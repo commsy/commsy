@@ -4041,3 +4041,12 @@ a.event_grey {
 	padding: 10px;
 	}
 
+#mandatory_missing{
+	margin:10px 0px 20px 85px;
+	padding:10px;
+	border: 2px solid red;
+	font-weight:bold;
+	width:500px;
+	text-align:center;
+	}
+

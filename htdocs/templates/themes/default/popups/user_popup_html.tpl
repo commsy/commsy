@@ -16,6 +16,9 @@
 
 
 					<div id="popup_content">
+						<div id="mandatory_missing" class="input_row hidden">
+							___COMMON_MANDATORY_FIELDS_CONTENT___
+						</div>
 						<div class="input_row">
 							<div class="input_label_100">___COMMON_TITLE___:</div>
 							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_80" />
@@ -28,7 +31,7 @@
 
 						<div class="input_row">
 							<div class="input_label_100" for="data_picture">___USER_PICTURE_UPLOADFILE___:</div>
-							
+
 							<div class="uploader-single">
 								<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 								   <input id="data_picture" class="fileSelector"></input>
@@ -174,7 +177,7 @@
 
 
 							<div id="netnavigation_tab" class="tab{if $popup.is_owner == true} hidden{/if}">
-								<div class="settings_area">							
+								<div class="settings_area">
 										<div id="popup_netnavigation">
 											<div id="content_row_two_max">
 							                    <div id="crt_content">
@@ -182,7 +185,7 @@
 							                            <div id="crt_row_area">
 							                            </div>
 							                        </div>
-							
+
 							                        <div id="crt_col_right">
 							                            <div class="pop_item_navigation">
 							                                <a id="first" href="#"><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
@@ -191,14 +194,14 @@
 							                                <a id="next" href="#"><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
 							                                <a id="last" href="#"><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
 							                            </div>
-							
+
 							                            <div class="pop_item_content">
 							                                <input name="netnavigation_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_170" />
 							                                <br/>
 							                                <span class="sitenote">___SEARCH_RUBRIC_RESTRICTION___</span><br/>
 							                                <select name="netnavigation_rubric_restriction" size="1" class="size_170_select"></select>
 							                                <br/>
-							
+
 							                                {if $popup.activating}
 								                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
 								                                <select name="netnavigation_type_restriction" size="1" class="size_170_select">
@@ -208,18 +211,18 @@
 								                                </select>
 								                                <br/>
 							                                {/if}
-							
+
 							                                <input name="netnavigation_linked_restriction" type="checkbox" value="true" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
 							                                <br/>
 							                                <input name="netnavigation_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
 							                            </div>
 							                        </div>
-							
+
 							                        <div class="clear"> </div>
 							                    </div>
 							                </div>
 										</div>
-							
+
 										<div id="netnavigation_list">
 											<ul class="netnavigation">
 												{foreach $popup.netnavigation.items as $entry}
@@ -234,7 +237,7 @@
 												{/foreach}
 											</ul>
 										</div>
-							
+
 									<div class="clear"></div>
 								</div>
 							</div>

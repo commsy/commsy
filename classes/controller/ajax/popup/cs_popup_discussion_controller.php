@@ -265,7 +265,10 @@
 						'mandatory' => true),
 				array(	'name'		=> 'description',
 						'type'		=> 'text',
-						'mandatory'	=> false)
+						'mandatory'	=> false),
+				array(	'name'		=> 'subject',
+						'type'		=> 'text',
+						'mandatory'	=> true)
 			);
 		}
 

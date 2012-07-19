@@ -10,6 +10,9 @@
 				</div>
 
 				<div id="popup_content">
+					<div id="mandatory_missing" class="input_row hidden">
+						___COMMON_MANDATORY_FIELDS_CONTENT___
+					</div>
 					<div class="input_row">
 						<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 					</div>
@@ -18,7 +21,7 @@
 						<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 					</div>
 				</div>
-				
+
 				<div id="popup_tabs">
 					<div class="tab_navigation">
 						<a href="files_tab" class="pop_tab_active">___MATERIAL_FILES___</a>
@@ -30,17 +33,17 @@
 					</div>
 					<div id="popup_tabcontent">
 						{include file="popups/include/files_tab_include_html.tpl"}
-						
+
 						{include file="popups/include/rights_tab_include_html.tpl"}
-						
+
 						{include file="popups/include/buzzwords_tab_include_html.tpl"}
-						
+
 						{include file="popups/include/tags_tab_include_html.tpl"}
-						
+
 						{include file="popups/include/netnavigation_tab_include_html.tpl"}
 
 					</div>
-					
+
 					<div id="content_buttons">
 						<div id="crt_actions_area">
 							<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_NEW_ITEM___{else}___COMMON_CHANGE_BUTTON___{/if}" />

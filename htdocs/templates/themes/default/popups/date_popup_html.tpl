@@ -18,9 +18,9 @@
 
 					<div id="popup_content">
 						<div id="mandatory_missing" class="input_row hidden">
-							___COMMON_MANDATORY_FIELDS___
+							___COMMON_MANDATORY_FIELDS_CONTENT___
 						</div>
-						
+
 						<div class="input_row">
 							<span class="input_label_80">___COMMON_TITLE___:<span class="required">*</span></span>
 							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />

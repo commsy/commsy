@@ -16,6 +16,9 @@
 					</div>
 
 					<div id="popup_content">
+						<div id="mandatory_missing" class="input_row hidden">
+							___COMMON_MANDATORY_FIELDS_CONTENT___
+						</div>
 						<div class="input_row">
 							<div class="input_label_80">___COMMON_NAME___<span class="required">*</span>:</div>
 							<input type="text" value="{if isset($item.name)}{$item.name}{/if}" name="form_data[name]" class="size_400" />
@@ -23,7 +26,7 @@
 
 						<div class="input_row">
 							<div class="input_label_80" for="data_picture">___USER_PICTURE_UPLOADFILE___:</div>
-							
+
 							<div class="uploader-single">
 								<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 								   <input id="data_picture" class="fileSelector"></input>
@@ -76,7 +79,7 @@
 									</div>
 								</div>
 							{/if}
-							
+
 							{include file="popups/include/netnavigation_tab_include_html.tpl"}
 
 						</div>

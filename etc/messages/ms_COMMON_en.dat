@@ -480,6 +480,7 @@ $message["COMMON_MAIL_TO_SERVICE"]["en"] = "Contact";
 $message["COMMON_MAIL_TO_SERVICE2"]["en"] = "ask helpdesk";
 $message["COMMON_MAIL_TO_SERVICE2_LINK_TITLE"]["en"] = "Deliver a question to the support of this portal.";
 $message["COMMON_MANDATORY_FIELDS"]["en"] = "Mandatory fields";
+$message["COMMON_MANDATORY_FIELDS_CONTENT"]["en"] = "Please complete all mandatory fields (marked with an red star).";
 $message["COMMON_MARK_READ_SINCE_MODIFICATION"]["en"] = "Current version signed as read by:";
 $message["COMMON_MATERIAL"]["en"] = "Material";
 $message["COMMON_MATERIALS"]["en"] = "Materials";

@@ -16,6 +16,9 @@
 
 
 					<div id="popup_content">
+						<div id="mandatory_missing" class="input_row hidden">
+							___COMMON_MANDATORY_FIELDS_CONTENT___
+						</div>
 						<div class="input_row">
 							<div class="input_label_100">___COMMON_TITLE___<span class="required">*</span>:</div>
 							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
@@ -60,13 +63,13 @@
 						</div>
 						<div id="popup_tabcontent">
 							{include file="popups/include/files_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/rights_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/buzzwords_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/tags_tab_include_html.tpl"}
-							
+
 							{include file="popups/include/netnavigation_tab_include_html.tpl"}
 
 						</div>

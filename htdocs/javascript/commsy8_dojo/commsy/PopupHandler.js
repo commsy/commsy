@@ -137,7 +137,7 @@ define([	"dojo/_base/declare",
 
 		setupLoading: function() {
 			var loadingScreenDiv = query("#loadingScreen")[0];
-			
+
 			if (!loadingScreenDiv) {
 				// TODO: add invisible screen layer, to prevent closing, before fully loaded
 				var loadingScreenDiv = domConstruct.create("div", {
@@ -274,21 +274,22 @@ define([	"dojo/_base/declare",
 				lang.hitch(this, function(response) {
 					if(response.status === "error" && response.code === 101) {
 						var missingFields = response.detail;
-						
+
 						// show missing mandatory text
 						var missingDivNode = query("div#mandatory_missing", this.contentNode)[0];
 						dom_class.remove(missingDivNode, "hidden");
-						
+						this.scrollToNodeAnimated(missingDivNode);
+
 						/*
 						// create a red border around the missing fields and scroll to first one
 						dojo.forEach(missingFields, lang.hitch(this, function(field, index, arr) {
 							var fieldNode = query("[name='form_data[" + field + "]']", this.contentNode)[0];
-							
+
 							var nodeType = dom_attr.get(fieldNode, "type");
 							if(nodeType === "hidden") {
 								fieldNode = new dojo.NodeList(fieldNode).prev()[0];
 							}
-							
+
 							domStyle.set(fieldNode, "border", "2px solid red !important");
 
 							if(index === 0) {
