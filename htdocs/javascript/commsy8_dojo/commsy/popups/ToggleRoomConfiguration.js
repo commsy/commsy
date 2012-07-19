@@ -189,14 +189,14 @@ define([	"dojo/_base/declare",
 		},
 
 		onClickAdditionalStatus: function() {
-			var inputObject = Query("input#state")[0];
+			var inputObject = Query("input#status")[0];
 
-			var value = DomAttr(inputObject, "value");
+			var value = DomAttr.get(inputObject, "value");
 			DomAttr.set(inputObject, "value", "");
 
 			if(value !== "") {
 				// append new entry
-				var divObject = Query("div#additional_status_list");
+				var divObject = Query("div#additional_status_list")[0];
 
 				// get new value
 				var newValue = 5;
@@ -215,7 +215,9 @@ define([	"dojo/_base/declare",
 					name:		"form_data[additional_status_" + newValue + "]"
 				}, divObject, "last");
 
-				DomConstruct.create(value, divObject, "last");
+				DomConstruct.create("span", {
+					innerHTML:	value
+				}, divObject, "last");
 			}
 		},
 
@@ -313,7 +315,13 @@ define([	"dojo/_base/declare",
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
-			this.close();
+			//var cid = this.uri_object.cid;
+
+
+			//var module = this.module;
+			location.href = location.href;
+			//"commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id;
+			//this.close();
 		}
 	});
 });
