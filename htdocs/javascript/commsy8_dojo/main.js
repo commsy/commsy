@@ -66,6 +66,18 @@ require([	"dojo/_base/declare",
 					});
 				});
 				
+				// threaded discussion tree
+				if (this.uri_object.mod == "discussion" && this.uri_object.fct == "detail") {
+					var treeNode = query("div#discussion_tree")[0];
+					
+					if (treeNode) {
+						require(["commsy/DiscussionTree"], function(DiscussionTree) {
+							var handler = new DiscussionTree();
+							handler.setupTree(treeNode);
+						});
+					}
+				}
+				
 				// search
 				if(this.from_php.dev.indexed_search === true) {
 					require(["commsy/Search"], function(Search) {

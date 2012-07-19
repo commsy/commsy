@@ -277,6 +277,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$discussion_type = $this->_item->getDiscussionType();
 
 			if($discussion_type === 'threaded') {
+				// TODO: check this
+				$return = parent::getEditActions($item, $current_user, 'discarticle');
+				
+				
 				/*
 					if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
 		            $params = array();
@@ -586,7 +590,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			$root_position = $root->getPosition();
 			$root_level = sizeof(explode('.', $root_position)) - 1;
-
+			
 			// get through
 			$item = $node_list->getFirst();
 			while($item) {
@@ -635,19 +639,41 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 					// description
 					$description = $item->getDescription();
-					$//description = $converter->cleanDataFromTextArea($description);
+					//description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
 					//$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $item, true);
 					//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-
-					$node_list->removeElement($item);
-					$node_list_clone = clone $node_list;
-
+					
+					// parse position string
+					$position = $item->getPosition();
+					$numberArray = explode(".", $position);
+					$number = "";
+					foreach ($numberArray as $num) {
+						if (empty($number)) {
+							$number = "1";
+						} else {
+							$len = mb_strlen($num);
+							$tmpNum = mb_substr($num, 1, $len);
+							$first = mb_substr($tmpNum, 0, 1);
+							
+							while ($first == "0") {
+								$tmpNum = mb_substr($tmpNum, 1, mb_strlen($tmpNum));
+								$first = mb_substr($tmpNum, 0, 1);
+							}
+							$number .= "." . $tmpNum;
+						}
+					}
+					
+					$position = $number;
+					
+					$potentialChildList = clone $node_list;
+					$potentialChildList->removeElement($item);
+					
 					// append return and recursive call
 					$return[] = array(
 						'item_id'			=> $item->getItemID(),
-						'position'			=> $item->getPosition(),
+						'position'			=> $number,
 						'subject'			=> $item->getSubject(),
 						'description'		=> $description,
 						'creator'			=> $creator_fullname,
@@ -657,7 +683,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 						'modificator_image'	=> $modificator_image,
 						'custom_image'		=> !empty($image),
 						'actions'			=> $this->getEditActions($item, $current_user),
-						'children'			=> $this->buildThreadedTree($node_list_clone, $item)
+						'moredetails'		=> $this->getCreatorInformationAsArray($item),
+						'children'			=> $this->buildThreadedTree($potentialChildList, $item),
+						'index'				=> 0
 					);
 				}
 
@@ -770,7 +798,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$description = $root->getDescription();
 			//$description = $converter->cleanDataFromTextArea($description);
 			$converter->setFileArray($this->getItemFileList());
-			$//description = $converter->text_as_html_long($description);
+			//description = $converter->text_as_html_long($description);
 			$description = $converter->showImages($description, $root, true);
 			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
 
@@ -788,12 +816,11 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'custom_image'		=> !empty($image),
 				'actions'			=> $this->getEditActions($root, $current_user),
 				'moredetails'		=> $this->getCreatorInformationAsArray($root),
-				'formal'			=> $entry
+				'formal'			=> $entry,
+				'index'				=> 0
 			);
 
 			$return[0]['children'] = $this->buildThreadedTree($articles_list, $root);
-
-#			pr($return);
 
 			return $return;
 		}

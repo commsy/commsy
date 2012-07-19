@@ -24,6 +24,8 @@ define([	"dojo/_base/declare",
 			// parent constructor is called automatically
 		},
 		
+		
+		
 		/************************************************************************************
 		 *** overwritten tree methods
 		 ************************************************************************************/
@@ -69,23 +71,38 @@ define([	"dojo/_base/declare",
 		
 		/************************************************************************************
 		 *** main setup routine
+		 *
+		 * this is completly overwritten, because the store data contains discussion details
+		 * and not tags
 		 ************************************************************************************/
-		setupTree: function(node) {			
-			// call parent method - overwrite arguments(add a callback function, when loading is done)
-			this.inherited(arguments, [node, Lang.hitch(this, function() {
-				// loading is done - now we can safely access this.tree
+		setupTree: function(node) {
+			/*
+			 * First of all, we need to load the store data via ajax. It will contain all
+			 * the needed information for building the discussion tree
+			 */
+			this.AJAXRequest("threaded_discussion", "getTreeData", { discussionId: this.uri_object.iid }, Lang.hitch(this, function(results) {
+				this.store = new ItemFileWriteStore({
+					data: {
+						identifier:		"item_id",
+						label:			"title",
+						items:			results
+					}
+				});
 				
-				// add "+" and "rename" to all node labels
-				this.addCreateAndRenameToAllLabels();
+				// create model
+				this.model = this.createModel();
 				
-				On(this.store, "New", Lang.hitch(this, function(newItem, parentInfo) {
-					this.onStoreNew(newItem, parentInfo);
-				}));
+				// create tree
+				this.tree = this.createTree();
 				
-				On(this.store, "Set", Lang.hitch(this, function(item, attribute, oldValue, newValue) {
-					this.onStoreSet(item, attribute, oldValue, newValue);
-				}));
-			})]);
+				domConstruct.empty(node);
+				this.tree.placeAt(node);
+				
+				callback();
+				
+				// auto expand
+				//this.autoExpandToLevel(tree);
+			}));
 		},
 		
 		/************************************************************************************

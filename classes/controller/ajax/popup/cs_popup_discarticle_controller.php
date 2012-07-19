@@ -48,9 +48,12 @@
 			$current_context = $this->_environment->getCurrentContextItem();
 
 			$current_iid = $form_data['iid'];
-
+			
 			$discarticle_manager = $this->_environment->getDiscussionArticleManager();
-			$discarticle_item = $discarticle_manager->getItem($current_iid);
+			
+			if($current_iid !== "NEW") {
+				$discarticle_item = $discarticle_manager->getItem($current_iid);
+			}
 
 			// check access rights
 			if($current_context->isProjectRoom() && $current_context->isClosed()) {
@@ -90,6 +93,90 @@
 			else {
 				// save item
 				if($this->_popup_controller->checkFormData()) {
+					
+					// if item id is "NEW" create a new discussion article
+					if($current_iid === "NEW") {
+						$discarticle_item = $discarticle_manager->getNewItem();
+						$discarticle_item->setContextID($this->_environment->getCurrentContextID());
+						$discarticle_item->setCreatorItem($current_user);
+						$discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
+						$discarticle_item->setDiscussionID($additional["discussionId"]);
+						
+						// if answerTo is set, this article belongs to a threaded discussion and the correct position needs to be set
+						if(isset($additional["answerTo"]) && $additional["answerTo"] !== null) {
+							$answerTo = $additional["answerTo"];
+						
+							$discussionManager = $this->_environment->getDiscussionManager();
+							$discussionItem = $discussionManager->getItem($additional["discussionId"]);
+							
+							// get the position of the discussion article this is a response to
+							$answerToItem = $discarticle_manager->getItem($answerTo);
+							$answerToPosition = $answerToItem->getPosition();
+							
+							// load discussion articles
+							$discarticle_manager->reset();
+							
+							$discarticle_manager->setDiscussionLimit($additional["discussionId"], "");
+							$discarticle_manager->select();
+							
+							$discussionArticlesList = $discarticle_manager->get();
+							
+							// build an array with all positions > $answerToPosition
+							$positionArray = array();
+							$discussionArticle = $discussionArticlesList->getFirst();
+							while ($discussionArticle) {
+								$articlePosition = $discussionArticle->getPosition();
+								
+								if ($articlePosition > $answerToPosition) {
+									$positionArray[] = $articlePosition;
+								}
+								
+								$discussionArticle = $discussionArticlesList->getNext();
+							}
+							sort($positionArray);
+							
+							// check if there is at least one direct answer to the $answerToItem
+							$hasChild = in_array($answerToPosition . ".1001", $positionArray);
+							
+							// if there is none, this article will be the first child
+							if (!$hasChild) {
+								$discarticle_item->setPosition($answerToPosition . ".1001");
+							}
+							
+							// otherwise we need do determ the correct position for appending
+							else {
+								// explode all sub-positions
+								$answerToPositionArray = explode(".", $answerToPosition);
+								
+								$compareArray = array();
+								$end = count($positionArray) - 1;
+								for ($i = 0; $i <= $end; $i++) {
+									$valueArray = explode(".", $positionArray[$i]);
+									
+									$in = true;
+									$end2 = count($answerToPositionArray) - 1;
+									for ($j = 0; $j <= $end2; $j++) {
+										if (isset($valueArray[$j]) && $answerToPositionArray[$j] != $valueArray[$j]) {
+											$in = false;
+										}
+									}
+									
+									if ($in && count($valueArray) == count($answerToPositionArray) + 1) {
+										$compareArray[] = $valueArray[count($answerToPositionArray)];
+									}
+								}
+								
+								$length = count($compareArray) - 1;
+								$result = $compareArray[$length];
+								$endResult = $result + 1;
+								
+								$discarticle_item->setPosition($answerToPosition . "." . $endResult);
+							}
+						} else {
+							$discarticle_item->setPosition("1");
+						}
+					}
+					
 					// set modificator and modification date
 					$discarticle_item->setModificatorItem($current_user);
 					$discarticle_item->setModificationDate(getCurrentDateTimeInMySQL());

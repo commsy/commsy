@@ -144,148 +144,148 @@
 	<div class="clear"> </div>
 
 
-
-	{foreach $detail.content.disc_articles as $article}
-		<div class="item_actions">
-			<a class="edit" data-custom="expand: 'edit_expand_article_{$article@index}'" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a class="detail" data-custom="expand: 'detail_expand_article_{$article@index}'" href="#"><span class="details_ia"> &nbsp; </span></a>
-		</div>
-
-		<div class="item_body"> <!-- Start item body -->
-			<a name="disc_article_{$article.item_id}"></a>
-			<a name="article{$article.item_id}"></a>
-
-			<!-- Start fade_in_ground -->
-			<div id="edit_expand_article_{$article@index}" class="hidden">
-				<div class="fade_in_ground_actions">
-					{if $article.actions.edit}
-						<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
-					{/if}
-					{if $article.actions.delete}
-						<a class="open_popup" data-custom="iid: {$article.item_id}, module: 'delete', delType: 'discarticle'" href="#">___COMMON_DELETE_ITEM___</a>
-					{/if}
-				</div>
+	{block name=discussion_articles}
+		{foreach $detail.content.disc_articles as $article}
+			<div class="item_actions">
+				<a class="edit" data-custom="expand: 'edit_expand_article_{$article@index}'" href="#"><span class="edit_set"> &nbsp; </span></a>
+				<a class="detail" data-custom="expand: 'detail_expand_article_{$article@index}'" href="#"><span class="details_ia"> &nbsp; </span></a>
 			</div>
-			<!-- Ende fade_in_ground -->
-
-			{block name=discussion_articles}
-				<div class="item_post">
-					<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover">
-						<div class="column_80">
-							<p>
-								<a href="" title="{$article.creator}">
-									{if $article.custom_image}
-										<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="___USER_PICTURE_UPLOADFILE___" />
-									{else}
-										<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
-									{/if}
-								</a>
-							</p>
-						</div>
-
-
-						<div class="column_585_nopadding">
-							<div class="post_content">
-								<h4>{$article@iteration}.
-									{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$article.subject}
-								</h4>
-								<span>
-								___COMMON_LAST_MODIFIED_BY_UPPER___
-								{build_user_link status=$article.moredetails.last_modificator_status user_name=$article.moredetails.last_modificator id=$article.moredetails.last_modificator_id}
-								___DATES_ON_DAY___  {$article.moredetails.last_modification_date}
-								</span>
-								{if !empty($article.formal)}
-									<table>
-										{if !empty($article.formal.files)}
-											<tr>
-												<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
-												<td>
-													{foreach $article.formal.files as $file}
-														{$file.name}
-														{if !$file@last }
-															<br/>
-														{/if}
-													{/foreach}
-												</td>
-											</tr>
-										{/if}
-									</table>
-									<div class="clear"> </div>
-								{/if}
-
-								<div class="editor_content">
-									{$article.description}
-								</div>
-							</div>
-						</div>
-						<div class="column_27">
-							<p class="jump_up_down">
-								{if !$article@first}<a href="#disc_article_{$detail.content.disc_articles[$article@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
-								{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
-							</p>
-						</div>
-						<div class="clear"> </div>
+	
+			<div class="item_body"> <!-- Start item body -->
+				<a name="disc_article_{$article.item_id}"></a>
+				<a name="article{$article.item_id}"></a>
+	
+				<!-- Start fade_in_ground -->
+				<div id="edit_expand_article_{$article@index}" class="hidden">
+					<div class="fade_in_ground_actions">
+						{if $article.actions.edit}
+							<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
+						{/if}
+						{if $article.actions.delete}
+							<a class="open_popup" data-custom="iid: {$article.item_id}, module: 'delete', delType: 'discarticle'" href="#">___COMMON_DELETE_ITEM___</a>
+						{/if}
 					</div>
 				</div>
-			{/block}
-
-			<div id="detail_expand_article_{$article@index}" class="hidden">
-				{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
+				<!-- Ende fade_in_ground -->
+					<div class="item_post">
+						<div class="row_{if $article@iteration is odd}odd{else}even{/if}_no_hover">
+							<div class="column_80">
+								<p>
+									<a href="" title="{$article.creator}">
+										{if $article.custom_image}
+											<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$article.modificator_image}" alt="___USER_PICTURE_UPLOADFILE___" />
+										{else}
+											<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
+										{/if}
+									</a>
+								</p>
+							</div>
+	
+	
+							<div class="column_585_nopadding">
+								<div class="post_content">
+									<h4>{$article@iteration}.
+										{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$article.subject}
+									</h4>
+									<span>
+									___COMMON_LAST_MODIFIED_BY_UPPER___
+									{build_user_link status=$article.moredetails.last_modificator_status user_name=$article.moredetails.last_modificator id=$article.moredetails.last_modificator_id}
+									___DATES_ON_DAY___  {$article.moredetails.last_modification_date}
+									</span>
+									{if !empty($article.formal)}
+										<table>
+											{if !empty($article.formal.files)}
+												<tr>
+													<td class="label"><h4>___MATERIAL_FILES___: </h4></td>
+													<td>
+														{foreach $article.formal.files as $file}
+															{$file.name}
+															{if !$file@last }
+																<br/>
+															{/if}
+														{/foreach}
+													</td>
+												</tr>
+											{/if}
+										</table>
+										<div class="clear"> </div>
+									{/if}
+	
+									<div class="editor_content">
+										{$article.description}
+									</div>
+								</div>
+							</div>
+							<div class="column_27">
+								<p class="jump_up_down">
+									{if !$article@first}<a href="#disc_article_{$detail.content.disc_articles[$article@index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
+									{if !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$article@index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
+								</p>
+							</div>
+							<div class="clear"> </div>
+						</div>
+					</div>
+	
+				<div id="detail_expand_article_{$article@index}" class="hidden">
+					{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
+				</div>
+			</div> <!-- Ende item body -->
+			<div class="clear"> </div>
+		{/foreach}
+	{/block}
+	
+	{block name=discussion_inline_answer}
+		<div class="item_actions">&nbsp;</div>
+	
+		<div class="item_body"> <!-- Start item body -->
+			<div class="item_post">
+				<div id="item_postnew">
+					<div class="column_80">
+						<p>
+							<a href="" title="{$environment.username}">
+								{if $environment.user_picture != ''}
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{else}
+									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{/if}
+							</a>
+						</p>
+					</div>
+	
+					<div class="column_590">
+						<a name="discarticle_new"></a>
+						<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
+							<div class="post_content">
+								<h4>{$detail.content.new_num}. </h4>
+								<input type="hidden" value="" name="iid"/>
+								<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
+								<input type="hidden" value="1" name="ref_position"/>
+								<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "discarticle"} class="missing"{/if}/>
+		
+								<div class="editor_content">
+									<div id="description" class="ckeditor"></div>
+								</div>
+								
+								{*
+								<div id="files_finished"></div>
+								
+								<div class="uploader">
+								   <input class="fileSelector"></input>
+								   
+								   <div class="fileList"></div>
+								</div>
+								*}
+								
+								<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
+							</div>
+						</form>
+					</div>
+					<div class="clear"> </div>
+				</div>
 			</div>
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
-	{/foreach}
-
-	<div class="item_actions">&nbsp;</div>
-
-	<div class="item_body"> <!-- Start item body -->
-		<div class="item_post">
-			<div id="item_postnew">
-				<div class="column_80">
-					<p>
-						<a href="" title="{$environment.username}">
-							{if $environment.user_picture != ''}
-								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-							{else}
-								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-							{/if}
-						</a>
-					</p>
-				</div>
-
-				<div class="column_590">
-					<a name="discarticle_new"></a>
-					<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
-						<div class="post_content">
-							<h4>{$detail.content.new_num}. </h4>
-							<input type="hidden" value="" name="iid"/>
-							<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
-							<input type="hidden" value="1" name="ref_position"/>
-							<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "discarticle"} class="missing"{/if}/>
-	
-							<div class="editor_content">
-								<div id="description" class="ckeditor"></div>
-							</div>
-							
-							{*
-							<div id="files_finished"></div>
-							
-							<div class="uploader">
-							   <input class="fileSelector"></input>
-							   
-							   <div class="fileList"></div>
-							</div>
-							*}
-							
-							<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
-						</div>
-					</form>
-				</div>
-				<div class="clear"> </div>
-			</div>
-		</div>
-	</div> <!-- Ende item body -->
-	<div class="clear"> </div>
+	{/block}
 
 	<div class="clear"> </div>
 {/block}
