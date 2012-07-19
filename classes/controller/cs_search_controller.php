@@ -760,17 +760,25 @@ if ( $environment->inPrivateRoom()
 				// different sort cases
 				switch($sortBy) {
 					case "title":
-						usort($return['items'], array($this, 'sortBy'));
+						usort($return['items'], array($this, "sortByTitle"));
+						break;
+					case "rubric":
+						usort($return['items'], array($this, "sortByRubric"));
+						break;
+					case "modified":
+						usort($return['items'], array($this, "sortByModified"));
+						break;
+					case "modificator":
+						usort($return['items'], array($this, "sortByModificator"));
+						break;
+					case "relevanz":
+						usort($return['items'], array($this, "sortByRelevanz"));
 						break;
 				}
 				
-				if($reverse === false) {
+				if($reverse === true) {
 					$return['items'] = array_reverse($return['items']);
 				}
-				
-				
-				var_dump($sortBy);
-				var_dump($reverse);
 			}
 			
 			// create id array
@@ -798,10 +806,26 @@ if ( $environment->inPrivateRoom()
 			return $return;
 		}
 
-		private function sortBy($a, $b, $key) {
-			if($a[$key] === $b[$key]) return 0;
-			
-			return ($a[$key] < $b[$key]) ? -1 : 1;
+		private function sortByTitle($a, $b) {
+			return strcmp($a["title"], $b["title"]);
+		}
+		
+		private function sortByRubric($a, $b) {
+			return strcmp($a["type"], $b["type"]);
+		}
+		
+		private function sortByModified($a, $b) {
+			return strcmp($a["modification_date"], $b["modification_date"]);
+		}
+		
+		private function sortByModificator($a, $b) {
+			return strcmp($a["modificator"], $b["modificator"]);
+		}
+		
+		private function sortByRelevanz($a, $b) {
+			if($a["relevanz"] === $b["relevanz"]) return 0;
+				
+			return ($a["relevanz"] < $b["relevanz"]) ? -1 : 1;
 		}
 
 
