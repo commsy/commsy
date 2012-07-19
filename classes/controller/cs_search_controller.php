@@ -750,14 +750,28 @@ if ( $environment->inPrivateRoom()
 			 * (at least when not using the indexed search)
 			************************************************************************************/
 			if ( !empty($this->_list_parameter_arrray['sort']) ) {
-				var_dump($this->_list_parameter_arrray['sort']);
+				$sortBy = $this->_list_parameter_arrray['sort'];
 				
-				//$material_manager->setOrder($this->_list_parameter_arrray['sort']);
+				// look for "_" and determ sort order
+				list($sortBy, $reverse) = explode("_", $sortBy);
+				
+				$reverse = ($reverse === null) ? false : true;
+				
+				// different sort cases
+				switch($sortBy) {
+					case "title":
+						usort($return['items'], array($this, 'sortBy'));
+						break;
+				}
+				
+				if($reverse === false) {
+					$return['items'] = array_reverse($return['items']);
+				}
+				
+				
+				var_dump($sortBy);
+				var_dump($reverse);
 			}
-			
-			// sort return by relevanz
-			usort($return['items'], array($this, 'sortByRelevanz'));
-			$return['items'] = array_reverse($return['items']);
 			
 			// create id array
 			$ids = array();
@@ -784,10 +798,10 @@ if ( $environment->inPrivateRoom()
 			return $return;
 		}
 
-		private function sortByRelevanz($a, $b) {
-			if($a['relevanz']	=== $b['relevanz']) return 0;
-
-			return ($a['relevanz'] < $b['relevanz']) ? -1 : 1;
+		private function sortBy($a, $b, $key) {
+			if($a[$key] === $b[$key]) return 0;
+			
+			return ($a[$key] < $b[$key]) ? -1 : 1;
 		}
 
 
