@@ -4035,4 +4035,9 @@ a.event_grey {
     padding: 1px 5px;
     }
 
+#delete_options{
+	border: 2px solid red;
+	margin:10px;
+	padding: 10px;
+	}
 
