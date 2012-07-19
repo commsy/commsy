@@ -96,7 +96,7 @@
 
 					// set attributes
 					if(isset($form_data['title'])) $discarticle_item->setSubject($form_data['title']);
-					if(isset($form_data['discarticle_description'])) $discarticle_item->setDescription($form_data['discarticle_description']);
+					if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
 
 		            // already attached files
 		            $file_ids = array();
@@ -107,7 +107,7 @@
 		            }
 		            
 		            // this will handle already attached files as well as adding new files
-		            $this->_popup_controller->getUtils()->setFilesForItem($date_item, $file_ids, $form_data["files"]);
+		            $this->_popup_controller->getUtils()->setFilesForItem($discarticle_item, $file_ids, $form_data["files"]);
 		            
 
 					// save item

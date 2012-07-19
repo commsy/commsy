@@ -319,7 +319,7 @@ define([	"dojo/_base/declare",
 
 
 			//var module = this.module;
-			location.href = location.href;
+			location.reload();
 			//"commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id;
 			//this.close();
 		}

@@ -55,11 +55,11 @@ define([	"dojo/_base/declare",
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					this.close();
+					//this.close();
 					this.reload(item_id);
 				}));
 			} else {
-				this.close();
+				//this.close();
 				this.reload(item_id);
 			}
 		}

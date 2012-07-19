@@ -8,7 +8,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-style",
         	"dojo/has",
-        	"dojo/_base/sniff"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle, Has) {
+        	"dojo/_base/sniff",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle, Has) {
 	return declare(BaseClass, {
 		is_open:				false,
 		contentNode:			null,
@@ -135,22 +136,26 @@ define([	"dojo/_base/declare",
 		},
 
 		setupLoading: function() {
-			// TODO: add invisible screen layer, to prevent closing, before fully loaded
-			var loadingScreenDiv = domConstruct.create("div", {
-				"id":		"loadingScreen"
-			}, document.body, "first")
+			var loadingScreenDiv = query("#loadingScreen")[0];
+			
+			if (!loadingScreenDiv) {
+				// TODO: add invisible screen layer, to prevent closing, before fully loaded
+				var loadingScreenDiv = domConstruct.create("div", {
+					"id":		"loadingScreen"
+				}, document.body, "first")
 
-				var loadingScreenInner = domConstruct.create("div", {
-					"id":		"loadingScreenInner"
-				}, loadingScreenDiv, "last");
+					var loadingScreenInner = domConstruct.create("div", {
+						"id":		"loadingScreenInner"
+					}, loadingScreenDiv, "last");
 
-					domConstruct.create("h2", {
-						innerHTML:		"Loading..."
-					}, loadingScreenInner, "last");
+						domConstruct.create("h2", {
+							innerHTML:		"Loading..."
+						}, loadingScreenInner, "last");
 
-					domConstruct.create("img", {
-						src:		this.from_php.template.tpl_path + "img/ajax_loader_big.gif"
-					}, loadingScreenInner, "last");
+						domConstruct.create("img", {
+							src:		this.from_php.template.tpl_path + "img/ajax_loader_big.gif"
+						}, loadingScreenInner, "last");
+			}
 		},
 
 		destroyLoading: function() {
@@ -269,21 +274,31 @@ define([	"dojo/_base/declare",
 				lang.hitch(this, function(response) {
 					if(response.status === "error" && response.code === 101) {
 						var missingFields = response.detail;
-
+						
+						// show missing mandatory text
+						var missingDivNode = query("div#mandatory_missing", this.contentNode)[0];
+						dom_class.remove(missingDivNode, "hidden");
+						
+						/*
 						// create a red border around the missing fields and scroll to first one
 						dojo.forEach(missingFields, lang.hitch(this, function(field, index, arr) {
 							var fieldNode = query("[name='form_data[" + field + "]']", this.contentNode)[0];
-
-							domStyle.set(fieldNode, "border", "1px solid red");
+							
+							var nodeType = dom_attr.get(fieldNode, "type");
+							if(nodeType === "hidden") {
+								fieldNode = new dojo.NodeList(fieldNode).prev()[0];
+							}
+							
+							domStyle.set(fieldNode, "border", "2px solid red !important");
 
 							if(index === 0) {
 								this.scrollToNodeAnimated(fieldNode);
 							}
 						}));
+						*/
 					} else {
 						console.error("an unhandled error response occurred");
 					}
-
 					this.destroyLoading();
 				})
 			);

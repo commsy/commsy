@@ -455,6 +455,16 @@ class cs_popup_date_controller {
     }
 
     public function getFieldInformation($sub = '') {
-        return array();
+        return array(
+    			array(	'name'		=> 'title',
+    					'type'		=> 'text',
+    					'mandatory' => true),
+    			array(	'name'		=> 'description',
+    					'type'		=> 'text',
+    					'mandatory'	=> false),
+        		array(	'name'		=> 'dayStart',
+        				'type'		=> 'date',
+        				'mandatory'	=> true)
+    	);
     }
 }

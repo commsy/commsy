@@ -58,42 +58,13 @@ define([	"dojo/_base/declare",
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					this.close();
+					//this.close();
 					this.reload(item_id);
 				}));
 			} else {
-				this.close();
+				//this.close();
 				this.reload(item_id);
 			}
 		},
 	});
 });
-
-/*
-		
-		onClickSave: function(event) {
-			// check if uploadify queue is empty
-			var queue_length = jQuery('div#uploadifyQueue').children().length;
-			
-			if(queue_length == 0 || event.data.handle.uploaded == true) {
-				event.data.handle.uploaded = false;
-				
-				// if queue is empty - save item
-				event.data.handle.save(event);
-			} else {
-				var uploadify = jQuery('input#uploadify');
-				
-				// first upload files - then save
-				uploadify.uploadifyUpload();
-				
-				event.data.handle.uploaded = true;
-			}
-		},
-		
-		onUploadifyAllComplete: function() {
-			jQuery('input#popup_button_create').click();
-		},
-	};
-});
-
-*/
