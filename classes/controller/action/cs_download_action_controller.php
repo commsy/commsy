@@ -146,7 +146,7 @@
 			
 			// get all linked css paths
 			$linkedCSS = array();
-			preg_match_all("=<link.*?href\=\"(.*)\"=", $output, $matches);
+			preg_match_all("=<link.*?href\=\"(.*?)\"=", $output, $matches);
 			list($matches, $linkedCSS) = $matches;
 			
 			foreach($linkedCSS as $css) {
@@ -159,16 +159,104 @@
 				// replace links in HTML output
 				$output = str_replace($css, $newLinkedCSS, $output);
 				
+				// copy css files
 				copy("htdocs/" . $css, $directory . "/" . $newLinkedCSS);
 			}
 			
+			// get all images
+			$images = array();
+			preg_match_all("=<img.*?src\=\"(.*?)\"=", $output, $matches);
+			list($matches, $images) = $matches;
 			
+			foreach($images as $image) {
+				// extract image filename
+				$fileName = basename($image);
+				
+				$newImage = "images/" . $fileName;
+				
+				// replace links in HTML output
+				$output = str_replace($image, $newImage, $output);
+				
+				// copy images
+				copy("htdocs/" . $image, $directory . "/" . $newImage);
+			}
+			
+			// TODO: getimage, etc...
+			
+			// write output to file
+			fwrite($fileHandle, $output);
+			fclose($fileHandle);
+			
+			
+			/*
+			var_dump($images);
+			
+			var_dump($output);
 			
 			
 			var_dump($linkedCSS);
 			var_dump($newLinkedCSS);
 			
-			var_dump($output);
+			
+			*/
+			
+			
+			/************************************************************************************
+			 * All files are ready now, create a ZIP archive and set headers for downloading
+			************************************************************************************/
+			// create zip file
+			$zipFile = $exportTempFolder . DIRECTORY_SEPARATOR . $mod . "_" . $itemId . ".zip";
+			
+			if (file_exists(realpath($zipfile))) unlink($zipfile);
+			
+			if (class_exists("ZipArchive")) {
+				include_once('functions/misc_functions.php');
+				
+				$zipArchive = new ZipArchive();
+				
+				if ($zipArchive->open($zipFile, ZIPARCHIVE::CREATE) !== TRUE) {
+					include_once('functions/error_functions.php');
+					trigger_error('can not open zip-file ' . $zipFile, E_USER_WARNING);
+				}
+				
+				$tempDir = getcwd();
+				chdir($directory);
+				$zipArchive = addFolderToZip(".", $zipArchive);
+				chdir($tempDir);
+				
+				$zipArchive->close();
+			} else {
+				include_once('functions/error_functions.php');
+				trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNING);
+			}
+			
+			// send zipfile by header
+			$translator = $this->_environment->getTranslationObject();
+			if($mod == 'announcement'){
+				$current_module = $translator->getMessage('ANNOUNCEMENT_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'material'){
+				$current_module = $translator->getMessage('MATERIAL_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'date'){
+				$current_module = $translator->getMessage('DATE_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'discussion'){
+				$current_module = $translator->getMessage('DISCUSSION_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'todo'){
+				$current_module = $translator->getMessage('TODO_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'group'){
+				$current_module = $translator->getMessage('GROUP_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'topic'){
+				$current_module = $translator->getMessage('TOPIC_EXPORT_ITEM_ZIP');
+			} elseif($mod == 'user'){
+				$current_module = $translator->getMessage('USER_EXPORT_ITEM_ZIP');
+			} else {
+				$current_module = $mod;
+			}
+			
+			$downloadFile = $current_module . "_" . $itemId . ".zip";
+			
+			header('Content-type: application/zip');
+		    header('Content-Disposition: attachment; filename="' . $downloadFile . '"');
+		    readfile($zipFile);
 			
 			$fileManager = $this->_environment->getFileManager();
 			
@@ -299,10 +387,7 @@
      $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
      $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output);
 
-     //write string into file
-     fwrite($handle, $output);
-     fclose($handle);
-     unset($output);
+     
 
      //copy CSS File
      if (isset($params['view_mode'])){
@@ -325,72 +410,6 @@
      $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$environment->getCurrentContextID();
      getCSS($directory.'/css/stylesheet2.css',$url_to_style);
      unset($url_to_style);
-
-     //create ZIP File
-     if(isset($params['iid'])) {
-        $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$environment->getCurrentModule().'_'.$params['iid'].'.zip';
-     }
-     else {
-        $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$environment->getCurrentModule().'_'.$environment->getCurrentFunction().'.zip';
-     }
-     if(file_exists(realpath($zipfile))) {
-        unlink($zipfile);
-      }
-
-     if ( class_exists('ZipArchive') ) {
-        include_once('functions/misc_functions.php');
-        $zip = new ZipArchive();
-        $filename = $zipfile;
-
-        if ( $zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE ) {
-            include_once('functions/error_functions.php');
-            trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNING);
-        }
-        $temp_dir = getcwd();
-        chdir($directory);
-
-        $zip = addFolderToZip('.',$zip);
-        chdir($temp_dir);
-
-        $zip->close();
-        unset($zip);
-        unset($params['downloads']);
-     } else {
-        include_once('functions/error_functions.php');
-        trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNING);
-     }
-
-     //send zipfile by header
-     $translator = $environment->getTranslationObject();
-     if($environment->getCurrentModule() == 'announcement'){
-        $current_module = $translator->getMessage('ANNOUNCEMENT_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'material'){
-        $current_module = $translator->getMessage('MATERIAL_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'date'){
-        $current_module = $translator->getMessage('DATE_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'discussion'){
-        $current_module = $translator->getMessage('DISCUSSION_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'todo'){
-        $current_module = $translator->getMessage('TODO_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'group'){
-        $current_module = $translator->getMessage('GROUP_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'topic'){
-        $current_module = $translator->getMessage('TOPIC_EXPORT_ITEM_ZIP');
-     } elseif($environment->getCurrentModule() == 'user'){
-        $current_module = $translator->getMessage('USER_EXPORT_ITEM_ZIP');
-     } else {
-        $current_module = $environment->getCurrentModule();
-     }
-     if(isset($params['iid'])) {
-        $downloadfile = $current_module.'_'.$params['iid'].'.zip';
-     }
-     else {
-        $downloadfile = $current_module.'_'.$environment->getCurrentFunction().'.zip';
-     }
-
-    header('Content-type: application/zip');
-    header('Content-Disposition: attachment; filename="'.$downloadfile.'"');
-    readfile($zipfile);
 			 */
 		}
 	}
