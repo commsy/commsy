@@ -233,7 +233,7 @@
                   $ip = $_SERVER["HTTP_HOST"];
                }
 
-               $email_to_service = '<form action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
+               $email_to_service = '<form id="supportForm" action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
                $email_to_service .= '<input type="hidden" name="server_name" value="'.$server_item->getTitle().'"/>'.LF;
                $email_to_service .= '<input type="hidden" name="server_ip" value="'.$ip.'"/>'.LF;
                $email_to_service .= '<input type="hidden" name="context_id" value="'.$current_context->getItemID().'"/>'.LF;
@@ -242,7 +242,7 @@
                $email_to_service .= '<input type="hidden" name="user_name" value="'.$current_user->getFullname().'"/>'.LF;
                $email_to_service .= '<input type="hidden" name="user_email" value="'.$current_user->getEmail().'"/>'.LF;
                $email_to_service .= '<input type="hidden" name="service_email" value="'.$service_email.'"/>'.LF;
-               $email_to_service .= '<a href="#" id="submit_form" title="'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'">'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
+               $email_to_service .= '<a href="#" title="'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'" onClick="document.getElementById(\'supportForm\').submit();">'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
                // jQuery
                $email_to_service .= '</form>'.LF;
  			}
@@ -255,6 +255,7 @@
 		private function processBaseTemplate() {
 			$current_user = $this->_environment->getCurrentUser();
 			$portal_user = $current_user->getRelatedPortalUserItem();
+			$portal_item = $this->_environment->getCurrentPortalItem();
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
 			$count_new_accounts = 0;
@@ -302,7 +303,7 @@
 			$this->assign('environment', 'language', $current_context->getLanguage());
 			$this->assign('environment','count_copies', $this->getUtils()->getCopyCount());
 			$this->assign('environment','show_moderator_link', $current_context->showMail2ModeratorLink());
-			$this->assign('environment','show_service_link', $current_context->showServiceLink());
+			$this->assign('environment','show_service_link', $portal_item->showServiceLink());
 			$this->assign('environment','service_link', $this->_getServiceMailLink());
 
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
