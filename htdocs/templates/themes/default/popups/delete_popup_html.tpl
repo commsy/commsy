@@ -1,5 +1,5 @@
 <div id="popup_wrapper">
-	<div id="popup_edit">
+	<div id="popup_delete">
 		<div id="popup_frame">
 			<div id="popup_inner">
 
@@ -18,7 +18,7 @@
 					<div id="popup_content">
 						___COMMON_DELETE_BOX_DESCRIPTION___
 					</div>
-					
+
 					<div id="content_buttons">
 						<div id="crt_actions_area">
 							{if $popup.recurrence}
@@ -28,7 +28,7 @@
 							<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 						</div>
 					</div>
-					
+
 				</div>
 			</div>
 			<div class="clear"></div>

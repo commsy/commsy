@@ -43,7 +43,7 @@
 			<div class="fade_in_ground_actions">
 				{* TODO: add missing actions *}
 				{if $detail.actions.edit}
-					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#"">___COMMON_EDIT_ITEM___</a> |
+					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
@@ -58,7 +58,7 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
 				{if $detail.actions.mail}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'send'" href="#">___COMMON_EMAIL_TO___</a> |
 				{/if}
 				{if $detail.actions.copy}
 					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'addToClipboard'" href="#">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
@@ -71,7 +71,7 @@
 				{if $detail.actions.workflow_unread}
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_not_read=true">___ITEM_WORKFLOW_MARK_NOT_READ___</a> |
 				{/if}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DOWNLOAD___</a>
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.content.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->

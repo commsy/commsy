@@ -28,6 +28,7 @@
 				{else}
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&institution_option=1">___GROUP_ENTER___</a> |
 				{/if}
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->

@@ -43,7 +43,7 @@
 			parent::processTemplate();
 
 			$this->assign('detail', 'actions', $this->getDetailActions());
-			
+
 			/*******************/
 			// move this, when inline forms are handles via ajax
 			if (isset($_GET["annotation_exception"]) && $_GET["annotation_exception"] == "mandatory") {
@@ -394,7 +394,7 @@
 			);
 
 			// edit
-			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions) {
+			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel()) {
 				$return['edit'] = true;
 				/*
 				 * if ( empty($module) ) {

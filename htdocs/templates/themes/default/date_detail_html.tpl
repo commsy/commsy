@@ -51,14 +51,14 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
 				{if $detail.actions.mail}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=mail&iid={$detail.content.item_id}" alt="___COMMON_EMAIL_TO___">___COMMON_EMAIL_TO___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'send'" href="#">___COMMON_EMAIL_TO___</a> |
 				{/if}
 				{if $detail.actions.copy}
 					<a class="ajax_action" data-custom="iid: {$detail.content.item_id}, action: 'addToClipboard'" href="#" title="___COMMON_ITEM_COPY_TO_CLIPBOARD___">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
 				{/if}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.downloadparams}" title="___COMMON_DOWNLOAD___">___COMMON_DOWNLOAD___</a>
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.content.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->

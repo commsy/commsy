@@ -139,6 +139,12 @@ div#loadingScreenInner .img {
 	position: relative;
 	}
 
+#popup_delete {
+	margin: 125px auto 20px;
+    width: 600px;
+	position: relative;
+	}
+
 #popup_my_area {
 	margin: 0px auto 20px;
     width: 990px;

@@ -24,6 +24,7 @@
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.content.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->

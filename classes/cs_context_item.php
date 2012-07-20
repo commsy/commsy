@@ -1099,6 +1099,18 @@ class cs_context_item extends cs_item {
     return $retour;
   }
 
+
+   function isSystemLabel () {
+      $retour = false;
+      if ( $this->_issetExtra('SYSTEM_LABEL')) {
+         $value = $this->_getExtra('SYSTEM_LABEL');
+         if ( $value == 1 ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
   function mayEnterByUserItemID ( $user_item_id ) {
     $retour = false;
     if ( $this->isLocked() ) {
