@@ -335,6 +335,8 @@ $message["COMMON_DELETE_BOX_DESCRIPTION_WIKI"]["de"] = "Ein gelöschtes Wiki kan
 $message["COMMON_DELETE_BOX_DESCRIPTION_WORDPRESS"]["de"] = "Alle Daten im Blog werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
 Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie diese <span style=&quot;font-weight:bold&quot;>%1 ausgewählten Einträge</span> endgültig löschen?";
+$message["COMMON_DELETE_BOX_INDEX_DESCRIPTION_2"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
+Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie die ausgewählten Einträge endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
 Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie diesen <span style=&quot;font-weight:bold&quot;>einen ausgewählten Eintrag</span> endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_TITLE"]["de"] = "Löschen von Einträgen";
