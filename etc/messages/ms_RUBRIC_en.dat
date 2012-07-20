@@ -35,12 +35,12 @@ $message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_PL"]["en"] = "This e-mail was se
 $message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_S"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the %_TOPIC_SUB_NOMS_BIG '%2'.";
 $message["RUBRIC_EMAIL_ADDED_BODY_SERVER"]["en"] = "This e-mail was sent from the server '%1'.";
 $message["RUBRIC_EMAIL_DEFAULT_COMMUNITY"]["en"] = "This e-mail was sent from the %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot;.
----";
+<br/>---<br/>";
 $message["RUBRIC_EMAIL_DEFAULT_GROUPROOM"]["en"] = "This e-mail was sent from the group workspace &quot;%1&quot;.
----";
+<br/>---<br/>";
 $message["RUBRIC_EMAIL_DEFAULT_PROJECT"]["en"] = "This e-mail was sent from the %_PROJECT_SUB_NOMS_BIG &quot;%1&quot;.
----";
-$message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["en"] = "---
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["en"] = "<br/>---<br/>
 Link:
 %1";
 $message["RUBRIC_PUBLIC"]["en"] = "Edit permission";

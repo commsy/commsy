@@ -53,7 +53,7 @@
 				<!-- Ende fade_in_ground -->
 					<div class="item_post">
 						<div class="row_{if $article_index+1 is odd}odd{else}even{/if}_no_hover" style="padding-left:{$discarticle_padding}px;">
-							<div class="column_80">
+							<div class="column_80">{$article.index}
 								<p>
 									<a href="" title="{$article.creator}">
 										{if $article.custom_image}

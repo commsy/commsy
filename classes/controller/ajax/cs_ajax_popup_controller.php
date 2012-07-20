@@ -104,6 +104,13 @@
 			echo $this->_return;
 			exit;
 		}
+		
+		public function setErrorReturn($code, $reason, $detail = array()) {
+			// setup return
+			parent::setErrorReturn($code, $reason, $detail);
+			echo $this->_return;
+			exit;
+		}
 
 		private function checkForm($sub) {
 			// get form data

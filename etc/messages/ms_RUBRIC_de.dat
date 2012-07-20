@@ -35,13 +35,13 @@ $message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_PL"]["de"] = "Diese E-Mail wurde
 $message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_S"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an %_TOPIC_ART_DEF_NOMS_LOW %_TOPIC_SUB_NOMS_BIG '%2' verschickt.";
 $message["RUBRIC_EMAIL_ADDED_BODY_SERVER"]["de"] = "Diese E-Mail wurde über den Server '%1' verschickt.";
 $message["RUBRIC_EMAIL_DEFAULT_COMMUNITY"]["de"] = "Diese Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%1&quot; verschickt.
----";
+<br/>---<br/>";
 $message["RUBRIC_EMAIL_DEFAULT_GROUPROOM"]["de"] = "Diese Mail wurde über den Gruppenraum &quot;%1&quot; verschickt.
----";
+<br/>---<br/>";
 $message["RUBRIC_EMAIL_DEFAULT_PROJECT"]["de"] = "Diese Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW CommSy-%_PROJECT_SUB_AKKS_BIG &quot;%1&quot; verschickt.
----";
-$message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["de"] = "---
-Link:
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["de"] = "<br/>---
+<br/>Link:
 %1";
 $message["RUBRIC_PUBLIC"]["de"] = "Bearbeitbar";
 $message["RUBRIC_PUBLIC_DESC"]["de"] = "Hier können Sie entscheiden, wer außer Ihnen diesen Eintrag bearbeiten darf.";
