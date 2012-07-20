@@ -35,7 +35,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		//TODO: feed mail with formdata etc.
 		$mail->set_from_email($this->_environment->getCurrentUser()->getEmail());
 		$mail->set_from_name($this->_environment->getCurrentUser()->getFullName());
-		
+
 		if (!empty($form_data['reciever'])) {
 			$recipients = implode(', ', $form_data['reciever']);
 			$mail->set_to($recipients);
@@ -47,13 +47,13 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 
 		$mail->set_message($form_data['body']);
 		$mail->set_subject($form_data['subject']);
-		
+
 		$success = $mail->send();
 		if ($success) {
-			$this->_popup_controller->setSuccessfullDataReturn('mail send successfully');			
+			$this->_popup_controller->setSuccessfullDataReturn('mail send successfully');
 		} else {
 			//TODO: Error handling
-			pr($mail);			
+			pr($mail);
 		}
 	}
 

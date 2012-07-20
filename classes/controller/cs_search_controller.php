@@ -32,12 +32,12 @@
 			************************************************************************************/
 			global $c_indexed_search;
 			$this->_indexed_search = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
-				
-			
+
+
 			// call parent
 			parent::processTemplate();
 		}
-		
+
 		public function actionIndex() {
 			$translator = $this->_environment->getTranslationObject();
 			$session = $this->_environment->getSessionItem();
@@ -47,17 +47,17 @@
 
 			// init list params
 			$this->initListParameters();
-			
+
 			// an array of all rubrics, containing files
 			$file_rubric_array = $this->getRubricsWithFiles();
-			
+
 			// get all parameters
 			$this->getParameters();
-			
+
 			// setup template variables
 			$this->assign('search', 'parameters', $this->_params);
 			$this->assign("search", "indexed_search", $this->_indexed_search);
-			
+
 			// find current option
 			$option = '';
 			if(isset($_POST['form_data']['option'])) {
@@ -65,7 +65,7 @@
 			} elseif(isset($_GET['option'])) {
 				$option = $_GET['option'];
 			}
-			
+
 			/*
 			 *
 
@@ -102,7 +102,7 @@ if ( isset($_GET['interval']) ) {
 				} else {
 					$this->getParameters();
 				}
-				
+
 				// store parameters in session
 				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array', $this->_params);
 			}
@@ -152,7 +152,7 @@ if ( isset($_GET['interval']) ) {
 				$rubric_array = array();
 				$rubric_array[] = $this->_params['selrubric'];
 			}
-			
+
 			/*
 
 
@@ -291,12 +291,12 @@ if ( $environment->inPrivateRoom()
 				if(strlen($word) >= 4) $search_words_tmp[] = $word;
 			}
 			$this->_search_words = $search_words_tmp;
-			
+
 			//if(empty($this->_search_words)) die("empty search");
-			
-			
-			
-			
+
+
+
+
 			/************************************************************************************
 			 * When using the indexed search method, ...
 			************************************************************************************/
@@ -304,7 +304,7 @@ if ( $environment->inPrivateRoom()
 				/************************************************************************************
 				 * ...we can look up all search words in the database to get their ids...
 				************************************************************************************/
-				
+
 				$query = '
 					SELECT
 						sw_id
@@ -312,7 +312,7 @@ if ( $environment->inPrivateRoom()
 						search_word
 					WHERE 1=1
 				';
-				
+
 				$size = sizeof($this->_search_words);
 				if ($size != 0){
 					$query .= 'AND (';
@@ -320,16 +320,16 @@ if ( $environment->inPrivateRoom()
 						$query .= '
 						sw_word LIKE "' . encode(AS_DB, $this->_search_words[$i]) . '%"
 						';
-				
+
 						if($i < $size - 1) $query .= ' OR ';
 					}
 					$query .= ') ';
 				}
 				$word_ids = $db->performQuery($query);
-				
+
 				/************************************************************************************
 				 * ...and find items matching these ids
-				 * 
+				 *
 				 * fortunately, it is possible to limit this selection by rubrics, because all indexed entries are
 				 * associated to their proper main item
 				 * f.e.	- discussionarticles are listed as discussions
@@ -340,7 +340,7 @@ if ( $environment->inPrivateRoom()
 				if(!empty($this->_params['selrubric'])) {
 					$search_rubrics = array($this->_params['selrubric']);
 				}
-				
+
 				$query = '
 					SELECT
 						si_item_id,
@@ -351,76 +351,76 @@ if ( $environment->inPrivateRoom()
 					WHERE
 					(
 				';
-				
+
 				$size = sizeof($search_rubrics);
 				for($i = 0; $i < $size; $i++) {
 					$query .= '
 					si_item_type = "' . mysql_real_escape_string($search_rubrics[$i]) . '"';
-				
+
 					if($i < $size - 1) $query .= ' OR ';
 				}
 				$query .= ') AND (';
-				
+
 				if(!empty($word_ids)) {
 					$size = sizeof($word_ids);
 					for($i = 0; $i < $size; $i++) {
 						$query .= '
 						si_sw_id = ' . $word_ids[$i]['sw_id'];
-				
+
 						if($i < $size - 1) $query .= ' OR ';
 					}
 				} else {
 					$query .= 'FALSE';
 				}
-				
+
 				$query .= ')';
-				
+
 				$query .= '
 					ORDER BY
 						si_count
 					DESC
 				';
-				
+
 				$results = $db->performQuery($query);
-				
+
 				/************************************************************************************
 				 * the result is catched in a way, creating a rubric ordered array
-				 * 
+				 *
 				 * ...maybe this could be done directly in query
 				************************************************************************************/
 				foreach($results as $result) {
 					$this->_items[$this->rubric2ItemType($result['si_item_type'])][$result['si_item_id']] = $result['si_count'];
 				}
-				
+
 				/************************************************************************************
 				 * now we can get all needed information for the matched items
 				************************************************************************************/
 				$count_all = 0;
-				
+
 				$campus_search_ids = array();
 				$result_list = new cs_list();
-				
+
 				global $c_plugin_array;
 				foreach($rubric_array as $rubric) {
 					if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
 						$rubric_ids = array();
 						$rubric_list = new cs_list();
 						$rubric_manager = $this->_environment->getManager($rubric);
-				
+
 						/*
 						 * TODO:	the main idea is to limit requests by the previous detected item ids and only get detailed information for those,
 						* 			but db managers do not act as expected
 						*
 						*			for now, items are filtered afterwards
 						*/
-				
+
 						// set id array limit
 						//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
-				
+
 						if($rubric === CS_PROJECT_TYPE) {
 							$rubric_manager->setQueryWithoutExtra();
 						}
-				
+
 						// context limit
 						if($rubric !== CS_PROJECT_TYPE && $rubric !== CS_MYROOM_TYPE) {
 							$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -430,18 +430,18 @@ if ( $environment->inPrivateRoom()
 							$rubric_manager->setIDArrayLimit(($current_community_item->getInternalProjectIDArray()));
 							unset($current_community_item);
 						}
-				
+
 						// date
 						if($rubric === CS_DATE_TYPE && $this->_params['selstatus'] === 2) {
 							$rubric_manager->setWithoutDateModeLimit();
 						} elseif($rubric === CS_DATE_TYPE && $this->_params['selstatus'] !== 2) {
 							$rubric_manager->setDateModeLimit($this->_params['selstatus']);
 						}
-				
+
 						if ($this->_params['selgroup'] ){
 							$rubric_manager->setGroupLimit($this->_params['selgroup']);
 						}
-				
+
 						// user
 						if($rubric === CS_USER_TYPE) {
 							$rubric_manager->setUserLimit();
@@ -452,45 +452,45 @@ if ( $environment->inPrivateRoom()
 								$rubric_manager->setVisibleToAll();
 							}
 						}
-				
+
 						$count_all = $count_all + $rubric_manager->getCountAll();
-				
+
 						foreach($sel_array as $rubric => $value) {
 							if(!empty($value)) {
 								$rubric_manager->setRubricLimit($rubric, $value);
 							}
 						}
-				
+
 						// activating status
 						if($this->_params['sel_activating_status'] !== '1') {
 							$rubric_manager->showNoNotActivatedEntries();
 						}
-				
+
 						$rubric_manager->setAttributeLimit($this->_params['selrestriction']);
-							
+
 						// apply filters
 						if(!empty($this->_params['selbuzzword'])) {
 							$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
 						}
-							
+
 						if(!empty($this->_params['seltag'])) {
 							$rubric_manager->setTagLimit($this->_params['seltag']);
 						}
-				
+
 						/*
 						 *
 						if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
 						$rubric_manager->setColorLimit('#'.$selcolor);
 						}
-				
+
 						if ( ($selrubric == "todo") and !empty($selstatus)) {
 						$rubric_manager->setStatusLimit($selstatus);
 						}
-				
+
 						if (!empty($seluser)) {
 						$rubric_manager->setUserLimit($seluser);
 						}
-				
+
 						if ( !empty($selfiles) ) {
 						$rubric_manager->setOnlyFilesLimit();
 						}
@@ -503,11 +503,11 @@ if ( $environment->inPrivateRoom()
 							//$rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
 							//$temp_rubric_ids = $rubric_list->getIDArray();
 						}
-				
-				
+
+
 						/*
-				
-				
+
+
 						if (isset($_GET['select']) and $_GET['select']=='all'){
 						if(get_class($rubric_manager) == 'cs_user_manager'){
 						$selected_ids = $temp_rubric_ids;
@@ -518,11 +518,11 @@ if ( $environment->inPrivateRoom()
 						if(!empty($temp_rubric_ids)) {
 							$rubric_ids = $temp_rubric_ids;
 						}
-				
+
 						$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
 						$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
 						/*
-				
+
 						$search_list->addList($rubric_list);
 						if (!empty($temp_rubric_ids)){
 						$rubric_ids = $temp_rubric_ids;
@@ -534,7 +534,7 @@ if ( $environment->inPrivateRoom()
 					#$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 					#            $session = $this->_environment->getSessionItem();
 				}
-				
+
 				/************************************************************************************
 				 * as said in the todo note, some filtering is applied afterwards
 				************************************************************************************/
@@ -545,45 +545,45 @@ if ( $environment->inPrivateRoom()
 					$entry->setType(CS_GROUP_TYPE);
 					$this->_list->add($entry);
 					}*/
-				
+
 					if(isset($this->_items[$entry->getType()][$entry->getItemID()])){
 						$this->_list->add($entry);
 					}
-				
+
 					$entry = $result_list->getNext();
 				}
 			}
-			
+
 			/************************************************************************************
 			 * When NOT using the indexed search method, ...
 			************************************************************************************/
 			else {
 				$count_all = 0;
-				
+
 				$campus_search_ids = array();
 				$result_list = new cs_list();
-				
+
 				global $c_plugin_array;
 				foreach($rubric_array as $rubric) {
 					if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
 						$rubric_ids = array();
 						$rubric_list = new cs_list();
 						$rubric_manager = $this->_environment->getManager($rubric);
-				
+
 						/*
 						 * TODO:	the main idea is to limit requests by the previous detected item ids and only get detailed information for those,
 						* 			but db managers do not act as expected
 						*
 						*			for now, items are filtered afterwards
 						*/
-				
+
 						// set id array limit
 						//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
-				
+
 						if($rubric === CS_PROJECT_TYPE) {
 							$rubric_manager->setQueryWithoutExtra();
 						}
-				
+
 						// context limit
 						if($rubric !== CS_PROJECT_TYPE && $rubric !== CS_MYROOM_TYPE) {
 							$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -593,18 +593,18 @@ if ( $environment->inPrivateRoom()
 							$rubric_manager->setIDArrayLimit(($current_community_item->getInternalProjectIDArray()));
 							unset($current_community_item);
 						}
-				
+
 						// date
 						if($rubric === CS_DATE_TYPE && $this->_params['selstatus'] === 2) {
 							$rubric_manager->setWithoutDateModeLimit();
 						} elseif($rubric === CS_DATE_TYPE && $this->_params['selstatus'] !== 2) {
 							$rubric_manager->setDateModeLimit($this->_params['selstatus']);
 						}
-				
+
 						if ($this->_params['selgroup'] ){
 							$rubric_manager->setGroupLimit($this->_params['selgroup']);
 						}
-				
+
 						// user
 						if($rubric === CS_USER_TYPE) {
 							$rubric_manager->setUserLimit();
@@ -615,47 +615,47 @@ if ( $environment->inPrivateRoom()
 								$rubric_manager->setVisibleToAll();
 							}
 						}
-				
+
 						$count_all = $count_all + $rubric_manager->getCountAll();
-				
+
 						foreach($sel_array as $rubric => $value) {
 							if(!empty($value)) {
 								$rubric_manager->setRubricLimit($rubric, $value);
 							}
 						}
-				
+
 						// activating status
 						if($this->_params['sel_activating_status'] !== '1') {
 							$rubric_manager->showNoNotActivatedEntries();
 						}
-						
+
 						$rubric_manager->setSearchLimit($this->_search_words[0]);
-				
+
 						$rubric_manager->setAttributeLimit($this->_params['selrestriction']);
-							
+
 						// apply filters
 						if(!empty($this->_params['selbuzzword'])) {
 							$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
 						}
-							
+
 						if(!empty($this->_params['seltag'])) {
 							$rubric_manager->setTagLimit($this->_params['seltag']);
 						}
-				
+
 						/*
 						 *
 						if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
 						$rubric_manager->setColorLimit('#'.$selcolor);
 						}
-				
+
 						if ( ($selrubric == "todo") and !empty($selstatus)) {
 						$rubric_manager->setStatusLimit($selstatus);
 						}
-				
+
 						if (!empty($seluser)) {
 						$rubric_manager->setUserLimit($seluser);
 						}
-				
+
 						if ( !empty($selfiles) ) {
 						$rubric_manager->setOnlyFilesLimit();
 						}
@@ -668,11 +668,11 @@ if ( $environment->inPrivateRoom()
 							//$rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
 							//$temp_rubric_ids = $rubric_list->getIDArray();
 						}
-				
-				
+
+
 						/*
-				
-				
+
+
 						if (isset($_GET['select']) and $_GET['select']=='all'){
 						if(get_class($rubric_manager) == 'cs_user_manager'){
 						$selected_ids = $temp_rubric_ids;
@@ -683,11 +683,11 @@ if ( $environment->inPrivateRoom()
 						if(!empty($temp_rubric_ids)) {
 							$rubric_ids = $temp_rubric_ids;
 						}
-				
+
 						$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
 						$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
 						/*
-				
+
 						$search_list->addList($rubric_list);
 						if (!empty($temp_rubric_ids)){
 						$rubric_ids = $temp_rubric_ids;
@@ -699,13 +699,13 @@ if ( $environment->inPrivateRoom()
 					#$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 					#            $session = $this->_environment->getSessionItem();
 				}
-				
+
 				// no filtering for result list
 				$this->_list = $result_list;
 			}
-			
+
 			$this->assign('room', 'search_content', $this->getListContent());
-			
+
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
 			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
 			$this->assign('list', 'restriction_text_parameters', $this->_getRestrictionTextAsHTML());
@@ -714,25 +714,25 @@ if ( $environment->inPrivateRoom()
 
 		protected function getListContent() {
 			$return = array();
-			
+
 			$session = $this->_environment->getSessionItem();
-			
+
 			// search in files
 			$ftsearch_manager = $this->_environment->getFTSearchManager();
 			if ($ftsearch_manager->getSearchStatus()) {
 				// get file ids from cs_ftsearch_manager
 				$ft_file_ids = $ftsearch_manager->getFileIDs();
-				
+
 				//var_dump($ft_file_ids);
 			}
-			
+
 			// find max count for relevanz bar
 			if($this->_indexed_search === true) {
 				$max_count = 0;
 				$entry = $this->_list->getFirst();
 				while($entry) {
 					if($this->_items[$entry->getType()][$entry->getItemID()] > $max_count) $max_count = $this->_items[$entry->getType()][$entry->getItemID()];
-				
+
 					$entry = $this->_list->getNext();
 				}
 			}
@@ -750,10 +750,10 @@ if ( $environment->inPrivateRoom()
 					"modificator"		=> $this->getItemModificator($entry),
 					"modification_date"	=> $entry->getModificationDate()
 				);
-				
+
 				$entry = $this->_list->getNext();
 			}
-			
+
 			/************************************************************************************
 			 * Now we can sort results
 			 * This must be done here, because we need to sort the results from all managers
@@ -761,12 +761,12 @@ if ( $environment->inPrivateRoom()
 			************************************************************************************/
 			if ( !empty($this->_list_parameter_arrray['sort']) ) {
 				$sortBy = $this->_list_parameter_arrray['sort'];
-				
+
 				// look for "_" and determ sort order
 				list($sortBy, $reverse) = explode("_", $sortBy);
-				
+
 				$reverse = ($reverse === null) ? false : true;
-				
+
 				// different sort cases
 				switch($sortBy) {
 					case "title":
@@ -785,22 +785,22 @@ if ( $environment->inPrivateRoom()
 						usort($return['items'], array($this, "sortByRelevanz"));
 						break;
 				}
-				
+
 				if($reverse === true) {
 					$return['items'] = array_reverse($return['items']);
 				}
 			}
-			
+
 			// create id array
 			$ids = array();
 			foreach($return['items'] as $entry) {
 				$ids[] = $entry['item_id'];
 			}
 			$session->setValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_index_ids', $ids);
-			
+
 			$this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'],sizeof($ids));
 			$return['count_all'] = sizeof($ids);
-			
+
 			// limit output
 			$limited_return = array();
 			$count = 0;
@@ -814,7 +814,7 @@ if ( $environment->inPrivateRoom()
 						$limited_return[] = $entry;
 					}
 				}
-				
+
 				$count++;
 			}
 			$return['items'] = $limited_return;
@@ -825,26 +825,26 @@ if ( $environment->inPrivateRoom()
 		private function sortByTitle($a, $b) {
 			return strcasecmp($a["title"], $b["title"]);
 		}
-		
+
 		private function sortByRubric($a, $b) {
 			return strcasecmp($a["type"], $b["type"]);
 		}
-		
+
 		private function sortByModified($a, $b) {
 			return strcasecmp($a["modification_date"], $b["modification_date"]);
 		}
-		
+
 		private function sortByModificator($a, $b) {
 			$aExplode = explode(" ", $a["modificator"]); end($aExplode);
 			$bExplode = explode(" ", $b["modificator"]); end($bExplode);
-			
-			
+
+
 			return strcasecmp(current($aExplode), current($bExplode));
 		}
-		
+
 		private function sortByRelevanz($a, $b) {
 			if($a["relevanz"] === $b["relevanz"]) return 0;
-				
+
 			return ($a["relevanz"] < $b["relevanz"]) ? -1 : 1;
 		}
 
@@ -969,7 +969,7 @@ unset($ftsearch_manager);
 			if(isset($_GET['seltags']) && !empty($_GET['seltags'])) {
 				$this->_params['seltags'] = $_GET['seltags'];
 			}
-			
+
 			/*
 			if(isset($_GET['seltag']) && $_GET['seltag'] === 'yes') {
 				$i = 0;
@@ -1086,9 +1086,9 @@ unset($ftsearch_manager);
 
 		protected function getAdditionalRestrictionText() {
 			$return = array();
-			
+
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			// search word
 			if(isset($this->_params['search'])) {
 				$return[0] = array(
@@ -1096,9 +1096,9 @@ unset($ftsearch_manager);
 					'type'				=> '',
 					'link_parameter'	=> ''
 				);
-				
+
 				$return[0]['name'] .= implode(', ', $this->_search_words);
-				
+
 				// set link parameter
 				$params = $this->_params;
 				unset($params['search']);
@@ -1110,7 +1110,7 @@ unset($ftsearch_manager);
 				}
 				$return[0]['link_parameter'] = $link_parameter_text;
 			}
-			
+
 			// rubric
 			if(isset($this->_params['selrubric']) && !empty($this->_params['selrubric'])) {
 				$return[1] = array(
@@ -1118,7 +1118,7 @@ unset($ftsearch_manager);
 					'type'				=> '',
 					'link_parameter'	=> ''
 				);
-				
+
 				// set link parameter
 				$params = $this->_params;
 				unset($params['selrubric']);
@@ -1130,17 +1130,17 @@ unset($ftsearch_manager);
 				}
 				$return[1]['link_parameter'] = $link_parameter_text;
 			}
-				
+
 			return $return;
 		}
-		
+
 		/**
 		 * gets information for displaying room rubrics in navigation bar
 		 */
 		protected function getRubricInformation() {
 			$selected_rubric = $this->_params['selrubric'];
 			if(empty($selected_rubric) || $selected_rubric === 'all') $selected_rubric = 'home';
-			
+
 			// init return with home
 			$return = array();
 			$return[] = array(
@@ -1148,10 +1148,10 @@ unset($ftsearch_manager);
 					'translate'		=> false,
 					'active'		=> $selected_rubric == 'home',
 					'span_prefix'	=> 'ho');
-		
+
 			// get rubrics
 			$rubrics = $this->getRubrics();
-		
+
 			// these prefixes are needed for building up the span id
 			$span_lookup = array(
 					CS_ANNOUNCEMENT_TYPE	=>	'an',
@@ -1165,10 +1165,10 @@ unset($ftsearch_manager);
 					CS_PROJECT_TYPE			=>	'pr',
 					CS_INSTITUTION_TYPE		=>	'in'
 			);
-		
+
 			foreach($rubrics as $rubric) {
 				list($suffix, $postfix) = explode('_', $rubric);
-		
+
 				if($postfix !== 'none') {
 					$name = '';
 					$translate = true;
@@ -1178,9 +1178,9 @@ unset($ftsearch_manager);
 					} else {
 						$name = $suffix;
 					}
-		
+
 					if(empty($name)) die('rubric name could not be found');
-		
+
 					// append return
 					$return[] = array(
 							'name'			=> $name,
@@ -1189,7 +1189,7 @@ unset($ftsearch_manager);
 							'span_prefix'	=> $span_lookup[$name]);
 				}
 			}
-		
+
 			return $return;
 		}
 	}

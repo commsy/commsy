@@ -99,9 +99,9 @@
 
             <div id="footer_right">
                 <p>
-                    <span>{$smarty.now|date_format:"%d."} {$translation.act_month_long} {$smarty.now|date_format:"%Y, %H:%M"}</span>
+                    <span>{$smarty.now|date_format:"%d."} {$translation.act_month_long} {$smarty.now|date_format:"%Y, %H:%M"}</span><br/>
                     <a href="#" class="open_popup" data-custom="module: 'mailtomod'">___MAIL_TO_MODERATOR_HEADLINE___</a>
-                    <a href="#" {*class="open_popup" data-custom="module: 'mailtoservice'"*}>TODO: ___COMMON_MAIL_TO_SERVICE2___</a>
+                   {* <a href="#" class="open_popup" data-custom="module: 'mailtoservice'">TODO: ___COMMON_MAIL_TO_SERVICE2___</a>*}
                 </p>
             </div>
 
