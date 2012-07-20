@@ -175,6 +175,80 @@
 
 		}
 
+		private function _getServiceMailLink(){
+			$current_context = $this->_environment->getCurrentContextItem();
+            $service_link_ext = $current_context->getServiceLinkExternal();
+            $current_user = $this->_environment->getCurrentUserItem();
+            $translator = $this->_environment->getTranslationObject();
+			$email_to_service = '';
+
+            if ($service_link_ext == '') {
+               $portal_item = $this->_environment->getCurrentPortalItem();
+               if (isset($portal_item) and !empty($portal_item)) {
+                  $service_link_ext = $portal_item->getServiceLinkExternal();
+               }
+               unset($portal_item);
+            }
+
+            if ($service_link_ext == '') {
+               $server_item = $this->_environment->getServerItem();
+               $service_link_ext = $server_item->getServiceLinkExternal();
+            }
+
+            if ( !empty($service_link_ext) ) {
+               if ( strstr($service_link_ext,'%') ) {
+                  $text_convert = $this->_environment->getTextConverter();
+                  $service_link_ext = $text_convert->convertPercent($service_link_ext,false,true);
+               }
+               $email_to_service = '<a href="'.$service_link_ext.'" title="'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'" target="_blank">'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>';
+            } else {
+            // exernal link: END
+
+               $server_item = $this->_environment->getServerItem();
+               $link = 'http://www.commsy.net/?n=Software.FAQ&amp;mod=edit';
+
+               //Hierarchy of service-email: Set email, test if portal tier has one, then server tier
+               $service_email = $current_context->getServiceEmail();
+
+               if ($service_email == '') {
+                  $portal_item = $this->_environment->getCurrentPortalItem();
+                  if (isset($portal_item) and !empty($portal_item)) {
+                     $service_email = $portal_item->getServiceEmail();
+                  }
+                  unset($portal_item);
+               }
+
+               if ($service_email == '') {
+                  $service_email = $server_item->getServiceEmail();
+               }
+
+              if ($service_email == '') {
+                  $service_email = 'NONE';
+               }
+
+               $ip = 'unknown';
+               if ( !empty($_SERVER["SERVER_ADDR"]) ) {
+                  $ip = $_SERVER["SERVER_ADDR"];
+               } elseif ( !empty($_SERVER["HTTP_HOST"]) ) {
+                  $ip = $_SERVER["HTTP_HOST"];
+               }
+
+               $email_to_service = '<form action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
+               $email_to_service .= '<input type="hidden" name="server_name" value="'.$server_item->getTitle().'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="server_ip" value="'.$ip.'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="context_id" value="'.$current_context->getItemID().'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="context_name" value="'.$current_context->getTitle().'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="context_type" value="'.$current_context->getType().'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="user_name" value="'.$current_user->getFullname().'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="user_email" value="'.$current_user->getEmail().'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="service_email" value="'.$service_email.'"/>'.LF;
+               $email_to_service .= '<a href="#" id="submit_form" title="'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'">'.$translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
+               // jQuery
+               $email_to_service .= '</form>'.LF;
+ 			}
+ 			return $email_to_service;
+		}
+
 		/**
 		 * process basic template information
 		 */
@@ -227,6 +301,10 @@
 			$this->assign('environment', 'show_room_title', $current_context->showTitle());
 			$this->assign('environment', 'language', $current_context->getLanguage());
 			$this->assign('environment','count_copies', $this->getUtils()->getCopyCount());
+			$this->assign('environment','show_moderator_link', $current_context->showMail2ModeratorLink());
+			$this->assign('environment','show_service_link', $current_context->showServiceLink());
+			$this->assign('environment','service_link', $this->_getServiceMailLink());
+
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
@@ -247,7 +325,7 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
-			
+
 			// dev
 			global $c_indexed_search;
 			$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
