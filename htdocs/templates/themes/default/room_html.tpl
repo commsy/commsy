@@ -274,16 +274,39 @@
 
 {block name=room_overlay}
         {if $confirm}
-		<div id="delete_confirm_overlay_background" class="delete_confirm_background"></div>
-		<div id="delete_confirm_overlay_box" class="delete_confirm_box" style="display: block;">
-			<form method="post" action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&delete_sel_cookie=true">
-				<h2 style="text-align: center;">{i18n tag=COMMON_DELETE_BOX_TITLE}</h2>
-				<p style="text-align: left;">{i18n tag=COMMON_DELETE_BOX_DESCRIPTION}</p>
-				<div>
-					<input type="submit" value="{i18n tag=COMMON_DELETE_BUTTON}" name="form_data[confirm][listoption_confirm_delete]" style="float: right;">
-					<input type="submit" value="{i18n tag=COMMON_CANCEL_BUTTON}" name="form_data[confirm][listoption_confirm_cancel]" style="float: left;">
+<div id="popup_wrapper">
+	<div id="popup_delete">
+		<div id="popup_frame">
+			<div id="popup_inner">
+
+				<div id="popup_pagetitle">
+					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+					<h2>___COMMON_DELETE_BOX_INDEX_TITLE___</h2>
+					<div class="clear"> </div>
 				</div>
-			</form>
+				<div id="popup_content_wrapper">
+					<div id="popup_title">
+						<h2>{i18n tag=COMMON_DELETE_BUTTON}</h2>
+						<div class="clear"> </div>
+					</div>
+					<div id="popup_content">
+						{i18n tag=COMMON_DELETE_BOX_INDEX_DESCRIPTION_2}
+
+						<div id="content_buttons">
+							<div id="crt_actions_area" style="height:20px; border-bottom:none;">
+								<form method="post" action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&delete_sel_cookie=true">
+									<input type="submit" id="popup_button_delete" class="popup_button" value="{i18n tag=COMMON_DELETE_BUTTON}" name="form_data[confirm][listoption_confirm_delete]" style="float: right;">
+									<input type="submit" class="popup_button" value="{i18n tag=COMMON_CANCEL_BUTTON}" name="form_data[confirm][listoption_confirm_cancel]" style="float: left;">
+								</form>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			<div class="clear"></div>
 		</div>
+	</div>
+</div>
 		{/if}
 {/block}
