@@ -5,56 +5,54 @@
 		<img src="{$basic.tpl_path}img/ajax_loader.gif" />
 	</div>
 {/block}
+{assign var="article_index" value=0}
 
 {block name=discussion_articles}
 	{* create a recursive functions for displaying threaded discussions *}
-	
+
 	{function name=threaded_discussion level=0}
 		{* build entries *}
 		{foreach $articles as $article}
-		
-			{*
-				TODO @ Matthias: Die Variable {$level} ist der Offset für das Einrücken der Artikel
-				
-				level
-				-------------------
-				0
-					1
-						2
-						2
-					1
-					1
-				etc...
-				-------------------
-				
-				greetz Christoph
-			*}
-			
+
 			{assign var="index" value=$article.index}
-			
-			<div class="item_actions">
-				<a class="edit" data-custom="expand: 'edit_expand_article_{$index}'" href="#"><span class="edit_set"> &nbsp; </span></a>
-				<a class="detail" data-custom="expand: 'detail_expand_article_{$index}'" href="#"><span class="details_ia"> &nbsp; </span></a>
+			{if ($article.position|strlen) > 1}
+				{assign var="discarticle_padding" value= ((($article.position|strlen/2)|ceil)-1)*39}
+				{assign var="discarticle_content_width" value= 585 - ((($article.position|strlen/2)|ceil)-1)*39}
+				{assign var="discarticle_body_width" value= 695 - ((($article.position|strlen/2)|ceil)-1)*39}
+			{/if}
+			{if ((($article.position|strlen/2)|ceil)-1) > 10}
+				{assign var="discarticle_padding" value= 390}
+				{assign var="discarticle_content_width" value= 195}
+				{assign var="discarticle_body_width" value= 305}
+			{/if}
+
+
+			<div class="item_actions" >
+				<a class="edit" data-custom="expand: 'edit_expand_article_{$article.item_id}'" href="#"><span class="edit_set"> &nbsp; </span></a>
+				<a class="detail" data-custom="expand: 'detail_expand_article_{$article.item_id}'" href="#"><span class="details_ia"> &nbsp; </span></a>
 			</div>
-	
+
 			<div class="item_body"> <!-- Start item body -->
 				<a name="disc_article_{$article.item_id}"></a>
 				<a name="article{$article.item_id}"></a>
-	
+
 				<!-- Start fade_in_ground -->
-				<div id="edit_expand_article_{$index}" class="hidden">
+				<div id="edit_expand_article_{$article.item_id}" class="hidden">
 					<div class="fade_in_ground_actions">
 						{if $article.actions.edit}
 							<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
 						{/if}
 						{if $article.actions.delete}
-							<a class="open_popup" data-custom="iid: {$article.item_id}, module: 'delete', delType: 'discarticle'" href="#">___COMMON_DELETE_ITEM___</a>
+							<a class="open_popup" data-custom="iid: {$article.item_id}, module: 'delete', delType: 'discarticle'" href="#">___COMMON_DELETE_ITEM___</a> |
+						{/if}
+						{if $article.actions.answer}
+							<a href="#" class="open_popup" data-custom="iid: 'NEW', module: 'discarticle', answerTo: {$article.item_id}">___DISCARTICLE_ANSWER_NEW___</a>
 						{/if}
 					</div>
 				</div>
 				<!-- Ende fade_in_ground -->
 					<div class="item_post">
-						<div class="row_{if $index+1 is odd}odd{else}even{/if}_no_hover">
+						<div class="row_{if $article_index+1 is odd}odd{else}even{/if}_no_hover" style="padding-left:{$discarticle_padding}px;">
 							<div class="column_80">
 								<p>
 									<a href="" title="{$article.creator}">
@@ -66,17 +64,12 @@
 									</a>
 								</p>
 							</div>
-	
-	
-							<div class="column_585_nopadding">
+							<div class="column_585_nopadding" style="width:{$discarticle_content_width}px">
 								<div class="post_content">
 									<h4 class="float-left">{$article.position}.
 										{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$article.subject}
 									</h4>
-									<div class="float-right">
-										<a href="#" class="open_popup" data-custom="iid: 'NEW', module: 'discarticle', answerTo: {$article.item_id}">___DISCARTICLE_ANSWER_NEW___</a>
-									</div>
-									
+
 									<div class="clear"></div>
 									<span>
 									___COMMON_LAST_MODIFIED_BY_UPPER___
@@ -101,7 +94,7 @@
 										</table>
 										<div class="clear"> </div>
 									{/if}
-	
+
 									<div class="editor_content">
 										{$article.description}
 									</div>
@@ -118,20 +111,20 @@
 							<div class="clear"> </div>
 						</div>
 					</div>
-	
-				<div id="detail_expand_article_{$index}" class="hidden">
+
+				<div id="detail_expand_article_{$article.item_id}" class="hidden">
 					{include file="include/detail_moredetails_html.tpl" data=$article.moredetails}
 				</div>
 			</div> <!-- Ende item body -->
 			<div class="clear"> </div>
-		
+
 			{if $article.children|count > 0}	{* recursive call *}
 				{threaded_discussion articles=$article.children level=level+1 }
 			{/if}
-			
+
 		{/foreach}
 	{/function}
-	
+
 	{* call function *}
 	{threaded_discussion articles=$detail.content.disc_articles}
 {/block}

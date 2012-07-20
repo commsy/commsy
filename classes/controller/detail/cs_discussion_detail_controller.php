@@ -269,7 +269,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 		protected function getEditActions($item, $user, $module = '') {
 			$return = array(
 				'edit'		=> false,
-				'delete'		=> false
+				'delete'	=> false,
+				'answer'	=> false
 			);
 
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -279,8 +280,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 			if($discussion_type === 'threaded') {
 				// TODO: check this
 				$return = parent::getEditActions($item, $current_user, 'discarticle');
-				
-				
+
+
 				/*
 					if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
 		            $params = array();
@@ -361,6 +362,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['delete'] = true;
+				$return['answer'] = true;
 
 
 				/*
@@ -590,7 +592,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			$root_position = $root->getPosition();
 			$root_level = sizeof(explode('.', $root_position)) - 1;
-			
+
 			// get through
 			$item = $node_list->getFirst();
 			while($item) {
@@ -644,7 +646,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					//$description = $converter->text_as_html_long($description);
 					$description = $converter->showImages($description, $item, true);
 					//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
-					
+
 					// parse position string
 					$position = $item->getPosition();
 					$numberArray = explode(".", $position);
@@ -656,7 +658,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 							$len = mb_strlen($num);
 							$tmpNum = mb_substr($num, 1, $len);
 							$first = mb_substr($tmpNum, 0, 1);
-							
+
 							while ($first == "0") {
 								$tmpNum = mb_substr($tmpNum, 1, mb_strlen($tmpNum));
 								$first = mb_substr($tmpNum, 0, 1);
@@ -664,12 +666,12 @@ if ($type != CS_DISCUSSION_TYPE) {
 							$number .= "." . $tmpNum;
 						}
 					}
-					
+
 					$position = $number;
-					
+
 					$potentialChildList = clone $node_list;
 					$potentialChildList->removeElement($item);
-					
+
 					// append return and recursive call
 					$return[] = array(
 						'item_id'			=> $item->getItemID(),
