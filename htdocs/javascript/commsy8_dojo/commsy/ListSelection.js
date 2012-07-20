@@ -44,6 +44,16 @@ define([	"dojo/_base/declare",
 				this.onClickCheckbox(event.target);
 			}));
 			
+			// setup handler for list action submit button
+			On(Query("input#delete_confirmselect_option")[0], "click", Lang.hitch(this, function(event) {
+				this.onClickListActionSubmit(event.target);
+			}))
+			
+			// setup select all handler
+			On(Query("input#selectAll")[0], "click", Lang.hitch(this, function(event) {
+				this.onSelectAll(event.target);
+			}));
+			
 			// if current rubric equals last rubric - restore selection from cookie,
 			// otherwise reset selection
 			if(this.currentRubric === this.cookieObject.lastRubric) {
@@ -92,6 +102,20 @@ define([	"dojo/_base/declare",
 			
 			// restore selection
 			this.restoreSelection();
+		},
+		
+		onClickListActionSubmit: function(inputNode) {
+			// empty selected ids
+			this.cookieObject.selectedIDs = [];
+			
+			// save cookie
+			Cookie(this.cookieName, dojo.toJson(this.cookieObject));
+		},
+		
+		onSelectAll: function(inputNode) {
+			dojo.forEach(Query("div.row_even input[type='checkbox'], div.row_odd input[type='checkbox']"), Lang.hitch(this, function(checkboxNode, index, arr) {
+				checkboxNode.click();
+			}));
 		}
 	});
 });

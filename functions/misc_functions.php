@@ -693,7 +693,10 @@ function isURLValid () {
         $module != 'ajax' and
         
         // Scorm
-        $module != 'scorm'
+        $module != 'scorm' and
+   		
+   		// download
+   		$module != 'download'
       ) {
       return false;
     }

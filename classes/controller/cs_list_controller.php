@@ -1163,6 +1163,11 @@
       			         }
       			      }
       			      $session->setValue($rubric.'_clipboard', $this->_list_parameter_arrray['clipboard_id_array']);
+      			      $params = $environment->getCurrentParameterArray();
+      			      redirect( $environment->getCurrentContextID(),
+	      			      		$environment->getCurrentModule(),
+	      			      		$environment->getCurrentFunction(),
+	      			      		$params);
       			      break;
       			   case CS_LISTOPTION_DELETE:
       			      $user = $environment->getCurrentUserItem();
@@ -1178,6 +1183,45 @@
       			         $this->assign('confirm', 'list_action', $this->_list_command);
       			      }
       			      break;
+      			     
+      			      
+      			      case CS_LISTOPTION_TODO_DONE:
+      			      	$error = false;
+      			      	$todo_manager = $environment->getTodosManager();
+      			      	$noticed_manager = $environment->getNoticedManager();
+      			      	foreach ($selected_ids as $id) {
+      			      		$todo_item = $todo_manager->getItem($id);
+      			      		$todo_item->setStatus('3');
+      			      		$todo_item->save();
+      			      		$version_id = $todo_item->getVersionID();
+      			      		$noticed_manager->markNoticed($id, $version_id );
+      			      	}
+      			      	break;
+      			      case CS_LISTOPTION_TODO_IN_PROGRESS:
+      			      	$error = false;
+      			      	$todo_manager = $environment->getTodosManager();
+      			      	$noticed_manager = $environment->getNoticedManager();
+      			      	foreach ($selected_ids as $id) {
+      			      		$todo_item = $todo_manager->getItem($id);
+      			      		$todo_item->setStatus('2');
+      			      		$todo_item->save();
+      			      		$version_id = $todo_item->getVersionID();
+      			      		$noticed_manager->markNoticed($id, $version_id );
+      			      	}
+      			      	break;
+      			      case CS_LISTOPTION_TODO_NOT_STARTED:
+      			      	$error = false;
+      			      	$todo_manager = $environment->getTodosManager();
+      			      	$noticed_manager = $environment->getNoticedManager();
+      			      	foreach ($selected_ids as $id) {
+      			      		$todo_item = $todo_manager->getItem($id);
+      			      		$todo_item->setStatus('1');
+      			      		$todo_item->save();
+      			      		$version_id = $todo_item->getVersionID();
+      			      		$noticed_manager->markNoticed($id, $version_id );
+      			      	}
+      			      	break;
+      			      
       			   case CS_LISTOPTION_DOWNLOAD:
       			      $class_factory = $environment->getClassFactory();
       			      include_once('include/inc_rubric_download.php');

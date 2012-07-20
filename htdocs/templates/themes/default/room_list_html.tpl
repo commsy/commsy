@@ -24,7 +24,7 @@
 
 {block name=room_main_content}
 	<div id="full_width_content">
-		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.all}" method="post">
+		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}{params params=$environment.params_array}" method="post">
 			<input type="hidden" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___">
 			<div class="content_item"> <!-- Start content_item -->
 				{block name=room_list_header}{/block}
@@ -40,7 +40,7 @@
 		<div class="item_info">
 			<div class="ii_left">
 			 	<div id="item_action">
-			 		<input type="checkbox" name="" value="" /> ___ALL___
+			 		<input type="checkbox" id="selectAll" /> ___ALL___
 			 		<select name="form_data[option][list]" size="1">
 			 			{foreach $list.actions as $action}
 			 				{if $action.disabled}

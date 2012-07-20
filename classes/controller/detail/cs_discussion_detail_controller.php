@@ -3,6 +3,7 @@
 
 	class cs_discussion_detail_controller extends cs_detail_controller {
 		const MAX_DEEP_THREADED = 12;
+		static private $threadedIndex = 0;
 
 		/**
 		 * constructor
@@ -686,8 +687,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 						'custom_image'		=> !empty($image),
 						'actions'			=> $this->getEditActions($item, $current_user),
 						'moredetails'		=> $this->getCreatorInformationAsArray($item),
-						'children'			=> $this->buildThreadedTree($potentialChildList, $item),
-						'index'				=> 0
+						'index'				=> self::$threadedIndex++,
+						'children'			=> $this->buildThreadedTree($potentialChildList, $item)
 					);
 				}
 
@@ -819,7 +820,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'actions'			=> $this->getEditActions($root, $current_user),
 				'moredetails'		=> $this->getCreatorInformationAsArray($root),
 				'formal'			=> $entry,
-				'index'				=> 0
+				'index'				=> self::$threadedIndex++
 			);
 
 			$return[0]['children'] = $this->buildThreadedTree($articles_list, $root);

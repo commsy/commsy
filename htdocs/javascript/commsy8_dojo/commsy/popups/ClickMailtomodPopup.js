@@ -48,20 +48,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
-			// invoke netnavigation / path - process after item creation actions
-			if(this.item_id === "NEW") {
-				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					this.featureHandles["path"][0].save(item_id, lang.hitch(this, function() {
-						//this.close();
-						this.reload(item_id);
-					}));
-				}));
-			} else {
-				this.featureHandles["path"][0].save(item_id, lang.hitch(this, function() {
-					//this.close();
-					this.reload(item_id);
-				}));
-			}
+			this.close();
 		},
 	});
 });
