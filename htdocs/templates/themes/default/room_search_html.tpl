@@ -14,13 +14,13 @@
 {block name=room_list_header}
 	<div class="table_head">
 		{if $list.sorting_parameters.sort_title == "up"}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_310"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_title == "down"}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
+		 	<h3 class="w_310"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_down"><strong>___COMMON_TITLE___</strong></a></h3>
 		{else}
-		 	<h3 class="w_295"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
+		 	<h3 class="w_310"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
 		{/if}
-		
+
 		{if $list.sorting_parameters.sort_rubric == "up"}
 		 	<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_rubric_link}" id="sort_up"><strong>___COMMON_RUBRIC___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_rubric == "down"}
@@ -28,7 +28,7 @@
 		{else}
 		 	<h3 class="w_60"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_rubric_link}" class="sort_none">___COMMON_RUBRIC___</a></h3>
 		{/if}
-		
+
 		{if $list.sorting_parameters.sort_modified == "up"}
 		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_modified == "down"}
@@ -36,7 +36,7 @@
 		{else}
 		 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
 		{/if}
-		
+
 		{if $list.sorting_parameters.sort_modificator == "up"}
 		 	<h3 class="w_150"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
 		{elseif $list.sorting_parameters.sort_modificator == "down"}
@@ -44,7 +44,7 @@
 		{else}
 		 	<h3 class="w_150"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
 		{/if}
-		
+
 		{if $search.index_search == true}
 			{if $list.sorting_parameters.sort_relevanz == "up"}
 			 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_relevanz_link}" id="sort_up"><strong>___SEARCH_RELEVANZ___</strong></a></h3>
@@ -61,13 +61,8 @@
 
 {block name=room_list_content}
 	{foreach $room.search_content.items as $item }
-		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_announcement{else}even_sep_announcement{/if}"> <!-- Start Reihe -->
-			<div class="column_20">
-				<p>
-					<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-				</p>
-			</div>
-			<div class="column_260">
+		<div class="{if $item@iteration is odd}row_odd{else}row_even{/if} {if $item@iteration is odd}odd_sep_search{else}even_sep_search{/if}"> <!-- Start Reihe -->
+			<div class="column_280">
 				<p>
 					 <a href="commsy.php?cid={$environment.cid}&mod={$item.type}&fct=detail&iid={$item.item_id}&search_path=true">{$item.title}</a>
 				</p>
@@ -81,7 +76,7 @@
 				<p><img src="{$basic.tpl_path}img/netnavigation/{$item.type}.png" title="___COMMON_{$item.type|upper}_INDEX___"/></p>
 			</div>
 			<div class="column_90">
-				<p>{$item.modification_date}</p>
+				<p>{$item.modification_date_print}</p>
 			</div>
 			<div class="column_155">
 				<p>{$item.modificator}</p>
@@ -100,6 +95,62 @@
 		</div> <!-- Ende Reihe -->
 	{/foreach}
 {/block}
+
+{block name=room_list_footer}
+	<div class="content_item"> <!-- Start content_item -->
+		<div class="item_info">
+			<div class="ii_left">
+				<p>___COMMON_PAGE_ENTRIES___
+					{if $list.list_entries_parameter.20 == 'disabled'}
+						<strong>20</strong>
+					{else}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.20}">20</a>
+					{/if}
+					|
+					{if $list.list_entries_parameter.50 == 'disabled'}
+						<strong>50</strong>
+					{else}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.50}">50</a>
+					{/if}
+					|
+					{if $list.list_entries_parameter.all == 'disabled'}
+						<strong>___COMMON_ALL_ENTRIES___</strong>
+					{else}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.all}">___COMMON_ALL_ENTRIES___</a>
+					{/if}
+				</p>
+			</div>
+			<div class="ii_right">
+				<div id="item_navigation">
+				    {if $list.browsing_parameters.browse_start != "disabled"}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.browsing_parameters.browse_start}"><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
+					{else}
+					   <a><img src="{$basic.tpl_path}img/btn_ar_start.gif" alt="Start" /></a>
+					{/if}
+				    {if $list.browsing_parameters.browse_left != "disabled"}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.browsing_parameters.browse_left}"><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
+					{else}
+					   <a><img src="{$basic.tpl_path}img/btn_ar_left.gif" alt="zur&uuml;ck" /></a>
+					{/if}
+					___COMMON_PAGE___ {$list.browsing_parameters.actual_page_number} / {$list.browsing_parameters.page_numbers}
+				    {if $list.browsing_parameters.browse_right != "disabled"}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.browsing_parameters.browse_right}"><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
+					{else}
+					   <a><img src="{$basic.tpl_path}img/btn_ar_right.gif" alt="weiter" /></a>
+					{/if}
+				    {if $list.browsing_parameters.browse_end != "disabled"}
+					   <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.browsing_parameters.browse_end}"><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
+					{else}
+					   <a><img src="{$basic.tpl_path}img/btn_ar_end.gif" alt="Ende" /></a>
+					{/if}
+				</div>
+			</div>
+			<div class="clear"> </div>
+		</div>
+		<div class="clear"> </div>
+	</div> <!-- Ende content_item -->
+{/block}
+
 
 {block name=sidebar_tagbox_treefunction}
 	{function name=tag_tree level=0}

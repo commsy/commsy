@@ -742,13 +742,15 @@ if ( $environment->inPrivateRoom()
 				$type = $entry->getType() === CS_LABEL_TYPE ? $entry->getLabelType() : $entry->getType();
 
 				$return['items'][] = array(
-					'title'				=> $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle(),
-					'type'				=> $type,
-					'relevanz'			=> ($this->_indexed_search === true) ? 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count : 0,
-					'item_id'			=> $entry->getItemID(),
-					'num_files'			=> $entry->getFileList()->getCount(),
-					"modificator"		=> $this->getItemModificator($entry),
-					"modification_date"	=> $entry->getModificationDate()
+					'title'						=> $entry->getType() === CS_USER_TYPE ? $this->_compareWithSearchText($entry->getFullname()) : $this->_compareWithSearchText($entry->getTitle()),
+					'type'						=> $type,
+					'type_sort'					=> $this->_environment->getTranslationObject()->getMessage(strtoupper($type).'_INDEX'),
+					'relevanz'					=> ($this->_indexed_search === true) ? 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count : 0,
+					'item_id'					=> $entry->getItemID(),
+					'num_files'					=> $entry->getFileList()->getCount(),
+					"modificator"				=> $this->_compareWithSearchText($this->getItemModificator($entry)),
+					"modification_date"			=> $entry->getModificationDate(),
+					"modification_date_print"	=> $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate())
 				);
 
 				$entry = $this->_list->getNext();
@@ -777,6 +779,7 @@ if ( $environment->inPrivateRoom()
 						break;
 					case "modified":
 						usort($return['items'], array($this, "sortByModified"));
+						$return['items'] = array_reverse($return['items']);
 						break;
 					case "modificator":
 						usort($return['items'], array($this, "sortByModificator"));
@@ -827,7 +830,7 @@ if ( $environment->inPrivateRoom()
 		}
 
 		private function sortByRubric($a, $b) {
-			return strcasecmp($a["type"], $b["type"]);
+			return strcasecmp($a["type_sort"], $b["type_sort"]);
 		}
 
 		private function sortByModified($a, $b) {
@@ -1090,7 +1093,7 @@ unset($ftsearch_manager);
 			$translator = $this->_environment->getTranslationObject();
 
 			// search word
-			if(isset($this->_params['search'])) {
+			if(isset($this->_params['search']) and!empty($this->_params['search'])) {
 				$return[0] = array(
 					'name'				=> $translator->getMessage('COMMON_SEARCH_IN_ENTRIES') . ': ',
 					'type'				=> '',
@@ -1192,4 +1195,50 @@ unset($ftsearch_manager);
 
 			return $return;
 		}
+
+		function _compareWithSearchText($value, $bold = true) {
+	      if ( !empty($this->_search_words) ) {
+	         foreach ($this->_search_words as $search_text) {
+	            if ( mb_stristr($value,$search_text) ) {
+	               // CSS Klasse erstellen für Farbmarkierung
+	               include_once('functions/misc_functions.php');
+	               if ( getMarkerColor() == 'green') {
+	                  $replace = '<span class="searchtext2">$0</span>';
+	               }
+	               else if (getMarkerColor() == 'yellow') {
+	                  $replace = '<span class="searchtext1">$0</span>';
+	               }
+	               // $replace = '(:mainsearch_text:)$0(:mainsearch_text_end:)';
+	               // $replace = '*$0*';
+	               if ( !$bold ) {
+	                  if ( getMarkerColor() == 'green') {
+	                    $replace = '<span class="searchtext2">$0</span>';
+	                }
+	                else if (getMarkerColor() == 'yellow') {
+	                    $replace = '<span class="searchtext1">$0</span>';
+	                }
+
+	                  // $replace = '(:search:)$0(:search_end:)';
+	               }
+	               if ( stristr($value,'<!-- KFC TEXT') ) {
+	                   if(getMarkerColor() == 'green'){
+	                      $replace = '<span class="searched_text_green">$0</span>';
+	                   }
+	                   else if(getMarkerColor() == 'yellow'){
+	                      $replace = '<span class="searched_text_yellow">$0</span>';
+	                   }
+
+	                  // $replace = '<span class="bold">$0</span>';
+	                  if ( !$bold ) {
+	                    $replace = '<span class="italic" style="font-style: italic;">$0</span>';
+	                  }
+	               }
+	               $value = preg_replace('~'.preg_quote($search_text,'/').'~iu',$replace,$value);
+	            }
+	         }
+	      }
+	      return $value;
+	   }
+
 	}
+

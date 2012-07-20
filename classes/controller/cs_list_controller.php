@@ -141,6 +141,8 @@
       			$sort_parameter = 'title';
       		}elseif($module == CS_PROJECT_TYPE){
       			$sort_parameter = 'title';
+      		}elseif($module == 'search'){
+      			$sort_parameter = 'modified';
       		}else{
       			$sort_parameter = '';
       		}
@@ -304,7 +306,7 @@
          		$return_array['sort_status_link'] = $link_parameter_text.'&sort=status';
          		$return_array['sort_status'] = 'none';
       		}
-      		
+
       		if ( $sort_parameter == 'relevanz') {
       			$return_array['sort_relevanz_link'] = $link_parameter_text.'&sort=relevanz_rev';
       			$return_array['sort_relevanz'] = 'up';
@@ -315,7 +317,7 @@
       			$return_array['sort_relevanz_link'] = $link_parameter_text.'&sort=relevanz';
       			$return_array['sort_relevanz'] = 'none';
       		}
-      		
+
       		if ( $sort_parameter == 'rubric') {
       			$return_array['sort_rubric_link'] = $link_parameter_text.'&sort=rubric_rev';
       			$return_array['sort_rubric'] = 'up';
@@ -1183,8 +1185,8 @@
       			         $this->assign('confirm', 'list_action', $this->_list_command);
       			      }
       			      break;
-      			     
-      			      
+
+
       			      case CS_LISTOPTION_TODO_DONE:
       			      	$error = false;
       			      	$todo_manager = $environment->getTodosManager();
@@ -1221,7 +1223,7 @@
       			      		$noticed_manager->markNoticed($id, $version_id );
       			      	}
       			      	break;
-      			      
+
       			   case CS_LISTOPTION_DOWNLOAD:
       			      $class_factory = $environment->getClassFactory();
       			      include_once('include/inc_rubric_download.php');
@@ -1421,7 +1423,7 @@
 					$this->_list_parameter_arrray['sort'] = 'name';
 				}elseif($this->_environment->getCurrentModule() === CS_GROUP_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'name';
-				} else {
+				}else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}
 			}

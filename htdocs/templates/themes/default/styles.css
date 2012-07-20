@@ -1427,6 +1427,14 @@ h2#item_navigation span {
 */
 
 
+.odd_sep_search {
+    background: url(img/sep_search.gif) repeat-y #F5F5F5;
+    }
+
+.even_sep_search {
+    background: url(img/sep_search.gif) repeat-y #FFF;
+    }
+
 .odd_sep_disdetail {
     background: url(img/sep_disdetails.gif) repeat-y #F5F5F5;
     }
@@ -2381,6 +2389,10 @@ a#sort_down {
 
 .w_300 {
     width: 300px;
+    }
+
+.w_310 {
+    width: 310px;
     }
 
 .w_60 {
@@ -4051,3 +4063,10 @@ a.event_grey {
 	text-align:center;
 	}
 
+.searchtext1{
+	background-color:yellow;
+	}
+
+.searchtext2{
+	background-color:green;
+	}

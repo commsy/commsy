@@ -256,9 +256,11 @@
 								<div class="clear"> </div>
 								<div class="portlet_rc_body">
 									{foreach $list.restriction_text_parameters as $restriction}
-										<span class="restriction" title="{$restriction.name}">{$restriction.name|truncate:25:'...':true}
-									   		<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$restriction.link_parameter}"><img src="{$basic.tpl_path}img/cross.gif" alt="x" border="0"/></a>
-									   	</span>
+										{if (!empty($restriction))}
+											<span class="restriction" title="{$restriction.name}">{$restriction.name|truncate:25:'...':true}
+									   			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$restriction.link_parameter}"><img src="{$basic.tpl_path}img/cross.gif" alt="x" border="0"/></a>
+									   		</span>
+									   	{/if}
 									{/foreach}
 								</div>
 							</div>
