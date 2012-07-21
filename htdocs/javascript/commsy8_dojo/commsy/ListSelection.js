@@ -45,14 +45,20 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// setup handler for list action submit button
-			On(Query("input#delete_confirmselect_option")[0], "click", Lang.hitch(this, function(event) {
-				this.onClickListActionSubmit(event.target);
-			}))
+			var inputSubmitNode = Query("input#delete_confirmselect_option")[0];
+			if (inputSubmitNode) {
+				On(inputSubmitNode, "click", Lang.hitch(this, function(event) {
+					this.onClickListActionSubmit(event.target);
+				}))
+			}
 			
 			// setup select all handler
-			On(Query("input#selectAll")[0], "click", Lang.hitch(this, function(event) {
-				this.onSelectAll(event.target);
-			}));
+			var inputSelectAllNode = Query("input#selectAll")[0];
+			if (inputSelectAllNode) {
+				On(inputSelectAllNode, "click", Lang.hitch(this, function(event) {
+					this.onSelectAll(event.target);
+				}));
+			}
 			
 			// if current rubric equals last rubric - restore selection from cookie,
 			// otherwise reset selection
