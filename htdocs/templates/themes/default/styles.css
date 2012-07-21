@@ -387,6 +387,14 @@ div#tag_tree input {
     width: 890px;
     }
 
+.pop_h3 {
+	font-size: 12px;
+    padding: 17px 0px 7px 10px;
+    padding: 8px 0px 8px 10px;
+    float: left;
+    font-weight: normal;
+}
+
 #crt_col_left {
     width: 680px;
     float: left;
@@ -437,10 +445,6 @@ div#accounts #crt_col_left {
     background: url(img/col_seperator.gif) repeat-y 310px top #FFF;
     }
 
-.pop_row_odd:hover, .pop_row_even:hover {
-    background-color: #DEE8FF;
-    }
-
 .pop_col_25 {
     width: 25px;
     float: left;
@@ -458,13 +462,19 @@ div#accounts #crt_col_left {
     float: left;
     }
 
+.pop_col_286 {
+    width: 286px;
+    padding-right: 15px;
+    float: left;
+    }
+
 .pop_col_90 {
     width: 90px;
     float: left;
     }
 
-.pop_col_150 {
-    width: 150px;
+.pop_col_102 {
+    width: 102px;
     float: left;
     }
 
@@ -472,6 +482,7 @@ div#accounts #crt_col_left {
     width: 150px;
     float: left;
     }
+
 
 div.pop_item_navigation {
     margin: 10px 10px 0px 10px;
@@ -500,6 +511,21 @@ div.pop_item_navigation {
     margin: 0px 10px 10px 10px;
     padding-top: 5px;
     }
+
+.pop_button_area{
+	padding:5px 10px;
+	}
+
+#crt_row_area h2{
+	padding:5px 10px;
+	}
+
+#crt_col_left_full_2 {
+    float: left;
+    height: 400px;
+    overflow: auto;
+    width: 936px;
+}
 
 .sitenote {
     font-size: 10px !important;

@@ -9,6 +9,9 @@
 			// call parent
 			parent::__construct($environment);
 
+			// set selected status
+			$this->setSelectedStatus();
+
 			$this->_tpl_file = 'todo_list';
 		}
 
@@ -553,14 +556,187 @@
 			return $return;
 		}
 
+		private function setSelectedStatus() {
+			$current_context = $this->_environment->getCurrentContextItem();
+
+			// find current status selection
+			if(isset($_GET['selstatus']) && $_GET['selstatus'] != '-2') {
+				$this->_selected_status = $_GET['selstatus'];
+
+			} else {
+				$this->_selected_status = '3';
+			}
+		}
+
+
 		protected function getAdditionalRestrictionText(){
 			$return = array();
+
+			$params = $this->_environment->getCurrentParameterArray();
+			$current_context = $this->_environment->getCurrentContextItem();
+			$translator = $this->_environment->getTranslationObject();
+
+			if(!isset($params['selstatus']) && !empty($params['selstatus'])) {
+				$restriction = array(
+					'name'				=> '',
+					'type'				=> '',
+					'link_parameter'	=> ''
+				);
+
+
+		        if (isset($params['selstatus']) and $params['selstatus'] == 1){
+		           $restriction['name'] = $translator->getMessage('TODO_NOT_STARTED');
+		        }elseif(isset($params['selstatus']) and $params['selstatus'] == 2){
+		           $restriction['name'] = $translator->getMessage('TODO_IN_POGRESS');
+		        }elseif(isset($params['selstatus']) and $params['selstatus'] == 3){
+		           $restriction['name'] = $translator->getMessage('TODO_DONE');
+		        }elseif(isset($params['selstatus']) and $params['selstatus'] == 4){
+		           $restriction['name'] = $translator->getMessage('TODO_NOT_DONE');
+		        }elseif(isset($params['selstatus']) and $params['selstatus'] != 0){
+		           $context_item = $this->_environment->getCurrentContextItem();
+		           $todo_status_array = $context_item->getExtraToDoStatusArray();
+		           $status_text = '';
+		           if (isset($todo_status_array[$params['selstatus']])){
+		              $restriction['name'] = $todo_status_array[$params['selstatus']];
+		           }
+		        }else{
+		           $restriction['name'] = '';
+		        }
+
+				// set link parameter
+				$params['selstatus'] = 0;
+				$link_parameter_text = '';
+				if ( count($params) > 0 ) {
+					foreach ($params as $key => $parameter) {
+						$link_parameter_text .= '&'.$key.'='.$parameter;
+					}
+				}
+				$restriction['link_parameter'] = $link_parameter_text;
+
+				$return[] = $restriction;
+			}else{
+		        $restriction['name'] = $translator->getMessage('TODO_NOT_DONE');
+				// set link parameter
+				$params['selstatus'] = 0;
+				$link_parameter_text = '';
+				if ( count($params) > 0 ) {
+					foreach ($params as $key => $parameter) {
+						$link_parameter_text .= '&'.$key.'='.$parameter;
+					}
+				}
+				$restriction['link_parameter'] = $link_parameter_text;
+				$return[] = $restriction;
+			}
 
 			return $return;
 		}
 
 		protected function getAdditionalRestrictions() {
 			$return = array();
+
+			$restriction = array(
+				'item'		=> array(),
+				'action'	=> '',
+				'hidden'	=> array(),
+				'tag'		=> '',
+				'name'		=> '',
+				'custom'	=> true
+			);
+
+			$translator = $this->_environment->getTranslationObject();
+			$dates_manager = $this->_environment->getDatesManager();
+			$context_item = $this->_environment->getCurrentContextItem();
+
+			// set tag and name
+			$tag = $translator->getMessage('TODO_STATUS');
+			$restriction['tag'] = $tag;
+			$restriction['name'] = 'status';
+
+			// set action
+			$params = $this->_environment->getCurrentParameterArray();
+
+			if(!isset($params['selstatus'])) {
+				unset($params['from']);
+			}
+
+			unset($params['selstatus']);
+			$link_parameter_text = '';
+
+			$hidden_array = array();
+			if(count($params) > 0) {
+				foreach($params as $key => $parameter) {
+					$link_parameter_text .= '&'.$key.'='.$parameter;
+					$hidden_array[] = array(
+						'name'	=> $key,
+						'value'	=> $parameter
+					);
+				}
+			}
+			$restriction['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
+
+			// set hidden
+			$restriction['hidden'] = $hidden_array;
+
+			// set items
+			$items = array();
+
+			// no selection
+			$item = array(
+				'id'		=> 0,
+				'name'		=> $translator->getMessage('ALL'),
+				'selected'	=> $this->_selected_status
+			);
+			$items[] = $item;
+
+			$item = array(
+				'id'		=> -2,
+				'name'		=> '------------------------------',
+				'selected'	=> $this->_selected_status,
+				'disabled'	=> true
+			);
+			$items[] = $item;
+
+			$item = array(
+				'id'		=> 2,
+				'name'		=> $translator->getMessage('TODO_NOT_STARTED'),
+				'selected'	=> $this->_selected_status
+			);
+			$items[] = $item;
+
+			$item = array(
+				'id'		=> 3,
+				'name'		=> $translator->getMessage('TODO_IN_POGRESS'),
+				'selected'	=> $this->_selected_status
+			);
+			$items[] = $item;
+
+			$item = array(
+				'id'		=> 4,
+				'name'		=> $translator->getMessage('TODO_DONE'),
+				'selected'	=> $this->_selected_status
+			);
+			$items[] = $item;
+
+      		$extra_status_array = $context_item->getExtraToDoStatusArray();
+      		if (!empty($extra_status_array)){
+				$item = array(
+					'id'		=> -2,
+					'name'		=> '------------------------------',
+					'selected'	=> $this->_selected_status,
+					'disabled'	=> true
+				);
+				$items[] = $item;
+				foreach ($extra_status_array as $key => $value){
+					$item = array(
+						'id'		=> $key,
+						'name'		=> $value,
+						'selected'	=> $this->_selected_status
+					);
+					$items[] = $item;
+				}
+      		}
+			$restriction['items'] = $items;
+			$return[] = $restriction;
 
 			return $return;
 		}
