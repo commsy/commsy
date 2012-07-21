@@ -27,59 +27,59 @@
 			$current_context = $this->_environment->getCurrentContextItem();
 			$session = $this->_environment->getSession();
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			// get current room modules
 			$current_room_modules = $current_context->getHomeConf();
 			$room_moduls = array();
 			if (!empty($current_room_modules)) {
 				$room_modules = explode(",", $current_room_modules);
 			}
-			
+
 			$modules = array();
 			foreach ($room_modules as $module) {
 				list($name, $display) = explode("_", $module);
-					
+
 				if($display !== "none") $modules[] = $name;
 			}
-			
+
 			$rubric_copy_array = $this->getUtils()->getCopyRubrics();
-			
+
 			$item_room_ids = array();
 			$tmp_id_array = array();
 			$item_list = new cs_list();
-			
+
 			// collect room and item ids
 			foreach ($rubric_copy_array as $rubric) {
 				$item_manager = $this->_environment->getManager($rubric);
 				$item_id_array = $session->getValue($rubric . "_clipboard");
-					
+
 				$item_list->addList($item_manager->getItemList($item_id_array));
 				$item = $item_list->getFirst();
 				while ($item) {
 					$item_room_ids[] = $item->getContextID();
-			
+
 					$item = $item_list->getNext();
 				}
-					
+
 				if (is_array($item_id_array)) {
 					$tmp_id_array = array_merge($tmp_id_array, $item_id_array);
 				}
 			}
-			
+
 			$item_id_array = $tmp_id_array;
-			
+
 			// create a list of rooms
 			$rooms = new cs_list();
-			
+
 			$rooms->addList($project_manager->getSortedItemList($item_room_ids, "title"));
 			$rooms->addList($community_manager->getSortedItemList($item_room_ids, "title"));
 			$rooms->addList($private_room_manager->getSortedItemList($item_room_ids, "title"));
 			$rooms->addList($group_room_manager->getSortedItemList($item_room_ids, "title"));
-			
-			// get item information 
+
+			// get item information
 			$new_item_list = new cs_list();
 			$checked_ids = array();
-			
+
 			if (!empty($item_id_array)) {
 				foreach ($item_id_array as $item_id) {
 					$item = $item_list->getFirst();
@@ -87,7 +87,7 @@
 						if ($item->getItemID() == $item_id && $item->getContextID() === 0) {
 							$item_manager = $this->_environment->getManager($item->getItemType());
 							$item = $item_manager->getItem($item->getItemId());
-							
+
 							$new_item_list->add($item);
 							if ($item->getContextID() !== $current_context->getItemID()) {
 								$checked_ids[] = $item->getItemID();
@@ -99,9 +99,9 @@
 					}
 				}
 			}
-			
+
 			$room_sort = $rooms->getFirst();
-			
+
 			while ($room_sort) {
 				if (!empty($item_id_array)) {
 					foreach ($item_id_array as $item_id) {
@@ -110,7 +110,7 @@
 							if ($item->getItemID() == $item_id && $item->getContextID() == $room_sort->getItemId()) {
 								$item_manager = $this->_environment->getManager($item->getItemType());
 								$item = $item_manager->getItem($item->getItemId());
-								
+
 								$new_item_list->add($item);
 								if (isset($item) && $item->getContextID() !== $current_context->getItemID()) {
 									$checked_ids[] = $item->getItemID();
@@ -122,30 +122,30 @@
 						}
 					}
 				}
-				
+
 				$room_sort = $rooms->getNext();
 			}
-			
+
 			$item_list = $new_item_list;
-			
+
 			// prepare id array
 			/*
 			$id_array = array();
 			$item = $item_list->getFirst();
 			while ($item) {
 				$id_array[] = $item->getItemID();
-				
+
 				$item = $item_list->getNext();
 			}
-			
+
 			// get noticed information
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-			
+
 			// get file links
 			$link_manager->getAllFileLinksForListByIDs($id_array);
 			*/
-			
+
 			// prepare return
 			$data = array();
 			$entry = $item_list->getFirst();
@@ -153,23 +153,23 @@
 			$index = 0;
 			while ($entry) {
 				$room_id = $entry->getContextID();
-				
+
 				if($last_room_id != $room_id) {
 					$index++;
 				}
 				$last_room_id = $room_id;
-				
+
 				// room data
 				if(!isset($data[$index])) {
 					$data[$index]["room_id"] = $last_room_id;
-						
+
 					$room = $room_manager->getItem($last_room_id);
-						
+
 					$headline = "";
 					if (empty($room)) {
 						$community_manager->getItem($room_id);
 						$room = $community_manager->getItem($room_id);
-							
+
 						$headline = $translator->getMessage("COPY_FROM") . " " . $translator->getMessage("COMMON_COMMUNITY_ROOM_TITLE") . " \"" . $room->getTitle() . "\"";
 					} elseif ($room->isPrivateRoom()) {
 						$headline = $translator->getMessage("COPY_FROM_PRIVATEROOM") . " \"" . $current_user->getFullname() . "\"";
@@ -178,10 +178,10 @@
 					} else {
 						$headline = $translator->getMessage("COPY_FROM_PROJECTROOM") . " \"" . $room->getTitle() . "\"";
 					}
-						
+
 					$data[$index]["headline"] = $headline;
 				}
-				
+
 				// process title
 				$title = $entry->getTitle();
 				if($entry->isNotActivated()) {
@@ -203,7 +203,7 @@
 		               }
 		            }
 					 */
-					
+
 					$activating_date = $entry->getActivatingDate();
 					if (mb_strstr($activating_date, "9999-00-00")) {
 						$title .= BR . $translator->getMessage('COMMON_NOT_ACTIVATED');
@@ -211,7 +211,7 @@
 						$title .= BR . $translator->getMessage('COMMON_NOT_ACTIVATED') . " " . getDateInLang($entry->getActivatingDate());
 					}
 				}
-				
+
 				// item data
 				$data[$index]["items"][] = array(
 					"disabled"			=> ($entry->isNotActivated() && !($$entry>getCreatorID() == $current_user->getItemID() || $current_user->isModerator())) ? true : false,
@@ -219,12 +219,12 @@
 					"title"				=> $title,
 					"rubric"			=> $this->getUtils()->getLogoInformationForType($entry->getItemType()),
 					"modifier"			=> $entry->getModificatorItem()->getFullName(),
-					"modification_date"	=> $entry->getModificationDate()
+					"modification_date"	=> getDateInLang($entry->getModificationDate())
 				);
-				
+
 				$entry = $item_list->getNext();
-			}		
-			
+			}
+
 			/*
 			if (isset($_GET['select']) and $_GET['select']=='all'){
 				$item = $item_list->getFirst();
@@ -238,9 +238,9 @@
 				if (isOption($option,$translator->getMessage('COMMON_COPY_LIST_ACTION_BUTTON_GO'))){
 				$selected_ids = array();
 			}
-			
-			
-			
+
+
+
 			// Set checked Items
 			$copy_view->setCheckedIDs($checkedIds);
 			$copy_view->setClipboardMode();
@@ -248,24 +248,24 @@
 			$copy_view->setCountAll(count($item_id_array));
 			$copy_view->setFrom(1);
 			$copy_view->setInterval(CS_LIST_INTERVAL);
-			
+
 			//SetButtons
 			$context_item = $environment->getCurrentContextItem();
 			*/
-			
+
 			$this->setSuccessfullDataReturn(array("list" => $data));
 			echo $this->_return;
 		}
-		
+
 		public function actionPerformClipboardAction() {
 			// get request data
 			$ids = $this->_data["ids"];
 			$action = $this->_data["action"];
-			
+
 			$manager = $this->_environment->getItemManager();
-			
+
 			$error_array = array();
-			
+
 			switch ($action) {
 				case "paste":
 					if (!empty($ids)) {
@@ -274,84 +274,84 @@
 							$item = $manager->getItem($id);
 							$item_manager = $this->_environment->getManager($item->getItemType());
 							$import_item = $item_manager->getItem($id);
-							
+
 							$copy = $import_item->copy();
-							
+
 							$rubric = $item->getItemType();
 							$iid = $copy->getItemID();
-							
+
 							$err = $copy->getErrorArray();
 							if (!empty($err)) {
 								$error_array[$copy->getItemID()] = $err;
 							}
 						}
 					}
-					
+
 					if (!empty($error_array)) {
 						$this->setErrorReturn("106", "something goes wrong while copying", $error_array);
 						echo $this->_return;
 					} else {
 						// setup redirect
 						$url = "commsy.php?cid=" . $this->_environment->getCurrentContextID();
-						
+
 						if (sizeof($ids) > 1) {
 							$url .= "&mod=" . $rubric . "&fct=index";
 						} else {
 							$url .= "&mod=" . $rubric . "&fct=detail&iid=" . $iid;
 						}
-						
+
 						$this->setSuccessfullDataReturn(array("url" => $url));
 						echo $this->_return;
 					}
 					break;
-				
+
 				case "delete":
 					if (!empty($ids)) {
 						$current_context = $this->_environment->getCurrentContextItem();
 						$session = $this->_environment->getSessionItem();
 						$translator = $this->_environment->getTranslationObject();
-							
+
 						// get current room modules
 						$current_room_modules = $current_context->getHomeConf();
 						$room_moduls = array();
 						if (!empty($current_room_modules)) {
 							$room_modules = explode(",", $current_room_modules);
 						}
-							
+
 						$modules = array();
 						foreach ($room_modules as $module) {
 							list($name, $display) = explode("_", $module);
-								
+
 							if($display !== "none") $modules[] = $name;
 						}
-							
+
 						$rubric_copy_array = $this->getUtils()->getCopyRubrics();
-							
+
 						// collect room and item ids
 						$rubric_item_ids = array();
-						
+
 						foreach ($rubric_copy_array as $rubric) {
 							$item_manager = $this->_environment->getManager($rubric);
 							$item_id_array = $session->getValue($rubric . "_clipboard");
-							
+
 							if (is_array($item_id_array)) {
 								$rubric_item_ids[$rubric] = $item_id_array;
 							}
 						}
-						
+
 						// go through each rubric and remove appropriate entries
 						foreach($rubric_item_ids as $rubric => $id_array) {
-							
+
 							$new_id_array = array();
 							foreach($id_array as $id) {
 								if(!in_array($id, $ids)) $new_id_array[] = $id;
 							}
-							
+
 							$session->setValue($rubric . "_clipboard", $new_id_array);
 						}
-						
+
 						$this->_environment->getSessionManager()->save($session);
-						
+
 						$this->setSuccessfullDataReturn(array());
 						echo $this->_return;
 					}
@@ -364,7 +364,7 @@
 		 */
 		public function process() {
 			// TODO: check for rights, see cs_ajax_accounts_controller
-			
+
 			// call parent
 			parent::process();
 		}

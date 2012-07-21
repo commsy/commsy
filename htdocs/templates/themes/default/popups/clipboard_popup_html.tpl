@@ -14,29 +14,27 @@
 					<div class="clear"> </div>
 				</div>
 				<div id="popup_content_wrapper">
-					<div id="content_row_three">
 						<div id="popup_accounts">
 							<div id="content_row_two_max">
 			                    <div id="crt_content">
-			                        <div id="crt_col_left_full">
-			                        
+			                        <div id="crt_col_left_full_2">
+
 			                        	<div class="table_head">
-		                            		<h3 class="pop_col_25">&nbsp;</h3>
-		                            		<h3 class="pop_col_270">___COMMON_TITLE___</h3>
-		                            		<h3 class="pop_col_150">___COMMON_RUBRIC___</h3>
-		                            		<h3 class="pop_col_270">___COMMON_MODIFIED_BY___</h3>
-		                            		<h3 class="pop_col_150">___COMMON_MODIFIED_AT___</h3>
-		                            		
+		                            		<h3 class="pop_col_286 pop_h3">___COMMON_TITLE___</h3>
+		                            		<h3 class="pop_col_90 pop_h3">___COMMON_RUBRIC___</h3>
+		                            		<h3 class="pop_col_270 pop_h3">___COMMON_MODIFIED_BY___</h3>
+		                            		<h3 class="pop_col_150 pop_h3">___COMMON_MODIFIED_AT___</h3>
+
 		                            		<div class="clear"></div>
 		                            	</div>
-		                            	
+
 			                            <div id="crt_row_area">
 			                            </div>
 			                        </div>
-			                        
+
 			                        <div class="clear"> </div>
-			                        
-			                        <div>
+
+			                        <div class="pop_button_area">
 			                        	<select id="list_action" size="1">
 			                        		<option value="-1">*___COMMON_LIST_ACTION_NO___</option>
 			                        		<option disabled="disabled">------------------------------</option>
@@ -51,7 +49,6 @@
 			            </div>
 					</div>
 				</div>
-			</div>
 			<div class="clear"></div>
 		</div>
 	</div>

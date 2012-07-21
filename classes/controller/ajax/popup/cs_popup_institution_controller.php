@@ -77,10 +77,10 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 					if(!empty($additional["fileInfo"])) {
 						$srcfile = $additional["fileInfo"]["file"];
 						$targetfile = $srcfile . "_converted";
-						
+
 						$session = $this->_environment->getSessionItem();
 						$session->unsetValue("add_files");
-						
+
 						// determ new file name
 						$filename_info = pathinfo($targetfile);
 						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]["name"];
@@ -107,6 +107,7 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 						$current_user = $environment->getCurrentUserItem();
 						$item->setCreatorItem($current_user);
 						$item->setCreationDate(getCurrentDateTimeInMySQL());
+						$item->setModificationDate(getCurrentDateTimeInMySQL());
                			$item->setLabelType(CS_INSTITUTION_TYPE);
 						$item_is_new = true;
 					}
