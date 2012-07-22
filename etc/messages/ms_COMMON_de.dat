@@ -169,6 +169,7 @@ $message["COMMON_COLOR_SCHEMA_OWN"]["de"] = "Eigenes Farbschema";
 $message["COMMON_COLOR_SCHEMA_PINK"]["de"] = "Pink";
 $message["COMMON_COLOR_SCHEMA_RED"]["de"] = "Knallrot";
 $message["COMMON_COLOR_SCHEMA_REDGREY"]["de"] = "Rot-grau";
+$message["COMMON_COLOR_SCHEMA_SCHULEHH"]["de"] = "SchulCommSy HH";
 $message["COMMON_COLOR_SCHEMA_STARS"]["de"] = "Sterne";
 $message["COMMON_COLOR_SCHEMA_YELLOW"]["de"] = "Sonne";
 $message["COMMON_COMMSY_CONFIGURE"]["de"] = "Übersicht der Einstellungsoptionen";
