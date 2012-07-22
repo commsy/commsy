@@ -32,6 +32,8 @@
 		}
 		
 		private function buildTreeArray($discussionArticlesList, $root) {
+			$disc_manager = $this->_environment->getDiscManager();
+			
 			$tree = array();
 			
 			// creator
