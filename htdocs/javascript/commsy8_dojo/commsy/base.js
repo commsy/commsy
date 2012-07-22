@@ -3,9 +3,11 @@ define([	"dojo/_base/declare",
         	"dojo/io-query",
         	"dojox/fx",
         	"dojox/fx/scroll",
+        	"dojo/query",
         	"dojo/dom-attr",
+        	"dojo/dom-construct",
         	"dojo/window",
-        	"dojo/dom-geometry"], function(declare, xhr, ioQuery, DojoxFX, Scroll, DomAttr, Window, domGeometry) {	
+        	"dojo/dom-geometry"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, Window, domGeometry) {	
 	return declare(null, {
 		uri_object:		null,
 		from_php:		null,
@@ -23,6 +25,43 @@ define([	"dojo/_base/declare",
 			var object = this.uri_object;
 			object[key] = value;
 			return object;
+		},
+		
+		setupLoading: function() {
+			var loadingScreenDiv = Query("#loadingScreen")[0];
+
+			if (!loadingScreenDiv) {
+				// TODO: add invisible screen layer, to prevent closing, before fully loaded
+				var loadingScreenDiv = domConstruct.create("div", {
+					"id":		"loadingScreen"
+				}, document.body, "first")
+
+					var loadingScreenInner = domConstruct.create("div", {
+						"id":		"loadingScreenInner"
+					}, loadingScreenDiv, "last");
+
+						domConstruct.create("h2", {
+							innerHTML:		"Loading..."
+						}, loadingScreenInner, "last");
+
+						domConstruct.create("img", {
+							src:		this.from_php.template.tpl_path + "img/ajax_loader_big.gif"
+						}, loadingScreenInner, "last");
+			}
+		},
+
+		destroyLoading: function() {
+			var loadingScreenDiv = Query("#loadingScreen")[0];
+
+			if(loadingScreenDiv) {
+				dojo.fadeOut({
+					node:		loadingScreenDiv,
+					duration:	1000,
+					onEnd:		function() {
+						domConstruct.destroy(loadingScreenDiv);
+					}
+				}).play();
+			}
 		},
 		
 		AJAXRequest: function(fct, action, data, callback, error_callback, sync, mixin) {

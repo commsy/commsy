@@ -135,43 +135,6 @@ define([	"dojo/_base/declare",
 			}));
 		},
 
-		setupLoading: function() {
-			var loadingScreenDiv = query("#loadingScreen")[0];
-
-			if (!loadingScreenDiv) {
-				// TODO: add invisible screen layer, to prevent closing, before fully loaded
-				var loadingScreenDiv = domConstruct.create("div", {
-					"id":		"loadingScreen"
-				}, document.body, "first")
-
-					var loadingScreenInner = domConstruct.create("div", {
-						"id":		"loadingScreenInner"
-					}, loadingScreenDiv, "last");
-
-						domConstruct.create("h2", {
-							innerHTML:		"Loading..."
-						}, loadingScreenInner, "last");
-
-						domConstruct.create("img", {
-							src:		this.from_php.template.tpl_path + "img/ajax_loader_big.gif"
-						}, loadingScreenInner, "last");
-			}
-		},
-
-		destroyLoading: function() {
-			var loadingScreenDiv = query("#loadingScreen")[0];
-
-			if(loadingScreenDiv) {
-				dojo.fadeOut({
-					node:		loadingScreenDiv,
-					duration:	1000,
-					onEnd:		function() {
-						domConstruct.destroy(loadingScreenDiv);
-					}
-				}).play();
-			}
-		},
-
 		submit: function(search, additional) {
 			additional = additional || [];
 

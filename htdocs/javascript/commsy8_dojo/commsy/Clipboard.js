@@ -111,6 +111,9 @@ define([	"dojo/_base/declare",
 			// get current action
 			var action = DomAttr.get(Query("select#list_action")[0], "value");
 			
+			// setup loading
+			this.setupLoading();
+			
 			// send action and id list via ajax
 			this.AJAXRequest("clipboard", "performClipboardAction", { ids: this.store.selected_ids, action: action },
 				Lang.hitch(this, function(response) {
