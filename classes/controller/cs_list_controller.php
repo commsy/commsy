@@ -1225,8 +1225,10 @@
       			      	break;
 
       			   case CS_LISTOPTION_DOWNLOAD:
-      			      $class_factory = $environment->getClassFactory();
-      			      include_once('include/inc_rubric_download.php');
+      			   	//include_once("classes/controller/action/cs_download_action_controller.php");
+      			   	
+      			      //$class_factory = $environment->getClassFactory();
+      			     // include_once('include/inc_rubric_download.php');
       			      break;
       			   case CS_LISTOPTION_EMAIL_SEND:
                      $current_user = $environment->getCurrentUser();

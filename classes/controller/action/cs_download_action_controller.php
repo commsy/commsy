@@ -59,6 +59,8 @@
 			/************************************************************************************
 			 * This will generate the downloadable content
 			************************************************************************************/
+			$currentContext = $this->_environment->getCurrentContextItem();
+			$currentUser = $this->_environment->getCurrentUserItem();
 			
 			// get export temp folder
 			global $export_temp_folder;
@@ -87,6 +89,14 @@
 			$itemManager = $this->_environment->getItemManager();
 			$item = $itemManager->getItem($itemId);
 			$module = $item->getItemType();
+			
+			// check access
+			if(	($currentContext->isProjectRoom() && $currentContext->isClosed()) ||
+					($itemId === "NEW") ||
+					(isset($item) && !$item->maySee($currentUser))) {
+					
+				continue;
+			}
 			
 			// init needed values
 			$cid = $this->_environment->getCurrentContextID();

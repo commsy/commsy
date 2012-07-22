@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/cookie",
         	"dojo/dom-attr",
-        	"dojo/_base/array"], function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, BaseArray) {
+        	"dojo/dom-construct",
+        	"dojo/_base/array"], function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomConstruct, BaseArray) {
 	return declare(BaseClass, {
 		cookieName:		"commsy_list_selection",
 		cookieObject: {
@@ -110,7 +111,28 @@ define([	"dojo/_base/declare",
 			this.restoreSelection();
 		},
 		
+		performListOption: function(option) {
+			if (option == "listoption_download") {
+				// bad hack... :(
+				// create a link and simulate click - like in detail view
+				dojo.forEach(this.cookieObject.selectedIDs, Lang.hitch(this, function(id, index, arr) {
+					var downloadLinkNode = DomConstruct.create("a", {
+						href:	"commsy.php?cid=" + this.uri_object.cid + "&mod=download&fct=action&iid=" + id,//this.cookieObject.selectedIDs.join(";"),
+						target:	"_blank"
+					}, Query("body")[0], "last");
+					
+					downloadLinkNode.click();
+					
+					DomConstruct.destroy(downloadLinkNode);
+				}));
+			}
+		},
+		
 		onClickListActionSubmit: function(inputNode) {
+			// perform list action
+			var value = DomAttr.get(Query("select[name='form_data[option][list]']")[0], "value");
+			this.performListOption(value);
+			
 			// empty selected ids
 			this.cookieObject.selectedIDs = [];
 			

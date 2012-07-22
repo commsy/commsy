@@ -44,7 +44,7 @@ require([	"dojo/_base/declare",
 				require(["commsy/AjaxActions"], function(AjaxActions) {
 					var aNodes = query("a.ajax_action");
 					
-					if(aNodes) {
+					if (aNodes) {
 						var handler = new AjaxActions();
 						handler.setup(aNodes);
 					}
