@@ -4096,3 +4096,13 @@ a.event_grey {
 .searchtext2{
 	background-color:green;
 	}
+
+#discussionShortExpandAll{
+	padding:10px 3px;
+	font-size:10px;
+	}
+
+#discussionShortCollapseAll{
+	padding:10px 3px;
+	font-size:10px;
+	}

@@ -1,6 +1,6 @@
 <?php
 	require_once('classes/controller/cs_ajax_controller.php');
-	
+
 	class cs_ajax_threaded_discussion_controller extends cs_ajax_controller {
 		/**
 		 * constructor
@@ -9,33 +9,33 @@
 			// call parent
 			parent::__construct($environment);
 		}
-		
+
 		public function actionGetTreeData() {
 			// get submitted data
 			$discussionId = $this->_data["discussionId"];
-			
+
 			// get the discussion item
 			$discussionManager = $this->_environment->getDiscussionManager();
 			$discussionItem = $discussionManager->getItem($discussionId);
-			
+
 			if ($discussionItem->getDiscussionType() == "threaded") {
 				// get all discussion articles
 				$discussionArticlesManager = $this->_environment->getDiscussionArticleManager();
 				$discussionArticlesList = $discussionArticlesManager->getAllArticlesForItem($discussionItem);
-				
+
 				// build the tree array
 				$treeArray = array($this->buildTreeArray($discussionArticlesList, $discussionArticlesList->getFirst()));
 			}
-			
+
 			$this->setSuccessfullDataReturn($treeArray);
 			echo $this->_return;
 		}
-		
+
 		private function buildTreeArray($discussionArticlesList, $root) {
 			$disc_manager = $this->_environment->getDiscManager();
-			
+
 			$tree = array();
-			
+
 			// creator
 			$creator = $root->getCreatorItem();
 			$creator_fullname = '';
@@ -57,7 +57,7 @@
 					}
 				}
 			}
-			
+
 			// parse position string
 			$position = $root->getPosition();
 			$numberArray = explode(".", $position);
@@ -69,7 +69,7 @@
 					$len = mb_strlen($num);
 					$tmpNum = mb_substr($num, 1, $len);
 					$first = mb_substr($tmpNum, 0, 1);
-			
+
 					while ($first == "0") {
 						$tmpNum = mb_substr($tmpNum, 1, mb_strlen($tmpNum));
 						$first = mb_substr($tmpNum, 0, 1);
@@ -77,21 +77,22 @@
 					$number .= "." . $tmpNum;
 				}
 			}
-			
+
 			$position = $number;
-			
+
 			// description
 			$description = $root->getDescription();
 			//$converter->setFileArray($this->getItemFileList());
 			//$description = $converter->showImages($description, $root, true);
-			
+
 			// files
 			$files = $root->getFileList();
-			
-			$label = "<span>" . $root->getSubject() . "</span>";
-			$label .= "<span>" . $files->getCount() . "</span>";
-			// TODO:....
-			
+			$articleLevelWidth = 350 - ((sizeof(explode('.', $root->getPosition())) - 1)*20);
+			$label ='';
+			$label .= "<span style=\" display:inline-block; width:".$articleLevelWidth."px;\">" . $root->getSubject() . "</span>";
+			$label .= "<span style=\" display:inline-block; width:180px;\">" . $creator_fullname . "</span>";
+			$label .= "<span style=\"width:".$articleLevelWidth."px;text-align:right;\">".getDateTimeInLang($root->getModificationDate(), false)."</span>";
+
 			$tree = array(
 					'item_id'			=> $root->getItemID(),
 					'position'			=> $position,
@@ -101,27 +102,27 @@
 					'modification_date'	=> getDateTimeInLang($root->getModificationDate(), false)
 					//'attachment_infos'	=> $attachment_infos
 			);
-			
+
 			$potentialChildList = clone $discussionArticlesList;
 			$potentialChildList->removeElement($root);
-			
+
 			$rootPosition = $root->getPosition();
 			$rootLevel = sizeof(explode('.', $rootPosition)) - 1;
-			
+
 			// iterate list - get children
 			$article = $potentialChildList->getFirst();
 			while($article) {
 				$articlePosition = $article->getPosition();
 				$articleLevel = sizeof(explode('.', $articlePosition)) - 1;
-				
+
 				// skip if item is not a direct child of root
 				if($articleLevel === $rootLevel + 1 && $rootPosition === mb_substr($articlePosition, 0, sizeof($articlePosition) - 6)) {
 					$tree["children"][] = $this->buildTreeArray($potentialChildList, $article);
 				}
-				
+
 				$article = $potentialChildList->getNext();
 			}
-			
+
 			return $tree;
 		}
 
@@ -130,7 +131,7 @@
 		 */
 		public function process() {
 			// TODO: check access rights
-			
+
 			// call parent
 			parent::process();
 		}

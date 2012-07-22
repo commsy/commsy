@@ -164,6 +164,11 @@ $theme_array['neongreen'] = array(
 	'value'		=> 'neongreen',
 	'disabled'	=> false
 );
+$theme_array['schulehh'] = array(
+	'text'		=> 'COMMON_COLOR_SCHEMA_SCHULEHH',
+	'value'		=> 'schulehh',
+	'disabled'	=> false
+);
 
 
 
