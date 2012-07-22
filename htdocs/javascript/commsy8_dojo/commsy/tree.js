@@ -11,7 +11,7 @@ define([	"dojo/_base/declare",
         	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, lang, Tree, Query, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
 	return declare(BaseClass, {
 		followUrl:			true,
-		autoExpandLevel:	3,
+		autoExpandLevel:	2,
 		checkboxes:			false,
 		expanded:			false,
 		item_id:			null,
@@ -94,29 +94,39 @@ define([	"dojo/_base/declare",
 			});
 		},
 		
-		autoExpandToLevel: function(tree) {
-			this.walkHelper(tree, tree.rootNode.item, 0);
+		autoExpandToLevel: function(tree, maxLevel, expandAll) {
+			this.expandHelper(tree, tree.rootNode, 0, maxLevel, expandAll);
 		},
 		
-		walkHelper: function(tree, item, level) {
-			if(item.item_id) {
-				var itemId = item.item_id[0];
-				
-				var node = tree.getNodesByItem(itemId);
-				
-				console.log(node);
-			}
-			//tree._expandNode(tree.rootNode);
+		getNumItems: function(tree) {
+			return this.numHelper(tree.rootNode.item);
+		},
+		
+		/************************************************************************************
+		 *** Helper Functions	
+		 ************************************************************************************/
+		expandHelper: function(tree, node, level, maxLevel, expandAll) {
+			var children = node.getChildren();
 			
-			/*if(level <= this.autoExpandLevel && node.isExpandable) {
+			dojo.forEach(children, lang.hitch(this, function(childrenNode, index, arr) {
+				if (expandAll ||level < maxLevel) {
+					tree._expandNode(childrenNode);
+				} else {
+					tree._collapseNode(childrenNode);
+				}
 				
-				console.log(node);	
-				tree._expandNode(node);
-			}
-			*/
-			for(var id in item.children) {
-				this.walkHelper(tree, item.children[id], level+1);
-			}
+				this.expandHelper(tree, childrenNode, level+1, maxLevel, expandAll);
+			}));
+		},
+		
+		numHelper: function(item) {
+			var children = item.children;
+			var numChildrenItems = 0;
+			dojo.forEach(children, lang.hitch(this, function(childrenItem, index, arr) {
+				numChildrenItems += this.numHelper(childrenItem);
+			}));
+			
+			return numChildrenItems + 1;
 		},
 		
 		iterateCallback: function(rootItem, callbackFunction) {

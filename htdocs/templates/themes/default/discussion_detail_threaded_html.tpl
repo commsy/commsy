@@ -1,6 +1,9 @@
 {extends file="discussion_detail_html.tpl"}
 
 {block name=discussion_short_articles}
+	<a id="discussionShortExpandAll" href="#">___DISCUSSION_THREADED_SHOW_ALL___</a>
+	<a id="discussionShortCollapseAll" href="#">___DISCUSSION_THREADED_HIDE_ALL___</a>
+	
 	<div id="discussion_tree">
 		<img src="{$basic.tpl_path}img/ajax_loader.gif" />
 	</div>
@@ -52,7 +55,7 @@
 				</div>
 				<!-- Ende fade_in_ground -->
 					<div class="item_post">
-						<div class="row_{if $article_index+1 is odd}odd{else}even{/if}_no_hover" style="padding-left:{$discarticle_padding}px;">
+						<div class="row_{if $index+1 is odd}odd{else}even{/if}_no_hover" style="padding-left:{$discarticle_padding}px;">
 							<div class="column_80">
 								<p>
 									<a href="" title="{$article.creator}">
@@ -102,10 +105,10 @@
 							</div>
 							<div class="column_27">
 								<p class="jump_up_down">
-								{*
+									{*
 									{if $index > 0}<a href="#disc_article_{$detail.content.disc_articles[$index - 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_up.gif" alt="&lt;" /></a>{/if}
-									{if $index < !$article@last}<a href="#disc_article_{$detail.content.disc_articles[$index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
-								*}
+									{if $index < $detail.content.numArticles - 1}<a href="#disc_article_{$detail.content.disc_articles[$index + 1].item_id}"><img src="{$basic.tpl_path}img/btn_jump_down.gif" alt="&gt;" /></a>{/if}
+									*}
 								</p>
 							</div>
 							<div class="clear"> </div>

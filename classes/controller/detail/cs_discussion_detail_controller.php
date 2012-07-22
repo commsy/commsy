@@ -169,6 +169,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$formal[] = $temp_array;
 		    }
 		    $temp_array = array();
+		    
+		    $discussion_type = $this->_item->getDiscussionType();
 
 			$return = array(
 				'formal'			=> $formal,
@@ -176,7 +178,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'discussion'		=> $this->getDiscussionContent(),
 				'disc_articles'		=> $disc_articles,
 				'new_num'			=> count($disc_articles) + 1,
-				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item)
+				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item),
+				'numArticles'		=> ($discussion_type === 'threaded') ? self::$threadedIndex : sizeof($disc_artices)
 			);
 
 			return $return;
