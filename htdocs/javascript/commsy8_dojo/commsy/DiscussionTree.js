@@ -68,6 +68,9 @@ define([	"dojo/_base/declare",
 					}
 				});
 				
+				// setup html markup for labels
+				dijit._TreeNode.prototype._setLabelAttr = {node: "labelNode", type: "innerHTML"};
+				
 				// create model
 				this.model = this.createModel();
 				

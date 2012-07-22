@@ -83,14 +83,20 @@
 			//$converter->setFileArray($this->getItemFileList());
 			//$description = $converter->showImages($description, $root, true);
 			
+			// files
+			$files = $root->getFileList();
+			
+			$label = "<span>" . $root->getSubject() . "</span>";
+			$label .= "<span>" . $files->getCount() . "</span>";
+			// TODO:....
+			
 			$tree = array(
 					'item_id'			=> $root->getItemID(),
 					'position'			=> $position,
-					'subject'			=> $root->getSubject(),
+					'subject'			=> $label,
 					'description'		=> $description,
 					'creator'			=> $creator_fullname,
 					'modification_date'	=> getDateTimeInLang($root->getModificationDate(), false)
-					//'num_attachments'	=> $files->getCount(),
 					//'attachment_infos'	=> $attachment_infos
 			);
 			
