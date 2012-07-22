@@ -239,15 +239,8 @@
 						$discussion_item->setLatestArticleID($discarticle_item->getItemID());
 						$discussion_item->setLatestArticleModificationDate($discarticle_item->getCreationDate());
 
-						$discussion_status = $current_context->getDiscussionStatus();
-						if($discussion_status == 3) {
-							if($form_data['discussion_type'] == 2) $discussion_item->setDiscussionType('threaded');
-							else $discussion_item->setDiscussionType('simple');
-						} elseif($discussion_status == 2) {
-							$discussion_item->setDiscussionType('threaded');
-						} else {
-							$discussion_item->setDiscussionType('simple');
-						}
+						if($form_data['discussion_type'] == 2) $discussion_item->setDiscussionType('threaded');
+						else $discussion_item->setDiscussionType('simple');
 
 						$discussion_item->save();
 					}
