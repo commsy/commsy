@@ -111,8 +111,8 @@
 									<div class="editor_content">
 										<div id="description_annotation" class="ckeditor"></div>
 									</div>
-									
-									<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_ITEM___" />
+
+									<input class="popup_button" style="margin-bottom:20px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_ITEM___" />
 								</div>
 							</form>
 						</div>
