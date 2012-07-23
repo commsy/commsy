@@ -68,9 +68,38 @@
 				</p>
 			</div>
 			<div class="column_45">
-				<p>
-					<a href="" class="attachment">{$item.num_files}</a>
-				</p>
+				{if $item.attachment_count > 0  && $item.activated}
+					<p>
+						<a href="#" class="attachment">{$item.attachment_count}</a>
+					</p>
+					<div class="tooltip tooltip_with_400">
+						<div class="tooltip_inner tooltip_inner_with_400">
+							<div class="tooltip_title">
+								<div class="header">___COMMON_ATTACHED_FILES___</div>
+							</div>
+							<div class="scrollable">
+								<div class="tooltip_content">
+									<ul>
+									{foreach $item.attachment_infos as $file}
+										<li>
+											{if !$environment.is_guest or $item.worldpublic}
+												<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
+											{/if}
+												{$file.file_icon} {$file.file_name}
+											{if !$environment.is_guest or $item.worldpublic}
+												</a>
+											{/if}
+											({$file.file_size} KB)
+										</li>
+									{/foreach}
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				{else}
+					<p>&nbsp;</p>
+				{/if}
 			</div>
 			<div class="column_65">
 				<p><img src="{$basic.tpl_path}img/netnavigation/{$item.type}.png" title="___COMMON_{$item.type|upper}_INDEX___"/></p>

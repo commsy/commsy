@@ -714,6 +714,7 @@ if ( $environment->inPrivateRoom()
 
 		protected function getListContent() {
 			$return = array();
+			$converter = $this->_environment->getTextConverter();
 
 			$session = $this->_environment->getSessionItem();
 
@@ -737,9 +738,100 @@ if ( $environment->inPrivateRoom()
 				}
 			}
 
+			$id_array = array();
+			$disc_id_array = array();
+
+			$item = $this->_list->getFirst();
+			while ($item){
+   				$id_array[] = $item->getItemID();
+   				if($item->getType() == CS_DISCUSSION_TYPE){
+   					$disc_id_array[] = $item->getItemID();
+   				}elseif($item->getType() == CS_MATERIAL_TYPE){
+   					$section_id_array[] = $item->getItemID();
+   				}if($item->getType() == CS_TODO_TYPE){
+   					$step_id_array[] = $item->getItemID();
+   				}
+   				$item = $this->_list->getNext();
+			}
+
+			$discarticle_manager = $this->_environment->getDiscussionArticleManager();
+			$discarticle_list = $discarticle_manager->getAllDiscArticlesItemListByIDArray($disc_id_array);
+			$item = $discarticle_list->getFirst();
+			$disc_id_array = array();
+			while ($item){
+			   $disc_id_array[] = $item->getItemID();
+			   $item = $discarticle_list->getNext();
+			}
+
+			$section_manager = $this->_environment->getSectionManager();
+			$section_list = $section_manager->getAllSectionItemListByIDArray($section_id_array);
+			$item = $section_list->getFirst();
+			$section_id_array = array();
+			while ($item){
+			   $section_id_array[] = $item->getItemID();
+			   $item = $section_list->getNext();
+			}
+
+			$step_manager = $this->_environment->getStepManager();
+			$step_list = $step_manager->getAllStepItemListByIDArray($step_id_array);
+			$item = $step_list->getFirst();
+			$step_id_array = array();
+			while ($item){
+			   $step_id_array[] = $item->getItemID();
+			   $item = $step_list->getNext();
+			}
+
+
+		    $link_manager = $this->_environment->getLinkManager();
+		    $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
+		    $file_id_array = array_merge($file_id_array, $link_manager->getAllFileLinksForListByIDs($disc_id_array));
+		    $file_id_array = array_merge($file_id_array, $link_manager->getAllFileLinksForListByIDs($section_id_array));
+		    $file_id_array = array_merge($file_id_array, $link_manager->getAllFileLinksForListByIDs($step_id_array));
+
+		    $file_manager = $this->_environment->getFileManager();
+		    $file_manager->setIDArrayLimit($file_id_array);
+		    $file_manager->select();
+
 			$entry = $this->_list->getFirst();
 			while($entry) {
+				$file_count = 0;
 				$type = $entry->getType() === CS_LABEL_TYPE ? $entry->getLabelType() : $entry->getType();
+
+
+				// files
+				$attachment_infos = array();
+
+
+				if ($entry->getItemType() == CS_MATERIAL_TYPE){
+					$file_count = $entry->getFileListWithFilesFromSections()->getCount();
+					$file_list = $entry->getFileListWithFilesFromSections();
+				}elseif ($entry->getItemType() == CS_DISCUSSION_TYPE){
+					$file_count = $entry->getFileListWithFilesFromArticles()->getCount();
+					$file_list = $entry->getFileListWithFilesFromArticles();
+				}elseif ($entry->getItemType() == CS_TODO_TYPE){
+					$file_count = $entry->getFileListWithFilesFromSteps()->getCount();
+					$file_list = $entry->getFileListWithFilesFromSteps();
+				}else{
+					$file_count = $entry->getFileList()->getCount();
+					$file_list = $entry->getFileList();
+				}
+
+				$file = $file_list->getFirst();
+				while($file) {
+					$lightbox = false;
+					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+
+					$info = array();
+					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_icon']	= $file->getFileIcon();
+					$info['file_url']	= $file->getURL();
+					$info['file_size']	= $file->getFileSize();
+					$info['lightbox']	= $lightbox;
+
+					$attachment_infos[] = $info;
+					$file = $file_list->getNext();
+				}
+
 
 				$return['items'][] = array(
 					'title'						=> $entry->getType() === CS_USER_TYPE ? $this->_compareWithSearchText($entry->getFullname()) : $this->_compareWithSearchText($entry->getTitle()),
@@ -747,10 +839,12 @@ if ( $environment->inPrivateRoom()
 					'type_sort'					=> $this->_environment->getTranslationObject()->getMessage(strtoupper($type).'_INDEX'),
 					'relevanz'					=> ($this->_indexed_search === true) ? 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count : 0,
 					'item_id'					=> $entry->getItemID(),
-					'num_files'					=> $entry->getFileList()->getCount(),
-					"modificator"				=> $this->_compareWithSearchText($this->getItemModificator($entry)),
-					"modification_date"			=> $entry->getModificationDate(),
-					"modification_date_print"	=> $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate())
+					'attachment_count'			=> $file_count,
+					'attachment_infos'			=> $attachment_infos,
+					'activated'					=> !$entry->isNotActivated(),
+					'modificator'				=> $this->_compareWithSearchText($this->getItemModificator($entry)),
+					'modification_date'			=> $entry->getModificationDate(),
+					'modification_date_print'	=> $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate())
 				);
 
 				$entry = $this->_list->getNext();
