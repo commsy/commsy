@@ -787,7 +787,6 @@ if ( isset($_GET['jscheck'])
       if (isset($_GET['isJS'])) {
          $session->setValue('javascript',1);
       } else {
-         $session->setValue('javascript',-1);
       }
    }
    if ( isset($session) and !$session->issetValue('https')) {
@@ -840,9 +839,9 @@ if(isset($c_smarty) && $c_smarty === true) {
 	$color = $environment->getCurrentContextItem()->getColorArray();
 	$theme = $color['schema'];
 
-#	if($theme !== 'default') {
-#		$c_theme = $theme;
-#	}
+	if($theme !== 'default') {
+		$c_theme = $theme;
+	}
 
 	$smarty = new cs_smarty($environment, $c_theme);
 
