@@ -20,7 +20,7 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_CLOSE_PARTICIPATION___</span> |
 				{/if}
-				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.content.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 
 			</div>
 		</div>
