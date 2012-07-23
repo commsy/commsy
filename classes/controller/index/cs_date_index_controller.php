@@ -447,7 +447,7 @@
 							$tempDate->setStartingTime("00:00:00");
 						}
 						
-						$count = 1;
+						//$count = 1;
 						while (array_diff_assoc($start, $end)) {				// compare start end end date - empty array is bool(false)
 						
 							// update date with day + 1 and keep boundries
@@ -463,7 +463,7 @@
 							}
 						
 							// if we are outside the week to display, break here
-							if($count++ == 6) break;
+							//if($count++ == 6) break;
 						
 							// set starting day
 							$startingDayString = $start["year"] . "-" . sprintf("%02d", $start["month"]) . "-" . sprintf("%02d", $start["day"]);
@@ -482,6 +482,7 @@
 			 * Create information for full day events
 			************************************************************************************/
 			
+			
 			/************************************************************************************
 			 * Create the display view array
 			 * 
@@ -489,18 +490,18 @@
 			************************************************************************************/
 			$displayArray = array();
 			
+			$weekStartZeroHour = $weekStart - 3 * 60 * 60;// don't know why, but weekStart was set TO 03:00 am
+			
 			// go through our dates
 			foreach ($dateArray as $year => $yearArray) {
 				foreach ($yearArray as $month => $monthArray) {
 					foreach ($monthArray as $day => $dates) {
 						foreach($dates as $date) {
-							
 							$dateReturn = array();
 							
 							// calculate week start - date start offset
-							$dateStartTimestamp = mktime(0, 0, 0, $month, $day, $year);
-							$weekStart -= 3 * 60 * 60;										// don't know why, but weekStart was set at 03:00 am
-							$timeStartDiff = $dateStartTimestamp - $weekStart;
+							$dateStartTimestamp = mktime(0, 0, 0, $month, $day, $year);								
+							$timeStartDiff = $dateStartTimestamp - $weekStartZeroHour;
 							
 							// convert diff to table column(24x7)
 							$viewColumn = (int) ($timeStartDiff / (3600 * 24));// + 1;
