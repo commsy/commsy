@@ -539,7 +539,7 @@ if ( !empty($SID) ) {
          unset($portal);
       }
    }
-   
+
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
       if (!$session->issetValue('cookie')) {    // second time a user get a commsy page
          if (isset($_COOKIE['SID'])) { // are cookies allowed?
@@ -839,10 +839,10 @@ if(isset($c_smarty) && $c_smarty === true) {
 	// room theme
 	$color = $environment->getCurrentContextItem()->getColorArray();
 	$theme = $color['schema'];
-	
-	if($theme !== 'default') {
-		$c_theme = $theme;
-	}
+
+#	if($theme !== 'default') {
+#		$c_theme = $theme;
+#	}
 
 	$smarty = new cs_smarty($environment, $c_theme);
 
