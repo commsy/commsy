@@ -281,6 +281,7 @@
 
 			}
 
+
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
@@ -313,7 +314,6 @@
 			$this->assign('environment', 'use_problems', $this->getUseProblems());
 
 
-
 			// to javascript
 			$to_javascript = array();
 
@@ -329,6 +329,7 @@
 
 			// dev
 			global $c_indexed_search;
+			$this->assign('environment','with_indexed_search',(isset($c_indexed_search) && $c_indexed_search === true) ? true : false);
 			$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
 
 			if(isset($portal_user) && $portal_user->isAutoSaveOn()) {

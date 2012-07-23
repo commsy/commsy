@@ -82,7 +82,9 @@
 	                    			<input type="hidden" name="form_data[selrubric]" value="{$environment.post.form_data.selrubric}"/>
 	                    		{/if}
 	                        	<input name="form_data[keywords]" onclick="javascript:document.getElementById('search_input').value=''" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{/if}" />
-	                        	<input id="search_suggestion" type="text" value="" />
+	                        	{if $environment.with_indexed_search}
+	                        		<input id="search_suggestion" type="text" value="" />
+	                        	{/if}
 	                        	<input id="search_submit" type="submit" class="search_button" value="___COMMON_GO_BUTTON2___!" />
 	                        </form>
 	                    </div>
