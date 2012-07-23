@@ -186,7 +186,9 @@
                 			{* nonactive_day / active_day / this_today *}
                 			<td class="active_day">
                 				{foreach $cc.content.display[-1][$i] as $date}
+                					<div class="cal_days_week_events">
                 					<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+                					</div>
 		                						<div class="tooltip tooltip_with_400">
 																<a href="{$date.href}">
 													<div class="tooltip_inner tooltip_inner_with_400">
@@ -269,7 +271,9 @@
 	                				{$width = (98 - 10 * $numDates) / $numDates}
 
 	                				{foreach $cc.content.display[$i][$j] as $date}
+                						<div class="cal_days_week_events">
 	                					<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
+		                				</div>
 		                						<div class="tooltip tooltip_with_400">
 													<a href="{$date.href}">
 													<div class="tooltip_inner tooltip_inner_with_400">
