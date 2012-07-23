@@ -33,6 +33,7 @@
 
 		private function buildTreeArray($discussionArticlesList, $root) {
 			$disc_manager = $this->_environment->getDiscManager();
+			$converter = $this->_environment->getTextConverter();
 
 			$tree = array();
 
@@ -87,10 +88,30 @@
 
 			// files
 			$files = $root->getFileList();
+			$file_string = '';
+			if(!$files->isEmpty()) {
+				$file_string = '';
+				$file = $files->getFirst();
+				while($file) {
+					$file_string .= '<a rel="lightbox-gallery'.$root->getItemID().'" href="' . $file->getUrl() . '" target="blank">';
+					//$name = $file->getDisplayName();
+					//$name = $converter->compareWithSearchText($name);
+					//$name = $converter->text_as_html_short($name);
+					$file_string .= $file->getFileIcon() . '</a>';
+					$file = $files->getNext();
+				}
+			}
 			$articleLevelWidth = 350 - ((sizeof(explode('.', $root->getPosition())) - 1)*20);
+			$chunkt_length = 45 - ((sizeof(explode('.', $root->getPosition())) - 1)*4);
+			if ($chunkt_length < 10){
+				$chunkt_length = 10;
+			}
+			if ($articleLevelWidth < 150){
+				$chunkt_length = 150;
+			}
 			$label ='';
-			$label .= "<span style=\" display:inline-block; width:".$articleLevelWidth."px;\">" . $root->getSubject() . "</span>";
-			$label .= "<span style=\" display:inline-block; width:180px;\">" . $creator_fullname . "</span>";
+			$label .= "<span style=\" display:inline-block; width:".$articleLevelWidth."px;\">" . chunkText($root->getSubject(),$chunkt_length) . ' '.$file_string."</span>";
+			$label .= "<span style=\" display:inline-block; width:180px;\">" . chunkText($creator_fullname,20) . "</span>";
 			$label .= "<span style=\"width:".$articleLevelWidth."px;text-align:right;\">".getDateTimeInLang($root->getModificationDate(), false)."</span>";
 
 			$tree = array(

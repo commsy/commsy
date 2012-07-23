@@ -169,7 +169,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$formal[] = $temp_array;
 		    }
 		    $temp_array = array();
-		    
+
 		    $discussion_type = $this->_item->getDiscussionType();
 
 			$return = array(
@@ -676,6 +676,56 @@ if ($type != CS_DISCUSSION_TYPE) {
 					$potentialChildList = clone $node_list;
 					$potentialChildList->removeElement($item);
 
+					// files
+					$files = $item->getFileList();
+					// files
+					$attachment_infos = array();
+					if(!$files->isEmpty()) {
+						$file = $files->getFirst();
+						while($file) {
+							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+								$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+								$name = $file->getDisplayName();
+								//TODO:
+								//$name = $converter->compareWithSearchText($name);
+								$name = $converter->text_as_html_short($name);
+
+								$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
+
+							} else {
+								$name = $file->getDisplayName();
+								//TODO:
+								//$name = $converter->compareWithSearchText($name);
+								$name = $converter->text_as_html_short($name);
+								$file_string = $file->getFileIcon() . ' ' . $name;
+							}
+							$tmp_array = array();
+							$tmp_array['name'] = $file_string;
+							$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+
+
+							$file_array[] = $tmp_array;
+
+							$lightbox = false;
+							if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
+
+							$info = array();
+							$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+							$info['file_icon']	= $file->getFileIcon();
+							$info['file_url']	= $file->getURL();
+							$info['file_size']	= $file->getFileSize();
+							$info['lightbox']	= $lightbox;
+
+							$attachment_infos[] = $info;
+
+							$file = $files->getNext();
+						}
+
+						$entry['files'] = $file_array;
+						$file_array = array();
+					}
+
+
 					// append return and recursive call
 					$return[] = array(
 						'item_id'			=> $item->getItemID(),
@@ -686,6 +736,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 						'modification_date'	=> getDateTimeInLang($item->getModificationDate(), false),
 						'num_attachments'	=> $files->getCount(),
 						'noticed'			=> $noticed,
+						'formal'			=> $entry,
 						'modificator_image'	=> $modificator_image,
 						'custom_image'		=> !empty($image),
 						'actions'			=> $this->getEditActions($item, $current_user),
@@ -716,7 +767,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			// files
 			$files = $root->getFileList();
-
 			// files
 			$attachment_infos = array();
 			if(!$files->isEmpty()) {
@@ -756,7 +806,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 					$info['lightbox']	= $lightbox;
 
 					$attachment_infos[] = $info;
-					$file = $file_list->getNext();
 
 					$file = $files->getNext();
 				}

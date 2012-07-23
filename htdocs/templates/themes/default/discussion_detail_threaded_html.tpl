@@ -3,7 +3,7 @@
 {block name=discussion_short_articles}
 	<a id="discussionShortExpandAll" href="#">___DISCUSSION_THREADED_SHOW_ALL___</a>
 	<a id="discussionShortCollapseAll" href="#">___DISCUSSION_THREADED_HIDE_ALL___</a>
-	
+
 	<div id="discussion_tree">
 		<img src="{$basic.tpl_path}img/ajax_loader.gif" />
 	</div>
@@ -79,6 +79,7 @@
 									{build_user_link status=$article.moredetails.last_modificator_status user_name=$article.moredetails.last_modificator id=$article.moredetails.last_modificator_id}
 									___DATES_ON_DAY___  {$article.moredetails.last_modification_date}
 									</span>
+									{debug}
 									{if !empty($article.formal)}
 										<table>
 											{if !empty($article.formal.files)}
