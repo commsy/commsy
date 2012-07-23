@@ -45,14 +45,14 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
 				{if $detail.actions.mail}
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_EMAIL_TO___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'send'" href="#">___COMMON_EMAIL_TO___</a> |
 				{/if}
 				{if $detail.actions.copy}
 					<a class="ajax_action" data-custom="iid: {$detail.content.item_id}, action: 'addToClipboard'" href="#">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_ITEM_COPY_TO_CLIPBOARD___</span> |
 				{/if}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}">___COMMON_DOWNLOAD___</a>
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.content.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
@@ -213,7 +213,7 @@
 						<div class="post_content">
 							<h4>{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$step.title}
 							</h4>
-							
+
 							<span>
 							___COMMON_LAST_MODIFIED_BY_UPPER___
 							{build_user_link status=$step.moredetails.last_modificator_status user_name=$step.moredetails.last_modificator id=$step.moredetails.last_modificator_id}
@@ -262,7 +262,7 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			
+
 			<div id="detail_expand_step_{$step.item_id}" class="hidden">
 				{include file="include/detail_moredetails_html.tpl" data=$step.moredetails}
 			</div>
@@ -303,26 +303,26 @@
 								<option value="2">___TODO_TIME_HOURS___</option>
 								<option value="3">___TODO_TIME_DAYS___</option>
 							</select>
-							
+
 							<div class="editor_content">
 								<div id="ckeditor_step" class="ckeditor"></div>
 							</div>
-							
+
 							{*
 							<div id="files_finished"></div>
-							
+
 							<div class="uploader">
 							   <input class="fileSelector"></input>
-							   
+
 							   <div class="fileList"></div>
 							</div>
 							*}
-							
+
 							<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
 						</div>
 					</form>
 				</div>
-				
+
 				<div class="clear"> </div>
 			</div>
 		</div>
