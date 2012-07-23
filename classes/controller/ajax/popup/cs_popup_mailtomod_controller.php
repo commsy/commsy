@@ -45,7 +45,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 			    $mail->set_to($list[0]);
 			} else {
 			    //no reciever checked
-			    //TODO: error handling
+			    $this->_popup_controller->setErrorReturn(112, 'no reciever checked');
 			}
 		}
 
