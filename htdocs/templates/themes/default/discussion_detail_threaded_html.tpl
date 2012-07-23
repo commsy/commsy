@@ -79,7 +79,6 @@
 									{build_user_link status=$article.moredetails.last_modificator_status user_name=$article.moredetails.last_modificator id=$article.moredetails.last_modificator_id}
 									___DATES_ON_DAY___  {$article.moredetails.last_modification_date}
 									</span>
-									{debug}
 									{if !empty($article.formal)}
 										<table>
 											{if !empty($article.formal.files)}

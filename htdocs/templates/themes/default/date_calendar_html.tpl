@@ -194,7 +194,7 @@
                 	</tr>
                 </table>
         	</div>
-        	<div id="cal_table_{$cc.mode}">
+        	<div id="cal_table_{$cc.mode}" class="cal_table_scroll">
         		<table id="hour_index" cellspacing="0" cellpadding="0" border="0">
         			{section name=time loop=24}
         				<tr>
@@ -217,7 +217,7 @@
 	                			{$pos = $i * 7 + $j}
 
 	                			{* nonactive_day / active_day / this_today *}
-	                			<td class="{$cc.content.days[$pos].state}">
+	                			<td class="{$cc.content.tableContent[$i][$j].state}">
 	                				{$numDates = $cc.content.display[$i][$j]|count}
 	                				
 	                				{* if there is more than one date to display in this cell, shrink them *}

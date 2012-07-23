@@ -78,6 +78,15 @@ require([	"dojo/_base/declare",
 					}
 				}
 				
+				// calendar scroll bar position - process directly here
+				if (this.uri_object.fct == "index" && this.uri_object.mod == "date") {
+					var scrollDivNode = query("div.cal_table_scroll")[0];
+					
+					if (scrollDivNode) {
+						scrollDivNode.scrollTop = 250;
+					}
+				}
+				
 				// search
 				if(this.from_php.dev.indexed_search === true) {
 					require(["commsy/Search"], function(Search) {

@@ -479,11 +479,6 @@
 			}
 			
 			/************************************************************************************
-			 * Create information for full day events
-			************************************************************************************/
-			
-			
-			/************************************************************************************
 			 * Create the display view array
 			 * 
 			 * two-dimensional array with [ row(hour) ][ column(day) ]
@@ -527,6 +522,12 @@
 								default: $colorStr = "grey"; break;
 							}
 							
+							// link
+							$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
+							$link = str_replace("'", "\'", $link);
+							$link_array = explode('"', $link);
+							$href = $link_array[1];
+							
 							// table row is taken from dates start time
 							$startTimeConvert = convertTimeFromInput($date->getStartingTime());
 							if ($startTimeConvert["conforms"] === true) {			// start time is specified
@@ -548,7 +549,13 @@
 									);
 									
 									// get end day
-									$endDateConvert = convertDateFromInput($date->getEndingDay(), $this->_environment->getSelectedLanguage());
+									
+									$endingDay = $date->getEndingDay();
+									if (empty($endingDay)) {
+										// for the case no ending date is given, assume ending day = starting day
+										$endingDay = $date->getStartingDay();
+									}
+									$endDateConvert = convertDateFromInput($endingDay, $this->_environment->getSelectedLanguage());
 									$endDateConvert = getDateFromString($endDateConvert["timestamp"]);
 									$endDay = (int) $endDateConvert["day"];
 									
@@ -613,10 +620,11 @@
 											
 											// create new view entries
 											$displayArray[$actualRow][$viewColumn][] = array(
-												"title"			=> $date->getTitle(),
+												"title"			=> "",					// leave empty, so only the starting cell will hold the title(and day beginning cells)
 												"color"			=> $colorStr,
 												"dateHeight"	=> $insertDateHeight,
-												"topMargin"		=> 0
+												"topMargin"		=> 0,
+												"href"			=> $href
 											);
 										}
 									}
@@ -631,6 +639,7 @@
 							// set display information
 							$dateReturn["title"] = $date->getTitle();
 							$dateReturn["color"] = $colorStr;
+							$dateReturn["href"] = $href;
 							
 							$displayArray[$viewRow][$viewColumn][] = $dateReturn;
 						}
@@ -638,470 +647,44 @@
 				}
 			}
 			
-			//var_dump($displayArray);
-			
 			$return["display"] = $displayArray;
 			
-			
-			
 			/************************************************************************************
-			 * Build an info array for manage displaying
-			 * of dates, that occure at the same time
+			 * Setup some information for the table content like
+			 * cell state(css class), link, etc..
 			************************************************************************************/
-			$dateInfo = array();
 			
-			// iterate through our dates
+			$tableContent = array();
 			
+			$today = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 			
-			
-			
-			
-			
-			
-			
-			// top row - full day events
-			for($index=0; $index <7; $index++){
-				$week_start = $this->_week_start + ( 3600 * 24 * $index);
-				$startday = date ( "d", $week_start);
-				$first_char = mb_substr($startday,0,1);
-				if ($first_char == '0'){
-					$startday = mb_substr($startday,1,2);
-				}
-				$startmonth = date ( "Ymd", $week_start );
-				$first_char = mb_substr($startmonth,0,1);
-				if ($first_char == '0'){
-					$startmonth = mb_substr($startmonth,1,2);
-				}
-				$startyear = date ( "Y", $week_start );
-				$params = array();
-				$params['iid'] = 'NEW';
-				$params['day'] = $startday;
-				$parameter_array = $this->_environment->getCurrentParameterArray();
-				$params['month'] = $startmonth;
-				$params['year'] = $startyear;
-				$params['week'] = $this->_week_start;
-				$params['presentation_mode'] = '1';
-				$params['time'] = 0;
-				$params['modus_from'] = 'calendar';
-				$anAction ='';
-				if ($i == 0){
-					$image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
-				}else{
-					$image = '<img style="width:'.$width.'; height:2.2em;" src="images/spacer.gif" alt="" border="0"/>';
-				}
-				if ( $this->_with_modifying_actions ) {
-					$anAction = ahref_curl( $this->_environment->getCurrentContextID(),
-							CS_DATE_TYPE,
-							'edit',
-							$params,
-							$image);
-				}
-
-				/*
-				 * TODO: seems that this whole block just creates the links for adding new entries
-				 *
-				$return["day_events"][$index][] = array(
-				);
-				$html .= '<div class="calendar_entry_day" id="calendar_entry_' . $index . '"><div class="data_day" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
-				*/
-			}
-
-			$session = $this->_environment->getSession();
-			
-			$date_array_for_jQuery = array();
-			$date_array_for_jQuery_temp = array();
-			$date_array_for_jQuery_php = array();
-			$date_index = 0;
-			$tooltips = array();
-			$tooltip_date = '';
-			$tooltip_last_id = '';
-			for ($day = 1; $day<9; $day++){
-				$day_entries = $day-1;
-				$left_position = 0;
-				if ( isset($display_date_array[$day_entries]) ){
-					foreach($display_date_array[$day_entries] as $date){
-						$is_date_for_whole_day = false;
-						$start_hour = mb_substr($date->getStartingTime(),0,2);
-						if(mb_substr($start_hour,0,1) == '0'){
-							$start_hour = mb_substr($start_hour,1,1);
-						}
-						$start_minutes = mb_substr($date->getStartingTime(),3,2);
-						if(mb_substr($start_minutes,0,1) == '0'){
-							$start_minutes = mb_substr($start_minutes,1,1);
-						}
-			
-						if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
-							if($date->getEndingTime() != ''){
-								$end_hour = 23;
-								$end_minutes = 60;
-							} else {
-								$end_hour = 0;
-								$end_minutes = 0;
-								$is_date_for_whole_day = true;
-							}
-						} else {
-							if($date->getEndingTime() != ''){
-								$end_hour = mb_substr($date->getEndingTime(),0,2);
-								$end_minutes = mb_substr($date->getEndingTime(),3,2);
-							} elseif($date->getStartingTime() != '' and $date->getEndingTime() == ''){
-								$end_hour = $start_hour + 1;
-								$end_minutes = $start_minutes;
-							} else {
-								$end_hour = $start_hour;
-								$end_minutes = $start_minutes;
-							}
-			
-						}
-						if(mb_substr($end_hour,0,1) == '0'){
-							$end_hour = mb_substr($end_hour,1,1);
-						}
-						if(mb_substr($end_minutes,0,1) == '0'){
-							$end_minutes = mb_substr($end_minutes,1,1);
-						}
-			
-						// umrechnen in Minuten, für jede viertelstunde 10 px drauf nach vier noch einen pixel drauf
-						$start_minutes = $start_hour*60 + $start_minutes;
-						$end_minutes = $end_hour*60 + $end_minutes;
-			
-						$start_quaters = mb_substr(($start_minutes / 15),0,2);
-						$start_quaters_addon = mb_substr(($start_quaters / 4),0,2);
-						$end_quaters = mb_substr(($end_minutes / 15),0,2);
-						$end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
-			
-						if($start_quaters == 0 and $end_quaters == 0){
-							$is_date_for_whole_day = true;
-						}
-			
-						$top = $start_quaters*10;
-			
-						$left = 19 + 129*($day_entries-1) + $left_position;
-						$width = 129 / count($display_date_array[$day_entries]) - 4;
-						$height = ($end_quaters - $start_quaters) * 10;
-						if($date->getColor() != ''){
-							$color = $date->getColor();
-						} else {
-							$color = '#FFFF66';
-						}
-						$color_border = '#CCCCCC';
-						$link = $this->getDateItemLinkWithJavascript($date, $date->getTitle());
-						$link_array = explode('"', $link);
-						$href = $link_array[1];
-			
-						$overlap = 1;
-						if(!$is_date_for_whole_day){
-							$display_date = $date;
-							foreach($display_date_array[$day_entries] as $display_date_compare){
-								$compare_is_date_for_whole_day = false;
-								if(($display_date_compare->getStartingDay() != $display_date_compare->getEndingDay()) and ($display_date_compare->getEndingDay() != '')){
-									$compare_is_date_for_whole_day = true;
-								}
-								if(!$compare_is_date_for_whole_day and ($display_date->getItemID() != $display_date_compare->getItemID())){
-									if($this->overlap($display_date, $display_date_compare)){
-										$overlap++;
-									}
-								}
-							}
-						}
-
-						$date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\')';
-						$date_array_for_jQuery_php[] = array($day_entries, $link, $start_quaters, $end_quaters, count($display_date_array[$day_entries]), $color, $color_border, $href, 'sticky_' . $date_index, $is_date_for_whole_day);
-						$tooltip = array();
-						$tooltip['title'] = $date->getTitle();
-						$tooltip['date'] = $date_tooltip_array[$date->getItemID()];
-						$tooltip['place'] = $date->getPlace();
-						$tooltip['participants'] = $date->getParticipantsItemList();
-						#$tooltip['desc'] = $date->getDescription();
-						$tooltip['color'] = $color;
-						$tooltips['sticky_' . $date_index] = $tooltip;
-						$date_index++;
-						$left_position = $left_position + $width + 4;
+			for ($hour=0; $hour < 24; $hour++) {
+				for ($day=0; $day < 7; $day++) {
+					
+					$beginningDayTimestamp = $weekStartZeroHour + (3600 * 24 * $day);
+					
+					// determe state
+					$state = "active_day";
+					
+					// check if day is today
+					if ($today == $beginningDayTimestamp) {
+						$state = "this_today";
 					}
+					
+					// check if day is not active(grey out)
+					elseif(($hour < 8) || ($hour > 17)) {
+						$state = "nonactive_day";
+					}
+					
+					$tableContent[$hour][$day] = array(
+						"state"		=> $state
+					);
+					
+					// TODO: generate link???
 				}
 			}
 			
-			/*
-			foreach($tooltips as $id => $tooltip){
-				
-				$html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
-				$html .= '<tr><td colspan="2"><b>' . encode(AS_HTML_SHORT,$tooltip['title']) . '</b></td></tr>'.LF;
-				$html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
-				if($tooltip['place'] != ''){
-					$html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . encode(AS_HTML_SHORT,$tooltip['place']) . '</td></tr>'.LF;
-				}
-				$html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
-				
-				if($tooltip['participants']->isEmpty()){
-					$html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
-				} else {
-					$participant = $tooltip['participants']->getFirst();
-					$count = $tooltip['participants']->getCount();
-					$counter = 1;
-					while ($participant) {
-						$html .= $participant->getFullName();
-						if ( $counter < $count) {
-							$html .= ', ';
-						}
-						$participant = $tooltip['participants']->getNext();
-						$counter++;
-					}
-				}
-			}
-			$html .= '</div></div>';
-			$html .= '<script type="text/javascript">'.LF;
-			$html .= '<!--'.LF;
-			$html .= 'var calendar_dates = new Array(';
-			*/
-			
-			// die maximale breite bei nebeneinander liegenden Termine
-			$overlap_array = array();
-			$max_overlap_array = array();
-			$max_overlap_array_for_date = array();
-			$date_array_for_jQuery_php_with_position = array();
-			for ($int = 0; $int < 7; $int++) {
-				$temp_quaters_array = array();
-				for ($j = 0; $j < 96; $j++) {
-					$temp_quaters_array[] = 0;
-				}
-				for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
-					$day = $date_array_for_jQuery_php[$i][0]-1;
-					if($day == $int){
-						$start_quaters = $date_array_for_jQuery_php[$i][2];
-						$end_quaters = $date_array_for_jQuery_php[$i][3];
-						for ($j = $start_quaters; $j < $end_quaters; $j++) {
-							$value = $temp_quaters_array[$j];
-							$temp_quaters_array[$j] = $value + 1;
-						}
-					}
-				}
-				$overlap_array[] = $temp_quaters_array;
-				$max_overlap = 0;
-				for ($i = 0; $i < sizeof($temp_quaters_array); $i++) {
-					if($max_overlap < $temp_quaters_array[$i]){
-						$max_overlap = $temp_quaters_array[$i];
-					}
-				}
-				$max_overlap_array[] = $max_overlap;
-				for ($i = 0; $i < sizeof($date_array_for_jQuery_php); $i++) {
-					$day = $date_array_for_jQuery_php[$i][0]-1;
-					if($day == $int){
-						$start_quaters = $date_array_for_jQuery_php[$i][2];
-						$end_quaters = $date_array_for_jQuery_php[$i][3];
-						$max_overlap_for_date = 0;
-						for ($j = $start_quaters; $j < $end_quaters; $j++) {
-							if($temp_quaters_array[$j] > $max_overlap_for_date){
-								$max_overlap_for_date = $temp_quaters_array[$j];
-							}
-						}
-						$max_overlap_array_for_date[] = $max_overlap_for_date;
-					}
-				}
-			}
-			
-		      // Arrays zum Sortieren vorbereiten
-		      $sort_dates_array = array();
-		      $sort_dates_start_array = array();
-		      for ($i = 0; $i < 7; $i++) {
-		         $temp_sort_array = array();
-		         for ($j = 0; $j < $max_overlap_array[$i]; $j++) {
-		            $temp_part_array = array();
-		            for ($k = 0; $k < 96; $k++) {
-		               $temp_part_array[] = 0;
-		            }
-		            $temp_sort_array[] = $temp_part_array;
-		         }
-		         // Termine sortieren
-		         $max_overlap_index = 0;
-		         foreach($date_array_for_jQuery_php as $temp_date){
-		            $found_position = false;
-		            if($temp_date[0]-1 == $i){
-		               $start_quaters = $temp_date[2];
-		               $end_quaters = $temp_date[3];
-		               $date_set = false;
-		               for ($temp_part = 0; $temp_part < sizeof($temp_sort_array); $temp_part++) {
-		               #foreach($temp_sort_array as $temp_part_array){
-		                  if(!$date_set){
-		                     $slot_free = true;
-		                     for ($time = $start_quaters; $time < $end_quaters; $time++) {
-		                        if($temp_sort_array[$temp_part][$time] != 0){
-		                        #if($temp_part_array[$time] != 0){
-		                           $slot_free = false;
-		                        }
-		                     }
-		                     if($slot_free){
-		                        for ($time = $start_quaters; $time < $end_quaters; $time++) {
-		                           $temp_sort_array[$temp_part][$time] = 1;
-		                           if(!$found_position){
-		                              $temp_date[] = sizeof($temp_sort_array);
-		                              $temp_date[] = $temp_part;
-		                              $temp_date[] = $time;
-		                              $found_position = true;
-		                           }
-		                           $temp_part_array[$time] = 1;
-		                        }
-		                        $date_set = true;
-		                     }
-		                  }
-		               }
-		               $temp_date[] = $max_overlap_array_for_date[$max_overlap_index];
-		               $date_array_for_jQuery_php_with_position[] = $temp_date;
-		            }
-		            $max_overlap_index++;
-		         }
-		         $sort_dates_array[] = $temp_sort_array;
-		      }
-		
-		      $last = count($date_array_for_jQuery)-1;
-		      #for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
-		      #   $html .= $date_array_for_jQuery[$index];
-		      #   #pr($date_array_for_jQuery[$index]);
-		      #   if($index < $last){
-		      #     $html .= ',';
-		      #   }
-		      #}
-		      for ($index = 0; $index < count($date_array_for_jQuery_php_with_position); $index++) {
-		         $day_entries = $date_array_for_jQuery_php_with_position[$index][0];
-		         $link = $date_array_for_jQuery_php_with_position[$index][1];
-		         $link = str_replace("'", "\'", $link);
-		         $start_quaters = $date_array_for_jQuery_php_with_position[$index][2];
-		         $end_quaters = $date_array_for_jQuery_php_with_position[$index][3];
-		         $dates_on_day = $date_array_for_jQuery_php_with_position[$index][4];
-		         $color = $date_array_for_jQuery_php_with_position[$index][5];
-		         $color_border = $date_array_for_jQuery_php_with_position[$index][6];
-		         $href = $date_array_for_jQuery_php_with_position[$index][7];
-		         $date_index = $date_array_for_jQuery_php_with_position[$index][8];
-		         $is_date_for_whole_day = $date_array_for_jQuery_php_with_position[$index][9];
-		         if(isset($date_array_for_jQuery_php_with_position[$index][10])){
-		            $max_overlap = $date_array_for_jQuery_php_with_position[$index][10];
-		         } else {
-		            $max_overlap = 0;
-		         }
-		         if(isset($date_array_for_jQuery_php_with_position[$index][11])){
-		            $start_column = $date_array_for_jQuery_php_with_position[$index][11];
-		         } else {
-		            $start_column = 0;
-		         }
-		         if(isset($date_array_for_jQuery_php_with_position[$index][12])){
-		            $start_quarter = $date_array_for_jQuery_php_with_position[$index][12];
-		         } else {
-		            $start_quarter = 0;
-		         }
-		         if(isset($date_array_for_jQuery_php_with_position[$index][13])){
-		            $max_overlap_for_date = $date_array_for_jQuery_php_with_position[$index][13];
-		         } else {
-		            $max_overlap_for_date = 0;
-		         }
-		         var_dump($max_overlap);
-		         var_dump($max_overlap_for_date);
-		         
-		         /*
-		         $html .= 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . $dates_on_day . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'' . $date_index . '\'' . ',\'' . $is_date_for_whole_day . '\'' . ',' . $max_overlap . '' . ',' . $start_column . '' . ',' . $start_quarter . '' . ',' . $max_overlap_for_date . ')'.LF;
-		         if($index < $last){
-		           $html .= ',';
-		         }*/
-		      }
-		      
-		      // main week content
-		      for($index=0; $index < 24; $index++) {
-		      	for($index_day=0; $index_day <7; $index_day++) {
-		      		$week_start = $this->_calendar["week"] + ( 3600 * 24 * $index_day);
-		      		$startday = date ( "d", $week_start);
-		      		$first_char = mb_substr($startday,0,1);
-		      
-		      		if ($first_char == '0'){
-		      			$startday = mb_substr($startday,1,2);
-		      		}
-		      
-		      		$startmonth = date ( "Ymd", $week_start );
-		      		$first_char = mb_substr($startmonth,0,1);
-		      
-		      		if ($first_char == '0'){
-		      			$startmonth = mb_substr($startmonth,1,2);
-		      		}
-		      
-		      		$startyear = date ( "Y", $week_start );
-		      
-		      		$params = array();
-		      		$params['iid'] = 'NEW';
-		      		$params['day'] = $startday;
-		      		$parameter_array = $this->_environment->getCurrentParameterArray();
-		      		$params['month'] = $startmonth;
-		      		$params['year'] = $startyear;
-		      		$params['week'] = $this->_week_start;
-		      		$params['presentation_mode'] = '1';
-		      
-		      		if ($i != 0){
-		      			$params['time'] = $index;
-		      		} else {
-		      			$params['time'] = 0;
-		      		}
-		      
-		      		$params['modus_from'] = 'calendar';
-		      		$anAction = '';
-		      
-		      		if ( $this->_with_modifying_actions ) {
-		      			$anAction = ahref_curl( $this->_environment->getCurrentContextID(),
-		      					CS_DATE_TYPE,
-		      					'edit',
-		      					$params,
-		      					$image);
-		      		}
-		      
-		      
-		      		$state = "active_day";
-		      		// check if day is today
-		      		if(false) {//$todayCompressed === $format['day'].$current_month_temp.$current_year[$i]) {
-		      			$state = "this_today";
-		      		}
-		      
-		      		// check if day is not active(grey out)
-		      		elseif(($index < 9) || ($index > 17)) {
-		      			$state = "nonactive_day";
-		      		}
-		      
-		      		//$index_day
-		      		//$todayCompressed = date("jnY");
-		      
-		      		$return["days"][] = array(
-		      				//"day"		=> $format["day"],
-		      				"link"		=> $anAction,
-		      				"state"		=> $state
-		      				//"dates"		=> $dates
-		      		);
-		      
-		      		/*
-		      		 if ($i == 0){
-		      		$image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
-		      		} else {
-		      		$image = '<img style="width:'.$width.'; height:2.2em;" src="images/spacer.gif" alt="" border="0"/>';
-		      		}
-		      
-		      		if(($index < 8) or ($index > 15)){
-		      		$html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
-		      		} else {
-		      		$html .= '<div class="calendar_entry_work" id="calendar_entry_' . $index . '_' . $index_day . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
-		      		}
-		      			
-		      
-		      		$html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" id="calendar_entry_background_div_' . $index . '_' . $index_day . '" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
-		      
-		      		if($current_element < (24*7)-1){
-		      		$html_javascript .= ','.LF;
-		      		} else {
-		      		$html_javascript .= LF;
-		      		}*/
-		      
-		      		$current_element++;
-		      	}
-		      }
-		      
-		      //var_dump($return);
-		
-		      /*
-		      $html .= ');'.LF;
-		      $html .= 'var today = "' . $today . '";' .LF;
-		      $html .= '-->'.LF;
-		      $html .= '</script>'.LF;
-		      return $html;*/
+			$return["tableContent"] = $tableContent;
 
 			return $return;
 		}
