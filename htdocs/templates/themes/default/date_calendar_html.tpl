@@ -112,7 +112,6 @@
 		                					{foreach $cc.content.days[$pos].dates as $date}
 		                						<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
 
-
 		                						{* build and style tooltips here
 
 		                						available date values are:
@@ -188,6 +187,52 @@
                 			<td class="active_day">
                 				{foreach $cc.content.display[-1][$i] as $date}
                 					<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+		                						<div class="tooltip tooltip_with_400">
+																<a href="{$date.href}">
+													<div class="tooltip_inner tooltip_inner_with_400">
+
+														<div class="tooltip_title">
+															<div class="header">{$date.title}</div>
+														</div>
+														<div class="scrollable">
+															<div class="tooltip_content">
+																<table id="hover_table">
+																	<tr>
+																		<td class="key">
+																			___DATES_END_DAY___:
+																		</td>
+																		<td class="value">
+																			{$date.date[1]}
+																		</td>
+																	</tr>
+																		{if !empty($date.place)}
+																		<tr>
+																			<td class="key">
+																				___DATES_PLACE___:
+																			</td>
+																			<td class="value">
+																				{$date.place}
+																			</td>
+																		</tr>
+																	{/if}
+																	<tr>
+																		<td class="key">
+																			___DATE_PARTICIPANTS___:
+																		</td>
+																		<td class="value">
+																			{if !empty($date.participants)}
+																				{$date.participants}
+																			{else}
+																				___TODO_NO_PROCESSOR___
+																			{/if}
+																		</td>
+																	</tr>
+																</table>
+															</div>
+														</div>
+													</div>
+																</a>
+												</div>
                 				{/foreach}
                 			</td>
                			{/section}
@@ -219,12 +264,57 @@
 	                			{* nonactive_day / active_day / this_today *}
 	                			<td class="{$cc.content.tableContent[$i][$j].state}">
 	                				{$numDates = $cc.content.display[$i][$j]|count}
-	                				
+
 	                				{* if there is more than one date to display in this cell, shrink them *}
 	                				{$width = (98 - 10 * $numDates) / $numDates}
-	                				
+
 	                				{foreach $cc.content.display[$i][$j] as $date}
 	                					<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
+		                						<div class="tooltip tooltip_with_400">
+													<a href="{$date.href}">
+													<div class="tooltip_inner tooltip_inner_with_400">
+														<div class="tooltip_title">
+															<div class="header">{$date.title}</div>
+														</div>
+														<div class="scrollable">
+															<div class="tooltip_content">
+																<table id="hover_table">
+																	<tr>
+																		<td class="key">
+																			___DATES_END_DAY___:
+																		</td>
+																		<td class="value">
+																			{$date.date[1]}
+																		</td>
+																	</tr>
+																		{if !empty($date.place)}
+																		<tr>
+																			<td class="key">
+																				___DATES_PLACE___:
+																			</td>
+																			<td class="value">
+																				{$date.place}
+																			</td>
+																		</tr>
+																	{/if}
+																	<tr>
+																		<td class="key">
+																			___DATE_PARTICIPANTS___:
+																		</td>
+																		<td class="value">
+																			{if !empty($date.participants)}
+																				{$date.participants}
+																			{else}
+																				___TODO_NO_PROCESSOR___
+																			{/if}
+																		</td>
+																	</tr>
+																</table>
+															</div>
+														</div>
+													</div>
+													</a>
+												</div>
 	                				{/foreach}
 	                				<div class="clear"></div>
 	                			</td>
