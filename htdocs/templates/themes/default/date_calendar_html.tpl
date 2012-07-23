@@ -194,7 +194,7 @@
 													<div class="tooltip_inner tooltip_inner_with_400">
 
 														<div class="tooltip_title">
-															<div class="header">{$date.title}</div>
+															<div class="header">{$date.display_title}</div>
 														</div>
 														<div class="scrollable">
 															<div class="tooltip_content">
@@ -274,11 +274,11 @@
                 						<div class="cal_days_week_events">
 	                					<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
 		                				</div>
-		                						<div class="tooltip tooltip_with_400">
+		                						<div class="tooltip tooltip_with_400" style="margin-left:50px;">
 													<a href="{$date.href}">
 													<div class="tooltip_inner tooltip_inner_with_400">
 														<div class="tooltip_title">
-															<div class="header">{$date.title}</div>
+															<div class="header">{$date.display_title}</div>
 														</div>
 														<div class="scrollable">
 															<div class="tooltip_content">
