@@ -664,6 +664,8 @@
             $done_time .= '      </div>'.LF;
             $done_time .= '</div>'.LF;
          }
+         //needed in print-view:
+         $this->assign('detail', 'done_time',$step_minutes_text.' '.$tmp_message);
 
   /**/
          		if($this->_item->getPlannedTime() > 0) {

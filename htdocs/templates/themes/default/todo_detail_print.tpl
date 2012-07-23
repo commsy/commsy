@@ -60,7 +60,7 @@
 							<tr>
 								<td class="label"><h4>___TODO_DONE_MINUTES___:</h4></td>
 								<td>
-									{$detail.content.formal.management[1]}
+									{$detail.done_time}
 								</td>
 							</tr>
 						{/if}
