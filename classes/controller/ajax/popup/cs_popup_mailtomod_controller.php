@@ -40,7 +40,13 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 			$recipients = implode(', ', $form_data['reciever']);
 			$mail->set_to($recipients);
 		} else {
-			//TODO: Error
+		    $list = $this->getRecieverList();
+			if(count($list) == 1) {
+			    $mail->set_to($list[0]);
+			} else {
+			    //no reciever checked
+			    //TODO: error handling
+			}
 		}
 
 		$context_item = $this->_environment->getCurrentContextItem();
