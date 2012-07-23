@@ -675,7 +675,7 @@
 										</div>
 									</fieldset>
 									<div class="input_row">
-										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'addons'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'addon_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 									</div>
 								</div>
 							</div>

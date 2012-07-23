@@ -67,24 +67,24 @@
 								<div class="settings_area">
 									<div class="form_formatting_checkbox_box">
 										<div style="font-size:10pt; text-align:left;">
-											<input type="radio" style="vertical-align:top;" tabindex="34" value="#999999" name="date_addon_color"><img style="background-color:#999999; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="35" value="#CC0000" name="date_addon_color"><img style="background-color:#cc0000; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="36" value="#FF6600" name="date_addon_color"><img style="background-color:#ff6600; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="37" value="#FFCC00" name="date_addon_color"><img style="background-color:#ffcc00; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="38" value="#FFFF66" name="date_addon_color"><img style="background-color:#ffff66; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="39" value="#33CC00" name="date_addon_color"><img style="background-color:#33cc00; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="40" value="#00CCCC" name="date_addon_color"><img style="background-color:#00cccc; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="41" value="#3366FF" name="date_addon_color"><img style="background-color:#3366ff; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="42" value="#6633FF" name="date_addon_color"><img style="background-color:#6633ff; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="43" value="#CC33CC" name="date_addon_color"><img style="background-color:#cc33cc; border:1px solid #cccccc;" src="images/spacer.gif">
+											<input type="radio" style="vertical-align:top;" tabindex="34" value="#999999" name="form_data[date_addon_color]"><img style="background-color:#999999; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="35" value="#CC0000" name="form_data[date_addon_color]"><img style="background-color:#cc0000; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="36" value="#FF6600" name="form_data[date_addon_color]"><img style="background-color:#ff6600; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="37" value="#FFCC00" name="form_data[date_addon_color]"><img style="background-color:#ffcc00; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="38" value="#FFFF66" name="form_data[date_addon_color]"><img style="background-color:#ffff66; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="39" value="#33CC00" name="form_data[date_addon_color]"><img style="background-color:#33cc00; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="40" value="#00CCCC" name="form_data[date_addon_color]"><img style="background-color:#00cccc; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="41" value="#3366FF" name="form_data[date_addon_color]"><img style="background-color:#3366ff; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="42" value="#6633FF" name="form_data[date_addon_color]"><img style="background-color:#6633ff; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="43" value="#CC33CC" name="form_data[date_addon_color]"><img style="background-color:#cc33cc; border:1px solid #cccccc;" src="images/spacer.gif">
 										</div>
 										<div style="padding-top: 3px;">
 											<br/>
 											<br/>
 										</div>
 										<div style="padding-top: 3px;">
-											<input type="checkbox" tabindex="44" value="recurring" name="recurring">&nbsp;<span style="font-size:10pt;">ist ein:</span>
-										    <select id="submit_form" style="font-size:10pt;" tabindex="45" size="0" name="recurring_select">
+											<input type="checkbox" tabindex="44" value="recurring" name="form_data[recurring]">&nbsp;<span style="font-size:10pt;">ist ein:</span>
+										    <select id="submit_form" style="font-size:10pt;" tabindex="45" size="0" name="form_data[recurring_select]">
 										    	<option value="daily">___DATES_RECURRING_DAILY___</option>
 										        <option value="weekly">___DATES_RECURRING_WEEKLY___</option>
 										        <option value="monthly">___DATES_RECURRING_MONTHLY___</option>
@@ -95,17 +95,17 @@
 										</div>
 										<div style="padding-top: 3px;">
 											___DATES_RECURRING_EVERY_WEEK___&nbsp;
-											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="" style="font-size:10pt;" name="recurring_week">
+											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_week]">
 											&nbsp;. ___DATES_RECURRING_WEEK___
 										</div>
 										<div style="padding-top: 3px;">
-											<input type="checkbox" tabindex="48" value="monday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_MONDAY___</span>
-										    <input type="checkbox" tabindex="49" value="tuesday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_TUESDAY___</span>
-										   	<input type="checkbox" tabindex="50" value="wednesday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_WEDNESDAY___</span>
-										    <input type="checkbox" tabindex="51" value="thursday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_THURSDAY___</span>
-										    <input type="checkbox" tabindex="52" value="friday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_FRIDAY___</span>
-										    <input type="checkbox" tabindex="53" value="saturday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SATURDAY___</span>
-										    <input type="checkbox" tabindex="54" value="sunday" name="recurring_week_days[]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SUNDAY___</span>
+											<input type="checkbox" tabindex="48" value="monday" name="form_data[recurring_week_days_monday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_MONDAY___</span>
+										    <input type="checkbox" tabindex="49" value="tuesday" name="form_data[recurring_week_days_tuesday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_TUESDAY___</span>
+										   	<input type="checkbox" tabindex="50" value="wednesday" name="form_data[recurring_week_days_wednesday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_WEDNESDAY___</span>
+										    <input type="checkbox" tabindex="51" value="thursday" name="form_data[recurring_week_days_thursday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_THURSDAY___</span>
+										    <input type="checkbox" tabindex="52" value="friday" name="form_data[recurring_week_days_friday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_FRIDAY___</span>
+										    <input type="checkbox" tabindex="53" value="saturday" name="form_data[recurring_week_days_saturday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SATURDAY___</span>
+										    <input type="checkbox" tabindex="54" value="sunday" name="form_data[recurring_week_days_sunday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SUNDAY___</span>
 										</div>
 										<div style="padding-top: 3px;">
 											___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;

@@ -590,9 +590,9 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        }
 
 				        if($isset_workflow){
-				           $room_item->setWithWorkflow();
+				           $current_context->setWithWorkflow();
 				        } else {
-				           $room_item->setWithoutWorkflow();
+				           $current_context->setWithoutWorkflow();
 				        }
 
 						// save

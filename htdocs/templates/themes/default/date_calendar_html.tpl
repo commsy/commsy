@@ -88,7 +88,7 @@
                 		{section name=week_tablehead loop=7}
                 			{$i = $smarty.section.week_tablehead.index}
 
-                			<th>{$cc.content.tablehead.week_start[$i]}</th>
+                			<th>{$cc.content.tablehead[$i]}</th>
                 		{/section}
                 	{/if}
 
@@ -186,7 +186,9 @@
 
                 			{* nonactive_day / active_day / this_today *}
                 			<td class="active_day">
-
+                				{foreach $cc.content.display[-1][$i] as $date}
+                					<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+                				{/foreach}
                 			</td>
                			{/section}
                 	</tr>
@@ -216,7 +218,15 @@
 
 	                			{* nonactive_day / active_day / this_today *}
 	                			<td class="{$cc.content.days[$pos].state}">
-
+	                				{$numDates = $cc.content.display[$i][$j]|count}
+	                				
+	                				{* if there is more than one date to display in this cell, shrink them *}
+	                				{$width = (98 - 10 * $numDates) / $numDates}
+	                				
+	                				{foreach $cc.content.display[$i][$j] as $date}
+	                					<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
+	                				{/foreach}
+	                				<div class="clear"></div>
 	                			</td>
                 			{/section}
                 		</tr>

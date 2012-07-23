@@ -3916,6 +3916,11 @@ calendar
     vertical-align: top;
     }
 
+.cal_table_week_date {
+	position: absolute;
+	z-index: 1;
+}
+
 #cal_table_month td:hover, #cal_table_week td:hover {
     background: #FCF3C1;
     }

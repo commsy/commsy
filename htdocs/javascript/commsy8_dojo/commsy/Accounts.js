@@ -223,9 +223,11 @@ define([	"dojo/_base/declare",
 		},
 		
 		sendMail: function(contentNode, ckEditor, action) {
+			var sendMailNode = Query("input[name='form_data[send_mail]']", contentNode)[0];
+			
 			// collect data
 			var data = {
-				sendMail:		DomAttr.get(Query("input[name='form_data[send_mail]']", contentNode)[0], "value"),
+				sendMail:		(sendMailNode) ? DomAttr.get(sendMailNode, "value") : true,
 				modCC:			DomAttr.get(Query("input[name='form_data[copy_mod_cc]']", contentNode)[0], "value"),
 				modBCC:			DomAttr.get(Query("input[name='form_data[copy_mod_bcc]']", contentNode)[0], "value"),
 				authCC:			DomAttr.get(Query("input[name='form_data[copy_auth_cc]']", contentNode)[0], "value"),

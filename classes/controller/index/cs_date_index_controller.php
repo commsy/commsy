@@ -7,6 +7,9 @@
 		private $_selected_status = '';
 		private $_available_color_array = array('#999999','#CC0000','#FF6600','#FFCC00','#FFFF66','#33CC00','#00CCCC','#3366FF','#6633FF','#CC33CC');
 		private $_calendar = array();
+		
+		const DATEDEFAULTHEIGHT = 16;
+		const CELLDEFAULTHEIGHT = 41;
 
 		/**
 		 * constructor
@@ -299,15 +302,26 @@
 
 			return $return;
 		}
+		
+		private function hoursToSpace($hours) {
+			return $hours * self::CELLDEFAULTHEIGHT;
+		}
+		
+		private function spaceToHours($space) {
+			return $space / self::CELLDEFAULTHEIGHT;
+		}
 
 		private function getWeekContent($list) {
 			$translator = $this->_environment->getTranslationObject();
 
 			$return = array();
-			$week_start = $this->_calendar['week'];
-
-			$today = '';
-			$month_array = array(
+			$weekStart = $this->_calendar['week'];
+			
+			/************************************************************************************
+			 * First, build the needed information for the table head
+			 * This will contain day of week, day of month and the month itself
+			************************************************************************************/
+			$monthArray = array(
 				$translator->getMessage('DATES_JANUARY_SHORT'),
 				$translator->getMessage('DATES_FEBRUARY_SHORT'),
 				$translator->getMessage('DATES_MARCH_SHORT'),
@@ -321,180 +335,329 @@
 				$translator->getMessage('DATES_NOVEMBER_SHORT'),
 				$translator->getMessage('DATES_DECEMBER_SHORT')
 			);
-
-			// get dates
-			$current_date = $list->getFirst();
-			$finish = false;
-			$date_array = array();
-			$date_tooltip_array = array();
-			while ($current_date) {
-				$start_date_month = '';
-				$start_date_day = '';
-				$start_date_year = '';
-				$end_date_month = '';
-				$end_date_day = '';
-				$end_date_year = '';
-				$start_date_time ='';
-				$start_end_time ='';
-				$start_date_array = convertDateFromInput($current_date->getStartingDay(),$this->_environment->getSelectedLanguage());
-				if ($start_date_array['conforms'] == true) {
-					$start_date_array = getDateFromString($start_date_array['timestamp']);
-					$start_date_month = $start_date_array['month'];
-					$start_date_day = $start_date_array['day'];
-					$start_date_year = $start_date_array['year'];
-				}
-				$start_time_array = convertTimeFromInput($current_date->getStartingTime(),$this->_environment->getSelectedLanguage());
-				$end_date_array = convertDateFromInput($current_date->getEndingDay(),$this->_environment->getSelectedLanguage());
-				if ($end_date_array['conforms'] == true) {
-					$end_date_array = getDateFromString($end_date_array['timestamp']);
-					$end_date_month = $end_date_array['month'];
-					$end_date_day =   $end_date_array['day'];
-					$end_date_year = $end_date_array['year'];
-				}
-				$end_time_array = convertTimeFromInput($current_date->getEndingTime(),$this->_environment->getSelectedLanguage());
-				if ($start_date_day != '') {
-					$date_array[$start_date_array['day'].$start_date_array['month'].$start_date_array['year']][] = $current_date;
-					$date_tooltip_array[$current_date->getItemID()] = $this->getTooltipDate($current_date);
-					$start_day = mb_substr($current_date->getStartingDay(),8,2);
-					$start_month = $start_date_array['month'];
-					$start_year = mb_substr($current_date->getStartingDay(),0,4);
-					$first_char = mb_substr($start_day,0,1);
-					if ($first_char == '0'){
-						$start_day = mb_substr($start_day,1,2);
-					}
-					$first_char = mb_substr($start_month,0,1);
-					if ($first_char == '0'){
-						$start_month = mb_substr($start_month,1,2);
-					}
-					$end_day = mb_substr($current_date->getEndingDay(),8,2);
-					$first_char = mb_substr($end_day,0,1);
-					if ($first_char == '0'){
-						$end_day = mb_substr($end_day,1,2);
-					}
-					$end_month = mb_substr($current_date->getEndingDay(),5,2);
-					$first_char = mb_substr($end_month,0,1);
-					if ($first_char == '0'){
-						$end_month = mb_substr($end_month,1,2);
-					}
-					$end_year = mb_substr($current_date->getEndingDay(),0,4);
-					$first_char = mb_substr($end_year,0,1);
-					if ($first_char == '0'){
-						$end_year = mb_substr($end_year,1,2);
-					}
-					if ( is_numeric($start_day)
-							and is_numeric($end_day)
-							and is_numeric($start_month)
-							and is_numeric($end_month)
-							and is_numeric($start_year)
-							and is_numeric($end_year)
-					) {
-						if (((($start_day != $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
-								($start_day == $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
-								($start_day != $end_day and !empty($end_day) and $start_month == $end_month and !empty($end_month))) or
-								($start_year < $end_year and !empty($end_year)))){
-							while ( ( ($start_day != $end_day and $start_month != $end_month) or
-									($start_day == $end_day and $start_month != $end_month) or
-									($start_day != $end_day and $start_month == $end_month)
-							)
-									or ($start_year < $end_year)
-							) {
-								$temp_date = clone $current_date;
-								if ($current_date->getStartingTime()){
-									$temp_date->setStartingTime('00:00:00');
-								}
-								$temp_starting_day = $temp_date->getStartingDay();
-								$days = daysInMonth($start_month,$start_year);
-								$start_day ++;
-								if ($start_day > $days){
-									$start_day = 1;
-									$start_month++;
-									if ($start_month > 12){
-										$start_month = 1;
-										$start_year++;
-									}
-								}
-								$temp_start_day = $start_day;
-								if (mb_strlen($temp_start_day) == 1){
-									$temp_start_day = '0'.$temp_start_day;
-								}
-								$temp_start_month = $start_month;
-								if (mb_strlen($temp_start_month) == 1){
-									$temp_start_month = '0'.$temp_start_month;
-								}
-								$temp_starting_day = $start_year.'-'.$temp_start_month.'-'.$temp_start_day;
-								$temp_date->setShownStartingDay($current_date->getStartingDay());
-								$temp_date->setShownStartingTime($current_date->getStartingTime());
-								$temp_date->setStartingDay($temp_starting_day);
-								$date_array[$temp_start_day.$temp_start_month.$start_year][] = $temp_date;
-								unset($temp_date);
-							}
-						}
-					}
-				}
-				$current_date = $list->getNext();
-			}
-
-			// table head
-			$display_date_array = array();
-			for($i = 0; $i < 7; $i++) {
-				$startday = date ("d",$week_start);
-				$startmonth = date ("m",$week_start);
-				$startyear = date ("Y",$week_start);
-				if($startday.$startmonth.$startyear == date("dmY")){
-					$today = $startday.$startmonth.$startyear;
-				}
-				$startarraymonth = $startmonth;
-				$startmonth = $month_array[$startmonth-1];
-				$first_char = mb_substr($startday,0,1);
-				if ($first_char == '0'){
-					$display_startday = mb_substr($startday,1,2);
-				}else{
-					$display_startday = $startday;
-				}
-				if ( isset($date_array[$startday.$startarraymonth.$startyear]) ){
-					$display_date_array[$i] = $date_array[$startday.$startarraymonth.$startyear];
-				}
-				switch ($i){
-					case 0: $text = 'COMMON_DATE_WEEKVIEW_MONDAY'; break;
-					case 1: $text = 'COMMON_DATE_WEEKVIEW_TUESDAY'; break;
-					case 2: $text = 'COMMON_DATE_WEEKVIEW_WEDNESDAY'; break;
-					case 3: $text = 'COMMON_DATE_WEEKVIEW_THURSDAY'; break;
-					case 4: $text = 'COMMON_DATE_WEEKVIEW_FRIDAY'; break;
-					case 5: $text = 'COMMON_DATE_WEEKVIEW_SATURDAY'; break;
-					case 6: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
-				}
-
-				switch ( $text ){
-					case 'COMMON_DATE_WEEKVIEW_MONDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
+			
+			$tableHead = array();
+			$startTime = $weekStart;			// this hold the weeks starting time
+			
+			for ($i = 0; $i < 7; $i++) {		// seven days of a week
+				// get day, month and year of current week
+				$startDay = date("j", $startTime);
+				$startMonth = date("n", $startTime);
+				$startYear = date("Y", $startTime);
+				
+				// translate month
+				$translatedMonth = $monthArray[$startMonth - 1];
+				
+				// translate day of week
+				switch ($i) {
+					case 0:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $startDay, $translatedMonth);
 						break;
-					case 'COMMON_DATE_WEEKVIEW_TUESDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_TUESDAY',   $display_startday, $startmonth);
+					case 1:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_TUESDAY',   $startDay, $translatedMonth);
 						break;
-					case 'COMMON_DATE_WEEKVIEW_WEDNESDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_WEDNESDAY', $display_startday, $startmonth);
+					case 2:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_WEDNESDAY', $startDay, $translatedMonth);
 						break;
-					case 'COMMON_DATE_WEEKVIEW_THURSDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_THURSDAY',  $display_startday, $startmonth);
+					case 3:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_THURSDAY',  $startDay, $translatedMonth);
 						break;
-					case 'COMMON_DATE_WEEKVIEW_FRIDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_FRIDAY',    $display_startday, $startmonth);
+					case 4:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_FRIDAY',    $startDay, $translatedMonth);
 						break;
-					case 'COMMON_DATE_WEEKVIEW_SATURDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_SATURDAY',  $display_startday, $startmonth);
+					case 5:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_SATURDAY',  $startDay, $translatedMonth);
 						break;
-					case 'COMMON_DATE_WEEKVIEW_SUNDAY':
-						$week_string = $translator->getMessage('COMMON_DATE_WEEKVIEW_SUNDAY',    $display_startday, $startmonth);
+					case 6:
+						$translatedDayOfWeek = $translator->getMessage('COMMON_DATE_WEEKVIEW_SUNDAY',    $startDay, $translatedMonth);
 						break;
 					default:
 						break;
 				}
-
-				$return["tablehead"]["week_start"][$i] = $week_string;
-
-				$week_start = $week_start + ( 3600 * 24);
+				
+				$return["tablehead"][$i] = $translatedDayOfWeek;
+				
+				$startTime += 3600 * 24;		// go to next day
 			}
-
+			
+			/************************************************************************************
+			 * Build an array of all dates to present in the view with
+			 * keys for year, month and day
+			 * 
+			 * Dates, that span over multiple days, month or years are added
+			 * as new dates for each day
+			************************************************************************************/
+			$dateArray = array();
+			
+			// iterate the list
+			$currentDate = $list->getFirst();
+			while ($currentDate) {
+				$startDate = array();				// with keys year, month, day
+				$endDate = array();					// with keys year, month, day
+				
+				// converte dates from input and put values into array and ensure correct format by typecasting(no trailing zero)
+				$startDateConvert = convertDateFromInput($currentDate->getStartingDay(), $this->_environment->getSelectedLanguage());
+				if ($startDateConvert["conforms"] === true) {
+					$startDateConvert = getDateFromString($startDateConvert["timestamp"]);
+					
+					$startDate["year"]	= (int) $startDateConvert["year"];
+					$startDate["month"]	= (int) $startDateConvert["month"];
+					$startDate["day"]	= (int) $startDateConvert["day"];
+				}
+				
+				$endDateConvert = convertDateFromInput($currentDate->getEndingDay(), $this->_environment->getSelectedLanguage());
+				if ($endDateConvert["conforms"] === true) {
+					$endDateConvert = getDateFromString($endDateConvert["timestamp"]);
+						
+					$endDate["year"]	= (int) $endDateConvert["year"];
+					$endDate["month"]	= (int) $endDateConvert["month"];
+					$endDate["day"]		= (int) $endDateConvert["day"];
+				}
+				
+				if (isset($startDate["day"]) && isset($startDate["month"]) && isset($startDate["year"])) {
+					
+					// dates in list are not only for this week - grmpf... - filter here
+					$dateStartTimestamp = mktime(0, 0, 0, $startDate["month"], $startDate["day"], $startDate["year"]);
+					$dateEndTimestamp = mktime(0, 0, 0, $endDate["month"], $endDate["day"], $endDate["year"]);
+					if (	(!empty($endDate) && $dateEndTimestamp < $weekStart) ||
+							($dateStartTimestamp > $weekStart + 3600 * 24 * 7) ) {
+						
+						$currentDate = $list->getNext();
+						continue;
+					}
+					
+					// add this date to our date array
+					$dateArray[$startDate["year"]][$startDate["month"]][$startDate["day"]][] = $currentDate;
+					
+					// the rest of this code is to create dates, if the current date spans several days, etc...
+					$start = $startDate;
+					$end = $endDate;
+					
+					// this is done outside the while loop, becuase the tempDate only needs to be cloned once
+					$tempDate = null;
+					if ( !empty($end) && array_diff_assoc($start, $end)) {
+						$tempDate = clone $currentDate;
+						
+						// set some temp date properties
+						$tempDate->setShownStartingDay($currentDate->getStartingDay());
+						$tempDate->setShownStartingTime($currentDate->getStartingTime());
+						
+						// if date has a starting time, set temp starting time to zero hour
+						if ($currentDate->getStartingTime()) {
+							$tempDate->setStartingTime("00:00:00");
+						}
+						
+						$count = 1;
+						while (array_diff_assoc($start, $end)) {				// compare start end end date - empty array is bool(false)
+						
+							// update date with day + 1 and keep boundries
+							$start["day"]++;
+							if ($start["day"] > daysInMonth($start["month"], $start["year"])) {
+								$start["day"] = 1;
+								$start["month"]++;
+									
+								if ($start["month"] > 12) {
+									$start["month"] = 1;
+									$start["year"]++;
+								}
+							}
+						
+							// if we are outside the week to display, break here
+							if($count++ == 6) break;
+						
+							// set starting day
+							$startingDayString = $start["year"] . "-" . sprintf("%02d", $start["month"]) . "-" . sprintf("%02d", $start["day"]);
+							$tempDate->setStartingDay($start["year"]);
+						
+							// add to date array
+							$dateArray[$start["year"]][$start["month"]][$start["day"]][] = $tempDate;
+						}
+					}
+				}				
+				
+				$currentDate = $list->getNext();
+			}
+			
+			/************************************************************************************
+			 * Create information for full day events
+			************************************************************************************/
+			
+			/************************************************************************************
+			 * Create the display view array
+			 * 
+			 * two-dimensional array with [ row(hour) ][ column(day) ]
+			************************************************************************************/
+			$displayArray = array();
+			
+			// go through our dates
+			foreach ($dateArray as $year => $yearArray) {
+				foreach ($yearArray as $month => $monthArray) {
+					foreach ($monthArray as $day => $dates) {
+						foreach($dates as $date) {
+							
+							$dateReturn = array();
+							
+							// calculate week start - date start offset
+							$dateStartTimestamp = mktime(0, 0, 0, $month, $day, $year);
+							$weekStart -= 3 * 60 * 60;										// don't know why, but weekStart was set at 03:00 am
+							$timeStartDiff = $dateStartTimestamp - $weekStart;
+							
+							// convert diff to table column(24x7)
+							$viewColumn = (int) ($timeStartDiff / (3600 * 24));// + 1;
+							
+							// color
+							if($date->getColor() != ''){
+								$color = $date->getColor();
+							} else {
+								$color = '#FFFF66';
+							}
+								
+							$colorStr = "";
+							switch ($color){
+								case '#CC0000': $colorStr = "red"; break;
+								case '#FF6600': $colorStr = "orange"; break;
+								case '#FFCC00': $colorStr = "yellow"; break;
+								case '#FFFF66': $colorStr = "light_yellow"; break;
+								case '#33CC00': $colorStr = "green"; break;
+								case '#00CCCC': $colorStr = "turquoise"; break;
+								case '#3366FF': $colorStr = "blue"; break;
+								case '#6633FF': $colorStr = "dark_blue"; break;
+								case '#CC33CC': $colorStr = "purple"; break;
+								default: $colorStr = "grey"; break;
+							}
+							
+							// table row is taken from dates start time
+							$startTimeConvert = convertTimeFromInput($date->getStartingTime());
+							if ($startTimeConvert["conforms"] === true) {			// start time is specified
+								$viewRow = (int) (mb_substr($startTimeConvert["timestamp"], 0, 2));
+								
+								// take the end time and determ the height
+								$topMargin = 0;											// this is the offset beginning hour offset
+								$dateHeight = $dateDefaultHeight;						// this is also the height, when no ending time is given
+								$endTimeConvert = convertTimeFromInput($date->getEndingTime());
+								if ($endTimeConvert["conforms"] === true) {
+									// calculate the exact top margin and height in px, maximum is the day border
+									$startTime = mktime(
+										(int) (mb_substr($startTimeConvert["timestamp"], 0, 2)),
+										(int) (mb_substr($startTimeConvert["timestamp"], 2, 2)),
+										0,
+										$month,
+										$day,
+										$year
+									);
+									
+									// get end day
+									$endDateConvert = convertDateFromInput($date->getEndingDay(), $this->_environment->getSelectedLanguage());
+									$endDateConvert = getDateFromString($endDateConvert["timestamp"]);
+									$endDay = (int) $endDateConvert["day"];
+									
+									$endTime = mktime(
+										(int) (mb_substr($endTimeConvert["timestamp"], 0, 2)),
+										(int) (mb_substr($endTimeConvert["timestamp"], 2, 2)),
+										0,
+										$month,
+										$day,
+										$year
+									);
+									
+									// top offset - when not starting at full hour boundries
+									// extract minutes from start time
+									$startTimeMinutes = (int) (date("i", $startTime));
+									$topMargin = self::CELLDEFAULTHEIGHT * $startTimeMinutes / 60;
+									$topMargin = ($topMargin + $dateDefaultHeight > self::CELLDEFAULTHEIGHT) ? self::CELLDEFAULTHEIGHT - self::DATEDEFAULTHEIGHT : $topMargin;		// limit to cell boundries
+									
+									// this is the time in hours, the date already displays
+									$durationDoneInHours = self::DATEDEFAULTHEIGHT / self::CELLDEFAULTHEIGHT;
+									
+									// get the space and the hours left in the starting cell
+									$startingCellSpaceLeft = self::CELLDEFAULTHEIGHT - self::DATEDEFAULTHEIGHT - $topMargin;
+									$startingCellSpaceLeftInHours = $startingCellSpaceLeft / self::CELLDEFAULTHEIGHT;
+									
+									// the complete date duration
+									if ($endDay == $day) {
+										// date will end today
+										$durationInHours = ($endTime - $startTime) / 3600;		// this is floating point
+									} else {
+										// date will end in future days
+										$durationInHours = 60 * 24 - ((int) date("H", $startTime)) * 60 - ((int) date("i", $startTime));
+									}
+									
+									// now fill the start cell and following cells until end
+									$durationLeftInHours = $durationInHours - $durationDoneInHours;
+									
+									// starting cell
+									if ($durationLeftInHours <= $startingCellSpaceLeftInHours) {
+										// cell can take it all
+										$dateHeight += self::CELLDEFAULTHEIGHT * $durationLeftInHours;
+										$durationLeftInHours = 0;
+									} else {
+										// date is going over starting cell
+										$dateHeight = self::CELLDEFAULTHEIGHT - $topMargin;
+										$durationLeftInHours -= $this->spaceToHours($dateHeight - self::DATEDEFAULTHEIGHT);
+										
+										$actualRow = $viewRow;
+										$spaceLeft = self::CELLDEFAULTHEIGHT;
+										while ($durationLeftInHours > 0) {
+											// determ the new cell
+											$actualRow++;
+											
+											// determ the height to use and update duration left
+											if ($durationLeftInHours > 1) {
+												$insertDateHeight = self::CELLDEFAULTHEIGHT;
+												$durationLeftInHours--;
+											} else {
+												$insertDateHeight = $this->hoursToSpace($durationLeftInHours);
+												$durationLeftInHours = 0;
+											}
+											
+											// create new view entries
+											$displayArray[$actualRow][$viewColumn][] = array(
+												"title"			=> $date->getTitle(),
+												"color"			=> $colorStr,
+												"dateHeight"	=> $insertDateHeight,
+												"topMargin"		=> 0
+											);
+										}
+									}
+								}
+								
+								$dateReturn["dateHeight"] = $dateHeight;
+								$dateReturn["topMargin"] = $topMargin;
+							} else {
+								$viewRow = -1;										// day event
+							}
+							
+							// set display information
+							$dateReturn["title"] = $date->getTitle();
+							$dateReturn["color"] = $colorStr;
+							
+							$displayArray[$viewRow][$viewColumn][] = $dateReturn;
+						}
+					}
+				}
+			}
+			
+			//var_dump($displayArray);
+			
+			$return["display"] = $displayArray;
+			
+			
+			
+			/************************************************************************************
+			 * Build an info array for manage displaying
+			 * of dates, that occure at the same time
+			************************************************************************************/
+			$dateInfo = array();
+			
+			// iterate through our dates
+			
+			
+			
+			
+			
+			
+			
+			
 			// top row - full day events
 			for($index=0; $index <7; $index++){
 				$week_start = $this->_week_start + ( 3600 * 24 * $index);
@@ -929,6 +1092,8 @@
 		      		$current_element++;
 		      	}
 		      }
+		      
+		      //var_dump($return);
 		
 		      /*
 		      $html .= ');'.LF;
