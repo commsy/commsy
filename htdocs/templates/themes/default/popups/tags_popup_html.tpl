@@ -25,22 +25,21 @@
 					<div id="profile_content_row_three">
 
 						<div class="tab_navigation">
-							<a href="add_tab" class="pop_tab_active">___COMMON_ADD_BUTTON___</a>
-							<a href="sort_tag" class="pop_tab">___COMMON_SORT_BUTTON___</a>
-		                    <a href="merge_tab" class="pop_tab">___BUZZWORDS_COMBINE_BUTTON___</a>
-		                    <a href="edit_tab" class="pop_tab list_activator">___COMMON_EDIT___</a>
+							<a href="edit_tab" class="pop_tab_active">___COMMON_EDIT___</a>
+		                    <a href="combine_tab" class="pop_tab">___BUZZWORDS_COMBINE_BUTTON___</a>
+		                    <a href="attach_tab" class="pop_tab list_activator">___COMMON_ATTACH_BUTTON___</a>
 
 		                    <div class="clear"> </div>
 		                </div>
 
 						<div id="popup_tabcontent">
-							<div id="add_tab" class="tab">
+							<div id="edit_tab" class="tab">
 								<div id="content_row_two_max">
 									<div class="tree"></div>
 								</div>
 							</div>
 
-							<div id="merge_tab" class="tab hidden">
+							<div id="combine_tab" class="tab hidden">
 								<div id="content_row_one">
 									<div class="input_row">
 										<select id="buzzword_merge_one" class="size_200" size="1">
@@ -69,7 +68,7 @@
 								</div>
 							</div>
 
-							<div id="edit_tab" class="tab hidden">
+							<div id="attach_tab" class="tab hidden">
 								<div id="content_row_one">
 									{foreach $popup.buzzwords as $buzzword}
 										<div class="input_row">

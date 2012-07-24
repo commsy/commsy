@@ -55,10 +55,10 @@ define([	"dojo/_base/declare",
 				checkedAttr:	"match",
 				
 				// event handling
-				/*
+				
 				onChildrenChange:	Lang.hitch(this, function(parent, newChildrenList) {
 					this.onChildrenChange(parent, newChildrenList);
-				}),
+				})/*,
 				
 				onDelete:	Lang.hitch(this, function(item) {
 					this.onDelete(item);
@@ -91,6 +91,22 @@ define([	"dojo/_base/declare",
 		/************************************************************************************
 		 *** event handler
 		 ************************************************************************************/
+		onChildrenChange: function(parent, newChildrenList) {
+			// fetch changes to root node, that are not handled by onStoreSet(dunno why)
+			if (parent.root) {
+				var rootIds = dojo.map(newChildrenList, Lang.hitch(this, function(child, index, arr) {
+					return this.model.getItemAttr(child, "item_id");
+				}));
+				
+				// send ajax request
+				this.AJAXRequest("tags", "updateTreeRoots", { rootIds: rootIds },
+					Lang.hitch(this, function(response) {
+						
+					})
+				);
+			}
+		},
+		
 		onStoreNew: function(newItem, parentInfo) {
 			console.log("new");
 		},

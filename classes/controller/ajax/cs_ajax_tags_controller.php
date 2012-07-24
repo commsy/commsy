@@ -91,6 +91,34 @@
 				echo $this->_return;
 			}
 		}
+		
+		public function actionUpdateTreeRoots() {
+			if ($this->accessGranted()) {
+				$rootIds = $this->_data["rootIds"];
+				
+				// get the root tag item
+				$tagManager = $this->_environment->getTagManager();
+				$currentContext = $this->_environment->getCurrentContextItem();
+				$tag2TagManager = $this->_environment->getTag2TagManager();
+				
+				$rootTagItem = $tagManager->getRootTagItemFor($currentContext->getItemID());
+				
+				// set all root ids as direct childs of the root tag - like in actionUpdateTreeStructure
+				foreach($rootIds as $rootIndex => $rootId) {
+					// get item
+					$rootItem = $tagManager->getItem($rootId);
+					
+					// set new position
+					$rootItem->setPosition($rootTagItem->getItemID(), $rootIndex + 1);
+					
+					// save
+					$rootItem->save();
+				}
+				
+				$this->setSuccessfullDataReturn(array());
+				echo $this->_return;
+			}
+		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
