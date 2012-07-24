@@ -76,21 +76,18 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 					/* handle institution picture upload */
 					if(!empty($additional["fileInfo"])) {
 						$srcfile = $additional["fileInfo"]["file"];
-						$targetfile = $srcfile . "_converted";
-
-						$session = $this->_environment->getSessionItem();
-						$session->unsetValue("add_files");
-
+						
 						// determ new file name
-						$filename_info = pathinfo($targetfile);
 						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]["name"];
+						
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
-
-						$disc_manager->copyFile($targetfile, $filename, true);
+						
+						$disc_manager->copyFile($srcfile, $filename, true);
 						$item->setPicture($filename);
 						$item->save();
-
+						
+						// set return
 						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 				}

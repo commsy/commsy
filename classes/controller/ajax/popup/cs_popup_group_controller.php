@@ -115,7 +115,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 						$srcfile = $additional["fileInfo"]["file"];
 
 						// determ new file name
-						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]['name'];
+						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]["name"];
 
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
