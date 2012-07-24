@@ -794,6 +794,28 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$room_item->setPortletShowActiveRoomList('-1');
 							}
 
+
+							if(isset($form_data['show_calendar_view']) && !empty($form_data['show_calendar_view'])) {
+								if($form_data['show_calendar_view'] == 'yes'){
+								   $room_item->setCSBarShowCalendar('1');
+								} else{
+									$room_item->setCSBarShowCalendar('-1');
+								}
+							}else{
+								$room_item->setCSBarShowCalendar('-1');
+							}
+
+							if(isset($form_data['show_stack_view']) && !empty($form_data['show_stack_view'])) {
+								if($form_data['show_stack_view'] == 'yes'){
+								   $room_item->setCSBarShowStack('1');
+								} else{
+									$room_item->setCSBarShowStack('-1');
+								}
+							}else{
+								$room_item->setCSBarShowStack('-1');
+							}
+
+
 							// save
 							$room_item->save();
 
@@ -1138,6 +1160,14 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		}
 		if ($room->getPortletShowActiveRoomList()){
 			$return['show_active_rooms'] = 'yes';
+		}
+
+		if ($room->getCSBarShowCalendar() == '1'){
+			$return['show_calendar_view'] = 'yes';
+		}
+
+		if ($room->getCSBarShowStack() == '1'){
+			$return['show_stack_view'] = 'yes';
 		}
 
 		return $return;
