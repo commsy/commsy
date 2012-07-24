@@ -1,5 +1,8 @@
 <?php
-$message["CS_BAR_WIDGETS"]["de"] = "CommSy-Leiste";
-$message["CS_BAR_WIDGETS_DESC"]["de"] = "In diesem Konfigurationsbereich können die Elemente der persönlichen CommSy-Leiste aktivieren bzw. deaktiveren und Einstellungen vornehmen.";
-$message["CS_BAR_WIDGETS_VIEW"]["de"] = "CommSy Widgets";
+$message["CS_BAR_COMMING_SOON"]["de"] = "Detaileinstellungen folgen in der nächsten CommSy-Version.";
+$message["CS_BAR_COMMING_SOON_2"]["de"] = "Einstellungen folgen in der nächsten CommSy-Version.";
+$message["CS_BAR_COMMON_SHOW"]["de"] = "Anzeigen";
+$message["CS_BAR_WIDGETS"]["de"] = "CommSy-Widgets";
+$message["CS_BAR_WIDGETS_DESC"]["de"] = "In diesem Konfigurationsbereich können die verschiedenen Widgets aktivieren bzw. deaktiveren und Einstellungen vornehmen.";
+$message["CS_BAR_WIDGETS_VIEW"]["de"] = "CommSy Widgets anzeigen";
 ?>

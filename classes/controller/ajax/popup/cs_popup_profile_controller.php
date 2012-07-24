@@ -761,7 +761,37 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								} else{
 									$room_item->setCSBarShowWidgets('-1');
 								}
-	pr($form_data['show_widget_view']);
+							}else{
+								$room_item->setCSBarShowWidgets('-1');
+							}
+							if(isset($form_data['show_roomwide_search']) && !empty($form_data['show_roomwide_search'])) {
+								if($form_data['show_roomwide_search'] == 'yes'){
+								   $room_item->setPortletShowRoomWideSearchBox('1');
+								} else{
+									$room_item->setPortletShowRoomWideSearchBox('-1');
+								}
+							}else{
+								$room_item->setPortletShowRoomWideSearchBox('-1');
+							}
+
+							if(isset($form_data['show_newest_entries']) && !empty($form_data['show_newest_entries'])) {
+								if($form_data['show_newest_entries'] == 'yes'){
+								   $room_item->setPortletShowNewEntryList('1');
+								} else{
+									$room_item->setPortletShowNewEntryList('-1');
+								}
+							}else{
+								$room_item->setPortletShowNewEntryList('-1');
+							}
+
+							if(isset($form_data['show_active_rooms']) && !empty($form_data['show_active_rooms'])) {
+								if($form_data['show_active_rooms'] == 'yes'){
+								   $room_item->setPortletShowActiveRoomList('1');
+								} else{
+									$room_item->setPortletShowActiveRoomList('-1');
+								}
+							}else{
+								$room_item->setPortletShowActiveRoomList('-1');
 							}
 
 							// save
@@ -1099,6 +1129,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
 		if ($room->getCSBarShowWidgets() == '1'){
 			$return['show_widget_view'] = 'yes';
+		}
+		if ($room->getPortletShowRoomWideSearchBox()){
+			$return['show_roomwide_search'] = 'yes';
+		}
+		if ($room->getPortletShowNewEntryList()){
+			$return['show_newest_entries'] = 'yes';
+		}
+		if ($room->getPortletShowActiveRoomList()){
+			$return['show_active_rooms'] = 'yes';
 		}
 
 		return $return;

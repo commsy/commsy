@@ -1,5 +1,8 @@
 <?php
-$message["CS_BAR_WIDGETS"]["en"] = "CommSy-Bar";
-$message["CS_BAR_WIDGETS_DESC"]["en"] = "Here you can setup your personal CommSy bar.";
-$message["CS_BAR_WIDGETS_VIEW"]["en"] = "CommSy widgets";
+$message["CS_BAR_COMMING_SOON"]["en"] = "Spezific settings comming soon in the next CommSy version.";
+$message["CS_BAR_COMMING_SOON_2"]["en"] = "Settings comming soon in the next CommSy version.";
+$message["CS_BAR_COMMON_SHOW"]["en"] = "Show";
+$message["CS_BAR_WIDGETS"]["en"] = "CommSy-Widgets";
+$message["CS_BAR_WIDGETS_DESC"]["en"] = "Here you can setup the CommSy widgets.";
+$message["CS_BAR_WIDGETS_VIEW"]["en"] = "Show CommSy widgets";
 ?>
