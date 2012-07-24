@@ -57,7 +57,7 @@
 
 										<div class="input_row_100">
 											<label for="room_logo">___LOGO_UPLOAD___:</label>
-											
+
 											<div class="uploader-single">
 												<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 												   <input id="room_logo" class="fileSelector"></input>
@@ -239,7 +239,7 @@
 
 											<div class="input_row_100">
 												<label for="room_color_bg_image">___USER_PICTURE_UPLOADFILE___:</label>
-												
+
 												<div class="uploader-single">
 													<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 													   <input id="room_color_bg_image" class="fileSelector"></input>
@@ -882,9 +882,9 @@
                               </div>
                            </fieldset>
 								</div>
-							</div>
                      		<div class="input_row">
 								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+							</div>
 							</div>
 						</div>
 					</div>
