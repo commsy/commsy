@@ -217,17 +217,17 @@ class cs_popup_date_controller {
                 $dt_end_time = '00:00:00';
                 $dt_start_date = '0000-00-00';
                 $dt_end_date = '0000-00-00';
-                
+
                 // check end after start
                 if ($form_data["dayEnd"] < $form_data["dayStart"]) {
-                	$form_data["dayEnd"] = $form_data["timeEnd"] = "";
+                	$form_data["dayEnd"] = "";
                 }
-                
+
                 if ($form_data["dayEnd"] == $form_data["dayStart"] && $form_data["timeEnd"] <= $form_data["timeStart"]) {
                 	$form_data["timeEnd"] = "";
                 }
 
-
+				pr($form_data["timeEnd"]);
                 $converted_time_start = convertTimeFromInput($form_data['timeStart']);
                 if ($converted_time_start['conforms'] == TRUE) {
                     $date_item->setStartingTime($converted_time_start['datetime']);
@@ -236,7 +236,7 @@ class cs_popup_date_controller {
                     $date_item->setStartingTime($converted_time_start['display']);
                 }
 
-                $converted_day_start = convertDateFromInput($form_data['dayStart'],$environment->getSelectedLanguage());
+               $converted_day_start = convertDateFromInput($form_data['dayStart'],$environment->getSelectedLanguage());
                if ($converted_day_start['conforms'] == TRUE) {
                     $date_item->setStartingDay($converted_day_start['datetime']);
                     $dt_start_date = $converted_day_start['datetime'];
