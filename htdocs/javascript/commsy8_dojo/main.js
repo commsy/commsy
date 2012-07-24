@@ -29,9 +29,13 @@ require([	"dojo/_base/declare",
 				});
 				
 				// widget popups
-				require(["commsy/popups/ToggleStack"], function(StackPopup) {
-					var handler = new StackPopup(query("a#tm_stack")[0], query("div#tm_menus div#tm_dropmenu_stack")[0]);
-				});
+				var aStackNode = query("a#tm_stack")[0];
+				if (aStackNode) {
+					require(["commsy/popups/ToggleStack"], function(StackPopup) {
+						var handler = new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
+					});
+				}
+				
 				/*
 				require(["commsy/popups/ToggleWidgets"], function(WidgetsPopup) {
 					var handler = newWidgetsPopup(query("a#tm_widgets")[0], query("div#tm_menus div#tm_dropmenu_widget_bar")[0]);
