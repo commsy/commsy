@@ -2337,7 +2337,7 @@ content, following pages
 ----------------------------------------------------------------------
 */
 
-.table_head, .widget_head {
+.table_head {
     background: url(img/ci_head_bg.png) repeat-x;
     }
 
@@ -4125,8 +4125,14 @@ a.event_grey {
 	font-size:10px;
 	}
 
+
+.widget_head{
+	background: url("img/breadcrump_room_title.jpg") repeat-x scroll 0 0 #FFFFFF;
+}
+
 .widget_body{
 	padding:10px;
+	background-color:#FFF;
 	}
 
 .widgetArea{
@@ -4134,11 +4140,13 @@ a.event_grey {
     border: 1px solid #FFFFFF;
     padding: 0;
     margin:10px 5px;
+    border: 1px solid #C0C0C1;
 	}
 
 .innerWidgetArea{
-	border: 1px solid #D1D1D1;
     background-color: #EAEAEA;
+    border-left: 1px solid #EBEBEB;
+    border-top: 1px solid #EBEBEB;
 	}
 
 .widget_500{
@@ -4147,5 +4155,12 @@ a.event_grey {
 
 #crt_col_left_full_widget {
     width: 936px;
+}
+
+
+.pop_widget_h3 {
+	font-size: 12px;
+    padding: 8px 0px 8px 10px;
+    font-weight: bold;
 }
 

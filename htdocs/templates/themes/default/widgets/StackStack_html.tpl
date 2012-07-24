@@ -6,7 +6,7 @@
 			___COMMON_SEARCH___
 			<input data-dojo-attach-event="onkeyup:onChangeSearch"></input>
 		</div>
-		<h3 class="pop_widget_h3">___PRIVATEROOM_MY_ENTRIES_LIST_BOX___</h3>
+		<h3 class="pop_widget_h3"> ___PRIVATEROOM_MY_ENTRIES_LIST_BOX___</h3>
 	</div>
 	<div class="widget_body">
 	{*	<div>
