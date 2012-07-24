@@ -113,17 +113,17 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					/* handle group picture upload */
 					if (!empty($additional["fileInfo"])) {
 						$srcfile = $additional["fileInfo"]["file"];
-						
+
 						// determ new file name
 						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]['name'];
-						
+
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
-						
+
 						$disc_manager->copyFile($srcfile, $filename, true);
 						$item->setPicture($filename);
 						$item->save();
-						
+
 						// set return
 						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
@@ -159,6 +159,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					if (isset($form_data['public'])) {
 						$item->setPublic($form_data['public']);
 					}
+
 
 					if ( isset($form_data['group_room_activate']) ) {
 						$item->setGroupRoomActive();

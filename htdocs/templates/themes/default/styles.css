@@ -4176,3 +4176,8 @@ a.event_grey {
     font-weight: bold;
 }
 
+.filePreview img{
+	margin-left: 100px;
+    max-width: 200px;
+	}
+

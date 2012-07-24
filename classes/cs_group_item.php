@@ -128,8 +128,8 @@ class cs_group_item extends cs_label_item {
     * this methode save the news item into the database
     */
    function save ( $save_other = true ) {
-      if ( !$this->_issetGroupRoomItemID() and $save_other ) {
-         $new_group_room = true;
+      if ( !$this->_issetGroupRoomItemID() and $this->isGroupRoomActivated() and $save_other ) {
+          $new_group_room = true;
          // initiate group room
          $grouproom_manager = $this->_environment->getGroupRoomManager();
          $grouproom_item = $grouproom_manager->getNewItem();
