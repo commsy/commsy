@@ -64,12 +64,17 @@
 		    $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).LF;
 			$this->assign('date','ical_adress', $ical_url);
 
-			if($this->_display_mode === "list") {
-				// init list params
 				$this->initListParameters(CS_DATE_TYPE);
-
 				// perform list options
 				$this->performListOption(CS_DATE_TYPE);
+
+
+			if($this->_display_mode === "list") {
+				// init list params
+#				$this->initListParameters(CS_DATE_TYPE);
+
+				// perform list options
+#				$this->performListOption(CS_DATE_TYPE);
 
 				// get list content
 				$list_content = $this->getListContent();
@@ -77,7 +82,7 @@
 
 
 				// assign to template
-				$this->assign('date','list_parameters', $this->_list_parameter_arrray);
+/*				$this->assign('date','list_parameters', $this->_list_parameter_arrray);
 				$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
 				$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
 				$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
@@ -86,7 +91,7 @@
 				$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
 				$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
 				$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
-				$this->assign('date','list_content', $list_content);
+*/				$this->assign('date','list_content', $list_content);
 			} elseif($this->_display_mode === "calendar" or $this->_display_mode === "calendar_month") {
 				// set presentation mode
 				if(isset($_GET['presentation_mode'])) {
@@ -105,6 +110,18 @@
 				// assign to template
 				$this->assign("date", "calendar_content", $calendar_content);
 			}
+			// assign to template
+			$this->assign('date','list_parameters', $this->_list_parameter_arrray);
+			$this->assign('date','display_mode', $this->_display_mode);
+			$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
+			$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
+			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
+			$this->assign('list','sorting_parameters',$this->getSortingParameterArray());
+			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
+			$this->assign('list','restriction_buzzword_link_parameters',$this->getRestrictionBuzzwordLinkParameters());
+			$this->assign('list','restriction_tag_link_parameters',$this->getRestrictionTagLinkParameters());
+			$this->assign('list','restriction_text_parameters',$this->_getRestrictionTextAsHTML());
+
 
 		}
 
@@ -1453,6 +1470,15 @@
 
 				if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
 					$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
+				}
+				if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
+	   				$dates_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);
+				}
+				if ( !empty($this->_list_parameter_arrray['seltopic']) ) {
+	   				$dates_manager->setTopicLimit($this->_list_parameter_arrray['seltopic']);
+				}
+				if ( !empty($this->_list_parameter_arrray['selinstitution']) ) {
+	   				$dates_manager->setTopicLimit($this->_list_parameter_arrray['selinstitution']);
 				}
 
 				if ( !empty($selstatus) ) {
