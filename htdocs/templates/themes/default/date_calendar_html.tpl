@@ -112,37 +112,23 @@
 		                					{foreach $cc.content.days[$pos].dates as $date}
 		                						<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
 
-		                						{* build and style tooltips here
-
-		                						available date values are:
-		                							"title"
-									      			"date"
-									      			"place"
-									      			"participants"	- array of
-									      				"name"
-									      			"color"			- used for css markup
-									      			"context"		- room title?
-									      			"href"			- link to date detail
-									      		*}
-
 		                						<div class="tooltip tooltip_with_400">
-																<a href="{$date.href}">
-													<div class="tooltip_inner tooltip_inner_with_400">
-
-														<div class="tooltip_title">
-															<div class="header">{$date.title}</div>
-														</div>
-														<div class="scrollable">
-															<div class="tooltip_content">
-																<table id="hover_table">
-																	<tr>
-																		<td class="key">
-																			___DATES_END_DAY___:
-																		</td>
-																		<td class="value">
-																			{$date.date[1]}
-																		</td>
-																	</tr>
+													<a href="{$date.href}">
+														<div class="tooltip_inner tooltip_inner_with_400">
+															<div class="tooltip_title">
+																<div class="header">{$date.title}</div>
+															</div>
+															<div class="scrollable">
+																<div class="tooltip_content">
+																	<table id="hover_table">
+																		<tr>
+																			<td class="key">
+																				___DATES_END_DAY___:
+																			</td>
+																			<td class="value">
+																				{$date.date[1]}
+																			</td>
+																		</tr>
 																		{if !empty($date.place)}
 																		<tr>
 																			<td class="key">
@@ -152,27 +138,30 @@
 																				{$date.place}
 																			</td>
 																		</tr>
-																	{/if}
-																	<tr>
-																		<td class="key">
-																			___DATE_PARTICIPANTS___:
-																		</td>
-																		<td class="value">
-																			{if !empty($date.participants)}
-																				{$date.participants}
-																			{else}
-																				___TODO_NO_PROCESSOR___
-																			{/if}
-																		</td>
-																	</tr>
-																</table>
+																		{/if}
+																		<tr>
+																			<td class="key">
+																				___DATE_PARTICIPANTS___:
+																			</td>
+																			<td class="value">
+																				{if !empty($date.participants)}
+																					{$date.participants}
+																				{else}
+																					___TODO_NO_PROCESSOR___
+																				{/if}
+																			</td>
+																		</tr>
+																	</table>
+																</div>
 															</div>
 														</div>
-													</div>
-																</a>
+													</a>
 												</div>
 		                					{/foreach}
 	                					</div>
+	                					<a style="height:10px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
+	                				{else}
+	                					<a style="height:70px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
 	                				{/if}
 	                			</td>
 	                		{/section}
@@ -185,57 +174,61 @@
 
                 			{* nonactive_day / active_day / this_today *}
                 			<td class="active_day">
-                				{foreach $cc.content.display[-1][$i] as $date}
-                					<div class="cal_days_week_events">
-                					<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
-                					</div>
-		                						<div class="tooltip tooltip_with_400">
-																<a href="{$date.href}">
-													<div class="tooltip_inner tooltip_inner_with_400">
-
-														<div class="tooltip_title">
-															<div class="header">{$date.display_title}</div>
-														</div>
-														<div class="scrollable">
-															<div class="tooltip_content">
-																<table id="hover_table">
+	                			{foreach $cc.content.display[-1][$i] as $date}
+	                				<div class="cal_days_week_events">
+	                					<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+	                					</div>
+                						<div class="tooltip tooltip_with_400">
+											<a href="{$date.href}">
+												<div class="tooltip_inner tooltip_inner_with_400">
+													<div class="tooltip_title">
+														<div class="header">{$date.display_title}</div>
+													</div>
+													<div class="scrollable">
+														<div class="tooltip_content">
+															<table id="hover_table">
+																<tr>
+																	<td class="key">
+																		___DATES_END_DAY___:
+																	</td>
+																	<td class="value">
+																		{$date.date[1]}
+																	</td>
+																</tr>
+																	{if !empty($date.place)}
 																	<tr>
 																		<td class="key">
-																			___DATES_END_DAY___:
+																			___DATES_PLACE___:
 																		</td>
 																		<td class="value">
-																			{$date.date[1]}
+																			{$date.place}
 																		</td>
 																	</tr>
-																		{if !empty($date.place)}
-																		<tr>
-																			<td class="key">
-																				___DATES_PLACE___:
-																			</td>
-																			<td class="value">
-																				{$date.place}
-																			</td>
-																		</tr>
-																	{/if}
-																	<tr>
-																		<td class="key">
-																			___DATE_PARTICIPANTS___:
-																		</td>
-																		<td class="value">
-																			{if !empty($date.participants)}
-																				{$date.participants}
-																			{else}
-																				___TODO_NO_PROCESSOR___
-																			{/if}
-																		</td>
-																	</tr>
-																</table>
-															</div>
+																{/if}
+																<tr>
+																	<td class="key">
+																		___DATE_PARTICIPANTS___:
+																	</td>
+																	<td class="value">
+																		{if !empty($date.participants)}
+																			{$date.participants}
+																		{else}
+																			___TODO_NO_PROCESSOR___
+																		{/if}
+																	</td>
+																</tr>
+															</table>
 														</div>
 													</div>
-																</a>
 												</div>
-                				{/foreach}
+											</a>
+										</div>
+                					{/foreach}
+ 	                			{if !isset($cc.content.display[-1][$i]) or empty($cc.content.display[-1][$i])}
+ 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___">
+ 	                					<img src="{$basic.tpl_path}img/empty_calendar_day.png" alt="___COMMON_NEW_ITEM___" />
+                					</a>
+                				{/if}
                 			</td>
                			{/section}
                 	</tr>
@@ -273,7 +266,7 @@
 	                				{foreach $cc.content.display[$i][$j] as $date}
                 						<div class="cal_days_week_events">
 	                					<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
-		                				</div>
+		                					</div>
 		                						<div class="tooltip tooltip_with_400" style="margin-left:50px;">
 													<a href="{$date.href}">
 													<div class="tooltip_inner tooltip_inner_with_400">
@@ -320,6 +313,11 @@
 													</a>
 												</div>
 	                				{/foreach}
+	 	                			{if !isset($cc.content.display[$i][$j]) or empty($cc.content.display[$i][$j])}
+	 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___">
+	 	                					<img src="{$basic.tpl_path}img/empty_calendar_day.png" alt="___COMMON_NEW_ITEM___" />
+	                					</a>
+	                				{/if}
 	                				<div class="clear"></div>
 	                			</td>
                 			{/section}
