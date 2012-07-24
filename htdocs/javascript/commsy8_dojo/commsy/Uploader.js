@@ -42,6 +42,7 @@ define([	"dojo/_base/declare",
 					"class":		"fileSelector",
 					
 					//force:			"flash",
+					//force:			"iframe",
 					isDebug:		true,
 					
 					url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=upload&action=upload"

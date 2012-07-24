@@ -41,27 +41,6 @@ define([	"dojo/_base/declare",
 					this.updateList();
 				})
 			);
-			
-			
-			/*
-			 * // Get a DOM node reference for the root of our widget
-    var domNode = this.domNode;
- 
-    // Run any parent postCreate processes - can be done at any point
-    this.inherited(arguments);
- 
-    // Set our DOM node's background color to white -
-    // smoothes out the mouseenter/leave event animations
-    domStyle.set(domNode, "backgroundColor", this.baseBackgroundColor);
-    // Set up our mouseenter/leave events - using dijit/_WidgetBase's connect
-    // means that our callback will execute with `this` set to our widget
-    this.connect(domNode, "onmouseenter", function(e) {
-        this._changeBackground(this.mouseBackgroundColor);
-    });
-    this.connect(domNode, "onmouseleave", function(e) {
-        this._changeBackground(this.baseBackgroundColor);
-    });
-			 */
 		},
 		
 		updateList: function() {
@@ -70,15 +49,19 @@ define([	"dojo/_base/declare",
 			
 			// fill list
 			var numFiltered = 0;
+			var start = (this.currentPage - 1) * this.entriesPerPage;
 			dojo.forEach(this.items, Lang.hitch(this, function(item, index, arr) {
 				
 				var skip = false;
 				// filter by search word
 				if (this.search) {
-					if (item.title.indexOf(this.search) == -1) {
+					if (item.title.toLowerCase().indexOf(this.search.toLowerCase()) == -1) {
 						skip = true;
 					}
 				}
+				
+				// limit entries per page
+				if (index < start || index > start + this.entriesPerPage) skip = true;
 				
 				if (!skip) {
 					// create list entries
@@ -117,26 +100,42 @@ define([	"dojo/_base/declare",
 		 * EventHandler
 		 ************************************************************************************/
 		onClickListEntry: function(aNode) {
-			// reinvoke popup handling
 			var customObject = this.getAttrAsObject(aNode, "data-custom");
 			
 			var module = customObject.module;
 			
+			// load detail content
+			this.AJAXRequest("widget_stack", "getDetailContent", { module: module, itemId: customObject.iid },
+				Lang.hitch(this, function(html) {
+					this.detailContent.innerHTML = html;
+				})
+			);
+			
+			/*
+			// reinvoke popup handling
+			
+			
+			
+			
 			require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
 				var handler = new ClickPopup(aNode, customObject);
-			});
+			});*/
 		},
 		
 		onClickPaging20: function(event) {
 			this.entriesPerPage = 20;
+			this.currentPage = 1;
 			this.paging20.innerHTML = "<strong>20</strong>";
 			this.paging50.innerHTML = "50";
+			this.updateList();
 		},
 		
 		onClickPaging50: function(event) {
 			this.entriesPerPage = 50;
+			this.currentPage = 1;
 			this.paging20.innerHTML = "20";
 			this.paging50.innerHTML = "<strong>50</strong>";
+			this.updateList();
 		},
 		
 		onClickPagingFirst: function(event) {

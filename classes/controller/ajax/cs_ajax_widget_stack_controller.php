@@ -122,6 +122,59 @@
 			echo $this->_return;
 		}
 		
+		public function actionGetDetailContent() {
+			$module = $this->_data["module"];
+			$itemId = $this->_data["itemId"];
+			
+			$function = "detail";
+			
+			global $c_smarty;
+			if(isset($c_smarty) && $c_smarty === true) {
+				require_once('classes/cs_smarty.php');
+				global $c_theme;
+				if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
+			
+				// room theme
+				$color = $this->_environment->getCurrentContextItem()->getColorArray();
+				$theme = $color['schema'];
+			
+				if($theme !== 'default') {
+					$c_theme = $theme;
+				}
+			
+				$smarty = new cs_smarty($this->_environment, $c_theme);
+			
+				global $c_smarty_caching;
+				if(isset($c_smarty_caching) && $c_smarty_caching === true) {
+					$smarty->caching = Smarty::CACHING_LIFETIME_CURRENT;
+				}
+				
+				$smarty->assign("ajax", "onlyContent", true);
+				
+				// set smarty in environment
+				$this->_environment->setTemplateEngine($smarty);
+				
+				$controller_name = "cs_" . $module . "_" . $function . "_controller";
+				require_once("classes/controller/" . $function . "/" . $controller_name . ".php");
+				
+				$this->_environment->setCurrentFunction("detail");
+				$_GET["iid"] = $itemId;
+				$privateRoomContextID = $this->_environment->getCurrentUserItem()->getOwnRoom()->getItemID();
+				$this->_environment->setCurrentContextID($privateRoomContextID);
+				
+				$controller = new $controller_name($this->_environment);
+				
+				$controller->processTemplate();
+				
+				ob_start();
+				$controller->displayTemplate();
+				
+				$output = ob_get_clean();
+				$this->setSuccessfullDataReturn($output);
+				echo $this->_return;
+			}
+		}
+		
 		public function actionGetHTMLForWidget() {
 			$this->_tpl_file = $this->_data["widgetPath"];
 			

@@ -186,9 +186,9 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 	                    }
 	                    $item->setModificationDate($dt_hiding_datetime);
 	                }else{
-	                    if($item->isNotActivated()){
+	                    //if($item->isNotActivated()){
 	                        $item->setModificationDate(getCurrentDateTimeInMySQL());
-	                    }
+	                    //}
 	                }
 
 					if($item->getPicture() && isset($form_data['delete_picture'])) {

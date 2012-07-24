@@ -12,6 +12,8 @@ define([	"dojo/_base/declare",
 		is_open:				false,
 		popup_button_node:		null,
 		
+		/* "static" */ statics: { togglePopups: [] },
+		
 		constructor: function(args) {
 			this.fct = "popup";
 		},
@@ -20,6 +22,8 @@ define([	"dojo/_base/declare",
 			on(this.popup_button_node, "click", lang.hitch(this, function(event) {
 				if(this.is_loaded === false) {
 					this.setupLoading();
+					
+					this.statics.togglePopups.push(this);
 					
 					// setup ajax request for getting html
 					this.AJAXRequest("popup", "getHTML", { module: this.module} , lang.hitch(this, function(html) {
@@ -53,6 +57,16 @@ define([	"dojo/_base/declare",
 				}
 				
 				this.is_open = !this.is_open;
+				
+				if (this.is_open) {
+					// close all popups before open this
+					dojo.forEach(this.statics.togglePopups, lang.hitch(this, function(popup, index, arr) {
+						if (popup !== this) {
+							popup.close();
+							popup.is_open = false;
+						}
+					}));
+				}
 				
 				this.onTogglePopup();
 				

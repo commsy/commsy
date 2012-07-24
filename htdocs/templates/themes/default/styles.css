@@ -91,6 +91,10 @@ id and class selectors
 	overflow: auto;
 }
 
+.cursor_pointer {
+	cursor: pointer;
+}
+
 /*
 ----------------------------------------------------------------------
 frame and header
