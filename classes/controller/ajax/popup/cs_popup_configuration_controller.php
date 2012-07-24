@@ -846,6 +846,91 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 					break;
+				
+				case 'external_configuration':
+				   include_once('functions/development_functions.php');
+				   
+				   logToFile('save_external');
+				   logToFile($form_data);
+				   logToFile($additional);
+				   
+				   if($this->_popup_controller->checkFormData('external_configuration')) {
+      				   
+				      // save
+				      $current_context->save();
+				      
+				      // set return
+				      $this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+				      
+				      /*
+				      // Set modificator and modification date
+      				   $current_user = $environment->getCurrentUserItem();
+      				   $item->setModificatorItem($current_user);
+      				   $item->setModificationDate(getCurrentDateTimeInMySQL());
+      				   
+      				   if ( isset($_POST['use_comments']) and !empty($_POST['use_comments']) and $_POST['use_comments'] == 1) {
+      				      $item->setWordpressUseComments();
+      				   } else {
+      				      $item->unsetWordpressUseComments();
+      				   }
+      				   
+      				   if ( isset($_POST['use_comments_moderation']) and !empty($_POST['use_comments_moderation']) and $_POST['use_comments_moderation'] == 1) {
+      				      $item->setWordpressUseCommentsModeration();
+      				   } else {
+      				      $item->unsetWordpressUseCommentsModeration();
+      				   }
+      				   
+      				   
+      				   if ( isset($_POST['use_calendar']) and !empty($_POST['use_calendar']) and $_POST['use_calendar'] == 1) {
+      				      $item->setWordpressUseCalendar();
+      				   } else {
+      				      $item->unsetWordpressUseCalendar();
+      				   }
+      				   
+      				   if ( isset($_POST['use_tagcloud']) and !empty($_POST['use_tagcloud']) and $_POST['use_tagcloud'] == 1) {
+      				      $item->setWordpressUseTagCloud();
+      				   } else {
+      				      $item->unsetWordpressUseTagCloud();
+      				   }
+      				   
+      				   if ( isset($_POST['wordpresslink']) and !empty($_POST['wordpresslink']) and $_POST['wordpresslink'] == 1) {
+      				      $item->setWordpressHomeLink();
+      				   } else {
+      				      $item->unsetWordpressHomeLink();
+      				   }
+      				   
+      				   if ( isset($_POST['skin_choice']) and !empty($_POST['skin_choice']) ) {
+      				      $item->setWordpressSkin($_POST['skin_choice']);
+      				   }
+      				   
+      				   if ( isset($_POST['wordpresstitle']) and !empty($_POST['wordpresstitle']) ) {
+      				      $item->setWordpressTitle($_POST['wordpresstitle']);
+      				   } else {
+      				      $item->setWordpressTitle($item->getTitle());
+      				   }
+      				   
+      				   if ( isset($_POST['wordpressdescription']) and !empty($_POST['wordpressdescription']) ) {
+      				      $item->setWordpressDescription($_POST['wordpressdescription']);
+      				   } else {
+      				      $item->setWordpressDescription('');
+      				   }
+      				   
+      				   if ( isset($_POST['member_role']) and !empty($_POST['member_role']) ) {
+      				      $item->setWordpressMemberRole($_POST['member_role']);
+      				   } else {
+      				      $item->setWordpressMemberRole();
+      				   }
+      				   
+      				   $item_wp_exists = $item->existWordpress();
+      				   $item->setWordpressExists();
+      				   $item->setWordpressActive();
+      				   
+      				   // create or change new wordpress
+      				   $wordpress_manager = $environment->getWordpressManager();
+      				   $success = $wordpress_manager->createWordpress($item);
+      				   */
+				   }
+				   break;
 			}
 		}
 	}
@@ -1292,6 +1377,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		$this->_popup_controller->assign('popup', 'additional', $this->getAdditionalInformation());
 		$this->_popup_controller->assign('popup', 'moderation', $this->getModerationInformation());
 		$this->_popup_controller->assign('popup', 'addon', $this->getAddonInformation());
+		$this->_popup_controller->assign('popup', 'external', $this->getExternalInformation());
 	}
 
 	private function getModerationInformation() {
@@ -1580,7 +1666,57 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		return $return;
 	}
 
+	private function getExternalInformation() {
+	   $return = array();
+	   $current_context = $this->_environment->getCurrentContextItem();
+	   $translator = $this->_environment->getTranslationObject();
+	   $wordpress_manager = $this->_environment->getWordpressManager();
+	   $wordpress = array();
+	   
+	   if($current_context->isWordpressActive()){
+	      $wordpress['wordpress_active'] = 'yes';
+	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
+	      $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
+	 
+	      include_once('functions/development_functions.php');
 
+	      $wordpress_skins = array();
+	      foreach($wordpress_manager->getSkins() as $key => $value){
+	          $temp_array['text']  = $key;
+	          $temp_array['value'] = $value;
+	          $wordpress_skins[] = $temp_array;
+	      }
+	      $wordpress['skin_array'] = $wordpress_skins;
+	      $wordpress['skin_choice'] = $current_context->getWordpressSkin();
+	      
+	      $wordpress_member_roles = array();
+	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber');
+	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author');
+	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_EDITOR'), 'value' => 'editor');
+	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator');
+	      $wordpress['member_role_array'] = $wordpress_member_roles;
+	      $wordpress['member_role'] = $current_context->getWordpressMemberRole();
+	      
+	      if($current_context->getWordpressUseComments()){
+	         $wordpress['use_comments'] = 'yes';
+	      }
+	      if($current_context->getWordpressUseCommentsModeration()){
+	         $wordpress['use_comments_moderation'] = 'yes';
+	      }
+	      
+	      $title = $translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWordpressTitle();
+	      $session_item = $this->_environment->getSessionItem();
+	      $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+	      unset($session_item);
+	      global $c_wordpress_path_url;
+	      $url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
+	      $wordpress['wordpresslink'] = $url;
+	   }
+	   
+	   $return['wordpress'] = $wordpress;
+	
+	   return $return;
+	}
 
 	private function getRoomInformation() {
 		$return = array();

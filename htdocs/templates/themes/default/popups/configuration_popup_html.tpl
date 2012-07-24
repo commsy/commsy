@@ -686,47 +686,54 @@
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
                               </p>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'} checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
+                                 <div class="clear"></div>
+                              </div>
                               <div class="input_row_100">
-											<label for="wordpresstitle">___COMMON_TITLE___<span class="required">*</span>:</label>
-											<input id="wordpresstitle" type="text" class="size_200" name="wordpresstitle" value="{show var=$popup.wordpress.wordpresstitle}"/>
-										</div>
+								 <label for="wordpresstitle">___COMMON_TITLE___<span class="required">*</span>:</label>
+								 <input id="wordpresstitle" type="text" class="size_200" name="wordpresstitle" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
+						      </div>
                               <div class="input_row_100">
                                  <label for="wordpressdescription">___COMMON_DESCRIPTION___<span class="required">*</span>:</label>
-                                 <input id="wordpressdescription" type="text" class="size_200" name="wordpressdescription" value="{show var=$popup.wordpress.wordpressdescription}"/>
+                                 <input id="wordpressdescription" type="text" class="size_200" name="wordpressdescription" value="{show var=$popup.external.wordpress.wordpressdescription}"/>
                               </div>
                               <div class="input_row_100">
                                  <label for="skin_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</label>
                                  <select class="size_200"  style="width:200px;" id="skin_choice" name="form_data[skin_choice]">
-                                    {foreach $popup.wordpress.skin_array as $skin}
-                                       <option value="{$skin.value}"{if $skin.disabled == true} disabled="disabled"{/if}{if $skin.value == $popup.wordpress.skin_choice} selected="selected"{/if}>___{$skin.text}___</option>
+                                    {foreach $popup.external.wordpress.skin_array as $skin}
+                                       <option value="{$skin.value}"{if $skin.disabled == true} disabled="disabled"{/if}{if $skin.value == $popup.external.wordpress.skin_choice} selected="selected"{/if}>___{$skin.text}___</option>
                                     {/foreach}
                                  </select>
                                  <br/>
-                                 {i18n tag=WORDPRESS_SKIN_DESCRIPTION param1=$popup.wordpress.wordpresslink}
+                                 {i18n tag=WORDPRESS_SKIN_DESCRIPTION param1=$popup.external.wordpress.wordpresslink}
                               </div>
+                              <br/>
                               <div class="input_row_200">
                                  <label for="member_role">___WORDPRESS_SELECT_MEMBER_ROLE___:</label>
                                  <select class="size_200"  style="width:200px;" id="member_role" name="form_data[member_role]">
-                                    {foreach $popup.wordpress.member_role_array as $member_role}
-                                       <option value="{$member_role.value}"{if $member_role.disabled == true} disabled="disabled"{/if}{if $member_role.value == $popup.wordpress.member_role} selected="selected"{/if}>___{$member_role.text}___</option>
+                                    {foreach $popup.external.wordpress.member_role_array as $member_role}
+                                       <option value="{$member_role.value}"{if $member_role.disabled == true} disabled="disabled"{/if}{if $member_role.value == $popup.external.wordpress.member_role} selected="selected"{/if}>___{$member_role.text}___</option>
                                     {/foreach}
                                  </select>
                                  <br/>
                                  ___WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION___
                               </div>
+                              <br/>
+                              <br/>
                               <div class="input_row_200">
                                  <label for="use_comments">___WORDPRESS_CONFIGURATION_COMMENTS___:</label>
-                                 <input type="checkbox" name="form_data[use_comments]" value="yes" {if $popup.wordpress.use_comments == 'yes'} checked="checked"{/if}/> ___WORDPRESS_CONFIGURATION_COMMENTS_DESC___
+                                 <input type="checkbox" name="form_data[use_comments]" value="yes" {if $popup.external.wordpress.use_comments == 'yes'} checked="checked"{/if}/> ___WORDPRESS_CONFIGURATION_COMMENTS_DESC___
                                  <div class="clear"></div>
                               </div>
                               <div class="input_row_200">
                                  <label for="use_comments_moderation">___WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION___:</label>
-                                 <input type="checkbox" name="form_data[use_comments_moderation]" value="yes" {if $popup.wordpress.use_comments_moderation == 'yes'} checked="checked"{/if}/> ___WORDPRESS_CONFIGURATION_WORDPRESS_COMMENTS_DESC___
+                                 <input type="checkbox" name="form_data[use_comments_moderation]" value="yes" {if $popup.external.wordpress.use_comments_moderation == 'yes'} checked="checked"{/if}/> ___WORDPRESS_CONFIGURATION_WORDPRESS_COMMENTS_DESC___
                                  <div class="clear"></div>
                               </div>
                               <div class="input_row_200">
                                  <label for="use_comments_moderation">___WORDPRESS_CONFIGURATION_SHOW_HOMELINK___:</label>
-                                 <input type="checkbox" name="form_data[wordpresslink]" value="yes" {if $popup.wordpress.wordpresslink == 'yes'} checked="checked"{/if}/>
+                                 <input type="checkbox" name="form_data[wordpresslink]" value="yes" {if $popup.external.wordpress.wordpresslink == 'yes'} checked="checked"{/if}/>
                                  <div class="clear"></div>
                               </div>
                            </fieldset>
@@ -876,7 +883,9 @@
                            </fieldset>
 								</div>
 							</div>
-                     
+                     		<div class="input_row">
+								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+							</div>
 						</div>
 					</div>
 				</div>
