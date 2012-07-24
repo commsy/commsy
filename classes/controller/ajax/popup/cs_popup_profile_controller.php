@@ -165,45 +165,45 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 						}
 						break;
-					
+
 					case "account_lock_room":
 						$current_user = $this->_environment->getCurrentUserItem();
-						
+
 						$current_user->reject();
 						$current_user->save();
-						
+
 						// set return
 						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 						break;
-					
+
 					case "account_delete_room":
 						$current_user = $this->_environment->getCurrentUserItem();
-							
+
 						$current_user->delete();
-						
+
 						// set return
 						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 						break;
-					
+
 					case "account_lock_portal":
 						$current_user = $this->_environment->getCurrentUserItem();
 						$portal_user_item = $user_item->getRelatedCommSyUserItem();
-						
+
 						$portal_user_item->reject();
 						$portal_user_item->save();
-						
+
 						// delete session
 						$session_manager = $this->_environment->getSessionManager();
 						$session = $this->_environment->getSessionItem();
 						$session_manager->delete($session->getSessionID());
 						$this->_environment->setSessionItem(null);
 						break;
-					
+
 					case "account_delete_portal":
 						$current_user = $this->_environment->getCurrentUserItem();
 						$authentication = $this->_environment->getAuthenticationObject();
 						$authentication->delete($user_item->getItemID());
-						
+
 						// delete session
 						$session_manager = $this->_environment->getSessionManager();
 						$session = $this->_environment->getSessionItem();
@@ -751,6 +751,26 @@ class cs_popup_profile_controller implements cs_popup_controller {
                 			$this->_popup_controller->setSuccessfullItemIDReturn($room_item->getItemID());
 						}
 						break;
+					case 'cs_bar':
+						if($this->_popup_controller->checkFormData('cs_bar')) {
+							$room_item = $user_item->getOwnRoom();
+
+							if(isset($form_data['show_widget_view']) && !empty($form_data['show_widget_view'])) {
+								if($form_data['show_widget_view'] == 'yes'){
+								   $room_item->setCSBarShowWidgets('1');
+								} else{
+									$room_item->setCSBarShowWidgets('-1');
+								}
+	pr($form_data['show_widget_view']);
+							}
+
+							// save
+							$room_item->save();
+
+							// set return
+                			$this->_popup_controller->setSuccessfullItemIDReturn($room_item->getItemID());
+						}
+						break;
 				}
 			}
 
@@ -935,7 +955,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$portal_information = array();
 		$portal_information['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
 		$this->_popup_controller->assign('popup', 'portal', $portal_information);
-		
+
 		// context
 		$context_information = array();
 		$context_information["context_name"] = $current_context->getTitle();
@@ -946,6 +966,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$form_information['account'] = $this->getAccountInformation();
 		$form_information['user'] = $this->getUserInformation();
 		$form_information['newsletter'] = $this->getNewsletterInformation();
+		$form_information['cs_bar'] = $this->getCSBarInformation();
 		$form_information['config'] = $this->_config;
 		$form_information['data'] = $this->_data;
 
@@ -1070,4 +1091,18 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 		return $return;
 	}
+
+	private function getCSBarInformation() {
+		$return = array();
+
+		// get data from database
+		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
+		if ($room->getCSBarShowWidgets() == '1'){
+			$return['show_widget_view'] = 'yes';
+		}
+
+		return $return;
+	}
+
+
 }

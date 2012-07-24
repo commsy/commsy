@@ -13,13 +13,13 @@ define([	"dojo/_base/declare",
 			this.module = "profile";
 			this.dialog = null;
 			this.button = null;
-			
+
 			this.features = [ "editor", "upload-single" ];
-			
+
 			// register click for node
 			this.registerPopupClick();
 		},
-		
+
 		onTogglePopup: function() {
 			if(this.is_open === true) {
 				DomClass.add(this.popup_button_node, "tm_user_hover");
@@ -29,7 +29,7 @@ define([	"dojo/_base/declare",
 				DomClass.add(this.contentNode, "hidden");
 			}
 		},
-		
+
 		setupSpecific: function() {
 			dojo.ready(Lang.hitch(this, function() {
 				// setup callback for single upload
@@ -42,16 +42,16 @@ define([	"dojo/_base/declare",
 						    fileInfo:	fileInfo
 						}
 					};
-					
+
 					this.AJAXRequest("popup", "save", data, function(response) {
 						// maybe change the picture in-time
 					});
 				}));
-				
+
 				// setup account delete handling
 				On(Query("input#delete", this.contentNode)[0], "click", Lang.hitch(this, function() {
 					DomClass.remove(Query("div#delete_options", this.contentNode)[0], "hidden");
-					
+
 					// register handler
 					On(Query("input#lock_room", this.contentNode)[0], "click", Lang.hitch(this, function() {
 						this.onPopupSubmit({ part: "account_lock_room" });
@@ -68,7 +68,7 @@ define([	"dojo/_base/declare",
 				}));
 			}));
 		},
-		
+
 		createConfirmBox: function() {
 			// create button
 			this.button = new dijit.form.Button({
@@ -76,34 +76,34 @@ define([	"dojo/_base/declare",
 				onClick:	Lang.hitch(this, function(event) {
 					// process submit
 					this.onPopupSubmit({ part: "account_delete" });
-					
+
 					// destroy the dialog
 					this.dialog.destroyRecursive();
 				})
 			});
-			
+
 			// create and show the dialog
 			this.dialog = new dijit.Dialog({
 				title:		""
 			});
 			dojo.place(this.button.domNode, this.dialog.containerNode, "last");
-			
+
 			this.dialog.show();
 		},
-		
+
 		onPopupSubmit: function(customObject) {
 			var part = customObject.part;
-			
+
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
-				
+
 				DomAttr.set(Query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
+
 			// setup data to send via ajax
-			if(part === "user" || part === "newsletter") {
+			if(part === "user" || part === "newsletter" || part === "cs_bar") {
 				var search = {
 					tabs: [
 					    { id: part }
@@ -140,10 +140,10 @@ define([	"dojo/_base/declare",
 					nodeLists: []
 				};
 			}
-			
+
 			this.submit(search, { part: part });
 		},
-		
+
 		onPopupSubmitSuccess: function(item_id) {
 			this.close();
 		}

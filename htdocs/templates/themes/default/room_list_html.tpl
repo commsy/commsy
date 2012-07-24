@@ -19,7 +19,9 @@
 
 {block name=room_navigation_rubric_title}
 	___COMMON_{$room.rubric|upper}_INDEX___
-	<span>(___COMMON_ENTRIES___: {$list.page_text_fragments.count_entries})</span>
+	{if !isset($date.display_mode) || ($date.display_mode != 'calendar_month' and $date.display_mode != 'calendar')}
+		<span>(___COMMON_ENTRIES___: {$list.page_text_fragments.count_entries})</span>
+	{/if}
 {/block}
 
 {block name=room_main_content}

@@ -35,7 +35,9 @@
 
 			{if !$environment.is_guest}
 				<div id="tm_icons_bar">
-					<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
+					{if $cs_bar.show_widgets == '1'}
+						<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
+					{/if}
 					<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
 					<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
 					<a href="#" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>

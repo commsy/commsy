@@ -254,6 +254,7 @@
 		 */
 		private function processBaseTemplate() {
 			$current_user = $this->_environment->getCurrentUser();
+			$own_room_item = $current_user->getOwnRoom();
 			$portal_user = $current_user->getRelatedPortalUserItem();
 			$portal_item = $this->_environment->getCurrentPortalItem();
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -312,6 +313,10 @@
 			$this->assign('environment', 'get', $_GET);
 
 			$this->assign('environment', 'use_problems', $this->getUseProblems());
+
+
+			$this->assign('cs_bar', 'show_widgets', $own_room_item->getCSBarShowWidgets());
+
 
 
 			// to javascript

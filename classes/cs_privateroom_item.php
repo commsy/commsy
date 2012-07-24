@@ -828,7 +828,7 @@ class cs_privateroom_item extends cs_room_item {
             if ( !empty($portal_item) ) {
                $url_to_portal = $portal_item->getURL();
             }
-            
+
             # cron_path ???
             if ( !empty($url_to_portal) ) {
                $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
@@ -1890,11 +1890,11 @@ class cs_privateroom_item extends cs_room_item {
          $this->_unsetExtra('PRIVATEROOMSELECTEDROOMLIST');
       }
    }
-   
+
    public function getCustomizedRoomListCommSy8 () {
    	$retour = NULL;
    	$room_id_array = $this->getCustomizedRoomIDArray();
-   	
+
    	if ( !empty($room_id_array)
    			and !empty($room_id_array[0])
    	) {
@@ -1922,7 +1922,7 @@ class cs_privateroom_item extends cs_room_item {
    				$grouproom_item = $grouproom_list->getNext();
    			}
    		}
-   		
+
    		// store negativ ids and titles and their position
    		$negative_ids = array();
    		$titles = array();
@@ -1934,12 +1934,12 @@ class cs_privateroom_item extends cs_room_item {
    			} elseif($id < 0) {
    				$negative_ids[$position] = $id;
    			}
-   			
+
    			$position++;
    		}
-   		
+
    		$end = $position - 1;
-   
+
    		// get room list
    		$room_manager = $this->_environment->getRoomManager();
    		$room_manager->setRoomTypeLimit('');
@@ -1952,13 +1952,13 @@ class cs_privateroom_item extends cs_room_item {
    		unset($room_manager);
    		unset($current_user_item);
    	}
-   
+
    	// remove first ---- and clean grouprooms
    	if ( !empty( $retour ) ) {
    		$retour2 = new cs_list();
    		$room_item = $retour->getFirst();
    		$room_id = 0;
-   
+
    		while ($room_item) {
    			if ( $room_item->getItemID() == -1 ) {
    					$retour2->add($room_item);
@@ -1979,7 +1979,7 @@ class cs_privateroom_item extends cs_room_item {
    		unset($retour2);
    	}
    	// remove first ---- and clean grouprooms
-   	
+
    	// restore correct negative id and titles
    	$item = $retour->getFirst();
    	$return = new cs_list;
@@ -1992,15 +1992,15 @@ class cs_privateroom_item extends cs_room_item {
    		} elseif(isset($negative_ids[$position])) {
    			$item->setItemID($negative_ids[$position]);
    			$return->add($item);
-   			
+
    			$item = $retour->getNext();
    		} else {
    			$return->add($item);
-   			
+
    			$item = $retour->getNext();
    		}
    	}
-   
+
    	return $return;
    }
 
@@ -2033,7 +2033,7 @@ class cs_privateroom_item extends cs_room_item {
                $grouproom_item = $grouproom_list->getNext();
             }
          }
-         
+
          // filter
          foreach($room_id_array as $key => $id) {
          	if(mb_stristr($id, '$$')) unset($room_id_array[$key]);
@@ -2075,8 +2075,8 @@ class cs_privateroom_item extends cs_room_item {
                }
             }
             $room_item = $retour->getNext();
-            
-           
+
+
          }
          $retour = $retour2;
          unset($retour2);
@@ -2226,6 +2226,19 @@ class cs_privateroom_item extends cs_room_item {
 
    function setPortletNewEntryListShowUser ($i) {
       $this->_addExtra('PORTLET_ENTRY_LIST_SHOW_USER',$i);
+   }
+
+
+   function getCSBarShowWidgets () {
+      $retour = '-1';
+      if ($this->_issetExtra('CS_BAR_SHOW_WIDGETS')) {
+         $retour = $this->_getExtra('CS_BAR_SHOW_WIDGETS');
+      }
+      return $retour;
+   }
+
+   function setCSBarShowWidgets ($i) {
+      $this->_addExtra('CS_BAR_SHOW_WIDGETS',$i);
    }
 
 
@@ -2813,8 +2826,8 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
-   
+
+
    function setEmailToCommSySecret ($value) {
       $this->_addExtra('EMAIL_TO_COMMSY_SECRET', $value);
    }
@@ -2826,6 +2839,6 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
-   
+
 }
 ?>
