@@ -13,14 +13,10 @@
 					</h2>
 					<div class="clear"> </div>
 				</div>
-				<div id="popup_content_wrapper">
-						<div id="popup_accounts">
-							<div id="content_row_two_max">
-			                    <div id="crt_content">
-			                        <div id="crt_col_left_full_2">
-			                        	<div class="widgetArea">
+			                        <div id="crt_col_left_full_widget">
+			                        	<div class="widgetArea widget_500">
 			                        	</div>
-			                        
+
 			                       	 	{*
 			                        	<div class="table_head">
 		                            		<h3 class="pop_col_286 pop_h3">___COMMON_TITLE___</h3>
@@ -30,7 +26,7 @@
 
 		                            		<div class="clear"></div>
 		                            	</div>
-		                            	
+
 
 			                            <div id="crt_row_area">
 			                            </div>
@@ -40,10 +36,6 @@
 			                        <div class="clear"> </div>
 			                    </div>
 			                </div>
-			            </div>
-					</div>
-				</div>
 			<div class="clear"></div>
-		</div>
 	</div>
 </div>

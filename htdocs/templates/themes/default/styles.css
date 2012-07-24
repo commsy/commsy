@@ -387,11 +387,22 @@ div#tag_tree input {
     width: 890px;
     }
 
+.crt_content_500 {
+    margin-right: 0;
+    padding-right: 0;
+    width: 500px;
+    }
+
 .pop_h3 {
 	font-size: 12px;
-    padding: 17px 0px 7px 10px;
     padding: 8px 0px 8px 10px;
     float: left;
+    font-weight: normal;
+}
+
+.pop_widget_h3 {
+	font-size: 12px;
+    padding: 8px 0px 8px 10px;
     font-weight: normal;
 }
 
@@ -412,6 +423,8 @@ div#tag_tree input {
 div#accounts #crt_col_left {
 	height: 500px;
 	}
+
+
 
 #content_row_two_max #crt_content {
     /*height: 440px !important;*/
@@ -2324,7 +2337,7 @@ content, following pages
 ----------------------------------------------------------------------
 */
 
-.table_head {
+.table_head, .widget_head {
     background: url(img/ci_head_bg.png) repeat-x;
     }
 
@@ -4111,3 +4124,28 @@ a.event_grey {
 	padding:10px 3px;
 	font-size:10px;
 	}
+
+.widget_body{
+	padding:10px;
+	}
+
+.widgetArea{
+	background-color: #E8E8E8;
+    border: 1px solid #FFFFFF;
+    padding: 0;
+    margin:10px 5px;
+	}
+
+.innerWidgetArea{
+	border: 1px solid #D1D1D1;
+    background-color: #EAEAEA;
+	}
+
+.widget_500{
+	width:500px;
+	}
+
+#crt_col_left_full_widget {
+    width: 936px;
+}
+

@@ -408,7 +408,7 @@
 								</div>
 							</div>
 
-							<div class="tab hidden" id="newsletter">
+							<div class="tab hidden" id="cs_bar">
 								<div id="content_row_three">
 									<div class="input_row">
 										<label for="newsletter">___USER_STATUS___:</label>
@@ -478,7 +478,7 @@
 
 									<div class="input_row">
 										<div class="input_container_180">
-											<input id="submit" class="submit" data-custom="part: 'newsletter'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+											<input id="submit" class="submit" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 										</div>
 									</div>
 								</div>
