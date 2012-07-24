@@ -38,8 +38,12 @@
 					{if $cs_bar.show_widgets == '1'}
 						<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
 					{/if}
-					<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
-					<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+					{if $cs_bar.show_calendar == '1'}
+						<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
+					{/if}
+					{if $cs_bar.show_stack == '1'}
+						<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+					{/if}
 					<a href="#" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
 					{if ($environment.count_copies > 0)}
 						<span id="tm_clipboard_copies">{$environment.count_copies}</span>
@@ -279,7 +283,7 @@
         </div> <!-- Ende columnset -->
 	{else}
 		<h1>{block name=room_navigation_rubric_title}{/block}</h1>
-		
+
 		<div id="maincontent">
         	{block name=room_main_content}{/block}
         </div>

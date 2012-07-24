@@ -499,6 +499,24 @@
                     </div>
                   </fieldset>
 
+                  <fieldset>
+                    <p>
+                      <strong>___CS_BAR_STACK___</strong>: ___CS_BAR_STACK_DESC___
+                    </p>
+                    <div class="input_row_180">
+                      <label for="widget_stack_view">___CS_BAR_STACK_VIEW___:</label>
+                      <input id="show_stack_view" type="checkbox" name="form_data[show_stack_view]" value="yes"{if $popup.form.cs_bar.show_stack_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <div class="clear"></div>
+                    </div>
+                    <div class="input_row_180">
+                      <label for="widget_view">___CS_BAR_COMMON_SHOW___:</label>
+                      <input id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___CS_BAR_SHOW_DATES___
+                      <input id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___CS_BAR_SHOW_TODOS___
+                      <input id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_SHOW_RESTRICTIONS___
+                      <div class="clear"></div>
+                    </div>
+                  </fieldset>
+
                   <div class="input_row">
                     <div class="input_container_180">
                       <input id="submit" class="submit popup_button" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>

@@ -317,6 +317,7 @@
 
 			$this->assign('cs_bar', 'show_widgets', $own_room_item->getCSBarShowWidgets());
 			$this->assign('cs_bar', 'show_calendar', $own_room_item->getCSBarShowCalendar());
+			$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
 
 
 

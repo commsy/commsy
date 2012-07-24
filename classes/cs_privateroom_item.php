@@ -2241,6 +2241,30 @@ class cs_privateroom_item extends cs_room_item {
       $this->_addExtra('CS_BAR_SHOW_WIDGETS',$i);
    }
 
+   function getCSBarShowCalendar () {
+      $retour = '-1';
+      if ($this->_issetExtra('CS_BAR_SHOW_CALENDAR')) {
+         $retour = $this->_getExtra('CS_BAR_SHOW_CALENDAR');
+      }
+      return $retour;
+   }
+
+   function setCSBarShowCalendar ($i) {
+      $this->_addExtra('CS_BAR_SHOW_CALENDAR',$i);
+   }
+
+   function getCSBarShowStack() {
+      $retour = '-1';
+      if ($this->_issetExtra('CS_BAR_SHOW_STACK')) {
+         $retour = $this->_getExtra('CS_BAR_SHOW_STACK');
+      }
+      return $retour;
+   }
+
+   function setCSBarShowStack ($i) {
+      $this->_addExtra('CS_BAR_SHOW_STACK',$i);
+   }
+
 
 
    function getPortletShowActiveRoomList () {
