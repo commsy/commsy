@@ -173,10 +173,10 @@ define([	"dojo/_base/declare",
 				dojo.forEach(nodes, function(node, index, arr) {
 					var formNodes = null;
 
-					if(node.tagName === "INPUT" || node.tagName === "SELECT") {
+					if(node.tagName === "INPUT" || node.tagName === "SELECT" || node.tagName === "TEXTAREA") {
 						formNodes = [ node ];
 					} else {
-						formNodes = query("input[name^='form_data'], select[name^='form_data']", node);
+						formNodes = query("input[name^='form_data'], select[name^='form_data'], textarea[name^='form_data']", node);
 					}
 
 					dojo.forEach(formNodes, function(formNode, index, arr) {
