@@ -81,6 +81,15 @@
 				$json = false;
 			}
 			
+			elseif(isset($_FILES["uploadedfile"])) {
+				// from html(single)
+				
+				$info = $this->doUpload($_FILES["uploadedfile"], $postdata["file_upload_rubric"]);
+				$postdata = $info;
+				
+				$json = false;
+			}
+			
 			elseif(isset($_FILES["uploadedfiles"])) {
 				// from html5(array)
 				
