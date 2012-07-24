@@ -618,10 +618,30 @@
 												$durationLeftInHours = 0;
 											}
 
+								      		// participants
+								      		$participants = array();
+								      		$participantsList = $date->getParticipantsItemList();
+								      		if(!$participantsList->isEmpty()) {
+								      			$participant = $participantsList->getFirst();
+
+								      			while($participant) {
+								      				$participants[] = array(
+								      					"name"	=> $participant->getFullName()
+								      				);
+
+								      				$participant = $participantsList->getNext();
+								      			}
+								      		}
+
 
 											// create new view entries
+											$date_tooltip_array[$date->getItemID()] = $this->getTooltipDate($date);
 											$displayArray[$actualRow][$viewColumn][] = array(
 												"title"			=> "",					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+												"display_title"	=> $date->getTitle(),					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+												"date"			=> $date_tooltip_array[$date->getItemID()],					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+												"place"			=> $date->getPlace(),					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+												"participants"	=> $participants,					// leave empty, so only the starting cell will hold the title(and day beginning cells)
 												"color"			=> $colorStr,
 												"dateHeight"	=> $insertDateHeight,
 												"topMargin"		=> 0,
