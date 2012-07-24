@@ -19,6 +19,7 @@
 							<a href="account" class="pop_tab_active">___PROFILE_ACCOUNT_DATA___</a>
 							<a href="user" class="pop_tab">___PROFILE_USER_DATA___</a>
 							<a href="newsletter" class="pop_tab">___PROFILE_NEWSLETTER_DATA___</a>
+							<a href="cs_bar" class="pop_tab">___PROFILE_COMMSY_BAR_DATA___</a>
 
 							<div class="clear"> </div>
 						</div>
@@ -430,6 +431,60 @@
 									</div>
 								</div>
 							</div>
+
+
+
+							<div class="tab hidden" id="cs_bar">
+								<div id="content_row_three">
+
+									<fieldset>
+										<p>
+											<strong>___CS_BAR_WIDGETS___</strong>: ___CS_BAR_WIDGETS_DESC___
+										</p>
+										<div class="input_row_150">
+											<label for="widget_view">___CS_BAR_WIDGETS_VIEW___:</label>
+											<input id="show_widget_view" type="checkbox" name="form_data[show_widget_view]" value="yes"{if $popup.form.cs_bar.show_widget_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="widget_view">___PRIVATROOM_ROOMWIDE_SEARCH_BOX___:</label>
+											<input id="show_roomwide_search" type="checkbox" name="form_data[show_roomwide_search]" value="yes"{if $popup.form.cs_bar.show_roomwide_search == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="widget_view">___COMMON_NEWEST_ENTRIES___:</label>
+											<input id="show_newest_entries" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+											(TODO: CONFIGURATIONS FOR ENTRY LIST LENGTH)
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="widget_view">___COMMON_ACTIV_ROOMS___:</label>
+											<input id="show_active_rooms" type="checkbox" name="form_data[show_active_rooms]" value="yes"{if $popup.form.cs_bar.show_active_rooms == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="widget_view">___COMMON_RSS_TICKER___:</label>
+											<input id="rss_ticker" type="checkbox" name="form_data[rss_ticker]" value="yes"{if $popup.form.cs_bar.rss_ticker == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+											(TODO: CONFIGURATIONS FOR RSS TICKER)
+											<div class="clear"></div>
+										</div>
+										<div class="input_row_150">
+											<label for="widget_view">___HOME_EXTRA_TOOLS___:</label>
+											<input id="show_extensions" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+											(TODO: CONFIGURATIONS FOR WIKI AND BLOG)
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+
+									<div class="input_row">
+										<div class="input_container_180">
+											<input id="submit" class="submit" data-custom="part: 'newsletter'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+										</div>
+									</div>
+								</div>
+							</div>
+
+
 						</div>
 					</div>
 				</div>

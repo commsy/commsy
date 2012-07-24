@@ -1,0 +1,5 @@
+<?php
+$message["CS_BAR_WIDGETS"]["en"] = "CommSy-Bar";
+$message["CS_BAR_WIDGETS_DESC"]["en"] = "Here you can setup your personal CommSy bar.";
+$message["CS_BAR_WIDGETS_VIEW"]["en"] = "CommSy widgets";
+?>

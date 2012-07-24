@@ -728,6 +728,7 @@ $message["COMMON_SHOW_INFORMATION_BOX"]["en"] = "Appearance";
 $message["COMMON_SHOW_INFORMATION_BOX_NO"]["en"] = "do not show";
 $message["COMMON_SHOW_INFORMATION_BOX_YES"]["en"] = "show";
 $message["COMMON_SHOW_ONLY_ACTIVATED_ENTRIES"]["en"] = "accessible entries";
+$message["COMMON_SHOW_ON_CS_BAR"]["en"] = "Activate the CommSy widgets icon in the CommSy-Bar.";
 $message["COMMON_SKIN"]["en"] = "Skin";
 $message["COMMON_SORTING_BOX"]["en"] = "Sorting";
 $message["COMMON_SORT_BOX"]["en"] = "Sort";

@@ -737,6 +737,7 @@ $message["COMMON_SHOW_INFORMATION_BOX"]["de"] = "Anzeige";
 $message["COMMON_SHOW_INFORMATION_BOX_NO"]["de"] = "ausblenden";
 $message["COMMON_SHOW_INFORMATION_BOX_YES"]["de"] = "anzeigen";
 $message["COMMON_SHOW_ONLY_ACTIVATED_ENTRIES"]["de"] = "freigeschaltete Einträge";
+$message["COMMON_SHOW_ON_CS_BAR"]["de"] = "Das Icon für die CommSy Widgets in der Leiste aktivieren.";
 $message["COMMON_SKIN"]["de"] = "Darstellung";
 $message["COMMON_SORTING_BOX"]["de"] = "Sortierung";
 $message["COMMON_SORT_BOX"]["de"] = "Sortierung";

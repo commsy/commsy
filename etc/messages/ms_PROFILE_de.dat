@@ -1,5 +1,6 @@
 <?php
 $message["PROFILE_ACCOUNT_DATA"]["de"] = "Profileinstellungen";
+$message["PROFILE_COMMSY_BAR_DATA"]["de"] = "CommSy-Leiste";
 $message["PROFILE_NEWSLETTER_DATA"]["de"] = "Newsletter";
 $message["PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION"]["de"] = "Durch Drag & Drop und Markierung per Haken können Sie die Räume in eine selbstbestimmte Reihenfolge bringen. Die markierten Räume erscheinen
 - in der Auswahl &quot;Raum wechseln&quot;
