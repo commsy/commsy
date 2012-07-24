@@ -143,11 +143,6 @@
 			$current_user = $this->_environment->getCurrentUserItem();
 			$desc = $this->_item->getDescription();
 
-			if (!empty($_GET['account'])) {
-			   $mode = $_GET['account'];
-			} else {
-			   $mode = 'none';
-			}
 			$item = $this->_item;
 			$room_user_status = 'closed';
 		    $user_manager = $this->_environment->getUserManager();
@@ -161,7 +156,6 @@
 		    } else {
 		       $room_user = '';
 		    }
-		    if (($mode !='member' and $mode !='info' and $mode !='email') or !$item->isOpen()){
 		    	if ($current_user->isRoot()) {
 		           $may_enter = true;
 		        } elseif ( !empty($room_user) ) {
@@ -191,9 +185,6 @@
 		            	$room_user_status_text = $translator->getMessage('ACCOUNT_NOT_ACCEPTED_AS_GUEST');
 		            }
 		         }
-		      }else{
-		         $room_user_status = 'open';
-		      }
 
 	         $moda = array();
 	         $moda_list = $this->_item->getContactModeratorList();
