@@ -61,6 +61,9 @@
 											<div class="uploader-single">
 												<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 												   <input id="room_logo" class="fileSelector"></input>
+												   
+												   <div class="filePreview"></div>
+												   
 												   <div class="fileList"></div>
 												</form>
 											</div>
@@ -243,6 +246,7 @@
 												<div class="uploader-single">
 													<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 													   <input id="room_color_bg_image" class="fileSelector"></input>
+													   <div class="filePreview"></div>
 													   <div class="fileList"></div>
 													   <input style="margin-left:80px;" id="room_color_bg_image_repeat" type="checkbox" name="form_data[color_bg_image_repeat]" value="1"{if $popup.room.color_bg_image_repeat == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_REPEAT___
 													<input id="room_color_bg_image_fixed" type="checkbox" name="form_data[color_bg_image_fixed]" value="1"{if $popup.room.color_bg_image_fixed == true} checked="checked"{/if} /> ___CONFIGURATION_BGIMAGE_FIXED___

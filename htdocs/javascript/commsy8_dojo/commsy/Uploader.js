@@ -88,7 +88,7 @@ define([	"dojo/_base/declare",
 		onUploadBegin: function(fileArray) {
 			this.progressbar = new ProgressBar({
 				value:		"0%",
-				"class":	"ui-progressbar"
+				className:	"ui-progressbar"
 			});
 			
 			this.progressbar.placeAt(Query("div.fileList")[0]);
@@ -113,11 +113,7 @@ define([	"dojo/_base/declare",
 					
 					DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
 				}));
-				
-				console.log(data);
 			}
-			
-			console.log("complete");
 		},
 		
 		onUploadError: function(error) {

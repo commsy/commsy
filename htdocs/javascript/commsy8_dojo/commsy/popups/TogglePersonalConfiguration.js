@@ -7,6 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/_base/lang"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
 	return declare(TogglePopupHandler, {
+		sendImages: [],
+		
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
 			this.contentNode = content_node;
@@ -34,18 +36,17 @@ define([	"dojo/_base/declare",
 			dojo.ready(Lang.hitch(this, function() {
 				// setup callback for single upload
 				this.featureHandles["upload-single"][0].setCallback(Lang.hitch(this, function(fileInfo) {
-					// send ajax request
-					var data = {
-						module:			"profile",
-						additional: {
-						    part:		"user_picture",
-						    fileInfo:	fileInfo
-						}
-					};
-
-					this.AJAXRequest("popup", "save", data, function(response) {
-						// maybe change the picture in-time
-					});
+					// setup preview
+					var formNode = this.featureHandles["upload-single"][0].uploader.form;
+					var previewNode = Query("div.filePreview", formNode)[0];
+					
+					DomConstruct.empty(previewNode);
+					
+					DomConstruct.create("img", {
+						src:		"commsy.php?cid=" + this.uri_object.cid + "&mod=picture&fct=getTemp&fileName=" + fileInfo.file
+					}, previewNode, "last");
+					
+					this.sendImages.push({ part: "user_picture", fileInfo: fileInfo });
 				}));
 
 				// setup account delete handling
@@ -145,7 +146,23 @@ define([	"dojo/_base/declare",
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
-			this.close();
+			if (this.sendImages.length > 0) {
+				// send ajax request
+				var data = {
+					module:			"profile",
+					additional: {
+					    part:		this.sendImages[0].part,
+					    fileInfo:	this.sendImages[0].fileInfo
+					}
+				};
+				
+				this.AJAXRequest("popup", "save", data, function(response) {
+					location.reload();
+				});
+			} else {
+				location.reload();
+			}
+			//this.close();
 		}
 	});
 });

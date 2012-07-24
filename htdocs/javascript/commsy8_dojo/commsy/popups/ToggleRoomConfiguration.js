@@ -7,6 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/_base/lang"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
 	return declare(TogglePopupHandler, {
+		sendImages: [],
+		
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
 			this.contentNode = content_node;
@@ -99,35 +101,37 @@ define([	"dojo/_base/declare",
 			}));
 
 			dojo.ready(Lang.hitch(this, function() {
-				// setup callback for single upload
+				// setup callback for single uploads
 				this.featureHandles["upload-single"][0].setCallback(Lang.hitch(this, function(fileInfo) {
-					// send ajax request
-					var data = {
-						module:			"configuration",
-						additional: {
-						    part:		"room_logo",
-						    fileInfo:	fileInfo
-						}
-					};
-
-					this.AJAXRequest("popup", "save", data, function(response) {
-						// maybe change the picture in-time
-					});
+					// room logo upload
+					
+					// setup preview
+					var formNode = this.featureHandles["upload-single"][0].uploader.form;
+					var previewNode = Query("div.filePreview", formNode)[0];
+					
+					DomConstruct.empty(previewNode);
+					
+					DomConstruct.create("img", {
+						src:		"commsy.php?cid=" + this.uri_object.cid + "&mod=picture&fct=getTemp&fileName=" + fileInfo.file
+					}, previewNode, "last");
+					
+					this.sendImages.push({ part: "room_logo", fileInfo: fileInfo });
 				}));
 
 				this.featureHandles["upload-single"][1].setCallback(Lang.hitch(this, function(fileInfo) {
-					// send ajax request
-					var data = {
-						module:			"configuration",
-						additional: {
-						    part:		"room_bg",
-						    fileInfo:	fileInfo
-						}
-					};
-
-					this.AJAXRequest("popup", "save", data, function(response) {
-						// maybe change the picture in-time
-					});
+					// room background
+					
+					// setup preview
+					var formNode = this.featureHandles["upload-single"][0].uploader.form;
+					var previewNode = Query("div.filePreview", formNode)[0];
+					
+					DomConstruct.empty(previewNode);
+					
+					DomConstruct.create("img", {
+						src:		"commsy.php?cid=" + this.uri_object.cid + "&mod=picture&fct=getTemp&fileName=" + fileInfo.file
+					}, previewNode, "last");
+					
+					this.sendImages.push({ part: "room_bg", fileInfo: fileInfo });
 				}));
 			}));
 
@@ -310,18 +314,41 @@ define([	"dojo/_base/declare",
 				nodeLists: [
 				]
 			};
-
+			
 			this.submit(search, { part: part });
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
-			//var cid = this.uri_object.cid;
-
-
-			//var module = this.module;
-			location.reload();
-			//"commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id;
-			//this.close();
+			// save images
+			if (this.sendImages.length > 0) {
+				var data = {
+						module:			"configuration",
+						additional: {
+						    part:		this.sendImages[0].part,
+						    fileInfo:	this.sendImages[0].fileInfo
+						}
+					};
+				
+				this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
+					if (this.sendImages[1]) {
+						var data = {
+								module:			"configuration",
+								additional: {
+								    part:		this.sendImages[1].part,
+								    fileInfo:	this.sendImages[1].fileInfo
+								}
+							};
+						
+						this.AJAXRequest("popup", "save", data, function(response) {
+							location.reload();
+						});
+					} else {
+						location.reload();
+					}
+				}));
+			} else {
+				location.reload();
+			}
 		}
 	});
 });

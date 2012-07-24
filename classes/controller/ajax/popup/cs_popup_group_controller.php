@@ -111,28 +111,21 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
 				if($this->_popup_controller->checkFormData('picture_upload')) {
 					/* handle group picture upload */
-					if(!empty($_FILES['form_data']['tmp_name'])) {
-						// rename temp file
-						$new_temp_name = $_FILES['form_data']['tmp_name']['picture'] . '_TEMP_' . $_FILES['form_data']['name']['picture'];
-						move_uploaded_file($_FILES['form_data']['tmp_name']['picture'], $new_temp_name);
-						$_FILES['form_data']['tmp_name']['picture'] = $new_temp_name;
-
-
-						// resize image to a maximum width of 150px and keep ratio
-						$srcfile = $_FILES['form_data']['tmp_name']['picture'];
-						$target = $_FILES['form_data']['tmp_name']['picture'];
-
+					if (!empty($additional["fileInfo"])) {
+						$srcfile = $additional["fileInfo"]["file"];
+						
 						// determ new file name
-						$filename_info = pathinfo($_FILES['form_data']['name']['picture']);
-						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $_FILES['form_data']['name']['picture'];
+						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]['name'];
+						
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
-
-						$disc_manager->copyFile($_FILES['form_data']['tmp_name']['picture'], $filename, true);
+						
+						$disc_manager->copyFile($srcfile, $filename, true);
 						$item->setPicture($filename);
 						$item->save();
-
-						$this->_return = 'success';
+						
+						// set return
+						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 				}
 			} else {

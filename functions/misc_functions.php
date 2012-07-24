@@ -721,6 +721,7 @@ function isURLValid () {
          $funct != 'meta' and
          $funct != 'process' and
          $funct != 'getfile' and
+    	 $funct != 'getTemp' and
          $funct != 'admin' and
          $funct != 'move' and
          $funct != 'to_moderator' and

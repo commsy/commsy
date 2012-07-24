@@ -35,6 +35,7 @@
 							<div class="uploader-single">
 								<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 								   <input id="data_picture" class="fileSelector"></input>
+								   <div class="filePreview"></div>
 								   <div class="fileList"></div>
 								</form>
 							</div>

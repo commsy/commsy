@@ -899,7 +899,7 @@ else {
 		$c_smarty = false;
 	}
 
-	if($environment->getCurrentFunction() === 'getfile') {
+	if($environment->getCurrentModule() === 'picture') {
 		$c_smarty = false;
 	}
 }
