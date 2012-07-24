@@ -41,17 +41,17 @@
 				$is_owner = false;
 				$this->assign('popup', 'edit', true);
                 $creator = $this->_item->getCreatorItem();
-                
+
 				if($type == CS_USER_TYPE) {
                 	if ($current_user->getItemID() == $this->_item->getItemID() || $current_user->isModerator()) {
                 		$is_owner = true;
                 	}
                 } else {
-                	if ($current_user->getItemID() == $creator->getItemID() || $current_user->isModerator()) {
+                	if ( (isset($creator) && $current_user->getItemID() == $creator->getItemID()) || $current_user->isModerator()) {
                 		$is_owner = true;
                 	}
                 }
-                
+
 				$this->assign('popup','is_owner', $is_owner);
  			}
 

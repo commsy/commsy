@@ -187,12 +187,15 @@ class cs_popup_project_controller implements cs_rubric_popup_controller {
 			$portal_item = $this->_environment->getCurrentPortalItem();
 			if(!empty($this->_shown_community_room_array)) $this->_popup_controller->assign('item', 'assigned_community_room_array', $this->_shown_community_room_array);
 			if(count($this->_community_room_array) > 2) $this->_popup_controller->assign('item', 'community_room_array', $this->_community_room_array);
+			$this->_popup_controller->assign('item', 'link_status',$portal_item->getProjectRoomLinkStatus());
 		}
-		
+
 		if($this->_item !== null) {
 			$this->_popup_controller->assign('item', 'title', $item->getTitle());
 			$this->_popup_controller->assign('item', 'description', $item->getDescription());
 		}
+
+
     }
 
 

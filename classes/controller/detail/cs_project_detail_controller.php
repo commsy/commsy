@@ -217,12 +217,16 @@
 	            $moda_item = $moda_list->getNext();
 	         }
 
-
+			$fullname = '';
+			$creator = $this->_item->getCreatorItem();
+			if (isset($creator)){
+			   $fullname = $creator->getFullName();
+			}
 			return array(
 				'item_id'				=> $this->_item->getItemID(),
 				'formal'				=> $this->getFormalData(),
 				'title'					=> $this->_item->getTitle(),
-				'creator'				=> $this->_item->getCreatorItem()->getFullName(),
+				'creator'				=> $fullname,
 				'creation_date'			=> getDateTimeInLang($this->_item->getCreationDate()),
 				'description'			=> $desc,
 				'room_user_status'		=> $room_user_status,
