@@ -99,12 +99,20 @@
 			$entry = $filteredList->getFirst();
 			while ($entry) {
 				$type = $entry->getItemType();
+				if ($type =='label'){
+					$type = $entry->getLabelType();
+				}
 				$manager = $this->_environment->getManager($type);
 				$entry = $manager->getItem($entry->getItemID());
 				
+				
+				
 				$return["items"][] = array(
 					"itemId"		=> $entry->getItemID(),
-					"title"			=> $entry->getTitle()
+					"contextId"		=> $entry->getContextID(),
+					"module"		=> Type2Module($type),
+					"title"			=> $entry->getTitle(),
+					"image"			=> $this->getUtils()->getLogoInformationForType($type)
 				);
 			
 				$entry = $filteredList->getNext();
