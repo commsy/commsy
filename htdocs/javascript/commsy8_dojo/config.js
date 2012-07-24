@@ -10,6 +10,7 @@ var dojoConfig = {
 	           					{ name: "dijit", location: "libs/dijit" },
 	           					{ name: "dojox", location: "libs/dojox" },
 	           					{ name: "commsy", location: "commsy" },
+	           					{ name: "widgets", location: "commsy/widgets" },
 	           					{ name: "ckeditor", location: "libs/ckeditor" },
 	           					{ name: "cbtree", location: "libs/cbtree" }
 	],

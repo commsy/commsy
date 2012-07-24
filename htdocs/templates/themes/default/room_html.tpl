@@ -65,6 +65,8 @@
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
 		<div id="tm_dropmenu_widget_bar" class="hidden"></div>
+		<div id="tm_dropmenu_mycalendar" class="hidden"></div>
+		<div id="tm_dropmenu_stack" class="hidden"></div>
 		<div id="tm_dropmenu_pers_bar" class="hidden"></div>
 		<div id="tm_dropmenu_clipboard" class="hidden"></div>
 		<div id="tm_dropmenu_configuration" class="hidden"></div>

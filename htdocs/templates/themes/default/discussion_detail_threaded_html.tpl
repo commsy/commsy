@@ -2,7 +2,7 @@
 
 {block name=discussion_short_articles}
 	<a id="discussionShortExpandAll" href="#">___DISCUSSION_THREADED_SHOW_ALL___</a>
-	<a id="discussionShortCollapseAll" href="#">___DISCUSSION_THREADED_HIDE_ALL___</a>
+	<a id="discussionShortCollapseAll" class="hidden" href="#">___DISCUSSION_THREADED_HIDE_ALL___</a>
 
 	<div id="discussion_tree">
 		<img src="{$basic.tpl_path}img/ajax_loader.gif" />

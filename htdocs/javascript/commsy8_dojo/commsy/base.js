@@ -27,6 +27,12 @@ define([	"dojo/_base/declare",
 			return object;
 		},
 		
+		replaceOrSetAnchor: function(anchor) {
+			var splitLocation = location.href.split("#");
+			
+			return splitLocation[0] + anchor;
+		},
+		
 		setupLoading: function() {
 			var loadingScreenDiv = Query("#loadingScreen")[0];
 

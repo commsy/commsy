@@ -8,13 +8,14 @@ define([	"dojo/_base/declare",
         	"dijit/form/TextBox",
         	"dijit/form/Button",
         	"dojo/query",
+        	"dojo/dom-class",
         	"cbtree/models/ForestStoreModel",
         	"dojo/data/ItemFileWriteStore",
         	"dojo/dom-attr",
         	"cbtree/CheckBox",
         	"dojo/on",
         	"cbtree/models/StoreModel-API",
-        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, Tree, TextBox, Button, Query, ForestStoreModel, ItemFileWriteStore, DomAttr, CheckBox, On) {
+        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, Tree, TextBox, Button, Query, DomClass, ForestStoreModel, ItemFileWriteStore, DomAttr, CheckBox, On) {
 	return declare(TreeClass, {
 		textbox:	null,
 		dialog:		null,
@@ -44,6 +45,21 @@ define([	"dojo/_base/declare",
 			return new ForestStoreModel({
 				store:			this.store,
 				checkedAttr:	"match",
+			});
+		},
+		
+		createTree: function() {
+			return new Tree({
+				autoExpand:			this.expanded,
+				model:				this.model,
+				showRoot:			false,
+				checkBoxes:			this.checkboxes,
+				onClick:			Lang.hitch(this, function(item, node, evt) {
+					// follow item url
+					if(this.followUrl) {
+						location.href = this.replaceOrSetAnchor("#article" + item.item_id);
+					}
+				})
 			});
 		},
 		
@@ -110,10 +126,18 @@ define([	"dojo/_base/declare",
 		 ************************************************************************************/
 		onClickExpandAll: function() {
 			this.autoExpandToLevel(this.tree, 0, true);
+			
+			// hide expand and show collapse
+			DomClass.add(Query("a#discussionShortExpandAll")[0], "hidden");
+			DomClass.remove(Query("a#discussionShortCollapseAll")[0], "hidden");
 		},
 		
 		onClickCollapseAll: function() {
 			this.autoExpandToLevel(this.tree, 0);
+			
+			// hide collapse and show expand
+			DomClass.add(Query("a#discussionShortCollapseAll")[0], "hidden");
+			DomClass.remove(Query("a#discussionShortExpandAll")[0], "hidden");
 		}
 		
 		/************************************************************************************
