@@ -11,25 +11,25 @@ define([	"dojo/_base/declare",
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
 			this.module = "project";
-			
-			this.features = [ "editor", "upload", "netnavigation", "calendar", "path" ];
-			
+
+			this.features = [ "editor" ];
+
 			// register click for node
 			this.registerPopupClick();
 		},
-		
+
 		setupSpecific: function() {
 		},
-		
+
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
-				
+
 				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
+
 			// setup data to send via ajax
 			var search = {
 				tabs: [
@@ -41,10 +41,10 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[title]']", this.contentNode) },
 				]
 			};
-			
+
 			this.submit(search);
 		},
-		
+
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation / path - process after item creation actions
 			if(this.item_id === "NEW") {

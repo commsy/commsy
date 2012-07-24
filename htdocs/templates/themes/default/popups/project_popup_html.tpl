@@ -26,10 +26,10 @@
 							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 						</div>
 
-{*						<div class="editor_content">
+						<div class="editor_content">
 							<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 						</div>
-*}
+
 						{if !empty($item.community_room_array)}
 							<div class="input_row_100">
 								<label for="room_communityrooms">

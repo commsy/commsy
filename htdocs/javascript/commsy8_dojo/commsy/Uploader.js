@@ -17,16 +17,16 @@ define([	"dojo/_base/declare",
 		progressbar:	null,
 		single:			false,
 		callback:		null,
-		
+
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
 		},
-		
+
 		setCallback: function(func) {
 			this.callback = func;
 		},
-		
+
 		setup: function(uploaderNode) {
 			/*
 			if(Flash.available) {
@@ -34,37 +34,37 @@ define([	"dojo/_base/declare",
 			} else {*/
 				dojo.require("dojox/form/uploader/plugins/IFrame");
 			//}
-			
+
 			dojo.ready(Lang.hitch(this, function() {
 				this.uploader = new dojox.form.Uploader({
 					multiple:		!this.single,
 					uploadOnSelect: false,
 					"class":		"fileSelector",
-					
+
 					//force:			"flash",
 					//force:			"iframe",
 					isDebug:		true,
-					
+
 					url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=upload&action=upload"
 				}, Query("input.fileSelector", uploaderNode)[0]);
-				
+
 				// setup event handler
 				On(this.uploader, "begin", Lang.hitch(this, function(fileArray) {
 					this.onUploadBegin(fileArray);
 				}));
-				
+
 				On(this.uploader, "complete", Lang.hitch(this, function(response) {
 					this.onUploadComplete(response);
 				}));
-				
+
 				On(this.uploader, "error", Lang.hitch(this, function(error) {
 					this.onUploadError(error);
 				}));
-				
+
 				On(this.uploader, "progress", Lang.hitch(this, function(statusObject) {
 					this.onProgress(statusObject);
 				}));
-				
+
 				On(this.uploader, "change", Lang.hitch(this, function(fileArray) {
 					// prepare data to send
 					var targetRubric = this.uri_object.mod;
@@ -73,35 +73,35 @@ define([	"dojo/_base/declare",
 					} else if(targetRubric === "discussion") {
 						targetRubric = "discarticle";
 					}
-					
+
 					var send = {
 						file_upload_rubric:		targetRubric
 					};
-					
+
 					this.uploader.upload(send);
 				}));
-				
+
 				this.uploader.startup();
 			}));
 		},
-		
+
 		onUploadBegin: function(fileArray) {
 			this.progressbar = new ProgressBar({
 				value:		"0%",
 				className:	"ui-progressbar"
 			});
-			
+
 			this.progressbar.placeAt(Query("div.fileList")[0]);
 		},
-		
+
 		onUploadComplete: function(data) {
 			if(this.callback) {
 				this.callback(data);
 			} else {
 				var fileListNode = Query("div#files_finished")[0];
-				
+
 				if(!data.length) data = [data];
-				
+
 				dojo.forEach(data, Lang.hitch(this, function(file, index, arr) {
 					// add file to file finished
 					DomConstruct.create("input", {
@@ -110,23 +110,23 @@ define([	"dojo/_base/declare",
 						name:		"form_data[file_" + index + "]",
 						value:		file.file_id
 					}, fileListNode, "last");
-					
+
 					DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
 				}));
 			}
 		},
-		
+
 		onUploadError: function(error) {
 			console.log(error);
 		},
-		
+
 		onProgress: function(statusObject) {
 			// update progress bar
 			this.progressbar.set("value", statusObject.percent);
-			
+
 			if(statusObject.percent === "100%") this.progressbar.destroy(false);
 		},
-		
+
 		destroy: function() {
 			this.uploader.destroy(false);
 		}
