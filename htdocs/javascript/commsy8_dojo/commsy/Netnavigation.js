@@ -42,9 +42,13 @@ define([	"dojo/_base/declare",
 			
 			// register handler
 			if (!autoInit) {
-				On(Query("#popup_netnavigation_attach_new")[0], "click", Lang.hitch(this, function(event) {
-					this.initDo();
-				}));
+				var triggerNode = Query("#popup_netnavigation_attach_new")[0];
+				
+				if (triggerNode) {
+					On(triggerNode, "click", Lang.hitch(this, function(event) {
+						this.initDo();
+					}));
+				}
 			} else {
 				this.initDo();
 			}

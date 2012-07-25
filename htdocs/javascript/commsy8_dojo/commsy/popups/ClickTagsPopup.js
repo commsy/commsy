@@ -160,8 +160,8 @@ define([	"dojo/_base/declare",
 		onPopupSubmit: function(customObject) {
 			var part = customObject.part;
 			
-			if(part === "add") {
-				//this.OnAddNewBuzzword();
+			if(part === "sort_abc") {
+				this.onSortABC();
 			} else if(part == "merge") {
 				this.onMergeTags();
 			}
@@ -194,7 +194,16 @@ define([	"dojo/_base/declare",
 			}
 		},
 		
+		onSortABC: function() {
+			this.AJAXRequest("tags", "sortABC", {},
+				Lang.hitch(this, function(response) {
+					
+				})
+			);
+		},
+		
 		onPopupSubmitSuccess: function(item_id) {
+			location.reload();
 		},
 	});
 });

@@ -1,5 +1,5 @@
 {if isset($popup.buzzwords)}
-	<div class="tab hidden" id="buzzwords_tab">
+	<div class="tab {if $item.edit_type != 'buzzwords'}hidden{/if}" id="buzzwords_tab">
 		<div class="settings_area">
 			<ul class="popup_buzzword_list">
 				{foreach $popup.buzzwords as $buzzword}

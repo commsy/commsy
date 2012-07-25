@@ -1,5 +1,5 @@
 {if isset($popup.tags)}
-	<div class="tab hidden" id="tags_tab">
+	<div class="tab {if $item.edit_type != 'tags'}hidden{/if}" id="tags_tab">
 		<div class="settings_area">
 			<div class="tree"></div>
 		</div>

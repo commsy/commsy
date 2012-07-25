@@ -289,6 +289,20 @@
 			}
 		}
 		
+		public function actionSortABC() {
+			if ($this->accessGranted()) {
+				$tag2TagManager = $this->_environment->getTag2TagManager();
+				$tagManager = $this->_environment->getTagManager();
+				
+				$rootTagItem = $tagManager->getRootTagItemFor($this->_environment->getCurrentContextID());
+				
+				$tag2TagManager->sortRecursiveABC($rootTagItem->getItemID());
+				
+				$this->setSuccessfullDataReturn(array());
+				echo $this->_return;
+			}
+		}
+		
 		public function actionDeleteTag() {
 			if ($this->accessGranted()) {
 				$tagId = $this->_data["tagId"];

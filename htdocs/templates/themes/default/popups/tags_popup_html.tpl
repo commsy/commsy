@@ -35,7 +35,10 @@
 						<div id="popup_tabcontent">
 							<div id="edit_tab" class="tab">
 								<div id="content_row_two_max">
-									<div class="tree"></div>
+									<div class="tree float-left"></div>
+									<input id="tag_sort_abc" class="popup_button float-right submit" type="button" name="form_data[sort_abc]" data-custom="part: 'sort_abc'" value="___TAG_SORT_ABC___">
+									
+									<div class="clear"></div>
 								</div>
 							</div>
 
