@@ -13,6 +13,7 @@ define([	"dojo/_base/declare",
         	"dojo/_base/connect"], function(declare, BaseClass, Lang, Flash, Uploader, ProgressBar, FileList, DomConstruct, DomAttr, On, Button, Query, connect) {
 	return declare(BaseClass, {
 		uploader:		null,
+		loadingImgNode:	null,
 		//fileList: null,
 		progressbar:	null,
 		single:			false,
@@ -92,9 +93,19 @@ define([	"dojo/_base/declare",
 			});
 
 			this.progressbar.placeAt(Query("div.fileList")[0]);
+			
+			// place a loading image
+			this.loadingImgNode = DomConstruct.create("img", {
+				src:		this.from_php.template.tpl_path + "img/ajax_loader.gif"
+			}, this.uploader.domNode, "after");
 		},
 
 		onUploadComplete: function(data) {
+			// remove loading image
+			if (this.loadingImgNode) {
+				DomConstruct.destroy(this.loadingImgNode);
+			}
+			
 			if(this.callback) {
 				this.callback(data);
 			} else {
