@@ -848,12 +848,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 					break;
 
 				case 'external_configuration':
-				   include_once('functions/development_functions.php');
-
-				   logToFile('save_external');
-				   logToFile($form_data);
-				   logToFile($additional);
-
 				   if($this->_popup_controller->checkFormData('external_configuration')) {
 
 				      // save

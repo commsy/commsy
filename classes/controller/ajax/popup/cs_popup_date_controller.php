@@ -96,6 +96,49 @@ class cs_popup_date_controller {
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 
 				$this->_popup_controller->assign('item', 'date_addon_color', $item->getColor());
+				
+				if($item->getRecurrenceId() != '' and $item->getRecurrenceId() != 0){
+				   $recurrence_pattern = $item->getRecurrencePattern();
+				   $this->_popup_controller->assign('item', 'is_recurring_date', $recurrence_pattern['recurring_select']);
+				   if($recurrence_pattern['recurring_select'] == 'daily'){
+				      $this->_popup_controller->assign('item', 'recurring_day', $recurrence_pattern['recurring_day']);
+				   } else if($recurrence_pattern['recurring_select'] == 'weekly'){
+   				   $this->_popup_controller->assign('item', 'recurring_week', $recurrence_pattern['recurring_week']);
+   				   $this->_popup_controller->assign('item', 'recurring_week_days_monday', $recurrence_pattern['recurring_week_days_monday']);
+   				   foreach($recurrence_pattern['recurring_week_days'] as $day){
+   				      if($day == 'monday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_monday', 'yes');
+   				      }
+   				      if($day == 'tuesday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_tuesday', 'yes');
+   				      }
+   				      if($day == 'wednesday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_wednesday', 'yes');
+   				      }
+   				      if($day == 'thursday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_thusday', 'yes');
+   				      }
+   				      if($day == 'friday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_friday', 'yes');
+   				      }
+   				      if($day == 'saturday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_saturday', 'yes');
+   				      }
+   				      if($day == 'sunday'){
+   				         $this->_popup_controller->assign('item', 'recurring_week_days_sunday', 'yes');
+   				      }
+   				   }
+				   } else if($recurrence_pattern['recurring_select'] == 'monthly'){
+				      $this->_popup_controller->assign('item', 'recurring_month', $recurrence_pattern['recurring_month']);
+				      $this->_popup_controller->assign('item', 'recurring_month_every', $recurrence_pattern['recurring_month_every']);
+				      $this->_popup_controller->assign('item', 'recurring_month_day_every', $recurrence_pattern['recurring_month_day_every']);
+				   } else if($recurrence_pattern['recurring_select'] == 'yearly'){
+				      $this->_popup_controller->assign('item', 'recurring_year', $recurrence_pattern['recurring_year']);
+				      $this->_popup_controller->assign('item', 'recurring_year_every', $recurrence_pattern['recurring_year_every']);
+				   }
+				   $this->_popup_controller->assign('item', 'recurring_end_date', $recurrence_pattern['recurring_end_date']);
+				}
+				
 			}else{
  				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
  				$this->_popup_controller->assign('item', 'public', $val);
@@ -343,35 +386,59 @@ class cs_popup_date_controller {
                 $date_item->save();
 
                 // Save recurrent items
-                include_once('functions/development_functions.php');
-                logToFile($form_data);
-                logToFile('---');
-                logToFile($additional);
 
-                if(isset($form_data['recurring']) or isset($form_data['recurring_date'])){
-                    if(isOption($command, $translator->getMessage('DATES_SAVE_BUTTON')) and !isset($form_data['recurring_ignore'])){
-                        $this->save_recurring_dates($date_item, true, array());
-                    } elseif (isOption($command, $translator->getMessage('DATES_CHANGE_RECURRING_BUTTON'))){
-                        $vales_to_change = array();
-                        if($values_before_change['title'] != $date_item->getTitle()){
-                            $vales_to_change[] = 'title';
-                        }
-                        if($values_before_change['startingTime'] != $date_item->getStartingTime()){
-                            $vales_to_change[] = 'startingTime';
-                        }
-                        if($values_before_change['endingTime'] != $date_item->getEndingTime()){
-                            $vales_to_change[] = 'endingTime';
-                        }
-                        if($values_before_change['place'] != $date_item->getPlace()){
-                            $vales_to_change[] = 'place';
-                        }
-                        if($values_before_change['color'] != $date_item->getColor()){
-                            $vales_to_change[] = 'color';
-                        }
-                        if($values_before_change['description'] != $date_item->getDescription()){
-                            $vales_to_change[] = 'description';
-                        }
-                        $this->save_recurring_dates($date_item, false, $vales_to_change);
+                $errors = array();
+                
+                if(isset($form_data['recurring']) or isset($form_data['recurring_date']) or ($date_item->getRecurrenceId() != '' and $date_item->getRecurrenceId() != 0)){
+                    if(isset($form_data['recurring_week_days_monday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_monday'];
+                    }
+                    if(isset($form_data['recurring_week_days_tuesday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_tuesday'];
+                    }
+                    if(isset($form_data['recurring_week_days_wednesday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_wednesday'];
+                    }
+                    if(isset($form_data['recurring_week_days_thusday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_thusday'];
+                    }
+                    if(isset($form_data['recurring_week_days_friday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_friday'];
+                    }
+                    if(isset($form_data['recurring_week_days_saturday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_saturday'];
+                    }
+                    if(isset($form_data['recurring_week_days_sunday'])){
+                       $form_data['recurring_week_days'][] = $form_data['recurring_week_days_sunday'];
+                    }
+                   
+                    $errors = $this->checkValues($form_data);
+                    
+                    if(empty($errors)){
+                       if($additional['part'] == 'all' and !isset($form_data['recurring_ignore'])){
+                           $this->save_recurring_dates($date_item, true, array(), $form_data);
+                       } elseif ($additional['part'] == 'recurring'){
+                           $vales_to_change = array();
+                           if($values_before_change['title'] != $date_item->getTitle()){
+                               $vales_to_change[] = 'title';
+                           }
+                           if($values_before_change['startingTime'] != $date_item->getStartingTime()){
+                               $vales_to_change[] = 'startingTime';
+                           }
+                           if($values_before_change['endingTime'] != $date_item->getEndingTime()){
+                               $vales_to_change[] = 'endingTime';
+                           }
+                           if($values_before_change['place'] != $date_item->getPlace()){
+                               $vales_to_change[] = 'place';
+                           }
+                           if($values_before_change['color'] != $date_item->getColor()){
+                               $vales_to_change[] = 'color';
+                           }
+                           if($values_before_change['description'] != $date_item->getDescription()){
+                               $vales_to_change[] = 'description';
+                           }
+                           $this->save_recurring_dates($date_item, false, $vales_to_change, $form_data);
+                       }
                     }
                 }
 
@@ -396,7 +463,11 @@ class cs_popup_date_controller {
                 $manager->markEdited($date_item->getItemID());
 
                 // set return
-                $this->_popup_controller->setSuccessfullItemIDReturn($date_item->getItemID());
+                if(empty($errors)){
+                   $this->_popup_controller->setSuccessfullItemIDReturn($date_item->getItemID());
+                } else {
+                   $this->_popup_controller->setErrorReturn(101, '', $errors);
+                }
             }
         }
 
@@ -526,7 +597,7 @@ class cs_popup_date_controller {
 			}
     }
 
-    function save_recurring_dates($dates_item, $is_new_date, $values_to_change){
+    function save_recurring_dates($dates_item, $is_new_date, $values_to_change, $form_data){
        global $environment;
        if($is_new_date){
           /*
@@ -546,13 +617,13 @@ class cs_popup_date_controller {
           $recurring_pattern_array = array();
 
           $start_date = new DateTime($dates_item->getStartingDay());
-          $end_date = new DateTime($_POST['recurring_end_date']);
+          $end_date = new DateTime($form_data['recurring_end_date']);
 
-          $recurring_pattern_array['recurring_select'] = $_POST['recurring_select'];
+          $recurring_pattern_array['recurring_select'] = $form_data['recurring_select'];
 
           // daily recurring
-          if($_POST['recurring_select'] == 'daily') {
-             $date_interval = new DateInterval('P' . $_POST['recurring_day'] . 'D');
+          if($form_data['recurring_select'] == 'daily') {
+             $date_interval = new DateInterval('P' . $form_data['recurring_day'] . 'D');
 
              $day = clone $start_date;
              $day->add($date_interval);
@@ -561,12 +632,12 @@ class cs_popup_date_controller {
 
                 $day->add($date_interval);
              }
-             $recurring_pattern_array['recurring_day'] = $_POST['recurring_day'];
+             $recurring_pattern_array['recurring_day'] = $form_data['recurring_day'];
 
              unset($date_interval);
 
              // weekly recurring
-          } else if($_POST['recurring_select'] == 'weekly') {
+          } else if($form_data['recurring_select'] == 'weekly') {
              // go back to last monday(if day is not monday)
              $monday = clone $start_date;
              if($start_date->format('w') == 0) {
@@ -576,7 +647,7 @@ class cs_popup_date_controller {
              }
 
              while($monday <= $end_date) {
-                foreach($_POST['recurring_week_days'] as $day) {
+                foreach($form_data['recurring_week_days'] as $day) {
                    if($day == 'monday') {
                       $addon_days = 0;
                    } elseif($day == 'tuesday') {
@@ -603,19 +674,19 @@ class cs_popup_date_controller {
                    unset($temp);
                 }
 
-                $monday->add(new DateInterval('P' . $_POST['recurring_week'] . 'W'));
+                $monday->add(new DateInterval('P' . $form_data['recurring_week'] . 'W'));
              }
-             $recurring_pattern_array['recurring_week_days'] = $_POST['recurring_week_days'];
-             $recurring_pattern_array['recurring_week'] = $_POST['recurring_week'];
+             $recurring_pattern_array['recurring_week_days'] = $form_data['recurring_week_days'];
+             $recurring_pattern_array['recurring_week'] = $form_data['recurring_week'];
 
              unset($monday);
 
              // monthly recurring
-          } else if($_POST['recurring_select'] == 'monthly') {
+          } else if($form_data['recurring_select'] == 'monthly') {
              $month_count = $start_date->format('m');
              $year_count = $start_date->format('Y');
-             $month_to_add = $_POST['recurring_month'] % 12;
-             $years_to_add = ($_POST['recurring_month'] - $month_to_add) / 12;
+             $month_to_add = $form_data['recurring_month'] % 12;
+             $years_to_add = ($form_data['recurring_month'] - $month_to_add) / 12;
              $month = new DateTime($year_count . '-' . $month_count . '-01');
 
              while($month <= $end_date) {
@@ -628,7 +699,7 @@ class cs_popup_date_controller {
 
                    // if the actual day is a correct week day, add it to possible dates
                    $week_day = $temp->format('w');
-                   if($week_day == $_POST['recurring_month_day_every']) {
+                   if($week_day == $form_data['recurring_month_day_every']) {
                       $dates_occurence_array[] = $temp;
                    }
 
@@ -636,17 +707,17 @@ class cs_popup_date_controller {
                 }
 
                 // add only days, that match the right week
-                if($_POST['recurring_month_every'] != 'last') {
-                   if($_POST['recurring_month_every'] <= count($dates_occurence_array)) {
-                      if(   $dates_occurence_array[$_POST['recurring_month_every']-1] >= $start_date &&
-                      $dates_occurence_array[$_POST['recurring_month_every']-1] <= $end_date) {
-                         $recurring_date_array[] = $dates_occurence_array[$_POST['recurring_month_every']-1];
+                if($form_data['recurring_month_every'] != 'last') {
+                   if($form_data['recurring_month_every'] <= count($dates_occurence_array)) {
+                      if(   $dates_occurence_array[$form_data['recurring_month_every']-1] >= $start_date &&
+                      $dates_occurence_array[$form_data['recurring_month_every']-1] <= $end_date) {
+                         $recurring_date_array[] = $dates_occurence_array[$form_data['recurring_month_every']-1];
                       }
                    }
                 } else {
-                   if(   $dates_occurence_array[count($_POST['recurring_month_every'])-1] >= $start_date &&
-                   $dates_occurence_array[count($_POST['recurring_month_every'])-1] <= $end_date) {
-                      $recurring_date_array[] = $dates_occurence_array[count($_POST['recurring_month_every'])-1];
+                   if(   $dates_occurence_array[count($form_data['recurring_month_every'])-1] >= $start_date &&
+                   $dates_occurence_array[count($form_data['recurring_month_every'])-1] <= $end_date) {
+                      $recurring_date_array[] = $dates_occurence_array[count($form_data['recurring_month_every'])-1];
                    }
                 }
 
@@ -662,18 +733,18 @@ class cs_popup_date_controller {
                 $month = new DateTime($year_count . '-' . $month_count . '-01');
              }
 
-             $recurring_pattern_array['recurring_month'] = $_POST['recurring_month'];
-             $recurring_pattern_array['recurring_month_day_every'] = $_POST['recurring_month_day_every'];
-             $recurring_pattern_array['recurring_month_every'] = $_POST['recurring_month_every'];
+             $recurring_pattern_array['recurring_month'] = $form_data['recurring_month'];
+             $recurring_pattern_array['recurring_month_day_every'] = $form_data['recurring_month_day_every'];
+             $recurring_pattern_array['recurring_month_every'] = $form_data['recurring_month_every'];
 
              unset($month);
 
              // yearly recurring
-          } else if($_POST['recurring_select'] == 'yearly') {
+          } else if($form_data['recurring_select'] == 'yearly') {
              $year_count = $start_date->format('Y');
              $year = new DateTime($year_count . '-01-01');
              while($year <= $end_date) {
-                $date = new DateTime($_POST['recurring_year'] . '-' . $_POST['recurring_year_every'] . '-' . $year_count);
+                $date = new DateTime($form_data['recurring_year'] . '-' . $form_data['recurring_year_every'] . '-' . $year_count);
                 if($date > $start_date && date <= $end_date) {
                    $recurring_date_array[] = $date;
                 }
@@ -684,15 +755,16 @@ class cs_popup_date_controller {
                 $year = new DateTime($year_count . '-01-01');
              }
 
-             $recurring_pattern_array['recurring_year'] = $_POST['recurring_year'];
-             $recurring_pattern_array['recurring_year_every'] = $_POST['recurring_year_every'];
+             $recurring_pattern_array['recurring_year'] = $form_data['recurring_year'];
+             $recurring_pattern_array['recurring_year_every'] = $form_data['recurring_year_every'];
           }
 
           unset($start_date);
           unset($end_date);
 
           $recurring_pattern_array['recurring_start_date'] = $dates_item->getStartingDay();
-          $recurring_pattern_array['recurring_end_date'] = $year_recurring.'-'.$month_recurring.'-'.$day_recurring;
+          //$recurring_pattern_array['recurring_end_date'] = $year_recurring.'-'.$month_recurring.'-'.$day_recurring;
+          $recurring_pattern_array['recurring_end_date'] = $form_data['recurring_end_date'];
 
           foreach($recurring_date_array as $date) {
              $temp_date = clone $dates_item;
@@ -763,21 +835,21 @@ class cs_popup_date_controller {
           $year_date = mb_substr($next_date,0,4);
           $next_date_time = mktime(0,0,0,$month_date,$day_date,$year_date);
 
-          $month_recurring = mb_substr($_POST['recurring_end_date'],3,2);
-          $day_recurring = mb_substr($_POST['recurring_end_date'],0,2);
-          $year_recurring = mb_substr($_POST['recurring_end_date'],6,4);
+          $month_recurring = mb_substr($form_data['recurring_end_date'],3,2);
+          $day_recurring = mb_substr($form_data['recurring_end_date'],0,2);
+          $year_recurring = mb_substr($form_data['recurring_end_date'],6,4);
           $recurring_end_time = mktime(0,0,0,$month_recurring,$day_recurring,$year_recurring);
 
-          $recurring_pattern_array['recurring_select'] = $_POST['recurring_select'];
-    	      if($_POST['recurring_select'] == 'daily') {
-    	         $next_date_time = strtotime('+' . $_POST['recurring_day'] . ' day', $next_date_time);
+          $recurring_pattern_array['recurring_select'] = $form_data['recurring_select'];
+    	      if($form_data['recurring_select'] == 'daily') {
+    	         $next_date_time = strtotime('+' . $form_data['recurring_day'] . ' day', $next_date_time);
           while($next_date_time <= $recurring_end_time) {
           $recurring_date_array[] = $next_date_time;
 
-             $next_date_time = strtotime('+' . $_POST['recurring_day'] . ' day', $next_date_time);
+             $next_date_time = strtotime('+' . $form_data['recurring_day'] . ' day', $next_date_time);
     	         }
-    	         $recurring_pattern_array['recurring_day'] = $_POST['recurring_day'];
-          } elseif($_POST['recurring_select'] == 'weekly') {
+    	         $recurring_pattern_array['recurring_day'] = $form_data['recurring_day'];
+          } elseif($form_data['recurring_select'] == 'weekly') {
              $weekday = date('w', $next_date_time);
              if($weekday == 0) {
              $week = strtotime('-6 days', $next_date_time);
@@ -786,7 +858,7 @@ class cs_popup_date_controller {
              }
 
              while($week <= $recurring_end_time) {
-             foreach($_POST['recurring_week_days'] as $day) {
+             foreach($form_data['recurring_week_days'] as $day) {
              if($day == 'monday') {
     	                  $addon_days = 0;
              } elseif($day == 'tuesday') {
@@ -810,17 +882,17 @@ class cs_popup_date_controller {
              }
              }
 
-             $week = strtotime('+' . $_POST['recurring_week'] . ' week', $week);
+             $week = strtotime('+' . $form_data['recurring_week'] . ' week', $week);
              }
-             $recurring_pattern_array['recurring_week_days'] = $_POST['recurring_week_days'];
-             $recurring_pattern_array['recurring_week'] = $_POST['recurring_week'];
-    	      } elseif($_POST['recurring_select'] == 'monthly') {
+             $recurring_pattern_array['recurring_week_days'] = $form_data['recurring_week_days'];
+             $recurring_pattern_array['recurring_week'] = $form_data['recurring_week'];
+    	      } elseif($form_data['recurring_select'] == 'monthly') {
              $month_count = $month_date;
     	         $year_count = $year_date;
-    	         $month_to_add = $_POST['recurring_month'] % 12;
-             $years_to_add = ($_POST['recurring_month'] - $month_to_add) / 12;
-    	         $selected_day = $_POST['recurring_month_day_every'];
-             $selected_occurence = $_POST['recurring_month_every'];
+    	         $month_to_add = $form_data['recurring_month'] % 12;
+             $years_to_add = ($form_data['recurring_month'] - $month_to_add) / 12;
+    	         $selected_day = $form_data['recurring_month_day_every'];
+             $selected_occurence = $form_data['recurring_month_every'];
     	         $month = mktime(0,0,0,$month_count,1,$year_count);
     	         while($month <= $recurring_end_time) {
              $dates_occurence_array = array();
@@ -850,21 +922,21 @@ class cs_popup_date_controller {
                 }
                 $month = mktime(0,0,0,$month_count,1,$year_count);
                 }
-                $recurring_pattern_array['recurring_month'] = $_POST['recurring_month'];
-                   $recurring_pattern_array['recurring_month_day_every'] = $_POST['recurring_month_day_every'];
-                   $recurring_pattern_array['recurring_month_every'] = $_POST['recurring_month_every'];
-                   } elseif($_POST['recurring_select'] == 'yearly') {
+                $recurring_pattern_array['recurring_month'] = $form_data['recurring_month'];
+                   $recurring_pattern_array['recurring_month_day_every'] = $form_data['recurring_month_day_every'];
+                   $recurring_pattern_array['recurring_month_every'] = $form_data['recurring_month_every'];
+                   } elseif($form_data['recurring_select'] == 'yearly') {
                    $year_count = $year_date;
     	         $year = mktime(0,0,0,1,1,$year_count);
                    while($year <= $recurring_end_time) {
-    	            if((mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count) > $next_date_time) and (mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count) <= $recurring_end_time)) {
-                   $recurring_date_array[] = mktime(0,0,0,$_POST['recurring_year_every'],$_POST['recurring_year'],$year_count);
+    	            if((mktime(0,0,0,$form_data['recurring_year_every'],$form_data['recurring_year'],$year_count) > $next_date_time) and (mktime(0,0,0,$form_data['recurring_year_every'],$form_data['recurring_year'],$year_count) <= $recurring_end_time)) {
+                   $recurring_date_array[] = mktime(0,0,0,$form_data['recurring_year_every'],$form_data['recurring_year'],$year_count);
                    }
     	            $year_count++;
     	            $year = mktime(0,0,0,1,1,$year_count);
                    }
-                   $recurring_pattern_array['recurring_year'] = $_POST['recurring_year'];
-                   $recurring_pattern_array['recurring_year_every'] = $_POST['recurring_year_every'];
+                   $recurring_pattern_array['recurring_year'] = $form_data['recurring_year'];
+                   $recurring_pattern_array['recurring_year_every'] = $form_data['recurring_year_every'];
                    }
 
     	      $recurring_pattern_array['recurring_start_date'] = $dates_item->getStartingDay();
@@ -956,4 +1028,74 @@ class cs_popup_date_controller {
           }
        }
     }
+    
+   function checkValues ($form_data) {
+      $translator = $this->_environment->getTranslationObject();
+      $result = array();
+      if ( !empty($form_data['recurring'])){
+         if($form_data['recurring_select'] == 'daily'){
+            if(empty($form_data['recurring_day'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_DAY_ERROR');
+            } else {
+               if(!is_numeric($form_data['recurring_day'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+               }
+            }
+         } elseif($form_data['recurring_select'] == 'weekly'){
+            if(empty($form_data['recurring_week'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_WEEK_ERROR');
+            } else {
+               if(!is_numeric($form_data['recurring_week'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+               }
+            }
+            if(empty($form_data['recurring_week_days'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_WEEKDAYS_ERROR');
+            }
+         } elseif($form_data['recurring_select'] == 'monthly'){
+            if(empty($form_data['recurring_month'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_MONTH_ERROR');
+            } else {
+               if(!is_numeric($form_data['recurring_month'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+               }
+            }
+         } elseif($form_data['recurring_select'] == 'yearly'){
+            if(empty($form_data['recurring_year'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_YEAR_ERROR');
+            } else {
+               if(!is_numeric($form_data['recurring_year'])){
+                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+               } else {
+                  if(($form_data['recurring_year_every'] == '1'
+                      or $form_data['recurring_year_every'] == '3'
+                      or $form_data['recurring_year_every'] == '5'
+                      or $form_data['recurring_year_every'] == '7'
+                      or $form_data['recurring_year_every'] == '8'
+                      or $form_data['recurring_year_every'] == '10'
+                      or $form_data['recurring_year_every'] == '12') and ($form_data['recurring_year'] > 31)){
+                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                  }
+                  if(($form_data['recurring_year_every'] == '4'
+                      or $form_data['recurring_year_every'] == '6'
+                      or $form_data['recurring_year_every'] == '9'
+                      or $form_data['recurring_year_every'] == '11') and ($form_data['recurring_year'] > 30)){
+                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                  }
+                  if(($form_data['recurring_year_every'] == '2') and ($form_data['recurring_year'] > 29)){
+                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                  }
+               }
+            }
+         }
+         if(empty($form_data['recurring_end_date'])){
+               $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
+         } else {
+            if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$form_data['recurring_end_date'],'00:00') ) {
+               $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
+            }
+         }
+      }
+      return $result;
+   }
 }
