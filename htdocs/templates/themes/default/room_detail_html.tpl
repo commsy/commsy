@@ -135,7 +135,12 @@
 			<div class="clear"> </div>
 		{if $room.netnavigation_edit}
 			<div class="portlet_rc_action">
-				<a class="open_popup context_nav" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}', editType: 'netnavigation'" href="#">
+				{if isset($detail.content.item_id)}
+					{assign var="iid" value=$detail.content.item_id}
+				{else}
+					{assign var="iid" value=$detail.item_id}
+				{/if}
+				<a class="open_popup context_nav" data-custom="iid:'{$iid}', module: '{$environment.module}', editType: 'netnavigation'" href="#">
 				___COMMON_ITEM_ATTACH___
 				</a>
 			</div>

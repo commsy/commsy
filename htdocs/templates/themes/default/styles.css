@@ -2893,7 +2893,6 @@ div#popup_w3col #netnavigation a {
 
 #dis_navigation a:hover, a:hover.context_nav {
     display: block;
-    color: #FFF;
     text-decoration: underline;
     }
 
