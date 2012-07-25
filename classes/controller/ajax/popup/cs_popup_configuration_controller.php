@@ -298,7 +298,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				               $current_context->setCheckNewMemberCode($form_data['code']);
 				            }
 				         }
-				         
+
 				         // open for guests
 				         if ( isset($form_data['open_for_guests']) ) {
 				            if ($form_data['open_for_guests'] == 'open') {
@@ -618,8 +618,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						else $current_context->setwithInformationBox('no');
 
 						// usage information
-						
-						
+
+
 						/*
 						 * $default_rubrics = $current_context->getAvailableRubrics();
         $array_info_text = array();
@@ -673,45 +673,45 @@ class cs_popup_configuration_controller implements cs_popup_controller {
               unset($temp_array);
          }
 						 */
-						
+
 						// get usage information
 				        $info_array = array();
 				        if (is_array($current_context->_getExtra('USAGE_INFO'))) {
 				        	$info_array = $current_context->_getExtra('USAGE_INFO');
 				        }
-				        
+
 				        // get selected rubric from form
 				        $info_rubric = $form_data["array_info_text_rubric"];
-				        
+
 				        if (!empty($info_rubric)) {
 				        	// if info array is empty, add rubric
 				        	if (empty($info_array)) {
 				        		$info_array[] = $info_rubric;
 				        		$current_context->setUsageInfoArray($info_array);
 				        	}
-				        	
+
 				        	/*
 				        	 * Note: Why adding twice? Why differ between empty and !in_array?
 				        	 */
-				        	
+
 				        	// if rubric is not in array push it
 				        	elseif (!in_array($info_rubric . "_no", $info_array)) {
 				        		array_push($info_array, $info_rubric . "no");
 				        		$current_context->setUsageInfoArray($info_array);
 				        	}
-				        	
+
 				        	// if rubric is in array remove it
 				        	elseif (in_array($info_rubric . "_no", $info_array)) {
 				        		$temp = array($info_rubric . "_no");
 				        		$newArray = array_diff($info_array, $temp);
 				        		$current_context->setUsageInfoArray($newArray);
 				        	}
-				        	
+
 				        	// set title
 				        	if (!empty($form_data["moderation_title_" . $info_rubric])) {
 				        		$current_context->setUsageInfoHeaderForRubric($info_rubric, $form_data["moderation_title_" . $info_rubric]);
 				        	}
-				        	
+
 				        	// set text
 				        	if (!empty($form_data["moderation_description_" . $info_rubric])) {
 				        		$current_context->setUsageInfoTextForRubric($info_rubric, $form_data["moderation_description_" . $info_rubric]);
@@ -719,9 +719,9 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        		$current_context->setUsageInfoTextForRubric($info_rubric, "");
 				        	}
 				        }
-				        
+
 				        /*
-				         
+
 				         $info_form_array = array();
 				         if (is_array($current_context->getUsageInfoFormArray())) {
 				            $info_form_array = $current_context->getUsageInfoFormArray();
@@ -764,7 +764,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				          }
 
 				         }
-				         
+
 				         */
 
 						// save
@@ -788,7 +788,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						if(!empty($additional["fileInfo"])) {
 							$logo = $current_context->getLogoFilename();
 							$disc_manager = $this->_environment->getDiscManager();
-							
+
 							$session = $this->_environment->getSessionItem();
 							$session->unsetValue("add_files");
 
@@ -821,7 +821,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						if(!empty($additional["fileInfo"])) {
 							$bg_image = $current_context->getBGImageFilename();
 							$disc_manager = $this->_environment->getDiscManager();
-							
+
 							$session = $this->_environment->getSessionItem();
 							$session->unsetValue("add_files");
 
@@ -846,85 +846,85 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 					break;
-				
+
 				case 'external_configuration':
 				   include_once('functions/development_functions.php');
-				   
+
 				   logToFile('save_external');
 				   logToFile($form_data);
 				   logToFile($additional);
-				   
+
 				   if($this->_popup_controller->checkFormData('external_configuration')) {
-      				   
+
 				      // save
 				      $current_context->save();
-				      
+
 				      // set return
 				      $this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
-				      
+
 				      /*
 				      // Set modificator and modification date
       				   $current_user = $environment->getCurrentUserItem();
       				   $item->setModificatorItem($current_user);
       				   $item->setModificationDate(getCurrentDateTimeInMySQL());
-      				   
+
       				   if ( isset($_POST['use_comments']) and !empty($_POST['use_comments']) and $_POST['use_comments'] == 1) {
       				      $item->setWordpressUseComments();
       				   } else {
       				      $item->unsetWordpressUseComments();
       				   }
-      				   
+
       				   if ( isset($_POST['use_comments_moderation']) and !empty($_POST['use_comments_moderation']) and $_POST['use_comments_moderation'] == 1) {
       				      $item->setWordpressUseCommentsModeration();
       				   } else {
       				      $item->unsetWordpressUseCommentsModeration();
       				   }
-      				   
-      				   
+
+
       				   if ( isset($_POST['use_calendar']) and !empty($_POST['use_calendar']) and $_POST['use_calendar'] == 1) {
       				      $item->setWordpressUseCalendar();
       				   } else {
       				      $item->unsetWordpressUseCalendar();
       				   }
-      				   
+
       				   if ( isset($_POST['use_tagcloud']) and !empty($_POST['use_tagcloud']) and $_POST['use_tagcloud'] == 1) {
       				      $item->setWordpressUseTagCloud();
       				   } else {
       				      $item->unsetWordpressUseTagCloud();
       				   }
-      				   
+
       				   if ( isset($_POST['wordpresslink']) and !empty($_POST['wordpresslink']) and $_POST['wordpresslink'] == 1) {
       				      $item->setWordpressHomeLink();
       				   } else {
       				      $item->unsetWordpressHomeLink();
       				   }
-      				   
+
       				   if ( isset($_POST['skin_choice']) and !empty($_POST['skin_choice']) ) {
       				      $item->setWordpressSkin($_POST['skin_choice']);
       				   }
-      				   
+
       				   if ( isset($_POST['wordpresstitle']) and !empty($_POST['wordpresstitle']) ) {
       				      $item->setWordpressTitle($_POST['wordpresstitle']);
       				   } else {
       				      $item->setWordpressTitle($item->getTitle());
       				   }
-      				   
+
       				   if ( isset($_POST['wordpressdescription']) and !empty($_POST['wordpressdescription']) ) {
       				      $item->setWordpressDescription($_POST['wordpressdescription']);
       				   } else {
       				      $item->setWordpressDescription('');
       				   }
-      				   
+
       				   if ( isset($_POST['member_role']) and !empty($_POST['member_role']) ) {
       				      $item->setWordpressMemberRole($_POST['member_role']);
       				   } else {
       				      $item->setWordpressMemberRole();
       				   }
-      				   
+
       				   $item_wp_exists = $item->existWordpress();
       				   $item->setWordpressExists();
       				   $item->setWordpressActive();
-      				   
+
       				   // create or change new wordpress
       				   $wordpress_manager = $environment->getWordpressManager();
       				   $success = $wordpress_manager->createWordpress($item);
@@ -1670,14 +1670,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   $return = array();
 	   $current_context = $this->_environment->getCurrentContextItem();
 	   $translator = $this->_environment->getTranslationObject();
-	   $wordpress_manager = $this->_environment->getWordpressManager();
-	   $wordpress = array();
-	   
+
 	   if($current_context->isWordpressActive()){
+	   	  $wordpress_manager = $this->_environment->getWordpressManager();
+	   	  $wordpress = array();
 	      $wordpress['wordpress_active'] = 'yes';
 	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
 	      $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
-	 
+
 	      include_once('functions/development_functions.php');
 
 	      $wordpress_skins = array();
@@ -1688,7 +1688,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      }
 	      $wordpress['skin_array'] = $wordpress_skins;
 	      $wordpress['skin_choice'] = $current_context->getWordpressSkin();
-	      
+
 	      $wordpress_member_roles = array();
 	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber');
 	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author');
@@ -1696,14 +1696,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator');
 	      $wordpress['member_role_array'] = $wordpress_member_roles;
 	      $wordpress['member_role'] = $current_context->getWordpressMemberRole();
-	      
+
 	      if($current_context->getWordpressUseComments()){
 	         $wordpress['use_comments'] = 'yes';
 	      }
 	      if($current_context->getWordpressUseCommentsModeration()){
 	         $wordpress['use_comments_moderation'] = 'yes';
 	      }
-	      
+
 	      $title = $translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWordpressTitle();
 	      $session_item = $this->_environment->getSessionItem();
 	      $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
@@ -1712,9 +1712,9 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      $url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
 	      $wordpress['wordpresslink'] = $url;
 	   }
-	   
+
 	   $return['wordpress'] = $wordpress;
-	
+
 	   return $return;
 	}
 
