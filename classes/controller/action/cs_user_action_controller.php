@@ -16,6 +16,36 @@
 		public function processTemplate() {
 			// call parent
 			parent::processTemplate();
+			
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUser();
+			$translator = $this->_environment->getTranslationObject();
+			$session = $this->_environment->getSessionItem();
+			$index_action = $session->getValue('index_action');
+			
+			if($index_action['action'] == 'USER_EMAIL_SEND'){
+			   $user_manager = $this->_environment->getUserManager();
+			   //$user = $user_manager->get
+			   
+			   $user_array = array();
+			   foreach($index_action['selected_ids'] as $item_id){
+			      $temp_user = $user_manager->getItem($item_id);
+			      $temp_array['name'] = $temp_user->getFullName();
+			      if($temp_user->isEmailVisible()){
+			         $temp_array['email'] = $temp_user->getEmail();
+			      } else {
+			         $temp_array['email'] = $translator->getMessage('USER_EMAIL_HIDDEN2');
+			      }
+			      $temp_array['item_id'] = $temp_user->$item_id;
+			      $user_array[] = $temp_array;
+			   }
+			   
+			   $this->assign('user', 'data', $user_array);
+			   
+			   $email_footer = $translator->getMessage('MAIL_BODY_CIAO_PR', $current_user->getFullName(), $current_context->getTitle());
+			   
+			   $this->assign('email', 'footer', $email_footer);
+			}
 		}
 		
 		public function actionAction(){
@@ -667,6 +697,10 @@
                $mail_success = $mail->send();
                $mail_error_array = $mail->getErrorArray();
                unset($mail);
+               
+               redirect($environment->getCurrentContextID(),
+                        $environment->getCurrentModule(),
+                        'index');
             }
             unset($user);
          }
