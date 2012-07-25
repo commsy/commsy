@@ -72,6 +72,7 @@ class cs_profile_form_view extends cs_form_view {
       }else{
          $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
       }
+      $current_user_item = $this->_environment->getCurrentUserItem();
       $params['profile_page'] = 'newsletter';
       $private_room = $current_user_item->getOwnRoom();
       if ( !isset( $private_room )
