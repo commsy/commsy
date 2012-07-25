@@ -67,16 +67,16 @@
 								<div class="settings_area">
 									<div class="form_formatting_checkbox_box">
 										<div style="font-size:10pt; text-align:left;">
-											<input type="radio" style="vertical-align:top;" tabindex="34" value="#999999" name="form_data[date_addon_color]"><img style="background-color:#999999; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="35" value="#CC0000" name="form_data[date_addon_color]"><img style="background-color:#cc0000; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="36" value="#FF6600" name="form_data[date_addon_color]"><img style="background-color:#ff6600; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="37" value="#FFCC00" name="form_data[date_addon_color]"><img style="background-color:#ffcc00; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="38" value="#FFFF66" name="form_data[date_addon_color]"><img style="background-color:#ffff66; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="39" value="#33CC00" name="form_data[date_addon_color]"><img style="background-color:#33cc00; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="40" value="#00CCCC" name="form_data[date_addon_color]"><img style="background-color:#00cccc; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="41" value="#3366FF" name="form_data[date_addon_color]"><img style="background-color:#3366ff; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="42" value="#6633FF" name="form_data[date_addon_color]"><img style="background-color:#6633ff; border:1px solid #cccccc;" src="images/spacer.gif">
-										    <input type="radio" style="vertical-align:top;" tabindex="43" value="#CC33CC" name="form_data[date_addon_color]"><img style="background-color:#cc33cc; border:1px solid #cccccc;" src="images/spacer.gif">
+											<input type="radio" style="vertical-align:top;" tabindex="34" value="#999999" name="form_data[date_addon_color]" {if $item.date_addon_color == '#999999'}checked="checked"{/if}><img style="background-color:#999999; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="35" value="#CC0000" name="form_data[date_addon_color]" {if $item.date_addon_color == '#CC0000'}checked="checked"{/if}><img style="background-color:#cc0000; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="36" value="#FF6600" name="form_data[date_addon_color]" {if $item.date_addon_color == '#FF6600'}checked="checked"{/if}><img style="background-color:#ff6600; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="37" value="#FFCC00" name="form_data[date_addon_color]" {if $item.date_addon_color == '#FFCC00'}checked="checked"{/if}><img style="background-color:#ffcc00; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="38" value="#FFFF66" name="form_data[date_addon_color]" {if $item.date_addon_color == '#FFFF66'}checked="checked"{/if}><img style="background-color:#ffff66; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="39" value="#33CC00" name="form_data[date_addon_color]" {if $item.date_addon_color == '#33CC00'}checked="checked"{/if}><img style="background-color:#33cc00; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="40" value="#00CCCC" name="form_data[date_addon_color]" {if $item.date_addon_color == '#00CCCC'}checked="checked"{/if}><img style="background-color:#00cccc; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="41" value="#3366FF" name="form_data[date_addon_color]" {if $item.date_addon_color == '#3366FF'}checked="checked"{/if}><img style="background-color:#3366ff; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="42" value="#6633FF" name="form_data[date_addon_color]" {if $item.date_addon_color == '#6633FF'}checked="checked"{/if}><img style="background-color:#6633ff; border:1px solid #cccccc;" src="images/spacer.gif">
+										    <input type="radio" style="vertical-align:top;" tabindex="43" value="#CC33CC" name="form_data[date_addon_color]" {if $item.date_addon_color == '#CC33CC'}checked="checked"{/if}><img style="background-color:#cc33cc; border:1px solid #cccccc;" src="images/spacer.gif">
 										</div>
 										<div style="padding-top: 3px;">
 											<br/>
@@ -93,6 +93,16 @@
 										    ___DATES_RECURRING_DATE___
 										    <br/>
 										</div>
+										<!-- daily -->
+										<div style="padding-top: 3px;">
+											<input type="text" class="text" tabindex="52" size="1" maxlength="4" value="" style="font-size: 10pt;" name="recurring_day">
+										</div>
+										<div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
+                                            Wiederholung bis:<span class="required">*</span>&nbsp;
+                                       		<input type="text" class="text hasDatepicker" tabindex="53" size="13" maxlength="13" value="" style="font-size: 10pt;" name="recurring_end_date" id="dp1343197657614"><img class="ui-datepicker-trigger" src="images/commsyicons/datepicker.png" alt="Datum auswŠhlen" title="Datum auswŠhlen">
+                                       </div>
+                                       
+										<!-- weekly -->
 										<div style="padding-top: 3px;">
 											___DATES_RECURRING_EVERY_WEEK___&nbsp;
 											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_week]">
