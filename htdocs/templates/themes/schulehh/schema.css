@@ -153,4 +153,9 @@ a:hover {
 		color:#DDD;
 	}
 
+#addon_area_row_2 {
+    float: right;
+    height: 60px;
+    width: 47px;
+}
 

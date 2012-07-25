@@ -3,6 +3,7 @@ $message["RUBRIC_ADMIN"]["de"] = "Auswahl der Rubriken";
 $message["RUBRIC_ADMIN_DESC"]["de"] = "Wählen Sie die Rubriken und ihre Reihenfolge aus.";
 $message["RUBRIC_ALL_ATTACHMENTS"]["de"] = "... alle anzeigen (%1)";
 $message["RUBRIC_CONFIG_NO"]["de"] = "Ausgeblendet auf der Home";
+$message["RUBRIC_CONFIG_NO_2"]["de"] = "ausgeblendet";
 $message["RUBRIC_CONFIG_SHORT"]["de"] = "Ausgeklappt auf der Home";
 $message["RUBRIC_CONFIG_TINY"]["de"] = "Zugeklappt auf der Home";
 $message["RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON"]["de"] = "Ankündigungen zuordnen";

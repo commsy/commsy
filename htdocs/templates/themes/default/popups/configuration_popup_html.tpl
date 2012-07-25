@@ -61,9 +61,9 @@
 											<div class="uploader-single">
 												<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 												   <input id="room_logo" class="fileSelector"></input>
-												   
+
 												   <div class="filePreview"></div>
-												   
+
 												   <div class="fileList"></div>
 												</form>
 											</div>
@@ -163,7 +163,7 @@
 															___MODULE_CONFIG_TINY___
 														</option>
 														<option value="nodisplay"{if 'none' == $conf_rubric.show} selected="selected"{/if}>
-															___MODULE_CONFIG_NONE___
+															___RUBRIC_CONFIG_NO_2___
 														</option>
 													</select>
 												</div>
