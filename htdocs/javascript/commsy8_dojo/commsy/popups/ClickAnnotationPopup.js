@@ -35,7 +35,7 @@ define([	"dojo/_base/declare",
 				tabs: [
 					{ id: "rights_tab" },
 					{ id: "buzzwords_tab", group: "buzzwords" },
-					{ id: "tags_tab", group: "tags" },
+					{ id: "tags_tab", group: "tags" }
 				],
 				nodeLists: [
 				    { query: query("div#files_attached", this.contentNode) },
@@ -43,7 +43,7 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
 				    { query: query("input[name='form_data[dayEnd]']", this.contentNode) },
 				    { query: query("input[name='form_data[timeEnd]']", this.contentNode) },
-				    { query: query("input[name='form_data[title]']", this.contentNode) },
+				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
 			};
 			

@@ -61,7 +61,7 @@ define([	"dojo/_base/declare",
 				nodeLists: [
 				    { query: query("div#files_attached", this.contentNode) },
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
-				    { query: query("input[name='form_data[title]']", this.contentNode) },
+				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
 			};
 

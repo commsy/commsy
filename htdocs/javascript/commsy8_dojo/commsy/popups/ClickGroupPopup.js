@@ -53,7 +53,7 @@ define([	"dojo/_base/declare",
 			var search = {
 				tabs: [
 					{ id: "rights_tab" },
-					{ id: "grouproom_tab" },
+					{ id: "grouproom_tab" }
 				],
 				nodeLists: [
 				    { query: query("div#files_attached", this.contentNode) },
