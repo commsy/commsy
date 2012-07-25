@@ -26,8 +26,11 @@
 				{if $detail.actions.mail}
 					<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'mailtomod', mailType:'project'" href="#">___EMAIL_CONTACT_MODERATOR_TEXT___</a> |
 				{/if}
-				{if $detail.content.room_user_status == 'closed'}
-					<a id="action_member" class="open_popup" data-custom="iid: {$detail.item_id}, module: 'join'" href="#">___CONTEXT_JOIN___</a>
+
+		{if $detail.content.room_user_status == 'closed'}
+		{*			<a id="action_member" class="open_popup" data-custom="iid: {$detail.item_id}, module: 'join'" href="#">___CONTEXT_JOIN___</a>
+		*}
+					<a href="commsy.php?cid={$environment.pid}&mod=home&fct=index&room_id={$detail.item_id}&account=member">___CONTEXT_JOIN___</a>
 				{elseif $detail.content.room_user_status == 'requested'}
 					<span title="___ACCOUNT_NOT_ACCEPTED_YET___" class="disabled_action">___CONTEXT_JOIN___</span>
 				{elseif $detail.content.room_user_status == 'rejected'}
@@ -37,6 +40,7 @@
 				{elseif $detail.content.room_user_status == 'open'}
 					<span title="___ACCOUNT_GET_MEMBERSHIP_ALREADY___" class="disabled_action">___CONTEXT_JOIN___</span>
 				{/if}
+
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
