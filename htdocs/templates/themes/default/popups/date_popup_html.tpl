@@ -6,6 +6,76 @@
 
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+	{if $item.edit_type == 'netnavigation'}
+						<h2>___COMMON_NETNAVIGATION_ENTRIES___</h2>
+							<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/netnavigation_tab_include_html.tpl"}
+						</div>
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input type="hidden" name="editType" value="{$item.edit_type}"/>
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
+					</div>
+	{elseif $item.edit_type == 'buzzwords'}
+						<h2>___COMMON_BUZZWORDS___</h2>
+							<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/buzzwords_tab_include_html.tpl"}
+						</div>
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input type="hidden" name="editType" value="{$item.edit_type}"/>
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
+					</div>
+
+	{elseif $item.edit_type == 'tags'}
+						<h2>___COMMON_TAGS___</h2>
+							<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/tags_tab_include_html.tpl"}
+						</div>
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input type="hidden" name="editType" value="{$item.edit_type}"/>
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
+					</div>
+
+	{else}
+
 					<h2>___COMMON_DATE___</h2>
 					<div class="clear"> </div>
 				</div>
@@ -101,7 +171,7 @@
                                     &nbsp;. ___DATES_RECURRING_DAY___
                                  </div>
                               </div>
-                                       
+
 										<!-- weekly -->
                               <div id="recurring_details_weekly" class="hidden">
    										<div style="padding-top: 3px;">
@@ -119,7 +189,7 @@
    										   <input type="checkbox" tabindex="54" value="sunday" name="form_data[recurring_week_days_sunday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SUNDAY___</span>
    										</div>
                               </div>
-                              
+
                               <!-- monthly -->
                               <div id="recurring_details_monthly" class="hidden">
                                  <div style="padding-top: 3px;">
@@ -145,13 +215,13 @@
                                     </select>
                                  </div>
                               </div>
-                              
+
                               <!-- yearly -->
                               <div id="recurring_details_yearly" class="hidden">
                                  <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
                                     ___DATES_RECURRING_EVERY_YEAR___&nbsp;
                                     <input type="text" class="text" tabindex="53" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_year]">
-                                    &nbsp;. 
+                                    &nbsp;.
                                     <select style="font-size:10pt;" tabindex="54" size="0" name="form_data[recurring_year_every]">
                                        <option value="1">___COMMON_DATE_JANUARY_LONG___</option>
                                        <option value="2">___COMMON_DATE_FEBRUARY_LONG___</option>
@@ -172,7 +242,7 @@
                                  ___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;
                                  <input class="datepicker" type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="form_data[recurring_end_date]">
                               </div>
-                              
+
 										<div class="clear"></div>
 									</div>
 								</div>
@@ -200,6 +270,7 @@
 
 					</div>
 				</div>
+				{/if}
 			</div>
 
 			<div class="clear"></div>

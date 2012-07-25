@@ -81,6 +81,9 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
         if(isset($additional['action']) && $additional['action'] === 'upload_picture') $current_iid = $additional['iid'];
         else $current_iid = $form_data['iid'];
 
+        if (isset($form_data['editType'])){
+			$this->_edit_type = $form_data['editType'];
+        }
         $translator = $this->_environment->getTranslationObject();
 
         if($current_iid === 'NEW') {
@@ -101,7 +104,33 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 		/****************************/
 
 
-        } else { //Acces granted
+        } elseif($this->_edit_type != 'normal'){
+ 			$this->cleanup_session($current_iid);
+            // Set modificator and modification date
+            $current_user = $environment->getCurrentUserItem();
+            $date_item->setModificatorItem($current_user);
+
+            if ($this->_edit_type == 'buzzwords'){
+                // buzzwords
+                $date_item->setBuzzwordListByID($form_data['buzzwords']);
+            }
+            if ($this->_edit_type == 'tags'){
+                // buzzwords
+                $date_item->setTagListByID($form_data['tags']);
+            }
+            $date_item->save();
+            // save session
+            $session = $this->_environment->getSessionItem();
+            $this->_environment->getSessionManager()->save($session);
+
+            // Add modifier to all users who ever edited this item
+            $manager = $environment->getLinkModifierItemManager();
+            $manager->markEdited($date_item->getItemID());
+
+            // set return
+            $this->_popup_controller->setSuccessfullItemIDReturn($date_item->getItemID(),CS_TOPIC_TYPE);
+
+        }else { //Acces granted
 			$this->cleanup_session($current_iid);
 
 
@@ -265,29 +294,33 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 
 
     public function getFieldInformation($sub = '') {
-		$return = array(
-			'upload_picture'	=> array(
-			),
+		if ($this->_edit_type == 'normal'){
+			$return = array(
+				'upload_picture'	=> array(
+				),
 
-			'general'			=> array(
-				array(	'name'		=> 'title',
-						'type'		=> 'text',
-						'mandatory' => true)
-			),
-			'description'			=> array(
-				array(	'name'		=> 'description',
-						'type'		=> 'text',
-						'mandatory' => false)
-			),
-			'public'			=> array(
-				array(	'name'		=> 'public',
-						'type'		=> 'radio',
-						'mandatory' => true)
-			)
+				'general'			=> array(
+					array(	'name'		=> 'title',
+							'type'		=> 'text',
+							'mandatory' => true)
+				),
+				'description'			=> array(
+					array(	'name'		=> 'description',
+							'type'		=> 'text',
+							'mandatory' => false)
+				),
+				'public'			=> array(
+					array(	'name'		=> 'public',
+							'type'		=> 'radio',
+							'mandatory' => true)
+				)
 
-		);
+			);
 
-		return $return[$sub];
+			return $return[$sub];
+		}else{
+			return array();
+		}
     }
 
 	public function cleanup_session($current_iid) {

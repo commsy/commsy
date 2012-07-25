@@ -51,6 +51,10 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
         if(isset($additional['action']) && $additional['action'] === 'upload_picture') $current_iid = $additional['iid'];
         else $current_iid = $form_data['iid'];
 
+        if (isset($form_data['editType'])){
+			$this->_edit_type = $form_data['editType'];
+        }
+
         $translator = $this->_environment->getTranslationObject();
 
         if($current_iid === 'NEW') {

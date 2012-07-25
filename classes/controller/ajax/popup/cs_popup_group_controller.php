@@ -98,6 +98,10 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
             $item = $item_manager->getItem($current_iid);
         }
 
+        if (isset($form_data['editType'])){
+			$this->_edit_type = $form_data['editType'];
+        }
+
         // TODO: check rights */
 		/****************************/
         if ( $current_iid != 'NEW' and !isset($item) ) {
@@ -109,7 +113,33 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 		/****************************/
 
 
-        } else { //Acces granted
+        } elseif($this->_edit_type != 'normal'){
+ 			$this->cleanup_session($current_iid);
+            // Set modificator and modification date
+            $current_user = $environment->getCurrentUserItem();
+            $item->setModificatorItem($current_user);
+
+            if ($this->_edit_type == 'buzzwords'){
+                // buzzwords
+                $item->setBuzzwordListByID($form_data['buzzwords']);
+            }
+            if ($this->_edit_type == 'tags'){
+                // buzzwords
+                $item->setTagListByID($form_data['tags']);
+            }
+            $item->save();
+            // save session
+            $session = $this->_environment->getSessionItem();
+            $this->_environment->getSessionManager()->save($session);
+
+            // Add modifier to all users who ever edited this item
+            $manager = $environment->getLinkModifierItemManager();
+            $manager->markEdited($item->getItemID());
+
+            // set return
+            $this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID(),CS_GROUP_TYPE);
+
+        }else { //Acces granted
 			$this->cleanup_session($current_iid);
 
 			// upload picture
@@ -250,35 +280,39 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 
 
     public function getFieldInformation($sub = '') {
-		$return = array(
-			'upload_picture'	=> array(
-			),
+		if ($this->_edit_type == 'normal'){
+			$return = array(
+				'upload_picture'	=> array(
+				),
 
-			'general'			=> array(
-				array(	'name'		=> 'name',
-						'type'		=> 'text',
-						'mandatory' => true)
-			),
-			'description'			=> array(
-				array(	'name'		=> 'description',
-						'type'		=> 'text',
-						'mandatory' => false)
-			),
-			'public'			=> array(
-				array(	'name'		=> 'public',
-						'type'		=> 'radio',
-						'mandatory' => true)
-			),
-			'grouproom_activate'=> array(
-				array(	'name'		=> 'grouproom_activate',
-						'type'		=> 'check',
-						'mandatory' => false)
-			)
+				'general'			=> array(
+					array(	'name'		=> 'name',
+							'type'		=> 'text',
+							'mandatory' => true)
+				),
+				'description'			=> array(
+					array(	'name'		=> 'description',
+							'type'		=> 'text',
+							'mandatory' => false)
+				),
+				'public'			=> array(
+					array(	'name'		=> 'public',
+							'type'		=> 'radio',
+							'mandatory' => true)
+				),
+				'grouproom_activate'=> array(
+					array(	'name'		=> 'grouproom_activate',
+							'type'		=> 'check',
+							'mandatory' => false)
+				)
 
 
-		);
+			);
 
-		return $return[$sub];
+			return $return[$sub];
+		}else{
+			return array();
+		}
     }
 
 	public function cleanup_session($current_iid) {

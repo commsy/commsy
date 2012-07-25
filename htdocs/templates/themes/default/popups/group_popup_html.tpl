@@ -6,6 +6,75 @@
 
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+	{if $item.edit_type == 'netnavigation'}
+						<h2>___COMMON_NETNAVIGATION_ENTRIES___</h2>
+							<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/netnavigation_tab_include_html.tpl"}
+						</div>
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input type="hidden" name="editType" value="{$item.edit_type}"/>
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
+					</div>
+	{elseif $item.edit_type == 'buzzwords'}
+						<h2>___COMMON_BUZZWORDS___</h2>
+							<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/buzzwords_tab_include_html.tpl"}
+						</div>
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input type="hidden" name="editType" value="{$item.edit_type}"/>
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
+					</div>
+
+	{elseif $item.edit_type == 'tags'}
+						<h2>___COMMON_TAGS___</h2>
+							<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/tags_tab_include_html.tpl"}
+						</div>
+						<div id="content_buttons">
+							<div id="crt_actions_area">
+								<input type="hidden" name="editType" value="{$item.edit_type}"/>
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+							</div>
+						</div>
+					</div>
+
+	{else}
 					<h2>___COMMON_GROUP___</h2>
 					<div class="clear"> </div>
 				</div>
@@ -24,10 +93,10 @@
 							<div class="input_label_80">___COMMON_NAME___<span class="required">*</span>:</div>
 							<input type="text" value="{if isset($item.name)}{$item.name}{/if}" name="form_data[name]" class="size_400" />
 						</div>
-						
+
 						<div class="input_row_100">
 							<label for="room_logo">___LOGO_UPLOAD___:</label>
-							
+
 							<div class="uploader-single">
 								<form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
 								   <input id="group_logo" class="fileSelector"></input>
@@ -36,7 +105,7 @@
 								</form>
 							</div>
 						</div>
-						
+
 						{if !empty($item.picture)}
 							<div class="input_row">
 								<div class="input_container">
@@ -104,6 +173,7 @@
 
 					</div>
 				</div>
+			{/if}
 			</div>
 
 			<div class="clear"></div>

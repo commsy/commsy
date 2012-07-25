@@ -86,6 +86,9 @@
 				$discussion_manager = $this->_environment->getDiscussionManager();
 				$discussion_item = $discussion_manager->getItem($current_iid);
 			}
+	        if (isset($form_data['editType'])){
+				$this->_edit_type = $form_data['editType'];
+	        }
 
 
 			// TODO: check rights */
@@ -117,7 +120,35 @@
 
 
 			// access granted
-			else {
+		elseif($this->_edit_type != 'normal'){
+ 			$this->cleanup_session($current_iid);
+            // Set modificator and modification date
+            $current_user = $environment->getCurrentUserItem();
+            $discussion_item->setModificatorItem($current_user);
+
+            if ($this->_edit_type == 'buzzwords'){
+                // buzzwords
+                $discussion_item->setBuzzwordListByID($form_data['buzzwords']);
+            }
+            if ($this->_edit_type == 'tags'){
+                // buzzwords
+                $discussion_item->setTagListByID($form_data['tags']);
+            }
+            $discussion_item->save();
+            // save session
+            $session = $this->_environment->getSessionItem();
+            $this->_environment->getSessionManager()->save($session);
+
+            // Add modifier to all users who ever edited this item
+            $manager = $environment->getLinkModifierItemManager();
+            $manager->markEdited($discussion_item->getItemID());
+
+            // set return
+            $this->_popup_controller->setSuccessfullItemIDReturn($discussion_item->getItemID(),CS_DISCUSSION_TYPE);
+
+        }
+
+        else {
 				$this->cleanup_session($current_iid);
 
 				// save item
