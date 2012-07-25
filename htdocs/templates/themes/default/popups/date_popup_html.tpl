@@ -94,33 +94,85 @@
 										    <br/>
 										</div>
 										<!-- daily -->
-										<div style="padding-top: 3px;">
-											<input type="text" class="text" tabindex="52" size="1" maxlength="4" value="" style="font-size: 10pt;" name="recurring_day">
-										</div>
-										<div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
-                                            Wiederholung bis:<span class="required">*</span>&nbsp;
-                                       		<input type="text" class="text hasDatepicker" tabindex="53" size="13" maxlength="13" value="" style="font-size: 10pt;" name="recurring_end_date" id="dp1343197657614"><img class="ui-datepicker-trigger" src="images/commsyicons/datepicker.png" alt="Datum auswŠhlen" title="Datum auswŠhlen">
-                                       </div>
+                              <div class="recurring_details daily">
+                                 <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
+                                    ___DATES_RECURRING_EVERY_DAY___&nbsp;
+                                    <input type="text" class="text" tabindex="52" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_day]">
+                                    &nbsp;. ___DATES_RECURRING_DAY___
+                                 </div>
+                              </div>
                                        
 										<!-- weekly -->
-										<div style="padding-top: 3px;">
-											___DATES_RECURRING_EVERY_WEEK___&nbsp;
-											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_week]">
-											&nbsp;. ___DATES_RECURRING_WEEK___
-										</div>
-										<div style="padding-top: 3px;">
-											<input type="checkbox" tabindex="48" value="monday" name="form_data[recurring_week_days_monday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_MONDAY___</span>
-										    <input type="checkbox" tabindex="49" value="tuesday" name="form_data[recurring_week_days_tuesday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_TUESDAY___</span>
-										   	<input type="checkbox" tabindex="50" value="wednesday" name="form_data[recurring_week_days_wednesday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_WEDNESDAY___</span>
-										    <input type="checkbox" tabindex="51" value="thursday" name="form_data[recurring_week_days_thursday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_THURSDAY___</span>
-										    <input type="checkbox" tabindex="52" value="friday" name="form_data[recurring_week_days_friday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_FRIDAY___</span>
-										    <input type="checkbox" tabindex="53" value="saturday" name="form_data[recurring_week_days_saturday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SATURDAY___</span>
-										    <input type="checkbox" tabindex="54" value="sunday" name="form_data[recurring_week_days_sunday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SUNDAY___</span>
-										</div>
-										<div style="padding-top: 3px;">
-											___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;
-											<input class="datepicker" type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="form_data[recurring_end_date]">
-										</div>
+                              <div class="recurring_details weekly">
+   										<div style="padding-top: 3px;">
+   											___DATES_RECURRING_EVERY_WEEK___&nbsp;
+   											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_week]">
+   											&nbsp;. ___DATES_RECURRING_WEEK___
+   										</div>
+   										<div style="padding-top: 3px;">
+   											<input type="checkbox" tabindex="48" value="monday" name="form_data[recurring_week_days_monday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_MONDAY___</span>
+   										   <input type="checkbox" tabindex="49" value="tuesday" name="form_data[recurring_week_days_tuesday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_TUESDAY___</span>
+   										   <input type="checkbox" tabindex="50" value="wednesday" name="form_data[recurring_week_days_wednesday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_WEDNESDAY___</span>
+   										   <input type="checkbox" tabindex="51" value="thursday" name="form_data[recurring_week_days_thursday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_THURSDAY___</span>
+   										   <input type="checkbox" tabindex="52" value="friday" name="form_data[recurring_week_days_friday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_FRIDAY___</span>
+   										   <input type="checkbox" tabindex="53" value="saturday" name="form_data[recurring_week_days_saturday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SATURDAY___</span>
+   										   <input type="checkbox" tabindex="54" value="sunday" name="form_data[recurring_week_days_sunday]">&nbsp;<span style="font-size:10pt;">___COMMON_DATE_SUNDAY___</span>
+   										</div>
+                              </div>
+                              
+                              <!-- monthly -->
+                              <div class="recurring_details monthly">
+                                 <div style="padding-top: 3px;">
+                                    ___DATES_RECURRING_EVERY_MONTH___&nbsp;
+                                    <input type="text" class="text" tabindex="54" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_month]">
+                                    &nbsp;. ___DATES_RECURRING_MONTH___
+                                    <select style="font-size:10pt;" tabindex="55" size="0" name="form_data[recurring_month_every]">
+                                       <option value="1">___DATES_RECURRING_FIRST___</option>
+                                       <option value="2">___DATES_RECURRING_SECOND___</option>
+                                       <option value="3">___DATES_RECURRING_THIRD___</option>
+                                       <option value="4">___DATES_RECURRING_FOURTH___</option>
+                                       <option value="5">___DATES_RECURRING_FIFTH___</option>
+                                       <option value="last">___DATES_RECURRING_LAST___</option>
+                                    </select>
+                                    <select style="font-size:10pt;" tabindex="56" size="0" name="form_data[recurring_month_day_every]">
+                                       <option value="1">___COMMON_DATE_MONDAY___</option>
+                                       <option value="2">___COMMON_DATE_TUESDAY___</option>
+                                       <option value="3">___COMMON_DATE_WEDNESDAY___</option>
+                                       <option value="4">___COMMON_DATE_THURSDAY___</option>
+                                       <option value="5">___COMMON_DATE_FRIDAY___</option>
+                                       <option value="6">___COMMON_DATE_SATURDAY___</option>
+                                       <option value="0">___COMMON_DATE_SUNDAY___</option>
+                                    </select>
+                                 </div>
+                              </div>
+                              
+                              <!-- yearly -->
+                              <div class="recurring_details yearly">
+                                 <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
+                                    ___DATES_RECURRING_EVERY_YEAR___&nbsp;
+                                    <input type="text" class="text" tabindex="53" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_year]">
+                                    &nbsp;. 
+                                    <select style="font-size:10pt;" tabindex="54" size="0" name="form_data[recurring_year_every]">
+                                       <option value="1">___COMMON_DATE_JANUARY_LONG___</option>
+                                       <option value="2">___COMMON_DATE_FEBRUARY_LONG___</option>
+                                       <option value="3">___COMMON_DATE_MARCH_LONG___</option>
+                                       <option value="4">___COMMON_DATE_APRIL_LONG___</option>
+                                       <option value="5">___COMMON_DATE_MAY_LONG___</option>
+                                       <option value="6">___COMMON_DATE_JUNE_LONG___</option>
+                                       <option value="7">___COMMON_DATE_JULY_LONG___</option>
+                                       <option value="8">___COMMON_DATE_AUGUST_LONG___</option>
+                                       <option value="9">___COMMON_DATE_SEPTEMBER_LONG___</option>
+                                       <option value="10">___COMMON_DATE_OCTOBER_LONG___</option>
+                                       <option value="11">___COMMON_DATE_NOVEMBER_LONG___</option>
+                                       <option value="12">___COMMON_DATE_DECEMBER_LONG___</option>
+                                    </select>
+                                 </div>
+                              </div>
+                              <div style="padding-top: 3px;">
+                                 ___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;
+                                 <input class="datepicker" type="text" tabindex="55" size="13" maxlength="13" value="" style="font-size:10pt;" name="form_data[recurring_end_date]">
+                              </div>
+                              
 										<div class="clear"></div>
 									</div>
 								</div>

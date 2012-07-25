@@ -1672,8 +1672,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   $translator = $this->_environment->getTranslationObject();
 
 	   if($current_context->isWordpressActive()){
-	   	  $wordpress_manager = $this->_environment->getWordpressManager();
-	   	  $wordpress = array();
+	   	$wordpress_manager = $this->_environment->getWordpressManager();
+	   	$wordpress = array();
 	      $wordpress['wordpress_active'] = 'yes';
 	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
 	      $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
