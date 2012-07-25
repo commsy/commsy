@@ -167,6 +167,22 @@ define([	"dojo/_base/declare",
 			}), model.getItemAttr(item, "title"));
 		},
 		
+		deleteTagEntry: function(itemId) {
+			var model = this.tree.model;
+			
+			// get item
+			var item = model.fetchItem({ item_id: itemId });
+			
+			this.createNewDeleteDialog(Lang.hitch(this, function() {
+				// delete tag
+				this.AJAXRequest("tags", "deleteTag", { tagId: itemId },
+					Lang.hitch(this, function(response) {
+						model.deleteItem(item);
+					})
+				);
+			}));
+		},
+		
 		/************************************************************************************
 		 *** Helper Functions	
 		 ************************************************************************************/
@@ -200,6 +216,30 @@ define([	"dojo/_base/declare",
 			this.dialog.show();
 		},
 		
+		createNewDeleteDialog: function(submitCallback) {
+			// create the button
+			// TODO: translate
+			this.button = new dijit.form.Button({
+				label:		"Löschen",
+				onClick:	Lang.hitch(this, function(event) {
+					// return the textbox value through callback
+					submitCallback();
+					
+					// destroy the dialog
+					this.dialog.destroyRecursive();
+				})
+			});
+			
+			// create and show the dialog
+			// TODO: translate
+			this.dialog = new dijit.Dialog({
+				title:		"Löschen"
+			});
+			dojo.place(this.button.domNode, this.dialog.containerNode, "last");
+			
+			this.dialog.show();
+		},
+		
 		addCreateAndRenameToAllLabels: function() {
 			// create a link after all labels and connect event handling
 			dojo.forEach(Query("div#popup_tabcontent span.dijitTreeLabel"), Lang.hitch(this, function(spanNode, index, arr) {
@@ -207,69 +247,58 @@ define([	"dojo/_base/declare",
 				// check if link wasn't already created
 				var nodeCreatorNode = Query("a.nodeCreator", spanNode.parentNode)[0];
 				if(!nodeCreatorNode) {
-					var createLinkNode = DomConstruct.create("a", {
-						className:		"nodeCreator",
-						href:			"#"
-					}, spanNode, "after");
 					
-						DomConstruct.create("img", {
-							src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
-						}, createLinkNode, "last");	
-					
-					var renameLinkNode = DomConstruct.create("a", {
-						href:			"#"
-					}, createLinkNode, "after");
-					
-						DomConstruct.create("img", {
-							src:		this.from_php.template.tpl_path + "img/btn_edit_rc.gif"
-						}, renameLinkNode, "last");	
-					
-					// get widget id from appropriated dijitTreeNode
-					var treeNode = new dojo.NodeList(createLinkNode).parents("div.dijitTreeNode")[0];
-					if(treeNode) {
-						var widgetId = DomAttr.get(treeNode, "widgetid");
+					// check if not root node
+					if (DomAttr.get(spanNode, "innerHTML") !== "ROOT") {
+						var createLinkNode = DomConstruct.create("a", {
+							className:		"nodeCreator",
+							href:			"#"
+						}, spanNode, "after");
 						
-						// extract item id
-						var widget = dijit.byId(widgetId);
-						var itemId = parseInt(this.tree.model.getItemAttr(widget.item, "item_id"));
+							DomConstruct.create("img", {
+								src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
+							}, createLinkNode, "last");	
 						
-						On(createLinkNode, "click", Lang.hitch(this, function(event) {
-							this.createNewTreeEntry(itemId);
-						}));
+						var renameLinkNode = DomConstruct.create("a", {
+							href:			"#"
+						}, createLinkNode, "after");
 						
-						On(renameLinkNode, "click", Lang.hitch(this, function(event) {
-							this.renameTagEntry(itemId);
-						}));
+							DomConstruct.create("img", {
+								src:		this.from_php.template.tpl_path + "img/btn_edit_rc.gif"
+							}, renameLinkNode, "last");
+						
+						var deleteLinkNode = DomConstruct.create("a", {
+							href:			"#"
+						}, renameLinkNode, "after");
+						
+							DomConstruct.create("img", {
+								src:		this.from_php.template.tpl_path + "img/btn_del_tag.gif"
+							}, deleteLinkNode, "last");	
+						
+						// get widget id from appropriated dijitTreeNode
+						var treeNode = new dojo.NodeList(createLinkNode).parents("div.dijitTreeNode")[0];
+						if(treeNode) {
+							var widgetId = DomAttr.get(treeNode, "widgetid");
+							
+							// extract item id
+							var widget = dijit.byId(widgetId);
+							var itemId = parseInt(this.tree.model.getItemAttr(widget.item, "item_id"));
+							
+							On(createLinkNode, "click", Lang.hitch(this, function(event) {
+								this.createNewTreeEntry(itemId);
+							}));
+							
+							On(renameLinkNode, "click", Lang.hitch(this, function(event) {
+								this.renameTagEntry(itemId);
+							}));
+							
+							On(deleteLinkNode, "click", Lang.hitch(this, function(event) {
+								this.deleteTagEntry(itemId);
+							}));
+						}
 					}
 				}
 			}));
-			
-			/*
-			var model = this.tree.model;
-			
-			model.getRoot(Lang.hitch(this, function(rootItem) {
-				this.iterateCallback(rootItem, function(item) {
-					// do not process factored root item
-					if(model.getItemAttr(item, "root") !== true) {
-						// get current label
-						
-						console.log(item);
-						var label = model.getItemAttr(item, "label");
-						
-						// update label and set
-						var createLinkNode = DomConstruct.create("a", {
-							href:			"#",
-							innerHTML:		"+"
-						});
-						
-						console.log(createLinkNode);
-						
-						label += createLinkNode;
-						model.setItemAttr(item, "label", label);
-					}
-				});
-			}));
-			*/
 		}
 	});
 });

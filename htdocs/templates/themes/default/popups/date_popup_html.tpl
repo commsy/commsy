@@ -94,7 +94,7 @@
 										    <br/>
 										</div>
 										<!-- daily -->
-                              <div class="recurring_details daily">
+                              <div id="recurring_details_daily">
                                  <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
                                     ___DATES_RECURRING_EVERY_DAY___&nbsp;
                                     <input type="text" class="text" tabindex="52" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_day]">
@@ -103,7 +103,7 @@
                               </div>
                                        
 										<!-- weekly -->
-                              <div class="recurring_details weekly">
+                              <div id="recurring_details_weekly" class="hidden">
    										<div style="padding-top: 3px;">
    											___DATES_RECURRING_EVERY_WEEK___&nbsp;
    											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_week]">
@@ -121,7 +121,7 @@
                               </div>
                               
                               <!-- monthly -->
-                              <div class="recurring_details monthly">
+                              <div id="recurring_details_monthly" class="hidden">
                                  <div style="padding-top: 3px;">
                                     ___DATES_RECURRING_EVERY_MONTH___&nbsp;
                                     <input type="text" class="text" tabindex="54" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_month]">
@@ -147,7 +147,7 @@
                               </div>
                               
                               <!-- yearly -->
-                              <div class="recurring_details yearly">
+                              <div id="recurring_details_yearly" class="hidden">
                                  <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
                                     ___DATES_RECURRING_EVERY_YEAR___&nbsp;
                                     <input type="text" class="text" tabindex="53" size="1" maxlength="4" value="" style="font-size:10pt;" name="form_data[recurring_year]">

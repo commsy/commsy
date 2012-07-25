@@ -289,6 +289,19 @@
 			}
 		}
 		
+		public function actionDeleteTag() {
+			if ($this->accessGranted()) {
+				$tagId = $this->_data["tagId"];
+				
+				$tagManager = $this->_environment->getTagManager();
+				
+				$tagManager->delete($tagId);
+				
+				$this->setSuccessfullDataReturn(array());
+				echo $this->_return;
+			}
+		}
+		
 		public function actionPerformRequest() {
 			$return = array();
 		

@@ -902,6 +902,10 @@ else {
 	if($environment->getCurrentModule() === 'picture') {
 		$c_smarty = false;
 	}
+	
+	if($environment->getCurrentFunction() === 'getfile') {
+		$c_smarty = false;
+	}
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
