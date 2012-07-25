@@ -103,13 +103,6 @@ require([	"dojo/_base/declare",
 					if (scrollDivNode) {
 						scrollDivNode.scrollTop = 250;
 					}
-					
-					var selectNode = query("select.calendar_switch")[0];
-					if (selectNode) {
-						On(selectNode, "change", Lang.hitch(this, function(event) {
-							location.reload();
-						}));
-					}
 				}
 				
 				// search

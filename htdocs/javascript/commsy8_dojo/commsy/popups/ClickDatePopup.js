@@ -23,18 +23,20 @@ define([	"dojo/_base/declare",
 			// recurring dates
 			var selectNode = query("select[name='form_data[recurring_select]']")[0];
 			var recurringDetailNodes = query("div[id^='recurring_details_']");
+			
+			if (selectNode) {
+				On(selectNode, "change", lang.hitch(this, function(event) {
+					var value = domAttr.get(selectNode, "value");
 
-			On(selectNode, "change", lang.hitch(this, function(event) {
-				var value = domAttr.get(selectNode, "value");
+					// hide all
+					dojo.forEach(recurringDetailNodes, lang.hitch(this, function(node, index, arr) {
+						dom_class.add(node, "hidden");
+					}));
 
-				// hide all
-				dojo.forEach(recurringDetailNodes, lang.hitch(this, function(node, index, arr) {
-					dom_class.add(node, "hidden");
+					// display specific
+					dom_class.remove(query("div#recurring_details_" + value)[0], "hidden");
 				}));
-
-				// display specific
-				dom_class.remove(query("div#recurring_details_" + value)[0], "hidden");
-			}));
+			}
 		},
 
 		onPopupSubmit: function(customObject) {

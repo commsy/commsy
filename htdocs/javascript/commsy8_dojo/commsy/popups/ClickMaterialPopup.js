@@ -23,14 +23,16 @@ define([	"dojo/_base/declare",
 			/* setup bibliographic form elements */
 			// get value from active bibliographic option
 			var selectNode = query("select#bibliographic_select", this.contentNode)[0];
-
-			// show / hude bibliographic div's
-			this.showHideBibliographic(selectNode);
-
-			// register handler for select
-			On(selectNode, "change", lang.hitch(this, function(event) {
+			
+			if (selectNode) {
+				// show / hude bibliographic div's
 				this.showHideBibliographic(selectNode);
-			}));
+
+				// register handler for select
+				On(selectNode, "change", lang.hitch(this, function(event) {
+					this.showHideBibliographic(selectNode);
+				}));
+			}
 		},
 
 		onPopupSubmit: function(customObject) {

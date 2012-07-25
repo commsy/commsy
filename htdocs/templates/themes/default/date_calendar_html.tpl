@@ -50,7 +50,7 @@
                   {foreach $cc.header.previous_months as $previous_month}
                      <option value="{$previous_month.text}" >{$previous_month.text}</option>
                   {/foreach}
-		            <option value="" selected>{$cc.header.current_month} {$cc.header.current_year}</option>
+		            <option value="" selected="selected">{$cc.header.current_month} {$cc.header.current_year}</option>
                   {foreach $cc.header.next_months as $next_month}
                      <option value="{$next_month.text}" >{$next_month.text}</option>
                   {/foreach}
@@ -63,7 +63,7 @@
                   {foreach $cc.header.previous_weeks as $previous_week}
                      <option value="{$previous_week.text}" >___DATES_CALENDARWEEK___  {$previous_week.text}</option>
                   {/foreach}
-		            <option value="" selected>___DATES_CALENDARWEEK___  {$cc.header.current_week}</option>
+		            <option value="" selected="selected">___DATES_CALENDARWEEK___  {$cc.header.current_week}</option>
                   {foreach $cc.header.next_weeks as $next_week}
                      <option value="{$next_week.text}" >___DATES_CALENDARWEEK___  {$next_week.text}</option>
                   {/foreach}
