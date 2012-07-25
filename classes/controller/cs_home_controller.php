@@ -52,13 +52,72 @@
 			    $entry_manager = $this->_environment->getManager($item->getItemType());
 			    $entry = $entry_manager->getItem($id);
 				$return_array['title'] = $entry->getTitle();
-				$return_array['content'] = $entry->getDescription();
+				$converter = $this->_environment->getTextConverter();
+				$desc = $entry->getDescription();
+				if(!empty($desc)) {
+					$desc = $converter->cleanDataFromTextArea($desc);
+					$converter->setFileArray($this->getItemFileList());
+					$desc = $converter->text_as_html_long($desc);
+				}
+				$return_array['content'] = $desc;
 				$return_array['rubric'] = $entry->getItemType();
 				$return_array['iid'] = $id;
 			}
 			return $return_array;
 
 
+		}
+
+
+		protected function getItemFileList() {
+			if($this->_item_file_list === null) {
+	          if ( isset($this->_item) ) {
+	            if ( $this->_item->isA(CS_MATERIAL_TYPE) ) {
+	               $file_list = $this->_item->getFileListWithFilesFromSections();
+	            } elseif ( $this->_item->isA(CS_DISCUSSION_TYPE) ) {
+	               $file_list = $this->_item->getFileListWithFilesFromArticles();
+	            } elseif ( $this->_item->isA(CS_TODO_TYPE) ) {
+	               $file_list = $this->_item->getFileListWithFilesFromSteps();
+	            } else {
+	               $file_list = $this->_item->getFileList();
+	            }
+	          } else {
+	            if ($this->_environment->getCurrentModule() == 'home') {
+	               $current_context_item = $this->_environment->getCurrentContextItem();
+	               if ($current_context_item->withInformationBox()){
+	                  $id = $current_context_item->getInformationBoxEntryID();
+	                  $manager = $this->_environment->getItemManager();
+	                  $item = $manager->getItem($id);
+	                  $entry_manager = $this->_environment->getManager($item->getItemType());
+	                  $entry = $entry_manager->getItem($id);
+	                  $file_list = $entry->getFileList();
+	               }
+	            } else {
+	               $file_list = $this->_environment->getCurrentContextItem()->getFileList();
+	            }
+	         }
+	         if ( isset($this->_item) and $this->_item->isA(CS_SECTION_TYPE) ) {
+	            $material_item = $this->_item->getLinkedItem();
+	            $file_list2 = $material_item->getFileList();
+	            if ( isset($file_list2) and !empty($file_list2) and $file_list2->getCount() > 0 ) {
+	               $file_list->addList($file_list2);
+	            }
+	            unset($file_list2);
+	            unset($material_item);
+	         }
+	         if ( !empty($file_list) ) {
+	            $file_array = $file_list->to_Array();
+	            unset($file_list);
+	            $file_name_array = array();
+	            foreach ($file_array as $file) {
+	               $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
+	            }
+	            unset($file_array);
+	            $this->_item_file_list = $file_name_array;
+	            unset($file_name_array);
+	         }
+	      }
+	      return $this->_item_file_list;
 		}
 
 		  /** get the activity of the item
