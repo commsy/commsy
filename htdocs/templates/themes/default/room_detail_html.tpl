@@ -97,11 +97,6 @@
 	</div>
 {if $room.sidebar_configuration.active.netnavigation}
 	<div class="portlet_rc">
-	{if $room.netnavigation.edit}
-		<a href="{$room.netnavigation.edit_link}" title="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" class="btn_head_rc2">
-			<img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" />
-		</a>
-	{/if}
 	<!--
 		<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 			<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
@@ -120,13 +115,6 @@
 		</h2>
 
 		<div class="clear"> </div>
-	<!--
-		{if $room.netnavigation.edit}
-			<a href="{$room.netnavigation.edit_link}" title="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" class="btn_body_rc">
-				<img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="{if isset($room.netnavigation.is_community)}{if $room.netnavigation.is_community}___COMMON_ATTACHED_INSTITUTIONS___{else}___COMMON_ATTACHED_GROUPS___{/if}{else}___COMMON_ATTACHED_ENTRIES___{/if}" />
-			</a>
-		{/if}
-	-->
 		<div class="portlet_rc_body">
 			<div id="netnavigation">
 				<ul>
@@ -144,6 +132,14 @@
 				{/foreach}
 				</ul>
 			</div>
+			<div class="clear"> </div>
+		{if $room.netnavigation_edit}
+			<div class="portlet_rc_action">
+				<a class="open_popup context_nav" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}', editType: 'netnavigation'" href="#">
+				___COMMON_ASSIGN_ENTRIES___
+				</a>
+			</div>
+		{/if}
 		</div>
 	</div>
 {/if}

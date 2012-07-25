@@ -1,4 +1,4 @@
-<div class="tab hidden" id="netnavigation_tab">
+<div class="tab {if $item.edit_type != 'netnavigation'}hidden{/if}" id="netnavigation_tab">
 	<div class="settings_area">
 
 {*			<div id="popup_netnavigation_outer_bottom" class="popup_netnavigation_outer">

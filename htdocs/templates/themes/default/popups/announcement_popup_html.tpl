@@ -5,6 +5,22 @@
 
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+					{if $item.edit_type == 'netnavigation'}
+						<h2>___COMMON_ANNOUNCEMENT___</h2>
+						<div class="clear"> </div>
+					</div>
+					<div id="popup_content_wrapper">
+						<div id="popup_title">
+							<h2>{if $popup.edit == false}___COMMON_ENTER_NEW___{else}___COMMON_EDIT___{/if}</h2>
+							<div class="clear"> </div>
+						</div>
+
+
+						<div id="popup_content">
+							{include file="popups/include/netnavigation_tab_include_html.tpl"}
+						</div>
+					</div>
+					{else}
 					<h2>___COMMON_ANNOUNCEMENT___</h2>
 					<div class="clear"> </div>
 				</div>
@@ -64,6 +80,7 @@
 
 					</div>
 				</div>
+				{/if}
 			</div>
 			<div class="clear"></div>
 		</div>
