@@ -439,43 +439,40 @@
                 <div id="content_row_three">
 
                   <fieldset>
+                  	<p><strong>___CS_BAR_COMMING_SOON_INFO_TEXT___</strong></p>
+                  </fieldset>
+                  <fieldset>
                     <p>
                       <strong>___CS_BAR_WIDGETS___</strong>: ___CS_BAR_WIDGETS_DESC___
                     </p>
                     <div class="input_row_180">
                       <label for="widget_view">___CS_BAR_WIDGETS_VIEW___:</label>
-                      <input id="show_widget_view" type="checkbox" name="form_data[show_widget_view]" value="yes"{if $popup.form.cs_bar.show_widget_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <input disabled="disabled" id="show_widget_view" type="checkbox" name="form_data[show_widget_view]" value="yes"{if $popup.form.cs_bar.show_widget_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
                     <div class="input_row_180">
                       <label for="widget_view">___PRIVATROOM_ROOMWIDE_SEARCH_BOX___:</label>
-                      <input id="show_roomwide_search" type="checkbox" name="form_data[show_roomwide_search]" value="yes"{if $popup.form.cs_bar.show_roomwide_search == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+                      <input disabled="disabled"  id="show_roomwide_search" type="checkbox" name="form_data[show_roomwide_search]" value="yes"{if $popup.form.cs_bar.show_roomwide_search == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
                       <div class="clear"></div>
                     </div>
                     <div class="input_row_180">
                       <label for="widget_view">___COMMON_NEWEST_ENTRIES___:</label>
-                      <input id="show_newest_entries" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      (___CS_BAR_COMMING_SOON___)
+                      <input disabled="disabled"  id="show_newest_entries" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
                       <div class="clear"></div>
                     </div>
                     <div class="input_row_180">
                       <label for="widget_view">___COMMON_ACTIV_ROOMS___:</label>
-                      <input id="show_active_rooms" type="checkbox" name="form_data[show_active_rooms]" value="yes"{if $popup.form.cs_bar.show_active_rooms == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
+                      <input disabled="disabled" id="show_active_rooms" type="checkbox" name="form_data[show_active_rooms]" value="yes"{if $popup.form.cs_bar.show_active_rooms == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
                       <div class="clear"></div>
                     </div>
                     <div class="input_row_180">
                       <label for="widget_view">___COMMON_RSS_TICKER___:</label>
-                      {*
-                      <input id="rss_ticker" type="checkbox" name="form_data[rss_ticker]" value="yes"{if $popup.form.cs_bar.rss_ticker == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      *}
-                      ___CS_BAR_COMMING_SOON_2___
+                      <input disabled="disabled" id="rss_ticker" type="checkbox" name="form_data[rss_ticker]" value="yes"{if $popup.form.cs_bar.rss_ticker == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
                       <div class="clear"></div>
                     </div>
                     <div class="input_row_180">
                       <label for="widget_view">___HOME_EXTRA_TOOLS___:</label>
-                      {*
-                      <input id="show_extensions" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
-                      *}
+                      <input disabled="disabled" id="show_extensions" type="checkbox" name="form_data[show_newest_entries]" value="yes"{if $popup.form.cs_bar.show_newest_entries == 'yes'} checked="checked"{/if} />___COMMON_SHOW___
                       ___CS_BAR_COMMING_SOON_2___
                       <div class="clear"></div>
                     </div>
@@ -487,14 +484,14 @@
                     </p>
                     <div class="input_row_180">
                       <label for="widget_calendar_view">___CS_BAR_CALENDAR_VIEW___:</label>
-                      <input id="show_calendar_view" type="checkbox" name="form_data[show_calendar_view]" value="yes"{if $popup.form.cs_bar.show_calendar_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <input disabled="disabled" id="show_calendar_view" type="checkbox" name="form_data[show_calendar_view]" value="yes"{if $popup.form.cs_bar.show_calendar_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
                     <div class="input_row_180">
                       <label for="widget_view">___CS_BAR_COMMON_SHOW___:</label>
-                      <input id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___CS_BAR_SHOW_DATES___
-                      <input id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___CS_BAR_SHOW_TODOS___
-                      <input id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_SHOW_RESTRICTIONS___
+                      <input disabled="disabled" id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___DATE_INDEX___
+                      <input disabled="disabled" id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___TODO_INDEX___
+                      <input disabled="disabled" id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_RESTRICTIONS_SHORT___
                       <div class="clear"></div>
                     </div>
                   </fieldset>
@@ -505,17 +502,21 @@
                     </p>
                     <div class="input_row_180">
                       <label for="widget_stack_view">___CS_BAR_STACK_VIEW___:</label>
-                      <input id="show_stack_view" type="checkbox" name="form_data[show_stack_view]" value="yes"{if $popup.form.cs_bar.show_stack_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <input disabled="disabled" id="show_stack_view" type="checkbox" name="form_data[show_stack_view]" value="yes"{if $popup.form.cs_bar.show_stack_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
+                 </fieldset>
+
+                  <fieldset>
+                    <p>
+                      <strong>___CS_BAR_PORTFOLIO___</strong>: ___CS_BAR_PORTFOLIO_DESC___
+                    </p>
                     <div class="input_row_180">
-                      <label for="widget_view">___CS_BAR_COMMON_SHOW___:</label>
-                      <input id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___CS_BAR_SHOW_DATES___
-                      <input id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___CS_BAR_SHOW_TODOS___
-                      <input id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_SHOW_RESTRICTIONS___
+                      <label for="widget_portfolio_view">___CS_BAR_PORTFOLIO_VIEW___:</label>
+                      <input disabled="disabled" id="show_portfolio_view" type="checkbox" name="form_data[show_portfolio_view]" value="yes"{if $popup.form.cs_bar.show_portfolio_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
-                  </fieldset>
+                 </fieldset>
 
                   <div class="input_row">
                     <div class="input_container_180">
