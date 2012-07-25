@@ -247,6 +247,43 @@
 				$return["current_year"] = $year;
 				$return['current_calendarweek_first'] = $calendar_week_first;
 				$return["current_calendarweek_last"] = $calendar_week_last;
+				
+				$previous_months = array();
+				$previous_year = 0;
+				for ($i = 1; $i <= 5; $i++) {
+				   if((($month - 1) - $i) < 0){
+				      $temp_array = array();
+				      $temp_array["text"] = $month_array[11 - $previous_year].' '.($this->_calendar["year"]-1);
+				      
+				      $previous_months[] = $temp_array;
+				      $previous_year++;
+				   } else {
+				      $temp_array = array();
+				      $temp_array["text"] = $month_array[($month - 1) - $i].' '.$this->_calendar["year"];
+				      
+				      $previous_months[] = $temp_array;
+				   }
+				}
+				$return["previous_months"] = array_reverse($previous_months);
+				
+				$next_months = array();
+			   $next_year = 0;
+				for ($i = 1; $i <= 5; $i++) {
+				   if((($month - 1) + $i) > 11){
+				      $temp_array = array();
+				      $temp_array["text"] = $month_array[$next_year].' '.($this->_calendar["year"]+1);
+				      
+				      $next_months[] = $temp_array;
+				      $next_year++;
+				   } else {
+				      $temp_array = array();
+				      $temp_array["text"] = $month_array[($month - 1) + $i].' '.$this->_calendar["year"];
+				      
+				      $next_months[] = $temp_array;
+				   }
+				}
+				$return["next_months"] = $next_months;
+				
 			} elseif($this->_presentation_mode === "week") {
 				$week_left = $this->_calendar["week"] - ( 3600 * 24 * 7);
 				$week_right = $this->_calendar["week"] + ( 3600 * 24 * 7);
@@ -279,6 +316,42 @@
 
 				$calendar_week = date('W', $this->_calendar["week"]);
 				$return["current_week"] = ($calendar_week[0] == "0") ? $calendar_week[1] : $calendar_week;
+				
+				$previous_weeks = array();
+				$previous_year = 0;
+				for ($i = 1; $i <= 5; $i++) {
+				   if(($return["current_week"] - $i) <= 0){
+				      $temp_array = array();
+				      $temp_array["text"] = 52 - $previous_year;
+				      
+				      $previous_weeks[] = $temp_array;
+				      $previous_year++;
+				   } else {
+				      $temp_array = array();
+				      $temp_array["text"] = $return["current_week"] - $i;
+				      
+				      $previous_weeks[] = $temp_array;
+				   }
+				}
+				$return["previous_weeks"] = array_reverse($previous_weeks);
+				
+				$next_weeks = array();
+			   $next_year = 1;
+				for ($i = 1; $i <= 5; $i++) {
+				   if(($return["current_week"] + $i) > 52){
+				      $temp_array = array();
+				      $temp_array["text"] = $next_year;
+				      
+				      $next_weeks[] = $temp_array;
+				      $next_year++;
+				   } else {
+				      $temp_array = array();
+				      $temp_array["text"] = $return["current_week"] + $i;
+				      
+				      $next_weeks[] = $temp_array;
+				   }
+				}
+				$return["next_weeks"] = $next_weeks;
 			}
 
 			// presentation_mode

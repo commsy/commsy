@@ -46,15 +46,27 @@
             {if $cc.mode == "month"}
             	<strong>{$cc.header.current_month} {$cc.header.current_year} (___DATES_CALENDARWEEKS_SHORT___ {$cc.header.current_calendarweek_first}-{$cc.header.current_calendarweek_last}) </strong>
 	           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.prev}" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
-				<select size="1" class="size_200" >
-		            <option value="" >{$cc.header.current_month} {$cc.header.current_year}</option>
+				<select size="1" class="size_200 calendar_switch">
+                  {foreach $cc.header.previous_months as $previous_month}
+                     <option value="" >{$previous_month.text}</option>
+                  {/foreach}
+		            <option value="" selected>{$cc.header.current_month} {$cc.header.current_year}</option>
+                  {foreach $cc.header.next_months as $next_month}
+                     <option value="" >{$next_month.text}</option>
+                  {/foreach}
 	 			</select>
            		<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.next}" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
             {else if $cc.mode == "week"}
             	<strong> {$cc.header.current_week_start} - {$cc.header.current_week_last}</strong>
 	           	<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.prev}" id="cal_left"><img src="{$basic.tpl_path}img/cal_arrow_left.gif" alt=""/></a>
-				<select size="1" class="size_200" >
-		            <option value="" >___DATES_CALENDARWEEK___  {$cc.header.current_week}</option>
+				<select size="1" class="size_200 calendar_switch">
+                  {foreach $cc.header.previous_weeks as $previous_week}
+                     <option value="" >___DATES_CALENDARWEEK___  {$previous_week.text}</option>
+                  {/foreach}
+		            <option value="" selected>___DATES_CALENDARWEEK___  {$cc.header.current_week}</option>
+                  {foreach $cc.header.next_weeks as $next_week}
+                     <option value="" >___DATES_CALENDARWEEK___  {$next_week.text}</option>
+                  {/foreach}
 	 			</select>
            		<a href="commsy.php?cid={$environment.cid}&mod=date&fct=index{restriction_params params=$environment.params_array key=$cc.mode value=$cc.header.next}" id="cal_right"><img src="{$basic.tpl_path}img/cal_arrow_right.gif" alt="" /></a>
             {/if}
