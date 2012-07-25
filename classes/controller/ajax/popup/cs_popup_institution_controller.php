@@ -4,6 +4,7 @@ require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 class cs_popup_institution_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
+    private $_edit_type = 'normal';
 
     /**
      * constructor
@@ -14,6 +15,10 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
+			if (!empty($data['editType'])){
+				$this->_edit_type = $data['editType'];
+				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
+			}
 			// assign template vars
 			$this->assignTemplateVars();
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -66,7 +71,33 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 		/****************************/
 
 
-        } else { //Acces granted
+        } elseif($this->_edit_type != 'normal'){
+ 			$this->cleanup_session($current_iid);
+            // Set modificator and modification date
+            $current_user = $environment->getCurrentUserItem();
+            $item->setModificatorItem($current_user);
+
+            if ($this->_edit_type == 'buzzwords'){
+                // buzzwords
+                $item->setBuzzwordListByID($form_data['buzzwords']);
+            }
+            if ($this->_edit_type == 'tags'){
+                // buzzwords
+                $item->setTagListByID($form_data['tags']);
+            }
+            $item->save();
+            // save session
+            $session = $this->_environment->getSessionItem();
+            $this->_environment->getSessionManager()->save($session);
+
+            // Add modifier to all users who ever edited this item
+            $manager = $environment->getLinkModifierItemManager();
+            $manager->markEdited($item->getItemID());
+
+            // set return
+            $this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID(),CS_INSTITUTION_TYPE);
+
+        }else { //Acces granted
 			$this->cleanup_session($current_iid);
 
 
@@ -76,17 +107,17 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 					/* handle institution picture upload */
 					if(!empty($additional["fileInfo"])) {
 						$srcfile = $additional["fileInfo"]["file"];
-						
+
 						// determ new file name
 						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_iid' . $item->getItemID() . '_'. $additional["fileInfo"]["name"];
-						
+
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
-						
+
 						$disc_manager->copyFile($srcfile, $filename, true);
 						$item->setPicture($filename);
 						$item->save();
-						
+
 						// set return
 						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
@@ -189,27 +220,31 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 
 
     public function getFieldInformation($sub = '') {
-		$return = array(
-			'general'			=> array(
-				array(	'name'		=> 'name',
-						'type'		=> 'text',
-						'mandatory' => true)
-			),
-			'description'			=> array(
-				array(	'name'		=> 'description',
-						'type'		=> 'text',
-						'mandatory' => false)
-			),
-			'public'			=> array(
-				array(	'name'		=> 'public',
-						'type'		=> 'radio',
-						'mandatory' => true)
-			),
-			'upload_picture'	=> array(
-			)
-		);
+		if ($this->_edit_type == 'normal'){
+			$return = array(
+				'general'			=> array(
+					array(	'name'		=> 'name',
+							'type'		=> 'text',
+							'mandatory' => true)
+				),
+				'description'			=> array(
+					array(	'name'		=> 'description',
+							'type'		=> 'text',
+							'mandatory' => false)
+				),
+				'public'			=> array(
+					array(	'name'		=> 'public',
+							'type'		=> 'radio',
+							'mandatory' => true)
+				),
+				'upload_picture'	=> array(
+				)
+			);
 
-		return $return[$sub];
+			return $return[$sub];
+		}else{
+			return array();
+		}
     }
 
 	public function cleanup_session($current_iid) {

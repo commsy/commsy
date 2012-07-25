@@ -4,6 +4,7 @@
 	class cs_popup_discussion_controller implements cs_rubric_popup_controller {
 		private $_environment = null;
 		private $_popup_controller = null;
+    	private $_edit_type = 'normal';
 
 		/**
 		* constructor
@@ -14,6 +15,10 @@
 		}
 
 		public function initPopup($item, $data) {
+			if (!empty($data['editType'])){
+				$this->_edit_type = $data['editType'];
+				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
+			}
 			// assign template vars
 			$this->assignTemplateVars();
 
@@ -252,17 +257,21 @@
 		}
 
 		public function getFieldInformation($sub = '') {
-			return array(
-				array(	'name'		=> 'title',
-						'type'		=> 'text',
-						'mandatory' => true),
-				array(	'name'		=> 'description',
-						'type'		=> 'text',
-						'mandatory'	=> false),
-				array(	'name'		=> 'subject',
-						'type'		=> 'text',
-						'mandatory'	=> true)
-			);
+			if ($this->_edit_type == 'normal'){
+				return array(
+					array(	'name'		=> 'title',
+							'type'		=> 'text',
+							'mandatory' => true),
+					array(	'name'		=> 'description',
+							'type'		=> 'text',
+							'mandatory'	=> false),
+					array(	'name'		=> 'subject',
+							'type'		=> 'text',
+							'mandatory'	=> true)
+				);
+			}else{
+				return array();
+			}
 		}
 
 		private function assignTemplateVars() {

@@ -11,40 +11,41 @@ define([	"dojo/_base/declare",
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
 			this.module = "date";
-			
+			this.editType = customObject.editType;
+
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
-			
+
 			// register click for node
 			this.registerPopupClick();
 		},
-		
+
 		setupSpecific: function() {
 			// recurring dates
 			var selectNode = query("select[name='form_data[recurring_select]']")[0];
 			var recurringDetailNodes = query("div[id^='recurring_details_']");
-			
+
 			On(selectNode, "change", lang.hitch(this, function(event) {
 				var value = domAttr.get(selectNode, "value");
-				
+
 				// hide all
 				dojo.forEach(recurringDetailNodes, lang.hitch(this, function(node, index, arr) {
 					dom_class.add(node, "hidden");
 				}));
-				
+
 				// display specific
 				dom_class.remove(query("div#recurring_details_" + value)[0], "hidden");
 			}));
 		},
-		
+
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
-				
+
 				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
+
 			// setup data to send via ajax
 			var search = {
 				tabs: [
@@ -65,10 +66,10 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[title]']", this.contentNode) },
 				]
 			};
-			
+
 			this.submit(search);
 		},
-		
+
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {

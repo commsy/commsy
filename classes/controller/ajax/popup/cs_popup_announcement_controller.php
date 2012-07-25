@@ -91,6 +91,10 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
         $current_iid = $form_data['iid'];
 
+        if (isset($form_data['editType'])){
+			$this->_edit_type = $form_data['editType'];
+        }
+
         $translator = $this->_environment->getTranslationObject();
 
         if($current_iid === 'NEW') {
@@ -111,7 +115,33 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 		/****************************/
 
 
-        } else { //Acces granted
+        } elseif($this->_edit_type != 'normal'){
+ 			$this->cleanup_session($current_iid);
+            // Set modificator and modification date
+            $current_user = $environment->getCurrentUserItem();
+            $announcement_item->setModificatorItem($current_user);
+
+            if ($this->_edit_type == 'buzzwords'){
+                // buzzwords
+                $announcement_item->setBuzzwordListByID($form_data['buzzwords']);
+            }
+            if ($this->_edit_type == 'tags'){
+                // buzzwords
+                $announcement_item->setTagListByID($form_data['tags']);
+            }
+            $announcement_item->save();
+            // save session
+            $session = $this->_environment->getSessionItem();
+            $this->_environment->getSessionManager()->save($session);
+
+            // Add modifier to all users who ever edited this item
+            $manager = $environment->getLinkModifierItemManager();
+            $manager->markEdited($announcement_item->getItemID());
+
+            // set return
+            $this->_popup_controller->setSuccessfullItemIDReturn($announcement_item->getItemID(),CS_ANNOUNCEMENT_TYPE);
+
+        }else { //Acces granted
 			$this->cleanup_session($current_iid);
 
 			// save item
@@ -268,20 +298,24 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
 
     public function getFieldInformation($sub = '') {
-			return array(
-				array(	'name'		=> 'title',
-						'type'		=> 'text',
-						'mandatory' => true),
-				array(	'name'		=> 'description',
-						'type'		=> 'textarea',
-						'mandatory'	=> false),
-				array(	'name'		=> 'dayEnd',
-						'type'		=> 'text',
-						'mandatory'	=> true),
-				array(	'name'		=> 'timeEnd',
-						'type'		=> 'text',
-						'mandatory'	=> false)
-			);
+			if ($this->_edit_type == 'normal'){
+				return array(
+					array(	'name'		=> 'title',
+							'type'		=> 'text',
+							'mandatory' => true),
+					array(	'name'		=> 'description',
+							'type'		=> 'textarea',
+							'mandatory'	=> false),
+					array(	'name'		=> 'dayEnd',
+							'type'		=> 'text',
+							'mandatory'	=> true),
+					array(	'name'		=> 'timeEnd',
+							'type'		=> 'text',
+							'mandatory'	=> false)
+				);
+			}else{
+				return array();
+			}
     }
 
 	public function cleanup_session($current_iid) {

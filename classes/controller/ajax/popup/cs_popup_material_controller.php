@@ -4,6 +4,7 @@ require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 class cs_popup_material_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
+    private $_edit_type = 'normal';
 
     /**
      * constructor
@@ -14,6 +15,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
+			if (!empty($data['editType'])){
+				$this->_edit_type = $data['editType'];
+				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
+			}
     		$translator = $this->_environment->getTranslationObject();
     		$current_context = $this->_environment->getCurrentContextItem();
     		$current_user = $this->_environment->getCurrentUserItem();
@@ -315,7 +320,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 		$file_ids[] = $value;
                 	}
                 }
-                
+
                 // this will handle already attached files as well as adding new files
                 $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, $form_data["files"]);
 

@@ -4,6 +4,7 @@ require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 class cs_popup_topic_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
+    private $_edit_type = 'normal';
 
     /**
      * constructor
@@ -14,6 +15,10 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
+			if (!empty($data['editType'])){
+				$this->_edit_type = $data['editType'];
+				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
+			}
 			// assign template vars
 			$this->assignTemplateVars();
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -107,7 +112,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 					if(!empty($additional["fileInfo"])) {
 						$srcfile = $additional["fileInfo"]["file"];
 						$targetfile = $srcfile . "_converted";
-						
+
 						$session = $this->_environment->getSessionItem();
 						$session->unsetValue("add_files");
 
@@ -120,7 +125,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 						$disc_manager->copyFile($targetfile, $filename, true);
 						$item->setPicture($filename);
 						$item->save();
-						
+
 						$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
 				}
