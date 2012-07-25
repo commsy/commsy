@@ -20,7 +20,11 @@
 								<span class="tm_bcb_next">
 							{/if}
 							{if !$crumb@last}
-								<a class="tm_breadcrumb_h2" href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title|truncate:40:'...':true}</a>
+								{if $environment.pid == $crumb.id}
+										<a class="tm_breadcrumb_h2" href="commsy.php?cid={$crumb.id}&mod=home&fct=index&room_id={$environment.cid}">{$crumb.title|truncate:40:'...':true}</a>
+								{else}
+										<a class="tm_breadcrumb_h2" href="commsy.php?cid={$crumb.id}&mod=home&fct=index">{$crumb.title|truncate:40:'...':true}</a>
+								{/if}
 							{else}
 								<strong>{$crumb.title|truncate:40:'...':true}</strong>
 							{/if}
