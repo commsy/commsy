@@ -34,7 +34,7 @@
 					</div>
 					<div id="popup_content_wrapper">
 						<div id="popup_title">
-							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<h2>{if $popup.edit == false}___COMMON_BUZZWORD_ATTACH___{else}___COMMON_BUZZWORD_ATTACH___{/if}</h2>
 							<div class="clear"> </div>
 						</div>
 
@@ -45,7 +45,7 @@
 						<div id="content_buttons">
 							<div id="crt_actions_area">
 								<input type="hidden" name="editType" value="{$item.edit_type}"/>
-								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ASSIGN___{else}___COMMON_ASSIGN___{/if}" />
 								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 							</div>
 						</div>
@@ -57,7 +57,7 @@
 					</div>
 					<div id="popup_content_wrapper">
 						<div id="popup_title">
-							<h2>{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}</h2>
+							<h2>{if $popup.edit == false}___COMMON_TAG_ATTACH___{else}___COMMON_TAG_ATTACH___{/if}</h2>
 							<div class="clear"> </div>
 						</div>
 
@@ -68,7 +68,7 @@
 						<div id="content_buttons">
 							<div id="crt_actions_area">
 								<input type="hidden" name="editType" value="{$item.edit_type}"/>
-								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ITEM_ATTACH___{else}___COMMON_ITEM_ATTACH___{/if}" />
+								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_ASSIGN___{else}___COMMON_ASSIGN___{/if}" />
 								<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 							</div>
 						</div>

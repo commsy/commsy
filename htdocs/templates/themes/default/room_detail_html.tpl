@@ -133,7 +133,7 @@
 				</ul>
 			</div>
 			<div class="clear"> </div>
-		{if $room.netnavigation_edit}
+		{if $room.netnavigation_edit && $environment.module != 'user' && $environment.module != 'project'}
 			<div class="portlet_rc_action">
 				{if isset($detail.content.item_id)}
 					{assign var="iid" value=$detail.content.item_id}
