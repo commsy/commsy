@@ -108,27 +108,27 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
  			$this->cleanup_session($current_iid);
             // Set modificator and modification date
             $current_user = $environment->getCurrentUserItem();
-            $date_item->setModificatorItem($current_user);
+            $item->setModificatorItem($current_user);
 
             if ($this->_edit_type == 'buzzwords'){
                 // buzzwords
-                $date_item->setBuzzwordListByID($form_data['buzzwords']);
+                $item->setBuzzwordListByID($form_data['buzzwords']);
             }
             if ($this->_edit_type == 'tags'){
                 // buzzwords
-                $date_item->setTagListByID($form_data['tags']);
+                $item->setTagListByID($form_data['tags']);
             }
-            $date_item->save();
+            $item->save();
             // save session
             $session = $this->_environment->getSessionItem();
             $this->_environment->getSessionManager()->save($session);
 
             // Add modifier to all users who ever edited this item
             $manager = $environment->getLinkModifierItemManager();
-            $manager->markEdited($date_item->getItemID());
+            $manager->markEdited($item->getItemID());
 
             // set return
-            $this->_popup_controller->setSuccessfullItemIDReturn($date_item->getItemID(),CS_TOPIC_TYPE);
+            $this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID(),CS_TOPIC_TYPE);
 
         }else { //Acces granted
 			$this->cleanup_session($current_iid);

@@ -123,7 +123,7 @@
 		elseif($this->_edit_type != 'normal'){
  			$this->cleanup_session($current_iid);
             // Set modificator and modification date
-            $current_user = $environment->getCurrentUserItem();
+            $current_user = $this->_environment->getCurrentUserItem();
             $discussion_item->setModificatorItem($current_user);
 
             if ($this->_edit_type == 'buzzwords'){
