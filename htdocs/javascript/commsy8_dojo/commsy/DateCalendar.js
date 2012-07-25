@@ -29,7 +29,7 @@ define([	"dojo/_base/declare",
 			var selectWeekNode = Query("select#calendar_switch_week")[0];
 			if (selectWeekNode) {
 				On(selectWeekNode, "change", Lang.hitch(this, function(event) {
-					var uriObject = this.replaceOrSetURIParam("month", event.target.value);
+					var uriObject = this.replaceOrSetURIParam("week", event.target.value);
 					
 					location.href = "commsy.php?" + dojo.objectToQuery(uriObject);
 				}));
