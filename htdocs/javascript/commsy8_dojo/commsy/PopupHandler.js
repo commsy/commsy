@@ -191,9 +191,12 @@ define([	"dojo/_base/declare",
 						// if form field is a checkbox, only add if checked
 						// if form field is a radio button, only add the selected one
 						if(type === "checkbox" || type === "radio") {
-							if(	formNode.checked === true ||
+							if(	(formNode.checked === true && dom_attr.get(formNode, "aria-checked") !== "false") ||
 								dom_attr.get(formNode, "aria-checked") === "true" ||
-								dom_attr.get(formNode, "aria-checked") === "mixed") add = true;
+								dom_attr.get(formNode, "aria-checked") === "mixed") {
+								
+								add = true;
+							}
 						}
 
 						// otherwise add
