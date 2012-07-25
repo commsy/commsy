@@ -254,13 +254,13 @@
 				   if((($month - 1) - $i) < 0){
 				      $temp_array = array();
 				      $temp_array["text"] = $month_array[11 - $previous_year].' '.($this->_calendar["year"]-1);
-				      
+				      $temp_array["value"] = date("Ymd", mktime(3,0,0,11 - $previous_year,1,$year - 1));
 				      $previous_months[] = $temp_array;
 				      $previous_year++;
 				   } else {
 				      $temp_array = array();
 				      $temp_array["text"] = $month_array[($month - 1) - $i].' '.$this->_calendar["year"];
-				      
+				      $temp_array["value"] = date("Ymd", mktime(3,0,0,$month - $i,1,$year));
 				      $previous_months[] = $temp_array;
 				   }
 				}
@@ -272,13 +272,13 @@
 				   if((($month - 1) + $i) > 11){
 				      $temp_array = array();
 				      $temp_array["text"] = $month_array[$next_year].' '.($this->_calendar["year"]+1);
-				      
+				      $temp_array["value"] = date("Ymd", mktime(3,0,0,$next_year + 1,1,$year + 1));
 				      $next_months[] = $temp_array;
 				      $next_year++;
 				   } else {
 				      $temp_array = array();
 				      $temp_array["text"] = $month_array[($month - 1) + $i].' '.$this->_calendar["year"];
-				      
+				      $temp_array["value"] = date("Ymd", mktime(3,0,0,$month + $i,1,$year));
 				      $next_months[] = $temp_array;
 				   }
 				}
@@ -323,13 +323,13 @@
 				   if(($return["current_week"] - $i) <= 0){
 				      $temp_array = array();
 				      $temp_array["text"] = 52 - $previous_year;
-				      
+				      $temp_array["value"] = $this->_calendar["week"] - ($previous_year * ( 3600 * 24 * 6));
 				      $previous_weeks[] = $temp_array;
 				      $previous_year++;
 				   } else {
 				      $temp_array = array();
 				      $temp_array["text"] = $return["current_week"] - $i;
-				      
+				      $temp_array["value"] = $this->_calendar["week"] - ($i * ( 3600 * 24 * 6));
 				      $previous_weeks[] = $temp_array;
 				   }
 				}
@@ -341,13 +341,13 @@
 				   if(($return["current_week"] + $i) > 52){
 				      $temp_array = array();
 				      $temp_array["text"] = $next_year;
-				      
+				      $temp_array["value"] = $this->_calendar["week"] + ($next_year * ( 3600 * 24 * 6));
 				      $next_weeks[] = $temp_array;
 				      $next_year++;
 				   } else {
 				      $temp_array = array();
 				      $temp_array["text"] = $return["current_week"] + $i;
-				      
+				      $temp_array["value"] = $this->_calendar["week"] + ($i * ( 3600 * 24 * 6));
 				      $next_weeks[] = $temp_array;
 				   }
 				}
