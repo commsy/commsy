@@ -277,6 +277,9 @@
 			if($this->showNetnavigation()) {
 				$this->_sidebar_configuration['active']['netnavigation'] = true;
 				$this->assign('room', 'netnavigation', $this->getNetnavigation());
+				if ($current_user->isUser()){
+					$this->assign('room', 'netnavigation_edit', $this->getNetnavigation());
+				}
 			}
 
 			$this->assign('room', 'sidebar_configuration', $this->_sidebar_configuration);

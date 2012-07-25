@@ -5,6 +5,8 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
 
+    private $_edit_type = 'normal';
+
     /**
      * constructor
      */
@@ -14,10 +16,13 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
+			if (!empty($data['editType'])){
+				$this->_edit_type = $data['editType'];
+				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
+			}
 			// assign template vars
 			$this->assignTemplateVars();
 			$current_context = $this->_environment->getCurrentContextItem();
-
 			if($item !== null) {
 				// edit mode
 

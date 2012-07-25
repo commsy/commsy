@@ -145,6 +145,9 @@ define([	"dojo/_base/declare",
 				form_data = [{
 					name:	'iid',
 					value:	this.item_id
+				},{
+					name:	'editType',
+					value:	this.editType
 				}];
 			}
 
