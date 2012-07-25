@@ -12,7 +12,6 @@ define([	"dojo/_base/declare",
 		triggerNode:			null,
 		item_id:				null,
 		ref_iid:				null,
-		editType:				null,
 		ticks:					0,
 
 		constructor: function(args) {
@@ -62,7 +61,7 @@ define([	"dojo/_base/declare",
 						on(document.body, "click", lang.hitch(this, function(event) {
 							if(dom_attr.get(event.target, "id") === "popup_wrapper") {
 								// TODO: create something like a tooltip here
-								alert("Bitte schlie�en Sie zuerst das Popup-Fenster, bevor Sie sonstige Seitenoperationen ausführen");
+								alert("Bitte schlie�en Sie zuerst das Popup-Fenster, bevor Sie sonstige Seitenoperationen ausführen");
 							}
 						}));
 

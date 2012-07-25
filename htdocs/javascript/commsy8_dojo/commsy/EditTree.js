@@ -78,9 +78,11 @@ define([	"dojo/_base/declare",
 				// add "+" and "rename" to all node labels
 				this.addCreateAndRenameToAllLabels();
 				
+				/*
 				On(this.store, "New", Lang.hitch(this, function(newItem, parentInfo) {
 					this.onStoreNew(newItem, parentInfo);
 				}));
+				*/
 				
 				On(this.store, "Set", Lang.hitch(this, function(item, attribute, oldValue, newValue) {
 					this.onStoreSet(item, attribute, oldValue, newValue);
@@ -107,8 +109,8 @@ define([	"dojo/_base/declare",
 			}
 		},
 		
-		onStoreNew: function(newItem, parentInfo) {
-			console.log("new");
+		onStore: function(newItem, parentInfo) {
+			//console.log("new");
 		},
 		
 		onStoreSet: function(item, attribute, oldValue, newValue) {
@@ -207,14 +209,20 @@ define([	"dojo/_base/declare",
 				if(!nodeCreatorNode) {
 					var createLinkNode = DomConstruct.create("a", {
 						className:		"nodeCreator",
-						href:			"#",
-						innerHTML:		"+"
+						href:			"#"
 					}, spanNode, "after");
 					
+						DomConstruct.create("img", {
+							src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
+						}, createLinkNode, "last");	
+					
 					var renameLinkNode = DomConstruct.create("a", {
-						href:			"#",
-						innerHTML:		"rename"
+						href:			"#"
 					}, createLinkNode, "after");
+					
+						DomConstruct.create("img", {
+							src:		this.from_php.template.tpl_path + "img/btn_edit_rc.gif"
+						}, renameLinkNode, "last");	
 					
 					// get widget id from appropriated dijitTreeNode
 					var treeNode = new dojo.NodeList(createLinkNode).parents("div.dijitTreeNode")[0];

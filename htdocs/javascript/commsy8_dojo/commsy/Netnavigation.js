@@ -34,49 +34,57 @@ define([	"dojo/_base/declare",
 			declare.safeMixin(this, options);
 		},
 		
-		init: function(cid, item_id, module, tpl_path) {
+		init: function(cid, item_id, module, tpl_path, autoInit) {
 			this.cid = cid;
 			this.item_id = item_id;
 			this.module = module;
 			this.tpl_path = tpl_path;
 			
 			// register handler
-			On(Query("#popup_netnavigation_attach_new")[0], "click", Lang.hitch(this, function(event) {
-				// get inital data if this is the first call
-				if(this.initialized === false) {
-					this.AJAXRequest("netnavigation", "getInitialData", { module: this.module }, Lang.hitch(this, function(data) {
-						// init rubric select box
-						var selectNode = Query("select[name='netnavigation_rubric_restriction']")[0];
+			if (!autoInit) {
+				On(Query("#popup_netnavigation_attach_new")[0], "click", Lang.hitch(this, function(event) {
+					this.initDo();
+				}));
+			} else {
+				this.initDo();
+			}
+		},
+		
+		initDo: function() {
+			// get inital data if this is the first call
+			if(this.initialized === false) {
+				this.AJAXRequest("netnavigation", "getInitialData", { module: this.module }, Lang.hitch(this, function(data) {
+					// init rubric select box
+					var selectNode = Query("select[name='netnavigation_rubric_restriction']")[0];
+					
+					dojo.forEach(data.rubrics, function(rubric, index, arr) {
+						DomConstruct.create("option", {
+							value:		rubric.value,
+							innerHTML:	rubric.text,
+							disabled:	rubric.disabled
+						}, selectNode, "last");
+					});
+					
+					// setup
+					this.setupPaging();
+					this.setupRestrictions();
+					
+					// register form submit
+					On(Query("input[name='netnavigation_submit_restrictions']")[0], "click", Lang.hitch(this, function(event) {
+						// reset paging
+						this.paging.current = 0;
 						
-						dojo.forEach(data.rubrics, function(rubric, index, arr) {
-							DomConstruct.create("option", {
-								value:		rubric.value,
-								innerHTML:	rubric.text,
-								disabled:	rubric.disabled
-							}, selectNode, "last");
-						});
-						
-						// setup
-						this.setupPaging();
-						this.setupRestrictions();
-						
-						// register form submit
-						On(Query("input[name='netnavigation_submit_restrictions']")[0], "click", Lang.hitch(this, function(event) {
-							// reset paging
-							this.paging.current = 0;
-							
-							this.performRequest();
-							
-							event.preventDefault();
-						}));
-						
-						// perform first request
 						this.performRequest();
 						
-						this.initialized = true;
+						event.preventDefault();
 					}));
-				}
-			}));
+					
+					// perform first request
+					this.performRequest();
+					
+					this.initialized = true;
+				}));
+			}
 		},
 		
 		setupRestrictions: function() {

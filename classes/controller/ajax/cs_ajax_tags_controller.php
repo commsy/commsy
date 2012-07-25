@@ -13,23 +13,29 @@
 		public function actionCreateNewTag() {
 			if($this->accessGranted()) {
 				$current_user = $this->_environment->getCurrentUserItem();
+				$tag_manager = $this->_environment->getTagManager();
 				
 				$tagName = trim($this->_data["tagName"]);
 				$parentId = $this->_data["parentId"];
+				
+				if ($parentId == null) {
+					$rootTagItem = $tag_manager->getRootTagItemFor($this->_environment->getCurrentContextID());
+					$parentId = $rootTagItem->getItemID();
+				}
+				
+				$parentTagItem = $tag_manager->getItem($parentId);
 				
 				// check if empty
 				if($tagName === "") {
 					$this->setErrorReturn("110", "tag is empty", array());
 					echo $this->_return;
 				} else {
-					$tag_manager = $this->_environment->getTagManager();
-					
 					$tag_item = $tag_manager->getNewItem();
 					$tag_item->setTitle($tagName);
 					$tag_item->setContextID($this->_environment->getCurrentContextID());
 					$tag_item->setCreatorItem($current_user);
 					$tag_item->setCreationDate(getCurrentDateTimeInMySQL());
-					$tag_item->setPosition($parentId, 1);
+					$tag_item->setPosition($parentId, $parentTagItem->getChildrenList()->getCount() + 1);
 					$tag_item->save();
 					
 					$this->setSuccessfullDataReturn(array("tagId" => $tag_item->getItemID()));

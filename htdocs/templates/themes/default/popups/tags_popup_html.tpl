@@ -71,13 +71,14 @@
 										<input id="tag_merge" class="popup_button submit" data-custom="part: 'merge'" type="button" name="form_data[tag_merge]" value="___TAG_COMBINE_BUTTON___" />
 									</div>
 								</div>
-
+								
+								{*
 								<div id="content_row_two" class="overflow_auto">
 									{function name=build_tag_tree_list level=0}
 										{foreach $tags as $tag}
 											<li class="ui-state-default popup_buzzword_item popup_tag_item">{$tag.title}</li>
 											
-											{if $tag.children|count > 0}				{* recursive call *}
+											{if $tag.children|count > 0}				{* recursive call *}{*
 											{build_tag_tree_list tags=$tag.children level=level+1 }
 										{/if}
 										{/foreach}
@@ -88,6 +89,7 @@
 										<div class="clear"></div>
 									</ul>
 								</div>
+								*}
 							</div>
 
 							<div id="attach_tab" class="tab hidden">

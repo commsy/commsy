@@ -177,9 +177,9 @@ define([	"dojo/_base/declare",
 				this.AJAXRequest("tags", "mergeTags", { idOne: mergeIdOne, idTwo: mergeIdTwo },
 					Lang.hitch(this, function(response) {
 						// remove both tags from all lists and add the new one
-						this.removeTagFromLists(response.tagOne);
-						this.removeTagFromLists(response.tagTwo);
-						this.addTagToLists(response.newTag);
+						//this.removeTagFromLists(response.tagOne);
+						//this.removeTagFromLists(response.tagTwo);
+						//this.addTagToLists(response.newTag);
 						
 						// remove both tags from the merge select boxes and add the new one
 						this.removeTagFromMergeSelects(response.tagOne);

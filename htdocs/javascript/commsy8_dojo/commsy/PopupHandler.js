@@ -17,6 +17,7 @@ define([	"dojo/_base/declare",
 		featureHandles:			[],
 		module:					null,
 		fct:					null,
+		editType:				null,
 
 		constructor: function(args) {
 
@@ -101,7 +102,7 @@ define([	"dojo/_base/declare",
 					require(["commsy/Netnavigation"], lang.hitch(this, function(Netnavigation) {
 						this.featureHandles[feature] = this.featureHandles[feature] || [];
 						this.featureHandles[feature][0] = new Netnavigation();
-						this.featureHandles[feature][0].init(this.uri_object.cid, this.item_id, this.module, this.from_php.template.tpl_path);
+						this.featureHandles[feature][0].init(this.uri_object.cid, this.item_id, this.module, this.from_php.template.tpl_path, (this.editType == "netnavigation"));
 					}));
 				}
 
