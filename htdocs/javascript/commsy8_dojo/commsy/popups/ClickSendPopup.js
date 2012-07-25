@@ -12,7 +12,7 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "send";
 			
-			this.features = [ "editor" ];
+			//this.features = [ "editor" ];
 			
 			// register click for node
 			this.registerPopupClick();
@@ -23,12 +23,12 @@ define([	"dojo/_base/declare",
 		
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
-			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-				var instance = editor.getInstance();
-				var node = editor.getNode().parentNode;
-				
-				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
-			});
+			//dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
+			//	var instance = editor.getInstance();
+			//	var node = editor.getNode().parentNode;
+			//	
+			//	domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
+			//});
 			
 			// setup data to send via ajax
 			var search = {
@@ -36,7 +36,7 @@ define([	"dojo/_base/declare",
 				],
 				nodeLists: [
 				    { query: query("input[name='form_data[subject]']", this.contentNode) },
-				    { query: query("input[name='form_data[body]']", this.contentNode) },
+				    { query: query("textarea[name='form_data[body]']", this.contentNode) },
 				    { query: query("input[name='form_data[copyToAttendees]']", this.contentNode) },
 				    { query: query("input[name^='form_data[group_']", this.contentNode) },
 				    { query: query("input[name^='form_data[institution_']", this.contentNode) },

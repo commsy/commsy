@@ -20,7 +20,10 @@
 							</div>
 						</div>
 						<div class="editor_content">
-							<div id="body" class="ckeditor">{if isset($popup.body)}{$popup.body}{/if}</div>
+							<br/>
+							<textarea rows="20" cols="109">{if isset($popup.body)}{$popup.body}{/if}</textarea>
+							<br/>
+							<br/>
 						</div>
 						
 						{if $popup.showAttendees == true}

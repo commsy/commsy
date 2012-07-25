@@ -505,7 +505,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 		}
 		$emailtext .= $translator->getMessage('RUBRIC_EMAIL_DEFAULT_PROJECT_END',$link);
 		
-		$this->_popup_controller->assign("popup", "body", $emailtext);
+		$this->_popup_controller->assign("popup", "body", strip_tags($emailtext));
 		
 		// receiver
 		$showAttendees = false;
