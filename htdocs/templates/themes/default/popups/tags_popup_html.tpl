@@ -42,27 +42,49 @@
 							<div id="combine_tab" class="tab hidden">
 								<div id="content_row_one">
 									<div class="input_row">
-										<select id="buzzword_merge_one" class="size_200" size="1">
-											{foreach $popup.buzzwords as $buzzword}
-												<option value="{$buzzword.item_id}">{$buzzword.name}</option>
+										{function name=build_tag_tree_merge level=0}
+											{foreach $tags as $tag}
+												<option value="{$tag.item_id}">{$tag.title}</option>
+												
+												{if $tag.children|count > 0}				{* recursive call *}
+												{build_tag_tree_merge tags=$tag.children level=level+1 }
+											{/if}
 											{/foreach}
+										{/function}
+										<select id="tag_merge_one" class="size_200" size="1">
+											{build_tag_tree_merge tags=$popup.room_tags}
 										</select>
 										
-										<select id="buzzword_merge_two" class="size_200" size="1">
-											{foreach $popup.buzzwords as $buzzword}
-												<option{if $buzzword@index == 0} disabled="disabled"{/if} value="{$buzzword.item_id}">{$buzzword.name}</option>
+										{function name=build_tag_tree_merge2 level=0}
+											{foreach $tags as $tag}
+												<option{if $tag.item_id == $popup.room_tags[0].item_id} disabled="disabled"{/if} value="{$tag.item_id}">{$tag.title}</option>
+												
+												{if $tag.children|count > 0}				{* recursive call *}
+												{build_tag_tree_merge2 tags=$tag.children level=level+1 }
+											{/if}
 											{/foreach}
+										{/function}
+										<select id="tag_merge_two" class="size_200" size="1">
+											{build_tag_tree_merge2 tags=$popup.room_tags}
 										</select>
 										
-										<input id="buzzword_merge" class="popup_button submit" data-custom="part: 'merge'" type="button" name="form_data[buzzword_merge]" value="___BUZZWORDS_COMBINE_BUTTON___" />
+										<input id="tag_merge" class="popup_button submit" data-custom="part: 'merge'" type="button" name="form_data[tag_merge]" value="___TAG_COMBINE_BUTTON___" />
 									</div>
 								</div>
 
 								<div id="content_row_two" class="overflow_auto">
-									<ul class="popup_buzzword_list">
-										{foreach $popup.buzzwords as $buzzword}
-											<li class="ui-state-default popup_buzzword_item">{$buzzword.name}</li>
+									{function name=build_tag_tree_list level=0}
+										{foreach $tags as $tag}
+											<li class="ui-state-default popup_buzzword_item popup_tag_item">{$tag.title}</li>
+											
+											{if $tag.children|count > 0}				{* recursive call *}
+											{build_tag_tree_list tags=$tag.children level=level+1 }
+										{/if}
 										{/foreach}
+									{/function}
+									
+									<ul class="popup_buzzword_list popup_tag_list">
+										{build_tag_tree_list tags=$popup.room_tags}
 										<div class="clear"></div>
 									</ul>
 								</div>
@@ -70,20 +92,26 @@
 
 							<div id="attach_tab" class="tab hidden">
 								<div id="content_row_one">
-									{foreach $popup.buzzwords as $buzzword}
-										<div class="input_row">
-											<input id="{$buzzword.item_id}" type="text" value="{$buzzword.name}" class="buzzword_change_name size_200" />
-											<input class="popup_button buzzword_change mandatory" type="button" name="form_data[{$buzzword.item_id}]" value="___BUZZWORDS_CHANGE_BUTTON___" />
-											<input class="popup_button buzzword_attach" type="button" name="form_data[{$buzzword.item_id}]" value="___COMMON_ATTACH_BUTTON___" />
-											<input class="popup_button buzzword_delete" type="button" name="form_data[{$buzzword.item_id}]" value="___COMMON_DELETE_BUTTON___" />
-										</div>
-									{/foreach}
+									{function name=build_tag_tree level=0}
+										{foreach $tags as $tag}
+											<div class="input_row">
+												<label for="{$tag.item_id}">{$tag.title}</label>
+												<input class="popup_button tag_attach" type="button" name="form_data[{$tag.item_id}]" id="{$tag.item_id}" value="___COMMON_ATTACH_BUTTON___">
+											</div>
+											
+											{if $tag.children|count > 0}				{* recursive call *}
+											{build_tag_tree tags=$tag.children level=level+1 }
+										{/if}
+										{/foreach}
+									{/function}
+									
+									{build_tag_tree tags=$popup.room_tags}
 								</div>
 								
 								<div id="content_row_two_max">
 									<div class="open_close_head">
 				                        <strong>___COMMON_ITEM_ATTACH___</strong> 
-				                        (<span class="text_important">&bdquo;{$popup.buzzwords[0].name}&rdquo;</span>)
+				                        (<span class="text_important">&bdquo;{$popup.room_tags[0].title}&rdquo;</span>)
 				                        
 				                        {*
 				                        	TODO: CS 8.0.1 - hopefully someone would't see this in CS 10
