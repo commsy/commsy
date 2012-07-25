@@ -29,15 +29,31 @@
 						</div>
 						<div class="input_row">
 							<div>___SECTION_OTHER_SECTIONS___:</div>
+                     <br/>
 							<div>
+                        {counter start=1 skip=1 assign="section_counter"}
         						{foreach $popup.sections as $section}
-        							{$section->getTitle()}
+        							{$section_counter}. {$section->getTitle()}
         							<br/>
+                           {counter}
         						{/foreach}
         						{if isset($item.title)}
         						{else}
-        							&#060;___COMMON_NEW___&#062;
+        							{$section_counter}. &#060;___COMMON_NEW___&#062;
 								{/if}
+                        <br/>
+                        ___SECTION_CHOOSE_POSITION___
+                        <select name="form_data[number]">
+                        {counter start=1 skip=1 assign="section_counter"}
+                        {foreach $popup.sections as $section}
+                           <option value="{$section_counter}" {if $item.number == $section_counter}selected{/if}>{$section_counter}</option>
+                           {counter}
+                        {/foreach}
+                        {if isset($item.title)}
+                        {else}
+                           <option value="{$section_counter}" selected="selected">{$section_counter}</option>
+                        {/if}
+                        </select>
 							</div>
 						</div>
 					</div>

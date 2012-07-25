@@ -60,6 +60,7 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
             $this->_popup_controller->assign('item', 'files', $attachment_infos);
             $this->_popup_controller->assign('item', 'title', $item->getTitle());
             $this->_popup_controller->assign('item', 'description', $item->getDescription());
+            $this->_popup_controller->assign('item', 'number', $item->getNumber());
         }
     }
 
