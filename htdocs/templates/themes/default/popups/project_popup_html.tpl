@@ -30,26 +30,6 @@
 							<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
 						</div>
 
-						{if !empty($item.community_room_array)}
-							<div class="input_row_100">
-								<label for="room_communityrooms">
-									___PREFERENCES_COMMUNITY_ROOMS___{if $item.link_status != 'optional'}<span class="required">*</span>{/if}:
-								</label>
-								<select class="size_200"  style="width:200px;" id="room_communityrooms" name="form_data[communityrooms]">
-									{foreach $item.community_room_array as $room}
-										<option value="{$room.value}"{if $room.disabled == true} disabled="disabled"{/if}>{$room.text}</option>
-									{/foreach}
-								</select>
-								<input style="width:102px;" id="add_community_room" class="popup_button" type="button" value="___PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON___" />
-									<div id="assigned_community_rooms" class="input_row_100" style="margin-left:100px;">
-										{foreach $item.assigned_community_room_array as $room}
-											<input id="room_communityroomlist" type="checkbox" name="form_data[communityroomlist_{$room.value}]" value="{$room.value}" checked="checked" />{$room.text}
-										{/foreach}
-									</div>
-								<div class="clear"></div>
-							</div>
-						{/if}
-
 						<div id="content_buttons">
 							<div id="crt_actions_area">
 								<input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="{if $popup.edit == false}___COMMON_NEW_ITEM___{else}___COMMON_CHANGE_BUTTON___{/if}" />

@@ -11,6 +11,7 @@ define([	"dojo/_base/declare",
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
 			this.module = "mailtomod";
+			this.editType = customObject.mailType;
 			
 			this.features = [ "editor" ];
 			

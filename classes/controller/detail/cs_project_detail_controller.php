@@ -21,7 +21,7 @@
 			parent::processTemplate();
 
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_ANNOUNCEMENT_TYPE);
+			$this->assign('room', 'rubric', CS_PROJECT_TYPE);
 		}
 
 		/*****************************************************************************/

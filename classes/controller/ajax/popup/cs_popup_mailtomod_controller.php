@@ -63,11 +63,18 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		}
 	}
 
-	private function getRecieverList() {
+	private function getRecieverList($id = null) {
 		$translator = $this->_environment->getTranslationObject();
-
-		$context_item = $this->_environment->getCurrentContextItem();
-		$mod_list = $context_item->getModeratorList();
+		
+		if ($id) {
+			$projectManager = $this->_environment->getProjectManager();
+			$projectItem = $projectManager->getItem($id);
+			$mod_list = $projectItem->getContactModeratorList();
+		} else {
+			$context_item = $this->_environment->getCurrentContextItem();
+			$mod_list = $context_item->getModeratorList();
+		}
+		
 		$receiver_array = array();
 		if (!$mod_list->isEmpty()) {
 			$mod_item = $mod_list->getFirst();
@@ -87,7 +94,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		return $receiver_array;
 	}
 
-	public function initPopup($data) {
+	public function initPopup($item) {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$context_item = $this->_environment->getCurrentContextItem();
 
@@ -96,9 +103,14 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		$user_information['fullname'] = $current_user->getFullName();
 		$user_information['mail'] = $current_user->getEmail();
 		$this->_popup_controller->assign('popup', 'user', $user_information);
-
+		
 		$mod_information = array();
-		$mod_information['list'] = $this->getRecieverList();
+		if(isset($item)) {
+			$mod_information['list'] = $this->getRecieverList($item->getItemID());
+		} else {
+			$mod_information['list'] = $this->getRecieverList();
+		}
+		
 		//pr($this->getRecieverList());
 		$this->_popup_controller->assign('popup', 'mod', $mod_information);
 

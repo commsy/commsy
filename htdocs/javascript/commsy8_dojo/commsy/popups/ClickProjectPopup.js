@@ -33,10 +33,8 @@ define([	"dojo/_base/declare",
 			// setup data to send via ajax
 			var search = {
 				tabs: [
-				    { id: "rights_tab" }
 				],
 				nodeLists: [
-				    { query: query("div#files_attached", this.contentNode) },
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
@@ -46,20 +44,7 @@ define([	"dojo/_base/declare",
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
-			// invoke netnavigation / path - process after item creation actions
-			if(this.item_id === "NEW") {
-				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					this.featureHandles["path"][0].save(item_id, lang.hitch(this, function() {
-						//this.close();
-						this.reload(item_id);
-					}));
-				}));
-			} else {
-				this.featureHandles["path"][0].save(item_id, lang.hitch(this, function() {
-					//this.close();
-					this.reload(item_id);
-				}));
-			}
+			this.reload(item_id);
 		},
 	});
 });

@@ -14,165 +14,114 @@ class cs_popup_project_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
-		// assign template vars
-		$this->assignTemplateVars();
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_portal = $this->_environment->getCurrentPortalItem();
 		$current_user = $this->_environment->getCurrentUser();
 		$translator = $this->_environment->getTranslationObject();
-
-
-		// assignment
-		$community_room_array = array();
-
-		// get community list and build up select options
-		$community_list = $current_portal->getCommunityList();
-
-		$community_room_array[] = array(
-			'text'		=> $translator->getMessage('PREFERENCES_NO_COMMUNITY_ROOM'),
-			'value'		=> '-1',
-			'checked'	=> false
-		);
-		$community_room_array[] = array(
-			'text'		=> '--------------------',
-			'value'		=> 'disabled',
-			'checked'	=> false,
-			'disabled'	=> true
-		);
-
-		if($community_list->isNotEmpty()) {
-			$community_item = $community_list->getFirst();
-
-			while($community_item) {
-				if($community_item->isAssignmentOnlyOpenForRoomMembers()) {
-					if(!$community_item->isUser($current_user)) {
-						$community_room_array[] = array(
-							'text'		=> $community_item->getTitle(),
-							'value'		=> 'disabled',
-							'disabled'	=> true
-						);
-					} else {
-						$community_room_array[] = array(
-							'text'		=> $community_item->getTitle(),
-							'value'		=> $community_item->getItemID(),
-							'disabled'	=> false
-						);
-					}
-				} else {
-					$community_room_array[] = array(
-						'text'		=> $community_item->getTitle(),
-						'value'		=> $community_item->getItemID(),
-						'disabled'	=> false
-					);
-				}
-
-				$community_item = $community_list->getNext();
-			}
+		
+		if($item !== null) {
+			$this->_popup_controller->assign('item', 'title', $item->getTitle());
+			$this->_popup_controller->assign('item', 'description', $item->getDescription());
 		}
-
-		$this->_community_room_array = $community_room_array;
-
-		$shown_community_room_array = array();
-		$community_room_list = $current_context->getCommunityList();
-		if($community_room_list->getCount() > 0) {
-			$community_room_item = $community_room_list->getFirst();
-
-			while($community_room_item) {
-				$shown_community_room_array[] = array(
-					'text'	=> $community_room_item->getTitle(),
-					'value'	=> $community_room_item->getItemID()
-				);
-
-				$community_room_item = $community_room_list->getNext();
-			}
-		}
-
-		$this->_shown_community_room_array = $shown_community_room_array;
-
+		
+		// assign template vars
+		$this->assignTemplateVars();
     }
 
     public function save($form_data, $additional = array()) {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
-
-        // TODO: check rights */
-		/****************************/
-        if ( $current_iid != 'NEW' and !isset($item) ) {
-
-        } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
-        ($current_iid != 'NEW' and isset($item) and
-        $item->mayEdit($current_user))) ) {
-
-		/****************************/
-
-
-        } else { //Acces granted
-			$this->cleanup_session($current_iid);
-
-			$community_room_array = array();
-
-			// get community room ids
-			foreach($form_data as $key => $value) {
-				if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
-			}
-
-			$item->setCommunityListByID($community_room_array);
-			// save item
-			if($this->_popup_controller->checkFormData('general')) {
-				$session = $this->_environment->getSessionItem();
-				$item_is_new = false;
-				// Create new item
-				if ( !isset($item) ) {
-					$item_manager = $environment->getGroupManager();
-					$item = $item_manager->getNewItem();
-					$item->setContextID($environment->getCurrentContextID());
-					$current_user = $environment->getCurrentUserItem();
-					$item->setCreatorItem($current_user);
-					$item->setCreationDate(getCurrentDateTimeInMySQL());
-           			$item->setLabelType(CS_GROUP_TYPE);
-					$item_is_new = true;
-				}
-
-				// Set modificator and modification date
-				$current_user = $environment->getCurrentUserItem();
-				$item->setModificatorItem($current_user);
-
-				// Set attributes
-				if ( isset($form_data['title']) ) {
-					$item->setTitle($form_data['title']);
-				}
-				if ( isset($form_data['description']) ) {
-					$item->setDescription($form_data['description']);
-				}
-				// Save item
-				$item->save();
-
-				// this will update the right box list
-				if($item_is_new){
-					if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_PROJECT_TYPE.'_index_ids')){
-						$id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_PROJECT_TYPE.'_index_ids'));
-					} else {
-						$id_array =  array();
-					}
-
-					$id_array[] = $item->getItemID();
-					$id_array = array_reverse($id_array);
-					$session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_PROJECT_TYPE.'_index_ids',$id_array);
-				}
-
-				// save session
-				$this->_environment->getSessionManager()->save($session);
-
-				// Add modifier to all users who ever edited this item
-				$manager = $environment->getLinkModifierItemManager();
-				$manager->markEdited($item->getItemID());
-
-				// set return
-            	$this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
-			}
-
+        
+        $current_iid = $form_data['iid'];
+        
+        $translator = $this->_environment->getTranslationObject();
+        
+        if($current_iid === 'NEW') {
+        	$item = null;
+        } else {
+        	$project_manager = $this->_environment->getProjectManager();
+        	$item = $project_manager->getItem($current_iid);
         }
+        
+        // TODO: check rights */
+        /****************************/
+        if ( $current_iid != 'NEW' and !isset($item) ) {
+        
+        } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
+        		($current_iid != 'NEW' and isset($item) and
+        				$item->mayEdit($current_user))) ) {
+        
+        	/****************************/
+        
+        	}else { //Acces granted
+        		$this->cleanup_session($current_iid);
+        	
+        		// save item
+        		if($this->_popup_controller->checkFormData()) {
+        			$session = $this->_environment->getSessionItem();
+        			$item_is_new = false;
+        			// Create new item
+        			if ( !isset($item) ) {
+        				$item_manager = $environment->getProjectManager();
+        				$item = $item_manager->getNewItem();
+        				$current_user = $environment->getCurrentUserItem();
+        				$item->setCreatorItem($current_user);
+        				$item->setCreationDate(getCurrentDateTimeInMySQL());
+        				$item->setContextID($environment->getCurrentPortalID());
+        				$item->open();
+        				$item->setRoomContext($current_context->getRoomContext());
+        				$item_is_new = true;
+        			}
+        			
+        			// Set modificator and modification date
+        			$current_user = $environment->getCurrentUserItem();
+        			$item->setModificatorItem($current_user);
+        			
+        			// Set attributes
+        			if ( isset($form_data['title']) ) {
+        				$item->setTitle($form_data['title']);
+        			}
+        			
+        			if (isset($form_data["description"])) {
+        				/*$description = array();
+        				$description[mb_strtoupper($current_context->getLanguage(), 'UTF-8')] = $form_data["description"];
+        				
+        				$item->setDescriptionArray($description);*/
+        				
+        				$item->setDescription($form_data["description"]);
+        			}
+        			
+        			// assignment
+        			$item->setCommunityListByID(array($this->_environment->getCurrentContextID()));
+        			
+        			// Save item
+        			$item->save();
+        			
+        			// this will update the right box list
+        			if($item_is_new){
+        				if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_PROJECT_TYPE.'_index_ids')){
+        					$id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.CS_PROJECT_TYPE.'_index_ids'));
+        				} else {
+        					$id_array =  array();
+        				}
+        			
+        				$id_array[] = $item->getItemID();
+        				$id_array = array_reverse($id_array);
+        				$session->setValue('cid'.$environment->getCurrentContextID().'_'.CS_PROJECT_TYPE.'_index_ids',$id_array);
+        			}
+        			
+        			// save session
+        			$this->_environment->getSessionManager()->save($session);
+        			
+        			// Add modifier to all users who ever edited this item
+        			$manager = $environment->getLinkModifierItemManager();
+        			$manager->markEdited($item->getItemID());
+        			
+        			// set return
+        			$this->_popup_controller->setSuccessfullItemIDReturn($item->getItemID());
+        		}
+        	}
     }
 
     public function isOption( $option, $string ) {
@@ -183,19 +132,9 @@ class cs_popup_project_controller implements cs_rubric_popup_controller {
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
 
-		if(!empty($this->_community_room_array)) {
-			$portal_item = $this->_environment->getCurrentPortalItem();
-			if(!empty($this->_shown_community_room_array)) $this->_popup_controller->assign('item', 'assigned_community_room_array', $this->_shown_community_room_array);
-			if(count($this->_community_room_array) > 2) $this->_popup_controller->assign('item', 'community_room_array', $this->_community_room_array);
-			$this->_popup_controller->assign('item', 'link_status',$portal_item->getProjectRoomLinkStatus());
-		}
-
-		if($this->_item !== null) {
-			$this->_popup_controller->assign('item', 'title', $item->getTitle());
-			$this->_popup_controller->assign('item', 'description', $item->getDescription());
-		}
-
-
+		
+		
+		$this->_popup_controller->assign("item", "languages", $this->_environment->getAvailableLanguageArray());
     }
 
 

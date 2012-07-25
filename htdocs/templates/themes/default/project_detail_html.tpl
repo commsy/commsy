@@ -24,7 +24,7 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
 				{if $detail.actions.mail}
-					<a class="open_popup" data-custom="module: 'mailtomod', mailType:'project'" href="#">___EMAIL_CONTACT_MODERATOR_TEXT___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'mailtomod', mailType:'project'" href="#">___EMAIL_CONTACT_MODERATOR_TEXT___</a> |
 				{/if}
 				{if $detail.content.room_user_status == 'closed'}
 					<a id="action_member" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&account=member">___CONTEXT_JOIN___</a>

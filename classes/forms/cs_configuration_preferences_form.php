@@ -246,7 +246,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       }
       $this->_community_room_array = $community_room_array;
       $community_room_array = array();
-
+      
       if (!empty($this->_session_community_room_array)) {
          foreach ( $this->_session_community_room_array as $community_room ) {
             $temp_array['text'] = $community_room['name'];
@@ -256,6 +256,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       } elseif ( isset($this->_item)
                  and $this->_item->isProjectRoom()
                ) {
+      	
          $community_room_list = $this->_item->getCommunityList();
          if ($community_room_list->getCount() > 0) {
             $community_room_item = $community_room_list->getFirst();
