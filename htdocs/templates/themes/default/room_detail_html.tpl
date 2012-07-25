@@ -136,7 +136,7 @@
 		{if $room.netnavigation_edit}
 			<div class="portlet_rc_action">
 				<a class="open_popup context_nav" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}', editType: 'netnavigation'" href="#">
-				___COMMON_ASSIGN_ENTRIES___
+				___COMMON_ITEM_ATTACH___
 				</a>
 			</div>
 		{/if}

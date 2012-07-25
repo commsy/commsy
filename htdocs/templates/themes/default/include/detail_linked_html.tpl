@@ -9,8 +9,9 @@
 			<div class="fi_md_content">
 
 				{if $room.sidebar_configuration.active.buzzwords}
-					<div class="fi_mdc_item">
-						<h4>___COMMON_ATTACHED_BUZZWORDS___</h4>
+					<div class="fi_mdc_item" style="margin-right:10px; width:265px;">
+						<h4 style="display:inline;">___COMMON_ATTACHED_BUZZWORDS___</h4>
+							(<a style="display:inline;" class="open_popup context_nav" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}', editType: 'buzzwords'" href="#">___COMMON_ITEM_ATTACH___</a>)<br/>
 						{foreach $room.buzzwords as $buzzword}
 							{block name=sidebar_buzzwordbox_buzzword}
 								<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&selbuzzword={$buzzword.to_item_id}">{$buzzword.name}</a>{if !$buzzword@last}, {/if}
@@ -22,8 +23,9 @@
 				{/if}
 
 				{if $room.sidebar_configuration.active.tags}
-					<div class="fi_mdc_item">
-						<h4>___COMMON_ATTACHED_TAGS___</h4>
+					<div class="fi_mdc_item" style="margin-right:10px; width:255px;">
+						<h4 style="display:inline;">___COMMON_ATTACHED_TAGS___</h4>
+							(<a style="display:inline;" class="open_popup context_nav" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}', editType: 'tags'" href="#">___COMMON_ITEM_ATTACH___</a>)<br/>
 							{foreach $item.tags as $tag}
 								<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$tag.level}={$tag.item_id}&seltag=yes">{$tag.title}</a>{if !$tag@last}, {/if}
 							{foreachelse}
