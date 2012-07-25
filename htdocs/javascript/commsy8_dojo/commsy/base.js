@@ -40,7 +40,7 @@ define([	"dojo/_base/declare",
 				// TODO: add invisible screen layer, to prevent closing, before fully loaded
 				var loadingScreenDiv = domConstruct.create("div", {
 					"id":		"loadingScreen"
-				}, document.body, "first")
+				}, document.body, "first");
 
 					var loadingScreenInner = domConstruct.create("div", {
 						"id":		"loadingScreenInner"
