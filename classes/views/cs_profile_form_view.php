@@ -72,22 +72,6 @@ class cs_profile_form_view extends cs_form_view {
       }else{
          $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
       }
-      $params['profile_page'] = 'room_list';
-      $current_user_item = $this->_environment->getCurrentUserItem();
-      if ( !$current_user_item->isRoomMember() ) {
-         $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOM_LIST_DATA').'</a>';
-      } else {
-         $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                              $this->_environment->getCurrentModule(),
-                              $this->_environment->getCurrentFunction(),
-                              $params,
-                              $this->_translator->getMessageInLang($this->_language,'PROFILE_ROOM_LIST_DATA'));
-      }
-      if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'room_list'){
-         $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
-      }else{
-         $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
-      }
       $params['profile_page'] = 'newsletter';
       $private_room = $current_user_item->getOwnRoom();
       if ( !isset( $private_room )
