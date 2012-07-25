@@ -26,19 +26,21 @@ define([	"dojo/_base/declare",
 		setupSpecific: function() {
 			dojo.ready(lang.hitch(this, function() {
 				// setup callback for single upload
-				this.featureHandles["upload-single"][0].setCallback(lang.hitch(this, function(fileInfo) {
-					// setup preview
-					var formNode = this.featureHandles["upload-single"][0].uploader.form;
-					var previewNode = query("div.filePreview", formNode)[0];
+				if (this.featureHandles["upload-single"]) {
+					this.featureHandles["upload-single"][0].setCallback(lang.hitch(this, function(fileInfo) {
+						// setup preview
+						var formNode = this.featureHandles["upload-single"][0].uploader.form;
+						var previewNode = query("div.filePreview", formNode)[0];
 
-					domConstruct.empty(previewNode);
+						domConstruct.empty(previewNode);
 
-					domConstruct.create("img", {
-						src:		"commsy.php?cid=" + this.uri_object.cid + "&mod=picture&fct=getTemp&fileName=" + fileInfo.file
-					}, previewNode, "last");
+						domConstruct.create("img", {
+							src:		"commsy.php?cid=" + this.uri_object.cid + "&mod=picture&fct=getTemp&fileName=" + fileInfo.file
+						}, previewNode, "last");
 
-					this.sendImages.push({ part: "upload_picture", fileInfo: fileInfo });
-				}));
+						this.sendImages.push({ part: "upload_picture", fileInfo: fileInfo });
+					}));
+				}
 			}));
 		},
 

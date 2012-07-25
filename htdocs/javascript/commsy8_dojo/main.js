@@ -10,8 +10,7 @@ require([	"dojo/_base/declare",
 			require([	"dojo/query",
 			         	"dojo/dom-attr",
 			         	"dojo/NodeList-traverse",
-			         	"dojo/on",
-			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, On, ready) {
+			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, ready) {
 				
 				// initiate popup handler
 				require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
@@ -98,11 +97,10 @@ require([	"dojo/_base/declare",
 				
 				// calendar scroll bar position and select auto submit - process directly here
 				if (this.uri_object.fct == "index" && this.uri_object.mod == "date") {
-					var scrollDivNode = query("div.cal_table_scroll")[0];
-					
-					if (scrollDivNode) {
-						scrollDivNode.scrollTop = 250;
-					}
+					require(["commsy/DateCalendar"], function(DateCalendar) {
+						var handler = new DateCalendar();
+						handler.setup();
+					});
 				}
 				
 				// search
