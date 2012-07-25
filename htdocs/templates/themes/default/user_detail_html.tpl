@@ -15,10 +15,10 @@
 			<div class="fade_in_ground_actions">
 				{if $detail.actions.edit}
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
-					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_CLOSE_PARTICIPATION___</a> |
+					<!-- <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_CLOSE_PARTICIPATION___</a> | -->
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
-					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_CLOSE_PARTICIPATION___</span> |
+					<!-- <span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_CLOSE_PARTICIPATION___</span> | -->
 				{/if}
 				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 
