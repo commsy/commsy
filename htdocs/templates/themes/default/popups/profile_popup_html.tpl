@@ -402,9 +402,7 @@
                   </fieldset>
 
                   <div class="input_row">
-                    <div class="input_container_180">
                       <input id="submit" class="submit popup_button" data-custom="part: 'user'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -426,9 +424,7 @@
                   </div>
 
                   <div class="input_row">
-                    <div class="input_container_180">
                       <input id="submit" class="submit popup_button" data-custom="part: 'newsletter'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -519,9 +515,7 @@
                  </fieldset>
 
                   <div class="input_row">
-                    <div class="input_container_180">
                       <input id="submit" class="submit popup_button" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-                    </div>
                   </div>
                 </div>
               </div>

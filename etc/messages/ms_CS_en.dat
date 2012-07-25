@@ -1,7 +1,17 @@
 <?php
+$message["CS_BAR_CALENDAR"]["en"] = "My calendar";
+$message["CS_BAR_CALENDAR_DESC"]["en"] = "Here you can setup the personal calendar.";
+$message["CS_BAR_CALENDAR_VIEW"]["en"] = "Show my calendar";
 $message["CS_BAR_COMMING_SOON"]["en"] = "Spezific settings comming soon in the next CommSy version.";
 $message["CS_BAR_COMMING_SOON_2"]["en"] = "Settings comming soon in the next CommSy version.";
+$message["CS_BAR_COMMING_SOON_INFO_TEXT"]["en"] = "Her you will be able to configure the CommSy-Bar. Please be patiently for a few day. At least at 1st of August it  will be usable.";
 $message["CS_BAR_COMMON_SHOW"]["en"] = "Show";
+$message["CS_BAR_PORTFOLIO"]["en"] = "My portfolios";
+$message["CS_BAR_PORTFOLIO_DESC"]["en"] = "Here you can setup the personal portfolios.";
+$message["CS_BAR_PORTFOLIO_VIEW"]["en"] = "Show my portfolios";
+$message["CS_BAR_STACK"]["en"] = "My repository";
+$message["CS_BAR_STACK_DESC"]["en"] = "Here you can setup the personal repository.";
+$message["CS_BAR_STACK_VIEW"]["en"] = "Show my repository";
 $message["CS_BAR_WIDGETS"]["en"] = "CommSy-Widgets";
 $message["CS_BAR_WIDGETS_DESC"]["en"] = "Here you can setup the CommSy widgets.";
 $message["CS_BAR_WIDGETS_VIEW"]["en"] = "Show CommSy widgets";
