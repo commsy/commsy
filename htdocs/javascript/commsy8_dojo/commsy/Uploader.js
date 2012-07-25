@@ -80,6 +80,11 @@ define([	"dojo/_base/declare",
 					};
 
 					this.uploader.upload(send);
+					
+					// place a loading image
+					this.loadingImgNode = DomConstruct.create("img", {
+						src:		this.from_php.template.tpl_path + "img/ajax_loader.gif"
+					}, this.uploader.domNode, "after");
 				}));
 
 				this.uploader.startup();
@@ -93,11 +98,6 @@ define([	"dojo/_base/declare",
 			});
 
 			this.progressbar.placeAt(Query("div.fileList")[0]);
-			
-			// place a loading image
-			this.loadingImgNode = DomConstruct.create("img", {
-				src:		this.from_php.template.tpl_path + "img/ajax_loader.gif"
-			}, this.uploader.domNode, "after");
 		},
 
 		onUploadComplete: function(data) {
