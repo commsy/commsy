@@ -25,7 +25,7 @@
 							<a href="moderation_configuration" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="additional_configuration" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
 							<a href="addons" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
-							<a href="external_systems" class="pop_tab">___COMMON_EXTERNAL_SYSTEMS___</a>
+							<a href="external_configuration" class="pop_tab">___COMMON_EXTERNAL_SYSTEMS___</a>
 
 							<div class="clear"> </div>
 						</div>
@@ -684,23 +684,24 @@
 								</div>
 							</div>
 
-							<div class="tab hidden" id="external_systems">
+							<div class="tab hidden" id="external_configuration">
 								<div id="content_row_three">
                            <fieldset>
+                              {if $popup.external.wordpress}
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
                               </p>
                               <div class="input_row_200">
-                                 <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'} checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
+                                 <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'}checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
                                  <div class="clear"></div>
                               </div>
                               <div class="input_row_100">
 								 <label for="wordpresstitle">___COMMON_TITLE___<span class="required">*</span>:</label>
-								 <input id="wordpresstitle" type="text" class="size_200" name="wordpresstitle" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
+								 <input id="wordpresstitle" type="text" class="size_200" name="form_data[wordpresstitle]" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
 						      </div>
                               <div class="input_row_100">
                                  <label for="wordpressdescription">___COMMON_DESCRIPTION___<span class="required">*</span>:</label>
-                                 <input id="wordpressdescription" type="text" class="size_200" name="wordpressdescription" value="{show var=$popup.external.wordpress.wordpressdescription}"/>
+                                 <input id="wordpressdescription" type="text" class="size_200" name="form_data[wordpressdescription]" value="{show var=$popup.external.wordpress.wordpressdescription}"/>
                               </div>
                               <div class="input_row_100">
                                  <label for="skin_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</label>
@@ -724,23 +725,23 @@
                                  ___WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION___
                               </div>
                               <br/>
-                              <br/>
                               <div class="input_row_200">
                                  <label for="use_comments">___WORDPRESS_CONFIGURATION_COMMENTS___:</label>
-                                 <input type="checkbox" name="form_data[use_comments]" value="yes" {if $popup.external.wordpress.use_comments == 'yes'} checked="checked"{/if}/> ___WORDPRESS_CONFIGURATION_COMMENTS_DESC___
+                                 <input type="checkbox" name="form_data[use_comments]" value="yes" {if $popup.external.wordpress.use_comments == 'yes'}checked="checked"{/if}/>
                                  <div class="clear"></div>
                               </div>
                               <div class="input_row_200">
                                  <label for="use_comments_moderation">___WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION___:</label>
-                                 <input type="checkbox" name="form_data[use_comments_moderation]" value="yes" {if $popup.external.wordpress.use_comments_moderation == 'yes'} checked="checked"{/if}/> ___WORDPRESS_CONFIGURATION_WORDPRESS_COMMENTS_DESC___
+                                 <input type="checkbox" name="form_data[use_comments_moderation]" value="yes" {if $popup.external.wordpress.use_comments_moderation == 'yes'}checked="checked"{/if}/>
                                  <div class="clear"></div>
                               </div>
                               <div class="input_row_200">
                                  <label for="use_comments_moderation">___WORDPRESS_CONFIGURATION_SHOW_HOMELINK___:</label>
-                                 <input type="checkbox" name="form_data[wordpresslink]" value="yes" {if $popup.external.wordpress.wordpresslink == 'yes'} checked="checked"{/if}/>
+                                 <input type="checkbox" name="form_data[wordpresslink]" value="yes" {if $popup.external.wordpress.wordpresslink == 'yes'}checked="checked"{/if}/>
                                  <div class="clear"></div>
                               </div>
                            </fieldset>
+                           {/if}
                            <fieldset>
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WIKI___:</strong>
