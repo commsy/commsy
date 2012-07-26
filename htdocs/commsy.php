@@ -844,10 +844,13 @@ if(isset($c_smarty) && $c_smarty === true) {
 		$correct_theme = false;
 		if (is_array($theme_array)){
 			foreach($theme_array as $key => $value){
-			  if ($theme == $key){
+			  if ($theme == $key or $key == 'individual'){
 			     $c_theme = $key;
 			  }
 			}
+		}
+		if($theme == 'individual'){
+			 $c_theme = $theme;
 		}
 	}
 	$smarty = new cs_smarty($environment, $c_theme);
