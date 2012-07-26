@@ -92,6 +92,7 @@ define([	"dojo/_base/declare",
 		},
 
 		onUploadBegin: function(fileArray) {
+			// seems not to be called by iframe method
 			this.progressbar = new ProgressBar({
 				value:		"0%",
 				className:	"ui-progressbar"

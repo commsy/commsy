@@ -31,9 +31,12 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			// register click for edit button
-			On.once(Query("a#edit_roomlist", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
-				this.setupEditMode();
-			}));
+			var aEditNode = Query("a#edit_roomlist", this.contentNode)[0]
+			if (aEditNode) {
+				On.once(aEditNode, "click", Lang.hitch(this, function(event) {
+					this.setupEditMode();
+				}));
+			}
 			
 			// register click for room links
 			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
