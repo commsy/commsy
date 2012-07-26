@@ -162,7 +162,7 @@
 								{/if}
 								{if $room.addon_information.wordpress.active}
 									{$wo = $room.addon_information.wordpress}
-									<a href="{$wo.path}/{$environment.cid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank">
+									<a href="{$wo.path}/{$environment.pid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank">
 										<img src="{$basic.tpl_path}img/addon_wordpress.png" alt="___COMMON_WORDPRESS_LINK___" />
 									</a>
 								{/if}

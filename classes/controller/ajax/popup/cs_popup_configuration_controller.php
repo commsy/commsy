@@ -1676,54 +1676,45 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   $translator = $this->_environment->getTranslationObject();
 
 	   if(isset($c_wordpress) and $c_wordpress){
-   	   	   $wordpress_manager = $this->_environment->getWordpressManager();
-   	   	   $wordpress = array();
-   	   	   if($current_context->isWordpressActive()){
-   	          $wordpress['wordpress_active'] = 'yes';
-   	   	   }
-   	       $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
-   	       $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
+   	   $wordpress_manager = $this->_environment->getWordpressManager();
+	      $wordpress = array();
+   	   if($current_context->isWordpressActive()){
+            $wordpress['wordpress_active'] = 'yes';
+   	   }
+	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
+	      $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
    
-   	       $wordpress_skins = array();
-   	       foreach($wordpress_manager->getSkins() as $key => $value){
-   	           $temp_array['text']  = $key;
-   	           $temp_array['value'] = $value;
-   	           $wordpress_skins[] = $temp_array;
-   	       }
-   	       $wordpress['skin_array'] = $wordpress_skins;
-   	       $wordpress['skin_choice'] = $current_context->getWordpressSkin();
+   	   $wordpress_skins = array();
+   	   foreach($wordpress_manager->getSkins() as $key => $value){
+   	      $temp_array['text']  = $key;
+   	      $temp_array['value'] = $value;
+   	      $wordpress_skins[] = $temp_array;
+   	   }
+   	   $wordpress['skin_array'] = $wordpress_skins;
+   	   $wordpress['skin_choice'] = $current_context->getWordpressSkin();
    
-   	       $wordpress_member_roles = array();
-   	       $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber');
-   	       $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author');
-   	       $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_EDITOR'), 'value' => 'editor');
-   	       $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator');
-   	       $wordpress['member_role_array'] = $wordpress_member_roles;
-   	       $wordpress['member_role'] = $current_context->getWordpressMemberRole();
+   	   $wordpress_member_roles = array();
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber');
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author');
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_EDITOR'), 'value' => 'editor');
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator');
+   	   $wordpress['member_role_array'] = $wordpress_member_roles;
+   	   $wordpress['member_role'] = $current_context->getWordpressMemberRole();
    
-   	       if($current_context->getWordpressUseComments() == '1'){
-   	          $wordpress['use_comments'] = 'yes';
-   	       }
-   	       if($current_context->getWordpressUseCommentsModeration() == '1'){
-   	          $wordpress['use_comments_moderation'] = 'yes';
-   	       }
+   	   if($current_context->getWordpressUseComments() == '1'){
+   	      $wordpress['use_comments'] = 'yes';
+   	   }
+   	   if($current_context->getWordpressUseCommentsModeration() == '1'){
+   	      $wordpress['use_comments_moderation'] = 'yes';
+   	   }
    
-   	       if($current_context->getWordpressHomeLink() == '1'){
-         	     #$title = $translator->getMessage('COMMON_WORDPRESS_LINK').': '.$current_context->getWordpressTitle();
-         	     #$session_item = $this->_environment->getSessionItem();
-         	     #$url_session_id = '?commsy_session_id='.$session_item->getSessionID();
-         	     #unset($session_item);
-         	     #global $c_wordpress_path_url;
-         	     #$url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
-   	          $wordpress['wordpresslink'] = 'yes';
-   	       }
-      	   $return['wordpress'] = $wordpress;
+   	   if($current_context->getWordpressHomeLink() == '1'){
+            $wordpress['wordpresslink'] = 'yes';
+   	   }
+      	$return['wordpress'] = $wordpress;
 	   } else {
 	       $return['wordpress'] = false;
 	   }
-
-	   
-
 	   return $return;
 	}
 
