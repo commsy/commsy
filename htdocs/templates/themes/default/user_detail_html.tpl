@@ -223,6 +223,11 @@
 				</div>
 			</p>
 			<div class="clear"> </div>
+				{if !empty($detail.content.description)}
+					<div class="detail_description">
+						{$detail.content.description}
+					</div>
+				{/if}
 	</div>
 
 	{if $detail.config.show_configuration}
