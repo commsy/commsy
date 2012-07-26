@@ -315,9 +315,15 @@
 			$this->assign('environment', 'use_problems', $this->getUseProblems());
 
 
-			$this->assign('cs_bar', 'show_widgets', $own_room_item->getCSBarShowWidgets());
-			$this->assign('cs_bar', 'show_calendar', $own_room_item->getCSBarShowCalendar());
-			$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
+			if (isset($own_room_item)){
+				$this->assign('cs_bar', 'show_widgets', $own_room_item->getCSBarShowWidgets());
+				$this->assign('cs_bar', 'show_calendar', $own_room_item->getCSBarShowCalendar());
+				$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
+			}else{
+				$this->assign('cs_bar', 'show_widgets', false);
+				$this->assign('cs_bar', 'show_calendar', false);
+				$this->assign('cs_bar', 'show_stack', false);
+			}
 
 
 
