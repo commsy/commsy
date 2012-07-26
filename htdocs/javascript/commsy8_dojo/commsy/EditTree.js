@@ -248,17 +248,17 @@ define([	"dojo/_base/declare",
 				var nodeCreatorNode = Query("a.nodeCreator", spanNode.parentNode)[0];
 				if(!nodeCreatorNode) {
 					
+					var createLinkNode = DomConstruct.create("a", {
+						className:		"nodeCreator",
+						href:			"#"
+					}, spanNode, "after");
+					
+						DomConstruct.create("img", {
+							src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
+						}, createLinkNode, "last");	
+						
 					// check if not root node
 					if (DomAttr.get(spanNode, "innerHTML") !== "ROOT") {
-						var createLinkNode = DomConstruct.create("a", {
-							className:		"nodeCreator",
-							href:			"#"
-						}, spanNode, "after");
-						
-							DomConstruct.create("img", {
-								src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
-							}, createLinkNode, "last");	
-						
 						var renameLinkNode = DomConstruct.create("a", {
 							href:			"#"
 						}, createLinkNode, "after");
@@ -273,21 +273,24 @@ define([	"dojo/_base/declare",
 						
 							DomConstruct.create("img", {
 								src:		this.from_php.template.tpl_path + "img/btn_del_tag.gif"
-							}, deleteLinkNode, "last");	
+							}, deleteLinkNode, "last");
+					}
+					
+					// get widget id from appropriated dijitTreeNode
+					var treeNode = new dojo.NodeList(createLinkNode).parents("div.dijitTreeNode")[0];
+					if(treeNode) {
+						var widgetId = DomAttr.get(treeNode, "widgetid");
 						
-						// get widget id from appropriated dijitTreeNode
-						var treeNode = new dojo.NodeList(createLinkNode).parents("div.dijitTreeNode")[0];
-						if(treeNode) {
-							var widgetId = DomAttr.get(treeNode, "widgetid");
-							
-							// extract item id
-							var widget = dijit.byId(widgetId);
-							var itemId = parseInt(this.tree.model.getItemAttr(widget.item, "item_id"));
-							
-							On(createLinkNode, "click", Lang.hitch(this, function(event) {
-								this.createNewTreeEntry(itemId);
-							}));
-							
+						// extract item id
+						var widget = dijit.byId(widgetId);
+						var itemId = parseInt(this.tree.model.getItemAttr(widget.item, "item_id"));
+						
+						On(createLinkNode, "click", Lang.hitch(this, function(event) {
+							this.createNewTreeEntry(itemId);
+						}));
+						
+						// check if not root node
+						if (DomAttr.get(spanNode, "innerHTML") !== "ROOT") {
 							On(renameLinkNode, "click", Lang.hitch(this, function(event) {
 								this.renameTagEntry(itemId);
 							}));
