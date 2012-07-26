@@ -29,7 +29,7 @@ require([	"dojo/_base/declare",
 				
 				if (aClipboardNode) {
 					require(["commsy/popups/ToggleClipboard"], function(ClipboardPopup) {
-						var handler = new ClipboardPopup(aClipbaordNode, query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
+						var handler = new ClipboardPopup(aClipboardNode, query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
 					});
 				}
 				
