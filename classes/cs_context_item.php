@@ -1037,7 +1037,9 @@ class cs_context_item extends cs_item {
     } else {
       $user_manager = $this->_environment->getUserManager();
       $user_in_room = $user_manager->getItem($user_item_id);
-      if ($user_in_room->isUser()) {
+      if ( $user_in_room->isUser()
+           and $user_in_room->getContextID() == $this->getItemID()
+         ) {
         $retour = true;
         $this->_cache_may_enter[$user_item_id] = true;
       } else {
