@@ -1175,8 +1175,10 @@
 			}
 			if (isset($_GET['month'])) {
 				$this->_calendar["month"] = $_GET['month'];
+				$this->_calendar["year"] = mb_substr($_GET['month'],0,4);
 			} elseif (isset($_POST['month'])) {
 				$this->_calendar["month"] = $_POST['month'];
+				$this->_calendar["year"] = mb_substr($_POST['month'],0,4);
 			}
 			if (isset($_GET['week']) and !empty($_GET['week'])){
 				$this->_calendar["week"] = $_GET['week'];
