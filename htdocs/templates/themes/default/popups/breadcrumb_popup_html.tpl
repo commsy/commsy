@@ -11,7 +11,7 @@
 							<a id="edit_roomlist" href="#" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
 						</span>
 					{else}
-						<span class="float-right">&nbsp;</span>
+						<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
 					{/if}
 					<h2>
 						___COMMON_YOUR_ARE_HERE___:
