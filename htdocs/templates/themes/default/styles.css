@@ -2605,6 +2605,7 @@ special
 */
 div.detail_description {
   padding: 5px 10px 10px 10px;
+  overflow: auto;
   }
 
 div.detail_description ul {
