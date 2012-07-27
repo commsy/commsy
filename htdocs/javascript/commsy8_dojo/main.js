@@ -62,6 +62,14 @@ require([	"dojo/_base/declare",
 					});
 				}));
 				
+				// buzzwords and tags expander
+				if (this.uri_object.fct === "index") {
+					require(["commsy/DivToggle"], function(DivToggle) {
+						var handler = new DivToggle();
+						handler.setup();
+					});
+				}
+				
 				// ajax actions
 				require(["commsy/AjaxActions"], function(AjaxActions) {
 					var aNodes = query("a.ajax_action");

@@ -196,7 +196,7 @@
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
 
-								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
+								<a href="#" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc divToggle" data-custom="toggleId: 'buzzwordToggle'">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
 
@@ -212,7 +212,7 @@
 									<a id="edit_buzzwords" class="btn_head_rc2 open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
 								{/if}
 
-								<div class="portlet_rc_body{if $h} hidden{/if}">
+								<div id="buzzwordToggle" class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
 										{block name=sidebar_buzzwordbox_buzzword}
 											<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index{restriction_params params=$environment.params_array key=selbuzzword value=$buzzword.to_item_id}" class="keywords_s{$buzzword.class_id}">{$buzzword.name}</a>

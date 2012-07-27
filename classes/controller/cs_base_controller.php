@@ -340,6 +340,10 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
+			
+			// translations - should be managed elsewhere soon
+			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
+			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
 
 			// dev
 			global $c_indexed_search;
