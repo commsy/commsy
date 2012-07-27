@@ -259,10 +259,12 @@ define([	"dojo/_base/declare",
 						this.addBuzzwordToLists(buzzword);
 						
 						// add the new buzzwords to the merge select boxes
-						addBuzzwordToMergeSelects(response.id, buzzword);
+						this.addBuzzwordToMergeSelects(response.id, buzzword);
 						
 						// add the new buzzword to the edit tab
-						addBuzzwordToEditTab(response.id, buzzword);
+						this.addBuzzwordToEditTab(response.id, buzzword);
+						
+						this.destroyLoading();
 					}),
 					
 					Lang.hitch(this, function(response) {
@@ -274,6 +276,8 @@ define([	"dojo/_base/declare",
 								DomStyle.set(buzzwordNode, "color", (buzzName === buzzword) ? "red" : "#393939");
 							}));
 						}
+						
+						this.destroyLoading();
 					})
 				);
 			}
@@ -297,10 +301,12 @@ define([	"dojo/_base/declare",
 						this.removeBuzzwordFromMergeSelects(response.buzzwordOne);
 						this.removeBuzzwordFromMergeSelects(response.buzzwordTwo);
 						this.addBuzzwordToMergeSelects(mergeIdOne, response.newBuzzword);
+						
+						this.destroyLoading();
 					}),
 					
 					Lang.hitch(this, function(response) {
-						
+						this.destroyLoading();
 					})
 				);
 			}

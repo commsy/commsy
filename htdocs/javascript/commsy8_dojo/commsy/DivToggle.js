@@ -3,9 +3,10 @@ define([	"dojo/_base/declare",
         	"dojo/query",
         	"dojo/dom-attr",
         	"dojo/dom-class",
+        	"dojo/dom-style",
         	"dojo/_base/lang",
         	"dojo/fx",
-        	"dojo/on"], function(declare, BaseClass, Query, DomAttr, DomClass, Lang, FX, On) {
+        	"dojo/on"], function(declare, BaseClass, Query, DomAttr, DomClass, DomStyle, Lang, FX, On) {
 	return declare(BaseClass, {
 		constructor: function(options) {
 			options = options || {};
@@ -49,6 +50,8 @@ define([	"dojo/_base/declare",
 				}
 				
 				DomClass.remove(toggleNode, "hidden");
+				DomStyle.set(toggleNode, "height", "0px");
+				
 				
 				// show div
 				FX.wipeIn({
