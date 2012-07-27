@@ -2,14 +2,22 @@
 
 {block name=room_detail_content}
 	<div class="item_actions">
-		<div id="top_item_actions">
+		<div id="top_item_actions" {if $detail.versions}class="material_versions"{/if}>
 			<a class="edit {if $detail.is_action_bar_visible}item_actions_glow{/if}" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set{if $detail.is_action_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			<a class="linked {if $detail.is_reference_bar_visible}item_actions_glow{/if}" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia{if $detail.is_reference_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			
+			{if $detail.versions}
+				<a class="versions {if $detail.is_versions_bar_visible}item_actions_glow{/if}" data-custom="expand: 'versions_expand'" href="#"><span class="versions_ia{if $detail.is_versions_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			{/if}
+			
 			<a class="detail  {if $detail.is_details_bar_visible}item_actions_glow{/if}" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia{if $detail.is_details_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			{if $room.workflow}
 				<a class="workflow" data-custom="expand: 'workflow_expand'" href="#"><span class="workflow_ia"> &nbsp; </span></a>
 			{/if}
 			<a class="annotations  {if $detail.is_annotations_bar_visible}item_actions_glow{/if}" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno{if $detail.is_annotations_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			{if $detail.versions}
+				<div class="action_count versions_count" >{$detail.versions}</div>
+			{/if}
 			{if $detail.annotations|@count}
 			<div class="action_count anno_count" >{$detail.annotations|@count}
 			</div>
@@ -43,7 +51,7 @@
 			<div class="fade_in_ground_actions">
 				{* TODO: add missing actions *}
 				{if $detail.actions.edit}
-					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
+					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}', vid: {$detail.content.version}" href="#">___COMMON_EDIT_ITEM___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
@@ -77,6 +85,28 @@
 		<!-- Ende fade_in_ground -->
 
 	    {include file="include/detail_linked_html.tpl"}
+
+        {if $detail.versions}
+		<div id="versions_expand" {if !$detail.is_versions_bar_visible}class="hidden"{/if}>
+			<div class="fade_in_ground_versions">
+      			<div class="fi_moreversions">
+      				<div class="fi_md_versions_info">
+      					<img src="{$basic.tpl_path}img/fi_item_versions.gif" alt="" />
+      				</div>
+      
+      				<div class="fi_md_content">
+      					<ul>
+						{foreach $detail.versions_array as $temp_version}
+							<li>{$temp_version}</li>
+						{/foreach}
+						</ul>
+						<div class="clear"> </div>
+					</div>
+					<div class="clear"> </div>
+				</div>
+			</div>
+		</div>
+		{/if}
 
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
@@ -154,7 +184,6 @@
 		<div id="detail_expand" {if !$detail.is_details_bar_visible}class="hidden"{/if}>
 			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 		</div>
-
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
 

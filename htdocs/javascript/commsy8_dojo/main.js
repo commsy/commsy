@@ -158,7 +158,8 @@ require([	"dojo/_base/declare",
 										"div.item_actions a.detail," +
 										"div.item_actions a.workflow," +
 										"div.item_actions a.linked," + 
-										"div.item_actions a.annotations");
+										"div.item_actions a.annotations," +
+										"div.item_actions a.versions");
 						
 					require(["commsy/ActionExpander"], function(ActionExpander) {
 						var handler = new ActionExpander();

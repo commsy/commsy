@@ -12,6 +12,7 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "material";
 			this.editType = customObject.editType;
+			this.version_id = customObject.version_id;
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 
@@ -73,7 +74,7 @@ define([	"dojo/_base/declare",
 				}
 			});
 
-			this.submit(search);
+			this.submit(search, {part:customObject.part, version_id:customObject.version_id});
 		},
 
 		onPopupSubmitSuccess: function(item_id) {

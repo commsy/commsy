@@ -247,6 +247,9 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
+        include_once('functions/development_functions.php');
+        logToFile($additional);
+       
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
@@ -326,6 +329,15 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                     $item_is_new = true;
                 }
 
+                // Create new version button pressed
+                if($additional['part'] == 'version') {
+                   $new_version_id = $item->getVersionID()+1;
+                   $new_version = true;
+                   $item = $item->cloneCopy($new_version);
+                   $item->setVersionID($new_version_id);
+                   $infoBox_forAutoNewVersion = '';
+                }
+                
                 // Set modificator and modification date
                 $current_user = $environment->getCurrentUserItem();
                 $item->setModificatorItem($current_user);

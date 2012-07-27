@@ -1698,6 +1698,10 @@ img.new_item_detail_annotation {
     text-align: center;
     text-decoration: none;
     }
+    
+.item_actions a.versions {
+    padding: 6px 0px;
+    }
 
 .item_actions a:hover {
     display: block;
@@ -1709,6 +1713,11 @@ img.new_item_detail_annotation {
     margin: auto;
     width: 15px;
     }
+
+.item_actions span.versions_ia_ok, .item_actions span.versions_ia{
+    width: 18px;
+    height: 20px;
+}
 
 .item_actions a span.edit_set {
     background: url(img/btn_edit_set_2.gif) -15px 0px no-repeat;
@@ -1750,6 +1759,13 @@ img.new_item_detail_annotation {
     background: url(img/btn_ref_3.png) no-repeat;
     }
 
+.item_actions a span.versions_ia {
+    background: url(img/btn_versions_2.gif) -16px 0px no-repeat;
+    }
+
+.item_actions a:hover span.versions_ia, .item_actions a span.versions_ia_ok {
+    background: url(img/btn_versions_2.gif) no-repeat;
+    }
 
 a.item_actions_glow {
     background: url(img/ia_glow_bg.jpg) no-repeat;
@@ -1782,6 +1798,18 @@ a.item_actions_glow {
 
 #top_item_actions .linked_count_workflow{
     top: -144px;
+}
+
+#top_item_actions.material_versions .linked_count {
+    top: -161px;
+}
+
+#top_item_actions.material_versions .anno_count {
+    top: -33px;
+}
+
+#top_item_actions .versions_count {
+    top: -84px;
 }
 
 .item_body {
@@ -2987,6 +3015,13 @@ fade-in
     min-height: 64px;
     }
 
+.fade_in_ground_versions {
+    background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
+    border-top: 1px solid #D7D7D9;
+    border-bottom: 1px solid #F9F9F9;
+    min-height: 64px;
+    }
+
 .fade_in_ground_panel {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
     border-top: 1px solid #D7D7D9;
@@ -3039,6 +3074,11 @@ fade-in
     min-height: 64px;
     }
 
+.fi_moreversions {
+    background: url(img/fi_md_bg.gif) 3px 0px repeat-y;
+    min-height: 64px;
+    }
+
 .fi_md_info {
     padding-bottom: 15px;
     float: left;
@@ -3046,6 +3086,12 @@ fade-in
     }
 
 .fi_md_linked_info {
+    padding-bottom: 11px;
+    float: left;
+    width: 70px;
+    }
+    
+.fi_md_versions_info {
     padding-bottom: 11px;
     float: left;
     width: 70px;

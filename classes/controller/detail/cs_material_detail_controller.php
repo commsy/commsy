@@ -334,8 +334,7 @@
 			$type = $item_manager->getItemType($_GET['iid']);
 
 			$this->_manager = $this->_environment->getMaterialManager();
-			$this->_version_list = $this->_manager->getVersionList($current_item_id);
-			$this->_item = $this->_version_list->getFirst();
+			$this->_item = $this->_manager->getItemByVersion($current_item_id, $current_version_id);
 		}
 
 		protected function setBrowseIDs() {
@@ -1019,7 +1018,7 @@
 			$params[$iid . 'version_mode'] = 'long';
 
 			// versions
-			$versions = array();
+			/*$versions = array();
 			if(!$this->_version_list->isEmpty()) {
 				$version = $this->_version_list->getFirst();
 
@@ -1037,7 +1036,7 @@
 				$version = $this->_version_list->getNext();
 				$is_user = $current_user->isUser();
 
-				while($version) {
+				while($version) {*/
 					/*
 					 *
 					 if ( !$with_links
@@ -1059,7 +1058,7 @@
 					 *
 					 */
 
-					$version = $this->_version_list->getNext();
+			/*		$version = $this->_version_list->getNext();
 				}
 				$count = $this->_version_list->getCount();
 
@@ -1089,8 +1088,47 @@
 			            $temp_array[] = $html_string;
 			            $formal_data1[] = $temp_array;
 				}
-			}
+			}*/
+				
+			$material_manager = $this->_environment->getMaterialManager();
+			$material_version_list = $material_manager->getVersionList($this->_item->getItemID());
+			if($material_version_list->getCount() > 1){
+			   $translator = $this->_environment->getTranslationObject();
+			
+			   $material_versions_array = array();
+			   $temp_material_item = $material_version_list->getFirst();
 
+			   if ( $temp_material_item->getVersionID() == $this->_item->getVersionID() ) {
+			      $material_versions_array[] = $translator->getMessage('MATERIAL_CURRENT_VERSION_DATE').' '.getDateTimeInLang($temp_material_item->getModificationDate());
+			   } else {
+			      $params = array();
+			      $params[$iid.'version_mode'] = 'long';
+			      $params['iid'] = $temp_material_item->getItemID();
+			      $material_versions_array[] = ahref_curl($this->_environment->getCurrentContextID(), 'material', 'detail', $params,$translator->getMessage('MATERIAL_CURRENT_VERSION_DATE').' '.getDateTimeInLang($temp_material_item->getModificationDate()));
+			      unset($params);
+			   }
+			   $temp_material_item = $material_version_list->getNext();
+			   $current_user = $this->_environment->getCurrentUserItem();
+			   $is_user = $current_user->isUser();
+			   while ( $temp_material_item ) {
+			      if ($this->_item->getVersionID() == $temp_material_item->getVersionID()) {
+			         $material_versions_array[] = $translator->getMessage('MATERIAL_VERSION_DATE').' '.getDateTimeInLang($temp_material_item->getModificationDate());
+			      } else {
+			         $params = array();
+			         $params[$iid.'version_mode'] = 'long';
+			         $params['iid'] = $temp_material_item->getItemID();
+			         $params['version_id'] = $temp_material_item->getVersionID();
+			         $material_versions_array[] = ahref_curl($this->_environment->getCurrentContextID(), 'material', 'detail', $params,$translator->getMessage('MATERIAL_VERSION_DATE').' '.getDateTimeInLang($temp_material_item->getModificationDate()));
+			         unset($params);
+			      }
+			      $temp_material_item = $material_version_list->getNext();
+			   }
+			
+			   $this->assign('detail', 'versions', $material_version_list->getCount());
+			   $this->assign('detail', 'versions_array', $material_versions_array);
+			   $this->assign('detail', 'is_versions_bar_visible', true);
+			}
+			
 			// TODO:
 			/*
 			if(!empty($formal_data1)) {
