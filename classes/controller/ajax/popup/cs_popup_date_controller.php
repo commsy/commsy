@@ -140,7 +140,7 @@ class cs_popup_date_controller {
 				}
 				
 			}else{
- 				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
+ 				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
  				$this->_popup_controller->assign('item', 'public', $val);
          		$this->_popup_controller->assign('item', 'private_editing', $val);
 			}

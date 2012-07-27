@@ -81,10 +81,8 @@ define([	"dojo/_base/declare",
 
 					this.uploader.upload(send);
 					
-					// place a loading image
-					this.loadingImgNode = DomConstruct.create("img", {
-						src:		this.from_php.template.tpl_path + "img/ajax_loader.gif"
-					}, this.uploader.domNode, "after");
+					// setup loading
+					this.setupLoading();
 				}));
 
 				this.uploader.startup();
@@ -102,10 +100,8 @@ define([	"dojo/_base/declare",
 		},
 
 		onUploadComplete: function(data) {
-			// remove loading image
-			if (this.loadingImgNode) {
-				DomConstruct.destroy(this.loadingImgNode);
-			}
+			// remove loading
+			this.destroyLoading();
 			
 			if(this.callback) {
 				this.callback(data);

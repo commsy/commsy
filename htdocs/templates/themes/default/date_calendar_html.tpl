@@ -121,55 +121,59 @@
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
 	                					<div class="cal_days_events">
 		                					{foreach $cc.content.days[$pos].dates as $date}
-		                						<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
+		                						<div>
+			                						<div>
+			                							<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
 
-		                						<div class="tooltip tooltip_with_400">
-													<a href="{$date.href}">
-														<div class="tooltip_inner tooltip_inner_with_400">
-															<div class="tooltip_title">
-																<div class="header">{$date.title}</div>
-															</div>
-															<div class="scrollable">
-																<div class="tooltip_content">
-																	<table id="hover_table">
-																		<tr>
-																			<td class="key">
-																				___DATES_END_DAY___:
-																			</td>
-																			<td class="value">
-																				{$date.date[1]}
-																			</td>
-																		</tr>
-																		{if !empty($date.place)}
-																		<tr>
-																			<td class="key">
-																				___DATES_PLACE___:
-																			</td>
-																			<td class="value">
-																				{$date.place}
-																			</td>
-																		</tr>
-																		{/if}
-																		<tr>
-																			<td class="key">
-																				___DATE_PARTICIPANTS___:
-																			</td>
-																			<td class="value">
-																				{if !empty($date.participants)}
-																				    {foreach name=participants item=participant from=$date.participants}
-																				    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
-																				    {/foreach}
-																				{else}
-																					___TODO_NO_PROCESSOR___
+				                						<div class="tooltip tooltip_with_400">
+															<a href="{$date.href}">
+																<div class="tooltip_inner tooltip_inner_with_400">
+																	<div class="tooltip_title">
+																		<div class="header">{$date.title}</div>
+																	</div>
+																	<div class="scrollable">
+																		<div class="tooltip_content">
+																			<table id="hover_table">
+																				<tr>
+																					<td class="key">
+																						___DATES_END_DAY___:
+																					</td>
+																					<td class="value">
+																						{$date.date[1]}
+																					</td>
+																				</tr>
+																				{if !empty($date.place)}
+																				<tr>
+																					<td class="key">
+																						___DATES_PLACE___:
+																					</td>
+																					<td class="value">
+																						{$date.place}
+																					</td>
+																				</tr>
 																				{/if}
-																			</td>
-																		</tr>
-																	</table>
+																				<tr>
+																					<td class="key">
+																						___DATE_PARTICIPANTS___:
+																					</td>
+																					<td class="value">
+																						{if !empty($date.participants)}
+																						    {foreach name=participants item=participant from=$date.participants}
+																						    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
+																						    {/foreach}
+																						{else}
+																							___TODO_NO_PROCESSOR___
+																						{/if}
+																					</td>
+																				</tr>
+																			</table>
+																		</div>
+																	</div>
 																</div>
-															</div>
+															</a>
 														</div>
-													</a>
-												</div>
+			                						</div>
+		                						</div>
 		                					{/foreach}
 	                					</div>
 	                					<a style="height:10px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
@@ -279,56 +283,59 @@
 	                				{$width = (98 - 10 * $numDates) / $numDates}
 
 	                				{foreach $cc.content.display[$i][$j] as $date}
-                						<div class="cal_days_week_events">
-	                					<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
-		                					</div>
-		                						<div class="tooltip tooltip_with_400" style="margin-left:50px;">
-													<a href="{$date.href}">
-													<div class="tooltip_inner tooltip_inner_with_400">
-														<div class="tooltip_title">
-															<div class="header">{$date.display_title}</div>
-														</div>
-														<div class="scrollable">
-															<div class="tooltip_content">
-																<table id="hover_table">
+	                					<div>
+	                						<div class="cal_days_week_events">
+		                						<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
+			                				</div>
+			                				
+	                						<div class="tooltip tooltip_with_400" style="margin-left:50px;">
+												<a href="{$date.href}">
+												<div class="tooltip_inner tooltip_inner_with_400">
+													<div class="tooltip_title">
+														<div class="header">{$date.display_title}</div>
+													</div>
+													<div class="scrollable">
+														<div class="tooltip_content">
+															<table id="hover_table">
+																<tr>
+																	<td class="key">
+																		___DATES_END_DAY___:
+																	</td>
+																	<td class="value">
+																		{$date.date[1]}
+																	</td>
+																</tr>
+																	{if !empty($date.place)}
 																	<tr>
 																		<td class="key">
-																			___DATES_END_DAY___:
+																			___DATES_PLACE___:
 																		</td>
 																		<td class="value">
-																			{$date.date[1]}
+																			{$date.place}
 																		</td>
 																	</tr>
-																		{if !empty($date.place)}
-																		<tr>
-																			<td class="key">
-																				___DATES_PLACE___:
-																			</td>
-																			<td class="value">
-																				{$date.place}
-																			</td>
-																		</tr>
-																	{/if}
-																	<tr>
-																		<td class="key">
-																			___DATE_PARTICIPANTS___:
-																		</td>
-																		<td class="value">
-																			{if !empty($date.participants)}
-																				{foreach name=participants item=participant from=$date.participants}
-																			    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
-																			    {/foreach}
-																			{else}
-																				___TODO_NO_PROCESSOR___
-																			{/if}
-																		</td>
-																	</tr>
-																</table>
-															</div>
+																{/if}
+																<tr>
+																	<td class="key">
+																		___DATE_PARTICIPANTS___:
+																	</td>
+																	<td class="value">
+																		{if !empty($date.participants)}
+																			{foreach name=participants item=participant from=$date.participants}
+																		    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
+																		    {/foreach}
+																		{else}
+																			___TODO_NO_PROCESSOR___
+																		{/if}
+																	</td>
+																</tr>
+															</table>
 														</div>
 													</div>
-													</a>
 												</div>
+												</a>
+											</div>
+										</div>
 	                				{/foreach}
 	 	                			{if !isset($cc.content.display[$i][$j]) or empty($cc.content.display[$i][$j])}
 	 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___">
