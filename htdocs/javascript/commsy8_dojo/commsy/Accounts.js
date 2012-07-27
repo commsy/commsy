@@ -209,25 +209,20 @@ define([	"dojo/_base/declare",
 					DomConstruct.empty(mailContentNode);
 					DomConstruct.place(html, mailContentNode, "last");
 					
-					require(["commsy/ckeditor"], Lang.hitch(this, function(CKEditor) {
-						var ck = new CKEditor();
-						ck.create(Query("div.ckeditor", mailContentNode)[0]);
-						
-						// create mail send and abort event
-						On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
-							this.sendMail(mailContentNode, ck, action);
-						}));
-						
-						On(Query("input[name='abort']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
-							var mailContentNode = Query("div#popup_accounts_mail")[0];
-							DomConstruct.empty(mailContentNode);
-						}));
+					// create mail send and abort event
+					On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+						this.sendMail(mailContentNode, action);
+					}));
+					
+					On(Query("input[name='abort']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+						var mailContentNode = Query("div#popup_accounts_mail")[0];
+						DomConstruct.empty(mailContentNode);
 					}));
 				}));
 			}));
 		},
 		
-		sendMail: function(contentNode, ckEditor, action) {
+		sendMail: function(contentNode, action) {
 			var sendMailNode = Query("input[name='form_data[send_mail]']", contentNode)[0];
 			
 			// collect data
@@ -238,7 +233,7 @@ define([	"dojo/_base/declare",
 				authCC:			DomAttr.get(Query("input[name='form_data[copy_auth_cc]']", contentNode)[0], "value"),
 				authBCC:		DomAttr.get(Query("input[name='form_data[copy_auth_bcc]']", contentNode)[0], "value"),
 				subject:		DomAttr.get(Query("input[name='form_data[subject]']", contentNode)[0], "value"),
-				description:	ckEditor.getInstance().getData(),
+				description:	DomAttr.get(Query("textarea[name='form_data[body]']", contentNode)[0], "value"),
 				ids:			this.store.selected_ids,
 				action:			action
 			};

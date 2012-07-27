@@ -174,7 +174,7 @@
 						$description = str_replace("%3", $room->getTitle(), $description);
 					}
 					
-					if (isset($subect) && !empty($subject)) {
+					if (isset($subject) && !empty($subject)) {
 						$mail->set_subject($subject);
 						
 						if (!isset($formal_data_subject)) {

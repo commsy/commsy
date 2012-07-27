@@ -19,7 +19,7 @@
 						<div class="input_row">
 							<span class="input_label_150">___ACCOUNT_PROCESS_ROOM_REASON___:</span>
 							<div class="input_container_180">
-								<textarea cols="80" rows="10"></textarea>
+								<textarea cols="80" rows="10" name="form_data[body]"></textarea>
 							</div>
 						</div>
 						<div class="clear"></div>

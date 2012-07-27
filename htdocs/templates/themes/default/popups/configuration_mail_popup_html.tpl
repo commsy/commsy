@@ -38,9 +38,7 @@
 		</div>
 
 		<div class="input_row_100">
-			<div class="editor_content">
-				<div id="body" class="ckeditor">{if isset($popup.specific.content)}{$popup.specific.content}{/if}</div>
-			</div>
+			<textarea cols="80" rows="10" name="form_data[body]">{if isset($popup.specific.content)}{$popup.specific.content}{/if}</textarea>
 		</div>
 	</fieldset>
 
