@@ -3385,7 +3385,7 @@ top-bar, breadcrumb and settings
 	color: #393939;
     display: inline-block;
     float: none;
-    padding: 0px 0;
+    padding: 0px;
 	}
 
 a.tm_breadcrumb_h2:hover{
