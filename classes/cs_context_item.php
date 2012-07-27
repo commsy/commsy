@@ -698,15 +698,14 @@ class cs_context_item extends cs_item {
   }
 
   function isBuzzwordShowExpanded () {
-    $retour = false;
+    $retour = true;
     if ( $this->_issetExtra('BUZZWORDSHOWEXPANDED') ) {
       $value = $this->_getExtra('BUZZWORDSHOWEXPANDED');
-      if ($value == 1) {
-        $retour = true;
+      if ($value == 0) {
+        $retour = false;
       }
     }
-   // return $retour;
-   return true;
+    return $retour;
   }
 
   function setBuzzwordShowExpanded () {
@@ -1129,7 +1128,7 @@ class cs_context_item extends cs_item {
       $user_in_room = $user_manager->getItem($user_item_id);
       if ( $user_in_room->isUser()
            and $user_in_room->getContextID() == $this->getItemID()
-         ) {      
+         ) {
         $retour = true;
         $this->_cache_may_enter[$user_item_id] = true;
       } else {
@@ -4583,7 +4582,7 @@ class cs_context_item extends cs_item {
        if($this->_environment->inPrivateRoom()){
          $retour = true;
        }
-       
+
        if (is_a($this, "cs_privateroom_item")) $retour = true;
     }
     return $retour;
@@ -4598,15 +4597,14 @@ class cs_context_item extends cs_item {
   }
 
   function isTagsShowExpanded () {
-    $retour = false;
+    $retour = true;
     if ( $this->_issetExtra('TAGSSHOWEXPANDED') ) {
       $value = $this->_getExtra('TAGSSHOWEXPANDED');
-      if ($value == 1) {
-        $retour = true;
+      if ($value == 0) {
+        $retour = false;
       }
     }
-   // return $retour;
-   return true;
+   return $retour;
   }
 
   function isNetnavigationShowExpanded () {

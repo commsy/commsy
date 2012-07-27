@@ -196,9 +196,15 @@
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
 
-								<a href="#" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc divToggle" data-custom="toggleId: 'buzzwordToggle'">
-									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
-								</a>
+
+								<div class="btn_head_rc2" style="padding-top:0px;">
+									{if $room.sidebar_configuration.editable.buzzwords}
+										<a id="edit_buzzwords" class=" open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>&nbsp;&nbsp;
+									{/if}
+									<a href="#" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="divToggle" data-custom="toggleId: 'buzzwordToggle'">
+										<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+									</a>
+								</div>
 
 								<h2>
 									{block name=sidebar_buzzwordbox_title}
@@ -207,10 +213,6 @@
 								</h2>
 
 								<div class="clear"> </div>
-
-								{if $room.sidebar_configuration.editable.buzzwords}
-									<a id="edit_buzzwords" class="btn_head_rc2 open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
-								{/if}
 
 								<div id="buzzwordToggle" class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
@@ -228,9 +230,15 @@
 							{$h = $room.sidebar_configuration.hidden.tags}
 							<div class="portlet_rc">
 
-								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
-									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
-								</a>
+								<div class="btn_head_rc2" style="padding-top:0px;">
+									{if $room.sidebar_configuration.editable.tags}
+										<a href="#" title="___COMMON_EDIT___" class="open_popup" data-custom="module: 'tags'"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>&nbsp;&nbsp;
+									{/if}
+									<a href="#" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="divToggle" data-custom="toggleId: 'tagsToggle'">
+										<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+									</a>
+								</div>
+
 
 								<h2>
 									{block name=sidebar_tagbox_title}
@@ -240,11 +248,7 @@
 
 								<div class="clear"> </div>
 
-								{if $room.sidebar_configuration.editable.tags}
-									<a href="#" title="___COMMON_EDIT___" class="btn_head_rc2 open_popup" data-custom="module: 'tags'"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
-								{/if}
-
-								<div class="portlet_rc_body{if $h} hidden{/if}">
+								<div id="tagsToggle" class="portlet_rc_body{if $h} hidden{/if}">
 									<div class="tree">
 										<img src="{$basic.tpl_path}img/ajax_loader.gif" />
 									</div>

@@ -451,14 +451,16 @@
 										</p>
 										<div class="input_row_100">
 											<label for="additional_structure">___COMMON_BUZZWORDS___:</label>
-											<input id="radditional_buzzword" type="checkbox" name="form_data[buzzword]" value="yes"{if $popup.additional.buzzword == 'yes'} checked="checked"{/if} />___PREFERENCES_CONFIGURATION_BUZZWORD_VALUE___
-											<input id="radditional_buzzword_mandatory" type="checkbox" name="form_data[buzzword_mandatory]" value="yes"{if $popup.additional.buzzword_mandatory == 'yes'} checked="checked"{/if} />___CONFIGURATION_BUZZWORDS_MANDATORY___
+											<input id="radditional_buzzword" type="checkbox" name="form_data[buzzword]" value="yes"{if $popup.additional.buzzword == 'yes'} checked="checked"{/if} />___GROUPROOM_FORM_CHECKBOX_TEXT___
+											<input id="radditional_buzzword" type="checkbox" name="form_data[buzzword_fadeout]" value="yes"{if $popup.additional.buzzword_fadeout == 'yes'} checked="checked"{/if} />___CONFIGURATION_ASSIGNMENT_FADEOUT___
+											<input id="radditional_buzzword_mandatory" type="checkbox" name="form_data[buzzword_mandatory]" value="yes"{if $popup.additional.buzzword_mandatory == 'yes'} checked="checked"{/if} />___CONFIGURATION_ASSIGNMENT_MANDATORY___
 											<div class="clear"></div>
 										</div>
 										<div class="input_row_100">
 											<label for="additional_structure">___COMMON_TAGS___:</label>
-											<input id="radditional_tags" type="checkbox" name="form_data[tags]" value="yes"{if $popup.additional.tags == 'yes'} checked="checked"{/if} />___PREFERENCES_CONFIGURATION_TAGS_VALUE___
-											<input id="radditional_tags_mandatory" type="checkbox" name="form_data[tags_mandatory]" value="yes"{if $popup.additional.tags_mandatory == 'yes'} checked="checked"{/if} />___CONFIGURATION_TAG_MANDATORY___
+											<input id="radditional_tags" type="checkbox" name="form_data[tags]" value="yes"{if $popup.additional.tags == 'yes'} checked="checked"{/if} />___GROUPROOM_FORM_CHECKBOX_TEXT___
+											<input id="radditional_tags" type="checkbox" name="form_data[tags_fadeout]" value="yes"{if $popup.additional.tags_fadeout == 'yes'} checked="checked"{/if} />___CONFIGURATION_ASSIGNMENT_FADEOUT___
+											<input id="radditional_tags_mandatory" type="checkbox" name="form_data[tags_mandatory]" value="yes"{if $popup.additional.tags_mandatory == 'yes'} checked="checked"{/if} />___CONFIGURATION_ASSIGNMENT_MANDATORY___
 											<input id="radditional_tags_edit" type="checkbox" name="form_data[tags_edit]" value="yes"{if $popup.additional.tags_edit == 'yes'} checked="checked"{/if} />___CONFIGURATION_TAG_EDIT_BY_MODERATOR___
 											<div class="clear"></div>
 										</div>

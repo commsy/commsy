@@ -361,6 +361,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        } else {
 				           $current_context->unsetBuzzwordMandatory();
 				        }
+				        if ( isset($form_data['buzzword_fadeout']) and !empty($form_data['buzzword_fadeout']) and $form_data['buzzword_fadeout'] == 'yes' ) {
+				           $current_context->setBuzzwordShowExpanded();
+				        } else {
+				           $current_context->unsetBuzzwordShowExpanded();
+				        }
+
 
 				        /**********save tag options*******/
 				        if ( isset($form_data['tags']) and !empty($form_data['tags']) and $form_data['tags'] == 'yes') {
@@ -377,6 +383,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->setTagEditedByModerator();
 				        } else {
 				           $current_context->setTagEditedByAll();
+				        }
+				        if ( isset($form_data['tags_fadeout']) and !empty($form_data['tags_fadeout']) and $form_data['tags_fadeout'] == 'yes' ) {
+				           $current_context->setTagsShowExpanded();
+				        } else {
+				           $current_context->unsetTagsShowExpanded();
+
 				        }
 
 						if (!empty($form_data['time_spread'])) {
@@ -852,55 +864,55 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				      $current_user = $this->_environment->getCurrentUserItem();
 				      $current_context->setModificatorItem($current_user);
 				      $current_context->setModificationDate(getCurrentDateTimeInMySQL());
-				      
+
 				      $wordpress_manager = $this->_environment->getWordpressManager();
-				      
+
 				      if ( isset($form_data['wordpress_active']) and !empty($form_data['wordpress_active']) and $form_data['wordpress_active'] == 'yes') {
 				         $current_context->setWordpressActive();
-				         
+
 				         if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
    				         $current_context->setWordpressUseComments();
    				      } else {
    				         $current_context->unsetWordpressUseComments();
    				      }
-   				      
+
    				      if ( isset($form_data['use_comments_moderation']) and !empty($form_data['use_comments_moderation']) and $form_data['use_comments_moderation'] == 'yes') {
    				         $current_context->setWordpressUseCommentsModeration();
    				      } else {
    				         $current_context->unsetWordpressUseCommentsModeration();
    				      }
-   				      
+
    				      if ( isset($form_data['wordpresslink']) and !empty($form_data['wordpresslink']) and $form_data['wordpresslink'] == 'yes') {
    				         $current_context->setWordpressHomeLink();
    				      } else {
    				         $current_context->unsetWordpressHomeLink();
    				      }
-   				      
+
    				      if ( isset($form_data['skin_choice']) and !empty($form_data['skin_choice']) ) {
    				         $current_context->setWordpressSkin($form_data['skin_choice']);
    				      }
-   				      
+
    				      if ( isset($form_data['wordpresstitle']) and !empty($form_data['wordpresstitle']) ) {
    				         $current_context->setWordpressTitle($form_data['wordpresstitle']);
    				      } else {
    				         $current_context->setWordpressTitle($current_context->getTitle());
    				      }
-   				      
+
    				      if ( isset($form_data['wordpressdescription']) and !empty($form_data['wordpressdescription']) ) {
    				         $current_context->setWordpressDescription($form_data['wordpressdescription']);
    				      } else {
    				         $current_context->setWordpressDescription('');
    				      }
-   				      
+
    				      if ( isset($form_data['member_role']) and !empty($form_data['member_role']) ) {
    				         $current_context->setWordpressMemberRole($form_data['member_role']);
    				      } else {
    				         $current_context->setWordpressMemberRole();
    				      }
-   				      
+
    				      $current_context->setWordpressExists();
    				      $current_context->setWordpressActive();
-   				      
+
    				      // save
    				      $current_context->save();
 
@@ -910,7 +922,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				         $current_context->setWordpressInactive();
 				         // save
    				      $current_context->save();
-				         
+
 				         // delete wordpress
 				         $delete = $wordpress_manager->deleteWordpress($current_context->getWordpressId());
 				      }
@@ -920,7 +932,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 				      /*
 				      // Set modificator and modification date
-      				   
+
       				   */
 				   }
 				   break;
@@ -1545,6 +1557,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
             $return['buzzword_mandatory'] = 'yes';
          }
 
+         if ($current_context->isBuzzwordShowExpanded()){
+         	$return['buzzword_fadeout'] = 'yes';
+         }
+
+         if ($current_context->isTagsShowExpanded()){
+         	$return['tags_fadeout'] = 'yes';
+         }
+
          //tags
          if ($current_context->withTags()){
             $return['tags'] = 'yes';
@@ -1611,7 +1631,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			$return['annotations_bar_visibility'] = '-1';
 		}
 
-
 		return $return;
 	}
 
@@ -1646,7 +1665,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
          if ($current_context->withWorkflowResubmission()){
             $return['workflow_resubmission'] = 'yes';
          }
-         
+
          // validity
          $return['workflow_validity'] = 'no';
          if ($current_context->withWorkflowValidity()) {
@@ -1657,18 +1676,18 @@ class cs_popup_configuration_controller implements cs_popup_controller {
          if ($current_context->withWorkflowReader()){
             $return['workflow_reader'] = 'yes';
          }
-         
+
          // reader
          $return['workflow_reader_group'] = 'no';
          if ($current_context->getWorkflowReaderGroup()) {
          	$return['workflow_reader_group'] = 'yes';
          }
-         
+
          $return['workflow_reader_person'] = 'no';
          if ($current_context->getWorkflowReaderPerson()) {
          	$return['workflow_reader_person'] = 'yes';
          }
-         
+
          $return['workflow_resubmission_show_to'] = $current_context->getWorkflowReaderShowTo();
 
 		return $return;
@@ -1676,7 +1695,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 	private function getExternalInformation() {
 	   global $c_wordpress;
-	   
+
 	   $return = array();
 	   $current_context = $this->_environment->getCurrentContextItem();
 	   $current_portal = $this->_environment->getCurrentPortalItem();
@@ -1690,7 +1709,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
    	   }
 	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
 	      $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
-   
+
    	   $wordpress_skins = array();
    	   foreach($wordpress_manager->getSkins() as $key => $value){
    	      $temp_array['text']  = $key;
@@ -1699,7 +1718,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
    	   }
    	   $wordpress['skin_array'] = $wordpress_skins;
    	   $wordpress['skin_choice'] = $current_context->getWordpressSkin();
-   
+
    	   $wordpress_member_roles = array();
    	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber');
    	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author');
@@ -1707,14 +1726,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
    	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator');
    	   $wordpress['member_role_array'] = $wordpress_member_roles;
    	   $wordpress['member_role'] = $current_context->getWordpressMemberRole();
-   
+
    	   if($current_context->getWordpressUseComments() == '1'){
    	      $wordpress['use_comments'] = 'yes';
    	   }
    	   if($current_context->getWordpressUseCommentsModeration() == '1'){
    	      $wordpress['use_comments_moderation'] = 'yes';
    	   }
-   
+
    	   if($current_context->getWordpressHomeLink() == '1'){
             $wordpress['wordpresslink'] = 'yes';
    	   }
