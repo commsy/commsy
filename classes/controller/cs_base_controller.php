@@ -301,6 +301,7 @@
 			$this->assign('environment', 'lang', $this->_environment->getSelectedLanguage());
 			$this->assign('environment', 'logo', $current_context->getLogoFileName());
 			$this->assign('environment', 'room_title', $current_context->getTitle());
+			$this->assign('environment', 'portal_title', $portal_item->getTitle());
 			$this->assign('environment', 'show_room_title', $current_context->showTitle());
 			$this->assign('environment', 'language', $current_context->getLanguage());
 			$this->assign('environment','count_copies', $this->getUtils()->getCopyCount());

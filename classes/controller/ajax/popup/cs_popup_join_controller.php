@@ -94,6 +94,7 @@ class cs_popup_join_controller implements cs_popup_controller {
 		$mod_information = array();
 		$mod_information['list'] = $this->getRecieverList();
 		//pr($this->getRecieverList());
+
 		$this->_popup_controller->assign('popup', 'mod', $mod_information);
 
 		$this->_popup_controller->assign('popup', 'body', $body_message);
