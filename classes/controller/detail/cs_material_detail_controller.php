@@ -1216,7 +1216,7 @@
 						}
 					}
 					
-					$entry['actions']			= $this->getEditActions($section, $current_user);
+					$entry['actions']			= $this->getEditActions($this->_item, $current_user);
 					$entry['num_files'] 		= sizeof($files);
 					$entry['moredetails'] 		= $this->getCreatorInformationAsArray($section);
 					$entry['title']				= $converter->text_as_html_short($section->getTitle());

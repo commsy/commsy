@@ -231,7 +231,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 			}else{
-				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0';
+				//$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? true : false;
 		    	$this->_popup_controller->assign('item', 'private_editing', $val);
 		    	$this->_popup_controller->assign('item', 'public', $val);
 		        if ($current_context->withWorkflow()){
@@ -352,7 +352,14 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
                 // this will handle already attached files as well as adding new files
                 $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, $form_data["files"]);
-
+                
+                if(isset($form_data['private_editing'])) {
+                	$item->setPrivateEditing('0');
+                } else {
+                	$item->setPrivateEditing('1');
+                }
+                
+                
                 if ( isset($form_data['hide']) ) {
                     // variables for datetime-format of end and beginning
                     $dt_hiding_time = '00:00:00';
