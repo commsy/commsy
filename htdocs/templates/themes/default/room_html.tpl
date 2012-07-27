@@ -198,11 +198,11 @@
 								{if $room.sidebar_configuration.editable.buzzwords}
 									<a id="edit_buzzwords" class="btn_head_rc2 open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
 								{/if}
-		<!--
+
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
-		-->
+
 								<h2>
 									{block name=sidebar_buzzwordbox_title}
 										___COMMON_BUZZWORD_BOX___
@@ -210,9 +210,9 @@
 								</h2>
 
 								<div class="clear"> </div>
-		<!--
+
 								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-		-->
+
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
 										{block name=sidebar_buzzwordbox_buzzword}
