@@ -156,7 +156,9 @@
 																			</td>
 																			<td class="value">
 																				{if !empty($date.participants)}
-																					{$date.participants}
+																				    {foreach name=participants item=participant from=$date.participants}
+																				    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
+																				    {/foreach}
 																				{else}
 																					___TODO_NO_PROCESSOR___
 																				{/if}
@@ -222,7 +224,9 @@
 																	</td>
 																	<td class="value">
 																		{if !empty($date.participants)}
-																			{$date.participants}
+																			{foreach name=participants item=participant from=$date.participants}
+																		    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
+																		    {/foreach}
 																		{else}
 																			___TODO_NO_PROCESSOR___
 																		{/if}
@@ -311,7 +315,9 @@
 																		</td>
 																		<td class="value">
 																			{if !empty($date.participants)}
-																				{$date.participants}
+																				{foreach name=participants item=participant from=$date.participants}
+																			    	{$participant.name}{if !$smarty.foreach.participants.last}, {/if}
+																			    {/foreach}
 																			{else}
 																				___TODO_NO_PROCESSOR___
 																			{/if}
