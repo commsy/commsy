@@ -247,8 +247,6 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
-        include_once('functions/development_functions.php');
-        logToFile($additional);
        
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();

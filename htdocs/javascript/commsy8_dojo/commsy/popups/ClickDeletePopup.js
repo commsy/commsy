@@ -15,6 +15,7 @@ define([	"dojo/_base/declare",
 			this.module = "delete";
 			this.delType = customObject.delType;
 			this.delVersion = customObject.delVersion || {};
+			this.version_id = customObject.vid;
 			
 			this.features = [];
 			
@@ -35,7 +36,7 @@ define([	"dojo/_base/declare",
 			var delType = this.delType;
 			if(customObject.del === "recurrence") delType = "date_recurrence";
 			
-			this.submit(search, { delType: this.delType, delVersion: this.delVersion });
+			this.submit(search, { delType: this.delType, delVersion: this.delVersion, version_id: this.version_id });
 		},
 		
 		onPopupSubmitSuccess: function(response) {
@@ -46,7 +47,11 @@ define([	"dojo/_base/declare",
 				var module = this.uri_object.mod;
 				location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=index";
 			} else {
-				this.reload(response.item_id);
+				if(typeof(this.version_id) != 'undefined'){
+					this.reload(response.item_id+"&version_id="+this.version_id);
+				} else {
+					this.reload(response.item_id);
+				}
 			}
 		},
 	});

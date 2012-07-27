@@ -23,9 +23,14 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
         $current_context = $this->_environment->getCurrentContextItem();
         
         $material_ref_id = $data['ref_iid'];
-
+        
         $material_manager = $this->_environment->getMaterialManager();
-        $material_item = $material_manager->getItem($material_ref_id);
+        
+        if(isset($data['version_id'])){
+           $material_item = $material_manager->getItemByVersion($material_ref_id, $data['version_id']);
+        } else {
+           $material_item = $material_manager->getItem($material_ref_id);
+        }
 
         $section_list = $material_item->getSectionList();
         $section = $section_list->getFirst();
@@ -111,7 +116,12 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
         }
         
         $material_ref_id = $additional['ref_iid'];
-        $material_item = $material_manager->getItem($material_ref_id);
+        
+        if(isset($additional['version_id'])){
+           $material_item = $material_manager->getItemByVersion($material_ref_id, $additional['version_id']);
+        } else {
+           $material_item = $material_manager->getItem($material_ref_id);
+        }
         
         // Create new item
         if ( !isset($section_item) ) {

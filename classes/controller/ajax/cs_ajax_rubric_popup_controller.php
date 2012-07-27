@@ -19,9 +19,6 @@
 			// item id
 			$this->_item_id = $this->_data['iid'];
 			
-			include_once('functions/development_functions.php');
-			logToFile($this->_data);
-			
 			$this->assign('popup', 'item_id', $this->_item_id);
 
 			// item

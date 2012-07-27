@@ -56,12 +56,12 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
 				{if $detail.actions.edit}
-					<a id="action_edit" class="open_popup" data-custom="iid: 'NEW', module: 'section', ref_iid: {$detail.item_id}, delVersion: {$detail.content.version}" href="#">___MATERIAL_SECTION_ADD___</a> |
+					<a id="action_edit" class="open_popup" data-custom="iid: 'NEW', module: 'section', ref_iid: {$detail.item_id}, delVersion: {$detail.content.version}{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#">___MATERIAL_SECTION_ADD___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
 				{/if}
 				{if $detail.actions.delete}
-					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'delete', delType: 'material'" href="#">___COMMON_DELETE_ITEM___</a> |
+					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'delete', delType: 'material'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#">___COMMON_DELETE_ITEM___</a> |
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
@@ -202,10 +202,10 @@
 			<div id="edit_expand_section_{$section@index}" class="hidden">
 				<div class="fade_in_ground_actions">
 					{if $section.actions.edit}
-						<a class="open_popup" data-custom="module: 'section', iid: '{$section.iid}', ref_iid: {$detail.item_id}" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+						<a class="open_popup" data-custom="module: 'section', iid: '{$section.iid}', ref_iid: {$detail.item_id}{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
 					{/if}
 					{if $section.actions.delete}
-						<a class="open_popup" data-custom="iid: {$section.iid}, module: 'delete', delType: 'section'" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
+						<a class="open_popup" data-custom="iid: {$section.iid}, module: 'delete', delType: 'section'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
 					{/if}
 				</div>
 			</div>

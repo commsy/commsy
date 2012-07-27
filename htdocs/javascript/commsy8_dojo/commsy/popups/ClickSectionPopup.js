@@ -12,6 +12,7 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.ref_iid = customObject.ref_iid;
 			this.module = "section";
+			this.version_id = customObject.vid;
 			
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 			
@@ -47,7 +48,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { ref_iid: this.ref_iid });
+			this.submit(search, { ref_iid:this.ref_iid, version_id:this.version_id });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
@@ -55,11 +56,19 @@ define([	"dojo/_base/declare",
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
 					//this.close();
-					this.reload(item_id);
+					if(typeof(this.version_id) != 'undefined'){
+						this.reload(item_id+"&version_id="+this.version_id);
+					} else {
+						this.reload(item_id);
+					}
 				}));
 			} else {
 				//this.close();
-				this.reload(item_id);
+				if(typeof(this.version_id) != 'undefined'){
+					this.reload(item_id+"&version_id="+this.version_id);
+				} else {
+					this.reload(item_id);
+				}
 			}
 		}
 	});

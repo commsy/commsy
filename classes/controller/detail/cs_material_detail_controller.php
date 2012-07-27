@@ -1136,7 +1136,9 @@
 			
 			   $this->assign('detail', 'versions', $material_version_list->getCount());
 			   $this->assign('detail', 'versions_array', $material_versions_array);
-			   $this->assign('detail', 'is_versions_bar_visible', true);
+			   if(isset($_GET['version_id'])) {
+			      $this->assign('detail', 'is_versions_bar_visible', true);
+			   }
 			}
 			
 			// TODO:

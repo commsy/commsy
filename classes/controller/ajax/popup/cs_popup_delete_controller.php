@@ -128,7 +128,7 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     				break;
     			
     			case "material":
-    				if($delVersion) {
+    				/*if($delVersion) {
     					$material_manager = $this->_environment->getMaterialManager();
     					$material_version_list = $material_manager->getVersionList($item_id);
     					$latest_version_item = $material_version_list->getFirst();
@@ -142,6 +142,12 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     					}
     					
     					$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => false, "item_id" => $item_id));
+    				}*/
+    				if (isset($additional['version_id'])){
+    				   $material_manager = $this->_environment->getMaterialManager();
+    				   $item = $material_manager->getItemByVersion($item_id, $additional['version_id']);
+    				   $item->delete();
+    				   $this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => false, "item_id" => $item_id));
     				} else {
     					$material_manager = $this->_environment->getMaterialManager();
     					$material_version_list = $material_manager->getVersionList($item_id);
