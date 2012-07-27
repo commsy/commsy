@@ -1698,7 +1698,7 @@ img.new_item_detail_annotation {
     text-align: center;
     text-decoration: none;
     }
-    
+
 .item_actions a.versions {
     padding: 6px 0px;
     }
@@ -3090,7 +3090,7 @@ fade-in
     float: left;
     width: 70px;
     }
-    
+
 .fi_md_versions_info {
     padding-bottom: 11px;
     float: left;
@@ -4226,4 +4226,10 @@ a.event_grey {
 	margin-left: 100px;
     max-width: 200px;
 	}
+
+.open_popup_context_nav{
+	color: #6F6F73 !important;
+    font-size: 10px !important;
+    font-weight: normal !important;
+    }
 
