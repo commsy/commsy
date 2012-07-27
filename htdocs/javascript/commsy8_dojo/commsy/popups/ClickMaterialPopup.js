@@ -74,7 +74,7 @@ define([	"dojo/_base/declare",
 				}
 			});
 
-			this.submit(search, {part:customObject.part, version_id:customObject.version_id});
+			this.submit(search, {part:customObject.part, version_id:this.version_id});
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
@@ -86,7 +86,11 @@ define([	"dojo/_base/declare",
 				}));
 			} else {
 				//this.close();
-				this.reload(item_id);
+				if(typeof(this.version_id) != 'undefined'){
+					this.reload(item_id+"&version_id="+this.version_id);
+				} else {
+					this.reload(item_id);
+				}
 			}
 		},
 

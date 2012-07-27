@@ -334,7 +334,11 @@
 			$type = $item_manager->getItemType($_GET['iid']);
 
 			$this->_manager = $this->_environment->getMaterialManager();
-			$this->_item = $this->_manager->getItemByVersion($current_item_id, $current_version_id);
+			if(isset($_GET['version_id'])) {
+			   $this->_item = $this->_manager->getItemByVersion($current_item_id, $_GET['version_id']);
+			} else {
+			   $this->_item = $this->_manager->getItem($current_item_id);
+			}
 		}
 
 		protected function setBrowseIDs() {
@@ -598,16 +602,22 @@
       			}
       		}
 
+      		$is_latest_version = true;
+      		if(isset($_GET['version_id'])) {
+      		   $is_latest_version = false;
+      		}
+      		
 			$return = array(
 				'title'				=> $this->_item->getTitle(),
 				'version'			=> $this->_item->getVersionID(),
+				'latest_version'	=> $is_latest_version,
 				'formal'			=> $this->getFormalData(),
 				'sections'			=> $this->getSections(),
 				'description'		=> $desc,
 				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item),
 				'workflow'			=> $this->getWorkflowInformation($this->_item)
 			);
-
+			
 			return $return;
 		}
 

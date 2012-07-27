@@ -260,12 +260,16 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         }
 
         $translator = $this->_environment->getTranslationObject();
-
+        
         if($current_iid === 'NEW') {
             $item = null;
         } else {
             $manager = $this->_environment->getMaterialManager();
-            $item = $manager->getItem($current_iid);
+            if(isset($additional['version_id'])){
+               $item = $manager->getItemByVersion($current_iid, $additional['version_id']);
+            } else {
+               $item = $manager->getItem($current_iid);
+            }
         }
 
 
