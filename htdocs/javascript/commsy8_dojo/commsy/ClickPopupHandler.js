@@ -26,7 +26,7 @@ define([	"dojo/_base/declare",
 					this.setupLoading();
 
 					// setup ajax request for getting html
-					this.AJAXRequest("rubric_popup", "getHTML", { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id:this.version_id }, lang.hitch(this, function(html) {
+					this.AJAXRequest("rubric_popup", "getHTML", { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id }, lang.hitch(this, function(html) {
 						// append html to body
 						domConstruct.place(html, query("body")[0], "first");
 

@@ -24,7 +24,7 @@
 							</a>
 							<a href="moderation_configuration" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>
 							<a href="additional_configuration" class="pop_tab">___INTERNAL_SPECIAL_TITLE___</a>
-							<a href="addons" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
+							<a href="addon_configuration" class="pop_tab">___HOME_EXTRA_TOOLS___</a>
 							<a href="external_configuration" class="pop_tab">___COMMON_EXTERNAL_SYSTEMS___</a>
 
 							<div class="clear"> </div>
@@ -617,7 +617,7 @@
 								</div>
 							</div>
 
-							<div class="tab hidden" id="addons">
+							<div class="tab hidden" id="addon_configuration">
 								<div id="content_row_three">
 									<fieldset>
 										<p>
@@ -660,7 +660,7 @@
 										<div class="input_row_150">
 											<label for="addon_workflow_trafic_light_text">___COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT___:</label>
 											<img src="images/commsyicons/workflow_traffic_light_green.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_green_text]" value="{$popup.addon.workflow_trafic_light_green_text}"/>
-											<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_yellox_text]" value="{$popup.addon.workflow_trafic_light_yellow_text}"/>
+											<img src="images/commsyicons/workflow_traffic_light_yellow.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_yellow_text]" value="{$popup.addon.workflow_trafic_light_yellow_text}"/>
 											<img src="images/commsyicons/workflow_traffic_light_red.png" style="height:12px;"> <input id="room_name" type="text" class="size_120" name="form_data[workflow_trafic_light_red_text]" value="{$popup.addon.workflow_trafic_light_red_text}"/>
 											<div class="clear"></div>
 										</div>

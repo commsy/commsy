@@ -104,7 +104,7 @@ define([	"dojo/_base/declare",
 			});
 
 			// setup data to send via ajax
-			if(part === "user" || part === "newsletter" || part === "cs_bar") {
+			if(part === "user" || part === "newsletter" || part === "cs_bar" || "addon_configuration") {
 				var search = {
 					tabs: [
 					    { id: part }

@@ -12,7 +12,7 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "material";
 			this.editType = customObject.editType;
-			this.version_id = customObject.version_id;
+			this.version_id = customObject.vid;
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 

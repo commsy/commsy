@@ -47,6 +47,7 @@
 	<fieldset>
 		<div class="input_row_100">
 			<input id="submit" type="button" class="popup_button" name="send" value="___INDEX_ACTION_SEND_MAIL_BUTTON___"/>
+			<input id="abort" type="button" class="popup_button" name="abort" value="___MAIL_NOT_SEND_BUTTON___"/>
 		</div>
 	</fieldset>
 </div>

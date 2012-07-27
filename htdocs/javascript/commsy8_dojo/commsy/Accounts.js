@@ -213,9 +213,14 @@ define([	"dojo/_base/declare",
 						var ck = new CKEditor();
 						ck.create(Query("div.ckeditor", mailContentNode)[0]);
 						
-						// create mail send event
+						// create mail send and abort event
 						On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
 							this.sendMail(mailContentNode, ck, action);
+						}));
+						
+						On(Query("input[name='abort']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+							var mailContentNode = Query("div#popup_accounts_mail")[0];
+							DomConstruct.empty(mailContentNode);
 						}));
 					}));
 				}));

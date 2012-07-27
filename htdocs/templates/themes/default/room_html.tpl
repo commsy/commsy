@@ -156,7 +156,7 @@
 								{/if}
 								{if $room.addon_information.chat.active}
 									{$c = $room.addon_information.chat}
-									<a href="commsy.php?cid={$environment.cid}&mod=context&fct=forward&tool=etchat" title="___CHAT_CHAT___" onclick="window.open(href, target, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600');">
+									<a href="commsy.php?cid={$environment.cid}&mod=context&fct=forward&tool=etchat" title="___CHAT_CHAT___" onclick="window.open(href, '_blank', 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600'); return false;">
 										<img src="{$basic.tpl_path}img/addon_chat.png" alt="___CHAT_CHAT___" />
 									</a>
 								{/if}

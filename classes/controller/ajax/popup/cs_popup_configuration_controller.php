@@ -1646,15 +1646,30 @@ class cs_popup_configuration_controller implements cs_popup_controller {
          if ($current_context->withWorkflowResubmission()){
             $return['workflow_resubmission'] = 'yes';
          }
+         
+         // validity
+         $return['workflow_validity'] = 'no';
+         if ($current_context->withWorkflowValidity()) {
+         	$return['workflow_validity'] = 'yes';
+         }
 
          // reader
          if ($current_context->withWorkflowReader()){
             $return['workflow_reader'] = 'yes';
          }
-         $return['workflow_reader_group'] = $current_context->getWorkflowReaderGroup();
-         $return['workflow_reader_person'] = $current_context->getWorkflowReaderPerson();
+         
+         // reader
+         $return['workflow_reader_group'] = 'no';
+         if ($current_context->getWorkflowReaderGroup()) {
+         	$return['workflow_reader_group'] = 'yes';
+         }
+         
+         $return['workflow_reader_person'] = 'no';
+         if ($current_context->getWorkflowReaderPerson()) {
+         	$return['workflow_reader_person'] = 'yes';
+         }
+         
          $return['workflow_resubmission_show_to'] = $current_context->getWorkflowReaderShowTo();
-
 
 		return $return;
 	}
