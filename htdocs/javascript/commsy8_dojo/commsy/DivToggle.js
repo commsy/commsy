@@ -25,7 +25,7 @@ define([	"dojo/_base/declare",
 					// register clicks
 					if (toggleNode) {
 						On(node, "click", Lang.hitch(this, function(event) {
-							this.onClick(event.target, toggleNode);
+							this.onClick(node, toggleNode);
 						}));
 					}
 				}
@@ -41,7 +41,6 @@ define([	"dojo/_base/declare",
 				
 				// set title of trigger node
 				DomAttr.set(triggerNode, "title", this.from_php.translations.common_hide);
-				
 				// set new image and alt of img node
 				var imgNode = Query("img", triggerNode)[0];
 				if (imgNode) {
@@ -72,7 +71,6 @@ define([	"dojo/_base/declare",
 				FX.wipeOut({
 					node:		toggleNode,
 					onEnd:		function() {
-						console.log("test");
 						DomClass.add(toggleNode, "hidden");
 					}
 				}).play();
