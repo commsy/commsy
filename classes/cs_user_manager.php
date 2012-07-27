@@ -284,7 +284,7 @@ class cs_user_manager extends cs_manager {
   /** set status limit to "normal user"
     * this method sets the status limit to "normal user"
     */
-  function setUserLimit () {
+  function setUserLimit ($limit = null) {
      $this->_status_limit = 2;
   }
 
