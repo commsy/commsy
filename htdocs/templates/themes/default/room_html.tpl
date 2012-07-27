@@ -195,9 +195,6 @@
            				{if $room.sidebar_configuration.active.buzzwords}
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
-								{if $room.sidebar_configuration.editable.buzzwords}
-									<a id="edit_buzzwords" class="btn_head_rc2 open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
-								{/if}
 
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
@@ -211,7 +208,9 @@
 
 								<div class="clear"> </div>
 
-								<a href="" title="bearbeiten" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
+								{if $room.sidebar_configuration.editable.buzzwords}
+									<a id="edit_buzzwords" class="btn_head_rc2 open_popup" data-custom="module: 'buzzwords'" href="#" title="___COMMON_EDIT___"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+								{/if}
 
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									{foreach $room.buzzwords as $buzzword}
@@ -228,14 +227,11 @@
 						{if $room.sidebar_configuration.active.tags}
 							{$h = $room.sidebar_configuration.hidden.tags}
 							<div class="portlet_rc">
-								{if $room.sidebar_configuration.editable.tags}
-									<a href="#" title="___COMMON_EDIT___" class="btn_head_rc2 open_popup" data-custom="module: 'tags'"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
-								{/if}
-		<!--
+
 								<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
 									<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
 								</a>
-		-->
+
 								<h2>
 									{block name=sidebar_tagbox_title}
 										___COMMON_TAG_BOX___
@@ -244,9 +240,10 @@
 
 								<div class="clear"> </div>
 
-		<!--
-									<a href="" title="___COMMON_EDIT___" class="btn_body_rc"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="close" /></a>
-		-->
+								{if $room.sidebar_configuration.editable.tags}
+									<a href="#" title="___COMMON_EDIT___" class="btn_head_rc2 open_popup" data-custom="module: 'tags'"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+								{/if}
+
 								<div class="portlet_rc_body{if $h} hidden{/if}">
 									<div class="tree">
 										<img src="{$basic.tpl_path}img/ajax_loader.gif" />
