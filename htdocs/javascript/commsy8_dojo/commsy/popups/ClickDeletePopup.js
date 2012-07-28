@@ -47,11 +47,7 @@ define([	"dojo/_base/declare",
 				var module = this.uri_object.mod;
 				location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=index";
 			} else {
-				if(typeof(this.version_id) != 'undefined'){
-					this.reload(response.item_id+"&version_id="+this.version_id);
-				} else {
-					this.reload(response.item_id);
-				}
+				this.reload(response.item_id);
 			}
 		},
 	});

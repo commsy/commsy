@@ -200,7 +200,6 @@ class cs_reader_manager {
                   ' user_id="'.encode(AS_DB,$this->_current_user_id).'", '.
                   ' read_date="'.getCurrentDateTimeInMySQL().'"';
          $result = $this->_db_connector->performQuery($query);
-         debugToFile($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems marking item as read from query: "'.$query.'"');

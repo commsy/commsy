@@ -128,21 +128,6 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     				break;
     			
     			case "material":
-    				/*if($delVersion) {
-    					$material_manager = $this->_environment->getMaterialManager();
-    					$material_version_list = $material_manager->getVersionList($item_id);
-    					$latest_version_item = $material_version_list->getFirst();
-    					
-    					$old_version_item = $material_version_list->getNext();
-    					while($old_version_item) {
-    						if($delVersion == $old_version_item->getVersionID() || (empty($delVersion) && $old_version_item->getVersionID() == 0)) {
-    							$old_version_item->delete();
-    							break;
-    						}
-    					}
-    					
-    					$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => false, "item_id" => $item_id));
-    				}*/
     				if (isset($additional['version_id'])){
     				   $material_manager = $this->_environment->getMaterialManager();
     				   $item = $material_manager->getItemByVersion($item_id, $additional['version_id']);

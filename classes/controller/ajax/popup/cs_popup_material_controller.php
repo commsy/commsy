@@ -263,7 +263,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
             $item = null;
         } else {
             $manager = $this->_environment->getMaterialManager();
-            if(isset($additional['version_id'])){
+            if(isset($additional['version_id']) and ($additional['part'] != 'version')){
                $item = $manager->getItemByVersion($current_iid, $additional['version_id']);
             } else {
                $item = $manager->getItem($current_iid);

@@ -50,6 +50,16 @@ define([	"dojo/_base/declare",
 					DomAttr.set(spanNode, "innerHTML", parseInt(DomAttr.get(spanNode, "innerHTML")) + 1);
 				}
 			}));
+		},
+		
+		versionMakeNew: function(customObject) {
+			var itemId = customObject.iid;
+			var versionID = customObject.vid;
+
+			// send ajax requets
+			this.AJAXRequest("actions", "versionMakeNew", { itemId: itemId, versionID: versionID }, Lang.hitch(this, function(response) {
+				this.reload(itemId);
+			}));
 		}
 	});
 });

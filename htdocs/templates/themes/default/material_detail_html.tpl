@@ -2,7 +2,7 @@
 
 {block name=room_detail_content}
 	<div class="item_actions">
-		<div id="top_item_actions" {if $detail.versions}class="material_versions"{/if}>
+		<div id="top_item_actions" {if $detail.versions and !$room.workflow}class="material_versions"{/if} {if $detail.versions and $room.workflow}class="material_versions_workflow"{/if}>
 			<a class="edit {if $detail.is_action_bar_visible}item_actions_glow{/if}" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set{if $detail.is_action_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			<a class="linked {if $detail.is_reference_bar_visible}item_actions_glow{/if}" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia{if $detail.is_reference_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			
@@ -26,7 +26,7 @@
 			{elseif $detail.annotations_changed == 'changed'}
 					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" />
 			{else}
-					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/spacer.gif" alt="*" />
+					<img title="*" class="new_item_detail_annotation" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" />
 			{/if}
 			{else}
 			<div class="action_count anno_count" >&nbsp;</div>
@@ -100,6 +100,12 @@
 							<li>{$temp_version}</li>
 						{/foreach}
 						</ul>
+						<br/>
+						{if $detail.not_latest_version}
+      						<div id="version_make_new">
+      							<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'versionMakeNew', vid: {$detail.content.version}" href="#">___VERSION_MAKE_NEW___</a>
+      						</div>
+      					{/if}
 						<div class="clear"> </div>
 					</div>
 					<div class="clear"> </div>

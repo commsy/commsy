@@ -48,6 +48,19 @@
 			echo $this->_return;
 		}
 
+		public function actionVersionMakeNew() {
+		   $material_manager = $this->_environment->getMaterialManager();
+		   $latest_version_item = $material_manager->getItem($this->_data['itemId']);
+		   $old_version_item = $material_manager->getItemByVersion($this->_data['itemId'], $this->_data['versionID']);
+		   $clone_item = $old_version_item->cloneCopy(true);
+		   $latest_version_id = $latest_version_item->getVersionID();
+		   $clone_item->setVersionID($latest_version_id+1);
+		   $clone_item->save();
+		   $old_version_item->delete();
+		   $this->setSuccessfullDataReturn(array());
+		   echo $this->_return;
+		}
+		
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */

@@ -152,7 +152,7 @@ define([	"dojo/_base/declare",
 			this.is_open = false;
 		},
 
-		reload: function(item_id) {
+		/*reload: function(item_id) {
 			// page reload
 			var cid = this.uri_object.cid;
 			var module = this.uri_object.mod;
@@ -162,6 +162,6 @@ define([	"dojo/_base/declare",
 			}
 
 			location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id;
-		},
+		},*/
 	});
 });

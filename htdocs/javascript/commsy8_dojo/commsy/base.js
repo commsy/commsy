@@ -127,6 +127,25 @@ define([	"dojo/_base/declare",
 			}
 
 			return {};
-		}
+		},
+		
+		reload: function(item_id, module) {
+            module = module || null;
+
+            // page reload
+            var cid = this.uri_object.cid;
+
+            if (module) {
+                var module = module;
+            } else {
+                var module = this.uri_object.mod;
+            }
+
+            if(module === "home") {
+                var module = this.module;
+            }
+
+            location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id;
+        }
 	});
 });

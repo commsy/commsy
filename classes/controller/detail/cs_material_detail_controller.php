@@ -1139,6 +1139,11 @@
 			   if(isset($_GET['version_id'])) {
 			      $this->assign('detail', 'is_versions_bar_visible', true);
 			   }
+			   
+			   $latest_material_item = $material_version_list->getFirst();
+			   if ( $latest_material_item->getVersionID() != $this->_item->getVersionID() ) {
+			      $this->assign('detail', 'not_latest_version', true);
+			   }
 			}
 			
 			// TODO:
