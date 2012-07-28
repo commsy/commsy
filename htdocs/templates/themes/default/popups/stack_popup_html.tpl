@@ -1,7 +1,7 @@
 {* include template functions *}
 {include file="include/functions.tpl" inline}
 
-<div id="popup_wrapper">
+<div id="popup_top_wrapper">
 	<div id="popup_my_area">
 		<div id="popup_frame_my_area">
 			<div id="popup_inner_my_area">
