@@ -95,7 +95,7 @@
 										{if !empty($subline@key)}<h3>{$subline@key}</h3>{/if}
 
 											{foreach $subline.rooms as $room}
-												<a class="room_change_item" title="{$room.title}" href="commsy.php?cid={$room.item_id}&mod=home&fct=index">
+												<div class="room_change_item" title="{$room.title}" data-custom="href: 'commsy.php?cid={$room.item_id}&mod=home&fct=index'">
 													<input type="hidden" name="hidden_item_id" value="{$room.item_id}"/>
 													<div class="room_change_content">
 														<div class="room_change_room_box">

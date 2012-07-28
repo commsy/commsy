@@ -52,14 +52,6 @@ define([	"dojo/_base/declare",
 		onPopupSubmit: function(customObject) {
 			var part = customObject.part;
 			
-			// add ckeditor data to hidden div
-			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-				var instance = editor.getInstance();
-				var node = editor.getNode().parentNode;
-				
-				DomAttr.set(Query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
-			});
-			
 			// setup data to send via ajax
 			var search = {
 				tabs: [
@@ -70,36 +62,6 @@ define([	"dojo/_base/declare",
 			};
 			
 			this.submit(search, { part: part });
-			
-			/*
-			 * var handle = event.data.handle;
-			var target = jQuery(event.target);
-			
-			// submit picture
-			var form_objects = jQuery('form#logo_upload, form#bg_upload');
-			
-			var all = 0;
-			form_objects.each(function(index) {
-				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
-					all++;
-				}
-			});
-			
-			if(all == 0) {
-		
-				thishandle.saveConfiguration(event);
-				
-				
-			}
-			
-			var index = 0;
-			form_objects.each(function() {
-				if(jQuery(this).find('input[type="file"]').attr('value') !== '') {
-					handle.uploadRoomPicture(jQuery(this), index, all, handle.saveConfiguration, event);
-					index++;
-				}
-			});
-			 */
 		},
 		
 		setupEditMode: function() {
