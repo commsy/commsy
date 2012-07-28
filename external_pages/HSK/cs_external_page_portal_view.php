@@ -3072,8 +3072,8 @@ $html .= '<div id="meta_menue" style="height:40px;">&nbsp;
 </div>'.LF;
 
     $html .= '<div id="hsk_header">
-            <a id="hsk_logo" href="" title="Intranet Startseite"><img src="templates/themes/hsk/images/hsk_logo.gif" alt="HSK" /></a>
-            <a id="rhoen_logo" href="http://www.rhoen-klinikum-ag.com" target="_blank" title="Rh&ouml;n-Klinikum"><img src="templates/themes/hsk/images/rhoen_logo.gif" alt="Rh&ouml;n-Klinikum" /></a>
+            <a id="hsk_logo" href="" title="Intranet Startseite"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/css/images/hsk_logo.gif" alt="HSK" /></a>
+            <a id="rhoen_logo" href="http://www.rhoen-klinikum-ag.com" target="_blank" title="Rh&ouml;n-Klinikum"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/css/images/rhoen_logo.gif" alt="Rh&ouml;n-Klinikum" /></a>
 
             <div class="clear"> </div>
         </div>
