@@ -688,6 +688,7 @@
 
 							<div class="tab hidden" id="external_configuration">
 								<div id="content_row_three">
+								{if false}
                            <fieldset>
                               {if $popup.external.wordpress}
                               <p>
@@ -892,6 +893,7 @@
                      		<div class="input_row">
 								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
 							</div>
+							{/if}
 							</div>
 						</div>
 					</div>
