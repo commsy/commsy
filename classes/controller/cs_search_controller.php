@@ -141,7 +141,7 @@ if ( isset($_GET['interval']) ) {
 
 				if($view !== 'none') {
 					if(!($this->_environment->inPrivateRoom() && $name === 'user') && (empty($selfiles) || in_array($name, $file_rubric_array))) {
-						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && empty($this->_params['seltag'])) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
+						if((empty($this->_params['selbuzzword']) && empty($this->_params['selfiles']) && empty($this->_params['seltag'])) || (!in_array($name, array(CS_USER_TYPE, CS_GROUP_TYPE, CS_TOPIC_TYPE, CS_INSTITUTION_TYPE, CS_PROJECT_TYPE)))) {
 							$rubric_array[] = $name;
 						}
 					}
