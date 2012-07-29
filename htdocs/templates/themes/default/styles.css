@@ -1699,6 +1699,7 @@ img.new_item_detail_annotation {
     height:12px;
 }
 
+#top_item_actions.material_versions img.new_item_detail_annotation,
 #top_item_actions.material_versions_workflow img.new_item_detail_annotation {
     left: -6px;
     padding-bottom: 0;
