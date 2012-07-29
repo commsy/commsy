@@ -33,7 +33,47 @@
 			// add non-configurable displays
 			$filteredDisplayConfig[] = "my_search_box";
 			$filteredDisplayConfig[] = "my_stack_box";
+			$filteredDisplayConfig[] = "my_new";
 			
+			$return["displayConfig"] = $filteredDisplayConfig;
+			
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+		}
+		
+		public function actionGetWidgetsConfiguration() {
+			$return = array();
+			
+			$currentUser = $this->_environment->getCurrentUserItem();
+			$privateRoomItem = $currentUser->getOwnRoom();
+				
+			$displayConfig = $privateRoomItem->getHomeConfig();
+			
+			foreach ($displayConfig as $row => $columnConfig) {
+				foreach ($columnConfig as $entry) {
+					/* all entries are named like "cs_privateroom_home_..._view" */
+					
+					// convert name
+					$name = $entry;
+					
+					// remove "cs_privateroom_home_" and "_view"
+					$name = mb_substr($name, 20);
+					$name = mb_substr($name, 0, sizeof($name) - 6);
+					
+					// collapse main name
+					$nameExplode = explode("_", $name);
+					$collapsedMiddle = "";
+					foreach ($nameExplode as $part) {
+						$collapsedMiddle .= ucfirst($part);
+					}
+					
+					$filteredDisplayConfig[] = "home_" . $collapsedMiddle . "_view";
+				}
+			}
+				
+			// add non-configurable displays
+			//$filteredDisplayConfig[] = "my_search_box";
+				
 			$return["displayConfig"] = $filteredDisplayConfig;
 			
 			$this->setSuccessfullDataReturn($return);

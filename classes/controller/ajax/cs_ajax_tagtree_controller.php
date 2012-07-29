@@ -14,6 +14,7 @@
 			$utils = $this->getUtils();
 			if($utils->showTags()) {
 				$item_id = $this->_data['item_id'];
+				$room_id = $this->_data["room_id"];
 					
 				if($item_id !== null && $item_id !== 'NEW') {
 					// get item
@@ -34,7 +35,11 @@
 					
 					$utils->markTags($tags, $item_tag_id_array);
 				} else {
-					$tags = $utils->getTags();
+					if ($room_id !== null) {
+						$tags = $utils->getTags($room_id);
+					} else {
+						$tags = $utils->getTags();
+					}
 				}
 				
 				$this->setSuccessfullDataReturn($tags);

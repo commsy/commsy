@@ -9,7 +9,11 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On) {
 	return declare(ClickPopupHandler, {
-		constructor: function(triggerNode, customObject) {
+		constructor: function() {
+			
+		},
+		
+		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			//this.item_id = customObject.iid;
 			this.module = "buzzwords";
@@ -241,19 +245,24 @@ define([	"dojo/_base/declare",
 		},
 		
 		removeBuzzwordFromEditTab: function(buzzword) {
-			var inputNode = Query("input.buzzword_change_name[value='" + buzzword + "']")[0];
-			
-			var rowDivNode = new dojo.NodeList(inputNode).parents("div.input_row")[0];
-			DomConstruct.destroy(rowDivNode);
+			dojo.forEach(Query("input.buzzword_change_name"), Lang.hitch(this, function(inputNode, index, arr) {
+				if (inputNode.value == buzzword) {
+					var rowDivNode = new dojo.NodeList(inputNode).parents("div.input_row")[0];
+					DomConstruct.destroy(rowDivNode);
+					return true;
+				}
+			}));
 		},
 		
-		OnAddNewBuzzword: function() {
+		OnAddNewBuzzword: function(roomId) {
+			roomId = roomId || null;
+			
 			// get buzzword
 			var buzzword = DomAttr.get(Query("input#buzzword_create_name")[0], "value").trim();
 			
 			if(buzzword !== "") {
 				// send ajax request
-				this.AJAXRequest("buzzwords", "createNewBuzzword", { buzzword: buzzword },
+				this.AJAXRequest("buzzwords", "createNewBuzzword", { buzzword: buzzword, roomId: roomId },
 					Lang.hitch(this, function(response) {
 						// add the new buzzword to all lists
 						this.addBuzzwordToLists(buzzword);

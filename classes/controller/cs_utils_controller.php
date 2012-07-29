@@ -573,9 +573,15 @@
 		/**
 		 * wrapper for recursive tag call
 		 */
-		public function getTags() {
+		public function getTags($room_id = null) {
 			$tag_manager = $this->_environment->getTagManager();
-			$root_item = $tag_manager->getRootTagItem();
+			
+			if ($room_id === null) {
+				$root_item = $tag_manager->getRootTagItem();
+			} else {
+				$root_item = $tag_manager->getRootTagItemFor($room_id);
+			}
+			
 
 			return $this->buildTagArray($root_item);
 		}
@@ -643,7 +649,7 @@
 		/**
 		 * get data for buzzword portlet
 		 */
-		public function getBuzzwords($return_empty = false) {
+		public function getBuzzwords($return_empty = false, $roomId = null) {
 			$return = array();
 
 			$buzzword_manager = $this->_environment->getLabelManager();
@@ -651,7 +657,11 @@
       		$params = $this->_environment->getCurrentParameterArray();
 
 			$buzzword_manager->resetLimits();
-			$buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+			if ($roomId == null) {
+				$buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+			} else {
+				$buzzword_manager->setContextLimit($roomId);
+			}
 			$buzzword_manager->setTypeLimit('buzzword');
 			$buzzword_manager->setGetCountLinks();
 			$buzzword_manager->select();

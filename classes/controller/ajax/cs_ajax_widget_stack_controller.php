@@ -99,13 +99,14 @@
 			$entry = $filteredList->getFirst();
 			while ($entry) {
 				$type = $entry->getItemType();
-				if ($type =='label'){
+				if ($type == CS_LABEL_TYPE) {
+					$labelManager = $this->_environment->getLabelManager();
+					$entry = $labelManager->getItem($entry->getItemID());
 					$type = $entry->getLabelType();
+				} else {
+					$manager = $this->_environment->getManager($type);
+					$entry = $manager->getItem($entry->getItemID());
 				}
-				$manager = $this->_environment->getManager($type);
-				$entry = $manager->getItem($entry->getItemID());
-				
-				
 				
 				$return["items"][] = array(
 					"itemId"		=> $entry->getItemID(),
@@ -120,81 +121,6 @@
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
-		}
-		
-		public function actionGetDetailContent() {
-			$module = $this->_data["module"];
-			$itemId = $this->_data["itemId"];
-			
-			$function = "detail";
-			
-			global $c_smarty;
-			if(isset($c_smarty) && $c_smarty === true) {
-				require_once('classes/cs_smarty.php');
-				global $c_theme;
-				if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
-			
-				// room theme
-				$color = $this->_environment->getCurrentContextItem()->getColorArray();
-				$theme = $color['schema'];
-			
-				if($theme !== 'default') {
-					$c_theme = $theme;
-				}
-			
-				$smarty = new cs_smarty($this->_environment, $c_theme);
-			
-				global $c_smarty_caching;
-				if(isset($c_smarty_caching) && $c_smarty_caching === true) {
-					$smarty->caching = Smarty::CACHING_LIFETIME_CURRENT;
-				}
-				
-				$smarty->assign("ajax", "onlyContent", true);
-				
-				// set smarty in environment
-				$this->_environment->setTemplateEngine($smarty);
-				
-				$controller_name = "cs_" . $module . "_" . $function . "_controller";
-				require_once("classes/controller/" . $function . "/" . $controller_name . ".php");
-				
-				$this->_environment->setCurrentFunction("detail");
-				$_GET["iid"] = $itemId;
-				$privateRoomContextID = $this->_environment->getCurrentUserItem()->getOwnRoom()->getItemID();
-				$this->_environment->setCurrentContextID($privateRoomContextID);
-				
-				$controller = new $controller_name($this->_environment);
-				
-				$controller->processTemplate();
-				
-				ob_start();
-				$controller->displayTemplate();
-				
-				$output = ob_get_clean();
-				$this->setSuccessfullDataReturn($output);
-				echo $this->_return;
-			}
-		}
-		
-		public function actionGetHTMLForWidget() {
-			$this->_tpl_file = $this->_data["widgetPath"];
-			
-			global $c_smarty;
-			if($c_smarty === true) {
-				ob_start();
-					
-				$this->displayTemplate();
-					
-				// setup return
-				$output = ob_get_clean();
-				$this->setSuccessfullDataReturn($output);
-					
-				//echo preg_replace('/\s/', '', $this->_return);
-				//echo str_replace(array('\n', '\t'), '', $this->_return);		// for some reasons, categories in popup will not work if active
-				echo $this->_return;
-					
-			} else {
-				echo json_encode('smarty not enabled');
-			}
 		}
 
 		/*

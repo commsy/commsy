@@ -4223,7 +4223,22 @@ a.event_grey {
 	font-size:10px;
 	}
 
+.filePreview img{
+	margin-left: 100px;
+    max-width: 200px;
+	}
 
+.open_popup_context_nav{
+	color: #6F6F73 !important;
+    font-size: 10px !important;
+    font-weight: normal !important;
+    }
+
+/*
+----------------------------------------------------------------------
+widgets
+----------------------------------------------------------------------
+*/
 .widget_head{
 	background: url("img/breadcrump_room_title.jpg") repeat-x scroll 0 0 #FFFFFF;
 }
@@ -4234,11 +4249,8 @@ a.event_grey {
 	}
 
 .widgetArea{
-	background-color: #E8E8E8;
-    border: 1px solid #FFFFFF;
     padding: 0;
     margin:10px 5px;
-    border: 1px solid #C0C0C1;
 	}
 
 .innerWidgetArea{
@@ -4251,6 +4263,10 @@ a.event_grey {
 	width:500px;
 	}
 
+.widget_755 {
+	width: 755px;
+}
+
 #crt_col_left_full_widget {
     width: 936px;
 }
@@ -4262,14 +4278,9 @@ a.event_grey {
     font-weight: bold;
 }
 
-.filePreview img{
-	margin-left: 100px;
-    max-width: 200px;
-	}
-
-.open_popup_context_nav{
-	color: #6F6F73 !important;
-    font-size: 10px !important;
-    font-weight: normal !important;
-    }
-
+.CommSyWidget {
+	margin: 5px;
+	background-color: #E8E8E8;
+    border: 1px solid #FFFFFF;
+    border: 1px solid #C0C0C1;
+}

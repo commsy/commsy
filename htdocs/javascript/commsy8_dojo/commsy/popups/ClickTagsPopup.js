@@ -11,7 +11,11 @@ define([	"dojo/_base/declare",
         	"dojo/NodeList-traverse",
         	"dojo/_base/sniff"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On, Has) {
 	return declare(ClickPopupHandler, {
-		constructor: function(triggerNode, customObject) {
+		constructor: function() {
+			
+		},
+		
+		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			//this.item_id = customObject.iid;
 			this.module = "tags";
@@ -192,14 +196,6 @@ define([	"dojo/_base/declare",
 					})
 				);
 			}
-		},
-		
-		onSortABC: function() {
-			this.AJAXRequest("tags", "sortABC", {},
-				Lang.hitch(this, function(response) {
-					
-				})
-			);
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {

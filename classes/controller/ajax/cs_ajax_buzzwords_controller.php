@@ -15,6 +15,7 @@
 				$current_user = $this->_environment->getCurrentUserItem();
 				
 				$buzzword = trim($this->_data["buzzword"]);
+				$roomId = $this->_data["roomId"];
 				
 				// check if empty
 				if($buzzword === "") {
@@ -22,7 +23,11 @@
 					echo $this->_return;
 				} else {
 					// get current buzzwords and check for duplicates
-					$currBuzzwords = $this->getUtils()->getBuzzwords(true);
+					if ($roomId == null) {
+						$currBuzzwords = $this->getUtils()->getBuzzwords(true);
+					} else {
+						$currBuzzwords = $this->getUtils()->getBuzzwords(true, $roomId);
+					}
 					
 					$isDuplicate = false;
 					foreach($currBuzzwords as $currBuzzword) {
@@ -43,7 +48,11 @@
 						$buzzword_item = $buzzword_manager->getNewItem();
 						$buzzword_item->setLabelType('buzzword');
 						$buzzword_item->setName($buzzword);
-						$buzzword_item->setContextID($this->_environment->getCurrentContextID());
+						if ($roomId == null) {
+							$buzzword_item->setContextID($this->_environment->getCurrentContextID());
+						} else {
+							$buzzword_item->setContextID($roomId);
+						}
 						$buzzword_item->setCreatorItem($current_user);
 						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
 						$buzzword_item->save();
@@ -91,6 +100,15 @@
 					echo $this->_return;
 				}
 			}
+		}
+		
+		public function actionGetBuzzwords() {
+			$roomId = $this->_data["roomId"];
+			
+			$buzzwords = $this->getUtils()->getBuzzwords(true, $roomId);
+			
+			$this->setSuccessfullDataReturn($buzzwords);
+			echo $this->_return;
 		}
 		
 		public function actionGetInitialData() {
@@ -197,6 +215,7 @@
 			$module = $this->_data['module'];
 			$current_page = $this->_data['current_page'];
 			$restrictions = $this->_data['restrictions'];
+			$roomId = $this->_data["roomId"];
 			
 			// get item
 			$item = $item_manager->getItem($item_id);
@@ -327,7 +346,13 @@ if ( !empty($_POST['itemlist'])
 				$rubric_manager = $this->_environment->getManager($rubric);
 			
 				if(isset($rubric_manager) && $rubric != CS_MYROOM_TYPE) {
-					if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+					if($rubric != CS_PROJECT_TYPE) {
+						if ($roomId == null) {
+							$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+						} else {
+							$rubric_manager->setContextLimit($roomId);
+						}
+					}
 			
 					if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
 			

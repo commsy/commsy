@@ -1,14 +1,3 @@
-{function name=tagsAsList level=0}
-	<ul>
-	{foreach $nodes as $node}
-		<li	id="node_{$node.item_id}" class="popup_buzzword_item">{$node.title}</li>
-		{if $node.children|count > 0}	{* recursive call *}
-			{tagsAsList nodes=$node.children level=$level+1}
-		{/if}
-	{/foreach}
-	</ul>
-{/function}
-
 <div id="popup_wrapper">
 	<div id="popup_edit">
 		<div id="popup_frame">

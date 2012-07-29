@@ -28,7 +28,7 @@
 				if($type === CS_LABEL_TYPE) {
 					$label_manager = $this->_environment->getLabelManager();
 					$label_item = $label_manager->getItem($this->_item_id);
-					$type = $label_item->getItemType();
+					$type = $label_item->getLabelType();
 				}
 				$manager = $this->_environment->getManager($type);
 				if($type === CS_MATERIAL_TYPE){

@@ -41,10 +41,15 @@ require([	"dojo/_base/declare",
 					});
 				}
 				
+				var aWidgetsNode = query("a#tm_widgets")[0];
+				if (aWidgetsNode) {
+					require(["commsy/popups/ToggleWidgets"], function(WidgetsPopup) {
+						var handler = new WidgetsPopup(aWidgetsNode, query("div#tm_menus div#tm_dropmenu_widget_bar")[0]);
+					});
+				}
+				
 				/*
-				require(["commsy/popups/ToggleWidgets"], function(WidgetsPopup) {
-					var handler = newWidgetsPopup(query("a#tm_widgets")[0], query("div#tm_menus div#tm_dropmenu_widget_bar")[0]);
-				});
+				
 				require(["commsy/popups/ToggleMyCalendar"], function(MyCalendarPopup) {
 					var handler = newMyCalendarPopup(query("a#tm_mycalendar")[0], query("div#tm_menus div#tm_dropmenu_mycalendar")[0]);
 				});
@@ -58,7 +63,8 @@ require([	"dojo/_base/declare",
 					var module = customObject.module;
 					
 					require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
-						var handler = new ClickPopup(node, customObject);
+						var handler = new ClickPopup();
+						handler.init(node, customObject);
 					});
 				}));
 				

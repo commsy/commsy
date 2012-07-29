@@ -9,7 +9,11 @@ define([	"dojo/_base/declare",
 	return declare(ClickPopupHandler, {
 		sendImages: [],
 
-		constructor: function(triggerNode, customObject) {
+		constructor: function() {
+			this.sendImages = [];
+		},
+		
+		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
 			this.module = "institution";

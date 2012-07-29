@@ -8,10 +8,14 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
 	return declare(TogglePopupHandler, {
 		widgetArray:	[],
+		widgetHandles:	[],
 		
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
 			this.contentNode = content_node;
+			
+			this.widgetArray = [];
+			this.widgetHandles = [];
 			
 			// register click for node
 			this.registerPopupClick();
@@ -23,7 +27,7 @@ define([	"dojo/_base/declare",
 			this.AJAXRequest("widgets", action, {},
 				Lang.hitch(this, function(response) {
 					// we recieved a list of widgets to display
-					this.widgetArray = response.displayConfig;
+					this.widgetArray = this.widgetArray.concat(response.displayConfig);
 					
 					// load widgets
 					this.loadWidgets();
@@ -39,20 +43,7 @@ define([	"dojo/_base/declare",
 				
 				if(split[3] && split[3] == "preferences") widgetPath += "Preferences";
 				
-				require([widgetPath], Lang.hitch(this, function(widgetObject) {
-					// get template
-					this.AJAXRequest("widgets", "getHTMLForWidget", { widgetPath: widgetPath },
-						Lang.hitch(this, function(templateString) {
-							// init widget
-							var widgetHandler = new widgetObject({
-								templateString:		templateString
-							});
-							
-							// place widget
-							widgetHandler.placeAt(Query("div.widgetArea", this.contentNode)[0]);
-						})
-					)
-				}));
+				this.loadWidget(widgetPath);
 				
 				
 				/*
@@ -62,6 +53,31 @@ define([	"dojo/_base/declare",
 					console.log(widgetName + " found");
 				}
 				*/
+			}));
+		},
+		
+		loadWidget: function(widgetPath, mixin) {
+			mixin = mixin || {};
+			
+			require([widgetPath], Lang.hitch(this, function(widgetObject) {
+				// get template
+				this.AJAXRequest("widgets", "getHTMLForWidget", { widgetPath: widgetPath },
+					Lang.hitch(this, function(templateString) {
+						var params = {
+							templateString:		templateString,
+							widgetHandler:		this
+						};
+						declare.safeMixin(params, mixin);
+						
+						// init widget
+						var widgetHandler = new widgetObject(params);
+						
+						this.widgetHandles.push({ path: widgetPath, handler: widgetHandler });
+						
+						// place widget
+						widgetHandler.placeAt(Query("div.widgetArea", this.contentNode)[0]);
+					})
+				)
 			}));
 		},
 		

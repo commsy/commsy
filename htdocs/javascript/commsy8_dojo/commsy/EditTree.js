@@ -70,7 +70,9 @@ define([	"dojo/_base/declare",
 		/************************************************************************************
 		 *** main setup routine
 		 ************************************************************************************/
-		setupTree: function(node) {			
+		setupTree: function(node, callback) {
+			callback = callback || function() {};
+			
 			// call parent method - overwrite arguments(add a callback function, when loading is done)
 			this.inherited(arguments, [node, Lang.hitch(this, function() {
 				// loading is done - now we can safely access this.tree
@@ -87,6 +89,8 @@ define([	"dojo/_base/declare",
 				On(this.store, "Set", Lang.hitch(this, function(item, attribute, oldValue, newValue) {
 					this.onStoreSet(item, attribute, oldValue, newValue);
 				}));
+				
+				callback();
 			})]);
 		},
 		
@@ -101,7 +105,7 @@ define([	"dojo/_base/declare",
 				}));
 				
 				// send ajax request
-				this.AJAXRequest("tags", "updateTreeRoots", { rootIds: rootIds },
+				this.AJAXRequest("tags", "updateTreeRoots", { rootIds: rootIds, roomId: this.room_id },
 					Lang.hitch(this, function(response) {
 						
 					})
@@ -145,7 +149,7 @@ define([	"dojo/_base/declare",
 			// create a new dialog with an input field for naming
 			this.createNewInputDialog(Lang.hitch(this, function(tagName) {
 				// create tag and update tree
-				this.AJAXRequest("tags", "createNewTag", { tagName: tagName, parentId: parentId }, Lang.hitch(this, function(response) {
+				this.AJAXRequest("tags", "createNewTag", { tagName: tagName, parentId: parentId, roomId: this.room_id }, Lang.hitch(this, function(response) {
 					model.newItem( { title: tagName, item_id: response.tagId, children: [] }, parentItem);
 					this.addCreateAndRenameToAllLabels();
 				}));
@@ -165,6 +169,10 @@ define([	"dojo/_base/declare",
 					model.setItemAttr(item, "title", newTagName);
 				}));
 			}), model.getItemAttr(item, "title"));
+		},
+		
+		sortABC: function() {
+			// TODO - and todo onclick registering
 		},
 		
 		deleteTagEntry: function(itemId) {

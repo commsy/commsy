@@ -17,9 +17,15 @@
 				
 				$tagName = trim($this->_data["tagName"]);
 				$parentId = $this->_data["parentId"];
+				$roomId = $this->_data["roomId"];
 				
 				if ($parentId == null) {
-					$rootTagItem = $tag_manager->getRootTagItemFor($this->_environment->getCurrentContextID());
+					if ($roomId == null) {
+						$rootTagItem = $tag_manager->getRootTagItemFor($this->_environment->getCurrentContextID());
+					} else {
+						$rootTagItem = $tag_manager->getRootTagItemFor($roomId);
+					}
+					
 					$parentId = $rootTagItem->getItemID();
 				}
 				
@@ -101,13 +107,19 @@
 		public function actionUpdateTreeRoots() {
 			if ($this->accessGranted()) {
 				$rootIds = $this->_data["rootIds"];
+				$roomId = $this->_data["roomId"];
 				
 				// get the root tag item
 				$tagManager = $this->_environment->getTagManager();
 				$currentContext = $this->_environment->getCurrentContextItem();
 				$tag2TagManager = $this->_environment->getTag2TagManager();
 				
-				$rootTagItem = $tagManager->getRootTagItemFor($currentContext->getItemID());
+				if ($roomId == null) {
+					$rootTagItem = $tagManager->getRootTagItemFor($currentContext->getItemID());
+				} else {
+					$rootTagItem = $tagManager->getRootTagItemFor($roomId);
+				}
+				
 				
 				// set all root ids as direct childs of the root tag - like in actionUpdateTreeStructure
 				foreach($rootIds as $rootIndex => $rootId) {
@@ -294,7 +306,13 @@
 				$tag2TagManager = $this->_environment->getTag2TagManager();
 				$tagManager = $this->_environment->getTagManager();
 				
-				$rootTagItem = $tagManager->getRootTagItemFor($this->_environment->getCurrentContextID());
+				$roomId = $this->_data["roomId"];
+				
+				if ($roomId == null) {
+					$rootTagItem = $tagManager->getRootTagItemFor($this->_environment->getCurrentContextID());
+				} else {
+					$rootTagItem = $tagManager->getRootTagItemFor($roomId);
+				}
 				
 				$tag2TagManager->sortRecursiveABC($rootTagItem->getItemID());
 				
@@ -325,6 +343,7 @@
 		
 			// get request data
 			$item_id = $this->_data['item_id'];
+			$roomId = $this->_data["roomId"];
 			$module = $this->_data['module'];
 			$current_page = $this->_data['current_page'];
 			$restrictions = $this->_data['restrictions'];
@@ -392,7 +411,13 @@
 					$rubric_manager = $this->_environment->getManager($rubric);
 		
 					if(isset($rubric_manager) && $rubric != CS_MYROOM_TYPE) {
-						if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+						if($rubric != CS_PROJECT_TYPE) {
+							if ($roomId !== null) {
+								$rubric_manager->setContextLimit($roomId);
+							} else {
+								$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+							}
+						}
 		
 						if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
 		

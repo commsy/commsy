@@ -283,8 +283,6 @@
             <div class="clear"> </div>
         </div> <!-- Ende columnset -->
 	{else}
-		<h1>{block name=room_navigation_rubric_title}{/block}</h1>
-
 		<div id="maincontent">
         	{block name=room_main_content}{/block}
         </div>

@@ -312,6 +312,9 @@
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
+			
+			$this->assign("own", "id", $current_user->getOwnRoom()->getItemId());
+			$this->assign("own", "with_activating", $current_user->getOwnRoom()->withActivatingContent());
 
 			$this->assign('environment', 'use_problems', $this->getUseProblems());
 
@@ -340,7 +343,8 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
-			
+			$to_javascript['ownRoom']['id'] = $current_user->getOwnRoom()->getItemId();
+				
 			// translations - should be managed elsewhere soon
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
 			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");

@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On) {
+        	"dojo/query",
+        	"dojo/on"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -29,10 +30,8 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			// get entries in my stack
-			this.AJAXRequest("widget_stack", "getListContent", {},
+			this.AJAXRequest("widget_new_entries", "getListContent", { },
 				Lang.hitch(this, function(response) {
-					
 					// save items
 					this.items = response.items;
 					
@@ -80,7 +79,7 @@ define([	"dojo/_base/declare",
 							className:		"open_popup"
 						}, liNode, "last");
 					
-					DomAttr.set(aNode, "data-custom", "iid: " + item.itemId + ", module: '" + item.module + "'");
+					DomAttr.set(aNode, "data-custom", "cid: " + item.contextId + ", iid: " + item.itemId + ", module: '" + item.module + "'");
 					On(aNode, "click", Lang.hitch(this, function(event) {
 						this.onClickListEntry(event.target);
 					}));
@@ -102,25 +101,8 @@ define([	"dojo/_base/declare",
 		 ************************************************************************************/
 		onClickListEntry: function(aNode) {
 			var customObject = this.getAttrAsObject(aNode, "data-custom");
-			
-			var module = customObject.module;
-			
-			// setup new widget for displaying the detail content
-			this.widgetHandler.loadWidget("widgets/DetailView", {
-				module:		module,
-				itemId:		customObject.iid
-			});
-			
-			
-			/*
-			// reinvoke popup handling
-			
-			
-			
-			
-			require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
-				var handler = new ClickPopup(aNode, customObject);
-			});*/
+					
+			this.reload(customObject.iid, customObject.module, customObject.cid);
 		},
 		
 		onClickPaging20: function(event) {
@@ -156,12 +138,6 @@ define([	"dojo/_base/declare",
 		
 		onClickPagingLast: function(event) {
 			if (this.currentPage < this.maxPage) this.currentPage = this.maxPage;
-			this.updateList();
-		},
-		
-		onChangeSearch: function(event) {
-			var searchWord = event.target.value;
-			this.search = searchWord;
 			this.updateList();
 		}
 	});

@@ -1,11 +1,7 @@
 <div class="{literal}${baseClass}{/literal} widget_500">
 	<div class="innerWidgetArea">
 		<div class="widget_head">
-			<div style="float:right; margin-right:10px;padding-top:5px;">
-				___COMMON_SEARCH___
-				<input data-dojo-attach-event="onkeyup:onChangeSearch"></input>
-			</div>
-			<h3 class="pop_widget_h3">___PRIVATEROOM_MY_ENTRIES_LIST_BOX___</h3>
+			<h3 class="pop_widget_h3">___COMMON_NEWEST_ENTRIES___</h3>
 		</div>
 		<div class="widget_head">
 			___COMMON_PAGE_ENTRIES___:
@@ -22,7 +18,8 @@
 			
 			<div class="clear"></div>
 		</div>
-		<div class="widget_body">
+		<div class="widget_body" data-dojo-attach-point="widgetBodyNode">
+			{i18n tag=COMMON_NEWEST_ENTRIES_IN_ROOMS param1=$environment.username}
 			<ul data-dojo-attach-point="itemList">
 			</ul>
 		</div>

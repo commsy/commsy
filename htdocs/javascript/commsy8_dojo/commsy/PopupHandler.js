@@ -25,9 +25,9 @@ define([	"dojo/_base/declare",
 		},
 
 		setupTabs: function() {
-			var link_nodes = query("div.tab_navigation a", this.popup_content_node);
-			var content_nodes = query("div#popup_tabcontent div[class^='tab']");
-
+			var link_nodes = query("div.tab_navigation a", this.contentNode);
+			var content_nodes = query("div#popup_tabcontent div.tab, div.popup_tabcontent div.tab", this.contentNode);
+			
 			// register click event for all tabs
 			on(link_nodes, "click", lang.hitch(this, function(event) {
 				// set all tabs inactive

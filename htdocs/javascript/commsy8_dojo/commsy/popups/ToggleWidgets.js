@@ -9,17 +9,17 @@ define([	"dojo/_base/declare",
 	return declare(WidgetPopupHandler, {
 		constructor: function(button_node, content_node) {
 			// parent constructor is called automatically
-			this.module = "stack";
+			this.module = "widgets";
 			
 			this.features = [ ];
 		},
 		
 		onTogglePopup: function() {
 			if(this.is_open === true) {
-				DomClass.add(this.popup_button_node, "tm_stack_hover");
+				DomClass.add(this.popup_button_node, "tm_widgets_hover");
 				DomClass.remove(this.contentNode, "hidden");
 			} else {
-				DomClass.remove(this.popup_button_node, "tm_stack_hover");
+				DomClass.remove(this.popup_button_node, "tm_widgets_hover");
 				DomClass.add(this.contentNode, "hidden");
 			}
 		},

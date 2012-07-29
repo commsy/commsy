@@ -129,11 +129,16 @@ define([	"dojo/_base/declare",
 			return {};
 		},
 		
-		reload: function(item_id, module) {
+		reload: function(item_id, module, cid) {
             module = module || null;
+            cid = cid || null;
 
             // page reload
-            var cid = this.uri_object.cid;
+            if (cid) {
+            	var cid = cid;
+            } else {
+            	var cid = this.uri_object.cid;
+            }
 
             if (module) {
                 var module = module;

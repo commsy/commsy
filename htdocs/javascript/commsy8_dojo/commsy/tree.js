@@ -18,6 +18,7 @@ define([	"dojo/_base/declare",
 		tree:				null,
 		store:				null,
 		model:				null,
+		room_id:			null,
 		
 		constructor: function(options) {
 			options = options || {};
@@ -28,7 +29,7 @@ define([	"dojo/_base/declare",
 			callback = callback || function() {};
 			
 			// get results from ajax call
-			this.AJAXRequest('tagtree', 'getTreeData', { item_id: this.item_id }, lang.hitch(this, function(results) {
+			this.AJAXRequest('tagtree', 'getTreeData', { item_id: this.item_id, room_id: this.room_id }, lang.hitch(this, function(results) {
 				this.store = new ItemFileWriteStore({
 					data: {
 						identifier:		"item_id",
