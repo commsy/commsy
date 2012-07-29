@@ -26,7 +26,7 @@
 		{assign var="typo_link" value="http://hsk-intranet.effective-webwork.de"}
 			<ul>
 				<li><a id="mn_home" target="_self" href="{$typo_link}/index.php?id=2214"><span id="button_home">Home</span></a></li>
-				<li><a id="mn_emergency" onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2246"><span id="button_emergency">Notfallpläne</span></a></li>
+				<li><a id="mn_emergency" onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2246"><span id="button_emergency">Notfallpl&auml;ne</span></a></li>
 				<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2223">Aktuelles</a>
 					<ul>
 						<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2218">Neuigkeiten</a></li>
@@ -35,7 +35,7 @@
 						<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2224">Kontakte</a>
 							<ul>
 								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2247">Telefonliste</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2229">Klinik-Übersicht</a></li>
+								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2229">Klinik-&Uuml;bersicht</a></li>
 								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2230">Kooperationspartner</a></li>
 							</ul>
 						</li>
@@ -43,8 +43,8 @@
 							<ul>
 								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2258">Notfall</a></li>
 								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2231">Patientenprozesse</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2232">Führungs- und Mitarbeiterprozesse</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2233">Unterstützende Prozesse</a></li>
+								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2232">F&uuml;hrungs- und Mitarbeiterprozesse</a></li>
+								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2233">Unterst&uuml;tzende Prozesse</a></li>
 								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2234">Prozesslandkarte</a></li>
 								<li><a onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2253">Dokumentenablage</a></li>
 							</ul>

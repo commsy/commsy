@@ -134,3 +134,15 @@
     position: absolute;
     z-index: 6;
 }
+a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
+    color: #525252;
+    line-height: 20px;
+    text-decoration: none;
+    text-shadow: 0 0px #2E405E;
+}
+a.keywords_s1:hover, a.keywords_s2:hover, a.keywords_s3:hover, a.keywords_s4:hover {
+    color: #525252;
+    line-height: 20px;
+    text-decoration: underline;
+    text-shadow: 0 0px #2E405E;
+}
