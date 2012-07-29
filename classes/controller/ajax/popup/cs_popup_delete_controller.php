@@ -14,10 +14,11 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     }
 
     public function initPopup($item, $data) {
-    	$recurrence = false;
-		if($this->_environment->getCurrentModule() === "date") {
-			$recurrence = true;
-			$this->_popup_controller->assign("popup", "recurrence", $recurrence);
+		if($item->getType() === CS_DATE_TYPE) {
+		    $recurrance_id = $item->getRecurrenceId();
+		    if(!empty($recurrance_id)){
+			   $this->_popup_controller->assign("popup", "recurrence", true);
+		    }
 		}
     }
 

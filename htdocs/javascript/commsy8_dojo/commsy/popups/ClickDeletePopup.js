@@ -33,8 +33,8 @@ define([	"dojo/_base/declare",
 				nodeLists: []
 			};
 			
-			var delType = this.delType;
-			if(customObject.del === "recurrence") delType = "date_recurrence";
+			//var delType = this.delType;
+			if(customObject.del === "recurrence") this.delType = "date_recurrence";
 			
 			this.submit(search, { delType: this.delType, delVersion: this.delVersion, version_id: this.version_id });
 		},
