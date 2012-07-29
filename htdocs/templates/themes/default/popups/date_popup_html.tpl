@@ -242,6 +242,8 @@
                                  ___DATES_RECURRING_END_DATE___:<span class="required">*</span>&nbsp;
                                  {if isset($item.recurring_end_date)}
                                     {$item.recurring_end_date}
+                                    <input type="hidden" value="{$item.recurring_end_date}" name="form_data[recurring_end_date]" />
+                                    <input type="hidden" value="true" name="form_data[recurring_ignore]" />
                                  {else}
                                     <input class="size_80 datepicker" type="text" value="" name="form_data[recurring_end_date]" />
                                  {/if}
