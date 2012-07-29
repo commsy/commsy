@@ -689,15 +689,17 @@
 							<div class="tab hidden" id="external_configuration">
 								<div id="content_row_three">
 								{if false}
+								{if $popup.external.wordpress}
                            <fieldset>
-                              {if $popup.external.wordpress}
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
                               </p>
+                              <!-- 
                               <div class="input_row_200">
                                  <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'}checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
                                  <div class="clear"></div>
                               </div>
+                               -->
                               <div class="input_row_100">
 								 <label for="wordpresstitle">___COMMON_TITLE___<span class="required">*</span>:</label>
 								 <input id="wordpresstitle" type="text" class="size_200" name="form_data[wordpresstitle]" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
@@ -744,6 +746,12 @@
                                  <div class="clear"></div>
                               </div>
                            </fieldset>
+                           <div class="input_row">
+								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'create_wordpress'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+								{if $popup.external.wordpress.wordpress_active == 'yes'}
+									<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'delete_wordpress'" name="save" value="___COMMON_DELETE_WORDPRESS_TITLE___"/>
+								{/if}
+						   </div>
                            {/if}
                            <fieldset>
                               <p>

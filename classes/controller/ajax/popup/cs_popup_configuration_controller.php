@@ -861,79 +861,74 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 				case 'external_configuration':
 				   if($this->_popup_controller->checkFormData('external_configuration')) {
+
 				      $current_user = $this->_environment->getCurrentUserItem();
 				      $current_context->setModificatorItem($current_user);
 				      $current_context->setModificationDate(getCurrentDateTimeInMySQL());
 
 				      $wordpress_manager = $this->_environment->getWordpressManager();
 
-				      if ( isset($form_data['wordpress_active']) and !empty($form_data['wordpress_active']) and $form_data['wordpress_active'] == 'yes') {
-				         $current_context->setWordpressActive();
-
-				         if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
-   				         $current_context->setWordpressUseComments();
-   				      } else {
-   				         $current_context->unsetWordpressUseComments();
-   				      }
-
-   				      if ( isset($form_data['use_comments_moderation']) and !empty($form_data['use_comments_moderation']) and $form_data['use_comments_moderation'] == 'yes') {
-   				         $current_context->setWordpressUseCommentsModeration();
-   				      } else {
-   				         $current_context->unsetWordpressUseCommentsModeration();
-   				      }
-
-   				      if ( isset($form_data['wordpresslink']) and !empty($form_data['wordpresslink']) and $form_data['wordpresslink'] == 'yes') {
-   				         $current_context->setWordpressHomeLink();
-   				      } else {
-   				         $current_context->unsetWordpressHomeLink();
-   				      }
-
-   				      if ( isset($form_data['skin_choice']) and !empty($form_data['skin_choice']) ) {
-   				         $current_context->setWordpressSkin($form_data['skin_choice']);
-   				      }
-
-   				      if ( isset($form_data['wordpresstitle']) and !empty($form_data['wordpresstitle']) ) {
-   				         $current_context->setWordpressTitle($form_data['wordpresstitle']);
-   				      } else {
-   				         $current_context->setWordpressTitle($current_context->getTitle());
-   				      }
-
-   				      if ( isset($form_data['wordpressdescription']) and !empty($form_data['wordpressdescription']) ) {
-   				         $current_context->setWordpressDescription($form_data['wordpressdescription']);
-   				      } else {
-   				         $current_context->setWordpressDescription('');
-   				      }
-
-   				      if ( isset($form_data['member_role']) and !empty($form_data['member_role']) ) {
-   				         $current_context->setWordpressMemberRole($form_data['member_role']);
-   				      } else {
-   				         $current_context->setWordpressMemberRole();
-   				      }
-
-   				      $current_context->setWordpressExists();
-   				      $current_context->setWordpressActive();
-
-   				      // save
-   				      $current_context->save();
-
-   				      // create or change new wordpress
-   				      $success = $wordpress_manager->createWordpress($current_context);
-				      } else {
+				      if($additional['action'] == 'create_wordpress'){
+                          if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
+      				         $current_context->setWordpressUseComments();
+      				      } else {
+      				         $current_context->unsetWordpressUseComments();
+      				      }
+   
+      				      if ( isset($form_data['use_comments_moderation']) and !empty($form_data['use_comments_moderation']) and $form_data['use_comments_moderation'] == 'yes') {
+      				         $current_context->setWordpressUseCommentsModeration();
+      				      } else {
+      				         $current_context->unsetWordpressUseCommentsModeration();
+      				      }
+   
+      				      if ( isset($form_data['wordpresslink']) and !empty($form_data['wordpresslink']) and $form_data['wordpresslink'] == 'yes') {
+      				         $current_context->setWordpressHomeLink();
+      				      } else {
+      				         $current_context->unsetWordpressHomeLink();
+      				      }
+   
+      				      if ( isset($form_data['skin_choice']) and !empty($form_data['skin_choice']) ) {
+      				         $current_context->setWordpressSkin($form_data['skin_choice']);
+      				      }
+   
+      				      if ( isset($form_data['wordpresstitle']) and !empty($form_data['wordpresstitle']) ) {
+      				         $current_context->setWordpressTitle($form_data['wordpresstitle']);
+      				      } else {
+      				         $current_context->setWordpressTitle($current_context->getTitle());
+      				      }
+   
+      				      if ( isset($form_data['wordpressdescription']) and !empty($form_data['wordpressdescription']) ) {
+      				         $current_context->setWordpressDescription($form_data['wordpressdescription']);
+      				      } else {
+      				         $current_context->setWordpressDescription('');
+      				      }
+   
+      				      if ( isset($form_data['member_role']) and !empty($form_data['member_role']) ) {
+      				         $current_context->setWordpressMemberRole($form_data['member_role']);
+      				      } else {
+      				         $current_context->setWordpressMemberRole();
+      				      }
+   
+      				      $current_context->setWithWordpressFunctions();
+      				      $current_context->setWordpressExists();
+      				      $current_context->setWordpressActive();
+      				      // save
+      				      $current_context->save();
+      				      // create or change new wordpress
+      				      $success = $wordpress_manager->createWordpress($current_context);
+      				      include_once('functions/development_functions.php');
+      				      logToFile($success);
+				      } else if ($additional['action'] == 'delete_wordpress') {
+				         $current_context->setWithoutWordpressFunctions();
+				         $current_context->unsetWordpressExists();
 				         $current_context->setWordpressInactive();
 				         // save
-   				      $current_context->save();
-
+   				         $current_context->save();
 				         // delete wordpress
 				         $delete = $wordpress_manager->deleteWordpress($current_context->getWordpressId());
 				      }
-
 				      // set return
-				      $this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
-
-				      /*
-				      // Set modificator and modification date
-
-      				   */
+				      #$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
 				   }
 				   break;
 			}

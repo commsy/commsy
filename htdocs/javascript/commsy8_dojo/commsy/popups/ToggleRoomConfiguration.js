@@ -297,6 +297,7 @@ define([	"dojo/_base/declare",
 
 		onPopupSubmit: function(customObject) {
 			var part = customObject.part;
+			var action = customObject.action;
 
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
@@ -315,7 +316,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { part: part });
+			this.submit(search, { part: part, action: action });
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
