@@ -69,6 +69,10 @@ define([	"dojo/_base/declare",
 				onClick:			lang.hitch(this, function(item, node, evt) {
 					// follow item url
 					if(this.followUrl) {
+						if (this.uri_object.mod == "home") {
+							this.replaceOrSetURIParam('mod', "search");
+						}
+						
 						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag', item.item_id));
 					} else {
 						// if click doesn't come from checkbox
