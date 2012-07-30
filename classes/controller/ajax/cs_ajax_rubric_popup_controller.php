@@ -18,7 +18,7 @@
 
 			// item id
 			$this->_item_id = $this->_data['iid'];
-			
+
 			$this->assign('popup', 'item_id', $this->_item_id);
 
 			// item
@@ -32,7 +32,11 @@
 				}
 				$manager = $this->_environment->getManager($type);
 				if($type === CS_MATERIAL_TYPE){
-				   $this->_item = $manager->getItemByVersion($this->_item_id, $this->_data['version_id']);
+				   if (isset($this->_data['version_id'])){
+				   		$this->_item = $manager->getItemByVersion($this->_item_id, $this->_data['version_id']);
+				   }else{
+				   		$this->_item = $manager->getItem($this->_item_id);
+				   }
 				} else {
 				   $this->_item = $manager->getItem($this->_item_id);
 				}
