@@ -30,13 +30,13 @@ class cs_popup_send_controller implements cs_popup_controller {
 	public function save($form_data, $additional = array()) {
 		$manager = $this->_environment->getItemManager();
 		$translator = $this->_environment->getTranslationObject();
-		
+
 		// get item
 		$iid = $additional["itemId"];
-		
+
 		$rubric_item = $manager->getItem($iid);
 		$module = $rubric_item->getItemType();
-		
+
 		if($this->_popup_controller->checkFormData()) {
 			$user_manager = $this->_environment->getUserManager();
 			$user_manager->resetLimits();
@@ -47,7 +47,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 			$recipients_display_bcc = array();
 			$label_manager = $this->_environment->getLabelManager();
 			$topic_list = new cs_list();
-			
+
 			if (isset($form_data["allMembers"])) {	//send to all members of a community room, if no institutions and topics are availlable
 				$cid = $this->_environment->getCurrentContextId();
 				$user_manager->setContextLimit($cid);
@@ -65,7 +65,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 					$user_item = $user_list->getNext();
 				}
 			}
-			
+
 			if ($module == CS_TOPIC_TYPE) {
 				$topic_list = $label_manager->getItemList($_POST[CS_TOPIC_TYPE]);
 			}
@@ -88,7 +88,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 				}
 				$topic_item = $topic_list->getNext();
 			}
-			
+
 			if (isset($form_data["copyToAttendees"]) && $form_data["copyToAttendees"] == "true") {
 				if($module == CS_DATE_TYPE) {
 					$date_manager = $this->_environment->getDateManager();
@@ -122,12 +122,12 @@ class cs_popup_send_controller implements cs_popup_controller {
 					}
 				}
 			}
-			
+
 			$user_manager->resetLimits();
 			$user_manager->setUserLimit();
 			$label_manager = $this->_environment->getLabelManager();
 			$group_list = new cs_list();
-			
+
 			// build group id array
 			$groupIdArray = array();
 			foreach ($form_data as $key => $value) {
@@ -135,7 +135,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 					$groupIdArray[] = $value;
 				}
 			}
-			
+
 			if (!empty($groupIdArray)) {
 				$group_list = $label_manager->getItemList($groupIdArray);
 			}
@@ -158,12 +158,12 @@ class cs_popup_send_controller implements cs_popup_controller {
 				}
 				$group_item = $group_list->getNext();
 			}
-			
+
 			$user_manager->resetLimits();
 			$user_manager->setUserLimit();
 			$label_manager = $this->_environment->getLabelManager();
 			$institution_list = new cs_list();
-			
+
 			// build institution id array
 			$institutionIdArray = array();
 			foreach ($form_data as $key => $value) {
@@ -171,7 +171,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 					$institutionIdArray[] = $value;
 				}
 			}
-			
+
 			if (!empty($institutionIdArray)) {
 				$institution_list = $label_manager->getItemList($institutionIdArray);
 			}
@@ -194,10 +194,10 @@ class cs_popup_send_controller implements cs_popup_controller {
 				}
 				$institution_item = $institution_list->getNext();
 			}
-			
+
 			$recipients = array_unique($recipients);
 			$recipients_display = array_unique($recipients_display);
-			
+
 			if ( $this->_environment->inGroupRoom() and empty($recipients_display) ) {
 				$cid = $this->_environment->getCurrentContextId();
 				$user_manager->setContextLimit($cid);
@@ -212,61 +212,61 @@ class cs_popup_send_controller implements cs_popup_controller {
 			}
 			$recipients_bcc = array_unique($recipients_bcc);
 			$recipients_display_bcc = array_unique($recipients_display_bcc);
-			
+
 			$current_user = $this->_environment->getCurrentUser();
 			$mail['from_name'] = $current_user->getFullName();
 			$mail['from_email'] = $current_user->getEmail();
 			$mail['to'] = implode(", ", $recipients);
 			$mail['subject'] = $form_data["subject"];
 			$mail['message'] = $form_data["body"];
-			
+
 			$email = new cs_mail();
 			$email->set_from_email($mail['from_email']);
 			$email->set_from_name($mail['from_name']);
 			$email->set_to($mail['to']);
 			$email->set_subject($mail['subject']);
 			$email->set_message($mail['message']);
-			
+
 			if (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true) {
 				$email->set_cc_to($current_user->getEmail());
 			}
 			if ( !empty($recipients_bcc) ) {
 				$email->set_bcc_to(implode(",",$recipients_bcc));
 			}
-			
+
 			if ($email->send()) {
 				$this->_popup_controller->setSuccessfullDataReturn(array());
 				/*
 				// prepare formal data
 				$tmp = array($translator->getMessage('MAIL_FROM'), $mail['from_name']." <".$mail['from_email'].">");
 				$formal_data[] = $tmp;
-			
+
 				$tmp = array($translator->getMessage('REPLY_TO'), $mail['from_email']);
 				$formal_data[] = $tmp;
-			
+
 				$tmp = array($translator->getMessage('MAIL_TO'), implode(", ", $recipients_display));
 				$formal_data[] = $tmp;
-			
+
 				if (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true) {
 					$tmp = array($translator->getMessage('CC_TO'), $mail['from_name']." <".$mail['from_email'].">");
 					$formal_data[] = $tmp;
 				}
-			
+
 				if ( !empty($recipients_bcc) ) {
 					$tmp = array($translator->getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
 					$formal_data[] = $tmp;
 				}
-			
+
 				$tmp = array($translator->getMessage('MAIL_SUBJECT'), $form_data["subject"]);
 				$formal_data[] = $tmp;
-			
+
 				$tmp = array($translator->getMessage('MAIL_BODY'), $form_data["body"]);
 				$formal_data[] = $tmp;
 				$detail_view->setFormalData($formal_data);
-			
+
 				$page->add($detail_view);
 				*/
-			
+
 			} // ~email->send()
 			else { // Mail could not be send
 				$this->_popup_controller->setErrorReturn("110", "mail could not be delivered", array());
@@ -302,18 +302,18 @@ class cs_popup_send_controller implements cs_popup_controller {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$current_context = $this->_environment->getCurrentContextItem();
 		$translator = $this->_environment->getTranslationObject();
-		
+
 		// context information
 		$contextInformation = array();
 		$contextInformation["name"] = $current_context->getTitle();
 		$this->_popup_controller->assign("popup", "context", $contextInformation);
-		
+
 		// group information
 		$groupArray = $this->getAllLabelsByType("group");
-		
+
 		// institutions information
 		$institutionArray = $this->getAllLabelsByType("institution");
-		
+
 		// get item
 		$iid = $data->getItemID();
 		$manager = $this->_environment->getItemManager();
@@ -328,7 +328,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 		$item_manager = $this->_environment->getManager($module);
 		$item = $item_manager->getItem($iid);
 		$item_name = $item->getTitle();
-		
+
 		// Wenn man mit HTTPS auf Commsy surft und eine Email generiert
 		// sollte diese Mail auch https links erstellen.
 		if ( !empty($_SERVER["HTTPS"])
@@ -347,7 +347,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 			.'&iid='.$item->getItemID();
 		}
 		$link = $url;
-		
+
 		$content = '';
 		//generate module name for the interface- a pretty version of module...
 		if ($module== CS_DATE_TYPE) {
@@ -359,7 +359,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 			} else {
 				$start_time_print = $item->getStartingTime();
 			}
-		
+
 			$parse_time_end = convertTimeFromInput($item->getEndingTime());
 			$conforms = $parse_time_end['conforms'];
 			if ($conforms == TRUE) {
@@ -367,7 +367,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 			} else {
 				$end_time_print = $item->getEndingTime();
 			}
-		
+
 			$parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
 			$conforms = $parse_day_start['conforms'];
 			if ($conforms == TRUE) {
@@ -375,7 +375,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 			} else {
 				$start_day_print = $item->getStartingDay();
 			}
-		
+
 			$parse_day_end = convertDateFromInput($item->getEndingDay(),$this->_environment->getSelectedLanguage());
 			$conforms = $parse_day_end['conforms'];
 			if ($conforms == TRUE) {
@@ -386,7 +386,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 			//formating dates and times for displaying
 			$date_print ="";
 			$time_print ="";
-		
+
 			if ($end_day_print != "") { //with ending day
 				$date_print = $translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$translator->getMessage('DATES_TILL').' '.$end_day_print;
 				if ($parse_day_start['conforms']
@@ -417,7 +417,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 						$date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$translator->getMessage('DATES_DAYS').')';
 					}
 				}
-		
+
 			} else { //without ending day
 				$date_print = $start_day_print;
 				if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -440,7 +440,7 @@ class cs_popup_send_controller implements cs_popup_controller {
 					$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$translator->getMessage('DATES_TILL').' '.$end_time_print;
 				}
 			}
-		
+
 			if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
 				$date_print = $translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
 				if ($start_time_print != "" and $end_time_print =="") { //starting time given
@@ -504,12 +504,12 @@ class cs_popup_send_controller implements cs_popup_controller {
 			$emailtext .= $content;
 		}
 		$emailtext .= $translator->getMessage('RUBRIC_EMAIL_DEFAULT_PROJECT_END',$link);
-		
+
 		$this->_popup_controller->assign("popup", "body", strip_tags($emailtext));
-		
+
 		// receiver
 		$showAttendees = false;
-		
+
 		if ($module === CS_DATE_TYPE) {
 			$showAttendees = true;
 			$attendeeType = CS_DATE_TYPE;
@@ -520,8 +520,8 @@ class cs_popup_send_controller implements cs_popup_controller {
 		}
 		$this->_popup_controller->assign("popup", "showAttendees", $showAttendees);
 		$this->_popup_controller->assign("popup", "attendeeType", $attendeeType);
-		
-		
+
+
 		$showGroupReceivers = false;
 		$showInstitutionReceivers = false;
 		if ( $this->_environment->inProjectRoom() and !empty($groupArray) ) {
@@ -533,13 +533,13 @@ class cs_popup_send_controller implements cs_popup_controller {
 				$showInstitutionReceivers = true;
 			}
 		}
-		
+
 		//Projectroom and no groups enabled -> send mails to group all
 		$withGroups = true;
 		if ( $current_context->isProjectRoom() && !$current_context->withRubric(CS_GROUP_TYPE)) {
 			$showGroupReceivers = true;
 			$withGroups = false;
-			
+
 			// get number of users
 			$cid = $this->_environment->getCurrentContextId();
 			$user_manager = $this->_environment->getUserManager();
@@ -547,19 +547,19 @@ class cs_popup_send_controller implements cs_popup_controller {
 			$user_manager->setContextLimit($cid);
 			$count = $user_manager->getCountAll();
 			$this->_popup_controller->assign("popup", "numMembers", $count);
-			
+
 			$groupArray = array_slice($groupArray, 0, 1);
 		}
-		
+
 		$this->_popup_controller->assign("popup", "showGroupReceivers", $showGroupReceivers);
 		$this->_popup_controller->assign("popup", "withGroups", $withGroups);
 		$this->_popup_controller->assign("popup", "groups", $groupArray);
-		
-		
+
+
 		$allMembers = false;
 		if ( ($current_context->isCommunityRoom() && !$current_context->withRubric(CS_INSTITUTION_TYPE)) || $current_context->isGroupRoom()) {
 			$allMembers = true;
-			
+
 			// get number of users
 			$cid = $this->_environment->getCurrentContextId();
 			$user_manager = $this->_environment->getUserManager();
@@ -568,12 +568,12 @@ class cs_popup_send_controller implements cs_popup_controller {
 			$count = $user_manager->getCountAll();
 			$this->_popup_controller->assign("popup", "numMembers", $count);
 		}
-		
+
 		$this->_popup_controller->assign("popup", "showInstitutionReceivers", $showInstitutionReceivers);
 		$this->_popup_controller->assign("popup", "institutions", $institutionArray);
 		$this->_popup_controller->assign("popup", "allMembers", $allMembers);
 	}
-	
+
 	/** Retrieves all labels of a type in the current context
 	 *   @param $type: typ of label, e.g. 'topic', 'group' or 'institution'
 	 *   @return list of names and id's of desired labels

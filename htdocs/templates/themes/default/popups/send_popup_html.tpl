@@ -5,7 +5,7 @@
 
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img
-						src="{$basic.tpl_path}img/pop_close_btn.gif"
+						src="{$basic.tpl_path}img/popup_close.gif"
 						alt="___COMMON_CLOSE___" />
 					</a>
 					<h2>___COMMON_EMAIL_TO_TITLE___</h2>
@@ -21,11 +21,11 @@
 						</div>
 						<div class="editor_content">
 							<br/>
-							<textarea rows="20" cols="109">{if isset($popup.body)}{$popup.body}{/if}</textarea>
+							<textarea name="form_data[body]" rows="20" cols="100">{if isset($popup.body)}{$popup.body}{/if}</textarea>
 							<br/>
 							<br/>
 						</div>
-						
+
 						{if $popup.showAttendees == true}
 							<div class="input_row">
 								<span class="input_label_150">___COMMON_MAIL_SEND_TO_ASIGNED_PEOPLE___:</span>
@@ -35,7 +35,7 @@
 								<div class="clear"></div>
 							</div>
 						{/if}
-						
+
 						{if $popup.showGroupReceivers == true}
 							<div class="input_row">
 								<span class="input_label_150">{if $popup.withGroups}___COMMON_MAILTO_GROUPS___:{else}___COMMON_MAIL_RECEIVER___{/if}</span>
@@ -57,7 +57,7 @@
 								<div class="clear"></div>
 							</div>
 						{/if}
-						
+
 						{if $popup.allMembers}
 							<div class="input_row">
 								<span class="input_label_150">___COMMON_MAIL_RECEIVER___:</span>
@@ -67,7 +67,7 @@
 								<div class="clear"></div>
 							</div>
 						{/if}
-						
+
 						<div class="input_row">
 							<span class="input_label_150">___MAILCOPY_TO_SENDER___:</span>
 							<div class="input_container_180">
@@ -76,9 +76,9 @@
 							</div>
 							<div class="clear"></div>
 						</div>
-						
-						
-						
+
+
+
     				</div>
     				<div id="popup_tabs">
 						<div id="content_buttons">
