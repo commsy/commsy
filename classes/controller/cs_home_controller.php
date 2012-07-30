@@ -55,9 +55,9 @@
 				$converter = $this->_environment->getTextConverter();
 				$desc = $entry->getDescription();
 				if(!empty($desc)) {
-					$desc = $converter->cleanDataFromTextArea($desc);
 					$converter->setFileArray($this->getItemFileList());
-					$desc = $converter->text_as_html_long($desc);
+					$desc = $converter->_text_as_html_long2($desc);
+					#$desc = $converter->cleanDataFromTextArea($desc);
 				}
 				$return_array['content'] = $desc;
 				$return_array['rubric'] = $entry->getItemType();

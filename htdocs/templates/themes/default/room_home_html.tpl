@@ -19,7 +19,9 @@
                 <div class="clear"> </div>
                 <div class="row_even" style="padding:10px;">
                 	<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto; ">
-                		{$room.informationbox.content}
+                		<div class="detail_description">
+                			{$room.informationbox.content}
+                		</div>
                		</div>
                 	<div class="clear"> </div>
                		<div style="float:right;">

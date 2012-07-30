@@ -183,7 +183,7 @@ class misc_text_converter {
 
       return $text;
    }
-   
+
    public function convertText($text) {
    	  //$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
       //$text = nl2br($text);
@@ -202,7 +202,7 @@ class misc_text_converter {
    }
 
    // text not from FCKeditor
-   private function _text_as_html_long1 ($text,$htmlTextArea=false) {
+   public function _text_as_html_long1 ($text,$htmlTextArea=false) {
       $text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
       $text = nl2br($text);
       $text = $this->_decode_backslashes_1($text);
@@ -220,7 +220,7 @@ class misc_text_converter {
    }
 
    // text from FCKeditor
-   private function _text_as_html_long2 ($text) {
+   public function _text_as_html_long2 ($text) {
       $text = $this->_cs_htmlspecialchars($text);
       $text = $this->_decode_backslashes_1_fck($text);
       $text = $this->_newFormating($text);
@@ -321,7 +321,7 @@ class misc_text_converter {
       $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~uU', '$1<span style="font-style:italic;">$2</span>$3', $text);
       foreach ($values as $key => $value) {
          $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
-      }     
+      }
 
 
       // search (with yellow background)
@@ -353,7 +353,7 @@ class misc_text_converter {
       // separating Links from COMMSY_FCKEDITOR tag
       $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;|COMMSY_FCKEDITOR)))'; //behind the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
       $url_string .= '(?![\s\w\d]*</a>)^u'; // if there's a </a>-tag behind the link, it is assumed that there's already a complete <a href="">link</a> contruct comming from the editor. These links are omitted.
-      
+
       #$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
       $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
@@ -1025,8 +1025,8 @@ class misc_text_converter {
       $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
       if ( !empty($plugin_reg_exp_array) ) {
          $reg_exp_array = array_merge($reg_exp_array,$plugin_reg_exp_array);
-      }     
-      
+      }
+
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
       global $c_jsmath_enable;
@@ -1037,7 +1037,7 @@ class misc_text_converter {
          $reg_exp_array['{$$']     = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
          $reg_exp_array['{$']      = '~\\{\\$(.*?)\\$\\}~eu';
       }
-      
+
       // is there wiki syntax ?
       if ( !empty($reg_exp_array) ) {
          $reg_exp_keys = array_keys($reg_exp_array);
@@ -1167,14 +1167,14 @@ class misc_text_converter {
                      } elseif ( $key == '(:scratch' and mb_stristr($value_new,'(:scratch') ) {
                         $value_new = $this->_formatScratch($value_new,$args_array,$file_array);
                      }
-                     
+
                      // plugins
                      else {
                         $value_new_plugin = plugin_hook_output_all('formatMedia',array('key' => $key, 'value_new' => $value_new, 'args_array' => $args_array, 'file_array' => $file_array),'ONE');
                         if ( !empty($value_new_plugin) ) {
                            $value_new = $value_new_plugin;
                         }
-                     }                     
+                     }
                   }
 
                   $text = str_replace($value,$value_new,$text);
@@ -1669,7 +1669,7 @@ class misc_text_converter {
    private function _formatLecture2go ( $text, $array ) {
 
       $new_style = true;
-      
+
       $retour = '';
       $source = $array[1];
 
@@ -1691,10 +1691,10 @@ class misc_text_converter {
       }
       /* old style
       else {
-         #$server = 'rtmp://fms.rrz.uni-hamburg.de:80/vod';         
+         #$server = 'rtmp://fms.rrz.uni-hamburg.de:80/vod';
       }
       */
-      
+
       if ( $new_style ) {
          $factor = 0.642; // orig = 1;
       } else {
@@ -1704,10 +1704,10 @@ class misc_text_converter {
          $width = $args['width'];
       } else {
          if ( $new_style ) {
-            $width = 960*$factor;            
-            #$width = 600;            
+            $width = 960*$factor;
+            #$width = 600;
          } else {
-            $width = 960*$factor;            
+            $width = 960*$factor;
          }
       }
       if ( !empty($args['height']) ) {
@@ -1731,10 +1731,10 @@ class misc_text_converter {
                if ( !empty($picture) ) {
                   $image = 'http://lecture2go.uni-hamburg.de/videorep/images/'.$picture;
                } else {
-                  $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';                  
+                  $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
                }
             }
-            $endOfVideoOverlay = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg'; 
+            $endOfVideoOverlay = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
          } else {
             $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
          }
@@ -1781,14 +1781,14 @@ class misc_text_converter {
          $image_text = '';
          $div_number = $this->_getDivNumber();
          $translator = $this->_environment->getTranslationObject();
-         
+
          if ( $new_style ) {
             /*
              * new style: iframe
              */
             $image_text .= '<!-- DNC -->'.LF;
             $image_text .= '<iframe'.LF;
-            $image_text .= ' src=\'http://lecture2go.uni-hamburg.de/strobemediaplayer/embed.html?autoPlay='.$play.'&endOfVideoOverlay='.$endOfVideoOverlay.'&poster='.$image.'&src=http://fms.rrz.uni-hamburg.de/vod/_definst_/mp4:'.$source.'/manifest.f4m\''.LF; 
+            $image_text .= ' src=\'http://lecture2go.uni-hamburg.de/strobemediaplayer/embed.html?autoPlay='.$play.'&endOfVideoOverlay='.$endOfVideoOverlay.'&poster='.$image.'&src=http://fms.rrz.uni-hamburg.de/vod/_definst_/mp4:'.$source.'/manifest.f4m\''.LF;
             $image_text .= ' type=\'text/html\''.LF;
             $image_text .= ' style=\''.$float.' margin:10px;\''.LF;
             $image_text .= ' width=\''.$width.'\''.LF;
@@ -1796,9 +1796,9 @@ class misc_text_converter {
             $image_text .= ' </iframe>'.LF;
             $image_text .= '<!-- DNC -->'.LF;
          }
-         
+
          else {
-            /* 
+            /*
              * old style: swf object
              */
             $image_text .= '<script type="text/javascript" src="http://lecture2go.uni-hamburg.de/jw/swfobject.js"></script>'.LF;
@@ -1821,13 +1821,13 @@ class misc_text_converter {
             $image_text .= '  so.write(\'id'.$div_number.'\');'.LF;
             $image_text .= '</script>'.LF;
          }
-                        
+
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
       return $retour;
    }
-   
+
    private function _formatOffice ($text, $array, $file_name_array) {
 
       // Abfrage auf curl-Funktionen einbauen.
