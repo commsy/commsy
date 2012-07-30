@@ -145,13 +145,13 @@ div#loadingScreenInner .img {
 }
 
 #popup_edit {
-	margin: 125px auto 20px;
+	margin: 50px auto 20px;
     width: 940px;
 	position: relative;
 	}
 
 #popup_delete {
-	margin: 125px auto 20px;
+	margin: 50px auto 20px;
     width: 600px;
 	position: relative;
 	}
@@ -601,7 +601,7 @@ div.pop_item_navigation {
     }
 
 .settings_area {
-    padding: 20px 0px;
+    padding: 10px 0px;
     }
 
 .info_notice {
