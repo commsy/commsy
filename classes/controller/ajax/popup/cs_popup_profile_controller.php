@@ -477,13 +477,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							// 						}
 
 							global $c_virus_scan;
-							if(!isset($c_virus_scan) || !c_virus_scan /*or empty($_FILES['upload']['tmp_name'])
+							if(!isset($c_virus_scan) || !$c_virus_scan /*or empty($_FILES['upload']['tmp_name'])
 							// 										or empty($_FILES['upload']['name'])
 							// 										or page_edit_virusscan_isClean($_FILES['upload']['tmp_name'],$_FILES['upload']['name'])*/) {
 								$portal_user = $user_item->getRelatedCommSyUserItem();
 
 								function setValue($user_item, $portal_user_item, $method, $value) {
-									if(isset($value) && !empty($value)) {
+									if(isset($value)) {
 										// set for user
 										call_user_func_array(array($user_item, $method), array($value));
 
