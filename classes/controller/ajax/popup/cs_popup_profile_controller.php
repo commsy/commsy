@@ -557,10 +557,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								function setChangeAllValue($user_item, $dummy_user_item, $method_set, $method_get, $checked) {
 									if(isset($checked)) {
 										$value = call_user_func_array(array($user_item, $method_get), array());
-
+										
 										if(empty($value)) $value = -1;
 
-										call_user_func_array(array($dummy_user, $method_set), array($value));
+										call_user_func_array(array($dummy_user_item, $method_set), array($value));
 									}
 								}
 
@@ -611,8 +611,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								// 							}
 								// 							redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
 							}
-
-
+							
 							// set return
                 			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 						}
