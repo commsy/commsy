@@ -146,3 +146,32 @@ a.keywords_s1:hover, a.keywords_s2:hover, a.keywords_s3:hover, a.keywords_s4:hov
     text-decoration: underline;
     text-shadow: 0 0px #2E405E;
 }
+
+#dis_navigation a, a.context_nav {
+    color: #525252;
+    display: block;
+    text-decoration: none;
+}
+a {
+    color: #525252;
+    text-decoration: none;
+}
+.portlet_rc_list {
+    color: #525252;
+    float: right;
+    line-height: 16px;
+}
+#netnavigation {
+    color: #525252;
+}
+#netnavigation a {
+    color: #525252;
+    text-decoration: none;
+}
+#dis_navigation {
+    border-top: 0px solid #689FDE;
+    margin-bottom: 8px;
+    overflow: hidden;
+    padding: 8px 0;
+    white-space: nowrap;
+}
