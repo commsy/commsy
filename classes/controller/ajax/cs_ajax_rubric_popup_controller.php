@@ -89,6 +89,12 @@
 				$this->assign('popup', 'tags', $tag_array);
 				*/
 			}
+			
+			if($this->_data["contextId"] || $this->_data["roomId"]) {
+				$this->assign("popup", "overflow", true);
+			} else {
+				$this->assign("popup", "overflow", false);
+			}
 
 			// set netnavigation information
 			if($this->getUtils()->showNetnavigation() === true) {

@@ -16,6 +16,7 @@ define([	"dojo/_base/declare",
 			this.item_id = customObject.iid;
 			this.module = "todo";
 			this.editType = customObject.editType;
+			this.contextId = customObject.contextId;
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 

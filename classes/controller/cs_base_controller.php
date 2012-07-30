@@ -313,8 +313,12 @@
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
 			
-			$this->assign("own", "id", $current_user->getOwnRoom()->getItemId());
-			$this->assign("own", "with_activating", $current_user->getOwnRoom()->withActivatingContent());
+			$ownRoomItem = $current_user->getOwnRoom();
+			
+			if ($ownRoomItem) {
+				$this->assign("own", "id", $ownRoomItem->getItemId());
+				$this->assign("own", "with_activating", $ownRoomItem->withActivatingContent());
+			}
 
 			$this->assign('environment', 'use_problems', $this->getUseProblems());
 
@@ -343,7 +347,10 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
-			$to_javascript['ownRoom']['id'] = $current_user->getOwnRoom()->getItemId();
+			
+			if ($ownRoomItem) {
+				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+			}
 				
 			// translations - should be managed elsewhere soon
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");

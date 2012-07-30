@@ -1,4 +1,4 @@
-<div class="{literal}${baseClass}{/literal} widget_500">
+<div class="{literal}${baseClass}{/literal} widget_208">
 	<div class="innerWidgetArea">
 		<div class="widget_head">
 			<h3 class="pop_widget_h3">___COMMON_NEWEST_ENTRIES___</h3>

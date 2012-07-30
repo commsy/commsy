@@ -27,8 +27,8 @@ define([	"dojo/_base/declare",
 		setupSpecific: function() {
 			// add some widgets hardcoded
 			var widgetArray = [
-			    "widgets/StackNew",
 			    "widgets/StackStack",
+			    "widgets/StackNew",
 			    "widgets/StackBuzzwordView",
 			    "widgets/StackTagView"
 			];
@@ -37,13 +37,10 @@ define([	"dojo/_base/declare",
 				Lang.hitch(this, function(results) {
 					// place widgets
 					dojo.forEach(results, Lang.hitch(this, function(result, index, arr) {
-						result[1].handle.placeAt(Query("div.widgetArea", this.contentNode)[0]);
-						
-						if (index === 3) {
-							// this will insert a float clear
-							DomConstruct.create("div", {
-								className:		"clear"
-							}, Query("div.widgetArea", this.contentNode)[0], "last");
+						if (index === 0) {
+							result[1].handle.placeAt(Query("div.widgetAreaLeft", this.contentNode)[0]);
+						} else {
+							result[1].handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
 						}
 					}));
 				})

@@ -1,7 +1,7 @@
 <div id="popup_wrapper">
 	<div id="popup_edit">
 		<div id="popup_frame">
-			<div id="popup_inner">
+			<div id="popup_inner"{if $popup.overflow} class="scrollPopup"{/if}>
 
 
 				<div id="popup_pagetitle">

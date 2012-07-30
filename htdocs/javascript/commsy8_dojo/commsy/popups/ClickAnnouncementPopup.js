@@ -8,7 +8,6 @@ define([	"dojo/_base/declare",
         	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
-			
 		},
 		
 		init: function(triggerNode, customObject) {

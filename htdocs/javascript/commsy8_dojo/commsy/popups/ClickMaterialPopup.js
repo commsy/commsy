@@ -17,6 +17,7 @@ define([	"dojo/_base/declare",
 			this.module = "material";
 			this.editType = customObject.editType;
 			this.version_id = customObject.vid;
+			this.contextId = customObject.contextId;
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 

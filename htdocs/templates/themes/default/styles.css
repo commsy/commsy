@@ -4321,3 +4321,12 @@ widgets
 div.StackListRestrictionWrapper {
 	background-color: #D9D9D9;
 }
+
+div.minHeightPopup {
+	min-height: 600px;
+}
+
+div.scrollPopup {
+	height: 400px;
+	overflow-y: scroll;
+}
