@@ -85,6 +85,7 @@ Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
 $message["PREFERENCES_ROOM_ASSIGMENT"]["de"] = "Zuordnung von <br/>
 %_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["de"] = "Einstellungen speichern";
+$message["PREFERENCES_SAVE_BUTTON_CHAT"]["de"] = "Chat-Einstellungen speichern";
 $message["PREFERENCES_SHOW_TITLE_OPTION"]["de"] = "Name anzeigen";
 $message["PREFERENCES_TAGS_CONFIGURATIONS"]["de"] = "Schlagwörter und Kategorien";
 $message["PREFERENCES_TAGS_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die Verwendung der Schlagwörter und Kategorien konfigurieren.";

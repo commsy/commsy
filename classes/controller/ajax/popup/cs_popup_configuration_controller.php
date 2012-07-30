@@ -861,11 +861,9 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 				case 'external_configuration':
 				   if($this->_popup_controller->checkFormData('external_configuration')) {
-
 				      $current_user = $this->_environment->getCurrentUserItem();
 				      $current_context->setModificatorItem($current_user);
 				      $current_context->setModificationDate(getCurrentDateTimeInMySQL());
-
 				      $wordpress_manager = $this->_environment->getWordpressManager();
 
 				      if($additional['action'] == 'create_wordpress'){
@@ -916,19 +914,30 @@ class cs_popup_configuration_controller implements cs_popup_controller {
       				      $current_context->save();
       				      // create or change new wordpress
       				      $success = $wordpress_manager->createWordpress($current_context);
-      				      include_once('functions/development_functions.php');
-      				      logToFile($success);
 				      } else if ($additional['action'] == 'delete_wordpress') {
-				         $current_context->setWithoutWordpressFunctions();
-				         $current_context->unsetWordpressExists();
-				         $current_context->setWordpressInactive();
-				         // save
-   				         $current_context->save();
-				         // delete wordpress
-				         $delete = $wordpress_manager->deleteWordpress($current_context->getWordpressId());
+				         if($wordpress_manager->deleteWordpress($current_context->getWordpressId())){
+      				         $current_user = $this->_environment->getCurrentUserItem();
+      				         $current_context->setModificatorItem($current_user);
+      				         $current_context->setModificationDate(getCurrentDateTimeInMySQL());
+      				         $current_context->unsetWordpressExists();
+      				         $current_context->setWordpressInActive();
+      				         $current_context->setWordpressSkin('twentyten');
+      				         $current_context->setWordpressTitle($current_context->getTitle());
+      				         $current_context->setWordpressDescription('');
+      				         $current_context->setWordpressId(0);
+      				         // Save item
+      				         $current_context->save();
+				         }
+				      } else if ($additional['action'] == 'chat'){
+				         if ( isset($form_data['chatlink']) and !empty($form_data['chatlink']) and $form_data['chatlink'] == 'yes') {
+                            $current_context->setChatLinkActive();
+                         } else {
+                            $current_context->setChatLinkInactive();
+                         }
+                         $current_context->save();
 				      }
 				      // set return
-				      #$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+				      $this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
 				   }
 				   break;
 			}
@@ -1316,30 +1325,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				array('name' => 'mail_room', 'type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'upload', 'type' => 'radio', 'mandatory' => true),
 				array('name' => 'auto_save', 'type' => 'checkbox', 'mandatory' => true),
-			),
-			'user'			=> array(
-				array('name' => 'title','type' => 'text', 'mandatory' => false), array('name' => 'title_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'birthday','type' => 'text', 'mandatory' => false), array('name' => 'birthday_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'picture','type' => 'file', 'mandatory' => false), array('name' => 'picture_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'mail','type' => 'mail', 'mandatory' => true), array('name' => 'mail_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'telephone','type' => 'text', 'mandatory' => false), array('name' => 'telephone_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'cellularphone','type' => 'text', 'mandatory' => false), array('name' => 'cellularphone_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'street','type' => 'text', 'mandatory' => false), array('name' => 'street_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'zipcode','type' => 'numeric', 'mandatory' => false), array('name' => 'zipcode_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'city','type' => 'text', 'mandatory' => false), array('name' => 'city_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'room','type' => 'text', 'mandatory' => false), array('name' => 'room_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'organisation','type' => 'text', 'mandatory' => false), array('name' => 'organisation_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'position','type' => 'text', 'mandatory' => false), array('name' => 'position_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'icq','type' => 'numeric', 'mandatory' => false),
-				array('name' => 'msn','type' => 'text', 'mandatory' => false),
-				array('name' => 'skype','type' => 'text', 'mandatory' => false),
-				array('name' => 'yahoo','type' => 'text', 'mandatory' => false),
-				array('name' => 'jabber','type' => 'text', 'mandatory' => false), array('name' => 'messenger_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'homepage','type' => 'text', 'mandatory' => false), array('name' => 'homepage_all','type' => 'checkbox', 'mandatory' => false),
-				array('name' => 'description','type' => 'text', 'mandatory' => false), array('name' => 'description_all','type' => 'checkbox', 'mandatory' => false),
-			),
-			'user_picture'	=> array(
-			),
+			)
 		);
 
 		return $return[$sub];
@@ -1690,6 +1676,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 	private function getExternalInformation() {
 	   global $c_wordpress;
+	   global $c_etchat_enable;
 
 	   $return = array();
 	   $current_context = $this->_environment->getCurrentContextItem();
@@ -1735,6 +1722,13 @@ class cs_popup_configuration_controller implements cs_popup_controller {
       	$return['wordpress'] = $wordpress;
 	   } else {
 	       $return['wordpress'] = false;
+	   }
+	   
+	   if(!empty($c_etchat_enable) && $c_etchat_enable) {
+	      $return['chat'] = true;
+	      if($current_context->isChatLinkActive() == '1'){
+	         $return['chatlink'] = 'yes';
+	      }
 	   }
 	   return $return;
 	}

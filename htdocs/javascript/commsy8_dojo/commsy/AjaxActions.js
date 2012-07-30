@@ -60,6 +60,15 @@ define([	"dojo/_base/declare",
 			this.AJAXRequest("actions", "versionMakeNew", { itemId: itemId, versionID: versionID }, Lang.hitch(this, function(response) {
 				this.reload(itemId);
 			}));
+		},
+		
+		exportToWordpress: function(customObject) {
+			var itemId = customObject.iid;
+
+			// send ajax requets
+			this.AJAXRequest("actions", "exportToWordpress", { itemId: itemId }, Lang.hitch(this, function(response) {
+				this.reload(itemId);
+			}));
 		}
 	});
 });

@@ -1156,6 +1156,11 @@
 			}
 			*/
 
+			// wordpress export
+			if($context_item->isWordpressActive() and !isset($_GET['version_id'])){
+			   $this->assign('detail', 'export_to_wordpress', true);
+			}
+			
 			return $return;
 		}
 

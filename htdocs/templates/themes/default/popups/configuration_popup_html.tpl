@@ -688,8 +688,7 @@
 
 							<div class="tab hidden" id="external_configuration">
 								<div id="content_row_three">
-								{if false}
-								{if $popup.external.wordpress}
+								{if $popup.external.wordpress and false}
                            <fieldset>
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
@@ -747,12 +746,13 @@
                               </div>
                            </fieldset>
                            <div class="input_row">
-								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'create_wordpress'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'create_wordpress'" name="save" value="{if $popup.external.wordpress.wordpress_active == 'yes'}___PREFERENCES_SAVE_BUTTON_WORDPRESS___{else}___PREFERENCES_SAVE_BUTTON_WORDPRESS_CREATE___{/if}"/>
 								{if $popup.external.wordpress.wordpress_active == 'yes'}
-									<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'delete_wordpress'" name="save" value="___COMMON_DELETE_WORDPRESS_TITLE___"/>
+									<input id="submit_delete_wordpress" type="button" class="popup_button" data-custom="part: 'external_configuration', action: 'delete_wordpress'" name="save" value="___COMMON_DELETE_WORDPRESS_TITLE___"/>
 								{/if}
 						   </div>
                            {/if}
+                           {if false}
                            <fieldset>
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WIKI___:</strong>
@@ -888,20 +888,24 @@
                                  <div class="clear"></div>
                               </div>
                            </fieldset>
+                           {/if}
+                           {if $popup.external.chat}
+                           <hr/>
                            <fieldset>
                               <p>
                                  <strong>___CHAT_CONFIGURATION_CHAT___:</strong>
                               </p>
                               <div class="input_row_200">
-                                 <input type="checkbox" name="form_data[chatlink]" value="yes" {if $popup.chat.chatlink == 'yes'} checked="checked"{/if}/> ___CHAT_CONFIGURATION_CHAT_VALUE___
+                                 <input type="checkbox" name="form_data[chatlink]" value="yes" {if $popup.external.chatlink == 'yes'} checked="checked"{/if}/> ___CHAT_CONFIGURATION_CHAT_VALUE___
                                  <div class="clear"></div>
                               </div>
                            </fieldset>
+                           		<div class="input_row">
+									<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'chat'" name="save" value="___PREFERENCES_SAVE_BUTTON_CHAT___"/>
 								</div>
-                     		<div class="input_row">
-								<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-							</div>
 							{/if}
+							</div>
+                     		
 							</div>
 						</div>
 					</div>

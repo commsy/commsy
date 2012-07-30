@@ -61,6 +61,17 @@
 		   echo $this->_return;
 		}
 		
+		public function actionExportToWordpress() {
+		   include_once('functions/development_functions.php');
+		   logToFile('actionExportToWordpress');
+		   
+		   $wordpress_manager = $this->_environment->getWordpressManager();
+		   $wordpress_manager->exportItemToWordpress($this->_data['itemId'],CS_MATERIAL_TYPE);
+		   
+		   $this->setSuccessfullDataReturn(array());
+		   echo $this->_return;
+		}
+		
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
