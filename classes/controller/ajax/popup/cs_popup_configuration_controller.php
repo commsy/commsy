@@ -429,7 +429,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            if ($form_data['room_status'] == '') {
 				               $current_context->open();
 				               if($current_context->existWiki() and $c_use_soap_for_wiki){
-				                  $wiki_manager = $environment->getWikiManager();
+				                  $wiki_manager = $this->_environment->getWikiManager();
 				                  $wiki_manager->openWiki();
 				               }
 
@@ -455,7 +455,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            } elseif ($form_data['room_status'] == 2) {
 				               $current_context->close();
 				               if($current_context->existWiki() and $c_use_soap_for_wiki){
-				                  $wiki_manager = $environment->getWikiManager();
+				                  $wiki_manager = $this->_environment->getWikiManager();
 				                  $wiki_manager->closeWiki();
 				               }
 
@@ -480,7 +480,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				         }else{
 				            $current_context->open();
 				            if($current_context->existWiki() and $c_use_soap_for_wiki){
-				               $wiki_manager = $environment->getWikiManager();
+				               $wiki_manager = $this->_environment->getWikiManager();
 				               $wiki_manager->openWiki();
 				            }
 
