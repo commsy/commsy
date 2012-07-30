@@ -19,6 +19,7 @@ define([	"dojo/_base/declare",
 		fct:					null,
 		editType:				null,
 		version_id:				null,
+		contextId:				null,
 
 		constructor: function(args) {
 

@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On) {
+        	"dojo/on",
+        	"dojo/query"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -15,11 +16,15 @@ define([	"dojo/_base/declare",
 		maxPage:			1,
 		entriesPerPage:		20,
 		search:				"",
-		items:				[],
 		
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
+			
+			this.restrictions = {
+				buzzwords: [],
+				tags: []
+			}
 		},
 		
 		postCreate: function() {
@@ -29,72 +34,85 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			// get entries in my stack
-			this.AJAXRequest("widget_stack", "getListContent", {},
-				Lang.hitch(this, function(response) {
-					
-					// save items
-					this.items = response.items;
-					
-					this.maxPage = this.items.length;
-					
-					// update list
-					this.updateList();
-				})
-			);
+			// update list
+			this.updateList();
 		},
 		
 		updateList: function() {
 			// empty list
 			DomConstruct.empty(this.itemList);
 			
-			// fill list
-			var numFiltered = 0;
-			var start = (this.currentPage - 1) * this.entriesPerPage;
-			dojo.forEach(this.items, Lang.hitch(this, function(item, index, arr) {
-				
-				var skip = false;
-				// filter by search word
-				if (this.search) {
-					if (item.title.toLowerCase().indexOf(this.search.toLowerCase()) == -1) {
-						skip = true;
-					}
-				}
-				
-				// limit entries per page
-				if (index < start || index > start + this.entriesPerPage) skip = true;
-				
-				if (!skip) {
-					// create list entries
-					var liNode = DomConstruct.create("li", {
-					}, this.itemList, "last");
-					
-						DomConstruct.create("img", {
-							src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
-							title:		item.image.text
-						}, liNode, "last");
+			this.AJAXRequest("widget_stack", "getListContent", {
+					search:					this.search.toLowerCase(),
+					start:					(this.currentPage - 1) * this.entriesPerPage,
+					numEntries:				this.entriesPerPage,
+					buzzwordRestrictions:	dojo.map(this.restrictions.buzzwords, function(item) { return item.id }),
+					tagRestrictions:		dojo.map(this.restrictions.tags, function(item) { return item.id })
+				},
+				Lang.hitch(this, function(response) {
+					// fill list
+					dojo.forEach(response.items, Lang.hitch(this, function(item, index, arr) {
+						// create list entries
+						var liNode = DomConstruct.create("li", {
+						}, this.itemList, "last");
 						
-						var aNode = DomConstruct.create("a", {
-							innerHTML:		item.title,
-							href:			"#",
-							className:		"open_popup"
-						}, liNode, "last");
-					
-					DomAttr.set(aNode, "data-custom", "iid: " + item.itemId + ", module: '" + item.module + "'");
-					On(aNode, "click", Lang.hitch(this, function(event) {
-						this.onClickListEntry(event.target);
+							DomConstruct.create("img", {
+								src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
+								title:		item.image.text
+							}, liNode, "last");
+							
+							var aNode = DomConstruct.create("a", {
+								innerHTML:		item.title,
+								href:			"#",
+								className:		"open_popup"
+							}, liNode, "last");
+						
+						DomAttr.set(aNode, "data-custom", "iid: " + item.itemId + ", module: '" + item.module + "'");
+						On(aNode, "click", Lang.hitch(this, function(event) {
+							this.onClickListEntry(event.target);
+						}));
 					}));
 					
-					numFiltered++;
-				}
-			}));
+					// update max page
+					this.maxPage = Math.ceil(response.total / this.entriesPerPage);
+					
+					// set template values
+					this.currentPageNode.innerHTML = Math.min(this.currentPage, this.maxPage);
+					this.maxPageNode.innerHTML = this.maxPage;
+				})
+			);
+		},
+		
+		addBuzzwordRestriction: function(buzzwordId, buzzwordName) {
+			// check if this buzzword is already in list
+			var filtered = dojo.filter(this.restrictions.buzzwords, function(buzzword, index, arr) {
+				return buzzword.id == buzzwordId;
+			});
 			
-			// update max page
-			this.maxPage = Math.ceil(numFiltered / this.entriesPerPage);
+			if (filtered.length == 0) {
+				this.restrictions.buzzwords.push({ id: buzzwordId, name: buzzwordName });
+				
+				// update restriction list
+				this.updateBuzzwordRestrictions();
+				
+				this.updateList();
+			}
+		},
+		
+		addTagRestriction: function(tagId, tagName) {
+			// check if this tag is already in list
+			var filtered = dojo.filter(this.restrictions.tags, function(tag, index, arr) {
+				return tag.id == tagId;
+			});
 			
-			// set template values
-			this.currentPageNode.innerHTML = this.currentPage;
-			this.maxPageNode.innerHTML = this.maxPage;
+			if (filtered.length == 0) {
+				this.restrictions.tags.push({ id: tagId, name: tagName });
+				
+				// update restriction list
+				this.updateTagRestrictions();
+				
+				this.updateList();
+			}
 		},
 		
 		/************************************************************************************
@@ -110,17 +128,6 @@ define([	"dojo/_base/declare",
 				module:		module,
 				itemId:		customObject.iid
 			});
-			
-			
-			/*
-			// reinvoke popup handling
-			
-			
-			
-			
-			require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
-				var handler = new ClickPopup(aNode, customObject);
-			});*/
 		},
 		
 		onClickPaging20: function(event) {
@@ -159,10 +166,95 @@ define([	"dojo/_base/declare",
 			this.updateList();
 		},
 		
-		onChangeSearch: function(event) {
-			var searchWord = event.target.value;
+		onClickSearch: function(event) {
+			var searchWord = this.searchNode.value;
 			this.search = searchWord;
 			this.updateList();
+		},
+		
+		onBuzzwordRestrictionRemove: function(buzzwordId) {
+			var liNode = Query("li#" + buzzwordId, this.buzzwordRestrictionsNode)[0];
+			
+			if (liNode) {
+				DomConstruct.destroy(liNode);
+			}
+			
+			this.restrictions.buzzwords = dojo.filter(this.restrictions.buzzwords, function(buzzword, index, arr) {
+				return buzzword.id != buzzwordId;
+			});
+			
+			this.updateList();
+		},
+		
+		onTagRestrictionRemove: function(tagId) {
+			var liNode = Query("li#" + tagId, this.tagRestrictionsNode)[0];
+			
+			if (liNode) {
+				DomConstruct.destroy(liNode);
+			}
+			
+			this.restrictions.tags = dojo.filter(this.restrictions.tags, function(tag, index, arr) {
+				return tag.id != tagId;
+			});
+			
+			this.updateList();
+		},
+		
+		/************************************************************************************
+		 * Helper Functions
+		 ************************************************************************************/
+		updateBuzzwordRestrictions: function() {
+			DomConstruct.empty(this.buzzwordRestrictionsNode);
+			
+			dojo.forEach(this.restrictions.buzzwords, Lang.hitch(this, function(buzzword, index, arr) {
+				var liNode = DomConstruct.create("li", {
+					"id":		buzzword.id,
+					className:	"float-left"
+				}, this.buzzwordRestrictionsNode, "last");
+				
+					DomConstruct.create("span", {
+						innerHTML:	buzzword.name
+					}, liNode, "last");
+					
+					var aNode = DomConstruct.create("a", {
+						href:		"#"
+					}, liNode, "last");
+					
+						DomConstruct.create("img", {
+							src:	this.from_php.template.tpl_path + "img/btn_del_tag.gif"
+						}, aNode, "last");
+				
+				On(aNode, "click", Lang.hitch(this, function(event) {
+					this.onBuzzwordRestrictionRemove(buzzword.id);
+				}));
+			}));
+		},
+		
+		updateTagRestrictions: function() {
+			DomConstruct.empty(this.tagRestrictionsNode);
+			
+			dojo.forEach(this.restrictions.tags, Lang.hitch(this, function(tag, index, arr) {
+				var liNode = DomConstruct.create("li", {
+					"id":		tag.id,
+					className:	"float-left"
+				}, this.tagRestrictionsNode, "last");
+				
+					DomConstruct.create("span", {
+						innerHTML:	tag.name
+					}, liNode, "last");
+					
+					var aNode = DomConstruct.create("a", {
+						href:		"#"
+					}, liNode, "last");
+					
+						DomConstruct.create("img", {
+							src:	this.from_php.template.tpl_path + "img/btn_del_tag.gif"
+						}, aNode, "last");
+				
+				On(aNode, "click", Lang.hitch(this, function(event) {
+					this.onTagRestrictionRemove(tag.id);
+				}));
+			}));
 		}
 	});
 });

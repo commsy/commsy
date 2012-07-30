@@ -21,6 +21,8 @@ define([	"dojo/_base/declare",
 			
 			this.features = [ ];
 			
+			this.contextId = customObject.contextId;
+			
 			// register click for node
 			this.registerPopupClick();
 		},
@@ -45,6 +47,7 @@ define([	"dojo/_base/declare",
 				this.list.init(this.cid, this.from_php.template.tpl_path, {
 					activatorNode:	Query("a.list_activator")[0],
 					module:			"buzzwords",
+					roomId:			this.contextId,
 					OnInitDone:		Lang.hitch(this, function() {
 						this.list.performRequest();
 					})
@@ -262,7 +265,7 @@ define([	"dojo/_base/declare",
 			
 			if(buzzword !== "") {
 				// send ajax request
-				this.AJAXRequest("buzzwords", "createNewBuzzword", { buzzword: buzzword, roomId: roomId },
+				this.AJAXRequest("buzzwords", "createNewBuzzword", { buzzword: buzzword, roomId: this.contextId },
 					Lang.hitch(this, function(response) {
 						// add the new buzzword to all lists
 						this.addBuzzwordToLists(buzzword);

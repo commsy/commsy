@@ -149,7 +149,9 @@
 			// prepare return
 			$data = array();
 			$entry = $item_list->getFirst();
-			$last_room_id = $entry->getContextID();
+			
+			if ($entry) $last_room_id = $entry->getContextID();
+			
 			$index = 0;
 			while ($entry) {
 				$room_id = $entry->getContextID();

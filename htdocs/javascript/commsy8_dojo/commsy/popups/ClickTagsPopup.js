@@ -23,6 +23,8 @@ define([	"dojo/_base/declare",
 			
 			this.features = [ ];
 			
+			this.contextId = customObject.contextId;
+			
 			// register click for node
 			this.registerPopupClick();
 		},
@@ -32,6 +34,7 @@ define([	"dojo/_base/declare",
 				this.tree = new EditTree({
 					followUrl:		false,
 					checkboxes:		false,
+					room_id:		this.contextId,
 					expanded:		(Has("ie") <= 8) ? false : true,
 					item_id:		this.item_id
 				});
@@ -57,6 +60,7 @@ define([	"dojo/_base/declare",
 				this.list.init(this.cid, this.from_php.template.tpl_path, {
 					activatorNode:	Query("a.list_activator")[0],
 					module:			"tags",
+					roomId:			this.contextId,
 					OnInitDone:		Lang.hitch(this, function() {
 						this.list.performRequest();
 					})

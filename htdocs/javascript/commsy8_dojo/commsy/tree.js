@@ -78,10 +78,10 @@ define([	"dojo/_base/declare",
 					} else {
 						// if click doesn't come from checkbox
 						if(evt.target.nodeName !== "INPUT") {
-							if(model.getChecked(item) === true) {
-								model.setChecked(item, false);
+							if(this.model.getChecked(item) === true) {
+								this.model.setChecked(item, false);
 							} else {
-								model.setChecked(item, true);
+								this.model.setChecked(item, true);
 							}
 						}
 					}

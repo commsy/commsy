@@ -26,18 +26,34 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			// add some widgets hardcoded
+			var widgetArray = [
+			    "widgets/StackNew",
+			    "widgets/StackStack",
+			    "widgets/StackBuzzwordView",
+			    "widgets/StackTagView"
+			];
+			
+			this.loadWidgetsManual(widgetArray).then(
+				Lang.hitch(this, function(results) {
+					// place widgets
+					dojo.forEach(results, Lang.hitch(this, function(result, index, arr) {
+						result[1].handle.placeAt(Query("div.widgetArea", this.contentNode)[0]);
+						
+						if (index === 3) {
+							// this will insert a float clear
+							DomConstruct.create("div", {
+								className:		"clear"
+							}, Query("div.widgetArea", this.contentNode)[0], "last");
+						}
+					}));
+				})
+			);
+			
+			
 			//this.widgetArray.push("widget_new");
 			
 			// call parent
-			this.inherited(arguments);
-			
-			/*
-			// setup clipboard functions
-			require(["commsy/Clipboard"], Lang.hitch(this, function(Clipboard) {
-				var clipboard = new Clipboard();
-				clipboard.init(this.cid, this.from_php.template.tpl_path);
-			}));
-			*/
+			//this.inherited(arguments);
 		}
 	});
 });

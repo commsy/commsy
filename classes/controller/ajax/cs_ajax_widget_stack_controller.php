@@ -14,6 +14,12 @@
 			$return = array(
 				"items"		=> array()
 			);
+					
+			$search = $this->_data["search"];
+			$start = $this->_data["start"];
+			$numEntries = $this->_data["numEntries"];
+			$buzzwordIds = $this->_data["buzzwordRestrictions"];
+			$tagIds = $this->_data["tagRestrictions"];
 			
 			$currentUser = $this->_environment->getCurrentUserItem()->getRelatedPrivateRoomUserItem();
 			$itemManager = $this->_environment->getItemManager();
@@ -24,23 +30,19 @@
 			$privateRoomIdArray = array($privateRoomItem->getItemID());
 			
 			$itemManager->setOrderLimit(true);
+			
+			if ($search) $itemManager->setSearchLimit($search);
+			if ($buzzwordIds) $itemManager->setBuzzwordLimit($buzzwordIds);
+			if ($tagIds) $itemManager->setTagLimit($tagIds);
+			
 			/*
-			 * TODO:
+			 * finaly removed?
 			 * 
 			if (!empty($sellist) and $sellist != 'new'){
 				$item_manager->setListLimit($sellist);
 			}
-			if (!empty($selbuzzword)){
-				$item_manager->setBuzzwordLimit($selbuzzword);
-			}
 			if (!empty($selmatrix)){
 				$item_manager->setMatrixLimit($selmatrix);
-			}
-			if (!empty($searchtext)){
-				$item_manager->setSearchLimit($searchtext);
-			}
-			if (!empty($last_selected_tag)){
-				$item_manager->setTagLimit($last_selected_tag);
 			}
 			 */
 			
@@ -60,64 +62,35 @@
 				$entry = $entryList->getNext();
 			}
 			
-			/*
-			$browse_prev = true;
-			$browse_next = true;
-			$temp_list = new cs_list();
-			if($interval != 'all'){
-				$temp_start = $pos * $interval;
-				$temp_index = 0;
-				$temp_item = $new_entry_list->getFirst();
-				while($temp_item){
-					if(($temp_index >= $temp_start) and ($temp_index < ($temp_start + $interval))){
-						$temp_list->add($temp_item);
-					}
-					$temp_index++;
-					$temp_item = $new_entry_list->getNext();
-				}
-				if($pos == 0){
-					$browse_prev = false;
-				}
-				if(($temp_start + $interval) >= $temp_index){
-					$browse_next = false;
-				}
-				if($temp_index % $interval == 0){
-					$max_pos = ($temp_index / $interval) - 1;
-				} else {
-					$max_pos = (($temp_index - ($temp_index % $interval)) / $interval);
-				}
-			} else {
-				$temp_list = $new_entry_list;
-				$browse_prev = false;
-				$browse_next = false;
-				$pos = 0;
-				$max_pos = 0;
-			}
-			*/
-			
 			// prepare return
 			$entry = $filteredList->getFirst();
+			$count = 0;
 			while ($entry) {
-				$type = $entry->getItemType();
-				if ($type == CS_LABEL_TYPE) {
-					$labelManager = $this->_environment->getLabelManager();
-					$entry = $labelManager->getItem($entry->getItemID());
-					$type = $entry->getLabelType();
-				} else {
-					$manager = $this->_environment->getManager($type);
-					$entry = $manager->getItem($entry->getItemID());
+				if ($count >= $start && $count <= $start + $numEntries) {
+					$type = $entry->getItemType();
+					if ($type == CS_LABEL_TYPE) {
+						$labelManager = $this->_environment->getLabelManager();
+						$entry = $labelManager->getItem($entry->getItemID());
+						$type = $entry->getLabelType();
+					} else {
+						$manager = $this->_environment->getManager($type);
+						$entry = $manager->getItem($entry->getItemID());
+					}
+					
+					$return["items"][] = array(
+							"itemId"		=> $entry->getItemID(),
+							"contextId"		=> $entry->getContextID(),
+							"module"		=> Type2Module($type),
+							"title"			=> $entry->getTitle(),
+							"image"			=> $this->getUtils()->getLogoInformationForType($type)
+					);
 				}
-				
-				$return["items"][] = array(
-					"itemId"		=> $entry->getItemID(),
-					"contextId"		=> $entry->getContextID(),
-					"module"		=> Type2Module($type),
-					"title"			=> $entry->getTitle(),
-					"image"			=> $this->getUtils()->getLogoInformationForType($type)
-				);
 			
 				$entry = $filteredList->getNext();
+				$count++;
 			}
+			
+			$return["total"] = $count;
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;

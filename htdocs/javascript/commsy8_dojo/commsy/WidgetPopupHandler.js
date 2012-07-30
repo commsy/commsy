@@ -5,7 +5,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/on",
-        	"dojo/_base/lang"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
+        	"dojo/_base/lang",
+        	"dojo/_base/Deferred",
+        	"dojo/DeferredList"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Deferred, DeferredList) {
 	return declare(TogglePopupHandler, {
 		widgetArray:	[],
 		widgetHandles:	[],
@@ -16,6 +18,8 @@ define([	"dojo/_base/declare",
 			
 			this.widgetArray = [];
 			this.widgetHandles = [];
+			
+			this.defWidgets = null;
 			
 			// register click for node
 			this.registerPopupClick();
@@ -56,8 +60,20 @@ define([	"dojo/_base/declare",
 			}));
 		},
 		
+		loadWidgetsManual: function(widgetArray) {
+			var defList = [];
+			
+			dojo.forEach(widgetArray, Lang.hitch(this, function(widget, index, arr) {
+				defList.push(this.loadWidget(widget));
+			}));
+			
+			return new DeferredList(defList);
+		},
+		
 		loadWidget: function(widgetPath, mixin) {
 			mixin = mixin || {};
+			
+			var deferred = new Deferred();
 			
 			require([widgetPath], Lang.hitch(this, function(widgetObject) {
 				// get template
@@ -75,10 +91,22 @@ define([	"dojo/_base/declare",
 						this.widgetHandles.push({ path: widgetPath, handler: widgetHandler });
 						
 						// place widget
-						widgetHandler.placeAt(Query("div.widgetArea", this.contentNode)[0]);
+						//widgetHandler.placeAt(Query("div.widgetArea", this.contentNode)[0]);
+						
+						deferred.resolve({ handle: widgetHandler });
 					})
 				)
 			}));
+			
+			return deferred;
+		},
+		
+		getWidget: function(widgetPath) {
+			var filtered = dojo.filter(this.widgetHandles, function(item, index, arr) {
+				return item.path == widgetPath;
+			});
+			
+			return filtered[0].handler || null;
 		},
 		
 		onPopupSubmit: function(customObject) {

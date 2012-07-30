@@ -62,7 +62,11 @@
 
 			// set Buzzword Information
 			if($this->getUtils()->showBuzzwords() === true) {
-				$this->assign('popup', 'buzzwords', $this->getBuzzwords(true));
+				if ($this->_data["contextId"]) {
+					$this->assign('popup', 'buzzwords', $this->getBuzzwords(true, $this->_data["contextId"]));
+				} else {
+					$this->assign('popup', 'buzzwords', $this->getBuzzwords(true));
+				}
 			}
 
 			// set Tag Information
@@ -101,7 +105,7 @@
 			$this->_popup_controller->initPopup($this->_item, $this->_data);
 		}
 
-		private function getBuzzwords($return_empty) {
+		private function getBuzzwords($return_empty, $contextId = null) {
 			$return = array();
 
 			$buzzword_manager = $this->_environment->getLabelManager();
@@ -120,7 +124,11 @@
 			}
 
 			$buzzword_manager->resetLimits();
-			$buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+			if ($contextId) {
+				$buzzword_manager->setContextLimit($contextId);
+			} else {
+				$buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+			}
 			$buzzword_manager->setTypeLimit('buzzword');
 			$buzzword_manager->setGetCountLinks();
 			$buzzword_manager->select();

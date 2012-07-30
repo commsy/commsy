@@ -12,6 +12,8 @@ define([	"dojo/_base/declare",
 		baseClass:			"CommSyWidget",
 		widgetHandler:		null,
 		
+		itemId:				null,
+		
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
@@ -21,20 +23,29 @@ define([	"dojo/_base/declare",
 			// run parent postCreate processes
 			this.inherited(arguments);
 			
+			this.itemId = this.from_php.ownRoom.id;
+			
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			/* we need to reinvoke popup handling */
-			Query(".open_popup", this.widgetBodyNode).forEach(Lang.hitch(this, function(node, index, arr) {
-				// get custom data object
-				var customObject = this.getAttrAsObject(node, "data-custom");
-				
-				var module = customObject.module;
-				
-				require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
-					var handler = new ClickPopup();
-					handler.init(node, customObject);
-				});
+			require(["commsy/popups/ClickMaterialPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.createMaterialNode, { iid: "NEW", module: "material", contextId: this.itemId });
+			}));
+			
+			require(["commsy/popups/ClickDatePopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.createDateNode, { iid: "NEW", module: "date", contextId: this.itemId });
+			}));
+			
+			require(["commsy/popups/ClickDiscussionPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.createDiscussionNode, { iid: "NEW", module: "discussion", contextId: this.itemId });
+			}));
+			
+			require(["commsy/popups/ClickTodoPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.createTodoNode, { iid: "NEW", module: "todo", contextId: this.itemId });
 			}));
 		}
 		
