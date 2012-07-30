@@ -285,7 +285,7 @@
 							</div>
 
 							<div class="tab hidden" id="accounts">
-								<div id="content_row_three">
+								<div id="content_row_three" style="padding:0px;">
 									<div id="popup_accounts_mail"></div>
 								</div>
 
