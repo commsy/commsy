@@ -336,7 +336,6 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						       } else {
 						          $own_room->setEmailToCommSySecret('');
 						       }
-						       pr($form_data['email_to_commsy_secret']);
 						       $own_room->save();
 						       $save = true;
 						    }
@@ -534,7 +533,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$portal_user->setModificationDate(getCurrentDateTimeInMySQL());
 
 								// save
-								$user_item->save();
+								//$user_item->save();
 								$portal_user->save();
 
 								// 							if (isset($_POST['want_mail_get_account'])) {
