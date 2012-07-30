@@ -40,7 +40,7 @@ define([	"dojo/_base/declare",
 		
 		updateList: function() {
 			// empty list
-			DomConstruct.empty(this.itemList);
+			DomConstruct.empty(this.itemListNode);
 			
 			this.AJAXRequest("widget_stack", "getListContent", {
 					search:					this.search.toLowerCase(),
@@ -52,20 +52,67 @@ define([	"dojo/_base/declare",
 				Lang.hitch(this, function(response) {
 					// fill list
 					dojo.forEach(response.items, Lang.hitch(this, function(item, index, arr) {
-						// create list entries
-						var liNode = DomConstruct.create("li", {
-						}, this.itemList, "last");
 						
-							DomConstruct.create("img", {
-								src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
-								title:		item.image.text
-							}, liNode, "last");
+						// create list entries
+						var rowNode = DomConstruct.create("div", {
+							className:		(index % 2 == 0) ? "row_even even_sep_search" : "row_odd odd_sep_search"
+						}, this.itemListNode, "last");
+						
+							var firstColumnNode = DomConstruct.create("div", {
+								className:		"column_280"
+							}, rowNode, "last");
 							
-							var aNode = DomConstruct.create("a", {
-								innerHTML:		item.title,
-								href:			"#",
-								className:		"open_popup"
-							}, liNode, "last");
+								var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
+								
+									var aNode = DomConstruct.create("a", {
+										href:		"#",
+										innerHTML:	item.title
+									}, pNode, "last");
+							
+							var secondColumnNode = DomConstruct.create("div", {
+								className:		"column_45"
+							}, rowNode, "last");
+							
+								var pNode = DomConstruct.create("p", {}, secondColumnNode, "last");
+								
+									if (item.fileCount > 0) {
+										DomConstruct.create("a", {
+											className:		"attachment",
+											href:			"#",
+											innerHTML:		item.fileCount
+										}, pNode, "last");
+									}
+							
+							var thirdColumnNode = DomConstruct.create("div", {
+								className:		"column_65"
+							}, rowNode, "last");
+							
+								var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
+								
+									DomConstruct.create("img", {
+										src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
+										title:		item.image.text
+									}, pNode, "last");
+							
+							var fourthColumnNode = DomConstruct.create("div", {
+								className:		"column_90"
+							}, rowNode, "last");
+							
+								DomConstruct.create("p", {
+									innerHTML:		item.modificationDate
+								}, fourthColumnNode, "last");
+							
+							var fifthColumnNode = DomConstruct.create("div", {
+								className:		"column_155"
+							}, rowNode, "last");
+							
+								DomConstruct.create("p", {
+									innerHTML:		item.creator
+								}, fifthColumnNode, "last");
+							
+							DomConstruct.create("div", {
+								className:		"clear"
+							}, rowNode, "last");
 						
 						DomAttr.set(aNode, "data-custom", "iid: " + item.itemId + ", module: '" + item.module + "'");
 						On(aNode, "click", Lang.hitch(this, function(event) {

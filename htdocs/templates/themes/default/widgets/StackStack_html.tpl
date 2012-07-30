@@ -22,10 +22,7 @@
 				<div class="clear"></div>
 			</div>
 		</div>
-		<div class="widget_body">
-			<ul data-dojo-attach-point="itemList">
-			</ul>
-		</div>
+		<div data-dojo-attach-point="itemListNode"></div>
 		<div class="widget_head">
 			___COMMON_PAGE_ENTRIES___:
 			<span class="cursor_pointer" data-dojo-attach-event="onclick:onClickPaging20" data-dojo-attach-point="paging20"><strong>20</strong></span> |
