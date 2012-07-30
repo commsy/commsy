@@ -874,41 +874,41 @@ class cs_popup_configuration_controller implements cs_popup_controller {
       				      } else {
       				         $current_context->unsetWordpressUseComments();
       				      }
-   
+
       				      if ( isset($form_data['use_comments_moderation']) and !empty($form_data['use_comments_moderation']) and $form_data['use_comments_moderation'] == 'yes') {
       				         $current_context->setWordpressUseCommentsModeration();
       				      } else {
       				         $current_context->unsetWordpressUseCommentsModeration();
       				      }
-   
+
       				      if ( isset($form_data['wordpresslink']) and !empty($form_data['wordpresslink']) and $form_data['wordpresslink'] == 'yes') {
       				         $current_context->setWordpressHomeLink();
       				      } else {
       				         $current_context->unsetWordpressHomeLink();
       				      }
-   
+
       				      if ( isset($form_data['skin_choice']) and !empty($form_data['skin_choice']) ) {
       				         $current_context->setWordpressSkin($form_data['skin_choice']);
       				      }
-   
+
       				      if ( isset($form_data['wordpresstitle']) and !empty($form_data['wordpresstitle']) ) {
       				         $current_context->setWordpressTitle($form_data['wordpresstitle']);
       				      } else {
       				         $current_context->setWordpressTitle($current_context->getTitle());
       				      }
-   
+
       				      if ( isset($form_data['wordpressdescription']) and !empty($form_data['wordpressdescription']) ) {
       				         $current_context->setWordpressDescription($form_data['wordpressdescription']);
       				      } else {
       				         $current_context->setWordpressDescription('');
       				      }
-   
+
       				      if ( isset($form_data['member_role']) and !empty($form_data['member_role']) ) {
       				         $current_context->setWordpressMemberRole($form_data['member_role']);
       				      } else {
       				         $current_context->setWordpressMemberRole();
       				      }
-   
+
       				      $current_context->setWithWordpressFunctions();
       				      $current_context->setWordpressExists();
       				      $current_context->setWordpressActive();
@@ -1861,9 +1861,10 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			$temp_array = array();
 			$temp_array['key'] = 'rubric_'.$j;
 			$temp_array['value'] = 'none';
-			$temp_array['show'] = 'none';
+			$temp_array['show'] = 'nodisplay';
 			$rubric_configuration_array[] = $temp_array;
 		}
+	#	pr($rubric_configuration_array);
 
 		$first = true;
 		$second = false;

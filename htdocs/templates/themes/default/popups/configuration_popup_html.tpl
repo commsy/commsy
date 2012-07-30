@@ -162,7 +162,7 @@
 														<option value="tiny"{if 'tiny' == $conf_rubric.show} selected="selected"{/if}>
 															___MODULE_CONFIG_TINY___
 														</option>
-														<option value="nodisplay"{if 'none' == $conf_rubric.show} selected="selected"{/if}>
+														<option value="nodisplay"{if 'nodisplay' == $conf_rubric.show} selected="selected"{/if}>
 															___RUBRIC_CONFIG_NO_2___
 														</option>
 													</select>
@@ -694,7 +694,7 @@
                               <p>
                                  <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
                               </p>
-                              <!-- 
+                              <!--
                               <div class="input_row_200">
                                  <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'}checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
                                  <div class="clear"></div>
