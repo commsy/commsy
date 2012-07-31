@@ -1578,9 +1578,12 @@ class cs_environment {
       }
    }
    
-   function unsetAllInstances() {
-   		unset($this->instance);
-   		$this->instance = array();
+   function unsetAllInstancesExceptTranslator() {
+   	foreach($this->instance as $instance => $value) {
+   		if ($instance !== "translation_object") {
+   			unset($this->instance[$instance]);
+   		}
+   	}
    }
    
    /** get Instance of the authentication object

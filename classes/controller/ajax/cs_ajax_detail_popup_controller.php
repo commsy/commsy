@@ -96,7 +96,7 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     	 
     	// we need to create a new environment to hide the fact, that we are inside a popup
     	$fakeEnvironment = clone $this->_environment;
-    	$fakeEnvironment->unsetAllInstances();
+    	$fakeEnvironment->unsetAllInstancesExceptTranslator();
     	$fakeEnvironment->setCurrentContextID($privateRoomContextID);
     	$fakeEnvironment->setCurrentModule($this->_module);
     	$fakeEnvironment->setCurrentFunction("detail");
