@@ -61,7 +61,7 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
 				{/if}
 				{if $detail.export_to_wordpress}
-					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWordpress'" href="#">___ITEM_EXPORT_TO_WORDPRESS__</a> |
+					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWordpress'" href="#">___ITEM_EXPORT_TO_WORDPRESS___</a> |
 				{/if}
 				{if $detail.actions.delete}
 					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'delete', delType: 'material'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#">___COMMON_DELETE_ITEM___</a> |
