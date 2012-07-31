@@ -4349,7 +4349,13 @@ div.scrollPopup {
 
 div#popup_wrapper .item_body {
 	float: left;
-	width: 849px;
+	width: 752px;
+}
+
+#popup_stack {
+    margin: 70px auto 20px;
+    position: relative;
+    width: 860px;
 }
 
 div#popup_wrapper .item_body h2 {

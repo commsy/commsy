@@ -2,10 +2,10 @@
 
 {block name="site"}
 	<div id="popup_wrapper">
-		<div id="popup_edit">
+		<div id="popup_stack">
 			<div id="popup_frame">
-				<div id="popup_inner"{if $popup.overflow} class="scrollPopup"{/if}>
-	
+				<div id="popup_inner" class="scrollPopup">
+
 					<div id="popup_pagetitle">
 						<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
 						<h2>___WIDGET_HEADER_DETAIL_VIEW___ - {$detail.content.discussion.title}</h2>
@@ -16,8 +16,8 @@
 						{/block}
 					</div>
 				</div>
-	
-	
+
+
 				<div class="clear"></div>
 			</div>
 		</div>
