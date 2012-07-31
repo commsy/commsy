@@ -73,7 +73,8 @@ define([	"dojo/_base/declare",
 								followUrl:		false,
 								checkboxes:		true,
 								expanded:		(Has("ie") <= 8) ? false : true,
-								item_id:		this.item_id
+								item_id:		this.item_id,
+								room_id:		this.contextId
 							});
 							this.featureHandles[feature][index].setupTree(node);
 						}));

@@ -31,7 +31,11 @@
 					$item_tag_list = $item->getTagList();
 					$item_tag_id_array = $item_tag_list->getIDArray();
 					
-					$tags = $utils->getTags();
+					if ($room_id !== null) {
+						$tags = $utils->getTags($room_id);
+					} else {
+						$tags = $utils->getTags();
+					}
 					
 					$utils->markTags($tags, $item_tag_id_array);
 				} else {

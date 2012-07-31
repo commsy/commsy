@@ -79,7 +79,7 @@ define([	"dojo/_base/declare",
 				}
 			});
 
-			this.submit(search, {part:customObject.part, version_id:this.version_id});
+			this.submit(search, {part:customObject.part, version_id:this.version_id, contextId: this.contextId });
 		},
 
 		onPopupSubmitSuccess: function(item_id) {

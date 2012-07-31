@@ -56,7 +56,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 
-			this.submit(search);
+			this.submit(search, { contextId: this.contextId });
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
