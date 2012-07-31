@@ -4361,3 +4361,13 @@ div#popup_wrapper .item_body {
 div#popup_wrapper .item_body h2 {
 	display: none;
 }
+
+div#popup_stack div#popup_pagetitle{
+	border-bottom: 0px solid #767676;
+}
+
+div#popup_stack div#popup_content_wrapper {
+    background-color: transparent;
+    border: 0px solid #FFFFFF;
+    padding: 0;
+}

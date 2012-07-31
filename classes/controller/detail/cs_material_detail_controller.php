@@ -575,7 +575,7 @@
             		}
          		}
 		     }
-		     
+
 		     return $return;
 		}
 
@@ -606,7 +606,7 @@
       		if(isset($_GET['version_id'])) {
       		   $is_latest_version = false;
       		}
-      		
+
 			$return = array(
 				'title'				=> $this->_item->getTitle(),
 				'version'			=> $this->_item->getVersionID(),
@@ -617,7 +617,7 @@
 				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item),
 				'workflow'			=> $this->getWorkflowInformation($this->_item)
 			);
-			
+
 			return $return;
 		}
 
@@ -1099,12 +1099,12 @@
 			            $formal_data1[] = $temp_array;
 				}
 			}*/
-				
+
 			$material_manager = $this->_environment->getMaterialManager();
 			$material_version_list = $material_manager->getVersionList($this->_item->getItemID());
 			if($material_version_list->getCount() > 1){
 			   $translator = $this->_environment->getTranslationObject();
-			
+
 			   $material_versions_array = array();
 			   $temp_material_item = $material_version_list->getFirst();
 
@@ -1133,19 +1133,19 @@
 			      }
 			      $temp_material_item = $material_version_list->getNext();
 			   }
-			
+
 			   $this->assign('detail', 'versions', $material_version_list->getCount());
 			   $this->assign('detail', 'versions_array', $material_versions_array);
 			   if(isset($_GET['version_id'])) {
 			      $this->assign('detail', 'is_versions_bar_visible', true);
 			   }
-			   
+
 			   $latest_material_item = $material_version_list->getFirst();
 			   if ( $latest_material_item->getVersionID() != $this->_item->getVersionID() ) {
 			      $this->assign('detail', 'not_latest_version', true);
 			   }
 			}
-			
+
 			// TODO:
 			/*
 			if(!empty($formal_data1)) {
@@ -1160,7 +1160,7 @@
 			if($context_item->isWordpressActive() and !isset($_GET['version_id'])){
 			   $this->assign('detail', 'export_to_wordpress', true);
 			}
-			
+
 			return $return;
 		}
 
@@ -1193,7 +1193,7 @@
 
 		private function getSections() {
 			$current_user = $this->_environment->getCurrentUserItem();
-			
+
 			// cache
 			if($this->_sections !== null) return $this->_sections;
 
@@ -1247,8 +1247,8 @@
 						$file_string = '';
 						$file = $file_list->getFirst();
 						while($file) {
-							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
-									$file_string = '<a rel="lightbox-gallery'.$section->getItemID().'" href="' . $file->getUrl() . '" target="blank">';
+							if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+									$file_string = '<a class="lightbox_'.$this->_item->getItemID().'" href="' . $file->getUrl() . '" target="blank">';
 									$name = $file->getDisplayName();
 									//TODO:
 									//$name = $converter->compareWithSearchText($name);
@@ -1264,8 +1264,11 @@
 							}
 							$tmp_array = array();
 							$tmp_array['name'] = $file_string;
-							$tmp_array['icon'] = '<a rel="lightbox-gallery'.$section->getItemID().'" href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
-
+							if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+								$tmp_array['icon'] = '<a class="lightbox_'.$this->_item->getItemID().'" href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+							}else{
+								$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
+							}
 
 							$files[] = $tmp_array;
 
@@ -1275,7 +1278,7 @@
 							$entry['formal']['files'] = $files;
 						}
 					}
-					
+
 					$entry['actions']			= $this->getEditActions($this->_item, $current_user);
 					$entry['num_files'] 		= sizeof($files);
 					$entry['moredetails'] 		= $this->getCreatorInformationAsArray($section);
