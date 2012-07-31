@@ -5,7 +5,7 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
+        	"dojo/on"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, domAttr, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 		},
@@ -27,7 +27,7 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			// reinvoke ActionExpander
-			var actors = query(	"div.item_actions a.edit," +
+			var actors = Query(	"div.item_actions a.edit," +
 								"div.item_actions a.detail," +
 								"div.item_actions a.workflow," +
 								"div.item_actions a.linked," + 
@@ -38,6 +38,27 @@ define([	"dojo/_base/declare",
 				var handler = new ActionExpander();
 				handler.setup(actors);
 			});
+			
+			// reinvoke forms
+			Query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
+				// this popup must be closed on click
+				On(node, "click", Lang.hitch(this, function(event) {
+					this.close();
+				}));
+				
+				// get custom data object
+				var customObject = this.getAttrAsObject(node, "data-custom");
+				
+				var module = customObject.module;
+				
+				// insert context id
+				customObject.contextId = this.contextId;
+				
+				require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
+					var handler = new ClickPopup();
+					handler.init(node, customObject);
+				});
+			}));
 		},
 		
 		onPopupSubmit: function(customObject) {
