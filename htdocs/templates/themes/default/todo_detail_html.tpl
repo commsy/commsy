@@ -39,6 +39,13 @@
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
+				{if $detail.actions.todo_leave}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&todo_option=2" title="___TODO_LEAVE___">___TODO_LEAVE___</a> |
+				{/if}
+
+				{if $detail.actions.todo_participate}
+					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&todo_option=1" title="___TODO_ENTER___">___TODO_ENTER___</a> |
+				{/if}
 				{if $detail.actions.delete}
 					<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'delete', delType: 'todo'" href="#">___COMMON_DELETE_ITEM___</a> |
 				{else}

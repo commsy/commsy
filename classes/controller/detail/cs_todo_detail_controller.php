@@ -209,6 +209,44 @@
 		}
 
 		protected function getAdditionalActions(&$perms) {
+		$current_user = $this->_environment->getCurrentUserItem();
+		$perms['todo_participate'] = false;
+		$perms['todo_leave'] = false;
+
+		// participate / leave
+		if($this->_item->isProcessor($current_user)) {
+			// is participant
+			if($this->_with_modifying_actions) {
+				// leave
+				$perms['todo_leave'] = true;
+			} else {
+				// disabled
+				/*
+				if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_LEAVE').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_LEAVE').'"/>';
+            }
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('DATE_LEAVE')).' "class="disabled">'.$image.'</a>'.LF;
+				 *
+				 */
+			}
+		} else {
+			// participate
+			if($current_user->isUser() && $this->_with_modifying_actions) {
+				$perms['todo_participate'] = true;
+			} else {
+				// disabled
+				/*
+				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+						$image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_ENTER').'"/>';
+						} else {
+						$image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DATE_ENTER').'"/>';
+						}
+						$html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('DATE_ENTER')).' "class="disabled">'.$image.'</a>'.LF;
+				 */
+			}
+		}
 		}
 
 
