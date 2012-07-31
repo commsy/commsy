@@ -1578,6 +1578,11 @@ class cs_environment {
       }
    }
    
+   function unsetAllInstances() {
+   		unset($this->instance);
+   		$this->instance = array();
+   }
+   
    /** get Instance of the authentication object
     * returns an object for authentication users in commsy
     *

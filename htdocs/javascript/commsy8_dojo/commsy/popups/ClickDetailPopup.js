@@ -26,6 +26,18 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupSpecific: function() {
+			// reinvoke ActionExpander
+			var actors = query(	"div.item_actions a.edit," +
+								"div.item_actions a.detail," +
+								"div.item_actions a.workflow," +
+								"div.item_actions a.linked," + 
+								"div.item_actions a.annotations," +
+								"div.item_actions a.versions");
+				
+			require(["commsy/ActionExpander"], function(ActionExpander) {
+				var handler = new ActionExpander();
+				handler.setup(actors);
+			});
 		},
 		
 		onPopupSubmit: function(customObject) {

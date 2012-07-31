@@ -41,17 +41,17 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     		}
     		
     		if ($this->_item !== null) {
-    			$this->invokeDetailController();
+    			$controller = $this->invokeDetailController();
     			
     			// determ the template file
-    			$this->_tpl_file = "popups/" . $this->_module . "_detail_popup";
+    			$controller->_tpl_file = "popups/" . $this->_module . "_detail_popup";
     			
-    			// smarty
+    			// smarty	
     			global $c_smarty;
     			if($c_smarty === true) {
     				ob_start();
     			
-    				$this->displayTemplate();
+    				$controller->displayTemplate();
     			
     				// setup return
     				$output = ob_get_clean();
@@ -87,7 +87,8 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     
     private function invokeDetailController() {
     	$currentUser = $this->_environment->getCurrentUserItem();
-    	$privateRoomContextID = $currentUser->getOwnRoom()->getItemID();
+    	$privateRoomItem = $currentUser->getOwnRoom();
+    	$privateRoomContextID = $privateRoomItem->getItemID();
     	
     	// get the detail controller
     	$controller_name = "cs_" . $this->_module . "_detail_controller";
@@ -95,10 +96,12 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     	 
     	// we need to create a new environment to hide the fact, that we are inside a popup
     	$fakeEnvironment = clone $this->_environment;
+    	$fakeEnvironment->unsetAllInstances();
     	$fakeEnvironment->setCurrentContextID($privateRoomContextID);
     	$fakeEnvironment->setCurrentModule($this->_module);
     	$fakeEnvironment->setCurrentFunction("detail");
     	
+    	$fakeEnvironment->setCurrentContextItem($privateRoomItem);
     	$fakeEnvironment->setCurrentUserItem($currentUser->getRelatedPrivateRoomUserItem());
     	
     	$smarty = new cs_smarty($fakeEnvironment, "default");
@@ -110,8 +113,10 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     	
     	// init controller and process the detail content
     	$controller = new $controller_name($fakeEnvironment);
-    	$controller->setTemplateEngine($this->_environment->getTemplateEngine());
-    	$controller->actionDetail();
+    	//$controller->setTemplateEngine($smarty);//$this->_environment->getTemplateEngine());
+    	$controller->processTemplate();
+    	
+    	return $controller;
     }
     
     /*
