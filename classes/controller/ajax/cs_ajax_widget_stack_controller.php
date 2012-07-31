@@ -84,6 +84,12 @@
 						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
 					}
 					
+					if ($type === CS_MATERIAL_TYPE) {
+						$versionId = $entry->getVersionID();
+					} else {
+						$versionId = null;
+					}
+					
 					$return["items"][] = array(
 							"itemId"			=> $entry->getItemID(),
 							"contextId"			=> $entry->getContextID(),
@@ -92,7 +98,8 @@
 							"image"				=> $this->getUtils()->getLogoInformationForType($type),
 							"fileCount"			=> $entry->getFileList()->getCount(),
 							"modificationDate"	=> $mod_date,
-							"creator"			=> $entry->getCreatorItem()->getFullName()
+							"creator"			=> $entry->getCreatorItem()->getFullName(),
+							"versionId"			=> $versionId
 					);
 				}
 			

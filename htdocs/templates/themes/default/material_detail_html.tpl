@@ -44,7 +44,7 @@
 		</div>
 	</div>
 
-	<div class="item_body" style="{if isset($ajax.onlyContent)}width: 461px;{/if}"> <!-- Start item body -->
+	<div class="item_body"> <!-- Start item body -->
 
 		<!-- Start fade_in_ground -->
 		<div id="edit_expand" {if !$detail.is_action_bar_visible}class="hidden"{/if}>

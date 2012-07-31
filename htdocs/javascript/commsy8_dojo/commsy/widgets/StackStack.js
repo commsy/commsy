@@ -12,6 +12,8 @@ define([	"dojo/_base/declare",
 		baseClass:			"CommSyWidget",
 		widgetHandler:		null,
 		
+		itemId:				null,
+		
 		currentPage:		1,
 		maxPage:			1,
 		entriesPerPage:		20,
@@ -34,6 +36,8 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
+			this.itemId = this.from_php.ownRoom.id;
+			
 			// update list
 			this.updateList();
 		},
@@ -114,9 +118,9 @@ define([	"dojo/_base/declare",
 								className:		"clear"
 							}, rowNode, "last");
 						
-						DomAttr.set(aNode, "data-custom", "iid: " + item.itemId + ", module: '" + item.module + "'");
-						On(aNode, "click", Lang.hitch(this, function(event) {
-							this.onClickListEntry(event.target);
+						require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
+							var handler = new ClickPopup();
+							handler.init(aNode, { iid: item.itemId, module: item.module, contextId: this.itemId, versionId: item.versionId });
 						}));
 					}));
 					
@@ -165,18 +169,6 @@ define([	"dojo/_base/declare",
 		/************************************************************************************
 		 * EventHandler
 		 ************************************************************************************/
-		onClickListEntry: function(aNode) {
-			var customObject = this.getAttrAsObject(aNode, "data-custom");
-			
-			var module = customObject.module;
-			
-			// setup new widget for displaying the detail content
-			this.widgetHandler.loadWidget("widgets/DetailView", {
-				module:		module,
-				itemId:		customObject.iid
-			});
-		},
-		
 		onClickPaging20: function(event) {
 			this.entriesPerPage = 20;
 			this.currentPage = 1;

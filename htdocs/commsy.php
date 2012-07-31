@@ -853,10 +853,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 			 $c_theme = $theme;
 		}
 	}
-	$smarty = new cs_smarty($environment, $c_theme);
-
-
-
+	
 	$smarty = new cs_smarty($environment, $c_theme);
 
 	global $c_smarty_caching;

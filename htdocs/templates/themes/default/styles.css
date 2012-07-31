@@ -4241,6 +4241,14 @@ widgets
 */
 .widget_head {
 	background: url("img/breadcrump_room_title.jpg") repeat-x scroll 0 0 #FFFFFF;
+	height: 31px;
+}
+
+.widget_footer {
+	background: url("img/breadcrump_room_title.jpg") repeat-x scroll 0 0 #FFFFFF;
+	height: 23px;
+	padding: 8px 5px 0px 5px;
+	border-top: 1px solid #D9D9D9;
 }
 
 .widget_head .edit {
@@ -4319,7 +4327,15 @@ widgets
 }
 
 div.StackListRestrictionWrapper {
-	background-color: #D9D9D9;
+	background-color: #FFFFFF;
+	padding: 5px;
+	border-bottom: 1px solid #D9D9D9;
+}
+
+div.StackListRestrictionWrapper h3 {
+	margin-bottom: 3px;
+	text-decoration: underline;
+	font-size: 12px;
 }
 
 div.minHeightPopup {
@@ -4329,4 +4345,13 @@ div.minHeightPopup {
 div.scrollPopup {
 	height: 400px;
 	overflow-y: scroll;
+}
+
+div#popup_wrapper .item_body {
+	float: left;
+	width: 850px;
+}
+
+div#popup_wrapper .item_body h2 {
+	display: none;
 }

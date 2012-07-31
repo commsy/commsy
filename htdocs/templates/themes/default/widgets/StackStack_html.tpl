@@ -8,7 +8,7 @@
 			<h3 class="pop_widget_h3">___PRIVATEROOM_MY_ENTRIES_LIST_BOX___</h3>
 		</div>
 		<div class="StackListRestrictionWrapper">
-			___COMMON_RESTRICTIONS___:
+			<h3>___COMMON_RESTRICTIONS___</h3>
 			<div class="StackListRestriction">
 				<span class="float-left restrictionType">___COMMON_BUZZWORDS___:</span>
 				<ul class="float-left" data-dojo-attach-point="buzzwordRestrictionsNode">
@@ -23,7 +23,7 @@
 			</div>
 		</div>
 		<div data-dojo-attach-point="itemListNode"></div>
-		<div class="widget_head">
+		<div class="widget_footer">
 			___COMMON_PAGE_ENTRIES___:
 			<span class="cursor_pointer" data-dojo-attach-event="onclick:onClickPaging20" data-dojo-attach-point="paging20"><strong>20</strong></span> |
 			<span class="cursor_pointer" data-dojo-attach-event="onclick:onClickPaging50" data-dojo-attach-point="paging50">50</span>

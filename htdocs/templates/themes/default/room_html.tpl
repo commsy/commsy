@@ -81,7 +81,6 @@
 {/block}
 
 {block name=layout_content}
-	{if !isset($ajax.onlyContent)}
 		<div id="columnset"> <!-- Start columnset -->
 
             <div id="left_column"> <!-- Start left_column -->
@@ -282,11 +281,6 @@
 
             <div class="clear"> </div>
         </div> <!-- Ende columnset -->
-	{else}
-		<div id="maincontent">
-        	{block name=room_main_content}{/block}
-        </div>
-	{/if}
 {/block}
 
 {block name=room_overlay}

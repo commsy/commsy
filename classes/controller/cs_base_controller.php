@@ -67,6 +67,10 @@
 			pr("error");
 		}
 		*/
+		
+		public function setTemplateEngine($tplEngine) {
+			$this->_tpl_engine = $tplEngine;
+		}
 
 		public function displayTemplate() {
 			try {
