@@ -19,7 +19,7 @@
 
 			{foreach $detail.annotations as $annotation}
 				<div class="item_actions">
-					<a data-custom="expand: 'edit_expand_annotation_{$annotation@index}'" class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+					<a title="___COMMON_ACTION_EDIT___" data-custom="expand: 'edit_expand_annotation_{$annotation@index}'" class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
 				</div>
 
 				<div class="item_body"> <!-- Start item body -->

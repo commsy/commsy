@@ -3,18 +3,18 @@
 {block name=room_detail_content}
 	<div class="item_actions">
 		<div id="top_item_actions" {if $detail.versions and !$room.workflow}class="material_versions"{/if} {if $detail.versions and $room.workflow}class="material_versions_workflow"{/if}>
-			<a class="edit {if $detail.is_action_bar_visible}item_actions_glow{/if}" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set{if $detail.is_action_bar_visible}_ok{/if}"> &nbsp; </span></a>
-			<a class="linked {if $detail.is_reference_bar_visible}item_actions_glow{/if}" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia{if $detail.is_reference_bar_visible}_ok{/if}"> &nbsp; </span></a>
-			
+			<a title="___COMMON_ACTION_EDIT___" class="edit {if $detail.is_action_bar_visible}item_actions_glow{/if}" data-custom="expand: 'edit_expand'" href="#"><span class="edit_set{if $detail.is_action_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a title="___COMMON_ACTION_LINKED___" class="linked {if $detail.is_reference_bar_visible}item_actions_glow{/if}" data-custom="expand: 'linked_expand'" href="#"><span class="ref_to_ia{if $detail.is_reference_bar_visible}_ok{/if}"> &nbsp; </span></a>
+
 			{if $detail.versions}
-				<a class="versions {if $detail.is_versions_bar_visible}item_actions_glow{/if}" data-custom="expand: 'versions_expand'" href="#"><span class="versions_ia{if $detail.is_versions_bar_visible}_ok{/if}"> &nbsp; </span></a>
+				<a title="___COMMON_ACTION_VERSIONS___" class="versions {if $detail.is_versions_bar_visible}item_actions_glow{/if}" data-custom="expand: 'versions_expand'" href="#"><span class="versions_ia{if $detail.is_versions_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			{/if}
-			
-			<a class="detail  {if $detail.is_details_bar_visible}item_actions_glow{/if}" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia{if $detail.is_details_bar_visible}_ok{/if}"> &nbsp; </span></a>
+
+			<a title="___COMMON_ACTION_DETAILS___" class="detail  {if $detail.is_details_bar_visible}item_actions_glow{/if}" data-custom="expand: 'detail_expand'" href="#"><span class="details_ia{if $detail.is_details_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			{if $room.workflow}
-				<a class="workflow" data-custom="expand: 'workflow_expand'" href="#"><span class="workflow_ia"> &nbsp; </span></a>
+				<a title="___COMMON_ACTION_WORKFLOW___" class="workflow" data-custom="expand: 'workflow_expand'" href="#"><span class="workflow_ia"> &nbsp; </span></a>
 			{/if}
-			<a class="annotations  {if $detail.is_annotations_bar_visible}item_actions_glow{/if}" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno{if $detail.is_annotations_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a itle="___COMMON_ACTION_ANNOTATIONS___" class="annotations  {if $detail.is_annotations_bar_visible}item_actions_glow{/if}" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno{if $detail.is_annotations_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			{if $detail.versions}
 				<div class="action_count versions_count" >{$detail.versions}</div>
 			{/if}
@@ -96,7 +96,7 @@
       				<div class="fi_md_versions_info">
       					<img src="{$basic.tpl_path}img/fi_item_versions.gif" alt="" />
       				</div>
-      
+
       				<div class="fi_md_content">
       					<ul>
 						{foreach $detail.versions_array as $temp_version}
@@ -199,8 +199,8 @@
 
 	{foreach $detail.content.sections as $section}
 		<div class="item_actions">
-			<a data-custom="expand: 'edit_expand_section_{$section@index}'" class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
-			<a data-custom="expand: 'detail_expand_section_{$section@index}'" class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
+			<a title="___COMMON_ACTION_EDIT___" data-custom="expand: 'edit_expand_section_{$section@index}'" class="edit" href="#"><span class="edit_set"> &nbsp; </span></a>
+			<a title="___COMMON_ACTION_DETAILS___" data-custom="expand: 'detail_expand_section_{$section@index}'" class="detail" href="#"><span class="details_ia"> &nbsp; </span></a>
 		</div>
 
 		<div class="item_body"> <!-- Start item body -->
