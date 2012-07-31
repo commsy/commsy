@@ -139,6 +139,12 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
 
 			$this->assign('detail', 'content', $this->getDetailContent());
+			
+			// wiki export
+			$context_item = $this->_environment->getCurrentContextItem();	
+			if($context_item->isWikiActive() and !isset($_GET['version_id'])){
+			   $this->assign('detail', 'export_to_wiki', true);
+			}
 		}
 
 		/*****************************************************************************/

@@ -24,6 +24,9 @@
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
+				{if $detail.export_to_wiki}
+					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWiki'" href="#">___ITEM_EXPORT_TO_WIKI___</a> |
+				{/if}
 				{if $detail.actions.delete}
 					<a class="open_popup" data-custom="iid: {$detail.content.item_id}, module: 'delete', delType: 'discussion'" href="#">___COMMON_DELETE_ITEM___</a> |
 				{else}

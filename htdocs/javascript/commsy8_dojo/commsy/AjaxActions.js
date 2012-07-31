@@ -69,6 +69,16 @@ define([	"dojo/_base/declare",
 			this.AJAXRequest("actions", "exportToWordpress", { itemId: itemId }, Lang.hitch(this, function(response) {
 				this.reload(itemId);
 			}));
+		},
+		
+		exportToWiki: function(customObject) {
+			var itemId = customObject.iid;
+
+			// send ajax requets
+			this.AJAXRequest("actions", "exportToWiki", { itemId: itemId }, Lang.hitch(this, function(response) {
+				this.reload(itemId);
+			}));
 		}
+		
 	});
 });

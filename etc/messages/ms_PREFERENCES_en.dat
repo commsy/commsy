@@ -90,6 +90,8 @@ $message["PREFERENCES_ROOM_ASSIGMENT"]["en"] = "Association of <br/>
 %_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["en"] = "Save preferences";
 $message["PREFERENCES_SAVE_BUTTON_CHAT"]["en"] = "Save chat preferences";
+$message["PREFERENCES_SAVE_BUTTON_WORDPRESS"]["en"] = "Save blog";
+$message["PREFERENCES_SAVE_BUTTON_WORDPRESS_CREATE"]["en"] = "Create new blog";
 $message["PREFERENCES_SHOW_TITLE_OPTION"]["en"] = "Display portal title at top of page";
 $message["PREFERENCES_TAGS_CONFIGURATIONS"]["en"] = "Configure categories and tags";
 $message["PREFERENCES_TAGS_CONFIGURATIONS_DESC"]["en"] = "Activate and configure usage of tags and categories in this menu.";

@@ -279,8 +279,9 @@
 									</fieldset>
 									<div class="input_row">
 										<input id="submit" type="button" class="popup_button submit" data-custom="part: 'room_configuration'" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-									</div>
-
+										<input id="submit_delete_room" type="button" class="popup_button" data-custom="part: 'room_configuration', action: 'delete_room'" name="save" value="___COMMON_DELETE_ROOM___" style="color:#ff0000; border:1px solid red; float:right;"/>
+                           				<div class="clear"></div>
+                           			</div>
 								</div>
 							</div>
 

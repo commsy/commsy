@@ -156,7 +156,7 @@ define([	"dojo/_base/declare",
 			if (deleteWordpressButton) {
 				On(deleteWordpressButton, "click", Lang.hitch(this, function(event) {
 					this.button_delete = new dijit.form.Button({
-						label:		"L&ouml;schen",
+						label:		"Blog endg&uuml;ltig l&ouml;schen",
 						onClick:	Lang.hitch(this, function(event) {
 							this.onPopupSubmit({
                         part: "external_configuration",
@@ -178,7 +178,8 @@ define([	"dojo/_base/declare",
 					// create and show the dialog
 					// TODO: translate
 					this.dialog = new dijit.Dialog({
-						title:		"Wordpress l&ouml;schen"
+						title:		"Wordpress l&ouml;schen",
+						content: 	"<b style='color:#ff0000;'>Achtung: Alle Daten im Blog werden gel&ouml;scht. Dieser Vorgang kann nicht r&uuml;ckg&auml;ngig gemacht werden!</b><br/><br/>"
 					});
 					dojo.place(this.button_delete.domNode, this.dialog.containerNode);
 					dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
@@ -192,7 +193,7 @@ define([	"dojo/_base/declare",
          if (deleteWikiButton) {
             On(deleteWikiButton, "click", Lang.hitch(this, function(event) {
                this.button_delete = new dijit.form.Button({
-                  label:      "L&ouml;schen",
+                  label:      "Wiki endg&uuml;ltig l&ouml;schen",
                   onClick: Lang.hitch(this, function(event) {
                      this.onPopupSubmit({
                         part: "external_configuration",
@@ -214,7 +215,8 @@ define([	"dojo/_base/declare",
                // create and show the dialog
                // TODO: translate
                this.dialog = new dijit.Dialog({
-                  title:      "Wiki l&ouml;schen"
+                  title:      "Wiki l&ouml;schen",
+                  content:	  "<b style='color:#ff0000;'>Ein gel&ouml;schtes Wiki kann nicht wieder rekonstruiert werden. M&ouml;chten Sie dieses Wiki endg&uuml;ltig l&ouml;schen?</b><br/><br/>"
                });
                dojo.place(this.button_delete.domNode, this.dialog.containerNode);
                dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
@@ -222,6 +224,43 @@ define([	"dojo/_base/declare",
                this.dialog.show();
             }));
          }
+         
+         	// confirm delete room
+			var deleteWordpressButton = Query("#submit_delete_room", this.contentNode)[0];
+			if (deleteWordpressButton) {
+				On(deleteWordpressButton, "click", Lang.hitch(this, function(event) {
+					this.button_delete = new dijit.form.Button({
+						label:		"Raum endg&uuml;ltig l&ouml;schen",
+						onClick:	Lang.hitch(this, function(event) {
+							this.onPopupSubmit({
+			                   part: "room_configuration",
+			                   action: "delete_room",
+			                });
+							// destroy the dialog
+							this.dialog.destroyRecursive();
+						})
+					});
+					
+					this.button_cancel = new dijit.form.Button({
+						label:		"Abbrechen",
+						onClick:	Lang.hitch(this, function(event) {
+							// destroy the dialog
+							this.dialog.destroyRecursive();
+						})
+					});
+					
+					// create and show the dialog
+					// TODO: translate
+					this.dialog = new dijit.Dialog({
+						title:		"Raum l&ouml;schen",
+						content: 	"<b style='color:#ff0000;'>Achtung: Der gesamte Raum und alle Daten im Raum werden gel&ouml;scht. Dieser Vorgang kann nicht r&uuml;ckg&auml;ngig gemacht werden!</b><br/><br/>"
+					});
+					dojo.place(this.button_delete.domNode, this.dialog.containerNode);
+					dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
+					
+					this.dialog.show();
+				}));
+			}
 		},
 
 		onClickAssignCommunityRoom: function() {

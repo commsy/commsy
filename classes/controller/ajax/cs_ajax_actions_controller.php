@@ -62,12 +62,21 @@
 		}
 		
 		public function actionExportToWordpress() {
-		   include_once('functions/development_functions.php');
-		   logToFile('actionExportToWordpress');
+		   $item_manager = $this->_environment->getItemManager();
+		   $temp_item = $item_manager->getItem($this->_data['itemId']);
 		   
 		   $wordpress_manager = $this->_environment->getWordpressManager();
-		   $wordpress_manager->exportItemToWordpress($this->_data['itemId'],CS_MATERIAL_TYPE);
+		   $wordpress_manager->exportItemToWordpress($this->_data['itemId'],$temp_item->getItemType());
+		   $this->setSuccessfullDataReturn(array());
+		   echo $this->_return;
+		}
+		
+		public function actionExportToWiki() {
+		   $item_manager = $this->_environment->getItemManager();
+		   $temp_item = $item_manager->getItem($this->_data['itemId']);
 		   
+		   $wiki_manager = $this->_environment->getWikiManager();
+		   $wiki_manager->exportItemToWiki($this->_data['itemId'],$temp_item->getItemType());
 		   $this->setSuccessfullDataReturn(array());
 		   echo $this->_return;
 		}

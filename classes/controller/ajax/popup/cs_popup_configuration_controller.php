@@ -316,6 +316,11 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						// TODO: outdated?
 						$current_context->generateLayoutImages();
 
+						if ($additional['action'] == 'delete_room'){
+						   $current_context->delete();
+						   $current_context->save();
+						}
+						
 						// set return
 						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
 					}
@@ -1159,9 +1164,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                            $enable_wiki_groups[] = $form_data[$form_data_key];
                         }
                      }
-                     
-                     include_once('functions/development_functions.php');
-                     logToFile($form_data);
                      
                      // WSDL-xml hier noch nicht zugreifbar, daher weiterhin die alte Variante
                      if ( !empty($enable_wiki_groups)){
@@ -2141,9 +2143,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
             }
             
             $wiki['enable_wiki_groups'] = $temp_wiki_groups_array;
-            
-            include_once('functions/development_functions.php');
-            logToFile($wiki_groups_array);
             
    	   } else {
       	   $wiki['wikititle'] = $current_context->getWikiTitle();

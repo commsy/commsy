@@ -1157,8 +1157,21 @@
 			*/
 
 			// wordpress export
-			if($context_item->isWordpressActive() and !isset($_GET['version_id'])){
+			$wordpress_manager = $this->_environment->getWordpressManager();
+			if ( $this->_item->mayEdit($current_user)
+			     and $context_item->isWordpressActive()
+			     and $wordpress_manager->isUserAllowedToExportItem($context_item->getWordpressId(),$current_user->getUserID())
+			     and !isset($_GET['version_id'])
+			   ) {
 			   $this->assign('detail', 'export_to_wordpress', true);
+			} else {
+			   if($context_item->isWordpressActive()){
+			      $this->assign('detail', 'export_to_wordpress_not_allowed', true);
+			   }
+			}
+			
+			if($context_item->isWikiActive() and !isset($_GET['version_id'])){
+			   $this->assign('detail', 'export_to_wiki', true);
 			}
 
 			return $return;
