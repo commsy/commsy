@@ -1,7 +1,7 @@
 <div id="popup_wrapper">
-	<div id="popup_edit">
+	<div id="popup_edit{if $popup.overflow}_stack{/if}">
 		<div id="popup_frame">
-			<div id="popup_inner">
+			<div id="popup_inner"{if $popup.overflow} class="scrollPopup"{/if}>
 
 				<div id="popup_title">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>

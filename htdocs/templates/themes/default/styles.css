@@ -4371,3 +4371,9 @@ div#popup_stack div#popup_content_wrapper {
     border: 0px solid #FFFFFF;
     padding: 0;
 }
+
+#popup_edit_stack {
+	margin: 70px auto 20px;
+    width: 860px;
+	position: relative;
+	}

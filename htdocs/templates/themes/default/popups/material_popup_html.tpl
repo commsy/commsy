@@ -2,7 +2,7 @@
 {include file="include/functions.tpl" inline}
 
 <div id="popup_wrapper">
-	<div id="popup_edit">
+	<div id="popup_edit{if $popup.overflow}_stack{/if}">
 		<div id="popup_frame">
 
 			<div id="popup_inner"{if $popup.overflow} class="scrollPopup"{/if}>

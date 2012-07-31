@@ -1,5 +1,5 @@
 <div id="popup_wrapper">
-	<div id="popup_edit">
+	<div id="popup_edit{if $popup.overflow}_stack{/if}">
 		<div id="popup_frame">
 			<div id="popup_inner"{if $popup.overflow} class="scrollPopup"{/if}>
 
@@ -48,13 +48,13 @@
 												<option value="{$buzzword.item_id}">{$buzzword.name}</option>
 											{/foreach}
 										</select>
-										
+
 										<select id="buzzword_merge_two" class="size_200" size="1">
 											{foreach $popup.buzzwords as $buzzword}
 												<option{if $buzzword@index == 0} disabled="disabled"{/if} value="{$buzzword.item_id}">{$buzzword.name}</option>
 											{/foreach}
 										</select>
-										
+
 										<input id="buzzword_merge" class="popup_button submit" data-custom="part: 'merge'" type="button" name="form_data[buzzword_merge]" value="___BUZZWORDS_COMBINE_BUTTON___" />
 									</div>
 								</div>
@@ -80,26 +80,26 @@
 										</div>
 									{/foreach}
 								</div>
-								
+
 								<div id="content_row_two_max">
 									<div class="open_close_head">
-				                        <strong>___COMMON_ITEM_ATTACH___</strong> 
+				                        <strong>___COMMON_ITEM_ATTACH___</strong>
 				                        (<span class="text_important">&bdquo;{$popup.buzzwords[0].name}&rdquo;</span>)
-				                        
+
 				                        {*
 				                        	TODO: CS 8.0.1 - hopefully someone would't see this in CS 10
 				                        	<a href="" class="row_open_close" title="Ansicht maximieren"><img src="{$basic.tpl_path}img/pop_max_btn.gif" alt="maximieren" /></a>
 				                        *}
-				                        
-				                        <div class="clear"> </div>  
+
+				                        <div class="clear"> </div>
 				                    </div>
-				                    
+
 				                    <div id="content_expand_wrapper">
 					                    <div id="crt_content">
 					                        <div id="crt_col_left">
 					                            <div id="crt_row_area"></div>
 					                        </div>
-					                        
+
 					                        <div id="crt_col_right">
 					                            <div class="pop_item_navigation">
 					                                <a id="first" href="#"><img src="{$basic.tpl_path}img/btn_ar_start2.gif" alt="Start" /></a>
@@ -108,14 +108,14 @@
 					                                <a id="next" href="#"><img src="{$basic.tpl_path}img/btn_ar_right2.gif" alt="weiter" /></a>
 					                                <a id="last" href="#"><img src="{$basic.tpl_path}img/btn_ar_end2.gif" alt="Ende" /></a>
 					                            </div>
-					
+
 					                            <div class="pop_item_content">
 					                                <input name="netnavigation_search_restriction" type="text" value="___HOME_SEARCH_SHORT_TO___" class="size_170" />
 					                                <br/>
 					                                <span class="sitenote">___SEARCH_RUBRIC_RESTRICTION___</span><br/>
 					                                <select name="netnavigation_rubric_restriction" size="1" class="size_170_select"></select>
 					                                <br/>
-					
+
 					                                {if $popup.config.with_activating}
 						                                <span class="sitenote">___COMMON_SHOW_ACTIVATING_ENTRIES___</span><br/>
 						                                <select name="netnavigation_type_restriction" size="1" class="size_170_select">
@@ -125,14 +125,14 @@
 						                                </select>
 						                                <br/>
 					                                {/if}
-					
+
 					                                <input name="netnavigation_linked_restriction" type="checkbox" value="true" /> <span class="sitenote">___SEARCH_LINKED_ENTRIES_ONLY___</span>
 					                                <br/>
 					                                <input name="netnavigation_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
 					                            </div>
 					                        </div>
-					                        
-					                        <div class="clear"> </div>  
+
+					                        <div class="clear"> </div>
 					                    </div>
 				                    </div>
 								</div>
