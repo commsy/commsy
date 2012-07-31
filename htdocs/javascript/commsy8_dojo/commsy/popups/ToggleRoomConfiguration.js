@@ -158,12 +158,10 @@ define([	"dojo/_base/declare",
 					this.button_delete = new dijit.form.Button({
 						label:		"L&ouml;schen",
 						onClick:	Lang.hitch(this, function(event) {
-							dojo.declare("CommSyObjectDeleteWordpress", null, {
-							    part: "external_configuration",
-							    action: "delete_wordpress",
-							});
-							this.onPopupSubmit(new CommSyObjectDeleteWordpress());
-							
+							this.onPopupSubmit({
+                        part: "external_configuration",
+                        action: "delete_wordpress",
+                     });
 							// destroy the dialog
 							this.dialog.destroyRecursive();
 						})
@@ -182,12 +180,48 @@ define([	"dojo/_base/declare",
 					this.dialog = new dijit.Dialog({
 						title:		"Wordpress l&ouml;schen"
 					});
-					dojo.place(this.button_delete, this.dialog.containerNode);
-					dojo.place(this.button_cancel, this.dialog.containerNode);
+					dojo.place(this.button_delete.domNode, this.dialog.containerNode);
+					dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
 					
 					this.dialog.show();
 				}));
 			}
+			
+		   // confirm delete Wiki
+         var deleteWikiButton = Query("#submit_delete_wiki", this.contentNode)[0];
+         if (deleteWikiButton) {
+            On(deleteWikiButton, "click", Lang.hitch(this, function(event) {
+               this.button_delete = new dijit.form.Button({
+                  label:      "L&ouml;schen",
+                  onClick: Lang.hitch(this, function(event) {
+                     this.onPopupSubmit({
+                        part: "external_configuration",
+                        action: "delete_wiki",
+                     });
+                     // destroy the dialog
+                     this.dialog.destroyRecursive();
+                  })
+               });
+               
+               this.button_cancel = new dijit.form.Button({
+                  label:      "Abbrechen",
+                  onClick: Lang.hitch(this, function(event) {
+                     // destroy the dialog
+                     this.dialog.destroyRecursive();
+                  })
+               });
+               
+               // create and show the dialog
+               // TODO: translate
+               this.dialog = new dijit.Dialog({
+                  title:      "Wiki l&ouml;schen"
+               });
+               dojo.place(this.button_delete.domNode, this.dialog.containerNode);
+               dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
+               
+               this.dialog.show();
+            }));
+         }
 		},
 
 		onClickAssignCommunityRoom: function() {
