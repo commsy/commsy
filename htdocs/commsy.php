@@ -853,7 +853,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 			 $c_theme = $theme;
 		}
 	}
-	
+
 	$smarty = new cs_smarty($environment, $c_theme);
 
 	global $c_smarty_caching;
@@ -1417,7 +1417,7 @@ if ($current_user->isUser() and !$current_user->isRoot()) {
 if ( $environment->getCurrentFunction() != 'getfile'
      and $environment->getCurrentFunction() != 'getingray'
      and $environment->getCurrentModule() != 'help'
-     and $_GET['mod'] != 'ajax'
+     and (!isset($_GET['mod']) or $_GET['mod'] != 'ajax')
      and !($environment->getCurrentModule() == 'agb' and $environment->getCurrentFunction() == 'index')
      and !empty($session)
    ) {
