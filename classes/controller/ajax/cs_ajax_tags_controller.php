@@ -617,7 +617,7 @@
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
 			
-			if (!$current_user->isUser() || ( !$current_context->isTagEditedByAll() && !$current_user->isModerator)) {
+			if (!$current_user->isUser() || ( !$current_context->isTagEditedByAll() && !$current_user->isModerator())) {
 				return false;
 				/*
 				 * $params = array();
