@@ -33,6 +33,62 @@ require([	"dojo/_base/declare",
 					});
 				}
 				
+				
+				
+				
+				/**/
+				
+				if (this.uri_object.mod == "group") {
+					var joinNode = query("a#group_detail_group_enter")[0];
+					
+					if (joinNode) {
+						var customObject = this.getAttrAsObject(joinNode, "data-custom");
+						
+						var qry = dojo.objectToQuery(this.replaceOrSetURIParam("group_option", "1"));
+						
+						if (customObject.needsCode) {
+							
+							require(["dojo/on","dijit/form/TextBox","dijit/form/Button","dijit/Dialog"], function(On, TextBox, Button, Dialog) {
+								
+								On(joinNode, "click", Lang.hitch(this, function(event) {
+									var input = new dijit.form.TextBox({
+										
+									});
+									
+									var button = new dijit.form.Button({
+										label:	"betreten",
+										onClick:	Lang.hitch(this, function(event) {
+											location.href = "commsy.php?" + qry + "&code=" + input.value;
+											
+											dialog.destroyRecursive();
+										})
+									});
+									var dialog = new dijit.Dialog({
+										title:		"Teilnahme-Code"
+									});
+									dojo.place(input.domNode, dialog.containerNode, "last");
+									dojo.place(button.domNode, dialog.containerNode, "last");
+									
+									
+									dialog.show();
+									
+									event.preventDefault();
+									return false;
+								}));
+								
+								
+							});
+						}
+					}
+				}
+				
+				
+				/**/
+				
+				
+				
+				
+				
 				// widget popups
 				var aStackNode = query("a#tm_stack")[0];
 				if (aStackNode) {

@@ -32,7 +32,7 @@
 			$session = $this->_environment->getSessionItem();
 			$environment = $this->_environment;
 			$translator = $this->_environment->getTranslationObject();
-
+			
 			// try to set the item
 			$this->setItem();
 
@@ -105,7 +105,7 @@
 
       // build new user_item
       if ( !$room_item->checkNewMembersWithCode()
-           or ( $room_item->getCheckNewMemberCode() == $_POST['code'])
+           or ( $room_item->getCheckNewMemberCode() == $_GET/*$_POST*/['code'])
          ) {
          $current_user = $environment->getCurrentUserItem();
          $user_item = $current_user->cloneData();
@@ -297,7 +297,7 @@
             }
          }
       } elseif ( $room_item->checkNewMembersWithCode()
-                 and $room_item->getCheckNewMemberCode() != $_POST['code']
+                 and $room_item->getCheckNewMemberCode() != $_GET/*$_POST*/['code']
                ) {
          $account_mode = 'member';
          $error = 'code';
@@ -339,6 +339,16 @@
 									$group_room_user_item = $grouproom_item->getUserByUserID($current_user->getUserID(), $current_user->getAuthSource());
 									$group_room_user_item->reject();
 									$group_room_user_item->save();
+								}
+							}
+						}
+					} else {
+						
+						if($this->_item->isGroupRoomActivated()) {
+							$grouproom_item = $this->_item->getGroupRoomItem();
+							if(isset($grouproom_item) && !empty($grouproom_item)) {
+								if( $grouproom_item->checkNewMembersWithCode()) {
+									$this->assign("join", "code", true);
 								}
 							}
 						}

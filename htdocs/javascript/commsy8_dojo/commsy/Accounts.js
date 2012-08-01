@@ -199,11 +199,16 @@ define([	"dojo/_base/declare",
 			
 			// send action and id list via ajax
 			this.AJAXRequest("accounts", "performUserAction", { ids: this.store.selected_ids, action: action }, Lang.hitch(this, function(response) {
+				
+				
+				var selectedIds = this.store.selected_ids;
+				this.store.selected_ids = [];
+				
 				// reload list to get changes
 				this.performRequest();
 				
 				// load mail popup information
-				this.AJAXRequest("popup", "getHTML", { ids: this.store.selected_ids, action: action, module: "configuration_mail" }, Lang.hitch(this, function(html) {
+				this.AJAXRequest("popup", "getHTML", { ids: selectedIds, action: action, module: "configuration_mail" }, Lang.hitch(this, function(html) {
 					var mailContentNode = Query("div#popup_accounts_mail")[0];
 					
 					DomConstruct.empty(mailContentNode);
@@ -211,18 +216,19 @@ define([	"dojo/_base/declare",
 					
 					// create mail send and abort event
 					On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
-						this.sendMail(mailContentNode, action);
+						this.sendMail(mailContentNode, action, selectedIds);
 					}));
 					
 					On(Query("input[name='abort']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
 						var mailContentNode = Query("div#popup_accounts_mail")[0];
 						DomConstruct.empty(mailContentNode);
+						
 					}));
 				}));
 			}));
 		},
 		
-		sendMail: function(contentNode, action) {
+		sendMail: function(contentNode, action, selectedIds) {
 			var sendMailNode = Query("input[name='form_data[send_mail]']", contentNode)[0];
 			
 			// collect data
@@ -234,7 +240,7 @@ define([	"dojo/_base/declare",
 				authBCC:		DomAttr.get(Query("input[name='form_data[copy_auth_bcc]']", contentNode)[0], "value"),
 				subject:		DomAttr.get(Query("input[name='form_data[subject]']", contentNode)[0], "value"),
 				description:	DomAttr.get(Query("textarea[name='form_data[body]']", contentNode)[0], "value"),
-				ids:			this.store.selected_ids,
+				ids:			selectedIds,
 				action:			action
 			};
 			
