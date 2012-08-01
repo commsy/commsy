@@ -399,7 +399,7 @@ class cs_popup_date_controller {
                 $date_item->setTagListByID($form_data['tags']);
 
                 // Save item
-                $date_item->save();
+                #$date_item->save();
 
                 // Save recurrent items
 
@@ -431,6 +431,8 @@ class cs_popup_date_controller {
                     $errors = $this->checkValues($form_data);
                     
                     if(empty($errors)){
+                       $date_item->save();
+                       
                        if($additional['part'] == 'all' and !isset($form_data['recurring_ignore'])){
                            $this->save_recurring_dates($date_item, true, array(), $form_data);
                        } elseif ($additional['part'] == 'recurring'){
@@ -456,6 +458,8 @@ class cs_popup_date_controller {
                            $this->save_recurring_dates($date_item, false, $vales_to_change, $form_data);
                        }
                     }
+                } else {
+                   $date_item->save();
                 }
 
                 // this will update the right box list
@@ -1107,8 +1111,10 @@ class cs_popup_date_controller {
          if(empty($form_data['recurring_end_date'])){
                $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
          } else {
-            if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$form_data['recurring_end_date'],'00:00') ) {
-               $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
+            if(!($form_data['recurring_end_date'] == '--' and $form_data['iid'] != 'NEW')){
+               if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$form_data['recurring_end_date'],'00:00')) {
+                  $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
+               }
             }
          }
       }
