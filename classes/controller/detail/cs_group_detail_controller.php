@@ -30,6 +30,8 @@
 		/*****************************************************************************/
 		public function actionDetail() {
 			$session = $this->_environment->getSessionItem();
+			$environment = $this->_environment;
+			$translator = $this->_environment->getTranslationObject();
 
 			// try to set the item
 			$this->setItem();
@@ -55,11 +57,51 @@
 			}
 
 			if(isOption($option, CS_OPTION_JOIN)) {
-				/*
-				 * $room_item = $item->getGroupRoomItem();
-   if ( isset($room_item) and !empty($room_item) ) {
-      $session = $environment->getSessionItem();
-      $params['iid']= $current_item_id;
+			}
+
+			$type = $this->_item->getItemType();
+
+			// check for correct type
+			if($type !== CS_GROUP_TYPE) {
+				throw new cs_detail_item_type_exception('wrong item type', 0);
+			} else {
+				// used to signal which "craetor infos" of annotations are expanded...
+				$creatorInfoStatus = array();
+				if(!empty($_GET['creator_info_max'])) {
+					$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
+				}
+
+				// initialize
+				$current_user = $this->_environment->getCurrentUser();
+
+				// check for deleted
+				if($this->_item->isDeleted()) {
+					throw new cs_detail_item_type_exception('item deleted', 1);
+				}
+
+				// check for visibility
+				elseif(!$this->_item->maySee($current_user)) {
+					// TODO: implement error handling
+					/*
+					 * $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
+      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
+      $page->add($errorbox);
+					 */
+				}
+
+				else {
+					// enter or leave group
+					if(!empty($_GET['group_option'])) {
+						if($_GET['group_option'] === '1') {
+
+							$room_item = $this->_item->getGroupRoomItem();
+   								if ( isset($room_item) and !empty($room_item) ) {
+      								$session = $environment->getSessionItem();
+      								$params['iid']= $this->_item->getItemID();
 
       // build new user_item
       if ( !$room_item->checkNewMembersWithCode()
@@ -201,7 +243,7 @@
             if ( $user_item->isUser() ) {
 
                // make member
-               $item->addMember($current_user);
+               $this->_item->addMember($current_user);
 
                // get contact moderator (TBD) now first contect moderator
                $user_list = $room_item->getContactModeratorList();
@@ -269,53 +311,21 @@
          }
          redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),'detail',$params);
       }
-   }
-				 */
-			}
-
-			$type = $this->_item->getItemType();
-
-			// check for correct type
-			if($type !== CS_GROUP_TYPE) {
-				throw new cs_detail_item_type_exception('wrong item type', 0);
-			} else {
-				// used to signal which "craetor infos" of annotations are expanded...
-				$creatorInfoStatus = array();
-				if(!empty($_GET['creator_info_max'])) {
-					$creatorInfoStatus = explode('-', $_GET['creator_info_max']);
-				}
-
-				// initialize
-				$current_user = $this->_environment->getCurrentUser();
-
-				// check for deleted
-				if($this->_item->isDeleted()) {
-					throw new cs_detail_item_type_exception('item deleted', 1);
-				}
-
-				// check for visibility
-				elseif(!$this->_item->maySee($current_user)) {
-					// TODO: implement error handling
-					/*
-					 * $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = true;
-      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
-      $page->add($errorbox);
-					 */
-				}
-
-				else {
-					// enter or leave group
-					if(!empty($_GET['group_option'])) {
-						if($_GET['group_option'] === '1') {
+   }else{
 							$this->_item->addMember($current_user);
 							if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {
 								$wiki_manager = $this->_environment->getWikiManager();
 								$wiki_manager->updateNotification();
 							}
+
+   }
+
+
+
+
+
+
+
 						} elseif($_GET['group_option'] === '2') {
 							$this->_item->removeMember($current_user);
 							if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() === '1') {

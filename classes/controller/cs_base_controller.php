@@ -67,7 +67,7 @@
 			pr("error");
 		}
 		*/
-		
+
 		public function setTemplateEngine($tplEngine) {
 			$this->_tpl_engine = $tplEngine;
 		}
@@ -299,6 +299,7 @@
 			$this->assign('environment', 'user_item_id', $current_user->getItemID());
 			$this->assign('environment', 'user_picture', $current_user->getPicture());
 			$this->assign('environment', 'room_type_commnunity', $current_context->isCommunityRoom());
+			$this->assign('environment', 'room_type_group', $current_context->isGroupRoom());
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));
@@ -316,9 +317,9 @@
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
-			
+
 			$ownRoomItem = $current_user->getOwnRoom();
-			
+
 			if ($ownRoomItem) {
 				$this->assign("own", "id", $ownRoomItem->getItemId());
 				$this->assign("own", "with_activating", $ownRoomItem->withActivatingContent());
@@ -351,11 +352,11 @@
 			$to_javascript['security']['token'] = getToken();
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
-			
+
 			if ($ownRoomItem) {
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
 			}
-				
+
 			// translations - should be managed elsewhere soon
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
 			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");

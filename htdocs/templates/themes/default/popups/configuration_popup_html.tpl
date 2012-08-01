@@ -84,8 +84,10 @@
 											<label for="room_logo">___DATE_PARTICIPANTS___:</label>
 									        <input type="radio" name="form_data[member_check]" value="always" {if $popup.room.member_check == 'always'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS___
 											<input type="radio" name="form_data[member_check]" value="never" {if $popup.room.member_check == 'never'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_NEVER___
-									        <input type="radio" name="form_data[member_check]" value="withcode" {if $popup.room.member_check == 'withcode'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE___:
-											<input type="text" class="size_200" id="code" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{else}___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE___{/if}" {if $popup.room.member_check != 'withcode'}disabled=disabled{/if} maxlength="255" size="30"/>
+									        {if !$environment.room_type_group}
+									        	<input type="radio" name="form_data[member_check]" value="withcode" {if $popup.room.member_check == 'withcode'}checked{/if}/>___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE___:
+												<input type="text" class="size_200" id="code" name="form_data[code]" value="{if isset($popup.room.code)}{$popup.room.code}{else}___PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE___{/if}" {if $popup.room.member_check != 'withcode'}disabled=disabled{/if} maxlength="255" size="30"/>
+											{/if}
 											<div class="clear"></div>
 										</div>
 
@@ -938,7 +940,7 @@
 								</div>
 							{/if}
 							</div>
-                     		
+
 							</div>
 						</div>
 					</div>
