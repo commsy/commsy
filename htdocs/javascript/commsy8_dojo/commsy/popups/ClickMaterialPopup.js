@@ -86,15 +86,29 @@ define([	"dojo/_base/declare",
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					//this.close();
-					this.reload(item_id);
+					if (this.contextId) {
+						this.close();
+						var aNode = query("a#listItem" + item_id)[0];
+						if (aNode) {
+							aNode.click();
+						}
+					} else {
+						this.reload(item_id);
+					}
 				}));
 			} else {
-				//this.close();
-				if(typeof(this.version_id) != 'undefined'){
-					this.reload(item_id+"&version_id="+this.version_id);
+				if (this.contextId) {
+					this.close();
+					var aNode = query("a#listItem" + item_id)[0];
+					if (aNode) {
+						aNode.click();
+					}
 				} else {
-					this.reload(item_id);
+					if(typeof(this.version_id) != 'undefined'){
+						this.reload(item_id+"&version_id="+this.version_id);
+					} else {
+						this.reload(item_id);
+					}
 				}
 			}
 		},

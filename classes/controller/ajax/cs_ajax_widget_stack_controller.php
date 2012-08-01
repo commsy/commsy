@@ -32,8 +32,8 @@
 			$itemManager->setOrderLimit(true);
 			
 			if ($search) $itemManager->setSearchLimit($search);
-			if ($buzzwordIds) $itemManager->setBuzzwordLimit($buzzwordIds);
-			if ($tagIds) $itemManager->setTagLimit($tagIds);
+			if ($buzzwordIds) $itemManager->setBuzzwordLimit($buzzwordIds[0]);
+			if ($tagIds) $itemManager->setTagLimit($tagIds[0]);
 			
 			/*
 			 * finaly removed?

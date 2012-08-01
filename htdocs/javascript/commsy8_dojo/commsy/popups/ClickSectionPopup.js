@@ -17,6 +17,7 @@ define([	"dojo/_base/declare",
 			this.ref_iid = customObject.ref_iid;
 			this.module = "section";
 			this.version_id = customObject.vid;
+			this.contextId = customObject.contextId;
 			
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 			
@@ -52,26 +53,40 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { ref_iid:this.ref_iid, version_id:this.version_id });
+			this.submit(search, { ref_iid:this.ref_iid, version_id:this.version_id, contextId: this.contextId });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					//this.close();
+					if (this.contextId) {
+						this.close();
+						var aNode = query("a#listItem" + item_id)[0];
+						if (aNode) {
+							aNode.click();
+						}
+					} else {
+						if(typeof(this.version_id) != 'undefined'){
+							this.reload(item_id+"&version_id="+this.version_id);
+						} else {
+							this.reload(item_id);
+						}
+					}
+				}));
+			} else {
+				if (this.contextId) {
+					this.close();
+					var aNode = query("a#listItem" + item_id)[0];
+					if (aNode) {
+						aNode.click();
+					}
+				} else {
 					if(typeof(this.version_id) != 'undefined'){
 						this.reload(item_id+"&version_id="+this.version_id);
 					} else {
 						this.reload(item_id);
 					}
-				}));
-			} else {
-				//this.close();
-				if(typeof(this.version_id) != 'undefined'){
-					this.reload(item_id+"&version_id="+this.version_id);
-				} else {
-					this.reload(item_id);
 				}
 			}
 		}

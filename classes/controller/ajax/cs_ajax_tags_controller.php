@@ -38,11 +38,24 @@
 				} else {
 					$tag_item = $tag_manager->getNewItem();
 					$tag_item->setTitle($tagName);
-					$tag_item->setContextID($this->_environment->getCurrentContextID());
+					if ($roomId == null) {
+						$tag_item->setContextID($this->_environment->getCurrentContextID());
+					} else {
+						$tag_item->setContextID($roomId);
+					}
+					
 					$tag_item->setCreatorItem($current_user);
 					$tag_item->setCreationDate(getCurrentDateTimeInMySQL());
 					$tag_item->setPosition($parentId, $parentTagItem->getChildrenList()->getCount() + 1);
-					$tag_item->save();
+					
+					if ($roomId == null) {
+						$tag_item->save();
+					} else {
+						$contextId = $this->_environment->getCurrentContextID();
+						$this->_environment->setCurrentContextID($roomId);
+						$tag_item->save();
+						$this->_environment->setCurrentContextID($contextId);
+					}
 					
 					$this->setSuccessfullDataReturn(array("tagId" => $tag_item->getItemID()));
 					echo $this->_return;
@@ -80,6 +93,7 @@
 			if($this->accessGranted()) {
 				$parentId = $this->_data["parentId"];
 				$children = $this->_data["children"];
+				$roomId = $this->_data["roomId"];
 				
 				$tag_manager = $this->_environment->getTagManager();
 				$tag2tag_manager = $this->_environment->getTag2TagManager();
@@ -96,7 +110,14 @@
 					$childItem->setPosition($parentId, $childIndex + 1);
 					
 					// save
-					$childItem->save();
+					if ($roomId == null) {
+						$childItem->save();
+					} else {
+						$contextId = $this->_environment->getCurrentContextID();
+						$this->_environment->setCurrentContextID($roomId);
+						$childItem->save();
+						$this->_environment->setCurrentContextID($contextId);
+					}
 				}
 				
 				$this->setSuccessfullDataReturn(array());
@@ -120,7 +141,6 @@
 					$rootTagItem = $tagManager->getRootTagItemFor($roomId);
 				}
 				
-				
 				// set all root ids as direct childs of the root tag - like in actionUpdateTreeStructure
 				foreach($rootIds as $rootIndex => $rootId) {
 					// get item
@@ -130,7 +150,14 @@
 					$rootItem->setPosition($rootTagItem->getItemID(), $rootIndex + 1);
 					
 					// save
-					$rootItem->save();
+					if ($roomId == null) {
+						$rootItem->save();
+					} else {
+						$contextId = $this->_environment->getCurrentContextID();
+						$this->_environment->setCurrentContextID($roomId);
+						$rootItem->save();
+						$this->_environment->setCurrentContextID($contextId);
+					}
 				}
 				
 				$this->setSuccessfullDataReturn(array());

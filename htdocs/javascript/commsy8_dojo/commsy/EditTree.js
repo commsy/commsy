@@ -53,6 +53,7 @@ define([	"dojo/_base/declare",
 			return new ForestStoreModel({
 				store:			this.store,
 				checkedAttr:	"match",
+				rootLabel:		"",
 				
 				// event handling
 				
@@ -129,7 +130,7 @@ define([	"dojo/_base/declare",
 				}));
 				
 				// send ajax request
-				this.AJAXRequest("tags", "updateTreeStructure", { parentId: parentId, children: childrenIds },
+				this.AJAXRequest("tags", "updateTreeStructure", { parentId: parentId, children: childrenIds, roomId: this.room_id },
 					Lang.hitch(this, function(response) {
 						
 					})
@@ -169,10 +170,6 @@ define([	"dojo/_base/declare",
 					model.setItemAttr(item, "title", newTagName);
 				}));
 			}), model.getItemAttr(item, "title"));
-		},
-		
-		sortABC: function() {
-			// TODO - and todo onclick registering
 		},
 		
 		deleteTagEntry: function(itemId) {
@@ -258,30 +255,33 @@ define([	"dojo/_base/declare",
 					
 					var createLinkNode = DomConstruct.create("a", {
 						className:		"nodeCreator",
-						href:			"#"
+						href:			"#",
+						innerHTML:		"Erstellen"
 					}, spanNode, "after");
 					
-						DomConstruct.create("img", {
+						/*DomConstruct.create("img", {
 							src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
-						}, createLinkNode, "last");	
+						}, createLinkNode, "last");*/
 						
 					// check if not root node
-					if (DomAttr.get(spanNode, "innerHTML") !== "ROOT") {
+					if (DomAttr.get(spanNode, "innerHTML") !== "ROOT" && DomAttr.get(spanNode, "innerHTML") !== "") {
 						var renameLinkNode = DomConstruct.create("a", {
-							href:			"#"
+							href:			"#",
+							innerHTML:		" | Bearbeiten"
 						}, createLinkNode, "after");
 						
-							DomConstruct.create("img", {
+							/*DomConstruct.create("img", {
 								src:		this.from_php.template.tpl_path + "img/btn_edit_rc.gif"
-							}, renameLinkNode, "last");
+							}, renameLinkNode, "last");*/
 						
 						var deleteLinkNode = DomConstruct.create("a", {
-							href:			"#"
+							href:			"#",
+							innerHTML:		" | Löschen"
 						}, renameLinkNode, "after");
 						
-							DomConstruct.create("img", {
+							/*DomConstruct.create("img", {
 								src:		this.from_php.template.tpl_path + "img/btn_del_tag.gif"
-							}, deleteLinkNode, "last");
+							}, deleteLinkNode, "last");*/
 					}
 					
 					// get widget id from appropriated dijitTreeNode
@@ -298,7 +298,7 @@ define([	"dojo/_base/declare",
 						}));
 						
 						// check if not root node
-						if (DomAttr.get(spanNode, "innerHTML") !== "ROOT") {
+						if (DomAttr.get(spanNode, "innerHTML") !== "ROOT" && DomAttr.get(spanNode, "innerHTML") !== "") {
 							On(renameLinkNode, "click", Lang.hitch(this, function(event) {
 								this.renameTagEntry(itemId);
 							}));

@@ -175,6 +175,14 @@ define([	"dojo/_base/declare",
 			}
 		},
 		
+		onSortABC: function() {
+			this.AJAXRequest("tags", "sortABC", { roomId: this.contextId },
+				Lang.hitch(this, function(response) {
+					this.close();
+				})
+			);
+		},
+		
 		onMergeTags: function() {
 			// get the two ids to merge
 			var mergeIdOne = DomAttr.get(Query("select#tag_merge_one")[0], "value");

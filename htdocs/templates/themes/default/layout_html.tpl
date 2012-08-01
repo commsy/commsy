@@ -35,9 +35,9 @@
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
 		</script>
 
-		<script src="javascript/commsy8_dojo/config.js?token=1"></script>
-		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=1"></script>
-		<script src="javascript/commsy8_dojo/main.js?token=1"></script>
+		<script src="javascript/commsy8_dojo/config.js?token=2"></script>
+		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=2"></script>
+		<script src="javascript/commsy8_dojo/main.js?token=2"></script>
 
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 

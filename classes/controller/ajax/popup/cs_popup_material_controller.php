@@ -158,6 +158,9 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 					$file = $file_list->getNext();
 				}
 				$this->_popup_controller->assign('item', 'files', $attachment_infos);
+				
+				$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
+				$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
 
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
@@ -258,6 +261,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         	
         	$manager = $this->_environment->getManager($type);
         	$current_context = $manager->getItem($additional["contextId"]);
+        	
+        	if ($type === CS_PRIVATEROOM_TYPE) {
+        		$current_user = $current_user->getRelatedPrivateRoomUserItem();
+        	}
         }
 
         $current_iid = $form_data['iid'];
@@ -332,8 +339,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 if ( !isset($item) ) {
                     $manager = $environment->getMaterialManager();
                     $item = $manager->getNewItem();
-                    $item->setContextID($environment->getCurrentContextID());
-                    $current_user = $environment->getCurrentUserItem();
+                    $item->setContextID($current_context->getItemID());
                     $item->setCreatorItem($current_user);
                     $item->setCreationDate(getCurrentDateTimeInMySQL());
                     $item_is_new = true;
@@ -375,12 +381,15 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 // this will handle already attached files as well as adding new files
                 $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, $form_data["files"]);
                 
-                if(isset($form_data['private_editing'])) {
+                if (isset($form_data["external_viewer"])) {
                 	$item->setPrivateEditing('0');
                 } else {
-                	$item->setPrivateEditing('1');
+                	if(isset($form_data['private_editing'])) {
+                		$item->setPrivateEditing('0');
+                	} else {
+                		$item->setPrivateEditing('1');
+                	}
                 }
-                
                 
                 if ( isset($form_data['hide']) ) {
                     // variables for datetime-format of end and beginning
