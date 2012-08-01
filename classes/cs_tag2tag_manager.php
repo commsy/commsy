@@ -468,6 +468,14 @@ class cs_tag2tag_manager extends cs_manager {
       $query .= ' ORDER BY sorting_place';
 
       $result = $this->_db_connector->performQuery($query);
+      
+      /**/
+      /* TODO: REMOVE!!!!! */
+      $file = fopen("tag2tag_log.txt", "a+");
+      fputs($file, date("d-m-Y H:i:s") . " - " . $query . "\n");
+      fclose($file);
+      /**/
+      
       if (!isset($result)) {
          include_once('functions/error_functions.php');
          trigger_error('Problems with links from query: "'.$query.'"',E_USER_WARNING);

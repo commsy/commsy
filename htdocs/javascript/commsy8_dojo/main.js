@@ -11,7 +11,7 @@ require([	"dojo/_base/declare",
 			         	"dojo/dom-attr",
 			         	"dojo/NodeList-traverse",
 			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, ready) {
-				
+			    
 				// initiate popup handler
 				require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
 					var aNode = query("a#tm_settings")[0];
@@ -32,9 +32,6 @@ require([	"dojo/_base/declare",
 						var handler = new ClipboardPopup(aClipboardNode, query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
 					});
 				}
-				
-				
-				
 				
 				/**/
 				
@@ -84,10 +81,6 @@ require([	"dojo/_base/declare",
 				
 				
 				/**/
-				
-				
-				
-				
 				
 				// widget popups
 				var aStackNode = query("a#tm_stack")[0];

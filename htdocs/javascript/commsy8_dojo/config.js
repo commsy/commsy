@@ -1,7 +1,7 @@
 var dojoConfig = {
 	has: {
-		"dojo-firebug":			true,
-		"dojo-debug-messages":	true
+		"dojo-firebug":			false,
+		"dojo-debug-messages":	false
 	},
 	baseUrl:					"javascript/commsy8_dojo/",
 	tlmSiblingOfDojo:			false,
@@ -15,7 +15,8 @@ var dojoConfig = {
 	           					{ name: "cbtree", location: "libs/cbtree" }
 	],
 	async:						true,
-	parseOnLoad:				false
+	parseOnLoad:				false,
+	isDebug:					false
 }
 
 var CKEDITOR_BASEPATH = "javascript/commsy8_dojo/libs/ckeditor/";
