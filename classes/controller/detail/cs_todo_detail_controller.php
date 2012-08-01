@@ -387,20 +387,23 @@
 					if(!$file_list->isEmpty()) {
 						$file = $file_list->getFirst();
 						while($file) {
-							if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
+							if((!isset($_GET['download']) || $_GET['download'] !== 'zip')){
+								if(in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
+									$file_string = '<a class="lightbox_'.$this->_item->getItemID().'" href="' . $file->getUrl() . '" target="blank">';
+								}else{
+									$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
+								}
+									$name = $file->getDisplayName();
+									//TODO:
+									//$name = $converter->compareWithSearchText($name);
+									$name = $converter->text_as_html_short($name);
+									$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
+							} else{
+								$name = $file->getDisplayName();
+								//TODO:
+								//$name = $converter->compareWithSearchText($name);
+								$name = $converter->text_as_html_short($name);
 								$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
-								$name = $file->getDisplayName();
-								//TODO:
-								//$name = $converter->compareWithSearchText($name);
-								$name = $converter->text_as_html_short($name);
-
-								$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
-
-							} else {
-								$name = $file->getDisplayName();
-								//TODO:
-								//$name = $converter->compareWithSearchText($name);
-								$name = $converter->text_as_html_short($name);
 								$file_string = $file->getFileIcon() . ' ' . $name;
 							}
 							$tmp_array = array();
