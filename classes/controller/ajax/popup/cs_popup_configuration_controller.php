@@ -317,12 +317,18 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						$current_context->generateLayoutImages();
 
 						if ($additional['action'] == 'delete_room'){
-						   $current_context->delete();
-						   $current_context->save();
-						}
-						
-						// set return
-						$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+                          $current_context->delete();
+                          $current_context->save();
+                          
+                          if ($current_context->isGroupRoom()) {
+                          	$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getLinkedProjectItemID());
+                          } else {
+                          	$this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentPortalID());
+                          }
+                       } else {
+                          // set return
+                          $this->_popup_controller->setSuccessfullItemIDReturn($current_context->getItemID());
+                       }
 					}
 
 					break;

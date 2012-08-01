@@ -459,7 +459,11 @@ define([	"dojo/_base/declare",
 					}
 				}));
 			} else {
-				location.reload();
+				if (!item_id) {
+					location.reload();
+				} else {
+					location.href = "commsy.php?cid=" + item_id;
+				}
 			}
 		}
 	});
