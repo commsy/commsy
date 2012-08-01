@@ -194,7 +194,7 @@ class misc_text_converter {
       //$text = $this->_activate_urls($text);
       //$text = $this->_display_headers($text);
       //$text = $this->_format_html_long($text);
-      $text = $this->_parseText2ID($text);
+      //$text = $this->_parseText2ID($text);
       //$text = $this->_decode_backslashes_2($text);
       //$text = $this->_delete_unnecassary_br($text);
       //$text = $this->_br_with_nl($text);
