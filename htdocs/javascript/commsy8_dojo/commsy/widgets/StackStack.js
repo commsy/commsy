@@ -69,6 +69,7 @@ define([	"dojo/_base/declare",
 								var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
 								
 									var aNode = DomConstruct.create("a", {
+										"id":		"listItem" + item.itemId,
 										href:		"#",
 										innerHTML:	item.title
 									}, pNode, "last");
@@ -140,7 +141,7 @@ define([	"dojo/_base/declare",
 				return buzzword.id == buzzwordId;
 			});
 			
-			if (filtered.length == 0) {
+			if (filtered.length == 0 && this.restrictions.buzzwords.length == 0) {
 				this.restrictions.buzzwords.push({ id: buzzwordId, name: buzzwordName });
 				
 				// update restriction list
@@ -156,7 +157,7 @@ define([	"dojo/_base/declare",
 				return tag.id == tagId;
 			});
 			
-			if (filtered.length == 0) {
+			if (filtered.length == 0 && this.restrictions.tags.length == 0) {
 				this.restrictions.tags.push({ id: tagId, name: tagName });
 				
 				// update restriction list
