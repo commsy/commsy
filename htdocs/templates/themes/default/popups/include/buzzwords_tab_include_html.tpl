@@ -9,6 +9,7 @@
 				{/foreach}
 				<div class="clear"></div>
 			</ul>
+			<div style="margin-left:10px">___BUZZWORDS_NEW_BUTTON___: <input name="form_data[new_buzzword]" value="" type="text" /></div>
 			<div class="clear"></div>
 		</div>
 	</div>

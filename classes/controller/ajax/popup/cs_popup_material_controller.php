@@ -158,12 +158,12 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 					$file = $file_list->getNext();
 				}
 				$this->_popup_controller->assign('item', 'files', $attachment_infos);
-				
+
 				if ($data["contextId"]) {
 					$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
 					$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
 				}
-				
+
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
@@ -252,18 +252,18 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
-       
+
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
-        
+
         if ($additional["contextId"]) {
         	$itemManager = $this->_environment->getItemManager();
         	$type = $itemManager->getItemType($additional["contextId"]);
-        	
+
         	$manager = $this->_environment->getManager($type);
         	$current_context = $manager->getItem($additional["contextId"]);
-        	
+
         	if ($type === CS_PRIVATEROOM_TYPE) {
         		$current_user = $current_user->getRelatedPrivateRoomUserItem();
         	}
@@ -275,7 +275,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         }
 
         $translator = $this->_environment->getTranslationObject();
-        
+
         if($current_iid === 'NEW') {
             $item = null;
         } else {
@@ -355,7 +355,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                    $item->setVersionID($new_version_id);
                    $infoBox_forAutoNewVersion = '';
                 }
-                
+
                 // Set modificator and modification date
                 $item->setModificatorItem($current_user);
 
@@ -381,7 +381,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
                 // this will handle already attached files as well as adding new files
                 $this->_popup_controller->getUtils()->setFilesForItem($item, $file_ids, $form_data["files"]);
-                
+
                 if (isset($form_data["external_viewer"])) {
                 	$item->setPrivateEditing('0');
                 } else {
@@ -391,7 +391,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 		$item->setPrivateEditing('1');
                 	}
                 }
-                
+
                 if ( isset($form_data['hide']) ) {
                     // variables for datetime-format of end and beginning
                     $dt_hiding_time = '00:00:00';
@@ -522,7 +522,48 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
 
                 // buzzwords
-                $item->setBuzzwordListByID($form_data['buzzwords']);
+                // buzzwords
+				$new_buzzword = '';
+                $buzzwords = array();
+				$buzzword_manager = $this->_environment->getLabelManager();
+				$buzzword_manager->resetLimits();
+				$buzzword_manager->setContextLimit($environment->getCurrentContextID());
+				$buzzword_manager->setTypeLimit('buzzword');
+				$buzzword_manager->select();
+				$buzzword_list = $buzzword_manager->get();
+				$buzzword_ids = $buzzword_manager->getIDArray();
+                if (isset($form_data['buzzwords'])){
+                	foreach($form_data['buzzwords'] as $buzzword){
+                  		if (!in_array($buzzword,$buzzword_ids)){
+                  			$new_buzzword = $buzzword;
+                  		}else{
+                  			$buzzwords[] =	$buzzword;
+                  		}
+                	}
+                }
+                if (!empty($new_buzzword)){
+					$isDuplicate = false;
+					$buzzword_item = $buzzword_list->getFirst();
+					while($buzzword_item) {
+						if($buzzword_item->getName() === $new_buzzword) {
+							$isDuplicate = true;
+							$buzzwords[] = $buzzword_item->getItemID();
+							break;
+						}
+						$buzzword_item = $buzzword_list->getNext();
+					}
+					if (!$isDuplicate){
+						$buzzword_manager = $environment->getBuzzwordManager();
+						$buzzword_item = $buzzword_manager->getNewItem();
+						$buzzword_item->setLabelType('buzzword');
+						$buzzword_item->setName($new_buzzword);
+						$buzzword_item->setCreatorItem($current_user);
+						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+						$buzzword_item->save();
+						$buzzwords[] = $buzzword_item->getItemID();
+					}
+                }
+                $item->setBuzzwordListByID($buzzwords);
 
                 // tags
                 $item->setTagListByID($form_data['tags']);

@@ -51,7 +51,7 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
  				$this->_popup_controller->assign('item', 'status', $item->getInternalStatus());
  				$this->_popup_controller->assign('item', 'time_type', $item->getTimeType());
- 				
+
 				if ($data["contextId"]) {
 					$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
 					$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
@@ -144,19 +144,19 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
-        
+
         if ($additional["contextId"]) {
         	$itemManager = $this->_environment->getItemManager();
         	$type = $itemManager->getItemType($additional["contextId"]);
-        	 
+
         	$manager = $this->_environment->getManager($type);
         	$current_context = $manager->getItem($additional["contextId"]);
-        	 
+
         	if ($type === CS_PRIVATEROOM_TYPE) {
         		$current_user = $current_user->getRelatedPrivateRoomUserItem();
         	}
         }
-        
+
         $current_iid = $form_data['iid'];
         if (isset($form_data['editType'])){
 			$this->_edit_type = $form_data['editType'];
@@ -314,7 +314,49 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
 
 
                 // buzzwords
-                $todo_item->setBuzzwordListByID($form_data['buzzwords']);
+                // buzzwords
+				$new_buzzword = '';
+                $buzzwords = array();
+				$buzzword_manager = $this->_environment->getLabelManager();
+				$buzzword_manager->resetLimits();
+				$buzzword_manager->setContextLimit($environment->getCurrentContextID());
+				$buzzword_manager->setTypeLimit('buzzword');
+				$buzzword_manager->select();
+				$buzzword_list = $buzzword_manager->get();
+				$buzzword_ids = $buzzword_manager->getIDArray();
+                if (isset($form_data['buzzwords'])){
+                	foreach($form_data['buzzwords'] as $buzzword){
+                  		if (!in_array($buzzword,$buzzword_ids)){
+                  			$new_buzzword = $buzzword;
+                  		}else{
+                  			$buzzwords[] =	$buzzword;
+                  		}
+                	}
+                }
+                if (!empty($new_buzzword)){
+					$isDuplicate = false;
+					$buzzword_item = $buzzword_list->getFirst();
+					while($buzzword_item) {
+						if($buzzword_item->getName() === $new_buzzword) {
+							$isDuplicate = true;
+							$buzzwords[] = $buzzword_item->getItemID();
+							break;
+						}
+						$buzzword_item = $buzzword_list->getNext();
+					}
+					if (!$isDuplicate){
+						$buzzword_manager = $environment->getBuzzwordManager();
+						$buzzword_item = $buzzword_manager->getNewItem();
+						$buzzword_item->setLabelType('buzzword');
+						$buzzword_item->setName($new_buzzword);
+						$buzzword_item->setCreatorItem($current_user);
+						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+						$buzzword_item->save();
+						$buzzwords[] = $buzzword_item->getItemID();
+					}
+                }
+
+                $todo_item->setBuzzwordListByID($buzzwords);
 
                 // tags
                 $todo_item->setTagListByID($form_data['tags']);
