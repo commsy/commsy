@@ -949,7 +949,8 @@
 				$return[] = $temp_array;
 			}
 
-			if($context_item->isWikiActive()) {
+			global $c_pmwiki;
+			if($c_pmwiki and $context_item->isWikiActive()) {
 				if($this->_item->isExportToWiki()) {
 					$temp_array = array();
 					$temp_array[] = $translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
@@ -958,7 +959,8 @@
 				}
 			}
 
-			if($context_item->isWordpressActive()) {
+			global $c_wordpress;
+			if($c_wordpress and $context_item->isWordpressActive()) {
 				if($this->_item->isExporttoWordpress()) {
 					$temp_array = array();
 					$temp_array[] = $translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS_LINK');
@@ -1157,20 +1159,23 @@
 			*/
 
 			// wordpress export
-			$wordpress_manager = $this->_environment->getWordpressManager();
-			if ( $this->_item->mayEdit($current_user)
-			     and $context_item->isWordpressActive()
-			     and $wordpress_manager->isUserAllowedToExportItem($context_item->getWordpressId(),$current_user->getUserID())
-			     and !isset($_GET['version_id'])
-			   ) {
-			   $this->assign('detail', 'export_to_wordpress', true);
-			} else {
-			   if($context_item->isWordpressActive()){
-			      $this->assign('detail', 'export_to_wordpress_not_allowed', true);
-			   }
+			global $c_wordpress;
+			if($c_wordpress and $context_item->isWordpressActive() and !isset($_GET['version_id'])){
+   			$wordpress_manager = $this->_environment->getWordpressManager();
+   			if ( $this->_item->mayEdit($current_user)
+   			     #and $wordpress_manager->isUserAllowedToExportItem($context_item->getWordpressId(),$current_user->getUserID())
+   			   ) {
+   			   $this->assign('detail', 'export_to_wordpress', true);
+   			} else {
+   			   if($context_item->isWordpressActive()){
+   			      $this->assign('detail', 'export_to_wordpress_not_allowed', true);
+   			   }
+   			}
 			}
 			
-			if($context_item->isWikiActive() and !isset($_GET['version_id'])){
+			// wiki export
+			global $c_pmwiki;
+			if($c_pmwiki and $context_item->isWikiActive() and !isset($_GET['version_id'])){
 			   $this->assign('detail', 'export_to_wiki', true);
 			}
 

@@ -141,8 +141,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$this->assign('detail', 'content', $this->getDetailContent());
 			
 			// wiki export
+			global $c_pmwiki;
 			$context_item = $this->_environment->getCurrentContextItem();	
-			if($context_item->isWikiActive() and !isset($_GET['version_id'])){
+			if($c_pmwiki and $context_item->isWikiActive() and !isset($_GET['version_id'])){
 			   $this->assign('detail', 'export_to_wiki', true);
 			}
 		}
