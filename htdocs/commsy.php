@@ -941,6 +941,8 @@ if(isset($c_smarty) && $c_smarty === true) {
 		} elseif($environment->getCurrentModule() === 'home' || $environment->getCurrentModule() === 'search') {
 			$controller_name = 'cs_' . $environment->getCurrentModule() . '_controller';
 			require_once('classes/controller/' . $controller_name . '.php');
+		} elseif($environment->getCurrentModule() === 'content' && $environment->getCurrentFunction() === 'detail') {
+			require_once('pages/content_detail.php');
 		} else {
 			$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
 			require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');
