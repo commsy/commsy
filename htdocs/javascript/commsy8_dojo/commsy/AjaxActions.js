@@ -7,9 +7,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
-        	"dojo/dom-style",
-        	"dijit/form/Button",
-        	"dijit/_TemplatedMixin"], function(declare, BaseClass, On, Lang, FX, Query, DomClass, DomAttr, DomConstruct, DomStyle) {
+        	"dojo/dom-style"], function(declare, BaseClass, On, Lang, FX, Query, DomClass, DomAttr, DomConstruct, DomStyle) {
 	return declare(BaseClass, {
 		constructor: function(args) {
 			args = args || {};
@@ -80,9 +78,9 @@ define([	"dojo/_base/declare",
 			this.AJAXRequest("actions", "exportToWiki", { itemId: itemId }, Lang.hitch(this, function(response) {
 				this.reload(itemId);
 			}));
-		},
+		}
 		
-		closeParticipation: function(customObject) {
+		/*closeParticipation: function(customObject) {
 			this.button_close_participation_room = new dijit.form.Button({
 				label:		"Teilnahme beenden in diesem Raum",
 				onClick:	Lang.hitch(this, function(event) {
@@ -156,7 +154,7 @@ define([	"dojo/_base/declare",
 			dojo.place(this.button_delete_participation_portal.domNode, this.dialog.containerNode);
 			dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
 			this.dialog.show();
-		}
+		}*/
 		
 	});
 });
