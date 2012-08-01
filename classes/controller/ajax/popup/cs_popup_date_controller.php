@@ -1111,7 +1111,7 @@ class cs_popup_date_controller {
          if(empty($form_data['recurring_end_date'])){
                $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
          } else {
-            if(!($form_data['recurring_end_date'] == '--' and $form_data['iid'] != 'NEW')){
+            if(!isset($form_data['recurring_ignore'])){
                if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$form_data['recurring_end_date'],'00:00')) {
                   $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
                }
