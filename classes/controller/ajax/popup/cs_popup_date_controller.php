@@ -1052,66 +1052,66 @@ class cs_popup_date_controller {
    function checkValues ($form_data) {
       $translator = $this->_environment->getTranslationObject();
       $result = array();
-      if ( !empty($form_data['recurring'])){
-         if($form_data['recurring_select'] == 'daily'){
-            if(empty($form_data['recurring_day'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_DAY_ERROR');
-            } else {
-               if(!is_numeric($form_data['recurring_day'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
-               }
-            }
-         } elseif($form_data['recurring_select'] == 'weekly'){
-            if(empty($form_data['recurring_week'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_WEEK_ERROR');
-            } else {
-               if(!is_numeric($form_data['recurring_week'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
-               }
-            }
-            if(empty($form_data['recurring_week_days'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_WEEKDAYS_ERROR');
-            }
-         } elseif($form_data['recurring_select'] == 'monthly'){
-            if(empty($form_data['recurring_month'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_MONTH_ERROR');
-            } else {
-               if(!is_numeric($form_data['recurring_month'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
-               }
-            }
-         } elseif($form_data['recurring_select'] == 'yearly'){
-            if(empty($form_data['recurring_year'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_YEAR_ERROR');
-            } else {
-               if(!is_numeric($form_data['recurring_year'])){
-                  $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+      if(!isset($form_data['recurring_ignore'])){
+         if ( !empty($form_data['recurring'])){
+            if($form_data['recurring_select'] == 'daily'){
+               if(empty($form_data['recurring_day'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_DAY_ERROR');
                } else {
-                  if(($form_data['recurring_year_every'] == '1'
-                      or $form_data['recurring_year_every'] == '3'
-                      or $form_data['recurring_year_every'] == '5'
-                      or $form_data['recurring_year_every'] == '7'
-                      or $form_data['recurring_year_every'] == '8'
-                      or $form_data['recurring_year_every'] == '10'
-                      or $form_data['recurring_year_every'] == '12') and ($form_data['recurring_year'] > 31)){
-                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                  if(!is_numeric($form_data['recurring_day'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
                   }
-                  if(($form_data['recurring_year_every'] == '4'
-                      or $form_data['recurring_year_every'] == '6'
-                      or $form_data['recurring_year_every'] == '9'
-                      or $form_data['recurring_year_every'] == '11') and ($form_data['recurring_year'] > 30)){
-                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+               }
+            } elseif($form_data['recurring_select'] == 'weekly'){
+               if(empty($form_data['recurring_week'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_WEEK_ERROR');
+               } else {
+                  if(!is_numeric($form_data['recurring_week'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
                   }
-                  if(($form_data['recurring_year_every'] == '2') and ($form_data['recurring_year'] > 29)){
-                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+               }
+               if(empty($form_data['recurring_week_days'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_WEEKDAYS_ERROR');
+               }
+            } elseif($form_data['recurring_select'] == 'monthly'){
+               if(empty($form_data['recurring_month'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_MONTH_ERROR');
+               } else {
+                  if(!is_numeric($form_data['recurring_month'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+                  }
+               }
+            } elseif($form_data['recurring_select'] == 'yearly'){
+               if(empty($form_data['recurring_year'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_YEAR_ERROR');
+               } else {
+                  if(!is_numeric($form_data['recurring_year'])){
+                     $result[] = $translator->getMessage('DATES_RECURRING_NUMERIC_ERROR');
+                  } else {
+                     if(($form_data['recurring_year_every'] == '1'
+                         or $form_data['recurring_year_every'] == '3'
+                         or $form_data['recurring_year_every'] == '5'
+                         or $form_data['recurring_year_every'] == '7'
+                         or $form_data['recurring_year_every'] == '8'
+                         or $form_data['recurring_year_every'] == '10'
+                         or $form_data['recurring_year_every'] == '12') and ($form_data['recurring_year'] > 31)){
+                        $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                     }
+                     if(($form_data['recurring_year_every'] == '4'
+                         or $form_data['recurring_year_every'] == '6'
+                         or $form_data['recurring_year_every'] == '9'
+                         or $form_data['recurring_year_every'] == '11') and ($form_data['recurring_year'] > 30)){
+                        $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                     }
+                     if(($form_data['recurring_year_every'] == '2') and ($form_data['recurring_year'] > 29)){
+                        $result[] = $translator->getMessage('DATES_RECURRING_YEAR_TO_MANY_DAYS_ERROR');
+                     }
                   }
                }
             }
-         }
-         if(empty($form_data['recurring_end_date'])){
-               $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
-         } else {
-            if(!isset($form_data['recurring_ignore'])){
+            if(empty($form_data['recurring_end_date'])){
+                  $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
+            } else {
                if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$form_data['recurring_end_date'],'00:00')) {
                   $result[] = $translator->getMessage('DATES_DATE_NOT_VALID');
                }
