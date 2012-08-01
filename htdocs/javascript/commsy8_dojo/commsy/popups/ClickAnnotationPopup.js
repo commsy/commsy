@@ -15,6 +15,8 @@ define([	"dojo/_base/declare",
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
 			this.module = "annotation";
+			this.contextId = customObject.contextId;
+			this.ref_iid = customObject.annotatedId;
 			
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 			
@@ -51,7 +53,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search);
+			this.submit(search, { contextId: this.contextId, annotatedId: this.ref_iid });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {

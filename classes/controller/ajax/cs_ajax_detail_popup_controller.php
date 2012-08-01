@@ -46,6 +46,8 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     			// determ the template file
     			$controller->_tpl_file = "popups/" . $this->_module . "_detail_popup";
     			
+    			$controller->assign("popup", "overflow", true);
+    			
     			// smarty	
     			global $c_smarty;
     			if($c_smarty === true) {

@@ -17,6 +17,7 @@ define([	"dojo/_base/declare",
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
 			this.module = "discarticle";
+			this.contextId = customObject.contextId;
 			
 			if(customObject.answerTo) {
 				this.answerTo = customObject.answerTo;
@@ -55,19 +56,33 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { answerTo: this.answerTo, discussionId: this.uri_object.iid });
+			this.submit(search, { answerTo: this.answerTo, discussionId: this.uri_object.iid, contextId: this.contextId });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					//this.close();
-					this.reload(item_id);
+					if (this.contextId) {
+						this.close();
+						var aNode = query("a#listItem" + item_id)[0];
+						if (aNode) {
+							aNode.click();
+						}
+					} else {
+						this.reload(item_id);
+					}
 				}));
 			} else {
-				//this.close();
-				this.reload(item_id);
+				if (this.contextId) {
+					this.close();
+					var aNode = query("a#listItem" + item_id)[0];
+					if (aNode) {
+						aNode.click();
+					}
+				} else {
+					this.reload(item_id);
+				}
 			}
 		},
 	});

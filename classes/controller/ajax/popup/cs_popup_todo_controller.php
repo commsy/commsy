@@ -51,6 +51,11 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
  				$this->_popup_controller->assign('item', 'status', $item->getInternalStatus());
  				$this->_popup_controller->assign('item', 'time_type', $item->getTimeType());
+ 				
+				if ($data["contextId"]) {
+					$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
+					$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
+				}
 
 			    $status_array = array();
 			    $temp_array['text']  = $translator->getMessage('TODO_NOT_STARTED');
@@ -139,7 +144,19 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
-
+        
+        if ($additional["contextId"]) {
+        	$itemManager = $this->_environment->getItemManager();
+        	$type = $itemManager->getItemType($additional["contextId"]);
+        	 
+        	$manager = $this->_environment->getManager($type);
+        	$current_context = $manager->getItem($additional["contextId"]);
+        	 
+        	if ($type === CS_PRIVATEROOM_TYPE) {
+        		$current_user = $current_user->getRelatedPrivateRoomUserItem();
+        	}
+        }
+        
         $current_iid = $form_data['iid'];
         if (isset($form_data['editType'])){
 			$this->_edit_type = $form_data['editType'];
@@ -203,7 +220,6 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
                     $todo_manager = $environment->getTodoManager();
                     $todo_item = $todo_manager->getNewItem();
                     $todo_item->setContextID($environment->getCurrentContextID());
-                    $current_user = $environment->getCurrentUserItem();
                     $todo_item->setCreatorItem($current_user);
                     $todo_item->setCreationDate(getCurrentDateTimeInMySQL());
                     $item_is_new = true;

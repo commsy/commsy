@@ -46,6 +46,11 @@
 				$this->_popup_controller->assign('item', 'files', $attachment_infos);
 
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
+				
+				if ($data["contextId"]) {
+					$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
+					$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
+				}
 
 				$activating = false;
 				if($current_context->withActivatingContent()) {
@@ -78,7 +83,19 @@
 
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
-
+			
+			if ($additional["contextId"]) {
+				$itemManager = $this->_environment->getItemManager();
+				$type = $itemManager->getItemType($additional["contextId"]);
+				 
+				$manager = $this->_environment->getManager($type);
+				$current_context = $manager->getItem($additional["contextId"]);
+				 
+				if ($type === CS_PRIVATEROOM_TYPE) {
+					$current_user = $current_user->getRelatedPrivateRoomUserItem();
+				}
+			}
+			
 			$current_iid = $form_data['iid'];
 			if($current_iid === 'NEW') {
 				$discussion_item = null;

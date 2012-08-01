@@ -159,9 +159,11 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 				}
 				$this->_popup_controller->assign('item', 'files', $attachment_infos);
 				
-				$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
-				$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
-
+				if ($data["contextId"]) {
+					$this->_popup_controller->assign('item', 'external_viewer', $item->issetExternalViewerStatus());
+					$this->_popup_controller->assign('item', 'external_viewer_accounts', $item->getExternalViewerString());
+				}
+				
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
