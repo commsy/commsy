@@ -113,11 +113,9 @@
                      break;
                }
          
-               #pr($tempMessage);
-               
                if ( !empty($command)
                     and ( isOption($command,$tempMessage)
-                          or isOption($command,$translator->getMessage('INDEX_ACTION_SEND_MAIL_BUTTON'))
+                          or isOption(strtolower($command),strtolower($translator->getMessage('INDEX_ACTION_SEND_MAIL_BUTTON')))
                         )
                   ) {
                   #pr(4);
