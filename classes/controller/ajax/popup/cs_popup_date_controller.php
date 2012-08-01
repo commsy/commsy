@@ -247,7 +247,6 @@ class cs_popup_date_controller {
 	            $values_before_change['description'] = $date_item->getDescription();
 
                 // Set modificator and modification date
-                $current_user = $environment->getCurrentUserItem();
                 $date_item->setModificatorItem($current_user);
 
                 // Set attributes

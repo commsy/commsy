@@ -226,7 +226,6 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
                 }
 
                 // Set modificator and modification date
-                $current_user = $environment->getCurrentUserItem();
                 $todo_item->setModificatorItem($current_user);
 
                 // Set attributes
