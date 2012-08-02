@@ -695,10 +695,6 @@
                $mail_success = $mail->send();
                $mail_error_array = $mail->getErrorArray();
                unset($mail);
-               
-               redirect($environment->getCurrentContextID(),
-                        $environment->getCurrentModule(),
-                        'index');
             }
             unset($user);
          }
@@ -713,6 +709,8 @@
          }
          unset($user_manager);
          unset($admin);
+         
+         redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index');
       }
 	}
 ?>
