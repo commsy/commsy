@@ -15,6 +15,10 @@
 			if($utils->showTags()) {
 				$item_id = $this->_data['item_id'];
 				$room_id = $this->_data["room_id"];
+				
+				if ($room_id !== null) {
+					$this->_environment->changeContextToPrivateRoom($room_id);
+				}
 					
 				if($item_id !== null && $item_id !== 'NEW') {
 					// get item

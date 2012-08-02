@@ -296,38 +296,42 @@
 				</div>
 
 				<div class="column_590">
-					<a name="step_new"></a>
-					<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post" enctype="multipart/form-data">
-						<div class="post_content">
-							<h4>{$step@total + 1}. </h4>
-							<input type="hidden" value="NEW" name="iid"/>
-							<input type="hidden" value="{$detail.content.item_id}" name="todo_id"/>
-							<input type="hidden" value="" name="ref_position"/>
-							<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "step"} class="missing"{/if}/> <br>
-							___STEP_MINUTES___: <input type="text" size="4" name="form_data[minutes]" />
-							<select size="1" name="form_data[time_type]">
-								<option value="1">___TODO_TIME_MINUTES___</option>
-								<option value="2">___TODO_TIME_HOURS___</option>
-								<option value="3">___TODO_TIME_DAYS___</option>
-							</select>
-
-							<div class="editor_content">
-								<div id="ckeditor_step" class="ckeditor"></div>
+					{if isset($popup.overflow) && $popup.overflow}
+						<input class="open_popup" type="submit" data-custom="module: 'step', iid: 'NEW', ref_iid: {$detail.item_id}" value="___COMMON_NEW_STEP_EDIT___" />
+					{else}
+						<a name="step_new"></a>
+						<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post" enctype="multipart/form-data">
+							<div class="post_content">
+								<h4>{$step@total + 1}. </h4>
+								<input type="hidden" value="NEW" name="iid"/>
+								<input type="hidden" value="{$detail.content.item_id}" name="todo_id"/>
+								<input type="hidden" value="" name="ref_position"/>
+								<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "step"} class="missing"{/if}/> <br>
+								___STEP_MINUTES___: <input type="text" size="4" name="form_data[minutes]" />
+								<select size="1" name="form_data[time_type]">
+									<option value="1">___TODO_TIME_MINUTES___</option>
+									<option value="2">___TODO_TIME_HOURS___</option>
+									<option value="3">___TODO_TIME_DAYS___</option>
+								</select>
+	
+								<div class="editor_content">
+									<div id="ckeditor_step" class="ckeditor"></div>
+								</div>
+	
+								{*
+								<div id="files_finished"></div>
+	
+								<div class="uploader">
+								   <input class="fileSelector"></input>
+	
+								   <div class="fileList"></div>
+								</div>
+								*}
+	
+								<input class="popup_button" style="margin-bottom:10px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
 							</div>
-
-							{*
-							<div id="files_finished"></div>
-
-							<div class="uploader">
-							   <input class="fileSelector"></input>
-
-							   <div class="fileList"></div>
-							</div>
-							*}
-
-							<input class="popup_button" style="margin-bottom:10px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
-						</div>
-					</form>
+						</form>
+					{/if}
 				</div>
 
 				<div class="clear"> </div>

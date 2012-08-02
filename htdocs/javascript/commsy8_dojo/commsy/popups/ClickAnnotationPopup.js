@@ -17,6 +17,7 @@ define([	"dojo/_base/declare",
 			this.module = "annotation";
 			this.contextId = customObject.contextId;
 			this.ref_iid = customObject.annotatedId;
+			this.version_id = customObject.vid;
 			
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 			
@@ -53,18 +54,33 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { contextId: this.contextId, annotatedId: this.ref_iid });
+			this.submit(search, { contextId: this.contextId, annotatedId: this.ref_iid, versionId: this.version_id });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					//this.close();
-					this.reload(item_id);
+					if (this.contextId) {
+						this.close();
+						var aNode = query("a#listItem" + item_id)[0];
+						if (aNode) {
+							aNode.click();
+						}
+					} else {
+						this.reload(item_id);
+					}
 				}));
 			} else {
-				//this.close();
+				if (this.contextId) {
+					this.close();
+					var aNode = query("a#listItem" + item_id)[0];
+					if (aNode) {
+						aNode.click();
+					}
+				} else {
+					this.reload(item_id);
+				}
 				this.reload(item_id);
 			}
 		},

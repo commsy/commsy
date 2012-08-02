@@ -59,6 +59,16 @@ define([	"dojo/_base/declare",
 					handler.init(node, customObject);
 				});
 			}));
+			
+			// discussion tree
+			var treeNode = Query("div#discussion_tree")[0];
+			
+			if (treeNode) {
+				require(["commsy/DiscussionTree"], function(DiscussionTree) {
+					var handler = new DiscussionTree();
+					handler.setupTree(treeNode);
+				});
+			}
 		},
 		
 		onPopupSubmit: function(customObject) {

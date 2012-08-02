@@ -46,6 +46,8 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
 			$this->_popup_controller->assign('item', 'title', $item->getTitle());
 			$this->_popup_controller->assign('item', 'description', $item->getDescription());
         }
+        
+        $this->_popup_controller->assign('item', 'is_new', ($item === null));
     }
 
     public function assignTemplateVars() {
@@ -91,7 +93,19 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     	// get the current user and room
     	$current_user = $this->_environment->getCurrentUserItem();
     	$room_item = $this->_environment->getCurrentContextItem();
-    		
+    	
+    	if ($additional["contextId"]) {
+    		$itemManager = $this->_environment->getItemManager();
+    		$type = $itemManager->getItemType($additional["contextId"]);
+    	
+    		$manager = $this->_environment->getManager($type);
+    		$current_context = $manager->getItem($additional["contextId"]);
+    	
+    		if ($type === CS_PRIVATEROOM_TYPE) {
+    			$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
+    		}
+    	}
+    	
     	// get history from session
     	$history = $session->getValue('history');
     	
@@ -112,7 +126,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     		
     	// check access rights
     	$item_manager = $this->_environment->getItemManager();
-    	if($annotation_item_id !== 'NEW' && !isset($annotation_item)) {
+    	if($form_data["iid"] !== 'NEW' && !isset($annotation_item)) {
     		/*
     		 * $params = array();
     		$params['environment'] = $environment;
@@ -122,9 +136,9 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     		$errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
     		$page->add($errorbox);
     		*/
-    	} elseif(	!(($annotation_item_id === 'NEW' && $current_user->isUser()) ||
-    			($annotation_item_id !== 'NEW' && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
-    			($annotation_item_id === 'NEW' && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
+    	} elseif(	!(($form_data["iid"] === 'NEW' && $current_user->isUser()) ||
+    			($form_data["iid"] !== 'NEW' && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
+    			($form_data["iid"] === 'NEW' && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
     		/*
     		 *    $params = array();
     		$params['environment'] = $environment;
@@ -134,6 +148,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     		$errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
     		$page->add($errorbox);
     		*/
+    		
     	} else {
     		$translator = $this->_environment->getTranslationObject();
     	
@@ -171,7 +186,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     		}
     	
     		// create data for a new item
-    		elseif($annotation_item_id === 'NEW') {
+    		elseif($form_data["iid"] === 'NEW') {
     			/*
     			 * $form->setRefID($_GET['ref_iid']);
     			if ( !empty($_GET['version']) ) {
@@ -205,6 +220,13 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     					$annotation_item->setContextID($this->_environment->getCurrentContextID());
     					$annotation_item->setCreatorItem($user);
     					$annotation_item->setCreationDate(getCurrentDateTimeInMySQL());
+    					
+    					if ($additional["annotatedId"]) {
+    						$annotation_item->setLinkedItemID($additional["annotatedId"]);
+    					}
+    					if ($additional["versionId"]) {
+    						$annotation_item->setLinkedVersionItemID($additional["versionId"]);
+    					}
     				}
     	
     				// set modificator and modification date

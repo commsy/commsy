@@ -5,6 +5,7 @@
 		private $_environment = null;
 		private $_popup_controller = null;
     	private $_edit_type = 'normal';
+    	private $_is_new = true;
 
 		/**
 		* constructor
@@ -19,6 +20,7 @@
 				$this->_edit_type = $data['editType'];
 				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
 			}
+			
 			// assign template vars
 			$this->assignTemplateVars();
 
@@ -80,10 +82,9 @@
 		}
 
 		public function save($form_data, $additional = array()) {
-
-			$current_user = $this->_environment->getCurrentUserItem();
-			$current_context = $this->_environment->getCurrentContextItem();
-
+			
+			$environment = $this->_environment;
+			
 			if ($additional["contextId"]) {
 				$itemManager = $this->_environment->getItemManager();
 				$type = $itemManager->getItemType($additional["contextId"]);
@@ -92,9 +93,12 @@
 				$current_context = $manager->getItem($additional["contextId"]);
 
 				if ($type === CS_PRIVATEROOM_TYPE) {
-					$current_user = $current_user->getRelatedPrivateRoomUserItem();
+					$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
 				}
 			}
+			
+			$current_user = $this->_environment->getCurrentUserItem();
+			$current_context = $this->_environment->getCurrentContextItem();
 
 			$current_iid = $form_data['iid'];
 			if($current_iid === 'NEW') {
@@ -106,6 +110,8 @@
 	        if (isset($form_data['editType'])){
 				$this->_edit_type = $form_data['editType'];
 	        }
+	        
+	        $this->_is_new = ($discussion_item === null);
 
 
 			// TODO: check rights */
@@ -355,7 +361,7 @@
 							'mandatory'	=> false),
 					array(	'name'		=> 'subject',
 							'type'		=> 'text',
-							'mandatory'	=> true)
+							'mandatory'	=> $this->_is_new)
 				);
 			}else{
 				return array();

@@ -44,7 +44,11 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     			$controller = $this->invokeDetailController();
     			
     			// determ the template file
-    			$controller->_tpl_file = "popups/" . $this->_module . "_detail_popup";
+    			if ($this->_module === CS_DISCUSSION_TYPE) {
+    				$controller->_tpl_file = "popups/discussion" . (($this->_item->getDiscussionType() === "threaded") ? "_detail_threaded_popup" : "_detail_popup");
+    			} else {
+    				$controller->_tpl_file = "popups/" . $this->_module . "_detail_popup";
+    			}
     			
     			$controller->assign("popup", "overflow", true);
     			

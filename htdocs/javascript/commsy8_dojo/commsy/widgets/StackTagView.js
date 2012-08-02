@@ -37,7 +37,7 @@ define([	"dojo/_base/declare",
 				});
 				handler.setupTree(this.treeNode, Lang.hitch(this, function() {
 					On(handler.tree.tree, "click", Lang.hitch(this, function(item, node, event) {
-						this.onClickTag(item.item_id, item.title);
+						this.onClickTag(item.item_id[0], item.title[0]);
 						
 						event.preventDefault();
 					}));

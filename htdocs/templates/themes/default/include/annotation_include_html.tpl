@@ -99,7 +99,7 @@
 
 						<div class="column_590">
 							{if isset($popup.overflow) && $popup.overflow}
-								<input class="open_popup" type="submit" data-custom="module: 'annotation', iid: 'NEW', annotatedId: {$detail.item_id}" value="___COMMON_NEW_ITEM___" />
+								<input class="open_popup" type="submit" data-custom="module: 'annotation', iid: 'NEW', annotatedId: {$detail.item_id}{if isset($detail.content.latest_version) && !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" value="___ANNOTATION_ENTER_NEW___" />
 							{else}
 								<a name="annotation-1"></a>
 								<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.item_id}&mode=annotate&iid=NEW" method="post">
@@ -115,7 +115,7 @@
 											<div id="description_annotation" class="ckeditor"></div>
 										</div>
 	
-										<input class="popup_button" style="margin-bottom:20px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_ITEM___" />
+										<input class="popup_button" style="margin-bottom:20px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___ANNOTATION_ADD_NEW_BUTTON___" />
 									</div>
 								</form>
 							{/if}

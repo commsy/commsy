@@ -65,7 +65,7 @@
  			}
 
 			// set Buzzword Information
-			if($this->getUtils()->showBuzzwords() === true) {
+			if($this->getUtils()->showBuzzwords() === true || $this->_data["contextId"] || $this->_data["roomId"]) {
 				if ($this->_data["contextId"]) {
 					$this->assign('popup', 'buzzwords', $this->getBuzzwords(true, $this->_data["contextId"]));
 				} else {
@@ -74,7 +74,7 @@
 			}
 
 			// set Tag Information
-			if($this->getUtils()->showTags() === true) {
+			if($this->getUtils()->showTags() === true || $this->_data["contextId"] || $this->_data["roomId"]) {
 				$this->assign('popup', 'tags', true);
 				/*
 				$tag_array = $this->getUtils()->getTags();

@@ -59,7 +59,7 @@ class cs_smarty extends Smarty {
 		$this->caching = Smarty::CACHING_OFF;
 		
 		// theme support
-		if(!$this->setTheme($theme) && !empty($theme)) {
+		if(!empty($theme) && !$this->setTheme($theme)) {
 			// set to default
 			$this->setTheme('default');
 		}

@@ -6,7 +6,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/on",
-        	"dojo/query"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query) {
+        	"dojo/query",
+        	"dojo/topic"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query, Topic) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -37,6 +38,11 @@ define([	"dojo/_base/declare",
 			 * Initialization is done here
 			 ************************************************************************************/
 			this.itemId = this.from_php.ownRoom.id;
+			
+			// subscribes
+			Topic.subscribe("newOwnRoomItem", Lang.hitch(this, function(object) {
+				this.updateList();
+			}));
 			
 			// update list
 			this.updateList();

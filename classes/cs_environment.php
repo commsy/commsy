@@ -2351,5 +2351,19 @@ class cs_environment {
    public function getTemplateEngine() {
    	return $this->_tpl_engine;
    }
+   
+   public function changeContextToPrivateRoom($contextId = null) {
+   	$currentUser = $this->getCurrentUserItem();
+   	$privateRoomItem = $currentUser->getOwnRoom();
+   	$privateRoomContextID = $privateRoomItem->getItemID();
+   	
+   	$contextIdToSet = ($contextId) ? $contextId : $privateRoomContextID;
+   	
+   	// set new context information and reset the loaded manager
+   	$this->setCurrentContextID($contextIdToSet);
+   	$this->setCurrentContextItem($privateRoomItem);
+   	$this->setCurrentUserItem($currentUser->getRelatedPrivateRoomUserItem());
+   	$this->unsetAllInstancesExceptTranslator();   
+   }
 }
 ?>

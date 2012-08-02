@@ -1,7 +1,7 @@
 <?php
-require_once('classes/controller/ajax/popup/cs_popup_controller.php');
+require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
 
-class cs_popup_tags_controller implements cs_popup_controller {
+class cs_popup_tags_controller implements cs_rubric_popup_controller {
 	private $_environment = null;
 	private $_popup_controller = null;
 	private $_return = '';
@@ -14,7 +14,11 @@ class cs_popup_tags_controller implements cs_popup_controller {
 		$this->_popup_controller = $popup_controller;
 	}
 	
-	public function initPopup($data) {
+	public function initPopup($item, $data) {
+		if ($data["contextId"]) {
+			$this->_environment->changeContextToPrivateRoom($data["contextId"]);
+		}
+		
 		// assign template vars
 		$this->assignTemplateVars();
 	}
@@ -33,4 +37,8 @@ class cs_popup_tags_controller implements cs_popup_controller {
 		
 		$this->_popup_controller->assign("popup", "room_tags", $this->_popup_controller->getUtils()->getTags());
 	}
+	
+	public function getFieldInformation($sub = '') {}
+	
+	public function cleanup_session($iid) {}
 }

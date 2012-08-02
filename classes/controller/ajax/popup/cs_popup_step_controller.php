@@ -90,11 +90,24 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 
     public function save($form_data, $additional = array()) {
     	$session = $this->_environment->getSessionItem();
+    	
+    	if ($additional["contextId"]) {
+    		$itemManager = $this->_environment->getItemManager();
+    		$type = $itemManager->getItemType($additional["contextId"]);
+    	
+    		$manager = $this->_environment->getManager($type);
+    		$current_context = $manager->getItem($additional["contextId"]);
+    	
+    		if ($type === CS_PRIVATEROOM_TYPE) {
+    			$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
+    		}
+    	}
+    	
+    	$current_user = $this->_environment->getCurrentUserItem();
+    	$current_context = $this->_environment->getCurrentContextItem();
     		
     	// get the current user and room
-    	$current_user = $this->_environment->getCurrentUserItem();
     	$room_item = $this->_environment->getCurrentContextItem();
-    	$current_context = $this->_environment->getCurrentContextItem();
     		
     	// get history from session
     	$history = $session->getValue('history');
@@ -117,7 +130,7 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
    $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 				 */
-			} elseif($step_item->getItemID() !== "NEW" && !isset($step_item)) {
+			} elseif($step_item !== null) {
 				/*
 				 * $params = array();
    $params['environment'] = $environment;
@@ -127,8 +140,8 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
    $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 				 */
-			} elseif(	!(($step_item->getItemID() === "NEW" && $current_user->isUser()) ||
-						($step_item->getItemID() !== "NEW" && isset($step_item) && $step_item->mayEdit($current_user))) ) {
+			} elseif(	!(($step_item === null && $current_user->isUser()) ||
+						($step_item !== null && isset($step_item) && $step_item->mayEdit($current_user))) ) {
 				
 				/*
 				 * $params = array();
@@ -143,9 +156,18 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 					$translator = $this->_environment->getTranslationObject();
 					
 					if($this->_popup_controller->checkFormData()) {
+						// Create new item
+						if ( !isset($step_item) ) {
+							$step_manager = $this->_environment->getStepManager();
+							$step_item = $step_manager->getNewItem();
+							$step_item->setContextID($this->_environment->getCurrentContextID());
+							$step_item->setCreatorItem($current_user);
+							$step_item->setCreationDate(getCurrentDateTimeInMySQL());
+							$step_item->setTodoID($additional["ref_iid"]);
+						}
+						
 						// set modificator and modification date
-						$user = $this->_environment->getCurrentUserItem();
-						$step_item->setModificatorItem($user);
+						$step_item->setModificatorItem($current_user);
 						$step_item->setModificationDate(getCurrentDateTimeInMySQL());
 						
 						// set attributes

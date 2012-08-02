@@ -142,8 +142,6 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
 
     public function save($form_data, $additional = array()) {
         $environment = $this->_environment;
-        $current_user = $this->_environment->getCurrentUserItem();
-        $current_context = $this->_environment->getCurrentContextItem();
 
         if ($additional["contextId"]) {
         	$itemManager = $this->_environment->getItemManager();
@@ -153,9 +151,12 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
         	$current_context = $manager->getItem($additional["contextId"]);
 
         	if ($type === CS_PRIVATEROOM_TYPE) {
-        		$current_user = $current_user->getRelatedPrivateRoomUserItem();
+        		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
+        
+        $current_user = $this->_environment->getCurrentUserItem();
+        $current_context = $this->_environment->getCurrentContextItem();
 
         $current_iid = $form_data['iid'];
         if (isset($form_data['editType'])){
