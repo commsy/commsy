@@ -212,7 +212,7 @@
 		<div class="item_body"> <!-- Start item body -->
 			<a name="mat_section_{$section@index}"></a>
 			<a name="section{$section.iid}"></a>
-
+			<a name="#anchor{$section.iid}"></a>
 			<!-- Start fade_in_ground -->
 			<div id="edit_expand_section_{$section@index}" class="hidden">
 				<div class="fade_in_ground_actions">
