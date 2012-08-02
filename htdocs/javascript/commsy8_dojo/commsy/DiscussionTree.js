@@ -57,7 +57,11 @@ define([	"dojo/_base/declare",
 				onClick:			Lang.hitch(this, function(item, node, evt) {
 					// follow item url
 					if(this.followUrl) {
-						location.href = this.replaceOrSetAnchor("#article" + item.item_id);
+						var anchorNode = Query("a[name='article" + item.item_id + "']")[0];
+						if (anchorNode) {
+							this.scrollToNodeAnimated(anchorNode);
+						}
+						//location.href = this.replaceOrSetAnchor("#article" + item.item_id);
 					}
 				})
 			});
