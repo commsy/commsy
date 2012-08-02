@@ -38,6 +38,7 @@
 		<script src="javascript/commsy8_dojo/config.js?token=3"></script>
 		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=3"></script>
 		<script src="javascript/commsy8_dojo/main.js?token=3"></script>
+        <script type="text/javascript" src="javascript/swfobject.js"></script>
 
 		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 
