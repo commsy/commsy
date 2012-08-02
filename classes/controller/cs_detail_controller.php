@@ -644,9 +644,9 @@
 						$annotated_item = $this->_item;
 						$desc = $annotation->getDescription();
 						if(!empty($desc)) {
-							$desc = $converter->cleanDataFromTextArea($desc);
+							$desc = $desc;
 							$converter->setFileArray($this->getItemFileList());
-							$desc = $converter->text_as_html_long($desc);
+							$desc = $desc;
 							//$html .= $this->getScrollableContent($desc,$item,'',true);
 						}
 
