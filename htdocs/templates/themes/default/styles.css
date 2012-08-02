@@ -3359,13 +3359,14 @@ top-bar, breadcrumb and settings
 
 #warning {
     background: url(img/warning.jpg) repeat-x;
-    }
+	background-color: #c3bd1f;
+}
 
 #wn_wrapper_outer {
 	margin: 0 auto;
     width: 980px;
     color: #000;
-    height: 18px;
+    min-height: 18px;
     text-align:center;
     padding:10px 20px;
     }

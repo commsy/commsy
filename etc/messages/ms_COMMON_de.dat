@@ -587,6 +587,7 @@ $message["COMMON_NO_IE_LOWER_THEN_8"]["de"] = "Mindestens Version 8 des Internet
 $message["COMMON_NO_INSTITUTIONS"]["de"] = "Keine %_INSTITUTION_SUB_NOMPL_LOW vorhanden";
 $message["COMMON_NO_JAVASCRIPT_POSSIBLE"]["de"] = "Javascript muss aktiviert werden.";
 $message["COMMON_NO_NEW_ENTRIES"]["de"] = "Keine neuen Einträge vorhanden";
+$message["COMMON_NO_OPERA"]["de"] = "CommSy funktioniert nicht vollständig in der aktuellen Opera-Version. Die in CommSy eingesetzte, weltweit verwendete javascript-Bibliothek dojo wird nicht von Opera 12 unterstützt.";
 $message["COMMON_NO_RESTRICTION"]["de"] = "keine Begrenzung";
 $message["COMMON_NO_RESTRICTIONS"]["de"] = "Keine Einschränkungen";
 $message["COMMON_NO_SELECTION"]["de"] = "Alle";

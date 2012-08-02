@@ -578,6 +578,7 @@ $message["COMMON_NO_IE_LOWER_THEN_8"]["en"] = "You need internet explorer 8 or h
 $message["COMMON_NO_INSTITUTIONS"]["en"] = "No %_INSTITUTION_SUB_NOMPL_LOW available";
 $message["COMMON_NO_JAVASCRIPT_POSSIBLE"]["en"] = "Javascript must be activated.";
 $message["COMMON_NO_NEW_ENTRIES"]["en"] = "No new items";
+$message["COMMON_NO_OPERA"]["en"] = "CommSy does not work with Opera 12 because Opera does not support the javascript library dojo.";
 $message["COMMON_NO_RESTRICTION"]["en"] = "no restriction";
 $message["COMMON_NO_RESTRICTIONS"]["en"] = "No list restrictions";
 $message["COMMON_NO_SELECTION"]["en"] = "Please select";

@@ -7,6 +7,7 @@
 				<strong>___COMMSY_USE_PROBLEMS___ {$environment.use_problems.content}</strong>
 			<div class="clear"></div>
 		</div>
+		</div>
 	{/if}
 {/block}
 
