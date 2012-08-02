@@ -8,27 +8,25 @@
                   src="{$basic.tpl_path}img/popup_close.gif"
                   alt="___COMMON_CLOSE___" />
                </a>
-               <h2>___ACCOUNT_GET_MEMBERSHIP_BUTTON___</h2>
+               <h2>___USER_CLOSE_FORM___</h2>
                <div class="clear"></div>
             </div>
             <div id="popup_content_wrapper">
                <div id="popup_content">
-                  <div class="input_row">
-                     <div class="input_container_180">___ACCOUNT_GET_4_TEXT___</div>
-                  </div>
-                  <div class="input_row">
-                     <span class="input_label_150">___ACCOUNT_PROCESS_ROOM_REASON___:</span>
-                     <div class="input_container_180">
-                        <textarea cols="80" rows="10" name="form_data[body]"></textarea>
+                  {i18n tag=PREFERENCES_REALLY_DELETE_DESC_ROOM param1=$popup.room.room_title param2=___PREFERENCES_LOCK_BUTTON_ROOM___ param3=___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___}
+                  <div id="content_buttons">
+                     <div id="crt_actions_area" style="border-bottom:0px;">
+                        <input id="popup_button_room_lock" class="popup_button submit" data-custom="part: 'all', user_id: {$popup.user.item_id}, context_id: {$popup.room.room_id}, action: 'room_lock'" type="button" name="" value="___PREFERENCES_LOCK_BUTTON_ROOM___" />
+                        <input id="popup_button_room_delete" class="popup_button submit" data-custom="part: 'all', user_id: {$popup.user.item_id}, context_id: {$popup.room.room_id}, action: 'room_delete'" type="button" name="" value="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___" />
                      </div>
                   </div>
-                  <div class="clear"></div>
                </div>
-               <div id="popup_tabs">
+               <div id="popup_content">
+                  {i18n tag=PREFERENCES_REALLY_DELETE_DESC param1=$popup.portal.portal_title param2={i18n tag=PREFERENCES_LOCK_BUTTON param1=$popup.portal.portal_title} param3={i18n tag=PREFERENCES_REALLY_DELETE_BUTTON param1=$popup.portal.portal_title}}
                   <div id="content_buttons">
                      <div id="crt_actions_area">
-                        <input id="popup_button_create" class="popup_button submit" data-custom="part: 'all'" type="button" name="" value="___ACCOUNT_GET_MEMBERSHIP_BUTTON___" />
-                        <input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
+                        <input id="popup_button_portal_lock" class="popup_button submit" data-custom="part: 'all', user_id: {$popup.user.item_id}, context_id: {$popup.portal.portal_id}, action: 'portal_lock'" type="button" name="" value="{i18n tag=PREFERENCES_LOCK_BUTTON param1=$popup.portal.portal_title}" />
+                        <input id="popup_button_portal_delete" class="popup_button submit" data-custom="part: 'all', user_id: {$popup.user.item_id}, context_id: {$popup.portal.portal_id}, action: 'portal_delete'" type="button" name="" value="{i18n tag=PREFERENCES_REALLY_DELETE_BUTTON param1=$popup.portal.portal_title}" />
                      </div>
                   </div>
                </div>

@@ -18,86 +18,72 @@ class cs_popup_userParticipation_controller implements cs_popup_controller {
 
 	public function getFieldInformation() {
 		return array(
-		array('name'		=> 'body',
-			  'type'		=> 'text',
-			  'mandatory'	=> true)
 		);
 	}
 
 	public function save($form_data, $additional = array()) {
-		$mail = new cs_mail();
-		//TODO: feed mail with formdata etc.
-		$mail->set_from_email($this->_environment->getCurrentUser()->getEmail());
-		$mail->set_from_name($this->_environment->getCurrentUser()->getFullName());
-
-		if (!empty($form_data['reciever'])) {
-			$recipients = implode(', ', $form_data['reciever']);
-			$mail->set_to($recipients);
-		} else {
-		    $list = $this->getRecieverList();
-			if(count($list) == 1) {
-			    $mail->set_to($list[0] ['value']);
-			} else {
-			    //no reciever checked
-			    $this->_popup_controller->setErrorReturn(112, 'no reciever checked');
-			}
+		switch ($additional['action']){
+		   case 'room_lock':
+		      $current_user = $this->_environment->getCurrentUserItem();
+		      $current_user->reject();
+		      $current_user->save();
+		      // set return
+		      $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentPortalID());
+		      break;
+		   
+		   case 'room_delete':
+		      $current_user = $this->_environment->getCurrentUserItem();
+		      $current_user->delete();
+		      // set return
+		      $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentPortalID());
+	          break;
+	      
+	       case 'portal_lock':
+	          $current_user = $this->_environment->getCurrentUserItem();
+	          $portal_user_item = $current_user->getRelatedCommSyUserItem();
+	          $portal_user_item->reject();
+	          $portal_user_item->save();
+	          // delete session
+	          $session_manager = $this->_environment->getSessionManager();
+	          $session = $this->_environment->getSessionItem();
+	          $session_manager->delete($session->getSessionID());
+	          $this->_environment->setSessionItem(null);
+	          $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentPortalID());
+              break;
+         
+           case 'portal_delete':
+              $current_user = $this->_environment->getCurrentUserItem();
+              $authentication = $this->_environment->getAuthenticationObject();
+              $authentication->delete($current_user->getItemID());
+              // delete session
+              $session_manager = $this->_environment->getSessionManager();
+              $session = $this->_environment->getSessionItem();
+              $session_manager->delete($session->getSessionID());
+              $this->_environment->setSessionItem(null);
+              $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentPortalID());
+              break;
 		}
-
-		$context_item = $this->_environment->getCurrentContextItem();
-
-		$mail->set_message($form_data['body']);
-		$mail->set_subject($form_data['subject']);
-
-		$success = $mail->send();
-		if ($success) {
-			$this->_popup_controller->setSuccessfullDataReturn('mail send successfully');
-		} else {
-			//TODO: Error handling
-			pr($mail);
-		}
-	}
-
-	private function getRecieverList() {
-		$translator = $this->_environment->getTranslationObject();
-
-		$context_item = $this->_environment->getCurrentContextItem();
-		$mod_list = $context_item->getModeratorList();
-		$receiver_array = array();
-		if (!$mod_list->isEmpty()) {
-			$mod_item = $mod_list->getFirst();
-			while ($mod_item) {
-				$temp_array = array();
-				$temp_array['value'] = $mod_item->getEmail();
-				if ($mod_item->isEmailVisible()) {
-					$temp_array['text'] = $mod_item->getFullName().' ('.$mod_item->getEmail().')';
-				} else {
-					$temp_array['text'] = $mod_item->getFullName().' ('.$translator->getMessage('USER_EMAIL_HIDDEN2').')';
-				}
-				$receiver_array[] = $temp_array;
-				$mod_item = $mod_list->getNext();
-			}
-		}
-
-		return $receiver_array;
 	}
 
 	public function initPopup($data) {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$context_item = $this->_environment->getCurrentContextItem();
+		$portal_item = $this->_environment->getCurrentPortalItem();
 
 		// user information
 		$user_information = array();
-		$user_information['fullname'] = $current_user->getFullName();
-		$user_information['mail'] = $current_user->getEmail();
+		$user_information['item_id'] = $current_user->getItemID();
 		$this->_popup_controller->assign('popup', 'user', $user_information);
 
-		$mod_information = array();
-		$mod_information['list'] = $this->getRecieverList();
-		//pr($this->getRecieverList());
-
-		$this->_popup_controller->assign('popup', 'mod', $mod_information);
-
-		$this->_popup_controller->assign('popup', 'body', $body_message);
+		$context_information = array();
+		$context_information['room_id'] = $context_item->getItemID();
+		$context_information['room_title'] = $context_item->getTitle();
+		$this->_popup_controller->assign('popup', 'room', $context_information);
+		
+		$portal_information = array();
+		$portal_information['portal_id'] = $portal_item->getItemID();
+		$portal_information['portal_title'] = $portal_item->getTitle();
+		$this->_popup_controller->assign('popup', 'portal', $portal_information);
 	}
 
 }

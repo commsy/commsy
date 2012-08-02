@@ -13,10 +13,12 @@ define([	"dojo/_base/declare",
 		
 		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
-			this.item_id = customObject.iid;
+			this.user_id = customObject.user_id;
+			this.content_id = customObject.context_id;
+			this.action = customObject.action;
 			this.module = "userParticipation";
 			
-			this.features = [  ];
+			this.features = [];
 			
 			// register click for node
 			this.registerPopupClick();
@@ -26,20 +28,22 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmit: function(customObject) {
+			var part = customObject.part;
+			var user_id = customObject.user_id;
+			var context_id = customObject.context_id;
+			var action = customObject.action;
+			
 			// setup data to send via ajax
 			var search = {
-				tabs: [
-				],
-				nodeLists: [
-				    { query: query("input[name='form_data[body]']", this.contentNode) }
-				]
+				tabs: [],
+				nodeLists: []
 			};
 			
-			this.submit(search);
+			this.submit(search,  { part: part, user_id: user_id, context_id: context_id, action: action });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
-			this.close();
+			location.href = "commsy.php?cid=" + item_id;
 		},
 	});
 });
