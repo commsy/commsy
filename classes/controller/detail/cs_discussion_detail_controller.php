@@ -186,7 +186,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				'disc_articles'		=> $disc_articles,
 				'new_num'			=> count($disc_articles) + 1,
 				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item),
-				'numArticles'		=> ($discussion_type === 'threaded') ? self::$threadedIndex : sizeof($disc_artices)
+				'numArticles'		=> ($discussion_type === 'threaded') ? self::$threadedIndex : sizeof($disc_articles)
 			);
 
 			return $return;
@@ -600,8 +600,11 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
 			$converter = $this->_environment->getTextConverter();
-
+			
 			$root_position = $root->getPosition();
+			if (empty($root_position)) {
+				$root_position = "1";
+			}
 			$root_level = sizeof(explode('.', $root_position)) - 1;
 
 			// get through
@@ -609,7 +612,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			while($item) {
 				$item_position = $item->getPosition();
 				$item_level = sizeof(explode('.', $item_position)) - 1;
-
+				
 				// skip if item is not a direct child of root
 				if($item_level === $root_level + 1 && $root_position === mb_substr($item_position, 0, sizeof($item_position) - 6)) {
 					// files
@@ -764,7 +767,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 		private function getDiscArticleContentThreaded($articles_list) {
 			$return = array();
-
+			
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$reader_manager = $this->_environment->getReaderManager();
 			$translator = $this->_environment->getTranslationObject();

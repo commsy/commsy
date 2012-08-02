@@ -128,6 +128,9 @@
 			$potentialChildList->removeElement($root);
 
 			$rootPosition = $root->getPosition();
+			if (empty($rootPosition)) {
+				$rootPosition = "1";
+			}
 			$rootLevel = sizeof(explode('.', $rootPosition)) - 1;
 
 			// iterate list - get children
