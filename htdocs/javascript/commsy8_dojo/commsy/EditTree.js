@@ -32,6 +32,7 @@ define([	"dojo/_base/declare",
 				autoExpand:			this.expanded,
 				model:				this.model,
 				showRoot:			true,
+				persist:			false,
 				dndController:		DndSource,
 				checkBoxes:			this.checkboxes,
 				onClick:			Lang.hitch(this, function(item, node, evt) {

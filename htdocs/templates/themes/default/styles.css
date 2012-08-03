@@ -1457,7 +1457,8 @@ h2#item_navigation span {
 	margin-bottom:0px;
 	}
 
-.row_odd {
+.row_odd,
+div.widgetArea .row_odd {
     background-color: #F5F5F5;
     }
 

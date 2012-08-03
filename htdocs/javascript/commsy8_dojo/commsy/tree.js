@@ -66,6 +66,7 @@ define([	"dojo/_base/declare",
 				autoExpand:			this.expanded,
 				model:				this.model,
 				showRoot:			false,
+				persist:			false,
 				checkBoxes:			this.checkboxes,
 				onClick:			lang.hitch(this, function(item, node, evt) {
 					// follow item url
