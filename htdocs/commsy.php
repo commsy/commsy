@@ -920,6 +920,38 @@ else {
 }
 
 if(isset($c_smarty) && $c_smarty === true) {
+	
+	/************************************************************************************
+	 *** AGB
+	************************************************************************************/
+	$current_user = $environment->getCurrentUserItem();
+	
+	// portal AGB
+	$current_context = $environment->getCurrentContextItem();
+	if (!$current_context->isPortal() && !$current_context->isServer()) {
+		
+		$portal_user = $current_user->getRelatedCommSyUserItem();
+		if ( isset($portal_user) and $portal_user->isUser() and !$portal_user->isRoot() ) {
+			$current_portal = $environment->getCurrentPortalItem();
+			$user_agb_date = $portal_user->getAGBAcceptanceDate();
+			$portal_agb_date = $current_portal->getAGBChangeDate();
+			
+			if ( $user_agb_date < $portal_agb_date && $current_portal->getAGBStatus() == 1 ) {
+				redirect($current_portal->getItemID(), "agb", "index");
+			}
+		}
+	}
+	
+	if ( $current_user->isUser() && !$current_user->isRoot() ) {
+		$user_agb_date = $current_user->getAGBAcceptanceDate();
+		$context_agb_date = $current_context->getAGBChangeDate();
+		if ( $user_agb_date < $context_agb_date && $current_context->getAGBStatus() == 1 ) {
+			if ($current_module != "agb"|| $current_function != "index") {
+				redirect($current_context->getItemID(), "agb", "index");
+			}
+		}
+	}
+	
 	// TODO: get-parameter is checked, because getCurrentModule() returns 'home' when calling 'ajax'
 	// TODO: getCurrentFunction() also fails
 	if(isset($_GET['mod']) && $_GET['mod'] === 'ajax') {
@@ -935,7 +967,18 @@ if(isset($c_smarty) && $c_smarty === true) {
 		$controller = new $controller_name($environment);
 		$controller->process();
 	} else {
-		if(isset($_GET['mod']) && $_GET['mod'] === 'search') {
+		if ($environment->getCurrentModule() === "agb" && $environment->getCurrentFunction() === "index") {
+			$controller_name = 'cs_agb_controller';
+			require_once('classes/controller/' . $controller_name . '.php');
+		/*
+		if ($showAGB) {
+			if ( ($current_module == "picture") && ($current_function == "getfile" || $current_function == "getingray")) {
+				include('pages/'.$current_module.'_'.$current_function.'.php');
+			} else {
+				$controller_name = 'cs_agb_controller';
+				require_once('classes/controller/' . $controller_name . '.php');
+			}*/
+		} elseif(isset($_GET['mod']) && $_GET['mod'] === 'search') {
 			$controller_name = 'cs_search_controller';
 			require_once('classes/controller/' . $controller_name . '.php');
 		} elseif($environment->getCurrentModule() === 'home' || $environment->getCurrentModule() === 'search') {

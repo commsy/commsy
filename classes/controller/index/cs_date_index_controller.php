@@ -1853,7 +1853,11 @@
 			$session_manager = $this->_environment->getSessionManager();
 
 			if(isset($_GET['mode'])) {
-				$this->_display_mode = $_GET['mode'];
+				if ($_GET['mode'] === "print") {
+					$this->_display_mode = "list";
+				} else {
+					$this->_display_mode = $_GET['mode'];
+				}
 			} elseif(!empty($_GET['presentation_mode'])) {
 				if ($_GET['presentation_mode'] == 'month'){
 					$this->_display_mode = 'calendar_month';

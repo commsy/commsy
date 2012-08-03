@@ -4378,3 +4378,7 @@ div#popup_stack div#popup_content_wrapper {
     width: 860px;
 	position: relative;
 	}
+
+.paddingArea {
+	padding: 5px 5px 5px 5px;
+}

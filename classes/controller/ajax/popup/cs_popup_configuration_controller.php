@@ -516,8 +516,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 				         $languages = $this->_environment->getAvailableLanguageArray();
 				         foreach ($languages as $language) {
-				            if (!empty($form_data['agb_text_'.mb_strtoupper($language, 'UTF-8')])) {
-				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $form_data['agb_text_'.mb_strtoupper($language, 'UTF-8')];
+				            if (!empty($form_data['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
+				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $form_data['agb_text_'.mb_strtolower($language, 'UTF-8')];
 				            } else {
 				               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
 				            }
@@ -1851,13 +1851,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
          }
 
          $agb_text_array = $current_context->getAGBTextArray();
-         foreach ($this->_languages as $language) {
+         $languages = $this->_environment->getAvailableLanguageArray();
+         foreach ($languages as $language) {
             if (!empty($agb_text_array[cs_strtoupper($language)])) {
                $return['agb_text_'.cs_strtoupper($language)] = $agb_text_array[cs_strtoupper($language)];
             } else {
                $return['agb_text_'.cs_strtoupper($language)] = '';
             }
          }
+         
          $return['agb_status'] = $current_context->getAGBStatus();
          if ($return['agb_status'] != '1'){
          	$return['agb_status'] = '2';
