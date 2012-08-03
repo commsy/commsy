@@ -7,7 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/on",
-        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On) {
+        	"dojo/topic",
+        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 			
@@ -94,6 +95,10 @@ define([	"dojo/_base/declare",
 							// update header if the buzzword was set in list
 							if(this.list.requestData.item_id === buzzwordId) {
 								DomAttr.set(Query("div.open_close_head span.text_important")[0], "innerHTML", "&bdquo;" + buzzwordName + "&rdquo;");
+								
+								if (this.contextId) {
+									Topic.publish("newOwnRoomBuzzword", {});
+								}
 							}
 						}),
 						Lang.hitch(this, function(response) {
@@ -120,6 +125,10 @@ define([	"dojo/_base/declare",
 							this.removeBuzzwordFromLists(buzzwordName);
 							this.removeBuzzwordFromMergeSelects(buzzwordName);
 							this.removeBuzzwordFromEditTab(buzzwordName);
+							
+							if (this.contextId) {
+								Topic.publish("newOwnRoomBuzzword", {});
+							}
 						}),
 						Lang.hitch(this, function(response) {
 							
@@ -277,6 +286,10 @@ define([	"dojo/_base/declare",
 						this.addBuzzwordToEditTab(response.id, buzzword);
 						
 						this.destroyLoading();
+						
+						if (this.contextId) {
+							Topic.publish("newOwnRoomBuzzword", {});
+						}
 					}),
 					
 					Lang.hitch(this, function(response) {
@@ -315,6 +328,10 @@ define([	"dojo/_base/declare",
 						this.addBuzzwordToMergeSelects(mergeIdOne, response.newBuzzword);
 						
 						this.destroyLoading();
+						
+						if (this.contextId) {
+							Topic.publish("newOwnRoomBuzzword", {});
+						}
 					}),
 					
 					Lang.hitch(this, function(response) {

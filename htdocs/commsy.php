@@ -937,7 +937,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 			$portal_agb_date = $current_portal->getAGBChangeDate();
 			
 			if ( $user_agb_date < $portal_agb_date && $current_portal->getAGBStatus() == 1 ) {
-				redirect($current_portal->getItemID(), "agb", "index");
+				redirect($current_portal->getItemID(), "agb", "detail");
 			}
 		}
 	}

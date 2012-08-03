@@ -78,7 +78,8 @@ define([	"dojo/_base/declare",
 			 * First of all, we need to load the store data via ajax. It will contain all
 			 * the needed information for building the discussion tree
 			 */
-			this.AJAXRequest("threaded_discussion", "getTreeData", { discussionId: this.uri_object.iid }, Lang.hitch(this, function(results) {
+			
+			this.AJAXRequest("threaded_discussion", "getTreeData", { discussionId: (this.item_id || this.uri_object.iid) }, Lang.hitch(this, function(results) {
 				
 				this.store = new ItemFileWriteStore({
 					data: {

@@ -6,7 +6,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/on",
-        	"dojo/query"], function(declare, WidgetBase, Base, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query) {
+        	"dojo/query",
+        	"dojo/topic"], function(declare, WidgetBase, Base, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query, Topic) {
 	
 	return declare([Base, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -27,11 +28,26 @@ define([	"dojo/_base/declare",
 			this.module = "buzzwords";
 			this.itemId = this.from_php.ownRoom.id;
 			
+			Topic.subscribe("newOwnRoomBuzzword", Lang.hitch(this, function(object) {
+				this.updateList();
+			}));
+			
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
+			this.updateList();
+			
+			require(["commsy/popups/ClickBuzzwordsPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.buzzwordEditNode, { module: "buzzwords", contextId: this.itemId });
+			}));
+		},
+		
+		updateList: function() {
 			this.AJAXRequest("buzzwords", "getBuzzwords", { roomId: this.itemId },
 				Lang.hitch(this, function(response) {
+					DomConstruct.empty(this.buzzwordListNode);
+					
 					dojo.forEach(response, Lang.hitch(this, function(item, index, arr) {
 						var buzzwordNode = DomConstruct.create("a", {
 							className:		"keywords_s" + item.class_id,
@@ -45,11 +61,6 @@ define([	"dojo/_base/declare",
 					}));
 				})
 			);
-			
-			require(["commsy/popups/ClickBuzzwordsPopup"], Lang.hitch(this, function(ClickPopup) {
-				var handler = new ClickPopup();
-				handler.init(this.buzzwordEditNode, { module: "buzzwords", contextId: this.itemId });
-			}));
 		},
 		
 		/************************************************************************************

@@ -6,7 +6,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/on",
-        	"dojo/query"], function(declare, WidgetBase, Base, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query) {
+        	"dojo/query",
+        	"dojo/topic"], function(declare, WidgetBase, Base, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query, Topic) {
 	
 	return declare([Base, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",

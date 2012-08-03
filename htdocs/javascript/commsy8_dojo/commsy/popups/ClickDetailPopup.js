@@ -64,10 +64,10 @@ define([	"dojo/_base/declare",
 			var treeNode = Query("div#discussion_tree")[0];
 			
 			if (treeNode) {
-				require(["commsy/DiscussionTree"], function(DiscussionTree) {
-					var handler = new DiscussionTree();
+				require(["commsy/DiscussionTree"], Lang.hitch(this, function(DiscussionTree) {
+					var handler = new DiscussionTree({ item_id: this.item_id });
 					handler.setupTree(treeNode);
-				});
+				}));
 			}
 		},
 		
