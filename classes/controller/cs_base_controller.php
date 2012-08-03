@@ -180,6 +180,12 @@
 				$return_array['show'] = true;
             	$return_array['content'] .= ' '.$translator->getMessage('COMMON_NO_OPERA');
         	}
+        	if ( empty($_COOKIE) ) {
+				$return_array['problem'] = true;
+				$return_array['show'] = true;
+            	$return_array['content'] .= ' '.$translator->getMessage('COMMON_NO_COOKIE');
+   			}
+
         	return $return_array;
 
 		}

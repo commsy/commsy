@@ -575,6 +575,7 @@ $message["COMMON_NO_AUTHOR"]["de"] = "ohne AutorIn";
 $message["COMMON_NO_CONTACTS"]["de"] = "keine angegeben";
 $message["COMMON_NO_CONTACT_MODERATOR"]["de"] = "keine AnsprechpartnerInnen angegeben";
 $message["COMMON_NO_CONTENT"]["de"] = "Es existieren keine Einträge.";
+$message["COMMON_NO_COOKIE"]["de"] = "CommSy benötigt für einige Funktionen Cookies. Bitte aktivieren Sie die Verwendung von Cookies für CommSy in Ihrem Browser.";
 $message["COMMON_NO_COPIES"]["de"] = "Keine Kopien vorhanden";
 $message["COMMON_NO_CURRENT_CONTENT"]["de"] = "Es existieren keine aktuellen Einträge.";
 $message["COMMON_NO_DESCRIPTION"]["de"] = "Keine Beschreibung vorhanden";

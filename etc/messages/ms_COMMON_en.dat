@@ -566,6 +566,7 @@ $message["COMMON_NO_AUTHOR"]["en"] = "no author";
 $message["COMMON_NO_CONTACTS"]["en"] = "None available";
 $message["COMMON_NO_CONTACT_MODERATOR"]["en"] = "No contact person defined";
 $message["COMMON_NO_CONTENT"]["en"] = "No items there.";
+$message["COMMON_NO_COOKIE"]["en"] = "Perhaps CommSy does not work without cookies. Please active cookies in your browser.";
 $message["COMMON_NO_COPIES"]["en"] = "Nothing on clipboard";
 $message["COMMON_NO_CURRENT_CONTENT"]["en"] = "There are no current items.";
 $message["COMMON_NO_DESCRIPTION"]["en"] = "No description available";
