@@ -235,6 +235,7 @@ class cs_tag_manager extends cs_manager {
                $this->_data->sortby('title');
             }
          } else {
+         	/*
             // sort tags(alphabet) if no order is given
             $tag2tag_manager = $this->_environment->getTag2TagManager();
             $query = 'SELECT link_id,sorting_place,title FROM '.$this->addDatabasePrefix($tag2tag_manager->_db_table).' INNER JOIN '.$this->addDatabasePrefix($this->_db_table).' ON item_id = to_item_id WHERE '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deletion_date is NULL AND '.$this->addDatabasePrefix($tag2tag_manager->_db_table).'.deleter_id IS NULL ';
@@ -307,6 +308,7 @@ class cs_tag_manager extends cs_manager {
              }
          }
          unset($tag2tag_manager);
+         */
          }
       } else {
          $result = $this->_performQuery();
