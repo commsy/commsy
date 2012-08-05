@@ -247,7 +247,7 @@
 				$return["current_year"] = $year;
 				$return['current_calendarweek_first'] = $calendar_week_first;
 				$return["current_calendarweek_last"] = $calendar_week_last;
-				
+
 				$previous_months = array();
 				$previous_year = 0;
 				for ($i = 1; $i <= 5; $i++) {
@@ -265,7 +265,7 @@
 				   }
 				}
 				$return["previous_months"] = array_reverse($previous_months);
-				
+
 				$next_months = array();
 			   $next_year = 0;
 				for ($i = 1; $i <= 5; $i++) {
@@ -283,7 +283,7 @@
 				   }
 				}
 				$return["next_months"] = $next_months;
-				
+
 			} elseif($this->_presentation_mode === "week") {
 				$week_left = $this->_calendar["week"] - ( 3600 * 24 * 7);
 				$week_right = $this->_calendar["week"] + ( 3600 * 24 * 7);
@@ -316,7 +316,7 @@
 
 				$calendar_week = date('W', $this->_calendar["week"]);
 				$return["current_week"] = ($calendar_week[0] == "0") ? $calendar_week[1] : $calendar_week;
-				
+
 				$previous_weeks = array();
 				$previous_year = 0;
 				for ($i = 1; $i <= 5; $i++) {
@@ -334,7 +334,7 @@
 				   }
 				}
 				$return["previous_weeks"] = array_reverse($previous_weeks);
-				
+
 				$next_weeks = array();
 			   $next_year = 1;
 				for ($i = 1; $i <= 5; $i++) {
@@ -1534,7 +1534,9 @@
 						($this->_display_mode !== 'calendar' || $this->_display_mode === 'calendar_month' || $this->getViewMode() === 'formattach' || $this->getViewMode() === 'detailattach')) {
 					$dates_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 				}
-
+				if ($this->_display_mode === 'calendar' || $this->_display_mode === 'calendar_month'){
+					$dates_manager->setSortOrder('time');
+				}
 				if ( !empty($this->_list_parameter_arrray['search']) ) {
 					$dates_manager->setSearchLimit($this->_list_parameter_arrray['search']);
 				}
