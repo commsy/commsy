@@ -379,9 +379,12 @@ class cs_tag2tag_manager extends cs_manager {
          $temp_array = array();
          $tag_manager = $this->_environment->getTagManager();
          foreach($children_array as $id) {
-            $item_title = $tag_manager->getItem($id)->getTitle();
-            array_push($temp_array, array(   'id'   =>   $id,
-                                             'name' =>   $item_title));
+            $item = $tag_manager->getItem($id);
+            if(isset($item)){
+	            $item_title = $item->getTitle();
+	            array_push($temp_array, array(   'id'   =>   $id,
+	                                             'name' =>   $item_title));
+            }
          }
 
          usort(   $temp_array,
@@ -401,12 +404,13 @@ class cs_tag2tag_manager extends cs_manager {
             }
 
             // change sort order and save
-            $item->setPosition($root_id, $new_sort_order);
-            $item->save();
-            unset($item);
-
-            // 4. call recursive
+            if(isset($item)){
+	            $item->setPosition($root_id, $new_sort_order);
+	            $item->save();
+	            unset($item);
+             // 4. call recursive
             $this->sortRecursiveABC($id);
+            }
          }
          unset($tag_manager);
       }
@@ -468,14 +472,14 @@ class cs_tag2tag_manager extends cs_manager {
       $query .= ' ORDER BY sorting_place';
 
       $result = $this->_db_connector->performQuery($query);
-      
+
       /**/
       /* TODO: REMOVE!!!!! */
       $file = fopen("tag2tag_log.txt", "a+");
       fputs($file, date("d-m-Y H:i:s") . " - " . $query . "\n");
       fclose($file);
       /**/
-      
+
       if (!isset($result)) {
          include_once('functions/error_functions.php');
          trigger_error('Problems with links from query: "'.$query.'"',E_USER_WARNING);

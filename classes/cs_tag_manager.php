@@ -497,8 +497,8 @@ class cs_tag_manager extends cs_manager {
         } elseif ( !empty($result[0]) ) {
            $item = $this->_buildItem($result[0]);
         } else {
-           include_once('functions/error_functions.php');
-           trigger_error(''.$this->_db_table.' ['.$item_id.'] does not exists.',E_USER_WARNING);
+ #          include_once('functions/error_functions.php');
+ #          trigger_error(''.$this->_db_table.' ['.$item_id.'] does not exists.',E_USER_WARNING);
         }
      }
      return $item;
