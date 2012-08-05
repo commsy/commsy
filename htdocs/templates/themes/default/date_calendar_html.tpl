@@ -176,9 +176,9 @@
 		                						</div>
 		                					{/foreach}
 	                					</div>
-	                					<a style="height:10px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
+	                					<a style="height:10px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.days[$pos].date_new}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
 	                				{else}
-	                					<a style="height:70px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
+	                					<a style="height:70px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.days[$pos].date_new}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
 	                				{/if}
 	                			</td>
 	                		{/section}
@@ -244,7 +244,7 @@
 										</div>
                 					{/foreach}
  	                			{if !isset($cc.content.display[-1][$i]) or empty($cc.content.display[-1][$i])}
- 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___">
+ 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.tableContent[$i][$j].date_new}'" href="#" title="___COMMON_NEW_ITEM___">
  	                					<img src="{$basic.tpl_path}img/empty_calendar_day.png" alt="___COMMON_NEW_ITEM___" />
                 					</a>
                 				{/if}
@@ -338,7 +338,7 @@
 										</div>
 	                				{/foreach}
 	 	                			{if !isset($cc.content.display[$i][$j]) or empty($cc.content.display[$i][$j])}
-	 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}'" href="#" title="___COMMON_NEW_ITEM___">
+	 	                				<a class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.tableContent[$i][$j].date_new}'" href="#" title="___COMMON_NEW_ITEM___">
 	 	                					<img src="{$basic.tpl_path}img/empty_calendar_day.png" alt="___COMMON_NEW_ITEM___" />
 	                					</a>
 	                				{/if}

@@ -18,6 +18,7 @@ define([	"dojo/_base/declare",
 			this.module = "date";
 			this.editType = customObject.editType;
 			this.contextId = customObject.contextId;
+			this.date_new =  customObject.date_new;
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 

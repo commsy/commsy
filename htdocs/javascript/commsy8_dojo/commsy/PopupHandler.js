@@ -270,6 +270,8 @@ define([	"dojo/_base/declare",
 							}
 						}));
 						*/
+					} else if(response.status === "error" && response.code === 111) {
+						this.onPopupSubmitError(response);
 					} else {
 						console.error("an unhandled error response occurred");
 					}

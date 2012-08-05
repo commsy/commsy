@@ -14,6 +14,7 @@ $message["ACCOUNT_GET_6_TEXT_2"]["en"] = "<b>Your user account is queued for app
 $message["ACCOUNT_GET_BUTTON"]["en"] = "Submit";
 $message["ACCOUNT_GET_CODE_TEXT"]["en"] = "Please type in the correct membership code for this workspace in the textfield below. </br>Entering the correct code, you immediately join the workspace as a member.";
 $message["ACCOUNT_GET_CODE_TEXT_2"]["en"] = "Become a member without membership code.";
+$message["ACCOUNT_GET_CODE_TEXT_DONT_KNOW"]["en"] = "If you don't know the membership code for this workspace, you can enter a message to the moderator. In that case you'll have to wait until a moderator accepts your membership.";
 $message["ACCOUNT_GET_GUEST_CHOICE"]["en"] = "You need a valid user account to apply for membership in this workspace.  Please<br/>
 - log in or<br/>
 - %1";
@@ -33,6 +34,7 @@ $message["ACCOUNT_PASSWORD_CHANGE"]["en"] = "Change password";
 $message["ACCOUNT_PROCESS_CONFIRMATION"]["en"] = "Confirmation";
 $message["ACCOUNT_PROCESS_ROOM_CODE"]["en"] = "membership code";
 $message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["en"] = "<b>Sorry, you entered a wrong membership code.</b> If you dont know the membership code use 'become a member without membership code' below the textfield.";
+$message["ACCOUNT_PROCESS_ROOM_CODE_ERROR_NEW"]["en"] = "<b>Sorry, you entered a wrong membership code.</b> If you dont know the membership code, you can give a message to the moderator.";
 $message["ACCOUNT_PROCESS_ROOM_REASON"]["en"] = "Your message";
 $message["ACCOUNT_SEND_BUTTON"]["en"] = "Send";
 $message["ACCOUNT_SHOW_AGB_ERROR"]["en"] = "Please read the applying <span style=&quot;font-weight:bold&quot;>Terms and Conditions</span> thoroughly.";

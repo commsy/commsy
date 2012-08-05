@@ -148,6 +148,10 @@ class cs_popup_date_controller {
  				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
  				$this->_popup_controller->assign('item', 'public', $val);
          		$this->_popup_controller->assign('item', 'private_editing', $val);
+         		if(!empty($data['date_new'])){
+         		   $this->_popup_controller->assign('item', 'date_new_date', date('d.m.Y', $data['date_new']));
+         		   $this->_popup_controller->assign('item', 'date_new_time', date('H:i', $data['date_new']));
+         		}
 			}
     }
 

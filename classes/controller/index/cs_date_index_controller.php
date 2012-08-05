@@ -808,7 +808,8 @@
 					}
 
 					$tableContent[$hour][$day] = array(
-						"state"		=> $state
+						"state"		=> $state,
+						"date_new"	=> $beginningDayTimestamp + ($hour * 3600)
 					);
 
 					// TODO: generate link???
@@ -944,6 +945,7 @@
 
 			// setup tooltip's and actions
 			$anAction_array = array();
+			$dateNewArray = array();
 			$date_index = 0;
 			$tooltips = array();
 			$tooltip_last_id = '';
@@ -981,6 +983,7 @@
 		      		$params,
 		      		'<img style="width:100%; height:100%" src="images/spacer.gif" alt="" border="0"/>');
 	      		$anAction_array[] = $anAction;
+	      		$dateNewArray[] = mktime(0, 0, 0, $current_month[$i], $format_array[$i]['day'], $current_year[$i]);
 		      }
 
 
@@ -1078,7 +1081,8 @@
 	      			"day"		=> $format["day"],
 	      			"link"		=> $anAction_array[$i],
 		      		"state"		=> $state,
-		      		"dates"		=> $dates
+		      		"dates"		=> $dates,
+		      		"date_new"  => $dateNewArray[$i]
 		      	);
 
 		      	$i++;

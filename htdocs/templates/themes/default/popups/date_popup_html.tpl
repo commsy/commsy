@@ -98,9 +98,9 @@
 						<div class="input_row">
 							<span class="input_label_80">___DATES_TIME_DAY_START___:<span class="required">*</span></span>
 							<span class="input_label">___COMMON_CALENDAR_DATE___<span class="required">*</span></span>
-							<input class="size_80 datepicker" type="text" value="{if isset($item.dayStart)}{$item.dayStart}{/if}" name="form_data[dayStart]" />
+							<input class="size_80 datepicker" type="text" value="{if isset($item.dayStart)}{$item.dayStart}{elseif $item.date_new_date}{$item.date_new_date}{/if}" name="form_data[dayStart]" />
 							<span class="input_label">___COMMON_CLOCK___</span>
-							<input type="text" value="{if isset($item.timeStart)}{$item.timeStart}{/if}" name="form_data[timeStart]" class="size_80" />
+							<input type="text" value="{if isset($item.timeStart)}{$item.timeStart}{elseif $item.date_new_time}{$item.date_new_time}{/if}" name="form_data[timeStart]" class="size_80" />
 						</div>
 						<div class="input_row">
 							<span class="input_label_80">___DATES_TIME_DAY_END___:</span>

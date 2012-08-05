@@ -16,6 +16,7 @@ freigeschaltet worden.</b> Sie erhalten eine E-Mail, sobald Ihre Kennung freiges
 $message["ACCOUNT_GET_BUTTON"]["de"] = "Beantragen";
 $message["ACCOUNT_GET_CODE_TEXT"]["de"] = "Bitte geben Sie den Teilnahme-Code an. Bei richtiger Eingabe werden Sie sofort in den Raum hineingelassen.";
 $message["ACCOUNT_GET_CODE_TEXT_2"]["de"] = "Anmeldung ohne Freischalt-Code.";
+$message["ACCOUNT_GET_CODE_TEXT_DONT_KNOW"]["de"] = "Wenn Sie den Teilnahme-Code nicht wissen, k&ouml;nnen Sie auch einen Teilnahmegrund angeben. Sie m&uuml;ssen dann allerdings auf Zugang zum Raum warten, bis ein Moderator Sie freigeschaltet hat.";
 $message["ACCOUNT_GET_GUEST_CHOICE"]["de"] = "Zur Teilnahme an einem Raum müssen Sie am System angemeldet sein. Bitte<br/>
 - melden Sie sich an oder<br/>
 - %1";
@@ -35,6 +36,7 @@ $message["ACCOUNT_PASSWORD_CHANGE"]["de"] = "Passwort ändern";
 $message["ACCOUNT_PROCESS_CONFIRMATION"]["de"] = "Bestätigung";
 $message["ACCOUNT_PROCESS_ROOM_CODE"]["de"] = "Teilnahme-Code";
 $message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["de"] = "<b>Sie haben einen falschen Code eingegeben.</b> Wenn Sie den Freischalt-Code nicht kennen, können Sie sich auch über 'Anmelden ohne Freischaltcode' anmelden.";
+$message["ACCOUNT_PROCESS_ROOM_CODE_ERROR_NEW"]["de"] = "<b>Sie haben einen falschen Code eingegeben.</b> Wenn Sie den Freischalt-Code nicht kennen, können Sie sich auch mit einem Teilnahmegrund anmelden.";
 $message["ACCOUNT_PROCESS_ROOM_REASON"]["de"] = "Teilnahmegrund";
 $message["ACCOUNT_SEND_BUTTON"]["de"] = "Zusenden";
 $message["ACCOUNT_SHOW_AGB_ERROR"]["de"] = "Bitte schauen Sie sich die <span style=&quot;font-weight:bold&quot;>Nutzungsvereinbarungen</span> an.";

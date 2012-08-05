@@ -27,7 +27,7 @@ define([	"dojo/_base/declare",
 					this.setupLoading();
 
 					// setup ajax request for getting html
-					this.AJAXRequest(this.ajaxHTMLSource, "getHTML", { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id, contextId: this.contextId }, lang.hitch(this, function(html) {
+					this.AJAXRequest(this.ajaxHTMLSource, "getHTML", { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id, contextId: this.contextId, date_new: this.date_new }, lang.hitch(this, function(html) {
 						// append html to body
 						domConstruct.place(html, query("body")[0], "first");
 
