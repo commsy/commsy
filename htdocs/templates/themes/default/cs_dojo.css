@@ -58,7 +58,7 @@
 .tundra.dojoDndCopy .dojoDndAvatarCanDrop .dojoDndAvatarHeader	{background-color: #C0C0C1;}
 
 .tundra .dijitTree {
-	overflow: hidden !important;
+	overflow: auto !important;
 }
 
 .tundra .dojoxLightbox {
