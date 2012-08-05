@@ -198,9 +198,13 @@ define([	"dojo/_base/declare",
 						//this.addTagToLists(response.newTag);
 						
 						// remove both tags from the merge select boxes and add the new one
+						/*
 						this.removeTagFromMergeSelects(response.tagOne);
 						this.removeTagFromMergeSelects(response.tagTwo);
 						this.addTagToMergeSelects(mergeIdOne, response.newTag);
+						*/
+						
+						this.close();
 					}),
 					
 					Lang.hitch(this, function(response) {

@@ -120,6 +120,8 @@ define([	"dojo/_base/declare",
 					if(action === "paste") {
 						// redirect
 						location.href = response.url;
+					} else if(action === "paste_stack") {
+						this.destroyLoading();
 					} else if(action === "delete") {
 						// remove entries from list
 						var numEntries = 0;

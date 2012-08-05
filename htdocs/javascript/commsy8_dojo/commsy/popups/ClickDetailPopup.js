@@ -69,6 +69,16 @@ define([	"dojo/_base/declare",
 					handler.setupTree(treeNode);
 				}));
 			}
+			
+			// ajax actions
+			require(["commsy/AjaxActions"], function(AjaxActions) {
+				var aNodes = Query("a.ajax_action");
+				
+				if (aNodes) {
+					var handler = new AjaxActions();
+					handler.setup(aNodes);
+				}
+			});
 		},
 		
 		onPopupSubmit: function(customObject) {

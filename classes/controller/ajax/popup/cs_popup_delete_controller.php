@@ -183,7 +183,9 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     	$manager = $this->_environment->getManager($type);
     	$item = $manager->getItem($item_id);
     	
-    	return $item->mayEdit($this->_environment->getCurrentUserItem());
+    	$currentUserItem = $this->_environment->getCurrentUserItem();
+    	
+    	return $item->mayEdit($currentUserItem) || $item->mayEdit($currentUserItem->getRelatedPrivateRoomUserItem());
     }
 
     public function getFieldInformation($sub = '') {

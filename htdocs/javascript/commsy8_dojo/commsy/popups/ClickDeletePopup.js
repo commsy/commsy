@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
+        	"dojo/on",
+        	"dojo/topic"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic) {
 	return declare(ClickPopupHandler, {
 		delType:	null,
 		
@@ -20,6 +21,7 @@ define([	"dojo/_base/declare",
 			this.delType = customObject.delType;
 			this.delVersion = customObject.delVersion || {};
 			this.version_id = customObject.vid;
+			this.contextId = customObject.contextId;
 			
 			this.features = [];
 			
@@ -46,12 +48,16 @@ define([	"dojo/_base/declare",
 		onPopupSubmitSuccess: function(response) {
 			this.close();
 			
-			if(response.redirectToIndex) {
-				var cid = this.uri_object.cid;
-				var module = this.uri_object.mod;
-				location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=index";
+			if (this.contextId) {
+				Topic.publish("newOwnRoomItem", {});		// this just updates the stack list at the moment
 			} else {
-				this.reload(response.item_id);
+				if(response.redirectToIndex) {
+					var cid = this.uri_object.cid;
+					var module = this.uri_object.mod;
+					location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=index";
+				} else {
+					this.reload(response.item_id);
+				}
 			}
 		},
 	});

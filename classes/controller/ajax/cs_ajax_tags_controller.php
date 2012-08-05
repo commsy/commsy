@@ -296,14 +296,28 @@
 					$this->setErrorReturn("108", "can't merge two tags with same id", array());
 					echo $this->_return;
 				} else {
-					// merge them
-					$tag2TagManager = $this->_environment->getTag2TagManager();
-					$tag2TagManager->combine($tagIdOne, $tagIdTwo, $tagIdOne);
-						
-					// get both
 					$tagManager = $this->_environment->getTagManager();
+					$tag2TagManager = $this->_environment->getTag2TagManager();
+					
+					// get both
 					$tagItemOne = $tagManager->getItem($tagIdOne);
 					$tagItemTwo = $tagManager->getItem($tagIdTwo);
+					
+					// for now, we put the combined tags under the parent of the first one
+					$putId = $tag2TagManager->getFatherItemId($tagIdOne);
+					
+					// get children ids of both
+					$childrenIdsOne = $tag2TagManager->getRecursiveChildrenItemIDArray($tagIdOne);
+					$childrenIdsTwo = $tag2TagManager->getRecursiveChildrenItemIDArray($tagIdTwo);
+					
+					// check wheter putId is not a child of the selected categories
+					//if (!in_array($put, $childrenIdsOne) && !in_array($put, $childrenIdsTwo)) {
+						
+					//} else {
+					//}
+					
+					// merge them
+					$tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
 					
 					$tagOne = $tagItemOne->getTitle();
 					$tagTwo = $tagItemTwo->getTitle();

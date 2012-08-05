@@ -39,6 +39,7 @@
 			                        		<option value="-1">*___COMMON_LIST_ACTION_NO___</option>
 			                        		<option disabled="disabled">------------------------------</option>
 			                        		<option selected="selected" value="paste">___CLIPBOARD_PASTE_BUTTON___</option>
+			                        		<option value="paste_stack">___CLIPBOARD_PASTE_STACK___</option>
 			                        		<option value="delete">___CLIPBOARD_DELETE_BUTTON___</option>
 			                        	</select>
 

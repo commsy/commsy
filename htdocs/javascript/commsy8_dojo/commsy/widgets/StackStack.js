@@ -76,7 +76,7 @@ define([	"dojo/_base/declare",
 
 									var aNode = DomConstruct.create("a", {
 										"id":		"listItem" + item.itemId,
-										"class":	"stack_link",
+										className:	"stack_link",
 										href:		"#",
 										innerHTML:	item.title
 									}, pNode, "last");
@@ -268,7 +268,7 @@ define([	"dojo/_base/declare",
 					}, liNode, "last");
 
 						DomConstruct.create("img", {
-							src:	this.from_php.template.tpl_path + "img/btn_del_tag.gif"
+							src:	this.from_php.template.tpl_path + "img/cross.gif"
 						}, aNode, "last");
 
 				On(aNode, "click", Lang.hitch(this, function(event) {
@@ -295,7 +295,7 @@ define([	"dojo/_base/declare",
 					}, liNode, "last");
 
 						DomConstruct.create("img", {
-							src:	this.from_php.template.tpl_path + "img/btn_del_tag.gif"
+							src:	this.from_php.template.tpl_path + "img/cross.gif"
 						}, aNode, "last");
 
 				On(aNode, "click", Lang.hitch(this, function(event) {

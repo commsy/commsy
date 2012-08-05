@@ -11,11 +11,11 @@
 		}
 		
 		public function actionGetTreeData() {
+			$item_id = $this->_data['item_id'];
+			$room_id = $this->_data["room_id"];
+			
 			$utils = $this->getUtils();
-			if($utils->showTags()) {
-				$item_id = $this->_data['item_id'];
-				$room_id = $this->_data["room_id"];
-				
+			if($utils->showTags() || $room_id !== null) {
 				if ($room_id !== null) {
 					$this->_environment->changeContextToPrivateRoom($room_id);
 				}

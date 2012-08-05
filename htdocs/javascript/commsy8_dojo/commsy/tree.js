@@ -57,7 +57,8 @@ define([	"dojo/_base/declare",
 		createModel: function() {
 			return new ForestStoreModel({
 				store:			this.store,
-				checkedAttr:	"match"
+				checkedAttr:	"match",
+				checkedStrict:	false
 			});
 		},
 		

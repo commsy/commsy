@@ -166,6 +166,11 @@
 					$data[$index]["room_id"] = $last_room_id;
 
 					$room = $room_manager->getItem($last_room_id);
+					
+					// if $room is null, try to get a private room
+					if ($room === null) {
+						$room = $private_room_manager->getItem($last_room_id);
+					}
 
 					$headline = "";
 					if (empty($room)) {
@@ -303,6 +308,44 @@
 						}
 
 						$this->setSuccessfullDataReturn(array("url" => $url));
+						echo $this->_return;
+					}
+					break;
+				
+				case "paste_stack":
+					
+					$privateRoomItem = $this->_environment->getCurrentUser()->getOwnRoom();
+					$this->_environment->changeContextToPrivateRoom($privateRoomItem->getItemID());
+					
+					$error_array = array();
+					if (!empty($ids)) {
+						foreach ($ids as $id) {
+							// get item to copy
+							$item = $manager->getItem($id);
+							
+							// for now, we only copy materials, dates, discussions and todos
+							if (in_array($item->getItemType(), array(CS_MATERIAL_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_TODO_TYPE))) {
+								$item_manager = $this->_environment->getManager($item->getItemType());
+								$import_item = $item_manager->getItem($id);
+								
+								$copy = $import_item->copy();
+									
+								$rubric = $item->getItemType();
+								$iid = $copy->getItemID();
+									
+								$err = $copy->getErrorArray();
+								if (!empty($err)) {
+									$error_array[$copy->getItemID()] = $err;
+								}
+							}
+						}
+					}
+					
+					if (!empty($error_array)) {
+						$this->setErrorReturn("106", "something goes wrong while copying", $error_array);
+						echo $this->_return;
+					} else {
+						$this->setSuccessfullDataReturn(array());
 						echo $this->_return;
 					}
 					break;
