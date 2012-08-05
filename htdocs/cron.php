@@ -22,13 +22,19 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-@include_once('../etc/commsy/development.php');
-if ( isset($c_cron_use_new)
-     and !empty($c_cron_use_new)
-     and $c_cron_use_new
-   ) {
-   include_once('cron_new.php');
-} else {
-   include_once('cron_old.php');
+@include_once('../etc/config.php');
+if (isset($c_commsy_cron_token) and !empty($c_commsy_cron_token)){
+	if (isset($_GET['cron_token']) and ($_GET['cron_token'] === $c_commsy_cron_token)){
+		@include_once('../etc/commsy/development.php');
+		if ( isset($c_cron_use_new)
+		     and !empty($c_cron_use_new)
+		     and $c_cron_use_new
+		   ) {
+		   include_once('cron_new.php');
+		} else {
+		   include_once('cron_old.php');
+		}
+	}
 }
+
 ?>

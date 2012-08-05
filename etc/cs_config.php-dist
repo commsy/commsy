@@ -183,4 +183,7 @@ $theme_array['schulehh'] = array(
 //$c_commsy_cron_var_temp_group = "www-data";
 // set to true to use htdocs/cron_single_room.php
 //$c_commsy_cron_split_scripts = false;
+
+//use $c_commsy_cron_token as $_GET['cron_token']-Parameter when starting cron.php
+//$c_commsy_cron_token = 'TOKEN-ID';
 ?>
