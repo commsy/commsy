@@ -4383,3 +4383,37 @@ div#popup_stack div#popup_content_wrapper {
 .paddingArea {
 	padding: 5px 5px 5px 5px;
 }
+
+
+div#popup_stack a.item_actions_glow {
+    background: url(img/ia_glow_bg.jpg) no-repeat;
+}
+
+div#popup_stack .item_actions a{
+    display: block;
+    padding: 8px 0px;
+    background: url(img/ia_norm_bg.jpg) repeat-y;
+    margin-bottom: 1px;
+    text-align: center;
+    text-decoration: none;
+    }
+
+
+div#popup_stack .item_actions a:hover {
+    display: block;
+    background: url(img/ia_active_bg_2.jpg) repeat-y;
+    }
+
+div#popup_stack #content_with_actions {
+    background: url("img/cwa_bg.jpg") repeat-y scroll 0 0 transparent;
+}
+
+a.stack_link {
+   color: #032f76;
+   text-decoration: none;
+}
+
+a.stack_link:hover {
+   color: #164db6;
+   text-decoration: underline;
+}
