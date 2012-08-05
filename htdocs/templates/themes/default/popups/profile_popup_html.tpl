@@ -498,7 +498,7 @@
                     </p>
                     <div class="input_row_180">
                       <label for="widget_stack_view">___CS_BAR_STACK_VIEW___:</label>
-                      <input disabled="disabled" id="show_stack_view" type="checkbox" name="form_data[show_stack_view]" value="yes"{if $popup.form.cs_bar.show_stack_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <input id="show_stack_view" type="checkbox" name="form_data[show_stack_view]" value="yes"{if $popup.form.cs_bar.show_stack_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
                  </fieldset>

@@ -2254,7 +2254,7 @@ class cs_privateroom_item extends cs_room_item {
    }
 
    function getCSBarShowStack() {
-      $retour = '-1';
+      $retour = '1';
       if ($this->_issetExtra('CS_BAR_SHOW_STACK')) {
          $retour = $this->_getExtra('CS_BAR_SHOW_STACK');
       }
