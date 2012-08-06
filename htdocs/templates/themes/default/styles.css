@@ -4417,3 +4417,12 @@ a.stack_link:hover {
    color: #164db6;
    text-decoration: underline;
 }
+
+a.nodeCreator{
+	font-size: 10px !important;
+}
+
+a.nodeCreator:hover{
+	font-size: 10px !important;
+	text-decoration:none;
+}
