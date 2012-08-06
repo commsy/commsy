@@ -77,7 +77,7 @@
 						$entry = $manager->getItem($entry->getItemID());
 					}
 					
-					if ($entry == null) {
+					if ($entry != null) {
 						$moddate = $entry->getModificationDate();
 						if ( $entry->getCreationDate() <> $entry->getModificationDate() and !strstr($moddate,'9999-00-00')){
 							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
