@@ -22,19 +22,33 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-@include_once('../etc/config.php');
-if (isset($c_commsy_cron_token) and !empty($c_commsy_cron_token)){
-	if (isset($_GET['cron_token']) and ($_GET['cron_token'] === $c_commsy_cron_token)){
-		@include_once('../etc/commsy/development.php');
-		if ( isset($c_cron_use_new)
-		     and !empty($c_cron_use_new)
-		     and $c_cron_use_new
-		   ) {
-		   include_once('cron_new.php');
-		} else {
-		   include_once('cron_old.php');
-		}
+function runCron() {
+	@include_once('../etc/commsy/development.php');
+	if ( isset($c_cron_use_new)
+			and !empty($c_cron_use_new)
+			and $c_cron_use_new
+	) {
+		include_once('cron_new.php');
+	} else {
+		include_once('cron_old.php');
 	}
+}
+
+@include_once('../etc/cs_config.php');
+if (isset($c_commsy_cron_token) and !empty($c_commsy_cron_token)) {
+	// if cron token is enabled
+	if (isset($_GET['cron_token']) and ($_GET['cron_token'] === $c_commsy_cron_token)) {
+		runCron();
+	
+	// try to get from command line - should be third parameter
+	} else if (isset($_SERVER["argv"][2]) && $_SERVER["argv"][2] === $c_commsy_cron_token) {
+		runCron();
+	} else {
+		die("cron token does not match");
+	}
+} else {
+	// if cron token is disabled
+	runCron();
 }
 
 ?>
