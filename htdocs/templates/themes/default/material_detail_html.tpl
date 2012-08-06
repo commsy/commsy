@@ -14,7 +14,7 @@
 			{if $room.workflow}
 				<a title="___COMMON_ACTION_WORKFLOW___" class="workflow" data-custom="expand: 'workflow_expand'" href="#"><span class="workflow_ia"> &nbsp; </span></a>
 			{/if}
-			<a itle="___COMMON_ACTION_ANNOTATIONS___" class="annotations  {if $detail.is_annotations_bar_visible}item_actions_glow{/if}" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno{if $detail.is_annotations_bar_visible}_ok{/if}"> &nbsp; </span></a>
+			<a title="___COMMON_ACTION_ANNOTATIONS___" class="annotations  {if $detail.is_annotations_bar_visible}item_actions_glow{/if}" data-custom="expand: 'annotations_expand'" href="#"><span class="ref_to_anno{if $detail.is_annotations_bar_visible}_ok{/if}"> &nbsp; </span></a>
 			{if $detail.versions}
 				<div class="action_count versions_count" >{$detail.versions}</div>
 			{/if}
@@ -60,14 +60,16 @@
 				{else}
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___MATERIAL_SECTION_ADD___</span> |
 				{/if}
-				{if $detail.export_to_wordpress}
-					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWordpress'" href="#">___ITEM_EXPORT_TO_WORDPRESS___</a> |
-				{/if}
-				{if $detail.export_to_wordpress_not_allowed}
-					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___ITEM_EXPORT_TO_WORDPRESS___</span> |
-				{/if}
-				{if $detail.export_to_wiki}
-					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWiki'" href="#">___ITEM_EXPORT_TO_WIKI___</a> |
+				{if !isset($popup.overflow) || (isset($popup.overflow) && $popup.overflow == false)}
+					{if $detail.export_to_wordpress}
+						<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWordpress'" href="#">___ITEM_EXPORT_TO_WORDPRESS___</a> |
+					{/if}
+					{if $detail.export_to_wordpress_not_allowed}
+						<span title="___COMMON_NO_ACTION___" class="disabled_actions">___ITEM_EXPORT_TO_WORDPRESS___</span> |
+					{/if}
+					{if $detail.export_to_wiki}
+						<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'exportToWiki'" href="#">___ITEM_EXPORT_TO_WIKI___</a> |
+					{/if}
 				{/if}
 				{if $detail.actions.delete}
 					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'delete', delType: 'material'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#">___COMMON_DELETE_ITEM___</a> |
