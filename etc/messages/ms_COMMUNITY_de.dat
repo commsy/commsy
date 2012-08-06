@@ -8,5 +8,5 @@ $message["COMMUNITY_MAIL_BODY_OPEN"]["de"] = "Eröffnung %_COMMUNITY_ART_UNDEF_G
 $message["COMMUNITY_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_SHORT_DESCRIPTION"]["de"] = "die Aktivsten";
+$message["COMMUNITY_SHORT_DESCRIPTION"]["de"] = "die aktivsten";
 ?>

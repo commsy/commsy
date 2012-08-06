@@ -243,8 +243,8 @@
 	                        }
 	                        $count_all = $manager->getCountAll();
 	                        $manager->setSortOrder('activity_rev');
-	                        if ( $interval > 0 ) {
-	                           $manager->setIntervalLimit(0,5);
+	                        if ( $count_all > 10 ) {
+	                           $manager->setIntervalLimit(0,10);
 	                        }
 	                        $manager->select();
 	                        $list = $manager->get();
@@ -680,7 +680,12 @@
 							if($this->_environment->inProjectRoom()) {
 								$message_tag = $translator->getMessage('PROJECT_SHORT_DESCRIPTION', 5);
 							} elseif($this->_environment->inCommunityRoom()) {
-								$message_tag = $translator->getMessage('COMMUNITY_SHORT_DESCRIPTION');
+								if(isset($list) && $list->isNotEmpty() && $list->getCount() < 10){
+									$count = $list->getCount();
+								}else{
+									$count = '10';
+								}
+								$message_tag = $translator->getMessage('COMMUNITY_SHORT_DESCRIPTION').' '.$count;
 							}
 							break;
 						case CS_GROUP_TYPE:
