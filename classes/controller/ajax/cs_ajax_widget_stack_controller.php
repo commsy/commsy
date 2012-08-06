@@ -77,34 +77,37 @@
 						$entry = $manager->getItem($entry->getItemID());
 					}
 					
-					$moddate = $entry->getModificationDate();
-					if ( $entry->getCreationDate() <> $entry->getModificationDate() and !strstr($moddate,'9999-00-00')){
-						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
-					} else {
-						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+					if ($entry == null) {
+						$moddate = $entry->getModificationDate();
+						if ( $entry->getCreationDate() <> $entry->getModificationDate() and !strstr($moddate,'9999-00-00')){
+							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
+						} else {
+							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+						}
+							
+						if ($type === CS_MATERIAL_TYPE) {
+							$versionId = $entry->getVersionID();
+						} else {
+							$versionId = null;
+						}
+						
+						$count++;
+							
+						$return["items"][] = array(
+								"itemId"			=> $entry->getItemID(),
+								"contextId"			=> $entry->getContextID(),
+								"module"			=> Type2Module($type),
+								"title"				=> $entry->getTitle(),
+								"image"				=> $this->getUtils()->getLogoInformationForType($type),
+								"fileCount"			=> $entry->getFileList()->getCount(),
+								"modificationDate"	=> $mod_date,
+								"creator"			=> $entry->getCreatorItem()->getFullName(),
+								"versionId"			=> $versionId
+						);
 					}
-					
-					if ($type === CS_MATERIAL_TYPE) {
-						$versionId = $entry->getVersionID();
-					} else {
-						$versionId = null;
-					}
-					
-					$return["items"][] = array(
-							"itemId"			=> $entry->getItemID(),
-							"contextId"			=> $entry->getContextID(),
-							"module"			=> Type2Module($type),
-							"title"				=> $entry->getTitle(),
-							"image"				=> $this->getUtils()->getLogoInformationForType($type),
-							"fileCount"			=> $entry->getFileList()->getCount(),
-							"modificationDate"	=> $mod_date,
-							"creator"			=> $entry->getCreatorItem()->getFullName(),
-							"versionId"			=> $versionId
-					);
 				}
 			
 				$entry = $filteredList->getNext();
-				$count++;
 			}
 			
 			$return["total"] = $count;
