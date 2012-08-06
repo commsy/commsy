@@ -26,18 +26,24 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			// add some widgets hardcoded
-			//this.widgetArray.push("widget_new");
+			var widgetArray = [
+			    "widgets/WidgetsReleasedEntries",
+			    "widgets/WidgetsRssTicker",
+			    "widgets/WidgetsNewEntries"
+			];
 			
-			// call parent
-			this.inherited(arguments);
-			
-			/*
-			// setup clipboard functions
-			require(["commsy/Clipboard"], Lang.hitch(this, function(Clipboard) {
-				var clipboard = new Clipboard();
-				clipboard.init(this.cid, this.from_php.template.tpl_path);
-			}));
-			*/
+			this.loadWidgetsManual(widgetArray).then(
+				Lang.hitch(this, function(results) {
+					// place widgets
+					dojo.forEach(results, Lang.hitch(this, function(result, index, arr) {
+						if (index < 2) {
+							result[1].handle.placeAt(Query("div.widgetAreaLeft", this.contentNode)[0]);
+						} else {
+							result[1].handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
+						}
+					}));
+				})
+			);
 		}
 	});
 });

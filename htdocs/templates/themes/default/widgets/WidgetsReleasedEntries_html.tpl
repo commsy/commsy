@@ -1,4 +1,4 @@
-<div class="{literal}${baseClass}{/literal} widget_500">
+<div class="{literal}${baseClass}{/literal} widget_694">
 	<div class="innerWidgetArea">
 		<div class="widget_head">
 			<h3 class="pop_widget_h3">___COMMON_RELEASED_ENTRIES_FOR_OTHER_USERS___</h3>

@@ -29,8 +29,8 @@ define([	"dojo/_base/declare",
 			var widgetArray = [
 			    "widgets/StackStack",
 			    "widgets/StackNew",
-			    "widgets/StackBuzzwordView",
-			    "widgets/StackTagView"
+			    "widgets/StackTagView",
+			    "widgets/StackBuzzwordView"
 			];
 			
 			this.loadWidgetsManual(widgetArray).then(
@@ -45,12 +45,6 @@ define([	"dojo/_base/declare",
 					}));
 				})
 			);
-			
-			
-			//this.widgetArray.push("widget_new");
-			
-			// call parent
-			//this.inherited(arguments);
 		}
 	});
 });

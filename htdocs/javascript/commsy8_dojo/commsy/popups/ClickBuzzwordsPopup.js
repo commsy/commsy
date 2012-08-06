@@ -270,7 +270,10 @@ define([	"dojo/_base/declare",
 			roomId = roomId || null;
 			
 			// get buzzword
-			var buzzword = DomAttr.get(Query("input#buzzword_create_name")[0], "value").trim();
+			var buzzword = Lang.trim(DomAttr.get(Query("input#buzzword_create_name")[0], "value"));
+			
+			console.log(buzzword);
+			
 			
 			if(buzzword !== "") {
 				// send ajax request

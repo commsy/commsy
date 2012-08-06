@@ -19,8 +19,8 @@
 			$itemManager = $this->_environment->getItemManager();
 			$currentUser = $this->_environment->getCurrentUserItem();
 			
-			$released_ids = $itemManager->getExternalViewerEntriesForRoom($room_id);
-			$viewable_ids = $itemManager->getExternalViewerEntriesForUser($currentUser->getItemID());
+			$released_ids = $itemManager->getExternalViewerEntriesForRoom($currentUser->getOwnRoom()->getItemID());
+			$viewable_ids = $itemManager->getExternalViewerEntriesForUser($currentUser->getRelatedPrivateRoomUserItem()->getUserID());
 			
 			$select_ids = array_merge($released_ids, $viewable_ids);
 			
