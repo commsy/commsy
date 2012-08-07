@@ -158,6 +158,9 @@
 							$config['show_configuration'] = true;
 						}
 					}
+					
+					// only show leave action, if watching yourself
+					$config["show_leave"] = ($this->_item->getItemID() === $this->_environment->getCurrentUserItem()->getItemID()) ? true : false;
 
 					// TODO: check this, should be handled by parent class
 					/*
