@@ -40,7 +40,7 @@ class cs_reader_manager {
   var $_cache_on = true;
 
   public $_db_prefix = '';
-  
+
    /**
     * Environment - the environment of the CommSy
     */
@@ -107,7 +107,7 @@ class cs_reader_manager {
                 ' WHERE item_id="'.encode(AS_DB,$item_id).'"'.
                 ' AND   user_id IN ('.implode(",",encode(AS_DB,$id_array)).')'.
                 ' GROUP BY user_id';
-                $result = $this->_db_connector->performQuery($query);
+               $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
            include_once('functions/error_functions.php');trigger_error('Problems selecting reader from query: "'.$query.'"');
          } else {
@@ -186,6 +186,9 @@ class cs_reader_manager {
      * @param integer version_id id of the version
      */
    function markRead ( $item_id, $version_id ) {
+      if ( empty($this->_current_user_id) ) {
+      	  $this->_current_user_id = $this->_environment->getCurrentUserID();
+      }
       if ( !empty($this->_current_user_id) ) {
          /*
           * There was a problem in reader- and noticed-manager when marking an entry as read, if
@@ -200,16 +203,16 @@ class cs_reader_manager {
                   ' user_id="'.encode(AS_DB,$this->_current_user_id).'", '.
                   ' read_date="'.getCurrentDateTimeInMySQL().'"';
          $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) ) {
+          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems marking item as read from query: "'.$query.'"');
          }
       }
    }
-   
+
    /**
     * mark an array of items/version as read by the current user
-    * 
+    *
     * @param $id_array
     * @param $version_id
     */
@@ -277,11 +280,11 @@ class cs_reader_manager {
          }
       }
    }
-   
+
    function addDatabasePrefix($db_table){
       return $this->_db_prefix . $db_table;
    }
-   
+
    function moveFromDbToBackup($context_id){
       $id_array_items = array();
       $item_manager = $this->_environment->getItemManager();
@@ -304,7 +307,7 @@ class cs_reader_manager {
          $id_array_users[] = $temp_user->getItemID();
          $temp_user = $user_list->getNext();
       }
-      
+
       global $c_db_backup_prefix;
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
@@ -321,7 +324,7 @@ class cs_reader_manager {
       }
       return $retour;
    }
-   
+
    function moveFromBackupToDb($context_id){
       $id_array_items = array();
       $zzz_item_manager = $this->_environment->getZzzItemManager();
@@ -344,7 +347,7 @@ class cs_reader_manager {
          $id_array_users[] = $temp_user->getItemID();
          $temp_user = $user_list->getNext();
       }
-      
+
       global $c_db_backup_prefix;
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
@@ -361,11 +364,11 @@ class cs_reader_manager {
       }
       return $retour;
    }
-   
+
    function deleteFromDb($context_id, $from_backup = false){
    	global $c_db_backup_prefix;
       $retour = false;
-      
+
       $db_prefix = '';
       $id_array_items = array();
       $id_array_users = array();
@@ -409,7 +412,7 @@ class cs_reader_manager {
             $temp_user = $user_list->getNext();
          }
       }
-      
+
       if(!empty($id_array_items) and !empty($id_array_users)){
 	      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'reader').' WHERE '.$this->addDatabasePrefix($db_prefix.'reader').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'reader').'.user_id IN ('.implode(",", $id_array_users).')';
 	      $result = $this->_db_connector->performQuery($query);

@@ -58,8 +58,8 @@
 			/*******************/
 
 			// mark as read and noticed
-			//$this->markRead();
-			//$this->markNoticed();
+			$this->markRead();
+			$this->markNoticed();
 
 			// set list actions
 			//$this->assign('list', 'actions', $this->getListActions());
@@ -1121,7 +1121,7 @@
 			$reader_manager = $this->_environment->getReaderManager();
 			$reader = $reader_manager->getLatestReader($this->_item->getItemID());
 			if(empty($reader) || $reader['read_date'] < $this->_item->getModificationDate()) {
-				$reader_manager->markRead($this->_item->getItemID(), 0);
+				$reader_manager->markRead($this->_item->getItemID(), $this->_item->getVersionID());
 			}
 		}
 
@@ -1130,7 +1130,7 @@
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$noticed = $noticed_manager->getLatestNoticed($this->_item->getItemID());
 			if(empty($noticed) || $noticed['read_date'] < $this->_item->getModificationDate()) {
-				$noticed_manager->markNoticed($this->_item->getItemID(), 0);
+				$noticed_manager->markNoticed($this->_item->getItemID(), $this->_item->getVersionID());
 			}
 		}
 
@@ -1208,7 +1208,10 @@
 		    if (($context->isProjectRoom() || $context->isGroupRoom()) && !in_array($item->getType(), array(CS_SECTION_TYPE, CS_DISCARTICLE_TYPE, CS_STEP_TYPE, CS_ANNOTATION_TYPE))) {
 		        $reader_manager = $environment->getReaderManager();
 		        $user_manager = $environment->getUserManager();
-		        $user_list = $user_manager->getAllRoomUsersFromCache($environment->getCurrentContextID());
+		        $user_manager->setContextLimit($environment->getCurrentContextID());
+		        $user_manager->setUserLimit();
+		        $user_manager->select();
+		        $user_list = $user_manager->get();
 		        $user_count = $user_list->getCount();
 		        $read_count = 0;
 		        $read_since_modification_count = 0;
@@ -1233,7 +1236,6 @@
 		            }
 		            $current_user = $user_list->getNext();
 		        }
-
 		        $read_percentage = round(($read_count/$user_count) * 100);
 		        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
 		        $return['read_percentage'] = $read_percentage;
