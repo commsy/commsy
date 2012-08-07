@@ -318,15 +318,6 @@ class cs_popup_date_controller {
                 $dt_start_date = '0000-00-00';
                 $dt_end_date = '0000-00-00';
 
-                // check end after start
-                if (!empty($form_data["dayEnd"]) and ($form_data["dayEnd"] < $form_data["dayStart"])) {
-                	$form_data["dayEnd"] = $form_data["timeEnd"] = "";
-                }
-
-                if ($form_data["dayEnd"] == $form_data["dayStart"] && $form_data["timeEnd"] <= $form_data["timeStart"]) {
-                	$form_data["timeEnd"] = "";
-                }
-
                 $converted_time_start = convertTimeFromInput($form_data['timeStart']);
                 if ($converted_time_start['conforms'] == TRUE) {
                     $date_item->setStartingTime($converted_time_start['datetime']);
@@ -342,10 +333,32 @@ class cs_popup_date_controller {
                 } else {
                     $date_item->setStartingDay($converted_day_start['display']);
                 }
+                
+                if (!empty($form_data['dayEnd'])) {
+                	$converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
+                	if ($converted_day_end['conforms'] == TRUE) {
+                		
+                		if ($converted_day_end["timestamp"] < $converted_day_start["timestamp"]) {
+                			$converted_day_end["datetime"] = $converted_day_start["datetime"];
+                		}
+                		
+                		$date_item->setEndingDay($converted_day_end['datetime']);
+                		$dt_end_date = $converted_day_end['datetime'];
+                	} else {
+                		$date_item->setEndingDay($converted_day_end['display']);
+                	}
+                } else {
+                	$date_item->setEndingDay('');
+                }
 
                 if (!empty($form_data['timeEnd'])) {
-                    $converted_time_end = convertTimeFromInput($form_data['timeEnd']);
+                    $converted_time_end = convertTimeFromInput($form_data['timeEnd']);     
                     if ($converted_time_end['conforms'] == TRUE) {
+                    	
+                    	if ($converted_time_end["timestamp"] < $converted_time_start["timestamp"]) {
+                    		$converted_time_end["datetime"] = $converted_time_start["datetime"];
+                    	}
+                    	
                         $date_item->setEndingTime($converted_time_end['datetime']);
                         $dt_end_time = $converted_time_end['datetime'];
                     } else {
@@ -354,19 +367,7 @@ class cs_popup_date_controller {
                 } else {
                     $date_item->setEndingTime('');
                 }
-
-                if (!empty($form_data['dayEnd'])) {
-        			$converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
-                    if ($converted_day_end['conforms'] == TRUE) {
-                        $date_item->setEndingDay($converted_day_end['datetime']);
-                        $dt_end_date = $converted_day_end['datetime'];
-                    } else {
-                        $date_item->setEndingDay($converted_day_end['display']);
-                    }
-                } else {
-                    $date_item->setEndingDay('');
-                }
-
+                
                 if ($dt_end_date == '0000-00-00') {
                     $dt_end_date = $dt_start_date;
                 }
