@@ -98,7 +98,7 @@ class cs_environment {
    private $_misc_text_converter = NULL;
    private $_class_factory = NULL;
    private $_archive_mode = false;
-   
+
    private $_tpl_engine	 = null;
 
   /** constructor: cs_environment
@@ -505,15 +505,15 @@ class cs_environment {
    function setCurrentParameter ( $key, $value ) {
       $this->_current_parameter_array[] = $key.'='.$value;
    }
-   
+
    function removeCurrentParameter($del_key) {
 	   $temp_array = array();
 	   foreach($this->_current_parameter_array as $param) {
 		   list($key, $value) = explode('=', $param);
-		   
+
 		   if($key !== $del_key) $temp_array[] = $param;
 	   }
-	   
+
 	   $this->_current_parameter_array = $temp_array;
    }
 
@@ -539,6 +539,11 @@ class cs_environment {
       }
    }
 
+   function getPortfolioManager() {
+      return $this->_getInstance('cs_portfolio_manager');
+   }
+
+
   /** get instance of cs_zzz_announcement_manager
    *
    * @return cs_zzz_announcement_manager
@@ -560,7 +565,7 @@ class cs_environment {
          return $this->getZzzAnnotationManager();
       }
    }
-   
+
    function getAssessmentManager() {
    	  if(!$this->isArchiveMode()) {
    	  	return $this->_getInstance('cs_assessments_manager');
@@ -990,7 +995,7 @@ class cs_environment {
          return $this->getZzzLinkModifierItemManager();
       }
    }
-   
+
    function unsetLinkModifierItemManager() {
       if ( !$this->isArchiveMode() ) {
          $this->_unsetInstance('cs_link_modifier_item_manager');
@@ -1007,7 +1012,7 @@ class cs_environment {
    function getZzzLinkModifierItemManager() {
       return $this->_getInstance('cs_zzz_link_modifier_item_manager');
    }
-   
+
    function unsetZzzLinkModifierItemManager() {
       return _unsetInstance('cs_zzz_link_modifier_item_manager');
    }
@@ -1307,7 +1312,7 @@ class cs_environment {
          return $this->getZzzTaskManager();
       }
    }
-   
+
    function getSearchIndexer() {
    	return $this->_getInstance('cs_search_indexer');
    }
@@ -1577,7 +1582,7 @@ class cs_environment {
       	unset($this->instance[$name]);
       }
    }
-   
+
    function unsetAllInstancesExceptTranslator() {
    	foreach($this->instance as $instance => $value) {
    		if ($instance !== "translation_object") {
@@ -1585,7 +1590,7 @@ class cs_environment {
    		}
    	}
    }
-   
+
    /** get Instance of the authentication object
     * returns an object for authentication users in commsy
     *
@@ -1634,6 +1639,8 @@ class cs_environment {
             return $this->getDiscussionArticlesManager();
          } elseif ($type == 'announcements' or $type == CS_ANNOUNCEMENT_TYPE) {
             return $this->getAnnouncementManager();
+         } elseif ($type == 'portfolio' or $type == CS_PORTFOLIO_TYPE) {
+            return $this->getPortfolioManager();
          } elseif ($type == 'institution' or $type == 'institutions') {
             return $this->getInstitutionManager();
          } elseif ($type == CS_TOPIC_TYPE) {
@@ -2343,27 +2350,27 @@ class cs_environment {
    public function isArchiveMode () {
       return $this->_archive_mode;
    }
-   
+
    public function setTemplateEngine($engine) {
    	$this->_tpl_engine = $engine;
    }
-   
+
    public function getTemplateEngine() {
    	return $this->_tpl_engine;
    }
-   
+
    public function changeContextToPrivateRoom($contextId = null) {
    	$currentUser = $this->getCurrentUserItem();
    	$privateRoomItem = $currentUser->getOwnRoom();
    	$privateRoomContextID = $privateRoomItem->getItemID();
-   	
+
    	$contextIdToSet = ($contextId) ? $contextId : $privateRoomContextID;
-   	
+
    	// set new context information and reset the loaded manager
    	$this->setCurrentContextID($contextIdToSet);
    	$this->setCurrentContextItem($privateRoomItem);
    	$this->setCurrentUserItem($currentUser->getRelatedPrivateRoomUserItem());
-   	$this->unsetAllInstancesExceptTranslator();   
+   	$this->unsetAllInstancesExceptTranslator();
    }
 }
 ?>

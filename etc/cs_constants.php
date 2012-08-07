@@ -59,6 +59,7 @@ define('CS_MATRIX_TYPE','matrix');
 define('CS_TAG_TYPE','tag');
 define('CS_TAG2TAG_TYPE','tag2tag');
 define('CS_ITEM_BACKUP','item_backup');
+define('CS_PORTFOLIO_TYPE','portfolio');
 
 define('CS_ROOM_TYPE','room');
 define('CS_COMMUNITY_TYPE','community');
