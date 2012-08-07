@@ -154,7 +154,7 @@ class cs_popup_section_controller implements cs_rubric_popup_controller {
             $section_item->setTitle($form_data['title']);
         }
         if (isset($form_data['description'])) {
-            $section_item->setDescription($form_data['description']);
+            $section_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
         }
         //TODO: Nummer auslesen (weil Eintragsordnung per drag & drop veränderbar)
         if (isset($form_data['number'])) {

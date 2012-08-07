@@ -881,5 +881,17 @@
 				
 			return $information;
 		}
+		
+		public function cleanCKEditor($string) {
+			// filter <body>-tags
+			$found = preg_match("=<body.*?>(.*)<\/body>=", $string, $matches);
+			
+			if ($found === 0) {
+				return $string;
+			} else {
+				if (isset($matches[1])) return $matches[1];
+				else return "";
+			}
+		}
 	}
 ?>

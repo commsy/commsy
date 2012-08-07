@@ -239,7 +239,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     				}
     	
     				if(isset($form_data['description'])) {
-    					$annotation_item->setDescription($form_data['description']);
+    					$annotation_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
     				}
     	
     				// already attached files

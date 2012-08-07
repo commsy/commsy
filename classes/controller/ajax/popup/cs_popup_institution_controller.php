@@ -153,7 +153,7 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 						$item->setName($form_data['name']);
 					}
 					if ( isset($form_data['description']) ) {
-						$item->setDescription($form_data['description']);
+						$item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
 					}
 					if (isset($form_data['public'])) {
 						$item->setPublic($form_data['public']);

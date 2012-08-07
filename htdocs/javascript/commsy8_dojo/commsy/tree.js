@@ -47,10 +47,12 @@ define([	"dojo/_base/declare",
 				domConstruct.empty(node);
 				this.tree.placeAt(node);
 				
-				callback();
-				
 				// auto expand
-				//this.autoExpandToLevel(tree);
+				if (this.expanded === true) {
+					this.autoExpandToLevel(this.tree, 0, true);
+				}
+				
+				callback();
 			}));
 		},
 		
@@ -64,7 +66,7 @@ define([	"dojo/_base/declare",
 		
 		createTree: function() {
 			return new Tree({
-				autoExpand:			this.expanded,
+				//autoExpand:			this.expanded,		// do not use the tree's routine for this, causing very long loading times in IE8
 				model:				this.model,
 				showRoot:			false,
 				persist:			false,
@@ -116,7 +118,7 @@ define([	"dojo/_base/declare",
 			var children = node.getChildren();
 			
 			dojo.forEach(children, lang.hitch(this, function(childrenNode, index, arr) {
-				if (expandAll ||level < maxLevel) {
+				if (expandAll || level < maxLevel) {
 					tree._expandNode(childrenNode);
 				} else {
 					tree._collapseNode(childrenNode);

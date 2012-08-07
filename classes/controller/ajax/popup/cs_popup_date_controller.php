@@ -259,7 +259,7 @@ class cs_popup_date_controller {
                     $date_item->setTitle($form_data['title']);
                 }
                 if ( isset($form_data['description']) ) {
-                    $date_item->setDescription($form_data['description']);
+                    $date_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
                 }
                 if (isset($form_data['public'])) {
                     $date_item->setPublic($form_data['public']);

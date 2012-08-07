@@ -430,7 +430,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								imagedestroy($newimg);
 
 								// determ new file name
-								$filename_info = pathinfo($targetfile);
+								$filename_info = pathinfo($additional["fileInfo"]["name"]);
 								$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getItemID() . '.' . $filename_info['extension'];
 
 								// copy file and set picture

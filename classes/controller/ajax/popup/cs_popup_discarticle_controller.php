@@ -183,7 +183,7 @@
 
 					// set attributes
 					if(isset($form_data['title'])) $discarticle_item->setSubject($form_data['title']);
-					if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
+					if(isset($form_data['description'])) $discarticle_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
 
 		            // already attached files
 		            $file_ids = array();

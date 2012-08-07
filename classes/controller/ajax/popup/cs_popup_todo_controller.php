@@ -235,7 +235,7 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
                 }
 
                 if ( isset($form_data['description']) ) {
-                    $todo_item->setDescription($form_data['description']);
+                    $todo_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
                 }
                 if (isset($form_data['public'])) {
                     $todo_item->setPublic($form_data['public']);

@@ -23,8 +23,8 @@
 ######
 
 #RewriteEngine		On
-#RewriteRule		^.*cron_old\.php$		/cron.php	[R=301,L]
-#RewriteRule		^.*cron_new\.php$		/cron.php	[R=301,L]
+#RewriteRule		^.*cron_old\.php$		/commsy.php	[R=301,L]
+#RewriteRule		^.*cron_new\.php$		/commsy.php	[R=301,L]
 
 ######
 #####################################

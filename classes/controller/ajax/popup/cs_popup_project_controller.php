@@ -89,7 +89,7 @@ class cs_popup_project_controller implements cs_rubric_popup_controller {
         				
         				$item->setDescriptionArray($description);*/
         				
-        				$item->setDescription($form_data["description"]);
+        				$item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
         			}
         			
         			// assignment

@@ -7,9 +7,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/dom-style",
-        	"dojo/has",
-        	"dojo/_base/sniff",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle, Has) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle) {
 	return declare(BaseClass, {
 		is_open:				false,
 		contentNode:			null,
@@ -72,7 +70,7 @@ define([	"dojo/_base/declare",
 							this.featureHandles[feature][index] = new Tree({
 								followUrl:		false,
 								checkboxes:		true,
-								expanded:		(Has("ie") <= 8) ? false : true,
+								expanded:		true,
 								item_id:		this.item_id,
 								room_id:		this.contextId
 							});

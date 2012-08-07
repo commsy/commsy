@@ -318,7 +318,7 @@
 						$discarticle_item->setDiscussionID($discussion_item->getItemID());
 
 						if(isset($form_data['subject'])) $discarticle_item->setSubject($form_data['subject']);
-						if(isset($form_data['description'])) $discarticle_item->setDescription($form_data['description']);
+						if(isset($form_data['description'])) $discarticle_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
 						if(isset($form_data['discussion_type']) && $form_data['discussion_type'] == 2) $discarticle_item->setPosition('1');
 
 						// already attached files

@@ -169,7 +169,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
                 }
 
                 if ( isset($form_data['description']) ) {
-                    $announcement_item->setDescription($form_data['description']);
+                    $announcement_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
                 }
                 if (isset($form_data['dayEnd'])) {
                     $date2 = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());

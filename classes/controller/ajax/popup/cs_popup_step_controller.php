@@ -173,7 +173,7 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 						// set attributes
 						if(isset($form_data["title"])) $step_item->setTitle($form_data["title"]);
 						
-						if(isset($form_data["description"])) $step_item->setDescription($form_data["description"]);
+						if(isset($form_data["description"])) $step_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
 						
 						if(isset($form_data["minutes"])) {
 							$minutes = $form_data["minutes"];

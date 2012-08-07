@@ -188,7 +188,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						}
 
 						// description
-						if(isset($form_data['description'])) $current_context->setDescription($form_data['description']);
+						if(isset($form_data['description'])) $current_context->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
 						else $current_context->setDescription('');
 
 
