@@ -100,8 +100,8 @@
                       <label for="auto_save">___CONFIGURATION_AUTO_SAVE___:</label>
 
                       <div class="input_container_180">
-                        <input id="auto_save" type="radio" name="form_data[auto_save]"{if $popup.form.account.auto_save == true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_YES___<br/>
-                        <input type="radio" name="form_data[auto_save]"{if $popup.form.account.auto_save != true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_NO___
+                        <input id="auto_save" value="on" type="radio" name="form_data[auto_save]"{if $popup.form.account.auto_save == true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_YES___<br/>
+                        <input type="radio" value="off" name="form_data[auto_save]"{if $popup.form.account.auto_save != true} checked="checked"{/if}/> ___CONFIGURATION_AUTO_SAVE_NO___
                       </div>
                     </div>
                     {if $popup.form.account.email_to_commsy_on}
