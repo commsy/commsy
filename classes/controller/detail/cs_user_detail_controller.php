@@ -616,7 +616,7 @@
 			#
 
 			// title
-			$title = $this->_item->getFullname();
+			$title = $this->_item->getTitle();
 			if(!empty($title)) {
 				//$temp_array = array();
 				//$temp_array[] = $translator->getMessage('USER_TITLE');
