@@ -191,7 +191,7 @@ class misc_text_converter {
       //$text = $this->_preserve_whitespaces($text);
       $text = $this->_newFormating($text);
       //$text = $this->_emphasize_text($text);
-      if($_GET['mod'] != 'ajax'){
+      if($_GET['mod'] != 'ajax' && $_GET['fct'] != 'index'){
 	      $text = $this->_activate_urls($text);
       }
       //$text = $this->_display_headers($text);
