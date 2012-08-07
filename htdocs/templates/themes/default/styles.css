@@ -4408,6 +4408,11 @@ div#popup_stack #content_with_actions {
     background: url("img/cwa_bg.jpg") repeat-y scroll 0 0 transparent;
 }
 
+div#popup_my_area .table_head {
+    background: url(img/ci_head_bg.png) repeat-x;
+    }
+
+
 a.stack_link {
    color: #032f76;
    text-decoration: none;
