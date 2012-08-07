@@ -191,7 +191,9 @@ class misc_text_converter {
       //$text = $this->_preserve_whitespaces($text);
       $text = $this->_newFormating($text);
       //$text = $this->_emphasize_text($text);
-      $text = $this->_activate_urls($text);
+      if($_GET['mod'] != 'ajax'){
+	      $text = $this->_activate_urls($text);
+      }
       //$text = $this->_display_headers($text);
       //$text = $this->_format_html_long($text);
       //$text = $this->_parseText2ID($text);
