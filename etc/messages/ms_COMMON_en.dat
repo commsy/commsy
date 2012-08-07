@@ -926,6 +926,7 @@ $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_TEXT_YELLOW_DEFAULT"]["en"] = "Draft";
 $message["COMMON_WORKFLOW_TRAFFIC_LIGHT_YELLOW"]["en"] = "yellow";
 $message["COMMON_WORKFLOW_VALIDITY"]["en"] = "Validity date";
 $message["COMMON_WORKFLOW_VALIDITY_TRAFFIC_LIGHT"]["en"] = "Status after the expiration of the validity date";
+$message["COMMON_WORKFLOW_VALIDITY_WHO"]["en"] = "Notification after the expiration of the validity date";
 $message["COMMON_X_ANNOTATIONS"]["en"] = "%1 total";
 $message["COMMON_X_ENTRIES"]["en"] = "%1";
 $message["COMMON_X_ENTRIES_FROM_ALL"]["en"] = "Listed: %1 items (of %2 total)";
