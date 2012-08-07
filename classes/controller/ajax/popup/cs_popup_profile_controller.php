@@ -52,7 +52,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 // 			$profile_page = 'account';
 // 		}
 
-		$user_item = $this->_environment->getCurrentUserItem();
+//		$user_item = $this->_environment->getCurrentUserItem();
+		$user_item = $this->_environment->getPortalUserItem();
+		$current_user = $this->_environment->getPortalUserItem();
+
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
 
@@ -187,7 +190,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 					case "account_lock_portal":
 						$current_user = $this->_environment->getCurrentUserItem();
-						$portal_user_item = $user_item->getRelatedCommSyUserItem();
+						$portal_user_item = $current_user->getRelatedCommSyUserItem();
 
 						$portal_user_item->reject();
 						$portal_user_item->save();
@@ -201,8 +204,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 					case "account_delete_portal":
 						$current_user = $this->_environment->getCurrentUserItem();
+						$portal_user_item = $current_user->getRelatedCommSyUserItem();
 						$authentication = $this->_environment->getAuthenticationObject();
-						$authentication->delete($user_item->getItemID());
+						$authentication->delete($portal_user_item->getItemID());
 
 						// delete session
 						$session_manager = $this->_environment->getSessionManager();
@@ -226,8 +230,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								}
 							}
 
-							if(!$this->_environment->inPortal()) $user = $this->_environment->getPortalUserItem();
-							else $user = $this->_environment->getCurrentUserItem();
+							$user = $this->_environment->getPortalUserItem();
 
 							// user id
 							if(!empty($form_data['user_id']) && $form_data['user_ID'] != $user->getUserID()) {
@@ -320,6 +323,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								if($form_data['auto_save'] == 'on') $user->turnAutoSaveOn();
 								else $user->turnAutoSaveOff();
 
+								$save = true;
+							}else{
+								$user->turnAutoSaveOff();
 								$save = true;
 							}
 
@@ -433,7 +439,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$disc_manager->copyFile($targetfile, $filename, true);
 								$user_item->setPicture($filename);
 
-								$portal_user = $user_item->getRelatedCommSyUserItem();
+/*								$portal_user = $user_item->getRelatedCommSyUserItem();
 								if(isset($portal_user)) {
 									if($disc_manager->copyImageFromRoomToRoom($filename, $portal_user->getContextID())) {
 										$value_array = explode('_', $filename);
@@ -448,7 +454,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 										$portal_user->save();
 									}
 								}
-
+*/
 								// save
 								$user_item->save();
 							}
@@ -557,7 +563,6 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								function setChangeAllValue($user_item, $dummy_user_item, $method_set, $method_get, $checked) {
 									if(isset($checked)) {
 										$value = call_user_func_array(array($user_item, $method_get), array());
-										
 										if(empty($value)) $value = -1;
 
 										call_user_func_array(array($dummy_user_item, $method_set), array($value));
@@ -588,15 +593,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								setChangeAllValue($user_item, $dummy_user, 'setJabber', 'getJabber', $form_data['messenger_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setHomepage', 'getHomepage', $form_data['homepage_all']);
 								setChangeAllValue($user_item, $dummy_user, 'setDescription', 'getDescription', $form_data['description_all']);
+								setChangeAllValue($user_item, $dummy_user, 'setPicture', 'getPicture', $form_data['picture_all']);
 
-
-								// 								if (isset($_POST['picture_change_all'])) {
-								// 									$value = $user_item->getPicture();
-								// 									if (empty($value)) {
-								// 										$value = -1;
-								// 									}
-								// 									$dummy_user->setPicture($value);
-								// 								}
 								$user_item->changeRelatedUser($dummy_user);
 
 
@@ -611,7 +609,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								// 							}
 								// 							redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
 							}
-							
+
 							// set return
                 			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 						}
@@ -873,11 +871,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$account = array();
 
 		// set user item
-		if($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom()) {
-			$this->_user = $this->_environment->getPortalUserItem();
-		} else {
-			$this->_user = $this->_environment->getCurrentUserItem();
-		}
+#		if($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom()) {
+#			$this->_user = $this->_environment->getPortalUserItem();
+#		} else {
+#			$this->_user = $this->_environment->getCurrentUserItem();
+#		}
+
+		$this->_user = $this->_environment->getPortalUserItem();
 
 		// disable merge form only for root
 		$this->_config['show_merge_form'] = true;
@@ -1078,7 +1078,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		// get data from database
 		$return['title'] = $this->_user->getTitle();
 		$return['birthday'] = $this->_user->getBirthday();
-		$return['picture'] = $this->_environment->getCurrentUserItem()->getPicture();
+		$return['picture'] = $this->_user->getPicture();
 		$return['mail'] = $this->_user->getEmail();
 		$return['telephone'] = $this->_user->getTelephone();
 		$return['cellularphone'] = $this->_user->getCellularphone();
