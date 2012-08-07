@@ -1,12 +1,12 @@
-php_flag  magic_quotes_gpc      off
-php_flag  register_globals      off
+#php_flag  magic_quotes_gpc      off
+#php_flag  register_globals      off
 
-php_value  error_reporting  2047
-php_flag   display_errors   on
-php_flag   log_errors       off
-php_value  error_log        '/var/log/commsy-error.log'
-php_value  error_prepend_string  '<BR><CENTER><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="70%"><TR><TD>'
-php_value  error_append_string   '<BR></TD></TR></TABLE>'
+#php_value  error_reporting  2047
+#php_flag   display_errors   on
+#php_flag   log_errors       off
+#php_value  error_log        '/var/log/commsy-error.log'
+#php_value  error_prepend_string  '<BR><CENTER><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="70%"><TR><TD>'
+#php_value  error_append_string   '<BR></TD></TR></TABLE>'
 
 # Use mod_rewrite to have short URLs linking entries in CommSy - TESTING
 #RewriteEngine On
@@ -16,3 +16,15 @@ php_value  error_append_string   '<BR></TD></TR></TABLE>'
 
 # http://www.mycommsy.de/12345 -> get to home of the room 12345
 #RewriteRule ^([0-9].*)$ commsy.php?cid=$1  [QSA,L]
+
+
+#####################################
+# restrict access of cron_old.php and cron_new.php and redirect to cron.php
+######
+
+#RewriteEngine		On
+#RewriteRule		^.*cron_old\.php$		/cron.php	[R=301,L]
+#RewriteRule		^.*cron_new\.php$		/cron.php	[R=301,L]
+
+######
+#####################################
