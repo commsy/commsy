@@ -2637,7 +2637,7 @@ a#sort_down {
 .post_content .editor_content {
     padding: 5px 0px 20px 0px;
     line-height: 18px;
-    overflow-x: scroll;
+    overflow-x: auto;
     }
 
 .jump_up_down img {
