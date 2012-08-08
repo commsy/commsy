@@ -234,6 +234,7 @@
 				//$desc = $converter->text_as_html_long($desc);
 				//$desc = $converter->show_images($desc, $this->_item, true);
 				//$html .= $this->getScrollableContent($desc,$item,'',true);
+				$desc = $converter->_activate_urls($desc);
 			}
 
 			return array(

@@ -158,7 +158,7 @@
 							$config['show_configuration'] = true;
 						}
 					}
-					
+
 					// only show leave action, if watching yourself
 					$config["show_leave"] = ($this->_item->getItemID() === $this->_environment->getCurrentUserItem()->getItemID()) ? true : false;
 
@@ -873,6 +873,7 @@
 			// description of the user
 			$desc = $this->_item->getDescription();
 			if(!empty($desc)) {
+				$desc = $converter->_activate_urls($desc);
 				//$desc = $converter->cleanDataFromTextArea($desc);
 				//TODO:
 				//$desc = $converter->compareWithSearchText($desc);

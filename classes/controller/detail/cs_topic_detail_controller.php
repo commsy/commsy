@@ -299,6 +299,7 @@
             	//TODO:
             	//$desc = $converter->compareWithSearchText($desc);
             	$converter->setFileArray($this->getItemFileList());
+				$desc = $converter->_activate_urls($desc);
             	//$desc = $converter->text_as_html_long($desc);
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }

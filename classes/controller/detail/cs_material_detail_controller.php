@@ -593,6 +593,7 @@
       			if(!empty($desc)) {
       				//$desc = $converter->cleanDataFromTextArea($desc);
       				$converter->setFileArray($this->getItemFileList());
+					$desc = $converter->_activate_urls($desc);
       				//$desc = $converter->text_as_html_long($desc);
 
       				/*
@@ -1256,6 +1257,7 @@
 					//$description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
 					//$description = $converter->text_as_html_long($description);
+					$description = $converter->_activate_urls($description);
 					$description = $converter->showImages($description, $section, true);
 
 

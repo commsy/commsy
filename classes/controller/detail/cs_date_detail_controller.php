@@ -295,7 +295,7 @@ class cs_date_detail_controller extends cs_detail_controller {
             //$desc = $converter->compareWithSearchText...
             //$desc = $converter->text_as_html_long($desc);
             //$desc = $converter->show_images($desc, $this->_item, true);
-            //$html .= $this->getScrollableContent($desc,$item,'',true);
+			$desc = $converter->_activate_urls($desc);
         }
 
 		// set up style of days and times

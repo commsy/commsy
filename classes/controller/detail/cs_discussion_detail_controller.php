@@ -139,10 +139,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$this->assign('detail', 'assessment', $this->getAssessmentInformation($this->_item));
 
 			$this->assign('detail', 'content', $this->getDetailContent());
-			
+
 			// wiki export
 			global $c_pmwiki;
-			$context_item = $this->_environment->getCurrentContextItem();	
+			$context_item = $this->_environment->getCurrentContextItem();
 			if($c_pmwiki and $context_item->isWikiActive() and !isset($_GET['version_id'])){
 			   $this->assign('detail', 'export_to_wiki', true);
 			}
@@ -600,7 +600,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$current_user = $this->_environment->getCurrentUserItem();
 			$disc_manager = $this->_environment->getDiscManager();
 			$converter = $this->_environment->getTextConverter();
-			
+
 			$root_position = $root->getPosition();
 			if (empty($root_position)) {
 				$root_position = "1";
@@ -612,7 +612,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			while($item) {
 				$item_position = $item->getPosition();
 				$item_level = sizeof(explode('.', $item_position)) - 1;
-				
+
 				// skip if item is not a direct child of root
 				if($item_level === $root_level + 1 && $root_position === mb_substr($item_position, 0, sizeof($item_position) - 6)) {
 					// files
@@ -658,6 +658,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					//description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
 					//$description = $converter->text_as_html_long($description);
+					$description = $converter->_activate_urls($description);
 					$description = $converter->showImages($description, $item, true);
 					//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
 
@@ -767,7 +768,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 		private function getDiscArticleContentThreaded($articles_list) {
 			$return = array();
-			
+
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$reader_manager = $this->_environment->getReaderManager();
 			$translator = $this->_environment->getTranslationObject();
@@ -869,6 +870,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 			//$description = $converter->cleanDataFromTextArea($description);
 			$converter->setFileArray($this->getItemFileList());
 			//description = $converter->text_as_html_long($description);
+			$description = $converter->_activate_urls($description);
 			$description = $converter->showImages($description, $root, true);
 			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
 
@@ -1001,6 +1003,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				//$description = $converter->cleanDataFromTextArea($description);
 				$converter->setFileArray($this->getItemFileList());
 				//$description = $converter->text_as_html_long($description);
+				$description = $converter->_activate_urls($description);
 				$description = $converter->showImages($description, $item, true);
 
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
