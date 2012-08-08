@@ -29,7 +29,10 @@ define([	"dojo/_base/declare",
 			var triggerNode = Query("#popup_path_tab")[0];
 			
 			if (triggerNode) {
-				On(triggerNode, "click", Lang.hitch(this, function(event) {
+				// TODO: Hotfix: If topic is saved and path tab was not clicked,
+				// DOM for checkboxes is not generated and status will not be saved.
+				// For now, load always
+				//On(triggerNode, "click", Lang.hitch(this, function(event) {
 					var list = Query("ul#popup_path_list")[0];
 					
 					// setup sortable
@@ -69,7 +72,7 @@ define([	"dojo/_base/declare",
 							this.sortable.insertNodes(false, Query(">", list));
 						}));
 					}
-				}));
+				//}));
 			}
 		},
 		
@@ -82,7 +85,7 @@ define([	"dojo/_base/declare",
 			dojo.forEach(Query("ul#popup_path_list input[type='checkbox']:checked"), function(checkbox, index, arr) {
 				// extract item id
 				var regex = new RegExp("path_(.*)");
-				var results = regex.exec(jQuery(this).attr('id'));
+				var results = regex.exec(DomAttr.get(checkbox, "id"));
 				id = results[1];
 				
 				ids.push(id);

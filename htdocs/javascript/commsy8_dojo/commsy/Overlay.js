@@ -24,14 +24,25 @@ define([	"dojo/_base/declare",
 			var contentNode = Query("div.tooltip:first", node.parentNode.parentNode)[0];
 			
 			if(contentNode) {
+				var position = "bottom";
+				
+				var customObject = this.getAttrAsObject(contentNode, "data-custom");
+				if (customObject) {
+					if (customObject.position) position = customObject.position;
+				}
+				
 				DomStyle.set(contentNode, "opacity", 0);
 				DomStyle.set(contentNode, "display", "block");
 				DomStyle.set(contentNode, "zIndex", -1);
 				
+				if (position === "right") {console.log(position);
+					DomStyle.set(contentNode, "marginLeft", "100px");
+				}
+				
 				// setup tooltip dialog
 				var tooltipDialog = new TooltipDialog({
 					content:		DomAttr.get(contentNode, "innerHTML"),
-					"class":		DomAttr.get(contentNode, "class")
+					className:		DomAttr.get(contentNode, "class")
 				});
 				
 				// set animations

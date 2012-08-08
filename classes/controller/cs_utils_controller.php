@@ -884,13 +884,22 @@
 		
 		public function cleanCKEditor($string) {
 			// filter <body>-tags
-			$found = preg_match("=<body.*?>(.*)<\/body>=", $string, $matches);
+			$found = preg_match("=(.*)<body.*?>(.*)<\/body>(.*)=is", $string, $matches);
+			$pre = $matches[1];
+			$inner = $matches[2];
+			$post = $matches[3];
 			
 			if ($found === 0) {
 				return $string;
 			} else {
-				if (isset($matches[1])) return $matches[1];
-				else return "";
+				$string = "";
+				for ($i = 1; $i <= 3; $i++) {
+					if (isset($matches[$i])) {
+						$string .= $matches[$i];
+					}
+				}
+				
+				return $string;
 			}
 		}
 	}

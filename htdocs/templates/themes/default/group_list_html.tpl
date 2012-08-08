@@ -66,7 +66,7 @@
 			</div>
 			<div class="column_160">
 				<p>
-					<a href="commsy.php?cid={$environment.cid}&mod=group&fct=mail&iid={$item.iid}">___GROUPS_EMAIL_TO_GROUP_BIG___</a>
+					<a class="open_popup" data-custom="module: 'mailtogroup', iid: {$item.iid}" href="#">___GROUPS_EMAIL_TO_GROUP_BIG___</a>
 				</p>
 			</div>
 			<div class="clear"> </div>

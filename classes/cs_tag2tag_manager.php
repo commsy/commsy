@@ -551,6 +551,10 @@ class cs_tag2tag_manager extends cs_manager {
       $item_title_1 = $item_1->getTitle();
       $item_2 = $tag_manager->getItem($item_id_2);
       $item_title_2 = $item_2->getTitle();
+      
+      // get all linked items
+      $linkedIDsItem_1 = $item_1->getAllLinkedItemIDArray();
+      $linkedIDsItem_2 = $item_2->getAllLinkedItemIDArray();
 
       // delete tags, but keep children alive
       $tag_manager->delete($item_id_1, false);
@@ -559,12 +563,15 @@ class cs_tag2tag_manager extends cs_manager {
       unset($item_1);
       unset($item_2);
 
-      // create new tag
+      // create new tag and set linked items
+      $mergedLinkedIDs = array_unique(array_merge($linkedIDsItem_1, $linkedIDsItem_2));
+      
       $new = $tag_manager->getNewItem();
       $new->setTitle($item_title_1 . '/' . $item_title_2);
       $new->setContextID($this->_environment->getCurrentContextID());
       $new->setCreatorItem($this->_environment->getCurrentUserItem());
       $new->setCreationDate(getCurrentDateTimeInMySQL());
+      $new->setLinkedItemsByIDArray($mergedLinkedIDs);
 
       // set position
       $new->setPosition($father_id, $this->countChildren($father_id));
@@ -586,6 +593,8 @@ class cs_tag2tag_manager extends cs_manager {
          unset($item);
          $count++;
       }
+      
+      
 
       unset($tag_manager);
       unset($new);

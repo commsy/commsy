@@ -7,9 +7,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/on",
-        	"dojo/has",
-        	"dojo/NodeList-traverse",
-        	"dojo/_base/sniff"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On, Has) {
+        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 			
@@ -35,7 +33,7 @@ define([	"dojo/_base/declare",
 					followUrl:		false,
 					checkboxes:		false,
 					room_id:		this.contextId,
-					expanded:		(Has("ie") <= 8) ? false : true,
+					expanded:		true,
 					item_id:		this.item_id
 				});
 				this.tree.setupTree(Query("div.tree", this.contentNode)[0]);

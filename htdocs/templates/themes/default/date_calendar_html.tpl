@@ -125,7 +125,7 @@
 			                						<div>
 			                							<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
 
-				                						<div class="tooltip tooltip_with_400">
+				                						<div class="tooltip tooltip_with_400" data-custom="position: 'right'">
 															<a href="{$date.href}">
 																<div class="tooltip_inner tooltip_inner_with_400">
 																	<div class="tooltip_title">
@@ -195,7 +195,7 @@
 	                				<div class="cal_days_week_events">
 	                					<a href="{$date.href}" class="event_{$date.color}">{$date.title|truncate:11:"...":true}</a>
 	                					</div>
-                						<div class="tooltip tooltip_with_400">
+                						<div class="tooltip tooltip_with_400" data-custom="position: 'right'">
 											<a href="{$date.href}">
 												<div class="tooltip_inner tooltip_inner_with_400">
 													<div class="tooltip_title">
@@ -288,7 +288,7 @@
 		                						<a href="{$date.href}" class="event_{$date.color} float-left" style="margin-top: {$date.topMargin}px; height: {$date.dateHeight}px; width: {$width}px;">{$date.title|truncate:11:"...":true}</a>
 			                				</div>
 			                				
-	                						<div class="tooltip tooltip_with_400" style="margin-left:50px;">
+	                						<div class="tooltip tooltip_with_400" style="margin-left:50px;" data-custom="position: 'right'">
 												<a href="{$date.href}">
 												<div class="tooltip_inner tooltip_inner_with_400">
 													<div class="tooltip_title">
