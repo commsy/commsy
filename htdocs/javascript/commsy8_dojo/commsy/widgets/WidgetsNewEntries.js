@@ -12,10 +12,11 @@ define([	"dojo/_base/declare",
 		baseClass:			"CommSyWidget",
 		widgetHandler:		null,
 		
+		itemId:				null,
+		
 		currentPage:		1,
 		maxPage:			1,
-		entriesPerPage:		20,
-		search:				"",
+		entriesPerPage:		10,
 		items:				[],
 		
 		constructor: function(options) {
@@ -30,70 +31,96 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			this.AJAXRequest("widget_new_entries", "getListContent", { },
-				Lang.hitch(this, function(response) {
-					// save items
-					this.items = response.items;
-					
-					this.maxPage = this.items.length;
-					
-					// update list
-					this.updateList();
-				})
-			);
+			this.itemId = this.from_php.ownRoom.id;
+			
+			// update list
+			this.updateList();
 		},
 		
 		updateList: function() {
 			// empty list
-			DomConstruct.empty(this.itemList);
-			
-			// fill list
-			var numFiltered = 0;
-			var start = (this.currentPage - 1) * this.entriesPerPage;
-			dojo.forEach(this.items, Lang.hitch(this, function(item, index, arr) {
-				
-				var skip = false;
-				// filter by search word
-				if (this.search) {
-					if (item.title.toLowerCase().indexOf(this.search.toLowerCase()) == -1) {
-						skip = true;
-					}
-				}
-				
-				// limit entries per page
-				if (index < start || index > start + this.entriesPerPage) skip = true;
-				
-				if (!skip) {
-					// create list entries
-					var liNode = DomConstruct.create("li", {
-					}, this.itemList, "last");
-					
-						DomConstruct.create("img", {
-							src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
-							title:		item.image.text
-						}, liNode, "last");
-						
-						var aNode = DomConstruct.create("a", {
-							innerHTML:		item.title,
-							href:			"#",
-							className:		"open_popup"
-						}, liNode, "last");
-					
-					DomAttr.set(aNode, "data-custom", "cid: " + item.contextId + ", iid: " + item.itemId + ", module: '" + item.module + "'");
-					On(aNode, "click", Lang.hitch(this, function(event) {
-						this.onClickListEntry(event.target);
+			DomConstruct.empty(this.itemListNode);
+
+			this.AJAXRequest("widget_new_entries", "getListContent", {
+					start:					(this.currentPage - 1) * this.entriesPerPage,
+					numEntries:				this.entriesPerPage
+				},
+				Lang.hitch(this, function(response) {
+					// fill list
+					dojo.forEach(response.items, Lang.hitch(this, function(item, index, arr) {
+
+						// create list entries
+						var rowNode = DomConstruct.create("div", {
+							className:		(index % 2 == 0) ? "row_even even_sep_search" : "row_odd odd_sep_search"
+						}, this.itemListNode, "last");
+
+							var firstColumnNode = DomConstruct.create("div", {
+								className:		"column_280"
+							}, rowNode, "last");
+
+								var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
+
+									var aNode = DomConstruct.create("a", {
+										"id":		"listItem" + item.itemId,
+										className:	"stack_link",
+										href:		"#",
+										innerHTML:	item.title
+									}, pNode, "last");
+
+							var secondColumnNode = DomConstruct.create("div", {
+								className:		"column_45"
+							}, rowNode, "last");
+
+								var pNode = DomConstruct.create("p", {}, secondColumnNode, "last");
+
+									if (item.fileCount > 0) {
+										DomConstruct.create("a", {
+											className:		"attachment",
+											href:			"#",
+											innerHTML:		item.fileCount
+										}, pNode, "last");
+									}
+
+							var thirdColumnNode = DomConstruct.create("div", {
+								className:		"column_65"
+							}, rowNode, "last");
+
+								var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
+
+									DomConstruct.create("img", {
+										src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
+										title:		item.image.text
+									}, pNode, "last");
+
+							var fourthColumnNode = DomConstruct.create("div", {
+								className:		"column_90"
+							}, rowNode, "last");
+
+								DomConstruct.create("p", {
+									innerHTML:		item.modificationDate
+								}, fourthColumnNode, "last");
+
+							var fifthColumnNode = DomConstruct.create("div", {
+								className:		"column_155"
+							}, rowNode, "last");
+
+								DomConstruct.create("p", {
+									innerHTML:		item.creator
+								}, fifthColumnNode, "last");
+
+							DomConstruct.create("div", {
+								className:		"clear"
+							}, rowNode, "last");
 					}));
-					
-					numFiltered++;
-				}
-			}));
-			
-			// update max page
-			this.maxPage = Math.ceil(numFiltered / this.entriesPerPage);
-			
-			// set template values
-			this.currentPageNode.innerHTML = this.currentPage;
-			this.maxPageNode.innerHTML = this.maxPage;
+
+					// update max page
+					this.maxPage = Math.ceil(response.total / this.entriesPerPage);
+
+					// set template values
+					this.currentPageNode.innerHTML = Math.min(this.currentPage, this.maxPage);
+					this.maxPageNode.innerHTML = this.maxPage;
+				})
+			);
 		},
 		
 		/************************************************************************************
@@ -103,22 +130,6 @@ define([	"dojo/_base/declare",
 			var customObject = this.getAttrAsObject(aNode, "data-custom");
 					
 			this.reload(customObject.iid, customObject.module, customObject.cid);
-		},
-		
-		onClickPaging20: function(event) {
-			this.entriesPerPage = 20;
-			this.currentPage = 1;
-			this.paging20.innerHTML = "<strong>20</strong>";
-			this.paging50.innerHTML = "50";
-			this.updateList();
-		},
-		
-		onClickPaging50: function(event) {
-			this.entriesPerPage = 50;
-			this.currentPage = 1;
-			this.paging20.innerHTML = "20";
-			this.paging50.innerHTML = "<strong>50</strong>";
-			this.updateList();
 		},
 		
 		onClickPagingFirst: function(event) {

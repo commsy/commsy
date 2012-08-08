@@ -27,9 +27,10 @@ define([	"dojo/_base/declare",
 		setupSpecific: function() {
 			// add some widgets hardcoded
 			var widgetArray = [
+			    "widgets/WidgetsNewEntries",
 			    "widgets/WidgetsReleasedEntries",
-			    "widgets/WidgetsRssTicker",
-			    "widgets/WidgetsNewEntries"
+			    "widgets/WidgetsRssTicker"/*,
+			    "widgets/WidgetsExtensions"*/
 			];
 			
 			this.loadWidgetsManual(widgetArray).then(

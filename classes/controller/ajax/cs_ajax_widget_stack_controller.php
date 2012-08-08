@@ -66,7 +66,7 @@
 			$entry = $filteredList->getFirst();
 			$count = 0;
 			while ($entry) {
-				if ($count >= $start && $count <= $start + $numEntries) {
+				if ($count >= $start && $count < $start + $numEntries) {
 					$type = $entry->getItemType();
 					if ($type == CS_LABEL_TYPE) {
 						$labelManager = $this->_environment->getLabelManager();
@@ -90,8 +90,6 @@
 						} else {
 							$versionId = null;
 						}
-						
-						$count++;
 							
 						$return["items"][] = array(
 								"itemId"			=> $entry->getItemID(),
@@ -106,7 +104,8 @@
 						);
 					}
 				}
-			
+				
+				$count++;
 				$entry = $filteredList->getNext();
 			}
 			
