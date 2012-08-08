@@ -14,8 +14,8 @@ CKEDITOR.dialog.add( 'about', function( editor )
 		contents : [
 			{
 				id : 'tab1',
-				label : '',
-				title : '',
+				label : 'CommSy Formatierungsmöglichkeiten',
+				title : 'CommSy Formatierungsmöglichkeiten',
 				expand : false,
 				padding : 0,
 				elements :
