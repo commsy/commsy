@@ -1527,7 +1527,10 @@ class cs_item {
          if ( ($rubric_array[1] != 'none' and $rubric_array[0] != CS_USER_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DATE_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_GROUP_TYPE)
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_GROUP_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_DATE_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_TODO_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->getItemType() == CS_GROUP_TYPE)
          ) {
             $type_array[] = $rubric_array[0];
          }
@@ -1739,6 +1742,10 @@ class cs_item {
                ($this->_environment->getCurrentModule() == CS_DATE_TYPE or
                  $this->_environment->getCurrentModule() == CS_TODO_TYPE or
                  $this->_environment->getCurrentModule() == CS_GROUP_TYPE
+               ) or
+               ($this->getItemType() == CS_DATE_TYPE or
+               	$this->getItemType() == CS_DATE_TYPE or
+               	($this->getItemType() == CS_GROUP_TYPE)
                )
             ){
             if (isset($rubric_sorted_array[$rubric])){

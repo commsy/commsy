@@ -376,6 +376,11 @@
 							break;
 					}
 
+					if (
+						!($name == CS_USER_TYPE and (
+							$this->_data['module'] != CS_DATE_TYPE and $this->_data['module'] != CS_TODO_TYPE and $this->_data['module'] != CS_GROUP_TYPE)
+							)
+						)
 					// add rubric
 					$rubrics[] = array(
 						'value'		=> $name,
