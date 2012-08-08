@@ -24,6 +24,8 @@
 
 mb_internal_encoding('UTF-8');
 
+global $environment;
+
 function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
    global $environment;
    global $file;
