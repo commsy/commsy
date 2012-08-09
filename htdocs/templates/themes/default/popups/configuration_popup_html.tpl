@@ -398,7 +398,7 @@
 													</div>
 												{else}
 													<div class="textarea_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
-														<textarea id="moderation_description_{$info_text.key}" name="form_data[moderation_description_{$info_text.key}]" cols="40" rows="5">{if isset($info_text.text)}{$info_text.text}{/if}</textarea>
+														<textarea id="moderation_description_{$info_text.key}" cols="80" rows="6" name="form_data[moderation_description_{$info_text.key}]" cols="40" rows="5">{if isset($info_text.text)}{$info_text.text}{/if}</textarea>
 													</div>
 												{/if}
 											{/foreach}
