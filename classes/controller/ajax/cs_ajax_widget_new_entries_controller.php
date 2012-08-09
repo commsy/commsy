@@ -9,18 +9,18 @@
 			// call parent
 			parent::__construct($environment);
 		}
-		
+
 		public function actionGetListContent() {
 			$return = array(
 				"items"		=> array()
 			);
-			
+
 			$start = $this->_data["start"];
 			$numEntries = $this->_data["numEntries"];
-			
+
 			$itemManager = $this->_environment->getItemManager();
 			$currentUser = $this->_environment->getCurrentUserItem();
-			
+
 			// collection room ids
 			$room_id_array = array();
 			$grouproom_list = $currentUser->getUserRelatedGroupList();
@@ -59,16 +59,16 @@
 				}
 			}
 			$room_id_array_without_privateroom = $room_id_array;
-			
+
 			$itemManager->setOrderLimit(true);
-			
+
 			if (isset($room_id_array_without_privateroom) && !empty($room_id_array_without_privateroom)) {
 				$new_entry_array = $itemManager->getAllNewPrivateRoomEntriesOfRoomList($room_id_array_without_privateroom);
 				$new_entry_list = $itemManager->getPrivateRoomHomeItemList($new_entry_array);
 			} else {
 				$new_entry_list = new cs_list();
 			}
-			
+
 			// prepare return
 			$entry = $new_entry_list->getFirst();
 			$count = 0;
@@ -83,39 +83,40 @@
 						$manager = $this->_environment->getManager($type);
 						$entry = $manager->getItem($entry->getItemID());
 					}
-					
-					$moddate = $entry->getModificationDate();
-					if ( $entry->getCreationDate() <> $entry->getModificationDate() and !strstr($moddate,'9999-00-00')){
-						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
-					} else {
-						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+					if (isset($entry) and !empty($entry)){
+						$moddate = $entry->getModificationDate();
+						if ( $entry->getCreationDate() <> $entry->getModificationDate() and !strstr($moddate,'9999-00-00')){
+							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
+						} else {
+							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+						}
+
+						if ($type === CS_MATERIAL_TYPE) {
+							$versionId = $entry->getVersionID();
+						} else {
+							$versionId = null;
+						}
+
+						$return["items"][] = array(
+							"itemId"			=> $entry->getItemID(),
+							"contextId"			=> $entry->getContextID(),
+							"module"			=> Type2Module($type),
+							"title"				=> $entry->getTitle(),
+							"image"				=> $this->getUtils()->getLogoInformationForType($type),
+							"fileCount"			=> $entry->getFileList()->getCount(),
+							"modificationDate"	=> $mod_date,
+							"creator"			=> $entry->getCreatorItem()->getFullName(),
+							"versionId"			=> $versionId
+						);
 					}
-						
-					if ($type === CS_MATERIAL_TYPE) {
-						$versionId = $entry->getVersionID();
-					} else {
-						$versionId = null;
-					}
-					
-					$return["items"][] = array(
-						"itemId"			=> $entry->getItemID(),
-						"contextId"			=> $entry->getContextID(),
-						"module"			=> Type2Module($type),
-						"title"				=> $entry->getTitle(),
-						"image"				=> $this->getUtils()->getLogoInformationForType($type),
-						"fileCount"			=> $entry->getFileList()->getCount(),
-						"modificationDate"	=> $mod_date,
-						"creator"			=> $entry->getCreatorItem()->getFullName(),
-						"versionId"			=> $versionId
-					);
 				}
-				
+
 				$count++;
 				$entry = $new_entry_list->getNext();
 			}
-			
+
 			$return["total"] = $count;
-			
+
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
 		}
@@ -125,7 +126,7 @@
 		 */
 		public function process() {
 			// TODO: check for rights, see cs_ajax_accounts_controller
-			
+
 			// call parent
 			parent::process();
 		}
