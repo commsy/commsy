@@ -99,7 +99,7 @@ define([	"dojo/_base/declare",
 												type:		"hidden",
 												name:		"form_data[tags]",
 												value:		itemId
-											}, this.contentNode, "last");
+											}, query("div#tags_tab")[0], "last");
 										}
 									}));
 								}));
@@ -110,7 +110,7 @@ define([	"dojo/_base/declare",
 										if (isChecked) {
 											var itemId = tree.model.getItemAttr(children, "item_id");
 											
-											var hiddenNode = query("input[type='hidden'][value='" + itemId + "']", this.contentNode)[0];
+											var hiddenNode = query("input[type='hidden'][value='" + itemId + "']", query("div#tags_tab")[0])[0];
 											if (hiddenNode) {
 												domConstruct.destroy(hiddenNode);
 											}
