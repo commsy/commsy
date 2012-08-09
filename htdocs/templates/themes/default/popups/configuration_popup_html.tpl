@@ -392,11 +392,16 @@
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_TEXT___:</label>
 											{foreach $popup.moderation.array_info_text as $info_text}
-												<div class="editor_content {if $info_text@index >0}hidden{/if}" style="margin-left:100px;">
-													<div id="moderation_description_{$info_text.key}" class="ckeditor">{if isset($info_text.text)}{$info_text.text}{/if}</div>
-												</div>
+												{if $environment.IE8 === false}
+													<div class="editor_content {if $info_text@index >0}hidden{/if}" style="margin-left:100px;">
+														<div id="moderation_description_{$info_text.key}" class="ckeditor">{if isset($info_text.text)}{$info_text.text}{/if}</div>
+													</div>
+												{else}
+													<div class="textarea_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+														<textarea id="moderation_description_{$info_text.key}" name="form_data[moderation_description_{$info_text.key}]" cols="40" rows="5">{if isset($info_text.text)}{$info_text.text}{/if}</textarea>
+													</div>
+												{/if}
 											{/foreach}
-
 										</div>
 
 									</fieldset>

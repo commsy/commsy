@@ -336,6 +336,16 @@
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
+			
+			// browser
+			$current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+			$current_browser_version = $this->_environment->getCurrentBrowserVersion();
+			
+			$IE8 = false;
+			if ($current_browser == 'msie' && strstr($current_browser_version,'8.')) {
+				$IE8 = true;
+			}
+			$this->assign("environment", "IE8", $IE8);
 
 			$ownRoomItem = $current_user->getOwnRoom();
 

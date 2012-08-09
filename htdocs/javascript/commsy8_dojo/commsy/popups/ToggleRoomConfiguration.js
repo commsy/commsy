@@ -365,13 +365,13 @@ define([	"dojo/_base/declare",
 				DomClass.add(node, "hidden");
 			});
 
-			dojo.forEach(Query("div[id^='moderation_description_']", this.contentNode), function(node, index, arr) {
+			dojo.forEach(Query("div[id^='moderation_description_'], textarea[id^='moderation_description_']", this.contentNode), function(node, index, arr) {
 				DomClass.add(node.parentNode, "hidden");
 			});
 
 			// show selected
 			DomClass.remove(Query("input#moderation_title_" + selectedValue, this.contentNode)[0], "hidden");
-			DomClass.remove(Query("div#moderation_description_" + selectedValue, this.contentNode)[0].parentNode, "hidden");
+			DomClass.remove(Query("div#moderation_description_" + selectedValue + ", textarea#moderation_description_" + selectedValue, this.contentNode)[0].parentNode, "hidden");
 		},
 
 		updateMailText: function(selectedValue) {
