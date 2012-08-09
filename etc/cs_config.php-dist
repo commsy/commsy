@@ -169,6 +169,11 @@ $theme_array['schulehh'] = array(
 	'value'		=> 'schulehh',
 	'disabled'	=> false
 );
+$theme_array['sah'] = array(
+	'text'		=> 'SaH',
+	'value'		=> 'sah',
+	'disabled'	=> false
+);
 
 
 
