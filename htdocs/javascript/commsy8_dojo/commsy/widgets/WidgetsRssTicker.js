@@ -50,29 +50,33 @@ define([	"dojo/_base/declare",
 					
 					dojo.forEach(response.feeds, Lang.hitch(this, function(feed, index, arr) {
 						if (feed.display == "1") {
-							var content = this.getFeedContent(feed.adress);
 							
-							var divNode = DomConstruct.create("div", {
-							}, this.rssContentNode, "last");
-							
-								DomConstruct.create("h3", {
-									innerHTML:		feed.title
-								}, divNode, "last");
-								
-								DomConstruct.create("div", {
-									innerHTML:		content
-								}, divNode, "last");
+							this.AJAXRequest("widget_rss_ticker", "getFeed", { address: feed.adress },
+								Lang.hitch(this, function(feeds) {
+									var content = "";
+									
+									dojo.forEach(feeds, Lang.hitch(this, function(feed, index, arr) {
+										console.log(feed);
+										if (feed.title && feed.link) {
+											content += "<a href='" + feed.link + "'>" + feed.title + "</a><br/>";
+										}
+									}));
+									
+									var divNode = DomConstruct.create("div", {
+									}, this.rssContentNode, "last");
+									
+										DomConstruct.create("h3", {
+											innerHTML:		feed.title
+										}, divNode, "last");
+										
+										DomConstruct.create("div", {
+											innerHTML:		content
+										}, divNode, "last");
+								})
+							);
 						}						
 					}));
 				}));
-		},
-		
-		getFeedContent: function(feedAddress) {
-			this.AJAXRequest("widget_rss_ticker", "getFeed", { address: feedAddress },
-				Lang.hitch(this, function(feed) {
-					//return feed;
-				})
-			);
 		}
 		
 		/************************************************************************************

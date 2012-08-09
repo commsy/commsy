@@ -2,13 +2,14 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/io-query",
         	"commsy/base",
+        	"dojo/on",
         	"dojo/_base/lang",
         	"cbtree/Tree",
         	"dojo/query",
         	"cbtree/models/ForestStoreModel",
         	"dojo/data/ItemFileWriteStore",
         	"cbtree/CheckBox",
-        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, lang, Tree, Query, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
+        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, On, lang, Tree, Query, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
 	return declare(BaseClass, {
 		followUrl:			true,
 		autoExpandLevel:	2,
@@ -25,7 +26,23 @@ define([	"dojo/_base/declare",
 			declare.safeMixin(this, options);
 		},
 		
-		setupTree: function(node, callback) {
+		setupTree: function(node, callback, autoInit) {
+			autoInit = autoInit || false;
+			
+			if (!autoInit) {
+				var triggerNode = Query("a[href='tags_tab']")[0];
+				
+				if (triggerNode) {
+					On(triggerNode, "click", lang.hitch(this, function(event) {
+						this.initDo(node, callback);
+					}));
+				}
+			} else {
+				this.initDo(node, callback);
+			}
+		},
+		
+		initDo: function(node, callback) {
 			callback = callback || function() {};
 			
 			// get results from ajax call

@@ -74,7 +74,7 @@ define([	"dojo/_base/declare",
 								item_id:		this.item_id,
 								room_id:		this.contextId
 							});
-							this.featureHandles[feature][index].setupTree(node);
+							this.featureHandles[feature][index].setupTree(node, function() {}, (this.editType == "tags"));
 						}));
 					}));
 				}

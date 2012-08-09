@@ -27,6 +27,27 @@
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
 		}
+		
+		public function actionGetFeed() {
+			$address = $this->_data["address"];
+			
+			$doc = new DOMDocument();
+			$doc->load($address);
+			
+			$feedArray = array();
+			
+			foreach($doc->getElementsByTagName("item") as $node) {
+				$feedArray[] = array(
+					"title"		=> $node->getElementsByTagName("title")->item(0)->nodeValue,
+					"desc"		=> $node->getElementsByTagName("desc")->item(0)->nodeValue,
+					"link"		=> $node->getElementsByTagName("link")->item(0)->nodeValue,
+					"date"		=> $node->getElementsByTagName("pubDate")->item(0)->nodeValue,
+				);
+			}
+			
+			$this->setSuccessfullDataReturn($feedArray);
+			echo $this->_return;
+		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function

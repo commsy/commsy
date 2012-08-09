@@ -42,7 +42,7 @@ define([	"dojo/_base/declare",
 						
 						event.preventDefault();
 					}));
-				}));
+				}), true);
 			}));
 			
 			require(["commsy/popups/ClickTagsPopup"], Lang.hitch(this, function(ClickPopup) {

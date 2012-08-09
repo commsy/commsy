@@ -147,7 +147,7 @@ require([	"dojo/_base/declare",
 				query("div.tree").forEach(function(node, index, arr) {
 					require(["commsy/tree"], function(Tree) {
 						var handler = new Tree();
-						handler.setupTree(node);
+						handler.setupTree(node, function() {}, true);
 					});
 				});
 				
