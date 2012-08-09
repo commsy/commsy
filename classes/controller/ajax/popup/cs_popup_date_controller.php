@@ -92,11 +92,17 @@ class cs_popup_date_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-
-						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date, 0, 10));
+						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
+				}else{
+					if ($current_context->isCommunityRoom()){
+ 						$this->_popup_controller->assign('item', 'public', '1');
+ 					}else{
+ 						$this->_popup_controller->assign('item', 'public', '0');
+ 					}
 				}
+
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 
@@ -261,20 +267,6 @@ class cs_popup_date_controller {
                 if ( isset($form_data['description']) ) {
                     $date_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
                 }
-                if (isset($form_data['public'])) {
-                    $date_item->setPublic($form_data['public']);
-                }
-                if ( isset($form_data['public']) ) {
-                    if ( $date_item->isPublic() != $form_data['public'] ) {
-                        $date_item->setPublic($form_data['public']);
-                    }
-                } else {
-                    if ( isset($form_data['private_editing']) ) {
-                        $date_item->setPrivateEditing('0');
-                    } else {
-                        $date_item->setPrivateEditing('1');
-                    }
-                }
                 if ( isset($form_data['external_viewer']) and isset($form_data['external_viewer_accounts']) ) {
                     $user_ids = explode(" ",$form_data['external_viewer_accounts']);
                     $date_item->setExternalViewerAccounts($user_ids);
@@ -282,28 +274,49 @@ class cs_popup_date_controller {
                     $date_item->unsetExternalViewerAccounts();
                 }
 
-                if ( isset($form_data['hide']) ) {
-                    // variables for datetime-format of end and beginning
-                    $dt_hiding_time = '00:00:00';
-                    $dt_hiding_date = '9999-00-00';
-                    $dt_hiding_datetime = '';
-                    $converted_activate_day_start = convertDateFromInput($form_data['dayActivateStart'],$environment->getSelectedLanguage());
-                    if ($converted_activate_day_start['conforms'] == TRUE) {
-                        $dt_hiding_datetime = $converted_activate_day_start['datetime'].' ';
-                        $converted_activate_time_start = convertTimeFromInput($form_data['timeActivateStart']);
-                        if ($converted_activate_time_start['conforms'] == TRUE) {
-                            $dt_hiding_datetime .= $converted_activate_time_start['datetime'];
-                        }else{
-                            $dt_hiding_datetime .= $dt_hiding_time;
-                        }
-                    }else{
-                        $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
-                    }
-                    $date_item->setModificationDate($dt_hiding_datetime);
-                }else{
-                    if($date_item->isNotActivated()){
-                        $date_item->setModificationDate(getCurrentDateTimeInMySQL());
-                    }
+            	if(isset($form_data['private_editing'])) {
+            		$date_item->setPrivateEditing('0');
+            	} else {
+            		$date_item->setPrivateEditing('1');
+            	}
+
+                 if (isset($form_data['rights_tab'])){
+	                if (isset($form_data['public'])) {
+	                    $date_item->setPublic($form_data['public']);
+	                }
+	                if ( isset($form_data['public']) ) {
+	                    if ( $date_item->isPublic() != $form_data['public'] ) {
+	                        $date_item->setPublic($form_data['public']);
+	                    }
+	                } else {
+	                    if ( isset($form_data['private_editing']) ) {
+	                        $date_item->setPrivateEditing('0');
+	                    } else {
+	                        $date_item->setPrivateEditing('1');
+	                    }
+	                }
+
+	                if ( isset($form_data['hide']) ) {
+	                    // variables for datetime-format of end and beginning
+	                    $dt_hiding_time = '00:00:00';
+	                    $dt_hiding_date = '9999-00-00';
+	                    $dt_hiding_datetime = '';
+		                $converted_activating_time_start = convertTimeFromInput($form_data['activating_time']);
+		                if ($converted_activating_time_start['conforms'] == TRUE) {
+		                    $dt_hiding_time= $converted_activating_time_start['datetime'];
+		                }
+
+	                    $converted_activate_day_start = convertDateFromInput($form_data['activating_date'],$environment->getSelectedLanguage());
+	                    if ($converted_activate_day_start['conforms'] == TRUE) {
+	                        $dt_hiding_date = $converted_activate_day_start['datetime'].' ';
+	                    }
+	                    $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+	                    $date_item->setModificationDate($dt_hiding_datetime);
+	                }else{
+	                    if($date_item->isNotActivated()){
+	                        $date_item->setModificationDate(getCurrentDateTimeInMySQL());
+	                    }
+	                }
                 }
 
                 if ( isset($form_data['mode']) ) {

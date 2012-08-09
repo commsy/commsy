@@ -228,8 +228,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-
-						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date, 0, 10));
+						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
 				}
@@ -368,9 +367,6 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                     $item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
                 }
 
-                if (isset($form_data['public'])) {
-                    $item->setPublic($form_data['public']);
-                }
 
                 // already attached files
                 $file_ids = array();
@@ -393,28 +389,43 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 	}
                 }
 
-                if ( isset($form_data['hide']) ) {
-                    // variables for datetime-format of end and beginning
-                    $dt_hiding_time = '00:00:00';
-                    $dt_hiding_date = '9999-00-00';
-                    $dt_hiding_datetime = '';
-                    $converted_day_start = convertDateFromInput($form_data['dayStart'],$environment->getSelectedLanguage());
-                    if ($converted_day_start['conforms'] == TRUE) {
-                        $dt_hiding_datetime = $converted_day_start['datetime'].' ';
-                        $converted_time_start = convertTimeFromInput($form_data['timeStart']);
-                        if ($converted_time_start['conforms'] == TRUE) {
-                            $dt_hiding_datetime .= $converted_time_start['datetime'];
-                        }else{
-                            $dt_hiding_datetime .= $dt_hiding_time;
-                        }
-                    }else{
-                        $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
-                    }
-                    $item->setModificationDate($dt_hiding_datetime);
-                }else{
-                    if($item->isNotActivated()){
-                        $item->setModificationDate(getCurrentDateTimeInMySQL());
-                    }
+                if (isset($form_data['rights_tab'])){
+	                if (isset($form_data['public'])) {
+	                    $item->setPublic($form_data['public']);
+	                }
+	                if ( isset($form_data['public']) ) {
+	                    if ( $item->isPublic() != $form_data['public'] ) {
+	                        $item->setPublic($form_data['public']);
+	                    }
+	                } else {
+	                    if ( isset($form_data['private_editing']) ) {
+	                        $item->setPrivateEditing('0');
+	                    } else {
+	                        $item->setPrivateEditing('1');
+	                    }
+	                }
+
+	                if ( isset($form_data['hide']) ) {
+	                    // variables for datetime-format of end and beginning
+	                    $dt_hiding_time = '00:00:00';
+	                    $dt_hiding_date = '9999-00-00';
+	                    $dt_hiding_datetime = '';
+		                $converted_activating_time_start = convertTimeFromInput($form_data['activating_time']);
+		                if ($converted_activating_time_start['conforms'] == TRUE) {
+		                    $dt_hiding_time= $converted_activating_time_start['datetime'];
+		                }
+
+	                    $converted_activate_day_start = convertDateFromInput($form_data['activating_date'],$environment->getSelectedLanguage());
+	                    if ($converted_activate_day_start['conforms'] == TRUE) {
+	                        $dt_hiding_date = $converted_activate_day_start['datetime'].' ';
+	                    }
+	                    $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+	                    $item->setModificationDate($dt_hiding_datetime);
+	                }else{
+	                    if($item->isNotActivated()){
+	                        $item->setModificationDate(getCurrentDateTimeInMySQL());
+	                    }
+	                }
                 }
 
                 // set bibliographic
