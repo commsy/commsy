@@ -34,28 +34,28 @@
 		<script>
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
 		</script>
-		
-		
-		
+
+
+
 		<script src="javascript/commsy8_dojo/config.js?token=7"></script>
 		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=7"></script>
 		<script src="javascript/commsy8_dojo/main.js?token=7"></script>
-		
+
 		{*
 		<script src="javascript/commsy8_dojo/config.js"></script>
 		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js"></script>
-		
+
 		<script>
 			console.log(dojo);
-		
+
 			//dojo.require("javascript/commsy8_dojo/main.js");
 		</script>
 		*}
-		
-		
-		
-		
-		
+
+
+
+
+
         <script type="text/javascript" src="javascript/swfobject.js"></script>
         {if $environment.c_jsmath_enable}
             <script type="text/javascript"> jsMath = {literal}{Controls: {cookie: {scale: 120}}}{/literal} </script>
@@ -78,6 +78,7 @@
 		{/block}
 
 	        <div id="header"> <!-- Start header -->
+	            {block name=logo_area}
 	            <div id="logo_area">
 	                {if !empty($environment.logo)}
 	                	<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.logo}" alt="Logo" /> <!-- Logo-Hoehe 60 Pixel -->
@@ -88,6 +89,7 @@
 	            		<span>{$environment.room_title|truncate:50:"...":true}</span>
 	            	{/if}
 	            </div>
+				{/block}
 
 	            <div id="search_area">
 	                <div id="search_navigation">
