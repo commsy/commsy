@@ -381,13 +381,13 @@ define([	"dojo/_base/declare",
 			var index = results[1];
 
 			// hide all
-			dojo.forEach(Query("div[id^='moderation_mail_body_']", this.contentNode), function(node, index, arr) {
+			dojo.forEach(Query("textarea[id^='moderation_mail_body_']", this.contentNode), function(node, index, arr) {
 				DomClass.add(node.parentNode, "hidden")
 				DomClass.add(node.parentNode.parentNode, "hidden");
 			});
 
 			// show selected
-			dojo.forEach(Query("div#moderation_mail_body_de_" + index + ", div#moderation_mail_body_en_" + index, this.contentNode), function(node, index, arr) {
+			dojo.forEach(Query("textarea#moderation_mail_body_de_" + index + ", textarea#moderation_mail_body_en_" + index, this.contentNode), function(node, index, arr) {
 				DomClass.remove(node.parentNode, "hidden")
 				DomClass.remove(node.parentNode.parentNode, "hidden");
 			});

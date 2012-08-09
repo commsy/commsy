@@ -416,8 +416,8 @@
 											<label for="room_name">___COMMON_BODY___ (___DE___):</label>
 											{foreach $popup.moderation.array_mail_text as $mail_text}
 												{if $mail_text.value != -1 && $mail_text.value != 'disabled'}
-													<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
-														<div id="moderation_mail_body_de_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_de)}{$mail_text.body_de}{/if}</div>
+													<div class="textarea_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+														<textarea id="moderation_mail_body_de_{$mail_text@index}" name="form_data[moderation_mail_body_de_{$mail_text@index}]" cols="40" rows="5">{if isset($mail_text.body_de)}{$mail_text.body_de}{/if}</textarea>
 													</div>
 												{/if}
 											{/foreach}
@@ -427,8 +427,8 @@
 											<label for="room_name">___COMMON_BODY___ (___EN___):</label>
 											{foreach $popup.moderation.array_mail_text as $mail_text}
 												{if $mail_text.value != -1 && $mail_text.value != 'disabled'}
-													<div class="editor_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
-														<div id="moderation_mail_body_en_{$mail_text@index}" class="ckeditor">{if isset($mail_text.body_en)}{$mail_text.body_en}{/if}</div>
+													<div class="textarea_content {if $mail_text@index >0}hidden{/if}" style="margin-left:100px;">
+														<textarea id="moderation_mail_body_en_{$mail_text@index}" name="form_data[moderation_mail_body_en_{$mail_text@index}]" cols="40" rows="5">{if isset($mail_text.body_en)}{$mail_text.body_en}{/if}</textarea>
 													</div>
 												{/if}
 											{/foreach}
