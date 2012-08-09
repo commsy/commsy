@@ -601,6 +601,8 @@
          			  $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
          			  */
       			}
+      		}else{
+				$desc = $converter->_activate_urls($desc);
       		}
 
       		$is_latest_version = true;
