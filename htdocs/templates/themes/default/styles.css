@@ -2673,11 +2673,11 @@ div.detail_description {
   overflow: auto;
   }
 
-div.detail_description ul,  div.editor_content ul{
+div.detail_description ul,  div.editor_content ul, div.detail_content ul  {
 	margin: 5px 15px;
 	}
 
-div.detail_description li, div.editor_content li {
+div.detail_description li, div.editor_content li, div.detail_content li   {
 	list-style-type: disc;
   	}
 
