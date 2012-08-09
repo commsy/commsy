@@ -272,9 +272,7 @@
 										</div>
 
 										<div class="input_row">
-											<div class="editor_content">
-												<div id="description" class="ckeditor">{if isset($popup.room.description)}{$popup.room.description}{/if}</div>
-											</div>
+											<textarea type="text" cols="80" rows="6" name="form_data[description]">{if isset($popup.room.description)}{$popup.room.description}{/if}</textarea>
 										</div>
 									</fieldset>
 									<div class="input_row">
@@ -565,9 +563,7 @@
 											<div class="clear"></div>
 										</div>
 										<div class="input_row">
-											<div class="editor_content">
-												<div id="template_description" class="ckeditor">{if isset($popup.additional.template_description)}{$popup.additional.template_description}{/if}</div>
-											</div>
+											<textarea type="text" cols="80" rows="6" name="form_data[template_description]">{if isset($popup.additional.template_description)}{$popup.additional.template_description}{/if}</textarea>
 										</div>
 									</fieldset>
 
