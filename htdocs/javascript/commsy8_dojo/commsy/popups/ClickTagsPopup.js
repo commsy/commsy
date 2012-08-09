@@ -33,7 +33,7 @@ define([	"dojo/_base/declare",
 					followUrl:		false,
 					checkboxes:		false,
 					room_id:		this.contextId,
-					expanded:		true,
+					expanded:		false,
 					item_id:		this.item_id
 				});
 				this.tree.setupTree(Query("div.tree", this.contentNode)[0]);

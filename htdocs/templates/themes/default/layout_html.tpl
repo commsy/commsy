@@ -34,10 +34,28 @@
 		<script>
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
 		</script>
-
+		
+		
+		
 		<script src="javascript/commsy8_dojo/config.js?token=7"></script>
 		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=7"></script>
 		<script src="javascript/commsy8_dojo/main.js?token=7"></script>
+		
+		{*
+		<script src="javascript/commsy8_dojo/config.js"></script>
+		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js"></script>
+		
+		<script>
+			console.log(dojo);
+		
+			//dojo.require("javascript/commsy8_dojo/main.js");
+		</script>
+		*}
+		
+		
+		
+		
+		
         <script type="text/javascript" src="javascript/swfobject.js"></script>
         {if $environment.c_jsmath_enable}
             <script type="text/javascript"> jsMath = {literal}{Controls: {cookie: {scale: 120}}}{/literal} </script>

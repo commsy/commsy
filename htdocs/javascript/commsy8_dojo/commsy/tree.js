@@ -69,7 +69,7 @@ define([	"dojo/_base/declare",
 					this.autoExpandToLevel(this.tree, 0, true);
 				}
 				
-				callback();
+				callback(this);
 			}));
 		},
 		

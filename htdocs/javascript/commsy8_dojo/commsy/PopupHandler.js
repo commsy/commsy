@@ -82,11 +82,42 @@ define([	"dojo/_base/declare",
 							this.featureHandles[feature][index] = new Tree({
 								followUrl:		false,
 								checkboxes:		true,
-								expanded:		true,
+								expanded:		false,
 								item_id:		this.item_id,
 								room_id:		this.contextId
 							});
-							this.featureHandles[feature][index].setupTree(node, function() {}, (this.editType == "tags"));
+							this.featureHandles[feature][index].setupTree(node, lang.hitch(this, function(tree) {
+								tree.model.fetchItemsWithChecked( { match: true}, lang.hitch(this, function(checkedNodes) {
+									
+									dojo.forEach(checkedNodes, lang.hitch(this, function(item, index, arr) {
+										
+										var itemId = tree.model.getItemAttr(item, "item_id");
+										var createdNode = query("input[name='form_data[tags]'][value='" + itemId + "']", this.contentNode)[0];
+										
+										if (!createdNode) {
+											domConstruct.create("input", {
+												type:		"hidden",
+												name:		"form_data[tags]",
+												value:		itemId
+											}, this.contentNode, "last");
+										}
+									}));
+								}));
+								
+								on(tree.tree, "open", lang.hitch(this, function(item, node) {
+									dojo.forEach(item.children, lang.hitch(this, function(children, index, arr) {
+										var isChecked = tree.model.getItemAttr(children, "match");
+										if (isChecked) {
+											var itemId = tree.model.getItemAttr(children, "item_id");
+											
+											var hiddenNode = query("input[type='hidden'][value='" + itemId + "']", this.contentNode)[0];
+											if (hiddenNode) {
+												domConstruct.destroy(hiddenNode);
+											}
+										}
+									}));
+								}));
+							}), (this.editType == "tags"));
 						}));
 					}));
 				}
