@@ -92,7 +92,7 @@ define([	"dojo/_base/declare",
 					this.onStoreSet(item, attribute, oldValue, newValue);
 				}));
 
-				callback();
+				callback(this);
 			}), true]);
 		},
 

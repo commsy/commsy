@@ -36,7 +36,11 @@ define([	"dojo/_base/declare",
 					expanded:		false,
 					item_id:		this.item_id
 				});
-				this.tree.setupTree(Query("div.tree", this.contentNode)[0]);
+				this.tree.setupTree(Query("div.tree", this.contentNode)[0], Lang.hitch(this, function(tree) {					
+					On(tree.tree, "open", Lang.hitch(this, function(item, node) {
+						this.tree.addCreateAndRenameToAllLabels();
+					}));
+				}));
 			}));
 			
 			// this will handle both select boxes in merge tab
