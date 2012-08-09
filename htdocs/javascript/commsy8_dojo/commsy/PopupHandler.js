@@ -26,7 +26,7 @@ define([	"dojo/_base/declare",
 		setupTabs: function() {
 			var link_nodes = query("div.tab_navigation a", this.contentNode);
 			var content_nodes = query("div#popup_tabcontent div.tab, div.popup_tabcontent div.tab", this.contentNode);
-			
+
 			// register click event for all tabs
 			on(link_nodes, "click", lang.hitch(this, function(event) {
 				// set all tabs inactive
@@ -39,13 +39,25 @@ define([	"dojo/_base/declare",
 
 				/* switch content */
 				// set classes for divs
-				dojo.forEach(content_nodes, function(node) {
-					if(dom_attr.get(event.target, "href") === dom_attr.get(node, "id")) {
+				dojo.forEach(content_nodes, lang.hitch(this, function(node, index, arr) {
+					var tabName = dom_attr.get(event.target, "href");
+					if(tabName === dom_attr.get(node, "id")) {
 						dom_class.remove(node, "hidden");
+
+						var hiddenNode = query("input[name='form_data[" + tabName + "]']", this.contentNode)[0];
+						if (!hiddenNode) {
+							// add a hidden input to mark this tab content as opened
+							domConstruct.create("input", {
+								type:		"hidden",
+								className:	"tabStatus",
+								name:		"form_data[" + tabName  + "]",
+								value:		true
+							}, this.contentNode, "last");
+						}
 					} else {
 						dom_class.add(node, "hidden");
 					}
-				});
+				}));
 
 				event.preventDefault();
 			}));
@@ -195,7 +207,7 @@ define([	"dojo/_base/declare",
 							if(	(formNode.checked === true && dom_attr.get(formNode, "aria-checked") !== "false") ||
 								dom_attr.get(formNode, "aria-checked") === "true" ||
 								dom_attr.get(formNode, "aria-checked") === "mixed") {
-								
+
 								add = true;
 							}
 						}

@@ -9,9 +9,9 @@ define([	"dojo/_base/declare",
         	"dojo/topic"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
-			
+
 		},
-		
+
 		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
@@ -30,7 +30,7 @@ define([	"dojo/_base/declare",
 			// recurring dates
 			var selectNode = query("select[name='form_data[recurring_select]']")[0];
 			var recurringDetailNodes = query("div[id^='recurring_details_']");
-			
+
 			if (selectNode) {
 				On(selectNode, "change", lang.hitch(this, function(event) {
 					var value = domAttr.get(selectNode, "value");
@@ -72,6 +72,7 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[dayEnd]']", this.contentNode) },
 				    { query: query("input[name='form_data[timeEnd]']", this.contentNode) },
 				    { query: query("input[name='form_data[place]']", this.contentNode) },
+				    { query: query("input.tabStatus", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
 			};

@@ -9,9 +9,9 @@ define([	"dojo/_base/declare",
         	"dojo/topic"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
-			
+
 		},
-		
+
 		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
@@ -50,6 +50,7 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
 				    { query: query("input[name='form_data[discussion_type]']", this.contentNode) },
 				    { query: query("input[name='form_data[subject]']", this.contentNode) },
+				    { query: query("input.tabStatus", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
 			};

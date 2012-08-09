@@ -20,7 +20,7 @@
 				$this->_edit_type = $data['editType'];
 				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
 			}
-			
+
 			// assign template vars
 			$this->assignTemplateVars();
 
@@ -82,9 +82,9 @@
 		}
 
 		public function save($form_data, $additional = array()) {
-			
+
 			$environment = $this->_environment;
-			
+
 			if ($additional["contextId"]) {
 				$itemManager = $this->_environment->getItemManager();
 				$type = $itemManager->getItemType($additional["contextId"]);
@@ -96,7 +96,7 @@
 					$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
 				}
 			}
-			
+
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
 
@@ -110,7 +110,7 @@
 	        if (isset($form_data['editType'])){
 				$this->_edit_type = $form_data['editType'];
 	        }
-	        
+
 	        $this->_is_new = ($discussion_item === null);
 
 
@@ -277,7 +277,10 @@
 					$discussion_item->setBuzzwordListByID($buzzwords);
 
 					// tags
-					$discussion_item->setTagListByID($form_data['tags']);
+	                // tags
+	                if (isset($form_data['tags_tab'])){
+						$discussion_item->setTagListByID($form_data['tags']);
+	                }
 
 					// save item
 					$discussion_item->save();

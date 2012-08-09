@@ -9,9 +9,9 @@ define([	"dojo/_base/declare",
         	"dojo/topic"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
-			
+
 		},
-		
+
 		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
@@ -30,7 +30,7 @@ define([	"dojo/_base/declare",
 			/* setup bibliographic form elements */
 			// get value from active bibliographic option
 			var selectNode = query("select#bibliographic_select", this.contentNode)[0];
-			
+
 			if (selectNode) {
 				// show / hude bibliographic div's
 				this.showHideBibliographic(selectNode);
@@ -64,6 +64,7 @@ define([	"dojo/_base/declare",
 				    { query: query("div#files_finished", this.contentNode), group: "files" },
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) },
+				    { query: query("input.tabStatus", this.contentNode) },
 				    { query: query("select#bibliographic_select", this.contentNode) }
 				]
 			};
@@ -89,7 +90,7 @@ define([	"dojo/_base/declare",
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
 					if (this.contextId) {
 						this.close();
-						
+
 						Topic.publish("newOwnRoomItem", { itemId: item_id });
 					} else {
 						this.reload(item_id);

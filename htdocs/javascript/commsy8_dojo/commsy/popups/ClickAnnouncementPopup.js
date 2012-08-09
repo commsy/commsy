@@ -9,7 +9,7 @@ define([	"dojo/_base/declare",
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 		},
-		
+
 		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
@@ -47,6 +47,7 @@ define([	"dojo/_base/declare",
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
 				    { query: query("input[name='form_data[dayEnd]']", this.contentNode) },
 				    { query: query("input[name='form_data[timeEnd]']", this.contentNode) },
+				    { query: query("input.tabStatus", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
 			};

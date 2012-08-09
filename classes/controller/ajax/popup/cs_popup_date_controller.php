@@ -170,7 +170,7 @@ class cs_popup_date_controller {
         		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
-        
+
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
 
@@ -333,15 +333,15 @@ class cs_popup_date_controller {
                 } else {
                     $date_item->setStartingDay($converted_day_start['display']);
                 }
-                
+
                 if (!empty($form_data['dayEnd'])) {
                 	$converted_day_end = convertDateFromInput($form_data['dayEnd'],$environment->getSelectedLanguage());
                 	if ($converted_day_end['conforms'] == TRUE) {
-                		
+
                 		if ($converted_day_end["timestamp"] < $converted_day_start["timestamp"]) {
                 			$converted_day_end["datetime"] = $converted_day_start["datetime"];
                 		}
-                		
+
                 		$date_item->setEndingDay($converted_day_end['datetime']);
                 		$dt_end_date = $converted_day_end['datetime'];
                 	} else {
@@ -352,13 +352,13 @@ class cs_popup_date_controller {
                 }
 
                 if (!empty($form_data['timeEnd'])) {
-                    $converted_time_end = convertTimeFromInput($form_data['timeEnd']);     
+                    $converted_time_end = convertTimeFromInput($form_data['timeEnd']);
                     if ($converted_time_end['conforms'] == TRUE) {
-                    	
+
                     	if ($converted_time_end["timestamp"] < $converted_time_start["timestamp"]) {
                     		$converted_time_end["datetime"] = $converted_time_start["datetime"];
                     	}
-                    	
+
                         $date_item->setEndingTime($converted_time_end['datetime']);
                         $dt_end_time = $converted_time_end['datetime'];
                     } else {
@@ -367,7 +367,7 @@ class cs_popup_date_controller {
                 } else {
                     $date_item->setEndingTime('');
                 }
-                
+
                 if ($dt_end_date == '0000-00-00') {
                     $dt_end_date = $dt_start_date;
                 }
@@ -441,7 +441,9 @@ class cs_popup_date_controller {
                 $date_item->setBuzzwordListByID($buzzwords);
 
                 // tags
-                $date_item->setTagListByID($form_data['tags']);
+                if (isset($form_data['tags_tab'])){
+                	$date_item->setTagListByID($form_data['tags']);
+                }
 
                 // Save item
                 #$date_item->save();

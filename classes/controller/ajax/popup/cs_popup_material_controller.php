@@ -254,19 +254,19 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
     public function save($form_data, $additional = array()) {
 
         $environment = $this->_environment;
-        
+
         if ($additional["contextId"]) {
         	$itemManager = $this->_environment->getItemManager();
         	$type = $itemManager->getItemType($additional["contextId"]);
-        
+
         	$manager = $this->_environment->getManager($type);
         	$current_context = $manager->getItem($additional["contextId"]);
-        
+
         	if ($type === CS_PRIVATEROOM_TYPE) {
         		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
-        
+
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
 
@@ -567,7 +567,9 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                 $item->setBuzzwordListByID($buzzwords);
 
                 // tags
-                $item->setTagListByID($form_data['tags']);
+                if (isset($form_data['tags_tab'])){
+                	$item->setTagListByID($form_data['tags']);
+                }
 
                 // Save item
                 $item->save();

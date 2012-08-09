@@ -154,7 +154,7 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
         		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
-        
+
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
 
@@ -360,7 +360,9 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
                 $todo_item->setBuzzwordListByID($buzzwords);
 
                 // tags
-                $todo_item->setTagListByID($form_data['tags']);
+                if (isset($form_data['tags_tab'])){
+            		$todo_item->setTagListByID($form_data['tags']);
+                }
 
                 // Save item
                 $todo_item->save();

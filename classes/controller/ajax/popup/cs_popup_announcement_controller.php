@@ -278,7 +278,9 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 
 
                 // tags
-                $announcement_item->setTagListByID($form_data['tags']);
+                if (isset($form_data['tags_tab'])){
+                	$announcement_item->setTagListByID($form_data['tags']);
+                }
 
                 // Save item
                 $announcement_item->save();
