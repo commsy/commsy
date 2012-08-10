@@ -91,6 +91,7 @@
 	            </div>
 				{/block}
 
+	            {block name=room_search}
 	            <div id="search_area">
 	                <div id="search_navigation">
 	                    {*<span class="sa_sep"><a href="" id="sa_active">___CAMPUS_SEARCH_ONLY_THIS_ROOM___</a></span>*}
@@ -115,6 +116,7 @@
 	                    </div>
 	                </div>
 	            </div>
+	            {/block}
 
 	            <div class="clear"> </div>
 	        </div> <!-- Ende header -->

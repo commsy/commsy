@@ -30,7 +30,10 @@ body{
 #logo_area {
     float: left;
     width: 735px;
-    visibility:hidden;
+}
+
+#logo_area img {
+    height: 35px;
 }
 
 .tm_di_ground_solid {
@@ -248,6 +251,42 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
     padding: 11px 2px 0 0;
 }
 
+#tm_user a{
+    color: #FFFFFF;
+    font-size: 10px;
+ 	}
+
+a#tm_user {
+    padding: 0px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-size: 10px;
+    text-shadow: none;
+    }
+
+a.tm_user {
+    padding: 0px;
+    text-decoration: none;
+    color: #FFF;
+    text-shadow: none;
+    width:auto;
+    }
+
+a#tm_user:hover,
+a.tm_user:hover,
+a.tm_user_hover {
+    color: #FFF;
+    text-shadow: none !important;
+    background-image: none;
+    }
+
+a#tm_user:hover{
+    background-image: none;
+    }
+
+
+
+
 #tm_mycalendar {
     background: url("img/tm_mycalendar.gif") no-repeat scroll 0 0 transparent;
 }
@@ -264,13 +303,69 @@ a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
 	left: -5px;
 	}
 
-#popup_my_area {
-    width: 1010px;
-	}
-
 .column_new_list {
     float: left;
     padding: 3px 3px 5px 5px;
     white-space: nowrap;
     width: 0;
+}
+
+#popup_my_area {
+    margin: 0;
+}
+
+#logged_in{
+    color: #FFFFFF;
+    font-size: 10px;
+    padding-left: 10px;
+    position: absolute;
+}
+
+#commsy_search {
+    background-color: #FFFFFF;
+    background-image: none;
+    height: 25px;
+    margin-left: 10px;
+    margin-top: 7px;
+    width: 195px;
+}
+
+#search_input {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 5px 5px 35px;
+    position: absolute;
+    width: 130px;
+    z-index: 5;
+}
+
+.search_button {
+    background: url("img/search.png") repeat scroll 0 0 transparent;
+    border: 0 solid #919191;
+    color: #FFFFFF;
+    cursor: default;
+    font-size: 14px;
+    font-weight: bold;
+    height: 20px;
+    text-align: center;
+    width: 25px;
+}
+
+#home_link{
+	float:left;
+	color:#FFF;
+	padding:11px 0px 0px 10px;
+	font-weight:normal;
+	font-familiy: arial;
+	text-decoration:underline;
+	font-size:12px;
+}
+
+#tm_wrapper {
+    background-image: none;
+    color: #CCCCCC;
+    margin-left: 10px;
+    width: 970px;
 }
