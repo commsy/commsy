@@ -361,10 +361,12 @@
 				$this->assign('cs_bar', 'show_widgets', $own_room_item->getCSBarShowWidgets());
 				$this->assign('cs_bar', 'show_calendar', $own_room_item->getCSBarShowCalendar());
 				$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
+				$this->assign('cs_bar', 'show_portfolio', $own_room_item->getCSBarShowPortfolio());
 			}else{
 				$this->assign('cs_bar', 'show_widgets', false);
 				$this->assign('cs_bar', 'show_calendar', false);
 				$this->assign('cs_bar', 'show_stack', false);
+				$this->assign('cs_bar', 'show_portfolio', false);
 			}
 
 

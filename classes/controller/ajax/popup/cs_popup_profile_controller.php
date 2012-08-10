@@ -810,6 +810,16 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}else{
 								$room_item->setCSBarShowStack('-1');
 							}
+							
+							if(isset($form_data['show_portfolio_view']) && !empty($form_data['show_portfolio_view'])) {
+								if($form_data['show_portfolio_view'] == 'yes'){
+									$room_item->setCSBarShowPortfolio('1');
+								} else{
+									$room_item->setCSBarShowPortfolio('-1');
+								}
+							}else{
+								$room_item->setCSBarShowPortfolio('-1');
+							}
 
 
 							// save
@@ -1166,6 +1176,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 		if ($room->getCSBarShowStack() == '1'){
 			$return['show_stack_view'] = 'yes';
+		}
+		
+		if ($room->getCSBarShowPortfolio() == '1'){
+			$return['show_portfolio_view'] = 'yes';
 		}
 
 		return $return;

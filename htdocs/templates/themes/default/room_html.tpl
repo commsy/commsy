@@ -36,6 +36,9 @@
 
 			{if !$environment.is_guest}
 				<div id="tm_icons_bar">
+					{if $cs_bar.show_portfolio == "1"}
+						<a href="#" id="tm_portfolio" title="___CS_BAR_PORTFOLIO___">&nbsp;</a>
+					{/if}
 					{if $cs_bar.show_widgets == '1'}
 						<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
 					{/if}
@@ -72,6 +75,7 @@
 	<div id="tm_menus">
 		<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
 		<div id="tm_dropmenu_widget_bar" class="hidden"></div>
+		<div id="tm_dropmenu_portfolio" class="hidden"></div>
 		<div id="tm_dropmenu_mycalendar" class="hidden"></div>
 		<div id="tm_dropmenu_stack" class="hidden"></div>
 		<div id="tm_dropmenu_pers_bar" class="hidden"></div>

@@ -87,6 +87,7 @@ define([	"dojo/_base/declare",
 						
 						// init widget
 						var widgetHandler = new widgetObject(params);
+						widgetHandler.startup();
 						
 						this.widgetHandles.push({ path: widgetPath, handler: widgetHandler });
 						

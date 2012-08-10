@@ -97,6 +97,13 @@ require([	"dojo/_base/declare",
 					});
 				}
 				
+				var aPortfolioNode = query("a#tm_portfolio")[0];
+				if (aPortfolioNode) {
+					require(["commsy/popups/TogglePortfolio"], function(PortfolioPopup) {
+						var handler = new PortfolioPopup(aPortfolioNode, query("div#tm_menus div#tm_dropmenu_portfolio")[0]);
+					});
+				}
+				
 				/*
 				
 				require(["commsy/popups/ToggleMyCalendar"], function(MyCalendarPopup) {

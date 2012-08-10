@@ -2264,8 +2264,18 @@ class cs_privateroom_item extends cs_room_item {
    function setCSBarShowStack ($i) {
       $this->_addExtra('CS_BAR_SHOW_STACK',$i);
    }
-
-
+   
+   function getCSBarShowPortfolio() {
+   	$retour = '1';
+   	if ($this->_issetExtra('CS_BAR_SHOW_PORTFOLIO')) {
+   		$retour = $this->_getExtra('CS_BAR_SHOW_PORTFOLIO');
+   	}
+   	return $retour;
+   }
+   
+   function setCSBarShowPortfolio ($i) {
+   	$this->_addExtra('CS_BAR_SHOW_PORTFOLIO',$i);
+   }
 
    function getPortletShowActiveRoomList () {
       $retour = true;
