@@ -9,7 +9,7 @@
 				<div id="popup_pagetitle">
 					<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
 					<h2>
-						___CS_BAR_PORTFOLIO___
+						___CS_BAR_PORTFOLIO_HEADER___
 					</h2>
 					<div class="clear"> </div>
 				</div>

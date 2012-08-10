@@ -4299,8 +4299,8 @@ widgets
 	width: 694px;
 }
 
-.widget_928 {
-	width: 928px;
+.widget_full {
+	width: 936px;
 }
 
 #crt_col_left_full_widget {
@@ -4321,7 +4321,7 @@ widgets
 }
 
 .CommSyPortfolioWidget {
-	margin: 5px;
+	margin: 0px;
 	background-color: #E8E8E8;
     border: 1px solid #C0C0C1;
 }
@@ -4733,4 +4733,40 @@ Portfolio
 
 .even_ep_sep_390 {
     background: url(sep_390.gif) repeat-y -20px 0px #FFF;
-    }  
+    }
+
+/**********************/
+.dijitTabListWrapper {
+	overflow: hidden !important;
+	background: url(img/pop_tabnav_bg.jpg) left bottom repeat-x #D3D3D3 !important;
+    padding: 10px 0px 0px 10px !important;
+}
+
+.dijitTabInnerDiv {
+	/*display: block !important;*/
+	/*float: left !important;*/
+	padding: 6px 10px !important;
+	text-decoration: none;
+	font-weight: bold;
+	border-top: 1px solid #B5B5B5;
+    border-right: 1px solid #B5B5B5;
+    border-left: 1px solid #B5B5B5;
+    color: #FFF;
+    background: url(img/pop_tab_norm_bg.jpg) left bottom repeat-x #B5B5B5;
+}
+
+.dijitTabHover div.dijitTabInnerDiv {
+	border-color: #767676;
+	color: #393939;
+	text-shadow: #E8E8E8 0 1px;
+}
+
+.dijitTabChecked div.dijitTabInnerDiv {
+	border-top: 1px solid #B5B5B5;
+    border-right: 1px solid #B5B5B5;
+    border-left: 1px solid #B5B5B5;
+    color: #393939;
+    background: #E8E8E8;
+}
+
+/**********************/

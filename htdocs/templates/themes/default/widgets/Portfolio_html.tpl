@@ -1,19 +1,19 @@
-<div class="{literal}${baseClass}{/literal} widget_928">
+<div class="{literal}${baseClass}{/literal} widget_full">
 
 
 	{* tab container *}
-          				<div data-dojo-type="dijit.layout.TabContainer" class="minHeightPopup">
-          					
-          					<div data-dojo-type="dijit.layout.ContentPane" title="My first tab" selected="true">
-            Lorem ipsum and all around...
-        </div>
-        <div data-dojo-type="dijit.layout.ContentPane" title="My second tab">
-            Lorem ipsum and all around - second...
-        </div>
-        <div data-dojo-type="dijit.layout.ContentPane" title="My last tab" closable="true">
-            Lorem ipsum and all around - last...
-        </div>
-          				</div>
+    <div data-dojo-type="dijit.layout.TabContainer" class="minHeightPopup">
+    
+    	<div data-dojo-type="dijit.layout.TabContainer" title="___CS_BAR_PORTFOLIO___" nested="true">
+    	
+    		<div data-dojo-type="dijit.layout.ContentPane" title="My last tab">Test1</div>
+    		<div data-dojo-type="dijit.layout.ContentPane" title="My last tab">Test2</div>
+    		<div data-dojo-type="dijit.layout.ContentPane" title="My last tab">Test3</div>
+    	
+    	</div>
+    	<div data-dojo-type="dijit.layout.TabContainer" title="___CS_BAR_PORTFOLIO_ACTIVATED___" nested="true"></div>
+    
+    </div>
 
 {*
 	<div class="innerWidgetArea">
