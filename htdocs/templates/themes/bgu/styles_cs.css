@@ -369,3 +369,8 @@ a#tm_user:hover{
     margin-left: 10px;
     width: 970px;
 }
+
+.column_90 {
+    float: left;
+    width: 86px;
+}

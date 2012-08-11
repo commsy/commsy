@@ -146,7 +146,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 				$attachment_infos = array();
 
 				$converter = $this->_environment->getTextConverter();
-				$file_list = $item->getFileListWithFilesFromSections();
+				$file_list = $item->getFileList();
 
 				$file = $file_list->getFirst();
 				while($file) {
