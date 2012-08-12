@@ -16,11 +16,11 @@ define([	"dojo/_base/declare",
 		baseClass:			"CommSyPortfolioWidget",
 		widgetHandler:		null,
 		
-		items:				[],
-		
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
+			
+			this.myPortfolioTabNode = null;
 		},
 		
 		postCreate: function() {
@@ -34,10 +34,60 @@ define([	"dojo/_base/declare",
 		},
 		
 		startup: function() {
-		}
+		},
+		
+		afterParse: function() {
+			// get handles
+			this.myPortfolioTabNode = dijit.byId("myPortfolioTabNode");
+			this.activatedPortfolioTabNode = dijit.byId("activatedPortfolioTabNode");
+			
+			// watch changes of child widgets in my portfolio tab
+			this.myPortfolioTabNode.watch("selectedChildWidget", Lang.hitch(this, function(name, oldWidget, newWidget) {;
+				this.onTabChanged(name, oldWidget, newWidget);
+			}));
+			
+			// load portfolios
+			this.AJAXRequest("portfolio", "getPortfolios", {},
+				Lang.hitch(this, function(response) {
+					// add portfolios to tabs
+					dojo.forEach(response.myPortfolios, Lang.hitch(this, function(portfolio, index, arr) {
+						this.addPortfolio(portfolio, this.myPortfolioTabNode);
+					}));
+					dojo.forEach(response.activatedPortfolios, Lang.hitch(this, function(portfolio, index, arr) {
+						
+					}));
+				})
+			);
+			
+			// register create popup
+			require(["commsy/popups/ClickPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.createNewPortfolioNode, { iid: "NEW", module: "portfolioItem" });
+			}));
+		},
+		
+		addPortfolio: function(portfolio, tab, select) {
+			select = select || false;
+			
+			this.widgetHandler.loadWidget("widgets/PortfolioItem", { portfolioId: portfolio.id, title: portfolio.title }).then(
+				Lang.hitch(this, function(widget) {
+					var widget = widget.handle;
+					
+					tab.addChild(widget, 0);
+					if (select) tab.selectChild(widget);
+				})
+			);
+		},
 		
 		/************************************************************************************
 		 * EventHandler
 		 ************************************************************************************/
+		onTabChanged: function(name, oldWidget, newWidget) {
+			if (newWidget.baseClass === "CommSyPortfolioItemWidget") {
+				newWidget.init();
+			} else if(newWidget.id === "newPortfolioNode") {
+				this.createNewPortfolioNode.click();
+			}
+		}
 	});
 });

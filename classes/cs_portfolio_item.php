@@ -31,30 +31,6 @@ class cs_portfolio_item extends cs_item {
       $this->_setValue('title', $value);
    }
 
-   function getUserID () {
-      return $this->_getValue('title');
-   }
-
-   function setUserID ($value) {
-      $this->_setValue('title', $value);
-   }
-
-   function getRows () {
-      return $this->_getValue('rows');
-   }
-
-   function setRows ($value) {
-      $this->_setValue('rows', $value);
-   }
-
-   function getColumns () {
-      return $this->_getValue('columns');
-   }
-
-   function setColumns ($value) {
-      $this->_setValue('columns', $value);
-   }
-
    function getDescription () {
       return $this->_getValue('description');
    }
@@ -72,6 +48,15 @@ class cs_portfolio_item extends cs_item {
       $manager = $this->_environment->getPortfolioManager();
       $this->_delete($manager);
    }
-
+   
+   function getExternalViewer() {
+   	$portfolioManager = $this->_environment->getPortfolioManager();
+   	
+   	return $portfolioManager->getExternalViewer($this->getItemID());
+   }
+   
+   function setExternalViewer($userIdArray) {
+   	$this->_setValue("externalViewer", $userIdArray);
+   }
 }
 ?>

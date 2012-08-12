@@ -4458,7 +4458,8 @@ Portfolio
 */	
 
 #e-portfolio {
-    width: 955px;
+	margin-left: 10px;
+    width: 915px;
     background: #E8E8E8;
     } 
 
@@ -4473,7 +4474,7 @@ Portfolio
     font-weight: normal;
     border-right: 10px solid #E8E8E8;
     border-bottom: 10px solid #E8E8E8;
-    background: url(ep_hor_head_bg.jpg) repeat-x left bottom;
+    background: url(img/ep_hor_head_bg.jpg) repeat-x left bottom;
     }
 
 #ep_table th img {
@@ -4521,7 +4522,7 @@ Portfolio
 
 .ep_cell_actions {
     height: 24px;
-    background: url(ep_cell_actions_bg.jpg) repeat-x;
+    background: url(img/ep_cell_actions_bg.jpg) repeat-x;
     }
 
 .ep_item_count {
@@ -4531,7 +4532,7 @@ Portfolio
     }
 
 .ep_item_comment {
-    background: url(ep_icon_comments.gif) no-repeat 0px 6px;
+    background: url(img/ep_icon_comments.gif) no-repeat 0px 6px;
     padding: 4px 0px 0px 16px;
     float: left;
     color: #888;
@@ -4581,7 +4582,7 @@ Portfolio
 
 .ep_vert_col_title {
     float: left;
-    background: url(ep_vert_head_bg.jpg) repeat-x;
+    background: url(img/ep_vert_head_bg.jpg) repeat-x;
     height: 90px;
     width: 170px;
     }
@@ -4631,7 +4632,7 @@ Portfolio
     border-top: 1px solid #FFF;   
     border-left: 1px solid #FFF;   
     border-right: 1px solid #FFF;    
-    background: url(pop_content_bg.jpg) repeat-x left bottom #E8E8E8;
+    background: url(img/pop_content_bg.jpg) repeat-x left bottom #E8E8E8;
     }
 
 #ep_content_row_one {
@@ -4651,12 +4652,12 @@ Portfolio
     }
 
 .ep_open_close_head {
-    background: url(open_close_head_bg.jpg) left bottom repeat-x #D1D1D1;
+    background: url(img/open_close_head_bg.jpg) left bottom repeat-x #D1D1D1;
     padding: 6px 10px;
     }
 
 .ep_open_close_title {
-    background: url(open_close_head_bg.jpg) left bottom repeat-x #D1D1D1;
+    background: url(img/open_close_head_bg.jpg) left bottom repeat-x #D1D1D1;
     padding: 17px 10px 7px 10px;
     }
 
@@ -4696,12 +4697,12 @@ Portfolio
     
 .ep_crt_content .pop_row_odd, .ep_crt_content_ff .pop_row_odd {
     padding: 5px 10px;
-    background: url(col_seperator.gif) repeat-y 325px top #F5F5F5;
+    background: url(img/col_seperator.gif) repeat-y 325px top #F5F5F5;
     }
 
 .ep_crt_content .pop_row_even, .ep_crt_content_ff .pop_row_even {
     padding: 5px 10px;
-    background: url(col_seperator.gif) repeat-y 325px top #FFF;
+    background: url(img/col_seperator.gif) repeat-y 325px top #FFF;
     }    
     
 .pop_row_odd:hover, .pop_row_even:hover {
@@ -4728,11 +4729,11 @@ Portfolio
     }   
     
 .odd_ep_sep_390 {
-    background: url(sep_390.gif) repeat-y -20px 0px #F5F5F5;
+    background: url(img/sep_390.gif) repeat-y -20px 0px #F5F5F5;
     }
 
 .even_ep_sep_390 {
-    background: url(sep_390.gif) repeat-y -20px 0px #FFF;
+    background: url(img/sep_390.gif) repeat-y -20px 0px #FFF;
     }
 
 /**********************/
@@ -4769,4 +4770,16 @@ Portfolio
     background: #E8E8E8;
 }
 
+.dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent .tabLabel,
+.dijitTabContainerTabListNested .dijitTabHover .dijitTabContent .tabLabel {
+    text-decoration: none !important;
+}
+
+.dijitTabPaneWrapper {
+	background: none !important;
+}
+
+.dijitContentPane {
+	background: none !important;
+}
 /**********************/

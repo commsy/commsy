@@ -37,6 +37,7 @@ define([	"dojo/_base/declare",
 					dojo.forEach(results, Lang.hitch(this, function(result, index, arr) {
 						result[1].handle.placeAt(Query("div.portfolioArea", this.contentNode)[0]);
 						dojo.parser.parse(this.contentNode);
+						result[1].handle.afterParse();
 					}));
 				})
 			);

@@ -91,9 +91,6 @@ define([	"dojo/_base/declare",
 						
 						this.widgetHandles.push({ path: widgetPath, handler: widgetHandler });
 						
-						// place widget
-						//widgetHandler.placeAt(Query("div.widgetArea", this.contentNode)[0]);
-						
 						deferred.resolve({ handle: widgetHandler });
 					})
 				)

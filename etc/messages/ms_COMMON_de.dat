@@ -278,6 +278,7 @@ $message["COMMON_CONTENT"]["de"] = "Inhalt";
 $message["COMMON_CONTINUOUS"]["de"] = "kontinuierlich";
 $message["COMMON_COOKIES_NEEDED"]["de"] = "Für diese Funktion müssen Cookies aktiviert sein";
 $message["COMMON_COPY_LIST_ACTION_BUTTON_GO"]["de"] = "ausführen";
+$message["COMMON_CREATE"]["de"] = "erstellen";
 $message["COMMON_CREATED_BY"]["de"] = "erstellt von";
 $message["COMMON_CREATED_BY_UPPER"]["de"] = "Erstellt von";
 $message["COMMON_CREATE_ANNOTATION"]["de"] = "Anmerkung hinzufügen";
