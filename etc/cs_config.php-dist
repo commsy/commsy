@@ -174,6 +174,11 @@ $theme_array['sah'] = array(
 	'value'		=> 'sah',
 	'disabled'	=> false
 );
+$theme_array['commsy'] = array(
+	'text'		=> 'CommSy',
+	'value'		=> 'commsy',
+	'disabled'	=> false
+);
 
 
 
