@@ -319,7 +319,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						if ($additional['action'] == 'delete_room'){
                           $current_context->delete();
                           $current_context->save();
-                          
+
                           if ($current_context->isGroupRoom()) {
                           	$this->_popup_controller->setSuccessfullItemIDReturn($current_context->getLinkedProjectItemID());
                           } else {
@@ -877,7 +877,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				      $current_context->setModificationDate(getCurrentDateTimeInMySQL());
 				      $wordpress_manager = $this->_environment->getWordpressManager();
                   $wiki_manager = $this->_environment->getWikiManager();
-				      
+
 				      if($additional['action'] == 'create_wordpress'){
                           if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
       				         $current_context->setWordpressUseComments();
@@ -960,149 +960,149 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                      } else {
                         $current_context->setWikiTitle($current_context->getTitle());
                      }
-            
+
                      if ( isset($form_data['admin']) and !empty($form_data['admin']) ) {
                         $current_context->setWikiAdminPW($form_data['admin']);
                      }
-                     
+
                      if ( isset($form_data['edit']) and !empty($form_data['edit']) ) {
                         $current_context->setWikiEditPW($form_data['edit']);
                      } else {
                         $current_context->setWikiEditPW('');
                      }
-            
+
                      if ( isset($form_data['read']) and !empty($form_data['read']) ) {
                         $current_context->setWikiReadPW($form_data['read']);
                      } else {
                         $current_context->setWikiReadPW('');
                      }
-            
+
                      #if ( isset($form_data['use_commsy_login']) ) {
                         $current_context->setWikiUseCommSyLogin();
                      #} else {
                      #   $current_context->unsetWikiUseCommSyLogin();
                      #}
-            
+
                      if ( isset($form_data['community_read_access']) ) {
                         $current_context->setWikiCommunityReadAccess();
                      } else {
                         $current_context->unsetWikiCommunityReadAccess();
                      }
-            
+
                      if ( isset($form_data['community_write_access']) ) {
                         $current_context->setWikiCommunityWriteAccess();
                      } else {
                         $current_context->unsetWikiCommunityWriteAccess();
                      }
-            
+
                      if ( isset($form_data['portal_read_access']) ) {
                         $current_context->setWikiPortalReadAccess();
                      } else {
                         $current_context->unsetWikiPortalReadAccess();
                      }
-            
+
                      if ( isset($form_data['room_mod_write_access']) ) {
                         $current_context->setWikiRoomModWriteAccess();
                      } else {
                         $current_context->unsetWikiRoomModWriteAccess();
                      }
-            
+
                      if ( isset($form_data['show_login_box']) ) {
                         $current_context->setWikiShowCommSyLogin();
                      } else {
                         $current_context->unsetWikiShowCommSyLogin();
                      }
-            
+
                      #if ( isset($form_data['enable_fckeditor']) ) {
                         $current_context->setWikiEnableFCKEditor();
                      #} else {
                      #   $current_context->unsetWikiEnableFCKEditor();
                      #}
-            
+
                      #if ( isset($form_data['enable_sitemap']) ) {
                         $current_context->setWikiEnableSitemap();
                      #} else {
                      #   $current_context->unsetWikiEnableSitemap();
                      #}
-            
+
                      #if ( isset($form_data['enable_statistic']) ) {
                         $current_context->setWikiEnableStatistic();
                      #} else {
                      #   $current_context->unsetWikiEnableStatistic();
                      #}
-            
+
                      #if ( isset($form_data['enable_search']) ) {
                         $current_context->setWikiEnableSearch();
                      #} else {
                      #   $current_context->unsetWikiEnableSearch();
                      #}
-            
+
                      #if ( isset($form_data['enable_rss']) ) {
                         $current_context->setWikiEnableRss();
                      #} else {
                      #   $current_context->unsetWikiEnableRss();
                      #}
-            
+
                      if ( isset($form_data['enable_calendar']) ) {
                         $current_context->setWikiEnableCalendar();
                      } else {
                         $current_context->unsetWikiEnableCalendar();
                      }
-            
+
                      if ( isset($form_data['enable_gallery']) ) {
                         $current_context->setWikiEnableGallery();
                      } else {
                         $current_context->unsetWikiEnableGallery();
                      }
-            
+
                      if ( isset($form_data['enable_notice']) ) {
                         $current_context->setWikiEnableNotice();
                      } else {
                         $current_context->unsetWikiEnableNotice();
                      }
-            
+
                      #if ( isset($form_data['enable_pdf']) ) {
                         $current_context->setWikiEnablePdf();
                      #} else {
                      #   $current_context->unsetWikiEnablePdf();
                      #}
-            
+
                      if ( isset($form_data['enable_rater']) ) {
                         $current_context->setWikiEnableRater();
                      } else {
                         $current_context->unsetWikiEnableRater();
                      }
-            
+
                      #if ( isset($form_data['enable_listcategories']) ) {
                         $current_context->setWikiEnableListCategories();
                      #} else {
                      #   $current_context->unsetWikiEnableListCategories();
                      #}
-            
+
                      if ((isset($form_data['new_page_template'])) &&  ($_POST['new_page_template'] != '')) {
                         $current_context->setWikiNewPageTemplate($_POST['new_page_template']);
                      } else {
                         $current_context->unsetWikiNewPageTemplate();
                      }
-            
+
                      if ( isset($form_data['enable_swf']) ) {
                         $current_context->setWikiEnableSwf();
                      } else {
                         $current_context->unsetWikiEnableSwf();
                      }
-            
+
                      if ( isset($form_data['enable_wmplayer']) ) {
                         $current_context->setWikiEnableWmplayer();
                      } else {
                         $current_context->unsetWikiEnableWmplayer();
                      }
-            
+
                      if ( isset($form_data['enable_quicktime']) ) {
                         $current_context->setWikiEnableQuicktime();
                      } else {
                         $current_context->unsetWikiEnableQuicktime();
                      }
-            
+
                      if ( isset($form_data['enable_youtube_google_vimeo']) ) {
                         $current_context->setWikiEnableYoutubeGoogleVimeo();
                      } else {
@@ -1110,7 +1110,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                      }
 
                      include_once('functions/development_functions.php');
-                     
+
                      // Discussion
                      #if ( isset($form_data['enable_discussion']) ) {
                         $current_context->setWikiEnableDiscussion();
@@ -1130,7 +1130,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                         }
                      }
                      $_POST['enable_discussion_discussions'] = $enable_discussion_discussions;
-                     
+
                      if ( isset($form_data['enable_discussion_notification']) ) {
                         $current_context->setWikiEnableDiscussionNotification();
                      } else {
@@ -1148,7 +1148,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                     } else {
                         $current_context->setWikiWithoutSectionEdit();
                     }
-                    
+
                     if ( isset($form_data['wiki_section_edit_header']) ) {
                         $current_context->setWikiWithHeaderForSectionEdit();
                     } else {
@@ -1170,7 +1170,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                            $enable_wiki_groups[] = $form_data[$form_data_key];
                         }
                      }
-                     
+
                      // WSDL-xml hier noch nicht zugreifbar, daher weiterhin die alte Variante
                      if ( !empty($enable_wiki_groups)){
                         //global $c_use_soap_for_wiki;
@@ -1451,10 +1451,17 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			$this->_shown_community_room_array = $shown_community_room_array;
 		}
 
+
+		global $c_theme;
+		$default_color_value = 'default';
+		if(isset($c_theme) and !empty($c_theme) and $c_theme != 'default'){
+			$default_color_value = $c_theme;
+		}
+
 		// color schemes
 		$this->_color_array[] = array(
 			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
-			'value'		=> 'default',
+			'value'		=> $default_color_value,
 			'disabled'	=> false
 		);
 		$this->_color_array[] = array(
@@ -1859,7 +1866,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                $return['agb_text_'.cs_strtoupper($language)] = '';
             }
          }
-         
+
          $return['agb_status'] = $current_context->getAGBStatus();
          if ($return['agb_status'] != '1'){
          	$return['agb_status'] = '2';
@@ -2002,12 +2009,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   } else {
 	      $return['wordpress'] = false;
 	   }
-	   
+
 	   // Wiki
 	   if(!empty($c_pmwiki) && $c_pmwiki) {
 	      $wiki_manager = $this->_environment->getWikiManager();
 	      $wiki = array();
-	      
+
 	      $wiki_skins = array();
          global $c_pmwiki_path_file;
          $directory_handle = @opendir($c_pmwiki_path_file.'/pub/skins');
@@ -2041,10 +2048,10 @@ class cs_popup_configuration_controller implements cs_popup_controller {
             }
          }
    	   $wiki['wiki_skin_array'] = $wiki_skins;
-	      
+
    	   if($current_context->isWikiActive()){
             $wiki['wiki_active'] = 'yes';
-   	   
+
             $wiki['wikititle'] = $current_context->getWikiTitle();
             if ($current_context->getWikiHomeLink() == '1'){
                $wiki['wikilink'] = 'yes';
@@ -2135,12 +2142,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
             if ($current_context->wikiWithHeaderForSectionEdit() ) {
                $wiki['wiki_section_edit_header'] = 'yes';
             }
-            
+
             $wiki['wiki_skin_choice'] = $current_context->getWikiSkin();
             $wiki['admin'] = $current_context->getWikiAdminPW();
             $wiki['edit'] = $current_context->getWikiEditPW();
             $wiki['read'] = $current_context->getWikiReadPW();
-            
+
             $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
             $temp_wiki_groups_array = array();
             for ($index = 0; $index < sizeof($wiki_groups_array['groups']); $index++) {
@@ -2149,9 +2156,9 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                $temp_array['public'] = $wiki_groups_array['public'][$index];
                $temp_wiki_groups_array[] = $temp_array;
             }
-            
+
             $wiki['enable_wiki_groups'] = $temp_wiki_groups_array;
-            
+
    	   } else {
       	   $wiki['wikititle'] = $current_context->getWikiTitle();
             $wiki['wiki_skin_choice'] = 'pmwiki';
@@ -2166,7 +2173,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   } else {
 	      $return['wiki'] = false;
 	   }
-	   
+
 	   // Chat
 	   if(!empty($c_etchat_enable) && $c_etchat_enable) {
 	      $return['chat'] = true;
@@ -2271,6 +2278,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		$return['color_bg_image'] = $current_context->getBGImageFilename();
 		$return['color_bg_image_repeat'] = $current_context->issetBGImageRepeat();
 		$return['color_bg_image_fixed'] = $current_context->issetBGImageFixed();
+
 
 		// description
 		$return['description'] = $current_context->getDescription();
