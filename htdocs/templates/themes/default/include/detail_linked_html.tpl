@@ -32,7 +32,7 @@
 						<h4 style="display:inline;">___COMMON_ATTACHED_TAGS___</h4>
 							(<a style="display:inline;" class="open_popup open_popup_context_nav" data-custom="iid: {$iid}, module: '{$environment.module}', editType: 'tags'" href="#">___COMMON_ATTACH_LINK___</a>)<br/>
 							{foreach $item.tags as $tag}
-								<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$tag.level}={$tag.item_id}&seltag=yes">{$tag.title}</a>{if !$tag@last}, {/if}
+								<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&seltag={$tag.item_id}">{$tag.title}</a>{if !$tag@last}, {/if}
 							{foreachelse}
 								___COMMON_NONE___
 							{/foreach}
