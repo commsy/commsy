@@ -134,8 +134,10 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
 			       $status_array[] = $temp_array;
 			    }
  				$this->_popup_controller->assign('item', 'status_array', $status_array);
- 				$val = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1';
+				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? '1': '0';
  				$this->_popup_controller->assign('item', 'public', $val);
+ 				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
+	       		$this->_popup_controller->assign('item', 'private_editing', $val);
 			}
     }
 

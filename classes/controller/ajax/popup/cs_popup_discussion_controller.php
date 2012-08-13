@@ -67,6 +67,9 @@
 						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
+				}else{
+					$this->_popup_controller->assign('item', 'public', $item->isPublic());
+
 				}
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);

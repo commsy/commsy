@@ -235,9 +235,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 			}else{
+ 				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? '1': '0';
+ 				$this->_popup_controller->assign('item', 'public', $val);
 				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
 		    	$this->_popup_controller->assign('item', 'private_editing', $val);
-		    	$this->_popup_controller->assign('item', 'public', $val);
 		        if ($current_context->withWorkflow()){
 		           $this->_popup_controller->assign('item', 'workflow_traffic_light',$current_context->getWorkflowTrafficLightDefault());
 		           $this->_popup_controller->assign('item', 'workflow_resubmission', false);
