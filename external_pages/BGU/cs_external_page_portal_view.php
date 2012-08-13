@@ -1668,14 +1668,14 @@ class cs_external_page_portal_view extends cs_page_view {
 
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie'){
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/ie9.css"/>'.LF;
+      }
       if ( $current_browser == 'msie' and !strstr($current_browser_version,'8.') ){
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/ie70.css"/>'.LF;
       }
       if ( $current_browser == 'msie' ){
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/ie.css"/>'.LF;
-      }
-      if ( $current_browser == 'msie' and !strstr($current_browser_version,'9.') ){
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/ie9.css"/>'.LF;
       }
       return $retour;
    }
@@ -3176,7 +3176,8 @@ class cs_external_page_portal_view extends cs_page_view {
     } else {
        $add_param = '';
     }
-
+	$typo_url = '';
+	$blog_url = '';
     global $c_pmwiki_path_url;
     $wiki_url = $c_pmwiki_path_url;
     $wiki_image_url = $wiki_url.'/wikis/'.$current_portal->getItemID().'/';
@@ -3273,6 +3274,7 @@ class cs_external_page_portal_view extends cs_page_view {
 #	}
 
     $current_user = $this->_environment->getCurrentUser();
+    $params = $this->_environment->getCurrentParameterArray();
     if ($current_user->isUser()){
        $html .= '<div id="portal_action" style="margin-top:15px; padding:0px; margin-left:0px; margin-right:0px;">'.LF;
        $html .='<div>'.LF;
