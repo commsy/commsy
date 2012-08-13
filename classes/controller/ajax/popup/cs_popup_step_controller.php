@@ -16,7 +16,7 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 
     public function initPopup($item, $data) {
     	$current_context = $this->_environment->getCurrentContextItem();
-    	
+
         // assign template vars
         $this->assignTemplateVars();
 
@@ -45,7 +45,7 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 			// TODO: check rights
 			$this->_popup_controller->assign('item', 'title', $item->getTitle());
 			$this->_popup_controller->assign('item', 'description', $item->getDescription());
-			
+
 			$this->_popup_controller->assign('item', 'timeType', $item->getTimeType());
 			$this->_popup_controller->assign('item', 'minutes', $item->getMinutes());
         }
@@ -90,72 +90,45 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 
     public function save($form_data, $additional = array()) {
     	$session = $this->_environment->getSessionItem();
-    	
+
     	if ($additional["contextId"]) {
     		$itemManager = $this->_environment->getItemManager();
     		$type = $itemManager->getItemType($additional["contextId"]);
-    	
+
     		$manager = $this->_environment->getManager($type);
     		$current_context = $manager->getItem($additional["contextId"]);
-    	
+
     		if ($type === CS_PRIVATEROOM_TYPE) {
     			$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
     		}
     	}
-    	
+
     	$current_user = $this->_environment->getCurrentUserItem();
     	$current_context = $this->_environment->getCurrentContextItem();
-    		
+
     	// get the current user and room
     	$room_item = $this->_environment->getCurrentContextItem();
-    		
+
     	// get history from session
     	$history = $session->getValue('history');
-    	
+
     	// load item from database
     	$step_item = null;
     	if($form_data["iid"] !== 'NEW') {
     		$step_manager = $this->_environment->getStepManager();
     		$step_item = $step_manager->getItem($form_data["iid"]);
     	}
-    		
-    	// check access rights
-			if($current_context->isProjectRoom() && $current_context->isClosed()) {
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
-   $page->add($errorbox);
-				 */
-			} elseif($step_item !== null) {
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
-   $page->add($errorbox);
-				 */
-			} elseif(	!(($step_item === null && $current_user->isUser()) ||
-						($step_item !== null && isset($step_item) && $step_item->mayEdit($current_user))) ) {
-				
-				/*
-				 * $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
-   $page->add($errorbox);
-				 */
-			} else {
-					$translator = $this->_environment->getTranslationObject();
-					
-					if($this->_popup_controller->checkFormData()) {
+
+
+       if ( $form_data["iid"] != 'NEW' and !isset($step_item) ) {
+
+        } elseif ( !(($form_data["iid"] == 'NEW' and $current_user->isUser()) or
+        ($form_data["iid"] != 'NEW' and isset($step_item) and
+        $step_item->mayEdit($current_user))) ) {
+        }else{
+
+		$translator = $this->_environment->getTranslationObject();
+		if($this->_popup_controller->checkFormData()) {
 						// Create new item
 						if ( !isset($step_item) ) {
 							$step_manager = $this->_environment->getStepManager();
@@ -165,45 +138,44 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 							$step_item->setCreationDate(getCurrentDateTimeInMySQL());
 							$step_item->setTodoID($additional["ref_iid"]);
 						}
-						
+
 						// set modificator and modification date
 						$step_item->setModificatorItem($current_user);
 						$step_item->setModificationDate(getCurrentDateTimeInMySQL());
-						
+
 						// set attributes
 						if(isset($form_data["title"])) $step_item->setTitle($form_data["title"]);
-						
+
 						if(isset($form_data["description"])) $step_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
-						
+
 						if(isset($form_data["minutes"])) {
 							$minutes = $form_data["minutes"];
 							$minutes = str_replace(",", ".", $minutes);
-							
+
 							if(isset($form_data["time_type"])) {
 								$step_item->setTimeType($form_data["time_type"]);
-								
+
 								switch($form_data["time_type"]) {
 									case 2: $minutes = $minutes * 60; break;
 									case 3: $minutes = $minutes * 60 * 8; break;
 								}
 							}
-							
+
 							$step_item->setMinutes($minutes);
 						}
-						
 						// save
 						$step_item->save();
-						
+
 						$todo_manager = $this->_environment->getTodoManager();
 						$todo_item = $todo_manager->getItem($additional["ref_iid"]);
-						
+
 						$status = $todo_item->getStatus();
 						if($status == $translator->getMessage("TODO_NOT_STARTED")) {
 							$todo_item->setStatus(2);
 						}
 						$todo_item->setModificationDate(getCurrentDateTimeInMySQL());
 						$todo_item->save();
-						
+
 						$this->_popup_controller->setSuccessfullItemIDReturn($todo_item->getItemID());
 					}
 			}
