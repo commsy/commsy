@@ -95,12 +95,6 @@ class cs_popup_date_controller {
 						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
-				}else{
-					if ($current_context->isCommunityRoom()){
- 						$this->_popup_controller->assign('item', 'public', '1');
- 					}else{
- 						$this->_popup_controller->assign('item', 'public', '0');
- 					}
 				}
 
 
