@@ -4458,7 +4458,7 @@ Portfolio
 */	
 
 #e-portfolio {
-	margin-left: 10px;
+	margin: 10px 0px 0px 10px;
     width: 915px;
     background: #E8E8E8;
     } 
@@ -4468,7 +4468,8 @@ Portfolio
     overflow: auto;
     }
 
-#ep_table th {
+#ep_table th,
+#epColumnAdd {
     width: 170px;
     height: 30px;
     font-weight: normal;
@@ -4477,11 +4478,13 @@ Portfolio
     background: url(img/ep_hor_head_bg.jpg) repeat-x left bottom;
     }
 
-#ep_table th img {
+#ep_table th img,
+#epColumnAdd img {
     padding-bottom: 10px;
     }
 
-#ep_table th strong {
+#ep_table th strong,
+#epColumnAdd strong {
     display: block;
     padding: 10px 10px 8px 10px;
     }

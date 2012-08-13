@@ -75,13 +75,46 @@
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			$portfolioItem = $portfolioManager->getItem($portfolioId);
 			
+			$cells = array();
+			
 			$return = array(
 				"title"			=> $portfolioItem->getTitle(),
 				"description"	=> $portfolioItem->getDescription(),
-				"tags"			=> $portfolioManager->getPortfolioTags($portfolioId)
+				"tags"			=> $portfolioManager->getPortfolioTags($portfolioId),
+				"cells"			=> $cells
 			);
 			
 			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+		}
+		
+		public function actionAddTagToPortfolio() {
+			// get data
+			$portfolioId = $this->_data["portfolioId"];
+			$tagId = $this->_data["tagId"];
+			$position = $this->_data["position"];
+			
+			$portfolioManager = $this->_environment->getPortfolioManager();
+			
+			$portfolioTags = $portfolioManager->getPortfolioTags($portfolioId);
+			
+			// get new index according to position
+			$index = 1;
+			foreach($portfolioTags as $portfolioTag) {
+				if ($portfolioTag["column"] === "0") {
+					// this is a row tag
+					
+					if ($position === "row") $index++;
+				} else {
+					// this is a column tag
+					
+					if ($position === "column") $index++;
+				}
+			}
+			
+			$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index);
+			
+			$this->setSuccessfullDataReturn(array());
 			echo $this->_return;
 		}
 

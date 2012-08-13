@@ -250,6 +250,7 @@ class cs_portfolio_manager extends cs_manager {
   function getPortfolioTags($portfolioId) {
   	$query = "
   		SELECT
+  			tag_portfolio.t_id,
   			tag_portfolio.row,
   			tag_portfolio.column,
   			tag.title
@@ -269,6 +270,36 @@ class cs_portfolio_manager extends cs_manager {
   	}
   	 
   	return $result;
+  }
+  
+  function addTagToPortfolio($portfolioId, $tagId, $position, $index) {
+  	if ($position === "row") {
+  		$row = $index;
+  		$column = 0;
+  	} else {
+  		$row = 0;
+  		$column = $index;
+  	}
+  	
+  	$query = "
+  		INSERT INTO
+  			" . $this->addDatabasePrefix("tag_portfolio") . "
+  		(
+  			p_id,
+  			t_id,
+  			`row`,
+  			`column`
+  		) VALUES (
+  			'" . encode(AS_DB, $portfolioId) . "',
+  			'" . encode(AS_DB, $tagId) . "',
+  			'" . encode(AS_DB, $row) . "',
+  			'" . encode(AS_DB, $column) . "'
+  		);
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems storing tag for portfolio.',E_USER_WARNING);
+  	}
   }
   
   function getExternalViewer($portfolioId) {
@@ -303,16 +334,6 @@ class cs_portfolio_manager extends cs_manager {
   	
   	return $userList;
   }
-
-	function getTagsForTableCell($item_id,$column,$row){
-		$tag_array = array();
-		return $tag_array;
-	}
-
-	function getAnnotationsForTableCell($item_id,$column,$row){
-		$annotation_array = array();
-		return $annotation_array;
-	}
 
 /****************************************/
 

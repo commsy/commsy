@@ -19,24 +19,11 @@
                 <div class="clear"></div>
             </div>
             
-            <div data-dojo-attach-point="verticalTags">
-            	{*
-            		<div class="ep_vert_col_cell">
-		                <a href="" class="ep_vert_edit"><img src="{$basic.tpl_path}img/ep_vert_edit.jpg" alt="" /></a>
-		                
-		                <div class="ep_vert_col_title">
-		                    <a href=""><img src="{$basic.tpl_path}img/ep_icon_editdarkgrey.gif" alt="" /></a>
-		                    <strong>Beschriftung</strong>
-		                </div>
-		                
-		                <div class="clear"></div>
-		            </div>
-            	*}
-            	
+            <div>
             	{* add row *}
-            	<div class="ep_vert_col_cell">
+            	<div class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
 	                <div class="ep_vert_col_title">
-	                    <a href=""><strong>+</strong></a>
+	                    <a href="" class="tagEdit" data-custom="tagId: 'NEW', position: 'row', module: 'tagPortfolio'"><strong>+</strong></a>
 	                </div>
 	                
 	                <div class="clear"></div>
@@ -46,49 +33,18 @@
         </div>
         
         <div id="ep_table">
-            <table cellspacing="0" cellpadding="0" border="0">
-                <tr data-dojo-attach-point="horizontalTags">
-                	{*
-                	<th>
-                        <a href=""><img src="{$basic.tpl_path}img/ep_hor_edit.jpg" alt="" /></a>
-                        <a class="ep_edit_head" href=""><img src="{$basic.tpl_path}img/ep_icon_editdarkgrey.gif" alt="" /></a>
-                        <strong>Beschriftung</strong>
-                    </th>
-                	*}
-                </tr>
-                <tr>
-                {*
-                    <td>
-                        <div class="ep_cell_content"> <!-- immer die neuesten/letzten 3 Eintraege anzeigen -->
-                        <a href="">
-                            <span>Lorem ipsum dolor nato ...</span> <!-- Text bitte so abschneiden, dass er in eine Zeile passt -->
-                            <span>Aenean massa cum sociis ...</span>
-                            <span>Phasellus viverra nulla ut ...</span>
-                        </a>
-                        </div>
-                        <div class="ep_cell_actions">
-                            <p class="ep_item_count">12</p>
-                            <p class="ep_item_comment">12</p>
-                            <a href=""><img src="{$basic.tpl_path}img/ep_icon_editgrey.gif" alt="" /></a>
-                            
-                            <div class="clear"></div>
-                        </div>
-                    </td>
-                    *}
-                </tr>
+            <table cellspacing="0" cellpadding="0" border="0" class="float-left" data-dojo-attach-point="tableNode">
             </table>
+            
+            {* add column *}
+	    	<div id="epColumnAdd" class="float-left">
+	            <a href=""><img src="{$basic.tpl_path}img/ep_hor_edit.jpg" alt="" /></a>
+	            <a class="ep_edit_head tagEdit" data-custom="tagId: 'NEW', position: 'column', module: 'tagPortfolio'" href=""><strong>+</strong></a>
+	            <strong>&nbsp;</strong>
+	        </div>
+	        
+	        <div class="clear"></div>
         </div>
-        
-        {* add column *}
-        {*
-                	<th>
-                        <a href=""><img src="{$basic.tpl_path}img/ep_hor_edit.jpg" alt="" /></a>
-                        <a class="ep_edit_head" href=""><strong>+</strong></a>
-                        <strong>&nbsp;</strong>
-                    </th>
-                    *}
-        
-        <div class="clear"></div>
     </div>
     
     
