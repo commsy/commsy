@@ -524,7 +524,9 @@ if ( !empty($SID) ) {
                   $session_manager = $environment->getSessionManager();
                   $session_manager->save($session);
                   $environment->setSessionItem($session);
-
+                  
+                  $typo3web_manager->sendSessionToTypo3($typo3_session_id, $session->getSessionID());
+                  
                   $params = array();
                   $params = $environment->getCurrentParameterArray();
                   unset($params['ses_id']);

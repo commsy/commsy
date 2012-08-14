@@ -288,5 +288,16 @@ class cs_auth_typo3 extends cs_auth_manager {
       $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_TYPO3WEB_NOT_YET_IMPLEMENTED');
       return $granted;
    }
+   
+   public function sendSessionToTypo3 ($ses_id, $sid) {
+      $retour = array();
+      $url = $this->_server.'&cmd=setSessionId&ses_id='.$ses_id.'&cses_id='.$sid;
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, $url);
+      curl_setopt($curl, CURLOPT_HEADER, 0);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      curl_exec($curl);
+      curl_close($curl);
+   }
 }
 ?>
