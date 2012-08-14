@@ -927,11 +927,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 								$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 						} else {
-							$name = $file->getDisplayName();
-							//TODO:
-							//$name = $converter->compareWithSearchText($name);
-							$name = $converter->text_as_html_short($name);
-							$file_string = $file->getFileIcon() . ' ' . $name;
+							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
 						}
 						$tmp_array = array();
 						$tmp_array['name'] = $file_string;
@@ -1021,7 +1017,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'noticed'			=> $noticed,
 					'modificator_image'	=> $modificator_image,
 					'custom_image'		=> !empty($image),
-					'actions'			=> $this->getEditActions($item, $current_user),
+					'actions'			=> $this->getEditActions($this->_item, $current_user),
 					'moredetails'		=> $this->getCreatorInformationAsArray($item),
 					'formal'			=> $entry
 				);
