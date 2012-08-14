@@ -526,7 +526,7 @@
 
 					$current_user = $this->_environment->getCurrentUserItem();
 					// apend to return
-					$entry['actions'] = $this->getEditActions($current_item, $current_user);
+					$entry['actions'] = $this->getEditActions($this->_item, $current_user);
 					$entry['creator'] = $current_item->getModificatorItem()->getFullname();
 					$entry['modification_date'] = getDateTimeInLang($current_item->getModificationDate());
 					$return[] = $entry;

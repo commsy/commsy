@@ -63,24 +63,11 @@
 					<div id="popup_tabs">
 						<div class="tab_navigation">
 							<a href="files_tab" class="pop_tab_active">___MATERIAL_FILES___</a>
-							{if $popup.is_owner == true}<a href="rights_tab" class="pop_tab">___COMMON_RIGHTS___</a>{/if}
-							{if isset($popup.buzzwords)}<a href="buzzwords_tab" class="pop_tab">___COMMON_BUZZWORDS___</a>{/if}
-							{if isset($popup.tags)}<a href="tags_tab" class="pop_tab">___COMMON_TAGS___</a>{/if}
-							<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
 							<div class="clear"> </div>
 						</div>
 						<div id="popup_tabcontent">
 
 							{include file="popups/include/files_tab_include_html.tpl"}
-
-							{include file="popups/include/rights_tab_include_html.tpl"}
-
-							{include file="popups/include/buzzwords_tab_include_html.tpl"}
-
-							{include file="popups/include/tags_tab_include_html.tpl"}
-
-							{include file="popups/include/netnavigation_tab_include_html.tpl"}
-
 						</div>
 
 
