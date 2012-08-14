@@ -17,6 +17,19 @@
 {/block}
 
 
+			{block name=widgets}
+			{if !$environment.is_guest}
+				<div id="tm_icons_bar">
+					<a href="#" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
+					{if ($environment.count_copies > 0)}
+						<span id="tm_clipboard_copies">{$environment.count_copies}</span>
+					{/if}
+					<div class="clear"></div>
+				</div>
+			{/if}
+			{/block}
+
+
 			{block name=breadcrumb}
 			<div id="tm_breadcrumb">
 				<a href="#" id="tm_bread_crumb">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
