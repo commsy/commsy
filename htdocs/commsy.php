@@ -472,6 +472,8 @@ if ( !empty($SID) ) {
          $typo3_session_id = $_COOKIE['ses_id'];
       }
       if ( !empty($typo3_session_id) ) {
+         $get_param_context_id = $environment->getCurrentContextId();
+         $environment->setCurrentContextId($environment->getCurrentPortalId());
          $portal = $environment->getCurrentPortalItem();
          $typo3web_list = $portal->getAuthSourceListTypo3WebEnabled();
          if ( $typo3web_list->isNotEmpty() ) {
@@ -502,8 +504,8 @@ if ( !empty($SID) ) {
                         $user_item->setUserID($new_account_data['user_id']);
                         $user_item->setFirstname($new_account_data['firstname']);
                         $user_item->setLastname($new_account_data['lastname']);
-                        if(!empty($new_account_data['email'])){
-                           $user_item->setEmail($new_account_data['email']);
+                        if(!empty($new_account_data['eMail'])){
+                           $user_item->setEmail($new_account_data['eMail']);
                         } else {
                            $server_item = $environment->getServerItem();
                            $email = $server_item->getDefaultSenderAddress();
@@ -517,6 +519,7 @@ if ( !empty($SID) ) {
                      }
                   }
                   $user_id = $user_data_array['user_id'];
+                  $environment->setCurrentContextId($get_param_context_id);
                   include_once('include/inc_make_session_for_user.php');
                   $session_manager = $environment->getSessionManager();
                   $session_manager->save($session);
@@ -526,8 +529,8 @@ if ( !empty($SID) ) {
                   $params = $environment->getCurrentParameterArray();
                   unset($params['ses_id']);
                   redirect( $environment->getCurrentContextID(),
-                            'home',
-                            'index',
+                            $environment->getCurrentModule(),
+                            $environment->getCurrentFunction(),
                             $params
                           );
                   unset($params);
