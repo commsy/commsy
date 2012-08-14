@@ -75,12 +75,26 @@
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			$portfolioItem = $portfolioManager->getItem($portfolioId);
 			
+			// gather tag information
+			$tags = $portfolioManager->getPortfolioTags($portfolioId);
+			$tagIdArray = array();
+			foreach ($tags as $tag) {
+				$tagIdArray[] = $tag["t_id"];
+			}
+			
+			// gather cell information
 			$cells = array();
+			
+			$linkManager = $this->_environment->getLinkItemManager();
+			$linkManager->reset();
+			$linkManager->setIDArrayLimit($tagIdArray);
+			$linkManager->select2();
+			$linkList = $linkManager->get();
 			
 			$return = array(
 				"title"			=> $portfolioItem->getTitle(),
 				"description"	=> $portfolioItem->getDescription(),
-				"tags"			=> $portfolioManager->getPortfolioTags($portfolioId),
+				"tags"			=> $tags,
 				"cells"			=> $cells
 			);
 			
