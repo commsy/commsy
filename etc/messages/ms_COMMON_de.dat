@@ -913,7 +913,7 @@ $message["COMMON_WORKFLOW_EMAIL_BODY_VALIDITY"]["de"] = "Im Raum &quot;%1&quot; 
 
 %3";
 $message["COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION"]["de"] = "%1 - Das Wiedervorlage-Datum eines Eintrags wurde erreicht.";
-$message["COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY"]["de"] = "%1 - Das G&uuml;ltigkeitsdatum eines Eintrags wurde erreicht.";
+$message["COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY"]["de"] = "%1 - Das Gültigkeitsdatum eines Eintrags wurde erreicht.";
 $message["COMMON_WORKFLOW_INDEX"]["de"] = "Status";
 $message["COMMON_WORKFLOW_READ_SINCE_MODIFICATION"]["de"] = "seither gelesen von";
 $message["COMMON_WORKFLOW_RESUBMISSION"]["de"] = "Wiedervorlage";
