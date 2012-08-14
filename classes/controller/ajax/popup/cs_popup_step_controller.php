@@ -129,57 +129,70 @@ class cs_popup_step_controller implements cs_rubric_popup_controller {
 
 		$translator = $this->_environment->getTranslationObject();
 		if($this->_popup_controller->checkFormData()) {
-						// Create new item
-						if ( !isset($step_item) ) {
-							$step_manager = $this->_environment->getStepManager();
-							$step_item = $step_manager->getNewItem();
-							$step_item->setContextID($this->_environment->getCurrentContextID());
-							$step_item->setCreatorItem($current_user);
-							$step_item->setCreationDate(getCurrentDateTimeInMySQL());
-							$step_item->setTodoID($additional["ref_iid"]);
+				// Create new item
+				if ( !isset($step_item) ) {
+					$step_manager = $this->_environment->getStepManager();
+					$step_item = $step_manager->getNewItem();
+					$step_item->setContextID($this->_environment->getCurrentContextID());
+					$step_item->setCreatorItem($current_user);
+					$step_item->setCreationDate(getCurrentDateTimeInMySQL());
+					$step_item->setTodoID($additional["ref_iid"]);
+				}
+
+				// set modificator and modification date
+				$step_item->setModificatorItem($current_user);
+				$step_item->setModificationDate(getCurrentDateTimeInMySQL());
+
+				// set attributes
+				if(isset($form_data["title"])) $step_item->setTitle($form_data["title"]);
+
+				if(isset($form_data["description"])) $step_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
+
+				if(isset($form_data["minutes"])) {
+					$minutes = $form_data["minutes"];
+					$minutes = str_replace(",", ".", $minutes);
+
+					if(isset($form_data["time_type"])) {
+						$step_item->setTimeType($form_data["time_type"]);
+
+						switch($form_data["time_type"]) {
+							case 2: $minutes = $minutes * 60; break;
+							case 3: $minutes = $minutes * 60 * 8; break;
 						}
-
-						// set modificator and modification date
-						$step_item->setModificatorItem($current_user);
-						$step_item->setModificationDate(getCurrentDateTimeInMySQL());
-
-						// set attributes
-						if(isset($form_data["title"])) $step_item->setTitle($form_data["title"]);
-
-						if(isset($form_data["description"])) $step_item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
-
-						if(isset($form_data["minutes"])) {
-							$minutes = $form_data["minutes"];
-							$minutes = str_replace(",", ".", $minutes);
-
-							if(isset($form_data["time_type"])) {
-								$step_item->setTimeType($form_data["time_type"]);
-
-								switch($form_data["time_type"]) {
-									case 2: $minutes = $minutes * 60; break;
-									case 3: $minutes = $minutes * 60 * 8; break;
-								}
-							}
-
-							$step_item->setMinutes($minutes);
-						}
-						// save
-						$step_item->save();
-
-						$todo_manager = $this->_environment->getTodoManager();
-						$todo_item = $todo_manager->getItem($additional["ref_iid"]);
-
-						$status = $todo_item->getStatus();
-						if($status == $translator->getMessage("TODO_NOT_STARTED")) {
-							$todo_item->setStatus(2);
-						}
-						$todo_item->setModificationDate(getCurrentDateTimeInMySQL());
-						$todo_item->save();
-
-						$this->_popup_controller->setSuccessfullItemIDReturn($todo_item->getItemID());
 					}
-			}
-    }
+
+					$step_item->setMinutes($minutes);
+				}
+
+			    // already attached files
+			    $file_ids = array();
+			    foreach($form_data as $key => $value) {
+			    	if(mb_substr($key, 0, 5) === 'file_') {
+			    		$file_ids[] = $value;
+			    	}
+			    }
+
+			    // this will handle already attached files as well as adding new files
+			    $this->_popup_controller->getUtils()->setFilesForItem($step_item, $file_ids, $form_data["files"]);
+
+
+				// save
+				$step_item->save();
+
+				$todo_manager = $this->_environment->getTodoManager();
+				$todo_item = $todo_manager->getItem($additional["ref_iid"]);
+
+				$status = $todo_item->getStatus();
+				if($status == $translator->getMessage("TODO_NOT_STARTED")) {
+					$todo_item->setStatus(2);
+				}
+				$todo_item->setModificationDate(getCurrentDateTimeInMySQL());
+				$todo_item->save();
+
+				$this->_popup_controller->setSuccessfullItemIDReturn($todo_item->getItemID());
+				}
+		}
+}
 
     public function cleanup_session($current_iid) {
 

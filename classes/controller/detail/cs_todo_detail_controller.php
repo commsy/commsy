@@ -414,8 +414,6 @@
 							}else{
 								$tmp_array['icon'] = '<a href="' . $file->getUrl() . '" target="blank">'.$file->getFileIcon(). '</a>';
 							}
-
-
 							$files[] = $tmp_array;
 
 							$file = $file_list->getNext();
