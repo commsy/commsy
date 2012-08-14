@@ -23,7 +23,7 @@
         <div id="hsk_main_navigation">
 
 
-		{assign var="typo_link" value="http://hsk-intranet.effective-webwork.de"}
+		{assign var="typo_link" value="http://hsk-intranet.hsk.intern"}
 			<ul>
 				<li><a id="mn_home" target="_self" href="{$typo_link}/index.php?id=2214"><span id="button_home">Home</span></a></li>
 				<li><a id="mn_emergency" onfocus="blurLink(this);" target="_self" href="{$typo_link}/index.php?id=2246"><span id="button_emergency">Notfallpl&auml;ne</span></a></li>
