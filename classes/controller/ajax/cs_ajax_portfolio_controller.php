@@ -75,6 +75,9 @@
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			$portfolioItem = $portfolioManager->getItem($portfolioId);
 			
+			$currentUser = $this->_environment->getCurrentUser();
+			$privateRoom = $currentUser->getOwnRoom();
+			
 			// gather tag information
 			$tags = $portfolioManager->getPortfolioTags($portfolioId);
 			$tagIdArray = array();
@@ -83,19 +86,62 @@
 			}
 			
 			// gather cell information
-			$cells = array();
-			
 			$linkManager = $this->_environment->getLinkItemManager();
-			$linkManager->reset();
-			$linkManager->setIDArrayLimit($tagIdArray);
-			$linkManager->select2();
-			$linkList = $linkManager->get();
+			$links = $linkManager->getALlLinksByTagIDArray($privateRoom->getItemID(), $tagIdArray);
+			
+			$cellInformation = array();
+			foreach ($links as $link) {
+				if ($link["first_item_type"] === CS_TAG_TYPE) {
+					$cellInformation[$link["first_item_id"]][$link["second_item_type"]][$link["second_item_id"]] = null;
+				} else if($link["second_item_type"] === CS_TAG_TYPE) {
+					$cellInformation[$link["second_item_id"]][$link["first_item_type"]][$link["first_item_id"]] = null;
+				}
+			}
+			
+			// create a rubric sorted array to group for manager
+			$rubricSorted = array();
+			foreach ($cellInformation as $tagId => $rubric) {
+				foreach ($rubric as $rubricName => $idArray) {
+					$rubricSorted[$rubricName]["tagId"] = $tagId;
+					
+					foreach ($idArray as $id => $null) {
+						$rubricSorted[$rubricName]["ids"][] = $id;
+					}
+				}
+			}
+			
+			// fetch items
+			foreach ($rubricSorted as $rubric => $detail) {
+				$idArray = $detail["ids"];
+				$tagId = $detail["tagId"];
+				
+				$manager = $this->_environment->getManager($rubric);
+				$manager->reset();
+				$manager->setIDArrayLimit($idArray);
+				$manager->setContextLimit($privateRoom->getItemID());
+				$manager->select();
+				
+				$itemList = $manager->get();
+				$item = $itemList->getFirst();
+				
+				while ($item) {
+					$itemInformation = array(
+						"itemId"	=> $item->getItemID(),
+						"title"		=> $item->getTitle()
+					);
+					
+					$cellInformation[$tagId][$rubric][$item->getItemID()] = $itemInformation;
+					
+					$item = $itemList->getNext();
+				}
+			}
 			
 			$return = array(
-				"title"			=> $portfolioItem->getTitle(),
-				"description"	=> $portfolioItem->getDescription(),
-				"tags"			=> $tags,
-				"cells"			=> $cells
+				"title"				=> $portfolioItem->getTitle(),
+				"description"		=> $portfolioItem->getDescription(),
+				"tags"				=> $tags,
+				"cells"				=> $cellInformation,
+				"numAnnotations"	=> $portfolioManager->getAnnotationCountForPortfolio($portfolioId)
 			);
 			
 			$this->setSuccessfullDataReturn($return);

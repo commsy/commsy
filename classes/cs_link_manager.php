@@ -1214,7 +1214,7 @@ class cs_link_manager extends cs_manager {
       return parent::_buildItem($db_array);
    }
 
-   public function getItemByFirstAndSecondID ($first_id,$second_id) {
+	public function getItemByFirstAndSecondID ($first_id,$second_id) {
       $item = NULL;
       if ( !empty($first_id)
            and !empty($second_id)
@@ -1237,6 +1237,36 @@ class cs_link_manager extends cs_manager {
          }
       }
       return $item;
+   }
+   
+   public function getALlLinksByTagIDArray ($contextId, $idArray) {
+   	if ( !empty($idArray)
+   	) {
+   		$inString = "'" . implode("', '", $idArray) . "'";
+   		
+   		$query = "
+   			SELECT
+   				first_item_id,
+   				first_item_type,
+   				second_item_id,
+   				second_item_type
+   			FROM
+   				" . $this->addDatabasePrefix($this->_db_table) . "
+   			WHERE
+   				" . $this->addDatabasePrefix($this->_db_table) . ".context_id = " . encode(AS_DB, $contextId) . " AND
+   				(
+   					" . $this->addDatabasePrefix($this->_db_table) . ".first_item_id IN (" . $inString . ") OR
+   					" . $this->addDatabasePrefix($this->_db_table) . ".second_item_id IN (" . $inString . ")
+   				);
+		";
+   		$result = $this->_db_connector->performQuery($query);
+   		if ( !isset($result) ) {
+   			include_once('functions/error_functions.php');
+   			trigger_error('Problems selecting items',E_USER_WARNING);
+   		} else {
+   			return $result;
+   		}
+   	}
    }
 }
 ?>

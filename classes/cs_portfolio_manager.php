@@ -334,6 +334,28 @@ class cs_portfolio_manager extends cs_manager {
   	
   	return $userList;
   }
+  
+  function getAnnotationCountForPortfolio($portfolioId) {
+  	$query = "
+  		SELECT
+  			COUNT(a_id),
+  			`row`,
+  			`column`
+  		FROM
+  			" . $this->addDatabasePrefix("annotation_portfolio") . "
+  		WHERE
+  			p_id = '" . encode(AS_DB, $portfolioId) . "'
+  		GROUP BY
+  			`row`, `column`;
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio annotation count.',E_USER_WARNING);
+  	}
+  	
+  	return $result;
+  }
 
 /****************************************/
 
