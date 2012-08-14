@@ -27,13 +27,17 @@ define([	"dojo/_base/declare",
 			toolbar: [
 			    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'SpecialChar', '-', 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', '-', 'TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Preview']
 			    ,'/',
-			    ['Format', 'Font', 'FontSize', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley','-', 'About']
+			    ['Format', 'Font', 'FontSize', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley','-', 'Image', 'About']
 			]
 		},
 
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
+			this.options.filebrowserUploadUrl = 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_upload&action=savefile';
+			this.options.filebrowserBrowseUrl = 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_browse&action=getHTML';
+			this.options.filebrowserWindowWidth = '100';
+			this.options.filebrowserWindowHeight = '50';
 		},
 
 		create: function(node) {
