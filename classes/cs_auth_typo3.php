@@ -233,7 +233,15 @@ class cs_auth_typo3 extends cs_auth_manager {
    public function validateSessionID ( $ses_id ) {
       $retour = array();
       $url = $this->_server.'&cmd=userInfo&ses_id='.$ses_id;
-      $xml = file_get_contents($url);
+      
+      $curl = curl_init();
+      curl_setopt($curl, CURLOPT_URL, $url);
+      curl_setopt($curl, CURLOPT_HEADER, 0);
+      curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+      
+      $xml = curl_exec($curl);
+      curl_close($curl);
+      
       if ( !empty($xml) ) {
          if ( strstr($xml,'sessionId') ) {
             $pos1 = mb_strpos($xml,'<userName>');
