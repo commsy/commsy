@@ -7,6 +7,11 @@
  {/block}
 
 
+
+
+
+			{block name=header}
+				{block name=warning}{/block}
 {block name=top_menu}
 	<div id="top_menu">
 		<div id="tm_wrapper_outer">
@@ -70,12 +75,6 @@
 	</div>
 	</div>
 {/block}
-
-
-
-			{block name=header}
-				{block name=warning}{/block}
-				{block name=top_menu}{/block}
 		    	{block name=room_overlay}{/block}
 
          <div id="hsk_header">
