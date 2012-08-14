@@ -504,8 +504,8 @@ if ( !empty($SID) ) {
                         $user_item->setUserID($new_account_data['user_id']);
                         $user_item->setFirstname($new_account_data['firstname']);
                         $user_item->setLastname($new_account_data['lastname']);
-                        if(!empty($new_account_data['eMail'])){
-                           $user_item->setEmail($new_account_data['eMail']);
+                        if(!empty($new_account_data['email'])){
+                           $user_item->setEmail($new_account_data['email']);
                         } else {
                            $server_item = $environment->getServerItem();
                            $email = $server_item->getDefaultSenderAddress();
