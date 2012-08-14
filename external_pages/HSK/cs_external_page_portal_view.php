@@ -3054,8 +3054,8 @@ class cs_external_page_portal_view extends cs_page_view {
     #global $c_pmwiki_path_url;
     #$wiki_url = $c_pmwiki_path_url;
     #$wiki_url .= '/wikis/'.$current_portal->getItemID().'/index.php?commsy_session_id='.$sid.'&n=';
-    $wiki_url = 'http://web.schulcommsy.de/index.php?commsy_session_id='.$sid.'&n=';
-    $typo_link = 'http://hsk-intranet.effective-webwork.de';
+    #$wiki_url = 'http://web.schulcommsy.de/index.php?commsy_session_id='.$sid.'&n=';
+    $typo_link = 'http://hsk-intranet.hsk.intern';
 
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
