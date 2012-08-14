@@ -25,6 +25,10 @@
 mb_internal_encoding('UTF-8');
 
 global $environment;
+global $file;
+global $c_commsy_cron_split_scripts;
+global $c_workflow;
+global $c_commsy_cron_path;
 
 function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
    global $environment;
