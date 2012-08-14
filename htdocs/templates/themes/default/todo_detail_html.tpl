@@ -194,9 +194,13 @@
 				<div class="fade_in_ground_actions">
 					{if $step.actions.edit}
 						<a id="action_edit" class="open_popup" data-custom="iid: {$step.item_id}, module: 'step', ref_iid: {$detail.content.item_id}" href="#">___COMMON_EDIT_ITEM___</a> |
+					{else}
+						<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 					{/if}
 					{if $step.actions.delete}
 						<a class="open_popup" data-custom="iid: {$step.item_id}, module: 'delete', delType: 'step'" href="#">___COMMON_DELETE_ITEM___</a>
+					{else}
+						<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span>
 					{/if}
 				</div>
 			</div>
@@ -313,21 +317,21 @@
 									<option value="2">___TODO_TIME_HOURS___</option>
 									<option value="3">___TODO_TIME_DAYS___</option>
 								</select>
-	
+
 								<div class="editor_content">
 									<div id="ckeditor_step" class="ckeditor"></div>
 								</div>
-	
+
 								{*
 								<div id="files_finished"></div>
-	
+
 								<div class="uploader">
 								   <input class="fileSelector"></input>
-	
+
 								   <div class="fileList"></div>
 								</div>
 								*}
-	
+
 								<input class="popup_button" style="margin-bottom:10px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
 							</div>
 						</form>

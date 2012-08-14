@@ -220,9 +220,13 @@
 				<div class="fade_in_ground_actions">
 					{if $section.actions.edit}
 						<a class="open_popup" data-custom="module: 'section', iid: '{$section.iid}', ref_iid: {$detail.item_id}{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
+					{else}
+						<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 					{/if}
 					{if $section.actions.delete}
 						<a class="open_popup" data-custom="iid: {$section.iid}, module: 'delete', delType: 'section'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a>
+					{else}
+						<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span>
 					{/if}
 				</div>
 			</div>
