@@ -70,6 +70,8 @@ define([	"dojo/_base/declare",
 		update: function() {
 			this.AJAXRequest("portfolio", "getPortfolio", { portfolioId: this.portfolioId },
 					Lang.hitch(this, function(response) {
+						this.response = response;
+						
 						this.descriptionNode.innerHTML = response.description;
 						
 						// separate row and column nodes
@@ -129,33 +131,58 @@ define([	"dojo/_base/declare",
 							
 								var tdNode = DomConstruct.create("td", { }, trNode, "last");
 								
-									var divContentNode = DomConstruct.create("div", { className: "ep_cell_content" }, tdNode, "last");
-										var aContentNode = DomConstruct.create("a", { }, divContentNode, "last");
-										
-										this.insertHTMLForTableCell(divContentNode, (i % columnTags.length) + 1, parseInt(i / columnTags.length) + 1);
-									
-									var divActionNode = DomConstruct.create("div", { className: "ep_cell_actions" }, tdNode, "last");
-										DomConstruct.create("p", { className: "ep_item_count", innerHTML: 123 }, divActionNode, "last");
-										DomConstruct.create("p", { className: "ep_item_comment", innerHTML: 123 }, divActionNode, "last");
-										
-										var aEditNode = DomConstruct.create("a", {}, divActionNode, "last");
-											DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
-										
-										DomConstruct.create("div", { className: "clear" }, divActionNode, "last");
+									this.insertHTMLForTableCell(tdNode, (i % columnTags.length) + 1, parseInt(i / columnTags.length) + 1);
 						}
 					})
 				);
 		},
 		
 		insertHTMLForTableCell: function(node, column, row) {
-			console.log(column);
-			console.log(row);
+			// first, get the tag id for this cell
+			var lookupColumn = column - 1;
+			var lookupRow = row - 1;
 			
-			/*
-			 * <span>Lorem ipsum dolor nato ...</span> <!-- Text bitte so abschneiden, dass er in eine Zeile passt -->
-            <span>Aenean massa cum sociis ...</span>
-            <span>Phasellus viverra nulla ut ...</span>
-			 */
+			var filteredArray = dojo.filter(this.response.tags, Lang.hitch(this, function(tag, index, arr) {
+				return lookupColumn == tag.column && lookupRow == tag.row;
+			}));
+			var filteredEntry = filteredArray[0];
+			
+			// create content div
+			var divContentNode = DomConstruct.create("div", { className: "ep_cell_content" }, node, "last");
+			
+			var numItems = 0;
+			var numComments = 0;
+			
+			// check if there is content for this cell
+			if (filteredEntry) {
+				// insert content
+				var aContentNode = DomConstruct.create("a", { }, divContentNode, "last");
+				
+				// insert items
+				var tagId = filteredEntry.t_id;
+				numItems = this.response.links[tagId].length;
+				dojo.forEach(this.response.links[tagId], Lang.hitch(this, function(item, index, arr) {
+					
+					// only three
+					if (index < 3) {
+						var spanNode = DomConstruct.create("span", {
+							innerHTML:		item.title.substring(0, 14)
+						}, aContentNode, "last");
+					}
+				}));
+			}
+			
+			// create action content
+			var divActionNode = DomConstruct.create("div", { className: "ep_cell_actions" }, node, "last");
+			
+				if (numItems > 0) DomConstruct.create("p", { className: "ep_item_count", innerHTML: numItems }, divActionNode, "last");
+				
+				if (numComments > 0) DomConstruct.create("p", { className: "ep_item_comment", innerHTML: 123 }, divActionNode, "last");
+				
+				var aEditNode = DomConstruct.create("a", {}, divActionNode, "last");
+					DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+				
+				DomConstruct.create("div", { className: "clear" }, divActionNode, "last");
 		},
 		
 		startup: function() {

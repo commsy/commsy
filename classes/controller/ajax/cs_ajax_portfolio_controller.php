@@ -115,10 +115,11 @@
 					
 					while ($item) {
 						$itemInformation = array(
+							"itemId"	=> $item->getItemId(),
 							"title"		=> $item->getTitle()
 						);
 						
-						$linkArray[$tagId][$item->getItemId()] = $itemInformation;
+						$linkArray[$tagId][] = $itemInformation;
 						
 						$item = $itemList->getNext();
 					}
@@ -147,24 +148,37 @@
 			
 			$portfolioTags = $portfolioManager->getPortfolioTags($portfolioId);
 			
-			// get new index according to position
-			$index = 1;
-			foreach($portfolioTags as $portfolioTag) {
-				if ($portfolioTag["column"] === "0") {
-					// this is a row tag
-					
-					if ($position === "row") $index++;
-				} else {
-					// this is a column tag
-					
-					if ($position === "column") $index++;
+			// check if this tag already exists
+			$double = false;
+			foreach ($portfolioTags as $tag) {
+				if ($tag["t_id"] == $tagId) {
+					$double = true;
+					break;
 				}
 			}
-			
-			$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index);
-			
-			$this->setSuccessfullDataReturn(array());
-			echo $this->_return;
+			if ($double) {
+				$this->setErrorReturn("115", "tag already exists", array());
+				echo $this->_return;
+			} else {
+				// get new index according to position
+				$index = 1;
+				foreach($portfolioTags as $portfolioTag) {
+					if ($portfolioTag["column"] === "0") {
+						// this is a row tag
+							
+						if ($position === "row") $index++;
+					} else {
+						// this is a column tag
+							
+						if ($position === "column") $index++;
+					}
+				}
+					
+				$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index);
+					
+				$this->setSuccessfullDataReturn(array());
+				echo $this->_return;
+			}
 		}
 
 		/*

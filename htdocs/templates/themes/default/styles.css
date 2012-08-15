@@ -4478,16 +4478,24 @@ Portfolio
     background: url(img/ep_hor_head_bg.jpg) repeat-x left bottom;
     }
 
+#epColumnAdd {
+	height: 54px;
+}
+
 #ep_table th img,
 #epColumnAdd img {
     padding-bottom: 10px;
     }
 
-#ep_table th strong,
-#epColumnAdd strong {
+#ep_table th strong {
     display: block;
     padding: 10px 10px 8px 10px;
     }
+
+#epColumnAdd strong {
+	display: block;
+    padding: 0px 0px 0px 0px;
+}
 
 .ep_edit_head {
     float: right;
@@ -4574,7 +4582,8 @@ Portfolio
     }
 
 .ep_vert_col_cell {
-    margin-bottom: 10px;
+    /*margin-bottom: 10px;*/
+    padding-bottom: 10px;
     }
 
 .ep_vert_edit {
@@ -4595,6 +4604,10 @@ Portfolio
     display: block;
     padding: 10px 10px 0px 0px;
     }
+
+#epRowAdd strong {
+	padding: 0px 0px 0px 0px !important;
+}
 
 .ep_vert_col_title strong {
     display: block;

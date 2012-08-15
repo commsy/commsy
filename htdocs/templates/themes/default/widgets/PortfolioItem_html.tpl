@@ -21,7 +21,11 @@
             
             <div>
             	{* add row *}
-            	<div class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
+            	<div id="epRowAdd" class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
+            		<a class="ep_vert_edit">
+            			<img src="{$basic.tpl_path}img/ep_vert_edit.jpg" alt=""/>
+            		</a>
+            		
 	                <div class="ep_vert_col_title">
 	                    <a href="" class="tagEdit" data-custom="tagId: 'NEW', position: 'row', module: 'tagPortfolio'"><strong>+</strong></a>
 	                </div>
