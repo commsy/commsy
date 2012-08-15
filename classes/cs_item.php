@@ -525,7 +525,7 @@ class cs_item {
     */
    function getModificationDate () {
       $date = $this->_getValue('modification_date');
-      if (is_null($date)) {
+      if (is_null($date) or $date=='0000-00-00 00:00:00') {
          $date = $this->_getValue('creation_date');
       }
       return $date;
