@@ -161,15 +161,18 @@ define([	"dojo/_base/declare",
 				// insert items
 				var tagId = filteredEntry.t_id;
 				numItems = this.response.links[tagId].length;
-				dojo.forEach(this.response.links[tagId], Lang.hitch(this, function(item, index, arr) {
-					
-					// only three
-					if (index < 3) {
-						var spanNode = DomConstruct.create("span", {
-							innerHTML:		item.title.substring(0, 14)
-						}, aContentNode, "last");
-					}
-				}));
+				
+				if(this.response.links[tagId]) {
+					dojo.forEach(this.response.links[tagId], Lang.hitch(this, function(item, index, arr) {
+						
+						// only three
+						if (index < 3) {
+							var spanNode = DomConstruct.create("span", {
+								innerHTML:		item.title.substring(0, 14)
+							}, aContentNode, "last");
+						}
+					}));
+				}
 			}
 			
 			// create action content
