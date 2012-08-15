@@ -163,6 +163,11 @@
 			$item_id = $this->_data['item_id'];
 			$link_id = $this->_data['link_id'];
 			$checked = $this->_data['checked'];
+			$contextId = $this->_data["contextId"];
+			
+			if ($contextId !== null) {
+				$this->_environment->changeContextToPrivateRoom($contextId);
+			}
 		
 			// get item
 			$item_manager = $this->_environment->getItemManager();
@@ -269,7 +274,16 @@
 				$return['linked_item'] = $entry;
 			} else {
 				// remove
-				if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
+				$tmp_array = array();
+				foreach ($selected_ids as $id) {
+					if ($link_id != $id) {
+						$tmp_array[] = $id;
+					}
+				}
+				
+				$selected_ids = $tmp_array;
+				
+				//if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
 			}
 		
 			// update item

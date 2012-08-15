@@ -31,6 +31,12 @@ define([	"dojo/_base/declare",
 			 * Initialization is done here
 			 ************************************************************************************/
 			this.itemId = this.from_php.ownRoom.id;
+			
+			// subscribe
+			Topic.subscribe("updatePortfolios", Lang.hitch(this, function(object) {
+				// refresh portfolios
+				this.loadPortfolios();
+			}));
 		},
 		
 		startup: function() {
@@ -46,6 +52,25 @@ define([	"dojo/_base/declare",
 				this.onTabChanged(name, oldWidget, newWidget);
 			}));
 			
+			this.loadPortfolios();
+			
+			// register create popup
+			require(["commsy/popups/ClickPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(this.createNewPortfolioNode, { iid: "NEW", module: "portfolioItem" });
+			}));
+		},
+		
+		loadPortfolios: function() {
+			// reset tabs
+			var children = this.myPortfolioTabNode.getChildren();
+			dojo.forEach(children, Lang.hitch(this, function(child, index, arr) {
+				if (child.baseClass === "CommSyPortfolioItemWidget") {
+					this.myPortfolioTabNode.removeChild(child);
+					child.destroyRecursive();
+				}
+			}));
+			
 			// load portfolios
 			this.AJAXRequest("portfolio", "getPortfolios", {},
 				Lang.hitch(this, function(response) {
@@ -58,12 +83,6 @@ define([	"dojo/_base/declare",
 					}));
 				})
 			);
-			
-			// register create popup
-			require(["commsy/popups/ClickPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
-				var handler = new ClickPopup();
-				handler.init(this.createNewPortfolioNode, { iid: "NEW", module: "portfolioItem" });
-			}));
 		},
 		
 		addPortfolio: function(portfolio, tab, select) {

@@ -262,6 +262,9 @@ class cs_portfolio_manager extends cs_manager {
   			tag_portfolio.t_id = tag.item_id
   		WHERE
   			tag_portfolio.p_id = '" . encode(AS_DB, $portfolioId) . "'
+  		ORDER BY
+  			tag_portfolio.`row`,
+  			tag_portfolio.`column`
   	";
   	$result = $this->_db_connector->performQuery($query);
   	 
@@ -299,6 +302,52 @@ class cs_portfolio_manager extends cs_manager {
   	$result = $this->_db_connector->performQuery($query);
   	if ( !isset($result) ) {
   		include_once('functions/error_functions.php');trigger_error('Problems storing tag for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
+  function replaceTagForPortfolio($portfolioId, $tagId, $oldTagId) {
+  	$query = "
+  		UPDATE
+  			" . $this->addDatabasePrefix("tag_portfolio") . "
+  		SET
+  			t_id = '" . encode(AS_DB, $tagId) . "'
+  		WHERE
+  			t_id = '" . encode(AS_DB, $oldTagId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems replacing tag for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
+  function deletePortfolioTag($portfolioId, $tagId) {
+  	$query = "
+  		DELETE FROM
+  			" . $this->addDatabasePrefix("tag_portfolio") . "
+  		WHERE
+  			p_id = '" . encode(AS_DB, $portfolioId) . "' AND
+  			t_id = '" . encode(AS_DB, $tagId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems deleting tag for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
+  function updatePortfolioTagPosition($portfolioId, $tagId, $row, $column) {
+  	$query = "
+  		UPDATE
+  			" . $this->addDatabasePrefix("tag_portfolio") . "
+  		SET
+  			`row` = '" . encode(AS_DB, $row) . "',
+  			`column` = '" . encode(AS_DB, $column) . "'
+  		WHERE
+  			p_id = '" . encode(AS_DB, $portfolioId) . "' AND
+  			t_id = '" . encode(AS_DB, $tagId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems updating tag position for portfolio.',E_USER_WARNING);
   	}
   }
   

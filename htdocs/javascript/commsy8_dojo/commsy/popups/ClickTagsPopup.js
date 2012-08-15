@@ -73,6 +73,7 @@ define([	"dojo/_base/declare",
 				if (firstAttachTagNode) {
 					var tagId = DomAttr.get(firstAttachTagNode, "id");
 					this.list.requestData.item_id = tagId;
+					this.list.requestData.contextId = this.contextId;
 				}
 			}));
 			
@@ -85,6 +86,7 @@ define([	"dojo/_base/declare",
 					
 					// update reference id of list and perform a new request
 					this.list.requestData.item_id = tagId;
+					this.list.requestData.contextId = this.contextId;
 					this.list.performRequest();
 					
 					// update header

@@ -483,7 +483,15 @@ if ( !empty($_POST['itemlist'])
 				$selected_ids = array_unique($selected_ids);
 			} else {
 				// remove
-				if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
+				$tmp_array = array();
+				foreach ($selected_ids as $id) {
+					if ($link_id != $id) {
+						$tmp_array[] = $id;
+					}
+				}
+				
+				$selected_ids = $tmp_array;
+				//if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
 			}
 			
 			// save
@@ -502,6 +510,11 @@ if ( !empty($_POST['itemlist'])
 			if($this->accessGranted()) {
 				$buzzword_id = $this->_data['buzzword_id'];
 				$buzzword = $this->_data['buzzword'];
+				$contextId = $this->_data["contextId"];
+				
+				if ($contextId !== null) {
+					$this->_environment->changeContextToPrivateRoom($contextId);
+				}
 			
 				$buzzword_manager = $this->_environment->getLabelManager();
 				$buzzword_item = $buzzword_manager->getItem($buzzword_id);

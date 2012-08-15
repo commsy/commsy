@@ -171,6 +171,14 @@ define([	"dojo/_base/declare",
 				this.updateTagRestrictions();
 
 				this.updateList();
+			} else {
+				// if it is, replace the old
+				this.restrictions.tags[0] = { id: tagId, name: tagName };
+				
+				// update restriction list
+				this.updateTagRestrictions();
+
+				this.updateList();
 			}
 		},
 

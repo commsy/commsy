@@ -41,6 +41,7 @@ define([	"dojo/_base/declare",
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
+			Topic.publish("updatePortfolios", { itemId: item_id });
 			this.close();
 		}
 	});

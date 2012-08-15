@@ -138,46 +138,113 @@
 			echo $this->_return;
 		}
 		
-		public function actionAddTagToPortfolio() {
+		public function actionDeletePortfolioTag() {
+			// get data
+			$portfolioId = $this->_data["portfolioId"];
+			$tagId = $this->_data["tagId"];
+			
+			$portfolioManager = $this->_environment->getPortfolioManager();
+				
+			$portfolioTags = $portfolioManager->getPortfolioTags($portfolioId);
+			
+			// get the tag we want to delete
+			$deleteTag = null;
+			foreach ($portfolioTags as $portfolioTag) {
+				if ($portfolioTag["t_id"] == $tagId) {
+					$deleteTag = $portfolioTag;
+					break;
+				}
+			}
+			
+			// determe if this is a row or column tag
+			$isRow = false;
+			if ($deleteTag["row"] > 0) $isRow = true;
+			
+			// delete the tag
+			$portfolioManager->deletePortfolioTag($portfolioId, $tagId);
+			
+			// if there are rows or column after this tag, we need to decrease their positions
+			foreach ($portfolioTags as $portfolioTag) {
+				if ($isRow) {
+					if ($portfolioTag["row"] > $deleteTag["row"]) {
+						$portfolioManager->updatePortfolioTagPosition($portfolioId, $portfolioTag["t_id"], $portfolioTag["row"] - 1, 0);
+					}
+				} else {
+					if ($portfolioTag["column"] > $deleteTag["column"]) {
+						$portfolioManager->updatePortfolioTagPosition($portfolioId, $portfolioTag["t_id"], 0, $portfolioTag["column"] - 1);
+					}
+				}
+			}
+			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
+		public function actionUpdatePortfolioTag() {
 			// get data
 			$portfolioId = $this->_data["portfolioId"];
 			$tagId = $this->_data["tagId"];
 			$position = $this->_data["position"];
+			$oldTagId = $this->_data["oldTagId"];
 			
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			
 			$portfolioTags = $portfolioManager->getPortfolioTags($portfolioId);
 			
-			// check if this tag already exists
-			$double = false;
-			foreach ($portfolioTags as $tag) {
-				if ($tag["t_id"] == $tagId) {
-					$double = true;
-					break;
-				}
-			}
-			if ($double) {
-				$this->setErrorReturn("115", "tag already exists", array());
-				echo $this->_return;
-			} else {
-				// get new index according to position
-				$index = 1;
-				foreach($portfolioTags as $portfolioTag) {
-					if ($portfolioTag["column"] === "0") {
-						// this is a row tag
-							
-						if ($position === "row") $index++;
-					} else {
-						// this is a column tag
-							
-						if ($position === "column") $index++;
+			if ($oldTagId !== null && $oldTagId !== "NEW") {
+				// replace the old tag
+				
+				// check if this tag already exists
+				$double = false;
+				foreach ($portfolioTags as $tag) {
+					if ($tag["t_id"] == $tagId) {
+						$double = true;
+						break;
 					}
 				}
+				if ($double) {
+					$this->setErrorReturn("115", "tag already exists", array());
+					echo $this->_return;
+				} else {
+					$portfolioManager->replaceTagForPortfolio($portfolioId, $tagId, $oldTagId);
 					
-				$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index);
-					
-				$this->setSuccessfullDataReturn(array());
-				echo $this->_return;
+					$this->setSuccessfullDataReturn(array());
+					echo $this->_return;
+				}
+			} else {
+				// add tag
+				
+				// check if this tag already exists
+				$double = false;
+				foreach ($portfolioTags as $tag) {
+					if ($tag["t_id"] == $tagId) {
+						$double = true;
+						break;
+					}
+				}
+				if ($double) {
+					$this->setErrorReturn("115", "tag already exists", array());
+					echo $this->_return;
+				} else {
+					// get new index according to position
+					$index = 1;
+					foreach($portfolioTags as $portfolioTag) {
+						if ($portfolioTag["column"] === "0") {
+							// this is a row tag
+								
+							if ($position === "row") $index++;
+						} else {
+							// this is a column tag
+								
+							if ($position === "column") $index++;
+						}
+					}
+						
+					$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index);
+						
+					$this->setSuccessfullDataReturn(array());
+					echo $this->_return;
+				}
 			}
 		}
 

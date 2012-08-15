@@ -48,10 +48,11 @@ define([	"dojo/_base/declare",
 		},
 		
 		onTagSelected: function(itemId) {
-			this.AJAXRequest("portfolio", "addTagToPortfolio", {
+			this.AJAXRequest("portfolio", "updatePortfolioTag", {
 				tagId:			itemId,
 				portfolioId:	this.portfolioId,
-				position:		this.position
+				position:		this.position,
+				oldTagId:		this.tagId
 			}, Lang.hitch(this, function(response) {
 				Topic.publish("updatePortfolio", { portfolioId: this.portfolioId });
 				this.close();
@@ -59,6 +60,15 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmit: function(customObject) {
+			if (customObject.action === "delete") {
+				this.AJAXRequest("portfolio", "deletePortfolioTag", {
+					tagId:			this.tagId,
+					portfolioId:	this.portfolioId,
+				}, Lang.hitch(this, function(response) {
+					Topic.publish("updatePortfolio", { portfolioId: this.portfolioId });
+					this.close();
+				}));
+			}
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {

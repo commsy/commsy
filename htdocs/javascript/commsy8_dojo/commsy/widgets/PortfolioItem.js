@@ -96,12 +96,27 @@ define([	"dojo/_base/declare",
 									DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_vert_edit.jpg" }, aNode, "last");
 								
 								var divTitleNode = DomConstruct.create("div", { className: "ep_vert_col_title" }, divNode, "last");
-									var aEditNode = DomConstruct.create("a", { }, divTitleNode, "last");
+									var aEditNode = DomConstruct.create("a", {
+										href:			"#",
+										"data-custom":	"tagId: '" + rowTag.t_id + "', position: 'row', module: 'tagPortfolio'"
+									}, divTitleNode, "last");
+									
 										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
 									
 									DomConstruct.create("strong", { innerHTML: rowTag.title }, divTitleNode, "last");
 								
 								DomConstruct.create("div", { className: "clear" }, divNode, "last");
+							
+							// register edit
+							require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
+								var handler = new ClickPopup();
+								var customObject = this.getAttrAsObject(aEditNode, "data-custom");
+								customObject.portfolioId = this.portfolioId;
+								
+								if (customObject) {
+									handler.init(aEditNode, customObject);
+								}
+							}));
 						}));
 						
 						DomConstruct.empty(this.tableNode);
@@ -115,10 +130,26 @@ define([	"dojo/_base/declare",
 									var aNode = DomConstruct.create("a", { }, thNode, "last");
 										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_hor_edit.jpg" }, aNode, "last");
 									
-									var aEditNode = DomConstruct.create("a", { className: "ep_edit_head" }, thNode, "last");
+									var aEditNode = DomConstruct.create("a", {
+											className: "ep_edit_head",
+											href:			"#",
+											"data-custom":	"tagId: '" + columnTag.t_id + "', position: 'row', module: 'tagPortfolio'"
+										}, thNode, "last");
+										
 										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
 									
-									DomConstruct.create("strong", { innerHTML: columnTag.title }, thNode, "last");
+									DomConstruct.create("strong", { innerHTML: columnTag.title.substring(0, 14) }, thNode, "last");
+								
+								// register edit
+								require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
+									var handler = new ClickPopup();
+									var customObject = this.getAttrAsObject(aEditNode, "data-custom");
+									customObject.portfolioId = this.portfolioId;
+									
+									if (customObject) {
+										handler.init(aEditNode, customObject);
+									}
+								}));
 							}));
 						
 						// create html for table cells
@@ -138,39 +169,48 @@ define([	"dojo/_base/declare",
 		},
 		
 		insertHTMLForTableCell: function(node, column, row) {
-			// first, get the tag id for this cell
-			var lookupColumn = column - 1;
-			var lookupRow = row - 1;
-			
 			var filteredArray = dojo.filter(this.response.tags, Lang.hitch(this, function(tag, index, arr) {
-				return lookupColumn == tag.column && lookupRow == tag.row;
+				return (tag.column == column && tag.row == 0) || (tag.row == row && tag.column == 0)
 			}));
-			var filteredEntry = filteredArray[0];
 			
+			// extract the tag ids an item has to match
+			var tagIdsToMatch = [];
+			dojo.forEach(filteredArray, Lang.hitch(this, function(tag, index, arr) {
+				tagIdsToMatch.push(tag.t_id);
+			}));
+
 			// create content div
 			var divContentNode = DomConstruct.create("div", { className: "ep_cell_content" }, node, "last");
 			
 			var numItems = 0;
 			var numComments = 0;
 			
-			// check if there is content for this cell
-			if (filteredEntry) {
+			// check if there is content for this cell - because this is a matrix, tagIDsToMatch needs to have two entries
+			if (tagIdsToMatch.length == 2) {
 				// insert content
 				var aContentNode = DomConstruct.create("a", { }, divContentNode, "last");
 				
-				// insert items
-				var tagId = filteredEntry.t_id;
+				var tagIdOne = tagIdsToMatch[0];
+				var tagIdTwo = tagIdsToMatch[1];
 				
-				if(this.response.links[tagId]) {
-					numItems = this.response.links[tagId].length;
-					
-					dojo.forEach(this.response.links[tagId], Lang.hitch(this, function(item, index, arr) {
+				// check for items matching
+				if(this.response.links[tagIdOne] && this.response.links[tagIdTwo]) {
+					// go through all item ids in first tag
+					dojo.forEach(this.response.links[tagIdOne], Lang.hitch(this, function(item, index, arr) {
+						var itemId = item.itemId;
 						
-						// only three
-						if (index < 3) {
-							var spanNode = DomConstruct.create("span", {
-								innerHTML:		item.title.substring(0, 14)
-							}, aContentNode, "last");
+						// check if the second tag also contains this id
+						var match = dojo.some(this.response.links[tagIdTwo], Lang.hitch(this, function(item2, index2, arr2) {
+							return item2.itemId == itemId;
+						}));
+						
+						if (match) {
+							// only three
+							if (index < 3) {
+								var spanNode = DomConstruct.create("span", {
+									innerHTML:		item.title.substring(0, 20)
+								}, aContentNode, "last");
+							};
 						}
 					}));
 				}

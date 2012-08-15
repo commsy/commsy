@@ -1245,7 +1245,7 @@ class cs_link_manager extends cs_manager {
    		$inString = "'" . implode("', '", $idArray) . "'";
    		
    		$query = "
-   			SELECT DISTINCT
+   			SELECT
    				first_item_id,
    				first_item_type,
    				second_item_id,
@@ -1254,6 +1254,7 @@ class cs_link_manager extends cs_manager {
    				" . $this->addDatabasePrefix($this->_db_table) . "
    			WHERE
    				" . $this->addDatabasePrefix($this->_db_table) . ".context_id = " . encode(AS_DB, $contextId) . " AND
+   				" . $this->addDatabasePrefix($this->_db_table) . ".deletion_date IS NULL AND
    				(
    					" . $this->addDatabasePrefix($this->_db_table) . ".first_item_id IN (" . $inString . ") OR
    					" . $this->addDatabasePrefix($this->_db_table) . ".second_item_id IN (" . $inString . ")
