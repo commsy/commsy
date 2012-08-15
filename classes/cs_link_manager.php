@@ -1245,7 +1245,7 @@ class cs_link_manager extends cs_manager {
    		$inString = "'" . implode("', '", $idArray) . "'";
    		
    		$query = "
-   			SELECT
+   			SELECT DISTINCT
    				first_item_id,
    				first_item_type,
    				second_item_id,

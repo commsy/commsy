@@ -131,11 +131,8 @@ define([	"dojo/_base/declare",
 								
 									var divContentNode = DomConstruct.create("div", { className: "ep_cell_content" }, tdNode, "last");
 										var aContentNode = DomConstruct.create("a", { }, divContentNode, "last");
-										/*
-										 * <span>Lorem ipsum dolor nato ...</span> <!-- Text bitte so abschneiden, dass er in eine Zeile passt -->
-			                            <span>Aenean massa cum sociis ...</span>
-			                            <span>Phasellus viverra nulla ut ...</span>
-										 */
+										
+										this.insertHTMLForTableCell(divContentNode, (i % columnTags.length) + 1, parseInt(i / columnTags.length) + 1);
 									
 									var divActionNode = DomConstruct.create("div", { className: "ep_cell_actions" }, tdNode, "last");
 										DomConstruct.create("p", { className: "ep_item_count", innerHTML: 123 }, divActionNode, "last");
@@ -148,6 +145,17 @@ define([	"dojo/_base/declare",
 						}
 					})
 				);
+		},
+		
+		insertHTMLForTableCell: function(node, column, row) {
+			console.log(column);
+			console.log(row);
+			
+			/*
+			 * <span>Lorem ipsum dolor nato ...</span> <!-- Text bitte so abschneiden, dass er in eine Zeile passt -->
+            <span>Aenean massa cum sociis ...</span>
+            <span>Phasellus viverra nulla ut ...</span>
+			 */
 		},
 		
 		startup: function() {

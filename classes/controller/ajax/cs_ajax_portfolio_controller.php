@@ -85,54 +85,43 @@
 				$tagIdArray[] = $tag["t_id"];
 			}
 			
-			// gather cell information
+			// gather linked cell information
 			$linkManager = $this->_environment->getLinkItemManager();
 			$links = $linkManager->getALlLinksByTagIDArray($privateRoom->getItemID(), $tagIdArray);
 			
-			$cellInformation = array();
+			$rubricArray = array();
+			
+			// structure links by rubric
 			foreach ($links as $link) {
 				if ($link["first_item_type"] === CS_TAG_TYPE) {
-					$cellInformation[$link["first_item_id"]][$link["second_item_type"]][$link["second_item_id"]] = null;
+					$rubricArray[$link["second_item_type"]][$link["first_item_id"]][] = $link["second_item_id"];
 				} else if($link["second_item_type"] === CS_TAG_TYPE) {
-					$cellInformation[$link["second_item_id"]][$link["first_item_type"]][$link["first_item_id"]] = null;
-				}
-			}
-			
-			// create a rubric sorted array to group for manager
-			$rubricSorted = array();
-			foreach ($cellInformation as $tagId => $rubric) {
-				foreach ($rubric as $rubricName => $idArray) {
-					$rubricSorted[$rubricName]["tagId"] = $tagId;
-					
-					foreach ($idArray as $id => $null) {
-						$rubricSorted[$rubricName]["ids"][] = $id;
-					}
+					$rubricArray[$link["first_item_type"]][$link["second_item_id"]][] = $link["first_item_id"];
 				}
 			}
 			
 			// fetch items
-			foreach ($rubricSorted as $rubric => $detail) {
-				$idArray = $detail["ids"];
-				$tagId = $detail["tagId"];
-				
-				$manager = $this->_environment->getManager($rubric);
-				$manager->reset();
-				$manager->setIDArrayLimit($idArray);
-				$manager->setContextLimit($privateRoom->getItemID());
-				$manager->select();
-				
-				$itemList = $manager->get();
-				$item = $itemList->getFirst();
-				
-				while ($item) {
-					$itemInformation = array(
-						"itemId"	=> $item->getItemID(),
-						"title"		=> $item->getTitle()
-					);
+			$linkArray = array();
+			foreach ($rubricArray as $rubric => $tagArray) {
+				foreach($tagArray as $tagId => $idArray) {
+					$manager = $this->_environment->getManager($rubric);
+					$manager->resetLimits();
+					$manager->setIDArrayLimit($idArray);
+					$manager->setContextLimit($privateRoom->getItemID());
+					$manager->select();
 					
-					$cellInformation[$tagId][$rubric][$item->getItemID()] = $itemInformation;
+					$itemList = $manager->get();
+					$item = $itemList->getFirst();
 					
-					$item = $itemList->getNext();
+					while ($item) {
+						$itemInformation = array(
+							"title"		=> $item->getTitle()
+						);
+						
+						$linkArray[$tagId][$item->getItemId()] = $itemInformation;
+						
+						$item = $itemList->getNext();
+					}
 				}
 			}
 			
@@ -140,7 +129,7 @@
 				"title"				=> $portfolioItem->getTitle(),
 				"description"		=> $portfolioItem->getDescription(),
 				"tags"				=> $tags,
-				"cells"				=> $cellInformation,
+				"links"				=> $linkArray,
 				"numAnnotations"	=> $portfolioManager->getAnnotationCountForPortfolio($portfolioId)
 			);
 			
