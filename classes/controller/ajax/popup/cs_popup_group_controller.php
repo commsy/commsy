@@ -176,6 +176,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 						$current_user = $environment->getCurrentUserItem();
 						$item->setCreatorItem($current_user);
 						$item->setCreationDate(getCurrentDateTimeInMySQL());
+						$item->setModificationDate(getCurrentDateTimeInMySQL());
                			$item->setLabelType(CS_GROUP_TYPE);
 						$item_is_new = true;
 					}

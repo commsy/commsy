@@ -32,7 +32,7 @@
 			$session = $this->_environment->getSessionItem();
 			$environment = $this->_environment;
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			// try to set the item
 			$this->setItem();
 
@@ -343,7 +343,7 @@
 							}
 						}
 					} else {
-						
+
 						if($this->_item->isGroupRoomActivated()) {
 							$grouproom_item = $this->_item->getGroupRoomItem();
 							if(isset($grouproom_item) && !empty($grouproom_item)) {
@@ -597,19 +597,19 @@
 
 					$return['show_picture'] = true;
 					$return['picture'] = $picture;
+				}
 
-					// description
-					$desc = $this->_item->getDescription();
-					if(!empty($desc)) {
-						//$desc = $converter->cleanDataFromTextArea($desc);
-						// TODO: implement
-						//$desc = $converter->compareWithSearchText($desc);
-						$converter->setFileArray($this->getItemFileList());
-						//$desc = $converter->text_as_html_long($desc);
-						//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
+				// description
+				$desc = $this->_item->getDescription();
+				if(!empty($desc)) {
+					//$desc = $converter->cleanDataFromTextArea($desc);
+					// TODO: implement
+					//$desc = $converter->compareWithSearchText($desc);
+					$converter->setFileArray($this->getItemFileList());
+					//$desc = $converter->text_as_html_long($desc);
+					//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
 
-						$return['description'] = $desc;
-					}
+					$return['description'] = $desc;
 				}
 
 				// description
