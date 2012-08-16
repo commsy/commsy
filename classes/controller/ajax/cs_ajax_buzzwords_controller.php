@@ -438,6 +438,11 @@ if ( !empty($_POST['itemlist'])
 			$item_id = $this->_data['item_id'];
 			$link_id = $this->_data['link_id'];
 			$checked = $this->_data['checked'];
+			$contextId = $this->_data["contextId"];
+				
+			if ($contextId !== null) {
+				$this->_environment->changeContextToPrivateRoom($contextId);
+			}
 			
 			// get item
 			$item = $item_manager->getItem($item_id);

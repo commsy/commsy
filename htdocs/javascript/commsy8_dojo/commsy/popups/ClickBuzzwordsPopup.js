@@ -59,6 +59,7 @@ define([	"dojo/_base/declare",
 				if(firstEditBuzzwordNode) {
 					var buzzwordId = DomAttr.get(firstEditBuzzwordNode, "id");
 					this.list.requestData.item_id = buzzwordId;
+					this.list.requestData.contextId = this.contextId;
 				}
 			}));
 			
@@ -71,6 +72,7 @@ define([	"dojo/_base/declare",
 					
 					// update reference id of list and perform a new request
 					this.list.requestData.item_id = buzzwordId;
+					this.list.requestData.contextId = this.contextId;
 					this.list.performRequest();
 					
 					// update header
