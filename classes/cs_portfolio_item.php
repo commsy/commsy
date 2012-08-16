@@ -50,9 +50,7 @@ class cs_portfolio_item extends cs_item {
    }
    
    function getExternalViewer() {
-   	$portfolioManager = $this->_environment->getPortfolioManager();
-   	
-   	return $portfolioManager->getExternalViewer($this->getItemID());
+   	return $this->_getValue("externalViewer");
    }
    
    function setExternalViewer($userIdArray) {

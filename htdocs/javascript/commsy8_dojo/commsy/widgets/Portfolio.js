@@ -79,7 +79,7 @@ define([	"dojo/_base/declare",
 						this.addPortfolio(portfolio, this.myPortfolioTabNode);
 					}));
 					dojo.forEach(response.activatedPortfolios, Lang.hitch(this, function(portfolio, index, arr) {
-						
+						this.addPortfolio(portfolio, this.activatedPortfolioTabNode);
 					}));
 				})
 			);

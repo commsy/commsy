@@ -225,13 +225,17 @@ class cs_portfolio_manager extends cs_manager {
   function delete ($item_id) {
      $current_datetime = getCurrentDateTimeInMySQL();
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
-              'deletion_date="'.$current_datetime.'",'.
+              'deletion_date="'.$current_datetime.'"'.
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
         include_once('functions/error_functions.php');trigger_error('Problems deleting portfolio.',E_USER_WARNING);
      } else {
          parent::delete($item_id);
+         
+         $this->deletePortfolioTags($item_id);
+         $this->deletePortfolioAnnotations($item_id);
+         $this->deletePortfolioUsers($item_id);
      }
   }
 
@@ -257,7 +261,12 @@ class cs_portfolio_manager extends cs_manager {
   		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio ids.',E_USER_WARNING);
   	}
   	
-  	return $result;
+  	$return = array();
+  	foreach ($result as $row) {
+  		$return[] = $row["p_id"];
+  	}
+  	
+  	return $return;
   }
   
   function getPortfolioTags($portfolioId) {
@@ -347,6 +356,45 @@ class cs_portfolio_manager extends cs_manager {
   	}
   }
   
+function deletePortfolioTags($portfolioId) {
+  	$query = "
+  		DELETE FROM
+  			" . $this->addDatabasePrefix("tag_portfolio") . "
+  		WHERE
+  		p_id = '" . encode(AS_DB, $portfolioId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems deleting tags for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
+  function deletePortfolioAnnotations($portfolioId) {
+  	$query = "
+	  	DELETE FROM
+	  		" . $this->addDatabasePrefix("annotation_portfolio") . "
+	  	WHERE
+	  		p_id = '" . encode(AS_DB, $portfolioId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems deleting annotations for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
+  function deletePortfolioUsers($portfolioId) {
+  	$query = "
+	  	DELETE FROM
+	  		" . $this->addDatabasePrefix("user_portfolio") . "
+	  	WHERE
+	  		p_id = '" . encode(AS_DB, $portfolioId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems deleting users for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
   function updatePortfolioTagPosition($portfolioId, $tagId, $row, $column) {
   	$query = "
   		UPDATE
@@ -389,7 +437,7 @@ class cs_portfolio_manager extends cs_manager {
   function getAnnotationCountForPortfolio($portfolioId) {
   	$query = "
   		SELECT
-  			COUNT(a_id),
+  			COUNT(a_id) AS count,
   			`row`,
   			`column`
   		FROM
@@ -405,7 +453,35 @@ class cs_portfolio_manager extends cs_manager {
   		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio annotation count.',E_USER_WARNING);
   	}
   	
-  	return $result;
+  	$return = array();
+  	foreach ($result as $row) {
+  		$return[$row["row"]][$row["column"]] = $row["count"];
+  	}
+  	
+  	return $return;
+  }
+  
+  function getPortfolioAnnotationIds($portfolioId) {
+  	$query = "
+	  	SELECT
+	  		a_id
+	  	FROM
+	  		" . $this->addDatabasePrefix("annotation_portfolio") . "
+	  	WHERE
+	  		p_id = '" . encode(AS_DB, $portfolioId) . "'
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	 
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio annotation count.',E_USER_WARNING);
+  	}
+  	 
+  	$return = array();
+  	foreach ($result as $row) {
+  		$return[] = $row["a_id"];
+  	}
+  	 
+  	return $return;
   }
 
 /****************************************/

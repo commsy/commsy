@@ -24,28 +24,37 @@ class cs_popup_portfolioItem_controller implements cs_rubric_popup_controller {
 			$item = $portfolioManager->getItem($current_iid);
 		}
 		
-		$currentUser = $this->_environment->getCurrentUser();
-		$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
-		
-		if ($this->_popup_controller->checkFormData()) {
-			if ($item === null) {
-				$item = $portfolioManager->getNewItem();
-				$item->setCreationDate(getCurrentDateTimeInMySQL());
-				$item->setCreatorItem($privateRoomUser);
+		if (isset($additional["part"]) && $additional["part"] === "delete") {
+			if ($item) {
+				$portfolioManager->delete($item->getItemID());
+				$this->_popup_controller->setSuccessfullDataReturn(array());
+			} else {
+				$this->_popup_controller->setErrorReturn("116", "no item given", array());
 			}
+		} else {
+			$currentUser = $this->_environment->getCurrentUser();
+			$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
 			
-			$item->setTitle($form_data["title"]);
-			$item->setDescription($form_data["description"]);
-			$item->setModificationDate(getCurrentDateTimeInMySQL());
-			$item->setModificatorItem($privateRoomUser);
-			
-			$externalViewerString = $form_data["externalViewer"];
-			$externalViewerUserIds = explode(" ", trim($externalViewerString));
-			$item->setExternalViewer($externalViewerUserIds);
-			
-			$item->save();
-			
-			$this->_popup_controller->setSuccessfullDataReturn(array("portfolioID" => $item->getItemID()));
+			if ($this->_popup_controller->checkFormData()) {
+				if ($item === null) {
+					$item = $portfolioManager->getNewItem();
+					$item->setCreationDate(getCurrentDateTimeInMySQL());
+					$item->setCreatorItem($privateRoomUser);
+				}
+					
+				$item->setTitle($form_data["title"]);
+				$item->setDescription($form_data["description"]);
+				$item->setModificationDate(getCurrentDateTimeInMySQL());
+				$item->setModificatorItem($privateRoomUser);
+					
+				$externalViewerString = $form_data["externalViewer"];
+				$externalViewerUserIds = explode(" ", trim($externalViewerString));
+				$item->setExternalViewer($externalViewerUserIds);
+					
+				$item->save();
+					
+				$this->_popup_controller->setSuccessfullDataReturn(array("portfolioID" => $item->getItemID()));
+			}
 		}
 	}
 
@@ -54,7 +63,8 @@ class cs_popup_portfolioItem_controller implements cs_rubric_popup_controller {
 			$this->_popup_controller->assign("portfolio", "title", $item->getTitle());
 			$this->_popup_controller->assign("portfolio", "description", $item->getDescription());
 			
-			$externalViewer = $item->getExternalViewer();
+			$manager = $this->_environment->getPortfolioManager();
+			$externalViewer = $manager->getExternalViewer($item->getItemID());
 			$externalViewerString = implode(" ", $externalViewer);
 			$this->_popup_controller->assign("portfolio", "externalViewer", $externalViewerString);
 		}

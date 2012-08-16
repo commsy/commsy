@@ -49,92 +49,29 @@
                 
                 <div id="ep_content_row_two">
                     <div class="ep_open_close_head">
-                        <strong>Kommentare</strong> (15 Kommentare vorhanden)
+                        <strong>___CS_BAR_PORTFOLIO_COMMENTS_HEADER___</strong> ({$popup.numAnnotations} ___CS_BAR_PORTFOLIO_COMMENTS_EXISTS___)
                         <a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="{$basic.tpl_path}img/pop_max_btn.gif" alt="maximieren" /></a>
                         
                         <div class="clear"></div>  
                     </div>
                     
                     <div class="ep_crt_content">
-                            
-                                <div class="pop_row_odd">
-                                    <div class="pop_col_330">
-                                        <a href="">Lorem ipsum dolor sit</a>
-                                    </div>
-                                    <div class="pop_col_90">
-                                        00.00.0000
-                                    </div>
-                                    <div class="pop_col_150">
-                                        Dennis Mustermann
-                                    </div>
-                                    <div class="clear"> </div>  
-                                </div>
-                                    
-                                <div class="pop_row_even">
-                                    <div class="pop_col_330">
-                                        <a href="">Lorem ipsum dolor sit</a>
-                                    </div>
-                                    <div class="pop_col_90">
-                                        00.00.0000
-                                    </div>
-                                    <div class="pop_col_150">
-                                        Dennis Mustermann
-                                    </div>
-                                    <div class="clear"> </div>  
-                                </div>
-                                 
-                                <div class="pop_row_odd">
-                                    <div class="pop_col_330">
-                                        <a href="">Lorem ipsum dolor sit</a>
-                                    </div>
-                                    <div class="pop_col_90">
-                                        00.00.0000
-                                    </div>
-                                    <div class="pop_col_150">
-                                        Dennis Mustermann
-                                    </div>
-                                    <div class="clear"> </div>  
-                                </div>
-                                    
-                                <div class="pop_row_even">
-                                    <div class="pop_col_330">
-                                        <a href="">Lorem ipsum dolor sit</a>
-                                    </div>
-                                    <div class="pop_col_90">
-                                        00.00.0000
-                                    </div>
-                                    <div class="pop_col_150">
-                                        Dennis Mustermann
-                                    </div>
-                                    <div class="clear"> </div>  
-                                </div>
-                                
-                                <div class="pop_row_odd">
-                                    <div class="pop_col_330">
-                                        <a href="">Lorem ipsum dolor sit</a>
-                                    </div>
-                                    <div class="pop_col_90">
-                                        00.00.0000
-                                    </div>
-                                    <div class="pop_col_150">
-                                        Dennis Mustermann
-                                    </div>
-                                    <div class="clear"> </div>  
-                                </div>
-                                    
-                                <div class="pop_row_even">
-                                    <div class="pop_col_330">
-                                        <a href="">Lorem ipsum dolor sit</a>
-                                    </div>
-                                    <div class="pop_col_90">
-                                        00.00.0000
-                                    </div>
-                                    <div class="pop_col_150">
-                                        Dennis Mustermann
-                                    </div>
-                                    <div class="clear"> </div>  
-                                </div>
-
+                    
+                    	{foreach $popup.annotationItems as $item}
+                    		 <div class="pop_row_odd">
+                                 <div class="pop_col_330">
+                                     <a href="">{$item.title}</a>
+                                 </div>
+                                 <div class="pop_col_90">
+                                     {$item.modificationDate}
+                                 </div>
+                                 <div class="pop_col_150">
+                                     {$item.modificator}
+                                 </div>
+                                 <div class="clear"> </div>  
+                             </div>
+                    	{/foreach}
+                    	
                         <div class="clear"></div>  
                     </div>
                 </div>

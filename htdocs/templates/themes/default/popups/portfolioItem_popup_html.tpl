@@ -39,7 +39,9 @@
 						</div>
 						
 						<div class="input_row">
-							<input id="newPortfolioSubmitButton" type="button" class="submit" data-custom="part: 'all'" value="___COMMON_CREATE___"/>
+							<input id="newPortfolioSubmitButton" type="button" class="submit" data-custom="part: 'all'" value="{if $popup.edit == false}___COMMON_CREATE___{else}___COMMON_CHANGE_BUTTON___{/if}"/>
+							{if $popup.edit == true}<input id="popup_button_delete" class="popup_button float-right submit" data-custom="part: 'delete'" type="button" name="" value="___COMMON_DELETE_BUTTON___" />{/if}
+							<input id="popup_button_abort" class="popup_button" type="button" name="" value="___COMMON_CANCEL_BUTTON___" />
 	           			</div>
 					</div>
 				</div>

@@ -185,6 +185,8 @@ define([	"dojo/_base/declare",
 			var numItems = 0;
 			var numComments = 0;
 			
+			if (this.response.numAnnotations[row] && this.response.numAnnotations[row][column]) numComments = this.response.numAnnotations[row][column];
+			
 			// check if there is content for this cell - because this is a matrix, tagIDsToMatch needs to have two entries
 			if (tagIdsToMatch.length == 2) {
 				// insert content
@@ -240,7 +242,7 @@ define([	"dojo/_base/declare",
 			
 				if (numItems > 0) {
 					DomConstruct.create("p", { className: "ep_item_count", innerHTML: numItems }, divActionNode, "last");
-					DomConstruct.create("p", { className: "ep_item_comment", innerHTML: 123 }, divActionNode, "last");
+					DomConstruct.create("p", { className: "ep_item_comment", innerHTML: numComments }, divActionNode, "last");
 				}
 				
 				/*

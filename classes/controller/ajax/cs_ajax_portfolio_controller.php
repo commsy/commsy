@@ -47,9 +47,7 @@
 				$portfolioManager->setIDArrayLimit($activatedIdArray);
 				$portfolioManager->select();
 				$portfolioList = $portfolioManager->get();
-					
-					
-					
+				
 				if (!$portfolioList->isEmpty()) {
 					$portfolioItem = $portfolioList->getFirst();
 					while ($portfolioItem) {
