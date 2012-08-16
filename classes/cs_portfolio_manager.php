@@ -140,7 +140,43 @@ class cs_portfolio_manager extends cs_manager {
      } else {
         unset($result);
      }
+     
+     $this->_updateExternalViewer($portfolio_item);
+     
      unset($portfolio_item);
+  }
+  
+  function _updateExternalViewer($portfolio_item) {
+  	$query = "
+  		DELETE FROM
+  			" . $this->addDatabasePrefix("user_portfolio") . "
+  		WHERE
+  			p_id = '" . encode(AS_DB, $portfolio_item->getItemID()) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');
+  		trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  	}
+  	
+  	foreach ($portfolio_item->getExternalViewer() as $viewer) {
+  		$query = "
+	  		INSERT INTO
+	  			" . $this->addDatabasePrefix("user_portfolio") . "
+	  		(
+	  			p_id,
+	  			u_id
+	  		) VALUES (
+	  			'" . encode(AS_DB, $portfolio_item->getItemID()) . "',
+	  			'" . encode(AS_DB, $viewer) . "'
+	  		);
+  		";
+  		$result = $this->_db_connector->performQuery($query);
+  		if ( !isset($result) ) {
+  			include_once('functions/error_functions.php');
+  			trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  		}
+  	}
   }
 
   function _create ($portfolio_item) {
@@ -180,12 +216,9 @@ class cs_portfolio_manager extends cs_manager {
         include_once('functions/error_functions.php');
         trigger_error('Problems creating portfolio.',E_USER_WARNING);
      } else {
+     	$this->_updateExternalViewer($portfolio_item);
         unset($result);
      }
-     
-     
-     
-     $this->assignUserToPortfolio($portfolio_item->getCreatorID(), $portfolio_item->getItemID());
      unset($portfolio_item);
   }
 
@@ -204,25 +237,6 @@ class cs_portfolio_manager extends cs_manager {
 
 
 /***********NEW FUNCTIONS****************/
-  
-  function assignUserToPortfolio($userId, $portfolioId) {
-  	$query = "
-  		REPLACE INTO
-  			" . $this->addDatabasePrefix("user_portfolio") . "
-  		(
-  			p_id,
-  			u_id
-  		) VALUES (
-  			'" . encode(AS_DB, $portfolioId) . "',
-  			'" . encode(AS_DB, $userId) . "'
-  		)
-  	";
-  	$result = $this->_db_connector->performQuery($query);
-  	if ( !isset($result) or !$result ) {
-  		include_once('functions/error_functions.php');trigger_error('Problems assigning user to portfolio.',E_USER_WARNING);
-  	}
-  }
-  
   public function getActivatedIDArray($userId) {
   	$query = "
   		SELECT
@@ -235,8 +249,7 @@ class cs_portfolio_manager extends cs_manager {
   			user_portfolio.p_id = portfolio.item_id
   		WHERE
   			user_portfolio.u_id = '" . encode(AS_DB, $userId) . "' AND
-  			portfolio.deletion_date IS NULL AND
-  			portfolio.creator_id <> user_portfolio.u_id
+  			portfolio.deletion_date IS NULL;
   	";
   	$result = $this->_db_connector->performQuery($query);
   	
@@ -352,36 +365,25 @@ class cs_portfolio_manager extends cs_manager {
   }
   
   function getExternalViewer($portfolioId) {
-  	$currentUser = $this->_environment->getCurrentUserItem();
-  	$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
-  	
   	$query = "
 	  	SELECT
 	  		u_id
 	  	FROM
 	  		" . $this->addDatabasePrefix("user_portfolio") . "
 	  	WHERE
-	  		p_id= '" . encode(AS_DB, $portfolioId) . "' AND
-	  		u_id <> '" . encode(AS_DB, $privateRoomUser->getItemID()) . "'
+	  		p_id= '" . encode(AS_DB, $portfolioId) . "';
   	";
   	$result = $this->_db_connector->performQuery($query);
   	if ( !isset($result) ) {
   		include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
   	}
   	
-  	$userList = new cs_list();
-  	
-  	if (!empty($result)) {
-  		$userManager = $this->_environment->getUserManager();
-  		$userManager->reset();
-  		$userManager->setIDArrayLimit($result);
-  		$userManager->setContextLimit($this->_environment->getCurrentPortalID());
-  		$userManager->select();
-  		 
-  		$userList = $userManager->get();
+  	$userArray = array();
+  	foreach ($result as $row) {
+  		$userArray[] = $row["u_id"];
   	}
   	
-  	return $userList;
+  	return $userArray;
   }
   
   function getAnnotationCountForPortfolio($portfolioId) {

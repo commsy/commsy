@@ -193,6 +193,8 @@ define([	"dojo/_base/declare",
 				var tagIdOne = tagIdsToMatch[0];
 				var tagIdTwo = tagIdsToMatch[1];
 				
+				var itemIdArray = [];
+				
 				// check for items matching
 				if(this.response.links[tagIdOne] && this.response.links[tagIdTwo]) {
 					// go through all item ids in first tag
@@ -205,6 +207,9 @@ define([	"dojo/_base/declare",
 						}));
 						
 						if (match) {
+							itemIdArray.push(item.itemId);
+							numItems++;
+							
 							// only three
 							if (index < 3) {
 								var spanNode = DomConstruct.create("span", {
@@ -214,17 +219,33 @@ define([	"dojo/_base/declare",
 						}
 					}));
 				}
+				
+				// register onclick
+				require(["commsy/popups/ClickPortfolioListPopup"], Lang.hitch(this, function(ClickPopup) {
+					var handler = new ClickPopup();
+					var customObject = {};
+					customObject.portfolioId = this.portfolioId;
+					customObject.row = row;
+					customObject.column = column;
+					customObject.itemIds = itemIdArray;
+					
+					if (customObject) {
+						handler.init(aContentNode, customObject);
+					}
+				}));
 			}
 			
 			// create action content
 			var divActionNode = DomConstruct.create("div", { className: "ep_cell_actions" }, node, "last");
 			
-				if (numItems > 0) DomConstruct.create("p", { className: "ep_item_count", innerHTML: numItems }, divActionNode, "last");
+				if (numItems > 0) {
+					DomConstruct.create("p", { className: "ep_item_count", innerHTML: numItems }, divActionNode, "last");
+					DomConstruct.create("p", { className: "ep_item_comment", innerHTML: 123 }, divActionNode, "last");
+				}
 				
-				if (numComments > 0) DomConstruct.create("p", { className: "ep_item_comment", innerHTML: 123 }, divActionNode, "last");
-				
+				/*
 				var aEditNode = DomConstruct.create("a", {}, divActionNode, "last");
-					DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+					DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");*/
 				
 				DomConstruct.create("div", { className: "clear" }, divActionNode, "last");
 		},

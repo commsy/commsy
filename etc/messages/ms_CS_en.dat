@@ -8,6 +8,7 @@ $message["CS_BAR_COMMING_SOON_INFO_TEXT"]["en"] = "Here you will be able to conf
 $message["CS_BAR_COMMON_SHOW"]["en"] = "Show";
 $message["CS_BAR_PORTFOLIO"]["en"] = "My portfolios";
 $message["CS_BAR_PORTFOLIO_ACTIVATED"]["en"] = "Activated portfolios";
+$message["CS_BAR_PORTFOLIO_CELL_HEADER"]["en"] = "Cell details";
 $message["CS_BAR_PORTFOLIO_DESC"]["en"] = "Here you can setup the personal portfolios.";
 $message["CS_BAR_PORTFOLIO_HEADER"]["en"] = "Portfolios";
 $message["CS_BAR_PORTFOLIO_EDIT"]["en"] = "Edit portfolio";

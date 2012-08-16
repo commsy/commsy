@@ -40,7 +40,7 @@
 			$return["myPortfolios"] = $myPortfolios;
 			
 			$activatedPortfolios = array();
-			$activatedIdArray = $portfolioManager->getActivatedIDArray($privateRoomUser->getItemID());
+			$activatedIdArray = $portfolioManager->getActivatedIDArray($privateRoomUser->getUserID());
 			
 			if (!empty($activatedIdArray)) {
 				$portfolioManager->reset();

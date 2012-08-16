@@ -40,8 +40,8 @@ class cs_popup_portfolioItem_controller implements cs_rubric_popup_controller {
 			$item->setModificatorItem($privateRoomUser);
 			
 			$externalViewerString = $form_data["externalViewer"];
-			$externalViewerUserIds = explode(" ", $externalViewerString);
-			$item->setExternalViewer($userIdArray);
+			$externalViewerUserIds = explode(" ", trim($externalViewerString));
+			$item->setExternalViewer($externalViewerUserIds);
 			
 			$item->save();
 			
@@ -55,21 +55,8 @@ class cs_popup_portfolioItem_controller implements cs_rubric_popup_controller {
 			$this->_popup_controller->assign("portfolio", "description", $item->getDescription());
 			
 			$externalViewer = $item->getExternalViewer();
-			$externalViewerString = "";
-			
-			$external = $externalViewer->getFirst();
-			$first = true;
-			while ($external) {
-				if ($first) {
-					$externalViewerString .= $external->getUserID();
-					$first = false;
-				} else {
-					$externalViewerString .= " " . $external->getUserID();
-				}
-				
-				$external = $externalViewer->getNext();
-			}
-			$this->_popup_controller->assign("portfolio", "externalViewser", $externalViewser);
+			$externalViewerString = implode(" ", $externalViewer);
+			$this->_popup_controller->assign("portfolio", "externalViewer", $externalViewerString);
 		}
 	}
 
