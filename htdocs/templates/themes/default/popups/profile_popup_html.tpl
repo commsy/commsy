@@ -511,7 +511,7 @@
                     </p>
                     <div class="input_row_180">
                       <label for="widget_portfolio_view">___CS_BAR_PORTFOLIO_VIEW___:</label>
-                      <input disabled="disabled" id="show_portfolio_view" type="checkbox" name="form_data[show_portfolio_view]" value="yes"{if $popup.form.cs_bar.show_portfolio_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <input id="show_portfolio_view" type="checkbox" name="form_data[show_portfolio_view]" value="yes"{if $popup.form.cs_bar.show_portfolio_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
                  </fieldset>
