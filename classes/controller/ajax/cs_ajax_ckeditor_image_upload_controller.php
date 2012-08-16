@@ -74,7 +74,7 @@ class cs_ajax_ckeditor_image_upload_controller extends cs_ajax_controller {
          $file_item = $file_manager->getNewItem();
          $file_item->setTempKey($file_data["file_id"]);
          $file_item->setPostFile($file_data);
-         $file_item->setTempUploadFromEditorSessionID($environment->getSessionID());
+         //$file_item->setTempUploadFromEditorSessionID($environment->getSessionID());
          $file_item->save();
          unlink($file_data["tmp_name"]);
          
