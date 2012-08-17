@@ -9,8 +9,9 @@ require([	"dojo/_base/declare",
 		init: function() {
 			require([	"dojo/query",
 			         	"dojo/dom-attr",
+			         	"dojo/on",
 			         	"dojo/NodeList-traverse",
-			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, ready) {
+			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, On, ready) {
 			    
 				// initiate popup handler
 				require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
@@ -32,6 +33,14 @@ require([	"dojo/_base/declare",
 						var handler = new ClipboardPopup(aClipboardNode, query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
 					});
 				}
+				
+				// register event for handling mouse actions outside content div
+				On(document.body, "click", Lang.hitch(this, function(event) {
+					if(domAttr.get(event.target, "id") === "popup_wrapper") {
+						// TODO: create something like a tooltip here
+						alert("Bitte schließen Sie zuerst das Popup-Fenster, bevor Sie sonstige Seitenoperationen ausführen");
+					}
+				}));
 				
 				/**/
 				

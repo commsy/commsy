@@ -17,7 +17,7 @@ define([	"dojo/_base/declare",
 
 		constructor: function(args) {
 			this.fct = "rubric_popup";
-			this.initData = null;
+			this.initData = {};
 		},
 		
 		setInitData: function(object) {
@@ -64,14 +64,6 @@ define([	"dojo/_base/declare",
 							this.onPopupSubmit(customObject);
 
 							event.preventDefault();
-						}));
-
-						// register event for handling mouse actions outside content div
-						on(document.body, "click", lang.hitch(this, function(event) {
-							if(dom_attr.get(event.target, "id") === "popup_wrapper") {
-								// TODO: create something like a tooltip here
-								alert("Bitte schließen Sie zuerst das Popup-Fenster, bevor Sie sonstige Seitenoperationen ausführen");
-							}
 						}));
 
 						this.is_open = !this.is_open;
