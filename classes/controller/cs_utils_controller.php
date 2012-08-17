@@ -719,6 +719,21 @@
 		public function setFilesForItem(cs_item $item, $post_file_ids, $new_file_ids_to_store) {
 			$session = $this->_environment->getSessionItem();
 
+			// temp files - uploaded via "Image"-Plugin (ckeditor; custom image-upload/image-browse)
+			$temp_files_array = array();
+         $file_manager = $this->_environment->getFileManager();
+         $file_manager->resetLimits();
+         $file_manager->setTempUploadSessionIdLimit($this->_environment->getSessionId());
+         $file_manager->select();
+         $file_list = $file_manager->get();
+         $file_item = $file_list->getFirst();
+         while($file_item){
+         	$temp_files_array[] = $file_item->getFileID();
+         	$file_manager->resetTempUpload($file_item);
+         	$file_item = $file_list->getNext();
+         }
+         unset($file_manager);
+			
 			$file_ids = array();
 
 			// new file information are stored in the session object
@@ -783,7 +798,7 @@
 			}
 
 			// merge already attached file ids and new ones
-			$file_ids = array_merge($new_file_ids, $attached_ids);
+			$file_ids = array_merge($new_file_ids, $attached_ids, $temp_files_array);
 
 			// set
 			$item->setFileIDArray($file_ids);
