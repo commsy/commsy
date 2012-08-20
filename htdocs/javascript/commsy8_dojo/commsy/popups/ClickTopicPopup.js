@@ -63,7 +63,8 @@ define([	"dojo/_base/declare",
 				    { id: "rights_tab" }
 				],
 				nodeLists: [
-				    { query: query("div#files_attached", this.contentNode) },
+					{ query: query("div#files_attached", this.contentNode) },
+					{ query: query("div#files_finished", this.contentNode), group: "files" },
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
 				    { query: query("input[name='form_data[title]']", this.contentNode) }
 				]
