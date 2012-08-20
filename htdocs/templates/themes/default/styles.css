@@ -3535,6 +3535,23 @@ a.tm_settings_hover {
     background: url(img/tm_eportfolio.gif) -36px 0px no-repeat !important;
     }
 
+#tm_wiki {
+    background: url(img/tm_wiki.gif) no-repeat;
+    }
+
+#tm_wiki:hover,
+.tm_wiki_hover {
+    background: url(img/tm_wiki.gif) -36px 0px no-repeat !important;
+    }
+#tm_wordpress {
+    background: url(img/tm_wordpress.gif) no-repeat;
+    }
+
+#tm_wordpress:hover,
+.tm_wordpress_hover {
+    background: url(img/tm_wordpress.gif) -36px 0px no-repeat !important;
+    }
+
 #tm_widgets {
     background: url(img/tm_widgets.gif) no-repeat;
     }
@@ -4455,13 +4472,13 @@ a.nodeCreator:hover{
 ----------------------------------------------------------------------
 Portfolio
 ----------------------------------------------------------------------
-*/	
+*/
 
 #e-portfolio {
 	margin: 10px 0px 0px 10px;
     width: 915px;
     background: #E8E8E8;
-    } 
+    }
 
 #ep_table {
     /*width: 754px;*/
@@ -4619,28 +4636,28 @@ Portfolio
 
 .ep_cc_blue {
     background: #BAC9FF;
-    }    
-    
+    }
+
 .ep_cc_green {
     background: #E7FFBA;
-    }    
-    
+    }
+
 .ep_cc_red {
     background: #FFBABA;
-    }      
-    
+    }
+
 .ep_cc_purple {
     background: #E2BAFF;
-    }      
-        
+    }
+
 .ep_cc_yellow {
     background: #FFFCBA;
-    }      
+    }
 
 #ep_accordion_head, .ep_accordion {
     background: transparent !important;
     }
-    
+
 #ep_minimize {
     text-align: right;
     padding: 0px 10px 10px 0px;
@@ -4648,9 +4665,9 @@ Portfolio
 
 /************************************************************/
 #popup_content {
-    border-top: 1px solid #FFF;   
-    border-left: 1px solid #FFF;   
-    border-right: 1px solid #FFF;    
+    border-top: 1px solid #FFF;
+    border-left: 1px solid #FFF;
+    border-right: 1px solid #FFF;
     background: url(img/pop_content_bg.jpg) repeat-x left bottom #E8E8E8;
     }
 
@@ -4685,7 +4702,7 @@ Portfolio
     display: block;
     padding-top: 4px;
     }
-    
+
 .ep_crt_content {
     height: 149px;
     overflow: auto;
@@ -4713,7 +4730,7 @@ Portfolio
 #content_row_two_max #crt_col_left {
     height: 330px !important;
     }
-    
+
 .ep_crt_content .pop_row_odd, .ep_crt_content_ff .pop_row_odd {
     padding: 5px 10px;
     background: url(img/col_seperator.gif) repeat-y 325px top #F5F5F5;
@@ -4722,12 +4739,12 @@ Portfolio
 .ep_crt_content .pop_row_even, .ep_crt_content_ff .pop_row_even {
     padding: 5px 10px;
     background: url(img/col_seperator.gif) repeat-y 325px top #FFF;
-    }    
-    
+    }
+
 .pop_row_odd:hover, .pop_row_even:hover {
     background-color: #DEE8FF;
-    }  
-    
+    }
+
 .pop_col_330 {
     width: 330px;
     float: left;
@@ -4737,7 +4754,7 @@ Portfolio
     width: 90px;
     float: left;
     }
-    
+
 .pop_col_150 {
     width: 150px;
     float: left;
@@ -4745,8 +4762,8 @@ Portfolio
 
 .ep_item_body {
     float: left;
-    }   
-    
+    }
+
 .odd_ep_sep_390 {
     background: url(img/sep_390.gif) repeat-y -20px 0px #F5F5F5;
     }
