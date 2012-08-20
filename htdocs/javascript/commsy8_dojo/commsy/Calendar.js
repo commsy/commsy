@@ -13,8 +13,17 @@ define([	"dojo/_base/declare",
 		},
 		
 		setup: function(node) {
+			if (this.from_php.environment.lang == "de") {
+				var dateFormat = "dd.MM.yyyy";
+				var loc = "de-de";
+			} else if (this.from_php.environment.lang == "en") {
+				var dateFormat = "MM/dd/yyyy";
+				var loc = "en-en";
+			}
+			
+			/*
 			dojo.declare("CustomDateTextBox", DateTextBox, {
-		        Customformat: {selector: 'date', datePattern: 'dd.MM.yyyy', locale: 'de-de'},
+		        Customformat: {selector: 'date', datePattern: dateFormat, locale: loc},
 		        //value: "", // prevent parser from trying to convert to Date object
 		        postMixInProperties: function(){ // change value string to Date object
 		            this.inherited(arguments);
@@ -26,12 +35,18 @@ define([	"dojo/_base/declare",
 		            return dojo.date.locale.format(dateObject, this.Customformat).toUpperCase();
 		        }
 		    });
+			*/
 			
-			this.calendar = new CustomDateTextBox({
-				value:			DomAttr.get(node, "value"),
+			var value = DomAttr.get(node, "value");
+			if (value === "") {
+				value = null;
+			}
+			
+			this.calendar = new /*Custom*/DateTextBox({
+				value:			value,
 				name:			DomAttr.get(node, "name"),
 				constraints: {
-					datePattern:	"dd.MM.yyyy",
+					datePattern:	dateFormat,
 				}
 			}, node);
 		},

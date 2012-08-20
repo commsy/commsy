@@ -35,7 +35,7 @@ define([	"dojo/_base/declare",
 				DomStyle.set(contentNode, "display", "block");
 				DomStyle.set(contentNode, "zIndex", -1);
 				
-				if (position === "right") {console.log(position);
+				if (position === "right") {
 					DomStyle.set(contentNode, "marginLeft", "100px");
 				}
 				

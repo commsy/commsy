@@ -56,7 +56,8 @@ class cs_popup_date_controller {
 
 		        $temp = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
 		        if ($temp['conforms']) {
-		           $this->_popup_controller->assign('item', 'dayStart', getDateInLang($item->getStartingDay()));
+		           //$this->_popup_controller->assign('item', 'dayStart', getDateInLang($item->getStartingDay()));
+		           $this->_popup_controller->assign('item', 'dayStart', $item->getStartingDay());
 		        } else {
 		           $this->_popup_controller->assign('item', 'dayStart',  $item->getStartingDay());
 		        }
@@ -68,7 +69,8 @@ class cs_popup_date_controller {
 		        }
          		$temp = convertDateFromInput($item->getEndingDay(),$this->_environment->getSelectedLanguage());
 		        if ($temp['conforms']) {
-		           $this->_popup_controller->assign('item', 'dayEnd', getDateInLang($item->getEndingDay()));
+		           //$this->_popup_controller->assign('item', 'dayEnd', getDateInLang($item->getEndingDay()));
+		        	$this->_popup_controller->assign('item', 'dayEnd', $item->getEndingDay());
 		        } else {
 		           $this->_popup_controller->assign('item', 'dayEnd',  $item->getEndingDay());
 		        }
@@ -150,7 +152,7 @@ class cs_popup_date_controller {
  				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
 	       		$this->_popup_controller->assign('item', 'private_editing', $val);
          		if(!empty($data['date_new'])){
-         		   $this->_popup_controller->assign('item', 'date_new_date', date('d.m.Y', $data['date_new']));
+         		   $this->_popup_controller->assign('item', 'date_new_date', date('Y-m-d', $data['date_new']));
          		   $this->_popup_controller->assign('item', 'date_new_time', date('H:i', $data['date_new']));
          		}
 			}

@@ -4466,8 +4466,7 @@ Portfolio
 #ep_table {
     /*width: 754px;*/
     /*overflow: auto;*/
-    float: left;
-    width: 500px;
+    overflow-x: scroll;
     }
 
 #ep_table th,
@@ -4482,6 +4481,7 @@ Portfolio
 
 #epColumnAdd {
 	height: 54px;
+	margin-left: 10px;
 }
 
 #ep_table th img,
@@ -4789,7 +4789,7 @@ Portfolio
 }
 
 .dijitTabPaneWrapperNested {
-	overflow: scroll;
+	overflow-y: scroll;
 }
 
 .dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent .tabLabel,

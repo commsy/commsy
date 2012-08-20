@@ -36,19 +36,21 @@
             
         </div>
         
-        <div id="ep_table">
-            <table cellspacing="0" cellpadding="0" border="0" class="float-left" data-dojo-attach-point="tableNode">
-            </table>
-            
-            {* add column *}
-	    	<div id="epColumnAdd" class="float-left">
+        <div>
+        	{* add column *}
+	    	<div id="epColumnAdd" class="float-right">
 	            <a href=""><img src="{$basic.tpl_path}img/ep_hor_edit.jpg" alt="" /></a>
 	            <a class="ep_edit_head tagEdit" data-custom="tagId: 'NEW', position: 'column', module: 'tagPortfolio'" href=""><strong>+</strong></a>
 	            <strong>&nbsp;</strong>
 	        </div>
-	        
-	        <div class="clear"></div>
         </div>
+        
+        <div id="ep_table">
+            <table cellspacing="0" cellpadding="0" border="0" class="float-left" data-dojo-attach-point="tableNode">
+            </table>
+        </div>
+        
+        <div class="clear"></div>
     </div>
     
     
