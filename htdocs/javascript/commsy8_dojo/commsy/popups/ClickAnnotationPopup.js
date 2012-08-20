@@ -19,6 +19,12 @@ define([	"dojo/_base/declare",
 			this.ref_iid = customObject.annotatedId;
 			this.version_id = customObject.vid;
 			
+			this.setInitData({
+				portfolioId:		customObject.portfolioId,
+				portfolioRow:		customObject.portfolioRow,
+				portfolioColumn:	customObject.portfolioColumn
+			});
+			
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 			
 			// register click for node
@@ -54,7 +60,14 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { contextId: this.contextId, annotatedId: this.ref_iid, versionId: this.version_id });
+			this.submit(search, {
+				contextId:			this.contextId,
+				annotatedId:		this.ref_iid,
+				versionId:			this.version_id,
+				portfolioId:		this.initData.portfolioId,
+				portfolioRow:		this.initData.portfolioRow,
+				portfolioColumn:	this.initData.portfolioColumn
+			});
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {

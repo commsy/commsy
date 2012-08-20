@@ -209,15 +209,15 @@ define([	"dojo/_base/declare",
 						}));
 						
 						if (match) {
-							itemIdArray.push(item.itemId);
-							numItems++;
-							
 							// only three
-							if (index < 3) {
+							if (numItems < 3) {
 								var spanNode = DomConstruct.create("span", {
-									innerHTML:		item.title.substring(0, 20)
+									innerHTML:		item.title.substring(0, 20),
 								}, aContentNode, "last");
 							};
+							
+							itemIdArray.push(item.itemId);
+							numItems++;
 						}
 					}));
 				}

@@ -42,6 +42,24 @@ define([	"dojo/_base/declare",
 					}));
 				}));
 			}));
+			
+			var aCreateAnnotationNode = Query("a#portfolioListCreateAnnotation")[0];
+			if (aCreateAnnotationNode) {
+				require(["commsy/popups/ClickAnnotationPopup"], Lang.hitch(this, function(ClickPopup) {
+					var handler = new ClickPopup();
+					var customObject = this.getAttrAsObject(aCreateAnnotationNode, "data-custom");
+					
+					customObject.portfolioRow = this.initData.row;
+					customObject.portfolioColumn = this.initData.column;
+					
+					handler.init(aCreateAnnotationNode, customObject);
+					
+					On(aCreateAnnotationNode, "click", Lang.hitch(this, function(event) {
+						this.close();
+					}));
+					
+				}));
+			}
 		},
 		
 		onPopupSubmit: function(customObject) {

@@ -61,6 +61,7 @@ class cs_popup_portfolioList_controller implements cs_rubric_popup_controller {
 		$privateRoom = $currentUser->getOwnRoom();
 		
 		$this->_popup_controller->assign("popup", "privateRoomId", $privateRoom->getItemID());
+		$this->_popup_controller->assign("popup", "portfolioId", $item->getItemID());
 		
 		$itemIdRubricArray = array();
 		foreach ($itemIdArray as $id) {
@@ -101,20 +102,17 @@ class cs_popup_portfolioList_controller implements cs_rubric_popup_controller {
 		
 		$this->_popup_controller->assign("popup", "items", $itemArray);
 		
-		$portfolioManager = $this->_environment->getPortfolioManager();
-		$annotationIds = $portfolioManager->getPortfolioAnnotationIds($item->getItemID());
-		
-		$this->_popup_controller->assign("popup", "numAnnotations", sizeof($annotationIds));
-		
 		$annotationManager = $this->_environment->getAnnotationManager();
+		
+		$annotationArray = array();
 		$annotationManager->resetLimits();
-		$annotationManager->setIDArrayLimit($annotationIds);
+		$annotationManager->setLinkedItemID($item->getItemID());
 		$annotationManager->setContextLimit($privateRoom->getItemID());
 		$annotationManager->select();
 		
 		$annotationList = $annotationManager->get();
 		$annotationItem = $annotationList->getFirst();
-		$annotationArray = array();
+		
 		while ($annotationItem) {
 			$moddate = $annotationItem->getModificationDate();
 			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
@@ -122,16 +120,18 @@ class cs_popup_portfolioList_controller implements cs_rubric_popup_controller {
 			} else {
 				$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
 			}
-			
+				
 			$annotationArray[] = array(
 					"itemId"			=> $annotationItem->getItemID(),
 					"title"				=> $annotationItem->getTitle(),
 					"modificationDate"	=> $moddate,
 					"modificator"		=> $annotationItem->getModificatorItem()->getFullName()
 			);
-			
+				
 			$annotationItem = $annotationList->getNext();
 		}
+		
+		$this->_popup_controller->assign("popup", "numAnnotations", sizeof($annotationArray));
 		
 		$this->_popup_controller->assign("popup", "annotationItems", $annotationArray);
 	}

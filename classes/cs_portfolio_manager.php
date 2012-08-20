@@ -461,27 +461,27 @@ function deletePortfolioTags($portfolioId) {
   	return $return;
   }
   
-  function getPortfolioAnnotationIds($portfolioId) {
+  function setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn) {
   	$query = "
-	  	SELECT
-	  		a_id
-	  	FROM
-	  		" . $this->addDatabasePrefix("annotation_portfolio") . "
-	  	WHERE
-	  		p_id = '" . encode(AS_DB, $portfolioId) . "'
+  		INSERT INTO
+  			" . $this->addDatabasePrefix("annotation_portfolio") . "
+  		(
+  			p_id,
+  			a_id,
+  			`row`,
+  			`column`
+  		) VALUES (
+  			'" . encode(AS_DB, $portfolioId) . "',
+  			'" . encode(AS_DB, $annotationId) . "',
+  			'" . encode(AS_DB, $portfolioRow) . "',
+  			'" . encode(AS_DB, $portfolioColumn) . "'
+  		)
   	";
+  	
   	$result = $this->_db_connector->performQuery($query);
-  	 
   	if ( !isset($result) ) {
-  		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio annotation count.',E_USER_WARNING);
+  		include_once('functions/error_functions.php');trigger_error('Problems storing annotation - portfolio reference.',E_USER_WARNING);
   	}
-  	 
-  	$return = array();
-  	foreach ($result as $row) {
-  		$return[] = $row["a_id"];
-  	}
-  	 
-  	return $return;
   }
 
 /****************************************/

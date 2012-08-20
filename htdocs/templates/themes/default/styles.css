@@ -4526,6 +4526,7 @@ Portfolio
 
 .ep_cell_content a:hover {
     text-decoration: underline;
+    cursor: pointer;
     }
 
 .ep_cell_content span {

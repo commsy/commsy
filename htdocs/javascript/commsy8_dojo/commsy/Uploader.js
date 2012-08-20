@@ -132,7 +132,9 @@ define([	"dojo/_base/declare",
 			// update progress bar
 			this.progressbar.set("value", statusObject.percent);
 
-			if(statusObject.percent === "100%") this.progressbar.destroy(false);
+			if(statusObject.percent === "100%") {
+				this.progressbar.destroy(false);
+			}
 		},
 
 		destroy: function() {

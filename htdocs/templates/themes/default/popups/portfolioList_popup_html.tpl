@@ -19,7 +19,7 @@
     					<div id="ep_content_row_one">
                     <div class="ep_open_close_head">
                         <strong>___COMMON_ENTRIES___</strong> ({$popup.numItems} ___COMMON_NETNAVIGATION_ENTRIES___)
-                        <a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="{$basic.tpl_path}img/pop_max_btn.gif" alt="maximieren" /></a>
+                        {*<a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="{$basic.tpl_path}img/pop_max_btn.gif" alt="maximieren" /></a>*}
                             
                         <div class="clear"></div>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="ep_crt_content">
                     
                     	{foreach $popup.items as $item}
-                    		 <div class="pop_row_odd">
+                    		 <div class="pop_{if $item@iteration is odd}row_odd{else}row_even{/if}">
                                     <div class="pop_col_330">
                                         <a href="#" class="openDetailPopup" data-custom="iid: {$item.itemId}, module: '{$item.module}', contextId: {$popup.privateRoomId}">{$item.title}</a>
                                     </div>
@@ -50,7 +50,9 @@
                 <div id="ep_content_row_two">
                     <div class="ep_open_close_head">
                         <strong>___CS_BAR_PORTFOLIO_COMMENTS_HEADER___</strong> ({$popup.numAnnotations} ___CS_BAR_PORTFOLIO_COMMENTS_EXISTS___)
-                        <a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="{$basic.tpl_path}img/pop_max_btn.gif" alt="maximieren" /></a>
+                        
+                        <a id="portfolioListCreateAnnotation" class="open_popup float-right" href="#" data-custom="module: 'annotation', iid: 'NEW', portfolioId: {$popup.portfolioId}, contextId: {$popup.privateRoomId}"><strong>+</strong></a>
+                        {*<a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="{$basic.tpl_path}img/pop_max_btn.gif" alt="maximieren" /></a>*}
                         
                         <div class="clear"></div>  
                     </div>
@@ -58,9 +60,9 @@
                     <div class="ep_crt_content">
                     
                     	{foreach $popup.annotationItems as $item}
-                    		 <div class="pop_row_odd">
+                    		 <div class="pop_{if $item@iteration is odd}row_odd{else}row_even{/if}">
                                  <div class="pop_col_330">
-                                     <a href="">{$item.title}</a>
+                                     <a href="#" class="openDetailPopup" data-custom="iid: {$item.itemId}, module: 'annotation', contextId: {$popup.privateRoomId}">{$item.title}</a>
                                  </div>
                                  <div class="pop_col_90">
                                      {$item.modificationDate}

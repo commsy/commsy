@@ -223,7 +223,10 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     					
     					if ($additional["annotatedId"]) {
     						$annotation_item->setLinkedItemID($additional["annotatedId"]);
+    					} else if (isset($additional["portfolioId"])) {
+    						$annotation_item->setLinkedItemID($additional["portfolioId"]);
     					}
+    					
     					if ($additional["versionId"]) {
     						$annotation_item->setLinkedVersionItemID($additional["versionId"]);
     					}
@@ -258,6 +261,12 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     				$manager->markEdited($annotation_item->getItemID());
     				
     				$annotation_item->save();
+    				
+    				// check for portfolio link
+    				if (isset($additional["portfolioId"])) {
+    					$portfolioManager = $this->_environment->getPortfolioManager();
+    					$portfolioManager->setPortfolioAnnotation($additional["portfolioId"], $annotation_item->getItemID(), $additional["portfolioRow"], $additional["portfolioColumn"]);
+    				}
     				
     				// reset id array
     				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_annotation_index_ids', array($annotation_item->getItemID()));
