@@ -24,7 +24,7 @@
 
 
 {block name=header}
-{assign  var="intranet_url" value="bgu-intranet.effective-webwork.de"}
+{assign  var="intranet_url" value="intranet.bgu-frankfurt.de"}
 <!--    <div id ="wrapper-outer">
 	<img id="background-img" class="hintergrundbild" alt="" src="templates/themes/bgu/img/hintergrund.jpg"/>
     <div id ="cs_wrapper">-->
