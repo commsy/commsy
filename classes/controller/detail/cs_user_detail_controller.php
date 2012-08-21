@@ -621,14 +621,17 @@
 			// title
 			$title = $this->_item->getTitle();
 			if(!empty($title)) {
+				$title .= ' ';
 				//$temp_array = array();
 				//$temp_array[] = $translator->getMessage('USER_TITLE');
 				// TODO:
 				// $title = compareWithSearchText($title);
 				//$temp_array[] = $converter->text_as_html_short($title);
 				//$formal_data[] = $temp_array;
-				$return['first_block']['fullname'] = $converter->text_as_html_short($title);
 			}
+			$title .= $this->_item->getFullname();
+			$return['first_block']['fullname'] = $converter->text_as_html_short($title);
+
 
 			// birthday
 			$birthday = $this->_item->getBirthday();
