@@ -530,6 +530,7 @@ if ( !empty($SID) ) {
                   $params = array();
                   $params = $environment->getCurrentParameterArray();
                   unset($params['ses_id']);
+                  unset($params['cid']);
                   redirect( $environment->getCurrentContextID(),
                             $environment->getCurrentModule(),
                             $environment->getCurrentFunction(),
