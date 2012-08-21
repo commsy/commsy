@@ -26,54 +26,57 @@ define([	"dojo/_base/declare",
 
 		registerPopupClick: function() {
 			on(this.triggerNode, "click", lang.hitch(this, function(event) {
-				if(this.is_open === false) {
-					this.is_open = true;
+				this.open();
+				event.preventDefault();
+			}));
+		},
+		
+		open: function() {
+			if(this.is_open === false) {
+				this.is_open = true;
 
-					this.setupLoading();
-					
-					var data = { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id, contextId: this.contextId, date_new: this.date_new };
-					declare.safeMixin(data, this.initData);
+				this.setupLoading();
+				
+				var data = { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id, contextId: this.contextId, date_new: this.date_new };
+				declare.safeMixin(data, this.initData);
 
-					// setup ajax request for getting html
-					this.AJAXRequest(this.ajaxHTMLSource, "getHTML", data, lang.hitch(this, function(html) {
-						// append html to body
-						domConstruct.place(html, query("body")[0], "first");
+				// setup ajax request for getting html
+				this.AJAXRequest(this.ajaxHTMLSource, "getHTML", data, lang.hitch(this, function(html) {
+					// append html to body
+					domConstruct.place(html, query("body")[0], "first");
 
-						this.contentNode = query("div#popup_wrapper")[0];
-						this.scrollToNodeAnimated(this.contentNode);
+					this.contentNode = query("div#popup_wrapper")[0];
+					this.scrollToNodeAnimated(this.contentNode);
 
-						this.setupTabs();
-						this.setupFeatures();
-						this.setupSpecific();
-						this.setupAutoSave();
+					this.setupTabs();
+					this.setupFeatures();
+					this.setupSpecific();
+					this.setupAutoSave();
 
-						// register close
-						on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
-							this.close();
+					// register close
+					on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
+						this.close();
 
-							event.preventDefault();
-						}));
-
-						// register submit clicks
-						on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
-							// setup loading
-							this.setupLoading();
-
-							// get custom data object
-							var customObject = this.getAttrAsObject(event.target, "data-custom");
-							this.onPopupSubmit(customObject);
-
-							event.preventDefault();
-						}));
-
-						this.is_open = !this.is_open;
-
-						this.destroyLoading();
+						event.preventDefault();
 					}));
 
-					event.preventDefault();
-				}
-			}));
+					// register submit clicks
+					on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+						// setup loading
+						this.setupLoading();
+
+						// get custom data object
+						var customObject = this.getAttrAsObject(event.target, "data-custom");
+						this.onPopupSubmit(customObject);
+
+						event.preventDefault();
+					}));
+
+					this.is_open = !this.is_open;
+
+					this.destroyLoading();
+				}));
+			}
 		},
 
 		setupAutoSave: function() {

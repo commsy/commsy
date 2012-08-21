@@ -6,7 +6,7 @@
     
     	<div id="myPortfolioTabNode" data-dojo-type="dijit.layout.TabContainer" title="___CS_BAR_PORTFOLIO___" nested="true">
     		<div id="startPortfolio" data-dojo-type="dijit.layout.ContentPane" title="Start" closable="false">
-    			Einleitung / Übersicht...
+    			___CS_BAR_PORTFOLIO_START___
     		</div>
     		<div id="newPortfolioNode" data-dojo-type="dijit.layout.ContentPane" title="+"></div>
     	

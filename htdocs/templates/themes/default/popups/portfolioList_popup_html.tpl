@@ -62,7 +62,7 @@
                     	{foreach $popup.annotationItems as $item}
                     		 <div class="pop_{if $item@iteration is odd}row_odd{else}row_even{/if}">
                                  <div class="pop_col_330">
-                                     <a href="#" class="openDetailPopup" data-custom="iid: {$item.itemId}, module: 'annotation', contextId: {$popup.privateRoomId}">{$item.title}</a>
+                                     <a href="#" class="openDetailPopupAnnotation" data-custom="iid: {$item.itemId}, module: 'annotation', contextId: {$popup.privateRoomId}, portfolioId: {$popup.portfolioId}">{$item.title}</a>
                                  </div>
                                  <div class="pop_col_90">
                                      {$item.modificationDate}

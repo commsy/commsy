@@ -23,6 +23,12 @@ define([	"dojo/_base/declare",
 			this.version_id = customObject.vid;
 			this.contextId = customObject.contextId;
 			
+			if (customObject.portfolioId) {
+				this.setInitData({
+					portfolioId:		customObject.portfolioId
+				});
+			}
+			
 			this.features = [];
 			
 			// register click for node
@@ -42,14 +48,30 @@ define([	"dojo/_base/declare",
 			//var delType = this.delType;
 			if(customObject.del === "recurrence") this.delType = "date_recurrence";
 			
-			this.submit(search, { delType: this.delType, delVersion: this.delVersion, version_id: this.version_id });
+			var send = {
+				delType:			this.delType,
+				delVersion:			this.delVersion,
+				version_id:			this.version_id
+			};
+			
+			if (this.initData.portfolioId) {
+				declare.safeMixin(send, {
+					portfolioId:		this.initData.portfolioId
+				});
+			}
+			
+			this.submit(search, send);
 		},
 		
 		onPopupSubmitSuccess: function(response) {
 			this.close();
 			
 			if (this.contextId) {
-				Topic.publish("newOwnRoomItem", {});		// this just updates the stack list at the moment
+				if (this.initData.portfolioId) {
+					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
+				} else {
+					Topic.publish("newOwnRoomItem", {});		// this just updates the stack list at the moment
+				}
 			} else {
 				if(response.redirectToIndex) {
 					var cid = this.uri_object.cid;

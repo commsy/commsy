@@ -102,6 +102,9 @@ class cs_popup_portfolioList_controller implements cs_rubric_popup_controller {
 		
 		$this->_popup_controller->assign("popup", "items", $itemArray);
 		
+		$portfolioManager = $this->_environment->getPortfolioManager();
+		$annotationIdArray = $portfolioManager->getAnnotationIdsForPortfolioCell($item->getItemID(), $data["row"], $data["column"]);
+		
 		$annotationManager = $this->_environment->getAnnotationManager();
 		
 		$annotationArray = array();
@@ -114,6 +117,11 @@ class cs_popup_portfolioList_controller implements cs_rubric_popup_controller {
 		$annotationItem = $annotationList->getFirst();
 		
 		while ($annotationItem) {
+			if (!in_array($annotationItem->getItemID(), $annotationIdArray)) {
+				$annotationItem = $annotationList->getNext();
+				continue;
+			}
+			
 			$moddate = $annotationItem->getModificationDate();
 			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
 				$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());

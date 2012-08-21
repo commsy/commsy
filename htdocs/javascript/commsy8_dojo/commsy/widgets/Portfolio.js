@@ -48,8 +48,13 @@ define([	"dojo/_base/declare",
 			this.activatedPortfolioTabNode = dijit.byId("activatedPortfolioTabNode");
 			
 			// watch changes of child widgets in my portfolio tab
-			this.myPortfolioTabNode.watch("selectedChildWidget", Lang.hitch(this, function(name, oldWidget, newWidget) {;
-				this.onTabChanged(name, oldWidget, newWidget);
+			this.myPortfolioTabNode.watch("selectedChildWidget", Lang.hitch(this, function(name, oldWidget, newWidget) {
+				this.onTabChanged(name, oldWidget, newWidget, true);
+			}));
+			
+			// watch changes of child widgets in activated tab
+			this.activatedPortfolioTabNode.watch("selectedChildWidget", Lang.hitch(this, function(name, oldWidget, newWidget) {
+				this.onTabChanged(name, oldWidget, newWidget, false);
 			}));
 			
 			this.loadPortfolios();
@@ -67,6 +72,14 @@ define([	"dojo/_base/declare",
 			dojo.forEach(children, Lang.hitch(this, function(child, index, arr) {
 				if (child.baseClass === "CommSyPortfolioItemWidget") {
 					this.myPortfolioTabNode.removeChild(child);
+					child.destroyRecursive();
+				}
+			}));
+			
+			children = this.activatedPortfolioTabNode.getChildren();
+			dojo.forEach(children, Lang.hitch(this, function(child, index, arr) {
+				if (child.baseClass === "CommSyPortfolioItemWidget") {
+					this.activatedPortfolioTabNode.removeChild(child);
 					child.destroyRecursive();
 				}
 			}));
@@ -94,6 +107,15 @@ define([	"dojo/_base/declare",
 					
 					tab.addChild(widget, 0);
 					if (select) tab.selectChild(widget);
+					
+					if (tab.id === "myPortfolioTabNode") {
+						var children = this.myPortfolioTabNode.getChildren();
+						dojo.forEach(children, Lang.hitch(this, function(child, index, arr) {
+							if (child.id === "startPortfolio") {
+								this.myPortfolioTabNode.removeChild(child);
+							}
+						}));
+					}
 				})
 			);
 		},
@@ -101,9 +123,9 @@ define([	"dojo/_base/declare",
 		/************************************************************************************
 		 * EventHandler
 		 ************************************************************************************/
-		onTabChanged: function(name, oldWidget, newWidget) {
+		onTabChanged: function(name, oldWidget, newWidget, withEditing) {
 			if (newWidget.baseClass === "CommSyPortfolioItemWidget") {
-				newWidget.init();
+				newWidget.init(withEditing);
 			} else if(newWidget.id === "newPortfolioNode") {
 				this.createNewPortfolioNode.click();
 			}

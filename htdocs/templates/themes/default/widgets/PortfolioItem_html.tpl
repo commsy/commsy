@@ -1,14 +1,16 @@
 <div class="{literal}${baseClass}{/literal} widget_full">
 
-	<div id="e-portfolio">
+	<div id="e-portfolio" data-dojo-attach-point="portfolioNode">
         
         <div id="ep_left_col">
             <div id="ep_title">
+            	{*
                 <div id="ep_title_nav">
                     <a href="" title="zur&uuml;ck"><img src="{$basic.tpl_path}img/ep_skip_left.gif" alt="zur&uuml;ck" /></a> 
                     <a href="" title="n&auml;chster"><img src="{$basic.tpl_path}img/ep_skip_right.gif" alt="n&auml;chster" /></a>
                 </div>
-                <div class="float-right">
+                *}
+                <div class="float-right" data-dojo-attach-point="portfolioEditDivNode">
                 	<a href="" class="ep_edit_head" data-dojo-attach-point="editPortfolioNode"><img src="{$basic.tpl_path}img/ep_icon_editdarkgrey.gif" alt="" /></a>
                 </div>
                 <div id="ep_tides">
@@ -19,7 +21,7 @@
                 <div class="clear"></div>
             </div>
             
-            <div>
+            <div data-dojo-attach-point="portfolioEditRowNode">
             	{* add row *}
             	<div id="epRowAdd" class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
             		<a class="ep_vert_edit">
@@ -38,7 +40,7 @@
         
         <div>
         	{* add column *}
-	    	<div id="epColumnAdd" class="float-right">
+	    	<div id="epColumnAdd" class="float-right" data-dojo-attach-point="portfolioEditColumnNode">
 	            <a href=""><img src="{$basic.tpl_path}img/ep_hor_edit.jpg" alt="" /></a>
 	            <a class="ep_edit_head tagEdit" data-custom="tagId: 'NEW', position: 'column', module: 'tagPortfolio'" href=""><strong>+</strong></a>
 	            <strong>&nbsp;</strong>
@@ -52,23 +54,4 @@
         
         <div class="clear"></div>
     </div>
-    
-    
-
-{*
-	<div class="innerWidgetArea">
-		<div class="widget_head">
-			<h3 class="pop_widget_h3 float-left">___COMMON_RSS_TICKER___</h3>
-			<a id="edit_buzzwords" class="btn_head_rc2 edit" href="#" data-dojo-attach-point="rssEditNode" title="Bearbeiten">
-				<img src="{$basic.tpl_path}img/templates/themes/default/img/btn_edit_rc.gif" alt="Bearbeiten">
-			</a>
-			<div class="clear"></div>
-		</div>
-		
-		<div class="widget_body" data-dojo-attach-point="widgetBodyNode">
-			<div data-dojo-attach-point="rssContentNode"></div>
-		</div>
-	</div>
-	
-	*}
 </div>

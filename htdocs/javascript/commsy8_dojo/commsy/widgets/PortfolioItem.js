@@ -34,8 +34,10 @@ define([	"dojo/_base/declare",
 			 ************************************************************************************/
 		},
 		
-		init: function() {
+		init: function(withEditing) {
 			if (this.isInitialized === false) {
+				this.withEditing = withEditing;
+				
 				this.update();
 				
 				require(["commsy/popups/ClickPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
@@ -43,7 +45,7 @@ define([	"dojo/_base/declare",
 					handler.init(this.editPortfolioNode, { iid: this.portfolioId, module: "portfolioItem" });
 				}));
 				
-				var tagEditNodes = Query("a.tagEdit");
+				var tagEditNodes = Query("a.tagEdit", this.portfolioNode);
 				dojo.forEach(tagEditNodes, Lang.hitch(this, function(tagNode, index, arr) {
 					require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
 						var handler = new ClickPopup();
@@ -58,7 +60,7 @@ define([	"dojo/_base/declare",
 				
 				// subscribe
 				Topic.subscribe("updatePortfolio", Lang.hitch(this, function(object) {
-					if (object.portfolioId === this.portfolioId) {
+					if (object.portfolioId == this.portfolioId) {
 						this.update();
 					}
 				}));
@@ -83,6 +85,12 @@ define([	"dojo/_base/declare",
 							return item.column > 0;
 						});
 						
+						if (this.withEditing === false) {
+							DomConstruct.destroy(this.portfolioEditDivNode);
+							DomConstruct.destroy(this.portfolioEditRowNode);
+							DomConstruct.destroy(this.portfolioEditColumnNode);
+						}
+						
 						// create html for row tags
 						var createdRowNodes = Query(this.lastVerticalTag).prevAll("div.ep_vert_col_cell");
 						dojo.forEach(createdRowNodes, Lang.hitch(this, function(rowNode, index, arr) {
@@ -96,27 +104,31 @@ define([	"dojo/_base/declare",
 									DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_vert_edit.jpg" }, aNode, "last");
 								
 								var divTitleNode = DomConstruct.create("div", { className: "ep_vert_col_title" }, divNode, "last");
-									var aEditNode = DomConstruct.create("a", {
-										href:			"#",
-										"data-custom":	"tagId: '" + rowTag.t_id + "', position: 'row', module: 'tagPortfolio'"
-									}, divTitleNode, "last");
-									
-										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+									if (this.withEditing === true) {
+										var aEditNode = DomConstruct.create("a", {
+											href:			"#",
+											"data-custom":	"tagId: '" + rowTag.t_id + "', position: 'row', module: 'tagPortfolio'"
+										}, divTitleNode, "last");
+										
+											DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+									}
 									
 									DomConstruct.create("strong", { innerHTML: rowTag.title }, divTitleNode, "last");
 								
 								DomConstruct.create("div", { className: "clear" }, divNode, "last");
 							
 							// register edit
-							require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
-								var handler = new ClickPopup();
-								var customObject = this.getAttrAsObject(aEditNode, "data-custom");
-								customObject.portfolioId = this.portfolioId;
-								
-								if (customObject) {
-									handler.init(aEditNode, customObject);
-								}
-							}));
+							if (this.withEditing === true) {
+								require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
+									var handler = new ClickPopup();
+									var customObject = this.getAttrAsObject(aEditNode, "data-custom");
+									customObject.portfolioId = this.portfolioId;
+									
+									if (customObject) {
+										handler.init(aEditNode, customObject);
+									}
+								}));
+							}
 						}));
 						
 						DomConstruct.empty(this.tableNode);
@@ -130,26 +142,30 @@ define([	"dojo/_base/declare",
 									var aNode = DomConstruct.create("a", { }, thNode, "last");
 										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_hor_edit.jpg" }, aNode, "last");
 									
-									var aEditNode = DomConstruct.create("a", {
-											className: "ep_edit_head",
-											href:			"#",
-											"data-custom":	"tagId: '" + columnTag.t_id + "', position: 'row', module: 'tagPortfolio'"
-										}, thNode, "last");
-										
-										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+									if (this.withEditing === true) {
+										var aEditNode = DomConstruct.create("a", {
+												className: "ep_edit_head",
+												href:			"#",
+												"data-custom":	"tagId: '" + columnTag.t_id + "', position: 'row', module: 'tagPortfolio'"
+											}, thNode, "last");
+											
+											DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+									}
 									
 									DomConstruct.create("strong", { innerHTML: columnTag.title.substring(0, 14) }, thNode, "last");
 								
 								// register edit
-								require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
-									var handler = new ClickPopup();
-									var customObject = this.getAttrAsObject(aEditNode, "data-custom");
-									customObject.portfolioId = this.portfolioId;
-									
-									if (customObject) {
-										handler.init(aEditNode, customObject);
-									}
-								}));
+								if (this.withEditing === true) {
+									require(["commsy/popups/ClickTagPortfolioPopup"], Lang.hitch(this, function(ClickPopup) {
+										var handler = new ClickPopup();
+										var customObject = this.getAttrAsObject(aEditNode, "data-custom");
+										customObject.portfolioId = this.portfolioId;
+										
+										if (customObject) {
+											handler.init(aEditNode, customObject);
+										}
+									}));
+								}
 							}));
 						
 						// create html for table cells

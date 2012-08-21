@@ -461,6 +461,31 @@ function deletePortfolioTags($portfolioId) {
   	return $return;
   }
   
+  function getAnnotationIdsForPortfolioCell($portfolioId, $row, $column) {
+  	$query = "
+	  	SELECT
+	  		a_id
+		FROM
+		  	" . $this->addDatabasePrefix("annotation_portfolio") . "
+	  	WHERE
+	  		p_id = '" . encode(AS_DB, $portfolioId) . "' AND
+	  		`row` = '" . encode(AS_DB, $row) . "' AND
+	  		`column` = '" . encode(AS_DB, $column) . "'
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	 
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio annotation ids.',E_USER_WARNING);
+  	}
+  	 
+  	$return = array();
+  	foreach ($result as $row) {
+  		$return[] = $row["a_id"];
+  	}
+  	 
+  	return $return;
+  }
+  
   function setPortfolioAnnotation($portfolioId, $annotationId, $portfolioRow, $portfolioColumn) {
   	$query = "
   		INSERT INTO
@@ -481,6 +506,21 @@ function deletePortfolioTags($portfolioId) {
   	$result = $this->_db_connector->performQuery($query);
   	if ( !isset($result) ) {
   		include_once('functions/error_functions.php');trigger_error('Problems storing annotation - portfolio reference.',E_USER_WARNING);
+  	}
+  }
+  
+  function deletePortfolioAnnotation($portfolioId, $annotationId) {
+  	$query = "
+  		DELETE FROM
+  			" . $this->addDatabasePrefix("annotation_portfolio") . "
+  		WHERE
+  			p_id = '" . encode(AS_DB, $portfolioId) . "' AND
+  			a_id = '" . encode(AS_DB, $annotationId) . "'
+  	";
+  	 
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems deleting annotation for portfolio reference.',E_USER_WARNING);
   	}
   }
 

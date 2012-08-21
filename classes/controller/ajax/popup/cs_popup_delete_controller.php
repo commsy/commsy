@@ -50,7 +50,14 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     			case "annotation":
     				$annotation_manager = $this->_environment->getAnnotationManager();
     				$annotation_item = $annotation_manager->getItem($item_id);
+    				
+    				if (isset($additional["portfolioId"])) {
+    					$portfolioManager = $this->_environment->getPortfolioManager();
+    					$portfolioManager->deletePortfolioAnnotation($additional["portfolioId"], $annotation_item->getItemID());
+    				}
+    				
     				$annotation_item->delete();
+    				
     				$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => false, "item_id" => $annotation_item->getLinkedItemID()));
     				break;
     			

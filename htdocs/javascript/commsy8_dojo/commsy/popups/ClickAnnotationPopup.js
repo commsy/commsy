@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
+        	"dojo/on",
+        	"dojo/topic"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 			
@@ -73,7 +74,27 @@ define([	"dojo/_base/declare",
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
-				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
+				if (this.initData.portfolioId) {
+					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
+					this.close();
+				} else {
+					this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
+						if (this.contextId) {
+							this.close();
+							var aNode = query("a#listItem" + item_id)[0];
+							if (aNode) {
+								aNode.click();
+							}
+						} else {
+							this.reload(item_id);
+						}
+					}));
+				}
+			} else {
+				if (this.initData.portfolioId) {
+					Topic.publish("portfolioOpenAnnotation", { itemId: item_id });
+					this.close();
+				} else {
 					if (this.contextId) {
 						this.close();
 						var aNode = query("a#listItem" + item_id)[0];
@@ -83,18 +104,8 @@ define([	"dojo/_base/declare",
 					} else {
 						this.reload(item_id);
 					}
-				}));
-			} else {
-				if (this.contextId) {
-					this.close();
-					var aNode = query("a#listItem" + item_id)[0];
-					if (aNode) {
-						aNode.click();
-					}
-				} else {
 					this.reload(item_id);
 				}
-				this.reload(item_id);
 			}
 		},
 	});

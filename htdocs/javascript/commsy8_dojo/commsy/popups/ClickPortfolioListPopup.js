@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, domAttr, On) {
+        	"dojo/on",
+        	"dojo/topic"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, domAttr, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 		},
@@ -29,7 +30,6 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			var aDetailNodes = Query("a.openDetailPopup", this.contentNode);
-			
 			dojo.forEach(aDetailNodes, Lang.hitch(this, function(node, index, arr) {
 				require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
 					var handler = new ClickPopup();
@@ -39,6 +39,29 @@ define([	"dojo/_base/declare",
 					
 					On(node, "click", Lang.hitch(this, function(event) {
 						this.close();
+					}));
+				}));
+			}));
+			
+			var aDetailNodes = Query("a.openDetailPopupAnnotation", this.contentNode);
+			dojo.forEach(aDetailNodes, Lang.hitch(this, function(node, index, arr) {
+				require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
+					var handler = new ClickPopup();
+					var customObject = this.getAttrAsObject(node, "data-custom");
+					
+					customObject.portfolioRow = this.initData.row;
+					customObject.portfolioColumn = this.initData.column;
+					
+					handler.init(node, customObject);
+					
+					On(node, "click", Lang.hitch(this, function(event) {
+						this.close();
+					}));
+					
+					Topic.subscribe("portfolioOpenAnnotation", Lang.hitch(this, function(object) {
+						if (customObject.iid == object.itemId) {
+							handler.open();
+						}
 					}));
 				}));
 			}));
@@ -57,7 +80,6 @@ define([	"dojo/_base/declare",
 					On(aCreateAnnotationNode, "click", Lang.hitch(this, function(event) {
 						this.close();
 					}));
-					
 				}));
 			}
 		},

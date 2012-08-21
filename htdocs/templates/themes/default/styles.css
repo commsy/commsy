@@ -4499,6 +4499,7 @@ Portfolio
 #epColumnAdd {
 	height: 54px;
 	margin-left: 10px;
+	width: 32px;
 }
 
 #ep_table th img,
@@ -4627,6 +4628,15 @@ Portfolio
 
 #epRowAdd strong {
 	padding: 0px 0px 0px 0px !important;
+}
+
+#epRowAdd div.ep_vert_col_title,
+#epRowAdd img {
+	height: 37px;
+}
+
+#epRowAdd img {
+	width: 10px;
 }
 
 .ep_vert_col_title strong {

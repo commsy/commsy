@@ -17,6 +17,14 @@ define([	"dojo/_base/declare",
 			this.version_id = customObject.vid || null;
 			this.contextId = customObject.contextId;
 			
+			if (customObject.portfolioId) {
+				this.setInitData({
+					portfolioId:		customObject.portfolioId,
+					portfolioRow:		customObject.portfolioRow,
+					portfolioColumn:	customObject.portfolioColumn
+				});
+			}
+			
 			this.ajaxHTMLSource = "detail_popup";
 			
 			this.features = [];
@@ -40,7 +48,7 @@ define([	"dojo/_base/declare",
 			});
 			
 			// reinvoke forms
-			Query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
+			Query(".open_popup", this.contentNode).forEach(Lang.hitch(this, function(node, index, arr) {
 				// this popup must be closed on click
 				On(node, "click", Lang.hitch(this, function(event) {
 					this.close();
@@ -53,6 +61,15 @@ define([	"dojo/_base/declare",
 				
 				// insert context id
 				customObject.contextId = this.contextId;
+				
+				// insert portfolio data, if given
+				if (this.initData.portfolioId) {
+					declare.safeMixin(customObject, {
+						portfolioId:		this.initData.portfolioId,
+						portfolioRow:		this.initData.portfolioRow,
+						portfolioColumn:	this.initData.portfolioColumn
+					});
+				}
 				
 				require(["commsy/popups/Click" + this.ucFirst(module) + "Popup"], function(ClickPopup) {
 					var handler = new ClickPopup();

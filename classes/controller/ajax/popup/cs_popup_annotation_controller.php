@@ -89,10 +89,6 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
 
     public function save($form_data, $additional = array()) {
     	$session = $this->_environment->getSessionItem();
-    		
-    	// get the current user and room
-    	$current_user = $this->_environment->getCurrentUserItem();
-    	$room_item = $this->_environment->getCurrentContextItem();
     	
     	if ($additional["contextId"]) {
     		$itemManager = $this->_environment->getItemManager();
@@ -105,6 +101,10 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     			$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
     		}
     	}
+    	
+    	// get the current user and room
+    	$current_user = $this->_environment->getCurrentUserItem();
+    	$room_item = $this->_environment->getCurrentContextItem();
     	
     	// get history from session
     	$history = $session->getValue('history');
@@ -214,6 +214,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     				$user = $this->_environment->getCurrentUserItem();
     	
     				// create new item
+    				$isNew = false;
     				if($annotation_item === null) {
     					$annotation_manager = $this->_environment->getAnnotationManager();
     					$annotation_item = $annotation_manager->getNewItem();
@@ -230,6 +231,8 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     					if ($additional["versionId"]) {
     						$annotation_item->setLinkedVersionItemID($additional["versionId"]);
     					}
+    					
+    					$isNew = true;
     				}
     	
     				// set modificator and modification date
@@ -262,16 +265,22 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     				
     				$annotation_item->save();
     				
-    				// check for portfolio link
-    				if (isset($additional["portfolioId"])) {
-    					$portfolioManager = $this->_environment->getPortfolioManager();
-    					$portfolioManager->setPortfolioAnnotation($additional["portfolioId"], $annotation_item->getItemID(), $additional["portfolioRow"], $additional["portfolioColumn"]);
-    				}
-    				
     				// reset id array
     				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_annotation_index_ids', array($annotation_item->getItemID()));
     				
-    				$this->_popup_controller->setSuccessfullItemIDReturn($annotation_item->getLinkedItemID());
+    				// check for portfolio link
+    				if (isset($additional["portfolioId"])) {
+    					
+    					if ($isNew === true) {
+    						$portfolioManager = $this->_environment->getPortfolioManager();
+    						$portfolioManager->setPortfolioAnnotation($additional["portfolioId"], $annotation_item->getItemID(), $additional["portfolioRow"], $additional["portfolioColumn"]);
+    					}
+    					
+    					$this->_popup_controller->setSuccessfullItemIDReturn($annotation_item->getItemID());
+    				} else {
+    					$this->_popup_controller->setSuccessfullItemIDReturn($annotation_item->getLinkedItemID());
+    				}
+    				
     			}
     	}
     }

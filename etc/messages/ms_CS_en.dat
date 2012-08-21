@@ -15,6 +15,7 @@ $message["CS_BAR_PORTFOLIO_DESC"]["en"] = "Here you can setup the personal portf
 $message["CS_BAR_PORTFOLIO_HEADER"]["en"] = "Portfolios";
 $message["CS_BAR_PORTFOLIO_EDIT"]["en"] = "Edit portfolio";
 $message["CS_BAR_PORTFOLIO_NEW"]["en"] = "New portfolio";
+$message["CS_BAR_PORTFOLIO_START"]["en"] = "No portfolios has been created yet, you can select the \"My portfolios\" tab and create<br/>a new portfolio by clicking on \"+\".";
 $message["CS_BAR_PORTFOLIO_VIEW"]["en"] = "Show my portfolios";
 $message["CS_BAR_STACK"]["en"] = "My repository";
 $message["CS_BAR_STACK_DESC"]["en"] = "Here you can setup the personal repository.";
