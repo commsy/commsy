@@ -1226,7 +1226,7 @@
 
       			   case CS_LISTOPTION_DOWNLOAD:
       			   	//include_once("classes/controller/action/cs_download_action_controller.php");
-      			   	
+
       			      //$class_factory = $environment->getClassFactory();
       			     // include_once('include/inc_rubric_download.php');
       			      break;
@@ -1406,6 +1406,10 @@
    				$this->_list_parameter_arrray['interval'] = $_GET['interval'];
 			} else{
    				$this->_list_parameter_arrray['interval'] = $context_item->getListLength();
+			}
+			global $cs_max_list_length;
+			if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
+				$this->_list_parameter_arrray['interval'] = $cs_max_list_length;
 			}
 
 			if ( isset($_GET['sort']) ) {

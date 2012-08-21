@@ -180,7 +180,7 @@ $theme_array['commsy'] = array(
 	'disabled'	=> false
 );
 
-
+//$cs_max_list_length = 20;
 
 
 // include more commsy settings
