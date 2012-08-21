@@ -122,11 +122,11 @@
                     </ul>
                     <div class="clear"> </div>
 
-
+					{block name=outer_room_site_actions}
                     <div id="site_actions">
                     	{block name=room_site_actions}{/block}
                     </div>
-
+					{/block}
                     <h1>{block name=room_navigation_rubric_title}{/block}</h1>
 
                     <div class="clear"> </div>

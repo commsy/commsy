@@ -1,8 +1,13 @@
 {extends file="room_html.tpl"}
 
+{block name=outer_room_site_actions}
+   	{block name=room_site_actions}{/block}
+ {/block}
+
+
 {block name=room_site_actions}
-	<a href="" title="Ansicht in Reihen"><img src="{$basic.tpl_path}img/btn_row_view.gif" alt="Reihen" /></a>
-    <a href="" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>
+{*	<a href="" title="Ansicht in Reihen"><img src="{$basic.tpl_path}img/btn_row_view.gif" alt="Reihen" /></a>
+    <a href="" title="Ansicht in Portlets"><img src="{$basic.tpl_path}img/btn_portlet_view.gif" alt="Portlets" /></a>*}
 {/block}
 
 {block name=room_navigation_rubric_title}
