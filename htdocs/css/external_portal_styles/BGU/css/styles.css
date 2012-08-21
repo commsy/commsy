@@ -310,11 +310,13 @@ box-shadow:none;}
 
 fieldset { border: 1px solid transparent; margin: 0; padding: 0; }
 
-#logged_in{
-    color: #FFFFFF;
-    font-size: 12px;
-    padding-left: 10px;
-    position: absolute;
+#logged_in {
+    color: #666666;
+    float: right;
+    font-size: 11px;
+    padding-bottom: 10px;
+    position: relative;
+    right: -37px;
 }
 
 #home_link{

@@ -3202,12 +3202,6 @@ class cs_external_page_portal_view extends cs_page_view {
 
 
 	<div id="wrapper" class="cf">';
-	if ($current_user->isUser()){
-		$html .= '<div id="logged_in"> Angemeldet als: ';
-		$html .= $current_user->getFullName();
-		$html .= '</div>';
-	}
-
 
 	$html .='
 		<!-- start header -->
@@ -3246,8 +3240,17 @@ class cs_external_page_portal_view extends cs_page_view {
 			</div>
 			<a id="home_link" title="Home" href="'.$typo_url.'index.php?id=531"> Home </a>
              </div>
-		<!-- start content -->
-		<div id="container" class="cf">'.LF;
+		<!-- start content -->'.LF;
+
+	if ($current_user->isUser()){
+		$html .= '<div id="logged_in"> Angemeldet als: ';
+		$html .= $current_user->getFullName();
+		$html .= '</div>';
+	}
+
+
+
+	$html .='<div id="container" class="cf">'.LF;
 
     if ( !(isset($this->_agb_view) or
           ($cs_room_id and $cs_module == 'configuration') or
