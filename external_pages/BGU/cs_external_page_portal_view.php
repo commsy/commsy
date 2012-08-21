@@ -3227,7 +3227,7 @@ class cs_external_page_portal_view extends cs_page_view {
                         </ul>
 		</div>
 				<div class="configure-App cf" style="height:35px;">
-				<div style="float:right;"><a title="Abmelden" href="http://bgu-intranet.effective-webwork.de/?logintype=logout">
+				<div style="float:right;"><a title="Abmelden" href="'.$typo_url.'?logintype=logout">
 <img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/logout_small.png" alt="">
 </a></div>
 		<div id="search" style="float:right; z-index:500;">
