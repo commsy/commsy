@@ -203,7 +203,7 @@
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        if($home_rubric_limit < $count_select){
-	                        	$home_rubric_limit = 50;
+	                        	$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 	                        }
 
 	                        $manager->select();
@@ -223,7 +223,7 @@
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        if($home_rubric_limit < $count_select){
-	                        	$home_rubric_limit = 50;
+	                        	$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 	                        }
 
 	                        $manager->select();
@@ -269,7 +269,7 @@
 	                        $count_select = $manager->getCountAll();
 	                        $manager->setIntervalLimit(0, $home_rubric_limit);
 	                        if($home_rubric_limit < $count_select){
-	                        	$home_rubric_limit = 50;
+	                        	$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 	                        }
 
 	                        $manager->select();
@@ -343,7 +343,7 @@
 	                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 
 	                        if($home_rubric_limit < $count_select){
-	                        	$home_rubric_limit = 50;
+	                        	$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 	                        }
 
 	                        $manager->select();
@@ -382,7 +382,7 @@
 	                        $home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 
 	                        if($home_rubric_limit < $count_select){
-	                        	$home_rubric_limit = 50;
+	                        	$home_rubric_limit = CS_HOME_RUBRIC_LIST_LIMIT;
 	                        }
 
 	                        $manager->select();
@@ -711,7 +711,7 @@
 
 							if($this->_environment->inProjectRoom()) {
 								global $who_is_online;
-								if(isset($who_is_online) && $who_is_online) {pr("test");
+								if(isset($who_is_online) && $who_is_online) {
 									$shown = $list->getCount();
 									if($shown > 0) {
 										$days = ($context_item->isProjectRoom() ? $context_item->getTimeSpread() : 90);
