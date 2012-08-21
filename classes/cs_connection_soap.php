@@ -2886,6 +2886,8 @@ class cs_connection_soap {
       return $xml;
    }
    
+   // Dates
+   
    public function getDatesList($session_id, $context_id) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
@@ -2951,8 +2953,8 @@ class cs_connection_soap {
          $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
          $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
          $temp_description = $date_item->getDescription();
-         $temp_description = html_entity_decode($date_item->getDescription());
-         $temp_description = utf8_encode($date_item->getDescription());
+         $temp_description = html_entity_decode($temp_description);
+         $temp_description = utf8_encode($temp_description);
          $temp_description = str_ireplace('<br />', "\n", $temp_description);
          $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
@@ -3059,5 +3061,339 @@ class cs_connection_soap {
       }
    }
    
+   
+   // Materials
+   
+   public function getMaterialsList($session_id, $context_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $reader_manager = $this->_environment->getReaderManager();
+         $material_manager = $this->_environment->getMaterialManager();
+         $material_manager->setContextLimit($context_id);
+         //$dates_manager->setDateModeLimit(2);
+         //$count_all = $material_manager->getCountAll();
+         $material_manager->select();
+         $material_list = $material_manager->get();
+         $xml = "<material_list>\n";
+         $material_item = $material_list->getFirst();
+         while($material_item) {
+            $xml .= "<material_item>\n";
+            $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
+            $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
+            $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $xml .= "<material_read><![CDATA[new]]></material_read>\n";
+            } elseif ( $reader['read_date'] < $material_item->getModificationDate() ) {
+               $xml .= "<material_read><![CDATA[changed]]></material_read>\n";
+            } else {
+               $xml .= "<material_read><![CDATA[]]></material_read>\n";
+            }
+            $xml .= "</material_item>\n";
+            $material_item = $material_list->getNext();
+         }
+         $xml .= "</material_list>";
+         #debugToFile($xml);
+         $xml = $this->_encode_output($xml);
+         return $xml;
+      }
+   }
+   
+   public function getMaterialDetails($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $material_manager = $this->_environment->getMaterialManager();
+         $material_item = $material_manager->getItem($item_id);
+         $xml .= "<material_item>\n";
+         $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
+         $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
+         $temp_description = $material_item->getDescription();
+         $temp_description = html_entity_decode($temp_description);
+         $temp_description = utf8_encode($temp_description);
+         $temp_description = str_ireplace('<br />', "\n", $temp_description);
+         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         $xml .= "<material_description><![CDATA[".$temp_description."]]></material_description>\n";
+         $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) ) {
+            $xml .= "<material_read><![CDATA[new]]></material_read>\n";
+         } elseif ( $reader['read_date'] < $material_item->getModificationDate() ) {
+            $xml .= "<material_read><![CDATA[changed]]></material_read>\n";
+         } else {
+            $xml .= "<material_read><![CDATA[]]></material_read>\n";
+         }
+         if($material_item->mayEdit($user_item)){
+            $xml .= "<material_edit><![CDATA[edit]]></material_edit>\n";
+         } else {
+            $xml .= "<material_edit><![CDATA[non_edit]]></material_edit>\n";
+         }
+         $xml .= "<material_files>\n";
+         $file_list = $material_item->getFileList();
+         $temp_file = $file_list->getFirst();
+         while($temp_file){
+            $xml .= "<material_file>\n";
+            $xml .= "<material_file_name><![CDATA[".$temp_file->getFileName()."]]></material_file_name>\n";
+            $xml .= "<material_file_id><![CDATA[".$temp_file->getFileID()."]]></material_file_id>\n";
+            $xml .= "<material_file_size><![CDATA[".$temp_file->getFileSize()."]]></material_file_size>\n";
+            $xml .= "<material_file_mime><![CDATA[".$temp_file->getMime()."]]></material_file_mime>\n";
+            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
+            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
+            //   debugToFile($temp_file->getBase64());
+            //}
+            $xml .= "</material_file>\n";
+            $temp_file = $file_list->getNext();
+         }
+         $xml .= "</material_files>\n";
+         $xml .= "</material_item>\n";
+         $xml = $this->_encode_output($xml);
+         $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) or $reader['read_date'] < $material_item->getModificationDate() ) {
+            $reader_manager->markRead($material_item->getItemID(),0);
+         }
+         $noticed = $noticed_manager->getLatestNoticedForUserByID($material_item->getItemID(), $user_item->getItemID());
+         if ( empty($noticed) or $noticed['read_date'] < $material_item->getModificationDate() ) {
+            $noticed_manager->markNoticed($material_item->getItemID(),0);
+         }
+         debugToFile($xml);
+         return $xml;
+      }
+   }
+   
+   
+   // Discussions
+   
+   public function getDiscussionList($session_id, $context_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $reader_manager = $this->_environment->getReaderManager();
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_manager->setContextLimit($context_id);
+         $discussion_manager->select();
+         $discussion_list = $discussion_manager->get();
+         $xml = "<discussion_list>\n";
+         $discussion_item = $discussion_list->getFirst();
+         while($discussion_item) {
+            $xml .= "<discussion_item>\n";
+            $xml .= "<discussion_id><![CDATA[".$discussion_item->getItemID()."]]></discussion_id>\n";
+            $xml .= "<discussion_title><![CDATA[".$discussion_item->getTitle()."]]></discussion_title>\n";
+            $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $xml .= "<discussion_read><![CDATA[new]]></discussion_read>\n";
+            } elseif ( $reader['read_date'] < $discussion_item->getModificationDate() ) {
+               $xml .= "<discussion_read><![CDATA[changed]]></discussion_read>\n";
+            } else {
+               $xml .= "<discussion_read><![CDATA[]]></discussion_read>\n";
+            }
+            $xml .= "</discussion_item>\n";
+            $discussion_item = $discussion_list->getNext();
+         }
+         $xml .= "</discussion_list>";
+         #debugToFile($xml);
+         $xml = $this->_encode_output($xml);
+         return $xml;
+      }
+   }
+   
+   public function getDiscussionDetails($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_item = $discussion_manager->getItem($item_id);
+         $xml .= "<discussion_item>\n";
+         $xml .= "<discussion_id><![CDATA[".$discussion_item->getItemID()."]]></discussion_id>\n";
+         $xml .= "<discussion_title><![CDATA[".$discussion_item->getTitle()."]]></discussion_title>\n";
+         #$temp_description = $discussion_item->getDescription();
+         #$temp_description = html_entity_decode($discussion_item->getDescription());
+         #$temp_description = utf8_encode($discussion_item->getDescription());
+         #$temp_description = str_ireplace('<br />', "\n", $temp_description);
+         #$temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         #$xml .= "<discussion_description><![CDATA[".$temp_description."]]></discussion_description>\n";
+         $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) ) {
+            $xml .= "<discussion_read><![CDATA[new]]></discussion_read>\n";
+         } elseif ( $reader['read_date'] < $discussion_item->getModificationDate() ) {
+            $xml .= "<discussion_read><![CDATA[changed]]></discussion_read>\n";
+         } else {
+            $xml .= "<discussion_read><![CDATA[]]></discussion_read>\n";
+         }
+         if($discussion_item->mayEdit($user_item)){
+            $xml .= "<discussion_edit><![CDATA[edit]]></discussion_edit>\n";
+         } else {
+            $xml .= "<discussion_edit><![CDATA[non_edit]]></discussion_edit>\n";
+         }
+         $xml .= "<discussion_files>\n";
+         $file_list = $discussion_item->getFileList();
+         $temp_file = $file_list->getFirst();
+         while($temp_file){
+            $xml .= "<discussion_file>\n";
+            $xml .= "<discussion_file_name><![CDATA[".$temp_file->getFileName()."]]></discussion_file_name>\n";
+            $xml .= "<discussion_file_id><![CDATA[".$temp_file->getFileID()."]]></discussion_file_id>\n";
+            $xml .= "<discussion_file_size><![CDATA[".$temp_file->getFileSize()."]]></discussion_file_size>\n";
+            $xml .= "<discussion_file_mime><![CDATA[".$temp_file->getMime()."]]></discussion_file_mime>\n";
+            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
+            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
+            //   debugToFile($temp_file->getBase64());
+            //}
+            $xml .= "</discussion_file>\n";
+            $temp_file = $file_list->getNext();
+         }
+         $xml .= "</discussion_files>\n";
+         $xml .= "</discussion_item>\n";
+         $xml = $this->_encode_output($xml);
+         $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) or $reader['read_date'] < $discussion_item->getModificationDate() ) {
+            $reader_manager->markRead($discussion_item->getItemID(),0);
+         }
+         $noticed = $noticed_manager->getLatestNoticedForUserByID($discussion_item->getItemID(), $user_item->getItemID());
+         if ( empty($noticed) or $noticed['read_date'] < $discussion_item->getModificationDate() ) {
+            $noticed_manager->markNoticed($discussion_item->getItemID(),0);
+         }
+         debugToFile($xml);
+         return $xml;
+      }
+   }
+   
+   
+   // User
+   
+   public function getUserList($session_id, $context_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $reader_manager = $this->_environment->getReaderManager();
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         $xml = "<user_list>\n";
+         $user_item = $user_list->getFirst();
+         while($user_item) {
+            $xml .= "<user_item>\n";
+            $xml .= "<user_id><![CDATA[".$user_item->getItemID()."]]></user_id>\n";
+            $xml .= "<user_title><![CDATA[".$user_item->getFullname()."]]></user_title>\n";
+            $reader = $reader_manager->getLatestReaderForUserByID($user_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $xml .= "<user_read><![CDATA[new]]></user_read>\n";
+            } elseif ( $reader['read_date'] < $user_item->getModificationDate() ) {
+               $xml .= "<user_read><![CDATA[changed]]></user_read>\n";
+            } else {
+               $xml .= "<user_read><![CDATA[]]></user_read>\n";
+            }
+            $xml .= "</user_item>\n";
+            $user_item = $user_list->getNext();
+         }
+         $xml .= "</user_list>";
+         #debugToFile($xml);
+         $xml = $this->_encode_output($xml);
+         return $xml;
+      }
+   }
+   
+   public function getUserDetails($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         //$user_manager = $this->_environment->getUserManager();
+         $user_details_item = $user_manager->getItem($item_id);
+         $xml .= "<user_item>\n";
+         $xml .= "<user_id><![CDATA[".$user_details_item->getItemID()."]]></user_id>\n";
+         $xml .= "<user_title><![CDATA[".$user_details_item->getFullname()."]]></user_title>\n";
+         $temp_description = $user_details_item->getDescription();
+         $temp_description = html_entity_decode($temp_description);
+         $temp_description = utf8_encode($temp_description);
+         $temp_description = str_ireplace('<br />', "\n", $temp_description);
+         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         $xml .= "<discussion_description><![CDATA[".$temp_description."]]></discussion_description>\n";
+         $reader = $reader_manager->getLatestReaderForUserByID($user_details_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) ) {
+            $xml .= "<user_read><![CDATA[new]]></user_read>\n";
+         } elseif ( $reader['read_date'] < $user_details_item->getModificationDate() ) {
+            $xml .= "<user_read><![CDATA[changed]]></user_read>\n";
+         } else {
+            $xml .= "<user_read><![CDATA[]]></user_read>\n";
+         }
+         if($user_details_item->mayEdit($user_item)){
+            $xml .= "<user_edit><![CDATA[edit]]></user_edit>\n";
+         } else {
+            $xml .= "<user_edit><![CDATA[non_edit]]></user_edit>\n";
+         }
+         $xml .= "<user_files>\n";
+         $file_list = $user_details_item->getFileList();
+         $temp_file = $file_list->getFirst();
+         while($temp_file){
+            $xml .= "<user_file>\n";
+            $xml .= "<user_file_name><![CDATA[".$temp_file->getFileName()."]]></user_file_name>\n";
+            $xml .= "<user_file_id><![CDATA[".$temp_file->getFileID()."]]></user_file_id>\n";
+            $xml .= "<user_file_size><![CDATA[".$temp_file->getFileSize()."]]></user_file_size>\n";
+            $xml .= "<user_file_mime><![CDATA[".$temp_file->getMime()."]]></user_file_mime>\n";
+            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
+            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
+            //   debugToFile($temp_file->getBase64());
+            //}
+            $xml .= "</user_file>\n";
+            $temp_file = $file_list->getNext();
+         }
+         $xml .= "</user_files>\n";
+         $xml .= "</user_item>\n";
+         $xml = $this->_encode_output($xml);
+         $reader = $reader_manager->getLatestReaderForUserByID($user_details_item->getItemID(), $user_item->getItemID());
+         if ( empty($reader) or $reader['read_date'] < $user_details_item->getModificationDate() ) {
+            $reader_manager->markRead($user_details_item->getItemID(),0);
+         }
+         $noticed = $noticed_manager->getLatestNoticedForUserByID($user_details_item->getItemID(), $user_item->getItemID());
+         if ( empty($noticed) or $noticed['read_date'] < $user_details_item->getModificationDate() ) {
+            $noticed_manager->markNoticed($user_details_item->getItemID(),0);
+         }
+         debugToFile($xml);
+         return $xml;
+      }
+   }
 }
 ?>

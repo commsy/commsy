@@ -378,7 +378,43 @@
 <message name='deleteDateOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
-
+<message name='getMaterialsListIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getMaterialsListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getMaterialDetailsIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+  <part name='item_id' type='xsd:integer'/>
+</message>
+<message name='getMaterialDetailsOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getDiscussionListIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getDiscussionListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getDiscussionDetailsIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+  <part name='item_id' type='xsd:integer'/>
+</message>
+<message name='getDiscussionDetailsOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getUserListIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getUserListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -577,6 +613,26 @@
   <operation name='deleteDate'>
     <input message='tns:deleteDateIN'/>
     <output message='tns:deleteDateOUT'/>
+  </operation>
+  <operation name='getMaterialsList'>
+    <input message='tns:getMaterialsListIN'/>
+    <output message='tns:getMaterialsListOUT'/>
+  </operation>
+  <operation name='getMaterialDetails'>
+    <input message='tns:getMaterialDetailsIN'/>
+    <output message='tns:getMaterialDetailsOUT'/>
+  </operation>
+  <operation name='getDiscussionList'>
+    <input message='tns:getDiscussionListIN'/>
+    <output message='tns:getDiscussionListOUT'/>
+  </operation>
+  <operation name='getDiscussionDetails'>
+    <input message='tns:getDiscussionDetailsIN'/>
+    <output message='tns:getDiscussionDetailsOUT'/>
+  </operation>
+  <operation name='getUserList'>
+    <input message='tns:getUserListIN'/>
+    <output message='tns:getUserListOUT'/>
   </operation>
 </portType>
 
@@ -1115,6 +1171,61 @@
   </operation>
   <operation name='deleteDate'>
     <soap:operation soapAction='urn:xmethodsCommSy#deleteDate'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getMaterialsList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getMaterialsList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getMaterialDetails'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getMaterialDetails'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getDiscussionList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getDiscussionList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getDiscussionDetails'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getDiscussionDetails'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getUserList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getUserList'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
