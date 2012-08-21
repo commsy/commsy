@@ -1,11 +1,27 @@
 {extends file="layout_html.tpl"}
 
+{assign  var="username" value=$environment.username}
 
 {block name="css"}
 	<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/bgu/bgu_styles.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/bgu/styles_cs.css" />
 {/block}
+
+{block name=logo_area}
+<div id="logged_in">Angemeldet als: <a href="#" id="tm_user">{$environment.username}</a></div>
+<div id="logo_area">
+    {if !empty($environment.logo)}
+    	<img src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.logo}" alt="Logo" /> <!-- Logo-Hoehe 60 Pixel -->
+    {else}
+    	<img src="{$basic.tpl_path}img/spacer.gif" style="width:1px;" alt="" />
+	{/if}
+	{if $environment.show_room_title}
+		<span>{$environment.room_title|truncate:50:"...":true}</span>
+	{/if}
+</div>
+{/block}
+
 
 {block name=header}
 {assign  var="intranet_url" value="bgu-intranet.effective-webwork.de"}
@@ -16,7 +32,6 @@
 		<!-- start header -->
 		<div id="cs_header" class="cf">
 		</div>
-		<div id="logged_in">Angemeldet als: <a href="#" id="tm_user">{$environment.username}</a></div>
 
 		<!-- end header -->
 		<div  class="cf suppage-banner">
