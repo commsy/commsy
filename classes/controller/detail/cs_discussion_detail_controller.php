@@ -373,7 +373,6 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['delete'] = true;
-				$return['answer'] = true;
 
 
 				/*
@@ -413,6 +412,8 @@ if ($type != CS_DISCUSSION_TYPE) {
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
+			
+			if ($user->isUser()) $return["answer"] = true;
 
 			return $return;
 		}
