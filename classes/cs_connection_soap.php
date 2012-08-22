@@ -3342,9 +3342,16 @@ class cs_connection_soap {
          $noticed_manager = $this->_environment->getNoticedManager();
          //$user_manager = $this->_environment->getUserManager();
          $user_details_item = $user_manager->getItem($item_id);
-         $xml .= "<user_item>\n";
+         $xml = "<user_item>\n";
          $xml .= "<user_id><![CDATA[".$user_details_item->getItemID()."]]></user_id>\n";
          $xml .= "<user_title><![CDATA[".$user_details_item->getFullname()."]]></user_title>\n";
+         $xml .= "<user_firstname><![CDATA[".$user_details_item->getFirstname()."]]></user_firstname>\n";
+         $xml .= "<user_name><![CDATA[".$user_details_item->getLastname()."]]></user_name>\n";
+         if($user_details_item->isEmailVisible()){
+            $xml .= "<user_email><![CDATA[".$user_details_item->getEmail()."]]></user_email>\n";
+         }
+         $xml .= "<user_phone1><![CDATA[".$user_details_item->getTelephone()."]]></user_phone1>\n";
+         $xml .= "<user_phone2><![CDATA[".$user_details_item->getCellularphone()."]]></user_phone2>\n";
          $temp_description = $user_details_item->getDescription();
          $temp_description = html_entity_decode($temp_description);
          $temp_description = utf8_encode($temp_description);
@@ -3364,23 +3371,16 @@ class cs_connection_soap {
          } else {
             $xml .= "<user_edit><![CDATA[non_edit]]></user_edit>\n";
          }
-         $xml .= "<user_files>\n";
-         $file_list = $user_details_item->getFileList();
-         $temp_file = $file_list->getFirst();
-         while($temp_file){
-            $xml .= "<user_file>\n";
-            $xml .= "<user_file_name><![CDATA[".$temp_file->getFileName()."]]></user_file_name>\n";
-            $xml .= "<user_file_id><![CDATA[".$temp_file->getFileID()."]]></user_file_id>\n";
-            $xml .= "<user_file_size><![CDATA[".$temp_file->getFileSize()."]]></user_file_size>\n";
-            $xml .= "<user_file_mime><![CDATA[".$temp_file->getMime()."]]></user_file_mime>\n";
-            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
-            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
-            //   debugToFile($temp_file->getBase64());
-            //}
-            $xml .= "</user_file>\n";
-            $temp_file = $file_list->getNext();
+         $user_image = $user_details_item->getPicture();
+         if($user_image){
+            #$user_image_handle = fopen('var');
+            $disc_manager = $this->_environment->getDiscManager();
+            $user_image_handle = fopen($disc_manager->getFilePath($this->_environment->getCurrentPortalID(), $this->_environment->getCurrentContextID()).$user_image, 'r');
+            $user_image_file = fread($user_image_handle, filesize($disc_manager->getFilePath($this->_environment->getCurrentPortalID(), $this->_environment->getCurrentContextID()).$user_image));
+            $xml .= "<user_image>\n";
+            $xml .= "<user_image_data><![CDATA[".base64_encode($user_image_file)."]]></user_image_data>\n";
+            $xml .= "</user_image>\n";
          }
-         $xml .= "</user_files>\n";
          $xml .= "</user_item>\n";
          $xml = $this->_encode_output($xml);
          $reader = $reader_manager->getLatestReaderForUserByID($user_details_item->getItemID(), $user_item->getItemID());
