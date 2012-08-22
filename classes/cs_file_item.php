@@ -171,7 +171,7 @@ class cs_file_item extends cs_item {
       //smartboard
       $this->_icon['notebook']     = "notebook.png";
       $this->_mime['notebook']     = 'aapplication/x-smarttech-notebook';
-      
+
       $this->_icon['gallery']      = "notebook.png";
 
       //promethean
@@ -198,6 +198,10 @@ class cs_file_item extends cs_item {
       $this->_icon['xlsx']     = "xls.png";
       // Missing MIME-type for Excel (TBD) mj 20.03.03
 
+      $this->_icon['vsd']      = "visio.png";
+      $this->_mime['vsd']      = 'application/x-visio';
+
+
       // Flash / Shockwave
       $this->_icon['swf']      = "movie.png";
       $this->_mime['swf']      = 'application/x-shockwave-flash';
@@ -205,15 +209,15 @@ class cs_file_item extends cs_item {
       // Consideo Modeler
       $this->_icon['cons']      = "consideo.png";
       $this->_mime['cons']      = 'application/consideo';
-      
+
       // GeoGebra
       $this->_icon['ggb']      = "geogebra.png";
       $this->_mime['ggb']      = 'application/geogebra';
-      
+
       // Scratch
       $this->_icon['sb']      = "scratch.png";
       $this->_mime['sb']      = 'application/scratch';
-      
+
       $this->_icon['unknown'] = "unknown.png";
 
       $this->cs_item($environment);
@@ -459,7 +463,7 @@ class cs_file_item extends cs_item {
       $saved = $this->_save($manager);
       return $saved;
    }
-   
+
    function update() {
       $saved = false;
       $manager = $this->_environment->getFileManager();
@@ -539,11 +543,11 @@ class cs_file_item extends cs_item {
    public function getBase64 () {
       return $this->_getFileAsBase64();
    }
-   
+
    public function getString () {
       return $this->_getFileAsString();
    }
-   
+
    public function _getDataAsXML () {
       $retour = '';
       foreach ($this->_data as $key => $value) {
@@ -704,7 +708,7 @@ class cs_file_item extends cs_item {
    function getTempUploadFromEditorSessionID(){
       return $this->_getValue('temp_upload_session_id');
    }
-   
+
    function setWordpressPostId($value) {
       $this->_setExtra('WORDPRESS_POST_ID', (string)$value);
    }
