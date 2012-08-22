@@ -49,11 +49,11 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
 		        if ($item->getSeconddateTime() != '') {
- 					$this->_popup_controller->assign('item', 'dayEnd', getDateInLang($item->getSeconddateTime()));
+					$this->_popup_controller->assign('item', 'dayEnd', mb_substr($item->getSeconddateTime(),0,10));
 		            $this->_popup_controller->assign('item', 'timeEnd', getTimeInLang($item->getSeconddateTime()));
 		        }else{
             		$time = $current_context->getTimeSpread();
- 					$this->_popup_controller->assign('item', 'dayEnd', getDateInLang(DateAdd($time,date("Y-m-d"),"Y-m-d")));
+ 					$this->_popup_controller->assign('item', 'dayEnd', DateAdd($time,date("Y-m-d"),"Y-m-d"));
 		            $this->_popup_controller->assign('item', 'timeEnd', date("H:m"));
 		        }
 
@@ -67,7 +67,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
+						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
 				}
@@ -75,7 +75,7 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 			}else{
             	$time = $current_context->getTimeSpread();
- 				$this->_popup_controller->assign('item', 'dayEnd', getDateInLang(DateAdd($time,date("Y-m-d"),"Y-m-d")));
+ 				$this->_popup_controller->assign('item', 'dayEnd', DateAdd($time,date("Y-m-d"),"Y-m-d"));
 		        $this->_popup_controller->assign('item', 'timeEnd', date("H:m"));
  				if ($current_context->isCommunityRoom()){
  						$this->_popup_controller->assign('item', 'public', '1');

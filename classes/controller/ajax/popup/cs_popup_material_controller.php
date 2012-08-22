@@ -200,7 +200,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 		           $this->_popup_controller->assign('item', 'workflow_traffic_light', $item->getWorkflowTrafficLight());
 		           $this->_popup_controller->assign('item', 'workflow_resubmission', $item->getWorkflowResubmission());
 		           if($item->getWorkflowResubmissionDate() != '' and $item->getWorkflowResubmissionDate() != '0000-00-00 00:00:00'){
-		              $this->_popup_controller->assign('item', 'workflow_resubmission_date', getDateInLang($item->getWorkflowResubmissionDate()));
+		              $this->_popup_controller->assign('item', 'workflow_resubmission_date', substr($item->getWorkflowResubmissionDate(),0,10));
 		           } else {
 		              $this->_popup_controller->assign('item', 'workflow_resubmission_date', '');
 		           }
@@ -209,7 +209,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 		           $this->_popup_controller->assign('item', 'workflow_resubmission_traffic_light', $item->getWorkflowResubmissionTrafficLight());
 				   $this->_popup_controller->assign('item', 'workflow_validity', $item->getWorkflowValidity());
 		           if($item->getWorkflowValidityDate() != '' and $item->getWorkflowValidityDate() != '0000-00-00 00:00:00'){
-		              $this->_popup_controller->assign('item', 'workflow_validity_date',getDateInLang($item->getWorkflowValidityDate()));
+		              $this->_popup_controller->assign('item', 'workflow_validity_date', substr($item->getWorkflowValidityDate(),0,10));
 		           } else {
 		              $this->_popup_controller->assign('workflow_validity_date', '');
 		           }
@@ -228,7 +228,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
+						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
 				}

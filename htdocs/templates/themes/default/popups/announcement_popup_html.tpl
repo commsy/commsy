@@ -89,11 +89,12 @@
 							___COMMON_MANDATORY_FIELDS_CONTENT___
 						</div>
 						<div class="input_row">
-							<div class="input_label_80">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
+							<div class="input_label_80" style="width:90px;">___COMMON_TITLE___<span class="required">*</span>:</div> <input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
 						</div>
 						<div class="input_row">
-							<span  class="input_label_80">___ANNOUNCEMENT_SHOW_HOME_DATE___<span class="required">*</span>:</span>
+							<span  class="input_label_80" style="width:90px;">___ANNOUNCEMENT_SHOW_HOME_DATE___<span class="required">*</span>:</span>
 							<span>___COMMON_CALENDAR_DATE___:</span><span class="required">*</span><input class="size_80 datepicker" type="text" value="{if isset($item.dayEnd)}{$item.dayEnd}{/if}" name="form_data[dayEnd]" />
+							{$item.dayEnd}
 							<span>___COMMON_CLOCK___:</span><input type="text" value="{if isset($item.timeEnd)}{$item.timeEnd}{/if}" name="form_data[timeEnd]" class="size_80" />
 						</div>
 

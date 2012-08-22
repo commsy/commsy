@@ -89,7 +89,7 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
  				$this->_popup_controller->assign('item', 'minutes', $minutes);
 
 			    if ($item->getDate() != '' and $item->getDate() != '9999-00-00 00:00:00') {
- 					$this->_popup_controller->assign('item', 'day_end',  getDateInLang($item->getDate()));
+ 					$this->_popup_controller->assign('item', 'day_end',  mb_substr($item->getDate(),0,10));
 			    } else {
  					$this->_popup_controller->assign('item', 'day_end',  '');
 			    }
@@ -109,7 +109,7 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
+						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
 				}

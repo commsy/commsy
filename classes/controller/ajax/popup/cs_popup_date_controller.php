@@ -94,7 +94,7 @@ class cs_popup_date_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', getDateInLang($activating_date));
+						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
 						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
 					}
 				}
@@ -143,7 +143,7 @@ class cs_popup_date_controller {
 				      $this->_popup_controller->assign('item', 'recurring_year', $recurrence_pattern['recurring_year']);
 				      $this->_popup_controller->assign('item', 'recurring_year_every', $recurrence_pattern['recurring_year_every']);
 				   }
-				   $this->_popup_controller->assign('item', 'recurring_end_date', $recurrence_pattern['recurring_end_date']);
+				   $this->_popup_controller->assign('item', 'recurring_end_date', getDateInLang($recurrence_pattern['recurring_end_date']));
 				}
 
 			}else{
