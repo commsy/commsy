@@ -88,7 +88,15 @@
 			$itemId = $_GET["iid"];
 			$itemManager = $this->_environment->getItemManager();
 			$item = $itemManager->getItem($itemId);
-			$module = $item->getItemType();
+			$type = $item->getItemType();
+			$manager = $this->_environment->getManager($type);
+			
+			// material version specific
+			if ($type === CS_MATERIAL_TYPE && isset($_GET["versionId"])) {
+				$item = $manager->getItemByVersion($itemId, $_GET["versionId"]);
+			} else {
+				$item = $manager->getItem($itemId);
+			}
 			
 			// check access
 			if(	($currentContext->isProjectRoom() && $currentContext->isClosed()) ||
@@ -100,7 +108,7 @@
 			
 			// init needed values
 			$cid = $this->_environment->getCurrentContextID();
-			$mod = $module;
+			$mod = $type;
 			$fct = "detail";
 			
 			/************************************************************************************
@@ -150,9 +158,10 @@
 			 * Next step is to adjust the html output for the zip package and copy all
 			 * the needed files to temporary export folder
 			************************************************************************************/
-			// create css and images folder
+			// create folder
 			mkdir($directory . "/css", 0777);
 			mkdir($directory . "/images", 0777);
+			mkdir($directory . "/files", 0777);
 			
 			// get all linked css paths
 			$linkedCSS = array();
@@ -192,6 +201,35 @@
 			}
 			
 			// TODO: getimage, etc...
+			
+			// get files
+			if ($type === CS_MATERIAL_TYPE) {
+				$fileList = $item->getFileListWithFilesFromSections();
+			} elseif ($type === CS_DISCUSSION_TYPE) {
+				$fileList = $item->getFileListWithFilesFromArticles();
+			} elseif ($type === CS_TODO_TYPE) {
+				$fileList = $item->getFileListWithFilesFromSteps();
+			} else {
+				$fileList = $item->getFileList();
+			}
+			
+			$file = $fileList->getFirst();
+			while ($file) {
+				// copy files
+				copy($file->getDiskFileName(), $directory . "/files/" . $file->getFileName());
+				
+				$file = $fileList->getNext();
+			}
+			
+			$files = array();
+			preg_match_all("=<a.*?href\=\"commsy\.php/(.*?)\?.*\"=", $output, $matches);
+			list($matches, $files) = $matches;
+			
+			foreach ($files as $file) {
+				$newFile = "files/" . $file;
+				
+				$output = preg_replace("=\"commsy\.php/" . $file . ".*?\"=", "\"" . $newFile . "\"", $output);
+			}
 			
 			// write output to file
 			fwrite($fileHandle, $output);

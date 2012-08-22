@@ -90,7 +90,7 @@
 				{if $detail.actions.workflow_unread}
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&workflow_not_read=true">___ITEM_WORKFLOW_MARK_NOT_READ___</a> |
 				{/if}
-				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
+				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}&versionId={$detail.content.version}" target="_blank">___COMMON_DOWNLOAD___</a>
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->
