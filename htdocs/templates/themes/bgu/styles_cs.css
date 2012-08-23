@@ -350,6 +350,18 @@ a#tm_user:hover{
     z-index: 5;
 }
 
+input#search_suggestion {
+  position: absolute;
+  z-index: 0;
+  background: none repeat scroll 0 0 transparent;
+    padding: 6px 5px 5px 35px;
+    width: 130px;
+    font-size: 12px;
+    font-weight: bold;
+    border: 0px none;
+    color: #999999;
+  }
+
 .search_button {
     background: url("img/search.png") repeat scroll 0 0 transparent;
     border: 0 solid #919191;
