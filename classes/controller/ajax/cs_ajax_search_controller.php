@@ -15,9 +15,11 @@
 			
 			list($search_word) = explode(' ', $this->_data['search_text']);
 			
-			/////////////////////////////////////////
-			// 1. get ids of search words
-			/////////////////////////////////////////
+			/************************************************************************************
+			 * Instead of joining with the index table and taking the matching count as reference,
+			 * we just read from the search_word table
+			************************************************************************************/
+			/*
 			$query = '
 				SELECT
 					sw_word
@@ -34,6 +36,15 @@
 				LIMIT
 					0, 20
 				';
+			*/
+			$query = "
+				SELECT
+					sw_word
+				FROM
+					search_word
+				WHERE
+					sw_word LIKE '" . encode(AS_DB, $search_word) . "%';
+			";
 			$result = $db->performQuery($query);
 			
 			$words = array();

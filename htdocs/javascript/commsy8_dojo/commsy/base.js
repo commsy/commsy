@@ -101,6 +101,8 @@ define([	"dojo/_base/declare",
 			}, function(errorMessage) {
 				console.error(errorMessage);
 			});
+			
+			return request;
 		},
 
 		scrollToNodeAnimated: function(node) {

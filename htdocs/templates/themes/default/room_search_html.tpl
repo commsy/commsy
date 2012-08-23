@@ -45,7 +45,7 @@
 		 	<h3 class="w_150"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" class="sort_none">___COMMON_ENTERED_BY___</a></h3>
 		{/if}
 
-		{if $search.index_search == true}
+		{if $search.indexed_search == true}
 			{if $list.sorting_parameters.sort_relevanz == "up"}
 			 	<h3 class="w_80"><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_relevanz_link}" id="sort_up"><strong>___SEARCH_RELEVANZ___</strong></a></h3>
 			{elseif $list.sorting_parameters.sort_relevanz == "down"}
@@ -110,15 +110,13 @@
 			<div class="column_155">
 				<p>{$item.modificator}</p>
 			</div>
-			<div class="column_120">
-				<p>
-					{if $search.index_search == true}
-						<div class="progressbar">
-							<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
-							<span class="percent hidden">{$item.relevanz}</span>
-						</div>
-					{/if}
-				</p>
+			<div class="column_90">
+				{if $search.indexed_search == true}
+					<div class="progressbar searchProgressbar">
+						<img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" />
+						<span class="percent hidden">{$item.relevanz}</span>
+					</div>
+				{/if}
 			</div>
 			<div class="clear"> </div>
 		</div> <!-- Ende Reihe -->

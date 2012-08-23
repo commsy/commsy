@@ -759,6 +759,10 @@ header
     background: url(img/sa_active.gif) center bottom no-repeat;
     }
 
+.searchProgressbar {
+	padding: 2px 0px;
+}
+
 #sa_options {
     padding-top: 10px !important;
     }

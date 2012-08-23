@@ -4,15 +4,15 @@ define([	"dojo/_base/declare",
         	"dojo/query",
         	"dojo/on",
         	"dojo/dom-attr"], function(declare, BaseClass, lang, Query, On, DomAttr) {
-	return declare(BaseClass, {
-		threshold:		3,
-		ajaxRequests:	[],
-		used:			false,
-		matches:		[],
-		
+	return declare(BaseClass, {		
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
+			
+			this.threshold = 3;
+			this.used = false;
+			this.matches = [];
+			this.ajaxRequests = [];
 		},
 		
 		setup: function(node) {
@@ -27,18 +27,20 @@ define([	"dojo/_base/declare",
 		},
 		
 		onKeyUp: function(event) {
+			//var char = String.fromCharCode(event.keyCode).toLowerCase();
+			
 			// set suggestion to typed text
 			DomAttr.set(Query("input#search_suggestion")[0], "value", event.target.value);
 			
 			// only update if threshold is met
-			if(event.target.value.length === this.threshold) {console.log(event.target.value.length);
+			if(event.target.value.length === this.threshold) {
 				// abort all running ajax requests
 				dojo.forEach(this.ajaxRequests, function(request, index, arr) {
-					request.abort();
+					request.cancel();
 				});
 				
 				// send ajax request
-				this.AJAXRequest("search", "getAutocompleteSuggestions", { search_text: event.target.value },
+				var request = this.AJAXRequest("search", "getAutocompleteSuggestions", { search_text: event.target.value.toLowerCase() },
 					lang.hitch(this, function(words) {
 						// update matches
 						this.matches = words;
@@ -50,24 +52,12 @@ define([	"dojo/_base/declare",
 					lang.hitch(this, function(err) {
 						console.log(err);
 					}),
-					false,
-					{
-						//beforeSend:	function
-					});
+					false);
 				
-				/*
-
-					beforeSend: function(jqXHR, settings) {
-						handle.ajaxRequests.push(jqXHR);
-					},
-					complete: function(jqXHR, textStatus) {
-						handle.ajaxRequests.pop();
-					},
-
-				});
-				 */
+				// store this request in array
+				this.ajaxRequests.push(request);
 				
-			} else if(event.target.value > this.threshold) {
+			} else if(event.target.value.length > this.threshold) {
 				// autosuggest
 				this.autoSuggest(event.target.value);
 			}
@@ -94,7 +84,6 @@ define([	"dojo/_base/declare",
 					if(match.length > userInput.length) {
 						// find shortest
 						if(match.length < length) {
-							console.log(match);
 							length = match.length;
 							suggestion = match;
 						}

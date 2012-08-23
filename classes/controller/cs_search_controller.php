@@ -20,20 +20,19 @@
 
 			$this->_list = new cs_list();
 			$this->_addition_selects = true;
+			
+			/************************************************************************************
+			 * The Search Algorithm has to handle both, new indexed and old-fashioned
+			* methods, so we need to check the $c_indexed_search global
+			************************************************************************************/
+			global $c_indexed_search;
+			$this->_indexed_search = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
 		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		public function processTemplate() {
-			/************************************************************************************
-			 * The Search Algorithm has to handle both, new indexed and old-fashioned
-			 * methods, so we need to check the $c_indexed_search global
-			************************************************************************************/
-			global $c_indexed_search;
-			$this->_indexed_search = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
-
-
 			// call parent
 			parent::processTemplate();
 		}

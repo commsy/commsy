@@ -321,14 +321,20 @@
 								<div class="editor_content">
 									<div id="ckeditor_step" class="ckeditor"></div>
 								</div>
-
+								
 								{*
 								<div id="files_finished"></div>
-
+			
+								<div id="files_attached">
+									{foreach $item.files as $file}
+										<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
+									{/foreach}
+								</div>
+								
 								<div class="uploader">
-								   <input class="fileSelector"></input>
-
-								   <div class="fileList"></div>
+									   <input class="fileSelector"></input>
+									   
+									   <div class="fileList"></div>
 								</div>
 								*}
 
