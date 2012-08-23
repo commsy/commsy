@@ -3395,5 +3395,54 @@ class cs_connection_soap {
          return $xml;
       }
    }
+   
+   public function saveUser($session_id, $context_id, $item_id, $name, $firstname, $email, $phone1, $phone2) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $user_item_save = $user_manager->getItem($item_id);
+         $user_item_save->setLastname($name);
+         $user_item_save->setFirstname($firstname);
+         $user_item_save->setEmail($email);
+         $user_item_save->setTelephone($phone1);
+         $user_item_save->setCellularphone($phone2);
+         $user_item_save->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($user_item_save->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($user_item_save->getItemID(),0);
+         $noticed_manager->markNoticed($user_item_save->getItemID(),0);
+      }
+   }
+   
+   
+   // Files
+   
+   public function uploadFile($session_id, $context_id, $file_id, $file_data) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         
+         $file_manager = $this->_environment->getFileManager();
+         $new_file = $file_manager->getNewItem();
+         $new_file->setFileName('upload_'.time().'.jpg');
+         $new_file->save();
+         
+         $disc_manager = $this->_environment->getDiscManager();
+         $bin = base64_decode($file_data);
+         file_put_contents($disc_manager->getFilePath($this->_environment->getCurrentPortalID(), $context_id).$new_file->getItemID().'.jpg', $bin);
+      }
+   }
 }
 ?>

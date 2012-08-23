@@ -358,6 +358,7 @@
 </message>
 <message name='saveDateIN'>
   <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
   <part name='item_id' type='xsd:string'/>
   <part name='title' type='xsd:string'/>
   <part name='place' type='xsd:string'/>
@@ -413,6 +414,28 @@
   <part name='context_id' type='xsd:integer'/>
 </message>
 <message name='getUserListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='saveUserIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='name' type='xsd:string'/>
+  <part name='firstname' type='xsd:string'/>
+  <part name='email' type='xsd:string'/>
+  <part name='phone1' type='xsd:string'/>
+  <part name='phone2' type='xsd:string'/>
+</message>
+<message name='saveUserOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='uploadFileIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+  <part name='file_id' type='xsd:string'/>
+  <part name='file_data' type='xsd:string'/>
+</message>
+<message name='uploadFileOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 
@@ -633,6 +656,14 @@
   <operation name='getUserList'>
     <input message='tns:getUserListIN'/>
     <output message='tns:getUserListOUT'/>
+  </operation>
+  <operation name='saveUser'>
+    <input message='tns:saveUserIN'/>
+    <output message='tns:saveUserOUT'/>
+  </operation>
+  <operation name='uploadFile'>
+    <input message='tns:uploadFileIN'/>
+    <output message='tns:uploadFileOUT'/>
   </operation>
 </portType>
 
@@ -1226,6 +1257,28 @@
   </operation>
   <operation name='getUserList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getUserList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveUser'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveUser'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='uploadFile'>
+    <soap:operation soapAction='urn:xmethodsCommSy#uploadFile'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
