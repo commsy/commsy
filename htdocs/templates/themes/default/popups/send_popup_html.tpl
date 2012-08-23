@@ -13,8 +13,11 @@
 				</div>
 				<div id="popup_content_wrapper">
     				<div id="popup_content">
+    					<div id="mandatory_missing" class="input_row hidden">
+							___COMMON_MANDATORY_FIELDS_CONTENT___
+						</div>
 						<div class="input_row">
-							<span class="input_label_150">___MAIL_SUBJECT___</span>
+							<span class="input_label_150">___MAIL_SUBJECT___<span class="required">*</span></span>
 							<div class="input_container_180" id="reciever">
 								<input type="text" name="form_data[subject]" class="size_400" />
 							</div>
