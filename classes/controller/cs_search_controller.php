@@ -584,10 +584,11 @@ if ( $environment->inPrivateRoom()
 					if ($relevanz == 0 && in_array($entry->getItemID(), $ftItemIdArray)) {
 						// this handles the case, that the match only happened in indexed files, because for now
 						// we are not getting any word count information from swish-e
+						/*
 						if ($max_count == 0) {
 							$max_count = 5;
-						}
-						$relevanz = 100 * 5 / $max_count;
+						}*/
+						$relevanz = 1;
 					}
 				}
 
