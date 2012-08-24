@@ -581,15 +581,23 @@ if ( $environment->inPrivateRoom()
 				if ($this->_indexed_search === true) {
 					$relevanz = 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count;
 					
-					if ($relevanz == 0 && in_array($entry->getItemID(), $ftItemIdArray)) {
-						// this handles the case, that the match only happened in indexed files, because for now
-						// we are not getting any word count information from swish-e
-						/*
-						if ($max_count == 0) {
-							$max_count = 5;
-						}*/
-						$relevanz = 1;
-					}
+					if (in_array($entry->getItemID(), $ftItemIdArray)) {
+						if ($relevanz == 0) {
+							// this handles the case, that the match only happened in indexed files, because for now
+							// we are not getting any word count information from swish-e
+							if ($max_count == 0) {
+								$relevanz = 50;
+							} else {
+								$relevanz = 100 * 50 / $max_count;
+							}
+						} else {
+							if ($max_count == 0) {
+								$relevanz = 50;
+							} else {
+								$relevanz = $relevanz = 100 * ($this->_items[$entry->getType()][$entry->getItemID()] + 5) / $max_count;
+							}
+						}
+					}		
 				}
 
 				$return['items'][] = array(
