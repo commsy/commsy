@@ -718,7 +718,7 @@
 	////////////////////////////
 	////// Groups //////////////
 	////////////////////////////
-	$indexer->add(CS_GROUP_TYPE, '', array('updateGroupIndex'));
+	$indexer->add(CS_GROUP_TYPE, '', 'updateGroupIndex');
 			
 	function updateGroupIndex($indexing, $search_time) {
 		echo "collecting " . CS_GROUP_TYPE . " data..";
