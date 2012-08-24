@@ -819,8 +819,9 @@
 	}
 	
 	////////////////////////////
-	////// Taks ////////////////
+	////// Tasks ///////////////
 	////////////////////////////
+	/*
 	$query = '
 		SELECT
 			tasks.item_id AS item_id,
@@ -838,6 +839,7 @@
 			tasks.deletion_date IS NULL
 	';
 	$indexer->add(CS_TASK_TYPE, $query);
+	*/
 	
 	////////////////////////////
 	////// Buzzwords ///////////
