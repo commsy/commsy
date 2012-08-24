@@ -463,52 +463,6 @@ if ( $environment->inPrivateRoom()
 			$converter = $this->_environment->getTextConverter();
 
 			$session = $this->_environment->getSessionItem();
-			
-			/*
-			global $c_indexing;
-			if (isset($c_indexing) && $c_indexing === true) {
-				
-				// search in indexed files
-				$ftsearch_manager = $this->_environment->getFTSearchManager();
-				$ftsearch_manager->setSearchStatus(true);
-				$ftsearch_manager->setWords($this->_search_words);
-				
-				$itemIdArray = $ftsearch_manager->performFTSearch();
-         		unset($ftsearch_manager);
-         		
-         		if ( isset($ft_result) and !empty($ft_result) ) {
-         			// combine sql statment
-         			include_once('functions/misc_functions.php');
-         			if ( $this->_db_table == type2Table(CS_DISCUSSION_TYPE) ) {
-         				$table = type2table(CS_DISCARTICLE_TYPE);
-         			} else {
-         				$table = $this->_db_table;
-         			}
-         			$ft_sql_result = ' OR (' . $this->addDatabasePrefix($table) . '.item_id IN (';
-         			for ($i = 0; $i < count($ft_result) - 1; $i++) {
-         				$ft_sql_result .= $ft_result[$i] . ',';
-         			}
-         			$ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.$this->addDatabasePrefix($table).'.deleter_id IS NULL)';
-         			if ( $this->_db_table == type2Table(CS_MATERIAL_TYPE) ) {
-         				$ft_sql_result .= ' OR (' . $this->addDatabasePrefix(type2Table(CS_SECTION_TYPE)) . '.item_id IN (';
-         				for ($i = 0; $i < count($ft_result) - 1; $i++) {
-         					$ft_sql_result .= $ft_result[$i] . ',';
-         				}
-         				$ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.$this->addDatabasePrefix(type2Table(CS_SECTION_TYPE)).'.deleter_id IS NULL)';
-         			}
-         			unset($ft_result);
-         			return $ft_sql_result;
-         		}
-			}
-			
-			$ftsearch_manager = $this->_environment->getFTSearchManager();
-			if ($ftsearch_manager->getSearchStatus()) {
-				// get file ids from cs_ftsearch_manager
-				$ft_file_ids = $ftsearch_manager->getFileIDs();
-
-				//var_dump($ft_file_ids);
-			}
-			*/
 
 			// find max count for relevanz bar
 			if($this->_indexed_search === true) {
@@ -1054,6 +1008,13 @@ unset($ftsearch_manager);
 				#            $session = $this->_environment->getSessionItem();
 			}
 			
+			// search in indexed files
+			$ftsearch_manager = $this->_environment->getFTSearchManager();
+			$ftsearch_manager->setSearchStatus(true);
+			$ftsearch_manager->setWords($this->_search_words);
+			
+			$ftItemIdArray = $ftsearch_manager->performFTSearch();
+			
 			/************************************************************************************
 			* as said in the todo note, some filtering is applied afterwards
 			************************************************************************************/
@@ -1065,7 +1026,7 @@ unset($ftsearch_manager);
 					$this->_list->add($entry);
 					}*/
 			
-					if(isset($this->_items[$entry->getType()][$entry->getItemID()])){
+					if(isset($this->_items[$entry->getType()][$entry->getItemID()]) || in_array($entry->getItemID(), $ftItemIdArray)){
 					$this->_list->add($entry);
 				}
 			
