@@ -568,13 +568,34 @@ if ( $environment->inPrivateRoom()
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-
+				
+				// search in indexed files
+				$ftsearch_manager = $this->_environment->getFTSearchManager();
+				$ftsearch_manager->setSearchStatus(true);
+				$ftsearch_manager->setWords($this->_search_words);
+					
+				$ftItemIdArray = $ftsearch_manager->performFTSearch();
+				
+				$relevanz = 0;
+				
+				if ($this->_indexed_search === true) {
+					$relevanz = 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count;
+					
+					if ($relevanz == 0 && in_array($entry->getItemID(), $ftItemIdArray)) {
+						// this handles the case, that the match only happened in indexed files, because for now
+						// we are not getting any word count information from swish-e
+						if ($max_count == 0) {
+							$max_count = 5;
+						}
+						$relevanz = 100 * 5 / $max_count;
+					}
+				}
 
 				$return['items'][] = array(
 					'title'						=> $entry->getType() === CS_USER_TYPE ? $this->_compareWithSearchText($entry->getFullname()) : $this->_compareWithSearchText($entry->getTitle()),
 					'type'						=> $type,
 					'type_sort'					=> $this->_environment->getTranslationObject()->getMessage(strtoupper($type).'_INDEX'),
-					'relevanz'					=> ($this->_indexed_search === true) ? 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count : 0,
+					'relevanz'					=> $relevanz,
 					'item_id'					=> $entry->getItemID(),
 					'attachment_count'			=> $file_count,
 					'attachment_infos'			=> $attachment_infos,
