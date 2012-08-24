@@ -370,15 +370,15 @@ if ( !isset($context_id) ) {
    $filename = 'cronresult_'.$context_id;
 }
 
-if ( file_exists('../var/'.$filename) ) {
-   $file_contents = file_get_contents('../var/'.$filename);
+if ( file_exists('var/'.$filename) ) {
+   $file_contents = file_get_contents('var/'.$filename);
    if(stristr($file_contents, '-----CRON-OK-----')){
-      unlink('../var/'.$filename);
+      unlink('var/'.$filename);
    } else {
-      rename('../var/'.$filename, '../var/'.$filename.'_error_'.date('dmY'));
+      rename('var/'.$filename, 'var/'.$filename.'_error_'.date('dmY'));
    }
 }
-$file = fopen('../var/'.$filename,'w+');
+$file = fopen('var/'.$filename,'w+');
 
 $memory_limit2 = 640 * 1024 * 1024;
 $memory_limit = ini_get('memory_limit');
@@ -398,10 +398,6 @@ if ( $memory_limit < $memory_limit2 ) {
       fwrite($file, 'Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.'.LF);
    }
 }
-
-// pretend, we work from the CommSy basedir to allow
-// giving include files without "../" prefix all the time.
-chdir('..');
 
 // start of execution time
 include_once('functions/misc_functions.php');

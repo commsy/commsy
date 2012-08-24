@@ -172,10 +172,6 @@ if ( $memory_limit < $memory_limit2 ) {
    }
 }
 
-// pretend, we work from the CommSy basedir to allow
-// giving include files without "../" prefix all the time.
-chdir('..');
-
 // start of execution time
 include_once('functions/misc_functions.php');
 $time_start = getmicrotime();

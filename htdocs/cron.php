@@ -22,8 +22,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// pretend, we work from the CommSy basedir to allow
+// giving include files without "../" prefix all the time.
+chdir('..');
+
 function runCron() {
-	@include_once('../etc/commsy/development.php');
+	@include_once('etc/commsy/development.php');
 	if ( isset($c_cron_use_new)
 			and !empty($c_cron_use_new)
 			and $c_cron_use_new
@@ -34,11 +38,11 @@ function runCron() {
 	}
 }
 
-@include_once('../etc/cs_config.php');
+include_once('etc/cs_config.php');
 if (isset($c_commsy_cron_token) and !empty($c_commsy_cron_token)) {
 	// if cron token is enabled
 	if (isset($_GET['cron_token']) and ($_GET['cron_token'] === $c_commsy_cron_token)) {
-		@include_once('../etc/commsy/development.php');
+		@include_once('etc/commsy/development.php');
 		if ( isset($c_cron_use_new)
 				and !empty($c_cron_use_new)
 				and $c_cron_use_new
@@ -50,7 +54,7 @@ if (isset($c_commsy_cron_token) and !empty($c_commsy_cron_token)) {
 	
 	// try to get from command line - should be third parameter
 	} else if (isset($_SERVER["argv"][2]) && $_SERVER["argv"][2] === $c_commsy_cron_token) {
-		@include_once('../etc/commsy/development.php');
+		@include_once('etc/commsy/development.php');
 		if ( isset($c_cron_use_new)
 				and !empty($c_cron_use_new)
 				and $c_cron_use_new
@@ -64,7 +68,7 @@ if (isset($c_commsy_cron_token) and !empty($c_commsy_cron_token)) {
 	}
 } else {
 	// if cron token is disabled
-	@include_once('../etc/commsy/development.php');
+	@include_once('etc/commsy/development.php');
 	if ( isset($c_cron_use_new)
 			and !empty($c_cron_use_new)
 			and $c_cron_use_new
