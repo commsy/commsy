@@ -570,6 +570,7 @@ if ( $environment->inPrivateRoom()
 				}
 				
 				// search in indexed files
+				/*
 				$ftsearch_manager = $this->_environment->getFTSearchManager();
 				$ftsearch_manager->setSearchStatus(true);
 				$ftsearch_manager->setWords($this->_search_words);
@@ -598,8 +599,8 @@ if ( $environment->inPrivateRoom()
 							}
 						}
 					}
-					*/	
-				}
+					*//*	
+				}*/
 
 				$return['items'][] = array(
 					'title'						=> $entry->getType() === CS_USER_TYPE ? $this->_compareWithSearchText($entry->getFullname()) : $this->_compareWithSearchText($entry->getTitle()),
@@ -897,12 +898,51 @@ unset($ftsearch_manager);
 			}
 			
 			/************************************************************************************
+			 * if file indexing is on, we merge items here
+			************************************************************************************/
+			/*
+			global $ftsearch_enabled;
+			if (isset($ftsearch_enabled) && $ftsearch_enabled === true) {
+				$ftsearch_manager = $this->_environment->getFTSearchManager();
+				$ftsearch_manager->setSearchStatus(true);
+				$ftsearch_manager->setWords($this->_search_words);
+				
+				$ftItemIdArray = $ftsearch_manager->performFTSearch();
+				
+				$itemManager = $this->_environment->getItemManager();
+				$itemList = $itemManager->getItemList($ftItemIdArray);
+				
+				$item = $itemList->getFirst();
+				while ($item) {
+					$type = $item->getType();
+					$map = array(
+						"discarticle"	=> "discussion",
+						"section"		=> "material",
+						"step"			=> "todo"
+					);
+					if (isset($map[$type])) $type = $map[$type];
+					
+					$this->_items[$type][$item->getItemID()] = 3;		// <- this is just a fake value
+					
+					$item = $itemList->getNext();
+				}
+			}*/
+			
+			/************************************************************************************
 			 * now we can get all needed information for the matched items
 			************************************************************************************/
 			$count_all = 0;
 			
 			$campus_search_ids = array();
 			$result_list = new cs_list();
+			
+			/*
+			foreach ($this->items as $type => $detail) {
+				$manager = $this->_environment->getManager($type);
+				
+				$idArray = array_keys($detail);
+				
+			}*/
 			
 			global $c_plugin_array;
 			foreach($rubric_array as $rubric) {
@@ -919,7 +959,7 @@ unset($ftsearch_manager);
 					*/
 			
 					// set id array limit
-					//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
+					$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
 			
 					if($rubric === CS_PROJECT_TYPE) {
 						$rubric_manager->setQueryWithoutExtra();
