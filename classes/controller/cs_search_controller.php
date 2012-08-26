@@ -961,7 +961,7 @@ unset($ftsearch_manager);
 					*/
 			
 					// set id array limit
-					$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
+					//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
 			
 					if($rubric === CS_PROJECT_TYPE) {
 						$rubric_manager->setQueryWithoutExtra();
