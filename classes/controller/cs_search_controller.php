@@ -528,6 +528,13 @@ if ( $environment->inPrivateRoom()
 		    $file_manager = $this->_environment->getFileManager();
 		    $file_manager->setIDArrayLimit($file_id_array);
 		    $file_manager->select();
+		    
+		    // search in indexed files
+		    $ftsearch_manager = $this->_environment->getFTSearchManager();
+		    $ftsearch_manager->setSearchStatus(true);
+		    $ftsearch_manager->setWords($this->_search_words[0]);
+		    	
+		    $ftItemIdArray = $ftsearch_manager->performFTSearch();
 
 			$entry = $this->_list->getFirst();
 			while($entry) {
@@ -568,13 +575,6 @@ if ( $environment->inPrivateRoom()
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-				
-				// search in indexed files
-				$ftsearch_manager = $this->_environment->getFTSearchManager();
-				$ftsearch_manager->setSearchStatus(true);
-				$ftsearch_manager->setWords($this->_search_words);
-					
-				$ftItemIdArray = $ftsearch_manager->performFTSearch();
 				
 				$relevanz = 0;
 				
