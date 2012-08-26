@@ -570,7 +570,6 @@ if ( $environment->inPrivateRoom()
 				}
 				
 				// search in indexed files
-				/*
 				$ftsearch_manager = $this->_environment->getFTSearchManager();
 				$ftsearch_manager->setSearchStatus(true);
 				$ftsearch_manager->setWords($this->_search_words);
@@ -598,9 +597,8 @@ if ( $environment->inPrivateRoom()
 								$relevanz = $relevanz = 100 * ($this->_items[$entry->getType()][$entry->getItemID()] + 5) / $max_count;
 							}
 						}
-					}
-					*//*	
-				}*/
+					}*/
+				}
 
 				$return['items'][] = array(
 					'title'						=> $entry->getType() === CS_USER_TYPE ? $this->_compareWithSearchText($entry->getFullname()) : $this->_compareWithSearchText($entry->getTitle()),
