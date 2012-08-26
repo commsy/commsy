@@ -142,7 +142,8 @@
       		}elseif($module == CS_PROJECT_TYPE){
       			$sort_parameter = 'title';
       		}elseif($module == 'search'){
-      			$sort_parameter = 'modified';
+      			global $c_indexed_search;
+				$sort_parameter = (isset($c_indexed_search) && $c_indexed_search === true) ? "relevanz_rev" : "modified";
       		}else{
       			$sort_parameter = '';
       		}
@@ -1429,7 +1430,10 @@
 					$this->_list_parameter_arrray['sort'] = 'name';
 				}elseif($this->_environment->getCurrentModule() === CS_GROUP_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'name';
-				}else {
+				} elseif($this->_environment->getCurrentModule() === "search") {
+					global $c_indexed_search;
+					$this->_list_parameter_arrray['sort'] = (isset($c_indexed_search) && $c_indexed_search === true) ? "relevanz_rev" : "modified";
+				} else {
 					$this->_list_parameter_arrray['sort'] = 'modified';
 				}
 			}
