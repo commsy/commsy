@@ -3397,6 +3397,13 @@ top-bar, breadcrumb and settings
     }
 
 
+#tm_breadcrumb_old {
+    height: 27px;
+    padding: 11px 5px 0px 5px;
+    float: left;
+    }
+
+
 
 #tm_breadcrumb {
     background: url(img/tm_separator.jpg) top right no-repeat;

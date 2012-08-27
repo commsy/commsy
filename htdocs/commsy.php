@@ -524,9 +524,9 @@ if ( !empty($SID) ) {
                   $session_manager = $environment->getSessionManager();
                   $session_manager->save($session);
                   $environment->setSessionItem($session);
-                  
+
                   $typo3web_manager->sendSessionToTypo3($typo3_session_id, $session->getSessionID());
-                  
+
                   $params = array();
                   $params = $environment->getCurrentParameterArray();
                   unset($params['ses_id']);
@@ -993,6 +993,8 @@ if(isset($c_smarty) && $c_smarty === true) {
 			require_once('classes/controller/' . $controller_name . '.php');
 		} elseif($environment->getCurrentModule() === 'content' && $environment->getCurrentFunction() === 'detail') {
 			require_once('pages/content_detail.php');
+		}elseif($environment->getCurrentModule() === 'room' && $environment->getCurrentFunction() === 'change') {
+			require_once('pages/room_change.php');
 		} else {
 			$controller_name = 'cs_' . $environment->getCurrentModule() . '_' . $environment->getCurrentFunction() . '_controller';
 			require_once('classes/controller/' . $environment->getCurrentFunction() . '/' . $controller_name . '.php');

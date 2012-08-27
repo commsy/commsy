@@ -433,10 +433,6 @@
 
               <div class="tab hidden" id="cs_bar">
                 <div id="content_row_three">
-
-                  <fieldset>
-                  	<p><strong>___CS_BAR_COMMING_SOON_INFO_TEXT___</strong></p>
-                  </fieldset>
                   <fieldset>
                     <p>
                       <strong>___CS_BAR_WIDGETS___</strong>: ___CS_BAR_WIDGETS_DESC___
@@ -476,7 +472,8 @@
                     *}
                   </fieldset>
 
-                  <fieldset>
+              {*
+              	  <fieldset>
                     <p>
                       <strong>___CS_BAR_CALENDAR___</strong>: ___CS_BAR_CALENDAR_DESC___
                     </p>
@@ -493,7 +490,7 @@
                       <div class="clear"></div>
                     </div>
                   </fieldset>
-
+			*}
                   <fieldset>
                     <p>
                       <strong>___CS_BAR_STACK___</strong>: ___CS_BAR_STACK_DESC___
@@ -515,6 +512,18 @@
                       <div class="clear"></div>
                     </div>
                  </fieldset>
+
+                  <fieldset>
+                    <p>
+                      <strong>___CS_BAR_SWITCH_ROOMS___</strong>: ___CS_BAR_SWITCH_ROOMS_DESC___
+                    </p>
+                    <div class="input_row_180">
+                      <label for="widget_switch_room_view">___CS_BAR_SWITCH_ROOMS_VIEW___:</label>
+                      <input id="show_calendar_view" type="checkbox" name="form_data[show_old_room_switcher]" value="yes"{if $popup.form.cs_bar.show_old_room_switcher == 'yes'} checked="checked"{/if} />___COMMON_ACTIVATE_ON_CS_BAR___
+                      <div class="clear"></div>
+                    </div>
+                  </fieldset>
+
 
                   <div class="input_row">
                       <input id="submit" class="submit popup_button" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>

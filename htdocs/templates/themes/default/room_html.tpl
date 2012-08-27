@@ -63,9 +63,15 @@
 			{/block}
 
 			{block name=breadcrumb}
-			<div id="tm_breadcrumb">
-				<a href="#" id="tm_bread_crumb">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
-			</div>
+			{if  $room.old_room_switcher == 'yes'}
+				<div id="tm_breadcrumb_old">
+					{$room.room_switcher_select_box}
+				</div>
+			{else}
+				<div id="tm_breadcrumb">
+					<a href="#" id="tm_bread_crumb">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
+				</div>
+			{/if}
 			{if $environment.is_moderator}
 				<div id="tm_icons_left_bar">
 					<a href="#" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>

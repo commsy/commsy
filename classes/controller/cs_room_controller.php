@@ -106,6 +106,16 @@
 			$this->assign('room', 'workflow', $current_context->withWorkflow());
 
 			$this->assign('room', 'usage_info_content', $this->getUsageInfoContent());
+
+      		$current_user = $this->_environment->getCurrentUserItem();
+      		$current_context_id = $this->_environment->getCurrentContextID();
+      		$own_room_item = $current_user->getOwnRoom();
+      		if($own_room_item->getCSBarShowOldRoomSwitcher() === '1'){
+      			$this->assign('room','room_switcher_select_box',$this->_getUserPersonalAreaAsHTML());
+      			$this->assign('room','old_room_switcher','yes');
+      		}
+
+
 		}
 
 
@@ -793,4 +803,414 @@
 		protected function showNetnavigation() {
 	      return false;
 		}
+
+   function _getCustomizedRoomListForCurrentUser(){
+      $retour = array();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $current_context_id = $this->_environment->getCurrentContextID();
+      $own_room_item = $current_user->getOwnRoom();
+      $temp_array = array();
+      $temp_array['title'] = '----------------------------';
+      $temp_array['item_id'] = '-1';
+      $retour[] = $temp_array;
+      $customized_room_list = $own_room_item->getCustomizedRoomList();
+      if ( isset($customized_room_list) ) {
+         $room_item = $customized_room_list->getFirst();
+         while ($room_item) {
+            $temp_array = array();
+            if ( $room_item->isGrouproom() ) {
+               $temp_array['title'] = '- '.$room_item->getTitle();
+            } else {
+               $temp_array['title'] = $room_item->getTitle();
+            }
+            if ( mb_strlen($temp_array['title']) > 28 ) {
+               $temp_array['title'] = mb_substr($temp_array['title'],0,28);
+               $temp_array['title'] .= '...';
+            }
+            $temp_array['item_id'] = $room_item->getItemID();
+            if ($current_context_id == $temp_array['item_id']){
+               $temp_array['selected'] = true;
+            }
+            $retour[] = $temp_array;
+            $room_item = $customized_room_list->getNext();
+         }
+      }
+      return $retour;
+   }
+
+
+
+
+
+   function _getAllOpenContextsForCurrentUser () {
+      $current_user = $this->_environment->getCurrentUserItem();
+      $own_room_item = $current_user->getOwnRoom();
+      $translator = $this->_environment->getTranslationObject();
+      if ( isset($own_room_item) ) {
+         $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
+      }
+      if (isset($customized_room_array[0])){
+         return $this->_getCustomizedRoomListForCurrentUser();
+      }else{
+     $current_portal = $this->_environment->getCurrentPortalItem();
+     if (isset($current_portal)) {
+       $translator->setContext(CS_PORTAL_TYPE);
+       $translator->setRubricTranslationArray($current_portal->getRubricTranslationArray());
+       $translator->setEmailTextArray($current_portal->getEmailTextArray());
+     }
+      $selected = false;
+      $selected_future = 0;
+      $selected_future_pos = -1;
+      $retour = array();
+      $temp_array = array();
+      $temp_array['item_id'] = -1;
+      $temp_array['title'] = '';
+      $retour[] = $temp_array;
+      unset($temp_array);
+      $temp_array = array();
+      $community_list = $current_user->getRelatedCommunityList();
+      if ( $community_list->isNotEmpty() ) {
+         $temp_array['item_id'] = -1;
+         $temp_array['title'] = $translator->getMessage('MYAREA_COMMUNITY_INDEX').'';
+         $retour[] = $temp_array;
+         unset($temp_array);
+         $community_item = $community_list->getFirst();
+         while ($community_item) {
+            $temp_array = array();
+            $temp_array['item_id'] = $community_item->getItemID();
+            $title = $community_item->getTitle();
+            $temp_array['title'] = $title;
+            if ( $community_item->getItemID() == $this->_environment->getCurrentContextID()
+                 and !$selected
+               ) {
+               $temp_array['selected'] = true;
+               $selected = true;
+            }
+            $retour[] = $temp_array;
+            unset($temp_array);
+            unset($community_item);
+            $community_item = $community_list->getNext();
+         }
+         $temp_array = array();
+         $temp_array['item_id'] = -1;
+         $temp_array['title'] = '';
+         $retour[] = $temp_array;
+         unset($community_list);
+      }
+      $portal_item = $this->_environment->getCurrentPortalItem();
+      if ($portal_item->showTime()) {
+         $project_list = $current_user->getRelatedProjectListSortByTimeForMyArea();
+#         if ( $portal_item->showGrouproomConfig() ) {
+            include_once('classes/cs_list.php');
+            $new_project_list = new cs_list();
+            $grouproom_array = array();
+            $project_grouproom_array = array();
+            if ( $project_list->isNotEmpty() ) {
+               $room_item = $project_list->getFirst();
+               while ($room_item) {
+                  if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
+                     $grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
+                     $linked_project_item_id = $room_item->getLinkedProjectItemID();
+                     $project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
+                  } else {
+                     $new_project_list->add($room_item);
+                  }
+                  unset($room_item);
+                  $room_item = $project_list->getNext();
+               }
+               unset($project_list);
+               $project_list = $new_project_list;
+               unset($new_project_list);
+            }
+#         }
+         $future = true;
+         $future_array = array();
+         $no_time = false;
+         $no_time_array = array();
+         $current_time = $portal_item->getTitleOfCurrentTime();
+         $with_title = false;
+      } else {
+         $project_list = $current_user->getRelatedProjectListForMyArea();
+#         if ( $portal_item->showGrouproomConfig() ) {
+            include_once('classes/cs_list.php');
+            $new_project_list = new cs_list();
+            $grouproom_array = array();
+            $project_grouproom_array = array();
+            if ( $project_list->isNotEmpty() ) {
+               $room_item = $project_list->getFirst();
+               while ($room_item) {
+                  if ( $room_item->isA(CS_GROUPROOM_TYPE) ) {
+                     $grouproom_array[$room_item->getItemID()] = $room_item->getTitle();
+                     $linked_project_item_id = $room_item->getLinkedProjectItemID();
+                     $project_grouproom_array[$linked_project_item_id][] = $room_item->getItemID();
+                  } else {
+                     $new_project_list->add($room_item);
+                  }
+                  unset($room_item);
+                  $room_item = $project_list->getNext();
+               }
+               unset($project_list);
+               $project_list = $new_project_list;
+               unset($new_project_list);
+            }
+#         }
+      }
+      unset($current_user);
+      if ( $project_list->isNotEmpty() ) {
+         $temp_array['item_id'] = -1;
+         $temp_array['title'] = $translator->getMessage('MYAREA_PROJECT_INDEX').'';
+         $retour[] = $temp_array;
+         unset($temp_array);
+         $project_item = $project_list->getFirst();
+         while ($project_item) {
+            $temp_array = array();
+            if ( $project_item->isA(CS_PROJECT_TYPE)
+               ) {
+               $temp_array['item_id'] = $project_item->getItemID();
+               $title = $project_item->getTitle();
+               $temp_array['title'] = $title;
+               if ( $project_item->getItemID() == $this->_environment->getCurrentContextID()
+                    and ( !$selected
+                          or $selected_future == $project_item->getItemID()
+                        )
+                  ) {
+                  $temp_array['selected'] = true;
+                  if ( !empty($selected_future)
+                       and $selected_future != 0
+                       and $selected_future_pos != -1
+                     ) {
+                     $selected_future = 0;
+                     unset($future_array[$selected_future_pos]['selected']);
+                  }
+                  $selected = true;
+               }
+
+               // grouprooms
+#               if ( $portal_item->showGrouproomConfig() ) {
+                  if ( isset($project_grouproom_array[$project_item->getItemID()]) and !empty($project_grouproom_array[$project_item->getItemID()]) and $project_item->isGrouproomActive()) {
+                     $group_result_array = array();
+                     $project_grouproom_array[$project_item->getItemID()]= array_unique($project_grouproom_array[$project_item->getItemID()]);
+                     foreach ($project_grouproom_array[$project_item->getItemID()] as $value) {
+                        $group_temp_array = array();
+                        $group_temp_array['item_id'] = $value;
+                        $group_temp_array['title'] = '- '.$grouproom_array[$value];
+                        if ( $value == $this->_environment->getCurrentContextID()
+                             and ( !$selected
+                                   or $selected_future == $value
+                                 )
+                           ) {
+                           $group_temp_array['selected'] = true;
+                           $selected = true;
+                           if ( !empty($selected_future)
+                                and $selected_future != 0
+                                and $selected_future_pos != -1
+                              ) {
+                              $selected_future = 0;
+                              unset($future_array[$selected_future_pos]['selected']);
+                           }
+                        }
+                        $group_result_array[] = $group_temp_array;
+                        unset($group_temp_array);
+                     }
+                  }
+#               }
+            } else {
+               $with_title = true;
+               $temp_array['item_id'] = -2;
+               $title = $project_item->getTitle();
+               if (!empty($title) and $title != 'COMMON_NOT_LINKED') {
+                  $temp_array['title'] = $translator->getTimeMessage($title);
+               } else {
+                  $temp_array['title'] = $translator->getMessage('COMMON_NOT_LINKED');
+                  $no_time = true;
+               }
+               if (!empty($title) and $title == $current_time) {
+               // if (!empty($title) and !empty($current_time) and $title == $current_time) {
+                  $future = false;
+               }
+            }
+            if ($portal_item->showTime()) {
+               if ($no_time) {
+                  $no_time_array[] = $temp_array;
+                  if ( isset($group_result_array) and !empty($group_result_array) ) {
+                     $no_time_array = array_merge($no_time_array,$group_result_array);
+                     unset($group_result_array);
+                  }
+               } elseif ($future) {
+                  if ($temp_array['item_id'] != -2) {
+                     $future_array[] = $temp_array;
+                     if ( !empty($temp_array['selected']) and $temp_array['selected'] ) {
+                        $selected_future = $temp_array['item_id'];
+                        $selected_future_pos = count($future_array)-1;
+                     }
+                     if ( isset($group_result_array) and !empty($group_result_array) ) {
+                         $future_array = array_merge($future_array,$group_result_array);
+                         unset($group_result_array);
+                     }
+                  }
+               } else {
+                  $retour[] = $temp_array;
+                  if ( isset($group_result_array) and !empty($group_result_array) ) {
+                      $retour = array_merge($retour,$group_result_array);
+                      unset($group_result_array);
+                  }
+               }
+            } else {
+               $retour[] = $temp_array;
+               if ( isset($group_result_array) and !empty($group_result_array) ) {
+                    $retour = array_merge($retour,$group_result_array);
+                  unset($group_result_array);
+               }
+            }
+            unset($temp_array);
+            unset($project_item);
+            $project_item = $project_list->getNext();
+         }
+         unset($project_list);
+   if ($portal_item->showTime()) {
+
+      // special case, if no room is linked to a time pulse
+      if (isset($with_title) and !$with_title) {
+         $temp_array = array();
+         $temp_array['item_id'] = -2;
+         $temp_array['title'] = $translator->getMessage('COMMON_NOT_LINKED');
+         $retour[] = $temp_array;
+         unset($temp_array);
+         $retour = array_merge($retour,$future_array);
+         $future_array = array();
+      }
+
+      if (!empty($future_array)) {
+         $future_array2 = array();
+         $future_array3 = array();
+         foreach ($future_array as $element) {
+            if ( !in_array($element['item_id'],$future_array3) ) {
+                     $future_array3[] = $element['item_id'];
+                     $future_array2[] = $element;
+            }
+         }
+         $future_array = $future_array2;
+         unset($future_array2);
+         unset($future_array3);
+         $temp_array = array();
+         $temp_array['title'] = $translator->getMessage('COMMON_IN_FUTURE');
+         $temp_array['item_id'] = -2;
+         $future_array_begin = array();
+         $future_array_begin[] = $temp_array;
+         $future_array = array_merge($future_array_begin,$future_array);
+         unset($temp_array);
+         $retour = array_merge($retour,$future_array);
+      }
+
+      if (!empty($no_time_array)) {
+         $retour = array_merge($retour,$no_time_array);
+      }
+         }
+      }
+      unset($portal_item);
+     $current_context = $this->_environment->getCurrentContextItem();
+     if (isset($current_context)) {
+         if ($current_context->isCommunityRoom()) {
+          $translator->setContext(CS_COMMUNITY_TYPE);
+         } elseif ($current_context->isProjectRoom()) {
+          $translator->setContext(CS_PROJECT_TYPE);
+         } elseif ($current_context->isPortal()) {
+          $translator->setContext(CS_PORTAL_TYPE);
+       } else {
+          $translator->setContext(CS_SERVER_TYPE);
+       }
+       $translator->setRubricTranslationArray($current_context->getRubricTranslationArray());
+       $translator->setEmailTextArray($current_context->getEmailTextArray());
+     }
+      return $retour;
+      }
+   }
+
+   function _getUserPersonalAreaAsHTML () {
+      $retour  = '';
+      $retour .= '   <form onchange="document.room_change.submit()" style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
+      // jQuery
+      //$retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      $retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
+      // jQuery
+      $context_array = array();
+      $context_array = $this->_getAllOpenContextsForCurrentUser();
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      $translator = $this->_environment->getTranslationObject();
+      $text_converter = $this->_environment->getTextConverter();
+      if ( !$this->_environment->inServer() ) {
+         $title = $this->_environment->getCurrentPortalItem()->getTitle();
+         $title .= ' ('.$translator->getMessage('COMMON_PORTAL').')';
+         $additional = '';
+         if ($this->_environment->inPortal()){
+            $additional = 'selected="selected"';
+         }
+         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$title.'</option>'.LF;
+
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+         if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+            $link_active = true;
+         } else {
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isRoomMember() ) {
+               $link_active = true;
+            } else {
+               $link_active = false;
+            }
+            unset($current_user_item);
+         }
+         unset($current_portal_item);
+
+      }
+
+      $first_time = true;
+      foreach ($context_array as $con) {
+         $title = $text_converter->text_as_html_short($con['title']);
+         $additional = '';
+         if (isset($con['selected']) and $con['selected']) {
+            $additional = ' selected="selected"';
+         }
+         if ($con['item_id'] == -1) {
+            $additional = ' class="disabled" disabled="disabled"';
+            if (!empty($con['title'])) {
+               $title = '----'.$text_converter->text_as_html_short($con['title']).'----';
+            } else {
+               $title = '&nbsp;';
+            }
+         }
+         if ($con['item_id'] == -2) {
+            $additional = ' class="disabled" disabled="disabled" style="font-style:italic;"';
+            if (!empty($con['title'])) {
+               $title = $text_converter->text_as_html_short($con['title']);
+            } else {
+               $title = '&nbsp;';
+            }
+            $con['item_id'] = -1;
+            if ($first_time) {
+               $first_time = false;
+            } else {
+               $retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>&nbsp;</option>'.LF;
+            }
+         }
+         $retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>'.$title.'</option>'.LF;
+      }
+
+      $current_user_item = $this->_environment->getCurrentUserItem();
+      if (!$current_user_item->isUser() and $current_user_item->getUserID() != "guest") {
+         $context = $this->_environment->getCurrentContextItem();
+         if (!empty($context_array)) {
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
+         }
+         $retour .= '            <option value="-1" class="disabled" disabled="disabled">----'.$translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
+         $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
+      }
+      $retour .= '         </select>'.LF;
+      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change" value="'.$translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
+      $retour .= '   </form>'.LF;
+      unset($context_array);
+      return $retour;
+   }
+
+
+
 	}
