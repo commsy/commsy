@@ -20,7 +20,7 @@
 
 			$this->_list = new cs_list();
 			$this->_addition_selects = true;
-			
+
 			/************************************************************************************
 			 * The Search Algorithm has to handle both, new indexed and old-fashioned
 			* methods, so we need to check the $c_indexed_search global
@@ -290,45 +290,45 @@ if ( $environment->inPrivateRoom()
 				if(strlen($word) >= 4) $search_words_tmp[] = strtolower($word);
 			}
 			$this->_search_words = $search_words_tmp;
-			
-			if (!empty($this->_search_words)) {
+
+#			if (!empty($this->_search_words)) {
 				/************************************************************************************
 				 * When using the indexed search method, ...
 				************************************************************************************/
 				if($this->_indexed_search === true) {
 					$this->_performIndexedSearch($rubric_array);
 				}
-	
+
 				/************************************************************************************
 				 * When NOT using the indexed search method, ...
 				************************************************************************************/
 				else {
 					$count_all = 0;
-	
+
 					$campus_search_ids = array();
 					$result_list = new cs_list();
-	
+
 					global $c_plugin_array;
 					foreach($rubric_array as $rubric) {
 						if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
 							$rubric_ids = array();
 							$rubric_list = new cs_list();
 							$rubric_manager = $this->_environment->getManager($rubric);
-	
+
 							/*
 							 * TODO:	the main idea is to limit requests by the previous detected item ids and only get detailed information for those,
 							* 			but db managers do not act as expected
 							*
 							*			for now, items are filtered afterwards
 							*/
-	
+
 							// set id array limit
 							//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
-	
+
 							if($rubric === CS_PROJECT_TYPE) {
 								$rubric_manager->setQueryWithoutExtra();
 							}
-	
+
 							// context limit
 							if($rubric !== CS_PROJECT_TYPE && $rubric !== CS_MYROOM_TYPE) {
 								$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -338,18 +338,18 @@ if ( $environment->inPrivateRoom()
 								$rubric_manager->setIDArrayLimit(($current_community_item->getInternalProjectIDArray()));
 								unset($current_community_item);
 							}
-	
+
 							// date
 							if($rubric === CS_DATE_TYPE && $this->_params['selstatus'] === 2) {
 								$rubric_manager->setWithoutDateModeLimit();
 							} elseif($rubric === CS_DATE_TYPE && $this->_params['selstatus'] !== 2) {
 								$rubric_manager->setDateModeLimit($this->_params['selstatus']);
 							}
-	
+
 							if ($this->_params['selgroup'] ){
 								$rubric_manager->setGroupLimit($this->_params['selgroup']);
 							}
-	
+
 							// user
 							if($rubric === CS_USER_TYPE) {
 								$rubric_manager->setUserLimit();
@@ -360,47 +360,47 @@ if ( $environment->inPrivateRoom()
 									$rubric_manager->setVisibleToAll();
 								}
 							}
-	
+
 							$count_all = $count_all + $rubric_manager->getCountAll();
-	
+
 							foreach($sel_array as $rubric => $value) {
 								if(!empty($value)) {
 									$rubric_manager->setRubricLimit($rubric, $value);
 								}
 							}
-	
+
 							// activating status
 							if($this->_params['sel_activating_status'] !== '1') {
 								$rubric_manager->showNoNotActivatedEntries();
 							}
-	
+
 							$rubric_manager->setSearchLimit($this->_search_words[0]);
-	
+
 							$rubric_manager->setAttributeLimit($this->_params['selrestriction']);
-	
+
 							// apply filters
 							if(!empty($this->_params['selbuzzword'])) {
 								$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
 							}
-	
+
 							if(!empty($this->_params['seltag'])) {
 								$rubric_manager->setTagLimit($this->_params['seltag']);
 							}
-	
+
 							/*
 							 *
 							if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
 							$rubric_manager->setColorLimit('#'.$selcolor);
 							}
-	
+
 							if ( ($selrubric == "todo") and !empty($selstatus)) {
 							$rubric_manager->setStatusLimit($selstatus);
 							}
-	
+
 							if (!empty($seluser)) {
 							$rubric_manager->setUserLimit($seluser);
 							}
-	
+
 							if ( !empty($selfiles) ) {
 							$rubric_manager->setOnlyFilesLimit();
 							}
@@ -413,11 +413,11 @@ if ( $environment->inPrivateRoom()
 								//$rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
 								//$temp_rubric_ids = $rubric_list->getIDArray();
 							}
-	
-	
+
+
 							/*
-	
-	
+
+
 							if (isset($_GET['select']) and $_GET['select']=='all'){
 							if(get_class($rubric_manager) == 'cs_user_manager'){
 							$selected_ids = $temp_rubric_ids;
@@ -428,11 +428,11 @@ if ( $environment->inPrivateRoom()
 							if(!empty($temp_rubric_ids)) {
 								$rubric_ids = $temp_rubric_ids;
 							}
-	
+
 							$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
 							$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
 							/*
-	
+
 							$search_list->addList($rubric_list);
 							if (!empty($temp_rubric_ids)){
 							$rubric_ids = $temp_rubric_ids;
@@ -444,11 +444,11 @@ if ( $environment->inPrivateRoom()
 						#$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 						#            $session = $this->_environment->getSessionItem();
 					}
-	
+
 					// no filtering for result list
 					$this->_list = $result_list;
 				}
-			}
+#			}
 
 			$this->assign('room', 'search_content', $this->getListContent());
 
@@ -528,12 +528,12 @@ if ( $environment->inPrivateRoom()
 		    $file_manager = $this->_environment->getFileManager();
 		    $file_manager->setIDArrayLimit($file_id_array);
 		    $file_manager->select();
-		    
+
 		    // search in indexed files
 		    $ftsearch_manager = $this->_environment->getFTSearchManager();
 		    $ftsearch_manager->setSearchStatus(true);
 		    $ftsearch_manager->setWords($this->_search_words[0]);
-		    	
+
 		    $ftItemIdArray = $ftsearch_manager->performFTSearch();
 
 			$entry = $this->_list->getFirst();
@@ -575,12 +575,12 @@ if ( $environment->inPrivateRoom()
 					$attachment_infos[] = $info;
 					$file = $file_list->getNext();
 				}
-				
+
 				$relevanz = 0;
-				
+
 				if ($this->_indexed_search === true) {
 					$relevanz = 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count;
-					
+
 					if ($relevanz == 0) $relevanz = 50;
 					/*
 					if (in_array($entry->getItemID(), $ftItemIdArray)) {
@@ -588,7 +588,7 @@ if ( $environment->inPrivateRoom()
 							// this handles the case, that the match only happened in indexed files, because for now
 							// we are not getting any word count information from swish-e
 							$relevanz = 50;
-							
+
 							if ($max_count == 0) {
 								$relevanz = 50;
 							} else {
@@ -794,15 +794,15 @@ unset($ftsearch_manager);
 					return $rubric_name;
 			}
 		}
-		
+
 		private function _performIndexedSearch($rubric_array) {
 			$db = $this->_environment->getDBConnector();
 			$session = $this->_environment->getSessionItem();
-			
+
 			/************************************************************************************
 			 * We can look up all search words in the database to get their ids...
 			************************************************************************************/
-			
+
 			$query = '
 				SELECT
 					sw_id
@@ -810,7 +810,7 @@ unset($ftsearch_manager);
 					search_word
 				WHERE 1=1
 			';
-			
+
 			$size = sizeof($this->_search_words);
 			if ($size != 0){
 				$query .= 'AND (';
@@ -818,13 +818,13 @@ unset($ftsearch_manager);
 					$query .= '
 					sw_word LIKE "' . encode(AS_DB, $this->_search_words[$i]) . '%"
 					';
-			
+
 					if($i < $size - 1) $query .= ' OR ';
 				}
 				$query .= ') ';
 			}
 			$word_ids = $db->performQuery($query);
-			
+
 			/************************************************************************************
 			 * ...and find items matching these ids
 			 *
@@ -838,7 +838,7 @@ unset($ftsearch_manager);
 			if(!empty($this->_params['selrubric'])) {
 				$search_rubrics = array($this->_params['selrubric']);
 			}
-			
+
 			$query = '
 				SELECT
 					si_item_id,
@@ -849,38 +849,38 @@ unset($ftsearch_manager);
 				WHERE
 					(
 			';
-			
+
 			$size = sizeof($search_rubrics);
 			for($i = 0; $i < $size; $i++) {
 				$query .= '
 				si_item_type = "' . mysql_real_escape_string($search_rubrics[$i]) . '"';
-			
+
 				if($i < $size - 1) $query .= ' OR ';
 			}
 			$query .= ') AND (';
-			
+
 			if(!empty($word_ids)) {
 				$size = sizeof($word_ids);
 				for($i = 0; $i < $size; $i++) {
 					$query .= '
 					si_sw_id = ' . $word_ids[$i]['sw_id'];
-			
+
 					if($i < $size - 1) $query .= ' OR ';
 				}
 			} else {
 				$query .= 'FALSE';
 			}
-			
+
 			$query .= ')';
-			
+
 			$query .= '
 				ORDER BY
 					si_count
 				DESC
 			';
-			
+
 			$results = $db->performQuery($query);
-			
+
 			/************************************************************************************
 			 * the result is catched in a way, creating a rubric ordered array
 			*
@@ -895,10 +895,10 @@ unset($ftsearch_manager);
 					"step"			=> "todo"
 				);
 				if (isset($map[$type])) $type = $map[$type];
-				
+
 				$this->_items[$type][$result['si_item_id']] = $result['si_count'];
 			}
-			
+
 			/************************************************************************************
 			 * if file indexing is on, we merge items here
 			************************************************************************************/
@@ -908,12 +908,12 @@ unset($ftsearch_manager);
 				$ftsearch_manager = $this->_environment->getFTSearchManager();
 				$ftsearch_manager->setSearchStatus(true);
 				$ftsearch_manager->setWords($this->_search_words);
-				
+
 				$ftItemIdArray = $ftsearch_manager->performFTSearch();
-				
+
 				$itemManager = $this->_environment->getItemManager();
 				$itemList = $itemManager->getItemList($ftItemIdArray);
-				
+
 				$item = $itemList->getFirst();
 				while ($item) {
 					$type = $item->getType();
@@ -923,50 +923,50 @@ unset($ftsearch_manager);
 						"step"			=> "todo"
 					);
 					if (isset($map[$type])) $type = $map[$type];
-					
+
 					$this->_items[$type][$item->getItemID()] = 3;		// <- this is just a fake value
-					
+
 					$item = $itemList->getNext();
 				}
 			}*/
-			
+
 			/************************************************************************************
 			 * now we can get all needed information for the matched items
 			************************************************************************************/
 			$count_all = 0;
-			
+
 			$campus_search_ids = array();
 			$result_list = new cs_list();
-			
+
 			/*
 			foreach ($this->items as $type => $detail) {
 				$manager = $this->_environment->getManager($type);
-				
+
 				$idArray = array_keys($detail);
-				
+
 			}*/
-			
+
 			global $c_plugin_array;
 			foreach($rubric_array as $rubric) {
 				if(!isset($c_plugin_array) || !in_array(strtolower($rubric), $c_plugin_array)) {
 					$rubric_ids = array();
 					$rubric_list = new cs_list();
 					$rubric_manager = $this->_environment->getManager($rubric);
-			
+
 					/*
 					 * TODO:	the main idea is to limit requests by the previous detected item ids and only get detailed information for those,
 					* 			but db managers do not act as expected
 					*
 					*			for now, items are filtered afterwards
 					*/
-			
+
 					// set id array limit
 					//$rubric_manager->setIDArrayLimit(array_keys($items[$rubric]));
-			
+
 					if($rubric === CS_PROJECT_TYPE) {
 						$rubric_manager->setQueryWithoutExtra();
 					}
-			
+
 					// context limit
 					if($rubric !== CS_PROJECT_TYPE && $rubric !== CS_MYROOM_TYPE) {
 						$rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -976,18 +976,18 @@ unset($ftsearch_manager);
 						$rubric_manager->setIDArrayLimit(($current_community_item->getInternalProjectIDArray()));
 						unset($current_community_item);
 					}
-			
+
 					// date
 					if($rubric === CS_DATE_TYPE && $this->_params['selstatus'] === 2) {
 						$rubric_manager->setWithoutDateModeLimit();
 					} elseif($rubric === CS_DATE_TYPE && $this->_params['selstatus'] !== 2) {
 						$rubric_manager->setDateModeLimit($this->_params['selstatus']);
 					}
-			
+
 					if ($this->_params['selgroup'] ){
 						$rubric_manager->setGroupLimit($this->_params['selgroup']);
 					}
-			
+
 					// user
 					if($rubric === CS_USER_TYPE) {
 						$rubric_manager->setUserLimit();
@@ -998,45 +998,44 @@ unset($ftsearch_manager);
 							$rubric_manager->setVisibleToAll();
 						}
 					}
-			
+
 					$count_all = $count_all + $rubric_manager->getCountAll();
-			
+
 					foreach($sel_array as $rubric => $value) {
 						if(!empty($value)) {
 							$rubric_manager->setRubricLimit($rubric, $value);
 						}
 					}
-			
+
 					// activating status
 					if($this->_params['sel_activating_status'] !== '1') {
 						$rubric_manager->showNoNotActivatedEntries();
 					}
-			
+
 					$rubric_manager->setAttributeLimit($this->_params['selrestriction']);
-			
+
 					// apply filters
 					if(!empty($this->_params['selbuzzword'])) {
 						$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
 					}
-			
 					if(!empty($this->_params['seltag'])) {
 						$rubric_manager->setTagLimit($this->_params['seltag']);
 					}
-			
+
 					/*
 					 *
 					if ( !empty($selcolor) and $selcolor != '2' and $selrubric == "date") {
 					$rubric_manager->setColorLimit('#'.$selcolor);
 					}
-			
+
 					if ( ($selrubric == "todo") and !empty($selstatus)) {
 					$rubric_manager->setStatusLimit($selstatus);
 					}
-			
+
 					if (!empty($seluser)) {
 					$rubric_manager->setUserLimit($seluser);
 					}
-			
+
 					if ( !empty($selfiles) ) {
 					$rubric_manager->setOnlyFilesLimit();
 					}
@@ -1049,11 +1048,11 @@ unset($ftsearch_manager);
 						//$rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
 						//$temp_rubric_ids = $rubric_list->getIDArray();
 					}
-			
-			
+
+
 					/*
-			
-			
+
+
 					if (isset($_GET['select']) and $_GET['select']=='all'){
 					if(get_class($rubric_manager) == 'cs_user_manager'){
 					$selected_ids = $temp_rubric_ids;
@@ -1064,11 +1063,11 @@ unset($ftsearch_manager);
 					if(!empty($temp_rubric_ids)) {
 						$rubric_ids = $temp_rubric_ids;
 					}
-			
+
 					$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_' . $rubric . '_index_ids', $rubric_ids);
 					$campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
 					/*
-			
+
 					$search_list->addList($rubric_list);
 					if (!empty($temp_rubric_ids)){
 					$rubric_ids = $temp_rubric_ids;
@@ -1080,14 +1079,14 @@ unset($ftsearch_manager);
 				#$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 				#            $session = $this->_environment->getSessionItem();
 			}
-			
+
 			// search in indexed files
 			$ftsearch_manager = $this->_environment->getFTSearchManager();
 			$ftsearch_manager->setSearchStatus(true);
 			$ftsearch_manager->setWords($this->_search_words);
-			
+
 			$ftItemIdArray = $ftsearch_manager->performFTSearch();
-			
+
 			/************************************************************************************
 			* as said in the todo note, some filtering is applied afterwards
 			************************************************************************************/
@@ -1098,11 +1097,11 @@ unset($ftsearch_manager);
 					$entry->setType(CS_GROUP_TYPE);
 					$this->_list->add($entry);
 					}*/
-			
+
 					if(isset($this->_items[$entry->getType()][$entry->getItemID()]) || in_array($entry->getItemID(), $ftItemIdArray)){
 					$this->_list->add($entry);
 				}
-			
+
 				$entry = $result_list->getNext();
 			}
 		}
