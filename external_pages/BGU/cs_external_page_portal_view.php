@@ -3386,7 +3386,7 @@ $html .= '
         	<span class="alignleft copy-Right">&copy; Verein f&uuml;r Berufsgenossenschaftliche Heilbehandlung Frankfurt am Main e. V.</span>
             <div class="alignright">
             	<ul>
-                    <li class="last"><a href="'.$typo_url.'index.php?id=651" title="Zug&auml;nglichkeit">Intranet-Redaktion</a></li>
+                    <li class="last"><a href="'.$typo_url.'index.php?id=651" title="Zug&auml;nglichkeit">Kontakt Intranet-Redaktion</a></li>
                 	<li><a href="'.$typo_url.'index.php?id=654" title="Impressum">Impressum</a></li>
                     <li><a href="'.$typo_url.'index.php?id=655" title="Rechtliche Hinweise">Rechtliche Hinweise</a></li>
                 </ul>
