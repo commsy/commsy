@@ -74,21 +74,21 @@
 
 {block name=widgets}
 
-<div id="search" style="float:right;">
+<div id="search" style="float:right; width:205px;">
     {*<span class="sa_sep"><a href="" id="sa_active">___CAMPUS_SEARCH_ONLY_THIS_ROOM___</a></span>*}
     {*<span class="sa_sep"><a href="">alle meine R&auml;ume</a></span>*}
     {*<span id="sa_options"><a href=""><img src="{$basic.tpl_path}img/sa_dropdown.gif" alt="O" /></a></span>*}
 
-    <div id="commsy_search">
+    <div id="commsy_search" style="width:168px;">
     	<form action="commsy.php?cid={$environment.cid}&mod=search&fct=index" method="post">
     		{if $environment.module != 'home' && $environment.module != 'search'}
     			<input type="hidden" name="form_data[selrubric]" value="{$environment.module}"/>
     		{elseif isset($environment.post.form_data.selrubric) && !empty($environment.post.form_data.selrubric)}
     			<input type="hidden" name="form_data[selrubric]" value="{$environment.post.form_data.selrubric}"/>
     		{/if}
-        	<input name="form_data[keywords]" onclick="javascript:document.getElementById('search_input').value=''" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
+        	<input style="padding:0px; width:168px; height:23px" name="form_data[keywords]" onclick="javascript:document.getElementById('search_input').value=''" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
         	{if $environment.with_indexed_search}
-        		<input id="search_suggestion" type="text" value="" />
+        		<input style="padding:0px; width:168px; height:23px" id="search_suggestion" type="text" value="" />
         	{/if}
         	<input id="search_submit" type="submit" class="search_button" value="" />
         </form>
