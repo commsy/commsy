@@ -810,7 +810,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}else{
 								$room_item->setCSBarShowStack('-1');
 							}
-							
+
 							if(isset($form_data['show_portfolio_view']) && !empty($form_data['show_portfolio_view'])) {
 								if($form_data['show_portfolio_view'] == 'yes'){
 									$room_item->setCSBarShowPortfolio('1');
@@ -821,6 +821,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$room_item->setCSBarShowPortfolio('-1');
 							}
 
+							if(isset($form_data['show_old_room_switcher']) && !empty($form_data['show_old_room_switcher'])) {
+								if($form_data['show_old_room_switcher'] == 'yes'){
+								   $room_item->setCSBarShowOldRoomSwitcher('1');
+								} else{
+									$room_item->setCSBarShowOldRoomSwitcher('-1');
+								}
+							}else{
+								$room_item->setCSBarShowOldRoomSwitcher('-1');
+							}
 
 							// save
 							$room_item->save();
@@ -1177,9 +1186,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		if ($room->getCSBarShowStack() == '1'){
 			$return['show_stack_view'] = 'yes';
 		}
-		
+
 		if ($room->getCSBarShowPortfolio() == '1'){
 			$return['show_portfolio_view'] = 'yes';
+		}
+
+		if ($room->getCSBarShowOldRoomSwitcher() == '1'){
+			$return['show_old_room_switcher'] = 'yes';
 		}
 
 		return $return;

@@ -2253,6 +2253,18 @@ class cs_privateroom_item extends cs_room_item {
       $this->_addExtra('CS_BAR_SHOW_CALENDAR',$i);
    }
 
+   function getCSBarShowOldRoomSwitcher () {
+      $retour = '-1';
+      if ($this->_issetExtra('CS_BAR_SHOW_OLD_ROOM_SWITCHER')) {
+         $retour = $this->_getExtra('CS_BAR_SHOW_OLD_ROOM_SWITCHER');
+      }
+      return $retour;
+   }
+
+   function setCSBarShowOldRoomSwitcher ($i) {
+      $this->_addExtra('CS_BAR_SHOW_OLD_ROOM_SWITCHER',$i);
+   }
+
    function getCSBarShowStack() {
       $retour = '1';
       if ($this->_issetExtra('CS_BAR_SHOW_STACK')) {
