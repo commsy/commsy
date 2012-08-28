@@ -22,8 +22,21 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+
+// home rubric list limit
 $interval = 20;
-define('CS_LIST_INTERVAL',20);
+include('cs_config.php');
+global $cs_max_list_length;
+if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
+	define('CS_HOME_RUBRIC_LIST_LIMIT', $cs_max_list_length);
+	define('CS_LIST_INTERVAL',$cs_max_list_length);
+
+}else{
+	define('CS_HOME_RUBRIC_LIST_LIMIT', 50);
+	define('CS_LIST_INTERVAL',20);
+}
+
+
 $no_room = 0;
 define('CS_NO_ROOM',0);
 define('CS_ROOM_OPEN',1);
@@ -238,8 +251,6 @@ if ( !isset($_SERVER['HTTP_REFERER']) ) {
 }
 */
 
-// home rubric list limit
-define('CS_HOME_RUBRIC_LIST_LIMIT', 50);
 
 // new constants for CommSy8
 define('CS_OPTION_SAVE', 'save');
