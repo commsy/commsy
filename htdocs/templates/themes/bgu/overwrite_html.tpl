@@ -86,9 +86,11 @@
     		{elseif isset($environment.post.form_data.selrubric) && !empty($environment.post.form_data.selrubric)}
     			<input type="hidden" name="form_data[selrubric]" value="{$environment.post.form_data.selrubric}"/>
     		{/if}
-        	<input style="padding:0px; width:168px; height:25px; line-height:25px;" name="form_data[keywords]" onclick="javascript:document.getElementById('search_input').value=''" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
+        	<input style="padding:0px 2px; width:168px; height:25px; line-height:25px; z-index:1000;" name="form_data[keywords]" onblur="if (this.value=='') this.value='{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}'" onfocus="if (this.value=='{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}') this.value='';" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
+{*        	<input style="padding:0px 2px; width:168px; height:25px; line-height:25px; z-index:1000;" name="form_data[keywords]" onclick="javascript:document.getElementById('search_input').value=''" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
+*}
         	{if $environment.with_indexed_search}
-        		<input disabled="disabled" style="padding:0px; width:168px; height:25px; line-height:25px;" id="search_suggestion" type="text" value="" />
+        		<input disabled="disabled" style="padding:0px 2px; width:168px; height:25px; line-height:25px; z-index:1;" id="search_suggestion" type="text" value="" />
         	{/if}
         	<input id="search_submit" type="submit" class="search_button" value="" />
         </form>
