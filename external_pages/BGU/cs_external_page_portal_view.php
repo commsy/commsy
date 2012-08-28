@@ -3284,8 +3284,11 @@ class cs_external_page_portal_view extends cs_page_view {
 #       $html .='<div class="sidehead">'.getMessage('PORTAL_OPEN_ROOM').'</div>'.LF;
        $html .= '<div id="room_actions" style="padding:5px;">'.LF;
 #       $html .= $this->_room_list_view->_getListActionsAsHTML();
+    if ($current_user->isModerator()){
+
 	   $html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Projektraum neu eröffnen</a>
-<br>';
+<br/>';
+    }
             $html .= ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="display:inline;"').'<br/>'.BRLF;
 
        if ( $current_user->isModerator() ) {
