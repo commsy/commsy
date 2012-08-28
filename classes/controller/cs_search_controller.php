@@ -287,7 +287,7 @@ if ( $environment->inPrivateRoom()
 
 			$search_words_tmp = array();
 			foreach($search_words as $word) {
-				if(strlen($word) >= 4) $search_words_tmp[] = strtolower($word);
+				if(strlen($word) >= 1) $search_words_tmp[] = strtolower($word);
 			}
 			$this->_search_words = $search_words_tmp;
 

@@ -160,8 +160,8 @@
 			// remove all kind of special chars
 			$search[] = '=[^a-zöäüß ]=u'; $replace[] = "  ";
 
-			// remove all words with length below 4
-			$search[] = '=\s[a-zöäüß]{1,3}\s=u'; $replace[] = " ";
+			// remove all words with length below 3
+			$search[] = '=\s[a-zöäüß]{1,2}\s=u'; $replace[] = " ";
 
 			// remove stopwords
 			global $stopwords;
