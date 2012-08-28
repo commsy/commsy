@@ -181,6 +181,7 @@ $theme_array['commsy'] = array(
 );
 
 //$cs_max_list_length = 20;
+//$cs_max_search_list_length = 20;
 //$cs_special_language_tags = '';
 
 // include more commsy settings

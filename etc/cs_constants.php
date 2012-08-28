@@ -27,6 +27,7 @@
 $interval = 20;
 include('cs_config.php');
 global $cs_max_list_length;
+global $cs_max_search_list_length;
 if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
 	define('CS_HOME_RUBRIC_LIST_LIMIT', $cs_max_list_length);
 	define('CS_LIST_INTERVAL',$cs_max_list_length);

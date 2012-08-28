@@ -1409,8 +1409,14 @@
    				$this->_list_parameter_arrray['interval'] = $context_item->getListLength();
 			}
 			global $cs_max_list_length;
+			global $cs_max_search_list_length;
 			if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
 				$this->_list_parameter_arrray['interval'] = $cs_max_list_length;
+			}
+			if( isset($_GET['mod']) and $_GET['mod'] == 'search'){
+				if (isset($cs_max_search_list_length) and !empty($cs_max_search_list_length)){
+					$this->_list_parameter_arrray['interval'] = $cs_max_search_list_length;
+				}
 			}
 
 			if ( isset($_GET['sort']) ) {
