@@ -3182,8 +3182,8 @@ class cs_external_page_portal_view extends cs_page_view {
     $wiki_url = $c_pmwiki_path_url;
     $wiki_image_url = $wiki_url.'/wikis/'.$current_portal->getItemID().'/';
     $wiki_url .= '/wikis/'.$current_portal->getItemID().'/index.php?commsy_session_id='.$sid.'&n=';
-    $typo_url .= 'http://bgu-intranet.effective-webwork.de/';
-    $blog_url .= 'http://bgu-wordpress.effective-webwork.de/';
+    $typo_url .= 'http://intranet.bgu-frankfurt.de/';
+    $blog_url .= 'http://blogs.bgu-frankfurt.de/';
 
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
@@ -3217,7 +3217,7 @@ class cs_external_page_portal_view extends cs_page_view {
                                 <li><a href="'.$typo_url.'index.php?id=457" title="Auftrag erteilen" class="smallicon5">Auftrag erteilen</a></li>
                                 <li><a href="'.$typo_url.'index.php?id=458" title="Projekträume" class="smallicon7">Projekträume</a></li>
                                 <li><a href="'.$typo_url.'index.php?id=453" title="Who is Who" class="smallicon6">Who is Who</a></li>
-                                <li><a href="http://172.17.1.25/ctsplan.php?fma=2" title="Speiseplan" class="smallicon8">Speiseplan</a></li>
+                                <li><a href="'.$typo_url.'index.php?id=456" title="Speiseplan" class="smallicon8">Speiseplan</a></li>
                         </ul>
 			<ul class="smallicon-set last alignleft">
                                 <li><a href="'.$typo_url.'index.php?id=460" title="Mein BGU" class="smallicon9">Mein BGU</a></li>

@@ -45,7 +45,7 @@
 				<li><a href="http://{$intranet_url}/index.php?id=457" title="Auftrag erteilen" class="smallicon5">Auftrag erteilen</a></li>
 				<li><a href="http://{$intranet_url}/index.php?id=458" title="Projekträume" class="smallicon7">Projekträume</a></li>
 				<li><a href="http://{$intranet_url}/index.php?id=453" title="Who is Who" class="smallicon6">Who is Who</a></li>
-				<li><a href="http://172.17.1.25/ctsplan.php?fma=2" title="Speiseplan" class="smallicon8">Speiseplan</a></li>
+				<li><a href="http://{$intranet_url}/index.php?id=456" title="Speiseplan" class="smallicon8">Speiseplan</a></li>
 			</ul>
 			<ul class="smallicon-set last alignleft">
 				<li><a href="http://{$intranet_url}/index.php?id=460" title="Mein BGU" class="smallicon9">Mein BGU</a></li>
