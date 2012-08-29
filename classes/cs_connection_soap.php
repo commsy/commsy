@@ -3434,14 +3434,23 @@ class cs_connection_soap {
          $session = $this->_environment->getSessionItem();
          $this->_environment->setCurrentContextID($context_id);
          
-         $file_manager = $this->_environment->getFileManager();
-         $new_file = $file_manager->getNewItem();
-         $new_file->setFileName('upload_'.time().'.jpg');
-         $new_file->save();
+         $temp_file_name = 'upload_'.time().'.jpg';
          
          $disc_manager = $this->_environment->getDiscManager();
          $bin = base64_decode($file_data);
-         file_put_contents($disc_manager->getFilePath($this->_environment->getCurrentPortalID(), $context_id).$new_file->getItemID().'.jpg', $bin);
+         file_put_contents($disc_manager->getTempFolder().'/'.$temp_file_name, $bin);
+         
+         $file_manager = $this->_environment->getFileManager();
+         $new_file = $file_manager->getNewItem();
+         $new_file->setFileName($temp_file_name);
+         $new_file->setTempName($disc_manager->getTempFolder().'/'.$temp_file_name);
+         $new_file->setTempKey($temp_file_name);
+         $new_file->save();
+         
+         $xml = '<upload_file_id>'.$new_file->getItemID().'</upload_file_id>';
+         $xml = $this->_encode_output($xml);
+         
+         return $xml;
       }
    }
 }
