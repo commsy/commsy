@@ -434,6 +434,9 @@
               <div class="tab hidden" id="cs_bar">
                 <div id="content_row_three">
                   <fieldset>
+                     <p><strong>___CS_BAR_COMMING_SOON_INFO_TEXT___</strong></p>
+                  </fieldset>
+                  <fieldset>
                     <p>
                       <strong>___CS_BAR_WIDGETS___</strong>: ___CS_BAR_WIDGETS_DESC___
                     </p>
@@ -524,10 +527,245 @@
                     </div>
                   </fieldset>
 
-
                   <div class="input_row">
                       <input id="submit" class="submit popup_button" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
                   </div>
+
+                        {if $popup.external.wordpress}
+                           <hr/>
+                           <fieldset>
+                              <p>
+                                 <strong>___CONFIGURATION_EXTRA_WORDPRESS___:</strong>
+                              </p>
+                              <!--
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[wordpress_active]" value="yes" {if $popup.external.wordpress.wordpress_active == 'yes'}checked="checked"{/if}/> ___CONFIGURATION_EXTRA_WORDPRESS___
+                                 <div class="clear"></div>
+                              </div>
+                               -->
+                              <div class="input_row_100">
+                         <label for="wordpresstitle">___COMMON_TITLE___<span class="required">*</span>:</label>
+                         <input id="wordpresstitle" type="text" class="size_200" name="form_data[wordpresstitle]" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
+                        </div>
+                              <div class="input_row_100">
+                                 <label for="wordpressdescription">___COMMON_DESCRIPTION___<span class="required">*</span>:</label>
+                                 <input id="wordpressdescription" type="text" class="size_200" name="form_data[wordpressdescription]" value="{show var=$popup.external.wordpress.wordpressdescription}"/>
+                              </div>
+                              <div class="input_row_100">
+                                 <label for="skin_choice">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</label>
+                                 <select class="size_200"  style="width:200px;" id="skin_choice" name="form_data[skin_choice]">
+                                    {foreach $popup.external.wordpress.skin_array as $skin}
+                                       <option value="{$skin.value}"{if $skin.disabled == true} disabled="disabled"{/if}{if $skin.value == $popup.external.wordpress.skin_choice} selected="selected"{/if}>___{$skin.text}___</option>
+                                    {/foreach}
+                                 </select>
+                                 <br/>
+                                 {i18n tag=WORDPRESS_SKIN_DESCRIPTION param1=$popup.external.wordpress.wordpresslink}
+                              </div>
+                              <br/>
+                              <div class="input_row_200">
+                                 <label for="member_role">___WORDPRESS_SELECT_MEMBER_ROLE___:</label>
+                                 <select class="size_200"  style="width:200px;" id="member_role" name="form_data[member_role]">
+                                    {foreach $popup.external.wordpress.member_role_array as $member_role}
+                                       <option value="{$member_role.value}"{if $member_role.disabled == true} disabled="disabled"{/if}{if $member_role.value == $popup.external.wordpress.member_role} selected="selected"{/if}>___{$member_role.text}___</option>
+                                    {/foreach}
+                                 </select>
+                                 <br/>
+                                 ___WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION___
+                              </div>
+                              <br/>
+                              <div class="input_row_200">
+                                 <label for="use_comments">___WORDPRESS_CONFIGURATION_COMMENTS___:</label>
+                                 <input type="checkbox" name="form_data[use_comments]" value="yes" {if $popup.external.wordpress.use_comments == 'yes'}checked="checked"{/if}/>
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <label for="use_comments_moderation">___WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION___:</label>
+                                 <input type="checkbox" name="form_data[use_comments_moderation]" value="yes" {if $popup.external.wordpress.use_comments_moderation == 'yes'}checked="checked"{/if}/>
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <label for="use_comments_moderation">___WORDPRESS_CONFIGURATION_SHOW_HOMELINK___:</label>
+                                 <input type="checkbox" name="form_data[wordpresslink]" value="yes" {if $popup.external.wordpress.wordpresslink == 'yes'}checked="checked"{/if}/>
+                                 <div class="clear"></div>
+                              </div>
+                           </fieldset>
+                           <div class="input_row">
+                        <input id="submit" type="button" class="popup_button submit" data-custom="part: 'cs_bar', action: 'create_wordpress'" name="save" value="{if $popup.external.wordpress.wordpress_active == 'yes'}___PREFERENCES_SAVE_BUTTON_WORDPRESS___{else}___PREFERENCES_SAVE_BUTTON_WORDPRESS_CREATE___{/if}"/>
+                        {if $popup.external.wordpress.wordpress_active == 'yes'}
+                           <input id="submit_delete_wordpress" type="button" class="popup_button" data-custom="part: 'cs_bar', action: 'delete_wordpress'" name="save" value="___COMMON_DELETE_WORDPRESS_TITLE___"/>
+                        {/if}
+                     </div>
+                           {/if}
+                           {if $popup.external.wiki}
+                           <hr/>
+                           <fieldset>
+                              <p>
+                                 <strong>___CONFIGURATION_EXTRA_WIKI___:</strong>
+                              </p>
+                              <div class="input_row_200">
+                                 <label for="wikititle"><div style="float:left; width:120px;">___COMMON_TITLE___:</div><span class="required">*</span></label>
+                                 <input id="wikititle" type="text" class="size_200" name="form_data[wikititle]" value="{show var=$popup.external.wiki.wikititle}"/>
+                              </div>
+                              <div class="input_row_200">
+                                 <label for="wiki_skin_choice"><div style="float:left; width:133px;">___CONFIGURATION_COLOR_FORM_CHOOSE_TEXT___:</div></label>
+                                 <select class="size_200"  style="width:200px;" id="wiki_skin_choice" name="form_data[wiki_skin_choice]">
+                                    {foreach $popup.external.wiki.wiki_skin_array as $wiki_skin}
+                                       <option value="{$wiki_skin}"{if $wiki_skin == $popup.external.wiki.wiki_skin_choice} selected="selected"{/if}>___{$wiki_skin}___</option>
+                                    {/foreach}
+                                 </select>
+                                 <br/>
+                                 {if false}{i18n tag=WORDPRESS_SKIN_DESCRIPTION param1=$popup.wordpress.wordpresslink}{/if}
+                              </div>
+                              <div class="input_row_200">
+                                 <label for="admin">___COMMON_WIKI_ADMIN_PW___<span class="required">*</span></label>
+                                 <input id="admin" type="text" class="size_200" name="form_data[admin]" value="{show var=$popup.external.wiki.admin}"/>
+                              </div>
+                               <div class="input_row_200">
+                                 <label for="edit">___COMMON_WIKI_EDIT_PW___<span class="required">*</span></label>
+                                 <input id="edit" type="text" class="size_200" name="form_data[edit]" value="{show var=$popup.external.wiki.edit}"/>
+                              </div>
+                              <div class="input_row_200">
+                                 <label for="read">___COMMON_WIKI_READ_PW___<span class="required">*</span></label>
+                                 <input id="read" type="text" class="size_200" name="form_data[read]" value="{show var=$popup.external.wiki.read}"/>
+                              </div>
+                              {if false}
+                              <div class="input_row_200">
+                                 ___COMMON_WIKI_GROUP_ORGANISATION___:
+                                 <div id="additional_status_list" class="input_container_180" style="margin-left:100px;">
+                                    {foreach $popup.external.wiki.enable_wiki_groups as $enable_wiki_group}
+                                       <input type="checkbox" name="form_data[enable_wiki_groups_{$enable_wiki_group.group}]" value="{$enable_wiki_group.group}" {if $enable_wiki_group.public}checked="checked"{/if} />{$enable_wiki_group.group}
+                                    {/foreach}
+                                 </div>
+                              </div>
+                              {/if}
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[use_commsy_login]" value="yes" {if $popup.external.wiki.use_commsy_login == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              <br/>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[room_mod_write_access]" value="yes" {if $popup.external.wiki.room_mod_write_access == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ROOM_MOD_WRITE_ACCESS_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[portal_read_access]" value="yes" {if $popup.external.wiki.portal_read_access == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[wikilink]" value="yes" {if $popup.external.wiki.wikilink == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_HOMELINK_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[wikilink2]" value="yes" {if $popup.external.wiki.wikilink2 == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[show_login_box]" value="yes" {if $popup.external.wiki.show_login_box == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX___
+                                 <div class="clear"></div>
+                              </div>
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_search]" value="yes" {if $popup.external.wiki.enable_search == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_sitemap]" value="yes" {if $popup.external.wiki.enable_sitemap == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[wiki_section_edit]" value="yes" {if $popup.external.wiki.wiki_section_edit == 'yes'} checked="checked"{/if}/> ___WIKI_CONFIGURATION_SECTION_EDIT_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[wiki_section_edit_header]" value="yes" {if $popup.external.wiki.wiki_section_edit_header == 'yes'} checked="checked"{/if}/> ___WIKI_CONFIGURATION_SECTION_HEADER_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_fckeditor]" value="yes" {if $popup.external.wiki.enable_fckeditor == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_statistic]" value="yes" {if $popup.external.wiki.enable_statistic == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_rss]" value="yes" {if $popup.external.wiki.enable_rss == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_calendar]" value="yes" {if $popup.external.wiki.enable_calendar == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_gallery]" value="yes" {if $popup.external.wiki.enable_gallery == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_pdf]" value="yes" {if $popup.external.wiki.enable_pdf == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_listcategories]" value="yes" {if $popup.external.wiki.enable_listcategories == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              <br/>
+                              <div class="input_row_200">
+                                 <label for="new_page_template">___WIKI_NEW_PAGE_TEMPLATE___:</label>
+                                 <input id="new_page_template" type="text" class="size_200" name="new_page_template" value="{show var=$popup.external.wiki.new_page_template}"/>
+                              </div>
+                              <br/>
+                              {if false}
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_discussion]" value="yes" {if $popup.external.wiki.enable_discussion == 'yes'} checked="checked"{/if}/> ___COMMON_WIKI_DISCUSSION_DESC___
+                                 <div class="clear"></div>
+                              </div>
+                              {/if}
+                              <div class="input_row_100">
+                                 ___COMMON_WIKI_DISCUSSION_ORGANISATION___:
+                                 <div id="enable_discussion_discussions" class="input_container_180" style="margin-left:100px;">
+                                    {foreach $popup.external.wiki.enable_discussion_discussions as $enable_discussion_discussion}
+                                       <input type="checkbox" name="form_data[enable_discussion_discussions_{$enable_discussion_discussion}]" value="{$enable_discussion_discussion}" checked="checked" />{$enable_discussion_discussion}
+                                    {/foreach}
+                                 </div>
+                              </div>
+                              <div class="input_row_100">
+                                 <label for="new_discussion">___COMMON_WIKI_DISCUSSION_NEW___:</label><input type="text" class="size_200" name="form_data[new_discussion]" value=""/>
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_discussion_notification]" value="yes" {if $popup.external.wiki.enable_discussion_notification == 'yes'} checked="checked"{/if}/> ___COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC___
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[enable_discussion_notification_groups]" value="yes" {if $popup.external.wiki.enable_discussion_notification_groups == 'yes'} checked="checked"{/if}/> ___COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC___
+                                 <div class="clear"></div>
+                              </div>
+                           </fieldset>
+                           <div class="input_row">
+                           <input id="submit" type="button" class="popup_button submit" data-custom="part: 'cs_bar', action: 'create_wiki'" name="save" value="{if $popup.external.wiki.wiki_active == 'yes'}___PREFERENCES_SAVE_BUTTON_WIKI___{else}___PREFERENCES_SAVE_BUTTON_WIKI_CREATE___{/if}"/>
+                           {if $popup.external.wiki.wiki_active == 'yes'}
+                              <input id="submit_delete_wiki" type="button" class="popup_button" data-custom="part: 'cs_bar', action: 'delete_wiki'" name="save" value="___COMMON_DELETE_WIKI_TITLE___"/>
+                           {/if}
+                           </div>
+                           {/if}
+
                 </div>
               </div>
 

@@ -41,6 +41,22 @@
 			{block name=widgets}
 			{if !$environment.is_guest}
 				<div id="tm_icons_bar">
+               {if $cs_bar.addon_information.wiki.active}
+                  {$w = $cs_bar.addon_information.wiki}
+                  <a href="{$w.path}/wikis/{$w.portal_id}/{$w.item_id}/index.php{$w.session}" title="___COMMON_WIKI_LINK___: {$w.title}" target="_blank" id="tm_wiki">&nbsp;</a>
+   {*             <a href="{$w.path}/wikis/{$w.portal_id}/{$w.item_id}/index.php{$w.session}" title="___COMMON_WIKI_LINK___: {$w.title}" target="_blank">
+                  <img src="{$basic.tpl_path}img/addon_wiki.png" alt="___COMMON_WIKI_LINK___" />
+                  </a>
+                  *}
+               {/if}
+               {if $cs_bar.addon_information.wordpress.active}
+                  {$wo = $cs_bar.addon_information.wordpress}
+                  <a href="{$wo.path}/{$environment.pid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank" id="tm_wordpress">&nbsp;</a>
+   {*             <a href="{$wo.path}/{$environment.pid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank">
+                     <img src="{$basic.tpl_path}img/addon_wordpress.png" alt="___COMMON_WORDPRESS_LINK___" />
+                  </a>
+                  *}
+               {/if}
 					{if $cs_bar.show_portfolio == "1"}
 						<a href="#" id="tm_portfolio" title="___CS_BAR_PORTFOLIO___">&nbsp;</a>
 					{/if}

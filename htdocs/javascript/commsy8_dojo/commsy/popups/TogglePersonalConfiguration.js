@@ -68,6 +68,80 @@ define([	"dojo/_base/declare",
 					}));
 				}));
 			}));
+			
+		   // confirm delete Wordpress
+         var deleteWordpressButton = Query("#submit_delete_wordpress", this.contentNode)[0];
+         if (deleteWordpressButton) {
+            On(deleteWordpressButton, "click", Lang.hitch(this, function(event) {
+               this.button_delete = new dijit.form.Button({
+                  label:      "Blog endg&uuml;ltig l&ouml;schen",
+                  onClick: Lang.hitch(this, function(event) {
+                     this.onPopupSubmit({
+                        part: "cs_bar",
+                        action: "delete_wordpress",
+                     });
+                     // destroy the dialog
+                     this.dialog.destroyRecursive();
+                  })
+               });
+               
+               this.button_cancel = new dijit.form.Button({
+                  label:      "Abbrechen",
+                  onClick: Lang.hitch(this, function(event) {
+                     // destroy the dialog
+                     this.dialog.destroyRecursive();
+                  })
+               });
+               
+               // create and show the dialog
+               // TODO: translate
+               this.dialog = new dijit.Dialog({
+                  title:      "Wordpress l&ouml;schen",
+                  content:    "<b style='color:#ff0000;'>Achtung: Alle Daten im Blog werden gel&ouml;scht. Dieser Vorgang kann nicht r&uuml;ckg&auml;ngig gemacht werden!</b><br/><br/>"
+               });
+               dojo.place(this.button_delete.domNode, this.dialog.containerNode);
+               dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
+               
+               this.dialog.show();
+            }));
+         }
+         
+         // confirm delete Wiki
+         var deleteWikiButton = Query("#submit_delete_wiki", this.contentNode)[0];
+         if (deleteWikiButton) {
+            On(deleteWikiButton, "click", Lang.hitch(this, function(event) {
+               this.button_delete = new dijit.form.Button({
+                  label:      "Wiki endg&uuml;ltig l&ouml;schen",
+                  onClick: Lang.hitch(this, function(event) {
+                     this.onPopupSubmit({
+                        part: "cs_bar",
+                        action: "delete_wiki",
+                     });
+                     // destroy the dialog
+                     this.dialog.destroyRecursive();
+                  })
+               });
+               
+               this.button_cancel = new dijit.form.Button({
+                  label:      "Abbrechen",
+                  onClick: Lang.hitch(this, function(event) {
+                     // destroy the dialog
+                     this.dialog.destroyRecursive();
+                  })
+               });
+               
+               // create and show the dialog
+               // TODO: translate
+               this.dialog = new dijit.Dialog({
+                  title:      "Wiki l&ouml;schen",
+                  content:   "<b style='color:#ff0000;'>Ein gel&ouml;schtes Wiki kann nicht wieder rekonstruiert werden. M&ouml;chten Sie dieses Wiki endg&uuml;ltig l&ouml;schen?</b><br/><br/>"
+               });
+               dojo.place(this.button_delete.domNode, this.dialog.containerNode);
+               dojo.place(this.button_cancel.domNode, this.dialog.containerNode);
+               
+               this.dialog.show();
+            }));
+         }
 		},
 
 		createConfirmBox: function() {
@@ -94,6 +168,7 @@ define([	"dojo/_base/declare",
 
 		onPopupSubmit: function(customObject) {
 			var part = customObject.part;
+			var action = customObject.action;
 
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
@@ -141,8 +216,8 @@ define([	"dojo/_base/declare",
 					nodeLists: []
 				};
 			}
-
-			this.submit(search, { part: part });
+			
+			this.submit(search, { part: part, action: action });
 		},
 
 		onPopupSubmitSuccess: function(item_id) {

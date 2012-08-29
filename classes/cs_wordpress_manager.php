@@ -66,7 +66,7 @@ class cs_wordpress_manager extends cs_manager {
    */
   function createWordpress ($item) {
     try {
-      $contextItem = $this->_environment->getCurrentContextItem();
+      /*$contextItem = $this->_environment->getCurrentContextItem();
 
       $wordpressId = $contextItem->getWordpressId();
       if($wordpressId == 0) {
@@ -82,23 +82,39 @@ class cs_wordpress_manager extends cs_manager {
 
         // set timezone
         $this->_setWordpressOption('timezone_string', date_default_timezone_get());
-      }
+      }*/
 
+      $wordpressId = $item->getWordpressId();
+      if($wordpressId == 0) {
+        $wpUser = $this->_getCurrentAuthItem();
+        $wpBlog = array('title' => $item->getTitle(),
+                        'path' => $this->_environment->getCurrentPortalID().'_'.$item->getItemID(),
+                        'cid' => $item->getItemID(),
+                        'pid' => $this->_environment->getCurrentPortalID()
+                       );
+        $result = $this->CW->createBlog($this->_environment->getSessionID(),$wpUser, $wpBlog);
+        $item->setWordpressId($result['blog_id']);
+        $item->save();
+
+        // set timezone
+        $this->_setWordpressOption('timezone_string', date_default_timezone_get(), true, $item);
+      }
+       
       // set commsy context id
-      $this->_setWordpressOption('commsy_context_id', $item->getItemID());
+      $this->_setWordpressOption('commsy_context_id', $item->getItemID(), true, $item);
 
 ////    // set Title
-      $this->_setWordpressOption('blogname', $item->getWordpressTitle());
+      $this->_setWordpressOption('blogname', $item->getWordpressTitle(), true, $item);
 //    // set Description
-      $this->_setWordpressOption('blogdescription', $item->getWordpressDescription());
+      $this->_setWordpressOption('blogdescription', $item->getWordpressDescription(), true, $item);
       // set default role
-      $this->_setWordpressOption('default_role', $item->getWordpressMemberRole());
+      $this->_setWordpressOption('default_role', $item->getWordpressMemberRole(), true, $item);
 //    // set Comments
-      $this->_setWordpressOption('default_comment_status', ($item->getWordpressUseComments()==1)?'open':'closed');
-      $this->_setWordpressOption('comment_moderation', ($item->getWordpressUseCommentsModeration()==1)?'1':'');
+      $this->_setWordpressOption('default_comment_status', ($item->getWordpressUseComments()==1)?'open':'closed', true, $item);
+      $this->_setWordpressOption('comment_moderation', ($item->getWordpressUseCommentsModeration()==1)?'1':'', true, $item);
 //    // set theme
-      $this->_setWordpressOption('template', $item->getWordpressSkin());
-      $this->_setWordpressOption('stylesheet', $item->getWordpressSkin());
+      $this->_setWordpressOption('template', $item->getWordpressSkin(), true, $item);
+      $this->_setWordpressOption('stylesheet', $item->getWordpressSkin(), true, $item);
 //    // set plugin calendar
 //
       $calendar = $item->getWordpressUseCalendar();
@@ -115,7 +131,7 @@ class cs_wordpress_manager extends cs_manager {
           $pluginsArray[] = 'nktagcloud/nktagcloud.php';
         }
         if(count($pluginsArray)>0) {
-          $this->_setWordpressOption('active_plugins', $pluginsArray, false);
+          $this->_setWordpressOption('active_plugins', $pluginsArray, false, $item);
         }
       }else {
         // update
@@ -131,7 +147,7 @@ class cs_wordpress_manager extends cs_manager {
           $key = array_search( 'nktagcloud/nktagcloud.php'  , $pluginsArray  );
           unset($pluginsArray[$key]);
         }
-        $this->_setWordpressOption('active_plugins', $pluginsArray, true);
+        $this->_setWordpressOption('active_plugins', $pluginsArray, true, $item);
       }
     } catch(Exception $e) {
       return new SoapFault('createWordpress', $e->getMessage());
@@ -421,13 +437,13 @@ class cs_wordpress_manager extends cs_manager {
     return $retour;
   }
 
-  protected function _setWordpressOption($option_name, $option_value, $update=true) {
+  protected function _setWordpressOption($option_name, $option_value, $update=true, $item) {
     // TBD: error handling
     $option_value = is_array($option_value) ? serialize($option_value) : $option_value;
     if($update==true) {
-      $this->CW->updateOption($this->_environment->getSessionID(),$option_name, $option_value, $this->_environment->getCurrentContextItem()->getWordpressId());
+      $this->CW->updateOption($this->_environment->getSessionID(),$option_name, $option_value, $item->getWordpressId());
     }else {
-      $this->CW->insertOption($this->_environment->getSessionID(),$option_name, $option_value, $this->_environment->getCurrentContextItem()->getWordpressId());
+      $this->CW->insertOption($this->_environment->getSessionID(),$option_name, $option_value, $item->getWordpressId());
     }
   }
 

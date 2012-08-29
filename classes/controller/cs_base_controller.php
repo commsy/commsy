@@ -264,6 +264,66 @@
  			return $email_to_service;
 		}
 
+		
+		private function getAddonInformation() {
+			$return = array(
+				'wiki'		=> array(
+					'active'	=> false
+				),
+				'wordpress'	=> array(
+					'active'	=> false
+				)
+			);
+
+			$current_user = $this->_environment->getPortalUserItem();
+			$current_context = $current_user->getOwnRoom();
+			$count = 0;
+
+			// wiki
+			if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
+					global $c_pmwiki_path_url;
+
+					$count++;
+					$return['wiki']['active'] = true;
+					$return['wiki']['title'] = $current_context->getWikiTitle();
+					$return['wiki']['path'] = $c_pmwiki_path_url;
+					$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
+					$return['wiki']['item_id'] = $current_context->getItemID();
+
+					$url_session_id = '';
+					if($current_context->withWikiUseCommSyLogin()) {
+						$session_item = $this->_environment->getSessionItem();
+						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+						unset($session_item);
+					}
+					$return['wiki']['session'] = $url_session_id;
+			}
+
+
+			// wordpress
+			if($current_context->existWordpress()) {
+				global $c_wordpress_path_url;
+				$count++;
+				$return['wordpress']['active'] = true;
+				$return['wordpress']['title'] = $current_context->getWordpressTitle();
+				$return['wordpress']['path'] = $c_wordpress_path_url;
+				$return['wordpress']['item_id'] = $current_context->getItemID();
+
+				$url_session_id = '';
+				if($current_context->withWordpressUseCommSyLogin()) {
+					$session_item = $this->_environment->getSessionItem();
+					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+					unset($session_item);
+				}
+				$return['wordpress']['session'] = $url_session_id;
+			}
+
+			// plugins for moderators and users
+			// TODO: $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
+			return $return;
+		}
+		
+		
 		/**
 		 * process basic template information
 		 */
@@ -362,6 +422,7 @@
 				$this->assign('cs_bar', 'show_calendar', $own_room_item->getCSBarShowCalendar());
 				$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
 				$this->assign('cs_bar', 'show_portfolio', $own_room_item->getCSBarShowPortfolio());
+				$this->assign('cs_bar', 'addon_information', $this->getAddonInformation());
 			}else{
 				$this->assign('cs_bar', 'show_widgets', false);
 				$this->assign('cs_bar', 'show_calendar', false);

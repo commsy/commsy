@@ -751,6 +751,348 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						if($this->_popup_controller->checkFormData('cs_bar')) {
 							$room_item = $user_item->getOwnRoom();
 
+							//---
+							
+							$wordpress_manager = $this->_environment->getWordpressManager();
+		               $wiki_manager = $this->_environment->getWikiManager();
+
+						      if($additional['action'] == 'create_wordpress'){
+		                          if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
+		      				         $room_item->setWordpressUseComments();
+		      				      } else {
+		      				         $room_item->unsetWordpressUseComments();
+		      				      }
+
+		      				      if ( isset($form_data['use_comments_moderation']) and !empty($form_data['use_comments_moderation']) and $form_data['use_comments_moderation'] == 'yes') {
+		      				         $room_item->setWordpressUseCommentsModeration();
+		      				      } else {
+		      				         $room_item->unsetWordpressUseCommentsModeration();
+		      				      }
+
+		      				      if ( isset($form_data['wordpresslink']) and !empty($form_data['wordpresslink']) and $form_data['wordpresslink'] == 'yes') {
+		      				         $room_item->setWordpressHomeLink();
+		      				      } else {
+		      				         $room_item->unsetWordpressHomeLink();
+		      				      }
+
+		      				      if ( isset($form_data['skin_choice']) and !empty($form_data['skin_choice']) ) {
+		      				         $room_item->setWordpressSkin($form_data['skin_choice']);
+		      				      }
+
+		      				      if ( isset($form_data['wordpresstitle']) and !empty($form_data['wordpresstitle']) ) {
+		      				         $room_item->setWordpressTitle($form_data['wordpresstitle']);
+		      				      } else {
+		      				         $room_item->setWordpressTitle($room_item->getTitle());
+		      				      }
+
+		      				      if ( isset($form_data['wordpressdescription']) and !empty($form_data['wordpressdescription']) ) {
+		      				         $room_item->setWordpressDescription($form_data['wordpressdescription']);
+		      				      } else {
+		      				         $room_item->setWordpressDescription('');
+		      				      }
+
+		      				      if ( isset($form_data['member_role']) and !empty($form_data['member_role']) ) {
+		      				         $room_item->setWordpressMemberRole($form_data['member_role']);
+		      				      } else {
+		      				         $room_item->setWordpressMemberRole();
+		      				      }
+
+		      				      $room_item->setWithWordpressFunctions();
+		      				      $room_item->setWordpressExists();
+		      				      $room_item->setWordpressActive();
+		      				      // save
+		      				      $room_item->save();
+		      				      // create or change new wordpress
+		      				      $success = $wordpress_manager->createWordpress($room_item);
+						      } else if ($additional['action'] == 'delete_wordpress') {
+						         if($wordpress_manager->deleteWordpress($room_item->getWordpressId())){
+		      				         $current_user = $this->_environment->getCurrentUserItem();
+		      				         $room_item->setModificatorItem($current_user);
+		      				         $room_item->setModificationDate(getCurrentDateTimeInMySQL());
+		      				         $room_item->unsetWordpressExists();
+		      				         $room_item->setWordpressInActive();
+		      				         $room_item->setWordpressSkin('twentyten');
+		      				         $room_item->setWordpressTitle($room_item->getTitle());
+		      				         $room_item->setWordpressDescription('');
+		      				         $room_item->setWordpressId(0);
+		      				         // Save item
+		      				         $room_item->save();
+						         }
+						      } else if($additional['action'] == 'create_wiki'){
+						         // Set modificator and modification date
+		                     #if ( isset($form_data['wikilink']) and !empty($form_data['wikilink']) and $form_data['wikilink'] == 'yes') {
+		                        $room_item->setWikiHomeLink();
+		                     #} else {
+		                     #   $room_item->unsetWikiHomeLink();
+		                     #}
+		                     if ( isset($form_data['wikilink2']) and !empty($form_data['wikilink2']) and $form_data['wikilink2'] == 'yes') {
+		                        $room_item->setWikiPortalLink();
+		                     } else {
+		                        $room_item->unsetWikiPortalLink();
+		                     }
+		                     if ( isset($form_data['wiki_skin_choice']) and !empty($form_data['wiki_skin_choice']) ) {
+		                        $room_item->setWikiSkin($form_data['wiki_skin_choice']);
+		                     }
+		                     if ( isset($form_data['wikititle']) and !empty($form_data['wikititle']) ) {
+		                        $room_item->setWikiTitle($form_data['wikititle']);
+		                     } else {
+		                        $room_item->setWikiTitle($room_item->getTitle());
+		                     }
+
+		                     if ( isset($form_data['admin']) and !empty($form_data['admin']) ) {
+		                        $room_item->setWikiAdminPW($form_data['admin']);
+		                     }
+
+		                     if ( isset($form_data['edit']) and !empty($form_data['edit']) ) {
+		                        $room_item->setWikiEditPW($form_data['edit']);
+		                     } else {
+		                        $room_item->setWikiEditPW('');
+		                     }
+
+		                     if ( isset($form_data['read']) and !empty($form_data['read']) ) {
+		                        $room_item->setWikiReadPW($form_data['read']);
+		                     } else {
+		                        $room_item->setWikiReadPW('');
+		                     }
+
+		                     #if ( isset($form_data['use_commsy_login']) ) {
+		                        $room_item->setWikiUseCommSyLogin();
+		                     #} else {
+		                     #   $room_item->unsetWikiUseCommSyLogin();
+		                     #}
+
+		                     if ( isset($form_data['community_read_access']) ) {
+		                        $room_item->setWikiCommunityReadAccess();
+		                     } else {
+		                        $room_item->unsetWikiCommunityReadAccess();
+		                     }
+
+		                     if ( isset($form_data['community_write_access']) ) {
+		                        $room_item->setWikiCommunityWriteAccess();
+		                     } else {
+		                        $room_item->unsetWikiCommunityWriteAccess();
+		                     }
+
+		                     if ( isset($form_data['portal_read_access']) ) {
+		                        $room_item->setWikiPortalReadAccess();
+		                     } else {
+		                        $room_item->unsetWikiPortalReadAccess();
+		                     }
+
+		                     if ( isset($form_data['room_mod_write_access']) ) {
+		                        $room_item->setWikiRoomModWriteAccess();
+		                     } else {
+		                        $room_item->unsetWikiRoomModWriteAccess();
+		                     }
+
+		                     if ( isset($form_data['show_login_box']) ) {
+		                        $room_item->setWikiShowCommSyLogin();
+		                     } else {
+		                        $room_item->unsetWikiShowCommSyLogin();
+		                     }
+
+		                     #if ( isset($form_data['enable_fckeditor']) ) {
+		                        $room_item->setWikiEnableFCKEditor();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableFCKEditor();
+		                     #}
+
+		                     #if ( isset($form_data['enable_sitemap']) ) {
+		                        $room_item->setWikiEnableSitemap();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableSitemap();
+		                     #}
+
+		                     #if ( isset($form_data['enable_statistic']) ) {
+		                        $room_item->setWikiEnableStatistic();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableStatistic();
+		                     #}
+
+		                     #if ( isset($form_data['enable_search']) ) {
+		                        $room_item->setWikiEnableSearch();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableSearch();
+		                     #}
+
+		                     #if ( isset($form_data['enable_rss']) ) {
+		                        $room_item->setWikiEnableRss();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableRss();
+		                     #}
+
+		                     if ( isset($form_data['enable_calendar']) ) {
+		                        $room_item->setWikiEnableCalendar();
+		                     } else {
+		                        $room_item->unsetWikiEnableCalendar();
+		                     }
+
+		                     if ( isset($form_data['enable_gallery']) ) {
+		                        $room_item->setWikiEnableGallery();
+		                     } else {
+		                        $room_item->unsetWikiEnableGallery();
+		                     }
+
+		                     if ( isset($form_data['enable_notice']) ) {
+		                        $room_item->setWikiEnableNotice();
+		                     } else {
+		                        $room_item->unsetWikiEnableNotice();
+		                     }
+
+		                     #if ( isset($form_data['enable_pdf']) ) {
+		                        $room_item->setWikiEnablePdf();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnablePdf();
+		                     #}
+
+		                     if ( isset($form_data['enable_rater']) ) {
+		                        $room_item->setWikiEnableRater();
+		                     } else {
+		                        $room_item->unsetWikiEnableRater();
+		                     }
+
+		                     #if ( isset($form_data['enable_listcategories']) ) {
+		                        $room_item->setWikiEnableListCategories();
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableListCategories();
+		                     #}
+
+		                     if ((isset($form_data['new_page_template'])) &&  ($_POST['new_page_template'] != '')) {
+		                        $room_item->setWikiNewPageTemplate($_POST['new_page_template']);
+		                     } else {
+		                        $room_item->unsetWikiNewPageTemplate();
+		                     }
+
+		                     if ( isset($form_data['enable_swf']) ) {
+		                        $room_item->setWikiEnableSwf();
+		                     } else {
+		                        $room_item->unsetWikiEnableSwf();
+		                     }
+
+		                     if ( isset($form_data['enable_wmplayer']) ) {
+		                        $room_item->setWikiEnableWmplayer();
+		                     } else {
+		                        $room_item->unsetWikiEnableWmplayer();
+		                     }
+
+		                     if ( isset($form_data['enable_quicktime']) ) {
+		                        $room_item->setWikiEnableQuicktime();
+		                     } else {
+		                        $room_item->unsetWikiEnableQuicktime();
+		                     }
+
+		                     if ( isset($form_data['enable_youtube_google_vimeo']) ) {
+		                        $room_item->setWikiEnableYoutubeGoogleVimeo();
+		                     } else {
+		                        $room_item->unsetWikiEnableYoutubeGoogleVimeo();
+		                     }
+
+		                     include_once('functions/development_functions.php');
+
+		                     // Discussion
+		                     #if ( isset($form_data['enable_discussion']) ) {
+		                        $room_item->setWikiEnableDiscussion();
+		                        if ( isset($form_data['new_discussion']) ) {
+		                           $_POST['new_discussion'] = $form_data['new_discussion'];
+		                           $room_item->WikiSetNewDiscussion($form_data['new_discussion']);
+		                        }
+		                     #} else {
+		                     #   $room_item->unsetWikiEnableDiscussion();
+		                     #}
+
+		                     $enable_discussion_discussions = array();
+		                     $form_data_keys = array_keys($form_data);
+		                     foreach($form_data_keys as $form_data_key){
+		                        if(stristr($form_data_key, 'enable_discussion_discussions_')){;
+		                           $enable_discussion_discussions[] = $form_data[$form_data_key];
+		                        }
+		                     }
+		                     $_POST['enable_discussion_discussions'] = $enable_discussion_discussions;
+
+		                     if ( isset($form_data['enable_discussion_notification']) ) {
+		                        $room_item->setWikiEnableDiscussionNotification();
+		                     } else {
+		                        $room_item->unsetWikiEnableDiscussionNotification();
+		                     }
+
+		                    if ( isset($form_data['enable_discussion_notification_groups']) ) {
+		                        $room_item->setWikiEnableDiscussionNotificationGroups();
+		                    } else {
+		                        $room_item->unsetWikiEnableDiscussionNotificationGroups();
+		                    }
+
+		                    if ( isset($form_data['wiki_section_edit']) ) {
+		                        $room_item->setWikiWithSectionEdit();
+		                    } else {
+		                        $room_item->setWikiWithoutSectionEdit();
+		                    }
+
+		                    if ( isset($form_data['wiki_section_edit_header']) ) {
+		                        $room_item->setWikiWithHeaderForSectionEdit();
+		                    } else {
+		                        $room_item->setWikiWithoutHeaderForSectionEdit();
+		                    }
+
+		                     $room_item->setWikiExists();
+		                     $room_item->setWikiActive();
+
+		                     $wiki_manager->createWiki($room_item);
+
+		                     // Save item - after createWiki() -> old discussions might be deleted
+		                     $room_item->save();
+
+		                     $enable_wiki_groups = array();
+		                     $form_data_keys = array_keys($form_data);
+		                     foreach($form_data_keys as $form_data_key){
+		                        if(stristr($form_data_key, 'enable_wiki_groups_')){;
+		                           $enable_wiki_groups[] = $form_data[$form_data_key];
+		                        }
+		                     }
+
+		                     // WSDL-xml hier noch nicht zugreifbar, daher weiterhin die alte Variante
+		                     if ( !empty($enable_wiki_groups)){
+		                        //global $c_use_soap_for_wiki;
+		                        //if(!$c_use_soap_for_wiki){
+		                           $wiki_manager->setWikiGroupsAsPublic($enable_wiki_groups);
+		                        //} else {
+		                        //   $wiki_manager->setWikiGroupsAsPublic_soap($_POST['enable_wiki_groups']);
+		                        //}
+		                     } else {
+		                        //global $c_use_soap_for_wiki;
+		                        //if(!$c_use_soap_for_wiki){
+		                           $wiki_manager->setWikiGroupsAsPublic(array());
+		                        //} else {
+		                        //   $wiki_manager->setWikiGroupsAsPublic_soap(array());
+		                        //}
+		                     }
+						      } else if ($additional['action'] == 'delete_wiki'){
+		                     $room_item->setModificatorItem($user_item);
+		                     $room_item->setModificationDate(getCurrentDateTimeInMySQL());
+		                     $room_item->unsetWikiExists();
+		                     $room_item->setWikiInActive();
+		                     $room_item->setWikiSkin('pmwiki');
+		                     $room_item->setWikiTitle($room_item->getTitle());
+		                     $room_item->unsetWikiEnableDiscussion();
+		                     $room_item->unsetWikiEnableDiscussionNotification();
+		                     $room_item->unsetWikiEnableDiscussionNotificationGroups();
+		                     $room_item->unsetWikiDiscussionArray();
+		                     // Save item
+		                     $room_item->save();
+		                     // delete wiki
+		                     $wiki_manager->deleteWiki($room_item);
+						      } else if ($additional['action'] == 'chat'){
+						         if ( isset($form_data['chatlink']) and !empty($form_data['chatlink']) and $form_data['chatlink'] == 'yes') {
+		                            $room_item->setChatLinkActive();
+		                         } else {
+		                            $room_item->setChatLinkInactive();
+		                         }
+		                         $room_item->save();
+						      }
+							
+							
+							//---
+							
+							
 							if(isset($form_data['show_widget_view']) && !empty($form_data['show_widget_view'])) {
 								if($form_data['show_widget_view'] == 'yes'){
 								   $room_item->setCSBarShowWidgets('1');
@@ -1087,7 +1429,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	       $return['email_to_commsy_mailadress'] = $c_email_upload_email_account;
 	    }
 
-
+      $this->_popup_controller->assign('popup', 'external', $this->getExternalInformation());
+      
 		return $return;
 	}
 
@@ -1139,6 +1482,230 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		 */
 	}
 
+	private function getExternalInformation() {
+	   global $c_wordpress;
+	   global $c_pmwiki;
+
+	   $return = array();
+	   $translator = $this->_environment->getTranslationObject();
+
+	   $user_item = $this->_environment->getPortalUserItem();
+	   $current_user = $this->_environment->getPortalUserItem();
+	   $current_context = $user_item->getOwnRoom();
+	   $current_portal_item = $this->_environment->getCurrentPortalItem();
+
+
+	   // Wordpress
+	   if(isset($c_wordpress) and $c_wordpress){
+   	   $wordpress_manager = $this->_environment->getWordpressManager();
+	      $wordpress = array();
+   	   if($current_context->isWordpressActive()){
+            $wordpress['wordpress_active'] = 'yes';
+   	   }
+	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();
+	      $wordpress['wordpressdescription'] = $current_context->getWordpressDescription();
+
+   	   $wordpress_skins = array();
+   	   foreach($wordpress_manager->getSkins() as $key => $value){
+   	      $temp_array['text']  = $key;
+   	      $temp_array['value'] = $value;
+   	      $wordpress_skins[] = $temp_array;
+   	   }
+   	   $wordpress['skin_array'] = $wordpress_skins;
+   	   $wordpress['skin_choice'] = $current_context->getWordpressSkin();
+
+   	   $wordpress_member_roles = array();
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER'), 'value' => 'subscriber');
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR'), 'value' => 'author');
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_EDITOR'), 'value' => 'editor');
+   	   $wordpress_member_roles[] = array('text' => $translator->getMessage('WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR'), 'value' => 'administrator');
+   	   $wordpress['member_role_array'] = $wordpress_member_roles;
+   	   $wordpress['member_role'] = $current_context->getWordpressMemberRole();
+
+   	   if($current_context->getWordpressUseComments() == '1'){
+   	      $wordpress['use_comments'] = 'yes';
+   	   }
+   	   if($current_context->getWordpressUseCommentsModeration() == '1'){
+   	      $wordpress['use_comments_moderation'] = 'yes';
+   	   }
+
+   	   if($current_context->getWordpressHomeLink() == '1'){
+            $wordpress['wordpresslink'] = 'yes';
+   	   }
+      	$return['wordpress'] = $wordpress;
+	   } else {
+	      $return['wordpress'] = false;
+	   }
+
+	   // Wiki
+	   if(!empty($c_pmwiki) && $c_pmwiki) {
+	      $wiki_manager = $this->_environment->getWikiManager();
+	      $wiki = array();
+
+	      $wiki_skins = array();
+         global $c_pmwiki_path_file;
+         $directory_handle = @opendir($c_pmwiki_path_file.'/pub/skins');
+         if ($directory_handle) {
+            while (false !== ($dir = readdir($directory_handle))) {
+               if ( $dir != 'home'
+                    and $dir != '...'
+                    and $dir != '..'
+                    and $dir != '.'
+                    and $dir != 'print'
+                    and $dir != 'jsMath'
+                    and $dir != 'CVS'
+                  ) {
+                  $wiki_skins[] = $dir;
+               }
+            }
+         }
+         $directory_handle = @opendir($c_pmwiki_path_file.'/wikis/'.$this->_environment->getCurrentPortalID().'/'.$this->_environment->getCurrentContextID().'/pub/skins');
+         if ($directory_handle) {
+            while (false !== ($dir = readdir($directory_handle))) {
+               if ( $dir != 'home'
+                    and $dir != '...'
+                    and $dir != '..'
+                    and $dir != '.'
+                    and $dir != 'print'
+                    and $dir != 'jsMath'
+                    and $dir != 'CVS'
+                  ) {
+                  $wiki_skins[] = $dir;
+               }
+            }
+         }
+   	   $wiki['wiki_skin_array'] = $wiki_skins;
+
+   	   if($current_context->isWikiActive()){
+            $wiki['wiki_active'] = 'yes';
+
+            $wiki['wikititle'] = $current_context->getWikiTitle();
+            if ($current_context->getWikiHomeLink() == '1'){
+               $wiki['wikilink'] = 'yes';
+            }
+            if ($current_context->getWikiPortalLink() == '1'){
+               $wiki['wikilink2'] = 'yes';
+            }
+            if ($current_context->WikiShowCommSyLogin() == "1"){
+               $wiki['show_login_box'] = 'yes';
+            }
+            if ($current_context->WikiEnableFCKEditor() == "1"){
+               $wiki['enable_fckeditor'] = 'yes';
+            }
+            if ($current_context->WikiEnableSitemap() == "1"){
+               $wiki['enable_sitemap'] = 'yes';
+            }
+            if ($current_context->WikiEnableStatistic() == "1"){
+               $wiki['enable_statistic'] = 'yes';
+            }
+            if ($current_context->WikiEnableSearch() == "1"){
+               $wiki['enable_search'] = 'yes';
+            }
+            if ($current_context->WikiEnableRss() == "1"){
+               $wiki['enable_rss'] = 'yes';
+            }
+            if ($current_context->WikiEnableCalendar() == "1"){
+               $wiki['enable_calendar'] = 'yes';
+            }
+            if ($current_context->WikiEnableGallery() == "1"){
+               $wiki['enable_gallery'] = 'yes';
+            }
+            if ($current_context->WikiEnableNotice() == "1"){
+               $wiki['enable_notice'] = 'yes';
+            }
+            if ($current_context->WikiEnablePdf() == "1"){
+               $wiki['enable_pdf'] = 'yes';
+            }
+            if ($current_context->WikiEnableRater() == "1"){
+               $wiki['enable_rater'] = 'yes';
+            }
+            if ($current_context->WikiEnableListCategories() == "1"){
+               $wiki['enable_listcategories'] = 'yes';
+            }
+            if ($current_context->WikiNewPageTemplate() != "-1"){
+               $wiki['new_page_template'] = $this->_item->WikiNewPageTemplate();
+            }
+            if ($current_context->WikiEnableSwf() == "1"){
+               $wiki['enable_swf'] = 'yes';
+            }
+            if ($current_context->WikiEnableWmplayer() == "1"){
+               $wiki['enable_wmplayer'] = 'yes';
+            }
+            if ($current_context->WikiEnableQuicktime() == "1"){
+               $wiki['enable_quicktime'] = 'yes';
+            }
+            if ($current_context->WikiEnableYoutubeGoogleVimeo() == "1"){
+               $wiki['enable_youtube_google_vimeo'] = 'yes';
+            }
+            if ($current_context->WikiEnableDiscussion() == "1"){
+               $wiki['enable_discussion'] = 'yes';
+            }
+            $wiki['enable_discussion_discussions'] = $current_context->getWikiDiscussionArray();
+            if ($current_context->WikiEnableDiscussionNotification() == "1"){
+               $wiki['enable_discussion_notification'] = 'yes';
+            }
+            if ($current_context->WikiEnableDiscussionNotificationGroups() == "1"){
+               $wiki['enable_discussion_notification_groups'] = 'yes';
+            }
+            if ($current_context->WikiUseCommSyLogin() == "1"){
+               $wiki['use_commsy_login'] = 'yes';
+            }
+            if ($current_context->WikiCommunityReadAccess() == "1"){
+               $wiki['community_read_access'] = 'yes';
+            }
+            if ($current_context->WikiCommunityWriteAccess() == "1"){
+               $wiki['community_write_access'] = 'yes';
+            }
+            if ($current_context->WikiPortalReadAccess() == "1"){
+               $wiki['portal_read_access'] = 'yes';
+            }
+            if ($current_context->isWikiRoomModWriteAccess() ) {
+               $wiki['room_mod_write_access'] = 'yes';
+            }
+            $wiki['new_discussion'] = '';
+            if ($current_context->wikiWithSectionEdit() ) {
+               $wiki['wiki_section_edit'] = 'yes';
+            }
+            if ($current_context->wikiWithHeaderForSectionEdit() ) {
+               $wiki['wiki_section_edit_header'] = 'yes';
+            }
+
+            $wiki['wiki_skin_choice'] = $current_context->getWikiSkin();
+            $wiki['admin'] = $current_context->getWikiAdminPW();
+            $wiki['edit'] = $current_context->getWikiEditPW();
+            $wiki['read'] = $current_context->getWikiReadPW();
+
+            $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
+            $temp_wiki_groups_array = array();
+            for ($index = 0; $index < sizeof($wiki_groups_array['groups']); $index++) {
+               $temp_array = array();
+               $temp_array['group'] = $wiki_groups_array['groups'][$index];
+               $temp_array['public'] = $wiki_groups_array['public'][$index];
+               $temp_wiki_groups_array[] = $temp_array;
+            }
+
+            $wiki['enable_wiki_groups'] = $temp_wiki_groups_array;
+
+   	   } else {
+      	   $wiki['wikititle'] = $current_context->getWikiTitle();
+            $wiki['wiki_skin_choice'] = 'pmwiki';
+            $wiki['admin'] = 'admin';
+            $wiki['edit'] = 'edit';
+            $wiki['read'] = 'read';
+            $wiki['show_login_box'] = 'yes';
+            $wiki['wikilink'] = 'yes';
+            $wiki['use_commsy_login'] = 'yes';
+   	   }
+	      $return['wiki'] = $wiki;
+	   } else {
+	      $return['wiki'] = false;
+	   }
+
+	   return $return;
+	}
+
+	
+	
 	private function getNewsletterInformation() {
 		$return = array();
 
