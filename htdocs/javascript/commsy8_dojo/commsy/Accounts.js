@@ -208,23 +208,25 @@ define([	"dojo/_base/declare",
 				this.performRequest();
 				
 				// load mail popup information
-				this.AJAXRequest("popup", "getHTML", { ids: selectedIds, action: action, module: "configuration_mail" }, Lang.hitch(this, function(html) {
-					var mailContentNode = Query("div#popup_accounts_mail")[0];
-					
-					DomConstruct.empty(mailContentNode);
-					DomConstruct.place(html, mailContentNode, "last");
-					
-					// create mail send and abort event
-					On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
-						this.sendMail(mailContentNode, action, selectedIds);
-					}));
-					
-					On(Query("input[name='abort']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+				if (selectedIds.length > 0) {
+					this.AJAXRequest("popup", "getHTML", { ids: selectedIds, action: action, module: "configuration_mail" }, Lang.hitch(this, function(html) {
 						var mailContentNode = Query("div#popup_accounts_mail")[0];
-						DomConstruct.empty(mailContentNode);
 						
+						DomConstruct.empty(mailContentNode);
+						DomConstruct.place(html, mailContentNode, "last");
+						
+						// create mail send and abort event
+						On(Query("input[name='send']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+							this.sendMail(mailContentNode, action, selectedIds);
+						}));
+						
+						On(Query("input[name='abort']", mailContentNode)[0], "click", Lang.hitch(this, function(event) {
+							var mailContentNode = Query("div#popup_accounts_mail")[0];
+							DomConstruct.empty(mailContentNode);
+							
+						}));
 					}));
-				}));
+				}
 			}));
 		},
 		
@@ -233,11 +235,11 @@ define([	"dojo/_base/declare",
 			
 			// collect data
 			var data = {
-				sendMail:		(sendMailNode) ? DomAttr.get(sendMailNode, "value") : true,
-				modCC:			DomAttr.get(Query("input[name='form_data[copy_mod_cc]']", contentNode)[0], "value"),
-				modBCC:			DomAttr.get(Query("input[name='form_data[copy_mod_bcc]']", contentNode)[0], "value"),
-				authCC:			DomAttr.get(Query("input[name='form_data[copy_auth_cc]']", contentNode)[0], "value"),
-				authBCC:		DomAttr.get(Query("input[name='form_data[copy_auth_bcc]']", contentNode)[0], "value"),
+				sendMail:		(sendMailNode) ? sendMailNode.checked : true,
+				modCC:			Query("input[name='form_data[copy_mod_cc]']", contentNode)[0].checked,
+				modBCC:			Query("input[name='form_data[copy_mod_bcc]']", contentNode)[0].checked,
+				authCC:			Query("input[name='form_data[copy_auth_cc]']", contentNode)[0].checked,
+				authBCC:		Query("input[name='form_data[copy_auth_bcc]']", contentNode)[0].checked,
 				subject:		DomAttr.get(Query("input[name='form_data[subject]']", contentNode)[0], "value"),
 				description:	DomAttr.get(Query("textarea[name='form_data[body]']", contentNode)[0], "value"),
 				ids:			selectedIds,

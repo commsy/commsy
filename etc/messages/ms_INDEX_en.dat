@@ -16,6 +16,7 @@ $message["INDEX_ACTION_FORM_HEADLINE_USER_STATUS_USER"]["en"] = "Change status t
 $message["INDEX_ACTION_FORM_HEADLINE_USER_UNMAKE_CONTACT_PERSON"]["en"] = "Unselect status contact person";
 $message["INDEX_ACTION_FORM_MAIL"]["en"] = "E-mail";
 $message["INDEX_ACTION_FORM_MAIL_OPTION"]["en"] = "Send e-mail";
+$message["INDEX_ACTION_FORM_MAIL_TO"]["en"] = "to Account(s)";
 $message["INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING"]["en"] = "If you delete this account, all related content items will also be deleted. This means that all items added through this account will be replaced by a dummy notice text in order to preserve the workspaces's structure. An alternative way of handling would be to lock the account, which leaves it's related content items as they are while the workspace member will be banned.";
 $message["INDEX_ACTION_PERFORM_USER_ACCOUNT_DELETE_BUTTON"]["en"] = "Delete account";
 $message["INDEX_ACTION_PERFORM_USER_ACCOUNT_FREE_BUTTON"]["en"] = "Activate account";

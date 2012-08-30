@@ -17,12 +17,12 @@
 		{if $popup.send_mail_checkbox === true}
 			<div class="input_row_100">
 				<label for="send_mail">___INDEX_ACTION_FORM_MAIL___:</label>
-				<input id="send_mail" type="checkbox" name="form_data[send_mail]" value="true" checked="checked" />
+				<input id="send_mail" type="checkbox" name="form_data[send_mail]" value="true" checked="checked" /> ___INDEX_ACTION_FORM_MAIL_TO___
 			</div>
 		{/if}
 		
 		<div class="input_row_100">
-			<label for="send_mail">___INDEX_ACTION_FORM_CC_BCC___:</label>
+			<label for="send_mail">&nbsp;</label>
 			<input id="send_mail" type="checkbox" name="form_data[copy_mod_cc]" value="true" /> ___INDEX_ACTION_FORM_CC___ <input id="send_mail" type="checkbox" name="form_data[copy_mod_bcc]" value="true" /> ___INDEX_ACTION_FORM_BCC_MODERATOR___
 		</div>
 		<div class="input_container" style="margin-left:100px;">
