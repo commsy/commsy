@@ -22,9 +22,14 @@ require([	"dojo/_base/declare",
 				require(["commsy/popups/TogglePersonalConfiguration"], function(PersonalConfigurationPopup) {
 					var handler = new PersonalConfigurationPopup(query("a#tm_user")[0], query("div#tm_menus div#tm_dropmenu_pers_bar")[0]);
 				});
-				require(["commsy/popups/ToggleBreadcrumb"], function(BreadcrumbPopup) {
-					var handler = new BreadcrumbPopup(query("a#tm_bread_crumb")[0], query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]);
-				});
+				
+				var aBreadcrumbNode = query("a#tm_bread_crumb")[0];
+				
+				if (aBreadcrumbNode) {
+					require(["commsy/popups/ToggleBreadcrumb"], function(BreadcrumbPopup) {
+						var handler = new BreadcrumbPopup(query("a#tm_bread_crumb")[0], query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]);
+					});
+				}
 				
 				var aClipboardNode = query("a#tm_clipboard")[0];
 				
