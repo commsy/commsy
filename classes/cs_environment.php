@@ -437,6 +437,18 @@ class cs_environment {
             $retour = explode('&',encode(FROM_GET,$_SERVER['QUERY_STRING']));
 
             // delete cid, mod and fct
+            $tmpRetour = array();
+            foreach ($retour as $param) {
+            	list($key, $value) = explode("=", $param);
+            	
+            	if ($key !== 'cid' && $key !== 'mod' && $key !== 'fct') {
+            		$tmpRetour[] = $key . "=" . $value;
+            	}
+            }
+            
+            $retour = $tmpRetour;
+            
+            /*
             $go_on = true;
             while ($go_on and isset($retour[0])) {
                if (mb_stristr($retour[0],'cid=') or mb_stristr($retour[0],'mod=') or mb_stristr($retour[0],'fct=') ) {
@@ -445,6 +457,8 @@ class cs_environment {
                   $go_on = false;
                }
             }
+            */
+            
             // delete SID or empty array element
             if (count($retour) > 0) {
                $retour2 = array();
