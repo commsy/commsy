@@ -531,6 +531,7 @@
                       <input id="submit" class="submit popup_button" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
                   </div>
 
+{*
                         {if $popup.external.wordpress}
                            <hr/>
                            <fieldset>
@@ -596,6 +597,7 @@
                         {/if}
                      </div>
                            {/if}
+
                            {if $popup.external.wiki}
                            <hr/>
                            <fieldset>
@@ -765,7 +767,7 @@
                            {/if}
                            </div>
                            {/if}
-
+*}
                 </div>
               </div>
 
