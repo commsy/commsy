@@ -439,6 +439,8 @@ class cs_environment {
             // delete cid, mod and fct
             $tmpRetour = array();
             foreach ($retour as $param) {
+            	if (empty($param)) continue;
+            	
             	list($key, $value) = explode("=", $param);
             	
             	if ($key !== 'cid' && $key !== 'mod' && $key !== 'fct') {
