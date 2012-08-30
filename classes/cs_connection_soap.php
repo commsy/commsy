@@ -3003,7 +3003,7 @@ class cs_connection_soap {
       }
    }
    
-   public function saveDate($session_id, $context_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime) {
+   public function saveDate($session_id, $context_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime, $uploadFiles) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
          $this->_environment->setSessionID($session_id);
@@ -3042,7 +3042,33 @@ class cs_connection_soap {
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
          $reader_manager->markRead($date_item->getItemID(),0);
          $noticed_manager->markNoticed($date_item->getItemID(),0);
+         
+         $this->_uploadFiles($uploadFiles, $date_item);
       }
+   }
+   
+   function _uploadFiles($uploadFiles, $item){
+      $uploadFilesArray = explode(',', $uploadFiles);
+      $new_id_array = array();
+      foreach($uploadFilesArray as $uploadFileData){
+         if($uploadFileData != ''){
+            $temp_file_name = 'upload_'.time().'.jpg';
+            $disc_manager = $this->_environment->getDiscManager();
+            $bin = base64_decode($uploadFileData);
+            file_put_contents($disc_manager->getTempFolder().'/'.$temp_file_name, $bin);
+            $file_manager = $this->_environment->getFileManager();
+            $new_file = $file_manager->getNewItem();
+            $new_file->setFileName($temp_file_name);
+            $new_file->setTempName($disc_manager->getTempFolder().'/'.$temp_file_name);
+            $new_file->setTempKey($temp_file_name);
+            $new_file->save();
+            $new_id_array[] = $new_file->getFileID();
+         }
+      }
+      $old_id_array = $item->getFileIDArray();
+      $merge_id_array = array_merge($old_id_array, $new_id_array);
+      $item->setFileIDArray($merge_id_array);
+      $item->save();
    }
    
    public function updateDate($session_id, $item_id, $title, $place, $starting_date, $ending_date, $description) {
@@ -3304,21 +3330,21 @@ class cs_connection_soap {
          $user_manager->select();
          $user_list = $user_manager->get();
          $xml = "<user_list>\n";
-         $user_item = $user_list->getFirst();
-         while($user_item) {
+         $user_list_item = $user_list->getFirst();
+         while($user_list_item) {
             $xml .= "<user_item>\n";
-            $xml .= "<user_id><![CDATA[".$user_item->getItemID()."]]></user_id>\n";
-            $xml .= "<user_title><![CDATA[".$user_item->getFullname()."]]></user_title>\n";
-            $reader = $reader_manager->getLatestReaderForUserByID($user_item->getItemID(), $user_item->getItemID());
+            $xml .= "<user_id><![CDATA[".$user_list_item->getItemID()."]]></user_id>\n";
+            $xml .= "<user_title><![CDATA[".$user_list_item->getFullname()."]]></user_title>\n";
+            $reader = $reader_manager->getLatestReaderForUserByID($user_list_item->getItemID(), $user_item->getItemID());
             if ( empty($reader) ) {
                $xml .= "<user_read><![CDATA[new]]></user_read>\n";
-            } elseif ( $reader['read_date'] < $user_item->getModificationDate() ) {
+            } elseif ( $reader['read_date'] < $user_list_item->getModificationDate() ) {
                $xml .= "<user_read><![CDATA[changed]]></user_read>\n";
             } else {
                $xml .= "<user_read><![CDATA[]]></user_read>\n";
             }
             $xml .= "</user_item>\n";
-            $user_item = $user_list->getNext();
+            $user_list_item = $user_list->getNext();
          }
          $xml .= "</user_list>";
          #debugToFile($xml);
@@ -3448,6 +3474,99 @@ class cs_connection_soap {
          $new_file->save();
          
          $xml = '<upload_file_id>'.$new_file->getItemID().'</upload_file_id>';
+         $xml = $this->_encode_output($xml);
+         
+         return $xml;
+      }
+   }
+   
+   
+   // Room
+   
+   public function getRoomReadCounter($session_id, $context_id){
+      el('getRoomReadCounter');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $reader_manager = $this->_environment->getReaderManager();
+         
+         $dates_manager = $this->_environment->getDatesManager();
+         $dates_manager->setContextLimit($context_id);
+         $dates_manager->setDateModeLimit(2);
+         $dates_manager->select();
+         $dates_list = $dates_manager->get();
+         $date_item = $dates_list->getFirst();
+         $date_counter = 0;
+         while($date_item) {
+            $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $date_counter++;
+            } elseif ( $reader['read_date'] < $date_item->getModificationDate() ) {
+               $date_counter++;
+            }
+            $date_item = $dates_list->getNext();
+         }
+         
+         $material_manager = $this->_environment->getMaterialManager();
+         $material_manager->setContextLimit($context_id);
+         $material_manager->select();
+         $material_list = $material_manager->get();
+         $material_item = $material_list->getFirst();
+         $material_counter = 0;
+         while($material_item) {
+            $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $material_counter++;
+            } elseif ( $reader['read_date'] < $material_item->getModificationDate() ) {
+               $material_counter++;
+            }
+            $material_item = $material_list->getNext();
+         }
+         
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_manager->setContextLimit($context_id);
+         $discussion_manager->select();
+         $discussion_list = $discussion_manager->get();
+         $discussion_item = $discussion_list->getFirst();
+         $discussion_counter = 0;
+         while($discussion_item) {
+            $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $discussion_counter++;
+            } elseif ( $reader['read_date'] < $discussion_item->getModificationDate() ) {
+               $discussion_counter++;
+            }
+            $discussion_item = $discussion_list->getNext();
+         }
+         
+         $user_counter_manager = $this->_environment->getUserManager();
+         $user_counter_manager->setContextLimit($context_id);
+         $user_counter_manager->select();
+         $user_counter_list = $user_counter_manager->get();
+         $user_counter_item = $user_counter_list->getFirst();
+         $user_counter = 0;
+         while($user_counter_item) {
+            $reader = $reader_manager->getLatestReaderForUserByID($user_counter_item->getItemID(), $user_item->getItemID());
+            if ( empty($reader) ) {
+               $user_counter++;
+            } elseif ( $reader['read_date'] < $user_counter_item->getModificationDate() ) {
+               $user_counter++;
+            }
+            $user_counter_item = $user_counter_list->getNext();
+         }
+         
+         $xml  = '<read_counter>';
+         $xml .= '<counter_dates>'.$date_counter.'</counter_dates>';
+         $xml .= '<counter_materials>'.$material_counter.'</counter_materials>';
+         $xml .= '<counter_discussions>'.$discussion_counter.'</counter_discussions>';
+         $xml .= '<counter_users>'.$user_counter.'</counter_users>';
+         $xml .= '</read_counter>';
+         
          $xml = $this->_encode_output($xml);
          
          return $xml;

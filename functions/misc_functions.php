@@ -568,6 +568,10 @@ function pr_user ($value, $user) {
    }
 }
 
+function el($value) {
+   error_log(print_r($value, true), 0);  
+}
+
 /** checks if url is valid
  *
  * @return   boolean  is URL valid [= commsy conform]

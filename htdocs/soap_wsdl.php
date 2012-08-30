@@ -367,6 +367,7 @@
   <part name='startingTime' type='xsd:string'/>
   <part name='endingDate' type='xsd:string'/>
   <part name='endingTime' type='xsd:string'/>
+  <part name='uploadFiles' type='xsd:string'/>
 </message>
 <message name='saveDateOUT'>
   <part name='xml_list' type='xsd:string'/>
@@ -436,6 +437,13 @@
   <part name='file_data' type='xsd:string'/>
 </message>
 <message name='uploadFileOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getRoomReadCounterIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getRoomReadCounterOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 
@@ -664,6 +672,10 @@
   <operation name='uploadFile'>
     <input message='tns:uploadFileIN'/>
     <output message='tns:uploadFileOUT'/>
+  </operation>
+  <operation name='getRoomReadCounter'>
+    <input message='tns:getRoomReadCounterIN'/>
+    <output message='tns:getRoomReadCounterOUT'/>
   </operation>
 </portType>
 
@@ -1279,6 +1291,17 @@
   </operation>
   <operation name='uploadFile'>
     <soap:operation soapAction='urn:xmethodsCommSy#uploadFile'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getRoomReadCounter'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getRoomReadCounter'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
