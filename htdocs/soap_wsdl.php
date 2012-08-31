@@ -368,6 +368,7 @@
   <part name='endingDate' type='xsd:string'/>
   <part name='endingTime' type='xsd:string'/>
   <part name='uploadFiles' type='xsd:string'/>
+  <part name='deleteFiles' type='xsd:string'/>
 </message>
 <message name='saveDateOUT'>
   <part name='xml_list' type='xsd:string'/>

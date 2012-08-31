@@ -3003,7 +3003,7 @@ class cs_connection_soap {
       }
    }
    
-   public function saveDate($session_id, $context_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime, $uploadFiles) {
+   public function saveDate($session_id, $context_id, $item_id, $title, $place, $description, $startingDate, $startingTime, $endingDate, $endingTime, $uploadFiles, $deleteFiles) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
          $this->_environment->setSessionID($session_id);
@@ -3044,6 +3044,8 @@ class cs_connection_soap {
          $noticed_manager->markNoticed($date_item->getItemID(),0);
          
          $this->_uploadFiles($uploadFiles, $date_item);
+         
+         $this->_deleteFiles($session_id, $deleteFiles, $date_item);
       }
    }
    
@@ -3069,6 +3071,15 @@ class cs_connection_soap {
       $merge_id_array = array_merge($old_id_array, $new_id_array);
       $item->setFileIDArray($merge_id_array);
       $item->save();
+   }
+   
+   function _deleteFiles($session_id, $deleteFiles, $item){
+      $deleteFilesArray = explode(',', $deleteFiles);
+      foreach($deleteFilesArray as $deleteFile){
+         if($deleteFile != ''){
+            $this->deleteFileItem($session_id, $deleteFile);
+         }
+      }
    }
    
    public function updateDate($session_id, $item_id, $title, $place, $starting_date, $ending_date, $description) {
