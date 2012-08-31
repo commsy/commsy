@@ -530,8 +530,6 @@
                   <div class="input_row">
                       <input id="submit" class="submit popup_button" data-custom="part: 'cs_bar'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
                   </div>
-
-{*
                         {if $popup.external.wordpress}
                            <hr/>
                            <fieldset>
@@ -549,7 +547,7 @@
                          <input id="wordpresstitle" type="text" class="size_200" name="form_data[wordpresstitle]" value="{show var=$popup.external.wordpress.wordpresstitle}"/>
                         </div>
                               <div class="input_row_100">
-                                 <label for="wordpressdescription">___COMMON_DESCRIPTION___<span class="required">*</span>:</label>
+                                 <label for="wordpressdescription">___COMMON_DESCRIPTION___:</label>
                                  <input id="wordpressdescription" type="text" class="size_200" name="form_data[wordpressdescription]" value="{show var=$popup.external.wordpress.wordpressdescription}"/>
                               </div>
                               <div class="input_row_100">
@@ -559,8 +557,6 @@
                                        <option value="{$skin.value}"{if $skin.disabled == true} disabled="disabled"{/if}{if $skin.value == $popup.external.wordpress.skin_choice} selected="selected"{/if}>___{$skin.text}___</option>
                                     {/foreach}
                                  </select>
-                                 <br/>
-                                 {i18n tag=WORDPRESS_SKIN_DESCRIPTION param1=$popup.external.wordpress.wordpresslink}
                               </div>
                               <br/>
                               <div class="input_row_200">
@@ -616,19 +612,18 @@
                                     {/foreach}
                                  </select>
                                  <br/>
-                                 {if false}{i18n tag=WORDPRESS_SKIN_DESCRIPTION param1=$popup.wordpress.wordpresslink}{/if}
                               </div>
                               <div class="input_row_200">
                                  <label for="admin">___COMMON_WIKI_ADMIN_PW___<span class="required">*</span></label>
                                  <input id="admin" type="text" class="size_200" name="form_data[admin]" value="{show var=$popup.external.wiki.admin}"/>
                               </div>
                                <div class="input_row_200">
-                                 <label for="edit">___COMMON_WIKI_EDIT_PW___<span class="required">*</span></label>
-                                 <input id="edit" type="text" class="size_200" name="form_data[edit]" value="{show var=$popup.external.wiki.edit}"/>
+                                 <label for="edit">___COMMON_WIKI_EDIT_PW___</label>
+                                 <input id="edit" type="text" class="size_200" name="form_data[edit]" value="{show var=$popup.external.wiki.edit}" style="margin-left:12px;"/>
                               </div>
                               <div class="input_row_200">
-                                 <label for="read">___COMMON_WIKI_READ_PW___<span class="required">*</span></label>
-                                 <input id="read" type="text" class="size_200" name="form_data[read]" value="{show var=$popup.external.wiki.read}"/>
+                                 <label for="read">___COMMON_WIKI_READ_PW___</label>
+                                 <input id="read" type="text" class="size_200" name="form_data[read]" value="{show var=$popup.external.wiki.read}" style="margin-left:12px;"/>
                               </div>
                               {if false}
                               <div class="input_row_200">
@@ -767,7 +762,6 @@
                            {/if}
                            </div>
                            {/if}
-*}
                 </div>
               </div>
 

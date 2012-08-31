@@ -110,11 +110,12 @@
       		$current_user = $this->_environment->getCurrentUserItem();
       		$current_context_id = $this->_environment->getCurrentContextID();
       		$own_room_item = $current_user->getOwnRoom();
-      		if($own_room_item->getCSBarShowOldRoomSwitcher() === '1'){
-      			$this->assign('room','room_switcher_select_box',$this->_getUserPersonalAreaAsHTML());
-      			$this->assign('room','old_room_switcher','yes');
+      		if($own_room_item != null){ // sonst kommt der root-user nicht mehr in den Raum.
+      		   if($own_room_item->getCSBarShowOldRoomSwitcher() === '1'){
+      			   $this->assign('room','room_switcher_select_box',$this->_getUserPersonalAreaAsHTML());
+      			   $this->assign('room','old_room_switcher','yes');
+      		   }
       		}
-
 
 		}
 
