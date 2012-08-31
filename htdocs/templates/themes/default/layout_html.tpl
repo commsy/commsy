@@ -37,9 +37,9 @@
 
 
 
-		<script src="javascript/commsy8_dojo/config.js?token=10"></script>
-		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=10"></script>
-		<script src="javascript/commsy8_dojo/main.js?token=10"></script>
+		<script src="javascript/commsy8_dojo/config.js?token=11"></script>
+		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=11"></script>
+		<script src="javascript/commsy8_dojo/main.js?token=11"></script>
 
 		{*
 		<script src="javascript/commsy8_dojo/config.js"></script>
