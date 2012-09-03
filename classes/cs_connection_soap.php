@@ -2953,10 +2953,11 @@ class cs_connection_soap {
          $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
          $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
          $temp_description = $date_item->getDescription();
-         $temp_description = html_entity_decode($temp_description);
+         //$temp_description = html_entity_decode($temp_description);
          $temp_description = utf8_encode($temp_description);
          $temp_description = str_ireplace('<br />', "\n", $temp_description);
-         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         //$temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         $temp_description = strip_tags($temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3161,10 +3162,8 @@ class cs_connection_soap {
          $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
          $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
          $temp_description = $material_item->getDescription();
+         $temp_description = strip_tags($temp_description);
          $temp_description = html_entity_decode($temp_description);
-         $temp_description = utf8_encode($temp_description);
-         $temp_description = str_ireplace('<br />', "\n", $temp_description);
-         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
          $xml .= "<material_description><![CDATA[".$temp_description."]]></material_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3196,6 +3195,22 @@ class cs_connection_soap {
             $temp_file = $file_list->getNext();
          }
          $xml .= "</material_files>\n";
+         
+         /*$section_manager = $this->_environment->getSectionManager();
+         $section_manager->setMaterialItemIDLimit($item_id);
+         $section_manager->select();
+         $section_list = $section_manager->get();
+         $section_item = $section_list->getFirst();
+         $xml .= "<material_sections>\n";
+         while($section_item){
+            $xml .= "<material_section>\n";
+            $xml .= "<material_section_id>'.$section_item->getItemID().'</material_section_id>\n";
+            $xml .= "<material_section_title>'.$section_item->getTitle().'</material_section_title>\n";
+            $xml .= "<material_section_description>'.$section_item->getDescription().'</material_section_description>\n";
+            $xml .= "</material_section>\n";
+            $section_item = $section_list->getNext();
+         }
+         $xml .= "</material_sections>\n";*/
          $xml .= "</material_item>\n";
          $xml = $this->_encode_output($xml);
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
