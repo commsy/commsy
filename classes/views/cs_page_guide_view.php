@@ -1516,7 +1516,18 @@ class cs_page_guide_view extends cs_page_view {
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('USER_CLOSE_FORM');
          $html .= '</h2>'.LF;
-         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION');
+
+         // datenschutz: overwrite or not (28.08.2012 IJ)
+   	   $overwrite = true;
+   	   $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	   if ( !empty($disable_overwrite) and $disable_overwrite ) {
+   		   $overwrite = false;
+   	   }
+   	   if ($overwrite) {
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION');
+   	   } else {
+   	   	$html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION_NOT_OVERWRITE');
+   	   }
          $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'group'
                  and $this->_environment->getCurrentFunction() == 'detail'

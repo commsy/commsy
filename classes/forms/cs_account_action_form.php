@@ -116,7 +116,17 @@ class cs_account_action_form extends cs_rubric_form {
          // now prepare for each action separately
          if ( $this->_action_array['action'] == 'USER_ACCOUNT_DELETE' ) {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_DELETE');
-            $this->_warning  = $translator->getMessage('INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING');
+            
+            // datenschutz: overwrite or not (28.08.2012 IJ)
+            $overwrite = true;
+            $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+            if ( !empty($disable_overwrite) and $disable_overwrite ) {
+            	$overwrite = false;
+            }            
+            if ($overwrite) {
+               $this->_warning  = $translator->getMessage('INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING');
+            }
+            
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE',$room->getTitle());
             if ( $translate ) {
                $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$user->getUserID(),$room->getTitle());
