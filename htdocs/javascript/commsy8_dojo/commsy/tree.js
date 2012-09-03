@@ -47,6 +47,9 @@ define([	"dojo/_base/declare",
 			
 			// get results from ajax call
 			this.AJAXRequest('tagtree', 'getTreeData', { item_id: this.item_id, room_id: this.room_id }, lang.hitch(this, function(results) {
+				
+				results = this.sanitizeResults(results);
+				
 				this.store = new ItemFileWriteStore({
 					data: {
 						identifier:		"item_id",
@@ -166,6 +169,22 @@ define([	"dojo/_base/declare",
 					this.iterateCallback(child, callbackFunction);
 				}));
 			}));
+		},
+		
+		sanitizeResults: function(results) {
+			dojo.forEach(results, lang.hitch(this, function(result, index, arr) {
+				if (result.children) {
+					if (result.children.length === 0) {
+						delete result.children;
+					} else {
+						result.children = this.sanitizeResults(result.children);
+					}
+				}
+				
+				results[index] = result;
+			}));
+			
+			return results;
 		}
 	});
 });
