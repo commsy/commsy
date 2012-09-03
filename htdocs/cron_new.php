@@ -342,7 +342,11 @@ function cron_workflow($portal){
             }
             $link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
 
-            $mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+            if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
+            	$mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+            }else{
+            	$mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+            }
             $mail->setSendAsHTML();
             if ( $mail->send() ) {
                fwrite($file, 'workflow validity e-mail send for item: '.$item['item_id']);
