@@ -8,6 +8,9 @@
 
 					<div id="popup_pagetitle">
 						<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+						<a id="popup_detail_print" href="commsy.php?cid={$own.id}&mod=date&fct=detail&iid={$detail.item_id}&mode=print" title="___COMMON_LIST_PRINTVIEW___" target="_blank">
+							<img src="{$basic.tpl_path}img/btn_print.gif" alt="___COMMON_LIST_PRINTVIEW___" />
+						</a>
 						<h2>___WIDGET_HEADER_DETAIL_VIEW___ - {$detail.content.title}</h2>
 						<div class="clear"> </div>
 					</div>

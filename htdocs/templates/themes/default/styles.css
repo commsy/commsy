@@ -150,6 +150,11 @@ div#loadingScreenInner .img {
 	position: relative;
 	}
 
+#popup_detail_print {
+	margin: 3px 3px 0px 0px;
+	float: right;
+}
+
 #popup_delete {
 	margin: 50px auto 20px;
     width: 600px;
