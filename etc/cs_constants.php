@@ -24,6 +24,7 @@
 
 
 // home rubric list limit
+/*
 $interval = 20;
 include('cs_config.php');
 global $cs_max_list_length;
@@ -36,6 +37,7 @@ if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
 	define('CS_HOME_RUBRIC_LIST_LIMIT', 50);
 	define('CS_LIST_INTERVAL',20);
 }
+*/
 
 
 $no_room = 0;
