@@ -3196,7 +3196,7 @@ class cs_connection_soap {
          }
          $xml .= "</material_files>\n";
          
-         /*$section_manager = $this->_environment->getSectionManager();
+         $section_manager = $this->_environment->getSectionManager();
          $section_manager->setMaterialItemIDLimit($item_id);
          $section_manager->select();
          $section_list = $section_manager->get();
@@ -3204,13 +3204,14 @@ class cs_connection_soap {
          $xml .= "<material_sections>\n";
          while($section_item){
             $xml .= "<material_section>\n";
-            $xml .= "<material_section_id>'.$section_item->getItemID().'</material_section_id>\n";
-            $xml .= "<material_section_title>'.$section_item->getTitle().'</material_section_title>\n";
-            $xml .= "<material_section_description>'.$section_item->getDescription().'</material_section_description>\n";
+            $xml .= "<material_section_id>".$section_item->getItemID()."</material_section_id>\n";
+            $xml .= "<material_section_title>".$section_item->getTitle()."</material_section_title>\n";
+            $xml .= "<material_section_description>".$section_item->getDescription()."</material_section_description>\n";
             $xml .= "</material_section>\n";
             $section_item = $section_list->getNext();
          }
-         $xml .= "</material_sections>\n";*/
+         $xml .= "</material_sections>\n";
+         
          $xml .= "</material_item>\n";
          $xml = $this->_encode_output($xml);
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
