@@ -19,7 +19,7 @@
 						</div>
 						<div class="clear"></div>
 						<div class="input_row">
-							<span class="input_label_150">___COMMON_MAIL_RECEIVER___:</span>
+							<span class="input_label_150">___COMMON_MAIL_RECEIVER___<span class="required">*</span>:</span>
 							<div class="input_container_180" id="reciever">
     							{foreach $popup.mod.list as $ele}
     								{if $ele@total == 1}
@@ -31,15 +31,19 @@
 							</div>
 						</div>
 						<div class="input_row">
-							<span class="input_label_150">___MAIL_SUBJECT___</span>
+							<span class="input_label_150">___MAIL_SUBJECT___<span class="required">*</span>:</span>
 							<div class="input_container_180" id="reciever">
 								<input type="text" name="form_data[subject]" class="size_400" />
 							</div>
 						</div>
-						<div class="editor_content">
-							<div id="body" class="ckeditor">{if isset($popup.body)}{$popup.body}{/if}</div>
+						<div class="input_row">
+							<span class="input_label_150">___MAIL_BODY___:</span>
+							<div class="input_container_180">
+								<textarea cols="80" rows="10" name="form_data[mailcontent]">{if isset($popup.mailcontent)}{$popup.mailcontent}{/if}</textarea>
+							</div>
+							<div class="clear"></div>
 						</div>
-    				</div>
+   				</div>
     				<div id="popup_tabs">
 						<div id="content_buttons">
 							<div id="crt_actions_area">

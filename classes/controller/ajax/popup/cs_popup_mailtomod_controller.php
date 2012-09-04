@@ -21,9 +21,9 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		array('name'		=> 'subject',
 			  'type'		=> 'text',
 			  'mandatory' => true),
-		array('name'		=> 'content',
+		array('name'		=> 'mailcontent',
 			  'type'		=> 'text',
-			  'mandatory'	=> true),
+			  'mandatory'	=> false),
 		array('name'        => 'recievers',
 		      'type'        => 'checkbox',
 		      'mandatory'   => false)
@@ -51,7 +51,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 
 		$context_item = $this->_environment->getCurrentContextItem();
 
-		$mail->set_message($form_data['body']);
+		$mail->set_message($form_data['mailcontent']);
 		$mail->set_subject($form_data['subject']);
 
 		$success = $mail->send();
@@ -65,7 +65,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 
 	private function getRecieverList($id = null) {
 		$translator = $this->_environment->getTranslationObject();
-		
+
 		if ($id) {
 			$projectManager = $this->_environment->getProjectManager();
 			$projectItem = $projectManager->getItem($id);
@@ -74,7 +74,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 			$context_item = $this->_environment->getCurrentContextItem();
 			$mod_list = $context_item->getModeratorList();
 		}
-		
+
 		$receiver_array = array();
 		if (!$mod_list->isEmpty()) {
 			$mod_item = $mod_list->getFirst();
@@ -103,14 +103,14 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		$user_information['fullname'] = $current_user->getFullName();
 		$user_information['mail'] = $current_user->getEmail();
 		$this->_popup_controller->assign('popup', 'user', $user_information);
-		
+
 		$mod_information = array();
 		if(isset($item)) {
 			$mod_information['list'] = $this->getRecieverList($item->getItemID());
 		} else {
 			$mod_information['list'] = $this->getRecieverList();
 		}
-		
+
 		//pr($this->getRecieverList());
 		$this->_popup_controller->assign('popup', 'mod', $mod_information);
 
@@ -128,7 +128,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_item->getTitle());
 		}
 
-		$this->_popup_controller->assign('popup', 'body', $body_message);
+		$this->_popup_controller->assign('popup', 'mailcontent', $body_message);
 	}
 
 }
