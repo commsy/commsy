@@ -27,14 +27,6 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmit: function(customObject) {
-			// add ckeditor data to hidden div
-			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-				var instance = editor.getInstance();
-				var node = editor.getNode().parentNode;
-				
-				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
-			});
-			
 			// setup data to send via ajax
 			var search = {
 				tabs: [
@@ -44,7 +36,7 @@ define([	"dojo/_base/declare",
 				    { query: query("div#reciever", this.contentNode), group: "reciever"},
 				    
 				    { query: query("div#files_attached", this.contentNode) },
-				    { query: query("input[name='form_data[body]']", this.contentNode) },
+				    { query: query("textarea[name='form_data[mailcontent]']", this.contentNode) },
 				    { query: query("input[name='form_data[subject]']", this.contentNode) }
 				]
 			};
