@@ -463,6 +463,8 @@ if ( !empty($SID) ) {
          unset($portal);
       }
 
+
+/*TYPO3-Anbindung*/
       $typo3_session_id = '';
       if ( !empty($_GET['ses_id']) ) {
          $typo3_session_id = $_GET['ses_id'];
@@ -544,6 +546,9 @@ if ( !empty($SID) ) {
          }
          unset($portal);
       }
+/*Ende TYPO3-Anbindung*/
+
+
    }
 
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
@@ -699,6 +704,25 @@ if ( $environment->getCurrentFunction() == 'index'
 
 /************ profile: update email address *****************/
 $current_user_item = $environment->getCurrentUserItem();
+
+/* Typo Login Anbindung*/
+/*
+global $cs_external_login_redirect;
+global $cs_external_login_redirect_exeption_var;
+if (isset($cs_external_login_redirect) and !empty($cs_external_login_redirect)
+	and (!isset($cs_external_login_redirect_exeption_var) or !isset($_GET[$cs_external_login_redirect_exeption_var]) or $_GET[$cs_external_login_redirect_exeption_var] != true)
+	and (!isset($current_user_item) or $current_user_item->isGuest())
+    and !( $environment->getCurrentModule() == 'context' and $environment->getCurrentFunction() == 'login')
+){
+	$url = $cs_external_login_redirect.$_SERVER['QUERY_STRING'];
+   	header('Location: '.$url);
+   	header('HTTP/1.0 302 Found');
+   	exit();
+}
+*/
+/* Ende Typo Login Anbindung*/
+
+
 if ( isset($current_user_item) ) {
    $current_portal_user_item = $current_user_item->getRelatedCommSyUserItem();
    if ( isset($current_portal_user_item)

@@ -183,6 +183,9 @@ $theme_array['commsy'] = array(
 //$cs_max_list_length = 20;
 //$cs_max_search_list_length = 20;
 //$cs_special_language_tags = '';
+//$cs_external_login_redirect = 'url_without_commsy_parameter';
+//$cs_external_login_redirect_exeption_var = 'get_parameter_for_exception';
+
 
 // include more commsy settings
 @include_once('config_meta.php');
