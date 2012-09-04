@@ -13,6 +13,8 @@ require([	"dojo/_base/declare",
 			         	"dojo/NodeList-traverse",
 			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, On, ready) {
 			    
+			    var uri_object = this.uri_object;
+			    
 				// initiate popup handler
 				require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
 					var aNode = query("a#tm_settings")[0];
@@ -168,7 +170,14 @@ require([	"dojo/_base/declare",
 				query("div.tree").forEach(function(node, index, arr) {
 					require(["commsy/tree"], function(Tree) {
 						var handler = new Tree();
-						handler.setupTree(node, function() {}, true);
+						handler.setupTree(node, function() {
+							// highlight path
+							if (uri_object.seltag) {
+								var seltag = uri_object.seltag;
+								var path = handler.buildPath(seltag);
+								handler.tree.set("paths", [path]);
+							}
+						}, true);
 					});
 				});
 				

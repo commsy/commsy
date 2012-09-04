@@ -31,15 +31,13 @@
 		{/block}
 
 		<!-- SCRIPTS -->
+		<script src="javascript/commsy8_dojo/config.js?token=12"></script>
 		<script>
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+			{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
 		</script>
-
-
-
-		<script src="javascript/commsy8_dojo/config.js?token=11"></script>
-		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=11"></script>
-		<script src="javascript/commsy8_dojo/main.js?token=11"></script>
+		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=12"></script>
+		<script src="javascript/commsy8_dojo/main.js?token=12"></script>
 
 		{*
 		<script src="javascript/commsy8_dojo/config.js"></script>

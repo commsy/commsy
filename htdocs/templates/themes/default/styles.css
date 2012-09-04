@@ -4284,6 +4284,20 @@ a.event_grey {
 widgets
 ----------------------------------------------------------------------
 */
+
+.CommSyErrorWidget {
+	width: 300px;
+}
+
+.CommSyErrorWidget div.CommSyErrorDescription {
+	float: right;
+	width: 210px;
+}
+
+.CommSyErrorWidget div.CommSyErrorMarginText {
+	margin-top: 10px;
+}
+
 .widget_head {
 	background: url("img/breadcrump_room_title.jpg") repeat-x scroll 0 0 #FFFFFF;
 	height: 31px;

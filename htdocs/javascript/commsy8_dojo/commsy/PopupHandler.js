@@ -286,6 +286,14 @@ define([	"dojo/_base/declare",
 				}),
 
 				lang.hitch(this, function(response) {
+					/************************************************************************************
+					 * We recieved a failure, maybe a mandatory field is missing or the user entered
+					 * a wrong format. This can also be caused by any special controller checks. See
+					 * AJAX error return codes.
+					 * 
+					 * Special error handling is directed to the corresponding popup handler.
+					************************************************************************************/
+					
 					if(response.status === "error" && response.code === 101) {
 						var missingFields = response.detail;
 
@@ -313,12 +321,22 @@ define([	"dojo/_base/declare",
 						*/
 					} else if(response.status === "error" && response.code === 111) {
 						this.onPopupSubmitError(response);
-					} else {
+					}/* else {
 						console.error("an unhandled error response occurred");
-					}
-					this.destroyLoading();
+					}*/
+					
+					// call the popups error handling or in case it is not implemented, the default handling defined in this class
+					this.onPopupSubmitError(response);
 				})
 			);
+		},
+		
+		/**
+		 * Abstract implementation for submit errors - can be overwritten
+		 */
+		onPopupSubmitError: function(resonse) {
+			// remove loading screen
+			this.destroyLoading();
 		},
 
 		close: function() {

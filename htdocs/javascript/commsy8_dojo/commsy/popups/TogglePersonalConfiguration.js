@@ -5,7 +5,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/on",
-        	"dojo/_base/lang"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
+        	"dijit/Tooltip",
+        	"dojo/_base/lang",
+        	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Tooltip, Lang, ErrorTranslations) {
 	return declare(TogglePopupHandler, {
 		sendImages: [],
 		
@@ -219,6 +221,10 @@ define([	"dojo/_base/declare",
 			
 			this.submit(search, { part: part, action: action });
 		},
+		
+		/************************************************************************************
+		 * Success Handling
+		 ************************************************************************************/
 
 		onPopupSubmitSuccess: function(item_id) {
 			if (this.sendImages.length > 0) {
@@ -238,6 +244,28 @@ define([	"dojo/_base/declare",
 				location.reload();
 			}
 			//this.close();
+		},
+		
+		/************************************************************************************
+		 * Error Handling
+		 ************************************************************************************/
+		onPopupSubmitError: function(response) {
+			// process parent error handling
+			this.inherited(arguments);
+			
+			switch (response.code) {
+				case "1011":			/* user id already registered */
+					// TODO: tooltip stays when closing popup
+					var errorNode = Query("input[name='form_data[user_id]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1011, errorNode);
+					break;
+				
+				case "1012":			/* user id contains umlaute */
+					break;
+				
+				case "1013":			/* error in auth source */
+					break;
+			}
 		}
 	});
 });

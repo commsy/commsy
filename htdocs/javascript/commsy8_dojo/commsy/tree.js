@@ -185,6 +185,25 @@ define([	"dojo/_base/declare",
 			}));
 			
 			return results;
+		},
+		
+		buildPath: function(tagId, path) {
+			path = path || [];
+			
+			// add item to path
+			path.push(tagId);
+			
+			// get item and parent
+			var item = this.model.fetchItem({item_id: tagId});
+			var parent = this.store.getParents(item)[0];
+			if (parent) {
+				// continue with parent
+				return this.buildPath(this.store.getIdentity(parent), path);
+			} else {
+				// parent is root
+				path.push(this.tree.rootNode.item.id);
+				return path.reverse();
+			}
 		}
 	});
 });
