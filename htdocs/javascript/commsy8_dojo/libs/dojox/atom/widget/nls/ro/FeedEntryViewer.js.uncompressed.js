@@ -1,7 +1,6 @@
 define(
-"dojox/atom/widget/nls/ro/FeedEntryViewer", //begin v1.x content
-({
-	displayOptions: "[opţiuni afişare]",
+"dojox/atom/widget/nls/ro/FeedEntryViewer", ({
+	displayOptions: "[opţiuni de afişare]",
 	title: "Titlu",
 	authors: "Autori",
 	contributors: "Contribuitori",
@@ -11,5 +10,4 @@ define(
 	summary: "Sumar",
 	content: "Conţinut"
 })
-//end v1.x content
 );

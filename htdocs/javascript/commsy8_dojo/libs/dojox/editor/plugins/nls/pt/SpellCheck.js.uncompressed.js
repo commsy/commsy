@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/pt/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/pt/SpellCheck", ({
 	widgetLabel: "Verificação Ortográfica em Lote",
 	unfound: "Não localizado",
 	skip: "Ignorar",
@@ -16,5 +15,4 @@ define(
 	iSkipAll: "Ignorar todos iguais a este",
 	iMsg: "Nenhuma sugestão de ortografia"
 })
-//end v1.x content
 );

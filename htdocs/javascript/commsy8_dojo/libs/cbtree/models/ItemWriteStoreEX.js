@@ -85,7 +85,7 @@ define([
 			if ( !this.isRootItem(/*dojo.data.item*/ item) ) {
 				item[this._rootItemPropName] = true;
 				this._arrayOfTopLevelItems.push(item);
-				this.onRoot( item,{ attach: true, detach: false } );
+				this.onRoot( item, "attach" );
 			}
 		},
 
@@ -101,7 +101,7 @@ define([
 			if ( this.isRootItem(item) ) {
 				this._removeArrayElement(this._arrayOfTopLevelItems, item);
 				delete item[this._rootItemPropName];
-				this.onRoot( item,{ attach: false, detach: true } );
+				this.onRoot( item, "detach" );
 			}
 		},
 		
@@ -117,15 +117,6 @@ define([
 			return this._getIdentifierAttribute();
 		},
 		
-		getLabelAttr: function () {
-			// summary:
-			//		Return the label attribute of the store.
-			// tag:
-			//		public
-
-			return this._labelAttr;
-		},
-
 		getParents: function (/*dojo.data.item*/ item) {
 			// summary:
 			//		Get the parent(s) of a dojo.data.item.	
@@ -150,6 +141,29 @@ define([
 				}
 				return parents;
 			}
+		},
+
+		isRootItem: function (/*dojo.data.item*/ item) {
+			// summary:
+			//		Returns true if the item has the '_rootItemPropName' property defined
+			//		and its value is true, otherwise false is returned.
+			// item:
+			//		A valid dojo.data.store item.
+			// returns:
+			//		True if the item is a root item otherwise false
+			// tag:
+			//		public
+
+			this._assertIsItem(item);
+			return item[this._rootItemPropName] ? true : false; 
+		},
+
+		isValidated: function () {
+			// summary:
+			//		Returns true if a model has signalled the store has successfully been
+			//		validated. The attribute _validated is part of the store and not of a
+			//		model as multiple models may operate on this store. 
+			return this._validated;
 		},
 
 		itemExist: function (/*Object*/ keywordArgs) {
@@ -190,88 +204,104 @@ define([
 			return item;
 		},
 		
-		isRootItem: function (/*dojo.data.item*/ item) {
+		loadStore: function ( keywordArgs ) {
 			// summary:
-			//		Returns true if the item has the '_rootItemPropName' property defined
-			//		and its value is true, otherwise false is returned.
-			// item:
-			//		A valid dojo.data.store item.
-			// returns:
-			//		True if the item is a root item otherwise false
-			// tag:
-			//		public
-
-			this._assertIsItem(item);
-			return item[this._rootItemPropName] ? true : false; 
-		},
-
-		isValidated: function () {
-			// summary:
-			//		Returns true if a model has signalled the store has successfully been
-			//		validated. The attribute _validated is part of the store and not of a
-			//		model as multiple models may operate on this store. 
-			return this._validated;
-		},
-
-		loadStore: function () {
-			// summary:
-			//		Try a forced synchronous load of the store but only if it has not
+			//		Try a forced load of the entire store but only if it has not
 			//		already been loaded.
 			//
-			if (!this._loadFinished) {
-				try {
-					this._forceLoad();
-				} catch(err) {
-					console.err(err);
-					return false;
+			// keywordArgs:
+			// 		onComplete:
+			//				If an onComplete callback function is provided, the callback function
+			//				will be called once on successful completion of the load operation
+			//				with the total number of items loaded: onComplete(count)
+			// 		onError:
+			//				The onError parameter is the callback to invoke when loadStore()
+			//				encountered an error. It takes one parameter, the error object.
+			// 		scope:
+			//				If a scope object is provided, all of the callback functions (onComplete,
+			//				onError, etc) will be invoked in the context of the scope object. In
+			//				the body of the callback function, the value of the "this" keyword
+			//				will be the scope object otherwise window.global is used.
+			// tag:
+			//		public
+			var scope = keywordArgs.scope || window.global;
+			var self  = this;
+			
+			function loadComplete( count, requestArgs ) {
+				// summary:
+				var loadArgs = requestArgs.loadArgs || null;
+				var scope    = loadArgs.scope;
+
+				self.onLoad( count );
+
+				if (loadArgs) {
+					if (loadArgs.onComplete) {
+						loadArgs.onComplete.call(scope, count);
+					}
 				}
 			}
-			this.onLoaded();
-			return true;
-		},
 
+			if (!this._loadFinished) {
+				var request  = { queryOptions: {deep: true}, 
+												 loadArgs: keywordArgs, 
+												 onBegin: loadComplete, 
+												 onError: keywordArgs.onError, 
+												 scope: this};
+				try {
+					this.fetch(request);
+				} catch(err) {
+					if (onError) {
+						onError.call(scope, err);
+					} else {
+						throw err;
+					}
+				}
+			} else {
+				if (onComplete) {
+					onComplete.call(scope, this._allFileItems.length);
+				}
+			}
+		},
+		
 		onDelete: function(/*dojo.data.item*/ deletedItem){
 			// summary:
 			//		See dojo.data.api.Notification.onDelete()
 			// tag:
 			//		callback.
-
 			// NOTE: Don't call isItem() as it will fail, the item is already deleted
-			//			 and therefore no longer valid. 
+			//			 and therefore no longer valid.
 			if ( deletedItem[this._rootItemPropName] === true ){
-				this.onRoot( deletedItem, { attach: false, detach: true } );
+				this.onRoot( deletedItem, "delete" );
 			}
 		},
-
+		
 		onNew: function(/*dojo.data.item*/ item, parentInfo ){
 			// summary:
 			//		See dojo.data.api.Notification.onNew()
 			// tag:
 			//		callback.
-
 			if ( this.isRootItem(item) ){
-				this.onRoot( item,{ attach: true, detach: false } );
+				this.onRoot( item, "new" );
 			}
 		},
 		
-		onLoaded: function () {
+		onLoad: function ( count ) {
 			// summary:
 			//		Invoked when loading the store completes. This method is only called
 			//		when the loadStore() is used.
+			// count:
+			//		Number of store items loaded.
 			// tag:
 			//		callback.
 		},
 		
-		onRoot: function(/*dojo.data.item*/ item, /*Object*/ evt ) {
+		onRoot: function(/*dojo.data.item*/ item, /*string*/ action ) {
 			// summary:
 			//		Invoked whenever a item is added to, or removed from the root.
 			// item:
 			//		Store item.
-			// evt:
-			//		Event object with two properties: 
-			//				{ attach: /*boolean*/, 
-			//					detach: /*boolean*/ 
-			//				}
+			// action:
+			//		Event action which can be: "new", "delete", "attach" or "detach" 
 			// tag:
 			//		callback.
 		},

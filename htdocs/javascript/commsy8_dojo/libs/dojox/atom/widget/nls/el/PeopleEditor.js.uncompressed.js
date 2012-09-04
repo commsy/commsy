@@ -1,9 +1,7 @@
 define(
-"dojox/atom/widget/nls/el/PeopleEditor", //begin v1.x content
-({
+"dojox/atom/widget/nls/el/PeopleEditor", ({
 	add: "Προσθήκη",
 	addAuthor: "Προσθήκη συντάκτη",
 	addContributor: "Προσθήκη συνεισφέροντα"
 })
-//end v1.x content
 );

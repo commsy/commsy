@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/FindReplace", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/FindReplace", ({
 	"findLabel": "Keresés:",
 	"findTooltip": "Adja meg a keresett szöveget",
 	"replaceLabel": "Csere:",
@@ -21,6 +20,4 @@ define(
 	"eofDialogTextFind": "találat",
 	"eofDialogTextReplace": "cserélve"
 })
-
-//end v1.x content
 );

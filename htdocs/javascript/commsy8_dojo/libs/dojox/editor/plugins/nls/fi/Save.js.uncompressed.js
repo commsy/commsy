@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/fi/Save", //begin v1.x content
-({
+"dojox/editor/plugins/nls/fi/Save", ({
 	"save": "Tallenna"
 })
-
-//end v1.x content
 );

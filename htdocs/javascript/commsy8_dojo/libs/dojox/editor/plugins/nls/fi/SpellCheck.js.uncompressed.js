@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/fi/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/fi/SpellCheck", ({
 	widgetLabel: "Eräoikoluku",
 	unfound: "Ei löydy",
 	skip: "Ohita",
@@ -16,6 +15,4 @@ define(
 	iSkipAll: "Ohita kaikki samanlaiset",
 	iMsg: "Ei oikeinkirjoitusehdotuksia"
 })
-
-//end v1.x content
 );

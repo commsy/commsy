@@ -14,14 +14,9 @@ define("dojox/mobile/Slider", [
 ],
 	function(array, connect, declare, lang, win, domClass, domConstruct, domGeometry, domStyle, keys, WidgetBase, FormValueMixin){
 
-	/*=====
-		WidgetBase = dijit._WidgetBase;
-		FormValueMixin = dijit.form._FormValueMixin;
-	=====*/
 	return declare("dojox.mobile.Slider", [WidgetBase, FormValueMixin], {
 		// summary:
 		//		A non-templated Slider widget similar to the HTML5 INPUT type=range.
-		//
 
 		// value: [const] Number
 		//		The current slider value.
@@ -41,6 +36,8 @@ define("dojox/mobile/Slider", [
 		//		A value of 0 means continuous (as much as allowed by pixel resolution).
 		step: 1,
 
+		// baseClass: String
+		//		The name of the CSS class of this widget.
 		baseClass: "mblSlider",
 
 		// flip: [const] Boolean
@@ -49,9 +46,10 @@ define("dojox/mobile/Slider", [
 
 		// orientation: [const] String
 		//		The slider direction.
-		//		"H": horizontal
-		//		"V": vertical
-		//		"auto": use width/height comparison at instantiation time (default is "H" if width/height are 0)
+		//
+		//		- "H": horizontal
+		//		- "V": vertical
+		//		- "auto": use width/height comparison at instantiation time (default is "H" if width/height are 0)
 		orientation: "auto",
 
 		// halo: Number
@@ -71,7 +69,9 @@ define("dojox/mobile/Slider", [
 
 		_setValueAttr: function(/*Number*/ value, /*Boolean?*/ priorityChange){
 			// summary:
-			//		Hook so set('value', value) works.
+			//		Hook such that set('value', value) works.
+			// tags:
+			//		private
 			value = Math.max(Math.min(value, this.max), this.min);
 			var fromPercent = (this.value - this.min) * 100 / (this.max - this.min);
 			this.valueNode.value = value;

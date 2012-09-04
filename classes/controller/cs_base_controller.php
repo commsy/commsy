@@ -455,8 +455,10 @@
 
 			// dev
 			global $c_indexed_search;
+			global $c_xhr_error_reporting;
 			$this->assign('environment','with_indexed_search',(isset($c_indexed_search) && $c_indexed_search === true) ? true : false);
 			$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
+			$to_javascript['dev']['xhr_error_reporting'] = (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) ? true : false;
 
 			if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
 				global $c_autosave_mode;
@@ -474,5 +476,7 @@
 			}
 
 			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));
+			
+			$this->assign("javascript", "locale", $this->_environment->getSelectedLanguage());
 		}
 	}

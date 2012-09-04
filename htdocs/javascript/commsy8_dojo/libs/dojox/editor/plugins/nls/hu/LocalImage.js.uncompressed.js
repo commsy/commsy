@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/LocalImage", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/LocalImage", ({
 	insertImageTitle: "Kép beszúrása",
 	url: "Kép",
 	browse: "Tallózás...",
@@ -10,6 +9,4 @@ define(
 	prePopuTextUrl: "Adja meg a kép URL címét",
 	prePopuTextBrowse: " vagy tallózással válasszon ki egy helyi fájlt."
 })
-
-//end v1.x content
 );

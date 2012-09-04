@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/ro/LinkDialog", //begin v1.x content
-({
+"dijit/_editor/nls/ro/LinkDialog", ({
 	createLinkTitle: "Proprietăţi legătură",
 	insertImageTitle: "Proprietăţi imagine",
 	url: "URL:",
@@ -12,6 +11,4 @@ define(
 	topWindow: "Fereastra cea mai de sus",
 	newWindow: "Fereastra nouă"
 })
-
-//end v1.x content
 );

@@ -5,4 +5,4 @@
 */
 
 //>>built
-define("dojo/cldr/nls/it/currency",{"HKD_displayName":"Dollaro di Hong Kong","CHF_displayName":"Franco Svizzero","CAD_displayName":"Dollaro Canadese","CNY_displayName":"Renmimbi Cinese","AUD_displayName":"Dollaro Australiano","JPY_displayName":"Yen Giapponese","USD_displayName":"Dollaro Statunitense","GBP_displayName":"Sterlina Inglese","EUR_displayName":"Euro"});
+define("dojo/cldr/nls/it/currency",{"AUD_displayName":"Dollaro Australiano","CAD_displayName":"Dollaro Canadese","CHF_displayName":"Franco Svizzero","CNY_displayName":"Renmimbi Cinese","EUR_displayName":"Euro","GBP_displayName":"Sterlina Inglese","HKD_displayName":"Dollaro di Hong Kong","JPY_displayName":"Yen Giapponese","USD_displayName":"Dollaro Statunitense"});

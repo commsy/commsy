@@ -1,8 +1,6 @@
 define(
-"dijit/nls/hu/loading", //begin v1.x content
-({
+"dijit/nls/hu/loading", ({
 	loadingState: "Betöltés...",
 	errorState: "Sajnálom, hiba történt"
 })
-//end v1.x content
 );

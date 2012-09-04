@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/Preview", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/Preview", ({
 	"preview": "Előzetes"
 })
-
-//end v1.x content
 );

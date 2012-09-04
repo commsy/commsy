@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/sl/Save", //begin v1.x content
-({
+"dojox/editor/plugins/nls/sl/Save", ({
 	"save": "Shrani"
 })
-
-//end v1.x content
 );

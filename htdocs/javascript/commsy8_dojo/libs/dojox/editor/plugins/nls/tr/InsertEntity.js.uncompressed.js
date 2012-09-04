@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/tr/InsertEntity", //begin v1.x content
-({
+"dojox/editor/plugins/nls/tr/InsertEntity", ({
 	insertEntity: "Simge Ekle"
 })
-
-//end v1.x content
 );

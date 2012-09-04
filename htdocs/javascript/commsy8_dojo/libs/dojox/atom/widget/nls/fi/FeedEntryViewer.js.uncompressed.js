@@ -1,6 +1,5 @@
 define(
-"dojox/atom/widget/nls/fi/FeedEntryViewer", //begin v1.x content
-({
+"dojox/atom/widget/nls/fi/FeedEntryViewer", ({
 	displayOptions: "[näyttöasetukset]",
 	title: "Otsikko",
 	authors: "Tekijät",
@@ -8,8 +7,7 @@ define(
 	id: "Tunnus",
 	close: "[sulje]",
 	updated: "Päivitetty",
-	summary: "Tiivistelmä",
+	summary: "Yhteenveto",
 	content: "Sisältö"
 })
-//end v1.x content
 );

@@ -5,4 +5,4 @@
 */
 
 //>>built
-define("dojo/cldr/nls/el/number",{"group":".","percentSign":"%","exponential":"e","percentFormat":"#,##0%","list":",","infinity":"∞","patternDigit":"#","minusSign":"-","decimal":",","nan":"NaN","nativeZeroDigit":"0","perMille":"‰","currencyFormat":"#,##0.00 ¤","plusSign":"+"});
+define("dojo/cldr/nls/el/number",{"decimal":",","group":".","list":",","percentSign":"%","plusSign":"+","minusSign":"-","exponential":"e","perMille":"‰","infinity":"∞","nan":"NaN","decimalFormat":"#,##0.###","decimalFormat-short":"000 τρις","percentFormat":"#,##0%","currencyFormat":"#,##0.00 ¤"});

@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/it/InsertAnchor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/it/InsertAnchor", ({
 	insertAnchor: "Inserisci ancoraggio",
 	title: "Proprietà ancoraggio",
 	anchor: "Nome:",
@@ -8,6 +7,4 @@ define(
 	set: "Imposta",
 	cancel: "Annulla"
 })
-
-//end v1.x content
 );

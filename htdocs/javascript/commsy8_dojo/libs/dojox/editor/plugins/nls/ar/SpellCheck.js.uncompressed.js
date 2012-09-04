@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ar/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ar/SpellCheck", ({
 	widgetLabel: "فحص هجاء دفعي",
 	unfound: "غير موجودة",
 	skip: "تخطي",
@@ -16,6 +15,4 @@ define(
 	iSkipAll: "تخطي كل المماثل لهذا",
 	iMsg: "لا توجد اقتراحات للهجاء"
 })
-
-//end v1.x content
 );

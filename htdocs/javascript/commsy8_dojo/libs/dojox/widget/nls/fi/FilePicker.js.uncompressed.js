@@ -1,3 +1,7 @@
-define('dojox/widget/nls/fi/FilePicker',
-{"name":"Nimi","size":"Koko (tavuina)","path":"Polku"}
+define(
+"dojox/widget/nls/fi/FilePicker", ({
+	name: "Nimi",
+	path: "Polku",
+	size: "Koko (tavuina)"
+})
 );

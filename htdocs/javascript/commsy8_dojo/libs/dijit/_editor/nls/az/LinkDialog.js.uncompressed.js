@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/az/LinkDialog", //begin v1.x content
-({
+"dijit/_editor/nls/az/LinkDialog", ({
 	"text" : "Yazı:",
 	"insertImageTitle" : "Şəkil başlığı əlavə et",
 	"set" : "Yönəlt",
@@ -12,5 +11,4 @@ define(
 	"currentWindow" : "Hazırki pəncərə",
 	"url" : "URL:"
 })
-//end v1.x content
 );

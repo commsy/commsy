@@ -44,14 +44,36 @@
 			$user_item = $this->_environment->getCurrentUserItem();
 			$db = $this->_environment->getDBConnector();
 
+			// get all parameters
+			//$this->getParameters();
+			
+			if(isset($_GET['option']) && isOption($_GET['option'], $translator->getMessage('COMMON_RESET'))) {
+				// TODO: rewrite this
+				/*
+				 * $this->_params['search'] = '';
+				$this->_params['selrubric'] = 'all';
+				$this->_params['selrestriction'] = 'all';
+				$this->_params['seltopic'] = '';
+				$this->_params['last_selected_tag'] = '';
+				$this->_params['seltag_array'] = array();
+				*/
+			} else {
+				// get parameters
+				if(isset($_GET['back_to_search']) && $session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_search_parameter_array')) {
+					$this->_params = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_search_parameter_array');
+				} else {
+					$this->getParameters();
+				}
+			
+				// store parameters in session
+				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_search_parameter_array', $this->_params);
+			}
+			
 			// init list params
 			$this->initListParameters();
-
+			
 			// an array of all rubrics, containing files
 			$file_rubric_array = $this->getRubricsWithFiles();
-
-			// get all parameters
-			$this->getParameters();
 
 			// setup template variables
 			$this->assign('search', 'parameters', $this->_params);
@@ -84,28 +106,7 @@ if ( isset($_GET['interval']) ) {
 }
 
 */
-			// TODO: rewrite this
-			// search / select area
-			/*
-			if(isset($_GET['option']) && isOption($_GET['option'], $translator->getMessage('COMMON_RESET'))) {
-				$this->_params['search'] = '';
-				$this->_params['selrubric'] = 'all';
-				$this->_params['selrestriction'] = 'all';
-				$this->_params['seltopic'] = '';
-				$this->_params['last_selected_tag'] = '';
-				$this->_params['seltag_array'] = array();
-			} else {
-				// get parameters
-				if(isset($_GET['back_to_search']) && $session->issetValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array')) {
-					$this->_params = $session->getValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array');
-				} else {
-					$this->getParameters();
-				}
-
-				// store parameters in session
-				$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_campus_search_parameter_array', $this->_params);
-			}
-			*/
+			
 
 			/*
 			 * // Handle attaching

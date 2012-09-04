@@ -1,7 +1,5 @@
 define(
-"dojox/atom/widget/nls/zh-tw/FeedViewerEntry", //begin v1.x content
-({
+"dojox/atom/widget/nls/zh-tw/FeedViewerEntry", ({
 	deleteButton: "[刪除]"
 })
-//end v1.x content
 );

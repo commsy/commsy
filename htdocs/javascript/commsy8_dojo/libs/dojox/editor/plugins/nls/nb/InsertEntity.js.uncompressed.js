@@ -1,7 +1,5 @@
 define(
-"dojox/editor/plugins/nls/nb/InsertEntity", //begin v1.x content
-({
+"dojox/editor/plugins/nls/nb/InsertEntity", ({
 	insertEntity: "Sett inn symbol"
 })
-//end v1.x content
 );

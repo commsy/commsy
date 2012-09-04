@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/AutoSave", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/AutoSave", ({
 	"saveLabel": "Mentés",
 	"saveSettingLabelOn": "Automatikus mentés időközének beállítása...",
 	"saveSettingLabelOff": "Automatikus mentés kikapcsolása",
@@ -13,6 +12,4 @@ define(
 	"saveMessageSuccess": "Mentés: ${0}",
 	"saveMessageFail": "Sikertelen mentés: ${0}"
 })
-
-//end v1.x content
 );

@@ -1,9 +1,6 @@
 define(
-"dojox/form/nls/hu/PasswordValidator", //begin v1.x content
-({
+"dojox/form/nls/hu/PasswordValidator", ({
         nomatchMessage: "A jelszavak nem egyeznek.",
-		badPasswordMessage: "Érvénytelen jelszó."
+	badPasswordMessage: "Érvénytelen jelszó."
 })
-
-//end v1.x content
 );

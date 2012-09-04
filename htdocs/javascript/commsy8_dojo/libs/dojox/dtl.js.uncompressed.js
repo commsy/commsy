@@ -10,29 +10,19 @@ define([
 	"dojox/string/Builder",
 	"dojo/_base/Deferred"], 
 	function(kernel, lang, Tokenize, json, dom, xhr, StringBuilder, deferred){
-	/*=====
-		Tokenize = dojox.string.tokenize;
-		StringBuilder = dojox.string.Builder;
-	=====*/
+
 	kernel.experimental("dojox.dtl");
 	var dd = lang.getObject("dojox.dtl", true);
 	dd._base = {};
-	/*=====
-		dd = dojox.dtl;
-	=====*/
 
 	dd.TOKEN_BLOCK = -1;
 	dd.TOKEN_VAR = -2;
 	dd.TOKEN_COMMENT = -3;
 	dd.TOKEN_TEXT = 3;
 
-	/*=====
-		dd._Context = function(dict){
-			// summary: Pass one of these when rendering a template to tell the template what values to use.
-		}
-	=====*/
 	dd._Context = lang.extend(function(dict){
-		// summary: Pass one of these when rendering a template to tell the template what values to use.
+		// summary:
+		//		Pass one of these when rendering a template to tell the template what values to use.
 		if(dict){
 			lang._mixin(this, dict);
 			if(dict.get){
@@ -112,16 +102,18 @@ define([
 		}
 		parts.push(this.slice(lastIndex));
 		return parts;
-	}
+	};
 
 	dd.Token = function(token_type, contents){
+		// tags:
+		//		private
 		this.token_type = token_type;
 		this.contents = new String(lang.trim(contents));
 		this.contents.split = split;
 		this.split = function(){
 			return String.prototype.split.apply(this.contents, arguments);
 		}
-	}
+	};
 	dd.Token.prototype.split_contents = function(/*Integer?*/ limit){
 		var bit, bits = [], i = 0;
 		limit = limit || 999;
@@ -136,11 +128,12 @@ define([
 			}
 		}
 		return bits;
-	}
+	};
 
 	var ddt = dd.text = {
 		_get: function(module, name, errorless){
-			// summary: Used to find both tags and filters
+			// summary:
+			//		Used to find both tags and filters
 			var params = dd.register.get(module, name.toLowerCase(), errorless);
 			if(!params){
 				if(!errorless){
@@ -239,40 +232,16 @@ define([
 				return [dd.TOKEN_BLOCK, tag];
 			}
 		}
-	}
+	};
 
-	/*=====
-		dd.Template = function(template, isString){
-			// summary: 
-			// 		The base class for text-based templates.
-			// template: String|dojo._Url
-			//		The string or location of the string to
-			//		use as a template
-			// isString: Boolean
-			//		Indicates whether the template is a string or a url.
-		};
-		dd.Template.prototype.update= function(node, context){
-			// summary:
-			//		Updates this template according to the given context.
-			// node: DOMNode|String|dojo.NodeList
-			//		A node reference or set of nodes
-			// context: dojo._Url|String|Object
-			//		The context object or location
-			}
-		dd.Template.prototype.render= function(context, buffer){
-			// summary:
-			//		Renders this template.
-			// context: Object
-			//		The runtime context.
-			// buffer: StringBuilder?
-			//		A string buffer.
-		}
-		
-	=====*/
 	dd.Template = lang.extend(function(/*String|dojo._Url*/ template, /*Boolean*/ isString){
-		// template:
+		// summary:
+		//		The base class for text-based templates.
+		// template: String|dojo/_base/url
 		//		The string or location of the string to
 		//		use as a template
+		// isString: Boolean
+		//		Indicates whether the template is a string or a url.
 		var str = isString ? template : ddt._resolveTemplateArg(template, true) || "";
 		var tokens = ddt.tokenize(str);
 		var parser = new dd._Parser(tokens);
@@ -282,9 +251,9 @@ define([
 		update: function(node, context){
 			// summary:
 			//		Updates this template according to the given context.
-			// node: DOMNode|String|dojo.NodeList
+			// node: DOMNode|String|dojo/NodeList
 			//		A node reference or set of nodes
-			// context: dojo._Url|String|Object
+			// context: dojo/base/url|String|Object
 			//		The context object or location
 			return ddt._resolveContextArg(context).addCallback(this, function(contextObject){
 				var content = this.render(new dd._Context(contextObject));
@@ -298,7 +267,13 @@ define([
 				return this;
 			});
 		},
-		render: function(context, /*concatenatable?*/ buffer){
+		render: function(context, buffer){
+			// summary:
+			//		Renders this template.
+			// context: Object
+			//		The runtime context.
+			// buffer: StringBuilder?
+			//		A string buffer.
 			buffer = buffer || this.getBuffer();
 			context = context || new dd._Context({});
 			return this.nodelist.render(context, buffer) + "";
@@ -319,7 +294,7 @@ define([
 				return new dd._Filter(token);
 			}));
 		}
-	}
+	};
 
 	dd._QuickNodeList = lang.extend(function(contents){
 		this.contents = contents;
@@ -340,7 +315,8 @@ define([
 	});
 
 	dd._Filter = lang.extend(function(token){
-		// summary: Uses a string to find (and manipulate) a variable
+		// summary:
+		//		Uses a string to find (and manipulate) a variable
 		if(!token) throw new Error("Filter must be called with variable name");
 		this.contents = token;
 
@@ -495,7 +471,8 @@ define([
 	});
 
 	dd._TextNode = dd._Node = lang.extend(function(/*Object*/ obj){
-		// summary: Basic catch-all node
+		// summary:
+		//		Basic catch-all node
 		this.contents = obj;
 	},
 	{
@@ -504,7 +481,8 @@ define([
 			return this;
 		},
 		render: function(context, buffer){
-			// summary: Adds content onto the buffer
+			// summary:
+			//		Adds content onto the buffer
 			return buffer.concat(this.contents);
 		},
 		isEmpty: function(){
@@ -514,13 +492,15 @@ define([
 	});
 
 	dd._NodeList = lang.extend(function(/*Node[]*/ nodes){
-		// summary: Allows us to render a group of nodes
+		// summary:
+		//		Allows us to render a group of nodes
 		this.contents = nodes || [];
 		this.last = "";
 	},
 	{
 		push: function(node){
-			// summary: Add a new node to the list
+			// summary:
+			//		Add a new node to the list
 			this.contents.push(node);
 			return this;
 		},
@@ -529,7 +509,8 @@ define([
 			return this;
 		},
 		render: function(context, buffer){
-			// summary: Adds all content onto the buffer
+			// summary:
+			//		Adds all content onto the buffer
 			for(var i = 0; i < this.contents.length; i++){
 				buffer = this.contents[i].render(context, buffer);
 				if(!buffer) throw new Error("Template must return buffer");
@@ -556,7 +537,8 @@ define([
 	});
 
 	dd._VarNode = lang.extend(function(str){
-		// summary: A node to be processed as a variable
+		// summary:
+		//		A node to be processed as a variable
 		this.contents = new dd._Filter(str);
 	},
 	{
@@ -570,20 +552,24 @@ define([
 	});
 
 	dd._noOpNode = new function(){
-		// summary: Adds a no-op node. Useful in custom tags
+		// summary:
+		//		Adds a no-op node. Useful in custom tags
 		this.render = this.unrender = function(){ return arguments[1]; }
 		this.clone = function(){ return this; }
-	}
+	};
 
 	dd._Parser = lang.extend(function(tokens){
-		// summary: Parser used during initialization and for tag groups.
+		// summary:
+		//		Parser used during initialization and for tag groups.
 		this.contents = tokens;
 	},
 	{
 		i: 0,
 		parse: function(/*Array?*/ stop_at){
-			// summary: Turns tokens into nodes
-			// description: Steps into tags are they're found. Blocks use the parse object
+			// summary:
+			//		Turns tokens into nodes
+			// description:
+			//		Steps into tags are they're found. Blocks use the parse object
 			//		to find their closing tag (the stop_at array). stop_at is inclusive, it
 			//		returns the node that matched.
 			var terminators = {}, token;
@@ -627,7 +613,8 @@ define([
 			return nodelist;
 		},
 		next_token: function(){
-			// summary: Returns the next token in the list.
+			// summary:
+			//		Returns the next token in the list.
 			var token = this.contents[this.i++];
 			return new dd.Token(token[0], token[1]);
 		},
@@ -655,12 +642,17 @@ define([
 	});
 
 	dd.register = {
+		// summary:
+		//		A register for filters and tags.
+		
 		_registry: {
 			attributes: [],
 			tags: [],
 			filters: []
 		},
 		get: function(/*String*/ module, /*String*/ name){
+			// tags:
+			//		private
 			var registry = dd.register._registry[module + "s"];
 			for(var i = 0, entry; entry = registry[i]; i++){
 				if(typeof entry[0] == "string"){
@@ -673,6 +665,8 @@ define([
 			}
 		},
 		getAttributeTags: function(){
+			// tags:
+			//		private
 			var tags = [];
 			var registry = dd.register._registry.attributes;
 			for(var i = 0, entry; entry = registry[i]; i++){
@@ -715,9 +709,31 @@ define([
 			}
 		},
 		tags: function(/*String*/ base, /*Object*/ locations){
+			// summary:
+			//		Register the specified tag libraries.
+			// description:
+			//		The locations parameter defines the contents of each library as a hash whose keys are the library names and values 
+			//		an array of the tags exported by the library. For example, the tags exported by the logic library would be:
+			//	|	{ logic: ["if", "for", "ifequal", "ifnotequal"] }
+			// base:
+			//		The base path of the libraries.
+			// locations:
+			//		An object defining the tags for each library as a hash whose keys are the library names and values 
+			//		an array of the tags or filters exported by the library.
 			dd.register._any("tags", base, locations);
 		},
 		filters: function(/*String*/ base, /*Object*/ locations){
+			// summary:
+			//		Register the specified filter libraries.
+			// description:
+			//		The locations parameter defines the contents of each library as a hash whose keys are the library names and values 
+			//		an array of the filters exported by the library. For example, the filters exported by the date library would be:
+			//	|	{ "dates": ["date", "time", "timesince", "timeuntil"] }
+			// base:
+			//		The base path of the libraries.
+			// locations:
+			//		An object defining the filters for each library as a hash whose keys are the library names and values 
+			//		an array of the filters exported by the library.
 			dd.register._any("filters", base, locations);
 		}
 	}
@@ -728,9 +744,10 @@ define([
 	var escapeqt = /'/g;
 	var escapedblqt = /"/g;
 	dd._base.escape = function(value){
-		// summary: Escapes a string's HTML
+		// summary:
+		//		Escapes a string's HTML
 		return dd.mark_safe(value.replace(escapeamp, '&amp;').replace(escapelt, '&lt;').replace(escapegt, '&gt;').replace(escapedblqt, '&quot;').replace(escapeqt, '&#39;'));
-	}
+	};
 
 	dd._base.safe = function(value){
 		if(typeof value == "string"){
@@ -740,7 +757,7 @@ define([
 			value.safe = true;
 		}
 		return value;
-	}
+	};
 	dd.mark_safe = dd._base.safe;
 
 	dd.register.tags("dojox.dtl.tag", {
@@ -768,15 +785,13 @@ define([
 
 },
 'dojox/dtl/tag/loader':function(){
-define("dojox/dtl/tag/loader", [
+define([
 	"dojo/_base/lang",
 	"../_base",
 	"dojo/_base/array",
 	"dojo/_base/connect"
 ], function(lang,dd,array,connect){
-	/*=====
-		dd = dojox.dtl;
-	=====*/
+
 	lang.getObject("dojox.dtl.tag.loader", true);
 
 	var ddtl = dd.tag.loader;
@@ -1073,33 +1088,28 @@ define("dojox/dtl/tag/loader", [
 });
 },
 'dojo/date':function(){
-define(["./_base/kernel", "./_base/lang"], function(dojo, lang) {
-	// module:
-	//		dojo/date
+define(["./has", "./_base/lang"], function(has, lang){
+// module:
+//		dojo/date
+
+var date = {
 	// summary:
-	//		TODOC
+	//		Date manipulation utilities
+};
 
-lang.getObject("date", true, dojo);
-
-/*=====
-dojo.date = {
-	// summary: Date manipulation utilities
-}
-=====*/
-
-dojo.date.getDaysInMonth = function(/*Date*/dateObject){
-	//	summary:
+date.getDaysInMonth = function(/*Date*/dateObject){
+	// summary:
 	//		Returns the number of days in the month used by dateObject
 	var month = dateObject.getMonth();
 	var days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-	if(month == 1 && dojo.date.isLeapYear(dateObject)){ return 29; } // Number
+	if(month == 1 && date.isLeapYear(dateObject)){ return 29; } // Number
 	return days[month]; // Number
 };
 
-dojo.date.isLeapYear = function(/*Date*/dateObject){
-	//	summary:
+date.isLeapYear = function(/*Date*/dateObject){
+	// summary:
 	//		Determines if the year of the dateObject is a leap year
-	//	description:
+	// description:
 	//		Leap years are years with an additional day YYYY-02-29, where the
 	//		year number is a multiple of four with the following exception: If
 	//		a year is a multiple of 100, then it is only a leap year if it is
@@ -1111,12 +1121,12 @@ dojo.date.isLeapYear = function(/*Date*/dateObject){
 };
 
 // FIXME: This is not localized
-dojo.date.getTimezoneName = function(/*Date*/dateObject){
-	//	summary:
+date.getTimezoneName = function(/*Date*/dateObject){
+	// summary:
 	//		Get the user's time zone as provided by the browser
 	// dateObject:
 	//		Needed because the timezone may vary with time (daylight savings)
-	//	description:
+	// description:
 	//		Try to get time zone info from toString or toLocaleString method of
 	//		the Date object -- UTC offset is not a time zone.  See
 	//		http://www.twinsun.com/tz/tz-link.htm Note: results may be
@@ -1157,16 +1167,16 @@ dojo.date.getTimezoneName = function(/*Date*/dateObject){
 
 // Utility methods to do arithmetic calculations with Dates
 
-dojo.date.compare = function(/*Date*/date1, /*Date?*/date2, /*String?*/portion){
-	//	summary:
+date.compare = function(/*Date*/date1, /*Date?*/date2, /*String?*/portion){
+	// summary:
 	//		Compare two date objects by date, time, or both.
-	//	description:
-	//  	Returns 0 if equal, positive if a > b, else negative.
-	//	date1:
+	// description:
+	//		Returns 0 if equal, positive if a > b, else negative.
+	// date1:
 	//		Date object
-	//	date2:
+	// date2:
 	//		Date object.  If not specified, the current Date is used.
-	//	portion:
+	// portion:
 	//		A string indicating the "date" or "time" portion of a Date object.
 	//		Compares both "date" and "time" by default.  One of the following:
 	//		"date", "time", "datetime"
@@ -1190,16 +1200,16 @@ dojo.date.compare = function(/*Date*/date1, /*Date?*/date2, /*String?*/portion){
 	return 0; // int
 };
 
-dojo.date.add = function(/*Date*/date, /*String*/interval, /*int*/amount){
-	//	summary:
+date.add = function(/*Date*/date, /*String*/interval, /*int*/amount){
+	// summary:
 	//		Add to a Date in intervals of different size, from milliseconds to years
-	//	date: Date
+	// date: Date
 	//		Date object to start with
-	//	interval:
+	// interval:
 	//		A string representing the interval.  One of the following:
-	//			"year", "month", "day", "hour", "minute", "second",
-	//			"millisecond", "quarter", "week", "weekday"
-	//	amount:
+	//		"year", "month", "day", "hour", "minute", "second",
+	//		"millisecond", "quarter", "week", "weekday"
+	// amount:
 	//		How much to add to the date.
 
 	var sum = new Date(+date); // convert to Number before copying to accomodate IE (#3112)
@@ -1210,7 +1220,7 @@ dojo.date.add = function(/*Date*/date, /*String*/interval, /*int*/amount){
 		case "day":
 			break;
 		case "weekday":
-			//i18n FIXME: assumes Saturday/Sunday weekend, but this is not always true.  see dojo.cldr.supplemental
+			//i18n FIXME: assumes Saturday/Sunday weekend, but this is not always true.  see dojo/cldr/supplemental
 
 			// Divide the increment time span into weekspans plus leftover days
 			// e.g., 8 days is one 5-day weekspan / and two leftover days
@@ -1283,19 +1293,20 @@ dojo.date.add = function(/*Date*/date, /*String*/interval, /*int*/amount){
 	return sum; // Date
 };
 
-dojo.date.difference = function(/*Date*/date1, /*Date?*/date2, /*String?*/interval){
-	//	summary:
+date.difference = function(/*Date*/date1, /*Date?*/date2, /*String?*/interval){
+	// summary:
 	//		Get the difference in a specific unit of time (e.g., number of
 	//		months, weeks, days, etc.) between two dates, rounded to the
 	//		nearest integer.
-	//	date1:
+	// date1:
 	//		Date object
-	//	date2:
+	// date2:
 	//		Date object.  If not specified, the current Date is used.
-	//	interval:
+	// interval:
 	//		A string representing the interval.  One of the following:
-	//			"year", "month", "day", "hour", "minute", "second",
-	//			"millisecond", "quarter", "week", "weekday"
+	//		"year", "month", "day", "hour", "minute", "second",
+	//		"millisecond", "quarter", "week", "weekday"
+	//
 	//		Defaults to "day".
 
 	date2 = date2 || new Date();
@@ -1315,8 +1326,8 @@ dojo.date.difference = function(/*Date*/date1, /*Date?*/date2, /*String?*/interv
 			delta = q2 - q1;
 			break;
 		case "weekday":
-			var days = Math.round(dojo.date.difference(date1, date2, "day"));
-			var weeks = parseInt(dojo.date.difference(date1, date2, "week"));
+			var days = Math.round(date.difference(date1, date2, "day"));
+			var weeks = parseInt(date.difference(date1, date2, "week"));
 			var mod = days % 7;
 
 			// Even number of weeks
@@ -1396,7 +1407,7 @@ dojo.date.difference = function(/*Date*/date1, /*Date?*/date2, /*String?*/interv
 		case "week":
 			// Truncate instead of rounding
 			// Don't use Math.floor -- value may be negative
-			delta = parseInt(dojo.date.difference(date1, date2, "day")/7);
+			delta = parseInt(date.difference(date1, date2, "day")/7);
 			break;
 		case "day":
 			delta /= 24;
@@ -1418,22 +1429,27 @@ dojo.date.difference = function(/*Date*/date1, /*Date?*/date2, /*String?*/interv
 	return Math.round(delta); // Number (integer)
 };
 
-return dojo.date;
+// Don't use setObject() because it may overwrite dojo/date/stamp (if that has already been loaded)
+ 1  && lang.mixin(lang.getObject("dojo.date", true), date);
+
+return date;
 });
 
 },
 'dojox/date/php':function(){
-define("dojox/date/php", ["dojo/_base/kernel", "dojo/_base/lang","dojo/date","dojox/string/tokenize"], function(dojo,dlang,ddate,dxst){
+define(["dojo/_base/kernel", "dojo/_base/lang","dojo/date","dojox/string/tokenize"], function(dojo,dlang,ddate,dxst){
 dojo.getObject("date.php", true, dojox);
 
 dojox.date.php.format = function(/*Date*/ date, /*String*/ format){
-	// summary: Get a formatted string for a given date object
+	// summary:
+	//		Get a formatted string for a given date object
 	var df = new dojox.date.php.DateFormat(format);
 	return df.format(date);
-}
+};
 
 dojox.date.php.DateFormat = function(/*String*/ format){
-	// summary: Format the internal date object
+	// summary:
+	//		Format the internal date object
 	if(!this.regex){
 		var keys = [];
 		for(var key in this.constructor.prototype){
@@ -1457,7 +1473,8 @@ dojox.date.php.DateFormat = function(/*String*/ format){
 	});
 
 	this.replacements = replacements;
-}
+};
+
 dojo.extend(dojox.date.php.DateFormat, {
 	weekdays: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
 	weekdays_3: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
@@ -1476,34 +1493,40 @@ dojo.extend(dojox.date.php.DateFormat, {
 	// Day
 
 	d: function(){
-		// summary: Day of the month, 2 digits with leading zeros
+		// summary:
+		//		Day of the month, 2 digits with leading zeros
 		var j = this.j();
 		return (j.length == 1) ? "0" + j : j;
 	},
 
 	D: function(){
-		// summary: A textual representation of a day, three letters
+		// summary:
+		//		A textual representation of a day, three letters
 		return this.weekdays_3[this.date.getDay()];
 	},
 
 	j: function(){
-		// summary: Day of the month without leading zeros
+		// summary:
+		//		Day of the month without leading zeros
 		return this.date.getDate() + "";
 	},
 
 	l: function(){
-		// summary: A full textual representation of the day of the week
+		// summary:
+		//		A full textual representation of the day of the week
 		return this.weekdays[this.date.getDay()];
 	},
-	
+
 	N: function(){
-		// summary: ISO-8601 numeric representation of the day of the week (added in PHP 5.1.0)
+		// summary:
+		//		ISO-8601 numeric representation of the day of the week (added in PHP 5.1.0)
 		var w = this.w();
 		return (!w) ? 7 : w;
 	},
 
 	S: function(){
-		// summary: English ordinal suffix for the day of the month, 2 characters
+		// summary:
+		//		English ordinal suffix for the day of the month, 2 characters
 		switch(this.date.getDate()){
 			case 11: case 12: case 13: return "th";
 			case 1: case 21: case 31: return "st";
@@ -1514,12 +1537,14 @@ dojo.extend(dojox.date.php.DateFormat, {
 	},
 
 	w: function(){
-		// summary: Numeric representation of the day of the week
+		// summary:
+		//		Numeric representation of the day of the week
 		return this.date.getDay() + "";
 	},
 
 	z: function(){
-		// summary: The day of the year (starting from 0)
+		// summary:
+		//		The day of the year (starting from 0)
 		var millis = this.date.getTime() - new Date(this.date.getFullYear(), 0, 1).getTime();
 		return Math.floor(millis/86400000) + "";
 	},
@@ -1527,7 +1552,8 @@ dojo.extend(dojox.date.php.DateFormat, {
 	// Week
 
 	W: function(){
-		// summary: ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0)
+		// summary:
+		//		ISO-8601 week number of year, weeks starting on Monday (added in PHP 4.1.0)
 		var week;
 		var jan1_w = new Date(this.date.getFullYear(), 0, 1).getDay() + 1;
 		var w = this.date.getDay() + 1;
@@ -1557,42 +1583,48 @@ dojo.extend(dojox.date.php.DateFormat, {
 				}
 			}
 		}
-		
+
 		return week;
 	},
 
 	// Month
 
 	F: function(){
-		// summary: A full textual representation of a month, such as January or March
+		// summary:
+		//		A full textual representation of a month, such as January or March
 		return this.months[this.date.getMonth()];
 	},
 
 	m: function(){
-		// summary: Numeric representation of a month, with leading zeros
+		// summary:
+		//		Numeric representation of a month, with leading zeros
 		var n = this.n();
 		return (n.length == 1) ? "0" + n : n;
 	},
 
 	M: function(){
-		// summary: A short textual representation of a month, three letters
+		// summary:
+		//		A short textual representation of a month, three letters
 		return this.months_3[this.date.getMonth()];
 	},
 
 	n: function(){
-		// summary: Numeric representation of a month, without leading zeros
+		// summary:
+		//		Numeric representation of a month, without leading zeros
 		return this.date.getMonth() + 1 + "";
 	},
 
 	t: function(){
-		// summary: Number of days in the given month
+		// summary:
+		//		Number of days in the given month
 		return (Boolean(this.L()) && this.date.getMonth() == 1) ? 29 : this.monthdays[this.getMonth()];
 	},
 
 	// Year
 
 	L: function(){
-		// summary: Whether it's a leap year
+		// summary:
+		//		Whether it's a leap year
 		return (ddate.isLeapYear(this.date)) ? "1" : "0";
 	},
 
@@ -1600,35 +1632,40 @@ dojo.extend(dojox.date.php.DateFormat, {
 		// summary:
 		//		ISO-8601 year number. This has the same value as Y, except that if
 		//		the ISO week number (W) belongs to the previous or next year, that year is used instead. (added in PHP 5.1.0)
+
 		// TODO: Figure out what this means
 	},
 
 	Y: function(){
-		// summary: A full numeric representation of a year, 4 digits
+		// summary:
+		//		A full numeric representation of a year, 4 digits
 		return this.date.getFullYear() + "";
 	},
 
 	y: function(){
-		// summary: A two digit representation of a year
+		// summary:
+		//		A two digit representation of a year
 		return this.Y().slice(-2);
 	},
 
 	// Time
 
 	a: function(){
-		// summary: Lowercase Ante meridiem and Post meridiem
+		// summary:
+		//		Lowercase Ante meridian and Post meridian
 		return this.date.getHours() >= 12 ? "pm" : "am";
 	},
 
 	b: function(){
-		// summary: Uppercase Ante meridiem and Post meridiem
+		// summary:
+		//		Uppercase Ante meridian and Post meridian
 		return this.a().toUpperCase();
 	},
 
 	B: function(){
 		// summary:
-		//	Swatch Internet time
-		//	A day is 1,000 beats. All time is measured from GMT + 1
+		//		Swatch Internet time
+		//		A day is 1,000 beats. All time is measured from GMT + 1
 		var off = this.date.getTimezoneOffset() + 60;
 		var secs = (this.date.getHours() * 3600) + (this.date.getMinutes() * 60) + this.getSeconds() + (off * 60);
 		var beat = Math.abs(Math.floor(secs / 86.4) % 1000) + "";
@@ -1637,35 +1674,41 @@ dojo.extend(dojox.date.php.DateFormat, {
 	},
 
 	g: function(){
-		// summary: 12-hour format of an hour without leading zeros
-		return (this.date.getHours() > 12) ? this.date.getHours() - 12 + "" : this.date.getHours() + "";
+		// summary:
+		//		12-hour format of an hour without leading zeros
+		return (this.date.getHours() % 12 || 12) + "";
 	},
 
 	G: function(){
-		// summary: 24-hour format of an hour without leading zeros
+		// summary:
+		//		24-hour format of an hour without leading zeros
 		return this.date.getHours() + "";
 	},
 
 	h: function(){
-		// summary: 12-hour format of an hour with leading zeros
+		// summary:
+		//		12-hour format of an hour with leading zeros
 		var g = this.g();
 		return (g.length == 1) ? "0" + g : g;
 	},
 
 	H: function(){
-		// summary: 24-hour format of an hour with leading zeros
+		// summary:
+		//		24-hour format of an hour with leading zeros
 		var G = this.G();
 		return (G.length == 1) ? "0" + G : G;
 	},
 
 	i: function(){
-		// summary: Minutes with leading zeros
+		// summary:
+		//		Minutes with leading zeros
 		var mins = this.date.getMinutes() + "";
 		return (mins.length == 1) ? "0" + mins : mins;
 	},
 
 	s: function(){
-		// summary: Seconds, with leading zeros
+		// summary:
+		//		Seconds, with leading zeros
 		var secs = this.date.getSeconds() + "";
 		return (secs.length == 1) ? "0" + secs : secs;
 	},
@@ -1673,17 +1716,21 @@ dojo.extend(dojox.date.php.DateFormat, {
 	// Timezone
 
 	e: function(){
-		// summary: Timezone identifier (added in PHP 5.1.0)
+		// summary:
+		//		Timezone identifier (added in PHP 5.1.0)
 		return ddate.getTimezoneName(this.date);
 	},
 
 	I: function(){
-		// summary: Whether or not the date is in daylight saving time
+		// summary:
+		//		Whether or not the date is in daylight saving time
+
 		// TODO: Can dojo.date do this?
 	},
 
 	O: function(){
-		// summary: Difference to Greenwich time (GMT) in hours
+		// summary:
+		//		Difference to Greenwich time (GMT) in hours
 		var off = Math.abs(this.date.getTimezoneOffset());
 		var hours = Math.floor(off / 60) + "";
 		var mins = (off % 60) + "";
@@ -1693,13 +1740,15 @@ dojo.extend(dojox.date.php.DateFormat, {
 	},
 
 	P: function(){
-		// summary: Difference to Greenwich time (GMT) with colon between hours and minutes (added in PHP 5.1.3)
+		// summary:
+		//		Difference to Greenwich time (GMT) with colon between hours and minutes (added in PHP 5.1.3)
 		var O = this.O();
 		return O.substring(0, 2) + ":" + O.substring(2, 4);
 	},
 
 	T: function(){
-		// summary: Timezone abbreviation
+		// summary:
+		//		Timezone abbreviation
 
 		// Guess...
 		return this.e().substring(0, 3);
@@ -1715,17 +1764,20 @@ dojo.extend(dojox.date.php.DateFormat, {
 	// Full Date/Time
 
 	c: function(){
-		// summary: ISO 8601 date (added in PHP 5)
+		// summary:
+		//		ISO 8601 date (added in PHP 5)
 		return this.Y() + "-" + this.m() + "-" + this.d() + "T" + this.h() + ":" + this.i() + ":" + this.s() + this.P();
 	},
 
 	r: function(){
-		// summary: RFC 2822 formatted date
+		// summary:
+		//		RFC 2822 formatted date
 		return this.D() + ", " + this.d() + " " + this.M() + " " + this.Y() + " " + this.H() + ":" + this.i() + ":" + this.s() + " " + this.O();
 	},
 
 	U: function(){
-		// summary: Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
+		// summary:
+		//		Seconds since the Unix Epoch (January 1 1970 00:00:00 GMT)
 		return Math.floor(this.date.getTime() / 1000);
 	}
 
@@ -1736,22 +1788,20 @@ return dojox.date.php;
 'dojox/dtl/ext-dojo/NodeList':function(){
 define([
 	"dojo/_base/lang",
-	"dojo/_base/NodeList",
+	"dojo/query",
 	"../_base"
-], function(lang,Nodelist,dd){
-	/*=====
-		Nodelist = dojo.Nodelist;
-		dd = dojox.dtl;
-	=====*/
-	
+], function(lang, query, dd){
 	var nl = lang.getObject("dojox.dtl.ext-dojo.NodeList", true);
 
-	lang.extend(Nodelist, {
+	var NodeList = query.NodeList;
+
+	lang.extend(NodeList, {
 		dtl: function(template, context){
-			// summary: Renders the specified template in each of the Nodelist entries.
-			// template: dojox.dtl.__StringArgs|String
+			// summary:
+			//		Renders the specified template in each of the NodeList entries.
+			// template: dojox/dtl/__StringArgs|String
 			//		The template string or location
-			// context: dojox.dtl.__ObjectArgs|Object
+			// context: dojox/dtl/__ObjectArgs|Object
 			//		The context object or location
 			var d = dd, self = this;
 			
@@ -1760,7 +1810,7 @@ define([
 				self.forEach(function(node){
 					node.innerHTML = content;
 				});
-			}
+			};
 
 			d.text._resolveTemplateArg(template).addCallback(function(templateString){
 				template = new d.Template(templateString);
@@ -1772,19 +1822,15 @@ define([
 			return this;
 		}
 	});
-	return nl;
+	return NodeList;
 });
 },
 'dojox/dtl/utils/date':function(){
-define("dojox/dtl/utils/date", [
+define([
 	"dojo/_base/lang",
 	"dojox/date/php",
 	"../_base"
 ], function(lang,ddp,dd){
-	/*=====
-		ddp = dojox.data.php;
-		dd = dojox.dtl;
-	=====*/
 	lang.getObject("dojox.dtl.utils.date", true);
 
 	dd.utils.date.DateFormat = ddp.DateFormat;
@@ -1798,7 +1844,8 @@ define("dojox/dtl/utils/date", [
 			return (!this.date.getMinutes()) ? this.g() : this.g() + ":" + this.i();
 		},
 		N: function(){
-			// summary: Month abbreviation in Associated Press style. Proprietary extension.
+			// summary:
+			//		Month abbreviation in Associated Press style. Proprietary extension.
 			return dojox.dtl.utils.date._months_ap[this.date.getMonth()];
 		},
 		P: function(){
@@ -1858,17 +1905,14 @@ define("dojox/dtl/utils/date", [
 
 },
 'dojox/dtl/tag/loop':function(){
-define("dojox/dtl/tag/loop", [
+define([
 	"dojo/_base/lang",
 	"dojo/_base/array",
 	"dojo/_base/json",
 	"../_base",
 	"dojox/string/tokenize"
 ], function(lang,array,json,dd,Tokenize){
-	/*=====
-		Tokenize = dojox.string.tokenize;
-		dd = dojox.dtl;
-	=====*/
+
 	lang.getObject("dojox.dtl.tag.loop", true);
 
 	var ddtl = dd.tag.loop;
@@ -1995,7 +2039,8 @@ define("dojox/dtl/tag/loop", [
 
 	lang.mixin(ddtl, {
 		cycle: function(parser, token){
-			// summary: Cycle among the given strings each time this tag is encountered
+			// summary:
+			//		Cycle among the given strings each time this tag is encountered
 			var args = token.split_contents();
 
 			if(args.length < 2){
@@ -2061,23 +2106,24 @@ define("dojox/dtl/tag/loop", [
 });
 },
 'dojox/string/Builder':function(){
-define("dojox/string/Builder", ["dojo/_base/lang"], 
+define(["dojo/_base/lang"], 
   function(lang){
 	lang.getObject("string", true, dojox).Builder = 
 	  function(/*String?*/str){
-		//	summary:
+		// summary:
 		//		A fast buffer for creating large strings.
-		//
-		//	length: Number
-		//		The current length of the internal string.
 
 		//	N.B. the public nature of the internal buffer is no longer
 		//	needed because the IE-specific fork is no longer needed--TRT.
 		var b = "";
+
+		// length: Number
+		//		The current length of the internal string.
 		this.length = 0;
 		
 		this.append = function(/* String... */s){
-			// summary: Append all arguments to the end of the buffer
+			// summary:
+			//		Append all arguments to the end of the buffer
 			if(arguments.length>1){
 				/*
 					This is a loop unroll was designed specifically for Firefox;
@@ -2131,13 +2177,13 @@ define("dojox/string/Builder", ["dojo/_base/lang"],
 		};
 		
 		this.concat = function(/*String...*/s){
-			//	summary:
+			// summary:
 			//		Alias for append.
 			return this.append.apply(this, arguments);	//	dojox.string.Builder
 		};
 		
 		this.appendArray = function(/*Array*/strings) {
-			//	summary:
+			// summary:
 			//		Append an array of items to the internal buffer.
 
 			//	Changed from String.prototype.concat.apply because of IE.
@@ -2145,7 +2191,7 @@ define("dojox/string/Builder", ["dojo/_base/lang"],
 		};
 		
 		this.clear = function(){
-			//	summary:
+			// summary:
 			//		Remove all characters from the buffer.
 			b = "";
 			this.length = 0;
@@ -2153,7 +2199,7 @@ define("dojox/string/Builder", ["dojo/_base/lang"],
 		};
 		
 		this.replace = function(/* String */oldStr, /* String */ newStr){
-			// 	summary:
+			// summary:
 			//		Replace instances of one string with another in the buffer.
 			b = b.replace(oldStr,newStr);
 			this.length = b.length;
@@ -2161,7 +2207,7 @@ define("dojox/string/Builder", ["dojo/_base/lang"],
 		};
 		
 		this.remove = function(/* Number */start, /* Number? */len){
-			//	summary:
+			// summary:
 			//		Remove len characters starting at index start.  If len
 			//		is not provided, the end of the string is assumed.
 			if(len===undefined){ len = b.length; }
@@ -2172,7 +2218,7 @@ define("dojox/string/Builder", ["dojo/_base/lang"],
 		};
 		
 		this.insert = function(/* Number */index, /* String */str){
-			//	summary:
+			// summary:
 			//		Insert string str starting at index.
 			if(index == 0){
 				b = str + b;
@@ -2184,7 +2230,7 @@ define("dojox/string/Builder", ["dojo/_base/lang"],
 		};
 		
 		this.toString = function(){
-			//	summary:
+			// summary:
 			//		Return the string representation of the internal buffer.
 			return b;	//	String
 		};
@@ -2244,15 +2290,13 @@ define([
 
 },
 'dojox/dtl/tag/misc':function(){
-define("dojox/dtl/tag/misc", [
+define([
 	"dojo/_base/lang",
 	"dojo/_base/array",
 	"dojo/_base/connect",
 	"../_base"
 ], function(lang,array,connect,dd){
-	/*=====
-		dd = dojox.dtl;
-	=====*/
+
 	lang.getObject("dojox.dtl.tag.misc", true);
 
 	var ddtm = dd.tag.misc;
@@ -2470,16 +2514,19 @@ define("dojox/dtl/tag/misc", [
 
 	lang.mixin(ddtm, {
 		comment: function(parser, token){
-			// summary: Ignore everything between {% comment %} and {% endcomment %}
+			// summary:
+			//		Ignore everything between {% comment %} and {% endcomment %}
 			parser.skip_past("endcomment");
 			return dd._noOpNode;
 		},
 		debug: function(parser, token){
-			// summary: Output the current context, maybe add more stuff later.
+			// summary:
+			//		Output the current context, maybe add more stuff later.
 			return new ddtm.DebugNode(parser.create_text_node());
 		},
 		filter: function(parser, token){
-			// summary: Filter the contents of the blog through variable filters.
+			// summary:
+			//		Filter the contents of the blog through variable filters.
 			var rest = token.contents.split(null, 1)[1];
 			var varnode = parser.create_variable_node("var|" + rest);
 			var nodelist = parser.parse(["endfilter"]);
@@ -2539,27 +2586,20 @@ define("dojox/dtl/tag/misc", [
 });
 },
 'dojox/dtl/Context':function(){
-define("dojox/dtl/Context", [
+define([
 	"dojo/_base/lang",
 	"./_base"
 ], function(lang,dd){
-	/*=====
-		dd = dojox.dtl;
-	=====*/
-	
-	/*=====
-	 dd.Context = function(dict){
-	 	// summary: Represents a runtime context used by DTL templates.
-	 }
-	 
-	=====*/
-	dd.Context = lang.extend(function(dict){
+	dd.Context = lang.extend(function(/*Object*/dict){
+	 	// summary:
+	 	//		Represents a runtime context used by DTL templates.
 		this._this = {};
-		dd._Context.call(this, dict);
-	}, dd._Context.prototype,
+		dd._Context.call(this, dict);	// TODO: huh?
+	}, dd._Context.prototype,		// TODO: huh?
 	{
 		getKeys: function(){
-			// summary: Returns the set of keys exported by this context.
+			// summary:
+			//		Returns the set of keys exported by this context.
 			var keys = [];
 			for(var key in this){
 				if(this.hasOwnProperty(key) && key != "_this"){
@@ -2568,14 +2608,16 @@ define("dojox/dtl/Context", [
 			}
 			return keys;
 		},
-		extend: function(/*dojox.dtl.Context|Object*/ obj){
-			// summary: Returns a clone of this context object, with the items from the
-			//		passed objecct mixed in.
+		extend: function(/*dojox/dtl/Context|Object*/ obj){
+			// summary:
+			//		Returns a clone of this context object, with the items from the passed objecct mixed in.
+			// obj:
+			//		The object to extend.
 			return  lang.delegate(this, obj);
 		},
-		filter: function(/*dojox.dtl.Context|Object|String...*/ filter){
-			// summary: Returns a clone of this context, only containing the items
-			//		defined in the filter.
+		filter: function(/*dojox/dtl/Context|Object|String...*/ filter){
+			// summary:
+			//		Returns a clone of this context, only containing the items defined in the filter.
 			var context = new dd.Context();
 			var keys = [];
 			var i, arg;
@@ -2599,18 +2641,23 @@ define("dojox/dtl/Context", [
 
 			return context;
 		},
-		setThis: function(/*Object*/ _this){
-			// summary: Sets the object on which to perform operations. 
-			// _this: the this ref.
-			this._this = _this;
+		setThis: function(/*Object*/ scope){
+			// summary:
+			//		Sets the object on which to perform operations. 
+			// scope:
+			//		the this ref.
+			this._this = scope;
 		},
 		getThis: function(){
-			// summary: Gets the object on which to perform operations. 
+			// summary:
+			//		Gets the object on which to perform operations. 
 			return this._this;
 		},
 		hasKey: function(/*String*/key){
-			// summary: Indicates whether the specified key is defined on this context.
-			// key: The key to look up.
+			// summary:
+			//		Indicates whether the specified key is defined on this context.
+			// key:
+			//		The key to look up.
 			if(this._getter){
 				var got = this._getter(key);
 				if(typeof got != "undefined"){
@@ -2623,9 +2670,9 @@ define("dojox/dtl/Context", [
 			}
 
 		return false;
-	}
-});
-return dojox.dtl.Context; 
+		}
+	});
+return dd.Context; 
 });
 },
 'dojox/dtl/tag/logic':function(){
@@ -2633,9 +2680,7 @@ define([
 	"dojo/_base/lang",
 	"../_base"
 ], function(lang, dd){
-	/*=====
-		dd = dojox.dtl;
-	=====*/
+
 	lang.getObject("dojox.dtl.tag.logic", true);
 
 	var ddt = dd.text;
@@ -2911,21 +2956,19 @@ define([
 });
 },
 'dojox/dtl/tag/date':function(){
-define("dojox/dtl/tag/date", [
+define([
 	"dojo/_base/lang",
 	"../_base",
 	"../utils/date"
 ], function(lang,dd,ddud){
-	/*=====
-		dd = dojox.dtl;
-	=====*/
+
 	lang.getObject("dojox.dtl.tag.date", true);
 
 	dojox.dtl.tag.date.NowNode = function(format, node){
 		this._format = format;
 		this.format = new ddud.DateFormat(format);
 		this.contents = node;
-	}
+	};
 	lang.extend(dd.tag.date.NowNode, {
 		render: function(context, buffer){
 			this.contents.set(this.format.format(new Date()));
@@ -2952,5 +2995,12 @@ define("dojox/dtl/tag/date", [
 
 }}});
 define("dojox/dtl", ["./dtl/_base"], function(dxdtl){
+	/*=====
+	 return {
+	 // summary:
+	 //		Deprecated.  Should require dojox/dtl modules directly rather than trying to access them through
+	 //		this module.
+	 };
+	 =====*/
 	return dxdtl;
 });

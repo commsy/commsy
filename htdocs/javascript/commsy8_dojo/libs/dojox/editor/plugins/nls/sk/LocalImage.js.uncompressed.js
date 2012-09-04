@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/sk/LocalImage", //begin v1.x content
-({
+"dojox/editor/plugins/nls/sk/LocalImage", ({
 	insertImageTitle: "Vložiť obrázok",
 	url: "Obrázok",
 	browse: "Prehľadať...",
@@ -10,6 +9,4 @@ define(
 	prePopuTextUrl: "Zadajte adresu URL",
 	prePopuTextBrowse: "alebo nájdite lokálny súbor."
 })
-
-//end v1.x content
 );

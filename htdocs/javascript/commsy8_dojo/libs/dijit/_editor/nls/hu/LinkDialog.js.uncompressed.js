@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/hu/LinkDialog", //begin v1.x content
-({
+"dijit/_editor/nls/hu/LinkDialog", ({
 	createLinkTitle: "Hivatkozás tulajdonságai",
 	insertImageTitle: "Kép tulajdonságai",
 	url: "URL:",
@@ -12,6 +11,4 @@ define(
 	topWindow: "Legfelső szintű ablak",
 	newWindow: "Új ablak"
 })
-
-//end v1.x content
 );

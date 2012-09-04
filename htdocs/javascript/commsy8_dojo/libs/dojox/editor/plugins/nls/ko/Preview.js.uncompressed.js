@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ko/Preview", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ko/Preview", ({
 	"preview": "미리보기"
 })
-
-//end v1.x content
 );

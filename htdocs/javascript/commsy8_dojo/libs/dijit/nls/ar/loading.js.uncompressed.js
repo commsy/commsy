@@ -1,8 +1,6 @@
 define(
-"dijit/nls/ar/loading", //begin v1.x content
-({
+"dijit/nls/ar/loading", ({
 	loadingState: "جاري التحميل...",
 	errorState: "عفوا، حدث خطأ"
 })
-//end v1.x content
 );

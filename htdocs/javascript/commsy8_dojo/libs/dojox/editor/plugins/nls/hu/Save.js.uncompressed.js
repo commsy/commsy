@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/Save", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/Save", ({
 	"save": "Mentés"
 })
-
-//end v1.x content
 );

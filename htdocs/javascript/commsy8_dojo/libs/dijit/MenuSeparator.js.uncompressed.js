@@ -9,16 +9,8 @@ define("dijit/MenuSeparator", [
 	"dojo/text!./templates/MenuSeparator.html"
 ], function(declare, dom, _WidgetBase, _TemplatedMixin, _Contained, template){
 
-/*=====
-	var _WidgetBase = dijit._WidgetBase;
-	var _TemplatedMixin = dijit._TemplatedMixin;
-	var _Contained = dijit._Contained;
-=====*/
-
 	// module:
 	//		dijit/MenuSeparator
-	// summary:
-	//		A line between two menu items
 
 	return declare("dijit.MenuSeparator", [_WidgetBase, _TemplatedMixin, _Contained], {
 		// summary:

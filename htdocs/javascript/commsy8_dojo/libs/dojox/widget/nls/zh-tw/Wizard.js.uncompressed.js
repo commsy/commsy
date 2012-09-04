@@ -1,9 +1,7 @@
 define(
-"dojox/widget/nls/zh-tw/Wizard", //begin v1.x content
-({
+"dojox/widget/nls/zh-tw/Wizard", ({
 next: "下一步",
 previous: "上一步",
 done: "完成"
 })
-//end v1.x content
 );

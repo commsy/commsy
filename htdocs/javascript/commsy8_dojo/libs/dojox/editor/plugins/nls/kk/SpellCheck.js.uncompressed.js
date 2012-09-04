@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/kk/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/kk/SpellCheck", ({
 	widgetLabel: "Бума емлесін тексеру",
 	unfound: "Табылмады",
 	skip: "Өткізіп жіберу",
@@ -16,6 +15,4 @@ define(
 	iSkipAll: "Осы сияқты барлығын өткізіп жіберу",
 	iMsg: "Емле ұсыныстары жоқ"
 })
-
-//end v1.x content
 );

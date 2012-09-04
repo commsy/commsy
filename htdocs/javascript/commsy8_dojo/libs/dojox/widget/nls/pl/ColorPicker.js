@@ -1,2 +1,2 @@
 //>>built
-define("dojox/widget/nls/pl/ColorPicker",({redLabel:"c",greenLabel:"z",blueLabel:"n",hueLabel:"barwa",saturationLabel:"nas.",valueLabel:"jas.",hexLabel:"szesnastkowe",huePickerTitle:"Selektor barwy",saturationPickerTitle:"Selektor nasycenia"}));
+define("dojox/widget/nls/pl/ColorPicker",({redLabel:"r",greenLabel:"g",blueLabel:"b",hueLabel:"g.",saturationLabel:"s",valueLabel:"jas.",degLabel:"°",hexLabel:"szesnastkowe",huePickerTitle:"Selektor barwy",saturationPickerTitle:"Selektor nasycenia"}));

@@ -1,9 +1,6 @@
 define(
-"dojox/form/nls/it/PasswordValidator", //begin v1.x content
-({
+"dojox/form/nls/it/PasswordValidator", ({
         nomatchMessage: "Le password non corrispondono.",
-		badPasswordMessage: "Password non valida."
+	badPasswordMessage: "Password non valida."
 })
-
-//end v1.x content
 );

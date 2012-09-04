@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/tr/FindReplace", //begin v1.x content
-({
+"dojox/editor/plugins/nls/tr/FindReplace", ({
 	"findLabel": "Bul:",
 	"findTooltip": "Bulunacak metni girin",
 	"replaceLabel": "Değiştir:",
@@ -21,6 +20,4 @@ define(
 	"eofDialogTextFind": "bulundu",
 	"eofDialogTextReplace": "değiştirildi"
 })
-
-//end v1.x content
 );

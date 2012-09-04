@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/fi/Breadcrumb", //begin v1.x content
-({
+"dojox/editor/plugins/nls/fi/Breadcrumb", ({
 	"nodeActions": "${nodeName} - Toiminnot",
 	"selectContents": "Valitse sisältö",
 	"selectElement": "Valitse elementti",
@@ -9,6 +8,4 @@ define(
 	"moveStart": "Siirrä kohdistin alkuun",
 	"moveEnd": "Siirrä kohdistin loppuun"
 })
-
-//end v1.x content
 );

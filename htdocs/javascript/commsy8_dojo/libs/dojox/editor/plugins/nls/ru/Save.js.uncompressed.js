@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ru/Save", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ru/Save", ({
 	"save": "Сохранить"
 })
-
-//end v1.x content
 );

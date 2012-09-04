@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/kk/FindReplace", //begin v1.x content
-({
+"dojox/editor/plugins/nls/kk/FindReplace", ({
 	"findLabel": "Табу:",
 	"findTooltip": "Табылатын мәтінді енгізу",
 	"replaceLabel": "Келесімен ауыстыру:",
@@ -21,6 +20,4 @@ define(
 	"eofDialogTextFind": "табылды",
 	"eofDialogTextReplace": "ауыстырылды"
 })
-
-//end v1.x content
 );

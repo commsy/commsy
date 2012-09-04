@@ -1,11 +1,8 @@
 define(
-"dijit/nls/ro/common", //begin v1.x content
-({
+"dijit/nls/ro/common", ({
 	buttonOk: "OK",
 	buttonCancel: "Anulare",
 	buttonSave: "Salvare",
 	itemClose: "Închidere"
 })
-
-//end v1.x content
 );

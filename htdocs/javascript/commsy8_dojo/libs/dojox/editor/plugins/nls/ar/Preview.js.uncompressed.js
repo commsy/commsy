@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ar/Preview", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ar/Preview", ({
 	"preview": "معاينة"
 })
-
-//end v1.x content
 );

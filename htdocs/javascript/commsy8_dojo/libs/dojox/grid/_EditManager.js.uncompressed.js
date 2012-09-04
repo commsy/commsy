@@ -14,7 +14,7 @@ return declare("dojox.grid._EditManager", null, {
 		// inGrid: dojox.Grid
 		//		The dojox.Grid this editor should be attached to
 		this.grid = inGrid;
-		if(has("ie")){
+		if(has('ie')){
 			this.connections = [connect.connect(document.body, "onfocus", lang.hitch(this, "_boomerangFocus"))];
 		}else{
 			this.connections = [connect.connect(this.grid, 'onBlur', this, 'apply')];
@@ -136,7 +136,7 @@ return declare("dojox.grid._EditManager", null, {
 	},
 	_doCatchBoomerang: function(){
 		// give ourselves a few ms to boomerang IE focus effects
-		if(has("ie")){this._catchBoomerang = new Date().getTime() + this._boomerangWindow;}
+		if(has('ie')){this._catchBoomerang = new Date().getTime() + this._boomerangWindow;}
 	},
 	// end boomerang fix API
 

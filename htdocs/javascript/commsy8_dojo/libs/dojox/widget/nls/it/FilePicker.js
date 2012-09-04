@@ -1,2 +1,2 @@
 //>>built
-define("dojox/widget/nls/it/FilePicker",{"name":"Nome","size":"Dimensione (in byte)","path":"Percorso"});
+define("dojox/widget/nls/it/FilePicker",({name:"Nome",path:"Percorso",size:"Dimensione (in byte)"}));

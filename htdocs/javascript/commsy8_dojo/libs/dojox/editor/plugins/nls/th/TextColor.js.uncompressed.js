@@ -1,9 +1,6 @@
 define(
-"dojox/editor/plugins/nls/th/TextColor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/th/TextColor", ({
 	"setButtonText": "เซ็ต",
 	"cancelButtonText": "ยกเลิก"
 })
-
-//end v1.x content
 );

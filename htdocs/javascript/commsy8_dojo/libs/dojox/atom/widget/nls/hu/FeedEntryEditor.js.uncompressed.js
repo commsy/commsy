@@ -1,10 +1,8 @@
 define(
-"dojox/atom/widget/nls/hu/FeedEntryEditor", //begin v1.x content
-({
+"dojox/atom/widget/nls/hu/FeedEntryEditor", ({
 	doNew: "[új]",
 	edit: "[szerkesztés]",
 	save: "[mentés]",
 	cancel: "[mégse]"
 })
-//end v1.x content
 );

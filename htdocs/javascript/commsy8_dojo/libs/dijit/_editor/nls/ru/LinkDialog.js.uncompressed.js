@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/ru/LinkDialog", //begin v1.x content
-({
+"dijit/_editor/nls/ru/LinkDialog", ({
 	createLinkTitle: "Свойства ссылки",
 	insertImageTitle: "Свойства изображения",
 	url: "URL:",
@@ -12,6 +11,4 @@ define(
 	topWindow: "Верхнее окно",
 	newWindow: "Новое окно"
 })
-
-//end v1.x content
 );

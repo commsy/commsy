@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/fi/Blockquote", //begin v1.x content
-({
-	"blockquote": "Sitaatti"
+"dojox/editor/plugins/nls/fi/Blockquote", ({
+	"blockquote": "Blockquote"
 })
-
-//end v1.x content
 );

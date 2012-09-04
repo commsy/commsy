@@ -34,7 +34,7 @@ like the default dijit Tree but still offering some of the additional benifits
 like the ability to hide branch and/or leaf icons.
 
 ### Parent-Child Relationship ###
-The CheckBox Tree comes with two store models, one of the Store Model features is
+The CheckBox Tree comes with three store models, one of the Store Model features is
 the ability to maintain a parent-child relationship.
 The parent checked state, represented as a tree branch checkbox, is the composite
 state of all its child checkboxes. For example, if the child checkboxes are either
@@ -76,7 +76,6 @@ items using a store query or manage any store item attributes using the *setItem
 and *getItemAttr()* methods. Some of the Store Model API functions are:
 
 * check(), uncheck()
-* getChecked(), setChecked()
 * getItemAttr(), setItemAttr()
 * fetchItem(), fetchItemsWithChecked()
 * addReference(), removeReference()
@@ -96,9 +95,63 @@ in the /documentation directory.
 * Tree Styling and Icons
 * CheckBox Tree Store Models
 * Store Models API
+* The File Store
 
 Note: All documentation is written using the [markdown](http://daringfireball.net/projects/markdown/)
 format.
+
+<h2 id="checkbox-tree-downloads">Checkbox Tree Downloads</h2>
+The github repository cbtree represents the current development stage of the CheckBox
+Tree project, also known as the incubation stage. It may contain new, untested and undocumented
+features that are not included in any stable build. No warrenty is provided that such
+features will be included in a later release. 
+
+To get the latest stable version please visit the [download](https://github.com/pjekel/cbtree/downloads)
+section:
+
+
+<table style="width:100%">
+  <tbody>
+	<thead>
+	  <tr>
+	    <th style="width:15%;">Version</th>
+	    <th style="width:15%;">Date</th>
+	    <th style="width:10%;">dojo</th>
+	    <th>Description</th>
+	  </tr>
+	</thead>
+    <tr style="vertical-align:top">
+      <td>cbtree-v09.2-0</td>
+      <td>Aug-15 2012</td>
+      <td>1.8</td>
+      <td>
+		Updated The CheckBox Tree to work with dojo 1.8.<br/>
+		Official release File Store and File Store Model.<br/>
+		Per store item read-only checkboxes.<br/>
+		New declarative demos added.<br/>
+		Updated documentation.<br/>
+      <td>
+    </tr>
+    <tr style="vertical-align:top">
+      <td>cbtree-v09.1-0</td>
+      <td>Aug-06 2012</td>
+      <td>1.7</td>
+      <td>
+		A new File Store and File Store Model have been added.<br/>
+		New and updated demos.<br/>
+		Updated documentation.<br/>
+		Minor software updates.
+      <td>
+    </tr>
+    <tr style="vertical-align:top">
+      <td>cbtree-v09.0-0</td>
+      <td>May-20 2012</td>
+      <td>1.7</td>
+      <td>Initial cbtree-AMD release</td>
+    </tr>
+  </tbody>
+</table>
+
 
 <h2 id="basics">CheckBox Tree Migration</h2>
 The new CheckBox Tree implementation is a complete rewrite of the previous

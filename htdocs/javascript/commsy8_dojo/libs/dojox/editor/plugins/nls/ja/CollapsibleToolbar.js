@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/ja/CollapsibleToolbar",({"collapse":"エディターのツールバーを省略","expand":"エディターのツールバーを展開"}));
+define("dojox/editor/plugins/nls/ja/CollapsibleToolbar",({"collapse":"エディター・ツールバーを省略","expand":"エディター・ツールバーを展開"}));

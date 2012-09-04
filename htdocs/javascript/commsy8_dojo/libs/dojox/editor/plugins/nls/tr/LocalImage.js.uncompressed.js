@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/tr/LocalImage", //begin v1.x content
-({
+"dojox/editor/plugins/nls/tr/LocalImage", ({
 	insertImageTitle: "Resim Ekle",
 	url: "Resim",
 	browse: "Göz at...",
@@ -10,6 +9,4 @@ define(
 	prePopuTextUrl: "Bir resim URL'si girin",
 	prePopuTextBrowse: " ya da yerel bir dosyaya göz atın."
 })
-
-//end v1.x content
 );

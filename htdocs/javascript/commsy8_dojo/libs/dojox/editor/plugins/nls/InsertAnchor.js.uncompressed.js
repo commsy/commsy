@@ -8,8 +8,8 @@ define("dojox/editor/plugins/nls/InsertAnchor", { root:
 	set: "Set",
 	cancel: "Cancel"
 })
-,
 //end v1.x content
+,
 "zh": true,
 "zh-tw": true,
 "tr": true,

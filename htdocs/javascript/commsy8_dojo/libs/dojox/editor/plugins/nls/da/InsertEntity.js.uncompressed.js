@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/da/InsertEntity", //begin v1.x content
-({
+"dojox/editor/plugins/nls/da/InsertEntity", ({
 	insertEntity: "Indsæt symbol"
 })
-
-//end v1.x content
 );

@@ -3,9 +3,6 @@ define("dojox/encoding/compression/splay", [
 	"../bits"
 ], function(lang, bits) {
 	var compression = lang.getObject("dojox.encoding.compression", true);
-	/*=====
-		compression = dojox.encoding.compression;
-	=====*/
 
 	compression.Splay = function(n){
 		this.up = new Array(2 * n + 1);

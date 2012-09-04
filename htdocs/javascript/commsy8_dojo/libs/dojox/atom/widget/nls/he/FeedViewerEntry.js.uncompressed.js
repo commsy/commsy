@@ -1,7 +1,5 @@
 define(
-"dojox/atom/widget/nls/he/FeedViewerEntry", //begin v1.x content
-({
+"dojox/atom/widget/nls/he/FeedViewerEntry", ({
 	deleteButton: "[מחיקה]"
 })
-//end v1.x content
 );

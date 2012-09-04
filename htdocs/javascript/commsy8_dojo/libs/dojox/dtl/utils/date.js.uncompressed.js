@@ -3,10 +3,6 @@ define("dojox/dtl/utils/date", [
 	"dojox/date/php",
 	"../_base"
 ], function(lang,ddp,dd){
-	/*=====
-		ddp = dojox.data.php;
-		dd = dojox.dtl;
-	=====*/
 	lang.getObject("dojox.dtl.utils.date", true);
 
 	dd.utils.date.DateFormat = ddp.DateFormat;
@@ -20,7 +16,8 @@ define("dojox/dtl/utils/date", [
 			return (!this.date.getMinutes()) ? this.g() : this.g() + ":" + this.i();
 		},
 		N: function(){
-			// summary: Month abbreviation in Associated Press style. Proprietary extension.
+			// summary:
+			//		Month abbreviation in Associated Press style. Proprietary extension.
 			return dojox.dtl.utils.date._months_ap[this.date.getMonth()];
 		},
 		P: function(){

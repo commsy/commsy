@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/pt/Preview",({"preview":"Visualização"}));
+define("dojox/editor/plugins/nls/pt/Preview",({"preview":"Visualizar"}));

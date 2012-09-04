@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/da/LinkDialog", //begin v1.x content
-({
+"dijit/_editor/nls/da/LinkDialog", ({
 	createLinkTitle: "Linkegenskaber",
 	insertImageTitle: "Billedegenskaber",
 	url: "URL:",
@@ -12,6 +11,4 @@ define(
 	topWindow: "Øverste vindue",
 	newWindow: "Nyt vindue"
 })
-
-//end v1.x content
 );

@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/el/InsertAnchor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/el/InsertAnchor", ({
 	insertAnchor: "Εισαγωγή αγκίστρωσης",
 	title: "Ιδιότητες αγκίστρωσης",
 	anchor: "Όνομα:",
@@ -8,6 +7,4 @@ define(
 	set: "Ορισμός",
 	cancel: "Ακύρωση"
 })
-
-//end v1.x content
 );

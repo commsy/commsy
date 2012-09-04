@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/PageBreak", ({
 	"pageBreak": "Oldaltörés"
 })
-
-//end v1.x content
 );

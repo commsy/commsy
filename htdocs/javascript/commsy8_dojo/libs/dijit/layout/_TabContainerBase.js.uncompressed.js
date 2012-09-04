@@ -11,17 +11,8 @@ define("dijit/layout/_TabContainerBase", [
 	"dojo/dom-style" // domStyle.style
 ], function(template, StackContainer, layoutUtils, _TemplatedMixin, declare, domClass, domGeometry, domStyle){
 
-
-/*=====
-	var StackContainer = dijit.layout.StackContainer;
-	var _TemplatedMixin = dijit._TemplatedMixin;
-=====*/
-
 // module:
 //		dijit/layout/_TabContainerBase
-// summary:
-//		Abstract base class for TabContainer.   Must define _makeController() to instantiate
-//		and return the widget that displays the tab labels
 
 
 return declare("dijit.layout._TabContainerBase", [StackContainer, _TemplatedMixin], {
@@ -83,7 +74,7 @@ return declare("dijit.layout._TabContainerBase", [StackContainer, _TemplatedMixi
 		}
 	},
 
-	_setupChild: function(/*dijit._Widget*/ tab){
+	_setupChild: function(/*dijit/_WidgetBase*/ tab){
 		// Overrides StackContainer._setupChild().
 		domClass.add(tab.domNode, "dijitTabPane");
 		this.inherited(arguments);

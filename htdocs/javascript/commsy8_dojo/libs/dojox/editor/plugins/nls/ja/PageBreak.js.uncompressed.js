@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ja/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ja/PageBreak", ({
 	"pageBreak": "改ページ"
 })
-
-//end v1.x content
 );

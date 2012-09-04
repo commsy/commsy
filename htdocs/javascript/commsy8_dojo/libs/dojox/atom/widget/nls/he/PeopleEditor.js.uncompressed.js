@@ -1,9 +1,7 @@
 define(
-"dojox/atom/widget/nls/he/PeopleEditor", //begin v1.x content
-({
+"dojox/atom/widget/nls/he/PeopleEditor", ({
 	add: "הוספה",
 	addAuthor: "הוספת מחבר",
 	addContributor: "הוספת תורם"
 })
-//end v1.x content
 );

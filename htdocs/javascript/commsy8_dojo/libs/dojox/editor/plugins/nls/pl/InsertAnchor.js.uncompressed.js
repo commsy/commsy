@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/pl/InsertAnchor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/pl/InsertAnchor", ({
 	insertAnchor: "Wstaw zakotwiczenie",
 	title: "Właściwości zakotwiczenia",
 	anchor: "Nazwa:",
@@ -8,6 +7,4 @@ define(
 	set: "Ustaw",
 	cancel: "Anuluj"
 })
-
-//end v1.x content
 );

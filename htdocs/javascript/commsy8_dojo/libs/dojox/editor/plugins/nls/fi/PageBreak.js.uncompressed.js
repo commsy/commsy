@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/fi/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/fi/PageBreak", ({
 	"pageBreak": "Sivunvaihto"
 })
-
-//end v1.x content
 );

@@ -4,16 +4,8 @@ define("dijit/layout/LinkPane", [
 	"dojo/_base/declare" // declare
 ], function(ContentPane, _TemplatedMixin, declare){
 
-/*=====
-	var _TemplatedMixin = dijit._TemplatedMixin;
-	var ContentPane = dijit.layout.ContentPane;
-=====*/
-
 	// module:
 	//		dijit/layout/LinkPane
-	// summary:
-	//		A ContentPane with an href where (when declared in markup)
-	//		the title is specified as innerHTML rather than as a title attribute.
 
 
 	return declare("dijit.layout.LinkPane", [ContentPane, _TemplatedMixin], {

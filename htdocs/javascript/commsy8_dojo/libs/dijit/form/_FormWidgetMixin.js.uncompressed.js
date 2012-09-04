@@ -5,27 +5,23 @@ define("dijit/form/_FormWidgetMixin", [
 	"dojo/dom-style", // domStyle.get
 	"dojo/_base/lang", // lang.hitch lang.isArray
 	"dojo/mouse", // mouse.isLeft
-	"dojo/_base/sniff", // has("webkit")
-	"dojo/_base/window", // win.body
+	"dojo/sniff", // has("webkit")
 	"dojo/window", // winUtils.scrollIntoView
 	"../a11y"	// a11y.hasDefaultTabStop
-], function(array, declare, domAttr, domStyle, lang, mouse, has, win, winUtils, a11y){
+], function(array, declare, domAttr, domStyle, lang, mouse, has, winUtils, a11y){
 
 // module:
 //		dijit/form/_FormWidgetMixin
-// summary:
-//		Mixin for widgets corresponding to native HTML elements such as <checkbox> or <button>,
-//		which can be children of a <form> node or a `dijit.form.Form` widget.
 
 return declare("dijit.form._FormWidgetMixin", null, {
 	// summary:
-	//		Mixin for widgets corresponding to native HTML elements such as <checkbox> or <button>,
-	//		which can be children of a <form> node or a `dijit.form.Form` widget.
+	//		Mixin for widgets corresponding to native HTML elements such as `<checkbox>` or `<button>`,
+	//		which can be children of a `<form>` node or a `dijit/form/Form` widget.
 	//
 	// description:
 	//		Represents a single HTML element.
 	//		All these widgets should have these attributes just like native HTML input elements.
-	//		You can set them during widget construction or afterwards, via `dijit._Widget.attr`.
+	//		You can set them during widget construction or afterwards, via `dijit/_WidgetBase.set()`.
 	//
 	//		They also share some common methods.
 
@@ -34,18 +30,18 @@ return declare("dijit.form._FormWidgetMixin", null, {
 	name: "",
 
 	// alt: String
-	//		Corresponds to the native HTML <input> element's attribute.
+	//		Corresponds to the native HTML `<input>` element's attribute.
 	alt: "",
 
 	// value: String
-	//		Corresponds to the native HTML <input> element's attribute.
+	//		Corresponds to the native HTML `<input>` element's attribute.
 	value: "",
 
 	// type: [const] String
-	//		Corresponds to the native HTML <input> element's attribute.
+	//		Corresponds to the native HTML `<input>` element's attribute.
 	type: "text",
 
-	// tabIndex: Integer
+	// tabIndex: String
 	//		Order fields are traversed when user hits the tab key
 	tabIndex: "0",
 	_setTabIndexAttr: "focusNode",	// force copy even when tabIndex default value, needed since Button is <span>
@@ -112,7 +108,7 @@ return declare("dijit.form._FormWidgetMixin", null, {
 			});
 			// Set a global event to handle mouseup, so it fires properly
 			// even if the cursor leaves this.domNode before the mouse up event.
-			var mouseUpConnector = this.connect(win.body(), "onmouseup", function(){
+			var mouseUpConnector = this.connect(this.ownerDocumentBody, "onmouseup", function(){
 				this.disconnect(mouseUpConnector);
 				this.disconnect(focusConnector);
 				// if here, then the mousedown did not focus the focusNode as the default action

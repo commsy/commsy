@@ -1,9 +1,6 @@
 define(
-"dojox/editor/plugins/nls/ru/TextColor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ru/TextColor", ({
 	"setButtonText": "Задать",
-	"cancelButtonText": "Отменить"
+	"cancelButtonText": "Отмена"
 })
-
-//end v1.x content
 );

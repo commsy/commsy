@@ -1,7 +1,7 @@
 # CheckBox Tree Store Models #
-The CheckBox Tree comes with two store models, that is, a *Tree Store Model* and
-a *Forest Store Model*. The distinct differences are explained in the following 
-sections. Which store model to use primarily depends on:
+The CheckBox Tree comes with three store models, that is, a *Tree Store Model*
+a *Forest Store Model* and a *File Store Model*. The distinct differences are
+explained in the following sections. Which store model to use primarily depends on:
 
 1. How the data store is structured.
 2. How you are going to query the store.
@@ -119,6 +119,26 @@ to anchor the tree.
 
 In this example the store query returns all store items available.
 
+<h2 id="file-store-model">File Store Model</h2>
+
+Similar to the Forest Store Model, the File Store Model allows the user to present
+the back-end server file system as a traditional UI directory tree. 
+The model is designed to be used with the cbtree FileStore which implements both the 
+*dojo.data.api.Read* and *dojo.data.api.Write* APIs offering the functionality to query the back-end
+servers file system, add lazy loading and provide limited support for store write operations.
+Please refer to the [File Store](FileStore.md) documentation for details. 
+
+The File Store Model implements a subset of the Forest Store Model and [Store Model API](StoreModelAPI.md) functionality.
+Because the content of a File Store is treated as read-only, that is, you can't add new
+items to the store, any attempt to do so will throw an error. You can however add custom
+properties to store items which will be writeable or rename or delete store items. The File
+Store Model also supports drag and drop operations using the File Store rename capabilities.
+
+In addition to the common Store Model Properties, the File Store Model has an
+additional set of properties to help query the File Store. Also, because of the
+reduced function set supported, some of common store model properties will be
+ignored by the File Store Model.
+
 <h2 id="store-model-properties">Store Model Properties</h2>
 
 #### checkedAll: ####
@@ -149,7 +169,8 @@ In this example the store query returns all store items available.
 > example, if all children are checked the parent will automatically receive
 > the same checked state or if any of the children are unchecked the parent
 > will, depending on, if multi state is enabled, receive either a mixed or unchecked
-> state. Note: If true, *deferItemLoadingUntilExpand* will be ignored.
+> state. Note: If true, the property *deferItemLoadingUntilExpand* will be ignored
+> and a complete store load is forced.
 
 #### childrenAttrs: ####
 > String[] ('children'), Array of one or more attribute names (attributes of a dojo.data item)
@@ -158,8 +179,15 @@ In this example the store query returns all store items available.
 #### deferItemLoadingUntilExpand: ####
 > Boolean (false), If true will cause the TreeStoreModel to defer calling loadItem
 > on nodes until they are expanded. This allows for lazy loading where only one
-> loadItem (and generally one network call, consequently) per expansion (rather than
-> one for each child). Note: Only valid if *checkedStrict* equals false.
+> loadItem (and generally one network call) per expansion (rather than one for each child).
+> Note: Only valid if *checkedStrict* equals false.
+
+#### enabledAttr: ####
+> The name of a store item attribute that holds the 'enabled' state
+> of the checkbox or alternative widget. Note: Eventhough it is referred to as the
+> 'enabled' state the tree will only use this property to enable/disable the 
+> 'ReadOnly' property of a checkbox or alternative widget. This because disabling
+> a widget (DOM element) may exclude it from HTTP POST operations.
 
 #### excludeChildrenAttrs: ####
 > String[] (null), If multiple childrenAttrs have been specified excludeChildrenAttrs
@@ -199,13 +227,73 @@ In this example the store query returns all store items available.
 > String ('$root$'), ID of fabricated root item, Only valid for a ForestStoreModel.
 
 #### store: ####
-> Object (null), The underlying dojo.data store.
+> Object (null), The underlying dojo/data or cbtree/file store.
+
+
+<h2 id="file-store-model-properties">File Store Model Properties</h2>
+
+The following properties are in addition to the common store model properties but are
+specific to the File Store Model. 
+Please note that these properties rely on the use of the cbtree File Store ***AND*** 
+the server side applications *cbtreeFileStore.php* or *cbtreeFileStore.cgi*.
+(See the [File Store](FileStore.md) documentation for details).
+
+#### queryOptions: ####
+> Object (null), A set of JS 'property:value' pairs used to assist in querying the 
+File Store and back-end server. Properties supported are: *deep* and *ignoreCase*. 
+If deep is true a recursive search is performed on the stores basePath and path
+combination. If ignoreCase is true, filenames and paths are matched case insensitive.
+
+#### sort: ####
+> Array (null), An array of sort fields, each sort field is a JavaScript 'property:value'
+pair object. The sort field properties supported are: *attribute*, *descending* and
+*ignoreCase*. Each sort field object must at least have the *attribute* property defined, the
+default value for both *descending* and *ignoreCase* is false. 
+The sort operation is performed in the order in which the sort field objects appear in the
+sort array.
+
+> sort:[ {attribute:'directory', descending:true}, {attribute:'name', ignoreCase: true} ]
+
+> The above examples returns a typical UI style directory listing with the directories first
+followed by a file list in ascending order.
 
 <h2 id="store-model-functions">Store Model Functions</h2>
 
 The following is a list of the default functions available with the CheckBox Tree
 store models. 
 Additional functionality is available using the [Store Model API](StoreModelAPI.md).
+
+******************************************
+#### deleteItem( storeItem ) #### 
+#### deleteItem( storeItem, onBegin, onComplete, onError, scope) #### 
+> Delete a store item. Please note that this feature needs to be explicitly enabled
+> on a File Store. (See the [CBTREE_METHODS](FileStore.md#server-side-configuration) environment
+variable in the File Store documentation
+for details).
+
+*storeItem:* data.item
+> A valid dojo.data.store item.
+
+*onBegin:* Function (Optional, FileStoreModel only)
+> If an onBegin callback function is provided, the callback function
+> will be called just once, before the XHR DELETE request is issued.
+> The onBegin callback MUST return true in order to proceed with the
+> deletion, any other return value will abort the operation.
+
+*onComplete:* Function (Optional, FileStoreModel only)
+> If an onComplete callback function is provided, the callback function will be
+> called once on successful completion of the delete operation with the list of
+> deleted file store items.
+
+*onError:* Function (Optional, FileStoreModel only)
+> The onError parameter is the callback to invoke when the item load
+> encountered an error. It takes only one parameter, the error object
+
+*scope:* Object (Optional, FileStoreModel only)
+> If a scope object is provided, all of the callback functions (onBegin,
+> onError, etc) will be invoked in the context of the scope object. In
+> the body of the callback function, the value of the "this" keyword
+> will be the scope object otherwise window.global is used.
 
 *********************************************
 #### fetchItemByIdentity( keywordArgs ) ####
@@ -239,6 +327,14 @@ Additional functionality is available using the [Store Model API](StoreModelAPI.
 > Array of property names of the *parentItem* identifying the children lists from
 > which the children are fetched. If omitted, all entries in the models *childrenAttrs*
 > property are used in which case all children are returned.
+
+*********************************************
+#### getEnabled( item ) ####
+> Returns the current 'enabled' state of an item as a boolean. See the *enabledAttr*
+> property description for more details.
+
+*item:* data.item
+> A valid dojo.data.store item.
 
 *********************************************
 #### getIcon( item ) ####
@@ -326,14 +422,22 @@ Additional functionality is available using the [Store Model API](StoreModelAPI.
 
 *********************************************
 #### setChecked ( item, newState ) ####
-> Update the checked state of a store item. If the property *checkedStrict* for
-> the model is true, the items parent(s) and children, if any, are updated accordingly.
+> Update the checked state of a store item. If the model property *checkedStrict*
+> is true, the items parent(s) and children, if any, are updated accordingly.
 
 *item:* data.item
 > A valid dojo.data.store item.
 
 *newState:* Boolean | String
 > The new checked state. The state can be either a boolean (true | false) or a string ('mixed')
+
+*********************************************
+#### setEnabled( item, value ) ####
+> Set the new 'enabled' state of an item. See the *enabledAttr* property description for more
+> details.
+
+*item:* data.item
+> A valid dojo.data.store item.
 
 <h2 id="store-model-callbacks">Store Model Callbacks</h2>
 

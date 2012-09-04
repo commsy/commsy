@@ -3,8 +3,8 @@ define("dojox/editor/plugins/nls/ShowBlockNodes", { root:
 ({
 	"showBlockNodes": "Show HTML Block Elements"
 })
-,
 //end v1.x content
+,
 "zh": true,
 "zh-tw": true,
 "tr": true,

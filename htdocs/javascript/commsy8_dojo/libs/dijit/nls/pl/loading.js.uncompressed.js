@@ -1,8 +1,6 @@
 define(
-"dijit/nls/pl/loading", //begin v1.x content
-({
+"dijit/nls/pl/loading", ({
 	loadingState: "Ładowanie...",
 	errorState: "Niestety, wystąpił błąd"
 })
-//end v1.x content
 );

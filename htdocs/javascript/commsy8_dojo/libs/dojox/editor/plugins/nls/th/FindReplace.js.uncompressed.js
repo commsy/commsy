@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/th/FindReplace", //begin v1.x content
-({
+"dojox/editor/plugins/nls/th/FindReplace", ({
 	"findLabel": "ค้นหา:",
 	"findTooltip": "ป้อนข้อความเพื่อหา",
 	"replaceLabel": "แทนที่ด้วย:",
@@ -21,6 +20,4 @@ define(
 	"eofDialogTextFind": "หาพบ",
 	"eofDialogTextReplace": "ถูกแทนที่"
 })
-
-//end v1.x content
 );

@@ -70,7 +70,7 @@ define("dojox/gesture/Base", [
 		//		|		return dojox.gesture.a;
 		//		|	});
 		//
-		//		2. A gesture can be used in the following ways(taking dojox.gestre.tap for example):
+		//		2. A gesture can be used in the following ways(taking dojox.gesture.tap for example):
 		//
 		//		A. Used with dojo.connect()
 		//		|	dojo.connect(node, dojox.gesture.tap, function(e){});
@@ -120,7 +120,7 @@ define("dojox/gesture/Base", [
 		//		Whether the gesture is touch-device only
 		touchOnly : false,
 
-		//	_elements: Array
+		// _elements: Array
 		//		List of elements that wraps target node and gesture data
 		_elements: null,
 

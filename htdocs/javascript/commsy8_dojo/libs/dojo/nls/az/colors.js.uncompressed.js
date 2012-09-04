@@ -1,6 +1,5 @@
 define(
-"dojo/nls/az/colors", //begin v1.x content
-({
+"dojo/nls/az/colors", ({
 	"lightsteelblue":"açıq metal mavi",
 	"orangered" :"narıncı qırmızı",
 	"midnightblue" :"gecə mavisi",
@@ -149,5 +148,4 @@ define(
 	"darkolivegreen" :"tünd zeytun yaşılı",
 	"yellowgreen" :"sarı-yaşıl"
 })
-//end v1.x content
 );

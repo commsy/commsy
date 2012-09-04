@@ -1,9 +1,7 @@
 define(
-"dojox/widget/nls/ca/Wizard", //begin v1.x content
-({
+"dojox/widget/nls/ca/Wizard", ({
 next: "Següent",
 previous: "Anterior",
 done: "Fet"
 })
-//end v1.x content
 );

@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ar/FindReplace", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ar/FindReplace", ({
 	"findLabel": "ايجاد:",
 	"findTooltip": "ادخال نص لايجاد",
 	"replaceLabel": "استبدال بالآتي:",
@@ -21,6 +20,4 @@ define(
 	"eofDialogTextFind": "موجودة",
 	"eofDialogTextReplace": "مستبدل"
 })
-
-//end v1.x content
 );

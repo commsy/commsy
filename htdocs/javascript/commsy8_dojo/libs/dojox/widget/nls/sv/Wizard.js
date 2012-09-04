@@ -1,2 +1,2 @@
 //>>built
-define("dojox/widget/nls/sv/Wizard",({next:"Nästa",previous:"Föregående",done:"Stäng"}));
+define("dojox/widget/nls/sv/Wizard",({next:"Nästa",previous:"Föregående",done:"Klart"}));

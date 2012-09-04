@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/tr/InsertAnchor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/tr/InsertAnchor", ({
 	insertAnchor: "Tutturucu Ekle",
 	title: "Tutturucu Özellikleri",
 	anchor: "Ad:",
@@ -8,6 +7,4 @@ define(
 	set: "Ayarla",
 	cancel: "İptal"
 })
-
-//end v1.x content
 );

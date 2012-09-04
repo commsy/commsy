@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/pl/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/pl/SpellCheck", ({
 	widgetLabel: "Wsadowe sprawdzanie pisowni",
 	unfound: "Nie znaleziono",
 	skip: "Pomiń",
@@ -16,6 +15,4 @@ define(
 	iSkipAll: "Pomiń wszystkie pozycje podobne do tej",
 	iMsg: "Brak propozycji pisowni"
 })
-
-//end v1.x content
 );

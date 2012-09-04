@@ -1,9 +1,6 @@
 define(
-"dijit/nls/sk/loading", //begin v1.x content
-({
-	loadingState: "Zavádzanie...",
-	errorState: "Nastala chyba"
+"dijit/nls/sk/loading", ({
+	loadingState: "Zavádza sa...",
+	errorState: "Ľutujeme, ale vyskytla sa chyba"
 })
-
-//end v1.x content
 );

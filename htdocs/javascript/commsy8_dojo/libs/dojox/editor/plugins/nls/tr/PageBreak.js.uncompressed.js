@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/tr/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/tr/PageBreak", ({
 	"pageBreak": "Sayfa Sonu"
 })
-
-//end v1.x content
 );

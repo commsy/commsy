@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/ar/commands", //begin v1.x content
-({
+"dijit/_editor/nls/ar/commands", ({
 	'bold': 'عري~ض',
 	'copy': 'نسخ',
 	'cut': 'قص',
@@ -49,6 +48,4 @@ define(
 	'ctrlKey':'ctrl+${0}',
 	'appleKey':'\u2318${0}' // "command" or open-apple key on Macintosh
 })
-
-//end v1.x content
 );

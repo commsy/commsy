@@ -1,8 +1,6 @@
 define(
-"dojox/editor/plugins/nls/zh/CollapsibleToolbar", //begin v1.x content
-({
+"dojox/editor/plugins/nls/zh/CollapsibleToolbar", ({
 	"collapse": "折叠编辑器工具栏",
 	"expand": "展开编辑器工具栏"
 })
-//end v1.x content
 );

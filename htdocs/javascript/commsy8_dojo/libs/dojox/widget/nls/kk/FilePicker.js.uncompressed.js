@@ -1,3 +1,7 @@
-define('dojox/widget/nls/kk/FilePicker',
-{"name":"Атауы","size":"Өлшемі (байт)","path":"Жол"}
+define(
+"dojox/widget/nls/kk/FilePicker", ({
+	name: "Аты",
+	path: "Жол",
+	size: "Өлшемі (байт)"
+})
 );

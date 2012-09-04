@@ -1,6 +1,4 @@
-define("dojox/charting/themes/GreySkies", ["../Theme", "./common"], function(Theme, themes){
-	
-	themes.GreySkies=new Theme(Theme._def);
-	
+define("dojox/charting/themes/GreySkies", ["../SimpleTheme", "./common"], function(SimpleTheme, themes){
+	themes.GreySkies = new SimpleTheme();
 	return themes.GreySkies;
 });

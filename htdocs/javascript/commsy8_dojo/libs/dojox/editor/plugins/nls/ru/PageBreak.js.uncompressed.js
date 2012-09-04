@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ru/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ru/PageBreak", ({
 	"pageBreak": "Разделитель страниц"
 })
-
-//end v1.x content
 );

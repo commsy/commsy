@@ -5,15 +5,8 @@ define("dijit/ToolbarSeparator", [
 	"./_TemplatedMixin"
 ], function(declare, dom, _Widget, _TemplatedMixin){
 
-/*=====
-	var _Widget = dijit._Widget;
-	var _TemplatedMixin = dijit._TemplatedMixin;
-=====*/
-
 	// module:
 	//		dijit/ToolbarSeparator
-	// summary:
-	//		A spacer between two `dijit.Toolbar` items
 
 
 	return declare("dijit.ToolbarSeparator", [_Widget, _TemplatedMixin], {

@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ca/InsertEntity", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ca/InsertEntity", ({
 	insertEntity: "Insereix símbol"
 })
-
-//end v1.x content
 );

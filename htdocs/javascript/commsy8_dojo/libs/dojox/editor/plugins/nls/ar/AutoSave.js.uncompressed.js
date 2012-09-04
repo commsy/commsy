@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ar/AutoSave", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ar/AutoSave", ({
 	"saveLabel": "حفظ",
 	"saveSettingLabelOn": "تحديد الفترة الزمنية للحفظ الآلي...",
 	"saveSettingLabelOff": "ايقاف الحفظ الآلي",
@@ -13,6 +12,4 @@ define(
 	"saveMessageSuccess": "تم الحفظ في ${0}",
 	"saveMessageFail": "فشل في الحفظ في ${0}"
 })
-
-//end v1.x content
 );

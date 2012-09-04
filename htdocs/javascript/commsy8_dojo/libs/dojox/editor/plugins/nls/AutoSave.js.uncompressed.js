@@ -13,8 +13,8 @@ define("dojox/editor/plugins/nls/AutoSave", { root:
 	"saveMessageSuccess": "Saved at ${0}",
 	"saveMessageFail": "Failed to save at ${0}"
 })
-,
 //end v1.x content
+,
 "zh": true,
 "zh-tw": true,
 "tr": true,

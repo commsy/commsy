@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/ko/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ko/PageBreak", ({
 	"pageBreak": "페이지 나누기"
 })
-
-//end v1.x content
 );

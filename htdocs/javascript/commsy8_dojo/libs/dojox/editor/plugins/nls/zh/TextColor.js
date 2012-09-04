@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/zh/TextColor",({"setButtonText":"设置","cancelButtonText":"取消"}));
+define("dojox/editor/plugins/nls/zh/TextColor",({"setButtonText":"集","cancelButtonText":"取消"}));

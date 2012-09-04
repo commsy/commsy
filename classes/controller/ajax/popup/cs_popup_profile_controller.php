@@ -241,16 +241,14 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									$authentication = $this->_environment->getAuthenticationObject();
 									
 									if ( !$authentication->is_free($form_data['user_id'], $auth_source) ) {
-										//$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR',$this->_form_post['user_id']);
-										//$this->_form->setFailure('user_id','');
+										$this->_popup_controller->setErrorReturn("1011", "user id error(duplicated)", array());
 										$check = false;
 									} elseif ( withUmlaut($form_data['user_id']) ) {
-										//$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
-										//$this->_form->setFailure('user_id','');
+										$this->_popup_controller->setErrorReturn("1012", "user id error(umlaut)", array());
 										$check = false;
 									}
 								} else {
-									//$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_AUTH_SOURCE_ERROR');
+									$this->_popup_controller->setErrorReturn("1013", "user id error(auth source error)", array());
 									$check = false;
 								}
 								

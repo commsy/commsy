@@ -5,4 +5,4 @@
 */
 
 //>>built
-define("dojo/cldr/nls/it/number",{"decimalFormat":"#,##0.###","group":".","scientificFormat":"#E0","percentFormat":"#,##0%","currencyFormat":"¤ #,##0.00","decimal":","});
+define("dojo/cldr/nls/it/number",{"decimal":",","group":".","percentSign":"%","plusSign":"+","minusSign":"-","perMille":"‰","infinity":"∞","decimalFormat":"#,##0.###","decimalFormat-short":"000 B","scientificFormat":"#E0","percentFormat":"#,##0%","currencyFormat":"¤ #,##0.00"});

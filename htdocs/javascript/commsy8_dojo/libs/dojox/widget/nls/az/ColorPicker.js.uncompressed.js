@@ -1,6 +1,5 @@
 define(
-"dojox/widget/nls/az/ColorPicker", //begin v1.x content
-({
+"dojox/widget/nls/az/ColorPicker", ({
 	"redLabel" : "q",
 	"valueLabel" : "d",
 	"hexLabel" : "onaltılıq",
@@ -12,5 +11,4 @@ define(
 	"huePickerTitle" : "Çalar seçimi",
 	"degLabel" : "°"
 })
-//end v1.x content
 );

@@ -20,16 +20,14 @@ define("dojox/calc/GraphPro", [
 	"dijit/form/TextBox" // template
 ], function(declare, lang, win, domStyle, domConstruct, domGeometry, ready, Standard, calc, FloatingPane, template){
 
-	/*=====
-		Standard = dojox.calc.Standard;
-	=====*/
+
 	return declare(
 		"dojox.calc.GraphPro",
 		Standard,
 	{
 		// summary:
 		//		The dialog widget for a graphing, scientific calculator
-		//
+
 		templateString: template,
 
 		grapher:null,
@@ -37,8 +35,8 @@ define("dojox/calc/GraphPro", [
 		aFloatingPane: null,
 
 		executorLoaded: function(){
-			// summary
-			//	when executor loads check to see if the writestore is there
+			// summary:
+			//		when executor loads check to see if the writestore is there
 			this.inherited(arguments);
 			ready(lang.hitch(this, function(){
 				if(this.writeStore == null && "functionMakerButton" in this){
@@ -47,8 +45,8 @@ define("dojox/calc/GraphPro", [
 			}));
 		},
 		makeFunctionWindow: function(){
-			// summary
-			//	use this function to create a function window (with the button on the layout)
+			// summary:
+			//		use this function to create a function window (with the button on the layout)
 			var body = win.body();
 
 			var pane = domConstruct.create('div');
@@ -86,8 +84,8 @@ define("dojox/calc/GraphPro", [
 			this.aFloatingPane.bringToTop();
 		},
 		makeGrapherWindow: function(){
-			// summary
-			//	use this to make a Grapher window appear with a button
+			// summary:
+			//		use this to make a Grapher window appear with a button
 			var body = win.body();
 
 			var pane = domConstruct.create('div');

@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/th/Blockquote", //begin v1.x content
-({
+"dojox/editor/plugins/nls/th/Blockquote", ({
 	"blockquote": "บล็อกคำพูด"
 })
-
-//end v1.x content
 );

@@ -81,6 +81,28 @@
 		   echo $this->_return;
 		}
 		
+		public function actionSendXHRErrorReporting() {
+			$error = $this->_data["error"];
+			$ioArgs = $this->_data["ioargs"];
+			
+			global $c_xhr_error_reporting;
+			if (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) {
+				// setup mail
+				$receivers = implode(", ", $c_xhr_error_reporting);
+				$subject = "CommSy XHR Error";
+				
+				ob_start();
+				var_dump($error);
+				var_dump($ioArgs);
+				$message = ob_get_clean();
+				
+				mail($receivers, $subject, $message);
+			}
+			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */

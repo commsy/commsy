@@ -1,7 +1,5 @@
 define(
-"dojox/atom/widget/nls/da/FeedViewerEntry", //begin v1.x content
-({
+"dojox/atom/widget/nls/da/FeedViewerEntry", ({
 	deleteButton: "[Slet]"
 })
-//end v1.x content
 );

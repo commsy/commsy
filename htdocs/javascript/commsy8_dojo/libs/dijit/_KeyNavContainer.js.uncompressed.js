@@ -10,18 +10,11 @@ define("dijit/_KeyNavContainer", [
 	"dojo/_base/lang" // lang.hitch
 ], function(kernel, _Container, _FocusMixin, array, keys, declare, event, domAttr, lang){
 
-/*=====
-	var _FocusMixin = dijit._FocusMixin;
-	var _Container = dijit._Container;
-=====*/
 
 	// module:
 	//		dijit/_KeyNavContainer
-	// summary:
-	//		A _Container with keyboard navigation of its children.
 
 	return declare("dijit._KeyNavContainer", [_FocusMixin, _Container], {
-
 		// summary:
 		//		A _Container with keyboard navigation of its children.
 		// description:
@@ -36,7 +29,7 @@ define("dijit/_KeyNavContainer", [
 		focusedChild: null,
 =====*/
 
-		// tabIndex: Integer
+		// tabIndex: String
 		//		Tab index of the container; same as HTML tabIndex attribute.
 		//		Note then when user tabs into the container, focus is immediately
 		//		moved to the first item in the container.
@@ -75,7 +68,7 @@ define("dijit/_KeyNavContainer", [
 			array.forEach(this.getChildren(), lang.hitch(this, "_startupChild"));
 		},
 
-		addChild: function(/*dijit._Widget*/ widget, /*int?*/ insertIndex){
+		addChild: function(/*dijit/_WidgetBase*/ widget, /*int?*/ insertIndex){
 			this.inherited(arguments);
 			this._startupChild(widget);
 		},
@@ -119,7 +112,7 @@ define("dijit/_KeyNavContainer", [
 			this.focusChild(this._getNextFocusableChild(this.focusedChild, -1), true);
 		},
 
-		focusChild: function(/*dijit._Widget*/ widget, /*Boolean*/ last){
+		focusChild: function(/*dijit/_WidgetBase*/ widget, /*Boolean*/ last){
 			// summary:
 			//		Focus specified child widget.
 			// widget:
@@ -140,7 +133,7 @@ define("dijit/_KeyNavContainer", [
 			this._set("focusedChild", widget);
 		},
 
-		_startupChild: function(/*dijit._Widget*/ widget){
+		_startupChild: function(/*dijit/_WidgetBase*/ widget){
 			// summary:
 			//		Setup for each child widget
 			// description:
@@ -214,7 +207,7 @@ define("dijit/_KeyNavContainer", [
 			}
 		},
 
-		_onChildBlur: function(/*dijit._Widget*/ /*===== widget =====*/){
+		_onChildBlur: function(/*dijit/_WidgetBase*/ /*===== widget =====*/){
 			// summary:
 			//		Called when focus leaves a child widget to go
 			//		to a sibling widget.
@@ -226,13 +219,13 @@ define("dijit/_KeyNavContainer", [
 		_getFirstFocusableChild: function(){
 			// summary:
 			//		Returns first child that can be focused
-			return this._getNextFocusableChild(null, 1);	// dijit._Widget
+			return this._getNextFocusableChild(null, 1);	// dijit/_WidgetBase
 		},
 
 		_getLastFocusableChild: function(){
 			// summary:
 			//		Returns last child that can be focused
-			return this._getNextFocusableChild(null, -1);	// dijit._Widget
+			return this._getNextFocusableChild(null, -1);	// dijit/_WidgetBase
 		},
 
 		_getNextFocusableChild: function(child, dir){
@@ -242,8 +235,8 @@ define("dijit/_KeyNavContainer", [
 			// child: Widget
 			//		The current widget
 			// dir: Integer
-			//		* 1 = after
-			//		* -1 = before
+			//		- 1 = after
+			//		- -1 = before
 			if(child){
 				child = this._getSiblingOfChild(child, dir);
 			}
@@ -253,12 +246,12 @@ define("dijit/_KeyNavContainer", [
 					child = children[(dir>0) ? 0 : (children.length-1)];
 				}
 				if(child.isFocusable()){
-					return child;	// dijit._Widget
+					return child;	// dijit/_WidgetBase
 				}
 				child = this._getSiblingOfChild(child, dir);
 			}
 			// no focusable child found
-			return null;	// dijit._Widget
+			return null;	// dijit/_WidgetBase
 		}
 	});
 });

@@ -1,2 +1,2 @@
 //>>built
-define("dojox/grid/nls/DataGrid_sk",{"dijit/nls/loading":{"loadingState":"Zavádzanie...","errorState":"Nastala chyba"}});
+define("dojox/grid/nls/DataGrid_sk",{"dijit/nls/loading":{"loadingState":"Zavádza sa...","errorState":"Ľutujeme, ale vyskytla sa chyba"}});

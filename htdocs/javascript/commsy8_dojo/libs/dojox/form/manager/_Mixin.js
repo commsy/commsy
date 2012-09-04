@@ -140,7 +140,7 @@ _3.forEach(_3.map(_2c.getDescendants(),function(w){
 return w instanceof _9&&w.get("name")||null;
 }),function(_2d){
 if(_2d){
-this.unregisterNode(_2d);
+this.unregisterWidget(_2d);
 }
 },this);
 return this.unregisterNodeDescendants?this.unregisterNodeDescendants(_2c.domNode):this;

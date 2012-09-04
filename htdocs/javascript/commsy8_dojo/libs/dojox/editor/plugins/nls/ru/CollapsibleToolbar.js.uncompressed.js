@@ -1,9 +1,6 @@
 define(
-"dojox/editor/plugins/nls/ru/CollapsibleToolbar", //begin v1.x content
-({
+"dojox/editor/plugins/nls/ru/CollapsibleToolbar", ({
 	"collapse": "Свернуть панель редактирования",
 	"expand": "Развернуть панель редактирования"
 })
-
-//end v1.x content
 );

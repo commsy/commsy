@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/el/InsertEntity", //begin v1.x content
-({
+"dojox/editor/plugins/nls/el/InsertEntity", ({
 	insertEntity: "Εισαγωγή συμβόλου"
 })
-
-//end v1.x content
 );

@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/hu/InsertEntity", //begin v1.x content
-({
+"dojox/editor/plugins/nls/hu/InsertEntity", ({
 	insertEntity: "Szimbólum beszúrása"
 })
-
-//end v1.x content
 );

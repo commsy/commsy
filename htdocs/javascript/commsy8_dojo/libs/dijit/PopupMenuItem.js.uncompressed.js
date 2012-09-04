@@ -2,20 +2,13 @@ define("dijit/PopupMenuItem", [
 	"dojo/_base/declare", // declare
 	"dojo/dom-style", // domStyle.set
 	"dojo/query", // query
-	"dojo/_base/window", // win.body
 	"./registry",	// registry.byNode
 	"./MenuItem",
 	"./hccss"
-], function(declare, domStyle, query, win, registry, MenuItem){
-
-/*=====
-	var MenuItem = dijit.MenuItem;
-=====*/
+], function(declare, domStyle, query, registry, MenuItem){
 
 	// module:
 	//		dijit/PopupMenuItem
-	// summary:
-	//		An item in a Menu that spawn a drop down (usually a drop down menu)
 
 	return declare("dijit.PopupMenuItem", MenuItem, {
 		// summary:
@@ -29,7 +22,7 @@ define("dijit/PopupMenuItem", [
 			//		srcNodeRefinnerHTML contains both the menu item text and a popup widget
 			//		The first part holds the menu item text and the second part is the popup
 			// example:
-			// |	<div data-dojo-type="dijit.PopupMenuItem">
+			// |	<div data-dojo-type="dijit/PopupMenuItem">
 			// |		<span>pick me</span>
 			// |		<popup> ... </popup>
 			// |	</div>
@@ -55,7 +48,7 @@ define("dijit/PopupMenuItem", [
 				var node = query("[widgetId]", this.dropDownContainer)[0];
 				this.popup = registry.byNode(node);
 			}
-			win.body().appendChild(this.popup.domNode);
+			this.ownerDocumentBody.appendChild(this.popup.domNode);
 			this.popup.startup();
 
 			this.popup.domNode.style.display="none";

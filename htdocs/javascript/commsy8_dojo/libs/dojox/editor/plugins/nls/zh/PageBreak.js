@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/zh/PageBreak",({"pageBreak":"换页符"}));
+define("dojox/editor/plugins/nls/zh/PageBreak",({"pageBreak":"分页符"}));

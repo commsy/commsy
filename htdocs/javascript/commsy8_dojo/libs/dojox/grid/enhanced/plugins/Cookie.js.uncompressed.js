@@ -75,7 +75,7 @@ define("dojox/grid/enhanced/plugins/Cookie", [
 		return array.map(array.filter(grid.layout.cells, function(cell){
 			return !(cell.isRowSelector || cell instanceof gridCells.RowIndex);
 		}), function(cell){
-			return cell.hidden ? 'hidden' : html[has("webkit") ? "marginBox" : "contentBox"](cell.getHeaderNode()).w;
+			return cell.hidden ? 'hidden' : html[has('webkit') ? "marginBox" : "contentBox"](cell.getHeaderNode()).w;
 		});
 	};
 	
@@ -155,7 +155,7 @@ define("dojox/grid/enhanced/plugins/Cookie", [
 	// Persist sorting order
 	var _loadSortOrder = function(sortOrder, grid){
 		try{
-			if(lang.isObject(sortOrder)){
+			if(sortOrder && lang.isObject(sortOrder)){
 				grid.setSortIndex(sortOrder.idx, sortOrder.asc);
 			}
 		}catch(e){
@@ -171,7 +171,7 @@ define("dojox/grid/enhanced/plugins/Cookie", [
 		};
 	};
 	
-	if(!has("ie")){
+	if(!has('ie')){
 		// Now in non-IE, widgets are no longer destroyed on page unload,
 		// so we have to destroy it manually to trigger saving cookie.
 		unload.addOnWindowUnload(function(){

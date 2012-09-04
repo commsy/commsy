@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/sk/AutoSave", //begin v1.x content
-({
+"dojox/editor/plugins/nls/sk/AutoSave", ({
 	"saveLabel": "Uložiť",
 	"saveSettingLabelOn": "Nastaviť interval automatického ukladania...",
 	"saveSettingLabelOff": "Vypnúť automatické ukladanie",
@@ -13,6 +12,4 @@ define(
 	"saveMessageSuccess": "Uložené o ${0}",
 	"saveMessageFail": "Zlyhalo ukladanie o ${0}"
 })
-
-//end v1.x content
 );

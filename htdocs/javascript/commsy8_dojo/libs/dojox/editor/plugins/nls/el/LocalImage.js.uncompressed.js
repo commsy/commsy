@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/el/LocalImage", //begin v1.x content
-({
+"dojox/editor/plugins/nls/el/LocalImage", ({
 	insertImageTitle: "Εισαγωγή εικόνας",
 	url: "Εικόνα",
 	browse: "Αναζήτηση...",
@@ -10,6 +9,4 @@ define(
 	prePopuTextUrl: "Καταχωρήστε τη διεύθυνση URL μιας εικόνας",
 	prePopuTextBrowse: " ή επιλέξτε ένα τοπικό αρχείο."
 })
-
-//end v1.x content
 );

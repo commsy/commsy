@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/sk/Blockquote", //begin v1.x content
-({
-	"blockquote": "Blockquote"
+"dojox/editor/plugins/nls/sk/Blockquote", ({
+	"blockquote": "Blok citátu"
 })
-
-//end v1.x content
 );

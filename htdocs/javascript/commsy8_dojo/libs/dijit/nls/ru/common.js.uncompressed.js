@@ -1,10 +1,8 @@
 define(
-"dijit/nls/ru/common", //begin v1.x content
-({
-	buttonOk: "ОК",
+"dijit/nls/ru/common", ({
+	buttonOk: "OK",
 	buttonCancel: "Отмена",
 	buttonSave: "Сохранить",
 	itemClose: "Закрыть"
 })
-//end v1.x content
 );

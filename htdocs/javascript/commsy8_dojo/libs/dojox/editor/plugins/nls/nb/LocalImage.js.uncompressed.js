@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/nb/LocalImage", //begin v1.x content
-({
+"dojox/editor/plugins/nls/nb/LocalImage", ({
 	insertImageTitle: "Sett inn bilde",
 	url: "Bilde",
 	browse: "Bla gjennom...",
@@ -10,5 +9,4 @@ define(
 	prePopuTextUrl: "Angi en bilde-URL",
 	prePopuTextBrowse: " eller bla gjennom til en lokal fil."
 })
-//end v1.x content
 );

@@ -4,8 +4,8 @@ define("dojox/editor/plugins/nls/CollapsibleToolbar", { root:
 	"collapse": "Collapse Editor Toolbar",
 	"expand": "Expand Editor Toolbar"
 })
-,
 //end v1.x content
+,
 "zh": true,
 "zh-tw": true,
 "tr": true,

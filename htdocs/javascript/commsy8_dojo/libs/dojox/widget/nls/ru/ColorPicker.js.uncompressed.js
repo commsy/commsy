@@ -1,12 +1,12 @@
 define(
-"dojox/widget/nls/ru/ColorPicker", //begin v1.x content
-({
+"dojox/widget/nls/ru/ColorPicker", ({
 redLabel: "к",
 greenLabel: "з",
 blueLabel: "с",
 hueLabel: "о",
 saturationLabel: "н",
 valueLabel: "з", /* aka intensity or brightness */
+degLabel: "\u00B0",
 hexLabel: "шест",
 huePickerTitle: "Выбор оттенка",
 saturationPickerTitle: "Выбор насыщенности"

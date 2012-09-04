@@ -19,7 +19,7 @@ define("dojo/domReady", ['./has'], function(has){
 				if(fixReadyState){ doc.readyState = "complete"; }
 
 				while(readyQ.length){
-					(readyQ.shift())();
+					(readyQ.shift())(doc);
 				}
 			},
 			on = function(node, event){
@@ -81,8 +81,10 @@ define("dojo/domReady", ['./has'], function(has){
 	}
 
 	function domReady(callback){
+		// summary:
+		//		Plugin to delay require()/define() callback from firing until the DOM has finished loading.
 		if(ready){
-			callback(1);
+			callback(doc);
 		}else{
 			readyQ.push(callback);
 		}

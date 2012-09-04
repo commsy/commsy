@@ -1,3 +1,7 @@
-define('dojox/widget/nls/ca/FilePicker',
-{"name":"Nom","size":"Mida (en bytes)","path":"Camí d'accés"}
+define(
+"dojox/widget/nls/ca/FilePicker", ({
+	name: "Nom",
+	path: "Camí d'accés",
+	size: "Mida (en bytes)"
+})
 );

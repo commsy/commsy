@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/nl/FindReplace", //begin v1.x content
-({
+"dojox/editor/plugins/nls/nl/FindReplace", ({
 	"findLabel": "Zoeken:",
 	"findTooltip": "Geef de zoektekst op",
 	"replaceLabel": "Vervangen door:",
@@ -21,6 +20,4 @@ define(
 	"eofDialogTextFind": "gevonden",
 	"eofDialogTextReplace": "vervangen"
 })
-
-//end v1.x content
 );

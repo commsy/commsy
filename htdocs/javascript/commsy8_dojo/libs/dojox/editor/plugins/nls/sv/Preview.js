@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/sv/Preview",({"preview":"Förhandsgranska"}));
+define("dojox/editor/plugins/nls/sv/Preview",({"preview":"Förhandsgranskning"}));

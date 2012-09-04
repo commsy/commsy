@@ -1,6 +1,5 @@
 define(
-"dijit/_editor/nls/tr/LinkDialog", //begin v1.x content
-({
+"dijit/_editor/nls/tr/LinkDialog", ({
 	createLinkTitle: "Bağlantı Özellikleri",
 	insertImageTitle: "Resim Özellikleri",
 	url: "URL:",
@@ -12,6 +11,4 @@ define(
 	topWindow: "En Üst Pencere",
 	newWindow: "Yeni Pencere"
 })
-
-//end v1.x content
 );

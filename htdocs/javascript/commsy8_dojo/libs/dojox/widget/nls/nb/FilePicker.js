@@ -1,2 +1,2 @@
 //>>built
-define("dojox/widget/nls/nb/FilePicker",{"name":"Navn","size":"Størrelse (i byte)","path":"Bane"});
+define("dojox/widget/nls/nb/FilePicker",({name:"Navn",path:"Bane",size:"Størrelse (i byte)"}));

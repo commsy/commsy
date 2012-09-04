@@ -1,8 +1,5 @@
 define(
-"dojox/editor/plugins/nls/pl/Preview", //begin v1.x content
-({
+"dojox/editor/plugins/nls/pl/Preview", ({
 	"preview": "Podgląd"
 })
-
-//end v1.x content
 );

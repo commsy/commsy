@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/sl/InsertAnchor", //begin v1.x content
-({
+"dojox/editor/plugins/nls/sl/InsertAnchor", ({
 	insertAnchor: "Vstavi sidro",
 	title: "Lastnosti sidra",
 	anchor: "Ime:",
@@ -8,6 +7,4 @@ define(
 	set: "Nastavi",
 	cancel: "Prekliči"
 })
-
-//end v1.x content
 );

@@ -1,2 +1,2 @@
 //>>built
-define("dojox/editor/plugins/nls/fi/Blockquote",({"blockquote":"Sitaatti"}));
+define("dojox/editor/plugins/nls/fi/Blockquote",({"blockquote":"Blockquote"}));

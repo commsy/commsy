@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/pt-pt/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/pt-pt/SpellCheck", ({
 	widgetLabel: "Verificação ortográfica por grupo",
 	unfound: "Não localizado",
 	skip: "Ignorar",
@@ -16,6 +15,4 @@ define(
 	iSkipAll: "Ignorar semelhantes",
 	iMsg: "Sem sugestões de ortografia"
 })
-
-//end v1.x content
 );

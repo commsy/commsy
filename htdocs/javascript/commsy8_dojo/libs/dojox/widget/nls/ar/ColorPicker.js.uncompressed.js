@@ -1,8 +1,6 @@
 define(
-"dojox/widget/nls/ar/ColorPicker", //begin v1.x content
-({
+"dojox/widget/nls/ar/ColorPicker", ({
 huePickerTitle: "محدد تدرج اللون",
 saturationPickerTitle: "محدد درجة التشبع"
 })
-//end v1.x content
 );

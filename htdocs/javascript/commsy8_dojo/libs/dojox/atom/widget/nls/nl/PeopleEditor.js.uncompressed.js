@@ -1,9 +1,7 @@
 define(
-"dojox/atom/widget/nls/nl/PeopleEditor", //begin v1.x content
-({
+"dojox/atom/widget/nls/nl/PeopleEditor", ({
 	add: "Toevoegen",
 	addAuthor: "Auteur toevoegen",
 	addContributor: "Deelnemer toevoegen"
 })
-//end v1.x content
 );

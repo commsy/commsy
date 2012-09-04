@@ -26,18 +26,13 @@ define("dojox/calc/Standard", [
 	"dijit/form/TextBox" // template
 ], function(declare, lang, has, win, event, domStyle, ready, keys, registry, typematic, WidgetBase, WidgetsInTemplateMixin, TemplatedMixin, _TextBoxMixin, math, TooltipDialog, template, calc){
 
-	/*=====
-		WidgetBase = dijit._WidgetBase;
-		WidgetsInTemplateMixin = dijit._WidgetsInTemplateMixin;
-		TemplatedMixin = dijit._TemplatedMixin;
-	=====*/
 	return declare(
 		"dojox.calc.Standard",
 		[WidgetBase, TemplatedMixin, WidgetsInTemplateMixin],
 	{
 		// summary:
 		//		The dialog layout for a standard 4 function/algebraic calculator
-		//
+
 		templateString: template,
 
 		readStore:null,
@@ -45,8 +40,8 @@ define("dojox/calc/Standard", [
 		functions: [],
 
 		executorLoaded: function(){
-			// summary
-			//	load in the stores after executor is loaded (the stores need executor to be loaded because it parses them)
+			// summary:
+			//		load in the stores after executor is loaded (the stores need executor to be loaded because it parses them)
 			ready(lang.hitch(this, function(){
 				this.loadStore(this.readStore, true);
 				this.loadStore(this.writeStore);
@@ -54,16 +49,16 @@ define("dojox/calc/Standard", [
 		},
 
 		saveFunction: function(name, args, body){
-			// summary
-			//	make the function with executor
+			// summary:
+			//		make the function with executor
 			this.functions[name] = this.executor.normalizedFunction(name, args, body);
 			this.functions[name].args = args;
 			this.functions[name].body = body;
 		},
 
 		loadStore: function(store, isReadOnly){
-			// summary
-			//	load an entire store, and make it publicly editable/viewable based on isReadOnly
+			// summary:
+			//		load an entire store, and make it publicly editable/viewable based on isReadOnly
 			if(!store){
 				return;
 			}
@@ -73,8 +68,8 @@ define("dojox/calc/Standard", [
 		},
 
 		parseTextbox: function(){
-			// summary
-			//	parse the contents of the textboxWidget and display the answer somewhere (depending on the layout)
+			// summary:
+			//		parse the contents of the textboxWidget and display the answer somewhere (depending on the layout)
 			var text = this.textboxWidget.textbox.value;
 			if(text == "" && this.commandList.length > 0){
 				this.setTextboxValue(this.textboxWidget, this.commandList[this.commandList.length-1]);
@@ -112,9 +107,9 @@ define("dojox/calc/Standard", [
 			}
 		},
 		cycleCommands: function(count, node, event){
-			// summary
-			//	cycle through the commands that the user has entered
-			//	it does not wrap around
+			// summary:
+			//		Cycle through the commands that the user has entered.
+			//		It does not wrap around.
 			if(count == -1 || this.commandList.length==0){
 				return;
 			}
@@ -127,8 +122,8 @@ define("dojox/calc/Standard", [
 			}
 		},
 		cycleCommandUp: function(){
-			// summary
-			//	cycle up through the list of commands the user has entered already
+			// summary:
+			//		cycle up through the list of commands the user has entered already
 			if(this.commandIndex-1<0){
 				this.commandIndex=0;
 			}else{
@@ -137,8 +132,8 @@ define("dojox/calc/Standard", [
 			this.setTextboxValue(this.textboxWidget, this.commandList[this.commandIndex]);
 		},
 		cycleCommandDown: function(){
-			// summary
-			//	cycle down through the list of commands the user has entered already
+			// summary:
+			//		cycle down through the list of commands the user has entered already
 			if(this.commandIndex+1>=this.commandList.length){
 				this.commandIndex=this.commandList.length;
 				this.setTextboxValue(this.textboxWidget, "");
@@ -149,9 +144,9 @@ define("dojox/calc/Standard", [
 
 		},
 		onBlur: function(){
-			// summary
-			//	IE is lacking in function when it comes to the text boxes, so here, make it work like other browsers do by forcing a node.selectionStart and End onto it
-			if(has("ie")){
+			// summary:
+			//		IE is lacking in function when it comes to the text boxes, so here, make it work like other browsers do by forcing a node.selectionStart and End onto it
+			if(has('ie')){
 				var tr = win.doc.selection.createRange().duplicate();
 				var selectedText = tr.text || '';
 				var ntr = this.textboxWidget.textbox.createTextRange();
@@ -165,14 +160,14 @@ define("dojox/calc/Standard", [
 			}
 		},
 		onKeyPress: function(e){
-			// summary
-			// handle key input for Enter and operators
+			// summary:
+			//		handle key input for Enter and operators
 			if(e.charOrCode == keys.ENTER){
 				this.parseTextbox();
 				// stop form submissions
 				event.stop(e);
 			}else if(e.charOrCode == '!' || e.charOrCode == '^' || e.charOrCode == '*' || e.charOrCode == '/' || e.charOrCode == '-' || e.charOrCode == '+'){
-				if(has("ie")){
+				if(has('ie')){
 					var tr = win.doc.selection.createRange().duplicate();
 					var selectedText = tr.text || '';
 					var ntr = this.textboxWidget.textbox.createTextRange();
@@ -195,13 +190,13 @@ define("dojox/calc/Standard", [
 			}
 		},
 		insertMinus: function(){
-			// summary
-			//	insert a minus sign when they press (-) in the combo button
+			// summary:
+			//		insert a minus sign when they press (-) in the combo button
 			this.insertText('-');
 		},
 		print: function(text, isRight){
-			// summary
-			//	print the answer (typically) to the display or the input box
+			// summary:
+			//		print the answer (typically) to the display or the input box
 			var t = "<span style='display:block;";
 			if(isRight){
 				t += "text-align:right;'>";
@@ -217,13 +212,14 @@ define("dojox/calc/Standard", [
 			//this.setTextboxValue(this.displayBox, this.displayBox.get('value')+'\n'+text);
 		},
 		setTextboxValue: function(widget, val){
-			// summary
-			//	set a widget's value
+			// summary:
+			//		set a widget's value
 			widget.set('value', val);
 		},
 		putInAnsIfTextboxIsHighlighted: function(node){
-			// summary
-			//	try seeing if the textbox is highlighted completely so you know if Ans should be put in for an operator like +
+			// summary:
+			//		try seeing if the textbox is highlighted completely so you know if Ans should be put in for an operator like +
+
 			//console.log("Entered "+node.selectionStart + " "+ node.selectionEnd);
 			if(typeof node.selectionStart == "number"){ // not-IE
 				if(node.selectionStart==0 && node.selectionEnd == node.value.length){
@@ -243,8 +239,8 @@ define("dojox/calc/Standard", [
 			return false;
 		},
 		clearText: function(){
-			// summary
-			//	this clears the input box if it has content, but if it does not it clears the display
+			// summary:
+			//		this clears the input box if it has content, but if it does not it clears the display
 			if(this.hasDisplay && this.textboxWidget.get('value')==""){
 				this.displayBox.innerHTML = "";//this.setTextboxValue(this.displayBox, "");
 			}else{
@@ -262,8 +258,8 @@ define("dojox/calc/Standard", [
 			this.insertText('-');
 		},*/
 		insertOperator: function(newText){
-			// summary
-			//	insert an operator with a button
+			// summary:
+			//		insert an operator with a button
 			if(typeof newText == "object"){
 				newText = newText = registry.getEnclosingWidget(newText["target"]).value;
 			}
@@ -273,8 +269,8 @@ define("dojox/calc/Standard", [
 			this.insertText(newText);
 		},
 		insertText: function(newText){//(node, newText){
-			// summary
-			//	insert text to the textboxWidget node
+			// summary:
+			//		insert text to the textboxWidget node
 			setTimeout(lang.hitch(this, function(){
 
 			var node = this.textboxWidget.textbox;
@@ -290,7 +286,7 @@ define("dojox/calc/Standard", [
 			if(typeof node.selectionStart == "number"){ // not-IE
 			        var pos = node.selectionStart;
 			        var cr = 0;
-		        	if(has("opera")){
+		        	if(has('opera')){
 		                	cr = (node.value.substring(0,pos).match(/\r/g) || []).length;
 			        }
 			        node.value = value.substring(0, node.selectionStart-cr) + newText + value.substring(node.selectionEnd-cr);
@@ -317,8 +313,8 @@ define("dojox/calc/Standard", [
 		},
 		hasDisplay: false,
 		postCreate: function(){
-			// summary
-			//	run startup, see if there is an upper display box, etc
+			// summary:
+			//		run startup, see if there is an upper display box, etc
 			this.handle = null;
 			this.commandList = [];
 			this.commandIndex = 0;

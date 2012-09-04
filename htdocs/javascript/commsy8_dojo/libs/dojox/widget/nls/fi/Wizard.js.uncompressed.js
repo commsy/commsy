@@ -1,9 +1,7 @@
 define(
-"dojox/widget/nls/fi/Wizard", //begin v1.x content
-({
+"dojox/widget/nls/fi/Wizard", ({
 next: "Seuraava",
 previous: "Edellinen",
 done: "Valmis"
 })
-//end v1.x content
 );

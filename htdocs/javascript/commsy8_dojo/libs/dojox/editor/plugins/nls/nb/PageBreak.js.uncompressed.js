@@ -1,7 +1,5 @@
 define(
-"dojox/editor/plugins/nls/nb/PageBreak", //begin v1.x content
-({
+"dojox/editor/plugins/nls/nb/PageBreak", ({
 	"pageBreak": "Sideskift"
 })
-//end v1.x content
 );

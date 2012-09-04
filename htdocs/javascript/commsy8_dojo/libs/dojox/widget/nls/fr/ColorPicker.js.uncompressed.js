@@ -1,8 +1,13 @@
 define(
-"dojox/widget/nls/fr/ColorPicker", //begin v1.x content
-({
+"dojox/widget/nls/fr/ColorPicker", ({
+redLabel: "r",
 greenLabel: "v",
+blueLabel: "b",
 hueLabel: "t",
+saturationLabel: "s",
+valueLabel: "v", /* aka intensity or brightness */
+degLabel: "\u00B0",
+hexLabel: "hex",
 huePickerTitle: "Sélecteur de teinte",
 saturationPickerTitle: "Sélecteur de saturation"
 })

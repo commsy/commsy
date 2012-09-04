@@ -1,8 +1,6 @@
 define(
-"dijit/form/nls/ru/ComboBox", //begin v1.x content
-({
+"dijit/form/nls/ru/ComboBox", ({
 		previousMessage: "Предыдущие варианты",
 		nextMessage: "Следующие варианты"
 })
-//end v1.x content
 );

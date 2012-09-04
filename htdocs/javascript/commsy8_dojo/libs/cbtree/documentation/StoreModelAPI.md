@@ -1,12 +1,23 @@
 # Store Model API #
 The Store Model API extends the functionality of the standard CheckBox Tree Store
-Models. The API allows the user to programmatically build and maintain checkbox
+Models. The Store Model API can be loaded and used with the TreeStoreModel, the ForestStoreModel and
+the FileStoreModel. 
+
+The API allows the user to programmatically build and maintain checkbox
 trees. For example, you can create your store starting with an empty JSON dataset
 or use an existing data store and use the Store Model API to add, move, remove or
 change store items.
 
-The Store Model API can be loaded and used with both the TreeStoreModel as well as
-the ForestStoreModel.
+### File Store Model Restrictions ###
+When used with the FileStoreModel ***ONLY*** the functionality to query the 
+[File Store](FileStore.md) is supported. You can not, for example, add items to
+a File Store nor can you change any of the File Store item properties deemed 
+'read-only'. The File Store does however support its own *rename()* function
+allowing you to rename files.
+
+With the addition of the FileStore, several functions have been extended to support the
+optional parameter *storeOnly*. Please refer to *fetchItemsWitchChecked()* for a detailed
+description of the *storeOnly* parameter.
 
 ### Loading the API ###
 The Store Model API is implemented as an extension to the [Store Models](StoreModels.md)
@@ -62,13 +73,13 @@ You can test the availability of the Store Model API using the command `has("cbt
 > A valid dojo.data.store item.
 
 ******************************************
-#### check( query, onComplete, scope) ####
+#### check( query, onComplete, scope, storeOnly ) ####
 > Check all store items that match the query.
 
 *query:* Object | String
 > A JavaScript object as a set of JavaScript 'property name: value' pairs. If
 > the *query* argument is a string, the value is used to match store items
-> identifier.
+> identifier. (See [The Query Paramater](#the-query-parameter) for more details).
 
 *onComplete:* Function (optional)
 > If an onComplete callback is specified, the callback function will be called
@@ -83,12 +94,10 @@ You can test the availability of the Store Model API using the command `has("cbt
 > of the "this" keyword will be the scope object. If no scope is provided, 
 > onComplete will be called in the context of the model.
 
-******************************************
-#### deleteItem( storeItem ) ####
-> Delete a store item.
-
-*storeItem:* data.item
-> A valid dojo.data.store item.
+*storeOnly:* Boolean (optional)
+> If the store model property *checkedStrict* is enabled this parameter will be automatically 
+> set to *true*.  
+> See *fetchItemsWithChecked()* for more details.
 
 ******************************************
 #### detachFromRoot( storeItem ) ####
@@ -105,7 +114,7 @@ You can test the availability of the Store Model API using the command `has("cbt
 *query:* Object | String
 > A JavaScript object as a set of JavaScript 'property name: value' pairs. If
 > the *query* argument is a string, the value is used to match store items
-> identifier.
+> identifier. (See [The Query Paramater](#the-query-parameter) for more details).
 
 *identAttr:* String (optional)
 > Attribute/property name. If specified AND parameter *query* is an object,
@@ -121,7 +130,7 @@ You can test the availability of the Store Model API using the command `has("cbt
 *query:* Object | String
 > A JavaScript object as a set of JavaScript 'property name: value' pairs. If
 > the *query* argument is a string, the value is used to match store items
-> identifier.
+> identifier. (See [The Query Paramater](#the-query-parameter) for more details).
 
 *onComplete:* Function (optional)
 > If an onComplete callback is specified, the callback function will be called
@@ -133,12 +142,23 @@ You can test the availability of the Store Model API using the command `has("cbt
 > of the "this" keyword will be the scope object. If no scope is provided, 
 > onComplete will be called in the context of the model.
 
-******************************************
-#### get( attribute ) ####
-> Accessor, provide the getter capabilities for the model properties.
+*storeOnly:* Boolean (optional)
+> Indicates if the fetch operation should be limited to the in-memory store
+> only. Some stores may fetch data from a back-end server when performing a
+> deep search. When querying store item attributes, some attributes may ***ONLY***
+> be available in the in-memory store as is the case with a File Store.
+> As an example, the *checked* state of a store item is an attribute in the 
+> in-memory File Store, custom created by the store model but not available on,
+> or maintained by, the back-end server.
 
-*attribute:* String
-> The name of a model attribute/property whose value is to be returned.
+> Limiting the fetch operation to the store will prevent it from requesting, 
+> potentially large, datasets from the server that don't have the required 
+> attribute(s) to begin with. However, limiting a fetch to the 
+> in-memory store may not return all possible matches if the store isn't fully
+> loaded. For example, if lazy loading is used and not all tree branches have
+> been fully expanded the result of a fetch may be unpredictable.
+
+> The default value of *storeOnly* is *true*.
 
 ******************************************
 #### getItemAttr( storeItem , attribute ) ####
@@ -193,16 +213,6 @@ You can test the availability of the Store Model API using the command `has("cbt
 > property is used.
 
 ******************************************
-#### set( attribute, value ) ####
-> Accessor, provide the setter capabilities for the model properties.
-
-*attribute:* String
-> The name of a model attribute/property whose value is to be updated.
-
-*value:* AnyType
-> New value to be assigned to the property *attribute*
-
-******************************************
 #### setItemAttr( storeItem, attribute, value ) ####
 > Provide the setter capabilities for store items thru the model. The setItemAttr()
 > method strictly operates on store items not the model itself. Equivalent to *store.setValue()*
@@ -217,13 +227,13 @@ You can test the availability of the Store Model API using the command `has("cbt
 > New value to be assigned to the property *attribute*
 
 ******************************************
-#### uncheck( query, onComplete, scope ) ####
+#### uncheck( query, onComplete, scope, storeOnly ) ####
 > Uncheck all store items that match the query.
 
 *query:* Object | String
 > A JavaScript object as a set of JavaScript 'property name: value' pairs. If
 > the *query* argument is a string, the value is used to match store items
-> identifier.
+> identifier. (See [The Query Paramater](#the-query-parameter) for more details).
 
 *onComplete:* Function (optional)
 > If an onComplete callback is specified, the callback function will be called
@@ -238,6 +248,36 @@ You can test the availability of the Store Model API using the command `has("cbt
 > of the "this" keyword will be the scope object. If no scope is provided, 
 > onComplete will be called in the context of the model.
 
+*storeOnly:* Boolean (optional)
+> If the store model property *checkedStrict* is enabled this parameter will be automatically 
+> set to *true*.  
+> See *fetchItemsWithChecked()* for details.
+
+
+<h2 id="the-query-parameter">The Query Parameter</h2>
+
+The query parameter is a JavaScript 'name:value' pairs type object. The value can be any data
+type that is allowed in a JavaScript conditional test. In general, string values or interpreted
+as simple pattern strings which will be converted into regular expressions.
+
+For example, in the following query: {name:"ab\*"}, the pattern string "ab\*" translates into the
+regular expression: /^ab.\*$/  
+Other pattern string conversion samples are:
+
+<table border="0">
+  <thead>
+	  <th style="width:150px;">Pattern</th> <th style="width:200px;">Regular Expression</th>
+  </thead>
+  <tbody>
+	  <tr> <td>*ab*</td> <td>/^.*ab.*$/</td> </tr>
+	  <tr> <td>*a\*b*</td> <td>/^.*a\*b.*$/</td> </tr>
+	  <tr> <td>*a\*b?*</td> <td>/^.*a\*b..*$/</td> </tr>
+  </tbody>
+</table>
+
+The above applies to almost all dojo stores however, some stores also provide ways to pass
+literal regular expressions. For example, the [File Store](FileStore.md#querying-the-store)
+support such feature by enclosing the string value in brackets.
 
 <h2 id="sample-application">Sample Application</h2>
 ****************************************

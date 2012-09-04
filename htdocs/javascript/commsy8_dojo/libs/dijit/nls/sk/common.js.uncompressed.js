@@ -1,11 +1,8 @@
 define(
-"dijit/nls/sk/common", //begin v1.x content
-({
+"dijit/nls/sk/common", ({
 	buttonOk: "OK",
 	buttonCancel: "Zrušiť",
 	buttonSave: "Uložiť",
 	itemClose: "Zatvoriť"
 })
-
-//end v1.x content
 );

@@ -1,7 +1,6 @@
 define(
-"dojox/atom/widget/nls/da/FeedEntryViewer", //begin v1.x content
-({
-	displayOptions: "[fremvisningsvalg]",
+"dojox/atom/widget/nls/da/FeedEntryViewer", ({
+	displayOptions: "[visningsindstillinger]",
 	title: "Titel",
 	authors: "Forfattere",
 	contributors: "Bidragydere",
@@ -11,5 +10,4 @@ define(
 	summary: "Resumé",
 	content: "Indhold"
 })
-//end v1.x content
 );

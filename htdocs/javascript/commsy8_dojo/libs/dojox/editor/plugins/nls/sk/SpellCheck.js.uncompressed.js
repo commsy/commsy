@@ -1,6 +1,5 @@
 define(
-"dojox/editor/plugins/nls/sk/SpellCheck", //begin v1.x content
-({
+"dojox/editor/plugins/nls/sk/SpellCheck", ({
 	widgetLabel: "Dávková kontrola pravopisu",
 	unfound: "Nenašlo sa",
 	skip: "Preskočiť",
@@ -16,6 +15,4 @@ define(
 	iSkipAll: "Preskočiť všetky podobné",
 	iMsg: "Žiadne návrhy na hláskovanie"
 })
-
-//end v1.x content
 );
