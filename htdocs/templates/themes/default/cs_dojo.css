@@ -88,3 +88,7 @@
     opacity: 0 !important;
 }
 
+.tundra .dijitTreeRowSelected .dijitTreeLabel {
+	background: none !important;
+	background-color: none !important;
+} 
