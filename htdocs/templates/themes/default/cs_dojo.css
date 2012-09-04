@@ -91,4 +91,6 @@
 .tundra .dijitTreeRowSelected .dijitTreeLabel {
 	background: none !important;
 	background-color: none !important;
+	font-weight: bold !important;
+	text-decoration: underline !important;
 } 
