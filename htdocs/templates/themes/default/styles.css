@@ -4393,12 +4393,12 @@ div.StackListRestrictionWrapper h3 {
 }
 
 div.minHeightPopup {
-	min-height: 600px;
+	min-height: 650px;
 }
 
 div.scrollPopup {
-	height: 400px;
-	overflow-y: scroll;
+	height: 600px;
+	overflow-y: auto;
 }
 
 div#popup_wrapper .item_body {
@@ -4407,7 +4407,7 @@ div#popup_wrapper .item_body {
 }
 
 #popup_stack {
-    margin: 70px auto 20px;
+    margin: 50px auto 20px;
     position: relative;
     width: 860px;
 }
@@ -4427,7 +4427,7 @@ div#popup_stack div#popup_content_wrapper {
 }
 
 #popup_edit_stack {
-	margin: 70px auto 20px;
+	margin: 53px auto 20px;
     width: 860px;
 	position: relative;
 	}
