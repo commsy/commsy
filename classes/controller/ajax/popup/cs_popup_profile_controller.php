@@ -233,24 +233,48 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$user = $this->_environment->getPortalUserItem();
 
 							// user id
-							if(!empty($form_data['user_id']) && $form_data['user_ID'] != $user->getUserID()) {
-								if($authentication->changeUserID($form_data['user_id'], $user)) {
-									$session_manager = $this->_environment->getSessionManager();
-									$session = $this->_environment->getSessionItem();
-
-									$session_id_old = $session->getSessionID();
-									$session_manager->delete($session_id_old, true);
-									$session->createSessionID($form_data['user_id']);
-
-									$cookie = $session->getValue('cookie');
-									if($cookie == 1) $session->setValue('cookie', 2);
-
-									$session_manager->save($session);
-									unset($session_manager);
-
-									$user->setUserID($form_data['user_id']);
-									require_once('functions/misc_functions.php');
-									plugin_hook('user_save', $portal_user);
+							if(!empty($form_data['user_id']) && $form_data['user_id'] != $user->getUserID()) {
+								
+								$check = true;
+								$auth_source = $user->getAuthSource();
+								if ( !empty($auth_source) ) {
+									$authentication = $this->_environment->getAuthenticationObject();
+									
+									if ( !$authentication->is_free($form_data['user_id'], $auth_source) ) {
+										//$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR',$this->_form_post['user_id']);
+										//$this->_form->setFailure('user_id','');
+										$check = false;
+									} elseif ( withUmlaut($form_data['user_id']) ) {
+										//$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+										//$this->_form->setFailure('user_id','');
+										$check = false;
+									}
+								} else {
+									//$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_AUTH_SOURCE_ERROR');
+									$check = false;
+								}
+								
+								if ($check === true) {
+									if($authentication->changeUserID($form_data['user_id'], $user)) {
+										$session_manager = $this->_environment->getSessionManager();
+										$session = $this->_environment->getSessionItem();
+									
+										$session_id_old = $session->getSessionID();
+										$session_manager->delete($session_id_old, true);
+										$session->createSessionID($form_data['user_id']);
+									
+										$cookie = $session->getValue('cookie');
+										if($cookie == 1) $session->setValue('cookie', 2);
+									
+										$session_manager->save($session);
+										unset($session_manager);
+									
+										$user->setUserID($form_data['user_id']);
+										require_once('functions/misc_functions.php');
+										plugin_hook('user_save', $portal_user);
+									}
+								} else {
+									$this->_popup_controller->setErrorReturn("117", "user id error(duplicated, umlaut, etc)", array());
 								}
 							} else {
 								// $success_1 = true
