@@ -109,14 +109,17 @@ define([	"dojo/_base/declare",
 							);
 						}
 						
+						/*
 						// destroy any existing loading screen
 						this.destroyLoading();
+						
 						
 						// setup error dialog
 						require(["commsy/widgets/ErrorDialog"], function(ErrorDialog) {
 							var dialog = new ErrorDialog({});
 							dialog.show();
 						});
+						*/
 					}
 				})
 			};
