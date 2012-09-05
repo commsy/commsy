@@ -185,7 +185,7 @@ define([	"dojo/_base/declare",
 
 			this.setupLoading();
 
-			var form_data = [];
+			var form_data = new [];
 			if(this.fct == "rubric_popup") {
 				form_data = [{
 					name:	'iid',
@@ -200,7 +200,7 @@ define([	"dojo/_base/declare",
 				form_data:	form_data,
 				module:		this.module,
 				additional:	additional
-			}
+			};
 
 			// collect form data from given search params
 			var nodeLists = search.nodeLists;
@@ -295,7 +295,7 @@ define([	"dojo/_base/declare",
 					************************************************************************************/
 					
 					if(response.status === "error" && response.code === 101) {
-						var missingFields = response.detail;
+						//var missingFields = response.detail;
 
 						// show missing mandatory text
 						var missingDivNode = query("div#mandatory_missing", this.contentNode)[0];
