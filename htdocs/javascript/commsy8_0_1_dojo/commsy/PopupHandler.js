@@ -249,6 +249,9 @@ define([	"dojo/_base/declare",
 						}
 
 						if(add) {
+							var value = dom_attr.get(formNode, "value");
+							if (value === "") value = ""; /* ie8 bogus value fix */
+							
 							if(group) {
 								// create group entry if not defined and get index of it
 								var group_index = null;
