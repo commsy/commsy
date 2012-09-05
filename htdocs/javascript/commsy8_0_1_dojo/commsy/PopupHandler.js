@@ -266,14 +266,14 @@ define([	"dojo/_base/declare",
 									group_index = data.form_data.length - 1;
 								}
 
-								data.form_data[group_index].value.push(dom_attr.get(formNode, "value"));
+								data.form_data[group_index].value.push(value);
 							} else {
 								// extract name
 								/form_data\[(.*)\]/.exec(dom_attr.get(formNode, "name"));
 
 								data.form_data.push({
 									name:	RegExp.$1,
-									value:	dom_attr.get(formNode, "value")
+									value:	value
 								});
 							}
 						}
