@@ -185,7 +185,7 @@ define([	"dojo/_base/declare",
 
 			this.setupLoading();
 
-			var form_data = new [];
+			var form_data = [];
 			if(this.fct == "rubric_popup") {
 				form_data = [{
 					name:	'iid',
