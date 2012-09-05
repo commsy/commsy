@@ -102,6 +102,6 @@ define([	"dojo/_base/declare",
 					this.reload(item_id);
 				}
 			}
-		},
+		}
 	});
 });

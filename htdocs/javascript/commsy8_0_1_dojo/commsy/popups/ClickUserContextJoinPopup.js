@@ -57,6 +57,6 @@ define([	"dojo/_base/declare",
 				domStyle.set("error_wrong_code", 'display', 'block');
 			});
 			//query("input[name='form_data[code]']", this.contentNode).value = '';
-		},
+		}
 	});
 });

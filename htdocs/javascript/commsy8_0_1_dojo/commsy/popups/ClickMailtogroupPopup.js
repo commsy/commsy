@@ -44,6 +44,6 @@ define([	"dojo/_base/declare",
 		
 		onPopupSubmitSuccess: function(item_id) {
 			this.close();
-		},
+		}
 	});
 });

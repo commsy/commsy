@@ -96,6 +96,6 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmitSuccess: function(response) {
-		},
+		}
 	});
 });

@@ -81,6 +81,6 @@ define([	"dojo/_base/declare",
 					this.reload(response.item_id);
 				}
 			}
-		},
+		}
 	});
 });
