@@ -85,16 +85,32 @@
 			$error = $this->_data["error"];
 			$ioArgs = $this->_data["ioargs"];
 			
+			$currentUser = $this->_environment->getCurrentUserItem();
+			
 			global $c_xhr_error_reporting;
 			if (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) {
 				// setup mail
 				$receivers = implode(", ", $c_xhr_error_reporting);
 				$subject = "CommSy XHR Error";
 				
-				ob_start();
-				var_dump($error);
-				var_dump($ioArgs);
-				$message = ob_get_clean();
+				$message = "
+					Fehler
+					========================
+					" . $error["message"] . "
+					Beschreibung: " . $error["description"] . "
+					
+					
+					Benutzer
+					========================
+					UserID: " . $currentUser->getUserID() . "
+					ItemID: " . $currentUser->getItemID() . "
+					
+					
+					Aufruf
+					========================
+					URL: " . $ioArgs["args"]["url"] . "
+					PostData: " . $ioArgs["args"]["postData"] . "
+				";
 				
 				mail($receivers, $subject, $message);
 			}
