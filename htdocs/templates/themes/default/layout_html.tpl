@@ -19,11 +19,11 @@
 	    <meta name="copyright" content="" />
 
 	    <!-- CSS -->
-	    <link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dijit/themes/tundra/tundra.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/cbtree/themes/tundra/tundra.css" />
-	 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/form/resources/UploaderFileList.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/image/resources/Lightbox.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_dojo/libs/dojox/widget/ColorPicker/ColorPicker.css" />
+	    <link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dijit/themes/tundra/tundra.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/cbtree/themes/tundra/tundra.css" />
+	 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dojox/form/resources/UploaderFileList.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dojox/image/resources/Lightbox.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dojox/widget/ColorPicker/ColorPicker.css" />
 
 		{block name="css"}
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
@@ -31,22 +31,22 @@
 		{/block}
 
 		<!-- SCRIPTS -->
-		<script src="javascript/commsy8_dojo/config.js?token=12"></script>
+		<script src="javascript/commsy8_0_1_dojo/config.js?token=12"></script>
 		<script>
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
 			{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
 		</script>
-		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js?token=12"></script>
-		<script src="javascript/commsy8_dojo/main.js?token=12"></script>
+		<script src="javascript/commsy8_0_1_dojo/libs/dojo/dojo.js?token=12"></script>
+		<script src="javascript/commsy8_0_1_dojo/main.js?token=12"></script>
 
 		{*
-		<script src="javascript/commsy8_dojo/config.js"></script>
-		<script src="javascript/commsy8_dojo/libs/dojo/dojo.js"></script>
+		<script src="javascript/commsy8_0_1_dojo/config.js"></script>
+		<script src="javascript/commsy8_0_1_dojo/libs/dojo/dojo.js"></script>
 
 		<script>
 			console.log(dojo);
 
-			//dojo.require("javascript/commsy8_dojo/main.js");
+			//dojo.require("javascript/commsy8_0_1_dojo/main.js");
 		</script>
 		*}
 
