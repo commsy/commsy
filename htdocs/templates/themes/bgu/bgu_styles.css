@@ -869,3 +869,7 @@ div#right_column div#tag_tree li a {
 	text-decoration: none;
 }
 
+input#search_submit {
+  position: relative !important;
+  left: 216px !important;
+  }
