@@ -85,10 +85,11 @@
 			$error = $this->_data["error"];
 			$ioArgs = $this->_data["ioargs"];
 			
-			$currentUser = $this->_environment->getCurrentUserItem();
-			
 			global $c_xhr_error_reporting;
 			if (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) {
+				$currentUser = $this->_environment->getCurrentUserItem();
+				$browserInfo = get_browser(null, true);
+				
 				// setup mail
 				$receivers = implode(", ", $c_xhr_error_reporting);
 				$subject = "CommSy XHR Error";
@@ -96,6 +97,7 @@
 				$message = "
 					Fehler
 					========================
+					Servername: " . $_SERVER['SERVER_NAME'] . "
 					" . $error["message"] . "
 					Beschreibung: " . $error["description"] . "
 					
@@ -104,6 +106,7 @@
 					========================
 					UserID: " . $currentUser->getUserID() . "
 					ItemID: " . $currentUser->getItemID() . "
+					Agent: " . $_SERVER["HTTP_USER_AGENT"] . "
 					
 					
 					Aufruf
