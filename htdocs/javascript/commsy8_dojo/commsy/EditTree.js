@@ -34,6 +34,7 @@ define([	"dojo/_base/declare",
 				showRoot:			true,
 				persist:			false,
 				dndController:		DndSource,
+				betweenThreshold:	5,
 				checkBoxes:			this.checkboxes,
 				onClick:			Lang.hitch(this, function(item, node, evt) {
 				}),
