@@ -19,4 +19,4 @@ var dojoConfig = {
 	isDebug:					false
 }
 
-var CKEDITOR_BASEPATH = "javascript/commsy8_dojo/libs/ckeditor/";
+var CKEDITOR_BASEPATH = "javascript/commsy8_0_1_dojo/libs/ckeditor/";
