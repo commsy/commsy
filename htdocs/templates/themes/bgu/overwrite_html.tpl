@@ -86,7 +86,7 @@
     		{elseif isset($environment.post.form_data.selrubric) && !empty($environment.post.form_data.selrubric)}
     			<input type="hidden" name="form_data[selrubric]" value="{$environment.post.form_data.selrubric}"/>
     		{/if}
-        	<input style="padding:2px 5px; width:200px; font-size:10pt; font-weight: normal; border: 1px solid #E5E9EB; z-index: 1000;" name="form_data[keywords]" onfocus="if (this.value=='{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}') this.value='';" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
+        	<input style="padding:2px 5px; width:200px; font-size:10pt; font-weight: normal; border: 1px solid #E5E9EB; z-index: 5;" name="form_data[keywords]" onfocus="if (this.value=='{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}') this.value='';" id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
 
         	{if $environment.with_indexed_search}
         		<input disabled="disabled" style="padding:2px 5px; width:200px; font-size:10pt; font-weight: normal; border: 1px solid #E5E9EB; z-index:1;" id="search_suggestion" type="text" value="" />
