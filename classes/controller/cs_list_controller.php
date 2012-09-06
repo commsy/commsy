@@ -658,6 +658,7 @@
 	         			$restriction_array[] = $tmp_array;
 	         		}
 	         	}
+	         	/*
 	         	if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) and $environment->current_module == "todo" ){
 	            	$new_params = $params;
 	            	unset($new_params['selstatus']);
@@ -690,7 +691,7 @@
 	         		$tmp_array['type'] = 'selstatus';
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array;
-	         	}
+	         	}*/
 	         	if ( isset($params['selcolor']) and (!empty($params['selcolor']) or $environment->getCurrentModule() == 'date') and $params['selcolor'] != 2 ){
 	            	$new_params = $params;
 	         		$new_params['selcolor'] = 2;

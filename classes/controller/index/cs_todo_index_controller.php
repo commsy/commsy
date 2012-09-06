@@ -13,6 +13,9 @@
 			$this->setSelectedStatus();
 
 			$this->_tpl_file = 'todo_list';
+			
+			// this will enable processing of additional restriction texts
+			$this->_additional_selects = true;
 		}
 
 		/*
@@ -564,7 +567,7 @@
 				$this->_selected_status = $_GET['selstatus'];
 
 			} else {
-				$this->_selected_status = '3';
+				$this->_selected_status = '4';
 			}
 		}
 
@@ -575,8 +578,8 @@
 			$params = $this->_environment->getCurrentParameterArray();
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
-
-			if(!isset($params['selstatus']) && !empty($params['selstatus'])) {
+			
+			if(isset($params['selstatus'])/* && !empty($params['selstatus'])*/) {
 				$restriction = array(
 					'name'				=> '',
 					'type'				=> '',
@@ -602,19 +605,21 @@
 		        }else{
 		           $restriction['name'] = '';
 		        }
-
-				// set link parameter
-				$params['selstatus'] = 0;
-				$link_parameter_text = '';
-				if ( count($params) > 0 ) {
-					foreach ($params as $key => $parameter) {
-						$link_parameter_text .= '&'.$key.'='.$parameter;
-					}
-				}
-				$restriction['link_parameter'] = $link_parameter_text;
-
-				$return[] = $restriction;
-			}else{
+		        
+		        if ($restriction["name"] !== "") {
+		        	// set link parameter
+		        	$params['selstatus'] = 0;
+		        	$link_parameter_text = '';
+		        	if ( count($params) > 0 ) {
+		        		foreach ($params as $key => $parameter) {
+		        			$link_parameter_text .= '&'.$key.'='.$parameter;
+		        		}
+		        	}
+		        	$restriction['link_parameter'] = $link_parameter_text;
+		        	
+		        	$return[] = $restriction;
+		        }
+			} else {
 		        $restriction['name'] = $translator->getMessage('TODO_NOT_DONE');
 				// set link parameter
 				$params['selstatus'] = 0;
@@ -697,21 +702,21 @@
 			$items[] = $item;
 
 			$item = array(
-				'id'		=> 2,
+				'id'		=> 1,
 				'name'		=> $translator->getMessage('TODO_NOT_STARTED'),
 				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
 
 			$item = array(
-				'id'		=> 3,
+				'id'		=> 2,
 				'name'		=> $translator->getMessage('TODO_IN_POGRESS'),
 				'selected'	=> $this->_selected_status
 			);
 			$items[] = $item;
 
 			$item = array(
-				'id'		=> 4,
+				'id'		=> 3,
 				'name'		=> $translator->getMessage('TODO_DONE'),
 				'selected'	=> $this->_selected_status
 			);
@@ -735,6 +740,22 @@
 					$items[] = $item;
 				}
       		}
+      		
+      		$item = array(
+      				'id'		=> -2,
+      				'name'		=> '------------------------------',
+      				'selected'	=> $this->_selected_status,
+      				'disabled'	=> true
+      		);
+      		$items[] = $item;
+      		
+      		$item = array(
+      				'id'		=> 4,
+      				'name'		=> $translator->getMessage('TODO_NOT_DONE'),
+      				'selected'	=> $this->_selected_status
+      		);
+      		$items[] = $item;
+      		
 			$restriction['items'] = $items;
 			$return[] = $restriction;
 
