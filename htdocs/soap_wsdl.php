@@ -396,6 +396,32 @@
 <message name='getMaterialDetailsOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='saveMaterialIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+  <part name='description' type='xsd:string'/>
+  <part name='uploadFiles' type='xsd:string'/>
+  <part name='deleteFiles' type='xsd:string'/>
+</message>
+<message name='saveMaterialOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='saveSectionIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+  <part name='description' type='xsd:string'/>
+  <part name='number' type='xsd:string'/>
+  <part name='uploadFiles' type='xsd:string'/>
+  <part name='deleteFiles' type='xsd:string'/>
+  <part name='material_item_id' type='xsd:string'/>
+</message>
+<message name='saveMaterialOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='getDiscussionListIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:integer'/>
@@ -653,6 +679,14 @@
   <operation name='getMaterialDetails'>
     <input message='tns:getMaterialDetailsIN'/>
     <output message='tns:getMaterialDetailsOUT'/>
+  </operation>
+  <operation name='saveMaterial'>
+    <input message='tns:saveMaterialIN'/>
+    <output message='tns:saveMaterialOUT'/>
+  </operation>
+  <operation name='saveSection'>
+    <input message='tns:saveSectionIN'/>
+    <output message='tns:saveSectionOUT'/>
   </operation>
   <operation name='getDiscussionList'>
     <input message='tns:getDiscussionListIN'/>
@@ -1237,6 +1271,28 @@
   </operation>
   <operation name='getMaterialDetails'>
     <soap:operation soapAction='urn:xmethodsCommSy#getMaterialDetails'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveMaterial'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveMaterial'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveSection'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveSection'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

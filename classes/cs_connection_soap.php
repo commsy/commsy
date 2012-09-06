@@ -3029,7 +3029,7 @@ class cs_connection_soap {
          }
          $date_item->setTitle($title);
          $date_item->setPlace($place);
-         $date_item->setDescription(str_ireplace("\n", '<br />', $description));
+         $date_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
          $date_item->setStartingDay($startingDate);
          $date_item->setStartingTime($startingTime);
          $date_item->setDateTime_start($startingDate.' '.$startingTime);
@@ -3158,11 +3158,12 @@ class cs_connection_soap {
          $noticed_manager = $this->_environment->getNoticedManager();
          $material_manager = $this->_environment->getMaterialManager();
          $material_item = $material_manager->getItem($item_id);
-         $xml .= "<material_item>\n";
+         $xml  = "<material_item>\n";
          $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
          $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
          $temp_description = $material_item->getDescription();
          $temp_description = strip_tags($temp_description);
+         //$temp_description = str_ireplace('<br />', "\n", $temp_description);
          $temp_description = html_entity_decode($temp_description);
          $xml .= "<material_description><![CDATA[".$temp_description."]]></material_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
@@ -3187,10 +3188,6 @@ class cs_connection_soap {
             $xml .= "<material_file_id><![CDATA[".$temp_file->getFileID()."]]></material_file_id>\n";
             $xml .= "<material_file_size><![CDATA[".$temp_file->getFileSize()."]]></material_file_size>\n";
             $xml .= "<material_file_mime><![CDATA[".$temp_file->getMime()."]]></material_file_mime>\n";
-            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
-            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
-            //   debugToFile($temp_file->getBase64());
-            //}
             $xml .= "</material_file>\n";
             $temp_file = $file_list->getNext();
          }
@@ -3206,8 +3203,27 @@ class cs_connection_soap {
             $xml .= "<material_section>\n";
             $xml .= "<material_section_id>".$section_item->getItemID()."</material_section_id>\n";
             $xml .= "<material_section_title>".$section_item->getTitle()."</material_section_title>\n";
-            $xml .= "<material_section_description>".$section_item->getDescription()."</material_section_description>\n";
+            $temp_description = $section_item->getDescription();
+            $temp_description = strip_tags($temp_description);
+            $temp_description = html_entity_decode($temp_description);
+            $xml .= "<material_section_description>".$temp_description."</material_section_description>\n";
             $xml .= "</material_section>\n";
+            
+            $xml .= "<material_section_files>\n";
+            $file_list = $section_item->getFileList();
+            $temp_file = $file_list->getFirst();
+            while($temp_file){
+               $xml .= "<material_section_file>\n";
+               $xml .= "<material_section_file_name><![CDATA[".$temp_file->getFileName()."]]></material_section_file_name>\n";
+               $xml .= "<material_section_file_id><![CDATA[".$temp_file->getFileID()."]]></material_section_file_id>\n";
+               $xml .= "<material_section_file_size><![CDATA[".$temp_file->getFileSize()."]]></material_section_file_size>\n";
+               $xml .= "<material_section_file_mime><![CDATA[".$temp_file->getMime()."]]></material_section_file_mime>\n";
+               $xml .= "</material_section_file>\n";
+               $temp_file = $file_list->getNext();
+            }
+            $xml .= "</material_section_files>\n";
+            $xml .= "<material_section_number>".$section_item->getNumber()."</material_section_number>\n";
+            
             $section_item = $section_list->getNext();
          }
          $xml .= "</material_sections>\n";
@@ -3222,11 +3238,89 @@ class cs_connection_soap {
          if ( empty($noticed) or $noticed['read_date'] < $material_item->getModificationDate() ) {
             $noticed_manager->markNoticed($material_item->getItemID(),0);
          }
-         debugToFile($xml);
          return $xml;
       }
    }
    
+   public function saveMaterial($session_id, $context_id, $item_id, $title, $description, $uploadFiles, $deleteFiles) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $material_manager = $this->_environment->getMaterialManager();
+         debugToFile($item_id);
+         if($item_id != 'NEW'){
+            $material_item = $material_manager->getItem($item_id);
+         } else {
+            debugToFile('is NEW');
+            $material_item = $material_manager->getNewItem();
+            $material_item->setContextID($context_id);
+            $material_item->setCreatorItem($user_item);
+            $material_item->setCreationDate(getCurrentDateTimeInMySQL());
+         }
+         $material_item->setTitle($title);
+         $material_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
+         $material_item->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($material_item->getItemID(),0);
+         $noticed_manager->markNoticed($material_item->getItemID(),0);
+         
+         $this->_uploadFiles($uploadFiles, $material_item);
+         
+         $this->_deleteFiles($session_id, $deleteFiles, $material_item);
+      }
+   }
+   
+   public function saveSection($session_id, $context_id, $item_id, $title, $description, $number, $uploadFiles, $deleteFiles, $material_item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $section_manager = $this->_environment->getSectionManager();
+         debugToFile($item_id);
+         if($item_id != 'NEW'){
+            $section_item = $section_manager->getItem($item_id);
+         } else {
+            debugToFile('is NEW');
+            $section_item = $section_manager->getNewItem();
+            $section_item->setContextID($context_id);
+            $section_item->setCreatorItem($user_item);
+            $section_item->setCreationDate(getCurrentDateTimeInMySQL());
+            $section_item->setLinkedItemID($material_item_id);
+         }
+         $section_item->setTitle($title);
+         $section_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
+         //$section_item->setNumber($number));
+         $section_item->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($section_item->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($section_item->getItemID(),0);
+         $noticed_manager->markNoticed($section_item->getItemID(),0);
+         
+         $this->_uploadFiles($uploadFiles, $section_item);
+         
+         $this->_deleteFiles($session_id, $deleteFiles, $section_item);
+      }
+   }
    
    // Discussions
    
