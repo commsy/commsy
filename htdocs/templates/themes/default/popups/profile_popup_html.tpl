@@ -157,12 +157,12 @@
 
                       <div class="input_row">
                         <label for="merge_user_id">___USER_USER_ID___:</label>
-                        <input id="merge_user_id" type="text" class="size_200 mandatory" name="form_data[merge_user_id]" />
+                        <input disabled="disabled" id="merge_user_id" type="text" class="size_200 mandatory" name="form_data[merge_user_id]" />
                       </div>
 
                       <div class="input_row">
                         <label for="merge_user_password">___USER_PASSWORD___:</label>
-                        <input id="merge_user_password" type="text" class="size_200 mandatory" name="form_data[merge_user_password]" />
+                        <input disabled="disabled" id="merge_user_password" type="text" class="size_200 mandatory" name="form_data[merge_user_password]" />
                       </div>
 
                       <div class="input_row">
@@ -173,7 +173,7 @@
 
                       <div class="input_row">
                         <div class="input_container_180">
-                          <input id="merge" class="submit popup_button" data-custom="part: 'account_merge'" type="submit" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
+                          <input id="merge" disabled="disabled" class="submit popup_button" data-custom="part: 'account_merge'" type="submit" name="form_data[merge]" value="___ACCOUNT_MERGE_BUTTON___"/>
                         </div>
                       </div>
                     </fieldset>
