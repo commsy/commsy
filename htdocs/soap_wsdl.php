@@ -419,7 +419,7 @@
   <part name='deleteFiles' type='xsd:string'/>
   <part name='material_item_id' type='xsd:string'/>
 </message>
-<message name='saveMaterialOUT'>
+<message name='saveSectionOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getDiscussionListIN'>
