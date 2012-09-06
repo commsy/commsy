@@ -15,6 +15,7 @@
                 </div>
                 <div id="ep_tides">
                     <strong>{literal}${title}{/literal}</strong>
+                    <p data-dojo-attach-point="creatorNode"></p>
                     <p data-dojo-attach-point="descriptionNode"></p>
                 </div>
                 

@@ -124,9 +124,22 @@
 				}
 			}
 			
+			$translator = $this->_environment->getTranslationObject();
+			$creatorItem = $portfolioItem->getCreatorItem();
+			if (isset($creatorItem) && !$creatorItem->isDeleted()) {
+				if ($creatorItem->isGuest() && $modificator->isVisibleForLoggedIn()) {
+					$fullname = $translator->getMessage("COMMON_USER_NOT_VISIBLE");
+				} else {
+					$fullname = $creatorItem->getFullName();
+				}
+			} else {
+				$fullname = $translator->GetMessage("COMMON_DELETED_USER");
+			}
+			
 			$return = array(
 				"title"				=> $portfolioItem->getTitle(),
 				"description"		=> $portfolioItem->getDescription(),
+				"creator"			=> $fullname,
 				"tags"				=> $tags,
 				"links"				=> $linkArray,
 				"numAnnotations"	=> $portfolioManager->getAnnotationCountForPortfolio($portfolioId)
