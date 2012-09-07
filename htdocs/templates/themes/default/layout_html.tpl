@@ -31,28 +31,46 @@
 		{/block}
 
 		<!-- SCRIPTS -->
-		<script src="javascript/commsy8_0_1_dojo/config.js?token=12"></script>
+		{assign var="jsMode" value="build"}
+		
+		{*
+		{if $jsMode === "source"}
+			<script src="js/src/sourceConfig.js"></script>
+			
+			<script>
+				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
+			</script>
+			
+			<script src="js/src/dojo/dojo.js"></script>
+			<script src="js/src/commsy/main.js"></script>
+		{elseif $jsMode === "build"}
+			<script src="js/src/buildConfig.js"></script>
+			
+			<script>
+				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
+			</script>
+			
+			<script src="js/build/release/dojo/dojo.js"></script>
+			<script src="js/build/release/commsy/main.js"></script>
+		{elseif $jsMode === "layer"}
+		{/if}
+		
+		*}
+		
+		
+		
+		<script src="javascript/commsy8_0_1_dojo/config.js"></script>
+		
 		<script>
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
 			{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
 		</script>
+			
 		<script src="javascript/commsy8_0_1_dojo/libs/dojo/dojo.js?token=12"></script>
 		<script src="javascript/commsy8_0_1_dojo/main.js?token=12"></script>
-
-		{*
-		<script src="javascript/commsy8_0_1_dojo/config.js"></script>
-		<script src="javascript/commsy8_0_1_dojo/libs/dojo/dojo.js"></script>
-
-		<script>
-			console.log(dojo);
-
-			//dojo.require("javascript/commsy8_0_1_dojo/main.js");
-		</script>
-		*}
-
-
-
-
+		
 
         <script type="text/javascript" src="javascript/swfobject.js"></script>
         {if $environment.c_jsmath_enable}
