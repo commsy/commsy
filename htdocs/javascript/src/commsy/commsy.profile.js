@@ -24,6 +24,10 @@ var profile = (function(){
     	stripConsole:		"normal",
     	selectorEngine:		"lite",
     	
+    	trees: [
+    	    [ ".", ".", /(\/\.)|(~$)|(CVS)/ ]
+    	],
+    	
     	layers: {
     		/*
     		"dojo/dojo": {
@@ -36,11 +40,11 @@ var profile = (function(){
     	    
     	    "commsy/CommSy": {
     	        include: [
-    	            "commsy/Accounts",
+    	            "commsy/Accounts"/*,
     	            "commsy/ActionExpander",
     	            "commsy/AjaxActions",
     	            "commsy/AnchorFollower",
-    	            "commsy/Assessment"/*,
+    	            "commsy/Assessment",
     	            "commsy/AutoOpenPopup",
     	            "commsy/base",
     	            "commsy/Calendar",
@@ -139,12 +143,15 @@ var profile = (function(){
 			}
         },
         
+        
         defaultConfig: {
         	/* not working??? - for now, relative paths are used */
+        	/*
         	paths: {
 					"widgets":		"commsy/widgets",
 					"templates":	"commsy/templates"
         	}
+        	*/
         },
         
         packages: [{
@@ -165,7 +172,7 @@ var profile = (function(){
         },{
         	name:			"commsy",
         	location:		"commsy"
-        }],
+        }]/*,
         
         /*
         staticHasFeatures: {
