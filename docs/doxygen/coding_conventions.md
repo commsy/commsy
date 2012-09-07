@@ -1,4 +1,4 @@
-Programmierkonvetionen					{#codingConventions}
+Programmierkonventionen					{#codingConventions}
 ================
 
 Content...
