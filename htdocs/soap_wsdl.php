@@ -375,8 +375,8 @@
 </message>
 <message name='deleteDateIN'>
   <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
   <part name='item_id' type='xsd:string'/>
-  <part name='title' type='xsd:string'/>
 </message>
 <message name='deleteDateOUT'>
   <part name='xml_list' type='xsd:string'/>
@@ -420,6 +420,14 @@
   <part name='material_item_id' type='xsd:string'/>
 </message>
 <message name='saveSectionOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='deleteSectionIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+</message>
+<message name='deleteSectionOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getDiscussionListIN'>
@@ -687,6 +695,10 @@
   <operation name='saveSection'>
     <input message='tns:saveSectionIN'/>
     <output message='tns:saveSectionOUT'/>
+  </operation>
+  <operation name='deleteSection'>
+    <input message='tns:deleteSectionIN'/>
+    <output message='tns:deleteSectionOUT'/>
   </operation>
   <operation name='getDiscussionList'>
     <input message='tns:getDiscussionListIN'/>
@@ -1293,6 +1305,17 @@
   </operation>
   <operation name='saveSection'>
     <soap:operation soapAction='urn:xmethodsCommSy#saveSection'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='deleteSection'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteSection'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
