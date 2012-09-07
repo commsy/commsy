@@ -709,9 +709,14 @@ $current_user_item = $environment->getCurrentUserItem();
 /*
 global $cs_external_login_redirect;
 global $cs_external_login_redirect_exeption_var;
+
+$current_portal_user_item = null;
+if ($current_user_item) {
+	$current_portal_user_item = $current_user_item->getRelatedPortalUserItem();
+}
 if (isset($cs_external_login_redirect) and !empty($cs_external_login_redirect)
 	and (!isset($cs_external_login_redirect_exeption_var) or !isset($_GET[$cs_external_login_redirect_exeption_var]) or $_GET[$cs_external_login_redirect_exeption_var] != true)
-	and (!isset($current_user_item) or $current_user_item->isGuest())
+	and (!isset($current_portal_user_item) or $current_portal_user_item->isGuest())
     and !( $environment->getCurrentModule() == 'context' and $environment->getCurrentFunction() == 'login')
 ){
 	$url = $cs_external_login_redirect.$_SERVER['QUERY_STRING'];
