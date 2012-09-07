@@ -25,6 +25,8 @@
 
 			$released_ids = $itemManager->getExternalViewerEntriesForRoom($currentUser->getOwnRoom()->getItemID());
 			$item_list = $itemManager->getItemList($released_ids);
+			$item_list->sortby("modification_date");
+			$item_list->reverse();
 
 			/*
 			 * $noticed_manager = $this->_environment->getNoticedManager();
@@ -107,6 +109,8 @@
 
 			$viewable_ids = $itemManager->getExternalViewerEntriesForUser($currentUser->getRelatedPrivateRoomUserItem()->getUserID());
 			$item_list = $itemManager->getItemList($viewable_ids);
+			$item_list->sortby("modification_date");
+			$item_list->reverse();
 
 			/*
 			 * $this->_related_user = $user->getRelatedUserItemInContext($this->_environment->getCurrentPortalID());
