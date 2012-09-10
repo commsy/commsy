@@ -1364,7 +1364,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 					$this->_time_array[] = array(
 						'text'		=> $translator->getMessage('COMMON_CONTINUOUS'),
 						'value'		=> 'cont',
-						'checked'	=> true
+						'checked'	=> $current_context->isContinuous()
 					);
 				}
 			}
