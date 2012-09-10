@@ -445,6 +445,20 @@
 <message name='getDiscussionDetailsOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='saveDiscussionArticleIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+  <part name='description' type='xsd:string'/>
+  <part name='uploadFiles' type='xsd:string'/>
+  <part name='deleteFiles' type='xsd:string'/>
+  <part name='discussion_item_id' type='xsd:string'/>
+  <part name='answerTo' type='xsd:string'/>
+</message>
+<message name='saveDiscussionArticleOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='getUserListIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:integer'/>
@@ -707,6 +721,10 @@
   <operation name='getDiscussionDetails'>
     <input message='tns:getDiscussionDetailsIN'/>
     <output message='tns:getDiscussionDetailsOUT'/>
+  </operation>
+  <operation name='saveDiscussionArticle'>
+    <input message='tns:saveDiscussionArticleIN'/>
+    <output message='tns:saveDiscussionArticleOUT'/>
   </operation>
   <operation name='getUserList'>
     <input message='tns:getUserListIN'/>
@@ -1338,6 +1356,17 @@
   </operation>
   <operation name='getDiscussionDetails'>
     <soap:operation soapAction='urn:xmethodsCommSy#getDiscussionDetails'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveDiscussionArticle'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveDiscussionArticle'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

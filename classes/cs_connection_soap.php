@@ -3397,7 +3397,7 @@ class cs_connection_soap {
          $noticed_manager = $this->_environment->getNoticedManager();
          $discussion_manager = $this->_environment->getDiscussionManager();
          $discussion_item = $discussion_manager->getItem($item_id);
-         $xml .= "<discussion_item>\n";
+         $xml  = "<discussion_item>\n";
          $xml .= "<discussion_id><![CDATA[".$discussion_item->getItemID()."]]></discussion_id>\n";
          $xml .= "<discussion_title><![CDATA[".$discussion_item->getTitle()."]]></discussion_title>\n";
          #$temp_description = $discussion_item->getDescription();
@@ -3419,23 +3419,33 @@ class cs_connection_soap {
          } else {
             $xml .= "<discussion_edit><![CDATA[non_edit]]></discussion_edit>\n";
          }
-         $xml .= "<discussion_files>\n";
-         $file_list = $discussion_item->getFileList();
-         $temp_file = $file_list->getFirst();
-         while($temp_file){
-            $xml .= "<discussion_file>\n";
-            $xml .= "<discussion_file_name><![CDATA[".$temp_file->getFileName()."]]></discussion_file_name>\n";
-            $xml .= "<discussion_file_id><![CDATA[".$temp_file->getFileID()."]]></discussion_file_id>\n";
-            $xml .= "<discussion_file_size><![CDATA[".$temp_file->getFileSize()."]]></discussion_file_size>\n";
-            $xml .= "<discussion_file_mime><![CDATA[".$temp_file->getMime()."]]></discussion_file_mime>\n";
-            //if($temp_file->getMime() == 'image/gif' || $temp_file->getMime() == 'image/jpeg' || $temp_file->getMime() == 'image/png'){
-            //   $xml .= "<date_file_data><![CDATA[".$temp_file->getBase64()."]]></date_file_data>\n";
-            //   debugToFile($temp_file->getBase64());
-            //}
-            $xml .= "</discussion_file>\n";
-            $temp_file = $file_list->getNext();
+
+         $xml .= "<discussion_articles>\n";
+         $articles_list = $discussion_item->getAllArticles();
+         $temp_article = $articles_list->getFirst();
+         while($temp_article){
+            $xml .= "<discussion_article>\n";
+            $xml .= "<discussion_article_id><![CDATA[".$temp_article->getItemID()."]]></discussion_article_id>\n";
+            $xml .= "<discussion_article_title><![CDATA[".$temp_article->getTitle()."]]></discussion_article_title>\n";
+            $xml .= "<discussion_article_description><![CDATA[".$temp_article->getDescription()."]]></discussion_article_description>\n";
+            $xml .= "<discussion_article_files>\n";
+            $article_file_list = $temp_article->getFileList();
+            $temp_article_file = $article_file_list->getFirst();
+            while($temp_article_file){
+               $xml .= "<discussion_article_file>\n";
+               $xml .= "<discussion_article_file_name><![CDATA[".$temp_article_file->getFileName()."]]></discussion_article_file_name>\n";
+               $xml .= "<discussion_article_file_id><![CDATA[".$temp_article_file->getFileID()."]]></discussion_article_file_id>\n";
+               $xml .= "<discussion_article_file_size><![CDATA[".$temp_article_file->getFileSize()."]]></discussion_article_file_size>\n";
+               $xml .= "<discussion_article_file_mime><![CDATA[".$temp_article_file->getMime()."]]></discussion_article_file_mime>\n";
+               $xml .= "</discussion_article_file>\n";
+               $temp_article_file = $article_file_list->getNext();
+            }
+            $xml .= "</discussion_article_files>\n";
+            $xml .= "</discussion_article>\n";
+            $temp_article = $articles_list->getNext();
          }
-         $xml .= "</discussion_files>\n";
+         $xml .= "</discussion_articles>\n";
+         
          $xml .= "</discussion_item>\n";
          $xml = $this->_encode_output($xml);
          $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
@@ -3446,11 +3456,123 @@ class cs_connection_soap {
          if ( empty($noticed) or $noticed['read_date'] < $discussion_item->getModificationDate() ) {
             $noticed_manager->markNoticed($discussion_item->getItemID(),0);
          }
-         debugToFile($xml);
+         el($xml);
          return $xml;
       }
    }
    
+   public function saveDiscussionArticle($session_id, $context_id, $item_id, $title, $description, $uploadFiles, $deleteFiles, $discussion_item_id, $answerTo) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_article_manager = $this->_environment->getDiscussionArticleManager();
+         debugToFile($item_id);
+         if($item_id != 'NEW'){
+            $discarticle_item = $discussion_article_manager->getItem($item_id);
+         } else {
+            debugToFile('is NEW');
+            $discarticle_item = $discussion_article_manager->getNewItem();
+            $discarticle_item->setContextID($context_id);
+            $discarticle_item->setCreatorItem($user_item);
+            $discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
+            $discarticle_item->setDiscussionID($discussion_item_id);
+            
+            if($answerTo != "NEW") {
+					$discussionManager = $this->_environment->getDiscussionManager();
+					$discussionItem = $discussionManager->getItem($discussion_item_id);
+					
+					// get the position of the discussion article this is a response to
+					$answerToItem = $discussion_article_manager->getItem($answerTo);
+					$answerToPosition = $answerToItem->getPosition();
+					
+					// load discussion articles
+					$discussion_article_manager->reset();
+					
+					$discussion_article_manager->setDiscussionLimit($discussion_item_id, "");
+					$discussion_article_manager->select();
+					
+					$discussionArticlesList = $discussion_article_manager->get();
+					
+					// build an array with all positions > $answerToPosition
+					$positionArray = array();
+					$discussionArticle = $discussionArticlesList->getFirst();
+					while ($discussionArticle) {
+						$articlePosition = $discussionArticle->getPosition();
+						
+						if ($articlePosition > $answerToPosition) {
+							$positionArray[] = $articlePosition;
+						}
+						
+						$discussionArticle = $discussionArticlesList->getNext();
+					}
+					sort($positionArray);
+					
+					// check if there is at least one direct answer to the $answerToItem
+					$hasChild = in_array($answerToPosition . ".1001", $positionArray);
+					
+					// if there is none, this article will be the first child
+					if (!$hasChild) {
+						$discarticle_item->setPosition($answerToPosition . ".1001");
+					}
+					
+					// otherwise we need do determ the correct position for appending
+					else {
+						// explode all sub-positions
+						$answerToPositionArray = explode(".", $answerToPosition);
+						
+						$compareArray = array();
+						$end = count($positionArray) - 1;
+						for ($i = 0; $i <= $end; $i++) {
+							$valueArray = explode(".", $positionArray[$i]);
+							
+							$in = true;
+							$end2 = count($answerToPositionArray) - 1;
+							for ($j = 0; $j <= $end2; $j++) {
+								if (isset($valueArray[$j]) && $answerToPositionArray[$j] != $valueArray[$j]) {
+									$in = false;
+								}
+							}
+							
+							if ($in && count($valueArray) == count($answerToPositionArray) + 1) {
+								$compareArray[] = $valueArray[count($answerToPositionArray)];
+							}
+						}
+						
+						$length = count($compareArray) - 1;
+						$result = $compareArray[$length];
+						$endResult = $result + 1;
+						
+						$discarticle_item->setPosition($answerToPosition . "." . $endResult);
+					}
+				} else {
+					$discarticle_item->setPosition("1");
+				}
+         }
+         $discarticle_item->setSubject($title);
+         $discarticle_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
+         
+         $discarticle_item->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($discarticle_item->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($discarticle_item->getItemID(),0);
+         $noticed_manager->markNoticed($discarticle_item->getItemID(),0);
+         
+         $this->_uploadFiles($uploadFiles, $discarticle_item);
+         
+         $this->_deleteFiles($session_id, $deleteFiles, $discarticle_item);
+      }
+   }
    
    // User
    
