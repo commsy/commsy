@@ -5,28 +5,32 @@ var profile = (function(){
     	releaseName:		"release",
     	action:				"release",
     	
-    	layerOptimize:		false,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
-    	optimize:			false,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	layerOptimize:		true,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	optimize:			true,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
     	stripConsole:		"normal",			/* "normal" | "none" | "warn" | "all" */
     	selectorEngine:		"acme",				/* "" | "lite" | "acme" */
-    	cssOptimize:		false,				/* "comments" | "comments.keepLines" | false */
-    	mini:				false,				/* true | false */
+    	cssOptimize:		"comments",			/* "comments" | "comments.keepLines" | false */
+    	mini:				true,				/* true | false */
     	
+    	/* this should solve errors - but it produces them :/
     	trees: [
     	    [ ".", ".", /(\/\.)|(~$)|(CVS)/ ]
     	],
+    	*/
     	
-    	/*
     	layers: {
     		"final/commsy": {
     			include: [
     			    "dojo/dojo",
     			    "commsy/main"
     			],
+    			exclude: [
+    			    
+    			],
     			customBase:	true,
     			boot:		true
     		}
-    	},*/
+    	},
         
         defaultConfig: {
         	
@@ -42,7 +46,7 @@ var profile = (function(){
         packages: [{
         	name:			"dojo",
         	location:		"dojo"
-        }/*,{
+        },{
         	name:			"dijit",
         	location:		"dijit"
         },{
@@ -57,7 +61,7 @@ var profile = (function(){
         },{
         	name:			"commsy",
         	location:		"commsy"
-        }*/]/*,
+        }]/*,
         
         staticHasFeatures: {
         	"config-deferredInstrumentation":	0,
