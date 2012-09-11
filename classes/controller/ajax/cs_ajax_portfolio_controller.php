@@ -73,8 +73,9 @@
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			$portfolioItem = $portfolioManager->getItem($portfolioId);
 			
-			$currentUser = $this->_environment->getCurrentUser();
-			$privateRoom = $currentUser->getOwnRoom();
+			$userManager = $this->_environment->getUserManager();
+			$userItem = $userManager->getItem($portfolioItem->getCreatorId());
+			$privateRoom = $userItem->getOwnRoom();
 			
 			// gather tag information
 			$tags = $portfolioManager->getPortfolioTags($portfolioId);
