@@ -19,7 +19,6 @@
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			
 			$currentUser = $this->_environment->getCurrentUser();
-				
 			$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
 			
 			$portfolioManager->reset();

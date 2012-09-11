@@ -4,19 +4,19 @@ var profile = (function(){
     	releaseDir:			"../build",
     	releaseName:		"release",
     	action:				"release",
-    	layerOptimize:		"shrinksafe",//"closure",
-    	optimize:			"shrinksafe",//"closure",
-    	stripConsole:		"normal",
-    	selectorEngine:		"acme",
-    	cssOptimize:		false,//"comments",
-    	mini:				true,
     	
-    	/*
+    	layerOptimize:		false,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	optimize:			false,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	stripConsole:		"normal",			/* "normal" | "none" | "warn" | "all" */
+    	selectorEngine:		"acme",				/* "" | "lite" | "acme" */
+    	cssOptimize:		false,				/* "comments" | "comments.keepLines" | false */
+    	mini:				false,				/* true | false */
+    	
     	trees: [
     	    [ ".", ".", /(\/\.)|(~$)|(CVS)/ ]
     	],
-    	*/
     	
+    	/*
     	layers: {
     		"final/commsy": {
     			include: [
@@ -26,9 +26,10 @@ var profile = (function(){
     			customBase:	true,
     			boot:		true
     		}
-    	},
+    	},*/
         
         defaultConfig: {
+        	
         	/* not working??? - for now, relative paths are used */
         	/*
         	paths: {
@@ -41,7 +42,7 @@ var profile = (function(){
         packages: [{
         	name:			"dojo",
         	location:		"dojo"
-        },{
+        }/*,{
         	name:			"dijit",
         	location:		"dijit"
         },{
@@ -50,13 +51,13 @@ var profile = (function(){
         },{
         	name:			"cbtree",
         	location:		"cbtree"
-        },/*{
+        },{
         	name:			"ckeditor",
         	location:		"ckeditor"
-        },*/{
+        },{
         	name:			"commsy",
         	location:		"commsy"
-        }]/*,
+        }*/]/*,
         
         staticHasFeatures: {
         	"config-deferredInstrumentation":	0,

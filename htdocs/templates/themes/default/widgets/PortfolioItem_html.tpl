@@ -22,7 +22,7 @@
                 <div class="clear"></div>
             </div>
             
-            <div data-dojo-attach-point="portfolioEditRowNode">
+            <div>
             	{* add row *}
             	<div id="epRowAdd" class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
             		<a class="ep_vert_edit">

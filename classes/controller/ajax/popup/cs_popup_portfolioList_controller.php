@@ -58,7 +58,10 @@ class cs_popup_portfolioList_controller implements cs_rubric_popup_controller {
 		
 		$itemManager = $this->_environment->getItemManager();
 		$currentUser = $this->_environment->getCurrentUser();
-		$privateRoom = $currentUser->getOwnRoom();
+		
+		$userManager = $this->_environment->getUserManager();
+		$userItem = $userManager->getItem($item->getCreatorId());
+		$privateRoom = $userItem->getOwnRoom();
 		
 		$this->_popup_controller->assign("popup", "privateRoomId", $privateRoom->getItemID());
 		$this->_popup_controller->assign("popup", "portfolioId", $item->getItemID());

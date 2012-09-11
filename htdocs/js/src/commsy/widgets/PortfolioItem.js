@@ -6,12 +6,13 @@ define([	"dojo/_base/declare",
         	"dojo/_base/array",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
+        	"dojo/dom-style",
         	"dojo/_base/xhr",
         	"dojo/query",
         	"dojo/on",
         	"dojo/topic",
         	"dijit/layout/ContentPane",
-        	"dojo/NodeList-traverse"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, Array, DomConstruct, DomAttr, xhr, Query, On, Topic, ContentPane) {
+        	"dojo/NodeList-traverse"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, Array, DomConstruct, DomAttr, DomStyle, xhr, Query, On, Topic, ContentPane) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyPortfolioItemWidget",
@@ -90,9 +91,9 @@ define([	"dojo/_base/declare",
 						});
 						
 						if (this.withEditing === false) {
-							DomConstruct.destroy(this.portfolioEditDivNode);
-							DomConstruct.destroy(this.portfolioEditRowNode);
-							DomConstruct.destroy(this.portfolioEditColumnNode);
+							DomStyle.set(this.lastVerticalTag, "display", "none");
+							DomStyle.set(this.portfolioEditDivNode, "display", "none");
+							DomStyle.set(this.portfolioEditColumnNode, "display", "none");
 						}
 						
 						// create html for row tags
@@ -232,7 +233,7 @@ define([	"dojo/_base/declare",
 							// only three
 							if (numItems < 3) {
 								var spanNode = DomConstruct.create("span", {
-									innerHTML:		item.title.substring(0, 20)
+									innerHTML:		item.title.substring(0, 20),
 								}, aContentNode, "last");
 							};
 							

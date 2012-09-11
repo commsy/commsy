@@ -1,4 +1,0 @@
-Programmierkonventionen					{#codingConventions}
-================
-
-Content...
