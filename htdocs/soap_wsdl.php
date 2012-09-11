@@ -408,6 +408,14 @@
 <message name='saveMaterialOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='deleteMaterialIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+</message>
+<message name='deleteMaterialOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='saveSectionIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:string'/>
@@ -445,6 +453,14 @@
 <message name='getDiscussionDetailsOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='deleteDiscussionIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+</message>
+<message name='deleteDiscussionOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='saveDiscussionArticleIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:string'/>
@@ -457,6 +473,37 @@
   <part name='answerTo' type='xsd:string'/>
 </message>
 <message name='saveDiscussionArticleOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='saveDiscussionWithInitialArticleIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+  <part name='item_id_article' type='xsd:string'/>
+  <part name='title_article' type='xsd:string'/>
+  <part name='description_article' type='xsd:string'/>
+  <part name='uploadFiles' type='xsd:string'/>
+  <part name='deleteFiles' type='xsd:string'/>
+</message>
+<message name='saveDiscussionWithInitialArticleOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='saveDiscussionIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+</message>
+<message name='saveDiscussionOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='deleteDiscussionArticleIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:string'/>
+</message>
+<message name='deleteDiscussionArticleOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getUserListIN'>
@@ -706,6 +753,10 @@
     <input message='tns:saveMaterialIN'/>
     <output message='tns:saveMaterialOUT'/>
   </operation>
+  <operation name='deleteMaterial'>
+    <input message='tns:deleteMaterialIN'/>
+    <output message='tns:deleteMaterialOUT'/>
+  </operation>
   <operation name='saveSection'>
     <input message='tns:saveSectionIN'/>
     <output message='tns:saveSectionOUT'/>
@@ -722,9 +773,25 @@
     <input message='tns:getDiscussionDetailsIN'/>
     <output message='tns:getDiscussionDetailsOUT'/>
   </operation>
+  <operation name='deleteDiscussion'>
+    <input message='tns:deleteDiscussionIN'/>
+    <output message='tns:deleteDiscussionOUT'/>
+  </operation>
   <operation name='saveDiscussionArticle'>
     <input message='tns:saveDiscussionArticleIN'/>
     <output message='tns:saveDiscussionArticleOUT'/>
+  </operation>
+  <operation name='saveDiscussionWithInitialArticle'>
+    <input message='tns:saveDiscussionWithInitialArticleIN'/>
+    <output message='tns:saveDiscussionWithInitialArticleOUT'/>
+  </operation>
+  <operation name='saveDiscussion'>
+    <input message='tns:saveDiscussionIN'/>
+    <output message='tns:saveDiscussionOUT'/>
+  </operation>
+  <operation name='deleteDiscussionArticle'>
+    <input message='tns:deleteDiscussionArticleIN'/>
+    <output message='tns:deleteDiscussionArticleOUT'/>
   </operation>
   <operation name='getUserList'>
     <input message='tns:getUserListIN'/>
@@ -1321,6 +1388,17 @@
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
       </output>
   </operation>
+  <operation name='deleteMaterial'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteMaterial'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
   <operation name='saveSection'>
     <soap:operation soapAction='urn:xmethodsCommSy#saveSection'/>
       <input>
@@ -1365,8 +1443,52 @@
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
       </output>
   </operation>
+  <operation name='deleteDiscussion'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteDiscussion'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
   <operation name='saveDiscussionArticle'>
     <soap:operation soapAction='urn:xmethodsCommSy#saveDiscussionArticle'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='deleteDiscussionArticle'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteDiscussionArticle'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveDiscussionWithInitialArticle'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveDiscussionWithInitialArticle'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='saveDiscussion'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveDiscussion'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

@@ -2921,6 +2921,11 @@ class cs_connection_soap {
             } else {
                $xml .= "<date_read><![CDATA[]]></date_read>\n";
             }
+            if($date_item->mayEdit($user_item)){
+               $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
+            } else {
+               $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
+            }
             $xml .= "</date_item>\n";
             $date_item = $dates_list->getNext();
          }
@@ -2969,6 +2974,9 @@ class cs_connection_soap {
          } else {
             $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
          }
+         $modifier_user = $date_item->getModificatorItem();
+         $xml .= "<date_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></date_last_modifier>\n";
+         $xml .= "<date_last_modification_date><![CDATA[".$date_item->getModificationDate()."]]></date_last_modification_date>\n";
          $xml .= "<date_files>\n";
          $file_list = $date_item->getFileList();
          $temp_file = $file_list->getFirst();
@@ -3130,6 +3138,11 @@ class cs_connection_soap {
             } else {
                $xml .= "<material_read><![CDATA[]]></material_read>\n";
             }
+            if($material_item->mayEdit($user_item)){
+               $xml .= "<material_edit><![CDATA[edit]]></material_edit>\n";
+            } else {
+               $xml .= "<material_edit><![CDATA[non_edit]]></material_edit>\n";
+            }
             $xml .= "</material_item>\n";
             $material_item = $material_list->getNext();
          }
@@ -3175,6 +3188,9 @@ class cs_connection_soap {
          } else {
             $xml .= "<material_edit><![CDATA[non_edit]]></material_edit>\n";
          }
+         $modifier_user = $material_item->getModificatorItem();
+         $xml .= "<material_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></material_last_modifier>\n";
+         $xml .= "<material_last_modification_date><![CDATA[".$material_item->getModificationDate()."]]></material_last_modification_date>\n";
          $xml .= "<material_files>\n";
          $file_list = $material_item->getFileList();
          $temp_file = $file_list->getFirst();
@@ -3203,8 +3219,9 @@ class cs_connection_soap {
             $temp_description = strip_tags($temp_description);
             $temp_description = str_ireplace("\n".'<br />', "\n", $temp_description);
             $xml .= "<material_section_description>".$temp_description."</material_section_description>\n";
-            $xml .= "</material_section>\n";
-            
+            $modifier_user = $section_item->getModificatorItem();
+            $xml .= "<material_section_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></material_section_last_modifier>\n";
+            $xml .= "<material_section_last_modification_date><![CDATA[".$section_item->getModificationDate()."]]></material_section_last_modification_date>\n";
             $xml .= "<material_section_files>\n";
             $file_list = $section_item->getFileList();
             $temp_file = $file_list->getFirst();
@@ -3219,7 +3236,7 @@ class cs_connection_soap {
             }
             $xml .= "</material_section_files>\n";
             $xml .= "<material_section_number>".$section_item->getNumber()."</material_section_number>\n";
-            
+             $xml .= "</material_section>\n";
             $section_item = $section_list->getNext();
          }
          $xml .= "</material_sections>\n";
@@ -3274,6 +3291,15 @@ class cs_connection_soap {
          $this->_uploadFiles($uploadFiles, $material_item);
          
          $this->_deleteFiles($session_id, $deleteFiles, $material_item);
+      }
+   }
+   
+   public function deleteMaterial($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $material_manager = $this->_environment->getMaterialManager();
+         $material_item = $material_manager->getItem($item_id);
+         $material_item->delete();
       }
    }
    
@@ -3372,6 +3398,11 @@ class cs_connection_soap {
             } else {
                $xml .= "<discussion_read><![CDATA[]]></discussion_read>\n";
             }
+            if($discussion_item->mayEdit($user_item)){
+               $xml .= "<discussion_edit><![CDATA[edit]]></discussion_edit>\n";
+            } else {
+               $xml .= "<discussion_edit><![CDATA[non_edit]]></discussion_edit>\n";
+            }
             $xml .= "</discussion_item>\n";
             $discussion_item = $discussion_list->getNext();
          }
@@ -3400,12 +3431,9 @@ class cs_connection_soap {
          $xml  = "<discussion_item>\n";
          $xml .= "<discussion_id><![CDATA[".$discussion_item->getItemID()."]]></discussion_id>\n";
          $xml .= "<discussion_title><![CDATA[".$discussion_item->getTitle()."]]></discussion_title>\n";
-         #$temp_description = $discussion_item->getDescription();
-         #$temp_description = html_entity_decode($discussion_item->getDescription());
-         #$temp_description = utf8_encode($discussion_item->getDescription());
-         #$temp_description = str_ireplace('<br />', "\n", $temp_description);
-         #$temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
-         #$xml .= "<discussion_description><![CDATA[".$temp_description."]]></discussion_description>\n";
+         $modifier_user = $discussion_item->getModificatorItem();
+         $xml .= "<discussion_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></discussion_last_modifier>\n";
+         $xml .= "<discussion_last_modification_date><![CDATA[".$discussion_item->getModificationDate()."]]></discussion_last_modification_date>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
             $xml .= "<discussion_read><![CDATA[new]]></discussion_read>\n";
@@ -3419,9 +3447,30 @@ class cs_connection_soap {
          } else {
             $xml .= "<discussion_edit><![CDATA[non_edit]]></discussion_edit>\n";
          }
+         
+         if($discussion_item->getDiscussionType() == 'threaded'){
+            $xml .= "<discussion_threaded><![CDATA[threaded]]></discussion_threaded>\n";
+         } else {
+            $xml .= "<discussion_threaded><![CDATA[non_threaded]]></discussion_threaded>\n";
+         }
 
          $xml .= "<discussion_articles>\n";
-         $articles_list = $discussion_item->getAllArticles();
+         
+         $disc_articles_manager = $this->_environment->getDiscussionArticlesManager();
+			$disc_articles_manager->setDiscussionLimit($discussion_item->getItemID(), array());
+
+			$discussion_type = $discussion_item->getDiscussionType();
+			if($discussion_type == 'threaded') {
+				$disc_articles_manager->setSortPosition();
+			}
+			if(isset($_GET['status']) && $_GET['status'] == 'all_articles') {
+				$disc_articles_manager->setDeleteLimit(false);
+			}
+
+			$disc_articles_manager->select();
+			$articles_list = $disc_articles_manager->get();
+         
+         //$articles_list = $discussion_item->getAllArticles();
          $temp_article = $articles_list->getFirst();
          while($temp_article){
             $xml .= "<discussion_article>\n";
@@ -3441,6 +3490,14 @@ class cs_connection_soap {
                $temp_article_file = $article_file_list->getNext();
             }
             $xml .= "</discussion_article_files>\n";
+            $modifier_user = $temp_article->getModificatorItem();
+            $xml .= "<discussion_article_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></discussion_article_last_modifier>\n";
+            $xml .= "<discussion_article_last_modification_date><![CDATA[".$temp_article->getModificationDate()."]]></discussion_article_last_modification_date>\n";
+            if($temp_article->mayEdit($user_item)){
+               $xml .= "<discussion_article_edit><![CDATA[edit]]></discussion_article_edit>\n";
+            } else {
+               $xml .= "<discussion_article_edit><![CDATA[non_edit]]></discussion_article_edit>\n";
+            }
             $xml .= "</discussion_article>\n";
             $temp_article = $articles_list->getNext();
          }
@@ -3571,6 +3628,96 @@ class cs_connection_soap {
          $this->_uploadFiles($uploadFiles, $discarticle_item);
          
          $this->_deleteFiles($session_id, $deleteFiles, $discarticle_item);
+      }
+   }
+   
+   public function saveDiscussionWithInitialArticle($session_id, $context_id, $item_id, $title, $item_id_article, $title_article, $description_article, $uploadFiles, $deleteFiles) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_item = $discussion_manager->getNewItem();
+         $discussion_item->setContextID($context_id);
+         $discussion_item->setCreatorItem($user_item);
+         $discussion_item->setCreationDate(getCurrentDateTimeInMySQL());
+         $discussion_item->setTitle($title);
+         $discussion_item->save();
+         
+         $discussion_article_manager = $this->_environment->getDiscussionArticleManager();
+         $discarticle_item = $discussion_article_manager->getNewItem();
+         $discarticle_item->setContextID($context_id);
+         $discarticle_item->setCreatorItem($user_item);
+         $discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
+         $discarticle_item->setDiscussionID($discussion_item->getItemID());
+			$discarticle_item->setPosition("1");
+         $discarticle_item->setSubject($title_article);
+         $discarticle_item->setDescription(str_ireplace("\n", "\n".'<br />', $description_article));
+         $discarticle_item->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($discarticle_item->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($discussion_item->getItemID(),0);
+         $noticed_manager->markNoticed($discussion_item->getItemID(),0);
+         $reader_manager->markRead($discarticle_item->getItemID(),0);
+         $noticed_manager->markNoticed($discarticle_item->getItemID(),0);
+         
+         $this->_uploadFiles($uploadFiles, $discarticle_item);
+         
+         $this->_deleteFiles($session_id, $deleteFiles, $discarticle_item);
+      }
+   }
+   
+   public function saveDiscussion($session_id, $context_id, $item_id, $title) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $this->_environment->setCurrentUser($user_item);
+         
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_item = $discussion_manager->getItem($item_id);
+         $discussion_item->setTitle($title);
+         $discussion_item->save();
+         
+         $reader_manager = $this->_environment->getReaderManager();
+         $noticed_manager = $this->_environment->getNoticedManager();
+         $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
+         $reader_manager->markRead($discussion_item->getItemID(),0);
+         $noticed_manager->markNoticed($discussion_item->getItemID(),0);
+      }
+   }
+   
+   public function deleteDiscussion($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      include_once('functions/date_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $discussion_manager = $this->_environment->getDiscussionManager();
+         $discussion_item = $discussion_manager->getItem($item_id);
+         $discussion_item->delete();
+      }
+   }
+   
+   public function deleteDiscussionArticle($session_id, $context_id, $item_id) {
+      include_once('functions/development_functions.php');
+      include_once('functions/date_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $discarticle_manager = $this->_environment->getDiscussionArticleManager();
+         $discarticle_item = $discarticle_manager->getItem($item_id);
+         $discarticle_item->delete();
       }
    }
    
