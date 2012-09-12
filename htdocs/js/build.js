@@ -5,11 +5,11 @@ var profile = (function(){
     	releaseName:		"release",
     	action:				"release",
     	
-    	layerOptimize:		true,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
-    	optimize:			true,				/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	layerOptimize:		"closure",			/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	optimize:			"closure",			/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
     	stripConsole:		"normal",			/* "normal" | "none" | "warn" | "all" */
     	selectorEngine:		"acme",				/* "" | "lite" | "acme" */
-    	cssOptimize:		"comments",			/* "comments" | "comments.keepLines" | false */
+    	cssOptimize:		false,				/* "comments" | "comments.keepLines" | false */
     	mini:				true,				/* true | false */
     	
     	/* this should solve errors - but it produces them :/
@@ -19,16 +19,24 @@ var profile = (function(){
     	*/
     	
     	layers: {
-    		"final/commsy": {
+    		"final/dojo": {
     			include: [
     			    "dojo/dojo",
-    			    "commsy/main"
+    			    "dojo/domReady",
+    			    "dojo/_base/declare"
     			],
     			exclude: [
-    			    
     			],
     			customBase:	true,
     			boot:		true
+    		},
+    		
+    		"final/commsy": {
+    			include: [
+    			    "commsy/main"
+    			],
+    			exclude: [
+    			]
     		}
     	},
         
@@ -57,7 +65,7 @@ var profile = (function(){
         	location:		"cbtree"
         },{
         	name:			"ckeditor",
-        	location:		"ckeditor"
+        	location:		"../3rdParty/ckeditor"
         },{
         	name:			"commsy",
         	location:		"commsy"

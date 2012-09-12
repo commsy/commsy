@@ -12,7 +12,7 @@ var dojoConfig = {
 	           					{ name: "dojox", location: "dojox" },
 	           					{ name: "commsy", location: "commsy" },
 	           					{ name: "widgets", location: "commsy/widgets" },
-	           					{ name: "ckeditor", location: "ckeditor" },
+	           					{ name: "ckeditor", location: "../../3rdParty/ckeditor" },
 	           					{ name: "cbtree", location: "cbtree" }
 	],
 	async:						true,
@@ -20,4 +20,4 @@ var dojoConfig = {
 	isDebug:					false
 }
 
-var CKEDITOR_BASEPATH = "js/build/release/ckeditor/";
+var CKEDITOR_BASEPATH = "js/3rdParty/ckeditor/";
