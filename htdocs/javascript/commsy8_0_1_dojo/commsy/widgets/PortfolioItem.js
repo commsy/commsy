@@ -233,7 +233,7 @@ define([	"dojo/_base/declare",
 							// only three
 							if (numItems < 3) {
 								var spanNode = DomConstruct.create("span", {
-									innerHTML:		item.title.substring(0, 20),
+									innerHTML:		item.title.substring(0, 20)
 								}, aContentNode, "last");
 							};
 							

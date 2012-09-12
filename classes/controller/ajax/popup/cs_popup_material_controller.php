@@ -418,7 +418,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
 	                    $converted_activate_day_start = convertDateFromInput($form_data['activating_date'],$environment->getSelectedLanguage());
 	                    if ($converted_activate_day_start['conforms'] == TRUE) {
-	                        $dt_hiding_date = $converted_activate_day_start['datetime'].' ';
+	                        $dt_hiding_date = $converted_activate_day_start['datetime'];
 	                    }
 	                    $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
 	                    $item->setModificationDate($dt_hiding_datetime);

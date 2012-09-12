@@ -305,7 +305,7 @@ class cs_popup_date_controller {
 
 	                    $converted_activate_day_start = convertDateFromInput($form_data['activating_date'],$environment->getSelectedLanguage());
 	                    if ($converted_activate_day_start['conforms'] == TRUE) {
-	                        $dt_hiding_date = $converted_activate_day_start['datetime'].' ';
+	                        $dt_hiding_date = $converted_activate_day_start['datetime'];
 	                    }
 	                    $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
 	                    $date_item->setModificationDate($dt_hiding_datetime);
