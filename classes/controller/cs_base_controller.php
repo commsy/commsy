@@ -360,6 +360,9 @@
 			if (!isset($c_jsmath_url)){
 				$c_jsmath_url = '';
 			}
+			
+			global $c_js_mode;
+			
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
@@ -388,6 +391,7 @@
 			$this->assign('environment','service_link', $this->_getServiceMailLink());
 			$this->assign('environment','c_jsmath_enable', $c_jsmath_enable);
 			$this->assign('environment','c_jsmath_url', $c_jsmath_url);
+			$this->assign('environment','c_js_mode', (isset($c_js_mode) && ($c_js_mode === "build" || $c_js_mode === "layer")) ? $c_js_mode : "source");
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);

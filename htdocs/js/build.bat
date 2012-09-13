@@ -1,0 +1,19 @@
+@echo off
+
+echo Truncating old build target directory...
+del /s /q build\*.*
+
+echo Moving source away...
+move src src_org
+
+echo Copying source...
+xcopy "src_org" "src" /s /c /i /h /k /o /x /y /exclude:exclude.txt
+
+echo Building...
+src/util/buildscripts/build.bat --profile build.js
+
+echo Removing copied source...
+del /s /q src
+
+echo Restoring original source...
+move src_org src

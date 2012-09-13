@@ -70,7 +70,7 @@ $c_enable_htmltextarea_security = false;
 // room list on portal
 // $c_room_count_redundancy = true;
 
-// use minimized javascript
+// use minimized javascript - CommSy 7
 // $c_minimized_js = false;
 
 // use new private room
@@ -109,4 +109,7 @@ $c_smarty_caching = false;
 
 // send xhr error reports to developers
 //$c_xhr_error_reporting = array("dev1@commsy.dev", "dev2@commsy.dev");
+
+// setup javascript mode
+$c_js_mode = "source";
 ?>

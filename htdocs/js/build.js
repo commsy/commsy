@@ -5,8 +5,8 @@ var profile = (function(){
     	releaseName:		"release",
     	action:				"release",
     	
-    	layerOptimize:		"closure",			/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
-    	optimize:			"closure",			/* "shinksafe" | "shinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	layerOptimize:		"closure",			/* "shrinksafe" | "shrinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
+    	optimize:			"closure",			/* "shrinksafe" | "shrinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
     	stripConsole:		"normal",			/* "normal" | "none" | "warn" | "all" */
     	selectorEngine:		"acme",				/* "" | "lite" | "acme" */
     	cssOptimize:		false,				/* "comments" | "comments.keepLines" | false */
@@ -19,11 +19,16 @@ var profile = (function(){
     	*/
     	
     	layers: {
-    		"final/dojo": {
+    		"dojo/dojo": {
     			include: [
     			    "dojo/dojo",
     			    "dojo/domReady",
-    			    "dojo/_base/declare"
+    			    "dojo/_base/declare",
+    			    "dojo/i18n",
+    			    
+    			    "dijit/TooltipDialog",
+    			    
+    			    "dojox/image/Lightbox"
     			],
     			exclude: [
     			],
@@ -33,7 +38,36 @@ var profile = (function(){
     		
     		"final/commsy": {
     			include: [
-    			    "commsy/main"
+    			    "commsy/main",
+    			    "commsy/popups/ToggleRoomConfiguration",
+    			    /*"commsy/popups/TogglePersonalConfiguration",*/
+    			    "commsy/popups/ToggleBreadcrumb",
+    			    "commsy/popups/ToggleClipboard",
+    			    "commsy/popups/ToggleStack",
+    			    "commsy/popups/ToggleWidgets",
+    			    "commsy/popups/TogglePortfolio",
+    			    
+    			    "commsy/popups/ClickDatePopup",
+    			    "commsy/popups/ClickTodoPopup",
+    			    "commsy/popups/ClickDiscussionPopup",
+    			    "commsy/popups/ClickMaterialPopup",
+    			    "commsy/popups/ClickAnnouncementPopup",
+    			    "commsy/popups/ClickTopicPopup",
+    			    "commsy/popups/ClickGroupPopup",
+    			    "commsy/popups/ClickBuzzwordsPopup",
+    			    "commsy/popups/ClickTagsPopup",
+    			    "commsy/popups/ClickMailtomodPopup",
+    			    
+    			    "commsy/DivToggle",
+    			    "commsy/AjaxActions",
+    			    "commsy/tree",
+    			    "commsy/Search",/*,
+    			    "commsy/Overlay"*/
+    			    "commsy/DivExpander",/*
+    			    "commsy/Lightbox",*/
+    			    "commsy/ListSelection",
+    			    "commsy/Assessment"/*,
+    			    "commsy/AutoOpenPopup"*/
     			],
     			exclude: [
     			]

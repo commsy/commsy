@@ -19,11 +19,11 @@
 	    <meta name="copyright" content="" />
 
 	    <!-- CSS -->
-	    <link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dijit/themes/tundra/tundra.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/cbtree/themes/tundra/tundra.css" />
-	 	<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dojox/form/resources/UploaderFileList.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dojox/image/resources/Lightbox.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="javascript/commsy8_0_1_dojo/libs/dojox/widget/ColorPicker/ColorPicker.css" />
+	    <link rel="stylesheet" type="text/css" media="screen" href="js/src/dijit/themes/tundra/tundra.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/src/cbtree/themes/tundra/tundra.css" />
+	 	<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/form/resources/UploaderFileList.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/image/resources/Lightbox.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/widget/ColorPicker/ColorPicker.css" />
 
 		{block name="css"}
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
@@ -32,20 +32,7 @@
 	    	<link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 
 		<!-- SCRIPTS -->
-		{assign var="jsMode" value="build"}
-
-		{*
-		{if $jsMode === "source"}
-			<script src="js/src/sourceConfig.js"></script>
-
-			<script>
-				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
-				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
-			</script>
-
-			<script src="js/src/dojo/dojo.js"></script>
-			<script src="js/src/commsy/main.js"></script>
-		{elseif $jsMode === "build"}
+		{if $environment.c_js_mode === "build"}
 			<script src="js/src/buildConfig.js"></script>
 
 			<script>
@@ -55,23 +42,33 @@
 
 			<script src="js/build/release/dojo/dojo.js"></script>
 			<script src="js/build/release/commsy/main.js"></script>
-		{elseif $jsMode === "layer"}
+		{elseif $environment.c_js_mode === "layer"}
+			<script src="js/src/layerConfig.js"></script>
+
+			<script>
+				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
+			</script>
+			
+			<script src="js/build/release/dojo/dojo.js"></script>
+			<script>
+				require(["layer/commsy"], function() {
+					require(["commsy/main"], function() {
+						
+					});
+				});
+			</script>
+		{else}
+			<script src="js/src/sourceConfig.js"></script>
+
+			<script>
+				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
+			</script>
+
+			<script src="js/src/dojo/dojo.js"></script>
+			<script src="js/src/commsy/main.js"></script>
 		{/if}
-
-		*}
-
-
-
-		<script src="javascript/commsy8_0_1_dojo/config.js"></script>
-
-		<script>
-			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
-			{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
-		</script>
-
-		<script src="javascript/commsy8_0_1_dojo/libs/dojo/dojo.js?token=12"></script>
-		<script src="javascript/commsy8_0_1_dojo/main.js?token=12"></script>
-
 
         <script type="text/javascript" src="javascript/swfobject.js"></script>
         {if $environment.c_jsmath_enable}
