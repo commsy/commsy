@@ -105,8 +105,8 @@ define([	"dojo/_base/declare",
 						dojo.forEach(rowTags, Lang.hitch(this, function(rowTag, index, arr) {
 							var divNode = DomConstruct.create("div", { className: "ep_vert_col_cell" }, this.lastVerticalTag, "before");
 							
-								var aNode = DomConstruct.create("a", { className: "ep_vert_edit" }, divNode, "last");
-									DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_vert_edit.jpg" }, aNode, "last");
+								/*var aNode = DomConstruct.create("a", { className: "ep_vert_edit" }, divNode, "last");
+									DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_vert_edit.jpg" }, aNode, "last");*/
 								
 								var divTitleNode = DomConstruct.create("div", { className: "ep_vert_col_title" }, divNode, "last");
 									if (this.withEditing === true) {
@@ -144,8 +144,8 @@ define([	"dojo/_base/declare",
 							dojo.forEach(columnTags, Lang.hitch(this, function(columnTag, index, arr) {
 								var thNode = DomConstruct.create("th", {}, trNode, "last");
 								
-									var aNode = DomConstruct.create("a", { }, thNode, "last");
-										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_hor_edit.jpg" }, aNode, "last");
+									/*var aNode = DomConstruct.create("a", { }, thNode, "last");
+										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_hor_edit.jpg" }, aNode, "last");*/
 									
 									if (this.withEditing === true) {
 										var aEditNode = DomConstruct.create("a", {
