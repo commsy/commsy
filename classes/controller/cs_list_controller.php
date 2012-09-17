@@ -1140,7 +1140,6 @@
 			if(!empty($this->_list_command)){
       			switch ($this->_list_command) {
       			   case CS_LISTOPTION_MARK_AS_READ:
-      			      $action = 'ENTRY_MARK_AS_READ';
       			      $error = false;
       			      $rubric_manager = $environment->getManager($rubric);
       			      $noticed_manager = $environment->getNoticedManager();
@@ -1159,14 +1158,21 @@
       			      }
       			      break;
       			   case CS_LISTOPTION_COPY:
-      			      $action = 'ENTRY_COPY';
-      			      // Copy to clipboard
-      			      foreach ($selected_ids as $id) {
-      			         if ( !in_array($id, $this->_list_parameter_arrray['clipboard_id_array']) ) {
-      			            $this->_list_parameter_arrray['clipboard_id_array'][] = $id;
-      			         }
-      			      }
-      			      $session->setValue($rubric.'_clipboard', $this->_list_parameter_arrray['clipboard_id_array']);
+      			      	// get current clipboard content
+	      			   	$clipboardIdArray = array();
+	      			   	if($session->issetValue($rubric . "_clipboard")) {
+	      			   		$clipboardIdArray = $session->getValue($rubric . "_clipboard");
+	      			   	}
+	      			   	
+	      			   	// if not already set, add id to clipboard
+	      			   	foreach ($selected_ids as $id) {
+	      			   		if(!in_array($id, $clipboardIdArray)) {
+	      			   			$clipboardIdArray[] = $id;
+	      			   		}
+	      			   	}
+	      			   	
+	      			   	$session->setValue($rubric . "_clipboard", $clipboardIdArray);
+	      			   	
       			      $params = $environment->getCurrentParameterArray();
       			      redirect( $environment->getCurrentContextID(),
 	      			      		$environment->getCurrentModule(),
