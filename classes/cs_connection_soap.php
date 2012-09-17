@@ -691,7 +691,7 @@ class cs_connection_soap {
    }
 
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-      
+      el('authenticate '. $user_id);
       el('authenticate');
       
       $user_id = $this->_encode_input($user_id);
