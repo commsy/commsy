@@ -2811,10 +2811,10 @@ class cs_connection_soap {
          $this->_environment->setCurrentContextID($context_id);
          $user_id = $session->getValue('user_id');
          $auth_source_id = $session->getValue('auth_source');
+         el('$auth_source_id ---------------- '.$auth_source_id);
          $user_manager = $this->_environment->getUserManager();
          $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
          $user_room_list = $user_item->getRelatedProjectList();
-         
          $room_manager = $this->_environment->getRoomManager();
          $room_manager->setContextLimit($portal_id);
          $room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
