@@ -691,6 +691,9 @@ class cs_connection_soap {
    }
 
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
+      
+      el('authenticate');
+      
       $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
       $portal_id = $this->_encode_input($portal_id);
@@ -740,6 +743,8 @@ class cs_connection_soap {
                      $session_manager->save($session);
 
                      $result = $session->getSessionID();
+                     
+                     el('authenticate: $result '.$result);
                   }
                } else {
                   $info = 'ERROR';
@@ -2811,7 +2816,6 @@ class cs_connection_soap {
          $this->_environment->setCurrentContextID($context_id);
          $user_id = $session->getValue('user_id');
          $auth_source_id = $session->getValue('auth_source');
-         el('$auth_source_id ---------------- '.$auth_source_id);
          $user_manager = $this->_environment->getUserManager();
          $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
          $user_room_list = $user_item->getRelatedProjectList();
@@ -2953,16 +2957,14 @@ class cs_connection_soap {
          $date_item = $dates_manager->getItem($item_id);
          $xml  = "<date_item>\n";
          $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
-         $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
+         $temp_title = $date_item->getTitle();
+         $temp_title = $this->prepareText($temp_title);
+         $xml .= "<date_title><![CDATA[".$temp_title."]]></date_title>\n";
          $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
          $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
          $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
          $temp_description = $date_item->getDescription();
-         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
-         $temp_description = strip_tags($temp_description);
-         $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
-         $temp_description = str_ireplace("\t", "   ", $temp_description);
-         $temp_description = str_ireplace("\r", "", $temp_description);
+         $temp_description = $this->prepareText($temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3174,13 +3176,11 @@ class cs_connection_soap {
          $material_item = $material_manager->getItem($item_id);
          $xml  = "<material_item>\n";
          $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
-         $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
+         $temp_title = $material_item->getTitle();
+         $temp_title = $this->prepareText($temp_title);
+         $xml .= "<material_title><![CDATA[".$temp_title."]]></material_title>\n";
          $temp_description = $material_item->getDescription();
-         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
-         $temp_description = strip_tags($temp_description);
-         $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
-         $temp_description = str_ireplace("\t", "   ", $temp_description);
-         $temp_description = str_ireplace("\r", "", $temp_description);
+         $temp_description = $this->prepareText($temp_description);
          $xml .= "<material_description><![CDATA[".$temp_description."]]></material_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3221,13 +3221,11 @@ class cs_connection_soap {
          while($section_item){
             $xml .= "<material_section>\n";
             $xml .= "<material_section_id>".$section_item->getItemID()."</material_section_id>\n";
-            $xml .= "<material_section_title>".$section_item->getTitle()."</material_section_title>\n";
+            $temp_title = $section_item->getTitle();
+            $temp_title = $this->prepareText($temp_title);
+            $xml .= "<material_section_title>".$temp_title."</material_section_title>\n";
             $temp_description = $section_item->getDescription();
-            $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
-            $temp_description = strip_tags($temp_description);
-            $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
-            $temp_description = str_ireplace("\t", "   ", $temp_description);
-            $temp_description = str_ireplace("\r", "", $temp_description);
+            $temp_description = $this->prepareText($temp_description);
             $xml .= "<material_section_description>".$temp_description."</material_section_description>\n";
             $modifier_user = $section_item->getModificatorItem();
             $xml .= "<material_section_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></material_section_last_modifier>\n";
@@ -3417,7 +3415,6 @@ class cs_connection_soap {
             $discussion_item = $discussion_list->getNext();
          }
          $xml .= "</discussion_list>";
-         #debugToFile($xml);
          $xml = $this->_encode_output($xml);
          return $xml;
       }
@@ -3440,7 +3437,9 @@ class cs_connection_soap {
          $discussion_item = $discussion_manager->getItem($item_id);
          $xml  = "<discussion_item>\n";
          $xml .= "<discussion_id><![CDATA[".$discussion_item->getItemID()."]]></discussion_id>\n";
-         $xml .= "<discussion_title><![CDATA[".$discussion_item->getTitle()."]]></discussion_title>\n";
+         $temp_title = $discussion_item->getTitle();
+         $temp_title = $this->prepareText($temp_title);
+         $xml .= "<discussion_title><![CDATA[".$temp_title."]]></discussion_title>\n";
          $modifier_user = $discussion_item->getModificatorItem();
          $xml .= "<discussion_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></discussion_last_modifier>\n";
          $xml .= "<discussion_last_modification_date><![CDATA[".$discussion_item->getModificationDate()."]]></discussion_last_modification_date>\n";
@@ -3485,13 +3484,11 @@ class cs_connection_soap {
          while($temp_article){
             $xml .= "<discussion_article>\n";
             $xml .= "<discussion_article_id><![CDATA[".$temp_article->getItemID()."]]></discussion_article_id>\n";
-            $xml .= "<discussion_article_title><![CDATA[".$temp_article->getTitle()."]]></discussion_article_title>\n";
+            $temp_title = $temp_article->getTitle();
+            $temp_title = $this->prepareText($temp_title);
+            $xml .= "<discussion_article_title><![CDATA[".$temp_title."]]></discussion_article_title>\n";
             $temp_description = $temp_article->getDescription();
-            $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
-            $temp_description = strip_tags($temp_description);
-            $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
-            $temp_description = str_ireplace("\t", "   ", $temp_description);
-            $temp_description = str_ireplace("\r", "", $temp_description);
+            $temp_description = $this->prepareText($temp_description);
             $xml .= "<discussion_article_description><![CDATA[".$temp_description."]]></discussion_article_description>\n";
             $xml .= "<discussion_article_files>\n";
             $article_file_list = $temp_article->getFileList();
@@ -3529,7 +3526,6 @@ class cs_connection_soap {
          if ( empty($noticed) or $noticed['read_date'] < $discussion_item->getModificationDate() ) {
             $noticed_manager->markNoticed($discussion_item->getItemID(),0);
          }
-         el($xml);
          return $xml;
       }
    }
@@ -3804,11 +3800,7 @@ class cs_connection_soap {
          $xml .= "<user_phone1><![CDATA[".$user_details_item->getTelephone()."]]></user_phone1>\n";
          $xml .= "<user_phone2><![CDATA[".$user_details_item->getCellularphone()."]]></user_phone2>\n";
          $temp_description = $user_details_item->getDescription();
-         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
-         $temp_description = strip_tags($temp_description);
-         $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
-         $temp_description = str_ireplace("\t", "   ", $temp_description);
-         $temp_description = str_ireplace("\r", "", $temp_description);
+         $temp_description = $this->prepareText($temp_description);
          $xml .= "<discussion_description><![CDATA[".$temp_description."]]></discussion_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($user_details_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3998,6 +3990,25 @@ class cs_connection_soap {
          
          return $xml;
       }
+   }
+   
+   function prepareText($text){
+      $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
+      $text = str_ireplace("<li>", "CS_LI", $text);
+      $text = str_ireplace("\n", "CS_NEWLINE", $text);
+      $text = str_ireplace("\r", "", $text);
+      $text = str_ireplace("\t", "", $text);
+      $text = str_ireplace("CS_LICS_NEWLINE", "&bull; ", $text);
+      $text = str_ireplace("CS_LI", "&bull; ", $text);
+      $text = str_ireplace("CS_NEWLINE", "\n", $text);
+      $current_encoding = mb_detect_encoding($text, 'auto');
+      $text = strip_tags($text);
+      $text = trim($text);
+      if(empty($text)){
+         $text = ' ';
+      }
+      $text = base64_encode($text);
+      return $text;
    }
 }
 ?>
