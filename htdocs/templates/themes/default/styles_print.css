@@ -1,0 +1,5 @@
+.fi_moredetails {
+    background: url("img/fi_md_bg.gif") repeat-y scroll 3px 0 transparent;
+    display: none;
+    min-height: 97px;
+}
