@@ -221,7 +221,7 @@ class cs_session_manager {
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
-         trigger_error('Problems saving session values for: '.$item->getSessionID().'.', E_USER_WARNING);
+         trigger_error('Problems saving session values for: '.$item->getSessionID().' with query: '.$query.'.', E_USER_WARNING);
       }
       unset($item);
    }

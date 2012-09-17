@@ -198,6 +198,59 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
       if ((!$session->issetValue('cookie') or $session->getValue('cookie') == '0') and !empty($current_SID)) {
          $address .= $amp_flag.'SID='.$current_SID;
       }
+         
+      // multi master implementation (06.09.2021 IJ)
+      $db = $environment->getConfiguration('db');
+      if ( count($db) > 1 ) {
+         if ( !$session->issetValue('cookie')
+              or $session->getValue('cookie') == '0'
+              or empty($_COOKIE['db_pid'])
+            ) {
+            $db_pid = $environment->getDBPortalID();
+            if ( $environment->inServer()
+                 or $environment->inPortal()
+               ) {
+      	      $cs_pid = $environment->getCurrentContextID();
+            } else {
+               $cs_pid = $environment->getCurrentPortalID();
+            }
+            if ( empty($db_pid)
+                 or $db_pid != $cs_pid 
+               ) {
+            	$db_pid = $cs_pid;
+            }
+            if ( !empty($db_pid) ) {
+            	if ( !strstr($address,'db_pid='.$db_pid) ) {
+            	   if ( strstr($address,'db_pid=') ) {
+            	   	$address = preg_replace('/'.$amp_flag.'db_pid=[0-9]*/', '', $address);
+            	   }          		
+                  $address .= $amp_flag.'db_pid='.$db_pid;
+            	}
+            }
+         } elseif ( !empty($_COOKIE['db_pid'])
+                    and strstr($address,'db_pid=')
+                  ) {
+           	$address = preg_replace('/'.$amp_flag.'db_pid=[0-9]*/', '', $address);
+         } elseif ( !empty($_COOKIE['db_pid'])
+                    and !strstr($address,'db_pid=')
+                  ) {
+         	$db_pid = $environment->getDBPortalID();
+         	if ( $environment->inServer()
+         	     or $environment->inPortal()
+         	   ) {
+         		$cs_pid = $environment->getCurrentContextID();
+         	} else {
+         		$cs_pid = $environment->getCurrentPortalID();
+         	}
+            if ( empty($db_pid)
+                 or $db_pid != $cs_pid 
+               ) {
+               $address .= $amp_flag.'db_pid='.$cs_pid;
+            }
+         }
+      }
+      // multi master implementation - END
+         
    }
 
    if ( !empty($fragment) ) {

@@ -99,6 +99,9 @@ class cs_environment {
    private $_class_factory = NULL;
    private $_archive_mode = false;
 
+   # multi master implementation
+   private $_db_portal_id = 0;  
+   
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
    */
@@ -2161,17 +2164,71 @@ class cs_environment {
 
    function _getMySQLConnector () {
       if ( empty($this->_db_mysql_connector) ) {
-         global $db;
+
+      	$db = $this->getConfiguration('db');
+         $db_choice = 'normal';
+         
+      	// multi master implementation (03.09.2012 IJ)
+         if ( count($db) > 1 ) {
+         	$db_force_master = $this->getConfiguration('db_force_master');
+         	if ( !empty($db_force_master) ) {
+         		$db_choice = $db_force_master;
+         	} else {
+         	   $portal_id = $this->getDBPortalID();
+         	   foreach ($db as $key => $value_array) {
+         		   if ( !empty($value_array['portals'])
+         		        and in_array($portal_id,$value_array['portals'])
+         		      ) {
+         		   	if ( empty($value_array['timeslots']) ) {
+         			      $db_choice = $key;
+         		   	} else {
+         		   		foreach ( $value_array['timeslots'] as $timeslot_array ) {
+         		   			if ( !empty($timeslot_array['begin'])
+         		   			     and !empty($timeslot_array['end'])
+         		   			     and date('H:i') >= $timeslot_array['begin']
+         		   			     and date('H:i') < $timeslot_array['end']
+         		   			   ) {
+         		   				$db_choice = $key;
+         		   				break;
+         		   			}
+         		   		}
+         		   	}
+         		   }
+         		}
+         	}
+         }
+         // multi master implemenation - END
+         
          include_once('classes/db_mysql_connector.php');
-         $this->_db_mysql_connector = new db_mysql_connector($db['normal']);
+         $this->_db_mysql_connector = new db_mysql_connector($db[$db_choice]);
          global $c_show_debug_infos;
          #if ( isset($c_show_debug_infos) and $c_show_debug_infos ) {
             $this->_db_mysql_connector->setLogQueries();
          #}
+         $db_read_only = $this->getConfiguration('db_read_only');
+         if ( isset($db_read_only)
+              and $db_read_only
+            ) {
+            $this->_db_mysql_connector->setReadOnly();	
+         }              
       }
       return $this->_db_mysql_connector;
    }
 
+   ##################################################################
+   # multi master implemenation - BEGIN
+   ##################################################################
+   public function getDBPortalID () {
+      return $this->_db_portal_id;
+   }
+
+   public function setDBPortalID ( $value ) {
+      $this->_db_portal_id = (int)$value;
+   }
+   ##################################################################
+   # multi master implemenation - BEGIN
+   ##################################################################
+   
    public function getCurrentCommSyVersion () {
       $server_item = $this->getServerItem();
       return $server_item->getCurrentCommSyVersion();

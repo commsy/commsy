@@ -115,6 +115,19 @@ $_POST = encode(FROM_FORM,$_POST);
 $_GET  = encode(FROM_GET,$_GET);
 $_GET  = encode(FROM_FORM,$_GET);
 
+// multi master implementation (06.09.2012 IJ)
+$db = $environment->getConfiguration('db');
+if ( count($db) > 1 ) {
+	if ( !empty($_COOKIE['db_pid']) ) {
+		$environment->setDBPortalID($_COOKIE['db_pid']);
+	} elseif ( !empty($_GET['db_pid']) ) {
+		$environment->setDBPortalID($_GET['db_pid']);
+	} elseif ( !empty($_POST['db_pid']) ) {
+		$environment->setDBPortalID($_POST['db_pid']);
+	}
+}
+// multi master implementation - END
+
 // include classes needed for this script
 include_once('classes/cs_session_item.php');
 include_once('classes/cs_session_manager.php');
@@ -673,6 +686,25 @@ if ( !empty($SID) ) {
       redirect_with_url($url);
    }
 }
+
+// multi master implementation - BEGIN
+$session_item = $environment->getSessionItem();
+if ( $session_item->issetValue('db_save_pid_in_cookie') ) {
+	setcookie('db_pid', $environment->getDBPortalID(), 0, $environment->getConfiguration('cookiepath'), $environment->getConfiguration('domain'), 0);
+	$session_item->unsetValue('db_save_pid_in_cookie');
+} elseif ( $session_item->issetValue('db_renew_pid_in_cookie') ) {
+	$cs_pid = 0;
+	if ( $environment->inServer()
+	     or $environment->inPortal()
+	   ) {
+		$cs_pid = $environment->getCurrentContextID();
+	} else {
+		$cs_pid = $environment->getCurrentPortalID();
+	}	
+	setcookie('db_pid', $cs_pid, 0, $environment->getConfiguration('cookiepath'), $environment->getConfiguration('domain'), 0);
+	$session_item->unsetValue('db_renew_pid_in_cookie');
+}
+// multi master implementation - END
 
 /************ language management **************/
 $translator = $environment->getTranslationObject();
@@ -1271,6 +1303,41 @@ if ($current_user->isUser() and !$current_user->isRoot()) {
       unset($portal_user);
    }
 }
+
+// multi master implementation (06.09.2012 IJ)
+$db = $environment->getConfiguration('db');
+if ( count($db) > 1 ) {
+	$session_item = $environment->getSessionItem();
+	$cookie = false;
+	if ( $session_item->issetValue('cookie')) {
+		$cookie_in_session = $session_item->getValue('cookie');
+		if ( !empty($cookie_in_session)
+		     and $cookie_in_session == 1
+		   ) {
+			$cookie = true;
+		}
+	}
+	if ( $cookie ) {
+		$db_pid = $environment->getDBPortalID();
+		if ( $environment->inServer()
+		     or $environment->inPortal()
+		   ) {
+			$cs_pid = $environment->getCurrentContextID();
+		} else {
+			$cs_pid = $environment->getCurrentPortalID();
+		}
+		if ( empty($db_pid)
+		     or empty($_COOKIE['db_pid'])
+		   ) {
+			$session_item->setValue('db_save_pid_in_cookie', 1);
+		} elseif ( $cs_pid != $db_pid
+		           and !empty($_COOKIE['db_pid'])
+		         ) {
+			$session_item->setValue('db_renew_pid_in_cookie', 1);
+		}
+	}
+}
+// multi master implementation - END
 
 /*********** SAVE SESSION ***********/
 
