@@ -705,24 +705,33 @@ class cs_connection_soap {
       $info = 'ERROR';
       $info_text = 'default-error';
       if ( empty($user_id) or empty($password) ) {
+         el('authenticate 1');
          $info = 'ERROR';
          $info_text = 'user_id or password lost';
       } else {
+         el('authenticate 2');
          if ( !isset($this->_environment) ) {
+            el('authenticate 3');
             $info = 'ERROR';
             $info_text = 'environment lost';
          } else {
+            el('authenticate 4');
             $this->_environment->setCurrentContextID($portal_id);
             $authentication = $this->_environment->getAuthenticationObject();
             if ( isset($authentication) ) {
+               el('authenticate 5');
                if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
+                  el('authenticate 6');
                   if ($this->_isSessionActive($user_id,$portal_id)) {
+                     el('authenticate 7');
                      $result = $this->_getActiveSessionID($user_id,$portal_id);
                      if ( empty($result) ) {
+                        el('authenticate 8');
                         $info = 'ERROR';
                         $info_text = 'no session id from session manager -> database error';
                      }
                   } else {
+                     el('authenticate 9');
                      // make session
                      include_once('classes/cs_session_item.php');
                      $session = new cs_session_item();
