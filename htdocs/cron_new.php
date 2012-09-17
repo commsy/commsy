@@ -372,8 +372,8 @@ foreach ( $portal_id_array as $portal_id ) {
 
 // server cron jobs must be run AFTER all other portal crons
 if ( !isset($context_id)
-or ($context_id == $environment->getServerID())
-) {
+     or ($context_id == $environment->getServerID())
+   ) {
    fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
    displayCronResults($server_item->runCron());
    fwrite($file, '<hr/>'.BRLF);

@@ -60,6 +60,9 @@ $c_enable_htmltextarea_security = false;
 // ATTENTION: maybe the newsletter will be send twice
 // default = false -> use old cron
 // $c_cron_use_new = true;
+// if you use the new cron mechanism, you can force portals (use portal id) to the old one
+// $c_cron_use_old_array = array();
+// $c_cron_use_old_array[] = 160;
 
 // use project ids stored in community room items
 // default = false -> use LEFT JOIN room -> link_items -> room
