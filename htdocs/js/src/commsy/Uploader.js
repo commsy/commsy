@@ -38,7 +38,8 @@ define([	"dojo/_base/declare",
 
 			dojo.ready(Lang.hitch(this, function() {
 				this.uploader = new dojox.form.Uploader({
-					multiple:		!this.single,
+					/* multiple false seems to be bugy */
+					multiple:		true,//!this.single,
 					uploadOnSelect: false,
 					"class":		"fileSelector",
 

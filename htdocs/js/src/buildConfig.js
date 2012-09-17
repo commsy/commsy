@@ -11,10 +11,13 @@ var dojoConfig = {
 	           					{ name: "dijit", location: "dijit" },
 	           					{ name: "dojox", location: "dojox" },
 	           					{ name: "commsy", location: "commsy" },
-	           					{ name: "widgets", location: "commsy/widgets" },
+	           					/*{ name: "widgets", location: "commsy/widgets" },*/
 	           					{ name: "ckeditor", location: "../../3rdParty/ckeditor" },
 	           					{ name: "cbtree", location: "cbtree" }
 	],
+	/*aliases: [
+	          					[ "widgets", "commsy/widgets" ]
+	],*/
 	async:						true,
 	parseOnLoad:				false,
 	isDebug:					false

@@ -75,7 +75,7 @@ define([	"dojo/_base/declare",
 			
 			var deferred = new Deferred();
 			
-			require([widgetPath], Lang.hitch(this, function(widgetObject) {
+			require(["commsy/" + widgetPath], Lang.hitch(this, function(widgetObject) {
 				// get template
 				this.AJAXRequest("widgets", "getHTMLForWidget", { widgetPath: widgetPath },
 					Lang.hitch(this, function(templateString) {
