@@ -2958,8 +2958,11 @@ class cs_connection_soap {
          $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
          $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
          $temp_description = $date_item->getDescription();
-         $temp_description = str_ireplace("\n".'<br />', "\n", $temp_description);
+         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
          $temp_description = strip_tags($temp_description);
+         $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
+         $temp_description = str_ireplace("\t", "   ", $temp_description);
+         $temp_description = str_ireplace("\r", "", $temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3120,30 +3123,31 @@ class cs_connection_soap {
          $reader_manager = $this->_environment->getReaderManager();
          $material_manager = $this->_environment->getMaterialManager();
          $material_manager->setContextLimit($context_id);
-         //$dates_manager->setDateModeLimit(2);
-         //$count_all = $material_manager->getCountAll();
+         $material_manager->showNoNotActivatedEntries();
          $material_manager->select();
          $material_list = $material_manager->get();
          $xml = "<material_list>\n";
          $material_item = $material_list->getFirst();
          while($material_item) {
-            $xml .= "<material_item>\n";
-            $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
-            $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
-            $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
-            if ( empty($reader) ) {
-               $xml .= "<material_read><![CDATA[new]]></material_read>\n";
-            } elseif ( $reader['read_date'] < $material_item->getModificationDate() ) {
-               $xml .= "<material_read><![CDATA[changed]]></material_read>\n";
-            } else {
-               $xml .= "<material_read><![CDATA[]]></material_read>\n";
+            if($material_item->maySee($user_item)){
+               $xml .= "<material_item>\n";
+               $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
+               $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
+               $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
+               if ( empty($reader) ) {
+                  $xml .= "<material_read><![CDATA[new]]></material_read>\n";
+               } elseif ( $reader['read_date'] < $material_item->getModificationDate() ) {
+                  $xml .= "<material_read><![CDATA[changed]]></material_read>\n";
+               } else {
+                  $xml .= "<material_read><![CDATA[]]></material_read>\n";
+               }
+               if($material_item->mayEdit($user_item)){
+                  $xml .= "<material_edit><![CDATA[edit]]></material_edit>\n";
+               } else {
+                  $xml .= "<material_edit><![CDATA[non_edit]]></material_edit>\n";
+               }
+               $xml .= "</material_item>\n";
             }
-            if($material_item->mayEdit($user_item)){
-               $xml .= "<material_edit><![CDATA[edit]]></material_edit>\n";
-            } else {
-               $xml .= "<material_edit><![CDATA[non_edit]]></material_edit>\n";
-            }
-            $xml .= "</material_item>\n";
             $material_item = $material_list->getNext();
          }
          $xml .= "</material_list>";
@@ -3172,8 +3176,11 @@ class cs_connection_soap {
          $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
          $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
          $temp_description = $material_item->getDescription();
+         $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
          $temp_description = strip_tags($temp_description);
-         $temp_description = str_ireplace("\n".'<br />', "\n", $temp_description);
+         $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
+         $temp_description = str_ireplace("\t", "   ", $temp_description);
+         $temp_description = str_ireplace("\r", "", $temp_description);
          $xml .= "<material_description><![CDATA[".$temp_description."]]></material_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3216,8 +3223,11 @@ class cs_connection_soap {
             $xml .= "<material_section_id>".$section_item->getItemID()."</material_section_id>\n";
             $xml .= "<material_section_title>".$section_item->getTitle()."</material_section_title>\n";
             $temp_description = $section_item->getDescription();
+            $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
             $temp_description = strip_tags($temp_description);
-            $temp_description = str_ireplace("\n".'<br />', "\n", $temp_description);
+            $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
+            $temp_description = str_ireplace("\t", "   ", $temp_description);
+            $temp_description = str_ireplace("\r", "", $temp_description);
             $xml .= "<material_section_description>".$temp_description."</material_section_description>\n";
             $modifier_user = $section_item->getModificatorItem();
             $xml .= "<material_section_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></material_section_last_modifier>\n";
@@ -3476,7 +3486,13 @@ class cs_connection_soap {
             $xml .= "<discussion_article>\n";
             $xml .= "<discussion_article_id><![CDATA[".$temp_article->getItemID()."]]></discussion_article_id>\n";
             $xml .= "<discussion_article_title><![CDATA[".$temp_article->getTitle()."]]></discussion_article_title>\n";
-            $xml .= "<discussion_article_description><![CDATA[".$temp_article->getDescription()."]]></discussion_article_description>\n";
+            $temp_description = $temp_article->getDescription();
+            $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+            $temp_description = strip_tags($temp_description);
+            $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
+            $temp_description = str_ireplace("\t", "   ", $temp_description);
+            $temp_description = str_ireplace("\r", "", $temp_description);
+            $xml .= "<discussion_article_description><![CDATA[".$temp_description."]]></discussion_article_description>\n";
             $xml .= "<discussion_article_files>\n";
             $article_file_list = $temp_article->getFileList();
             $temp_article_file = $article_file_list->getFirst();
@@ -3788,10 +3804,11 @@ class cs_connection_soap {
          $xml .= "<user_phone1><![CDATA[".$user_details_item->getTelephone()."]]></user_phone1>\n";
          $xml .= "<user_phone2><![CDATA[".$user_details_item->getCellularphone()."]]></user_phone2>\n";
          $temp_description = $user_details_item->getDescription();
-         $temp_description = html_entity_decode($temp_description);
-         $temp_description = utf8_encode($temp_description);
-         $temp_description = str_ireplace('<br />', "\n", $temp_description);
          $temp_description = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$temp_description);
+         $temp_description = strip_tags($temp_description);
+         $temp_description = str_ireplace("\n".'<br />', "", $temp_description);
+         $temp_description = str_ireplace("\t", "   ", $temp_description);
+         $temp_description = str_ireplace("\r", "", $temp_description);
          $xml .= "<discussion_description><![CDATA[".$temp_description."]]></discussion_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($user_details_item->getItemID(), $user_item->getItemID());
          if ( empty($reader) ) {
@@ -3923,6 +3940,7 @@ class cs_connection_soap {
          
          $material_manager = $this->_environment->getMaterialManager();
          $material_manager->setContextLimit($context_id);
+         $material_manager->showNoNotActivatedEntries();
          $material_manager->select();
          $material_list = $material_manager->get();
          $material_item = $material_list->getFirst();
