@@ -70,6 +70,11 @@ var profile = (function(){
     			    "commsy/AutoOpenPopup"*/
     			],
     			exclude: [
+    			    /*
+    			     * There is a problem building i18n packages, so wee need to exlude this file,
+    			     * otherwise it would be loaded as a popup dependency
+    			     */
+    			    "commsy/PopupHandler"
     			]
     		}
     	},

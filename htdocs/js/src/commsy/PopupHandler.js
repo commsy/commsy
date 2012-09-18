@@ -8,7 +8,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-style",
         	"dijit/Tooltip",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, dom_class, dom_attr, domConstruct, domStyle, Tooltip) {
+        	"dojo/i18n!./nls/tooltipErrors",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, dom_class, dom_attr, domConstruct, domStyle, Tooltip, ErrorTranslations) {
 	return declare(BaseClass, {
 		is_open:				false,
 		contentNode:			null,
@@ -348,6 +349,15 @@ define([	"dojo/_base/declare",
 		onPopupSubmitError: function(response) {
 			// remove loading screen
 			this.destroyLoading();
+			
+			switch (response.code) {
+				case "113":				/* 	tags or buzzwords are mandatory and not given */
+					var errorNode = query("a[href='buzzwords_tab']", this.contentNode)[0] || query("a[href='tags_tab']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.generalTagsBuzzwords113, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;
+			}
 		},
 		
 		closeErrorTooltips: function() {
