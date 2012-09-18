@@ -551,6 +551,20 @@
 <message name='getRoomReadCounterOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getModerationUserListIN'>
+  <part name='session_id' type='xsd:string'/>
+</message>
+<message name='getModerationUserListOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='activateUserIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='activate_user_id' type='xsd:integer'/>
+</message>
+<message name='activateUserOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -821,6 +835,14 @@
   <operation name='getRoomReadCounter'>
     <input message='tns:getRoomReadCounterIN'/>
     <output message='tns:getRoomReadCounterOUT'/>
+  </operation>
+  <operation name='getModerationUserList'>
+    <input message='tns:getModerationUserListIN'/>
+    <output message='tns:getModerationUserListOUT'/>
+  </operation>
+  <operation name='activateUser'>
+    <input message='tns:activateUserIN'/>
+    <output message='tns:activateUserOUT'/>
   </operation>
 </portType>
 
@@ -1557,6 +1579,28 @@
   </operation>
   <operation name='getRoomReadCounter'>
     <soap:operation soapAction='urn:xmethodsCommSy#getRoomReadCounter'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getModerationUserList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getModerationUserList'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='activateUser'>
+    <soap:operation soapAction='urn:xmethodsCommSy#activateUser'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

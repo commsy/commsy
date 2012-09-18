@@ -3006,7 +3006,6 @@ class cs_connection_soap {
       } else {
          return new SoapFault('ERROR','Session not valid!');
       }
-      el($xml);
       return $xml;
    }
    
@@ -4128,6 +4127,86 @@ class cs_connection_soap {
          
          return $xml;
       }
+   }
+   
+   public function getModerationUserList($session_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $room_manager = $this->_environment->getRoomManager();
+         $room_list = $room_manager->getRelatedRoomListForUser($user_item);
+
+         $room_item = $room_list->getFirst();
+         $xml = "<moderation_user_list>\n";
+         while($room_item) {
+            el($room_item->getItemID());
+            $is_moderator = false;
+            $room_user = $room_item->getUserByUserID($user_id, $auth_source_id);
+            if($room_user->getStatus() == '3'){
+               $is_moderator = true;
+            }
+
+            if($is_moderator){
+               el('is_moderator');
+               $user_manager->resetLimits();
+               $user_manager->setContextLimit($room_item->getItemID());
+               $user_manager->setRegisteredLimit();
+               $user_manager->select();
+               $user_list = $user_manager->get();
+               $temp_user_item = $user_list->getFirst();
+               while($temp_user_item){
+                  if($temp_user_item->getStatus() == '1'){
+                     el('user: '.$temp_user_item->getItemID().' Status: '.$temp_user_item->getStatus());
+                     $xml .= "<moderation_user_item>";
+                     $xml .= "<firstname><![CDATA[".$temp_user_item->getFirstname()."]]></firstname>\n";
+                     $xml .= "<lastname><![CDATA[".$temp_user_item->getLastname()."]]></lastname>\n";
+                     $xml .= "<item_id><![CDATA[".$temp_user_item->getItemID()."]]></item_id>\n";
+                     $xml .= "<context_id><![CDATA[".$room_item->getItemID()."]]></context_id>\n";
+                     $xml .= "<context_name><![CDATA[".$room_item->getTitle()."]]></context_name>\n";
+                     $xml .= "</moderation_user_item>\n";
+                  }
+                  $temp_user_item = $user_list->getNext();
+               }
+            }
+            
+            $room_item = $room_list->getNext();
+         }
+         $xml .= "</moderation_user_list>";
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session not valid!');
+      }
+      return $xml;
+   }
+   
+   public function activateUser($session_id, $activate_user_id) {
+      include_once('functions/development_functions.php');
+      if($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+         $activate_user_item = $user_manager->getItem($activate_user_id);
+         $activate_user_item->makeUser();
+         $activate_user_item->save();
+         $xml = "<activateUser>\n";
+         $xml .= "</activateUser>";
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session not valid!');
+      }
+      return $xml;
    }
    
    function prepareText($text){
