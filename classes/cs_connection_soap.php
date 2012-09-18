@@ -2950,35 +2950,38 @@ class cs_connection_soap {
          $auth_source_id = $session->getValue('auth_source');
          $user_manager = $this->_environment->getUserManager();
          $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
-         $user_room_list = $user_item->getRelatedProjectList();
+         #$user_room_list = $user_item->getRelatedProjectList();
          $room_manager = $this->_environment->getRoomManager();
-         $room_manager->setContextLimit($portal_id);
-         $room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
-         $room_manager->setOrder('activity_rev');
-         $room_manager->select();
-         $room_list = $room_manager->get();
+         #$room_manager->setContextLimit($portal_id);
+         #$room_manager->setRoomTypeLimit(CS_PROJECT_TYPE);
+         #$room_manager->setOrder('activity_rev');
+         #$room_manager->select();
+         #$user_room_list = null;
+         $room_list = $room_manager->getRelatedRoomListForUser($user_item);
 
          #$room_list = $user_room_list;
          
          $room_item = $room_list->getFirst();
          $xml = "<room_list>\n";
          while($room_item) {
-            $user_room_item = $user_room_list->getFirst();
-            $is_room_user = false;
-            while($user_room_item){
-               if($user_room_item->getItemID() == $room_item->getItemID()){
-                  $is_room_user = true;
-               }
-               $user_room_item = $user_room_list->getNext();
-            }
+            #$user_room_item = $user_room_list->getFirst();
+            #$is_room_user = false;
+            #while($user_room_item){
+            #   if($user_room_item->getItemID() == $room_item->getItemID()){
+            #      $is_room_user = true;
+            #   }
+            #   $user_room_item = $user_room_list->getNext();
+            #}
+            $is_room_user = true;
             
+            #$is_membership_pending = false;
+            #if($is_room_user){
+            #   $room_user = $room_item->getUserByUserID($user_id, $auth_source_id);
+            #   if($room_user->getStatus() == '1'){
+            #      $is_membership_pending = true;
+            #   }
+            #}
             $is_membership_pending = false;
-            if($is_room_user){
-               $room_user = $room_item->getUserByUserID($user_id, $auth_source_id);
-               if($room_user->getStatus() == '1'){
-                  $is_membership_pending = true;
-               }
-            }
             
             $xml .= "<room_item>";
             $xml .= "<title><![CDATA[".$room_item->getTitle()."]]></title>\n";
@@ -3003,6 +3006,7 @@ class cs_connection_soap {
       } else {
          return new SoapFault('ERROR','Session not valid!');
       }
+      el($xml);
       return $xml;
    }
    
