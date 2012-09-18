@@ -412,7 +412,7 @@ if ($type != CS_DISCUSSION_TYPE) {
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
 				 */
 			}
-			
+
 			if ($user->isUser()) $return["answer"] = true;
 
 			return $return;
@@ -744,7 +744,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					// append return and recursive call
 					$return[] = array(
 						'item_id'			=> $item->getItemID(),
-						'position'			=> $number,
+						'position'			=> substr($number,2,strlen($number)),
 						'subject'			=> $item->getSubject(),
 						'description'		=> $description,
 						'creator'			=> $creator_fullname,
@@ -877,7 +877,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 			$return[] = array(
 				'item_id'			=> $root->getItemID(),
-				'position'			=> $root->getPosition(),
+				'position'			=> '',
 				'subject'			=> $root->getSubject(),
 				'description'		=> $description,
 				'creator'			=> $creator_fullname,

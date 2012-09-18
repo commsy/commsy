@@ -31,7 +31,7 @@
 
 
 			<div class="item_actions" >
-				<a class="edit" data-custom="expand: 'edit_expand_article_{$article.item_id}'" href="#"><span class="edit_set"> &nbsp; </span></a>
+				<a class="edit item_actions_glow" data-custom="expand: 'edit_expand_article_{$article.item_id}'" href="#"><span class="edit_set_ok"> &nbsp; </span></a>
 				<a class="detail" data-custom="expand: 'detail_expand_article_{$article.item_id}'" href="#"><span class="details_ia"> &nbsp; </span></a>
 			</div>
 
@@ -40,7 +40,7 @@
 				<a name="article{$article.item_id}"></a>
 
 				<!-- Start fade_in_ground -->
-				<div id="edit_expand_article_{$article.item_id}" class="hidden">
+				<div id="edit_expand_article_{$article.item_id}">
 					<div class="fade_in_ground_actions">
 						{if $article.actions.edit}
 							<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
@@ -69,7 +69,7 @@
 							</div>
 							<div class="column_585_nopadding" style="width:{$discarticle_content_width}px">
 								<div class="post_content">
-									<h4 class="float-left">{$article.position}.
+									<h4 class="float-left">{if !empty($article.position)}{$article.position}.{/if}
 										{*{if $article.noticed == 'new' or $article.noticed == 'changed'}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}*} {$article.subject}
 									</h4>
 
