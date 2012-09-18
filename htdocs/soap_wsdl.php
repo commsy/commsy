@@ -329,6 +329,15 @@
   <part name='result' type='xsd:string'/>
 </message>
 
+<message name='authenticateForAppIN'>
+  <part name='user_id' type='xsd:string'/>
+  <part name='password' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='auth_source_id' type='xsd:integer'/>
+</message>
+<message name='authenticateForAppOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='getPortalRoomListIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='portal_id' type='xsd:integer'/>
@@ -717,6 +726,10 @@
     <output message='tns:getStatisticsOUT'/>
   </operation>
   
+  <operation name='authenticateForApp'>
+    <input message='tns:authenticateForAppIN'/>
+    <output message='tns:authenticateForAppOUT'/>
+  </operation>
   <operation name='getPortalRoomList'>
     <input message='tns:getPortalRoomListIN'/>
     <output message='tns:getPortalRoomListOUT'/>
@@ -1289,6 +1302,17 @@
     </output>
   </operation>
   
+  <operation name='authenticateForApp'>
+    <soap:operation soapAction='urn:xmethodsCommSy#authenticateForApp'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
   <operation name='getPortalRoomList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomList'/>
       <input>

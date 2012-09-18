@@ -330,6 +330,25 @@ class cs_session_manager {
       return $retour;
    }
 
+   public function getActiveSOAPSessionIDForApp ($user_id, $portal_id) {
+      $retour = '';
+      $query = 'SELECT session_id FROM session WHERE (session_value LIKE "%'.encode(AS_DB,'s:12:"SOAP_SESSION";i:1').'%" or session_value LIKE "%'.encode(AS_DB,'s:10:"SOAP_LOGIN";i:1').'%") and (session_value LIKE "%i:'.encode(AS_DB,$portal_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$portal_id).'\"'.'%") and (session_value LIKE "%i:'.encode(AS_DB,$user_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$user_id).'\"'.'%") ORDER BY created DESC;';
+      $this->_last_query = $query;
+      
+      $result = $this->_db_conntector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting session_id values for: '.$user_id.' - '.$portal_id.' - SQL-Query:'.$query.'.', E_USER_WARNING);
+      } elseif ( !empty($result[0]) ) {
+         $session_row = $result[0];
+         $session_id = $session_row['session_id'];
+         if ( !empty($session_id) ) {
+            $retour = $session_id;
+         }
+      }
+      return $retour;
+   }
+   
    public function updateSessionCreationDate ($session_id) {
       $retour = false;
       $query = 'UPDATE session SET created = NOW() WHERE session_id="'.encode(AS_DB,$session_id).'";';

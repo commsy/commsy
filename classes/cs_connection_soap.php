@@ -2822,6 +2822,123 @@ class cs_connection_soap {
    //  Additional methods for iOS application
    // ----------------------------------------
 
+   public function authenticateForApp ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
+      el('authenticate '. $user_id);
+      el('authenticate');
+      
+      $user_id = $this->_encode_input($user_id);
+      $password = $this->_encode_input($password);
+      $portal_id = $this->_encode_input($portal_id);
+      if ( !empty($auth_source_id) and $auth_source_id != 0 ) {
+         $auth_source_id = $this->_encode_input($auth_source_id);
+      }
+      $result = '';
+
+      $info = 'ERROR';
+      $info_text = 'default-error';
+      if ( empty($user_id) or empty($password) ) {
+         el('authenticate 1');
+         $info = 'ERROR';
+         $info_text = 'user_id or password lost';
+      } else {
+         el('authenticate 2');
+         if ( !isset($this->_environment) ) {
+            el('authenticate 3');
+            $info = 'ERROR';
+            $info_text = 'environment lost';
+         } else {
+            el('authenticate 4');
+            $this->_environment->setCurrentContextID($portal_id);
+            $authentication = $this->_environment->getAuthenticationObject();
+            if ( isset($authentication) ) {
+               el('authenticate 5');
+               if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
+                  el('authenticate 6');
+                  if ($this->_isSessionActiveForApp($user_id,$portal_id)) {
+                     el('authenticate 7');
+                     $result = $this->_getActiveSessionIDForApp($user_id,$portal_id);
+                     if ( empty($result) ) {
+                        el('authenticate 8');
+                        $info = 'ERROR';
+                        $info_text = 'no session id from session manager -> database error';
+                     }
+                  } else {
+                     el('authenticate 9');
+                     // make session
+                     include_once('classes/cs_session_item.php');
+                     $session = new cs_session_item();
+                     $session->createSessionID($user_id);
+                     // save portal id in session to be sure, that user didn't
+                     // switch between portals
+                     $session->setValue('user_id',$user_id);
+                     $session->setValue('commsy_id',$portal_id);
+                     if ( empty($auth_source_id) or $auth_source_id == 0 ) {
+                        $auth_source_id = $authentication->getAuthSourceItemID();
+                     }
+                     $session->setValue('auth_source',$auth_source_id);
+                     $session->setValue('cookie','0');
+                     $session->setSoapSession();
+
+                     // save session
+                     $session_manager = $this->_environment->getSessionManager();
+                     $session_manager->save($session);
+
+                     $result = $session->getSessionID();
+                     
+                     
+                  }
+               } else {
+                  $info = 'ERROR';
+                  $info_text = 'account not granted '.$user_id.' - '.$password.' - '.$portal_id;
+               }
+            } else {
+               $info = 'ERROR';
+               $info_text = 'authentication object lost';
+            }
+         }
+      }
+      el('authenticate: $result '.$result);
+      el('authenticate: $info '.$info);
+      el('authenticate: $info_text '.$info_text);
+      if ( empty($result) and !empty($info) ) {
+         $result = new SoapFault($info,$info_text);
+      } else {
+         $result = $this->_encode_output($result);
+      }
+      return $result;
+   }
+   
+   private function _isSessionActiveForApp ($user_id, $portal_id) {
+      $retour = false;
+      if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
+         $retour = true;
+      } else {
+         $session_id = $this->_getActiveSessionIDForApp($user_id,$portal_id);
+         if ( !empty($session_id) ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   private function _getActiveSessionIDForApp ($user_id, $portal_id) {
+      $retour = '';
+      el('_getActiveSessionID '.$user_id);
+      if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
+         el('_getActiveSessionID !empty');
+         $retour = $this->_session_id_array[$portal_id][$user_id];
+      } else {
+         $session_manager = $this->_environment->getSessionManager();
+         $retour = $session_manager->getActiveSOAPSessionIDForApp($user_id,$portal_id);
+         if ( !empty($retour) ) {
+            $this->_session_id_array[$portal_id][$user_id] = $retour;
+            $this->_updateSessionCreationDate($retour);
+         }
+      }
+      el('_getActiveSessionID $retour '.$retour);
+      return $retour;
+   }
+   
    public function getPortalRoomList($session_id, $portal_id) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
