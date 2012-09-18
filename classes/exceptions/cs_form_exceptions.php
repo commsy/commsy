@@ -16,3 +16,7 @@
 	class cs_form_value_exception extends cs_base_exception {
 		
 	}
+	
+	class cs_form_general_exception extends cs_base_exception {
+		
+	}

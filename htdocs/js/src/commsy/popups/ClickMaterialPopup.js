@@ -6,7 +6,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/on",
-        	"dojo/topic"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic) {
+        	"dojo/topic",
+        	"dijit/Tooltip",
+        	"dojo/i18n!./nls/tooltipErrors"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, Topic, Tooltip, ErrorTranslations) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 
@@ -126,6 +128,23 @@ define([	"dojo/_base/declare",
 					dom_class.add(node, "hidden");
 				}
 			});
+		},
+		
+		/************************************************************************************
+		 * Error Handling
+		 ************************************************************************************/
+		onPopupSubmitError: function(response) {
+			// process parent error handling
+			this.inherited(arguments);
+			
+			switch (response.code) {
+				case "113":				/* 	tags or buzzwords are mandatory and not given */
+					var errorNode = query("a[href='buzzwords_tab']", this.contentNode)[0] || query("a[href='tags_tab']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.generalTagsBuzzwords113, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;
+			}
 		}
 	});
 });

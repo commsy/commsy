@@ -45,7 +45,7 @@
 			// setup return
 			$return = array(
 				'status'	=> 'error',
-				'code'		=> $code,
+				'code'		=> (string) $code,
 				'reason'	=> $reason,
 				'detail'	=> $detail
 			);

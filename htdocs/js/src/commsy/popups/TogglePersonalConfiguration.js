@@ -255,9 +255,10 @@ define([	"dojo/_base/declare",
 			
 			switch (response.code) {
 				case "1011":			/* user id already registered */
-					// TODO: tooltip stays when closing popup
 					var errorNode = Query("input[name='form_data[user_id]']", this.contentNode)[0];
 					Tooltip.show(ErrorTranslations.personalPopup1011, errorNode);
+					this.errorNodes.push(errorNode);
+					
 					break;
 				
 				case "1012":			/* user id contains umlaute */

@@ -136,10 +136,47 @@
 
 			if(!empty($missing_fields)) {
 				// setup new exception
-				$exception = new cs_form_mandatory_exception('missing_mandatory field', 101);
+				$exception = new cs_form_mandatory_exception('missing mandatory field', 101);
 				$exception->setMissingFields($missing_fields);
 
 				throw $exception;
+			}
+		}
+		
+		/** \brief	General form checks
+		 * 
+		 * This Method performs some generell checks when saving.
+		 * 
+		 * @param	form_data	The form data
+		 * @param	additional	Additinal given data to the save process
+		 */
+		public function performChecks($form_data, $additional) {
+			/**
+			 * Check if buzzwords and tags are mandatory and given
+			 */
+			$utils = $this->getUtils();
+			$currentContextItem = $this->_environment->getCurrentContextItem();
+			
+			try {
+				if ($utils->showTags() && $currentContextItem->isTagMandatory()) {
+					if (empty($form_data["tags"])) {
+						$exception = new cs_form_general_exception("tags are mandatory", 113);
+						throw $exception;
+					}
+				}
+				
+				if ($utils->showBuzzwords() && $currentContextItem->isBuzzwordMandatory()) {
+					if (empty($form_data["buzzwords"])) {
+						$exception = new cs_form_general_exception("buzzwords are mandatory", 113);
+						throw $exception;
+					}
+				}
+			} catch (cs_form_general_exception $e) {
+				// setup return array
+				$this->setErrorReturn($e->getCode(), $e->getMessage(), array());
+				
+				echo $this->_return;
+				exit;
 			}
 		}
 
