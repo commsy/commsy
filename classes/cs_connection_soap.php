@@ -918,7 +918,9 @@ class cs_connection_soap {
 
    private function _getActiveSessionID ($user_id, $portal_id) {
       $retour = '';
+      el('_getActiveSessionID '.$user_id);
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
+         el('_getActiveSessionID !empty');
          $retour = $this->_session_id_array[$portal_id][$user_id];
       } else {
          $session_manager = $this->_environment->getSessionManager();
@@ -928,6 +930,7 @@ class cs_connection_soap {
             $this->_updateSessionCreationDate($retour);
          }
       }
+      el('_getActiveSessionID $retour '.$retour);
       return $retour;
    }
 
