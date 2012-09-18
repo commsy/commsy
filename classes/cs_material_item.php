@@ -739,6 +739,9 @@ class cs_material_item extends cs_item {
                // and for copying in new rooms
                if ( $mode == 'copy' ) {
                   $section->setFileList($file_list);
+				  $user = $this->_environment->getCurrentUserItem();
+				  $section->setCreatorItem($user);
+				  $section->setModificatorItem($user);
                } elseif ( isset($file_id_array) ) {
                   $section->setFileIDArray($file_id_array);
                }
