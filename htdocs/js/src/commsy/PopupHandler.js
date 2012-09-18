@@ -7,7 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/dom-style",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, on, lang, query, dom_class, dom_attr, domConstruct, domStyle) {
+        	"dijit/Tooltip",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, dom_class, dom_attr, domConstruct, domStyle, Tooltip) {
 	return declare(BaseClass, {
 		is_open:				false,
 		contentNode:			null,
@@ -20,7 +21,13 @@ define([	"dojo/_base/declare",
 		contextId:				null,
 
 		constructor: function(args) {
-
+			this.errorNodes = [];
+		},
+		
+		onCreate: function() {
+			On(this.contentNode, "click", lang.hitch(this, function(event) {
+				this.closeErrorTooltips();
+			}));
 		},
 
 		setupTabs: function() {
@@ -28,7 +35,7 @@ define([	"dojo/_base/declare",
 			var content_nodes = query("div#popup_tabcontent div.tab, div.popup_tabcontent div.tab", this.contentNode);
 
 			// register click event for all tabs
-			on(link_nodes, "click", lang.hitch(this, function(event) {
+			On(link_nodes, "click", lang.hitch(this, function(event) {
 				// set all tabs inactive
 				dojo.forEach(link_nodes, function(node) {
 					dom_class.add(node, "pop_tab");
@@ -104,7 +111,7 @@ define([	"dojo/_base/declare",
 									}));
 								}));
 								
-								on(tree.tree, "open", lang.hitch(this, function(item, node) {
+								On(tree.tree, "open", lang.hitch(this, function(item, node) {
 									dojo.forEach(item.children, lang.hitch(this, function(children, index, arr) {
 										var isChecked = tree.model.getItemAttr(children, "match");
 										if (isChecked) {
@@ -184,6 +191,7 @@ define([	"dojo/_base/declare",
 			additional = additional || [];
 
 			this.setupLoading();
+			this.closeErrorTooltips();
 
 			var form_data = [];
 			if(this.fct == "rubric_popup") {
@@ -297,7 +305,7 @@ define([	"dojo/_base/declare",
 					 * Special error handling is directed to the corresponding popup handler.
 					************************************************************************************/
 					
-					if(response.status === "error" && response.code === 101) {
+					if(response.status === "error" && response.code === "101") {
 						//var missingFields = response.detail;
 
 						// show missing mandatory text
@@ -322,7 +330,7 @@ define([	"dojo/_base/declare",
 							}
 						}));
 						*/
-					} else if(response.status === "error" && response.code === 111) {
+					} else if(response.status === "error" && response.code === "111") {
 						this.onPopupSubmitError(response);
 					}/* else {
 						console.error("an unhandled error response occurred");
@@ -337,9 +345,17 @@ define([	"dojo/_base/declare",
 		/**
 		 * Abstract implementation for submit errors - can be overwritten
 		 */
-		onPopupSubmitError: function(resonse) {
+		onPopupSubmitError: function(response) {
 			// remove loading screen
 			this.destroyLoading();
+		},
+		
+		closeErrorTooltips: function() {
+			dojo.forEach(this.errorNodes, lang.hitch(function(node, index, arr) {
+				Tooltip.hide(node);
+			}));
+			
+			this.errorNodes = [];
 		},
 
 		close: function() {
@@ -354,6 +370,8 @@ define([	"dojo/_base/declare",
 					uploader.destroy();
 				});
 			}
+			
+			this.closeErrorTooltips();
 
 			// set closed
 			this.is_open = false;

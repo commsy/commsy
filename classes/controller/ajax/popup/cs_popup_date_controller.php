@@ -159,6 +159,8 @@ class cs_popup_date_controller {
     }
 
     public function save($form_data, $additional = array()) {
+    	
+    	$this->_popup_controller->performChecks($form_data, $additional);
 
         $environment = $this->_environment;
 

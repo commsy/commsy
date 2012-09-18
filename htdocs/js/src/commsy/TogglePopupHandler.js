@@ -33,6 +33,7 @@ define([	"dojo/_base/declare",
 						this.setupTabs();
 						this.setupFeatures();
 						this.setupSpecific();
+						this.onCreate();
 						
 						// register close
 						on(query("a", this.contentNode)[0], "click", lang.hitch(this, function(event) {

@@ -52,6 +52,7 @@ define([	"dojo/_base/declare",
 					this.setupFeatures();
 					this.setupSpecific();
 					this.setupAutoSave();
+					this.onCreate();
 
 					// register close
 					on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
@@ -132,7 +133,7 @@ define([	"dojo/_base/declare",
 
 		close: function() {
 			this.inherited(arguments);
-
+			
 			// destroy editors
 			if(this.featureHandles["editor"]) {
 				dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
