@@ -53,7 +53,7 @@ $url2 = curl( $environment->getCurrentContextID(),
      <noscript>
        <meta http-equiv="refresh" content="0; URL=<?PHP echo($url2); ?>">
       </noscript>
-      <script src="/javascript/Adobe/AC_OETags.js" language="javascript"></script>
+      <script src="javascript/Adobe/AC_OETags.js" language="javascript"></script>
       <script type="text/javascript">
          <!--
             function reload () {
