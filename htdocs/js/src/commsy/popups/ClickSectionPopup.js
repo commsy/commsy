@@ -8,9 +8,9 @@ define([	"dojo/_base/declare",
         	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
-			
+
 		},
-		
+
 		init: function(triggerNode, customObject) {
 			this.triggerNode = triggerNode;
 			this.item_id = customObject.iid;
@@ -18,25 +18,25 @@ define([	"dojo/_base/declare",
 			this.module = "section";
 			this.version_id = customObject.vid;
 			this.contextId = customObject.contextId;
-			
+
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
-			
+
 			// register click for node
 			this.registerPopupClick();
 		},
-		
+
 		setupSpecific: function() {
 		},
-		
+
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
 				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
-				
+
 				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
+
 			// setup data to send via ajax
 			var search = {
 				tabs: [
@@ -52,10 +52,10 @@ define([	"dojo/_base/declare",
 				    { query: query("select[name='form_data[number]']", this.contentNode) }
 				]
 			};
-			
+
 			this.submit(search, { ref_iid:this.ref_iid, version_id:this.version_id, contextId: this.contextId });
 		},
-		
+
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
@@ -85,6 +85,7 @@ define([	"dojo/_base/declare",
 					if(typeof(this.version_id) != 'undefined'){
 						this.reload(item_id+"&version_id="+this.version_id);
 					} else {
+					// mit Anker this.reload(item_id+"#section"+this.item_id);
 						this.reload(item_id);
 					}
 				}
