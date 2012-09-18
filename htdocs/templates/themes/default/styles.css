@@ -26,7 +26,7 @@ body {
     line-height: 16px;
     }
 
-p, form, ul {
+p, form, ul, ol {
     margin: 0px;
     border: 0px none;
     padding: 0px;
@@ -2683,12 +2683,20 @@ div.detail_description {
   }
 
 div.detail_description ul,  div.editor_content ul, div.detail_content ul  {
-	margin: 5px 15px;
+	margin: 5px 20px;
 	}
 
-div.detail_description li, div.editor_content li, div.detail_content li   {
+div.detail_description ul li,  div.editor_content ul li, div.detail_content ul li {
 	list-style-type: disc;
-  	}
+	}
+
+div.detail_description ol,  div.editor_content ol, div.detail_content ol  {
+	margin: 5px 20px;
+	}
+
+div.detail_description ol li,  div.editor_content ol li, div.detail_content ol li  {
+	list-style-type: decimal;
+	}
 
 
 div.user_profil_blocks {
