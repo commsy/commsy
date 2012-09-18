@@ -753,7 +753,7 @@ class cs_connection_soap {
 
                      $result = $session->getSessionID();
                      
-                     el('authenticate: $result '.$result);
+                     
                   }
                } else {
                   $info = 'ERROR';
@@ -765,6 +765,8 @@ class cs_connection_soap {
             }
          }
       }
+      el('authenticate: $result '.$result);
+      el('authenticate: $info '.$info);
       if ( empty($result) and !empty($info) ) {
          $result = new SoapFault($info,$info_text);
       } else {
@@ -2835,6 +2837,8 @@ class cs_connection_soap {
          $room_manager->select();
          $room_list = $room_manager->get();
 
+         #$room_list = $user_room_list;
+         
          $room_item = $room_list->getFirst();
          $xml = "<room_list>\n";
          while($room_item) {
