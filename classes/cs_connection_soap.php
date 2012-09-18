@@ -767,6 +767,7 @@ class cs_connection_soap {
       }
       el('authenticate: $result '.$result);
       el('authenticate: $info '.$info);
+      el('authenticate: $info_text '.$info_text);
       if ( empty($result) and !empty($info) ) {
          $result = new SoapFault($info,$info_text);
       } else {
