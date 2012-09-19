@@ -3042,6 +3042,7 @@ class cs_connection_soap {
          $reader_manager = $this->_environment->getReaderManager();
          $dates_manager = $this->_environment->getDatesManager();
          $dates_manager->setContextLimit($context_id);
+         $dates_manager->showNoNotActivatedEntries();
          $dates_manager->setDateModeLimit(2);
          $count_all = $dates_manager->getCountAll();
          $dates_manager->select();
@@ -3527,6 +3528,7 @@ class cs_connection_soap {
          $reader_manager = $this->_environment->getReaderManager();
          $discussion_manager = $this->_environment->getDiscussionManager();
          $discussion_manager->setContextLimit($context_id);
+         $discussion_manager->showNoNotActivatedEntries();
          $discussion_manager->select();
          $discussion_list = $discussion_manager->get();
          $xml = "<discussion_list>\n";
@@ -3885,6 +3887,7 @@ class cs_connection_soap {
          $reader_manager = $this->_environment->getReaderManager();
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
+         $user_manager->setUserLimit();
          $user_manager->select();
          $user_list = $user_manager->get();
          $xml = "<user_list>\n";
@@ -4102,6 +4105,7 @@ class cs_connection_soap {
          
          $user_counter_manager = $this->_environment->getUserManager();
          $user_counter_manager->setContextLimit($context_id);
+         $user_manager->setUserLimit();
          $user_counter_manager->select();
          $user_counter_list = $user_counter_manager->get();
          $user_counter_item = $user_counter_list->getFirst();
