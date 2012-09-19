@@ -4223,6 +4223,7 @@ class cs_connection_soap {
       $text = str_ireplace("CS_LI", "&bull; ", $text);
       $text = str_ireplace("CS_NEWLINE", "\n", $text);
       $current_encoding = mb_detect_encoding($text, 'auto');
+      $text = iconv($current_encoding, 'ISO-8859-1', $text);
       $text = strip_tags($text);
       $text = trim($text);
       if(empty($text)){
