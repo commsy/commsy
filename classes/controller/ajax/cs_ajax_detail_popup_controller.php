@@ -93,8 +93,16 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     
     private function invokeDetailController() {
     	$currentUser = $this->_environment->getCurrentUserItem();
-    	$privateRoomItem = $currentUser->getOwnRoom();
-    	$privateRoomContextID = $privateRoomItem->getItemID();
+    	
+    	// get context item
+    	$itemManager = $this->_environment->getItemManager();
+    	$item = $itemManager->getItem($this->_contextId);
+    	$type = $item->getItemType();
+    	$manager = $this->_environment->getManager($type);
+    	$contextItem = $manager->getItem($this->_contextId);
+    	
+    	//$privateRoomItem = $currentUser->getOwnRoom();
+    	//$privateRoomContextID = $privateRoomItem->getItemID();
     	
     	// get the detail controller
     	$controller_name = "cs_" . $this->_module . "_detail_controller";
@@ -103,11 +111,11 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     	// we need to create a new environment to hide the fact, that we are inside a popup
     	$fakeEnvironment = clone $this->_environment;
     	$fakeEnvironment->unsetAllInstancesExceptTranslator();
-    	$fakeEnvironment->setCurrentContextID($privateRoomContextID);
+    	$fakeEnvironment->setCurrentContextID($this->_contextId);
     	$fakeEnvironment->setCurrentModule($this->_module);
     	$fakeEnvironment->setCurrentFunction("detail");
     	
-    	$fakeEnvironment->setCurrentContextItem($privateRoomItem);
+    	$fakeEnvironment->setCurrentContextItem($contextItem);
     	$fakeEnvironment->setCurrentUserItem($currentUser->getRelatedPrivateRoomUserItem());
     	
     	$smarty = new cs_smarty($fakeEnvironment, "default");
@@ -116,6 +124,7 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     	// override $_GET - ugly I know
     	$_GET["iid"] = $this->_itemId;
     	$_GET["version_id"] = $this->_versionId;
+    	$_GET["fromPortfolio"] = $this->_data["fromPortfolio"];
     	
     	// init controller and process the detail content
     	$controller = new $controller_name($fakeEnvironment);

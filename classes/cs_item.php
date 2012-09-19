@@ -1428,7 +1428,17 @@ class cs_item {
    	 $retour = $item_manager->getExternalViewerForItem($this->getItemID(),$user->getUserID());
    	 if ($retour){
    	 	return true;
-   	 }else{
+   	 } else {
+   	 	
+   	 	/*
+   	 	 * TODO: this is just a temporary workaround, "fromPortfolio" is send by ajax as post var and could easily be faked.
+   	 	 * At least, the context item is checked, so this could not affect normal room entries and editing rights are handled seperatly
+   	 	 */
+   	 	$currentContextItem = $this->_environment->getCurrentContextItem();
+   	 	if ($currentContextItem->isPrivateRoom()) {
+   	 		if (isset($_GET["fromPortfolio"]) && $_GET["fromPortfolio"] === true) return true;
+   	 	}
+   	 	
    	 	return false;
    	 }
    }

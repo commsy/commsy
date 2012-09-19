@@ -180,6 +180,7 @@ class cs_portfolio_manager extends cs_manager {
   }
 
   function _create ($portfolio_item) {
+  	// TODO: shouldn't the context id be the private room id???
      $modification_date = getCurrentDateTimeInMySQL();
      $portal_id = $this->_environment->getCurrentPortalID();
      $query = 'INSERT INTO '.$this->addDatabasePrefix('items').' SET '.

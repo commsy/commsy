@@ -23,6 +23,10 @@ define([	"dojo/_base/declare",
 					portfolioRow:		customObject.portfolioRow,
 					portfolioColumn:	customObject.portfolioColumn
 				});
+			} else if(customObject.fromPortfolio) {
+				this.setInitData({
+					fromPortfolio:		customObject.fromPortfolio
+				});
 			}
 			
 			this.ajaxHTMLSource = "detail_popup";

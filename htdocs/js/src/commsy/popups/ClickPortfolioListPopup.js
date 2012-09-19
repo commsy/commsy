@@ -35,6 +35,8 @@ define([	"dojo/_base/declare",
 					var handler = new ClickPopup();
 					var customObject = this.getAttrAsObject(node, "data-custom");
 					
+					customObject.fromPortfolio = true;
+					
 					handler.init(node, customObject);
 					
 					On(node, "click", Lang.hitch(this, function(event) {
