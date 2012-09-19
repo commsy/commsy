@@ -17,6 +17,9 @@
 	    <meta name="keywords" content="" />
 	    <meta name="description" content="" />
 	    <meta name="copyright" content="" />
+	    
+	    <link rel="icon" href="commsy8.ico" type="image/x-icon">
+	    <link rel="shortcut icon" href="commsy8.ico" type="image/x-icon">
 
 	    <!-- CSS -->
 	    <link rel="stylesheet" type="text/css" media="screen" href="js/src/dijit/themes/tundra/tundra.css" />
