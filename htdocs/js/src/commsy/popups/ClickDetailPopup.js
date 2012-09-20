@@ -26,6 +26,7 @@ define([	"dojo/_base/declare",
 				});
 			} else if(customObject.fromPortfolio) {
 				this.setInitData({
+					portfolioId:		customObject.portfolioId,
 					fromPortfolio:		customObject.fromPortfolio
 				});
 			}

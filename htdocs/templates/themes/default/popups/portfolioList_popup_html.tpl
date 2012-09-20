@@ -29,7 +29,7 @@
                     	{foreach $popup.items as $item}
                     		 <div class="pop_{if $item@iteration is odd}row_odd{else}row_even{/if}">
                                     <div class="pop_col_330">
-                                        <a href="#" class="openDetailPopup" data-custom="iid: {$item.itemId}, module: '{$item.module}', contextId: {$popup.privateRoomId}">{$item.title}</a>
+                                        <a href="#" class="openDetailPopup" data-custom="iid: {$item.itemId}, module: '{$item.module}', portfolioId: {$popup.portfolioId}, contextId: {$popup.privateRoomId}">{$item.title}</a>
                                     </div>
                                     <div class="pop_col_90">
                                         {$item.modificationDate}

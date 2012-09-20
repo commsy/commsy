@@ -123,7 +123,13 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     		$session->setValue('annotation_history_function', $history[0]['function']);
     		$session->setValue('annotation_history_parameter', $history[0]['parameter']);
     	}
-    		
+    	
+    	/**/
+    	if (isset($additional["portfolioId"]) && !empty($additional["portfolioId"])) {
+    		$_GET["fromPortfolio"] = true;
+    	}
+    	/**/
+    	
     	// check access rights
     	$item_manager = $this->_environment->getItemManager();
     	if($form_data["iid"] !== 'NEW' && !isset($annotation_item)) {
