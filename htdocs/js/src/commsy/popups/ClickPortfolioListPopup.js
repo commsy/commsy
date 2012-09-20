@@ -53,6 +53,7 @@ define([	"dojo/_base/declare",
 					
 					customObject.portfolioRow = this.initData.row;
 					customObject.portfolioColumn = this.initData.column;
+					customObject.fromPortfolio = true;
 					
 					handler.init(node, customObject);
 					

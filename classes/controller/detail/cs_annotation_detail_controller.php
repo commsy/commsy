@@ -55,7 +55,7 @@
 				}
 
 				// check for access rights
-				elseif(!$this->_item->maySee($current_user)) {
+				elseif(!$this->_item->maySee($current_user) && !$this->_item->mayExternalSee($current_user)) {
 					// TODO: implement error handling
 					/*
 					 * $params = array();

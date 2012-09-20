@@ -21,7 +21,8 @@ define([	"dojo/_base/declare",
 				this.setInitData({
 					portfolioId:		customObject.portfolioId,
 					portfolioRow:		customObject.portfolioRow,
-					portfolioColumn:	customObject.portfolioColumn
+					portfolioColumn:	customObject.portfolioColumn,
+					fromPortfolio:		customObject.fromPortfolio
 				});
 			} else if(customObject.fromPortfolio) {
 				this.setInitData({
