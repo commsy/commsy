@@ -126,7 +126,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
     	
     	/**/
     	if (isset($additional["portfolioId"]) && !empty($additional["portfolioId"])) {
-    		if($current_user->getItemID() === $annotation_item->getCreatorId()) $_GET["fromPortfolio"] = true;
+    		if($current_user->getItemID() === $annotation_item->getCreatorID()) $_GET["fromPortfolio"] = true;
     	}
     	/**/
     	
