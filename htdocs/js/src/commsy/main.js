@@ -14,32 +14,8 @@ require([	"dojo/_base/declare",
 			         	"dojo/domReady!"], Lang.hitch(this, function(query, domAttr, On, ready) {
 			    
 			    var uri_object = this.uri_object;
-			    
-				// initiate popup handler
-				require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
-					var aNode = query("a#tm_settings")[0];
-					
-					if(aNode) var handler = new RoomConfigurationPopup(aNode, query("div#tm_menus div#tm_dropmenu_configuration")[0]);
-				});
-				require(["commsy/popups/TogglePersonalConfiguration"], function(PersonalConfigurationPopup) {
-					var handler = new PersonalConfigurationPopup(query("a#tm_user")[0], query("div#tm_menus div#tm_dropmenu_pers_bar")[0]);
-				});
 				
-				var aBreadcrumbNode = query("a#tm_bread_crumb")[0];
-				
-				if (aBreadcrumbNode) {
-					require(["commsy/popups/ToggleBreadcrumb"], function(BreadcrumbPopup) {
-						var handler = new BreadcrumbPopup(query("a#tm_bread_crumb")[0], query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]);
-					});
-				}
-				
-				var aClipboardNode = query("a#tm_clipboard")[0];
-				
-				if (aClipboardNode) {
-					require(["commsy/popups/ToggleClipboard"], function(ClipboardPopup) {
-						var handler = new ClipboardPopup(aClipboardNode, query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
-					});
-				}
+				this.initCommsyBar();
 				
 				// register event for handling mouse actions outside content div
 				On(document.body, "click", Lang.hitch(this, function(event) {
@@ -309,6 +285,68 @@ require([	"dojo/_base/declare",
 					var handler = new AutoOpenPopup();
 					handler.setup();
 				});
+			}));
+		},
+		
+		initCommsyBar: function() {
+			require([	"dojo/query",
+			         	"dojo/on",
+			         	"dojo/NodeList-traverse",
+			         	"dojo/domReady!"], Lang.hitch(this, function(Query, On, ready) {
+			    
+	         	/*
+	         	 * initiate popup handler
+	         	 * new method: first click is handled here and not by module, so we only need to load it when requested
+	         	 */
+			    var aConfigurationNode = Query("a#tm_settings")[0];
+			    if (aConfigurationNode) {
+			    	On.once(aConfigurationNode, "click", Lang.hitch(this, function(event) {
+			    		require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
+			    			var handler = new RoomConfigurationPopup(aConfigurationNode, Query("div#tm_menus div#tm_dropmenu_configuration")[0]);
+			    			handler.open();
+		    			});
+			    	}));
+			    }
+			    
+			    var aPersonalNode = Query("a#tm_user")[0];
+			    if (aPersonalNode) {
+			    	On.once(aPersonalNode, "click", Lang.hitch(this, function(event) {
+			    		require(["commsy/popups/TogglePersonalConfiguration"], function(PersonalConfigurationPopup) {
+		    				var handler = new PersonalConfigurationPopup(aPersonalNode, Query("div#tm_menus div#tm_dropmenu_pers_bar")[0]);
+		    				handler.open();
+		    			});
+			    	}));
+			    }
+			    
+			    var aBreadcrumbNode = Query("a#tm_bread_crumb")[0];
+			    if (aBreadcrumbNode) {
+			    	On.once(aBreadcrumbNode, "click", Lang.hitch(this, function(event) {
+			    		require(["commsy/popups/ToggleBreadcrumb"], function(BreadcrumbPopup) {
+	    					var handler = new BreadcrumbPopup(aBreadcrumbNode, Query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]);
+	    					handler.open();
+	    				});
+			    	}));
+    			}
+			    
+			    var aClipboardNode = Query("a#tm_clipboard")[0];
+			    if (aClipboardNode) {
+			    	On.once(aClipboardNode, "click", Lang.hitch(this, function(event) {
+			    		require(["commsy/popups/ToggleClipboard"], function(ClipboardPopup) {
+	    					var handler = new ClipboardPopup(aClipboardNode, Query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
+	    					handler.open();
+	    				});
+			    	}));
+    			}
+			    
+    			var aCalendarNode = Query("a#tm_mycalendar")[0];
+    			if (aCalendarNode) {
+    				On.once(aCalendarNode, "click", Lang.hitch(this, function(event) {
+    					require(["commsy/bar/ToggleCalendar"], function(ToggleCalendar) {
+    						var handler = new ToggleCalendar(aCalendarNode, Query("div#tm_menus div#tm_dropmenu_mycalendar")[0]);
+    						handler.open();
+    					});
+    				}));
+    			}
 			}));
 		}
 	});

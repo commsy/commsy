@@ -41,7 +41,7 @@
         
         <div>
         	{* add column *}
-	    	<div id="epColumnAdd" class="float-right" data-dojo-attach-point="portfolioEditColumnNode" style="height: 34px" {* <- only until ep_hor_edit.jpg is reactivated *}>
+	    	<div id="epColumnAdd" class="float-right" data-dojo-attach-point="portfolioEditColumnNode" style="height: 34px"> {* <- only until ep_hor_edit.jpg is reactivated *}
 	            {*<a href=""><img src="{$basic.tpl_path}img/ep_hor_edit.jpg" alt="" /></a>*}
 	            <a class="ep_edit_head tagEdit" data-custom="tagId: 'NEW', position: 'column', module: 'tagPortfolio'" href=""><strong>+</strong></a>
 	            <strong>&nbsp;</strong>

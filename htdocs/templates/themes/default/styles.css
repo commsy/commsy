@@ -4375,6 +4375,10 @@ widgets
     border: 1px solid #C0C0C1;
 }
 
+.CommSyWidgetBorderless {
+	margin: 5px;
+}
+
 .CommSyPortfolioWidget {
 	margin: 0px;
 	background-color: #E8E8E8;

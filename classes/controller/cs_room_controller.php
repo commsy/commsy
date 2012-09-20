@@ -1129,10 +1129,10 @@
 
    function _getUserPersonalAreaAsHTML () {
       $retour  = '';
-      $retour .= '   <form onchange="document.room_change.submit()" style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
+      $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
       // jQuery
       //$retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
-      $retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
+      $retour .= '         <select onchange="document.room_change.submit()" size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
       // jQuery
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
