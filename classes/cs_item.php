@@ -1429,15 +1429,7 @@ class cs_item {
    	 if ($retour){
    	 	return true;
    	 } else {
-   	 	
-   	 	/*
-   	 	 * TODO: this is just a temporary workaround, "fromPortfolio" is send by ajax as post var and could easily be faked.
-   	 	 * At least, the context item is checked, so this could not affect normal room entries
-   	 	 */
-   	 	$currentContextItem = $this->_environment->getCurrentContextItem();
-   	 	if ($currentContextItem->isPrivateRoom()) {
-   	 		if (isset($_GET["fromPortfolio"]) && $_GET["fromPortfolio"] === true) return true;
-   	 	}
+   	 	if (portfolioExternalCheck($this->_environment->getCurrentContextItem())) return true;
    	 	
    	 	return false;
    	 }

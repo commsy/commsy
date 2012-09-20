@@ -143,8 +143,6 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
 
     public function save($form_data, $additional = array()) {
     	
-    	$this->_popup_controller->performChecks($form_data, $additional);
-    	
         $environment = $this->_environment;
 
         if ($additional["contextId"]) {
@@ -158,6 +156,8 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
         		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
+        
+        $this->_popup_controller->performChecks($form_data, $additional);
 
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
