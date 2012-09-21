@@ -41,8 +41,6 @@ define([	"dojo/_base/declare",
 						} else {
 							result[1].handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
 						}
-						dojo.parser.parse(this.contentNode);
-						result[1].handle.afterParse();	
 					}));
 				})
 			);

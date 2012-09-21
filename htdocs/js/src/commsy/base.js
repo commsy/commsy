@@ -70,6 +70,44 @@ define([	"dojo/_base/declare",
 				}).play();
 			}
 		},
+		
+		request: function(fct, action, data) {
+			// execute a HTTP POST request
+			var args = {
+				url:		"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
+				headers:	{
+							"Content-Type":		"application/json; charset=utf-8",
+							"Accept":			"application/json"
+				},
+				postData:	dojo.toJson(data),
+				handleAs:	"json",
+				error:		Lang.hitch(this, function(errorMessage, ioargs) {
+					/************************************************************************************
+					 * A fatal error occured while performing the ajax request, maybe something went wrong
+					 * on php side or while transporting data. Show error message in console and setup a
+					 * user-friendly error widget
+					************************************************************************************/
+					
+					// ignore the case of status code 0 - aborted xhr requests(search auto-completion, etc.)
+					if (ioargs.xhr.status !== 0) {
+						if (this.from_php.dev.xhr_error_reporting && this.from_php.dev.xhr_error_reporting === true) {
+							/*
+							 * we overwrite all success and error handler, so failing to send
+							 * this request will not lead into a recursive loop
+							 */
+							this.AJAXRequest("actions", "sendXHRErrorReporting", { ioargs: ioargs, error: errorMessage },
+								function() {},
+								function() {},
+								false,
+								{ error: function() {} }
+							);
+						}
+					}
+				})
+			};
+			
+			return xhr.post(args);
+		},
 
 		AJAXRequest: function(fct, action, data, callback, error_callback, sync, mixin) {
 			callback = callback || function(response) {};

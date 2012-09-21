@@ -62,4 +62,9 @@
 				
 			$this->_return = json_encode($return);
 		}
+		
+		public function rawDataReturn($data = array()) {
+			echo json_encode($data);
+			exit;
+		}
 	}

@@ -13,9 +13,28 @@ define([	"dojo/_base/declare",
 		},
 		
 		get: function(id, options) {
+			/*
+		// summary:
+		//		Retrieves an object by its identity. This will trigger a GET request to the server using
+		//		the url `this.target + id`.
+		// id: Number
+		//		The identity to use to lookup the object
+		// options: Object?
+		//		HTTP headers. For consistency with other methods, if a `headers` key exists on this object, it will be
+		//		used to provide HTTP headers instead.
+		// returns: Object
+		//		The object in the store that matches the given id.
+		options = options || {};
+		var headers = lang.mixin({ Accept: this.accepts }, this.headers, options.headers || options);
+		return xhr("GET", {
+			url: this.target + id,
+			handleAs: "json",
+			headers: headers
+		});
+			 */
 			options = options || {};
 			
-			return this.AJAXRequest(this.fct, "get");
+			return  this.request(this.fct, "get", { id: id });
 		},
 		
 		getIdentity: function(object) {
@@ -159,9 +178,9 @@ define([	"dojo/_base/declare",
 			}
 			 */
 			
-			this.AJAXRequest(this.fct, "query", function(response) {
-				return QueryResults(response);
-			});
+			var request = this.request(this.fct, "query", { query: query });
+			
+			return QueryResults(request);
 		}
 	});
 });

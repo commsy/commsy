@@ -9,7 +9,8 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/store/Observable",
         	"commsy/store/Json",
-        	"dojox/calendar/Calendar"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On, Observable, Json, Calendar) {
+        	"dojox/calendar/Calendar",
+        	"dojo/date/stamp"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On, Observable, Json, Calendar, Stamp) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -31,27 +32,22 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			
-		},
-		
-		afterParse: function() {
-			//var calendar = dijit.byId("calendar");
-			
-			var someData = [
-			                {
-			                  id: 0,
-			                  summary: "Event 1",
-			                  startTime: new Date(2012, 0, 1, 10, 0),
-			                  endTime: new Date(2012, 0, 1, 12, 0)
-			                }
-			              ];
-			
 			var calendar = new Calendar({
-				store: new Observable(new Json({
+				decodeDate:			function(s) {
+					return Stamp.fromISOString(s);
+				},
+				encodeDate:			function(d) {
+					return Stamp.toISOString(d)
+				},
+				store:				new Observable(new Json({
 					fct:		"myCalendar"
 				})),
-				dateInterval: "day",
-				style: "position: relative; height: 500px;"
+				dateInterval:		"day",
+				style:				"position: relative; height: 500px;",
+				columnViewProps:	{
+					minHours:		0,
+					maxHours:		24
+				}
 			}, this.calendarNode);
 		}
 		
