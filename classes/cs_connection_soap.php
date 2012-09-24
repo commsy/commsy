@@ -4150,7 +4150,6 @@ class cs_connection_soap {
          $room_item = $room_list->getFirst();
          $xml = "<moderation_user_list>\n";
          while($room_item) {
-            el($room_item->getItemID());
             $is_moderator = false;
             $room_user = $room_item->getUserByUserID($user_id, $auth_source_id);
             if($room_user->getStatus() == '3'){
@@ -4158,7 +4157,6 @@ class cs_connection_soap {
             }
 
             if($is_moderator){
-               el('is_moderator');
                $user_manager->resetLimits();
                $user_manager->setContextLimit($room_item->getItemID());
                $user_manager->setRegisteredLimit();
@@ -4167,7 +4165,6 @@ class cs_connection_soap {
                $temp_user_item = $user_list->getFirst();
                while($temp_user_item){
                   if($temp_user_item->getStatus() == '1'){
-                     el('user: '.$temp_user_item->getItemID().' Status: '.$temp_user_item->getStatus());
                      $xml .= "<moderation_user_item>";
                      $xml .= "<firstname><![CDATA[".$temp_user_item->getFirstname()."]]></firstname>\n";
                      $xml .= "<lastname><![CDATA[".$temp_user_item->getLastname()."]]></lastname>\n";
@@ -4190,7 +4187,7 @@ class cs_connection_soap {
       return $xml;
    }
    
-   public function activateUser($session_id, $activate_user_id) {
+   public function activateUser($session_id, $activate_user_id, $with_email) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
          $this->_environment->setSessionID($session_id);
@@ -4203,7 +4200,40 @@ class cs_connection_soap {
          $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
          $activate_user_item = $user_manager->getItem($activate_user_id);
          $activate_user_item->makeUser();
-         $activate_user_item->save();
+         //$activate_user_item->save();
+         
+         if($with_email == 'true'){
+            $translator = $this->_environment->getTranslationObject();
+            $room_manager = $this->_environment->getRoomManager();
+
+            $temp_room = $room_manager->getItem($activate_user_item->getContextID());
+            if($temp_room->getRoomType() == "project"){
+               $body  = $translator->getMessage('MAIL_BODY_USER_STATUS_USER_PR', $activate_user_item->getUserID(), $temp_room->getTitle());
+            } else if($temp_room->getRoomType() == "group"){
+               $body  = $translator->getMessage('MAIL_BODY_USER_STATUS_USER_GR', $activate_user_item->getUserID(), $temp_room->getTitle());
+            } else if($temp_room->getRoomType() == "community") {
+               $body  = $translator->getMessage('MAIL_BODY_USER_STATUS_USER_GP', $activate_user_item->getUserID(), $temp_room->getTitle());
+            }
+
+            include_once('classes/cs_mail.php');
+            $mail = new cs_mail();
+            $mail->set_to($activate_user_item->getEmail());
+            $server_item = $this->_environment->getServerItem();
+            $default_sender_address = $server_item->getDefaultSenderAddress();
+            if (!empty($default_sender_address)) {
+               $mail->set_from_email($default_sender_address);
+            } else {
+               $mail->set_from_email('@');
+            }
+            $current_context = $this->_environment->getCurrentContextItem();
+            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
+            $mail->set_reply_to_name($user_item->getFullname());
+            $mail->set_reply_to_email($user_item->getEmail());
+            $mail->set_subject($subject);
+            $mail->set_message($body);
+            $mail->send();
+         }
+         
          $xml = "<activateUser>\n";
          $xml .= "</activateUser>";
          $xml = $this->_encode_output($xml);
