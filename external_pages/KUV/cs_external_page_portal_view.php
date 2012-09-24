@@ -2469,6 +2469,28 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .= '</div> <!--end content-box-->'.LF;
       }
 
+     // change password
+      elseif (!empty($cs_mod) and $cs_mod == 'password_change') {
+         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
+   } else {
+              $params = array();
+            $params['iid'] = $this->_current_user->getItemID();
+      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+         $portal_user = $this->_environment->getPortalUserItem();
+         $fullname = $portal_user->getFullname();
+               unset($portal_user);
+      } else {
+         $fullname = $this->_current_user->getFullname();
+      }
+         }
+         $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+         include_once('classes/cs_password_change_page.php');
+   $left_page = new cs_password_change_page($this->_environment);
+   $html .= $left_page->execute();
+         unset($left_page);
+#         $html .= '</div>'.LF;
+      }
+
      // change account
      elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
@@ -3108,7 +3130,7 @@ $html .='<div id="overallContainer">
 		<div id="breadcrumb"><ul><li class="bc first">Sie befinden sich hier:</li>
 
 
-      <li class="bc last first">Workspace der K-UV</li>
+      <li class="bc last first"><a href="http://workspace.k-uv.de">Workspace des KUV</a></li>
 
 
 </ul></div>
