@@ -3052,7 +3052,9 @@ class cs_connection_soap {
          while($date_item) {
             $xml .= "<date_item>\n";
             $xml .= "<date_id><![CDATA[".$date_item->getItemID()."]]></date_id>\n";
-            $xml .= "<date_title><![CDATA[".$date_item->getTitle()."]]></date_title>\n";
+            $temp_title = $date_item->getTitle();
+            $temp_title = $this->prepareText($temp_title);
+            $xml .= "<date_title><![CDATA[".$temp_title."]]></date_title>\n";
             $xml .= "<date_starting_date><![CDATA[".$date_item->getDateTime_start()."]]></date_starting_date>\n";
             $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
             $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
@@ -3174,8 +3176,11 @@ class cs_connection_soap {
             $date_item->setCreatorItem($user_item);
             $date_item->setCreationDate(getCurrentDateTimeInMySQL());
          }
+         $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
          $date_item->setTitle($title);
+         $place = html_entity_decode($place, ENT_COMPAT, 'UTF-8');
          $date_item->setPlace($place);
+         $description = html_entity_decode($description, ENT_COMPAT, 'UTF-8');
          $date_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
          debugToFile($description);
          $date_item->setStartingDay($startingDate);
@@ -3272,7 +3277,9 @@ class cs_connection_soap {
             if($material_item->maySee($user_item)){
                $xml .= "<material_item>\n";
                $xml .= "<material_id><![CDATA[".$material_item->getItemID()."]]></material_id>\n";
-               $xml .= "<material_title><![CDATA[".$material_item->getTitle()."]]></material_title>\n";
+               $temp_title = $material_item->getTitle();
+               $temp_title = $this->prepareText($temp_title);
+               $xml .= "<material_title><![CDATA[".$temp_title."]]></material_title>\n";
                $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
                if ( empty($reader) ) {
                   $xml .= "<material_read><![CDATA[new]]></material_read>\n";
@@ -3291,7 +3298,6 @@ class cs_connection_soap {
             $material_item = $material_list->getNext();
          }
          $xml .= "</material_list>";
-         #debugToFile($xml);
          $xml = $this->_encode_output($xml);
          return $xml;
       }
@@ -3424,7 +3430,10 @@ class cs_connection_soap {
             $material_item->setCreatorItem($user_item);
             $material_item->setCreationDate(getCurrentDateTimeInMySQL());
          }
+         
+         $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
          $material_item->setTitle($title);
+         $description = html_entity_decode($description, ENT_COMPAT, 'UTF-8');
          $material_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
          $material_item->save();
          
@@ -3536,7 +3545,9 @@ class cs_connection_soap {
          while($discussion_item) {
             $xml .= "<discussion_item>\n";
             $xml .= "<discussion_id><![CDATA[".$discussion_item->getItemID()."]]></discussion_id>\n";
-            $xml .= "<discussion_title><![CDATA[".$discussion_item->getTitle()."]]></discussion_title>\n";
+            $temp_title = $discussion_item->getTitle();
+            $temp_title = $this->prepareText($temp_title);
+            $xml .= "<discussion_title><![CDATA[".$temp_title."]]></discussion_title>\n";
             $reader = $reader_manager->getLatestReaderForUserByID($discussion_item->getItemID(), $user_item->getItemID());
             if ( empty($reader) ) {
                $xml .= "<discussion_read><![CDATA[new]]></discussion_read>\n";
@@ -3765,7 +3776,9 @@ class cs_connection_soap {
 					$discarticle_item->setPosition("1");
 				}
          }
+         $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
          $discarticle_item->setSubject($title);
+         $description = html_entity_decode($description, ENT_COMPAT, 'UTF-8');
          $discarticle_item->setDescription(str_ireplace("\n", "\n".'<br />', $description));
          
          $discarticle_item->save();
@@ -3799,6 +3812,7 @@ class cs_connection_soap {
          $discussion_item->setContextID($context_id);
          $discussion_item->setCreatorItem($user_item);
          $discussion_item->setCreationDate(getCurrentDateTimeInMySQL());
+         $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
          $discussion_item->setTitle($title);
          $discussion_item->save();
          
@@ -3809,7 +3823,9 @@ class cs_connection_soap {
          $discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
          $discarticle_item->setDiscussionID($discussion_item->getItemID());
 			$discarticle_item->setPosition("1");
+			$title_article = html_entity_decode($title_article, ENT_COMPAT, 'UTF-8');
          $discarticle_item->setSubject($title_article);
+         $description_article = html_entity_decode($description_article, ENT_COMPAT, 'UTF-8');
          $discarticle_item->setDescription(str_ireplace("\n", "\n".'<br />', $description_article));
          $discarticle_item->save();
          
@@ -3841,6 +3857,7 @@ class cs_connection_soap {
          
          $discussion_manager = $this->_environment->getDiscussionManager();
          $discussion_item = $discussion_manager->getItem($item_id);
+         $title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
          $discussion_item->setTitle($title);
          $discussion_item->save();
          
@@ -3895,7 +3912,9 @@ class cs_connection_soap {
          while($user_list_item) {
             $xml .= "<user_item>\n";
             $xml .= "<user_id><![CDATA[".$user_list_item->getItemID()."]]></user_id>\n";
-            $xml .= "<user_title><![CDATA[".$user_list_item->getFullname()."]]></user_title>\n";
+            $temp_title = $user_list_item->getFullname();
+            $temp_title = $this->prepareText($temp_title);
+            $xml .= "<user_title><![CDATA[".$temp_title."]]></user_title>\n";
             $reader = $reader_manager->getLatestReaderForUserByID($user_list_item->getItemID(), $user_item->getItemID());
             if ( empty($reader) ) {
                $xml .= "<user_read><![CDATA[new]]></user_read>\n";
@@ -3993,10 +4012,15 @@ class cs_connection_soap {
          $this->_environment->setCurrentUser($user_item);
          
          $user_item_save = $user_manager->getItem($item_id);
+         $name = html_entity_decode($name, ENT_COMPAT, 'UTF-8');
          $user_item_save->setLastname($name);
+         $firstname = html_entity_decode($firstname, ENT_COMPAT, 'UTF-8');
          $user_item_save->setFirstname($firstname);
+         $email = html_entity_decode($email, ENT_COMPAT, 'UTF-8');
          $user_item_save->setEmail($email);
+         $phone1 = html_entity_decode($phone1, ENT_COMPAT, 'UTF-8');
          $user_item_save->setTelephone($phone1);
+         $phone2 = html_entity_decode($phone2, ENT_COMPAT, 'UTF-8');
          $user_item_save->setCellularphone($phone2);
          $user_item_save->save();
          
@@ -4245,6 +4269,7 @@ class cs_connection_soap {
    
    function prepareText($text){
       $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
+      $text = html_entity_decode($text, ENT_COMPAT, 'UTF-8');
       $text = str_ireplace("<li>", "CS_LI", $text);
       $text = str_ireplace("\n", "CS_NEWLINE", $text);
       $text = str_ireplace("\r", "", $text);
@@ -4252,8 +4277,10 @@ class cs_connection_soap {
       $text = str_ireplace("CS_LICS_NEWLINE", "&bull; ", $text);
       $text = str_ireplace("CS_LI", "&bull; ", $text);
       $text = str_ireplace("CS_NEWLINE", "\n", $text);
-      //$current_encoding = mb_detect_encoding($text, 'auto');
-      //$text = iconv($current_encoding, 'ISO-8859-1', $text);
+      $text = str_ireplace("<br />", "", $text);
+      $current_encoding = mb_detect_encoding($text, 'auto');
+      $text = iconv($current_encoding, 'UTF-8', $text);
+      $text =  htmlentities($text, ENT_QUOTES, 'UTF-8');
       $text = strip_tags($text);
       $text = trim($text);
       if(empty($text)){
