@@ -757,7 +757,7 @@ class cs_connection_soap {
                   }
                } else {
                   $info = 'ERROR';
-                  $info_text = 'account not granted '.$user_id.' - '.$password.' - '.$portal_id;
+                  $info_text = 'account not granted for user '.$user_id;
                }
             } else {
                $info = 'ERROR';
@@ -765,9 +765,6 @@ class cs_connection_soap {
             }
          }
       }
-      el('authenticate: $result '.$result);
-      el('authenticate: $info '.$info);
-      el('authenticate: $info_text '.$info_text);
       if ( empty($result) and !empty($info) ) {
          $result = new SoapFault($info,$info_text);
       } else {
@@ -4224,9 +4221,9 @@ class cs_connection_soap {
          $user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
          $activate_user_item = $user_manager->getItem($activate_user_id);
          $activate_user_item->makeUser();
-         //$activate_user_item->save();
+         $activate_user_item->save();
          
-         if($with_email == 'true'){
+         if($with_email == 'true' && false){
             $translator = $this->_environment->getTranslationObject();
             $room_manager = $this->_environment->getRoomManager();
 
@@ -4274,14 +4271,16 @@ class cs_connection_soap {
       $text = str_ireplace("\n", "CS_NEWLINE", $text);
       $text = str_ireplace("\r", "", $text);
       $text = str_ireplace("\t", "", $text);
-      $text = str_ireplace("CS_LICS_NEWLINE", "&bull; ", $text);
-      $text = str_ireplace("CS_LI", "&bull; ", $text);
+      $text = str_ireplace("CS_LICS_NEWLINE", "CS_BULL ", $text);
+      $text = str_ireplace("CS_LI", "CS_BULL ", $text);
       $text = str_ireplace("CS_NEWLINE", "\n", $text);
       $text = str_ireplace("<br />", "", $text);
       $current_encoding = mb_detect_encoding($text, 'auto');
       $text = iconv($current_encoding, 'UTF-8', $text);
-      $text =  htmlentities($text, ENT_QUOTES, 'UTF-8');
       $text = strip_tags($text);
+      $text =  htmlentities($text, ENT_QUOTES, 'UTF-8');
+      $text = str_ireplace("CS_BULL", "&bull;", $text);
+      el($text);
       $text = trim($text);
       if(empty($text)){
          $text = ' ';
