@@ -145,7 +145,7 @@
 		
 		/** \brief	General form checks
 		 * 
-		 * This Method performs some generell checks when saving.
+		 * This Method performs some general checks when saving.
 		 * 
 		 * @param	form_data	The form data
 		 * @param	additional	Additinal given data to the save process

@@ -7,13 +7,15 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/query",
         	"dojo/on",
+        	"dojo/topic",
         	"dijit/MenuItem",
         	"dijit/CheckedMenuItem",
         	"dijit/form/ComboButton",
         	"dijit/DropDownMenu",
         	"dijit/MenuSeparator",
         	"dijit/PopupMenuItem",
-        	"dojo/i18n!./nls/calendar"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On, MenuItem, CheckedMenuItem, ComboButton, DropDownMenu, MenuSeparator, PopupMenuItem, CalendarTranslations) {
+        	"dijit/registry",
+        	"dojo/i18n!./nls/calendar"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On, Topic, MenuItem, CheckedMenuItem, ComboButton, DropDownMenu, MenuSeparator, PopupMenuItem, Registry, CalendarTranslations) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidgetBorderless",
@@ -24,6 +26,8 @@ define([	"dojo/_base/declare",
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
+			
+			this.roomList = [];
 		},
 		
 		postCreate: function() {
@@ -35,12 +39,20 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			this.createMenu();
+			this.loadRoomList().then(Lang.hitch(this, function() {
+				this.createMenu();
+			}));
 		},
 		
 		/************************************************************************************
 		 * Helper Functions
 		 ************************************************************************************/
+		loadRoomList: function() {
+			return this.AJAXRequest("myCalendar", "getRoomList", {}, Lang.hitch(this, function(response) {
+				this.roomList = response;
+			}));
+		},
+		
 		createMenu: function() {
 			var menu = new DropDownMenu();
 			
@@ -59,7 +71,7 @@ define([	"dojo/_base/declare",
 			/* Date Menu */
 			var dateMenu = new DropDownMenu();
 			
-			this.createRoomMenu(dateMenu);
+			this.createRoomMenu(dateMenu, "checkedInDates");
 			
 			menu.addChild(new PopupMenuItem({
 				label:			CalendarTranslations.configDate,
@@ -69,7 +81,7 @@ define([	"dojo/_base/declare",
 			/* ToDo Menu */
 			var todoMenu = new DropDownMenu();
 			
-			this.createRoomMenu(todoMenu);
+			this.createRoomMenu(todoMenu, "checkedInTodo");
 			
 			menu.addChild(new PopupMenuItem({
 				label:			CalendarTranslations.configToDo,
@@ -83,12 +95,22 @@ define([	"dojo/_base/declare",
 			button.placeAt(this.widgetBodyNode);
 		},
 		
-		createRoomMenu: function(topMenu) {
+		createRoomMenu: function(topMenu, checkedVar) {
 			topMenu.addChild(new MenuItem({
-				label:			CalendarTranslations.configFromAll
+				label:			CalendarTranslations.configFromAll,
+				onClick:		Lang.partial(Lang.hitch(this, this.onClickAllRooms), (checkedVar === "checkedInDates") ? "dates" : "todo")
 			}));
 			
 			topMenu.addChild(new MenuSeparator());
+			
+			/* add room list */
+			dojo.forEach(this.roomList, Lang.hitch(this, function(room, index, arr) {
+				topMenu.addChild(new CheckedMenuItem({
+					label:		room.title,
+					checked:	room[checkedVar],
+					onChange:	Lang.partial(Lang.hitch(this, this.onRoomSelectChange), room.id, (checkedVar === "checkedInDates") ? "dates" : "todo")
+				}));
+			}));
 		},
 		
 		/************************************************************************************
@@ -104,8 +126,32 @@ define([	"dojo/_base/declare",
 			event.preventDefault();
 		},
 		
-		onExecuteMenu: function(event) {
+		onClickAllRooms: function(type, event) {
+			// store changes
+			this.AJAXRequest("myCalendar", "storeRoomSelectAll", { type: type },
+				Lang.hitch(this, function(response) {
+					// reload calendar
+					Topic.publish("updatePrivateCalendar", {});
+				})
+			);
 			
+			// update menu
+			var childWidgets = Registry.findWidgets(event.rangeParent);
+			dojo.forEach(childWidgets, function(widget, index, arr) {
+				if (widget.get("declaredClass") === "dijit.CheckedMenuItem") {
+					widget.set("checked", true);
+				}
+			});
+		},
+		
+		onRoomSelectChange: function(roomId, type, checked) {
+			// store change
+			this.AJAXRequest("myCalendar", "storeRoomChange", { roomId: roomId, type: type, checked: checked },
+				Lang.hitch(this, function(response) {
+					// reload calendar
+					Topic.publish("updatePrivateCalendar", {});
+				})
+			);
 		}
 	});
 });

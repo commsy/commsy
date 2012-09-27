@@ -7,14 +7,10 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/query",
         	"dojo/on",
-        	"dojo/store/Observable",
-        	"commsy/store/Json",
-        	"dojo/topic",
-        	"dojox/calendar/Calendar",
-        	"dojo/date/stamp"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On, Observable, Json, Topic, Calendar, Stamp) {
+        	"dojo/i18n!./nls/calendar"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, Query, On, CalendarTranslations) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
-		baseClass:			"CommSyWidget",
+		baseClass:			"CommSyWidgetBorderless",
 		widgetHandler:		null,
 		
 		itemId:				null,
@@ -33,32 +29,11 @@ define([	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			var calendar = this.createCalendar();
-			
-			Topic.subscribe("updatePrivateCalendar", Lang.hitch(this, function(data) {
-				calendar.set("store", calendar.store);
-			}));
-		},
-		
-		createCalendar: function() {
-			return new Calendar({
-				decodeDate:			function(s) {
-					return Stamp.fromISOString(s);
-				},
-				encodeDate:			function(d) {
-					return Stamp.toISOString(d)
-				},
-				store:				new Observable(new Json({
-					fct:			"myCalendar"
-				})),
-				dateInterval:		"day",
-				style:				"position: relative; height: 500px;",
-				columnViewProps:	{
-					minHours:		0,
-					maxHours:		24
-				}
-			}, this.calendarNode);
 		}
+		
+		/************************************************************************************
+		 * Helper Functions
+		 ************************************************************************************/
 		
 		/************************************************************************************
 		 * EventHandler

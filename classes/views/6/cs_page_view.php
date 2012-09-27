@@ -1,9 +1,5 @@
 <?PHP
 // $Id$
-// $Id$
-// $Id$
-// $Id$
-// $Id$
 //
 // Release $Name$
 //
@@ -542,8 +538,127 @@ class cs_page_view extends cs_view {
       // jQuery
       return $retour;
    }
-
-
+   
+   private function _includeDojoAsHTML() {
+   	$html = "";
+   	
+   	$current_user = $this->_environment->getCurrentUser();
+   	$ownRoomItem = $current_user->getOwnRoom();
+   	$templateEngine = $this->_environment->getTemplateEngine();
+   	$translator = $this->_environment->getTranslationObject();
+   	
+   	if($templateEngine->getTheme() !== 'default') {
+   		$tpl_path = substr($templateEngine->getTemplateDir(1), 7);
+   	} else {
+   		$tpl_path = substr($templateEngine->getTemplateDir(0), 7);
+   	}
+   	
+   	
+   	
+   	global $c_js_mode;
+   	$mode = (isset($c_js_mode) && ($c_js_mode === "build" || $c_js_mode === "layer")) ? $c_js_mode : "source";
+   	
+   	$to_javascript = array();
+   	
+   	$to_javascript['template']['tpl_path'] = $tpl_path;
+   	$to_javascript['environment']['lang'] = $this->_environment->getSelectedLanguage();
+   	$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
+   	$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
+   	$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
+   	$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
+   	$to_javascript['security']['token'] = getToken();
+   	$to_javascript['autosave']['mode'] = 0;
+   	$to_javascript['autosave']['limit'] = 0;
+   	
+   	if ($ownRoomItem) {
+   		$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+   	}
+   	
+   	// translations - should be managed elsewhere soon
+   	$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
+   	$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
+   	
+   	// dev
+   	global $c_indexed_search;
+   	global $c_xhr_error_reporting;
+   	$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
+   	$to_javascript['dev']['xhr_error_reporting'] = (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) ? true : false;
+   	
+   	if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
+   		global $c_autosave_mode;
+   		global $c_autosave_limit;
+   	
+   		if(isset($c_autosave_mode) && isset($c_autosave_limit)) {
+   			$to_javascript['autosave']['mode'] = $c_autosave_mode;
+   			$to_javascript['autosave']['limit'] = $c_autosave_limit;
+   		}
+   	}
+   	
+   	switch ($mode) {
+   		case "build":
+   			$html .= '<script src="js/src/buildConfig.js"></script>';
+   			
+   			$html .= "
+   				<script>
+   					var from_php  = '" . json_encode($to_javascript) . "';
+   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
+   				</script>
+   			";
+   			
+   			$html .= '<script src="js/build/release/dojo/dojo.js"></script>';
+   			$html .= '<script src="js/build/release/commsy/main.js"></script>';
+   			
+   			break;
+   	
+   		case "layer":
+   			$html .= '<script src="js/src/layerConfig.js"></script>';
+   			
+   			$html .= "
+   				<script>
+   					var from_php  = '" . json_encode($to_javascript) . "';
+   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
+   				</script>
+   			";
+   			
+   			$html .= '<script src="js/src/dojo/dojo.js"></script>';
+   			$html .= '
+   				<script>
+   					require(["layer/commsy"], function() {
+				   		require(["commsy/main"], function() {
+				   	
+				   		});
+				   	});
+   				</script>
+   			';
+   			break;
+   		
+   		default:
+   			$html .= '<script src="js/src/sourceConfig.js"></script>';
+   			
+   			$html .= "
+   				<script>
+   					var from_php  = '" . json_encode($to_javascript) . "';
+   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
+   				</script>
+   			";
+   			
+   			$html .= '<script src="js/src/dojo/dojo.js"></script>';
+   			$html .= '<script src="js/src/commsy/main.js"></script>';
+   	}
+   	
+   	$html .= '
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dijit/themes/tundra/tundra.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/cbtree/themes/tundra/tundra.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/form/resources/UploaderFileList.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/image/resources/Lightbox.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/widget/ColorPicker/ColorPicker.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/calendar/themes/tundra/Calendar.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles_addon.css" />
+   	';
+   	
+   	return $html;
+   }
 
    function _getHTMLHeadAsHTML () {
       global $c_commsy_url_path;
@@ -572,6 +687,13 @@ class cs_page_view extends cs_view {
       $retour .= '   <meta http-equiv="pragma" content="no-cache"/>'.LF;
       $retour .= '   <meta name="MSSmartTagsPreventParsing" content="TRUE"/>'.LF;
       $retour .= '   <meta name="CommsyBaseURL" content="'.$c_commsy_url_path.'"/>'.LF;
+      
+      /* CommSy Bar */
+      $currentUser = $this->_environment->getCurrentUserItem();
+      if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
+      	$retour .= $this->_includeDojoAsHTML();
+      }
+      
       $retour .= $this->_getIncludedCSSAsHTML();
       $retour .= $this->_includedJavascriptAsHTML();
 

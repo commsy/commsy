@@ -930,9 +930,13 @@ if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
 }
 
 // temporary bypass smarty for server and project context
-if($context_item->isServer() || $context_item->isPortal()) {
+if($context_item->isServer()) {
+	$c_smarty = false;
+
+} elseif ($context_item->isPortal() && $_GET["mod"] !== "ajax") {
 	$c_smarty = false;
 }
+
 // and anywhere else if conditions match
 else {
 	if(	$environment->getCurrentFunction() === 'edit' &&

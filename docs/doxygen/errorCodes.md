@@ -10,6 +10,10 @@ Einleitung...
 
 \section errorCodesAJAX AJAX Fehlercodes
 
+- Allgemein 0xx
+  + Rights 00x
+    * 000 - Unzureichende Rechte
+
 - mandatory-Errors 11x
   + 111 - Feld leer
   + 112 - Feld leer nach Bereinigung

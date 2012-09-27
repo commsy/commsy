@@ -180,6 +180,8 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     				$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => true));
     				break;
     		}
+    	} else {
+    		$this->_popup_controller->setErrorReturn("000", "insufficent rights");
     	}
     }
     

@@ -1,4 +1,5 @@
 <?php
+$message["CS_BAR_ABOEXPORT"]["de"] = "Abonnieren/Exportieren";
 $message["CS_BAR_CALENDAR"]["de"] = "Mein Kalender";
 $message["CS_BAR_CALENDAR_DESC"]["de"] = "In diesem Konfigurationsbereich können Sie die Optionen den persönlichen Kalender aktivieren bzw. deaktiveren und Einstellungen vornehmen.";
 $message["CS_BAR_CALENDAR_VIEW"]["de"] = "Mein Calendar anzeigen";

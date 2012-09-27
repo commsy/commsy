@@ -1,4 +1,5 @@
 <?php
+$message["CS_BAR_ABOEXPORT"]["en"] = "Subscribe/Export";
 $message["CS_BAR_CALENDAR"]["en"] = "My calendar";
 $message["CS_BAR_CALENDAR_DESC"]["en"] = "Here you can setup the personal calendar.";
 $message["CS_BAR_CALENDAR_VIEW"]["en"] = "Show my calendar";

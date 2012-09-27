@@ -1843,6 +1843,362 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<!-- END HEADER -->'.LF;
       return $html;
    }
+   
+   private function _getCommSyBarBeforeContentAsHTML() {
+   	$html = "";
+   	
+   	$currentUser = $this->_environment->getCurrentUserItem();
+   	$translator = $this->_environment->getTranslationObject();
+   	if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
+   		$html .= '
+   			<div id="top_menu">
+   				<div id="tm_wrapper_outer">
+   					<div id="tm_wrapper">
+						<div id="tm_icons_bar">
+   		';
+   		
+   		if ( !$currentUser->isReallyGuest() )
+   		{
+   			$html .= '
+   							<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=context&fct=logout&iid=' . $currentUser->getItemID() . '" id="tm_logout" title="' . $translator->getMessage("LOGOUT") . '">
+   								&nbsp;
+   							</a>
+   			';
+   		}
+   		else
+   		{
+   			$html .= '
+   							<a href="commsy.php?cid=' . $this->_environment->getCurrentPortalID() . '&mod=home&fct=index&room_id=' . $this->_environment->getCurrentContextID() . '&login_redirect=1" class="tm_user" style="width:70px;" title="' . $translator->getMessage("MYAREA_LOGIN_BUTTON") . '">
+   								' . $translator->getMessage("MYAREA_LOGIN_BUTTON") . '
+   							</a>
+   			';
+   		}
+   		
+   		$html .= '
+   							<div class="clear"></div>
+   						</div>
+   						
+   						<div id="tm_pers_bar">
+   							<a href="#" id="tm_user">
+   		';
+   		
+   		if ( !$currentUser->isReallyGuest() )
+   		{
+   			$html .= 			$translator->getMessage("COMMON_WELCOME") . ", " . mb_substr($currentUser->getFullName(), 0, 20);
+   		}
+   		else
+   		{
+   			$html .= 			$translator->getMessage("COMMON_WELCOME") . ", " . $translator->getMessage("COMMON_GUEST");
+   		}
+   		
+   		$html .= '
+   							</a>
+   						</div>
+   		';
+   		
+   		if ( !$currentUser->isReallyGuest() )
+   		{
+   			$ownRoomItem = $currentUser->getOwnRoom();
+   			
+   			
+						   				$return = array(
+						   						'wiki'		=> array(
+						   								'active'	=> false
+						   						),
+						   						'chat'		=> array(
+						   								'active'	=> false
+						   						),
+						   						'wordpress'	=> array(
+						   								'active'	=> false
+						   						),
+						   						'rss'		=> array(
+						   								'active'	=> false
+						   						),
+						   						'rows'		=> 0
+						   				);
+						   			
+						   				$current_context = $this->_environment->getCurrentContextItem();
+						   				$current_user = $this->_environment->getCurrentUserItem();
+						   				$count = 0;
+						   			
+						   				// wiki
+						   				if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
+						   					global $c_pmwiki_path_url;
+						   			
+						   					$count++;
+						   					$return['wiki']['active'] = true;
+						   					$return['wiki']['title'] = $current_context->getWikiTitle();
+						   					$return['wiki']['path'] = $c_pmwiki_path_url;
+						   					$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
+						   					$return['wiki']['item_id'] = $current_context->getItemID();
+						   			
+						   					$url_session_id = '';
+						   					if($current_context->withWikiUseCommSyLogin()) {
+						   						$session_item = $this->_environment->getSessionItem();
+						   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+						   						unset($session_item);
+						   					}
+						   					$return['wiki']['session'] = $url_session_id;
+						   				}
+						   			
+						   				// chat
+						   				if($current_context->showChatLink()) {
+						   					global $c_etchat_enable;
+						   					if(!empty($c_etchat_enable) && $c_etchat_enable) {
+						   						if(isset($current_user) && $current_user->isReallyGuest()) {
+						   						} else {
+						   							$count++;
+						   							$return['chat']['active'] = true;
+						   						}
+						   					}
+						   				}
+						   			
+						   				// wordpress
+						   				if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
+						   					global $c_wordpress_path_url;
+						   			
+						   					$count++;
+						   					$return['wordpress']['active'] = true;
+						   					$return['wordpress']['title'] = $current_context->getWordpressTitle();
+						   					$return['wordpress']['path'] = $c_wordpress_path_url;
+						   					$return['wordpress']['item_id'] = $current_context->getItemID();
+						   			
+						   					$url_session_id = '';
+						   					if($current_context->withWordpressUseCommSyLogin()) {
+						   						$session_item = $this->_environment->getSessionItem();
+						   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+						   						unset($session_item);
+						   					}
+						   					$return['wordpress']['session'] = $url_session_id;
+						   				}
+						   				// rss
+						   				$show_rss_link = false;
+						   				if($current_context->isLocked() || $current_context->isClosed()) {
+						   					// do nothing
+						   				} elseif($current_context->isOpenForGuests()) {
+						   					$show_rss_link = true;
+						   				} elseif($current_user->isUser()) {
+						   					$show_rss_link = true;
+						   				}
+						   			
+						   				$hash_string = '';
+						   				if(!$current_context->isOpenForGuests() && $current_user->isUser()) {
+						   					$hash_manager = $this->_environment->getHashManager();
+						   					$hash_string = '&amp;hid=' . $hash_manager->getRSSHashForUser($current_user->getItemID());
+						   				}
+						   			
+						   				if(!$current_context->isRSSOn()) {
+						   					$show_rss_link = false;
+						   				}
+						   			
+						   				if($show_rss_link) {
+						   					$count++;
+						   					$return['rss']['active'] = true;
+						   					$return['rss']['item_id'] = $current_context->getItemID();
+						   					$return['rss']['hash'] = $hash_string;
+						   				}
+						   			
+						   				$return['rows'] = ceil($count / 2);
+						   			
+			$addonInformation = $return;
+   			
+   			$html .= '	<div id="tm_icons_bar">';
+   			
+   			if ( $addonInformation["wiki"]["active"] === true )
+   			{
+   				$wiki = $addonInformation["wiki"];
+   				$html .= '	<a href="' . $wiki["path"] . '/wikis/' . $wiki["portal_id"] . '/' . $wiki["item_id"] . '/index.php' . $wiki["session"] . '" title="' . $translator->getMessage("COMMON_WIKI_LINK") . ': ' . $wiki["title"] . '" target="_blank" id="tm_wiki">
+   								&nbsp;
+   							</a>
+   				';
+   			}
+   			
+   			if ( $addonInformation["wordpress"]["active"] === true )
+   			{
+   				$wordpress = $addonInformation["wordpress"];
+   				$html .= '	<a href="' . $wordpress["path"] . '/' . $this->_environment->getCurrentPortalID() . '_' . $wordpress["item_id"] . '/' . $wordpress["session"] . '" title="' . $translator->getMessage("COMMON_WORDPRESS_LINK") . ': ' . $wordpress["title"] . '" target="_blank" id="tm_wordpress">
+   								&nbsp;
+   							</a>
+   				';
+   			}
+   			
+   			if ( isset($ownRoomItem)) {
+   				if ( $ownRoomItem->getCSBarShowPortfolio() === true )
+   				{
+   					$html .= '	<a href="#" id="tm_portfolio" title="' . $translator->getMessage("CS_BAR_PORTFOLIO") . '">&nbsp;</a>';
+   				}
+   				
+   				if ( $ownRoomItem->getCSBarShowWidgets() == "1" )
+   				{
+   					$html .= '	<a href="#" id="tm_widgets" title="' . $translator->getMessage("MYWIDGETS_INDEX") . '">&nbsp;</a>';
+   				}
+   				
+   				if ( $ownRoomItem->getCSBarShowCalendar() )
+   				{
+   					$html .= '	<a href="#" id="tm_mycalendar" title="' . $translator->getMessage("MYCALENDAR_INDEX") . '">&nbsp;</a>';
+   				}
+   				
+   				if ( $ownRoomItem->getCSBarShowStack() )
+   				{
+   					$html .= '	<a href="#" id="tm_stack" title="' . $translator->getMessage("COMMON_ENTRY_INDEX") . '">&nbsp;</a>';
+   				}
+   			}
+   			
+   			
+   			/*
+   			$html .= '		<a href="#" id="tm_clipboard" title="' . $translator->getMessage("MYAREA_MY_COPIES") . '">&nbsp;</a>';
+   			
+   			$numCopies = 0;
+   			$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
+   			$session = $this->_environment->getSessionItem();
+   			foreach ($rubric_copy_array as $rubric){
+   				$numCopies += count($session->getValue($rubric.'_clipboard'));
+   			}
+   			
+   			if ( $numCopies > 0)
+   			{
+   				$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
+   			}
+   			*/
+   			
+   			$html .= '
+   							<div class="clear"></div>
+   						</div>
+   			';
+   		}
+   		
+   		if (isset($ownRoomItem) && $ownRoomItem->getCSBarShowOldRoomSwitcher() === "1" )
+   		{
+   			$html .= '	<div id="tm_breadcrumb_old">';
+   			
+   					$retour  = '';
+				      $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
+				      // jQuery
+				      //$retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+				      $retour .= '         <select onchange="document.room_change.submit()" size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
+				      // jQuery
+				      $context_array = array();
+				      $context_array = $this->_getAllOpenContextsForCurrentUser();
+				      $current_portal = $this->_environment->getCurrentPortalItem();
+				      $translator = $this->_environment->getTranslationObject();
+				      $text_converter = $this->_environment->getTextConverter();
+				      if ( !$this->_environment->inServer() ) {
+				         $title = $this->_environment->getCurrentPortalItem()->getTitle();
+				         $title .= ' ('.$translator->getMessage('COMMON_PORTAL').')';
+				         $additional = '';
+				         if ($this->_environment->inPortal()){
+				            $additional = 'selected="selected"';
+				         }
+				         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$title.'</option>'.LF;
+				
+				         $current_portal_item = $this->_environment->getCurrentPortalItem();
+				         if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+				            $link_active = true;
+				         } else {
+				            $current_user_item = $this->_environment->getCurrentUserItem();
+				            if ( $current_user_item->isRoomMember() ) {
+				               $link_active = true;
+				            } else {
+				               $link_active = false;
+				            }
+				            unset($current_user_item);
+				         }
+				         unset($current_portal_item);
+				
+				      }
+				
+				      $first_time = true;
+				      foreach ($context_array as $con) {
+				         $title = $text_converter->text_as_html_short($con['title']);
+				         $additional = '';
+				         if (isset($con['selected']) and $con['selected']) {
+				            $additional = ' selected="selected"';
+				         }
+				         if ($con['item_id'] == -1) {
+				            $additional = ' class="disabled" disabled="disabled"';
+				            if (!empty($con['title'])) {
+				               $title = '----'.$text_converter->text_as_html_short($con['title']).'----';
+				            } else {
+				               $title = '&nbsp;';
+				            }
+				         }
+				         if ($con['item_id'] == -2) {
+				            $additional = ' class="disabled" disabled="disabled" style="font-style:italic;"';
+				            if (!empty($con['title'])) {
+				               $title = $text_converter->text_as_html_short($con['title']);
+				            } else {
+				               $title = '&nbsp;';
+				            }
+				            $con['item_id'] = -1;
+				            if ($first_time) {
+				               $first_time = false;
+				            } else {
+				               $retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>&nbsp;</option>'.LF;
+				            }
+				         }
+				         $retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>'.$title.'</option>'.LF;
+				      }
+				
+				      $current_user_item = $this->_environment->getCurrentUserItem();
+				      if (!$current_user_item->isUser() and $current_user_item->getUserID() != "guest") {
+				         $context = $this->_environment->getCurrentContextItem();
+				         if (!empty($context_array)) {
+				            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
+				         }
+				         $retour .= '            <option value="-1" class="disabled" disabled="disabled">----'.$translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
+				         $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
+				      }
+				      $retour .= '         </select>'.LF;
+				      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change" value="'.$translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
+				      $retour .= '   </form>'.LF;
+				      unset($context_array);
+			
+			$html .= $retour;
+			$html .= '	</div>';
+   		}
+   		else
+   		{
+   			$html .= '
+   						<div id="tm_breadcrumb">
+   							<a href="#" id="tm_bread_crumb">' . $translator->getMessage("COMMON_GO_BUTTON") . ': ' . $this->_environment->getCurrentPortalItem()->getTitle() . '</a>
+   						</div>
+   			';
+   		}
+   		
+   		if ( $currentUser->isModerator() )
+   		{
+   			$html .= '
+   						<div id="tm_icons_left_bar">
+   							<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=configuration&fct=index" id="tm_settings" title="' . $translator->getMessage("COMMON_CONFIGURATION") . '">&nbsp;</a>
+   			';
+   			
+   			$html .= '
+   							<div class="clear"></div>
+   						</div>
+   				';
+   		}
+   		
+   		$html .= '
+   						<div class="clear"></div>
+   					</div>
+   				</div>
+   				
+   				<div id="tm_menus">
+   					<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
+			   		<div id="tm_dropmenu_widget_bar" class="hidden"></div>
+			   		<div id="tm_dropmenu_portfolio" class="hidden"></div>
+			   		<div id="tm_dropmenu_mycalendar" class="hidden"></div>
+			   		<div id="tm_dropmenu_stack" class="hidden"></div>
+			   		<div id="tm_dropmenu_pers_bar" class="hidden"></div>
+			   		<div id="tm_dropmenu_clipboard" class="hidden"></div>
+			   		<div id="tm_dropmenu_configuration" class="hidden"></div>
+   				</div>
+   			</div>
+   		';
+   	}
+   	
+   	return $html;
+   }
 
 
    /** get page view as HTML
@@ -1886,6 +2242,9 @@ class cs_page_guide_view extends cs_page_view {
             $view = next($views);
          }
          $html .= '>'.LF;
+         
+         /* CommSy Bar */
+         $html .= $this->_getCommSyBarBeforeContentAsHTML();
 
          $html .= $this->_getPluginInfosForBeforeContentAsHTML();
          if ($this->_show_agbs) {

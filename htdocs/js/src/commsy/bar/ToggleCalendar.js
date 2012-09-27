@@ -29,7 +29,9 @@ define([	"dojo/_base/declare",
 			// add some widgets hardcoded
 			var widgetArray = [
 			    "bar/Calendar",
-			    "bar/CalendarConfig"
+			    "bar/CalendarConfig",
+			    "bar/CalendarAbo",
+			    "bar/CalendarRestrictions"
 			];
 			
 			this.loadWidgetsManual(widgetArray).then(

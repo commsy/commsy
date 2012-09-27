@@ -178,10 +178,14 @@ require([	"dojo/_base/declare",
 				
 				// search
 				if(this.from_php.dev.indexed_search === true) {
-					require(["commsy/Search"], function(Search) {
-						var handler = new Search();
-						handler.setup(query("input#search_input")[0]);
-					});
+					var inputNode = query("input#search_input")[0];
+					
+					if (inputNode) {
+						require(["commsy/Search"], function(Search) {
+							var handler = new Search();
+							handler.setup(inputNode);
+						});
+					}
 				}
 				
 				// overlays
@@ -191,7 +195,7 @@ require([	"dojo/_base/declare",
 						handler.setup(node);
 					});
 				});
-			    
+				
 				// div expander
 				if(this.uri_object.mod === "home") {
 					var objects = [];
