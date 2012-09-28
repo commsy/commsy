@@ -27,34 +27,38 @@
 	      return false;
 		}
 
-		public function showTags() {
+		public function showTags($module = null) {
+			$module = ($module !== null) ? $module : $this->_environment->getCurrentModule();
+			
 			$context_item = $this->_environment->getCurrentContextItem();
 			if($context_item->withTags() &&
-				( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
-	                || $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
-	                || $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
-	                || $this->_environment->getCurrentModule() == CS_TODO_TYPE
-	                || $this->_environment->getCurrentModule() == CS_DATE_TYPE
-	                || $this->_environment->getCurrentModule() == 'search'
-					|| $this->_environment->getCurrentModule() == 'ajax'
-	                || $this->_environment->getCurrentModule() === 'home')) {
+				( $module == CS_MATERIAL_TYPE
+	                || $module == CS_ANNOUNCEMENT_TYPE
+	                || $module == CS_DISCUSSION_TYPE
+	                || $module == CS_TODO_TYPE
+	                || $module == CS_DATE_TYPE
+	                || $module == 'search'
+					|| $module == 'ajax'
+	                || $module === 'home')) {
 				return true;
 			}
 
 			return false;
 		}
 
-		public function showBuzzwords() {
+		public function showBuzzwords($module = null) {
+			$module = ($module !== null) ? $module : $this->_environment->getCurrentModule();
+			
 			$context_item = $this->_environment->getCurrentContextItem();
 			if($context_item->withBuzzwords() &&
-				(	$this->_environment->getCurrentModule() === CS_ANNOUNCEMENT_TYPE ||
-					$this->_environment->getCurrentModule() === 'home' ||
-					$this->_environment->getCurrentModule() === 'ajax' ||
-					$this->_environment->getCurrentModule() === 'search' ||
-					$this->_environment->getCurrentModule() === CS_DATE_TYPE ||
-					$this->_environment->getCurrentModule() === CS_MATERIAL_TYPE ||
-					$this->_environment->getCurrentModule() === CS_DISCUSSION_TYPE ||
-					$this->_environment->getCurrentModule() === CS_TODO_TYPE)) {
+				(	$module === CS_ANNOUNCEMENT_TYPE ||
+					$module === 'home' ||
+					$module === 'ajax' ||
+					$module === 'search' ||
+					$module === CS_DATE_TYPE ||
+					$module === CS_MATERIAL_TYPE ||
+					$module === CS_DISCUSSION_TYPE ||
+					$module === CS_TODO_TYPE)) {
 				return true;
 			}
 

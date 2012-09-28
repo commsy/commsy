@@ -1,3 +1,70 @@
-//>>built
-define("ckeditor/_source/skins/v2/skin",["dijit","dojo","dojox"],function(){CKEDITOR.skins.add("v2",{editor:{css:["editor.css"]},dialog:{css:["dialog.css"]},separator:{canGroup:!1},templates:{css:["templates.css"]},margins:[0,14,18,14]});(function(){function c(){CKEDITOR.dialog.on("resize",function(a){var a=a.data,d=a.height,c=a.dialog;"v2"==a.skin&&(c.parts.contents.setStyles({width:a.width+"px",height:d+"px"}),CKEDITOR.env.ie&&!CKEDITOR.env.ie9Compat&&setTimeout(function(){var a=c.parts.dialog.getChild([0,
-0,0]),b=a.getChild(0),e=b.getSize("width");d+=b.getChild(0).getSize("height")+1;b=a.getChild(2);b.setSize("width",e);b=a.getChild(7);b.setSize("width",e-28);b=a.getChild(4);b.setSize("height",d);b=a.getChild(5);b.setSize("height",d)},100))})}CKEDITOR.dialog?c():CKEDITOR.on("dialogPluginReady",c)})()});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.skins.add( 'v2', (function()
+{
+	return {
+		editor		: { css : [ 'editor.css' ] },
+		dialog		: { css : [ 'dialog.css' ] },
+		separator		: { canGroup: false },
+		templates	: { css : [ 'templates.css' ] },
+		margins		: [ 0, 14, 18, 14 ]
+	};
+})() );
+
+(function()
+{
+	CKEDITOR.dialog ? dialogSetup() : CKEDITOR.on( 'dialogPluginReady', dialogSetup );
+
+	function dialogSetup()
+	{
+		CKEDITOR.dialog.on( 'resize', function( evt )
+			{
+				var data = evt.data,
+					width = data.width,
+					height = data.height,
+					dialog = data.dialog,
+					contents = dialog.parts.contents;
+
+				if ( data.skin != 'v2' )
+					return;
+
+				contents.setStyles(
+					{
+						width : width + 'px',
+						height : height + 'px'
+					});
+
+				if ( !CKEDITOR.env.ie || CKEDITOR.env.ie9Compat )
+					return;
+
+				// Fix the size of the elements which have flexible lengths.
+				setTimeout( function()
+					{
+						var innerDialog = dialog.parts.dialog.getChild( [ 0, 0, 0 ] ),
+							body = innerDialog.getChild( 0 ),
+							bodyWidth = body.getSize( 'width' );
+						height += body.getChild( 0 ).getSize( 'height' ) + 1;
+
+						// tc
+						var el = innerDialog.getChild( 2 );
+						el.setSize( 'width', bodyWidth );
+
+						// bc
+						el = innerDialog.getChild( 7 );
+						el.setSize( 'width', bodyWidth - 28 );
+
+						// ml
+						el = innerDialog.getChild( 4 );
+						el.setSize( 'height', height );
+
+						// mr
+						el = innerDialog.getChild( 5 );
+						el.setSize( 'height', height );
+					},
+					100 );
+			});
+	}
+})();

@@ -1,8 +1,251 @@
-//>>built
-define("ckeditor/_source/plugins/justify/plugin",["dijit","dojo","dojox"],function(){(function(){function l(a,d){var d=void 0===d||d,b;if(d)b=a.getComputedStyle("text-align");else{for(;!a.hasAttribute||!a.hasAttribute("align")&&!a.getStyle("text-align");){b=a.getParent();if(!b)break;a=b}b=a.getStyle("text-align")||a.getAttribute("align")||""}b&&(b=b.replace(/(?:-(?:moz|webkit)-)?(?:start|auto)/i,""));!b&&d&&(b="rtl"==a.getComputedStyle("direction")?"right":"left");return b}function f(a){a.editor.readOnly||
-a.editor.getCommand(this.name).refresh(a.data.path)}function g(a,d,b){this.editor=a;this.name=d;this.value=b;if(a=a.config.justifyClasses){switch(b){case "left":this.cssClassName=a[0];break;case "center":this.cssClassName=a[1];break;case "right":this.cssClassName=a[2];break;case "justify":this.cssClassName=a[3]}this.cssClassRegex=RegExp("(?:^|\\s+)(?:"+a.join("|")+")(?=$|\\s)")}}function j(a){var d=a.editor,b=new CKEDITOR.dom.range(d.document);b.setStartBefore(a.data.node);b.setEndAfter(a.data.node);
-for(var i=new CKEDITOR.dom.walker(b),c;c=i.next();)if(c.type==CKEDITOR.NODE_ELEMENT)if(!c.equals(a.data.node)&&c.getDirection())b.setStartAfter(c),i=new CKEDITOR.dom.walker(b);else{var e=d.config.justifyClasses;e&&(c.hasClass(e[0])?(c.removeClass(e[0]),c.addClass(e[2])):c.hasClass(e[2])&&(c.removeClass(e[2]),c.addClass(e[0])));e=c.getStyle("text-align");"left"==e?c.setStyle("text-align","right"):"right"==e&&c.setStyle("text-align","left")}}g.prototype={exec:function(a){var d=a.getSelection(),b=a.config.enterMode;
-if(d){for(var i=d.createBookmarks(),c=d.getRanges(!0),e=this.cssClassName,g,h,f=a.config.useComputedState,f=void 0===f||f,k=c.length-1;0<=k;k--){g=c[k].createIterator();for(g.enlargeBr=b!=CKEDITOR.ENTER_BR;h=g.getNextParagraph(b==CKEDITOR.ENTER_P?"p":"div");){h.removeAttribute("align");h.removeStyle("text-align");var j=e&&(h.$.className=CKEDITOR.tools.ltrim(h.$.className.replace(this.cssClassRegex,""))),m=this.state==CKEDITOR.TRISTATE_OFF&&(!f||l(h,!0)!=this.value);e?m?h.addClass(e):j||h.removeAttribute("class"):
-m&&h.setStyle("text-align",this.value)}}a.focus();a.forceNextSelectionCheck();d.selectBookmarks(i)}},refresh:function(a){a=a.block||a.blockLimit;this.setState("body"!=a.getName()&&l(a,this.editor.config.useComputedState)==this.value?CKEDITOR.TRISTATE_ON:CKEDITOR.TRISTATE_OFF)}};CKEDITOR.plugins.add("justify",{init:function(a){var d=new g(a,"justifyleft","left"),b=new g(a,"justifycenter","center"),i=new g(a,"justifyright","right"),c=new g(a,"justifyblock","justify");a.addCommand("justifyleft",d);a.addCommand("justifycenter",
-b);a.addCommand("justifyright",i);a.addCommand("justifyblock",c);a.ui.addButton("JustifyLeft",{label:a.lang.justify.left,command:"justifyleft"});a.ui.addButton("JustifyCenter",{label:a.lang.justify.center,command:"justifycenter"});a.ui.addButton("JustifyRight",{label:a.lang.justify.right,command:"justifyright"});a.ui.addButton("JustifyBlock",{label:a.lang.justify.block,command:"justifyblock"});a.on("selectionChange",CKEDITOR.tools.bind(f,d));a.on("selectionChange",CKEDITOR.tools.bind(f,i));a.on("selectionChange",
-CKEDITOR.tools.bind(f,b));a.on("selectionChange",CKEDITOR.tools.bind(f,c));a.on("dirChanged",j)},requires:["domiterator"]})})()});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @file Justify commands.
+ */
+
+(function()
+{
+	function getAlignment( element, useComputedState )
+	{
+		useComputedState = useComputedState === undefined || useComputedState;
+
+		var align;
+		if ( useComputedState )
+			align = element.getComputedStyle( 'text-align' );
+		else
+		{
+			while ( !element.hasAttribute || !( element.hasAttribute( 'align' ) || element.getStyle( 'text-align' ) ) )
+			{
+				var parent = element.getParent();
+				if ( !parent )
+					break;
+				element = parent;
+			}
+			align = element.getStyle( 'text-align' ) || element.getAttribute( 'align' ) || '';
+		}
+
+		// Sometimes computed values doesn't tell.
+		align && ( align = align.replace( /(?:-(?:moz|webkit)-)?(?:start|auto)/i, '' ) );
+
+		!align && useComputedState && ( align = element.getComputedStyle( 'direction' ) == 'rtl' ? 'right' : 'left' );
+
+		return align;
+	}
+
+	function onSelectionChange( evt )
+	{
+		if ( evt.editor.readOnly )
+			return;
+
+		evt.editor.getCommand( this.name ).refresh( evt.data.path );
+	}
+
+	function justifyCommand( editor, name, value )
+	{
+		this.editor = editor;
+		this.name = name;
+		this.value = value;
+
+		var classes = editor.config.justifyClasses;
+		if ( classes )
+		{
+			switch ( value )
+			{
+				case 'left' :
+					this.cssClassName = classes[0];
+					break;
+				case 'center' :
+					this.cssClassName = classes[1];
+					break;
+				case 'right' :
+					this.cssClassName = classes[2];
+					break;
+				case 'justify' :
+					this.cssClassName = classes[3];
+					break;
+			}
+
+			this.cssClassRegex = new RegExp( '(?:^|\\s+)(?:' + classes.join( '|' ) + ')(?=$|\\s)' );
+		}
+	}
+
+	function onDirChanged( e )
+	{
+		var editor = e.editor;
+
+		var range = new CKEDITOR.dom.range( editor.document );
+		range.setStartBefore( e.data.node );
+		range.setEndAfter( e.data.node );
+
+		var walker = new CKEDITOR.dom.walker( range ),
+			node;
+
+		while ( ( node = walker.next() ) )
+		{
+			if ( node.type == CKEDITOR.NODE_ELEMENT )
+			{
+				// A child with the defined dir is to be ignored.
+				if ( !node.equals( e.data.node ) && node.getDirection() )
+				{
+					range.setStartAfter( node );
+					walker = new CKEDITOR.dom.walker( range );
+					continue;
+				}
+
+				// Switch the alignment.
+				var classes = editor.config.justifyClasses;
+				if ( classes )
+				{
+					// The left align class.
+					if ( node.hasClass( classes[ 0 ] ) )
+					{
+						node.removeClass( classes[ 0 ] );
+						node.addClass( classes[ 2 ] );
+					}
+					// The right align class.
+					else if ( node.hasClass( classes[ 2 ] ) )
+					{
+						node.removeClass( classes[ 2 ] );
+						node.addClass( classes[ 0 ] );
+					}
+				}
+
+				// Always switch CSS margins.
+				var style = 'text-align';
+				var align = node.getStyle( style );
+
+				if ( align == 'left' )
+					node.setStyle( style, 'right' );
+				else if ( align == 'right' )
+					node.setStyle( style, 'left' );
+			}
+		}
+	}
+
+	justifyCommand.prototype = {
+		exec : function( editor )
+		{
+			var selection = editor.getSelection(),
+				enterMode = editor.config.enterMode;
+
+			if ( !selection )
+				return;
+
+			var bookmarks = selection.createBookmarks(),
+				ranges = selection.getRanges( true );
+
+			var cssClassName = this.cssClassName,
+				iterator,
+				block;
+
+			var useComputedState = editor.config.useComputedState;
+			useComputedState = useComputedState === undefined || useComputedState;
+
+			for ( var i = ranges.length - 1 ; i >= 0 ; i-- )
+			{
+				iterator = ranges[ i ].createIterator();
+				iterator.enlargeBr = enterMode != CKEDITOR.ENTER_BR;
+
+				while ( ( block = iterator.getNextParagraph( enterMode == CKEDITOR.ENTER_P ? 'p' : 'div' ) ) )
+				{
+					block.removeAttribute( 'align' );
+					block.removeStyle( 'text-align' );
+
+					// Remove any of the alignment classes from the className.
+					var className = cssClassName && ( block.$.className =
+						CKEDITOR.tools.ltrim( block.$.className.replace( this.cssClassRegex, '' ) ) );
+
+					var apply =
+						( this.state == CKEDITOR.TRISTATE_OFF ) &&
+						( !useComputedState || ( getAlignment( block, true ) != this.value ) );
+
+					if ( cssClassName )
+					{
+						// Append the desired class name.
+						if ( apply )
+							block.addClass( cssClassName );
+						else if ( !className )
+							block.removeAttribute( 'class' );
+					}
+					else if ( apply )
+						block.setStyle( 'text-align', this.value );
+				}
+
+			}
+
+			editor.focus();
+			editor.forceNextSelectionCheck();
+			selection.selectBookmarks( bookmarks );
+		},
+
+		refresh : function( path )
+		{
+			var firstBlock = path.block || path.blockLimit;
+
+			this.setState( firstBlock.getName() != 'body' &&
+				getAlignment( firstBlock, this.editor.config.useComputedState ) == this.value ?
+				CKEDITOR.TRISTATE_ON :
+				CKEDITOR.TRISTATE_OFF );
+		}
+	};
+
+	CKEDITOR.plugins.add( 'justify',
+	{
+		init : function( editor )
+		{
+			var left = new justifyCommand( editor, 'justifyleft', 'left' ),
+				center = new justifyCommand( editor, 'justifycenter', 'center' ),
+				right = new justifyCommand( editor, 'justifyright', 'right' ),
+				justify = new justifyCommand( editor, 'justifyblock', 'justify' );
+
+			editor.addCommand( 'justifyleft', left );
+			editor.addCommand( 'justifycenter', center );
+			editor.addCommand( 'justifyright', right );
+			editor.addCommand( 'justifyblock', justify );
+
+			editor.ui.addButton( 'JustifyLeft',
+				{
+					label : editor.lang.justify.left,
+					command : 'justifyleft'
+				} );
+			editor.ui.addButton( 'JustifyCenter',
+				{
+					label : editor.lang.justify.center,
+					command : 'justifycenter'
+				} );
+			editor.ui.addButton( 'JustifyRight',
+				{
+					label : editor.lang.justify.right,
+					command : 'justifyright'
+				} );
+			editor.ui.addButton( 'JustifyBlock',
+				{
+					label : editor.lang.justify.block,
+					command : 'justifyblock'
+				} );
+
+			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, left ) );
+			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, right ) );
+			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, center ) );
+			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, justify ) );
+			editor.on( 'dirChanged', onDirChanged );
+		},
+
+		requires : [ 'domiterator' ]
+	});
+})();
+
+ /**
+ * List of classes to use for aligning the contents. If it's null, no classes will be used
+ * and instead the corresponding CSS values will be used. The array should contain 4 members, in the following order: left, center, right, justify.
+ * @name CKEDITOR.config.justifyClasses
+ * @type Array
+ * @default null
+ * @example
+ * // Use the classes 'AlignLeft', 'AlignCenter', 'AlignRight', 'AlignJustify'
+ * config.justifyClasses = [ 'AlignLeft', 'AlignCenter', 'AlignRight', 'AlignJustify' ];
+ */

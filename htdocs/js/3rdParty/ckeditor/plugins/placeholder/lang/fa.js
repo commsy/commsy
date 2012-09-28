@@ -1,3 +1,6 @@
-//>>built
-define("ckeditor/plugins/placeholder/lang/fa",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","fa",{placeholder:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0645\u062d\u0644 \u0646\u06af\u0647\u062f\u0627\u0631\u06cc",toolbar:"\u0627\u06cc\u062c\u0627\u062f \u06cc\u06a9 \u0645\u062d\u0644 \u0646\u06af\u0647\u062f\u0627\u0631\u06cc",text:"\u0645\u062a\u0646 \u0645\u062d\u0644 \u0646\u06af\u0647\u062f\u0627\u0631\u06cc",edit:"\u0648\u06cc\u0631\u0627\u06cc\u0634 \u0645\u062d\u0644 \u0646\u06af\u0647\u062f\u0627\u0631\u06cc",
-textMissing:"\u0645\u062d\u0644 \u0646\u06af\u0647\u062f\u0627\u0631\u06cc \u0628\u0627\u06cc\u062f \u0645\u062d\u062a\u0648\u06cc \u0645\u062a\u0646 \u0628\u0627\u0634\u062f."}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang('placeholder','fa',{placeholder:{title:'ویژگیهای محل نگهداری',toolbar:'ایجاد یک محل نگهداری',text:'متن محل نگهداری',edit:'ویرایش محل نگهداری',textMissing:'محل نگهداری باید محتوی متن باشد.'}});

@@ -1,2 +1,6 @@
-//>>built
-define("ckeditor/plugins/placeholder/lang/vi",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","vi",{placeholder:{title:"Thu\u1ed9c t\u00ednh \u0111\u1eb7t ch\u1ed7",toolbar:"T\u1ea1o \u0111\u1eb7t ch\u1ed7",text:"V\u0103n b\u1ea3n \u0111\u1eb7t ch\u1ed7",edit:"Ch\u1ec9nh s\u1eeda ",textMissing:"The placeholder must contain text."}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang('placeholder','vi',{placeholder:{title:'Thuộc tính đặt chỗ',toolbar:'Tạo đặt chỗ',text:'Văn bản đặt chỗ',edit:'Chỉnh sửa ',textMissing:'The placeholder must contain text.'}});

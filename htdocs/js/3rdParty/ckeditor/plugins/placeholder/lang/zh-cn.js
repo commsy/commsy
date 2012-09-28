@@ -1,2 +1,6 @@
-//>>built
-define("ckeditor/plugins/placeholder/lang/zh-cn",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","zh-cn",{placeholder:{title:"\u5360\u4f4d\u7b26\u5c5e\u6027",toolbar:"\u521b\u5efa\u5360\u4f4d\u7b26",text:"\u5360\u4f4d\u7b26\u6587\u5b57",edit:"\u7f16\u8f91\u5360\u4f4d\u7b26",textMissing:"\u5360\u4f4d\u7b26\u5fc5\u9700\u5305\u542b\u6709\u6587\u5b57"}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang('placeholder','zh-cn',{placeholder:{title:'占位符属性',toolbar:'创建占位符',text:'占位符文字',edit:'编辑占位符',textMissing:'占位符必需包含有文字'}});

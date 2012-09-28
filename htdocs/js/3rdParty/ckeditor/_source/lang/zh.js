@@ -1,44 +1,816 @@
-//>>built
-define("ckeditor/_source/lang/zh",["dijit","dojo","dojox"],function(){CKEDITOR.lang.zh={dir:"ltr",editorTitle:"Rich text editor, %1",editorHelp:"Press ALT 0 for help",toolbars:"\u7de8\u8f2f\u5668\u5de5\u5177\u6b04",editor:"\u5bcc\u6587\u672c\u7de8\u8f2f\u5668",source:"\u539f\u59cb\u78bc",newPage:"\u958b\u65b0\u6a94\u6848",save:"\u5132\u5b58",preview:"\u9810\u89bd",cut:"\u526a\u4e0b",copy:"\u8907\u88fd",paste:"\u8cbc\u4e0a",print:"\u5217\u5370",underline:"\u5e95\u7dda",bold:"\u7c97\u9ad4",italic:"\u659c\u9ad4",
-selectAll:"\u5168\u9078",removeFormat:"\u6e05\u9664\u683c\u5f0f",strike:"\u522a\u9664\u7dda",subscript:"\u4e0b\u6a19",superscript:"\u4e0a\u6a19",horizontalrule:"\u63d2\u5165\u6c34\u5e73\u7dda",pagebreak:"\u63d2\u5165\u5206\u9801\u7b26\u865f",pagebreakAlt:"\u5206\u9801\u7b26\u865f",unlink:"\u79fb\u9664\u8d85\u9023\u7d50",undo:"\u5fa9\u539f",redo:"\u91cd\u8907",common:{browseServer:"\u700f\u89bd\u4f3a\u670d\u5668\u7aef",url:"URL",protocol:"\u901a\u8a0a\u5354\u5b9a",upload:"\u4e0a\u50b3",uploadSubmit:"\u4e0a\u50b3\u81f3\u4f3a\u670d\u5668",
-image:"\u5f71\u50cf",flash:"Flash",form:"\u8868\u55ae",checkbox:"\u6838\u53d6\u65b9\u584a",radio:"\u9078\u9805\u6309\u9215",textField:"\u6587\u5b57\u65b9\u584a",textarea:"\u6587\u5b57\u5340\u57df",hiddenField:"\u96b1\u85cf\u6b04\u4f4d",button:"\u6309\u9215",select:"\u6e05\u55ae/\u9078\u55ae",imageButton:"\u5f71\u50cf\u6309\u9215",notSet:"<\u5c1a\u672a\u8a2d\u5b9a>",id:"ID",name:"\u540d\u7a31",langDir:"\u8a9e\u8a00\u65b9\u5411",langDirLtr:"\u7531\u5de6\u800c\u53f3 (LTR)",langDirRtl:"\u7531\u53f3\u800c\u5de6 (RTL)",
-langCode:"\u8a9e\u8a00\u4ee3\u78bc",longDescr:"\u8a73\u7d30 URL",cssClass:"\u6a23\u5f0f\u8868\u985e\u5225",advisoryTitle:"\u6a19\u984c",cssStyle:"\u6a23\u5f0f",ok:"\u78ba\u5b9a",cancel:"\u53d6\u6d88",close:"\u5173\u95ed",preview:"\u9884\u89c8",generalTab:"\u4e00\u822c",advancedTab:"\u9032\u968e",validateNumberFailed:"\u9700\u8981\u8f38\u5165\u6578\u5b57\u683c\u5f0f",confirmNewPage:"\u73fe\u5b58\u7684\u4fee\u6539\u5c1a\u672a\u5132\u5b58\uff0c\u8981\u958b\u65b0\u6a94\u6848\uff1f",confirmCancel:"\u90e8\u4efd\u9078\u9805\u5c1a\u672a\u5132\u5b58\uff0c\u8981\u95dc\u9589\u5c0d\u8a71\u76d2\uff1f",
-options:"\u9009\u9879",target:"\u76ee\u6807",targetNew:"\u65b0\u7a97\u53e3(_blank)",targetTop:"\u6574\u9875(_top)",targetSelf:"\u672c\u7a97\u53e3(_self)",targetParent:"\u7236\u7a97\u53e3(_parent)",langDirLTR:"Left to Right (LTR)",langDirRTL:"Right to Left (RTL)",styles:"Style",cssClasses:"Stylesheet Classes",width:"\u5bec\u5ea6",height:"\u9ad8\u5ea6",align:"\u5c0d\u9f4a",alignLeft:"\u9760\u5de6\u5c0d\u9f4a",alignRight:"\u9760\u53f3\u5c0d\u9f4a",alignCenter:"\u7f6e\u4e2d",alignTop:"\u9760\u4e0a\u5c0d\u9f4a",
-alignMiddle:"\u7f6e\u4e2d\u5c0d\u9f4a",alignBottom:"\u9760\u4e0b\u5c0d\u9f4a",invalidHeight:"\u9ad8\u5ea6\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidWidth:"\u5bec\u5ea6\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidCssLength:'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).',invalidHtmlLength:'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).',
-invalidInlineStyle:'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.',cssLengthTooltip:"Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).",unavailable:'%1<span class="cke_accessibility">, \u5df2\u95dc\u9589</span>'},contextmenu:{options:"Context Menu Options"},specialChar:{toolbar:"\u63d2\u5165\u7279\u6b8a\u7b26\u865f",title:"\u8acb\u9078\u64c7\u7279\u6b8a\u7b26\u865f",
-options:"Special Character Options"},link:{toolbar:"\u63d2\u5165/\u7de8\u8f2f\u8d85\u9023\u7d50",other:"<\u5176\u4ed6>",menu:"\u7de8\u8f2f\u8d85\u9023\u7d50",title:"\u8d85\u9023\u7d50",info:"\u8d85\u9023\u7d50\u8cc7\u8a0a",target:"\u76ee\u6a19",upload:"\u4e0a\u50b3",advanced:"\u9032\u968e",type:"\u8d85\u9023\u63a5\u985e\u578b",toUrl:"URL",toAnchor:"\u672c\u9801\u9328\u9ede",toEmail:"\u96fb\u5b50\u90f5\u4ef6",targetFrame:"<\u6846\u67b6>",targetPopup:"<\u5feb\u986f\u8996\u7a97>",targetFrameName:"\u76ee\u6a19\u6846\u67b6\u540d\u7a31",
-targetPopupName:"\u5feb\u986f\u8996\u7a97\u540d\u7a31",popupFeatures:"\u5feb\u986f\u8996\u7a97\u5c6c\u6027",popupResizable:"\u53ef\u7e2e\u653e",popupStatusBar:"\u72c0\u614b\u5217",popupLocationBar:"\u7db2\u5740\u5217",popupToolbar:"\u5de5\u5177\u5217",popupMenuBar:"\u9078\u55ae\u5217",popupFullScreen:"\u5168\u87a2\u5e55 (IE)",popupScrollBars:"\u6372\u8ef8",popupDependent:"\u5f9e\u5c6c (NS)",popupLeft:"\u5de6",popupTop:"\u53f3",id:"ID",langDir:"\u8a9e\u8a00\u65b9\u5411",langDirLTR:"\u7531\u5de6\u800c\u53f3 (LTR)",
-langDirRTL:"\u7531\u53f3\u800c\u5de6 (RTL)",acccessKey:"\u5b58\u53d6\u9375",name:"\u540d\u7a31",langCode:"\u8a9e\u8a00\u65b9\u5411",tabIndex:"\u5b9a\u4f4d\u9806\u5e8f",advisoryTitle:"\u6a19\u984c",advisoryContentType:"\u5167\u5bb9\u985e\u578b",cssClasses:"\u6a23\u5f0f\u8868\u985e\u5225",charset:"\u9023\u7d50\u8cc7\u6e90\u4e4b\u7de8\u78bc",styles:"\u6a23\u5f0f",rel:"Relationship",selectAnchor:"\u8acb\u9078\u64c7\u9328\u9ede",anchorName:"\u4f9d\u9328\u9ede\u540d\u7a31",anchorId:"\u4f9d\u5143\u4ef6 ID",
-emailAddress:"\u96fb\u5b50\u90f5\u4ef6",emailSubject:"\u90f5\u4ef6\u4e3b\u65e8",emailBody:"\u90f5\u4ef6\u5167\u5bb9",noAnchors:"(\u672c\u6587\u4ef6\u5c1a\u7121\u53ef\u7528\u4e4b\u9328\u9ede)",noUrl:"\u8acb\u8f38\u5165\u6b32\u9023\u7d50\u7684 URL",noEmail:"\u8acb\u8f38\u5165\u96fb\u5b50\u90f5\u4ef6\u4f4d\u5740"},anchor:{toolbar:"\u63d2\u5165/\u7de8\u8f2f\u9328\u9ede",menu:"\u9328\u9ede\u5c6c\u6027",title:"\u9328\u9ede\u5c6c\u6027",name:"\u9328\u9ede\u540d\u7a31",errorName:"\u8acb\u8f38\u5165\u9328\u9ede\u540d\u7a31",
-remove:"Remove Anchor"},list:{numberedTitle:"Numbered List Properties",bulletedTitle:"Bulleted List Properties",type:"Type",start:"Start",validateStartNumber:"List start number must be a whole number.",circle:"Circle",disc:"Disc",square:"Square",none:"None",notset:"<not set>",armenian:"Armenian numbering",georgian:"Georgian numbering (an, ban, gan, etc.)",lowerRoman:"Lower Roman (i, ii, iii, iv, v, etc.)",upperRoman:"Upper Roman (I, II, III, IV, V, etc.)",lowerAlpha:"Lower Alpha (a, b, c, d, e, etc.)",
-upperAlpha:"Upper Alpha (A, B, C, D, E, etc.)",lowerGreek:"Lower Greek (alpha, beta, gamma, etc.)",decimal:"Decimal (1, 2, 3, etc.)",decimalLeadingZero:"Decimal leading zero (01, 02, 03, etc.)"},findAndReplace:{title:"\u5c0b\u627e\u8207\u53d6\u4ee3",find:"\u5c0b\u627e",replace:"\u53d6\u4ee3",findWhat:"\u5c0b\u627e:",replaceWith:"\u53d6\u4ee3:",notFoundMsg:"\u672a\u627e\u5230\u6307\u5b9a\u7684\u6587\u5b57\u3002",findOptions:"Find Options",matchCase:"\u5927\u5c0f\u5beb\u9808\u76f8\u7b26",matchWord:"\u5168\u5b57\u76f8\u7b26",
-matchCyclic:"\u5faa\u74b0\u641c\u7d22",replaceAll:"\u5168\u90e8\u53d6\u4ee3",replaceSuccessMsg:"\u5171\u5b8c\u6210 %1 \u6b21\u53d6\u4ee3"},table:{toolbar:"\u8868\u683c",title:"\u8868\u683c\u5c6c\u6027",menu:"\u8868\u683c\u5c6c\u6027",deleteTable:"\u522a\u9664\u8868\u683c",rows:"\u5217\u6578",columns:"\u6b04\u6578",border:"\u908a\u6846",widthPx:"\u50cf\u7d20",widthPc:"\u767e\u5206\u6bd4",widthUnit:"width unit",cellSpace:"\u9593\u8ddd",cellPad:"\u5167\u8ddd",caption:"\u6a19\u984c",summary:"\u6458\u8981",
-headers:"\u6a19\u984c",headersNone:"\u7121\u6a19\u984c",headersColumn:"\u7b2c\u4e00\u6b04",headersRow:"\u7b2c\u4e00\u5217",headersBoth:"\u7b2c\u4e00\u6b04\u548c\u7b2c\u4e00\u5217",invalidRows:"\u5fc5\u9808\u6709\u4e00\u6216\u66f4\u591a\u7684\u5217",invalidCols:"\u5fc5\u9808\u6709\u4e00\u6216\u66f4\u591a\u7684\u6b04",invalidBorder:"\u908a\u6846\u5927\u5c0f\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidWidth:"\u8868\u683c\u5bec\u5ea6\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidHeight:"\u8868\u683c\u9ad8\u5ea6\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",
-invalidCellSpacing:"\u5132\u5b58\u683c\u9593\u8ddd\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidCellPadding:"\u5132\u5b58\u683c\u5167\u8ddd\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",cell:{menu:"\u5132\u5b58\u683c",insertBefore:"\u5411\u5de6\u63d2\u5165\u5132\u5b58\u683c",insertAfter:"\u5411\u53f3\u63d2\u5165\u5132\u5b58\u683c",deleteCell:"\u522a\u9664\u5132\u5b58\u683c",merge:"\u5408\u4f75\u5132\u5b58\u683c",mergeRight:"\u5411\u53f3\u5408\u4f75\u5132\u5b58\u683c",mergeDown:"\u5411\u4e0b\u5408\u4f75\u5132\u5b58\u683c",
-splitHorizontal:"\u6a6b\u5411\u5206\u5272\u5132\u5b58\u683c",splitVertical:"\u7e31\u5411\u5206\u5272\u5132\u5b58\u683c",title:"\u5132\u5b58\u683c\u5c6c\u6027",cellType:"\u5132\u5b58\u683c\u985e\u5225",rowSpan:"\u5132\u5b58\u683c\u5217\u6578",colSpan:"\u5132\u5b58\u683c\u6b04\u6578",wordWrap:"\u81ea\u52d5\u63db\u884c",hAlign:"\u6c34\u5e73\u5c0d\u9f4a",vAlign:"\u5782\u76f4\u5c0d\u9f4a",alignBaseline:"\u57fa\u7dda\u5c0d\u9f4a",bgColor:"\u80cc\u666f\u984f\u8272",borderColor:"\u908a\u6846\u984f\u8272",
-data:"\u6578\u64da",header:"\u6a19\u984c",yes:"\u662f",no:"\u5426",invalidWidth:"\u5132\u5b58\u683c\u5bec\u5ea6\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidHeight:"\u5132\u5b58\u683c\u9ad8\u5ea6\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",invalidRowSpan:"\u5132\u5b58\u683c\u5217\u6578\u5fc5\u9808\u70ba\u6574\u6578\u683c\u5f0f",invalidColSpan:"\u5132\u5b58\u683c\u6b04\u6578\u5ea6\u5fc5\u9808\u70ba\u6574\u6578\u683c\u5f0f",chooseColor:"Choose"},row:{menu:"\u5217",insertBefore:"\u5411\u4e0a\u63d2\u5165\u5217",
-insertAfter:"\u5411\u4e0b\u63d2\u5165\u5217",deleteRow:"\u522a\u9664\u5217"},column:{menu:"\u6b04",insertBefore:"\u5411\u5de6\u63d2\u5165\u6b04",insertAfter:"\u5411\u53f3\u63d2\u5165\u6b04",deleteColumn:"\u522a\u9664\u6b04"}},button:{title:"\u6309\u9215\u5c6c\u6027",text:"\u986f\u793a\u6587\u5b57 (\u503c)",type:"\u985e\u578b",typeBtn:"\u6309\u9215 (Button)",typeSbm:"\u9001\u51fa (Submit)",typeRst:"\u91cd\u8a2d (Reset)"},checkboxAndRadio:{checkboxTitle:"\u6838\u53d6\u65b9\u584a\u5c6c\u6027",radioTitle:"\u9078\u9805\u6309\u9215\u5c6c\u6027",
-value:"\u9078\u53d6\u503c",selected:"\u5df2\u9078\u53d6"},form:{title:"\u8868\u55ae\u5c6c\u6027",menu:"\u8868\u55ae\u5c6c\u6027",action:"\u52d5\u4f5c",method:"\u65b9\u6cd5",encoding:"\u8868\u55ae\u7de8\u78bc"},select:{title:"\u6e05\u55ae/\u9078\u55ae\u5c6c\u6027",selectInfo:"\u8cc7\u8a0a",opAvail:"\u53ef\u7528\u9078\u9805",value:"\u503c",size:"\u5927\u5c0f",lines:"\u884c",chkMulti:"\u53ef\u591a\u9078",opText:"\u986f\u793a\u6587\u5b57",opValue:"\u9078\u53d6\u503c",btnAdd:"\u65b0\u589e",btnModify:"\u4fee\u6539",
-btnUp:"\u4e0a\u79fb",btnDown:"\u4e0b\u79fb",btnSetValue:"\u8a2d\u70ba\u9810\u8a2d\u503c",btnDelete:"\u522a\u9664"},textarea:{title:"\u6587\u5b57\u5340\u57df\u5c6c\u6027",cols:"\u5b57\u5143\u5bec\u5ea6",rows:"\u5217\u6578"},textfield:{title:"\u6587\u5b57\u65b9\u584a\u5c6c\u6027",name:"\u540d\u7a31",value:"\u503c",charWidth:"\u5b57\u5143\u5bec\u5ea6",maxChars:"\u6700\u591a\u5b57\u5143\u6578",type:"\u985e\u578b",typeText:"\u6587\u5b57",typePass:"\u5bc6\u78bc"},hidden:{title:"\u96b1\u85cf\u6b04\u4f4d\u5c6c\u6027",
-name:"\u540d\u7a31",value:"\u503c"},image:{title:"\u5f71\u50cf\u5c6c\u6027",titleButton:"\u5f71\u50cf\u6309\u9215\u5c6c\u6027",menu:"\u5f71\u50cf\u5c6c\u6027",infoTab:"\u5f71\u50cf\u8cc7\u8a0a",btnUpload:"\u4e0a\u50b3\u81f3\u4f3a\u670d\u5668",upload:"\u4e0a\u50b3",alt:"\u66ff\u4ee3\u6587\u5b57",lockRatio:"\u7b49\u6bd4\u4f8b",resetSize:"\u91cd\u8a2d\u70ba\u539f\u5927\u5c0f",border:"\u908a\u6846",hSpace:"\u6c34\u5e73\u8ddd\u96e2",vSpace:"\u5782\u76f4\u8ddd\u96e2",alertUrl:"\u8acb\u8f38\u5165\u5f71\u50cf URL",
-linkTab:"\u8d85\u9023\u7d50",button2Img:"\u8981\u628a\u5f71\u50cf\u6309\u9215\u6539\u6210\u5f71\u50cf\u55ce\uff1f",img2Button:"\u8981\u628a\u5f71\u50cf\u6539\u6210\u5f71\u50cf\u6309\u9215\u55ce\uff1f",urlMissing:"Image source URL is missing.",validateBorder:"Border must be a whole number.",validateHSpace:"HSpace must be a whole number.",validateVSpace:"VSpace must be a whole number."},flash:{properties:"Flash \u5c6c\u6027",propertiesTab:"\u5c6c\u6027",title:"Flash \u5c6c\u6027",chkPlay:"\u81ea\u52d5\u64ad\u653e",
-chkLoop:"\u91cd\u8907",chkMenu:"\u958b\u555f\u9078\u55ae",chkFull:"\u555f\u52d5\u5168\u87a2\u5e55\u986f\u793a",scale:"\u7e2e\u653e",scaleAll:"\u5168\u90e8\u986f\u793a",scaleNoBorder:"\u7121\u908a\u6846",scaleFit:"\u7cbe\u78ba\u7b26\u5408",access:"\u5141\u8a31\u8173\u672c\u8a2a\u554f",accessAlways:"\u6c38\u9060",accessSameDomain:"\u76f8\u540c\u57df\u540d",accessNever:"\u6c38\u4e0d",alignAbsBottom:"\u7d55\u5c0d\u4e0b\u65b9",alignAbsMiddle:"\u7d55\u5c0d\u4e2d\u9593",alignBaseline:"\u57fa\u6e96\u7dda",
-alignTextTop:"\u6587\u5b57\u4e0a\u65b9",quality:"\u8cea\u7d20",qualityBest:"\u6700\u597d",qualityHigh:"\u9ad8",qualityAutoHigh:"\u9ad8\uff08\u81ea\u52d5\uff09",qualityMedium:"\u4e2d\uff08\u81ea\u52d5\uff09",qualityAutoLow:"\u4f4e\uff08\u81ea\u52d5\uff09",qualityLow:"\u4f4e",windowModeWindow:"\u8996\u7a97",windowModeOpaque:"\u4e0d\u900f\u660e",windowModeTransparent:"\u900f\u660e",windowMode:"\u8996\u7a97\u6a21\u5f0f",flashvars:"Flash \u8b8a\u6578",bgcolor:"\u80cc\u666f\u984f\u8272",hSpace:"\u6c34\u5e73\u8ddd\u96e2",
-vSpace:"\u5782\u76f4\u8ddd\u96e2",validateSrc:"\u8acb\u8f38\u5165\u6b32\u9023\u7d50\u7684 URL",validateHSpace:"\u6c34\u5e73\u9593\u8ddd\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f",validateVSpace:"\u5782\u76f4\u9593\u8ddd\u5fc5\u9808\u70ba\u6578\u5b57\u683c\u5f0f"},spellCheck:{toolbar:"\u62fc\u5b57\u6aa2\u67e5",title:"\u62fc\u5b57\u6aa2\u67e5",notAvailable:"\u62b1\u6b49\uff0c\u670d\u52d9\u76ee\u524d\u66ab\u4e0d\u53ef\u7528",errorLoading:"\u7121\u6cd5\u806f\u7cfb\u4f8d\u670d\u5668: %s.",notInDic:"\u4e0d\u5728\u5b57\u5178\u4e2d",
-changeTo:"\u66f4\u6539\u70ba",btnIgnore:"\u5ffd\u7565",btnIgnoreAll:"\u5168\u90e8\u5ffd\u7565",btnReplace:"\u53d6\u4ee3",btnReplaceAll:"\u5168\u90e8\u53d6\u4ee3",btnUndo:"\u5fa9\u539f",noSuggestions:"- \u7121\u5efa\u8b70\u503c -",progress:"\u9032\u884c\u62fc\u5b57\u6aa2\u67e5\u4e2d\u2026",noMispell:"\u62fc\u5b57\u6aa2\u67e5\u5b8c\u6210\uff1a\u672a\u767c\u73fe\u62fc\u5b57\u932f\u8aa4",noChanges:"\u62fc\u5b57\u6aa2\u67e5\u5b8c\u6210\uff1a\u672a\u66f4\u6539\u4efb\u4f55\u55ae\u5b57",oneChange:"\u62fc\u5b57\u6aa2\u67e5\u5b8c\u6210\uff1a\u66f4\u6539\u4e86 1 \u500b\u55ae\u5b57",
-manyChanges:"\u62fc\u5b57\u6aa2\u67e5\u5b8c\u6210\uff1a\u66f4\u6539\u4e86 %1 \u500b\u55ae\u5b57",ieSpellDownload:"\u5c1a\u672a\u5b89\u88dd\u62fc\u5b57\u6aa2\u67e5\u5143\u4ef6\u3002\u60a8\u662f\u5426\u60f3\u8981\u73fe\u5728\u4e0b\u8f09\uff1f"},smiley:{toolbar:"\u8868\u60c5\u7b26\u865f",title:"\u63d2\u5165\u8868\u60c5\u7b26\u865f",options:"Smiley Options"},elementsPath:{eleLabel:"Elements path",eleTitle:"%1 \u5143\u7d20"},numberedlist:"\u7de8\u865f\u6e05\u55ae",bulletedlist:"\u9805\u76ee\u6e05\u55ae",
-indent:"\u589e\u52a0\u7e2e\u6392",outdent:"\u6e1b\u5c11\u7e2e\u6392",justify:{left:"\u9760\u5de6\u5c0d\u9f4a",center:"\u7f6e\u4e2d",right:"\u9760\u53f3\u5c0d\u9f4a",block:"\u5de6\u53f3\u5c0d\u9f4a"},blockquote:"\u5f15\u7528\u6587\u5b57",clipboard:{title:"\u8cbc\u4e0a",cutError:"\u700f\u89bd\u5668\u7684\u5b89\u5168\u6027\u8a2d\u5b9a\u4e0d\u5141\u8a31\u7de8\u8f2f\u5668\u81ea\u52d5\u57f7\u884c\u526a\u4e0b\u52d5\u4f5c\u3002\u8acb\u4f7f\u7528\u5feb\u6377\u9375 (Ctrl/Cmd+X) \u526a\u4e0b\u3002",copyError:"\u700f\u89bd\u5668\u7684\u5b89\u5168\u6027\u8a2d\u5b9a\u4e0d\u5141\u8a31\u7de8\u8f2f\u5668\u81ea\u52d5\u57f7\u884c\u8907\u88fd\u52d5\u4f5c\u3002\u8acb\u4f7f\u7528\u5feb\u6377\u9375 (Ctrl/Cmd+C) \u8907\u88fd\u3002",
-pasteMsg:"\u8acb\u4f7f\u7528\u5feb\u6377\u9375 (<strong>Ctrl/Cmd+V</strong>) \u8cbc\u5230\u4e0b\u65b9\u5340\u57df\u4e2d\u4e26\u6309\u4e0b <strong>\u78ba\u5b9a</strong>",securityMsg:"\u56e0\u70ba\u700f\u89bd\u5668\u7684\u5b89\u5168\u6027\u8a2d\u5b9a\uff0c\u672c\u7de8\u8f2f\u5668\u7121\u6cd5\u76f4\u63a5\u5b58\u53d6\u60a8\u7684\u526a\u8cbc\u7c3f\u8cc7\u6599\uff0c\u8acb\u60a8\u81ea\u884c\u5728\u672c\u8996\u7a97\u9032\u884c\u8cbc\u4e0a\u52d5\u4f5c\u3002",pasteArea:"Paste Area"},pastefromword:{confirmCleanup:"\u60a8\u60f3\u8cbc\u4e0a\u7684\u6587\u5b57\u4f3c\u4e4e\u662f\u81ea Word \u8907\u88fd\u800c\u4f86\uff0c\u8acb\u554f\u60a8\u662f\u5426\u8981\u5148\u6e05\u9664 Word \u7684\u683c\u5f0f\u5f8c\u518d\u884c\u8cbc\u4e0a\uff1f",
-toolbar:"\u81ea Word \u8cbc\u4e0a",title:"\u81ea Word \u8cbc\u4e0a",error:"It was not possible to clean up the pasted data due to an internal error"},pasteText:{button:"\u8cbc\u70ba\u7d14\u6587\u5b57\u683c\u5f0f",title:"\u8cbc\u70ba\u7d14\u6587\u5b57\u683c\u5f0f"},templates:{button:"\u6a23\u7248",title:"\u5167\u5bb9\u6a23\u7248",options:"Template Options",insertOption:"\u53d6\u4ee3\u539f\u6709\u5167\u5bb9",selectPromptMsg:"\u8acb\u9078\u64c7\u6b32\u958b\u555f\u7684\u6a23\u7248<br> (\u539f\u6709\u7684\u5167\u5bb9\u5c07\u6703\u88ab\u6e05\u9664):",
-emptyListMsg:"(\u7121\u6a23\u7248)"},showBlocks:"\u986f\u793a\u5340\u584a",stylesCombo:{label:"\u6a23\u5f0f",panelTitle:"Formatting Styles",panelTitle1:"\u584a\u7d1a\u5143\u7d20\u6a23\u5f0f",panelTitle2:"\u5167\u806f\u5143\u7d20\u6a23\u5f0f",panelTitle3:"\u7269\u4ef6\u5143\u7d20\u6a23\u5f0f"},format:{label:"\u683c\u5f0f",panelTitle:"\u683c\u5f0f",tag_p:"\u4e00\u822c",tag_pre:"\u5df2\u683c\u5f0f\u5316",tag_address:"\u4f4d\u5740",tag_h1:"\u6a19\u984c 1",tag_h2:"\u6a19\u984c 2",tag_h3:"\u6a19\u984c 3",
-tag_h4:"\u6a19\u984c 4",tag_h5:"\u6a19\u984c 5",tag_h6:"\u6a19\u984c 6",tag_div:"\u4e00\u822c (DIV)"},div:{title:"Create Div Container",toolbar:"Create Div Container",cssClassInputLabel:"Stylesheet Classes",styleSelectLabel:"Style",IdInputLabel:"Id",languageCodeInputLabel:" Language Code",inlineStyleInputLabel:"Inline Style",advisoryTitleInputLabel:"Advisory Title",langDirLabel:"Language Direction",langDirLTRLabel:"Left to Right (LTR)",langDirRTLLabel:"Right to Left (RTL)",edit:"Edit Div",remove:"Remove Div"},
-iframe:{title:"IFrame Properties",toolbar:"IFrame",noUrl:"Please type the iframe URL",scrolling:"Enable scrollbars",border:"Show frame border"},font:{label:"\u5b57\u9ad4",voiceLabel:"\u5b57\u9ad4",panelTitle:"\u5b57\u9ad4"},fontSize:{label:"\u5927\u5c0f",voiceLabel:"\u6587\u5b57\u5927\u5c0f",panelTitle:"\u5927\u5c0f"},colorButton:{textColorTitle:"\u6587\u5b57\u984f\u8272",bgColorTitle:"\u80cc\u666f\u984f\u8272",panelTitle:"Colors",auto:"\u81ea\u52d5",more:"\u66f4\u591a\u984f\u8272\u2026"},colors:{"000":"Black",
-8E5:"Maroon","8B4513":"Saddle Brown","2F4F4F":"Dark Slate Gray","008080":"Teal","000080":"Navy","4B0082":"Indigo",696969:"Dark Gray",B22222:"Fire Brick",A52A2A:"Brown",DAA520:"Golden Rod","006400":"Dark Green","40E0D0":"Turquoise","0000CD":"Medium Blue",800080:"Purple",808080:"Gray",F00:"Red",FF8C00:"Dark Orange",FFD700:"Gold","008000":"Green","0FF":"Cyan","00F":"Blue",EE82EE:"Violet",A9A9A9:"Dim Gray",FFA07A:"Light Salmon",FFA500:"Orange",FFFF00:"Yellow","00FF00":"Lime",AFEEEE:"Pale Turquoise",ADD8E6:"Light Blue",
-DDA0DD:"Plum",D3D3D3:"Light Grey",FFF0F5:"Lavender Blush",FAEBD7:"Antique White",FFFFE0:"Light Yellow",F0FFF0:"Honeydew",F0FFFF:"Azure",F0F8FF:"Alice Blue",E6E6FA:"Lavender",FFF:"White"},scayt:{title:"\u5373\u6642\u62fc\u5beb\u6aa2\u67e5",opera_title:"Not supported by Opera",enable:"\u555f\u7528\u5373\u6642\u62fc\u5beb\u6aa2\u67e5",disable:"\u95dc\u9589\u5373\u6642\u62fc\u5beb\u6aa2\u67e5",about:"\u95dc\u65bc\u5373\u6642\u62fc\u5beb\u6aa2\u67e5",toggle:"\u555f\u7528\uff0f\u95dc\u9589\u5373\u6642\u62fc\u5beb\u6aa2\u67e5",
-options:"\u9078\u9805",langs:"\u8a9e\u8a00",moreSuggestions:"\u66f4\u591a\u62fc\u5beb\u5efa\u8b70",ignore:"\u5ffd\u7565",ignoreAll:"\u5168\u90e8\u5ffd\u7565",addWord:"\u6dfb\u52a0\u55ae\u8a5e",emptyDic:"\u5b57\u5178\u540d\u4e0d\u61c9\u70ba\u7a7a.",optionsTab:"\u9078\u9805",allCaps:"Ignore All-Caps Words",ignoreDomainNames:"Ignore Domain Names",mixedCase:"Ignore Words with Mixed Case",mixedWithDigits:"Ignore Words with Numbers",languagesTab:"\u8a9e\u8a00",dictionariesTab:"\u5b57\u5178",dic_field_name:"Dictionary name",
-dic_create:"Create",dic_restore:"Restore",dic_delete:"Delete",dic_rename:"Rename",dic_info:"Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.",
-aboutTab:"\u95dc\u65bc"},about:{title:"\u95dc\u65bc CKEditor",dlgTitle:"\u95dc\u65bc CKEditor",help:"Check $1 for help.",userGuide:"CKEditor User's Guide",moreInfo:"\u8a2a\u554f\u6211\u5011\u7684\u7db2\u7ad9\u4ee5\u7372\u53d6\u66f4\u591a\u95dc\u65bc\u5354\u8b70\u7684\u4fe1\u606f",copy:"Copyright &copy; $1. All rights reserved."},maximize:"\u6700\u5927\u5316",minimize:"\u6700\u5c0f\u5316",fakeobjects:{anchor:"\u9328\u9ede",flash:"Flash \u52d5\u756b",iframe:"IFrame",hiddenfield:"Hidden Field",unknown:"\u4e0d\u660e\u7269\u4ef6"},
-resize:"\u62d6\u62fd\u6539\u8b8a\u5927\u5c0f",colordialog:{title:"Select color",options:"Color Options",highlight:"Highlight",selected:"Selected Color",clear:"Clear"},toolbarCollapse:"\u6298\u53e0\u5de5\u5177\u680f",toolbarExpand:"\u5c55\u5f00\u5de5\u5177\u680f",toolbarGroups:{document:"Document",clipboard:"Clipboard/Undo",editing:"Editing",forms:"Forms",basicstyles:"Basic Styles",paragraph:"Paragraph",links:"Links",insert:"Insert",styles:"Styles",colors:"Colors",tools:"Tools"},bidi:{ltr:"Text direction from left to right",
-rtl:"Text direction from right to left"},docprops:{label:"\u6587\u4ef6\u5c6c\u6027",title:"\u6587\u4ef6\u5c6c\u6027",design:"Design",meta:"Meta \u8cc7\u6599",chooseColor:"Choose",other:"<\u5176\u4ed6>",docTitle:"\u9801\u9762\u6a19\u984c",charset:"\u5b57\u5143\u7de8\u78bc",charsetOther:"\u5176\u4ed6\u5b57\u5143\u7de8\u78bc",charsetASCII:"ASCII",charsetCE:"\u4e2d\u6b50\u8a9e\u7cfb",charsetCT:"\u6b63\u9ad4\u4e2d\u6587 (Big5)",charsetCR:"\u65af\u62c9\u592b\u6587",charsetGR:"\u5e0c\u81d8\u6587",charsetJP:"\u65e5\u6587",
-charsetKR:"\u97d3\u6587",charsetTR:"\u571f\u8033\u5176\u6587",charsetUN:"Unicode (UTF-8)",charsetWE:"\u897f\u6b50\u8a9e\u7cfb",docType:"\u6587\u4ef6\u985e\u578b",docTypeOther:"\u5176\u4ed6\u6587\u4ef6\u985e\u578b",xhtmlDec:"\u5305\u542b XHTML \u5b9a\u7fa9",bgColor:"\u80cc\u666f\u984f\u8272",bgImage:"\u80cc\u666f\u5f71\u50cf",bgFixed:"\u6d6e\u6c34\u5370",txtColor:"\u6587\u5b57\u984f\u8272",margin:"\u9801\u9762\u908a\u754c",marginTop:"\u4e0a",marginLeft:"\u5de6",marginRight:"\u53f3",marginBottom:"\u4e0b",
-metaKeywords:"\u6587\u4ef6\u7d22\u5f15\u95dc\u9375\u5b57 (\u7528\u534a\u5f62\u9017\u865f[,]\u5206\u9694)",metaDescription:"\u6587\u4ef6\u8aaa\u660e",metaAuthor:"\u4f5c\u8005",metaCopyright:"\u7248\u6b0a\u6240\u6709",previewHtml:'<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>'}}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @fileOverview Defines the {@link CKEDITOR.lang} object, for the
+ * Chinese Traditional language.
+ */
+
+/**#@+
+   @type String
+   @example
+*/
+
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang['zh'] =
+{
+	/**
+	 * The language reading direction. Possible values are "rtl" for
+	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
+	 * languages (like English).
+	 * @default 'ltr'
+	 */
+	dir : 'ltr',
+
+	/*
+	 * Screenreader titles. Please note that screenreaders are not always capable
+	 * of reading non-English words. So be careful while translating it.
+	 */
+	editorTitle : 'Rich text editor, %1', // MISSING
+	editorHelp : 'Press ALT 0 for help', // MISSING
+
+	// ARIA descriptions.
+	toolbars	: '編輯器工具欄',
+	editor		: '富文本編輯器',
+
+	// Toolbar buttons without dialogs.
+	source			: '原始碼',
+	newPage			: '開新檔案',
+	save			: '儲存',
+	preview			: '預覽',
+	cut				: '剪下',
+	copy			: '複製',
+	paste			: '貼上',
+	print			: '列印',
+	underline		: '底線',
+	bold			: '粗體',
+	italic			: '斜體',
+	selectAll		: '全選',
+	removeFormat	: '清除格式',
+	strike			: '刪除線',
+	subscript		: '下標',
+	superscript		: '上標',
+	horizontalrule	: '插入水平線',
+	pagebreak		: '插入分頁符號',
+	pagebreakAlt		: '分頁符號',
+	unlink			: '移除超連結',
+	undo			: '復原',
+	redo			: '重複',
+
+	// Common messages and labels.
+	common :
+	{
+		browseServer	: '瀏覽伺服器端',
+		url				: 'URL',
+		protocol		: '通訊協定',
+		upload			: '上傳',
+		uploadSubmit	: '上傳至伺服器',
+		image			: '影像',
+		flash			: 'Flash',
+		form			: '表單',
+		checkbox		: '核取方塊',
+		radio			: '選項按鈕',
+		textField		: '文字方塊',
+		textarea		: '文字區域',
+		hiddenField		: '隱藏欄位',
+		button			: '按鈕',
+		select			: '清單/選單',
+		imageButton		: '影像按鈕',
+		notSet			: '<尚未設定>',
+		id				: 'ID',
+		name			: '名稱',
+		langDir			: '語言方向',
+		langDirLtr		: '由左而右 (LTR)',
+		langDirRtl		: '由右而左 (RTL)',
+		langCode		: '語言代碼',
+		longDescr		: '詳細 URL',
+		cssClass		: '樣式表類別',
+		advisoryTitle	: '標題',
+		cssStyle		: '樣式',
+		ok				: '確定',
+		cancel			: '取消',
+		close			: '关闭',
+		preview			: '预览',
+		generalTab		: '一般',
+		advancedTab		: '進階',
+		validateNumberFailed : '需要輸入數字格式',
+		confirmNewPage	: '現存的修改尚未儲存，要開新檔案？',
+		confirmCancel	: '部份選項尚未儲存，要關閉對話盒？',
+		options			: '选项',
+		target			: '目标',
+		targetNew		: '新窗口(_blank)',
+		targetTop		: '整页(_top)',
+		targetSelf		: '本窗口(_self)',
+		targetParent	: '父窗口(_parent)',
+		langDirLTR		: 'Left to Right (LTR)', // MISSING
+		langDirRTL		: 'Right to Left (RTL)', // MISSING
+		styles			: 'Style', // MISSING
+		cssClasses		: 'Stylesheet Classes', // MISSING
+		width			: '寬度',
+		height			: '高度',
+		align			: '對齊',
+		alignLeft		: '靠左對齊',
+		alignRight		: '靠右對齊',
+		alignCenter		: '置中',
+		alignTop		: '靠上對齊',
+		alignMiddle		: '置中對齊',
+		alignBottom		: '靠下對齊',
+		invalidHeight	: '高度必須為數字格式',
+		invalidWidth	: '寬度必須為數字格式',
+		invalidCssLength	: 'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+		invalidHtmlLength	: 'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).', // MISSING
+		invalidInlineStyle	: 'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.', // MISSING
+		cssLengthTooltip	: 'Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+
+		// Put the voice-only part of the label in the span.
+		unavailable		: '%1<span class="cke_accessibility">, 已關閉</span>'
+	},
+
+	contextmenu :
+	{
+		options : 'Context Menu Options' // MISSING
+	},
+
+	// Special char dialog.
+	specialChar		:
+	{
+		toolbar		: '插入特殊符號',
+		title		: '請選擇特殊符號',
+		options : 'Special Character Options' // MISSING
+	},
+
+	// Link dialog.
+	link :
+	{
+		toolbar		: '插入/編輯超連結',
+		other 		: '<其他>',
+		menu		: '編輯超連結',
+		title		: '超連結',
+		info		: '超連結資訊',
+		target		: '目標',
+		upload		: '上傳',
+		advanced	: '進階',
+		type		: '超連接類型',
+		toUrl		: 'URL', // MISSING
+		toAnchor	: '本頁錨點',
+		toEmail		: '電子郵件',
+		targetFrame		: '<框架>',
+		targetPopup		: '<快顯視窗>',
+		targetFrameName	: '目標框架名稱',
+		targetPopupName	: '快顯視窗名稱',
+		popupFeatures	: '快顯視窗屬性',
+		popupResizable	: '可縮放',
+		popupStatusBar	: '狀態列',
+		popupLocationBar: '網址列',
+		popupToolbar	: '工具列',
+		popupMenuBar	: '選單列',
+		popupFullScreen	: '全螢幕 (IE)',
+		popupScrollBars	: '捲軸',
+		popupDependent	: '從屬 (NS)',
+		popupLeft		: '左',
+		popupTop		: '右',
+		id				: 'ID',
+		langDir			: '語言方向',
+		langDirLTR		: '由左而右 (LTR)',
+		langDirRTL		: '由右而左 (RTL)',
+		acccessKey		: '存取鍵',
+		name			: '名稱',
+		langCode			: '語言方向',
+		tabIndex			: '定位順序',
+		advisoryTitle		: '標題',
+		advisoryContentType	: '內容類型',
+		cssClasses		: '樣式表類別',
+		charset			: '連結資源之編碼',
+		styles			: '樣式',
+		rel			: 'Relationship', // MISSING
+		selectAnchor		: '請選擇錨點',
+		anchorName		: '依錨點名稱',
+		anchorId			: '依元件 ID',
+		emailAddress		: '電子郵件',
+		emailSubject		: '郵件主旨',
+		emailBody		: '郵件內容',
+		noAnchors		: '(本文件尚無可用之錨點)',
+		noUrl			: '請輸入欲連結的 URL',
+		noEmail			: '請輸入電子郵件位址'
+	},
+
+	// Anchor dialog
+	anchor :
+	{
+		toolbar		: '插入/編輯錨點',
+		menu		: '錨點屬性',
+		title		: '錨點屬性',
+		name		: '錨點名稱',
+		errorName	: '請輸入錨點名稱',
+		remove		: 'Remove Anchor' // MISSING
+	},
+
+	// List style dialog
+	list:
+	{
+		numberedTitle		: 'Numbered List Properties', // MISSING
+		bulletedTitle		: 'Bulleted List Properties', // MISSING
+		type				: 'Type', // MISSING
+		start				: 'Start', // MISSING
+		validateStartNumber				:'List start number must be a whole number.', // MISSING
+		circle				: 'Circle', // MISSING
+		disc				: 'Disc', // MISSING
+		square				: 'Square', // MISSING
+		none				: 'None', // MISSING
+		notset				: '<not set>', // MISSING
+		armenian			: 'Armenian numbering', // MISSING
+		georgian			: 'Georgian numbering (an, ban, gan, etc.)', // MISSING
+		lowerRoman			: 'Lower Roman (i, ii, iii, iv, v, etc.)', // MISSING
+		upperRoman			: 'Upper Roman (I, II, III, IV, V, etc.)', // MISSING
+		lowerAlpha			: 'Lower Alpha (a, b, c, d, e, etc.)', // MISSING
+		upperAlpha			: 'Upper Alpha (A, B, C, D, E, etc.)', // MISSING
+		lowerGreek			: 'Lower Greek (alpha, beta, gamma, etc.)', // MISSING
+		decimal				: 'Decimal (1, 2, 3, etc.)', // MISSING
+		decimalLeadingZero	: 'Decimal leading zero (01, 02, 03, etc.)' // MISSING
+	},
+
+	// Find And Replace Dialog
+	findAndReplace :
+	{
+		title				: '尋找與取代',
+		find				: '尋找',
+		replace				: '取代',
+		findWhat			: '尋找:',
+		replaceWith			: '取代:',
+		notFoundMsg			: '未找到指定的文字。',
+		findOptions			: 'Find Options', // MISSING
+		matchCase			: '大小寫須相符',
+		matchWord			: '全字相符',
+		matchCyclic			: '循環搜索',
+		replaceAll			: '全部取代',
+		replaceSuccessMsg	: '共完成 %1 次取代'
+	},
+
+	// Table Dialog
+	table :
+	{
+		toolbar		: '表格',
+		title		: '表格屬性',
+		menu		: '表格屬性',
+		deleteTable	: '刪除表格',
+		rows		: '列數',
+		columns		: '欄數',
+		border		: '邊框',
+		widthPx		: '像素',
+		widthPc		: '百分比',
+		widthUnit	: 'width unit', // MISSING
+		cellSpace	: '間距',
+		cellPad		: '內距',
+		caption		: '標題',
+		summary		: '摘要',
+		headers		: '標題',
+		headersNone		: '無標題',
+		headersColumn	: '第一欄',
+		headersRow		: '第一列',
+		headersBoth		: '第一欄和第一列',
+		invalidRows		: '必須有一或更多的列',
+		invalidCols		: '必須有一或更多的欄',
+		invalidBorder	: '邊框大小必須為數字格式',
+		invalidWidth	: '表格寬度必須為數字格式',
+		invalidHeight	: '表格高度必須為數字格式',
+		invalidCellSpacing	: '儲存格間距必須為數字格式',
+		invalidCellPadding	: '儲存格內距必須為數字格式',
+
+		cell :
+		{
+			menu			: '儲存格',
+			insertBefore	: '向左插入儲存格',
+			insertAfter		: '向右插入儲存格',
+			deleteCell		: '刪除儲存格',
+			merge			: '合併儲存格',
+			mergeRight		: '向右合併儲存格',
+			mergeDown		: '向下合併儲存格',
+			splitHorizontal	: '橫向分割儲存格',
+			splitVertical	: '縱向分割儲存格',
+			title			: '儲存格屬性',
+			cellType		: '儲存格類別',
+			rowSpan			: '儲存格列數',
+			colSpan			: '儲存格欄數',
+			wordWrap		: '自動換行',
+			hAlign			: '水平對齊',
+			vAlign			: '垂直對齊',
+			alignBaseline	: '基線對齊',
+			bgColor			: '背景顏色',
+			borderColor		: '邊框顏色',
+			data			: '數據',
+			header			: '標題',
+			yes				: '是',
+			no				: '否',
+			invalidWidth	: '儲存格寬度必須為數字格式',
+			invalidHeight	: '儲存格高度必須為數字格式',
+			invalidRowSpan	: '儲存格列數必須為整數格式',
+			invalidColSpan	: '儲存格欄數度必須為整數格式',
+			chooseColor		: 'Choose' // MISSING
+		},
+
+		row :
+		{
+			menu			: '列',
+			insertBefore	: '向上插入列',
+			insertAfter		: '向下插入列',
+			deleteRow		: '刪除列'
+		},
+
+		column :
+		{
+			menu			: '欄',
+			insertBefore	: '向左插入欄',
+			insertAfter		: '向右插入欄',
+			deleteColumn	: '刪除欄'
+		}
+	},
+
+	// Button Dialog.
+	button :
+	{
+		title		: '按鈕屬性',
+		text		: '顯示文字 (值)',
+		type		: '類型',
+		typeBtn		: '按鈕 (Button)',
+		typeSbm		: '送出 (Submit)',
+		typeRst		: '重設 (Reset)'
+	},
+
+	// Checkbox and Radio Button Dialogs.
+	checkboxAndRadio :
+	{
+		checkboxTitle : '核取方塊屬性',
+		radioTitle	: '選項按鈕屬性',
+		value		: '選取值',
+		selected	: '已選取'
+	},
+
+	// Form Dialog.
+	form :
+	{
+		title		: '表單屬性',
+		menu		: '表單屬性',
+		action		: '動作',
+		method		: '方法',
+		encoding	: '表單編碼'
+	},
+
+	// Select Field Dialog.
+	select :
+	{
+		title		: '清單/選單屬性',
+		selectInfo	: '資訊',
+		opAvail		: '可用選項',
+		value		: '值',
+		size		: '大小',
+		lines		: '行',
+		chkMulti	: '可多選',
+		opText		: '顯示文字',
+		opValue		: '選取值',
+		btnAdd		: '新增',
+		btnModify	: '修改',
+		btnUp		: '上移',
+		btnDown		: '下移',
+		btnSetValue : '設為預設值',
+		btnDelete	: '刪除'
+	},
+
+	// Textarea Dialog.
+	textarea :
+	{
+		title		: '文字區域屬性',
+		cols		: '字元寬度',
+		rows		: '列數'
+	},
+
+	// Text Field Dialog.
+	textfield :
+	{
+		title		: '文字方塊屬性',
+		name		: '名稱',
+		value		: '值',
+		charWidth	: '字元寬度',
+		maxChars	: '最多字元數',
+		type		: '類型',
+		typeText	: '文字',
+		typePass	: '密碼'
+	},
+
+	// Hidden Field Dialog.
+	hidden :
+	{
+		title	: '隱藏欄位屬性',
+		name	: '名稱',
+		value	: '值'
+	},
+
+	// Image Dialog.
+	image :
+	{
+		title		: '影像屬性',
+		titleButton	: '影像按鈕屬性',
+		menu		: '影像屬性',
+		infoTab		: '影像資訊',
+		btnUpload	: '上傳至伺服器',
+		upload		: '上傳',
+		alt			: '替代文字',
+		lockRatio	: '等比例',
+		resetSize	: '重設為原大小',
+		border		: '邊框',
+		hSpace		: '水平距離',
+		vSpace		: '垂直距離',
+		alertUrl	: '請輸入影像 URL',
+		linkTab		: '超連結',
+		button2Img	: '要把影像按鈕改成影像嗎？',
+		img2Button	: '要把影像改成影像按鈕嗎？',
+		urlMissing	: 'Image source URL is missing.', // MISSING
+		validateBorder	: 'Border must be a whole number.', // MISSING
+		validateHSpace	: 'HSpace must be a whole number.', // MISSING
+		validateVSpace	: 'VSpace must be a whole number.' // MISSING
+	},
+
+	// Flash Dialog
+	flash :
+	{
+		properties		: 'Flash 屬性',
+		propertiesTab	: '屬性',
+		title			: 'Flash 屬性',
+		chkPlay			: '自動播放',
+		chkLoop			: '重複',
+		chkMenu			: '開啟選單',
+		chkFull			: '啟動全螢幕顯示',
+ 		scale			: '縮放',
+		scaleAll		: '全部顯示',
+		scaleNoBorder	: '無邊框',
+		scaleFit		: '精確符合',
+		access			: '允許腳本訪問',
+		accessAlways	: '永遠',
+		accessSameDomain: '相同域名',
+		accessNever		: '永不',
+		alignAbsBottom	: '絕對下方',
+		alignAbsMiddle	: '絕對中間',
+		alignBaseline	: '基準線',
+		alignTextTop	: '文字上方',
+		quality			: '質素',
+		qualityBest		: '最好',
+		qualityHigh		: '高',
+		qualityAutoHigh	: '高（自動）',
+		qualityMedium	: '中（自動）',
+		qualityAutoLow	: '低（自動）',
+		qualityLow		: '低',
+		windowModeWindow: '視窗',
+		windowModeOpaque: '不透明',
+		windowModeTransparent : '透明',
+		windowMode		: '視窗模式',
+		flashvars		: 'Flash 變數',
+		bgcolor			: '背景顏色',
+		hSpace			: '水平距離',
+		vSpace			: '垂直距離',
+		validateSrc		: '請輸入欲連結的 URL',
+		validateHSpace	: '水平間距必須為數字格式',
+		validateVSpace	: '垂直間距必須為數字格式'
+	},
+
+	// Speller Pages Dialog
+	spellCheck :
+	{
+		toolbar			: '拼字檢查',
+		title			: '拼字檢查',
+		notAvailable	: '抱歉，服務目前暫不可用',
+		errorLoading	: '無法聯系侍服器: %s.',
+		notInDic		: '不在字典中',
+		changeTo		: '更改為',
+		btnIgnore		: '忽略',
+		btnIgnoreAll	: '全部忽略',
+		btnReplace		: '取代',
+		btnReplaceAll	: '全部取代',
+		btnUndo			: '復原',
+		noSuggestions	: '- 無建議值 -',
+		progress		: '進行拼字檢查中…',
+		noMispell		: '拼字檢查完成：未發現拼字錯誤',
+		noChanges		: '拼字檢查完成：未更改任何單字',
+		oneChange		: '拼字檢查完成：更改了 1 個單字',
+		manyChanges		: '拼字檢查完成：更改了 %1 個單字',
+		ieSpellDownload	: '尚未安裝拼字檢查元件。您是否想要現在下載？'
+	},
+
+	smiley :
+	{
+		toolbar	: '表情符號',
+		title	: '插入表情符號',
+		options : 'Smiley Options' // MISSING
+	},
+
+	elementsPath :
+	{
+		eleLabel : 'Elements path', // MISSING
+		eleTitle : '%1 元素'
+	},
+
+	numberedlist	: '編號清單',
+	bulletedlist	: '項目清單',
+	indent			: '增加縮排',
+	outdent			: '減少縮排',
+
+	justify :
+	{
+		left	: '靠左對齊',
+		center	: '置中',
+		right	: '靠右對齊',
+		block	: '左右對齊'
+	},
+
+	blockquote : '引用文字',
+
+	clipboard :
+	{
+		title		: '貼上',
+		cutError	: '瀏覽器的安全性設定不允許編輯器自動執行剪下動作。請使用快捷鍵 (Ctrl/Cmd+X) 剪下。',
+		copyError	: '瀏覽器的安全性設定不允許編輯器自動執行複製動作。請使用快捷鍵 (Ctrl/Cmd+C) 複製。',
+		pasteMsg	: '請使用快捷鍵 (<strong>Ctrl/Cmd+V</strong>) 貼到下方區域中並按下 <strong>確定</strong>',
+		securityMsg	: '因為瀏覽器的安全性設定，本編輯器無法直接存取您的剪貼簿資料，請您自行在本視窗進行貼上動作。',
+		pasteArea	: 'Paste Area' // MISSING
+	},
+
+	pastefromword :
+	{
+		confirmCleanup	: '您想貼上的文字似乎是自 Word 複製而來，請問您是否要先清除 Word 的格式後再行貼上？',
+		toolbar			: '自 Word 貼上',
+		title			: '自 Word 貼上',
+		error			: 'It was not possible to clean up the pasted data due to an internal error' // MISSING
+	},
+
+	pasteText :
+	{
+		button	: '貼為純文字格式',
+		title	: '貼為純文字格式'
+	},
+
+	templates :
+	{
+		button			: '樣版',
+		title			: '內容樣版',
+		options : 'Template Options', // MISSING
+		insertOption	: '取代原有內容',
+		selectPromptMsg	: '請選擇欲開啟的樣版<br> (原有的內容將會被清除):',
+		emptyListMsg	: '(無樣版)'
+	},
+
+	showBlocks : '顯示區塊',
+
+	stylesCombo :
+	{
+		label		: '樣式',
+		panelTitle	: 'Formatting Styles', // MISSING
+		panelTitle1	: '塊級元素樣式',
+		panelTitle2	: '內聯元素樣式',
+		panelTitle3	: '物件元素樣式'
+	},
+
+	format :
+	{
+		label		: '格式',
+		panelTitle	: '格式',
+
+		tag_p		: '一般',
+		tag_pre		: '已格式化',
+		tag_address	: '位址',
+		tag_h1		: '標題 1',
+		tag_h2		: '標題 2',
+		tag_h3		: '標題 3',
+		tag_h4		: '標題 4',
+		tag_h5		: '標題 5',
+		tag_h6		: '標題 6',
+		tag_div		: '一般 (DIV)'
+	},
+
+	div :
+	{
+		title				: 'Create Div Container', // MISSING
+		toolbar				: 'Create Div Container', // MISSING
+		cssClassInputLabel	: 'Stylesheet Classes', // MISSING
+		styleSelectLabel	: 'Style', // MISSING
+		IdInputLabel		: 'Id', // MISSING
+		languageCodeInputLabel	: ' Language Code', // MISSING
+		inlineStyleInputLabel	: 'Inline Style', // MISSING
+		advisoryTitleInputLabel	: 'Advisory Title', // MISSING
+		langDirLabel		: 'Language Direction', // MISSING
+		langDirLTRLabel		: 'Left to Right (LTR)', // MISSING
+		langDirRTLLabel		: 'Right to Left (RTL)', // MISSING
+		edit				: 'Edit Div', // MISSING
+		remove				: 'Remove Div' // MISSING
+  	},
+
+	iframe :
+	{
+		title		: 'IFrame Properties', // MISSING
+		toolbar		: 'IFrame', // MISSING
+		noUrl		: 'Please type the iframe URL', // MISSING
+		scrolling	: 'Enable scrollbars', // MISSING
+		border		: 'Show frame border' // MISSING
+	},
+
+	font :
+	{
+		label		: '字體',
+		voiceLabel	: '字體',
+		panelTitle	: '字體'
+	},
+
+	fontSize :
+	{
+		label		: '大小',
+		voiceLabel	: '文字大小',
+		panelTitle	: '大小'
+	},
+
+	colorButton :
+	{
+		textColorTitle	: '文字顏色',
+		bgColorTitle	: '背景顏色',
+		panelTitle		: 'Colors', // MISSING
+		auto			: '自動',
+		more			: '更多顏色…'
+	},
+
+	colors :
+	{
+		'000' : 'Black', // MISSING
+		'800000' : 'Maroon', // MISSING
+		'8B4513' : 'Saddle Brown', // MISSING
+		'2F4F4F' : 'Dark Slate Gray', // MISSING
+		'008080' : 'Teal', // MISSING
+		'000080' : 'Navy', // MISSING
+		'4B0082' : 'Indigo', // MISSING
+		'696969' : 'Dark Gray', // MISSING
+		'B22222' : 'Fire Brick', // MISSING
+		'A52A2A' : 'Brown', // MISSING
+		'DAA520' : 'Golden Rod', // MISSING
+		'006400' : 'Dark Green', // MISSING
+		'40E0D0' : 'Turquoise', // MISSING
+		'0000CD' : 'Medium Blue', // MISSING
+		'800080' : 'Purple', // MISSING
+		'808080' : 'Gray', // MISSING
+		'F00' : 'Red', // MISSING
+		'FF8C00' : 'Dark Orange', // MISSING
+		'FFD700' : 'Gold', // MISSING
+		'008000' : 'Green', // MISSING
+		'0FF' : 'Cyan', // MISSING
+		'00F' : 'Blue', // MISSING
+		'EE82EE' : 'Violet', // MISSING
+		'A9A9A9' : 'Dim Gray', // MISSING
+		'FFA07A' : 'Light Salmon', // MISSING
+		'FFA500' : 'Orange', // MISSING
+		'FFFF00' : 'Yellow', // MISSING
+		'00FF00' : 'Lime', // MISSING
+		'AFEEEE' : 'Pale Turquoise', // MISSING
+		'ADD8E6' : 'Light Blue', // MISSING
+		'DDA0DD' : 'Plum', // MISSING
+		'D3D3D3' : 'Light Grey', // MISSING
+		'FFF0F5' : 'Lavender Blush', // MISSING
+		'FAEBD7' : 'Antique White', // MISSING
+		'FFFFE0' : 'Light Yellow', // MISSING
+		'F0FFF0' : 'Honeydew', // MISSING
+		'F0FFFF' : 'Azure', // MISSING
+		'F0F8FF' : 'Alice Blue', // MISSING
+		'E6E6FA' : 'Lavender', // MISSING
+		'FFF' : 'White' // MISSING
+	},
+
+	scayt :
+	{
+		title			: '即時拼寫檢查',
+		opera_title		: 'Not supported by Opera', // MISSING
+		enable			: '啟用即時拼寫檢查',
+		disable			: '關閉即時拼寫檢查',
+		about			: '關於即時拼寫檢查',
+		toggle			: '啟用／關閉即時拼寫檢查',
+		options			: '選項',
+		langs			: '語言',
+		moreSuggestions	: '更多拼寫建議',
+		ignore			: '忽略',
+		ignoreAll		: '全部忽略',
+		addWord			: '添加單詞',
+		emptyDic		: '字典名不應為空.',
+
+		optionsTab		: '選項',
+		allCaps			: 'Ignore All-Caps Words', // MISSING
+		ignoreDomainNames : 'Ignore Domain Names', // MISSING
+		mixedCase		: 'Ignore Words with Mixed Case', // MISSING
+		mixedWithDigits	: 'Ignore Words with Numbers', // MISSING
+
+		languagesTab	: '語言',
+
+		dictionariesTab	: '字典',
+		dic_field_name	: 'Dictionary name', // MISSING
+		dic_create		: 'Create', // MISSING
+		dic_restore		: 'Restore', // MISSING
+		dic_delete		: 'Delete', // MISSING
+		dic_rename		: 'Rename', // MISSING
+		dic_info		: 'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.', // MISSING
+
+		aboutTab		: '關於'
+	},
+
+	about :
+	{
+		title		: '關於 CKEditor',
+		dlgTitle	: '關於 CKEditor',
+		help	: 'Check $1 for help.', // MISSING
+		userGuide : 'CKEditor User\'s Guide', // MISSING
+		moreInfo	: '訪問我們的網站以獲取更多關於協議的信息',
+		copy		: 'Copyright &copy; $1. All rights reserved.'
+	},
+
+	maximize : '最大化',
+	minimize : '最小化',
+
+	fakeobjects :
+	{
+		anchor		: '錨點',
+		flash		: 'Flash 動畫',
+		iframe		: 'IFrame', // MISSING
+		hiddenfield	: 'Hidden Field', // MISSING
+		unknown		: '不明物件'
+	},
+
+	resize : '拖拽改變大小',
+
+	colordialog :
+	{
+		title		: 'Select color', // MISSING
+		options	:	'Color Options', // MISSING
+		highlight	: 'Highlight', // MISSING
+		selected	: 'Selected Color', // MISSING
+		clear		: 'Clear' // MISSING
+	},
+
+	toolbarCollapse	: '折叠工具栏',
+	toolbarExpand	: '展开工具栏',
+
+	toolbarGroups :
+	{
+		document : 'Document', // MISSING
+		clipboard : 'Clipboard/Undo', // MISSING
+		editing : 'Editing', // MISSING
+		forms : 'Forms', // MISSING
+		basicstyles : 'Basic Styles', // MISSING
+		paragraph : 'Paragraph', // MISSING
+		links : 'Links', // MISSING
+		insert : 'Insert', // MISSING
+		styles : 'Styles', // MISSING
+		colors : 'Colors', // MISSING
+		tools : 'Tools' // MISSING
+	},
+
+	bidi :
+	{
+		ltr : 'Text direction from left to right', // MISSING
+		rtl : 'Text direction from right to left' // MISSING
+	},
+
+	docprops :
+	{
+		label : '文件屬性',
+		title : '文件屬性',
+		design : 'Design', // MISSING
+		meta : 'Meta 資料',
+		chooseColor : 'Choose', // MISSING
+		other : '<其他>',
+		docTitle :	'頁面標題',
+		charset : 	'字元編碼',
+		charsetOther : '其他字元編碼',
+		charsetASCII : 'ASCII', // MISSING
+		charsetCE : '中歐語系',
+		charsetCT : '正體中文 (Big5)',
+		charsetCR : '斯拉夫文',
+		charsetGR : '希臘文',
+		charsetJP : '日文',
+		charsetKR : '韓文',
+		charsetTR : '土耳其文',
+		charsetUN : 'Unicode (UTF-8)', // MISSING
+		charsetWE : '西歐語系',
+		docType : '文件類型',
+		docTypeOther : '其他文件類型',
+		xhtmlDec : '包含 XHTML 定義',
+		bgColor : '背景顏色',
+		bgImage : '背景影像',
+		bgFixed : '浮水印',
+		txtColor : '文字顏色',
+		margin : '頁面邊界',
+		marginTop : '上',
+		marginLeft : '左',
+		marginRight : '右',
+		marginBottom : '下',
+		metaKeywords : '文件索引關鍵字 (用半形逗號[,]分隔)',
+		metaDescription : '文件說明',
+		metaAuthor : '作者',
+		metaCopyright : '版權所有',
+		previewHtml : '<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>' // MISSING
+	}
+};

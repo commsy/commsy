@@ -98,8 +98,6 @@
 					$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
 				}
 			}
-			
-			$this->_popup_controller->performChecks($form_data, $additional);
 
 			$current_user = $this->_environment->getCurrentUserItem();
 			$current_context = $this->_environment->getCurrentContextItem();
@@ -111,6 +109,9 @@
 				$discussion_manager = $this->_environment->getDiscussionManager();
 				$discussion_item = $discussion_manager->getItem($current_iid);
 			}
+			
+			$this->_popup_controller->performChecks($discussion_item, $form_data, $additional);
+			
 	        if (isset($form_data['editType'])){
 				$this->_edit_type = $form_data['editType'];
 	        }

@@ -150,7 +150,7 @@
 		 * @param	form_data	The form data
 		 * @param	additional	Additinal given data to the save process
 		 */
-		public function performChecks($form_data, $additional) {
+		public function performChecks($item, $form_data, $additional) {
 			/**
 			 * Check if buzzwords and tags are mandatory and given
 			 */
@@ -158,15 +158,24 @@
 			$currentContextItem = $this->_environment->getCurrentContextItem();
 			
 			try {
-				if ($utils->showTags() && $currentContextItem->isTagMandatory()) {
-					if (empty($form_data["tags"])) {
+				if ($utils->showTags($this->_data["module"]) && $currentContextItem->isTagMandatory()) {
+					// check
+					if (	( $item === null && empty($form_data["tags"]) ) ||
+							( $item !== null && $form_data["tags_tab"] == "true" && !isset($form_data["tags"]) ) )
+					{
 						$exception = new cs_form_general_exception("tags are mandatory", 113);
 						throw $exception;
 					}
 				}
 				
-				if ($utils->showBuzzwords() && $currentContextItem->isBuzzwordMandatory()) {
-					if (empty($form_data["buzzwords"])) {
+				if ($utils->showBuzzwords($this->_data["module"]) && $currentContextItem->isBuzzwordMandatory()) {
+					$buzzwordsEmpty = false;
+					if ( isset($form_data["buzzwords"]) && sizeof($form_data["buzzwords"]) < 2 ) $buzzwordsEmpty = true;	// this is because there is always one item for adding new buzzwords(maybe empty)
+					
+					// check
+					if (	( $item === null && $buzzwordsEmpty === true ) ||
+							( $item !== null && $form_data["buzzwords_tab"] == "true" && $buzzwordsEmpty === true ) )
+					{
 						$exception = new cs_form_general_exception("buzzwords are mandatory", 113);
 						throw $exception;
 					}

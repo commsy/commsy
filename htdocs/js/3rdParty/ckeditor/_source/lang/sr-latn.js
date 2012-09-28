@@ -1,35 +1,816 @@
-//>>built
-define("ckeditor/_source/lang/sr-latn",["dijit","dojo","dojox"],function(){CKEDITOR.lang["sr-latn"]={dir:"ltr",editorTitle:"Rich text editor, %1",editorHelp:"Press ALT 0 for help",toolbars:"Editor toolbars",editor:"Rich Text Editor",source:"K\u00f4d",newPage:"Nova stranica",save:"Sa\u010duvaj",preview:"Izgled stranice",cut:"Iseci",copy:"Kopiraj",paste:"Zalepi",print:"\u0160tampa",underline:"Podvu\u010deno",bold:"Podebljano",italic:"Kurziv",selectAll:"Ozna\u010di sve",removeFormat:"Ukloni formatiranje",
-strike:"Precrtano",subscript:"Indeks",superscript:"Stepen",horizontalrule:"Unesi horizontalnu liniju",pagebreak:"Insert Page Break for Printing",pagebreakAlt:"Page Break",unlink:"Ukloni link",undo:"Poni\ufffdti akciju",redo:"Ponovi akciju",common:{browseServer:"Pretra\u017ei server",url:"URL",protocol:"Protokol",upload:"Po\u0161alji",uploadSubmit:"Po\u0161alji na server",image:"Slika",flash:"Fle\u0161",form:"Forma",checkbox:"Polje za potvrdu",radio:"Radio-dugme",textField:"Tekstualno polje",textarea:"Zona teksta",
-hiddenField:"Skriveno polje",button:"Dugme",select:"Izborno polje",imageButton:"Dugme sa slikom",notSet:"<nije postavljeno>",id:"Id",name:"Naziv",langDir:"Smer jezika",langDirLtr:"S leva na desno (LTR)",langDirRtl:"S desna na levo (RTL)",langCode:"K\u00f4d jezika",longDescr:"Pun opis URL",cssClass:"Stylesheet klase",advisoryTitle:"Advisory naslov",cssStyle:"Stil",ok:"OK",cancel:"Otka\u017ei",close:"Close",preview:"Preview",generalTab:"General",advancedTab:"Napredni tagovi",validateNumberFailed:"This value is not a number.",
-confirmNewPage:"Any unsaved changes to this content will be lost. Are you sure you want to load new page?",confirmCancel:"Some of the options have been changed. Are you sure to close the dialog?",options:"Options",target:"Target",targetNew:"New Window (_blank)",targetTop:"Topmost Window (_top)",targetSelf:"Same Window (_self)",targetParent:"Parent Window (_parent)",langDirLTR:"Left to Right (LTR)",langDirRTL:"Right to Left (RTL)",styles:"Style",cssClasses:"Stylesheet Classes",width:"\u0160irina",
-height:"Visina",align:"Ravnanje",alignLeft:"Levo",alignRight:"Desno",alignCenter:"Sredina",alignTop:"Vrh",alignMiddle:"Sredina",alignBottom:"Dole",invalidHeight:"Height must be a number.",invalidWidth:"Width must be a number.",invalidCssLength:'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).',invalidHtmlLength:'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).',
-invalidInlineStyle:'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.',cssLengthTooltip:"Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).",unavailable:'%1<span class="cke_accessibility">, unavailable</span>'},contextmenu:{options:"Context Menu Options"},specialChar:{toolbar:"Unesi specijalni karakter",title:"Odaberite specijalni karakter",options:"Special Character Options"},
-link:{toolbar:"Unesi/izmeni link",other:"<\u043e\u0441\u0442\u0430\u043b\u043e>",menu:"Izmeni link",title:"Link",info:"Link Info",target:"Meta",upload:"Po\u0161alji",advanced:"Napredni tagovi",type:"Vrsta linka",toUrl:"URL",toAnchor:"Sidro na ovoj stranici",toEmail:"E-Mail",targetFrame:"<okvir>",targetPopup:"<popup prozor>",targetFrameName:"Naziv odredi\u0161nog frejma",targetPopupName:"Naziv popup prozora",popupFeatures:"Mogu\u0107nosti popup prozora",popupResizable:"Resizable",popupStatusBar:"Statusna linija",
-popupLocationBar:"Lokacija",popupToolbar:"Toolbar",popupMenuBar:"Kontekstni meni",popupFullScreen:"Prikaz preko celog ekrana (IE)",popupScrollBars:"Scroll bar",popupDependent:"Zavisno (Netscape)",popupLeft:"Od leve ivice ekrana (px)",popupTop:"Od vrha ekrana (px)",id:"Id",langDir:"Smer jezika",langDirLTR:"S leva na desno (LTR)",langDirRTL:"S desna na levo (RTL)",acccessKey:"Pristupni taster",name:"Naziv",langCode:"Smer jezika",tabIndex:"Tab indeks",advisoryTitle:"Advisory naslov",advisoryContentType:"Advisory vrsta sadr\u017eaja",
-cssClasses:"Stylesheet klase",charset:"Linked Resource Charset",styles:"Stil",rel:"Relationship",selectAnchor:"Odaberi sidro",anchorName:"Po nazivu sidra",anchorId:"Po Id-ju elementa",emailAddress:"E-Mail adresa",emailSubject:"Naslov",emailBody:"Sadr\u017eaj poruke",noAnchors:"(Nema dostupnih sidra)",noUrl:"Unesite URL linka",noEmail:"Otkucajte adresu elektronske pote"},anchor:{toolbar:"Unesi/izmeni sidro",menu:"Osobine sidra",title:"Osobine sidra",name:"Ime sidra",errorName:"Unesite ime sidra",remove:"Remove Anchor"},
-list:{numberedTitle:"Numbered List Properties",bulletedTitle:"Bulleted List Properties",type:"Type",start:"Start",validateStartNumber:"List start number must be a whole number.",circle:"Circle",disc:"Disc",square:"Square",none:"None",notset:"<not set>",armenian:"Armenian numbering",georgian:"Georgian numbering (an, ban, gan, etc.)",lowerRoman:"Lower Roman (i, ii, iii, iv, v, etc.)",upperRoman:"Upper Roman (I, II, III, IV, V, etc.)",lowerAlpha:"Lower Alpha (a, b, c, d, e, etc.)",upperAlpha:"Upper Alpha (A, B, C, D, E, etc.)",
-lowerGreek:"Lower Greek (alpha, beta, gamma, etc.)",decimal:"Decimal (1, 2, 3, etc.)",decimalLeadingZero:"Decimal leading zero (01, 02, 03, etc.)"},findAndReplace:{title:"Find and Replace",find:"Pretraga",replace:"Zamena",findWhat:"Pronadi:",replaceWith:"Zameni sa:",notFoundMsg:"Tra\u017eeni tekst nije prona\u0111en.",findOptions:"Find Options",matchCase:"Razlikuj mala i velika slova",matchWord:"Uporedi cele reci",matchCyclic:"Match cyclic",replaceAll:"Zameni sve",replaceSuccessMsg:"%1 occurrence(s) replaced."},
-table:{toolbar:"Tabela",title:"Osobine tabele",menu:"Osobine tabele",deleteTable:"Delete Table",rows:"Redova",columns:"Kolona",border:"Veli\u010dina okvira",widthPx:"piksela",widthPc:"procenata",widthUnit:"width unit",cellSpace:"\u0106elijski prostor",cellPad:"Razmak \u0107elija",caption:"Naslov tabele",summary:"Summary",headers:"Headers",headersNone:"None",headersColumn:"First column",headersRow:"First Row",headersBoth:"Both",invalidRows:"Number of rows must be a number greater than 0.",invalidCols:"Number of columns must be a number greater than 0.",
-invalidBorder:"Border size must be a number.",invalidWidth:"Table width must be a number.",invalidHeight:"Table height must be a number.",invalidCellSpacing:"Cell spacing must be a positive number.",invalidCellPadding:"Cell padding must be a positive number.",cell:{menu:"Cell",insertBefore:"Insert Cell Before",insertAfter:"Insert Cell After",deleteCell:"Obri\u0161i \u0107elije",merge:"Spoj celije",mergeRight:"Merge Right",mergeDown:"Merge Down",splitHorizontal:"Split Cell Horizontally",splitVertical:"Split Cell Vertically",
-title:"Cell Properties",cellType:"Cell Type",rowSpan:"Rows Span",colSpan:"Columns Span",wordWrap:"Word Wrap",hAlign:"Horizontal Alignment",vAlign:"Vertical Alignment",alignBaseline:"Baseline",bgColor:"Background Color",borderColor:"Border Color",data:"Data",header:"Header",yes:"Yes",no:"No",invalidWidth:"Cell width must be a number.",invalidHeight:"Cell height must be a number.",invalidRowSpan:"Rows span must be a whole number.",invalidColSpan:"Columns span must be a whole number.",chooseColor:"Choose"},
-row:{menu:"Row",insertBefore:"Insert Row Before",insertAfter:"Insert Row After",deleteRow:"Obri\u0161i redove"},column:{menu:"Column",insertBefore:"Insert Column Before",insertAfter:"Insert Column After",deleteColumn:"Obri\u0161i kolone"}},button:{title:"Osobine dugmeta",text:"Tekst (vrednost)",type:"Tip",typeBtn:"Button",typeSbm:"Submit",typeRst:"Reset"},checkboxAndRadio:{checkboxTitle:"Osobine polja za potvrdu",radioTitle:"Osobine radio-dugmeta",value:"Vrednost",selected:"Ozna\u010deno"},form:{title:"Osobine forme",
-menu:"Osobine forme",action:"Akcija",method:"Metoda",encoding:"Encoding"},select:{title:"Osobine izbornog polja",selectInfo:"Info",opAvail:"Dostupne opcije",value:"Vrednost",size:"Veli\u010dina",lines:"linija",chkMulti:"Dozvoli vi\u0161estruku selekciju",opText:"Tekst",opValue:"Vrednost",btnAdd:"Dodaj",btnModify:"Izmeni",btnUp:"Gore",btnDown:"Dole",btnSetValue:"Podesi kao ozna\u010denu vrednost",btnDelete:"Obri\u0161i"},textarea:{title:"Osobine zone teksta",cols:"Broj kolona",rows:"Broj redova"},
-textfield:{title:"Osobine tekstualnog polja",name:"Naziv",value:"Vrednost",charWidth:"\u0160irina (karaktera)",maxChars:"Maksimalno karaktera",type:"Tip",typeText:"Tekst",typePass:"Lozinka"},hidden:{title:"Osobine skrivenog polja",name:"Naziv",value:"Vrednost"},image:{title:"Osobine slika",titleButton:"Osobine dugmeta sa slikom",menu:"Osobine slika",infoTab:"Info slike",btnUpload:"Po\u0161alji na server",upload:"Po\u0161alji",alt:"Alternativni tekst",lockRatio:"Zaklju\u010daj odnos",resetSize:"Resetuj veli\u010dinu",
-border:"Okvir",hSpace:"HSpace",vSpace:"VSpace",alertUrl:"Unesite URL slike",linkTab:"Link",button2Img:"Do you want to transform the selected image button on a simple image?",img2Button:"Do you want to transform the selected image on a image button?",urlMissing:"Image source URL is missing.",validateBorder:"Border must be a whole number.",validateHSpace:"HSpace must be a whole number.",validateVSpace:"VSpace must be a whole number."},flash:{properties:"Osobine fle\u0161a",propertiesTab:"Properties",
-title:"Osobine fle\u0161a",chkPlay:"Automatski start",chkLoop:"Ponavljaj",chkMenu:"Uklju\u010di fle\u0161 meni",chkFull:"Allow Fullscreen",scale:"Skaliraj",scaleAll:"Prika\u017ei sve",scaleNoBorder:"Bez ivice",scaleFit:"Popuni povr\u0161inu",access:"Script Access",accessAlways:"Always",accessSameDomain:"Same domain",accessNever:"Never",alignAbsBottom:"Abs dole",alignAbsMiddle:"Abs sredina",alignBaseline:"Bazno",alignTextTop:"Vrh teksta",quality:"Quality",qualityBest:"Best",qualityHigh:"High",qualityAutoHigh:"Auto High",
-qualityMedium:"Medium",qualityAutoLow:"Auto Low",qualityLow:"Low",windowModeWindow:"Window",windowModeOpaque:"Opaque",windowModeTransparent:"Transparent",windowMode:"Window mode",flashvars:"Variables for Flash",bgcolor:"Boja pozadine",hSpace:"HSpace",vSpace:"VSpace",validateSrc:"Unesite URL linka",validateHSpace:"HSpace must be a number.",validateVSpace:"VSpace must be a number."},spellCheck:{toolbar:"Proveri spelovanje",title:"Spell Check",notAvailable:"Sorry, but service is unavailable now.",errorLoading:"Error loading application service host: %s.",
-notInDic:"Nije u re\u010dniku",changeTo:"Izmeni",btnIgnore:"Ignori\u0161i",btnIgnoreAll:"Ignori\u0161i sve",btnReplace:"Zameni",btnReplaceAll:"Zameni sve",btnUndo:"Vrati akciju",noSuggestions:"- Bez sugestija -",progress:"Provera spelovanja u toku...",noMispell:"Provera spelovanja zavr\u0161ena: gre\u0161ke nisu pronadene",noChanges:"Provera spelovanja zavr\u0161ena: Nije izmenjena nijedna rec",oneChange:"Provera spelovanja zavr\u0161ena: Izmenjena je jedna re\u010d",manyChanges:"Provera spelovanja zavr\u0161ena: %1 re\u010d(i) je izmenjeno",
-ieSpellDownload:"Provera spelovanja nije instalirana. Da li \u017eelite da je skinete sa Interneta?"},smiley:{toolbar:"Smajli",title:"Unesi smajlija",options:"Smiley Options"},elementsPath:{eleLabel:"Elements path",eleTitle:"%1 element"},numberedlist:"Nabrojiva lista",bulletedlist:"Nenabrojiva lista",indent:"Uve\u0107aj levu marginu",outdent:"Smanji levu marginu",justify:{left:"Levo ravnanje",center:"Centriran tekst",right:"Desno ravnanje",block:"Obostrano ravnanje"},blockquote:"Block Quote",clipboard:{title:"Zalepi",
-cutError:"Sigurnosna pode\u0161avanja Va\u0161eg pretra\u017eiva\u010da ne dozvoljavaju operacije automatskog isecanja teksta. Molimo Vas da koristite pre\u010dicu sa tastature (Ctrl/Cmd+X).",copyError:"Sigurnosna pode\u0161avanja Va\u0161eg pretra\u017eiva\u010da ne dozvoljavaju operacije automatskog kopiranja teksta. Molimo Vas da koristite pre\u010dicu sa tastature (Ctrl/Cmd+C).",pasteMsg:"Molimo Vas da zalepite unutar donje povrine koriste\u0107i tastaturnu pre\u010dicu (<STRONG>Ctrl/Cmd+V</STRONG>) i da pritisnete <STRONG>OK</STRONG>.",
-securityMsg:"Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",pasteArea:"Paste Area"},pastefromword:{confirmCleanup:"The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?",toolbar:"Zalepi iz Worda",title:"Zalepi iz Worda",error:"It was not possible to clean up the pasted data due to an internal error"},pasteText:{button:"Zalepi kao \u010dist tekst",
-title:"Zalepi kao \u010dist tekst"},templates:{button:"Obrasci",title:"Obrasci za sadr\u017eaj",options:"Template Options",insertOption:"Replace actual contents",selectPromptMsg:"Molimo Vas da odaberete obrazac koji ce biti primenjen na stranicu (trenutni sadr\u017eaj ce biti obrisan):",emptyListMsg:"(Nema definisanih obrazaca)"},showBlocks:"Show Blocks",stylesCombo:{label:"Stil",panelTitle:"Formatting Styles",panelTitle1:"Block Styles",panelTitle2:"Inline Styles",panelTitle3:"Object Styles"},format:{label:"Format",
-panelTitle:"Format",tag_p:"Normal",tag_pre:"Formatirano",tag_address:"Adresa",tag_h1:"Naslov 1",tag_h2:"Naslov 2",tag_h3:"Naslov 3",tag_h4:"Naslov 4",tag_h5:"Naslov 5",tag_h6:"Naslov 6",tag_div:"Normal (DIV)"},div:{title:"Create Div Container",toolbar:"Create Div Container",cssClassInputLabel:"Stylesheet Classes",styleSelectLabel:"Style",IdInputLabel:"Id",languageCodeInputLabel:" Language Code",inlineStyleInputLabel:"Inline Style",advisoryTitleInputLabel:"Advisory Title",langDirLabel:"Language Direction",
-langDirLTRLabel:"Left to Right (LTR)",langDirRTLLabel:"Right to Left (RTL)",edit:"Edit Div",remove:"Remove Div"},iframe:{title:"IFrame Properties",toolbar:"IFrame",noUrl:"Please type the iframe URL",scrolling:"Enable scrollbars",border:"Show frame border"},font:{label:"Font",voiceLabel:"Font",panelTitle:"Font"},fontSize:{label:"Veli\u010dina fonta",voiceLabel:"Font Size",panelTitle:"Veli\u010dina fonta"},colorButton:{textColorTitle:"Boja teksta",bgColorTitle:"Boja pozadine",panelTitle:"Colors",auto:"Automatski",
-more:"Vi\u0161e boja..."},colors:{"000":"Black",8E5:"Maroon","8B4513":"Saddle Brown","2F4F4F":"Dark Slate Gray","008080":"Teal","000080":"Navy","4B0082":"Indigo",696969:"Dark Gray",B22222:"Fire Brick",A52A2A:"Brown",DAA520:"Golden Rod","006400":"Dark Green","40E0D0":"Turquoise","0000CD":"Medium Blue",800080:"Purple",808080:"Gray",F00:"Red",FF8C00:"Dark Orange",FFD700:"Gold","008000":"Green","0FF":"Cyan","00F":"Blue",EE82EE:"Violet",A9A9A9:"Dim Gray",FFA07A:"Light Salmon",FFA500:"Orange",FFFF00:"Yellow",
-"00FF00":"Lime",AFEEEE:"Pale Turquoise",ADD8E6:"Light Blue",DDA0DD:"Plum",D3D3D3:"Light Grey",FFF0F5:"Lavender Blush",FAEBD7:"Antique White",FFFFE0:"Light Yellow",F0FFF0:"Honeydew",F0FFFF:"Azure",F0F8FF:"Alice Blue",E6E6FA:"Lavender",FFF:"White"},scayt:{title:"Spell Check As You Type",opera_title:"Not supported by Opera",enable:"Enable SCAYT",disable:"Disable SCAYT",about:"About SCAYT",toggle:"Toggle SCAYT",options:"Options",langs:"Languages",moreSuggestions:"More suggestions",ignore:"Ignore",ignoreAll:"Ignore All",
-addWord:"Add Word",emptyDic:"Dictionary name should not be empty.",optionsTab:"Options",allCaps:"Ignore All-Caps Words",ignoreDomainNames:"Ignore Domain Names",mixedCase:"Ignore Words with Mixed Case",mixedWithDigits:"Ignore Words with Numbers",languagesTab:"Languages",dictionariesTab:"Dictionaries",dic_field_name:"Dictionary name",dic_create:"Create",dic_restore:"Restore",dic_delete:"Delete",dic_rename:"Rename",dic_info:"Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.",
-aboutTab:"About"},about:{title:"About CKEditor",dlgTitle:"About CKEditor",help:"Check $1 for help.",userGuide:"CKEditor User's Guide",moreInfo:"For licensing information please visit our web site:",copy:"Copyright &copy; $1. All rights reserved."},maximize:"Maximize",minimize:"Minimize",fakeobjects:{anchor:"Anchor",flash:"Flash Animation",iframe:"IFrame",hiddenfield:"Hidden Field",unknown:"Unknown Object"},resize:"Drag to resize",colordialog:{title:"Select color",options:"Color Options",highlight:"Highlight",
-selected:"Selected Color",clear:"Clear"},toolbarCollapse:"Collapse Toolbar",toolbarExpand:"Expand Toolbar",toolbarGroups:{document:"Document",clipboard:"Clipboard/Undo",editing:"Editing",forms:"Forms",basicstyles:"Basic Styles",paragraph:"Paragraph",links:"Links",insert:"Insert",styles:"Styles",colors:"Colors",tools:"Tools"},bidi:{ltr:"Text direction from left to right",rtl:"Text direction from right to left"},docprops:{label:"Osobine dokumenta",title:"Osobine dokumenta",design:"Design",meta:"Metapodaci",
-chooseColor:"Choose",other:"<\u043e\u0441\u0442\u0430\u043b\u043e>",docTitle:"Naslov stranice",charset:"Kodiranje skupa karaktera",charsetOther:"Ostala kodiranja skupa karaktera",charsetASCII:"ASCII",charsetCE:"Central European",charsetCT:"Chinese Traditional (Big5)",charsetCR:"Cyrillic",charsetGR:"Greek",charsetJP:"Japanese",charsetKR:"Korean",charsetTR:"Turkish",charsetUN:"Unicode (UTF-8)",charsetWE:"Western European",docType:"Zaglavlje tipa dokumenta",docTypeOther:"Ostala zaglavlja tipa dokumenta",
-xhtmlDec:"Ukljuci XHTML deklaracije",bgColor:"Boja pozadine",bgImage:"URL pozadinske slike",bgFixed:"Fiksirana pozadina",txtColor:"Boja teksta",margin:"Margine stranice",marginTop:"Gornja",marginLeft:"Leva",marginRight:"Desna",marginBottom:"Donja",metaKeywords:"Klju\u010dne reci za indeksiranje dokumenta (razdvojene zarezima)",metaDescription:"Opis dokumenta",metaAuthor:"Autor",metaCopyright:"Autorska prava",previewHtml:'<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>'}}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @fileOverview Defines the {@link CKEDITOR.lang} object, for the
+ * Serbian (Latin) language.
+ */
+
+/**#@+
+   @type String
+   @example
+*/
+
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang['sr-latn'] =
+{
+	/**
+	 * The language reading direction. Possible values are "rtl" for
+	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
+	 * languages (like English).
+	 * @default 'ltr'
+	 */
+	dir : 'ltr',
+
+	/*
+	 * Screenreader titles. Please note that screenreaders are not always capable
+	 * of reading non-English words. So be careful while translating it.
+	 */
+	editorTitle : 'Rich text editor, %1', // MISSING
+	editorHelp : 'Press ALT 0 for help', // MISSING
+
+	// ARIA descriptions.
+	toolbars	: 'Editor toolbars', // MISSING
+	editor		: 'Rich Text Editor', // MISSING
+
+	// Toolbar buttons without dialogs.
+	source			: 'Kôd',
+	newPage			: 'Nova stranica',
+	save			: 'Sačuvaj',
+	preview			: 'Izgled stranice',
+	cut				: 'Iseci',
+	copy			: 'Kopiraj',
+	paste			: 'Zalepi',
+	print			: 'Štampa',
+	underline		: 'Podvučeno',
+	bold			: 'Podebljano',
+	italic			: 'Kurziv',
+	selectAll		: 'Označi sve',
+	removeFormat	: 'Ukloni formatiranje',
+	strike			: 'Precrtano',
+	subscript		: 'Indeks',
+	superscript		: 'Stepen',
+	horizontalrule	: 'Unesi horizontalnu liniju',
+	pagebreak		: 'Insert Page Break for Printing', // MISSING
+	pagebreakAlt		: 'Page Break', // MISSING
+	unlink			: 'Ukloni link',
+	undo			: 'Poni�ti akciju',
+	redo			: 'Ponovi akciju',
+
+	// Common messages and labels.
+	common :
+	{
+		browseServer	: 'Pretraži server',
+		url				: 'URL',
+		protocol		: 'Protokol',
+		upload			: 'Pošalji',
+		uploadSubmit	: 'Pošalji na server',
+		image			: 'Slika',
+		flash			: 'Fleš',
+		form			: 'Forma',
+		checkbox		: 'Polje za potvrdu',
+		radio			: 'Radio-dugme',
+		textField		: 'Tekstualno polje',
+		textarea		: 'Zona teksta',
+		hiddenField		: 'Skriveno polje',
+		button			: 'Dugme',
+		select			: 'Izborno polje',
+		imageButton		: 'Dugme sa slikom',
+		notSet			: '<nije postavljeno>',
+		id				: 'Id',
+		name			: 'Naziv',
+		langDir			: 'Smer jezika',
+		langDirLtr		: 'S leva na desno (LTR)',
+		langDirRtl		: 'S desna na levo (RTL)',
+		langCode		: 'Kôd jezika',
+		longDescr		: 'Pun opis URL',
+		cssClass		: 'Stylesheet klase',
+		advisoryTitle	: 'Advisory naslov',
+		cssStyle		: 'Stil',
+		ok				: 'OK',
+		cancel			: 'Otkaži',
+		close			: 'Close', // MISSING
+		preview			: 'Preview', // MISSING
+		generalTab		: 'General', // MISSING
+		advancedTab		: 'Napredni tagovi',
+		validateNumberFailed : 'This value is not a number.', // MISSING
+		confirmNewPage	: 'Any unsaved changes to this content will be lost. Are you sure you want to load new page?', // MISSING
+		confirmCancel	: 'Some of the options have been changed. Are you sure to close the dialog?', // MISSING
+		options			: 'Options', // MISSING
+		target			: 'Target', // MISSING
+		targetNew		: 'New Window (_blank)', // MISSING
+		targetTop		: 'Topmost Window (_top)', // MISSING
+		targetSelf		: 'Same Window (_self)', // MISSING
+		targetParent	: 'Parent Window (_parent)', // MISSING
+		langDirLTR		: 'Left to Right (LTR)', // MISSING
+		langDirRTL		: 'Right to Left (RTL)', // MISSING
+		styles			: 'Style', // MISSING
+		cssClasses		: 'Stylesheet Classes', // MISSING
+		width			: 'Širina',
+		height			: 'Visina',
+		align			: 'Ravnanje',
+		alignLeft		: 'Levo',
+		alignRight		: 'Desno',
+		alignCenter		: 'Sredina',
+		alignTop		: 'Vrh',
+		alignMiddle		: 'Sredina',
+		alignBottom		: 'Dole',
+		invalidHeight	: 'Height must be a number.', // MISSING
+		invalidWidth	: 'Width must be a number.', // MISSING
+		invalidCssLength	: 'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+		invalidHtmlLength	: 'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).', // MISSING
+		invalidInlineStyle	: 'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.', // MISSING
+		cssLengthTooltip	: 'Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+
+		// Put the voice-only part of the label in the span.
+		unavailable		: '%1<span class="cke_accessibility">, unavailable</span>' // MISSING
+	},
+
+	contextmenu :
+	{
+		options : 'Context Menu Options' // MISSING
+	},
+
+	// Special char dialog.
+	specialChar		:
+	{
+		toolbar		: 'Unesi specijalni karakter',
+		title		: 'Odaberite specijalni karakter',
+		options : 'Special Character Options' // MISSING
+	},
+
+	// Link dialog.
+	link :
+	{
+		toolbar		: 'Unesi/izmeni link',
+		other 		: '<остало>',
+		menu		: 'Izmeni link',
+		title		: 'Link',
+		info		: 'Link Info',
+		target		: 'Meta',
+		upload		: 'Pošalji',
+		advanced	: 'Napredni tagovi',
+		type		: 'Vrsta linka',
+		toUrl		: 'URL', // MISSING
+		toAnchor	: 'Sidro na ovoj stranici',
+		toEmail		: 'E-Mail',
+		targetFrame		: '<okvir>',
+		targetPopup		: '<popup prozor>',
+		targetFrameName	: 'Naziv odredišnog frejma',
+		targetPopupName	: 'Naziv popup prozora',
+		popupFeatures	: 'Mogućnosti popup prozora',
+		popupResizable	: 'Resizable', // MISSING
+		popupStatusBar	: 'Statusna linija',
+		popupLocationBar: 'Lokacija',
+		popupToolbar	: 'Toolbar',
+		popupMenuBar	: 'Kontekstni meni',
+		popupFullScreen	: 'Prikaz preko celog ekrana (IE)',
+		popupScrollBars	: 'Scroll bar',
+		popupDependent	: 'Zavisno (Netscape)',
+		popupLeft		: 'Od leve ivice ekrana (px)',
+		popupTop		: 'Od vrha ekrana (px)',
+		id				: 'Id', // MISSING
+		langDir			: 'Smer jezika',
+		langDirLTR		: 'S leva na desno (LTR)',
+		langDirRTL		: 'S desna na levo (RTL)',
+		acccessKey		: 'Pristupni taster',
+		name			: 'Naziv',
+		langCode			: 'Smer jezika',
+		tabIndex			: 'Tab indeks',
+		advisoryTitle		: 'Advisory naslov',
+		advisoryContentType	: 'Advisory vrsta sadržaja',
+		cssClasses		: 'Stylesheet klase',
+		charset			: 'Linked Resource Charset',
+		styles			: 'Stil',
+		rel			: 'Relationship', // MISSING
+		selectAnchor		: 'Odaberi sidro',
+		anchorName		: 'Po nazivu sidra',
+		anchorId			: 'Po Id-ju elementa',
+		emailAddress		: 'E-Mail adresa',
+		emailSubject		: 'Naslov',
+		emailBody		: 'Sadržaj poruke',
+		noAnchors		: '(Nema dostupnih sidra)',
+		noUrl			: 'Unesite URL linka',
+		noEmail			: 'Otkucajte adresu elektronske pote'
+	},
+
+	// Anchor dialog
+	anchor :
+	{
+		toolbar		: 'Unesi/izmeni sidro',
+		menu		: 'Osobine sidra',
+		title		: 'Osobine sidra',
+		name		: 'Ime sidra',
+		errorName	: 'Unesite ime sidra',
+		remove		: 'Remove Anchor' // MISSING
+	},
+
+	// List style dialog
+	list:
+	{
+		numberedTitle		: 'Numbered List Properties', // MISSING
+		bulletedTitle		: 'Bulleted List Properties', // MISSING
+		type				: 'Type', // MISSING
+		start				: 'Start', // MISSING
+		validateStartNumber				:'List start number must be a whole number.', // MISSING
+		circle				: 'Circle', // MISSING
+		disc				: 'Disc', // MISSING
+		square				: 'Square', // MISSING
+		none				: 'None', // MISSING
+		notset				: '<not set>', // MISSING
+		armenian			: 'Armenian numbering', // MISSING
+		georgian			: 'Georgian numbering (an, ban, gan, etc.)', // MISSING
+		lowerRoman			: 'Lower Roman (i, ii, iii, iv, v, etc.)', // MISSING
+		upperRoman			: 'Upper Roman (I, II, III, IV, V, etc.)', // MISSING
+		lowerAlpha			: 'Lower Alpha (a, b, c, d, e, etc.)', // MISSING
+		upperAlpha			: 'Upper Alpha (A, B, C, D, E, etc.)', // MISSING
+		lowerGreek			: 'Lower Greek (alpha, beta, gamma, etc.)', // MISSING
+		decimal				: 'Decimal (1, 2, 3, etc.)', // MISSING
+		decimalLeadingZero	: 'Decimal leading zero (01, 02, 03, etc.)' // MISSING
+	},
+
+	// Find And Replace Dialog
+	findAndReplace :
+	{
+		title				: 'Find and Replace', // MISSING
+		find				: 'Pretraga',
+		replace				: 'Zamena',
+		findWhat			: 'Pronadi:',
+		replaceWith			: 'Zameni sa:',
+		notFoundMsg			: 'Traženi tekst nije pronađen.',
+		findOptions			: 'Find Options', // MISSING
+		matchCase			: 'Razlikuj mala i velika slova',
+		matchWord			: 'Uporedi cele reci',
+		matchCyclic			: 'Match cyclic', // MISSING
+		replaceAll			: 'Zameni sve',
+		replaceSuccessMsg	: '%1 occurrence(s) replaced.' // MISSING
+	},
+
+	// Table Dialog
+	table :
+	{
+		toolbar		: 'Tabela',
+		title		: 'Osobine tabele',
+		menu		: 'Osobine tabele',
+		deleteTable	: 'Delete Table', // MISSING
+		rows		: 'Redova',
+		columns		: 'Kolona',
+		border		: 'Veličina okvira',
+		widthPx		: 'piksela',
+		widthPc		: 'procenata',
+		widthUnit	: 'width unit', // MISSING
+		cellSpace	: 'Ćelijski prostor',
+		cellPad		: 'Razmak ćelija',
+		caption		: 'Naslov tabele',
+		summary		: 'Summary', // MISSING
+		headers		: 'Headers', // MISSING
+		headersNone		: 'None', // MISSING
+		headersColumn	: 'First column', // MISSING
+		headersRow		: 'First Row', // MISSING
+		headersBoth		: 'Both', // MISSING
+		invalidRows		: 'Number of rows must be a number greater than 0.', // MISSING
+		invalidCols		: 'Number of columns must be a number greater than 0.', // MISSING
+		invalidBorder	: 'Border size must be a number.', // MISSING
+		invalidWidth	: 'Table width must be a number.', // MISSING
+		invalidHeight	: 'Table height must be a number.', // MISSING
+		invalidCellSpacing	: 'Cell spacing must be a positive number.', // MISSING
+		invalidCellPadding	: 'Cell padding must be a positive number.', // MISSING
+
+		cell :
+		{
+			menu			: 'Cell', // MISSING
+			insertBefore	: 'Insert Cell Before', // MISSING
+			insertAfter		: 'Insert Cell After', // MISSING
+			deleteCell		: 'Obriši ćelije',
+			merge			: 'Spoj celije',
+			mergeRight		: 'Merge Right', // MISSING
+			mergeDown		: 'Merge Down', // MISSING
+			splitHorizontal	: 'Split Cell Horizontally', // MISSING
+			splitVertical	: 'Split Cell Vertically', // MISSING
+			title			: 'Cell Properties', // MISSING
+			cellType		: 'Cell Type', // MISSING
+			rowSpan			: 'Rows Span', // MISSING
+			colSpan			: 'Columns Span', // MISSING
+			wordWrap		: 'Word Wrap', // MISSING
+			hAlign			: 'Horizontal Alignment', // MISSING
+			vAlign			: 'Vertical Alignment', // MISSING
+			alignBaseline	: 'Baseline', // MISSING
+			bgColor			: 'Background Color', // MISSING
+			borderColor		: 'Border Color', // MISSING
+			data			: 'Data', // MISSING
+			header			: 'Header', // MISSING
+			yes				: 'Yes', // MISSING
+			no				: 'No', // MISSING
+			invalidWidth	: 'Cell width must be a number.', // MISSING
+			invalidHeight	: 'Cell height must be a number.', // MISSING
+			invalidRowSpan	: 'Rows span must be a whole number.', // MISSING
+			invalidColSpan	: 'Columns span must be a whole number.', // MISSING
+			chooseColor		: 'Choose' // MISSING
+		},
+
+		row :
+		{
+			menu			: 'Row', // MISSING
+			insertBefore	: 'Insert Row Before', // MISSING
+			insertAfter		: 'Insert Row After', // MISSING
+			deleteRow		: 'Obriši redove'
+		},
+
+		column :
+		{
+			menu			: 'Column', // MISSING
+			insertBefore	: 'Insert Column Before', // MISSING
+			insertAfter		: 'Insert Column After', // MISSING
+			deleteColumn	: 'Obriši kolone'
+		}
+	},
+
+	// Button Dialog.
+	button :
+	{
+		title		: 'Osobine dugmeta',
+		text		: 'Tekst (vrednost)',
+		type		: 'Tip',
+		typeBtn		: 'Button', // MISSING
+		typeSbm		: 'Submit', // MISSING
+		typeRst		: 'Reset' // MISSING
+	},
+
+	// Checkbox and Radio Button Dialogs.
+	checkboxAndRadio :
+	{
+		checkboxTitle : 'Osobine polja za potvrdu',
+		radioTitle	: 'Osobine radio-dugmeta',
+		value		: 'Vrednost',
+		selected	: 'Označeno'
+	},
+
+	// Form Dialog.
+	form :
+	{
+		title		: 'Osobine forme',
+		menu		: 'Osobine forme',
+		action		: 'Akcija',
+		method		: 'Metoda',
+		encoding	: 'Encoding' // MISSING
+	},
+
+	// Select Field Dialog.
+	select :
+	{
+		title		: 'Osobine izbornog polja',
+		selectInfo	: 'Info',
+		opAvail		: 'Dostupne opcije',
+		value		: 'Vrednost',
+		size		: 'Veličina',
+		lines		: 'linija',
+		chkMulti	: 'Dozvoli višestruku selekciju',
+		opText		: 'Tekst',
+		opValue		: 'Vrednost',
+		btnAdd		: 'Dodaj',
+		btnModify	: 'Izmeni',
+		btnUp		: 'Gore',
+		btnDown		: 'Dole',
+		btnSetValue : 'Podesi kao označenu vrednost',
+		btnDelete	: 'Obriši'
+	},
+
+	// Textarea Dialog.
+	textarea :
+	{
+		title		: 'Osobine zone teksta',
+		cols		: 'Broj kolona',
+		rows		: 'Broj redova'
+	},
+
+	// Text Field Dialog.
+	textfield :
+	{
+		title		: 'Osobine tekstualnog polja',
+		name		: 'Naziv',
+		value		: 'Vrednost',
+		charWidth	: 'Širina (karaktera)',
+		maxChars	: 'Maksimalno karaktera',
+		type		: 'Tip',
+		typeText	: 'Tekst',
+		typePass	: 'Lozinka'
+	},
+
+	// Hidden Field Dialog.
+	hidden :
+	{
+		title	: 'Osobine skrivenog polja',
+		name	: 'Naziv',
+		value	: 'Vrednost'
+	},
+
+	// Image Dialog.
+	image :
+	{
+		title		: 'Osobine slika',
+		titleButton	: 'Osobine dugmeta sa slikom',
+		menu		: 'Osobine slika',
+		infoTab		: 'Info slike',
+		btnUpload	: 'Pošalji na server',
+		upload		: 'Pošalji',
+		alt			: 'Alternativni tekst',
+		lockRatio	: 'Zaključaj odnos',
+		resetSize	: 'Resetuj veličinu',
+		border		: 'Okvir',
+		hSpace		: 'HSpace',
+		vSpace		: 'VSpace',
+		alertUrl	: 'Unesite URL slike',
+		linkTab		: 'Link',
+		button2Img	: 'Do you want to transform the selected image button on a simple image?', // MISSING
+		img2Button	: 'Do you want to transform the selected image on a image button?', // MISSING
+		urlMissing	: 'Image source URL is missing.', // MISSING
+		validateBorder	: 'Border must be a whole number.', // MISSING
+		validateHSpace	: 'HSpace must be a whole number.', // MISSING
+		validateVSpace	: 'VSpace must be a whole number.' // MISSING
+	},
+
+	// Flash Dialog
+	flash :
+	{
+		properties		: 'Osobine fleša',
+		propertiesTab	: 'Properties', // MISSING
+		title			: 'Osobine fleša',
+		chkPlay			: 'Automatski start',
+		chkLoop			: 'Ponavljaj',
+		chkMenu			: 'Uključi fleš meni',
+		chkFull			: 'Allow Fullscreen', // MISSING
+ 		scale			: 'Skaliraj',
+		scaleAll		: 'Prikaži sve',
+		scaleNoBorder	: 'Bez ivice',
+		scaleFit		: 'Popuni površinu',
+		access			: 'Script Access', // MISSING
+		accessAlways	: 'Always', // MISSING
+		accessSameDomain: 'Same domain', // MISSING
+		accessNever		: 'Never', // MISSING
+		alignAbsBottom	: 'Abs dole',
+		alignAbsMiddle	: 'Abs sredina',
+		alignBaseline	: 'Bazno',
+		alignTextTop	: 'Vrh teksta',
+		quality			: 'Quality', // MISSING
+		qualityBest		: 'Best', // MISSING
+		qualityHigh		: 'High', // MISSING
+		qualityAutoHigh	: 'Auto High', // MISSING
+		qualityMedium	: 'Medium', // MISSING
+		qualityAutoLow	: 'Auto Low', // MISSING
+		qualityLow		: 'Low', // MISSING
+		windowModeWindow: 'Window', // MISSING
+		windowModeOpaque: 'Opaque', // MISSING
+		windowModeTransparent : 'Transparent', // MISSING
+		windowMode		: 'Window mode', // MISSING
+		flashvars		: 'Variables for Flash', // MISSING
+		bgcolor			: 'Boja pozadine',
+		hSpace			: 'HSpace',
+		vSpace			: 'VSpace',
+		validateSrc		: 'Unesite URL linka',
+		validateHSpace	: 'HSpace must be a number.', // MISSING
+		validateVSpace	: 'VSpace must be a number.' // MISSING
+	},
+
+	// Speller Pages Dialog
+	spellCheck :
+	{
+		toolbar			: 'Proveri spelovanje',
+		title			: 'Spell Check', // MISSING
+		notAvailable	: 'Sorry, but service is unavailable now.', // MISSING
+		errorLoading	: 'Error loading application service host: %s.', // MISSING
+		notInDic		: 'Nije u rečniku',
+		changeTo		: 'Izmeni',
+		btnIgnore		: 'Ignoriši',
+		btnIgnoreAll	: 'Ignoriši sve',
+		btnReplace		: 'Zameni',
+		btnReplaceAll	: 'Zameni sve',
+		btnUndo			: 'Vrati akciju',
+		noSuggestions	: '- Bez sugestija -',
+		progress		: 'Provera spelovanja u toku...',
+		noMispell		: 'Provera spelovanja završena: greške nisu pronadene',
+		noChanges		: 'Provera spelovanja završena: Nije izmenjena nijedna rec',
+		oneChange		: 'Provera spelovanja završena: Izmenjena je jedna reč',
+		manyChanges		: 'Provera spelovanja završena: %1 reč(i) je izmenjeno',
+		ieSpellDownload	: 'Provera spelovanja nije instalirana. Da li želite da je skinete sa Interneta?'
+	},
+
+	smiley :
+	{
+		toolbar	: 'Smajli',
+		title	: 'Unesi smajlija',
+		options : 'Smiley Options' // MISSING
+	},
+
+	elementsPath :
+	{
+		eleLabel : 'Elements path', // MISSING
+		eleTitle : '%1 element' // MISSING
+	},
+
+	numberedlist	: 'Nabrojiva lista',
+	bulletedlist	: 'Nenabrojiva lista',
+	indent			: 'Uvećaj levu marginu',
+	outdent			: 'Smanji levu marginu',
+
+	justify :
+	{
+		left	: 'Levo ravnanje',
+		center	: 'Centriran tekst',
+		right	: 'Desno ravnanje',
+		block	: 'Obostrano ravnanje'
+	},
+
+	blockquote : 'Block Quote', // MISSING
+
+	clipboard :
+	{
+		title		: 'Zalepi',
+		cutError	: 'Sigurnosna podešavanja Vašeg pretraživača ne dozvoljavaju operacije automatskog isecanja teksta. Molimo Vas da koristite prečicu sa tastature (Ctrl/Cmd+X).',
+		copyError	: 'Sigurnosna podešavanja Vašeg pretraživača ne dozvoljavaju operacije automatskog kopiranja teksta. Molimo Vas da koristite prečicu sa tastature (Ctrl/Cmd+C).',
+		pasteMsg	: 'Molimo Vas da zalepite unutar donje povrine koristeći tastaturnu prečicu (<STRONG>Ctrl/Cmd+V</STRONG>) i da pritisnete <STRONG>OK</STRONG>.',
+		securityMsg	: 'Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.', // MISSING
+		pasteArea	: 'Paste Area' // MISSING
+	},
+
+	pastefromword :
+	{
+		confirmCleanup	: 'The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?', // MISSING
+		toolbar			: 'Zalepi iz Worda',
+		title			: 'Zalepi iz Worda',
+		error			: 'It was not possible to clean up the pasted data due to an internal error' // MISSING
+	},
+
+	pasteText :
+	{
+		button	: 'Zalepi kao čist tekst',
+		title	: 'Zalepi kao čist tekst'
+	},
+
+	templates :
+	{
+		button			: 'Obrasci',
+		title			: 'Obrasci za sadržaj',
+		options : 'Template Options', // MISSING
+		insertOption	: 'Replace actual contents', // MISSING
+		selectPromptMsg	: 'Molimo Vas da odaberete obrazac koji ce biti primenjen na stranicu (trenutni sadržaj ce biti obrisan):',
+		emptyListMsg	: '(Nema definisanih obrazaca)'
+	},
+
+	showBlocks : 'Show Blocks', // MISSING
+
+	stylesCombo :
+	{
+		label		: 'Stil',
+		panelTitle	: 'Formatting Styles', // MISSING
+		panelTitle1	: 'Block Styles', // MISSING
+		panelTitle2	: 'Inline Styles', // MISSING
+		panelTitle3	: 'Object Styles' // MISSING
+	},
+
+	format :
+	{
+		label		: 'Format',
+		panelTitle	: 'Format',
+
+		tag_p		: 'Normal',
+		tag_pre		: 'Formatirano',
+		tag_address	: 'Adresa',
+		tag_h1		: 'Naslov 1',
+		tag_h2		: 'Naslov 2',
+		tag_h3		: 'Naslov 3',
+		tag_h4		: 'Naslov 4',
+		tag_h5		: 'Naslov 5',
+		tag_h6		: 'Naslov 6',
+		tag_div		: 'Normal (DIV)' // MISSING
+	},
+
+	div :
+	{
+		title				: 'Create Div Container', // MISSING
+		toolbar				: 'Create Div Container', // MISSING
+		cssClassInputLabel	: 'Stylesheet Classes', // MISSING
+		styleSelectLabel	: 'Style', // MISSING
+		IdInputLabel		: 'Id', // MISSING
+		languageCodeInputLabel	: ' Language Code', // MISSING
+		inlineStyleInputLabel	: 'Inline Style', // MISSING
+		advisoryTitleInputLabel	: 'Advisory Title', // MISSING
+		langDirLabel		: 'Language Direction', // MISSING
+		langDirLTRLabel		: 'Left to Right (LTR)', // MISSING
+		langDirRTLLabel		: 'Right to Left (RTL)', // MISSING
+		edit				: 'Edit Div', // MISSING
+		remove				: 'Remove Div' // MISSING
+  	},
+
+	iframe :
+	{
+		title		: 'IFrame Properties', // MISSING
+		toolbar		: 'IFrame', // MISSING
+		noUrl		: 'Please type the iframe URL', // MISSING
+		scrolling	: 'Enable scrollbars', // MISSING
+		border		: 'Show frame border' // MISSING
+	},
+
+	font :
+	{
+		label		: 'Font',
+		voiceLabel	: 'Font', // MISSING
+		panelTitle	: 'Font'
+	},
+
+	fontSize :
+	{
+		label		: 'Veličina fonta',
+		voiceLabel	: 'Font Size', // MISSING
+		panelTitle	: 'Veličina fonta'
+	},
+
+	colorButton :
+	{
+		textColorTitle	: 'Boja teksta',
+		bgColorTitle	: 'Boja pozadine',
+		panelTitle		: 'Colors', // MISSING
+		auto			: 'Automatski',
+		more			: 'Više boja...'
+	},
+
+	colors :
+	{
+		'000' : 'Black', // MISSING
+		'800000' : 'Maroon', // MISSING
+		'8B4513' : 'Saddle Brown', // MISSING
+		'2F4F4F' : 'Dark Slate Gray', // MISSING
+		'008080' : 'Teal', // MISSING
+		'000080' : 'Navy', // MISSING
+		'4B0082' : 'Indigo', // MISSING
+		'696969' : 'Dark Gray', // MISSING
+		'B22222' : 'Fire Brick', // MISSING
+		'A52A2A' : 'Brown', // MISSING
+		'DAA520' : 'Golden Rod', // MISSING
+		'006400' : 'Dark Green', // MISSING
+		'40E0D0' : 'Turquoise', // MISSING
+		'0000CD' : 'Medium Blue', // MISSING
+		'800080' : 'Purple', // MISSING
+		'808080' : 'Gray', // MISSING
+		'F00' : 'Red', // MISSING
+		'FF8C00' : 'Dark Orange', // MISSING
+		'FFD700' : 'Gold', // MISSING
+		'008000' : 'Green', // MISSING
+		'0FF' : 'Cyan', // MISSING
+		'00F' : 'Blue', // MISSING
+		'EE82EE' : 'Violet', // MISSING
+		'A9A9A9' : 'Dim Gray', // MISSING
+		'FFA07A' : 'Light Salmon', // MISSING
+		'FFA500' : 'Orange', // MISSING
+		'FFFF00' : 'Yellow', // MISSING
+		'00FF00' : 'Lime', // MISSING
+		'AFEEEE' : 'Pale Turquoise', // MISSING
+		'ADD8E6' : 'Light Blue', // MISSING
+		'DDA0DD' : 'Plum', // MISSING
+		'D3D3D3' : 'Light Grey', // MISSING
+		'FFF0F5' : 'Lavender Blush', // MISSING
+		'FAEBD7' : 'Antique White', // MISSING
+		'FFFFE0' : 'Light Yellow', // MISSING
+		'F0FFF0' : 'Honeydew', // MISSING
+		'F0FFFF' : 'Azure', // MISSING
+		'F0F8FF' : 'Alice Blue', // MISSING
+		'E6E6FA' : 'Lavender', // MISSING
+		'FFF' : 'White' // MISSING
+	},
+
+	scayt :
+	{
+		title			: 'Spell Check As You Type', // MISSING
+		opera_title		: 'Not supported by Opera', // MISSING
+		enable			: 'Enable SCAYT', // MISSING
+		disable			: 'Disable SCAYT', // MISSING
+		about			: 'About SCAYT', // MISSING
+		toggle			: 'Toggle SCAYT', // MISSING
+		options			: 'Options', // MISSING
+		langs			: 'Languages', // MISSING
+		moreSuggestions	: 'More suggestions', // MISSING
+		ignore			: 'Ignore', // MISSING
+		ignoreAll		: 'Ignore All', // MISSING
+		addWord			: 'Add Word', // MISSING
+		emptyDic		: 'Dictionary name should not be empty.', // MISSING
+
+		optionsTab		: 'Options', // MISSING
+		allCaps			: 'Ignore All-Caps Words', // MISSING
+		ignoreDomainNames : 'Ignore Domain Names', // MISSING
+		mixedCase		: 'Ignore Words with Mixed Case', // MISSING
+		mixedWithDigits	: 'Ignore Words with Numbers', // MISSING
+
+		languagesTab	: 'Languages', // MISSING
+
+		dictionariesTab	: 'Dictionaries', // MISSING
+		dic_field_name	: 'Dictionary name', // MISSING
+		dic_create		: 'Create', // MISSING
+		dic_restore		: 'Restore', // MISSING
+		dic_delete		: 'Delete', // MISSING
+		dic_rename		: 'Rename', // MISSING
+		dic_info		: 'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.', // MISSING
+
+		aboutTab		: 'About' // MISSING
+	},
+
+	about :
+	{
+		title		: 'About CKEditor', // MISSING
+		dlgTitle	: 'About CKEditor', // MISSING
+		help	: 'Check $1 for help.', // MISSING
+		userGuide : 'CKEditor User\'s Guide', // MISSING
+		moreInfo	: 'For licensing information please visit our web site:', // MISSING
+		copy		: 'Copyright &copy; $1. All rights reserved.' // MISSING
+	},
+
+	maximize : 'Maximize', // MISSING
+	minimize : 'Minimize', // MISSING
+
+	fakeobjects :
+	{
+		anchor		: 'Anchor', // MISSING
+		flash		: 'Flash Animation', // MISSING
+		iframe		: 'IFrame', // MISSING
+		hiddenfield	: 'Hidden Field', // MISSING
+		unknown		: 'Unknown Object' // MISSING
+	},
+
+	resize : 'Drag to resize', // MISSING
+
+	colordialog :
+	{
+		title		: 'Select color', // MISSING
+		options	:	'Color Options', // MISSING
+		highlight	: 'Highlight', // MISSING
+		selected	: 'Selected Color', // MISSING
+		clear		: 'Clear' // MISSING
+	},
+
+	toolbarCollapse	: 'Collapse Toolbar', // MISSING
+	toolbarExpand	: 'Expand Toolbar', // MISSING
+
+	toolbarGroups :
+	{
+		document : 'Document', // MISSING
+		clipboard : 'Clipboard/Undo', // MISSING
+		editing : 'Editing', // MISSING
+		forms : 'Forms', // MISSING
+		basicstyles : 'Basic Styles', // MISSING
+		paragraph : 'Paragraph', // MISSING
+		links : 'Links', // MISSING
+		insert : 'Insert', // MISSING
+		styles : 'Styles', // MISSING
+		colors : 'Colors', // MISSING
+		tools : 'Tools' // MISSING
+	},
+
+	bidi :
+	{
+		ltr : 'Text direction from left to right', // MISSING
+		rtl : 'Text direction from right to left' // MISSING
+	},
+
+	docprops :
+	{
+		label : 'Osobine dokumenta',
+		title : 'Osobine dokumenta',
+		design : 'Design', // MISSING
+		meta : 'Metapodaci',
+		chooseColor : 'Choose', // MISSING
+		other : '<остало>',
+		docTitle :	'Naslov stranice',
+		charset : 	'Kodiranje skupa karaktera',
+		charsetOther : 'Ostala kodiranja skupa karaktera',
+		charsetASCII : 'ASCII', // MISSING
+		charsetCE : 'Central European', // MISSING
+		charsetCT : 'Chinese Traditional (Big5)', // MISSING
+		charsetCR : 'Cyrillic', // MISSING
+		charsetGR : 'Greek', // MISSING
+		charsetJP : 'Japanese', // MISSING
+		charsetKR : 'Korean', // MISSING
+		charsetTR : 'Turkish', // MISSING
+		charsetUN : 'Unicode (UTF-8)', // MISSING
+		charsetWE : 'Western European', // MISSING
+		docType : 'Zaglavlje tipa dokumenta',
+		docTypeOther : 'Ostala zaglavlja tipa dokumenta',
+		xhtmlDec : 'Ukljuci XHTML deklaracije',
+		bgColor : 'Boja pozadine',
+		bgImage : 'URL pozadinske slike',
+		bgFixed : 'Fiksirana pozadina',
+		txtColor : 'Boja teksta',
+		margin : 'Margine stranice',
+		marginTop : 'Gornja',
+		marginLeft : 'Leva',
+		marginRight : 'Desna',
+		marginBottom : 'Donja',
+		metaKeywords : 'Ključne reci za indeksiranje dokumenta (razdvojene zarezima)',
+		metaDescription : 'Opis dokumenta',
+		metaAuthor : 'Autor',
+		metaCopyright : 'Autorska prava',
+		previewHtml : '<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>' // MISSING
+	}
+};

@@ -29,6 +29,20 @@ define("commsy/bar/CalendarAbo", [	"dojo/_base/declare",
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
+		},
+		
+		afterParse: function() {
+			this.AJAXRequest("myCalendar", "getIcalAdress", {},
+				Lang.hitch(function(response) {
+					DomAttr.set(Query("a#dateAbo")[0], "href", "webcal://" + response.date);
+					DomAttr.set(Query("a#dateExport")[0], "href", "http://" + response.date);
+					
+					/*
+					DomAttr.set(Query("a#todoAbo")[0], "href", "webcal://" + response.todo);
+					DomAttr.set(Query("a#todoExport")[0], "href", "http://" + response.todo);
+					*/
+				})
+			);
 		}
 		
 		/************************************************************************************

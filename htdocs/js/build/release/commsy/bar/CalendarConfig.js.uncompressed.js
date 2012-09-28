@@ -44,6 +44,10 @@ define("commsy/bar/CalendarConfig", [	"dojo/_base/declare",
 			}));
 		},
 		
+		afterParse: function() {
+			
+		},
+		
 		/************************************************************************************
 		 * Helper Functions
 		 ************************************************************************************/
@@ -56,6 +60,7 @@ define("commsy/bar/CalendarConfig", [	"dojo/_base/declare",
 		createMenu: function() {
 			var menu = new DropDownMenu();
 			
+			/*
 			menu.addChild(new CheckedMenuItem({
 				label:			CalendarTranslations.configToDo,
 				onClick:		this.onClickConfigToDo
@@ -67,6 +72,7 @@ define("commsy/bar/CalendarConfig", [	"dojo/_base/declare",
 			}));
 			
 			menu.addChild(new MenuSeparator());
+			*/
 			
 			/* Date Menu */
 			var dateMenu = new DropDownMenu();
@@ -79,6 +85,7 @@ define("commsy/bar/CalendarConfig", [	"dojo/_base/declare",
 			}));
 			
 			/* ToDo Menu */
+			/*
 			var todoMenu = new DropDownMenu();
 			
 			this.createRoomMenu(todoMenu, "checkedInTodo");
@@ -87,6 +94,7 @@ define("commsy/bar/CalendarConfig", [	"dojo/_base/declare",
 				label:			CalendarTranslations.configToDo,
 				popup:			todoMenu
 			}));
+			*/
 			
 			var button = new ComboButton({
 				label:			CalendarTranslations.configHeadline,

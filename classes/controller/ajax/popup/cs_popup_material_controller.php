@@ -266,8 +266,6 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
         		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
-        
-        $this->_popup_controller->performChecks($form_data, $additional);
 
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
@@ -289,7 +287,8 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                $item = $manager->getItem($current_iid);
             }
         }
-
+        
+        $this->_popup_controller->performChecks($item, $form_data, $additional);
 
         // TODO: check rights */
 		/****************************/

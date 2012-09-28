@@ -173,8 +173,6 @@ class cs_popup_date_controller {
         		$this->_environment->changeContextToPrivateRoom($current_context->getItemID());
         	}
         }
-        
-        $this->_popup_controller->performChecks($form_data, $additional);
 
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
@@ -193,6 +191,8 @@ class cs_popup_date_controller {
             $date_manager = $this->_environment->getDateManager();
             $date_item = $date_manager->getItem($current_iid);
         }
+        
+        $this->_popup_controller->performChecks($date_item, $form_data, $additional);
 
         // TODO: check rights */
 		/****************************/

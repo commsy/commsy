@@ -1,2 +1,6 @@
-//>>built
-define("ckeditor/plugins/placeholder/lang/pt-br",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","pt-br",{placeholder:{title:"Propriedades do Espa\u00e7o Reservado",toolbar:"Criar Espa\u00e7o Reservado",text:"Texto do Espa\u00e7o Reservado",edit:"Editar Espa\u00e7o Reservado",textMissing:"O espa\u00e7o reservado deve conter texto."}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang('placeholder','pt-br',{placeholder:{title:'Propriedades do Espaço Reservado',toolbar:'Criar Espaço Reservado',text:'Texto do Espaço Reservado',edit:'Editar Espaço Reservado',textMissing:'O espaço reservado deve conter texto.'}});

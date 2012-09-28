@@ -1,41 +1,816 @@
-//>>built
-define("ckeditor/_source/lang/sk",["dijit","dojo","dojox"],function(){CKEDITOR.lang.sk={dir:"ltr",editorTitle:"Rich text editor, %1",editorHelp:"Press ALT 0 for help",toolbars:"Editor toolbars",editor:"Rich Text Editor",source:"Zdroj",newPage:"Nov\u00e1 str\u00e1nka",save:"Ulo\u017ei\u0165",preview:"N\u00e1h\u013ead",cut:"Vystrihn\u00fa\u0165",copy:"Kop\u00edrova\u0165",paste:"Vlo\u017ei\u0165",print:"Tla\u010d",underline:"Pod\u010diarknut\u00e9",bold:"Tu\u010dn\u00e9",italic:"Kurz\u00edva",selectAll:"Vybra\u0165 v\u0161etko",
-removeFormat:"Odstr\u00e1ni\u0165 form\u00e1tovanie",strike:"Pre\u010diarknut\u00e9",subscript:"Doln\u00fd index",superscript:"Horn\u00fd index",horizontalrule:"Vlo\u017ei\u0165 vodorovn\u00fa \u010diaru",pagebreak:"Vlo\u017ei\u0165 odde\u013eova\u010d str\u00e1nky",pagebreakAlt:"Zalomenie strany",unlink:"Odstr\u00e1ni\u0165 odkaz",undo:"Sp\u00e4\u0165",redo:"Znovu",common:{browseServer:"Prech\u00e1dza\u0165 server",url:"URL",protocol:"Protokol",upload:"Odosla\u0165",uploadSubmit:"Odosla\u0165 na server",
-image:"Obr\u00e1zok",flash:"Flash",form:"Formul\u00e1r",checkbox:"Za\u0161krt\u00e1vacie pol\u00ed\u010dko",radio:"Prep\u00edna\u010d",textField:"Textov\u00e9 pole",textarea:"Textov\u00e1 oblas\u0165",hiddenField:"Skryt\u00e9 pole",button:"Tla\u010didlo",select:"Rozba\u013eovac\u00ed zoznam",imageButton:"Obr\u00e1zkov\u00e9 tla\u010didlo",notSet:"<nenastaven\u00e9>",id:"Id",name:"Meno",langDir:"Orient\u00e1cia jazyka",langDirLtr:"Z\u013eava doprava (LTR)",langDirRtl:"Sprava do\u013eava (RTL)",langCode:"K\u00f3d jazyka",
-longDescr:"Dlh\u00fd popis URL",cssClass:"Trieda \u0161t\u00fdlu",advisoryTitle:"Pomocn\u00fd titulok",cssStyle:"\u0160t\u00fdl",ok:"OK",cancel:"Zru\u0161i\u0165",close:"Zatvorit",preview:"N\u00e1h\u013ead",generalTab:"Hlavn\u00e9",advancedTab:"Roz\u0161\u00edren\u00e9",validateNumberFailed:"Hodnota nieje \u010d\u00edslo.",confirmNewPage:"Prajete si na\u010d\u00edtat nov\u00fa str\u00e1nku? V\u0161etky neulo\u017een\u00e9 zmeny bud\u00fa straten\u00e9. ",confirmCancel:"Niektore mo\u017enosti boli zmenen\u00e9. Naozaj chcete zavrie\u0165 okno?",
-options:"Options",target:"Target",targetNew:"New Window (_blank)",targetTop:"Topmost Window (_top)",targetSelf:"Same Window (_self)",targetParent:"Parent Window (_parent)",langDirLTR:"Left to Right (LTR)",langDirRTL:"Right to Left (RTL)",styles:"Style",cssClasses:"Stylesheet Classes",width:"\u0160\u00edrka",height:"V\u00fd\u0161ka",align:"Zarovnanie",alignLeft:"V\u013eavo",alignRight:"Vpravo",alignCenter:"Na stred",alignTop:"Nahor",alignMiddle:"Na stred",alignBottom:"Dole",invalidHeight:"V\u00fd\u0161ka mus\u00ed by\u0165 \u010d\u00edslo.",
-invalidWidth:"\u0160\u00edrka mus\u00ed by\u0165 \u010d\u00edslo.",invalidCssLength:'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).',invalidHtmlLength:'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).',invalidInlineStyle:'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.',
-cssLengthTooltip:"Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).",unavailable:'%1<span class="cke_accessibility">, unavailable</span>'},contextmenu:{options:"Context Menu Options"},specialChar:{toolbar:"Vlo\u017ei\u0165 \u0161peci\u00e1lne znaky",title:"V\u00fdber \u0161peci\u00e1lneho znaku",options:"Mo\u017enosti \u0161pec\u00edalneho znaku"},link:{toolbar:"Vlo\u017ei\u0165/zmeni\u0165 odkaz",other:"<in\u00fd>",menu:"Zmeni\u0165 odkaz",
-title:"Odkaz",info:"Inform\u00e1cie o odkaze",target:"Cie\u013e",upload:"Odosla\u0165",advanced:"Roz\u0161\u00edren\u00e9",type:"Typ odkazu",toUrl:"URL",toAnchor:"Kotva v tejto str\u00e1nke",toEmail:"E-Mail",targetFrame:"<r\u00e1mec>",targetPopup:"<vyskakovacie okno>",targetFrameName:"Meno r\u00e1mu cie\u013ea",targetPopupName:"N\u00e1zov vyskakovacieho okna",popupFeatures:"Vlastnosti vyskakovacieho okna",popupResizable:"Menite\u013en\u00e1 ve\u013ekos\u0165",popupStatusBar:"Stavov\u00fd riadok",
-popupLocationBar:"Panel umiestnenia",popupToolbar:"Panel n\u00e1strojov",popupMenuBar:"Panel ponuky",popupFullScreen:"Cel\u00e1 obrazovka (IE)",popupScrollBars:"Posuvn\u00edky",popupDependent:"Z\u00e1vislos\u0165 (Netscape)",popupLeft:"\u013dav\u00fd okraj",popupTop:"Horn\u00fd okraj",id:"Id",langDir:"Orient\u00e1cia jazyka",langDirLTR:"Z\u013eava doprava (LTR)",langDirRTL:"Sprava do\u013eava (RTL)",acccessKey:"Pr\u00edstupov\u00fd k\u013e\u00fa\u010d",name:"Meno",langCode:"Orient\u00e1cia jazyka",
-tabIndex:"Poradie prvku",advisoryTitle:"Pomocn\u00fd titulok",advisoryContentType:"Pomocn\u00fd typ obsahu",cssClasses:"Trieda \u0161t\u00fdlu",charset:"Priraden\u00e1 znakov\u00e1 sada",styles:"\u0160t\u00fdl",rel:"Relationship",selectAnchor:"Vybra\u0165 kotvu",anchorName:"Pod\u013ea mena kotvy",anchorId:"Pod\u013ea Id objektu",emailAddress:"E-Mailov\u00e1 adresa",emailSubject:"Predmet spr\u00e1vy",emailBody:"Telo spr\u00e1vy",noAnchors:"(V str\u00e1nke nie je definovan\u00e1 \u017eiadna kotva)",
-noUrl:"Zadajte pros\u00edm URL odkazu",noEmail:"Zadajte pros\u00edm e-mailov\u00fa adresu"},anchor:{toolbar:"Vlo\u017ei\u0165/zmeni\u0165 kotvu",menu:"Vlastnosti kotvy",title:"Vlastnosti kotvy",name:"Meno kotvy",errorName:"Zadajte pros\u00edm meno kotvy",remove:"Remove Anchor"},list:{numberedTitle:"Vlastnosti \u010d\u00edseln\u00e9ho zoznamu",bulletedTitle:"Bulleted List Properties",type:"Druh",start:"Za\u010diatok",validateStartNumber:"Za\u010diato\u010dn\u00e9 \u010d\u00edslo \u010d\u00edseln\u00e9ho zoznamu mus\u00ed by\u0165 cel\u00e9 \u010d\u00edslo.",
-circle:"Circle",disc:"Disc",square:"Square",none:"None",notset:"<not set>",armenian:"Armenian numbering",georgian:"Georgian numbering (an, ban, gan, etc.)",lowerRoman:"Lower Roman (i, ii, iii, iv, v, etc.)",upperRoman:"Upper Roman (I, II, III, IV, V, etc.)",lowerAlpha:"Lower Alpha (a, b, c, d, e, etc.)",upperAlpha:"Upper Alpha (A, B, C, D, E, etc.)",lowerGreek:"Lower Greek (alpha, beta, gamma, etc.)",decimal:"Decimal (1, 2, 3, etc.)",decimalLeadingZero:"Decimal leading zero (01, 02, 03, etc.)"},findAndReplace:{title:"N\u00e1js\u0165 a nahradi\u0165",
-find:"H\u013eada\u0165",replace:"Nahradi\u0165",findWhat:"\u010co h\u013eada\u0165:",replaceWith:"\u010c\u00edm nahradi\u0165:",notFoundMsg:"H\u013eadan\u00fd text nebol n\u00e1jden\u00fd.",findOptions:"Find Options",matchCase:"Rozli\u0161ova\u0165 mal\u00e9/ve\u013ek\u00e9 p\u00edsmen\u00e1",matchWord:"Len cel\u00e9 slov\u00e1",matchCyclic:"Match cyclic",replaceAll:"Nahradi\u0165 v\u0161etko",replaceSuccessMsg:"%1 v\u00fdskyt(ov) nahraden\u00fdch."},table:{toolbar:"Tabu\u013eka",title:"Vlastnosti tabu\u013eky",
-menu:"Vlastnosti tabu\u013eky",deleteTable:"Vymaza\u0165 tabu\u013eku",rows:"Riadky",columns:"St\u013apce",border:"Ohrani\u010denie",widthPx:"pixelov",widthPc:"percent",widthUnit:"width unit",cellSpace:"Vzdialenos\u0165 buniek",cellPad:"Odsadenie obsahu",caption:"Popis",summary:"Preh\u013ead",headers:"Hlavi\u010dka",headersNone:"\u017diadne",headersColumn:"Prv\u00fd st\u013apec",headersRow:"Prv\u00fd riadok",headersBoth:"Obe",invalidRows:"Po\u010det riadkov mus\u00ed by\u0165 \u010d\u00edslo v\u00e4\u010d\u0161ie ako 0.",
-invalidCols:"Po\u010det st\u013apcov mus\u00ed by\u0165 \u010d\u00edslo v\u00e4\u010d\u0161ie ako 0.",invalidBorder:"\u0160irka r\u00e1mu mus\u00ed by\u0165 cel\u00e9 \u010d\u00edslo.",invalidWidth:"\u0160irka tabu\u013eky mus\u00ed by\u0165 \u010d\u00edslo.",invalidHeight:"V\u00fd\u0161ka tabu\u013eky mus\u00ed by\u0165 \u010d\u00edslo.",invalidCellSpacing:"Medzera m\u00e4dzi bunkami (spacing) mus\u00ed by\u0165 \u010d\u00edslo.",invalidCellPadding:"Odsadenie v bunk\u00e1ch (padding) mus\u00ed by\u0165 \u010d\u00edslo.",
-cell:{menu:"Bunka",insertBefore:"Vlo\u017ei\u0165 bunku pred",insertAfter:"Vlo\u017ei\u0165 bunku za",deleteCell:"Vymaza\u0165 bunky",merge:"Zl\u00fa\u010di\u0165 bunky",mergeRight:"Zl\u00fa\u010di\u0165 doprava",mergeDown:"Zl\u00fa\u010di\u0165 dole",splitHorizontal:"Rozdeli\u0165 bunky horizont\u00e1lne",splitVertical:"Rozdeli\u0165 bunky vertik\u00e1lne",title:"Cell Properties",cellType:"Cell Type",rowSpan:"Rows Span",colSpan:"Columns Span",wordWrap:"Word Wrap",hAlign:"Horizontal Alignment",vAlign:"Vertical Alignment",
-alignBaseline:"Baseline",bgColor:"Background Color",borderColor:"Border Color",data:"Data",header:"Header",yes:"Yes",no:"No",invalidWidth:"Cell width must be a number.",invalidHeight:"Cell height must be a number.",invalidRowSpan:"Rows span must be a whole number.",invalidColSpan:"Columns span must be a whole number.",chooseColor:"Choose"},row:{menu:"Riadok",insertBefore:"Vlo\u017ei\u0165 riadok za",insertAfter:"Vlo\u017ei\u0165 riadok pred",deleteRow:"Vymaza\u0165 riadok"},column:{menu:"St\u013apec",
-insertBefore:"Vlo\u017ei\u0165 st\u013apec za",insertAfter:"Vlo\u017ei\u0165 st\u013apec pred",deleteColumn:"Zmaza\u0165 st\u013apec"}},button:{title:"Vlastnosti tla\u010didla",text:"Text",type:"Typ",typeBtn:"Tla\u010didlo",typeSbm:"Odosla\u0165",typeRst:"Vymaza\u0165"},checkboxAndRadio:{checkboxTitle:"Vlastnosti za\u0161krt\u00e1vacieho pol\u00ed\u010dka",radioTitle:"Vlastnosti prep\u00edna\u010da",value:"Hodnota",selected:"Vybran\u00e9"},form:{title:"Vlastnosti formul\u00e1ra",menu:"Vlastnosti formul\u00e1ra",
-action:"Akcie",method:"Met\u00f3da",encoding:"K\u00f3dovanie"},select:{title:"Vlastnosti rozba\u013eovacieho zoznamu",selectInfo:"Info",opAvail:"Dostupn\u00e9 mo\u017enosti",value:"Hodnota",size:"Ve\u013ekos\u0165",lines:"riadkov",chkMulti:"Povoli\u0165 viacn\u00e1sobn\u00fd v\u00fdber",opText:"Text",opValue:"Hodnota",btnAdd:"Prida\u0165",btnModify:"Zmeni\u0165",btnUp:"Hore",btnDown:"Dole",btnSetValue:"Nastavi\u0165 ako vybran\u00fa hodnotu",btnDelete:"Zmaza\u0165"},textarea:{title:"Vlastnosti textovej oblasti",
-cols:"St\u013apce",rows:"Riadky"},textfield:{title:"Vlastnosti textov\u00e9ho po\u013ea",name:"N\u00e1zov",value:"Hodnota",charWidth:"\u0160\u00edrka pola (znakov)",maxChars:"Maxim\u00e1lny po\u010det znakov",type:"Typ",typeText:"Text",typePass:"Heslo"},hidden:{title:"Vlastnosti skryt\u00e9ho po\u013ea",name:"N\u00e1zov",value:"Hodnota"},image:{title:"Vlastnosti obr\u00e1zku",titleButton:"Vlastnosti obr\u00e1zkov\u00e9ho tla\u010didla",menu:"Vlastnosti obr\u00e1zku",infoTab:"Inform\u00e1cie o obr\u00e1zku",
-btnUpload:"Odosla\u0165 na server",upload:"Odosla\u0165",alt:"Alternat\u00edvny text",lockRatio:"Z\u00e1mok",resetSize:"P\u00f4vodn\u00e1 ve\u013ekos\u0165",border:"Okraje",hSpace:"H-medzera",vSpace:"V-medzera",alertUrl:"Zadajte pros\u00edm URL obr\u00e1zku",linkTab:"Odkaz",button2Img:"Do you want to transform the selected image button on a simple image?",img2Button:"Do you want to transform the selected image on a image button?",urlMissing:"Image source URL is missing.",validateBorder:"Border must be a whole number.",
-validateHSpace:"HSpace must be a whole number.",validateVSpace:"VSpace must be a whole number."},flash:{properties:"Vlastnosti Flashu",propertiesTab:"Properties",title:"Vlastnosti Flashu",chkPlay:"Automatick\u00e9 prehr\u00e1vanie",chkLoop:"Opakovanie",chkMenu:"Povoli\u0165 Flash Menu",chkFull:"Allow Fullscreen",scale:"Mierka",scaleAll:"Zobrazi\u0165 mierku",scaleNoBorder:"Bez okrajov",scaleFit:"Roztiahnu\u0165 na cel\u00e9",access:"Script Access",accessAlways:"Always",accessSameDomain:"Same domain",
-accessNever:"Never",alignAbsBottom:"\u00daplne dole",alignAbsMiddle:"Do stredu",alignBaseline:"Na z\u00e1klad\u0148u",alignTextTop:"Na horn\u00fd okraj textu",quality:"Quality",qualityBest:"Best",qualityHigh:"High",qualityAutoHigh:"Auto High",qualityMedium:"Medium",qualityAutoLow:"Auto Low",qualityLow:"Low",windowModeWindow:"Window",windowModeOpaque:"Opaque",windowModeTransparent:"Transparent",windowMode:"Window mode",flashvars:"Variables for Flash",bgcolor:"Farba pozadia",hSpace:"H-medzera",vSpace:"V-medzera",
-validateSrc:"Zadajte pros\u00edm URL odkazu",validateHSpace:"HSpace must be a number.",validateVSpace:"VSpace must be a number."},spellCheck:{toolbar:"Kontrola pravopisu",title:"Spell Check",notAvailable:"Slu\u017eba pr\u00e1ve nieje dostupn\u00e1.",errorLoading:"Chyba pri na\u010d\u00edtan\u00ed slovn\u00edka z adresy: %s.",notInDic:"Nie je v slovn\u00edku",changeTo:"Zmeni\u0165 na",btnIgnore:"Ignorova\u0165",btnIgnoreAll:"Ignorova\u0165 v\u0161etko",btnReplace:"Prep\u00edsat",btnReplaceAll:"Prep\u00edsat v\u0161etko",
-btnUndo:"Sp\u00e4\u0165",noSuggestions:"- \u017diadny n\u00e1vrh -",progress:"Prebieha kontrola pravopisu...",noMispell:"Kontrola pravopisu dokon\u010den\u00e1: bez ch\u00fdb",noChanges:"Kontrola pravopisu dokon\u010den\u00e1: \u017eiadne slov\u00e1 nezmenen\u00e9",oneChange:"Kontrola pravopisu dokon\u010den\u00e1: zmenen\u00e9 jedno slovo",manyChanges:"Kontrola pravopisu dokon\u010den\u00e1: zmenen\u00fdch %1 slov",ieSpellDownload:"Kontrola pravopisu nie je nai\u0161talovan\u00e1. Chcete ju hne\u010f stiahnu\u0165?"},
-smiley:{toolbar:"Smajl\u00edky",title:"Vkladanie smajl\u00edkov",options:"Mo\u017enosti smajl\u00edkov"},elementsPath:{eleLabel:"Elements path",eleTitle:"%1 element"},numberedlist:"\u010c\u00edslovanie",bulletedlist:"Odr\u00e1\u017eky",indent:"Zv\u00e4\u010d\u0161i\u0165 odsadenie",outdent:"Zmen\u0161i\u0165 odsadenie",justify:{left:"Zarovna\u0165 v\u013eavo",center:"Zarovna\u0165 na stred",right:"Zarovna\u0165 vpravo",block:"Zarovna\u0165 do bloku"},blockquote:"Cit\u00e1cia",clipboard:{title:"Vlo\u017ei\u0165",
-cutError:"Bezpe\u010dnostn\u00e9 nastavenia V\u00e1\u0161ho prehliada\u010da nedovo\u013euj\u00fa editoru spusti\u0165 funkciu pre vystrihnutie zvolen\u00e9ho textu do schr\u00e1nky. Pros\u00edm vystrihnite zvolen\u00fd text do schr\u00e1nky pomocou kl\u00e1vesnice (Ctrl/Cmd+X).",copyError:"Bezpe\u010dnostn\u00e9 nastavenia V\u00e1\u0161ho prehliada\u010da nedovo\u013euj\u00fa editoru spusti\u0165 funkciu pre kop\u00edrovanie zvolen\u00e9ho textu do schr\u00e1nky. Pros\u00edm skop\u00edrujte zvolen\u00fd text do schr\u00e1nky pomocou kl\u00e1vesnice (Ctrl/Cmd+C).",
-pasteMsg:"Pros\u00edm vlo\u017ete nasledovn\u00fd r\u00e1m\u010dek pou\u017eit\u00edm kl\u00e1vesnice (<STRONG>Ctrl/Cmd+V</STRONG>) a stla\u010dte <STRONG>OK</STRONG>.",securityMsg:"Bezpe\u010dnostn\u00e9 nastavenia V\u00e1\u0161ho prehliada\u010da nedovo\u013euj\u00fa editoru pristupova\u0165 priamo k dat\u00e1m v schr\u00e1nke. Mus\u00edte ich vlo\u017ei\u0165 znovu do tohto okna.",pasteArea:"Vlo\u017ei\u0165 pole"},pastefromword:{confirmCleanup:"Vkladan\u00fd text vyzer\u00e1 by\u0165 skop\u00edrovan\u00fd z Wordu. Chcete ho automaticky vy\u010disti\u0165 pred vkladan\u00edm?",
-toolbar:"Vlo\u017ei\u0165 z Wordu",title:"Vlo\u017ei\u0165 z Wordu",error:"Nastala chyba pri \u010disten\u00ed \u00fadajov. Nie je mo\u017en\u00e9 vy\u010disti\u0165 vlo\u017een\u00e9 \u00fadaje."},pasteText:{button:"Vlo\u017ei\u0165 ako \u010dist\u00fd text",title:"Vlo\u017ei\u0165 ako \u010dist\u00fd text"},templates:{button:"\u0160abl\u00f3ny",title:"\u0160abl\u00f3ny obsahu",options:"Vlastnosti \u0161abl\u00f3ny",insertOption:"Nahradi\u0165 aktu\u00e1lny obsah",selectPromptMsg:"Pros\u00edm vyberte \u0161abl\u00f3ny na otvorenie v editore<br>(s\u00fa\u0161asn\u00fd obsah bude straten\u00fd):",
-emptyListMsg:"(\u017eiadne \u0161abl\u00f3ny nen\u00e1jden\u00e9)"},showBlocks:"Uk\u00e1za\u0165 bloky",stylesCombo:{label:"\u0160t\u00fdl",panelTitle:"Formatting Styles",panelTitle1:"Block Styles",panelTitle2:"Inline Styles",panelTitle3:"Object Styles"},format:{label:"Form\u00e1t",panelTitle:"Form\u00e1t",tag_p:"Norm\u00e1lny",tag_pre:"Form\u00e1tovan\u00fd",tag_address:"Adresa",tag_h1:"Nadpis 1",tag_h2:"Nadpis 2",tag_h3:"Nadpis 3",tag_h4:"Nadpis 4",tag_h5:"Nadpis 5",tag_h6:"Nadpis 6",tag_div:"Odsek (DIV)"},
-div:{title:"Create Div Container",toolbar:"Create Div Container",cssClassInputLabel:"Stylesheet Classes",styleSelectLabel:"Style",IdInputLabel:"Id",languageCodeInputLabel:" Language Code",inlineStyleInputLabel:"Inline Style",advisoryTitleInputLabel:"Advisory Title",langDirLabel:"Language Direction",langDirLTRLabel:"Left to Right (LTR)",langDirRTLLabel:"Right to Left (RTL)",edit:"Edit Div",remove:"Remove Div"},iframe:{title:"IFrame - vlastnosti",toolbar:"IFrame",noUrl:"Vlo\u017ete URL pre iframe",
-scrolling:"Povoli\u0165 skrolovanie",border:"Zobrazi\u0165 or\u00e1movanie"},font:{label:"P\u00edsmo",voiceLabel:"Font",panelTitle:"P\u00edsmo"},fontSize:{label:"Ve\u013ekos\u0165",voiceLabel:"Ve\u013ekos\u0165 p\u00edsma",panelTitle:"Ve\u013ekos\u0165"},colorButton:{textColorTitle:"Farba textu",bgColorTitle:"Farba pozadia",panelTitle:"Farby",auto:"Automaticky",more:"Viac farieb..."},colors:{"000":"Black",8E5:"Maroon","8B4513":"Saddle Brown","2F4F4F":"Dark Slate Gray","008080":"Teal","000080":"Navy",
-"4B0082":"Indigo",696969:"Dark Gray",B22222:"Fire Brick",A52A2A:"Brown",DAA520:"Golden Rod","006400":"Dark Green","40E0D0":"Turquoise","0000CD":"Medium Blue",800080:"Purple",808080:"Gray",F00:"Red",FF8C00:"Dark Orange",FFD700:"Gold","008000":"Green","0FF":"Cyan","00F":"Blue",EE82EE:"Violet",A9A9A9:"Dim Gray",FFA07A:"Light Salmon",FFA500:"Orange",FFFF00:"Yellow","00FF00":"Lime",AFEEEE:"Pale Turquoise",ADD8E6:"Light Blue",DDA0DD:"Plum",D3D3D3:"Light Grey",FFF0F5:"Lavender Blush",FAEBD7:"Antique White",
-FFFFE0:"Light Yellow",F0FFF0:"Honeydew",F0FFFF:"Azure",F0F8FF:"Alice Blue",E6E6FA:"Lavender",FFF:"White"},scayt:{title:"Spell Check As You Type",opera_title:"Not supported by Opera",enable:"Enable SCAYT",disable:"Disable SCAYT",about:"About SCAYT",toggle:"Toggle SCAYT",options:"Options",langs:"Languages",moreSuggestions:"More suggestions",ignore:"Ignore",ignoreAll:"Ignore All",addWord:"Add Word",emptyDic:"Dictionary name should not be empty.",optionsTab:"Options",allCaps:"Ignore All-Caps Words",ignoreDomainNames:"Ignore Domain Names",
-mixedCase:"Ignore Words with Mixed Case",mixedWithDigits:"Ignore Words with Numbers",languagesTab:"Languages",dictionariesTab:"Dictionaries",dic_field_name:"Dictionary name",dic_create:"Create",dic_restore:"Restore",dic_delete:"Delete",dic_rename:"Rename",dic_info:"Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.",
-aboutTab:"About"},about:{title:"About CKEditor",dlgTitle:"About CKEditor",help:"Check $1 for help.",userGuide:"CKEditor User's Guide",moreInfo:"For licensing information please visit our web site:",copy:"Copyright &copy; $1. All rights reserved."},maximize:"Maximalizova\u0165",minimize:"Minimalizova\u0165",fakeobjects:{anchor:"Anchor",flash:"Flash Animation",iframe:"IFrame",hiddenfield:"Hidden Field",unknown:"Unknown Object"},resize:"Drag to resize",colordialog:{title:"Select color",options:"Color Options",
-highlight:"Highlight",selected:"Selected Color",clear:"Clear"},toolbarCollapse:"Collapse Toolbar",toolbarExpand:"Expand Toolbar",toolbarGroups:{document:"Document",clipboard:"Clipboard/Undo",editing:"Editing",forms:"Forms",basicstyles:"Basic Styles",paragraph:"Paragraph",links:"Links",insert:"Insert",styles:"Styles",colors:"Colors",tools:"Tools"},bidi:{ltr:"Text direction from left to right",rtl:"Text direction from right to left"},docprops:{label:"Vlastnosti dokumentu",title:"Vlastnosti dokumentu",
-design:"Design",meta:"Meta Data",chooseColor:"Choose",other:"<in\u00fd>",docTitle:"Titulok",charset:"K\u00f3dov\u00e1 str\u00e1nka",charsetOther:"In\u00e1 k\u00f3dov\u00e1 str\u00e1nka",charsetASCII:"ASCII",charsetCE:"Stredoeur\u00f3pske",charsetCT:"\u010c\u00edn\u0161tina tradi\u010dn\u00e1 (Big5)",charsetCR:"Cyrillika",charsetGR:"Gr\u00e9\u010dtina",charsetJP:"Japon\u010dina",charsetKR:"Korej\u010dina",charsetTR:"Ture\u010dtina",charsetUN:"Unicode (UTF-8)",charsetWE:"Z\u00e1padn\u00e1 eur\u00f3pa",
-docType:"Typ z\u00e1hlavia dokumentu",docTypeOther:"In\u00fd typ z\u00e1hlavia dokumentu",xhtmlDec:"Obsahuje deklar\u00e1cie XHTML",bgColor:"Farba pozadia",bgImage:"URL adresa obr\u00e1zku na pozad\u00ed",bgFixed:"Fixn\u00e9 pozadie",txtColor:"Farba textu",margin:"Okraje str\u00e1nky",marginTop:"Horn\u00fd",marginLeft:"\u013dav\u00fd",marginRight:"Prav\u00fd",marginBottom:"Doln\u00fd",metaKeywords:"K\u013e\u00fa\u010dov\u00e9 slov\u00e1 pre indexovanie (oddelen\u00e9 \u010diarkou)",metaDescription:"Popis str\u00e1nky",
-metaAuthor:"Autor",metaCopyright:"Autorsk\u00e9 pr\u00e1va",previewHtml:'<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>'}}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @fileOverview Defines the {@link CKEDITOR.lang} object, for the
+ * Slovak language.
+ */
+
+/**#@+
+   @type String
+   @example
+*/
+
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang['sk'] =
+{
+	/**
+	 * The language reading direction. Possible values are "rtl" for
+	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
+	 * languages (like English).
+	 * @default 'ltr'
+	 */
+	dir : 'ltr',
+
+	/*
+	 * Screenreader titles. Please note that screenreaders are not always capable
+	 * of reading non-English words. So be careful while translating it.
+	 */
+	editorTitle : 'Rich text editor, %1', // MISSING
+	editorHelp : 'Press ALT 0 for help', // MISSING
+
+	// ARIA descriptions.
+	toolbars	: 'Editor toolbars', // MISSING
+	editor		: 'Rich Text Editor', // MISSING
+
+	// Toolbar buttons without dialogs.
+	source			: 'Zdroj',
+	newPage			: 'Nová stránka',
+	save			: 'Uložiť',
+	preview			: 'Náhľad',
+	cut				: 'Vystrihnúť',
+	copy			: 'Kopírovať',
+	paste			: 'Vložiť',
+	print			: 'Tlač',
+	underline		: 'Podčiarknuté',
+	bold			: 'Tučné',
+	italic			: 'Kurzíva',
+	selectAll		: 'Vybrať všetko',
+	removeFormat	: 'Odstrániť formátovanie',
+	strike			: 'Prečiarknuté',
+	subscript		: 'Dolný index',
+	superscript		: 'Horný index',
+	horizontalrule	: 'Vložiť vodorovnú čiaru',
+	pagebreak		: 'Vložiť oddeľovač stránky',
+	pagebreakAlt		: 'Zalomenie strany',
+	unlink			: 'Odstrániť odkaz',
+	undo			: 'Späť',
+	redo			: 'Znovu',
+
+	// Common messages and labels.
+	common :
+	{
+		browseServer	: 'Prechádzať server',
+		url				: 'URL',
+		protocol		: 'Protokol',
+		upload			: 'Odoslať',
+		uploadSubmit	: 'Odoslať na server',
+		image			: 'Obrázok',
+		flash			: 'Flash',
+		form			: 'Formulár',
+		checkbox		: 'Zaškrtávacie políčko',
+		radio			: 'Prepínač',
+		textField		: 'Textové pole',
+		textarea		: 'Textová oblasť',
+		hiddenField		: 'Skryté pole',
+		button			: 'Tlačidlo',
+		select			: 'Rozbaľovací zoznam',
+		imageButton		: 'Obrázkové tlačidlo',
+		notSet			: '<nenastavené>',
+		id				: 'Id',
+		name			: 'Meno',
+		langDir			: 'Orientácia jazyka',
+		langDirLtr		: 'Zľava doprava (LTR)',
+		langDirRtl		: 'Sprava doľava (RTL)',
+		langCode		: 'Kód jazyka',
+		longDescr		: 'Dlhý popis URL',
+		cssClass		: 'Trieda štýlu',
+		advisoryTitle	: 'Pomocný titulok',
+		cssStyle		: 'Štýl',
+		ok				: 'OK',
+		cancel			: 'Zrušiť',
+		close			: 'Zatvorit',
+		preview			: 'Náhľad',
+		generalTab		: 'Hlavné',
+		advancedTab		: 'Rozšírené',
+		validateNumberFailed : 'Hodnota nieje číslo.',
+		confirmNewPage	: 'Prajete si načítat novú stránku? Všetky neuložené zmeny budú stratené. ',
+		confirmCancel	: 'Niektore možnosti boli zmenené. Naozaj chcete zavrieť okno?',
+		options			: 'Options', // MISSING
+		target			: 'Target', // MISSING
+		targetNew		: 'New Window (_blank)', // MISSING
+		targetTop		: 'Topmost Window (_top)', // MISSING
+		targetSelf		: 'Same Window (_self)', // MISSING
+		targetParent	: 'Parent Window (_parent)', // MISSING
+		langDirLTR		: 'Left to Right (LTR)', // MISSING
+		langDirRTL		: 'Right to Left (RTL)', // MISSING
+		styles			: 'Style', // MISSING
+		cssClasses		: 'Stylesheet Classes', // MISSING
+		width			: 'Šírka',
+		height			: 'Výška',
+		align			: 'Zarovnanie',
+		alignLeft		: 'Vľavo',
+		alignRight		: 'Vpravo',
+		alignCenter		: 'Na stred',
+		alignTop		: 'Nahor',
+		alignMiddle		: 'Na stred',
+		alignBottom		: 'Dole',
+		invalidHeight	: 'Výška musí byť číslo.',
+		invalidWidth	: 'Šírka musí byť číslo.',
+		invalidCssLength	: 'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+		invalidHtmlLength	: 'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).', // MISSING
+		invalidInlineStyle	: 'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.', // MISSING
+		cssLengthTooltip	: 'Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+
+		// Put the voice-only part of the label in the span.
+		unavailable		: '%1<span class="cke_accessibility">, unavailable</span>' // MISSING
+	},
+
+	contextmenu :
+	{
+		options : 'Context Menu Options' // MISSING
+	},
+
+	// Special char dialog.
+	specialChar		:
+	{
+		toolbar		: 'Vložiť špeciálne znaky',
+		title		: 'Výber špeciálneho znaku',
+		options : 'Možnosti špecíalneho znaku'
+	},
+
+	// Link dialog.
+	link :
+	{
+		toolbar		: 'Vložiť/zmeniť odkaz',
+		other 		: '<iný>',
+		menu		: 'Zmeniť odkaz',
+		title		: 'Odkaz',
+		info		: 'Informácie o odkaze',
+		target		: 'Cieľ',
+		upload		: 'Odoslať',
+		advanced	: 'Rozšírené',
+		type		: 'Typ odkazu',
+		toUrl		: 'URL', // MISSING
+		toAnchor	: 'Kotva v tejto stránke',
+		toEmail		: 'E-Mail',
+		targetFrame		: '<rámec>',
+		targetPopup		: '<vyskakovacie okno>',
+		targetFrameName	: 'Meno rámu cieľa',
+		targetPopupName	: 'Názov vyskakovacieho okna',
+		popupFeatures	: 'Vlastnosti vyskakovacieho okna',
+		popupResizable	: 'Meniteľná veľkosť',
+		popupStatusBar	: 'Stavový riadok',
+		popupLocationBar: 'Panel umiestnenia',
+		popupToolbar	: 'Panel nástrojov',
+		popupMenuBar	: 'Panel ponuky',
+		popupFullScreen	: 'Celá obrazovka (IE)',
+		popupScrollBars	: 'Posuvníky',
+		popupDependent	: 'Závislosť (Netscape)',
+		popupLeft		: 'Ľavý okraj',
+		popupTop		: 'Horný okraj',
+		id				: 'Id', // MISSING
+		langDir			: 'Orientácia jazyka',
+		langDirLTR		: 'Zľava doprava (LTR)',
+		langDirRTL		: 'Sprava doľava (RTL)',
+		acccessKey		: 'Prístupový kľúč',
+		name			: 'Meno',
+		langCode			: 'Orientácia jazyka',
+		tabIndex			: 'Poradie prvku',
+		advisoryTitle		: 'Pomocný titulok',
+		advisoryContentType	: 'Pomocný typ obsahu',
+		cssClasses		: 'Trieda štýlu',
+		charset			: 'Priradená znaková sada',
+		styles			: 'Štýl',
+		rel			: 'Relationship', // MISSING
+		selectAnchor		: 'Vybrať kotvu',
+		anchorName		: 'Podľa mena kotvy',
+		anchorId			: 'Podľa Id objektu',
+		emailAddress		: 'E-Mailová adresa',
+		emailSubject		: 'Predmet správy',
+		emailBody		: 'Telo správy',
+		noAnchors		: '(V stránke nie je definovaná žiadna kotva)',
+		noUrl			: 'Zadajte prosím URL odkazu',
+		noEmail			: 'Zadajte prosím e-mailovú adresu'
+	},
+
+	// Anchor dialog
+	anchor :
+	{
+		toolbar		: 'Vložiť/zmeniť kotvu',
+		menu		: 'Vlastnosti kotvy',
+		title		: 'Vlastnosti kotvy',
+		name		: 'Meno kotvy',
+		errorName	: 'Zadajte prosím meno kotvy',
+		remove		: 'Remove Anchor' // MISSING
+	},
+
+	// List style dialog
+	list:
+	{
+		numberedTitle		: 'Vlastnosti číselného zoznamu',
+		bulletedTitle		: 'Bulleted List Properties', // MISSING
+		type				: 'Druh',
+		start				: 'Začiatok',
+		validateStartNumber				:'Začiatočné číslo číselného zoznamu musí byť celé číslo.',
+		circle				: 'Circle', // MISSING
+		disc				: 'Disc', // MISSING
+		square				: 'Square', // MISSING
+		none				: 'None', // MISSING
+		notset				: '<not set>', // MISSING
+		armenian			: 'Armenian numbering', // MISSING
+		georgian			: 'Georgian numbering (an, ban, gan, etc.)', // MISSING
+		lowerRoman			: 'Lower Roman (i, ii, iii, iv, v, etc.)', // MISSING
+		upperRoman			: 'Upper Roman (I, II, III, IV, V, etc.)', // MISSING
+		lowerAlpha			: 'Lower Alpha (a, b, c, d, e, etc.)', // MISSING
+		upperAlpha			: 'Upper Alpha (A, B, C, D, E, etc.)', // MISSING
+		lowerGreek			: 'Lower Greek (alpha, beta, gamma, etc.)', // MISSING
+		decimal				: 'Decimal (1, 2, 3, etc.)', // MISSING
+		decimalLeadingZero	: 'Decimal leading zero (01, 02, 03, etc.)' // MISSING
+	},
+
+	// Find And Replace Dialog
+	findAndReplace :
+	{
+		title				: 'Nájsť a nahradiť',
+		find				: 'Hľadať',
+		replace				: 'Nahradiť',
+		findWhat			: 'Čo hľadať:',
+		replaceWith			: 'Čím nahradiť:',
+		notFoundMsg			: 'Hľadaný text nebol nájdený.',
+		findOptions			: 'Find Options', // MISSING
+		matchCase			: 'Rozlišovať malé/veľké písmená',
+		matchWord			: 'Len celé slová',
+		matchCyclic			: 'Match cyclic', // MISSING
+		replaceAll			: 'Nahradiť všetko',
+		replaceSuccessMsg	: '%1 výskyt(ov) nahradených.'
+	},
+
+	// Table Dialog
+	table :
+	{
+		toolbar		: 'Tabuľka',
+		title		: 'Vlastnosti tabuľky',
+		menu		: 'Vlastnosti tabuľky',
+		deleteTable	: 'Vymazať tabuľku',
+		rows		: 'Riadky',
+		columns		: 'Stĺpce',
+		border		: 'Ohraničenie',
+		widthPx		: 'pixelov',
+		widthPc		: 'percent',
+		widthUnit	: 'width unit', // MISSING
+		cellSpace	: 'Vzdialenosť buniek',
+		cellPad		: 'Odsadenie obsahu',
+		caption		: 'Popis',
+		summary		: 'Prehľad',
+		headers		: 'Hlavička',
+		headersNone		: 'Žiadne',
+		headersColumn	: 'Prvý stĺpec',
+		headersRow		: 'Prvý riadok',
+		headersBoth		: 'Obe',
+		invalidRows		: 'Počet riadkov musí byť číslo väčšie ako 0.',
+		invalidCols		: 'Počet stĺpcov musí byť číslo väčšie ako 0.',
+		invalidBorder	: 'Širka rámu musí byť celé číslo.',
+		invalidWidth	: 'Širka tabuľky musí byť číslo.',
+		invalidHeight	: 'Výška tabuľky musí byť číslo.',
+		invalidCellSpacing	: 'Medzera mädzi bunkami (spacing) musí byť číslo.',
+		invalidCellPadding	: 'Odsadenie v bunkách (padding) musí byť číslo.',
+
+		cell :
+		{
+			menu			: 'Bunka',
+			insertBefore	: 'Vložiť bunku pred',
+			insertAfter		: 'Vložiť bunku za',
+			deleteCell		: 'Vymazať bunky',
+			merge			: 'Zlúčiť bunky',
+			mergeRight		: 'Zlúčiť doprava',
+			mergeDown		: 'Zlúčiť dole',
+			splitHorizontal	: 'Rozdeliť bunky horizontálne',
+			splitVertical	: 'Rozdeliť bunky vertikálne',
+			title			: 'Cell Properties', // MISSING
+			cellType		: 'Cell Type', // MISSING
+			rowSpan			: 'Rows Span', // MISSING
+			colSpan			: 'Columns Span', // MISSING
+			wordWrap		: 'Word Wrap', // MISSING
+			hAlign			: 'Horizontal Alignment', // MISSING
+			vAlign			: 'Vertical Alignment', // MISSING
+			alignBaseline	: 'Baseline', // MISSING
+			bgColor			: 'Background Color', // MISSING
+			borderColor		: 'Border Color', // MISSING
+			data			: 'Data', // MISSING
+			header			: 'Header', // MISSING
+			yes				: 'Yes', // MISSING
+			no				: 'No', // MISSING
+			invalidWidth	: 'Cell width must be a number.', // MISSING
+			invalidHeight	: 'Cell height must be a number.', // MISSING
+			invalidRowSpan	: 'Rows span must be a whole number.', // MISSING
+			invalidColSpan	: 'Columns span must be a whole number.', // MISSING
+			chooseColor		: 'Choose' // MISSING
+		},
+
+		row :
+		{
+			menu			: 'Riadok',
+			insertBefore	: 'Vložiť riadok za',
+			insertAfter		: 'Vložiť riadok pred',
+			deleteRow		: 'Vymazať riadok'
+		},
+
+		column :
+		{
+			menu			: 'Stĺpec',
+			insertBefore	: 'Vložiť stĺpec za',
+			insertAfter		: 'Vložiť stĺpec pred',
+			deleteColumn	: 'Zmazať stĺpec'
+		}
+	},
+
+	// Button Dialog.
+	button :
+	{
+		title		: 'Vlastnosti tlačidla',
+		text		: 'Text',
+		type		: 'Typ',
+		typeBtn		: 'Tlačidlo',
+		typeSbm		: 'Odoslať',
+		typeRst		: 'Vymazať'
+	},
+
+	// Checkbox and Radio Button Dialogs.
+	checkboxAndRadio :
+	{
+		checkboxTitle : 'Vlastnosti zaškrtávacieho políčka',
+		radioTitle	: 'Vlastnosti prepínača',
+		value		: 'Hodnota',
+		selected	: 'Vybrané'
+	},
+
+	// Form Dialog.
+	form :
+	{
+		title		: 'Vlastnosti formulára',
+		menu		: 'Vlastnosti formulára',
+		action		: 'Akcie',
+		method		: 'Metóda',
+		encoding	: 'Kódovanie'
+	},
+
+	// Select Field Dialog.
+	select :
+	{
+		title		: 'Vlastnosti rozbaľovacieho zoznamu',
+		selectInfo	: 'Info',
+		opAvail		: 'Dostupné možnosti',
+		value		: 'Hodnota',
+		size		: 'Veľkosť',
+		lines		: 'riadkov',
+		chkMulti	: 'Povoliť viacnásobný výber',
+		opText		: 'Text',
+		opValue		: 'Hodnota',
+		btnAdd		: 'Pridať',
+		btnModify	: 'Zmeniť',
+		btnUp		: 'Hore',
+		btnDown		: 'Dole',
+		btnSetValue : 'Nastaviť ako vybranú hodnotu',
+		btnDelete	: 'Zmazať'
+	},
+
+	// Textarea Dialog.
+	textarea :
+	{
+		title		: 'Vlastnosti textovej oblasti',
+		cols		: 'Stĺpce',
+		rows		: 'Riadky'
+	},
+
+	// Text Field Dialog.
+	textfield :
+	{
+		title		: 'Vlastnosti textového poľa',
+		name		: 'Názov',
+		value		: 'Hodnota',
+		charWidth	: 'Šírka pola (znakov)',
+		maxChars	: 'Maximálny počet znakov',
+		type		: 'Typ',
+		typeText	: 'Text',
+		typePass	: 'Heslo'
+	},
+
+	// Hidden Field Dialog.
+	hidden :
+	{
+		title	: 'Vlastnosti skrytého poľa',
+		name	: 'Názov',
+		value	: 'Hodnota'
+	},
+
+	// Image Dialog.
+	image :
+	{
+		title		: 'Vlastnosti obrázku',
+		titleButton	: 'Vlastnosti obrázkového tlačidla',
+		menu		: 'Vlastnosti obrázku',
+		infoTab		: 'Informácie o obrázku',
+		btnUpload	: 'Odoslať na server',
+		upload		: 'Odoslať',
+		alt			: 'Alternatívny text',
+		lockRatio	: 'Zámok',
+		resetSize	: 'Pôvodná veľkosť',
+		border		: 'Okraje',
+		hSpace		: 'H-medzera',
+		vSpace		: 'V-medzera',
+		alertUrl	: 'Zadajte prosím URL obrázku',
+		linkTab		: 'Odkaz',
+		button2Img	: 'Do you want to transform the selected image button on a simple image?', // MISSING
+		img2Button	: 'Do you want to transform the selected image on a image button?', // MISSING
+		urlMissing	: 'Image source URL is missing.', // MISSING
+		validateBorder	: 'Border must be a whole number.', // MISSING
+		validateHSpace	: 'HSpace must be a whole number.', // MISSING
+		validateVSpace	: 'VSpace must be a whole number.' // MISSING
+	},
+
+	// Flash Dialog
+	flash :
+	{
+		properties		: 'Vlastnosti Flashu',
+		propertiesTab	: 'Properties', // MISSING
+		title			: 'Vlastnosti Flashu',
+		chkPlay			: 'Automatické prehrávanie',
+		chkLoop			: 'Opakovanie',
+		chkMenu			: 'Povoliť Flash Menu',
+		chkFull			: 'Allow Fullscreen', // MISSING
+ 		scale			: 'Mierka',
+		scaleAll		: 'Zobraziť mierku',
+		scaleNoBorder	: 'Bez okrajov',
+		scaleFit		: 'Roztiahnuť na celé',
+		access			: 'Script Access', // MISSING
+		accessAlways	: 'Always', // MISSING
+		accessSameDomain: 'Same domain', // MISSING
+		accessNever		: 'Never', // MISSING
+		alignAbsBottom	: 'Úplne dole',
+		alignAbsMiddle	: 'Do stredu',
+		alignBaseline	: 'Na základňu',
+		alignTextTop	: 'Na horný okraj textu',
+		quality			: 'Quality', // MISSING
+		qualityBest		: 'Best', // MISSING
+		qualityHigh		: 'High', // MISSING
+		qualityAutoHigh	: 'Auto High', // MISSING
+		qualityMedium	: 'Medium', // MISSING
+		qualityAutoLow	: 'Auto Low', // MISSING
+		qualityLow		: 'Low', // MISSING
+		windowModeWindow: 'Window', // MISSING
+		windowModeOpaque: 'Opaque', // MISSING
+		windowModeTransparent : 'Transparent', // MISSING
+		windowMode		: 'Window mode', // MISSING
+		flashvars		: 'Variables for Flash', // MISSING
+		bgcolor			: 'Farba pozadia',
+		hSpace			: 'H-medzera',
+		vSpace			: 'V-medzera',
+		validateSrc		: 'Zadajte prosím URL odkazu',
+		validateHSpace	: 'HSpace must be a number.', // MISSING
+		validateVSpace	: 'VSpace must be a number.' // MISSING
+	},
+
+	// Speller Pages Dialog
+	spellCheck :
+	{
+		toolbar			: 'Kontrola pravopisu',
+		title			: 'Spell Check', // MISSING
+		notAvailable	: 'Služba práve nieje dostupná.',
+		errorLoading	: 'Chyba pri načítaní slovníka z adresy: %s.',
+		notInDic		: 'Nie je v slovníku',
+		changeTo		: 'Zmeniť na',
+		btnIgnore		: 'Ignorovať',
+		btnIgnoreAll	: 'Ignorovať všetko',
+		btnReplace		: 'Prepísat',
+		btnReplaceAll	: 'Prepísat všetko',
+		btnUndo			: 'Späť',
+		noSuggestions	: '- Žiadny návrh -',
+		progress		: 'Prebieha kontrola pravopisu...',
+		noMispell		: 'Kontrola pravopisu dokončená: bez chýb',
+		noChanges		: 'Kontrola pravopisu dokončená: žiadne slová nezmenené',
+		oneChange		: 'Kontrola pravopisu dokončená: zmenené jedno slovo',
+		manyChanges		: 'Kontrola pravopisu dokončená: zmenených %1 slov',
+		ieSpellDownload	: 'Kontrola pravopisu nie je naištalovaná. Chcete ju hneď stiahnuť?'
+	},
+
+	smiley :
+	{
+		toolbar	: 'Smajlíky',
+		title	: 'Vkladanie smajlíkov',
+		options : 'Možnosti smajlíkov'
+	},
+
+	elementsPath :
+	{
+		eleLabel : 'Elements path', // MISSING
+		eleTitle : '%1 element' // MISSING
+	},
+
+	numberedlist	: 'Číslovanie',
+	bulletedlist	: 'Odrážky',
+	indent			: 'Zväčšiť odsadenie',
+	outdent			: 'Zmenšiť odsadenie',
+
+	justify :
+	{
+		left	: 'Zarovnať vľavo',
+		center	: 'Zarovnať na stred',
+		right	: 'Zarovnať vpravo',
+		block	: 'Zarovnať do bloku'
+	},
+
+	blockquote : 'Citácia',
+
+	clipboard :
+	{
+		title		: 'Vložiť',
+		cutError	: 'Bezpečnostné nastavenia Vášho prehliadača nedovoľujú editoru spustiť funkciu pre vystrihnutie zvoleného textu do schránky. Prosím vystrihnite zvolený text do schránky pomocou klávesnice (Ctrl/Cmd+X).',
+		copyError	: 'Bezpečnostné nastavenia Vášho prehliadača nedovoľujú editoru spustiť funkciu pre kopírovanie zvoleného textu do schránky. Prosím skopírujte zvolený text do schránky pomocou klávesnice (Ctrl/Cmd+C).',
+		pasteMsg	: 'Prosím vložte nasledovný rámček použitím klávesnice (<STRONG>Ctrl/Cmd+V</STRONG>) a stlačte <STRONG>OK</STRONG>.',
+		securityMsg	: 'Bezpečnostné nastavenia Vášho prehliadača nedovoľujú editoru pristupovať priamo k datám v schránke. Musíte ich vložiť znovu do tohto okna.',
+		pasteArea	: 'Vložiť pole'
+	},
+
+	pastefromword :
+	{
+		confirmCleanup	: 'Vkladaný text vyzerá byť skopírovaný z Wordu. Chcete ho automaticky vyčistiť pred vkladaním?',
+		toolbar			: 'Vložiť z Wordu',
+		title			: 'Vložiť z Wordu',
+		error			: 'Nastala chyba pri čistení údajov. Nie je možné vyčistiť vložené údaje.'
+	},
+
+	pasteText :
+	{
+		button	: 'Vložiť ako čistý text',
+		title	: 'Vložiť ako čistý text'
+	},
+
+	templates :
+	{
+		button			: 'Šablóny',
+		title			: 'Šablóny obsahu',
+		options : 'Vlastnosti šablóny',
+		insertOption	: 'Nahradiť aktuálny obsah',
+		selectPromptMsg	: 'Prosím vyberte šablóny na otvorenie v editore<br>(súšasný obsah bude stratený):',
+		emptyListMsg	: '(žiadne šablóny nenájdené)'
+	},
+
+	showBlocks : 'Ukázať bloky',
+
+	stylesCombo :
+	{
+		label		: 'Štýl',
+		panelTitle	: 'Formatting Styles', // MISSING
+		panelTitle1	: 'Block Styles', // MISSING
+		panelTitle2	: 'Inline Styles', // MISSING
+		panelTitle3	: 'Object Styles' // MISSING
+	},
+
+	format :
+	{
+		label		: 'Formát',
+		panelTitle	: 'Formát',
+
+		tag_p		: 'Normálny',
+		tag_pre		: 'Formátovaný',
+		tag_address	: 'Adresa',
+		tag_h1		: 'Nadpis 1',
+		tag_h2		: 'Nadpis 2',
+		tag_h3		: 'Nadpis 3',
+		tag_h4		: 'Nadpis 4',
+		tag_h5		: 'Nadpis 5',
+		tag_h6		: 'Nadpis 6',
+		tag_div		: 'Odsek (DIV)'
+	},
+
+	div :
+	{
+		title				: 'Create Div Container', // MISSING
+		toolbar				: 'Create Div Container', // MISSING
+		cssClassInputLabel	: 'Stylesheet Classes', // MISSING
+		styleSelectLabel	: 'Style', // MISSING
+		IdInputLabel		: 'Id', // MISSING
+		languageCodeInputLabel	: ' Language Code', // MISSING
+		inlineStyleInputLabel	: 'Inline Style', // MISSING
+		advisoryTitleInputLabel	: 'Advisory Title', // MISSING
+		langDirLabel		: 'Language Direction', // MISSING
+		langDirLTRLabel		: 'Left to Right (LTR)', // MISSING
+		langDirRTLLabel		: 'Right to Left (RTL)', // MISSING
+		edit				: 'Edit Div', // MISSING
+		remove				: 'Remove Div' // MISSING
+  	},
+
+	iframe :
+	{
+		title		: 'IFrame - vlastnosti',
+		toolbar		: 'IFrame', // MISSING
+		noUrl		: 'Vložte URL pre iframe',
+		scrolling	: 'Povoliť skrolovanie',
+		border		: 'Zobraziť orámovanie'
+	},
+
+	font :
+	{
+		label		: 'Písmo',
+		voiceLabel	: 'Font', // MISSING
+		panelTitle	: 'Písmo'
+	},
+
+	fontSize :
+	{
+		label		: 'Veľkosť',
+		voiceLabel	: 'Veľkosť písma',
+		panelTitle	: 'Veľkosť'
+	},
+
+	colorButton :
+	{
+		textColorTitle	: 'Farba textu',
+		bgColorTitle	: 'Farba pozadia',
+		panelTitle		: 'Farby',
+		auto			: 'Automaticky',
+		more			: 'Viac farieb...'
+	},
+
+	colors :
+	{
+		'000' : 'Black', // MISSING
+		'800000' : 'Maroon', // MISSING
+		'8B4513' : 'Saddle Brown', // MISSING
+		'2F4F4F' : 'Dark Slate Gray', // MISSING
+		'008080' : 'Teal', // MISSING
+		'000080' : 'Navy', // MISSING
+		'4B0082' : 'Indigo', // MISSING
+		'696969' : 'Dark Gray', // MISSING
+		'B22222' : 'Fire Brick', // MISSING
+		'A52A2A' : 'Brown', // MISSING
+		'DAA520' : 'Golden Rod', // MISSING
+		'006400' : 'Dark Green', // MISSING
+		'40E0D0' : 'Turquoise', // MISSING
+		'0000CD' : 'Medium Blue', // MISSING
+		'800080' : 'Purple', // MISSING
+		'808080' : 'Gray', // MISSING
+		'F00' : 'Red', // MISSING
+		'FF8C00' : 'Dark Orange', // MISSING
+		'FFD700' : 'Gold', // MISSING
+		'008000' : 'Green', // MISSING
+		'0FF' : 'Cyan', // MISSING
+		'00F' : 'Blue', // MISSING
+		'EE82EE' : 'Violet', // MISSING
+		'A9A9A9' : 'Dim Gray', // MISSING
+		'FFA07A' : 'Light Salmon', // MISSING
+		'FFA500' : 'Orange', // MISSING
+		'FFFF00' : 'Yellow', // MISSING
+		'00FF00' : 'Lime', // MISSING
+		'AFEEEE' : 'Pale Turquoise', // MISSING
+		'ADD8E6' : 'Light Blue', // MISSING
+		'DDA0DD' : 'Plum', // MISSING
+		'D3D3D3' : 'Light Grey', // MISSING
+		'FFF0F5' : 'Lavender Blush', // MISSING
+		'FAEBD7' : 'Antique White', // MISSING
+		'FFFFE0' : 'Light Yellow', // MISSING
+		'F0FFF0' : 'Honeydew', // MISSING
+		'F0FFFF' : 'Azure', // MISSING
+		'F0F8FF' : 'Alice Blue', // MISSING
+		'E6E6FA' : 'Lavender', // MISSING
+		'FFF' : 'White' // MISSING
+	},
+
+	scayt :
+	{
+		title			: 'Spell Check As You Type', // MISSING
+		opera_title		: 'Not supported by Opera', // MISSING
+		enable			: 'Enable SCAYT', // MISSING
+		disable			: 'Disable SCAYT', // MISSING
+		about			: 'About SCAYT', // MISSING
+		toggle			: 'Toggle SCAYT', // MISSING
+		options			: 'Options', // MISSING
+		langs			: 'Languages', // MISSING
+		moreSuggestions	: 'More suggestions', // MISSING
+		ignore			: 'Ignore', // MISSING
+		ignoreAll		: 'Ignore All', // MISSING
+		addWord			: 'Add Word', // MISSING
+		emptyDic		: 'Dictionary name should not be empty.', // MISSING
+
+		optionsTab		: 'Options', // MISSING
+		allCaps			: 'Ignore All-Caps Words', // MISSING
+		ignoreDomainNames : 'Ignore Domain Names', // MISSING
+		mixedCase		: 'Ignore Words with Mixed Case', // MISSING
+		mixedWithDigits	: 'Ignore Words with Numbers', // MISSING
+
+		languagesTab	: 'Languages', // MISSING
+
+		dictionariesTab	: 'Dictionaries', // MISSING
+		dic_field_name	: 'Dictionary name', // MISSING
+		dic_create		: 'Create', // MISSING
+		dic_restore		: 'Restore', // MISSING
+		dic_delete		: 'Delete', // MISSING
+		dic_rename		: 'Rename', // MISSING
+		dic_info		: 'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.', // MISSING
+
+		aboutTab		: 'About' // MISSING
+	},
+
+	about :
+	{
+		title		: 'About CKEditor', // MISSING
+		dlgTitle	: 'About CKEditor', // MISSING
+		help	: 'Check $1 for help.', // MISSING
+		userGuide : 'CKEditor User\'s Guide', // MISSING
+		moreInfo	: 'For licensing information please visit our web site:', // MISSING
+		copy		: 'Copyright &copy; $1. All rights reserved.' // MISSING
+	},
+
+	maximize : 'Maximalizovať',
+	minimize : 'Minimalizovať',
+
+	fakeobjects :
+	{
+		anchor		: 'Anchor', // MISSING
+		flash		: 'Flash Animation', // MISSING
+		iframe		: 'IFrame', // MISSING
+		hiddenfield	: 'Hidden Field', // MISSING
+		unknown		: 'Unknown Object' // MISSING
+	},
+
+	resize : 'Drag to resize', // MISSING
+
+	colordialog :
+	{
+		title		: 'Select color', // MISSING
+		options	:	'Color Options', // MISSING
+		highlight	: 'Highlight', // MISSING
+		selected	: 'Selected Color', // MISSING
+		clear		: 'Clear' // MISSING
+	},
+
+	toolbarCollapse	: 'Collapse Toolbar', // MISSING
+	toolbarExpand	: 'Expand Toolbar', // MISSING
+
+	toolbarGroups :
+	{
+		document : 'Document', // MISSING
+		clipboard : 'Clipboard/Undo', // MISSING
+		editing : 'Editing', // MISSING
+		forms : 'Forms', // MISSING
+		basicstyles : 'Basic Styles', // MISSING
+		paragraph : 'Paragraph', // MISSING
+		links : 'Links', // MISSING
+		insert : 'Insert', // MISSING
+		styles : 'Styles', // MISSING
+		colors : 'Colors', // MISSING
+		tools : 'Tools' // MISSING
+	},
+
+	bidi :
+	{
+		ltr : 'Text direction from left to right', // MISSING
+		rtl : 'Text direction from right to left' // MISSING
+	},
+
+	docprops :
+	{
+		label : 'Vlastnosti dokumentu',
+		title : 'Vlastnosti dokumentu',
+		design : 'Design', // MISSING
+		meta : 'Meta Data',
+		chooseColor : 'Choose', // MISSING
+		other : '<iný>',
+		docTitle :	'Titulok',
+		charset : 	'Kódová stránka',
+		charsetOther : 'Iná kódová stránka',
+		charsetASCII : 'ASCII', // MISSING
+		charsetCE : 'Stredoeurópske',
+		charsetCT : 'Čínština tradičná (Big5)',
+		charsetCR : 'Cyrillika',
+		charsetGR : 'Gréčtina',
+		charsetJP : 'Japončina',
+		charsetKR : 'Korejčina',
+		charsetTR : 'Turečtina',
+		charsetUN : 'Unicode (UTF-8)', // MISSING
+		charsetWE : 'Západná európa',
+		docType : 'Typ záhlavia dokumentu',
+		docTypeOther : 'Iný typ záhlavia dokumentu',
+		xhtmlDec : 'Obsahuje deklarácie XHTML',
+		bgColor : 'Farba pozadia',
+		bgImage : 'URL adresa obrázku na pozadí',
+		bgFixed : 'Fixné pozadie',
+		txtColor : 'Farba textu',
+		margin : 'Okraje stránky',
+		marginTop : 'Horný',
+		marginLeft : 'Ľavý',
+		marginRight : 'Pravý',
+		marginBottom : 'Dolný',
+		metaKeywords : 'Kľúčové slová pre indexovanie (oddelené čiarkou)',
+		metaDescription : 'Popis stránky',
+		metaAuthor : 'Autor',
+		metaCopyright : 'Autorské práva',
+		previewHtml : '<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>' // MISSING
+	}
+};

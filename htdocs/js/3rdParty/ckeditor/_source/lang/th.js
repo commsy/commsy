@@ -1,70 +1,816 @@
-//>>built
-define("ckeditor/_source/lang/th",["dijit","dojo","dojox"],function(){CKEDITOR.lang.th={dir:"ltr",editorTitle:"Rich text editor, %1",editorHelp:"Press ALT 0 for help",toolbars:"Editor toolbars",editor:"Rich Text Editor",source:"\u0e14\u0e39\u0e23\u0e2b\u0e31\u0e2a HTML",newPage:"\u0e2a\u0e23\u0e49\u0e32\u0e07\u0e2b\u0e19\u0e49\u0e32\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\u0e43\u0e2b\u0e21\u0e48",save:"\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01",preview:"\u0e14\u0e39\u0e2b\u0e19\u0e49\u0e32\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\u0e15\u0e31\u0e27\u0e2d\u0e22\u0e48\u0e32\u0e07",
-cut:"\u0e15\u0e31\u0e14",copy:"\u0e2a\u0e33\u0e40\u0e19\u0e32",paste:"\u0e27\u0e32\u0e07",print:"\u0e2a\u0e31\u0e48\u0e07\u0e1e\u0e34\u0e21\u0e1e\u0e4c",underline:"\u0e15\u0e31\u0e27\u0e02\u0e35\u0e14\u0e40\u0e2a\u0e49\u0e19\u0e43\u0e15\u0e49",bold:"\u0e15\u0e31\u0e27\u0e2b\u0e19\u0e32",italic:"\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e35\u0e22\u0e07",selectAll:"\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14",removeFormat:"\u0e25\u0e49\u0e32\u0e07\u0e23\u0e39\u0e1b\u0e41\u0e1a\u0e1a",
-strike:"\u0e15\u0e31\u0e27\u0e02\u0e35\u0e14\u0e40\u0e2a\u0e49\u0e19\u0e17\u0e31\u0e1a",subscript:"\u0e15\u0e31\u0e27\u0e2b\u0e49\u0e2d\u0e22",superscript:"\u0e15\u0e31\u0e27\u0e22\u0e01",horizontalrule:"\u0e41\u0e17\u0e23\u0e01\u0e40\u0e2a\u0e49\u0e19\u0e04\u0e31\u0e48\u0e19\u0e1a\u0e23\u0e23\u0e17\u0e31\u0e14",pagebreak:"\u0e41\u0e17\u0e23\u0e01\u0e15\u0e31\u0e27\u0e41\u0e1a\u0e48\u0e07\u0e2b\u0e19\u0e49\u0e32 Page Break",pagebreakAlt:"Page Break",unlink:"\u0e25\u0e1a \u0e25\u0e34\u0e07\u0e04\u0e4c",
-undo:"\u0e22\u0e01\u0e40\u0e25\u0e34\u0e01\u0e04\u0e33\u0e2a\u0e31\u0e48\u0e07",redo:"\u0e17\u0e33\u0e0b\u0e49\u0e33\u0e04\u0e33\u0e2a\u0e31\u0e48\u0e07",common:{browseServer:"\u0e40\u0e1b\u0e34\u0e14\u0e2b\u0e19\u0e49\u0e32\u0e15\u0e48\u0e32\u0e07\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e44\u0e1f\u0e25\u0e4c\u0e2d\u0e31\u0e1e\u0e42\u0e2b\u0e25\u0e14",url:"\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07 URL",protocol:"\u0e42\u0e1b\u0e23\u0e42\u0e15\u0e04\u0e2d\u0e25",
-upload:"\u0e2d\u0e31\u0e1e\u0e42\u0e2b\u0e25\u0e14\u0e44\u0e1f\u0e25\u0e4c",uploadSubmit:"\u0e2d\u0e31\u0e1e\u0e42\u0e2b\u0e25\u0e14\u0e44\u0e1f\u0e25\u0e4c\u0e44\u0e1b\u0e40\u0e01\u0e47\u0e1a\u0e44\u0e27\u0e49\u0e17\u0e35\u0e48\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e41\u0e21\u0e48\u0e02\u0e48\u0e32\u0e22 (\u0e40\u0e0b\u0e34\u0e23\u0e4c\u0e1f\u0e40\u0e27\u0e2d\u0e23\u0e4c)",image:"\u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",flash:"\u0e44\u0e1f\u0e25\u0e4c Flash",form:"\u0e41\u0e1a\u0e1a\u0e1f\u0e2d\u0e23\u0e4c\u0e21",
-checkbox:"\u0e40\u0e0a\u0e47\u0e04\u0e1a\u0e4a\u0e2d\u0e01",radio:"\u0e40\u0e23\u0e14\u0e34\u0e42\u0e2d\u0e1a\u0e31\u0e15\u0e15\u0e2d\u0e19",textField:"\u0e40\u0e17\u0e47\u0e01\u0e0b\u0e4c\u0e1f\u0e34\u0e25\u0e14\u0e4c",textarea:"\u0e40\u0e17\u0e47\u0e01\u0e0b\u0e4c\u0e41\u0e2d\u0e40\u0e23\u0e35\u0e22",hiddenField:"\u0e2e\u0e34\u0e14\u0e40\u0e14\u0e19\u0e1f\u0e34\u0e25\u0e14\u0e4c",button:"\u0e1b\u0e38\u0e48\u0e21",select:"\u0e41\u0e16\u0e1a\u0e15\u0e31\u0e27\u0e40\u0e25\u0e37\u0e2d\u0e01",imageButton:"\u0e1b\u0e38\u0e48\u0e21\u0e41\u0e1a\u0e1a\u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",
-notSet:"<\u0e44\u0e21\u0e48\u0e23\u0e30\u0e1a\u0e38>",id:"\u0e44\u0e2d\u0e14\u0e35",name:"\u0e0a\u0e37\u0e48\u0e2d",langDir:"\u0e01\u0e32\u0e23\u0e40\u0e02\u0e35\u0e22\u0e19-\u0e2d\u0e48\u0e32\u0e19\u0e20\u0e32\u0e29\u0e32",langDirLtr:"\u0e08\u0e32\u0e01\u0e0b\u0e49\u0e32\u0e22\u0e44\u0e1b\u0e02\u0e27\u0e32 (LTR)",langDirRtl:"\u0e08\u0e32\u0e01\u0e02\u0e27\u0e32\u0e21\u0e32\u0e0b\u0e49\u0e32\u0e22 (RTL)",langCode:"\u0e23\u0e2b\u0e31\u0e2a\u0e20\u0e32\u0e29\u0e32",longDescr:"\u0e04\u0e33\u0e2d\u0e18\u0e34\u0e1a\u0e32\u0e22\u0e1b\u0e23\u0e30\u0e01\u0e2d\u0e1a URL",
-cssClass:"\u0e04\u0e25\u0e32\u0e2a\u0e02\u0e2d\u0e07\u0e44\u0e1f\u0e25\u0e4c\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e25\u0e31\u0e01\u0e29\u0e13\u0e30\u0e01\u0e32\u0e23\u0e41\u0e2a\u0e14\u0e07\u0e1c\u0e25",advisoryTitle:"\u0e04\u0e33\u0e40\u0e01\u0e23\u0e34\u0e48\u0e19\u0e19\u0e33",cssStyle:"\u0e25\u0e31\u0e01\u0e29\u0e13\u0e30\u0e01\u0e32\u0e23\u0e41\u0e2a\u0e14\u0e07\u0e1c\u0e25",ok:"\u0e15\u0e01\u0e25\u0e07",cancel:"\u0e22\u0e01\u0e40\u0e25\u0e34\u0e01",close:"Close",preview:"Preview",generalTab:"General",
-advancedTab:"\u0e02\u0e31\u0e49\u0e19\u0e2a\u0e39\u0e07",validateNumberFailed:"This value is not a number.",confirmNewPage:"Any unsaved changes to this content will be lost. Are you sure you want to load new page?",confirmCancel:"Some of the options have been changed. Are you sure to close the dialog?",options:"Options",target:"Target",targetNew:"New Window (_blank)",targetTop:"Topmost Window (_top)",targetSelf:"Same Window (_self)",targetParent:"Parent Window (_parent)",langDirLTR:"Left to Right (LTR)",
-langDirRTL:"Right to Left (RTL)",styles:"Style",cssClasses:"Stylesheet Classes",width:"\u0e04\u0e27\u0e32\u0e21\u0e01\u0e27\u0e49\u0e32\u0e07",height:"\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e39\u0e07",align:"\u0e01\u0e32\u0e23\u0e08\u0e31\u0e14\u0e27\u0e32\u0e07",alignLeft:"\u0e0a\u0e34\u0e14\u0e0b\u0e49\u0e32\u0e22",alignRight:"\u0e0a\u0e34\u0e14\u0e02\u0e27\u0e32",alignCenter:"\u0e01\u0e36\u0e48\u0e07\u0e01\u0e25\u0e32\u0e07",alignTop:"\u0e1a\u0e19\u0e2a\u0e38\u0e14",alignMiddle:"\u0e01\u0e36\u0e48\u0e07\u0e01\u0e25\u0e32\u0e07\u0e41\u0e19\u0e27\u0e15\u0e31\u0e49\u0e07",
-alignBottom:"\u0e0a\u0e34\u0e14\u0e14\u0e49\u0e32\u0e19\u0e25\u0e48\u0e32\u0e07",invalidHeight:"Height must be a number.",invalidWidth:"Width must be a number.",invalidCssLength:'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).',invalidHtmlLength:'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).',invalidInlineStyle:'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.',
-cssLengthTooltip:"Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).",unavailable:'%1<span class="cke_accessibility">, unavailable</span>'},contextmenu:{options:"Context Menu Options"},specialChar:{toolbar:"\u0e41\u0e17\u0e23\u0e01\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29",title:"\u0e41\u0e17\u0e23\u0e01\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e1e\u0e34\u0e40\u0e28\u0e29",options:"Special Character Options"},
-link:{toolbar:"\u0e41\u0e17\u0e23\u0e01/\u0e41\u0e01\u0e49\u0e44\u0e02 \u0e25\u0e34\u0e07\u0e04\u0e4c",other:"<\u0e2d\u0e37\u0e48\u0e19 \u0e46>",menu:"\u0e41\u0e01\u0e49\u0e44\u0e02 \u0e25\u0e34\u0e07\u0e04\u0e4c",title:"\u0e25\u0e34\u0e07\u0e04\u0e4c\u0e40\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e42\u0e22\u0e07\u0e40\u0e27\u0e47\u0e1a \u0e2d\u0e35\u0e40\u0e21\u0e25\u0e4c \u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e \u0e2b\u0e23\u0e37\u0e2d\u0e44\u0e1f\u0e25\u0e4c\u0e2d\u0e37\u0e48\u0e19\u0e46",info:"\u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14",
-target:"\u0e01\u0e32\u0e23\u0e40\u0e1b\u0e34\u0e14\u0e2b\u0e19\u0e49\u0e32\u0e25\u0e34\u0e07\u0e04\u0e4c",upload:"\u0e2d\u0e31\u0e1e\u0e42\u0e2b\u0e25\u0e14\u0e44\u0e1f\u0e25\u0e4c",advanced:"\u0e02\u0e31\u0e49\u0e19\u0e2a\u0e39\u0e07",type:"\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17\u0e02\u0e2d\u0e07\u0e25\u0e34\u0e07\u0e04\u0e4c",toUrl:"URL",toAnchor:"\u0e08\u0e38\u0e14\u0e40\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e42\u0e22\u0e07 (Anchor)",toEmail:"\u0e2a\u0e48\u0e07\u0e2d\u0e35\u0e40\u0e21\u0e25\u0e4c (E-Mail)",
-targetFrame:"<\u0e40\u0e1b\u0e34\u0e14\u0e43\u0e19\u0e40\u0e1f\u0e23\u0e21>",targetPopup:"<\u0e40\u0e1b\u0e34\u0e14\u0e2b\u0e19\u0e49\u0e32\u0e08\u0e2d\u0e40\u0e25\u0e47\u0e01 (Pop-up)>",targetFrameName:"\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e32\u0e23\u0e4c\u0e40\u0e01\u0e47\u0e15\u0e40\u0e1f\u0e23\u0e21",targetPopupName:"\u0e23\u0e30\u0e1a\u0e38\u0e0a\u0e37\u0e48\u0e2d\u0e2b\u0e19\u0e49\u0e32\u0e08\u0e2d\u0e40\u0e25\u0e47\u0e01 (Pop-up)",popupFeatures:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07\u0e2b\u0e19\u0e49\u0e32\u0e08\u0e2d\u0e40\u0e25\u0e47\u0e01 (Pop-up)",
-popupResizable:"Resizable",popupStatusBar:"\u0e41\u0e2a\u0e14\u0e07\u0e41\u0e16\u0e1a\u0e2a\u0e16\u0e32\u0e19\u0e30",popupLocationBar:"\u0e41\u0e2a\u0e14\u0e07\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e02\u0e2d\u0e07\u0e44\u0e1f\u0e25\u0e4c",popupToolbar:"\u0e41\u0e2a\u0e14\u0e07\u0e41\u0e16\u0e1a\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e21\u0e37\u0e2d",popupMenuBar:"\u0e41\u0e2a\u0e14\u0e07\u0e41\u0e16\u0e1a\u0e40\u0e21\u0e19\u0e39",popupFullScreen:"\u0e41\u0e2a\u0e14\u0e07\u0e40\u0e15\u0e47\u0e21\u0e2b\u0e19\u0e49\u0e32\u0e08\u0e2d (IE5.5++ \u0e40\u0e17\u0e48\u0e32\u0e19\u0e31\u0e49\u0e19)",
-popupScrollBars:"\u0e41\u0e2a\u0e14\u0e07\u0e41\u0e16\u0e1a\u0e40\u0e25\u0e37\u0e48\u0e2d\u0e19",popupDependent:"\u0e41\u0e2a\u0e14\u0e07\u0e40\u0e15\u0e47\u0e21\u0e2b\u0e19\u0e49\u0e32\u0e08\u0e2d (Netscape)",popupLeft:"\u0e1e\u0e34\u0e01\u0e31\u0e14\u0e0b\u0e49\u0e32\u0e22 (Left Position)",popupTop:"\u0e1e\u0e34\u0e01\u0e31\u0e14\u0e1a\u0e19 (Top Position)",id:"Id",langDir:"\u0e01\u0e32\u0e23\u0e40\u0e02\u0e35\u0e22\u0e19-\u0e2d\u0e48\u0e32\u0e19\u0e20\u0e32\u0e29\u0e32",langDirLTR:"\u0e08\u0e32\u0e01\u0e0b\u0e49\u0e32\u0e22\u0e44\u0e1b\u0e02\u0e27\u0e32 (LTR)",
-langDirRTL:"\u0e08\u0e32\u0e01\u0e02\u0e27\u0e32\u0e21\u0e32\u0e0b\u0e49\u0e32\u0e22 (RTL)",acccessKey:"\u0e41\u0e2d\u0e04\u0e40\u0e0b\u0e2a \u0e04\u0e35\u0e22\u0e4c",name:"\u0e0a\u0e37\u0e48\u0e2d",langCode:"\u0e01\u0e32\u0e23\u0e40\u0e02\u0e35\u0e22\u0e19-\u0e2d\u0e48\u0e32\u0e19\u0e20\u0e32\u0e29\u0e32",tabIndex:"\u0e25\u0e33\u0e14\u0e31\u0e1a\u0e02\u0e2d\u0e07 \u0e41\u0e17\u0e47\u0e1a",advisoryTitle:"\u0e04\u0e33\u0e40\u0e01\u0e23\u0e34\u0e48\u0e19\u0e19\u0e33",advisoryContentType:"\u0e0a\u0e19\u0e34\u0e14\u0e02\u0e2d\u0e07\u0e04\u0e33\u0e40\u0e01\u0e23\u0e34\u0e48\u0e19\u0e19\u0e33",
-cssClasses:"\u0e04\u0e25\u0e32\u0e2a\u0e02\u0e2d\u0e07\u0e44\u0e1f\u0e25\u0e4c\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e25\u0e31\u0e01\u0e29\u0e13\u0e30\u0e01\u0e32\u0e23\u0e41\u0e2a\u0e14\u0e07\u0e1c\u0e25",charset:"\u0e25\u0e34\u0e07\u0e04\u0e4c\u0e40\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e42\u0e22\u0e07\u0e44\u0e1b\u0e22\u0e31\u0e07\u0e0a\u0e38\u0e14\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23",styles:"\u0e25\u0e31\u0e01\u0e29\u0e13\u0e30\u0e01\u0e32\u0e23\u0e41\u0e2a\u0e14\u0e07\u0e1c\u0e25",rel:"Relationship",
-selectAnchor:"\u0e23\u0e30\u0e1a\u0e38\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e08\u0e38\u0e14\u0e40\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e42\u0e22\u0e07 (Anchor)",anchorName:"\u0e0a\u0e37\u0e48\u0e2d",anchorId:"\u0e44\u0e2d\u0e14\u0e35",emailAddress:"\u0e2d\u0e35\u0e40\u0e21\u0e25\u0e4c (E-Mail)",emailSubject:"\u0e2b\u0e31\u0e27\u0e40\u0e23\u0e37\u0e48\u0e2d\u0e07",emailBody:"\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21",noAnchors:"(\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e08\u0e38\u0e14\u0e40\u0e0a\u0e37\u0e48\u0e2d\u0e21\u0e42\u0e22\u0e07\u0e20\u0e32\u0e22\u0e43\u0e19\u0e2b\u0e19\u0e49\u0e32\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\u0e19\u0e35\u0e49)",
-noUrl:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07\u0e2d\u0e2d\u0e19\u0e44\u0e25\u0e19\u0e4c (URL)",noEmail:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e2d\u0e35\u0e40\u0e21\u0e25\u0e4c (E-mail)"},anchor:{toolbar:"\u0e41\u0e17\u0e23\u0e01/\u0e41\u0e01\u0e49\u0e44\u0e02 Anchor",menu:"\u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14 Anchor",title:"\u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14 Anchor",
-name:"\u0e0a\u0e37\u0e48\u0e2d Anchor",errorName:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e0a\u0e37\u0e48\u0e2d\u0e02\u0e2d\u0e07 Anchor",remove:"Remove Anchor"},list:{numberedTitle:"Numbered List Properties",bulletedTitle:"Bulleted List Properties",type:"Type",start:"Start",validateStartNumber:"List start number must be a whole number.",circle:"Circle",disc:"Disc",square:"Square",none:"None",notset:"<not set>",armenian:"Armenian numbering",georgian:"Georgian numbering (an, ban, gan, etc.)",
-lowerRoman:"Lower Roman (i, ii, iii, iv, v, etc.)",upperRoman:"Upper Roman (I, II, III, IV, V, etc.)",lowerAlpha:"Lower Alpha (a, b, c, d, e, etc.)",upperAlpha:"Upper Alpha (A, B, C, D, E, etc.)",lowerGreek:"Lower Greek (alpha, beta, gamma, etc.)",decimal:"Decimal (1, 2, 3, etc.)",decimalLeadingZero:"Decimal leading zero (01, 02, 03, etc.)"},findAndReplace:{title:"Find and Replace",find:"\u0e04\u0e49\u0e19\u0e2b\u0e32",replace:"\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e41\u0e25\u0e30\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48",
-findWhat:"\u0e04\u0e49\u0e19\u0e2b\u0e32\u0e04\u0e33\u0e27\u0e48\u0e32:",replaceWith:"\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48\u0e14\u0e49\u0e27\u0e22:",notFoundMsg:"\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e04\u0e33\u0e17\u0e35\u0e48\u0e04\u0e49\u0e19\u0e2b\u0e32.",findOptions:"Find Options",matchCase:"\u0e15\u0e31\u0e27\u0e42\u0e2b\u0e0d\u0e48-\u0e40\u0e25\u0e47\u0e01 \u0e15\u0e49\u0e2d\u0e07\u0e15\u0e23\u0e07\u0e01\u0e31\u0e19",matchWord:"\u0e15\u0e49\u0e2d\u0e07\u0e15\u0e23\u0e07\u0e01\u0e31\u0e19\u0e17\u0e38\u0e01\u0e04\u0e33",
-matchCyclic:"Match cyclic",replaceAll:"\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14\u0e17\u0e35\u0e48\u0e1e\u0e1a",replaceSuccessMsg:"%1 occurrence(s) replaced."},table:{toolbar:"\u0e15\u0e32\u0e23\u0e32\u0e07",title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e15\u0e32\u0e23\u0e32\u0e07",menu:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e15\u0e32\u0e23\u0e32\u0e07",deleteTable:"\u0e25\u0e1a\u0e15\u0e32\u0e23\u0e32\u0e07",
-rows:"\u0e41\u0e16\u0e27",columns:"\u0e2a\u0e14\u0e21\u0e19\u0e4c",border:"\u0e02\u0e19\u0e32\u0e14\u0e40\u0e2a\u0e49\u0e19\u0e02\u0e2d\u0e1a",widthPx:"\u0e08\u0e38\u0e14\u0e2a\u0e35",widthPc:"\u0e40\u0e1b\u0e2d\u0e23\u0e4c\u0e40\u0e0b\u0e47\u0e19",widthUnit:"width unit",cellSpace:"\u0e23\u0e30\u0e22\u0e30\u0e41\u0e19\u0e27\u0e19\u0e2d\u0e19\u0e19",cellPad:"\u0e23\u0e30\u0e22\u0e30\u0e41\u0e19\u0e27\u0e15\u0e31\u0e49\u0e07",caption:"\u0e2b\u0e31\u0e27\u0e40\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e02\u0e2d\u0e07\u0e15\u0e32\u0e23\u0e32\u0e07",
-summary:"\u0e2a\u0e23\u0e38\u0e1b\u0e04\u0e27\u0e32\u0e21",headers:"Headers",headersNone:"None",headersColumn:"First column",headersRow:"First Row",headersBoth:"Both",invalidRows:"Number of rows must be a number greater than 0.",invalidCols:"Number of columns must be a number greater than 0.",invalidBorder:"Border size must be a number.",invalidWidth:"Table width must be a number.",invalidHeight:"Table height must be a number.",invalidCellSpacing:"Cell spacing must be a positive number.",invalidCellPadding:"Cell padding must be a positive number.",
-cell:{menu:"\u0e0a\u0e48\u0e2d\u0e07\u0e15\u0e32\u0e23\u0e32\u0e07",insertBefore:"Insert Cell Before",insertAfter:"Insert Cell After",deleteCell:"\u0e25\u0e1a\u0e0a\u0e48\u0e2d\u0e07",merge:"\u0e1c\u0e2a\u0e32\u0e19\u0e0a\u0e48\u0e2d\u0e07",mergeRight:"Merge Right",mergeDown:"Merge Down",splitHorizontal:"Split Cell Horizontally",splitVertical:"Split Cell Vertically",title:"Cell Properties",cellType:"Cell Type",rowSpan:"Rows Span",colSpan:"Columns Span",wordWrap:"Word Wrap",hAlign:"Horizontal Alignment",
-vAlign:"Vertical Alignment",alignBaseline:"Baseline",bgColor:"Background Color",borderColor:"Border Color",data:"Data",header:"Header",yes:"Yes",no:"No",invalidWidth:"Cell width must be a number.",invalidHeight:"Cell height must be a number.",invalidRowSpan:"Rows span must be a whole number.",invalidColSpan:"Columns span must be a whole number.",chooseColor:"Choose"},row:{menu:"\u0e41\u0e16\u0e27",insertBefore:"Insert Row Before",insertAfter:"Insert Row After",deleteRow:"\u0e25\u0e1a\u0e41\u0e16\u0e27"},
-column:{menu:"\u0e04\u0e2d\u0e25\u0e31\u0e21\u0e19\u0e4c",insertBefore:"Insert Column Before",insertAfter:"Insert Column After",deleteColumn:"\u0e25\u0e1a\u0e2a\u0e14\u0e21\u0e19\u0e4c"}},button:{title:"\u0e23\u0e32\u0e22\u0e25\u0e30\u0e40\u0e2d\u0e35\u0e22\u0e14\u0e02\u0e2d\u0e07 \u0e1b\u0e38\u0e48\u0e21",text:"\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21 (\u0e04\u0e48\u0e32\u0e15\u0e31\u0e27\u0e41\u0e1b\u0e23)",type:"\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21",typeBtn:"Button",typeSbm:"Submit",typeRst:"Reset"},
-checkboxAndRadio:{checkboxTitle:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e40\u0e0a\u0e47\u0e04\u0e1a\u0e4a\u0e2d\u0e01",radioTitle:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e40\u0e23\u0e14\u0e34\u0e42\u0e2d\u0e1a\u0e31\u0e15\u0e15\u0e2d\u0e19",value:"\u0e04\u0e48\u0e32\u0e15\u0e31\u0e27\u0e41\u0e1b\u0e23",selected:"\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e1b\u0e47\u0e19\u0e04\u0e48\u0e32\u0e40\u0e23\u0e34\u0e48\u0e21\u0e15\u0e49\u0e19"},
-form:{title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e41\u0e1a\u0e1a\u0e1f\u0e2d\u0e23\u0e4c\u0e21",menu:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e41\u0e1a\u0e1a\u0e1f\u0e2d\u0e23\u0e4c\u0e21",action:"\u0e41\u0e2d\u0e04\u0e0a\u0e31\u0e48\u0e19",method:"\u0e40\u0e21\u0e18\u0e2d\u0e14",encoding:"Encoding"},select:{title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e41\u0e16\u0e1a\u0e15\u0e31\u0e27\u0e40\u0e25\u0e37\u0e2d\u0e01",
-selectInfo:"\u0e2d\u0e34\u0e19\u0e42\u0e1f",opAvail:"\u0e23\u0e32\u0e22\u0e01\u0e32\u0e23\u0e15\u0e31\u0e27\u0e40\u0e25\u0e37\u0e2d\u0e01",value:"\u0e04\u0e48\u0e32\u0e15\u0e31\u0e27\u0e41\u0e1b\u0e23",size:"\u0e02\u0e19\u0e32\u0e14",lines:"\u0e1a\u0e23\u0e23\u0e17\u0e31\u0e14",chkMulti:"\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e48\u0e32\u0e44\u0e14\u0e49",opText:"\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21",opValue:"\u0e04\u0e48\u0e32\u0e15\u0e31\u0e27\u0e41\u0e1b\u0e23",btnAdd:"\u0e40\u0e1e\u0e34\u0e48\u0e21",
-btnModify:"\u0e41\u0e01\u0e49\u0e44\u0e02",btnUp:"\u0e1a\u0e19",btnDown:"\u0e25\u0e48\u0e32\u0e07",btnSetValue:"\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e1b\u0e47\u0e19\u0e04\u0e48\u0e32\u0e40\u0e23\u0e34\u0e48\u0e21\u0e15\u0e49\u0e19",btnDelete:"\u0e25\u0e1a"},textarea:{title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e40\u0e17\u0e47\u0e01\u0e41\u0e2d\u0e40\u0e23\u0e35\u0e22",cols:"\u0e2a\u0e14\u0e21\u0e20\u0e4c",rows:"\u0e41\u0e16\u0e27"},textfield:{title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e40\u0e17\u0e47\u0e01\u0e0b\u0e4c\u0e1f\u0e34\u0e25\u0e14\u0e4c",
-name:"\u0e0a\u0e37\u0e48\u0e2d",value:"\u0e04\u0e48\u0e32\u0e15\u0e31\u0e27\u0e41\u0e1b\u0e23",charWidth:"\u0e04\u0e27\u0e32\u0e21\u0e01\u0e27\u0e49\u0e32\u0e07",maxChars:"\u0e08\u0e33\u0e19\u0e27\u0e19\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e2a\u0e39\u0e07\u0e2a\u0e38\u0e14",type:"\u0e0a\u0e19\u0e34\u0e14",typeText:"\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21",typePass:"\u0e23\u0e2b\u0e31\u0e2a\u0e1c\u0e48\u0e32\u0e19"},hidden:{title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e2e\u0e34\u0e14\u0e40\u0e14\u0e19\u0e1f\u0e34\u0e25\u0e14\u0e4c",
-name:"\u0e0a\u0e37\u0e48\u0e2d",value:"\u0e04\u0e48\u0e32\u0e15\u0e31\u0e27\u0e41\u0e1b\u0e23"},image:{title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",titleButton:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e1b\u0e38\u0e48\u0e21\u0e41\u0e1a\u0e1a\u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",menu:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07 \u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",
-infoTab:"\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",btnUpload:"\u0e2d\u0e31\u0e1e\u0e42\u0e2b\u0e25\u0e14\u0e44\u0e1f\u0e25\u0e4c\u0e44\u0e1b\u0e40\u0e01\u0e47\u0e1a\u0e44\u0e27\u0e49\u0e17\u0e35\u0e48\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e41\u0e21\u0e48\u0e02\u0e48\u0e32\u0e22 (\u0e40\u0e0b\u0e34\u0e23\u0e4c\u0e1f\u0e40\u0e27\u0e2d\u0e23\u0e4c)",upload:"\u0e2d\u0e31\u0e1e\u0e42\u0e2b\u0e25\u0e14\u0e44\u0e1f\u0e25\u0e4c",alt:"\u0e04\u0e33\u0e1b\u0e23\u0e30\u0e01\u0e2d\u0e1a\u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e",
-lockRatio:"\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e2d\u0e31\u0e15\u0e23\u0e32\u0e2a\u0e48\u0e27\u0e19 \u0e01\u0e27\u0e49\u0e32\u0e07-\u0e2a\u0e39\u0e07 \u0e41\u0e1a\u0e1a\u0e04\u0e07\u0e17\u0e35\u0e48",resetSize:"\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e23\u0e39\u0e1b\u0e40\u0e17\u0e48\u0e32\u0e02\u0e19\u0e32\u0e14\u0e08\u0e23\u0e34\u0e07",border:"\u0e02\u0e19\u0e32\u0e14\u0e02\u0e2d\u0e1a\u0e23\u0e39\u0e1b",hSpace:"\u0e23\u0e30\u0e22\u0e30\u0e41\u0e19\u0e27\u0e19\u0e2d\u0e19",vSpace:"\u0e23\u0e30\u0e22\u0e30\u0e41\u0e19\u0e27\u0e15\u0e31\u0e49\u0e07",
-alertUrl:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07\u0e2d\u0e2d\u0e19\u0e44\u0e25\u0e19\u0e4c\u0e02\u0e2d\u0e07\u0e44\u0e1f\u0e25\u0e4c\u0e23\u0e39\u0e1b\u0e20\u0e32\u0e1e (URL)",linkTab:"\u0e25\u0e34\u0e49\u0e07\u0e04\u0e4c",button2Img:"Do you want to transform the selected image button on a simple image?",img2Button:"Do you want to transform the selected image on a image button?",urlMissing:"Image source URL is missing.",
-validateBorder:"Border must be a whole number.",validateHSpace:"HSpace must be a whole number.",validateVSpace:"VSpace must be a whole number."},flash:{properties:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07\u0e44\u0e1f\u0e25\u0e4c Flash",propertiesTab:"Properties",title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07\u0e44\u0e1f\u0e25\u0e4c Flash",chkPlay:"\u0e40\u0e25\u0e48\u0e19\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34 Auto Play",
-chkLoop:"\u0e40\u0e25\u0e48\u0e19\u0e27\u0e19\u0e23\u0e2d\u0e1a Loop",chkMenu:"\u0e43\u0e2b\u0e49\u0e43\u0e0a\u0e49\u0e07\u0e32\u0e19\u0e40\u0e21\u0e19\u0e39\u0e02\u0e2d\u0e07 Flash",chkFull:"Allow Fullscreen",scale:"\u0e2d\u0e31\u0e15\u0e23\u0e32\u0e2a\u0e48\u0e27\u0e19 Scale",scaleAll:"\u0e41\u0e2a\u0e14\u0e07\u0e43\u0e2b\u0e49\u0e40\u0e2b\u0e47\u0e19\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14 Show all",scaleNoBorder:"\u0e44\u0e21\u0e48\u0e41\u0e2a\u0e14\u0e07\u0e40\u0e2a\u0e49\u0e19\u0e02\u0e2d\u0e1a No Border",
-scaleFit:"\u0e41\u0e2a\u0e14\u0e07\u0e43\u0e2b\u0e49\u0e1e\u0e2d\u0e14\u0e35\u0e01\u0e31\u0e1a\u0e1e\u0e37\u0e49\u0e19\u0e17\u0e35\u0e48 Exact Fit",access:"Script Access",accessAlways:"Always",accessSameDomain:"Same domain",accessNever:"Never",alignAbsBottom:"\u0e0a\u0e34\u0e14\u0e14\u0e49\u0e32\u0e19\u0e25\u0e48\u0e32\u0e07\u0e2a\u0e38\u0e14",alignAbsMiddle:"\u0e01\u0e36\u0e48\u0e07\u0e01\u0e25\u0e32\u0e07",alignBaseline:"\u0e0a\u0e34\u0e14\u0e1a\u0e23\u0e23\u0e17\u0e31\u0e14",alignTextTop:"\u0e43\u0e15\u0e49\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23",
-quality:"Quality",qualityBest:"Best",qualityHigh:"High",qualityAutoHigh:"Auto High",qualityMedium:"Medium",qualityAutoLow:"Auto Low",qualityLow:"Low",windowModeWindow:"Window",windowModeOpaque:"Opaque",windowModeTransparent:"Transparent",windowMode:"Window mode",flashvars:"Variables for Flash",bgcolor:"\u0e2a\u0e35\u0e1e\u0e37\u0e49\u0e19\u0e2b\u0e25\u0e31\u0e07",hSpace:"\u0e23\u0e30\u0e22\u0e30\u0e41\u0e19\u0e27\u0e19\u0e2d\u0e19",vSpace:"\u0e23\u0e30\u0e22\u0e30\u0e41\u0e19\u0e27\u0e15\u0e31\u0e49\u0e07",
-validateSrc:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e23\u0e30\u0e1a\u0e38\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07\u0e2d\u0e2d\u0e19\u0e44\u0e25\u0e19\u0e4c (URL)",validateHSpace:"HSpace must be a number.",validateVSpace:"VSpace must be a number."},spellCheck:{toolbar:"\u0e15\u0e23\u0e27\u0e08\u0e01\u0e32\u0e23\u0e2a\u0e30\u0e01\u0e14\u0e04\u0e33",title:"Spell Check",notAvailable:"Sorry, but service is unavailable now.",errorLoading:"Error loading application service host: %s.",
-notInDic:"\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e43\u0e19\u0e14\u0e34\u0e01\u0e0a\u0e31\u0e19\u0e19\u0e32\u0e23\u0e35",changeTo:"\u0e41\u0e01\u0e49\u0e44\u0e02\u0e40\u0e1b\u0e47\u0e19",btnIgnore:"\u0e22\u0e01\u0e40\u0e27\u0e49\u0e19",btnIgnoreAll:"\u0e22\u0e01\u0e40\u0e27\u0e49\u0e19\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14",btnReplace:"\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48",btnReplaceAll:"\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14",btnUndo:"\u0e22\u0e01\u0e40\u0e25\u0e34\u0e01",
-noSuggestions:"- \u0e44\u0e21\u0e48\u0e21\u0e35\u0e04\u0e33\u0e41\u0e19\u0e30\u0e19\u0e33\u0e43\u0e14\u0e46 -",progress:"\u0e01\u0e33\u0e25\u0e31\u0e07\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14...",noMispell:"\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14\u0e40\u0e2a\u0e23\u0e47\u0e08\u0e2a\u0e34\u0e49\u0e19: \u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14\u0e1c\u0e34\u0e14",noChanges:"\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14\u0e40\u0e2a\u0e23\u0e47\u0e08\u0e2a\u0e34\u0e49\u0e19: \u0e44\u0e21\u0e48\u0e21\u0e35\u0e01\u0e32\u0e23\u0e41\u0e01\u0e49\u0e04\u0e33\u0e43\u0e14\u0e46",
-oneChange:"\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14\u0e40\u0e2a\u0e23\u0e47\u0e08\u0e2a\u0e34\u0e49\u0e19: \u0e41\u0e01\u0e49\u0e44\u0e021\u0e04\u0e33",manyChanges:"\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14\u0e40\u0e2a\u0e23\u0e47\u0e08\u0e2a\u0e34\u0e49\u0e19:: \u0e41\u0e01\u0e49\u0e44\u0e02 %1 \u0e04\u0e33",ieSpellDownload:"\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49\u0e15\u0e34\u0e14\u0e15\u0e31\u0e49\u0e07\u0e23\u0e30\u0e1a\u0e1a\u0e15\u0e23\u0e27\u0e08\u0e2a\u0e2d\u0e1a\u0e04\u0e33\u0e2a\u0e30\u0e01\u0e14. \u0e15\u0e49\u0e2d\u0e07\u0e01\u0e32\u0e23\u0e15\u0e34\u0e14\u0e15\u0e31\u0e49\u0e07\u0e44\u0e2b\u0e21\u0e04\u0e23\u0e31\u0e1a?"},
-smiley:{toolbar:"\u0e23\u0e39\u0e1b\u0e2a\u0e37\u0e48\u0e2d\u0e2d\u0e32\u0e23\u0e21\u0e13\u0e4c",title:"\u0e41\u0e17\u0e23\u0e01\u0e2a\u0e31\u0e0d\u0e25\u0e31\u0e01\u0e29\u0e13\u0e4c\u0e2a\u0e37\u0e48\u0e2d\u0e2d\u0e32\u0e23\u0e21\u0e13\u0e4c",options:"Smiley Options"},elementsPath:{eleLabel:"Elements path",eleTitle:"%1 element"},numberedlist:"\u0e25\u0e33\u0e14\u0e31\u0e1a\u0e23\u0e32\u0e22\u0e01\u0e32\u0e23\u0e41\u0e1a\u0e1a\u0e15\u0e31\u0e27\u0e40\u0e25\u0e02",bulletedlist:"\u0e25\u0e33\u0e14\u0e31\u0e1a\u0e23\u0e32\u0e22\u0e01\u0e32\u0e23\u0e41\u0e1a\u0e1a\u0e2a\u0e31\u0e0d\u0e25\u0e31\u0e01\u0e29\u0e13\u0e4c",
-indent:"\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e23\u0e30\u0e22\u0e30\u0e22\u0e48\u0e2d\u0e2b\u0e19\u0e49\u0e32",outdent:"\u0e25\u0e14\u0e23\u0e30\u0e22\u0e30\u0e22\u0e48\u0e2d\u0e2b\u0e19\u0e49\u0e32",justify:{left:"\u0e08\u0e31\u0e14\u0e0a\u0e34\u0e14\u0e0b\u0e49\u0e32\u0e22",center:"\u0e08\u0e31\u0e14\u0e01\u0e36\u0e48\u0e07\u0e01\u0e25\u0e32\u0e07",right:"\u0e08\u0e31\u0e14\u0e0a\u0e34\u0e14\u0e02\u0e27\u0e32",block:"\u0e08\u0e31\u0e14\u0e1e\u0e2d\u0e14\u0e35\u0e2b\u0e19\u0e49\u0e32\u0e01\u0e23\u0e30\u0e14\u0e32\u0e29"},
-blockquote:"Block Quote",clipboard:{title:"\u0e27\u0e32\u0e07",cutError:"\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e15\u0e31\u0e14\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e17\u0e35\u0e48\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e44\u0e27\u0e49\u0e44\u0e14\u0e49\u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e01\u0e32\u0e23\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e04\u0e48\u0e32\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e04\u0e27\u0e32\u0e21\u0e1b\u0e25\u0e2d\u0e14\u0e20\u0e31\u0e22. \u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e0a\u0e49\u0e1b\u0e38\u0e48\u0e21\u0e25\u0e31\u0e14\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e27\u0e32\u0e07\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e41\u0e17\u0e19 (\u0e01\u0e14\u0e1b\u0e38\u0e48\u0e21 Ctrl/Cmd \u0e41\u0e25\u0e30\u0e15\u0e31\u0e27 X \u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e01\u0e31\u0e19).",
-copyError:"\u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e2a\u0e33\u0e40\u0e19\u0e32\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e17\u0e35\u0e48\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e44\u0e27\u0e49\u0e44\u0e14\u0e49\u0e40\u0e19\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e32\u0e01\u0e01\u0e32\u0e23\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e04\u0e48\u0e32\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e04\u0e27\u0e32\u0e21\u0e1b\u0e25\u0e2d\u0e14\u0e20\u0e31\u0e22. \u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e0a\u0e49\u0e1b\u0e38\u0e48\u0e21\u0e25\u0e31\u0e14\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e27\u0e32\u0e07\u0e02\u0e49\u0e2d\u0e04\u0e27\u0e32\u0e21\u0e41\u0e17\u0e19 (\u0e01\u0e14\u0e1b\u0e38\u0e48\u0e21 Ctrl/Cmd \u0e41\u0e25\u0e30\u0e15\u0e31\u0e27 C \u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e01\u0e31\u0e19).",
-pasteMsg:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e43\u0e0a\u0e49\u0e04\u0e35\u0e22\u0e4c\u0e1a\u0e2d\u0e23\u0e4c\u0e14\u0e40\u0e17\u0e48\u0e32\u0e19\u0e31\u0e49\u0e19 \u0e42\u0e14\u0e22\u0e01\u0e14\u0e1b\u0e38\u0e4b\u0e21 (<strong>Ctrl/Cmd \u0e41\u0e25\u0e30 V</strong>)\u0e1e\u0e23\u0e49\u0e2d\u0e21\u0e46\u0e01\u0e31\u0e19 \u0e41\u0e25\u0e30\u0e01\u0e14 <strong>OK</strong>.",securityMsg:"Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.",
-pasteArea:"Paste Area"},pastefromword:{confirmCleanup:"The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?",toolbar:"\u0e27\u0e32\u0e07\u0e2a\u0e33\u0e40\u0e19\u0e32\u0e08\u0e32\u0e01\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e40\u0e27\u0e34\u0e23\u0e4c\u0e14",title:"\u0e27\u0e32\u0e07\u0e2a\u0e33\u0e40\u0e19\u0e32\u0e08\u0e32\u0e01\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e40\u0e27\u0e34\u0e23\u0e4c\u0e14",error:"It was not possible to clean up the pasted data due to an internal error"},
-pasteText:{button:"\u0e27\u0e32\u0e07\u0e41\u0e1a\u0e1a\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e18\u0e23\u0e23\u0e21\u0e14\u0e32",title:"\u0e27\u0e32\u0e07\u0e41\u0e1a\u0e1a\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e18\u0e23\u0e23\u0e21\u0e14\u0e32"},templates:{button:"\u0e40\u0e17\u0e21\u0e40\u0e1e\u0e25\u0e15",title:"\u0e40\u0e17\u0e21\u0e40\u0e1e\u0e25\u0e15\u0e02\u0e2d\u0e07\u0e2a\u0e48\u0e27\u0e19\u0e40\u0e19\u0e37\u0e49\u0e2d\u0e2b\u0e32\u0e40\u0e27\u0e47\u0e1a\u0e44\u0e0b\u0e15\u0e4c",
-options:"Template Options",insertOption:"\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48\u0e40\u0e19\u0e37\u0e49\u0e2d\u0e2b\u0e32\u0e40\u0e27\u0e47\u0e1a\u0e44\u0e0b\u0e15\u0e4c\u0e17\u0e35\u0e48\u0e40\u0e25\u0e37\u0e2d\u0e01",selectPromptMsg:"\u0e01\u0e23\u0e38\u0e13\u0e32\u0e40\u0e25\u0e37\u0e2d\u0e01 \u0e40\u0e17\u0e21\u0e40\u0e1e\u0e25\u0e15 \u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e19\u0e33\u0e44\u0e1b\u0e41\u0e01\u0e49\u0e44\u0e02\u0e43\u0e19\u0e2d\u0e35\u0e14\u0e34\u0e15\u0e40\u0e15\u0e2d\u0e23\u0e4c<br />(\u0e40\u0e19\u0e37\u0e49\u0e2d\u0e2b\u0e32\u0e2a\u0e48\u0e27\u0e19\u0e19\u0e35\u0e49\u0e08\u0e30\u0e2b\u0e32\u0e22\u0e44\u0e1b):",
-emptyListMsg:"(\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e01\u0e32\u0e23\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e40\u0e17\u0e21\u0e40\u0e1e\u0e25\u0e15)"},showBlocks:"Show Blocks",stylesCombo:{label:"\u0e25\u0e31\u0e01\u0e29\u0e13\u0e30",panelTitle:"Formatting Styles",panelTitle1:"Block Styles",panelTitle2:"Inline Styles",panelTitle3:"Object Styles"},format:{label:"\u0e23\u0e39\u0e1b\u0e41\u0e1a\u0e1a",panelTitle:"\u0e23\u0e39\u0e1b\u0e41\u0e1a\u0e1a",tag_p:"Normal",tag_pre:"Formatted",tag_address:"Address",
-tag_h1:"Heading 1",tag_h2:"Heading 2",tag_h3:"Heading 3",tag_h4:"Heading 4",tag_h5:"Heading 5",tag_h6:"Heading 6",tag_div:"Paragraph (DIV)"},div:{title:"Create Div Container",toolbar:"Create Div Container",cssClassInputLabel:"Stylesheet Classes",styleSelectLabel:"Style",IdInputLabel:"Id",languageCodeInputLabel:" Language Code",inlineStyleInputLabel:"Inline Style",advisoryTitleInputLabel:"Advisory Title",langDirLabel:"Language Direction",langDirLTRLabel:"Left to Right (LTR)",langDirRTLLabel:"Right to Left (RTL)",
-edit:"Edit Div",remove:"Remove Div"},iframe:{title:"IFrame Properties",toolbar:"IFrame",noUrl:"Please type the iframe URL",scrolling:"Enable scrollbars",border:"Show frame border"},font:{label:"\u0e41\u0e1a\u0e1a\u0e2d\u0e31\u0e01\u0e29\u0e23",voiceLabel:"Font",panelTitle:"\u0e41\u0e1a\u0e1a\u0e2d\u0e31\u0e01\u0e29\u0e23"},fontSize:{label:"\u0e02\u0e19\u0e32\u0e14",voiceLabel:"Font Size",panelTitle:"\u0e02\u0e19\u0e32\u0e14"},colorButton:{textColorTitle:"\u0e2a\u0e35\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23",
-bgColorTitle:"\u0e2a\u0e35\u0e1e\u0e37\u0e49\u0e19\u0e2b\u0e25\u0e31\u0e07",panelTitle:"Colors",auto:"\u0e2a\u0e35\u0e2d\u0e31\u0e15\u0e42\u0e19\u0e21\u0e31\u0e15\u0e34",more:"\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e2a\u0e35\u0e2d\u0e37\u0e48\u0e19\u0e46..."},colors:{"000":"Black",8E5:"Maroon","8B4513":"Saddle Brown","2F4F4F":"Dark Slate Gray","008080":"Teal","000080":"Navy","4B0082":"Indigo",696969:"Dark Gray",B22222:"Fire Brick",A52A2A:"Brown",DAA520:"Golden Rod","006400":"Dark Green","40E0D0":"Turquoise",
-"0000CD":"Medium Blue",800080:"Purple",808080:"Gray",F00:"Red",FF8C00:"Dark Orange",FFD700:"Gold","008000":"Green","0FF":"Cyan","00F":"Blue",EE82EE:"Violet",A9A9A9:"Dim Gray",FFA07A:"Light Salmon",FFA500:"Orange",FFFF00:"Yellow","00FF00":"Lime",AFEEEE:"Pale Turquoise",ADD8E6:"Light Blue",DDA0DD:"Plum",D3D3D3:"Light Grey",FFF0F5:"Lavender Blush",FAEBD7:"Antique White",FFFFE0:"Light Yellow",F0FFF0:"Honeydew",F0FFFF:"Azure",F0F8FF:"Alice Blue",E6E6FA:"Lavender",FFF:"White"},scayt:{title:"Spell Check As You Type",
-opera_title:"Not supported by Opera",enable:"Enable SCAYT",disable:"Disable SCAYT",about:"About SCAYT",toggle:"Toggle SCAYT",options:"Options",langs:"Languages",moreSuggestions:"More suggestions",ignore:"Ignore",ignoreAll:"Ignore All",addWord:"Add Word",emptyDic:"Dictionary name should not be empty.",optionsTab:"Options",allCaps:"Ignore All-Caps Words",ignoreDomainNames:"Ignore Domain Names",mixedCase:"Ignore Words with Mixed Case",mixedWithDigits:"Ignore Words with Numbers",languagesTab:"Languages",
-dictionariesTab:"Dictionaries",dic_field_name:"Dictionary name",dic_create:"Create",dic_restore:"Restore",dic_delete:"Delete",dic_rename:"Rename",dic_info:"Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.",
-aboutTab:"About"},about:{title:"About CKEditor",dlgTitle:"About CKEditor",help:"Check $1 for help.",userGuide:"CKEditor User's Guide",moreInfo:"For licensing information please visit our web site:",copy:"Copyright &copy; $1. All rights reserved."},maximize:"Maximize",minimize:"Minimize",fakeobjects:{anchor:"Anchor",flash:"Flash Animation",iframe:"IFrame",hiddenfield:"Hidden Field",unknown:"Unknown Object"},resize:"Drag to resize",colordialog:{title:"Select color",options:"Color Options",highlight:"Highlight",
-selected:"Selected Color",clear:"Clear"},toolbarCollapse:"Collapse Toolbar",toolbarExpand:"Expand Toolbar",toolbarGroups:{document:"Document",clipboard:"Clipboard/Undo",editing:"Editing",forms:"Forms",basicstyles:"Basic Styles",paragraph:"Paragraph",links:"Links",insert:"Insert",styles:"Styles",colors:"Colors",tools:"Tools"},bidi:{ltr:"Text direction from left to right",rtl:"Text direction from right to left"},docprops:{label:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23",
-title:"\u0e04\u0e38\u0e13\u0e2a\u0e21\u0e1a\u0e31\u0e15\u0e34\u0e02\u0e2d\u0e07\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23",design:"Design",meta:"\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e2a\u0e33\u0e2b\u0e23\u0e31\u0e1a\u0e40\u0e2a\u0e34\u0e23\u0e4c\u0e0a\u0e40\u0e2d\u0e19\u0e08\u0e34\u0e49\u0e19",chooseColor:"Choose",other:"<\u0e2d\u0e37\u0e48\u0e19 \u0e46>",docTitle:"\u0e0a\u0e37\u0e48\u0e2d\u0e44\u0e15\u0e40\u0e15\u0e34\u0e49\u0e25",charset:"\u0e0a\u0e38\u0e14\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23",
-charsetOther:"\u0e0a\u0e38\u0e14\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23\u0e2d\u0e37\u0e48\u0e19\u0e46",charsetASCII:"ASCII",charsetCE:"Central European",charsetCT:"Chinese Traditional (Big5)",charsetCR:"Cyrillic",charsetGR:"Greek",charsetJP:"Japanese",charsetKR:"Korean",charsetTR:"Turkish",charsetUN:"Unicode (UTF-8)",charsetWE:"Western European",docType:"\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17\u0e02\u0e2d\u0e07\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23",docTypeOther:"\u0e1b\u0e23\u0e30\u0e40\u0e20\u0e17\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23\u0e2d\u0e37\u0e48\u0e19\u0e46",
-xhtmlDec:"\u0e23\u0e27\u0e21\u0e40\u0e2d\u0e32  XHTML Declarations \u0e44\u0e27\u0e49\u0e14\u0e49\u0e27\u0e22",bgColor:"\u0e2a\u0e35\u0e1e\u0e37\u0e49\u0e19\u0e2b\u0e25\u0e31\u0e07",bgImage:"\u0e17\u0e35\u0e48\u0e2d\u0e22\u0e39\u0e48\u0e2d\u0e49\u0e32\u0e07\u0e2d\u0e34\u0e07\u0e2d\u0e2d\u0e19\u0e44\u0e25\u0e19\u0e4c\u0e02\u0e2d\u0e07\u0e23\u0e39\u0e1b\u0e1e\u0e37\u0e49\u0e19\u0e2b\u0e25\u0e31\u0e07 (Image URL)",bgFixed:"\u0e1e\u0e37\u0e49\u0e19\u0e2b\u0e25\u0e31\u0e07\u0e41\u0e1a\u0e1a\u0e44\u0e21\u0e48\u0e21\u0e35\u0e41\u0e16\u0e1a\u0e40\u0e25\u0e37\u0e48\u0e2d\u0e19",
-txtColor:"\u0e2a\u0e35\u0e15\u0e31\u0e27\u0e2d\u0e31\u0e01\u0e29\u0e23",margin:"\u0e23\u0e30\u0e22\u0e30\u0e02\u0e2d\u0e1a\u0e02\u0e2d\u0e07\u0e2b\u0e19\u0e49\u0e32\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23",marginTop:"\u0e14\u0e49\u0e32\u0e19\u0e1a\u0e19",marginLeft:"\u0e14\u0e49\u0e32\u0e19\u0e0b\u0e49\u0e32\u0e22",marginRight:"\u0e14\u0e49\u0e32\u0e19\u0e02\u0e27\u0e32",marginBottom:"\u0e14\u0e49\u0e32\u0e19\u0e25\u0e48\u0e32\u0e07",metaKeywords:"\u0e04\u0e33\u0e2a\u0e33\u0e04\u0e31\u0e0d\u0e2d\u0e18\u0e34\u0e1a\u0e32\u0e22\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23 (\u0e04\u0e31\u0e48\u0e19\u0e04\u0e33\u0e14\u0e49\u0e27\u0e22 \u0e04\u0e2d\u0e21\u0e21\u0e48\u0e32)",
-metaDescription:"\u0e1b\u0e23\u0e30\u0e42\u0e22\u0e04\u0e2d\u0e18\u0e34\u0e1a\u0e32\u0e22\u0e40\u0e01\u0e35\u0e48\u0e22\u0e27\u0e01\u0e31\u0e1a\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23",metaAuthor:"\u0e1c\u0e39\u0e49\u0e2a\u0e23\u0e49\u0e32\u0e07\u0e40\u0e2d\u0e01\u0e2a\u0e32\u0e23",metaCopyright:"\u0e2a\u0e07\u0e27\u0e19\u0e25\u0e34\u0e02\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c",previewHtml:'<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>'}}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @fileOverview Defines the {@link CKEDITOR.lang} object, for the
+ * Thai language.
+ */
+
+/**#@+
+   @type String
+   @example
+*/
+
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang['th'] =
+{
+	/**
+	 * The language reading direction. Possible values are "rtl" for
+	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
+	 * languages (like English).
+	 * @default 'ltr'
+	 */
+	dir : 'ltr',
+
+	/*
+	 * Screenreader titles. Please note that screenreaders are not always capable
+	 * of reading non-English words. So be careful while translating it.
+	 */
+	editorTitle : 'Rich text editor, %1', // MISSING
+	editorHelp : 'Press ALT 0 for help', // MISSING
+
+	// ARIA descriptions.
+	toolbars	: 'Editor toolbars', // MISSING
+	editor		: 'Rich Text Editor', // MISSING
+
+	// Toolbar buttons without dialogs.
+	source			: 'ดูรหัส HTML',
+	newPage			: 'สร้างหน้าเอกสารใหม่',
+	save			: 'บันทึก',
+	preview			: 'ดูหน้าเอกสารตัวอย่าง',
+	cut				: 'ตัด',
+	copy			: 'สำเนา',
+	paste			: 'วาง',
+	print			: 'สั่งพิมพ์',
+	underline		: 'ตัวขีดเส้นใต้',
+	bold			: 'ตัวหนา',
+	italic			: 'ตัวเอียง',
+	selectAll		: 'เลือกทั้งหมด',
+	removeFormat	: 'ล้างรูปแบบ',
+	strike			: 'ตัวขีดเส้นทับ',
+	subscript		: 'ตัวห้อย',
+	superscript		: 'ตัวยก',
+	horizontalrule	: 'แทรกเส้นคั่นบรรทัด',
+	pagebreak		: 'แทรกตัวแบ่งหน้า Page Break',
+	pagebreakAlt		: 'Page Break', // MISSING
+	unlink			: 'ลบ ลิงค์',
+	undo			: 'ยกเลิกคำสั่ง',
+	redo			: 'ทำซ้ำคำสั่ง',
+
+	// Common messages and labels.
+	common :
+	{
+		browseServer	: 'เปิดหน้าต่างจัดการไฟล์อัพโหลด',
+		url				: 'ที่อยู่อ้างอิง URL',
+		protocol		: 'โปรโตคอล',
+		upload			: 'อัพโหลดไฟล์',
+		uploadSubmit	: 'อัพโหลดไฟล์ไปเก็บไว้ที่เครื่องแม่ข่าย (เซิร์ฟเวอร์)',
+		image			: 'รูปภาพ',
+		flash			: 'ไฟล์ Flash',
+		form			: 'แบบฟอร์ม',
+		checkbox		: 'เช็คบ๊อก',
+		radio			: 'เรดิโอบัตตอน',
+		textField		: 'เท็กซ์ฟิลด์',
+		textarea		: 'เท็กซ์แอเรีย',
+		hiddenField		: 'ฮิดเดนฟิลด์',
+		button			: 'ปุ่ม',
+		select			: 'แถบตัวเลือก',
+		imageButton		: 'ปุ่มแบบรูปภาพ',
+		notSet			: '<ไม่ระบุ>',
+		id				: 'ไอดี',
+		name			: 'ชื่อ',
+		langDir			: 'การเขียน-อ่านภาษา',
+		langDirLtr		: 'จากซ้ายไปขวา (LTR)',
+		langDirRtl		: 'จากขวามาซ้าย (RTL)',
+		langCode		: 'รหัสภาษา',
+		longDescr		: 'คำอธิบายประกอบ URL',
+		cssClass		: 'คลาสของไฟล์กำหนดลักษณะการแสดงผล',
+		advisoryTitle	: 'คำเกริ่นนำ',
+		cssStyle		: 'ลักษณะการแสดงผล',
+		ok				: 'ตกลง',
+		cancel			: 'ยกเลิก',
+		close			: 'Close', // MISSING
+		preview			: 'Preview', // MISSING
+		generalTab		: 'General', // MISSING
+		advancedTab		: 'ขั้นสูง',
+		validateNumberFailed : 'This value is not a number.', // MISSING
+		confirmNewPage	: 'Any unsaved changes to this content will be lost. Are you sure you want to load new page?', // MISSING
+		confirmCancel	: 'Some of the options have been changed. Are you sure to close the dialog?', // MISSING
+		options			: 'Options', // MISSING
+		target			: 'Target', // MISSING
+		targetNew		: 'New Window (_blank)', // MISSING
+		targetTop		: 'Topmost Window (_top)', // MISSING
+		targetSelf		: 'Same Window (_self)', // MISSING
+		targetParent	: 'Parent Window (_parent)', // MISSING
+		langDirLTR		: 'Left to Right (LTR)', // MISSING
+		langDirRTL		: 'Right to Left (RTL)', // MISSING
+		styles			: 'Style', // MISSING
+		cssClasses		: 'Stylesheet Classes', // MISSING
+		width			: 'ความกว้าง',
+		height			: 'ความสูง',
+		align			: 'การจัดวาง',
+		alignLeft		: 'ชิดซ้าย',
+		alignRight		: 'ชิดขวา',
+		alignCenter		: 'กึ่งกลาง',
+		alignTop		: 'บนสุด',
+		alignMiddle		: 'กึ่งกลางแนวตั้ง',
+		alignBottom		: 'ชิดด้านล่าง',
+		invalidHeight	: 'Height must be a number.', // MISSING
+		invalidWidth	: 'Width must be a number.', // MISSING
+		invalidCssLength	: 'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+		invalidHtmlLength	: 'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).', // MISSING
+		invalidInlineStyle	: 'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.', // MISSING
+		cssLengthTooltip	: 'Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
+
+		// Put the voice-only part of the label in the span.
+		unavailable		: '%1<span class="cke_accessibility">, unavailable</span>' // MISSING
+	},
+
+	contextmenu :
+	{
+		options : 'Context Menu Options' // MISSING
+	},
+
+	// Special char dialog.
+	specialChar		:
+	{
+		toolbar		: 'แทรกตัวอักษรพิเศษ',
+		title		: 'แทรกตัวอักษรพิเศษ',
+		options : 'Special Character Options' // MISSING
+	},
+
+	// Link dialog.
+	link :
+	{
+		toolbar		: 'แทรก/แก้ไข ลิงค์',
+		other 		: '<อื่น ๆ>',
+		menu		: 'แก้ไข ลิงค์',
+		title		: 'ลิงค์เชื่อมโยงเว็บ อีเมล์ รูปภาพ หรือไฟล์อื่นๆ',
+		info		: 'รายละเอียด',
+		target		: 'การเปิดหน้าลิงค์',
+		upload		: 'อัพโหลดไฟล์',
+		advanced	: 'ขั้นสูง',
+		type		: 'ประเภทของลิงค์',
+		toUrl		: 'URL', // MISSING
+		toAnchor	: 'จุดเชื่อมโยง (Anchor)',
+		toEmail		: 'ส่งอีเมล์ (E-Mail)',
+		targetFrame		: '<เปิดในเฟรม>',
+		targetPopup		: '<เปิดหน้าจอเล็ก (Pop-up)>',
+		targetFrameName	: 'ชื่อทาร์เก็ตเฟรม',
+		targetPopupName	: 'ระบุชื่อหน้าจอเล็ก (Pop-up)',
+		popupFeatures	: 'คุณสมบัติของหน้าจอเล็ก (Pop-up)',
+		popupResizable	: 'Resizable', // MISSING
+		popupStatusBar	: 'แสดงแถบสถานะ',
+		popupLocationBar: 'แสดงที่อยู่ของไฟล์',
+		popupToolbar	: 'แสดงแถบเครื่องมือ',
+		popupMenuBar	: 'แสดงแถบเมนู',
+		popupFullScreen	: 'แสดงเต็มหน้าจอ (IE5.5++ เท่านั้น)',
+		popupScrollBars	: 'แสดงแถบเลื่อน',
+		popupDependent	: 'แสดงเต็มหน้าจอ (Netscape)',
+		popupLeft		: 'พิกัดซ้าย (Left Position)',
+		popupTop		: 'พิกัดบน (Top Position)',
+		id				: 'Id', // MISSING
+		langDir			: 'การเขียน-อ่านภาษา',
+		langDirLTR		: 'จากซ้ายไปขวา (LTR)',
+		langDirRTL		: 'จากขวามาซ้าย (RTL)',
+		acccessKey		: 'แอคเซส คีย์',
+		name			: 'ชื่อ',
+		langCode			: 'การเขียน-อ่านภาษา',
+		tabIndex			: 'ลำดับของ แท็บ',
+		advisoryTitle		: 'คำเกริ่นนำ',
+		advisoryContentType	: 'ชนิดของคำเกริ่นนำ',
+		cssClasses		: 'คลาสของไฟล์กำหนดลักษณะการแสดงผล',
+		charset			: 'ลิงค์เชื่อมโยงไปยังชุดตัวอักษร',
+		styles			: 'ลักษณะการแสดงผล',
+		rel			: 'Relationship', // MISSING
+		selectAnchor		: 'ระบุข้อมูลของจุดเชื่อมโยง (Anchor)',
+		anchorName		: 'ชื่อ',
+		anchorId			: 'ไอดี',
+		emailAddress		: 'อีเมล์ (E-Mail)',
+		emailSubject		: 'หัวเรื่อง',
+		emailBody		: 'ข้อความ',
+		noAnchors		: '(ยังไม่มีจุดเชื่อมโยงภายในหน้าเอกสารนี้)',
+		noUrl			: 'กรุณาระบุที่อยู่อ้างอิงออนไลน์ (URL)',
+		noEmail			: 'กรุณาระบุอีเมล์ (E-mail)'
+	},
+
+	// Anchor dialog
+	anchor :
+	{
+		toolbar		: 'แทรก/แก้ไข Anchor',
+		menu		: 'รายละเอียด Anchor',
+		title		: 'รายละเอียด Anchor',
+		name		: 'ชื่อ Anchor',
+		errorName	: 'กรุณาระบุชื่อของ Anchor',
+		remove		: 'Remove Anchor' // MISSING
+	},
+
+	// List style dialog
+	list:
+	{
+		numberedTitle		: 'Numbered List Properties', // MISSING
+		bulletedTitle		: 'Bulleted List Properties', // MISSING
+		type				: 'Type', // MISSING
+		start				: 'Start', // MISSING
+		validateStartNumber				:'List start number must be a whole number.', // MISSING
+		circle				: 'Circle', // MISSING
+		disc				: 'Disc', // MISSING
+		square				: 'Square', // MISSING
+		none				: 'None', // MISSING
+		notset				: '<not set>', // MISSING
+		armenian			: 'Armenian numbering', // MISSING
+		georgian			: 'Georgian numbering (an, ban, gan, etc.)', // MISSING
+		lowerRoman			: 'Lower Roman (i, ii, iii, iv, v, etc.)', // MISSING
+		upperRoman			: 'Upper Roman (I, II, III, IV, V, etc.)', // MISSING
+		lowerAlpha			: 'Lower Alpha (a, b, c, d, e, etc.)', // MISSING
+		upperAlpha			: 'Upper Alpha (A, B, C, D, E, etc.)', // MISSING
+		lowerGreek			: 'Lower Greek (alpha, beta, gamma, etc.)', // MISSING
+		decimal				: 'Decimal (1, 2, 3, etc.)', // MISSING
+		decimalLeadingZero	: 'Decimal leading zero (01, 02, 03, etc.)' // MISSING
+	},
+
+	// Find And Replace Dialog
+	findAndReplace :
+	{
+		title				: 'Find and Replace', // MISSING
+		find				: 'ค้นหา',
+		replace				: 'ค้นหาและแทนที่',
+		findWhat			: 'ค้นหาคำว่า:',
+		replaceWith			: 'แทนที่ด้วย:',
+		notFoundMsg			: 'ไม่พบคำที่ค้นหา.',
+		findOptions			: 'Find Options', // MISSING
+		matchCase			: 'ตัวโหญ่-เล็ก ต้องตรงกัน',
+		matchWord			: 'ต้องตรงกันทุกคำ',
+		matchCyclic			: 'Match cyclic', // MISSING
+		replaceAll			: 'แทนที่ทั้งหมดที่พบ',
+		replaceSuccessMsg	: '%1 occurrence(s) replaced.' // MISSING
+	},
+
+	// Table Dialog
+	table :
+	{
+		toolbar		: 'ตาราง',
+		title		: 'คุณสมบัติของ ตาราง',
+		menu		: 'คุณสมบัติของ ตาราง',
+		deleteTable	: 'ลบตาราง',
+		rows		: 'แถว',
+		columns		: 'สดมน์',
+		border		: 'ขนาดเส้นขอบ',
+		widthPx		: 'จุดสี',
+		widthPc		: 'เปอร์เซ็น',
+		widthUnit	: 'width unit', // MISSING
+		cellSpace	: 'ระยะแนวนอนน',
+		cellPad		: 'ระยะแนวตั้ง',
+		caption		: 'หัวเรื่องของตาราง',
+		summary		: 'สรุปความ',
+		headers		: 'Headers', // MISSING
+		headersNone		: 'None', // MISSING
+		headersColumn	: 'First column', // MISSING
+		headersRow		: 'First Row', // MISSING
+		headersBoth		: 'Both', // MISSING
+		invalidRows		: 'Number of rows must be a number greater than 0.', // MISSING
+		invalidCols		: 'Number of columns must be a number greater than 0.', // MISSING
+		invalidBorder	: 'Border size must be a number.', // MISSING
+		invalidWidth	: 'Table width must be a number.', // MISSING
+		invalidHeight	: 'Table height must be a number.', // MISSING
+		invalidCellSpacing	: 'Cell spacing must be a positive number.', // MISSING
+		invalidCellPadding	: 'Cell padding must be a positive number.', // MISSING
+
+		cell :
+		{
+			menu			: 'ช่องตาราง',
+			insertBefore	: 'Insert Cell Before', // MISSING
+			insertAfter		: 'Insert Cell After', // MISSING
+			deleteCell		: 'ลบช่อง',
+			merge			: 'ผสานช่อง',
+			mergeRight		: 'Merge Right', // MISSING
+			mergeDown		: 'Merge Down', // MISSING
+			splitHorizontal	: 'Split Cell Horizontally', // MISSING
+			splitVertical	: 'Split Cell Vertically', // MISSING
+			title			: 'Cell Properties', // MISSING
+			cellType		: 'Cell Type', // MISSING
+			rowSpan			: 'Rows Span', // MISSING
+			colSpan			: 'Columns Span', // MISSING
+			wordWrap		: 'Word Wrap', // MISSING
+			hAlign			: 'Horizontal Alignment', // MISSING
+			vAlign			: 'Vertical Alignment', // MISSING
+			alignBaseline	: 'Baseline', // MISSING
+			bgColor			: 'Background Color', // MISSING
+			borderColor		: 'Border Color', // MISSING
+			data			: 'Data', // MISSING
+			header			: 'Header', // MISSING
+			yes				: 'Yes', // MISSING
+			no				: 'No', // MISSING
+			invalidWidth	: 'Cell width must be a number.', // MISSING
+			invalidHeight	: 'Cell height must be a number.', // MISSING
+			invalidRowSpan	: 'Rows span must be a whole number.', // MISSING
+			invalidColSpan	: 'Columns span must be a whole number.', // MISSING
+			chooseColor		: 'Choose' // MISSING
+		},
+
+		row :
+		{
+			menu			: 'แถว',
+			insertBefore	: 'Insert Row Before', // MISSING
+			insertAfter		: 'Insert Row After', // MISSING
+			deleteRow		: 'ลบแถว'
+		},
+
+		column :
+		{
+			menu			: 'คอลัมน์',
+			insertBefore	: 'Insert Column Before', // MISSING
+			insertAfter		: 'Insert Column After', // MISSING
+			deleteColumn	: 'ลบสดมน์'
+		}
+	},
+
+	// Button Dialog.
+	button :
+	{
+		title		: 'รายละเอียดของ ปุ่ม',
+		text		: 'ข้อความ (ค่าตัวแปร)',
+		type		: 'ข้อความ',
+		typeBtn		: 'Button',
+		typeSbm		: 'Submit',
+		typeRst		: 'Reset'
+	},
+
+	// Checkbox and Radio Button Dialogs.
+	checkboxAndRadio :
+	{
+		checkboxTitle : 'คุณสมบัติของ เช็คบ๊อก',
+		radioTitle	: 'คุณสมบัติของ เรดิโอบัตตอน',
+		value		: 'ค่าตัวแปร',
+		selected	: 'เลือกเป็นค่าเริ่มต้น'
+	},
+
+	// Form Dialog.
+	form :
+	{
+		title		: 'คุณสมบัติของ แบบฟอร์ม',
+		menu		: 'คุณสมบัติของ แบบฟอร์ม',
+		action		: 'แอคชั่น',
+		method		: 'เมธอด',
+		encoding	: 'Encoding' // MISSING
+	},
+
+	// Select Field Dialog.
+	select :
+	{
+		title		: 'คุณสมบัติของ แถบตัวเลือก',
+		selectInfo	: 'อินโฟ',
+		opAvail		: 'รายการตัวเลือก',
+		value		: 'ค่าตัวแปร',
+		size		: 'ขนาด',
+		lines		: 'บรรทัด',
+		chkMulti	: 'เลือกหลายค่าได้',
+		opText		: 'ข้อความ',
+		opValue		: 'ค่าตัวแปร',
+		btnAdd		: 'เพิ่ม',
+		btnModify	: 'แก้ไข',
+		btnUp		: 'บน',
+		btnDown		: 'ล่าง',
+		btnSetValue : 'เลือกเป็นค่าเริ่มต้น',
+		btnDelete	: 'ลบ'
+	},
+
+	// Textarea Dialog.
+	textarea :
+	{
+		title		: 'คุณสมบัติของ เท็กแอเรีย',
+		cols		: 'สดมภ์',
+		rows		: 'แถว'
+	},
+
+	// Text Field Dialog.
+	textfield :
+	{
+		title		: 'คุณสมบัติของ เท็กซ์ฟิลด์',
+		name		: 'ชื่อ',
+		value		: 'ค่าตัวแปร',
+		charWidth	: 'ความกว้าง',
+		maxChars	: 'จำนวนตัวอักษรสูงสุด',
+		type		: 'ชนิด',
+		typeText	: 'ข้อความ',
+		typePass	: 'รหัสผ่าน'
+	},
+
+	// Hidden Field Dialog.
+	hidden :
+	{
+		title	: 'คุณสมบัติของ ฮิดเดนฟิลด์',
+		name	: 'ชื่อ',
+		value	: 'ค่าตัวแปร'
+	},
+
+	// Image Dialog.
+	image :
+	{
+		title		: 'คุณสมบัติของ รูปภาพ',
+		titleButton	: 'คุณสมบัติของ ปุ่มแบบรูปภาพ',
+		menu		: 'คุณสมบัติของ รูปภาพ',
+		infoTab		: 'ข้อมูลของรูปภาพ',
+		btnUpload	: 'อัพโหลดไฟล์ไปเก็บไว้ที่เครื่องแม่ข่าย (เซิร์ฟเวอร์)',
+		upload		: 'อัพโหลดไฟล์',
+		alt			: 'คำประกอบรูปภาพ',
+		lockRatio	: 'กำหนดอัตราส่วน กว้าง-สูง แบบคงที่',
+		resetSize	: 'กำหนดรูปเท่าขนาดจริง',
+		border		: 'ขนาดขอบรูป',
+		hSpace		: 'ระยะแนวนอน',
+		vSpace		: 'ระยะแนวตั้ง',
+		alertUrl	: 'กรุณาระบุที่อยู่อ้างอิงออนไลน์ของไฟล์รูปภาพ (URL)',
+		linkTab		: 'ลิ้งค์',
+		button2Img	: 'Do you want to transform the selected image button on a simple image?', // MISSING
+		img2Button	: 'Do you want to transform the selected image on a image button?', // MISSING
+		urlMissing	: 'Image source URL is missing.', // MISSING
+		validateBorder	: 'Border must be a whole number.', // MISSING
+		validateHSpace	: 'HSpace must be a whole number.', // MISSING
+		validateVSpace	: 'VSpace must be a whole number.' // MISSING
+	},
+
+	// Flash Dialog
+	flash :
+	{
+		properties		: 'คุณสมบัติของไฟล์ Flash',
+		propertiesTab	: 'Properties', // MISSING
+		title			: 'คุณสมบัติของไฟล์ Flash',
+		chkPlay			: 'เล่นอัตโนมัติ Auto Play',
+		chkLoop			: 'เล่นวนรอบ Loop',
+		chkMenu			: 'ให้ใช้งานเมนูของ Flash',
+		chkFull			: 'Allow Fullscreen', // MISSING
+ 		scale			: 'อัตราส่วน Scale',
+		scaleAll		: 'แสดงให้เห็นทั้งหมด Show all',
+		scaleNoBorder	: 'ไม่แสดงเส้นขอบ No Border',
+		scaleFit		: 'แสดงให้พอดีกับพื้นที่ Exact Fit',
+		access			: 'Script Access', // MISSING
+		accessAlways	: 'Always', // MISSING
+		accessSameDomain: 'Same domain', // MISSING
+		accessNever		: 'Never', // MISSING
+		alignAbsBottom	: 'ชิดด้านล่างสุด',
+		alignAbsMiddle	: 'กึ่งกลาง',
+		alignBaseline	: 'ชิดบรรทัด',
+		alignTextTop	: 'ใต้ตัวอักษร',
+		quality			: 'Quality', // MISSING
+		qualityBest		: 'Best', // MISSING
+		qualityHigh		: 'High', // MISSING
+		qualityAutoHigh	: 'Auto High', // MISSING
+		qualityMedium	: 'Medium', // MISSING
+		qualityAutoLow	: 'Auto Low', // MISSING
+		qualityLow		: 'Low', // MISSING
+		windowModeWindow: 'Window', // MISSING
+		windowModeOpaque: 'Opaque', // MISSING
+		windowModeTransparent : 'Transparent', // MISSING
+		windowMode		: 'Window mode', // MISSING
+		flashvars		: 'Variables for Flash', // MISSING
+		bgcolor			: 'สีพื้นหลัง',
+		hSpace			: 'ระยะแนวนอน',
+		vSpace			: 'ระยะแนวตั้ง',
+		validateSrc		: 'กรุณาระบุที่อยู่อ้างอิงออนไลน์ (URL)',
+		validateHSpace	: 'HSpace must be a number.', // MISSING
+		validateVSpace	: 'VSpace must be a number.' // MISSING
+	},
+
+	// Speller Pages Dialog
+	spellCheck :
+	{
+		toolbar			: 'ตรวจการสะกดคำ',
+		title			: 'Spell Check', // MISSING
+		notAvailable	: 'Sorry, but service is unavailable now.', // MISSING
+		errorLoading	: 'Error loading application service host: %s.', // MISSING
+		notInDic		: 'ไม่พบในดิกชันนารี',
+		changeTo		: 'แก้ไขเป็น',
+		btnIgnore		: 'ยกเว้น',
+		btnIgnoreAll	: 'ยกเว้นทั้งหมด',
+		btnReplace		: 'แทนที่',
+		btnReplaceAll	: 'แทนที่ทั้งหมด',
+		btnUndo			: 'ยกเลิก',
+		noSuggestions	: '- ไม่มีคำแนะนำใดๆ -',
+		progress		: 'กำลังตรวจสอบคำสะกด...',
+		noMispell		: 'ตรวจสอบคำสะกดเสร็จสิ้น: ไม่พบคำสะกดผิด',
+		noChanges		: 'ตรวจสอบคำสะกดเสร็จสิ้น: ไม่มีการแก้คำใดๆ',
+		oneChange		: 'ตรวจสอบคำสะกดเสร็จสิ้น: แก้ไข1คำ',
+		manyChanges		: 'ตรวจสอบคำสะกดเสร็จสิ้น:: แก้ไข %1 คำ',
+		ieSpellDownload	: 'ไม่ได้ติดตั้งระบบตรวจสอบคำสะกด. ต้องการติดตั้งไหมครับ?'
+	},
+
+	smiley :
+	{
+		toolbar	: 'รูปสื่ออารมณ์',
+		title	: 'แทรกสัญลักษณ์สื่ออารมณ์',
+		options : 'Smiley Options' // MISSING
+	},
+
+	elementsPath :
+	{
+		eleLabel : 'Elements path', // MISSING
+		eleTitle : '%1 element' // MISSING
+	},
+
+	numberedlist	: 'ลำดับรายการแบบตัวเลข',
+	bulletedlist	: 'ลำดับรายการแบบสัญลักษณ์',
+	indent			: 'เพิ่มระยะย่อหน้า',
+	outdent			: 'ลดระยะย่อหน้า',
+
+	justify :
+	{
+		left	: 'จัดชิดซ้าย',
+		center	: 'จัดกึ่งกลาง',
+		right	: 'จัดชิดขวา',
+		block	: 'จัดพอดีหน้ากระดาษ'
+	},
+
+	blockquote : 'Block Quote', // MISSING
+
+	clipboard :
+	{
+		title		: 'วาง',
+		cutError	: 'ไม่สามารถตัดข้อความที่เลือกไว้ได้เนื่องจากการกำหนดค่าระดับความปลอดภัย. กรุณาใช้ปุ่มลัดเพื่อวางข้อความแทน (กดปุ่ม Ctrl/Cmd และตัว X พร้อมกัน).',
+		copyError	: 'ไม่สามารถสำเนาข้อความที่เลือกไว้ได้เนื่องจากการกำหนดค่าระดับความปลอดภัย. กรุณาใช้ปุ่มลัดเพื่อวางข้อความแทน (กดปุ่ม Ctrl/Cmd และตัว C พร้อมกัน).',
+		pasteMsg	: 'กรุณาใช้คีย์บอร์ดเท่านั้น โดยกดปุ๋ม (<strong>Ctrl/Cmd และ V</strong>)พร้อมๆกัน และกด <strong>OK</strong>.',
+		securityMsg	: 'Because of your browser security settings, the editor is not able to access your clipboard data directly. You are required to paste it again in this window.', // MISSING
+		pasteArea	: 'Paste Area' // MISSING
+	},
+
+	pastefromword :
+	{
+		confirmCleanup	: 'The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?', // MISSING
+		toolbar			: 'วางสำเนาจากตัวอักษรเวิร์ด',
+		title			: 'วางสำเนาจากตัวอักษรเวิร์ด',
+		error			: 'It was not possible to clean up the pasted data due to an internal error' // MISSING
+	},
+
+	pasteText :
+	{
+		button	: 'วางแบบตัวอักษรธรรมดา',
+		title	: 'วางแบบตัวอักษรธรรมดา'
+	},
+
+	templates :
+	{
+		button			: 'เทมเพลต',
+		title			: 'เทมเพลตของส่วนเนื้อหาเว็บไซต์',
+		options : 'Template Options', // MISSING
+		insertOption	: 'แทนที่เนื้อหาเว็บไซต์ที่เลือก',
+		selectPromptMsg	: 'กรุณาเลือก เทมเพลต เพื่อนำไปแก้ไขในอีดิตเตอร์<br />(เนื้อหาส่วนนี้จะหายไป):',
+		emptyListMsg	: '(ยังไม่มีการกำหนดเทมเพลต)'
+	},
+
+	showBlocks : 'Show Blocks', // MISSING
+
+	stylesCombo :
+	{
+		label		: 'ลักษณะ',
+		panelTitle	: 'Formatting Styles', // MISSING
+		panelTitle1	: 'Block Styles', // MISSING
+		panelTitle2	: 'Inline Styles', // MISSING
+		panelTitle3	: 'Object Styles' // MISSING
+	},
+
+	format :
+	{
+		label		: 'รูปแบบ',
+		panelTitle	: 'รูปแบบ',
+
+		tag_p		: 'Normal',
+		tag_pre		: 'Formatted',
+		tag_address	: 'Address',
+		tag_h1		: 'Heading 1',
+		tag_h2		: 'Heading 2',
+		tag_h3		: 'Heading 3',
+		tag_h4		: 'Heading 4',
+		tag_h5		: 'Heading 5',
+		tag_h6		: 'Heading 6',
+		tag_div		: 'Paragraph (DIV)'
+	},
+
+	div :
+	{
+		title				: 'Create Div Container', // MISSING
+		toolbar				: 'Create Div Container', // MISSING
+		cssClassInputLabel	: 'Stylesheet Classes', // MISSING
+		styleSelectLabel	: 'Style', // MISSING
+		IdInputLabel		: 'Id', // MISSING
+		languageCodeInputLabel	: ' Language Code', // MISSING
+		inlineStyleInputLabel	: 'Inline Style', // MISSING
+		advisoryTitleInputLabel	: 'Advisory Title', // MISSING
+		langDirLabel		: 'Language Direction', // MISSING
+		langDirLTRLabel		: 'Left to Right (LTR)', // MISSING
+		langDirRTLLabel		: 'Right to Left (RTL)', // MISSING
+		edit				: 'Edit Div', // MISSING
+		remove				: 'Remove Div' // MISSING
+  	},
+
+	iframe :
+	{
+		title		: 'IFrame Properties', // MISSING
+		toolbar		: 'IFrame', // MISSING
+		noUrl		: 'Please type the iframe URL', // MISSING
+		scrolling	: 'Enable scrollbars', // MISSING
+		border		: 'Show frame border' // MISSING
+	},
+
+	font :
+	{
+		label		: 'แบบอักษร',
+		voiceLabel	: 'Font', // MISSING
+		panelTitle	: 'แบบอักษร'
+	},
+
+	fontSize :
+	{
+		label		: 'ขนาด',
+		voiceLabel	: 'Font Size', // MISSING
+		panelTitle	: 'ขนาด'
+	},
+
+	colorButton :
+	{
+		textColorTitle	: 'สีตัวอักษร',
+		bgColorTitle	: 'สีพื้นหลัง',
+		panelTitle		: 'Colors', // MISSING
+		auto			: 'สีอัตโนมัติ',
+		more			: 'เลือกสีอื่นๆ...'
+	},
+
+	colors :
+	{
+		'000' : 'Black', // MISSING
+		'800000' : 'Maroon', // MISSING
+		'8B4513' : 'Saddle Brown', // MISSING
+		'2F4F4F' : 'Dark Slate Gray', // MISSING
+		'008080' : 'Teal', // MISSING
+		'000080' : 'Navy', // MISSING
+		'4B0082' : 'Indigo', // MISSING
+		'696969' : 'Dark Gray', // MISSING
+		'B22222' : 'Fire Brick', // MISSING
+		'A52A2A' : 'Brown', // MISSING
+		'DAA520' : 'Golden Rod', // MISSING
+		'006400' : 'Dark Green', // MISSING
+		'40E0D0' : 'Turquoise', // MISSING
+		'0000CD' : 'Medium Blue', // MISSING
+		'800080' : 'Purple', // MISSING
+		'808080' : 'Gray', // MISSING
+		'F00' : 'Red', // MISSING
+		'FF8C00' : 'Dark Orange', // MISSING
+		'FFD700' : 'Gold', // MISSING
+		'008000' : 'Green', // MISSING
+		'0FF' : 'Cyan', // MISSING
+		'00F' : 'Blue', // MISSING
+		'EE82EE' : 'Violet', // MISSING
+		'A9A9A9' : 'Dim Gray', // MISSING
+		'FFA07A' : 'Light Salmon', // MISSING
+		'FFA500' : 'Orange', // MISSING
+		'FFFF00' : 'Yellow', // MISSING
+		'00FF00' : 'Lime', // MISSING
+		'AFEEEE' : 'Pale Turquoise', // MISSING
+		'ADD8E6' : 'Light Blue', // MISSING
+		'DDA0DD' : 'Plum', // MISSING
+		'D3D3D3' : 'Light Grey', // MISSING
+		'FFF0F5' : 'Lavender Blush', // MISSING
+		'FAEBD7' : 'Antique White', // MISSING
+		'FFFFE0' : 'Light Yellow', // MISSING
+		'F0FFF0' : 'Honeydew', // MISSING
+		'F0FFFF' : 'Azure', // MISSING
+		'F0F8FF' : 'Alice Blue', // MISSING
+		'E6E6FA' : 'Lavender', // MISSING
+		'FFF' : 'White' // MISSING
+	},
+
+	scayt :
+	{
+		title			: 'Spell Check As You Type', // MISSING
+		opera_title		: 'Not supported by Opera', // MISSING
+		enable			: 'Enable SCAYT', // MISSING
+		disable			: 'Disable SCAYT', // MISSING
+		about			: 'About SCAYT', // MISSING
+		toggle			: 'Toggle SCAYT', // MISSING
+		options			: 'Options', // MISSING
+		langs			: 'Languages', // MISSING
+		moreSuggestions	: 'More suggestions', // MISSING
+		ignore			: 'Ignore', // MISSING
+		ignoreAll		: 'Ignore All', // MISSING
+		addWord			: 'Add Word', // MISSING
+		emptyDic		: 'Dictionary name should not be empty.', // MISSING
+
+		optionsTab		: 'Options', // MISSING
+		allCaps			: 'Ignore All-Caps Words', // MISSING
+		ignoreDomainNames : 'Ignore Domain Names', // MISSING
+		mixedCase		: 'Ignore Words with Mixed Case', // MISSING
+		mixedWithDigits	: 'Ignore Words with Numbers', // MISSING
+
+		languagesTab	: 'Languages', // MISSING
+
+		dictionariesTab	: 'Dictionaries', // MISSING
+		dic_field_name	: 'Dictionary name', // MISSING
+		dic_create		: 'Create', // MISSING
+		dic_restore		: 'Restore', // MISSING
+		dic_delete		: 'Delete', // MISSING
+		dic_rename		: 'Rename', // MISSING
+		dic_info		: 'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.', // MISSING
+
+		aboutTab		: 'About' // MISSING
+	},
+
+	about :
+	{
+		title		: 'About CKEditor', // MISSING
+		dlgTitle	: 'About CKEditor', // MISSING
+		help	: 'Check $1 for help.', // MISSING
+		userGuide : 'CKEditor User\'s Guide', // MISSING
+		moreInfo	: 'For licensing information please visit our web site:', // MISSING
+		copy		: 'Copyright &copy; $1. All rights reserved.' // MISSING
+	},
+
+	maximize : 'Maximize', // MISSING
+	minimize : 'Minimize', // MISSING
+
+	fakeobjects :
+	{
+		anchor		: 'Anchor', // MISSING
+		flash		: 'Flash Animation', // MISSING
+		iframe		: 'IFrame', // MISSING
+		hiddenfield	: 'Hidden Field', // MISSING
+		unknown		: 'Unknown Object' // MISSING
+	},
+
+	resize : 'Drag to resize', // MISSING
+
+	colordialog :
+	{
+		title		: 'Select color', // MISSING
+		options	:	'Color Options', // MISSING
+		highlight	: 'Highlight', // MISSING
+		selected	: 'Selected Color', // MISSING
+		clear		: 'Clear' // MISSING
+	},
+
+	toolbarCollapse	: 'Collapse Toolbar', // MISSING
+	toolbarExpand	: 'Expand Toolbar', // MISSING
+
+	toolbarGroups :
+	{
+		document : 'Document', // MISSING
+		clipboard : 'Clipboard/Undo', // MISSING
+		editing : 'Editing', // MISSING
+		forms : 'Forms', // MISSING
+		basicstyles : 'Basic Styles', // MISSING
+		paragraph : 'Paragraph', // MISSING
+		links : 'Links', // MISSING
+		insert : 'Insert', // MISSING
+		styles : 'Styles', // MISSING
+		colors : 'Colors', // MISSING
+		tools : 'Tools' // MISSING
+	},
+
+	bidi :
+	{
+		ltr : 'Text direction from left to right', // MISSING
+		rtl : 'Text direction from right to left' // MISSING
+	},
+
+	docprops :
+	{
+		label : 'คุณสมบัติของเอกสาร',
+		title : 'คุณสมบัติของเอกสาร',
+		design : 'Design', // MISSING
+		meta : 'ข้อมูลสำหรับเสิร์ชเอนจิ้น',
+		chooseColor : 'Choose', // MISSING
+		other : '<อื่น ๆ>',
+		docTitle :	'ชื่อไตเติ้ล',
+		charset : 	'ชุดตัวอักษร',
+		charsetOther : 'ชุดตัวอักษรอื่นๆ',
+		charsetASCII : 'ASCII', // MISSING
+		charsetCE : 'Central European', // MISSING
+		charsetCT : 'Chinese Traditional (Big5)', // MISSING
+		charsetCR : 'Cyrillic', // MISSING
+		charsetGR : 'Greek', // MISSING
+		charsetJP : 'Japanese', // MISSING
+		charsetKR : 'Korean', // MISSING
+		charsetTR : 'Turkish', // MISSING
+		charsetUN : 'Unicode (UTF-8)', // MISSING
+		charsetWE : 'Western European', // MISSING
+		docType : 'ประเภทของเอกสาร',
+		docTypeOther : 'ประเภทเอกสารอื่นๆ',
+		xhtmlDec : 'รวมเอา  XHTML Declarations ไว้ด้วย',
+		bgColor : 'สีพื้นหลัง',
+		bgImage : 'ที่อยู่อ้างอิงออนไลน์ของรูปพื้นหลัง (Image URL)',
+		bgFixed : 'พื้นหลังแบบไม่มีแถบเลื่อน',
+		txtColor : 'สีตัวอักษร',
+		margin : 'ระยะขอบของหน้าเอกสาร',
+		marginTop : 'ด้านบน',
+		marginLeft : 'ด้านซ้าย',
+		marginRight : 'ด้านขวา',
+		marginBottom : 'ด้านล่าง',
+		metaKeywords : 'คำสำคัญอธิบายเอกสาร (คั่นคำด้วย คอมม่า)',
+		metaDescription : 'ประโยคอธิบายเกี่ยวกับเอกสาร',
+		metaAuthor : 'ผู้สร้างเอกสาร',
+		metaCopyright : 'สงวนลิขสิทธิ์',
+		previewHtml : '<p>This is some <strong>sample text</strong>. You are using <a href="javascript:void(0)">CKEditor</a>.</p>' // MISSING
+	}
+};

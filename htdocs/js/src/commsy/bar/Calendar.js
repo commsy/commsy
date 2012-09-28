@@ -40,17 +40,23 @@ define([	"dojo/_base/declare",
 			}));
 		},
 		
+		afterParse: function() {
+			
+		},
+		
 		createCalendar: function() {
-			return new Calendar({
+			var calendar = new Calendar({
 				decodeDate:			function(s) {
 					return Stamp.fromISOString(s);
 				},
 				encodeDate:			function(d) {
 					return Stamp.toISOString(d)
 				},
-				store:				new Observable(new Json({
+				store:				/*new Observable(*/new Json({
 					fct:			"myCalendar"
-				})),
+				})/*)*/,
+				selectionMode:		"none",
+				moveEnabled:		false,
 				dateInterval:		"day",
 				style:				"position: relative; height: 500px;",
 				columnViewProps:	{
@@ -58,6 +64,12 @@ define([	"dojo/_base/declare",
 					maxHours:		24
 				}
 			}, this.calendarNode);
+			
+			calendar.on("itemClick", Lang.hitch(function(event) {
+				
+			}));
+			
+			return calendar;
 		}
 		
 		/************************************************************************************

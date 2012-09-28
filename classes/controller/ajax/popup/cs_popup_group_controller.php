@@ -82,9 +82,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
-    	
-    	$this->_popup_controller->performChecks($form_data, $additional);
-    	
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
@@ -100,6 +97,8 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
             $item_manager = $this->_environment->getGroupManager();
             $item = $item_manager->getItem($current_iid);
         }
+        
+        $this->_popup_controller->performChecks($item, $form_data, $additional);
 
         if (isset($form_data['editType'])){
 			$this->_edit_type = $form_data['editType'];

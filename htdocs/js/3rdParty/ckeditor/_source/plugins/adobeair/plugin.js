@@ -1,6 +1,228 @@
-//>>built
-define("ckeditor/_source/plugins/adobeair/plugin",["dijit","dojo","dojox"],function(){(function(){function g(a){for(var a=a.getElementsByTag("*"),c=a.count(),b,d=0;d<c;d++)b=a.getItem(d),function(a){for(var b=0;b<f.length;b++)(function(b){var c=a.getAttribute("on"+b);a.hasAttribute("on"+b)&&(a.removeAttribute("on"+b),a.on(b,function(b){var d=/(return\s*)?CKEDITOR\.tools\.callFunction\(([^)]+)\)/.exec(c),j=d&&d[1],e=d&&d[2].split(","),d=/return false;/.test(c);if(e){for(var g=e.length,f,h=0;h<g;h++){e[h]=
-f=CKEDITOR.tools.trim(e[h]);var i=f.match(/^(["'])([^"']*?)\1$/);if(i)e[h]=i[2];else if(f.match(/\d+/))e[h]=parseInt(f,10);else switch(f){case "this":e[h]=a.$;break;case "event":e[h]=b.data.$;break;case "null":e[h]=null}}e=CKEDITOR.tools.callFunction.apply(window,e);j&&!1===e&&(d=1)}d&&b.data.preventDefault()}))})(f[b])}(b)}var f="click,keydown,mousedown,keypress,mouseover,mouseout".split(",");CKEDITOR.plugins.add("adobeair",{init:function(a){CKEDITOR.env.air&&(a.addCss("body { padding: 8px }"),a.on("uiReady",
-function(){g(a.container);if(a.sharedSpaces)for(var c in a.sharedSpaces)g(a.sharedSpaces[c]);a.on("elementsPathUpdate",function(a){g(a.data.space)})}),a.on("contentDom",function(){a.document.on("click",function(a){a.data.preventDefault(!0)})}))}});CKEDITOR.ui.on("ready",function(a){a=a.data;if(a._.panel){var c=a._.panel._.panel,b;(function(){c.isLoaded?(b=c._.holder,g(b)):setTimeout(arguments.callee,30)})()}else a instanceof CKEDITOR.dialog&&g(a._.element)})})();CKEDITOR.dom.document.prototype.write=
-CKEDITOR.tools.override(CKEDITOR.dom.document.prototype.write,function(g){function f(a,c,b,d){c=a.append(c);(b=CKEDITOR.htmlParser.fragment.fromHtml(b).children[0].attributes)&&c.setAttributes(b);d&&c.append(a.getDocument().createText(d))}return function(a,c){if(this.getBody()){var b=this,d=this.getHead(),a=a.replace(/(<style[^>]*>)([\s\S]*?)<\/style>/gi,function(a,b,c){f(d,"style",b,c);return""}),a=a.replace(/<base\b[^>]*\/>/i,function(a){f(d,"base",a);return""}),a=a.replace(/<title>([\s\S]*)<\/title>/i,
-function(a,d){b.$.title=d;return""}),a=a.replace(/<head>([\s\S]*)<\/head>/i,function(a){var c=new CKEDITOR.dom.element("div",b);c.setHtml(a);c.moveChildren(d);return""});a.replace(/(<body[^>]*>)([\s\S]*)(?=$|<\/body>)/i,function(a,c,d){b.getBody().setHtml(d);(a=CKEDITOR.htmlParser.fragment.fromHtml(c).children[0].attributes)&&b.getBody().setAttributes(a)})}else g.apply(this,arguments)}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+(function()
+{
+	var eventNameList = [ 'click', 'keydown', 'mousedown', 'keypress', 'mouseover', 'mouseout' ];
+
+	// Inline event callbacks assigned via innerHTML/outerHTML, such as
+	// onclick/onmouseover, are ignored in AIR.
+	// Use DOM2 event listeners to substitue inline handlers instead.
+	function convertInlineHandlers( container )
+	{
+		// TODO: document.querySelectorAll is not supported in AIR.
+		var children = container.getElementsByTag( '*' ),
+			count = children.count(),
+			child;
+
+		for ( var i = 0; i < count; i++ )
+		{
+			child = children.getItem( i );
+
+			(function( node )
+			{
+				for ( var j = 0; j < eventNameList.length; j++ )
+				{
+					(function( eventName )
+					{
+						var inlineEventHandler = node.getAttribute( 'on' + eventName );
+						if ( node.hasAttribute( 'on' + eventName ) )
+						{
+							node.removeAttribute( 'on' + eventName );
+							node.on( eventName, function( evt )
+							{
+								var callFunc = /(return\s*)?CKEDITOR\.tools\.callFunction\(([^)]+)\)/.exec( inlineEventHandler ),
+									hasReturn = callFunc && callFunc[ 1 ],
+									callFuncArgs = callFunc &&  callFunc[ 2 ].split( ',' ),
+									preventDefault = /return false;/.test( inlineEventHandler );
+
+								if ( callFuncArgs )
+								{
+									var nums = callFuncArgs.length,
+										argName;
+
+									for ( var i = 0; i < nums; i++ )
+									{
+										// Trim spaces around param.
+										callFuncArgs[ i ] = argName = CKEDITOR.tools.trim( callFuncArgs[ i ] );
+
+										// String form param.
+										var strPattern = argName.match( /^(["'])([^"']*?)\1$/ );
+										if ( strPattern )
+										{
+											callFuncArgs[ i ] = strPattern[ 2 ];
+											continue;
+										}
+
+										// Integer form param.
+										if ( argName.match( /\d+/ ) )
+										{
+											callFuncArgs[ i ] = parseInt( argName, 10 );
+											continue;
+										}
+
+										// Speical variables.
+										switch( argName )
+										{
+											case 'this' :
+												callFuncArgs[ i ] = node.$;
+												break;
+											case 'event' :
+												callFuncArgs[ i ] = evt.data.$;
+												break;
+											case 'null' :
+												callFuncArgs [ i ] = null;
+												break;
+										}
+									}
+
+									var retval = CKEDITOR.tools.callFunction.apply( window, callFuncArgs );
+									if ( hasReturn && retval === false )
+										 preventDefault = 1;
+								}
+
+								if ( preventDefault )
+									evt.data.preventDefault();
+							});
+						}
+					})( eventNameList[ j ] );
+				}
+			})( child );
+		}
+	}
+
+	CKEDITOR.plugins.add( 'adobeair',
+	{
+		init : function( editor )
+		{
+			if ( !CKEDITOR.env.air )
+				return;
+
+			// Body doesn't get default margin on AIR.
+			editor.addCss( 'body { padding: 8px }' );
+
+			editor.on( 'uiReady', function()
+				{
+					convertInlineHandlers( editor.container );
+
+					if ( editor.sharedSpaces )
+					{
+						for ( var space in editor.sharedSpaces )
+							convertInlineHandlers( editor.sharedSpaces[ space ] );
+					}
+
+					editor.on( 'elementsPathUpdate', function( evt ) { convertInlineHandlers( evt.data.space ); } );
+				});
+
+			editor.on( 'contentDom', function()
+				{
+					// Hyperlinks are enabled in editable documents in Adobe
+					// AIR. Prevent their click behavior.
+					editor.document.on( 'click', function( ev )
+						{
+							ev.data.preventDefault( true );
+						});
+				});
+		}
+	});
+
+	CKEDITOR.ui.on( 'ready', function( evt )
+		{
+			var ui = evt.data;
+			// richcombo, panelbutton and menu
+			if ( ui._.panel )
+			{
+				var panel = ui._.panel._.panel,
+						holder;
+
+				( function()
+				{
+					// Adding dom event listeners off-line are not supported in AIR,
+					// waiting for panel iframe loaded.
+					if ( !panel.isLoaded )
+					{
+						setTimeout( arguments.callee, 30 );
+						return;
+					}
+					holder = panel._.holder;
+					convertInlineHandlers( holder );
+				})();
+			}
+			else if ( ui instanceof CKEDITOR.dialog )
+				convertInlineHandlers( ui._.element );
+		});
+})();
+
+CKEDITOR.dom.document.prototype.write = CKEDITOR.tools.override( CKEDITOR.dom.document.prototype.write,
+	function( original_write )
+	{
+		function appendElement( parent, tagName, fullTag, text )
+		{
+			var node = parent.append( tagName ),
+				attrs = CKEDITOR.htmlParser.fragment.fromHtml( fullTag ).children[ 0 ].attributes;
+			attrs && node.setAttributes( attrs );
+			text && node.append( parent.getDocument().createText( text ) );
+		}
+
+		return function( html, mode )
+			{
+				// document.write() or document.writeln() fail silently after
+				// the page load event in Adobe AIR.
+				// DOM manipulation could be used instead.
+				if ( this.getBody() )
+				{
+					// We're taking the below extra work only because innerHTML
+					// on <html> element doesn't work as expected.
+					var doc = this,
+						head = this.getHead();
+
+					// Create style nodes for inline css. ( <style> content doesn't applied when setting via innerHTML )
+					html = html.replace( /(<style[^>]*>)([\s\S]*?)<\/style>/gi,
+						function ( match, startTag, styleText )
+						{
+							appendElement( head, 'style', startTag, styleText );
+							return '';
+						});
+
+					html = html.replace( /<base\b[^>]*\/>/i,
+						function( match )
+						{
+							appendElement( head, 'base', match );
+							return '';
+						});
+
+					html = html.replace( /<title>([\s\S]*)<\/title>/i,
+						function( match, title )
+						{
+							doc.$.title = title;
+							return '';
+						});
+
+					// Move the rest of head stuff.
+					html = html.replace( /<head>([\s\S]*)<\/head>/i,
+						function( headHtml )
+						{
+							// Inject the <head> HTML inside a <div>.
+							// Do that before getDocumentHead because WebKit moves
+							// <link css> elements to the <head> at this point.
+							var div = new CKEDITOR.dom.element( 'div', doc );
+							div.setHtml( headHtml );
+							// Move the <div> nodes to <head>.
+							div.moveChildren( head );
+							return '';
+						});
+
+					html.replace( /(<body[^>]*>)([\s\S]*)(?=$|<\/body>)/i,
+						function( match, startTag, innerHTML )
+						{
+							doc.getBody().setHtml( innerHTML );
+							var attrs = CKEDITOR.htmlParser.fragment.fromHtml( startTag ).children[ 0 ].attributes;
+							attrs && doc.getBody().setAttributes( attrs );
+						});
+				}
+				else
+					original_write.apply( this, arguments );
+			};
+	});

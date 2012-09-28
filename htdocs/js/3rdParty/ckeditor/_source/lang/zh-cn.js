@@ -1,46 +1,816 @@
-//>>built
-define("ckeditor/_source/lang/zh-cn",["dijit","dojo","dojox"],function(){CKEDITOR.lang["zh-cn"]={dir:"ltr",editorTitle:"\u5bcc\u6587\u672c\u7f16\u8f91\u5668\uff0c%1",editorHelp:"\u6309 ALT+0 \u83b7\u5f97\u5e2e\u52a9",toolbars:"\u5de5\u5177\u680f",editor:"\u6240\u89c1\u5373\u6240\u5f97\u7f16\u8f91\u5668",source:"\u6e90\u7801",newPage:"\u65b0\u5efa",save:"\u4fdd\u5b58",preview:"\u9884\u89c8",cut:"\u526a\u5207",copy:"\u590d\u5236",paste:"\u7c98\u8d34",print:"\u6253\u5370",underline:"\u4e0b\u5212\u7ebf",
-bold:"\u52a0\u7c97",italic:"\u503e\u659c",selectAll:"\u5168\u9009",removeFormat:"\u6e05\u9664\u683c\u5f0f",strike:"\u5220\u9664\u7ebf",subscript:"\u4e0b\u6807",superscript:"\u4e0a\u6807",horizontalrule:"\u63d2\u5165\u6c34\u5e73\u7ebf",pagebreak:"\u63d2\u5165\u5206\u9875\u7b26",pagebreakAlt:"\u5206\u9875\u7b26",unlink:"\u53d6\u6d88\u8d85\u94fe\u63a5",undo:"\u64a4\u6d88",redo:"\u91cd\u505a",common:{browseServer:"\u6d4f\u89c8\u670d\u52a1\u5668",url:"\u6e90\u6587\u4ef6",protocol:"\u534f\u8bae",upload:"\u4e0a\u4f20",
-uploadSubmit:"\u4e0a\u4f20\u5230\u670d\u52a1\u5668\u4e0a",image:"\u56fe\u8c61",flash:"Flash",form:"\u8868\u5355",checkbox:"\u590d\u9009\u6846",radio:"\u5355\u9009\u6309\u94ae",textField:"\u5355\u884c\u6587\u672c",textarea:"\u591a\u884c\u6587\u672c",hiddenField:"\u9690\u85cf\u57df",button:"\u6309\u94ae",select:"\u5217\u8868/\u83dc\u5355",imageButton:"\u56fe\u50cf\u57df",notSet:"<\u6ca1\u6709\u8bbe\u7f6e>",id:"ID",name:"\u540d\u79f0",langDir:"\u8bed\u8a00\u65b9\u5411",langDirLtr:"\u4ece\u5de6\u5230\u53f3 (LTR)",
-langDirRtl:"\u4ece\u53f3\u5230\u5de6 (RTL)",langCode:"\u8bed\u8a00\u4ee3\u7801",longDescr:"\u8be6\u7ec6\u8bf4\u660e\u5730\u5740",cssClass:"\u6837\u5f0f\u7c7b\u540d\u79f0",advisoryTitle:"\u6807\u9898",cssStyle:"\u884c\u5185\u6837\u5f0f",ok:"\u786e\u5b9a",cancel:"\u53d6\u6d88",close:"\u5173\u95ed",preview:"\u9884\u89c8",generalTab:"\u5e38\u89c4",advancedTab:"\u9ad8\u7ea7",validateNumberFailed:"\u9700\u8981\u8f93\u5165\u6570\u5b57\u683c\u5f0f",confirmNewPage:"\u5f53\u524d\u6587\u6863\u5185\u5bb9\u672a\u4fdd\u5b58,\u662f\u5426\u786e\u8ba4\u65b0\u5efa\u6587\u6863\uff1f",
-confirmCancel:"\u90e8\u5206\u4fee\u6539\u5c1a\u672a\u4fdd\u5b58\uff0c\u662f\u5426\u786e\u8ba4\u5173\u95ed\u5bf9\u8bdd\u6846\uff1f",options:"\u9009\u9879",target:"\u76ee\u6807\u7a97\u53e3",targetNew:"\u65b0\u7a97\u53e3 (_blank)",targetTop:"\u6574\u9875 (_top)",targetSelf:"\u672c\u7a97\u53e3 (_self)",targetParent:"\u7236\u7a97\u53e3 (_parent)",langDirLTR:"\u4ece\u5de6\u5230\u53f3 (LTR)",langDirRTL:"\u4ece\u53f3\u5230\u5de6 (RTL)",styles:"\u6837\u5f0f",cssClasses:"\u6837\u5f0f\u7c7b",width:"\u5bbd\u5ea6",
-height:"\u9ad8\u5ea6",align:"\u5bf9\u9f50\u65b9\u5f0f",alignLeft:"\u5de6\u5bf9\u9f50",alignRight:"\u53f3\u5bf9\u9f50",alignCenter:"\u5c45\u4e2d",alignTop:"\u9876\u7aef",alignMiddle:"\u5c45\u4e2d",alignBottom:"\u5e95\u90e8",invalidHeight:"\u9ad8\u5ea6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidWidth:"\u5bbd\u5ea6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidCssLength:"\u8be5\u5b57\u6bb5\u5fc5\u987b\u4e3a\u5408\u5f0f\u7684CSS\u957f\u5ea6\u503c\uff0c\u5305\u62ec\u5355\u4f4d(px, %, in, cm, mm, em, ex, pt \u6216 pc)",
-invalidHtmlLength:"\u8be5\u5b57\u6bb5\u5fc5\u987b\u4e3a\u5408\u5f0f\u7684HTML\u957f\u5ea6\u503c\uff0c\u5305\u62ec\u5355\u4f4d(px \u6216 %)",invalidInlineStyle:"\u5185\u8054\u6837\u5f0f\u5fc5\u987b\u4e3a\u683c\u5f0f\u662f\u4ee5\u5206\u53f7\u5206\u9694\u7684\u4e00\u4e2a\u6216\u591a\u4e2a\u201c\u5c5e\u6027\u540d : \u5c5e\u6027\u503c\u201d",cssLengthTooltip:"\u8be5\u5b57\u6bb5\u5fc5\u987b\u4e3a\u5408\u5f0f\u7684CSS\u957f\u5ea6\u503c\uff0c\u5305\u62ec\u5355\u4f4d(px, %, in, cm, mm, em, ex, pt \u6216 pc)",
-unavailable:'%1<span class="cke_accessibility">, \u4e0d\u53ef\u7528</span>'},contextmenu:{options:"\u5feb\u6377\u83dc\u5355\u9009\u9879"},specialChar:{toolbar:"\u63d2\u5165\u7279\u6b8a\u7b26\u53f7",title:"\u9009\u62e9\u7279\u6b8a\u7b26\u53f7",options:"\u7279\u6b8a\u7b26\u53f7\u9009\u9879"},link:{toolbar:"\u63d2\u5165/\u7f16\u8f91\u8d85\u94fe\u63a5",other:"<\u5176\u4ed6>",menu:"\u7f16\u8f91\u8d85\u94fe\u63a5",title:"\u8d85\u94fe\u63a5",info:"\u8d85\u94fe\u63a5\u4fe1\u606f",target:"\u76ee\u6807",upload:"\u4e0a\u4f20",
-advanced:"\u9ad8\u7ea7",type:"\u8d85\u94fe\u63a5\u7c7b\u578b",toUrl:"\u5730\u5740",toAnchor:"\u9875\u5185\u951a\u70b9\u94fe\u63a5",toEmail:"\u7535\u5b50\u90ae\u4ef6",targetFrame:"<\u6846\u67b6>",targetPopup:"<\u5f39\u51fa\u7a97\u53e3>",targetFrameName:"\u76ee\u6807\u6846\u67b6\u540d\u79f0",targetPopupName:"\u5f39\u51fa\u7a97\u53e3\u540d\u79f0",popupFeatures:"\u5f39\u51fa\u7a97\u53e3\u5c5e\u6027",popupResizable:"\u53ef\u7f29\u653e",popupStatusBar:"\u72b6\u6001\u680f",popupLocationBar:"\u5730\u5740\u680f",
-popupToolbar:"\u5de5\u5177\u680f",popupMenuBar:"\u83dc\u5355\u680f",popupFullScreen:"\u5168\u5c4f (IE)",popupScrollBars:"\u6eda\u52a8\u6761",popupDependent:"\u4f9d\u9644 (NS)",popupLeft:"\u5de6",popupTop:"\u53f3",id:"ID",langDir:"\u8bed\u8a00\u65b9\u5411",langDirLTR:"\u4ece\u5de6\u5230\u53f3 (LTR)",langDirRTL:"\u4ece\u53f3\u5230\u5de6 (RTL)",acccessKey:"\u8bbf\u95ee\u952e",name:"\u540d\u79f0",langCode:"\u8bed\u8a00\u4ee3\u7801",tabIndex:"Tab \u952e\u6b21\u5e8f",advisoryTitle:"\u6807\u9898",advisoryContentType:"\u5185\u5bb9\u7c7b\u578b",
-cssClasses:"\u6837\u5f0f\u7c7b\u540d\u79f0",charset:"\u5b57\u7b26\u7f16\u7801",styles:"\u884c\u5185\u6837\u5f0f",rel:"\u5173\u8054",selectAnchor:"\u9009\u62e9\u4e00\u4e2a\u951a\u70b9",anchorName:"\u6309\u951a\u70b9\u540d\u79f0",anchorId:"\u6309\u951a\u70b9 ID",emailAddress:"\u5730\u5740",emailSubject:"\u4e3b\u9898",emailBody:"\u5185\u5bb9",noAnchors:"(\u6b64\u6587\u6863\u6ca1\u6709\u53ef\u7528\u7684\u951a\u70b9)",noUrl:"\u8bf7\u8f93\u5165\u8d85\u94fe\u63a5\u5730\u5740",noEmail:"\u8bf7\u8f93\u5165\u7535\u5b50\u90ae\u4ef6\u5730\u5740"},
-anchor:{toolbar:"\u63d2\u5165/\u7f16\u8f91\u951a\u70b9\u94fe\u63a5",menu:"\u951a\u70b9\u94fe\u63a5\u5c5e\u6027",title:"\u951a\u70b9\u94fe\u63a5\u5c5e\u6027",name:"\u951a\u70b9\u540d\u79f0",errorName:"\u8bf7\u8f93\u5165\u951a\u70b9\u540d\u79f0",remove:"\u5220\u9664\u951a\u70b9"},list:{numberedTitle:"\u7f16\u53f7\u5217\u8868\u5c5e\u6027",bulletedTitle:"\u9879\u76ee\u5217\u8868\u5c5e\u6027",type:"\u6807\u8bb0\u7c7b\u578b",start:"\u5f00\u59cb\u5e8f\u53f7",validateStartNumber:"\u5217\u8868\u5f00\u59cb\u5e8f\u53f7\u5fc5\u987b\u4e3a\u6574\u6570\u683c\u5f0f",
-circle:"\u7a7a\u5fc3\u5706",disc:"\u5b9e\u5fc3\u5706",square:"\u5b9e\u5fc3\u65b9\u5757",none:"\u65e0\u6807\u8bb0",notset:"<\u6ca1\u6709\u8bbe\u7f6e>",armenian:"\u4f20\u7edf\u7684\u4e9a\u7f8e\u5c3c\u4e9a\u7f16\u53f7\u65b9\u5f0f",georgian:"\u4f20\u7edf\u7684\u4e54\u6cbb\u4e9a\u7f16\u53f7\u65b9\u5f0f(an, ban, gan, \u7b49)",lowerRoman:"\u5c0f\u5199\u7f57\u9a6c\u6570\u5b57(i, ii, iii, iv, v, \u7b49)",upperRoman:"\u5927\u5199\u7f57\u9a6c\u6570\u5b57(I, II, III, IV, V, \u7b49)",lowerAlpha:"\u5c0f\u5199\u82f1\u6587\u5b57\u6bcd(a, b, c, d, e, \u7b49)",
-upperAlpha:"\u5927\u5199\u82f1\u6587\u5b57\u6bcd(A, B, C, D, E, \u7b49)",lowerGreek:"\u5c0f\u5199\u5e0c\u814a\u5b57\u6bcd(alpha, beta, gamma, \u7b49)",decimal:"\u6570\u5b57 (1, 2, 3, \u7b49)",decimalLeadingZero:"0\u5f00\u5934\u7684\u6570\u5b57\u6807\u8bb0(01, 02, 03, \u7b49)"},findAndReplace:{title:"\u67e5\u627e\u548c\u66ff\u6362",find:"\u67e5\u627e",replace:"\u66ff\u6362",findWhat:"\u67e5\u627e:",replaceWith:"\u66ff\u6362:",notFoundMsg:"\u6307\u5b9a\u6587\u672c\u6ca1\u6709\u627e\u5230",findOptions:"\u67e5\u627e\u9009\u9879",
-matchCase:"\u533a\u5206\u5927\u5c0f\u5199",matchWord:"\u5168\u5b57\u5339\u914d",matchCyclic:"\u5faa\u73af\u5339\u914d",replaceAll:"\u5168\u90e8\u66ff\u6362",replaceSuccessMsg:"\u5171\u5b8c\u6210 %1 \u5904\u66ff\u6362."},table:{toolbar:"\u8868\u683c",title:"\u8868\u683c\u5c5e\u6027",menu:"\u8868\u683c\u5c5e\u6027",deleteTable:"\u5220\u9664\u8868\u683c",rows:"\u884c\u6570",columns:"\u5217\u6570",border:"\u8fb9\u6846",widthPx:"\u50cf\u7d20",widthPc:"\u767e\u5206\u6bd4",widthUnit:"\u5bbd\u5ea6\u5355\u4f4d",
-cellSpace:"\u95f4\u8ddd",cellPad:"\u8fb9\u8ddd",caption:"\u6807\u9898",summary:"\u6458\u8981",headers:"\u6807\u9898\u5355\u5143\u683c",headersNone:"\u65e0",headersColumn:"\u7b2c\u4e00\u5217",headersRow:"\u7b2c\u4e00\u884c",headersBoth:"\u7b2c\u4e00\u5217\u548c\u7b2c\u4e00\u884c",invalidRows:"\u6307\u5b9a\u7684\u5217\u6570\u5fc5\u987b\u5927\u4e8e\u96f6",invalidCols:"\u6307\u5b9a\u7684\u884c\u6570\u5fc5\u987b\u5927\u4e8e\u96f6",invalidBorder:"\u8fb9\u6846\u7c97\u7ec6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",
-invalidWidth:"\u8868\u683c\u5bbd\u5ea6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidHeight:"\u8868\u683c\u9ad8\u5ea6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidCellSpacing:"\u5355\u5143\u683c\u95f4\u8ddd\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidCellPadding:"\u5355\u5143\u683c\u586b\u5145\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",cell:{menu:"\u5355\u5143\u683c",insertBefore:"\u5728\u5de6\u4fa7\u63d2\u5165\u5355\u5143\u683c",insertAfter:"\u5728\u53f3\u4fa7\u63d2\u5165\u5355\u5143\u683c",
-deleteCell:"\u5220\u9664\u5355\u5143\u683c",merge:"\u5408\u5e76\u5355\u5143\u683c",mergeRight:"\u5411\u53f3\u5408\u5e76\u5355\u5143\u683c",mergeDown:"\u5411\u4e0b\u5408\u5e76\u5355\u5143\u683c",splitHorizontal:"\u6c34\u5e73\u62c6\u5206\u5355\u5143\u683c",splitVertical:"\u5782\u76f4\u62c6\u5206\u5355\u5143\u683c",title:"\u5355\u5143\u683c\u5c5e\u6027",cellType:"\u5355\u5143\u683c\u7c7b\u578b",rowSpan:"\u7eb5\u8de8\u884c\u6570",colSpan:"\u6a2a\u8de8\u5217\u6570",wordWrap:"\u81ea\u52a8\u6362\u884c",
-hAlign:"\u6c34\u5e73\u5bf9\u9f50",vAlign:"\u5782\u76f4\u5bf9\u9f50",alignBaseline:"\u57fa\u7ebf",bgColor:"\u80cc\u666f\u989c\u8272",borderColor:"\u8fb9\u6846\u989c\u8272",data:"\u6570\u636e",header:"\u8868\u5934",yes:"\u662f",no:"\u5426",invalidWidth:"\u5355\u5143\u683c\u5bbd\u5ea6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidHeight:"\u5355\u5143\u683c\u9ad8\u5ea6\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",invalidRowSpan:"\u884c\u8de8\u5ea6\u5fc5\u987b\u4e3a\u6574\u6570\u683c\u5f0f",invalidColSpan:"\u5217\u8de8\u5ea6\u5fc5\u987b\u4e3a\u6574\u6570\u683c\u5f0f",
-chooseColor:"\u9009\u62e9"},row:{menu:"\u884c",insertBefore:"\u5728\u4e0a\u65b9\u63d2\u5165\u884c",insertAfter:"\u5728\u4e0b\u65b9\u63d2\u5165\u884c",deleteRow:"\u5220\u9664\u884c"},column:{menu:"\u5217",insertBefore:"\u5728\u5de6\u4fa7\u63d2\u5165\u5217",insertAfter:"\u5728\u53f3\u4fa7\u63d2\u5165\u5217",deleteColumn:"\u5220\u9664\u5217"}},button:{title:"\u6309\u94ae\u5c5e\u6027",text:"\u6807\u7b7e(\u503c)",type:"\u7c7b\u578b",typeBtn:"\u6309\u94ae",typeSbm:"\u63d0\u4ea4",typeRst:"\u91cd\u8bbe"},
-checkboxAndRadio:{checkboxTitle:"\u590d\u9009\u6846\u5c5e\u6027",radioTitle:"\u5355\u9009\u6309\u94ae\u5c5e\u6027",value:"\u9009\u5b9a\u503c",selected:"\u5df2\u52fe\u9009"},form:{title:"\u8868\u5355\u5c5e\u6027",menu:"\u8868\u5355\u5c5e\u6027",action:"\u52a8\u4f5c",method:"\u65b9\u6cd5",encoding:"\u8868\u5355\u7f16\u7801"},select:{title:"\u83dc\u5355/\u5217\u8868\u5c5e\u6027",selectInfo:"\u9009\u62e9\u4fe1\u606f",opAvail:"\u53ef\u9009\u9879",value:"\u503c",size:"\u9ad8\u5ea6",lines:"\u884c",chkMulti:"\u5141\u8bb8\u591a\u9009",
-opText:"\u9009\u9879\u6587\u672c",opValue:"\u9009\u9879\u503c",btnAdd:"\u6dfb\u52a0",btnModify:"\u4fee\u6539",btnUp:"\u4e0a\u79fb",btnDown:"\u4e0b\u79fb",btnSetValue:"\u8bbe\u4e3a\u521d\u59cb\u9009\u5b9a",btnDelete:"\u5220\u9664"},textarea:{title:"\u591a\u884c\u6587\u672c\u5c5e\u6027",cols:"\u5b57\u7b26\u5bbd\u5ea6",rows:"\u884c\u6570"},textfield:{title:"\u5355\u884c\u6587\u672c\u5c5e\u6027",name:"\u540d\u79f0",value:"\u521d\u59cb\u503c",charWidth:"\u5b57\u7b26\u5bbd\u5ea6",maxChars:"\u6700\u591a\u5b57\u7b26\u6570",
-type:"\u7c7b\u578b",typeText:"\u6587\u672c",typePass:"\u5bc6\u7801"},hidden:{title:"\u9690\u85cf\u57df\u5c5e\u6027",name:"\u540d\u79f0",value:"\u521d\u59cb\u503c"},image:{title:"\u56fe\u8c61\u5c5e\u6027",titleButton:"\u56fe\u50cf\u57df\u5c5e\u6027",menu:"\u56fe\u8c61\u5c5e\u6027",infoTab:"\u56fe\u8c61",btnUpload:"\u4e0a\u4f20\u5230\u670d\u52a1\u5668\u4e0a",upload:"\u4e0a\u4f20",alt:"\u66ff\u6362\u6587\u672c",lockRatio:"\u9501\u5b9a\u6bd4\u4f8b",resetSize:"\u539f\u59cb\u5c3a\u5bf8",border:"\u8fb9\u6846\u5927\u5c0f",
-hSpace:"\u6c34\u5e73\u95f4\u8ddd",vSpace:"\u5782\u76f4\u95f4\u8ddd",alertUrl:"\u8bf7\u8f93\u5165\u56fe\u8c61\u5730\u5740",linkTab:"\u94fe\u63a5",button2Img:"\u786e\u5b9a\u8981\u628a\u5f53\u524d\u6309\u94ae\u6539\u53d8\u4e3a\u56fe\u50cf\u5417?",img2Button:"\u786e\u5b9a\u8981\u628a\u5f53\u524d\u56fe\u50cf\u6539\u53d8\u4e3a\u6309\u94ae\u5417?",urlMissing:"\u7f3a\u5c11\u56fe\u50cf\u6e90\u6587\u4ef6\u5730\u5740",validateBorder:"\u8fb9\u6846\u5927\u5c0f\u5fc5\u987b\u4e3a\u6574\u6570\u683c\u5f0f",validateHSpace:"\u6c34\u5e73\u95f4\u8ddd\u5fc5\u987b\u4e3a\u6574\u6570\u683c\u5f0f",
-validateVSpace:"\u5782\u76f4\u95f4\u8ddd\u5fc5\u987b\u4e3a\u6574\u6570\u683c\u5f0f"},flash:{properties:"Flash \u5c5e\u6027",propertiesTab:"\u5c5e\u6027",title:"\u6807\u9898",chkPlay:"\u81ea\u52a8\u64ad\u653e",chkLoop:"\u5faa\u73af",chkMenu:"\u542f\u7528 Flash \u83dc\u5355",chkFull:"\u542f\u7528\u5168\u5c4f",scale:"\u7f29\u653e",scaleAll:"\u5168\u90e8\u663e\u793a",scaleNoBorder:"\u65e0\u8fb9\u6846",scaleFit:"\u4e25\u683c\u5339\u914d",access:"\u5141\u8bb8\u811a\u672c\u8bbf\u95ee",accessAlways:"\u603b\u662f",
-accessSameDomain:"\u540c\u57df",accessNever:"\u4ece\u4e0d",alignAbsBottom:"\u7edd\u5bf9\u5e95\u90e8",alignAbsMiddle:"\u7edd\u5bf9\u5c45\u4e2d",alignBaseline:"\u57fa\u7ebf",alignTextTop:"\u6587\u672c\u4e0a\u65b9",quality:"\u8d28\u91cf",qualityBest:"\u6700\u597d",qualityHigh:"\u9ad8",qualityAutoHigh:"\u9ad8(\u81ea\u52a8)",qualityMedium:"\u4e2d(\u81ea\u52a8)",qualityAutoLow:"\u4f4e(\u81ea\u52a8)",qualityLow:"\u4f4e",windowModeWindow:"\u7a97\u4f53",windowModeOpaque:"\u4e0d\u900f\u660e",windowModeTransparent:"\u900f\u660e",
-windowMode:"\u7a97\u4f53\u6a21\u5f0f",flashvars:"Flash \u53d8\u91cf",bgcolor:"\u80cc\u666f\u989c\u8272",hSpace:"\u6c34\u5e73\u95f4\u8ddd",vSpace:"\u5782\u76f4\u95f4\u8ddd",validateSrc:"\u8bf7\u8f93\u5165\u6e90\u6587\u4ef6\u5730\u5740",validateHSpace:"\u6c34\u5e73\u95f4\u8ddd\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f",validateVSpace:"\u5782\u76f4\u95f4\u8ddd\u5fc5\u987b\u4e3a\u6570\u5b57\u683c\u5f0f"},spellCheck:{toolbar:"\u62fc\u5199\u68c0\u67e5",title:"\u62fc\u5199\u68c0\u67e5",notAvailable:"\u62b1\u6b49, \u670d\u52a1\u76ee\u524d\u6682\u4e0d\u53ef\u7528",
-errorLoading:"\u52a0\u8f7d\u5e94\u8be5\u670d\u52a1\u4e3b\u673a\u65f6\u51fa\u9519: %s.",notInDic:"\u6ca1\u6709\u5728\u5b57\u5178\u91cc",changeTo:"\u66f4\u6539\u4e3a",btnIgnore:"\u5ffd\u7565",btnIgnoreAll:"\u5168\u90e8\u5ffd\u7565",btnReplace:"\u66ff\u6362",btnReplaceAll:"\u5168\u90e8\u66ff\u6362",btnUndo:"\u64a4\u6d88",noSuggestions:"- \u6ca1\u6709\u5efa\u8bae -",progress:"\u6b63\u5728\u8fdb\u884c\u62fc\u5199\u68c0\u67e5...",noMispell:"\u62fc\u5199\u68c0\u67e5\u5b8c\u6210: \u6ca1\u6709\u53d1\u73b0\u62fc\u5199\u9519\u8bef",
-noChanges:"\u62fc\u5199\u68c0\u67e5\u5b8c\u6210: \u6ca1\u6709\u66f4\u6539\u4efb\u4f55\u5355\u8bcd",oneChange:"\u62fc\u5199\u68c0\u67e5\u5b8c\u6210: \u66f4\u6539\u4e86\u4e00\u4e2a\u5355\u8bcd",manyChanges:"\u62fc\u5199\u68c0\u67e5\u5b8c\u6210: \u66f4\u6539\u4e86 %1 \u4e2a\u5355\u8bcd",ieSpellDownload:"\u62fc\u5199\u68c0\u67e5\u63d2\u4ef6\u8fd8\u6ca1\u5b89\u88c5, \u4f60\u662f\u5426\u60f3\u73b0\u5728\u5c31\u4e0b\u8f7d?"},smiley:{toolbar:"\u8868\u60c5\u7b26",title:"\u63d2\u5165\u8868\u60c5\u56fe\u6807",
-options:"\u8868\u60c5\u56fe\u6807\u9009\u9879"},elementsPath:{eleLabel:"\u5143\u7d20\u8def\u5f84",eleTitle:"%1 \u5143\u7d20"},numberedlist:"\u7f16\u53f7\u5217\u8868",bulletedlist:"\u9879\u76ee\u5217\u8868",indent:"\u589e\u52a0\u7f29\u8fdb\u91cf",outdent:"\u51cf\u5c11\u7f29\u8fdb\u91cf",justify:{left:"\u5de6\u5bf9\u9f50",center:"\u5c45\u4e2d",right:"\u53f3\u5bf9\u9f50",block:"\u4e24\u7aef\u5bf9\u9f50"},blockquote:"\u5757\u5f15\u7528",clipboard:{title:"\u7c98\u8d34",cutError:"\u60a8\u7684\u6d4f\u89c8\u5668\u5b89\u5168\u8bbe\u7f6e\u4e0d\u5141\u8bb8\u7f16\u8f91\u5668\u81ea\u52a8\u6267\u884c\u526a\u5207\u64cd\u4f5c, \u8bf7\u4f7f\u7528\u952e\u76d8\u5feb\u6377\u952e(Ctrl/Cmd+X)\u6765\u5b8c\u6210",
-copyError:"\u60a8\u7684\u6d4f\u89c8\u5668\u5b89\u5168\u8bbe\u7f6e\u4e0d\u5141\u8bb8\u7f16\u8f91\u5668\u81ea\u52a8\u6267\u884c\u590d\u5236\u64cd\u4f5c, \u8bf7\u4f7f\u7528\u952e\u76d8\u5feb\u6377\u952e(Ctrl/Cmd+C)\u6765\u5b8c\u6210",pasteMsg:"\u8bf7\u4f7f\u7528\u952e\u76d8\u5feb\u6377\u952e(<STRONG>Ctrl/Cmd+V</STRONG>)\u628a\u5185\u5bb9\u7c98\u8d34\u5230\u4e0b\u9762\u7684\u65b9\u6846\u91cc\uff0c\u518d\u6309 <STRONG>\u786e\u5b9a</STRONG>",securityMsg:"\u56e0\u4e3a\u4f60\u7684\u6d4f\u89c8\u5668\u7684\u5b89\u5168\u8bbe\u7f6e\u539f\u56e0, \u672c\u7f16\u8f91\u5668\u4e0d\u80fd\u76f4\u63a5\u8bbf\u95ee\u4f60\u7684\u526a\u8d34\u677f\u5185\u5bb9, \u4f60\u9700\u8981\u5728\u672c\u7a97\u53e3\u91cd\u65b0\u7c98\u8d34\u4e00\u6b21",
-pasteArea:"\u7c98\u8d34\u533a\u57df"},pastefromword:{confirmCleanup:"\u60a8\u8981\u7c98\u8d34\u7684\u5185\u5bb9\u597d\u50cf\u662f\u6765\u81ea MS Word, \u662f\u5426\u8981\u6e05\u9664 MS Word \u683c\u5f0f\u540e\u518d\u7c98\u8d34?",toolbar:"\u4ece MS Word \u7c98\u8d34",title:"\u4ece MS Word \u7c98\u8d34",error:"\u7531\u4e8e\u5185\u90e8\u9519\u8bef\u65e0\u6cd5\u6e05\u7406\u8981\u7c98\u8d34\u7684\u6570\u636e"},pasteText:{button:"\u7c98\u8d34\u4e3a\u65e0\u683c\u5f0f\u6587\u672c",title:"\u7c98\u8d34\u4e3a\u65e0\u683c\u5f0f\u6587\u672c"},
-templates:{button:"\u6a21\u677f",title:"\u5185\u5bb9\u6a21\u677f",options:"\u6a21\u677f\u9009\u9879",insertOption:"\u66ff\u6362\u5f53\u524d\u5185\u5bb9",selectPromptMsg:"\u8bf7\u9009\u62e9\u7f16\u8f91\u5668\u5185\u5bb9\u6a21\u677f:",emptyListMsg:"(\u6ca1\u6709\u6a21\u677f)"},showBlocks:"\u663e\u793a\u533a\u5757",stylesCombo:{label:"\u6837\u5f0f",panelTitle:"\u6837\u5f0f",panelTitle1:"\u5757\u7ea7\u5143\u7d20\u6837\u5f0f",panelTitle2:"\u5185\u8054\u5143\u7d20\u6837\u5f0f",panelTitle3:"\u5bf9\u8c61\u5143\u7d20\u6837\u5f0f"},
-format:{label:"\u683c\u5f0f",panelTitle:"\u683c\u5f0f",tag_p:"\u666e\u901a",tag_pre:"\u5df2\u7f16\u6392\u683c\u5f0f",tag_address:"\u5730\u5740",tag_h1:"\u6807\u9898 1",tag_h2:"\u6807\u9898 2",tag_h3:"\u6807\u9898 3",tag_h4:"\u6807\u9898 4",tag_h5:"\u6807\u9898 5",tag_h6:"\u6807\u9898 6",tag_div:"\u6bb5\u843d(DIV)"},div:{title:"\u521b\u5efa DIV \u5bb9\u5668",toolbar:"\u521b\u5efa DIV \u5bb9\u5668",cssClassInputLabel:"\u6837\u5f0f\u7c7b\u540d\u79f0",styleSelectLabel:"\u6837\u5f0f",IdInputLabel:"ID",
-languageCodeInputLabel:"\u8bed\u8a00\u4ee3\u7801",inlineStyleInputLabel:"\u884c\u5185\u6837\u5f0f",advisoryTitleInputLabel:"\u6807\u9898",langDirLabel:"\u8bed\u8a00\u65b9\u5411",langDirLTRLabel:"\u4ece\u5de6\u5230\u53f3 (LTR)",langDirRTLLabel:"\u4ece\u53f3\u5230\u5de6 (RTL)",edit:"\u7f16\u8f91 DIV",remove:"\u79fb\u9664 DIV"},iframe:{title:"IFrame \u5c5e\u6027",toolbar:"IFrame",noUrl:"\u8bf7\u8f93\u5165\u6846\u67b6\u7684 URL",scrolling:"\u5141\u8bb8\u6eda\u52a8\u6761",border:"\u663e\u793a\u6846\u67b6\u8fb9\u6846"},
-font:{label:"\u5b57\u4f53",voiceLabel:"\u5b57\u4f53",panelTitle:"\u5b57\u4f53"},fontSize:{label:"\u5927\u5c0f",voiceLabel:"\u6587\u5b57\u5927\u5c0f",panelTitle:"\u5927\u5c0f"},colorButton:{textColorTitle:"\u6587\u672c\u989c\u8272",bgColorTitle:"\u80cc\u666f\u989c\u8272",panelTitle:"\u989c\u8272",auto:"\u81ea\u52a8",more:"\u5176\u5b83\u989c\u8272..."},colors:{"000":"\u9ed1",8E5:"\u8910\u7ea2","8B4513":"\u6df1\u8910","2F4F4F":"\u58a8\u7eff","008080":"\u7eff\u677e\u77f3","000080":"\u6d77\u519b\u84dd",
-"4B0082":"\u975b\u84dd",696969:"\u6697\u7070",B22222:"\u7816\u7ea2",A52A2A:"\u8910",DAA520:"\u91d1\u9ec4","006400":"\u6df1\u7eff","40E0D0":"\u84dd\u7eff","0000CD":"\u4e2d\u84dd",800080:"\u7d2b",808080:"\u7070",F00:"\u7ea2",FF8C00:"\u6df1\u6a59",FFD700:"\u91d1","008000":"\u7eff","0FF":"\u9752","00F":"\u84dd",EE82EE:"\u7d2b\u7f57\u5170",A9A9A9:"\u6df1\u7070",FFA07A:"\u4eae\u6a59",FFA500:"\u6a59",FFFF00:"\u9ec4","00FF00":"\u6c34\u7eff",AFEEEE:"\u7c89\u84dd",ADD8E6:"\u4eae\u84dd",DDA0DD:"\u6885\u7ea2",
-D3D3D3:"\u6de1\u7070",FFF0F5:"\u6de1\u7d2b\u7ea2",FAEBD7:"\u53e4\u8463\u767d",FFFFE0:"\u6de1\u9ec4",F0FFF0:"\u871c\u767d",F0FFFF:"\u5929\u84dd",F0F8FF:"\u6de1\u84dd",E6E6FA:"\u6de1\u7d2b",FFF:"\u767d"},scayt:{title:"\u5373\u65f6\u62fc\u5199\u68c0\u67e5",opera_title:"\u4e0d\u652f\u6301 Opera \u6d4f\u89c8\u5668",enable:"\u542f\u7528\u5373\u65f6\u62fc\u5199\u68c0\u67e5",disable:"\u7981\u7528\u5373\u65f6\u62fc\u5199\u68c0\u67e5",about:"\u5173\u4e8e\u5373\u65f6\u62fc\u5199\u68c0\u67e5",toggle:"\u6682\u505c/\u542f\u7528\u5373\u65f6\u62fc\u5199\u68c0\u67e5",
-options:"\u9009\u9879",langs:"\u8bed\u8a00",moreSuggestions:"\u66f4\u591a\u62fc\u5199\u5efa\u8bae",ignore:"\u5ffd\u7565",ignoreAll:"\u5168\u90e8\u5ffd\u7565",addWord:"\u6dfb\u52a0\u5355\u8bcd",emptyDic:"\u5b57\u5178\u540d\u4e0d\u5e94\u4e3a\u7a7a.",optionsTab:"\u9009\u9879",allCaps:"\u5ffd\u7565\u6240\u6709\u5927\u5199\u5355\u8bcd",ignoreDomainNames:"\u5ffd\u7565\u57df\u540d",mixedCase:"\u5ffd\u7565\u5927\u5c0f\u5199\u6df7\u5408\u7684\u5355\u8bcd",mixedWithDigits:"\u5ffd\u7565\u5e26\u6570\u5b57\u7684\u5355\u8bcd",
-languagesTab:"\u8bed\u8a00",dictionariesTab:"\u5b57\u5178",dic_field_name:"\u5b57\u5178\u540d\u79f0",dic_create:"\u521b\u5efa",dic_restore:"\u8fd8\u539f",dic_delete:"\u5220\u9664",dic_rename:"\u91cd\u547d\u540d",dic_info:"\u4e00\u5f00\u59cb\u7528\u6237\u8bcd\u5178\u50a8\u5b58\u5728 Cookie \u4e2d, \u4f46\u662f Cookies \u7684\u5bb9\u91cf\u662f\u6709\u9650\u7684, \u5f53\u7528\u6237\u8bcd\u5178\u589e\u957f\u5230\u8d85\u51fa Cookie \u9650\u5236\u65f6\u5c31\u65e0\u6cd5\u518d\u50a8\u5b58\u4e86, \u8fd9\u65f6\u60a8\u53ef\u4ee5\u5c06\u8bcd\u5178\u50a8\u5b58\u5230\u6211\u4eec\u7684\u670d\u52a1\u5668\u4e0a. \u8981\u628a\u60a8\u7684\u4e2a\u4eba\u8bcd\u5178\u5230\u50a8\u5b58\u5230\u6211\u4eec\u7684\u670d\u52a1\u5668\u4e0a\u7684\u8bdd, \u9700\u8981\u4e3a\u60a8\u7684\u8bcd\u5178\u6307\u5b9a\u4e00\u4e2a\u540d\u79f0, \u5982\u679c\u60a8\u5728\u6211\u4eec\u7684\u670d\u52a1\u5668\u4e0a\u5df2\u7ecf\u6709\u50a8\u5b58\u6709\u4e00\u4e2a\u8bcd\u5178, \u8bf7\u8f93\u5165\u8bcd\u5178\u540d\u79f0\u5e76\u6309\u8fd8\u539f\u6309\u94ae.",
-aboutTab:"\u5173\u4e8e"},about:{title:"\u5173\u4e8eCKEditor",dlgTitle:"\u5173\u4e8eCKEditor",help:"\u8bf7\u8bbf\u95ee $1 \u4ee5\u83b7\u53d6\u5e2e\u52a9.",userGuide:"CKEditor \u7528\u6237\u5411\u5bfc",moreInfo:"\u8bbf\u95ee\u6211\u4eec\u7684\u7f51\u7ad9\u4ee5\u83b7\u53d6\u66f4\u591a\u5173\u4e8e\u534f\u8bae\u7684\u4fe1\u606f",copy:"Copyright &copy; $1. \u7248\u6743\u6240\u6709\u3002"},maximize:"\u5168\u5c4f",minimize:"\u6700\u5c0f\u5316",fakeobjects:{anchor:"\u951a\u70b9",flash:"Flash \u52a8\u753b",
-iframe:"IFrame",hiddenfield:"\u9690\u85cf\u57df",unknown:"\u672a\u77e5\u5bf9\u8c61"},resize:"\u62d6\u62fd\u4ee5\u6539\u53d8\u5c3a\u5bf8",colordialog:{title:"\u9009\u62e9\u989c\u8272",options:"\u989c\u8272\u9009\u9879",highlight:"\u9ad8\u4eae",selected:"\u9009\u62e9\u989c\u8272",clear:"\u6e05\u9664"},toolbarCollapse:"\u6298\u53e0\u5de5\u5177\u680f",toolbarExpand:"\u5c55\u5f00\u5de5\u5177\u680f",toolbarGroups:{document:"\u6587\u6863",clipboard:"\u526a\u8d34\u677f/\u64a4\u9500",editing:"\u7f16\u8f91",
-forms:"\u8868\u5355",basicstyles:"\u57fa\u672c\u683c\u5f0f",paragraph:"\u6bb5\u843d",links:"\u94fe\u63a5",insert:"\u63d2\u5165",styles:"\u6837\u5f0f",colors:"\u989c\u8272",tools:"\u5de5\u5177"},bidi:{ltr:"\u6587\u5b57\u65b9\u5411\u4e3a\u4ece\u5de6\u81f3\u53f3",rtl:"\u6587\u5b57\u65b9\u5411\u4e3a\u4ece\u53f3\u81f3\u5de6"},docprops:{label:"\u9875\u9762\u5c5e\u6027",title:"\u9875\u9762\u5c5e\u6027",design:"\u8bbe\u8ba1",meta:"Meta \u6570\u636e",chooseColor:"\u9009\u62e9",other:"<\u5176\u4ed6>",docTitle:"\u9875\u9762\u6807\u9898",
-charset:"\u5b57\u7b26\u7f16\u7801",charsetOther:"\u5176\u5b83\u5b57\u7b26\u7f16\u7801",charsetASCII:"ASCII",charsetCE:"\u4e2d\u6b27",charsetCT:"\u7e41\u4f53\u4e2d\u6587 (Big5)",charsetCR:"\u897f\u91cc\u5c14\u6587",charsetGR:"\u5e0c\u814a\u6587",charsetJP:"\u65e5\u6587",charsetKR:"\u97e9\u6587",charsetTR:"\u571f\u8033\u5176\u6587",charsetUN:"Unicode (UTF-8)",charsetWE:"\u897f\u6b27",docType:"\u6587\u6863\u7c7b\u578b",docTypeOther:"\u5176\u5b83\u6587\u6863\u7c7b\u578b",xhtmlDec:"\u5305\u542b XHTML \u58f0\u660e",
-bgColor:"\u80cc\u666f\u989c\u8272",bgImage:"\u80cc\u666f\u56fe\u50cf",bgFixed:"\u4e0d\u6eda\u52a8\u80cc\u666f\u56fe\u50cf",txtColor:"\u6587\u672c\u989c\u8272",margin:"\u9875\u9762\u8fb9\u8ddd",marginTop:"\u4e0a",marginLeft:"\u5de6",marginRight:"\u53f3",marginBottom:"\u4e0b",metaKeywords:"\u9875\u9762\u7d22\u5f15\u5173\u952e\u5b57 (\u7528\u534a\u89d2\u9017\u53f7[,]\u5206\u9694)",metaDescription:"\u9875\u9762\u8bf4\u660e",metaAuthor:"\u4f5c\u8005",metaCopyright:"\u7248\u6743",previewHtml:'<p>\u8fd9\u662f\u4e00\u4e9b<strong>\u6f14\u793a\u7528\u6587\u5b57</strong>\u3002\u4f60\u5f53\u524d\u6b63\u5728\u4f7f\u7528<a href="javascript:void(0)">CKEditor</a>\u3002</p>'}}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @fileOverview Defines the {@link CKEDITOR.lang} object, for the
+ * Chinese Simplified language.
+ */
+
+/**#@+
+   @type String
+   @example
+*/
+
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang['zh-cn'] =
+{
+	/**
+	 * The language reading direction. Possible values are "rtl" for
+	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
+	 * languages (like English).
+	 * @default 'ltr'
+	 */
+	dir : 'ltr',
+
+	/*
+	 * Screenreader titles. Please note that screenreaders are not always capable
+	 * of reading non-English words. So be careful while translating it.
+	 */
+	editorTitle : '富文本编辑器，%1',
+	editorHelp : '按 ALT+0 获得帮助',
+
+	// ARIA descriptions.
+	toolbars	: '工具栏',
+	editor		: '所见即所得编辑器',
+
+	// Toolbar buttons without dialogs.
+	source			: '源码',
+	newPage			: '新建',
+	save			: '保存',
+	preview			: '预览',
+	cut				: '剪切',
+	copy			: '复制',
+	paste			: '粘贴',
+	print			: '打印',
+	underline		: '下划线',
+	bold			: '加粗',
+	italic			: '倾斜',
+	selectAll		: '全选',
+	removeFormat	: '清除格式',
+	strike			: '删除线',
+	subscript		: '下标',
+	superscript		: '上标',
+	horizontalrule	: '插入水平线',
+	pagebreak		: '插入分页符',
+	pagebreakAlt		: '分页符',
+	unlink			: '取消超链接',
+	undo			: '撤消',
+	redo			: '重做',
+
+	// Common messages and labels.
+	common :
+	{
+		browseServer	: '浏览服务器',
+		url				: '源文件',
+		protocol		: '协议',
+		upload			: '上传',
+		uploadSubmit	: '上传到服务器上',
+		image			: '图象',
+		flash			: 'Flash',
+		form			: '表单',
+		checkbox		: '复选框',
+		radio			: '单选按钮',
+		textField		: '单行文本',
+		textarea		: '多行文本',
+		hiddenField		: '隐藏域',
+		button			: '按钮',
+		select			: '列表/菜单',
+		imageButton		: '图像域',
+		notSet			: '<没有设置>',
+		id				: 'ID',
+		name			: '名称',
+		langDir			: '语言方向',
+		langDirLtr		: '从左到右 (LTR)',
+		langDirRtl		: '从右到左 (RTL)',
+		langCode		: '语言代码',
+		longDescr		: '详细说明地址',
+		cssClass		: '样式类名称',
+		advisoryTitle	: '标题',
+		cssStyle		: '行内样式',
+		ok				: '确定',
+		cancel			: '取消',
+		close			: '关闭',
+		preview			: '预览',
+		generalTab		: '常规',
+		advancedTab		: '高级',
+		validateNumberFailed : '需要输入数字格式',
+		confirmNewPage	: '当前文档内容未保存,是否确认新建文档？',
+		confirmCancel	: '部分修改尚未保存，是否确认关闭对话框？',
+		options			: '选项',
+		target			: '目标窗口',
+		targetNew		: '新窗口 (_blank)',
+		targetTop		: '整页 (_top)',
+		targetSelf		: '本窗口 (_self)',
+		targetParent	: '父窗口 (_parent)',
+		langDirLTR		: '从左到右 (LTR)',
+		langDirRTL		: '从右到左 (RTL)',
+		styles			: '样式',
+		cssClasses		: '样式类',
+		width			: '宽度',
+		height			: '高度',
+		align			: '对齐方式',
+		alignLeft		: '左对齐',
+		alignRight		: '右对齐',
+		alignCenter		: '居中',
+		alignTop		: '顶端',
+		alignMiddle		: '居中',
+		alignBottom		: '底部',
+		invalidHeight	: '高度必须为数字格式',
+		invalidWidth	: '宽度必须为数字格式',
+		invalidCssLength	: '该字段必须为合式的CSS长度值，包括单位(px, %, in, cm, mm, em, ex, pt 或 pc)',
+		invalidHtmlLength	: '该字段必须为合式的HTML长度值，包括单位(px 或 %)',
+		invalidInlineStyle	: '内联样式必须为格式是以分号分隔的一个或多个“属性名 : 属性值”',
+		cssLengthTooltip	: '该字段必须为合式的CSS长度值，包括单位(px, %, in, cm, mm, em, ex, pt 或 pc)',
+
+		// Put the voice-only part of the label in the span.
+		unavailable		: '%1<span class="cke_accessibility">, 不可用</span>'
+	},
+
+	contextmenu :
+	{
+		options : '快捷菜单选项'
+	},
+
+	// Special char dialog.
+	specialChar		:
+	{
+		toolbar		: '插入特殊符号',
+		title		: '选择特殊符号',
+		options : '特殊符号选项'
+	},
+
+	// Link dialog.
+	link :
+	{
+		toolbar		: '插入/编辑超链接',
+		other 		: '<其他>',
+		menu		: '编辑超链接',
+		title		: '超链接',
+		info		: '超链接信息',
+		target		: '目标',
+		upload		: '上传',
+		advanced	: '高级',
+		type		: '超链接类型',
+		toUrl		: '地址',
+		toAnchor	: '页内锚点链接',
+		toEmail		: '电子邮件',
+		targetFrame		: '<框架>',
+		targetPopup		: '<弹出窗口>',
+		targetFrameName	: '目标框架名称',
+		targetPopupName	: '弹出窗口名称',
+		popupFeatures	: '弹出窗口属性',
+		popupResizable	: '可缩放',
+		popupStatusBar	: '状态栏',
+		popupLocationBar: '地址栏',
+		popupToolbar	: '工具栏',
+		popupMenuBar	: '菜单栏',
+		popupFullScreen	: '全屏 (IE)',
+		popupScrollBars	: '滚动条',
+		popupDependent	: '依附 (NS)',
+		popupLeft		: '左',
+		popupTop		: '右',
+		id				: 'ID',
+		langDir			: '语言方向',
+		langDirLTR		: '从左到右 (LTR)',
+		langDirRTL		: '从右到左 (RTL)',
+		acccessKey		: '访问键',
+		name			: '名称',
+		langCode			: '语言代码',
+		tabIndex			: 'Tab 键次序',
+		advisoryTitle		: '标题',
+		advisoryContentType	: '内容类型',
+		cssClasses		: '样式类名称',
+		charset			: '字符编码',
+		styles			: '行内样式',
+		rel			: '关联',
+		selectAnchor		: '选择一个锚点',
+		anchorName		: '按锚点名称',
+		anchorId			: '按锚点 ID',
+		emailAddress		: '地址',
+		emailSubject		: '主题',
+		emailBody		: '内容',
+		noAnchors		: '(此文档没有可用的锚点)',
+		noUrl			: '请输入超链接地址',
+		noEmail			: '请输入电子邮件地址'
+	},
+
+	// Anchor dialog
+	anchor :
+	{
+		toolbar		: '插入/编辑锚点链接',
+		menu		: '锚点链接属性',
+		title		: '锚点链接属性',
+		name		: '锚点名称',
+		errorName	: '请输入锚点名称',
+		remove		: '删除锚点'
+	},
+
+	// List style dialog
+	list:
+	{
+		numberedTitle		: '编号列表属性',
+		bulletedTitle		: '项目列表属性',
+		type				: '标记类型',
+		start				: '开始序号',
+		validateStartNumber				:'列表开始序号必须为整数格式',
+		circle				: '空心圆',
+		disc				: '实心圆',
+		square				: '实心方块',
+		none				: '无标记',
+		notset				: '<没有设置>',
+		armenian			: '传统的亚美尼亚编号方式',
+		georgian			: '传统的乔治亚编号方式(an, ban, gan, 等)',
+		lowerRoman			: '小写罗马数字(i, ii, iii, iv, v, 等)',
+		upperRoman			: '大写罗马数字(I, II, III, IV, V, 等)',
+		lowerAlpha			: '小写英文字母(a, b, c, d, e, 等)',
+		upperAlpha			: '大写英文字母(A, B, C, D, E, 等)',
+		lowerGreek			: '小写希腊字母(alpha, beta, gamma, 等)',
+		decimal				: '数字 (1, 2, 3, 等)',
+		decimalLeadingZero	: '0开头的数字标记(01, 02, 03, 等)'
+	},
+
+	// Find And Replace Dialog
+	findAndReplace :
+	{
+		title				: '查找和替换',
+		find				: '查找',
+		replace				: '替换',
+		findWhat			: '查找:',
+		replaceWith			: '替换:',
+		notFoundMsg			: '指定文本没有找到',
+		findOptions			: '查找选项',
+		matchCase			: '区分大小写',
+		matchWord			: '全字匹配',
+		matchCyclic			: '循环匹配',
+		replaceAll			: '全部替换',
+		replaceSuccessMsg	: '共完成 %1 处替换.'
+	},
+
+	// Table Dialog
+	table :
+	{
+		toolbar		: '表格',
+		title		: '表格属性',
+		menu		: '表格属性',
+		deleteTable	: '删除表格',
+		rows		: '行数',
+		columns		: '列数',
+		border		: '边框',
+		widthPx		: '像素',
+		widthPc		: '百分比',
+		widthUnit	: '宽度单位',
+		cellSpace	: '间距',
+		cellPad		: '边距',
+		caption		: '标题',
+		summary		: '摘要',
+		headers		: '标题单元格',
+		headersNone		: '无',
+		headersColumn	: '第一列',
+		headersRow		: '第一行',
+		headersBoth		: '第一列和第一行',
+		invalidRows		: '指定的列数必须大于零',
+		invalidCols		: '指定的行数必须大于零',
+		invalidBorder	: '边框粗细必须为数字格式',
+		invalidWidth	: '表格宽度必须为数字格式',
+		invalidHeight	: '表格高度必须为数字格式',
+		invalidCellSpacing	: '单元格间距必须为数字格式',
+		invalidCellPadding	: '单元格填充必须为数字格式',
+
+		cell :
+		{
+			menu			: '单元格',
+			insertBefore	: '在左侧插入单元格',
+			insertAfter		: '在右侧插入单元格',
+			deleteCell		: '删除单元格',
+			merge			: '合并单元格',
+			mergeRight		: '向右合并单元格',
+			mergeDown		: '向下合并单元格',
+			splitHorizontal	: '水平拆分单元格',
+			splitVertical	: '垂直拆分单元格',
+			title			: '单元格属性',
+			cellType		: '单元格类型',
+			rowSpan			: '纵跨行数',
+			colSpan			: '横跨列数',
+			wordWrap		: '自动换行',
+			hAlign			: '水平对齐',
+			vAlign			: '垂直对齐',
+			alignBaseline	: '基线',
+			bgColor			: '背景颜色',
+			borderColor		: '边框颜色',
+			data			: '数据',
+			header			: '表头',
+			yes				: '是',
+			no				: '否',
+			invalidWidth	: '单元格宽度必须为数字格式',
+			invalidHeight	: '单元格高度必须为数字格式',
+			invalidRowSpan	: '行跨度必须为整数格式',
+			invalidColSpan	: '列跨度必须为整数格式',
+			chooseColor		: '选择'
+		},
+
+		row :
+		{
+			menu			: '行',
+			insertBefore	: '在上方插入行',
+			insertAfter		: '在下方插入行',
+			deleteRow		: '删除行'
+		},
+
+		column :
+		{
+			menu			: '列',
+			insertBefore	: '在左侧插入列',
+			insertAfter		: '在右侧插入列',
+			deleteColumn	: '删除列'
+		}
+	},
+
+	// Button Dialog.
+	button :
+	{
+		title		: '按钮属性',
+		text		: '标签(值)',
+		type		: '类型',
+		typeBtn		: '按钮',
+		typeSbm		: '提交',
+		typeRst		: '重设'
+	},
+
+	// Checkbox and Radio Button Dialogs.
+	checkboxAndRadio :
+	{
+		checkboxTitle : '复选框属性',
+		radioTitle	: '单选按钮属性',
+		value		: '选定值',
+		selected	: '已勾选'
+	},
+
+	// Form Dialog.
+	form :
+	{
+		title		: '表单属性',
+		menu		: '表单属性',
+		action		: '动作',
+		method		: '方法',
+		encoding	: '表单编码'
+	},
+
+	// Select Field Dialog.
+	select :
+	{
+		title		: '菜单/列表属性',
+		selectInfo	: '选择信息',
+		opAvail		: '可选项',
+		value		: '值',
+		size		: '高度',
+		lines		: '行',
+		chkMulti	: '允许多选',
+		opText		: '选项文本',
+		opValue		: '选项值',
+		btnAdd		: '添加',
+		btnModify	: '修改',
+		btnUp		: '上移',
+		btnDown		: '下移',
+		btnSetValue : '设为初始选定',
+		btnDelete	: '删除'
+	},
+
+	// Textarea Dialog.
+	textarea :
+	{
+		title		: '多行文本属性',
+		cols		: '字符宽度',
+		rows		: '行数'
+	},
+
+	// Text Field Dialog.
+	textfield :
+	{
+		title		: '单行文本属性',
+		name		: '名称',
+		value		: '初始值',
+		charWidth	: '字符宽度',
+		maxChars	: '最多字符数',
+		type		: '类型',
+		typeText	: '文本',
+		typePass	: '密码'
+	},
+
+	// Hidden Field Dialog.
+	hidden :
+	{
+		title	: '隐藏域属性',
+		name	: '名称',
+		value	: '初始值'
+	},
+
+	// Image Dialog.
+	image :
+	{
+		title		: '图象属性',
+		titleButton	: '图像域属性',
+		menu		: '图象属性',
+		infoTab		: '图象',
+		btnUpload	: '上传到服务器上',
+		upload		: '上传',
+		alt			: '替换文本',
+		lockRatio	: '锁定比例',
+		resetSize	: '原始尺寸',
+		border		: '边框大小',
+		hSpace		: '水平间距',
+		vSpace		: '垂直间距',
+		alertUrl	: '请输入图象地址',
+		linkTab		: '链接',
+		button2Img	: '确定要把当前按钮改变为图像吗?',
+		img2Button	: '确定要把当前图像改变为按钮吗?',
+		urlMissing	: '缺少图像源文件地址',
+		validateBorder	: '边框大小必须为整数格式',
+		validateHSpace	: '水平间距必须为整数格式',
+		validateVSpace	: '垂直间距必须为整数格式'
+	},
+
+	// Flash Dialog
+	flash :
+	{
+		properties		: 'Flash 属性',
+		propertiesTab	: '属性',
+		title			: '标题',
+		chkPlay			: '自动播放',
+		chkLoop			: '循环',
+		chkMenu			: '启用 Flash 菜单',
+		chkFull			: '启用全屏',
+ 		scale			: '缩放',
+		scaleAll		: '全部显示',
+		scaleNoBorder	: '无边框',
+		scaleFit		: '严格匹配',
+		access			: '允许脚本访问',
+		accessAlways	: '总是',
+		accessSameDomain: '同域',
+		accessNever		: '从不',
+		alignAbsBottom	: '绝对底部',
+		alignAbsMiddle	: '绝对居中',
+		alignBaseline	: '基线',
+		alignTextTop	: '文本上方',
+		quality			: '质量',
+		qualityBest		: '最好',
+		qualityHigh		: '高',
+		qualityAutoHigh	: '高(自动)',
+		qualityMedium	: '中(自动)',
+		qualityAutoLow	: '低(自动)',
+		qualityLow		: '低',
+		windowModeWindow: '窗体',
+		windowModeOpaque: '不透明',
+		windowModeTransparent : '透明',
+		windowMode		: '窗体模式',
+		flashvars		: 'Flash 变量',
+		bgcolor			: '背景颜色',
+		hSpace			: '水平间距',
+		vSpace			: '垂直间距',
+		validateSrc		: '请输入源文件地址',
+		validateHSpace	: '水平间距必须为数字格式',
+		validateVSpace	: '垂直间距必须为数字格式'
+	},
+
+	// Speller Pages Dialog
+	spellCheck :
+	{
+		toolbar			: '拼写检查',
+		title			: '拼写检查',
+		notAvailable	: '抱歉, 服务目前暂不可用',
+		errorLoading	: '加载应该服务主机时出错: %s.',
+		notInDic		: '没有在字典里',
+		changeTo		: '更改为',
+		btnIgnore		: '忽略',
+		btnIgnoreAll	: '全部忽略',
+		btnReplace		: '替换',
+		btnReplaceAll	: '全部替换',
+		btnUndo			: '撤消',
+		noSuggestions	: '- 没有建议 -',
+		progress		: '正在进行拼写检查...',
+		noMispell		: '拼写检查完成: 没有发现拼写错误',
+		noChanges		: '拼写检查完成: 没有更改任何单词',
+		oneChange		: '拼写检查完成: 更改了一个单词',
+		manyChanges		: '拼写检查完成: 更改了 %1 个单词',
+		ieSpellDownload	: '拼写检查插件还没安装, 你是否想现在就下载?'
+	},
+
+	smiley :
+	{
+		toolbar	: '表情符',
+		title	: '插入表情图标',
+		options : '表情图标选项'
+	},
+
+	elementsPath :
+	{
+		eleLabel : '元素路径',
+		eleTitle : '%1 元素'
+	},
+
+	numberedlist	: '编号列表',
+	bulletedlist	: '项目列表',
+	indent			: '增加缩进量',
+	outdent			: '减少缩进量',
+
+	justify :
+	{
+		left	: '左对齐',
+		center	: '居中',
+		right	: '右对齐',
+		block	: '两端对齐'
+	},
+
+	blockquote : '块引用',
+
+	clipboard :
+	{
+		title		: '粘贴',
+		cutError	: '您的浏览器安全设置不允许编辑器自动执行剪切操作, 请使用键盘快捷键(Ctrl/Cmd+X)来完成',
+		copyError	: '您的浏览器安全设置不允许编辑器自动执行复制操作, 请使用键盘快捷键(Ctrl/Cmd+C)来完成',
+		pasteMsg	: '请使用键盘快捷键(<STRONG>Ctrl/Cmd+V</STRONG>)把内容粘贴到下面的方框里，再按 <STRONG>确定</STRONG>',
+		securityMsg	: '因为你的浏览器的安全设置原因, 本编辑器不能直接访问你的剪贴板内容, 你需要在本窗口重新粘贴一次',
+		pasteArea	: '粘贴区域'
+	},
+
+	pastefromword :
+	{
+		confirmCleanup	: '您要粘贴的内容好像是来自 MS Word, 是否要清除 MS Word 格式后再粘贴?',
+		toolbar			: '从 MS Word 粘贴',
+		title			: '从 MS Word 粘贴',
+		error			: '由于内部错误无法清理要粘贴的数据'
+	},
+
+	pasteText :
+	{
+		button	: '粘贴为无格式文本',
+		title	: '粘贴为无格式文本'
+	},
+
+	templates :
+	{
+		button			: '模板',
+		title			: '内容模板',
+		options : '模板选项',
+		insertOption	: '替换当前内容',
+		selectPromptMsg	: '请选择编辑器内容模板:',
+		emptyListMsg	: '(没有模板)'
+	},
+
+	showBlocks : '显示区块',
+
+	stylesCombo :
+	{
+		label		: '样式',
+		panelTitle	: '样式',
+		panelTitle1	: '块级元素样式',
+		panelTitle2	: '内联元素样式',
+		panelTitle3	: '对象元素样式'
+	},
+
+	format :
+	{
+		label		: '格式',
+		panelTitle	: '格式',
+
+		tag_p		: '普通',
+		tag_pre		: '已编排格式',
+		tag_address	: '地址',
+		tag_h1		: '标题 1',
+		tag_h2		: '标题 2',
+		tag_h3		: '标题 3',
+		tag_h4		: '标题 4',
+		tag_h5		: '标题 5',
+		tag_h6		: '标题 6',
+		tag_div		: '段落(DIV)'
+	},
+
+	div :
+	{
+		title				: '创建 DIV 容器',
+		toolbar				: '创建 DIV 容器',
+		cssClassInputLabel	: '样式类名称',
+		styleSelectLabel	: '样式',
+		IdInputLabel		: 'ID',
+		languageCodeInputLabel	: '语言代码',
+		inlineStyleInputLabel	: '行内样式',
+		advisoryTitleInputLabel	: '标题',
+		langDirLabel		: '语言方向',
+		langDirLTRLabel		: '从左到右 (LTR)',
+		langDirRTLLabel		: '从右到左 (RTL)',
+		edit				: '编辑 DIV',
+		remove				: '移除 DIV'
+  	},
+
+	iframe :
+	{
+		title		: 'IFrame 属性',
+		toolbar		: 'IFrame',
+		noUrl		: '请输入框架的 URL',
+		scrolling	: '允许滚动条',
+		border		: '显示框架边框'
+	},
+
+	font :
+	{
+		label		: '字体',
+		voiceLabel	: '字体',
+		panelTitle	: '字体'
+	},
+
+	fontSize :
+	{
+		label		: '大小',
+		voiceLabel	: '文字大小',
+		panelTitle	: '大小'
+	},
+
+	colorButton :
+	{
+		textColorTitle	: '文本颜色',
+		bgColorTitle	: '背景颜色',
+		panelTitle		: '颜色',
+		auto			: '自动',
+		more			: '其它颜色...'
+	},
+
+	colors :
+	{
+		'000' : '黑',
+		'800000' : '褐红',
+		'8B4513' : '深褐',
+		'2F4F4F' : '墨绿',
+		'008080' : '绿松石',
+		'000080' : '海军蓝',
+		'4B0082' : '靛蓝',
+		'696969' : '暗灰',
+		'B22222' : '砖红',
+		'A52A2A' : '褐',
+		'DAA520' : '金黄',
+		'006400' : '深绿',
+		'40E0D0' : '蓝绿',
+		'0000CD' : '中蓝',
+		'800080' : '紫',
+		'808080' : '灰',
+		'F00' : '红',
+		'FF8C00' : '深橙',
+		'FFD700' : '金',
+		'008000' : '绿',
+		'0FF' : '青',
+		'00F' : '蓝',
+		'EE82EE' : '紫罗兰',
+		'A9A9A9' : '深灰',
+		'FFA07A' : '亮橙',
+		'FFA500' : '橙',
+		'FFFF00' : '黄',
+		'00FF00' : '水绿',
+		'AFEEEE' : '粉蓝',
+		'ADD8E6' : '亮蓝',
+		'DDA0DD' : '梅红',
+		'D3D3D3' : '淡灰',
+		'FFF0F5' : '淡紫红',
+		'FAEBD7' : '古董白',
+		'FFFFE0' : '淡黄',
+		'F0FFF0' : '蜜白',
+		'F0FFFF' : '天蓝',
+		'F0F8FF' : '淡蓝',
+		'E6E6FA' : '淡紫',
+		'FFF' : '白'
+	},
+
+	scayt :
+	{
+		title			: '即时拼写检查',
+		opera_title		: '不支持 Opera 浏览器',
+		enable			: '启用即时拼写检查',
+		disable			: '禁用即时拼写检查',
+		about			: '关于即时拼写检查',
+		toggle			: '暂停/启用即时拼写检查',
+		options			: '选项',
+		langs			: '语言',
+		moreSuggestions	: '更多拼写建议',
+		ignore			: '忽略',
+		ignoreAll		: '全部忽略',
+		addWord			: '添加单词',
+		emptyDic		: '字典名不应为空.',
+
+		optionsTab		: '选项',
+		allCaps			: '忽略所有大写单词',
+		ignoreDomainNames : '忽略域名',
+		mixedCase		: '忽略大小写混合的单词',
+		mixedWithDigits	: '忽略带数字的单词',
+
+		languagesTab	: '语言',
+
+		dictionariesTab	: '字典',
+		dic_field_name	: '字典名称',
+		dic_create		: '创建',
+		dic_restore		: '还原',
+		dic_delete		: '删除',
+		dic_rename		: '重命名',
+		dic_info		: '一开始用户词典储存在 Cookie 中, 但是 Cookies 的容量是有限的, 当用户词典增长到超出 Cookie 限制时就无法再储存了, 这时您可以将词典储存到我们的服务器上. 要把您的个人词典到储存到我们的服务器上的话, 需要为您的词典指定一个名称, 如果您在我们的服务器上已经有储存有一个词典, 请输入词典名称并按还原按钮.',
+
+		aboutTab		: '关于'
+	},
+
+	about :
+	{
+		title		: '关于CKEditor',
+		dlgTitle	: '关于CKEditor',
+		help	: '请访问 $1 以获取帮助.',
+		userGuide : 'CKEditor 用户向导',
+		moreInfo	: '访问我们的网站以获取更多关于协议的信息',
+		copy		: 'Copyright &copy; $1. 版权所有。'
+	},
+
+	maximize : '全屏',
+	minimize : '最小化',
+
+	fakeobjects :
+	{
+		anchor		: '锚点',
+		flash		: 'Flash 动画',
+		iframe		: 'IFrame',
+		hiddenfield	: '隐藏域',
+		unknown		: '未知对象'
+	},
+
+	resize : '拖拽以改变尺寸',
+
+	colordialog :
+	{
+		title		: '选择颜色',
+		options	:	'颜色选项',
+		highlight	: '高亮',
+		selected	: '选择颜色',
+		clear		: '清除'
+	},
+
+	toolbarCollapse	: '折叠工具栏',
+	toolbarExpand	: '展开工具栏',
+
+	toolbarGroups :
+	{
+		document : '文档',
+		clipboard : '剪贴板/撤销',
+		editing : '编辑',
+		forms : '表单',
+		basicstyles : '基本格式',
+		paragraph : '段落',
+		links : '链接',
+		insert : '插入',
+		styles : '样式',
+		colors : '颜色',
+		tools : '工具'
+	},
+
+	bidi :
+	{
+		ltr : '文字方向为从左至右',
+		rtl : '文字方向为从右至左'
+	},
+
+	docprops :
+	{
+		label : '页面属性',
+		title : '页面属性',
+		design : '设计',
+		meta : 'Meta 数据',
+		chooseColor : '选择',
+		other : '<其他>',
+		docTitle :	'页面标题',
+		charset : 	'字符编码',
+		charsetOther : '其它字符编码',
+		charsetASCII : 'ASCII',
+		charsetCE : '中欧',
+		charsetCT : '繁体中文 (Big5)',
+		charsetCR : '西里尔文',
+		charsetGR : '希腊文',
+		charsetJP : '日文',
+		charsetKR : '韩文',
+		charsetTR : '土耳其文',
+		charsetUN : 'Unicode (UTF-8)',
+		charsetWE : '西欧',
+		docType : '文档类型',
+		docTypeOther : '其它文档类型',
+		xhtmlDec : '包含 XHTML 声明',
+		bgColor : '背景颜色',
+		bgImage : '背景图像',
+		bgFixed : '不滚动背景图像',
+		txtColor : '文本颜色',
+		margin : '页面边距',
+		marginTop : '上',
+		marginLeft : '左',
+		marginRight : '右',
+		marginBottom : '下',
+		metaKeywords : '页面索引关键字 (用半角逗号[,]分隔)',
+		metaDescription : '页面说明',
+		metaAuthor : '作者',
+		metaCopyright : '版权',
+		previewHtml : '<p>这是一些<strong>演示用文字</strong>。你当前正在使用<a href="javascript:void(0)">CKEditor</a>。</p>'
+	}
+};

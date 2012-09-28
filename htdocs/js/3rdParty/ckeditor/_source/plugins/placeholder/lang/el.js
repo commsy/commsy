@@ -1,3 +1,16 @@
-//>>built
-define("ckeditor/_source/plugins/placeholder/lang/el",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","el",{placeholder:{title:"\u0399\u03b4\u03b9\u03cc\u03c4\u03b7\u03c4\u03b5\u03c2 \u03a5\u03c0\u03bf\u03ba\u03b1\u03c4\u03ac\u03c3\u03c4\u03b1\u03c4\u03bf\u03c5 \u039a\u03b5\u03b9\u03bc\u03ad\u03bd\u03bf\u03c5",toolbar:"\u0394\u03b7\u03bc\u03b9\u03bf\u03c5\u03c1\u03b3\u03af\u03b1 \u03a5\u03c0\u03bf\u03ba\u03b1\u03c4\u03ac\u03c3\u03c4\u03b1\u03c3\u03c4\u03bf\u03c5 \u039a\u03b5\u03b9\u03bc\u03ad\u03bd\u03bf\u03c5",
-text:"\u03a5\u03c0\u03bf\u03ba\u03b1\u03b8\u03b9\u03c3\u03c4\u03cc\u03bc\u03b5\u03bd\u03bf \u039a\u03b5\u03af\u03bc\u03b5\u03bd\u03bf",edit:"\u0395\u03c0\u03b5\u03be\u03b5\u03c1\u03b3\u03b1\u03c3\u03af\u03b1 \u03a5\u03c0\u03bf\u03ba\u03b1\u03c4\u03ac\u03c3\u03c4\u03b1\u03c3\u03c4\u03bf\u03c5 \u039a\u03b5\u03b9\u03bc\u03ad\u03bd\u03bf\u03c5",textMissing:"\u03a0\u03c1\u03ad\u03c0\u03b5\u03b9 \u03bd\u03b1 \u03c5\u03c0\u03ac\u03c1\u03c7\u03b5\u03b9 \u03c5\u03c0\u03bf\u03ba\u03b1\u03b8\u03b9\u03c3\u03c4\u03cc\u03bc\u03b5\u03bd\u03bf \u03ba\u03b5\u03af\u03bc\u03b5\u03bd\u03bf."}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang( 'placeholder', 'el',
+{
+	placeholder :
+	{
+		title		: 'Ιδιότητες Υποκατάστατου Κειμένου',
+		toolbar		: 'Δημιουργία Υποκατάσταστου Κειμένου',
+		text		: 'Υποκαθιστόμενο Κείμενο',
+		edit		: 'Επεξεργασία Υποκατάσταστου Κειμένου',
+		textMissing	: 'Πρέπει να υπάρχει υποκαθιστόμενο κείμενο.'
+	}
+});

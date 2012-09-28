@@ -1,26 +1,1187 @@
-//>>built
-define("ckeditor/_source/plugins/tabletools/plugin",["dijit","dojo","dojox"],function(){(function(){function o(b){function c(b){!(0<a.length)&&b.type==CKEDITOR.NODE_ELEMENT&&z.test(b.getName())&&!b.getCustomData("selected_cell")&&(CKEDITOR.dom.element.setMarker(f,b,"selected_cell",!0),a.push(b))}for(var b=b.getRanges(),a=[],f={},d=0;d<b.length;d++){var g=b[d];if(g.collapsed)g=g.getCommonAncestor(),(g=g.getAscendant("td",!0)||g.getAscendant("th",!0))&&a.push(g);else{var g=new CKEDITOR.dom.walker(g),
-e;for(g.guard=c;e=g.next();)if((e=e.getAscendant("td")||e.getAscendant("th"))&&!e.getCustomData("selected_cell"))CKEDITOR.dom.element.setMarker(f,e,"selected_cell",!0),a.push(e)}}CKEDITOR.dom.element.clearAllMarkers(f);return a}function v(b,c){for(var a=o(b),f=a[0],d=f.getAscendant("table"),f=f.getDocument(),g=a[0].getParent(),e=g.$.rowIndex,a=a[a.length-1],h=a.getParent().$.rowIndex+a.$.rowSpan-1,a=new CKEDITOR.dom.element(d.$.rows[h]),e=c?e:h,g=c?g:a,a=CKEDITOR.tools.buildTableMap(d),d=a[e],e=c?
-a[e-1]:a[e+1],a=a[0].length,f=f.createElement("tr"),h=0;d[h]&&h<a;h++){var i;1<d[h].rowSpan&&e&&d[h]==e[h]?(i=d[h],i.rowSpan+=1):(i=(new CKEDITOR.dom.element(d[h])).clone(),i.removeAttribute("rowSpan"),!CKEDITOR.env.ie&&i.appendBogus(),f.append(i),i=i.$);h+=i.colSpan-1}c?f.insertBefore(g):f.insertAfter(g)}function n(b){if(b instanceof CKEDITOR.dom.selection){for(var c=o(b),a=c[0].getAscendant("table"),f=CKEDITOR.tools.buildTableMap(a),b=c[0].getParent().$.rowIndex,c=c[c.length-1],d=c.getParent().$.rowIndex+
-c.$.rowSpan-1,c=[],g=b;g<=d;g++){for(var e=f[g],h=new CKEDITOR.dom.element(a.$.rows[g]),i=0;i<e.length;i++){var j=new CKEDITOR.dom.element(e[i]),l=j.getParent().$.rowIndex;1==j.$.rowSpan?j.remove():(j.$.rowSpan-=1,l==g&&(l=f[g+1],l[i-1]?j.insertAfter(new CKEDITOR.dom.element(l[i-1])):(new CKEDITOR.dom.element(a.$.rows[g+1])).append(j,1)));i+=j.$.colSpan-1}c.push(h)}f=a.$.rows;a=new CKEDITOR.dom.element(f[d+1]||(0<b?f[b-1]:null)||a.$.parentNode);for(g=c.length;0<=g;g--)n(c[g]);return a}b instanceof
-CKEDITOR.dom.element&&(a=b.getAscendant("table"),1==a.$.rows.length?a.remove():b.remove());return null}function t(b,c){for(var a=c?Infinity:0,f=0;f<b.length;f++){var d;d=b[f];for(var g=c,e=d.getParent().$.cells,h=0,i=0;i<e.length;i++){var j=e[i],h=h+(g?1:j.colSpan);if(j==d.$)break}d=h-1;if(c?d<a:d>a)a=d}return a}function r(b,c){for(var a=o(b),f=a[0].getAscendant("table"),d=t(a,1),a=t(a),d=c?d:a,g=CKEDITOR.tools.buildTableMap(f),f=[],a=[],e=g.length,h=0;h<e;h++){f.push(g[h][d]);var i=c?g[h][d-1]:g[h][d+
-1];i&&a.push(i)}for(h=0;h<e;h++)1<f[h].colSpan&&a.length&&a[h]==f[h]?(d=f[h],d.colSpan+=1):(d=(new CKEDITOR.dom.element(f[h])).clone(),d.removeAttribute("colSpan"),!CKEDITOR.env.ie&&d.appendBogus(),d[c?"insertBefore":"insertAfter"].call(d,new CKEDITOR.dom.element(f[h])),d=d.$),h+=d.rowSpan-1}function s(b,c){var a=b.getStartElement();if(a=a.getAscendant("td",1)||a.getAscendant("th",1)){var f=a.clone();CKEDITOR.env.ie||f.appendBogus();c?f.insertBefore(a):f.insertAfter(a)}}function p(b){if(b instanceof
-CKEDITOR.dom.selection){var b=o(b),c=b[0]&&b[0].getAscendant("table"),a;a:{var f=0;a=b.length-1;for(var d={},g,e;g=b[f++];)CKEDITOR.dom.element.setMarker(d,g,"delete_cell",!0);for(f=0;g=b[f++];)if((e=g.getPrevious())&&!e.getCustomData("delete_cell")||(e=g.getNext())&&!e.getCustomData("delete_cell")){CKEDITOR.dom.element.clearAllMarkers(d);a=e;break a}CKEDITOR.dom.element.clearAllMarkers(d);e=b[0].getParent();(e=e.getPrevious())?a=e.getLast():(e=b[a].getParent(),a=(e=e.getNext())?e.getChild(0):null)}for(e=
-b.length-1;0<=e;e--)p(b[e]);a?m(a,!0):c&&c.remove()}else b instanceof CKEDITOR.dom.element&&(c=b.getParent(),1==c.getChildCount()?c.remove():b.remove())}function m(b,c){var a=new CKEDITOR.dom.range(b.getDocument());if(!a["moveToElementEdit"+(c?"End":"Start")](b))a.selectNodeContents(b),a.collapse(c?!1:!0);a.select(!0)}function u(b,c,a){b=b[c];if("undefined"==typeof a)return b;for(c=0;b&&c<b.length;c++){if(a.is&&b[c]==a.$)return c;if(c==a)return new CKEDITOR.dom.element(b[c])}return a.is?-1:null}function q(b,
-c,a){var f=o(b),d;if((c?1!=f.length:2>f.length)||(d=b.getCommonAncestor())&&d.type==CKEDITOR.NODE_ELEMENT&&d.is("table"))return!1;var g,b=f[0];d=b.getAscendant("table");var e=CKEDITOR.tools.buildTableMap(d),h=e.length,i=e[0].length,j=b.getParent().$.rowIndex,l=u(e,j,b);if(c){var k;try{var m=parseInt(b.getAttribute("rowspan"),10)||1;g=parseInt(b.getAttribute("colspan"),10)||1;k=e["up"==c?j-m:"down"==c?j+m:j]["left"==c?l-g:"right"==c?l+g:l]}catch(v){return!1}if(!k||b.$==k)return!1;f["up"==c||"left"==
-c?"unshift":"push"](new CKEDITOR.dom.element(k))}for(var c=b.getDocument(),n=j,m=k=0,q=!a&&new CKEDITOR.dom.documentFragment(c),r=0,c=0;c<f.length;c++){g=f[c];var p=g.getParent(),t=g.getFirst(),s=g.$.colSpan,w=g.$.rowSpan,p=p.$.rowIndex,x=u(e,p,g),r=r+s*w,m=Math.max(m,x-l+s);k=Math.max(k,p-j+w);if(!a){s=g;(w=s.getBogus())&&w.remove();s.trim();if(g.getChildren().count()){if(p!=n&&t&&(!t.isBlockBoundary||!t.isBlockBoundary({br:1})))(n=q.getLast(CKEDITOR.dom.walker.whitespaces(!0)))&&(!n.is||!n.is("br"))&&
-q.append("br");g.moveChildren(q)}c?g.remove():g.setHtml("")}n=p}if(a)return k*m==r;q.moveChildren(b);CKEDITOR.env.ie||b.appendBogus();m>=i?b.removeAttribute("rowSpan"):b.$.rowSpan=k;k>=h?b.removeAttribute("colSpan"):b.$.colSpan=m;a=new CKEDITOR.dom.nodeList(d.$.rows);f=a.count();for(c=f-1;0<=c;c--)d=a.getItem(c),d.$.cells.length||(d.remove(),f++);return b}function x(b,c){var a=o(b);if(1<a.length)return!1;if(c)return!0;var a=a[0],f=a.getParent(),d=f.getAscendant("table"),g=CKEDITOR.tools.buildTableMap(d),
-e=f.$.rowIndex,h=u(g,e,a),i=a.$.rowSpan,j;if(1<i){j=Math.ceil(i/2);for(var i=Math.floor(i/2),f=e+j,d=new CKEDITOR.dom.element(d.$.rows[f]),g=u(g,f),l,f=a.clone(),e=0;e<g.length;e++)if(l=g[e],l.parentNode==d.$&&e>h){f.insertBefore(new CKEDITOR.dom.element(l));break}else l=null;l||d.append(f,!0)}else{i=j=1;d=f.clone();d.insertAfter(f);d.append(f=a.clone());l=u(g,e);for(h=0;h<l.length;h++)l[h].rowSpan++}CKEDITOR.env.ie||f.appendBogus();a.$.rowSpan=j;f.$.rowSpan=i;1==j&&a.removeAttribute("rowSpan");1==
-i&&f.removeAttribute("rowSpan");return f}function y(b,c){var a=o(b);if(1<a.length)return!1;if(c)return!0;var a=a[0],f=a.getParent(),d=f.getAscendant("table"),d=CKEDITOR.tools.buildTableMap(d),g=u(d,f.$.rowIndex,a),e=a.$.colSpan;if(1<e)f=Math.ceil(e/2),e=Math.floor(e/2);else{for(var e=f=1,h=[],i=0;i<d.length;i++){var j=d[i];h.push(j[g]);1<j[g].rowSpan&&(i+=j[g].rowSpan-1)}for(d=0;d<h.length;d++)h[d].colSpan++}d=a.clone();d.insertAfter(a);CKEDITOR.env.ie||d.appendBogus();a.$.colSpan=f;d.$.colSpan=e;
-1==f&&a.removeAttribute("colSpan");1==e&&d.removeAttribute("colSpan");return d}var z=/^(?:td|th)$/,A={thead:1,tbody:1,tfoot:1,td:1,tr:1,th:1};CKEDITOR.plugins.tabletools={requires:["table","dialog","contextmenu"],init:function(b){var c=b.lang.table;b.addCommand("cellProperties",new CKEDITOR.dialogCommand("cellProperties"));CKEDITOR.dialog.add("cellProperties",this.path+"dialogs/tableCell.js");b.addCommand("tableDelete",{exec:function(a){var e;var b=a.getSelection();if(e=(b=b&&b.getStartElement())&&
-b.getAscendant("table",1),b=e){var d=b.getParent();1==d.getChildCount()&&!d.is("body","td","th")&&(b=d);a=new CKEDITOR.dom.range(a.document);a.moveToPosition(b,CKEDITOR.POSITION_BEFORE_START);b.remove();a.select()}}});b.addCommand("rowDelete",{exec:function(a){a=a.getSelection();m(n(a))}});b.addCommand("rowInsertBefore",{exec:function(a){a=a.getSelection();v(a,!0)}});b.addCommand("rowInsertAfter",{exec:function(a){a=a.getSelection();v(a)}});b.addCommand("columnDelete",{exec:function(a){for(var a=
-a.getSelection(),a=o(a),b=a[0],d=a[a.length-1],a=b.getAscendant("table"),c=CKEDITOR.tools.buildTableMap(a),e,h,i=[],j=0,l=c.length;j<l;j++)for(var k=0,n=c[j].length;k<n;k++)c[j][k]==b.$&&(e=k),c[j][k]==d.$&&(h=k);for(j=e;j<=h;j++)for(k=0;k<c.length;k++)d=c[k],b=new CKEDITOR.dom.element(a.$.rows[k]),d=new CKEDITOR.dom.element(d[j]),d.$&&(1==d.$.colSpan?d.remove():d.$.colSpan-=1,k+=d.$.rowSpan-1,b.$.cells.length||i.push(b));h=a.$.rows[0]&&a.$.rows[0].cells;e=new CKEDITOR.dom.element(h[e]||(e?h[e-1]:
-a.$.parentNode));i.length==l&&a.remove();e&&m(e,!0)}});b.addCommand("columnInsertBefore",{exec:function(a){a=a.getSelection();r(a,!0)}});b.addCommand("columnInsertAfter",{exec:function(a){a=a.getSelection();r(a)}});b.addCommand("cellDelete",{exec:function(a){a=a.getSelection();p(a)}});b.addCommand("cellMerge",{exec:function(a){m(q(a.getSelection()),!0)}});b.addCommand("cellMergeRight",{exec:function(a){m(q(a.getSelection(),"right"),!0)}});b.addCommand("cellMergeDown",{exec:function(a){m(q(a.getSelection(),
-"down"),!0)}});b.addCommand("cellVerticalSplit",{exec:function(a){m(x(a.getSelection()))}});b.addCommand("cellHorizontalSplit",{exec:function(a){m(y(a.getSelection()))}});b.addCommand("cellInsertBefore",{exec:function(a){a=a.getSelection();s(a,!0)}});b.addCommand("cellInsertAfter",{exec:function(a){a=a.getSelection();s(a)}});b.addMenuItems&&b.addMenuItems({tablecell:{label:c.cell.menu,group:"tablecell",order:1,getItems:function(){var a=b.getSelection(),c=o(a);return{tablecell_insertBefore:CKEDITOR.TRISTATE_OFF,
-tablecell_insertAfter:CKEDITOR.TRISTATE_OFF,tablecell_delete:CKEDITOR.TRISTATE_OFF,tablecell_merge:q(a,null,!0)?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_DISABLED,tablecell_merge_right:q(a,"right",!0)?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_DISABLED,tablecell_merge_down:q(a,"down",!0)?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_DISABLED,tablecell_split_vertical:x(a,!0)?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_DISABLED,tablecell_split_horizontal:y(a,!0)?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_DISABLED,tablecell_properties:0<
-c.length?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_DISABLED}}},tablecell_insertBefore:{label:c.cell.insertBefore,group:"tablecell",command:"cellInsertBefore",order:5},tablecell_insertAfter:{label:c.cell.insertAfter,group:"tablecell",command:"cellInsertAfter",order:10},tablecell_delete:{label:c.cell.deleteCell,group:"tablecell",command:"cellDelete",order:15},tablecell_merge:{label:c.cell.merge,group:"tablecell",command:"cellMerge",order:16},tablecell_merge_right:{label:c.cell.mergeRight,group:"tablecell",
-command:"cellMergeRight",order:17},tablecell_merge_down:{label:c.cell.mergeDown,group:"tablecell",command:"cellMergeDown",order:18},tablecell_split_horizontal:{label:c.cell.splitHorizontal,group:"tablecell",command:"cellHorizontalSplit",order:19},tablecell_split_vertical:{label:c.cell.splitVertical,group:"tablecell",command:"cellVerticalSplit",order:20},tablecell_properties:{label:c.cell.title,group:"tablecellproperties",command:"cellProperties",order:21},tablerow:{label:c.row.menu,group:"tablerow",
-order:1,getItems:function(){return{tablerow_insertBefore:CKEDITOR.TRISTATE_OFF,tablerow_insertAfter:CKEDITOR.TRISTATE_OFF,tablerow_delete:CKEDITOR.TRISTATE_OFF}}},tablerow_insertBefore:{label:c.row.insertBefore,group:"tablerow",command:"rowInsertBefore",order:5},tablerow_insertAfter:{label:c.row.insertAfter,group:"tablerow",command:"rowInsertAfter",order:10},tablerow_delete:{label:c.row.deleteRow,group:"tablerow",command:"rowDelete",order:15},tablecolumn:{label:c.column.menu,group:"tablecolumn",order:1,
-getItems:function(){return{tablecolumn_insertBefore:CKEDITOR.TRISTATE_OFF,tablecolumn_insertAfter:CKEDITOR.TRISTATE_OFF,tablecolumn_delete:CKEDITOR.TRISTATE_OFF}}},tablecolumn_insertBefore:{label:c.column.insertBefore,group:"tablecolumn",command:"columnInsertBefore",order:5},tablecolumn_insertAfter:{label:c.column.insertAfter,group:"tablecolumn",command:"columnInsertAfter",order:10},tablecolumn_delete:{label:c.column.deleteColumn,group:"tablecolumn",command:"columnDelete",order:15}});b.contextMenu&&
-b.contextMenu.addListener(function(a){if(!a||a.isReadOnly())return null;for(;a;){if(a.getName()in A)return{tablecell:CKEDITOR.TRISTATE_OFF,tablerow:CKEDITOR.TRISTATE_OFF,tablecolumn:CKEDITOR.TRISTATE_OFF};a=a.getParent()}return null})},getSelectedCells:o};CKEDITOR.plugins.add("tabletools",CKEDITOR.plugins.tabletools)})();CKEDITOR.tools.buildTableMap=function(o){for(var o=o.$.rows,v=-1,n=[],t=0;t<o.length;t++){v++;!n[v]&&(n[v]=[]);for(var r=-1,s=0;s<o[t].cells.length;s++){var p=o[t].cells[s];for(r++;n[v][r];)r++;
-for(var m=isNaN(p.colSpan)?1:p.colSpan,p=isNaN(p.rowSpan)?1:p.rowSpan,u=0;u<p;u++){n[v+u]||(n[v+u]=[]);for(var q=0;q<m;q++)n[v+u][r+q]=o[t].cells[s]}r+=m-1}}return n}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+(function()
+{
+	var cellNodeRegex = /^(?:td|th)$/;
+
+	function getSelectedCells( selection )
+	{
+		var ranges = selection.getRanges();
+		var retval = [];
+		var database = {};
+
+		function moveOutOfCellGuard( node )
+		{
+			// Apply to the first cell only.
+			if ( retval.length > 0 )
+				return;
+
+			// If we are exiting from the first </td>, then the td should definitely be
+			// included.
+			if ( node.type == CKEDITOR.NODE_ELEMENT && cellNodeRegex.test( node.getName() )
+					&& !node.getCustomData( 'selected_cell' ) )
+			{
+				CKEDITOR.dom.element.setMarker( database, node, 'selected_cell', true );
+				retval.push( node );
+			}
+		}
+
+		for ( var i = 0 ; i < ranges.length ; i++ )
+		{
+			var range = ranges[ i ];
+
+			if ( range.collapsed )
+			{
+				// Walker does not handle collapsed ranges yet - fall back to old API.
+				var startNode = range.getCommonAncestor();
+				var nearestCell = startNode.getAscendant( 'td', true ) || startNode.getAscendant( 'th', true );
+				if ( nearestCell )
+					retval.push( nearestCell );
+			}
+			else
+			{
+				var walker = new CKEDITOR.dom.walker( range );
+				var node;
+				walker.guard = moveOutOfCellGuard;
+
+				while ( ( node = walker.next() ) )
+				{
+					// If may be possible for us to have a range like this:
+					// <td>^1</td><td>^2</td>
+					// The 2nd td shouldn't be included.
+					//
+					// So we have to take care to include a td we've entered only when we've
+					// walked into its children.
+
+					var parent = node.getAscendant( 'td' ) || node.getAscendant( 'th' );
+					if ( parent && !parent.getCustomData( 'selected_cell' ) )
+					{
+						CKEDITOR.dom.element.setMarker( database, parent, 'selected_cell', true );
+						retval.push( parent );
+					}
+				}
+			}
+		}
+
+		CKEDITOR.dom.element.clearAllMarkers( database );
+
+		return retval;
+	}
+
+	function getFocusElementAfterDelCells( cellsToDelete ) {
+		var i = 0,
+			last = cellsToDelete.length - 1,
+			database = {},
+			cell,focusedCell,
+			tr;
+
+		while ( ( cell = cellsToDelete[ i++ ] ) )
+			CKEDITOR.dom.element.setMarker( database, cell, 'delete_cell', true );
+
+		// 1.first we check left or right side focusable cell row by row;
+		i = 0;
+		while ( ( cell = cellsToDelete[ i++ ] ) )
+		{
+			if ( ( focusedCell = cell.getPrevious() ) && !focusedCell.getCustomData( 'delete_cell' )
+			  || ( focusedCell = cell.getNext()     ) && !focusedCell.getCustomData( 'delete_cell' ) )
+			{
+				CKEDITOR.dom.element.clearAllMarkers( database );
+				return focusedCell;
+			}
+		}
+
+		CKEDITOR.dom.element.clearAllMarkers( database );
+
+		// 2. then we check the toppest row (outside the selection area square) focusable cell
+		tr = cellsToDelete[ 0 ].getParent();
+		if ( ( tr = tr.getPrevious() ) )
+			return tr.getLast();
+
+		// 3. last we check the lowerest  row focusable cell
+		tr = cellsToDelete[ last ].getParent();
+		if ( ( tr = tr.getNext() ) )
+			return tr.getChild( 0 );
+
+		return null;
+	}
+
+	function insertRow( selection, insertBefore )
+	{
+		var cells = getSelectedCells( selection ),
+				firstCell = cells[ 0 ],
+				table = firstCell.getAscendant( 'table' ),
+				doc = firstCell.getDocument(),
+				startRow = cells[ 0 ].getParent(),
+				startRowIndex = startRow.$.rowIndex,
+				lastCell = cells[ cells.length - 1 ],
+				endRowIndex = lastCell.getParent().$.rowIndex + lastCell.$.rowSpan - 1,
+				endRow = new CKEDITOR.dom.element( table.$.rows[ endRowIndex ] ),
+				rowIndex = insertBefore ? startRowIndex : endRowIndex,
+				row = insertBefore ? startRow : endRow;
+
+		var map = CKEDITOR.tools.buildTableMap( table ),
+				cloneRow = map[ rowIndex ],
+				nextRow = insertBefore ? map[ rowIndex - 1 ] : map[ rowIndex + 1 ],
+				width = map[0].length;
+
+		var newRow = doc.createElement( 'tr' );
+		for ( var i = 0; cloneRow[ i ] && i < width; i++ )
+		{
+			var cell;
+			// Check whether there's a spanning row here, do not break it.
+			if ( cloneRow[ i ].rowSpan > 1 && nextRow && cloneRow[ i ] == nextRow[ i ] )
+			{
+				cell = cloneRow[ i ];
+				cell.rowSpan += 1;
+			}
+			else
+			{
+				cell = new CKEDITOR.dom.element( cloneRow[ i ] ).clone();
+				cell.removeAttribute( 'rowSpan' );
+				!CKEDITOR.env.ie && cell.appendBogus();
+				newRow.append( cell );
+				cell = cell.$;
+			}
+
+			i += cell.colSpan - 1;
+		}
+
+		insertBefore ?
+		newRow.insertBefore( row ) :
+		newRow.insertAfter( row );
+	}
+
+	function deleteRows( selectionOrRow )
+	{
+		if ( selectionOrRow instanceof CKEDITOR.dom.selection )
+		{
+			var cells = getSelectedCells( selectionOrRow ),
+					firstCell = cells[ 0 ],
+					table = firstCell.getAscendant( 'table' ),
+					map = CKEDITOR.tools.buildTableMap( table ),
+					startRow = cells[ 0 ].getParent(),
+					startRowIndex = startRow.$.rowIndex,
+					lastCell = cells[ cells.length - 1 ],
+					endRowIndex = lastCell.getParent().$.rowIndex + lastCell.$.rowSpan - 1,
+					rowsToDelete = [];
+
+			// Delete cell or reduce cell spans by checking through the table map.
+			for ( var i = startRowIndex; i <= endRowIndex; i++ )
+			{
+				var mapRow = map[ i ],
+						row = new CKEDITOR.dom.element( table.$.rows[ i ] );
+
+				for ( var j = 0; j < mapRow.length; j++ )
+				{
+					var cell = new CKEDITOR.dom.element( mapRow[ j ] ),
+							cellRowIndex = cell.getParent().$.rowIndex;
+
+					if ( cell.$.rowSpan == 1 )
+						cell.remove();
+					// Row spanned cell.
+					else
+					{
+						// Span row of the cell, reduce spanning.
+						cell.$.rowSpan -= 1;
+						// Root row of the cell, root cell to next row.
+						if ( cellRowIndex == i )
+						{
+							var nextMapRow = map[ i + 1 ];
+							nextMapRow[ j - 1 ] ?
+							cell.insertAfter( new CKEDITOR.dom.element( nextMapRow[ j - 1 ] ) )
+									: new CKEDITOR.dom.element( table.$.rows[ i + 1 ] ).append( cell, 1 );
+						}
+					}
+
+					j += cell.$.colSpan - 1;
+				}
+
+				rowsToDelete.push( row );
+			}
+
+			var rows = table.$.rows;
+
+			// Where to put the cursor after rows been deleted?
+			// 1. Into next sibling row if any;
+			// 2. Into previous sibling row if any;
+			// 3. Into table's parent element if it's the very last row.
+			var cursorPosition =  new CKEDITOR.dom.element( rows[ endRowIndex + 1 ] || ( startRowIndex > 0 ? rows[  startRowIndex - 1 ] : null ) || table.$.parentNode );
+
+			for ( i = rowsToDelete.length ; i >= 0 ; i-- )
+				deleteRows( rowsToDelete[ i ] );
+
+			return cursorPosition;
+		}
+		else if ( selectionOrRow instanceof CKEDITOR.dom.element )
+		{
+			table = selectionOrRow.getAscendant( 'table' );
+
+			if ( table.$.rows.length == 1 )
+				table.remove();
+			else
+				selectionOrRow.remove();
+		}
+
+		return null;
+	}
+
+	function getCellColIndex( cell, isStart )
+	{
+		var row = cell.getParent(),
+			rowCells = row.$.cells;
+
+		var colIndex = 0;
+		for ( var i = 0; i < rowCells.length; i++ )
+		{
+			var mapCell = rowCells[ i ];
+			colIndex += isStart ? 1 : mapCell.colSpan;
+			if ( mapCell == cell.$ )
+				break;
+		}
+
+		return colIndex -1;
+	}
+
+	function getColumnsIndices( cells, isStart )
+	{
+		var retval = isStart ? Infinity : 0;
+		for ( var i = 0; i < cells.length; i++ )
+		{
+			var colIndex = getCellColIndex( cells[ i ], isStart );
+			if ( isStart ? colIndex < retval  : colIndex > retval )
+				retval = colIndex;
+		}
+		return retval;
+	}
+
+	function insertColumn( selection, insertBefore )
+	{
+		var cells = getSelectedCells( selection ),
+			firstCell = cells[ 0 ],
+			table = firstCell.getAscendant( 'table' ),
+			startCol =  getColumnsIndices( cells, 1 ),
+			lastCol =  getColumnsIndices( cells ),
+			colIndex = insertBefore? startCol : lastCol;
+
+		var map = CKEDITOR.tools.buildTableMap( table ),
+			cloneCol = [],
+			nextCol = [],
+			height = map.length;
+
+		for ( var i = 0; i < height; i++ )
+		{
+			cloneCol.push( map[ i ][ colIndex ] );
+			var nextCell = insertBefore ? map[ i ][ colIndex - 1 ] : map[ i ][ colIndex + 1 ];
+			nextCell && nextCol.push( nextCell );
+		}
+
+		for ( i = 0; i < height; i++ )
+		{
+			var cell;
+			// Check whether there's a spanning column here, do not break it.
+			if ( cloneCol[ i ].colSpan > 1
+				&& nextCol.length
+				&& nextCol[ i ] == cloneCol[ i ] )
+			{
+				cell = cloneCol[ i ];
+				cell.colSpan += 1;
+			}
+			else
+			{
+				cell = new CKEDITOR.dom.element( cloneCol[ i ] ).clone();
+				cell.removeAttribute( 'colSpan' );
+				!CKEDITOR.env.ie && cell.appendBogus();
+				cell[ insertBefore? 'insertBefore' : 'insertAfter' ].call( cell, new CKEDITOR.dom.element ( cloneCol[ i ] ) );
+				cell = cell.$;
+			}
+
+			i += cell.rowSpan - 1;
+		}
+	}
+
+	function deleteColumns( selectionOrCell )
+	{
+		var cells = getSelectedCells( selectionOrCell ),
+				firstCell = cells[ 0 ],
+				lastCell = cells[ cells.length - 1 ],
+				table = firstCell.getAscendant( 'table' ),
+				map = CKEDITOR.tools.buildTableMap( table ),
+				startColIndex,
+				endColIndex,
+				rowsToDelete = [];
+
+		// Figure out selected cells' column indices.
+		for ( var i = 0, rows = map.length; i < rows; i++ )
+		{
+			for ( var j = 0, cols = map[ i ].length; j < cols; j++ )
+			{
+				if ( map[ i ][ j ] == firstCell.$ )
+					startColIndex = j;
+				if ( map[ i ][ j ] == lastCell.$ )
+					endColIndex = j;
+			}
+		}
+
+		// Delete cell or reduce cell spans by checking through the table map.
+		for ( i = startColIndex; i <= endColIndex; i++ )
+		{
+			for ( j = 0; j < map.length; j++ )
+			{
+				var mapRow = map[ j ],
+					row = new CKEDITOR.dom.element( table.$.rows[ j ] ),
+					cell = new CKEDITOR.dom.element( mapRow[ i ] );
+
+				if ( cell.$ )
+				{
+					if ( cell.$.colSpan == 1 )
+						cell.remove();
+					// Reduce the col spans.
+					else
+						cell.$.colSpan -= 1;
+
+					j += cell.$.rowSpan - 1;
+
+					if ( !row.$.cells.length )
+						rowsToDelete.push( row );
+				}
+			}
+		}
+
+		var firstRowCells = table.$.rows[ 0 ] && table.$.rows[ 0 ].cells;
+
+		// Where to put the cursor after columns been deleted?
+		// 1. Into next cell of the first row if any;
+		// 2. Into previous cell of the first row if any;
+		// 3. Into table's parent element;
+		var cursorPosition =  new CKEDITOR.dom.element( firstRowCells[ startColIndex ] || ( startColIndex ? firstRowCells[ startColIndex - 1 ] : table.$.parentNode ) );
+
+		// Delete table rows only if all columns are gone (do not remove empty row).
+		if ( rowsToDelete.length == rows )
+			table.remove();
+
+		return cursorPosition;
+	}
+
+	function getFocusElementAfterDelCols( cells )
+	{
+		var cellIndexList = [],
+			table = cells[ 0 ] && cells[ 0 ].getAscendant( 'table' ),
+			i, length,
+			targetIndex, targetCell;
+
+		// get the cellIndex list of delete cells
+		for ( i = 0, length = cells.length; i < length; i++ )
+			cellIndexList.push( cells[i].$.cellIndex );
+
+		// get the focusable column index
+		cellIndexList.sort();
+		for ( i = 1, length = cellIndexList.length; i < length; i++ )
+		{
+			if ( cellIndexList[ i ] - cellIndexList[ i - 1 ] > 1 )
+			{
+				targetIndex = cellIndexList[ i - 1 ] + 1;
+				break;
+			}
+		}
+
+		if ( !targetIndex )
+			targetIndex = cellIndexList[ 0 ] > 0 ? ( cellIndexList[ 0 ] - 1 )
+							: ( cellIndexList[ cellIndexList.length - 1 ] + 1 );
+
+		// scan row by row to get the target cell
+		var rows = table.$.rows;
+		for ( i = 0, length = rows.length; i < length ; i++ )
+		{
+			targetCell = rows[ i ].cells[ targetIndex ];
+			if ( targetCell )
+				break;
+		}
+
+		return targetCell ?  new CKEDITOR.dom.element( targetCell ) :  table.getPrevious();
+	}
+
+	function insertCell( selection, insertBefore )
+	{
+		var startElement = selection.getStartElement();
+		var cell = startElement.getAscendant( 'td', 1 ) || startElement.getAscendant( 'th', 1 );
+
+		if ( !cell )
+			return;
+
+		// Create the new cell element to be added.
+		var newCell = cell.clone();
+		if ( !CKEDITOR.env.ie )
+			newCell.appendBogus();
+
+		if ( insertBefore )
+			newCell.insertBefore( cell );
+		else
+			newCell.insertAfter( cell );
+	}
+
+	function deleteCells( selectionOrCell )
+	{
+		if ( selectionOrCell instanceof CKEDITOR.dom.selection )
+		{
+			var cellsToDelete = getSelectedCells( selectionOrCell );
+			var table = cellsToDelete[ 0 ] && cellsToDelete[ 0 ].getAscendant( 'table' );
+			var cellToFocus   = getFocusElementAfterDelCells( cellsToDelete );
+
+			for ( var i = cellsToDelete.length - 1 ; i >= 0 ; i-- )
+				deleteCells( cellsToDelete[ i ] );
+
+			if ( cellToFocus )
+				placeCursorInCell( cellToFocus, true );
+			else if ( table )
+				table.remove();
+		}
+		else if ( selectionOrCell instanceof CKEDITOR.dom.element )
+		{
+			var tr = selectionOrCell.getParent();
+			if ( tr.getChildCount() == 1 )
+				tr.remove();
+			else
+				selectionOrCell.remove();
+		}
+	}
+
+	// Remove filler at end and empty spaces around the cell content.
+	function trimCell( cell )
+	{
+		var bogus = cell.getBogus();
+		bogus && bogus.remove();
+		cell.trim();
+	}
+
+	function placeCursorInCell( cell, placeAtEnd )
+	{
+		var range = new CKEDITOR.dom.range( cell.getDocument() );
+		if ( !range[ 'moveToElementEdit' + ( placeAtEnd ? 'End' : 'Start' ) ]( cell ) )
+		{
+			range.selectNodeContents( cell );
+			range.collapse( placeAtEnd ? false : true );
+		}
+		range.select( true );
+	}
+
+	function cellInRow( tableMap, rowIndex, cell )
+	{
+		var oRow = tableMap[ rowIndex ];
+		if ( typeof cell == 'undefined' )
+			return oRow;
+
+		for ( var c = 0 ; oRow && c < oRow.length ; c++ )
+		{
+			if ( cell.is && oRow[c] == cell.$ )
+				return c;
+			else if ( c == cell )
+				return new CKEDITOR.dom.element( oRow[ c ] );
+		}
+		return cell.is ? -1 : null;
+	}
+
+	function cellInCol( tableMap, colIndex )
+	{
+		var oCol = [];
+		for ( var r = 0; r < tableMap.length; r++ )
+		{
+			var row = tableMap[ r ];
+			oCol.push( row[ colIndex ] );
+
+			// Avoid adding duplicate cells.
+			if ( row[ colIndex ].rowSpan > 1 )
+				r += row[ colIndex ].rowSpan - 1;
+		}
+		return oCol;
+	}
+
+	function mergeCells( selection, mergeDirection, isDetect )
+	{
+		var cells = getSelectedCells( selection );
+
+		// Invalid merge request if:
+		// 1. In batch mode despite that less than two selected.
+		// 2. In solo mode while not exactly only one selected.
+		// 3. Cells distributed in different table groups (e.g. from both thead and tbody).
+		var commonAncestor;
+		if ( ( mergeDirection ? cells.length != 1 : cells.length < 2 )
+				|| ( commonAncestor = selection.getCommonAncestor() )
+				&& commonAncestor.type == CKEDITOR.NODE_ELEMENT
+				&& commonAncestor.is( 'table' ) )
+		{
+			return false;
+		}
+
+		var	cell,
+			firstCell = cells[ 0 ],
+			table = firstCell.getAscendant( 'table' ),
+			map = CKEDITOR.tools.buildTableMap( table ),
+			mapHeight = map.length,
+			mapWidth = map[ 0 ].length,
+			startRow = firstCell.getParent().$.rowIndex,
+			startColumn = cellInRow( map, startRow, firstCell );
+
+		if ( mergeDirection )
+		{
+			var targetCell;
+			try
+			{
+				var rowspan = parseInt( firstCell.getAttribute( 'rowspan' ), 10 ) || 1;
+				var colspan = parseInt( firstCell.getAttribute( 'colspan' ), 10 ) || 1;
+
+				targetCell =
+					map[ mergeDirection == 'up' ?
+							( startRow - rowspan ):
+							mergeDirection == 'down' ? ( startRow + rowspan ) : startRow  ] [
+						mergeDirection == 'left' ?
+							( startColumn - colspan ):
+						mergeDirection == 'right' ?  ( startColumn + colspan ) : startColumn ];
+
+			}
+			catch( er )
+			{
+				return false;
+			}
+
+			// 1. No cell could be merged.
+			// 2. Same cell actually.
+			if ( !targetCell || firstCell.$ == targetCell  )
+				return false;
+
+			// Sort in map order regardless of the DOM sequence.
+			cells[ ( mergeDirection == 'up' || mergeDirection == 'left' ) ?
+			         'unshift' : 'push' ]( new CKEDITOR.dom.element( targetCell ) );
+		}
+
+		// Start from here are merging way ignorance (merge up/right, batch merge).
+		var	doc = firstCell.getDocument(),
+			lastRowIndex = startRow,
+			totalRowSpan = 0,
+			totalColSpan = 0,
+			// Use a documentFragment as buffer when appending cell contents.
+			frag = !isDetect && new CKEDITOR.dom.documentFragment( doc ),
+			dimension = 0;
+
+		for ( var i = 0; i < cells.length; i++ )
+		{
+			cell = cells[ i ];
+
+			var tr = cell.getParent(),
+				cellFirstChild = cell.getFirst(),
+				colSpan = cell.$.colSpan,
+				rowSpan = cell.$.rowSpan,
+				rowIndex = tr.$.rowIndex,
+				colIndex = cellInRow( map, rowIndex, cell );
+
+			// Accumulated the actual places taken by all selected cells.
+			dimension += colSpan * rowSpan;
+			// Accumulated the maximum virtual spans from column and row.
+			totalColSpan = Math.max( totalColSpan, colIndex - startColumn + colSpan ) ;
+			totalRowSpan = Math.max( totalRowSpan, rowIndex - startRow + rowSpan );
+
+			if ( !isDetect )
+			{
+				// Trim all cell fillers and check to remove empty cells.
+				if ( trimCell( cell ), cell.getChildren().count() )
+				{
+					// Merge vertically cells as two separated paragraphs.
+					if ( rowIndex != lastRowIndex
+						&& cellFirstChild
+						&& !( cellFirstChild.isBlockBoundary
+							  && cellFirstChild.isBlockBoundary( { br : 1 } ) ) )
+					{
+						var last = frag.getLast( CKEDITOR.dom.walker.whitespaces( true ) );
+						if ( last && !( last.is && last.is( 'br' ) ) )
+							frag.append( 'br' );
+					}
+
+					cell.moveChildren( frag );
+				}
+				i ? cell.remove() : cell.setHtml( '' );
+			}
+			lastRowIndex = rowIndex;
+		}
+
+		if ( !isDetect )
+		{
+			frag.moveChildren( firstCell );
+
+			if ( !CKEDITOR.env.ie )
+				firstCell.appendBogus();
+
+			if ( totalColSpan >= mapWidth )
+				firstCell.removeAttribute( 'rowSpan' );
+			else
+				firstCell.$.rowSpan = totalRowSpan;
+
+			if ( totalRowSpan >= mapHeight )
+				firstCell.removeAttribute( 'colSpan' );
+			else
+				firstCell.$.colSpan = totalColSpan;
+
+			// Swip empty <tr> left at the end of table due to the merging.
+			var trs = new CKEDITOR.dom.nodeList( table.$.rows ),
+				count = trs.count();
+
+			for ( i = count - 1; i >= 0; i-- )
+			{
+				var tailTr = trs.getItem( i );
+				if ( !tailTr.$.cells.length )
+				{
+					tailTr.remove();
+					count++;
+					continue;
+				}
+			}
+
+			return firstCell;
+		}
+		// Be able to merge cells only if actual dimension of selected
+		// cells equals to the caculated rectangle.
+		else
+			return ( totalRowSpan * totalColSpan ) == dimension;
+	}
+
+	function verticalSplitCell ( selection, isDetect )
+	{
+		var cells = getSelectedCells( selection );
+		if ( cells.length > 1 )
+			return false;
+		else if ( isDetect )
+			return true;
+
+		var cell = cells[ 0 ],
+			tr = cell.getParent(),
+			table = tr.getAscendant( 'table' ),
+			map = CKEDITOR.tools.buildTableMap( table ),
+			rowIndex = tr.$.rowIndex,
+			colIndex = cellInRow( map, rowIndex, cell ),
+			rowSpan = cell.$.rowSpan,
+			newCell,
+			newRowSpan,
+			newCellRowSpan,
+			newRowIndex;
+
+		if ( rowSpan > 1 )
+		{
+			newRowSpan = Math.ceil( rowSpan / 2 );
+			newCellRowSpan = Math.floor( rowSpan / 2 );
+			newRowIndex = rowIndex + newRowSpan;
+			var newCellTr = new CKEDITOR.dom.element( table.$.rows[ newRowIndex ] ),
+				newCellRow = cellInRow( map, newRowIndex ),
+				candidateCell;
+
+			newCell = cell.clone();
+
+			// Figure out where to insert the new cell by checking the vitual row.
+			for ( var c = 0; c < newCellRow.length; c++ )
+			{
+				candidateCell = newCellRow[ c ];
+				// Catch first cell actually following the column.
+				if ( candidateCell.parentNode == newCellTr.$
+					&& c > colIndex )
+				{
+					newCell.insertBefore( new CKEDITOR.dom.element( candidateCell ) );
+					break;
+				}
+				else
+					candidateCell = null;
+			}
+
+			// The destination row is empty, append at will.
+			if ( !candidateCell )
+				newCellTr.append( newCell, true );
+		}
+		else
+		{
+			newCellRowSpan = newRowSpan = 1;
+
+			newCellTr = tr.clone();
+			newCellTr.insertAfter( tr );
+			newCellTr.append( newCell = cell.clone() );
+
+			var cellsInSameRow = cellInRow( map, rowIndex );
+			for ( var i = 0; i < cellsInSameRow.length; i++ )
+				cellsInSameRow[ i ].rowSpan++;
+		}
+
+		if ( !CKEDITOR.env.ie )
+			newCell.appendBogus();
+
+		cell.$.rowSpan = newRowSpan;
+		newCell.$.rowSpan = newCellRowSpan;
+		if ( newRowSpan == 1 )
+			cell.removeAttribute( 'rowSpan' );
+		if ( newCellRowSpan == 1 )
+			newCell.removeAttribute( 'rowSpan' );
+
+		return newCell;
+	}
+
+	function horizontalSplitCell( selection, isDetect )
+	{
+		var cells = getSelectedCells( selection );
+		if ( cells.length > 1 )
+			return false;
+		else if ( isDetect )
+			return true;
+
+		var cell = cells[ 0 ],
+			tr = cell.getParent(),
+			table = tr.getAscendant( 'table' ),
+			map = CKEDITOR.tools.buildTableMap( table ),
+			rowIndex = tr.$.rowIndex,
+			colIndex = cellInRow( map, rowIndex, cell ),
+			colSpan = cell.$.colSpan,
+			newCell,
+			newColSpan,
+			newCellColSpan;
+
+		if ( colSpan > 1 )
+		{
+			newColSpan = Math.ceil( colSpan / 2 );
+			newCellColSpan = Math.floor( colSpan / 2 );
+		}
+		else
+		{
+			newCellColSpan = newColSpan = 1;
+			var cellsInSameCol = cellInCol( map, colIndex );
+			for ( var i = 0; i < cellsInSameCol.length; i++ )
+				cellsInSameCol[ i ].colSpan++;
+		}
+		newCell = cell.clone();
+		newCell.insertAfter( cell );
+		if ( !CKEDITOR.env.ie )
+			newCell.appendBogus();
+
+		cell.$.colSpan = newColSpan;
+		newCell.$.colSpan = newCellColSpan;
+		if ( newColSpan == 1 )
+			cell.removeAttribute( 'colSpan' );
+		if ( newCellColSpan == 1 )
+			newCell.removeAttribute( 'colSpan' );
+
+		return newCell;
+	}
+	// Context menu on table caption incorrect (#3834)
+	var contextMenuTags = { thead : 1, tbody : 1, tfoot : 1, td : 1, tr : 1, th : 1 };
+
+	CKEDITOR.plugins.tabletools =
+	{
+		requires : [ 'table', 'dialog', 'contextmenu' ],
+
+		init : function( editor )
+		{
+			var lang = editor.lang.table;
+
+			editor.addCommand( 'cellProperties', new CKEDITOR.dialogCommand( 'cellProperties' ) );
+			CKEDITOR.dialog.add( 'cellProperties', this.path + 'dialogs/tableCell.js' );
+
+			editor.addCommand( 'tableDelete',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection(),
+							startElement = selection && selection.getStartElement(),
+							table = startElement && startElement.getAscendant( 'table', 1 );
+
+						if ( !table )
+							return;
+
+						// If the table's parent has only one child remove it as well (unless it's the body or a table cell) (#5416, #6289)
+						var parent = table.getParent();
+						if ( parent.getChildCount() == 1 && !parent.is( 'body', 'td', 'th' ) )
+							table = parent;
+
+						var range = new CKEDITOR.dom.range( editor.document );
+						range.moveToPosition( table, CKEDITOR.POSITION_BEFORE_START );
+						table.remove();
+						range.select();
+					}
+				} );
+
+			editor.addCommand( 'rowDelete',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						placeCursorInCell( deleteRows( selection ) );
+					}
+				} );
+
+			editor.addCommand( 'rowInsertBefore',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						insertRow( selection, true );
+					}
+				} );
+
+			editor.addCommand( 'rowInsertAfter',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						insertRow( selection );
+					}
+				} );
+
+			editor.addCommand( 'columnDelete',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						var element = deleteColumns( selection );
+						element &&  placeCursorInCell( element, true );
+					}
+				} );
+
+			editor.addCommand( 'columnInsertBefore',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						insertColumn( selection, true );
+					}
+				} );
+
+			editor.addCommand( 'columnInsertAfter',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						insertColumn( selection );
+					}
+				} );
+
+			editor.addCommand( 'cellDelete',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						deleteCells( selection );
+					}
+				} );
+
+			editor.addCommand( 'cellMerge',
+				{
+					exec : function( editor )
+					{
+						placeCursorInCell( mergeCells( editor.getSelection() ), true );
+					}
+				} );
+
+			editor.addCommand( 'cellMergeRight',
+				{
+					exec : function( editor )
+					{
+						placeCursorInCell( mergeCells( editor.getSelection(), 'right' ), true );
+					}
+				} );
+
+			editor.addCommand( 'cellMergeDown',
+				{
+					exec : function( editor )
+					{
+						placeCursorInCell( mergeCells( editor.getSelection(), 'down' ), true );
+					}
+				} );
+
+			editor.addCommand( 'cellVerticalSplit',
+				{
+					exec : function( editor )
+					{
+						placeCursorInCell( verticalSplitCell( editor.getSelection() ) );
+					}
+				} );
+
+			editor.addCommand( 'cellHorizontalSplit',
+				{
+					exec : function( editor )
+					{
+						placeCursorInCell( horizontalSplitCell( editor.getSelection() ) );
+					}
+				} );
+
+			editor.addCommand( 'cellInsertBefore',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						insertCell( selection, true );
+					}
+				} );
+
+			editor.addCommand( 'cellInsertAfter',
+				{
+					exec : function( editor )
+					{
+						var selection = editor.getSelection();
+						insertCell( selection );
+					}
+				} );
+
+			// If the "menu" plugin is loaded, register the menu items.
+			if ( editor.addMenuItems )
+			{
+				editor.addMenuItems(
+					{
+						tablecell :
+						{
+							label : lang.cell.menu,
+							group : 'tablecell',
+							order : 1,
+							getItems : function()
+							{
+								var selection = editor.getSelection(),
+									cells = getSelectedCells( selection );
+								return {
+									tablecell_insertBefore : CKEDITOR.TRISTATE_OFF,
+									tablecell_insertAfter : CKEDITOR.TRISTATE_OFF,
+									tablecell_delete : CKEDITOR.TRISTATE_OFF,
+									tablecell_merge : mergeCells( selection, null, true ) ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+									tablecell_merge_right : mergeCells( selection, 'right', true ) ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+									tablecell_merge_down : mergeCells( selection, 'down', true ) ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+									tablecell_split_vertical : verticalSplitCell( selection, true ) ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+									tablecell_split_horizontal : horizontalSplitCell( selection, true ) ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED,
+									tablecell_properties : cells.length > 0 ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED
+								};
+							}
+						},
+
+						tablecell_insertBefore :
+						{
+							label : lang.cell.insertBefore,
+							group : 'tablecell',
+							command : 'cellInsertBefore',
+							order : 5
+						},
+
+						tablecell_insertAfter :
+						{
+							label : lang.cell.insertAfter,
+							group : 'tablecell',
+							command : 'cellInsertAfter',
+							order : 10
+						},
+
+						tablecell_delete :
+						{
+							label : lang.cell.deleteCell,
+							group : 'tablecell',
+							command : 'cellDelete',
+							order : 15
+						},
+
+						tablecell_merge :
+						{
+							label : lang.cell.merge,
+							group : 'tablecell',
+							command : 'cellMerge',
+							order : 16
+						},
+
+						tablecell_merge_right :
+						{
+							label : lang.cell.mergeRight,
+							group : 'tablecell',
+							command : 'cellMergeRight',
+							order : 17
+						},
+
+						tablecell_merge_down :
+						{
+							label : lang.cell.mergeDown,
+							group : 'tablecell',
+							command : 'cellMergeDown',
+							order : 18
+						},
+
+						tablecell_split_horizontal :
+						{
+							label : lang.cell.splitHorizontal,
+							group : 'tablecell',
+							command : 'cellHorizontalSplit',
+							order : 19
+						},
+
+						tablecell_split_vertical :
+						{
+							label : lang.cell.splitVertical,
+							group : 'tablecell',
+							command : 'cellVerticalSplit',
+							order : 20
+						},
+
+						tablecell_properties :
+						{
+							label : lang.cell.title,
+							group : 'tablecellproperties',
+							command : 'cellProperties',
+							order : 21
+						},
+
+						tablerow :
+						{
+							label : lang.row.menu,
+							group : 'tablerow',
+							order : 1,
+							getItems : function()
+							{
+								return {
+									tablerow_insertBefore : CKEDITOR.TRISTATE_OFF,
+									tablerow_insertAfter : CKEDITOR.TRISTATE_OFF,
+									tablerow_delete : CKEDITOR.TRISTATE_OFF
+								};
+							}
+						},
+
+						tablerow_insertBefore :
+						{
+							label : lang.row.insertBefore,
+							group : 'tablerow',
+							command : 'rowInsertBefore',
+							order : 5
+						},
+
+						tablerow_insertAfter :
+						{
+							label : lang.row.insertAfter,
+							group : 'tablerow',
+							command : 'rowInsertAfter',
+							order : 10
+						},
+
+						tablerow_delete :
+						{
+							label : lang.row.deleteRow,
+							group : 'tablerow',
+							command : 'rowDelete',
+							order : 15
+						},
+
+						tablecolumn :
+						{
+							label : lang.column.menu,
+							group : 'tablecolumn',
+							order : 1,
+							getItems : function()
+							{
+								return {
+									tablecolumn_insertBefore : CKEDITOR.TRISTATE_OFF,
+									tablecolumn_insertAfter : CKEDITOR.TRISTATE_OFF,
+									tablecolumn_delete : CKEDITOR.TRISTATE_OFF
+								};
+							}
+						},
+
+						tablecolumn_insertBefore :
+						{
+							label : lang.column.insertBefore,
+							group : 'tablecolumn',
+							command : 'columnInsertBefore',
+							order : 5
+						},
+
+						tablecolumn_insertAfter :
+						{
+							label : lang.column.insertAfter,
+							group : 'tablecolumn',
+							command : 'columnInsertAfter',
+							order : 10
+						},
+
+						tablecolumn_delete :
+						{
+							label : lang.column.deleteColumn,
+							group : 'tablecolumn',
+							command : 'columnDelete',
+							order : 15
+						}
+					});
+			}
+
+			// If the "contextmenu" plugin is laoded, register the listeners.
+			if ( editor.contextMenu )
+			{
+				editor.contextMenu.addListener( function( element, selection )
+					{
+						if ( !element || element.isReadOnly() )
+							return null;
+
+						while ( element )
+						{
+							if ( element.getName() in contextMenuTags )
+							{
+								return {
+									tablecell : CKEDITOR.TRISTATE_OFF,
+									tablerow : CKEDITOR.TRISTATE_OFF,
+									tablecolumn : CKEDITOR.TRISTATE_OFF
+								};
+							}
+							element = element.getParent();
+						}
+
+						return null;
+					} );
+			}
+		},
+
+		getSelectedCells : getSelectedCells
+
+	};
+	CKEDITOR.plugins.add( 'tabletools', CKEDITOR.plugins.tabletools );
+})();
+
+/**
+ * Create a two-dimension array that reflects the actual layout of table cells,
+ * with cell spans, with mappings to the original td elements.
+ * @param table {CKEDITOR.dom.element}
+ */
+CKEDITOR.tools.buildTableMap = function ( table )
+{
+	var aRows = table.$.rows ;
+
+	// Row and Column counters.
+	var r = -1 ;
+
+	var aMap = [];
+
+	for ( var i = 0 ; i < aRows.length ; i++ )
+	{
+		r++ ;
+		!aMap[r] && ( aMap[r] = [] );
+
+		var c = -1 ;
+
+		for ( var j = 0 ; j < aRows[i].cells.length ; j++ )
+		{
+			var oCell = aRows[i].cells[j] ;
+
+			c++ ;
+			while ( aMap[r][c] )
+				c++ ;
+
+			var iColSpan = isNaN( oCell.colSpan ) ? 1 : oCell.colSpan ;
+			var iRowSpan = isNaN( oCell.rowSpan ) ? 1 : oCell.rowSpan ;
+
+			for ( var rs = 0 ; rs < iRowSpan ; rs++ )
+			{
+				if ( !aMap[r + rs] )
+					aMap[r + rs] = [];
+
+				for ( var cs = 0 ; cs < iColSpan ; cs++ )
+				{
+					aMap[r + rs][c + cs] = aRows[i].cells[j] ;
+				}
+			}
+
+			c += iColSpan - 1 ;
+		}
+	}
+	return aMap ;
+};

@@ -1,26 +1,1038 @@
-//>>built
-define("ckeditor/_source/plugins/list/plugin",["dijit","dojo","dojox"],function(){(function(){function w(c){if(c.editor.readOnly)return null;var f=c.data.path,c=f.blockLimit,f=f.elements,d,e;for(e=0;e<f.length&&(d=f[e])&&!d.equals(c);e++)if(q[f[e].getName()])return this.setState(this.type==f[e].getName()?CKEDITOR.TRISTATE_ON:CKEDITOR.TRISTATE_OFF);return this.setState(CKEDITOR.TRISTATE_OFF)}function J(c,f,d){function e(a){if((b=g[a?"getFirst":"getLast"]())&&(!b.is||!b.isBlockBoundary())&&(k=f.root[a?
-"getPrevious":"getNext"](CKEDITOR.dom.walker.whitespaces(!0)))&&(!k.is||!k.isBlockBoundary({br:1})))c.document.createElement("br")[a?"insertBefore":"insertAfter"](b)}for(var i=CKEDITOR.plugins.list.listToArray(f.root,d),a=[],h=0;h<f.contents.length;h++){var l=f.contents[h];if((l=l.getAscendant("li",!0))&&!l.getCustomData("list_item_processed"))a.push(l),CKEDITOR.dom.element.setMarker(d,l,"list_item_processed",!0)}l=null;for(h=0;h<a.length;h++)l=a[h].getCustomData("listarray_index"),i[l].indent=-1;
-for(h=l+1;h<i.length;h++)if(i[h].indent>i[h-1].indent+1){a=i[h-1].indent+1-i[h].indent;for(l=i[h].indent;i[h]&&i[h].indent>=l;)i[h].indent+=a,h++;h--}var g=CKEDITOR.plugins.list.arrayToList(i,d,null,c.config.enterMode,f.root.getAttribute("dir")).listNode,b,k;e(!0);e();g.replace(f.root)}function x(c,f){this.name=c;this.type=f}function A(c,f,d,e){for(var i,a;i=c[e?"getLast":"getFirst"](K);)(a=i.getDirection(1))!==f.getDirection(1)&&i.setAttribute("dir",a),i.remove(),d?i[e?"insertBefore":"insertAfter"](d):
-f.append(i,e)}function B(c){var f;(f=function(d){var e=c[d?"getPrevious":"getNext"](r);e&&e.type==CKEDITOR.NODE_ELEMENT&&e.is(c.getName())&&(A(c,e,null,!d),c.remove(),c=e)})();f(1)}function C(c){return function(f){var d=f.children;a:{for(var e=f.children,i=e.length,a=0;a<i;a++)if(f=e[a],f.name&&f.name in y.$list){f=a;break a}f=i}var e=(e=d[f])&&e.previous,h;if(e&&(e.name&&"br"==e.name||e.value&&(h=e.value.match(D))))(!h||!h.index)&&e==d[0]?d[0]=c||CKEDITOR.env.ie?new CKEDITOR.htmlParser.text("\u00a0"):
-new CKEDITOR.htmlParser.element("br",{}):"br"==e.name?d.splice(f-1,1):e.value=e.value.replace(D,"")}}function E(c){return c.type==CKEDITOR.NODE_ELEMENT&&(c.getName()in CKEDITOR.dtd.$block||c.getName()in CKEDITOR.dtd.$listItem)&&CKEDITOR.dtd[c.getName()]["#"]}function F(c,f,d){c.fire("saveSnapshot");d.enlarge(CKEDITOR.ENLARGE_LIST_ITEM_CONTENTS);var e=d.extractContents();f.trim(!1,!0);var i=f.createBookmark(),a=new CKEDITOR.dom.elementPath(f.startContainer),h=a.lastElement.getAscendant("li",1);(a=
-a.block.getBogus())&&a.remove();(a=e.getLast())&&a.type==CKEDITOR.NODE_ELEMENT&&a.is("br")&&a.remove();(a=f.startContainer.getChild(f.startOffset))?e.insertBefore(a):f.startContainer.append(e);e=new CKEDITOR.dom.elementPath(d.startContainer);if(e=d.startContainer.getAscendant("li",1))if(a=G(e))h.contains(e)?(A(a,e.getParent(),e),a.remove()):h.append(a);for(;d.checkStartOfBlock()&&d.checkEndOfBlock();)e=new CKEDITOR.dom.elementPath(d.startContainer),h=e.block,h.is("li")&&(e=h.getParent(),h.equals(e.getLast(r))&&
-h.equals(e.getFirst(r))&&(h=e)),d.moveToPosition(h,CKEDITOR.POSITION_BEFORE_START),h.remove();d=d.clone();h=c.document.getBody();d.setEndAt(h,CKEDITOR.POSITION_BEFORE_END);d=new CKEDITOR.dom.walker(d);d.evaluator=function(a){return r(a)&&!v(a)};(d=d.next())&&d.type==CKEDITOR.NODE_ELEMENT&&d.getName()in CKEDITOR.dtd.$list&&B(d);f.moveToBookmark(i);f.select();c.selectionChange(1);c.fire("saveSnapshot")}function G(c){return(c=c.getLast(r))&&c.type==CKEDITOR.NODE_ELEMENT&&c.getName()in q?c:null}var q=
-{ol:1,ul:1},L=CKEDITOR.dom.walker.whitespaces(),M=CKEDITOR.dom.walker.bookmark(),r=function(c){return!(L(c)||M(c))},v=CKEDITOR.dom.walker.bogus();CKEDITOR.plugins.list={listToArray:function(c,f,d,e,i){if(!q[c.getName()])return[];e||(e=0);d||(d=[]);for(var a=0,h=c.getChildCount();a<h;a++){var l=c.getChild(a);l.type==CKEDITOR.NODE_ELEMENT&&l.getName()in CKEDITOR.dtd.$list&&CKEDITOR.plugins.list.listToArray(l,f,d,e+1);if("li"==l.$.nodeName.toLowerCase()){var g={parent:c,indent:e,element:l,contents:[]};
-if(i)g.grandparent=i;else if(g.grandparent=c.getParent(),g.grandparent&&"li"==g.grandparent.$.nodeName.toLowerCase())g.grandparent=g.grandparent.getParent();f&&CKEDITOR.dom.element.setMarker(f,l,"listarray_index",d.length);d.push(g);for(var b=0,k=l.getChildCount(),j;b<k;b++)j=l.getChild(b),j.type==CKEDITOR.NODE_ELEMENT&&q[j.getName()]?CKEDITOR.plugins.list.listToArray(j,f,d,e+1,g.grandparent):g.contents.push(j)}}return d},arrayToList:function(c,f,d,e,i){d||(d=0);if(!c||c.length<d+1)return null;for(var a,
-h=c[d].parent.getDocument(),l=new CKEDITOR.dom.documentFragment(h),g=null,b=d,k=Math.max(c[d].indent,0),j=null,n,m,p=e==CKEDITOR.ENTER_P?"p":"div";;){var o=c[b];a=o.grandparent;n=o.element.getDirection(1);if(o.indent==k){if(!g||c[b].parent.getName()!=g.getName())g=c[b].parent.clone(!1,1),i&&g.setAttribute("dir",i),l.append(g);j=g.append(o.element.clone(0,1));n!=g.getDirection(1)&&j.setAttribute("dir",n);for(a=0;a<o.contents.length;a++)j.append(o.contents[a].clone(1,1));b++}else if(o.indent==Math.max(k,
-0)+1)m=c[b-1].element.getDirection(1),b=CKEDITOR.plugins.list.arrayToList(c,null,b,e,m!=n?n:null),!j.getChildCount()&&CKEDITOR.env.ie&&!(7<h.$.documentMode)&&j.append(h.createText("\u00a0")),j.append(b.listNode),b=b.nextIndex;else if(-1==o.indent&&!d&&a){q[a.getName()]?(j=o.element.clone(!1,!0),n!=a.getDirection(1)&&j.setAttribute("dir",n)):j=new CKEDITOR.dom.documentFragment(h);var g=a.getDirection(1)!=n,s=o.element,z=s.getAttribute("class"),u=s.getAttribute("style"),x=j.type==CKEDITOR.NODE_DOCUMENT_FRAGMENT&&
-(e!=CKEDITOR.ENTER_BR||g||u||z),t,y=o.contents.length;for(a=0;a<y;a++){t=o.contents[a];if(t.type==CKEDITOR.NODE_ELEMENT&&t.isBlockBoundary()){g&&!t.getDirection()&&t.setAttribute("dir",n);var v=t,w=s.getAttribute("style");w&&v.setAttribute("style",w.replace(/([^;])$/,"$1;")+(v.getAttribute("style")||""));z&&t.addClass(z)}else x&&(m||(m=h.createElement(p),g&&m.setAttribute("dir",n)),u&&m.setAttribute("style",u),z&&m.setAttribute("class",z),m.append(t.clone(1,1)));j.append(m||t.clone(1,1))}j.type==
-CKEDITOR.NODE_DOCUMENT_FRAGMENT&&b!=c.length-1&&((n=j.getLast())&&n.type==CKEDITOR.NODE_ELEMENT&&"_moz"==n.getAttribute("type")&&n.remove(),j.getLast(r)&&n.type==CKEDITOR.NODE_ELEMENT&&n.getName()in CKEDITOR.dtd.$block||j.append(h.createElement("br")));n=j.$.nodeName.toLowerCase();!CKEDITOR.env.ie&&("div"==n||"p"==n)&&j.appendBogus();l.append(j);g=null;b++}else return null;m=null;if(c.length<=b||Math.max(c[b].indent,0)<k)break}if(f)for(c=l.getFirst();c;){if(c.type==CKEDITOR.NODE_ELEMENT&&(CKEDITOR.dom.element.clearMarkers(f,
-c),c.getName()in CKEDITOR.dtd.$listItem&&(d=c,h=i=e=void 0,e=d.getDirection()))){for(i=d.getParent();i&&!(h=i.getDirection());)i=i.getParent();e==h&&d.removeAttribute("dir")}c=c.getNextSourceNode()}return{listNode:l,nextIndex:b}}};var N=/^h[1-6]$/,K=CKEDITOR.dom.walker.nodeType(CKEDITOR.NODE_ELEMENT);x.prototype={exec:function(c){var f=c.document,d=c.config,e=c.getSelection(),i=e&&e.getRanges(!0);if(i&&!(1>i.length)){if(this.state==CKEDITOR.TRISTATE_OFF)if(f=f.getBody(),f.getFirst(r)){var a=1==i.length&&
-i[0];(d=a&&a.getEnclosedNode())&&d.is&&this.type==d.getName()&&this.setState(CKEDITOR.TRISTATE_ON)}else d.enterMode==CKEDITOR.ENTER_BR?f.appendBogus():i[0].fixBlock(1,d.enterMode==CKEDITOR.ENTER_P?"p":"div"),e.selectRanges(i);for(var d=e.createBookmarks(!0),f=[],h={},i=i.createIterator(),l=0;(a=i.getNextRange())&&++l;){var g=a.getBoundaryNodes(),b=g.startNode,k=g.endNode;b.type==CKEDITOR.NODE_ELEMENT&&"td"==b.getName()&&a.setStartAt(g.startNode,CKEDITOR.POSITION_AFTER_START);k.type==CKEDITOR.NODE_ELEMENT&&
-"td"==k.getName()&&a.setEndAt(g.endNode,CKEDITOR.POSITION_BEFORE_END);a=a.createIterator();for(a.forceBrBreak=this.state==CKEDITOR.TRISTATE_OFF;g=a.getNextParagraph();)if(!g.getCustomData("list_block")){CKEDITOR.dom.element.setMarker(h,g,"list_block",1);for(var j=new CKEDITOR.dom.elementPath(g),b=j.elements,k=0,j=j.blockLimit,n,m=b.length-1;0<=m&&(n=b[m]);m--)if(q[n.getName()]&&j.contains(n)){j.removeCustomData("list_group_object_"+l);(b=n.getCustomData("list_group_object"))?b.contents.push(g):(b=
-{root:n,contents:[g]},f.push(b),CKEDITOR.dom.element.setMarker(h,n,"list_group_object",b));k=1;break}k||(k=j,k.getCustomData("list_group_object_"+l)?k.getCustomData("list_group_object_"+l).contents.push(g):(b={root:k,contents:[g]},CKEDITOR.dom.element.setMarker(h,k,"list_group_object_"+l,b),f.push(b)))}}for(n=[];0<f.length;)if(b=f.shift(),this.state==CKEDITOR.TRISTATE_OFF)if(q[b.root.getName()]){g=c;i=b;b=h;l=n;k=CKEDITOR.plugins.list.listToArray(i.root,b);j=[];for(a=0;a<i.contents.length;a++)if(m=
-i.contents[a],(m=m.getAscendant("li",!0))&&!m.getCustomData("list_item_processed"))j.push(m),CKEDITOR.dom.element.setMarker(b,m,"list_item_processed",!0);for(var m=i.root.getDocument(),p=void 0,o=void 0,a=0;a<j.length;a++){var s=j[a].getCustomData("listarray_index"),p=k[s].parent;if(!p.is(this.type))o=m.createElement(this.type),p.copyAttributes(o,{start:1,type:1}),o.removeStyle("list-style-type"),k[s].parent=o}g=CKEDITOR.plugins.list.arrayToList(k,b,null,g.config.enterMode);b=void 0;k=g.listNode.getChildCount();
-for(a=0;a<k&&(b=g.listNode.getChild(a));a++)b.getName()==this.type&&l.push(b);g.listNode.replace(i.root)}else{k=c;g=b;a=n;j=g.contents;i=g.root.getDocument();l=[];1==j.length&&j[0].equals(g.root)&&(b=i.createElement("div"),j[0].moveChildren&&j[0].moveChildren(b),j[0].append(b),j[0]=b);g=g.contents[0].getParent();for(m=0;m<j.length;m++)g=g.getCommonAncestor(j[m].getParent());p=k.config.useComputedState;k=b=void 0;p=void 0===p||p;for(m=0;m<j.length;m++)for(o=j[m];s=o.getParent();){if(s.equals(g)){l.push(o);
-!k&&o.getDirection()&&(k=1);o=o.getDirection(p);null!==b&&(b=b&&b!=o?null:o);break}o=s}if(!(1>l.length)){j=l[l.length-1].getNext();m=i.createElement(this.type);a.push(m);for(p=a=void 0;l.length;)a=l.shift(),p=i.createElement("li"),a.is("pre")||N.test(a.getName())?a.appendTo(p):(a.copyAttributes(p),b&&a.getDirection()&&(p.removeStyle("direction"),p.removeAttribute("dir")),a.moveChildren(p),a.remove()),p.appendTo(m);b&&k&&m.setAttribute("dir",b);j?m.insertBefore(j):m.appendTo(g)}}else this.state==CKEDITOR.TRISTATE_ON&&
-q[b.root.getName()]&&J.call(this,c,b,h);for(m=0;m<n.length;m++)B(n[m]);CKEDITOR.dom.element.clearAllMarkers(h);e.selectBookmarks(d);c.focus()}}};var y=CKEDITOR.dtd,D=/[\t\r\n ]*(?:&nbsp;|\xa0)$/,H={elements:{}},u;for(u in y.$listItem)H.elements[u]=C();var I={elements:{}};for(u in y.$listItem)I.elements[u]=C(!0);CKEDITOR.plugins.add("list",{init:function(c){var f=c.addCommand("numberedlist",new x("numberedlist","ol")),d=c.addCommand("bulletedlist",new x("bulletedlist","ul"));c.ui.addButton("NumberedList",
-{label:c.lang.numberedlist,command:"numberedlist"});c.ui.addButton("BulletedList",{label:c.lang.bulletedlist,command:"bulletedlist"});c.on("selectionChange",CKEDITOR.tools.bind(w,f));c.on("selectionChange",CKEDITOR.tools.bind(w,d));c.on("key",function(e){var d=e.data.keyCode;if("wysiwyg"==c.mode&&d in{8:1,46:1}){var a=c.getSelection().getRanges()[0];if(a.collapsed){var h=8==d,f=c.document.getBody(),g=new CKEDITOR.dom.walker(a.clone());g.evaluator=function(a){return r(a)&&!v(a)};d=a.clone();if(h){var b,
-k;if((b=(new CKEDITOR.dom.elementPath(a.startContainer)).contains(q))&&a.checkBoundaryOfElement(b,CKEDITOR.START)&&(b=b.getParent())&&b.is("li")&&(b=G(b)))k=b,b=b.getPrevious(r),d.moveToPosition(b&&v(b)?b:k,CKEDITOR.POSITION_BEFORE_START);else if(g.range.setStartAt(f,CKEDITOR.POSITION_AFTER_START),g.range.setEnd(a.startContainer,a.startOffset),(b=g.previous())&&b.type==CKEDITOR.NODE_ELEMENT&&(b.getName()in q||b.is("li"))){if(!b.is("li"))g.range.selectNodeContents(b),g.reset(),g.evaluator=E,b=g.previous();
-k=b;d.moveToElementEditEnd(k)}k&&(F(c,d,a),e.cancel())}else if(b=a.startContainer.getAscendant("li",1))g.range.setEndAt(f,CKEDITOR.POSITION_BEFORE_END),k=(f=b.getLast(r))&&E(f)?f:b,h=0,(b=g.next())&&b.type==CKEDITOR.NODE_ELEMENT&&b.getName()in q&&b.equals(f)?(h=1,b=g.next()):a.checkBoundaryOfElement(k,CKEDITOR.END)&&(h=1),h&&b&&(a=a.clone(),a.moveToElementEditStart(b),F(c,d,a),e.cancel());setTimeout(function(){c.selectionChange(1)})}}})},afterInit:function(c){if(c=c.dataProcessor)c.dataFilter.addRules(H),
-c.htmlFilter.addRules(I)},requires:["domiterator"]})})()});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @file Insert and remove numbered and bulleted lists.
+ */
+
+(function()
+{
+	var listNodeNames = { ol : 1, ul : 1 },
+		emptyTextRegex = /^[\n\r\t ]*$/;
+
+	var whitespaces = CKEDITOR.dom.walker.whitespaces(),
+		bookmarks = CKEDITOR.dom.walker.bookmark(),
+		nonEmpty = function( node ){ return !( whitespaces( node ) || bookmarks( node ) );},
+		blockBogus = CKEDITOR.dom.walker.bogus();
+
+	function cleanUpDirection( element )
+	{
+		var dir, parent, parentDir;
+		if ( ( dir = element.getDirection() ) )
+		{
+			parent = element.getParent();
+			while ( parent && !( parentDir = parent.getDirection() ) )
+				parent = parent.getParent();
+
+			if ( dir == parentDir )
+				element.removeAttribute( 'dir' );
+		}
+	}
+
+	// Inheirt inline styles from another element.
+	function inheirtInlineStyles( parent, el )
+	{
+		var style = parent.getAttribute( 'style' );
+
+		// Put parent styles before child styles.
+		style && el.setAttribute( 'style',
+			style.replace( /([^;])$/, '$1;' ) +
+			( el.getAttribute( 'style' ) || '' ) );
+	}
+
+	CKEDITOR.plugins.list = {
+		/*
+		 * Convert a DOM list tree into a data structure that is easier to
+		 * manipulate. This operation should be non-intrusive in the sense that it
+		 * does not change the DOM tree, with the exception that it may add some
+		 * markers to the list item nodes when database is specified.
+		 */
+		listToArray : function( listNode, database, baseArray, baseIndentLevel, grandparentNode )
+		{
+			if ( !listNodeNames[ listNode.getName() ] )
+				return [];
+
+			if ( !baseIndentLevel )
+				baseIndentLevel = 0;
+			if ( !baseArray )
+				baseArray = [];
+
+			// Iterate over all list items to and look for inner lists.
+			for ( var i = 0, count = listNode.getChildCount() ; i < count ; i++ )
+			{
+				var listItem = listNode.getChild( i );
+
+				// Fixing malformed nested lists by moving it into a previous list item. (#6236)
+				if( listItem.type == CKEDITOR.NODE_ELEMENT && listItem.getName() in CKEDITOR.dtd.$list )
+					CKEDITOR.plugins.list.listToArray( listItem, database, baseArray, baseIndentLevel + 1 );
+
+				// It may be a text node or some funny stuff.
+				if ( listItem.$.nodeName.toLowerCase() != 'li' )
+					continue;
+
+				var itemObj = { 'parent' : listNode, indent : baseIndentLevel, element : listItem, contents : [] };
+				if ( !grandparentNode )
+				{
+					itemObj.grandparent = listNode.getParent();
+					if ( itemObj.grandparent && itemObj.grandparent.$.nodeName.toLowerCase() == 'li' )
+						itemObj.grandparent = itemObj.grandparent.getParent();
+				}
+				else
+					itemObj.grandparent = grandparentNode;
+
+				if ( database )
+					CKEDITOR.dom.element.setMarker( database, listItem, 'listarray_index', baseArray.length );
+				baseArray.push( itemObj );
+
+				for ( var j = 0, itemChildCount = listItem.getChildCount(), child; j < itemChildCount ; j++ )
+				{
+					child = listItem.getChild( j );
+					if ( child.type == CKEDITOR.NODE_ELEMENT && listNodeNames[ child.getName() ] )
+						// Note the recursion here, it pushes inner list items with
+						// +1 indentation in the correct order.
+						CKEDITOR.plugins.list.listToArray( child, database, baseArray, baseIndentLevel + 1, itemObj.grandparent );
+					else
+						itemObj.contents.push( child );
+				}
+			}
+			return baseArray;
+		},
+
+		// Convert our internal representation of a list back to a DOM forest.
+		arrayToList : function( listArray, database, baseIndex, paragraphMode, dir )
+		{
+			if ( !baseIndex )
+				baseIndex = 0;
+			if ( !listArray || listArray.length < baseIndex + 1 )
+				return null;
+			var i,
+				doc = listArray[ baseIndex ].parent.getDocument(),
+				retval = new CKEDITOR.dom.documentFragment( doc ),
+				rootNode = null,
+				currentIndex = baseIndex,
+				indentLevel = Math.max( listArray[ baseIndex ].indent, 0 ),
+				currentListItem = null,
+				orgDir,
+				block,
+				paragraphName = ( paragraphMode == CKEDITOR.ENTER_P ? 'p' : 'div' );
+			while ( 1 )
+			{
+				var item = listArray[ currentIndex ],
+					itemGrandParent = item.grandparent;
+
+				orgDir = item.element.getDirection( 1 );
+
+				if ( item.indent == indentLevel )
+				{
+					if ( !rootNode || listArray[ currentIndex ].parent.getName() != rootNode.getName() )
+					{
+						rootNode = listArray[ currentIndex ].parent.clone( false, 1 );
+						dir && rootNode.setAttribute( 'dir', dir );
+						retval.append( rootNode );
+					}
+					currentListItem = rootNode.append( item.element.clone( 0, 1 ) );
+
+					if ( orgDir != rootNode.getDirection( 1 ) )
+						currentListItem.setAttribute( 'dir', orgDir );
+
+					for ( i = 0 ; i < item.contents.length ; i++ )
+						currentListItem.append( item.contents[i].clone( 1, 1 ) );
+					currentIndex++;
+				}
+				else if ( item.indent == Math.max( indentLevel, 0 ) + 1 )
+				{
+					// Maintain original direction (#6861).
+					var currDir = listArray[ currentIndex - 1 ].element.getDirection( 1 ),
+						listData = CKEDITOR.plugins.list.arrayToList( listArray, null, currentIndex, paragraphMode,
+						currDir != orgDir ? orgDir: null );
+
+					// If the next block is an <li> with another list tree as the first
+					// child, we'll need to append a filler (<br>/NBSP) or the list item
+					// wouldn't be editable. (#6724)
+					if ( !currentListItem.getChildCount() && CKEDITOR.env.ie && !( doc.$.documentMode > 7 ))
+						currentListItem.append( doc.createText( '\xa0' ) );
+					currentListItem.append( listData.listNode );
+					currentIndex = listData.nextIndex;
+				}
+				else if ( item.indent == -1 && !baseIndex && itemGrandParent )
+				{
+					if ( listNodeNames[ itemGrandParent.getName() ] )
+					{
+						currentListItem = item.element.clone( false, true );
+						if ( orgDir != itemGrandParent.getDirection( 1 ) )
+							currentListItem.setAttribute( 'dir', orgDir );
+					}
+					else
+						currentListItem = new CKEDITOR.dom.documentFragment( doc );
+
+					// Migrate all children to the new container,
+					// apply the proper text direction.
+					var dirLoose = itemGrandParent.getDirection( 1 ) != orgDir,
+						li = item.element,
+						className = li.getAttribute( 'class' ),
+						style = li.getAttribute( 'style' );
+
+					var needsBlock = currentListItem.type ==
+					                 CKEDITOR.NODE_DOCUMENT_FRAGMENT &&
+					                 ( paragraphMode != CKEDITOR.ENTER_BR || dirLoose ||
+					                   style || className );
+
+					var child, count = item.contents.length;
+					for ( i = 0 ; i < count; i++ )
+					{
+						child = item.contents[ i ];
+
+						if ( child.type == CKEDITOR.NODE_ELEMENT && child.isBlockBoundary() )
+						{
+							// Apply direction on content blocks.
+							if ( dirLoose && !child.getDirection() )
+								child.setAttribute( 'dir', orgDir );
+
+							inheirtInlineStyles( li, child );
+
+							className && child.addClass( className );
+						}
+						else if ( needsBlock )
+						{
+							// Establish new block to hold text direction and styles.
+							if ( !block )
+							{
+								block = doc.createElement( paragraphName );
+								dirLoose && block.setAttribute( 'dir', orgDir );
+							}
+
+							// Copy over styles to new block;
+							style && block.setAttribute( 'style', style );
+							className && block.setAttribute( 'class', className );
+
+							block.append( child.clone( 1, 1 ) );
+						}
+
+						currentListItem.append( block || child.clone( 1, 1 ) );
+					}
+
+					if ( currentListItem.type == CKEDITOR.NODE_DOCUMENT_FRAGMENT
+						 && currentIndex != listArray.length - 1 )
+					{
+						var last = currentListItem.getLast();
+						if ( last && last.type == CKEDITOR.NODE_ELEMENT
+								&& last.getAttribute( 'type' ) == '_moz' )
+						{
+							last.remove();
+						}
+
+						if ( !( last = currentListItem.getLast( nonEmpty )
+							&& last.type == CKEDITOR.NODE_ELEMENT
+							&& last.getName() in CKEDITOR.dtd.$block ) )
+						{
+							currentListItem.append( doc.createElement( 'br' ) );
+						}
+					}
+
+					var currentListItemName = currentListItem.$.nodeName.toLowerCase();
+					if ( !CKEDITOR.env.ie && ( currentListItemName == 'div' || currentListItemName == 'p' ) )
+						currentListItem.appendBogus();
+					retval.append( currentListItem );
+					rootNode = null;
+					currentIndex++;
+				}
+				else
+					return null;
+
+				block = null;
+
+				if ( listArray.length <= currentIndex || Math.max( listArray[ currentIndex ].indent, 0 ) < indentLevel )
+					break;
+			}
+
+			if ( database )
+			{
+				var currentNode = retval.getFirst(),
+					listRoot = listArray[ 0 ].parent;
+
+				while ( currentNode )
+				{
+					if ( currentNode.type == CKEDITOR.NODE_ELEMENT )
+					{
+						// Clear marker attributes for the new list tree made of cloned nodes, if any.
+						CKEDITOR.dom.element.clearMarkers( database, currentNode );
+
+						// Clear redundant direction attribute specified on list items.
+						if ( currentNode.getName() in CKEDITOR.dtd.$listItem )
+							cleanUpDirection( currentNode );
+					}
+
+					currentNode = currentNode.getNextSourceNode();
+				}
+			}
+
+			return { listNode : retval, nextIndex : currentIndex };
+		}
+	};
+
+	function onSelectionChange( evt )
+	{
+		if ( evt.editor.readOnly )
+			return null;
+
+		var path = evt.data.path,
+			blockLimit = path.blockLimit,
+			elements = path.elements,
+			element,
+			i;
+
+		// Grouping should only happen under blockLimit.(#3940).
+		for ( i = 0 ; i < elements.length && ( element = elements[ i ] )
+			  && !element.equals( blockLimit ); i++ )
+		{
+			if ( listNodeNames[ elements[ i ].getName() ] )
+				return this.setState( this.type == elements[ i ].getName() ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
+		}
+
+		return this.setState( CKEDITOR.TRISTATE_OFF );
+	}
+
+	function changeListType( editor, groupObj, database, listsCreated )
+	{
+		// This case is easy...
+		// 1. Convert the whole list into a one-dimensional array.
+		// 2. Change the list type by modifying the array.
+		// 3. Recreate the whole list by converting the array to a list.
+		// 4. Replace the original list with the recreated list.
+		var listArray = CKEDITOR.plugins.list.listToArray( groupObj.root, database ),
+			selectedListItems = [];
+
+		for ( var i = 0 ; i < groupObj.contents.length ; i++ )
+		{
+			var itemNode = groupObj.contents[i];
+			itemNode = itemNode.getAscendant( 'li', true );
+			if ( !itemNode || itemNode.getCustomData( 'list_item_processed' ) )
+				continue;
+			selectedListItems.push( itemNode );
+			CKEDITOR.dom.element.setMarker( database, itemNode, 'list_item_processed', true );
+		}
+
+		var root = groupObj.root,
+			doc = root.getDocument(),
+			listNode,
+			newListNode;
+
+		for ( i = 0 ; i < selectedListItems.length ; i++ )
+		{
+			var listIndex = selectedListItems[i].getCustomData( 'listarray_index' );
+			listNode = listArray[ listIndex ].parent;
+
+			// Switch to new list node for this particular item.
+			if ( !listNode.is( this.type ) )
+			{
+				newListNode = doc.createElement( this.type );
+				// Copy all attributes, except from 'start' and 'type'.
+				listNode.copyAttributes( newListNode, { start : 1, type : 1 } );
+				// The list-style-type property should be ignored.
+				newListNode.removeStyle( 'list-style-type' );
+				listArray[ listIndex ].parent = newListNode;
+			}
+		}
+
+		var newList = CKEDITOR.plugins.list.arrayToList( listArray, database, null, editor.config.enterMode );
+		var child, length = newList.listNode.getChildCount();
+		for ( i = 0 ; i < length && ( child = newList.listNode.getChild( i ) ) ; i++ )
+		{
+			if ( child.getName() == this.type )
+				listsCreated.push( child );
+		}
+		newList.listNode.replace( groupObj.root );
+	}
+
+	var headerTagRegex = /^h[1-6]$/;
+
+	function createList( editor, groupObj, listsCreated )
+	{
+		var contents = groupObj.contents,
+			doc = groupObj.root.getDocument(),
+			listContents = [];
+
+		// It is possible to have the contents returned by DomRangeIterator to be the same as the root.
+		// e.g. when we're running into table cells.
+		// In such a case, enclose the childNodes of contents[0] into a <div>.
+		if ( contents.length == 1 && contents[0].equals( groupObj.root ) )
+		{
+			var divBlock = doc.createElement( 'div' );
+			contents[0].moveChildren && contents[0].moveChildren( divBlock );
+			contents[0].append( divBlock );
+			contents[0] = divBlock;
+		}
+
+		// Calculate the common parent node of all content blocks.
+		var commonParent = groupObj.contents[0].getParent();
+		for ( var i = 0 ; i < contents.length ; i++ )
+			commonParent = commonParent.getCommonAncestor( contents[i].getParent() );
+
+		var useComputedState = editor.config.useComputedState,
+			listDir, explicitDirection;
+
+		useComputedState = useComputedState === undefined || useComputedState;
+
+		// We want to insert things that are in the same tree level only, so calculate the contents again
+		// by expanding the selected blocks to the same tree level.
+		for ( i = 0 ; i < contents.length ; i++ )
+		{
+			var contentNode = contents[i],
+				parentNode;
+			while ( ( parentNode = contentNode.getParent() ) )
+			{
+				if ( parentNode.equals( commonParent ) )
+				{
+					listContents.push( contentNode );
+
+					// Determine the lists's direction.
+					if ( !explicitDirection && contentNode.getDirection() )
+						explicitDirection = 1;
+
+					var itemDir = contentNode.getDirection( useComputedState );
+
+					if ( listDir !== null )
+					{
+						// If at least one LI have a different direction than current listDir, we can't have listDir.
+						if ( listDir && listDir != itemDir )
+							listDir = null;
+						else
+							listDir = itemDir;
+					}
+
+					break;
+				}
+				contentNode = parentNode;
+			}
+		}
+
+		if ( listContents.length < 1 )
+			return;
+
+		// Insert the list to the DOM tree.
+		var insertAnchor = listContents[ listContents.length - 1 ].getNext(),
+			listNode = doc.createElement( this.type );
+
+		listsCreated.push( listNode );
+
+		var contentBlock, listItem;
+
+		while ( listContents.length )
+		{
+			contentBlock = listContents.shift();
+			listItem = doc.createElement( 'li' );
+
+			// Preserve preformat block and heading structure when converting to list item. (#5335) (#5271)
+			if ( contentBlock.is( 'pre' ) || headerTagRegex.test( contentBlock.getName() ) )
+				contentBlock.appendTo( listItem );
+			else
+			{
+				contentBlock.copyAttributes( listItem );
+				// Remove direction attribute after it was merged into list root. (#7657)
+				if ( listDir && contentBlock.getDirection() )
+				{
+					listItem.removeStyle( 'direction' );
+					listItem.removeAttribute( 'dir' );
+				}
+				contentBlock.moveChildren( listItem );
+				contentBlock.remove();
+			}
+
+			listItem.appendTo( listNode );
+		}
+
+		// Apply list root dir only if it has been explicitly declared.
+		if ( listDir && explicitDirection )
+			listNode.setAttribute( 'dir', listDir );
+
+		if ( insertAnchor )
+			listNode.insertBefore( insertAnchor );
+		else
+			listNode.appendTo( commonParent );
+	}
+
+	function removeList( editor, groupObj, database )
+	{
+		// This is very much like the change list type operation.
+		// Except that we're changing the selected items' indent to -1 in the list array.
+		var listArray = CKEDITOR.plugins.list.listToArray( groupObj.root, database ),
+			selectedListItems = [];
+
+		for ( var i = 0 ; i < groupObj.contents.length ; i++ )
+		{
+			var itemNode = groupObj.contents[i];
+			itemNode = itemNode.getAscendant( 'li', true );
+			if ( !itemNode || itemNode.getCustomData( 'list_item_processed' ) )
+				continue;
+			selectedListItems.push( itemNode );
+			CKEDITOR.dom.element.setMarker( database, itemNode, 'list_item_processed', true );
+		}
+
+		var lastListIndex = null;
+		for ( i = 0 ; i < selectedListItems.length ; i++ )
+		{
+			var listIndex = selectedListItems[i].getCustomData( 'listarray_index' );
+			listArray[listIndex].indent = -1;
+			lastListIndex = listIndex;
+		}
+
+		// After cutting parts of the list out with indent=-1, we still have to maintain the array list
+		// model's nextItem.indent <= currentItem.indent + 1 invariant. Otherwise the array model of the
+		// list cannot be converted back to a real DOM list.
+		for ( i = lastListIndex + 1 ; i < listArray.length ; i++ )
+		{
+			if ( listArray[i].indent > listArray[i-1].indent + 1 )
+			{
+				var indentOffset = listArray[i-1].indent + 1 - listArray[i].indent;
+				var oldIndent = listArray[i].indent;
+				while ( listArray[i] && listArray[i].indent >= oldIndent )
+				{
+					listArray[i].indent += indentOffset;
+					i++;
+				}
+				i--;
+			}
+		}
+
+		var newList = CKEDITOR.plugins.list.arrayToList( listArray, database, null, editor.config.enterMode,
+			groupObj.root.getAttribute( 'dir' ) );
+
+		// Compensate <br> before/after the list node if the surrounds are non-blocks.(#3836)
+		var docFragment = newList.listNode, boundaryNode, siblingNode;
+		function compensateBrs( isStart )
+		{
+			if ( ( boundaryNode = docFragment[ isStart ? 'getFirst' : 'getLast' ]() )
+				 && !( boundaryNode.is && boundaryNode.isBlockBoundary() )
+				 && ( siblingNode = groupObj.root[ isStart ? 'getPrevious' : 'getNext' ]
+				      ( CKEDITOR.dom.walker.whitespaces( true ) ) )
+				 && !( siblingNode.is && siblingNode.isBlockBoundary( { br : 1 } ) ) )
+				editor.document.createElement( 'br' )[ isStart ? 'insertBefore' : 'insertAfter' ]( boundaryNode );
+		}
+		compensateBrs( true );
+		compensateBrs();
+
+		docFragment.replace( groupObj.root );
+	}
+
+	function listCommand( name, type )
+	{
+		this.name = name;
+		this.type = type;
+	}
+
+	var elementType = CKEDITOR.dom.walker.nodeType( CKEDITOR.NODE_ELEMENT );
+
+	// Merge child nodes with direction preserved. (#7448)
+	function mergeChildren( from, into, refNode, forward )
+	{
+		var child, itemDir;
+		while ( ( child = from[ forward ? 'getLast' : 'getFirst' ]( elementType ) ) )
+		{
+			if ( ( itemDir = child.getDirection( 1 ) ) !== into.getDirection( 1 ) )
+				child.setAttribute( 'dir', itemDir );
+
+			child.remove();
+
+			refNode ?
+				child[ forward ? 'insertBefore' : 'insertAfter' ]( refNode ) :
+				into.append( child, forward  );
+		}
+	}
+
+	listCommand.prototype = {
+		exec : function( editor )
+		{
+			var doc = editor.document,
+				config = editor.config,
+				selection = editor.getSelection(),
+				ranges = selection && selection.getRanges( true );
+
+			// There should be at least one selected range.
+			if ( !ranges || ranges.length < 1 )
+				return;
+
+			// Midas lists rule #1 says we can create a list even in an empty document.
+			// But DOM iterator wouldn't run if the document is really empty.
+			// So create a paragraph if the document is empty and we're going to create a list.
+			if ( this.state == CKEDITOR.TRISTATE_OFF )
+			{
+				var body = doc.getBody();
+				if ( !body.getFirst( nonEmpty ) )
+				{
+					config.enterMode == CKEDITOR.ENTER_BR ?
+						body.appendBogus() :
+						ranges[ 0 ].fixBlock( 1, config.enterMode == CKEDITOR.ENTER_P ? 'p' : 'div' );
+
+					selection.selectRanges( ranges );
+				}
+				// Maybe a single range there enclosing the whole list,
+				// turn on the list state manually(#4129).
+				else
+				{
+					var range = ranges.length == 1 && ranges[ 0 ],
+						enclosedNode = range && range.getEnclosedNode();
+					if ( enclosedNode && enclosedNode.is
+						&& this.type == enclosedNode.getName() )
+							this.setState( CKEDITOR.TRISTATE_ON );
+				}
+			}
+
+			var bookmarks = selection.createBookmarks( true );
+
+			// Group the blocks up because there are many cases where multiple lists have to be created,
+			// or multiple lists have to be cancelled.
+			var listGroups = [],
+				database = {},
+				rangeIterator = ranges.createIterator(),
+				index = 0;
+
+			while ( ( range = rangeIterator.getNextRange() ) && ++index )
+			{
+				var boundaryNodes = range.getBoundaryNodes(),
+					startNode = boundaryNodes.startNode,
+					endNode = boundaryNodes.endNode;
+
+				if ( startNode.type == CKEDITOR.NODE_ELEMENT && startNode.getName() == 'td' )
+					range.setStartAt( boundaryNodes.startNode, CKEDITOR.POSITION_AFTER_START );
+
+				if ( endNode.type == CKEDITOR.NODE_ELEMENT && endNode.getName() == 'td' )
+					range.setEndAt( boundaryNodes.endNode, CKEDITOR.POSITION_BEFORE_END );
+
+				var iterator = range.createIterator(),
+					block;
+
+				iterator.forceBrBreak = ( this.state == CKEDITOR.TRISTATE_OFF );
+
+				while ( ( block = iterator.getNextParagraph() ) )
+				{
+					// Avoid duplicate blocks get processed across ranges.
+					if( block.getCustomData( 'list_block' ) )
+						continue;
+					else
+						CKEDITOR.dom.element.setMarker( database, block, 'list_block', 1 );
+
+					var path = new CKEDITOR.dom.elementPath( block ),
+						pathElements = path.elements,
+						pathElementsCount = pathElements.length,
+						listNode = null,
+						processedFlag = 0,
+						blockLimit = path.blockLimit,
+						element;
+
+					// First, try to group by a list ancestor.
+					for ( var i = pathElementsCount - 1; i >= 0 && ( element = pathElements[ i ] ); i-- )
+					{
+						if ( listNodeNames[ element.getName() ]
+							 && blockLimit.contains( element ) )     // Don't leak outside block limit (#3940).
+						{
+							// If we've encountered a list inside a block limit
+							// The last group object of the block limit element should
+							// no longer be valid. Since paragraphs after the list
+							// should belong to a different group of paragraphs before
+							// the list. (Bug #1309)
+							blockLimit.removeCustomData( 'list_group_object_' + index );
+
+							var groupObj = element.getCustomData( 'list_group_object' );
+							if ( groupObj )
+								groupObj.contents.push( block );
+							else
+							{
+								groupObj = { root : element, contents : [ block ] };
+								listGroups.push( groupObj );
+								CKEDITOR.dom.element.setMarker( database, element, 'list_group_object', groupObj );
+							}
+							processedFlag = 1;
+							break;
+						}
+					}
+
+					if ( processedFlag )
+						continue;
+
+					// No list ancestor? Group by block limit, but don't mix contents from different ranges.
+					var root = blockLimit;
+					if ( root.getCustomData( 'list_group_object_' + index ) )
+						root.getCustomData( 'list_group_object_' + index ).contents.push( block );
+					else
+					{
+						groupObj = { root : root, contents : [ block ] };
+						CKEDITOR.dom.element.setMarker( database, root, 'list_group_object_' + index, groupObj );
+						listGroups.push( groupObj );
+					}
+				}
+			}
+
+			// Now we have two kinds of list groups, groups rooted at a list, and groups rooted at a block limit element.
+			// We either have to build lists or remove lists, for removing a list does not makes sense when we are looking
+			// at the group that's not rooted at lists. So we have three cases to handle.
+			var listsCreated = [];
+			while ( listGroups.length > 0 )
+			{
+				groupObj = listGroups.shift();
+				if ( this.state == CKEDITOR.TRISTATE_OFF )
+				{
+					if ( listNodeNames[ groupObj.root.getName() ] )
+						changeListType.call( this, editor, groupObj, database, listsCreated );
+					else
+						createList.call( this, editor, groupObj, listsCreated );
+				}
+				else if ( this.state == CKEDITOR.TRISTATE_ON && listNodeNames[ groupObj.root.getName() ] )
+					removeList.call( this, editor, groupObj, database );
+			}
+
+			// For all new lists created, merge into adjacent, same type lists.
+			for ( i = 0 ; i < listsCreated.length ; i++ )
+				mergeListSiblings( listsCreated[ i ] );
+
+			// Clean up, restore selection and update toolbar button states.
+			CKEDITOR.dom.element.clearAllMarkers( database );
+			selection.selectBookmarks( bookmarks );
+			editor.focus();
+		}
+	};
+
+	// Merge list adjacent, of same type lists.
+	function mergeListSiblings( listNode )
+	{
+		var mergeSibling;
+		( mergeSibling = function( rtl )
+		{
+			var sibling = listNode[ rtl ? 'getPrevious' : 'getNext' ]( nonEmpty );
+			if ( sibling && sibling.type == CKEDITOR.NODE_ELEMENT &&
+			     sibling.is( listNode.getName() ) )
+			{
+				// Move children order by merge direction.(#3820)
+				mergeChildren( listNode, sibling, null, !rtl );
+
+				listNode.remove();
+				listNode = sibling;
+			}
+		} )();
+		mergeSibling( 1 );
+	}
+
+	var dtd = CKEDITOR.dtd;
+	var tailNbspRegex = /[\t\r\n ]*(?:&nbsp;|\xa0)$/;
+
+	function indexOfFirstChildElement( element, tagNameList )
+	{
+		var child,
+			children = element.children,
+			length = children.length;
+
+		for ( var i = 0 ; i < length ; i++ )
+		{
+			child = children[ i ];
+			if ( child.name && ( child.name in tagNameList ) )
+				return i;
+		}
+
+		return length;
+	}
+
+	function getExtendNestedListFilter( isHtmlFilter )
+	{
+		// An element filter function that corrects nested list start in an empty
+		// list item for better displaying/outputting. (#3165)
+		return function( listItem )
+		{
+			var children = listItem.children,
+				firstNestedListIndex = indexOfFirstChildElement( listItem, dtd.$list ),
+				firstNestedList = children[ firstNestedListIndex ],
+				nodeBefore = firstNestedList && firstNestedList.previous,
+				tailNbspmatch;
+
+			if ( nodeBefore
+				&& ( nodeBefore.name && nodeBefore.name == 'br'
+					|| nodeBefore.value && ( tailNbspmatch = nodeBefore.value.match( tailNbspRegex ) ) ) )
+			{
+				var fillerNode = nodeBefore;
+
+				// Always use 'nbsp' as filler node if we found a nested list appear
+				// in front of a list item.
+				if ( !( tailNbspmatch && tailNbspmatch.index ) && fillerNode == children[ 0 ] )
+					children[ 0 ] = ( isHtmlFilter || CKEDITOR.env.ie ) ?
+					                 new CKEDITOR.htmlParser.text( '\xa0' ) :
+									 new CKEDITOR.htmlParser.element( 'br', {} );
+
+				// Otherwise the filler is not needed anymore.
+				else if ( fillerNode.name == 'br' )
+					children.splice( firstNestedListIndex - 1, 1 );
+				else
+					fillerNode.value = fillerNode.value.replace( tailNbspRegex, '' );
+			}
+
+		};
+	}
+
+	var defaultListDataFilterRules = { elements : {} };
+	for ( var i in dtd.$listItem )
+		defaultListDataFilterRules.elements[ i ] = getExtendNestedListFilter();
+
+	var defaultListHtmlFilterRules = { elements : {} };
+	for ( i in dtd.$listItem )
+		defaultListHtmlFilterRules.elements[ i ] = getExtendNestedListFilter( true );
+
+	// Check if node is block element that recieves text.
+	function isTextBlock( node )
+	{
+		return node.type == CKEDITOR.NODE_ELEMENT &&
+			   ( node.getName() in CKEDITOR.dtd.$block ||
+				 node.getName() in CKEDITOR.dtd.$listItem ) &&
+			   CKEDITOR.dtd[ node.getName() ][ '#' ];
+	}
+
+	// Merge the visual line content at the cursor range into the block.
+	function joinNextLineToCursor( editor, cursor, nextCursor )
+	{
+		editor.fire( 'saveSnapshot' );
+
+		// Merge with previous block's content.
+		nextCursor.enlarge( CKEDITOR.ENLARGE_LIST_ITEM_CONTENTS );
+		var frag = nextCursor.extractContents();
+
+		cursor.trim( false, true );
+		var bm = cursor.createBookmark();
+
+		// Kill original bogus;
+		var currentPath = new CKEDITOR.dom.elementPath( cursor.startContainer );
+		var currentLi = currentPath.lastElement.getAscendant( 'li', 1 );
+
+		var bogus = currentPath.block.getBogus();
+		bogus && bogus.remove();
+
+		// Kill the tail br in extracted.
+		var last = frag.getLast();
+		if ( last && last.type == CKEDITOR.NODE_ELEMENT && last.is( 'br' ) )
+			last.remove();
+
+		// Insert fragment at the range position.
+		var nextNode = cursor.startContainer.getChild( cursor.startOffset );
+		if ( nextNode )
+			frag.insertBefore( nextNode );
+		else
+			cursor.startContainer.append( frag );
+
+		var nextPath = new CKEDITOR.dom.elementPath( nextCursor.startContainer );
+		var nextLi = nextCursor.startContainer.getAscendant( 'li', 1 );
+
+		// Move the sub list nested in the next list item.
+		if ( nextLi )
+		{
+			var sublist = getSubList( nextLi );
+			if ( sublist )
+			{
+				// If next line is in the sub list of the current list item.
+				if ( currentLi.contains( nextLi ) )
+				{
+					mergeChildren( sublist, nextLi.getParent(), nextLi );
+					sublist.remove();
+				}
+				// Migrate the sub list to current list item.
+				else
+					currentLi.append( sublist );
+			}
+		}
+
+		// Remove any remaining empty path blocks at next line after merging.
+		while ( nextCursor.checkStartOfBlock() &&
+			 nextCursor.checkEndOfBlock() )
+		{
+			nextPath = new CKEDITOR.dom.elementPath( nextCursor.startContainer );
+			var nextBlock = nextPath.block, parent;
+
+			// Check if also to remove empty list.
+			if ( nextBlock.is( 'li' ) )
+			{
+				parent = nextBlock.getParent();
+				if ( nextBlock.equals( parent.getLast( nonEmpty ) )
+						&& nextBlock.equals( parent.getFirst( nonEmpty ) ) )
+					nextBlock = parent;
+			}
+
+			nextCursor.moveToPosition( nextBlock, CKEDITOR.POSITION_BEFORE_START );
+			nextBlock.remove();
+		}
+
+		// Check if need to further merge with the list resides after the merged block. (#9080)
+		var walkerRng = nextCursor.clone(), body = editor.document.getBody();
+		walkerRng.setEndAt( body, CKEDITOR.POSITION_BEFORE_END );
+		var walker = new CKEDITOR.dom.walker( walkerRng );
+		walker.evaluator = function( node ) { return nonEmpty( node ) && !blockBogus( node ); };
+		var next = walker.next();
+		if ( next && next.type == CKEDITOR.NODE_ELEMENT && next.getName() in CKEDITOR.dtd.$list )
+			mergeListSiblings( next );
+
+		cursor.moveToBookmark( bm );
+
+		// Make fresh selection.
+		cursor.select();
+
+		editor.selectionChange( 1 );
+		editor.fire( 'saveSnapshot' );
+	}
+
+	function getSubList( li )
+	{
+		var last = li.getLast( nonEmpty );
+		return last && last.type == CKEDITOR.NODE_ELEMENT && last.getName() in listNodeNames ? last : null;
+	}
+
+	CKEDITOR.plugins.add( 'list',
+	{
+		init : function( editor )
+		{
+			// Register commands.
+			var numberedListCommand = editor.addCommand( 'numberedlist', new listCommand( 'numberedlist', 'ol' ) ),
+				bulletedListCommand = editor.addCommand( 'bulletedlist', new listCommand( 'bulletedlist', 'ul' ) );
+
+			// Register the toolbar button.
+			editor.ui.addButton( 'NumberedList',
+				{
+					label : editor.lang.numberedlist,
+					command : 'numberedlist'
+				} );
+			editor.ui.addButton( 'BulletedList',
+				{
+					label : editor.lang.bulletedlist,
+					command : 'bulletedlist'
+				} );
+
+			// Register the state changing handlers.
+			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, numberedListCommand ) );
+			editor.on( 'selectionChange', CKEDITOR.tools.bind( onSelectionChange, bulletedListCommand ) );
+
+				// Handled backspace/del key to join list items. (#8248,#9080)
+				editor.on( 'key', function( evt )
+				{
+					var key = evt.data.keyCode;
+
+					// DEl/BACKSPACE
+					if ( editor.mode == 'wysiwyg' && key in { 8 : 1, 46 : 1 } )
+					{
+						var sel = editor.getSelection(),
+						range = sel.getRanges()[ 0 ];
+
+						if ( !range.collapsed )
+							return;
+
+						var isBackspace = key == 8;
+						var body = editor.document.getBody();
+						var walker = new CKEDITOR.dom.walker( range.clone() );
+						walker.evaluator = function( node ) { return nonEmpty( node ) && !blockBogus( node ); };
+
+						var cursor = range.clone();
+
+						if ( isBackspace )
+						{
+							var previous, joinWith;
+
+							var path = new CKEDITOR.dom.elementPath( range.startContainer );
+
+							// Join a sub list's first line, with the previous visual line in parent.
+							if ( ( previous = path.contains( listNodeNames ) ) &&
+							     range.checkBoundaryOfElement( previous, CKEDITOR.START ) &&
+							     ( previous = previous.getParent() ) && previous.is( 'li' ) &&
+							     ( previous = getSubList( previous ) ) )
+							{
+								joinWith = previous;
+								previous = previous.getPrevious( nonEmpty );
+								// Place cursor before the nested list.
+								cursor.moveToPosition(
+									previous && blockBogus( previous ) ? previous : joinWith,
+									CKEDITOR.POSITION_BEFORE_START );
+							}
+							// Join any line following a list, with the last visual line of the list.
+							else
+							{
+								walker.range.setStartAt( body, CKEDITOR.POSITION_AFTER_START );
+								walker.range.setEnd( range.startContainer, range.startOffset );
+								previous = walker.previous();
+
+								if ( previous && previous.type == CKEDITOR.NODE_ELEMENT &&
+								   ( previous.getName() in listNodeNames || previous.is( 'li' ) ) )
+								{
+									if ( !previous.is( 'li' ) )
+									{
+										walker.range.selectNodeContents( previous );
+										walker.reset();
+										walker.evaluator = isTextBlock;
+										previous = walker.previous();
+									}
+
+									joinWith = previous;
+									// Place cursor at the end of previous block.
+									cursor.moveToElementEditEnd( joinWith );
+								}
+							}
+
+							if ( joinWith )
+							{
+								joinNextLineToCursor( editor, cursor, range );
+								evt.cancel();
+							}
+						}
+						else
+						{
+							var li = range.startContainer.getAscendant( 'li', 1 );
+							if ( li )
+							{
+								walker.range.setEndAt( body, CKEDITOR.POSITION_BEFORE_END );
+
+								var last = li.getLast( nonEmpty );
+								var block = last && isTextBlock( last ) ? last : li;
+
+								// Indicate cursor at the visual end of an list item.
+								var isAtEnd = 0;
+
+								var next = walker.next();
+
+								// When list item contains a sub list.
+								if ( next && next.type == CKEDITOR.NODE_ELEMENT &&
+									 next.getName() in listNodeNames
+									 && next.equals( last ) )
+								{
+									isAtEnd = 1;
+
+									// Move to the first item in sub list.
+									next = walker.next();
+								}
+								// Right at the end of list item.
+								else if ( range.checkBoundaryOfElement( block, CKEDITOR.END ) )
+									isAtEnd = 1;
+
+
+								if ( isAtEnd && next )
+								{
+									// Put cursor range there.
+									var nextLine = range.clone();
+									nextLine.moveToElementEditStart( next );
+
+									joinNextLineToCursor( editor, cursor, nextLine );
+									evt.cancel();
+								}
+							}
+						}
+
+						// The backspace/del could potentially put cursor at a bad position,
+						// being it handled or not, check immediately the selection to have it fixed.
+						setTimeout( function() { editor.selectionChange( 1 ); } );
+					}
+				} );
+		},
+
+		afterInit : function ( editor )
+		{
+			var dataProcessor = editor.dataProcessor;
+			if ( dataProcessor )
+			{
+				dataProcessor.dataFilter.addRules( defaultListDataFilterRules );
+				dataProcessor.htmlFilter.addRules( defaultListHtmlFilterRules );
+			}
+		},
+
+		requires : [ 'domiterator' ]
+	} );
+})();

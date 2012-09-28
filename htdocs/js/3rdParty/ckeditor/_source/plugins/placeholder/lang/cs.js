@@ -1,2 +1,16 @@
-//>>built
-define("ckeditor/_source/plugins/placeholder/lang/cs",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","cs",{placeholder:{title:"Vlastnosti vyhrazen\u00e9ho prostoru",toolbar:"Vytvo\u0159it vyhrazen\u00fd prostor",text:"Vyhrazen\u00fd text",edit:"Upravit vyhrazen\u00fd prostor",textMissing:"Vyhrazen\u00fd prostor mus\u00ed obsahovat text."}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang( 'placeholder', 'cs',
+{
+	placeholder :
+	{
+		title		: 'Vlastnosti vyhrazeného prostoru',
+		toolbar		: 'Vytvořit vyhrazený prostor',
+		text		: 'Vyhrazený text',
+		edit		: 'Upravit vyhrazený prostor',
+		textMissing	: 'Vyhrazený prostor musí obsahovat text.'
+	}
+});

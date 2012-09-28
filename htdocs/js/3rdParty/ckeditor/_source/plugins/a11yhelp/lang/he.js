@@ -1,9 +1,89 @@
-//>>built
-define("ckeditor/_source/plugins/a11yhelp/lang/he",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("a11yhelp","he",{accessibilityHelp:{title:"\u05d4\u05d5\u05e8\u05d0\u05d5\u05ea \u05e0\u05d2\u05d9\u05e9\u05d5\u05ea",contents:"\u05d4\u05d5\u05e8\u05d0\u05d5\u05ea \u05e0\u05d2\u05d9\u05e9\u05d5\u05ea. \u05dc\u05e1\u05d2\u05d9\u05e8\u05d4 \u05dc\u05d7\u05e5 \u05d0\u05e1\u05e7\u05d9\u05d9\u05e4 (ESC).",legend:[{name:"\u05db\u05dc\u05dc\u05d9",items:[{name:"\u05e1\u05e8\u05d2\u05dc \u05d4\u05db\u05dc\u05d9\u05dd",
-legend:"\u05dc\u05d7\u05e5 \u05e2\u05dc ${toolbarFocus} \u05db\u05d3\u05d9 \u05dc\u05e0\u05d5\u05d5\u05d8 \u05dc\u05e1\u05e8\u05d2\u05dc \u05d4\u05db\u05dc\u05d9\u05dd. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05db\u05e4\u05ea\u05d5\u05e8 \u05d4\u05d1\u05d0 \u05e2\u05dd \u05de\u05e7\u05e9 \u05d4\u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05e9\u05de\u05d0\u05dc\u05d9. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05db\u05e4\u05ea\u05d5\u05e8 \u05d4\u05e7\u05d5\u05d3\u05dd \u05e2\u05dd \u05de\u05e7\u05e9 \u05d4\u05e9\u05d9\u05e4\u05d8 (SHIFT) + \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05d9\u05de\u05e0\u05d9. \u05dc\u05d7\u05e5 \u05e8\u05d5\u05d5\u05d7 \u05d0\u05d5 \u05d0\u05e0\u05d8\u05e8 (ENTER) \u05db\u05d3\u05d9 \u05dc\u05d4\u05e4\u05e2\u05d9\u05dc \u05d0\u05ea \u05d4\u05db\u05e4\u05ea\u05d5\u05e8 \u05d4\u05e0\u05d1\u05d7\u05e8."},
-{name:"\u05d3\u05d9\u05d0\u05dc\u05d5\u05d2\u05d9\u05dd (\u05d7\u05dc\u05d5\u05e0\u05d5\u05ea \u05ea\u05e9\u05d0\u05d5\u05dc)",legend:"\u05d1\u05ea\u05d5\u05da \u05d3\u05d9\u05d0\u05dc\u05d5\u05d2, \u05dc\u05d7\u05e5 \u05d8\u05d0\u05d1 (TAB) \u05db\u05d3\u05d9 \u05dc\u05e0\u05d5\u05d5\u05d8 \u05dc\u05e9\u05d3\u05d4 \u05d4\u05d1\u05d0, \u05dc\u05d7\u05e5 \u05e9\u05d9\u05e4\u05d8 (SHIFT) + \u05d8\u05d0\u05d1 (TAB) \u05db\u05d3\u05d9 \u05dc\u05e0\u05d5\u05d5\u05d8 \u05dc\u05e9\u05d3\u05d4 \u05d4\u05e7\u05d5\u05d3\u05dd, \u05dc\u05d7\u05e5 \u05d0\u05e0\u05d8\u05e8 (ENTER) \u05db\u05d3\u05d9 \u05dc\u05e9\u05dc\u05d5\u05d7 \u05d0\u05ea \u05d4\u05d3\u05d9\u05d0\u05dc\u05d5\u05d2, \u05dc\u05d7\u05e5 \u05d0\u05e1\u05e7\u05d9\u05d9\u05e4 (ESC) \u05db\u05d3\u05d9 \u05dc\u05d1\u05d8\u05dc. \u05d1\u05ea\u05d5\u05da \u05d3\u05d9\u05d0\u05dc\u05d5\u05d2\u05d9\u05dd \u05d1\u05e2\u05dc\u05d9 \u05de\u05e1\u05e4\u05e8 \u05d8\u05d0\u05d1\u05d9\u05dd (\u05dc\u05e9\u05d5\u05e0\u05d9\u05d5\u05ea), \u05dc\u05d7\u05e5 \u05d0\u05dc\u05d8 (ALT) + F10 \u05db\u05d3\u05d9 \u05dc\u05e0\u05d5\u05d5\u05d8 \u05dc\u05e9\u05d5\u05e8\u05ea \u05d4\u05d8\u05d0\u05d1\u05d9\u05dd. \u05e0\u05d5\u05d5\u05d8 \u05dc\u05d8\u05d0\u05d1 \u05d4\u05d1\u05d0 \u05e2\u05dd \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05e9\u05de\u05d0\u05dc\u05d9. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05d8\u05d0\u05d1 \u05d4\u05e7\u05d5\u05d3\u05dd \u05e2\u05dd \u05e9\u05d9\u05e4\u05d8 (SHIFT) + \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05e9\u05de\u05d0\u05dc\u05d9. \u05dc\u05d7\u05e5 \u05e8\u05d5\u05d5\u05d7 \u05d0\u05d5 \u05d0\u05e0\u05d8\u05e8 (ENTER) \u05db\u05d3\u05d9 \u05dc\u05d4\u05d9\u05db\u05e0\u05e1 \u05dc\u05d8\u05d0\u05d1."},
-{name:"\u05ea\u05e4\u05e8\u05d9\u05d8 \u05d4\u05d4\u05e7\u05e9\u05e8 (Context Menu)",legend:"\u05dc\u05d7\u05e5 ${contextMenu} \u05d0\u05d5 APPLICATION KEY\u05db\u05d3\u05d9 \u05dc\u05e4\u05ea\u05d5\u05d7 \u05d0\u05ea \u05ea\u05e4\u05e8\u05d9\u05d8 \u05d4\u05d4\u05e7\u05e9\u05e8. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05d0\u05e4\u05e9\u05e8\u05d5\u05ea \u05d4\u05d1\u05d0\u05d4 \u05e2\u05dd \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05dc\u05de\u05d8\u05d4. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05d0\u05e4\u05e9\u05e8\u05d5\u05ea \u05d4\u05e7\u05d5\u05d3\u05de\u05ea \u05e2\u05dd \u05e9\u05d9\u05e4\u05d8 (SHIFT) + \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05dc\u05de\u05e2\u05dc\u05d4. \u05dc\u05d7\u05e5 \u05e8\u05d5\u05d5\u05d7 \u05d0\u05d5 \u05d0\u05e0\u05d8\u05e8 (ENTER) \u05db\u05d3\u05d9 \u05dc\u05d1\u05d7\u05d5\u05e8 \u05d0\u05ea \u05d4\u05d0\u05e4\u05e9\u05e8\u05d5\u05ea. \u05e4\u05ea\u05d7 \u05d0\u05ea \u05ea\u05ea \u05d4\u05ea\u05e4\u05e8\u05d9\u05d8 (Sub-menu) \u05e9\u05dc \u05d4\u05d0\u05e4\u05e9\u05e8\u05d5\u05ea \u05d4\u05e0\u05d5\u05db\u05d7\u05d9\u05ea \u05e2\u05dd \u05e8\u05d5\u05d5\u05d7 \u05d0\u05d5 \u05d0\u05e0\u05d8\u05e8 (ENTER) \u05d0\u05d5 \u05d7\u05e5 \u05e9\u05de\u05d0\u05dc\u05d9. \u05d7\u05d6\u05d5\u05e8 \u05dc\u05ea\u05e4\u05e8\u05d9\u05d8 \u05d4\u05d0\u05d1 \u05e2\u05dd \u05d0\u05e1\u05e7\u05d9\u05d9\u05e4 (ESC) \u05d0\u05d5 \u05d7\u05e5 \u05e9\u05de\u05d0\u05dc\u05d9. \u05e1\u05d2\u05d5\u05e8 \u05d0\u05ea \u05ea\u05e4\u05e8\u05d9\u05d8 \u05d4\u05d4\u05e7\u05e9\u05e8 \u05e2\u05dd \u05d0\u05e1\u05e7\u05d9\u05d9\u05e4 (ESC)."},
-{name:"\u05ea\u05e4\u05e8\u05d9\u05d8\u05d9\u05dd \u05e6\u05e4\u05d9\u05dd (List boxes)",legend:"\u05d1\u05ea\u05d5\u05da \u05ea\u05e4\u05e8\u05d9\u05d8 \u05e6\u05e3, \u05e2\u05d1\u05d5\u05e8 \u05dc\u05e4\u05e8\u05d9\u05d8 \u05d4\u05d1\u05d0 \u05e2\u05dd \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05dc\u05de\u05d8\u05d4. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05ea\u05e4\u05e8\u05d9\u05d8 \u05d4\u05e7\u05d5\u05d3\u05dd \u05e2\u05dd \u05e9\u05d9\u05e4\u05d8 (SHIFT) + \u05d8\u05d0\u05d1 (TAB) or \u05d7\u05e5 \u05e2\u05dc\u05d9\u05d5\u05df. Press SPACE or ENTER to select the list option. Press ESC to close the list-box."},
-{name:"\u05e2\u05e5 \u05d0\u05dc\u05de\u05e0\u05d8\u05d9\u05dd (Elements Path)",legend:"\u05dc\u05d7\u05e5 ${elementsPathFocus} \u05db\u05d3\u05d9 \u05dc\u05e0\u05d5\u05d5\u05d8 \u05dc\u05e2\u05e5 \u05d4\u05d0\u05dc\u05de\u05e0\u05d8\u05d9\u05dd. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05e4\u05e8\u05d9\u05d8 \u05d4\u05d1\u05d0 \u05e2\u05dd \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05d9\u05de\u05e0\u05d9. \u05e2\u05d1\u05d5\u05e8 \u05dc\u05e4\u05e8\u05d9\u05d8 \u05d4\u05e7\u05d5\u05d3\u05dd \u05e2\u05dd \u05e9\u05d9\u05e4\u05d8 (SHIFT) + \u05d8\u05d0\u05d1 (TAB) \u05d0\u05d5 \u05d7\u05e5 \u05e9\u05de\u05d0\u05dc\u05d9. \u05dc\u05d7\u05e5 \u05e8\u05d5\u05d5\u05d7 \u05d0\u05d5 \u05d0\u05e0\u05d8\u05e8 (ENTER) \u05db\u05d3\u05d9 \u05dc\u05d1\u05d7\u05d5\u05e8 \u05d0\u05ea \u05d4\u05d0\u05dc\u05de\u05e0\u05d8 \u05d1\u05e2\u05d5\u05e8\u05da."}]},
-{name:"\u05e4\u05e7\u05d5\u05d3\u05d5\u05ea",items:[{name:" \u05d1\u05d9\u05d8\u05d5\u05dc \u05e6\u05e2\u05d3 \u05d0\u05d7\u05e8\u05d5\u05df",legend:"\u05dc\u05d7\u05e5 ${undo}"},{name:" \u05d7\u05d6\u05e8\u05d4 \u05e2\u05dc \u05e6\u05e2\u05d3 \u05d0\u05d7\u05e8\u05d5\u05df",legend:"\u05dc\u05d7\u05e5 ${redo}"},{name:" \u05d4\u05d3\u05d2\u05e9\u05d4",legend:"\u05dc\u05d7\u05e5 ${bold}"},{name:" \u05d4\u05d8\u05d9\u05d9\u05d4",legend:"\u05dc\u05d7\u05e5 ${italic}"},{name:" \u05d4\u05d5\u05e1\u05e4\u05ea \u05e7\u05d5 \u05ea\u05d7\u05ea\u05d5\u05df",
-legend:"\u05dc\u05d7\u05e5 ${underline}"},{name:" \u05d4\u05d5\u05e1\u05e4\u05ea \u05dc\u05d9\u05e0\u05e7",legend:"\u05dc\u05d7\u05e5 ${link}"},{name:" \u05db\u05d9\u05d5\u05d5\u05e5 \u05e1\u05e8\u05d2\u05dc \u05d4\u05db\u05dc\u05d9\u05dd",legend:"\u05dc\u05d7\u05e5 ${toolbarCollapse}"},{name:" \u05d4\u05d5\u05e8\u05d0\u05d5\u05ea \u05e0\u05d2\u05d9\u05e9\u05d5\u05ea",legend:"\u05dc\u05d7\u05e5 ${a11yHelp}"}]}]}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang( 'a11yhelp', 'he',
+{
+	accessibilityHelp :
+	{
+		title : 'הוראות נגישות',
+		contents : 'הוראות נגישות. לסגירה לחץ אסקייפ (ESC).',
+		legend :
+		[
+			{
+				name : 'כללי',
+				items :
+						[
+							{
+								name : 'סרגל הכלים',
+								legend:
+									'לחץ על ${toolbarFocus} כדי לנווט לסרגל הכלים. עבור לכפתור הבא עם מקש הטאב (TAB) או חץ שמאלי. עבור לכפתור הקודם עם מקש השיפט (SHIFT) + טאב (TAB) או חץ ימני. לחץ רווח או אנטר (ENTER) כדי להפעיל את הכפתור הנבחר.'
+							},
+
+							{
+								name : 'דיאלוגים (חלונות תשאול)',
+								legend :
+									'בתוך דיאלוג, לחץ טאב (TAB) כדי לנווט לשדה הבא, לחץ שיפט (SHIFT) + טאב (TAB) כדי לנווט לשדה הקודם, לחץ אנטר (ENTER) כדי לשלוח את הדיאלוג, לחץ אסקייפ (ESC) כדי לבטל. בתוך דיאלוגים בעלי מספר טאבים (לשוניות), לחץ אלט (ALT) + F10 כדי לנווט לשורת הטאבים. נווט לטאב הבא עם טאב (TAB) או חץ שמאלי. עבור לטאב הקודם עם שיפט (SHIFT) + טאב (TAB) או חץ שמאלי. לחץ רווח או אנטר (ENTER) כדי להיכנס לטאב.'
+							},
+
+							{
+								name : 'תפריט ההקשר (Context Menu)',
+								legend :
+									'לחץ ${contextMenu} או APPLICATION KEYכדי לפתוח את תפריט ההקשר. עבור לאפשרות הבאה עם טאב (TAB) או חץ למטה. עבור לאפשרות הקודמת עם שיפט (SHIFT) + טאב (TAB) או חץ למעלה. לחץ רווח או אנטר (ENTER) כדי לבחור את האפשרות. פתח את תת התפריט (Sub-menu) של האפשרות הנוכחית עם רווח או אנטר (ENTER) או חץ שמאלי. חזור לתפריט האב עם אסקייפ (ESC) או חץ שמאלי. סגור את תפריט ההקשר עם אסקייפ (ESC).'
+							},
+
+							{
+								name : 'תפריטים צפים (List boxes)',
+								legend :
+									'בתוך תפריט צף, עבור לפריט הבא עם טאב (TAB) או חץ למטה. עבור לתפריט הקודם עם שיפט (SHIFT) + טאב (TAB) or חץ עליון. Press SPACE or ENTER to select the list option. Press ESC to close the list-box.'
+							},
+
+							{
+								name : 'עץ אלמנטים (Elements Path)',
+								legend :
+									'לחץ ${elementsPathFocus} כדי לנווט לעץ האלמנטים. עבור לפריט הבא עם טאב (TAB) או חץ ימני. עבור לפריט הקודם עם שיפט (SHIFT) + טאב (TAB) או חץ שמאלי. לחץ רווח או אנטר (ENTER) כדי לבחור את האלמנט בעורך.'
+							}
+						]
+			},
+			{
+				name : 'פקודות',
+				items :
+						[
+							{
+								name : ' ביטול צעד אחרון',
+								legend : 'לחץ ${undo}'
+							},
+							{
+								name : ' חזרה על צעד אחרון',
+								legend : 'לחץ ${redo}'
+							},
+							{
+								name : ' הדגשה',
+								legend : 'לחץ ${bold}'
+							},
+							{
+								name : ' הטייה',
+								legend : 'לחץ ${italic}'
+							},
+							{
+								name : ' הוספת קו תחתון',
+								legend : 'לחץ ${underline}'
+							},
+							{
+								name : ' הוספת לינק',
+								legend : 'לחץ ${link}'
+							},
+							{
+								name : ' כיווץ סרגל הכלים',
+								legend : 'לחץ ${toolbarCollapse}'
+							},
+							{
+								name : ' הוראות נגישות',
+								legend : 'לחץ ${a11yHelp}'
+							}
+						]
+			}
+		]
+	}
+});

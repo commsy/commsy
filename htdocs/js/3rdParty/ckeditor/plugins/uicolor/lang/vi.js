@@ -1,2 +1,6 @@
-//>>built
-define("ckeditor/plugins/uicolor/lang/vi",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","vi",{uicolor:{title:"Giao di\u1ec7n ng\u01b0\u1eddi d\u00f9ng Color Picker",preview:"Xem tr\u01b0\u1edbc tr\u1ef1c ti\u1ebfp",config:"D\u00e1n chu\u1ed7i n\u00e0y v\u00e0o t\u1eadp tin config.js c\u1ee7a b\u1ea1n",predefined:"T\u1eadp m\u00e0u \u0111\u1ecbnh ngh\u0129a s\u1eb5n"}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang('uicolor','vi',{uicolor:{title:'Giao diện người dùng Color Picker',preview:'Xem trước trực tiếp',config:'Dán chuỗi này vào tập tin config.js của bạn',predefined:'Tập màu định nghĩa sẵn'}});

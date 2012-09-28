@@ -1,2 +1,15 @@
-//>>built
-define("ckeditor/_source/plugins/uicolor/lang/fi",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","fi",{uicolor:{title:"K\u00e4ytt\u00f6liittym\u00e4n v\u00e4rivalitsin",preview:"Esikatsele",config:"Liit\u00e4 t\u00e4m\u00e4 merkkijono config.js tiedostoosi",predefined:"Esim\u00e4\u00e4ritellyt v\u00e4rijoukot"}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang( 'uicolor', 'fi',
+{
+	uicolor :
+	{
+		title : 'Käyttöliittymän värivalitsin',
+		preview : 'Esikatsele',
+		config : 'Liitä tämä merkkijono config.js tiedostoosi',
+		predefined : 'Esimääritellyt värijoukot'
+	}
+});

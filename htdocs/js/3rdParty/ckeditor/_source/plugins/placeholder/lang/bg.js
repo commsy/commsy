@@ -1,3 +1,16 @@
-//>>built
-define("ckeditor/_source/plugins/placeholder/lang/bg",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","bg",{placeholder:{title:"\u041d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u043d\u0430 \u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430",toolbar:"\u041d\u043e\u0432 \u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440",text:"\u0422\u0435\u043a\u0441\u0442 \u0437\u0430 \u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430",edit:"\u041f\u0440\u043e\u043c\u044f\u043d\u0430 \u043d\u0430 \u043a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440",
-textMissing:"\u041a\u043e\u043d\u0442\u0435\u0439\u043d\u0435\u0440\u0430 \u0442\u0440\u044f\u0431\u0432\u0430 \u0434\u0430 \u0441\u044a\u0434\u044a\u0440\u0436\u0430 \u0442\u0435\u043a\u0441\u0442."}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang( 'placeholder', 'bg',
+{
+	placeholder :
+	{
+		title		: 'Настройки на контейнера',
+		toolbar		: 'Нов контейнер',
+		text		: 'Текст за контейнера',
+		edit		: 'Промяна на контейнер',
+		textMissing	: 'Контейнера трябва да съдържа текст.'
+	}
+});

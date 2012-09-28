@@ -73,9 +73,6 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
     }
 
     public function save($form_data, $additional = array()) {
-    	
-    	$this->_popup_controller->performChecks($form_data, $additional);
-    	
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
@@ -94,6 +91,8 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
             $item_manager = $this->_environment->getTopicManager();
             $item = $item_manager->getItem($current_iid);
         }
+        
+        $this->_popup_controller->performChecks($item, $form_data, $additional);
 
         // TODO: check rights */
 		/****************************/

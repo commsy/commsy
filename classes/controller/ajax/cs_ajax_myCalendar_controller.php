@@ -18,10 +18,10 @@
 			$query = $this->_data["query"];
 			
 			$parameters = array();
-			$parameters["activatingStatus"] = $this->_data["parameters"]["activatingStatus"] || "2";
-			$parameters["selColor"] = $this->_data["parameters"]["selColor"] || "2";
-			$parameters["selRoom"] = $this->_data["parameters"]["selRoom"] || "2";
-			$parameters["todoSelRoom"] = $this->_data["parameters"]["todoSelRoom"] || "2";
+			$parameters["activatingStatus"] = isset($this->_data["parameters"]["activatingStatus"]) ? $this->_data["parameters"]["activatingStatus"] : "2";
+			$parameters["selColor"] = isset($this->_data["parameters"]["selColor"]) ? $this->_data["parameters"]["selColor"] : "2";
+			$parameters["selRoom"] = isset($this->_data["parameters"]["selRoom"]) ? $this->_data["parameters"]["selRoom"] : "2";
+			$parameters["todoSelRoom"] = isset($this->_data["parameters"]["todoSelRoom"]) ? $this->_data["parameters"]["todoSelRoom"] : "2";
 			
 			$month = "09";
 			$year = "2012";
@@ -32,11 +32,14 @@
 			
 			/* get data from database */
 			$datesManager = $this->_environment->getDatesManager();
+			$todoManager = $this->_environment->getTodoManager();
 			
 			$colorArray = $datesManager->getColorArray();
 			
 			$datesManager->resetLimits();
 			$datesManager->setSortOrder('time');
+			
+			
 			
 			/* set paramter limits */
 			if ($parameters["activatingStatus"] == 2) {
@@ -155,6 +158,15 @@
 				}
 				$temp[] = $privateContextItem->getItemID();
 				$datesLimit = $temp;
+				
+				$temp = array();
+				foreach ($todoLimit as $limit) {
+					if ( in_array($limit, $roomIdArray)) {
+						$temp[] = $limit;
+					}
+				}
+				$temp[] = $privateContextItem->getItemID();
+				$todoLimit = $temp;
 				
 				if ($parameters["selRoom"] != "2") {
 					$datesManager->setContextArrayLimit($parameters["selRoom"]);
@@ -442,6 +454,24 @@
 			}
 			
 			$this->rawDataReturn($dates);
+		}
+		
+		public function actionGetIcalAdress() {
+			$currentUser = $this->_environment->getCurrentUserItem();
+			$hashManager = $this->_environment->getHashmanager();
+			
+			global $c_single_entry_point;
+			
+			$baseUrl = '';
+			$baseUrl .= $_SERVER['HTTP_HOST'];
+			$baseUrl .= str_replace($c_single_entry_point, 'ical.php',$_SERVER['PHP_SELF']);
+			
+			$dateUrl = $baseUrl . '?cid='.$_GET['cid'].'&hid='.$hashManager->getICalHashForUser($currentUser->getItemID()).LF;
+			$todoUrl = $baseUrl . '?cid='.$_GET['cid'].'&mod=todo&hid='.$hashManager->getICalHashForUser($currentUser->getItemID());
+			
+			$this->setSuccessfullDataReturn(array("date" => $dateUrl, "todo" => $todoUrl));
+			echo $this->_return;
+			exit;
 		}
 		
 		public function actionGet() {

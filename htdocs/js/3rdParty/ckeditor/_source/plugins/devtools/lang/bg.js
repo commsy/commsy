@@ -1,3 +1,16 @@
-//>>built
-define("ckeditor/_source/plugins/devtools/lang/bg",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("devtools","bg",{devTools:{title:"\u0418\u043d\u0444\u043e\u0440\u043c\u0430\u0446\u0438\u044f \u0437\u0430 \u0435\u043b\u0435\u043c\u0435\u043d\u0442\u0430",dialogName:"\u0418\u043c\u0435 \u043d\u0430 \u0434\u0438\u0430\u043b\u043e\u0433\u043e\u0432\u0438\u044f \u043f\u0440\u043e\u0437\u043e\u0440\u0435\u0446",tabName:"\u0418\u043c\u0435 \u043d\u0430 \u0442\u0430\u0431",elementId:"ID \u043d\u0430 \u0435\u043b\u0435\u043c\u0435\u043d\u0442\u0430",
-elementType:"\u0422\u0438\u043f \u043d\u0430 \u0435\u043b\u0435\u043c\u0435\u043d\u0442\u0430"}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang( 'devtools', 'bg',
+{
+	devTools :
+	{
+		title		: 'Информация за елемента',
+		dialogName	: 'Име на диалоговия прозорец',
+		tabName		: 'Име на таб',
+		elementId	: 'ID на елемента',
+		elementType	: 'Тип на елемента'
+	}
+});

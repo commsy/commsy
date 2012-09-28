@@ -1,5 +1,197 @@
-//>>built
-define("ckeditor/_source/plugins/format/plugin",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.add("format",{requires:["richcombo","styles"],init:function(a){for(var f=a.config,b=a.lang.format,i=f.format_tags.split(";"),d={},g=0;g<i.length;g++){var h=i[g];d[h]=new CKEDITOR.style(f["format_"+h]);d[h]._.enterMode=a.config.enterMode}a.ui.addRichCombo("Format",{label:b.label,title:b.panelTitle,className:"cke_format",panel:{css:a.skin.editor.css.concat(f.contentsCss),multiSelect:!1,attributes:{"aria-label":b.panelTitle}},
-init:function(){this.startGroup(b.panelTitle);for(var a in d){var e=b["tag_"+a];this.add(a,d[a].buildPreview(e),e)}},onClick:function(c){a.focus();a.fire("saveSnapshot");var c=d[c],e=new CKEDITOR.dom.elementPath(a.getSelection().getStartElement());c[c.checkActive(e)?"remove":"apply"](a.document);setTimeout(function(){a.fire("saveSnapshot")},0)},onRender:function(){a.on("selectionChange",function(c){var e=this.getValue(),c=c.data.path,b;for(b in d)if(d[b].checkActive(c)){b!=e&&this.setValue(b,a.lang.format["tag_"+
-b]);return}this.setValue("")},this)}})}});CKEDITOR.config.format_tags="p;h1;h2;h3;h4;h5;h6;pre;address;div";CKEDITOR.config.format_p={element:"p"};CKEDITOR.config.format_div={element:"div"};CKEDITOR.config.format_pre={element:"pre"};CKEDITOR.config.format_address={element:"address"};CKEDITOR.config.format_h1={element:"h1"};CKEDITOR.config.format_h2={element:"h2"};CKEDITOR.config.format_h3={element:"h3"};CKEDITOR.config.format_h4={element:"h4"};CKEDITOR.config.format_h5={element:"h5"};CKEDITOR.config.format_h6=
-{element:"h6"}});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.add( 'format',
+{
+	requires : [ 'richcombo', 'styles' ],
+
+	init : function( editor )
+	{
+		var config = editor.config,
+			lang = editor.lang.format;
+
+		// Gets the list of tags from the settings.
+		var tags = config.format_tags.split( ';' );
+
+		// Create style objects for all defined styles.
+		var styles = {};
+		for ( var i = 0 ; i < tags.length ; i++ )
+		{
+			var tag = tags[ i ];
+			styles[ tag ] = new CKEDITOR.style( config[ 'format_' + tag ] );
+			styles[ tag ]._.enterMode = editor.config.enterMode;
+		}
+
+		editor.ui.addRichCombo( 'Format',
+			{
+				label : lang.label,
+				title : lang.panelTitle,
+				className : 'cke_format',
+				panel :
+				{
+					css : editor.skin.editor.css.concat( config.contentsCss ),
+					multiSelect : false,
+					attributes : { 'aria-label' : lang.panelTitle }
+				},
+
+				init : function()
+				{
+					this.startGroup( lang.panelTitle );
+
+					for ( var tag in styles )
+					{
+						var label = lang[ 'tag_' + tag ];
+
+						// Add the tag entry to the panel list.
+						this.add( tag, styles[tag].buildPreview( label ), label );
+					}
+				},
+
+				onClick : function( value )
+				{
+					editor.focus();
+					editor.fire( 'saveSnapshot' );
+
+					var style = styles[ value ],
+						elementPath = new CKEDITOR.dom.elementPath( editor.getSelection().getStartElement() );
+
+					style[ style.checkActive( elementPath ) ? 'remove' : 'apply' ]( editor.document );
+
+					// Save the undo snapshot after all changes are affected. (#4899)
+					setTimeout( function()
+					{
+						editor.fire( 'saveSnapshot' );
+					}, 0 );
+				},
+
+				onRender : function()
+				{
+					editor.on( 'selectionChange', function( ev )
+						{
+							var currentTag = this.getValue();
+
+							var elementPath = ev.data.path;
+
+							for ( var tag in styles )
+							{
+								if ( styles[ tag ].checkActive( elementPath ) )
+								{
+									if ( tag != currentTag )
+										this.setValue( tag, editor.lang.format[ 'tag_' + tag ] );
+									return;
+								}
+							}
+
+							// If no styles match, just empty it.
+							this.setValue( '' );
+						},
+						this);
+				}
+			});
+	}
+});
+
+/**
+ * A list of semi colon separated style names (by default tags) representing
+ * the style definition for each entry to be displayed in the Format combo in
+ * the toolbar. Each entry must have its relative definition configuration in a
+ * setting named "format_(tagName)". For example, the "p" entry has its
+ * definition taken from config.format_p.
+ * @type String
+ * @default 'p;h1;h2;h3;h4;h5;h6;pre;address;div'
+ * @example
+ * config.format_tags = 'p;h2;h3;pre'
+ */
+CKEDITOR.config.format_tags = 'p;h1;h2;h3;h4;h5;h6;pre;address;div';
+
+/**
+ * The style definition to be used to apply the "Normal" format.
+ * @type Object
+ * @default { element : 'p' }
+ * @example
+ * config.format_p = { element : 'p', attributes : { 'class' : 'normalPara' } };
+ */
+CKEDITOR.config.format_p = { element : 'p' };
+
+/**
+ * The style definition to be used to apply the "Normal (DIV)" format.
+ * @type Object
+ * @default { element : 'div' }
+ * @example
+ * config.format_div = { element : 'div', attributes : { 'class' : 'normalDiv' } };
+ */
+CKEDITOR.config.format_div = { element : 'div' };
+
+/**
+ * The style definition to be used to apply the "Formatted" format.
+ * @type Object
+ * @default { element : 'pre' }
+ * @example
+ * config.format_pre = { element : 'pre', attributes : { 'class' : 'code' } };
+ */
+CKEDITOR.config.format_pre = { element : 'pre' };
+
+/**
+ * The style definition to be used to apply the "Address" format.
+ * @type Object
+ * @default { element : 'address' }
+ * @example
+ * config.format_address = { element : 'address', attributes : { 'class' : 'styledAddress' } };
+ */
+CKEDITOR.config.format_address = { element : 'address' };
+
+/**
+ * The style definition to be used to apply the "Heading 1" format.
+ * @type Object
+ * @default { element : 'h1' }
+ * @example
+ * config.format_h1 = { element : 'h1', attributes : { 'class' : 'contentTitle1' } };
+ */
+CKEDITOR.config.format_h1 = { element : 'h1' };
+
+/**
+ * The style definition to be used to apply the "Heading 1" format.
+ * @type Object
+ * @default { element : 'h2' }
+ * @example
+ * config.format_h2 = { element : 'h2', attributes : { 'class' : 'contentTitle2' } };
+ */
+CKEDITOR.config.format_h2 = { element : 'h2' };
+
+/**
+ * The style definition to be used to apply the "Heading 1" format.
+ * @type Object
+ * @default { element : 'h3' }
+ * @example
+ * config.format_h3 = { element : 'h3', attributes : { 'class' : 'contentTitle3' } };
+ */
+CKEDITOR.config.format_h3 = { element : 'h3' };
+
+/**
+ * The style definition to be used to apply the "Heading 1" format.
+ * @type Object
+ * @default { element : 'h4' }
+ * @example
+ * config.format_h4 = { element : 'h4', attributes : { 'class' : 'contentTitle4' } };
+ */
+CKEDITOR.config.format_h4 = { element : 'h4' };
+
+/**
+ * The style definition to be used to apply the "Heading 1" format.
+ * @type Object
+ * @default { element : 'h5' }
+ * @example
+ * config.format_h5 = { element : 'h5', attributes : { 'class' : 'contentTitle5' } };
+ */
+CKEDITOR.config.format_h5 = { element : 'h5' };
+
+/**
+ * The style definition to be used to apply the "Heading 1" format.
+ * @type Object
+ * @default { element : 'h6' }
+ * @example
+ * config.format_h6 = { element : 'h6', attributes : { 'class' : 'contentTitle6' } };
+ */
+CKEDITOR.config.format_h6 = { element : 'h6' };

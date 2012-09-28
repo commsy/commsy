@@ -1,34 +1,1403 @@
-//>>built
-define("ckeditor/_source/plugins/wysiwygarea/plugin",["dijit","dojo","dojox"],function(){(function(){function s(a){return function(e){if("wysiwyg"==this.mode){this.focus();var c=this.getSelection(),g=c.isLocked;g&&c.unlock();this.fire("saveSnapshot");a.call(this,e.data);g&&this.getSelection().lock();CKEDITOR.tools.setTimeout(function(){this.fire("saveSnapshot")},0,this)}}}function A(a){var b;this.dataProcessor&&(a=this.dataProcessor.toHtml(a));if(a){var e=this.getSelection(),c=e.getRanges()[0];if(!c.checkReadOnly()){if(CKEDITOR.env.opera&&
-(new CKEDITOR.dom.elementPath(c.startContainer)).block)for(var g=CKEDITOR.htmlParser.fragment.fromHtml(a,!1).children,i=0,l=g.length;i<l;i++)if(g[i]._.isBlockLike){c.splitBlock(this.enterMode==CKEDITOR.ENTER_DIV?"div":"p");c.insertNode(c.document.createText(""));c.select();break}if(CKEDITOR.env.ie){g=e.getNative();if("Control"==g.type)g.clear();else if(e.getType()==CKEDITOR.SELECTION_TEXT&&(b=(c=e.getRanges()[0])&&c.endContainer,e=b)&&e.type==CKEDITOR.NODE_ELEMENT&&"false"==e.getAttribute("contenteditable")&&
-c.checkBoundaryOfElement(e,CKEDITOR.END))c.setEndAfter(c.endContainer),c.deleteContents();g.createRange().pasteHTML(a)}else this.document.$.execCommand("inserthtml",!1,a);CKEDITOR.env.webkit&&(e=this.getSelection(),e.scrollIntoView())}}}function E(a){var e=this.getSelection(),c=e.getStartElement().hasAscendant("pre",!0)?CKEDITOR.ENTER_BR:this.config.enterMode,g=c==CKEDITOR.ENTER_BR,a=CKEDITOR.tools.htmlEncode(a.replace(/\r\n|\r/g,"\n")),a=a.replace(/^[ \t]+|[ \t]+$/g,function(a,c){return 1==a.length?
-"&nbsp;":c?" "+CKEDITOR.tools.repeat("&nbsp;",a.length-1):CKEDITOR.tools.repeat("&nbsp;",a.length-1)+" "}),a=a.replace(/[ \t]{2,}/g,function(a){return CKEDITOR.tools.repeat("&nbsp;",a.length-1)+" "}),i=c==CKEDITOR.ENTER_P?"p":"div";g||(a=a.replace(/(\n{2})([\s\S]*?)(?:$|\1)/g,function(a,c,e){return"<"+i+">"+e+"</"+i+">"}));a=a.replace(/\n/g,"<br>");!g&&!CKEDITOR.env.ie&&(a=a.replace(RegExp("<br>(?=</"+i+">)"),function(a){return CKEDITOR.tools.repeat(a,2)}));if(CKEDITOR.env.gecko||CKEDITOR.env.webkit){e=
-new CKEDITOR.dom.elementPath(e.getStartElement());c=[];for(g=0;g<e.elements.length;g++){var l=e.elements[g].getName();if(l in CKEDITOR.dtd.$inline)c.unshift(e.elements[g].getOuterHtml().match(/^<.*?>/));else if(l in CKEDITOR.dtd.$block)break}a=c.join("")+a}A.call(this,a)}function F(a){var e=this.getSelection(),c=e.getRanges(),g=a.getName(),i=CKEDITOR.dtd.$block[g],l=e.isLocked;l&&e.unlock();for(var d,m,k,o=c.length-1;0<=o;o--)if(d=c[o],!d.checkReadOnly()){d.deleteContents(1);m=!o&&a||a.clone(1);var j,
-t;if(i)for(;(j=d.getCommonAncestor(0,1))&&(t=CKEDITOR.dtd[j.getName()])&&(!t||!t[g]);)j.getName()in CKEDITOR.dtd.span?d.splitElement(j):d.checkStartOfBlock()&&d.checkEndOfBlock()?(d.setStartBefore(j),d.collapse(!0),j.remove()):d.splitBlock();d.insertNode(m);k||(k=m)}k&&(d.moveToPosition(k,CKEDITOR.POSITION_AFTER_END),i&&((c=(a=k.getNext(u))&&a.type==CKEDITOR.NODE_ELEMENT&&a.getName())&&CKEDITOR.dtd.$block[c]?CKEDITOR.dtd[c]["#"]?d.moveToElementEditStart(a):d.moveToElementEditEnd(k):a||(a=d.fixBlock(!0,
-this.config.enterMode==CKEDITOR.ENTER_DIV?"div":"p"),d.moveToElementEditStart(a))));e.selectRanges([d]);l&&this.getSelection().lock()}function v(a){a.checkDirty()||setTimeout(function(){a.resetDirty()},0)}function B(a){return p(a)&&G(a)}function C(a){var e=a.window,c=a.document,g=a.document.getBody(),i=g.getFirst(),l=g.getChildren().count();if(!l||1==l&&i.type==CKEDITOR.NODE_ELEMENT&&i.hasAttribute("_moz_editor_bogus_node")){v(a);var a=a.element.getDocument(),i=a.getDocumentElement(),d=i.$.scrollTop,
-m=i.$.scrollLeft,k=c.$.createEvent("KeyEvents");k.initKeyEvent("keypress",!0,!0,e.$,!1,!1,!1,!1,0,32);c.$.dispatchEvent(k);(d!=i.$.scrollTop||m!=i.$.scrollLeft)&&a.getWindow().$.scrollTo(m,d);l&&g.getFirst().remove();c.getBody().appendBogus();e=new CKEDITOR.dom.range(c);e.setStartAt(g,CKEDITOR.POSITION_AFTER_START);e.select()}}var w=/(^|<body\b[^>]*>)\s*<(p|div|address|h\d|center|pre)[^>]*>\s*(?:<br[^>]*>|&nbsp;|\u00A0|&#160;)?\s*(:?<\/\2>)?\s*(?=$|<\/body>)/gi,x=CKEDITOR.dom.walker.whitespaces(!0),
-H=CKEDITOR.dom.walker.bogus(!0),u=function(a){return x(a)&&H(a)},p=CKEDITOR.dom.walker.whitespaces(!0),G=CKEDITOR.dom.walker.bookmark(!1,!0),p=CKEDITOR.dom.walker.whitespaces(!0);CKEDITOR.plugins.add("wysiwygarea",{requires:["editingblock"],init:function(a){var e=a.config.enterMode!=CKEDITOR.ENTER_BR&&!1!==a.config.autoParagraph?a.config.enterMode==CKEDITOR.ENTER_DIV?"div":"p":!1,c=a.lang.editorTitle.replace("%1",a.name),g=a.lang.editorHelp;CKEDITOR.env.ie&&(c+=", "+g);var i=CKEDITOR.document.getWindow(),
-l;a.on("editingBlockReady",function(){function k(f){if(y){y=0;a.fire("ariaWidget",j);var b=f.document,c=b.body,e=b.getElementById("cke_actscrpt");e&&e.parentNode.removeChild(e);c.spellcheck=!a.config.disableNativeSpellChecker;var h=!a.readOnly;CKEDITOR.env.ie?(c.hideFocus=!0,c.disabled=!0,c.contentEditable=h,c.removeAttribute("disabled")):setTimeout(function(){CKEDITOR.env.gecko&&10900<=CKEDITOR.env.version||CKEDITOR.env.opera?b.$.body.contentEditable=h:CKEDITOR.env.webkit?b.$.body.parentNode.contentEditable=
-h:b.$.designMode=h?"off":"on"},0);h&&CKEDITOR.env.gecko&&CKEDITOR.tools.setTimeout(C,0,null,a);f=a.window=new CKEDITOR.dom.window(f);b=a.document=new CKEDITOR.dom.document(b);h&&b.on("dblclick",function(b){b={element:b.data.getTarget(),dialog:""};a.fire("doubleclick",b);b.dialog&&a.openDialog(b.dialog)});CKEDITOR.env.ie&&b.on("click",function(a){var b=a.data.getTarget();b.is("input")&&(b=b.getAttribute("type"),("submit"==b||"reset"==b)&&a.data.preventDefault())});if(!CKEDITOR.env.ie&&!CKEDITOR.env.opera)b.on("mousedown",
-function(b){b=b.data.getTarget();b.is("img","hr","input","textarea","select")&&a.getSelection().selectElement(b)});if(CKEDITOR.env.gecko)b.on("mouseup",function(a){if(2==a.data.$.button&&(a=a.data.getTarget(),!a.getOuterHtml().replace(w,""))){var f=new CKEDITOR.dom.range(b);f.moveToElementEditStart(a);f.select(!0)}});b.on("click",function(a){a=a.data;a.getTarget().is("a")&&2!=a.$.button&&a.preventDefault()});CKEDITOR.env.webkit&&(b.on("mousedown",function(){d=1}),b.on("click",function(a){a.data.getTarget().is("input",
-"select")&&a.data.preventDefault()}),b.on("mouseup",function(a){a.data.getTarget().is("input","textarea")&&a.data.preventDefault()}));c=CKEDITOR.env.ie?j:f;c.on("blur",function(){a.focusManager.blur()});var d;c.on("focus",function(){var b=a.document;CKEDITOR.env.gecko||CKEDITOR.env.opera?b.getBody().focus():CKEDITOR.env.webkit&&!d&&(a.document.getDocumentElement().focus(),d=1);a.focusManager.focus()});c=a.keystrokeHandler;c.blockedKeystrokes[8]=!h;c.attach(b);b.getDocumentElement().addClass(b.$.compatMode);
-h&&b.on("keydown",function(c){var e=c.data.getKeystroke();if(e in{8:1,46:1}){var d=a.getSelection(),h=d.getSelectedElement(),d=d.getRanges()[0],g=new CKEDITOR.dom.elementPath(d.startContainer),k,j,n,i=8==e;if(h)a.fire("saveSnapshot"),d.moveToPosition(h,CKEDITOR.POSITION_BEFORE_START),h.remove(),d.select(),a.fire("saveSnapshot"),c.data.preventDefault();else if((k=g.block)&&d[i?"checkStartOfBlock":"checkEndOfBlock"]()&&(n=k[i?"getPrevious":"getNext"](x))&&n.is("table"))a.fire("saveSnapshot"),d[i?"checkEndOfBlock":
-"checkStartOfBlock"]()&&k.remove(),d["moveToElementEdit"+(i?"End":"Start")](n),d.select(),a.fire("saveSnapshot"),c.data.preventDefault();else if(g.blockLimit.is("td")&&(j=g.blockLimit.getAscendant("table"))&&d.checkBoundaryOfElement(j,i?CKEDITOR.START:CKEDITOR.END)&&(n=j[i?"getPrevious":"getNext"](x)))a.fire("saveSnapshot"),d["moveToElementEdit"+(i?"End":"Start")](n),d.checkStartOfBlock()&&d.checkEndOfBlock()?n.remove():d.select(),a.fire("saveSnapshot"),c.data.preventDefault()}if((33==e||34==e)&&
-CKEDITOR.env.gecko)h=b.getBody(),f.$.innerHeight>h.$.offsetHeight&&(d=new CKEDITOR.dom.range(b),d[33==e?"moveToElementEditStart":"moveToElementEditEnd"](h),d.select(),c.data.preventDefault())});if(CKEDITOR.env.ie&&"CSS1Compat"==b.$.compatMode){var g={33:1,34:1};b.on("keydown",function(b){b.data.getKeystroke()in g&&setTimeout(function(){a.getSelection().scrollIntoView()},0)})}if(CKEDITOR.env.ie&&a.config.enterMode!=CKEDITOR.ENTER_P)b.on("selectionchange",function(){var f=b.getBody(),c=a.getSelection(),
-d=c&&c.getRanges()[0];d&&f.getHtml().match(/^<p>&nbsp;<\/p>$/i)&&d.startContainer.equals(f)&&setTimeout(function(){d=a.getSelection().getRanges()[0];d.startContainer.equals("body")||(f.getFirst().remove(1),d.moveToElementEditEnd(f),d.select(1))},0)});a.contextMenu&&a.contextMenu.addTarget(b,!1!==a.config.browserContextMenuOnCtrl);setTimeout(function(){a.fire("contentDom");if(z)a.mode="wysiwyg",a.fire("mode",{previousMode:a._.previousMode}),z=!1;m=!1;q&&(a.focus(),q=!1);setTimeout(function(){a.fire("dataReady")},
-0);try{a.document.$.execCommand("2D-position",!1,!0)}catch(b){}try{a.document.$.execCommand("enableInlineTableEditing",!1,!a.config.disableNativeTableHandles)}catch(f){}if(a.config.disableObjectResizing)try{a.document.$.execCommand("enableObjectResizing",!1,!1)}catch(c){a.document.getBody().on(CKEDITOR.env.ie?"resizestart":"resize",function(a){a.data.preventDefault()})}CKEDITOR.env.ie&&setTimeout(function(){if(a.document){var b=a.document.$.body;b.runtimeStyle.marginBottom="0px";b.runtimeStyle.marginBottom=
-""}},1E3)},0)}}var d,j,m,q,y,z,r,D=CKEDITOR.env.isCustomDomain(),u=function(f){j&&j.remove();var b="document.open();"+(D?'document.domain="'+document.domain+'";':"")+"document.close();",b=CKEDITOR.env.air?"javascript:void(0)":CKEDITOR.env.ie?"javascript:void(function(){"+encodeURIComponent(b)+"}())":"",e=CKEDITOR.tools.getNextId();j=CKEDITOR.dom.element.createFromHtml('<iframe style="width:100%;height:100%" frameBorder="0" aria-describedby="'+e+'" title="'+c+'" src="'+b+'" tabIndex="'+(CKEDITOR.env.webkit?
--1:a.tabIndex)+'" allowTransparency="true"></iframe>');if("chrome:"==document.location.protocol)CKEDITOR.event.useCapture=!0;j.on("load",function(a){y=1;a.removeListener();a=j.getFrameDocument();a.write(f);CKEDITOR.env.air&&k(a.getWindow().$)});if("chrome:"==document.location.protocol)CKEDITOR.event.useCapture=!1;d.append(CKEDITOR.dom.element.createFromHtml('<span id="'+e+'" class="cke_voice_label">'+g+"</span>"));d.append(j);CKEDITOR.env.webkit&&(r=function(){d.setStyle("width","100%");j.hide();
-j.setSize("width",d.getSize("width"));d.removeStyle("width");j.show()},i.on("resize",r))};l=CKEDITOR.tools.addFunction(k);var v='<script id="cke_actscrpt" type="text/javascript" data-cke-temp="1">'+(D?'document.domain="'+document.domain+'";':"")+"window.parent.CKEDITOR.tools.callFunction( "+l+", window );<\/script>";a.addMode("wysiwyg",{load:function(f,b,c){d=f;CKEDITOR.env.ie&&CKEDITOR.env.quirks&&f.setStyle("position","relative");z=a.mayBeDirty=!0;c?this.loadSnapshotData(b):this.loadData(b)},loadData:function(f){m=
-!0;a._.dataStore={id:1};var b=a.config,d=b.fullPage,g=b.docType,h='<style type="text/css" data-cke-temp="1">'+a._.styles.join("\n")+"</style>";!d&&(h=CKEDITOR.tools.buildStyleHtml(a.config.contentsCss)+h);var i=b.baseHref?'<base href="'+b.baseHref+'" data-cke-temp="1" />':"";d&&(f=f.replace(/<!DOCTYPE[^>]*>/i,function(b){a.docType=g=b;return""}).replace(/<\?xml\s[^\?]*\?>/i,function(b){a.xmlDeclaration=b;return""}));a.dataProcessor&&(f=a.dataProcessor.toHtml(f,e));d?(/<body[\s|>]/.test(f)||(f="<body>"+
-f),/<html[\s|>]/.test(f)||(f="<html>"+f+"</html>"),/<head[\s|>]/.test(f)?/<title[\s|>]/.test(f)||(f=f.replace(/<head[^>]*>/,"$&<title></title>")):f=f.replace(/<html[^>]*>/,"$&<head><title></title></head>"),i&&(f=f.replace(/<head>/,"$&"+i)),f=f.replace(/<\/head\s*>/,h+"$&"),f=g+f):f=b.docType+'<html dir="'+b.contentsLangDirection+'" lang="'+(b.contentsLanguage||a.langCode)+'"><head><title>'+c+"</title>"+i+h+"</head><body"+(b.bodyId?' id="'+b.bodyId+'"':"")+(b.bodyClass?' class="'+b.bodyClass+'"':"")+
-">"+f+"</html>";CKEDITOR.env.gecko&&(f=f.replace(/<br \/>(?=\s*<\/(:?html|body)>)/,'$&<br type="_moz" />'));f+=v;this.onDispose();u(f)},getData:function(){var f=a.config,b=f.fullPage,c=b&&a.docType,d=b&&a.xmlDeclaration,h=j.getFrameDocument(),b=b?h.getDocumentElement().getOuterHtml():h.getBody().getHtml();CKEDITOR.env.gecko&&(b=b.replace(/<br>(?=\s*(:?$|<\/body>))/,""));a.dataProcessor&&(b=a.dataProcessor.toDataFormat(b,e));f.ignoreEmptyParagraph&&(b=b.replace(w,function(a,b){return b}));d&&(b=d+
-"\n"+b);c&&(b=c+"\n"+b);return b},getSnapshotData:function(){return j.getFrameDocument().getBody().getHtml()},loadSnapshotData:function(a){j.getFrameDocument().getBody().setHtml(a)},onDispose:function(){a.document&&(a.document.getDocumentElement().clearCustomData(),a.document.getBody().clearCustomData(),a.window.clearCustomData(),a.document.clearCustomData(),j.clearCustomData(),j.remove())},unload:function(){this.onDispose();r&&i.removeListener("resize",r);a.window=a.document=j=d=q=null;a.fire("contentDomUnload")},
-focus:function(){var c=a.window;if(m)q=!0;else if(c){var b=a.getSelection(),b=b&&b.getNative();b&&"Control"==b.type||(CKEDITOR.env.air?setTimeout(function(){c.focus()},0):c.focus(),a.selectionChange())}}});a.on("insertHtml",s(A),null,null,20);a.on("insertElement",s(F),null,null,20);a.on("insertText",s(E),null,null,20);a.on("selectionChange",function(c){if(!a.readOnly){var b=a.getSelection();if(b&&!b.isLocked){b=a.checkDirty();a.fire("saveSnapshot",{contentOnly:1});var d=c.editor,e=c.data.path,h=e.blockLimit,
-g=c.data.selection.getRanges()[0],i=d.document.getBody(),k=d.config.enterMode;if(CKEDITOR.env.gecko){C(d);var j=e.block||e.blockLimit,l=j&&j.getLast(B);j&&j.isBlockBoundary()&&(!l||!(l.type==CKEDITOR.NODE_ELEMENT&&l.isBlockBoundary()))&&!j.is("pre")&&!j.getBogus()&&j.appendBogus()}if(!1!==d.config.autoParagraph&&k!=CKEDITOR.ENTER_BR&&g.collapsed&&"body"==h.getName()&&!e.block){e=g.fixBlock(!0,d.config.enterMode==CKEDITOR.ENTER_DIV?"div":"p");CKEDITOR.env.ie&&(h=e.getFirst(B))&&h.type==CKEDITOR.NODE_TEXT&&
-CKEDITOR.tools.trim(h.getText()).match(/^(?:&nbsp;|\xa0)$/)&&h.remove();if(e.getOuterHtml().match(w))if((h=e.getNext(p))&&h.type==CKEDITOR.NODE_ELEMENT&&(!h.isBlockBoundary()||!CKEDITOR.dtd.$empty[h.getName()]))g.moveToElementEditStart(h),e.remove();else if((h=e.getPrevious(p))&&h.type==CKEDITOR.NODE_ELEMENT&&(!h.isBlockBoundary()||!CKEDITOR.dtd.$empty[h.getName()]))g.moveToElementEditEnd(h),e.remove();g.select();c.cancel()}c=new CKEDITOR.dom.range(d.document);c.moveToElementEditEnd(d.document.getBody());
-(new CKEDITOR.dom.elementPath(c.startContainer)).blockLimit.is("body")||(c=k!=CKEDITOR.ENTER_BR?i.append(d.document.createElement(k==CKEDITOR.ENTER_P?"p":"div")):i,CKEDITOR.env.ie||c.appendBogus());a.fire("updateSnapshot");!b&&a.resetDirty()}}},null,null,1)});a.on("contentDom",function(){a.document.getElementsByTag("title").getItem(0).data("cke-title",a.document.$.title);CKEDITOR.env.ie&&(a.document.$.title=c)});a.on("readOnly",function(){if("wysiwyg"==a.mode){var c=a.getMode();c.loadData(c.getData())}});
-if(8<=CKEDITOR.document.$.documentMode){a.addCss("html.CSS1Compat [contenteditable=false]{ min-height:0 !important;}");var d=[],m;for(m in CKEDITOR.dtd.$removeEmpty)d.push("html.CSS1Compat "+m+"[contenteditable=false]");a.addCss(d.join(",")+"{ display:inline-block;}")}else CKEDITOR.env.gecko?(a.addCss("html { height: 100% !important; }"),a.addCss("img:-moz-broken { -moz-force-broken-image-icon : 1;\tmin-width : 24px; min-height : 24px; }")):CKEDITOR.env.ie&&8>CKEDITOR.env.version&&"ltr"==a.config.contentsLangDirection&&
-a.addCss("body{margin-right:0;}");a.addCss("html {\t_overflow-y: scroll; cursor: text;\t*cursor:auto;}");a.addCss("img, input, textarea { cursor: default;}");a.on("insertElement",function(a){a=a.data;if(a.type==CKEDITOR.NODE_ELEMENT&&(a.is("input")||a.is("textarea"))&&"false"!=a.getAttribute("contenteditable"))a.data("cke-editable",a.hasAttribute("contenteditable")?"true":"1"),a.setAttribute("contenteditable",!1)})}});CKEDITOR.env.gecko&&function(){var a=document.body;if(a){var e=a.getAttribute("onpageshow");
-a.setAttribute("onpageshow",(e?e+";":"")+'event.persisted && (function(){var allInstances = CKEDITOR.instances, editor, doc;for ( var i in allInstances ){\teditor = allInstances[ i ];\tdoc = editor.document;\tif ( doc )\t{\t\tdoc.$.designMode = "off";\t\tdoc.$.designMode = "on";\t}}})();')}else window.addEventListener("load",arguments.callee,!1)}()})();CKEDITOR.config.disableObjectResizing=!1;CKEDITOR.config.disableNativeTableHandles=!0;CKEDITOR.config.disableNativeSpellChecker=!0;CKEDITOR.config.ignoreEmptyParagraph=
-!0});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+/**
+ * @fileOverview The "wysiwygarea" plugin. It registers the "wysiwyg" editing
+ *		mode, which handles the main editing area space.
+ */
+
+(function()
+{
+	// Matching an empty paragraph at the end of document.
+	var emptyParagraphRegexp = /(^|<body\b[^>]*>)\s*<(p|div|address|h\d|center|pre)[^>]*>\s*(?:<br[^>]*>|&nbsp;|\u00A0|&#160;)?\s*(:?<\/\2>)?\s*(?=$|<\/body>)/gi;
+
+	var notWhitespaceEval = CKEDITOR.dom.walker.whitespaces( true ),
+	  notBogus = CKEDITOR.dom.walker.bogus( true ),
+	  notEmpty = function( node ) { return notWhitespaceEval( node ) && notBogus( node ); };
+
+	// Elements that could blink the cursor anchoring beside it, like hr, page-break. (#6554)
+	function nonEditable( element )
+	{
+		return element.isBlockBoundary() && CKEDITOR.dtd.$empty[ element.getName() ];
+	}
+
+
+	function onInsert( insertFunc )
+	{
+		return function( evt )
+		{
+			if ( this.mode == 'wysiwyg' )
+			{
+				this.focus();
+
+				// Since the insertion might happen from within dialog or menu
+				// where the editor selection might be locked at the moment,
+				// update the locked selection.
+				var selection = this.getSelection(),
+				selIsLocked = selection.isLocked;
+
+				selIsLocked && selection.unlock();
+
+				this.fire( 'saveSnapshot' );
+
+				insertFunc.call( this, evt.data );
+
+				selIsLocked && this.getSelection().lock();
+
+				// Save snaps after the whole execution completed.
+				// This's a workaround for make DOM modification's happened after
+				// 'insertElement' to be included either, e.g. Form-based dialogs' 'commitContents'
+				// call.
+				CKEDITOR.tools.setTimeout( function()
+				   {
+					   this.fire( 'saveSnapshot' );
+				   }, 0, this );
+			}
+		};
+	}
+
+	function doInsertHtml( data )
+	{
+		if ( this.dataProcessor )
+			data = this.dataProcessor.toHtml( data );
+
+		if ( !data )
+			return;
+
+		// HTML insertion only considers the first range.
+		var selection = this.getSelection(),
+			range = selection.getRanges()[ 0 ];
+
+		if ( range.checkReadOnly() )
+			return;
+
+		// Opera: force block splitting when pasted content contains block. (#7801)
+		if ( CKEDITOR.env.opera )
+		{
+			var path = new CKEDITOR.dom.elementPath( range.startContainer );
+			if ( path.block )
+			{
+				var nodes = CKEDITOR.htmlParser.fragment.fromHtml( data, false ).children;
+				for ( var i = 0, count = nodes.length; i < count; i++ )
+				{
+					if ( nodes[ i ]._.isBlockLike )
+					{
+						range.splitBlock( this.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p' );
+						range.insertNode( range.document.createText( '' ) );
+						range.select();
+						break;
+					}
+				}
+			}
+		}
+
+		if ( CKEDITOR.env.ie )
+		{
+			var $sel = selection.getNative();
+
+			// Delete control selections to avoid IE bugs on pasteHTML.
+			if ( $sel.type == 'Control' )
+				$sel.clear();
+			else if ( selection.getType() == CKEDITOR.SELECTION_TEXT )
+			{
+				// Due to IE bugs on handling contenteditable=false blocks
+				// (#6005), we need to make some checks and eventually
+				// delete the selection first.
+
+				range = selection.getRanges()[ 0 ];
+				var endContainer = range && range.endContainer;
+
+				if ( endContainer &&
+						endContainer.type == CKEDITOR.NODE_ELEMENT &&
+						endContainer.getAttribute( 'contenteditable' ) == 'false' &&
+						range.checkBoundaryOfElement( endContainer, CKEDITOR.END ) )
+				{
+					range.setEndAfter( range.endContainer );
+					range.deleteContents();
+				}
+			}
+
+			$sel.createRange().pasteHTML( data );
+		}
+		else
+			this.document.$.execCommand( 'inserthtml', false, data );
+
+		// Webkit does not scroll to the cursor position after pasting (#5558)
+		if ( CKEDITOR.env.webkit )
+		{
+			selection = this.getSelection();
+			selection.scrollIntoView();
+		}
+	}
+
+	function doInsertText( text )
+	{
+		var selection = this.getSelection(),
+			mode = selection.getStartElement().hasAscendant( 'pre', true ) ?
+				   CKEDITOR.ENTER_BR : this.config.enterMode,
+			isEnterBrMode = mode == CKEDITOR.ENTER_BR;
+
+		var html = CKEDITOR.tools.htmlEncode( text.replace( /\r\n|\r/g, '\n' ) );
+
+		// Convert leading and trailing whitespaces into &nbsp;
+		html = html.replace( /^[ \t]+|[ \t]+$/g, function( match, offset, s )
+			{
+				if ( match.length == 1 )	// one space, preserve it
+					return '&nbsp;';
+				else if ( !offset )		// beginning of block
+					return CKEDITOR.tools.repeat( '&nbsp;', match.length - 1 ) + ' ';
+				else				// end of block
+					return ' ' + CKEDITOR.tools.repeat( '&nbsp;', match.length - 1 );
+			} );
+
+		// Convert subsequent whitespaces into &nbsp;
+		html = html.replace( /[ \t]{2,}/g, function ( match )
+		   {
+			   return CKEDITOR.tools.repeat( '&nbsp;', match.length - 1 ) + ' ';
+		   } );
+
+		var paragraphTag = mode == CKEDITOR.ENTER_P ? 'p' : 'div';
+
+		// Two line-breaks create one paragraph.
+		if ( !isEnterBrMode )
+		{
+			html = html.replace( /(\n{2})([\s\S]*?)(?:$|\1)/g,
+				function( match, group1, text )
+				{
+					return '<'+paragraphTag + '>' + text + '</' + paragraphTag + '>';
+				});
+		}
+
+		// One <br> per line-break.
+		html = html.replace( /\n/g, '<br>' );
+
+		// Compensate padding <br> for non-IE.
+		if ( !( isEnterBrMode || CKEDITOR.env.ie ) )
+		{
+			html = html.replace( new RegExp( '<br>(?=</' + paragraphTag + '>)' ), function( match )
+			{
+				return CKEDITOR.tools.repeat( match, 2 );
+			} );
+		}
+
+		// Inline styles have to be inherited in Firefox.
+		if ( CKEDITOR.env.gecko || CKEDITOR.env.webkit )
+		{
+			var path = new CKEDITOR.dom.elementPath( selection.getStartElement() ),
+				context = [];
+
+			for ( var i = 0; i < path.elements.length; i++ )
+			{
+				var tag = path.elements[ i ].getName();
+				if ( tag in CKEDITOR.dtd.$inline )
+					context.unshift( path.elements[ i ].getOuterHtml().match( /^<.*?>/) );
+				else if ( tag in CKEDITOR.dtd.$block )
+					break;
+			}
+
+			// Reproduce the context  by preceding the pasted HTML with opening inline tags.
+			html = context.join( '' ) + html;
+		}
+
+		doInsertHtml.call( this, html );
+	}
+
+	function doInsertElement( element )
+	{
+		var selection = this.getSelection(),
+				ranges = selection.getRanges(),
+				elementName = element.getName(),
+				isBlock = CKEDITOR.dtd.$block[ elementName ];
+
+		var selIsLocked = selection.isLocked;
+
+		if ( selIsLocked )
+			selection.unlock();
+
+		var range, clone, lastElement, bookmark;
+
+		for ( var i = ranges.length - 1 ; i >= 0 ; i-- )
+		{
+			range = ranges[ i ];
+
+				if ( !range.checkReadOnly() )
+				{
+					// Remove the original contents, merge splitted nodes.
+					range.deleteContents( 1 );
+
+					clone = !i && element || element.clone( 1 );
+
+					// If we're inserting a block at dtd-violated position, split
+					// the parent blocks until we reach blockLimit.
+					var current, dtd;
+					if ( isBlock )
+					{
+						while ( ( current = range.getCommonAncestor( 0, 1 ) )
+								&& ( dtd = CKEDITOR.dtd[ current.getName() ] )
+								&& !( dtd && dtd [ elementName ] ) )
+						{
+							// Split up inline elements.
+							if ( current.getName() in CKEDITOR.dtd.span )
+								range.splitElement( current );
+							// If we're in an empty block which indicate a new paragraph,
+							// simply replace it with the inserting block.(#3664)
+							else if ( range.checkStartOfBlock()
+									&& range.checkEndOfBlock() )
+							{
+								range.setStartBefore( current );
+								range.collapse( true );
+								current.remove();
+							}
+							else
+								range.splitBlock();
+						}
+					}
+
+					// Insert the new node.
+					range.insertNode( clone );
+
+					// Save the last element reference so we can make the
+					// selection later.
+					if ( !lastElement )
+						lastElement = clone;
+				}
+			}
+
+			if ( lastElement )
+			{
+				range.moveToPosition( lastElement, CKEDITOR.POSITION_AFTER_END );
+
+				// If we're inserting a block element immediately followed by
+				// another block element, the selection must be optimized. (#3100,#5436,#8950)
+				if ( isBlock )
+				{
+					var next = lastElement.getNext( notEmpty ),
+						nextName = next && next.type == CKEDITOR.NODE_ELEMENT && next.getName();
+
+					// If the next one is a text block, move cursor to the start of it's content.
+					if ( nextName && CKEDITOR.dtd.$block[ nextName ] )
+					{
+						if ( CKEDITOR.dtd[ nextName ][ '#' ] )
+							range.moveToElementEditStart( next );
+						// Otherwise move cursor to the before end of the last element.
+						else
+							range.moveToElementEditEnd( lastElement );
+					}
+					// Open a new line if the block is inserted at the end of parent.
+					else if ( !next )
+					{
+						next = range.fixBlock( true, this.config.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p' );
+						range.moveToElementEditStart( next );
+					}
+				}
+			}
+
+			selection.selectRanges( [ range ] );
+
+		if ( selIsLocked )
+			this.getSelection().lock();
+	}
+
+	// DOM modification here should not bother dirty flag.(#4385)
+	function restoreDirty( editor )
+	{
+		if ( !editor.checkDirty() )
+			setTimeout( function(){ editor.resetDirty(); }, 0 );
+	}
+
+	var isNotWhitespace = CKEDITOR.dom.walker.whitespaces( true ),
+		isNotBookmark = CKEDITOR.dom.walker.bookmark( false, true );
+
+	function isNotEmpty( node )
+	{
+		return isNotWhitespace( node ) && isNotBookmark( node );
+	}
+
+	function isNbsp( node )
+	{
+		return node.type == CKEDITOR.NODE_TEXT
+			   && CKEDITOR.tools.trim( node.getText() ).match( /^(?:&nbsp;|\xa0)$/ );
+	}
+
+	function restoreSelection( selection )
+	{
+		if ( selection.isLocked )
+		{
+			selection.unlock();
+			setTimeout( function() { selection.lock(); }, 0 );
+		}
+	}
+
+	function isBlankParagraph( block )
+	{
+		return block.getOuterHtml().match( emptyParagraphRegexp );
+	}
+
+	isNotWhitespace = CKEDITOR.dom.walker.whitespaces( true );
+
+	// Gecko need a key event to 'wake up' the editing
+	// ability when document is empty.(#3864, #5781)
+	function activateEditing( editor )
+	{
+		var win = editor.window,
+			doc = editor.document,
+			body = editor.document.getBody(),
+			bodyFirstChild = body.getFirst(),
+			bodyChildsNum = body.getChildren().count();
+
+		if ( !bodyChildsNum
+			|| bodyChildsNum == 1
+				&& bodyFirstChild.type == CKEDITOR.NODE_ELEMENT
+				&& bodyFirstChild.hasAttribute( '_moz_editor_bogus_node' ) )
+		{
+			restoreDirty( editor );
+
+			// Memorize scroll position to restore it later (#4472).
+			var hostDocument = editor.element.getDocument();
+			var hostDocumentElement = hostDocument.getDocumentElement();
+			var scrollTop = hostDocumentElement.$.scrollTop;
+			var scrollLeft = hostDocumentElement.$.scrollLeft;
+
+			// Simulating keyboard character input by dispatching a keydown of white-space text.
+			var keyEventSimulate = doc.$.createEvent( "KeyEvents" );
+			keyEventSimulate.initKeyEvent( 'keypress', true, true, win.$, false,
+				false, false, false, 0, 32 );
+			doc.$.dispatchEvent( keyEventSimulate );
+
+			if ( scrollTop != hostDocumentElement.$.scrollTop || scrollLeft != hostDocumentElement.$.scrollLeft )
+				hostDocument.getWindow().$.scrollTo( scrollLeft, scrollTop );
+
+			// Restore the original document status by placing the cursor before a bogus br created (#5021).
+			bodyChildsNum && body.getFirst().remove();
+			doc.getBody().appendBogus();
+			var nativeRange = new CKEDITOR.dom.range( doc );
+			nativeRange.setStartAt( body , CKEDITOR.POSITION_AFTER_START );
+			nativeRange.select();
+		}
+	}
+
+	/**
+	 *  Auto-fixing block-less content by wrapping paragraph (#3190), prevent
+	 *  non-exitable-block by padding extra br.(#3189)
+	 */
+	function onSelectionChangeFixBody( evt )
+	{
+		var editor = evt.editor,
+			path = evt.data.path,
+			blockLimit = path.blockLimit,
+			selection = evt.data.selection,
+			range = selection.getRanges()[0],
+			body = editor.document.getBody(),
+			enterMode = editor.config.enterMode;
+
+		if ( CKEDITOR.env.gecko )
+		{
+			activateEditing( editor );
+
+			// Ensure bogus br could help to move cursor (out of styles) to the end of block. (#7041)
+			var pathBlock = path.block || path.blockLimit,
+				lastNode = pathBlock && pathBlock.getLast( isNotEmpty );
+
+			// Check some specialities of the current path block:
+			// 1. It is really displayed as block; (#7221)
+			// 2. It doesn't end with one inner block; (#7467)
+			// 3. It doesn't have bogus br yet.
+			if ( pathBlock
+					&& pathBlock.isBlockBoundary()
+					&& !( lastNode && lastNode.type == CKEDITOR.NODE_ELEMENT && lastNode.isBlockBoundary() )
+					&& !pathBlock.is( 'pre' )
+					&& !pathBlock.getBogus() )
+			{
+				pathBlock.appendBogus();
+			}
+		}
+
+		// When we're in block enter mode, a new paragraph will be established
+		// to encapsulate inline contents right under body. (#3657)
+		if ( editor.config.autoParagraph !== false
+				&& enterMode != CKEDITOR.ENTER_BR
+				&& range.collapsed
+				&& blockLimit.getName() == 'body'
+				&& !path.block )
+		{
+			var fixedBlock = range.fixBlock( true,
+					editor.config.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p'  );
+
+			// For IE, we should remove any filler node which was introduced before.
+			if ( CKEDITOR.env.ie )
+			{
+				var first = fixedBlock.getFirst( isNotEmpty );
+				first && isNbsp( first ) && first.remove();
+			}
+
+			// If the fixed block is actually blank and is already followed by an exitable blank
+			// block, we should revert the fix and move into the existed one. (#3684)
+			if ( isBlankParagraph( fixedBlock ) )
+			{
+				var element = fixedBlock.getNext( isNotWhitespace );
+				if ( element &&
+					 element.type == CKEDITOR.NODE_ELEMENT &&
+					 !nonEditable( element ) )
+				{
+					range.moveToElementEditStart( element );
+					fixedBlock.remove();
+				}
+				else
+				{
+					element = fixedBlock.getPrevious( isNotWhitespace );
+					if ( element &&
+						 element.type == CKEDITOR.NODE_ELEMENT &&
+						 !nonEditable( element ) )
+					{
+						range.moveToElementEditEnd( element );
+						fixedBlock.remove();
+					}
+				}
+			}
+
+			range.select();
+			// Cancel this selection change in favor of the next (correct).  (#6811)
+			evt.cancel();
+		}
+
+		// Browsers are incapable of moving cursor out of certain block elements (e.g. table, div, pre)
+		// at the end of document, makes it unable to continue adding content, we have to make this
+		// easier by opening an new empty paragraph.
+		var testRange = new CKEDITOR.dom.range( editor.document );
+		testRange.moveToElementEditEnd( editor.document.getBody() );
+		var testPath = new CKEDITOR.dom.elementPath( testRange.startContainer );
+		if ( !testPath.blockLimit.is( 'body') )
+		{
+			var paddingBlock;
+			if ( enterMode != CKEDITOR.ENTER_BR )
+				paddingBlock = body.append( editor.document.createElement( enterMode == CKEDITOR.ENTER_P ? 'p' : 'div' ) );
+			else
+				paddingBlock = body;
+
+			if ( !CKEDITOR.env.ie )
+				paddingBlock.appendBogus();
+		}
+	}
+
+	CKEDITOR.plugins.add( 'wysiwygarea',
+	{
+		requires : [ 'editingblock' ],
+
+		init : function( editor )
+		{
+			var fixForBody = ( editor.config.enterMode != CKEDITOR.ENTER_BR && editor.config.autoParagraph !== false )
+				? editor.config.enterMode == CKEDITOR.ENTER_DIV ? 'div' : 'p' : false;
+
+			var frameLabel = editor.lang.editorTitle.replace( '%1', editor.name ),
+				frameDesc = editor.lang.editorHelp;
+
+			if ( CKEDITOR.env.ie )
+				frameLabel += ', ' + frameDesc;
+
+			var win = CKEDITOR.document.getWindow();
+			var contentDomReadyHandler;
+			editor.on( 'editingBlockReady', function()
+				{
+					var mainElement,
+						iframe,
+						isLoadingData,
+						isPendingFocus,
+						frameLoaded,
+						fireMode,
+						onResize;
+
+
+					// Support for custom document.domain in IE.
+					var isCustomDomain = CKEDITOR.env.isCustomDomain();
+
+					// Creates the iframe that holds the editable document.
+					var createIFrame = function( data )
+					{
+						if ( iframe )
+							iframe.remove();
+
+						var src =
+							'document.open();' +
+
+							// The document domain must be set any time we
+							// call document.open().
+							( isCustomDomain ? ( 'document.domain="' + document.domain + '";' ) : '' ) +
+
+							'document.close();';
+
+						// With IE, the custom domain has to be taken care at first,
+						// for other browers, the 'src' attribute should be left empty to
+						// trigger iframe's 'load' event.
+  						src =
+							CKEDITOR.env.air ?
+								'javascript:void(0)' :
+							CKEDITOR.env.ie ?
+								'javascript:void(function(){' + encodeURIComponent( src ) + '}())'
+							:
+								'';
+
+						var labelId = CKEDITOR.tools.getNextId();
+						iframe = CKEDITOR.dom.element.createFromHtml( '<iframe' +
+  							' style="width:100%;height:100%"' +
+  							' frameBorder="0"' +
+  							' aria-describedby="' + labelId + '"' +
+							' title="' + frameLabel + '"' +
+  							' src="' + src + '"' +
+							' tabIndex="' + ( CKEDITOR.env.webkit? -1 : editor.tabIndex ) + '"' +
+  							' allowTransparency="true"' +
+  							'></iframe>' );
+
+						// Running inside of Firefox chrome the load event doesn't bubble like in a normal page (#5689)
+						if ( document.location.protocol == 'chrome:' )
+							CKEDITOR.event.useCapture = true;
+
+						// With FF, it's better to load the data on iframe.load. (#3894,#4058)
+						iframe.on( 'load', function( ev )
+							{
+								frameLoaded = 1;
+								ev.removeListener();
+
+								var doc = iframe.getFrameDocument();
+								doc.write( data );
+
+								CKEDITOR.env.air && contentDomReady( doc.getWindow().$ );
+							});
+
+						// Reset adjustment back to default (#5689)
+						if ( document.location.protocol == 'chrome:' )
+							CKEDITOR.event.useCapture = false;
+
+						mainElement.append( CKEDITOR.dom.element.createFromHtml(
+							'<span id="' + labelId + '" class="cke_voice_label">' + frameDesc + '</span>'));
+
+						mainElement.append( iframe );
+
+						// Webkit: iframe size doesn't auto fit well. (#7360)
+						if ( CKEDITOR.env.webkit )
+						{
+							onResize = function()
+							{
+								// Hide the iframe to get real size of the holder. (#8941)
+								mainElement.setStyle( 'width', '100%' );
+								iframe.hide();
+
+								iframe.setSize( 'width', mainElement.getSize( 'width' ) );
+								mainElement.removeStyle( 'width' );
+								iframe.show();
+							};
+
+							win.on( 'resize', onResize );
+						}
+					};
+
+					// The script that launches the bootstrap logic on 'domReady', so the document
+					// is fully editable even before the editing iframe is fully loaded (#4455).
+					contentDomReadyHandler = CKEDITOR.tools.addFunction( contentDomReady );
+					var activationScript =
+						'<script id="cke_actscrpt" type="text/javascript" data-cke-temp="1">' +
+							( isCustomDomain ? ( 'document.domain="' + document.domain + '";' ) : '' ) +
+							'window.parent.CKEDITOR.tools.callFunction( ' + contentDomReadyHandler + ', window );' +
+						'</script>';
+
+					// Editing area bootstrap code.
+					function contentDomReady( domWindow )
+					{
+						if ( !frameLoaded )
+							return;
+						frameLoaded = 0;
+
+						editor.fire( 'ariaWidget', iframe );
+
+						var domDocument = domWindow.document,
+							body = domDocument.body;
+
+						// Remove this script from the DOM.
+						var script = domDocument.getElementById( "cke_actscrpt" );
+						script && script.parentNode.removeChild( script );
+
+						body.spellcheck = !editor.config.disableNativeSpellChecker;
+
+						var editable = !editor.readOnly;
+
+						if ( CKEDITOR.env.ie )
+						{
+							// Don't display the focus border.
+							body.hideFocus = true;
+
+							// Disable and re-enable the body to avoid IE from
+							// taking the editing focus at startup. (#141 / #523)
+							body.disabled = true;
+							body.contentEditable = editable;
+							body.removeAttribute( 'disabled' );
+						}
+						else
+						{
+							// Avoid opening design mode in a frame window thread,
+							// which will cause host page scrolling.(#4397)
+							setTimeout( function()
+							{
+								// Prefer 'contentEditable' instead of 'designMode'. (#3593)
+								if ( CKEDITOR.env.gecko && CKEDITOR.env.version >= 10900
+										|| CKEDITOR.env.opera )
+									domDocument.$.body.contentEditable = editable;
+								else if ( CKEDITOR.env.webkit )
+									domDocument.$.body.parentNode.contentEditable = editable;
+								else
+									domDocument.$.designMode = editable? 'off' : 'on';
+							}, 0 );
+						}
+
+						editable && CKEDITOR.env.gecko && CKEDITOR.tools.setTimeout( activateEditing, 0, null, editor );
+
+						domWindow	= editor.window	= new CKEDITOR.dom.window( domWindow );
+						domDocument	= editor.document	= new CKEDITOR.dom.document( domDocument );
+
+						editable && domDocument.on( 'dblclick', function( evt )
+						{
+							var element = evt.data.getTarget(),
+								data = { element : element, dialog : '' };
+							editor.fire( 'doubleclick', data );
+							data.dialog && editor.openDialog( data.dialog );
+						});
+
+						// Prevent automatic submission in IE #6336
+						CKEDITOR.env.ie && domDocument.on( 'click', function( evt )
+						{
+							var element = evt.data.getTarget();
+							if ( element.is( 'input' ) )
+							{
+								var type = element.getAttribute( 'type' );
+								if ( type == 'submit' || type == 'reset' )
+									evt.data.preventDefault();
+							}
+						});
+
+						// Gecko/Webkit need some help when selecting control type elements. (#3448)
+						if ( !( CKEDITOR.env.ie || CKEDITOR.env.opera ) )
+						{
+							domDocument.on( 'mousedown', function( ev )
+							{
+								var control = ev.data.getTarget();
+								if ( control.is( 'img', 'hr', 'input', 'textarea', 'select' ) )
+									editor.getSelection().selectElement( control );
+							} );
+						}
+
+						if ( CKEDITOR.env.gecko )
+						{
+							domDocument.on( 'mouseup', function( ev )
+							{
+								if ( ev.data.$.button == 2 )
+								{
+									var target = ev.data.getTarget();
+
+									// Prevent right click from selecting an empty block even
+									// when selection is anchored inside it. (#5845)
+									if ( !target.getOuterHtml().replace( emptyParagraphRegexp, '' ) )
+									{
+										var range = new CKEDITOR.dom.range( domDocument );
+										range.moveToElementEditStart( target );
+										range.select( true );
+									}
+								}
+							} );
+						}
+
+						// Prevent the browser opening links in read-only blocks. (#6032)
+						domDocument.on( 'click', function( ev )
+							{
+								ev = ev.data;
+								if ( ev.getTarget().is( 'a' ) && ev.$.button != 2 )
+									ev.preventDefault();
+							});
+
+						// Webkit: avoid from editing form control elements content.
+						if ( CKEDITOR.env.webkit )
+						{
+							// Mark that cursor will right blinking (#7113).
+							domDocument.on( 'mousedown', function() { wasFocused = 1; } );
+							// Prevent from tick checkbox/radiobox/select
+							domDocument.on( 'click', function( ev )
+							{
+								if ( ev.data.getTarget().is( 'input', 'select' ) )
+									ev.data.preventDefault();
+							} );
+
+							// Prevent from editig textfield/textarea value.
+							domDocument.on( 'mouseup', function( ev )
+							{
+								if ( ev.data.getTarget().is( 'input', 'textarea' ) )
+									ev.data.preventDefault();
+							} );
+						}
+
+						var focusTarget = CKEDITOR.env.ie ? iframe : domWindow;
+						focusTarget.on( 'blur', function()
+							{
+								editor.focusManager.blur();
+							});
+
+						var wasFocused;
+
+						focusTarget.on( 'focus', function()
+							{
+								var doc = editor.document;
+
+								if ( CKEDITOR.env.gecko || CKEDITOR.env.opera )
+									doc.getBody().focus();
+								// Webkit needs focus for the first time on the HTML element. (#6153)
+								else if ( CKEDITOR.env.webkit )
+								{
+									if ( !wasFocused )
+									{
+										editor.document.getDocumentElement().focus();
+										wasFocused = 1;
+									}
+								}
+
+								editor.focusManager.focus();
+							});
+
+						var keystrokeHandler = editor.keystrokeHandler;
+						// Prevent backspace from navigating off the page.
+						keystrokeHandler.blockedKeystrokes[ 8 ] = !editable;
+						keystrokeHandler.attach( domDocument );
+
+						domDocument.getDocumentElement().addClass( domDocument.$.compatMode );
+						// Override keystroke behaviors.
+						editable && domDocument.on( 'keydown', function( evt )
+						{
+							var keyCode = evt.data.getKeystroke();
+
+							// Backspace OR Delete.
+							if ( keyCode in { 8 : 1, 46 : 1 } )
+							{
+								var sel = editor.getSelection(),
+									selected = sel.getSelectedElement(),
+									range = sel.getRanges()[ 0 ],
+									path = new CKEDITOR.dom.elementPath( range.startContainer ),
+									block,
+									parent,
+									next,
+									rtl = keyCode == 8;
+
+								// Override keystrokes which should have deletion behavior
+								//  on fully selected element . (#4047) (#7645)
+								if ( selected )
+								{
+									// Make undo snapshot.
+									editor.fire( 'saveSnapshot' );
+
+									// Delete any element that 'hasLayout' (e.g. hr,table) in IE8 will
+									// break up the selection, safely manage it here. (#4795)
+									range.moveToPosition( selected, CKEDITOR.POSITION_BEFORE_START );
+									// Remove the control manually.
+									selected.remove();
+									range.select();
+
+									editor.fire( 'saveSnapshot' );
+
+									evt.data.preventDefault();
+								}
+								else
+								{
+									// Handle the following special cases: (#6217)
+									// 1. Del/Backspace key before/after table;
+									// 2. Backspace Key after start of table.
+									if ( ( block = path.block ) &&
+										 range[ rtl ? 'checkStartOfBlock' : 'checkEndOfBlock' ]() &&
+										 ( next = block[ rtl ? 'getPrevious' : 'getNext' ]( notWhitespaceEval ) ) &&
+										 next.is( 'table' ) )
+									{
+										editor.fire( 'saveSnapshot' );
+
+										// Remove the current empty block.
+										if ( range[ rtl ? 'checkEndOfBlock' : 'checkStartOfBlock' ]() )
+											block.remove();
+
+										// Move cursor to the beginning/end of table cell.
+										range[ 'moveToElementEdit' + ( rtl ? 'End' : 'Start' ) ]( next );
+										range.select();
+
+										editor.fire( 'saveSnapshot' );
+
+										evt.data.preventDefault();
+									}
+									else if ( path.blockLimit.is( 'td' ) &&
+											  ( parent = path.blockLimit.getAscendant( 'table' ) ) &&
+											  range.checkBoundaryOfElement( parent, rtl ? CKEDITOR.START : CKEDITOR.END ) &&
+											  ( next = parent[ rtl ? 'getPrevious' : 'getNext' ]( notWhitespaceEval ) ) )
+									{
+										editor.fire( 'saveSnapshot' );
+
+										// Move cursor to the end of previous block.
+										range[ 'moveToElementEdit' + ( rtl ? 'End' : 'Start' ) ]( next );
+
+										// Remove any previous empty block.
+										if ( range.checkStartOfBlock() && range.checkEndOfBlock() )
+											next.remove();
+										else
+											range.select();
+
+										editor.fire( 'saveSnapshot' );
+
+										evt.data.preventDefault();
+									}
+
+								}
+							}
+
+							// PageUp OR PageDown
+							if ( keyCode == 33 || keyCode == 34 )
+							{
+								if ( CKEDITOR.env.gecko )
+								{
+									var body = domDocument.getBody();
+
+									// Page up/down cause editor selection to leak
+									// outside of editable thus we try to intercept
+									// the behavior, while it affects only happen
+									// when editor contents are not overflowed. (#7955)
+									if ( domWindow.$.innerHeight > body.$.offsetHeight )
+									{
+										range = new CKEDITOR.dom.range( domDocument );
+										range[ keyCode == 33 ? 'moveToElementEditStart' : 'moveToElementEditEnd']( body );
+										range.select();
+										evt.data.preventDefault();
+									}
+								}
+
+							}
+						} );
+
+						// PageUp/PageDown scrolling is broken in document
+						// with standard doctype, manually fix it. (#4736)
+						if ( CKEDITOR.env.ie && domDocument.$.compatMode == 'CSS1Compat' )
+						{
+							var pageUpDownKeys = { 33 : 1, 34 : 1 };
+							domDocument.on( 'keydown', function( evt )
+							{
+								if ( evt.data.getKeystroke() in pageUpDownKeys )
+								{
+									setTimeout( function ()
+									{
+										editor.getSelection().scrollIntoView();
+									}, 0 );
+								}
+							} );
+						}
+
+						// Prevent IE from leaving new paragraph after deleting all contents in body. (#6966)
+						if ( CKEDITOR.env.ie && editor.config.enterMode != CKEDITOR.ENTER_P )
+						{
+							domDocument.on( 'selectionchange', function()
+							{
+								var body = domDocument.getBody(),
+									sel = editor.getSelection(),
+									range = sel && sel.getRanges()[ 0 ];
+
+								if ( range && body.getHtml().match( /^<p>&nbsp;<\/p>$/i )
+									&& range.startContainer.equals( body ) )
+								{
+									// Avoid the ambiguity from a real user cursor position.
+									setTimeout( function ()
+									{
+										range = editor.getSelection().getRanges()[ 0 ];
+										if ( !range.startContainer.equals ( 'body' ) )
+										{
+											body.getFirst().remove( 1 );
+											range.moveToElementEditEnd( body );
+											range.select( 1 );
+										}
+									}, 0 );
+								}
+							});
+						}
+
+						// Adds the document body as a context menu target.
+						if ( editor.contextMenu )
+							editor.contextMenu.addTarget( domDocument, editor.config.browserContextMenuOnCtrl !== false );
+
+						setTimeout( function()
+							{
+								editor.fire( 'contentDom' );
+
+								if ( fireMode )
+								{
+									editor.mode = 'wysiwyg';
+									editor.fire( 'mode', { previousMode : editor._.previousMode } );
+									fireMode = false;
+								}
+
+								isLoadingData = false;
+
+								if ( isPendingFocus )
+								{
+									editor.focus();
+									isPendingFocus = false;
+								}
+								setTimeout( function()
+								{
+									editor.fire( 'dataReady' );
+								}, 0 );
+
+								// Enable dragging of position:absolute elements in IE.
+								try { editor.document.$.execCommand ( '2D-position', false, true); } catch(e) {}
+
+								// IE, Opera and Safari may not support it and throw errors.
+								try { editor.document.$.execCommand( 'enableInlineTableEditing', false, !editor.config.disableNativeTableHandles ); } catch(e) {}
+								if ( editor.config.disableObjectResizing )
+								{
+									try
+									{
+										editor.document.$.execCommand( 'enableObjectResizing', false, false );
+									}
+									catch(e)
+									{
+										// For browsers in which the above method failed, we can cancel the resizing on the fly (#4208)
+										editor.document.getBody().on( CKEDITOR.env.ie ? 'resizestart' : 'resize', function( evt )
+										{
+											evt.data.preventDefault();
+										});
+									}
+								}
+
+								/*
+								 * IE BUG: IE might have rendered the iframe with invisible contents.
+								 * (#3623). Push some inconsequential CSS style changes to force IE to
+								 * refresh it.
+								 *
+								 * Also, for some unknown reasons, short timeouts (e.g. 100ms) do not
+								 * fix the problem. :(
+								 */
+								if ( CKEDITOR.env.ie )
+								{
+									setTimeout( function()
+										{
+											if ( editor.document )
+											{
+												var $body = editor.document.$.body;
+												$body.runtimeStyle.marginBottom = '0px';
+												$body.runtimeStyle.marginBottom = '';
+											}
+										}, 1000 );
+								}
+							},
+							0 );
+					}
+
+					editor.addMode( 'wysiwyg',
+						{
+							load : function( holderElement, data, isSnapshot )
+							{
+								mainElement = holderElement;
+
+								if ( CKEDITOR.env.ie && CKEDITOR.env.quirks )
+									holderElement.setStyle( 'position', 'relative' );
+
+								// The editor data "may be dirty" after this
+								// point.
+								editor.mayBeDirty = true;
+
+								fireMode = true;
+
+								if ( isSnapshot )
+									this.loadSnapshotData( data );
+								else
+									this.loadData( data );
+							},
+
+							loadData : function( data )
+							{
+								isLoadingData = true;
+								editor._.dataStore = { id : 1 };
+
+								var config = editor.config,
+									fullPage = config.fullPage,
+									docType = config.docType;
+
+								// Build the additional stuff to be included into <head>.
+								var headExtra =
+									'<style type="text/css" data-cke-temp="1">' +
+										editor._.styles.join( '\n' ) +
+									'</style>';
+
+								!fullPage && ( headExtra =
+									CKEDITOR.tools.buildStyleHtml( editor.config.contentsCss ) +
+									headExtra );
+
+								var baseTag = config.baseHref ? '<base href="' + config.baseHref + '" data-cke-temp="1" />' : '';
+
+								if ( fullPage )
+								{
+									// Search and sweep out the doctype declaration.
+									data = data.replace( /<!DOCTYPE[^>]*>/i, function( match )
+										{
+											editor.docType = docType = match;
+											return '';
+										}).replace( /<\?xml\s[^\?]*\?>/i, function( match )
+										{
+											editor.xmlDeclaration = match;
+											return '';
+										});
+								}
+
+								// Get the HTML version of the data.
+								if ( editor.dataProcessor )
+									data = editor.dataProcessor.toHtml( data, fixForBody );
+
+								if ( fullPage )
+								{
+									// Check if the <body> tag is available.
+									if ( !(/<body[\s|>]/).test( data ) )
+										data = '<body>' + data;
+
+									// Check if the <html> tag is available.
+									if ( !(/<html[\s|>]/).test( data ) )
+										data = '<html>' + data + '</html>';
+
+									// Check if the <head> tag is available.
+									if ( !(/<head[\s|>]/).test( data ) )
+										data = data.replace( /<html[^>]*>/, '$&<head><title></title></head>' ) ;
+									else if ( !(/<title[\s|>]/).test( data ) )
+										data = data.replace( /<head[^>]*>/, '$&<title></title>' ) ;
+
+									// The base must be the first tag in the HEAD, e.g. to get relative
+									// links on styles.
+									baseTag && ( data = data.replace( /<head>/, '$&' + baseTag ) );
+
+									// Inject the extra stuff into <head>.
+									// Attention: do not change it before testing it well. (V2)
+									// This is tricky... if the head ends with <meta ... content type>,
+									// Firefox will break. But, it works if we place our extra stuff as
+									// the last elements in the HEAD.
+									data = data.replace( /<\/head\s*>/, headExtra + '$&' );
+
+									// Add the DOCTYPE back to it.
+									data = docType + data;
+								}
+								else
+								{
+									data =
+										config.docType +
+										'<html dir="' + config.contentsLangDirection + '"' +
+											' lang="' + ( config.contentsLanguage || editor.langCode ) + '">' +
+										'<head>' +
+											'<title>' + frameLabel + '</title>' +
+											baseTag +
+											headExtra +
+										'</head>' +
+										'<body' + ( config.bodyId ? ' id="' + config.bodyId + '"' : '' ) +
+												  ( config.bodyClass ? ' class="' + config.bodyClass + '"' : '' ) +
+												  '>' +
+											data +
+										'</html>';
+								}
+
+								// Distinguish bogus to normal BR at the end of document for Mozilla. (#5293).
+								if ( CKEDITOR.env.gecko )
+									data = data.replace( /<br \/>(?=\s*<\/(:?html|body)>)/, '$&<br type="_moz" />' );
+
+								data += activationScript;
+
+
+								// The iframe is recreated on each call of setData, so we need to clear DOM objects
+								this.onDispose();
+								createIFrame( data );
+							},
+
+							getData : function()
+							{
+								var config = editor.config,
+									fullPage = config.fullPage,
+									docType = fullPage && editor.docType,
+									xmlDeclaration = fullPage && editor.xmlDeclaration,
+									doc = iframe.getFrameDocument();
+
+								var data = fullPage
+									? doc.getDocumentElement().getOuterHtml()
+									: doc.getBody().getHtml();
+
+								// BR at the end of document is bogus node for Mozilla. (#5293).
+								if ( CKEDITOR.env.gecko )
+									data = data.replace( /<br>(?=\s*(:?$|<\/body>))/, '' );
+
+								if ( editor.dataProcessor )
+									data = editor.dataProcessor.toDataFormat( data, fixForBody );
+
+								// Reset empty if the document contains only one empty paragraph.
+								if ( config.ignoreEmptyParagraph )
+									data = data.replace( emptyParagraphRegexp, function( match, lookback ) { return lookback; } );
+
+								if ( xmlDeclaration )
+									data = xmlDeclaration + '\n' + data;
+								if ( docType )
+									data = docType + '\n' + data;
+
+								return data;
+							},
+
+							getSnapshotData : function()
+							{
+								return iframe.getFrameDocument().getBody().getHtml();
+							},
+
+							loadSnapshotData : function( data )
+							{
+								iframe.getFrameDocument().getBody().setHtml( data );
+							},
+
+							onDispose : function()
+							{
+								if ( !editor.document )
+									return;
+
+								editor.document.getDocumentElement().clearCustomData();
+								editor.document.getBody().clearCustomData();
+
+								editor.window.clearCustomData();
+								editor.document.clearCustomData();
+
+								iframe.clearCustomData();
+
+								/*
+								* IE BUG: When destroying editor DOM with the selection remains inside
+								* editing area would break IE7/8's selection system, we have to put the editing
+								* iframe offline first. (#3812 and #5441)
+								*/
+								iframe.remove();
+							},
+
+							unload : function( holderElement )
+							{
+								this.onDispose();
+
+								if ( onResize )
+									win.removeListener( 'resize', onResize );
+
+								editor.window = editor.document = iframe = mainElement = isPendingFocus = null;
+
+								editor.fire( 'contentDomUnload' );
+							},
+
+							focus : function()
+							{
+								var win = editor.window;
+
+								if ( isLoadingData )
+									isPendingFocus = true;
+								else if ( win )
+								{
+									var sel = editor.getSelection(),
+										ieSel = sel && sel.getNative();
+
+									// IE considers control-type element as separate
+									// focus host when selected, avoid destroying the
+									// selection in such case. (#5812) (#8949)
+									if ( ieSel && ieSel.type == 'Control' )
+										return;
+
+									// AIR needs a while to focus when moving from a link.
+									CKEDITOR.env.air ? setTimeout( function () { win.focus(); }, 0 ) : win.focus();
+									editor.selectionChange();
+								}
+							}
+						});
+
+					editor.on( 'insertHtml', onInsert( doInsertHtml ) , null, null, 20 );
+					editor.on( 'insertElement', onInsert( doInsertElement ), null, null, 20 );
+					editor.on( 'insertText', onInsert( doInsertText ), null, null, 20 );
+					// Auto fixing on some document structure weakness to enhance usabilities. (#3190 and #3189)
+					editor.on( 'selectionChange', function( evt )
+					{
+						if ( editor.readOnly )
+							return;
+
+						var sel = editor.getSelection();
+						// Do it only when selection is not locked. (#8222)
+						if ( sel && !sel.isLocked )
+						{
+							var isDirty = editor.checkDirty();
+							editor.fire( 'saveSnapshot', { contentOnly : 1 } );
+							onSelectionChangeFixBody.call( this, evt );
+							editor.fire( 'updateSnapshot' );
+							!isDirty && editor.resetDirty();
+						}
+
+					}, null, null, 1 );
+				});
+
+			editor.on( 'contentDom', function()
+				{
+					var title = editor.document.getElementsByTag( 'title' ).getItem( 0 );
+					title.data( 'cke-title', editor.document.$.title );
+
+					// [IE] JAWS will not recognize the aria label we used on the iframe
+					// unless the frame window title string is used as the voice label,
+					// backup the original one and restore it on output.
+					CKEDITOR.env.ie && ( editor.document.$.title = frameLabel );
+				});
+
+			editor.on( 'readOnly', function()
+				{
+					if ( editor.mode == 'wysiwyg' )
+					{
+						// Symply reload the wysiwyg area. It'll take care of read-only.
+						var wysiwyg = editor.getMode();
+						wysiwyg.loadData( wysiwyg.getData() );
+					}
+				});
+
+			// IE>=8 stricts mode doesn't have 'contentEditable' in effect
+			// on element unless it has layout. (#5562)
+			if ( CKEDITOR.document.$.documentMode >= 8 )
+			{
+				editor.addCss( 'html.CSS1Compat [contenteditable=false]{ min-height:0 !important;}' );
+
+				var selectors = [];
+				for ( var tag in CKEDITOR.dtd.$removeEmpty )
+					selectors.push( 'html.CSS1Compat ' + tag + '[contenteditable=false]' );
+				editor.addCss( selectors.join( ',' ) + '{ display:inline-block;}' );
+			}
+			// Set the HTML style to 100% to have the text cursor in affect (#6341)
+			else if ( CKEDITOR.env.gecko )
+			{
+				editor.addCss( 'html { height: 100% !important; }' );
+				editor.addCss( 'img:-moz-broken { -moz-force-broken-image-icon : 1;	min-width : 24px; min-height : 24px; }' );
+			}
+			// Remove the margin to avoid mouse confusion. (#8835)
+			else if ( CKEDITOR.env.ie && CKEDITOR.env.version < 8 && editor.config.contentsLangDirection == 'ltr' )
+				editor.addCss( 'body{margin-right:0;}' );
+
+			/* #3658: [IE6] Editor document has horizontal scrollbar on long lines
+			To prevent this misbehavior, we show the scrollbar always */
+			/* #6341: The text cursor must be set on the editor area. */
+			/* #6632: Avoid having "text" shape of cursor in IE7 scrollbars.*/
+			editor.addCss( 'html {	_overflow-y: scroll; cursor: text;	*cursor:auto;}' );
+			// Use correct cursor for these elements
+			editor.addCss( 'img, input, textarea { cursor: default;}' );
+
+			// Disable form elements editing mode provided by some browers. (#5746)
+			editor.on( 'insertElement', function ( evt )
+			{
+				var element = evt.data;
+				if ( element.type == CKEDITOR.NODE_ELEMENT
+						&& ( element.is( 'input' ) || element.is( 'textarea' ) ) )
+				{
+					// We should flag that the element was locked by our code so
+					// it'll be editable by the editor functions (#6046).
+					var readonly = element.getAttribute( 'contenteditable' ) == 'false';
+					if ( !readonly )
+					{
+						element.data( 'cke-editable', element.hasAttribute( 'contenteditable' ) ? 'true' : '1' );
+						element.setAttribute( 'contenteditable', false );
+					}
+				}
+			});
+
+		}
+	});
+
+	// Fixing Firefox 'Back-Forward Cache' break design mode. (#4514)
+	if ( CKEDITOR.env.gecko )
+	{
+		(function()
+		{
+			var body = document.body;
+
+			if ( !body )
+				window.addEventListener( 'load', arguments.callee, false );
+			else
+			{
+				var currentHandler = body.getAttribute( 'onpageshow' );
+				body.setAttribute( 'onpageshow', ( currentHandler ? currentHandler + ';' : '') +
+							'event.persisted && (function(){' +
+								'var allInstances = CKEDITOR.instances, editor, doc;' +
+								'for ( var i in allInstances )' +
+								'{' +
+								'	editor = allInstances[ i ];' +
+								'	doc = editor.document;' +
+								'	if ( doc )' +
+								'	{' +
+								'		doc.$.designMode = "off";' +
+								'		doc.$.designMode = "on";' +
+								'	}' +
+								'}' +
+						'})();' );
+			}
+		} )();
+
+	}
+})();
+
+/**
+ * Disables the ability of resize objects (image and tables) in the editing
+ * area.
+ * @type Boolean
+ * @default false
+ * @example
+ * config.disableObjectResizing = true;
+ */
+CKEDITOR.config.disableObjectResizing = false;
+
+/**
+ * Disables the "table tools" offered natively by the browser (currently
+ * Firefox only) to make quick table editing operations, like adding or
+ * deleting rows and columns.
+ * @type Boolean
+ * @default true
+ * @example
+ * config.disableNativeTableHandles = false;
+ */
+CKEDITOR.config.disableNativeTableHandles = true;
+
+/**
+ * Disables the built-in words spell checker if browser provides one.<br /><br />
+ *
+ * <strong>Note:</strong> Although word suggestions provided by browsers (natively) will not appear in CKEditor's default context menu,
+ * users can always reach the native context menu by holding the <em>Ctrl</em> key when right-clicking if {@link CKEDITOR.config.browserContextMenuOnCtrl}
+ * is enabled or you're simply not using the context menu plugin.
+ *
+ * @type Boolean
+ * @default true
+ * @example
+ * config.disableNativeSpellChecker = false;
+ */
+CKEDITOR.config.disableNativeSpellChecker = true;
+
+/**
+ * Whether the editor must output an empty value ("") if it's contents is made
+ * by an empty paragraph only.
+ * @type Boolean
+ * @default true
+ * @example
+ * config.ignoreEmptyParagraph = false;
+ */
+CKEDITOR.config.ignoreEmptyParagraph = true;
+
+/**
+ * Fired when data is loaded and ready for retrieval in an editor instance.
+ * @name CKEDITOR.editor#dataReady
+ * @event
+ */
+
+/**
+ * Whether automatically create wrapping blocks around inline contents inside document body,
+ * this helps to ensure the integrality of the block enter mode.
+ * <strong>Note:</strong> Changing the default value might introduce unpredictable usability issues.
+ * @name CKEDITOR.config.autoParagraph
+ * @since 3.6
+ * @type Boolean
+ * @default true
+ * @example
+ * config.autoParagraph = false;
+ */
+
+/**
+ * Fired when some elements are added to the document
+ * @name CKEDITOR.editor#ariaWidget
+ * @event
+ * @param {Object} element The element being added
+ */

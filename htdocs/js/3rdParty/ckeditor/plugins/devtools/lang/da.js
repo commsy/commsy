@@ -1,2 +1,6 @@
-//>>built
-define("ckeditor/plugins/devtools/lang/da",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("devtools","da",{devTools:{title:"Information p\u00e5 elementet",dialogName:"Dialogboks",tabName:"Tab beskrivelse",elementId:"ID p\u00e5 element",elementType:"Type af element"}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.setLang('devtools','da',{devTools:{title:'Information på elementet',dialogName:'Dialogboks',tabName:'Tab beskrivelse',elementId:'ID på element',elementType:'Type af element'}});

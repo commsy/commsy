@@ -1,9 +1,260 @@
-//>>built
-define("ckeditor/_source/plugins/listblock/plugin",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.add("listblock",{requires:["panel"],onLoad:function(){CKEDITOR.ui.panel.prototype.addListBlock=function(a,b){return this.addBlock(a,new CKEDITOR.ui.listBlock(this.getHolderElement(),b))};CKEDITOR.ui.listBlock=CKEDITOR.tools.createClass({base:CKEDITOR.ui.panel.block,$:function(a,b){var b=b||{},c=b.attributes||(b.attributes={});(this.multiSelect=!!b.multiSelect)&&(c["aria-multiselectable"]=!0);!c.role&&
-(c.role="listbox");this.base.apply(this,arguments);c=this.keys;c[40]="next";c[9]="next";c[38]="prev";c[CKEDITOR.SHIFT+9]="prev";c[32]=CKEDITOR.env.ie?"mouseup":"click";CKEDITOR.env.ie&&(c[13]="mouseup");this._.pendingHtml=[];this._.items={};this._.groups={}},_:{close:function(){this._.started&&(this._.pendingHtml.push("</ul>"),delete this._.started)},getClick:function(){if(!this._.click)this._.click=CKEDITOR.tools.addFunction(function(a){var b=!0;this.multiSelect?b=this.toggle(a):this.mark(a);if(this.onClick)this.onClick(a,
-b)},this);return this._.click}},proto:{add:function(a,b,c){var d=this._.pendingHtml,e=CKEDITOR.tools.getNextId();if(!this._.started)d.push('<ul role="presentation" class=cke_panel_list>'),this._.started=1,this._.size=this._.size||0;this._.items[a]=e;d.push("<li id=",e,' class=cke_panel_listItem role=presentation><a id="',e,'_option" _cke_focus=1 hidefocus=true title="',c||a,'" href="javascript:void(\'',a,"')\" "+(CKEDITOR.env.ie?'onclick="return false;" onmouseup':"onclick")+'="CKEDITOR.tools.callFunction(',
-this._.getClick(),",'",a,"'); return false;\"",' role="option">',b||a,"</a></li>")},startGroup:function(a){this._.close();var b=CKEDITOR.tools.getNextId();this._.groups[a]=b;this._.pendingHtml.push('<h1 role="presentation" id=',b," class=cke_panel_grouptitle>",a,"</h1>")},commit:function(){this._.close();this.element.appendHtml(this._.pendingHtml.join(""));delete this._.size;this._.pendingHtml=[]},toggle:function(a){var b=this.isMarked(a);b?this.unmark(a):this.mark(a);return!b},hideGroup:function(a){var b=
-(a=this.element.getDocument().getById(this._.groups[a]))&&a.getNext();a&&(a.setStyle("display","none"),b&&"ul"==b.getName()&&b.setStyle("display","none"))},hideItem:function(a){this.element.getDocument().getById(this._.items[a]).setStyle("display","none")},showAll:function(){var a=this._.items,b=this._.groups,c=this.element.getDocument(),d;for(d in a)c.getById(a[d]).setStyle("display","");for(var e in b)a=c.getById(b[e]),d=a.getNext(),a.setStyle("display",""),d&&"ul"==d.getName()&&d.setStyle("display",
-"")},mark:function(a){this.multiSelect||this.unmarkAll();var a=this._.items[a],b=this.element.getDocument().getById(a);b.addClass("cke_selected");this.element.getDocument().getById(a+"_option").setAttribute("aria-selected",!0);this.onMark&&this.onMark(b)},unmark:function(a){var b=this.element.getDocument(),a=this._.items[a],c=b.getById(a);c.removeClass("cke_selected");b.getById(a+"_option").removeAttribute("aria-selected");this.onUnmark&&this.onUnmark(c)},unmarkAll:function(){var a=this._.items,b=
-this.element.getDocument(),c;for(c in a){var d=a[c];b.getById(d).removeClass("cke_selected");b.getById(d+"_option").removeAttribute("aria-selected")}this.onUnmark&&this.onUnmark()},isMarked:function(a){return this.element.getDocument().getById(this._.items[a]).hasClass("cke_selected")},focus:function(a){this._.focusIndex=-1;if(a){for(var b=this.element.getDocument().getById(this._.items[a]).getFirst(),a=this.element.getElementsByTag("a"),c,d=-1;c=a.getItem(++d);)if(c.equals(b)){this._.focusIndex=
-d;break}setTimeout(function(){b.focus()},0)}}}})}})});
+﻿/*
+Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+CKEDITOR.plugins.add( 'listblock',
+{
+	requires : [ 'panel' ],
+
+	onLoad : function()
+	{
+		CKEDITOR.ui.panel.prototype.addListBlock = function( name, definition )
+		{
+			return this.addBlock( name, new CKEDITOR.ui.listBlock( this.getHolderElement(), definition ) );
+		};
+
+		CKEDITOR.ui.listBlock = CKEDITOR.tools.createClass(
+			{
+				base : CKEDITOR.ui.panel.block,
+
+				$ : function( blockHolder, blockDefinition )
+				{
+					blockDefinition = blockDefinition || {};
+
+					var attribs = blockDefinition.attributes || ( blockDefinition.attributes = {} );
+					( this.multiSelect = !!blockDefinition.multiSelect ) &&
+						( attribs[ 'aria-multiselectable' ] = true );
+					// Provide default role of 'listbox'.
+					!attribs.role && ( attribs.role = 'listbox' );
+
+					// Call the base contructor.
+					this.base.apply( this, arguments );
+
+					var keys = this.keys;
+					keys[ 40 ]	= 'next';					// ARROW-DOWN
+					keys[ 9 ]	= 'next';					// TAB
+					keys[ 38 ]	= 'prev';					// ARROW-UP
+					keys[ CKEDITOR.SHIFT + 9 ]	= 'prev';	// SHIFT + TAB
+					keys[ 32 ]	= CKEDITOR.env.ie ? 'mouseup' : 'click';					// SPACE
+					CKEDITOR.env.ie && ( keys[ 13 ] = 'mouseup' );		// Manage ENTER, since onclick is blocked in IE (#8041).
+
+					this._.pendingHtml = [];
+					this._.items = {};
+					this._.groups = {};
+				},
+
+				_ :
+				{
+					close : function()
+					{
+						if ( this._.started )
+						{
+							this._.pendingHtml.push( '</ul>' );
+							delete this._.started;
+						}
+					},
+
+					getClick : function()
+					{
+						if ( !this._.click )
+						{
+							this._.click = CKEDITOR.tools.addFunction( function( value )
+								{
+									var marked = true;
+
+									if ( this.multiSelect )
+										marked = this.toggle( value );
+									else
+										this.mark( value );
+
+									if ( this.onClick )
+										this.onClick( value, marked );
+								},
+								this );
+						}
+						return this._.click;
+					}
+				},
+
+				proto :
+				{
+					add : function( value, html, title )
+					{
+						var pendingHtml = this._.pendingHtml,
+							id = CKEDITOR.tools.getNextId();
+
+						if ( !this._.started )
+						{
+							pendingHtml.push( '<ul role="presentation" class=cke_panel_list>' );
+							this._.started = 1;
+							this._.size = this._.size || 0;
+						}
+
+						this._.items[ value ] = id;
+
+						pendingHtml.push(
+							'<li id=', id, ' class=cke_panel_listItem role=presentation>' +
+								'<a id="', id, '_option" _cke_focus=1 hidefocus=true' +
+									' title="', title || value, '"' +
+									' href="javascript:void(\'', value, '\')" ' +
+									( CKEDITOR.env.ie ? 'onclick="return false;" onmouseup' : 'onclick' ) +		// #188
+										'="CKEDITOR.tools.callFunction(', this._.getClick(), ',\'', value, '\'); return false;"',
+									' role="option">',
+									html || value,
+								'</a>' +
+							'</li>' );
+					},
+
+					startGroup : function( title )
+					{
+						this._.close();
+
+						var id = CKEDITOR.tools.getNextId();
+
+						this._.groups[ title ] = id;
+
+						this._.pendingHtml.push( '<h1 role="presentation" id=', id, ' class=cke_panel_grouptitle>', title, '</h1>' );
+					},
+
+					commit : function()
+					{
+						this._.close();
+						this.element.appendHtml( this._.pendingHtml.join( '' ) );
+						delete this._.size;
+
+						this._.pendingHtml = [];
+					},
+
+					toggle : function( value )
+					{
+						var isMarked = this.isMarked( value );
+
+						if ( isMarked )
+							this.unmark( value );
+						else
+							this.mark( value );
+
+						return !isMarked;
+					},
+
+					hideGroup : function( groupTitle )
+					{
+						var group = this.element.getDocument().getById( this._.groups[ groupTitle ] ),
+							list = group && group.getNext();
+
+						if ( group )
+						{
+							group.setStyle( 'display', 'none' );
+
+							if ( list && list.getName() == 'ul' )
+								list.setStyle( 'display', 'none' );
+						}
+					},
+
+					hideItem : function( value )
+					{
+						this.element.getDocument().getById( this._.items[ value ] ).setStyle( 'display', 'none' );
+					},
+
+					showAll : function()
+					{
+						var items = this._.items,
+							groups = this._.groups,
+							doc = this.element.getDocument();
+
+						for ( var value in items )
+						{
+							doc.getById( items[ value ] ).setStyle( 'display', '' );
+						}
+
+						for ( var title in groups )
+						{
+							var group = doc.getById( groups[ title ] ),
+								list = group.getNext();
+
+							group.setStyle( 'display', '' );
+
+							if ( list && list.getName() == 'ul' )
+								list.setStyle( 'display', '' );
+						}
+					},
+
+					mark : function( value )
+					{
+						if ( !this.multiSelect )
+							this.unmarkAll();
+
+						var itemId = this._.items[ value ],
+							item = this.element.getDocument().getById( itemId );
+						item.addClass( 'cke_selected' );
+
+						this.element.getDocument().getById( itemId + '_option' ).setAttribute( 'aria-selected', true );
+						this.onMark && this.onMark( item );
+					},
+
+					unmark : function( value )
+					{
+						var doc = this.element.getDocument(),
+							itemId = this._.items[ value ],
+							item = doc.getById( itemId );
+
+						item.removeClass( 'cke_selected' );
+						doc.getById( itemId + '_option' ).removeAttribute( 'aria-selected' );
+
+						this.onUnmark && this.onUnmark( item );
+					},
+
+					unmarkAll : function()
+					{
+						var items = this._.items,
+							doc = this.element.getDocument();
+
+						for ( var value in items )
+						{
+							var itemId = items[ value ];
+
+							doc.getById( itemId ).removeClass( 'cke_selected' );
+							doc.getById( itemId + '_option' ).removeAttribute( 'aria-selected' );
+						}
+
+						this.onUnmark && this.onUnmark();
+					},
+
+					isMarked : function( value )
+					{
+						return this.element.getDocument().getById( this._.items[ value ] ).hasClass( 'cke_selected' );
+					},
+
+					focus : function( value )
+					{
+						this._.focusIndex = -1;
+
+						if ( value )
+						{
+							var selected = this.element.getDocument().getById( this._.items[ value ] ).getFirst();
+
+							var links = this.element.getElementsByTag( 'a' ),
+								link,
+								i = -1;
+
+							while ( ( link = links.getItem( ++i ) ) )
+							{
+								if ( link.equals( selected ) )
+								{
+									this._.focusIndex = i;
+									break;
+								}
+							}
+
+							setTimeout( function()
+								{
+									selected.focus();
+								},
+								0 );
+						}
+					}
+				}
+			});
+	}
+});

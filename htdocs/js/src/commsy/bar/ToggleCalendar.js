@@ -30,8 +30,8 @@ define([	"dojo/_base/declare",
 			var widgetArray = [
 			    "bar/Calendar",
 			    "bar/CalendarConfig",
-			    "bar/CalendarAbo",
-			    "bar/CalendarRestrictions"
+			    "bar/CalendarAbo"/*,
+			    "bar/CalendarRestrictions"*/
 			];
 			
 			this.loadWidgetsManual(widgetArray).then(
@@ -43,6 +43,8 @@ define([	"dojo/_base/declare",
 						} else {
 							result[1].handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
 						}
+						dojo.parser.parse(this.contentNode);
+						result[1].handle.afterParse();
 					}));
 				})
 			);
