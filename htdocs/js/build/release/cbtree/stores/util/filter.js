@@ -1,0 +1,3 @@
+//>>built
+define("cbtree/stores/util/filter",["dojo/_base/lang"],function(){return{patternToRegExp:function(b,e){if("("==b.charAt(0)&&")"==b.charAt(b.length-1))var a=b.substr(1,b.length-2);else{for(var a="^",d=null,c=0;c<b.length;c++)switch(d=b.charAt(c),d){case "\\":a+=d;c++;a+=b.charAt(c);break;case "*":a+=".*";break;case "?":a+=".";break;case "$":case "^":case "/":case "+":case ".":case "|":case "(":case ")":case "{":case "}":case "[":case "]":a+="\\";default:a+=d}a+="$"}return e?RegExp(a,"mi"):RegExp(a,
+"m")}}});

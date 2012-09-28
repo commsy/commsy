@@ -2221,7 +2221,7 @@ class cs_page_guide_view extends cs_page_view {
       $html .= $this->_getHTMLHeadAsHTML();
       // Body
       if ( !$this->_blank_page ) {
-         $html .= '<body';
+         $html .= '<body class="tundra"';
          if ( ($this->_focus_onload) or ($this->_with_delete_box) ) {
             $html .= ' onload="';
             if ( $this->_focus_onload){
@@ -2250,7 +2250,7 @@ class cs_page_guide_view extends cs_page_view {
          if ($this->_show_agbs) {
             $html .= $this->_getAGBTextAsHTML();
          } else {
-            $html .= '<div style="width: 72em;">'.LF;
+            $html .= '<div style="width: 72em; margin: 0 auto;">'.LF;
             $html .= LF.'<table style="border-collapse:collapse; padding:0px;  margin-top:5px; width:100%;" summary="Layout">'.LF;
 
             // Page Header

@@ -3394,6 +3394,7 @@ top-bar, breadcrumb and settings
 #top_menu {
     background: url(img/top_menu_bg.jpg) repeat-x;
     height: 40px;
+    text-align: left;
     }
 
 #tm_wrapper_outer {

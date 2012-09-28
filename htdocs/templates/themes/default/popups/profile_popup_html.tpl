@@ -476,25 +476,26 @@
                     *}
                   </fieldset>
 
-              {*
               	  <fieldset>
                     <p>
                       <strong>___CS_BAR_CALENDAR___</strong>: ___CS_BAR_CALENDAR_DESC___
                     </p>
                     <div class="input_row_180">
                       <label for="widget_calendar_view">___CS_BAR_CALENDAR_VIEW___:</label>
-                      <input disabled="disabled" id="show_calendar_view" type="checkbox" name="form_data[show_calendar_view]" value="yes"{if $popup.form.cs_bar.show_calendar_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                      <input id="show_calendar_view" type="checkbox" name="form_data[show_calendar_view]" value="yes"{if $popup.form.cs_bar.show_calendar_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
                       <div class="clear"></div>
                     </div>
+                    {*
                     <div class="input_row_180">
                       <label for="widget_view">___CS_BAR_COMMON_SHOW___:</label>
-                      <input disabled="disabled" id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___DATE_INDEX___
-                      <input disabled="disabled" id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___TODO_INDEX___
-                      <input disabled="disabled" id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_RESTRICTIONS_SHORT___
+                      <input id="show_dates" type="checkbox" name="form_data[show_dates]" value="yes"{if $popup.form.cs_bar.show_dates == 'yes'} checked="checked"{/if} />___DATE_INDEX___
+                      <input id="show_todos" type="checkbox" name="form_data[show_todos]" value="yes"{if $popup.form.cs_bar.show_todos == 'yes'} checked="checked"{/if} />___TODO_INDEX___
+                      <input id="show_restrictions" type="checkbox" name="form_data[show_restrictions]" value="yes"{if $popup.form.cs_bar.show_restrictions == 'yes'} checked="checked"{/if} />___COMMON_RESTRICTIONS_SHORT___
                       <div class="clear"></div>
                     </div>
+                    *}
                   </fieldset>
-			*}
+                  
                   <fieldset>
                     <p>
                       <strong>___CS_BAR_STACK___</strong>: ___CS_BAR_STACK_DESC___

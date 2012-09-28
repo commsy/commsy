@@ -1556,491 +1556,495 @@ class cs_page_view extends cs_view {
    }
 
    function getMyAreaAsHTML() {
-      $get_vars  = $this->_environment->getCurrentParameterArray();
-      $post_vars = $this->_environment->getCurrentPostParameterArray();
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_portal = $this->_environment->getCurrentPortalItem();
-      if (!empty($get_vars['cs_modus'])) {
-         $cs_mod = $get_vars['cs_modus'];
-      } elseif (!empty($post_vars['cs_modus'])) {
-         $cs_mod = $post_vars['cs_modus'];
-      } else {
-         $cs_mod = '';
-      }
-      unset($get_vars);
-      unset($post_vars);
-
-      $html  = LF;
-      $html .= '<div class="myarea_frame">'.LF;
-      $html .= '<div class="myarea_headline">'.LF;
-      $html .= '<div class="myarea_headline_title">'.LF;
-      if ( $this->_with_personal_area) {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
-            $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
-            // @segment-end 77327
-            // @segment-begin 69973 no-cs_modus/user=guest:if-logged-in-as-guest
-         } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
-               $params = array();
-               $params['iid'] = $this->_current_user->getItemID();
-               $fullname = $this->_current_user->getFullname();
-
-          // @segment-end 70706
-          // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
-               $length = mb_strlen($fullname);
-               if ($length < 20) {
-                  $html .= $fullname;
-               } else {
-                $html .= $fullname;
-               }
-         }
-      }
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
-           and !$this->_environment->inServer()
-           and !$this->_environment->inPortal()
-         ) {
-         $html .= '<div class="myarea_content" style="padding-bottom:5px; margin-bottom:0px; font-weight:bold;">'.LF;
-         $html .= $this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST');
-         $html .= '</div >'.LF;
-      }
-
-      if ( $this->_with_personal_area and empty($cs_mod)) {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
-            if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
-                 and !$this->_environment->inServer()
-                 and !$this->_environment->inPortal()
-               ) {
-            }
-            $html .= '<div class="myarea_content">'.LF;
-            if ($this->_environment->inPortal() or $this->_environment->inServer()) {
-               $context_id = $this->_environment->getCurrentContextID();
-            } else {
-               $context_id = $this->_environment->getCurrentPortalID();
-            }
-            $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.curl($context_id,'context','login','').'" name="login">'.LF;
-            $error_box = $this->getMyAreaErrorBox();
-            if ( isset($error_box) ){
-               $error_box->setWidth('100%');
-               $html .= $error_box->asHTML();
-            }
-            unset($context_id);
-            unset($error_box);
-
-            // auth source
-            $insert_auth_source_selectbox = false;
-            if ( $current_portal->showAuthAtLogin() ) {
-               $auth_source_list = $current_portal->getAuthSourceListEnabled();
-               if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
-                  if ($auth_source_list->getCount() == 1) {
-                     $auth_source_item = $auth_source_list->getFirst();
-                     $html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
-                  } else {
-                     $insert_auth_source_selectbox = true;
-                  }
-               }
-            }
-
-            // login redirect
-            $session_item = $this->_environment->getSessionItem();
-            if ($session_item->issetValue('login_redirect')) {
-               $params = $session_item->getValue('login_redirect');
-               foreach ( $params as $key => $value ) {
-                  $html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
-               }
-               $session_item->unsetValue('login_redirect');
-            }
-
-            // login form
-            $html .= '<table summary="Layout">'.LF;
-            $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
-            $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6.2em;" tabindex="1"/>'.LF;
-            $html .= '</td></tr>'.LF.'<tr><td>'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_PASSWORD').':'.'</td>'.LF.'<td>';
-            $html .= '<input type="password" name="password" size="10" style="font-size:10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
-            if ( $insert_auth_source_selectbox ) {
-               $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
-               $html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
-               // selectbox
-               $width_auth_selectbox = 6.5;
-               if ( mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8') == 'msie' ) {
-                  $width_auth_selectbox = 6.7;
-               }
-               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
-               $auth_source_item = $auth_source_list->getFirst();
-               $auth_source_selected = false;
-               while ( $auth_source_item ) {
-                  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
-                  if ( !$auth_source_selected ) {
-                     if ( isset($_GET['auth_source'])
-                          and !empty($_GET['auth_source'])
-                          and $auth_source_item->getItemID() == $_GET['auth_source']) {
-                        $html .= ' selected="selected"';
-                        $auth_source_selected = true;
-                     } elseif ( $auth_source_item->getItemID() == $current_portal->getAuthDefault() ) {
-                        $html .= ' selected="selected"';
-                     }
-                  }
-                  $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
-                  $auth_source_item = $auth_source_list->getNext();
-               }
-               $html .= '</select>'.LF;
-               $html .= '</td></tr>'.LF;
-            }
-            unset($auth_source_list);
-            $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
-            $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
-            $html .= '</td></tr>'.LF;
-            $html .= '</table>'.LF;
-
-            if ( !$this->_environment->inServer() ) {
-               $params = array();
-               $params = $this->_environment->getCurrentParameterArray();
-
-               // auth source
-               $auth_source_list = $current_portal->getAuthSourceListEnabled();
-               $count_auth_source_list_add_account = 0;
-               if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
-                  $auth_source_item = $auth_source_list->getFirst();
-                  while ($auth_source_item) {
-                     $temp_array = array();
-                     if ( $auth_source_item->allowAddAccount() ) {
-                        $count_auth_source_list_add_account++;
-                     }
-                     $auth_source_item = $auth_source_list->getNext();
-                  }
-               }
-               unset($auth_source_list);
-
-               if ( $count_auth_source_list_add_account != 0 ) {
-                  $params['cs_modus'] = 'portalmember';
-                  $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               } else {
-                  $html .= '<span style="font-size:8pt;" class="disabled">> '.$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK').'</span>'.BRLF;
-               }
-               $params['cs_modus'] = 'account_forget';
-               $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               $params['cs_modus'] = 'password_forget';
-               $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               unset($params);
-            }
-            $html .= LF;
-            $html .= '</form>'.LF;
-            $html .= '</div>'.LF;
-
-         } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
-            $params = array();
-
-            if (!$this->_environment->inServer()) {
-               $title = $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM');
-               $user = $this->_environment->getCurrentUser();
-               $current_user_item = $this->_environment->getCurrentUserItem();
-               if ( !$current_user_item->isRoot() ) {
-                  $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_ACTUAL_ROOMS').'</div>'.LF;
-                  $html .= '<div class="myarea_content">'.LF;
-                  $html .= '<div style="padding-bottom:5px;">'.$this->_getUserPersonalAreaAsHTML().'</div>'.LF;
-               }else{
-                  $html .= '<div class="myarea_content">'.LF;
-               }
-               unset($current_user_item);
-               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
-               ){
-                  $private_room_manager = $this->_environment->getPrivateRoomManager();
-                  $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
-                  global $c_annonymous_account_array;
-                  if ( isset($own_room)
-                       and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
-                       and !$this->_current_user->isOnlyReadUser()
-                     ) {
-                     $current_portal_item = $this->_environment->getCurrentPortalItem();
-                     if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
-                        $link_active = true;
-                     } else {
-                        $current_user_item = $this->_environment->getCurrentUserItem();
-                        if ( $current_user_item->isRoomMember() ) {
-                           $link_active = true;
-                        } else {
-                           $link_active = false;
-                        }
-                        unset($current_user_item);
-                     }
-                     unset($current_portal_item);
-                     if ($link_active) {
-                        $html .= '<span> '.ahref_curl($own_room->getItemID(), 'home',
-                                         'index',
-                                         '',
-                                         '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-                        $html .= ahref_curl($own_room->getItemID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                     } else {
-                        // disable private room
-                        $html .= '<span class="disabled"><img src="images/door_closed_small.gif" style="vertical-align: middle" alt="door close"/>'.LF;
-                        $html .= $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM').'</span>'.BRLF;
-                     }
-                  }
-                  unset($own_room);
-               }
-               $html .= '<span> '.ahref_curl($this->_environment->getCurrentPortalID(), 'home',
-                                        'index',
-                                        '',
-                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-               $html .= ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', '',$this->_translator->getMessage('COMMON_PORTAL').' ('.$this->_translator->getMessage('MYAREA_LOGIN_TO_PORTAL_OVERVIEW').')','','','','','','','style="color:#800000"').'</span>'.LF;
-
-               if ( $this->_current_user->isRoot() ) {
-                  $html .= BR.'<span> '.ahref_curl($this->_environment->getServerID(), 'home',
-                                        'index',
-                                        '',
-                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-                  $html .= ahref_curl($this->_environment->getServerID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_ALL_PORTALS'),'','','','','','','style="color:#800000"').'</span>'.LF;
-               }
-            } else {
-               if ( $this->_current_user->isRoot() ) {
-                  $html .= '<div class="myarea_content">'.LF;
-                  $html .= '<span> '.ahref_curl($this->_environment->getServerID(), 'home',
-                                        'index',
-                                        '',
-                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-                  $html .= ahref_curl($this->_environment->getServerID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_ALL_PORTALS'),'','','','','','','style="color:#800000"').'</span>'.LF;
-                  $html .= '</div>'.LF;
-               }
-            }
-
-            unset($current_context);
-            unset($current_portal);
-            if (!$this->_current_user->isRoot() and !$this->_environment->inServer()) {
-               $html .= '</div>'.LF;
-            }
-            if (!$this->_environment->inServer() and !$this->_current_user->isRoot() ) {
-               $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_COPIES').'</div>'.LF;
-               $html .= '<div class="myarea_content">'.LF;
-               $html .= $this->_getUserCopiesAsHTML();
-               $html .= '</div>'.LF;
-            }
-
-            if (!$this->_environment->inServer() ) {
-               global $c_annonymous_account_array;
-               if ( !$this->_current_user->isRoot()
-                    and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
-                    and !$this->_current_user->isOnlyReadUser()
-                  ) {
-                  $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
-                  $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
-
-                  // new: commsy 7 profile on portal
-                  $params = array();
-                  $params = $this->_environment->getCurrentParameterArray();
-                  $params['uid'] = $this->_current_user->getItemID();
-                  $params['show_profile'] = 'yes';
-                  unset($params['is_saved']);
-                  unset($params['show_copies']);
-                  unset($params['profile_page']);
-                  global $c_annonymous_account_array;
-                  if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
-                       and !$this->_current_user->isOnlyReadUser()
-                     ) {
-                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                  } else {
-                     $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
-                  }
-               } elseif ( !$this->_current_user->isRoot() ) {
-                  $html .= '<div>'.LF;
-               }
-            }
-            if ( !$this->_current_user->isRoot() ) {
-               global $c_annonymous_account_array;
-               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
-                    and !$this->_current_user->isOnlyReadUser()
-                  ) {
-                  if ($this->_environment->inCommunityRoom() and !$this->_current_user->isUser()){
-                     $params['cs_modus'] = 'become_member';
-                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                  }
-                  if ($this->_environment->inProjectRoom() and !$this->_current_user->isUser()){
-                     $params['cs_modus'] = 'become_member';
-                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                  }
-                  // auth source
-                  $current_portal_item = $this->_environment->getCurrentPortalItem();
-                  if ( !isset($current_portal_item) ) {
-                     $current_portal_item = $this->_environment->getServerItem();
-                  }
-                  $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
-                  unset($current_portal_item);
-               }
-            } else {
-               // auth source
-               if (!$this->_environment->inServer() ) {
-                  $html .= '</div>'.LF;
-               }
-               $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
-               $html .= '<div class="myarea_content">'.LF;
-               $current_portal_item = $this->_environment->getCurrentPortalItem();
-               if ( !isset($current_portal_item) ) {
-                  $current_portal_item = $this->_environment->getServerItem();
-               }
-               $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
-               unset($current_portal_item);
-               if ((isset($current_auth_source_item) and $current_auth_source_item->allowChangePassword()) or $this->_current_user->isRoot()) {
-                      $params = array();
-                      $params = $this->_environment->getCurrentParameterArray();
-                      $params['cs_modus'] = 'password_change';
-                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE_EDIT'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-
-               } else {
-                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_PROFILE_EDIT').'</span>'.BRLF;
-               }
-               unset($params['cs_modus']);
-               if ($this->_environment->inServer() ) {
-                  $html .= '</div>'.LF;
-               }
-            }
-            if (!$this->_environment->inServer() ) {
-               $html .= '</div>'.LF;
-            }
-            $params = $this->_environment->getCurrentParameterArray();
-            $html .= '<div class="myarea_content" style="padding-bottom:5px; padding-top:7px; text-align:right;">'.LF;
-            $html .= '<div style="float:right; text-align:right;">'.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="color:#800000"').'</div>'.LF;
-            $html .= '<div style="text-align:left;"> &nbsp;'.LF;
-            $html .= '</div>'.LF;
-            $html .= '</div>'.LF;
-
-         } elseif ($this->_environment->inServer()) {
-            $server_item = $this->_environment->getServerItem();
-            $portal_list = $server_item->getPortalList();
-            if ($portal_list->isEmpty()) {
-                  $html .= '<div class="myarea_title">'.$this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN').'</div>'.LF;
-                     $html .= '<div class="myarea_content">'.LF;
-                     $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.curl($server_item->getItemID(),'context','login','').'" name="login">'.LF;
-                     $error_box = $this->getMyAreaErrorBox();
-                  if ( isset($error_box) ){
-                      $error_box->setWidth('100%');
-                    $html .= $error_box->asHTML();
-                  }
-
-
-                 unset($portal_list);
-                 unset($server_item);
-                 unset($error_box);
-                  $html .= '<table summary="Layout"><tr><td>'.LF;
-                  $html .=  $this->_translator->getMessage('COMMON_ACCOUNT').':'.LF.'</td><td>';
-                  $html .= '<input type="text" name="user_id" style="font-size: 10pt; width:6.2em;" tabindex="1"/>'.LF;
-                  $html .= '</td></tr>'.LF.'<tr><td>'.LF;
-                  $html .= $this->_translator->getMessage('COMMON_PASSWORD').':'.'</td>'.LF.'<td>';
-                  $html .= '<input type="password" name="password" style="font-size: 10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
-                  $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
-                  $html .= '<input type="submit" name="option" style="font-size: 10pt; width:6.2em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'"/>'.LF;
-                  $html .= '</td></tr>'.LF;
-                  $html .= '</table>'.LF;
-                  $html .= '</form>'.LF;
-                  $html .= '</div>'.LF;
-               }
-           }
-
-      // new account
-      }elseif ( !empty($cs_mod)
-         and ( $cs_mod == 'portalmember'
-         or $cs_mod == 'portalmember2'
-         )
-         ) {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-   } else {
-              $params = array();
-            $params['iid'] = $this->_current_user->getItemID();
-      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-         $portal_user = $this->_environment->getPortalUserItem();
-         $fullname = $portal_user->getFullname();
-         unset($portal_user);
-      } else {
-         $fullname = $this->_current_user->getFullname();
-      }
-
-        }
-        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-        if ( $cs_mod == 'portalmember' ) {
-             include_once('classes/cs_home_member_page.php');
-     $left_page = new cs_home_member_page($this->_environment);
-        } else {
-             include_once('classes/cs_home_member2_page.php');
-     $left_page = new cs_home_member2_page($this->_environment);
-        }
-        $html .= $left_page->execute();
-        unset($left_page);
-        $html .= '</div>'.LF;
-      }
-
-     // forget account
-      elseif (!empty($cs_mod) and $cs_mod == 'account_forget') {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-   } else {
-              $params = array();
-            $params['iid'] = $this->_current_user->getItemID();
-      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-         $portal_user = $this->_environment->getPortalUserItem();
-         $fullname = $portal_user->getFullname();
-               unset($portal_user);
-      } else {
-         $fullname = $this->_current_user->getFullname();
-      }
-        }
-        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-        include_once('classes/cs_account_forget_page.php');
-        $left_page = new cs_account_forget_page($this->_environment);
-        $html .= $left_page->execute();
-        unset($left_page);
-        $html .= '</div>'.LF;
-      }
-
-     // forget password
-      elseif (!empty($cs_mod) and $cs_mod == 'password_forget') {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-         } else {
-            $params = array();
-            $params['iid'] = $this->_current_user->getItemID();
-            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-               $portal_user = $this->_environment->getPortalUserItem();
-               $fullname = $portal_user->getFullname();
-               unset($portal_user);
-            } else {
-               $fullname = $this->_current_user->getFullname();
-            }
-         }
-         $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-         include_once('classes/cs_password_forget_page.php');
-         $left_page = new cs_password_forget_page($this->_environment);
-         $html .= $left_page->execute();
-         unset($left_page);
-         $html .= '</div>'.LF;
-      }
-
-      // become member
-      elseif ( !empty($cs_mod) and $cs_mod == 'become_member' ) {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-         } else {
-            $params = array();
-            $params['iid'] = $this->_current_user->getItemID();
-            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-               $portal_user = $this->_environment->getPortalUserItem();
-               $fullname = $portal_user->getFullname();
-               unset($portal_user);
-            } else {
-               $fullname = $this->_current_user->getFullname();
-            }
-        }
-        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-        include_once('classes/cs_become_member_page.php');
-        $left_page = new cs_become_member_page($this->_environment);
-        $html .= $left_page->execute();
-        unset($left_page);
-        $html .= '</div>'.LF;
-      }
-      // @segment-end 90042
-      // @segment-begin 89418 end-of-my_area_box/down-corner-pictures
-      $html .= '</div>'.LF;
-      // @segment-end 89418
+   	$html  = LF;
+   	if ( !$this->_environment->inPortal() || $this->_current_user->isGuest() ) {
+		      $get_vars  = $this->_environment->getCurrentParameterArray();
+		      $post_vars = $this->_environment->getCurrentPostParameterArray();
+		      $current_context = $this->_environment->getCurrentContextItem();
+		      $current_portal = $this->_environment->getCurrentPortalItem();
+		      if (!empty($get_vars['cs_modus'])) {
+		         $cs_mod = $get_vars['cs_modus'];
+		      } elseif (!empty($post_vars['cs_modus'])) {
+		         $cs_mod = $post_vars['cs_modus'];
+		      } else {
+		         $cs_mod = '';
+		      }
+		      unset($get_vars);
+		      unset($post_vars);
+		
+		      
+		      $html .= '<div class="myarea_frame">'.LF;
+		      $html .= '<div class="myarea_headline">'.LF;
+		      $html .= '<div class="myarea_headline_title">'.LF;
+		      if ( $this->_with_personal_area) {
+		         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
+		            $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
+		            // @segment-end 77327
+		            // @segment-begin 69973 no-cs_modus/user=guest:if-logged-in-as-guest
+		         } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
+		               $params = array();
+		               $params['iid'] = $this->_current_user->getItemID();
+		               $fullname = $this->_current_user->getFullname();
+		
+		          // @segment-end 70706
+		          // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
+		               $length = mb_strlen($fullname);
+		               if ($length < 20) {
+		                  $html .= $fullname;
+		               } else {
+		                $html .= $fullname;
+		               }
+		         }
+		      }
+		      $html .= '</div>'.LF;
+		      $html .= '</div>'.LF;
+		      if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
+		           and !$this->_environment->inServer()
+		           and !$this->_environment->inPortal()
+		         ) {
+		         $html .= '<div class="myarea_content" style="padding-bottom:5px; margin-bottom:0px; font-weight:bold;">'.LF;
+		         $html .= $this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST');
+		         $html .= '</div >'.LF;
+		      }
+		
+		      if ( $this->_with_personal_area and empty($cs_mod)) {
+		         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
+		            if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
+		                 and !$this->_environment->inServer()
+		                 and !$this->_environment->inPortal()
+		               ) {
+		            }
+		            $html .= '<div class="myarea_content">'.LF;
+		            if ($this->_environment->inPortal() or $this->_environment->inServer()) {
+		               $context_id = $this->_environment->getCurrentContextID();
+		            } else {
+		               $context_id = $this->_environment->getCurrentPortalID();
+		            }
+		            $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.curl($context_id,'context','login','').'" name="login">'.LF;
+		            $error_box = $this->getMyAreaErrorBox();
+		            if ( isset($error_box) ){
+		               $error_box->setWidth('100%');
+		               $html .= $error_box->asHTML();
+		            }
+		            unset($context_id);
+		            unset($error_box);
+		
+		            // auth source
+		            $insert_auth_source_selectbox = false;
+		            if ( $current_portal->showAuthAtLogin() ) {
+		               $auth_source_list = $current_portal->getAuthSourceListEnabled();
+		               if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
+		                  if ($auth_source_list->getCount() == 1) {
+		                     $auth_source_item = $auth_source_list->getFirst();
+		                     $html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
+		                  } else {
+		                     $insert_auth_source_selectbox = true;
+		                  }
+		               }
+		            }
+		
+		            // login redirect
+		            $session_item = $this->_environment->getSessionItem();
+		            if ($session_item->issetValue('login_redirect')) {
+		               $params = $session_item->getValue('login_redirect');
+		               foreach ( $params as $key => $value ) {
+		                  $html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
+		               }
+		               $session_item->unsetValue('login_redirect');
+		            }
+		
+		            // login form
+		            $html .= '<table summary="Layout">'.LF;
+		            $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
+		            $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
+		            $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6.2em;" tabindex="1"/>'.LF;
+		            $html .= '</td></tr>'.LF.'<tr><td>'.LF;
+		            $html .= $this->_translator->getMessage('MYAREA_PASSWORD').':'.'</td>'.LF.'<td>';
+		            $html .= '<input type="password" name="password" size="10" style="font-size:10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
+		            if ( $insert_auth_source_selectbox ) {
+		               $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
+		               $html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
+		               // selectbox
+		               $width_auth_selectbox = 6.5;
+		               if ( mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8') == 'msie' ) {
+		                  $width_auth_selectbox = 6.7;
+		               }
+		               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
+		               $auth_source_item = $auth_source_list->getFirst();
+		               $auth_source_selected = false;
+		               while ( $auth_source_item ) {
+		                  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
+		                  if ( !$auth_source_selected ) {
+		                     if ( isset($_GET['auth_source'])
+		                          and !empty($_GET['auth_source'])
+		                          and $auth_source_item->getItemID() == $_GET['auth_source']) {
+		                        $html .= ' selected="selected"';
+		                        $auth_source_selected = true;
+		                     } elseif ( $auth_source_item->getItemID() == $current_portal->getAuthDefault() ) {
+		                        $html .= ' selected="selected"';
+		                     }
+		                  }
+		                  $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
+		                  $auth_source_item = $auth_source_list->getNext();
+		               }
+		               $html .= '</select>'.LF;
+		               $html .= '</td></tr>'.LF;
+		            }
+		            unset($auth_source_list);
+		            $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
+		            $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
+		            $html .= '</td></tr>'.LF;
+		            $html .= '</table>'.LF;
+		
+		            if ( !$this->_environment->inServer() ) {
+		               $params = array();
+		               $params = $this->_environment->getCurrentParameterArray();
+		
+		               // auth source
+		               $auth_source_list = $current_portal->getAuthSourceListEnabled();
+		               $count_auth_source_list_add_account = 0;
+		               if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
+		                  $auth_source_item = $auth_source_list->getFirst();
+		                  while ($auth_source_item) {
+		                     $temp_array = array();
+		                     if ( $auth_source_item->allowAddAccount() ) {
+		                        $count_auth_source_list_add_account++;
+		                     }
+		                     $auth_source_item = $auth_source_list->getNext();
+		                  }
+		               }
+		               unset($auth_source_list);
+		
+		               if ( $count_auth_source_list_add_account != 0 ) {
+		                  $params['cs_modus'] = 'portalmember';
+		                  $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		               } else {
+		                  $html .= '<span style="font-size:8pt;" class="disabled">> '.$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK').'</span>'.BRLF;
+		               }
+		               $params['cs_modus'] = 'account_forget';
+		               $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		               $params['cs_modus'] = 'password_forget';
+		               $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		               unset($params);
+		            }
+		            $html .= LF;
+		            $html .= '</form>'.LF;
+		            $html .= '</div>'.LF;
+		
+		         } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
+		            $params = array();
+		
+		            if (!$this->_environment->inServer()) {
+		               $title = $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM');
+		               $user = $this->_environment->getCurrentUser();
+		               $current_user_item = $this->_environment->getCurrentUserItem();
+		               if ( !$current_user_item->isRoot() ) {
+		                  $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_ACTUAL_ROOMS').'</div>'.LF;
+		                  $html .= '<div class="myarea_content">'.LF;
+		                  $html .= '<div style="padding-bottom:5px;">'.$this->_getUserPersonalAreaAsHTML().'</div>'.LF;
+		               }else{
+		                  $html .= '<div class="myarea_content">'.LF;
+		               }
+		               unset($current_user_item);
+		               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
+		               ){
+		                  $private_room_manager = $this->_environment->getPrivateRoomManager();
+		                  $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
+		                  global $c_annonymous_account_array;
+		                  if ( isset($own_room)
+		                       and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+		                       and !$this->_current_user->isOnlyReadUser()
+		                     ) {
+		                     $current_portal_item = $this->_environment->getCurrentPortalItem();
+		                     if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+		                        $link_active = true;
+		                     } else {
+		                        $current_user_item = $this->_environment->getCurrentUserItem();
+		                        if ( $current_user_item->isRoomMember() ) {
+		                           $link_active = true;
+		                        } else {
+		                           $link_active = false;
+		                        }
+		                        unset($current_user_item);
+		                     }
+		                     unset($current_portal_item);
+		                     if ($link_active) {
+		                        $html .= '<span> '.ahref_curl($own_room->getItemID(), 'home',
+		                                         'index',
+		                                         '',
+		                                         '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
+		
+		                        $html .= ahref_curl($own_room->getItemID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		                     } else {
+		                        // disable private room
+		                        $html .= '<span class="disabled"><img src="images/door_closed_small.gif" style="vertical-align: middle" alt="door close"/>'.LF;
+		                        $html .= $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM').'</span>'.BRLF;
+		                     }
+		                  }
+		                  unset($own_room);
+		               }
+		               $html .= '<span> '.ahref_curl($this->_environment->getCurrentPortalID(), 'home',
+		                                        'index',
+		                                        '',
+		                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
+		
+		               $html .= ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', '',$this->_translator->getMessage('COMMON_PORTAL').' ('.$this->_translator->getMessage('MYAREA_LOGIN_TO_PORTAL_OVERVIEW').')','','','','','','','style="color:#800000"').'</span>'.LF;
+		
+		               if ( $this->_current_user->isRoot() ) {
+		                  $html .= BR.'<span> '.ahref_curl($this->_environment->getServerID(), 'home',
+		                                        'index',
+		                                        '',
+		                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
+		
+		                  $html .= ahref_curl($this->_environment->getServerID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_ALL_PORTALS'),'','','','','','','style="color:#800000"').'</span>'.LF;
+		               }
+		            } else {
+		               if ( $this->_current_user->isRoot() ) {
+		                  $html .= '<div class="myarea_content">'.LF;
+		                  $html .= '<span> '.ahref_curl($this->_environment->getServerID(), 'home',
+		                                        'index',
+		                                        '',
+		                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
+		
+		                  $html .= ahref_curl($this->_environment->getServerID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_ALL_PORTALS'),'','','','','','','style="color:#800000"').'</span>'.LF;
+		                  $html .= '</div>'.LF;
+		               }
+		            }
+		
+		            unset($current_context);
+		            unset($current_portal);
+		            if (!$this->_current_user->isRoot() and !$this->_environment->inServer()) {
+		               $html .= '</div>'.LF;
+		            }
+		            if (!$this->_environment->inServer() and !$this->_current_user->isRoot() ) {
+		               $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_COPIES').'</div>'.LF;
+		               $html .= '<div class="myarea_content">'.LF;
+		               $html .= $this->_getUserCopiesAsHTML();
+		               $html .= '</div>'.LF;
+		            }
+		
+		            if (!$this->_environment->inServer() ) {
+		               global $c_annonymous_account_array;
+		               if ( !$this->_current_user->isRoot()
+		                    and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+		                    and !$this->_current_user->isOnlyReadUser()
+		                  ) {
+		                  $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
+		                  $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
+		
+		                  // new: commsy 7 profile on portal
+		                  $params = array();
+		                  $params = $this->_environment->getCurrentParameterArray();
+		                  $params['uid'] = $this->_current_user->getItemID();
+		                  $params['show_profile'] = 'yes';
+		                  unset($params['is_saved']);
+		                  unset($params['show_copies']);
+		                  unset($params['profile_page']);
+		                  global $c_annonymous_account_array;
+		                  if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+		                       and !$this->_current_user->isOnlyReadUser()
+		                     ) {
+		                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		                  } else {
+		                     $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
+		                  }
+		               } elseif ( !$this->_current_user->isRoot() ) {
+		                  $html .= '<div>'.LF;
+		               }
+		            }
+		            if ( !$this->_current_user->isRoot() ) {
+		               global $c_annonymous_account_array;
+		               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+		                    and !$this->_current_user->isOnlyReadUser()
+		                  ) {
+		                  if ($this->_environment->inCommunityRoom() and !$this->_current_user->isUser()){
+		                     $params['cs_modus'] = 'become_member';
+		                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		                  }
+		                  if ($this->_environment->inProjectRoom() and !$this->_current_user->isUser()){
+		                     $params['cs_modus'] = 'become_member';
+		                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		                  }
+		                  // auth source
+		                  $current_portal_item = $this->_environment->getCurrentPortalItem();
+		                  if ( !isset($current_portal_item) ) {
+		                     $current_portal_item = $this->_environment->getServerItem();
+		                  }
+		                  $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
+		                  unset($current_portal_item);
+		               }
+		            } else {
+		               // auth source
+		               if (!$this->_environment->inServer() ) {
+		                  $html .= '</div>'.LF;
+		               }
+		               $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
+		               $html .= '<div class="myarea_content">'.LF;
+		               $current_portal_item = $this->_environment->getCurrentPortalItem();
+		               if ( !isset($current_portal_item) ) {
+		                  $current_portal_item = $this->_environment->getServerItem();
+		               }
+		               $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
+		               unset($current_portal_item);
+		               if ((isset($current_auth_source_item) and $current_auth_source_item->allowChangePassword()) or $this->_current_user->isRoot()) {
+		                      $params = array();
+		                      $params = $this->_environment->getCurrentParameterArray();
+		                      $params['cs_modus'] = 'password_change';
+		                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE_EDIT'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+		
+		               } else {
+		                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_PROFILE_EDIT').'</span>'.BRLF;
+		               }
+		               unset($params['cs_modus']);
+		               if ($this->_environment->inServer() ) {
+		                  $html .= '</div>'.LF;
+		               }
+		            }
+		            if (!$this->_environment->inServer() ) {
+		               $html .= '</div>'.LF;
+		            }
+		            $params = $this->_environment->getCurrentParameterArray();
+		            $html .= '<div class="myarea_content" style="padding-bottom:5px; padding-top:7px; text-align:right;">'.LF;
+		            $html .= '<div style="float:right; text-align:right;">'.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="color:#800000"').'</div>'.LF;
+		            $html .= '<div style="text-align:left;"> &nbsp;'.LF;
+		            $html .= '</div>'.LF;
+		            $html .= '</div>'.LF;
+		
+		         } elseif ($this->_environment->inServer()) {
+		            $server_item = $this->_environment->getServerItem();
+		            $portal_list = $server_item->getPortalList();
+		            if ($portal_list->isEmpty()) {
+		                  $html .= '<div class="myarea_title">'.$this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN').'</div>'.LF;
+		                     $html .= '<div class="myarea_content">'.LF;
+		                     $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.curl($server_item->getItemID(),'context','login','').'" name="login">'.LF;
+		                     $error_box = $this->getMyAreaErrorBox();
+		                  if ( isset($error_box) ){
+		                      $error_box->setWidth('100%');
+		                    $html .= $error_box->asHTML();
+		                  }
+		
+		
+		                 unset($portal_list);
+		                 unset($server_item);
+		                 unset($error_box);
+		                  $html .= '<table summary="Layout"><tr><td>'.LF;
+		                  $html .=  $this->_translator->getMessage('COMMON_ACCOUNT').':'.LF.'</td><td>';
+		                  $html .= '<input type="text" name="user_id" style="font-size: 10pt; width:6.2em;" tabindex="1"/>'.LF;
+		                  $html .= '</td></tr>'.LF.'<tr><td>'.LF;
+		                  $html .= $this->_translator->getMessage('COMMON_PASSWORD').':'.'</td>'.LF.'<td>';
+		                  $html .= '<input type="password" name="password" style="font-size: 10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
+		                  $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
+		                  $html .= '<input type="submit" name="option" style="font-size: 10pt; width:6.2em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'"/>'.LF;
+		                  $html .= '</td></tr>'.LF;
+		                  $html .= '</table>'.LF;
+		                  $html .= '</form>'.LF;
+		                  $html .= '</div>'.LF;
+		               }
+		           }
+		
+		      // new account
+		      }elseif ( !empty($cs_mod)
+		         and ( $cs_mod == 'portalmember'
+		         or $cs_mod == 'portalmember2'
+		         )
+		         ) {
+		         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
+		   } else {
+		              $params = array();
+		            $params['iid'] = $this->_current_user->getItemID();
+		      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+		         $portal_user = $this->_environment->getPortalUserItem();
+		         $fullname = $portal_user->getFullname();
+		         unset($portal_user);
+		      } else {
+		         $fullname = $this->_current_user->getFullname();
+		      }
+		
+		        }
+		        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+		        if ( $cs_mod == 'portalmember' ) {
+		             include_once('classes/cs_home_member_page.php');
+		     $left_page = new cs_home_member_page($this->_environment);
+		        } else {
+		             include_once('classes/cs_home_member2_page.php');
+		     $left_page = new cs_home_member2_page($this->_environment);
+		        }
+		        $html .= $left_page->execute();
+		        unset($left_page);
+		        $html .= '</div>'.LF;
+		      }
+		
+		     // forget account
+		      elseif (!empty($cs_mod) and $cs_mod == 'account_forget') {
+		         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
+		   } else {
+		              $params = array();
+		            $params['iid'] = $this->_current_user->getItemID();
+		      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+		         $portal_user = $this->_environment->getPortalUserItem();
+		         $fullname = $portal_user->getFullname();
+		               unset($portal_user);
+		      } else {
+		         $fullname = $this->_current_user->getFullname();
+		      }
+		        }
+		        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+		        include_once('classes/cs_account_forget_page.php');
+		        $left_page = new cs_account_forget_page($this->_environment);
+		        $html .= $left_page->execute();
+		        unset($left_page);
+		        $html .= '</div>'.LF;
+		      }
+		
+		     // forget password
+		      elseif (!empty($cs_mod) and $cs_mod == 'password_forget') {
+		         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
+		         } else {
+		            $params = array();
+		            $params['iid'] = $this->_current_user->getItemID();
+		            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+		               $portal_user = $this->_environment->getPortalUserItem();
+		               $fullname = $portal_user->getFullname();
+		               unset($portal_user);
+		            } else {
+		               $fullname = $this->_current_user->getFullname();
+		            }
+		         }
+		         $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+		         include_once('classes/cs_password_forget_page.php');
+		         $left_page = new cs_password_forget_page($this->_environment);
+		         $html .= $left_page->execute();
+		         unset($left_page);
+		         $html .= '</div>'.LF;
+		      }
+		
+		      // become member
+		      elseif ( !empty($cs_mod) and $cs_mod == 'become_member' ) {
+		         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
+		         } else {
+		            $params = array();
+		            $params['iid'] = $this->_current_user->getItemID();
+		            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+		               $portal_user = $this->_environment->getPortalUserItem();
+		               $fullname = $portal_user->getFullname();
+		               unset($portal_user);
+		            } else {
+		               $fullname = $this->_current_user->getFullname();
+		            }
+		        }
+		        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+		        include_once('classes/cs_become_member_page.php');
+		        $left_page = new cs_become_member_page($this->_environment);
+		        $html .= $left_page->execute();
+		        unset($left_page);
+		        $html .= '</div>'.LF;
+		      }
+		      // @segment-end 90042
+		      // @segment-begin 89418 end-of-my_area_box/down-corner-pictures
+		      $html .= '</div>'.LF;
+		      // @segment-end 89418
+   		}
+      
       $html .= $this->_getServerNewsAsHTML();
 
       global $c_message_management;
