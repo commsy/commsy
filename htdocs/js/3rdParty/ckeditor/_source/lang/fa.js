@@ -1,816 +1,91 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-/**
- * @fileOverview Defines the {@link CKEDITOR.lang} object for the
- * Persian language.
- */
-
-/**#@+
-   @type String
-   @example
-*/
-
-/**
- * Contains the dictionary of language entries.
- * @namespace
- */
-CKEDITOR.lang['fa'] =
-{
-	/**
-	 * The language reading direction. Possible values are "rtl" for
-	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
-	 * languages (like English).
-	 * @default 'ltr'
-	 */
-	dir : 'rtl',
-
-	/*
-	 * Screenreader titles. Please note that screenreaders are not always capable
-	 * of reading non-English words. So be careful while translating it.
-	 */
-	editorTitle : 'Rich text editor, %1', // MISSING
-	editorHelp : 'Press ALT 0 for help', // MISSING
-
-	// ARIA descriptions.
-	toolbars	: 'نوار ابزار',
-	editor		: 'ویرایشگر متن غنی',
-
-	// Toolbar buttons without dialogs.
-	source			: 'منبع',
-	newPage			: 'برگهٴ تازه',
-	save			: 'ذخیره',
-	preview			: 'پیشنمایش',
-	cut				: 'برش',
-	copy			: 'کپی',
-	paste			: 'چسباندن',
-	print			: 'چاپ',
-	underline		: 'زیرخطدار',
-	bold			: 'درشت',
-	italic			: 'خمیده',
-	selectAll		: 'گزینش همه',
-	removeFormat	: 'برداشتن فرمت',
-	strike			: 'میانخط',
-	subscript		: 'زیرنویس',
-	superscript		: 'بالانویس',
-	horizontalrule	: 'گنجاندن خط افقی',
-	pagebreak		: 'گنجاندن شکستگی پایان برگه',
-	pagebreakAlt		: 'شکستن صفحه',
-	unlink			: 'برداشتن پیوند',
-	undo			: 'واچیدن',
-	redo			: 'بازچیدن',
-
-	// Common messages and labels.
-	common :
-	{
-		browseServer	: 'فهرستنمایی سرور',
-		url				: 'URL',
-		protocol		: 'پروتکل',
-		upload			: 'انتقال به سرور',
-		uploadSubmit	: 'به سرور بفرست',
-		image			: 'تصویر',
-		flash			: 'فلش',
-		form			: 'فرم',
-		checkbox		: 'خانهٴ گزینهای',
-		radio			: 'دکمهٴ رادیویی',
-		textField		: 'فیلد متنی',
-		textarea		: 'ناحیهٴ متنی',
-		hiddenField		: 'فیلد پنهان',
-		button			: 'دکمه',
-		select			: 'فیلد چندگزینهای',
-		imageButton		: 'دکمهٴ تصویری',
-		notSet			: '<تعین نشده>',
-		id				: 'شناسه',
-		name			: 'نام',
-		langDir			: 'جهتنمای زبان',
-		langDirLtr		: 'چپ به راست (LTR)',
-		langDirRtl		: 'راست به چپ (RTL)',
-		langCode		: 'کد زبان',
-		longDescr		: 'URL توصیف طولانی',
-		cssClass		: 'کلاسهای شیوهنامه(Stylesheet)',
-		advisoryTitle	: 'عنوان کمکی',
-		cssStyle		: 'شیوه(style)',
-		ok				: 'پذیرش',
-		cancel			: 'انصراف',
-		close			: 'بستن',
-		preview			: 'پیشنمایش',
-		generalTab		: 'عمومی',
-		advancedTab		: 'پیشرفته',
-		validateNumberFailed : 'این مقدار یک عدد نیست.',
-		confirmNewPage	: 'هر تغییر ایجاد شدهی ذخیره نشده از بین خواهد رفت. آیا اطمینان دارید که قصد بارگیری صفحه جدیدی را دارید؟',
-		confirmCancel	: 'برخی از گزینهها تغییر کردهاند. آیا واقعا قصد بستن این پنجره را دارید؟',
-		options			: 'گزینهها',
-		target			: 'مسیر',
-		targetNew		: 'پنجره جدید (_blank)',
-		targetTop		: 'بالاترین پنجره (_top)',
-		targetSelf		: 'همان پنجره (_self)',
-		targetParent	: 'پنجره والد (_parent)',
-		langDirLTR		: 'چپ به راست (LTR)',
-		langDirRTL		: 'راست به چپ (RTL)',
-		styles			: 'سبک',
-		cssClasses		: 'کلاسهای شیوهنامه',
-		width			: 'پهنا',
-		height			: 'درازا',
-		align			: 'چینش',
-		alignLeft		: 'چپ',
-		alignRight		: 'راست',
-		alignCenter		: 'وسط',
-		alignTop		: 'بالا',
-		alignMiddle		: 'وسط',
-		alignBottom		: 'پائین',
-		invalidHeight	: 'ارتفاع باید یک عدد باشد.',
-		invalidWidth	: 'پهنا باید یک عدد باشد.',
-		invalidCssLength	: 'عدد تعیین شده برای فیلد "%1" باید یک عدد مثبت با یا بدون یک واحد اندازه گیری CSS معتبر باشد (px, %, in, cm, mm, em, ex, pt, or pc).',
-		invalidHtmlLength	: 'عدد تعیین شده برای فیلد "%1" باید یک عدد مثبت با یا بدون یک واحد اندازه گیری HTML معتبر باشد (px or %).',
-		invalidInlineStyle	: 'عدد تعیین شده برای سبک درونخطی(Inline Style) باید دارای یک یا چند چندتایی با شکلی شبیه "name : value" که باید با یک ","(semi-colons) از هم جدا شوند.',
-		cssLengthTooltip	: 'یک عدد برای یک مقدار بر حسب پیکسل و یا یک عدد با یک واحد CSS معتبر وارد کنید (px, %, in, cm, mm, em, ex, pt, or pc).',
-
-		// Put the voice-only part of the label in the span.
-		unavailable		: '%1<span class="cke_accessibility">، غیر قابل دسترس</span>'
-	},
-
-	contextmenu :
-	{
-		options : 'گزینههای منوی زمینه'
-	},
-
-	// Special char dialog.
-	specialChar		:
-	{
-		toolbar		: 'گنجاندن نویسهٴ ویژه',
-		title		: 'گزینش نویسهٴ ویژه',
-		options : 'گزینههای نویسههای ویژه'
-	},
-
-	// Link dialog.
-	link :
-	{
-		toolbar		: 'گنجاندن/ویرایش پیوند',
-		other 		: '<سایر>',
-		menu		: 'ویرایش پیوند',
-		title		: 'پیوند',
-		info		: 'اطلاعات پیوند',
-		target		: 'مقصد',
-		upload		: 'انتقال به سرور',
-		advanced	: 'پیشرفته',
-		type		: 'نوع پیوند',
-		toUrl		: 'URL',
-		toAnchor	: 'لنگر در همین صفحه',
-		toEmail		: 'پست الکترونیکی',
-		targetFrame		: '<فریم>',
-		targetPopup		: '<پنجرهٴ پاپاپ>',
-		targetFrameName	: 'نام فریم مقصد',
-		targetPopupName	: 'نام پنجرهٴ پاپاپ',
-		popupFeatures	: 'ویژگیهای پنجرهٴ پاپاپ',
-		popupResizable	: 'قابل تغییر اندازه',
-		popupStatusBar	: 'نوار وضعیت',
-		popupLocationBar: 'نوار موقعیت',
-		popupToolbar	: 'نوارابزار',
-		popupMenuBar	: 'نوار منو',
-		popupFullScreen	: 'تمامصفحه (IE)',
-		popupScrollBars	: 'میلههای پیمایش',
-		popupDependent	: 'وابسته (Netscape)',
-		popupLeft		: 'موقعیت چپ',
-		popupTop		: 'موقعیت بالا',
-		id				: 'شناسه',
-		langDir			: 'جهتنمای زبان',
-		langDirLTR		: 'چپ به راست (LTR)',
-		langDirRTL		: 'راست به چپ (RTL)',
-		acccessKey		: 'کلید دستیابی',
-		name			: 'نام',
-		langCode			: 'جهتنمای زبان',
-		tabIndex			: 'نمایهٴ دسترسی با برگه',
-		advisoryTitle		: 'عنوان کمکی',
-		advisoryContentType	: 'نوع محتوای کمکی',
-		cssClasses		: 'کلاسهای شیوهنامه(Stylesheet)',
-		charset			: 'نویسهگان منبع پیوند شده',
-		styles			: 'شیوه(style)',
-		rel			: 'وابستگی',
-		selectAnchor		: 'یک لنگر برگزینید',
-		anchorName		: 'با نام لنگر',
-		anchorId			: 'با شناسهٴ المان',
-		emailAddress		: 'نشانی پست الکترونیکی',
-		emailSubject		: 'موضوع پیام',
-		emailBody		: 'متن پیام',
-		noAnchors		: '(در این سند لنگری دردسترس نیست)',
-		noUrl			: 'لطفا URL پیوند را بنویسید',
-		noEmail			: 'لطفا نشانی پست الکترونیکی را بنویسید'
-	},
-
-	// Anchor dialog
-	anchor :
-	{
-		toolbar		: 'گنجاندن/ویرایش لنگر',
-		menu		: 'ویژگیهای لنگر',
-		title		: 'ویژگیهای لنگر',
-		name		: 'نام لنگر',
-		errorName	: 'لطفا نام لنگر را بنویسید',
-		remove		: 'حذف لنگر'
-	},
-
-	// List style dialog
-	list:
-	{
-		numberedTitle		: 'ویژگیهای فهرست شمارهدار',
-		bulletedTitle		: 'ویژگیهای فهرست گلولهدار',
-		type				: 'نوع',
-		start				: 'شروع',
-		validateStartNumber				:'فهرست شماره شروع باید یک عدد صحیح باشد.',
-		circle				: 'دایره',
-		disc				: 'صفحه گرد',
-		square				: 'چهارگوش',
-		none				: 'هیچ',
-		notset				: '<تنظیم نشده>',
-		armenian			: 'شمارهگذاری ارمنی',
-		georgian			: 'شمارهگذاری گریگورین (an, ban, gan, etc.)',
-		lowerRoman			: 'پانویس رومی (i, ii, iii, iv, v, etc.)',
-		upperRoman			: 'بالانویس رومی (I, II, III, IV, V, etc.)',
-		lowerAlpha			: 'پانویس الفبایی (a, b, c, d, e, etc.)',
-		upperAlpha			: 'بالانویس الفبایی (A, B, C, D, E, etc.)',
-		lowerGreek			: 'پانویس یونانی (alpha, beta, gamma, etc.)',
-		decimal				: 'دهدهی (1, 2, 3, etc.)',
-		decimalLeadingZero	: 'دهدهی همراه با صفر (01, 02, 03, etc.)'
-	},
-
-	// Find And Replace Dialog
-	findAndReplace :
-	{
-		title				: 'جستجو و جایگزینی',
-		find				: 'جستجو',
-		replace				: 'جایگزینی',
-		findWhat			: 'چه چیز را مییابید:',
-		replaceWith			: 'جایگزینی با:',
-		notFoundMsg			: 'متن موردنظر یافت نشد.',
-		findOptions			: 'گزینههای جستجو',
-		matchCase			: 'همسانی در بزرگی و کوچکی نویسهها',
-		matchWord			: 'همسانی با واژهٴ کامل',
-		matchCyclic			: 'همسانی با چرخه',
-		replaceAll			: 'جایگزینی همهٴ یافتهها',
-		replaceSuccessMsg	: '%1 رخداد جایگزین شد.'
-	},
-
-	// Table Dialog
-	table :
-	{
-		toolbar		: 'جدول',
-		title		: 'ویژگیهای جدول',
-		menu		: 'ویژگیهای جدول',
-		deleteTable	: 'پاک کردن جدول',
-		rows		: 'سطرها',
-		columns		: 'ستونها',
-		border		: 'اندازهٴ لبه',
-		widthPx		: 'پیکسل',
-		widthPc		: 'درصد',
-		widthUnit	: 'واحد پهنا',
-		cellSpace	: 'فاصلهٴ میان سلولها',
-		cellPad		: 'فاصلهٴ پرشده در سلول',
-		caption		: 'عنوان',
-		summary		: 'خلاصه',
-		headers		: 'سرنویسها',
-		headersNone		: 'هیچ',
-		headersColumn	: 'اولین ستون',
-		headersRow		: 'اولین ردیف',
-		headersBoth		: 'هردو',
-		invalidRows		: 'تعداد ردیفها باید یک عدد بزرگتر از 0 باشد.',
-		invalidCols		: 'تعداد ستونها باید یک عدد بزرگتر از 0 باشد.',
-		invalidBorder	: 'مقدار اندازه خطوط باید یک عدد باشد.',
-		invalidWidth	: 'مقدار پهنای جدول باید یک عدد باشد.',
-		invalidHeight	: 'مقدار ارتفاع  جدول باید یک عدد باشد.',
-		invalidCellSpacing	: 'مقدار فاصلهگذاری سلول باید یک عدد باشد.',
-		invalidCellPadding	: 'بالشتک سلول باید یک عدد باشد.',
-
-		cell :
-		{
-			menu			: 'سلول',
-			insertBefore	: 'افزودن سلول قبل از',
-			insertAfter		: 'افزودن سلول بعد از',
-			deleteCell		: 'حذف سلولها',
-			merge			: 'ادغام سلولها',
-			mergeRight		: 'ادغام به راست',
-			mergeDown		: 'ادغام به پایین',
-			splitHorizontal	: 'جدا کردن افقی سلول',
-			splitVertical	: 'جدا کردن عمودی سلول',
-			title			: 'ویژگیهای سلول',
-			cellType		: 'نوع سلول',
-			rowSpan			: 'محدوده ردیفها',
-			colSpan			: 'محدوده ستونها',
-			wordWrap		: 'شکستن کلمه',
-			hAlign			: 'چینش افقی',
-			vAlign			: 'چینش عمودی',
-			alignBaseline	: 'خط مبنا',
-			bgColor			: 'رنگ زمینه',
-			borderColor		: 'رنگ خطوط',
-			data			: 'اطلاعات',
-			header			: 'سرنویس',
-			yes				: 'بله',
-			no				: 'خیر',
-			invalidWidth	: 'عرض سلول باید یک عدد باشد.',
-			invalidHeight	: 'ارتفاع سلول باید عدد باشد.',
-			invalidRowSpan	: 'مقدار محدوده ردیفها باید یک عدد باشد.',
-			invalidColSpan	: 'مقدار محدوده ستونها باید یک عدد باشد.',
-			chooseColor		: 'انتخاب'
-		},
-
-		row :
-		{
-			menu			: 'سطر',
-			insertBefore	: 'افزودن سطر قبل از',
-			insertAfter		: 'افزودن سطر بعد از',
-			deleteRow		: 'حذف سطرها'
-		},
-
-		column :
-		{
-			menu			: 'ستون',
-			insertBefore	: 'افزودن ستون قبل از',
-			insertAfter		: 'افزودن ستون بعد از',
-			deleteColumn	: 'حذف ستونها'
-		}
-	},
-
-	// Button Dialog.
-	button :
-	{
-		title		: 'ویژگیهای دکمه',
-		text		: 'متن (مقدار)',
-		type		: 'نوع',
-		typeBtn		: 'دکمه',
-		typeSbm		: 'ثبت',
-		typeRst		: 'بازنشانی (Reset)'
-	},
-
-	// Checkbox and Radio Button Dialogs.
-	checkboxAndRadio :
-	{
-		checkboxTitle : 'ویژگیهای خانهٴ گزینهای',
-		radioTitle	: 'ویژگیهای دکمهٴ رادیویی',
-		value		: 'مقدار',
-		selected	: 'برگزیده'
-	},
-
-	// Form Dialog.
-	form :
-	{
-		title		: 'ویژگیهای فرم',
-		menu		: 'ویژگیهای فرم',
-		action		: 'رویداد',
-		method		: 'متد',
-		encoding	: 'رمزنگاری'
-	},
-
-	// Select Field Dialog.
-	select :
-	{
-		title		: 'ویژگیهای فیلد چندگزینهای',
-		selectInfo	: 'اطلاعات',
-		opAvail		: 'گزینههای دردسترس',
-		value		: 'مقدار',
-		size		: 'اندازه',
-		lines		: 'خطوط',
-		chkMulti	: 'گزینش چندگانه فراهم باشد',
-		opText		: 'متن',
-		opValue		: 'مقدار',
-		btnAdd		: 'افزودن',
-		btnModify	: 'ویرایش',
-		btnUp		: 'بالا',
-		btnDown		: 'پائین',
-		btnSetValue : 'تنظیم به عنوان مقدار برگزیده',
-		btnDelete	: 'پاککردن'
-	},
-
-	// Textarea Dialog.
-	textarea :
-	{
-		title		: 'ویژگیهای ناحیهٴ متنی',
-		cols		: 'ستونها',
-		rows		: 'سطرها'
-	},
-
-	// Text Field Dialog.
-	textfield :
-	{
-		title		: 'ویژگیهای فیلد متنی',
-		name		: 'نام',
-		value		: 'مقدار',
-		charWidth	: 'پهنای نویسه',
-		maxChars	: 'بیشینهٴ نویسهها',
-		type		: 'نوع',
-		typeText	: 'متن',
-		typePass	: 'گذرواژه'
-	},
-
-	// Hidden Field Dialog.
-	hidden :
-	{
-		title	: 'ویژگیهای فیلد پنهان',
-		name	: 'نام',
-		value	: 'مقدار'
-	},
-
-	// Image Dialog.
-	image :
-	{
-		title		: 'ویژگیهای تصویر',
-		titleButton	: 'ویژگیهای دکمهٴ تصویری',
-		menu		: 'ویژگیهای تصویر',
-		infoTab		: 'اطلاعات تصویر',
-		btnUpload	: 'به سرور بفرست',
-		upload		: 'انتقال به سرور',
-		alt			: 'متن جایگزین',
-		lockRatio	: 'قفل کردن نسبت',
-		resetSize	: 'بازنشانی اندازه',
-		border		: 'لبه',
-		hSpace		: 'فاصلهٴ افقی',
-		vSpace		: 'فاصلهٴ عمودی',
-		alertUrl	: 'لطفا URL تصویر را بنویسید',
-		linkTab		: 'پیوند',
-		button2Img	: 'آیا مایلید از یک تصویر ساده روی دکمه تصویری انتخاب شده استفاده کنید؟',
-		img2Button	: 'آیا مایلید از یک دکمه تصویری روی تصویر انتخاب شده استفاده کنید؟',
-		urlMissing	: 'آدرس URL اصلی تصویر یافت نشد.',
-		validateBorder	: 'مقدار خطوط باید یک عدد باشد.',
-		validateHSpace	: 'مقدار فاصلهگذاری افقی باید یک عدد باشد.',
-		validateVSpace	: 'مقدار فاصلهگذاری عمودی باید یک عدد باشد.'
-	},
-
-	// Flash Dialog
-	flash :
-	{
-		properties		: 'ویژگیهای فلش',
-		propertiesTab	: 'ویژگیها',
-		title			: 'ویژگیهای فلش',
-		chkPlay			: 'آغاز خودکار',
-		chkLoop			: 'اجرای پیاپی',
-		chkMenu			: 'در دسترس بودن منوی فلش',
-		chkFull			: 'اجازه تمام صفحه',
- 		scale			: 'مقیاس',
-		scaleAll		: 'نمایش همه',
-		scaleNoBorder	: 'بدون کران',
-		scaleFit		: 'جایگیری کامل',
-		access			: 'دسترسی به اسکریپت',
-		accessAlways	: 'همیشه',
-		accessSameDomain: 'همان دامنه',
-		accessNever		: 'هرگز',
-		alignAbsBottom	: 'پائین مطلق',
-		alignAbsMiddle	: 'وسط مطلق',
-		alignBaseline	: 'خط پایه',
-		alignTextTop	: 'متن بالا',
-		quality			: 'کیفیت',
-		qualityBest		: 'بهترین',
-		qualityHigh		: 'بالا',
-		qualityAutoHigh	: 'بالا - خودکار',
-		qualityMedium	: 'متوسط',
-		qualityAutoLow	: 'پایین - خودکار',
-		qualityLow		: 'پایین',
-		windowModeWindow: 'پنجره',
-		windowModeOpaque: 'مات',
-		windowModeTransparent : 'شفاف',
-		windowMode		: 'حالت پنجره',
-		flashvars		: 'مقادیر برای فلش',
-		bgcolor			: 'رنگ پسزمینه',
-		hSpace			: 'فاصلهٴ افقی',
-		vSpace			: 'فاصلهٴ عمودی',
-		validateSrc		: 'لطفا URL پیوند را بنویسید',
-		validateHSpace	: 'مقدار فاصلهگذاری افقی باید یک عدد باشد.',
-		validateVSpace	: 'مقدار فاصلهگذاری عمودی باید یک عدد باشد.'
-	},
-
-	// Speller Pages Dialog
-	spellCheck :
-	{
-		toolbar			: 'بررسی املا',
-		title			: 'بررسی املا',
-		notAvailable	: 'با عرض پوزش خدمات الان در دسترس نیستند.',
-		errorLoading	: 'خطا در بارگیری برنامه خدمات میزبان: %s.',
-		notInDic		: 'در واژه~نامه یافت نشد',
-		changeTo		: 'تغییر به',
-		btnIgnore		: 'چشمپوشی',
-		btnIgnoreAll	: 'چشمپوشی همه',
-		btnReplace		: 'جایگزینی',
-		btnReplaceAll	: 'جایگزینی همه',
-		btnUndo			: 'واچینش',
-		noSuggestions	: '- پیشنهادی نیست -',
-		progress		: 'بررسی املا در حال انجام...',
-		noMispell		: 'بررسی املا انجام شد. هیچ غلط املائی یافت نشد',
-		noChanges		: 'بررسی املا انجام شد. هیچ واژهای تغییر نیافت',
-		oneChange		: 'بررسی املا انجام شد. یک واژه تغییر یافت',
-		manyChanges		: 'بررسی املا انجام شد. %1 واژه تغییر یافت',
-		ieSpellDownload	: 'بررسی کنندهٴ املا نصب نشده است. آیا میخواهید آن را هماکنون دریافت کنید؟'
-	},
-
-	smiley :
-	{
-		toolbar	: 'خندانک',
-		title	: 'گنجاندن خندانک',
-		options : 'گزینههای خندانک'
-	},
-
-	elementsPath :
-	{
-		eleLabel : 'مسیر عناصر',
-		eleTitle : '%1 عنصر'
-	},
-
-	numberedlist	: 'فهرست شمارهدار',
-	bulletedlist	: 'فهرست نقطهای',
-	indent			: 'افزایش تورفتگی',
-	outdent			: 'کاهش تورفتگی',
-
-	justify :
-	{
-		left	: 'چپچین',
-		center	: 'میانچین',
-		right	: 'راستچین',
-		block	: 'بلوکچین'
-	},
-
-	blockquote : 'بلوک نقل قول',
-
-	clipboard :
-	{
-		title		: 'چسباندن',
-		cutError	: 'تنظیمات امنیتی مرورگر شما اجازه نمیدهد که ویرایشگر به طور خودکار عملکردهای برش را انجام دهد. لطفا با دکمههای صفحه کلید این کار را انجام دهید (Ctrl/Cmd+X).',
-		copyError	: 'تنظیمات امنیتی مرورگر شما اجازه نمیدهد که ویرایشگر به طور خودکار عملکردهای کپی کردن را انجام دهد. لطفا با دکمههای صفحه کلید این کار را انجام دهید (Ctrl/Cmd+C).',
-		pasteMsg	: 'لطفا متن را با کلیدهای (<STRONG>Ctrl/Cmd+V</STRONG>) در این جعبهٴ متنی بچسبانید و <STRONG>پذیرش</STRONG> را بزنید.',
-		securityMsg	: 'به خاطر تنظیمات امنیتی مرورگر شما، ویرایشگر نمیتواند دسترسی مستقیم به دادههای clipboard داشته باشد. شما باید دوباره آنرا در این پنجره بچسبانید.',
-		pasteArea	: 'محل چسباندن'
-	},
-
-	pastefromword :
-	{
-		confirmCleanup	: 'متنی که میخواهید بچسبانید به نظر میرسد که از Word کپی شده است. آیا میخواهید قبل از چسباندن آن را پاکسازی کنید؟',
-		toolbar			: 'چسباندن از Word',
-		title			: 'چسباندن از Word',
-		error			: 'به دلیل بروز خطای داخلی امکان پاکسازی اطلاعات بازنشانی شده وجود ندارد.'
-	},
-
-	pasteText :
-	{
-		button	: 'چسباندن به عنوان متن ِساده',
-		title	: 'چسباندن به عنوان متن ِساده'
-	},
-
-	templates :
-	{
-		button			: 'الگوها',
-		title			: 'الگوهای محتویات',
-		options : 'گزینههای الگو',
-		insertOption	: 'محتویات کنونی جایگزین شوند',
-		selectPromptMsg	: 'لطفا الگوی موردنظر را برای بازکردن در ویرایشگر برگزینید<br>(محتویات کنونی از دست خواهند رفت):',
-		emptyListMsg	: '(الگوئی تعریف نشده است)'
-	},
-
-	showBlocks : 'نمایش بلوکها',
-
-	stylesCombo :
-	{
-		label		: 'سبک',
-		panelTitle	: 'سبکهای قالببندی',
-		panelTitle1	: 'سبکهای بلوک',
-		panelTitle2	: 'سبکهای درونخطی',
-		panelTitle3	: 'سبکهای شیء'
-	},
-
-	format :
-	{
-		label		: 'فرمت',
-		panelTitle	: 'فرمت',
-
-		tag_p		: 'نرمال',
-		tag_pre		: 'فرمت شده',
-		tag_address	: 'آدرس',
-		tag_h1		: 'سرنویس 1',
-		tag_h2		: 'سرنویس 2',
-		tag_h3		: 'سرنویس 3',
-		tag_h4		: 'سرنویس 4',
-		tag_h5		: 'سرنویس 5',
-		tag_h6		: 'سرنویس 6',
-		tag_div		: 'بند'
-	},
-
-	div :
-	{
-		title				: 'ایجاد یک محل DIV',
-		toolbar				: 'ایجاد یک محل DIV',
-		cssClassInputLabel	: 'کلاسهای شیوهنامه',
-		styleSelectLabel	: 'سبک',
-		IdInputLabel		: 'شناسه',
-		languageCodeInputLabel	: ' کد زبان',
-		inlineStyleInputLabel	: 'سبک درونخطی(Inline Style)',
-		advisoryTitleInputLabel	: 'عنوان مشاوره',
-		langDirLabel		: 'جهت نوشتاری زبان',
-		langDirLTRLabel		: 'چپ به راست (LTR)',
-		langDirRTLLabel		: 'راست به چپ (RTL)',
-		edit				: 'ویرایش Div',
-		remove				: 'حذف Div'
-  	},
-
-	iframe :
-	{
-		title		: 'ویژگیهای IFrame',
-		toolbar		: 'IFrame',
-		noUrl		: 'لطفا مسیر URL iframe را درج کنید',
-		scrolling	: 'نمایش خطکشها',
-		border		: 'نمایش خطوط frame'
-	},
-
-	font :
-	{
-		label		: 'قلم',
-		voiceLabel	: 'قلم',
-		panelTitle	: 'قلم'
-	},
-
-	fontSize :
-	{
-		label		: 'اندازه',
-		voiceLabel	: 'اندازه قلم',
-		panelTitle	: 'اندازه'
-	},
-
-	colorButton :
-	{
-		textColorTitle	: 'رنگ متن',
-		bgColorTitle	: 'رنگ پسزمینه',
-		panelTitle		: 'رنگها',
-		auto			: 'خودکار',
-		more			: 'رنگهای بیشتر...'
-	},
-
-	colors :
-	{
-		'000' : 'سیاه',
-		'800000' : 'خرمایی',
-		'8B4513' : 'قهوهای شکلاتی',
-		'2F4F4F' : 'ارغوانی مایل به خاکستری',
-		'008080' : 'آبی مایل به خاکستری',
-		'000080' : 'آبی سیر',
-		'4B0082' : 'نیلی',
-		'696969' : 'خاکستری تیره',
-		'B22222' : 'آتش آجری',
-		'A52A2A' : 'قهوهای',
-		'DAA520' : 'میلهی طلایی',
-		'006400' : 'سبز تیره',
-		'40E0D0' : 'فیروزهای',
-		'0000CD' : 'آبی روشن',
-		'800080' : 'ارغوانی',
-		'808080' : 'خاکستری',
-		'F00' : 'قرمز',
-		'FF8C00' : 'نارنجی پررنگ',
-		'FFD700' : 'طلایی',
-		'008000' : 'سبز',
-		'0FF' : 'آبی مایل به سبز',
-		'00F' : 'آبی',
-		'EE82EE' : 'بنفش',
-		'A9A9A9' : 'خاکستری مات',
-		'FFA07A' : 'صورتی کدر روشن',
-		'FFA500' : 'نارنجی',
-		'FFFF00' : 'زرد',
-		'00FF00' : 'فسفری',
-		'AFEEEE' : 'فیروزهای رنگ پریده',
-		'ADD8E6' : 'آبی کمرنگ',
-		'DDA0DD' : 'آلویی',
-		'D3D3D3' : 'خاکستری روشن',
-		'FFF0F5' : 'بنفش کمرنگ',
-		'FAEBD7' : 'عتیقه سفید',
-		'FFFFE0' : 'زرد روشن',
-		'F0FFF0' : 'عسلی',
-		'F0FFFF' : 'لاجوردی',
-		'F0F8FF' : 'آبی براق',
-		'E6E6FA' : 'بنفش کمرنگ',
-		'FFF' : 'سفید'
-	},
-
-	scayt :
-	{
-		title			: 'بررسی املای تایپ شما',
-		opera_title		: 'توسط اپرا پشتیبانی نمیشود',
-		enable			: 'فعالسازی SCAYT',
-		disable			: 'غیرفعالسازی SCAYT',
-		about			: 'درباره SCAYT',
-		toggle			: 'ضامن SCAYT',
-		options			: 'گزینهها',
-		langs			: 'زبانها',
-		moreSuggestions	: 'پیشنهادهای بیشتر',
-		ignore			: 'عبور کردن',
-		ignoreAll		: 'عبور کردن از همه',
-		addWord			: 'افزودن Word',
-		emptyDic		: 'نام دیکشنری نباید خالی باشد.',
-
-		optionsTab		: 'گزینهها',
-		allCaps			: 'نادیده گرفتن همه کلاه-واژهها',
-		ignoreDomainNames : 'عبور از نامهای دامنه',
-		mixedCase		: 'عبور از کلماتی مرکب از حروف بزرگ و کوچک',
-		mixedWithDigits	: 'عبور از کلمات به همراه عدد',
-
-		languagesTab	: 'زبانها',
-
-		dictionariesTab	: 'دیکشنریها',
-		dic_field_name	: 'نام دیکشنری',
-		dic_create		: 'ایجاد',
-		dic_restore		: 'بازیافت',
-		dic_delete		: 'حذف',
-		dic_rename		: 'تغییر نام',
-		dic_info		: 'در ابتدا دیکشنری کاربر در کوکی ذخیره میشود. با این حال، کوکیها در اندازه محدود شدهاند. وقتی که دیکشنری کاربری بزرگ میشود و به نقطهای که نمیتواند در کوکی ذخیره شود، پس از آن دیکشنری ممکن است بر روی سرور ما ذخیره شود. برای ذخیره دیکشنری شخصی شما بر روی سرور ما، باید یک نام برای دیکشنری خود مشخص نمایید. اگر شما قبلا یک دیکشنری روی سرور ما ذخیره کردهاید، لطفا نام آنرا درج و روی دکمه بازیافت کلیک نمایید.',
-
-		aboutTab		: 'درباره'
-	},
-
-	about :
-	{
-		title		: 'درباره CKEditor',
-		dlgTitle	: 'درباره CKEditor',
-		help	: 'بررسی $1 برای راهنمایی.',
-		userGuide : 'راهنمای کاربران CKEditor',
-		moreInfo	: 'برای کسب اطلاعات مجوز لطفا به وب سایت ما مراجعه کنید:',
-		copy		: 'حق نشر &copy; $1. کلیه حقوق محفوظ است.'
-	},
-
-	maximize : 'حداکثر کردن',
-	minimize : 'حداقل کردن',
-
-	fakeobjects :
-	{
-		anchor		: 'لنگر',
-		flash		: 'انیمشن فلش',
-		iframe		: 'IFrame',
-		hiddenfield	: 'فیلد پنهان',
-		unknown		: 'شیء ناشناخته'
-	},
-
-	resize : 'کشیدن برای تغییر اندازه',
-
-	colordialog :
-	{
-		title		: 'انتخاب رنگ',
-		options	:	'گزینههای رنگ',
-		highlight	: 'متمایز',
-		selected	: 'رنگ انتخاب شده',
-		clear		: 'پاک کردن'
-	},
-
-	toolbarCollapse	: 'بستن نوار ابزار',
-	toolbarExpand	: 'بازکردن نوار ابزار',
-
-	toolbarGroups :
-	{
-		document : 'سند',
-		clipboard : 'حافظه موقت/برگشت',
-		editing : 'در حال ویرایش',
-		forms : 'فرمها',
-		basicstyles : 'شیوههای پایه',
-		paragraph : 'بند',
-		links : 'پیوندها',
-		insert : 'ورود',
-		styles : 'شیوهها',
-		colors : 'رنگها',
-		tools : 'ابزارها'
-	},
-
-	bidi :
-	{
-		ltr : 'نوشتار متن از چپ به راست',
-		rtl : 'نوشتار متن از راست به چپ'
-	},
-
-	docprops :
-	{
-		label : 'ویژگیهای سند',
-		title : 'ویژگیهای سند',
-		design : 'طراحی',
-		meta : 'فراداده',
-		chooseColor : 'انتخاب',
-		other : '<سایر>',
-		docTitle :	'عنوان صفحه',
-		charset : 	'رمزگذاری نویسهگان',
-		charsetOther : 'رمزگذاری نویسهگان دیگر',
-		charsetASCII : 'ASCII',
-		charsetCE : 'اروپای مرکزی',
-		charsetCT : 'چینی رسمی (Big5)',
-		charsetCR : 'سیریلیک',
-		charsetGR : 'یونانی',
-		charsetJP : 'ژاپنی',
-		charsetKR : 'کرهای',
-		charsetTR : 'ترکی',
-		charsetUN : 'یونیکُد (UTF-8)',
-		charsetWE : 'اروپای غربی',
-		docType : 'عنوان نوع سند',
-		docTypeOther : 'عنوان نوع سند دیگر',
-		xhtmlDec : 'شامل تعاریف XHTML',
-		bgColor : 'رنگ پسزمینه',
-		bgImage : 'URL تصویر پسزمینه',
-		bgFixed : 'پسزمینهٴ پیمایش ناپذیر',
-		txtColor : 'رنگ متن',
-		margin : 'حاشیههای صفحه',
-		marginTop : 'بالا',
-		marginLeft : 'چپ',
-		marginRight : 'راست',
-		marginBottom : 'پایین',
-		metaKeywords : 'کلیدواژگان نمایهگذاری سند (با کاما جدا شوند)',
-		metaDescription : 'توصیف سند',
-		metaAuthor : 'نویسنده',
-		metaCopyright : 'حق انتشار',
-		previewHtml : '<p>این یک <strong>متن نمونه</strong> است. شما در حال استفاده از <a href="javascript:void(0)">CKEditor</a> هستید.</p>'
-	}
-};
+//>>built
+define("ckeditor/_source/lang/fa",["dijit","dojo","dojox"],function(){CKEDITOR.lang.fa={dir:"rtl",editorTitle:"Rich text editor, %1",editorHelp:"Press ALT 0 for help",toolbars:"\u0646\u0648\u0627\u0631 \u0627\u0628\u0632\u0627\u0631",editor:"\u0648\u06cc\u0631\u0627\u06cc\u0634\u06af\u0631 \u0645\u062a\u0646 \u063a\u0646\u06cc",source:"\u0645\u0646\u0628\u0639",newPage:"\u0628\u0631\u06af\u0647\u0674 \u062a\u0627\u0632\u0647",save:"\u0630\u062e\u06cc\u0631\u0647",preview:"\u067e\u06cc\u0634\u0646\u0645\u0627\u06cc\u0634",
+cut:"\u0628\u0631\u0634",copy:"\u06a9\u067e\u06cc",paste:"\u0686\u0633\u0628\u0627\u0646\u062f\u0646",print:"\u0686\u0627\u067e",underline:"\u0632\u06cc\u0631\u062e\u0637\u062f\u0627\u0631",bold:"\u062f\u0631\u0634\u062a",italic:"\u062e\u0645\u06cc\u062f\u0647",selectAll:"\u06af\u0632\u06cc\u0646\u0634 \u0647\u0645\u0647",removeFormat:"\u0628\u0631\u062f\u0627\u0634\u062a\u0646 \u0641\u0631\u0645\u062a",strike:"\u0645\u06cc\u0627\u0646\u062e\u0637",subscript:"\u0632\u06cc\u0631\u0646\u0648\u06cc\u0633",
+superscript:"\u0628\u0627\u0644\u0627\u0646\u0648\u06cc\u0633",horizontalrule:"\u06af\u0646\u062c\u0627\u0646\u062f\u0646 \u062e\u0637 \u0627\u0641\u0642\u06cc",pagebreak:"\u06af\u0646\u062c\u0627\u0646\u062f\u0646 \u0634\u06a9\u0633\u062a\u06af\u06cc \u067e\u0627\u06cc\u0627\u0646 \u0628\u0631\u06af\u0647",pagebreakAlt:"\u0634\u06a9\u0633\u062a\u0646 \u0635\u0641\u062d\u0647",unlink:"\u0628\u0631\u062f\u0627\u0634\u062a\u0646 \u067e\u06cc\u0648\u0646\u062f",undo:"\u0648\u0627\u0686\u06cc\u062f\u0646",
+redo:"\u0628\u0627\u0632\u0686\u06cc\u062f\u0646",common:{browseServer:"\u0641\u0647\u0631\u0633\u062a\u0646\u0645\u0627\u06cc\u06cc \u0633\u0631\u0648\u0631",url:"URL",protocol:"\u067e\u0631\u0648\u062a\u06a9\u0644",upload:"\u0627\u0646\u062a\u0642\u0627\u0644 \u0628\u0647 \u0633\u0631\u0648\u0631",uploadSubmit:"\u0628\u0647 \u0633\u0631\u0648\u0631 \u0628\u0641\u0631\u0633\u062a",image:"\u062a\u0635\u0648\u06cc\u0631",flash:"\u0641\u0644\u0634",form:"\u0641\u0631\u0645",checkbox:"\u062e\u0627\u0646\u0647\u0674 \u06af\u0632\u06cc\u0646\u0647\u0627\u06cc",
+radio:"\u062f\u06a9\u0645\u0647\u0674 \u0631\u0627\u062f\u06cc\u0648\u06cc\u06cc",textField:"\u0641\u06cc\u0644\u062f \u0645\u062a\u0646\u06cc",textarea:"\u0646\u0627\u062d\u06cc\u0647\u0674 \u0645\u062a\u0646\u06cc",hiddenField:"\u0641\u06cc\u0644\u062f \u067e\u0646\u0647\u0627\u0646",button:"\u062f\u06a9\u0645\u0647",select:"\u0641\u06cc\u0644\u062f \u0686\u0646\u062f\u06af\u0632\u06cc\u0646\u0647\u0627\u06cc",imageButton:"\u062f\u06a9\u0645\u0647\u0674 \u062a\u0635\u0648\u06cc\u0631\u06cc",notSet:"<\u062a\u0639\u06cc\u0646 \u0646\u0634\u062f\u0647>",
+id:"\u0634\u0646\u0627\u0633\u0647",name:"\u0646\u0627\u0645",langDir:"\u062c\u0647\u062a\u0646\u0645\u0627\u06cc \u0632\u0628\u0627\u0646",langDirLtr:"\u0686\u067e \u0628\u0647 \u0631\u0627\u0633\u062a (LTR)",langDirRtl:"\u0631\u0627\u0633\u062a \u0628\u0647 \u0686\u067e (RTL)",langCode:"\u06a9\u062f \u0632\u0628\u0627\u0646",longDescr:"URL \u062a\u0648\u0635\u06cc\u0641 \u0637\u0648\u0644\u0627\u0646\u06cc",cssClass:"\u06a9\u0644\u0627\u0633\u0647\u0627\u06cc \u0634\u06cc\u0648\u0647\u0646\u0627\u0645\u0647(Stylesheet)",
+advisoryTitle:"\u0639\u0646\u0648\u0627\u0646 \u06a9\u0645\u06a9\u06cc",cssStyle:"\u0634\u06cc\u0648\u0647(style)",ok:"\u067e\u0630\u06cc\u0631\u0634",cancel:"\u0627\u0646\u0635\u0631\u0627\u0641",close:"\u0628\u0633\u062a\u0646",preview:"\u067e\u06cc\u0634\u0646\u0645\u0627\u06cc\u0634",generalTab:"\u0639\u0645\u0648\u0645\u06cc",advancedTab:"\u067e\u06cc\u0634\u0631\u0641\u062a\u0647",validateNumberFailed:"\u0627\u06cc\u0646 \u0645\u0642\u062f\u0627\u0631 \u06cc\u06a9 \u0639\u062f\u062f \u0646\u06cc\u0633\u062a.",
+confirmNewPage:"\u0647\u0631 \u062a\u063a\u06cc\u06cc\u0631 \u0627\u06cc\u062c\u0627\u062f \u0634\u062f\u0647\u06cc \u0630\u062e\u06cc\u0631\u0647 \u0646\u0634\u062f\u0647 \u0627\u0632 \u0628\u06cc\u0646 \u062e\u0648\u0627\u0647\u062f \u0631\u0641\u062a. \u0622\u06cc\u0627 \u0627\u0637\u0645\u06cc\u0646\u0627\u0646 \u062f\u0627\u0631\u06cc\u062f \u06a9\u0647 \u0642\u0635\u062f \u0628\u0627\u0631\u06af\u06cc\u0631\u06cc \u0635\u0641\u062d\u0647 \u062c\u062f\u06cc\u062f\u06cc \u0631\u0627 \u062f\u0627\u0631\u06cc\u062f\u061f",
+confirmCancel:"\u0628\u0631\u062e\u06cc \u0627\u0632 \u06af\u0632\u06cc\u0646\u0647\u0647\u0627 \u062a\u063a\u06cc\u06cc\u0631 \u06a9\u0631\u062f\u0647\u0627\u0646\u062f. \u0622\u06cc\u0627 \u0648\u0627\u0642\u0639\u0627 \u0642\u0635\u062f \u0628\u0633\u062a\u0646 \u0627\u06cc\u0646 \u067e\u0646\u062c\u0631\u0647 \u0631\u0627 \u062f\u0627\u0631\u06cc\u062f\u061f",options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627",target:"\u0645\u0633\u06cc\u0631",targetNew:"\u067e\u0646\u062c\u0631\u0647 \u062c\u062f\u06cc\u062f (_blank)",
+targetTop:"\u0628\u0627\u0644\u0627\u062a\u0631\u06cc\u0646 \u067e\u0646\u062c\u0631\u0647 (_top)",targetSelf:"\u0647\u0645\u0627\u0646 \u067e\u0646\u062c\u0631\u0647 (_self)",targetParent:"\u067e\u0646\u062c\u0631\u0647 \u0648\u0627\u0644\u062f (_parent)",langDirLTR:"\u0686\u067e \u0628\u0647 \u0631\u0627\u0633\u062a (LTR)",langDirRTL:"\u0631\u0627\u0633\u062a \u0628\u0647 \u0686\u067e (RTL)",styles:"\u0633\u0628\u06a9",cssClasses:"\u06a9\u0644\u0627\u0633\u0647\u0627\u06cc \u0634\u06cc\u0648\u0647\u0646\u0627\u0645\u0647",
+width:"\u067e\u0647\u0646\u0627",height:"\u062f\u0631\u0627\u0632\u0627",align:"\u0686\u06cc\u0646\u0634",alignLeft:"\u0686\u067e",alignRight:"\u0631\u0627\u0633\u062a",alignCenter:"\u0648\u0633\u0637",alignTop:"\u0628\u0627\u0644\u0627",alignMiddle:"\u0648\u0633\u0637",alignBottom:"\u067e\u0627\u0626\u06cc\u0646",invalidHeight:"\u0627\u0631\u062a\u0641\u0627\u0639 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidWidth:"\u067e\u0647\u0646\u0627 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",
+invalidCssLength:'\u0639\u062f\u062f \u062a\u0639\u06cc\u06cc\u0646 \u0634\u062f\u0647 \u0628\u0631\u0627\u06cc \u0641\u06cc\u0644\u062f "%1" \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0645\u062b\u0628\u062a \u0628\u0627 \u06cc\u0627 \u0628\u062f\u0648\u0646 \u06cc\u06a9 \u0648\u0627\u062d\u062f \u0627\u0646\u062f\u0627\u0632\u0647 \u06af\u06cc\u0631\u06cc CSS \u0645\u0639\u062a\u0628\u0631 \u0628\u0627\u0634\u062f (px, %, in, cm, mm, em, ex, pt, or pc).',invalidHtmlLength:'\u0639\u062f\u062f \u062a\u0639\u06cc\u06cc\u0646 \u0634\u062f\u0647 \u0628\u0631\u0627\u06cc \u0641\u06cc\u0644\u062f "%1" \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0645\u062b\u0628\u062a \u0628\u0627 \u06cc\u0627 \u0628\u062f\u0648\u0646 \u06cc\u06a9 \u0648\u0627\u062d\u062f \u0627\u0646\u062f\u0627\u0632\u0647 \u06af\u06cc\u0631\u06cc HTML \u0645\u0639\u062a\u0628\u0631 \u0628\u0627\u0634\u062f (px or %).',
+invalidInlineStyle:'\u0639\u062f\u062f \u062a\u0639\u06cc\u06cc\u0646 \u0634\u062f\u0647 \u0628\u0631\u0627\u06cc \u0633\u0628\u06a9 \u062f\u0631\u0648\u0646\u062e\u0637\u06cc(Inline Style) \u0628\u0627\u06cc\u062f \u062f\u0627\u0631\u0627\u06cc \u06cc\u06a9 \u06cc\u0627 \u0686\u0646\u062f \u0686\u0646\u062f\u062a\u0627\u06cc\u06cc \u0628\u0627 \u0634\u06a9\u0644\u06cc \u0634\u0628\u06cc\u0647 "name : value" \u06a9\u0647 \u0628\u0627\u06cc\u062f \u0628\u0627 \u06cc\u06a9 ","(semi-colons) \u0627\u0632 \u0647\u0645 \u062c\u062f\u0627 \u0634\u0648\u0646\u062f.',
+cssLengthTooltip:"\u06cc\u06a9 \u0639\u062f\u062f \u0628\u0631\u0627\u06cc \u06cc\u06a9 \u0645\u0642\u062f\u0627\u0631 \u0628\u0631 \u062d\u0633\u0628 \u067e\u06cc\u06a9\u0633\u0644 \u0648 \u06cc\u0627 \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627 \u06cc\u06a9 \u0648\u0627\u062d\u062f CSS \u0645\u0639\u062a\u0628\u0631 \u0648\u0627\u0631\u062f \u06a9\u0646\u06cc\u062f (px, %, in, cm, mm, em, ex, pt, or pc).",unavailable:'%1<span class="cke_accessibility">\u060c \u063a\u06cc\u0631 \u0642\u0627\u0628\u0644 \u062f\u0633\u062a\u0631\u0633</span>'},
+contextmenu:{options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u0645\u0646\u0648\u06cc \u0632\u0645\u06cc\u0646\u0647"},specialChar:{toolbar:"\u06af\u0646\u062c\u0627\u0646\u062f\u0646 \u0646\u0648\u06cc\u0633\u0647\u0674 \u0648\u06cc\u0698\u0647",title:"\u06af\u0632\u06cc\u0646\u0634 \u0646\u0648\u06cc\u0633\u0647\u0674 \u0648\u06cc\u0698\u0647",options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u0646\u0648\u06cc\u0633\u0647\u0647\u0627\u06cc \u0648\u06cc\u0698\u0647"},link:{toolbar:"\u06af\u0646\u062c\u0627\u0646\u062f\u0646/\u0648\u06cc\u0631\u0627\u06cc\u0634 \u067e\u06cc\u0648\u0646\u062f",
+other:"<\u0633\u0627\u06cc\u0631>",menu:"\u0648\u06cc\u0631\u0627\u06cc\u0634 \u067e\u06cc\u0648\u0646\u062f",title:"\u067e\u06cc\u0648\u0646\u062f",info:"\u0627\u0637\u0644\u0627\u0639\u0627\u062a \u067e\u06cc\u0648\u0646\u062f",target:"\u0645\u0642\u0635\u062f",upload:"\u0627\u0646\u062a\u0642\u0627\u0644 \u0628\u0647 \u0633\u0631\u0648\u0631",advanced:"\u067e\u06cc\u0634\u0631\u0641\u062a\u0647",type:"\u0646\u0648\u0639 \u067e\u06cc\u0648\u0646\u062f",toUrl:"URL",toAnchor:"\u0644\u0646\u06af\u0631 \u062f\u0631 \u0647\u0645\u06cc\u0646 \u0635\u0641\u062d\u0647",
+toEmail:"\u067e\u0633\u062a \u0627\u0644\u06a9\u062a\u0631\u0648\u0646\u06cc\u06a9\u06cc",targetFrame:"<\u0641\u0631\u06cc\u0645>",targetPopup:"<\u067e\u0646\u062c\u0631\u0647\u0674 \u067e\u0627\u067e\u0627\u067e>",targetFrameName:"\u0646\u0627\u0645 \u0641\u0631\u06cc\u0645 \u0645\u0642\u0635\u062f",targetPopupName:"\u0646\u0627\u0645 \u067e\u0646\u062c\u0631\u0647\u0674 \u067e\u0627\u067e\u0627\u067e",popupFeatures:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u067e\u0646\u062c\u0631\u0647\u0674 \u067e\u0627\u067e\u0627\u067e",
+popupResizable:"\u0642\u0627\u0628\u0644 \u062a\u063a\u06cc\u06cc\u0631 \u0627\u0646\u062f\u0627\u0632\u0647",popupStatusBar:"\u0646\u0648\u0627\u0631 \u0648\u0636\u0639\u06cc\u062a",popupLocationBar:"\u0646\u0648\u0627\u0631 \u0645\u0648\u0642\u0639\u06cc\u062a",popupToolbar:"\u0646\u0648\u0627\u0631\u0627\u0628\u0632\u0627\u0631",popupMenuBar:"\u0646\u0648\u0627\u0631 \u0645\u0646\u0648",popupFullScreen:"\u062a\u0645\u0627\u0645\u0635\u0641\u062d\u0647 (IE)",popupScrollBars:"\u0645\u06cc\u0644\u0647\u0647\u0627\u06cc \u067e\u06cc\u0645\u0627\u06cc\u0634",
+popupDependent:"\u0648\u0627\u0628\u0633\u062a\u0647 (Netscape)",popupLeft:"\u0645\u0648\u0642\u0639\u06cc\u062a \u0686\u067e",popupTop:"\u0645\u0648\u0642\u0639\u06cc\u062a \u0628\u0627\u0644\u0627",id:"\u0634\u0646\u0627\u0633\u0647",langDir:"\u062c\u0647\u062a\u0646\u0645\u0627\u06cc \u0632\u0628\u0627\u0646",langDirLTR:"\u0686\u067e \u0628\u0647 \u0631\u0627\u0633\u062a (LTR)",langDirRTL:"\u0631\u0627\u0633\u062a \u0628\u0647 \u0686\u067e (RTL)",acccessKey:"\u06a9\u0644\u06cc\u062f \u062f\u0633\u062a\u06cc\u0627\u0628\u06cc",
+name:"\u0646\u0627\u0645",langCode:"\u062c\u0647\u062a\u0646\u0645\u0627\u06cc \u0632\u0628\u0627\u0646",tabIndex:"\u0646\u0645\u0627\u06cc\u0647\u0674 \u062f\u0633\u062a\u0631\u0633\u06cc \u0628\u0627 \u0628\u0631\u06af\u0647",advisoryTitle:"\u0639\u0646\u0648\u0627\u0646 \u06a9\u0645\u06a9\u06cc",advisoryContentType:"\u0646\u0648\u0639 \u0645\u062d\u062a\u0648\u0627\u06cc \u06a9\u0645\u06a9\u06cc",cssClasses:"\u06a9\u0644\u0627\u0633\u0647\u0627\u06cc \u0634\u06cc\u0648\u0647\u0646\u0627\u0645\u0647(Stylesheet)",
+charset:"\u0646\u0648\u06cc\u0633\u0647\u06af\u0627\u0646 \u0645\u0646\u0628\u0639 \u067e\u06cc\u0648\u0646\u062f \u0634\u062f\u0647",styles:"\u0634\u06cc\u0648\u0647(style)",rel:"\u0648\u0627\u0628\u0633\u062a\u06af\u06cc",selectAnchor:"\u06cc\u06a9 \u0644\u0646\u06af\u0631 \u0628\u0631\u06af\u0632\u06cc\u0646\u06cc\u062f",anchorName:"\u0628\u0627 \u0646\u0627\u0645 \u0644\u0646\u06af\u0631",anchorId:"\u0628\u0627 \u0634\u0646\u0627\u0633\u0647\u0674 \u0627\u0644\u0645\u0627\u0646",emailAddress:"\u0646\u0634\u0627\u0646\u06cc \u067e\u0633\u062a \u0627\u0644\u06a9\u062a\u0631\u0648\u0646\u06cc\u06a9\u06cc",
+emailSubject:"\u0645\u0648\u0636\u0648\u0639 \u067e\u06cc\u0627\u0645",emailBody:"\u0645\u062a\u0646 \u067e\u06cc\u0627\u0645",noAnchors:"(\u062f\u0631 \u0627\u06cc\u0646 \u0633\u0646\u062f \u0644\u0646\u06af\u0631\u06cc \u062f\u0631\u062f\u0633\u062a\u0631\u0633 \u0646\u06cc\u0633\u062a)",noUrl:"\u0644\u0637\u0641\u0627 URL \u067e\u06cc\u0648\u0646\u062f \u0631\u0627 \u0628\u0646\u0648\u06cc\u0633\u06cc\u062f",noEmail:"\u0644\u0637\u0641\u0627 \u0646\u0634\u0627\u0646\u06cc \u067e\u0633\u062a \u0627\u0644\u06a9\u062a\u0631\u0648\u0646\u06cc\u06a9\u06cc \u0631\u0627 \u0628\u0646\u0648\u06cc\u0633\u06cc\u062f"},
+anchor:{toolbar:"\u06af\u0646\u062c\u0627\u0646\u062f\u0646/\u0648\u06cc\u0631\u0627\u06cc\u0634 \u0644\u0646\u06af\u0631",menu:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0644\u0646\u06af\u0631",title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0644\u0646\u06af\u0631",name:"\u0646\u0627\u0645 \u0644\u0646\u06af\u0631",errorName:"\u0644\u0637\u0641\u0627 \u0646\u0627\u0645 \u0644\u0646\u06af\u0631 \u0631\u0627 \u0628\u0646\u0648\u06cc\u0633\u06cc\u062f",remove:"\u062d\u0630\u0641 \u0644\u0646\u06af\u0631"},
+list:{numberedTitle:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u0647\u0631\u0633\u062a \u0634\u0645\u0627\u0631\u0647\u062f\u0627\u0631",bulletedTitle:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u0647\u0631\u0633\u062a \u06af\u0644\u0648\u0644\u0647\u062f\u0627\u0631",type:"\u0646\u0648\u0639",start:"\u0634\u0631\u0648\u0639",validateStartNumber:"\u0641\u0647\u0631\u0633\u062a \u0634\u0645\u0627\u0631\u0647 \u0634\u0631\u0648\u0639 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0635\u062d\u06cc\u062d \u0628\u0627\u0634\u062f.",
+circle:"\u062f\u0627\u06cc\u0631\u0647",disc:"\u0635\u0641\u062d\u0647 \u06af\u0631\u062f",square:"\u0686\u0647\u0627\u0631\u06af\u0648\u0634",none:"\u0647\u06cc\u0686",notset:"<\u062a\u0646\u0638\u06cc\u0645 \u0646\u0634\u062f\u0647>",armenian:"\u0634\u0645\u0627\u0631\u0647\u06af\u0630\u0627\u0631\u06cc \u0627\u0631\u0645\u0646\u06cc",georgian:"\u0634\u0645\u0627\u0631\u0647\u06af\u0630\u0627\u0631\u06cc \u06af\u0631\u06cc\u06af\u0648\u0631\u06cc\u0646 (an, ban, gan, etc.)",lowerRoman:"\u067e\u0627\u0646\u0648\u06cc\u0633 \u0631\u0648\u0645\u06cc (i, ii, iii, iv, v, etc.)",
+upperRoman:"\u0628\u0627\u0644\u0627\u0646\u0648\u06cc\u0633 \u0631\u0648\u0645\u06cc (I, II, III, IV, V, etc.)",lowerAlpha:"\u067e\u0627\u0646\u0648\u06cc\u0633 \u0627\u0644\u0641\u0628\u0627\u06cc\u06cc (a, b, c, d, e, etc.)",upperAlpha:"\u0628\u0627\u0644\u0627\u0646\u0648\u06cc\u0633 \u0627\u0644\u0641\u0628\u0627\u06cc\u06cc (A, B, C, D, E, etc.)",lowerGreek:"\u067e\u0627\u0646\u0648\u06cc\u0633 \u06cc\u0648\u0646\u0627\u0646\u06cc (alpha, beta, gamma, etc.)",decimal:"\u062f\u0647\u062f\u0647\u06cc (1, 2, 3, etc.)",
+decimalLeadingZero:"\u062f\u0647\u062f\u0647\u06cc \u0647\u0645\u0631\u0627\u0647 \u0628\u0627 \u0635\u0641\u0631 (01, 02, 03, etc.)"},findAndReplace:{title:"\u062c\u0633\u062a\u062c\u0648 \u0648 \u062c\u0627\u06cc\u06af\u0632\u06cc\u0646\u06cc",find:"\u062c\u0633\u062a\u062c\u0648",replace:"\u062c\u0627\u06cc\u06af\u0632\u06cc\u0646\u06cc",findWhat:"\u0686\u0647 \u0686\u06cc\u0632 \u0631\u0627 \u0645\u06cc\u06cc\u0627\u0628\u06cc\u062f:",replaceWith:"\u062c\u0627\u06cc\u06af\u0632\u06cc\u0646\u06cc \u0628\u0627:",
+notFoundMsg:"\u0645\u062a\u0646 \u0645\u0648\u0631\u062f\u0646\u0638\u0631 \u06cc\u0627\u0641\u062a \u0646\u0634\u062f.",findOptions:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u062c\u0633\u062a\u062c\u0648",matchCase:"\u0647\u0645\u0633\u0627\u0646\u06cc \u062f\u0631 \u0628\u0632\u0631\u06af\u06cc \u0648 \u06a9\u0648\u0686\u06a9\u06cc \u0646\u0648\u06cc\u0633\u0647\u0647\u0627",matchWord:"\u0647\u0645\u0633\u0627\u0646\u06cc \u0628\u0627 \u0648\u0627\u0698\u0647\u0674 \u06a9\u0627\u0645\u0644",
+matchCyclic:"\u0647\u0645\u0633\u0627\u0646\u06cc \u0628\u0627 \u0686\u0631\u062e\u0647",replaceAll:"\u062c\u0627\u06cc\u06af\u0632\u06cc\u0646\u06cc \u0647\u0645\u0647\u0674 \u06cc\u0627\u0641\u062a\u0647\u0647\u0627",replaceSuccessMsg:"%1 \u0631\u062e\u062f\u0627\u062f \u062c\u0627\u06cc\u06af\u0632\u06cc\u0646 \u0634\u062f."},table:{toolbar:"\u062c\u062f\u0648\u0644",title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062c\u062f\u0648\u0644",menu:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062c\u062f\u0648\u0644",
+deleteTable:"\u067e\u0627\u06a9 \u06a9\u0631\u062f\u0646 \u062c\u062f\u0648\u0644",rows:"\u0633\u0637\u0631\u0647\u0627",columns:"\u0633\u062a\u0648\u0646\u0647\u0627",border:"\u0627\u0646\u062f\u0627\u0632\u0647\u0674 \u0644\u0628\u0647",widthPx:"\u067e\u06cc\u06a9\u0633\u0644",widthPc:"\u062f\u0631\u0635\u062f",widthUnit:"\u0648\u0627\u062d\u062f \u067e\u0647\u0646\u0627",cellSpace:"\u0641\u0627\u0635\u0644\u0647\u0674 \u0645\u06cc\u0627\u0646 \u0633\u0644\u0648\u0644\u0647\u0627",cellPad:"\u0641\u0627\u0635\u0644\u0647\u0674 \u067e\u0631\u0634\u062f\u0647 \u062f\u0631 \u0633\u0644\u0648\u0644",
+caption:"\u0639\u0646\u0648\u0627\u0646",summary:"\u062e\u0644\u0627\u0635\u0647",headers:"\u0633\u0631\u0646\u0648\u06cc\u0633\u0647\u0627",headersNone:"\u0647\u06cc\u0686",headersColumn:"\u0627\u0648\u0644\u06cc\u0646 \u0633\u062a\u0648\u0646",headersRow:"\u0627\u0648\u0644\u06cc\u0646 \u0631\u062f\u06cc\u0641",headersBoth:"\u0647\u0631\u062f\u0648",invalidRows:"\u062a\u0639\u062f\u0627\u062f \u0631\u062f\u06cc\u0641\u0647\u0627 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0632\u0631\u06af\u062a\u0631 \u0627\u0632 0 \u0628\u0627\u0634\u062f.",
+invalidCols:"\u062a\u0639\u062f\u0627\u062f \u0633\u062a\u0648\u0646\u0647\u0627 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0632\u0631\u06af\u062a\u0631 \u0627\u0632 0 \u0628\u0627\u0634\u062f.",invalidBorder:"\u0645\u0642\u062f\u0627\u0631 \u0627\u0646\u062f\u0627\u0632\u0647 \u062e\u0637\u0648\u0637 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidWidth:"\u0645\u0642\u062f\u0627\u0631 \u067e\u0647\u0646\u0627\u06cc \u062c\u062f\u0648\u0644 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",
+invalidHeight:"\u0645\u0642\u062f\u0627\u0631 \u0627\u0631\u062a\u0641\u0627\u0639  \u062c\u062f\u0648\u0644 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidCellSpacing:"\u0645\u0642\u062f\u0627\u0631 \u0641\u0627\u0635\u0644\u0647\u06af\u0630\u0627\u0631\u06cc \u0633\u0644\u0648\u0644 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidCellPadding:"\u0628\u0627\u0644\u0634\u062a\u06a9 \u0633\u0644\u0648\u0644 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",
+cell:{menu:"\u0633\u0644\u0648\u0644",insertBefore:"\u0627\u0641\u0632\u0648\u062f\u0646 \u0633\u0644\u0648\u0644 \u0642\u0628\u0644 \u0627\u0632",insertAfter:"\u0627\u0641\u0632\u0648\u062f\u0646 \u0633\u0644\u0648\u0644 \u0628\u0639\u062f \u0627\u0632",deleteCell:"\u062d\u0630\u0641 \u0633\u0644\u0648\u0644\u0647\u0627",merge:"\u0627\u062f\u063a\u0627\u0645 \u0633\u0644\u0648\u0644\u0647\u0627",mergeRight:"\u0627\u062f\u063a\u0627\u0645 \u0628\u0647 \u0631\u0627\u0633\u062a",mergeDown:"\u0627\u062f\u063a\u0627\u0645 \u0628\u0647 \u067e\u0627\u06cc\u06cc\u0646",
+splitHorizontal:"\u062c\u062f\u0627 \u06a9\u0631\u062f\u0646 \u0627\u0641\u0642\u06cc \u0633\u0644\u0648\u0644",splitVertical:"\u062c\u062f\u0627 \u06a9\u0631\u062f\u0646 \u0639\u0645\u0648\u062f\u06cc \u0633\u0644\u0648\u0644",title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0633\u0644\u0648\u0644",cellType:"\u0646\u0648\u0639 \u0633\u0644\u0648\u0644",rowSpan:"\u0645\u062d\u062f\u0648\u062f\u0647 \u0631\u062f\u06cc\u0641\u0647\u0627",colSpan:"\u0645\u062d\u062f\u0648\u062f\u0647 \u0633\u062a\u0648\u0646\u0647\u0627",
+wordWrap:"\u0634\u06a9\u0633\u062a\u0646 \u06a9\u0644\u0645\u0647",hAlign:"\u0686\u06cc\u0646\u0634 \u0627\u0641\u0642\u06cc",vAlign:"\u0686\u06cc\u0646\u0634 \u0639\u0645\u0648\u062f\u06cc",alignBaseline:"\u062e\u0637 \u0645\u0628\u0646\u0627",bgColor:"\u0631\u0646\u06af \u0632\u0645\u06cc\u0646\u0647",borderColor:"\u0631\u0646\u06af \u062e\u0637\u0648\u0637",data:"\u0627\u0637\u0644\u0627\u0639\u0627\u062a",header:"\u0633\u0631\u0646\u0648\u06cc\u0633",yes:"\u0628\u0644\u0647",no:"\u062e\u06cc\u0631",
+invalidWidth:"\u0639\u0631\u0636 \u0633\u0644\u0648\u0644 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidHeight:"\u0627\u0631\u062a\u0641\u0627\u0639 \u0633\u0644\u0648\u0644 \u0628\u0627\u06cc\u062f \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidRowSpan:"\u0645\u0642\u062f\u0627\u0631 \u0645\u062d\u062f\u0648\u062f\u0647 \u0631\u062f\u06cc\u0641\u0647\u0627 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",invalidColSpan:"\u0645\u0642\u062f\u0627\u0631 \u0645\u062d\u062f\u0648\u062f\u0647 \u0633\u062a\u0648\u0646\u0647\u0627 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",
+chooseColor:"\u0627\u0646\u062a\u062e\u0627\u0628"},row:{menu:"\u0633\u0637\u0631",insertBefore:"\u0627\u0641\u0632\u0648\u062f\u0646 \u0633\u0637\u0631 \u0642\u0628\u0644 \u0627\u0632",insertAfter:"\u0627\u0641\u0632\u0648\u062f\u0646 \u0633\u0637\u0631 \u0628\u0639\u062f \u0627\u0632",deleteRow:"\u062d\u0630\u0641 \u0633\u0637\u0631\u0647\u0627"},column:{menu:"\u0633\u062a\u0648\u0646",insertBefore:"\u0627\u0641\u0632\u0648\u062f\u0646 \u0633\u062a\u0648\u0646 \u0642\u0628\u0644 \u0627\u0632",insertAfter:"\u0627\u0641\u0632\u0648\u062f\u0646 \u0633\u062a\u0648\u0646 \u0628\u0639\u062f \u0627\u0632",
+deleteColumn:"\u062d\u0630\u0641 \u0633\u062a\u0648\u0646\u0647\u0627"}},button:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062f\u06a9\u0645\u0647",text:"\u0645\u062a\u0646 (\u0645\u0642\u062f\u0627\u0631)",type:"\u0646\u0648\u0639",typeBtn:"\u062f\u06a9\u0645\u0647",typeSbm:"\u062b\u0628\u062a",typeRst:"\u0628\u0627\u0632\u0646\u0634\u0627\u0646\u06cc (Reset)"},checkboxAndRadio:{checkboxTitle:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062e\u0627\u0646\u0647\u0674 \u06af\u0632\u06cc\u0646\u0647\u0627\u06cc",
+radioTitle:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062f\u06a9\u0645\u0647\u0674 \u0631\u0627\u062f\u06cc\u0648\u06cc\u06cc",value:"\u0645\u0642\u062f\u0627\u0631",selected:"\u0628\u0631\u06af\u0632\u06cc\u062f\u0647"},form:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u0631\u0645",menu:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u0631\u0645",action:"\u0631\u0648\u06cc\u062f\u0627\u062f",method:"\u0645\u062a\u062f",encoding:"\u0631\u0645\u0632\u0646\u06af\u0627\u0631\u06cc"},
+select:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u06cc\u0644\u062f \u0686\u0646\u062f\u06af\u0632\u06cc\u0646\u0647\u0627\u06cc",selectInfo:"\u0627\u0637\u0644\u0627\u0639\u0627\u062a",opAvail:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u062f\u0631\u062f\u0633\u062a\u0631\u0633",value:"\u0645\u0642\u062f\u0627\u0631",size:"\u0627\u0646\u062f\u0627\u0632\u0647",lines:"\u062e\u0637\u0648\u0637",chkMulti:"\u06af\u0632\u06cc\u0646\u0634 \u0686\u0646\u062f\u06af\u0627\u0646\u0647 \u0641\u0631\u0627\u0647\u0645 \u0628\u0627\u0634\u062f",
+opText:"\u0645\u062a\u0646",opValue:"\u0645\u0642\u062f\u0627\u0631",btnAdd:"\u0627\u0641\u0632\u0648\u062f\u0646",btnModify:"\u0648\u06cc\u0631\u0627\u06cc\u0634",btnUp:"\u0628\u0627\u0644\u0627",btnDown:"\u067e\u0627\u0626\u06cc\u0646",btnSetValue:"\u062a\u0646\u0638\u06cc\u0645 \u0628\u0647 \u0639\u0646\u0648\u0627\u0646 \u0645\u0642\u062f\u0627\u0631 \u0628\u0631\u06af\u0632\u06cc\u062f\u0647",btnDelete:"\u067e\u0627\u06a9\u06a9\u0631\u062f\u0646"},textarea:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0646\u0627\u062d\u06cc\u0647\u0674 \u0645\u062a\u0646\u06cc",
+cols:"\u0633\u062a\u0648\u0646\u0647\u0627",rows:"\u0633\u0637\u0631\u0647\u0627"},textfield:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u06cc\u0644\u062f \u0645\u062a\u0646\u06cc",name:"\u0646\u0627\u0645",value:"\u0645\u0642\u062f\u0627\u0631",charWidth:"\u067e\u0647\u0646\u0627\u06cc \u0646\u0648\u06cc\u0633\u0647",maxChars:"\u0628\u06cc\u0634\u06cc\u0646\u0647\u0674 \u0646\u0648\u06cc\u0633\u0647\u0647\u0627",type:"\u0646\u0648\u0639",typeText:"\u0645\u062a\u0646",typePass:"\u06af\u0630\u0631\u0648\u0627\u0698\u0647"},
+hidden:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u06cc\u0644\u062f \u067e\u0646\u0647\u0627\u0646",name:"\u0646\u0627\u0645",value:"\u0645\u0642\u062f\u0627\u0631"},image:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062a\u0635\u0648\u06cc\u0631",titleButton:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062f\u06a9\u0645\u0647\u0674 \u062a\u0635\u0648\u06cc\u0631\u06cc",menu:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u062a\u0635\u0648\u06cc\u0631",infoTab:"\u0627\u0637\u0644\u0627\u0639\u0627\u062a \u062a\u0635\u0648\u06cc\u0631",
+btnUpload:"\u0628\u0647 \u0633\u0631\u0648\u0631 \u0628\u0641\u0631\u0633\u062a",upload:"\u0627\u0646\u062a\u0642\u0627\u0644 \u0628\u0647 \u0633\u0631\u0648\u0631",alt:"\u0645\u062a\u0646 \u062c\u0627\u06cc\u06af\u0632\u06cc\u0646",lockRatio:"\u0642\u0641\u0644 \u06a9\u0631\u062f\u0646 \u0646\u0633\u0628\u062a",resetSize:"\u0628\u0627\u0632\u0646\u0634\u0627\u0646\u06cc \u0627\u0646\u062f\u0627\u0632\u0647",border:"\u0644\u0628\u0647",hSpace:"\u0641\u0627\u0635\u0644\u0647\u0674 \u0627\u0641\u0642\u06cc",
+vSpace:"\u0641\u0627\u0635\u0644\u0647\u0674 \u0639\u0645\u0648\u062f\u06cc",alertUrl:"\u0644\u0637\u0641\u0627 URL \u062a\u0635\u0648\u06cc\u0631 \u0631\u0627 \u0628\u0646\u0648\u06cc\u0633\u06cc\u062f",linkTab:"\u067e\u06cc\u0648\u0646\u062f",button2Img:"\u0622\u06cc\u0627 \u0645\u0627\u06cc\u0644\u06cc\u062f \u0627\u0632 \u06cc\u06a9 \u062a\u0635\u0648\u06cc\u0631 \u0633\u0627\u062f\u0647 \u0631\u0648\u06cc \u062f\u06a9\u0645\u0647 \u062a\u0635\u0648\u06cc\u0631\u06cc \u0627\u0646\u062a\u062e\u0627\u0628 \u0634\u062f\u0647 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f\u061f",
+img2Button:"\u0622\u06cc\u0627 \u0645\u0627\u06cc\u0644\u06cc\u062f \u0627\u0632 \u06cc\u06a9 \u062f\u06a9\u0645\u0647 \u062a\u0635\u0648\u06cc\u0631\u06cc \u0631\u0648\u06cc \u062a\u0635\u0648\u06cc\u0631 \u0627\u0646\u062a\u062e\u0627\u0628 \u0634\u062f\u0647 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f\u061f",urlMissing:"\u0622\u062f\u0631\u0633 URL \u0627\u0635\u0644\u06cc \u062a\u0635\u0648\u06cc\u0631 \u06cc\u0627\u0641\u062a \u0646\u0634\u062f.",validateBorder:"\u0645\u0642\u062f\u0627\u0631 \u062e\u0637\u0648\u0637 \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",
+validateHSpace:"\u0645\u0642\u062f\u0627\u0631 \u0641\u0627\u0635\u0644\u0647\u06af\u0630\u0627\u0631\u06cc \u0627\u0641\u0642\u06cc \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",validateVSpace:"\u0645\u0642\u062f\u0627\u0631 \u0641\u0627\u0635\u0644\u0647\u06af\u0630\u0627\u0631\u06cc \u0639\u0645\u0648\u062f\u06cc \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f."},flash:{properties:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u0644\u0634",
+propertiesTab:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627",title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0641\u0644\u0634",chkPlay:"\u0622\u063a\u0627\u0632 \u062e\u0648\u062f\u06a9\u0627\u0631",chkLoop:"\u0627\u062c\u0631\u0627\u06cc \u067e\u06cc\u0627\u067e\u06cc",chkMenu:"\u062f\u0631 \u062f\u0633\u062a\u0631\u0633 \u0628\u0648\u062f\u0646 \u0645\u0646\u0648\u06cc \u0641\u0644\u0634",chkFull:"\u0627\u062c\u0627\u0632\u0647 \u062a\u0645\u0627\u0645 \u0635\u0641\u062d\u0647",scale:"\u0645\u0642\u06cc\u0627\u0633",
+scaleAll:"\u0646\u0645\u0627\u06cc\u0634 \u0647\u0645\u0647",scaleNoBorder:"\u0628\u062f\u0648\u0646 \u06a9\u0631\u0627\u0646",scaleFit:"\u062c\u0627\u06cc\u06af\u06cc\u0631\u06cc \u06a9\u0627\u0645\u0644",access:"\u062f\u0633\u062a\u0631\u0633\u06cc \u0628\u0647 \u0627\u0633\u06a9\u0631\u06cc\u067e\u062a",accessAlways:"\u0647\u0645\u06cc\u0634\u0647",accessSameDomain:"\u0647\u0645\u0627\u0646 \u062f\u0627\u0645\u0646\u0647",accessNever:"\u0647\u0631\u06af\u0632",alignAbsBottom:"\u067e\u0627\u0626\u06cc\u0646 \u0645\u0637\u0644\u0642",
+alignAbsMiddle:"\u0648\u0633\u0637 \u0645\u0637\u0644\u0642",alignBaseline:"\u062e\u0637 \u067e\u0627\u06cc\u0647",alignTextTop:"\u0645\u062a\u0646 \u0628\u0627\u0644\u0627",quality:"\u06a9\u06cc\u0641\u06cc\u062a",qualityBest:"\u0628\u0647\u062a\u0631\u06cc\u0646",qualityHigh:"\u0628\u0627\u0644\u0627",qualityAutoHigh:"\u0628\u0627\u0644\u0627 - \u062e\u0648\u062f\u06a9\u0627\u0631",qualityMedium:"\u0645\u062a\u0648\u0633\u0637",qualityAutoLow:"\u067e\u0627\u06cc\u06cc\u0646 - \u062e\u0648\u062f\u06a9\u0627\u0631",
+qualityLow:"\u067e\u0627\u06cc\u06cc\u0646",windowModeWindow:"\u067e\u0646\u062c\u0631\u0647",windowModeOpaque:"\u0645\u0627\u062a",windowModeTransparent:"\u0634\u0641\u0627\u0641",windowMode:"\u062d\u0627\u0644\u062a \u067e\u0646\u062c\u0631\u0647",flashvars:"\u0645\u0642\u0627\u062f\u06cc\u0631 \u0628\u0631\u0627\u06cc \u0641\u0644\u0634",bgcolor:"\u0631\u0646\u06af \u067e\u0633\u0632\u0645\u06cc\u0646\u0647",hSpace:"\u0641\u0627\u0635\u0644\u0647\u0674 \u0627\u0641\u0642\u06cc",vSpace:"\u0641\u0627\u0635\u0644\u0647\u0674 \u0639\u0645\u0648\u062f\u06cc",
+validateSrc:"\u0644\u0637\u0641\u0627 URL \u067e\u06cc\u0648\u0646\u062f \u0631\u0627 \u0628\u0646\u0648\u06cc\u0633\u06cc\u062f",validateHSpace:"\u0645\u0642\u062f\u0627\u0631 \u0641\u0627\u0635\u0644\u0647\u06af\u0630\u0627\u0631\u06cc \u0627\u0641\u0642\u06cc \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f.",validateVSpace:"\u0645\u0642\u062f\u0627\u0631 \u0641\u0627\u0635\u0644\u0647\u06af\u0630\u0627\u0631\u06cc \u0639\u0645\u0648\u062f\u06cc \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0627\u0634\u062f."},
+spellCheck:{toolbar:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627",title:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627",notAvailable:"\u0628\u0627 \u0639\u0631\u0636 \u067e\u0648\u0632\u0634 \u062e\u062f\u0645\u0627\u062a \u0627\u0644\u0627\u0646 \u062f\u0631 \u062f\u0633\u062a\u0631\u0633 \u0646\u06cc\u0633\u062a\u0646\u062f.",errorLoading:"\u062e\u0637\u0627 \u062f\u0631 \u0628\u0627\u0631\u06af\u06cc\u0631\u06cc \u0628\u0631\u0646\u0627\u0645\u0647 \u062e\u062f\u0645\u0627\u062a \u0645\u06cc\u0632\u0628\u0627\u0646: %s.",
+notInDic:"\u062f\u0631 \u0648\u0627\u0698\u0647~\u0646\u0627\u0645\u0647 \u06cc\u0627\u0641\u062a \u0646\u0634\u062f",changeTo:"\u062a\u063a\u06cc\u06cc\u0631 \u0628\u0647",btnIgnore:"\u0686\u0634\u0645\u067e\u0648\u0634\u06cc",btnIgnoreAll:"\u0686\u0634\u0645\u067e\u0648\u0634\u06cc \u0647\u0645\u0647",btnReplace:"\u062c\u0627\u06cc\u06af\u0632\u06cc\u0646\u06cc",btnReplaceAll:"\u062c\u0627\u06cc\u06af\u0632\u06cc\u0646\u06cc \u0647\u0645\u0647",btnUndo:"\u0648\u0627\u0686\u06cc\u0646\u0634",noSuggestions:"- \u067e\u06cc\u0634\u0646\u0647\u0627\u062f\u06cc \u0646\u06cc\u0633\u062a -",
+progress:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627 \u062f\u0631 \u062d\u0627\u0644 \u0627\u0646\u062c\u0627\u0645...",noMispell:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627 \u0627\u0646\u062c\u0627\u0645 \u0634\u062f. \u0647\u06cc\u0686 \u063a\u0644\u0637 \u0627\u0645\u0644\u0627\u0626\u06cc \u06cc\u0627\u0641\u062a \u0646\u0634\u062f",noChanges:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627 \u0627\u0646\u062c\u0627\u0645 \u0634\u062f. \u0647\u06cc\u0686 \u0648\u0627\u0698\u0647\u0627\u06cc \u062a\u063a\u06cc\u06cc\u0631 \u0646\u06cc\u0627\u0641\u062a",
+oneChange:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627 \u0627\u0646\u062c\u0627\u0645 \u0634\u062f. \u06cc\u06a9 \u0648\u0627\u0698\u0647 \u062a\u063a\u06cc\u06cc\u0631 \u06cc\u0627\u0641\u062a",manyChanges:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627 \u0627\u0646\u062c\u0627\u0645 \u0634\u062f. %1 \u0648\u0627\u0698\u0647 \u062a\u063a\u06cc\u06cc\u0631 \u06cc\u0627\u0641\u062a",ieSpellDownload:"\u0628\u0631\u0631\u0633\u06cc \u06a9\u0646\u0646\u062f\u0647\u0674 \u0627\u0645\u0644\u0627 \u0646\u0635\u0628 \u0646\u0634\u062f\u0647 \u0627\u0633\u062a. \u0622\u06cc\u0627 \u0645\u06cc\u062e\u0648\u0627\u0647\u06cc\u062f \u0622\u0646 \u0631\u0627 \u0647\u0645\u0627\u06a9\u0646\u0648\u0646 \u062f\u0631\u06cc\u0627\u0641\u062a \u06a9\u0646\u06cc\u062f\u061f"},
+smiley:{toolbar:"\u062e\u0646\u062f\u0627\u0646\u06a9",title:"\u06af\u0646\u062c\u0627\u0646\u062f\u0646 \u062e\u0646\u062f\u0627\u0646\u06a9",options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u062e\u0646\u062f\u0627\u0646\u06a9"},elementsPath:{eleLabel:"\u0645\u0633\u06cc\u0631 \u0639\u0646\u0627\u0635\u0631",eleTitle:"%1 \u0639\u0646\u0635\u0631"},numberedlist:"\u0641\u0647\u0631\u0633\u062a \u0634\u0645\u0627\u0631\u0647\u062f\u0627\u0631",bulletedlist:"\u0641\u0647\u0631\u0633\u062a \u0646\u0642\u0637\u0647\u0627\u06cc",
+indent:"\u0627\u0641\u0632\u0627\u06cc\u0634 \u062a\u0648\u0631\u0641\u062a\u06af\u06cc",outdent:"\u06a9\u0627\u0647\u0634 \u062a\u0648\u0631\u0641\u062a\u06af\u06cc",justify:{left:"\u0686\u067e\u0686\u06cc\u0646",center:"\u0645\u06cc\u0627\u0646\u0686\u06cc\u0646",right:"\u0631\u0627\u0633\u062a\u0686\u06cc\u0646",block:"\u0628\u0644\u0648\u06a9\u0686\u06cc\u0646"},blockquote:"\u0628\u0644\u0648\u06a9 \u0646\u0642\u0644 \u0642\u0648\u0644",clipboard:{title:"\u0686\u0633\u0628\u0627\u0646\u062f\u0646",
+cutError:"\u062a\u0646\u0638\u06cc\u0645\u0627\u062a \u0627\u0645\u0646\u06cc\u062a\u06cc \u0645\u0631\u0648\u0631\u06af\u0631 \u0634\u0645\u0627 \u0627\u062c\u0627\u0632\u0647 \u0646\u0645\u06cc\u062f\u0647\u062f \u06a9\u0647 \u0648\u06cc\u0631\u0627\u06cc\u0634\u06af\u0631 \u0628\u0647 \u0637\u0648\u0631 \u062e\u0648\u062f\u06a9\u0627\u0631 \u0639\u0645\u0644\u06a9\u0631\u062f\u0647\u0627\u06cc \u0628\u0631\u0634 \u0631\u0627 \u0627\u0646\u062c\u0627\u0645 \u062f\u0647\u062f. \u0644\u0637\u0641\u0627 \u0628\u0627 \u062f\u06a9\u0645\u0647\u0647\u0627\u06cc \u0635\u0641\u062d\u0647 \u06a9\u0644\u06cc\u062f \u0627\u06cc\u0646 \u06a9\u0627\u0631 \u0631\u0627 \u0627\u0646\u062c\u0627\u0645 \u062f\u0647\u06cc\u062f (Ctrl/Cmd+X).",
+copyError:"\u062a\u0646\u0638\u06cc\u0645\u0627\u062a \u0627\u0645\u0646\u06cc\u062a\u06cc \u0645\u0631\u0648\u0631\u06af\u0631 \u0634\u0645\u0627 \u0627\u062c\u0627\u0632\u0647 \u0646\u0645\u06cc\u062f\u0647\u062f \u06a9\u0647 \u0648\u06cc\u0631\u0627\u06cc\u0634\u06af\u0631 \u0628\u0647 \u0637\u0648\u0631 \u062e\u0648\u062f\u06a9\u0627\u0631 \u0639\u0645\u0644\u06a9\u0631\u062f\u0647\u0627\u06cc \u06a9\u067e\u06cc \u06a9\u0631\u062f\u0646 \u0631\u0627 \u0627\u0646\u062c\u0627\u0645 \u062f\u0647\u062f. \u0644\u0637\u0641\u0627 \u0628\u0627 \u062f\u06a9\u0645\u0647\u0647\u0627\u06cc \u0635\u0641\u062d\u0647 \u06a9\u0644\u06cc\u062f \u0627\u06cc\u0646 \u06a9\u0627\u0631 \u0631\u0627 \u0627\u0646\u062c\u0627\u0645 \u062f\u0647\u06cc\u062f (Ctrl/Cmd+C).",
+pasteMsg:"\u0644\u0637\u0641\u0627 \u0645\u062a\u0646 \u0631\u0627 \u0628\u0627 \u06a9\u0644\u06cc\u062f\u0647\u0627\u06cc (<STRONG>Ctrl/Cmd+V</STRONG>) \u062f\u0631 \u0627\u06cc\u0646 \u062c\u0639\u0628\u0647\u0674 \u0645\u062a\u0646\u06cc \u0628\u0686\u0633\u0628\u0627\u0646\u06cc\u062f \u0648 <STRONG>\u067e\u0630\u06cc\u0631\u0634</STRONG> \u0631\u0627 \u0628\u0632\u0646\u06cc\u062f.",securityMsg:"\u0628\u0647 \u062e\u0627\u0637\u0631 \u062a\u0646\u0638\u06cc\u0645\u0627\u062a \u0627\u0645\u0646\u06cc\u062a\u06cc \u0645\u0631\u0648\u0631\u06af\u0631 \u0634\u0645\u0627\u060c \u0648\u06cc\u0631\u0627\u06cc\u0634\u06af\u0631 \u0646\u0645\u06cc\u062a\u0648\u0627\u0646\u062f \u062f\u0633\u062a\u0631\u0633\u06cc \u0645\u0633\u062a\u0642\u06cc\u0645 \u0628\u0647 \u062f\u0627\u062f\u0647\u0647\u0627\u06cc clipboard \u062f\u0627\u0634\u062a\u0647 \u0628\u0627\u0634\u062f. \u0634\u0645\u0627 \u0628\u0627\u06cc\u062f \u062f\u0648\u0628\u0627\u0631\u0647 \u0622\u0646\u0631\u0627 \u062f\u0631 \u0627\u06cc\u0646 \u067e\u0646\u062c\u0631\u0647 \u0628\u0686\u0633\u0628\u0627\u0646\u06cc\u062f.",
+pasteArea:"\u0645\u062d\u0644 \u0686\u0633\u0628\u0627\u0646\u062f\u0646"},pastefromword:{confirmCleanup:"\u0645\u062a\u0646\u06cc \u06a9\u0647 \u0645\u06cc\u062e\u0648\u0627\u0647\u06cc\u062f \u0628\u0686\u0633\u0628\u0627\u0646\u06cc\u062f \u0628\u0647 \u0646\u0638\u0631 \u0645\u06cc\u0631\u0633\u062f \u06a9\u0647 \u0627\u0632 Word \u06a9\u067e\u06cc \u0634\u062f\u0647 \u0627\u0633\u062a. \u0622\u06cc\u0627 \u0645\u06cc\u062e\u0648\u0627\u0647\u06cc\u062f \u0642\u0628\u0644 \u0627\u0632 \u0686\u0633\u0628\u0627\u0646\u062f\u0646 \u0622\u0646 \u0631\u0627 \u067e\u0627\u06a9\u0633\u0627\u0632\u06cc \u06a9\u0646\u06cc\u062f\u061f",
+toolbar:"\u0686\u0633\u0628\u0627\u0646\u062f\u0646 \u0627\u0632 Word",title:"\u0686\u0633\u0628\u0627\u0646\u062f\u0646 \u0627\u0632 Word",error:"\u0628\u0647 \u062f\u0644\u06cc\u0644 \u0628\u0631\u0648\u0632 \u062e\u0637\u0627\u06cc \u062f\u0627\u062e\u0644\u06cc \u0627\u0645\u06a9\u0627\u0646 \u067e\u0627\u06a9\u0633\u0627\u0632\u06cc \u0627\u0637\u0644\u0627\u0639\u0627\u062a \u0628\u0627\u0632\u0646\u0634\u0627\u0646\u06cc \u0634\u062f\u0647 \u0648\u062c\u0648\u062f \u0646\u062f\u0627\u0631\u062f."},
+pasteText:{button:"\u0686\u0633\u0628\u0627\u0646\u062f\u0646 \u0628\u0647 \u0639\u0646\u0648\u0627\u0646 \u0645\u062a\u0646 \u0650\u0633\u0627\u062f\u0647",title:"\u0686\u0633\u0628\u0627\u0646\u062f\u0646 \u0628\u0647 \u0639\u0646\u0648\u0627\u0646 \u0645\u062a\u0646 \u0650\u0633\u0627\u062f\u0647"},templates:{button:"\u0627\u0644\u06af\u0648\u0647\u0627",title:"\u0627\u0644\u06af\u0648\u0647\u0627\u06cc \u0645\u062d\u062a\u0648\u06cc\u0627\u062a",options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u0627\u0644\u06af\u0648",
+insertOption:"\u0645\u062d\u062a\u0648\u06cc\u0627\u062a \u06a9\u0646\u0648\u0646\u06cc \u062c\u0627\u06cc\u06af\u0632\u06cc\u0646 \u0634\u0648\u0646\u062f",selectPromptMsg:"\u0644\u0637\u0641\u0627 \u0627\u0644\u06af\u0648\u06cc \u0645\u0648\u0631\u062f\u0646\u0638\u0631 \u0631\u0627 \u0628\u0631\u0627\u06cc \u0628\u0627\u0632\u06a9\u0631\u062f\u0646 \u062f\u0631 \u0648\u06cc\u0631\u0627\u06cc\u0634\u06af\u0631 \u0628\u0631\u06af\u0632\u06cc\u0646\u06cc\u062f<br>(\u0645\u062d\u062a\u0648\u06cc\u0627\u062a \u06a9\u0646\u0648\u0646\u06cc \u0627\u0632 \u062f\u0633\u062a \u062e\u0648\u0627\u0647\u0646\u062f \u0631\u0641\u062a):",
+emptyListMsg:"(\u0627\u0644\u06af\u0648\u0626\u06cc \u062a\u0639\u0631\u06cc\u0641 \u0646\u0634\u062f\u0647 \u0627\u0633\u062a)"},showBlocks:"\u0646\u0645\u0627\u06cc\u0634 \u0628\u0644\u0648\u06a9\u0647\u0627",stylesCombo:{label:"\u0633\u0628\u06a9",panelTitle:"\u0633\u0628\u06a9\u0647\u0627\u06cc \u0642\u0627\u0644\u0628\u0628\u0646\u062f\u06cc",panelTitle1:"\u0633\u0628\u06a9\u0647\u0627\u06cc \u0628\u0644\u0648\u06a9",panelTitle2:"\u0633\u0628\u06a9\u0647\u0627\u06cc \u062f\u0631\u0648\u0646\u062e\u0637\u06cc",
+panelTitle3:"\u0633\u0628\u06a9\u0647\u0627\u06cc \u0634\u06cc\u0621"},format:{label:"\u0641\u0631\u0645\u062a",panelTitle:"\u0641\u0631\u0645\u062a",tag_p:"\u0646\u0631\u0645\u0627\u0644",tag_pre:"\u0641\u0631\u0645\u062a \u0634\u062f\u0647",tag_address:"\u0622\u062f\u0631\u0633",tag_h1:"\u0633\u0631\u0646\u0648\u06cc\u0633 1",tag_h2:"\u0633\u0631\u0646\u0648\u06cc\u0633 2",tag_h3:"\u0633\u0631\u0646\u0648\u06cc\u0633 3",tag_h4:"\u0633\u0631\u0646\u0648\u06cc\u0633 4",tag_h5:"\u0633\u0631\u0646\u0648\u06cc\u0633 5",
+tag_h6:"\u0633\u0631\u0646\u0648\u06cc\u0633 6",tag_div:"\u0628\u0646\u062f"},div:{title:"\u0627\u06cc\u062c\u0627\u062f \u06cc\u06a9 \u0645\u062d\u0644 DIV",toolbar:"\u0627\u06cc\u062c\u0627\u062f \u06cc\u06a9 \u0645\u062d\u0644 DIV",cssClassInputLabel:"\u06a9\u0644\u0627\u0633\u0647\u0627\u06cc \u0634\u06cc\u0648\u0647\u0646\u0627\u0645\u0647",styleSelectLabel:"\u0633\u0628\u06a9",IdInputLabel:"\u0634\u0646\u0627\u0633\u0647",languageCodeInputLabel:" \u06a9\u062f \u0632\u0628\u0627\u0646",inlineStyleInputLabel:"\u0633\u0628\u06a9 \u062f\u0631\u0648\u0646\u062e\u0637\u06cc(Inline Style)",
+advisoryTitleInputLabel:"\u0639\u0646\u0648\u0627\u0646 \u0645\u0634\u0627\u0648\u0631\u0647",langDirLabel:"\u062c\u0647\u062a \u0646\u0648\u0634\u062a\u0627\u0631\u06cc \u0632\u0628\u0627\u0646",langDirLTRLabel:"\u0686\u067e \u0628\u0647 \u0631\u0627\u0633\u062a (LTR)",langDirRTLLabel:"\u0631\u0627\u0633\u062a \u0628\u0647 \u0686\u067e (RTL)",edit:"\u0648\u06cc\u0631\u0627\u06cc\u0634 Div",remove:"\u062d\u0630\u0641 Div"},iframe:{title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc IFrame",toolbar:"IFrame",
+noUrl:"\u0644\u0637\u0641\u0627 \u0645\u0633\u06cc\u0631 URL iframe \u0631\u0627 \u062f\u0631\u062c \u06a9\u0646\u06cc\u062f",scrolling:"\u0646\u0645\u0627\u06cc\u0634 \u062e\u0637\u06a9\u0634\u0647\u0627",border:"\u0646\u0645\u0627\u06cc\u0634 \u062e\u0637\u0648\u0637 frame"},font:{label:"\u0642\u0644\u0645",voiceLabel:"\u0642\u0644\u0645",panelTitle:"\u0642\u0644\u0645"},fontSize:{label:"\u0627\u0646\u062f\u0627\u0632\u0647",voiceLabel:"\u0627\u0646\u062f\u0627\u0632\u0647 \u0642\u0644\u0645",panelTitle:"\u0627\u0646\u062f\u0627\u0632\u0647"},
+colorButton:{textColorTitle:"\u0631\u0646\u06af \u0645\u062a\u0646",bgColorTitle:"\u0631\u0646\u06af \u067e\u0633\u0632\u0645\u06cc\u0646\u0647",panelTitle:"\u0631\u0646\u06af\u0647\u0627",auto:"\u062e\u0648\u062f\u06a9\u0627\u0631",more:"\u0631\u0646\u06af\u0647\u0627\u06cc \u0628\u06cc\u0634\u062a\u0631..."},colors:{"000":"\u0633\u06cc\u0627\u0647",8E5:"\u062e\u0631\u0645\u0627\u06cc\u06cc","8B4513":"\u0642\u0647\u0648\u0647\u0627\u06cc \u0634\u06a9\u0644\u0627\u062a\u06cc","2F4F4F":"\u0627\u0631\u063a\u0648\u0627\u0646\u06cc \u0645\u0627\u06cc\u0644 \u0628\u0647 \u062e\u0627\u06a9\u0633\u062a\u0631\u06cc",
+"008080":"\u0622\u0628\u06cc \u0645\u0627\u06cc\u0644 \u0628\u0647 \u062e\u0627\u06a9\u0633\u062a\u0631\u06cc","000080":"\u0622\u0628\u06cc \u0633\u06cc\u0631","4B0082":"\u0646\u06cc\u0644\u06cc",696969:"\u062e\u0627\u06a9\u0633\u062a\u0631\u06cc \u062a\u06cc\u0631\u0647",B22222:"\u0622\u062a\u0634 \u0622\u062c\u0631\u06cc",A52A2A:"\u0642\u0647\u0648\u0647\u0627\u06cc",DAA520:"\u0645\u06cc\u0644\u0647\u06cc \u0637\u0644\u0627\u06cc\u06cc","006400":"\u0633\u0628\u0632 \u062a\u06cc\u0631\u0647","40E0D0":"\u0641\u06cc\u0631\u0648\u0632\u0647\u0627\u06cc",
+"0000CD":"\u0622\u0628\u06cc \u0631\u0648\u0634\u0646",800080:"\u0627\u0631\u063a\u0648\u0627\u0646\u06cc",808080:"\u062e\u0627\u06a9\u0633\u062a\u0631\u06cc",F00:"\u0642\u0631\u0645\u0632",FF8C00:"\u0646\u0627\u0631\u0646\u062c\u06cc \u067e\u0631\u0631\u0646\u06af",FFD700:"\u0637\u0644\u0627\u06cc\u06cc","008000":"\u0633\u0628\u0632","0FF":"\u0622\u0628\u06cc \u0645\u0627\u06cc\u0644 \u0628\u0647 \u0633\u0628\u0632","00F":"\u0622\u0628\u06cc",EE82EE:"\u0628\u0646\u0641\u0634",A9A9A9:"\u062e\u0627\u06a9\u0633\u062a\u0631\u06cc \u0645\u0627\u062a",
+FFA07A:"\u0635\u0648\u0631\u062a\u06cc \u06a9\u062f\u0631 \u0631\u0648\u0634\u0646",FFA500:"\u0646\u0627\u0631\u0646\u062c\u06cc",FFFF00:"\u0632\u0631\u062f","00FF00":"\u0641\u0633\u0641\u0631\u06cc",AFEEEE:"\u0641\u06cc\u0631\u0648\u0632\u0647\u0627\u06cc \u0631\u0646\u06af \u067e\u0631\u06cc\u062f\u0647",ADD8E6:"\u0622\u0628\u06cc \u06a9\u0645\u0631\u0646\u06af",DDA0DD:"\u0622\u0644\u0648\u06cc\u06cc",D3D3D3:"\u062e\u0627\u06a9\u0633\u062a\u0631\u06cc \u0631\u0648\u0634\u0646",FFF0F5:"\u0628\u0646\u0641\u0634 \u06a9\u0645\u0631\u0646\u06af",
+FAEBD7:"\u0639\u062a\u06cc\u0642\u0647 \u0633\u0641\u06cc\u062f",FFFFE0:"\u0632\u0631\u062f \u0631\u0648\u0634\u0646",F0FFF0:"\u0639\u0633\u0644\u06cc",F0FFFF:"\u0644\u0627\u062c\u0648\u0631\u062f\u06cc",F0F8FF:"\u0622\u0628\u06cc \u0628\u0631\u0627\u0642",E6E6FA:"\u0628\u0646\u0641\u0634 \u06a9\u0645\u0631\u0646\u06af",FFF:"\u0633\u0641\u06cc\u062f"},scayt:{title:"\u0628\u0631\u0631\u0633\u06cc \u0627\u0645\u0644\u0627\u06cc \u062a\u0627\u06cc\u067e \u0634\u0645\u0627",opera_title:"\u062a\u0648\u0633\u0637 \u0627\u067e\u0631\u0627 \u067e\u0634\u062a\u06cc\u0628\u0627\u0646\u06cc \u0646\u0645\u06cc\u0634\u0648\u062f",
+enable:"\u0641\u0639\u0627\u0644\u0633\u0627\u0632\u06cc SCAYT",disable:"\u063a\u06cc\u0631\u0641\u0639\u0627\u0644\u0633\u0627\u0632\u06cc SCAYT",about:"\u062f\u0631\u0628\u0627\u0631\u0647 SCAYT",toggle:"\u0636\u0627\u0645\u0646 SCAYT",options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627",langs:"\u0632\u0628\u0627\u0646\u0647\u0627",moreSuggestions:"\u067e\u06cc\u0634\u0646\u0647\u0627\u062f\u0647\u0627\u06cc \u0628\u06cc\u0634\u062a\u0631",ignore:"\u0639\u0628\u0648\u0631 \u06a9\u0631\u062f\u0646",
+ignoreAll:"\u0639\u0628\u0648\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0632 \u0647\u0645\u0647",addWord:"\u0627\u0641\u0632\u0648\u062f\u0646 Word",emptyDic:"\u0646\u0627\u0645 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u0646\u0628\u0627\u06cc\u062f \u062e\u0627\u0644\u06cc \u0628\u0627\u0634\u062f.",optionsTab:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627",allCaps:"\u0646\u0627\u062f\u06cc\u062f\u0647 \u06af\u0631\u0641\u062a\u0646 \u0647\u0645\u0647 \u06a9\u0644\u0627\u0647-\u0648\u0627\u0698\u0647\u0647\u0627",
+ignoreDomainNames:"\u0639\u0628\u0648\u0631 \u0627\u0632 \u0646\u0627\u0645\u0647\u0627\u06cc \u062f\u0627\u0645\u0646\u0647",mixedCase:"\u0639\u0628\u0648\u0631 \u0627\u0632 \u06a9\u0644\u0645\u0627\u062a\u06cc \u0645\u0631\u06a9\u0628 \u0627\u0632 \u062d\u0631\u0648\u0641 \u0628\u0632\u0631\u06af \u0648 \u06a9\u0648\u0686\u06a9",mixedWithDigits:"\u0639\u0628\u0648\u0631 \u0627\u0632 \u06a9\u0644\u0645\u0627\u062a \u0628\u0647 \u0647\u0645\u0631\u0627\u0647 \u0639\u062f\u062f",languagesTab:"\u0632\u0628\u0627\u0646\u0647\u0627",
+dictionariesTab:"\u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc\u0647\u0627",dic_field_name:"\u0646\u0627\u0645 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc",dic_create:"\u0627\u06cc\u062c\u0627\u062f",dic_restore:"\u0628\u0627\u0632\u06cc\u0627\u0641\u062a",dic_delete:"\u062d\u0630\u0641",dic_rename:"\u062a\u063a\u06cc\u06cc\u0631 \u0646\u0627\u0645",dic_info:"\u062f\u0631 \u0627\u0628\u062a\u062f\u0627 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u06a9\u0627\u0631\u0628\u0631 \u062f\u0631 \u06a9\u0648\u06a9\u06cc \u0630\u062e\u06cc\u0631\u0647 \u0645\u06cc\u0634\u0648\u062f. \u0628\u0627 \u0627\u06cc\u0646 \u062d\u0627\u0644\u060c \u06a9\u0648\u06a9\u06cc\u0647\u0627 \u062f\u0631 \u0627\u0646\u062f\u0627\u0632\u0647 \u0645\u062d\u062f\u0648\u062f \u0634\u062f\u0647\u0627\u0646\u062f. \u0648\u0642\u062a\u06cc \u06a9\u0647 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u06a9\u0627\u0631\u0628\u0631\u06cc \u0628\u0632\u0631\u06af \u0645\u06cc\u0634\u0648\u062f \u0648 \u0628\u0647 \u0646\u0642\u0637\u0647\u0627\u06cc \u06a9\u0647 \u0646\u0645\u06cc\u062a\u0648\u0627\u0646\u062f \u062f\u0631 \u06a9\u0648\u06a9\u06cc \u0630\u062e\u06cc\u0631\u0647 \u0634\u0648\u062f\u060c \u067e\u0633 \u0627\u0632 \u0622\u0646 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u0645\u0645\u06a9\u0646 \u0627\u0633\u062a \u0628\u0631 \u0631\u0648\u06cc \u0633\u0631\u0648\u0631 \u0645\u0627 \u0630\u062e\u06cc\u0631\u0647 \u0634\u0648\u062f. \u0628\u0631\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u0634\u062e\u0635\u06cc \u0634\u0645\u0627 \u0628\u0631 \u0631\u0648\u06cc \u0633\u0631\u0648\u0631 \u0645\u0627\u060c \u0628\u0627\u06cc\u062f \u06cc\u06a9 \u0646\u0627\u0645 \u0628\u0631\u0627\u06cc \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u062e\u0648\u062f \u0645\u0634\u062e\u0635 \u0646\u0645\u0627\u06cc\u06cc\u062f. \u0627\u06af\u0631 \u0634\u0645\u0627 \u0642\u0628\u0644\u0627 \u06cc\u06a9 \u062f\u06cc\u06a9\u0634\u0646\u0631\u06cc \u0631\u0648\u06cc \u0633\u0631\u0648\u0631 \u0645\u0627 \u0630\u062e\u06cc\u0631\u0647 \u06a9\u0631\u062f\u0647\u0627\u06cc\u062f\u060c \u0644\u0637\u0641\u0627 \u0646\u0627\u0645 \u0622\u0646\u0631\u0627 \u062f\u0631\u062c \u0648 \u0631\u0648\u06cc \u062f\u06a9\u0645\u0647 \u0628\u0627\u0632\u06cc\u0627\u0641\u062a \u06a9\u0644\u06cc\u06a9 \u0646\u0645\u0627\u06cc\u06cc\u062f.",
+aboutTab:"\u062f\u0631\u0628\u0627\u0631\u0647"},about:{title:"\u062f\u0631\u0628\u0627\u0631\u0647 CKEditor",dlgTitle:"\u062f\u0631\u0628\u0627\u0631\u0647 CKEditor",help:"\u0628\u0631\u0631\u0633\u06cc $1 \u0628\u0631\u0627\u06cc \u0631\u0627\u0647\u0646\u0645\u0627\u06cc\u06cc.",userGuide:"\u0631\u0627\u0647\u0646\u0645\u0627\u06cc \u06a9\u0627\u0631\u0628\u0631\u0627\u0646 CKEditor",moreInfo:"\u0628\u0631\u0627\u06cc \u06a9\u0633\u0628 \u0627\u0637\u0644\u0627\u0639\u0627\u062a \u0645\u062c\u0648\u0632 \u0644\u0637\u0641\u0627 \u0628\u0647 \u0648\u0628 \u0633\u0627\u06cc\u062a \u0645\u0627 \u0645\u0631\u0627\u062c\u0639\u0647 \u06a9\u0646\u06cc\u062f:",
+copy:"\u062d\u0642 \u0646\u0634\u0631 &copy; $1. \u06a9\u0644\u06cc\u0647 \u062d\u0642\u0648\u0642 \u0645\u062d\u0641\u0648\u0638 \u0627\u0633\u062a."},maximize:"\u062d\u062f\u0627\u06a9\u062b\u0631 \u06a9\u0631\u062f\u0646",minimize:"\u062d\u062f\u0627\u0642\u0644 \u06a9\u0631\u062f\u0646",fakeobjects:{anchor:"\u0644\u0646\u06af\u0631",flash:"\u0627\u0646\u06cc\u0645\u0634\u0646 \u0641\u0644\u0634",iframe:"IFrame",hiddenfield:"\u0641\u06cc\u0644\u062f \u067e\u0646\u0647\u0627\u0646",unknown:"\u0634\u06cc\u0621 \u0646\u0627\u0634\u0646\u0627\u062e\u062a\u0647"},
+resize:"\u06a9\u0634\u06cc\u062f\u0646 \u0628\u0631\u0627\u06cc \u062a\u063a\u06cc\u06cc\u0631 \u0627\u0646\u062f\u0627\u0632\u0647",colordialog:{title:"\u0627\u0646\u062a\u062e\u0627\u0628 \u0631\u0646\u06af",options:"\u06af\u0632\u06cc\u0646\u0647\u0647\u0627\u06cc \u0631\u0646\u06af",highlight:"\u0645\u062a\u0645\u0627\u06cc\u0632",selected:"\u0631\u0646\u06af \u0627\u0646\u062a\u062e\u0627\u0628 \u0634\u062f\u0647",clear:"\u067e\u0627\u06a9 \u06a9\u0631\u062f\u0646"},toolbarCollapse:"\u0628\u0633\u062a\u0646 \u0646\u0648\u0627\u0631 \u0627\u0628\u0632\u0627\u0631",
+toolbarExpand:"\u0628\u0627\u0632\u06a9\u0631\u062f\u0646 \u0646\u0648\u0627\u0631 \u0627\u0628\u0632\u0627\u0631",toolbarGroups:{document:"\u0633\u0646\u062f",clipboard:"\u062d\u0627\u0641\u0638\u0647 \u0645\u0648\u0642\u062a/\u0628\u0631\u06af\u0634\u062a",editing:"\u062f\u0631 \u062d\u0627\u0644 \u0648\u06cc\u0631\u0627\u06cc\u0634",forms:"\u0641\u0631\u0645\u0647\u0627",basicstyles:"\u0634\u06cc\u0648\u0647\u0647\u0627\u06cc \u067e\u0627\u06cc\u0647",paragraph:"\u0628\u0646\u062f",links:"\u067e\u06cc\u0648\u0646\u062f\u0647\u0627",
+insert:"\u0648\u0631\u0648\u062f",styles:"\u0634\u06cc\u0648\u0647\u0647\u0627",colors:"\u0631\u0646\u06af\u0647\u0627",tools:"\u0627\u0628\u0632\u0627\u0631\u0647\u0627"},bidi:{ltr:"\u0646\u0648\u0634\u062a\u0627\u0631 \u0645\u062a\u0646 \u0627\u0632 \u0686\u067e \u0628\u0647 \u0631\u0627\u0633\u062a",rtl:"\u0646\u0648\u0634\u062a\u0627\u0631 \u0645\u062a\u0646 \u0627\u0632 \u0631\u0627\u0633\u062a \u0628\u0647 \u0686\u067e"},docprops:{label:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0633\u0646\u062f",
+title:"\u0648\u06cc\u0698\u06af\u06cc\u0647\u0627\u06cc \u0633\u0646\u062f",design:"\u0637\u0631\u0627\u062d\u06cc",meta:"\u0641\u0631\u0627\u062f\u0627\u062f\u0647",chooseColor:"\u0627\u0646\u062a\u062e\u0627\u0628",other:"<\u0633\u0627\u06cc\u0631>",docTitle:"\u0639\u0646\u0648\u0627\u0646 \u0635\u0641\u062d\u0647",charset:"\u0631\u0645\u0632\u06af\u0630\u0627\u0631\u06cc \u0646\u0648\u06cc\u0633\u0647\u06af\u0627\u0646",charsetOther:"\u0631\u0645\u0632\u06af\u0630\u0627\u0631\u06cc \u0646\u0648\u06cc\u0633\u0647\u06af\u0627\u0646 \u062f\u06cc\u06af\u0631",
+charsetASCII:"ASCII",charsetCE:"\u0627\u0631\u0648\u067e\u0627\u06cc \u0645\u0631\u06a9\u0632\u06cc",charsetCT:"\u0686\u06cc\u0646\u06cc \u0631\u0633\u0645\u06cc (Big5)",charsetCR:"\u0633\u06cc\u0631\u06cc\u0644\u06cc\u06a9",charsetGR:"\u06cc\u0648\u0646\u0627\u0646\u06cc",charsetJP:"\u0698\u0627\u067e\u0646\u06cc",charsetKR:"\u06a9\u0631\u0647\u0627\u06cc",charsetTR:"\u062a\u0631\u06a9\u06cc",charsetUN:"\u06cc\u0648\u0646\u06cc\u06a9\u064f\u062f (UTF-8)",charsetWE:"\u0627\u0631\u0648\u067e\u0627\u06cc \u063a\u0631\u0628\u06cc",
+docType:"\u0639\u0646\u0648\u0627\u0646 \u0646\u0648\u0639 \u0633\u0646\u062f",docTypeOther:"\u0639\u0646\u0648\u0627\u0646 \u0646\u0648\u0639 \u0633\u0646\u062f \u062f\u06cc\u06af\u0631",xhtmlDec:"\u0634\u0627\u0645\u0644 \u062a\u0639\u0627\u0631\u06cc\u0641 XHTML",bgColor:"\u0631\u0646\u06af \u067e\u0633\u0632\u0645\u06cc\u0646\u0647",bgImage:"URL \u062a\u0635\u0648\u06cc\u0631 \u067e\u0633\u0632\u0645\u06cc\u0646\u0647",bgFixed:"\u067e\u0633\u0632\u0645\u06cc\u0646\u0647\u0674 \u067e\u06cc\u0645\u0627\u06cc\u0634 \u0646\u0627\u067e\u0630\u06cc\u0631",
+txtColor:"\u0631\u0646\u06af \u0645\u062a\u0646",margin:"\u062d\u0627\u0634\u06cc\u0647\u0647\u0627\u06cc \u0635\u0641\u062d\u0647",marginTop:"\u0628\u0627\u0644\u0627",marginLeft:"\u0686\u067e",marginRight:"\u0631\u0627\u0633\u062a",marginBottom:"\u067e\u0627\u06cc\u06cc\u0646",metaKeywords:"\u06a9\u0644\u06cc\u062f\u0648\u0627\u0698\u06af\u0627\u0646 \u0646\u0645\u0627\u06cc\u0647\u06af\u0630\u0627\u0631\u06cc \u0633\u0646\u062f (\u0628\u0627 \u06a9\u0627\u0645\u0627 \u062c\u062f\u0627 \u0634\u0648\u0646\u062f)",
+metaDescription:"\u062a\u0648\u0635\u06cc\u0641 \u0633\u0646\u062f",metaAuthor:"\u0646\u0648\u06cc\u0633\u0646\u062f\u0647",metaCopyright:"\u062d\u0642 \u0627\u0646\u062a\u0634\u0627\u0631",previewHtml:'<p>\u0627\u06cc\u0646 \u06cc\u06a9 <strong>\u0645\u062a\u0646 \u0646\u0645\u0648\u0646\u0647</strong> \u0627\u0633\u062a. \u0634\u0645\u0627 \u062f\u0631 \u062d\u0627\u0644 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 <a href="javascript:void(0)">CKEditor</a> \u0647\u0633\u062a\u06cc\u062f.</p>'}}});

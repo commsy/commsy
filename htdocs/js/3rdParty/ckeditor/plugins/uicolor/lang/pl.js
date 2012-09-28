@@ -1,6 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('uicolor','pl',{uicolor:{title:'Wybór koloru interfejsu',preview:'Podgląd na żywo',config:'Wklej poniższy łańcuch znaków do pliku config.js:',predefined:'Predefiniowane zestawy kolorów'}});
+//>>built
+define("ckeditor/plugins/uicolor/lang/pl",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","pl",{uicolor:{title:"Wyb\u00f3r koloru interfejsu",preview:"Podgl\u0105d na \u017cywo",config:"Wklej poni\u017cszy \u0142a\u0144cuch znak\u00f3w do pliku config.js:",predefined:"Predefiniowane zestawy kolor\u00f3w"}})});

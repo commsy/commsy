@@ -1,6 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('uicolor','cs',{uicolor:{title:'Výběr barvy rozhraní',preview:'Živý náhled',config:'Vložte tento řetězec do Vašeho souboru config.js',predefined:'Přednastavené sady barev'}});
+//>>built
+define("ckeditor/plugins/uicolor/lang/cs",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","cs",{uicolor:{title:"V\u00fdb\u011br barvy rozhran\u00ed",preview:"\u017div\u00fd n\u00e1hled",config:"Vlo\u017ete tento \u0159et\u011bzec do Va\u0161eho souboru config.js",predefined:"P\u0159ednastaven\u00e9 sady barev"}})});

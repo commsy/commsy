@@ -1,6 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('uicolor','nb',{uicolor:{title:'Fargevelger for brukergrensesnitt',preview:'Forhåndsvisning i sanntid',config:'Lim inn følgende tekst i din config.js-fil',predefined:'Forhåndsdefinerte fargesett'}});
+//>>built
+define("ckeditor/plugins/uicolor/lang/nb",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","nb",{uicolor:{title:"Fargevelger for brukergrensesnitt",preview:"Forh\u00e5ndsvisning i sanntid",config:"Lim inn f\u00f8lgende tekst i din config.js-fil",predefined:"Forh\u00e5ndsdefinerte fargesett"}})});

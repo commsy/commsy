@@ -1,0 +1,2 @@
+//>>built
+define("commsy/AnchorFollower",["dojo/_base/declare","commsy/base","dojo/query"],function(b,d,c){return b(d,{display:!1,anim:null,constructor:function(a){a=a||{};b.safeMixin(this,a)},follow:function(a){/([a-z]*)([\-0-9]*)/.exec(a);var a=RegExp.$1,b=parseInt(RegExp.$2);"annotation"===a&&this.followAnnotation(b)},followAnnotation:function(a){c("div#top_item_actions a.annotations")[0].click();this.scrollToNodeAnimated(c("a[name='annotation"+a+"']")[0]);window.location.href=window.location.href}})});

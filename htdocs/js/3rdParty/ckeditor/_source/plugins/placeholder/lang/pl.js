@@ -1,16 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'placeholder', 'pl',
-{
-	placeholder :
-	{
-		title		: 'Właściwości wypełniacza',
-		toolbar		: 'Utwórz wypełniacz',
-		text		: 'Tekst wypełnienia',
-		edit		: 'Edytuj wypełnienie',
-		textMissing	: 'Wypełnienie musi posiadać jakiś tekst.'
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/placeholder/lang/pl",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","pl",{placeholder:{title:"W\u0142a\u015bciwo\u015bci wype\u0142niacza",toolbar:"Utw\u00f3rz wype\u0142niacz",text:"Tekst wype\u0142nienia",edit:"Edytuj wype\u0142nienie",textMissing:"Wype\u0142nienie musi posiada\u0107 jaki\u015b tekst."}})});

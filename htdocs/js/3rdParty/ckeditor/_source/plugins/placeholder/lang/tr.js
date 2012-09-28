@@ -1,16 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'placeholder', 'tr',
-{
-	placeholder :
-	{
-		title		: 'Yer tutucu özellikleri',
-		toolbar		: 'Yer tutucu oluşturun',
-		text		: 'Yer tutucu metini',
-		edit		: 'Yer tutucuyu düzenle',
-		textMissing	: 'Yer tutucu metin içermelidir.'
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/placeholder/lang/tr",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","tr",{placeholder:{title:"Yer tutucu \u00f6zellikleri",toolbar:"Yer tutucu olu\u015fturun",text:"Yer tutucu metini",edit:"Yer tutucuyu d\u00fczenle",textMissing:"Yer tutucu metin i\u00e7ermelidir."}})});

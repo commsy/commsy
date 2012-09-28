@@ -1,6 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('devtools','vi',{devTools:{title:'Thông tin thành ph',dialogName:'Tên hộp tho',tabName:'Tên th',elementId:'Mã thành ph',elementType:'Loại thành ph'}});
+//>>built
+define("ckeditor/plugins/devtools/lang/vi",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("devtools","vi",{devTools:{title:"Th\u00f4ng tin th\u00e0nh ph",dialogName:"T\u00ean h\u1ed9p tho",tabName:"T\u00ean th",elementId:"M\u00e3 th\u00e0nh ph",elementType:"Lo\u1ea1i th\u00e0nh ph"}})});

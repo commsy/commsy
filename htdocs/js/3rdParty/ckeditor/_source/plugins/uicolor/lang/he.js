@@ -1,15 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'uicolor', 'he',
-{
-	uicolor :
-	{
-		title : 'בחירת צבע ממשק משתמש',
-		preview : 'תצוגה מקדימה',
-		config : 'הדבק את הטקסט הבא לתוך הקובץ config.js',
-		predefined : 'קבוצות צבעים מוגדרות מראש'
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/uicolor/lang/he",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","he",{uicolor:{title:"\u05d1\u05d7\u05d9\u05e8\u05ea \u05e6\u05d1\u05e2 \u05de\u05de\u05e9\u05e7 \u05de\u05e9\u05ea\u05de\u05e9",preview:"\u05ea\u05e6\u05d5\u05d2\u05d4 \u05de\u05e7\u05d3\u05d9\u05de\u05d4",config:"\u05d4\u05d3\u05d1\u05e7 \u05d0\u05ea \u05d4\u05d8\u05e7\u05e1\u05d8 \u05d4\u05d1\u05d0 \u05dc\u05ea\u05d5\u05da \u05d4\u05e7\u05d5\u05d1\u05e5 config.js",predefined:"\u05e7\u05d1\u05d5\u05e6\u05d5\u05ea \u05e6\u05d1\u05e2\u05d9\u05dd \u05de\u05d5\u05d2\u05d3\u05e8\u05d5\u05ea \u05de\u05e8\u05d0\u05e9"}})});

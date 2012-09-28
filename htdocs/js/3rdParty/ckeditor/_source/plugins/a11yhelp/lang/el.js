@@ -1,89 +1,9 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'a11yhelp', 'el',
-{
-	accessibilityHelp :
-	{
-		title : 'Οδηγίες Προσβασιμότητας',
-		contents : 'Περιεχόμενα Βοήθειας. Πατήστε ESC για κλείσιμο.',
-		legend :
-		[
-			{
-				name : 'Γενικά',
-				items :
-						[
-							{
-								name : 'Εργαλειοθήκη Επεξεργαστή',
-								legend:
-									'Πατήστε ${toolbarFocus} για να περιηγηθείτε στην γραμμή εργαλείων. Μετακινηθείτε ανάμεσα στις ομάδες της γραμμής εργαλείων με TAB και Shift-TAB. Μετακινηθείτε ανάμεσα στα κουμπία εργαλείων με ΔΕΞΙ και ΑΡΙΣΤΕΡΟ ΒΕΛΑΚΙ. Πατήστε ΚΕΝΟ ή ENTER για να ενεργοποιήσετε το ενεργό κουμπί εργαλείου.'
-							},
-
-							{
-								name : 'Παράθυρο Διαλόγου Επεξεργαστή',
-								legend :
-									'Μέσα σε ένα παράθυρο διαλόγου, πατήστε TAB για να μεταβείτε στο επόμενο πεδίο ή SHIFT + TAB για να μεταβείτε στο προηγούμενο. Πατήστε ENTER για να υποβάλετε την φόρμα. Πατήστε ESC για να ακυρώσετε την διαδικασία της φόρμας. Για παράθυρα διαλόγων που έχουν πολλές σελίδες σε καρτέλες πατήστε ALT + F10 για να μεταβείτε στην λίστα των καρτέλων. Στην συνέχεια μπορείτε να μεταβείτε στην επόμενη καρτέλα πατώντας TAB ή RIGHT ARROW. Μπορείτε να μεταβείτε στην προηγούμενη καρτέλα πατώντας SHIFT + TAB ή LEFT ARROW. Πατήστε SPACE ή ENTER για να επιλέξετε την καρτέλα για προβολή.'
-							},
-
-							{
-								name : 'Αναδυόμενο Μενού Επεξεργαστή',
-								legend :
-									'Press ${contextMenu} or APPLICATION KEY to open context-menu. Then move to next menu option with TAB or DOWN ARROW. Move to previous option with SHIFT+TAB or UP ARROW. Press SPACE or ENTER to select the menu option. Open sub-menu of current option with SPACE or ENTER or RIGHT ARROW. Go back to parent menu item with ESC or LEFT ARROW. Close context menu with ESC.'  // MISSING
-							},
-
-							{
-								name : 'Editor List Box', // MISSING
-								legend :
-									'Inside a list-box, move to next list item with TAB OR DOWN ARROW. Move to previous list item with SHIFT + TAB or UP ARROW. Press SPACE or ENTER to select the list option. Press ESC to close the list-box.'  // MISSING
-							},
-
-							{
-								name : 'Editor Element Path Bar', // MISSING
-								legend :
-									'Press ${elementsPathFocus} to navigate to the elements path bar. Move to next element button with TAB or RIGHT ARROW. Move to previous button with  SHIFT+TAB or LEFT ARROW. Press SPACE or ENTER to select the element in editor.'  // MISSING
-							}
-						]
-			},
-			{
-				name : 'Εντολές',
-				items :
-						[
-							{
-								name : ' Εντολή αναίρεσης',
-								legend : 'Πατήστε ${undo}'
-							},
-							{
-								name : ' Εντολή επανάληψης',
-								legend : 'Πατήστε ${redo}'
-							},
-							{
-								name : ' Εντολή έντονης γραφής',
-								legend : 'Πατήστε ${bold}'
-							},
-							{
-								name : ' Εντολή πλάγιας γραφής',
-								legend : 'Πατήστε ${italic}'
-							},
-							{
-								name : ' Εντολή υπογράμμισης',
-								legend : 'Πατήστε ${underline}'
-							},
-							{
-								name : ' Εντολή συνδέσμου',
-								legend : 'Πατήστε ${link}'
-							},
-							{
-								name : ' Εντολή Σύμπτηξης Εργαλειοθήκης',
-								legend : 'Πατήστε ${toolbarCollapse}'
-							},
-							{
-								name : ' Βοήθεια Προσβασιμότητας',
-								legend : 'Πατήστε ${a11yHelp}'
-							}
-						]
-			}
-		]
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/a11yhelp/lang/el",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("a11yhelp","el",{accessibilityHelp:{title:"\u039f\u03b4\u03b7\u03b3\u03af\u03b5\u03c2 \u03a0\u03c1\u03bf\u03c3\u03b2\u03b1\u03c3\u03b9\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2",contents:"\u03a0\u03b5\u03c1\u03b9\u03b5\u03c7\u03cc\u03bc\u03b5\u03bd\u03b1 \u0392\u03bf\u03ae\u03b8\u03b5\u03b9\u03b1\u03c2. \u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ESC \u03b3\u03b9\u03b1 \u03ba\u03bb\u03b5\u03af\u03c3\u03b9\u03bc\u03bf.",
+legend:[{name:"\u0393\u03b5\u03bd\u03b9\u03ba\u03ac",items:[{name:"\u0395\u03c1\u03b3\u03b1\u03bb\u03b5\u03b9\u03bf\u03b8\u03ae\u03ba\u03b7 \u0395\u03c0\u03b5\u03be\u03b5\u03c1\u03b3\u03b1\u03c3\u03c4\u03ae",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${toolbarFocus} \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03c0\u03b5\u03c1\u03b9\u03b7\u03b3\u03b7\u03b8\u03b5\u03af\u03c4\u03b5 \u03c3\u03c4\u03b7\u03bd \u03b3\u03c1\u03b1\u03bc\u03bc\u03ae \u03b5\u03c1\u03b3\u03b1\u03bb\u03b5\u03af\u03c9\u03bd. \u039c\u03b5\u03c4\u03b1\u03ba\u03b9\u03bd\u03b7\u03b8\u03b5\u03af\u03c4\u03b5 \u03b1\u03bd\u03ac\u03bc\u03b5\u03c3\u03b1 \u03c3\u03c4\u03b9\u03c2 \u03bf\u03bc\u03ac\u03b4\u03b5\u03c2 \u03c4\u03b7\u03c2 \u03b3\u03c1\u03b1\u03bc\u03bc\u03ae\u03c2 \u03b5\u03c1\u03b3\u03b1\u03bb\u03b5\u03af\u03c9\u03bd \u03bc\u03b5 TAB \u03ba\u03b1\u03b9 Shift-TAB. \u039c\u03b5\u03c4\u03b1\u03ba\u03b9\u03bd\u03b7\u03b8\u03b5\u03af\u03c4\u03b5 \u03b1\u03bd\u03ac\u03bc\u03b5\u03c3\u03b1 \u03c3\u03c4\u03b1 \u03ba\u03bf\u03c5\u03bc\u03c0\u03af\u03b1 \u03b5\u03c1\u03b3\u03b1\u03bb\u03b5\u03af\u03c9\u03bd \u03bc\u03b5 \u0394\u0395\u039e\u0399 \u03ba\u03b1\u03b9 \u0391\u03a1\u0399\u03a3\u03a4\u0395\u03a1\u039f \u0392\u0395\u039b\u0391\u039a\u0399. \u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 \u039a\u0395\u039d\u039f \u03ae ENTER \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b5\u03bd\u03b5\u03c1\u03b3\u03bf\u03c0\u03bf\u03b9\u03ae\u03c3\u03b5\u03c4\u03b5 \u03c4\u03bf \u03b5\u03bd\u03b5\u03c1\u03b3\u03cc \u03ba\u03bf\u03c5\u03bc\u03c0\u03af \u03b5\u03c1\u03b3\u03b1\u03bb\u03b5\u03af\u03bf\u03c5."},
+{name:"\u03a0\u03b1\u03c1\u03ac\u03b8\u03c5\u03c1\u03bf \u0394\u03b9\u03b1\u03bb\u03cc\u03b3\u03bf\u03c5 \u0395\u03c0\u03b5\u03be\u03b5\u03c1\u03b3\u03b1\u03c3\u03c4\u03ae",legend:"\u039c\u03ad\u03c3\u03b1 \u03c3\u03b5 \u03ad\u03bd\u03b1 \u03c0\u03b1\u03c1\u03ac\u03b8\u03c5\u03c1\u03bf \u03b4\u03b9\u03b1\u03bb\u03cc\u03b3\u03bf\u03c5, \u03c0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 TAB \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b5\u03c4\u03b1\u03b2\u03b5\u03af\u03c4\u03b5 \u03c3\u03c4\u03bf \u03b5\u03c0\u03cc\u03bc\u03b5\u03bd\u03bf \u03c0\u03b5\u03b4\u03af\u03bf \u03ae SHIFT + TAB \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b5\u03c4\u03b1\u03b2\u03b5\u03af\u03c4\u03b5 \u03c3\u03c4\u03bf \u03c0\u03c1\u03bf\u03b7\u03b3\u03bf\u03cd\u03bc\u03b5\u03bd\u03bf. \u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ENTER \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03c5\u03c0\u03bf\u03b2\u03ac\u03bb\u03b5\u03c4\u03b5 \u03c4\u03b7\u03bd \u03c6\u03cc\u03c1\u03bc\u03b1. \u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ESC \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b1\u03ba\u03c5\u03c1\u03ce\u03c3\u03b5\u03c4\u03b5 \u03c4\u03b7\u03bd \u03b4\u03b9\u03b1\u03b4\u03b9\u03ba\u03b1\u03c3\u03af\u03b1 \u03c4\u03b7\u03c2 \u03c6\u03cc\u03c1\u03bc\u03b1\u03c2. \u0393\u03b9\u03b1 \u03c0\u03b1\u03c1\u03ac\u03b8\u03c5\u03c1\u03b1 \u03b4\u03b9\u03b1\u03bb\u03cc\u03b3\u03c9\u03bd \u03c0\u03bf\u03c5 \u03ad\u03c7\u03bf\u03c5\u03bd \u03c0\u03bf\u03bb\u03bb\u03ad\u03c2 \u03c3\u03b5\u03bb\u03af\u03b4\u03b5\u03c2 \u03c3\u03b5 \u03ba\u03b1\u03c1\u03c4\u03ad\u03bb\u03b5\u03c2 \u03c0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ALT + F10 \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03bc\u03b5\u03c4\u03b1\u03b2\u03b5\u03af\u03c4\u03b5 \u03c3\u03c4\u03b7\u03bd \u03bb\u03af\u03c3\u03c4\u03b1 \u03c4\u03c9\u03bd \u03ba\u03b1\u03c1\u03c4\u03ad\u03bb\u03c9\u03bd. \u03a3\u03c4\u03b7\u03bd \u03c3\u03c5\u03bd\u03ad\u03c7\u03b5\u03b9\u03b1 \u03bc\u03c0\u03bf\u03c1\u03b5\u03af\u03c4\u03b5 \u03bd\u03b1 \u03bc\u03b5\u03c4\u03b1\u03b2\u03b5\u03af\u03c4\u03b5 \u03c3\u03c4\u03b7\u03bd \u03b5\u03c0\u03cc\u03bc\u03b5\u03bd\u03b7 \u03ba\u03b1\u03c1\u03c4\u03ad\u03bb\u03b1 \u03c0\u03b1\u03c4\u03ce\u03bd\u03c4\u03b1\u03c2 TAB \u03ae RIGHT ARROW. \u039c\u03c0\u03bf\u03c1\u03b5\u03af\u03c4\u03b5 \u03bd\u03b1 \u03bc\u03b5\u03c4\u03b1\u03b2\u03b5\u03af\u03c4\u03b5 \u03c3\u03c4\u03b7\u03bd \u03c0\u03c1\u03bf\u03b7\u03b3\u03bf\u03cd\u03bc\u03b5\u03bd\u03b7 \u03ba\u03b1\u03c1\u03c4\u03ad\u03bb\u03b1 \u03c0\u03b1\u03c4\u03ce\u03bd\u03c4\u03b1\u03c2 SHIFT + TAB \u03ae LEFT ARROW. \u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 SPACE \u03ae ENTER \u03b3\u03b9\u03b1 \u03bd\u03b1 \u03b5\u03c0\u03b9\u03bb\u03ad\u03be\u03b5\u03c4\u03b5 \u03c4\u03b7\u03bd \u03ba\u03b1\u03c1\u03c4\u03ad\u03bb\u03b1 \u03b3\u03b9\u03b1 \u03c0\u03c1\u03bf\u03b2\u03bf\u03bb\u03ae."},
+{name:"\u0391\u03bd\u03b1\u03b4\u03c5\u03cc\u03bc\u03b5\u03bd\u03bf \u039c\u03b5\u03bd\u03bf\u03cd \u0395\u03c0\u03b5\u03be\u03b5\u03c1\u03b3\u03b1\u03c3\u03c4\u03ae",legend:"Press ${contextMenu} or APPLICATION KEY to open context-menu. Then move to next menu option with TAB or DOWN ARROW. Move to previous option with SHIFT+TAB or UP ARROW. Press SPACE or ENTER to select the menu option. Open sub-menu of current option with SPACE or ENTER or RIGHT ARROW. Go back to parent menu item with ESC or LEFT ARROW. Close context menu with ESC."},
+{name:"Editor List Box",legend:"Inside a list-box, move to next list item with TAB OR DOWN ARROW. Move to previous list item with SHIFT + TAB or UP ARROW. Press SPACE or ENTER to select the list option. Press ESC to close the list-box."},{name:"Editor Element Path Bar",legend:"Press ${elementsPathFocus} to navigate to the elements path bar. Move to next element button with TAB or RIGHT ARROW. Move to previous button with  SHIFT+TAB or LEFT ARROW. Press SPACE or ENTER to select the element in editor."}]},
+{name:"\u0395\u03bd\u03c4\u03bf\u03bb\u03ad\u03c2",items:[{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03b1\u03bd\u03b1\u03af\u03c1\u03b5\u03c3\u03b7\u03c2",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${undo}"},{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03b5\u03c0\u03b1\u03bd\u03ac\u03bb\u03b7\u03c8\u03b7\u03c2",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${redo}"},{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03ad\u03bd\u03c4\u03bf\u03bd\u03b7\u03c2 \u03b3\u03c1\u03b1\u03c6\u03ae\u03c2",
+legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${bold}"},{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03c0\u03bb\u03ac\u03b3\u03b9\u03b1\u03c2 \u03b3\u03c1\u03b1\u03c6\u03ae\u03c2",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${italic}"},{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03c5\u03c0\u03bf\u03b3\u03c1\u03ac\u03bc\u03bc\u03b9\u03c3\u03b7\u03c2",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${underline}"},{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03c3\u03c5\u03bd\u03b4\u03ad\u03c3\u03bc\u03bf\u03c5",
+legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${link}"},{name:" \u0395\u03bd\u03c4\u03bf\u03bb\u03ae \u03a3\u03cd\u03bc\u03c0\u03c4\u03b7\u03be\u03b7\u03c2 \u0395\u03c1\u03b3\u03b1\u03bb\u03b5\u03b9\u03bf\u03b8\u03ae\u03ba\u03b7\u03c2",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${toolbarCollapse}"},{name:" \u0392\u03bf\u03ae\u03b8\u03b5\u03b9\u03b1 \u03a0\u03c1\u03bf\u03c3\u03b2\u03b1\u03c3\u03b9\u03bc\u03cc\u03c4\u03b7\u03c4\u03b1\u03c2",legend:"\u03a0\u03b1\u03c4\u03ae\u03c3\u03c4\u03b5 ${a11yHelp}"}]}]}})});

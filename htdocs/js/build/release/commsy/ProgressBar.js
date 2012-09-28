@@ -1,0 +1,3 @@
+//>>built
+define("commsy/ProgressBar","dojo/_base/declare,dojo/on,dojo/_base/lang,commsy/base,dojo/fx,dojo/dom-construct,dojo/dom-style,dojo/dom-attr,dojo/query,dijit/ProgressBar,dojo/NodeList-traverse".split(","),function(d,i,j,g,k,e,l,f,m,h){return d(g,{hidden:[],constructor:function(a){a=a||{};d.safeMixin(this,a)},setup:function(a){var b=new dojo.NodeList(a),c=b.children("span[class^='percent']")[0],d=parseInt(f.get(c,"innerHTML"));e.destroy(c);e.destroy(b.children("img:first")[0]);c=new h({value:d+"%",
+"class":"ui-progressbar"});c.placeAt(a);if(a=b.children("span[class^='value']")[0])b=f.get(a,"innerHTML"),e.destroy(a),c.set("label",b)}})});

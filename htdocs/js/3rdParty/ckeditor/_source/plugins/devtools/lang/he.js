@@ -1,16 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'devtools', 'he',
-{
-	devTools :
-	{
-		title		: 'מידע על האלמנט',
-		dialogName	: 'שם הדיאלוג',
-		tabName		: 'שם הטאב',
-		elementId	: 'ID של האלמנט',
-		elementType	: 'סוג האלמנט'
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/devtools/lang/he",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("devtools","he",{devTools:{title:"\u05de\u05d9\u05d3\u05e2 \u05e2\u05dc \u05d4\u05d0\u05dc\u05de\u05e0\u05d8",dialogName:"\u05e9\u05dd \u05d4\u05d3\u05d9\u05d0\u05dc\u05d5\u05d2",tabName:"\u05e9\u05dd \u05d4\u05d8\u05d0\u05d1",elementId:"ID \u05e9\u05dc \u05d4\u05d0\u05dc\u05de\u05e0\u05d8",elementType:"\u05e1\u05d5\u05d2 \u05d4\u05d0\u05dc\u05de\u05e0\u05d8"}})});

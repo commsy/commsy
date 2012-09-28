@@ -1,16 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'devtools', 'pt-br',
-{
-	devTools :
-	{
-		title		: 'Informação do Elemento',
-		dialogName	: 'Nome da janela de diálogo',
-		tabName		: 'Nome da aba',
-		elementId	: 'ID do elemento',
-		elementType	: 'Tipo do elemento'
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/devtools/lang/pt-br",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("devtools","pt-br",{devTools:{title:"Informa\u00e7\u00e3o do Elemento",dialogName:"Nome da janela de di\u00e1logo",tabName:"Nome da aba",elementId:"ID do elemento",elementType:"Tipo do elemento"}})});

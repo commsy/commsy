@@ -1,0 +1,2 @@
+//>>built
+define("commsy/bar/nls/de/calendar",{configDate:"Termine",configFromAll:"Aus allen R\u00e4umen",configHeadline:"Mein Kalender konfigurieren",configRestrictions:"Einschr\u00e4nkungen",configToDo:"Aufgaben"});

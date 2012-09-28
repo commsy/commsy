@@ -1,816 +1,104 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-/**
- * @fileOverview Defines the {@link CKEDITOR.lang} object, for the Georgian
- *		language.
- */
-
-/**#@+
-   @type String
-   @example
-*/
-
-/**
- * Contains the dictionary of language entries.
- * @namespace
- */
-CKEDITOR.lang['ka'] =
-{
-	/**
-	 * The language reading direction. Possible values are "rtl" for
-	 * Right-To-Left languages (like Arabic) and "ltr" for Left-To-Right
-	 * languages (like English).
-	 * @default 'ltr'
-	 */
-	dir : 'ltr',
-
-	/*
-	 * Screenreader titles. Please note that screenreaders are not always capable
-	 * of reading non-English words. So be careful while translating it.
-	 */
-	editorTitle : 'Rich text editor, %1', // MISSING
-	editorHelp : 'Press ALT 0 for help', // MISSING
-
-	// ARIA descriptions.
-	toolbars	: 'Editor toolbars', // MISSING
-	editor		: 'ტექსტის რედაქტორი',
-
-	// Toolbar buttons without dialogs.
-	source			: 'კოდები',
-	newPage			: 'ახალი გვერდი',
-	save			: 'ჩაწერა',
-	preview			: 'გადახედვა',
-	cut				: 'ამოჭრა',
-	copy			: 'ასლი',
-	paste			: 'ჩასმა',
-	print			: 'ბეჭდვა',
-	underline		: 'გახაზული',
-	bold			: 'მსხვილი',
-	italic			: 'დახრილი',
-	selectAll		: 'ყველაფრის მონიშნვა',
-	removeFormat	: 'ფორმატირების მოხსნა',
-	strike			: 'გადახაზული',
-	subscript		: 'ინდექსი',
-	superscript		: 'ხარისხი',
-	horizontalrule	: 'ჰორიზონტალური ხაზის ჩასმა',
-	pagebreak		: 'გვერდის წყვეტა ბეჭდვისთვის',
-	pagebreakAlt		: 'გვერდის წყვეტა',
-	unlink			: 'ბმულის მოხსნა',
-	undo			: 'გაუქმება',
-	redo			: 'გამეორება',
-
-	// Common messages and labels.
-	common :
-	{
-		browseServer	: 'სერვერზე დათვალიერება',
-		url				: 'URL',
-		protocol		: 'პროტოკოლი',
-		upload			: 'ატვირთვა',
-		uploadSubmit	: 'სერვერზე გაგზავნა',
-		image			: 'სურათი',
-		flash			: 'Flash',
-		form			: 'ფორმა',
-		checkbox		: 'მონიშვნის ღილაკი',
-		radio			: 'ამორჩევის ღილაკი',
-		textField		: 'ტექსტური ველი',
-		textarea		: 'ტექსტური არე',
-		hiddenField		: 'მალული ველი',
-		button			: 'ღილაკი',
-		select			: 'არჩევის ველი',
-		imageButton		: 'სურათიანი ღილაკი',
-		notSet			: '<არაფერი>',
-		id				: 'Id',
-		name			: 'სახელი',
-		langDir			: 'ენის მიმართულება',
-		langDirLtr		: 'მარცხნიდან მარჯვნივ (LTR)',
-		langDirRtl		: 'მარჯვნიდან მარცხნივ (RTL)',
-		langCode		: 'ენის კოდი',
-		longDescr		: 'დიდი აღწერის URL',
-		cssClass		: 'CSS კლასი',
-		advisoryTitle	: 'სათაური',
-		cssStyle		: 'CSS სტილი',
-		ok				: 'დიახ',
-		cancel			: 'გაუქმება',
-		close			: 'დახურვა',
-		preview			: 'გადახედვა',
-		generalTab		: 'ინფორმაცია',
-		advancedTab		: 'გაფართოებული',
-		validateNumberFailed : 'ეს მნიშვნელობა არაა რიცხვი.',
-		confirmNewPage	: 'ამ დოკუმენტში ყველა ჩაუწერელი ცვლილება დაიკარგება. დარწმუნებული ხართ რომ ახალი გვერდის ჩატვირთვა გინდათ?',
-		confirmCancel	: 'ზოგიერთი პარამეტრი შეცვლილია, დარწმუნებულილ ხართ რომ ფანჯრის დახურვა გსურთ?',
-		options			: 'პარამეტრები',
-		target			: 'გახსნის ადგილი',
-		targetNew		: 'ახალი ფანჯარა (_blank)',
-		targetTop		: 'ზედა ფანჯარა (_top)',
-		targetSelf		: 'იგივე ფანჯარა (_self)',
-		targetParent	: 'მშობელი ფანჯარა (_parent)',
-		langDirLTR		: 'მარცხნიდან მარჯვნივ (LTR)',
-		langDirRTL		: 'მარჯვნიდან მარცხნივ (RTL)',
-		styles			: 'სტილი',
-		cssClasses		: 'CSS კლასი',
-		width			: 'სიგანე',
-		height			: 'სიმაღლე',
-		align			: 'სწორება',
-		alignLeft		: 'მარცხენა',
-		alignRight		: 'მარჯვენა',
-		alignCenter		: 'შუა',
-		alignTop		: 'ზემოთა',
-		alignMiddle		: 'შუა',
-		alignBottom		: 'ქვემოთა',
-		invalidHeight	: 'სიმაღლე რიცხვით უნდა იყოს წარმოდგენილი.',
-		invalidWidth	: 'სიგანე რიცხვით უნდა იყოს წარმოდგენილი.',
-		invalidCssLength	: 'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
-		invalidHtmlLength	: 'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).', // MISSING
-		invalidInlineStyle	: 'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.', // MISSING
-		cssLengthTooltip	: 'Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).', // MISSING
-
-		// Put the voice-only part of the label in the span.
-		unavailable		: '%1<span class="cke_accessibility">, მიუწვდომელია</span>'
-	},
-
-	contextmenu :
-	{
-		options : 'კონტექსტური მენიუს პარამეტრები'
-	},
-
-	// Special char dialog.
-	specialChar		:
-	{
-		toolbar		: 'სპეციალური სიმბოლოს ჩასმა',
-		title		: 'სპეციალური სიმბოლოს არჩევა',
-		options : 'სპეციალური სიმბოლოს პარამეტრები'
-	},
-
-	// Link dialog.
-	link :
-	{
-		toolbar		: 'ბმული',
-		other 		: '<სხვა>',
-		menu		: 'ბმულის რედაქტირება',
-		title		: 'ბმული',
-		info		: 'ბმულის ინფორმაცია',
-		target		: 'გახსნის ადგილი',
-		upload		: 'აქაჩვა',
-		advanced	: 'დაწვრილებით',
-		type		: 'ბმულის ტიპი',
-		toUrl		: 'URL',
-		toAnchor	: 'ბმული ტექსტში ღუზაზე',
-		toEmail		: 'ელფოსტა',
-		targetFrame		: '<frame>',
-		targetPopup		: '<popup ფანჯარა>',
-		targetFrameName	: 'Frame-ის სახელი',
-		targetPopupName	: 'Popup ფანჯრის სახელი',
-		popupFeatures	: 'Popup ფანჯრის პარამეტრები',
-		popupResizable	: 'ცვალებადი ზომით',
-		popupStatusBar	: 'სტატუსის ზოლი',
-		popupLocationBar: 'ნავიგაციის ზოლი',
-		popupToolbar	: 'ხელსაწყოთა ზოლი',
-		popupMenuBar	: 'მენიუს ზოლი',
-		popupFullScreen	: 'მთელი ეკრანი (IE)',
-		popupScrollBars	: 'გადახვევის ზოლები',
-		popupDependent	: 'დამოკიდებული (Netscape)',
-		popupLeft		: 'მარცხენა პოზიცია',
-		popupTop		: 'ზედა პოზიცია',
-		id				: 'Id',
-		langDir			: 'ენის მიმართულება',
-		langDirLTR		: 'მარცხნიდან მარჯვნივ (LTR)',
-		langDirRTL		: 'მარჯვნიდან მარცხნივ (RTL)',
-		acccessKey		: 'წვდომის ღილაკი',
-		name			: 'სახელი',
-		langCode			: 'ენის კოდი',
-		tabIndex			: 'Tab-ის ინდექსი',
-		advisoryTitle		: 'სათაური',
-		advisoryContentType	: 'შიგთავსის ტიპი',
-		cssClasses		: 'CSS კლასი',
-		charset			: 'კოდირება',
-		styles			: 'CSS სტილი',
-		rel			: 'კავშირი',
-		selectAnchor		: 'აირჩიეთ ღუზა',
-		anchorName		: 'ღუზის სახელით',
-		anchorId			: 'ელემენტის Id-თ',
-		emailAddress		: 'ელფოსტის მისამართები',
-		emailSubject		: 'წერილის სათაური',
-		emailBody		: 'წერილის ტექსტი',
-		noAnchors		: '(ამ დოკუმენტში ღუზა არაა)',
-		noUrl			: 'აკრიფეთ ბმულის URL',
-		noEmail			: 'აკრიფეთ ელფოსტის მისამართი'
-	},
-
-	// Anchor dialog
-	anchor :
-	{
-		toolbar		: 'ღუზა',
-		menu		: 'ღუზის რედაქტირება',
-		title		: 'ღუზის პარამეტრები',
-		name		: 'ღუზუს სახელი',
-		errorName	: 'აკრიფეთ ღუზის სახელი',
-		remove		: 'Remove Anchor' // MISSING
-	},
-
-	// List style dialog
-	list:
-	{
-		numberedTitle		: 'გადანომრილი სიის პარამეტრები',
-		bulletedTitle		: 'ღილებიანი სიის პარამეტრები',
-		type				: 'ტიპი',
-		start				: 'საწყისი',
-		validateStartNumber				:'სიის საწყისი მთელი რიცხვი უნდა იყოს.',
-		circle				: 'წრეწირი',
-		disc				: 'წრე',
-		square				: 'კვადრატი',
-		none				: 'არაფერი',
-		notset				: '<არაფერი>',
-		armenian			: 'სომხური გადანომრვა',
-		georgian			: 'ქართული გადანომრვა (ან, ბან, გან, ..)',
-		lowerRoman			: 'რომაული გადანომრვცა პატარა ციფრებით (i, ii, iii, iv, v, ..)',
-		upperRoman			: 'რომაული გადანომრვა დიდი ციფრებით (I, II, III, IV, V, etc.)',
-		lowerAlpha			: 'პატარა ლათინური ასოებით (a, b, c, d, e, ..)',
-		upperAlpha			: 'დიდი ლათინური ასოებით (A, B, C, D, E, ..)',
-		lowerGreek			: 'პატარა ბერძნული ასოებით (ალფა, ბეტა, გამა, ..)',
-		decimal				: 'რიცხვებით (1, 2, 3, ..)',
-		decimalLeadingZero	: 'ნულით დაწყებული რიცხვებით (01, 02, 03, ..)'
-	},
-
-	// Find And Replace Dialog
-	findAndReplace :
-	{
-		title				: 'ძებნა და შეცვლა',
-		find				: 'ძებნა',
-		replace				: 'შეცვლა',
-		findWhat			: 'საძიებელი ტექსტი:',
-		replaceWith			: 'შეცვლის ტექსტი:',
-		notFoundMsg			: 'მითითებული ტექსტი არ მოიძებნა.',
-		findOptions			: 'Find Options', // MISSING
-		matchCase			: 'დიდი და პატარა ასოების დამთხვევა',
-		matchWord			: 'მთელი სიტყვის დამთხვევა',
-		matchCyclic			: 'დოკუმენტის ბოლოში გასვლის მერე თავიდან დაწყება',
-		replaceAll			: 'ყველას შეცვლა',
-		replaceSuccessMsg	: '%1 მოძებნილი შეიცვალა.'
-	},
-
-	// Table Dialog
-	table :
-	{
-		toolbar		: 'ცხრილი',
-		title		: 'ცხრილის პარამეტრები',
-		menu		: 'ცხრილის პარამეტრები',
-		deleteTable	: 'ცხრილის წაშლა',
-		rows		: 'სტრიქონი',
-		columns		: 'სვეტი',
-		border		: 'ჩარჩოს ზომა',
-		widthPx		: 'წერტილი',
-		widthPc		: 'პროცენტი',
-		widthUnit	: 'საზომი ერთეული',
-		cellSpace	: 'უჯრის სივრცე (spacing)',
-		cellPad		: 'უჯრის კიდე (padding)',
-		caption		: 'სათაური',
-		summary		: 'შეჯამება',
-		headers		: 'სათაურები',
-		headersNone		: 'არაფერი',
-		headersColumn	: 'პირველი სვეტი',
-		headersRow		: 'პირველი სტრიქონი',
-		headersBoth		: 'ორივე',
-		invalidRows		: 'სტრიქონების რაოდენობა დადებითი რიცხვი უნდა იყოს.',
-		invalidCols		: 'სვეტების რაოდენობა დადებითი რიცხვი უნდა იყოს.',
-		invalidBorder	: 'ჩარჩოს ზომა რიცხვით უდნა იყოს წარმოდგენილი.',
-		invalidWidth	: 'ცხრილის სიგანე რიცხვით უნდა იყოს წარმოდგენილი.',
-		invalidHeight	: 'ცხრილის სიმაღლე რიცხვით უნდა იყოს წარმოდგენილი.',
-		invalidCellSpacing	: 'უჯრის სივრცე (spacing) რიცხვით უნდა იყოს წარმოდგენილი.',
-		invalidCellPadding	: 'უჯრის კიდე (padding) რიცხვით უნდა იყოს წარმოდგენილი.',
-
-		cell :
-		{
-			menu			: 'უჯრა',
-			insertBefore	: 'უჯრის ჩასმა მანამდე',
-			insertAfter		: 'უჯრის ჩასმა მერე',
-			deleteCell		: 'უჯრების წაშლა',
-			merge			: 'უჯრების შეერთება',
-			mergeRight		: 'შეერთება მარჯვენასთან',
-			mergeDown		: 'შეერთება ქვემოთასთან',
-			splitHorizontal	: 'გაყოფა ჰორიზონტალურად',
-			splitVertical	: 'გაყოფა ვერტიკალურად',
-			title			: 'უჯრის პარამეტრები',
-			cellType		: 'უჯრის ტიპი',
-			rowSpan			: 'სტრიქონების ოდენობა',
-			colSpan			: 'სვეტების ოდენობა',
-			wordWrap		: 'სტრიქონის გადატანა (Word Wrap)',
-			hAlign			: 'ჰორიზონტალური სწორება',
-			vAlign			: 'ვერტიკალური სწორება',
-			alignBaseline	: 'ძირითადი ხაზის გასწვრივ',
-			bgColor			: 'ფონის ფერი',
-			borderColor		: 'ჩარჩოს ფერი',
-			data			: 'მონაცემები',
-			header			: 'სათაური',
-			yes				: 'დიახ',
-			no				: 'არა',
-			invalidWidth	: 'უჯრის სიგანე რიცხვით უნდა იყოს წარმოდგენილი.',
-			invalidHeight	: 'უჯრის სიმაღლე რიცხვით უნდა იყოს წარმოდგენილი.',
-			invalidRowSpan	: 'სტრიქონების რაოდენობა მთელი რიცხვი უნდა იყოს.',
-			invalidColSpan	: 'სვეტების რაოდენობა მთელი რიცხვი უნდა იყოს.',
-			chooseColor		: 'არჩევა'
-		},
-
-		row :
-		{
-			menu			: 'სტრიქონი',
-			insertBefore	: 'სტრიქონის ჩამატება წინ',
-			insertAfter		: 'სტრიქონის ჩამატება მერე',
-			deleteRow		: 'სტრიქონების წაშლა'
-		},
-
-		column :
-		{
-			menu			: 'სვეტი',
-			insertBefore	: 'სვეტის ჩამატება წინ',
-			insertAfter		: 'სვეტის ჩამატება მერე',
-			deleteColumn	: 'სვეტების წაშლა'
-		}
-	},
-
-	// Button Dialog.
-	button :
-	{
-		title		: 'ღილაკის პარამეტრები',
-		text		: 'ტექსტი',
-		type		: 'ტიპი',
-		typeBtn		: 'ღილაკი',
-		typeSbm		: 'გაგზავნა',
-		typeRst		: 'გასუფთავება'
-	},
-
-	// Checkbox and Radio Button Dialogs.
-	checkboxAndRadio :
-	{
-		checkboxTitle : 'მონიშვნის ღილაკის (Checkbox) პარამეტრები',
-		radioTitle	: 'ასარჩევი ღილაკის (Radio) პარამეტრები',
-		value		: 'ტექსტი',
-		selected	: 'არჩეული'
-	},
-
-	// Form Dialog.
-	form :
-	{
-		title		: 'ფორმის პარამეტრები',
-		menu		: 'ფორმის პარამეტრები',
-		action		: 'ქმედება',
-		method		: 'მეთოდი',
-		encoding	: 'კოდირება'
-	},
-
-	// Select Field Dialog.
-	select :
-	{
-		title		: 'არჩევის ველის პარამეტრები',
-		selectInfo	: 'ინფორმაცია',
-		opAvail		: 'შესაძლებელი ვარიანტები',
-		value		: 'მნიშვნელობა',
-		size		: 'ზომა',
-		lines		: 'ხაზები',
-		chkMulti	: 'მრავლობითი არჩევანის საშუალება',
-		opText		: 'ტექსტი',
-		opValue		: 'მნიშვნელობა',
-		btnAdd		: 'დამატება',
-		btnModify	: 'შეცვლა',
-		btnUp		: 'ზემოთ',
-		btnDown		: 'ქვემოთ',
-		btnSetValue : 'ამორჩეულ მნიშვნელოვნად დაყენება',
-		btnDelete	: 'წაშლა'
-	},
-
-	// Textarea Dialog.
-	textarea :
-	{
-		title		: 'ტექსტური არის პარამეტრები',
-		cols		: 'სვეტები',
-		rows		: 'სტრიქონები'
-	},
-
-	// Text Field Dialog.
-	textfield :
-	{
-		title		: 'ტექსტური ველის პარამეტრები',
-		name		: 'სახელი',
-		value		: 'მნიშვნელობა',
-		charWidth	: 'სიმბოლოს ზომა',
-		maxChars	: 'ასოების მაქსიმალური ოდენობა',
-		type		: 'ტიპი',
-		typeText	: 'ტექსტი',
-		typePass	: 'პაროლი'
-	},
-
-	// Hidden Field Dialog.
-	hidden :
-	{
-		title	: 'მალული ველის პარამეტრები',
-		name	: 'სახელი',
-		value	: 'მნიშვნელობა'
-	},
-
-	// Image Dialog.
-	image :
-	{
-		title		: 'სურათის პარამეტრები',
-		titleButton	: 'სურათიანი ღილაკის პარამეტრები',
-		menu		: 'სურათის პარამეტრები',
-		infoTab		: 'სურათის ინფორმცია',
-		btnUpload	: 'სერვერისთვის გაგზავნა',
-		upload		: 'ატვირთვა',
-		alt			: 'სანაცვლო ტექსტი',
-		lockRatio	: 'პროპორციის შენარჩუნება',
-		resetSize	: 'ზომის დაბრუნება',
-		border		: 'ჩარჩო',
-		hSpace		: 'ჰორიზონტალური სივრცე',
-		vSpace		: 'ვერტიკალური სივრცე',
-		alertUrl	: 'აკრიფეთ სურათის URL',
-		linkTab		: 'ბმული',
-		button2Img	: 'გსურთ არჩეული სურათიანი ღილაკის გადაქცევა ჩვეულებრივ ღილაკად?',
-		img2Button	: 'გსურთ არჩეული ჩვეულებრივი ღილაკის გადაქცევა სურათიან ღილაკად?',
-		urlMissing	: 'სურათის URL არაა შევსებული.',
-		validateBorder	: 'ჩარჩო მთელი რიცხვი უნდა იყოს.',
-		validateHSpace	: 'ჰორიზონტალური სივრცე მთელი რიცხვი უნდა იყოს.',
-		validateVSpace	: 'ვერტიკალური სივრცე მთელი რიცხვი უნდა იყოს.'
-	},
-
-	// Flash Dialog
-	flash :
-	{
-		properties		: 'Flash-ის პარამეტრები',
-		propertiesTab	: 'პარამეტრები',
-		title			: 'Flash-ის პარამეტრები',
-		chkPlay			: 'ავტო გაშვება',
-		chkLoop			: 'ჩაციკლვა',
-		chkMenu			: 'Flash-ის მენიუს დაშვება',
-		chkFull			: 'მთელი ეკრანის დაშვება',
- 		scale			: 'მასშტაბირება',
-		scaleAll		: 'ყველაფრის ჩვენება',
-		scaleNoBorder	: 'ჩარჩოს გარეშე',
-		scaleFit		: 'ზუსტი ჩასმა',
-		access			: 'სკრიპტის წვდომა',
-		accessAlways	: 'ყოველთვის',
-		accessSameDomain: 'იგივე დომენი',
-		accessNever		: 'არასდროს',
-		alignAbsBottom	: 'ჩარჩოს ქვემოთა ნაწილის სწორება ტექსტისთვის',
-		alignAbsMiddle	: 'ჩარჩოს შუა ნაწილის სწორება ტექსტისთვის',
-		alignBaseline	: 'საბაზისო ხაზის სწორება',
-		alignTextTop	: 'ტექსტი ზემოდან',
-		quality			: 'ხარისხი',
-		qualityBest		: 'საუკეთესო',
-		qualityHigh		: 'მაღალი',
-		qualityAutoHigh	: 'მაღალი (ავტომატური)',
-		qualityMedium	: 'საშუალო',
-		qualityAutoLow	: 'ძალიან დაბალი',
-		qualityLow		: 'დაბალი',
-		windowModeWindow: 'ფანჯარა',
-		windowModeOpaque: 'გაუმჭვირვალე',
-		windowModeTransparent : 'გამჭვირვალე',
-		windowMode		: 'ფანჯრის რეჟიმი',
-		flashvars		: 'ცვლადები Flash-ისთვის',
-		bgcolor			: 'ფონის ფერი',
-		hSpace			: 'ჰორიზ. სივრცე',
-		vSpace			: 'ვერტ. სივრცე',
-		validateSrc		: 'URL არ უნდა იყოს ცარიელი.',
-		validateHSpace	: 'ჰორიზონტალური სივრცე არ უნდა იყოს ცარიელი.',
-		validateVSpace	: 'ვერტიკალური სივრცე არ უნდა იყოს ცარიელი.'
-	},
-
-	// Speller Pages Dialog
-	spellCheck :
-	{
-		toolbar			: 'მართლწერა',
-		title			: 'მართლწერა',
-		notAvailable	: 'უკაცრავად, ეს სერვისი ამჟამად მიუწვდომელია.',
-		errorLoading	: 'სერვისის გამოძახების შეცდომა: %s.',
-		notInDic		: 'არაა ლექსიკონში',
-		changeTo		: 'შეცვლელი',
-		btnIgnore		: 'უგულებელყოფა',
-		btnIgnoreAll	: 'ყველას უგულებელყოფა',
-		btnReplace		: 'შეცვლა',
-		btnReplaceAll	: 'ყველას შეცვლა',
-		btnUndo			: 'გაუქმება',
-		noSuggestions	: '- არაა შემოთავაზება -',
-		progress		: 'მიმდინარეობს მართლწერის შემოწმება...',
-		noMispell		: 'მართლწერის შემოწმება: შეცდომა არ მოიძებნა',
-		noChanges		: 'მართლწერის შემოწმება: არაფერი შეცვლილა',
-		oneChange		: 'მართლწერის შემოწმება: ერთი სიტყვა შეიცვალა',
-		manyChanges		: 'მართლწერის შემოწმება: %1 სიტყვა შეიცვალა',
-		ieSpellDownload	: 'მართლწერის შემოწმება არაა დაინსტალირებული. ჩამოვქაჩოთ ინტერნეტიდან?'
-	},
-
-	smiley :
-	{
-		toolbar	: 'სიცილაკები',
-		title	: 'სიცილაკის ჩასმა',
-		options : 'სიცილაკის პარამეტრები'
-	},
-
-	elementsPath :
-	{
-		eleLabel : 'ელემეტის გზა',
-		eleTitle : '%1 ელემენტი'
-	},
-
-	numberedlist	: 'გადანომრილი სია',
-	bulletedlist	: 'ღილიანი სია',
-	indent			: 'მეტად შეწევა',
-	outdent			: 'ნაკლებად შეწევა',
-
-	justify :
-	{
-		left	: 'მარცხნივ სწორება',
-		center	: 'შუაში სწორება',
-		right	: 'მარჯვნივ სწორება',
-		block	: 'გადასწორება'
-	},
-
-	blockquote : 'ციტატა',
-
-	clipboard :
-	{
-		title		: 'ჩასმა',
-		cutError	: 'თქვენი ბროუზერის უსაფრთხოების პარამეტრები არ იძლევა ამოჭრის ოპერაციის ავტომატურად განხორციელების საშუალებას. გამოიყენეთ კლავიატურა ამისთვის (Ctrl/Cmd+X).',
-		copyError	: 'თქვენი ბროუზერის უსაფრთხოების პარამეტრები არ იძლევა ასლის ოპერაციის ავტომატურად განხორციელების საშუალებას. გამოიყენეთ კლავიატურა ამისთვის (Ctrl/Cmd+C).',
-		pasteMsg	: 'ჩასვით ამ არის შიგნით კლავიატურის გამოყენებით (<strong>Ctrl/Cmd+V</strong>) და დააჭირეთ OK-ს',
-		securityMsg	: 'თქვენი ბროუზერის უსაფრთხოების პარამეტრები არ იძლევა clipboard-ის მონაცემების წვდომის უფლებას. კიდევ უნდა ჩასვათ ტექსტი ამ ფანჯარაში.',
-		pasteArea	: 'ჩასმის არე'
-	},
-
-	pastefromword :
-	{
-		confirmCleanup	: 'ჩასასმელი ტექსტი ვორდიდან გადმოტანილს გავს - გინდათ მისი წინასწარ გაწმენდა?',
-		toolbar			: 'ვორდიდან ჩასმა',
-		title			: 'ვორდიდან ჩასმა',
-		error			: 'შიდა შეცდომის გამო ვერ მოხერხდა ტექსტის გაწმენდა'
-	},
-
-	pasteText :
-	{
-		button	: 'მხოლოდ ტექსტის ჩასმა',
-		title	: 'მხოლოდ ტექსტის ჩასმა'
-	},
-
-	templates :
-	{
-		button			: 'თარგები',
-		title			: 'თარგები',
-		options : 'თარგების პარამეტრები',
-		insertOption	: 'მიმდინარე შეგთავსის შეცვლა',
-		selectPromptMsg	: 'აირჩიეთ თარგი რედაქტორისთვის',
-		emptyListMsg	: '(თარგი არაა განსაზღვრული)'
-	},
-
-	showBlocks : 'არეების ჩვენება',
-
-	stylesCombo :
-	{
-		label		: 'სტილები',
-		panelTitle	: 'ფორმატირების სტილები',
-		panelTitle1	: 'არის სტილები',
-		panelTitle2	: 'თანდართული სტილები',
-		panelTitle3	: 'ობიექტის სტილები'
-	},
-
-	format :
-	{
-		label		: 'ფიორმატირება',
-		panelTitle	: 'ფორმატირება',
-
-		tag_p		: 'ჩვეულებრივი',
-		tag_pre		: 'ფორმატირებული',
-		tag_address	: 'მისამართი',
-		tag_h1		: 'სათაური 1',
-		tag_h2		: 'სათაური 2',
-		tag_h3		: 'სათაური 3',
-		tag_h4		: 'სათაური 4',
-		tag_h5		: 'სათაური 5',
-		tag_h6		: 'სათაური 6',
-		tag_div		: 'ჩვეულებრივი (DIV)'
-	},
-
-	div :
-	{
-		title				: 'Div კონტეინერის შექმნა',
-		toolbar				: 'Div კონტეინერის შექმნა',
-		cssClassInputLabel	: 'CSS კლასები',
-		styleSelectLabel	: 'სტილი',
-		IdInputLabel		: 'Id',
-		languageCodeInputLabel	: 'ენის კოდი',
-		inlineStyleInputLabel	: 'თანდართული სტილი',
-		advisoryTitleInputLabel	: 'სათაური',
-		langDirLabel		: 'ენის მინართულება',
-		langDirLTRLabel		: 'მარცხნიდან მარჯვნიც (LTR)',
-		langDirRTLLabel		: 'მარჯვნიდან მარცხნივ (RTL)',
-		edit				: 'Div-ის რედაქტირება',
-		remove				: 'Div-ის წაშლა'
-  	},
-
-	iframe :
-	{
-		title		: 'IFrame-ის პარამეტრები',
-		toolbar		: 'IFrame',
-		noUrl		: 'აკრიფეთ iframe-ის URL',
-		scrolling	: 'გადახვევის ზოლების დაშვება',
-		border		: 'ჩარჩოს გამოჩენა'
-	},
-
-	font :
-	{
-		label		: 'ფონტი',
-		voiceLabel	: 'ფონტი',
-		panelTitle	: 'ფონტის სახელი'
-	},
-
-	fontSize :
-	{
-		label		: 'ზომა',
-		voiceLabel	: 'ტექსტის ზომა',
-		panelTitle	: 'ტექსტის ზომა'
-	},
-
-	colorButton :
-	{
-		textColorTitle	: 'ტექსტის ფერი',
-		bgColorTitle	: 'ფონის ფერი',
-		panelTitle		: 'ფერები',
-		auto			: 'ავტომატური',
-		more			: 'მეტი ფერი...'
-	},
-
-	colors :
-	{
-		'000' : 'შავი',
-		'800000' : 'მუქი შინდისფერი',
-		'8B4513' : 'ყავისფერი',
-		'2F4F4F' : 'მოლურჯო ნაცრისფერი',
-		'008080' : 'ჩამქრალი ლურჯი',
-		'000080' : 'მუქი ლურჯი',
-		'4B0082' : 'იასამნისფერი',
-		'696969' : 'მუქი ნაცრისფერი',
-		'B22222' : 'აგურისფერი',
-		'A52A2A' : 'მუქი ყავისფერი',
-		'DAA520' : 'მოყვითალო',
-		'006400' : 'მუქი მწვანე',
-		'40E0D0' : 'ცისფერი',
-		'0000CD' : 'ზომიერად ლურჯი',
-		'800080' : 'იისფერი',
-		'808080' : 'ნაცრისფერი',
-		'F00' : 'წითელი',
-		'FF8C00' : 'მუქი სტაფილოსფერი',
-		'FFD700' : 'ოქროსფერი',
-		'008000' : 'მწვანე',
-		'0FF' : 'ღია ცისფერი',
-		'00F' : 'ლურჯი',
-		'EE82EE' : 'იისფერი',
-		'A9A9A9' : 'ბაცი ნაცრისფერი',
-		'FFA07A' : 'ჩამქრალი ვარდისფერი',
-		'FFA500' : 'სტაფილოსფერი',
-		'FFFF00' : 'ყვითელი',
-		'00FF00' : 'ლურჯი',
-		'AFEEEE' : 'ცისფერი',
-		'ADD8E6' : 'ღია ლურჯი',
-		'DDA0DD' : 'ღია იისფერი',
-		'D3D3D3' : 'ღია ნაცრისფერი',
-		'FFF0F5' : 'ღია ვარდისფერი',
-		'FAEBD7' : 'ღია ყავისფერი',
-		'FFFFE0' : 'ნათელი ყვითელი',
-		'F0FFF0' : 'ღია მწვანე',
-		'F0FFFF' : 'ღია ცისფერი 2',
-		'F0F8FF' : 'ღია ცისფერი 3',
-		'E6E6FA' : 'ღია იისფერი 2',
-		'FFF' : 'თეთრი'
-	},
-
-	scayt :
-	{
-		title			: 'მართლწერის შემოწმება კრეფისას',
-		opera_title		: 'არაა მხარდაჭერილი Opera-ს მიერ',
-		enable			: 'SCAYT-ის ჩართვა',
-		disable			: 'SCAYT-ის გამორთვა',
-		about			: 'SCAYT-ის შესახებ',
-		toggle			: 'SCAYT-ის გადართვა',
-		options			: 'პარამეტრები',
-		langs			: 'ენები',
-		moreSuggestions	: 'მეტი შემოთავაზება',
-		ignore			: 'უგულებელყოფა',
-		ignoreAll		: 'ყველას უგულებელყოფა',
-		addWord			: 'სიტყვის დამატება',
-		emptyDic		: 'ლექსიკონის სიტყვა არ უნდა იყოს ცარიელი.',
-
-		optionsTab		: 'პარამეტრები',
-		allCaps			: 'დიდი ასოებით დაწერილი სიტყვების უგულებელყოფა',
-		ignoreDomainNames : 'დომენური სახელების უგულებელყოფა',
-		mixedCase		: 'შერეული ასოებანი სიტყვების უგულებელყოფა',
-		mixedWithDigits	: 'ციფრებიანი სიტყვების უგულებელყოფა',
-
-		languagesTab	: 'ენები',
-
-		dictionariesTab	: 'ლექსიკონები',
-		dic_field_name	: 'ლექსიკონის სახელი',
-		dic_create		: 'შექმნა',
-		dic_restore		: 'დაბრუნება',
-		dic_delete		: 'წაშლა',
-		dic_rename		: 'გადარქმევა',
-		dic_info		: 'თავდაპირველად მომხმარებლის ლექსიკონი ინახება Cookie-ში. თუმცა Cookie შეზღუდულია ზომაში. როცა ლექსიკონის ზომა გაიზრდება საკმაოდ ის შეიძლება შევინახოთ ჩვენს სერვერზე. ჩვენს სერვერზე ლექსიკონს შესანახად უნდა მიუთითოთ მისი სახელი. თუ უკე გაქვთ ლექსიკონი, აკრიფეთ მისი სახელი და დააჭირეთ "დაბრუნების" ღილაკს.',
-
-		aboutTab		: 'ინფორმაცია'
-	},
-
-	about :
-	{
-		title		: 'CKEditor-ის შესახებ',
-		dlgTitle	: 'CKEditor-ის შესახებ',
-		help	: 'დახმარებისთვის იხილეთ $1.',
-		userGuide : 'CKEditor-ის მომხმარებლის სახელმძღვანელო',
-		moreInfo	: 'ლიცენზიის ინფორმაციისთვის ეწვიეთ ჩვენს საიტს:',
-		copy		: 'Copyright &copy; $1. ყველა უფლება დაცულია.'
-	},
-
-	maximize : 'გადიდება',
-	minimize : 'დაპატარავება',
-
-	fakeobjects :
-	{
-		anchor		: 'ღუზა',
-		flash		: 'Flash ანიმაცია',
-		iframe		: 'IFrame',
-		hiddenfield	: 'მალული ველი',
-		unknown		: 'უცნობი ობიექტი'
-	},
-
-	resize : 'გაწიე ზომის შესაცვლელად',
-
-	colordialog :
-	{
-		title		: 'ფერის შეცვლა',
-		options	:	'ფერის პარამეტრები',
-		highlight	: 'ჩვენება',
-		selected	: 'არჩეული ფერი',
-		clear		: 'გასუფთავება'
-	},
-
-	toolbarCollapse	: 'ხელსაწყოთა ზოლის შეწევა',
-	toolbarExpand	: 'ხელსაწყოთა ზოლის გამოწევა',
-
-	toolbarGroups :
-	{
-		document : 'დოკუმენტი',
-		clipboard : 'Clipboard/გაუქმება',
-		editing : 'რედაქტირება',
-		forms : 'ფორმები',
-		basicstyles : 'ძირითადი სტილები',
-		paragraph : 'აბზაცი',
-		links : 'ბმულები',
-		insert : 'ჩასმა',
-		styles : 'სტილები',
-		colors : 'ფერები',
-		tools : 'ხელსაწყოები'
-	},
-
-	bidi :
-	{
-		ltr : 'ტექსტის მიმართულება მარცხნიდან მარჯვნივ',
-		rtl : 'ტექსტის მიმართულება მარჯვნიდან მარცხნივ'
-	},
-
-	docprops :
-	{
-		label : 'დოკუმენტის პარამეტრები',
-		title : 'დოკუმენტის პარამეტრები',
-		design : 'დიზაინი',
-		meta : 'მეტაTag-ები',
-		chooseColor : 'არჩევა',
-		other : 'სხვა...',
-		docTitle :	'გვერდის სათაური',
-		charset : 	'კოდირება',
-		charsetOther : 'სხვა კოდირებები',
-		charsetASCII : 'ამერიკული (ASCII)',
-		charsetCE : 'ცენტრალურ ევროპული',
-		charsetCT : 'ტრადიციული ჩინური (Big5)',
-		charsetCR : 'კირილური',
-		charsetGR : 'ბერძნული',
-		charsetJP : 'იაპონური',
-		charsetKR : 'კორეული',
-		charsetTR : 'თურქული',
-		charsetUN : 'უნიკოდი (UTF-8)',
-		charsetWE : 'დასავლეთ ევროპული',
-		docType : 'დოკუმენტის ტიპი',
-		docTypeOther : 'სხვა ტიპის დოკუმენტი',
-		xhtmlDec : 'XHTML დეკლარაციების ჩართვა',
-		bgColor : 'ფონის ფერი',
-		bgImage : 'ფონური სურათის URL',
-		bgFixed : 'უმოძრაო (ფიქსირებული) ფონი',
-		txtColor : 'ტექსტის ფერი',
-		margin : 'გვერდის კიდეები',
-		marginTop : 'ზედა',
-		marginLeft : 'მარცხენა',
-		marginRight : 'მარჯვენა',
-		marginBottom : 'ქვედა',
-		metaKeywords : 'დოკუმენტის საკვანძო სიტყვები (მძიმით გამოყოფილი)',
-		metaDescription : 'დოკუმენტის აღწერა',
-		metaAuthor : 'ავტორი',
-		metaCopyright : 'Copyright',
-		previewHtml : '<p>ეს არის <strong>საცდელი ტექსტი</strong>. თქვენ <a href="javascript:void(0)">CKEditor</a>-ით სარგებლობთ.</p>'
-	}
-};
+//>>built
+define("ckeditor/_source/lang/ka",["dijit","dojo","dojox"],function(){CKEDITOR.lang.ka={dir:"ltr",editorTitle:"Rich text editor, %1",editorHelp:"Press ALT 0 for help",toolbars:"Editor toolbars",editor:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10e0\u10d4\u10d3\u10d0\u10e5\u10e2\u10dd\u10e0\u10d8",source:"\u10d9\u10dd\u10d3\u10d4\u10d1\u10d8",newPage:"\u10d0\u10ee\u10d0\u10da\u10d8 \u10d2\u10d5\u10d4\u10e0\u10d3\u10d8",save:"\u10e9\u10d0\u10ec\u10d4\u10e0\u10d0",preview:"\u10d2\u10d0\u10d3\u10d0\u10ee\u10d4\u10d3\u10d5\u10d0",
+cut:"\u10d0\u10db\u10dd\u10ed\u10e0\u10d0",copy:"\u10d0\u10e1\u10da\u10d8",paste:"\u10e9\u10d0\u10e1\u10db\u10d0",print:"\u10d1\u10d4\u10ed\u10d3\u10d5\u10d0",underline:"\u10d2\u10d0\u10ee\u10d0\u10d6\u10e3\u10da\u10d8",bold:"\u10db\u10e1\u10ee\u10d5\u10d8\u10da\u10d8",italic:"\u10d3\u10d0\u10ee\u10e0\u10d8\u10da\u10d8",selectAll:"\u10e7\u10d5\u10d4\u10da\u10d0\u10e4\u10e0\u10d8\u10e1 \u10db\u10dd\u10dc\u10d8\u10e8\u10dc\u10d5\u10d0",removeFormat:"\u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10d8\u10e0\u10d4\u10d1\u10d8\u10e1 \u10db\u10dd\u10ee\u10e1\u10dc\u10d0",
+strike:"\u10d2\u10d0\u10d3\u10d0\u10ee\u10d0\u10d6\u10e3\u10da\u10d8",subscript:"\u10d8\u10dc\u10d3\u10d4\u10e5\u10e1\u10d8",superscript:"\u10ee\u10d0\u10e0\u10d8\u10e1\u10ee\u10d8",horizontalrule:"\u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d8 \u10ee\u10d0\u10d6\u10d8\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0",pagebreak:"\u10d2\u10d5\u10d4\u10e0\u10d3\u10d8\u10e1 \u10ec\u10e7\u10d5\u10d4\u10e2\u10d0 \u10d1\u10d4\u10ed\u10d3\u10d5\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1",pagebreakAlt:"\u10d2\u10d5\u10d4\u10e0\u10d3\u10d8\u10e1 \u10ec\u10e7\u10d5\u10d4\u10e2\u10d0",
+unlink:"\u10d1\u10db\u10e3\u10da\u10d8\u10e1 \u10db\u10dd\u10ee\u10e1\u10dc\u10d0",undo:"\u10d2\u10d0\u10e3\u10e5\u10db\u10d4\u10d1\u10d0",redo:"\u10d2\u10d0\u10db\u10d4\u10dd\u10e0\u10d4\u10d1\u10d0",common:{browseServer:"\u10e1\u10d4\u10e0\u10d5\u10d4\u10e0\u10d6\u10d4 \u10d3\u10d0\u10d7\u10d5\u10d0\u10da\u10d8\u10d4\u10e0\u10d4\u10d1\u10d0",url:"URL",protocol:"\u10de\u10e0\u10dd\u10e2\u10dd\u10d9\u10dd\u10da\u10d8",upload:"\u10d0\u10e2\u10d5\u10d8\u10e0\u10d7\u10d5\u10d0",uploadSubmit:"\u10e1\u10d4\u10e0\u10d5\u10d4\u10e0\u10d6\u10d4 \u10d2\u10d0\u10d2\u10d6\u10d0\u10d5\u10dc\u10d0",
+image:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8",flash:"Flash",form:"\u10e4\u10dd\u10e0\u10db\u10d0",checkbox:"\u10db\u10dd\u10dc\u10d8\u10e8\u10d5\u10dc\u10d8\u10e1 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8",radio:"\u10d0\u10db\u10dd\u10e0\u10e9\u10d4\u10d5\u10d8\u10e1 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8",textField:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10e3\u10e0\u10d8 \u10d5\u10d4\u10da\u10d8",textarea:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10e3\u10e0\u10d8 \u10d0\u10e0\u10d4",hiddenField:"\u10db\u10d0\u10da\u10e3\u10da\u10d8 \u10d5\u10d4\u10da\u10d8",
+button:"\u10e6\u10d8\u10da\u10d0\u10d9\u10d8",select:"\u10d0\u10e0\u10e9\u10d4\u10d5\u10d8\u10e1 \u10d5\u10d4\u10da\u10d8",imageButton:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10d0\u10dc\u10d8 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8",notSet:"<\u10d0\u10e0\u10d0\u10e4\u10d4\u10e0\u10d8>",id:"Id",name:"\u10e1\u10d0\u10ee\u10d4\u10da\u10d8",langDir:"\u10d4\u10dc\u10d8\u10e1 \u10db\u10d8\u10db\u10d0\u10e0\u10d7\u10e3\u10da\u10d4\u10d1\u10d0",langDirLtr:"\u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d5 (LTR)",
+langDirRtl:"\u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d5 (RTL)",langCode:"\u10d4\u10dc\u10d8\u10e1 \u10d9\u10dd\u10d3\u10d8",longDescr:"\u10d3\u10d8\u10d3\u10d8 \u10d0\u10e6\u10ec\u10d4\u10e0\u10d8\u10e1 URL",cssClass:"CSS \u10d9\u10da\u10d0\u10e1\u10d8",advisoryTitle:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",cssStyle:"CSS \u10e1\u10e2\u10d8\u10da\u10d8",ok:"\u10d3\u10d8\u10d0\u10ee",cancel:"\u10d2\u10d0\u10e3\u10e5\u10db\u10d4\u10d1\u10d0",
+close:"\u10d3\u10d0\u10ee\u10e3\u10e0\u10d5\u10d0",preview:"\u10d2\u10d0\u10d3\u10d0\u10ee\u10d4\u10d3\u10d5\u10d0",generalTab:"\u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d0",advancedTab:"\u10d2\u10d0\u10e4\u10d0\u10e0\u10d7\u10dd\u10d4\u10d1\u10e3\u10da\u10d8",validateNumberFailed:"\u10d4\u10e1 \u10db\u10dc\u10d8\u10e8\u10d5\u10dc\u10d4\u10da\u10dd\u10d1\u10d0 \u10d0\u10e0\u10d0\u10d0 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8.",confirmNewPage:"\u10d0\u10db \u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10e8\u10d8 \u10e7\u10d5\u10d4\u10da\u10d0 \u10e9\u10d0\u10e3\u10ec\u10d4\u10e0\u10d4\u10da\u10d8 \u10ea\u10d5\u10da\u10d8\u10da\u10d4\u10d1\u10d0 \u10d3\u10d0\u10d8\u10d9\u10d0\u10e0\u10d2\u10d4\u10d1\u10d0. \u10d3\u10d0\u10e0\u10ec\u10db\u10e3\u10dc\u10d4\u10d1\u10e3\u10da\u10d8 \u10ee\u10d0\u10e0\u10d7 \u10e0\u10dd\u10db \u10d0\u10ee\u10d0\u10da\u10d8 \u10d2\u10d5\u10d4\u10e0\u10d3\u10d8\u10e1 \u10e9\u10d0\u10e2\u10d5\u10d8\u10e0\u10d7\u10d5\u10d0 \u10d2\u10d8\u10dc\u10d3\u10d0\u10d7?",
+confirmCancel:"\u10d6\u10dd\u10d2\u10d8\u10d4\u10e0\u10d7\u10d8 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d8 \u10e8\u10d4\u10ea\u10d5\u10da\u10d8\u10da\u10d8\u10d0, \u10d3\u10d0\u10e0\u10ec\u10db\u10e3\u10dc\u10d4\u10d1\u10e3\u10da\u10d8\u10da \u10ee\u10d0\u10e0\u10d7 \u10e0\u10dd\u10db \u10e4\u10d0\u10dc\u10ef\u10e0\u10d8\u10e1 \u10d3\u10d0\u10ee\u10e3\u10e0\u10d5\u10d0 \u10d2\u10e1\u10e3\u10e0\u10d7?",options:"\u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",target:"\u10d2\u10d0\u10ee\u10e1\u10dc\u10d8\u10e1 \u10d0\u10d3\u10d2\u10d8\u10da\u10d8",
+targetNew:"\u10d0\u10ee\u10d0\u10da\u10d8 \u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0 (_blank)",targetTop:"\u10d6\u10d4\u10d3\u10d0 \u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0 (_top)",targetSelf:"\u10d8\u10d2\u10d8\u10d5\u10d4 \u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0 (_self)",targetParent:"\u10db\u10e8\u10dd\u10d1\u10d4\u10da\u10d8 \u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0 (_parent)",langDirLTR:"\u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d5 (LTR)",
+langDirRTL:"\u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d5 (RTL)",styles:"\u10e1\u10e2\u10d8\u10da\u10d8",cssClasses:"CSS \u10d9\u10da\u10d0\u10e1\u10d8",width:"\u10e1\u10d8\u10d2\u10d0\u10dc\u10d4",height:"\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4",align:"\u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",alignLeft:"\u10db\u10d0\u10e0\u10ea\u10ee\u10d4\u10dc\u10d0",alignRight:"\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10dc\u10d0",alignCenter:"\u10e8\u10e3\u10d0",
+alignTop:"\u10d6\u10d4\u10db\u10dd\u10d7\u10d0",alignMiddle:"\u10e8\u10e3\u10d0",alignBottom:"\u10e5\u10d5\u10d4\u10db\u10dd\u10d7\u10d0",invalidHeight:"\u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",invalidWidth:"\u10e1\u10d8\u10d2\u10d0\u10dc\u10d4 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",
+invalidCssLength:'Value specified for the "%1" field must be a positive number with or without a valid CSS measurement unit (px, %, in, cm, mm, em, ex, pt, or pc).',invalidHtmlLength:'Value specified for the "%1" field must be a positive number with or without a valid HTML measurement unit (px or %).',invalidInlineStyle:'Value specified for the inline style must consist of one or more tuples with the format of "name : value", separated by semi-colons.',cssLengthTooltip:"Enter a number for a value in pixels or a number with a valid CSS unit (px, %, in, cm, mm, em, ex, pt, or pc).",
+unavailable:'%1<span class="cke_accessibility">, \u10db\u10d8\u10e3\u10ec\u10d5\u10d3\u10dd\u10db\u10d4\u10da\u10d8\u10d0</span>'},contextmenu:{options:"\u10d9\u10dd\u10dc\u10e2\u10d4\u10e5\u10e1\u10e2\u10e3\u10e0\u10d8 \u10db\u10d4\u10dc\u10d8\u10e3\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8"},specialChar:{toolbar:"\u10e1\u10de\u10d4\u10ea\u10d8\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10db\u10d1\u10dd\u10da\u10dd\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0",title:"\u10e1\u10de\u10d4\u10ea\u10d8\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10db\u10d1\u10dd\u10da\u10dd\u10e1 \u10d0\u10e0\u10e9\u10d4\u10d5\u10d0",
+options:"\u10e1\u10de\u10d4\u10ea\u10d8\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10db\u10d1\u10dd\u10da\u10dd\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8"},link:{toolbar:"\u10d1\u10db\u10e3\u10da\u10d8",other:"<\u10e1\u10ee\u10d5\u10d0>",menu:"\u10d1\u10db\u10e3\u10da\u10d8\u10e1 \u10e0\u10d4\u10d3\u10d0\u10e5\u10e2\u10d8\u10e0\u10d4\u10d1\u10d0",title:"\u10d1\u10db\u10e3\u10da\u10d8",info:"\u10d1\u10db\u10e3\u10da\u10d8\u10e1 \u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d0",
+target:"\u10d2\u10d0\u10ee\u10e1\u10dc\u10d8\u10e1 \u10d0\u10d3\u10d2\u10d8\u10da\u10d8",upload:"\u10d0\u10e5\u10d0\u10e9\u10d5\u10d0",advanced:"\u10d3\u10d0\u10ec\u10d5\u10e0\u10d8\u10da\u10d4\u10d1\u10d8\u10d7",type:"\u10d1\u10db\u10e3\u10da\u10d8\u10e1 \u10e2\u10d8\u10de\u10d8",toUrl:"URL",toAnchor:"\u10d1\u10db\u10e3\u10da\u10d8 \u10e2\u10d4\u10e5\u10e1\u10e2\u10e8\u10d8 \u10e6\u10e3\u10d6\u10d0\u10d6\u10d4",toEmail:"\u10d4\u10da\u10e4\u10dd\u10e1\u10e2\u10d0",targetFrame:"<frame>",targetPopup:"<popup \u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0>",
+targetFrameName:"Frame-\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8",targetPopupName:"Popup \u10e4\u10d0\u10dc\u10ef\u10e0\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8",popupFeatures:"Popup \u10e4\u10d0\u10dc\u10ef\u10e0\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",popupResizable:"\u10ea\u10d5\u10d0\u10da\u10d4\u10d1\u10d0\u10d3\u10d8 \u10d6\u10dd\u10db\u10d8\u10d7",popupStatusBar:"\u10e1\u10e2\u10d0\u10e2\u10e3\u10e1\u10d8\u10e1 \u10d6\u10dd\u10da\u10d8",
+popupLocationBar:"\u10dc\u10d0\u10d5\u10d8\u10d2\u10d0\u10ea\u10d8\u10d8\u10e1 \u10d6\u10dd\u10da\u10d8",popupToolbar:"\u10ee\u10d4\u10da\u10e1\u10d0\u10ec\u10e7\u10dd\u10d7\u10d0 \u10d6\u10dd\u10da\u10d8",popupMenuBar:"\u10db\u10d4\u10dc\u10d8\u10e3\u10e1 \u10d6\u10dd\u10da\u10d8",popupFullScreen:"\u10db\u10d7\u10d4\u10da\u10d8 \u10d4\u10d9\u10e0\u10d0\u10dc\u10d8 (IE)",popupScrollBars:"\u10d2\u10d0\u10d3\u10d0\u10ee\u10d5\u10d4\u10d5\u10d8\u10e1 \u10d6\u10dd\u10da\u10d4\u10d1\u10d8",popupDependent:"\u10d3\u10d0\u10db\u10dd\u10d9\u10d8\u10d3\u10d4\u10d1\u10e3\u10da\u10d8 (Netscape)",
+popupLeft:"\u10db\u10d0\u10e0\u10ea\u10ee\u10d4\u10dc\u10d0 \u10de\u10dd\u10d6\u10d8\u10ea\u10d8\u10d0",popupTop:"\u10d6\u10d4\u10d3\u10d0 \u10de\u10dd\u10d6\u10d8\u10ea\u10d8\u10d0",id:"Id",langDir:"\u10d4\u10dc\u10d8\u10e1 \u10db\u10d8\u10db\u10d0\u10e0\u10d7\u10e3\u10da\u10d4\u10d1\u10d0",langDirLTR:"\u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d5 (LTR)",langDirRTL:"\u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d5 (RTL)",
+acccessKey:"\u10ec\u10d5\u10d3\u10dd\u10db\u10d8\u10e1 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8",name:"\u10e1\u10d0\u10ee\u10d4\u10da\u10d8",langCode:"\u10d4\u10dc\u10d8\u10e1 \u10d9\u10dd\u10d3\u10d8",tabIndex:"Tab-\u10d8\u10e1 \u10d8\u10dc\u10d3\u10d4\u10e5\u10e1\u10d8",advisoryTitle:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",advisoryContentType:"\u10e8\u10d8\u10d2\u10d7\u10d0\u10d5\u10e1\u10d8\u10e1 \u10e2\u10d8\u10de\u10d8",cssClasses:"CSS \u10d9\u10da\u10d0\u10e1\u10d8",charset:"\u10d9\u10dd\u10d3\u10d8\u10e0\u10d4\u10d1\u10d0",
+styles:"CSS \u10e1\u10e2\u10d8\u10da\u10d8",rel:"\u10d9\u10d0\u10d5\u10e8\u10d8\u10e0\u10d8",selectAnchor:"\u10d0\u10d8\u10e0\u10e9\u10d8\u10d4\u10d7 \u10e6\u10e3\u10d6\u10d0",anchorName:"\u10e6\u10e3\u10d6\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8\u10d7",anchorId:"\u10d4\u10da\u10d4\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 Id-\u10d7",emailAddress:"\u10d4\u10da\u10e4\u10dd\u10e1\u10e2\u10d8\u10e1 \u10db\u10d8\u10e1\u10d0\u10db\u10d0\u10e0\u10d7\u10d4\u10d1\u10d8",emailSubject:"\u10ec\u10d4\u10e0\u10d8\u10da\u10d8\u10e1 \u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",
+emailBody:"\u10ec\u10d4\u10e0\u10d8\u10da\u10d8\u10e1 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8",noAnchors:"(\u10d0\u10db \u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10e8\u10d8 \u10e6\u10e3\u10d6\u10d0 \u10d0\u10e0\u10d0\u10d0)",noUrl:"\u10d0\u10d9\u10e0\u10d8\u10e4\u10d4\u10d7 \u10d1\u10db\u10e3\u10da\u10d8\u10e1 URL",noEmail:"\u10d0\u10d9\u10e0\u10d8\u10e4\u10d4\u10d7 \u10d4\u10da\u10e4\u10dd\u10e1\u10e2\u10d8\u10e1 \u10db\u10d8\u10e1\u10d0\u10db\u10d0\u10e0\u10d7\u10d8"},anchor:{toolbar:"\u10e6\u10e3\u10d6\u10d0",
+menu:"\u10e6\u10e3\u10d6\u10d8\u10e1 \u10e0\u10d4\u10d3\u10d0\u10e5\u10e2\u10d8\u10e0\u10d4\u10d1\u10d0",title:"\u10e6\u10e3\u10d6\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",name:"\u10e6\u10e3\u10d6\u10e3\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8",errorName:"\u10d0\u10d9\u10e0\u10d8\u10e4\u10d4\u10d7 \u10e6\u10e3\u10d6\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8",remove:"Remove Anchor"},list:{numberedTitle:"\u10d2\u10d0\u10d3\u10d0\u10dc\u10dd\u10db\u10e0\u10d8\u10da\u10d8 \u10e1\u10d8\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+bulletedTitle:"\u10e6\u10d8\u10da\u10d4\u10d1\u10d8\u10d0\u10dc\u10d8 \u10e1\u10d8\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",type:"\u10e2\u10d8\u10de\u10d8",start:"\u10e1\u10d0\u10ec\u10e7\u10d8\u10e1\u10d8",validateStartNumber:"\u10e1\u10d8\u10d8\u10e1 \u10e1\u10d0\u10ec\u10e7\u10d8\u10e1\u10d8 \u10db\u10d7\u10d4\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",circle:"\u10ec\u10e0\u10d4\u10ec\u10d8\u10e0\u10d8",
+disc:"\u10ec\u10e0\u10d4",square:"\u10d9\u10d5\u10d0\u10d3\u10e0\u10d0\u10e2\u10d8",none:"\u10d0\u10e0\u10d0\u10e4\u10d4\u10e0\u10d8",notset:"<\u10d0\u10e0\u10d0\u10e4\u10d4\u10e0\u10d8>",armenian:"\u10e1\u10dd\u10db\u10ee\u10e3\u10e0\u10d8 \u10d2\u10d0\u10d3\u10d0\u10dc\u10dd\u10db\u10e0\u10d5\u10d0",georgian:"\u10e5\u10d0\u10e0\u10d7\u10e3\u10da\u10d8 \u10d2\u10d0\u10d3\u10d0\u10dc\u10dd\u10db\u10e0\u10d5\u10d0 (\u10d0\u10dc, \u10d1\u10d0\u10dc, \u10d2\u10d0\u10dc, ..)",lowerRoman:"\u10e0\u10dd\u10db\u10d0\u10e3\u10da\u10d8 \u10d2\u10d0\u10d3\u10d0\u10dc\u10dd\u10db\u10e0\u10d5\u10ea\u10d0 \u10de\u10d0\u10e2\u10d0\u10e0\u10d0 \u10ea\u10d8\u10e4\u10e0\u10d4\u10d1\u10d8\u10d7 (i, ii, iii, iv, v, ..)",
+upperRoman:"\u10e0\u10dd\u10db\u10d0\u10e3\u10da\u10d8 \u10d2\u10d0\u10d3\u10d0\u10dc\u10dd\u10db\u10e0\u10d5\u10d0 \u10d3\u10d8\u10d3\u10d8 \u10ea\u10d8\u10e4\u10e0\u10d4\u10d1\u10d8\u10d7 (I, II, III, IV, V, etc.)",lowerAlpha:"\u10de\u10d0\u10e2\u10d0\u10e0\u10d0 \u10da\u10d0\u10d7\u10d8\u10dc\u10e3\u10e0\u10d8 \u10d0\u10e1\u10dd\u10d4\u10d1\u10d8\u10d7 (a, b, c, d, e, ..)",upperAlpha:"\u10d3\u10d8\u10d3\u10d8 \u10da\u10d0\u10d7\u10d8\u10dc\u10e3\u10e0\u10d8 \u10d0\u10e1\u10dd\u10d4\u10d1\u10d8\u10d7 (A, B, C, D, E, ..)",
+lowerGreek:"\u10de\u10d0\u10e2\u10d0\u10e0\u10d0 \u10d1\u10d4\u10e0\u10eb\u10dc\u10e3\u10da\u10d8 \u10d0\u10e1\u10dd\u10d4\u10d1\u10d8\u10d7 (\u10d0\u10da\u10e4\u10d0, \u10d1\u10d4\u10e2\u10d0, \u10d2\u10d0\u10db\u10d0, ..)",decimal:"\u10e0\u10d8\u10ea\u10ee\u10d5\u10d4\u10d1\u10d8\u10d7 (1, 2, 3, ..)",decimalLeadingZero:"\u10dc\u10e3\u10da\u10d8\u10d7 \u10d3\u10d0\u10ec\u10e7\u10d4\u10d1\u10e3\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d4\u10d1\u10d8\u10d7 (01, 02, 03, ..)"},findAndReplace:{title:"\u10eb\u10d4\u10d1\u10dc\u10d0 \u10d3\u10d0 \u10e8\u10d4\u10ea\u10d5\u10da\u10d0",
+find:"\u10eb\u10d4\u10d1\u10dc\u10d0",replace:"\u10e8\u10d4\u10ea\u10d5\u10da\u10d0",findWhat:"\u10e1\u10d0\u10eb\u10d8\u10d4\u10d1\u10d4\u10da\u10d8 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8:",replaceWith:"\u10e8\u10d4\u10ea\u10d5\u10da\u10d8\u10e1 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8:",notFoundMsg:"\u10db\u10d8\u10d7\u10d8\u10d7\u10d4\u10d1\u10e3\u10da\u10d8 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8 \u10d0\u10e0 \u10db\u10dd\u10d8\u10eb\u10d4\u10d1\u10dc\u10d0.",findOptions:"Find Options",matchCase:"\u10d3\u10d8\u10d3\u10d8 \u10d3\u10d0 \u10de\u10d0\u10e2\u10d0\u10e0\u10d0 \u10d0\u10e1\u10dd\u10d4\u10d1\u10d8\u10e1 \u10d3\u10d0\u10db\u10d7\u10ee\u10d5\u10d4\u10d5\u10d0",
+matchWord:"\u10db\u10d7\u10d4\u10da\u10d8 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d8\u10e1 \u10d3\u10d0\u10db\u10d7\u10ee\u10d5\u10d4\u10d5\u10d0",matchCyclic:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10d1\u10dd\u10da\u10dd\u10e8\u10d8 \u10d2\u10d0\u10e1\u10d5\u10da\u10d8\u10e1 \u10db\u10d4\u10e0\u10d4 \u10d7\u10d0\u10d5\u10d8\u10d3\u10d0\u10dc \u10d3\u10d0\u10ec\u10e7\u10d4\u10d1\u10d0",replaceAll:"\u10e7\u10d5\u10d4\u10da\u10d0\u10e1 \u10e8\u10d4\u10ea\u10d5\u10da\u10d0",replaceSuccessMsg:"%1 \u10db\u10dd\u10eb\u10d4\u10d1\u10dc\u10d8\u10da\u10d8 \u10e8\u10d4\u10d8\u10ea\u10d5\u10d0\u10da\u10d0."},
+table:{toolbar:"\u10ea\u10ee\u10e0\u10d8\u10da\u10d8",title:"\u10ea\u10ee\u10e0\u10d8\u10da\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",menu:"\u10ea\u10ee\u10e0\u10d8\u10da\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",deleteTable:"\u10ea\u10ee\u10e0\u10d8\u10da\u10d8\u10e1 \u10ec\u10d0\u10e8\u10da\u10d0",rows:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d8",columns:"\u10e1\u10d5\u10d4\u10e2\u10d8",border:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10d6\u10dd\u10db\u10d0",
+widthPx:"\u10ec\u10d4\u10e0\u10e2\u10d8\u10da\u10d8",widthPc:"\u10de\u10e0\u10dd\u10ea\u10d4\u10dc\u10e2\u10d8",widthUnit:"\u10e1\u10d0\u10d6\u10dd\u10db\u10d8 \u10d4\u10e0\u10d7\u10d4\u10e3\u10da\u10d8",cellSpace:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4 (spacing)",cellPad:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10d9\u10d8\u10d3\u10d4 (padding)",caption:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",summary:"\u10e8\u10d4\u10ef\u10d0\u10db\u10d4\u10d1\u10d0",headers:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d4\u10d1\u10d8",
+headersNone:"\u10d0\u10e0\u10d0\u10e4\u10d4\u10e0\u10d8",headersColumn:"\u10de\u10d8\u10e0\u10d5\u10d4\u10da\u10d8 \u10e1\u10d5\u10d4\u10e2\u10d8",headersRow:"\u10de\u10d8\u10e0\u10d5\u10d4\u10da\u10d8 \u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d8",headersBoth:"\u10dd\u10e0\u10d8\u10d5\u10d4",invalidRows:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d4\u10d1\u10d8\u10e1 \u10e0\u10d0\u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0 \u10d3\u10d0\u10d3\u10d4\u10d1\u10d8\u10d7\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",
+invalidCols:"\u10e1\u10d5\u10d4\u10e2\u10d4\u10d1\u10d8\u10e1 \u10e0\u10d0\u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0 \u10d3\u10d0\u10d3\u10d4\u10d1\u10d8\u10d7\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",invalidBorder:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10d6\u10dd\u10db\u10d0 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10d3\u10dc\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",invalidWidth:"\u10ea\u10ee\u10e0\u10d8\u10da\u10d8\u10e1 \u10e1\u10d8\u10d2\u10d0\u10dc\u10d4 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",
+invalidHeight:"\u10ea\u10ee\u10e0\u10d8\u10da\u10d8\u10e1 \u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",invalidCellSpacing:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4 (spacing) \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",
+invalidCellPadding:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10d9\u10d8\u10d3\u10d4 (padding) \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",cell:{menu:"\u10e3\u10ef\u10e0\u10d0",insertBefore:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0 \u10db\u10d0\u10dc\u10d0\u10db\u10d3\u10d4",insertAfter:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0 \u10db\u10d4\u10e0\u10d4",
+deleteCell:"\u10e3\u10ef\u10e0\u10d4\u10d1\u10d8\u10e1 \u10ec\u10d0\u10e8\u10da\u10d0",merge:"\u10e3\u10ef\u10e0\u10d4\u10d1\u10d8\u10e1 \u10e8\u10d4\u10d4\u10e0\u10d7\u10d4\u10d1\u10d0",mergeRight:"\u10e8\u10d4\u10d4\u10e0\u10d7\u10d4\u10d1\u10d0 \u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10dc\u10d0\u10e1\u10d7\u10d0\u10dc",mergeDown:"\u10e8\u10d4\u10d4\u10e0\u10d7\u10d4\u10d1\u10d0 \u10e5\u10d5\u10d4\u10db\u10dd\u10d7\u10d0\u10e1\u10d7\u10d0\u10dc",splitHorizontal:"\u10d2\u10d0\u10e7\u10dd\u10e4\u10d0 \u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d0\u10d3",
+splitVertical:"\u10d2\u10d0\u10e7\u10dd\u10e4\u10d0 \u10d5\u10d4\u10e0\u10e2\u10d8\u10d9\u10d0\u10da\u10e3\u10e0\u10d0\u10d3",title:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",cellType:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e2\u10d8\u10de\u10d8",rowSpan:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d4\u10d1\u10d8\u10e1 \u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0",colSpan:"\u10e1\u10d5\u10d4\u10e2\u10d4\u10d1\u10d8\u10e1 \u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0",
+wordWrap:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d8\u10e1 \u10d2\u10d0\u10d3\u10d0\u10e2\u10d0\u10dc\u10d0 (Word Wrap)",hAlign:"\u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",vAlign:"\u10d5\u10d4\u10e0\u10e2\u10d8\u10d9\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",alignBaseline:"\u10eb\u10d8\u10e0\u10d8\u10d7\u10d0\u10d3\u10d8 \u10ee\u10d0\u10d6\u10d8\u10e1 \u10d2\u10d0\u10e1\u10ec\u10d5\u10e0\u10d8\u10d5",
+bgColor:"\u10e4\u10dd\u10dc\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d8",borderColor:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10e4\u10d4\u10e0\u10d8",data:"\u10db\u10dd\u10dc\u10d0\u10ea\u10d4\u10db\u10d4\u10d1\u10d8",header:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",yes:"\u10d3\u10d8\u10d0\u10ee",no:"\u10d0\u10e0\u10d0",invalidWidth:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e1\u10d8\u10d2\u10d0\u10dc\u10d4 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",
+invalidHeight:"\u10e3\u10ef\u10e0\u10d8\u10e1 \u10e1\u10d8\u10db\u10d0\u10e6\u10da\u10d4 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8\u10d7 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ec\u10d0\u10e0\u10db\u10dd\u10d3\u10d2\u10d4\u10dc\u10d8\u10da\u10d8.",invalidRowSpan:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d4\u10d1\u10d8\u10e1 \u10e0\u10d0\u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0 \u10db\u10d7\u10d4\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",
+invalidColSpan:"\u10e1\u10d5\u10d4\u10e2\u10d4\u10d1\u10d8\u10e1 \u10e0\u10d0\u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0 \u10db\u10d7\u10d4\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",chooseColor:"\u10d0\u10e0\u10e9\u10d4\u10d5\u10d0"},row:{menu:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d8",insertBefore:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d8\u10e1 \u10e9\u10d0\u10db\u10d0\u10e2\u10d4\u10d1\u10d0 \u10ec\u10d8\u10dc",insertAfter:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d8\u10e1 \u10e9\u10d0\u10db\u10d0\u10e2\u10d4\u10d1\u10d0 \u10db\u10d4\u10e0\u10d4",
+deleteRow:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d4\u10d1\u10d8\u10e1 \u10ec\u10d0\u10e8\u10da\u10d0"},column:{menu:"\u10e1\u10d5\u10d4\u10e2\u10d8",insertBefore:"\u10e1\u10d5\u10d4\u10e2\u10d8\u10e1 \u10e9\u10d0\u10db\u10d0\u10e2\u10d4\u10d1\u10d0 \u10ec\u10d8\u10dc",insertAfter:"\u10e1\u10d5\u10d4\u10e2\u10d8\u10e1 \u10e9\u10d0\u10db\u10d0\u10e2\u10d4\u10d1\u10d0 \u10db\u10d4\u10e0\u10d4",deleteColumn:"\u10e1\u10d5\u10d4\u10e2\u10d4\u10d1\u10d8\u10e1 \u10ec\u10d0\u10e8\u10da\u10d0"}},button:{title:"\u10e6\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+text:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8",type:"\u10e2\u10d8\u10de\u10d8",typeBtn:"\u10e6\u10d8\u10da\u10d0\u10d9\u10d8",typeSbm:"\u10d2\u10d0\u10d2\u10d6\u10d0\u10d5\u10dc\u10d0",typeRst:"\u10d2\u10d0\u10e1\u10e3\u10e4\u10d7\u10d0\u10d5\u10d4\u10d1\u10d0"},checkboxAndRadio:{checkboxTitle:"\u10db\u10dd\u10dc\u10d8\u10e8\u10d5\u10dc\u10d8\u10e1 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 (Checkbox) \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",radioTitle:"\u10d0\u10e1\u10d0\u10e0\u10e9\u10d4\u10d5\u10d8 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 (Radio) \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+value:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8",selected:"\u10d0\u10e0\u10e9\u10d4\u10e3\u10da\u10d8"},form:{title:"\u10e4\u10dd\u10e0\u10db\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",menu:"\u10e4\u10dd\u10e0\u10db\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",action:"\u10e5\u10db\u10d4\u10d3\u10d4\u10d1\u10d0",method:"\u10db\u10d4\u10d7\u10dd\u10d3\u10d8",encoding:"\u10d9\u10dd\u10d3\u10d8\u10e0\u10d4\u10d1\u10d0"},select:{title:"\u10d0\u10e0\u10e9\u10d4\u10d5\u10d8\u10e1 \u10d5\u10d4\u10da\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+selectInfo:"\u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d0",opAvail:"\u10e8\u10d4\u10e1\u10d0\u10eb\u10da\u10d4\u10d1\u10d4\u10da\u10d8 \u10d5\u10d0\u10e0\u10d8\u10d0\u10dc\u10e2\u10d4\u10d1\u10d8",value:"\u10db\u10dc\u10d8\u10e8\u10d5\u10dc\u10d4\u10da\u10dd\u10d1\u10d0",size:"\u10d6\u10dd\u10db\u10d0",lines:"\u10ee\u10d0\u10d6\u10d4\u10d1\u10d8",chkMulti:"\u10db\u10e0\u10d0\u10d5\u10da\u10dd\u10d1\u10d8\u10d7\u10d8 \u10d0\u10e0\u10e9\u10d4\u10d5\u10d0\u10dc\u10d8\u10e1 \u10e1\u10d0\u10e8\u10e3\u10d0\u10da\u10d4\u10d1\u10d0",
+opText:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8",opValue:"\u10db\u10dc\u10d8\u10e8\u10d5\u10dc\u10d4\u10da\u10dd\u10d1\u10d0",btnAdd:"\u10d3\u10d0\u10db\u10d0\u10e2\u10d4\u10d1\u10d0",btnModify:"\u10e8\u10d4\u10ea\u10d5\u10da\u10d0",btnUp:"\u10d6\u10d4\u10db\u10dd\u10d7",btnDown:"\u10e5\u10d5\u10d4\u10db\u10dd\u10d7",btnSetValue:"\u10d0\u10db\u10dd\u10e0\u10e9\u10d4\u10e3\u10da \u10db\u10dc\u10d8\u10e8\u10d5\u10dc\u10d4\u10da\u10dd\u10d5\u10dc\u10d0\u10d3 \u10d3\u10d0\u10e7\u10d4\u10dc\u10d4\u10d1\u10d0",
+btnDelete:"\u10ec\u10d0\u10e8\u10da\u10d0"},textarea:{title:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10e3\u10e0\u10d8 \u10d0\u10e0\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",cols:"\u10e1\u10d5\u10d4\u10e2\u10d4\u10d1\u10d8",rows:"\u10e1\u10e2\u10e0\u10d8\u10e5\u10dd\u10dc\u10d4\u10d1\u10d8"},textfield:{title:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10e3\u10e0\u10d8 \u10d5\u10d4\u10da\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",name:"\u10e1\u10d0\u10ee\u10d4\u10da\u10d8",
+value:"\u10db\u10dc\u10d8\u10e8\u10d5\u10dc\u10d4\u10da\u10dd\u10d1\u10d0",charWidth:"\u10e1\u10d8\u10db\u10d1\u10dd\u10da\u10dd\u10e1 \u10d6\u10dd\u10db\u10d0",maxChars:"\u10d0\u10e1\u10dd\u10d4\u10d1\u10d8\u10e1 \u10db\u10d0\u10e5\u10e1\u10d8\u10db\u10d0\u10da\u10e3\u10e0\u10d8 \u10dd\u10d3\u10d4\u10dc\u10dd\u10d1\u10d0",type:"\u10e2\u10d8\u10de\u10d8",typeText:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8",typePass:"\u10de\u10d0\u10e0\u10dd\u10da\u10d8"},hidden:{title:"\u10db\u10d0\u10da\u10e3\u10da\u10d8 \u10d5\u10d4\u10da\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+name:"\u10e1\u10d0\u10ee\u10d4\u10da\u10d8",value:"\u10db\u10dc\u10d8\u10e8\u10d5\u10dc\u10d4\u10da\u10dd\u10d1\u10d0"},image:{title:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",titleButton:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10d0\u10dc\u10d8 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",menu:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+infoTab:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10e1 \u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10ea\u10d8\u10d0",btnUpload:"\u10e1\u10d4\u10e0\u10d5\u10d4\u10e0\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 \u10d2\u10d0\u10d2\u10d6\u10d0\u10d5\u10dc\u10d0",upload:"\u10d0\u10e2\u10d5\u10d8\u10e0\u10d7\u10d5\u10d0",alt:"\u10e1\u10d0\u10dc\u10d0\u10ea\u10d5\u10da\u10dd \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8",lockRatio:"\u10de\u10e0\u10dd\u10de\u10dd\u10e0\u10ea\u10d8\u10d8\u10e1 \u10e8\u10d4\u10dc\u10d0\u10e0\u10e9\u10e3\u10dc\u10d4\u10d1\u10d0",
+resetSize:"\u10d6\u10dd\u10db\u10d8\u10e1 \u10d3\u10d0\u10d1\u10e0\u10e3\u10dc\u10d4\u10d1\u10d0",border:"\u10e9\u10d0\u10e0\u10e9\u10dd",hSpace:"\u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4",vSpace:"\u10d5\u10d4\u10e0\u10e2\u10d8\u10d9\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4",alertUrl:"\u10d0\u10d9\u10e0\u10d8\u10e4\u10d4\u10d7 \u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10e1 URL",linkTab:"\u10d1\u10db\u10e3\u10da\u10d8",
+button2Img:"\u10d2\u10e1\u10e3\u10e0\u10d7 \u10d0\u10e0\u10e9\u10d4\u10e3\u10da\u10d8 \u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10d0\u10dc\u10d8 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 \u10d2\u10d0\u10d3\u10d0\u10e5\u10ea\u10d4\u10d5\u10d0 \u10e9\u10d5\u10d4\u10e3\u10da\u10d4\u10d1\u10e0\u10d8\u10d5 \u10e6\u10d8\u10da\u10d0\u10d9\u10d0\u10d3?",img2Button:"\u10d2\u10e1\u10e3\u10e0\u10d7 \u10d0\u10e0\u10e9\u10d4\u10e3\u10da\u10d8 \u10e9\u10d5\u10d4\u10e3\u10da\u10d4\u10d1\u10e0\u10d8\u10d5\u10d8 \u10e6\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 \u10d2\u10d0\u10d3\u10d0\u10e5\u10ea\u10d4\u10d5\u10d0 \u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10d0\u10dc \u10e6\u10d8\u10da\u10d0\u10d9\u10d0\u10d3?",
+urlMissing:"\u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10e1 URL \u10d0\u10e0\u10d0\u10d0 \u10e8\u10d4\u10d5\u10e1\u10d4\u10d1\u10e3\u10da\u10d8.",validateBorder:"\u10e9\u10d0\u10e0\u10e9\u10dd \u10db\u10d7\u10d4\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",validateHSpace:"\u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4 \u10db\u10d7\u10d4\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1.",
+validateVSpace:"\u10d5\u10d4\u10e0\u10e2\u10d8\u10d9\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4 \u10db\u10d7\u10d4\u10da\u10d8 \u10e0\u10d8\u10ea\u10ee\u10d5\u10d8 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1."},flash:{properties:"Flash-\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",propertiesTab:"\u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",title:"Flash-\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+chkPlay:"\u10d0\u10d5\u10e2\u10dd \u10d2\u10d0\u10e8\u10d5\u10d4\u10d1\u10d0",chkLoop:"\u10e9\u10d0\u10ea\u10d8\u10d9\u10da\u10d5\u10d0",chkMenu:"Flash-\u10d8\u10e1 \u10db\u10d4\u10dc\u10d8\u10e3\u10e1 \u10d3\u10d0\u10e8\u10d5\u10d4\u10d1\u10d0",chkFull:"\u10db\u10d7\u10d4\u10da\u10d8 \u10d4\u10d9\u10e0\u10d0\u10dc\u10d8\u10e1 \u10d3\u10d0\u10e8\u10d5\u10d4\u10d1\u10d0",scale:"\u10db\u10d0\u10e1\u10e8\u10e2\u10d0\u10d1\u10d8\u10e0\u10d4\u10d1\u10d0",scaleAll:"\u10e7\u10d5\u10d4\u10da\u10d0\u10e4\u10e0\u10d8\u10e1 \u10e9\u10d5\u10d4\u10dc\u10d4\u10d1\u10d0",
+scaleNoBorder:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10d2\u10d0\u10e0\u10d4\u10e8\u10d4",scaleFit:"\u10d6\u10e3\u10e1\u10e2\u10d8 \u10e9\u10d0\u10e1\u10db\u10d0",access:"\u10e1\u10d9\u10e0\u10d8\u10de\u10e2\u10d8\u10e1 \u10ec\u10d5\u10d3\u10dd\u10db\u10d0",accessAlways:"\u10e7\u10dd\u10d5\u10d4\u10da\u10d7\u10d5\u10d8\u10e1",accessSameDomain:"\u10d8\u10d2\u10d8\u10d5\u10d4 \u10d3\u10dd\u10db\u10d4\u10dc\u10d8",accessNever:"\u10d0\u10e0\u10d0\u10e1\u10d3\u10e0\u10dd\u10e1",alignAbsBottom:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10e5\u10d5\u10d4\u10db\u10dd\u10d7\u10d0 \u10dc\u10d0\u10ec\u10d8\u10da\u10d8\u10e1 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1",
+alignAbsMiddle:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10e8\u10e3\u10d0 \u10dc\u10d0\u10ec\u10d8\u10da\u10d8\u10e1 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1",alignBaseline:"\u10e1\u10d0\u10d1\u10d0\u10d6\u10d8\u10e1\u10dd \u10ee\u10d0\u10d6\u10d8\u10e1 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",alignTextTop:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8 \u10d6\u10d4\u10db\u10dd\u10d3\u10d0\u10dc",quality:"\u10ee\u10d0\u10e0\u10d8\u10e1\u10ee\u10d8",
+qualityBest:"\u10e1\u10d0\u10e3\u10d9\u10d4\u10d7\u10d4\u10e1\u10dd",qualityHigh:"\u10db\u10d0\u10e6\u10d0\u10da\u10d8",qualityAutoHigh:"\u10db\u10d0\u10e6\u10d0\u10da\u10d8 (\u10d0\u10d5\u10e2\u10dd\u10db\u10d0\u10e2\u10e3\u10e0\u10d8)",qualityMedium:"\u10e1\u10d0\u10e8\u10e3\u10d0\u10da\u10dd",qualityAutoLow:"\u10eb\u10d0\u10da\u10d8\u10d0\u10dc \u10d3\u10d0\u10d1\u10d0\u10da\u10d8",qualityLow:"\u10d3\u10d0\u10d1\u10d0\u10da\u10d8",windowModeWindow:"\u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0",windowModeOpaque:"\u10d2\u10d0\u10e3\u10db\u10ed\u10d5\u10d8\u10e0\u10d5\u10d0\u10da\u10d4",
+windowModeTransparent:"\u10d2\u10d0\u10db\u10ed\u10d5\u10d8\u10e0\u10d5\u10d0\u10da\u10d4",windowMode:"\u10e4\u10d0\u10dc\u10ef\u10e0\u10d8\u10e1 \u10e0\u10d4\u10df\u10d8\u10db\u10d8",flashvars:"\u10ea\u10d5\u10da\u10d0\u10d3\u10d4\u10d1\u10d8 Flash-\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1",bgcolor:"\u10e4\u10dd\u10dc\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d8",hSpace:"\u10f0\u10dd\u10e0\u10d8\u10d6. \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4",vSpace:"\u10d5\u10d4\u10e0\u10e2. \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4",
+validateSrc:"URL \u10d0\u10e0 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ea\u10d0\u10e0\u10d8\u10d4\u10da\u10d8.",validateHSpace:"\u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4 \u10d0\u10e0 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ea\u10d0\u10e0\u10d8\u10d4\u10da\u10d8.",validateVSpace:"\u10d5\u10d4\u10e0\u10e2\u10d8\u10d9\u10d0\u10da\u10e3\u10e0\u10d8 \u10e1\u10d8\u10d5\u10e0\u10ea\u10d4 \u10d0\u10e0 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ea\u10d0\u10e0\u10d8\u10d4\u10da\u10d8."},
+spellCheck:{toolbar:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d0",title:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d0",notAvailable:"\u10e3\u10d9\u10d0\u10ea\u10e0\u10d0\u10d5\u10d0\u10d3, \u10d4\u10e1 \u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8 \u10d0\u10db\u10df\u10d0\u10db\u10d0\u10d3 \u10db\u10d8\u10e3\u10ec\u10d5\u10d3\u10dd\u10db\u10d4\u10da\u10d8\u10d0.",errorLoading:"\u10e1\u10d4\u10e0\u10d5\u10d8\u10e1\u10d8\u10e1 \u10d2\u10d0\u10db\u10dd\u10eb\u10d0\u10ee\u10d4\u10d1\u10d8\u10e1 \u10e8\u10d4\u10ea\u10d3\u10dd\u10db\u10d0: %s.",
+notInDic:"\u10d0\u10e0\u10d0\u10d0 \u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10e8\u10d8",changeTo:"\u10e8\u10d4\u10ea\u10d5\u10da\u10d4\u10da\u10d8",btnIgnore:"\u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",btnIgnoreAll:"\u10e7\u10d5\u10d4\u10da\u10d0\u10e1 \u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",btnReplace:"\u10e8\u10d4\u10ea\u10d5\u10da\u10d0",btnReplaceAll:"\u10e7\u10d5\u10d4\u10da\u10d0\u10e1 \u10e8\u10d4\u10ea\u10d5\u10da\u10d0",
+btnUndo:"\u10d2\u10d0\u10e3\u10e5\u10db\u10d4\u10d1\u10d0",noSuggestions:"- \u10d0\u10e0\u10d0\u10d0 \u10e8\u10d4\u10db\u10dd\u10d7\u10d0\u10d5\u10d0\u10d6\u10d4\u10d1\u10d0 -",progress:"\u10db\u10d8\u10db\u10d3\u10d8\u10dc\u10d0\u10e0\u10d4\u10dd\u10d1\u10e1 \u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0...",noMispell:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0: \u10e8\u10d4\u10ea\u10d3\u10dd\u10db\u10d0 \u10d0\u10e0 \u10db\u10dd\u10d8\u10eb\u10d4\u10d1\u10dc\u10d0",
+noChanges:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0: \u10d0\u10e0\u10d0\u10e4\u10d4\u10e0\u10d8 \u10e8\u10d4\u10ea\u10d5\u10da\u10d8\u10da\u10d0",oneChange:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0: \u10d4\u10e0\u10d7\u10d8 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d0 \u10e8\u10d4\u10d8\u10ea\u10d5\u10d0\u10da\u10d0",manyChanges:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0: %1 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d0 \u10e8\u10d4\u10d8\u10ea\u10d5\u10d0\u10da\u10d0",
+ieSpellDownload:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0 \u10d0\u10e0\u10d0\u10d0 \u10d3\u10d0\u10d8\u10dc\u10e1\u10e2\u10d0\u10da\u10d8\u10e0\u10d4\u10d1\u10e3\u10da\u10d8. \u10e9\u10d0\u10db\u10dd\u10d5\u10e5\u10d0\u10e9\u10dd\u10d7 \u10d8\u10dc\u10e2\u10d4\u10e0\u10dc\u10d4\u10e2\u10d8\u10d3\u10d0\u10dc?"},smiley:{toolbar:"\u10e1\u10d8\u10ea\u10d8\u10da\u10d0\u10d9\u10d4\u10d1\u10d8",title:"\u10e1\u10d8\u10ea\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0",
+options:"\u10e1\u10d8\u10ea\u10d8\u10da\u10d0\u10d9\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8"},elementsPath:{eleLabel:"\u10d4\u10da\u10d4\u10db\u10d4\u10e2\u10d8\u10e1 \u10d2\u10d6\u10d0",eleTitle:"%1 \u10d4\u10da\u10d4\u10db\u10d4\u10dc\u10e2\u10d8"},numberedlist:"\u10d2\u10d0\u10d3\u10d0\u10dc\u10dd\u10db\u10e0\u10d8\u10da\u10d8 \u10e1\u10d8\u10d0",bulletedlist:"\u10e6\u10d8\u10da\u10d8\u10d0\u10dc\u10d8 \u10e1\u10d8\u10d0",indent:"\u10db\u10d4\u10e2\u10d0\u10d3 \u10e8\u10d4\u10ec\u10d4\u10d5\u10d0",
+outdent:"\u10dc\u10d0\u10d9\u10da\u10d4\u10d1\u10d0\u10d3 \u10e8\u10d4\u10ec\u10d4\u10d5\u10d0",justify:{left:"\u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d5 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",center:"\u10e8\u10e3\u10d0\u10e8\u10d8 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",right:"\u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d5 \u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0",block:"\u10d2\u10d0\u10d3\u10d0\u10e1\u10ec\u10dd\u10e0\u10d4\u10d1\u10d0"},blockquote:"\u10ea\u10d8\u10e2\u10d0\u10e2\u10d0",
+clipboard:{title:"\u10e9\u10d0\u10e1\u10db\u10d0",cutError:"\u10d7\u10e5\u10d5\u10d4\u10dc\u10d8 \u10d1\u10e0\u10dd\u10e3\u10d6\u10d4\u10e0\u10d8\u10e1 \u10e3\u10e1\u10d0\u10e4\u10e0\u10d7\u10ee\u10dd\u10d4\u10d1\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8 \u10d0\u10e0 \u10d8\u10eb\u10da\u10d4\u10d5\u10d0 \u10d0\u10db\u10dd\u10ed\u10e0\u10d8\u10e1 \u10dd\u10de\u10d4\u10e0\u10d0\u10ea\u10d8\u10d8\u10e1 \u10d0\u10d5\u10e2\u10dd\u10db\u10d0\u10e2\u10e3\u10e0\u10d0\u10d3 \u10d2\u10d0\u10dc\u10ee\u10dd\u10e0\u10ea\u10d8\u10d4\u10da\u10d4\u10d1\u10d8\u10e1 \u10e1\u10d0\u10e8\u10e3\u10d0\u10da\u10d4\u10d1\u10d0\u10e1. \u10d2\u10d0\u10db\u10dd\u10d8\u10e7\u10d4\u10dc\u10d4\u10d7 \u10d9\u10da\u10d0\u10d5\u10d8\u10d0\u10e2\u10e3\u10e0\u10d0 \u10d0\u10db\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 (Ctrl/Cmd+X).",
+copyError:"\u10d7\u10e5\u10d5\u10d4\u10dc\u10d8 \u10d1\u10e0\u10dd\u10e3\u10d6\u10d4\u10e0\u10d8\u10e1 \u10e3\u10e1\u10d0\u10e4\u10e0\u10d7\u10ee\u10dd\u10d4\u10d1\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8 \u10d0\u10e0 \u10d8\u10eb\u10da\u10d4\u10d5\u10d0 \u10d0\u10e1\u10da\u10d8\u10e1 \u10dd\u10de\u10d4\u10e0\u10d0\u10ea\u10d8\u10d8\u10e1 \u10d0\u10d5\u10e2\u10dd\u10db\u10d0\u10e2\u10e3\u10e0\u10d0\u10d3 \u10d2\u10d0\u10dc\u10ee\u10dd\u10e0\u10ea\u10d8\u10d4\u10da\u10d4\u10d1\u10d8\u10e1 \u10e1\u10d0\u10e8\u10e3\u10d0\u10da\u10d4\u10d1\u10d0\u10e1. \u10d2\u10d0\u10db\u10dd\u10d8\u10e7\u10d4\u10dc\u10d4\u10d7 \u10d9\u10da\u10d0\u10d5\u10d8\u10d0\u10e2\u10e3\u10e0\u10d0 \u10d0\u10db\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 (Ctrl/Cmd+C).",
+pasteMsg:"\u10e9\u10d0\u10e1\u10d5\u10d8\u10d7 \u10d0\u10db \u10d0\u10e0\u10d8\u10e1 \u10e8\u10d8\u10d2\u10dc\u10d8\u10d7 \u10d9\u10da\u10d0\u10d5\u10d8\u10d0\u10e2\u10e3\u10e0\u10d8\u10e1 \u10d2\u10d0\u10db\u10dd\u10e7\u10d4\u10dc\u10d4\u10d1\u10d8\u10d7 (<strong>Ctrl/Cmd+V</strong>) \u10d3\u10d0 \u10d3\u10d0\u10d0\u10ed\u10d8\u10e0\u10d4\u10d7 OK-\u10e1",securityMsg:"\u10d7\u10e5\u10d5\u10d4\u10dc\u10d8 \u10d1\u10e0\u10dd\u10e3\u10d6\u10d4\u10e0\u10d8\u10e1 \u10e3\u10e1\u10d0\u10e4\u10e0\u10d7\u10ee\u10dd\u10d4\u10d1\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8 \u10d0\u10e0 \u10d8\u10eb\u10da\u10d4\u10d5\u10d0 clipboard-\u10d8\u10e1 \u10db\u10dd\u10dc\u10d0\u10ea\u10d4\u10db\u10d4\u10d1\u10d8\u10e1 \u10ec\u10d5\u10d3\u10dd\u10db\u10d8\u10e1 \u10e3\u10e4\u10da\u10d4\u10d1\u10d0\u10e1. \u10d9\u10d8\u10d3\u10d4\u10d5 \u10e3\u10dc\u10d3\u10d0 \u10e9\u10d0\u10e1\u10d5\u10d0\u10d7 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8 \u10d0\u10db \u10e4\u10d0\u10dc\u10ef\u10d0\u10e0\u10d0\u10e8\u10d8.",
+pasteArea:"\u10e9\u10d0\u10e1\u10db\u10d8\u10e1 \u10d0\u10e0\u10d4"},pastefromword:{confirmCleanup:"\u10e9\u10d0\u10e1\u10d0\u10e1\u10db\u10d4\u10da\u10d8 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8 \u10d5\u10dd\u10e0\u10d3\u10d8\u10d3\u10d0\u10dc \u10d2\u10d0\u10d3\u10db\u10dd\u10e2\u10d0\u10dc\u10d8\u10da\u10e1 \u10d2\u10d0\u10d5\u10e1 - \u10d2\u10d8\u10dc\u10d3\u10d0\u10d7 \u10db\u10d8\u10e1\u10d8 \u10ec\u10d8\u10dc\u10d0\u10e1\u10ec\u10d0\u10e0 \u10d2\u10d0\u10ec\u10db\u10d4\u10dc\u10d3\u10d0?",toolbar:"\u10d5\u10dd\u10e0\u10d3\u10d8\u10d3\u10d0\u10dc \u10e9\u10d0\u10e1\u10db\u10d0",
+title:"\u10d5\u10dd\u10e0\u10d3\u10d8\u10d3\u10d0\u10dc \u10e9\u10d0\u10e1\u10db\u10d0",error:"\u10e8\u10d8\u10d3\u10d0 \u10e8\u10d4\u10ea\u10d3\u10dd\u10db\u10d8\u10e1 \u10d2\u10d0\u10db\u10dd \u10d5\u10d4\u10e0 \u10db\u10dd\u10ee\u10d4\u10e0\u10ee\u10d3\u10d0 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10d2\u10d0\u10ec\u10db\u10d4\u10dc\u10d3\u10d0"},pasteText:{button:"\u10db\u10ee\u10dd\u10da\u10dd\u10d3 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0",title:"\u10db\u10ee\u10dd\u10da\u10dd\u10d3 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10e9\u10d0\u10e1\u10db\u10d0"},
+templates:{button:"\u10d7\u10d0\u10e0\u10d2\u10d4\u10d1\u10d8",title:"\u10d7\u10d0\u10e0\u10d2\u10d4\u10d1\u10d8",options:"\u10d7\u10d0\u10e0\u10d2\u10d4\u10d1\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",insertOption:"\u10db\u10d8\u10db\u10d3\u10d8\u10dc\u10d0\u10e0\u10d4 \u10e8\u10d4\u10d2\u10d7\u10d0\u10d5\u10e1\u10d8\u10e1 \u10e8\u10d4\u10ea\u10d5\u10da\u10d0",selectPromptMsg:"\u10d0\u10d8\u10e0\u10e9\u10d8\u10d4\u10d7 \u10d7\u10d0\u10e0\u10d2\u10d8 \u10e0\u10d4\u10d3\u10d0\u10e5\u10e2\u10dd\u10e0\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1",
+emptyListMsg:"(\u10d7\u10d0\u10e0\u10d2\u10d8 \u10d0\u10e0\u10d0\u10d0 \u10d2\u10d0\u10dc\u10e1\u10d0\u10d6\u10e6\u10d5\u10e0\u10e3\u10da\u10d8)"},showBlocks:"\u10d0\u10e0\u10d4\u10d4\u10d1\u10d8\u10e1 \u10e9\u10d5\u10d4\u10dc\u10d4\u10d1\u10d0",stylesCombo:{label:"\u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8",panelTitle:"\u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10d8\u10e0\u10d4\u10d1\u10d8\u10e1 \u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8",panelTitle1:"\u10d0\u10e0\u10d8\u10e1 \u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8",
+panelTitle2:"\u10d7\u10d0\u10dc\u10d3\u10d0\u10e0\u10d7\u10e3\u10da\u10d8 \u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8",panelTitle3:"\u10dd\u10d1\u10d8\u10d4\u10e5\u10e2\u10d8\u10e1 \u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8"},format:{label:"\u10e4\u10d8\u10dd\u10e0\u10db\u10d0\u10e2\u10d8\u10e0\u10d4\u10d1\u10d0",panelTitle:"\u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10d8\u10e0\u10d4\u10d1\u10d0",tag_p:"\u10e9\u10d5\u10d4\u10e3\u10da\u10d4\u10d1\u10e0\u10d8\u10d5\u10d8",tag_pre:"\u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10d8\u10e0\u10d4\u10d1\u10e3\u10da\u10d8",
+tag_address:"\u10db\u10d8\u10e1\u10d0\u10db\u10d0\u10e0\u10d7\u10d8",tag_h1:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8 1",tag_h2:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8 2",tag_h3:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8 3",tag_h4:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8 4",tag_h5:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8 5",tag_h6:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8 6",tag_div:"\u10e9\u10d5\u10d4\u10e3\u10da\u10d4\u10d1\u10e0\u10d8\u10d5\u10d8 (DIV)"},div:{title:"Div \u10d9\u10dd\u10dc\u10e2\u10d4\u10d8\u10dc\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10e5\u10db\u10dc\u10d0",
+toolbar:"Div \u10d9\u10dd\u10dc\u10e2\u10d4\u10d8\u10dc\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10e5\u10db\u10dc\u10d0",cssClassInputLabel:"CSS \u10d9\u10da\u10d0\u10e1\u10d4\u10d1\u10d8",styleSelectLabel:"\u10e1\u10e2\u10d8\u10da\u10d8",IdInputLabel:"Id",languageCodeInputLabel:"\u10d4\u10dc\u10d8\u10e1 \u10d9\u10dd\u10d3\u10d8",inlineStyleInputLabel:"\u10d7\u10d0\u10dc\u10d3\u10d0\u10e0\u10d7\u10e3\u10da\u10d8 \u10e1\u10e2\u10d8\u10da\u10d8",advisoryTitleInputLabel:"\u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",
+langDirLabel:"\u10d4\u10dc\u10d8\u10e1 \u10db\u10d8\u10dc\u10d0\u10e0\u10d7\u10e3\u10da\u10d4\u10d1\u10d0",langDirLTRLabel:"\u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10ea (LTR)",langDirRTLLabel:"\u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d5 (RTL)",edit:"Div-\u10d8\u10e1 \u10e0\u10d4\u10d3\u10d0\u10e5\u10e2\u10d8\u10e0\u10d4\u10d1\u10d0",remove:"Div-\u10d8\u10e1 \u10ec\u10d0\u10e8\u10da\u10d0"},
+iframe:{title:"IFrame-\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",toolbar:"IFrame",noUrl:"\u10d0\u10d9\u10e0\u10d8\u10e4\u10d4\u10d7 iframe-\u10d8\u10e1 URL",scrolling:"\u10d2\u10d0\u10d3\u10d0\u10ee\u10d5\u10d4\u10d5\u10d8\u10e1 \u10d6\u10dd\u10da\u10d4\u10d1\u10d8\u10e1 \u10d3\u10d0\u10e8\u10d5\u10d4\u10d1\u10d0",border:"\u10e9\u10d0\u10e0\u10e9\u10dd\u10e1 \u10d2\u10d0\u10db\u10dd\u10e9\u10d4\u10dc\u10d0"},font:{label:"\u10e4\u10dd\u10dc\u10e2\u10d8",voiceLabel:"\u10e4\u10dd\u10dc\u10e2\u10d8",
+panelTitle:"\u10e4\u10dd\u10dc\u10e2\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8"},fontSize:{label:"\u10d6\u10dd\u10db\u10d0",voiceLabel:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10d6\u10dd\u10db\u10d0",panelTitle:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10d6\u10dd\u10db\u10d0"},colorButton:{textColorTitle:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d8",bgColorTitle:"\u10e4\u10dd\u10dc\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d8",panelTitle:"\u10e4\u10d4\u10e0\u10d4\u10d1\u10d8",
+auto:"\u10d0\u10d5\u10e2\u10dd\u10db\u10d0\u10e2\u10e3\u10e0\u10d8",more:"\u10db\u10d4\u10e2\u10d8 \u10e4\u10d4\u10e0\u10d8..."},colors:{"000":"\u10e8\u10d0\u10d5\u10d8",8E5:"\u10db\u10e3\u10e5\u10d8 \u10e8\u10d8\u10dc\u10d3\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8","8B4513":"\u10e7\u10d0\u10d5\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8","2F4F4F":"\u10db\u10dd\u10da\u10e3\u10e0\u10ef\u10dd \u10dc\u10d0\u10ea\u10e0\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8","008080":"\u10e9\u10d0\u10db\u10e5\u10e0\u10d0\u10da\u10d8 \u10da\u10e3\u10e0\u10ef\u10d8",
+"000080":"\u10db\u10e3\u10e5\u10d8 \u10da\u10e3\u10e0\u10ef\u10d8","4B0082":"\u10d8\u10d0\u10e1\u10d0\u10db\u10dc\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",696969:"\u10db\u10e3\u10e5\u10d8 \u10dc\u10d0\u10ea\u10e0\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",B22222:"\u10d0\u10d2\u10e3\u10e0\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",A52A2A:"\u10db\u10e3\u10e5\u10d8 \u10e7\u10d0\u10d5\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",DAA520:"\u10db\u10dd\u10e7\u10d5\u10d8\u10d7\u10d0\u10da\u10dd","006400":"\u10db\u10e3\u10e5\u10d8 \u10db\u10ec\u10d5\u10d0\u10dc\u10d4",
+"40E0D0":"\u10ea\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8","0000CD":"\u10d6\u10dd\u10db\u10d8\u10d4\u10e0\u10d0\u10d3 \u10da\u10e3\u10e0\u10ef\u10d8",800080:"\u10d8\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",808080:"\u10dc\u10d0\u10ea\u10e0\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",F00:"\u10ec\u10d8\u10d7\u10d4\u10da\u10d8",FF8C00:"\u10db\u10e3\u10e5\u10d8 \u10e1\u10e2\u10d0\u10e4\u10d8\u10da\u10dd\u10e1\u10e4\u10d4\u10e0\u10d8",FFD700:"\u10dd\u10e5\u10e0\u10dd\u10e1\u10e4\u10d4\u10e0\u10d8","008000":"\u10db\u10ec\u10d5\u10d0\u10dc\u10d4",
+"0FF":"\u10e6\u10d8\u10d0 \u10ea\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8","00F":"\u10da\u10e3\u10e0\u10ef\u10d8",EE82EE:"\u10d8\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",A9A9A9:"\u10d1\u10d0\u10ea\u10d8 \u10dc\u10d0\u10ea\u10e0\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",FFA07A:"\u10e9\u10d0\u10db\u10e5\u10e0\u10d0\u10da\u10d8 \u10d5\u10d0\u10e0\u10d3\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",FFA500:"\u10e1\u10e2\u10d0\u10e4\u10d8\u10da\u10dd\u10e1\u10e4\u10d4\u10e0\u10d8",FFFF00:"\u10e7\u10d5\u10d8\u10d7\u10d4\u10da\u10d8",
+"00FF00":"\u10da\u10e3\u10e0\u10ef\u10d8",AFEEEE:"\u10ea\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",ADD8E6:"\u10e6\u10d8\u10d0 \u10da\u10e3\u10e0\u10ef\u10d8",DDA0DD:"\u10e6\u10d8\u10d0 \u10d8\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",D3D3D3:"\u10e6\u10d8\u10d0 \u10dc\u10d0\u10ea\u10e0\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",FFF0F5:"\u10e6\u10d8\u10d0 \u10d5\u10d0\u10e0\u10d3\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",FAEBD7:"\u10e6\u10d8\u10d0 \u10e7\u10d0\u10d5\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8",FFFFE0:"\u10dc\u10d0\u10d7\u10d4\u10da\u10d8 \u10e7\u10d5\u10d8\u10d7\u10d4\u10da\u10d8",
+F0FFF0:"\u10e6\u10d8\u10d0 \u10db\u10ec\u10d5\u10d0\u10dc\u10d4",F0FFFF:"\u10e6\u10d8\u10d0 \u10ea\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8 2",F0F8FF:"\u10e6\u10d8\u10d0 \u10ea\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8 3",E6E6FA:"\u10e6\u10d8\u10d0 \u10d8\u10d8\u10e1\u10e4\u10d4\u10e0\u10d8 2",FFF:"\u10d7\u10d4\u10d7\u10e0\u10d8"},scayt:{title:"\u10db\u10d0\u10e0\u10d7\u10da\u10ec\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10db\u10dd\u10ec\u10db\u10d4\u10d1\u10d0 \u10d9\u10e0\u10d4\u10e4\u10d8\u10e1\u10d0\u10e1",
+opera_title:"\u10d0\u10e0\u10d0\u10d0 \u10db\u10ee\u10d0\u10e0\u10d3\u10d0\u10ed\u10d4\u10e0\u10d8\u10da\u10d8 Opera-\u10e1 \u10db\u10d8\u10d4\u10e0",enable:"SCAYT-\u10d8\u10e1 \u10e9\u10d0\u10e0\u10d7\u10d5\u10d0",disable:"SCAYT-\u10d8\u10e1 \u10d2\u10d0\u10db\u10dd\u10e0\u10d7\u10d5\u10d0",about:"SCAYT-\u10d8\u10e1 \u10e8\u10d4\u10e1\u10d0\u10ee\u10d4\u10d1",toggle:"SCAYT-\u10d8\u10e1 \u10d2\u10d0\u10d3\u10d0\u10e0\u10d7\u10d5\u10d0",options:"\u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",
+langs:"\u10d4\u10dc\u10d4\u10d1\u10d8",moreSuggestions:"\u10db\u10d4\u10e2\u10d8 \u10e8\u10d4\u10db\u10dd\u10d7\u10d0\u10d5\u10d0\u10d6\u10d4\u10d1\u10d0",ignore:"\u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",ignoreAll:"\u10e7\u10d5\u10d4\u10da\u10d0\u10e1 \u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",addWord:"\u10e1\u10d8\u10e2\u10e7\u10d5\u10d8\u10e1 \u10d3\u10d0\u10db\u10d0\u10e2\u10d4\u10d1\u10d0",emptyDic:"\u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10d8\u10e1 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d0 \u10d0\u10e0 \u10e3\u10dc\u10d3\u10d0 \u10d8\u10e7\u10dd\u10e1 \u10ea\u10d0\u10e0\u10d8\u10d4\u10da\u10d8.",
+optionsTab:"\u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",allCaps:"\u10d3\u10d8\u10d3\u10d8 \u10d0\u10e1\u10dd\u10d4\u10d1\u10d8\u10d7 \u10d3\u10d0\u10ec\u10d4\u10e0\u10d8\u10da\u10d8 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",ignoreDomainNames:"\u10d3\u10dd\u10db\u10d4\u10dc\u10e3\u10e0\u10d8 \u10e1\u10d0\u10ee\u10d4\u10da\u10d4\u10d1\u10d8\u10e1 \u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",
+mixedCase:"\u10e8\u10d4\u10e0\u10d4\u10e3\u10da\u10d8 \u10d0\u10e1\u10dd\u10d4\u10d1\u10d0\u10dc\u10d8 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",mixedWithDigits:"\u10ea\u10d8\u10e4\u10e0\u10d4\u10d1\u10d8\u10d0\u10dc\u10d8 \u10e1\u10d8\u10e2\u10e7\u10d5\u10d4\u10d1\u10d8\u10e1 \u10e3\u10d2\u10e3\u10da\u10d4\u10d1\u10d4\u10da\u10e7\u10dd\u10e4\u10d0",languagesTab:"\u10d4\u10dc\u10d4\u10d1\u10d8",dictionariesTab:"\u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10d4\u10d1\u10d8",
+dic_field_name:"\u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8",dic_create:"\u10e8\u10d4\u10e5\u10db\u10dc\u10d0",dic_restore:"\u10d3\u10d0\u10d1\u10e0\u10e3\u10dc\u10d4\u10d1\u10d0",dic_delete:"\u10ec\u10d0\u10e8\u10da\u10d0",dic_rename:"\u10d2\u10d0\u10d3\u10d0\u10e0\u10e5\u10db\u10d4\u10d5\u10d0",dic_info:'\u10d7\u10d0\u10d5\u10d3\u10d0\u10de\u10d8\u10e0\u10d5\u10d4\u10da\u10d0\u10d3 \u10db\u10dd\u10db\u10ee\u10db\u10d0\u10e0\u10d4\u10d1\u10da\u10d8\u10e1 \u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10d8 \u10d8\u10dc\u10d0\u10ee\u10d4\u10d1\u10d0 Cookie-\u10e8\u10d8. \u10d7\u10e3\u10db\u10ea\u10d0 Cookie \u10e8\u10d4\u10d6\u10e6\u10e3\u10d3\u10e3\u10da\u10d8\u10d0 \u10d6\u10dd\u10db\u10d0\u10e8\u10d8. \u10e0\u10dd\u10ea\u10d0 \u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10d8\u10e1 \u10d6\u10dd\u10db\u10d0 \u10d2\u10d0\u10d8\u10d6\u10e0\u10d3\u10d4\u10d1\u10d0 \u10e1\u10d0\u10d9\u10db\u10d0\u10dd\u10d3 \u10d8\u10e1 \u10e8\u10d4\u10d8\u10eb\u10da\u10d4\u10d1\u10d0 \u10e8\u10d4\u10d5\u10d8\u10dc\u10d0\u10ee\u10dd\u10d7 \u10e9\u10d5\u10d4\u10dc\u10e1 \u10e1\u10d4\u10e0\u10d5\u10d4\u10e0\u10d6\u10d4. \u10e9\u10d5\u10d4\u10dc\u10e1 \u10e1\u10d4\u10e0\u10d5\u10d4\u10e0\u10d6\u10d4 \u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10e1 \u10e8\u10d4\u10e1\u10d0\u10dc\u10d0\u10ee\u10d0\u10d3 \u10e3\u10dc\u10d3\u10d0 \u10db\u10d8\u10e3\u10d7\u10d8\u10d7\u10dd\u10d7 \u10db\u10d8\u10e1\u10d8 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8. \u10d7\u10e3 \u10e3\u10d9\u10d4 \u10d2\u10d0\u10e5\u10d5\u10d7 \u10da\u10d4\u10e5\u10e1\u10d8\u10d9\u10dd\u10dc\u10d8, \u10d0\u10d9\u10e0\u10d8\u10e4\u10d4\u10d7 \u10db\u10d8\u10e1\u10d8 \u10e1\u10d0\u10ee\u10d4\u10da\u10d8 \u10d3\u10d0 \u10d3\u10d0\u10d0\u10ed\u10d8\u10e0\u10d4\u10d7 "\u10d3\u10d0\u10d1\u10e0\u10e3\u10dc\u10d4\u10d1\u10d8\u10e1" \u10e6\u10d8\u10da\u10d0\u10d9\u10e1.',
+aboutTab:"\u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d0"},about:{title:"CKEditor-\u10d8\u10e1 \u10e8\u10d4\u10e1\u10d0\u10ee\u10d4\u10d1",dlgTitle:"CKEditor-\u10d8\u10e1 \u10e8\u10d4\u10e1\u10d0\u10ee\u10d4\u10d1",help:"\u10d3\u10d0\u10ee\u10db\u10d0\u10e0\u10d4\u10d1\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 \u10d8\u10ee\u10d8\u10da\u10d4\u10d7 $1.",userGuide:"CKEditor-\u10d8\u10e1 \u10db\u10dd\u10db\u10ee\u10db\u10d0\u10e0\u10d4\u10d1\u10da\u10d8\u10e1 \u10e1\u10d0\u10ee\u10d4\u10da\u10db\u10eb\u10e6\u10d5\u10d0\u10dc\u10d4\u10da\u10dd",
+moreInfo:"\u10da\u10d8\u10ea\u10d4\u10dc\u10d6\u10d8\u10d8\u10e1 \u10d8\u10dc\u10e4\u10dd\u10e0\u10db\u10d0\u10ea\u10d8\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 \u10d4\u10ec\u10d5\u10d8\u10d4\u10d7 \u10e9\u10d5\u10d4\u10dc\u10e1 \u10e1\u10d0\u10d8\u10e2\u10e1:",copy:"Copyright &copy; $1. \u10e7\u10d5\u10d4\u10da\u10d0 \u10e3\u10e4\u10da\u10d4\u10d1\u10d0 \u10d3\u10d0\u10ea\u10e3\u10da\u10d8\u10d0."},maximize:"\u10d2\u10d0\u10d3\u10d8\u10d3\u10d4\u10d1\u10d0",minimize:"\u10d3\u10d0\u10de\u10d0\u10e2\u10d0\u10e0\u10d0\u10d5\u10d4\u10d1\u10d0",
+fakeobjects:{anchor:"\u10e6\u10e3\u10d6\u10d0",flash:"Flash \u10d0\u10dc\u10d8\u10db\u10d0\u10ea\u10d8\u10d0",iframe:"IFrame",hiddenfield:"\u10db\u10d0\u10da\u10e3\u10da\u10d8 \u10d5\u10d4\u10da\u10d8",unknown:"\u10e3\u10ea\u10dc\u10dd\u10d1\u10d8 \u10dd\u10d1\u10d8\u10d4\u10e5\u10e2\u10d8"},resize:"\u10d2\u10d0\u10ec\u10d8\u10d4 \u10d6\u10dd\u10db\u10d8\u10e1 \u10e8\u10d4\u10e1\u10d0\u10ea\u10d5\u10da\u10d4\u10da\u10d0\u10d3",colordialog:{title:"\u10e4\u10d4\u10e0\u10d8\u10e1 \u10e8\u10d4\u10ea\u10d5\u10da\u10d0",
+options:"\u10e4\u10d4\u10e0\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",highlight:"\u10e9\u10d5\u10d4\u10dc\u10d4\u10d1\u10d0",selected:"\u10d0\u10e0\u10e9\u10d4\u10e3\u10da\u10d8 \u10e4\u10d4\u10e0\u10d8",clear:"\u10d2\u10d0\u10e1\u10e3\u10e4\u10d7\u10d0\u10d5\u10d4\u10d1\u10d0"},toolbarCollapse:"\u10ee\u10d4\u10da\u10e1\u10d0\u10ec\u10e7\u10dd\u10d7\u10d0 \u10d6\u10dd\u10da\u10d8\u10e1 \u10e8\u10d4\u10ec\u10d4\u10d5\u10d0",toolbarExpand:"\u10ee\u10d4\u10da\u10e1\u10d0\u10ec\u10e7\u10dd\u10d7\u10d0 \u10d6\u10dd\u10da\u10d8\u10e1 \u10d2\u10d0\u10db\u10dd\u10ec\u10d4\u10d5\u10d0",
+toolbarGroups:{document:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8",clipboard:"Clipboard/\u10d2\u10d0\u10e3\u10e5\u10db\u10d4\u10d1\u10d0",editing:"\u10e0\u10d4\u10d3\u10d0\u10e5\u10e2\u10d8\u10e0\u10d4\u10d1\u10d0",forms:"\u10e4\u10dd\u10e0\u10db\u10d4\u10d1\u10d8",basicstyles:"\u10eb\u10d8\u10e0\u10d8\u10d7\u10d0\u10d3\u10d8 \u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8",paragraph:"\u10d0\u10d1\u10d6\u10d0\u10ea\u10d8",links:"\u10d1\u10db\u10e3\u10da\u10d4\u10d1\u10d8",insert:"\u10e9\u10d0\u10e1\u10db\u10d0",
+styles:"\u10e1\u10e2\u10d8\u10da\u10d4\u10d1\u10d8",colors:"\u10e4\u10d4\u10e0\u10d4\u10d1\u10d8",tools:"\u10ee\u10d4\u10da\u10e1\u10d0\u10ec\u10e7\u10dd\u10d4\u10d1\u10d8"},bidi:{ltr:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10db\u10d8\u10db\u10d0\u10e0\u10d7\u10e3\u10da\u10d4\u10d1\u10d0 \u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d5",rtl:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10db\u10d8\u10db\u10d0\u10e0\u10d7\u10e3\u10da\u10d4\u10d1\u10d0 \u10db\u10d0\u10e0\u10ef\u10d5\u10dc\u10d8\u10d3\u10d0\u10dc \u10db\u10d0\u10e0\u10ea\u10ee\u10dc\u10d8\u10d5"},
+docprops:{label:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",title:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10de\u10d0\u10e0\u10d0\u10db\u10d4\u10e2\u10e0\u10d4\u10d1\u10d8",design:"\u10d3\u10d8\u10d6\u10d0\u10d8\u10dc\u10d8",meta:"\u10db\u10d4\u10e2\u10d0Tag-\u10d4\u10d1\u10d8",chooseColor:"\u10d0\u10e0\u10e9\u10d4\u10d5\u10d0",other:"\u10e1\u10ee\u10d5\u10d0...",docTitle:"\u10d2\u10d5\u10d4\u10e0\u10d3\u10d8\u10e1 \u10e1\u10d0\u10d7\u10d0\u10e3\u10e0\u10d8",
+charset:"\u10d9\u10dd\u10d3\u10d8\u10e0\u10d4\u10d1\u10d0",charsetOther:"\u10e1\u10ee\u10d5\u10d0 \u10d9\u10dd\u10d3\u10d8\u10e0\u10d4\u10d1\u10d4\u10d1\u10d8",charsetASCII:"\u10d0\u10db\u10d4\u10e0\u10d8\u10d9\u10e3\u10da\u10d8 (ASCII)",charsetCE:"\u10ea\u10d4\u10dc\u10e2\u10e0\u10d0\u10da\u10e3\u10e0 \u10d4\u10d5\u10e0\u10dd\u10de\u10e3\u10da\u10d8",charsetCT:"\u10e2\u10e0\u10d0\u10d3\u10d8\u10ea\u10d8\u10e3\u10da\u10d8 \u10e9\u10d8\u10dc\u10e3\u10e0\u10d8 (Big5)",charsetCR:"\u10d9\u10d8\u10e0\u10d8\u10da\u10e3\u10e0\u10d8",
+charsetGR:"\u10d1\u10d4\u10e0\u10eb\u10dc\u10e3\u10da\u10d8",charsetJP:"\u10d8\u10d0\u10de\u10dd\u10dc\u10e3\u10e0\u10d8",charsetKR:"\u10d9\u10dd\u10e0\u10d4\u10e3\u10da\u10d8",charsetTR:"\u10d7\u10e3\u10e0\u10e5\u10e3\u10da\u10d8",charsetUN:"\u10e3\u10dc\u10d8\u10d9\u10dd\u10d3\u10d8 (UTF-8)",charsetWE:"\u10d3\u10d0\u10e1\u10d0\u10d5\u10da\u10d4\u10d7 \u10d4\u10d5\u10e0\u10dd\u10de\u10e3\u10da\u10d8",docType:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10e2\u10d8\u10de\u10d8",
+docTypeOther:"\u10e1\u10ee\u10d5\u10d0 \u10e2\u10d8\u10de\u10d8\u10e1 \u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8",xhtmlDec:"XHTML \u10d3\u10d4\u10d9\u10da\u10d0\u10e0\u10d0\u10ea\u10d8\u10d4\u10d1\u10d8\u10e1 \u10e9\u10d0\u10e0\u10d7\u10d5\u10d0",bgColor:"\u10e4\u10dd\u10dc\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d8",bgImage:"\u10e4\u10dd\u10dc\u10e3\u10e0\u10d8 \u10e1\u10e3\u10e0\u10d0\u10d7\u10d8\u10e1 URL",bgFixed:"\u10e3\u10db\u10dd\u10eb\u10e0\u10d0\u10dd (\u10e4\u10d8\u10e5\u10e1\u10d8\u10e0\u10d4\u10d1\u10e3\u10da\u10d8) \u10e4\u10dd\u10dc\u10d8",
+txtColor:"\u10e2\u10d4\u10e5\u10e1\u10e2\u10d8\u10e1 \u10e4\u10d4\u10e0\u10d8",margin:"\u10d2\u10d5\u10d4\u10e0\u10d3\u10d8\u10e1 \u10d9\u10d8\u10d3\u10d4\u10d4\u10d1\u10d8",marginTop:"\u10d6\u10d4\u10d3\u10d0",marginLeft:"\u10db\u10d0\u10e0\u10ea\u10ee\u10d4\u10dc\u10d0",marginRight:"\u10db\u10d0\u10e0\u10ef\u10d5\u10d4\u10dc\u10d0",marginBottom:"\u10e5\u10d5\u10d4\u10d3\u10d0",metaKeywords:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10e1\u10d0\u10d9\u10d5\u10d0\u10dc\u10eb\u10dd \u10e1\u10d8\u10e2\u10e7\u10d5\u10d4\u10d1\u10d8 (\u10db\u10eb\u10d8\u10db\u10d8\u10d7 \u10d2\u10d0\u10db\u10dd\u10e7\u10dd\u10e4\u10d8\u10da\u10d8)",
+metaDescription:"\u10d3\u10dd\u10d9\u10e3\u10db\u10d4\u10dc\u10e2\u10d8\u10e1 \u10d0\u10e6\u10ec\u10d4\u10e0\u10d0",metaAuthor:"\u10d0\u10d5\u10e2\u10dd\u10e0\u10d8",metaCopyright:"Copyright",previewHtml:'<p>\u10d4\u10e1 \u10d0\u10e0\u10d8\u10e1 <strong>\u10e1\u10d0\u10ea\u10d3\u10d4\u10da\u10d8 \u10e2\u10d4\u10e5\u10e1\u10e2\u10d8</strong>. \u10d7\u10e5\u10d5\u10d4\u10dc <a href="javascript:void(0)">CKEditor</a>-\u10d8\u10d7 \u10e1\u10d0\u10e0\u10d2\u10d4\u10d1\u10da\u10dd\u10d1\u10d7.</p>'}}});

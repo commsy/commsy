@@ -1,6 +1,3 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.skins.add('office2003',(function(){return{editor:{css:['editor.css']},dialog:{css:['dialog.css']},separator:{canGroup:false},templates:{css:['templates.css']},margins:[0,14,18,14]};})());(function(){CKEDITOR.dialog?a():CKEDITOR.on('dialogPluginReady',a);function a(){CKEDITOR.dialog.on('resize',function(b){var c=b.data,d=c.width,e=c.height,f=c.dialog,g=f.parts.contents;if(c.skin!='office2003')return;g.setStyles({width:d+'px',height:e+'px'});if(!CKEDITOR.env.ie||CKEDITOR.env.ie9Compat)return;var h=function(){var i=f.parts.dialog.getChild([0,0,0]),j=i.getChild(0),k=j.getSize('width');e+=j.getChild(0).getSize('height')+1;var l=i.getChild(2);l.setSize('width',k);l=i.getChild(7);l.setSize('width',k-28);l=i.getChild(4);l.setSize('height',e);l=i.getChild(5);l.setSize('height',e);};setTimeout(h,100);if(b.editor.lang.dir=='rtl')setTimeout(h,1000);});};})();
+//>>built
+define("ckeditor/skins/office2003/skin",["dijit","dojo","dojox"],function(){CKEDITOR.skins.add("office2003",{editor:{css:["editor.css"]},dialog:{css:["dialog.css"]},separator:{canGroup:!1},templates:{css:["templates.css"]},margins:[0,14,18,14]});(function(){function c(){CKEDITOR.dialog.on("resize",function(c){var a=c.data,d=a.height,e=a.dialog;"office2003"==a.skin&&(e.parts.contents.setStyles({width:a.width+"px",height:d+"px"}),CKEDITOR.env.ie&&!CKEDITOR.env.ie9Compat&&(a=function(){var a=e.parts.dialog.getChild([0,
+0,0]),b=a.getChild(0),c=b.getSize("width");d+=b.getChild(0).getSize("height")+1;b=a.getChild(2);b.setSize("width",c);b=a.getChild(7);b.setSize("width",c-28);b=a.getChild(4);b.setSize("height",d);b=a.getChild(5);b.setSize("height",d)},setTimeout(a,100),"rtl"==c.editor.lang.dir&&setTimeout(a,1E3)))})}CKEDITOR.dialog?c():CKEDITOR.on("dialogPluginReady",c)})()});

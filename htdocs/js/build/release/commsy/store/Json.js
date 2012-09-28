@@ -1,0 +1,2 @@
+//>>built
+define("commsy/store/Json",["dojo/_base/declare","commsy/base","dojo/store/util/QueryResults","dojo/store/util/SimpleQueryEngine"],function(b,c,d){return b([c],{fct:"",idProperty:"id",constructor:function(a){b.safeMixin(this,a)},get:function(a){return this.request(this.fct,"get",{id:a})},getIdentity:function(a){return a[this.idProperty]},put:function(){},add:function(){},remove:function(){},query:function(a){a=this.request(this.fct,"query",{query:a});return d(a)}})});

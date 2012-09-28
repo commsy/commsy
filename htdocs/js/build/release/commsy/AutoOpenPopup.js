@@ -1,0 +1,2 @@
+//>>built
+define("commsy/AutoOpenPopup",["dojo/_base/declare","commsy/base","dojo/query"],function(b,c,d){return b(c,{constructor:function(a){a=a||{};b.safeMixin(this,a)},setup:function(){var a=this.from_php.autoOpenPopup;a&&"tm_settings"==a.popup&&this.openRoomConfiguration(a.parameters)},openRoomConfiguration:function(){d("a#tm_settings")[0].click()}})});

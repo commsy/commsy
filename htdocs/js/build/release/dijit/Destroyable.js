@@ -1,0 +1,2 @@
+//>>built
+define("dijit/Destroyable",["dojo/_base/array","dojo/aspect","dojo/_base/declare"],function(d,b,e){return e("dijit.Destroyable",null,{destroy:function(){this._destroyed=!0},own:function(){d.forEach(arguments,function(a){var c="destroyRecursive"in a?"destroyRecursive":"destroy"in a?"destroy":"remove";a._odh=b.before(this,"destroy",function(b){a._odh.remove();a[c](b)});b.after(a,c,function(){a._odh.remove()})},this);return arguments}})});

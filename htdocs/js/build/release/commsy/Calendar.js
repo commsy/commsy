@@ -1,0 +1,2 @@
+//>>built
+define("commsy/Calendar","dojo/_base/declare,commsy/base,dojo/_base/lang,dojo/query,dijit/form/DateTextBox,dojo/dom-attr".split(","),function(b,e,g,h,f,d){return b(e,{calendar:null,constructor:function(a){a=a||{};b.safeMixin(this,a)},setup:function(a){if("de"==this.from_php.environment.lang)var b="dd.MM.yyyy";else"en"==this.from_php.environment.lang&&(b="MM/dd/yyyy");var c=d.get(a,"value");""===c&&(c=null);this.calendar=new f({value:c,name:d.get(a,"name"),constraints:{datePattern:b}},a)},destroy:function(){this.calendar.destroyRecursive(!1)}})});

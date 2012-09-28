@@ -1,6 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('uicolor','mk',{uicolor:{title:'Палета со бои',preview:'Преглед',config:'Залепи го овој текст во config.js датотеката',predefined:'Предефинирани множества на бои'}});
+//>>built
+define("ckeditor/plugins/uicolor/lang/mk",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("uicolor","mk",{uicolor:{title:"\u041f\u0430\u043b\u0435\u0442\u0430 \u0441\u043e \u0431\u043e\u0438",preview:"\u041f\u0440\u0435\u0433\u043b\u0435\u0434",config:"\u0417\u0430\u043b\u0435\u043f\u0438 \u0433\u043e \u043e\u0432\u043e\u0458 \u0442\u0435\u043a\u0441\u0442 \u0432\u043e config.js \u0434\u0430\u0442\u043e\u0442\u0435\u043a\u0430\u0442\u0430",predefined:"\u041f\u0440\u0435\u0434\u0435\u0444\u0438\u043d\u0438\u0440\u0430\u043d\u0438 \u043c\u043d\u043e\u0436\u0435\u0441\u0442\u0432\u0430 \u043d\u0430 \u0431\u043e\u0438"}})});

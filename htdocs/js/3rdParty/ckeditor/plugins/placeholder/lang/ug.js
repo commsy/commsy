@@ -1,6 +1,3 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang('placeholder','ug',{placeholder:{title:'ئورۇن بەلگە خاسلىقى',toolbar:'ئورۇن بەلگە قۇر',text:'ئورۇن بەلگە تېكىستى',edit:'ئورۇن بەلگە تەھرىر',textMissing:'ئورۇن بەلگىسىدە چوقۇم تېكىست بولۇشى لازىم'}});
+//>>built
+define("ckeditor/plugins/placeholder/lang/ug",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("placeholder","ug",{placeholder:{title:"\u0626\u0648\u0631\u06c7\u0646 \u0628\u06d5\u0644\u06af\u06d5 \u062e\u0627\u0633\u0644\u0649\u0642\u0649",toolbar:"\u0626\u0648\u0631\u06c7\u0646 \u0628\u06d5\u0644\u06af\u06d5 \u0642\u06c7\u0631",text:"\u0626\u0648\u0631\u06c7\u0646 \u0628\u06d5\u0644\u06af\u06d5 \u062a\u06d0\u0643\u0649\u0633\u062a\u0649",edit:"\u0626\u0648\u0631\u06c7\u0646 \u0628\u06d5\u0644\u06af\u06d5 \u062a\u06d5\u06be\u0631\u0649\u0631",
+textMissing:"\u0626\u0648\u0631\u06c7\u0646 \u0628\u06d5\u0644\u06af\u0649\u0633\u0649\u062f\u06d5 \u0686\u0648\u0642\u06c7\u0645 \u062a\u06d0\u0643\u0649\u0633\u062a \u0628\u0648\u0644\u06c7\u0634\u0649 \u0644\u0627\u0632\u0649\u0645"}})});

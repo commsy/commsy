@@ -1,16 +1,2 @@
-﻿/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
-
-CKEDITOR.plugins.setLang( 'devtools', 'zh-cn',
-{
-	devTools :
-	{
-		title		: '元素信息',
-		dialogName	: '对话框窗口名称',
-		tabName		: 'Tab 名称',
-		elementId	: '元素 ID',
-		elementType	: '元素类型'
-	}
-});
+//>>built
+define("ckeditor/_source/plugins/devtools/lang/zh-cn",["dijit","dojo","dojox"],function(){CKEDITOR.plugins.setLang("devtools","zh-cn",{devTools:{title:"\u5143\u7d20\u4fe1\u606f",dialogName:"\u5bf9\u8bdd\u6846\u7a97\u53e3\u540d\u79f0",tabName:"Tab \u540d\u79f0",elementId:"\u5143\u7d20 ID",elementType:"\u5143\u7d20\u7c7b\u578b"}})});
