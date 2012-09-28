@@ -47,7 +47,7 @@ global structure - tag definitions
 body {
     margin: 0px;
     border: 0px none;
-    padding: 0px 0px 60px 0px;
+    padding: 40px 0px 60px 0px;
     background: url(../img/body_bg.jpg) #080300;
     color: #5C4B36;
     font-family: verdana, sans-serif;
@@ -66,6 +66,9 @@ img {
     border: 0px none;
     }
 
+div#top_menu {
+	margin-top: -40px;
+}
    
    
 /*
