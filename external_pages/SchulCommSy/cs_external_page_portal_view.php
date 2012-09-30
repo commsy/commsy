@@ -1815,6 +1815,11 @@ class cs_external_page_portal_view extends cs_page_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $show_rooms = $current_context->getShowRoomsOnHome();
       $html  = '';
+      
+      $html .= '
+      	<h2>Meine Räume</h2><p style="padding:5px 5px 20px 5px">Den persönlichen Bereich mit der Liste Ihrer Räume finden Sie mit der Version 8.1 nach erfolgreicher Anmeldung in der CommSy-Leiste am Anfang der Seite.</p>
+      ';
+      
       $html .= '<h2>Raumsuche</h2>';
       #$html .= '<div class="column_content">';
       // Search / select form
