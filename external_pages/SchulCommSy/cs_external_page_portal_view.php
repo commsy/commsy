@@ -3461,7 +3461,7 @@ if ( !$this->_environment->inPortal() || $this->_current_user->isGuest()) {
    					$html .= '	<a href="#" id="tm_widgets" title="' . $translator->getMessage("MYWIDGETS_INDEX") . '">&nbsp;</a>';
    				}
    					
-   				if ( $ownRoomItem->getCSBarShowCalendar() )
+   				if ( $ownRoomItem->getCSBarShowCalendar() == "1" )
    				{
    					$html .= '	<a href="#" id="tm_mycalendar" title="' . $translator->getMessage("MYCALENDAR_INDEX") . '">&nbsp;</a>';
    				}
