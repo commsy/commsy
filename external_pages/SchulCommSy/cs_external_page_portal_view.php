@@ -2321,7 +2321,7 @@ class cs_external_page_portal_view extends cs_page_view {
       unset($post_vars);
       $html  = LF;
       
-      $html .= '<h2>Aktionen</h2>';
+      $html .= '<h2>Anmeldung</h2>';
       $html .= '<div class="column_content">';
       
 //if ( !$this->_environment->inPortal() || $this->_current_user->isGuest()) {
@@ -2406,7 +2406,7 @@ class cs_external_page_portal_view extends cs_page_view {
             #$html .= '<tr><td style="padding:0px;margin:0px; font-size:8pt; vertical-align:middle;">'.LF;
             #$html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
             
-            $html .= '<label>'.$this->_translator->getMessage('MYAREA_ACCOUNT').':</label>'.LF;
+            //$html .= '<label>'.$this->_translator->getMessage('MYAREA_ACCOUNT').':</label>'.LF;
             $html .= '<div class="field_item">'.LF;
             $html .= '<input type="text" name="user_id" tabindex="1"/>'.LF;
             $html .= '</div>'.LF;
@@ -2552,14 +2552,14 @@ class cs_external_page_portal_view extends cs_page_view {
                       unset($params['is_saved']);
                       unset($params['show_copies']);
                       unset($params['profile_page']);
-                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('COMMON_PROFILE_EDIT'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+                      //$html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('COMMON_PROFILE_EDIT'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
                       #$params = array();
                       #$params = $this->_environment->getCurrentParameterArray();
                       #$params['cs_modus'] = 'password_change';
-                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+                      //$html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
                   } else {
-                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_PROFILE_EDIT').'</span>'.BRLF;
-                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET').'</span>'.BRLF;
+                      //$html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_PROFILE_EDIT').'</span>'.BRLF;
+                      //$html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET').'</span>'.BRLF;
                   }
                   unset($params['cs_modus']);
 
@@ -2574,10 +2574,10 @@ class cs_external_page_portal_view extends cs_page_view {
                         #$params['cs_modus'] = 'account_change';
                         $params['uid'] = $this->_current_user->getItemID();
                         $params['show_profile'] = 'yes';
-                        $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+                        //$html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
                         unset($params['cs_modus']);
                       } else {
-                        $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
+                        //$html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
                       }
                   }
                }
@@ -2595,10 +2595,10 @@ class cs_external_page_portal_view extends cs_page_view {
                          $params = array();
                          $params = $this->_environment->getCurrentParameterArray();
                          $params['show_profile'] = 'yes';
-                         $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('COMMON_PROFILE_EDIT'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+                         //$html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('COMMON_PROFILE_EDIT'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
 
                   } else {
-                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_PROFILE_EDIT').'</span>'.BRLF;
+                      //$html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_PROFILE_EDIT').'</span>'.BRLF;
                   }
                }
 
@@ -2612,10 +2612,10 @@ class cs_external_page_portal_view extends cs_page_view {
                       $params = array();
                       $params = $this->_environment->getCurrentParameterArray();
                       $params['cs_modus'] = 'password_change';
-                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+                      //$html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
 
                } else {
-                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET').'</span>'.BRLF;
+                   //$html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET').'</span>'.BRLF;
                }
                unset($params['cs_modus']);
                if ($this->_environment->inServer() ) {
