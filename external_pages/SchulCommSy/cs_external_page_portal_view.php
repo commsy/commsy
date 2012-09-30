@@ -2503,7 +2503,7 @@ class cs_external_page_portal_view extends cs_page_view {
          } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
             $params = array();
             $html .= '<div>';
-            /*
+            
             if (!$this->_environment->inServer() ) {
                global $c_annonymous_account_array;
                if ( !$this->_current_user->isRoot()
@@ -2687,7 +2687,7 @@ class cs_external_page_portal_view extends cs_page_view {
                                         '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>','','','','','','','style="display:inline;"').LF;
 
                $html .= ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', '',$this->_translator->getMessage('COMMON_PORTAL').' ('.$this->_translator->getMessage('MYAREA_LOGIN_TO_PORTAL_OVERVIEW').')','','','','','','','style="display:inline;"').'</span>'.BRLF;
-*//*
+*/
                // @segment-end 7294
                // @segment-begin 90042 link-to:portal-overview-if-root-user
                if ( $this->_current_user->isRoot() ) {
@@ -2721,11 +2721,11 @@ class cs_external_page_portal_view extends cs_page_view {
                $html .= '<div class="myarea_content">'.LF;
                $html .= $this->_getUserCopiesAsHTML();
                $html .= '</div>'.LF;
-            }*//*
+            }*/
 
            if (!$this->_environment->inServer() ) {
                $html .= '</div>'.LF;
-            }*/
+            }
 
             // @segment-end 21493
             // @segment-begin 68416 no_cs_modus/without-user-depend/no-portals-in-server:only-log_in-part
