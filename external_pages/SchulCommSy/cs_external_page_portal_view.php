@@ -3748,7 +3748,7 @@ class cs_external_page_portal_view extends cs_page_view {
     $html .= $this->_getCommSyBarBeforeContentAsHTML();
     
     $html .= '<div id="wrapper">'.LF;
-    $html .= '    <div id="header">'.LF;
+    $html .= '    <div id="header" style="padding-top: 0px;">'.LF;
     $html .= '        <a href="" title="SchulCommSy Startseite"><img src="css/external_portal_styles/'.$current_context->getItemID().'/img/portal_logo.gif" alt="SchulCommSy" /></a>'.LF;
             
     $html .= '        <ul>'.LF;
