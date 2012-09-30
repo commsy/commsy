@@ -1816,9 +1816,10 @@ class cs_external_page_portal_view extends cs_page_view {
       $show_rooms = $current_context->getShowRoomsOnHome();
       $html  = '';
       
+      /*
       $html .= '
       	<h2>Meine Räume</h2><p style="padding:5px 5px 20px 5px">Den persönlichen Bereich mit der Liste Ihrer Räume finden Sie mit der Version 8.1 nach erfolgreicher Anmeldung in der CommSy-Leiste am Anfang der Seite.</p>
-      ';
+      ';*/
       
       $html .= '<h2>Raumsuche</h2>';
       #$html .= '<div class="column_content">';
@@ -2323,7 +2324,7 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '<h2>Aktionen</h2>';
       $html .= '<div class="column_content">';
       
-if ( !$this->_environment->inPortal() || $this->_current_user->isGuest()) {
+//if ( !$this->_environment->inPortal() || $this->_current_user->isGuest()) {
       $html .= '<div id="left_box">'.LF;
       $html .= '<div>'.LF;
       $html .= '<div class="sidehead">'.LF;
@@ -2920,7 +2921,7 @@ if ( !$this->_environment->inPortal() || $this->_current_user->isGuest()) {
       // @segment-end 89418
 
       $html .= '</div>'.LF;
- } 
+ //} 
       return $html;
    }
 
