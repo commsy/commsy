@@ -189,6 +189,7 @@ div#loadingScreenInner .img {
 	padding: 10px;
     border-radius: 2px 2px 2px 2px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    text-align: left;
 	}
 
 #popup_frame_my_area {
@@ -1316,6 +1317,8 @@ content, general
 */
 
 #maincontent {
+	padding: 0px !important;
+	text-align: left !important;
     }
 
 #full_width_content {
