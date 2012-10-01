@@ -3457,7 +3457,7 @@ class cs_external_page_portal_view extends cs_page_view {
    			}
    
    			if ( isset($ownRoomItem)) {
-   				if ( $ownRoomItem->getCSBarShowPortfolio() === true )
+   				if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
    				{
    					$html .= '	<a href="#" id="tm_portfolio" title="' . $translator->getMessage("CS_BAR_PORTFOLIO") . '">&nbsp;</a>';
    				}
@@ -3472,7 +3472,7 @@ class cs_external_page_portal_view extends cs_page_view {
    					$html .= '	<a href="#" id="tm_mycalendar" title="' . $translator->getMessage("MYCALENDAR_INDEX") . '">&nbsp;</a>';
    				}
    					
-   				if ( $ownRoomItem->getCSBarShowStack() )
+   				if ( $ownRoomItem->getCSBarShowStack() == "1" )
    				{
    					$html .= '	<a href="#" id="tm_stack" title="' . $translator->getMessage("COMMON_ENTRY_INDEX") . '">&nbsp;</a>';
    				}
