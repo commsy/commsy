@@ -143,7 +143,6 @@
 		public function actionPerformRequest() {
 			$return = array();
 
-			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUser();
 			$session = $this->_environment->getSessionItem();
 
@@ -166,6 +165,9 @@
 				}
 				$item = $manager->getItem($item_id);
 			}
+			
+			$current_context = ($item !== null) ? $item->getContextItem() : $this->_environment->getCurrentContextItem();
+			
 			// get ids of linked items
 			$selected_ids = ($item_id !== "NEW") ? $this->getLinkedItemIDArray($item) : array();
 
@@ -178,45 +180,57 @@
 				// get current room modules
 				$room_modules = array();
 				$current_room_modules = $current_context->getHomeConf();
+				
 				if(!empty($current_room_modules)) $room_modules = explode(',', $current_room_modules);
-
-				$rubric_array = array();
-				foreach($room_modules as $room_module) {
-					list($name, $display) = explode('_', $room_module);
-
-					if($display != 'none'	&&	!($this->_environment->inPrivateRoom() && $name == 'user') &&
-							!(	$name == CS_USER_TYPE && (
-									$module == CS_MATERIAL_TYPE ||
-									$module == CS_DISCUSSION_TYPE ||
-									$module == CS_ANNOUNCEMENT_TYPE ||
-									$module == CS_TOPIC_TYPE))) {
-						$rubric_array[] = $name;
+				
+				if ($current_context->isPrivateRoom() )
+				{
+					$rubric_array = array(
+						CS_MATERIAL_TYPE,
+						CS_DISCUSSION_TYPE,
+						CS_DISCUSSION_TYPE,
+						CS_DATE_TYPE
+					);
+				}
+				else
+				{
+					$rubric_array = array();
+					
+					foreach($room_modules as $room_module) {
+						list($name, $display) = explode('_', $room_module);
+					
+						if($display != 'none'	&&	!($current_context->isPrivateRoom() && $name == 'user') &&
+								!(	$name == CS_USER_TYPE && (
+										$module == CS_MATERIAL_TYPE ||
+										$module == CS_DISCUSSION_TYPE ||
+										$module == CS_ANNOUNCEMENT_TYPE ||
+										$module == CS_TOPIC_TYPE))) {
+							$rubric_array[] = $name;
+						}
+					}
+					
+					if($module == CS_USER_TYPE) {
+						$rubric_array = array();
+							
+						if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
+						if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
 					}
 				}
-
-				if($module == CS_USER_TYPE) {
-					$rubric_array = array();
-
-					if($current_context->withRubric(CS_GROUP_TYPE)) $rubric_array[] = CS_GROUP_TYPE;
-					if($current_context->withRubric(CS_INSTITUTION_TYPE)) $rubric_array[] = CS_INSTITUTION_TYPE;
-
-					// $interval = 100;
-				}
-
+				
 				// perform rubric restriction
 				if(!empty($restrictions['rubric']) && $restrictions['rubric'] !== "all") {
 					$rubric_array = array();
 					$rubric_array[] = $restrictions['rubric'];
 				}
-
+					
 				if($restrictions['only_linked'] === true && empty($selected_ids)) $rubric_array = array();
-
+				
 				foreach($rubric_array as $rubric) {
 					$rubric_list = new cs_list();
 					$rubric_manager = $this->_environment->getManager($rubric);
 
 					if(isset($rubric_manager) && $rubric != CS_MYROOM_TYPE) {
-						if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($this->_environment->getCurrentContextID());
+						if($rubric != CS_PROJECT_TYPE) $rubric_manager->setContextLimit($current_context->getItemID());
 
 						if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
 
@@ -236,7 +250,7 @@
 
 						$rubric_manager->selectDistinct();
 						$rubric_list = $rubric_manager->get();
-
+						
 						// show hidden entries only if user is moderator or owner
 						if($restrictions['type'] != 2 && !$current_user->isModerator()) {
 							// check if user is owner
