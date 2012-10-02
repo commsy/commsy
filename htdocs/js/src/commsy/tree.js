@@ -91,6 +91,8 @@ define([	"dojo/_base/declare",
 				showRoot:			false,
 				persist:			false,
 				checkBoxes:			this.checkboxes,
+				branchIcons:		false,
+				nodeIcons:			false,
 				onClick:			lang.hitch(this, function(item, node, evt) {
 					// follow item url
 					if(this.followUrl) {
