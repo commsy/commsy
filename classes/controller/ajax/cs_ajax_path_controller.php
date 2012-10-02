@@ -98,16 +98,15 @@
 		}
 		
 		public function actionSavePath() {
-			$return = array();
-			
 			// get request data
 			$item_id = $this->_data['item_id'];
 			$linked_ids = $this->_data['linked_ids'];
+			$onlyUpdate = $this->_data["onlyUpdate"];
 			
 			// get item
 			$manager = $this->_environment->getManager(CS_TOPIC_TYPE);
 			$item = $manager->getItem($item_id);
-			
+				
 			// get link_id for all linked entries
 			$linked_id_link_id = array();
 			$link_items = $item->getAllLinkItemList();
@@ -118,7 +117,7 @@
 				if($type === 'label') {
 					$type = $linked_item->getLabelType();
 				}
-				
+			
 				switch($type) {
 					case CS_DISCARTICLE_TYPE:
 						$linked_iid = $linked_item->getDiscussionID();
@@ -134,26 +133,53 @@
 						$linked_iid = $linked_item->getItemID();
 				}
 				
-				$linked_id_link_id[$linked_iid] = $link_item->getItemID();
+				$linked_id_link_id[$linked_iid] = array(
+					"linkItemId"		=> $link_item->getItemID(),
+					"sortingPlace"		=> $link_item->getSortingPlace()
+				);
 			
 				$link_item = $link_items->getNext();
 			}
 			
+			// set up array to save
 			$item_place_array = array();
 			$count = 1;
-			foreach($linked_ids as $id) {
-				$item_place_array[] = array(
-					'item_id'		=> $linked_id_link_id[$id],
-					'place'			=> $count++
-				);
+			
+			if ( isset($onlyUpdate) && $onlyUpdate === true )
+			{
+				/**
+				 * When this flag is set, we get all linked items, but don't check them against the selected one. This will catch any case
+				 * where linked items are updated, but no path tab was available.
+				 */
+				foreach ( $linked_id_link_id as $id => $linkArray )
+				{
+					// only add if previously defined in path - do not include newly added linked entries automatically
+					if ( !empty($linkArray["sortingPlace"]) )
+					{
+						$item_place_array[] = array(
+							'item_id'		=> $linkArray["linkItemId"],
+							'place'			=> $count++
+						);
+					}
+				}
+			}
+			else
+			{
+				foreach( $linked_ids as $id )
+				{
+					$item_place_array[] = array(
+						'item_id'		=> $linked_id_link_id[$id]["linkItemId"],
+						'place'			=> $count++
+					);
+				}
 			}
 			
 			$link_item_manager = $this->_environment->getLinkItemManager();
 			$link_item_manager->cleanSortingPlaces($item);
-			
+				
 			if(!empty($item_place_array)) $link_item_manager->saveSortingPlaces($item_place_array);
 			
-			$this->setSuccessfullDataReturn($return);
+			$this->setSuccessfullDataReturn(array());
 			echo $this->_return;
 		}
 

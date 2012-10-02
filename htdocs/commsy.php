@@ -918,9 +918,9 @@ global $c_smarty_always;
 if(isset($c_smarty_always) && $c_smarty_always === true) $c_smarty = true;
 
 if(isset($_GET['smarty'])) {
-	if($_GET['smarty'] === 'false') {
+	if($_GET['smarty'] === 'off') {
 		$session->setValue('smarty_off', true);
-	} elseif($_GET['smarty'] === 'true') {
+	} elseif($_GET['smarty'] === 'on') {
 		$session->setValue('smarty_off', false);
 	}
 }

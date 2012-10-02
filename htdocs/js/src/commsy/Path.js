@@ -80,18 +80,28 @@ define([	"dojo/_base/declare",
 			var request_item_id = this.item_id;
 			if(item_id) request_item_id = item_id;
 			
-			// collect data
-			var ids = [];
-			dojo.forEach(Query("ul#popup_path_list input[type='checkbox']:checked"), function(checkbox, index, arr) {
-				// extract item id
-				var regex = new RegExp("path_(.*)");
-				var results = regex.exec(DomAttr.get(checkbox, "id"));
-				id = results[1];
-				
-				ids.push(id);
-			});
+			// check if path tab is set up
+			var pathListNode = Query("ul#popup_path_list")[0];
 			
-			this.AJAXRequest("path", "savePath", { item_id: request_item_id, linked_ids: ids }, callback);
+			if ( pathListNode )
+			{
+				// collect data
+				var ids = [];
+				dojo.forEach(Query("input[type='checkbox']:checked", pathListNode), function(checkbox, index, arr) {
+					// extract item id
+					var regex = new RegExp("path_(.*)");
+					var results = regex.exec(DomAttr.get(checkbox, "id"));
+					id = results[1];
+					
+					ids.push(id);
+				});
+				
+				this.AJAXRequest("path", "savePath", { item_id: request_item_id, linked_ids: ids }, callback);
+			}
+			else
+			{
+				this.AJAXRequest("path", "savePath", { item_id: request_item_id, onlyUpdate: true }, callback);
+			}
 		}
 	});
 });

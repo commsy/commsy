@@ -11,18 +11,18 @@ define([	"dojo/_base/declare",
         	"dojo/i18n!./nls/tooltipErrors",
         	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, dom_class, dom_attr, domConstruct, domStyle, Tooltip, ErrorTranslations) {
 	return declare(BaseClass, {
-		is_open:				false,
-		contentNode:			null,
-		features:				[],
-		featureHandles:			[],
-		module:					null,
-		fct:					null,
-		editType:				null,
-		version_id:				null,
-		contextId:				null,
-
 		constructor: function(args) {
-			this.errorNodes = [];
+			this.errorNodes			= [];
+			
+			this.featureHandles		= [];
+			this.is_open			= false;
+			this.contentNode		= null;
+			this.features			= [];
+			this.module				= null;
+			this.fct				= null;
+			this.editType			= null;
+			this.version_id			= null;
+			this.contextId			= null;
 		},
 		
 		onCreate: function() {

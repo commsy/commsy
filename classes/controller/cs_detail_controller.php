@@ -828,17 +828,21 @@
 	                  		$activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
 	               		}
 					}
-					$return[] = array(
-						'title'			=> $converter->text_as_html_short($link_title),
-						'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
-						'item_id'		=> $item->getItemID(),
-						'type'			=> $type,
-						'params'		=> $params,
-						'position'		=> $count_items + 1,
-						'activating_text'=> $activating_text
-					);
-
-					unset($item);
+					
+					if ( isset($item) )
+					{
+						$return[] = array(
+								'title'			=> $converter->text_as_html_short($link_title),
+								'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
+								'item_id'		=> $item->getItemID(),
+								'type'			=> $type,
+								'params'		=> $params,
+								'position'		=> $count_items + 1,
+								'activating_text'=> $activating_text
+						);
+						
+						unset($item);
+					}
 				}
 
 				$count_items++;

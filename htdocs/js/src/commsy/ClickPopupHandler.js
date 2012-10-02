@@ -9,15 +9,15 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-style"], function(declare, PopupHandler, on, lang, query, dom_class, Tooltip, dom_attr, domConstruct, domStyle) {
 	return declare(PopupHandler, {
-		triggerNode:			null,
-		item_id:				null,
-		ref_iid:				null,
-		ticks:					0,
-		ajaxHTMLSource:			"rubric_popup",
-
 		constructor: function(args) {
-			this.fct = "rubric_popup";
-			this.initData = {};
+			this.fct			= "rubric_popup";
+			this.initData		= {};
+			
+			this.triggerNode	= null;
+			this.item_id		= null;
+			this.ref_iid		= null;
+			this.ticks			= 0;
+			this.ajaxHTMLSource	= "rubric_popup";
 		},
 		
 		setInitData: function(object) {

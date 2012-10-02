@@ -38,7 +38,13 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		}
 
 		// check context
-		elseif(!$current_context->isOpen() && !$current_context->isTemplate()) {
+		//elseif(!$current_context->isOpen() && !$current_context->isTemplate()) {
+		
+			/**
+			 * temporary out-commented. before commsy8 it seems not to be possible to edit archived rooms settings(unlock only via portal?).
+			 * however, to re-activate a room we have to process this save method
+			 */
+		
 			// TODO:
 			/*
 			 *  $params = array();
@@ -50,7 +56,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			   $page->add($errorbox);
 			   $command = 'error';
 			 */
-		}
+		//}
 
 		elseif(!$current_user->isModerator()) {
 			/*
@@ -488,7 +494,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				               }
 				               // ~Fix
 				            }
-				         }else{
+				         } else {
 				            $current_context->open();
 				            if($current_context->existWiki() and $c_use_soap_for_wiki){
 				               $wiki_manager = $this->_environment->getWikiManager();
