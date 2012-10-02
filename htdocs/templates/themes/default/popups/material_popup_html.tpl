@@ -585,7 +585,7 @@
 							{if isset($popup.buzzwords)}<a href="buzzwords_tab" class="pop_tab">___COMMON_BUZZWORDS___</a>{/if}
 							{if isset($popup.tags)}<a href="tags_tab" class="pop_tab">___COMMON_TAGS___</a>{/if}
 							{if $item.with_workflow == true}<a href="workflow_tab" class="pop_tab">___COMMON_WORKFLOW___</a>{/if}
-							<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>
+							{if !$popup.overflow}<a href="netnavigation_tab" id="popup_netnavigation_attach_new" class="pop_tab">___COMMON_ATTACHED_ENTRIES___</a>{/if}
 							<div class="clear"> </div>
 						</div>
 						<div id="popup_tabcontent">
