@@ -270,7 +270,7 @@ class cs_portfolio_manager extends cs_manager {
   	return $return;
   }
   
-  function getPortfolioTags($portfolioId) {
+function getPortfolioTags($portfolioId) {
   	$query = "
   		SELECT
   			tag_portfolio.t_id,
@@ -296,6 +296,37 @@ class cs_portfolio_manager extends cs_manager {
   	}
   	 
   	return $result;
+  }
+  
+  function getPortfolioData($portfolioIdArray, $tagIdArray) {
+  	$query = "
+  		SELECT
+  			tag_portfolio.p_id,
+  			tag_portfolio.t_id,
+  			tag_portfolio.row,
+  			tag_portfolio.column
+  		FROM
+  			" . $this->addDatabasePrefix("tag_portfolio") . " AS tag_portfolio
+  		WHERE
+  			tag_portfolio.p_id IN (" . encode(AS_DB, implode(", ", $portfolioIdArray)) . ") AND
+  			tag_portfolio.t_id IN (" . encode(AS_DB, implode(", ", $tagIdArray)) . ")
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio tags.',E_USER_WARNING);
+  	}
+  
+  	$return = array();
+  	foreach ($result as $row) {
+  		$return[$row["p_id"]][] = array(
+  			"t_id"		=> $row["t_id"],
+  			"row"		=> $row["row"],
+  			"column"	=> $row["column"]
+  		);
+  	}
+  	
+  	return $return;
   }
   
   function addTagToPortfolio($portfolioId, $tagId, $position, $index) {
@@ -435,6 +466,28 @@ function deletePortfolioTags($portfolioId) {
   	return $userArray;
   }
   
+  function getPortfolioForExternalViewer($userId) {
+  	$query = "
+	  	SELECT
+	  		p_id
+	  	FROM
+	  		" . $this->addDatabasePrefix("user_portfolio") . "
+	  	WHERE
+	  		u_id= '" . encode(AS_DB, $userId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
+  	}
+  	 
+  	$portfolioArray = array();
+  	foreach ($result as $row) {
+  		$portfolioArray[] = $row["p_id"];
+  	}
+  	 
+  	return $portfolioArray;
+  }
+  
   function getAnnotationCountForPortfolio($portfolioId) {
   	$query = "
   		SELECT
@@ -460,6 +513,24 @@ function deletePortfolioTags($portfolioId) {
   	}
   	
   	return $return;
+  }
+  
+  function getPortfolioId($annotationId) {
+  	$query = "
+	  	SELECT
+	  		p_id
+		FROM
+		  	" . $this->addDatabasePrefix("annotation_portfolio") . "
+	  	WHERE
+	  		a_id = '" . encode(AS_DB, $annotationId) . "'
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting portfolio annotation ids.',E_USER_WARNING);
+  	}
+  	
+  	return $result[0]["p_id"];
   }
   
   function getAnnotationIdsForPortfolioCell($portfolioId, $row, $column) {

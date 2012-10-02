@@ -227,12 +227,9 @@ class cs_annotation_item extends cs_item {
    function mayEdit ($user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {
-         if ( $user_item->isRoot() or
-              ($user_item->getContextID() == $this->getContextID()
-               and ($user_item->isModerator()
-                    or ($user_item->isUser()
-                        and ($user_item->getItemID() == $this->getCreatorID()
-                             or $this->isPublic()))))
+         if (	$user_item->isRoot() ||
+         		( $user_item->getContextID() == $this->getContextID() && $user_item->isModerator() ) ||
+         		( $user_item->isUser() && ( $user_item->getItemID() === $this->getCreatorID() || $this->isPublic() ) )
             ) {
             $access = true;
          }
@@ -244,7 +241,23 @@ class cs_annotation_item extends cs_item {
       }
       return $access;
    }
-
+   
+   /** \brief	check via portfolio permission
+    *
+    * This Method checks for item <=> activated portfolio - relationships
+    */
+   protected function mayPortfolioSee($userItem) {
+   	$portfolioManager = $this->_environment->getPortfolioManager();
+   
+   	// get portfolio id for this annotation
+   	$portfolioId = $portfolioManager->getPortfolioId($this->getItemId());
+   	
+   	// get all ids from portfolios we are allow to see
+   	$portfolioIds = $portfolioManager->getPortfolioForExternalViewer($userItem->getUserId());
+   	
+   	// if the portfolio this annotation belongs to is in the list, we are allowed to see
+   	return in_array($portfolioId, $portfolioIds);
+   }
 }
 
 ?>

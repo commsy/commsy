@@ -779,8 +779,6 @@ class cs_item_manager extends cs_manager {
       if ( isset($result) and !empty($result) ) {
          return true;
       } else {
-         if (portfolioExternalCheck($this->_environment->getCurrentContextItem())) return true;
-   	 	
    	 	return false;
       }
    }

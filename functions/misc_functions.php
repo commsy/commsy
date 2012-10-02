@@ -2076,16 +2076,4 @@ function update_progress_bar($total) {
       echo('|');
    }
 }
-
-function portfolioExternalCheck($currentContextItem) {
-	/*
-	 * TODO: this is just a temporary workaround, "fromPortfolio" is send by ajax as post var and could easily be faked.
-	* At least, the context item is checked, so this could not affect normal room entries
-	*/
-	if ($currentContextItem->isPrivateRoom()) {
-		if (isset($_GET["fromPortfolio"]) && $_GET["fromPortfolio"] === true) return true;
-	}
-	
-	return false;
-}
 ?>

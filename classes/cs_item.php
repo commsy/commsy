@@ -1420,7 +1420,57 @@ class cs_item {
          trigger_error('can not find user data in database table "user" for user-id "'.$user_id.'", auth_source "'.$auth_source.'", context_id "'.$this->getContextID().'"',E_USER_WARNING);
       }
    }
-
+   
+   /** \brief	check via portfolio permission
+    *
+    * This Method checks for item <=> activated portfolio - relationships
+    */
+   protected function mayPortfolioSee($userItem) {
+   	$portfolioManager = $this->_environment->getPortfolioManager();
+   	
+   	// get all ids from portfolios we are allow to see
+   	$portfolioIds = $portfolioManager->getPortfolioForExternalViewer($userItem->getUserId());
+   	
+   	// now we get all item tags and their ids
+   	$tagList = $this->getTagList();
+   	$tagIdArray = array();
+   	
+   	$tagEntry = $tagList->getFirst();
+   	while ( $tagEntry )
+   	{
+   		$tagIdArray[] = $tagEntry->getItemID();
+   		
+   		$tagEntry = $tagList->getNext();
+   	}
+   	
+   	if ( empty($portfolioIds) || empty($tagIdArray) ) return false;
+   	
+   	// get row and column information for all portfolios with given tags
+   	$portfolioInformation = $portfolioManager->getPortfolioData($portfolioIds, $tagIdArray);
+   	
+   	// if user is allowed to see, there must be two tags for one portfolioId in this array, one for column, one for row
+   	foreach ( $portfolioIds as $portfolioId )
+   	{
+   		if ( isset($portfolioInformation[$portfolioId]) )
+   		{
+   			$entryArray = $portfolioInformation[$portfolioId];
+   			
+   			if ( sizeof($entryArray) > 1 )
+   			{
+   				$hasRow = $hasColumn = false;
+   				foreach ( $entryArray as $entry )
+   				{
+   					if ( $entry["row"] == 0) $hasColumn = true;
+   					if ( $entry["column"] == 0) $hasRow = true;
+   				}
+   				
+   				if ( $hasRow === true && $hasColumn === true) return true;
+   			}
+   		}
+   	}
+   	
+   	return false;
+   }
 
    function mayExternalSee($user){
 
@@ -1429,9 +1479,7 @@ class cs_item {
    	 if ($retour){
    	 	return true;
    	 } else {
-   	 	if (portfolioExternalCheck($this->_environment->getCurrentContextItem())) return true;
-   	 	
-   	 	return false;
+   	 	return $this->mayPortfolioSee($user);
    	 }
    }
 
