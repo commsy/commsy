@@ -22,6 +22,7 @@
 			$parameters["selColor"] = isset($this->_data["parameters"]["selColor"]) ? $this->_data["parameters"]["selColor"] : "2";
 			$parameters["selRoom"] = isset($this->_data["parameters"]["selRoom"]) ? $this->_data["parameters"]["selRoom"] : "2";
 			$parameters["todoSelRoom"] = isset($this->_data["parameters"]["todoSelRoom"]) ? $this->_data["parameters"]["todoSelRoom"] : "2";
+			$parameters["selStatus"] = isset($this->_data["parameters"]["selStatus"]) ? $this->_data["parameters"]["selStatus"] : "2";
 			
 			$month = "09";
 			$year = "2012";
@@ -39,15 +40,20 @@
 			$datesManager->resetLimits();
 			$datesManager->setSortOrder('time');
 			
-			
-			
 			/* set paramter limits */
-			if ($parameters["activatingStatus"] == 2) {
+			if ( $parameters["activatingStatus"] == "2" )
+			{
 				$datesManager->showNoNotActivatedEntries();
 			}
 			
-			if ($parameters["selColor"] != 2) {
+			if ( $parameters["selColor"] != "2" )
+			{
 				$datesManager->setColorLimit("#" . $parameters["selColor"]);
+			}
+			
+			if ( $paramters["selStatus"] != "2" )
+			{
+				$datesManager->setDateModeLimit($parameters["selStatus"]);
 			}
 			
 			/*
@@ -62,9 +68,6 @@
 			}
 			if ( !empty($search) ) {
 				$dates_manager->setSearchLimit($search);
-			}
-			if ( !empty($selstatus) ) {
-				$dates_manager->setDateModeLimit($selstatus);
 			}
 			if ( !empty($selbuzzword) ) {
 				$dates_manager->setBuzzwordLimit($selbuzzword);
@@ -395,13 +398,17 @@
 				$allDay = false;
 				
 				// check start time
-				if (empty($startTime)) $startTime = "00:00";
+				if ( empty($startTime) )
+				{
+					$startTime = "00:00";
+					$allDay = true;
+				}
+				
+				// check end day
+				if (empty($endDay)) $endDay = $startDay;
 				
 				// check end time
-				if (empty($endTime)) $endTime = "00:00";
-				
-				// check end start
-				if (empty($endDay)) $endDay = $startDay;
+				if (empty($endTime)) $endTime = $startTime;
 				
 				// ensure end > start
 				if ($endDay < $startDay) {
@@ -432,13 +439,23 @@
 						mb_substr($convertedEndDate["timestamp"], 6, 2),
 						mb_substr($convertedEndDate["timestamp"], 0, 4)	);
 				
-				/* if equal add one day offset */
-				if ($timestampStart === $timestampEnd) {
-					$timestampEnd += 60 * 60 * 24;
+				/* if equal add offset */
+				if ( $timestampStart === $timestampEnd )
+				{
+					if ( $allDay === true )
+					{
+						// if zero hour add one day
+						$timestampEnd += 60 * 60 * 24;
+					}
+					else
+					{
+						// add one hour
+						$timestampEnd += 60 * 60;
+					}
 				}
-
+				
 				// check for all day events
-				if ($startTime === "00:00" && $endTime === "00:00") {
+				if ( $timeStampStart - $timestampEnd >= 60 * 60 * 24 ) {
 					$allDay = true;
 				}
 				
