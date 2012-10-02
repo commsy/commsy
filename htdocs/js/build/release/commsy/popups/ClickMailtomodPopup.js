@@ -1,3 +1,0 @@
-//>>built
-define("commsy/popups/ClickMailtomodPopup","dojo/_base/declare,commsy/ClickPopupHandler,dojo/query,dojo/dom-class,dojo/_base/lang,dojo/dom-construct,dojo/dom-attr,dojo/on".split(","),function(c,d,a){return c(d,{constructor:function(){},init:function(a,b){this.triggerNode=a;this.item_id=b.iid;this.module="mailtomod";this.editType=b.mailType;this.features=[];this.registerPopupClick()},setupSpecific:function(){},onPopupSubmit:function(){this.submit({tabs:[],nodeLists:[{query:a("div#reciever",this.contentNode),
-group:"reciever"},{query:a("textarea[name='form_data[mailcontent]']",this.contentNode)},{query:a("input[name='form_data[subject]']",this.contentNode)}]})},onPopupSubmitSuccess:function(){this.close()}})});

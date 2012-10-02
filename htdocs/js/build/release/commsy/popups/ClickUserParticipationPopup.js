@@ -1,3 +1,0 @@
-//>>built
-define("commsy/popups/ClickUserParticipationPopup","dojo/_base/declare,commsy/ClickPopupHandler,dojo/query,dojo/dom-class,dojo/_base/lang,dojo/dom-construct,dojo/dom-attr,dojo/on".split(","),function(c,d){return c(d,{constructor:function(){},init:function(a,b){this.triggerNode=a;this.user_id=b.user_id;this.content_id=b.context_id;this.action=b.action;this.module="userParticipation";this.features=[];this.registerPopupClick()},setupSpecific:function(){},onPopupSubmit:function(a){this.submit({tabs:[],
-nodeLists:[]},{part:a.part,user_id:a.user_id,context_id:a.context_id,action:a.action})},onPopupSubmitSuccess:function(a){location.href="commsy.php?cid="+a}})});

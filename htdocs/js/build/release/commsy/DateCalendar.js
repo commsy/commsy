@@ -1,3 +1,0 @@
-//>>built
-define("commsy/DateCalendar","dojo/_base/declare,commsy/base,dojo/query,dojo/dom-attr,dojo/_base/lang,dojo/on".split(","),function(c,f,b,g,d,e){return c(f,{constructor:function(a){a=a||{};c.safeMixin(this,a)},setup:function(){var a=b("div.cal_table_scroll")[0];if(a)a.scrollTop=250;(a=b("select#calendar_switch_month")[0])&&e(a,"change",d.hitch(this,function(a){a=this.replaceOrSetURIParam("month",a.target.value);location.href="commsy.php?"+dojo.objectToQuery(a)}));(a=b("select#calendar_switch_week")[0])&&
-e(a,"change",d.hitch(this,function(a){a=this.replaceOrSetURIParam("week",a.target.value);location.href="commsy.php?"+dojo.objectToQuery(a)}))}})});

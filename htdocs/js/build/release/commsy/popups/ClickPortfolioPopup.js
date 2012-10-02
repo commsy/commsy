@@ -1,3 +1,0 @@
-//>>built
-define("commsy/popups/ClickPortfolioPopup","dojo/_base/declare,commsy/ClickPopupHandler,dojo/query,dojo/dom-class,dojo/_base/lang,dojo/dom-construct,dojo/dom-attr,dojo/on,dojo/topic".split(","),function(c,d,b,f,g,h,i,j,e){return c(d,{constructor:function(){},init:function(a,b){this.triggerNode=a;this.item_id=b.iid;this.module="portfolioItem";this.features=[];this.registerPopupClick()},setupSpecific:function(){},onPopupSubmit:function(a){this.submit({tabs:[],nodeLists:[{query:b("input[name^='form_data']",
-this.contentNode)},{query:b("textarea[name^='form_data']",this.contentNode)}]},{part:a.part})},onPopupSubmitSuccess:function(a){e.publish("updatePortfolios",{itemId:a});this.close()}})});

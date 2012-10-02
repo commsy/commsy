@@ -1,3 +1,0 @@
-//>>built
-define("commsy/popups/ClickJoinPopup","dojo/_base/declare,commsy/ClickPopupHandler,dojo/query,dojo/dom-class,dojo/_base/lang,dojo/dom-construct,dojo/dom-attr,dojo/on".split(","),function(d,e,c,g,h,i,f){return d(e,{constructor:function(){},init:function(a,b){this.triggerNode=a;this.item_id=b.iid;this.module="join";this.features=[];this.registerPopupClick()},setupSpecific:function(){},onPopupSubmit:function(){dojo.forEach(this.featureHandles.editor,function(a){a.getInstance();var b=a.getNode().parentNode;
-f.set(c("input[type='hidden']",b)[0],"value",a.getInstance().getData())});this.submit({tabs:[],nodeLists:[{query:c("input[name='form_data[body]']",this.contentNode)}]})},onPopupSubmitSuccess:function(){this.close()}})});

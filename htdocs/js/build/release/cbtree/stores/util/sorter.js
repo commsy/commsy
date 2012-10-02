@@ -1,3 +1,0 @@
-//>>built
-define("cbtree/stores/util/sorter",["dojo/_base/declare","dojo/_base/lang"],function(i,f){return i(null,{constructor:function(d){var c;this.sortArgm=[];if(f.isArray(d))for(c=0;c<d.length;c++){var a=d[c];a.attribute&&this.sortArgm.push({attribute:a.attribute,descending:a.descending?-1:1,ignoreCase:a.ignoreCase||!1})}},_compare:function(d,c){var a,g,h,b,e;for(e=0;e<this.sortArgm.length;e++)if(a=this.sortArgm[e].attribute,g=this.sortArgm[e].descending,h=this.sortArgm[e].ignoreCase,b=null===d[a]?void 0:
-d[a],a=null===c[a]?void 0:c[a],h&&f.isString(b)&&f.isString(a)&&(b=b.toLowerCase(),a=a.toLowerCase()),b!=a){if(null==a||b>a)return 1*g;if(null==b||b<a)return-1*g}return 0},sortFunction:function(){return f.hitch(this,this._compare)}})});

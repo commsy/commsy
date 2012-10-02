@@ -1,2 +1,0 @@
-//>>built
-define("commsy/widgets/nls/de/common",{ajaxErrorDescription:"Entschuldigung, das h\u00e4tte nicht passieren d\u00fcrfen.<br/>Dieser Fehler wurde automatisch an die Entwickler gesendet.",ajaxErrorAutoClose:"Dieses Fenster schlie\u00dft sich automatisch"});

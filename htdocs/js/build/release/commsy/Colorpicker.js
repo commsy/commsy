@@ -1,2 +1,0 @@
-//>>built
-define("commsy/Colorpicker","dojo/_base/declare,commsy/base,dojo/_base/lang,dojo/query,dojox/widget/ColorPicker,dojo/dom-attr".split(","),function(b,d,e,f,g,c){return b(d,{constructor:function(a){a=a||{};b.safeMixin(this,a)},setup:function(a){var b=new dojox.widget.ColorPicker({name:c.get(a,"name")},a);(a=c.get(a,"value"))?b.setColor(a):b.setColor("#FFFFFF")}})});
