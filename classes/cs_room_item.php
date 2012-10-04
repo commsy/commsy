@@ -1030,6 +1030,16 @@ class cs_room_item extends cs_context_item {
       return $retour;
    }
 
+   public function renewFileIndex () {
+   	$retour = true;
+      $indexing_manager = $this->_environment->getFTSearchManager();
+      $indexing_manager->setRoomID($this->getItemID());
+      $indexing_manager->setPortalID($this->getContextID());
+      $indexing_manager->rebuildFTIndex();
+      unset($indexing_manager);
+   	return $retour;
+   }
+
    public function _cronControlLinkItems () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
