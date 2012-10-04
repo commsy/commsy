@@ -80,14 +80,30 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          }
          unset($user);
       }
-      fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
+      fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'</h4>'.LF);
       if ( $active ) {
       	global $c_commsy_cron_split_scripts;
       	if(isset($c_commsy_cron_split_scripts) and $c_commsy_cron_split_scripts){
 	         if($room->isPrivateRoom()){
-	      	   passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
+	      	   #passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
+	         	$output = array();
+               exec('php htdocs/cron_single_room.php '.$room->getItemID().' private',$output);
+               if ( !empty($output)
+                    and !empty($output[0])
+                  ) {
+                  $cron_array = json_decode($output[0],true);
+                  displayCronResults($cron_array);
+               }
 	         } else {
-	         	passthru('php htdocs/cron_single_room.php '.$room->getItemID());
+	         	#passthru('php htdocs/cron_single_room.php '.$room->getItemID());
+	            $output = array();
+               exec('php htdocs/cron_single_room.php '.$room->getItemID(),$output);
+               if ( !empty($output)
+                    and !empty($output[0])
+                  ) {
+                  $cron_array = json_decode($output[0],true);
+                  displayCronResults($cron_array);
+               }
 	         }
       	} else {
       		displayCronResults($room->runCron());
@@ -278,6 +294,8 @@ if ( file_exists('../var/'.$filename) ) {
 }
 $file = fopen('../var/'.$filename,'w+');
 
+fwrite($file,'<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>');
+
 $memory_limit2 = 640 * 1024 * 1024;
 $memory_limit = ini_get('memory_limit');
 if ( !empty($memory_limit) ) {
@@ -339,7 +357,7 @@ foreach ( $portal_id_array as $portal_id ) {
 
       // portal
       $portal = $portal_manager->getItem($portal_id);
-      fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF);
+      fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal</h4>'.LF);
       displayCronResults($portal->runCron());
       fwrite($file, '<hr/>'.LF);
 
@@ -374,7 +392,7 @@ foreach ( $portal_id_array as $portal_id ) {
 if ( !isset($context_id)
      or ($context_id == $environment->getServerID())
    ) {
-   fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
+   fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server</h4>'.LF);
    displayCronResults($server_item->runCron());
    fwrite($file, '<hr/>'.BRLF);
 }
@@ -418,5 +436,6 @@ fwrite($file, 'Peak of memory allocated: '.memory_get_peak_usage().BRLF);
 echo('Current of memory allocated: '.memory_get_usage().BRLF);
 fwrite($file, 'Current of memory allocated: '.memory_get_usage().BRLF);
 fwrite($file, '-----CRON-OK-----');
+fwrite($file,'</body></html>');
 fclose($file);
 ?>
