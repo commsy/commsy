@@ -1947,7 +1947,7 @@ class cs_external_page_portal_view extends cs_page_view {
          unset($current_portal_item);
 
          if ( $link_active ) {
-            $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
+#            $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
             $additional = '';
             $user = $this->_environment->getCurrentUser();
             $private_room_manager = $this->_environment->getPrivateRoomManager();
@@ -1958,7 +1958,7 @@ class cs_external_page_portal_view extends cs_page_view {
                if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
                   $additional = ' selected="selected"';
                }
-               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
+#               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
             }
             unset($own_room);
             unset($private_room_manager);
