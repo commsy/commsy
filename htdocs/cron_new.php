@@ -118,6 +118,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
       unset($room);
    }
    unset($room_manager);
+   unset($translator);
 }
 
 function displayCronResults ( $array ) {
@@ -177,7 +178,7 @@ function displayCronResults ( $array ) {
       $html .= '</table>'.LF;
    }
    fwrite($file, $html);
-   flush();
+   unset($html);
 }
 
 function cron_workflow($portal){
@@ -264,8 +265,17 @@ function cron_workflow($portal){
             // change the status of the material
             // ...
             $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowResubmissionTrafficLight(), $temp_material->getVersionID());
+            
+            unset($mail);
+            unset($translator);
+            unset($server_item);
          }
+         unset($temp_material);
+         unset($temp_room);
+         unset($room_manager);
       }
+      unset($item_array);
+      unset($material_manager);
    }
 }
 
@@ -349,7 +359,6 @@ $result_array['portal'] = array();
 $portal_id_array = $server_item->getPortalIDArray();
 
 $portal_manager = $environment->getPortalManager();
-$room_manager = $environment->getRoomManager();
 foreach ( $portal_id_array as $portal_id ) {
    if ( !isset($context_id)
         or $context_id == $portal_id
@@ -387,6 +396,7 @@ foreach ( $portal_id_array as $portal_id ) {
       unset($portal);
    }
 }
+unset($portal_manager);
 
 // server cron jobs must be run AFTER all other portal crons
 if ( !isset($context_id)
@@ -397,6 +407,7 @@ if ( !isset($context_id)
    fwrite($file, '<hr/>'.BRLF);
 }
 unset($server_item);
+unset($environment);
 
 $time_end = getmicrotime();
 $end_time = date('d.m.Y H:i:s');
