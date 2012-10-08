@@ -2070,12 +2070,11 @@ class cs_page_guide_view extends cs_page_view {
    		if (isset($ownRoomItem) && $ownRoomItem->getCSBarShowOldRoomSwitcher() === "1" )
    		{
    			$html .= '	<div id="tm_breadcrumb_old">';
-   			
    					$retour  = '';
-				      $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
+				      $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change_bar">'.LF;
 				      // jQuery
 				      //$retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
-				      $retour .= '         <select onchange="document.room_change.submit()" size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
+				      $retour .= '         <select onchange="document.room_change_bar.submit()" size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
 				      // jQuery
 				      $context_array = array();
 				      $context_array = $this->_getAllOpenContextsForCurrentUser();
@@ -2149,7 +2148,7 @@ class cs_page_guide_view extends cs_page_view {
 				         $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
 				      }
 				      $retour .= '         </select>'.LF;
-				      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change" value="'.$translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
+				      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change_bar" value="'.$translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
 				      $retour .= '   </form>'.LF;
 				      unset($context_array);
 			
