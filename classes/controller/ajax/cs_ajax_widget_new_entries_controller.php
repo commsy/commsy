@@ -68,6 +68,10 @@
 			} else {
 				$new_entry_list = new cs_list();
 			}
+			
+			// sort list
+			$new_entry_list->sortby("modification_date");
+			$new_entry_list->reverse();
 
 			// prepare return
 			$entry = $new_entry_list->getFirst();
@@ -85,7 +89,7 @@
 					}
 					if (isset($entry) and !empty($entry)){
 						$moddate = $entry->getModificationDate();
-						if ( $entry->getCreationDate() <> $entry->getModificationDate() and !strstr($moddate,'9999-00-00')){
+						if ( $entry->getCreationDate() != $entry->getModificationDate() && !strstr($moddate,'9999-00-00')){
 							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
 						} else {
 							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());

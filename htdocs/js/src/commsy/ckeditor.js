@@ -13,31 +13,32 @@ define([	"dojo/_base/declare",
 
 		// TODO: multilanguage support
 		options: {
-			language: 'de',
-			skin: 'kama',
-			uiColor: '#eeeeee',
-			startupFocus: false,
-			dialog_startupFocusTab: false,
-			resize_enabled: true,
-			resize_maxWidth: '100%',
-			height:'150px',
-			enterMode: CKEDITOR.ENTER_BR,
-			shiftEnterMode: CKEDITOR.ENTER_P,
+			skin:						'kama',
+			uiColor:					'#eeeeee',
+			startupFocus:				false,
+			dialog_startupFocusTab:		false,
+			resize_enabled:				true,
+			resize_maxWidth:			'100%',
+			height:						'150px',
+			enterMode:					CKEDITOR.ENTER_BR,
+			shiftEnterMode:				CKEDITOR.ENTER_P,
+			extraPlugins:				"CommSyAbout",
 			//extraPlugins: 'CommSyImages,CommSyMDO',
 			toolbar: [
 			    ['Cut', 'Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo', '-', 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'SpecialChar', '-', 'NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote', '-', 'TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Preview']
 			    ,'/',
-			    ['Format', 'Font', 'FontSize', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley','-', 'Image', 'About']
+			    ['Format', 'Font', 'FontSize', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Image', 'CommSyAbout']
 			]
 		},
 
 		constructor: function(options) {
 			options = options || {};
 			declare.safeMixin(this, options);
-			this.options.filebrowserUploadUrl = 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_upload&action=savefile';
-			this.options.filebrowserBrowseUrl = 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_browse&action=getHTML';
-			this.options.filebrowserWindowWidth = '100';
-			this.options.filebrowserWindowHeight = '50';
+			this.options.filebrowserUploadUrl		= 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_upload&action=savefile';
+			this.options.filebrowserBrowseUrl		= 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_browse&action=getHTML';
+			this.options.filebrowserWindowWidth		= '100';
+			this.options.filebrowserWindowHeight	= '50';
+			this.options.language					= this.from_php.lang;
 		},
 
 		create: function(node) {
@@ -56,7 +57,9 @@ define([	"dojo/_base/declare",
 
 			var data = node.innerHTML;
 			node.innerHTML = "";
-
+			
+			CKEDITOR.plugins.addExternal( "CommSyAbout", "/js/src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );
+			
 			this.instance = CKEDITOR.appendTo(node, this.options, data);
 
 			// get the form this editor belongs to
