@@ -40,7 +40,8 @@ class cs_noticed_manager {
   var $_cache_on = true;
 
   public $_db_prefix = '';
-
+  public $_with_db_prefix = true;
+  
    /**
     * Environment - the environment of the CommSy
     */
@@ -390,10 +391,26 @@ class cs_noticed_manager {
       }
    }
 
-   function addDatabasePrefix($db_table){
-      return $this->_db_prefix . $db_table;
+   function addDatabasePrefix ($db_table) {
+      $retour = $db_table;
+      if ( $this->withDatabasePrefix() ) {
+         $retour = $this->_db_prefix.$retour;
+      }
+      return $retour;
    }
 
+   function setWithoutDatabasePrefix () {
+      $this->_with_db_prefix = false;
+   }
+
+   function setWithDatabasePrefix () {
+      $this->_with_db_prefix = true;
+   }
+
+   function withDatabasePrefix () {
+      return $this->_with_db_prefix;
+   }
+   
    function moveFromDbToBackup($context_id){
       $id_array_items = array();
       $item_manager = $this->_environment->getItemManager();
@@ -461,8 +478,14 @@ class cs_noticed_manager {
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
-            $query = 'INSERT INTO '.$this->addDatabasePrefix('noticed').' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-            $result = $this->_db_connector->performQuery($query);
+            if ( $this->_environment->isArchiveMode() ) {
+      	      $this->setWithoutDatabasePrefix();
+            }
+         	$query = 'INSERT INTO '.$this->addDatabasePrefix('noticed').' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+            if ( $this->_environment->isArchiveMode() ) {
+      	      $this->setWithDatabasePrefix();
+            }
+         	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
                trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
@@ -523,8 +546,14 @@ class cs_noticed_manager {
       }
 
       if(!empty($id_array_items) and !empty($id_array_users)){
-	      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-	      $result = $this->_db_connector->performQuery($query);
+         if ( $this->_environment->isArchiveMode() ) {
+         	$this->setWithoutDatabasePrefix();
+         }
+      	$query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+         if ( $this->_environment->isArchiveMode() ) {
+     	      $this->setWithDatabasePrefix();
+         }
+      	$result = $this->_db_connector->performQuery($query);
 	      if ( !isset($result) ) {
 	         include_once('functions/error_functions.php');
 	         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);

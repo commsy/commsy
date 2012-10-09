@@ -743,6 +743,11 @@ class cs_item_manager extends cs_manager {
             $retour = $zzz_item_manager->getItem($iid);
             if ( $retour == 'empty' ) {
                $retour = NULL;
+            } else {
+            	if ( $retour->getItemID() == $this->_environment->getCurrentContextID() ) {
+            	   $this->_environment->setFoundCurrentContextInArchive();
+            	   $this->_environment->activateArchiveMode();
+            	}
             }
             unset($zzz_item_manager);
          } elseif ( $this->_environment->isArchiveMode()
@@ -981,14 +986,28 @@ class cs_item_manager extends cs_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
+      	// archive
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithoutDatabasePrefix();
+         }
+      	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithDatabasePrefix();
+         }
+      	$result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
          } else {
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
-            $result = $this->_db_connector->performQuery($query);
+         	// archive
+            if ( $this->_environment->isArchiveMode() ) {
+    	         $this->setWithoutDatabasePrefix();
+            }
+         	$query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+            if ( $this->_environment->isArchiveMode() ) {
+    	         $this->setWithDatabasePrefix();
+            }
+         	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
                trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
@@ -996,7 +1015,15 @@ class cs_item_manager extends cs_manager {
                $retour = true;
             }
          }
+         // archive
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithoutDatabasePrefix();
+         }
          $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
+         // archive
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithDatabasePrefix();
+         }
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
@@ -1004,7 +1031,15 @@ class cs_item_manager extends cs_manager {
          } else {
             $db_prefix = '';
             $db_prefix .= $c_db_backup_prefix.'_';
+            // archive
+            if ( $this->_environment->isArchiveMode() ) {
+    	         $this->setWithoutDatabasePrefix();
+            }
             $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
+            // archive
+            if ( $this->_environment->isArchiveMode() ) {
+    	         $this->setWithDatabasePrefix();
+            }
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
@@ -1019,8 +1054,173 @@ class cs_item_manager extends cs_manager {
       }
       return $retour;
    }
+   
+   // archive
+   public function moveFromDbToBackupWorkflow ( $context_id ) {
+   	$db_table = 'workflow_read';
+   	
+      $id_array_items = array();
+      $item_manager = $this->_environment->getItemManager();
+      $item_manager->setContextLimit($context_id);
+      $item_manager->select();
+      $item_list = $item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array_items[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
 
-     function getItemsForNewsletter ($room_id_array, $user_id_array,$age_limit){
+      $id_array_users = array();
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->setContextLimit($context_id);
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      $temp_user = $user_list->getFirst();
+      while($temp_user){
+         $id_array_users[] = $temp_user->getItemID();
+         $temp_user = $user_list->getNext();
+      }
+      
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array_items) and !empty($id_array_users)){
+         if ( !empty($context_id) ) {
+            $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).' SELECT * FROM '.$this->addDatabasePrefix($db_table).' WHERE '.$this->addDatabasePrefix($db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_table).'.user_id IN ('.implode(",", $id_array_users).')';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying data of "'.$db_table.'" to backup-table.',E_USER_WARNING);
+            } else {
+               $retour = $this->_deleteFromDbWorkflow($context_id);
+            }
+         }
+      }
+      return $retour;
+   }
+   
+   function moveFromBackupToDbWorkflow ( $context_id ) {
+   	$db_table = 'workflow_read';
+   	
+   	$id_array_items = array();
+      $zzz_item_manager = $this->_environment->getZzzItemManager();
+      $zzz_item_manager->setContextLimit($context_id);
+      $zzz_item_manager->select();
+      $item_list = $zzz_item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array_items[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
+
+      $id_array_users = array();
+      $zzz_user_manager = $this->_environment->getZzzUserManager();
+      $zzz_user_manager->setContextLimit($context_id);
+      $zzz_user_manager->select();
+      $user_list = $zzz_user_manager->get();
+      $temp_user = $user_list->getFirst();
+      while($temp_user){
+         $id_array_users[] = $temp_user->getItemID();
+         $temp_user = $user_list->getNext();
+      }
+      
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array_items) and !empty($id_array_users)){
+         if ( !empty($context_id) ) {
+            if ( $this->_environment->isArchiveMode() ) {
+    	         $this->setWithoutDatabasePrefix();
+            }
+         	$query = 'INSERT INTO '.$this->addDatabasePrefix($db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).'.user_id IN ('.implode(",", $id_array_users).')';
+            if ( $this->_environment->isArchiveMode() ) {
+    	         $this->setWithDatabasePrefix();
+            }
+         	$result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying data of "'.$db_table.'" from backup-table.',E_USER_WARNING);
+            } else {
+               $retour = $this->_deleteFromDbWorkflow($context_id, true);
+            }
+         }
+      }
+      return $retour;
+   }
+   
+   // archive
+   private function _deleteFromDbWorkflow($context_id, $from_backup = false){
+   	$db_table = 'workflow_read';
+   	
+   	global $c_db_backup_prefix;
+      $retour = false;
+      
+      $db_prefix = '';
+      $id_array_items = array();
+      $id_array_users = array();
+      if(!$from_backup){
+         $item_manager = $this->_environment->getItemManager();
+         $item_manager->setContextLimit($context_id);
+         $item_manager->select();
+         $item_list = $item_manager->get();
+         $temp_item = $item_list->getFirst();
+         while($temp_item){
+            $id_array_items[] = $temp_item->getItemID();
+            $temp_item = $item_list->getNext();
+         }
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         $temp_user = $user_list->getFirst();
+         while($temp_user){
+            $id_array_users[] = $temp_user->getItemID();
+            $temp_user = $user_list->getNext();
+         }
+      } else {
+         $db_prefix .= $c_db_backup_prefix.'_';
+         $zzz_item_manager = $this->_environment->getZzzItemManager();
+         $zzz_item_manager->setContextLimit($context_id);
+         $zzz_item_manager->select();
+         $item_list = $zzz_item_manager->get();
+         $temp_item = $item_list->getFirst();
+         while($temp_item){
+            $id_array_items[] = $temp_item->getItemID();
+            $temp_item = $item_list->getNext();
+         }
+         $zzz_user_manager = $this->_environment->getZzzUserManager();
+         $zzz_user_manager->setContextLimit($context_id);
+         $zzz_user_manager->select();
+         $user_list = $zzz_user_manager->get();
+         $temp_user = $user_list->getFirst();
+         while($temp_user){
+            $id_array_users[] = $temp_user->getItemID();
+            $temp_user = $user_list->getNext();
+         }
+      }
+      
+      if(!empty($id_array_items) and !empty($id_array_users)){
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithoutDatabasePrefix();
+         }
+      	$query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.$db_table).'.user_id IN ('.implode(",", $id_array_users).')';
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithDatabasePrefix();
+         }
+      	$result = $this->_db_connector->performQuery($query);
+	      if ( !isset($result) ) {
+	         include_once('functions/error_functions.php');
+	         trigger_error('Problems deleting data of "'.$db_table.'" after move to or from backup-table.',E_USER_WARNING);
+	      } elseif ( !empty($result[0]) ) {
+	         $retour = true;
+	      }
+      }
+      return $retour;
+   }   
+   
+   ########################################################
+   # archive functions - END
+   ########################################################   
+   
+   function getItemsForNewsletter ($room_id_array, $user_id_array,$age_limit){
      $query1 = 'SELECT '.$this->addDatabasePrefix('items').'.item_id, '.$this->addDatabasePrefix('items').'.context_id, '.$this->addDatabasePrefix('items').'.type FROM '.$this->addDatabasePrefix('items');
      $query1 .= ' WHERE '.$this->addDatabasePrefix('items').'.context_id IN ('.implode(", ",encode(AS_DB,$room_id_array)).')';
      $query1 .= ' AND modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$age_limit).' day) AND '.$this->addDatabasePrefix('items').'.deleter_id IS NULL and '.$this->addDatabasePrefix('items').'.deletion_date IS NULL';

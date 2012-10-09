@@ -165,8 +165,16 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
       $retour = false;
       if(!empty($id_array)){
          if ( !empty($context_id) ) {
-            $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
-            $result = $this->_db_connector->performQuery($query);
+         	// archive
+            if ( $this->_environment->isArchiveMode() ) {
+      	      $this->setWithoutDatabasePrefix();
+            }
+         	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
+            // archive
+            if ( $this->_environment->isArchiveMode() ) {
+      	      $this->setWithDatabasePrefix();
+            }
+         	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
                trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
@@ -208,8 +216,16 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
       }
       
       if(!empty($id_array)){
-	      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
-	      $result = $this->_db_connector->performQuery($query);
+      	// archive
+         if ( $this->_environment->isArchiveMode() ) {
+   	      $this->setWithoutDatabasePrefix();
+         }
+      	$query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
+         // archive
+         if ( $this->_environment->isArchiveMode() ) {
+   	      $this->setWithDatabasePrefix();
+         }
+      	$result = $this->_db_connector->performQuery($query);
 	      if ( !isset($result) ) {
 	         include_once('functions/error_functions.php');
 	         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);

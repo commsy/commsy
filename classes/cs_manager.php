@@ -1724,8 +1724,16 @@ class cs_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
+      	// archive
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithoutDatabasePrefix();
+         }
+      	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
+         // archive
+         if ( $this->_environment->isArchiveMode() ) {
+    	      $this->setWithDatabasePrefix();
+         }
+      	$result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
@@ -1745,7 +1753,15 @@ class cs_manager {
          $db_prefix .= $c_db_backup_prefix.'_';
       }
 
+      // archive
+      if ( $this->_environment->isArchiveMode() ) {
+ 	      $this->setWithoutDatabasePrefix();
+      }
       $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
+      // archive
+      if ( $this->_environment->isArchiveMode() ) {
+ 	      $this->setWithDatabasePrefix();
+      }
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -1784,7 +1800,7 @@ protected function updateSearchIndices($query, $item_type = '') {
    		}
 		$search[] = "=&(.*?);=";											$replace[] = " ";
 		$search[] = "=\\(:(.*?):\\)=";										$replace[] = " ";
-		$search[] = '=(["()!:0-9/.,Ÿ-]*\s["()0-9/.,Ÿ-]*)=';					$replace[] = " ";
+		$search[] = '=(["()!:0-9/.,ï¿½-]*\s["()0-9/.,ï¿½-]*)=';					$replace[] = " ";
 		$search[] = "=(\s[A-Za-z]{1,2})\s=";								$replace[] = " ";
 		$search[] = "=\s+=";												$replace[] = " ";
 		
