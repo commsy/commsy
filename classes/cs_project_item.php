@@ -945,6 +945,17 @@ class cs_project_item extends cs_room_item {
       }
       $current_portal = $this->_environment->getCurrentPortalItem();
       $current_user = $this->_environment->getCurrentUserItem();
+      $fullname = $current_user->getFullname();
+      if ( empty($fullname) ) {
+         $current_user = $this->_environment->getRootUserItem();
+         $email = $current_user->getEmail();
+         if ( empty($email)
+              and !empty($default_sender_address)
+              and $default_sender_address != '@'
+            ) {
+         	$current_user->setEmail($default_sender_address);
+         }	
+      }
       $moderator_list = $room_item->getModeratorList();
 
       // get moderators
@@ -1024,7 +1035,34 @@ class cs_project_item extends cs_room_item {
          $body .= LF.LF;
          $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$this->getTitle(),$current_user->getFullname(),$room_change_action);
          if ( $room_change != 'delete' ) {
-            $body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->getContextID().'&room_id='.$this->getItemID();
+            $url_to_portal = '';
+            if ( !empty($current_portal) ) {
+               $url_to_portal = $current_portal->getURL();
+            }
+
+            if ( !empty($url_to_portal) ) {
+               $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+               if ( stristr($c_commsy_domain,'https://') ) {
+                  $url = 'https://';
+               } else {
+                  $url = 'http://';
+               }
+               $url .= $url_to_portal;
+               $file = 'commsy.php';
+               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+               if ( !empty($c_single_entry_point) ) {
+                  $file = $c_single_entry_point;
+               }
+               $url .= '/'.$file.'?cid=';
+            } else {
+               $file = $_SERVER['PHP_SELF'];
+               $file = str_replace('cron','commsy',$file);
+               $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+            }   		
+   		   $url .= $this->getContextID();
+   		   $url .= '&room_id='.$this->getItemID();
+  			   $body .= LF.$url;
+         	#$body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->getContextID().'&room_id='.$this->getItemID();
          }
 
          $body .= LF.LF;

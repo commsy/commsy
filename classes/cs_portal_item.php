@@ -875,9 +875,262 @@ class cs_portal_item extends cs_guide_item {
       if ( $this->isCountRoomRedundancy() ) {
          $cron_array[] = $this->_cronSyncCountRooms();
       }
+      
+      // archiving
+      if ( $this->isActivatedArchivingUnusedRooms() ) {
+      	$cron_array[] = $this->_cronArchiveUnusedRooms();
+      	$cron_array[] = $this->_cronArchiveUnusedRoomsSendMailBefore();
+      }
 
       return $cron_array;
    }
+   
+   ##############################################################
+   # archive unused rooms - BEGIN
+   ##############################################################
+
+   private function _cronArchiveUnusedRooms () {
+   	$cron_array = array();
+   	$cron_array['title'] = 'archive unused rooms';
+   	$cron_array['description'] = 'if rooms (project and community) are unused for '.$this->getDaysUnusedBeforeArchivingRooms().' days this cron archives it';
+   	$cron_array['success'] = false;
+   	$cron_array['success_text'] = 'cron failed';
+   	
+   	$days_mail_send_before = $this->getDaysSendMailBeforeArchivingRooms();
+   	
+   	// unused project rooms
+   	// group rooms will be archived with project room
+   	$count_project = 0;
+   	$room_manager = $this->_environment->getProjectManager();
+   	include_once('functions/date_functions.php');
+   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms());
+   	$room_manager->setLastLoginOlderLimit($datetime_border);
+   	$room_manager->setContextLimit($this->getItemID());
+   	$room_manager->select();
+   	$room_list = $room_manager->get();
+   	$count_project_all = 0;
+   	if ( !empty($room_list) 
+   	     and $room_list->isNotEmpty()
+   	   ) {
+   		$count_project_all = $room_list->getCount();
+   		$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms());
+   		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms()+21);
+   		$room_item = $room_list->getFirst();
+   		while ( $room_item ) {
+   			
+   			$archive = true;
+   			if ( !empty($days_mail_send_before) ) {
+   				$send_mail_datetime = $room_item->getArchiveMailSendDateTime();
+   				
+   				// room will only archived configured days after sending email
+   				if ( empty($send_mail_datetime) 
+   				     or $send_mail_datetime > $datetime_border_send_mail
+   				   ) {
+   					$archive = false;
+   				}
+   				
+   				// maybe mail was send and user login into room
+   				// after one period room will be archived without sending mail,
+   				// because there is a datetime from sending mail a period before
+   				// this if clause reset the datetime of sending the email
+   				// $datetime_border_send_mail = 3 weeks before border to send mail
+   				elseif ( $send_mail_datetime < $datetime_border_send_mail2 ) {
+   					$archive = false;
+   					$room_item->setArchiveMailSendDateTime('');
+   					$room_item->saveWithoutChangingModificationInformation();
+   				}
+   			}
+   			
+   			if ( $archive ) {
+   				$room_item->close();
+   				$room_item->save();
+   				$room_item->moveToArchive();
+   				$count_project++;
+   			}
+   			
+   			unset($room_item);
+   			$room_item = $room_list->getNext();
+   		}
+   	}
+   	unset($room_list);
+   	unset($room_manager);
+   	
+   	// unused community rooms
+      $count_community = 0;
+   	$room_manager = $this->_environment->getCommunityManager();
+   	include_once('functions/date_functions.php');
+   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms());
+   	$room_manager->setLastLoginOlderLimit($datetime_border);
+   	$room_manager->setContextLimit($this->getItemID());
+   	$room_manager->select();
+   	$room_list = $room_manager->get();
+   	$count_community_all = 0;
+   	if ( !empty($room_list) 
+   	     and $room_list->isNotEmpty()
+   	   ) {
+   		$count_community_all = $room_list->getCount();
+   		$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms());
+   		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms()+21);
+   		$room_item = $room_list->getFirst();
+   		while ( $room_item ) {
+   			
+   			$archive = true;
+   			if ( !empty($days_mail_send_before) ) {
+   				$send_mail_datetime = $room_item->getArchiveMailSendDateTime();
+   				
+   				// room will only archived configured days after sending email
+   				if ( empty($send_mail_datetime) 
+   				     or $send_mail_datetime > $datetime_border_send_mail
+   				   ) {
+   					$archive = false;
+   				}
+   				
+   				// maybe mail was send and user login into room
+   				// after one period room will be archived without sending mail,
+   				// because there is a datetime from sending mail a period before
+   				// this if clause reset the datetime of sending the email
+   				// $datetime_border_send_mail = 3 weeks before border to send mail
+   				elseif ( $send_mail_datetime < $datetime_border_send_mail2 ) {
+   					$archive = false;
+   					$room_item->setArchiveMailSendDateTime('');
+   					$room_item->saveWithoutChangingModificationInformation();
+   				}
+   			}
+   			
+   			if ( $archive ) {
+   				$room_item->close();
+   				$room_item->save();
+   				$room_item->moveToArchive();
+   				$count_community++;
+   			}
+   			
+   			unset($room_item);
+   			$room_item = $room_list->getNext();
+   		}
+   	}  	   	
+   	unset($room_list);
+   	unset($room_manager);	
+   	
+   	$cron_array['success'] = true;
+   	$cron_array['success_text'] = 'archive project rooms: '.$count_project. ' (possible: '.$count_project_all.') - archive community rooms: '.$count_community.' (possible: '.$count_community_all.')';
+   	
+   	return $cron_array;
+   }   
+   
+   private function _cronArchiveUnusedRoomsSendMailBefore () {
+   	$cron_array = array();
+   	$cron_array['title'] = 'send mail befote archive unused rooms';
+   	$cron_array['description'] = 'if rooms are unused for '.($this->getDaysUnusedBeforeArchivingRooms()-$this->getDaysSendMailBeforeArchivingRooms()).' days this cron sends a notifications about archiving the room in '.$this->getDaysSendMailBeforeArchivingRooms().' days';
+   	$cron_array['success'] = false;
+   	$cron_array['success_text'] = 'cron failed';
+   	
+   	$days_mail_send_before = $this->getDaysSendMailBeforeArchivingRooms();
+   	
+  		if ( !empty($days_mail_send_before) ) {
+	   	// unused project rooms
+	   	// group rooms will be archived with project room
+	   	$count_project = 0;
+	   	$room_manager = $this->_environment->getProjectManager();
+	   	include_once('functions/date_functions.php');
+	   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms()-$this->getDaysSendMailBeforeArchivingRooms());
+	   	$room_manager->setLastLoginOlderLimit($datetime_border);
+	   	$room_manager->setContextLimit($this->getItemID());
+	   	$room_manager->select();
+	   	$room_list = $room_manager->get();
+	   	$count_project_all = 0;
+	   	if ( !empty($room_list) 
+	   	     and $room_list->isNotEmpty()
+	   	   ) {
+	   		$count_project_all = $room_list->getCount();
+	   		$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms());
+	   		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms()+21);
+	   		$room_item = $room_list->getFirst();
+	   		while ( $room_item ) {
+	   			
+	   			$send_mail = true;
+   				$send_mail_datetime = $room_item->getArchiveMailSendDateTime();
+	   				
+   				if ( !empty($send_mail_datetime) 
+   				     and !($send_mail_datetime < $datetime_border_send_mail2)
+   				   ) {
+   					$send_mail = false;
+   				}
+	   				
+	   			if ( $send_mail ) {
+	   				
+	   				// send mail
+	   				$success = $room_item->sendMailArchiveInfoToModeration();
+	   				
+	   				// save room
+	   				include_once('functions/date_functions.php');
+	   				$room_item->setArchiveMailSendDateTime(getCurrentDateTimeInMySQL());
+	   				$room_item->saveWithoutChangingModificationInformation();
+	   				$count_project++;
+	   			}
+	   			
+	   			unset($room_item);
+	   			$room_item = $room_list->getNext();
+	   		}
+	   	}
+	   	unset($room_list);
+	   	unset($room_manager);
+
+	   	// unused community rooms
+	   	$count_community = 0;
+	   	$room_manager = $this->_environment->getCommunityManager();
+	   	include_once('functions/date_functions.php');
+	   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms()-$this->getDaysSendMailBeforeArchivingRooms());
+	   	$room_manager->setLastLoginOlderLimit($datetime_border);
+	   	$room_manager->setContextLimit($this->getItemID());
+	   	$room_manager->select();
+	   	$room_list = $room_manager->get();
+	   	$count_community_all = 0;
+	   	if ( !empty($room_list) 
+	   	     and $room_list->isNotEmpty()
+	   	   ) {
+	   		$count_community_all = $room_list->getCount();
+	   		$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms());
+	   		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms()+21);
+	   		$room_item = $room_list->getFirst();
+	   		while ( $room_item ) {
+	   			
+	   			$send_mail = true;
+   				$send_mail_datetime = $room_item->getArchiveMailSendDateTime();
+	   				
+   				if ( !empty($send_mail_datetime) 
+   				     and !($send_mail_datetime < $datetime_border_send_mail2)
+   				   ) {
+   					$send_mail = false;
+   				}
+	   				
+	   			if ( $send_mail ) {
+	   				
+	   				// send mail
+	   				$success = $room_item->sendMailArchiveInfoToModeration();
+	   				
+	   				// save room
+	   				include_once('functions/date_functions.php');
+	   				$room_item->setArchiveMailSendDateTime(getCurrentDateTimeInMySQL());
+	   				$room_item->saveWithoutChangingModificationInformation();
+	   				$count_community++;
+	   			}
+	   			
+	   			unset($room_item);
+	   			$room_item = $room_list->getNext();
+	   		}
+	   	}
+	   	unset($room_list);
+	   	unset($room_manager);
+  		}
+  		
+   	$cron_array['success'] = true;
+   	$cron_array['success_text'] = 'send archive info project rooms: '.$count_project. ' (possible: '.$count_project_all.') - send archive info community rooms: '.$count_community.' (possible: '.$count_community_all.')';
+  		return $cron_array;
+   }   
+   
+   ##############################################################
+   # archive unused rooms - END
+   ##############################################################
 
    /** cron log, INTERNAL
     *  daily cron
@@ -1807,6 +2060,93 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   ############################################
+   # archiving - BEGIN
+   ############################################
+
+   public function isActivatedArchivingUnusedRooms () {
+   	$retour = false;
+   	$status = $this->_getStatusArchivingUnusedRooms();
+   	if ( !empty($status)
+   	     and $status == 1
+   	   ) {
+   		$retour = true;
+   	}
+   	return $retour;
+   }
+   
+   public function turnOnArchivingUnusedRooms () {
+   	$this->_setStatusArchivingUnusedRooms(1);
+   }
+   
+   public function turnOffArchivingUnusedRooms () {
+   	$this->_setStatusArchivingUnusedRooms(-1);
+   }
+   
+   /** get status of archiving unused rooms
+    *
+    * @return int status of archiving unused rooms (1 = on, -1 = off)
+    */
+   private function _getStatusArchivingUnusedRooms () {
+      $retour = -1;
+      if ($this->_issetExtra('ARCHIVING_ROOMS_STATUS')) {
+         $retour = $this->_getExtra('ARCHIVING_ROOMS_STATUS');
+      }
+      return $retour;
+   }
+
+   /** set status archiving unused rooms
+    *
+    * @param int status archiving unused rooms (1 = on, -1 = off)
+    */
+   private function _setStatusArchivingUnusedRooms ($value) {
+      $this->_addExtra('ARCHIVING_ROOMS_STATUS',(int)$value);
+   }
+   
+   /** get days before archiving an unused room
+    *
+    * @return int days before archiving an unused room
+    */
+   public function getDaysUnusedBeforeArchivingRooms () {
+      $retour = 365; //default
+      if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE')) {
+         $retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE');
+      }
+      return $retour;
+   }
+
+   /** set days before archiving an unused room
+    *
+    * @param int days before archiving an unused room
+    */
+   public function setDaysUnusedBeforeArchivingRooms ($value) {
+      $this->_addExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_ARCHIVE',(int)$value);
+   }
+      
+   /** get days send an email before archiving an unused room
+    *
+    * @return int days send email before archiving an unused room
+    */
+   public function getDaysSendMailBeforeArchivingRooms () {
+      $retour = 0;
+      if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE')) {
+         $retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE');
+      }
+      return $retour;
+   }
+
+   /** set days sed mail before archiving an unused room
+    *
+    * @param int days send mail before archiving an unused room
+    */
+   public function setDaysSendMailBeforeArchivingRooms ($value) {
+      $this->_addExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE',(int)$value);
+   }
+      
+   ############################################
+   # archiving - END
+   ############################################
+   
    ############################################
    # count rooms
    ############################################

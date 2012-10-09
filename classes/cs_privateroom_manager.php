@@ -220,6 +220,16 @@ function getContextIDForItemID($id){
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "1"';
      }
 
+      // archive
+      // lastlogin_limit
+      if ( !empty($this->_lastlogin_limit) ) {
+      	if ( $this->_lastlogin_limit == 'NULL' ) {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL';      		
+      	} else {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB,$this->_lastlogin_limit);
+      	}
+      }
+     
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';

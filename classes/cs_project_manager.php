@@ -200,6 +200,7 @@ class cs_project_manager extends cs_room2_manager {
         }else{
            $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
         }
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.lastlogin';
      } else {
         $query .= ' '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
@@ -365,8 +366,21 @@ class cs_project_manager extends cs_room2_manager {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
 
-
-
+      // archive
+      // lastlogin_limit
+      if ( !empty($this->_lastlogin_limit) ) {
+      	if ( $this->_lastlogin_limit == 'NULL' ) {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL';      		
+      	} else {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB,$this->_lastlogin_limit);
+      	}
+      }
+      // _lastlogin_older_limit
+      if ( !empty($this->_lastlogin_older_limit) ) {
+    	   $query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.encode(AS_DB,$this->_lastlogin_older_limit).'"';
+    	   $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB,$this->_lastlogin_older_limit).'" ) )';
+      }
+      
      if (isset($this->_sort_order)) {
         if ($this->_sort_order == 'title_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
