@@ -871,6 +871,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
   `room_description` varchar(10000) DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -882,7 +883,8 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `room_description` (`room_description`(333)),
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
-  KEY `modifier_id` (`modifier_id`)
+  KEY `modifier_id` (`modifier_id`),
+  KEY `lastlogin` (`lastlogin`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -916,10 +918,12 @@ CREATE TABLE IF NOT EXISTS `room_privat` (
   `template` tinyint(4) NOT NULL DEFAULT '-1',
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `status` (`status`),
-  KEY `creator_id` (`creator_id`)
+  KEY `creator_id` (`creator_id`),
+  KEY `lastlogin` (`lastlogin`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1724,6 +1728,7 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
   `room_description` varchar(10000) DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1735,7 +1740,8 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `room_description` (`room_description`(333)),
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
-  KEY `modifier_id` (`modifier_id`)
+  KEY `modifier_id` (`modifier_id`),
+  KEY `lastlogin` (`lastlogin`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
