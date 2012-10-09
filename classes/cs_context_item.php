@@ -992,6 +992,21 @@ class cs_context_item extends cs_item {
        $user_manager = $this->_environment->getUserManager();
 /*DB-Optimierung vom 23.10.2010*/
        $retour = $user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
+
+       // archive
+       if ( !$retour
+            and ( $this->isProjectRoom()
+                  or $this->isCommunityRoom()
+                  or $this->isGroupRoom()
+                )
+            and $this->isClosed()
+            and !$this->_environment->isArchiveMode()
+          ) {
+    	    $zzz_user_manager = $this->_environment->getZzzUserManager();
+    	    $retour = $zzz_user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
+       }
+       // archive
+       
        if ($retour) {
           $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
        } else {

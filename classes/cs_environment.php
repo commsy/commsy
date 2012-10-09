@@ -100,7 +100,10 @@ class cs_environment {
    private $_archive_mode = false;
 
    # multi master implementation
-   private $_db_portal_id = 0;  
+   private $_db_portal_id = 0;
+
+   # archive
+   private $_found_in_archive = false;
    
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
@@ -1397,10 +1400,23 @@ class cs_environment {
    * @access public
    */
    function getHashManager() {
-      return $this->_getInstance('cs_hash_manager');
+      if ( !$this->isArchiveMode() ) {
+   	   return $this->_getInstance('cs_hash_manager');
+      } else {
+         return $this->getZzzHashManager();
+      }
    }
 
-  /** get instance of cs_homepage_manager
+  /** get instance of cs_zzz_hash_manager
+   *
+   * @return cs_zzz_hash_manager
+   * @access public
+   */
+   function getZzzHashManager() {
+      return $this->_getInstance('cs_zzz_hash_manager');
+   }
+
+   /** get instance of cs_homepage_manager
    *
    * @return cs_homepage_manager
    * @access public
@@ -2374,6 +2390,14 @@ class cs_environment {
 
    public function isArchiveMode () {
       return $this->_archive_mode;
+   }
+   
+   public function setFoundCurrentContextInArchive () {
+   	$this->_found_in_archive = true;
+   }
+   
+   public function foundCurrentContextInArchive () {
+   	return $this->_found_in_archive;
    }
 }
 ?>
