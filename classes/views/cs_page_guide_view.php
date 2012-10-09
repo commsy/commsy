@@ -636,6 +636,26 @@ class cs_page_guide_view extends cs_page_view {
       } else {
          $room_user = '';
       }
+      
+      if ( $may_enter
+           and empty($room_user)
+           and $item->isClosed()
+           and !$this->_environment->isArchiveMode()
+         ) {
+         $user_manager = $this->_environment->getZzzUserManager();
+         $user_manager->setUserIDLimit($current_user->getUserID());
+         $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+         $user_manager->setContextLimit($item->getItemID());
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if (!empty($user_list)) {
+            $room_user = $user_list->getFirst();
+         } else {
+            $room_user = '';
+         }
+         unset($user_list);
+      }
+      
       $current_user = $this->_environment->getCurrentUserItem();
 
       //Anzeige außerhalb des Anmeldeprozesses
@@ -643,7 +663,11 @@ class cs_page_guide_view extends cs_page_view {
          $current_user = $this->_environment->getCurrentUserItem();
          $may_enter = $item->mayEnter($current_user);
          // Eintritt erlaubt
-         if ( $may_enter and ( ( !empty($room_user) and $room_user->isUser() ) or $current_user->isRoot() ) ) {
+         if ( $may_enter
+              and ( ( !empty($room_user) and $room_user->isUser() )
+                    or $current_user->isRoot()
+                  )
+            ) {
             $actionCurl = curl( $item->getItemID(),
                              'home',
                              'index',
