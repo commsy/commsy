@@ -276,6 +276,28 @@ class cs_ftsearch_manager extends cs_manager {
          }
       }
    }
+   
+   public function rebuildFTIndex () {  	
+      $disc_manager = $this->_environment->getDiscManager();
+      $disc_manager->setPortalID($this->_getPortalID());
+      $disc_manager->setContextID($this->_getRoomID());
+      $index_base = $disc_manager->getFilePath();
+      unset($disc_manager);
+      
+      $file2del = $index_base.DIRECTORY_SEPARATOR.'ft_idx.log';
+      if ( file_exists($file2del) ) {
+         unlink($file2del);      	
+      }
+      $file2del = $index_base.DIRECTORY_SEPARATOR.'ft.index';
+      if ( file_exists($file2del) ) {
+      	unlink($file2del);
+      }
+      $file2del = $index_base.DIRECTORY_SEPARATOR.'ft.index.prop';
+      if ( file_exists($file2del) ) {
+      	unlink($file2del);
+      }
+      $this->buildFTIndexForIndexBase($index_base);
+   }
 
    function buildFTIndex() {
 
