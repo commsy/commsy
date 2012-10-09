@@ -644,8 +644,14 @@ class cs_room_manager extends cs_context_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
-         $result = $this->_db_connector->performQuery($query);
+         if ( $this->_environment->isArchiveMode() ) {
+     	      $this->setWithoutDatabasePrefix();
+         }
+      	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
+         if ( $this->_environment->isArchiveMode() ) {
+      	   $this->setWithDatabasePrefix();
+         }
+      	$result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
@@ -665,7 +671,13 @@ class cs_room_manager extends cs_context_manager {
          $db_prefix .= $c_db_backup_prefix.'_';
       }
 
+      if ( $this->_environment->isArchiveMode() ) {
+          $this->setWithoutDatabasePrefix();
+      }
       $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.item_id = "'.$context_id.'"';
+      if ( $this->_environment->isArchiveMode() ) {
+         $this->setWithDatabasePrefix();
+      }
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');

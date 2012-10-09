@@ -35,7 +35,17 @@ include_once('classes/cs_context_manager.php');
  */
 class cs_room2_manager extends cs_context_manager {
 
-  /** constructor
+  /**
+   * string - containing the last login limit (a datetimeor "NULL") of rooms
+   */
+  protected $_lastlogin_limit = NULL;
+
+  /**
+   * string - containing the last login limit (a datetime) of rooms
+   */
+  protected $_lastlogin_older_limit = NULL;
+
+	/** constructor
     * the only available constructor, initial values for internal variables
     *
     * @param object cs_environment the environment
@@ -43,7 +53,38 @@ class cs_room2_manager extends cs_context_manager {
   function cs_room2_manager ($environment) {
   }
 
-  /** update a room - internal, do not use -> use method save
+   public function setLastLoginLimit ($limit) {
+      $this->_lastlogin_limit = (string)$limit;
+   }
+  
+   public function setLastLoginOlderLimit ($limit) {
+      $this->_lastlogin_older_limit = (string)$limit;
+   }
+  
+   // archiving
+   public function saveLastLogin ($item, $datetime = '') {
+   	$retour = false;
+   	if ( !empty($datetime) ) {
+   		$query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
+   		                  ' lastlogin="'.$datetime.'"'.
+   		                  ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+   		 
+   	} else {
+         $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
+                  ' lastlogin=NOW()'.
+                  ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+   	}
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems saving lastlogin to room ('.$item->getItemID().') - '.$this->_db_table.'.',E_USER_WARNING);
+      } else {
+      	$retour = true;
+      }
+      return $retour;
+   }
+   
+   /** update a room - internal, do not use -> use method save
     * this method updates a room
     *
     * @param object cs_context_item a commsy room
