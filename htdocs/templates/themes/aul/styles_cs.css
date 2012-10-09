@@ -55,3 +55,7 @@ a.context_nav {
 #netnavigation a {
 	color: #FFFFFF !important;
 }
+
+#popup_my_area {
+	margin: 0;
+}
