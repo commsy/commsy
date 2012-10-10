@@ -906,6 +906,7 @@ class cs_portal_item extends cs_guide_item {
    	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms());
    	$room_manager->setLastLoginOlderLimit($datetime_border);
    	$room_manager->setContextLimit($this->getItemID());
+   	$room_manager->setNotTemplateLimit();
    	$room_manager->select();
    	$room_list = $room_manager->get();
    	$count_project_all = 0;
@@ -962,6 +963,7 @@ class cs_portal_item extends cs_guide_item {
    	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms());
    	$room_manager->setLastLoginOlderLimit($datetime_border);
    	$room_manager->setContextLimit($this->getItemID());
+   	$room_manager->setNotTemplateLimit();
    	$room_manager->select();
    	$room_list = $room_manager->get();
    	$count_community_all = 0;
@@ -1019,7 +1021,7 @@ class cs_portal_item extends cs_guide_item {
    
    private function _cronArchiveUnusedRoomsSendMailBefore () {
    	$cron_array = array();
-   	$cron_array['title'] = 'send mail befote archive unused rooms';
+   	$cron_array['title'] = 'send mail before archive unused rooms';
    	$cron_array['description'] = 'if rooms are unused for '.($this->getDaysUnusedBeforeArchivingRooms()-$this->getDaysSendMailBeforeArchivingRooms()).' days this cron sends a notifications about archiving the room in '.$this->getDaysSendMailBeforeArchivingRooms().' days';
    	$cron_array['success'] = false;
    	$cron_array['success_text'] = 'cron failed';
@@ -1035,6 +1037,7 @@ class cs_portal_item extends cs_guide_item {
 	   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms()-$this->getDaysSendMailBeforeArchivingRooms());
 	   	$room_manager->setLastLoginOlderLimit($datetime_border);
 	   	$room_manager->setContextLimit($this->getItemID());
+   	   $room_manager->setNotTemplateLimit();
 	   	$room_manager->select();
 	   	$room_list = $room_manager->get();
 	   	$count_project_all = 0;
@@ -1082,6 +1085,7 @@ class cs_portal_item extends cs_guide_item {
 	   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeArchivingRooms()-$this->getDaysSendMailBeforeArchivingRooms());
 	   	$room_manager->setLastLoginOlderLimit($datetime_border);
 	   	$room_manager->setContextLimit($this->getItemID());
+	    	$room_manager->setNotTemplateLimit();
 	   	$room_manager->select();
 	   	$room_list = $room_manager->get();
 	   	$count_community_all = 0;
