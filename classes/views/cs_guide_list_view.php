@@ -654,6 +654,10 @@ class cs_guide_list_view extends cs_list_view_plain {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('PORTAL_DELETED_ROOMS').'</option>'.LF;
+      }
+      if ( $current_user->isRoot()
+           or $current_user->isModerator()
+         ) {
          $html .= '      <option value="8"';
          if ( !empty($selroom) and $selroom == 8 ) {
             $html .= ' selected="selected"';

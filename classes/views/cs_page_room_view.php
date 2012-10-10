@@ -1097,7 +1097,7 @@ class cs_page_room_view extends cs_page_view {
       	$temp_array[0]['item_id'] = -1; 
       	$temp_array[0]['title'] = ''; 
       	$temp_array[1]['item_id'] = -1; 
-      	$temp_array[1]['title'] = 'ARCHIVIERT'; 
+      	$temp_array[1]['title'] = strtoupper($this->_translator->getMessage('COMMON_CLOSED'));
       	$context_array_archive = $this->_getAllOpenContextsForCurrentUser();
       	$context_array = array_merge($context_array,$temp_array,$context_array_archive);
       	unset($context_array_archive);
