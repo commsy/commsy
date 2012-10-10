@@ -8,6 +8,7 @@ $message["COMMON_ACCOUNT_PASSWORD_FORM_TITLE"]["en"] = "Change password";
 $message["COMMON_ACCOUNT_PREFERENCES_FORM_TITLE"]["en"] = "Edit preferences";
 $message["COMMON_ACCOUNT_STATUS_FORM_TITLE"]["en"] = "Change status";
 $message["COMMON_ACTIONS"]["en"] = "Actions";
+$message["COMMON_ACTIVATE"]["en"] = "Activate";
 $message["COMMON_ACTIVATED"]["en"] = "Available";
 $message["COMMON_ACTIVATING_DATE"]["en"] = "to be accessible at";
 $message["COMMON_ACTIVATION_RESTRICTION"]["en"] = "Type";

@@ -8,6 +8,7 @@ $message["COMMON_ACCOUNT_PASSWORD_FORM_TITLE"]["de"] = "Passwort ändern";
 $message["COMMON_ACCOUNT_PREFERENCES_FORM_TITLE"]["de"] = "Einstellungen ändern";
 $message["COMMON_ACCOUNT_STATUS_FORM_TITLE"]["de"] = "Status ändern";
 $message["COMMON_ACTIONS"]["de"] = "Aktionen";
+$message["COMMON_ACTIVATE"]["de"] = "Aktivieren";
 $message["COMMON_ACTIVATED"]["de"] = "Verfügbar";
 $message["COMMON_ACTIVATING_DATE"]["de"] = "wird freigeschaltet am";
 $message["COMMON_ACTIVATION_RESTRICTION"]["de"] = "Art";

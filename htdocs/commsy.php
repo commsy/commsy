@@ -1400,7 +1400,11 @@ if ( isset($context_item_current) ) {
         or $environment->inPrivateRoom()
         or $environment->inGroupRoom()
       ) {
-      $current_portal_item = $environment->getCurrentPortalItem();
+   	
+   	// archiving
+   	$context_item_current->saveLastLogin();
+      
+   	$current_portal_item = $environment->getCurrentPortalItem();
       if ( isset($current_portal_item) ) {
          $current_portal_item->saveActivityPoints($activity_points);
          unset($current_portal_item);
