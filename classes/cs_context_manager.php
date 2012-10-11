@@ -609,7 +609,7 @@ class cs_context_manager extends cs_manager {
 
    function minimizeActivityPoints ($quotient) {
       $retour = false;
-      $query  = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET activity=activity/"'.encode(AS_DB,$quotient).'";';
+      $query  = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET activity=ROUND(activity/'.encode(AS_DB,$quotient).') WHERE activity > 0;';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
