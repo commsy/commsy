@@ -26,10 +26,6 @@ header("Content-type: text/css");
 // load required classes
 ?>
 
-
-
-/* $Id$ */
-
 /*** Generic elements */
 
 

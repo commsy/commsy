@@ -246,7 +246,7 @@ class cs_annotation_item extends cs_item {
     *
     * This Method checks for item <=> activated portfolio - relationships
     */
-   protected function mayPortfolioSee($userItem) {
+   public function mayPortfolioSee($userItem) {
    	$portfolioManager = $this->_environment->getPortfolioManager();
    
    	// get portfolio id for this annotation

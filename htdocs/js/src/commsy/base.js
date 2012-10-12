@@ -6,20 +6,24 @@ define([	"dojo/_base/declare",
         	"dojo/query",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"commsy/widgets/WidgetManager",
         	"dojo/window",
         	"dojo/dom-geometry",
-        	"dojo/_base/lang"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, Window, domGeometry, Lang) {
+        	"dojo/_base/lang"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, Lang) {
 	return declare(null, {
-		uri_object:		null,
-		from_php:		null,
-
 		constructor: function(args) {
 			// set query object
 			this.uri_object = ioQuery.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1: 0)));
 
 			// set from php object
 			this.from_php = dojo.fromJson(from_php);
-
+			
+			this.widgetManager = new widgetManager();
+			this.widgetManager.Init();
+		},
+		
+		getWidgetManager: function() {
+			return this.widgetManager;
 		},
 
 		replaceOrSetURIParam: function(key, value) {

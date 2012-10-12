@@ -962,7 +962,8 @@ class cs_authentication {
                }
             } elseif(isset($_GET['iid']) and ($this->_environment->getCurrentFunction() == 'detail') and $this->_isExternalUserAllowedToSee($uid, $_GET['iid'])){
                $value = true;
-            }elseif(($this->_environment->getCurrentModule() == 'material') and ($this->_environment->getCurrentFunction() == 'getfile') and isset($_GET['iid'])){
+            }elseif(($this->_environment->getCurrentModule() == 'material') and ($this->_environment->getCurrentFunction() == 'getfile') and isset($_GET['iid']))
+            {
                $current_user_item = $this->_environment->getCurrentUserItem();
                $manager = $this->_environment->getLinkItemFileManager();
                $manager->setFileIDLimit($_GET['iid']);
@@ -976,20 +977,26 @@ class cs_authentication {
 				  if ($item_type == 'section'){
 				  	  $section_manager = $this->_environment->getSectionManager();
 				  	  $section_item = $section_manager->getItem($item_item->getItemID());
-				  	  $material_id = $section_item->getLinkedItemID();
-                      $value = $this->_isExternalUserAllowedToSee($uid,$material_id);
-				  }elseif ($item_type == 'material'){
-                  $value = $this->_isExternalUserAllowedToSee($uid,$item_item->getItemID());
-				  }elseif ($item_type == 'discarticle'){
+				  	  $material_item = $section_item->getLinkedItem();
+                      $value = $this->_isExternalUserAllowedToSee($uid,$material_item->getItemID()) || $material_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+				  }
+				  elseif ($item_type == 'material')
+				  {
+                  	$value = $this->_isExternalUserAllowedToSee($uid,$item_item->getItemID()) || $item_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+				  }
+				  elseif ($item_type == 'discarticle')
+				  {
 				  	  $discarticle_manager = $this->_environment->getDiscussionArticleManager();
 				  	  $discarticle_item = $discarticle_manager->getItem($item_item->getItemID());
 				  	  $discussion_item = $discarticle_item->getLinkedItem();
-                      $value = $this->_isExternalUserAllowedToSee($uid,$discussion_item->getItemID());
-				  }elseif ($item_type == 'step'){
+                      $value = $this->_isExternalUserAllowedToSee($uid,$discussion_item->getItemID()) || $discussion_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+				  }
+				  elseif ($item_type == 'step')
+				  {
 				  	  $step_manager = $this->_environment->getStepManager();
 				  	  $step_item = $step_manager->getItem($item_item->getItemID());
 				  	  $step_item = $step_item->getLinkedItem();
-                      $value = $this->_isExternalUserAllowedToSee($uid,$step_item->getItemID());
+                      $value = $this->_isExternalUserAllowedToSee($uid,$step_item->getItemID()) || $step_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
 				  }
                }
              }elseif($this->_environment->getCurrentModule() == 'annotation') {
@@ -1070,7 +1077,7 @@ class cs_authentication {
                  and $this->_function_limit == 'getfile') { // get picture
          $value = true;
       }
-
+      
       return $value;
    }
 

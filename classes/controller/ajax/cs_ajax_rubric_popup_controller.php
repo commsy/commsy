@@ -15,6 +15,7 @@
 
 		public function actiongetHTML() {
             $current_user = $this->_environment->getCurrentUser();
+            $privateRoomUser = $current_user->getRelatedPrivateRoomUserItem();
 
 			// item id
 			$this->_item_id = $this->_data['iid'];
@@ -56,7 +57,12 @@
                 		$is_owner = true;
                 	}
                 } else {
-                	if ( (isset($creator) && $current_user->getItemID() == $creator->getItemID()) || $current_user->isModerator()) {
+                	if (
+                		( isset($creator) && $current_user->getItemID() == $creator->getItemID() ) ||
+                		( isset($creator) && isset($privateRoomUser) && $privateRoomUser->getItemID() == $creator->getItemID() ) ||	
+                		$current_user->isModerator()
+                		)
+                	{
                 		$is_owner = true;
                 	}
                 }

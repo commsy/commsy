@@ -211,7 +211,7 @@ require([	"dojo/_base/declare",
 				
 				// lightbox
 				require(["commsy/Lightbox"], function(Lightbox) {
-					var handler = Lightbox();
+					var handler = new Lightbox();
 					handler.setup(query("a[class^='lightbox']"));
 				});
 				

@@ -234,39 +234,20 @@ class cs_popup_send_controller implements cs_popup_controller {
 				$email->set_bcc_to(implode(",",$recipients_bcc));
 			}
 
-			if ($email->send()) {
-				$this->_popup_controller->setSuccessfullDataReturn(array());
-				/*
-				// prepare formal data
-				$tmp = array($translator->getMessage('MAIL_FROM'), $mail['from_name']." <".$mail['from_email'].">");
-				$formal_data[] = $tmp;
-
-				$tmp = array($translator->getMessage('REPLY_TO'), $mail['from_email']);
-				$formal_data[] = $tmp;
-
-				$tmp = array($translator->getMessage('MAIL_TO'), implode(", ", $recipients_display));
-				$formal_data[] = $tmp;
-
-				if (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true) {
-					$tmp = array($translator->getMessage('CC_TO'), $mail['from_name']." <".$mail['from_email'].">");
-					$formal_data[] = $tmp;
-				}
-
-				if ( !empty($recipients_bcc) ) {
-					$tmp = array($translator->getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
-					$formal_data[] = $tmp;
-				}
-
-				$tmp = array($translator->getMessage('MAIL_SUBJECT'), $form_data["subject"]);
-				$formal_data[] = $tmp;
-
-				$tmp = array($translator->getMessage('MAIL_BODY'), $form_data["body"]);
-				$formal_data[] = $tmp;
-				$detail_view->setFormalData($formal_data);
-
-				$page->add($detail_view);
-				*/
-
+			if ($email->send())
+			{
+				// prepare data for confirm popup
+				$confirmPopupData = array(
+					"from"			=> $mail['from_email'],
+					"to"			=> $recipients,
+					"reply"			=> $mail['from_email'],
+					"copyToSender"	=> (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true),
+					"recipientsBcc"	=> $recipients_bcc,
+					"subject"		=> $form_data["subject"],
+					"body"			=> nl2br($form_data["body"])
+				);
+				
+				$this->_popup_controller->setSuccessfullDataReturn($confirmPopupData);
 			} // ~email->send()
 			else { // Mail could not be send
 				$this->_popup_controller->setErrorReturn("110", "mail could not be delivered", array());

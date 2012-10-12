@@ -23,7 +23,7 @@ var profile = (function(){
 			},
 
 			amd: function(filename, mid){
-				return !testResourceRegEx.test(mid) && !copyOnly(filename, mid) && /\.js$/.test(filename);
+				return !testResourceRegEx.test(mid) && !copyOnly(filename, mid) && /\.js$/.test(filename) && !/^commsy\/ckeditor\/plugins\//.test(mid);
 			},
 
 			miniExclude: function(filename, mid){

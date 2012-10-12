@@ -1425,7 +1425,7 @@ class cs_item {
     *
     * This Method checks for item <=> activated portfolio - relationships
     */
-   protected function mayPortfolioSee($userItem) {
+   public function mayPortfolioSee($userItem) {
    	$portfolioManager = $this->_environment->getPortfolioManager();
    	
    	// get all ids from portfolios we are allow to see

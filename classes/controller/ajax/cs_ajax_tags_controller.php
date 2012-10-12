@@ -374,6 +374,11 @@
 		public function actionDeleteTag() {
 			if ($this->accessGranted()) {
 				$tagId = $this->_data["tagId"];
+				$roomId = $this->_data["roomId"];
+				
+				if ($roomId !== null) {
+					$this->_environment->changeContextToPrivateRoom($roomId);
+				}
 				
 				$tagManager = $this->_environment->getTagManager();
 				

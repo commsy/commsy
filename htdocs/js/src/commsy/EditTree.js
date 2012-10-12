@@ -12,9 +12,10 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"cbtree/CheckBox",
         	"dojo/on",
+        	"dojo/topic",
         	"dijit/tree/dndSource",
         	"cbtree/models/StoreModel-API",
-        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, Tree, TextBox, Button, Query, ForestStoreModel, DomAttr, CheckBox, On, DndSource) {
+        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, Tree, TextBox, Button, Query, ForestStoreModel, DomAttr, CheckBox, On, Topic, DndSource) {
 	return declare(TreeClass, {
 		textbox:	null,
 		dialog:		null,
@@ -182,9 +183,12 @@ define([	"dojo/_base/declare",
 
 			this.createNewDeleteDialog(Lang.hitch(this, function() {
 				// delete tag
-				this.AJAXRequest("tags", "deleteTag", { tagId: itemId },
+				this.AJAXRequest("tags", "deleteTag", { tagId: itemId, roomId: this.room_id },
 					Lang.hitch(this, function(response) {
 						model.deleteItem(item);
+						
+						// publish topic
+						Topic.publish("updateTree", { widgetId: this.tree.get("id") });
 					})
 				);
 			}));

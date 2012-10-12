@@ -6,10 +6,11 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"cbtree/Tree",
         	"dojo/query",
+        	"dojo/topic",
         	"cbtree/models/ForestStoreModel",
         	"dojo/data/ItemFileWriteStore",
         	"cbtree/CheckBox",
-        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, On, lang, Tree, Query, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
+        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, On, lang, Tree, Query, Topic, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
 	return declare(BaseClass, {
 		followUrl:			true,
 		autoExpandLevel:	2,
@@ -40,6 +41,15 @@ define([	"dojo/_base/declare",
 			} else {
 				this.initDo(node, callback);
 			}
+			
+			Topic.subscribe("updateTree", lang.hitch(this, function(object)
+			{
+				if ( this.tree.get("id") != object.widgetId )
+				{
+					this.initDo(node, callback);
+				}
+			}
+			));
 		},
 		
 		initDo: function(node, callback) {

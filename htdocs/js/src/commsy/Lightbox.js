@@ -20,7 +20,7 @@ define([	"dojo/_base/declare",
 			declare.safeMixin(this, options);
 		},
 		
-		setup: function(nodeList) {			
+		setup: function(nodeList) {
 			var dialog = dojo.declare("CustomLightboxDialog", [dojox.image.LightboxDialog, dijit._TemplatedMixin ], {
 				id:					"dojoxLightboxDialog",
 				templateString: 	Template

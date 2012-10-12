@@ -215,7 +215,7 @@
 							<tr>
 								<td class="label"><h4>___USER_HOMEPAGE___</h4></td>
 								<td>
-									{$detail.content.homepage|truncate:60:"...":true}
+									<a href="{$detail.content.homepage}" target="_blank" title="{$detail.content.homepage}" href="">{$detail.content.homepage|truncate:60:"...":true}</a>
 								</td>
 							</tr>
 						</table>
