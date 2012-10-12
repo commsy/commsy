@@ -25,35 +25,42 @@
 // the following is part of the method "asHTML"
 // from the object cs_update_view.php
 
-function _rm_swishe_index($dirname) {
-   if ( $dirHandle = opendir($dirname) ) {
-      $old_cwd = getcwd();
-      chdir($dirname);
+function slowDown () {
 
-      while ($file = readdir($dirHandle)){
-         if ($file == '.' or $file == '..' or $file == 'CVS') continue;
-         if ( is_dir($file) ) {
-            if ( !_rm_swishe_index($file) ) {
-               chdir($old_cwd);
-               return false;
-            }
-         } elseif ( is_file($file)
-                    and ( $file == 'ft.index'
-                          or $file == 'ft.index.prop'
-                          or $file == 'ft_idx.log'
-                        )
-                  ) {
-            if ( !@unlink($file) ) {
-               chdir($old_cwd);
-               return false;
-            }
-         }
-      }
+   // config
+   $border_load_default = 2;
 
-      closedir($dirHandle);
-      chdir($old_cwd);
-      return true;
+   // count processors
+   $load_border = exec('nproc');
+   if ( empty($load_border) ) {
+      $load_border = $load_border_default;
    }
+
+   // slow down server
+   $load_current = getCurrentLoad();
+   while ( !empty($load_current)
+           and $load_current > $load_border
+         ) {
+      sleep(round($load_current),0);
+      $load_current = getCurrentLoad();
+   }
+}
+
+function getCurrentLoad () {
+   $retour = NULL;
+   $result_array = array();
+   exec('uptime',$result_array);
+   if ( !empty($result_array[0]) ) {
+      $pattern = '/load average: ([0-9\.]*)/i';
+      $result2_array = array();
+      preg_match($pattern,$result_array[0],$result2_array);
+      if ( !empty($result2_array[1])
+           and is_numeric($result2_array[1])
+         ) {
+         $retour = $result2_array[1];
+      }
+   }
+   return $retour;
 }
 
 $c_indexing = $this->_environment->getConfiguration('c_indexing');
@@ -69,7 +76,6 @@ if ( isset($c_indexing)
 	
 	// headline
 	$this->_flushHTML('file: renew swish-e index'.BRLF);
-	#$success = _rm_swishe_index('var/');
 	
 	$server_item = $this->_environment->getServerItem();
 	$portal_list = $server_item->getPortalList();
@@ -103,6 +109,7 @@ if ( isset($c_indexing)
 	
 					$this->_updateProgressBar($count);
 					unset($room_item);
+					slowDown();
 					$room_item = $room_list->getNext();
 				}
 				$this->_flushHTML(BRLF);
@@ -129,6 +136,7 @@ if ( isset($c_indexing)
 	
 					$this->_updateProgressBar($count);
 					unset($room_item);
+					slowDown();
 					$room_item = $room_list->getNext();
 				}
 				$this->_flushHTML(BRLF);
@@ -155,6 +163,7 @@ if ( isset($c_indexing)
 	
 					$this->_updateProgressBar($count);
 					unset($room_item);
+					slowDown();
 					$room_item = $room_list->getNext();
 				}
 				$this->_flushHTML(BRLF);
@@ -181,6 +190,7 @@ if ( isset($c_indexing)
 	
 					$this->_updateProgressBar($count);
 					unset($room_item);
+					slowDown();
 					$room_item = $room_list->getNext();
 				}
 				$this->_flushHTML(BRLF);
