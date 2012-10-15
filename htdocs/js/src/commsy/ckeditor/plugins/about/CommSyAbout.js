@@ -13,7 +13,7 @@ CKEDITOR.plugins.add( "CommSyAbout",
 		{
 			label:		"CommSy Formatierungsmöglichkeiten",
 			command:	"CommSyAbout",
-			icon:		"/js/src/commsy/ckeditor/plugins/about/icon.png"
+			icon:		"../../src/commsy/ckeditor/plugins/about/icon.png"
 		} );
 		
 		CKEDITOR.dialog.add( "CommSyAbout", function( api )
