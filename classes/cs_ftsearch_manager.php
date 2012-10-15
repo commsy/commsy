@@ -288,15 +288,15 @@ class cs_ftsearch_manager extends cs_manager {
       if ( file_exists($file2del) ) {
          unlink($file2del);      	
       }
-      $file2del = $index_base.DIRECTORY_SEPARATOR.'ft.index';
-      if ( file_exists($file2del) ) {
-      	unlink($file2del);
-      }
       $file2del = $index_base.DIRECTORY_SEPARATOR.'ft.index.prop';
       if ( file_exists($file2del) ) {
       	unlink($file2del);
       }
-      $this->buildFTIndexForIndexBase($index_base);
+      $file2del = $index_base.DIRECTORY_SEPARATOR.'ft.index';
+      if ( file_exists($file2del) ) {
+      	unlink($file2del);
+         $this->buildFTIndexForIndexBase($index_base);
+      }
    }
 
    function buildFTIndex() {
