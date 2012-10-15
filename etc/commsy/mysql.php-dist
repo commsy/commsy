@@ -42,6 +42,8 @@
 // define timeslots of a day where the second master will be used
 // out of the slots, normal master will be used
 // this is not possible for "normal" master
+//
+// begin and end format = hh:mm - e.g. 06:30, 09:15, 17:20
 
 // $db["master2"]["timeslots"] = array();
 
@@ -52,7 +54,7 @@
 // unset($temp_array);
 
 // $temp_array = array();
-// $temp_array['begin'] = '11:00';
+// $temp_array['begin'] = '06:00';
 // $temp_array['end'] = '12:00';
 // $db["master2"]["timeslots"][] = $temp_array;
 // unset($temp_array);
