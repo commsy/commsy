@@ -3330,7 +3330,7 @@ class cs_external_page_portal_view extends cs_page_view {
    						</div>
    		';
    		 
-   		if ( !$currentUser->isReallyGuest() )
+   		if ( !$currentUser->isReallyGuest() && !$currentUser->isRoot() )
    		{
    			$ownRoomItem = $currentUser->getOwnRoom();
    			
