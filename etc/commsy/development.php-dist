@@ -101,4 +101,9 @@ $c_enable_htmltextarea_security = false;
 
 // enable workflow support
 //$c_workflow = false;
+
+// show rooms on portal for guests
+// default: true
+// at performance problems you should try false
+//$c_portal_show_rooms_for_guests = false;
 ?>

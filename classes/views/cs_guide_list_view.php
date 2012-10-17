@@ -1073,12 +1073,18 @@ class cs_guide_list_view extends cs_list_view_plain {
 
       $html .= '<table style="width: 100%; border-collapse: collapse; border: 0px; padding:0px;" summary="Layout">'.LF;
       $html .= $this->_getTableheadAsHTML();
-      $html .= $this->_getContentAsHTML();
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ( !empty($this->_list) ) {
+         $html .= $this->_getContentAsHTML();
+      } elseif ( !$current_user->isUser() ) {
+      	$html .= '<tr><td colspan="3">'.$this->_translator->getMessage('PORTAL_LOGIN_TO_SEE_ROOMS').'</td></tr>';
+      }
+      unset($current_user);
       $html .= '</table>'.LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .= '</table>'.LF;
-     $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
+      $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
 
@@ -1116,7 +1122,10 @@ class cs_guide_list_view extends cs_list_view_plain {
    function _getContentAsHTML() {
       $i = 1;
       $html = '';
-      if ( !$this->_list->isEmpty() ) {
+      if ( isset($this->_list)
+           and !empty($this->_list) 
+           and !$this->_list->isEmpty()
+         ) {
          $list = $this->_list;
          $current_item = $list->getFirst();
          $html = '';
