@@ -3347,66 +3347,69 @@ class cs_external_page_portal_view extends cs_page_view {
    			$current_context = $ownRoomItem;
    			$count = 0;
    			
-   			// wiki
-   			if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
-   				global $c_pmwiki_path_url;
-   			
-   				$count++;
-   				$return['wiki']['active'] = true;
-   				$return['wiki']['title'] = $current_context->getWikiTitle();
-   				$return['wiki']['path'] = $c_pmwiki_path_url;
-   				$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
-   				$return['wiki']['item_id'] = $current_context->getItemID();
-   			
-   				$url_session_id = '';
-   				if($current_context->withWikiUseCommSyLogin()) {
-   					$session_item = $this->_environment->getSessionItem();
-   					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
-   					unset($session_item);
-   				}
-   				$return['wiki']['session'] = $url_session_id;
-   			}
-   			
-   			
-   			// wordpress
-   			if($current_context->existWordpress()) {
-   				global $c_wordpress_path_url;
-   				$count++;
-   				$return['wordpress']['active'] = true;
-   				$return['wordpress']['title'] = $current_context->getWordpressTitle();
-   				$return['wordpress']['path'] = $c_wordpress_path_url;
-   				$return['wordpress']['item_id'] = $current_context->getItemID();
-   			
-   				$url_session_id = '';
-   				if($current_context->withWordpressUseCommSyLogin()) {
-   					$session_item = $this->_environment->getSessionItem();
-   					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
-   					unset($session_item);
-   				}
-   				$return['wordpress']['session'] = $url_session_id;
-   			}
-   			
-   			$addonInformation = $return;
-   			
-   
-   			$html .= '	<div id="tm_icons_bar">';
-   
-   			if ( $addonInformation["wiki"]["active"] === true )
+   			if ( isset($current_context) )
    			{
-   				$wiki = $addonInformation["wiki"];
-   				$html .= '	<a href="' . $wiki["path"] . '/wikis/' . $wiki["portal_id"] . '/' . $wiki["item_id"] . '/index.php' . $wiki["session"] . '" title="' . $translator->getMessage("COMMON_WIKI_LINK") . ': ' . $wiki["title"] . '" target="_blank" id="tm_wiki">
-   								&nbsp;
-   							</a>
-   				';
-   			}
-   
-   			if ( $addonInformation["wordpress"]["active"] === true )
-   			{
-   				$wordpress = $addonInformation["wordpress"];
-   				$html .= '	<a href="' . $wordpress["path"] . '/' . $this->_environment->getCurrentPortalID() . '_' . $wordpress["item_id"] . '/' . $wordpress["session"] . '" title="' . $translator->getMessage("COMMON_WORDPRESS_LINK") . ': ' . $wordpress["title"] . '" target="_blank" id="tm_wordpress">
-   								&nbsp;
-   							</a>
-   				';
+   				// wiki
+   				if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
+   					global $c_pmwiki_path_url;
+   				
+   					$count++;
+   					$return['wiki']['active'] = true;
+   					$return['wiki']['title'] = $current_context->getWikiTitle();
+   					$return['wiki']['path'] = $c_pmwiki_path_url;
+   					$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
+   					$return['wiki']['item_id'] = $current_context->getItemID();
+   				
+   					$url_session_id = '';
+   					if($current_context->withWikiUseCommSyLogin()) {
+   						$session_item = $this->_environment->getSessionItem();
+   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+   						unset($session_item);
+   					}
+   					$return['wiki']['session'] = $url_session_id;
+   				}
+   				
+   				
+   				// wordpress
+   				if($current_context->existWordpress()) {
+   					global $c_wordpress_path_url;
+   					$count++;
+   					$return['wordpress']['active'] = true;
+   					$return['wordpress']['title'] = $current_context->getWordpressTitle();
+   					$return['wordpress']['path'] = $c_wordpress_path_url;
+   					$return['wordpress']['item_id'] = $current_context->getItemID();
+   				
+   					$url_session_id = '';
+   					if($current_context->withWordpressUseCommSyLogin()) {
+   						$session_item = $this->_environment->getSessionItem();
+   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+   						unset($session_item);
+   					}
+   					$return['wordpress']['session'] = $url_session_id;
+   				}
+   				
+   				$addonInformation = $return;
+   				
+   				 
+   				$html .= '	<div id="tm_icons_bar">';
+   				 
+   				if ( $addonInformation["wiki"]["active"] === true )
+   				{
+   					$wiki = $addonInformation["wiki"];
+	   					$html .= '	<a href="' . $wiki["path"] . '/wikis/' . $wiki["portal_id"] . '/' . $wiki["item_id"] . '/index.php' . $wiki["session"] . '" title="' . $translator->getMessage("COMMON_WIKI_LINK") . ': ' . $wiki["title"] . '" target="_blank" id="tm_wiki">
+	   								&nbsp;
+	   							</a>
+	   				';
+   				}
+   				 
+   				if ( $addonInformation["wordpress"]["active"] === true )
+   				{
+   					$wordpress = $addonInformation["wordpress"];
+   					$html .= '	<a href="' . $wordpress["path"] . '/' . $this->_environment->getCurrentPortalID() . '_' . $wordpress["item_id"] . '/' . $wordpress["session"] . '" title="' . $translator->getMessage("COMMON_WORDPRESS_LINK") . ': ' . $wordpress["title"] . '" target="_blank" id="tm_wordpress">
+	   								&nbsp;
+	   							</a>
+	   				';
+   				}
    			}
    
    			if ( isset($ownRoomItem)) {
