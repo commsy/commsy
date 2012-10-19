@@ -254,7 +254,7 @@ class cs_material_form extends cs_rubric_form {
             $modificator = $user_manager->getItem($modifier_id);
             //Links only at accessible contact pages
             if ( isset($modificator) and $modificator->isRoot() ) {
-               $temp_text = $this->_compareWithSearchText($modificator->getFullname());
+               $temp_text = $modificator->getFullname();
                $modifier_array[] = $temp_text;
             } elseif ( $modificator->getContextID() == $item->getContextID() ) {
                $user = $this->_environment->getCurrentUserItem();
@@ -268,7 +268,7 @@ class cs_material_form extends cs_rubric_form {
                                         $params,
                                         $modificator->getFullname());
                   }elseif(isset($modificator) and  !$modificator->isDeleted()){
-                      $temp_text = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+                      $temp_text = '<span class="disabled">'.$modificator->getFullname().'</span>';
                   }else{
                       $temp_text = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
                   }
@@ -285,23 +285,23 @@ class cs_material_form extends cs_rubric_form {
                                            'user',
                                            'detail',
                                            $params,
-                                           $text_converter->encode(AS_HTML_SHORT,$this->_compareWithSearchText($modificator->getFullname())));
+                                           $text_converter->encode(AS_HTML_SHORT,$modificator->getFullname()));
                      }else{
-                        $modifier_array[] = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
+                        $modifier_array[] = '<span class="disabled">'.$modificator->getFullname().'</span>';
                      }
                   }else{
                      $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
                   }
                   unset($params);
                } elseif ( $item->mayExternalSee($this->_environment->getCurrentUserItem())) {
-                  $modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
+                  $modifier_array[] = $modificator->getFullname();
                } else {
                   if(isset($modificator) and !$modificator->isDeleted()){
                      $current_user_item = $this->_environment->getCurrentUserItem();
                      if ( $current_user_item->isGuest() ) {
                         $modifier_array[] = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
                      } else {
-                        $modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
+                        $modifier_array[] = $modificator->getFullname();
                      }
                      unset($current_user_item);
                   }else{

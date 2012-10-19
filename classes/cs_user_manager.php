@@ -1748,7 +1748,7 @@ class cs_user_manager extends cs_manager {
 	public function getLastUsedDateOfRoom ( $room_id ) {
 		$retour = '';
 		if ( !empty($room_id) ) {
-			$query = 'SELECT lastlogin FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.$room_id.' ORDER BY lastlogin DESC LIMIT 0,1';
+			$query = 'SELECT lastlogin FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.$room_id.' AND lastlogin IS NOT NULL ORDER BY lastlogin DESC LIMIT 0,1';
 			$result = $this->_db_connector->performQuery($query);
 			if ( !isset($result) ) {
 				include_once('functions/error_functions.php');

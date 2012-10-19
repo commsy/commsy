@@ -21,7 +21,7 @@
 //    along with CommSy.
 
 // headline
-$this->_flushHeadline('db: add indexes to tables (labels, user, zzz_labels, zzz_user)');
+$this->_flushHeadline('db: add indexes to tables and zzz-equivalents');
 
 $success = true;
 
@@ -62,6 +62,86 @@ if ( !$this->_existsIndex('user','status') ) {
 
 if ( !$this->_existsIndex('zzz_user','status') ) {
    $sql = "ALTER TABLE zzz_user ADD INDEX ( status );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('link_items','first_item_type') ) {
+   $sql = "ALTER TABLE link_items ADD INDEX ( first_item_type );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_link_items','first_item_type') ) {
+   $sql = "ALTER TABLE zzz_link_items ADD INDEX ( first_item_type );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('link_items','second_item_type') ) {
+   $sql = "ALTER TABLE link_items ADD INDEX ( second_item_type );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_link_items','second_item_type') ) {
+   $sql = "ALTER TABLE zzz_link_items ADD INDEX ( second_item_type );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('link_items','deletion_date') ) {
+   $sql = "ALTER TABLE link_items ADD INDEX ( deletion_date );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_link_items','deletion_date') ) {
+   $sql = "ALTER TABLE zzz_link_items ADD INDEX ( deletion_date );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('link_items','deleter_id') ) {
+   $sql = "ALTER TABLE link_items ADD INDEX ( deleter_id );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_link_items','deleter_id') ) {
+   $sql = "ALTER TABLE zzz_link_items ADD INDEX ( deleter_id );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('user','is_contact') ) {
+   $sql = "ALTER TABLE user ADD INDEX ( is_contact );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_user','is_contact') ) {
+   $sql = "ALTER TABLE zzz_user ADD INDEX ( is_contact );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('homepage_link_page_page','to_item_id') ) {
+   $sql = "ALTER TABLE homepage_link_page_page ADD INDEX ( to_item_id );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_homepage_link_page_page','to_item_id') ) {
+   $sql = "ALTER TABLE zzz_homepage_link_page_page ADD INDEX ( to_item_id );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('tag2tag','deletion_date') ) {
+   $sql = "ALTER TABLE tag2tag ADD INDEX ( deletion_date );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_tag2tag','deletion_date') ) {
+   $sql = "ALTER TABLE zzz_tag2tag ADD INDEX ( deletion_date );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('tag2tag','deleter_id') ) {
+   $sql = "ALTER TABLE tag2tag ADD INDEX ( deleter_id );";
+   $success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsIndex('zzz_tag2tag','deleter_id') ) {
+   $sql = "ALTER TABLE zzz_tag2tag ADD INDEX ( deleter_id );";
    $success = $success AND $this->_select($sql);
 }
 

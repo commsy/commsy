@@ -64,6 +64,8 @@ $portal_list = $server_item->getPortalList();
 if ( !empty($portal_list)
      and $portal_list->isNotEmpty()
    ) {
+	set_time_limit(0);
+	
 	$portal_item = $portal_list->getFirst();
 	while ( $portal_item ) {
 		
