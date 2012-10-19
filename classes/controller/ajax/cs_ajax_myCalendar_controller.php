@@ -16,13 +16,16 @@
 		 */
 		public function actionQuery() {
 			$query = $this->_data["query"];
+			$startISO = $this->_data["options"]["startISOTime"];
+			$endISO = $this->_data["options"]["endISOTime"];
 			
 			$parameters = array();
-			$parameters["activatingStatus"] = isset($this->_data["parameters"]["activatingStatus"]) ? $this->_data["parameters"]["activatingStatus"] : "2";
-			$parameters["selColor"] = isset($this->_data["parameters"]["selColor"]) ? $this->_data["parameters"]["selColor"] : "2";
-			$parameters["selRoom"] = isset($this->_data["parameters"]["selRoom"]) ? $this->_data["parameters"]["selRoom"] : "2";
-			$parameters["todoSelRoom"] = isset($this->_data["parameters"]["todoSelRoom"]) ? $this->_data["parameters"]["todoSelRoom"] : "2";
-			$parameters["selStatus"] = isset($this->_data["parameters"]["selStatus"]) ? $this->_data["parameters"]["selStatus"] : "2";
+			$parameters["activatingStatus"] = /*isset($this->_data["parameters"]["activatingStatus"]) ? $this->_data["parameters"]["activatingStatus"] :*/ "2";
+			$parameters["selColor"] = /*isset($this->_data["parameters"]["selColor"]) ? $this->_data["parameters"]["selColor"] :*/ "2";
+			$parameters["selRoom"] = /*isset($this->_data["parameters"]["selRoom"]) ? $this->_data["parameters"]["selRoom"] :*/ "2";
+			$parameters["todoSelRoom"] = /*isset($this->_data["parameters"]["todoSelRoom"]) ? $this->_data["parameters"]["todoSelRoom"] :*/ "2";
+			$parameters["selStatus"] = /*isset($this->_data["parameters"]["selStatus"]) ? $this->_data["parameters"]["selStatus"] :*/ "2";
+			$parameters["assignedToMe"] = isset($this->_data["options"]["assignedToMe"]) ? $this->_data["options"]["assignedToMe"] : false;
 			
 			$month = "09";
 			$year = "2012";
@@ -175,6 +178,11 @@
 					$datesManager->setContextArrayLimit($parameters["selRoom"]);
 				} else {
 					$datesManager->setContextArrayLimit($datesLimit);
+				}
+				
+				if ( isset($startISO) && isset($endISO) )
+				{
+					$datesManager->setBetweenLimit($startISO, $endISO);
 				}
 				
 				/************************************************************************************
@@ -388,6 +396,42 @@
 			
 			$dateList = $datesManager->get();
 			
+			// post date filter
+			if ( $parameters["assignedToMe"] === true )
+			{
+				// check if user is not root
+				if ( !$currentUserItem->isRoot() )
+				{
+					$userList = $currentUserItem->getRelatedUserList();
+					$dateEntry = $dateList->getFirst();
+					
+					while ( $dateEntry )
+					{
+						// check all related users for participation
+						$user = $userList->getFirst();
+						
+						$isParticipant = false;
+						while ( $user )
+						{
+							if ( $dateEntry->isParticipant($user) )
+							{
+								$isParticipant = true;
+								break;
+							}
+							
+							$user = $userList->getNext();
+						}
+						
+						if ( !$isParticipant )
+						{
+							$dateList->removeElement($dateEntry);
+						}
+						
+						$dateEntry = $dateList->getNext();
+					}
+				}
+			}
+			
 			$dateEntry = $dateList->getFirst();
 			$dates = array();
 			while ($dateEntry) {
@@ -474,17 +518,22 @@
 		}
 		
 		public function actionGetIcalAdress() {
-			$currentUser = $this->_environment->getCurrentUserItem();
-			$hashManager = $this->_environment->getHashmanager();
+			$hashManager = $this->_environment->getHashManager();
+			
+			$currentUserItem = $this->_environment->getCurrentUserItem();
+			$privateUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+			$privateContextItem = $currentUserItem->getOwnRoom();
 			
 			global $c_single_entry_point;
+			
+			$cid = $privateContextItem->getItemId();
 			
 			$baseUrl = '';
 			$baseUrl .= $_SERVER['HTTP_HOST'];
 			$baseUrl .= str_replace($c_single_entry_point, 'ical.php',$_SERVER['PHP_SELF']);
 			
-			$dateUrl = $baseUrl . '?cid='.$_GET['cid'].'&hid='.$hashManager->getICalHashForUser($currentUser->getItemID()).LF;
-			$todoUrl = $baseUrl . '?cid='.$_GET['cid'].'&mod=todo&hid='.$hashManager->getICalHashForUser($currentUser->getItemID());
+			$dateUrl = $baseUrl . '?cid=' . $cid . '&hid='.$hashManager->getICalHashForUser($privateUserItem->getItemID()).LF;
+			$todoUrl = $baseUrl . '?cid=' . $cid . '&mod=todo&hid='.$hashManager->getICalHashForUser($privateUserItem->getItemID());
 			
 			$this->setSuccessfullDataReturn(array("date" => $dateUrl, "todo" => $todoUrl));
 			echo $this->_return;
@@ -502,6 +551,28 @@
 			);
 			
 			$this->rawDataReturn($date);
+		}
+		
+		/**
+		 * \brief	gets calendar config
+		 * 
+		 * Return the user-specific calendar configuration
+		 */
+		public function actionGetConfig()
+		{
+			$currentUserItem = $this->_environment->getCurrentUserItem();
+			$privateUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+			$privateRoomItem = $currentUserItem->getOwnRoom();
+			
+			$calendarConfiguration = $privateRoomItem->getMyCalendarDisplayConfig();
+			
+			$return = array(
+				"assignedToMe"			=> in_array("mycalendar_dates_assigned_to_me", $calendarConfiguration)
+			);
+			
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+			exit;
 		}
 		
 		/** \brief	room list information
@@ -546,6 +617,45 @@
 			}
 			
 			$this->setSuccessfullDataReturn($roomArray);
+			echo $this->_return;
+			exit;
+		}
+		
+		/**
+		 * \brief	Stores calendar configuration
+		 */
+		public function actionStoreConfig()
+		{
+			$config = $this->_data["config"];
+			
+			$currentUserItem = $this->_environment->getCurrentUserItem();
+			$privateUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+			$privateRoomItem = $currentUserItem->getOwnRoom();
+				
+			$calendarConfiguration = $privateRoomItem->getMyCalendarDisplayConfig();
+			
+			$store = false;
+			if ( isset($config["assignedToMe"]) )
+			{
+				if ( !( $key = array_search("mycalendar_dates_assigned_to_me", $calendarConfiguration) ) && $config["assignedToMe"] === true )
+				{
+					$calendarConfiguration["mycalendar_dates_assigned_to_me"] = true;
+					$store = true;
+				}
+				else
+				{
+					unset($calendarConfiguration[$key]);
+					$store = true;
+				}
+			}
+			
+			if ( $store )
+			{
+				$privateRoomItem->setMyCalendarDisplayConfig($calendarConfiguration);
+				$privateRoomItem->save();
+			}
+			
+			$this->setSuccessfullDataReturn(array());
 			echo $this->_return;
 			exit;
 		}

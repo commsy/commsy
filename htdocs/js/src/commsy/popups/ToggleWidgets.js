@@ -38,9 +38,9 @@ define([	"dojo/_base/declare",
 					// place widgets
 					dojo.forEach(results, Lang.hitch(this, function(result, index, arr) {
 						if (index < 2) {
-							result[1].handle.placeAt(Query("div.widgetAreaLeft", this.contentNode)[0]);
+							result.handle.placeAt(Query("div.widgetAreaLeft", this.contentNode)[0]);
 						} else {
-							result[1].handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
+							result.handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
 						}
 					}));
 				})

@@ -166,6 +166,10 @@ if ( isset($_GET['cid']) ) {
                   }
                }
             }
+            
+            // add private room to array
+            $myroom_array[] = $context_item->getItemID();
+            
             $dates_manager->setContextArrayLimit($myroom_array);
          }
          $dates_manager->setNotOlderThanMonthLimit(3);

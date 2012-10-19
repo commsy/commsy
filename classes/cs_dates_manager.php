@@ -69,6 +69,7 @@ class cs_dates_manager extends cs_manager {
    var $_assignment_limit = false;
    var $_related_user_limit = NULL;
    private $_not_older_than_limit = NULL;
+   private $_between_limit = null;
 
    /*
     * Translation Object
@@ -109,6 +110,7 @@ class cs_dates_manager extends cs_manager {
       $this->_date_mode_limit = 1;
       $this->_assignment_limit = false;
       $this->_not_older_than_limit = NULL;
+      $this->_between_limit = null;
       $this->_related_user_limit = NULL;
    }
 
@@ -119,6 +121,17 @@ class cs_dates_manager extends cs_manager {
          include_once('functions/date_functions.php');
          $this->_not_older_than_limit = getCurrentDateTimeMinusMonthsInMySQL($month);
       }
+   }
+   
+   public function setBetweenLimit( $startDate, $endDate )
+   {
+   		if ( !empty($startDate) && !empty($endDate) )
+   		{
+   			$this->_between_limit = array(
+   				"start"		=> $startDate,
+   				"end"		=> $endDate
+   			);
+   		}
    }
 
    /** set age limit
@@ -519,6 +532,29 @@ class cs_dates_manager extends cs_manager {
       // $this->_not_older_than_limit
       if ( isset($this->_not_older_than_limit) ) {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.datetime_start > "'.$this->_not_older_than_limit.'"';
+      }
+      
+      if ( isset($this->_between_limit) && !empty($this->_between_limit) )
+      {
+      		$query .= "
+      			AND
+      			(
+      				(
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_start <= '" . $this->_between_limit["start"] . "' AND
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_end >= '" . $this->_between_limit["end"] . "'
+      				)
+      				OR
+      				(
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_start <= '" . $this->_between_limit["end"] . "' AND
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_end >= '" . $this->_between_limit["end"] . "'
+      				)
+      				OR
+      				(
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_start >= '" . $this->_between_limit["start"] . "' AND
+      					" . $this->addDatabasePrefix($this->_db_table) . ".datetime_end <= '" . $this->_between_limit["end"] . "'
+      				)
+      			)
+      		";
       }
 
       if ( isset($this->_sort_order) ) {

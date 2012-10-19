@@ -34,7 +34,7 @@ define([	"dojo/_base/declare",
 			 */
 			options = options || {};
 			
-			return  this.request(this.fct, "get", { id: id });
+			return {};//this.request(this.fct, "get", { id: id });
 		},
 		
 		getIdentity: function(object) {
@@ -178,7 +178,7 @@ define([	"dojo/_base/declare",
 			}
 			 */
 			
-			var request = this.request(this.fct, "query", { query: query });
+			var request = this.request(this.fct, "query", { query: query, options: this.options });
 			
 			return QueryResults(request);
 		}

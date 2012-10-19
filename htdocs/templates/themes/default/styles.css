@@ -4297,6 +4297,26 @@ widgets
 ----------------------------------------------------------------------
 */
 
+/* General */
+.toggleWidget
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 6;
+	top: 40px;
+}
+
+.toggleWidget h2
+{
+    font-size: 12px;
+    text-shadow: 0 1px #CCCCCC;
+    line-height:24px;
+    vertical-align: bottom;
+}
+
+/**/
+
 .CommSyErrorWidget {
 	width: 300px;
 }

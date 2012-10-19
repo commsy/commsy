@@ -5,7 +5,8 @@ define(
  	"commsy/base",
  	"dojo/_base/lang",
  	"dojo/query",
- 	"dojo/dom-style"
+ 	"dojo/dom-style",
+ 	"dojo/deferred"
 ], function
 (
 	declare,
@@ -13,18 +14,20 @@ define(
 	CommSyBase,
 	Lang,
 	Query,
-	DomStyle
+	DomStyle,
+	Deferred
 ) {
 	return declare([CommSyBase, WidgetBase],
 	{
 		toggle:				false,						///< Determs if this is a switchable popup
-		initData:			null,						///< Initialization data
-		loadingAnimation:	true,						///< Toggles loading animation
 		
 		// internal
-		isOpen:				false,						///< Indicates current display status
-		isLoaded:			false,						///< Inidcates if popup is fully initialized
 		widgetManager:		null,						///< widgetManager instance - set up on construction
+		
+		// attributes
+		isOpen:				false,						///< Indicates current display status
+		loaded:				false,						///< Indicates if popup is fully initialized
+		initData:			null,						///< Initialization data
 		
 		// static
 		statics: {
@@ -50,48 +53,23 @@ define(
 		 */
 		SetInitData: function(data)
 		{
-			this._set("initData", data);
+			//this.set("initData", data);
 		},
 		
 		/**
-		 * \brief	Opens popup
-		 * 
-		 * This will open the popup, if currently not shown.
-		 * It will also load the popup, if requested.
+		 * Open Wrapper
 		 */
 		Open: function()
 		{
-			// if not already open
-			if ( !this.isOpen )
-			{
-				if ( this.loadingAnimation ) this._SetupLoading();
-				
-				// load popup if not already done and init data is given
-				if ( !this.isLoaded && this.initData )
-				{
-					this._LoadPopup();
-				}
-				
-				this.OnOpenPopup();
-				
-				// popup is opened now
-				this._set("isOpen", true);
-				
-				if (this.loadingAnimation ) this._DestroyLoading();
-			}
+			this.set("isOpen", true);
 		},
 		
 		/**
-		 * \brief	Closes popup
-		 * 
-		 * Closes the popup i, if currently shown.
+		 * Close Wrapper
 		 */
 		Close: function()
 		{
-			this.OnClosePopup();
-			
-			// popup is closed now
-			this._set("isOpen", false);
+			this.set("isOpen", false);
 		},
 		
 		/************************************************************************************
@@ -102,107 +80,121 @@ define(
 		 * \brief	Load Popup
 		 * 
 		 * Loads a popup be requesting initial data from php
+		 * 
+		 * @return	Deferred - resolves when loading is done or not needed
 		 */
 		_LoadPopup: function()
 		{
-			// send ajax request to initiate popup
-			this.AJAXRequest(
-				this.initData.module,
-				this.initData.action,
-				this.initData.data,
-				Lang.hitch(this, function(reponse)
-				{
-					/*
-					 * TooglePopupHandler
-					 * 
-					 * 
-					 * 
-					 * // append html to node
-				DomConstruct.place(html, this.contentNode, "last");
-				
-				this.setupTabs();
-				this.setupFeatures();
-				this.setupSpecific();
-				this.onCreate();
-				
-				// register close
-				on(query("a", this.contentNode)[0], "click", lang.hitch(this, function(event) {
-					this.close();
+			var loadingDeferred = new Deferred();
+			
+			// load popup if not already done and init data is given
+			if ( !this.loaded && this.initData )
+			{
+				// send ajax request to initiate popup
+				this.AJAXRequest(
+					this.initData.module,
+					this.initData.action,
+					this.initData.data,
+					Lang.hitch(this, function(reponse)
+					{
+						/*
+						 * TooglePopupHandler
+						 * 
+						 * 
+						 * 
+						 * // append html to node
+					DomConstruct.place(html, this.contentNode, "last");
 					
-					event.preventDefault();
-				}));
-				
-				// register submit click
-				on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
-					// get custom data object
-					var customObject = this.getAttrAsObject(event.target, "data-custom");
-					this.onPopupSubmit(customObject);
+					this.setupTabs();
+					this.setupFeatures();
+					this.setupSpecific();
+					this.onCreate();
 					
-					event.preventDefault();
-				}));
-				
-				this.destroyLoading();
-					 */
+					// register submit click
+					on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+						// get custom data object
+						var customObject = this.getAttrAsObject(event.target, "data-custom");
+						this.onPopupSubmit(customObject);
+						
+						event.preventDefault();
+					}));
 					
-					
-					/*
-					 * ClickPopupHandler
-					 * 
-					 * 
-					 * // append html to body
-				domConstruct.place(html, query("body")[0], "first");
+					this.destroyLoading();
+						 */
+						
+						
+						/*
+						 * ClickPopupHandler
+						 * 
+						 * 
+						 * // append html to body
+					domConstruct.place(html, query("body")[0], "first");
 
-				this.contentNode = query("div#popup_wrapper")[0];
-				this.scrollToNodeAnimated(this.contentNode);
+					this.contentNode = query("div#popup_wrapper")[0];
+					this.scrollToNodeAnimated(this.contentNode);
 
-				this.setupTabs();
-				this.setupFeatures();
-				this.setupSpecific();
-				this.setupAutoSave();
-				this.onCreate();
+					this.setupTabs();
+					this.setupFeatures();
+					this.setupSpecific();
+					this.setupAutoSave();
+					this.onCreate();
 
-				// register close
-				on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
-					this.close();
+					// register submit clicks
+					on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+						// setup loading
+						this.setupLoading();
 
-					event.preventDefault();
-				}));
+						// get custom data object
+						var customObject = this.getAttrAsObject(event.target, "data-custom");
+						this.onPopupSubmit(customObject);
 
-				// register submit clicks
-				on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
-					// setup loading
-					this.setupLoading();
-
-					// get custom data object
-					var customObject = this.getAttrAsObject(event.target, "data-custom");
-					this.onPopupSubmit(customObject);
-
-					event.preventDefault();
-				}));
-					 */
-					
-					this._set("isLoaded", true);
-				})
-			);
+						event.preventDefault();
+					}));
+						 */
+						
+						this._set("loaded", true);
+						loadingDeferred.resolve();
+					})
+				);
+			}
+			else
+			{
+				this._set("loaded", true);
+				loadingDeferred.resolve();
+			}
+			
+			return loadingDeferred;
 		},
 		
+		/************************************************************************************
+		 * Getter / Setter
+		 ************************************************************************************/
+		
 		/**
-		 * \brief	Set up loading
+		 * Setter for "isOpen" attribute
 		 * 
-		 * Set up a loading animation widget
+		 * @param[in]	open			Boolean
 		 */
-		_SetupLoading: function()
+		_setIsOpenAttr: function(open)
 		{
+			if ( open === true )
+			{
+				// if not already opened
+				if ( this.isOpen === false )
+				{
+					this.OnOpenPopup();
+				}
+			}
+			else
+			{
+				// if not already closed
+				if ( this.isOpen === true )
+				{
+					this.OnClosePopup();
+				}
+			}
 			
-		},
-		
-		/**
-		 * \brief	Destroy loading
-		 * Destroys loading animation
-		 */
-		_DestroyLoading: function()
-		{
-			
+			this._set("isOpen", open);
 		},
 		
 		/************************************************************************************
@@ -212,43 +204,55 @@ define(
 		/**
 		 * \brief	toggle event
 		 * 
-		 * Called when the popup is opened. Should be overwritten and called by child classes to specify custom behaviour
+		 * This will open the popup. It will also load the popup, if requested.
+		 * Should be overwritten and called by child classes to specify custom behaviour
+		 * 
+		 * @return	Deferred - resolves when opening is done
 		 */
 		OnOpenPopup: function()
 		{
-			// check if there are other switchable popups open
-			if ( this.statics.switchableIsOpen )
-			{
-				// close all
-				this.widgetManager.CloseAllWidgets();
-			}
+			var openDeferred = new Deferred();
 			
-			// place widget
-			var widgetNode = Query("body div#" + this.id)[0];
-			if ( !widgetNode )
+			this._LoadPopup().then(Lang.hitch(this, function(response)
 			{
-				this.placeAt( Query("body")[0], "first" );
-			}
-			else
-			{
-				// check if hidden and unhide
-				if ( DomStyle.get(widgetNode, "display") == "none" )
+				// check if there are other switchable popups open
+				if ( this.statics.switchableIsOpen )
 				{
-					DomStyle.set(widgetNode, "display", "block");
+					// close all
+					this.widgetManager.CloseAllWidgets();
 				}
-			}
+				
+				// place widget
+				var widgetNode = Query("body div#" + this.id)[0];
+				if ( !widgetNode )
+				{
+					this.placeAt( Query("body")[0], "first" );
+				}
+				else
+				{
+					// check if hidden and unhide
+					if ( DomStyle.get(widgetNode, "display") == "none" )
+					{
+						DomStyle.set(widgetNode, "display", "block");
+					}
+				}
+				
+				// if this popup is switchable, we set the "static" flag
+				if ( this.toggle )
+				{
+					this.statics.switchableIsOpen = true;
+				}
+				
+				openDeferred.resolve();
+			}));
 			
-			// if this popup is switchable, we set the "static" flag
-			if ( this.toggle )
-			{
-				this.statics.switchableIsOpen = true;
-			}
+			return openDeferred;
 		},
 		
 		/**
 		 * \brief	close event
 		 * 
-		 * Called when the popup is close. Should be overwritten and called by child classes to specify custom behaviour
+		 * Closes the popup. Should be overwritten and called by child classes to specify custom behaviour
 		 */
 		OnClosePopup: function()
 		{

@@ -11,6 +11,11 @@ define([	"dojo/_base/declare",
         	"dojo/dom-geometry",
         	"dojo/_base/lang"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, Lang) {
 	return declare(null, {
+		// static
+		baseStatics: {
+			widgetManager:		null
+		},
+		
 		constructor: function(args) {
 			// set query object
 			this.uri_object = ioQuery.queryToObject(dojo.doc.location.search.substr((dojo.doc.location.search[0] === "?" ? 1: 0)));
@@ -18,12 +23,15 @@ define([	"dojo/_base/declare",
 			// set from php object
 			this.from_php = dojo.fromJson(from_php);
 			
-			this.widgetManager = new widgetManager();
-			this.widgetManager.Init();
+			if ( this.baseStatics.widgetManager === null )
+			{
+				this.baseStatics.widgetManager = new widgetManager( { base: this } );
+				this.baseStatics.widgetManager.Init();
+			}
 		},
 		
 		getWidgetManager: function() {
-			return this.widgetManager;
+			return this.baseStatics.widgetManager;
 		},
 
 		replaceOrSetURIParam: function(key, value) {

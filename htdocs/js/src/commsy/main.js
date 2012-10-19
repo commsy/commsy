@@ -345,10 +345,18 @@ require([	"dojo/_base/declare",
     			var aCalendarNode = Query("a#tm_mycalendar")[0];
     			if (aCalendarNode) {
     				On.once(aCalendarNode, "click", Lang.hitch(this, function(event) {
-    					require(["commsy/bar/ToggleCalendar"], function(ToggleCalendar) {
-    						var handler = new ToggleCalendar(aCalendarNode, Query("div#tm_menus div#tm_dropmenu_mycalendar")[0]);
-    						handler.open();
-    					});
+    					var widgetManager = this.getWidgetManager();
+    					
+    					widgetManager.GetInstance("commsy/widgets/Calendar/CalendarWidget", {}).then(function(deferred)
+						{
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							widgetManager.RegisterOpenCloseClick(widgetInstance, aCalendarNode);
+							
+							// open widget
+							widgetInstance.Open();
+						});
     				}));
     			}
 			}));

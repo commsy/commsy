@@ -3,23 +3,29 @@ define(
  	"dojo/_base/declare",
  	"commsy/widgets/PopupBase",
  	"dijit/_TemplatedMixin",
- 	"dojo/text!./templates/MailConfirmWidget.html",
- 	"dojo/i18n!./nls/popup"
+ 	"dojo/text!./templates/CalendarWidget.html",
+ 	"dojo/i18n!./nls/calendarWidget",
+ 	"dojo/_base/lang",
+	"dojo/dom-class",
+	"dojo/query",
 ], function
 (
 	declare,
 	PopupBase,
 	TemplatedMixin,
 	Template,
-	PopupTranslations
+	PopupTranslations,
+	Lang,
+	DomClass,
+	Query
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
 		templateString:		Template,
-		baseClass:			"mailConfirmWidget",
+		baseClass:			"toggleWidget",
 		
-		mailSuccess:		true,
-		mail:				null,							///< mail data mixed in by calling class
+		toggle:				true,							///< Determs if this is a switchable popup
+		calendar:			null,
 		
 		// attributes
 		title:				"",
@@ -48,18 +54,29 @@ define(
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			this.set("title", ( this.mailSuccess ) ? this.popupTranslations.titleSuccess : this.popupTranslations.titleFailure);
+			this.set("title", this.popupTranslations.title);
 			
-			/*
-			this.fromNode = this.mail.from;
-			
-			
-			"from"			=> $mail['from_email'],
-			"to"			=> $recipients,
-			"copyToSender"	=> (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true),
-			"recipientsBcc"	=> $recipients_bcc,
-			"subject"		=> $form_data["subject"],
-			"body"			=> $form_data["body"]*/
+			// load child widgets silently
+			var widgetManager = this.getWidgetManager();
+			widgetManager.GetInstances(
+			[
+			 	[ "commsy/widgets/Calendar/Calendar", {}, true ],
+			 	[ "commsy/widgets/Calendar/CalendarConfig", { parentWidget: this }, true ],
+			 	[ "commsy/widgets/Calendar/CalendarAbo", {}, true ]
+			]).then(Lang.hitch(this, function(deferred)
+			{
+				var calendar = deferred[0].instance;
+				var calendarConfig = deferred[1].instance;
+				var calendarAbo = deferred[2].instance;
+				
+				// store calendar instance
+				this.calendar = calendar;
+				
+				// place widgets
+				calendar.placeAt(this.mainNode);
+				calendarConfig.placeAt(this.sidebarNode);
+				calendarAbo.placeAt(this.sidebarNode);
+			}));
 		},
 		
 		/**
@@ -73,11 +90,12 @@ define(
 		startup: function()
 		{
 			this.inherited(arguments);
-		}
+		},
 		
 		/************************************************************************************
 		 * Getter / Setter
 		 ************************************************************************************/
+		
 		
 		/************************************************************************************
 		 * Helper Functions
@@ -86,5 +104,45 @@ define(
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
+		
+		/**
+		 * \brief	toggle event
+		 * 
+		 * Triggered on popup opening. Overwritten to specify some custom behavior.
+		 * 
+		 * @return	Deferred - resolves when opening is done
+		 */
+		OnOpenPopup: function()
+		{
+			// call parent
+			return this.inherited(arguments).then(Lang.hitch(this, function(response)
+			{
+				// set class for widget button
+				var buttonNode = Query("a#tm_mycalendar")[0];
+				
+				if ( buttonNode )
+				{
+					DomClass.add(buttonNode, "tm_mycalendar_hover");
+				}
+			}));
+		},
+		
+		/**
+		 * \brief	close event
+		 * 
+		 * Triggered on popup closing. Overwritten to specify some custom behavior.
+		 */
+		OnClosePopup: function()
+		{
+			this.inherited(arguments);
+			
+			// set class for widget button
+			var buttonNode = Query("a#tm_mycalendar")[0];
+			
+			if ( buttonNode )
+			{
+				DomClass.remove(buttonNode, "tm_mycalendar_hover");
+			}
+		}
 	});
 });

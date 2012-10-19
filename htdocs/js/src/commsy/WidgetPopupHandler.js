@@ -7,11 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/_base/lang",
         	"dojo/_base/Deferred",
-        	"dojo/DeferredList"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Deferred, DeferredList) {
-	return declare(TogglePopupHandler, {
-		widgetArray:	[],
-		widgetHandles:	[],
-		
+        	"dojo/promise/all"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Deferred, All) {
+	return declare(TogglePopupHandler, {		
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
 			this.contentNode = content_node;
@@ -61,13 +58,13 @@ define([	"dojo/_base/declare",
 		},
 		
 		loadWidgetsManual: function(widgetArray) {
-			var defList = [];
+			var promiseList = [];
 			
 			dojo.forEach(widgetArray, Lang.hitch(this, function(widget, index, arr) {
-				defList.push(this.loadWidget(widget));
+				promiseList.push(this.loadWidget(widget));
 			}));
 			
-			return new DeferredList(defList);
+			return All(promiseList);
 		},
 		
 		loadWidget: function(widgetPath, mixin) {
