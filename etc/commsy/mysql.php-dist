@@ -24,6 +24,12 @@
 // default = false
 // $db_read_only = true;
 
+// REPLICATION
+// set to true of you use replication
+// sql statements will be optimzed for replication
+// default = false
+$db_replication = true;
+
 // MySQL MASTER - SLAVE(s)
 // please use MySQL Proxy to use a MASTER - SLAVE(s) environment
 

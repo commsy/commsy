@@ -441,7 +441,16 @@ class cs_translator {
                   if ( !empty($this->_version) ) {
                      $version = $this->_version;
                   }
-                  $query = 'INSERT DELAYED INTO `log_message_tag` SET '.
+                  
+                  // mysql - replication
+                  $delayed = ' DELAYED ';
+                  $db_replication = $this->_environment->getConfiguration('db_replication');
+                  if ( !empty($db_replication)
+                       and $db_replication
+                     ) {
+                     $delayed = ' ';
+                  }
+                  $query = 'INSERT'.$delayed.'INTO `log_message_tag` SET '.
                            '`tag`="'.encode(AS_DB,$MsgID).'", '.
                            '`version`="'.encode(AS_DB,$version).'", '.
                            '`datetime`=NOW(), '.
