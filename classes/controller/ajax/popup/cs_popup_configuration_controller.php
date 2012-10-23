@@ -318,7 +318,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 						// save
 						$current_context->save();
 
-						// genereate layout images
+						// generate layout images
 						// TODO: outdated?
 						$current_context->generateLayoutImages();
 
@@ -748,53 +748,42 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        		$current_context->setUsageInfoTextForRubric($info_rubric, "");
 				        	}
 				        }
-
-				        /*
-
-				         $info_form_array = array();
-				         if (is_array($current_context->getUsageInfoFormArray())) {
-				            $info_form_array = $current_context->getUsageInfoFormArray();
-				         }
-				         $do_not_show_form = false;
-				         if (!empty($form_data['info_text'])){
-				            if (empty($form_data['text_form'])) {
-				               $do_not_show_form = true;
-				            }
-				            if ( empty($info_form_array) and  $do_not_show_form ){
-				               $info_form_array[] = $form_data['info_text'];
-				               $current_context->setUsageInfoFormArray($info_form_array);
-				            }
-				            elseif ( !in_array($form_data['info_text'].'_no', $info_form_array) and $do_not_show_form ){
-				               array_push($info_form_array,$form_data['info_text'].'_no');
-				               $current_context->setUsageInfoFormArray($info_form_array);
-				            }
-				            elseif ( in_array($form_data['info_text'].'_no', $info_form_array) and  !$do_not_show_form ){
-				               $array[]=$form_data['info_text'].'_no';
-				               $new_array = array_diff($info_form_array,$array);
-				               $current_context->setUsageInfoFormArray($new_array);
-				            }
-				            if (! empty($form_data['title']) ){
-				               $current_context->setUsageInfoHeaderForRubricForm( $form_data['info_text'],  $form_data['title']);
-				            }
-				            if (! empty($form_data['text_form']) ){
-				               if ( mb_stristr($form_data['text_form'],'<!-- KFC TEXT -->') ){
-				                  $text = str_replace('<!-- KFC TEXT -->','',$form_data['text']);
-				               } else{
-				                  $text =  $form_data['text_form'];
-				               }
-				               $current_context->setUsageInfoTextForRubricForm( $form_data['info_text'],  $text);
-				            }else{
-				               $current_context->setUsageInfoTextForRubricForm( $form_data['info_text'],  '');
-				            }
-				          if(!empty($form_data['show_global'])) {
-				             $current_context->setUsageInfoGlobal('true');
-				          } else {
-				             $current_context->setUsageInfoGlobal('false');
-				          }
-
-				         }
-
-				         */
+				        
+				        // Mail
+				        $store = array();
+				        foreach ($form_data as $name => $value )
+				        {
+				        	if ( substr($name, 0, 20) === "moderation_mail_body" )
+				        	{
+				        		$lang = substr($name, 21, 2);
+				        		$num = substr($name, 24);
+				        		
+				        		switch ( $num )
+				        		{
+				        			case 2: $messageTag	= "MAIL_BODY_HELLO";							break;
+				        			case 3: $messageTag = "MAIL_BODY_CIAO";								break;
+				        			case 5: $messageTag = "MAIL_CHOICE_USER_ACCOUNT_DELETE";			break;
+				        			case 6: $messageTag = "MAIL_CHOICE_USER_ACCOUNT_LOCK";				break;
+				        			case 7: $messageTag = "MAIL_CHOICE_USER_STATUS_USER";				break;
+				        			case 8: $messageTag = "MAIL_CHOICE_USER_STATUS_MODERATOR";			break;
+				        			case 9: $messageTag = "MAIL_BODY_USER_MAKE_CONTACT_PERSON";			break;
+				        			case 10: $messageTag = "MAIL_CHOICE_USER_MAKE_CONTACT_PERSON";		break;
+				        			case 11: $messageTag = "MAIL_BODY_USER_ACCOUNT_PASSWORD";			break;
+				        			case 12: $messageTag = "MAIL_BODY_USER_ACCOUNT_MERGE";				break;
+				        		}
+				        		
+				        		$languages = $this->_environment->getAvailableLanguageArray();
+				        		if ( in_array($lang, $languages ))
+				        		{
+				        			$store[$messageTag][$lang] = $value;
+				        		}
+				        	}
+				        }
+				        
+				        foreach ( $store as $tag => $values )
+				        {
+				        	$current_context->setEmailText($tag, $values);
+				        }
 
 						// save
 						$current_context->save();
