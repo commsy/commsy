@@ -587,6 +587,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 					/**** NEWSLETTER ****/
 					case 'newsletter':
 						if($this->_popup_controller->checkFormData('newsletter')) {
+							$currentUser = $this->_environment->getCurrentUserItem();
 							$room_item = $currentUser->getOwnRoom();
 
 							$set_to = 'none';
@@ -607,6 +608,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						break;
 					case 'cs_bar':
 						if($this->_popup_controller->checkFormData('cs_bar')) {
+							$currentUser = $this->_environment->getCurrentUserItem();
 							$room_item = $currentUser->getOwnRoom();
 
 							//---

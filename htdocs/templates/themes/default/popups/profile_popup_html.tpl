@@ -311,7 +311,7 @@
                     <div class="input_row">
                       <label for="data_organisation">___USER_ORGANISATION___:</label>
                       <input id="data_organisation" type="text" class="size_200 float-left" name="form_data[organisation]" value="{show var=$popup.form.user.organisation}" />
-                      <input id="data_organisation_all" type="checkbox" class="float-left" name="form_data['organisation_all]"/>
+                      <input id="data_organisation_all" type="checkbox" class="float-left" name="form_data[organisation_all]"/>
                       <label for="data_organisation_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
                       <div class="clear"></div>
                     </div>
@@ -348,7 +348,7 @@
 
                     <div class="input_row">
                       <label for="data_skype">___USER_SKYPE___:</label>
-                      <input id="data_skype" type="text" class="size_200 float-left" name="form_data[sykpe]" value="{show var=$popup.form.user.skype}" />
+                      <input id="data_skype" type="text" class="size_200 float-left" name="form_data[skype]" value="{show var=$popup.form.user.skype}" />
                       <div class="clear"></div>
                     </div>
 

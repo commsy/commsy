@@ -219,14 +219,6 @@ define([	"dojo/_base/declare",
 				};
 			}
 			
-			this.submit(search, { part: part, action: action });
-		},
-		
-		/************************************************************************************
-		 * Success Handling
-		 ************************************************************************************/
-
-		onPopupSubmitSuccess: function(item_id) {
 			if (this.sendImages.length > 0) {
 				// send ajax request
 				var data = {
@@ -237,13 +229,20 @@ define([	"dojo/_base/declare",
 					}
 				};
 				
-				this.AJAXRequest("popup", "save", data, function(response) {
-					location.reload();
-				});
+				this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
+					this.submit(search, { part: part, action: action });
+				}));
 			} else {
-				location.reload();
+				this.submit(search, { part: part, action: action });
 			}
-			//this.close();
+		},
+		
+		/************************************************************************************
+		 * Success Handling
+		 ************************************************************************************/
+
+		onPopupSubmitSuccess: function(item_id) {
+			location.reload();
 		},
 		
 		/************************************************************************************

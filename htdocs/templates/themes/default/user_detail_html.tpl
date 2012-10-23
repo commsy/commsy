@@ -167,7 +167,7 @@
 								<tr>
 									<td class="label"><h4>___USER_ICQ___</h4></td>
 									<td>
-										{$detail.content.messenger_block.icq}(<img style="vertical-align:middle; margin-bottom:5px;" src="{$detail.content.indicators.icq}" alt="ICQ Online Status Indicator"/>)
+										{$detail.content.messenger_block.icq}{*(<img style="vertical-align:middle; margin-bottom:5px;" src="{$detail.content.indicators.icq}" alt="ICQ Online Status Indicator"/>)*}
 									</td>
 								</tr>
 							{/if}
@@ -185,7 +185,7 @@
 								<tr>
 									<td class="label"><h4>___USER_MSN___</h4></td>
 									<td>
-										{$detail.content.messenger_block.msn}(<img style="vertical-align:middle; margin-bottom:5px;" src="{$detail.content.indicators.msn}" alt="MSN Online Status Indicator"/>)
+										{$detail.content.messenger_block.msn}{*(<img style="vertical-align:middle; margin-bottom:5px;" src="{$detail.content.indicators.msn}" alt="MSN Online Status Indicator"/>)*}
 									</td>
 								</tr>
 							{/if}

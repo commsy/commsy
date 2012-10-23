@@ -11,6 +11,7 @@ define([	"dojo/_base/declare",
 		
 		constructor: function() {
 			this.answerTo = null;
+			this.discussionId = this.uri_object.iid;
 		},
 		
 		init: function(triggerNode, customObject) {
@@ -21,6 +22,11 @@ define([	"dojo/_base/declare",
 			
 			if(customObject.answerTo) {
 				this.answerTo = customObject.answerTo;
+			}
+			
+			if ( customObject.discussionId )
+			{
+				this.discussionId = customObject.discussionId;
 			}
 			
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
@@ -56,7 +62,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search, { answerTo: this.answerTo, discussionId: this.uri_object.iid, contextId: this.contextId });
+			this.submit(search, { answerTo: this.answerTo, discussionId: this.discussionId, contextId: this.contextId });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {

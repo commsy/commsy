@@ -62,8 +62,12 @@ define([	"dojo/_base/declare",
 				
 				// get custom data object
 				var customObject = this.getAttrAsObject(node, "data-custom");
-				
 				var module = customObject.module;
+				
+				if ( module === "discarticle" && customObject.answerTo )
+				{
+					customObject.discussionId = this.item_id;
+				}
 				
 				// insert context id
 				customObject.contextId = this.contextId;

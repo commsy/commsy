@@ -68,9 +68,9 @@ define([	"dojo/_base/declare",
 						}
 					} else {
 						if(typeof(this.version_id) != 'undefined'){
-							this.reload(item_id+"&version_id="+this.version_id);
+							this.reload(item_id+"&version_id="+this.version_id, null, null, "#section" + this.item_id);
 						} else {
-							this.reload(item_id);
+							this.reload(item_id, null, null, "#section" + this.item_id);
 						}
 					}
 				}));
@@ -83,10 +83,9 @@ define([	"dojo/_base/declare",
 					}
 				} else {
 					if(typeof(this.version_id) != 'undefined'){
-						this.reload(item_id+"&version_id="+this.version_id);
+						this.reload(item_id+"&version_id="+this.version_id, null, null, "#section" + this.item_id);
 					} else {
-					// mit Anker this.reload(item_id+"#section"+this.item_id);
-						this.reload(item_id);
+						this.reload(item_id, null, null, "#section" + this.item_id);
 					}
 				}
 			}

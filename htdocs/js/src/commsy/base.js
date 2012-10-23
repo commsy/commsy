@@ -215,9 +215,10 @@ define([	"dojo/_base/declare",
 			return {};
 		},
 		
-		reload: function(item_id, module, cid) {
+		reload: function(item_id, module, cid, anchor) {
             module = module || null;
             cid = cid || null;
+            anchor = anchor || null;
 
             // page reload
             if (cid) {
@@ -235,8 +236,13 @@ define([	"dojo/_base/declare",
             if(module === "home") {
                 var module = this.module;
             }
-
-            location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id;
+            
+            location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id + ( anchor ? anchor : "");
+            
+            if ( anchor )
+            {
+            	location.reload();
+            }
         }
 	});
 });
