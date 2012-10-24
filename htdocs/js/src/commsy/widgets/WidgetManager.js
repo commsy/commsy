@@ -13,7 +13,7 @@ define(
 	Lang,
 	On
 ) {
-	return declare([],
+	return declare(null,
 	{
 		loadingAnimation:	true,						///< Toggles loading animation
 		

@@ -112,4 +112,7 @@ $c_smarty_caching = false;
 
 // setup javascript mode
 $c_js_mode = "source";
+
+// debug mode
+$c_debug = false;
 ?>

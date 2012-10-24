@@ -7,7 +7,7 @@ define(
  	"dojo/i18n!./nls/calendarWidget",
  	"dojo/_base/lang",
 	"dojo/dom-class",
-	"dojo/query",
+	"dojo/query"
 ], function
 (
 	declare,

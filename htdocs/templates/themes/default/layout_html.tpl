@@ -33,28 +33,32 @@
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
 		{/block}
-	    	<link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
+	    
+	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 
 		<!-- SCRIPTS -->
+		<script src="
+			{if $environment.c_js_mode === "build"}
+				js/src/buildConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}
+			{elseif $environment.c_js_mode === "layer"}
+				js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}
+			{else}
+				js/src/sourceConfig.js
+			{/if}">
+		</script>
+		
+		<script>
+			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
+			{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
+			{if isset($javascript.version) && !empty($javascript.version)}dojoConfig.cacheBust = '{$javascript.version}';{/if}
+		</script>
+		
 		{if $environment.c_js_mode === "build"}
-			<script src="js/src/buildConfig.js"></script>
-
-			<script>
-				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
-				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
-			</script>
-
-			<script src="js/build/release/dojo/dojo.js"></script>
-			<script src="js/build/release/commsy/main.js"></script>
-		{elseif $environment.c_js_mode === "layer"}
-			<script src="js/src/layerConfig.js"></script>
-
-			<script>
-				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
-				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
-			</script>
+			<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
+			<script src="js/build/release/commsy/main.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 			
-			<script src="js/build/release/dojo/dojo.js"></script>
+		{elseif $environment.c_js_mode === "layer"}
+			<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 			<script>
 				require(["layer/commsy"], function() {
 					require(["commsy/main"], function() {
@@ -62,16 +66,10 @@
 					});
 				});
 			</script>
+			
 		{else}
-			<script src="js/src/sourceConfig.js"></script>
-
-			<script>
-				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
-				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
-			</script>
-
-			<script src="js/src/dojo/dojo.js"></script>
-			<script src="js/src/commsy/main.js"></script>
+			<script src="js/src/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
+			<script src="js/src/commsy/main.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 		{/if}
 
         <script type="text/javascript" src="javascript/swfobject.js"></script>

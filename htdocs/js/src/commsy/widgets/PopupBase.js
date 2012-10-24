@@ -6,7 +6,7 @@ define(
  	"dojo/_base/lang",
  	"dojo/query",
  	"dojo/dom-style",
- 	"dojo/deferred"
+ 	"dojo/_base/Deferred"
 ], function
 (
 	declare,

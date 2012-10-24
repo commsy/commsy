@@ -17,50 +17,19 @@
 			parent::processTemplate();
 		}
 		
-		/*
-		 * function getCSS ( $file, $file_url ) {
-   $out = fopen($file,'wb');
-   if ( $out == false ) {
-      include_once('functions/error_functions.php');
-      trigger_error('can not open destination file. - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
-   }
-   if ( function_exists('curl_init') ) {
-      $ch = curl_init();
-      curl_setopt($ch,CURLOPT_FILE,$out);
-      curl_setopt($ch,CURLOPT_HEADER,0);
-      curl_setopt($ch,CURLOPT_URL,$file_url);
-      curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
-      curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
-      global $c_proxy_ip;
-      global $c_proxy_port;
-      if ( !empty($c_proxy_ip) ) {
-         $proxy = $c_proxy_ip;
-         if ( !empty($c_proxy_port) ) {
-            $proxy = $c_proxy_ip.':'.$c_proxy_port;
-         }
-         curl_setopt($ch,CURLOPT_PROXY,$proxy);
-      }
-      curl_exec($ch);
-      $error = curl_error($ch);
-      if ( !empty($error) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('curl error: '.$error.' - '.$file_url.' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
-      }
-      curl_close($ch);
-   } else {
-      include_once('functions/error_functions.php');
-      trigger_error('curl library php5-curl is not installed - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
-   }
-   fclose($out);
-}
-		 */
-		
 		public function actionAction() {
 			/************************************************************************************
 			 * This will generate the downloadable content
 			************************************************************************************/
 			$currentContext = $this->_environment->getCurrentContextItem();
 			$currentUser = $this->_environment->getCurrentUserItem();
+			
+			// get item
+			$itemId = $_GET["iid"];
+			$itemManager = $this->_environment->getItemManager();
+			$item = $itemManager->getItem($itemId);
+			$type = $item->getItemType();
+			$manager = $this->_environment->getManager($type);
 			
 			// get export temp folder
 			global $export_temp_folder;
@@ -81,15 +50,8 @@
 				$doneDir .= "/" . $dir;
 			}
 			
-			$directory = "./" . $exportTempFolder . "/" . time();
+			$directory = "./" . $exportTempFolder . "/" . uniqid("", true);
 			mkdir($directory, 0777);
-			
-			// get item
-			$itemId = $_GET["iid"];
-			$itemManager = $this->_environment->getItemManager();
-			$item = $itemManager->getItem($itemId);
-			$type = $item->getItemType();
-			$manager = $this->_environment->getManager($type);
 			
 			// material version specific
 			if ($type === CS_MATERIAL_TYPE && isset($_GET["versionId"])) {
@@ -307,158 +269,6 @@
 		    readfile($zipFile);
 			
 			$fileManager = $this->_environment->getFileManager();
-			
-			/*
-
-     //find images in string
-     $reg_exp = '~\<a\s{1}href=\"(.*)\"\s{1}t~u';
-     preg_match_all($reg_exp, $output, $matches_array);
-     $i = 0;
-     $iids = array();
-
-     if ( !empty($matches_array[1]) ) {
-        mkdir($directory.'/images', 0777);
-     }
-
-     foreach($matches_array[1] as $match) {
-        $new = parse_url($matches_array[1][$i],PHP_URL_QUERY);
-        parse_str($new,$out);
-
-        if(isset($out['amp;iid']))
-         {
-            $index = $out['amp;iid'];
-         }
-        elseif(isset($out['iid']))
-         {
-            $index = $out['iid'];
-         }
-        if(isset($index))
-         {
-          $file = $filemanager->getItem($index);
-          if ( isset($file) ) {
-             $icon = $directory.'/images/'.$file->getIconFilename();
-             $filearray[$i] = $file->getDiskFileName();
-             if(file_exists(realpath($file->getDiskFileName()))) {
-                include_once('functions/text_functions.php');
-                copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
-                $output = str_replace($match, toggleUmlaut($file->getFilename()), $output);
-                copy('htdocs/images/'.$file->getIconFilename(),$icon);
-
-                // thumbs gehen nicht
-                // warum nicht allgemeiner mit <img? (siehe unten)
-                // geht unten aber auch nicht
-                $thumb_name = $file->getFilename() . '_thumb';
-                $thumb_disk_name = $file->getDiskFileName() . '_thumb';
-                if ( file_exists(realpath($thumb_disk_name)) ) {
-                   copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
-                   $output = str_replace($match, $thumb_name, $output);
-                }
-             }
-          }
-       }
-       $i++;
-     }
-
-     preg_match_all('~\<img\s{1}style=" padding:5px;"\s{1}src=\"(.*)\"\s{1}a~u', $output, $imgatt_array);
-     $i = 0;
-     foreach($imgatt_array[1] as $img)
-     {
-       $img = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-       $img = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-       #$img = str_replace($c_single_entry_point.'/','',$img);
-       #$img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-       #$img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-       $imgatt_array[1][$i] = str_replace('_thumb.png','',$img);
-       foreach($filearray as $fi)
-       {
-          $imgname = strstr($fi,$imgatt_array[1][$i]);
-          $img = preg_replace('~cid\d{1,}_\d{1,}_~u','',$img);
-
-           if($imgname != false)
-         {
-            $disc_manager = $environment->getDiscManager();
-            $disc_manager->setPortalID($environment->getCurrentPortalID());
-            $disc_manager->setContextID($environment->getCurrentContextID());
-            $path_to_file = $disc_manager->getFilePath();
-            unset($disc_manager);
-            $srcfile = $path_to_file.$imgname;
-            $target = $directory.'/'.$img;
-            $size = getimagesize($srcfile);
-
-            $x_orig= $size[0];
-            $y_orig= $size[1];
-            $verhaeltnis = $x_orig/$y_orig;
-            $max_width = 200;
-
-            if ($x_orig > $max_width) {
-               $show_width = $max_width;
-               $show_height = $y_orig * ($max_width/$x_orig);
-             } else {
-               $show_width = $x_orig;
-               $show_height = $y_orig;
-            }
-            switch ($size[2]) {
-                  case '1':
-                     $im = imagecreatefromgif($srcfile);
-                     break;
-                  case '2':
-                     $im = imagecreatefromjpeg($srcfile);
-                     break;
-                  case '3':
-                     $im = imagecreatefrompng($srcfile);
-                     break;
-               }
-            $newimg = imagecreatetruecolor($show_width,$show_height);
-            imagecopyresampled($newimg, $im, 0, 0, 0, 0, $show_width, $show_height, $size[0], $size[1]);
-               imagepng($newimg,$target);
-               imagedestroy($im);
-            imagedestroy($newimg);
-         }
-       }
-       $i++;
-     }
-
-     // thumbs_new
-     preg_match_all('~\<img(.*)src=\"((.*)_thumb.png)\"~u', $output, $imgatt_array);
-     foreach($imgatt_array[2] as $img)
-     {
-       $img_old = $img;
-       $img = str_replace($c_single_entry_point.'/','',$img);
-       $img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-       $img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-       $img = mb_substr($img,0,mb_strlen($img)/2);
-       $img = preg_replace('~cid\d{1,}_\d{1,}_~u','',$img);
-       $output = str_replace($img_old,$img,$output);
-     }
-
-     $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$output);
-     $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
-     $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output);
-
-     
-
-     //copy CSS File
-     if (isset($params['view_mode'])){
-        $csssrc = 'htdocs/commsy_pda_css.php';
-     } else {
-        $csssrc = 'htdocs/commsy_print_css.php';
-     }
-     $csstarget = $directory.'/stylesheet.css';
-
-     mkdir($directory.'/css', 0777);
-
-     if (isset($params['view_mode'])){
-        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_pda_css.php?cid='.$environment->getCurrentContextID();
-     } else {
-        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
-     }
-     getCSS($directory.'/css/stylesheet.css',$url_to_style);
-     unset($url_to_style);
-
-     $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$environment->getCurrentContextID();
-     getCSS($directory.'/css/stylesheet2.css',$url_to_style);
-     unset($url_to_style);
-			 */
 		}
 	}
 ?>

@@ -477,5 +477,30 @@
 			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));
 			
 			$this->assign("javascript", "locale", $this->_environment->getSelectedLanguage());
+			
+			// version
+			global $c_debug;
+			if ( isset($c_debug) && $c_debug === true )
+			{
+				$this->assign("javascript", "version", uniqid("", true));
+			}
+			else
+			{
+				if ( file_exists("version") )
+				{
+					$versionFromFile = file_get_contents("version");
+					
+					/*
+					 * It is very important to replace " " whitespaces, otherwhise dojo shows some odd behaviour
+					 * resulting in adding y11n body classes(high contrast css) 
+					 */ 
+					
+					$this->assign("javascript", "version", str_replace(" ", "_", $versionFromFile));
+				}
+				else
+				{
+					$this->assign("javascript", "version", "unset");
+				}
+			}
 		}
 	}

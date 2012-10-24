@@ -79,7 +79,7 @@ define(
 		startup: function()
 		{
 			this.inherited(arguments);
-		},
+		}
 		
 		/************************************************************************************
 		 * Getter / Setter
