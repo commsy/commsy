@@ -185,17 +185,39 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     	}
     }
     
-    private function checkRights($item_id) {
-    	$item_manager = $this->_environment->getItemManager();
-    	$type = $item_manager->getItemType($item_id);
-    	
-    	$manager = $this->_environment->getManager($type);
-    	$item = $manager->getItem($item_id);
-    	
-    	$currentUserItem = $this->_environment->getCurrentUserItem();
-    	
-    	return $item->mayEdit($currentUserItem) || $item->mayEdit($currentUserItem->getRelatedPrivateRoomUserItem());
-    }
+	private function checkRights($item_id) {
+        $item_manager = $this->_environment->getItemManager();
+        $type = $item_manager->getItemType($item_id);
+
+        $manager = $this->_environment->getManager($type);
+        $item = $manager->getItem($item_id);
+
+        $currentUserItem = $this->_environment->getCurrentUserItem();
+        $privateRoomUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+
+        $mayDelete = $item->mayEdit($currentUserItem) || $item->mayEdit($privateRoomUserItem);
+
+        if ( $mayDelete === true )
+        {
+            return true;
+        }
+        else
+        {
+            // check for sub-types
+            switch ( $type )
+            {
+                case CS_SECTION_TYPE:
+                case CS_ANNOTATION_TYPE:
+                CASE CS_DISCARTICLE_TYPE:
+                case CS_STEP_TYPE:
+                    $linkedItem = $item->getLinkedItem();
+                    return $linkedItem->mayEdit($currentUserItem) || $linkedItem->mayEdit($privateRoomUserItem);
+                    break;
+            }
+        }
+
+        return false;
+    } 
 
     public function getFieldInformation($sub = '') {
 			return array();
