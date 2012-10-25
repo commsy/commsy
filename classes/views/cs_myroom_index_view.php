@@ -679,7 +679,10 @@ class cs_myroom_index_view extends cs_context_index_view {
       // Get percentage of active members
       $active = $item->getActiveMembers($context->getTimeSpread());
       $all_users = $item->getAllUsers();
-      $percentage = round($active / $all_users * 100);
+      $percentage = 0;
+      if ( !empty($all_users) ) {
+         $percentage = round($active / $all_users * 100);
+      }
       $html .= $this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS').':'.BRLF;
       $html .= '         <div class="gauge'.$item->getItemID().'">'.LF;
       if ( $percentage >= 5 ) {
@@ -923,9 +926,25 @@ class cs_myroom_index_view extends cs_context_index_view {
       $temp_array['value']  = "";
       $action_array[] = $temp_array;
 
+      $first_char = 'a';
       $list = $this->_list;
       $room_item = $list->getFirst();
       while($room_item){
+         
+         // archive
+         $room_title = $room_item->getTitle();
+         if ( strtolower($room_title[0]) < $first_char
+              and $room_item->isClosed()
+            ) {           
+            $temp_array = array();
+            $temp_array['dropdown_image']  = "new_icon";
+            $temp_array['checked']  = "headline";
+            $temp_array['text']  = $this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS');
+            $temp_array['value']  = "";
+            $action_array[] = $temp_array;
+         }
+         $first_char = strtolower($room_title[0]);
+
          $temp_array = array();
          $temp_array['dropdown_image']  = "new_icon";
          $temp_array['text']  = str_replace('"','&quot;',$this->_text_as_html_short($room_item->getTitle()));

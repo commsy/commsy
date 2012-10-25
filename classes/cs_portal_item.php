@@ -914,7 +914,7 @@ class cs_portal_item extends cs_guide_item {
    	     and $room_list->isNotEmpty()
    	   ) {
    		$count_project_all = $room_list->getCount();
-   		$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms());
+   		$datetime_border_send_mail = getCurrentDateTimeMinusHoursInMySQL(($this->getDaysSendMailBeforeArchivingRooms()-0.5)*24);
    		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeArchivingRooms()+21);
    		$room_item = $room_list->getFirst();
    		while ( $room_item ) {

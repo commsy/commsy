@@ -6508,7 +6508,22 @@ class cs_context_item extends cs_item {
     $user_manager->reset();
     $user_manager->setContextLimit($this->getItemID());
     $user_manager->setUserLimit();
-    return $user_manager->getCountAll();
+    $retour = $user_manager->getCountAll();
+    if ( empty($retour)
+         and $this->isClosed()
+         and !$this->_environment->isArchiveMode()
+       ) {
+       $this->_environment->activateArchiveMode();
+       $user_manager2 = $this->_environment->getUserManager();
+       $user_manager2->reset();
+       $user_manager2->setContextLimit($this->getItemID());
+       $user_manager2->setUserLimit();
+       $retour = $user_manager2->getCountAll();
+       unset($user_manager2);
+       $this->_environment->deactivateArchiveMode();
+    }
+    unset($user_manager);
+    return $retour;
   }
 
   function delete () {
