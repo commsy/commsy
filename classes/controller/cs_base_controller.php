@@ -494,7 +494,6 @@
 					 * It is very important to replace " " whitespaces, otherwhise dojo shows some odd behaviour
 					 * resulting in adding y11n body classes(high contrast css) 
 					 */ 
-					
 					$this->assign("javascript", "version", str_replace(" ", "_", $versionFromFile));
 				}
 				else
