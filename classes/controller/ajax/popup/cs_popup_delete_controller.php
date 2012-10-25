@@ -207,8 +207,6 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
             switch ( $type )
             {
                 case CS_SECTION_TYPE:
-                case CS_ANNOTATION_TYPE:
-                CASE CS_DISCARTICLE_TYPE:
                 case CS_STEP_TYPE:
                     $linkedItem = $item->getLinkedItem();
                     return $linkedItem->mayEdit($currentUserItem) || $linkedItem->mayEdit($privateRoomUserItem);

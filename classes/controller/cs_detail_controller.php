@@ -703,7 +703,7 @@
 			$annotated_item_type = $annotated_item->getItemType();
 			$item_manager = $this->_environment->getItemManager();
 
-			if(($item->mayEdit($current_user) || $item_manager->getExternalViewerForItem($annotated_item->getItemID(), $current_user->getUserID())) && $this->_with_modifying_actions === true) {
+			if ( ( $item->mayEdit($current_user)/* || $item_manager->getExternalViewerForItem($annotated_item->getItemID(), $current_user->getUserID())*/ ) && $this->_with_modifying_actions === true ) {
 				$return['edit'] = true;
 				$return['delete'] = true;
 			} else {

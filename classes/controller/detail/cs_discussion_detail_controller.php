@@ -1018,7 +1018,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 					'noticed'			=> $noticed,
 					'modificator_image'	=> $modificator_image,
 					'custom_image'		=> !empty($image),
-					'actions'			=> $this->getEditActions($this->_item, $current_user),
+					'actions'			=> $this->getEditActions($item, $current_user),
 					'moredetails'		=> $this->getCreatorInformationAsArray($item),
 					'formal'			=> $entry
 				);
