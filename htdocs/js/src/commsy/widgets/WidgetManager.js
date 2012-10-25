@@ -113,7 +113,10 @@ define(
 		{
 			dojo.forEach(this.widgets, function(widget, index, arr)
 			{
-				widget.instance.Close();
+				if ( widget.instance.Close )				// this is false, if the widget is not deferred from PopupBase
+				{
+					widget.instance.Close();
+				}
 			});
 		},
 		
