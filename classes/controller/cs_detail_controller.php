@@ -195,6 +195,21 @@
 			}
 			$this->_manager = $this->_environment->getManager($type);
 			$this->_item = $this->_manager->getItem($current_item_id);
+			
+			$this->checkNotSet();
+		}
+		
+		protected function checkNotSet() {
+			if ( $this->_item === null )
+			{
+				// if item is not set, maybe it is deleted or does not exists, this will bring you back to the list view
+				$cid = $this->_environment->getCurrentContextId();
+				$mod = $this->_environment->getCurrentModule();
+				$fct = "index";
+				
+				redirect($cid, $mod, $fct);
+				exit;
+			}
 		}
 
 		/**
