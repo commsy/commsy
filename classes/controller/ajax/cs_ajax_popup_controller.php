@@ -170,13 +170,23 @@
 				
 				if ($utils->showBuzzwords($this->_data["module"]) && $currentContextItem->isBuzzwordMandatory()) {
 					$buzzwordsEmpty = false;
-					if ( isset($form_data["buzzwords"]) && sizeof($form_data["buzzwords"]) < 2 ) $buzzwordsEmpty = true;	// this is because there is always one item for adding new buzzwords(maybe empty)
+					
+					if ( sizeof($form_data["buzzwords"]) === 1 )
+					{
+						// in this case, no buzzwords are checked, but the value (empty or not) of the new buzzword "on the fly" field is given
+						list($onTheFlyBuzzword) = trim($form_data["buzzwords"][0]);
+						
+						if ( !isset($onTheFlyBuzzword) || empty($onTheFlyBuzzword) )
+						{
+							$buzzwordsEmpty = true;
+						}
+					}
 					
 					// check
 					if (	( $item === null && $buzzwordsEmpty === true ) ||
 							( $item !== null && $form_data["buzzwords_tab"] == "true" && $buzzwordsEmpty === true ) )
 					{
-						$exception = new cs_form_general_exception("buzzwords are mandatory", 113);
+						$exception = new cs_form_general_exception("buzzwords are mandatory", 114);
 						throw $exception;
 					}
 				}
