@@ -17,7 +17,8 @@ Einleitung...
 - mandatory-Errors 11x
   + 111 - Feld leer
   + 112 - Feld leer nach Bereinigung
-  + 113 - Zwingende Zuordnung nicht erfüllt
+  + 113 - Zwingende Zuordnung nicht erfüllt(Kategorien)
+  + 114 - Zwingende Zuordnung nicht erfüllt(Schlagwörter)
 
 - Format-Errors 2xx
   + Textfeld 20x

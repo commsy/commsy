@@ -1,6 +1,7 @@
 define({
 	root: {
-		generalTagsBuzzwords113:		"In this room it is mandatory to specify tags and/or buzzwords!"
+		generalBuzzwords114:		"You need to specify buzzwords in this room!",
+		generalTags113:				"Tags are mendatory in this room!"
 	},
 	
 	"de":		true

@@ -20,10 +20,10 @@ Diese Dateien wurden nicht an das neue Material angeh&auml;ngt.";
 $message["EMAIL_TO_COMMSY_RESULT_REGARDS"]["de"] = "Gru&szlig; ... CommSy Administrator";
 $message["EMAIL_TO_COMMSY_RESULT_SUCCESS"]["de"] = "Hallo %1,
 
-der Upload per E-Mail in Ihren pers&ouml;nlichen Raum war erfolgreich.
+der Upload per E-Mail in Ihre pers&ouml;nliche Ablage war erfolgreich.
 
-Das neue Material finden sie hier:
-%2";
+Das neue Material finden sie in Ihrer CommSy-Leiste.
+";
 $message["EMAIL_TO_INSTITUTION_TITLE"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW &quot;%1&quot;";
 $message["EMAIL_TO_INSTITUTION_TITLE_WITHOUT"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW";
 $message["EMAIL_TO_TOPIC_TITLE"]["de"] = "Email an die Personen, die sich %_TOPICS_ART_DEF_DATS_LOW %_TOPICS_SUB_DATS_BIG &quot;%1&quot; zugeordneten haben.";

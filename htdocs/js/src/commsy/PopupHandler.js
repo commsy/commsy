@@ -351,9 +351,20 @@ define([	"dojo/_base/declare",
 			this.destroyLoading();
 			
 			switch (response.code) {
-				case "113":				/* 	tags or buzzwords are mandatory and not given */
-					var errorNode = query("a[href='buzzwords_tab']", this.contentNode)[0] || query("a[href='tags_tab']", this.contentNode)[0];
-					Tooltip.show(ErrorTranslations.generalTagsBuzzwords113, errorNode);
+				case "113":				/* 	tags are mandatory and not given */
+					var errorNode = query("a[href='tags_tab']", this.contentNode)[0];
+					dijit.Tooltip.defaultPosition = ["above"];
+					Tooltip.show(ErrorTranslations.generalTags113, errorNode);
+					dijit.Tooltip.defaultPosition = ["left", "right"];
+					this.errorNodes.push(errorNode);
+					
+					break;
+				
+				case "114":				/* 	buzzwords are mandatory and not given */
+					var errorNode = query("a[href='buzzwords_tab']", this.contentNode)[0];
+					dijit.Tooltip.defaultPosition = ["above"];
+					Tooltip.show(ErrorTranslations.generalBuzzwords114, errorNode);
+					dijit.Tooltip.defaultPosition = ["left", "right"];
 					this.errorNodes.push(errorNode);
 					
 					break;
