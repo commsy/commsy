@@ -444,7 +444,7 @@ class cs_translator {
                   
                   // mysql - replication
                   $delayed = ' DELAYED ';
-                  $db_replication = $this->_environment->getConfiguration('db_replication');
+                  global $db_replication;
                   if ( !empty($db_replication)
                        and $db_replication
                      ) {

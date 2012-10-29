@@ -47,6 +47,9 @@ class cs_portal_item extends cs_guide_item {
    private $_community_id_array = NULL;
    private $_project_id_array = NULL;
    private $_group_id_array = NULL;
+   private $_community_id_array_archive = NULL;
+   private $_project_id_array_archive = NULL;
+   private $_group_id_array_archive = NULL;
    private $_private_id_array = NULL;
    private $_room_list_continuous_nlct = NULL;
    private $_grouproom_list_count = NULL;
@@ -246,7 +249,11 @@ class cs_portal_item extends cs_guide_item {
 
    public function getCommunityIDArray () {
       $retour = array();
-      if ( !isset($this->_community_id_array) ) {
+      $archive = 'this->_community_id_array';
+      if ( $this->_environment->isArchiveMode() ) {
+         $archive .= '_archive';
+      }
+      if ( !isset($$archive) ) {
          $manager = $this->_environment->getCommunityManager();
          $manager->resetData();
          $manager->resetLimits();
@@ -254,18 +261,22 @@ class cs_portal_item extends cs_guide_item {
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
-            $this->_community_id_array = $id_array;
+            $$archive = $id_array;
          }
       }
-      if ( !empty($this->_community_id_array) ) {
-         $retour = $this->_community_id_array;
+      if ( !empty($$archive) ) {
+         $retour = $$archive;
       }
       return $retour;
    }
 
    public function getProjectIDArray () {
       $retour = array();
-      if ( !isset($this->_project_id_array) ) {
+      $archive = 'this->_project_id_array';
+      if ( $this->_environment->isArchiveMode() ) {
+         $archive .= '_archive';
+      }
+      if ( !isset($$archive) ) {
          $manager = $this->_environment->getProjectManager();
          $manager->resetData();
          $manager->resetLimits();
@@ -273,18 +284,22 @@ class cs_portal_item extends cs_guide_item {
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
-            $this->_project_id_array = $id_array;
+            $$archive = $id_array;
          }
       }
-      if ( !empty($this->_project_id_array) ) {
-         $retour = $this->_project_id_array;
+      if ( !empty($$archive) ) {
+         $retour = $$archive;
       }
       return $retour;
    }
 
    public function getGroupIDArray () {
       $retour = array();
-      if ( !isset($this->_group_id_array) ) {
+      $archive = 'this->_group_id_array';
+      if ( $this->_environment->isArchiveMode() ) {
+         $archive .= '_archive';
+      }
+      if ( !isset($$archive) ) {
          $manager = $this->_environment->getGrouproomManager();
          $manager->resetData();
          $manager->resetLimits();
@@ -292,11 +307,11 @@ class cs_portal_item extends cs_guide_item {
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
-            $this->_group_id_array = $id_array;
+            $$archive = $id_array;
          }
       }
-      if ( !empty($this->_group_id_array) ) {
-         $retour = $this->_group_id_array;
+      if ( !empty($$archive) ) {
+         $retour = $$archive;
       }
       return $retour;
    }

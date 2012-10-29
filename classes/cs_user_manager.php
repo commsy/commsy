@@ -431,7 +431,29 @@ class cs_user_manager extends cs_manager {
          $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
          $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
       }
-
+      
+      // archive
+      if ( !$this->_environment->isArchiveMode() ) {
+         $this->_environment->activateArchiveMode();
+         $room_id_array = $current_portal->getCommunityIDArray();
+         $room_id_array = array_merge($room_id_array,$current_portal->getProjectIDArray());
+         $room_id_array = array_merge($room_id_array,$current_portal->getGroupIDArray());
+         if ( !empty($room_id_array) ) {
+            $tmp_db_name = 'usernomem_archive';
+            $this->setWithDatabasePrefix();
+            $this->_db_prefix = $this->_environment->getConfiguration('c_db_backup_prefix').'_';
+            $retour .= ' LEFT JOIN '.$this->addDatabasePrefix($this->_db_table).' AS '.$tmp_db_name;
+            $this->_db_prefix = '';
+            $this->setWithoutDatabasePrefix();
+            $retour .= ' ON '.$this->addDatabasePrefix($this->_db_table).'.user_id='.$tmp_db_name.'.user_id';
+            $retour .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.auth_source='.$tmp_db_name.'.auth_source';
+            $retour .= ' AND '.$tmp_db_name.'.deleter_id IS NULL';
+            $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
+            $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
+         }
+         $this->_environment->deactivateArchiveMode();
+      }
+      // archive
       return $retour;
    }
 
@@ -439,6 +461,12 @@ class cs_user_manager extends cs_manager {
       $retour  = '';
       $tmp_db_name = 'usernomem';
       $retour .= ' AND '.$tmp_db_name.'.auth_source IS NULL';
+      // archive
+      if ( !$this->_environment->isArchiveMode() ) {
+         $tmp_db_name_archive = 'usernomem_archive';
+         $retour .= ' AND '.$tmp_db_name_archive.'.auth_source IS NULL';
+      }
+      // archive
       return $retour;
    }
 

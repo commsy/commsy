@@ -116,7 +116,7 @@ class cs_hash_manager extends cs_manager {
    
    public function deleteHashesForUser ( $user_item_id ) {
       if ( !empty($user_item_id) ) {
-         $delete = "DElETE FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+         $delete = "DELETE FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE user_item_id = '".$user_item_id."'";
          $result = $this->_db_connector->performQuery($delete);
       }
    }
