@@ -1398,6 +1398,26 @@ class cs_item {
             $access = true;
          }
       }
+      
+      if ( $access === true )
+      {
+      	return true;
+      }
+      else
+      {
+      	$privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
+      	
+      	// check for sub-types
+      	switch ( $this->getType() )
+      	{
+      		case CS_SECTION_TYPE:
+      		case CS_STEP_TYPE:
+      			$linkedItem = $this->getLinkedItem();
+      			return $linkedItem->mayEdit($user_item) || $linkedItem->mayEdit($privateRoomUserItem);
+      			break;
+      	}
+      }
+      
       return $access;
    }
 
