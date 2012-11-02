@@ -84,10 +84,30 @@
 			}
 		}
 
+		public function sanitize (&$item, $key){
+			$item = $this->getUtils()->sanitize($item);
+		}
+
+//		public function removeBadCode (&$item, $key){
+//			$item = str_replace('<','',$item);
+//			$item = str_replace('>','',$item);
+//      		$item = str_replace('"','',$item);
+//      		$item = str_replace('\'','',$item);
+//		}
+
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		protected function processTemplate() {
+			//sanitize
+			if(!empty($_POST) and isset($_POST)){
+				array_walk_recursive($_POST, 'cs_base_controller::sanitize');
+			}
+
+			if(!empty($_GET) and isset($_GET)){
+				array_walk_recursive($_GET, 'cs_base_controller::sanitize');
+			}
+
 			// the actual function determes the method to call
 			$function = 'action' . ucfirst($this->_environment->getCurrentFunction());
 
@@ -259,7 +279,7 @@
  			return $email_to_service;
 		}
 
-		
+
 		private function getAddonInformation() {
 			$return = array(
 				'wiki'		=> array(
@@ -317,8 +337,8 @@
 			// TODO: $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
 			return $return;
 		}
-		
-		
+
+
 		/**
 		 * process basic template information
 		 */
@@ -360,9 +380,9 @@
 			if (!isset($c_jsmath_url)){
 				$c_jsmath_url = '';
 			}
-			
+
 			global $c_js_mode;
-			
+
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
@@ -395,11 +415,11 @@
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
-			
+
 			// browser
 			$current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
 			$current_browser_version = $this->_environment->getCurrentBrowserVersion();
-			
+
 			$IE8 = false;
 			if ($current_browser == 'msie' && strstr($current_browser_version,'8.')) {
 				$IE8 = true;
@@ -444,6 +464,7 @@
 			$to_javascript['autosave']['mode'] = 0;
 			$to_javascript['autosave']['limit'] = 0;
 
+
 			if ($ownRoomItem) {
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
 			}
@@ -469,15 +490,16 @@
 				}
 			}
 
+
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {
 				$to_javascript = array_merge($to_javascript, $this->_toJSMixin);
 			}
 
 			$this->assign('javascript', 'variables_as_json', json_encode($to_javascript));
-			
+
 			$this->assign("javascript", "locale", $this->_environment->getSelectedLanguage());
-			
+
 			// version
 			global $c_debug;
 			if ( isset($c_debug) && $c_debug === true )
@@ -489,11 +511,11 @@
 				if ( file_exists("version") )
 				{
 					$versionFromFile = file_get_contents("version");
-					
+
 					/*
 					 * It is very important to replace " " whitespaces, otherwhise dojo shows some odd behaviour
-					 * resulting in adding y11n body classes(high contrast css) 
-					 */ 
+					 * resulting in adding y11n body classes(high contrast css)
+					 */
 					$this->assign("javascript", "version", str_replace(" ", "_", $versionFromFile));
 				}
 				else

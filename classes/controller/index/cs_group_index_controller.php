@@ -114,10 +114,10 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
             $session = $this->_environment->getSessionItem();
             $session->setValue('cid'.$environment->getCurrentContextID().'_group_index_ids', $ids);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
@@ -139,7 +139,7 @@
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'title'				=> $item->getTitle(),
 					'noticed'			=> $noticed_text,
 					'modificator'		=> $this->getItemModificator($item),
 					'members_count'		=> $item->getMemberItemList()->getCount(),

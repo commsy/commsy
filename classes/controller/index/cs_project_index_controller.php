@@ -139,7 +139,7 @@
 				}
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'title'				=> $item->getTitle(),
 					'noticed'			=> $noticed_text,
 					'modificator'		=> $this->getItemModificator($item),
 					'contacts'			=> $contact_array,

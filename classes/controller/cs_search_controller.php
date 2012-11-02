@@ -1111,9 +1111,14 @@ unset($ftsearch_manager);
 			// find current search text
 			$this->_params['search'] = '';
 			if(isset($_POST['form_data']['keywords'])) {
+				$text_converter = $this->_environment->getTextConverter();
+				//$this->_params['search'] = $text_converter->_htmlentities_cleanbadcode($_POST['form_data']['keywords']);
 				$this->_params['search'] = $_POST['form_data']['keywords'];
 				//$from = 1;
-				$this->_environment->setCurrentParameter('search', $this->_params['search']);
+				//CrossSiteScripting
+				//$search = $text_converter->_htmlentities_cleanbadcode($this->_params['search']);
+				$search = $this->_params['search'];
+				$this->_environment->setCurrentParameter('search', $search);
 			} elseif(isset($_GET['search'])) {
 				$this->_params['search'] = $_GET['search'];
 			}

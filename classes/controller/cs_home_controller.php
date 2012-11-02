@@ -465,7 +465,7 @@
 #						$noticed_text = '';
 	               		switch($key) {
 	                  		case CS_ANNOUNCEMENT_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$parse_day_start = convertDateFromInput($item->getSeconddateTime(), $this->_environment->getSelectedLanguage());
 								$conforms = $parse_day_start['conforms'];
 								if($conforms === true) {
@@ -477,7 +477,7 @@
 								$modificator_id = $item->getModificatorItem()->getItemID();
 								break;
 	                  		case CS_DATE_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
       							$parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
       							$conforms = $parse_day_start['conforms'];
       							if ($conforms == TRUE) {
@@ -496,10 +496,10 @@
       								$time = ', '.$time;
       							}
       							$column2 = $view->_text_as_html_short($date.$time);
-								$column3 = $view->_text_as_html_short($item->getPlace());
+								$column3 = $item->getPlace();
 								break;
 	                  		case CS_DISCUSSION_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
 								$column3 = $item->getModificatorItem()->getFullName();
 								$modificator_id = $item->getModificatorItem()->getItemID();
@@ -510,7 +510,7 @@
 	                  			$column1 = '';
 	                  			$title = $item->getTitle();
 	                  			if (!empty($title)){
-	                  				$column1 = $view->_text_as_html_short($item->getTitle()).' ';
+	                  				$column1 = $item->getTitle().' ';
 	                  			}
 								$column1 .= $view->_text_as_html_short($item->getFullname());
       							##################################################
@@ -567,32 +567,32 @@
      							}
 								break;
 							case CS_GROUP_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$members = $item->getMemberItemList();
             					$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$members->getCount();
             					$linked_item_array = $item->getAllLinkedItemIDArray();
 								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
 							case CS_TOPIC_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
            						$linked_item_array = $item->getAllLinkedItemIDArray();
 								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
 							case CS_INSTITUTION_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$members = $item->getMemberItemList();
             					$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$members->getCount();
            						$linked_item_array = $item->getAllLinkedItemIDArray();
 								$column3 = $translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES').': '.count($linked_item_array);
 								break;
 							case CS_PROJECT_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
            						$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$item->getAllUsers();
  								$column3 = $this->_getItemActivity ($item,$room_max_activity);
 								break;
 							case CS_TODO_TYPE:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$original_date = $item->getDate();
       							$date = getDateInLang($original_date);
       							$status = $item->getStatus();
@@ -607,7 +607,7 @@
 								$column3 = $this->_getTodoItemProcess($item,$translator);
 								break;
 							default:
-								$column1 = $view->_text_as_html_short($item->getTitle());
+								$column1 = $item->getTitle();
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
 								$column3 = $item->getModificatorItem()->getFullName();
 								$modificator_id = $item->getModificatorItem()->getItemID();

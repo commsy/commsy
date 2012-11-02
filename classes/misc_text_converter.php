@@ -837,6 +837,12 @@ class misc_text_converter {
       return $retour;
    }
 
+   public function _htmlentities_cleanbadcode( $value ) {
+   	  $value = $this->_htmlentities_small($value);
+   	  $value = $this->_cleanBadCode($value);
+   	  return $value;
+   }
+
    private function _htmlentities_small ( $value ) {
       $value = str_replace('<','&lt;',$value);
       $value = str_replace('>','&gt;',$value);

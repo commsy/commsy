@@ -1,7 +1,7 @@
 <?php
 	require_once('classes/controller/cs_list_controller.php');
 
-	class cs_user_index_controller extends cs_list_controller {		
+	class cs_user_index_controller extends cs_list_controller {
 		/**
 		 * constructor
 		 */
@@ -140,10 +140,10 @@
 
 			$this->_page_text_fragment_array['count_entries'] = $this->getCountEntriesText($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all, $count_all_shown);
             $this->_browsing_icons_parameter_array = $this->getBrowsingIconsParameterArray($this->_list_parameter_arrray['from'],$this->_list_parameter_arrray['interval'], $count_all_shown);
-            
+
             $session = $this->_environment->getSessionItem();
             $session->setValue('cid' . $environment->getCurrentContextID() . '_user_index_ids', $ids);
-            
+
 			$id_array = array();
 			$item = $list->getFirst();
 			while ($item){
@@ -165,30 +165,30 @@
 				$phone = $item->getTelephone();
 				$handy = $item->getCellularphone();
 				$mail = '';
-				
+
 				if(!empty($phone)) {
 					//TODO:
 					//$phone = $converter->compareWithSearchText($phone);
 					$phone = $view->_text_as_html_short($phone);
 				}
-				
+
 				if(!empty($handy)) {
 					//TODO
 					//$handy = $converter->compareWithSearchText($handy);
 					$handy = $view->_text_as_html_short($handy);
 				}
-				
+
 				if($item->isEmailVisible()) {
 					$mail = $item->getEmail();
 					//TODO:
 					//$mail = $converter->compareWithSearchText($mail);
 					$mail = $view->_text_as_html_short($mail);
 				}
-				
+
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getFullname()),
+					'title'				=> $item->getFullname(),
 					'phone'				=> $phone,
 					'handy'				=> $handy,
 					'mail'				=> $mail,
@@ -212,10 +212,10 @@
 		protected function getAdditionalListActions() {
 			return array();
 		}
-		
+
 		protected function getAdditionalRestrictionText(){
 			$return = array();
-			
+
 			$params = $this->_environment->getCurrentParameterArray();
 			if(isset($params['selstatus']) && !empty($params['selstatus']) && $params['selstatus'] === '3') {
 				$return = array(
@@ -223,16 +223,16 @@
 					'type'				=> '',
 					'link_parameter'	=> ''
 				);
-				
+
 				$translator = $this->_environment->getTranslationObject();
-				
+
 				// set name
 				if($params['selstatus'] === '3') {
 					$return['name'] = $translator->getMessage('USER_MODERATORS');
 				} else {
 					$return['name'] = $translator->getMessage('COMMON_USERS');
 				}
-				
+
 				// set link parameter
 				unset($params['selstatus']);
 				$link_parameter_text = '';
@@ -243,10 +243,10 @@
 				}
 				$return['link_parameter'] = $link_parameter_text;
 			}
-				
+
 			return array($return);
 		}
-		
+
 		protected function getAdditionalRestrictions() {
 			$return[0] = array(
 				'item'		=> array(),
@@ -256,30 +256,30 @@
 				'name'		=> '',
 				'custom'	=> true
 			);
-			
+
 			if(isset($_GET['selstatus']) && $_GET['selstatus'] != 2 && $_GET['selstatus'] != '-2') {
 				$selstatus = $_GET['selstatus'];
 			} else {
 				$selstatus = '';
 			}
-			
+
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			// set tag and name
 			$tag = $translator->getMessage('COMMON_STATUS');
 			$return[0]['tag'] = $tag;
 			$return[0]['name'] = 'status';
-			
+
 			// set action
 			$params = $this->_environment->getCurrentParameterArray();
-			
+
 			if(!isset($params['selstatus'])) {
 				unset($params['from']);
 			}
-			
+
 			unset($params['selstatus']);
 			$link_parameter_text = '';
-			
+
 			$hidden_array = array();
 			if(count($params) > 0) {
 				foreach($params as $key => $parameter) {
@@ -289,15 +289,15 @@
 						'value'	=> $parameter
 					);
 				}
-			}			
+			}
 			$return[0]['action'] = 'commsy.php?cid='.$this->_environment->getCurrentContextID().'&mod='.$this->_environment->getCurrentModule().'&fct='.$this->_environment->getCurrentFunction().'&'.$link_parameter_text;
-			
+
 			// set hidden
 			$return[0]['hidden'] = $hidden_array;
-			
+
 			// set items
 			$items = array();
-			
+
 			// no selection
 			$item = array(
 				'id'		=> 2,
@@ -305,7 +305,7 @@
 				'selected'	=> $selstatus
 			);
 			$items[] = $item;
-			
+
 			// moderators
 			$item = array(
 				'id'		=> 3,
@@ -313,7 +313,7 @@
 				'selected'	=> $selstatus
 			);
 			$items[] = $item;
-			
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			if($current_context->isCommunityRoom()) {
 				// disabled
@@ -324,7 +324,7 @@
 					'disabled'	=> true
 				);
 				$items[] = $item;
-				
+
 				// project user
 				$item = array(
 					'id'		=> 11,
@@ -332,7 +332,7 @@
 					'selected'	=> $selstatus
 				);
 				$items[] = $item;
-				
+
 				// project moderator
 				$item = array(
 					'id'		=> 12,
@@ -341,9 +341,9 @@
 				);
 				$items[] = $item;
 			}
-			
+
 			$return[0]['items'] = $items;
-			
+
 			return $return;
 		}
 	}

@@ -579,13 +579,13 @@
 		 */
 		public function getTags($room_id = null) {
 			$tag_manager = $this->_environment->getTagManager();
-			
+
 			if ($room_id === null) {
 				$root_item = $tag_manager->getRootTagItem();
 			} else {
 				$root_item = $tag_manager->getRootTagItemFor($room_id);
 			}
-			
+
 
 			return $this->buildTagArray($root_item);
 		}
@@ -634,7 +634,7 @@
 			// break the reference
 			unset($tag);
 		}
-		
+
 		public function getCopyRubrics() {
 			return array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
 		}
@@ -737,7 +737,7 @@
          	$file_item = $file_list->getNext();
          }
          unset($file_manager);
-			
+
 			$file_ids = array();
 
 			// new file information are stored in the session object
@@ -750,15 +750,15 @@
 				foreach($new_file_ids_to_store as $file_id) {
 					$file = $new_files[$file_id];
 					$file["file_id"] = $file_id;
-					
+
 					if(isset($file['tmp_name']) && file_exists($file['tmp_name'])) {
 						$file_item = $file_manager->getNewItem();
 						$file_item->setTempKey($file['file_id']);
-					
+
 						$file['name'] = trim($file['name']);
 						$file_item->setPostFile($file);
 						$file_item->save();
-					
+
 						unlink($file['tmp_name']);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
 						$new_file_ids[] = $file_item->getFileID();
 					}/* else {
@@ -824,7 +824,7 @@
 
 			// replace placeholder
 			preg_match_all("/\\{\\$(\S*?)\\}/", $css_file, $matches);
-			
+
 			if(isset($matches[0])) {
 				for($i=0; $i < sizeof($matches[0]); $i++) {
 					$match = $matches[0][$i];
@@ -845,12 +845,21 @@
 			// store new css file
 			file_put_contents($path, $css_file);
 		}
-		
+
+
+		public function sanitize( $value ) {
+			$text_converter = $this->_environment->getTextConverter();
+			$value = $text_converter->_htmlentities_cleanbadcode($value);
+
+      		return $value;
+
+		}
+
 		public function getLogoInformationForType($type) {
 			$translator = $this->_environment->getTranslationObject();
-				
+
 			$information = array();
-				
+
 			switch(mb_strtoupper($type, 'UTF-8')) {
 				case 'ANNOUNCEMENT':
 					$information["text"] = $translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
@@ -897,17 +906,17 @@
 					$information["img"] = '';
 					break;
 			}
-				
+
 			return $information;
 		}
-		
+
 		public function cleanCKEditor($string) {
 			// filter <body>-tags
 			$found = preg_match("=(.*)<body.*?>(.*)<\/body>(.*)=is", $string, $matches);
 			$pre = $matches[1];
 			$inner = $matches[2];
 			$post = $matches[3];
-			
+
 			if ($found === 0) {
 				return $string;
 			} else {
@@ -917,7 +926,7 @@
 						$string .= $matches[$i];
 					}
 				}
-				
+
 				return $string;
 			}
 		}

@@ -240,7 +240,7 @@
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'title'				=> $item->getTitle(),
 					'date'				=> $mod_date,
 					'modificator'		=> $this->getItemModificator($item),
 					'noticed'			=> $noticed_text,

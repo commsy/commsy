@@ -436,7 +436,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 		$place = $this->_item->getPlace();
 		if(!empty($place)) {
 			// TODO: compareWithSearchText
-			$place = $converter->text_as_html_short($place);
+			$place = $place;
 		}
 
 		// color

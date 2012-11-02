@@ -13,7 +13,7 @@
 			$this->setSelectedStatus();
 
 			$this->_tpl_file = 'todo_list';
-			
+
 			// this will enable processing of additional restriction texts
 			$this->_additional_selects = true;
 		}
@@ -304,7 +304,7 @@
 
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'title'				=> $item->getTitle(),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
 					'modificator'		=> $this->getItemModificator($item),
 					'processors'		=> $this->getProcessorArray($item),
@@ -578,7 +578,7 @@
 			$params = $this->_environment->getCurrentParameterArray();
 			$current_context = $this->_environment->getCurrentContextItem();
 			$translator = $this->_environment->getTranslationObject();
-			
+
 			if(isset($params['selstatus'])/* && !empty($params['selstatus'])*/) {
 				$restriction = array(
 					'name'				=> '',
@@ -605,7 +605,7 @@
 		        }else{
 		           $restriction['name'] = '';
 		        }
-		        
+
 		        if ($restriction["name"] !== "") {
 		        	// set link parameter
 		        	$params['selstatus'] = 0;
@@ -616,7 +616,7 @@
 		        		}
 		        	}
 		        	$restriction['link_parameter'] = $link_parameter_text;
-		        	
+
 		        	$return[] = $restriction;
 		        }
 			} else {
@@ -740,7 +740,7 @@
 					$items[] = $item;
 				}
       		}
-      		
+
       		$item = array(
       				'id'		=> -2,
       				'name'		=> '------------------------------',
@@ -748,14 +748,14 @@
       				'disabled'	=> true
       		);
       		$items[] = $item;
-      		
+
       		$item = array(
       				'id'		=> 4,
       				'name'		=> $translator->getMessage('TODO_NOT_DONE'),
       				'selected'	=> $this->_selected_status
       		);
       		$items[] = $item;
-      		
+
 			$restriction['items'] = $items;
 			$return[] = $restriction;
 

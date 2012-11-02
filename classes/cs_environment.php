@@ -436,20 +436,25 @@ class cs_environment {
          if (isset($_SERVER['QUERY_STRING'])) {
             $retour = explode('&',encode(FROM_GET,$_SERVER['QUERY_STRING']));
 
+            // GetParameterSäubern
+            $textConverter = $this->getTextConverter();
             // delete cid, mod and fct
             $tmpRetour = array();
             foreach ($retour as $param) {
             	if (empty($param)) continue;
-            	
+
             	list($key, $value) = explode("=", $param);
-            	
+
             	if ($key !== 'cid' && $key !== 'mod' && $key !== 'fct') {
-            		$tmpRetour[] = $key . "=" . $value;
+            		$tmpRetour[] = $key . "=" . $textConverter->_htmlentities_cleanbadcode($value);
+            		//$tmpRetour[] = $key . "=" . $value;
             	}
             }
-            
+
+
+
             $retour = $tmpRetour;
-            
+
             /*
             $go_on = true;
             while ($go_on and isset($retour[0])) {
@@ -460,7 +465,7 @@ class cs_environment {
                }
             }
             */
-            
+
             // delete SID or empty array element
             if (count($retour) > 0) {
                $retour2 = array();
@@ -515,7 +520,12 @@ class cs_environment {
       if (isset($retour['search']) and ($retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_RUBRIC'))){
          unset($retour['search']);
       }
+      array_walk_recursive($retour,'cs_environment::cleanBadCode');
       return $retour;
+   }
+
+   public function cleanBadCode (&$item, $key){
+		$item = $this->getTextConverter()->_htmlentities_cleanbadcode($item);
    }
 
    function setCurrentParameter ( $key, $value ) {

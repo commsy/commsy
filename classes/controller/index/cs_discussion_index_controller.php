@@ -270,7 +270,7 @@
 
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'title'				=> $item->getTitle(),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
 					'modificator'		=> $this->getItemModificator($item),
 					'assessment_array'  => $assessment_stars_text_array,
