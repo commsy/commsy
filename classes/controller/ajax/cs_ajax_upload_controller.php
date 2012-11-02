@@ -14,6 +14,7 @@
 			if(!isset($_FILES) || empty($_FILES)) exit;
 			
 			// debugging file output
+			/*
 			$file = fopen("output.txt", "w+");
 			error_reporting(E_ALL);
 			ob_start();
@@ -24,9 +25,6 @@
 			fputs($file, var_dump($_REQUEST));
 			fputs($file, "================================");
 			*/
-			
-			fputs($file, var_dump($_FILES));
-			fputs($file, var_dump($_REQUEST));
 			
 			// get post data
 			$postdata = array();
@@ -108,8 +106,10 @@
 			// html gets a json array back
 			$data = json_encode($postdata);
 			
+			/*
 			fputs($file, ob_get_clean());
 			fclose($file);
+			*/
 			
 			if($json === true) {
 				echo $data;

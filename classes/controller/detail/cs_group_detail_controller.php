@@ -481,6 +481,8 @@
 
 			$this->_manager = $this->_environment->getGroupManager();
 			$this->_item = $this->_manager->getItem($current_item_id);
+			
+			$this->checkNotSet();
 		}
 
 		protected function getAdditionalActions(&$return) {
