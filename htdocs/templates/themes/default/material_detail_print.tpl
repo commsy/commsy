@@ -34,7 +34,7 @@
 
 		<div id="item_legend"> <!-- Start item_legend -->
 				{* formal data *}
-				<div class="detail_content">
+				<div class="detail_content_print">
 				{if !empty($detail.content.formal)}
 						<table class="detail_content_table">
 							{foreach $detail.content.formal as $formal}
@@ -62,7 +62,7 @@
 								<tr>
 									<td><h4>___MATERIAL_ABSTRACT___:</h4></td>
 									<td>
-										{$detail.content.description}
+										test hard{$detail.content.description}
 									</td>
 								</tr>
 							{/if}
@@ -70,7 +70,7 @@
 				{/if}
 
 				{if $detail.content.description && (!isset($detail.content.sections) || empty($detail.content.sections))}
-					<div class="detail_description">
+					<div class="detail_description_print">
 						{$detail.content.description}
 					</div>
 				{/if}
@@ -83,7 +83,6 @@
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
-
 
 	{foreach $detail.content.sections as $section}
 
@@ -128,7 +127,7 @@
 								<div class="clear"> </div>
 							{/if}
 
-							<div class="editor_content">
+							<div class="editor_content_print">
 								{$section.description}
 							</div>
 						</div>

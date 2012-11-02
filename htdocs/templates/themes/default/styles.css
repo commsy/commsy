@@ -3996,6 +3996,50 @@ print settings
     color: #FFF;
     padding: 8px 10px;
     }
+    
+div.detail_description_print {
+	  padding: 5px 10px 10px 10px;
+	  overflow: auto;
+  }
+
+div.detail_description_print ul,  div.editor_content_print ul {
+	margin: 5px 15px;
+	}
+
+div.detail_description_print li, div.editor_content_print li {
+	list-style-type: disc;
+  	}
+  	
+div.detail_description_print {
+	overflow: auto;	
+}
+
+div.detail_description_print td.label {
+	width: 150px;
+	vertical-align: top;
+  }
+  
+div.detail_description_print table {
+	max-width: 98%;
+	width: 98%;
+	table-layout: fixed;
+	word-wrap: break-word;
+	word-break: break-all;
+  }
+
+div.editor_content_print {
+	overflow: auto;
+}
+
+div.editor_content_print table {
+	max-width: 98%;
+	width: 98%;
+	table-layout: fixed;
+	word-wrap: break-word;
+	word-break: break-all;
+  }
+  
+ 
 
 
 

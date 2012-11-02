@@ -209,7 +209,7 @@
 			</p>
 			<div class="clear"> </div>
 			{if !empty($detail.content.description)}
-				<div class="detail_description">
+				<div class="detail_description_print">
 					{$detail.content.description}
 				</div>
 			{/if}

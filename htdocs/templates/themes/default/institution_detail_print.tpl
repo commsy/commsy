@@ -41,14 +41,14 @@
 					</div>
 				{/if}
 				{if !empty($detail.content.description)}
-					<div class="detail_description">
+					<div class="detail_description_print">
 					{$detail.content.description}
 					</div>
 				{/if}
 				<div class="clear"> </div>
 
 
-				<div class="detail_description">
+				<div class="detail_description_print">
 					<h4>___GROUP_MEMBERS___</h4>
 					{if !empty($detail.content.members)}
 						<table class="no_padding">
