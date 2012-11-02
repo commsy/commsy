@@ -1682,7 +1682,7 @@
 				}
 
 				$place = $item->getPlace();
-				$place = $converter->text_as_html_short($place);
+				$place = $place;
 
 				$parse_time_start = convertTimeFromInput($item->getStartingTime());
 				$conforms = $parse_time_start['conforms'];
@@ -1717,7 +1717,7 @@
 	            }
 			   	$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $view->_text_as_html_short($item->getTitle()),
+					'title'				=> $item->getTitle(),
 					'date'				=> $date,
 					'time'				=> $time,
 					'color'				=> $item->getColor(),
