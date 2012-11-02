@@ -8,7 +8,6 @@ define([	"dojo/_base/declare",
         	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
-			
 		},
 		
 		init: function(triggerNode, customObject) {
@@ -26,14 +25,6 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmit: function(customObject) {
-			// add ckeditor data to hidden div
-			//dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-			//	var instance = editor.getInstance();
-			//	var node = editor.getNode().parentNode;
-			//	
-			//	domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
-			//});
-			
 			// setup data to send via ajax
 			var search = {
 				tabs: [
@@ -52,7 +43,24 @@ define([	"dojo/_base/declare",
 			this.submit(search, { itemId: this.item_id });
 		},
 		
-		onPopupSubmitSuccess: function(item_id) {
+		onPopupSubmitSuccess: function(confirmData) {
+			/*
+			// prepare mixin data
+			var mixin = {
+				mailSuccess:	true,
+				mail:			confirmData
+			};
+			
+			// get instance of confirm widget
+			var widgetManager = this.getWidgetManager();
+			widgetManager.GetInstance("commsy/widgets/MailConfirmWidget/MailConfirmWidget", mixin).then(function(deferred)
+			{
+				var widgetInstance = deferred.instance;
+				
+				// open widget
+				widgetInstance.Open();
+			});
+			*/
 			this.close();
 		},
 		

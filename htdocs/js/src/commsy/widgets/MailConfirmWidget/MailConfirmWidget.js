@@ -4,14 +4,18 @@ define(
  	"commsy/widgets/PopupBase",
  	"dijit/_TemplatedMixin",
  	"dojo/text!./templates/MailConfirmWidget.html",
- 	"dojo/i18n!./nls/popup"
+ 	"dojo/i18n!./nls/popup",
+ 	"dojo/dom-construct",
+ 	"dojo/_base/lang"
 ], function
 (
 	declare,
 	PopupBase,
 	TemplatedMixin,
 	Template,
-	PopupTranslations
+	PopupTranslations,
+	DomConstruct,
+	Lang
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
@@ -73,6 +77,17 @@ define(
 		startup: function()
 		{
 			this.inherited(arguments);
+			
+			console.log(this.mail);
+			
+			// set reciever
+			dojo.forEach(this.mail.to, Lang.hitch(this, function(reciever, index, arr)
+			{
+				DomConstruct.create("li",
+				{
+					innerHTML:	reciever
+				}, this.recieverListNode, "last");
+			}));
 		}
 		
 		/************************************************************************************

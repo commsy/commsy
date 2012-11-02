@@ -6,11 +6,14 @@ define([	"dojo/_base/declare",
         	"dijit/ProgressBar",
         	"dojox/form/uploader/FileList",
         	"dojo/dom-construct",
+        	"dojox/timing",
         	"dojo/dom-attr",
+        	"dijit/Tooltip",
+        	"dojo/i18n!./nls/tooltipErrors",
         	"dojo/on",
         	"dijit/form/Button",
         	"dojo/query",
-        	"dojo/_base/connect"], function(declare, BaseClass, Lang, Flash, Uploader, ProgressBar, FileList, DomConstruct, DomAttr, On, Button, Query, connect) {
+        	"dojo/_base/connect"], function(declare, BaseClass, Lang, Flash, Uploader, ProgressBar, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect) {
 	return declare(BaseClass, {
 		uploader:		null,
 		loadingImgNode:	null,
@@ -104,24 +107,40 @@ define([	"dojo/_base/declare",
 			// remove loading
 			this.destroyLoading();
 			
-			if(this.callback) {
-				this.callback(data);
-			} else {
-				var fileListNode = Query("div#files_finished")[0];
+			// check if something went wrong
+			if ( data.file === null )
+			{
+				Tooltip.show(ErrorTranslations.upload, this.uploader.domNode);
+				
+				var timer = new Timing.Timer(3000);
+				timer.onTick = Lang.hitch(this, function(event)
+				{
+					Tooltip.hide(this.uploader.domNode);
+					timer.stop();
+				});
+				timer.start();
+			}
+			else
+			{
+				if(this.callback) {
+					this.callback(data);
+				} else {
+					var fileListNode = Query("div#files_finished")[0];
 
-				if(!data.length) data = [data];
+					if(!data.length) data = [data];
 
-				dojo.forEach(data, Lang.hitch(this, function(file, index, arr) {
-					// add file to file finished
-					DomConstruct.create("input", {
-						type:		"checkbox",
-						checked:	"checked",
-						name:		"form_data[file_" + index + "]",
-						value:		file.file_id
-					}, fileListNode, "last");
+					dojo.forEach(data, Lang.hitch(this, function(file, index, arr) {
+						// add file to file finished
+						DomConstruct.create("input", {
+							type:		"checkbox",
+							checked:	"checked",
+							name:		"form_data[file_" + index + "]",
+							value:		file.file_id
+						}, fileListNode, "last");
 
-					DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
-				}));
+						DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
+					}));
+				}
 			}
 		},
 
@@ -130,11 +149,16 @@ define([	"dojo/_base/declare",
 		},
 
 		onProgress: function(statusObject) {
-			// update progress bar
-			this.progressbar.set("value", statusObject.percent);
-
-			if(statusObject.percent === "100%") {
-				this.progressbar.destroy(false);
+			// update progress bar, if not destroyed yet
+			if ( this.progressbar )
+			{
+				this.progressbar.set("value", statusObject.percent);
+				
+				// destroy on complete
+				if(statusObject.percent === "100%") {
+					this.progressbar.destroy(false);
+					this.progressbar = null;
+				}
 			}
 		},
 

@@ -287,15 +287,15 @@ function email_to_commsy($mbox,$msgno){
 				   
 				   // send e-mail with 'material created in your private room' back to sender
 				   $file = $_SERVER['PHP_SELF'];
-               $file = str_replace('cron_email_upload','commsy',$file);
-               $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+               		$file = str_replace('cron_email_upload','commsy',$file);
+               		$curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
 				   
 				   #$params['iid'] = $material_item->getItemID();
 				   #$link_to_new_material = curl($private_room_id, 'material', 'detail', $params);
 				   
-               $link_to_new_material = '<a href="'.$curl_text.$private_room_id.'&amp;mod=material&amp;fct=detail&amp;iid='.$material_item->getItemID().'">'.$material_item->getTitle().'</a>';
+               		//$link_to_new_material = '<a href="'.$curl_text.$private_room_id.'&amp;mod=material&amp;fct=detail&amp;iid='.$material_item->getItemID().'">'.$material_item->getTitle().'</a>';
                
-				   $result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName(), $link_to_new_material)."\n\n";
+				   $result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_SUCCESS', $private_room_user->getFullName())."\n\n";
 				   
 				   if(!empty($error['files_to_large'])){
 				   	$files_to_large = '';
@@ -308,12 +308,12 @@ function email_to_commsy($mbox,$msgno){
 				   $result_body .= $translator->getMessage('EMAIL_TO_COMMSY_RESULT_REGARDS');
 				   
 				   $result_mail->set_subject('Upload2CommSy - erfolgreich');
-               $result_mail->set_message($result_body);
+               		$result_mail->set_message($result_body);
 			   } else {
 			   	// send e-mail with 'password or subject not correct' back to sender
 			   	$result_body = $translator->getMessage('EMAIL_TO_COMMSY_RESULT_FAILURE', $private_room_user->getFullName(), $translator->getMessage('EMAIL_TO_COMMSY_PASSWORD'));
 			   	$result_mail->set_subject('Upload2CommSy - fehlgeschlagen');
-               $result_mail->set_message($result_body);
+               	$result_mail->set_message($result_body);
 			   }
 			   
 			   #$result_mail->setSendAsHTML();
