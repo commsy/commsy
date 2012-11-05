@@ -1081,7 +1081,29 @@ class cs_page_room_view extends cs_page_view {
       $retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
       // jQuery
       $context_array = array();
+      
+      // archive
+      $toggle_archive_mode = false;
+      if ( $this->_environment->isArchiveMode() ) {
+      	$this->_environment->deactivateArchiveMode();
+      	$toggle_archive_mode = true;
+      }
+      
       $context_array = $this->_getAllOpenContextsForCurrentUser();
+      
+      // archive
+      if ( $toggle_archive_mode ) {
+      	$this->_environment->activateArchiveMode();
+      	$temp_array[0]['item_id'] = -1; 
+      	$temp_array[0]['title'] = ''; 
+      	$temp_array[1]['item_id'] = -1; 
+      	$temp_array[1]['title'] = strtoupper($this->_translator->getMessage('COMMON_CLOSED'));
+      	$context_array_archive = $this->_getAllOpenContextsForCurrentUser();
+      	$context_array = array_merge($context_array,$temp_array,$context_array_archive);
+      	unset($context_array_archive);
+      }
+      unset($toggle_archive_mode);
+      
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( !$this->_environment->inServer() ) {
          $title = $this->_environment->getCurrentPortalItem()->getTitle();
@@ -1356,7 +1378,18 @@ class cs_page_room_view extends cs_page_view {
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('USER_CLOSE_FORM');
          $html .= '</h2>'.LF;
-         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION');
+
+         // datenschutz: overwrite or not (03.09.2012 IJ)
+   	   $overwrite = true;
+   	   $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	   if ( !empty($disable_overwrite) and $disable_overwrite ) {
+   		   $overwrite = false;
+   	   }
+   	   if ($overwrite) {
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION');
+         } else {
+         	$html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION_NOT_OVERWRITE');
+         }
          $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'group'
                  and $this->_environment->getCurrentFunction() == 'detail'
