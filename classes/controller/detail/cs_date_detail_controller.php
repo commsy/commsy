@@ -172,20 +172,22 @@ class cs_date_detail_controller extends cs_detail_controller {
 		}
 
 		// set up ids of linked items
-		$material_ids = $this->_item->getLinkedItemIDArray(CS_MATERIAL_TYPE);
-		$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids', $material_ids);
+		if ( isset($this->_item) ) {
+		   $material_ids = $this->_item->getLinkedItemIDArray(CS_MATERIAL_TYPE);
+		   $session->setValue('cid' . $this->_environment->getCurrentContextID() . '_material_index_ids', $material_ids);
+		}
 
-		if($current_context->withRubric(CS_TOPIC_TYPE)) {
+		if($current_context->withRubric(CS_TOPIC_TYPE) and isset($this->_item) ) {
 			$ids = $this->_item->getLinkedItemIDArray(CS_TOPIC_TYPE);
 			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_topics_index_ids', $ids);
 		}
 
-		if($current_context->withRubric(CS_GROUP_TYPE)) {
+		if($current_context->withRubric(CS_GROUP_TYPE) and isset($this->_item) ) {
 			$ids = $this->_item->getLinkedItemIDArray(CS_GROUP_TYPE);
 			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_group_index_ids', $ids);
 		}
 
-		if($current_context->withRubric(CS_INSTITUTION_TYPE)) {
+		if($current_context->withRubric(CS_INSTITUTION_TYPE) and isset($this->_item) ) {
 			$ids = $this->_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
 			$session->setValue('cid' . $this->_environment->getCurrentContextID() . '_institutions_index_ids', $ids);
 		}
@@ -219,7 +221,9 @@ class cs_date_detail_controller extends cs_detail_controller {
 
 		// annotations
 		// get annotations
-		$annotations = $this->_item->getAnnotationList();
+		if ( isset($this->_item) ) {
+		   $annotations = $this->_item->getAnnotationList();
+		}
 
 		// assign annotations
 		$this->assign('detail', 'annotations', $this->getAnnotationInformation($annotations));

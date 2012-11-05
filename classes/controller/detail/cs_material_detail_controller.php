@@ -53,7 +53,7 @@
 			// check for right manager
 			if(!($this->_manager instanceof cs_material_manager)) {
 				throw new cs_detail_item_type_exception('wrong item type', 0);
-			} else {
+			} elseif ( isset($this->_item) ) {
 				// load the shown item
 				$material_version_list = $this->_manager->getVersionList($this->_item->getItemID());
 				$material_item = $material_version_list->getFirst();
@@ -302,8 +302,9 @@
 					$this->assign('detail', 'content', $this->getDetailContent());
 				}
 			}
-			$annotations = $this->_item->getAnnotationList();
-
+			if ( isset($this->_item) ) {
+			   $annotations = $this->_item->getAnnotationList();
+			}
 			// mark annotations as readed and noticed
 		}
 
