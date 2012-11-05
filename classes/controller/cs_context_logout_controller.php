@@ -25,7 +25,7 @@
 			if ( $session->issetValue('root_session_id') ) {
 			   $root_session_id = $session->getValue('root_session_id');
 			}
-			$session_manager->delete($SID,true);
+			$session_manager->delete($session->getSessionID(),true);
 			$session->reset();
 
 			include_once('classes/cs_session_item.php');
