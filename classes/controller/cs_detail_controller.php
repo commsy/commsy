@@ -75,32 +75,36 @@
 			$this->assign('list', 'paging', $paging);
 			$this->assign('list', 'num_entries', $this->_num_entries);
 			*/
-			$tag_list = $this->_item->getTagList();
-			$tag_item = $tag_list->getFirst();
-			$tag_array = array();
-			while($tag_item){
-				$tmp = array();
-				$tmp['item_id'] = $tag_item->getItemID();
-				$tmp['title'] = $tag_item->getTitle();
-				$tmp['level'] = '0';
-				$tag_array[] = $tmp;
-				$tag_item = $tag_list->getNext();
-				$this->_linked_count++;
+			if ( isset($this->_item) ) {
+				$tag_list = $this->_item->getTagList();
+				$tag_item = $tag_list->getFirst();
+				$tag_array = array();
+				while($tag_item){
+					$tmp = array();
+					$tmp['item_id'] = $tag_item->getItemID();
+					$tmp['title'] = $tag_item->getTitle();
+					$tmp['level'] = '0';
+					$tag_array[] = $tmp;
+					$tag_item = $tag_list->getNext();
+					$this->_linked_count++;
+				}
+				$this->assign('item', 'tags', $tag_array);
+				$this->assign('item','linked_count', $this->_linked_count);
 			}
-			$this->assign('item', 'tags', $tag_array);
-			$this->assign('item','linked_count', $this->_linked_count);
 
-			$global_changed = false;
-			$changed = $this->_getItemAnnotationChangeStatus($this->_item);
-			if($changed['count_new']){
-				$global_changed = 'new';
-			}elseif($changed['count_changed']) {
-				$global_changed = 'changed';
+			if ( isset($this->_item) ) {
+				$global_changed = false;
+				$changed = $this->_getItemAnnotationChangeStatus($this->_item);
+				if($changed['count_new']){
+					$global_changed = 'new';
+				}elseif($changed['count_changed']) {
+					$global_changed = 'changed';
+				}
+				$annotations = $this->_item->getAnnotationList();
+				$this->markAnnotationsReadedAndNoticed($annotations);
+				$this->assign('detail', 'annotations_changed', $global_changed);
 			}
-			$annotations = $this->_item->getAnnotationList();
-			$this->markAnnotationsReadedAndNoticed($annotations);
-			$this->assign('detail', 'annotations_changed', $global_changed);
-
+				
 			$current_context = $this->_environment->getCurrentContextItem();
 			$this->assign('detail','is_action_bar_visible',$current_context->isActionBarVisibleAsDefault());
 			$this->assign('detail','is_details_bar_visible',$current_context->isDetailsBarVisibleAsDefault());
@@ -135,7 +139,9 @@
 				$ids = $this->getBrowseIDs();
 				$this->assign('detail', 'browsing_information', $this->getBrowseInformation($ids));
 			}
-			$this->assign('detail', 'item_id', $this->_item->getItemID());
+			if ( isset($this->_item) ) {
+			   $this->assign('detail', 'item_id', $this->_item->getItemID());
+			}
 
 			$this->assign('detail', 'forward_information', $this->getForwardInformation($ids));
 		}
@@ -194,7 +200,9 @@
 				$type = $label_item->getItemType();
 			}
 			$this->_manager = $this->_environment->getManager($type);
-			$this->_item = $this->_manager->getItem($current_item_id);
+			if ( isset($this->_manager) ) {
+			   $this->_item = $this->_manager->getItem($current_item_id);
+			}
 			
 			$this->checkNotSet();
 		}
@@ -218,39 +226,41 @@
 		protected function getBuzzwords() {
 			$return = array();
 
-			$text_converter = $this->_environment->getTextConverter();
-
-			$buzzword_list = $this->_item->getBuzzwordList();
-			$buzzword_entry = $buzzword_list->getFirst();
-			$item_id_array = array();
-			while($buzzword_entry) {
-				$item_id_array[] = $buzzword_entry->getItemID();
-
-				$buzzword_entry = $buzzword_list->getNext();
-			}
-
-			$links_manager = $this->_environment->getLinkManager();
-			if(isset($item_id_array[0])) {
-				$count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array, 'buzzword');
-			}
-
-			$buzzword_entry = $buzzword_list->getFirst();
-			while($buzzword_entry) {
-				$count = 0;
-				if(isset($count_array[$buzzword_entry->getItemID()])) {
-					$count = $count_array[$buzzword_entry->getItemID()];
+			if ( isset($this->_item) ) {
+				$text_converter = $this->_environment->getTextConverter();
+	
+				$buzzword_list = $this->_item->getBuzzwordList();
+				$buzzword_entry = $buzzword_list->getFirst();
+				$item_id_array = array();
+				while($buzzword_entry) {
+					$item_id_array[] = $buzzword_entry->getItemID();
+	
+					$buzzword_entry = $buzzword_list->getNext();
 				}
-				$return[] = array(
-							'to_item_id'		=> $buzzword_entry->getItemID(),
-							'name'				=> $text_converter->text_as_html_short($buzzword_entry->getName()),
-							'class_id'			=> $this->getUtils()->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
-							'selected_id'		=> $buzzword_entry->getItemID()
-						);
-
-
-				$buzzword_entry = $buzzword_list->getNext();
+	
+				$links_manager = $this->_environment->getLinkManager();
+				if(isset($item_id_array[0])) {
+					$count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array, 'buzzword');
+				}
+	
+				$buzzword_entry = $buzzword_list->getFirst();
+				while($buzzword_entry) {
+					$count = 0;
+					if(isset($count_array[$buzzword_entry->getItemID()])) {
+						$count = $count_array[$buzzword_entry->getItemID()];
+					}
+					$return[] = array(
+								'to_item_id'		=> $buzzword_entry->getItemID(),
+								'name'				=> $text_converter->text_as_html_short($buzzword_entry->getName()),
+								'class_id'			=> $this->getUtils()->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
+								'selected_id'		=> $buzzword_entry->getItemID()
+							);
+	
+	
+					$buzzword_entry = $buzzword_list->getNext();
+				}
+				$this->_linked_count += $buzzword_list->getCount();
 			}
-			$this->_linked_count += $buzzword_list->getCount();
 			return $return;
 		}
 
@@ -409,7 +419,7 @@
 			);
 
 			// edit
-			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel()) {
+			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel()) {
 				$return['edit'] = true;
 				/*
 				 * if ( empty($module) ) {
@@ -442,7 +452,7 @@
 			}
 
 			// delete
-			if($this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
+			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
 				$return['delete'] = true;
 				/*
 
@@ -516,7 +526,7 @@
 			}
 
 			// copy
-			if($current_user->isUser() && !in_array($this->_item->getItemID(), $this->_clipboard_id_array)) {
+			if($current_user->isUser() && isset($this->_item) and !in_array($this->_item->getItemID(), $this->_clipboard_id_array)) {
 				$return['copy'] = true;
 
 				/*
@@ -600,7 +610,9 @@
 			$reader_manager = $this->_environment->getReaderManager();
 			$noticed_manager = $this->_environment->getNoticedManager();
 			$translator = $this->_environment->getTranslationObject();
-			$count = $annotation_list->getCount();
+			if ( isset($annotation_list) ) {
+			   $count = $annotation_list->getCount();
+			}
 			if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || $count > 0) {
 				// TODO: add annotation heading to template, specified like here
 				/*
@@ -776,7 +788,7 @@
 
 			$converter = $this->_environment->getTextConverter();
 
-			if(empty($ids)) {
+			if(empty($ids) and isset($this->_item) ) {
 				$ids = array();
 				$ids[] = $this->_item->getItemID();
 			}
@@ -785,7 +797,7 @@
 			$count = 0;
 			$pos = 0;
 			foreach($ids as $id) {
-				if($id == $this->_item->getItemID()) {
+				if( isset($this->_item) and $id == $this->_item->getItemID()) {
 					$pos = $count;
 				} else {
 					$count++;
@@ -843,7 +855,7 @@
 	                  		$activating_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
 	               		}
 					}
-					
+
 					if ( isset($item) )
 					{
 						$return[] = array(
@@ -1129,7 +1141,9 @@
 				$this->setBrowseIDs();
 
 				if(!isset($this->_browse_ids) || sizeof($this->_browse_ids) === 0) {
-					$this->_browse_ids[] = $this->_item->getItemID();
+					if ( isset($this->_item) ) {
+					   $this->_browse_ids[] = $this->_item->getItemID();
+					}
 				}
 			}
 			return $this->_browse_ids;
@@ -1137,20 +1151,24 @@
 
 		protected function markRead() {
 			// mark as read
-			$reader_manager = $this->_environment->getReaderManager();
-			$reader = $reader_manager->getLatestReader($this->_item->getItemID());
-			if(empty($reader) || $reader['read_date'] < $this->_item->getModificationDate()) {
-				$reader_manager->markRead($this->_item->getItemID(), $this->_item->getVersionID());
-			}
+         if ( isset($this->_item) ) {
+				$reader_manager = $this->_environment->getReaderManager();
+				$reader = $reader_manager->getLatestReader($this->_item->getItemID());
+				if(empty($reader) || $reader['read_date'] < $this->_item->getModificationDate()) {
+					$reader_manager->markRead($this->_item->getItemID(), $this->_item->getVersionID());
+				}
+         }
 		}
 
 		protected function markNoticed() {
 			// mark as noticed
-			$noticed_manager = $this->_environment->getNoticedManager();
-			$noticed = $noticed_manager->getLatestNoticed($this->_item->getItemID());
-			if(empty($noticed) || $noticed['read_date'] < $this->_item->getModificationDate()) {
-				$noticed_manager->markNoticed($this->_item->getItemID(), $this->_item->getVersionID());
-			}
+         if ( isset($this->_item) ) {
+				$noticed_manager = $this->_environment->getNoticedManager();
+				$noticed = $noticed_manager->getLatestNoticed($this->_item->getItemID());
+				if(empty($noticed) || $noticed['read_date'] < $this->_item->getModificationDate()) {
+					$noticed_manager->markNoticed($this->_item->getItemID(), $this->_item->getVersionID());
+				}
+         }
 		}
 
 		protected function setRubricConnections($array) {
