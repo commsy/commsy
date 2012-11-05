@@ -233,7 +233,7 @@
 			}
 
 			$hash_string = '';
-			if(!$current_context->isOpenForGuests() && $current_user->isUser()) {
+			if($current_user->isUser()) {
 				$hash_manager = $this->_environment->getHashManager();
 				$hash_string = '&amp;hid=' . $hash_manager->getRSSHashForUser($current_user->getItemID());
 			}
@@ -726,7 +726,7 @@
       		$info_text = array();
       		$info_text['count_new'] = 0;
       		$info_text['count_changed'] = 0;
-      		if ($current_user->isUser()) {
+      		if ($current_user->isUser() and isset($item) ) {
          		$noticed_manager = $this->_environment->getNoticedManager();
          		$annotation_list = $item->getItemAnnotationList();
          		$anno_item = $annotation_list->getFirst();
