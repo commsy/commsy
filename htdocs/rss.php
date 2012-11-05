@@ -806,8 +806,6 @@ if ( isset($_GET['cid']) ) {
                } else {
                   $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
                   setFileArray($item);
-                  #$description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-                  $description = $environment->getTextConverter()->text_as_html_long($item->getDescription());
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
                   $email = $user_item->getEmail();
@@ -823,8 +821,20 @@ if ( isset($_GET['cid']) ) {
                   $author = $email.' ('.$fullname.')';
                   unset($email);
                   unset($fullname);
-                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
                   $date = date('r',strtotime($item->getModificationDate()));
+
+                  if ( $context_item->isCommunityRoom()
+                        and empty($_GET['hid'])
+                        and !$item->isWorldPublic()
+                      ) {
+                     $description = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $link = '';
+                     $show_without_link = true;
+                  } else {
+                     $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
+                     #$description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                     $description = $environment->getTextConverter()->text_as_html_long($item->getDescription());
+                  }
                }
                unset($user_item);
             }
@@ -1121,7 +1131,11 @@ if ( isset($_GET['cid']) ) {
       } else {
          $description = '';
       }
-      if ( !empty($title) and !empty($link) ) {
+      if ( !empty($title)
+           and ( !empty($link)
+                 or isset($show_without_link) and !empty($show_without_link) and $show_without_link
+               )
+         ) {
          $rss_item = '';
          $rss_item .= '
          <item>
