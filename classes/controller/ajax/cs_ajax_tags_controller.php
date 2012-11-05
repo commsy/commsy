@@ -11,7 +11,8 @@
 		}
 		
 		public function actionCreateNewTag() {
-			if($this->accessGranted()) {
+			if ( $this->accessGranted() )
+			{
 				$current_user = $this->_environment->getCurrentUserItem();
 				$tag_manager = $this->_environment->getTagManager();
 				
@@ -669,23 +670,27 @@
 		}
 		
 		private function accessGranted() {
-			$current_user = $this->_environment->getCurrentUserItem();
-			$current_context = $this->_environment->getCurrentContextItem();
+			$currentUser = $this->_environment->getCurrentUserItem();
+			$currentContext = $this->_environment->getCurrentContextItem();
 			
-			if (!$current_user->isUser() || ( !$current_context->isTagEditedByAll() && !$current_user->isModerator())) {
-				return false;
-				/*
-				 * $params = array();
-				$params['environment'] = $environment;
-				$params['with_modifying_actions'] = true;
-				$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-				unset($params);
-				$errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
-				$page->add($errorbox);
-				 */
-			} else {
+			if ( $currentUser->isUser() && ($currentContext->isTagEditedByAll() || $currentUser->isModerator()) )
+			{
 				return true;
 			}
+			
+			// my stack check
+			if ( isset($this->_data["roomId"]) )
+			{
+				$roomId = $this->_data["roomId"];
+				$ownRoomItem = $currentUser->getOwnRoom();
+				
+				if ( $roomId === $ownRoomItem->getItemID() )
+				{
+					return true;
+				}
+			}
+			
+			return false;
 		}
 	}
 ?>

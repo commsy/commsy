@@ -19,8 +19,8 @@
 				if ($room_id !== null) {
 					$this->_environment->changeContextToPrivateRoom($room_id);
 				}
-					
-				if($item_id !== null && $item_id !== 'NEW') {
+				
+				if ( isset($item_id) && !empty($item_id) && $item_id !== null && $item_id !== 'NEW') {
 					// get item
 					$item_manager = $this->_environment->getItemManager();
 					$type = $item_manager->getItemType($item_id);
