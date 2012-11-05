@@ -828,9 +828,7 @@ class cs_page_view extends cs_view {
          $show_rss_link =  true;
       }
       $hash_string = '';
-      if ( !$current_context_item->isOpenForGuests()
-           and $current_user_item->isUser()
-         ) {
+      if ( $current_user_item->isUser() ) {
          $hash_manager = $this->_environment->getHashManager();
          $hash_string = '&amp;hid='.$hash_manager->getRSSHashForUser($current_user_item->getItemID());
       }
