@@ -81,9 +81,19 @@ $message["PREFERENCES_REALLY_DELETE_DESC_PORTAL"]["en"] = "Your choice is betwee
 <li>If you choose <b>%2</b> you quit all your commsy workspace access on the portal [%1]. The items you entered will not be deleted. It is possible to reactivate your account.</li><li>If you choose <b>%3</b> your account completely, everything you have written in all your workspaces will be deleted. You will not be able to access the workspace with this account.
 
 This is a step of no return.</li></ul>";
+$message["PREFERENCES_REALLY_DELETE_DESC_PORTAL_NOT_OVERWRITE"]["en"] = "Your choice is between two options:
+<ul>
+<li>If you choose <b>%2</b> you quit all your commsy workspace access on the portal [%1]. The items you entered will not be deleted. It is possible to reactivate your account.</li><li>If you choose <b>%3</b> your account completely in all your workspaces will be deleted. You will not be able to access the workspace with this account. The items you entered will not be deleted.
+
+This is a step of no return.</li></ul>";
 $message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["en"] = "Your choice is between two options:
 <ul>
 <li>If you choose <b>%2</b> you quit your commsy workspace [%1] access. The items you entered will not be deleted. It is possible to reactivate your account.</li><li>If you choose <b>%3</b> your account completely, everything you have written in the workspaces %1 will be deleted. You will not be able to access the workspace with this account.
+
+This is a step of no return.</li></ul>";
+$message["PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE"]["en"] = "Your choice is between two options:
+<ul>
+<li>If you choose <b>%2</b> you quit your commsy workspace [%1] access. The items you entered will not be deleted. It is possible to reactivate your account.</li><li>If you choose <b>%3</b> your account completely will be deleted in the workspaces %1. You will not be able to access the workspace with this account. The items you entered will not be deleted.
 
 This is a step of no return.</li></ul>";
 $message["PREFERENCES_ROOM_ASSIGMENT"]["en"] = "Association of <br/>

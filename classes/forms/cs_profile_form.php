@@ -359,13 +359,33 @@ class cs_profile_form extends cs_rubric_form {
               and !$this->_environment->inPrivateRoom()
             ) {
             $current_context_item = $this->_environment->getCurrentContextItem();
-            $this->_form->addText('delete_text_room','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_ROOM',$current_context_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM')));
+            // datenschutz: overwrite or not (28.08.2012 IJ)
+            $overwrite = true;
+            $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+            if ( !empty($disable_overwrite) and $disable_overwrite ) {
+            	$overwrite = false;
+            }            
+            if ($overwrite) {
+               $this->_form->addText('delete_text_room','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_ROOM',$current_context_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM')));
+            } else {
+               $this->_form->addText('delete_text_room','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE',$current_context_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM')));
+            }            
             unset($current_context_item);
             $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM'));
             $this->_form->addEmptyline(true);
             $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
          } else {
-            $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_PORTAL',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
+            // datenschutz: overwrite or not (28.08.2012 IJ)
+            $overwrite = true;
+            $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+            if ( !empty($disable_overwrite) and $disable_overwrite ) {
+            	$overwrite = false;
+            }            
+            if ($overwrite) {
+         	   $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_PORTAL',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
+            } else {
+               $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_PORTAL_NOT_OVERWRITE',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
+            }         
          }
          $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle()));
          unset($current_portal_item);

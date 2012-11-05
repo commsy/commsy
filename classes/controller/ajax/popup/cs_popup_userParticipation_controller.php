@@ -84,6 +84,14 @@ class cs_popup_userParticipation_controller implements cs_popup_controller {
 		$portal_information['portal_id'] = $portal_item->getItemID();
 		$portal_information['portal_title'] = $portal_item->getTitle();
 		$this->_popup_controller->assign('popup', 'portal', $portal_information);
-	}
 
+	   // datenschutz: overwrite or not (04.09.2012 IJ)
+	   $datenschutz = array();
+		$datenschutz['overwrite'] = true;
+		$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+		if ( !empty($disable_overwrite) and $disable_overwrite ) {
+			$datenschutz['overwrite'] = false;
+		}
+		$this->_popup_controller->assign('popup', 'datenschutz', $datenschutz);
+	}
 }
