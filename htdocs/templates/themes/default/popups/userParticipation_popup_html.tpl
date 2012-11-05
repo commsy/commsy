@@ -13,7 +13,12 @@
             </div>
             <div id="popup_content_wrapper">
                <div id="popup_content">
-                  {i18n tag=PREFERENCES_REALLY_DELETE_DESC_ROOM param1=$popup.room.room_title param2=___PREFERENCES_LOCK_BUTTON_ROOM___ param3=___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___}
+                  {if $popup.datenschutz.overwrite === true}
+                     {i18n tag=PREFERENCES_REALLY_DELETE_DESC_ROOM param1=$popup.room.room_title param2=___PREFERENCES_LOCK_BUTTON_ROOM___ param3=___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___}
+                  {/if}
+                  {if $popup.datenschutz.overwrite === false}
+                     {i18n tag=PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE param1=$popup.room.room_title param2=___PREFERENCES_LOCK_BUTTON_ROOM___ param3=___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___}
+                  {/if}
                   <div id="content_buttons">
                      <div id="crt_actions_area" style="border-bottom:0px;">
                         <input id="popup_button_room_lock" class="popup_button submit" data-custom="part: 'all', user_id: {$popup.user.item_id}, context_id: {$popup.room.room_id}, action: 'room_lock'" type="button" name="" value="___PREFERENCES_LOCK_BUTTON_ROOM___" />
