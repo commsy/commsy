@@ -23,7 +23,7 @@
 			$this->assign('popup', 'item_id', $this->_item_id);
 
 			// item
-			if ( isset($item_id) && !empty($item_id) && $item_id !== null && $this->_item_id !== 'NEW') {
+			if ( isset($this->_item_id) && !empty($this->_item_id) && $this->_item_id !== null && $this->_item_id !== 'NEW') {
 				$item_manager = $this->_environment->getItemManager();
 				$type = $item_manager->getItemType($this->_item_id);
 				if($type === CS_LABEL_TYPE) {
