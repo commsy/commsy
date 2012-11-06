@@ -3268,6 +3268,15 @@ jQuery(document).ready(function() {
 							scroll_li.append(scroll_div);
 							ul.append(scroll_li);
 							scroll = false;
+						} else if (temp_menu_entry[1] == 'headline') {
+							var tempActionChecked = temp_menu_entry[1];
+							var tempActionText = temp_menu_entry[2];
+							var tempActionValue = temp_menu_entry[3];
+							if(!scroll){
+								ul.append('<br/><li class="dropdown">'+tempActionText+'</li>');
+							} else {
+								scroll_ul.append('<br/><li class="dropdown">'+tempActionText+'</li>');
+							}
 						} else {
 							var tempActionChecked = temp_menu_entry[1];
 							var tempActionText = temp_menu_entry[2];
