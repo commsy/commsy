@@ -2248,20 +2248,20 @@ class cs_environment {
       		if ( !empty($db_force_master) ) {
       			$db_choice = $db_force_master;
       		} else {
-      			$portal_id = $this->getDBPortalID();
+      		   $portal_id = $this->getDBPortalID();
       			foreach ($db as $key => $value_array) {
       				if ( !empty($value_array['portals'])
-      				and in_array($portal_id,$value_array['portals'])
-      				) {
+      				     and in_array($portal_id,$value_array['portals'])
+      				   ) {
       					if ( empty($value_array['timeslots']) ) {
       						$db_choice = $key;
       					} else {
-      						foreach ( $value_array['timeslots'] as $timeslot_array ) {
+      					   foreach ( $value_array['timeslots'] as $timeslot_array ) {
       							if ( !empty($timeslot_array['begin'])
-      							and !empty($timeslot_array['end'])
-      							and date('H:i') >= $timeslot_array['begin']
-      							and date('H:i') < $timeslot_array['end']
-      							) {
+      							     and !empty($timeslot_array['end'])
+      							     and date('H:i') >= $timeslot_array['begin']
+      							     and date('H:i') < $timeslot_array['end']
+      							   ) {
       								$db_choice = $key;
       								break;
       							}
