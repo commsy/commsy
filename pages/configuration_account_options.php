@@ -158,14 +158,11 @@ if ($current_user->isGuest()) {
                // ~Fix
             }
          }else{
-            $current_context->open();
-            if($current_context->existWiki() and $c_use_soap_for_wiki){
-               $wiki_manager = $environment->getWikiManager();
-               $wiki_manager->openWiki();
-            }
             
             // Fix: Find Group-Rooms if existing
-            if( $current_context->isGrouproomActive() ) {
+            if ( $current_context->isProjectRoom()
+                 and $current_context->isGrouproomActive()
+               ) {
                $groupRoomList = $current_context->getGroupRoomList();
                
                if( !$groupRoomList->isEmpty() ) {
@@ -175,12 +172,25 @@ if ($current_user->isGuest()) {
                      // All GroupRooms have to be opened too
                      $room_item->open();
                      $room_item->save();
+                     if ( $environment->isArchiveMode() ) {
+                     	$room_item->backFromArchive();
+                     }
                      
                      $room_item = $groupRoomList->getNext();
                   }
                }
             }
             // ~Fix
+
+            if ( $environment->isArchiveMode() ) {
+            	$current_context->backFromArchive();
+            	$environment->deactivateArchiveMode();
+            }
+         	$current_context->open();
+            if($current_context->existWiki() and $c_use_soap_for_wiki){
+               $wiki_manager = $environment->getWikiManager();
+               $wiki_manager->openWiki();
+            }            
          }
 
 
@@ -245,7 +255,9 @@ if ($current_user->isGuest()) {
                $commsy->setClosedForGuests();
             }
          }
-         $commsy->save();
+         if ( !$environment->isArchiveMode() ) {
+            $commsy->save();
+         }
 #         redirect($environment->getCurrentContextID(),'configuration', 'index', '');
          $form_view->setItemIsSaved();
          $is_saved = true;
@@ -253,7 +265,9 @@ if ($current_user->isGuest()) {
          // editor agb acceptance
          $current_user = $environment->getCurrentUserItem();
          $current_user->setAGBAcceptance();
-         $current_user->save();
+         if ( !$environment->isArchiveMode() ) {
+            $current_user->save();
+         }
       }
    } else {
       $current_context = $environment->getCurrentContextItem();
