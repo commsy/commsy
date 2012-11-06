@@ -34,7 +34,8 @@ class db_mysql_connector {
    private $_query_failed = 0;
    private $_query_failed_border = 10;
    private $_db_data = array();
-
+   private $_read_only = false;
+    
    public function __construct ($data) {
       $this->_db_data = $data;
       $this->_connect();
@@ -91,8 +92,27 @@ class db_mysql_connector {
             trigger_error('no connection to to mysql database available - query: '.$query,E_USER_ERROR);
          }
       }
-
-      $result = mysql_query($query,$this->_db_link);
+      
+      // db read only (17.09.2012 IJ)
+      if ( !$this->_read_only
+           or ( $this->_read_only
+                and ( mb_substr(trim($query),0,19) == 'INSERT INTO session'
+					       or mb_substr(trim($query),0,18) == 'UPDATE session SET'
+					       or mb_substr(trim($query),0,19) == 'DELETE FROM session'
+					       or mb_substr(trim($query),0,16) == 'INSERT INTO tmp3'
+					     )
+              )
+           or ( $this->_read_only
+   			    and mb_substr(trim($query),0,6) != 'INSERT'
+ 			       and mb_substr(trim($query),0,6) != 'UPDATE'
+ 			       and mb_substr(trim($query),0,6) != 'DELETE'
+              )
+         ) {
+      	$result = mysql_query($query,$this->_db_link);
+      } else {
+      	$result = true;
+      }
+      
       $this->_db_errno = mysql_errno($this->_db_link);
       $this->_db_error = mysql_error($this->_db_link);
       if ( $this->_log_query ) {
@@ -147,6 +167,12 @@ class db_mysql_connector {
                  or strstr($query,'INSERT INTO item_backup')
                ) {
                $retour = $result;
+            } elseif ( $this->_read_only                 
+                       and mb_substr(trim($query),0,19) != 'INSERT INTO session'
+                       and mb_substr(trim($query),0,16) != 'INSERT INTO tmp3'
+               ) {
+            	// db read only (17.09.2012 IJ)
+               $retour = 42;
             } else {
                $retour = mysql_insert_id($this->_db_link);
             }
@@ -182,6 +208,10 @@ class db_mysql_connector {
 
    public function setDisplayOn () {
       $this->_display = true;
+   }
+
+   public function setReadOnly () {
+   	$this->_read_only = true;
    }
 
    public function text_php2db ( $text ) {
