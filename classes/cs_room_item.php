@@ -1257,6 +1257,10 @@ class cs_room_item extends cs_context_item {
       unset($item_manager);
       
       // Plain copy of the rest
+      $assessment_manager = $environment->getAssessmentManager();
+      $assessment_manager->moveFromDbToBackup($this->getItemID());
+      unset($assessment_manager);
+
       $annotation_manager = $environment->getAnnotationManager();
       $annotation_manager->moveFromDbToBackup($this->getItemID());
       unset($annotation_manager);
@@ -1384,6 +1388,10 @@ class cs_room_item extends cs_context_item {
       unset($item_manager);
 
       // Plain copy of the rest
+      $assessment_manager = $environment->getAssessmentManager();
+      $assessment_manager->moveFromBackupToDb($this->getItemID());
+      unset($assessment_manager);
+
       $annotation_manager = $environment->getAnnotationManager();
       $annotation_manager->moveFromBackupToDb($this->getItemID());
       unset($annotation_manager);
