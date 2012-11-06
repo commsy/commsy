@@ -239,7 +239,17 @@ class cs_log_manager extends cs_manager {
       if(!isset($array['time'])){
          $array['time'] = '0';
       }
-      $query = 'INSERT DELAYED INTO '.$this->addDatabasePrefix('log').' SET '.
+      
+      // mysql - replication
+      $delayed = ' DELAYED ';
+      $db_replication = $this->_environment->getConfiguration('db_replication');
+      if ( !empty($db_replication)
+           and $db_replication
+         ) {
+         $delayed = ' ';
+      }
+      
+      $query = 'INSERT'.$delayed.'INTO '.$this->addDatabasePrefix('log').' SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.
                'timestamp=NOW(), '.
                'agent="'.   encode(AS_DB,$array['user_agent']).'", '.

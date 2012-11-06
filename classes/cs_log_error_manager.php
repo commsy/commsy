@@ -158,7 +158,16 @@ class cs_log_error_manager extends cs_manager {
       if ( !isset($array['user']) ) {
          $array['user'] = '';
       }
-      $query = 'INSERT DELAYED INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
+
+      // mysql - replication
+      $delayed = ' DELAYED ';
+      $db_replication = $this->_environment->getConfiguration('db_replication');
+      if ( !empty($db_replication)
+           and $db_replication
+         ) {
+         $delayed = ' ';
+      }
+      $query = 'INSERT'.$delayed.'INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
                'datetime=NOW(), '.
                'number="'.  encode(AS_DB,$array['number']).'", '.
                'type="'.    encode(AS_DB,$array['type']).'", '.
