@@ -39,6 +39,7 @@ Wenn Sie <b>alles löschen</b> möchten, werden sämtliche ihrer Beiträge und i
 </ul>";
 $message["USER_CREATIONDATE"]["de"] = "erzeugt";
 $message["USER_DELETE_FORM_DESCRIPTION"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie die <b>Teilnahme beenden</b>, wird die Kennung für diesen Raum gesperrt. Die Person hat dann keinen Zutritt mehr zu diesem Raum. Alle Beiträge bleiben aber erhalten. Die Kennung kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie die Kennung <b>löschen</b> möchten, werden sämtliche Beiträge und die Kennung in diesem Raum gelöscht. Die Person kann danach den Raum nicht mehr betreten.</li></ul>";
+$message["USER_DELETE_FORM_DESCRIPTION_NOT_OVERWRITE"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie die <b>Teilnahme beenden</b>, wird die Kennung für diesen Raum gesperrt. Die Person hat dann keinen Zutritt mehr zu diesem Raum. Alle Beiträge bleiben aber erhalten. Die Kennung kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie die Kennung <b>löschen</b> möchten, werden sämtliche persönliche Daten der Person und die Kennung in diesem Raum gelöscht. Die Einträge bleiben erhalten. Die Person kann danach den Raum nicht mehr betreten.</li></ul>";
 $message["USER_DELETE_MAIL_BODY"]["de"] = "Die Kennung [%2] wurde gelöscht.
 
 Die Informationen im einzelnen:
