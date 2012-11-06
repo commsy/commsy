@@ -21,7 +21,6 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-
 mb_internal_encoding('UTF-8');
 
 global $environment;
@@ -86,14 +85,30 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          }
          unset($user);
       }
-      fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
+      fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'</h4>'.LF);
       if ( $active ) {
       	global $c_commsy_cron_split_scripts;
       	if(isset($c_commsy_cron_split_scripts) and $c_commsy_cron_split_scripts){
 	         if($room->isPrivateRoom()){
-	      	   passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
+	      	   #passthru('php htdocs/cron_single_room.php '.$room->getItemID().' private');
+	         	$output = array();
+               exec('php htdocs/cron_single_room.php '.$room->getItemID().' private',$output);
+               if ( !empty($output)
+                    and !empty($output[0])
+                  ) {
+                  $cron_array = json_decode($output[0],true);
+                  displayCronResults($cron_array);
+               }
 	         } else {
-	         	passthru('php htdocs/cron_single_room.php '.$room->getItemID());
+	         	#passthru('php htdocs/cron_single_room.php '.$room->getItemID());
+	            $output = array();
+               exec('php htdocs/cron_single_room.php '.$room->getItemID(),$output);
+               if ( !empty($output)
+                    and !empty($output[0])
+                  ) {
+                  $cron_array = json_decode($output[0],true);
+                  displayCronResults($cron_array);
+               }
 	         }
       	} else {
       		displayCronResults($room->runCron());
@@ -108,6 +123,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
       unset($room);
    }
    unset($room_manager);
+   unset($translator);
 }
 
 function displayCronResults ( $array ) {
@@ -167,7 +183,7 @@ function displayCronResults ( $array ) {
       $html .= '</table>'.LF;
    }
    fwrite($file, $html);
-   flush();
+   unset($html);
 }
 
 function cron_workflow($portal){
@@ -179,189 +195,205 @@ function cron_workflow($portal){
       $material_manager = $environment->getMaterialManager();
       $item_array = $material_manager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
-      	if ( isset($item) && !$item->isDeleted() )
-      	{
-      		$room_manager = $environment->getRoomManager();
-      		$temp_room = $room_manager->getItem($temp_material->getContextID());
-      		
-      		if($temp_material->getWorkflowResubmission() and $temp_room->withWorkflowResubmission()){
-      			$email_receiver_array = array();
-      			if($temp_material->getWorkflowResubmissionWho() == 'creator'){
-      				$email_receiver_array[] = $temp_material->getCreator();
-      			} else {
-      				$temp_list = $temp_material->getModifierList();
-      				$email_receiver_array = $temp_list->to_array();
-      			}
-      		
-      			$to = '';
-      			$first = true;
-      			foreach($email_receiver_array as $email_receiver){
-      				if($first){
-      					$to .= $email_receiver->getEmail();
-      					$first = false;
-      				} else {
-      					$to .= ','.$email_receiver->getEmail();
-      				}
-      			}
-      		
-      			$additional_receiver = $temp_material->getWorkflowResubmissionWhoAdditional();
-      			if(!empty($additional_receiver)){
-      				$to .= ','.$additional_receiver;
-      			}
-      		
-      			include_once('classes/cs_mail.php');
-      			$translator = $environment->getTranslationObject();
-      			$mail = new cs_mail();
-      			$mail->set_to($to);
-      			$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $portal->getTitle()));
-      			$server_item = $environment->getServerItem();
-      			$default_sender_address = $server_item->getDefaultSenderAddress();
-      			if (!empty($default_sender_address)) {
-      				$mail->set_from_email($default_sender_address);
-      			} else {
-      				$mail->set_from_email('@');
-      			}
-      			$mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portal->getTitle()));
-      		
-      			$url_to_portal = '';
-      			if ( !empty($portal) ) {
-      				$url_to_portal = $portal->getURL();
-      			}
-      			global $c_commsy_cron_path;
-      			if(isset($c_commsy_cron_path)){
-      				$curl_text = $c_commsy_cron_path.'commsy.php?cid=';
-      			} elseif ( !empty($url_to_portal) ) {
-      				$c_commsy_domain = $environment->getConfiguration('c_commsy_domain');
-      				if ( stristr($c_commsy_domain,'https://') ) {
-      					$curl_text = 'https://';
-      				} else {
-      					$curl_text = 'http://';
-      				}
-      				$curl_text .= $url_to_portal;
-      				$file = 'commsy.php';
-      				$c_single_entry_point = $environment->getConfiguration('c_single_entry_point');
-      				if ( !empty($c_single_entry_point) ) {
-      					$file = $c_single_entry_point;
-      				}
-      				$curl_text .= '/'.$file.'?cid=';
-      			} else {
-      				$commsy_file = $_SERVER['PHP_SELF'];
-      				$commsy_file = str_replace('cron_new','commsy',$commsy_file);
-      				$commsy_file = str_replace('cron','commsy',$commsy_file);
-      				$curl_text = 'http://'.$_SERVER['HTTP_HOST'].$commsy_file.'?cid=';
-      			}
-      			$link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
-      		
-      			if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
-      				$mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-      			}else{
-      				$mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-      			}
-      			$mail->setSendAsHTML();
-      			if ( $mail->send() ) {
-      				fwrite($file, 'workflow resubmission e-mail send for item: '.$item['item_id']);
-      			}
-      		
-      			// change the status of the material
-      			$material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowResubmissionTrafficLight(), $temp_material->getVersionID());
-      		}
-      	}
-      	
-         $temp_material = $material_manager->getItem($item['item_id']);
+         if ( isset($item) && !$item->isDeleted() )
+         {
+	      	$temp_material = $material_manager->getItem($item['item_id']);
+	
+	         $room_manager = $environment->getRoomManager();
+	         $temp_room = $room_manager->getItem($temp_material->getContextID());
+	
+	         if($temp_material->getWorkflowResubmission() and $temp_room->withWorkflowResubmission()){
+	            $email_receiver_array = array();
+	            if($temp_material->getWorkflowResubmissionWho() == 'creator'){
+	               $email_receiver_array[] = $temp_material->getCreator();
+	            } else {
+	               $temp_list = $temp_material->getModifierList();
+	               $email_receiver_array = $temp_list->to_array();
+	            }
+	
+	            $to = '';
+	            $first = true;
+	            foreach($email_receiver_array as $email_receiver){
+	               if($first){
+	                  $to .= $email_receiver->getEmail();
+	                  $first = false;
+	               } else {
+	                  $to .= ','.$email_receiver->getEmail();
+	               }
+	            }
+	
+	            $additional_receiver = $temp_material->getWorkflowResubmissionWhoAdditional();
+	            if(!empty($additional_receiver)){
+	               $to .= ','.$additional_receiver;
+	            }
+	
+	            include_once('classes/cs_mail.php');
+	            $translator = $environment->getTranslationObject();
+	            $mail = new cs_mail();
+	            $mail->set_to($to);
+	            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $portal->getTitle()));
+	            $server_item = $environment->getServerItem();
+	            $default_sender_address = $server_item->getDefaultSenderAddress();
+	            if (!empty($default_sender_address)) {
+	               $mail->set_from_email($default_sender_address);
+	            } else {
+	               $mail->set_from_email('@');
+	            }
+	            $mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_RESUBMISSION', $portal->getTitle()));
+	
+	            $url_to_portal = '';
+	            if ( !empty($portal) ) {
+	               $url_to_portal = $portal->getURL();
+	            }
+	            global $c_commsy_cron_path;
+	            if(isset($c_commsy_cron_path)){
+	               $curl_text = $c_commsy_cron_path.'commsy.php?cid=';
+	            } elseif ( !empty($url_to_portal) ) {
+	               $c_commsy_domain = $environment->getConfiguration('c_commsy_domain');
+	               if ( stristr($c_commsy_domain,'https://') ) {
+	                  $curl_text = 'https://';
+	               } else {
+	                  $curl_text = 'http://';
+	               }
+	               $curl_text .= $url_to_portal;
+	               $file = 'commsy.php';
+	               $c_single_entry_point = $environment->getConfiguration('c_single_entry_point');
+	               if ( !empty($c_single_entry_point) ) {
+	                  $file = $c_single_entry_point;
+	               }
+	               $curl_text .= '/'.$file.'?cid=';
+	            } else {
+	               $commsy_file = $_SERVER['PHP_SELF'];
+	               $commsy_file = str_replace('cron_new','commsy',$commsy_file);
+	               $commsy_file = str_replace('cron','commsy',$commsy_file);
+	               $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$commsy_file.'?cid=';
+	            }
+	            $link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
+	
+	            if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
+	            	$mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+	            }else{
+	            	$mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+	            }
+	            $mail->setSendAsHTML();
+	            if ( $mail->send() ) {
+	               fwrite($file, 'workflow resubmission e-mail send for item: '.$item['item_id']);
+	            }
+	
+	            // change the status of the material
+	            $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowResubmissionTrafficLight(), $temp_material->getVersionID());
+	            
+	            unset($mail);
+	            unset($translator);
+	            unset($server_item);
+	         }
+	         unset($temp_material);
+	         unset($temp_room);
+	         unset($room_manager);
+         }
       }
 
       $item_array = $material_manager->getValidityItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
-         $temp_material = $material_manager->getItem($item['item_id']);
-         
          if ( isset($item) && !$item->isDeleted() )
          {
-         	$room_manager = $environment->getRoomManager();
-         	$temp_room = $room_manager->getItem($temp_material->getContextID());
-         	
-         	if($temp_material->getWorkflowValidity() and $temp_room->withWorkflowValidity()){
-         		$email_receiver_array = array();
-         		if($temp_material->getWorkflowValidityWho() == 'creator'){
-         			$email_receiver_array[] = $temp_material->getCreator();
-         		} else {
-         			$temp_list = $temp_material->getModifierList();
-         			$email_receiver_array = $temp_list->to_array();
-         		}
-         	
-         		$to = '';
-         		$first = true;
-         		foreach($email_receiver_array as $email_receiver){
-         			if($first){
-         				$to .= $email_receiver->getEmail();
-         				$first = false;
-         			} else {
-         				$to .= ','.$email_receiver->getEmail();
-         			}
-         		}
-         	
-         		$additional_receiver = $temp_material->getWorkflowValidityWhoAdditional();
-         		if(!empty($additional_receiver)){
-         			$to .= ','.$additional_receiver;
-         		}
-         	
-         		include_once('classes/cs_mail.php');
-         		$translator = $environment->getTranslationObject();
-         		$mail = new cs_mail();
-         		$mail->set_to($to);
-         		$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $portal->getTitle()));
-         		$server_item = $environment->getServerItem();
-         		$default_sender_address = $server_item->getDefaultSenderAddress();
-         		if (!empty($default_sender_address)) {
-         			$mail->set_from_email($default_sender_address);
-         		} else {
-         			$mail->set_from_email('@');
-         		}
-         		$mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY', $portal->getTitle()));
-         	
-         		$url_to_portal = '';
-         		if ( !empty($portal) ) {
-         			$url_to_portal = $portal->getURL();
-         		}
-         		global $c_commsy_cron_path;
-         		if(isset($c_commsy_cron_path)){
-         			$curl_text = $c_commsy_cron_path.'commsy.php?cid=';
-         		} elseif ( !empty($url_to_portal) ) {
-         			$c_commsy_domain = $environment->getConfiguration('c_commsy_domain');
-         			if ( stristr($c_commsy_domain,'https://') ) {
-         				$curl_text = 'https://';
-         			} else {
-         				$curl_text = 'http://';
-         			}
-         			$curl_text .= $url_to_portal;
-         			$file = 'commsy.php';
-         			$c_single_entry_point = $environment->getConfiguration('c_single_entry_point');
-         			if ( !empty($c_single_entry_point) ) {
-         				$file = $c_single_entry_point;
-         			}
-         			$curl_text .= '/'.$file.'?cid=';
-         		} else {
-         			$commsy_file = $_SERVER['PHP_SELF'];
-         			$commsy_file = str_replace('cron_new','commsy',$commsy_file);
-         			$commsy_file = str_replace('cron','commsy',$commsy_file);
-         			$curl_text = 'http://'.$_SERVER['HTTP_HOST'].$commsy_file.'?cid=';
-         		}
-         		$link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
-         	
-         		if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
-         			$mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-         		}else{
-         			$mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $temp_room->getTitle(), $temp_material->getTitle(), $link));
-         		}
-         		$mail->setSendAsHTML();
-         		if ( $mail->send() ) {
-         			fwrite($file, 'workflow validity e-mail send for item: '.$item['item_id']);
-         		}
-         	
-         		// change the status of the material
-         		$material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowValidityTrafficLight(), $temp_material->getVersionID());
-         	}
+	      	$temp_material = $material_manager->getItem($item['item_id']);
+	
+	         $room_manager = $environment->getRoomManager();
+	         $temp_room = $room_manager->getItem($temp_material->getContextID());
+	
+	         if($temp_material->getWorkflowValidity() and $temp_room->withWorkflowValidity()){
+	            $email_receiver_array = array();
+	            if($temp_material->getWorkflowValidityWho() == 'creator'){
+	               $email_receiver_array[] = $temp_material->getCreator();
+	            } else {
+	               $temp_list = $temp_material->getModifierList();
+	               $email_receiver_array = $temp_list->to_array();
+	            }
+	
+	            $to = '';
+	            $first = true;
+	            foreach($email_receiver_array as $email_receiver){
+	               if($first){
+	                  $to .= $email_receiver->getEmail();
+	                  $first = false;
+	               } else {
+	                  $to .= ','.$email_receiver->getEmail();
+	               }
+	            }
+	
+	            $additional_receiver = $temp_material->getWorkflowValidityWhoAdditional();
+	            if(!empty($additional_receiver)){
+	               $to .= ','.$additional_receiver;
+	            }
+	
+	            include_once('classes/cs_mail.php');
+	            $translator = $environment->getTranslationObject();
+	            $mail = new cs_mail();
+	            $mail->set_to($to);
+	            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE', $portal->getTitle()));
+	            $server_item = $environment->getServerItem();
+	            $default_sender_address = $server_item->getDefaultSenderAddress();
+	            if (!empty($default_sender_address)) {
+	               $mail->set_from_email($default_sender_address);
+	            } else {
+	               $mail->set_from_email('@');
+	            }
+	            $mail->set_subject($translator->getMessage('COMMON_WORKFLOW_EMAIL_SUBJECT_VALIDITY', $portal->getTitle()));
+	
+	            $url_to_portal = '';
+	            if ( !empty($portal) ) {
+	               $url_to_portal = $portal->getURL();
+	            }
+	            global $c_commsy_cron_path;
+	            if(isset($c_commsy_cron_path)){
+	               $curl_text = $c_commsy_cron_path.'commsy.php?cid=';
+	            } elseif ( !empty($url_to_portal) ) {
+	               $c_commsy_domain = $environment->getConfiguration('c_commsy_domain');
+	               if ( stristr($c_commsy_domain,'https://') ) {
+	                  $curl_text = 'https://';
+	               } else {
+	                  $curl_text = 'http://';
+	               }
+	               $curl_text .= $url_to_portal;
+	               $file = 'commsy.php';
+	               $c_single_entry_point = $environment->getConfiguration('c_single_entry_point');
+	               if ( !empty($c_single_entry_point) ) {
+	                  $file = $c_single_entry_point;
+	               }
+	               $curl_text .= '/'.$file.'?cid=';
+	            } else {
+	               $commsy_file = $_SERVER['PHP_SELF'];
+	               $commsy_file = str_replace('cron_new','commsy',$commsy_file);
+	               $commsy_file = str_replace('cron','commsy',$commsy_file);
+	               $curl_text = 'http://'.$_SERVER['HTTP_HOST'].$commsy_file.'?cid=';
+	            }
+	            $link = '<a href="'.$curl_text.$temp_room->getItemID().'&amp;mod=material&amp;fct=detail&amp;iid='.$temp_material->getItemID().'">'.$temp_material->getTitle().'</a>';
+	
+	            if (isset($cs_special_language_tags) and !empty($cs_special_language_tags)){
+	            	$mail->set_message($translator->getMessage($cs_special_language_tags.'_WORKFLOW_EMAIL_BODY_RESUBMISSION', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+	            }else{
+	            	$mail->set_message($translator->getMessage('COMMON_WORKFLOW_EMAIL_BODY_VALIDITY', $temp_room->getTitle(), $temp_material->getTitle(), $link));
+	            }
+	            $mail->setSendAsHTML();
+	            if ( $mail->send() ) {
+	               fwrite($file, 'workflow validity e-mail send for item: '.$item['item_id']);
+	            }
+	
+	            // change the status of the material
+	            $material_manager->setWorkflowStatus($temp_material->getItemID(), $temp_material->getWorkflowValidityTrafficLight(), $temp_material->getVersionID());
+	            
+	            unset($mail);
+	            unset($translator);
+	            unset($server_item);
+	         }
+	         unset($temp_material);
+	         unset($temp_room);
+	         unset($room_manager);
          }
       }
+	   unset($item_array);
+	   unset($material_manager);
    }
 }
 
@@ -389,6 +421,8 @@ if ( file_exists('var/'.$filename) ) {
    }
 }
 $file = fopen('var/'.$filename,'w+');
+
+fwrite($file,'<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>');
 
 $memory_limit2 = 640 * 1024 * 1024;
 $memory_limit = ini_get('memory_limit');
@@ -435,7 +469,6 @@ $result_array['portal'] = array();
 $portal_id_array = $server_item->getPortalIDArray();
 
 $portal_manager = $environment->getPortalManager();
-$room_manager = $environment->getRoomManager();
 foreach ( $portal_id_array as $portal_id ) {
    if ( !isset($context_id)
         or $context_id == $portal_id
@@ -443,7 +476,7 @@ foreach ( $portal_id_array as $portal_id ) {
 
       // portal
       $portal = $portal_manager->getItem($portal_id);
-      fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF);
+      fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal</h4>'.LF);
       displayCronResults($portal->runCron());
       fwrite($file, '<hr/>'.LF);
 
@@ -473,16 +506,18 @@ foreach ( $portal_id_array as $portal_id ) {
       unset($portal);
    }
 }
+unset($portal_manager);
 
 // server cron jobs must be run AFTER all other portal crons
 if ( !isset($context_id)
      or ($context_id == $environment->getServerID())
    ) {
-   fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
+   fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server</h4>'.LF);
    displayCronResults($server_item->runCron());
    fwrite($file, '<hr/>'.BRLF);
 }
 unset($server_item);
+unset($environment);
 
 $time_end = getmicrotime();
 $end_time = date('d.m.Y H:i:s');
@@ -522,5 +557,6 @@ fwrite($file, 'Peak of memory allocated: '.memory_get_peak_usage().BRLF);
 echo('Current of memory allocated: '.memory_get_usage().BRLF);
 fwrite($file, 'Current of memory allocated: '.memory_get_usage().BRLF);
 fwrite($file, '-----CRON-OK-----');
+fwrite($file,'</body></html>');
 fclose($file);
 ?>

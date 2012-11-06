@@ -24,6 +24,6 @@ if ( !empty($_SERVER["argv"][1]) ) {
    
    $room_manager->setCacheOff();
    $room = $room_manager->getItem($room_id);
-   $room->runCron();
+   echo(json_encode($room->runCron()));
 }
 ?>
