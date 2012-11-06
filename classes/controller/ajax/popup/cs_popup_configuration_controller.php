@@ -495,11 +495,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				               // ~Fix
 				            }
 				         } else {
-				            $current_context->open();
-				            if($current_context->existWiki() and $c_use_soap_for_wiki){
-				               $wiki_manager = $this->_environment->getWikiManager();
-				               $wiki_manager->openWiki();
-				            }
 
 				            // Fix: Find Group-Rooms if existing
 				            if( $current_context->isGrouproomActive() ) {
@@ -518,6 +513,19 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				               }
 				            }
 				            // ~Fix
+				            
+				            // archive
+				            if ( $this->_environment->isArchiveMode() ) {
+            	            $current_context->backFromArchive();
+            	            $this->_environment->deactivateArchiveMode();
+                        }
+                        // archive
+                        
+         	            $current_context->open();
+                        if($current_context->existWiki() and $c_use_soap_for_wiki){
+                           $wiki_manager = $environment->getWikiManager();
+                           $wiki_manager->openWiki();
+                        }            
 				         }
 
 				         $languages = $this->_environment->getAvailableLanguageArray();
