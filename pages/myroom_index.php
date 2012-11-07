@@ -468,6 +468,19 @@ if (!empty($seltime)) {
 if( $environment->inPrivateRoom() ){
    $user = $environment->getCurrentUserItem();
    $ids = $manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');
+   
+   // archive list
+   if ( !$environment->isArchiveMode() ) {
+      $environment->activateArchiveMode();
+      $manager2 = $environment->getMyRoomManager();      
+      $ids2 = $manager2->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');
+      if ( !empty($ids2) ) {
+         $ids = array_merge($ids,$ids2);
+      }
+      unset($manager2);
+      $environment->deactivateArchiveMode();
+   }
+   
    $count_all_shown = count($ids);
 }else{
    $ids = $manager->getIDArray();       // returns an array of item ids
@@ -482,6 +495,22 @@ if( $environment->inPrivateRoom() ){
    $user = $environment->getCurrentUserItem();
    $manager->resetLimits();
    $list = $manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
+   
+   // archive list
+   if ( !$environment->isArchiveMode() ) {
+      $environment->activateArchiveMode();
+      $manager2 = $environment->getMyRoomManager();      
+      $list2 = $manager2->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
+      if ( isset($list2)
+           and !empty($list2)
+           and $list2->isNotEmpty()
+         ) {
+         $list->addList($list2);
+      }
+      unset($manager2);
+      unset($list2);
+      $environment->deactivateArchiveMode();
+   }
 } else {
    $list = $manager->get();        // returns a cs_list items
 }
