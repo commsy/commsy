@@ -131,6 +131,14 @@ class cs_environment {
          if ($current_user->isRoot() or $this->inPortal()) {
             $this->_portal_user = $current_user;
          } else {
+            
+            // archive mode
+            $toggle_archive_mode = false;
+            if ( $this->isArchiveMode() ) {
+               $this->deactivateArchiveMode();
+               $toggle_archive_mode = true;
+            }
+            
             $manager = $this->getUserManager();
             $manager->resetLimits();
             $manager->setContextLimit($this->getCurrentPortalID());
@@ -140,6 +148,11 @@ class cs_environment {
             $list = $manager->get();
             if ($list->isNotEmpty() and $list->getCount() == 1) {
                $this->_portal_user = $list->getFirst();
+            }
+            
+            // archive mode
+            if ( $toggle_archive_mode ) {
+               $this->activateArchiveMode();
             }
          }
       }
