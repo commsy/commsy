@@ -1057,7 +1057,48 @@ class cs_item_manager extends cs_manager {
       return $retour;
    }
 
-   
+   public function moveFromDbToBackupWorkflow ( $context_id ) {
+   	$db_table = 'workflow_read';
+   	
+      $id_array_items = array();
+      $item_manager = $this->_environment->getItemManager();
+      $item_manager->setContextLimit($context_id);
+      $item_manager->select();
+      $item_list = $item_manager->get();
+      $temp_item = $item_list->getFirst();
+      while($temp_item){
+         $id_array_items[] = $temp_item->getItemID();
+         $temp_item = $item_list->getNext();
+      }
+
+      $id_array_users = array();
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->setContextLimit($context_id);
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      $temp_user = $user_list->getFirst();
+      while($temp_user){
+         $id_array_users[] = $temp_user->getItemID();
+         $temp_user = $user_list->getNext();
+      }
+      
+      global $c_db_backup_prefix;
+      $retour = false;
+      if(!empty($id_array_items) and !empty($id_array_users)){
+         if ( !empty($context_id) ) {
+            $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).' SELECT * FROM '.$this->addDatabasePrefix($db_table).' WHERE '.$this->addDatabasePrefix($db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_table).'.user_id IN ('.implode(",", $id_array_users).')';
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems while copying data of "'.$db_table.'" to backup-table.',E_USER_WARNING);
+            } else {
+               $retour = $this->_deleteFromDbWorkflow($context_id);
+            }
+         }
+      }
+      return $retour;
+   }
+      
    function moveFromBackupToDbWorkflow ( $context_id ) {
    	$db_table = 'workflow_read';
    	
