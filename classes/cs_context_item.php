@@ -1069,6 +1069,21 @@ class cs_context_item extends cs_item {
        $user_manager = $this->_environment->getUserManager();
 /*DB-Optimierung vom 23.10.2010*/
        $retour = $user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
+
+       // archive
+       if ( !$retour
+            and ( $this->isProjectRoom()
+                  or $this->isCommunityRoom()
+                  or $this->isGroupRoom()
+                )
+            and $this->isClosed()
+            and !$this->_environment->isArchiveMode()
+          ) {
+       	 $zzz_user_manager = $this->_environment->getZzzUserManager();
+          $retour = $zzz_user_manager->isUserInContext($user_id, $this->getItemID(), $auth_source);
+       }
+       // archive
+       
        if ($retour) {
           $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
        } else {
@@ -6611,7 +6626,22 @@ class cs_context_item extends cs_item {
     $user_manager->reset();
     $user_manager->setContextLimit($this->getItemID());
     $user_manager->setUserLimit();
-    return $user_manager->getCountAll();
+    $retour = $user_manager->getCountAll();
+    if ( empty($retour)
+         and $this->isClosed()
+         and !$this->_environment->isArchiveMode()
+       ) {
+       $this->_environment->activateArchiveMode();
+       $user_manager2 = $this->_environment->getUserManager();
+       $user_manager2->reset();
+       $user_manager2->setContextLimit($this->getItemID());
+       $user_manager2->setUserLimit();
+       $retour = $user_manager2->getCountAll();
+       unset($user_manager2);
+       $this->_environment->deactivateArchiveMode();
+    }
+    unset($user_manager);
+    return $retour;
   }
 
   function delete () {
