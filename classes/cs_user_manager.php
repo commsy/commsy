@@ -431,7 +431,30 @@ class cs_user_manager extends cs_manager {
          $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
          $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
       }
-
+      
+      // archive
+      if ( !$this->_environment->isArchiveMode() ) {
+         $this->_environment->activateArchiveMode();
+         $room_id_array = $current_portal->getCommunityIDArray();
+         $room_id_array = array_merge($room_id_array,$current_portal->getProjectIDArray());
+         $room_id_array = array_merge($room_id_array,$current_portal->getGroupIDArray());
+         if ( !empty($room_id_array) ) {
+            $tmp_db_name = 'usernomem_archive';
+            $this->setWithDatabasePrefix();
+            $this->_db_prefix = $this->_environment->getConfiguration('c_db_backup_prefix').'_';
+            $retour .= ' LEFT JOIN '.$this->addDatabasePrefix($this->_db_table).' AS '.$tmp_db_name;
+            $this->_db_prefix = '';
+            $this->setWithoutDatabasePrefix();
+            $retour .= ' ON '.$this->addDatabasePrefix($this->_db_table).'.user_id='.$tmp_db_name.'.user_id';
+            $retour .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.auth_source='.$tmp_db_name.'.auth_source';
+            $retour .= ' AND '.$tmp_db_name.'.deleter_id IS NULL';
+            $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
+            $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
+         }
+         $this->_environment->deactivateArchiveMode();
+      }
+      // archive
+      
       return $retour;
    }
 
@@ -439,6 +462,14 @@ class cs_user_manager extends cs_manager {
       $retour  = '';
       $tmp_db_name = 'usernomem';
       $retour .= ' AND '.$tmp_db_name.'.auth_source IS NULL';
+      
+      // archive
+      if ( !$this->_environment->isArchiveMode() ) {
+         $tmp_db_name_archive = 'usernomem_archive';
+         $retour .= ' AND '.$tmp_db_name_archive.'.auth_source IS NULL';
+      }
+      // archive
+      
       return $retour;
    }
 
@@ -451,8 +482,10 @@ class cs_user_manager extends cs_manager {
          }
       }else{
          $query = 'SELECT DISTINCT '.$this->addDatabasePrefix('user').'.context_id FROM '.$this->addDatabasePrefix('user');
-         $query .= ' WHERE 1 AND user.user_id = "'.$user_id.'" AND user.auth_source = "'.$auth_source.'"';
-         $query .= ' AND user.deleter_id IS NULL AND user.deletion_date IS NULL AND user.status >= "2" ORDER BY user.lastname, user.firstname DESC, user.user_id ASC';
+         $query .= ' WHERE 1 AND '.$this->addDatabasePrefix('user').'.user_id = "'.$user_id.'" AND '.$this->addDatabasePrefix('user').'.auth_source = "'.$auth_source.'"';
+         $query .= ' AND '.$this->addDatabasePrefix('user').'.deleter_id IS NULL AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL AND '.$this->addDatabasePrefix('user').'.status >= "2" ORDER BY '.$this->addDatabasePrefix('user').'.lastname, '.$this->addDatabasePrefix('user').'.firstname DESC, '.$this->addDatabasePrefix('user').'.user_id ASC';
+         #$query .= ' WHERE 1 AND user.user_id = "'.$user_id.'" AND user.auth_source = "'.$auth_source.'"';
+         #$query .= ' AND user.deleter_id IS NULL AND user.deletion_date IS NULL AND user.status >= "2" ORDER BY user.lastname, user.firstname DESC, user.user_id ASC';
          if ( isset($this->_cache_sql[$query]) ) {
             $result = $this->_cache_sql[$query];
          } else {
@@ -465,25 +498,39 @@ class cs_user_manager extends cs_manager {
                   $this->_cache_sql[$query] = $result;
                }
             }
-          }
-          if (isset($result)){
-             foreach ($result as $r){
-#                pr($r);
-                $this->_is_user_in_context_cache[$user_id.$auth_source][$r['context_id']] = 'is_user';
-             }
-             if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
-                return true;
-             }else{
-                return false;
-             }
-          }else{
-                return false;
-          }
+         }
+         if (isset($result)){
+            foreach ($result as $r){
+               $this->_is_user_in_context_cache[$user_id.$auth_source][$r['context_id']] = 'is_user';
+            }
+            if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
+               return true;
+            } else {
+            	if ( $this->_environment->foundCurrentContextInArchive()
+            	     and !$this->_environment->isArchiveMode()
+            	     and !($this instanceof cs_zzz_user_manager)
+            	   ) {
+            		$zzz_user_manager = $this->_environment->getZZZUserManager();
+            		$retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
+            		return $retour;
+            	} else {
+                  return false;
+            	}
+            }
+         } else {
+           	if ( $this->_environment->foundCurrentContextInArchive()
+           	     and !$this->_environment->isArchiveMode()
+           	     and !($this instanceof cs_zzz_user_manager)
+               ) {
+           		$zzz_user_manager = $this->_environment->getZZZUserManager();
+           		$retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
+           		return $retour;
+           	} else {
+               return false;
+           	}
+         }
       }
    }
-
-
-
 
    /** INTERNAL: perform database query to get user data
      *
@@ -1699,6 +1746,25 @@ class cs_user_manager extends cs_manager {
 				user.item_id = ' . $item->getItemID() . '
 		';
 		$indexer->add(CS_USER_TYPE, $query);
+	}
+	
+	####################################################
+	# archive method
+	####################################################
+	
+	public function getLastUsedDateOfRoom ( $room_id ) {
+		$retour = '';
+		if ( !empty($room_id) ) {
+			$query = 'SELECT lastlogin FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.$room_id.' AND lastlogin IS NOT NULL ORDER BY lastlogin DESC LIMIT 0,1';
+			$result = $this->_db_connector->performQuery($query);
+			if ( !isset($result) ) {
+				include_once('functions/error_functions.php');
+				trigger_error('Problems getting last used date of this room: '.$room_id,E_USER_WARNING);
+			} elseif ( !empty($result[0]['lastlogin']) ) {
+				$retour = $result[0]['lastlogin'];
+			}	
+		}
+		return $retour;
 	}
 }
 ?>

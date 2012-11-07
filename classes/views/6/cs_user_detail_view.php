@@ -527,6 +527,23 @@ class cs_user_detail_view extends cs_detail_view {
            unset($related_user_list);
        }
 
+         // archive
+         if ( !$this->_environment->isArchiveMode() ) {
+            $this->_environment->activateArchiveMode();
+            $related_user_list = $item->getRelatedUserList();
+            if ($related_user_list->isNotEmpty()) {
+               $user_item = $related_user_list->getFirst();
+               while ($user_item) {
+                  $related_user_array[$user_item->getContextID()] = $user_item;
+                  unset($user_item);
+                  $user_item = $related_user_list->getNext();
+               }
+               unset($related_user_list);
+            }
+            $this->_environment->deactivateArchiveMode();
+         }
+         // archive - end
+            
        $temp_array = array();
        $formal_data[] = $temp_array;
        unset($temp_array);
@@ -606,6 +623,89 @@ class cs_user_detail_view extends cs_detail_view {
        }
        $formal_data[] = $temp_array;
        unset($temp_array);
+
+       // archive
+       if ( !$this->_environment->isArchiveMode() ) {
+       
+          $temp_array = array();
+          $formal_data[] = $temp_array;
+          unset($temp_array);
+       
+          $temp_array = array();
+          $temp_array[] = $this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS');
+          $formal_data[] = $temp_array;
+          unset($temp_array);
+       
+          $this->_environment->activateArchiveMode();
+       
+          $temp_array = array();
+          $temp_array[] = $this->_translator->getMessage('COMMUNITYS');
+       
+          $community_list = $item->getRelatedCommunityList();
+          if ($community_list->isNotEmpty()) {
+             $community_item = $community_list->getFirst();
+             $first = true;
+             $temp_string = '';
+             while ($community_item) {
+                if ($first) {
+                   $first = false;
+                } else {
+                   $temp_string .= BRLF;
+                }
+                $temp_string .= $community_item->getTitle();
+       
+                // status
+                $status = $this->_getStatus($related_user_array[$community_item->getItemID()],$community_item);
+                if (!empty($status)) {
+                   $temp_string .= ' ('.$status.')';
+                }
+                unset($community_item);
+                $community_item = $community_list->getNext();
+             }
+             $temp_array[] = $temp_string;
+             unset($temp_string);
+             unset($community_list);
+          } else {
+             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
+          }
+          $formal_data[] = $temp_array;
+          unset($temp_array);
+       
+          $temp_array = array();
+          $temp_array[] = $this->_translator->getMessage('PROJECTS');
+       
+          $room_list = $item->getRelatedProjectList();
+          if ($room_list->isNotEmpty()) {
+             $room_item = $room_list->getFirst();
+             $first = true;
+             $temp_string = '';
+             while ($room_item) {
+                if ($first) {
+                   $first = false;
+                } else {
+                   $temp_string .= BRLF;
+                }
+                $temp_string .= $room_item->getTitle();
+                // status
+                $status = $this->_getStatus($related_user_array[$room_item->getItemID()],$room_item);
+                if (!empty($status)) {
+                   $temp_string .= ' ('.$status.')';
+                }
+                unset($room_item);
+                $room_item = $room_list->getNext();
+             }
+             $temp_array[] = $temp_string;
+             unset($temp_string);
+             unset($room_list);
+          } else {
+             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
+          }
+          $formal_data[] = $temp_array;
+          unset($temp_array);
+          $this->_environment->deactivateArchiveMode();
+       }
+       // arcive - end
+       
        unset($related_user_list);
       }
 
