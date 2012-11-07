@@ -9,7 +9,8 @@
 		protected $_list_command_confirm = null;
 		protected $_list_attached_ids = array();
 		protected $_list_shown_ids = array();
-
+		private $_toggle_archive_mode = false;
+		
 		/**
 		 * constructor
 		 */
@@ -868,6 +869,13 @@
       $temp_array['title'] = '';
       $retour[] = $temp_array;
       unset($temp_array);
+      if ( $this->_environment->isArchiveMode() ) {
+         $temp_array = array();
+         $temp_array['item_id'] = -1;
+         $temp_array['title'] .= $translator->getMessage('PORTAL_ARCHIVED_ROOMS');
+         $retour[] = $temp_array;
+         unset($temp_array);
+      }
       $temp_array = array();
       $community_list = $current_user->getRelatedCommunityList();
       if ( $community_list->isNotEmpty() ) {
@@ -1123,7 +1131,29 @@
        $translator->setRubricTranslationArray($current_context->getRubricTranslationArray());
        $translator->setEmailTextArray($current_context->getEmailTextArray());
      }
-      return $retour;
+     
+        // archive - BEGIN
+        if ( !$this->_toggle_archive_mode ) {
+           $this->_toggle_archive_mode = true;
+           if ( $this->_environment->isArchiveMode() ) {
+              $this->_environment->deactivateArchiveMode();
+              $retour2 = $this->_getAllOpenContextsForCurrentUser();
+              if ( !empty($retour2) ) {
+                 $retour = array_merge($retour2,$retour);
+              }
+              $this->_environment->activateArchiveMode();
+           } else {
+              $this->_environment->activateArchiveMode();
+              $retour2 = $this->_getAllOpenContextsForCurrentUser();
+              if ( !empty($retour2) ) {
+                 $retour = array_merge($retour,$retour2);
+              }
+              $this->_environment->deactivateArchiveMode();
+           }
+        }
+        // archive - END
+        
+         return $retour;
       }
    }
 
