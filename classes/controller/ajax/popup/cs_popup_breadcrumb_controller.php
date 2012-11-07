@@ -5,6 +5,7 @@
 		private $_environment = null;
 		private $_translator = null;
 		private $_popup_controller = null;
+		private $_toggle_archive_mode = false;
 	
 		/**
 		* constructor
@@ -199,7 +200,10 @@
 	   		$community_list = $current_user->getRelatedCommunityList();
 	   		if ( $community_list->isNotEmpty() ) {
 	   			$temp_array['item_id'] = -1;
-	   			$temp_array['title'] = $this->_translator->getMessage('MYAREA_COMMUNITY_INDEX').'';
+	   			$temp_array['title'] = $this->_translator->getMessage('MYAREA_COMMUNITY_INDEX');
+	     			if ( $this->_environment->isArchiveMode() ) {
+	   			   $temp_array['title'] .= ' ('.$this->_translator->getMessage('COMMON_CLOSED').')';
+	   			}
 	   			$retour[] = $temp_array;
 	   			unset($temp_array);
 	   			$community_item = $community_list->getFirst();
@@ -209,8 +213,8 @@
 	   				$title = $community_item->getTitle();
 	   				$temp_array['title'] = $title;
 	   				if ( $community_item->getItemID() == $this->_environment->getCurrentContextID()
-	   						and !$selected
-	   				) {
+	   					  and !$selected
+	   				   ) {
 	   					$temp_array['selected'] = true;
 	   					$selected = true;
 	   				}
@@ -287,7 +291,10 @@
 	   		unset($current_user);
 	   		if ( $project_list->isNotEmpty() ) {
 	   			$temp_array['item_id'] = -1;
-	   			$temp_array['title'] = $this->_translator->getMessage('MYAREA_PROJECT_INDEX').'';
+	   			$temp_array['title'] = $this->_translator->getMessage('MYAREA_PROJECT_INDEX');
+	   			if ( $this->_environment->isArchiveMode() ) {
+	   			   $temp_array['title'] .= ' ('.$this->_translator->getMessage('COMMON_CLOSED').')';
+	   			}
 	   			$retour[] = $temp_array;
 	   			unset($temp_array);
 	   			$project_item = $project_list->getFirst();
@@ -438,6 +445,28 @@
 	   		}
 	   		unset($portal_item);
 	   		$this->translatorChangeToCurrentContext();
+	   		
+	   		// archive - BEGIN
+	   		if ( !$this->_toggle_archive_mode ) {
+	   		   $this->_toggle_archive_mode = true;
+   	   		if ( $this->_environment->isArchiveMode() ) {
+   	   		   $this->_environment->deactivateArchiveMode();
+   	   		   $retour2 = $this->_getAllOpenContextsForCurrentUser();
+   	   		   if ( !empty($retour2) ) {
+   	   		      $retour = array_merge($retour2,$retour);
+   	   		   }	   		   
+   	   		   $this->_environment->activateArchiveMode();
+   	   		} else {
+   	   		   $this->_environment->activateArchiveMode();
+   	   		   $retour2 = $this->_getAllOpenContextsForCurrentUser();
+   	   		   if ( !empty($retour2) ) {
+   	   		      $retour = array_merge($retour,$retour2);
+   	   		   }
+   	   		   $this->_environment->deactivateArchiveMode();
+   	   		}
+	   		}
+	   		// archive - END
+	   		
 	   		return $retour;
 	   	}
 	   }
