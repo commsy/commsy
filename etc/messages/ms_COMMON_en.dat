@@ -15,6 +15,7 @@ $message["COMMON_ACTION_LINKED"]["en"] = "Linked buzzwords and tags";
 $message["COMMON_ACTION_USER_DETAILS"]["en"] = "Personal room settings";
 $message["COMMON_ACTION_VERSIONS"]["en"] = "Versions";
 $message["COMMON_ACTION_WORKFLOW"]["en"] = "Workflow";
+$message["COMMON_ACTIVATE"]["en"] = "Activate";
 $message["COMMON_ACTIVATED"]["en"] = "Available";
 $message["COMMON_ACTIVATE_ON_CS_BAR"]["en"] = "activate";
 $message["COMMON_ACTIVATING_DATE"]["en"] = "to be accessible at";

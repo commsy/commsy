@@ -15,6 +15,7 @@ $message["COMMON_ACTION_LINKED"]["de"] = "Schlagwörter und Kategorien";
 $message["COMMON_ACTION_USER_DETAILS"]["de"] = "Persönliche Raumeinstellungen";
 $message["COMMON_ACTION_VERSIONS"]["de"] = "Versionen";
 $message["COMMON_ACTION_WORKFLOW"]["de"] = "Workflow";
+$message["COMMON_ACTIVATE"]["de"] = "Aktivieren";
 $message["COMMON_ACTIVATED"]["de"] = "Verfügbar";
 $message["COMMON_ACTIVATE_ON_CS_BAR"]["de"] = "aktivieren";
 $message["COMMON_ACTIVATING_DATE"]["de"] = "wird freigeschaltet am";
