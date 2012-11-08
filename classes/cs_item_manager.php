@@ -744,7 +744,7 @@ class cs_item_manager extends cs_manager {
             if ( $retour == 'empty' ) {
                $retour = NULL;
             } else {
-            	if ( $retour->getItemID() == $this->_environment->getCurrentContextID() ) {
+               if ( $retour->getItemID() == $this->_environment->getCurrentContextID() ) {
             	   $this->_environment->setFoundCurrentContextInArchive();
             	   $this->_environment->activateArchiveMode();
             	}
@@ -762,10 +762,18 @@ class cs_item_manager extends cs_manager {
          } else {
             $retour = 'empty';
          }
+         
          if ( !empty($retour)
               and $retour != 'empty'
               and is_object($retour)
             ) {
+            
+            // archive
+            if ( $this->withDatabasePrefix() ) {
+               $retour->setArchiveStatus();
+            }
+            // archive
+                     
             $this->_cache_object[$iid] = $retour;
          }
       } else {
