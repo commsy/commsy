@@ -1689,8 +1689,8 @@ class cs_environment {
             return $this->getMaterialManager();
          } elseif ($type == CS_ANNOTATION_TYPE or $type == 'annotations') {
             return $this->getAnnotationManager();
-		 } elseif ($type == CS_ASSESSMENT_TYPE or $type == 'assessments') {
-		 	return $this->getAssessmentManager();
+		   } elseif ($type == CS_ASSESSMENT_TYPE or $type == 'assessments') {
+		 	   return $this->getAssessmentManager();
          } elseif ($type == 'discussion' or $type == 'discussions') {
             return $this->getDiscussionManager();
          } elseif ($type == 'discarticle' or $type == 'discarticles') {
@@ -1717,7 +1717,7 @@ class cs_environment {
             return $this->getLogArchiveManager();
          } elseif ($type == CS_PROJECT_TYPE) {
             return $this->getProjectManager($force);
-         }elseif ($type == CS_STEP_TYPE) {
+         } elseif ($type == CS_STEP_TYPE) {
             return $this->getStepManager();
          } elseif ($type == CS_ROOM_TYPE) {
             return $this->getRoomManager($force);
@@ -1767,9 +1767,9 @@ class cs_environment {
             return $this->getTag2TagManager();
          } elseif ($type == CS_BUZZWORD_TYPE) {
             return $this->getBuzzwordManager();
-         }elseif ($type == CS_MYLIST_TYPE) {
+         } elseif ($type == CS_MYLIST_TYPE) {
             return $this->getMylistManager();
-         }elseif ($type == CS_MATRIX_TYPE) {
+         } elseif ($type == CS_MATRIX_TYPE) {
             return $this->getMatrixManager();
          } elseif ($type == CS_ITEM_BACKUP) {
             return $this->getBackupItemManager();
@@ -2461,6 +2461,14 @@ class cs_environment {
 
    public function isArchiveMode () {
       return $this->_archive_mode;
+   }
+   
+   public function toggleArchiveMode () {
+      if ( $this->isArchiveMode() ) {
+         $this->deactivateArchiveMode();
+      } else {
+         $this->activateArchiveMode();
+      }
    }
 
    public function setTemplateEngine($engine) {
