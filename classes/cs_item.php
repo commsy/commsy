@@ -63,7 +63,7 @@ class cs_item {
    var $_cache_on = true;
 
    var $_external_viewer_user_array = NULL;
-
+   
   /**
    * boolean - if true the modification_date will be updated - else not
    */
@@ -72,7 +72,13 @@ class cs_item {
    public $_link_modifier = true;
    var $_db_load_extras = true;
 
-  /** constructor
+   /**
+    * used to flag, if item is in an archived room or not
+    * @var boolean
+    */
+   private $_is_archived = false;
+
+   /** constructor
    * the only available constructor, initial values for internal variables
    */
    function cs_item ($environment) {
@@ -2571,6 +2577,15 @@ function getExternalViewerArray(){
          $result = $this->_getExtra('WORKFLOWVALIDITYTRAFFICLIGHT');
       }
       return $result;
+   }
+   
+   // archive
+   public function setArchiveStatus () {
+      $this->_is_archived = true;
+   }
+   
+   public function isArchived () {
+      return $this->_is_archived;
    }
 }
 ?>
