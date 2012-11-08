@@ -163,7 +163,9 @@ class cs_configuration_portal_upload_form extends cs_rubric_form {
       // create hidden fields for room limits
       if($isJSEnabled) {
 	      foreach($this->room_limits as $room) {
-	         $this->_form->addHidden('room_limit_' . $room['id'], $room['limit']);
+	         if ( !empty($room['limit']) ) {
+	            $this->_form->addHidden('room_limit_' . $room['id'], $room['limit']);
+	         }
 	      }
       }
       
