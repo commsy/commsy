@@ -872,7 +872,7 @@
       if ( $this->_environment->isArchiveMode() ) {
          $temp_array = array();
          $temp_array['item_id'] = -1;
-         $temp_array['title'] .= $translator->getMessage('PORTAL_ARCHIVED_ROOMS');
+         $temp_array['title'] = $translator->getMessage('PORTAL_ARCHIVED_ROOMS');
          $retour[] = $temp_array;
          unset($temp_array);
       }

@@ -124,7 +124,9 @@ class cs_page_view extends cs_view {
    var $_style_image_path = 'images/layout/';
 
    var $_flush_mode = false;
-
+   
+   protected $_toggle_archive_mode = false;
+    
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -979,6 +981,17 @@ class cs_page_view extends cs_view {
       $temp_array['title'] = '';
       $retour[] = $temp_array;
       unset($temp_array);
+      
+      // archive
+      if ( $this->_environment->isArchiveMode() ) {
+         $temp_array = array();
+         $temp_array['item_id'] = -1;
+         $temp_array['title'] = $this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS');
+         $retour[] = $temp_array;
+         unset($temp_array);
+      }
+      // archive
+      
       $temp_array = array();
       $community_list = $current_user->getRelatedCommunityList();
       if ( $community_list->isNotEmpty() ) {
@@ -1221,6 +1234,28 @@ class cs_page_view extends cs_view {
       }
       unset($portal_item);
       $this->translatorChangeToCurrentContext();
+
+      // archive - BEGIN
+      if ( !$this->_toggle_archive_mode ) {
+         $this->_toggle_archive_mode = true;
+         if ( $this->_environment->isArchiveMode() ) {
+            $this->_environment->deactivateArchiveMode();
+            $retour2 = $this->_getAllOpenContextsForCurrentUser();
+            if ( !empty($retour2) ) {
+               $retour = array_merge($retour2,$retour);
+            }
+            $this->_environment->activateArchiveMode();
+         } else {
+            $this->_environment->activateArchiveMode();
+            $retour2 = $this->_getAllOpenContextsForCurrentUser();
+            if ( !empty($retour2) ) {
+               $retour = array_merge($retour,$retour2);
+            }
+            $this->_environment->deactivateArchiveMode();
+         }
+      }
+      // archive - END
+      
       return $retour;
       }
    }
