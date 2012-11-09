@@ -19,7 +19,15 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     public function actiongetHTML() {
     	$current_user = $this->_environment->getCurrentUser();
     
-    	// get data
+      // archive
+      $toggle_archive = false;
+      if ( $this->_environment->isArchiveMode() ) {
+         $toggle_archive = true;
+         $this->_environment->deactivateArchiveMode();
+      }
+      // archive
+    	
+      // get data
     	$this->_itemId = $this->_data['iid'];
     	$this->_contextId = $this->_data["contextId"];
     	$this->_versionId = $this->_data["version_id"];
@@ -89,6 +97,11 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
 		$this->assign('popup', 'item_id', $this->_itemId);
 		
 		*/
+      // archive
+      if ( $toggle_archive ) {
+         $this->_environment->activateArchiveMode();
+      }
+      // archive
     }
     
     private function invokeDetailController() {
