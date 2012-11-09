@@ -1617,7 +1617,11 @@ class cs_user_item extends cs_item {
                ) {
                $room_manager = $this->_environment->getManager(CS_ROOM_TYPE);
                $room = $room_manager->getItem($this->getContextID());
-               $portal_id = $room->getContextID();
+               if ( !empty($room) ) {
+                  $portal_id = $room->getContextID();
+               } else {
+                  $portal_id = $item->getContextID();
+               }
             } elseif ( $item->getItemType() == CS_PRIVATEROOM_TYPE ) {
                $room_manager = $this->_environment->getManager(CS_PRIVATEROOM_TYPE);
                $room = $room_manager->getItem($this->getContextID());
@@ -1648,9 +1652,18 @@ class cs_user_item extends cs_item {
 
   function getRelatedPrivateRoomUserItem() {
      $retour = NULL;
+
+      // archive
+      $toggle_archive = false;
+      if ( $this->_environment->isArchiveMode() ) {
+         $toggle_archive = true;
+         $this->_environment->deactivateArchiveMode();
+      }
+      // archive
+      
      $private_room_manager = $this->_environment->getPrivateRoomManager();
      $own_room = $private_room_manager->getRelatedOwnRoomForUser($this,$this->_environment->getCurrentPortalID());
-     unset($private_room_manager);
+     unset($private_room_manager);   
      if ( isset($own_room) ) {
         $own_cid = $own_room->getItemID();
         $user_manager = $this->_environment->getUserManager();
@@ -1667,6 +1680,13 @@ class cs_user_item extends cs_item {
         unset($user_list);
      }
      unset($own_room);
+     
+      // archive
+      if ( $toggle_archive ) {
+         $this->_environment->activateArchiveMode();
+      }
+      // archive
+     
      return $retour;
   }
 
