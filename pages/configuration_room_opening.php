@@ -63,8 +63,12 @@ else {
               or isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
              )
       ) {
-
-      if ( $form->check() ) {
+     	
+   	if ( !empty($_POST) ) {
+   		$form->setFormPost($_POST);
+   	}
+   	
+   	if ( $form->check() ) {
 
          if ( isset($_POST['community_room_opening']) and !empty($_POST['community_room_opening']) and $_POST['community_room_opening'] == 2 ) {
             $room_item->setCommunityRoomCreationStatus('moderator');
@@ -99,6 +103,25 @@ else {
             }
          }
 
+   	   // archiving
+         if ( !empty($_POST['room_archiving'])
+              and $_POST['room_archiving'] == 1
+            ) {
+            $room_item->turnOnArchivingUnusedRooms();
+         } else {
+         	$room_item->turnOffArchivingUnusedRooms();
+         }
+         if ( !empty($_POST['room_archiving_days_unused']) ) {
+         	$room_item->setDaysUnusedBeforeArchivingRooms($_POST['room_archiving_days_unused']);
+         } else {
+         	$room_item->setDaysUnusedBeforeArchivingRooms(0);
+         }
+         if ( !empty($_POST['room_archiving_days_unused_mail']) ) {
+         	$room_item->setDaysSendMailBeforeArchivingRooms($_POST['room_archiving_days_unused_mail']);
+         } else {
+         	$room_item->setDaysSendMailBeforeArchivingRooms(0);
+         }
+         
          // Save item
          $room_item->save();
          $form_view->setItemIsSaved();

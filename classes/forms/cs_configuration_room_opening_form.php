@@ -185,7 +185,14 @@ var $_template_array = array();
       $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK_OFF');
       $radio_values[1]['value'] = '-1';
       $this->_form->addRadioGroup('private_room_link',$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK'),'',$radio_values,'',true,false);
-
+      
+      // archiving
+      $this->_form->addEmptyLine();
+      $this->_form->addCheckbox('room_archiving',1,'',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING'),strtolower($this->_translator->getMessage('COMMON_ACTIVATE')));
+      $this->_form->combine();
+      $this->_form->addTextfield('room_archiving_days_unused','','','',4,4,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED2'));
+      $this->_form->combine();
+      $this->_form->addTextfield('room_archiving_days_unused_mail','','','',2,2,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED2'));
 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -227,8 +234,36 @@ var $_template_array = array();
          } else {
             $this->_values['private_room_link'] = -1;
          }
+         
+         // archiving
+         if ( $room->isActivatedArchivingUnusedRooms() ) {
+         	$this->_values['room_archiving'] = 1;
+         }
+         $this->_values['room_archiving_days_unused'] = $room->getDaysUnusedBeforeArchivingRooms();
+         $this->_values['room_archiving_days_unused_mail'] = $room->getDaysSendMailBeforeArchivingRooms();
       }
    }
 
+   /** specific check the values of the form
+    * this methods check the entered values
+    */
+   function _checkValues () {
+      if ( !empty($this->_form_post['room_archiving'])
+           and $this->_form_post['room_archiving'] == 1
+           and empty($this->_form_post['room_archiving_days_unused'])
+         ) {
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED_ERROR_EMPTY');
+         $this->_form->setFailure('room_archiving_days_unused','');
+      }
+      if ( !empty($this->_form_post['room_archiving'])
+           and $this->_form_post['room_archiving'] == 1
+           and !empty($this->_form_post['room_archiving_days_unused'])
+           and !empty($this->_form_post['room_archiving_days_unused_mail'])
+           and $this->_form_post['room_archiving_days_unused_mail'] > $this->_form_post['room_archiving_days_unused'] 
+         ) {
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED_ERROR_DAYS');
+         $this->_form->setFailure('room_archiving_days_unused','');
+      }
+   }   
 }
 ?>
