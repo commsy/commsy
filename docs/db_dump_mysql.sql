@@ -3,20 +3,14 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 05. Dezember 2011 um 10:01
+-- Erstellungszeit: 09. November 2012 um 15:27
 -- Server Version: 5.1.44
 -- PHP-Version: 5.3.1
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
 --
--- Datenbank: `commsy_db_dump`
+-- Datenbank: `commsy`
 --
 
 -- --------------------------------------------------------
@@ -47,6 +41,26 @@ CREATE TABLE IF NOT EXISTS `annotations` (
 
 --
 -- Daten für Tabelle `annotations`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `annotation_portfolio`
+--
+
+CREATE TABLE IF NOT EXISTS `annotation_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `a_id` int(11) NOT NULL DEFAULT '0',
+  `row` int(11) NOT NULL DEFAULT '0',
+  `column` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`p_id`,`a_id`),
+  KEY `row` (`row`,`column`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `annotation_portfolio`
 --
 
 
@@ -386,7 +400,8 @@ CREATE TABLE IF NOT EXISTS `homepage_link_page_page` (
   `sorting_place` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`link_id`),
   KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`)
+  KEY `context_id` (`context_id`),
+  KEY `to_item_id` (`to_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
@@ -514,7 +529,8 @@ CREATE TABLE IF NOT EXISTS `labels` (
   `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
+  KEY `creator_id` (`creator_id`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -577,7 +593,11 @@ CREATE TABLE IF NOT EXISTS `link_items` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `first_item_id` (`first_item_id`),
-  KEY `second_item_id` (`second_item_id`)
+  KEY `second_item_id` (`second_item_id`),
+  KEY `first_item_type` (`first_item_type`),
+  KEY `second_item_type` (`second_item_type`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -628,7 +648,7 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`),
   KEY `timestamp` (`timestamp`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1553 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Daten für Tabelle `log`
@@ -730,7 +750,7 @@ CREATE TABLE IF NOT EXISTS `log_message_tag` (
   `datetime` datetime NOT NULL,
   `language` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=61 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Daten für Tabelle `log_message_tag`
@@ -830,6 +850,31 @@ CREATE TABLE IF NOT EXISTS `portal` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `portfolio`
+--
+
+CREATE TABLE IF NOT EXISTS `portfolio` (
+  `item_id` int(11) NOT NULL DEFAULT '0',
+  `creator_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
+  `modifier_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext NOT NULL,
+  `creation_date` datetime NOT NULL,
+  `modification_date` datetime NOT NULL,
+  `deletion_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`item_id`),
+  KEY `creator_id` (`creator_id`),
+  KEY `modifier_id` (`modifier_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='General Portfolio Information';
+
+--
+-- Daten für Tabelle `portfolio`
+--
+
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `reader`
 --
 
@@ -873,6 +918,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
   `room_description` varchar(10000) DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -885,6 +931,7 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
   KEY `modifier_id` (`modifier_id`),
+  KEY `lastlogin` (`lastlogin`),
   KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -919,10 +966,12 @@ CREATE TABLE IF NOT EXISTS `room_privat` (
   `template` tinyint(4) NOT NULL DEFAULT '-1',
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `status` (`status`),
   KEY `creator_id` (`creator_id`),
+  KEY `lastlogin` (`lastlogin`),
   KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1053,7 +1102,7 @@ CREATE TABLE IF NOT EXISTS `server` (
 --
 
 INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`) VALUES
-(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 30, 'server', 1, NULL);
+(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 36, 'server', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -1069,7 +1118,7 @@ CREATE TABLE IF NOT EXISTS `session` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Daten für Tabelle `session`
@@ -1153,11 +1202,33 @@ CREATE TABLE IF NOT EXISTS `tag2tag` (
   `sorting_place` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`link_id`),
   KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`)
+  KEY `context_id` (`context_id`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
 -- Daten für Tabelle `tag2tag`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `tag_portfolio`
+--
+
+CREATE TABLE IF NOT EXISTS `tag_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `t_id` int(11) NOT NULL DEFAULT '0',
+  `row` int(11) DEFAULT '0',
+  `column` int(11) DEFAULT '0',
+  PRIMARY KEY (`p_id`,`t_id`),
+  KEY `row` (`row`,`column`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `tag_portfolio`
 --
 
 
@@ -1251,7 +1322,11 @@ CREATE TABLE IF NOT EXISTS `user` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`),
+  KEY `status` (`status`),
+  KEY `is_contact` (`is_contact`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1260,6 +1335,23 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`) VALUES
 (98, 99, 99, 99, NULL, '2006-09-13 12:17:17', '2006-09-13 12:17:17', NULL, 'root', 3, 1, 'CommSy', 'Administrator', '', '', NULL, 1, '', 100, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `user_portfolio`
+--
+
+CREATE TABLE IF NOT EXISTS `user_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `u_id` varchar(32) NOT NULL,
+  PRIMARY KEY (`p_id`,`u_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `user_portfolio`
+--
+
 
 -- --------------------------------------------------------
 
@@ -1337,6 +1429,33 @@ CREATE TABLE IF NOT EXISTS `zzz_announcement` (
 
 --
 -- Daten für Tabelle `zzz_announcement`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `zzz_assessments`
+--
+
+CREATE TABLE IF NOT EXISTS `zzz_assessments` (
+  `item_id` int(11) NOT NULL,
+  `context_id` int(11) DEFAULT NULL,
+  `creator_id` int(11) NOT NULL,
+  `deleter_id` int(11) DEFAULT NULL,
+  `creation_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `deletion_date` datetime DEFAULT NULL,
+  `item_link_id` int(11) NOT NULL,
+  `assessment` int(2) NOT NULL,
+  PRIMARY KEY (`item_id`),
+  KEY `item_link_id` (`item_link_id`),
+  KEY `context_id` (`context_id`),
+  KEY `creator_id` (`creator_id`),
+  KEY `deleter_id` (`deleter_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_assessments`
 --
 
 
@@ -1445,6 +1564,23 @@ CREATE TABLE IF NOT EXISTS `zzz_discussions` (
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `zzz_external_viewer`
+--
+
+CREATE TABLE IF NOT EXISTS `zzz_external_viewer` (
+  `item_id` int(11) NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  KEY `item_id` (`item_id`,`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten für Tabelle `zzz_external_viewer`
+--
+
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `zzz_files`
 --
 
@@ -1512,7 +1648,8 @@ CREATE TABLE IF NOT EXISTS `zzz_homepage_link_page_page` (
   `sorting_place` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`link_id`),
   KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`)
+  KEY `context_id` (`context_id`),
+  KEY `to_item_id` (`to_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
@@ -1614,7 +1751,8 @@ CREATE TABLE IF NOT EXISTS `zzz_labels` (
   `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
-  KEY `creator_id` (`creator_id`)
+  KEY `creator_id` (`creator_id`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1677,7 +1815,11 @@ CREATE TABLE IF NOT EXISTS `zzz_link_items` (
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `first_item_id` (`first_item_id`),
-  KEY `second_item_id` (`second_item_id`)
+  KEY `second_item_id` (`second_item_id`),
+  KEY `first_item_type` (`first_item_type`),
+  KEY `second_item_type` (`second_item_type`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -1806,6 +1948,7 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   `contact_persons` varchar(255) DEFAULT NULL,
   `description` text,
   `room_description` varchar(10000) DEFAULT NULL,
+  `lastlogin` datetime DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1818,6 +1961,7 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `contact_persons` (`contact_persons`),
   KEY `title` (`title`),
   KEY `modifier_id` (`modifier_id`),
+  KEY `lastlogin` (`lastlogin`),
   KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1935,7 +2079,9 @@ CREATE TABLE IF NOT EXISTS `zzz_tag2tag` (
   `sorting_place` tinyint(4) DEFAULT NULL,
   PRIMARY KEY (`link_id`),
   KEY `from_item_id` (`from_item_id`),
-  KEY `context_id` (`context_id`)
+  KEY `context_id` (`context_id`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
@@ -2033,7 +2179,11 @@ CREATE TABLE IF NOT EXISTS `zzz_user` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`user_id`),
+  KEY `deletion_date` (`deletion_date`),
+  KEY `deleter_id` (`deleter_id`),
+  KEY `status` (`status`),
+  KEY `is_contact` (`is_contact`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -2057,4 +2207,3 @@ CREATE TABLE IF NOT EXISTS `zzz_workflow_read` (
 --
 -- Daten für Tabelle `zzz_workflow_read`
 --
-
