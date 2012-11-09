@@ -3475,7 +3475,7 @@ a.tm_breadcrumb_h2:hover{
     height: 27px;
     padding: 11px 2px 0px 0px;
     }
-
+    
 a#tm_user {
     padding: 11px 10px 13px 10px;
     text-decoration: none;
@@ -3501,6 +3501,13 @@ a.tm_user_hover {
 
 a#tm_user:hover .tm_dropdown {
     background: url(img/tm_arrow_down_dark.gif) no-repeat right 6px;
+    }
+
+#tm_user {
+    padding: 0px 10px 13px 10px;
+    text-decoration: none;
+    color: #CCC;
+    text-shadow: #2E2D2E 0 1px;
     }
 
 #tm_icons_bar {

@@ -416,6 +416,10 @@
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
 
+      	// archive
+      	$this->assign('environment','archive_mode',$this->_environment->isArchiveMode());
+      	// archive
+
 			// browser
 			$current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
 			$current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -436,7 +440,11 @@
 			$this->assign('environment', 'use_problems', $this->getUseProblems());
 
 
-			if (isset($own_room_item)){
+			if (isset($own_room_item)
+			    // archive
+			    and !$this->_environment->isArchiveMode()
+			    // archive
+			   ){
 				$this->assign('cs_bar', 'show_widgets', $own_room_item->getCSBarShowWidgets());
 				$this->assign('cs_bar', 'show_calendar', $own_room_item->getCSBarShowCalendar());
 				$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());

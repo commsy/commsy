@@ -26,6 +26,7 @@
 	
 				{block name=user_area}
 				<div id="tm_pers_bar">
+				   {if !$environment.archive_mode}
 					<a href="#" id="tm_user">
 						{* login / logout *}
 						{if !$environment.is_guest}
@@ -35,6 +36,18 @@
 							___COMMON_WELCOME___, ___COMMON_GUEST___
 						{/if}
 					</a>
+               {/if}					
+               {if $environment.archive_mode}
+               <div id="tm_user">
+                  {* login / logout *}
+                  {if !$environment.is_guest}
+                     ___COMMON_WELCOME___, {$environment.username|truncate:20}
+                  {/if}
+                  {if $environment.is_guest}
+                     ___COMMON_WELCOME___, ___COMMON_GUEST___
+                  {/if}
+               </div>
+               {/if}             
 				</div>
 				{/block}
 	
