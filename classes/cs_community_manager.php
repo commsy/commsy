@@ -165,6 +165,8 @@ class cs_community_manager extends cs_room2_manager {
         }else{
            $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
         }
+        // archive (2012 IJ)
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.lastlogin';
      } else {
         $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }
@@ -196,6 +198,21 @@ class cs_community_manager extends cs_room2_manager {
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "'.encode(AS_DB,$this->_template_limit).'"';
      }
 
+      // archive
+      // lastlogin_limit
+      if ( !empty($this->_lastlogin_limit) ) {
+      	if ( $this->_lastlogin_limit == 'NULL' ) {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL';      		
+      	} else {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB,$this->_lastlogin_limit);
+      	}
+      }
+      // _lastlogin_older_limit
+      if ( !empty($this->_lastlogin_older_limit) ) {
+      	$query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.encode(AS_DB,$this->_lastlogin_older_limit).'"';
+      	$query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB,$this->_lastlogin_older_limit).'" ) )';
+      }
+      
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.modification_date DESC, '.$this->addDatabasePrefix($this->_db_table).'.title ASC';

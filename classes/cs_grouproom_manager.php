@@ -241,6 +241,16 @@ class cs_grouproom_manager extends cs_room2_manager {
          $query .= ' AND extras LIKE "%s:20:\"PROJECT_ROOM_ITEM_ID\";i:' . encode(AS_DB, $this->_project_room_limit) .  ';%"';
       }
 
+      // archive
+      // lastlogin_limit
+      if ( !empty($this->_lastlogin_limit) ) {
+      	if ( $this->_lastlogin_limit == 'NULL' ) {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL';      		
+      	} else {
+      		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB,$this->_lastlogin_limit);
+      	}
+      }
+
       if ( isset($this->_sort_order) ) {
          if ($this->_sort_order == 'title_rev') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
