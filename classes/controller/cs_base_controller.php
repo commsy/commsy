@@ -415,6 +415,13 @@
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
+			
+			include_once('functions/misc_functions.php');
+			$this->assign('environment','commsy_version',getCommSyVersion());
+			$c_version_addon = $this->_environment->getConfiguration('c_version_addon');
+			if ( !empty($c_version_addon) ) {
+			   $this->assign('environment','commsy_version_addon',$c_version_addon);
+			}
 
       	// archive
       	$this->assign('environment','archive_mode',$this->_environment->isArchiveMode());

@@ -141,7 +141,16 @@
 
 	        <div id="footer"> <!-- Start footer -->
 	            <div id="footer_left">
-	                <p>CommSy 8.0</p>
+	                <p>CommSy
+	                {if !empty($environment.commsy_version)}
+	                   {$environment.commsy_version}
+	                {else}
+	                   8.0
+	                {/if}
+	                {if !empty($environment.commsy_version_addon)}
+	                   - {$environment.commsy_version_addon}
+	                {/if}
+	                </p>
 	            </div>
 
 	            <div id="footer_right">
