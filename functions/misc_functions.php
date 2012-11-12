@@ -1078,6 +1078,11 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
                ) {
                $retour = array_merge($retour,$output);
             } elseif ( !empty($separator)
+                 and $separator == 'MULTIARRAY'
+                 and is_array($output)
+               ) {
+               $retour[] = $output;
+            } elseif ( !empty($separator)
                        and $separator == 'ONE'
                      ) {
                $retour = $output;
