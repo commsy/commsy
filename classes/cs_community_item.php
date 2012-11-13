@@ -899,6 +899,11 @@ class cs_community_item extends cs_room_item {
          $default_sender_address = '@';
       }
       $current_portal = $this->_environment->getCurrentPortalItem();
+         if ( empty($current_portal)
+           or !$current_portal->isPortal()
+         ) {
+         $current_portal = $this->getContextItem();
+      }
       $current_user = $this->_environment->getCurrentUserItem();
       $fullname = $current_user->getFullname();
       if ( empty($fullname) ) {

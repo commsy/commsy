@@ -995,8 +995,15 @@ class cs_grouproom_item extends cs_room_item {
          $default_sender_address = '@';
       }
       $current_portal = $this->_environment->getCurrentPortalItem();
-      if ( !isset($current_portal) ) {
-         $current_portal = $this->_environment->getServerItem();
+      if ( empty($current_portal)
+           or !$current_portal->isPortal()
+         ) {
+         $current_portal = $this->getContextItem();
+         if ( !empty($current_portal)
+              and $current_portal->isProjectRoom()
+            ) {
+            $current_portal = $current_portal->getContextItem();
+         }
       }
       $current_user = $this->_environment->getCurrentUserItem();
       $moderator_list = $room_item->getModeratorList();
@@ -1071,17 +1078,44 @@ class cs_grouproom_item extends cs_room_item {
          $body .= LF.LF;
          $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$this->getTitle(),$current_user->getFullname(),$room_change_action);
          if ( $room_change != 'delete' ) {
+
+            $url_to_portal = '';
+            if ( !empty($current_portal) ) {
+               $url_to_portal = $current_portal->getURL();
+            }
+            
+            if ( !empty($url_to_portal) ) {
+               $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+               if ( stristr($c_commsy_domain,'https://') ) {
+                  $url = 'https://';
+               } else {
+                  $url = 'http://';
+               }
+               $url .= $url_to_portal;
+               $file = 'commsy.php';
+               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+               if ( !empty($c_single_entry_point) ) {
+                  $file = $c_single_entry_point;
+               }
+               $url .= '/'.$file.'?cid=';
+            } else {
+               $file = $_SERVER['PHP_SELF'];
+               $file = str_replace('cron','commsy',$file);
+               $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+            }
+                        
             $project_room = $this->getLinkedProjectItem();
             $group_item = $this->getLinkedGroupItem();
             if ( isset($project_room) and !empty($project_room) and !$room_item->isPortal() ) {
                if ( isset($group_item) and !empty($group_item) ) {
-                  $body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$project_room->getItemID().'&mod=group&fct=detail&iid='.$group_item->getItemID();
+                  $url .= $project_room->getItemID().'&mod=group&fct=detail&iid='.$group_item->getItemID();
                } else {
-                  $body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$project_room->getItemID();
+                  $url .= $project_room->getItemID();
                }
             } else {
-               $body .= LF.'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->getContextID().'&room_id='.$this->getItemID();
+               $url .= $this->getContextID().'&room_id='.$this->getItemID();
             }
+            $body .= LF.$url;
          }
 
          $body .= LF.LF;
