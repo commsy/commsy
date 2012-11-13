@@ -100,7 +100,7 @@ class class_voyeur extends cs_plugin {
    public function getDetailActionAsHTML () {
       $retour = '';
       $title = $this->_translator->getMessage('VOYEUR_ACTION_ICON_TITLE');
-      $img =  '<img src="'.$this->_image_path.'/voyeur_icon_22x22.png" style="vertical-align:bottom;" title="'.$title.'"/>';
+      #$img =  '<img src="'.$this->_image_path.'/voyeur_icon_22x22.png" style="vertical-align:bottom;" title="'.$title.'"/>';
       $url_params = array();
       $url_params['iid'] = $this->_environment->getValueOfParameter('iid');
       $session_item = $this->_environment->getSessionItem();
@@ -109,7 +109,7 @@ class class_voyeur extends cs_plugin {
       }
       unset($session_item);
       $url = curl($this->_environment->getCurrentContextID(),$this->_identifier,'reload',$url_params);
-      $retour .= '<a href="'.$url.'" target="_blank">'.$img.'</a>';
+      $retour .= '<a href="'.$url.'" target="_blank" title="'.$title.'">'.ucfirst($this->_translator->getMessage('VOYEUR_DETAIL_ACTION_ANALYSE')).'</a>';
       return $retour;
    }
 
@@ -147,18 +147,29 @@ class class_voyeur extends cs_plugin {
       return $retour;
    }
 
+   /*
+    * CommSy7
+    */
    public function getAdditionalViewActionsAsHTML ( $params ) {
       $retour = '';
       $retour .= '   <option value="'.$this->_identifier.'_analyse">'.$this->_translator->getMessage('VOYEUR_LIST_ACTION_ANALYSE').'</option>'.LF;
       return $retour;
    }
 
+   /*
+    * CommSy8
+    */
+   public function getAdditionalListOptions ( $params ) {
+      $retour = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => $this->_identifier.'_analyse', 'display' => '___VOYEUR_LIST_ACTION_ANALYSE___');
+      return $retour;
+   }
+
    public function performListAction ( $params ) {
       if ( $params['index_view_action'] == $this->_identifier.'_analyse'
-           and !empty($_POST['attach'])
+           and !empty($params['attach'])
          ) {
          $id_array = array();
-         foreach ($_POST['attach'] as $key => $value) {
+         foreach ($params['attach'] as $key => $value) {
             $id_array[] = $key;
          }
          $class_factory = $this->_environment->getClassFactory();
@@ -169,7 +180,14 @@ class class_voyeur extends cs_plugin {
          $zipname_wf = $list2zip->getZipFilenameWithFolder();
          $new_zip = $this->_changeZIP($zipname_wf);
          unlink($zipname_wf);
+         
+         $retour  = '';
+         $retour .= '<script type=\'text/javascript\'>';
+         $retour .= 'window.open(\''.$this->getVoyeurURL(basename($new_zip)).'\');';
+         $retour .= '</script>';
+         return $retour;
 
+         /* CommSy7
          $params = array();
          $params['environment'] = $this->_environment;
          $params['with_modifying_actions'] = true;
@@ -190,6 +208,7 @@ class class_voyeur extends cs_plugin {
          $page->addOverlay($box);
          unset($_GET['download']);
          unset($_GET['mode']);
+         */
       }
    }
 
