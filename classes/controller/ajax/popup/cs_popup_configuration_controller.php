@@ -2253,7 +2253,10 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	               $array_plugins[$plugin_class->getIdentifier()]['description'] = $plugin_class->getDescription();
 	            }
 	            if ( method_exists($plugin_class,'getHomepage') ) {
-	               $array_plugins[$plugin_class->getIdentifier()]['homepage'] = $plugin_class->getHomepage();
+	               $homepage = $plugin_class->getHomepage();
+	               if ( !empty($homepage) ) {
+	                  $array_plugins[$plugin_class->getIdentifier()]['homepage'] = '___CONFIGURATION_PLUGIN_HOMEPAGE___: <a href="'.$homepage.'" target="_blank" title="___CONFIGURATION_PLUGIN_HOMEPAGE___: '.$plugin_class->getTitle().'">'.$homepage.'</a>';
+	               }
 	            }
                if ( $current_context_item->isPluginOn($plugin) ) {
                   $array_plugins[$plugin_class->getIdentifier()]['on'] = 'yes';

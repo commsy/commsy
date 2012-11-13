@@ -949,6 +949,12 @@
                                     <input type="checkbox" name="form_data[{$plugin}_on]" value="yes" {if $plugin_data.on == 'yes'} checked="checked"{/if}/> ___COMMON_ACTIVATE___
                                     <div class="clear"></div>
                                  </div>
+                                 {if !empty($plugin_data.description)}
+                                    <p>{$plugin_data.description}</p>
+                                 {/if}
+                                 {if !empty($plugin_data.homepage)}
+                                    <p>{$plugin_data.homepage}</p>
+                                 {/if}
                               </fieldset>
                               <div class="input_row">
                                  <input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'plugin_{$plugin}'" name="save" value="{$plugin_data.title}: ___PREFERENCES_SAVE_BUTTON___"/>
