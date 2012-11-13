@@ -934,10 +934,28 @@
                                  <div class="clear"></div>
                               </div>
                            </fieldset>
-                           		<div class="input_row">
-									<input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'chat'" name="save" value="___PREFERENCES_SAVE_BUTTON_CHAT___"/>
-								</div>
-							{/if}
+                           <div class="input_row">
+									   <input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'chat'" name="save" value="___PREFERENCES_SAVE_BUTTON_CHAT___"/>
+								   </div>
+							      {/if}
+							      {if $popup.external.plugins}
+							         {foreach key=plugin item=plugin_data from=$popup.external.plugins_array}
+							            <hr/>
+                                 <fieldset>
+                                 <p>
+                                    <strong>{$plugin_data.title}:</strong>
+                                 </p>
+                                 <div class="input_row_200">
+                                    <input type="checkbox" name="form_data[{$plugin}_on]" value="yes" {if $plugin_data.on == 'yes'} checked="checked"{/if}/> ___COMMON_ACTIVATE___
+                                    <div class="clear"></div>
+                                 </div>
+                              </fieldset>
+                              <div class="input_row">
+                                 <input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'plugin_{$plugin}'" name="save" value="{$plugin_data.title}: ___PREFERENCES_SAVE_BUTTON___"/>
+                              </div>							            
+							         {/foreach}
+							      {/if}
+							      
 							</div>
 
 							</div>

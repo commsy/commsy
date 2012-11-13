@@ -36,6 +36,9 @@
 					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=2">___GROUP_LEAVE___</a> |
 				{/if}
 				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
+
+            {include file="include/detail_actions_plugins_html.tpl"}
+
 			</div>
 		</div>
 		<!-- Ende fade_in_ground -->

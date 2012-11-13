@@ -56,10 +56,13 @@
 						<input type="submit" class="popup_button" id="delete_confirmselect_option" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___" />
 				 </div>
 			</div>
-				<div class="ii_right">
+			<div class="ii_right">
 				<p>{i18n tag=COMMON_SELECTED param1='<span id="selected_items"></span>'}</p>
 			</div>
-				<div class="clear"> </div>
+			<div class="clear"> </div>
+         {if !empty($list.plugin_retour) }
+            {$list.plugin_retour}
+         {/if} 
 		</div>
 	</div> <!-- Ende content_item -->
 	<div class="content_item"> <!-- Start content_item -->

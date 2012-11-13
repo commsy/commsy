@@ -1258,17 +1258,22 @@
                                $params);
       			      break;
       			   default:
-      			      if (!empty($this->_list_command)
-      			          and ( $environment->isPlugin($this->_list_command)
-      			          or $environment->isPlugin(substr($this->_list_command,0,strpos($this->_list_command,'_')))
-      			          )) {
+      			      if ( !empty($this->_list_command)
+      			           and ( $environment->isPlugin($this->_list_command)
+      			                 or $environment->isPlugin(substr($this->_list_command,0,strpos($this->_list_command,'_')))
+      			               )
+      			         ) {
          			      $plugin = '';
          			      if ( $environment->isPlugin($this->_list_command) ) {
          			         $plugin = $this->_list_command;
          			      } else {
          			         $plugin = substr($this->_list_command,0,strpos($this->_list_command,'_'));
          			      }
-         			      plugin_hook_plugin($plugin,'performListAction',$_POST); //TODO: Plugins an neue $_POST-Struktur anpassen
+         			      $_POST['form_data']['index_view_action'] = $this->_list_command;
+         			      $retour = plugin_hook_output($plugin,'performListAction',$_POST['form_data']);
+         			      if ( !empty($retour) ) {
+         			         $this->assign('list','plugin_retour',$retour);
+         			      }
          			   } else {
          			      $params = $environment->getCurrentParameterArray();
          			      unset($params['mode']);
@@ -1666,7 +1671,16 @@
 			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___CLIPBOARD_PASTE_BUTTON___');
 			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 2, 'display' => '___CLIPBOARD_DELETE_BUTTON___');
 			//}
-
+			
+			// plugins
+			$plugin_options = plugin_hook_output_all('getAdditionalListOptions',NULL,'MULTIARRAY');
+			if ( !empty($plugin_options) ) {
+			   // add separator
+			   $return[] = array('selected' => false, 'disabled' => true, 'id' => '', 'value' => '', 'display' => '------------------------------');
+			   $return = array_merge($return,$plugin_options);
+			}
+			// plugins
+				
 			return $return;
 		}
 	}

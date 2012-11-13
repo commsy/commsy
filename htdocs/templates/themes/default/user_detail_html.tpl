@@ -22,6 +22,8 @@
 				{/if}
 				<a href="commsy.php?cid={$environment.cid}&mod=download&fct=action&iid={$detail.item_id}" target="_blank">___COMMON_DOWNLOAD___</a>
 
+            {include file="include/detail_actions_plugins_html.tpl"}
+
 			</div>
 		</div>
 

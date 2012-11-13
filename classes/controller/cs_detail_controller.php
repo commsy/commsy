@@ -560,7 +560,11 @@
 			// TODO: dont forget print, download - which are always allowed
 
 			// TODO:  // actions from rubric plugins
-      		//$html .= plugin_hook_output_all('getDetailActionAsHTML',NULL,LF);
+      	$plugin_actions = plugin_hook_output_all('getDetailActionAsHTML',NULL,' | ');
+      	if ( !empty($plugin_actions) ) {
+      	   $return['plugins'] = true;
+      	   $return['plugins_html'] = $plugin_actions;
+      	}
 
 			// new
 			$current_module = $this->_environment->getCurrentModule();
