@@ -38,7 +38,7 @@ define([	"dojo/_base/declare",
 			this.options.filebrowserBrowseUrl		= 'commsy.php?cid='+this.uri_object.cid+'&mod=ajax&fct=ckeditor_image_browse&action=getHTML';
 			this.options.filebrowserWindowWidth		= '100';
 			this.options.filebrowserWindowHeight	= '50';
-			this.options.language					= this.from_php.lang;
+			this.options.language					= this.from_php.environment.lang;
 		},
 
 		create: function(node) {
