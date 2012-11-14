@@ -39,7 +39,7 @@
 				<li><a href="http://{$intranet_url}/index.php?id=553" title="Orga-Handbuch" class="smallicon1">Orga-Handbuch</a></li>
 				<li><a href="http://{$intranet_url}/index.php?id=506" title="Standards" class="smallicon2">Standards </a></li>
 				<li><a href="http://{$intranet_url}/index.php?id=507" title="Formulare" class="smallicon3">Formulare </a></li>
-				<li><a href="http://{$intranet_url}/index.php?id=455" title="Notfallpläne" class="smallicon4">Sicherheit</a></li>
+				<li><a href="http://{$intranet_url}/index.php?id=455" title="Sicherheit" class="smallicon4">Sicherheit</a></li>
 			</ul>
 			<ul class="smallicon-set last alignleft">
 				<li><a href="http://{$intranet_url}/index.php?id=457" title="Auftrag erteilen" class="smallicon5">Auftrag erteilen</a></li>
