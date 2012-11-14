@@ -948,7 +948,49 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		                         }
 		                         $room_item->save();
 						      }
-							
+						      
+						      // plugins
+						      elseif ( substr($additional['action'],0,7) == 'plugin_' ) {
+						         $plugin = substr($additional['action'],7);
+						      
+						         $plugin_class = $this->_environment->getPluginClass($plugin);
+						         if ( !empty($plugin_class)
+						              and method_exists($plugin_class,'isConfigurableInPortal')
+						            ) {
+						            if ( ( $this->_environment->inPortal()
+						                   and $plugin_class->isConfigurableInPortal()
+						                 )
+						                 or
+						                 ( !$this->_environment->inServer()
+						                   and method_exists($plugin_class,'isConfigurableInRoom')
+						                   and $plugin_class->isConfigurableInRoom(CS_PRIVATEROOM_TYPE)
+						                 )
+						               ) {
+						               if ( !empty($form_data[$plugin.'_on'])
+						                    and $form_data[$plugin.'_on'] == 'yes'
+						                  ) {
+						                  $room_item->setPluginOn($plugin);
+						               } else {
+						                  $room_item->setPluginOff($plugin);
+						               }
+						                
+						               $values = $form_data;
+						               $values['current_context_item'] = $room_item;
+						               if ( $this->_environment->inPortal()
+						                    and method_exists($plugin_class,'configurationAtPortal')
+						                  ) {
+						                  $plugin_class->configurationAtPortal('save_config',$values);
+						               } elseif ( !$this->_environment->inServer()
+						                          and method_exists($plugin_class,'configurationAtRoom')
+						                        ) {
+						                  $plugin_class->configurationAtRoom('save_config',$values);
+						               }
+						            }
+						         }
+						         $room_item->save();
+						      }
+						      // plugins
+						      
 							
 							//---
 							
@@ -1560,6 +1602,62 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	      $return['wiki'] = false;
 	   }
 
+	   // plugins - TODO
+	   $c_plugin_array = $this->_environment->getConfiguration('c_plugin_array');
+	   if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+	      $current_portal_item = $this->_environment->getCurrentPortalItem();
+	      foreach ($c_plugin_array as $plugin) {
+	         $plugin_class = $this->_environment->getPluginClass($plugin);
+	         if ( (
+	                $this->_environment->inPortal()
+	                and method_exists($plugin_class,'isConfigurableInPortal')
+	                and $plugin_class->isConfigurableInPortal()
+	              )
+	              or
+	              (
+	                !$this->_environment->inServer()
+	                and $current_portal_item->isPluginOn($plugin)
+	                and method_exists($plugin_class,'isConfigurableInRoom')
+	                and $plugin_class->isConfigurableInRoom(CS_PRIVATEROOM_TYPE)
+	              )
+	            ) {
+	            $array_plugins[$plugin_class->getIdentifier()]['title'] = $plugin_class->getTitle();
+	            if ( method_exists($plugin_class,'getDescription') ) {
+	               $array_plugins[$plugin_class->getIdentifier()]['description'] = $plugin_class->getDescription();
+	            }
+	            if ( method_exists($plugin_class,'getHomepage') ) {
+	               $homepage = $plugin_class->getHomepage();
+	               if ( !empty($homepage) ) {
+	                  $array_plugins[$plugin_class->getIdentifier()]['homepage'] = '___CONFIGURATION_PLUGIN_HOMEPAGE___: <a href="'.$homepage.'" target="_blank" title="___CONFIGURATION_PLUGIN_HOMEPAGE___: '.$plugin_class->getTitle().'">'.$homepage.'</a>';
+	               }
+	            }
+               if ( $current_context->isPluginOn($plugin) ) {
+                  $array_plugins[$plugin_class->getIdentifier()]['on'] = 'yes';
+               } else {
+                  $array_plugins[$plugin_class->getIdentifier()]['on'] = 'no';
+               }
+	            
+	            /*
+	            if ( $this->_environment->inPortal()
+	                 and method_exists($plugin_class,'configurationAtPortal')
+	               ) {
+	               $array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtPortal('change_form');
+	            } elseif ( !$this->_environment->inServer()
+	                       and method_exists($plugin_class,'configurationAtRoom')
+	               ) {
+	               $array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtRoom('change_form');
+	            }
+	            */
+	         }
+	      }
+	   }
+	   if ( !empty($array_plugins) ) {
+	      ksort($array_plugins);
+	      $return['plugins'] = true;
+	      $return['plugins_array'] = $array_plugins;
+	   }
+	   // plugins
+	   
 	   return $return;
 	}
 
