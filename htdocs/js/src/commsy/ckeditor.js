@@ -58,7 +58,8 @@ define([	"dojo/_base/declare",
 			var data = node.innerHTML;
 			node.innerHTML = "";
 			
-			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );
+			/*CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );*/
+			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.php?cid="+this.uri_object.cid );
 			
 			this.instance = CKEDITOR.appendTo(node, this.options, data);
 
