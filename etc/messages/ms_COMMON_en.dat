@@ -839,6 +839,95 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<ol style=&quot;font-weigh
     <li>Bsp: (:slideshare quicktour-1209540124077378-8:)<br/>or use:<br/></li>
     <li>[slideshare id=380816&doc=quicktour-1209540124077378-8] WordPress-source from slideshare.net</li>
 </ul><br/>";
+$message["COMMON_TEXT_INCLUDING_MEDIA_TEXT_JS"]["en"] = "<table>
+   <tr>
+      <td>
+<span style=&quot;font-weight:bold;&quot;>Lists:</span> <span style=&quot;font-weight:normal;&quot;>- for bulleted, # for numbered lists</span><br/>
+<span style=&quot;font-weight:bold;&quot;>Emphasis:</span> <span style=&quot;font-weight:normal;&quot;>*text* becomes </span> <span style=&quot;font-weight:bold;&quot;>text</span>, <span style=&quot;font-weight:normal;&quot;>_text_ becomes </span><span style=&quot;font-weight:normal;font-style:italic;&quot;>text</span><br/>
+<span style=&quot;font-weight:bold;&quot;>Headings: </span><span style=&quot;font-weight:normal;&quot;>!Text,!!Text or !!!Text for headings</span><br/>
+<span style=&quot;font-weight:bold;&quot;>Separators: </span><span style=&quot;font-weight:normal;&quot;>--- for horizontal line</span>
+<br/><hr><br/>
+<div class=&quot;bold&quot; style=&quot;padding-bottom: 5px;&quot;>Integration media:</div>
+<ol style=&quot;font-weight:normal;&quot;><li>Please search the line fitting to your media (see below),</li><li> copy it,</li><li>paste it in your content and</li><li>replace the CAPITALS with your data.</li></ol>
+<span style=&quot;font-weight:bold&quot;>Links:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:link ADRESS text=TEXT:) for hyperlinks</li>
+    <li>(:item NUMBER text=TEXT:) for links to entries in CommSy</li>
+    <li>(:file FILENAME text=TEXT:) for links to uploaded files</li>
+    <li>Arguments:
+    <ul>
+        <li>newwin: open a new window</li>
+        <li>text=TEXT: description</li>
+        <li>text='LONG TEXT': longer description</li>
+    </ul>
+    </li>
+    <li>e.g.(:file file.pdf text='My file' newwin:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Images:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:image IMAGENAME alt=TEXT rfloat width=WIDTH:)</li>
+    <li>Arguments:
+    <ul>
+        <li>lfloat/rfloat: text float left/right</li>
+        <li>alt=TEXT: description</li>
+        <li>alt='LONG TEXT': longer description</li>
+        <li>width=WIDTH / height=HEIGHT: width / height in px</li>
+        <li>http://www.url.de/IMAGE: embedding external images</li>
+    </ul>
+    </li>
+    <li>e.g. (:image picture.jpg width=150 alt=Text lfloat:)</li>
+</ul>
+         %1
+      </td>
+      <td>
+<span style=&quot;font-weight:bold&quot;>Videos:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:wmplayer FILEINAME play=true width=ZAHL:) for wma, wmv, avi, ...</li>
+    <li>(:quicktime FILEINAME play=true width=ZAHL:) for mov, wav, mpeg, mp4...</li>
+    <li>(:flash FILEINAME play=true width=ZAHL:) for swf, flv</li>
+    <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) for youtube videos</li>
+    <li>(:googlevideo FILM-ID:) for google videos</li>
+   <li>(:lecture2go DATEINAME:) to show Lecture2Go movies.<br/>The DATEINAME must begin with an foldername.<br/>You need a server (server=rtmp://fms.rrz.uni-hamburg.de:NUMBER/vod) only at old l2go-videos.</li>
+<li>(:podcampus MOVIE-ID:) for movies at <a href=&quot;http://www.podcampus.de&quot; target=&quot;_blank&quot;>www.podcampus.de</a></li>
+    <li>Arguments:
+    <ul>
+        <li>lfloat / rfloat: text float left/right</li>
+        <li>width=WIDTH / height=HEIGHT: width / height in px</li>
+        <li>play=true/false: automatic play (default: false)</li>
+        <li>http://www.url.de/FILEINAME: embedding external videos</li>
+        <li>FILM-ID: ID (part of the URL, e.g.http://de.youtube.com/watch?v==FILM-ID)</li>
+    </ul>
+    </li>
+    <li>e.g. (:quicktime video.mpeg width=150 play=true:)</li>
+    <li>e.g. (:youtube pQHX-SjgQvQ play=false:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Music:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+<li>(:podcampus AUDIO-ID:) for audio podcasts at <a href=&quot;http://www.podcampus.de&quot; target=&quot;_blank&quot;>www.podcampus.de</a></li>
+    <li>(:wmplayer FILEINAME play=true width=ZAHL:) for wma</li>
+    <li>(:mp3 FILENAME.mp3:) for mp3</li>
+    <li>Arguments:
+    <ul>
+        <li>lfloat / rfloat: text float left/right</li>
+        <li>width=WIDTH / height=HEIGHT: width / height in px</li>
+        <li>play=true/false: automatic play (default: false)</li>
+        <li>http://www.url.de/FILEINAME: embedding external videos</li>
+    </ul>
+    </li>
+    <li>e.g. (:mp3 mymusic.mp3 width=150 play=true:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Documents:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:slideshare DOC-ID:) for slideshare-presentations</li>
+    <li>Arguments:
+    <ul>
+        <li>DOC-ID: slideshare.net &quot;doc=&quot;-value of the presentation (see WordPress-source below)</li>
+    </ul>
+    </li>
+    <li>Bsp: (:slideshare quicktour-1209540124077378-8:)<br/>or use:<br/></li>
+    <li>[slideshare id=380816&doc=quicktour-1209540124077378-8] WordPress-source from slideshare.net</li>
+</ul>
+         %2
+      </td>
+   </tr>
+</table>";
 $message["COMMON_TIME"]["en"] = "Time";
 $message["COMMON_TIME_NAME"]["en"] = "%_TIME_SUB_NOMPL_BIG";
 $message["COMMON_TITLE"]["en"] = "Title";
