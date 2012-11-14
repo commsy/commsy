@@ -94,6 +94,9 @@ class class_voyeur extends cs_plugin {
 
    public function isConfigurableInRoom ( $room_type = '' ) {
       $retour = true;
+      if ( $room_type == CS_PRIVATEROOM_TYPE ) {
+         $retour = false;
+      }
       return $retour;
    }
 
