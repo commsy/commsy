@@ -1993,7 +1993,7 @@ class cs_form_view extends cs_view {
          $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
          
          // plugins
-         $plugin_text = plugin_hook_output_all('getTestFormatingInformationAsHTML','',BRLF);
+         $plugin_text = plugin_hook_output_all('getTextFormatingInformationAsHTML','',BRLF);
          if ( !empty($plugin_text) ) {
             $text .= $plugin_text;
          }
@@ -2017,7 +2017,7 @@ class cs_form_view extends cs_view {
          $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
          
          // plugins
-         $plugin_text = plugin_hook_output_all('getTestFormatingInformationAsHTML','',BRLF);
+         $plugin_text = plugin_hook_output_all('getTextFormatingInformationAsHTML','',BRLF);
          if ( !empty($plugin_text) ) {
             $text .= $plugin_text;
          }
