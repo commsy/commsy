@@ -3211,7 +3211,7 @@ class cs_external_page_portal_view extends cs_page_view {
 				<li><a href="'.$typo_url.'index.php?id=553" title="Orga-Handbuch" class="smallicon1">Orgahandbuch</a></li>
 				<li><a href="'.$typo_url.'index.php?id=506" title="Standards" class="smallicon2">Standards</a></li>
 				<li><a href="'.$typo_url.'index.php?id=507" title="Formulare" class="smallicon3">Formulare</a></li>
-				<li><a href="'.$typo_url.'index.php?id=455" title="Notfallpläne" class="smallicon4">Notfallpläne</a></li>
+				<li><a href="'.$typo_url.'index.php?id=455" title="Sicherheit" class="smallicon4">Notfallpläne</a></li>
 			</ul>
 			<ul class="smallicon-set last alignleft">
                                 <li><a href="'.$typo_url.'index.php?id=457" title="Auftrag erteilen" class="smallicon5">Auftrag erteilen</a></li>
