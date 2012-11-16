@@ -333,8 +333,12 @@
 				$return['wordpress']['session'] = $url_session_id;
 			}
 
-			// plugins for moderators and users
-			// TODO: $html .= plugin_hook_output_all('getExtraActionAsHTML',array(),LF).LF;
+			// plugins
+			$plugin_array = plugin_hook_output_all('getMyAreaActionAsArray',array(),'MULTIARRAY');
+			if ( !empty($plugin_array) ) {
+			   $plugin_array2['plugins'] = $plugin_array;
+			   $return = array_merge($return,$plugin_array2);
+			}
 			return $return;
 		}
 

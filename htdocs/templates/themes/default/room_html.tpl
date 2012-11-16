@@ -54,6 +54,25 @@
 				{block name=widgets}
 				{if !$environment.is_guest}
 					<div id="tm_icons_bar">
+					   {if !empty($cs_bar.addon_information.plugins)}
+					      {foreach key=no item=plugin_data from=$cs_bar.addon_information.plugins}
+					         {if !empty($plugin_data.active) and $plugin_data.active and !empty($plugin_data.href) and !empty($plugin_data.title) and !empty($plugin_data.text) and !empty($plugin_data.img) and !empty($plugin_data.name)}
+					            <style type="text/css">
+                           <!--
+                           #tm_{$plugin_data.name} {
+                               background: url({$plugin_data.img}) no-repeat;
+                           }
+                           
+                           #tm_{$plugin_data.name}:hover,
+                           .tm_{$plugin_data.name}_hover {
+                               background: url({$plugin_data.img}) -36px 0px no-repeat !important;
+                           }
+                           -->
+                           </style>
+   			               <a href="{$plugin_data.href}" title="{$plugin_data.title}" target="_blank" id="tm_{$plugin_data.name}">{$plugin_data.text}</a>
+					         {/if}
+					      {/foreach}
+					   {/if}
 	               {if $cs_bar.addon_information.wiki.active}
 	                  {$w = $cs_bar.addon_information.wiki}
 	                  <a href="{$w.path}/wikis/{$w.portal_id}/{$w.item_id}/index.php{$w.session}" title="___COMMON_WIKI_LINK___: {$w.title}" target="_blank" id="tm_wiki">&nbsp;</a>
