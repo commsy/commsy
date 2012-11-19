@@ -2379,6 +2379,7 @@ class cs_context_item extends cs_item {
    * @return boolean
    */
   function isGrouproomActive () {
+    /*
     $retour = false;
     if ( $this->_issetExtra('GROUPROOM') ) {
       $active = $this->_getExtra('GROUPROOM');
@@ -2386,6 +2387,8 @@ class cs_context_item extends cs_item {
         $retour = true;
       }
     }
+    */
+    $retour = true;
     return $retour;
   }
 
