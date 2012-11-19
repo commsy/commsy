@@ -73,10 +73,14 @@ else {
       } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_SPONSORING') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_SPONSORING_DESC');
-      } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM') {
+      }
+      /*
+      elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_GROUPROOM_DESC');
-      } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE') {
+      }
+      */
+      elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_LOGARCHIVE_DESC');
       } elseif ($_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE') {
@@ -118,7 +122,7 @@ else {
          unset($portal_manager);
          if (
               ( $extra == 'CONFIGURATION_EXTRA_SPONSORING'   and $portal->withAds() ) or
-              ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $portal->withGrouproomFunctions() ) or
+              #( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $portal->withGrouproomFunctions() ) or
               ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'   and $portal->withLogArchive() ) or
               ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $portal->withPDAView() ) or
               ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
@@ -142,7 +146,7 @@ else {
             while ($room) {
                if (
                    ( $extra == 'CONFIGURATION_EXTRA_SPONSORING'   and $room->withAds() ) or
-                    ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $room->withGrouproomFunctions() ) or
+                    #( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $room->withGrouproomFunctions() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'    and $room->withLogArchive() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $room->withPDAView() ) or
                     ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
@@ -188,7 +192,7 @@ else {
 
          if (
               $_POST['extra'] == 'CONFIGURATION_EXTRA_SPONSORING' or
-              $_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM' or
+              #$_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_PDA' or
               $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
@@ -213,9 +217,13 @@ else {
             if ( !empty($_POST['ROOM_'.$portal->getItemID()]) ) {
                if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
                   $portal->setWithAds();
-               } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
+               }
+               /*
+               elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
                   $portal->setWithGrouproomFunctions();
-               } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
+               }
+               */
+               elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
                   $portal->setWithLogArchive();
                } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
                   $portal->setWithHomepageLink();
@@ -237,9 +245,13 @@ else {
             } else {
                if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
                   $portal->setWithoutAds();
-               } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
+               }
+               /*
+               elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
                   $portal->setWithoutGrouproomFunctions();
-               } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
+               }
+               */
+               elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
                   $portal->setWithoutLogArchive();
                } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
                   $portal->setWithoutHomepageLink();
@@ -271,10 +283,14 @@ else {
                      if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' and !$room->WithAds()) {
                         $room->setWithAds();
                         $save_flag = true;
-                     } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and !$room->WithGrouproomFunctions()) {
+                     }
+                     /*
+                     elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and !$room->WithGrouproomFunctions()) {
                         $room->setWithGrouproomFunctions();
                         $save_flag = true;
-                     } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and !$room->withLogArchive()) {
+                     }
+                     */
+                     elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and !$room->withLogArchive()) {
                         $room->setWithLogArchive();
                         $save_flag = true;
                      } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and !$room->WithHomepageLink() ) {
@@ -306,10 +322,14 @@ else {
                      if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' and $room->WithAds() ) {
                         $room->setWithoutAds();
                         $save_flag = true;
-                     } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and $room->WithGrouproomFunctions() ) {
+                     }
+                     /*
+                     elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and $room->WithGrouproomFunctions() ) {
                         $room->setWithoutGrouproomFunctions();
                         $save_flag = true;
-                     } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and $room->withLogArchive()) {
+                     }
+                     */
+                     elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and $room->withLogArchive()) {
                         $room->setWithoutLogArchive();
                         $save_flag = true;
                      } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->WithHomepageLink() ) {
