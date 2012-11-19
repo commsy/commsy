@@ -1645,6 +1645,17 @@ class cs_user_item extends cs_item {
          if ( $user_list->getCount() == 1 ) {
             $retour = $user_list->getFirst();
          }
+         
+         // archive
+         elseif ( $user_list->getCount() == 0
+                  and $this->_environment->isArchiveMode()
+                ) {
+            $this->_environment->deactivateArchiveMode();
+            $retour = $this->getRelatedCommSyUserItem();
+            $this->_environment->activateArchiveMode();
+         }
+         // archive
+         
       }
       return $retour;
    }
