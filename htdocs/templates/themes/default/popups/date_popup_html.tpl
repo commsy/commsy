@@ -166,7 +166,7 @@
 										<!-- daily -->
                               <div id="recurring_details_daily" {if $item.is_recurring_date and $item.is_recurring_date != 'daily'}class="hidden"{/if}>
                                  <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
-                                    ___DATES_RECURRING_EVERY_DAY___&nbsp;
+                                    ___DATES_RECURRING_EVERY_DAY___&nbsp;<span class="required">*</span>
                                     <input type="text" class="text" tabindex="52" size="1" maxlength="4" value="{$item.recurring_day}" style="font-size:10pt;" name="form_data[recurring_day]" {if $item.is_recurring_date}disabled{/if}>
                                     &nbsp;. ___DATES_RECURRING_DAY___
                                  </div>
@@ -175,7 +175,7 @@
 										<!-- weekly -->
                               <div id="recurring_details_weekly" {if $item.is_recurring_date != 'weekly' or !$item.is_recurring_date}class="hidden"{/if}>
    										<div style="padding-top: 3px;">
-   											___DATES_RECURRING_EVERY_WEEK___&nbsp;
+   											___DATES_RECURRING_EVERY_WEEK___&nbsp;<span class="required">*</span>
    											<input type="text" class="text" tabindex="47" size="1" maxlength="4" value="{$item.recurring_week}" style="font-size:10pt;" name="form_data[recurring_week]" {if $item.is_recurring_date}disabled{/if}>
    											&nbsp;. ___DATES_RECURRING_WEEK___
    										</div>
@@ -193,7 +193,7 @@
                               <!-- monthly -->
                               <div id="recurring_details_monthly" {if $item.is_recurring_date != 'monthly' or !$item.is_recurring_date}class="hidden"{/if}>
                                  <div style="padding-top: 3px;">
-                                    ___DATES_RECURRING_EVERY_MONTH___&nbsp;
+                                    ___DATES_RECURRING_EVERY_MONTH___&nbsp;<span class="required">*</span>
                                     <input type="text" class="text" tabindex="54" size="1" maxlength="4" value="{$item.recurring_month}" style="font-size:10pt;" name="form_data[recurring_month]" {if $item.is_recurring_date}disabled{/if}>
                                     &nbsp;. ___DATES_RECURRING_MONTH___
                                     <select style="font-size:10pt;" tabindex="55" size="0" name="form_data[recurring_month_every]" {if $item.is_recurring_date}disabled{/if}>
@@ -219,7 +219,7 @@
                               <!-- yearly -->
                               <div id="recurring_details_yearly" {if $item.is_recurring_date != 'yearly' or !$item.is_recurring_date}class="hidden"{/if}>
                                  <div style="padding-top: 3px;"><!-- COMBINED FIELDS -->
-                                    ___DATES_RECURRING_EVERY_YEAR___&nbsp;
+                                    ___DATES_RECURRING_EVERY_YEAR___&nbsp;<span class="required">*</span>
                                     <input type="text" class="text" tabindex="53" size="1" maxlength="4" value="{$item.recurring_year}" style="font-size:10pt;" name="form_data[recurring_year]" {if $item.is_recurring_date}disabled{/if}>
                                     &nbsp;.
                                     <select style="font-size:10pt;" tabindex="54" size="0" name="form_data[recurring_year_every]" {if $item.is_recurring_date}disabled{/if}>
