@@ -481,23 +481,35 @@ foreach ( $portal_id_array as $portal_id ) {
       fwrite($file, '<hr/>'.LF);
 
       // private rooms
-      fwrite($file, '<h4>Private Rooms</h4>'.LF);
-      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
+      #$id_array = $portal->getPrivateIDArray();
+      $id_array = $portal->getActiveUserPrivateIDArray();
+      fwrite($file, '<h4>Private Rooms ('.count($id_array).')</h4>'.LF);
+      performRoomIDArray($id_array,$portal->getTitle(),true);
+      unset($id_array);
       fwrite($file, '<hr/>'.LF);
 
       // community rooms
-      fwrite($file, '<h4>Community Rooms</h4>'.LF);
-      performRoomIDArray($portal->getCommunityIDArray(),$portal->getTitle());
+      #$id_array = $portal->getCommunityIDArray();
+      $id_array = $portal->getActiveCommunityIDArray();
+      fwrite($file, '<h4>Community Rooms ('.count($id_array).')</h4>'.LF);
+      performRoomIDArray($id_array,$portal->getTitle());
+      unset($id_array);
       fwrite($file, '<hr/>'.LF);
 
       // project rooms
-      fwrite($file, '<h4>Project Rooms</h4>'.LF);
-      performRoomIDArray($portal->getProjectIDArray(),$portal->getTitle());
+      #$id_array = $portal->getProjectIDArray();
+      $id_array = $portal->getActiveProjectIDArray();
+      fwrite($file, '<h4>Project Rooms ('.count($id_array).')</h4>'.LF);
+      performRoomIDArray($id_array,$portal->getTitle());
+      unset($id_array);
       fwrite($file, '<hr/>'.LF);
 
       // group rooms
-      fwrite($file, '<h4>Group Rooms</h4>'.LF);
-      performRoomIDArray($portal->getGroupIDArray(),$portal->getTitle());
+      #$id_array = $portal->getGroupIDArray();
+      $id_array = $portal->getActiveGroupIDArray();
+      fwrite($file, '<h4>Group Rooms ('.count($id_array).')</h4>'.LF);
+      performRoomIDArray($id_array,$portal->getTitle());
+      unset($id_array);
       fwrite($file, '<hr/>'.LF);
 
       cron_workflow($portal);

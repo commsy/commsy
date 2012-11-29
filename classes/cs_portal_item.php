@@ -45,12 +45,16 @@ class cs_portal_item extends cs_guide_item {
    var $_cache_auth_source_list = NULL;
 
    private $_community_id_array = NULL;
+   private $_active_community_id_array = NULL;
    private $_project_id_array = NULL;
+   private $_active_project_id_array = NULL;
    private $_group_id_array = NULL;
+   private $_active_group_id_array = NULL;
    private $_community_id_array_archive = NULL;
    private $_project_id_array_archive = NULL;
    private $_group_id_array_archive = NULL;
    private $_private_id_array = NULL;
+   private $_private_id_array_active_user = NULL;
    private $_room_list_continuous_nlct = NULL;
    private $_grouproom_list_count = NULL;
 
@@ -270,6 +274,30 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   public function getActiveCommunityIDArray () {
+      $retour = array();
+      $archive = 'this->_active_community_id_array';
+      if ( $this->_environment->isArchiveMode() ) {
+         $archive .= '_archive';
+      }
+      if ( !isset($$archive) ) {
+         $manager = $this->_environment->getCommunityManager();
+         $manager->resetData();
+         $manager->resetLimits();
+         $manager->setContextLimit($this->getItemID());
+         $manager->setActiveLimit();
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $$archive = $id_array;
+         }
+      }
+      if ( !empty($$archive) ) {
+         $retour = $$archive;
+      }
+      return $retour;
+   }
+
    public function getProjectIDArray () {
       $retour = array();
       $archive = 'this->_project_id_array';
@@ -281,6 +309,30 @@ class cs_portal_item extends cs_guide_item {
          $manager->resetData();
          $manager->resetLimits();
          $manager->setContextLimit($this->getItemID());
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $$archive = $id_array;
+         }
+      }
+      if ( !empty($$archive) ) {
+         $retour = $$archive;
+      }
+      return $retour;
+   }
+
+   public function getActiveProjectIDArray () {
+      $retour = array();
+      $archive = 'this->_active_project_id_array';
+      if ( $this->_environment->isArchiveMode() ) {
+         $archive .= '_archive';
+      }
+      if ( !isset($$archive) ) {
+         $manager = $this->_environment->getProjectManager();
+         $manager->resetData();
+         $manager->resetLimits();
+         $manager->setContextLimit($this->getItemID());
+         $manager->setActiveLimit();
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
@@ -316,6 +368,30 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
    
+   public function getActiveGroupIDArray () {
+      $retour = array();
+      $archive = 'this->_active_group_id_array';
+      if ( $this->_environment->isArchiveMode() ) {
+         $archive .= '_archive';
+      }
+      if ( !isset($$archive) ) {
+         $manager = $this->_environment->getGrouproomManager();
+         $manager->resetData();
+         $manager->resetLimits();
+         $manager->setContextLimit($this->getItemID());
+         $manager->setActiveLimit();
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $$archive = $id_array;
+         }
+      }
+      if ( !empty($$archive) ) {
+         $retour = $$archive;
+      }
+      return $retour;
+   }
+   
    public function getPrivateIDArray () {
       $retour = array();
       if ( !isset($this->_private_id_array) ) {
@@ -335,6 +411,26 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   public function getActiveUserPrivateIDArray () {
+      $retour = array();
+      if ( !isset($this->_private_id_array_active_user) ) {
+         $manager = $this->_environment->getPrivateroomManager();
+         $manager->resetData();
+         $manager->resetLimits();
+         $manager->setContextLimit($this->getItemID());
+         $manager->setActiveLimit();
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $this->_private_id_array_active_user = $id_array;
+         }
+      }
+      if ( !empty($this->_private_id_array_active_user) ) {
+         $retour = $this->_private_id_array_active_user;
+      }
+      return $retour;
+   }
+   
    /** get community list
     * this function returns a list of all community rooms
     * existing at this portal
