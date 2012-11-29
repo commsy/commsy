@@ -125,7 +125,17 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
            and isset($environment)
          ) {
          $db_connector = $environment->getDBConnector();
-         $query = 'INSERT DELAYED INTO log_error SET '.
+
+         // mysql - replication
+         $delayed = ' DELAYED ';
+         $db_replication = $environment->getConfiguration('db_replication');
+         if ( !empty($db_replication)
+              and $db_replication
+            ) {
+            $delayed = ' ';
+         }
+         
+         $query = 'INSERT'.$delayed.'INTO log_error SET '.
             'datetime="'.mysql_real_escape_string($dt).'", '.
             'number="'.mysql_real_escape_string($errno).'", '.
             'type="'.mysql_real_escape_string($errortype[$errno]).'", '.
