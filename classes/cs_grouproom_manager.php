@@ -251,6 +251,11 @@ class cs_grouproom_manager extends cs_room2_manager {
       	}
       }
 
+      // lastlogin_newer_limit
+      if ( !empty($this->_lastlogin_newer_limit) ) {
+      	$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin >= "'.encode(AS_DB,$this->_lastlogin_newer_limit).'"';
+      }
+      
       if ( isset($this->_sort_order) ) {
          if ($this->_sort_order == 'title_rev') {
             $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';

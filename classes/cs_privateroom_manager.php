@@ -64,6 +64,8 @@ class cs_privateroom_manager extends cs_room2_manager {
 
   private $_template_limit = NULL;
 
+  private $_active_limit = false;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -87,6 +89,7 @@ class cs_privateroom_manager extends cs_room2_manager {
      $this->_user_id_limit = NULL;
      $this->_room_type = CS_PRIVATEROOM_TYPE;
      $this->_template_limit = NULL;
+     $this->_active_limit = false;
   }
 
   /** set interval limit
@@ -100,6 +103,10 @@ class cs_privateroom_manager extends cs_room2_manager {
      $this->_from_limit = (integer)$from;
   }
 
+  public function setActiveLimit () {
+     $this->_active_limit = true;
+  }
+  
   /** set order limit
     * this method sets an order limit for the select statement
     *
@@ -196,6 +203,15 @@ function getContextIDForItemID($id){
            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
         }
      }
+     
+      if ( $this->_active_limit ) {
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id';
+         $query .= ' AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
+         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' AS user2 ON '.$this->addDatabasePrefix('user').'.user_id=user2.user_id';
+         $query .= ' AND '.$this->addDatabasePrefix('user').'.auth_source=user2.auth_source';
+         $query .= ' AND user2.deletion_date IS NULL';
+      }
+     
      $query .= ' WHERE 1';
      if (isset($this->_user_id_limit)) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$this->_user_id_limit).'"';
@@ -220,6 +236,12 @@ function getContextIDForItemID($id){
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.template = "1"';
      }
 
+      if ( $this->_active_limit ) {
+         include_once('functions/date_functions.php');
+         $query .= ' AND user2.context_id = '.encode(AS_DB,$this->_room_limit);
+         $query .= ' and user2.lastlogin >= "'.getCurrentDateTimeMinusDaysInMySQL(100).'"';
+      }
+     
       // archive
       // lastlogin_limit
       if ( !empty($this->_lastlogin_limit) ) {

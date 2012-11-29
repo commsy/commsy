@@ -375,13 +375,18 @@ class cs_project_manager extends cs_room2_manager {
       		$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin = '.encode(AS_DB,$this->_lastlogin_limit);
       	}
       }
-      // _lastlogin_older_limit
+      // lastlogin_older_limit
       if ( !empty($this->_lastlogin_older_limit) ) {
       	$query .= ' AND ( '.$this->addDatabasePrefix($this->_db_table).'.lastlogin < "'.encode(AS_DB,$this->_lastlogin_older_limit).'"';
       	$query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.lastlogin IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.creation_date < "'.encode(AS_DB,$this->_lastlogin_older_limit).'" ) )';
       }
 
-     if (isset($this->_sort_order)) {
+      // lastlogin_newer_limit
+      if ( !empty($this->_lastlogin_newer_limit) ) {
+      	$query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.lastlogin >= "'.encode(AS_DB,$this->_lastlogin_newer_limit).'"';
+      }
+      
+      if (isset($this->_sort_order)) {
         if ($this->_sort_order == 'title_rev') {
            $query .= ' ORDER BY '.$this->addDatabasePrefix($this->_db_table).'.title DESC';
         } elseif ($this->_sort_order == 'activity') {
@@ -414,6 +419,7 @@ class cs_project_manager extends cs_room2_manager {
            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
         }
      }
+     
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {

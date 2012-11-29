@@ -45,7 +45,12 @@ class cs_room2_manager extends cs_context_manager {
    */
   protected $_lastlogin_older_limit = NULL;
 	
-   /** constructor
+  /**
+   * string - containing the last login limit (a datetime) of rooms
+   */
+  protected $_lastlogin_newer_limit = NULL;
+	
+  /** constructor
     * the only available constructor, initial values for internal variables
     *
     * @param object cs_environment the environment
@@ -56,13 +61,14 @@ class cs_room2_manager extends cs_context_manager {
   /** reset limits
     * reset limits of this class: lastlogin and all limits from upper class
     */
-  function resetLimits () {
-     parent::resetLimits();
-     $this->_lastlogin_limit = NULL;
-     $this->_lastlogin_older_limit = NULL;
-  }
+   function resetLimits () {
+      parent::resetLimits();
+      $this->_lastlogin_limit = NULL;
+      $this->_lastlogin_older_limit = NULL;
+      $this->_lastlogin_newer_limit = NULL;
+   }
   
-  public function setLastLoginLimit ($limit) {
+   public function setLastLoginLimit ($limit) {
       $this->_lastlogin_limit = (string)$limit;
    }
   
@@ -70,6 +76,15 @@ class cs_room2_manager extends cs_context_manager {
       $this->_lastlogin_older_limit = (string)$limit;
    }
   
+   public function setLastLoginNewerLimit ($limit) {
+      $this->_lastlogin_newer_limit = (string)$limit;
+   }
+  
+   public function setActiveLimit () {
+      include_once('functions/date_functions.php');
+      $this->setLastLoginNewerLimit(getCurrentDateTimeMinusDaysInMySQL(100));
+   }
+   
    // archiving
    public function saveLastLogin ($item, $datetime = '') {
    	$retour = false;
