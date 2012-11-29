@@ -1663,5 +1663,19 @@ class cs_room_item extends cs_context_item {
    	
    	return $retour;
    }
+
+  /** get lastlogin of a context
+   * this method returns the last login date of the context
+   *
+   * @return string lastlogin of a context
+   */
+   public function getLastLogin () {
+      return $this->_getValue('lastlogin');
+   }
+   
+   public function isActiveDuringLast99Days () {
+      include_once('functions/date_functions.php');
+      return $this->getLastLogin() >= getCurrentDateTimeMinusDaysInMySQL(99);
+   }
 }
 ?>
