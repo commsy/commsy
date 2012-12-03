@@ -25,6 +25,8 @@
 // overwrite entries with "overwritten because of data security"
 // when deleting a user
 // default = false
+// do nothing = true
+// set flag = flag
 $c_datenschutz_disable_overwriting = true;
 
 ?>
