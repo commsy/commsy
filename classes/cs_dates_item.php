@@ -448,6 +448,7 @@ class cs_dates_item extends cs_item {
 
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
+      $this->SendDeleteEntryMailToModerators();
    }
 
    /** asks if item is editable by everybody or just creator

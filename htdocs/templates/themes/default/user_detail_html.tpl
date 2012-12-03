@@ -307,6 +307,20 @@
 									</td>
 								</tr>
 							{/if}
+							{if !empty($detail.configcontent.mailing_material)}
+								<tr>
+									<td class="label"><h4>___ACCOUNT_EMAIL_MATERIAL___</h4></td>
+									<td>
+										{if $detail.configcontent.mailing_material == 'yes'}
+											___COMMON_YES___
+										{elseif $detail.configcontent.mailing_material == 'no'}
+											___COMMON_NO___
+										{else}
+											___COMMON_MESSAGETAG_ERROR___
+										{/if}
+									</td>
+								</tr>
+							{/if}
 
 							{if !empty($detail.configcontent.mailing)}
 								<tr>
@@ -338,13 +352,13 @@
 								</tr>
 							{/if}
 
-							{if !empty($detail.configcontent.mailing_material)}
+							{if !empty($detail.configcontent.mailing_delete_entries)}
 								<tr>
-									<td class="label"><h4>___ACCOUNT_EMAIL_MATERIAL___</h4></td>
+									<td class="label"><h4>___DELETE_ENTRY_WANT_MAIL___</h4></td>
 									<td>
-										{if $detail.configcontent.mailing_material == 'yes'}
+										{if $detail.configcontent.mailing_delete_entries == 'yes'}
 											___COMMON_YES___
-										{elseif $detail.configcontent.mailing_material == 'no'}
+										{elseif $detail.configcontent.mailing_delete_entries == 'no'}
 											___COMMON_NO___
 										{else}
 											___COMMON_MESSAGETAG_ERROR___
@@ -352,6 +366,7 @@
 									</td>
 								</tr>
 							{/if}
+
 
 
 

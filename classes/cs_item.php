@@ -63,7 +63,7 @@ class cs_item {
    var $_cache_on = true;
 
    var $_external_viewer_user_array = NULL;
-   
+
   /**
    * boolean - if true the modification_date will be updated - else not
    */
@@ -1379,6 +1379,7 @@ class cs_item {
       $manager->delete($this->getItemID());
       $link_manager = $this->_environment->getLinkItemManager();
       $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
+
    }
 
    function _undelete ($manager) {
@@ -1404,7 +1405,7 @@ class cs_item {
             $access = true;
          }
       }
-      
+
       if ( $access === true )
       {
       	return true;
@@ -1412,7 +1413,7 @@ class cs_item {
       else
       {
       	$privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
-      	
+
       	// check for sub-types
       	switch ( $this->getType() )
       	{
@@ -1423,7 +1424,7 @@ class cs_item {
       			break;
       	}
       }
-      
+
       return $access;
    }
 
@@ -1446,41 +1447,41 @@ class cs_item {
          trigger_error('can not find user data in database table "user" for user-id "'.$user_id.'", auth_source "'.$auth_source.'", context_id "'.$this->getContextID().'"',E_USER_WARNING);
       }
    }
-   
+
    /** \brief	check via portfolio permission
     *
     * This Method checks for item <=> activated portfolio - relationships
     */
    public function mayPortfolioSee($userItem) {
    	$portfolioManager = $this->_environment->getPortfolioManager();
-   	
+
    	// get all ids from portfolios we are allow to see
    	$portfolioIds = $portfolioManager->getPortfolioForExternalViewer($userItem->getUserId());
-   	
+
    	// now we get all item tags and their ids
    	$tagList = $this->getTagList();
    	$tagIdArray = array();
-   	
+
    	$tagEntry = $tagList->getFirst();
    	while ( $tagEntry )
    	{
    		$tagIdArray[] = $tagEntry->getItemID();
-   		
+
    		$tagEntry = $tagList->getNext();
    	}
-   	
+
    	if ( empty($portfolioIds) || empty($tagIdArray) ) return false;
-   	
+
    	// get row and column information for all portfolios with given tags
    	$portfolioInformation = $portfolioManager->getPortfolioData($portfolioIds, $tagIdArray);
-   	
+
    	// if user is allowed to see, there must be two tags for one portfolioId in this array, one for column, one for row
    	foreach ( $portfolioIds as $portfolioId )
    	{
    		if ( isset($portfolioInformation[$portfolioId]) )
    		{
    			$entryArray = $portfolioInformation[$portfolioId];
-   			
+
    			if ( sizeof($entryArray) > 1 )
    			{
    				$hasRow = $hasColumn = false;
@@ -1489,12 +1490,12 @@ class cs_item {
    					if ( $entry["row"] == 0) $hasColumn = true;
    					if ( $entry["column"] == 0) $hasRow = true;
    				}
-   				
+
    				if ( $hasRow === true && $hasColumn === true) return true;
    			}
    		}
    	}
-   	
+
    	return false;
    }
 
@@ -2588,14 +2589,111 @@ function getExternalViewerArray(){
       }
       return $result;
    }
-   
+
    // archive
    public function setArchiveStatus () {
       $this->_is_archived = true;
    }
-   
+
    public function isArchived () {
       return $this->_is_archived;
    }
+
+   function SendDeleteEntryMailToModerators(){
+	   	$translator = $this->_environment->getTranslationObject();
+	   	$default_language = 'de';
+	   	$server_item = $this->_environment->getServerItem();
+	   	$default_sender_address = $server_item->getDefaultSenderAddress();
+	   	if ( empty($default_sender_address) ) {
+	   		$default_sender_address = '@';
+	   	}
+		$current_context = $this->_environment->getCurrentContextItem();
+		$moderator_list = $current_context->getModeratorList();
+		$mod_item = $moderator_list->getFirst();
+		while($mod_item){
+  			if ($mod_item->getDeleteEntryWantMail() == 'yes') {
+   				$language = $current_context->getLanguage();
+   				if ($language == 'user') {
+   					$language = $mod_item->getLanguage();
+   					if ($language == 'browser') {
+   						$language = $default_language;
+   					}
+   				}
+   				$receiver_array[$language][] = $mod_item->getEmail();
+   				$moderator_name_array[] = $mod_item->getFullname();
+   			}
+   			$mod_item = $moderator_list->getNext();
+ 		}
+
+		$context_item = $this->_environment->getCurrentContextItem();
+
+	   	// now email information
+   		foreach ($receiver_array as $key => $value) {
+   			$current_portal = $this->_environment->getCurrentPortalItem();
+   			$current_user = $this->_environment->getCurrentUserItem();
+   			$fullname = $current_user->getFullname();
+   			$save_language = $translator->getSelectedLanguage();
+   			$translator->setSelectedLanguage($key);
+   			$subject = '';
+		    $subject .= $translator->getMessage('COMMON_DELETED_ENTRY',$context_item->getTitle());
+  			$body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+   			$body .= LF.LF;
+         	$body  .= $translator->getMessage('COMMON_DELETED_ENTRY_DESC',$this->getTitle(), $context_item->getTitle(), $fullname, $translator->getMessage('COMMON_'.strtoupper($this->getType())));
+   			$body .= LF.LF;
+
+	        $url_to_portal = '';
+	        if ( !empty($current_portal) ) {
+	           $url_to_portal = $current_portal->getURL();
+	        }
+	        $c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+	        if ( isset($c_commsy_cron_path) ) {
+	           $url = $c_commsy_cron_path.'commsy.php?cid=';
+	        } elseif ( !empty($url_to_portal) ) {
+	           $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+	           if ( stristr($c_commsy_domain,'https://') ) {
+	              $url = 'https://';
+	           } else {
+	              $url = 'http://';
+	           }
+	           $url .= $url_to_portal;
+	           $file = 'commsy.php';
+	           $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+	           if ( !empty($c_single_entry_point) ) {
+	              $file = $c_single_entry_point;
+	           }
+	           $url .= '/'.$file.'?cid=';
+	        } else {
+	           $file = $_SERVER['PHP_SELF'];
+	           $file = str_replace('cron','commsy',$file);
+	           $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+	        }
+   			$url .= $context_item->getItemID();
+  			$body .= LF.$url;
+    		$body .= LF.LF;
+   			$body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
+   			$body .= LF.LF;
+
+	   		// send email
+   			include_once('classes/cs_mail.php');
+   			$mail = new cs_mail();
+   			$mail->set_to(implode(',',$value));
+   			$mail->set_from_email($default_sender_address);
+   			if (isset($current_portal)){
+   				$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
+   			}else{
+   				$mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+   			}
+   			$mail->set_reply_to_name($current_user->getFullname());
+   			$mail->set_reply_to_email($current_user->getEmail());
+   			$mail->set_subject($subject);
+   			$mail->set_message($body);
+   			$retour = $mail->send();
+   			unset($mail);
+   			$translator->setSelectedLanguage($save_language);
+   			unset($save_language);
+   		}
+
+   }
+
 }
 ?>

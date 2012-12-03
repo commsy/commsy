@@ -1,0 +1,4 @@
+<?php
+$message["DELETE_ENTRY_WANT_MAIL"]["de"] = "E-Mail bei Eintragslöschung.";
+$message["DELETE_ENTRY_WANT_MAIL_DESC"]["de"] = "Benachrichtigung, wenn ein Beitrag im Raum gelöscht wurde.";
+?>

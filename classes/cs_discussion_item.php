@@ -277,6 +277,7 @@ class cs_discussion_item extends cs_item {
    function delete() {
       $discussion_manager = $this->_environment->getDiscussionManager();
       $this->_delete($discussion_manager);
+      $this->SendDeleteEntryMailToModerators();
    }
 
    /** Checks and sets the data of the discussion_item.
@@ -354,9 +355,9 @@ class cs_discussion_item extends cs_item {
       $article_list = $this->getAllArticles(true);
       $article = $article_list->getFirst();
       $article_number = 1;
-      
 
-      
+
+
       while ( $article ) {
          $article_number++;
          $arcticle_copy = $article->cloneCopy();

@@ -20,7 +20,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	{
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
-		
+
 		// check context
 		if(!$current_context->isOpen()) {
 			// TODO:
@@ -177,9 +177,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 					case 'account':
 						if($this->_popup_controller->checkFormData('account')) {
 							$authentication = $this->_environment->getAuthenticationObject();
-							
+
 							$currentUser = $this->_environment->getCurrentUserItem();
-							
+
 							// password
 							if(!empty($form_data['new_password'])) {
 								$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
@@ -190,7 +190,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
 								}
 							}
-							
+
 							// get portal user if in room context
 							if ( !$this->_environment->inPortal() )
 							{
@@ -200,15 +200,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							{
 								$portalUser = $this->_environment->getCurrentUserItem();
 							}
-							
+
 							// user id
 							if(!empty($form_data['user_id']) && $form_data['user_id'] != $portalUser->getUserID()) {
-								
+
 								$check = true;
 								$auth_source = $portalUser->getAuthSource();
 								if ( !empty($auth_source) ) {
 									$authentication = $this->_environment->getAuthenticationObject();
-									
+
 									if ( !$authentication->is_free($form_data['user_id'], $auth_source) ) {
 										$this->_popup_controller->setErrorReturn("1011", "user id error(duplicated)", array());
 										$check = false;
@@ -220,22 +220,22 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									$this->_popup_controller->setErrorReturn("1013", "user id error(auth source error)", array());
 									$check = false;
 								}
-								
+
 								if ($check === true) {
 									if($authentication->changeUserID($form_data['user_id'], $portalUser)) {
 										$session_manager = $this->_environment->getSessionManager();
 										$session = $this->_environment->getSessionItem();
-									
+
 										$session_id_old = $session->getSessionID();
 										$session_manager->delete($session_id_old, true);
 										$session->createSessionID($form_data['user_id']);
-									
+
 										$cookie = $session->getValue('cookie');
 										if($cookie == 1) $session->setValue('cookie', 2);
-									
+
 										$session_manager->save($session);
 										unset($session_manager);
-									
+
 										$portalUser->setUserID($form_data['user_id']);
 										require_once('functions/misc_functions.php');
 										plugin_hook('user_save', $portalUser);
@@ -285,6 +285,18 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								}
 							}
 
+/*							if(!empty($form_data['mail_delete_entry'])) {
+								if($portalUser->getDeleteEntryWantMail() == 'no') {
+									$portalUser->setDeleteEntryWantMail('yes');
+									$save = true;
+								}
+							} else {
+								if($portalUser->getDeleteEntryWantMail() == 'yes') {
+									$portalUser->setDeleteEntryWantMail('no');
+									$save = true;
+								}
+							}
+*/
 							$change_name = false;
 
 							// forname
@@ -300,7 +312,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$change_name = true;
 								$save = true;
 							}
-							
+
 							// auto save
 							if(!empty($form_data['auto_save'])) {
 								if($form_data['auto_save'] == 'on') $portalUser->turnAutoSaveOn();
@@ -363,7 +375,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							if(!empty($additional["fileInfo"])) {
 								$currentUser = $this->_environment->getCurrentUserItem();
 								$portalUser = $currentUser->getRelatedCommSyUserItem();
-								
+
 								$srcfile = $additional["fileInfo"]["file"];
 								$targetfile = $srcfile . "_converted";
 
@@ -422,9 +434,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 								$disc_manager->copyFile($targetfile, $filename, true);
 								$currentUser->setPicture($filename);
-								
+
 								$modifier = $this->_environment->getCurrentUserItem();
-								
+
 								if ( isset($portalUser) ) {
 									if($disc_manager->copyImageFromRoomToRoom($filename, $portalUser->getContextID())) {
 										$value_array = explode('_', $filename);
@@ -435,13 +447,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 										$new_picture_name = implode('_', $value_array);
 
 										$portalUser->setPicture($new_picture_name);
-										
+
 										$portalUser->setModificatorItem($modifier);
 										$portalUser->setModificationDate(getCurrentDateTimeInMySQL());
 										$portalUser->save();
 									}
 								}
-								
+
 								// save
 								$currentUser->setModificatorItem($modifier);
 								$currentUser->setModificationDate(getCurrentDateTimeInMySQL());
@@ -457,7 +469,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 					case 'user':
 						$currentUser = $this->_environment->getCurrentUserItem();
 						$portalUser = $currentUser->getRelatedCommSyUserItem();
-						
+
 						if ( $this->_popup_controller->checkFormData('user') )
 						{
 
@@ -465,7 +477,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								if(isset($value)) {
 									// set for user
 									call_user_func_array(array($currentUser, $method), array($value));
-									
+
 									if ( isset($portalUser_item) )
 									{
 										// set for portal user
@@ -513,11 +525,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 							// set modificator and modification date and save
 							$modifier = $this->_environment->getCurrentUserItem();
-							
+
 							$currentUser->setModificatorItem($modifier);
 							$currentUser->setModificationDate(getCurrentDateTimeInMySQL());
 							$currentUser->save();
-							
+
 							if ( isset($portalUser) )
 							{
 								$portalUser->setModificatorItem($modifier);
@@ -529,7 +541,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							// get a dummy user
 							$user_manager = $this->_environment->getUserManager();
 							$dummy_user = $user_manager->getNewItem();
-							
+
 							$changeAll = false;
 							function setChangeAllValue($currentUser, $dummy_user_item, $method_set, $method_get, $checked) {
 								if( isset($checked) )
@@ -539,7 +551,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 									call_user_func_array(array($dummy_user_item, $method_set), array($value));
 								}
-								
+
 								return $checked;
 							}
 
@@ -549,7 +561,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$changeAll = $changeAll || setChangeAllValue($currentUser, $dummy_user, 'setEmail', 'getEmail', $form_data['mail_all']);
 							if(isset($form_data['mail_all'])) {
 								$changeAll = true;
-								
+
 								if(!$currentUser->isEmailVisible()) $dummy_user->setEmailNotVisible();
 								else $dummy_user->setEmailVisible();
 							}
@@ -570,15 +582,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$changeAll = setChangeAllValue($currentUser, $dummy_user, 'setHomepage', 'getHomepage', $form_data['homepage_all']) || $changeAll;
 							$changeAll = setChangeAllValue($currentUser, $dummy_user, 'setDescription', 'getDescription', $form_data['description_all']) || $changeAll;
 							$changeAll = setChangeAllValue($currentUser, $dummy_user, 'setPicture', 'getPicture', $form_data['picture_all']) || $changeAll;
-							
+
 							if ( $changeAll === true )
 							{
 								$currentUser->changeRelatedUser($dummy_user);
 							}
-							
+
 							$manager = $this->_environment->getLinkModifierItemManager();
 							$manager->markEdited($currentUser->getItemID());
-							
+
 							// set return
                 			$this->_popup_controller->setSuccessfullItemIDReturn($currentUser->getItemID());
 						}
@@ -612,7 +624,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$room_item = $currentUser->getOwnRoom();
 
 							//---
-							
+
 							$wordpress_manager = $this->_environment->getWordpressManager();
 		               $wiki_manager = $this->_environment->getWikiManager();
 
@@ -948,11 +960,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		                         }
 		                         $room_item->save();
 						      }
-						      
+
 						      // plugins
 						      elseif ( substr($additional['action'],0,7) == 'plugin_' ) {
 						         $plugin = substr($additional['action'],7);
-						      
+
 						         $plugin_class = $this->_environment->getPluginClass($plugin);
 						         if ( !empty($plugin_class)
 						              and method_exists($plugin_class,'isConfigurableInPortal')
@@ -973,7 +985,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						               } else {
 						                  $room_item->setPluginOff($plugin);
 						               }
-						                
+
 						               $values = $form_data;
 						               $values['current_context_item'] = $room_item;
 						               if ( $this->_environment->inPortal()
@@ -990,11 +1002,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						         $room_item->save();
 						      }
 						      // plugins
-						      
-							
+
+
 							//---
-							
-							
+
+
 							if(isset($form_data['show_widget_view']) && !empty($form_data['show_widget_view'])) {
 								if($form_data['show_widget_view'] == 'yes'){
 								   $room_item->setCSBarShowWidgets('1');
@@ -1132,7 +1144,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 		// set configuration
 		$account = array();
-		
+
 		$this->_user = $this->_environment->getCurrentUserItem();
 
 		// disable merge form only for root
@@ -1186,7 +1198,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		if($this->_user->isModerator()) {
 			$this->_config['show_mail_change_form'] = true;
 		}
-		
+
 		// datenschutz: overwrite or not (04.09.2012 IJ)
 		$overwrite = true;
 		$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
@@ -1219,6 +1231,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 				array('name' => 'mail_account', 'type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'mail_room', 'type' => 'checkbox', 'mandatory' => false),
 				array('name' => 'upload', 'type' => 'radio', 'mandatory' => false/*true*/),
+//				array('name' => 'mail_delete_entry', 'type' => 'radio', 'mandatory' => false/*true*/),
 				array('name' => 'auto_save', 'type' => 'checkbox', 'mandatory' => true),
 			),
 			'user'			=> array(
@@ -1316,6 +1329,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$return['language'] = $this->_user->getLanguage();
 		$return['email_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
 		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
+//		$return['mail_delete_entry'] = ($this->_user->getDeleteEntryWantMail() === 'yes') ? true : false;
 //		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
 		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
 		$return['email_to_commsy_on'] = false;
@@ -1331,7 +1345,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	    }
 
       $this->_popup_controller->assign('popup', 'external', $this->getExternalInformation());
-      
+
 		return $return;
 	}
 
@@ -1636,7 +1650,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
                } else {
                   $array_plugins[$plugin_class->getIdentifier()]['on'] = 'no';
                }
-	            
+
 	            /*
 	            if ( $this->_environment->inPortal()
 	                 and method_exists($plugin_class,'configurationAtPortal')
@@ -1657,12 +1671,12 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	      $return['plugins_array'] = $array_plugins;
 	   }
 	   // plugins
-	   
+
 	   return $return;
 	}
 
-	
-	
+
+
 	private function getNewsletterInformation() {
 		$return = array();
 

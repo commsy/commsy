@@ -825,6 +825,8 @@ class cs_material_item extends cs_item {
 
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
+
+      $this->SendDeleteEntryMailToModerators();
    }
 
    /** delete a version of a material

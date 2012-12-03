@@ -153,9 +153,10 @@ class cs_announcement_item extends cs_item {
    function delete() {
       $manager = $this->_environment->getAnnouncementManager();
       $this->_delete($manager);
-      
+
       // delete associated annotations
       $this->deleteAssociatedAnnotations();
+      $this->SendDeleteEntryMailToModerators();
    }
 
 

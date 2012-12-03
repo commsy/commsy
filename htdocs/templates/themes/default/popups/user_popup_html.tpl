@@ -152,6 +152,13 @@
 											</div>
 										{/if}
 										{if $environment.is_moderator}
+											{if $environment.room_type_commnunity}
+												<div class="input_row">
+													<span  class="input_label_230">___USER_MAIL_PUBLISH_MATERIAL___<span class="required">*</span>:</span>
+													<input type="radio" value="yes" {if $item.want_mail_publish_material  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_YES___
+													<input type="radio" value="no" {if !$item.want_mail_publish_material == 'no'} checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_NO___
+												</div>
+											{/if}
 											<div class="input_row">
 												<div class="input_label_230">___USER_MAIL_GET_ACCOUNT___<span class="required">*</span>:</div>
 												<input type="radio" value="yes" {if $item.want_mail_get_account =='yes'}checked="checked"{/if}" name="form_data[want_mail_get_account]"  />___COMMON_YES___
@@ -161,15 +168,13 @@
 											<div class="input_row">
 												<span  class="input_label_230">___USER_MAIL_ROOM___<span class="required">*</span>:</span>
 												<input type="radio" value="yes" {if $item.want_mail_open_room  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_YES___
-												<input type="radio" value="no" {if !$item.want_mail_open_room == 'no'} checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_NO___
+												<input type="radio" value="no" {if $item.want_mail_open_room == 'no'} checked="checked"{/if}" name="form_data[want_mail_open_room]"  />___COMMON_NO___
 											</div>
-											{if $environment.room_type_commnunity}
-												<div class="input_row">
-													<span  class="input_label_230">___USER_MAIL_PUBLISH_MATERIAL___<span class="required">*</span>:</span>
-													<input type="radio" value="yes" {if $item.want_mail_publish_material  == 'yes' }checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_YES___
-													<input type="radio" value="no" {if !$item.want_mail_publish_material == 'no'} checked="checked"{/if}" name="form_data[want_mail_publish_material]"  />___COMMON_NO___
-												</div>
-											{/if}
+											<div class="input_row">
+												<span  class="input_label_230">___DELETE_ENTRY_WANT_MAIL___<span class="required">*</span>:</BR></BR></span>
+												<input type="radio" value="yes" {if $item.mail_delete_entry  == 'yes' }checked="checked"{/if}" name="form_data[mail_delete_entry]"  />___COMMON_YES___
+												<input type="radio" value="no" {if $item.mail_delete_entry == 'no'} checked="checked"{/if}" name="form_data[mail_delete_entry]"  />___COMMON_NO___
+											</div>
 										{/if}
 										<div class="clear"> </div>
 									</div>

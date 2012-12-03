@@ -740,6 +740,20 @@ class cs_user_item extends cs_item {
       return $this->getOpenRoomWantMail();
    }
 
+
+  function setDeleteEntryWantMail ($value) {
+      $this->_addExtra('DELETEENTRYMAIL',(string)$value);
+   }
+
+   function getDeleteEntryWantMail () {
+      $retour = 'no';
+      if ($this->_issetExtra('DELETEENTRYMAIL')) {
+         $retour = $this->_getExtra('DELETEENTRYMAIL');
+      }
+      return $retour;
+  }
+
+
    /** get flag, if moderator wants a mail if he has to publish a material
     * this method returns the getaccountwantmail flag
     *
@@ -1645,7 +1659,7 @@ class cs_user_item extends cs_item {
          if ( $user_list->getCount() == 1 ) {
             $retour = $user_list->getFirst();
          }
-         
+
          // archive
          elseif ( $user_list->getCount() == 0
                   and $this->_environment->isArchiveMode()
@@ -1655,7 +1669,7 @@ class cs_user_item extends cs_item {
             $this->_environment->activateArchiveMode();
          }
          // archive
-         
+
       }
       return $retour;
    }
@@ -1671,10 +1685,10 @@ class cs_user_item extends cs_item {
          $this->_environment->deactivateArchiveMode();
       }
       // archive
-      
+
      $private_room_manager = $this->_environment->getPrivateRoomManager();
      $own_room = $private_room_manager->getRelatedOwnRoomForUser($this,$this->_environment->getCurrentPortalID());
-     unset($private_room_manager);   
+     unset($private_room_manager);
      if ( isset($own_room) ) {
         $own_cid = $own_room->getItemID();
         $user_manager = $this->_environment->getUserManager();
@@ -1691,13 +1705,13 @@ class cs_user_item extends cs_item {
         unset($user_list);
      }
      unset($own_room);
-     
+
       // archive
       if ( $toggle_archive ) {
          $this->_environment->activateArchiveMode();
       }
       // archive
-     
+
      return $retour;
   }
 
@@ -1782,7 +1796,7 @@ class cs_user_item extends cs_item {
    	if ( !empty($disable_overwrite) and $disable_overwrite ) {
    		$overwrite = false;
    	}
-   	
+
    	if ($overwrite) {
    	   $announcement_manager = $this->_environment->getAnnouncementManager();
          $dates_manager = $this->_environment->getDatesManager();

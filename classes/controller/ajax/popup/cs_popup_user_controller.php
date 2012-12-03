@@ -26,6 +26,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				$this->_popup_controller->assign('item', 'description', $item->getDescription());
 				$this->_popup_controller->assign('item', 'want_mail_get_account', $item->getAccountWantMail());
+				$this->_popup_controller->assign('item', 'mail_delete_entry', $item->getDeleteEntryWantMail());
 				$this->_popup_controller->assign('item', 'want_mail_open_room', $item->getOpenRoomWantMail());
 				$this->_popup_controller->assign('item', 'want_mail_publish_material', $item->getPublishMaterialWantMail());
 				$this->_popup_controller->assign('item', 'language', $item->getLanguage());
@@ -70,7 +71,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
             $user_manager = $this->_environment->getUserManager();
             $user_item = $user_manager->getItem($current_iid);
         }
-        
+
         $this->_popup_controller->performChecks($user_item, $form_data, $additional);
 
         // TODO: check rights */
@@ -90,12 +91,12 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 			// upload picture
 			if(isset($additional['action']) && $additional['action'] === 'upload_picture') {
 				if($this->_popup_controller->checkFormData('file_upload')) {
-					
+
 					/* handle picture upload */
 					if(!empty($additional["fileInfo"])) {
 						$srcfile = $additional["fileInfo"]["file"];
 						$targetfile = $srcfile . "_converted";
-						
+
 						$session = $this->_environment->getSessionItem();
 						$session->unsetValue("add_files");
 
@@ -149,7 +150,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 						$disc_manager->copyFile($targetfile, $filename, true);
 						$user_item->setPicture($filename);
 						$user_item->save();
-						
+
 						// set return
                			$this->_popup_controller->setSuccessfullDataReturn($filename);
 					}
@@ -251,6 +252,19 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 		            if (isset($form_data['want_mail_get_account'])) {
 		               $user_item->setAccountWantMail($form_data['want_mail_get_account']);
 		            }
+		            if (isset($form_data['mail_delete_entry'])) {
+		               $user_item->setAccountWantMail('yes');
+		            }else{
+		               $user_item->setAccountWantMail('no');
+		            }
+
+					if(isset($form_data['mail_delete_entry'])) {
+						$user_item->setDeleteEntryWantMail($form_data['mail_delete_entry']);
+					} else {
+						$user_item->setDeleteEntryWantMail('no');
+					}
+
+
 		            if (isset($form_data['want_mail_publish_material'])) {
 		               $user_item->setPublishMaterialWantMail($form_data['want_mail_publish_material']);
 		            }

@@ -470,6 +470,19 @@
 						break;
 				}
 
+				$temp_extra = cs_strtoupper($this->_item->getDeleteEntryWantMail());
+				switch($temp_extra) {
+					case 'YES':
+						$return['mailing_delete_entries'] = 'yes';
+						break;
+					case 'NO':
+						$return['mailing_delete_entries'] = 'no';
+						break;
+					default:
+						$return['mailing_delete_entries'] = 'error';
+						break;
+				}
+
 				if($this->_environment->inCommunityRoom()) {
 					if($current_context->isOpenForGuests()) {
 						$temp_extra = cs_strtoupper($this->_item->getPublishMaterialWantMail());
