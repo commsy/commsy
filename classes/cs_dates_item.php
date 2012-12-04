@@ -66,7 +66,12 @@ class cs_dates_item extends cs_item {
     * @author CommSy Development Group
     */
    function getTitle () {
-      return $this->_getValue('title');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return $this->_getValue('title');
+   	  }
    }
 
    /** set title of a dates
@@ -131,7 +136,12 @@ class cs_dates_item extends cs_item {
     * @return string description of a dates
     */
    function getDescription () {
-      return $this->_getValue('description');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+   	  }else{
+         return $this->_getValue('description');
+   	  }
    }
 
    /** set description of a dates
@@ -276,7 +286,11 @@ class cs_dates_item extends cs_item {
     * @author CommSy Development Group
     */
    function getPlace() {
-      return $this->_getValue('place');
+   	  if ($this->getPublic()=='-1'){
+   	  	 return '';
+   	  }else{
+      	 return $this->_getValue('place');
+   	  }
    }
 
    /** set date_mode status of a dates

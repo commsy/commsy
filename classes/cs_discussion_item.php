@@ -50,7 +50,12 @@ class cs_discussion_item extends cs_item {
    * @author CommSy Development Group
    */
    function getTitle () {
-      return $this->_getValue('title');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return $this->_getValue('title');
+   	  }
    }
 
   /** set title of a discussion

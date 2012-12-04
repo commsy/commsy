@@ -484,7 +484,8 @@ class cs_discussionarticles_manager extends cs_manager {
 
    function deleteDiscarticlesOfUser($uid) {
         // create backup of item
-        $this->backupItem($uid, array(   'subject'         =>   'title',
+   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+      $this->backupItem($uid, array(   'subject'         =>   'title',
                                    'description'      =>   'description',
                                    'modification_date'   =>   'modification_date'));
       $current_datetime = getCurrentDateTimeInMySQL();
@@ -493,18 +494,23 @@ class cs_discussionarticles_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE '.$this->addDatabasePrefix('discussionarticles').' SET';
-            $insert_query .= ' subject = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
-            $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
+			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
+            	$insert_query .= ' modification_date = "'.$current_datetime.'",';
+                $insert_query .= ' public = "-1"';
+			}else{
+	            $insert_query .= ' subject = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
+	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
+			}
+	        $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
+			$result2 = $this->_db_connector->performQuery($insert_query);
             if ( !isset($result2) or !$result2 ) {
                include_once('functions/error_functions.php');trigger_error('Problems automatic deleting discussionarticles.',E_USER_WARNING);
             }
          }
       }
    }
-   
+
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();
 		$query = '

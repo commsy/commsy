@@ -51,7 +51,12 @@ class cs_step_item extends cs_item {
    * @author CommSy Development Group
    */
    function getTitle () {
-      return $this->_getValue('title');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return $this->_getValue('title');
+   	  }
    }
 
    /** set title of a step
@@ -118,7 +123,12 @@ class cs_step_item extends cs_item {
    * @author CommSy Development Group
    */
    function getDescription () {
-      return $this->_getValue('description');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+   	  }else{
+         return $this->_getValue('description');
+   	  }
    }
 
    /** set description of a step

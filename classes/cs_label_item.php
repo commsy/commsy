@@ -282,7 +282,12 @@ class cs_label_item extends cs_item {
     * @return string name of the label
     */
    function getTitle () {
-     return $this->_getValue('name');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return $this->_getValue('title');
+   	  }
    }
 
    /** get description
@@ -291,7 +296,12 @@ class cs_label_item extends cs_item {
     * @return string description of the label
     */
    function getDescription () {
-      return $this->_getValue('description');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+   	  }else{
+         return $this->_getValue('description');
+   	  }
    }
 
    /** set description

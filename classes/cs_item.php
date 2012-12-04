@@ -1392,6 +1392,12 @@ class cs_item {
       return false;
    }
 
+   function getPublic() {
+      return $this->_getValue('public');
+   }
+
+
+
    function mayEdit ($user_item) {
       $access = false;
       if ( !$user_item->isOnlyReadUser() ) {
@@ -1939,40 +1945,45 @@ class cs_item {
    */
    function getFileList() {
       $file_list = new cs_list;
-      if ( !empty($this->_data['file_list']) ) {
-         $file_list = $this->_data['file_list'];
-      } else {
-         if ( isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array']) ) {
-            $file_id_array = $this->_data['file_id_array'];
-         } else {
-            $file_id_array = array();
-            $link_manager = $this->_environment->getLinkManager();
-            $file_links = $link_manager->getFileLinks($this);
-            if ( !empty($file_links) ) {
-               foreach ($file_links as $link) {
-                  $file_id_array[] = $link['file_id'];
-               }
-            }
-            if ( isset($file_id_array) ) {
-               $this->_data['file_id_array'] = $file_id_array;
-            }
-         }
-         if ( !empty($file_id_array) ) {
-            $file_id_array = array_unique($file_id_array);
-            $file_manager = $this->_environment->getFileManager();
-            $file_manager->setIDArrayLimit($file_id_array);
-            $file_manager->setContextLimit('');
-            $file_manager->select();
-            $file_list = $file_manager->get();
-            if ( isset($file_list)
-                 and !empty($file_list)
-               ) {
-               $this->_data['file_list'] = $file_list;
-            }
-         }
-      }
-      $file_list->sortby('filename');
-      return $file_list;
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $file_list;
+   	  }else{
+	      if ( !empty($this->_data['file_list']) ) {
+	         $file_list = $this->_data['file_list'];
+	      } else {
+	         if ( isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array']) ) {
+	            $file_id_array = $this->_data['file_id_array'];
+	         } else {
+	            $file_id_array = array();
+	            $link_manager = $this->_environment->getLinkManager();
+	            $file_links = $link_manager->getFileLinks($this);
+	            if ( !empty($file_links) ) {
+	               foreach ($file_links as $link) {
+	                  $file_id_array[] = $link['file_id'];
+	               }
+	            }
+	            if ( isset($file_id_array) ) {
+	               $this->_data['file_id_array'] = $file_id_array;
+	            }
+	         }
+	         if ( !empty($file_id_array) ) {
+	            $file_id_array = array_unique($file_id_array);
+	            $file_manager = $this->_environment->getFileManager();
+	            $file_manager->setIDArrayLimit($file_id_array);
+	            $file_manager->setContextLimit('');
+	            $file_manager->select();
+	            $file_list = $file_manager->get();
+	            if ( isset($file_list)
+	                 and !empty($file_list)
+	               ) {
+	               $this->_data['file_list'] = $file_list;
+	            }
+	         }
+	      }
+	      $file_list->sortby('filename');
+	      return $file_list;
+	  }
    }
 
    /**get array of file ids

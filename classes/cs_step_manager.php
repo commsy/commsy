@@ -527,16 +527,22 @@ class cs_step_manager extends cs_manager {
 
 
    function deleteStepsOfUser($uid) {
+   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('step').'.* FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE '.$this->addDatabasePrefix('step').' SET';
-            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
-            $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
+			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
+                $insert_query .= ' public = "-1",';
+            	$insert_query .= ' modification_date = "'.$current_datetime.'"';
+			}else{
+	            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
+	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
+			}
+			$insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !$result2 ) {
                include_once('functions/error_functions.php');trigger_error('Problems automatic deleting steps from query: "'.$insert_query.'"',E_USER_WARNING);
@@ -544,7 +550,7 @@ class cs_step_manager extends cs_manager {
          }
       }
    }
-   
+
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();
 		$query = '

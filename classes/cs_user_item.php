@@ -1793,12 +1793,12 @@ class cs_user_item extends cs_item {
    	// datenschutz: overwrite or not (03.09.2012 IJ)
    	$overwrite = true;
    	$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
-   	if ( !empty($disable_overwrite) and $disable_overwrite ) {
+   	if ( !empty($disable_overwrite) and $disable_overwrite == 'true'){
    		$overwrite = false;
    	}
 
    	if ($overwrite) {
-   	   $announcement_manager = $this->_environment->getAnnouncementManager();
+   	   	 $announcement_manager = $this->_environment->getAnnouncementManager();
          $dates_manager = $this->_environment->getDatesManager();
          $discussion_manager = $this->_environment->getDiscussionManager();
          $discarticle_manager = $this->_environment->getDiscussionarticleManager();
@@ -1808,6 +1808,7 @@ class cs_user_item extends cs_item {
          $label_manager = $this->_environment->getLabelManager();
          $tag_manager = $this->_environment->getTagManager();
          $todo_manager = $this->_environment->getToDoManager();
+         $step_manager = $this->_environment->getStepManager();
 
          // replace users entries with the standart message for deleted entries
          $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
@@ -1818,8 +1819,10 @@ class cs_user_item extends cs_item {
          $section_manager->deleteSectionsOfUser($this->getItemID());
          $annotation_manager->deleteAnnotationsOfUser($this->getItemID());
          $label_manager->deleteLabelsOfUser($this->getItemID());
-         $tag_manager->deleteTagsOfUser($this->getItemID());
-         $todo_manager->deleteTodosOfUser($this->getItemID());
+   		 if ( empty($disable_overwrite) or $disable_overwrite != 'flag'){
+         	$tag_manager->deleteTagsOfUser($this->getItemID());
+   		 }
+         $step_manager->deleteStepsOfUser($this->getItemID());
    	}
    }
 

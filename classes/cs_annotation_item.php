@@ -47,7 +47,12 @@ class cs_annotation_item extends cs_item {
     * @author CommSy Development Group
     */
    function getTitle () {
-      return $this->_getValue('title');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return $this->_getValue('title');
+   	  }
    }
 
    /** set title of an annotation
@@ -69,7 +74,12 @@ class cs_annotation_item extends cs_item {
     * @author CommSy Development Group
     */
    function getDescription () {
-      return $this->_getValue('description');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+   	  }else{
+         return $this->_getValue('description');
+   	  }
    }
 
    /** set description of an annotation
@@ -241,20 +251,20 @@ class cs_annotation_item extends cs_item {
       }
       return $access;
    }
-   
+
    /** \brief	check via portfolio permission
     *
     * This Method checks for item <=> activated portfolio - relationships
     */
    public function mayPortfolioSee($userItem) {
    	$portfolioManager = $this->_environment->getPortfolioManager();
-   
+
    	// get portfolio id for this annotation
    	$portfolioId = $portfolioManager->getPortfolioId($this->getItemId());
-   	
+
    	// get all ids from portfolios we are allow to see
    	$portfolioIds = $portfolioManager->getPortfolioForExternalViewer($userItem->getUserId());
-   	
+
    	// if the portfolio this annotation belongs to is in the list, we are allowed to see
    	return in_array($portfolioId, $portfolioIds);
    }

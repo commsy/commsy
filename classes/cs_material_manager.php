@@ -508,11 +508,11 @@ class cs_material_manager extends cs_manager {
       } else {
          $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix('materials').'.*';
       }
-	  
+
 	  if((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
 	  	$query .= ', AVG(assessments.assessment) AS assessments_avg';
 	  }
-	  
+
       $query .= ' FROM '.$this->addDatabasePrefix('materials');
       $query .= ' INNER JOIN tmp3'.$temp_number.' ON '.$this->addDatabasePrefix('materials').'.item_id=tmp3'.$temp_number.'.item_id AND '.$this->addDatabasePrefix('materials').'.version_id=tmp3'.$temp_number.'.version_id';
 
@@ -769,7 +769,7 @@ class cs_material_manager extends cs_manager {
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' GROUP BY '.$this->addDatabasePrefix('materials').'.item_id';
       }
-	  
+
 	  if((isset($this->_order) && ($this->_order == 'assessment' || $this->_order == 'assessment_rev'))) {
 	  	$query .= ' GROUP BY '.$this->addDatabasePrefix('materials').'.item_id';
 	  }
@@ -1210,6 +1210,7 @@ class cs_material_manager extends cs_manager {
 
    function deleteMaterialsOfUser($uid) {
    	  // create backup of item
+   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
    	  $this->backupItem($uid, array(	'title'				=>	'title',
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
@@ -1221,14 +1222,19 @@ class cs_material_manager extends cs_manager {
       if ( isset($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET';
-            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-            $insert_query .= ' author = "",';
-            $insert_query .= ' publishing_date = "",';
-            $insert_query .= ' extras = "",';
-            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' public = "1"';
-            $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
+			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
+                $insert_query .= ' public = "-1",';
+            	$insert_query .= ' modification_date = "'.$current_datetime.'"';
+			}else{
+	            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+	            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+	            $insert_query .= ' author = "",';
+	            $insert_query .= ' publishing_date = "",';
+	            $insert_query .= ' extras = "",';
+	            $insert_query .= ' modification_date = "'.$current_datetime.'",';
+	            $insert_query .= ' public = "1"';
+			}
+			$insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !isset($result2) or !$result2 ) {
                include_once('functions/error_functions.php');
@@ -1237,7 +1243,7 @@ class cs_material_manager extends cs_manager {
          }
       }
    }
-   
+
 	public function updateIndexedSearch($item) {
 		$indexer = $this->_environment->getSearchIndexer();
 		$query = '
@@ -1259,17 +1265,17 @@ class cs_material_manager extends cs_manager {
 		';
 		$indexer->add(CS_MATERIAL_TYPE, $query);
 	}
-	
+
 	function getResubmissionItemIDsByDate($year, $month, $day){
 	   $query = 'SELECT item_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_resubmission_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
-	
+
 	function setWorkflowStatus($item_id, $status, $version_id){
 	   $query = 'UPDATE '.$this->addDatabasePrefix('materials').' SET workflow_status = "'.$status.'" WHERE item_id = '.$item_id.' AND version_id = '.$version_id;
 	   return $this->_db_connector->performQuery($query);
 	}
-	
+
    function getValidityItemIDsByDate($year, $month, $day){
 	   $query = 'SELECT item_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);

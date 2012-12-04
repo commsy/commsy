@@ -414,7 +414,12 @@ class cs_material_item extends cs_item {
     * @author CommSy Development Group
     */
    function getTitle () {
-      return (string) $this->_getValue('title');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
+   	  }else{
+         return (string) $this->_getValue('title');
+   	  }
    }
 
    /** get author of a material
@@ -424,7 +429,11 @@ class cs_material_item extends cs_item {
     * @author CommSy Development Group
     */
    function getAuthor () {
-      return (string) $this->_getValue('author');
+   	  if ($this->getPublic()=='-1'){
+   	  	 return '';
+   	  }else{
+      	 return (string) $this->_getValue('author');
+   	  }
    }
 
    /** get publishing_date of a material
@@ -433,7 +442,11 @@ class cs_material_item extends cs_item {
     * @return string publishing_date of a material
     */
    function getPublishingDate () {
-      return (int) $this->_getValue('publishing_date');
+   	  if ($this->getPublic()=='-1'){
+   	  	 return '';
+   	  }else{
+      	 return (int) $this->_getValue('publishing_date');
+   	  }
    }
 
    /** get bibliographic values of a material
@@ -444,7 +457,11 @@ class cs_material_item extends cs_item {
     * @author CommSy Development Group
     */
    function getBibliographicValues(){
-      return (string) $this->_getExtra('BIBLIOGRAPHIC');
+   	  if ($this->getPublic()=='-1'){
+   	  	 return '';
+   	  }else{
+      	 return (string) $this->_getExtra('BIBLIOGRAPHIC');
+   	  }
    }
 
    /** get description of a material
@@ -455,7 +472,12 @@ class cs_material_item extends cs_item {
     * @author CommSy Development Group
     */
    function getDescription () {
-      return (string) $this->_getValue('description');
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION');
+   	  }else{
+         return (string) $this->_getValue('description');
+   	  }
    }
 
       /** get projects of a material
@@ -1534,46 +1556,51 @@ function _copySectionList ($copy_id) {
    */
    function getFileListWithFilesFromSections () {
       $file_list = new cs_list;
-      // material
-      if ( !empty($this->_data['file_list']) ) {
-         $file_list = $this->_data['file_list'];
-      } else {
-         if ( isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array']) ) {
-            $file_id_array = $this->_data['file_id_array'];
-         } else {
-            $link_manager = $this->_environment->getLinkManager();
-            $file_links = $link_manager->getFileLinks($this);
-            if ( !empty($file_links) ) {
-               foreach($file_links as $link) {
-                  $file_id_array[] = $link['file_id'];
-               }
-            }
-         }
-         if ( !empty($file_id_array) ) {
-            $file_manager = $this->_environment->getFileManager();
-            $file_manager->setIDArrayLimit($file_id_array);
-            $file_manager->setContextLimit('');
-            $file_manager->select();
-            $file_list = $file_manager->get();
-         }
-      }
+   	  if ($this->getPublic()=='-1'){
+		 $translator = $this->_environment->getTranslationObject();
+   	  	 return $file_list;
+   	  }else{
+	      // material
+	      if ( !empty($this->_data['file_list']) ) {
+	         $file_list = $this->_data['file_list'];
+	      } else {
+	         if ( isset($this->_data['file_id_array']) and !empty($this->_data['file_id_array']) ) {
+	            $file_id_array = $this->_data['file_id_array'];
+	         } else {
+	            $link_manager = $this->_environment->getLinkManager();
+	            $file_links = $link_manager->getFileLinks($this);
+	            if ( !empty($file_links) ) {
+	               foreach($file_links as $link) {
+	                  $file_id_array[] = $link['file_id'];
+	               }
+	            }
+	         }
+	         if ( !empty($file_id_array) ) {
+	            $file_manager = $this->_environment->getFileManager();
+	            $file_manager->setIDArrayLimit($file_id_array);
+	            $file_manager->setContextLimit('');
+	            $file_manager->select();
+	            $file_list = $file_manager->get();
+	         }
+	      }
 
-      // sections
-      $section_item_list = clone $this->getSectionList();
-      if ( $section_item_list->isNotEmpty() ) {
-         $section_list_item = $section_item_list->getFirst();
-         while ($section_list_item) {
-            $section_file_list = $section_list_item->getFileList();
-            if ( $section_file_list->isNotEmpty() ) {
-               $file_list->addList($section_file_list);
-            }
-            unset($section_list_item);
-            $section_list_item = $section_item_list->getNext();
-         }
-      }
-      unset($section_list_item);
-      unset($section_item_list);
-      $file_list->sortby('filename');
+	      // sections
+	      $section_item_list = clone $this->getSectionList();
+	      if ( $section_item_list->isNotEmpty() ) {
+	         $section_list_item = $section_item_list->getFirst();
+	         while ($section_list_item) {
+	            $section_file_list = $section_list_item->getFileList();
+	            if ( $section_file_list->isNotEmpty() ) {
+	               $file_list->addList($section_file_list);
+	            }
+	            unset($section_list_item);
+	            $section_list_item = $section_item_list->getNext();
+	         }
+	      }
+	      unset($section_list_item);
+	      unset($section_item_list);
+	      $file_list->sortby('filename');
+   	  }
       return $file_list;
    }
 

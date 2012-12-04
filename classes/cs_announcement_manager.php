@@ -163,11 +163,11 @@ class cs_announcement_manager extends cs_manager {
       } else {
          $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       }
-	  
+
 	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
 	  	$query .= ', AVG(assessments.assessment) AS assessments_avg';
 	  }
-	  
+
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 
       if ( isset($this->_search_array) AND !empty($this->_search_array) ||
@@ -221,7 +221,7 @@ class cs_announcement_manager extends cs_manager {
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' INNER JOIN '.$this->addDatabasePrefix('item_link_file').' AS lf ON '.$this->addDatabasePrefix($this->_db_table).'.item_id = lf.item_iid';
       }
-	  
+
 	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
       	$query .= ' LEFT JOIN ' . $this->addDatabasePrefix('assessments') . ' ON ' . $this->addDatabasePrefix('announcement') . '.item_id=assessments.item_link_id AND assessments.deletion_date IS NULL';
       }
@@ -315,7 +315,7 @@ class cs_announcement_manager extends cs_manager {
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
       }
-	  
+
 	  if((isset($this->_sort_order) && ($this->_sort_order == 'assessment' || $this->_sort_order == 'assessment_rev'))) {
 	  	$query .= ' GROUP BY '.$this->addDatabasePrefix('announcement').'.item_id';
 	  }
@@ -599,6 +599,7 @@ class cs_announcement_manager extends cs_manager {
 
    function deleteAnnouncementsofUser($uid) {
    	  // create backup of item
+   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
    	  $this->backupItem($uid, array(	'title'				=>	'title',
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
@@ -610,10 +611,14 @@ class cs_announcement_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
-            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-            $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' public = "1"';
+			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
+               $insert_query .= ' public = "-1",';
+			}else{
+	           $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+    	       $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+
+			}
+            $insert_query .= ' modification_date = "'.$current_datetime.'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !isset($result2) or !$result2 ) {
@@ -625,7 +630,7 @@ class cs_announcement_manager extends cs_manager {
          unset($result);
       }
    }
-	
+
    public function updateIndexedSearch($item) {
 	   	$indexer = $this->_environment->getSearchIndexer();
 	   	$query = '

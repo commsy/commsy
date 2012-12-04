@@ -1124,6 +1124,7 @@ class cs_labels_manager extends cs_manager {
 
    function deleteLabelsOfUser($uid) {
    	  // create backup of item
+   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
    	  $this->backupItem($uid, array(	'name'				=>	'title',
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',
@@ -1137,11 +1138,16 @@ class cs_labels_manager extends cs_manager {
             //Never delete any group "ALL"
             if (!($rs['type'] == CS_GROUP_TYPE AND $rs['name'] == 'ALL')) {
                $insert_query = 'UPDATE '.$this->addDatabasePrefix('labels').' SET';
-               $insert_query .= ' name = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-               $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-               $insert_query .= ' modification_date = "'.$current_datetime.'",';
-               $insert_query .= ' public = "1"';
-               $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
+				if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
+	                $insert_query .= ' public = "-1",';
+               		$insert_query .= ' modification_date = "'.$current_datetime.'"';
+				}else{
+	               $insert_query .= ' name = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+	               $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+	               $insert_query .= ' modification_date = "'.$current_datetime.'",';
+	               $insert_query .= ' public = "1"';
+				}
+				$insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
                $result2 = $this->_db_connector->performQuery($insert_query);
                if ( !isset($result2) or !$result2 ) {
                   include_once('functions/error_functions.php');trigger_error('Problems automatic deleting labels:.',E_USER_WARNING);
