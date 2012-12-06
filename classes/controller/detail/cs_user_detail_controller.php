@@ -23,6 +23,12 @@
 
 			// assign rubric to template
 			$this->assign('room', 'rubric', CS_USER_TYPE);
+			$current_context = $this->_environment->getCurrentContextItem();
+			if ($current_context->withRubric(CS_USER_TYPE)){
+				$this->assign('room', 'is_rubric_active', 'yes');
+			}else{
+				$this->assign('room', 'is_rubric_active', 'no');
+			}
 		}
 
 		/*****************************************************************************/

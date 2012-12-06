@@ -27,6 +27,7 @@
 {/block}
 
 {block name=room_right_portlets}
+{if !isset($room.is_rubric_active) or $room.is_rubric_active != 'no'}
 	<div class="portlet_rc">
 		<div class="portlet_rc_list">
 		{if $detail.browsing_information.paging.first.active}
@@ -95,7 +96,10 @@
 			</div>
 		</div>
 	</div>
+{/if}
 {if $room.sidebar_configuration.active.netnavigation}
+
+
 	<div class="portlet_rc">
 	<!--
 		<a href="" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="btn_head_rc">
