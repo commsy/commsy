@@ -769,7 +769,11 @@ class cs_item_manager extends cs_manager {
             ) {
             
             // archive
-            if ( $this->withDatabasePrefix() ) {
+            $db_prefix = $this->getDatabasePrefix();
+            if ( $this->withDatabasePrefix()
+                 and !empty($db_prefix)
+                 and Stristr($query,$db_prefix)
+               ) {
                $retour->setArchiveStatus();
             }
             // archive

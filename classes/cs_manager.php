@@ -1703,6 +1703,10 @@ class cs_manager {
    function withDatabasePrefix () {
       return $this->_with_db_prefix;
    }
+   
+   function getDatabasePrefix () {
+      return $this->_db_prefix;
+   }
 
    function moveFromDbToBackup($context_id){
       global $c_db_backup_prefix;
