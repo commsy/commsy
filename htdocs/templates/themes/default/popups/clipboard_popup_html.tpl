@@ -40,7 +40,7 @@
 			                        		<option disabled="disabled">------------------------------</option>
                                        {if $popup.archive.status === false}
 			                        		   <option selected="selected" value="paste">___CLIPBOARD_PASTE_BUTTON___</option>
-			                        		{/if}
+			                           {/if}
                                        {if $popup.archive.status === true}
                                           <option value="-1" class="disabled" disabled="disabled">___CLIPBOARD_PASTE_BUTTON___</option>
                                        {/if}
