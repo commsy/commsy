@@ -195,9 +195,10 @@ function cron_workflow($portal){
       $material_manager = $environment->getMaterialManager();
       $item_array = $material_manager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
-         if ( isset($item) && !$item->isDeleted() )
+      	$temp_material = $material_manager->getItem($item['item_id']);
+         if ( isset($temp_material) && !$temp_material->isDeleted() )
          {
-	      	$temp_material = $material_manager->getItem($item['item_id']);
+	      	//$temp_material = $material_manager->getItem($item['item_id']);
 	
 	         $room_manager = $environment->getRoomManager();
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
@@ -295,9 +296,10 @@ function cron_workflow($portal){
 
       $item_array = $material_manager->getValidityItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
-         if ( isset($item) && !$item->isDeleted() )
+      	$temp_material = $material_manager->getItem($item['item_id']);
+         if ( isset($temp_material) && !$temp_material->isDeleted() )
          {
-	      	$temp_material = $material_manager->getItem($item['item_id']);
+	      	//$temp_material = $material_manager->getItem($item['item_id']);
 	
 	         $room_manager = $environment->getRoomManager();
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
