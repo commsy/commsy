@@ -430,7 +430,7 @@ if ($mode=='print'){
 	            }
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
-					'title'				=> $item->getName(),
+					'title'				=> $item->getTitle(),
 					'date'				=> $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate()),
 					'modificator'		=> $this->getItemModificator($item),
 					'noticed'			=> $noticed_text,
