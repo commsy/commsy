@@ -318,7 +318,7 @@
 					$title = $current_item->getTitle();
 					//TODO:
 					//$title = $converter->compareWithSearchText($title);
-					$title = $converter->text_as_html_short($title);
+					//$title = $converter->text_as_html_short($title);
 
 					/*
 					 * TODO:

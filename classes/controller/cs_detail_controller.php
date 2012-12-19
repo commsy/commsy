@@ -104,7 +104,7 @@
 				$this->markAnnotationsReadedAndNoticed($annotations);
 				$this->assign('detail', 'annotations_changed', $global_changed);
 			}
-				
+
 			$current_context = $this->_environment->getCurrentContextItem();
 			$this->assign('detail','is_action_bar_visible',$current_context->isActionBarVisibleAsDefault());
 			$this->assign('detail','is_details_bar_visible',$current_context->isDetailsBarVisibleAsDefault());
@@ -203,10 +203,10 @@
 			if ( isset($this->_manager) ) {
 			   $this->_item = $this->_manager->getItem($current_item_id);
 			}
-			
+
 			$this->checkNotSet();
 		}
-		
+
 		protected function checkNotSet() {
 			if ( $this->_item === null )
 			{
@@ -214,7 +214,7 @@
 				$cid = $this->_environment->getCurrentContextId();
 				$mod = $this->_environment->getCurrentModule();
 				$fct = "index";
-				
+
 				redirect($cid, $mod, $fct);
 				exit;
 			}
@@ -228,21 +228,21 @@
 
 			if ( isset($this->_item) ) {
 				$text_converter = $this->_environment->getTextConverter();
-	
+
 				$buzzword_list = $this->_item->getBuzzwordList();
 				$buzzword_entry = $buzzword_list->getFirst();
 				$item_id_array = array();
 				while($buzzword_entry) {
 					$item_id_array[] = $buzzword_entry->getItemID();
-	
+
 					$buzzword_entry = $buzzword_list->getNext();
 				}
-	
+
 				$links_manager = $this->_environment->getLinkManager();
 				if(isset($item_id_array[0])) {
 					$count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array, 'buzzword');
 				}
-	
+
 				$buzzword_entry = $buzzword_list->getFirst();
 				while($buzzword_entry) {
 					$count = 0;
@@ -255,8 +255,8 @@
 								'class_id'			=> $this->getUtils()->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
 								'selected_id'		=> $buzzword_entry->getItemID()
 							);
-	
-	
+
+
 					$buzzword_entry = $buzzword_list->getNext();
 				}
 				$this->_linked_count += $buzzword_list->getCount();
@@ -658,7 +658,7 @@
 
 						//$html .= $this->_text_as_html_short($this->_compareWithSearchText($subitem->getTitle()));
 						$subitem_title = $annotation->getTitle();
-						$subitem_title = $converter->text_as_html_short($subitem_title);
+						//$subitem_title = $converter->text_as_html_short($subitem_title);
 
 						/*
 						 *
@@ -871,7 +871,7 @@
 								'position'		=> $count_items + 1,
 								'activating_text'=> $activating_text
 						);
-						
+
 						unset($item);
 					}
 				}
