@@ -286,7 +286,7 @@ class cs_label_item extends cs_item {
 		 $translator = $this->_environment->getTranslationObject();
    	  	 return $translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE');
    	  }else{
-         return $this->_getValue('title');
+         return $this->_getValue('name');
    	  }
    }
 
