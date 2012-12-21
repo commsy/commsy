@@ -739,9 +739,9 @@ if ( $environment->getCurrentFunction() == 'index'
 $current_user_item = $environment->getCurrentUserItem();
 
 /* Typo Login Anbindung*/
-/*
 global $cs_external_login_redirect;
 global $cs_external_login_redirect_exeption_var;
+global $cs_external_login_redirect_portal_array;
 
 $current_portal_user_item = null;
 if ($current_user_item) {
@@ -767,7 +767,6 @@ if (isset($cs_external_login_redirect) and !empty($cs_external_login_redirect)
    		exit();
 	}
 }
-*/
 /* Ende Typo Login Anbindung*/
 
 
