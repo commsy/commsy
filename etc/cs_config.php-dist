@@ -186,7 +186,7 @@ $theme_array['commsy'] = array(
 //$cs_special_language_tags = '';
 //$cs_external_login_redirect = 'url_without_commsy_parameter';
 //$cs_external_login_redirect_portal_array = array();;
-//$cs_external_login_redirect_exeption_var = 'get_parameter_for_exception';
+$cs_external_login_redirect_exeption_var = 'get_parameter_for_exception';
 
 
 // include more commsy settings
