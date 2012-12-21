@@ -752,10 +752,20 @@ if (isset($cs_external_login_redirect) and !empty($cs_external_login_redirect)
 	and (!isset($current_portal_user_item) or $current_portal_user_item->isGuest())
     and !( $environment->getCurrentModule() == 'context' and $environment->getCurrentFunction() == 'login')
 ){
-	$url = $cs_external_login_redirect.$_SERVER['QUERY_STRING'];
-   	header('Location: '.$url);
-   	header('HTTP/1.0 302 Found');
-   	exit();
+	if (isset($cs_external_login_redirect_portal_array) and isset($cs_external_login_redirect_portal_array[0])){
+		$pid = $environment->getCurrentPortalID();
+		if (in_array($pid,$cs_external_login_redirect_portal_array)){
+			$url = $cs_external_login_redirect.$_SERVER['QUERY_STRING'];
+	   		header('Location: '.$url);
+	   		header('HTTP/1.0 302 Found');
+	   		exit();
+		}
+	}else{
+		$url = $cs_external_login_redirect.$_SERVER['QUERY_STRING'];
+   		header('Location: '.$url);
+   		header('HTTP/1.0 302 Found');
+   		exit();
+	}
 }
 */
 /* Ende Typo Login Anbindung*/
@@ -993,7 +1003,7 @@ else {
 	if($environment->getCurrentFunction() === 'getfile') {
 		$c_smarty = false;
 	}
-	
+
 	// show a webpage in a zipfile embedded in texts with (:zip FILENAME:)
 	// 03.08.2012 IJ
 	if ( $environment->getCurrentFunction() === 'showzip'
@@ -1642,7 +1652,7 @@ if ( isset($context_item_current) ) {
 
    	// archiving
    	$context_item_current->saveLastLogin();
-   	
+
    	$current_portal_item = $environment->getCurrentPortalItem();
       if ( isset($current_portal_item) ) {
          $current_portal_item->saveActivityPoints($activity_points);
