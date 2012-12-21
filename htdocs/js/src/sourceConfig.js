@@ -18,6 +18,6 @@ var dojoConfig = {
 	async:						true,
 	parseOnLoad:				false,
 	isDebug:					false
-}
+};
 
 var CKEDITOR_BASEPATH = "js/3rdParty/ckeditor/";

@@ -30,7 +30,15 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
       // get data
     	$this->_itemId = $this->_data['iid'];
     	$this->_contextId = $this->_data["contextId"];
-    	$this->_versionId = $this->_data["version_id"];
+    	
+    	if ( isset($this->_data["version_id"]) && !empty($this->_data["version_id"]) )
+    	{
+    		$this->_versionId = $this->_data["version_id"];
+    	}
+    	else
+    	{
+    		$this->_versionId = null;
+    	}
     	
     	// get the item and set the module(should be of type material, discussion, date or todo - so no label check is needed)
     	if ($this->_itemId !== null && $this->_itemId !== "NEW") {
@@ -136,8 +144,12 @@ class cs_ajax_detail_popup_controller extends cs_ajax_controller {
     	
     	// override $_GET - ugly I know
     	$_GET["iid"] = $this->_itemId;
-    	$_GET["version_id"] = $this->_versionId;
     	$_GET["fromPortfolio"] = $this->_data["fromPortfolio"];
+    	
+    	if ( $this->_versionId !== null )
+    	{
+    		$_GET["version_id"] = $this->_versionId;
+    	}
     	
     	// init controller and process the detail content
     	$controller = new $controller_name($fakeEnvironment);

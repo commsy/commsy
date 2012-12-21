@@ -136,9 +136,14 @@
 				$fullname = $translator->GetMessage("COMMON_DELETED_USER");
 			}
 			
+			$externalViewer = $portfolioManager->getExternalViewer($portfolioId);
+			$externalViewerString = implode(" ", $externalViewer);
+			
 			$return = array(
+				"contextId"			=> $privateRoom->getItemID(),
 				"title"				=> $portfolioItem->getTitle(),
 				"description"		=> $portfolioItem->getDescription(),
+				"externalViewer"	=> $externalViewerString,
 				"creator"			=> $fullname,
 				"tags"				=> $tags,
 				"links"				=> $linkArray,
@@ -147,6 +152,196 @@
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
+		}
+		
+		public function actionGetPortfolioList() {
+			$portfolioId = $this->_data["portfolioId"];
+			$itemIdArray = $this->_data["itemIdArray"];
+			$row = $this->_data["row"];
+			$column = $this->_data["column"];
+			
+			$portfolioManager = $this->_environment->getPortfolioManager();
+			$item = $portfolioManager->getItem($portfolioId);
+			
+			$itemManager = $this->_environment->getItemManager();
+			$currentUser = $this->_environment->getCurrentUser();
+			
+			$userManager = $this->_environment->getUserManager();
+			$userItem = $userManager->getItem($item->getCreatorId());
+			$privateRoom = $userItem->getOwnRoom();
+			
+			$itemIdRubricArray = array();
+			foreach ( $itemIdArray as $id )
+			{
+				$type = $itemManager->getItemType($id);
+				$itemIdRubricArray[$type][] = $id;
+			}
+			
+			$itemArray = array();
+			foreach ( $itemIdRubricArray as $rubric => $idArray )
+			{
+				$manager = $this->_environment->getManager($rubric);
+				$manager->resetLimits();
+				$manager->setIDArrayLimit($idArray);
+				$manager->setContextLimit($privateRoom->getItemID());
+				$manager->select();
+					
+				$rubricList = $manager->get();
+				$rubricItem = $rubricList->getFirst();
+				while ( $rubricItem )
+				{
+					$moddate = $rubricItem->getModificationDate();
+					if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00') )
+					{
+						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+					}
+					else
+					{
+						$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+					}
+			
+					$itemArray[] = array(
+						"itemId"			=> $rubricItem->getItemID(),
+						"title"				=> $rubricItem->getTitle(),
+						"module"			=> $rubric,
+						"modificationDate"	=> $moddate,
+						"modificator"		=> $rubricItem->getModificatorItem()->getFullName()
+					);
+			
+					$rubricItem = $rubricList->getNext();
+				}
+			}
+			
+			$annotationIdArray = $portfolioManager->getAnnotationIdsForPortfolioCell($item->getItemID(), $row, $column);
+			
+			$annotationManager = $this->_environment->getAnnotationManager();
+			
+			$annotationArray = array();
+			$annotationManager->resetLimits();
+			$annotationManager->setLinkedItemID($portfolioId);
+			$annotationManager->setContextLimit($privateRoom->getItemID());
+			$annotationManager->select();
+			
+			$annotationList = $annotationManager->get();
+			$annotationItem = $annotationList->getFirst();
+			
+			while ( $annotationItem )
+			{
+				if ( !in_array($annotationItem->getItemID(), $annotationIdArray) )
+				{
+					$annotationItem = $annotationList->getNext();
+					continue;
+				}
+					
+				$moddate = $annotationItem->getModificationDate();
+				if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00') )
+				{
+					$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+				}
+				else
+				{
+					$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+				}
+			
+				$annotationArray[] = array(
+					"itemId"			=> $annotationItem->getItemID(),
+					"title"				=> $annotationItem->getTitle(),
+					"modificationDate"	=> $moddate,
+					"modificator"		=> $annotationItem->getModificatorItem()->getFullName()
+				);
+			
+				$annotationItem = $annotationList->getNext();
+			}
+			
+			$this->setSuccessfullDataReturn(array("items" => $itemArray, "annotationItems" => $annotationArray));
+			echo $this->_return;
+			exit;
+		}
+		
+		public function actionSavePortfolio()
+		{
+			// get data
+			$portfolioId = $this->_data["id"];
+			$portfolioTitle = $this->_data["title"];
+			$portfolioDescription = $this->_data["description"];
+			$portfolioExternalViewer = $this->_data["externalViewer"];
+			
+			$portfolioManager = $this->_environment->getPortfolioManager();
+			
+			$currentUser = $this->_environment->getCurrentUser();
+			$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
+			
+			$item = null;
+			if ( $portfolioId !== "NEW")
+			{
+				$item = $portfolioManager->getItem($portfolioId);
+				
+				/*
+				// check access rights
+				if ( !$item->mayEdit($privateRoomUser) )
+				{
+					$this->setErrorReturn("000", "insufficent rights", array());
+					echo $this->_return;
+					exit;
+				}
+				*/
+			}
+			
+			if ( $item === null )
+			{
+				$item = $portfolioManager->getNewItem();
+				$item->setCreationDate(getCurrentDateTimeInMySQL());
+				$item->setCreatorItem($privateRoomUser);
+			}
+			
+			$item->setTitle($portfolioTitle);
+			$item->setDescription($portfolioDescription);
+			$item->setModificationDate(getCurrentDateTimeInMySQL());
+			$item->setModificatorItem($privateRoomUser);
+			
+			$externalViewerUserIds = explode(" ", trim($portfolioExternalViewer));
+			$item->setExternalViewer($externalViewerUserIds);
+				
+			$item->save();
+				
+			$this->setSuccessfullDataReturn(array("portfolioId" => $item->getItemID()));
+			echo $this->_return;
+			exit;
+		}
+		
+		public function actionDeletePortfolio()
+		{
+			// get data
+			$portfolioId = $this->_data["id"];
+			
+			$portfolioManager = $this->_environment->getPortfolioManager();
+			
+			$item = $portfolioManager->getItem($portfolioId);
+			
+			if ( $item === null )
+			{
+				$this->setErrorReturn("010", "item not found ", array());
+				echo $this->_return;
+				exit;
+			}
+			
+			$currentUser = $this->_environment->getCurrentUser();
+			$privateRoomUser = $currentUser->getRelatedPrivateRoomUserItem();
+			
+			// check access rights
+			/*
+			if ( !$item->mayEdit($privateRoomUser) )
+			{
+				$this->setErrorReturn("000", "insufficent rights", array());
+				echo $this->_return;
+				exit;
+			}
+			*/
+			
+			$portfolioManager->delete($portfolioId);
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+			exit;
 		}
 		
 		public function actionDeletePortfolioTag() {
@@ -197,6 +392,7 @@
 			$tagId = $this->_data["tagId"];
 			$position = $this->_data["position"];
 			$oldTagId = $this->_data["oldTagId"];
+			$description = $this->_data["description"];
 			
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			
@@ -207,17 +403,23 @@
 				
 				// check if this tag already exists
 				$double = false;
-				foreach ($portfolioTags as $tag) {
-					if ($tag["t_id"] == $tagId) {
-						$double = true;
-						break;
+				
+				// ignore double, if old tag is new tag
+				if ( $oldTagId !== $tagId )
+				{
+					foreach ($portfolioTags as $tag) {
+						if ($tag["t_id"] == $tagId) {
+							$double = true;
+							break;
+						}
 					}
 				}
+				
 				if ($double) {
-					$this->setErrorReturn("115", "tag already exists", array());
+					$this->setErrorReturn("902", "tag already exists", array());
 					echo $this->_return;
 				} else {
-					$portfolioManager->replaceTagForPortfolio($portfolioId, $tagId, $oldTagId);
+					$portfolioManager->replaceTagForPortfolio($portfolioId, $tagId, $oldTagId, $description);
 					
 					$this->setSuccessfullDataReturn(array());
 					echo $this->_return;
@@ -234,7 +436,7 @@
 					}
 				}
 				if ($double) {
-					$this->setErrorReturn("115", "tag already exists", array());
+					$this->setErrorReturn("902", "tag already exists", array());
 					echo $this->_return;
 				} else {
 					// get new index according to position
@@ -250,8 +452,8 @@
 							if ($position === "column") $index++;
 						}
 					}
-						
-					$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index);
+					
+					$portfolioManager->addTagToPortfolio($portfolioId, $tagId, $position, $index, $description);
 						
 					$this->setSuccessfullDataReturn(array());
 					echo $this->_return;

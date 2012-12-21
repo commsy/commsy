@@ -69,6 +69,7 @@ define([	"dojo/_base/declare",
 			if (this.contextId) {
 				if (this.initData.portfolioId) {
 					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
+					Topic.publish("openPortfolioList", { portfolioId: this.initData.portfolioId });
 				} else {
 					Topic.publish("newOwnRoomItem", {});		// this just updates the stack list at the moment
 				}

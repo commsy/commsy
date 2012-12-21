@@ -116,7 +116,7 @@
 						$discarticle_item->setDiscussionID($additional["discussionId"]);
 						
 						// if answerTo is set, this article belongs to a threaded discussion and the correct position needs to be set
-						if(isset($additional["answerTo"]) && $additional["answerTo"] !== null) {
+						if(isset($additional["answerTo"]) && $additional["answerTo"] !== null && !empty($additional["answerTo"])) {
 							$answerTo = $additional["answerTo"];
 						
 							$discussionManager = $this->_environment->getDiscussionManager();

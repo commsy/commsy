@@ -249,7 +249,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 						if($disc_manager->existsFile($item->getPicture())) $disc_manager->unlinkFile($item->getPicture());
 						$item->setPicture('');
 					}
-
+					
 					// Save item
 					$item->save();
 

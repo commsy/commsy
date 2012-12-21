@@ -11,8 +11,10 @@ Einleitung...
 \section errorCodesAJAX AJAX Fehlercodes
 
 - Allgemein 0xx
-  + Rights 00x
+  + Rechte 00x
     * 000 - Unzureichende Rechte
+  + Item 01x
+    * 010 - Item nicht gefunden
 
 - mandatory-Errors 11x
   + 111 - Feld leer
@@ -44,3 +46,4 @@ Einleitung...
 
 - Spezial-Errors 9xx
   + 901 - Feld stimmt nicht mit anderem überein
+  + 902 - Portfolio-Tag bereits vergeben

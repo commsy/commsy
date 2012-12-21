@@ -1256,6 +1256,19 @@ class cs_user_item extends cs_item {
          unset($id_manager);
       }
    }
+   
+   /**
+    * Check if this user can be seen by $userItem
+    * 
+    * @see cs_item::mayPortfolioSee()
+    */
+   public function mayPortfolioSee($userItem) {
+   	$portfolioManager = $this->_environment->getPortfolioManager();
+   	
+   	$userArray = $portfolioManager->getPortfolioUserForExternalViewer($this->getItemId());
+   
+   	return in_array($userItem->getUserId(), $userArray);
+   }
 
    function maySee ($user_item) {
       if ( $this->_environment->inCommunityRoom() ) {  // Community room

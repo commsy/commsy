@@ -184,6 +184,7 @@
 
 					$context_item = $this->_environment->getCurrentContextItem();
 					$latest_version_item = $material_version_list->getFirst();
+					
 
 					$id = $this->_item->getItemID();
 					if(isset($id) && $latest_version_item->getVersionID() != $id) {
@@ -267,7 +268,7 @@
 							$version_item = $material_version_list->getNext();
 						}
 					}
-
+					
 					if(!empty($version_item)) {
 						// annotations
 						// get annotations
@@ -1310,7 +1311,6 @@
 
 					$entry['actions']			= $this->getEditActions($this->_item, $current_user);
 					$entry['num_files'] 		= sizeof($files);
-					$entry['moredetails'] 		= $this->getCreatorInformationAsArray($section);
 					$entry['title']				= $converter->text_as_html_short($section->getTitle());
 					$entry['iid']				= $section->getItemID();
 					$entry['description']		= $description;

@@ -4,18 +4,21 @@ define(
  	"dojo/_base/Deferred",
  	"dojo/promise/all",
  	"dojo/_base/lang",
- 	"dojo/on"
+ 	"dojo/on",
+ 	"dijit/Tooltip"
 ], function
 (
 	declare,
 	Deferred,
 	All,
 	Lang,
-	On
+	On,
+	Tooltip
 ) {
 	return declare(null,
 	{
 		loadingAnimation:	true,						///< Toggles loading animation
+		errorNodes:			[],							///< Contains all tooltip error nodes
 		
 		constructor: function(options)
 		{
@@ -46,7 +49,7 @@ define(
 		 * 
 		 * @return	Dojo deferred, resolving when instancing is done, containing the widget instance
 		 */
-		GetInstance: function(widgetModule, mixin, silent)
+		GetInstance: function(widgetModuleString, mixin, silent)
 		{
 			silent = silent || false;
 			
@@ -62,14 +65,14 @@ define(
 				this._SetupLoading();
 			}
 			
-			require([widgetModule], Lang.hitch(this, function(widgetModule)
+			require([widgetModuleString], Lang.hitch(this, function(widgetModule)
 			{
 				// init widget
 				var instance = new widgetModule(mixin);
 				instance.startup();
 				
 				// store instance
-				this.widgets.push({ widget: widgetModule, instance: instance });
+				this.widgets.push({ widget: widgetModuleString, instance: instance });
 				
 				deferred.resolve({
 					instance:	instance
@@ -102,6 +105,38 @@ define(
 			}));
 			
 			return All(instanceArray);
+		},
+		
+		/**
+		 * \brief		Removes all widgets matching the String
+		 * 
+		 * This will remove all internaly stored widgets, that matches with the widgetString
+		 * 
+		 * @param[in]	widgetString	String of widget
+		 */
+		removeInstances: function(widgetString)
+		{
+			var matches = dojo.filter(this.widgets, function(widget)
+			{
+				return widget.widget === widgetString;
+			});
+			
+			dojo.forEach(matches, function(widget)
+			{
+				var instance = widget.instance;
+				
+				instance.destroy();
+			});
+			
+			var tmp = [];
+			dojo.forEach(this.widgets, function(widget)
+			{
+				if ( widget.widget !== widgetString )
+				{
+					tmp.push(widget);
+				}
+			});
+			this.widgets = tmp;
 		},
 		
 		/**
@@ -143,6 +178,33 @@ define(
 					widgetInstance.Open();
 				}
 			}));
+		},
+		
+		createErrorTooltip: function(node, message, position)
+		{
+			// ensure optional parameter
+			position = position || ["left", "right"];
+			
+			// set tooltip position
+			dijit.Tooltip.defaultPosition = position;
+			
+			// show tooltip
+			Tooltip.show(message, node);
+			
+			// restore default position
+			dijit.Tooltip.defaultPosition = ["left", "right"];
+			
+			// store node
+			this.errorNodes.push(node);
+		},
+		
+		closeErrorTooltips: function()
+		{
+			dojo.forEach(this.errorNodes, Lang.hitch(function(node, index, arr) {
+				Tooltip.hide(node);
+			}));
+			
+			this.errorNodes = [];
 		},
 		
 		/************************************************************************************

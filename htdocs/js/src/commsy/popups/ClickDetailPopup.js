@@ -64,7 +64,7 @@ define([	"dojo/_base/declare",
 				var customObject = this.getAttrAsObject(node, "data-custom");
 				var module = customObject.module;
 				
-				if ( module === "discarticle" && customObject.answerTo )
+				if ( module === "discarticle" /*&& customObject.answerTo*/ )
 				{
 					customObject.discussionId = this.item_id;
 				}

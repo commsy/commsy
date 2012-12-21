@@ -555,6 +555,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                   		}
                 	}
                 }
+                
                 if (!empty($new_buzzword)){
 					$isDuplicate = false;
 					$buzzword_item = $buzzword_list->getFirst();

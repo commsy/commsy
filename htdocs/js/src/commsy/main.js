@@ -88,6 +88,7 @@ require([	"dojo/_base/declare",
 					});
 				}
 				
+				/*
 				var aPortfolioNode = query("a#tm_portfolio")[0];
 				if (aPortfolioNode) {
 					require(["commsy/popups/TogglePortfolio"], function(PortfolioPopup) {
@@ -359,6 +360,26 @@ require([	"dojo/_base/declare",
 						});
     				}));
     			}
+    			
+    			var aPortfolioNode = Query("a#tm_portfolio")[0];
+				if (aPortfolioNode)
+				{
+					On.once(aPortfolioNode, "click", Lang.hitch(this, function(event)
+					{
+						var widgetManager = this.getWidgetManager();
+						
+						widgetManager.GetInstance("commsy/widgets/Portfolio/PortfolioWidget", {}).then(function(deferred)
+						{
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							widgetManager.RegisterOpenCloseClick(widgetInstance, aPortfolioNode);
+							
+							// open widget
+							widgetInstance.Open();
+						});
+					}));
+				}
 			}));
 		}
 	});

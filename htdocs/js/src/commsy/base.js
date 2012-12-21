@@ -206,10 +206,14 @@ define([	"dojo/_base/declare",
 		},
 
 		getAttrAsObject: function(node, attrName) {
-			if(node) {
+			if(node)
+			{
 				var attribute = DomAttr.get(node, attrName);
-
-				if(attribute) return dojo.fromJson("{" + attribute + "}");
+				
+				if ( attribute )
+				{
+					return dojo.fromJson("{" + attribute + "}");
+				}
 			}
 
 			return {};
@@ -221,20 +225,19 @@ define([	"dojo/_base/declare",
             anchor = anchor || null;
 
             // page reload
-            if (cid) {
-            	var cid = cid;
-            } else {
-            	var cid = this.uri_object.cid;
+            if ( !cid )
+            {
+            	cid = this.uri_object.cid;
+            }
+            
+            if ( !module )
+            {
+            	module = this.uri_object.mod;
             }
 
-            if (module) {
-                var module = module;
-            } else {
-                var module = this.uri_object.mod;
-            }
-
-            if(module === "home") {
-                var module = this.module;
+            if ( module === "home" )
+            {
+                module = this.module;
             }
             
             location.href = "commsy.php?cid=" + cid + "&mod=" + module + "&fct=detail&iid=" + item_id + ( anchor ? anchor : "");

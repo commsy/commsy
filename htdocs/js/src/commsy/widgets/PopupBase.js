@@ -20,6 +20,7 @@ define(
 	return declare([CommSyBase, WidgetBase],
 	{
 		toggle:				false,						///< Determs if this is a switchable popup
+		canOverlay:			false,						///< Determs if popup can overlay other popus
 		
 		// internal
 		widgetManager:		null,						///< widgetManager instance - set up on construction
@@ -51,9 +52,9 @@ define(
 		 * 
 		 * @param[in]	data	The init data object
 		 */
-		SetInitData: function(data)
+		setInitData: function(data)
 		{
-			//this.set("initData", data);
+			this.set("initData", data);
 		},
 		
 		/**
@@ -79,7 +80,7 @@ define(
 		/**
 		 * \brief	Load Popup
 		 * 
-		 * Loads a popup be requesting initial data from php
+		 * Loads a popup by requesting initial data from php
 		 * 
 		 * @return	Deferred - resolves when loading is done or not needed
 		 */
@@ -216,7 +217,7 @@ define(
 			this._LoadPopup().then(Lang.hitch(this, function(response)
 			{
 				// check if there are other switchable popups open
-				if ( this.statics.switchableIsOpen )
+				if ( this.statics.switchableIsOpen && this.canOverlay === false )
 				{
 					// close all
 					this.widgetManager.CloseAllWidgets();

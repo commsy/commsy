@@ -113,7 +113,8 @@ define([	"dojo/_base/declare",
 								DomConstruct.create("p", {
 									innerHTML:		item.modificationDate
 								}, fourthColumnNode, "last");
-
+							
+							/*
 							var fifthColumnNode = DomConstruct.create("div", {
 								className:		"column_155"
 							}, rowNode, "last");
@@ -121,6 +122,7 @@ define([	"dojo/_base/declare",
 								DomConstruct.create("p", {
 									innerHTML:		item.creator
 								}, fifthColumnNode, "last");
+							*/
 
 							DomConstruct.create("div", {
 								className:		"clear"

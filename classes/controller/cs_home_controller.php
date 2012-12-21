@@ -56,7 +56,7 @@
 				$desc = $entry->getDescription();
 				if(!empty($desc)) {
 					$converter->setFileArray($this->getItemFileList());
-					$desc = $converter->_text_as_html_long2($desc);
+					//$desc = $converter->_text_as_html_long2($desc);
 					#$desc = $converter->cleanDataFromTextArea($desc);
 				}
 				$return_array['content'] = $desc;

@@ -10,9 +10,16 @@
 			parent::__construct($environment);
 		}
 		
-		public function actionGetTreeData() {
-			$item_id = $this->_data['item_id'];
-			$room_id = $this->_data["room_id"];
+		public function actionGetTreeData()
+		{
+			if ( isset($this->_data["item_id"]) && !empty($this->_data["item_id"]) )
+			{
+				$item_id = $this->_data["item_id"];
+			}
+			if ( isset($this->_data["room_id"]) && !empty($this->_data["room_id"]) )
+			{
+				$room_id = $this->_data["room_id"];
+			}
 			
 			$utils = $this->getUtils();
 			if($utils->showTags() || $room_id !== null) {

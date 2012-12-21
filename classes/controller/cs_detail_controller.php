@@ -1344,12 +1344,22 @@
 		            $return['last_modificator_status'] = self::USER_IS_DELETED;
 		        }
 		        unset($params);
-		    } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
-		    || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
-		    || ( isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {
+		    }
+		    elseif (	($user->isUser() && isset($modificator) && $modificator->isVisibleForLoggedIn()) ||			// viewer is user and modificator is visible for logged in
+			    		(!$user->isUser() && isset($modificator) && $modificator->isVisibleForAll()) ||				// viewer is no user and modificator is visible for all
+		   		 		( isset($modificator) && $environment->getCurrentUserID() == $modificator->getItemID()) )	// viewer is modificator of item
+		    {
 		        $params = array();
 		        $params['iid'] = $modificator->getItemID();
-		        if( !$modificator->isDeleted() and $modificator->maySee($user) ){
+		        
+		        if (	!$modificator->isDeleted() &&
+		        			(
+		        				$modificator->maySee($user) ||
+		        				$modificator->getItemID() == $user->getItemID() ||
+		        				//$modificator->getRelatedPrivateRoomUserItem()->getItemID() == $user->getItemID() ||
+		        				$modificator->getRelatedPrivateRoomUserItem()->mayPortfolioSee($user)
+		        			) )
+		        {
 		            if ( !$this->_environment->inPortal() ){
 		                /*$temp_html = ahref_curl($this->_environment->getCurrentContextID(),
                                      'user',
@@ -1366,18 +1376,22 @@
 		                $return['last_modificator'] = $modificator->getFullname();
 		                $return['last_modificator_stats'] = self::USER_HAS_LINK;
 		                $return['modifcator_id'] = $modificator->getItemID();
-		            }else{
+		            }
+		            else
+		            {
 		                //$temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
 		                $return['last_modificator'] = $modificator->getFullname();
 		                $return['last_modificator_status'] = self::USER_DISABLED;
 		            }
-		        } elseif ( $item->isA(CS_USER_TYPE)
-		        and $item->getUserID() == $modificator->getUserID()
-		        and $item->getAuthSource() == $modificator->getAuthSource()
-		        ) {
+		        }
+		        elseif (	$item->isA(CS_USER_TYPE) &&
+		        			$item->getUserID() == $modificator->getUserID() && $item->getAuthSource() == $modificator->getAuthSource() )
+		        {
 		            //$temp_html = $this->_compareWithSearchText($modificator->getFullname());
 		            $return['last_modificator'] = $modificator->getFullname();
-		        }  else {
+		        }
+		        else
+		        {
 		            //$temp_html = '<span class="disabled">'.$translator->getMessage('COMMON_DELETED_USER').'</span>';
 		            $return['last_modificator'] = $translator->getMessage('COMMON_DELETED_USER');
 		            $return['last_modificator_status'] = self::USER_IS_DELETED;

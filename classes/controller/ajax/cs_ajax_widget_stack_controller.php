@@ -99,7 +99,7 @@
 								"image"				=> $this->getUtils()->getLogoInformationForType($type),
 								"fileCount"			=> $entry->getFileList()->getCount(),
 								"modificationDate"	=> $mod_date,
-								"creator"			=> $entry->getCreatorItem()->getFullName(),
+								//"creator"			=> $entry->getCreatorItem()->getFullName(),
 								"versionId"			=> $versionId
 						);
 					}

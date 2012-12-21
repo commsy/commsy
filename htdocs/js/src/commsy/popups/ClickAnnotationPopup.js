@@ -76,6 +76,7 @@ define([	"dojo/_base/declare",
 			if(this.item_id === "NEW") {
 				if (this.initData.portfolioId) {
 					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
+					Topic.publish("openPortfolioList", { portfolioId: this.initData.portfolioId });
 					this.close();
 				} else {
 					this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
@@ -92,7 +93,8 @@ define([	"dojo/_base/declare",
 				}
 			} else {
 				if (this.initData.portfolioId) {
-					Topic.publish("portfolioOpenAnnotation", { itemId: item_id });
+					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
+					Topic.publish("openPortfolioList", { portfolioId: this.initData.portfolioId });
 					this.close();
 				} else {
 					if (this.contextId) {

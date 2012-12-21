@@ -36,7 +36,10 @@ define([	"dojo/_base/declare",
 				dndController:		DndSource,
 				checkBoxes:			this.checkboxes,
 				onClick:			Lang.hitch(this, function(item, node, evt) {
-					this.popup.onTagSelected(item.item_id[0]);
+					if ( item.item_id && item.item_id[0] )
+					{
+						this.popup.onTagSelected(item.item_id[0]);
+					}
 				}),
 				widget: {
 					type:			CheckBox,

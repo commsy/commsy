@@ -1,0 +1,64 @@
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
+
+	<div id="popup_wrapper">
+		<div id="popup_edit_stack">
+			<div id="popup_frame">
+				<div id="popup_inner" class="scrollPopup">
+	
+					<div id="popup_pagetitle">
+						<a id="popup_close" title="${popupTranslations.close}" href="#" data-dojo-attach-event="onclick:Close">
+							<img alt="${popupTranslations.close}" src="${templatePath}img/popup_close.gif"/>
+						</a>
+						<h2 data-dojo-attach-point="titleNode"></h2>
+						<div class="clear"></div>
+					</div>
+					
+					<div id="popup_content_wrapper">
+						<div id="popup_content">
+						
+							<div id="ep_content_row_one">
+		                    	<div class="ep_open_close_head">
+		                        	<strong>${popupTranslations.entries}</strong> (<span data-dojo-attach-point="numEntriesNode"></span>)
+		                        	<!--<a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="${templatePath}img/pop_max_btn.gif" alt="maximieren" /></a>-->
+		                            
+		                        <div class="clear"></div>
+		                    </div>
+                
+		                    <div class="ep_crt_content">
+		                    	
+		                    	<div data-dojo-attach-point="entriesNode"></div>
+		                    	
+		                        <div class="clear"></div>
+		                    </div>
+                    
+               			 </div>
+                
+                
+		                <div id="ep_content_row_two">
+		                    <div class="ep_open_close_head">
+		                    	<strong>${popupTranslations.comments}</strong> (<span data-dojo-attach-point="numAnnotationsNode"></span>)
+		                        
+		                        <a data-dojo-attach-point="createAnnotationNode" data-dojo-attach-event="click: onClickCreateAnnotation" class="open_popup float-right" href="#"><strong>+</strong></a>
+		                        <!--<a href="" class="ep_row_open_close" title="Ansicht maximieren"><img src="${templatePath}img/pop_max_btn.gif" alt="maximieren" /></a>-->
+		                        
+		                        <div class="clear"></div>  
+		                    </div>
+		                    
+		                    <div class="ep_crt_content">
+		                    
+		                    	<div data-dojo-attach-point="annotationsNode"></div>
+		                    	
+		                    	
+		                        <div class="clear"></div>  
+		                    </div>
+		                </div>
+							
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	
+</div>

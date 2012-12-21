@@ -9,7 +9,7 @@ var profile = (function(){
     	optimize:			"closure",			/* "shrinksafe" | "shrinksafe.keeplines" | "closure" | "closure.keeplines" | "comment" | false */
     	stripConsole:		"normal",			/* "normal" | "none" | "warn" | "all" */
     	selectorEngine:		"acme",				/* "" | "lite" | "acme" */
-    	cssOptimize:		false,				/* "comments" | "comments.keepLines" | false */
+    	cssOptimize:		"comments",			/* "comments" | "comments.keepLines" | false */
     	mini:				true,				/* true | false */
     	
     	/* this should solve errors - but it produces them :/
@@ -45,7 +45,9 @@ var profile = (function(){
     			    "commsy/popups/ToggleClipboard",
     			    "commsy/popups/ToggleStack",
     			    "commsy/popups/ToggleWidgets",
-    			    "commsy/popups/TogglePortfolio",
+    			    /*"commsy/popups/TogglePortfolio",*/
+    			    
+    			    "commsy/widgets/WidgetManager",
     			    
     			    "commsy/popups/ClickDatePopup",
     			    "commsy/popups/ClickTodoPopup",

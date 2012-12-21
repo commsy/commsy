@@ -88,30 +88,35 @@
 						$entry = $manager->getItem($entry->getItemID());
 					}
 					if (isset($entry) and !empty($entry)){
-						$moddate = $entry->getModificationDate();
-						if ( $entry->getCreationDate() != $entry->getModificationDate() && !strstr($moddate,'9999-00-00')){
-							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
-						} else {
-							$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+						
+						// skip portfolio
+						if ( $entry->getType() !== CS_PORTFOLIO_TYPE )
+						{
+							$moddate = $entry->getModificationDate();
+							if ( $entry->getCreationDate() != $entry->getModificationDate() && !strstr($moddate,'9999-00-00')){
+								$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
+							} else {
+								$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+							}
+	
+							if ($type === CS_MATERIAL_TYPE) {
+								$versionId = $entry->getVersionID();
+							} else {
+								$versionId = null;
+							}
+	
+							$return["items"][] = array(
+								"itemId"			=> $entry->getItemID(),
+								"contextId"			=> $entry->getContextID(),
+								"module"			=> Type2Module($type),
+								"title"				=> $entry->getTitle(),
+								"image"				=> $this->getUtils()->getLogoInformationForType($type),
+								"fileCount"			=> $entry->getFileList()->getCount(),
+								"modificationDate"	=> $mod_date,
+								"creator"			=> $entry->getCreatorItem()->getFullName(),
+								"versionId"			=> $versionId
+							);
 						}
-
-						if ($type === CS_MATERIAL_TYPE) {
-							$versionId = $entry->getVersionID();
-						} else {
-							$versionId = null;
-						}
-
-						$return["items"][] = array(
-							"itemId"			=> $entry->getItemID(),
-							"contextId"			=> $entry->getContextID(),
-							"module"			=> Type2Module($type),
-							"title"				=> $entry->getTitle(),
-							"image"				=> $this->getUtils()->getLogoInformationForType($type),
-							"fileCount"			=> $entry->getFileList()->getCount(),
-							"modificationDate"	=> $mod_date,
-							"creator"			=> $entry->getCreatorItem()->getFullName(),
-							"versionId"			=> $versionId
-						);
 					}
 				}
 

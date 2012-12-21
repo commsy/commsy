@@ -73,6 +73,11 @@ define([	"dojo/_base/declare",
 						popup.is_open = false;
 					}
 				}));
+				
+				/* temporary, until all widgets are migrated to current version */
+				var widgetManager = this.getWidgetManager();
+				widgetManager.CloseAllWidgets();
+				/* ~temporary */
 			}
 			
 			this.onTogglePopup();

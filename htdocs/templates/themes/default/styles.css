@@ -184,7 +184,9 @@ div#loadingScreenInner .img {
 
 
 #popup_frame{
+	background: none repeat scroll 0 0 #444444; /* Fallback */
 	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+	filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#0000002A', endColorstr='#0000002A'); /* IE */
 	border: 5px solid transparent;
 	padding: 10px;
     border-radius: 2px 2px 2px 2px;
@@ -193,7 +195,9 @@ div#loadingScreenInner .img {
 	}
 
 #popup_frame_my_area {
+	background: none repeat scroll 0 0 #444444; /* Fallback */
     background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6);
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr='#0000002A', endColorstr='#0000002A'); /* IE */
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
     border-bottom: 5px solid transparent;
@@ -2683,6 +2687,7 @@ special
 div.detail_description {
   padding: 5px 10px 10px 10px;
   overflow: auto;
+  line-height: normal;
   }
 
 div.detail_description ul,  div.editor_content ul, div.detail_content ul  {
@@ -4460,6 +4465,11 @@ widgets
     border: 1px solid #C0C0C1;
 }
 
+.CommSyPortfolioItemWidget
+{
+	width: 936px;
+}
+
 .StackNew li {
 	margin-bottom: 5px;
 }
@@ -4625,7 +4635,6 @@ a.nodeCreator:hover{
 Portfolio
 ----------------------------------------------------------------------
 */
-
 #e-portfolio {
 	margin: 10px 0px 0px 10px;
     width: 915px;
@@ -4734,13 +4743,18 @@ Portfolio
     }
 
 #ep_title {
-    height: 64px;
+    height: 100px;
     }
 
 #ep_title_nav {
     float: left;
     padding-right: 8px;
     }
+
+#ep_description
+{
+	padding: 5px 10px 0px 0px;
+}
 
 #ep_tides {
     float: left;
@@ -4765,14 +4779,18 @@ Portfolio
     display: block;
     }
 
-.ep_vert_col_title {
+.ep_vert_col_title,
+.ep_hor_col_title
+{
     float: left;
     background: url(img/ep_vert_head_bg.jpg) repeat-x;
     height: 90px;
     width: 170px;
     }
 
-.ep_vert_col_title a {
+.ep_vert_col_title a,
+.ep_hor_col_title a
+{
     float: right;
     display: block;
     padding: 10px 10px 0px 0px;
@@ -4791,10 +4809,18 @@ Portfolio
 	width: 10px;
 }
 
-.ep_vert_col_title strong {
+.ep_vert_col_title strong,
+.ep_hor_col_title strong
+{
     display: block;
     padding: 8px 30px 10px 10px;
     }
+
+.ep_vert_col_title div,
+.ep_hor_col_title div
+{
+	padding: 0px 10px 10px 10px;
+}
 
 .ep_cc_blue {
     background: #BAC9FF;
@@ -4834,13 +4860,13 @@ Portfolio
     }
 
 #ep_content_row_one {
-    height: 180px;
+    height: 260px;
     overflow: auto;
     border-bottom: 1px solid #767676;
     }
 
 #ep_content_row_two {
-    height: 180px;
+    height: 260px;
     border-top: 1px solid #FFF;
     }
 
@@ -4866,7 +4892,7 @@ Portfolio
     }
 
 .ep_crt_content {
-    height: 149px;
+    height: 229px;
     overflow: auto;
     }
 
@@ -4935,53 +4961,92 @@ Portfolio
     }
 
 /**********************/
-.dijitTabListWrapper {
-	overflow: hidden !important;
-	background: url(img/pop_tabnav_bg.jpg) left bottom repeat-x #D3D3D3 !important;
-    padding: 10px 0px 0px 10px !important;
+#portfolioContentContainer
+{
+	height: 632px;
 }
 
-.dijitTabInnerDiv {
+.portfolioTabContainer
+{
+	width: 100%;
+	height: 100%;
+}
+
+.portfolioWidget .dijitContentPane
+{
+	background: none !important;
+}
+
+.portfolioWidget .dijitTabPaneWrapper
+{
+	background-color: #E8E8E8;
+	overflow-y: auto;
+}
+
+.portfolioWidget .dijitTabInner
+{
 	/*display: block !important;*/
 	/*float: left !important;*/
 	padding: 6px 10px !important;
 	text-decoration: none;
 	font-weight: bold;
-	border-top: 1px solid #B5B5B5;
-    border-right: 1px solid #B5B5B5;
-    border-left: 1px solid #B5B5B5;
+	border: 1px solid #B5B5B5;
     color: #FFF;
     background: url(img/pop_tab_norm_bg.jpg) left bottom repeat-x #B5B5B5;
 }
 
-.dijitTabHover div.dijitTabInnerDiv {
+.portfolioWidget .dijitTabListWrapper .dijitTabChecked
+{
+	/*border-top: 1px solid #B5B5B5;
+    border-right: 1px solid #B5B5B5;
+    border-left: 1px solid #B5B5B5;*/
+    color: #393939;
+    background: #E8E8E8;
+    border-bottom-color: #CCCCCC;
+}
+
+#portfolioCreate
+{
+	position: absolute;
+	right: 10px;
+	z-index: 1;
+}
+
+#portfolioCreate img
+{
+	top: 4px;
+	position: relative;
+}
+
+/*
+.portfolioWidget .dijitTabListWrapper {
+	overflow: hidden !important;
+	background: url(img/pop_tabnav_bg.jpg) left bottom repeat-x #D3D3D3 !important;
+    padding: 10px 0px 0px 10px !important;
+}
+
+
+
+/*
+.portfolioWidget .dijitTabHover div.dijitTabInner {
 	border-color: #767676;
 	color: #393939;
 	text-shadow: #E8E8E8 0 1px;
 }
 
-.dijitTabChecked div.dijitTabInnerDiv {
-	border-top: 1px solid #B5B5B5;
-    border-right: 1px solid #B5B5B5;
-    border-left: 1px solid #B5B5B5;
-    color: #393939;
-    background: #E8E8E8;
-}
 
-.dijitTabPaneWrapperNested {
+
+
+.portfolioWidget .dijitTabPaneWrapperNested {
 	overflow-y: scroll;
 }
 
-.dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent .tabLabel,
-.dijitTabContainerTabListNested .dijitTabHover .dijitTabContent .tabLabel {
+.portfolioWidget .dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent .tabLabel,
+.portfolioWidget .dijitTabContainerTabListNested .dijitTabHover .dijitTabContent .tabLabel {
     text-decoration: none !important;
-}
+}*/
+/*
 
-.dijitTabPaneWrapper {
-	background: none !important;
-}
 
-.dijitContentPane {
-	background: none !important;
-}
+
 /**********************/

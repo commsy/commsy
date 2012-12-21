@@ -22,19 +22,44 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 $disc_manager = $environment->getDiscManager();
-if ( !empty($_GET['picture']) and $disc_manager->existsFile($_GET['picture']) ) {
+if ( !empty($_GET['picture']) and $disc_manager->existsFile($_GET['picture']) )
+{
    header('Content-type: image');
    header('Pragma: no-cache');
    header('Expires: 0');
    readfile($disc_manager->getFilePath().$_GET['picture']);
-} elseif ( !empty($_GET['picture']) and withUmlaut($_GET['picture']) ) {
+   exit;
+}
+elseif ( !empty($_GET['picture']) and withUmlaut($_GET['picture']) )
+{
    $filename = rawurlencode($_GET['picture']);
-   if ( file_exists($disc_manager->existsFile($_GET['picture'])) ) {
+   if ( $disc_manager->existsFile($_GET['picture']) )
+   {
       header('Content-type: image');
       header('Pragma: no-cache');
       header('Expires: 0');
       readfile($disc_manager->getFilePath().$filename);
+      exit;
    }
 }
+
+// portfolio context
+if ( !empty($_GET["picture"]) )
+{
+	$environment->changeContextToPrivateRoom();
+	$disc_manager = $environment->getDiscManager();
+	
+	$filename = withUmlaut($_GET["picture"]) ? rawurlencode($_GET["picture"]) : $_GET["picture"];
+	
+	if ( $disc_manager->existsFile($_GET['picture']) )
+	{
+		header('Content-type: image');
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		readfile($disc_manager->getFilePath().$filename);
+		exit;
+	}
+}
+
 exit();
 ?>
