@@ -8,6 +8,7 @@
 	
 	<target name="run">
 		<echo>WORKSPACE: ${project.workspace}</echo>
+		<exec></exec>
 	</target>
 	
 </project>
