@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="CommSy Dojo Build" default="build">
+	
+	<property name="project.workspace" value="workspace"/>
+	
+	<target name="build" depends="run"/>
+	
+	<target name="run">
+		<echo>WORKSPACE: ${project.workspace}</echo>
+	</target>
+	
+</project>
