@@ -36,14 +36,14 @@
 
 			if(empty($this->_data)) {
 				$this->_data = $_POST;
-				array_walk_recursive($_POST, 'cs_ajax_controller::sanitize');
+				array_walk_recursive($_POST, array($this, 'sanitize'));
 			} else {
 				// get content from ckeditor
 				if(isset($this->_data['form_data']['2']['value'])
 					and !empty($this->_data['form_data']['2']['value'])){
 					$tempCont = $this->_data['form_data']['2']['value'];
 				}
-				array_walk_recursive($this->_data, 'cs_ajax_controller::sanitize');
+				array_walk_recursive($this->_data, array($this, 'sanitize'));
 				if(isset($this->_data['form_data']['2']['value'])
 					and !empty($this->_data['form_data']['2']['value'])){
 					$this->_data['form_data']['2']['value'] = $tempCont;

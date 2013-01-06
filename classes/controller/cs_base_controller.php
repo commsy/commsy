@@ -101,11 +101,11 @@
 		protected function processTemplate() {
 			//sanitize
 			if(!empty($_POST) and isset($_POST)){
-				array_walk_recursive($_POST, 'cs_base_controller::sanitize');
+				array_walk_recursive($_POST, array($this, 'sanitize'));
 			}
 
 			if(!empty($_GET) and isset($_GET)){
-				array_walk_recursive($_GET, 'cs_base_controller::sanitize');
+				array_walk_recursive($_GET, array($this, 'sanitize'));
 			}
 
 			// the actual function determes the method to call
@@ -419,7 +419,7 @@
 			$this->assign('environment','count_new_accounts', $count_new_accounts);
 			$this->assign('environment', 'post', $_POST);
 			$this->assign('environment', 'get', $_GET);
-			
+
 			include_once('functions/misc_functions.php');
 			$this->assign('environment','commsy_version',getCommSyVersion());
 			$c_version_addon = $this->_environment->getConfiguration('c_version_addon');

@@ -102,11 +102,11 @@ class cs_environment {
    private $_tpl_engine	 = null;
 
    # multi master implementation
-   private $_db_portal_id = 0;  
-   
+   private $_db_portal_id = 0;
+
    # archive
    private $_found_in_archive = false;
-   
+
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
    */
@@ -131,14 +131,14 @@ class cs_environment {
          if ($current_user->isRoot() or $this->inPortal()) {
             $this->_portal_user = $current_user;
          } else {
-            
+
             // archive mode
             $toggle_archive_mode = false;
             if ( $this->isArchiveMode() ) {
                $this->deactivateArchiveMode();
                $toggle_archive_mode = true;
             }
-            
+
             $manager = $this->getUserManager();
             $manager->resetLimits();
             $manager->setContextLimit($this->getCurrentPortalID());
@@ -149,7 +149,7 @@ class cs_environment {
             if ($list->isNotEmpty() and $list->getCount() == 1) {
                $this->_portal_user = $list->getFirst();
             }
-            
+
             // archive mode
             if ( $toggle_archive_mode ) {
                $this->activateArchiveMode();
@@ -539,11 +539,11 @@ class cs_environment {
       if (isset($retour['search']) and ($retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM') || $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_RUBRIC'))){
          unset($retour['search']);
       }
-      array_walk_recursive($retour,'cs_environment::cleanBadCode');
+       array_walk_recursive($retour, array($this, 'cleanBadCode'));
       return $retour;
    }
 
-   public function cleanBadCode (&$item, $key){
+   function cleanBadCode (&$item, $key){
 		$item = $this->getTextConverter()->_htmlentities_cleanbadcode($item);
    }
 
@@ -2254,7 +2254,7 @@ class cs_environment {
 
       	$db = $this->getConfiguration('db');
       	$db_choice = 'normal';
-      	 
+
       	// multi master implementation (03.09.2012 IJ)
       	if ( count($db) > 1 ) {
       		$db_force_master = $this->getConfiguration('db_force_master');
@@ -2285,7 +2285,7 @@ class cs_environment {
       		}
       	}
       	// multi master implemenation - END
-      	
+
       	include_once('classes/db_mysql_connector.php');
          $this->_db_mysql_connector = new db_mysql_connector($db[$db_choice]);
          global $c_show_debug_infos;
@@ -2296,8 +2296,8 @@ class cs_environment {
          if ( isset($db_read_only)
               and $db_read_only
             ) {
-            $this->_db_mysql_connector->setReadOnly();	
-         }              
+            $this->_db_mysql_connector->setReadOnly();
+         }
       }
       return $this->_db_mysql_connector;
    }
@@ -2315,7 +2315,7 @@ class cs_environment {
    ##################################################################
    # multi master implemenation - BEGIN
    ##################################################################
-   
+
    public function getCurrentCommSyVersion () {
       $server_item = $this->getServerItem();
       return $server_item->getCurrentCommSyVersion();
@@ -2462,7 +2462,7 @@ class cs_environment {
    public function isArchiveMode () {
       return $this->_archive_mode;
    }
-   
+
    public function toggleArchiveMode () {
       if ( $this->isArchiveMode() ) {
          $this->deactivateArchiveMode();
@@ -2492,14 +2492,14 @@ class cs_environment {
    	$this->setCurrentUserItem($currentUser->getRelatedPrivateRoomUserItem());
    	$this->unsetAllInstancesExceptTranslator();
    }
-   
+
    // archive
    public function setFoundCurrentContextInArchive () {
       $this->_found_in_archive = true;
    }
-    
+
    public function foundCurrentContextInArchive () {
       return $this->_found_in_archive;
-   }   
+   }
 }
 ?>
