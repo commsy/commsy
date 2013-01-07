@@ -2,7 +2,8 @@
 
 <project name="CommSy Dojo Build" default="build">
 	
-	<property name="project.workspace" value="workspace"/>
+	<property environment="env"/>
+	<property name="project.workspace" value="${env.WORKSPACE}"/>
 	
 	<target name="build" depends="run"/>
 	
