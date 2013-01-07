@@ -5,11 +5,14 @@
 	<property environment="env"/>
 	<property name="project.workspace" value="${env.WORKSPACE}"/>
 	
-	<target name="build" depends="run"/>
+	<target name="build" depends="clean,js"/>
 	
-	<target name="run">
+	<target name="clean">
+	</target>
+	
+	<target name="js">
 		<echo>WORKSPACE: ${project.workspace}</echo>
-		<exec></exec>
+		<exec executable="${project.workspace}/htdocs/js/build.sh"></exec>
 	</target>
 	
 </project>
