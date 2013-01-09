@@ -230,7 +230,7 @@ class cs_room_manager extends cs_context_manager {
      }
 
      $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
-
+     
      // user id limit
      if (isset($this->_user_id_limit)) {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.item_id AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL';
@@ -393,6 +393,13 @@ class cs_room_manager extends cs_context_manager {
         ) {
         $query = str_replace(' '.$this->addDatabasePrefix($this->_db_table),' '.$db_prefix.$this->addDatabasePrefix($this->_db_table),$query);
         $query = str_replace('('.$this->addDatabasePrefix($this->_db_table),'('.$db_prefix.$this->addDatabasePrefix($this->_db_table),$query);
+        $query = str_replace('='.$this->addDatabasePrefix($this->_db_table),'='.$db_prefix.$this->addDatabasePrefix($this->_db_table),$query);
+        
+        // user
+        $table = 'user';
+        $query = str_replace(' '.$this->addDatabasePrefix($table),' '.$db_prefix.$this->addDatabasePrefix($table),$query);
+        $query = str_replace('('.$this->addDatabasePrefix($table),'('.$db_prefix.$this->addDatabasePrefix($table),$query);
+        $query = str_replace('='.$this->addDatabasePrefix($table),'='.$db_prefix.$this->addDatabasePrefix($table),$query);
      }
      $this->_last_query = $query;
 

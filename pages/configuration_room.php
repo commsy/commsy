@@ -82,9 +82,12 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
       } elseif ($status == 'undelete') {
          $room->undelete();
       }elseif ($status == 'archive') {
-         if ( $current_user->isRoot() ) {
+         if ( !$room->isTemplate() ) {
             $room->moveToArchive();
          } else {
+         	// templates can not closed / archived
+         	// so do nothing
+         	/*
             $room->close();
 
             // Fix: Find Group-Rooms if existing
@@ -104,7 +107,11 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
                }
             }
             // ~Fix
+            */
          }
+
+         // TBD: close wiki
+      
       }elseif ($status == 'open') {
          if ($archive) {
             $room->backFromArchive();
@@ -128,6 +135,9 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
                }
             }
          }
+         
+         // TBD: open wiki
+
       } else {
          include_once('functions/error_functions.php');
          trigger_error('automatic mode is not defined, E_USER_ERROR');

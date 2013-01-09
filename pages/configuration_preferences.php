@@ -219,35 +219,40 @@ if ($current_user->isGuest()) {
          redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
       }
    } elseif ( isOption($delete_command, $translator->getMessage('ROOM_ARCHIV_BUTTON')) ) {
-      $item->close();
-      $item->save();
-      if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
-           and $environment->inCommunityRoom()
-         ) {
-         $params = array();
-         if (isset($item)) {
-            $params['iid'] = $item->getItemID();
-            redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'detail',$params);
-            unset($params);
-         } else {
-            redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'index','');
-         }
-      } elseif ($environment->getCurrentModule() == CS_MYROOM_TYPE) {
-         $params = array();
-         if (isset($item)) {
-            $params['iid'] = $item->getItemID();
-            redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'detail',$params);
-            unset($params);
-         } else {
-            redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'index','');
-         }
+      if ( !$item->isTemplate() ) {
+      	// TBD: close wiki
+      	$item->moveToArchive();
+	      if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
+	           and $environment->inCommunityRoom()
+	         ) {
+	         $params = array();
+	         if (isset($item)) {
+	            $params['iid'] = $item->getItemID();
+	            redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'detail',$params);
+	            unset($params);
+	         } else {
+	            redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'index','');
+	         }
+	      } elseif ($environment->getCurrentModule() == CS_MYROOM_TYPE) {
+	         $params = array();
+	         if (isset($item)) {
+	            $params['iid'] = $item->getItemID();
+	            redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'detail',$params);
+	            unset($params);
+	         } else {
+	            redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'index','');
+	         }
+	      } else {
+	         $session = $environment->getSessionItem();
+	         $history = $session->getValue('history');
+	         redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
+	      }
       } else {
          $session = $environment->getSessionItem();
          $history = $session->getValue('history');
          redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
       }
    }
-
 
 
 

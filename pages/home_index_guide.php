@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
 // Verify parameters for this page
 if (!empty($_GET['account'])) {
    $account_mode = $_GET['account'];
@@ -130,8 +129,18 @@ elseif ( isOption($delete_command, $translator->getMessage('ROOM_ARCHIV_BUTTON')
              and $item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
            )
       ) {
-      $item->close();
-      $item->save();
+   	// TBD: wiki
+   	if ( !$item->isTemplate() ) {
+   		$item->moveToArchive();
+   	} else {
+   		// templates can not closed / archived
+   		// so do nothing
+   		/*   
+   		// TBD: grouprooms
+         $item->close();
+         $item->save();
+         */
+   	}
    }
    unset($item);
    unset($manager);

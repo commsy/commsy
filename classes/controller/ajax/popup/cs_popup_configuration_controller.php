@@ -444,76 +444,83 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				         global $c_use_soap_for_wiki;
 				         if ( isset($form_data['room_status']) ) {
 				            if ($form_data['room_status'] == '') {
-				               $current_context->open();
-				               if($current_context->existWiki() and $c_use_soap_for_wiki){
-				                  $wiki_manager = $this->_environment->getWikiManager();
-				                  $wiki_manager->openWiki();
-				               }
 
-				               // Fix: Find Group-Rooms if existing
-				               if( $current_context->isGrouproomActive() ) {
-				                  $groupRoomList = $current_context->getGroupRoomList();
-
-				                  if( !$groupRoomList->isEmpty() ) {
-				                     $room_item = $groupRoomList->getFirst();
-
-				                     while($room_item) {
-				                        // All GroupRooms have to be opened too
-				                        $room_item->open();
-				                        $room_item->save();
-
-				                        $room_item = $groupRoomList->getNext();
-				                     }
-				                  }
-				               }
-				               // ~Fix
-
-
+				            	// archive
+				            	if ( $this->_environment->isArchiveMode() ) {
+				            		$current_context->backFromArchive();
+				            		$this->_environment->deactivateArchiveMode();
+				            	}
+				            	// archive
+				            	
+				            	// old: should be impossible
+				            	else {
+				            		// Fix: Find Group-Rooms if existing
+				            		if( $current_context->isGrouproomActive() ) {
+				            			$groupRoomList = $current_context->getGroupRoomList();
+				            			 
+				            			if( !$groupRoomList->isEmpty() ) {
+				            				$room_item = $groupRoomList->getFirst();
+				            				 
+				            				while($room_item) {
+				            					// All GroupRooms have to be opened too
+				            					$room_item->open();
+				            					$room_item->save();
+				            					 
+				            					$room_item = $groupRoomList->getNext();
+				            				}
+				            			}
+				            		}
+				            		// ~Fix
+				            		 
+				            		$current_context->open();
+				            	}
+				            	
+				            	// wiki
+				            	if($current_context->existWiki() and $c_use_soap_for_wiki){
+				            		$wiki_manager = $environment->getWikiManager();
+				            		$wiki_manager->openWiki();
+				            	}
+				            	 
 				            } elseif ($form_data['room_status'] == 2) {
-				               $current_context->close();
-				               if($current_context->existWiki() and $c_use_soap_for_wiki){
-				                  $wiki_manager = $this->_environment->getWikiManager();
-				                  $wiki_manager->closeWiki();
-				               }
-
-				               // Fix: Find Group-Rooms if existing
-				               if( $current_context->isGrouproomActive() ) {
-				                  $groupRoomList = $current_context->getGroupRoomList();
-
-				                  if( !$groupRoomList->isEmpty() ) {
-				                     $room_item = $groupRoomList->getFirst();
-
-				                     while($room_item) {
-				                        // All GroupRooms have to be closed too
-				                        $room_item->close();
-				                        $room_item->save();
-
-				                        $room_item = $groupRoomList->getNext();
-				                     }
+				               // template or not: template close, others archive
+				               if ( !$current_context->isTemplate() ) {				               	
+	   			               // close wiki
+				            	   if($current_context->existWiki() and $c_use_soap_for_wiki){
+				                     $wiki_manager = $this->_environment->getWikiManager();
+				                     $wiki_manager->closeWiki();
 				                  }
-				               }
-				               // ~Fix
-				            }
-				         } else {
-
-				            // Fix: Find Group-Rooms if existing
-				            if( $current_context->isGrouproomActive() ) {
-				               $groupRoomList = $current_context->getGroupRoomList();
-
-				               if( !$groupRoomList->isEmpty() ) {
-				                  $room_item = $groupRoomList->getFirst();
-
-				                  while($room_item) {
-				                     // All GroupRooms have to be opened too
-				                     $room_item->open();
-				                     $room_item->save();
-
-				                     $room_item = $groupRoomList->getNext();
-				                  }
+				               
+				               	$current_context->moveToArchive();
+                              $this->_environment->activateArchiveMode();                             
+				               } else {
+				               	// templates can not closed / archived
+				               	// so do nothing
+				               	/*
+					               $current_context->close();
+					               // Fix: Find Group-Rooms if existing
+					               if( $current_context->isGrouproomActive() ) {
+					                  $groupRoomList = $current_context->getGroupRoomList();
+	
+					                  if( !$groupRoomList->isEmpty() ) {
+					                     $room_item = $groupRoomList->getFirst();
+	
+					                     while($room_item) {
+					                        // All GroupRooms have to be closed too
+					                        $room_item->close();
+					                        $room_item->save();
+	
+					                        $room_item = $groupRoomList->getNext();
+					                     }
+					                  }
+					               }
+					               // ~Fix
+					               */
 				               }
 				            }
-				            // ~Fix
-				            
+				         }
+				         
+				         // status != 2 and =! empty
+				         else {
 				            // archive
 				            if ( $this->_environment->isArchiveMode() ) {
             	            $current_context->backFromArchive();
@@ -521,7 +528,31 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                         }
                         // archive
                         
-         	            $current_context->open();
+                        // old: should be impossible
+                        else {
+                        	
+                        	// Fix: Find Group-Rooms if existing
+                        	if( $current_context->isGrouproomActive() ) {
+                        		$groupRoomList = $current_context->getGroupRoomList();
+                        	
+                        		if( !$groupRoomList->isEmpty() ) {
+                        			$room_item = $groupRoomList->getFirst();
+                        	
+                        			while($room_item) {
+                        				// All GroupRooms have to be opened too
+                        				$room_item->open();
+                        				$room_item->save();
+                        	
+                        				$room_item = $groupRoomList->getNext();
+                        			}
+                        		}
+                        	}
+                        	// ~Fix
+                        	
+                        	$current_context->open();                        	 
+                        }
+                                 	            
+         	            // wiki
                         if($current_context->existWiki() and $c_use_soap_for_wiki){
                            $wiki_manager = $environment->getWikiManager();
                            $wiki_manager->openWiki();

@@ -94,7 +94,7 @@ class cs_guide_room_list_page extends cs_page {
 	         }
 	
 	         if (!empty($this->_values['sel_archive_room'])) {
-	            $sel_archive_room = 1;
+	            $sel_archive_room = $this->_values['sel_archive_room'];
 	         }else {
 	            $sel_archive_room = '';
 	         }
@@ -139,8 +139,13 @@ class cs_guide_room_list_page extends cs_page {
 	            $count_all = $current_context->getCountProjectAndCommunityRooms();
 	         }
 	
-	         if (empty($sel_archive_room)) {
-	            $manager->setOpenedLimit();
+	         #if ( empty($sel_archive_room) ) {
+	         #   $manager->setOpenedLimit();
+	         #}
+	         if ( !empty($sel_archive_room) 
+	              and $sel_archive_room == 1
+	            ) {	
+	            $manager->setArchiveLimit();
 	         }
 	         if (!empty($selroom)) {
 	            if ($selroom == 3) {
@@ -154,9 +159,6 @@ class cs_guide_room_list_page extends cs_page {
 	            } elseif ($selroom == 6) {
 	               $manager->setRoomTypeLimit(CS_GROUPROOM_TYPE);
 	               $count_all = $current_context->getCountGroupRooms();
-	            } elseif ($selroom == 8) {
-	               $manager->setArchiveLimit();
-	               $count_all = $manager->getCountAll();
 	            } elseif ($selroom == 9) {
 	               $manager->setDeletedLimit();
 	               $count_all = $manager->getCountAll();

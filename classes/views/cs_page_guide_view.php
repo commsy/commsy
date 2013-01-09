@@ -1679,6 +1679,7 @@ class cs_page_guide_view extends cs_page_view {
          if ( $current_user->isModerator()
               and $this->_with_modifying_actions
               and !$item->isClosed()
+         	  and !$item->isTemplate()
             ) {
             $params = array();
             $params['iid'] = $item->getItemID();

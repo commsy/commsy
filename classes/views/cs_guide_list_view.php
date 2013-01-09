@@ -635,6 +635,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       }
 
       $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_ROOM_LIST_ROOMS').':'.BRLF;
+      
       // jQuery
       //$html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" id="submit_form">'.LF;
@@ -658,11 +659,11 @@ class cs_guide_list_view extends cs_list_view_plain {
            or $current_user->isModerator()
          ) {
          $html .= '>'.$this->_translator->getMessage('PORTAL_DELETED_ROOMS').'</option>'.LF;
-         $html .= '      <option value="8"';
-         if ( !empty($selroom) and $selroom == 8 ) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>'.$this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS').'</option>'.LF;
+         #$html .= '      <option value="8"';
+         #if ( !empty($selroom) and $selroom == 8 ) {
+         #   $html .= ' selected="selected"';
+         #}
+         #$html .= '>'.$this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS').'</option>'.LF;
       }
 
       $current_context = $this->_environment->getCurrentContextItem();
@@ -718,6 +719,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html .= '   </select>'.LF;
       $html .= '</div>'.LF;
 
+      /*
       if ( (!empty($sel_archive_room) and $sel_archive_room == 1) ) {
          $text = ' checked="checked"';
       } else {
@@ -729,8 +731,22 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html .= '</td><td style="width:99%; vertical-align:middle; font-size:8pt;">';
       $html .= $this->_translator->getMessage('COMMON_SHOW_ARCHIVED_ROOMS');;
       $html .= '</td></tr></table></div>'.LF;
-
-
+      */
+      
+      // archive
+      if ( !empty($sel_archive_room) and $sel_archive_room == 1 ) {
+      	$text1 = '';
+      	$text2 = ' checked="checked"';
+      } else {
+         $text1 = ' checked="checked"';
+      	$text2 = '';
+      }
+      $html .= '<div style="text-align:left; font-size: 8pt; font-weight:normal; margin-bottom:10px;">'.LF;
+      $html .= '<input type="radio" name="sel_archive_room" value="2"'.$text1.'>'.lcfirst($this->_translator->getMessage('PORTAL_NORMAL_ROOMS')).'</input>'.BRLF;
+      $html .= '<input type="radio" name="sel_archive_room" value="1"'.$text2.'>'.lcfirst($this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS')).'</input>'.LF;
+      $html .= '</div>'.LF;
+      // archive - END     
+      
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $this->_environment->inPortal()
            and $current_context->showTime()

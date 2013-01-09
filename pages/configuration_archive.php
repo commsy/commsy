@@ -73,8 +73,8 @@ else {
             if ($_POST['status'] == '') {
                $room_item->open();
                $room_item->setNotTemplate();
-            } elseif ($_POST['status'] == 2) {
-               $room_item->close();
+            } elseif ($_POST['status'] == 2 and !$room_item->isTemplate()) {
+               $room_item->moveToArchive();
             }
          }else{
             $room_item->open();

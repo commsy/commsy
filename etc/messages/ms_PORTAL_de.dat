@@ -28,6 +28,7 @@ $message["PORTAL_MY_PROJECT_ROOMS"]["de"] = "Meine %_PROJECT_SUB_NOMPL_BIG";
 $message["PORTAL_MY_ROOMS"]["de"] = "Meine Räume";
 $message["PORTAL_NEWS_LINK"]["de"] = "Portal-Ankündigungen";
 $message["PORTAL_NEWS_LINK_DESC"]["de"] = "Einstellungen zu portalweiten Ankündigungen.";
+$message["PORTAL_NORMAL_ROOMS"]["de"] = "Nutzbare Räume";
 $message["PORTAL_NO_ANNOUNCEMENTS"]["de"] = "Zurzeit keine aktuelle Ankündigung";
 $message["PORTAL_OPEN_ROOM"]["de"] = "Raumeröffnung";
 $message["PORTAL_ROOM_DESCRIPTION"]["de"] = "Raumbeschreibung";

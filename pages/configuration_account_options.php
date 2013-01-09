@@ -107,85 +107,90 @@ if ($current_user->isGuest()) {
          global $c_use_soap_for_wiki;
          if ( isset($_POST['status']) ) {
             if ($_POST['status'] == '') {
-               $current_context->open();
-               if($current_context->existWiki() and $c_use_soap_for_wiki){
-                  $wiki_manager = $environment->getWikiManager();
-                  $wiki_manager->openWiki();
-               }
-               
-               // Fix: Find Group-Rooms if existing
-               if( $current_context->isGrouproomActive() ) {
-                  $groupRoomList = $current_context->getGroupRoomList();
-                  
-                  if( !$groupRoomList->isEmpty() ) {
-                     $room_item = $groupRoomList->getFirst();
-                     
-                     while($room_item) {
-                        // All GroupRooms have to be opened too
-                        $room_item->open();
-                        $room_item->save();
-                        
-                        $room_item = $groupRoomList->getNext();
-                     }
-                  }
-               }
-               // ~Fix
-               
-               
+	            if ( $environment->isArchiveMode() ) {
+	            	$current_context->backFromArchive();
+	            	$environment->deactivateArchiveMode();
+	            }
+	            
+	            // old: should be impossible
+	            else {
+	            	/*
+	            	// Fix: Find Group-Rooms if existing
+	            	if ( $current_context->isProjectRoom()
+	            			and $current_context->isGrouproomActive()
+	            	   ) {
+	            		$groupRoomList = $current_context->getGroupRoomList();
+	            		 
+	            		if( !$groupRoomList->isEmpty() ) {
+	            			$room_item = $groupRoomList->getFirst();
+	            	
+	            			while($room_item) {
+	            				// All GroupRooms have to be opened too
+	            				$room_item->open();
+	            				$room_item->save();
+	            				if ( $environment->isArchiveMode() ) {
+	            					$room_item->backFromArchive();
+	            				}
+	            				 
+	            				$room_item = $groupRoomList->getNext();
+	            			}
+	            		}
+	            	}
+	            	// ~Fix
+	            	*/
+	            }
+	            
+	         	$current_context->open();
+	            if($current_context->existWiki() and $c_use_soap_for_wiki){
+	               $wiki_manager = $environment->getWikiManager();
+	               $wiki_manager->openWiki();
+	            }            
+            	               
             } elseif ($_POST['status'] == 2) {
-               $current_context->close();
-               if($current_context->existWiki() and $c_use_soap_for_wiki){
-                  $wiki_manager = $environment->getWikiManager();
-                  $wiki_manager->closeWiki();
-               }
-               
-               // Fix: Find Group-Rooms if existing
-               if( $current_context->isGrouproomActive() ) {
-                  $groupRoomList = $current_context->getGroupRoomList();
-                  
-                  if( !$groupRoomList->isEmpty() ) {
-                     $room_item = $groupRoomList->getFirst();
-                     
-                     while($room_item) {
-                        // All GroupRooms have to be closed too
-                        $room_item->close();
-                        $room_item->save();
-                        
-                        $room_item = $groupRoomList->getNext();
-                     }
-                  }
-               }
-               // ~Fix
+            	if ( !$current_context->isTemplate() ) {
+	               if($current_context->existWiki() and $c_use_soap_for_wiki){
+	                  $wiki_manager = $environment->getWikiManager();
+	                  $wiki_manager->closeWiki();
+	               }
+	               $current_context->moveToArchive();
+            	   $environment->activateArchiveMode();
+            	}
             }
          }else{
             
-            // Fix: Find Group-Rooms if existing
-            if ( $current_context->isProjectRoom()
-                 and $current_context->isGrouproomActive()
-               ) {
-               $groupRoomList = $current_context->getGroupRoomList();
-               
-               if( !$groupRoomList->isEmpty() ) {
-                  $room_item = $groupRoomList->getFirst();
-                  
-                  while($room_item) {
-                     // All GroupRooms have to be opened too
-                     $room_item->open();
-                     $room_item->save();
-                     if ( $environment->isArchiveMode() ) {
-                     	$room_item->backFromArchive();
-                     }
-                     
-                     $room_item = $groupRoomList->getNext();
-                  }
-               }
-            }
-            // ~Fix
-
             if ( $environment->isArchiveMode() ) {
             	$current_context->backFromArchive();
             	$environment->deactivateArchiveMode();
             }
+            
+            // old: should be impossible
+            else {
+            	/*
+            	// Fix: Find Group-Rooms if existing
+            	if ( $current_context->isProjectRoom()
+            			and $current_context->isGrouproomActive()
+            	   ) {
+            		$groupRoomList = $current_context->getGroupRoomList();
+            		 
+            		if( !$groupRoomList->isEmpty() ) {
+            			$room_item = $groupRoomList->getFirst();
+            	
+            			while($room_item) {
+            				// All GroupRooms have to be opened too
+            				$room_item->open();
+            				$room_item->save();
+            				if ( $environment->isArchiveMode() ) {
+            					$room_item->backFromArchive();
+            				}
+            				 
+            				$room_item = $groupRoomList->getNext();
+            			}
+            		}
+            	}
+            	// ~Fix
+            	*/
+            }
+            
          	$current_context->open();
             if($current_context->existWiki() and $c_use_soap_for_wiki){
                $wiki_manager = $environment->getWikiManager();

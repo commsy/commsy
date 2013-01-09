@@ -372,40 +372,44 @@ elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON
 elseif ( isOption($delete_command, $translator->getMessage('ROOM_ARCHIV_BUTTON')) ) {
    $manager = $environment->getRoomManager();
    $item = $manager->getItem($current_item_iid);
-   $item->close();
-   $item->save();
-   if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
-        and $environment->inCommunityRoom()
-      ) {
-      $params = array();
-      if (isset($item)) {
-         $params['iid'] = $item->getItemID();
-         redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'detail',$params);
-         unset($params);
-      } else {
-         redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'index','');
-      }
-   } elseif ($environment->getCurrentModule() == CS_MYROOM_TYPE) {
-      $params = array();
-      if (isset($item)) {
-         $params['iid'] = $item->getItemID();
-         redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'detail',$params);
-         unset($params);
-      } else {
-         redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'index','');
-      }
-   } elseif ($environment->getCurrentModule() == 'configuration') {
-      if ( $environment->getCurrentFunction() == 'account_options' ) {
-         $redirect_context_id = $environment->getCurrentContextID();
-         $redirect_module     = $environment->getCurrentModule();
-         $redirect_function   = $environment->getCurrentFunction();
-      } else {
-         $redirect_context_id = $environment->getCurrentContextID();
-         $redirect_module     = 'home';
-         $redirect_function   = 'index';
-      }
-      $redirect_params     = array();
-      redirect($redirect_context_id,$redirect_module,$redirect_function,$redirect_params);
+   if ( !$item->isTemplate() ) {
+   	// TBD: close wiki
+	   $item->moveToArchive();
+	   if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
+	        and $environment->inCommunityRoom()
+	      ) {
+	      $params = array();
+	      if (isset($item)) {
+	         $params['iid'] = $item->getItemID();
+	         redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'detail',$params);
+	         unset($params);
+	      } else {
+	         redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'index','');
+	      }
+	   } elseif ($environment->getCurrentModule() == CS_MYROOM_TYPE) {
+	      $params = array();
+	      if (isset($item)) {
+	         $params['iid'] = $item->getItemID();
+	         redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'detail',$params);
+	         unset($params);
+	      } else {
+	         redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'index','');
+	      }
+	   } elseif ($environment->getCurrentModule() == 'configuration') {
+	      if ( $environment->getCurrentFunction() == 'account_options' ) {
+	         $redirect_context_id = $environment->getCurrentContextID();
+	         $redirect_module     = $environment->getCurrentModule();
+	         $redirect_function   = $environment->getCurrentFunction();
+	      } else {
+	         $redirect_context_id = $environment->getCurrentContextID();
+	         $redirect_module     = 'home';
+	         $redirect_function   = 'index';
+	      }
+	      $redirect_params     = array();
+	      redirect($redirect_context_id,$redirect_module,$redirect_function,$redirect_params);
+	   } else {
+	      redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
+	   }
    } else {
       redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
    }

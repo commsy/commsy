@@ -574,13 +574,15 @@
 
 									<fieldset>
 										<p>
-											<strong>___CONTEXT_ROOM_ARCHIVE___:</strong> ___ROOM_STATUS_LONG_DESCRIPTION___
+											<strong>___CONTEXT_ROOM_ARCHIVE___:</strong> {if $popup.additional.template == false}___ROOM_STATUS_LONG_DESCRIPTION___{else}___CONTEXT_ROOM_ARCHIVE_DESCRIPTION_NOT_POSSIBLE___{/if}
 										</p>
-										<div class="input_row_100">
-											<label for="additional_room_status">___COMMON_STATUS___:</label>
-											<input type="checkbox" name="form_data[room_status]" value="2" {if $popup.additional.room_status == 2} checked="checked"{/if}/> ___ROOM_STATUS_DESCRIPTION___
-											<div class="clear"></div>
-										</div>
+                                        {if $popup.additional.template == false}
+										   <div class="input_row_100">
+											   <label for="additional_room_status">___COMMON_STATUS___:</label>
+											   <input type="checkbox" name="form_data[room_status]" value="2" {if $popup.additional.room_status == 2} checked="checked"{/if}/> ___ROOM_STATUS_DESCRIPTION___
+											   <div class="clear"></div>
+										   </div>
+										{/if}
 									</fieldset>
 
 									<fieldset>
