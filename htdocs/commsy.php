@@ -978,7 +978,7 @@ if($context_item->isServer()
   ) {
 	$c_smarty = false;
 
-} elseif ($context_item->isPortal() && $_GET["mod"] !== "ajax") {
+} elseif ($context_item->isPortal() && ( empty($_GET["mod"]) or $_GET["mod"] !== "ajax") ) {
 	$c_smarty = false;
 }
 
