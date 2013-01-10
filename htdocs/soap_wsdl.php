@@ -1,4 +1,18 @@
-<?php header("Content-Type: text/xml"); ?>
+<?php
+   header("Content-Type: text/xml");
+   chdir('..');
+   $plugin_config_file = 'etc/commsy/plugin.php';
+   if ( file_exists($plugin_config_file) ) {
+      include_once($plugin_config_file);
+      include_once('etc/cs_constants.php');
+      include_once('etc/cs_config.php');
+      include_once('functions/misc_functions.php');
+      include_once('classes/cs_environment.php');
+      $environment = new cs_environment();
+      
+      $soap_functions_array = plugin_hook_output_all('getSOAPAPIArray',array(),'ARRAY');
+   }
+?>
 <<?php echo('?'); ?>xml version ='1.0' encoding ='UTF-8'?>
 <definitions name='CommSy'
   targetNamespace='<?php echo('http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']); ?>'
@@ -565,6 +579,26 @@
   <part name='xml_list' type='xsd:string'/>
 </message>
 
+<?php
+// message - dynamisch
+foreach ( $soap_functions_array as $key => $in_out ) {
+   echo("<message name='".$key."IN'>\n");
+   if ( !empty($in_out['in']) ) {
+      foreach ( $in_out['in'] as $name => $type ) {
+         echo("<part name='".$name."' type='xsd:".$type."'/>\n");
+      }
+   }
+   echo('</message>'."\n");
+   echo("<message name='".$key."OUT'>\n");
+   if ( !empty($in_out['out']) ) {
+      foreach ( $in_out['out'] as $name => $type ) {
+         echo("<part name='".$name."' type='xsd:".$type."'/>\n");
+      }
+   }
+   echo('</message>'."\n");
+}
+echo("\n");
+?>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -844,6 +878,17 @@
     <input message='tns:activateUserIN'/>
     <output message='tns:activateUserOUT'/>
   </operation>
+
+<?php
+// operation port type - dynamisch
+foreach ( $soap_functions_array as $key => $in_out ) {
+   echo("   <operation name='".$key."'>\n");
+   echo("      <input message='tns:".$key."IN'/>\n");
+   echo("      <output message='tns:".$key."OUT'/>\n");
+   echo("   </operation>\n");
+}
+echo("\n");
+?>
 </portType>
 
 <binding name='CommSyBinding' type='tns:CommSyPortType'>
@@ -1610,6 +1655,22 @@
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
       </output>
   </operation>
+
+<?php 
+// operation binding - dynamisch
+foreach ( $soap_functions_array as $key => $in_out ) {
+   echo("   <operation name='".$key."'>\n");
+   echo("      <soap:operation soapAction='urn:xmethodsCommSy#".$key."'/>\n");
+   echo("      <input>\n");
+   echo("         <soap:body use='encoded' namespace='urn:xmethodsCommSy' encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>\n");
+   echo("      </input>\n");
+   echo("      <output>\n");
+   echo("         <soap:body use='encoded' namespace='urn:xmethodsCommSy' encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>\n");
+   echo("      </output>\n");
+   echo("   </operation>\n");
+}
+?>
+
 </binding>
 
 <service name='CommSyService'>

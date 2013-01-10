@@ -4288,5 +4288,63 @@ class cs_connection_soap {
       $text = base64_encode($text);
       return $text;
    }
+   
+   /*
+    * for plugin soap methods
+    */
+   public function __call ($name, $arguments) {
+   	
+   	// maybe plugin method
+   	// first argument = session id or json-string with session id
+   	$sid = '';
+   	if ( !empty($arguments[0]) ) {
+   		// 32 = length of md5 hash
+   		if ( strlen($arguments[0]) == 32 ) {
+   			$sid = $arguments[0];
+   		}
+   		// maybe json
+   		else {
+   			$arg_array = json_decode($arguments[0],true);
+   			if ( !empty($arg_array['SID']) ) {
+   				$sid = $arg_array['SID'];
+   			} elseif ( !empty($arg_array['SID']) ) {
+   				$sid = $arg_array['sid'];
+   			}
+   		}
+   	}
+   	
+   	// now the context
+   	if ( !empty($sid) ) {
+   		// session valid ?
+   		if ( $this->_isSessionValid($sid) ) {
+   			// get session item
+            $session_manager = $this->_environment->getSessionManager();
+            $session_item = $session_manager->get($sid);
+            if ( $session_item->issetValue('commsy_id') ) {
+            	$portal_id = $session_item->getValue('commsy_id');
+               $this->_environment->setCurrentPortalID($portal_id);
+               $this->_environment->setCurrentContextID($portal_id);
+   	
+               // plugin function 
+   	         $retour = plugin_hook_output_all($name,$arguments);
+   	
+            } else {
+            	return new SoapFault('ERROR','can not find portal id in session item');
+            }
+   		} else {
+   			return new SoapFault('ERROR','Session ('.$sid.') not valid!');
+   		}
+   	}
+   	
+   	// return
+   	if ( !empty($retour) ) {
+   		return $retour;
+    	} else {
+    		return new SoapFault('ERROR','SOAP function ('.$name.') is not defined');
+    	}
+   }
+   public static function __callStatic($name, $arguments) {
+   	$this->__call($name, $arguments);
+   }
 }
 ?>
