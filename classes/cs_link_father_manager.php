@@ -81,6 +81,7 @@ class cs_link_father_manager extends cs_manager {
          ) {
          $this->_data = '<'.$this->_db_table.'_list>'.LF;
       } else {
+      	include_once('classes/cs_list.php');
          $this->_data = new cs_list();
       }
       foreach ($result as $query_result) {

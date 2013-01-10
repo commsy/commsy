@@ -4305,6 +4305,9 @@ class cs_connection_soap {
    		// maybe json
    		else {
    			$arg_array = json_decode($arguments[0],true);
+   			if ( empty($arg_array) ) {
+   				$arg_array = json_decode(str_replace('\'','"',$arguments[0]),true);
+   			}
    			if ( !empty($arg_array['SID']) ) {
    				$sid = $arg_array['SID'];
    			} elseif ( !empty($arg_array['SID']) ) {
@@ -4326,8 +4329,7 @@ class cs_connection_soap {
                $this->_environment->setCurrentContextID($portal_id);
    	
                // plugin function 
-   	         $retour = plugin_hook_output_all($name,$arguments);
-   	
+               $retour = plugin_hook_output_all($name,$arguments);
             } else {
             	return new SoapFault('ERROR','can not find portal id in session item');
             }
