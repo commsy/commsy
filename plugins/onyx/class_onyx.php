@@ -188,6 +188,11 @@ class class_onyx extends cs_plugin {
             $navi = $args_array['navi'];
          }
 
+         $saveResult = 0;
+         if ( isset($args_array['save']) ) {
+            $saveResult = $args_array['save'];
+         }
+         
          if ( !empty($args['target'])
               and ( $args['target'] == '_blank'
                     or $args['target'] == 'newwin'
@@ -209,7 +214,17 @@ class class_onyx extends cs_plugin {
             // first: Anmeldung des Tests
             $session_item = $this->_environment->getSessionItem();
             
-            $id = $session_item->getSessionID();
+            // id a json_string with infos
+            $id_array = array();
+            $id_array['SID'] = $session_item->getSessionID();
+            $id_array['cid'] = $this->_environment->getCurrentContextID();
+            $id_array['fid'] = $file->getFileID();
+            $id_array['save'] = $saveResult;
+            include_once('functions/date_functions.php');
+            $id_array['time'] = getCurrentDateTimeInMySQL();
+            $id = json_encode($id_array);
+            $id = str_replace('"','\'',$id);
+            
             $qti = $file->getString();
             $lang = $this->_environment->getSelectedLanguage();
             $inst = '';
@@ -292,6 +307,125 @@ class class_onyx extends cs_plugin {
    public function getTextFormatingInformationAsHTML () {
       $retour = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION');
       return $retour;
+   }
+   
+   /* RETURN and SAVE result
+    * 
+    * SOAP
+    * ----
+    * <message name="saveResult">
+    *    <part name="uniqueId" type="xsd:string"/>
+    *    <part name="resultFile" type="xsd:base64Binary"/>
+    * </message>
+    * 
+    * unique id -> infos via json
+    *
+    */
+   
+   public function getSOAPAPIArray () {
+   	$retour = array();
+   	
+   	$temp_array = array();
+   	$temp_array['in'] = array();
+   	$temp_array['in']['uniqueId'] = 'string';
+   	$temp_array['in']['resultFile'] = 'base64Binary';
+   	$temp_array['out'] = array();
+   	$temp_array['out']['result'] = 'integer';
+   	$retour['saveResult'] = $temp_array;
+   	unset($temp_array);
+
+   	return $retour;
+   }
+   
+   public function saveResult ($args) {
+   	if ( !empty($args[0]) 
+   		  and !empty($args[1])
+   	   ) {
+   		$uniqueId = $args[0];
+   		$uniqueID_array = json_decode(str_replace('\'','"',$uniqueId),true);
+   		$sid = $uniqueID_array['SID'];
+   		$cid = $uniqueID_array['cid'];
+    		$fid = $uniqueID_array['fid'];
+    		$time = $uniqueID_array['time'];
+    		$time_short = str_replace('-','',$time);
+    		$time_short = str_replace(':','',$time_short);
+     		$time_short = str_replace('.','',$time_short);
+     		$time_short = str_replace(' ','',$time_short);
+     		$saveResult = 0; // 0 = save not, 1 = save anonym, 2 = save pseudonym
+    		if ( !empty($uniqueID_array['save']) ) {
+    			$saveResult = $uniqueID_array['save'];
+    		}
+    		$resultFile = $args[1];
+    		
+    		if ( !empty($saveResult)
+    			  and ( $saveResult == 1
+    			  		  or $saveResult == 2
+    			  		)
+    		   ) {
+            $this->_environment->setCurrentContextID($cid);
+    			
+	    		// get link file item
+	    		$lif_manager = $this->_environment->getLinkItemFileManager();
+	    		$lif_manager->setContextLimit($cid);
+	    		$lif_manager->setFileIDLimit($fid);
+	    		$lif_manager->select();
+	    		$lif_list = $lif_manager->get();
+	    		if ( $lif_list->isNotEmpty()
+	    			  and $lif_list->getCount() == 1
+	    		   ) {
+	    			$lif_item = $lif_list->getFirst();
+	    		
+	    			// get data item
+	    			$data_item = $lif_item->getLinkedItem();
+	    			if ( !empty($data_item) ) {
+	    			
+                  // new file on disc
+                  $file_name = 'result';
+                  if ( $saveResult == 2 ) {
+			            $session_manager = $this->_environment->getSessionManager();
+			            $session_item = $session_manager->get($sid);
+                  	$file_name .= '_'.md5($session_item->getValue('user_id').'-'.$session_item->getValue('auth_source'));
+                  } else {
+                     $file_name .= '_anonym';	
+                  }
+                  $file_name .= '_'.$time_short.'.xml';
+	    				$disc_manager = $this->_environment->getDiscManager();
+	    				$temp_file = $disc_manager->saveFileFromBase64($file_name,$resultFile);
+	    				if ( isset($temp_file) and !empty($temp_file) ) {
+	    		         // new file item
+	    					$session_manager = $this->_environment->getSessionManager();
+			            $session_item = $session_manager->get($sid);
+	    					$file_manager = $this->_environment->getFileManager();
+	    					$file_item = $file_manager->getNewItem();
+	    					$file_item->setFilename($file_name);
+	    					$file_item->setContextID($cid);
+	    					$file_item->setPortalID($session_item->getValue('commsy_id'));
+	    					$file_item->setTempName($temp_file);
+	    					$file_item->save();
+	    					
+	    					// file item to data item
+	    					$file_id_array = $data_item->getFileIDArray();
+	    					$file_id_array[] = $file_item->getFileID();
+	    					$data_item->setFileIDArray($file_id_array);
+	    					$data_item->save();
+	    					unlink($temp_file);
+	    					return $file_item->getFileID();	    					 
+	    				} else {
+	    					return new SoapFault('ERROR',$this->_title.': can not save temp file');
+	    				}  					    			    		
+	    			} else {
+	    			   return new SoapFault('ERROR',$this->_title.': no data item found for file id (onyx test)');
+	    			}
+	    			
+	    		} else {
+	    			return new SoapFault('ERROR',$this->_title.': no link item found  for file id (onyx test)');
+	    		}
+    		} else {
+    			return 1; // 1 = nothing saved
+    		}
+   	} else {
+   		return new SoapFault('ERROR',$this->_title.': uniqueId and/or resultFile is empty');
+   	}
    }
 }
 ?>
