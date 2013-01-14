@@ -23,7 +23,6 @@
 			} else {
 				$this->_tpl_path = substr($this->_tpl_engine->getTemplateDir(0), 7);
 			}
-
 			// process basic template information
 			$this->processBaseTemplate();
 
@@ -87,13 +86,6 @@
 		public function sanitize (&$item, $key){
 			$item = $this->getUtils()->sanitize($item);
 		}
-
-//		public function removeBadCode (&$item, $key){
-//			$item = str_replace('<','',$item);
-//			$item = str_replace('>','',$item);
-//      		$item = str_replace('"','',$item);
-//      		$item = str_replace('\'','',$item);
-//		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function

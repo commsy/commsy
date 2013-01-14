@@ -38,16 +38,24 @@
 				$this->_data = $_POST;
 				array_walk_recursive($_POST, array($this, 'sanitize'));
 			} else {
-				// get content from ckeditor
-				if(isset($this->_data['form_data']['2']['value'])
-					and !empty($this->_data['form_data']['2']['value'])){
-					$tempCont = $this->_data['form_data']['2']['value'];
+
+				$flag = false;
+				$ckArrayKey = -1;
+				if(isset($this->_data['form_data'])
+					and !empty($this->_data['form_data'])){
+					foreach($this->_data['form_data'] as $key => $data){
+						if($this->_data['form_data'][$key]['name'] == 'description'){
+							$tempContent = $this->_data['form_data'][$key]['value'];
+							$flag = true;
+							$ckArrayKey = $key;
+						}
+					}
 				}
 				array_walk_recursive($this->_data, array($this, 'sanitize'));
-				if(isset($this->_data['form_data']['2']['value'])
-					and !empty($this->_data['form_data']['2']['value'])){
-					$this->_data['form_data']['2']['value'] = $tempCont;
+				if($flag){
+					$this->_data['form_data'][$ckArrayKey]['value'] = $tempContent;
 				}
+
 			}
 
 
