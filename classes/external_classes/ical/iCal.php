@@ -902,6 +902,9 @@ class iCal {
          $this->output .= (string) 'PRODID:' . $this->prodid . "\r\n";
          $this->output .= (string) "VERSION:2.0\r\n";
          $this->output .= (string) 'METHOD:' . $this->getMethod() . "\r\n";
+         /* EWW */
+         $this->output .= (string) 'X-WR-TIMEZONE:' . date_default_timezone_get() . "\r\n";
+         /* ~EWW */
          $eventkeys = (array) array_keys($this->icalevents);
          foreach ($eventkeys as $id) {
             $this->output .= (string) "BEGIN:VEVENT\r\n";
