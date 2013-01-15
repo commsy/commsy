@@ -202,6 +202,9 @@ function cron_workflow($portal){
 	
 	         $room_manager = $environment->getRoomManager();
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
+	         
+	         // check if context of room is current portal
+	         if ( $temp_room->getContextID() !== $portal->getItemID()) continue;
 	
 	         if($temp_material->getWorkflowResubmission() and $temp_room->withWorkflowResubmission()){
 	            $email_receiver_array = array();
@@ -303,6 +306,9 @@ function cron_workflow($portal){
 	
 	         $room_manager = $environment->getRoomManager();
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
+	         
+	         // check if context of room is current portal
+	         if ( $temp_room->getContextID() !== $portal->getItemID()) continue;
 	
 	         if($temp_material->getWorkflowValidity() and $temp_room->withWorkflowValidity()){
 	            $email_receiver_array = array();
