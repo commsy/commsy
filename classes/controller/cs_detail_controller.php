@@ -863,7 +863,7 @@
 					if ( isset($item) )
 					{
 						$return[] = array(
-								'title'			=> $converter->text_as_html_short($link_title),
+								'title'			=> $link_title,
 								'is_current'	=> $item->getItemID() == $this->_item->getItemID(),
 								'item_id'		=> $item->getItemID(),
 								'type'			=> $type,
@@ -1351,7 +1351,7 @@
 		    {
 		        $params = array();
 		        $params['iid'] = $modificator->getItemID();
-		        
+
 		        if (	!$modificator->isDeleted() &&
 		        			(
 		        				$modificator->maySee($user) ||
