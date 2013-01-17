@@ -2931,7 +2931,7 @@ class misc_text_converter {
       //split description in paragraphs
       //$paragraphs = preg_split('§\s*\n(\s*\n)+§', $description);
       $paragraphs = preg_split('~(\s*<br( /)?>{2,})~u', $description,-1,PREG_SPLIT_DELIM_CAPTURE);
-      $file_list = $item->getFileList();
+      $file_list = clone $item->getFileList();
       if ( $item->isA(CS_SECTION_TYPE) ) {
          $material_item = $item->getLinkedItem();
          $file_list2 = $material_item->getFileList();
