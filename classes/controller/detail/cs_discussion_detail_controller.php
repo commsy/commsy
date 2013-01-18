@@ -704,11 +704,13 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 									$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 							} else {
+								$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
 								$name = $file->getDisplayName();
 								//TODO:
 								//$name = $converter->compareWithSearchText($name);
 								$name = $converter->text_as_html_short($name);
-								$file_string = $file->getFileIcon() . ' ' . $name;
+								//$file_string = $file->getFileIcon() . ' ' . $name;
+								$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 							}
 							$tmp_array = array();
 							$tmp_array['name'] = $file_string;
@@ -796,11 +798,13 @@ if ($type != CS_DISCUSSION_TYPE) {
 
 							$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 					} else {
+						$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
 						$name = $file->getDisplayName();
 						//TODO:
 						//$name = $converter->compareWithSearchText($name);
 						$name = $converter->text_as_html_short($name);
-						$file_string = $file->getFileIcon() . ' ' . $name;
+						//$file_string = $file->getFileIcon() . ' ' . $name;
+						$file_string .= $name.' '.$file->getFileIcon() . ' ' . '</a> (' . $file->getFileSize() . ' KB)';
 					}
 					$tmp_array = array();
 					$tmp_array['name'] = $file_string;
