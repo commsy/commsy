@@ -874,7 +874,7 @@
 					if(strstr($second_part, '&')) {
 						$param_array = explode('&', $second_part);
 						foreach($param_array as $key => $value) {
-							$value = str_replce('=', 'EQUAL', $value);
+							$value = str_replace('=', 'EQUAL', $value);
 							$value = rawurlencode($value);
 							$value = str_replace('EQUAL', '=', $value);
 							$param_array[$key] = $value;
