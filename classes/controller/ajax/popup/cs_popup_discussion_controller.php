@@ -220,18 +220,17 @@
 						$dt_hiding_time = '00:00:00';
 						$dt_hiding_date = '9999-00-00';
 						$dt_hiding_datetime = '';
-						$converted_day_start = convertDateFromInput($form_data['dayStart'], $this->_environment->getSelectedLanguage());
-						if($converted_day_start['conforms'] === true) {
-							$dt_hiding_datetime = $converted_day_start['datetime'] . ' ';
-							$converted_time_start = convertTimeFromInput($form_data['timeStart']);
-							if ($converted_time_start['conforms'] === true) {
-								$dt_hiding_datetime .= $converted_time_start['datetime'];
-							} else {
-								$dt_hiding_datetime .= $dt_hiding_time;
-							}
-						} else {
-							$dt_hiding_datetime = $dt_hiding_date . ' ' . $dt_hiding_time;
+						
+						$converted_activating_time_start = convertTimeFromInput($form_data['activating_time']);
+						if ($converted_activating_time_start['conforms'] == TRUE) {
+							$dt_hiding_time= $converted_activating_time_start['datetime'];
 						}
+						
+						$converted_activate_day_start = convertDateFromInput($form_data['activating_date'],$environment->getSelectedLanguage());
+						if ($converted_activate_day_start['conforms'] == TRUE) {
+							$dt_hiding_date = $converted_activate_day_start['datetime'];
+						}
+						$dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
 						$discussion_item->setModificationDate($dt_hiding_datetime);
 					} else {
 						if($discussion_item->isNotActivated()) $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());
