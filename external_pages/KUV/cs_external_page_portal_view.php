@@ -3118,11 +3118,11 @@ $html .='<div id="overallContainer">
 
 	<li><a id="linktag7" href="http://www.k-uv.de/de/main/downloads.htm" target="_top">Downloads</a></li>
 
-	<li><a id="linktag8" href="http://www.k-uv.de/de/main/nachrichten.htm" target="_top">Nachrichten</a></li>
+	<li><a id="linktag8" href="http://www.k-uv.de/de/main/presse_2.htm" target="_top">Presse</a></li>
 
 	<li><a id="linktag9" href="http://www.k-uv.de/de/main/stellen_2.htm" target="_top">Stellen</a></li>
 
-	<li><a id="linktag10" href="http://www.k-uv.de/de/main/intern.htm" target="_top">Intern</a></li>
+	<li><a id="linktag10" href="http://workspace.k-uv.de" target="_top">Workspace</a></li>
 
 
 
