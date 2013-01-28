@@ -756,7 +756,7 @@
 								$biblio .= ' (' . $this->_item->getIssue() . ')';
 							}
 						} elseif($this->_item->getIssue()) {
-							$biblio .= ', ' . $this->_Item->getIssue();
+							$biblio .= ', ' . $this->_item->getIssue();
 						}
 						$biblio .= ', ' . $translator->getMessage('MATERIAL_BIB_PAGES', $this->_item->getPages()) . '. ';
 
