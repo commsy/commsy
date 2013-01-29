@@ -120,7 +120,7 @@ class cs_smarty extends Smarty {
 	}
 	
 	public function smarty_filter_i18n($tpl_source, Smarty_Internal_Template $template) {
-		return preg_replace_callback('/___(.+?)___/', array($this, 'compile_lang'), $tpl_source);
+		return preg_replace_callback('/___([A-Z_]+?)___/', array($this, 'compile_lang'), $tpl_source);
 	}
 	
 	public function smarty_filter_textfunctions($tpl_source, Smarty_Internal_Template $template) {

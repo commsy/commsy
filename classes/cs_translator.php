@@ -434,7 +434,7 @@ class cs_translator {
             $text = $MsgID;
 
             if ( $this->_log_messagetags ) {
-               $query = 'SELECT * FROM `log_message_tag` WHERE `tag`="'.$MsgID.'"';
+               $query = 'SELECT * FROM `log_message_tag` WHERE `tag`="'.encode(AS_DB,$MsgID).'"';
                $result = $this->_db_connector->performQuery($query);
                if ( !isset($result) or empty($result) or count($result) == 0 ) {
                   $version = 'no version number';
