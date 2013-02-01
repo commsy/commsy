@@ -3103,7 +3103,7 @@ $html .='<div id="overallContainer">
 
 
 		<div id="nav1"><ul>
-	<li class="aktiv"><a id="linktag0" href="http://www.k-uv.de/de/main/home.htm" target="_top">Home</a></li>
+	<li><a id="linktag0" href="http://www.k-uv.de/de/main/home.htm" target="_top">Home</a></li>
 	<li><a id="linktag1" href="http://www.k-uv.de/de/main/standorte.htm" target="_top">Standorte</a></li>
 
 	<li><a id="linktag2" href="http://www.k-uv.de/de/main/medizinische_kompetenz.htm" target="_top">Medizinische Kompetenz</a></li>
@@ -3122,7 +3122,7 @@ $html .='<div id="overallContainer">
 
 	<li><a id="linktag9" href="http://www.k-uv.de/de/main/stellen_2.htm" target="_top">Stellen</a></li>
 
-	<li><a id="linktag10" href="http://workspace.k-uv.de" target="_top">Workspace</a></li>
+	<li class="aktiv"><a id="linktag10" href="https://workspace.k-uv.de/" target="_top">Workspace</a></li>
 
 
 
@@ -3187,11 +3187,14 @@ $html .= '
 
 
 			<div style="width: 80px; height: 80px; clear: both;">&nbsp;</div>
-			</div><!-- col1 -->
+			</div><!-- col1 -->'.LF;
+if  ($cs_module == 'account'){
 
-            <div id="col2">
-			<div id="pc4">
-<div class="ceWrapper pc2 colw520">
+$html .='            <div id="col2" style="width:700px; background-color:white;">'.LF;
+}else{
+$html .='            <div id="col2">'.LF;
+}
+$html .='<div class="ceWrapper pc2 colw520">
 <div class="pcMainrow">'.LF;
 
 			$html .='<!-- BEGINN CONTENT --><div id="Content_solid">'.LF;
@@ -3290,24 +3293,28 @@ $html .='
 </div><!-- ceWrapper -->
 </div>
 
-			</div><!-- col2 -->
-
+			<!-- col2 -->
+'.LF;
+if  ($cs_module != 'account'){
+$html .='
 			<div id="col3"><div class="ceWrapper pc6 colw180" style="margin-bottom:10px;">
 
 
 <div class="pcMainrow">'.LF;
-
-
 
 			      $html .= $this->getSearchBoxAsHTML().LF;
 
 
 $html .='<div style="clear: both;"></div>
 </div>
-</div><!-- ceWrapper -->
+</div><!-- ceWrapper -->'.LF;
+
+
+}
+
+
+$html .='
 <div class="ceWrapper pc6 colw180">
-
-
 <div class="pcMainrow">
 
 <h1>Klinikverbund der gesetzlichen Unfallversicherung e.V. (KUV)</h1>
