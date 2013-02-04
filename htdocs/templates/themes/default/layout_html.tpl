@@ -17,7 +17,7 @@
 	    <meta name="keywords" content="" />
 	    <meta name="description" content="" />
 	    <meta name="copyright" content="" />
-	    
+
 	    <link rel="icon" href="commsy8.ico" type="image/x-icon">
 	    <link rel="shortcut icon" href="commsy8.ico" type="image/x-icon">
 
@@ -33,7 +33,7 @@
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
 		{/block}
-	    
+
 	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 
 		<!-- SCRIPTS -->
@@ -46,27 +46,27 @@
 				js/src/sourceConfig.js
 			{/if}">
 		</script>
-		
+
 		<script>
 			{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
 			{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
 			{if isset($javascript.version) && !empty($javascript.version)}dojoConfig.cacheBust = '{$javascript.version}';{/if}
 		</script>
-		
+
 		{if $environment.c_js_mode === "build"}
 			<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 			<script src="js/build/release/commsy/main.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
-			
+
 		{elseif $environment.c_js_mode === "layer"}
 			<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 			<script>
 				require(["layer/commsy"], function() {
 					require(["commsy/main"], function() {
-						
+
 					});
 				});
 			</script>
-			
+
 		{else}
 			<script src="js/src/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 			<script src="js/src/commsy/main.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
@@ -84,8 +84,9 @@
 	    <title>{$environment.room_title} - ___{$environment.module_name}___</title>
 
 	</head>
-
+{block name=body_begin}
 	<body class="tundra">
+{/block}
 		{block name=header}
 			{block name=warning}{/block}
 			{block name=top_menu}{/block}
@@ -174,7 +175,9 @@
 
 	    </div> <!-- Ende wrapper -->
 	    <div id="popup_uploader"></div>
+{block name=body_end}
 	</body>
+{/block}
 
 	</html>
 {/block}
