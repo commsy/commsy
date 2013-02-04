@@ -38,27 +38,26 @@
 				$this->_data = $_POST;
 				array_walk_recursive($_POST, array($this, 'sanitize'));
 			} else {
-
-				$flag = false;
-				$ckArrayKey = -1;
-				if(isset($this->_data['form_data'])
-					and !empty($this->_data['form_data'])){
-					foreach($this->_data['form_data'] as $key => $data){
-						if($this->_data['form_data'][$key]['name'] == 'description'){
-							$tempContent = $this->_data['form_data'][$key]['value'];
-							$flag = true;
-							$ckArrayKey = $key;
+				if ( isset($this->_data["form_data"]) && !empty($this->_data["form_data"]) )
+				{
+					foreach ( $this->_data["form_data"] as $key => $data )
+					{
+						$filterHTML = true;
+						$name = $this->_data['form_data'][$key]['name'];
+						
+						if ( $name == "description" || mb_substr($name, 0, 22) == "moderation_description" || mb_substr($name, 0, 8) == "agb_text" ) {
+							$filterHTML = false;
+						}
+						
+						if ( $filterHTML === true && isset($this->_data["form_data"][$key]["value"]) )
+						{
+							$this->sanitize($this->_data["form_data"][$key]["value"]);
+							//array_walk_recursive($this->_data["form_data"][$key]["value"], array($this, 'sanitize'));
 						}
 					}
 				}
-				array_walk_recursive($this->_data, array($this, 'sanitize'));
-				if($flag){
-					$this->_data['form_data'][$ckArrayKey]['value'] = $tempContent;
-				}
-
 			}
-
-
+			
 			// the actual function determes the method to call
 			$function = 'action' . ucfirst($_GET['action']);
 
