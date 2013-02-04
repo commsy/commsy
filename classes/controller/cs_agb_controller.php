@@ -67,11 +67,14 @@
 					}
 					
 					if (!empty($textArray[mb_strtoupper($language, 'UTF-8')])) {
-						 $text = $this->_environment->getTextConverter()->cleanDataFromTextArea($textArray[mb_strtoupper($language, 'UTF-8')]);
+						 //$text = $this->_environment->getTextConverter()->cleanDataFromTextArea($textArray[mb_strtoupper($language, 'UTF-8')]);
+						 
+						 $text = $textArray[mb_strtoupper($language, 'UTF-8')];
 					} else {
 						foreach($textArray as $key => $value) {
 							if (!empty($value)) {
-								$text = $this->_environment->getTextConverter()->cleanDataFromTextArea($textArray[mb_strtoupper($key, 'UTF-8')]);
+								//$text = $this->_environment->getTextConverter()->cleanDataFromTextArea($textArray[mb_strtoupper($key, 'UTF-8')]);
+								$text = $textArray[mb_strtoupper($key, 'UTF-8')];
 								$text .= '<br/><br/><b>'.$this->_translator->getMessage('AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE').'</b>';
 							}
 						}
