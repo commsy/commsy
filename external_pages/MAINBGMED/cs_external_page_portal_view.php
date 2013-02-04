@@ -2329,8 +2329,8 @@ class cs_external_page_portal_view extends cs_page_view {
                // @segment-begin 83516 no_cs_modus/user=guest:links-want_account/account_forget/pasword_forget(log_in_form-end)
                if ( $count_auth_source_list_add_account != 0 ) {
                   $params['cs_modus'] = 'portalmember';
-                  $html .= '<li><a style="display: inline;" href="http://hamburg.schulcommsy.de/de/erste-schritte/kennung/">Neue Kennung beantragen</a></li>'.LF;
-#                  $html .= '<span style="font-size:10pt;">&gt; '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+#                  $html .= '<li><a style="display: inline;" href="http://hamburg.schulcommsy.de/de/erste-schritte/kennung/">Neue Kennung beantragen</a></li>'.LF;
+                  $html .= '<span style="font-size:10pt;">'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
                } else {
                   $html .= '<li>'.$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK').'</li>'.LF;
                }
