@@ -94,8 +94,10 @@ class cs_popup_date_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
-						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						if (!stristr($activating_date,'9999')){
+							$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
+							$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						}
 					}
 				}
 
@@ -191,7 +193,7 @@ class cs_popup_date_controller {
             $date_manager = $this->_environment->getDateManager();
             $date_item = $date_manager->getItem($current_iid);
         }
-        
+
         $this->_popup_controller->performChecks($date_item, $form_data, $additional);
 
         // TODO: check rights */

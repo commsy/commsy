@@ -64,8 +64,10 @@
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
-						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						if (!stristr($activating_date,'9999')){
+							$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
+							$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						}
 					}
 				}else{
 					$this->_popup_controller->assign('item', 'public', $item->isPublic());
@@ -109,9 +111,9 @@
 				$discussion_manager = $this->_environment->getDiscussionManager();
 				$discussion_item = $discussion_manager->getItem($current_iid);
 			}
-			
+
 			$this->_popup_controller->performChecks($discussion_item, $form_data, $additional);
-			
+
 	        if (isset($form_data['editType'])){
 				$this->_edit_type = $form_data['editType'];
 	        }
@@ -220,12 +222,12 @@
 						$dt_hiding_time = '00:00:00';
 						$dt_hiding_date = '9999-00-00';
 						$dt_hiding_datetime = '';
-						
+
 						$converted_activating_time_start = convertTimeFromInput($form_data['activating_time']);
 						if ($converted_activating_time_start['conforms'] == TRUE) {
 							$dt_hiding_time= $converted_activating_time_start['datetime'];
 						}
-						
+
 						$converted_activate_day_start = convertDateFromInput($form_data['activating_date'],$environment->getSelectedLanguage());
 						if ($converted_activate_day_start['conforms'] == TRUE) {
 							$dt_hiding_date = $converted_activate_day_start['datetime'];

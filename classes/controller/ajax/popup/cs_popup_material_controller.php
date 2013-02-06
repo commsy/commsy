@@ -228,8 +228,10 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 						$this->_popup_controller->assign('item', 'is_not_activated', true);
 
 						$activating_date = $item->getActivatingDate();
-						$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
-						$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						if (!stristr($activating_date,'9999')){
+							$this->_popup_controller->assign('item', 'activating_date', mb_substr($activating_date,0,10));
+							$this->_popup_controller->assign('item', 'activating_time', mb_substr($activating_date, -8));
+						}
 					}
 				}
 
@@ -287,7 +289,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                $item = $manager->getItem($current_iid);
             }
         }
-        
+
         $this->_popup_controller->performChecks($item, $form_data, $additional);
 
         // TODO: check rights */
@@ -555,7 +557,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
                   		}
                 	}
                 }
-                
+
                 if (!empty($new_buzzword)){
 					$isDuplicate = false;
 					$buzzword_item = $buzzword_list->getFirst();
