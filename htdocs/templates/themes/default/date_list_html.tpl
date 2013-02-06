@@ -10,7 +10,7 @@
 		<img src="{$basic.tpl_path}img/btn_remember.gif" alt="___DATES_ABBO___" />
 	</a>
 
-	<a id="export_entries" href="http://{$date.ical_adress}" title="___DATES_EXPORT___" target="_blank">
+	<a id="export_entries" href="http://{$date.ical_adress}&mode=export" title="___DATES_EXPORT___" target="_blank">
 		<img src="{$basic.tpl_path}img/btn_export_todisk.gif" alt="___DATES_EXPORT___" />
 	</a>
 
