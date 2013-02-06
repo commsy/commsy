@@ -140,7 +140,7 @@
       		}elseif($module == CS_INSTITUTION_TYPE){
       			$sort_parameter = 'title';
       		}elseif($module == CS_PROJECT_TYPE){
-      			$sort_parameter = 'title';
+      			$sort_parameter = 'activity_rev';
       		}elseif($module == 'search'){
       			global $c_indexed_search;
 				$sort_parameter = (isset($c_indexed_search) && $c_indexed_search === true) ? "relevanz_rev" : "modified";
@@ -1163,16 +1163,16 @@
 	      			   	if($session->issetValue($rubric . "_clipboard")) {
 	      			   		$clipboardIdArray = $session->getValue($rubric . "_clipboard");
 	      			   	}
-	      			   	
+
 	      			   	// if not already set, add id to clipboard
 	      			   	foreach ($selected_ids as $id) {
 	      			   		if(!in_array($id, $clipboardIdArray)) {
 	      			   			$clipboardIdArray[] = $id;
 	      			   		}
 	      			   	}
-	      			   	
+
 	      			   	$session->setValue($rubric . "_clipboard", $clipboardIdArray);
-	      			   	
+
       			      $params = $environment->getCurrentParameterArray();
       			      redirect( $environment->getCurrentContextID(),
 	      			      		$environment->getCurrentModule(),
@@ -1448,6 +1448,8 @@
 					$this->_list_parameter_arrray['sort'] = 'name';
 				}elseif($this->_environment->getCurrentModule() === CS_GROUP_TYPE) {
 					$this->_list_parameter_arrray['sort'] = 'name';
+				}elseif($this->_environment->getCurrentModule() === CS_PROJECT_TYPE) {
+					$this->_list_parameter_arrray['sort'] = 'activity_rev';
 				} elseif($this->_environment->getCurrentModule() === "search") {
 					global $c_indexed_search;
 					$this->_list_parameter_arrray['sort'] = (isset($c_indexed_search) && $c_indexed_search === true) ? "relevanz_rev" : "modified";
@@ -1671,7 +1673,7 @@
 			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 1, 'display' => '___CLIPBOARD_PASTE_BUTTON___');
 			//	$return[] = array('selected' => false, 'disabled' => false, 'id' => '', 'value' => 2, 'display' => '___CLIPBOARD_DELETE_BUTTON___');
 			//}
-			
+
 			// plugins
 			$plugin_options = plugin_hook_output_all('getAdditionalListOptions',NULL,'MULTIARRAY');
 			if ( !empty($plugin_options) ) {
@@ -1680,7 +1682,7 @@
 			   $return = array_merge($return,$plugin_options);
 			}
 			// plugins
-				
+
 			return $return;
 		}
 	}

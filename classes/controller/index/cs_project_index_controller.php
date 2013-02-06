@@ -41,7 +41,7 @@
 			$list_content = $this->getListContent();
 
 			// assign to template
-			$this->assign('group','list_parameters', $this->_list_parameter_arrray);
+			$this->assign('project','list_parameters', $this->_list_parameter_arrray);
 			$this->assign('list','perspective_rubric_entries', $this->_perspective_rubric_array);
 			$this->assign('list','page_text_fragments',$this->_page_text_fragment_array);
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
