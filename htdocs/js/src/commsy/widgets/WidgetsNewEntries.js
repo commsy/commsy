@@ -60,7 +60,7 @@ define([	"dojo/_base/declare",
 
 								var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
 
-									var aNode = DomConstruct.create("a", {
+									DomConstruct.create("a", {
 										"id":		"listItem" + item.itemId,
 										className:	"stack_link",
 										href:		"commsy.php?cid=" + item.contextId + "&mod=" + item.module + "&fct=detail&iid=" + item.itemId,

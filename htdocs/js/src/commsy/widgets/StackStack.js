@@ -27,7 +27,7 @@ define([	"dojo/_base/declare",
 			this.restrictions = {
 				buzzwords: [],
 				tags: []
-			}
+			};
 		},
 
 		postCreate: function() {
@@ -56,8 +56,8 @@ define([	"dojo/_base/declare",
 					search:					this.search.toLowerCase(),
 					start:					(this.currentPage - 1) * this.entriesPerPage,
 					numEntries:				this.entriesPerPage,
-					buzzwordRestrictions:	dojo.map(this.restrictions.buzzwords, function(item) { return item.id }),
-					tagRestrictions:		dojo.map(this.restrictions.tags, function(item) { return item.id })
+					buzzwordRestrictions:	dojo.map(this.restrictions.buzzwords, function(item) { return item.id; }),
+					tagRestrictions:		dojo.map(this.restrictions.tags, function(item) { return item.id; })
 				},
 				Lang.hitch(this, function(response) {
 					// fill list

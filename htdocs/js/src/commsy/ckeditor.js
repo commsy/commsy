@@ -13,7 +13,7 @@ define([	"dojo/_base/declare",
 
 		// TODO: multilanguage support
 		options: {
-			skin:						'kama',
+			skin:						'moono',
 			uiColor:					'#eeeeee',
 			startupFocus:				false,
 			dialog_startupFocusTab:		false,

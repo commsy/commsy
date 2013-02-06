@@ -349,7 +349,7 @@ define([	"dojo/_base/declare",
 						item_id:	item_id,
 						link_id:	id,
 						checked:	true
-					}
+					};
 					
 					this.AJAXRequest("netnavigation", "updateLinkedItem", data,
 						function() {

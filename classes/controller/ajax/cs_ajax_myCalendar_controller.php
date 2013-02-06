@@ -718,6 +718,40 @@
 			echo $this->_return;
 			exit;
 		}
+		
+		public function actionStoreRoomSelectNone()
+		{
+			$type = $this->_data["type"];
+				
+			$currentUserItem = $this->_environment->getCurrentUserItem();
+			$privateUserItem = $currentUserItem->getRelatedPrivateRoomUserItem();
+			$privateRoomItem = $currentUserItem->getOwnRoom();
+				
+			$displayConfig = $privateRoomItem->getMyCalendarDisplayConfig();
+				
+			$roomManager = $this->_environment->getRoomManager();
+			$roomList = $roomManager->getAllRelatedRoomListForUser($privateUserItem);
+			$roomEntry = $roomList->getFirst();
+			
+			while ($roomEntry) {
+				$lookUp = $roomEntry->getItemID() . "_" . $type;
+				
+				if ( $key = array_search($lookUp, $displayConfig) )
+				{
+					array_splice($displayConfig, $key, 1);
+					//$displayConfig[] = $lookUp;
+				}
+					
+				$roomEntry = $roomList->getNext();
+			}
+			
+			$privateRoomItem->setMyCalendarDisplayConfig($displayConfig);
+			$privateRoomItem->save();
+				
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+			exit;
+		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function

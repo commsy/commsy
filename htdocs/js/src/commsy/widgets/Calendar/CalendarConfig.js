@@ -168,7 +168,11 @@ define(
 		createRoomMenu: function(topMenu, checkedVar) {
 			topMenu.addChild(new MenuItem({
 				label:			CalendarTranslations.configFromAll,
-				onClick:		Lang.partial(Lang.hitch(this, this.onClickAllRooms), (checkedVar === "checkedInDates") ? "dates" : "todo")
+				onClick:		Lang.partial(Lang.hitch(this, this.onClickAllRooms), (checkedVar === "checkedInDates") ? "dates" : "todo", topMenu)
+			}));
+			topMenu.addChild(new MenuItem({
+				label:			CalendarTranslations.configFromNone,
+				onClick:		Lang.partial(Lang.hitch(this, this.onClickNoneRooms), (checkedVar === "checkedInDates") ? "dates" : "todo", topMenu)
 			}));
 			
 			topMenu.addChild(new MenuSeparator());
@@ -208,7 +212,7 @@ define(
 			}));
 		},
 		
-		onClickAllRooms: function(type, event) {
+		onClickAllRooms: function(type, menuWidget, event) {
 			// store changes
 			this.AJAXRequest("myCalendar", "storeRoomSelectAll", { type: type },
 				Lang.hitch(this, function(response) {
@@ -218,10 +222,32 @@ define(
 			);
 			
 			// update menu
-			var childWidgets = Registry.findWidgets(event.rangeParent);
+			var childWidgets = Registry.findWidgets(menuWidget.domNode);
 			dojo.forEach(childWidgets, function(widget, index, arr) {
 				if (widget.get("declaredClass") === "dijit.CheckedMenuItem") {
 					widget.set("checked", true);
+				}
+			});
+		},
+		
+		onClickNoneRooms: function(type, menuWidget, event)
+		{
+			// store changes
+			this.AJAXRequest("myCalendar", "storeRoomSelectNone", { type: type },
+				Lang.hitch(this, function(response)
+				{
+					// reload calendar
+					Topic.publish("updatePrivateCalendar", {});
+				})
+			);
+			
+			// update menu
+			var childWidgets = Registry.findWidgets(menuWidget.domNode);
+			dojo.forEach(childWidgets, function(widget, index, arr)
+			{
+				if ( widget.get("declaredClass") === "dijit.CheckedMenuItem")
+				{
+					widget.set("checked", false);
 				}
 			});
 		},
