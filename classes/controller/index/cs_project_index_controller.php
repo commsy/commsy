@@ -58,6 +58,7 @@
 			include_once('classes/views/cs_view.php');
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
+			$current_user = $environment->getCurrentUserItem();
 			$translator = $environment->getTranslationObject();
 			$return = array();
 
@@ -128,7 +129,28 @@
 			$params['environment'] = $environment;
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
+			$user_manager = $this->_environment->getUserManager();
 			while($item) {
+
+			    $user_manager->setUserIDLimit($current_user->getUserID());
+			    $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+			    $user_manager->setContextLimit($item->getItemID());
+			    $user_manager->select();
+			    $user_list = $user_manager->get();
+			    if (!empty($user_list)){
+			       $room_user = $user_list->getFirst();
+			    } else {
+			       $room_user = '';
+			    }
+		    	if ($current_user->isRoot()) {
+		           $may_enter = true;
+		        } elseif ( !empty($room_user) ) {
+		           $may_enter = $item->mayEnter($room_user);
+		        } else {
+		           $may_enter = false;
+		        }
+
+
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$contact_list = $item->getContactModeratorList();
 				$contact_item = $contact_list->getFirst();
@@ -144,6 +166,7 @@
 					'modificator'		=> $this->getItemModificator($item),
 					'contacts'			=> $contact_array,
 					'members_count'		=> $item->getAllUsers(),
+					'may_enter'			=> $may_enter,
 					'activity'			=> $this->_getItemActivity ($item,$room_max_activity)
 				);
 				$item = $list->getNext();

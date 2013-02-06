@@ -57,6 +57,11 @@
 			</div>
 			<div class="column_260">
 				<p>
+					 {if $item.may_enter}
+					 	<a href="commsy.php?cid={$item.iid}&mod=home&fct=index"><img title="" src="{$basic.tpl_path}img/door_open_small.gif" alt="" /></a>
+					 {else}
+					 	<img title="" src="{$basic.tpl_path}img/door_closed_small.gif" alt="" />
+					 {/if}
 					 <a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 				</p>
 			</div>
