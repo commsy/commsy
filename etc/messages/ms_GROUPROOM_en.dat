@@ -1,6 +1,6 @@
 <?php
 $message["GROUPROOM_ACCESS_NOT_GRANTED"]["en"] = "Sorry, you are not a member of group workspace <span style=&quot;font-weight:bold;&quot;>%1</span>. Only members are allowed to enter.";
-$message["GROUPROOM_COMMON_DESC"]["en"] = "This room is onla accessible for the member of this group.";
+$message["GROUPROOM_COMMON_DESC"]["en"] = "This workspace is only accessible for group members.";
 $message["GROUPROOM_CONFIGURATION_CHOICE_TITLE"]["en"] = "Group workspaces";
 $message["GROUPROOM_CONFIGURATION_CHOICE_VALUE"]["en"] = "Enable group workspaces";
 $message["GROUPROOM_EXPLANATION_TITLE"]["en"] = "Explanation";
