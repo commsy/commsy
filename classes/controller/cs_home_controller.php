@@ -451,6 +451,7 @@
 			         }
 			      }
 
+			     $user_manager = $this->_environment->getUserManager();
 				 foreach($rubric_list_array as $key=>$list){
 					$item_array = array();
 				 	$column1_addon = '';
@@ -461,6 +462,7 @@
 					$params['with_modifying_actions'] = false;
 					$view = new cs_view($params);
 	           		 while($item) {
+	           		 	$may_enter = false;
 						$noticed_text = $this->_getItemChangeStatus($item);
 #						$noticed_text = '';
 	               		switch($key) {
@@ -590,6 +592,24 @@
 								$column1 = $item->getTitle();
            						$column2 = $translator->getMessage('GROUP_MEMBERS').': '.$item->getAllUsers();
  								$column3 = $this->_getItemActivity ($item,$room_max_activity);
+							    $user_manager->setUserIDLimit($current_user->getUserID());
+							    $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+							    $user_manager->setContextLimit($item->getItemID());
+							    $user_manager->select();
+							    $user_list = $user_manager->get();
+							    if (!empty($user_list)){
+							       $room_user = $user_list->getFirst();
+							    } else {
+							       $room_user = '';
+							    }
+						    	if ($current_user->isRoot()) {
+						           $may_enter = true;
+						        } elseif ( !empty($room_user) ) {
+						           $may_enter = $item->mayEnter($room_user);
+						        } else {
+						           $may_enter = false;
+						        }
+
 								break;
 							case CS_TODO_TYPE:
 								$column1 = $item->getTitle();
@@ -658,7 +678,8 @@
 							'noticed'			=> $noticed_text,
 							'has_attachments'	=> $with_files,
 							'attachment_count'	=> $file_count,
-							'attachment_infos'	=> $attachment_infos
+							'attachment_infos'	=> $attachment_infos,
+							'may_enter'			=> $may_enter
 						);
 
 						$item = $list->getNext();

@@ -155,6 +155,14 @@
 		                        	</p>
 	                        	{/if}
 	                        	<p>
+									{if $rubric@key == 'project'}
+										{if $item.may_enter}
+											<a href="commsy.php?cid={$item.iid}&mod=home&fct=index"><img title="" src="{$basic.tpl_path}img/door_open_small.gif" alt="" /></a>
+										{else}
+											<img title="" src="{$basic.tpl_path}img/door_closed_small.gif" alt="" />
+										{/if}
+									{/if}
+
 									{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
 		                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 									{else}
