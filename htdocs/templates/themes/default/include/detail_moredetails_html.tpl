@@ -14,7 +14,7 @@
 				<h4>___COMMON_LAST_MODIFIED_BY___</h4>
 				<p class="fi_mdc_item_250">
 					{if !empty($data.last_modificator)}
-					   	{build_user_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} - {$data.last_modification_date}
+					   	{build_user_link status=$data.last_modificator_status user_name=$data.last_modificator id=$data.last_modificator_id} {if !empty($data.last_modification_date)}- {$data.last_modification_date}{/if}
 					{else}
 						 ___COMMON_NO_LAST_MODIFIED_BY___
 					{/if}

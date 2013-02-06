@@ -1289,7 +1289,7 @@
 			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
      			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getModificationDate());
   			} else {
-     			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getCreationDate());
+     			$mod_date = '';
   			}
  		    $return['last_modification_date'] = $mod_date;
 		    $return['creation_date'] = $translator->getDateTimeInLang($item->getCreationDate());
