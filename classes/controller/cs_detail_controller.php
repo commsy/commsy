@@ -1287,9 +1287,9 @@
 
 			$moddate = $item->getModificationDate();
 			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
-     			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
+     			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getModificationDate());
   			} else {
-     			$mod_date = $this->_environment->getTranslationObject()->getDateInLang($item->getCreationDate());
+     			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getCreationDate());
   			}
  		    $return['last_modification_date'] = $mod_date;
 		    $return['creation_date'] = $translator->getDateTimeInLang($item->getCreationDate());
@@ -1374,7 +1374,7 @@
                                      '',
                                      'style="font-size:10pt;"'); */
 		                $return['last_modificator'] = $modificator->getFullname();
-		                $return['last_modificator_stats'] = self::USER_HAS_LINK;
+		                $return['last_modificator_status'] = self::USER_HAS_LINK;
 		                $return['modifcator_id'] = $modificator->getItemID();
 		            }
 		            else

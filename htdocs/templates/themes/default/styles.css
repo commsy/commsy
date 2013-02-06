@@ -3196,6 +3196,14 @@ p.fi_mdc_item{
     font-weight: normal !important;
     }
 
+.fi_mdc_item_250 {
+    float: left;
+    font-size: 10px !important;
+    width: 250px;
+    padding: 0px 20px 10px 0px;
+    color: #6F6F73 !important;
+    font-weight: normal !important;
+    }
 
 .fi_mdc_item a, fi_mdc_item_150 a, fi_mdc_item_380 a {
     font-weight: normal !important;
@@ -3480,7 +3488,7 @@ a.tm_breadcrumb_h2:hover{
     height: 27px;
     padding: 11px 2px 0px 0px;
     }
-    
+
 a#tm_user {
     padding: 11px 10px 13px 10px;
     text-decoration: none;
@@ -4008,7 +4016,7 @@ print settings
     color: #FFF;
     padding: 8px 10px;
     }
-    
+
 div.detail_description_print {
 	  padding: 5px 10px 10px 10px;
 	  overflow: auto;
@@ -4021,16 +4029,16 @@ div.detail_description_print ul,  div.editor_content_print ul {
 div.detail_description_print li, div.editor_content_print li {
 	list-style-type: disc;
   	}
-  	
+
 div.detail_description_print {
-	overflow: auto;	
+	overflow: auto;
 }
 
 div.detail_description_print td.label {
 	width: 150px;
 	vertical-align: top;
   }
-  
+
 div.detail_description_print table {
 	max-width: 98%;
 	width: 98%;
@@ -4050,8 +4058,8 @@ div.editor_content_print table {
 	word-wrap: break-word;
 	word-break: break-all;
   }
-  
- 
+
+
 
 
 
