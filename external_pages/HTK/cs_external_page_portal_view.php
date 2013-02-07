@@ -3694,7 +3694,7 @@ $html .='
 
     <div id="content_footer">
         <div class="wrapper">
-            <a href="http://htk2013.effective-webwork.de/#top" id="page_up">nach oben</a>
+            <a href="#top" id="page_up">nach oben</a>
 
             <div class="clear"> </div>
         </div>

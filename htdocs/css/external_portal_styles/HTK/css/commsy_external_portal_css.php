@@ -43,8 +43,8 @@ a {
     text-decoration: none;
 }
 
-a:hover{
-	    color: #008532;
+#columnset a:hover{
+	color: #008532;
     text-decoration: none;
     border-bottom: 1px dotted #008532;
 }
