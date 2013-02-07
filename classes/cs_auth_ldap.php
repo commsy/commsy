@@ -183,8 +183,10 @@ class cs_auth_ldap extends cs_auth_manager {
                   ) {
             $access_first = $access;
             $suchfilter = "(".$this->_field_userid."=".$uid.")";
-            if ( strstr($this->_rootuser,',')
-                 and strstr($this->_rootuser,'=')
+            if ( ( strstr($this->_rootuser,',')
+                   and strstr($this->_rootuser,'=')
+                 )
+                 or strstr($this->_rootuser,'@')
                ) {
                $access_root = $this->_rootuser;
             } else {
