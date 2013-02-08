@@ -66,7 +66,7 @@ define([
 		// pattern: [extension protected] String|Function(constraints) returning a string.
 		//		This defines the regular expression used to validate the input.
 		//		Do not add leading ^ or $ characters since the widget adds these.
-		//		A function may used to generate a valid pattern when dependent on constraints or other runtime factors.
+		//		A function may be used to generate a valid pattern when dependent on constraints or other runtime factors.
 		//		set('pattern', String|Function).
 		pattern: ".*",
 
@@ -172,7 +172,7 @@ define([
 			if(isValid){ this._maskValidSubsetError = true; }
 			var isEmpty = this._isEmpty(this.textbox.value);
 			var isValidSubset = !isValid && isFocused && this._isValidSubset();
-			this._set("state", isValid ? "" : (((((!this._hasBeenBlurred || isFocused) && isEmpty) || isValidSubset) && this._maskValidSubsetError) ? "Incomplete" : "Error"));
+			this._set("state", isValid ? "" : (((((!this._hasBeenBlurred || isFocused) && isEmpty) || isValidSubset) && (this._maskValidSubsetError || (isValidSubset && !this._hasBeenBlurred && isFocused))) ? "Incomplete" : "Error"));
 			this.focusNode.setAttribute("aria-invalid", isValid ? "false" : "true");
 
 			if(this.state == "Error"){
@@ -218,6 +218,7 @@ define([
 			// params: Object|null
 			//		Hash of initialization parameters for widget, including scalar values (like title, duration etc.)
 			//		and functions, typically callbacks like onClick.
+			//		The hash can contain any of the widget's properties, excluding read-only properties.
 			// srcNodeRef: DOMNode|String?
 			//		If a srcNodeRef (DOM node) is specified, replace srcNodeRef with my generated DOM tree.
 
@@ -236,6 +237,10 @@ define([
 			}
 			this._set("constraints", constraints);
 			this._refreshState();
+		},
+
+		_setPatternAttr: function(/*String|Function*/ pattern){
+			this._set("pattern", pattern); // don't set on INPUT to avoid native HTML5 validation
 		},
 
 		_getPatternAttr: function(/*__Constraints*/ constraints){

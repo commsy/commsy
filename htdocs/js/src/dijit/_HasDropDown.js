@@ -175,7 +175,7 @@ define([
 				this.defer("focus");
 			}
 
-			if(has("ios")){
+			if(has("touch")){
 				this._justGotMouseUp = true;
 				this.defer(function(){
 					this._justGotMouseUp = false;
@@ -226,11 +226,12 @@ define([
 
 			this.inherited(arguments);
 
+			var keyboardEventNode = this.focusNode || this.domNode;
 			this.own(
 				on(this._buttonNode, "mousedown", lang.hitch(this, "_onDropDownMouseDown")),
 				on(this._buttonNode, "click", lang.hitch(this, "_onDropDownClick")),
-				on(this.focusNode, "keydown", lang.hitch(this, "_onKey")),
-				on(this.focusNode, "keyup", lang.hitch(this, "_onKeyUp"))
+				on(keyboardEventNode, "keydown", lang.hitch(this, "_onKey")),
+				on(keyboardEventNode, "keyup", lang.hitch(this, "_onKeyUp"))
 			);
 		},
 
@@ -264,7 +265,7 @@ define([
 				event.stop(e);
 			}else if(!this._opened &&
 					(e.keyCode == keys.DOWN_ARROW ||
-						( (e.keyCode == keys.ENTER || e.keyCode == dojo.keys.SPACE) &&
+						( (e.keyCode == keys.ENTER || e.keyCode == keys.SPACE) &&
 						  //ignore enter and space if the event is for a text input
 						  ((target.tagName || "").toLowerCase() !== 'input' ||
 						     (target.type && target.type.toLowerCase() !== 'text'))))){

@@ -35,8 +35,18 @@
 					<script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">
 						require(["dijit/registry"],
 							function(registry) {
-								var gauge = registry.byId("g1");
-								gauge.getElement("scale").getIndicator("indicator").set("value", 15, "hello");
+								registry.byId("g1").set("value", 15);
+								registry.byId("g2").set("value", 15);
+							}
+						);
+					</script>
+				</button>
+				<button data-dojo-type="dijit.form.Button" type="button">
+					Alert current values
+					<script type="dojo/method" data-dojo-event="onClick" data-dojo-args="evt">
+						require(["dijit/registry"],
+							function(registry) {
+								alert(registry.byId("g1").get("value") + " and " + registry.byId("g2").get("value"));
 							}
 						);
 					</script>

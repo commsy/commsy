@@ -10,8 +10,9 @@ define([
 	"dijit/_Container",
 	"dijit/_WidgetBase",
 	"./TransitionEvent",
-	"./iconUtils"
-], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils){
+	"./iconUtils",
+	"./sniff"
+], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has){
 
 	// module:
 	//		dojox/mobile/_ItemBase
@@ -240,6 +241,13 @@ define([
 		handleSelection: function(/*Event*/e){
 			// summary:
 			//		Handles this items selection state.
+
+			// Before transitioning, we want the visual effect of selecting the item.
+			// To ensure this effect happens even if _delayedSelection is true:
+			if(this._delayedSelection){
+			  this.set("selected", true);
+			} // the item will be deselected after transition.
+
 			if(this._onTouchEndHandle){
 				this.disconnect(this._onTouchEndHandle);
 				this._onTouchEndHandle = null;
@@ -293,7 +301,7 @@ define([
 			// summary:
 			//		Subclasses may want to implement it.
 		},
-
+		
 		_onTouchStart: function(e){
 			// tags:
 			//		private
@@ -400,7 +408,11 @@ define([
 		_setIconAttr: function(icon){
 			// tags:
 			//		private
-			if(!this._isOnLine){ return; } // icon may be invalid because inheritParams is not called yet
+			if(!this._isOnLine){
+				// record the value to be able to reapply it (see the code in the startup method)
+				this._pendingIcon = icon;  
+				return; 
+			} // icon may be invalid because inheritParams is not called yet
 			this._set("icon", icon);
 			this.iconNode = iconUtils.setIcon(icon, this.iconPos, this.iconNode, this.alt, this.iconParentNode, this.refNode, this.position);
 		},

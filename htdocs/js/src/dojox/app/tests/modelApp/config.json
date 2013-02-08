@@ -6,6 +6,7 @@
 
 	"dependencies": [
 		"dojox/mobile/_base",
+		"dojox/mobile/compat",
 		"dojox/mobile/TabBar",
 		"dojox/mobile/RoundRect",
 		"dojox/mobile/TabBarButton",
@@ -82,7 +83,7 @@
 		//repeat scene, include list view and date view
 		"repeat": {
 			"defaultView": "repeatList",
-			"defaultTransition": "fade",
+			"defaultTransition": "slide",
 			"definition": "none",
 
 			"views": {
