@@ -11,10 +11,10 @@ define([	"dojo/_base/declare",
 		instance:	null,
 		node:		null,
 
-		// TODO: multilanguage support
 		options: {
 			skin:						'moono',
 			uiColor:					'#eeeeee',
+			customConfig:				"",
 			startupFocus:				false,
 			dialog_startupFocusTab:		false,
 			resize_enabled:				true,
@@ -54,14 +54,20 @@ define([	"dojo/_base/declare",
 			domAttr.set(hiddenNode, "type", "hidden");
 			domAttr.set(hiddenNode, "name", "form_data[" + id + "]");
 			domConstruct.place(hiddenNode, node, "after");
-
-			var data = node.innerHTML;
-			node.innerHTML = "";
 			
 			/*CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );*/
 			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.php?cid="+this.uri_object.cid );
 			
-			this.instance = CKEDITOR.appendTo(node, this.options, data);
+			if ( node.nodeName === "TEXTAREA" )
+			{
+				this.instance = CKEDITOR.replace(node/*, this.options*/);
+			}
+			else
+			{
+				var data = node.innerHTML;
+				node.innerHTML = "";
+				this.instance = CKEDITOR.appendTo(node, this.options, data);
+			}
 
 			// get the form this editor belongs to
 			var nodeList =  new dojo.NodeList(node);
