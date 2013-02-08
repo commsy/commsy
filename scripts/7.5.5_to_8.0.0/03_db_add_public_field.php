@@ -45,6 +45,25 @@ if ( !$this->_existsField('step','public') ) {
    $success = $success AND $this->_select($sql);
 }
 
+if ( !$this->_existsField('zzz_annotations','public') ) {
+	$sql = "ALTER TABLE zzz_annotations ADD public TINYINT( 11 ) NOT NULL DEFAULT '0'";
+	$success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsField('zzz_discussionarticles','public') ) {
+	$sql = "ALTER TABLE zzz_discussionarticles ADD public TINYINT( 11 ) NOT NULL DEFAULT '0'";
+	$success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsField('zzz_section','public') ) {
+	$sql = "ALTER TABLE zzz_section ADD public TINYINT( 11 ) NOT NULL DEFAULT '0'";
+	$success = $success AND $this->_select($sql);
+}
+
+if ( !$this->_existsField('zzz_step','public') ) {
+	$sql = "ALTER TABLE zzz_step ADD public TINYINT( 11 ) NOT NULL DEFAULT '0'";
+	$success = $success AND $this->_select($sql);
+}
 
 $this->_flushHTML(BRLF);
 ?>
