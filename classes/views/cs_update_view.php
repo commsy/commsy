@@ -48,6 +48,8 @@ class cs_update_view extends cs_view {
 
    private $_cached_sql = array();
 
+   private $_points = 200;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -88,7 +90,11 @@ class cs_update_view extends cs_view {
 
    private function _initProgressBar($count,$title = 'Total entries to be processed',$value = '100%') {
       echo (BRLF.$title.": ".$count.LF);
-      echo (BRLF."|....................................................................................................| ".$value.LF);
+      echo (BRLF."|");
+      for ($i=1;$i<=$this->_points;$i++) {
+          echo('.');
+      }
+      echo ("| ".LF);
       echo ('<script type="text/javascript">window.scrollTo(1,10000000);</script>'.LF);
       echo BRLF."|";
       flush();
@@ -98,7 +104,7 @@ class cs_update_view extends cs_view {
       static $counter_upb = 0;
       static $percent = 0;
       $counter_upb++;
-      $cur_percent = (int)(($counter_upb*100)/($total) );
+      $cur_percent = (int)(($counter_upb*$this->_points)/($total) );
       if ($percent < $cur_percent) {
          $add = $cur_percent-$percent;
          while ($add>0) {
