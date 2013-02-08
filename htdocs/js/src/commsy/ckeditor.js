@@ -60,7 +60,7 @@ define([	"dojo/_base/declare",
 			
 			if ( node.nodeName === "TEXTAREA" )
 			{
-				this.instance = CKEDITOR.replace(node/*, this.options*/);
+				this.instance = CKEDITOR.replace(node, this.options);
 			}
 			else
 			{
