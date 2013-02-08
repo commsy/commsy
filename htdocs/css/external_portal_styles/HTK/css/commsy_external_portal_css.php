@@ -229,10 +229,10 @@ width:150px;
 h1 {
     border-bottom: 1px dotted #3C3C3C;
     font-family: times,serif;
-    font-size: 17px;
-    height: 20px;
+    font-size: 16px;
+    height: 16px;
     margin: 0;
-    padding: 9px 15px;
+    padding: 15px;
     text-transform: uppercase;
 }
 
@@ -248,7 +248,7 @@ h1 {
 
 #room_detail_content{
    border: 0px solid #DFE7F7;
-   padding:0px;
+   padding:0px 25px;
 }
 
 

@@ -720,7 +720,7 @@ class cs_external_page_portal_view extends cs_page_view {
       $current_user = $this->_environment->getCurrentUser();
       $moda_item = $moda_list->getFirst();
       while ($moda_item) {
-         $html_temp .= '<li style="font-weight:normal; font-size:10pt;">'.$this->_text_as_html_short($moda_item->getFullName()).'</li>';
+         $html_temp .= '<li style="font-weight:normal;">'.$this->_text_as_html_short($moda_item->getFullName()).'</li>';
          $moda_item = $moda_list->getNext();
       }
       $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('ROOM_CONTACT').':</span>'.LF;
@@ -1263,8 +1263,11 @@ class cs_external_page_portal_view extends cs_page_view {
 #      $html .='<div class="sidehead">Raumbeschreibung</div>'.LF;
 
       // actions
-      $html .= '<div>'.LF;
-      $html .= '<div id="room_detail_actions">'.LF;
+      $html .= '<div style="padding-top:8px;">'.LF;
+      $html .= '<div id="room_detail_headline">'.LF;
+      $html .= $this->_getRoomHeaderAsHTML($item);
+      $html .= '</div>'.LF;
+      $html .= '<div id="room_detail_actions" style="margin-bottom:20px;">'.LF;
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUser();
       if ( !$item->isDeleted() and !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
@@ -1364,9 +1367,6 @@ class cs_external_page_portal_view extends cs_page_view {
       // end actions
 
       $html .= '</div>'.LF;
-      $html .= '<div id="room_detail_headline">'.LF;
-      $html .= $this->_getRoomHeaderAsHTML($item);
-      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 
 
@@ -1393,13 +1393,8 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .= '<td style="width:25%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
          $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_FACTS').':'.'</span>';
          $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
 
-         $html .= '<td style="width:1%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
-         $html .= '<img src="'.$this->_style_image_path.'portal_info.gif" alt="" border="0"/>'.LF;
-         $html .= '</td>'.LF;
-         $html .= '<td style="width:50%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
-         $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_DESCRIPTION').':'.'</span>';
-         $html .= '</td>'.LF;
 
       }else{
          $html .= '<td colspan="4" rowspan="2" style="width:100%; vertical-align:top; font-weight:normal;">'.LF;
@@ -1418,12 +1413,21 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .= '<td colspan="2" style="vertical-align:top; text-align:left;">'.LF;
          $html .= $this->_getRoomFacts($item);
          $html .= '</td>'.LF;
-         $html .= '<td colspan="2" style="font-weight:normal; font-size:8pt; vertical-align:top; text-align:left;">'.LF;
+#         $html .= '<td colspan="2" style="font-weight:normal; font-size:8pt; vertical-align:top; text-align:left;">'.LF;
          $desc = $item->getDescription();
          if (!empty($desc)){
-            $html .= $this->_text_as_html_long($item->getDescription());
+         	 $html .= '</tr>'.LF;
+         	 $html .= '<tr>'.LF;
+	         $html .= '<td style="width:1%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
+	         $html .= '<img src="'.$this->_style_image_path.'portal_info.gif" alt="" border="0"/>'.LF;
+	         $html .= '</td>'.LF;
+	         $html .= '<td colspan="3" style="width:100%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
+	         $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_DESCRIPTION').':'.'</span>';
+             $html .= '<p>'.$desc.'</p>'.LF;
+	         $html .= '</td>'.LF;
+         	 $html .= '</tr>'.LF;
          }else{
-            $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
+         	 $html .= '</tr>'.LF;
          }
          $html .= '</td>'.LF;
 
@@ -2047,7 +2051,7 @@ class cs_external_page_portal_view extends cs_page_view {
    function _getUserPersonalAreaAsHTML () {
       $retour  = '';
       $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
-      $retour .= '         <select size="1" style="font-size:10pt; width:210px; height:25px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      $retour .= '         <select size="1" style="font-size:10pt; width:146px; height:22px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
       $current_portal = $this->_environment->getCurrentPortalItem();
@@ -2164,16 +2168,17 @@ class cs_external_page_portal_view extends cs_page_view {
 //if ( !$this->_environment->inPortal() || $this->_current_user->isGuest()) {
       $html .= '<div id="left_box">'.LF;
       $html .= '<div>'.LF;
-      $html .= '<div class="sidehead">'.LF;
       $get_vars  = $this->_environment->getCurrentParameterArray();
       $post_vars = $this->_environment->getCurrentPostParameterArray();
       $current_context = $this->_environment->getCurrentContextItem();
       $current_portal = $this->_environment->getCurrentPortalItem();
 
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
+      		$html .= '<div class="sidehead" style="padding-left:3px;">'.LF;
             $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
          } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
 
+      			$html .= '<div class="sidehead" style="padding-left:10px;">'.LF;
 				$params = array();
                $params['iid'] = $this->_current_user->getItemID();
                $fullname = $this->_current_user->getFullname();
@@ -2461,8 +2466,8 @@ class cs_external_page_portal_view extends cs_page_view {
             }
 
             $params = $this->_environment->getCurrentParameterArray();
-            $html .= '<div class="myarea_content" style="padding-bottom:15px; text-align:right;">'.LF;
-            $html .= '<div style="float:right; text-align:right;">'.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="display:inline;"').'</div>'.LF;
+            $html .= '<div class="myarea_content" style="padding-bottom:15px;">'.LF;
+            $html .= '<div style="">'.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="display:inline;"').'</div>'.LF;
             $html .= '<div style="text-align:left;"> &nbsp;'.LF;
             $html .= '</div>'.LF;
             $html .= '</div>'.LF;
@@ -2476,7 +2481,7 @@ class cs_external_page_portal_view extends cs_page_view {
                if ( !$current_user_item->isRoot() ) {
 #                 $html .='<div class="sidehead">Raumsuche</div>'.LF;
                   $html .= '<div class="sidehead">'.$this->_translator->getMessage('MYAREA_MY_ACTUAL_ROOMS').'</div>'.LF;
-                  $html .= '<div class="myarea_content"  style="padding:3px;">'.LF;
+                  $html .= '<div class="myarea_content">'.LF;
                   $html .= '<div style="padding-bottom:5px;">'.$this->_getUserPersonalAreaAsHTML().'</div>'.LF;
                }else{
                   $html .= '<div class="myarea_content">'.LF;
@@ -3507,8 +3512,9 @@ class cs_external_page_portal_view extends cs_page_view {
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
 
-
-
+	$commsy_path = '';
+	$typo3_path = '';
+	$wordpress_path = '';
 
 
 $html.='<body>
@@ -3524,13 +3530,13 @@ $html.='<body>
 
     <div id="main_navigation">
         <div class="wrapper">
-            <a href="" id="btn_emergency">HTK Intranet</a>
-
-            <ul><li><a id="mn_active" href="" target="_self">Projekträume</a></li>' .
-            	'<li><a href="" target="_self">Handbuch</a></li>' .
-            	'<li><a href="" target="_self">Mitteilung der Leitung</a></li>' .
-            	'<li><a href="" target="_self">Betriebsrat aktuell</a></li>' .
-            	'<li><a href="" target="_self">Dienstanweisungen</a></li>' .
+            <ul>' .
+            	'<li><a href="'.$wordpress_path.'" target="_self">Mitteilung der Leitung</a></li>' .
+           		'<li><a href="'.$wordpress_path.'" target="_self">Betriebsrat aktuell</a></li>' .
+            	'<li><a href="'.$commsy_path.'" target="_self">Dokumentenablage</a></li>' .
+           		'<li><a href="'.$typo3_path.'" target="_self">Fachabteilungen</a></li>' .
+             	'<li><a id="mn_active" href="'.$commsy_path.'commsy.php?cid='.$this->_environment->getCurrentPortalID().'" target="_self">Projekträume</a></li>' .
+            	'<li><a href="'.$commsy_path.'" target="_self">Dienstanweisungen</a></li>' .
             	'</ul>
 
             <div class="clear"> </div>
@@ -3539,9 +3545,7 @@ $html.='<body>
 
     <div id="columnset">
         <div class="wrapper">
-            <div id="column_left"><div id="c3903" class="csc-default">
-<div class="news-latest-container">
-	<div id="news_area">'.LF;
+            '.LF;
 
 
       if (!( isset($this->_agb_view) or
@@ -3556,7 +3560,9 @@ $html.='<body>
           ( $cs_module == 'language' )
       )) {
 
-	$html .= '<h2 style="padding-left:0px;">Anmeldung/Raumsuche</h2>
+	$html .= '<div id="column_left"><div id="c3903" class="csc-default">
+<div class="news-latest-container">
+	<div id="news_area"><h2 style="padding-left:0px;">Anmeldung/Raumsuche</h2>
     	<div class="news_item">';
     $html .= $this->getMyAreaAsHTML(str_replace('commsy_session_id='.$sid.'&','',$wiki_url));
 
@@ -3580,7 +3586,8 @@ $html.='<body>
        }
        $html .= '</div>'.LF;
        $html .= '</div>'.LF;
-       $html .= '</div>'.LF;
+       $html .= '</div></div>
+</div></div></div>'.LF;
     }else{
     }
       }else{
@@ -3591,9 +3598,8 @@ $html.='<body>
       }
 
 
-$html .='	</div></div>
-</div>
-</div></div>
+$html .='	</div>
+
 <div id="column_right">'.LF;
 
 

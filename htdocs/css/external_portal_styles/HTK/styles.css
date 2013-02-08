@@ -200,9 +200,23 @@ main_navigation
     padding-bottom: 16px;
     }
 
+#main_navigation{
+	height: auto !important;
+	}
+
+#main_navigation a {
+    display: normal;
+    font-size: 12px !important;
+    line-height:  16px !important;
+    padding: 0px 0px 0px;
+    text-decoration: none;
+}
+
 #main_navigation ul {
-    margin-left: 90px;
+    margin-left: 20px;
     float: left;
+    border-right: 0px solid #EBEBEB;
+    padding:0px 0px 0px 0px;
     }
 
 #main_navigation li {
@@ -250,6 +264,7 @@ columnset
 
 #columnset {
     background-color: #FFF;
+    background-image:none !important;
     padding-top: 25px;
     }
 
