@@ -1,13 +1,12 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
-        	"dijit/TooltipDialog",
         	"dojo/dom-attr",
         	"dojo/query",
         	"dojo/on",
         	"dojo/dom-class",
         	"dojo/dom-style",
         	"dojo/_base/lang",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, TooltipDialog, DomAttr, Query, On, DomClass, DomStyle, Lang) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, DomAttr, Query, On, DomClass, DomStyle, Lang) {
 	return declare(BaseClass, {
 		display:	false,
 		anim:		null,

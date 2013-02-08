@@ -4,10 +4,9 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/query",
         	"dojo/dom-class",
-        	"dijit/Tooltip",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
-        	"dojo/dom-style"], function(declare, PopupHandler, on, lang, query, dom_class, Tooltip, dom_attr, domConstruct, domStyle) {
+        	"dojo/dom-style"], function(declare, PopupHandler, on, lang, query, dom_class, dom_attr, domConstruct, domStyle) {
 	return declare(PopupHandler, {
 		constructor: function(args) {
 			this.fct			= "rubric_popup";
