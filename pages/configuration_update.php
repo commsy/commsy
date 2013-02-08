@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+# more time for processing
+set_time_limit(0);
+
 // Get the current user
 $current_user = $environment->getCurrentUserItem();
 $translator = $environment->getTranslationObject();
