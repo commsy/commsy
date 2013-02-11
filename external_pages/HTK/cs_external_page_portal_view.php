@@ -3536,7 +3536,7 @@ $html.='<body>
             	'<li><a href="'.$commsy_path.'" target="_self">Dokumentenablage</a></li>' .
            		'<li><a href="'.$typo3_path.'" target="_self">Fachabteilungen</a></li>' .
              	'<li><a id="mn_active" href="'.$commsy_path.'commsy.php?cid='.$this->_environment->getCurrentPortalID().'" target="_self">Projekträume</a></li>' .
-            	'<li><a href="'.$commsy_path.'" target="_self">Dienstanweisungen</a></li>' .
+            	'<li><a href="'.$commsy_path.'commsy.php?cid=1643009&seltag=1643015" target="_self">Dienstanweisungen</a></li>' .
             	'</ul>
 
             <div class="clear"> </div>
