@@ -3589,6 +3589,8 @@ $html.='<body>
        $html .= '</div></div>
 </div></div></div>'.LF;
     }else{
+$html .= '</div></div>
+</div></div>'.LF;
     }
       }else{
 	$html .= '
