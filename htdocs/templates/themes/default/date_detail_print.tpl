@@ -28,7 +28,7 @@
 		</div>
 		<!-- Ende fade_in_ground -->
 
-	    {include file="include/detail_linked_html.tpl"}
+	    {include file="include/detail_linked_print.tpl"}
 
         <h2>
             {$detail.content.title}
@@ -132,7 +132,9 @@
 				{/if}
 			</div>
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		</div>
 
     </div> <!-- Ende item body -->
     <div class="clear"> </div>

@@ -6,7 +6,9 @@
 
 		<!-- Start fade_in_ground -->
 		<!-- Ende fade_in_ground -->
-
+		
+		{include file="include/detail_linked_print.tpl"}
+		
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
 
@@ -35,7 +37,7 @@
 		<div id="item_legend"> <!-- Start item_legend -->
 				{* formal data *}
 				<div class="detail_content_print">
-				{if !empty($detail.content.formal)}
+				{if !empty($detail.content.formal) || $detail.content.sections}
 						<table class="detail_content_table">
 							{foreach $detail.content.formal as $formal}
 								<tr>
@@ -62,7 +64,13 @@
 								<tr>
 									<td><h4>___MATERIAL_ABSTRACT___:</h4></td>
 									<td>
-										test hard{$detail.content.description}
+										{$detail.content.description}
+										{$detail.printcookie}
+										{if in_array("detail_expand",$detail.printcookie)}
+										   if abfrage ging durch :)
+										{else}
+											if ging nicht durch 
+										{/if}
 									</td>
 								</tr>
 							{/if}
@@ -72,14 +80,17 @@
 				{if $detail.content.description && (!isset($detail.content.sections) || empty($detail.content.sections))}
 					<div class="detail_description_print">
 						{$detail.content.description}
+						{$smarty.cookies.hiddenDivs}
 					</div>
 				{/if}
 				</div>
 		</div> <!-- Ende item_legend -->
 		{if $room.workflow}
-		   {include file="include/detail_workflow_html.tpl" data=$detail.content.workflow}
+		   {include file="include/detail_workflow_print.tpl" data=$detail.content.workflow}
 		{/if}
-		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
@@ -89,13 +100,14 @@
 		<div class="item_body_print"> <!-- Start item body -->
 			<a name="mat_section_{$section@index}"></a>
 			<a name="section{$section.iid}"></a>
+			<a name="anchor{$section.iid}"></a>
 
 			<!-- Start fade_in_ground -->
 			<!-- Ende fade_in_ground -->
 
 			<div class="item_post">
 				<div class="row_{if $section@iteration is odd}odd{else}even{/if}_no_hover padding_left_10px">
-					<div>
+					<div class="column_655">
 						<div class="post_content">
 							<h4>
 								{$section.title}
@@ -127,7 +139,7 @@
 								<div class="clear"> </div>
 							{/if}
 
-							<div class="editor_content_print">
+							<div class="editor_content">
 								{$section.description}
 							</div>
 						</div>
@@ -141,7 +153,10 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			{include file="include/detail_moredetails_print.tpl" data=$section.moredetails}
+
+			<div id="detail_expand_section_{$section@index}" {if in_array("detail_expand_section_{$section@index}",$detail.printcookie)}class="hidden"{/if}>
+				{include file="include/detail_moredetails_print.tpl" data=$section.moredetails}
+			</div>
 
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>

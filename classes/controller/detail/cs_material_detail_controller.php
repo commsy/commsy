@@ -342,7 +342,7 @@
 			   $this->_item = $this->_manager->getItem($current_item_id);
 			}
 			
-			$this->checkNotSet();
+			$this->checkNotValid();
 		}
 
 		protected function setBrowseIDs() {

@@ -7,7 +7,7 @@
 		<!-- Start fade_in_ground -->
 		<!-- Ende fade_in_ground -->
 
-		{include file="include/detail_linked_html.tpl"}
+		{include file="include/detail_linked_print.tpl"}
 
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
@@ -116,7 +116,9 @@
 				</div>
 			{/if}
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
@@ -196,7 +198,9 @@
 					<div class="clear"> </div>
 				</div>
 			</div>
-			{include file="include/detail_moredetails_print.tpl" data=$step.moredetails}
+			<div id="detail_expand_step_{$step.item_id}" {if in_array("detail_expand_step_{$step.item_id}",$detail.printcookie)}}class="hidden"{/if}>
+				{include file="include/detail_moredetails_print.tpl" data=$step.moredetails}
+			</div>
 
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>

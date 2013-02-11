@@ -61,6 +61,10 @@
 		 * every derived class needs to implement an processTemplate function
 		 */
 		protected function processTemplate() {
+			
+			// rubric information for room navigation
+			$this->assign('room', 'rubric_information', $this->getRubricInformation());
+			
 			// call parent
 			parent::processTemplate();
 
@@ -85,8 +89,7 @@
 				die('you are not in room context, so no room template should be processed');
 			}
 
-			// rubric information for room navigation
-			$this->assign('room', 'rubric_information', $this->getRubricInformation());
+			
 
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());

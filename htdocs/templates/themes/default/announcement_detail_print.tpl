@@ -4,7 +4,7 @@
 
 	<div class="item_body_print"> <!-- Start item body -->
 	    
-
+		{include file="include/detail_linked_print.tpl"}
 		<h2>{$detail.content.title}</h2>
 		<div class="clear"> </div>
 
@@ -48,7 +48,9 @@
 	<div class="clear"> </div>
 
 	<div id="moredetails_print">
-		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		</div>
 	</div>
 	{include file='include/annotation_include_print.tpl'}
 

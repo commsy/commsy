@@ -76,7 +76,9 @@
 				{/section}
 			{/block}
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
@@ -157,8 +159,9 @@
 						<div class="clear"> </div>
 					</div>
 				</div>
-
-				{include file="include/detail_moredetails_print.tpl" data=$article.moredetails}
+				<div id="detail_expand_article_{$article@index}" {if in_array("detail_expand_article_{$article@index}",$detail.printcookie)}class="hidden"{/if}>
+					{include file="include/detail_moredetails_print.tpl" data=$article.moredetails}
+				</div>
 			{/block}
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>

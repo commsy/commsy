@@ -41,7 +41,7 @@
 		protected function processTemplate() {
 			// call parent
 			parent::processTemplate();
-
+			
 			$this->assign('detail', 'actions', $this->getDetailActions());
 
 			/*******************/
@@ -104,12 +104,24 @@
 				$this->markAnnotationsReadedAndNoticed($annotations);
 				$this->assign('detail', 'annotations_changed', $global_changed);
 			}
-
+				
 			$current_context = $this->_environment->getCurrentContextItem();
 			$this->assign('detail','is_action_bar_visible',$current_context->isActionBarVisibleAsDefault());
 			$this->assign('detail','is_details_bar_visible',$current_context->isDetailsBarVisibleAsDefault());
 			$this->assign('detail','is_annotations_bar_visible',$current_context->isAnnotationsBarVisibleAsDefault());
 			$this->assign('detail','is_reference_bar_visible',$current_context->isReferenceBarVisibleAsDefault());
+			
+			
+			//Wenn Printmode dann Variable an Smarty-Template senden (Cookie)
+			if(isset($_COOKIE['hiddenDivs'])) {
+				if($this->_environment->getOutputMode() === 'print') {
+				    $this->assign('detail','printcookie',explode(',',$_COOKIE['hiddenDivs']));
+				}
+			} else {
+				//TODO: errorhandling
+				$this->assign('detail','printcookie',array());
+			}
+				
 		}
 
 		protected function setupInformation() {
@@ -203,19 +215,24 @@
 			if ( isset($this->_manager) ) {
 			   $this->_item = $this->_manager->getItem($current_item_id);
 			}
-
-			$this->checkNotSet();
+			
+			$this->checkNotValid();
 		}
-
-		protected function checkNotSet() {
-			if ( $this->_item === null )
+		
+		protected function checkNotValid() {
+			if ( $this->_item === null || $this->_item->isDeleted())
 			{
 				// if item is not set, maybe it is deleted or does not exists, this will bring you back to the list view
 				$cid = $this->_environment->getCurrentContextId();
 				$mod = $this->_environment->getCurrentModule();
 				$fct = "index";
 
-				redirect($cid, $mod, $fct);
+				//redirect($cid, $mod, $fct);
+				
+				//TODO: konflikt im cvs -> prüfen welche lösung die aktuelle ist
+				$this->_tpl_file = "exception";
+				$this->assign("exception","link", "commsy.php?cid=".$cid."&mod=".$mod."&fct=".$fct);
+				$this->displayTemplate();
 				exit;
 			}
 		}
@@ -228,21 +245,21 @@
 
 			if ( isset($this->_item) ) {
 				$text_converter = $this->_environment->getTextConverter();
-
+	
 				$buzzword_list = $this->_item->getBuzzwordList();
 				$buzzword_entry = $buzzword_list->getFirst();
 				$item_id_array = array();
 				while($buzzword_entry) {
 					$item_id_array[] = $buzzword_entry->getItemID();
-
+	
 					$buzzword_entry = $buzzword_list->getNext();
 				}
-
+	
 				$links_manager = $this->_environment->getLinkManager();
 				if(isset($item_id_array[0])) {
 					$count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array, 'buzzword');
 				}
-
+	
 				$buzzword_entry = $buzzword_list->getFirst();
 				while($buzzword_entry) {
 					$count = 0;
@@ -255,8 +272,8 @@
 								'class_id'			=> $this->getUtils()->getBuzzwordSizeLogarithmic($count, 0, 30, 1, 4),
 								'selected_id'		=> $buzzword_entry->getItemID()
 							);
-
-
+	
+	
 					$buzzword_entry = $buzzword_list->getNext();
 				}
 				$this->_linked_count += $buzzword_list->getCount();
@@ -871,7 +888,7 @@
 								'position'		=> $count_items + 1,
 								'activating_text'=> $activating_text
 						);
-
+						
 						unset($item);
 					}
 				}
@@ -1351,7 +1368,6 @@
 		    {
 		        $params = array();
 		        $params['iid'] = $modificator->getItemID();
-
 		        if (	!$modificator->isDeleted() &&
 		        			(
 		        				$modificator->maySee($user) ||

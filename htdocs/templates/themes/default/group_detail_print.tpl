@@ -118,7 +118,9 @@
 				</div>
 			</div>
 		</div> <!-- Ende item_legend -->
-		{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+		</div>
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>

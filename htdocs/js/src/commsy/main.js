@@ -238,6 +238,17 @@ require([	"dojo/_base/declare",
 						var handler = new ActionExpander();
 						handler.setup(actors);
 					});
+					
+					var printNode = query("a#printbutton")[0];
+					if ( printNode )
+					{
+						On(printNode, "click", function(event) {
+							require(["commsy/PrintDivToggle"], function(PrintDivToggle) {
+								var printToggle = new PrintDivToggle();
+								printToggle.setup();
+							});							
+						});
+					}
 				}
 				
 				// on list context
