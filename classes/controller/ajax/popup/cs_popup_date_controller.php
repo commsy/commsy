@@ -909,16 +909,20 @@ class cs_popup_date_controller {
           $recurring_pattern_array = array();
 
           $recurrent_id = $dates_item->getItemID();
+          
+          // first next date is starting date
           $next_date = $dates_item->getStartingDay();
-
+          
+          // convert date to timestamp - zero hour
           $month_date = mb_substr($next_date,5,2);
           $day_date = mb_substr($next_date,8,2);
           $year_date = mb_substr($next_date,0,4);
           $next_date_time = mktime(0,0,0,$month_date,$day_date,$year_date);
-
-          $month_recurring = mb_substr($form_data['recurring_end_date'],3,2);
-          $day_recurring = mb_substr($form_data['recurring_end_date'],0,2);
-          $year_recurring = mb_substr($form_data['recurring_end_date'],6,4);
+          
+          // calculate timestamp for recurring date
+          $month_recurring = mb_substr($form_data['recurring_end_date'],5,2);
+          $day_recurring = mb_substr($form_data['recurring_end_date'],8,2);
+          $year_recurring = mb_substr($form_data['recurring_end_date'],0,4);
           $recurring_end_time = mktime(0,0,0,$month_recurring,$day_recurring,$year_recurring);
 
           $recurring_pattern_array['recurring_select'] = $form_data['recurring_select'];
