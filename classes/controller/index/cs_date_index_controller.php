@@ -400,6 +400,8 @@
 
 			$return = array();
 			$weekStart = $this->_calendar['week'];
+			
+			$weekStartZeroHour = $weekStart - 3 * 60 * 60;// don't know why, but weekStart was set TO 03:00 am
 
 			/************************************************************************************
 			 * First, build the needed information for the table head
@@ -421,7 +423,7 @@
 			);
 
 			$tableHead = array();
-			$startTime = $weekStart;			// this hold the weeks starting time
+			$startTime = $weekStartZeroHour;			// this hold the weeks starting time
 
 			for ($i = 0; $i < 7; $i++) {		// seven days of a week
 				// get day, month and year of current week
@@ -503,9 +505,9 @@
 					// dates in list are not only for this week - grmpf... - filter here
 					$dateStartTimestamp = mktime(0, 0, 0, $startDate["month"], $startDate["day"], $startDate["year"]);
 					$dateEndTimestamp = mktime(0, 0, 0, $endDate["month"], $endDate["day"], $endDate["year"]);
-					if (	(!empty($endDate) && $dateEndTimestamp < $weekStart) ||
-							($dateStartTimestamp > $weekStart + 3600 * 24 * 7) ) {
-
+					if (	(!empty($endDate) && $dateEndTimestamp < $weekStartZeroHour) ||
+							($dateStartTimestamp > $weekStartZeroHour + 3600 * 24 * 7) ) {
+						
 						$currentDate = $list->getNext();
 						continue;
 					}
@@ -568,8 +570,6 @@
 			 * two-dimensional array with [ row(hour) ][ column(day) ]
 			************************************************************************************/
 			$displayArray = array();
-
-			$weekStartZeroHour = $weekStart - 3 * 60 * 60;// don't know why, but weekStart was set TO 03:00 am
 
 			// go through our dates
 			foreach ($dateArray as $year => $yearArray) {
