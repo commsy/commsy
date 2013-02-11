@@ -91,6 +91,7 @@
 			{block name=warning}{/block}
 			{block name=top_menu}{/block}
 	    	{block name=room_overlay}{/block}
+			{block name=external_top_menu}{/block}
 		    <div id="wrapper">
 		{/block}
 

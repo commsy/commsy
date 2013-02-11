@@ -17,6 +17,7 @@
 /* Body*/
 
 body {
+	background-color: #FFFFFF;
 }
 
 #search_area {
@@ -279,5 +280,78 @@ a.item_actions_glow {
 #item_postnew {
     background: none;
 }
+
+#external_main_navigation {
+    background: url(main_bg.jpg) no-repeat top center #FFF;
+    }
+
+#external_main_navigation .wrapper {
+    padding: 18px 0px 22px 0px;
+    }
+
+
+#btn_emergency:hover, #external_main_navigation li a:hover, #mn_active {
+    color: #FEF175 !important;
+    }
+
+#mn_active {
+    background: url(img/mn_active.gif) no-repeat center 26px;
+    padding-bottom: 16px;
+    }
+
+#external_main_navigation{
+	height: auto !important;
+	}
+
+#external_main_navigation a {
+    display: normal;
+    font-size: 12px !important;
+    line-height:  16px !important;
+    padding: 0px 0px 0px;
+    text-decoration: none;
+}
+
+#external_main_navigation ul {
+    margin-left: 20px;
+    float: left;
+    border-right: 0px solid #EBEBEB;
+    padding:0px 0px 0px 0px;
+    }
+
+#external_main_navigation li {
+    list-style-type: none;
+    display: inline;
+    }
+
+#external_main_navigation li a {
+    color: #FFF;
+    text-transform: uppercase;
+    text-decoration: none;
+    margin-right: 15px;
+    }
+.external_wrapper {
+    width: 980px;
+    margin: 0px auto;
+    }
+
+#external_header {
+    background-color: #FFF;
+    padding: 7px 0px;
+    }
+
+#external_main_navigation .external_wrapper {
+    padding: 18px 0 22px;
+}
+
+#portal_logo {
+    float: left;
+    }
+
+    #portal_claim {
+    padding-left: 78px;
+    padding-top: 72px;
+    float: left;
+    }
+
 
 
