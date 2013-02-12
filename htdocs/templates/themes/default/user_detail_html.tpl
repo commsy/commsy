@@ -50,10 +50,10 @@
 					{* formal data *}
 					{if !empty($detail.content.first_block)}
 						<table>
-							{if !empty($detail.content.first_block.fullname)}
+							{if !empty($detail.content.first_block.title)}
 								<tr>
 									<td class="label"><h4>___USER_TITLE___</h4></td>
-									<td>{$detail.content.first_block.fullname}</td>
+									<td>{$detail.content.first_block.title}</td>
 								</tr>
 							{/if}
 							{if !empty($detail.content.first_block.birthday)}

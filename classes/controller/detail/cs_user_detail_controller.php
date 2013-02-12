@@ -648,6 +648,7 @@
 				//$temp_array[] = $converter->text_as_html_short($title);
 				//$formal_data[] = $temp_array;
 			}
+			$return['first_block']['title'] = $title;
 			$title .= $this->_item->getFullname();
 			$return['first_block']['fullname'] = $converter->text_as_html_short($title);
 
