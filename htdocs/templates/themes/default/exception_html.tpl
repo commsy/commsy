@@ -7,16 +7,16 @@
 		</div>
 	</div>
 	<div class="item_body"> <!-- Start item body -->
-		<div id="item_legend"> <!-- Start item_legend -->
+		<h2>___ERRORBOX_TITLE___</h2>
+		<div class="clear"> </div>
 			<div class="detail_content">
-				<div class="row_odd_no_hover padding_left_10px">
+				<div class="row_even_no_hover" style="padding:10px">
 					<p>___ITEM_NOT_AVAILABLE___</p>
 					<br/>
 					<br/>
 					<p><a href="{$exception.link}">___COMMON_BACK_BUTTON___</a></p>
 				</div>
 			</div>
-		</div>
 	</div> <!-- Ende item body -->
 
 {/block}
