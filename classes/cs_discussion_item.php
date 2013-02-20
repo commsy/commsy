@@ -58,6 +58,10 @@ class cs_discussion_item extends cs_item {
    	  }
    }
 
+function getDescription(){
+	return '';
+}
+
   /** set title of a discussion
    * this method sets the title of the discussion
    *
