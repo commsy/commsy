@@ -587,6 +587,7 @@ if ( $environment->inPrivateRoom()
 				$relevanz = 0;
 				
 				$title = $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle();
+				$modificationDate = $entry->getModificationDate();
 				
 				if ($this->_indexed_search === true) {
 					
@@ -604,7 +605,31 @@ if ( $environment->inPrivateRoom()
 					
 					$contextCount = $this->_items[$entry->getType()][$entry->getItemID()] - $titleCount;
 					
-					$relevanzPoints = $titleCount * 5 + round(8 * $contextCount / $max_count) + ($isInAttachedFiles ? 1 : 0);
+					$modificationTimestamp = datetime2Timestamp($modificationDate);
+					$timestampDiffToday = time() - $modificationTimestamp;
+					$modificationPoints = 0;
+					
+					if ( $timestampDiffToday <= 604800 )
+					{
+						$modificationPoints = 4;
+					}
+					else if ( $timestampDiffToday <= 604800 * 4 )
+					{
+						$modificationPoints = 3;
+					}
+					else if ( $timestampDiffToday <= 604800 * 4 * 6 )
+					{
+						$modificationPoints = 2;
+					}
+					else if ( $timestampDiffToday <= 604800 * 4 * 6 * 2)
+					{
+						$modificationPoints = 1;
+					}
+					
+					$relevanzPoints =	$titleCount * 10 +
+										round(4 * $contextCount / $max_count) +
+										$modificationPoints +
+										($isInAttachedFiles ? 1 : 0);
 					
 					if ( $relevanzPoints > $maxRelevanzPoints )
 					{
@@ -622,7 +647,7 @@ if ( $environment->inPrivateRoom()
 					'attachment_infos'			=> $attachment_infos,
 					'activated'					=> !$entry->isNotActivated(),
 					'modificator'				=> $this->_compareWithSearchText($this->getItemModificator($entry)),
-					'modification_date'			=> $entry->getModificationDate(),
+					'modification_date'			=> $modificationDate,
 					'modification_date_print'	=> $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate())
 				);
 
