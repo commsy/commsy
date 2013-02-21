@@ -297,7 +297,7 @@ if ( $environment->inPrivateRoom()
 				 * When using the indexed search method, ...
 				************************************************************************************/
 				if($this->_indexed_search === true) {
-					$this->_performIndexedSearch($rubric_array);
+					$ftItemIdArray = $this->_performIndexedSearch($rubric_array);
 				}
 
 				/************************************************************************************
@@ -451,7 +451,14 @@ if ( $environment->inPrivateRoom()
 				}
 #			}
 
-			$this->assign('room', 'search_content', $this->getListContent());
+			if($this->_indexed_search === true) {
+				$this->assign('room', 'search_content', $this->getListContent($ftItemIdArray));
+			}
+			else
+			{
+				$this->assign('room', 'search_content', $this->getListContent());
+			}
+			
 
 			$this->assign('list','browsing_parameters',$this->_browsing_icons_parameter_array);
 			$this->assign('list','list_entries_parameter',$this->getListEntriesParameterArray());
@@ -459,7 +466,7 @@ if ( $environment->inPrivateRoom()
 			$this->assign('list','sorting_parameters',$this->getSortingParameterArray());
 		}
 
-		protected function getListContent() {
+		protected function getListContent($ftItemIdArray = array()) {
 			$return = array();
 			$converter = $this->_environment->getTextConverter();
 
@@ -534,9 +541,9 @@ if ( $environment->inPrivateRoom()
 		    $ftsearch_manager = $this->_environment->getFTSearchManager();
 		    $ftsearch_manager->setSearchStatus(true);
 		    $ftsearch_manager->setWords($this->_search_words[0]);
-
-		    $ftItemIdArray = $ftsearch_manager->performFTSearch();
-
+		    
+		    $maxRelevanzPoints = 0;
+		    
 			$entry = $this->_list->getFirst();
 			while($entry) {
 				$file_count = 0;
@@ -578,38 +585,38 @@ if ( $environment->inPrivateRoom()
 				}
 
 				$relevanz = 0;
-
+				
+				$title = $entry->getType() === CS_USER_TYPE ? $entry->getFullname() : $entry->getTitle();
+				
 				if ($this->_indexed_search === true) {
-					$relevanz = 100 * $this->_items[$entry->getType()][$entry->getItemID()] / $max_count;
-
-					if ($relevanz == 0) $relevanz = 50;
-					/*
-					if (in_array($entry->getItemID(), $ftItemIdArray)) {
-						if ($relevanz == 0) {
-							// this handles the case, that the match only happened in indexed files, because for now
-							// we are not getting any word count information from swish-e
-							$relevanz = 50;
-
-							if ($max_count == 0) {
-								$relevanz = 50;
-							} else {
-								$relevanz = 100 * 50 / $max_count;
-							}
-						} else {
-							if ($max_count == 0) {
-								$relevanz = 50;
-							} else {
-								$relevanz = $relevanz = 100 * ($this->_items[$entry->getType()][$entry->getItemID()] + 5) / $max_count;
-							}
+					
+					$isInAttachedFiles = in_array($entry->getItemID(), $ftItemIdArray);
+					$titleCount = 0;
+					
+					foreach ( $this->_search_words as $searchWord )
+					{
+						if (mb_stristr($title, $searchWord) !== false )
+						{
+							$titleCount++;
+							break;
 						}
-					}*/
+					}
+					
+					$contextCount = $this->_items[$entry->getType()][$entry->getItemID()] - $titleCount;
+					
+					$relevanzPoints = $titleCount * 5 + round(8 * $contextCount / $max_count) + ($isInAttachedFiles ? 1 : 0);
+					
+					if ( $relevanzPoints > $maxRelevanzPoints )
+					{
+						$maxRelevanzPoints = $relevanzPoints;
+					}
 				}
 
 				$return['items'][] = array(
-					'title'						=> $entry->getType() === CS_USER_TYPE ? $this->_compareWithSearchText($entry->getFullname()) : $this->_compareWithSearchText($entry->getTitle()),
+					'title'						=> $this->_compareWithSearchText($title),
 					'type'						=> $type,
 					'type_sort'					=> $this->_environment->getTranslationObject()->getMessage(strtoupper($type).'_INDEX'),
-					'relevanz'					=> $relevanz,
+					'relevanz'					=> $relevanzPoints,
 					'item_id'					=> $entry->getItemID(),
 					'attachment_count'			=> $file_count,
 					'attachment_infos'			=> $attachment_infos,
@@ -620,6 +627,11 @@ if ( $environment->inPrivateRoom()
 				);
 
 				$entry = $this->_list->getNext();
+			}
+			
+			foreach ( $return["items"] as &$item )
+			{
+				$item["relevanz"] = (100 * $item["relevanz"]) / $maxRelevanzPoints;
 			}
 
 			/************************************************************************************
@@ -1105,6 +1117,8 @@ unset($ftsearch_manager);
 
 				$entry = $result_list->getNext();
 			}
+			
+			return $ftItemIdArray;
 		}
 
 		private function getParameters() {
