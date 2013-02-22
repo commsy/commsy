@@ -1,6 +1,6 @@
 var profile = (function(){
     return {
-    	basePath:			"./src_cpy",
+    	basePath:			"./src",
     	releaseDir:			"../build",
     	releaseName:		"release",
     	action:				"release",
