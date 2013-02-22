@@ -3356,16 +3356,16 @@ $html.='                    <div class="clear"></div>
         <div class="wrapper">
 
             <div id="footer_links">
-                <a href="http://www.mobilitaetsagentur-hamburg.de/impressum.html">Impressum</a> |
-		<a href="http://www.mobilitaetsagentur-hamburg.de/datenschutz.html">Datenschutz</a> |
-		<a href="http://www.mobilitaetsagentur-hamburg.de/agb.html">AGB</a>
+                <a href="http://www.mobilitaetsagentur-hamburg.de/impressum.html" target="_blank">Impressum</a> |
+		<a href="http://www.mobilitaetsagentur-hamburg.de/datenschutz.html" target="_blank">Datenschutz</a> |
+		<a href="http://www.mobilitaetsagentur-hamburg.de/agb.html" target="_blank">AGB</a>
             </div>
 
             <div id="footer_logos">
-                <a href="http://www.mobilitaetsagentur-hamburg.de/europaeische-union.html" id="logo_eu">&nbsp;</a>
-                <a href="http://www.mobilitaetsagentur-hamburg.de/arbeit-und-leben-hamburg.html" id="logo_aul">&nbsp;</a>
-                <a href="http://www.mobilitaetsagentur-hamburg.de/hibb.html" id="logo_hib">&nbsp;</a>
-                <a href="http://www.mobilitaetsagentur-hamburg.de/hamburg.html" id="logo_hh">&nbsp;</a>
+                <a href="http://www.mobilitaetsagentur-hamburg.de/europaeische-union.html" id="logo_eu" target="_blank">&nbsp;</a>
+                <a href="http://www.mobilitaetsagentur-hamburg.de/arbeit-und-leben-hamburg.html" id="logo_aul" target="_blank">&nbsp;</a>
+                <a href="http://www.mobilitaetsagentur-hamburg.de/hibb.html" id="logo_hib" target="_blank">&nbsp;</a>
+                <a href="http://www.mobilitaetsagentur-hamburg.de/hamburg.html" id="logo_hh" target="_blank">&nbsp;</a>
 
                 <div class="clear"></div>
             </div>
