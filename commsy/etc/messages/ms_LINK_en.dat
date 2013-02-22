@@ -1,0 +1,4 @@
+<?php
+$message["LINK_ITEM_NEW"]["en"] = "Assign items";
+$message["LINK_ITEM_SAVE_BUTTON"]["en"] = "Assign items";
+?>

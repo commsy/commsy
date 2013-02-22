@@ -1,0 +1,9 @@
+<?php
+$message["ENTRY_COPY_MYLIST"]["de"] = "Liste kopieren";
+$message["ENTRY_DELETE_ENTRY_FROM_BUZZWORD"]["de"] = "Zuordnung zum Schlagwort entfernen";
+$message["ENTRY_DELETE_ENTRY_FROM_MATRIX"]["de"] = "Aus der Matrix entfernen";
+$message["ENTRY_DELETE_ENTRY_FROM_MYLIST"]["de"] = "Aus der Liste entfernen";
+$message["ENTRY_DELETE_MYLIST"]["de"] = "Liste löschen";
+$message["ENTRY_DELETE_RESTRICTION"]["de"] = "Einschränkung aufheben";
+$message["ENTRY_INDEX"]["de"] = "Meine Ablage";
+?>

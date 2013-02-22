@@ -1,0 +1,52 @@
+<?php
+$message["RUBRIC_ADMIN"]["de"] = "Auswahl der Rubriken";
+$message["RUBRIC_ADMIN_DESC"]["de"] = "Wählen Sie die Rubriken und ihre Reihenfolge aus.";
+$message["RUBRIC_ALL_ATTACHMENTS"]["de"] = "... alle anzeigen (%1)";
+$message["RUBRIC_CONFIG_NO"]["de"] = "Ausgeblendet auf der Home";
+$message["RUBRIC_CONFIG_NO_2"]["de"] = "ausgeblendet";
+$message["RUBRIC_CONFIG_SHORT"]["de"] = "Ausgeklappt auf der Home";
+$message["RUBRIC_CONFIG_TINY"]["de"] = "Zugeklappt auf der Home";
+$message["RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON"]["de"] = "Ankündigungen zuordnen";
+$message["RUBRIC_DO_ATTACH_DATE_BUTTON"]["de"] = "Termine zuordnen";
+$message["RUBRIC_DO_ATTACH_DISCUSSION_BUTTON"]["de"] = "Diskussionen zuordnen";
+$message["RUBRIC_DO_ATTACH_GROUP_BUTTON"]["de"] = "Gruppen zuordnen";
+$message["RUBRIC_DO_ATTACH_INSTITUTION_BUTTON"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG suchen";
+$message["RUBRIC_DO_ATTACH_MATERIAL_BUTTON"]["de"] = "Materialien zuordnen";
+$message["RUBRIC_DO_ATTACH_PROJECT_BUTTON"]["de"] = "%_PROJECT_SUB_AKKPL_BIG zuordnen";
+$message["RUBRIC_DO_ATTACH_TODO_BUTTON"]["de"] = "Aufgaben zuordnen";
+$message["RUBRIC_DO_ATTACH_TOPIC_BUTTON"]["de"] = "%_TOPICS_SUB_NOMPL_BIG suchen";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY"]["de"] = "Diese E-Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG '%1' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_PL"]["de"] = "Diese E-Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG '%1' an die folgenden %_INSTITUTION_SUB_NOMPL_BIG verschickt:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_S"]["de"] = "Diese E-Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG '%1' an %_INSTITUTION_ART_DEF_NOMS_LOW %_INSTITUTION_SUB_NOMS_BIG '%2' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_TOPIC_PL"]["de"] = "Diese E-Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG '%1' an die folgenden %_TOPIC_SUB_NOMPL_BIG verschickt:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_TOPIC_S"]["de"] = "Diese E-Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG '%1' an %_TOPIC_ART_DEF_NOMS_LOW %_TOPIC_SUB_NOMS_BIG '%2' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_GROUPROOM"]["de"] = "Diese E-Mail wurde über den Gruppenraum '%1' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PORTAL"]["de"] = "Diese E-Mail wurde über das Portal '%1' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_PL"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an die folgenden Gruppen verschickt:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_S"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an die Gruppe '%2' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_PL"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an die folgenden %_INSTITUTION_SUB_NOMPL_BIG verschickt:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_S"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an %_INSTITUTION_ART_DEF_NOMS_LOW %_INSTITUTION_SUB_NOMS_BIG '%2' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_PL"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an die folgenden %_TOPIC_SUB_NOMPL_BIG verschickt:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_S"]["de"] = "Diese E-Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG '%1' an %_TOPIC_ART_DEF_NOMS_LOW %_TOPIC_SUB_NOMS_BIG '%2' verschickt.";
+$message["RUBRIC_EMAIL_ADDED_BODY_SERVER"]["de"] = "Diese E-Mail wurde über den Server '%1' verschickt.";
+$message["RUBRIC_EMAIL_DEFAULT_COMMUNITY"]["de"] = "Diese Mail wurde über %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG &quot;%1&quot; verschickt.
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_GROUPROOM"]["de"] = "Diese Mail wurde über den Gruppenraum &quot;%1&quot; verschickt.
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_PROJECT"]["de"] = "Diese Mail wurde über %_PROJECT_ART_DEF_AKKS_LOW CommSy-%_PROJECT_SUB_AKKS_BIG &quot;%1&quot; verschickt.
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["de"] = "<br/>---
+<br/>Link:
+%1";
+$message["RUBRIC_PUBLIC"]["de"] = "Bearbeitbar";
+$message["RUBRIC_PUBLIC_DESC"]["de"] = "Hier können Sie entscheiden, wer außer Ihnen diesen Eintrag bearbeiten darf.";
+$message["RUBRIC_PUBLIC_NO"]["de"] = "Nur von %1 bearbeitbar";
+$message["RUBRIC_PUBLIC_YES"]["de"] = "Für alle bearbeitbar";
+$message["RUBRIC_WARN_CHANGER"]["de"] = "Achtung";
+?>

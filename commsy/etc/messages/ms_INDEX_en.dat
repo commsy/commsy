@@ -1,0 +1,38 @@
+<?php
+$message["INDEX_ACTION_FORM_BCC"]["en"] = "bcc to sender";
+$message["INDEX_ACTION_FORM_BCC_MODERATOR"]["en"] = "bcc to moderator/s";
+$message["INDEX_ACTION_FORM_CC"]["en"] = "cc and/or";
+$message["INDEX_ACTION_FORM_CC_BCC"]["en"] = "cc / bcc";
+$message["INDEX_ACTION_FORM_CC_MODERATOR"]["en"] = "cc and/or";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_DELETE"]["en"] = "Delete account";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_FREE"]["en"] = "Activate or unlock account";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_LOCK"]["en"] = "Lock account";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_MERGE"]["en"] = "E-mail: merge accounts";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_PASSWORD"]["en"] = "E-mail: account and password";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_EMAIL_SEND"]["en"] = "Send e-mail";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_MAKE_CONTACT_PERSON"]["en"] = "Make contact person";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR"]["en"] = "Change status to moderator";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_STATUS_USER"]["en"] = "Change status to user";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_UNMAKE_CONTACT_PERSON"]["en"] = "Unselect status contact person";
+$message["INDEX_ACTION_FORM_MAIL"]["en"] = "E-mail";
+$message["INDEX_ACTION_FORM_MAIL_OPTION"]["en"] = "Send e-mail";
+$message["INDEX_ACTION_FORM_MAIL_TO"]["en"] = "to Account(s)";
+$message["INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING"]["en"] = "If you delete this account, all related content items will also be deleted. This means that all items added through this account will be replaced by a dummy notice text in order to preserve the workspaces's structure. An alternative way of handling would be to lock the account, which leaves it's related content items as they are while the workspace member will be banned.";
+$message["INDEX_ACTION_PERFORM_USER_ACCOUNT_DELETE_BUTTON"]["en"] = "Delete account";
+$message["INDEX_ACTION_PERFORM_USER_ACCOUNT_FREE_BUTTON"]["en"] = "Activate account";
+$message["INDEX_ACTION_PERFORM_USER_ACCOUNT_LOCK_BUTTON"]["en"] = "Lock account";
+$message["INDEX_ACTION_PERFORM_USER_MAKE_CONTACT_PERSON_BUTTON"]["en"] = "Change status";
+$message["INDEX_ACTION_PERFORM_USER_STATUS_MODERATOR_BUTTON"]["en"] = "Change status";
+$message["INDEX_ACTION_PERFORM_USER_STATUS_USER_BUTTON"]["en"] = "Change status";
+$message["INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON"]["en"] = "Change status";
+$message["INDEX_ACTION_SEND_MAIL_BUTTON"]["en"] = "send e-mail";
+$message["INDEX_USER_ACCOUNT_MERGE_ERROR"]["en"] = "The selected users either do not have multiple accounts or their accounts have been locked. <br />
+<br>
+Selection was reset.";
+$message["INDEX_USER_MAKE_CONTACT_ERROR"]["en"] = "To make a user account a workspace contact person, it has to be a approved member of the workspace. <br />
+<br />
+Selection has been reset.";
+$message["INDEX_USER_UNMAKE_CONTACT_ERROR"]["en"] = "It is not possible to revoke the status &quot;contact person&quot; for members who do not have that status. <br />
+<br />
+Selection has been restricted to contact persons only.";
+?>

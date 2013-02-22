@@ -1,0 +1,20 @@
+<?php
+$message["ERROR_CROSS_SITE_REQUEST_FORGERY"]["de"] = "Der Vorgang ist aus abgebrochen worden, da für das Speichern von Inhalten in Ihrer Sitzung ein Sicherheitsmerkmal fehlt. Dies kann passieren, wenn Sie CommSy mit Cookies in mehreren Browsertabs verwenden oder wenn Kriminelle versuchen, Ihr Sitzung zu kidnappen. 
+<br/><br/>
+Bitte melden Sie sich aus Sicherheitsgründen ab und loggen Sie sich erneut ein.";
+$message["ERROR_EMAIL_DOES_NOT_EXIST"]["de"] = "Es gibt keine Kennung mit dieser E-Mail Adresse.";
+$message["ERROR_ILLEGAL_IID"]["de"] = "Die Daten, auf die Sie zugreifen wollen, existieren nicht.
+
+Es liegt ein Fehler in der Seitenadresse vor, entweder durch einen fehlerhaften Link oder durch eine falsche Eingabe.";
+$message["ERROR_LAST_MODERATOR"]["de"] = "Es muss immer mindestens eine aktive  Kennung mit dem Moderationsrecht versehen sein, da der Raum ansonsten nicht mehr konfiguriert werden kann.";
+$message["ERROR_MAIL_CC"]["de"] = "CC:";
+$message["ERROR_MAIL_CONTENT"]["de"] = "Nachricht:";
+$message["ERROR_MAIL_FROM"]["de"] = "Von:";
+$message["ERROR_MAIL_REPLY_TO"]["de"] = "Antwort-an:";
+$message["ERROR_MAIL_SERVER"]["de"] = "Es trat ein Fehler beim Versenden der E-Mail auf. Bitte wenden Sie sich an die Moderation des CommSy-Raumes %1.";
+$message["ERROR_MAIL_SUBJECT"]["de"] = "Betreff:";
+$message["ERROR_MAIL_TO"]["de"] = "An:";
+$message["ERROR_SEND_EMAIL_TO"]["de"] = "Beim Versenden der E-Mail ist ein Fehler aufgetreten. Die E-Mail wurde nicht an folgende Personen verschickt:";
+$message["ERROR_SEND_MAIL"]["de"] = "Beim Verschicken der folgenden Nachricht ist ein Fehler aufgetreten:";
+$message["ERROR_UPLOADIFY_FILE_SIZE"]["de"] = "Die zulässige Dateigröße wurde überschritten!";
+?>

@@ -1,0 +1,130 @@
+<?php
+$message["ROOM_ADMINISTRATION_DESC"]["de"] = "dieses Raums";
+$message["ROOM_ARCHIVE_STATUS"]["de"] = "Raum archivieren";
+$message["ROOM_ARCHIV_BUTTON"]["de"] = "Archivieren";
+$message["ROOM_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Termine</li>
+<li>Materialien</li>
+<li>Diskussionen</li>
+<li>Personen</li>
+<li>Themen</li>
+<li>Gruppen</li>
+<li>Aufgaben</li>
+</ul>";
+$message["ROOM_CLOSED"]["de"] = "archiviert";
+$message["ROOM_COLOR_ACTION_BG"]["de"] = "Aktionsleiste";
+$message["ROOM_COLOR_ACTION_ICON"]["de"] = "Iconfarbe";
+$message["ROOM_COLOR_ACTION_ICON_HOVER"]["de"] = "Icon (hover)";
+$message["ROOM_COLOR_ACTIVE_MENU"]["de"] = "Aktive Rubrik";
+$message["ROOM_COLOR_BG"]["de"] = "Raumfarbe";
+$message["ROOM_COLOR_CONTENT_BG"]["de"] = "Inhaltsbereich";
+$message["ROOM_COLOR_LINK"]["de"] = "Link";
+$message["ROOM_COLOR_LINK_HOVER"]["de"] = "Link (hover)";
+$message["ROOM_COLOR_MENU"]["de"] = "Rubrikleiste";
+$message["ROOM_COLOR_RIGHT_COLUMN"]["de"] = "Rechte Spalte";
+$message["ROOM_CONTACT"]["de"] = "AnsprechpartnerInnen";
+$message["ROOM_CONTACT_SINGULAR"]["de"] = "AnsprechpartnerIn";
+$message["ROOM_CONTINUOUS_SINCE"]["de"] = "kontinuierlich seit";
+$message["ROOM_CR_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Projekträume</li>
+<li>Materialien</li>
+<li>Personen</li>
+<li>Projekte</li>
+<li>Themen</li>
+</ul>";
+$message["ROOM_CR_SCHOOL_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Klassenräume</li>
+<li>Materialien</li>
+<li>Personen</li>
+<li>Gremien</li>
+</ul>";
+$message["ROOM_CR_UNIVERSITY_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Projekträume</li>
+<li>Materialien</li>
+<li>Personen</li>
+<li>Themen</li>
+<li>Institutionen</li>
+</ul>";
+$message["ROOM_DELETE_BUTTON"]["de"] = "Raum löschen";
+$message["ROOM_GR_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Termine</li>
+<li>Materialien</li>
+<li>Diskussionen</li>
+<li>Personen</li>
+<li>Themen</li>
+<li>Aufgaben</li>
+</ul>";
+$message["ROOM_GR_SCHOOL_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Termine</li>
+<li>Materialien</li>
+<li>Diskussionen</li>
+<li>Personen</li>
+<li>Aufgaben</li>
+<li>Fächer</li>
+</ul>";
+$message["ROOM_GR_UNIVERSITY_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Termine</li>
+<li>Materialien</li>
+<li>Diskussionen</li>
+<li>Personen</li>
+<li>Themen</li>
+<li>Aufgaben</li>
+</ul>";
+$message["ROOM_IS_CLOSED"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG %1 ist archiviert.";
+$message["ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP"]["de"] = "Sie können sich nicht mehr für diesen %_PROJECT_SUB_AKKS_BIG anmelden.";
+$message["ROOM_JOIN_ERROR_HAS_REQUESTED"]["de"] = "Sie haben sich bereits beim Raum <span style=&quot;font-weight:bold;&quot;>%1</span> angemeldet. Ihre Kennung muss noch freigeschaltet werden. Bei Nachfragen wenden sie sich bitte an die Verantwortlichen des Raums <span style=&quot;font-weight:bold;&quot;>%2</span>.";
+$message["ROOM_JOIN_ERROR_IS_DENIED"]["de"] = "Sie haben sich bereits beim Raum <span style=&quot;font-weight:bold;&quot;>%1</span> angemeldet. Ihre Teilnahmewunsch wurde abgelehnt. Bei Nachfragen wenden sie sich bitte an die Verantwortlichen des Raums <span style=&quot;font-weight:bold;&quot;>%2</span>.";
+$message["ROOM_MEMBER_ADMIN"]["de"] = "Kennungen";
+$message["ROOM_MEMBER_ADMIN_DESC"]["de"] = "Hier können Sie Kennungen freischalten oder den Status von TeilnehmerInnen ändern.";
+$message["ROOM_NOT_LINKED"]["de"] = "nicht zugeordnet";
+$message["ROOM_ONGOING"]["de"] = "aktuell";
+$message["ROOM_SCHOOL_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Termine</li>
+<li>Materialien</li>
+<li>Diskussionen</li>
+<li>Personen</li>
+<li>Gruppen</li>
+<li>Fächer</li>
+<li>Aufgaben</li>
+</ul>";
+$message["ROOM_STATUS"]["de"] = "Status";
+$message["ROOM_STATUS_BARRICADE"]["de"] = "gesperrt";
+$message["ROOM_STATUS_CLOSE"]["de"] = "archiviert";
+$message["ROOM_STATUS_DELETED"]["de"] = "gelöscht";
+$message["ROOM_STATUS_DESCRIPTION"]["de"] = "archiviert (Keine Änderungen im Raum mehr möglich)";
+$message["ROOM_STATUS_LONG_DESCRIPTION"]["de"] = "Der Status &quot;archiviert&quot; bedeutet, dass keine Änderungen mehr im Raum vorgenommen werden können. Auf die Inhalte kann jedoch weiterhin zugegriffen werden.";
+$message["ROOM_STATUS_TEMPLATE"]["de"] = "Vorlage";
+$message["ROOM_TYPE"]["de"] = "Typ";
+$message["ROOM_TYPE_BUSINESS"]["de"] = "Wirtschaft";
+$message["ROOM_TYPE_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG";
+$message["ROOM_TYPE_DESC"]["de"] = "%_PROJECT_ART_UNDEF_NOMS_BIG %_PROJECT_SUB_NOMS_LOW unterstützt Gruppen in Ihrer Kommunikation und Kooperation, während %_COMMUNITY_SUB_NOMPL_LOW sich an größere Gemeinschaften richten, um insbesondere %_PROJECT_SUB_NOMPL_LOW zu strukturieren, sie in Beziehung zu setzen und ihnen einen Kontext zu geben.";
+$message["ROOM_TYPE_PORTAL"]["de"] = "Portal";
+$message["ROOM_TYPE_PROJECT"]["de"] = "%_PROJECT_SUB_NOMS_BIG";
+$message["ROOM_UNIVERSITY_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
+<ul>
+<li>Ankündigungen</li>
+<li>Termine</li>
+<li>Materialien</li>
+<li>Diskussionen</li>
+<li>Personen</li>
+<li>Gruppen</li>
+<li>Themen</li>
+<li>Aufgaben</li>
+</ul>";
+?>

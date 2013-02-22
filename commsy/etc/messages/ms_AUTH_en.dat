@@ -1,0 +1,14 @@
+<?php
+$message["AUTH_ACCOUNT"]["en"] = "Account";
+$message["AUTH_ERROR_ACCOUNT_EXIST"]["en"] = "This user ID already exists in the combination [%1]. Please try a different user ID.";
+$message["AUTH_ERROR_ACCOUNT_NOT_EXIST"]["en"] = "There is no account <span style=&quot;font-weight:bold;&quot;>%1</span>.";
+$message["AUTH_ERROR_ACCOUNT_NOT_FREE"]["en"] = "Your user account <span style=&quot;font-weight:bold;&quot;>%1</span> is queued for approval by the workspace moderator/s. As soon as one of the moderator/s approves your workspace membership, CommSy will let you know by e-mail.";
+$message["AUTH_ERROR_ACCOUNT_OR_PASSWORD"]["en"] = "Sorry, CommSy was not able to login account <span style=&quot;font-weight:bold;&quot;>%1</span> with the password entered.";
+$message["AUTH_ERROR_ACCOUNT_REJECTED"]["en"] = "Your account <span style=&quot;font-weight:bold;&quot;>%1</span> has been locked by the moderators of the CommSy <span style=&quot;font-weight:bold;&quot;>%2</span>. You do not have permission to log in.";
+$message["AUTH_ERROR_ACCOUNT_TO_MANY"]["en"] = "There seems to be an inconsistency in the CommSy database concerning your account data <span style=&quot;font-weight:bold;&quot;>%1</span>. Please jot down this message and contact the workspace moderators <span style=&quot;font-weight:bold;&quot;>%2</span>.";
+$message["AUTH_ERROR_LDAP_ROOTUSER"]["en"] = "No access to the authentication source. Please contact the portal moderation.";
+$message["AUTH_ERROR_PASSWORD_WRONG"]["en"] = "The <span style=&quot;font-weight:bold;&quot;>password</span> entered does not conform with account %1.";
+$message["AUTH_ERROR_TYPO3WEB_NOT_YET_IMPLEMENTED"]["en"] = "Authentication via TYPO3 ist not yet possible.";
+$message["AUTH_NOT_AVAILABLE"]["en"] = "This function is not available in CommSy.";
+$message["AUTH_NOT_AVAILABLE2"]["en"] = "This function is not available. Please contact the moderator/s of the CommSy portal.";
+?>

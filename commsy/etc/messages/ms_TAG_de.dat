@@ -1,0 +1,12 @@
+<?php
+$message["TAG_ACTIONS_AFTER"]["de"] = "nach";
+$message["TAG_ACTIONS_BEFORE"]["de"] = "vor";
+$message["TAG_ACTIONS_UNDER"]["de"] = "unter";
+$message["TAG_CANNOT_COMBINE"]["de"] = "Kategorieren können so nicht zusammengelegt werden";
+$message["TAG_COMBINE_BUTTON"]["de"] = "zusammenlegen";
+$message["TAG_EDIT_FORM_TITLE"]["de"] = "Kategorien bearbeiten";
+$message["TAG_FORM_ROOT_LEVEL"]["de"] = "oberster Ebene";
+$message["TAG_SORT_ABC"]["de"] = "Alphabetisch sortieren";
+$message["TAG_SORT_BUTTON"]["de"] = "einfügen";
+$message["TAG_WORD_TO"]["de"] = "zu";
+?>

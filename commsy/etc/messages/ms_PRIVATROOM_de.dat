@@ -1,0 +1,5 @@
+<?php
+$message["PRIVATROOM_ROOMWIDE_SEARCH_BOX"]["de"] = "Raumübergreifende Suche";
+$message["PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT"]["de"] = "Suchbegriff";
+$message["PRIVATROOM_SEARCH_BOX"]["de"] = "Suche in der Ablage";
+?>

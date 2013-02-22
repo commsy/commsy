@@ -1,0 +1,6 @@
+<?php
+$message["BUZZWORDS_CHANGE_BUTTON"]["en"] = "Submit";
+$message["BUZZWORDS_COMBINE_BUTTON"]["en"] = "Combine";
+$message["BUZZWORDS_EDIT_HEADER"]["en"] = "Edit tags";
+$message["BUZZWORDS_NEW_BUTTON"]["en"] = "Create new tag";
+?>

@@ -1,0 +1,7 @@
+<?php
+$message["LOGIN_ACCOUNT_FORGET_LINK"]["en"] = "Forgot your user ID?";
+$message["LOGIN_NOT_ALLOWED"]["en"] = "You have to be logged in to access this page.
+<br/>
+<span style=&quot;font-weight: bold;&quot;>Please log in first</span>.";
+$message["LOGIN_PASSWORD_FORGET_LINK"]["en"] = "Forgot your password?";
+?>

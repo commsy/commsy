@@ -1,0 +1,25 @@
+<?php
+$message["ALL"]["de"] = "Alle";
+$message["ANNOUNCEMENTS"]["de"] = "Ankündigungen";
+$message["BROWSER"]["de"] = "Browsereinstellung";
+$message["COMMUNITYS"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["DATES"]["de"] = "Termine";
+$message["DE"]["de"] = "Deutsch";
+$message["DISCUSSIONS"]["de"] = "Diskussionen";
+$message["EN"]["de"] = "Englisch";
+$message["GROUPS"]["de"] = "Gruppen";
+$message["INITIALARTICLE"]["de"] = "Initialbeitrag";
+$message["INSTITUTION"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG";
+$message["INSTITUTIONS"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["LOGO"]["de"] = "Logo";
+$message["LOGOUT"]["de"] = "Abmelden";
+$message["MARK"]["de"] = "*";
+$message["MATERIALS"]["de"] = "Materialien";
+$message["MYROOMS"]["de"] = "Meine Räume";
+$message["PRIVATEROOM"]["de"] = "Persönlicher Raum";
+$message["PRIVATEROOMS"]["de"] = "Meine Räume";
+$message["PROJECTS"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["RU"]["de"] = "Rumänisch";
+$message["TODOS"]["de"] = "Aufgaben";
+$message["TOPICS"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
+?>

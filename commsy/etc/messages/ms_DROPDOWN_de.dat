@@ -1,0 +1,10 @@
+<?php
+$message["DROPDOWN_NEW_ANNOUNCEMENT"]["de"] = "Neue Ankündigung zuordnen";
+$message["DROPDOWN_NEW_DATE"]["de"] = "Neuen Termin zuordnen";
+$message["DROPDOWN_NEW_DISCUSSION"]["de"] = "Neue Diskussion zuordnen";
+$message["DROPDOWN_NEW_GROUP"]["de"] = "Neue Gruppe zuordnen";
+$message["DROPDOWN_NEW_INSTITUTION"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG_ADJ_NEW_BIG zuordnen";
+$message["DROPDOWN_NEW_MATERIAL"]["de"] = "Neues Material zuordnen";
+$message["DROPDOWN_NEW_TODO"]["de"] = "Neue Aufgabe zuordnen";
+$message["DROPDOWN_NEW_TOPIC"]["de"] = "%_TOPICS_SUB_NOMS_BIG_ADJ_NEW_BIG zuordnen";
+?>

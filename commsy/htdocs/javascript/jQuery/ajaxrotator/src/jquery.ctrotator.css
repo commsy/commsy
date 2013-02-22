@@ -1,0 +1,33 @@
+.clearer{
+  clear:both;
+}
+.ctrotator{
+  width:180px;
+  margin:0;
+  padding:0 0 5px 0;
+  background: url('line-bg.png') repeat-y;
+}
+.ctrotator-item{
+  list-style:none;
+  padding:2px 0 3px 0;
+}
+
+.ctrotator-item a{
+  color:#666;
+  text-decoration:none;
+  font-size:11px;
+  font-family: Verdana, Geneva, Arial, Helvetica, sans-serif 
+}
+
+.ctrotator-item a:hover{
+  text-decoration:underline;
+}
+
+.ctrotator-item:hover{
+  background-color:#e5ffff;
+}
+
+#tooltip{
+  width:250px;
+  opacity: 1;
+}

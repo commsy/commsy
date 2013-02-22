@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path="commsy/classes"/>
+	<buildpathentry kind="src" path="commsy/etc"/>
+	<buildpathentry kind="src" path="commsy/external_pages/AUL"/>
+	<buildpathentry kind="src" path="commsy/external_pages/BGU"/>
+	<buildpathentry kind="src" path="commsy/external_pages/HSK"/>
+	<buildpathentry kind="src" path="commsy/external_pages/HTK"/>
+	<buildpathentry kind="src" path="commsy/external_pages/KUV"/>
+	<buildpathentry kind="src" path="commsy/external_pages/MAINBGMED"/>
+	<buildpathentry kind="src" path="commsy/external_pages/SchulCommSy"/>
+	<buildpathentry kind="src" path="commsy/functions"/>
+	<buildpathentry kind="src" path="commsy/htdocs"/>
+	<buildpathentry kind="src" path="commsy/include"/>
+	<buildpathentry kind="src" path="commsy/libs/smarty"/>
+	<buildpathentry kind="src" path="commsy/pages"/>
+	<buildpathentry kind="src" path="commsy/plugins/ads"/>
+	<buildpathentry kind="src" path="commsy/plugins/ckeditor"/>
+	<buildpathentry kind="src" path="commsy/plugins/life"/>
+	<buildpathentry kind="src" path="commsy/plugins/mediabird"/>
+	<buildpathentry kind="src" path="commsy/plugins/onyx"/>
+	<buildpathentry kind="src" path="commsy/plugins/voyeur"/>
+	<buildpathentry kind="src" path="commsy/scripts"/>
+	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+</buildpath>

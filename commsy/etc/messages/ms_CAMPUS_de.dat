@@ -1,0 +1,4 @@
+<?php
+$message["CAMPUS_SEARCH_INDEX"]["de"] = "Suche im Raum";
+$message["CAMPUS_SEARCH_ONLY_THIS_ROOM"]["de"] = "nur dieser Raum";
+?>

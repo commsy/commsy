@@ -1,0 +1,4 @@
+<?php
+$message["MYCALENDAR_CONFIGURATION"]["en"] = "Configure my calendar";
+$message["MYCALENDAR_INDEX"]["en"] = "My calendar";
+?>

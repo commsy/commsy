@@ -1,0 +1,9 @@
+<?php
+$message["INTERNAL_META_TITLE"]["de"] = "Allgemeine Einstellungen";
+$message["INTERNAL_MODULE_CONF_DESC_NONE"]["de"] = "Die Option &quot;%1&quot; bedeutet, dass diese Rubrik in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG nicht zur Verfügung steht.";
+$message["INTERNAL_MODULE_CONF_DESC_SHORT"]["de"] = "Die Option &quot;%1&quot; bedeutet, dass diese Rubrik als Kurzansicht auf der Home erscheint.";
+$message["INTERNAL_MODULE_CONF_DESC_TINY"]["de"] = "Die Option &quot;%1&quot; bedeutet, dass diese Rubrik als Balken auf der Home erscheint.";
+$message["INTERNAL_SPECIAL_TITLE"]["de"] = "Zusätzliche Einstellungen";
+$message["INTERNAL_TIME_SPREAD"]["de"] = "Zeitspanne";
+$message["INTERNAL_TIME_SPREAD_DESC"]["de"] = "Diese Anzahl an Tagen bleiben Einträge auf der Home sichtbar.";
+?>

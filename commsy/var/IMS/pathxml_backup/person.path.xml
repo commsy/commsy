@@ -1,0 +1,80 @@
+<pathinfo>
+<var name="TARGET">
+<path>properties/extension/targets</path></var>
+
+<var name="INSTITUTION">
+<path>person/extension/institution</path>
+
+</var>
+<var name="PREFIX">
+<path>person/name/n/prefix</path>
+
+</var>
+<var name="EXTERNALREF">
+<path>person/extension/id</path>
+
+</var>
+<var name="BIRTHDATE">
+<path>person/extension/birthdate</path>
+
+</var>
+<var name="FAMILY">
+<path>person/name/n/family</path>
+
+</var>
+<var name="PASSWORD">
+<path>person/userid[@password]</path>
+
+</var>
+<var name="FACULTY">
+<path>person/extension/faculty</path>
+
+</var>
+<var name="DATETIME">
+<path>properties/datetime</path>
+
+</var>
+<var name="DATASOURCE">
+<path>properties/datasource</path>
+<path>person/datasource</path>
+
+</var>
+<var name="EMAIL">
+<path>person/email</path>
+
+</var>
+<var name="OP">
+<path>person[@recstatus]</path>
+
+</var>
+<var name="USERID">
+<path>person/sourcedid/id</path>
+<path>person/userid</path>
+
+</var>
+<var name="COMMENT">
+<path>person/extension/comment</path>
+
+</var>
+<var name="PWENC">
+<path>person/userid[@pwencryptiontype]</path>
+
+</var>
+<var name="GIVEN">
+<path>person/name/n/given</path>
+
+</var>
+<var name="SOURCE">
+<path>person/sourcedid/source</path>
+
+</var>
+<var name="SUFFIX">
+<path>person/name/n/suffix</path>
+
+</var>
+<var name="ROLE">
+<path>person/extension/role</path>
+
+</var>
+
+</pathinfo>

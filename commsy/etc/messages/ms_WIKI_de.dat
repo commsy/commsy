@@ -1,0 +1,17 @@
+<?php
+$message["WIKI_CONFIGURATION_DESC"]["de"] = "Einstellungen für das angebundene Wiki.";
+$message["WIKI_CONFIGURATION_LINK"]["de"] = "Raum-Wiki";
+$message["WIKI_CONFIGURATION_SECTION_EDIT"]["de"] = "SectionEdit<br/>(Erweiterung)";
+$message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"]["de"] = "Abschnittsfunktionen aktivieren.";
+$message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"]["de"] = "Überschriften automatisch als Beginn neuer Abschnitte erkennen";
+$message["WIKI_COOMUNITY_NO_READ_ACCESS_ERROR"]["de"] = "Mitglieder der Gemeinschaftsräume haben kein Lese-Recht.";
+$message["WIKI_DELETE_BUTTON"]["de"] = "Wiki löschen";
+$message["WIKI_DISCUSSION_EMPTY_ERROR"]["de"] = "Bitte geben Sie einen Namen für das Forum an.";
+$message["WIKI_DISCUSSION_EXISTS_ERROR"]["de"] = "Ein Forum mit diesem Namen existiert schon.";
+$message["WIKI_DISCUSSION_GROUP_TITLE"]["de"] = "Forum:";
+$message["WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR"]["de"] = "Foren-Benachrichtigung nicht aktiv, die Steuerung der Beachrichtigung über CommSy-Gruppen kann daher nicht ausgewählt werden.";
+$message["WIKI_DISCUSSION_NOT_SELECTED_ERROR"]["de"] = "Foren sind nicht aktiv, die Bachrichtigung kann daher nicht ausgewählt werden.";
+$message["WIKI_DISCUSSION_NO_DISCUSSION_ERROR"]["de"] = "Keine Foren vorhanden";
+$message["WIKI_NEW_PAGE_TEMPLATE"]["de"] = "Wiki-Seite als Vorlage";
+$message["WIKI_SAVE_BUTTON"]["de"] = "Wiki anlegen";
+?>

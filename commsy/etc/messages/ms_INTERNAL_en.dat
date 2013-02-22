@@ -1,0 +1,9 @@
+<?php
+$message["INTERNAL_META_TITLE"]["en"] = "General settings";
+$message["INTERNAL_MODULE_CONF_DESC_NONE"]["en"] = "The option &quot;%1&quot; means that this workspace rubric is not available in this %_PROJECT_SUB_NOMS_BIG.";
+$message["INTERNAL_MODULE_CONF_DESC_SHORT"]["en"] = "The option &quot;%1&quot; means that this workspace rubric is shown as a short view on the home page.";
+$message["INTERNAL_MODULE_CONF_DESC_TINY"]["en"] = "The option &quot;%1&quot; means that this workspace rubric is shown as a bar on the home page.";
+$message["INTERNAL_SPECIAL_TITLE"]["en"] = "Additional settings";
+$message["INTERNAL_TIME_SPREAD"]["en"] = "Time span recent";
+$message["INTERNAL_TIME_SPREAD_DESC"]["en"] = "This is the amount of days that items will be visible on the home page.";
+?>

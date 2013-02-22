@@ -1,0 +1,5 @@
+<?php
+$message["PRIVATROOM_ROOMWIDE_SEARCH_BOX"]["en"] = "Search overall my workspaces";
+$message["PRIVATROOM_ROOMWIDE_SEARCH_BOX_TEXT"]["en"] = "search term";
+$message["PRIVATROOM_SEARCH_BOX"]["en"] = "Serach in my repository";
+?>

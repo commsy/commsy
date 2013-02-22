@@ -1,0 +1,3 @@
+<?php
+$message["SEND_MAIL_DESC"]["en"] = "sent confirmation";
+?>

@@ -1,0 +1,17 @@
+<?php
+$message["WIKI_CONFIGURATION_DESC"]["en"] = "Wiki settings";
+$message["WIKI_CONFIGURATION_LINK"]["en"] = "Workspace wiki";
+$message["WIKI_CONFIGURATION_SECTION_EDIT"]["en"] = "SectionEdit<br/>(Addon)";
+$message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"]["en"] = "Activate section edit.";
+$message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"]["en"] = "Recognize headlines as sections";
+$message["WIKI_COOMUNITY_NO_READ_ACCESS_ERROR"]["en"] = "Community-room users don't have read-access.";
+$message["WIKI_DELETE_BUTTON"]["en"] = "Delete wiki";
+$message["WIKI_DISCUSSION_EMPTY_ERROR"]["en"] = "";
+$message["WIKI_DISCUSSION_EXISTS_ERROR"]["en"] = "";
+$message["WIKI_DISCUSSION_GROUP_TITLE"]["en"] = "Discussion:";
+$message["WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR"]["en"] = "";
+$message["WIKI_DISCUSSION_NOT_SELECTED_ERROR"]["en"] = "";
+$message["WIKI_DISCUSSION_NO_DISCUSSION_ERROR"]["en"] = "No discussions available";
+$message["WIKI_NEW_PAGE_TEMPLATE"]["en"] = "Wiki-page used as template";
+$message["WIKI_SAVE_BUTTON"]["en"] = "Create wiki";
+?>

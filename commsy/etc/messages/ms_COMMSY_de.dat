@@ -1,0 +1,4 @@
+<?php
+$message["COMMSY_LINK_TITLE"]["de"] = "Homepage von CommSy";
+$message["COMMSY_USE_PROBLEMS"]["de"] = "ACHTUNG: CommSy funktioniert eventuell nicht richtig.";
+?>

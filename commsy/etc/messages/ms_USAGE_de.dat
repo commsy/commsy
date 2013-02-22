@@ -1,0 +1,28 @@
+<?php
+$message["USAGE_INFO_COMING_SOON"]["de"] = "Keine Nutzungshinweise vorhanden.";
+$message["USAGE_INFO_FORM_COMING_SOON"]["de"] = "Keine Nutzungshinweise vorhanden.";
+$message["USAGE_INFO_HEADER"]["de"] = "Nutzungshinweise";
+$message["USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM"]["de"] = "Diese Message Tags sind zwar definiert, werden aber im CommSy- Code nicht (mehr) verwendet.";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM"]["de"] = "Keine Nutzungshinweise vorhanden";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM"]["de"] = "CommSy verschickt zu verschiedenen Anlässen E-Mails, deren Texte hier verändert werden können. Dazu ist zunächst ein Textbaustein auszuwählen, der im Feld darunter beliebig verändert werden kann.
+Mit &quot;speichern&quot; werden die Änderungen übernommen und sind sofort wirksam.
+Um wieder den Standardtext zu erhalten, wählen Sie den entsprechenden Textbaustein aus, klicken unter &quot;Zurücksetzen?&quot; auf &quot;Ja&quot; und anschließend auf &quot;speichern&quot;.
+<span style=&quot;font-style:italic;&quot;>Ausdrücke wie z. B. %2 dienen als Platzhalter für Texte wie Kennung, Raumname, etc.</span>";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM"]["de"] = "Bitte verwenden Sie folgende Bildformate:
+
+Logo: 171x53 px
+
+Portalbild: 200x160 px 
+(bzw. 300x268 px ohne Ankündigungen)";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_TIME_FORM"]["de"] = "Platzhalter für 4-stellige Jahreszahlen:
+- %1 = aktuelles Jahr
+- %2 = zukünftiges Jahr
+- %3 = vergangenes Jahr
+Platzhalter für 2-stellige Jahreszahlen:
+- %4 = aktuelles Jahr
+- %5 = zukünftiges Jahr
+- %6 = vergangenes Jahr
+Format bei &quot;von bis&quot;: TT.MM";
+$message["USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM"]["de"] = "Welche Sprachen sollen auf Ihrem Server zur Verfügung stehen?";
+$message["USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM"]["de"] = "Hier können Sie eine Wartungsseite aktivieren und damit die Nutzung von CommSy unterbrechen, um z.B. Updates einzuspielen.";
+?>

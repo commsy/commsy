@@ -1,0 +1,7 @@
+<?php
+$message["DISCARTICLE_ANSWER_NEW"]["en"] = "Add reply";
+$message["DISCARTICLE_CHANGE_BUTTON"]["en"] = "Save post";
+$message["DISCARTICLE_EDIT"]["en"] = "Edit post";
+$message["DISCARTICLE_ENTER_NEW"]["en"] = "Reply";
+$message["DISCARTICLE_SAVE_BUTTON"]["en"] = "Save post";
+?>

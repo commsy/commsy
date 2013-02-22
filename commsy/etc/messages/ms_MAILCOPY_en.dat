@@ -1,0 +1,4 @@
+<?php
+$message["MAILCOPY_TO_SENDER"]["en"] = "Copy to self";
+$message["MAILCOPY_TO_SENDER_DESC"]["en"] = "Would you prefer to receive a copy of this e-mail?";
+?>

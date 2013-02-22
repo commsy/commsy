@@ -1,0 +1,16 @@
+<?php
+$message["ANNOUNCEMENT_ACTUAL_TITLE"]["de"] = "Aktuelle Ankündigungen";
+$message["ANNOUNCEMENT_CHANGE_BUTTON"]["de"] = "Ankündigung speichern";
+$message["ANNOUNCEMENT_DETAIL"]["de"] = "Ankündigung";
+$message["ANNOUNCEMENT_EDIT"]["de"] = "Ankündigung ändern";
+$message["ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ankündigung erstellen";
+$message["ANNOUNCEMENT_EXPORT_ITEM_ZIP"]["de"] = "Ankündigung";
+$message["ANNOUNCEMENT_EXPORT_ZIP"]["de"] = "Ankündigungen";
+$message["ANNOUNCEMENT_INDEX"]["de"] = "Ankündigungen";
+$message["ANNOUNCEMENT_SAVE_BUTTON"]["de"] = "Ankündigung speichern";
+$message["ANNOUNCEMENT_SHOW_HOME_DATE"]["de"] = "Aktuell bis";
+$message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["de"] = "Zu diesem Datum verschwindet Ihre Ankündigung von der Einstiegsseite des Raums.<br/>
+<br/>
+Datum: TT.MM.JJJJ - z.B. 24.12.2006<br/>
+Uhrzeit: SS:MM - z.B. 12:30";
+?>

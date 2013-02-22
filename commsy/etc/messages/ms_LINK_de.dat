@@ -1,0 +1,4 @@
+<?php
+$message["LINK_ITEM_NEW"]["de"] = "Einträge zuordnen";
+$message["LINK_ITEM_SAVE_BUTTON"]["de"] = "Einträge zuordnen";
+?>

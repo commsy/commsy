@@ -1,0 +1,10 @@
+<?php
+$message["CHAT_CHAT"]["en"] = "Workspace chat";
+$message["CHAT_CONFIGURATION_CHAT"]["en"] = "Workspace chat";
+$message["CHAT_CONFIGURATION_CHAT_VALUE"]["en"] = "activate workspace chat";
+$message["CHAT_CONFIGURATION_DESC"]["en"] = "Workspace chat preferences.";
+$message["CHAT_CONFIGURATION_DESCRIPTION"]["en"] = "The chat can be found at the noticed board (home) under extensions.";
+$message["CHAT_CONFIGURATION_EXTRA_CHAT"]["en"] = "Workspace chat";
+$message["CHAT_CONFIGURATION_EXTRA_CHAT_DESC"]["en"] = "With this option you switch on the extension &quot;workspace chat&quot; either for particular or all workspaces. Afterwards, the extension needs to be activated by each workspace moderator individually.";
+$message["CHAT_CONFIGURATION_LINK"]["en"] = "Workspace chat";
+?>

@@ -1,0 +1,30 @@
+<pathinfo>
+   <var name="TARGET">
+   <path>properties/extension/targets</path></var>
+   <var name="DATASOURCE">
+   <path>group/sourcedid/source</path><path>properties/datasource</path><path>group/datasource</path></var>
+   <var name="DATETIME">
+   <path>properties/datetime</path></var>
+   <var name="OP">
+   <path>group[@recstatus]</path></var>
+   <var name="GROUPID">
+   <path>group/sourcedid/id</path></var>
+   <var name="TITLE">
+   <path>group/description/short</path></var>
+   <var name="FULL">
+   <path>group/description/long</path></var>
+   <var name="FACULTY">
+   <path>group/extension/faculty</path></var>
+   <var name="INSTITUTION">
+   <path>group/extension/institution</path></var>
+   <var name="CODE">
+   <path>group/extension/code</path></var>
+   <var name="CHARSET">
+   <path>group/extension/charset</path></var>
+   <var name="TEMPLATE">
+   <path>group/extension/template</path></var>
+   <var name="LANG">
+   <path>group/extension/language</path></var>
+   <var name="SOURCE">
+   <path>group/sourcedid/source</path></var>
+</pathinfo>

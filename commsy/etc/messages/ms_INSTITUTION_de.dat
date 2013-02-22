@@ -1,0 +1,9 @@
+<?php
+$message["INSTITUTION_CHANGE_BUTTON"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG  ändern";
+$message["INSTITUTION_EDIT"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG  bearbeiten";
+$message["INSTITUTION_ENTER_NEW"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG  eingeben";
+$message["INSTITUTION_INDEX"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["INSTITUTION_MAIL_NO_RECIPIENTS_ERROR"]["de"] = "%_INSTITUTION_ART_DEF_DATPL_BIG ausgewählten %_INSTITUTION_SUB_DATPL_BIG haben sich keine Personen zu geordnet, d.h. die Adressatenliste dieser E-Mail ist leer.";
+$message["INSTITUTION_PICTURE_FILE_DESC"]["de"] = "Hier können Sie ein Bild für %_INSTITUTION_ART_DEF_NOMS_LOW %_INSTITUTION_SUB_NOMS_LOW hinzufügen.";
+$message["INSTITUTION_SAVE_BUTTON"]["de"] = "%_INSTITUTION_SUB_NOMS_BIG  speichern";
+?>

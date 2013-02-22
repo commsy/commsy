@@ -1,0 +1,6 @@
+<?php
+$message["BUZZWORDS_CHANGE_BUTTON"]["de"] = "Ändern";
+$message["BUZZWORDS_COMBINE_BUTTON"]["de"] = "zusammenlegen";
+$message["BUZZWORDS_EDIT_HEADER"]["de"] = "Schlagwörter bearbeiten";
+$message["BUZZWORDS_NEW_BUTTON"]["de"] = "Neues Schlagwort anlegen";
+?>

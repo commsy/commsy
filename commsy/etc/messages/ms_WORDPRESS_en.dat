@@ -1,0 +1,28 @@
+<?php
+$message["WORDPRESS_CONFIGURATION_COMMENTS"]["en"] = "Comments";
+$message["WORDPRESS_CONFIGURATION_COMMENTS_DESC"]["en"] = "Settings for User Comments";
+$message["WORDPRESS_CONFIGURATION_COMMON"]["en"] = "Blog Settings";
+$message["WORDPRESS_CONFIGURATION_COMMON_DESC"]["en"] = "Common Options";
+$message["WORDPRESS_CONFIGURATION_DESC"]["en"] = "Blog settings";
+$message["WORDPRESS_CONFIGURATION_LINK"]["en"] = "Workspace Blog";
+$message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["en"] = "Show Link to Blog in Workspace";
+$message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["en"] = "Allow Comments";
+$message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["en"] = "Enable Comments on Blog Posts";
+$message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["en"] = "Moderate Comments";
+$message["WORDPRESS_CONFIG_ACCESS_NOT_GRANTED"]["en"] = "You are not allowed to config the blog of this CommSy workspace, because of your permissions in wordpress.";
+$message["WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL"]["en"] = "WordPress not allow 2 accounts with the same email address. Please change your email address of your other account in WordPress or of your current CommSy account in your profile at the portal site.";
+$message["WORDPRESS_DELETE_BUTTON"]["en"] = "delete Blog";
+$message["WORDPRESS_DELETE_ERROR_TEXT"]["en"] = "Your blog can not be deleted at the wordpress installation. Please try again later or contact your CommSy administration.";
+$message["WORDPRESS_MODIFY_ERROR_NOT_ALLOWED"]["en"] = "You are not allowed in WordPress to change the configuration of this blog. Please contact the person who created this blog. This person should change your status in WordPress to administrator.";
+$message["WORDPRESS_SAVE_BUTTON"]["en"] = "Create wordpress blog";
+$message["WORDPRESS_SELECT_MEMBER_ROLE"]["en"] = "Role of new room members in blog";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["en"] = "Admin";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR"]["en"] = "Author";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION"]["en"] = "Administrator - Somebody who has access to all the administration features
+Editor - Somebody who can publish and manage posts and pages as well as manage other users' posts, etc.
+Author - Somebody who can publish and manage their own posts
+Subscriber - Somebody who can only manage their profile";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["en"] = "Editor";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["en"] = "Read access / subscriber";
+$message["WORDPRESS_SKIN_DESCRIPTION"]["en"] = "There are more informations about this themes in your %1.";
+?>

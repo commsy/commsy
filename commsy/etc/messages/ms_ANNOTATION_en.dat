@@ -1,0 +1,11 @@
+<?php
+$message["ANNOTATION_ADD_NEW_BUTTON"]["en"] = "Save new comment";
+$message["ANNOTATION_CHANGE_BUTTON"]["en"] = "Save comment";
+$message["ANNOTATION_DELETE_BUTTON"]["en"] = "Delete comment";
+$message["ANNOTATION_EDIT"]["en"] = "Edit comment";
+$message["ANNOTATION_ENTER_NEW"]["en"] = "Add annotation";
+$message["ANNOTATION_FOR_NEWER_VERSION"]["en"] = "Comment to a newer version";
+$message["ANNOTATION_FOR_OLDER_VERSION"]["en"] = "Comment to an older version";
+$message["ANNOTATION_INDEX"]["en"] = "Comments";
+$message["ANNOTATION_SAVE_BUTTON"]["en"] = "Save comment";
+?>

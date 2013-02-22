@@ -1,0 +1,25 @@
+<?php
+$message["DISCUSSION_ARTICLE"]["de"] = "Diskussionsbeitrag";
+$message["DISCUSSION_ARTICLES"]["de"] = "Beiträge";
+$message["DISCUSSION_CLOSE"]["de"] = "Abschließen";
+$message["DISCUSSION_CLOSE_ALL_ARTICLES"]["de"] = "alle Beiträge anzeigen";
+$message["DISCUSSION_CLOSE_BUTTON"]["de"] = "Diskussion schließen";
+$message["DISCUSSION_CLOSE_TITLE"]["de"] = "Abschlussbeitrag";
+$message["DISCUSSION_DISCARTICLE_COUNT"]["de"] = "Anzahl der Beiträge";
+$message["DISCUSSION_EDIT"]["de"] = "Diskussion bearbeiten";
+$message["DISCUSSION_ENTER_NEW"]["de"] = "Diskussion eröffnen";
+$message["DISCUSSION_EXPORT_ITEM_ZIP"]["de"] = "Diskussion";
+$message["DISCUSSION_EXPORT_ZIP"]["de"] = "Diskussionen";
+$message["DISCUSSION_FORM_TYPE_1"]["de"] = "Art der";
+$message["DISCUSSION_FORM_TYPE_2"]["de"] = "Diskussion";
+$message["DISCUSSION_HEADER"]["de"] = "Diskussionen";
+$message["DISCUSSION_INDEX"]["de"] = "Diskussionen";
+$message["DISCUSSION_INIT_ARTICLE"]["de"] = "Initialbeitrag der Diskussion";
+$message["DISCUSSION_IS_CLOSED"]["de"] = "abgeschlossen";
+$message["DISCUSSION_LAST_ENTRY"]["de"] = "Letzter Beitrag";
+$message["DISCUSSION_SIMPLE"]["de"] = "linear";
+$message["DISCUSSION_THREADED"]["de"] = "verzweigt (threaded)";
+$message["DISCUSSION_THREADED_HIDE_ALL"]["de"] = "[Alle Beiträge einklappen]";
+$message["DISCUSSION_THREADED_LOADING"]["de"] = "Baumansicht wird geladen";
+$message["DISCUSSION_THREADED_SHOW_ALL"]["de"] = "[Alle Beiträge ausklappen]";
+?>

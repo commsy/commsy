@@ -1,0 +1,15 @@
+<?php
+$message["ADMIN_CANCEL_BUTTON"]["en"] = "Cancel editing";
+$message["ADMIN_INDEX"]["en"] = "Settings";
+$message["ADMIN_MAIL_ARCHIVE_SET_NOT_WOLRDPUBLIC_TITLE"]["en"] = "Material %1 not accessible for guests";
+$message["ADMIN_MAIL_ARCHIVE_SET_WOLRDPUBLIC_TITLE"]["en"] = "Material %1 accessible for guests";
+$message["ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_BODY"]["en"] = "Request for publishing:
+
+CommSy: %2
+Name of the material: %1
+User: %3";
+$message["ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT"]["en"] = "%1: Publish material?";
+$message["ADMIN_USER_FORM_TITLE"]["en"] = "Edit account";
+$message["ADMIN_USER_FREE"]["en"] = "activate";
+$message["ADMIN_USER_LOCK"]["en"] = "lock";
+?>

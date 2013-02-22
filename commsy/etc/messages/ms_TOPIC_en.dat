@@ -1,0 +1,16 @@
+<?php
+$message["TOPIC_ACTIVATE_PATH"]["en"] = "Activate path feature";
+$message["TOPIC_ACTIVATE_PATH_DESCRIPTION"]["en"] = "When path feature is active, you can arrange the contents referred to into voluntary order as a &quot;path&quot;. This path  will be displayed in the content area of this topic.";
+$message["TOPIC_ACTIVATE_PATH_SELECT_DESCRIPTION"]["en"] = "You can arrange the contents referred to into voluntary order by using drag &amp; drop. Only the selected entries will be shown as a path.";
+$message["TOPIC_CHANGE_BUTTON"]["en"] = "Save %_TOPICS_SUB_AKKS_LOW";
+$message["TOPIC_DEACTIVATE_PATH"]["en"] = "Deactivate path";
+$message["TOPIC_EDIT"]["en"] = "Edit %_TOPICS_SUB_NOMS_LOW";
+$message["TOPIC_ENTER"]["en"] = "Join";
+$message["TOPIC_ENTER_NEW"]["en"] = "Add new %_TOPICS_SUB_NOMS_LOW";
+$message["TOPIC_EXPORT_ITEM_ZIP"]["en"] = "Topic";
+$message["TOPIC_INDEX"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
+$message["TOPIC_LEAVE"]["en"] = "Leave";
+$message["TOPIC_MAIL_NO_RECIPIENTS_ERROR"]["en"] = "There are no receipients for this mail because no persons joined the selected %_TOPICS_SUB_AKKPL_LOW.";
+$message["TOPIC_PATH"]["en"] = "Path";
+$message["TOPIC_SAVE_BUTTON"]["en"] = "Save %_TOPICS_SUB_NOMS_LOW";
+?>

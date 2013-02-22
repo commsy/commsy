@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="CommSy Dojo Build" default="build">
+	
+	<property environment="env"/>
+	<property name="project.workspace" value="${env.WORKSPACE}/commsy"/>
+	
+	<target name="build" depends="clean,prepare,lint,phploc,js"/>
+	
+	<target name="clean">
+	</target>
+	
+	<target name="js">
+        <echo>WORKSPACE: ${project.workspace}</echo>
+        <exec dir="${project.workspace}/htdocs/js/" executable="./src/util/buildscripts/build.sh">
+                <arg value="--profile build.js"></arg>
+        </exec>
+    </target>
+	
+	<target name="prepare">
+		<mkdir dir="${project.workspace}/build/logs"/>
+	</target>
+	
+	<target name="lint" description="Perform syntax check of source files">
+		<apply executable="php" failonerror="true">
+			<arg value="-l"></arg>
+			
+			<fileset dir="${project.workspace}">
+				<include name="**/*.php"/>
+				<exclude name="htdocs/js/**"/>
+				<modified />
+			</fileset>
+		</apply>
+	</target>
+	
+	<target name="phploc" description="Measure project size using PHPLOC">
+		<exec executable="phploc">
+			<arg value="--log-csv" />
+			<arg value="${project.workspace}/build/logs/phploc.csv" />
+			<arg path="${project.workspace}" />
+		</exec>
+	</target>
+	
+</project>

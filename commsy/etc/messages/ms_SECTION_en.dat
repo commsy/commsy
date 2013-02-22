@@ -1,0 +1,9 @@
+<?php
+$message["SECTION_CHANGE_BUTTON"]["en"] = "Save section";
+$message["SECTION_CHOOSE_POSITION"]["en"] = "Paste at position:";
+$message["SECTION_DELETE"]["en"] = "Section delete";
+$message["SECTION_EDIT"]["en"] = "Edit section";
+$message["SECTION_ENTER_NEW"]["en"] = "New section";
+$message["SECTION_OTHER_SECTIONS"]["en"] = "All sections";
+$message["SECTION_SAVE_BUTTON"]["en"] = "Create section";
+?>

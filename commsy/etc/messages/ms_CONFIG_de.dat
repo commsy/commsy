@@ -1,0 +1,6 @@
+<?php
+$message["CONFIG_BASIC_DESC"]["de"] = "Legen Sie z.B. den Raumnamen fest und ob er dargestellt werden soll, wählen Sie die Sprache des Raumes aus und geben Sie dem Raum ein Logo. Außerdem können Sie die zentralen Zuordnungen für den Raum treffen.";
+$message["CONFIG_BASIC_DESC_TITLE"]["de"] = "Grundeinstellungen";
+$message["CONFIG_META_TITLE"]["de"] = "Raumeinstellungen";
+$message["CONFIG_MODERATION_TITLE"]["de"] = "Moderationsunterstützung";
+?>

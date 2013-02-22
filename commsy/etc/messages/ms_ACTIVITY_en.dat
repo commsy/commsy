@@ -1,0 +1,11 @@
+<?php
+$message["ACTIVITY_ACTIVE_MEMBERS"]["en"] = "active members (logged in once at least)";
+$message["ACTIVITY_ACTIVE_MEMBERS_DESC"]["en"] = "active members (%1 days)";
+$message["ACTIVITY_ACTIVE_MEMBERS_DESC_NEW"]["en"] = "active members";
+$message["ACTIVITY_NEW_ENTRIES"]["en"] = "new items";
+$message["ACTIVITY_NEW_ENTRIES_NEW"]["en"] = "new items (%1 days)";
+$message["ACTIVITY_NEW_ENTRIES_NEW_SINGULAR"]["en"] = "new item (%1 days)";
+$message["ACTIVITY_NEW_ENTRIES_SINGULAR"]["en"] = "new item";
+$message["ACTIVITY_PAGE_IMPRESSIONS"]["en"] = "page impressions";
+$message["ACTIVITY_PAGE_IMPRESSIONS_SINGULAR"]["en"] = "page impression";
+?>

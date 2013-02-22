@@ -1,0 +1,15 @@
+<?php
+$message["ADMIN_CANCEL_BUTTON"]["de"] = "Bearbeitung abbrechen";
+$message["ADMIN_INDEX"]["de"] = "Einstellungen";
+$message["ADMIN_MAIL_ARCHIVE_SET_NOT_WOLRDPUBLIC_TITLE"]["de"] = "Material %1 nicht weltweit verfügbar machen";
+$message["ADMIN_MAIL_ARCHIVE_SET_WOLRDPUBLIC_TITLE"]["de"] = "Material %1 weltweit verfügbar";
+$message["ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_BODY"]["de"] = "Es wurde ein Material zur weltweiten Veröffentlichung angemeldet:
+
+CommSy: %2
+Materialname: %1
+EinstellerIn: %3";
+$message["ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT"]["de"] = "%1: Material veröffentlichen?";
+$message["ADMIN_USER_FORM_TITLE"]["de"] = "Kennung verwalten";
+$message["ADMIN_USER_FREE"]["de"] = "freischalten";
+$message["ADMIN_USER_LOCK"]["de"] = "sperren";
+?>

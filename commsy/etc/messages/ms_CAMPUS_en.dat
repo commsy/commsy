@@ -1,0 +1,4 @@
+<?php
+$message["CAMPUS_SEARCH_INDEX"]["en"] = "Search workspace";
+$message["CAMPUS_SEARCH_ONLY_THIS_ROOM"]["en"] = "only this room";
+?>

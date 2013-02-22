@@ -1,0 +1,10 @@
+<?php
+$message["CHAT_CHAT"]["de"] = "Raum-Chat";
+$message["CHAT_CONFIGURATION_CHAT"]["de"] = "Raum-Chat";
+$message["CHAT_CONFIGURATION_CHAT_VALUE"]["de"] = "Raum-Chat aktivieren";
+$message["CHAT_CONFIGURATION_DESC"]["de"] = "Einstellungen zum Raum-Chat.";
+$message["CHAT_CONFIGURATION_DESCRIPTION"]["de"] = "Der eingeschaltete Chat ist über die &quot;Home&quot; unter &quot;Erweiterungen&quot; erreichbar.";
+$message["CHAT_CONFIGURATION_EXTRA_CHAT"]["de"] = "Raum-Chat";
+$message["CHAT_CONFIGURATION_EXTRA_CHAT_DESC"]["de"] = "Hiermit können Sie die Erweiterung &quot;Raum-Chat&quot; freischalten pro Raum oder für ein gesamtes Portal (alle Räume). Der Raum-Chat muss dann noch von den Moderatoren pro Raum aktiviert werden.";
+$message["CHAT_CONFIGURATION_LINK"]["de"] = "Raum-Chat";
+?>

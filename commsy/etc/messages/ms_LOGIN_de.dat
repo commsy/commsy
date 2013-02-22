@@ -1,0 +1,7 @@
+<?php
+$message["LOGIN_ACCOUNT_FORGET_LINK"]["de"] = "Kennung vergessen?";
+$message["LOGIN_NOT_ALLOWED"]["de"] = "Sie müssen angemeldet sein, um auf die Inhalte dieses Raums zuzugreifen.
+<br/>
+<span style=&quot;font-weight: bold;&quot;>Bitte melden Sie sich zunächst am System an</span>.";
+$message["LOGIN_PASSWORD_FORGET_LINK"]["de"] = "Passwort vergessen?";
+?>

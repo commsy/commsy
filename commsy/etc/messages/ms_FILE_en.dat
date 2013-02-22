@@ -1,0 +1,6 @@
+<?php
+$message["FILE_ERROR_GET_FILE"]["en"] = "Sorry, you do not have sufficient permissions to download this file.";
+$message["FILE_ERROR_GET_FILE_NOT_EXISTS"]["en"] = "Sorry, this file does not exist.";
+$message["FILE_ZIP_UPLOAD_PROCESS_DESC"]["en"] = "Number of files to integrate";
+$message["FILE_ZIP_UPLOAD_PROCESS_TITLE"]["en"] = "The archive *%1* will be extracted and all files will be integrated. Please don't stop this process.";
+?>

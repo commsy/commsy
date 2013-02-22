@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<enterprise>
+   <properties>
+      <datasource>${DATASOURCE}</datasource>
+      <datetime>${DATETIME}</datetime>
+      <extension>
+         <targets>${TARGET}</targets>
+      </extension>
+   </properties>
+   <group recstatus="${OP}">
+      <sourcedid>
+         <source>${DATASOURCE}</source>
+         <id>${GROUPID}</id>
+      </sourcedid>
+      <grouptype>
+         <typevalue level="0">CLASSES</typevalue>
+      </grouptype>
+      <description>
+         <short>${TITLE}</short>
+         <long>${FULL}</long>
+      </description>
+      <datasource>${DATASOURCE}</datasource>
+      <extension>
+         <institution>${INSTITUTION}</institution>
+         <faculty>${FACULTY}</faculty>
+         <code>${CODE}</code>
+         <charset>${CHARSET}</charset>
+         <template>${TEMPLATE}</template>
+         <language>${LANG}</language>
+      </extension>
+   </group>
+</enterprise>

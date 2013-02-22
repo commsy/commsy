@@ -1,0 +1,4 @@
+<?php
+$message["SYSTEM_MAIL_MESSAGE"]["de"] = "%1";
+$message["SYSTEM_MAIL_REPLY_INFO"]["de"] = "Bei Rückfragen wenden sie sich bitte an";
+?>

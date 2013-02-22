@@ -1,0 +1,1 @@
+For documention visit http://thecodecentral.com/2008/11/12/ctrotator-a-flexible-itemimage-rotator-script-for-jquery

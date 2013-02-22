@@ -1,0 +1,16 @@
+<?php
+$message["TOPIC_ACTIVATE_PATH"]["de"] = "Pfad aktivieren";
+$message["TOPIC_ACTIVATE_PATH_DESCRIPTION"]["de"] = "Durch die Aktivierung der Pfade können Sie die zugeordneten Einträge in eine selbstbestimmte Reihenfolge bringen.";
+$message["TOPIC_ACTIVATE_PATH_SELECT_DESCRIPTION"]["de"] = "Es werden nur die angehakten Einträge in den Pfad übernommen. Durch Drag &amp; Drop können Sie die Einträge in eine selbstbestimmte Reihenfolge bringen.";
+$message["TOPIC_CHANGE_BUTTON"]["de"] = "%_TOPICS_SUB_AKKS_BIG ändern";
+$message["TOPIC_DEACTIVATE_PATH"]["de"] = "Pfad deaktivieren";
+$message["TOPIC_EDIT"]["de"] = "%_TOPICS_SUB_NOMS_LOW bearbeiten";
+$message["TOPIC_ENTER"]["de"] = "Beitreten";
+$message["TOPIC_ENTER_NEW"]["de"] = "%_TOPICS_SUB_NOMS_LOW eingeben";
+$message["TOPIC_EXPORT_ITEM_ZIP"]["de"] = "Thema";
+$message["TOPIC_INDEX"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
+$message["TOPIC_LEAVE"]["de"] = "Austreten";
+$message["TOPIC_MAIL_NO_RECIPIENTS_ERROR"]["de"] = "Den ausgewählten %_TOPICS_SUB_AKKPL_BIG haben sich keine Personen zu geordnet, d.h. die Adressatenliste dieser E-Mail ist leer.";
+$message["TOPIC_PATH"]["de"] = "Pfad";
+$message["TOPIC_SAVE_BUTTON"]["de"] = "%_TOPICS_SUB_NOMS_LOW speichern";
+?>

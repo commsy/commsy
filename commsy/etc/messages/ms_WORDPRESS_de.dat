@@ -1,0 +1,28 @@
+<?php
+$message["WORDPRESS_CONFIGURATION_COMMENTS"]["de"] = "Kommentarfunktion";
+$message["WORDPRESS_CONFIGURATION_COMMENTS_DESC"]["de"] = "Einstellungen zu Benutzerkommentaren";
+$message["WORDPRESS_CONFIGURATION_COMMON"]["de"] = "Blog-Einstellungen";
+$message["WORDPRESS_CONFIGURATION_COMMON_DESC"]["de"] = "allgemeine Optionen";
+$message["WORDPRESS_CONFIGURATION_DESC"]["de"] = "Einstellungen für das angebundene Blog.";
+$message["WORDPRESS_CONFIGURATION_LINK"]["de"] = "Raum-Blog";
+$message["WORDPRESS_CONFIGURATION_SHOW_HOMELINK"]["de"] = "Link zum Blog im Projektraum anzeigen";
+$message["WORDPRESS_CONFIGURATION_USE_COMMENTS"]["de"] = "Kommentare erlauben";
+$message["WORDPRESS_CONFIGURATION_USE_COMMENTS_DESC"]["de"] = "Kommentare zu Blog-Einträgen ermöglichen";
+$message["WORDPRESS_CONFIGURATION_USE_COMMENTS_MODERATION"]["de"] = "Kommentare moderieren";
+$message["WORDPRESS_CONFIG_ACCESS_NOT_GRANTED"]["de"] = "Aufgrund Ihrer Rechte in WordPress dürfen Sie den Blog dieses CommSy-Raumes nicht konfigurieren.";
+$message["WORDPRESS_CREATE_ERROR_EXISTING_USER_EMAIL"]["de"] = "WordPress erlaubt keine 2 Accounts mit der gleichen E-Mail-Adresse und Ihre E-Mail-Adresse wird schon in WordPress verwendet. Bitte ändern Sie Ihre E-Mail-Adresse in CommSy in Ihrem Profil auf Portal-Ebene oder bei Ihrer anderen Kennung in WordPress.";
+$message["WORDPRESS_DELETE_BUTTON"]["de"] = "Blog löschen";
+$message["WORDPRESS_DELETE_ERROR_TEXT"]["de"] = "Ihr Blog konnte auf der Seite von WordPress nicht gelöscht werden. Bitte versuchen Sie es später noch einmal oder wenden Sie sich an die CommSy-Administration.";
+$message["WORDPRESS_MODIFY_ERROR_NOT_ALLOWED"]["de"] = "Sie haben leider keine ausreichenden Rechte in WordPress, um diesen Blog zu konfigurieren. Bitte wenden Sie sich an Ihre Kollegin / Ihren Kollegen, der den Blog eingerichtet hat und lassen Sie sich in WordPress zum Administrator für diesen Blog befördern.";
+$message["WORDPRESS_SAVE_BUTTON"]["de"] = "Wordpress-Blog anlegen";
+$message["WORDPRESS_SELECT_MEMBER_ROLE"]["de"] = "Rolle neuer Blog-Benutzer";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_ADMINISTRATOR"]["de"] = "Administrator";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_AUTHOR"]["de"] = "Autor";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_DESCRIPTION"]["de"] = "Der Abonnent darf nur lesend auf den Blog zugreifen.
+Der Autor darf darüber hinaus eigene Beiträge publizieren.
+Der Redakteur darf eigene und fremde Beiträge und Seiten bearbeiten und veröffentlichen.
+Der Administrator darf darüber hinaus den Blog konfigurieren und administrieren.";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_EDITOR"]["de"] = "Redakteur";
+$message["WORDPRESS_SELECT_MEMBER_ROLE_SUBSCRIBER"]["de"] = "Lesender Zugriff / Abonnent";
+$message["WORDPRESS_SKIN_DESCRIPTION"]["de"] = "Detaillierte Informationen zu den Themes erhalten Sie in Ihrem %1.";
+?>

@@ -1,0 +1,9 @@
+<?php
+$message["ENTRY_COPY_MYLIST"]["en"] = "Copy list";
+$message["ENTRY_DELETE_ENTRY_FROM_BUZZWORD"]["en"] = "Delete assignment";
+$message["ENTRY_DELETE_ENTRY_FROM_MATRIX"]["en"] = "Delete from matrix";
+$message["ENTRY_DELETE_ENTRY_FROM_MYLIST"]["en"] = "Delete from list";
+$message["ENTRY_DELETE_MYLIST"]["en"] = "Delete list";
+$message["ENTRY_DELETE_RESTRICTION"]["en"] = "delete restriction";
+$message["ENTRY_INDEX"]["en"] = "My repository";
+?>

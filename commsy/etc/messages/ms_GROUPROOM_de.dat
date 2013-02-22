@@ -1,0 +1,28 @@
+<?php
+$message["GROUPROOM_ACCESS_NOT_GRANTED"]["de"] = "Sie dürfen den Gruppenraum <span style=&quot;font-weight:bold;&quot;>%1</span> nicht betreten, da Sie dort kein Mitglied sind.";
+$message["GROUPROOM_COMMON_DESC"]["de"] = "Dieser Raum kann nur von Mitgliedern der Gruppe betreten werden. Er dient dem Austausch der Gruppe.";
+$message["GROUPROOM_CONFIGURATION_CHOICE_TITLE"]["de"] = "Gruppenräume";
+$message["GROUPROOM_CONFIGURATION_CHOICE_VALUE"]["de"] = "Gruppenräume aktivieren";
+$message["GROUPROOM_EXPLANATION_TITLE"]["de"] = "Erläuterung";
+$message["GROUPROOM_EXPLANATION_VALUE"]["de"] = "Bei Aktivierung dieser Funktion stehen in diesem Raum Gruppenräume zur Verfügung. Dies bedeutet, dass Mitglieder einer Gruppe bei der Gruppe einen Raum einrichten können. Dieser kann dann nur von den Gruppenmitgliedern betreten werden.";
+$message["GROUPROOM_FORM_CHECKBOX_TEXT"]["de"] = "aktivieren";
+$message["GROUPROOM_FORM_CHECKBOX_TITLE"]["de"] = "Gruppenraum";
+$message["GROUPROOM_MAIL_BODY_ARCHIVE"]["de"] = "Archivierung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_BODY_DELETE"]["de"] = "Löschung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_BODY_LOCK"]["de"] = "Sperrung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_BODY_OPEN"]["de"] = "Eröffnung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_BODY_PROJECT_ROOM"]["de"] = "Der Gruppenraum ist mit %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verknüpft:";
+$message["GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY"]["de"] = "*keine %_PROJECT_SUB_NOMPL_BIG";
+$message["GROUPROOM_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_BODY_UNDELETE"]["de"] = "Wiederherstellung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_BODY_UNLOCK"]["de"] = "Entsperrung eines Gruppenraumes.";
+$message["GROUPROOM_MAIL_SEND_WHY_GROUP"]["de"] = "Sie haben diese E-Mail als Mitglied der Moderation des Gruppenraums %1 erhalten.";
+$message["GROUPROOM_MODERATORS"]["de"] = "Moderatoren des Gruppenraums";
+$message["GROUPROOM_PORTAL_SELECT_TITLE"]["de"] = "Gruppenräume";
+$message["GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für den Gruppenraum %4 angemeldet.
+
+Die Informationen im Einzelnen:
+Name: %1
+Kennung: %2
+E-Mail Adresse: %3";
+?>

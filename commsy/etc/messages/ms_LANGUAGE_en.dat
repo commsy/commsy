@@ -1,0 +1,6 @@
+<?php
+$message["LANGUAGE_DELETE_UNUSED_BUTTON"]["en"] = "delete tags";
+$message["LANGUAGE_EDIT"]["en"] = "Edit";
+$message["LANGUAGE_UNUSED_FORM_TITLE"]["en"] = "unused tags";
+$message["LANGUAGE_UNUSED_TAGS"]["en"] = "unused tags";
+?>

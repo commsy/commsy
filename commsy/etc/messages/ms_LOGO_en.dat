@@ -1,0 +1,5 @@
+<?php
+$message["LOGO_DELETE_OPTION"]["en"] = "Delete current image";
+$message["LOGO_UPLOAD"]["en"] = "Logo";
+$message["LOGO_UPLOAD_DESC"]["en"] = "Notice: CommSy will not resize your logo. Please make sure it has the correct dimensions.";
+?>

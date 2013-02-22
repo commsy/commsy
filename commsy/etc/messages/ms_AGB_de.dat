@@ -1,0 +1,14 @@
+<?php
+$message["AGB_ACCEPTANCE_BUTTON"]["de"] = "Ich akzeptiere die Nutzungsvereinbarungen.";
+$message["AGB_ACCEPTANCE_NOT_BUTTON"]["de"] = "Beantragung abbrechen";
+$message["AGB_ACCEPTANCE_NOT_BUTTON_PORTAL"]["de"] = "Mitgliedschaft beenden";
+$message["AGB_ACCEPTANCE_NOT_BUTTON_ROOM"]["de"] = "Teilnahme ablehnen";
+$message["AGB_CHANGE_TITLE"]["de"] = "Neue Nutzungsvereinbarungen";
+$message["AGB_COMFIRMATION_TEXT"]["de"] = "Ich stimme den %1 zu.";
+$message["AGB_CONFIRMATION"]["de"] = "Nutzungsvereinbarungen";
+$message["AGB_CONFIRMATION_GUIDE"]["de"] = "Nutzungsver-
+einbarungen";
+$message["AGB_CONFIRMATION_LINK_INPUT"]["de"] = "Nutzungsvereinbarungen";
+$message["AGB_MUST_BE_ACCEPTED_FAILURE_TEXT"]["de"] = "Bitte stimmen Sie den <span style=&quot;font-weight:bold;&quot;>Nutzungsvereinbarungen</span> zu, da wir Ihnen die Nutzung des Systems sonst nicht ermöglichen können";
+$message["AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE"]["de"] = "In Ihrer Sprache wurden keine AGBs gefunden.";
+?>

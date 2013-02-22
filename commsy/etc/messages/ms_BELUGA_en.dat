@@ -1,0 +1,6 @@
+<?php
+$message["BELUGA_AVAILABILITY"]["en"] = "Availability";
+$message["BELUGA_IMPORT_DESCRIPTION"]["en"] = "By clicking this link, you directly enter the Library Catalogue System at *Hamburg State and University Library (SUB Hamburg)*. Once there, you can collect bibliographic data online to directly import into the CommSy workspace. The bibliographic data from the selected catalogue entries will be imported automatically when you re-enter the CommSy workspace.";
+$message["BELUGA_LINK"]["en"] = "Ressource";
+$message["BELUGA_NO_AVAILABILITY_INFORMATION"]["en"] = "no accessible information";
+?>

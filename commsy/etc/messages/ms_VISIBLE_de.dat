@@ -1,0 +1,10 @@
+<?php
+$message["VISIBLE_ALWAYS"]["de"] = "webweit";
+$message["VISIBLE_NEVER"]["de"] = "nicht für andere sichtbar";
+$message["VISIBLE_ONLY_LOGGED"]["de"] = "raumweit";
+$message["VISIBLE_PROPERTY"]["de"] = "Sichtbarkeit";
+$message["VISIBLE_PROPERTY_DESC"]["de"] = "<ul>
+<li>raumweit = jedes Mitglied dieses Raumes kann Ihre Kontaktdaten sehen</li>
+<li>webweit = jeder kann Ihre Kontaktdaten sehen</li>
+</ul>";
+?>

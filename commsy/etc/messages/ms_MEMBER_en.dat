@@ -1,0 +1,3 @@
+<?php
+$message["MEMBER_EDIT_ERROR_JUST_DELETED"]["en"] = "The membership %1 has already been cancelled.";
+?>

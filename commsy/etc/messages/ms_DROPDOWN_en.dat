@@ -1,0 +1,10 @@
+<?php
+$message["DROPDOWN_NEW_ANNOUNCEMENT"]["en"] = "Link new announcement";
+$message["DROPDOWN_NEW_DATE"]["en"] = "Link new date";
+$message["DROPDOWN_NEW_DISCUSSION"]["en"] = "Link new discussion";
+$message["DROPDOWN_NEW_GROUP"]["en"] = "Link new group";
+$message["DROPDOWN_NEW_INSTITUTION"]["en"] = "Link %_INSTITUTION_SUB_NOMS_LOW_ADJ_NEW_LOW";
+$message["DROPDOWN_NEW_MATERIAL"]["en"] = "Link new material";
+$message["DROPDOWN_NEW_TODO"]["en"] = "Link new todo";
+$message["DROPDOWN_NEW_TOPIC"]["en"] = "Link %_TOPICS_SUB_NOMS_LOW_ADJ_NEW_LOW";
+?>

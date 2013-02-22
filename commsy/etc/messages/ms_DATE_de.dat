@@ -1,0 +1,34 @@
+<?php
+$message["DATE_ALTERNATIVE_DISPLAY"]["de"] = "Ansicht wechseln";
+$message["DATE_BACK_TO_CALENDAR"]["de"] = "zum Kalender";
+$message["DATE_COLOR_BLUE"]["de"] = "Blau";
+$message["DATE_COLOR_DARK_BLUE"]["de"] = "Dunkelblau";
+$message["DATE_COLOR_DEFAULT_YELLOW"]["de"] = "Gelb";
+$message["DATE_COLOR_GREEN"]["de"] = "Grün";
+$message["DATE_COLOR_GREY"]["de"] = "Grau";
+$message["DATE_COLOR_LIGHT_YELLOW"]["de"] = "Hellgelb (Standard)";
+$message["DATE_COLOR_ORANGE"]["de"] = "Orange";
+$message["DATE_COLOR_PURPLE"]["de"] = "Lila";
+$message["DATE_COLOR_RED"]["de"] = "Rot";
+$message["DATE_COLOR_TURQUOISE"]["de"] = "Türkis";
+$message["DATE_COLOR_UNKNOWN"]["de"] = "Unbekannt";
+$message["DATE_ENDDAY"]["de"] = "Tag (Ende)";
+$message["DATE_ENDTIME"]["de"] = "Uhrzeit (Ende)";
+$message["DATE_ENTER"]["de"] = "Teilnahme zusagen";
+$message["DATE_EXPORT_ITEM_ZIP"]["de"] = "Termin";
+$message["DATE_EXPORT_ZIP"]["de"] = "Termine";
+$message["DATE_IMPORT_FORM1"]["de"] = "Externe Termine importieren (Schritt 1 von 2)";
+$message["DATE_IMPORT_FORM2"]["de"] = "Externe Termine importieren (Schritt 2 von 2)";
+$message["DATE_IMPORT_PUBLIC"]["de"] = "Terminart";
+$message["DATE_INDEX"]["de"] = "Termine";
+$message["DATE_LEAVE"]["de"] = "Teilnahme absagen";
+$message["DATE_LOCATION"]["de"] = "Ort";
+$message["DATE_MONTH_PRESENTATION"]["de"] = "Monatsansicht";
+$message["DATE_PARTICIPANTS"]["de"] = "Teilnahme";
+$message["DATE_PRIVATE_ENTRY"]["de"] = "privater Eintrag";
+$message["DATE_PUBLIC_NO"]["de"] = "als private Termine hochladen";
+$message["DATE_STARTDAY"]["de"] = "Tag (Beginn)";
+$message["DATE_STARTTIME"]["de"] = "Uhrzeit (Beginn)";
+$message["DATE_TITLE_DESC"]["de"] = "Ordnen Sie bitte die hochgeladenen Kategorien zu.";
+$message["DATE_WEEK_PRESENTATION"]["de"] = "Wochenansicht";
+?>

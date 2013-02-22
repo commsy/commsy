@@ -1,0 +1,3 @@
+<?php
+$message["ROOMS_ACCESS_NOT_GRANTED"]["de"] = "Sie dürfen %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG <span style=&quot;font-weight:bold;&quot;>%1</span> nicht betreten, da Sie dort kein Mitglied sind. Sie können hier die %2.";
+?>

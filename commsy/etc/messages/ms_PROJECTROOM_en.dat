@@ -1,0 +1,5 @@
+<?php
+$message["PROJECTROOM_CLOSED"]["en"] = "archived";
+$message["PROJECTROOM_LOCKED"]["en"] = "locked";
+$message["PROJECTROOM_TEMPLATE"]["en"] = "Template";
+?>

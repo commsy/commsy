@@ -1,0 +1,3 @@
+<?php
+$message["HELP_COMMON_FORMAT_TITLE"]["en"] = "Formatting options";
+?>

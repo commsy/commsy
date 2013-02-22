@@ -1,0 +1,12 @@
+<?php
+$message["PROFILE_ACCOUNT_DATA"]["en"] = "Profile settings";
+$message["PROFILE_COMMSY_BAR_DATA"]["en"] = "CommSy-Bar";
+$message["PROFILE_NEWSLETTER_DATA"]["en"] = "Newsletter";
+$message["PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION"]["en"] = "You can arrange the contents referred to into voluntary order by using drag & drop. Only the selected entries will be shown as a path.";
+$message["PROFILE_ROOMLIST_DELETE_OPTION"]["en"] = "delete customized room list and use system room list";
+$message["PROFILE_ROOM_LIST_DATA"]["en"] = "Workspace list";
+$message["PROFILE_USER_DATA"]["en"] = "User data";
+$message["PROFILE_USER_PASSWORD"]["en"] = "New password";
+$message["PROFILE_USER_PASSWORD2"]["en"] = "Repeat new password";
+$message["PROFILE_USER_PASSWORD_OLD"]["en"] = "current password";
+?>

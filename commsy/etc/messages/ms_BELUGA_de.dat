@@ -1,0 +1,6 @@
+<?php
+$message["BELUGA_AVAILABILITY"]["de"] = "Verfügbarkeit";
+$message["BELUGA_IMPORT_DESCRIPTION"]["de"] = "Über den Link können Sie direkt in den Beluga-Katalog der *Staats- und Universitätsbibliothek Hamburg* wechseln. Im Beluga-Katalog können Sie sich eine Liste von Literaturangaben zusammenstellen. Wenn Sie dort anschließend über den Link &quot;Export direkt ins LMS&quot; zu CommSy zurückspringen, werden Ihre Beluga-Einträge sofort als einzelne Materialien in diesen CommSy-Raum importiert.";
+$message["BELUGA_LINK"]["de"] = "Quelle";
+$message["BELUGA_NO_AVAILABILITY_INFORMATION"]["de"] = "Keine Informationen vorhanden";
+?>

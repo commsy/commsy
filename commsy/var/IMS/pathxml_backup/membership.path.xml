@@ -1,0 +1,18 @@
+<pathinfo>
+   <var name="TARGET">
+   <path>properties/extension/targets</path></var>
+   <var name="DATASOURCE">
+   <path>properties/datasource</path><path>membership/member/sourcedid/source</path><path>membership/sourcedid/source</path></var>
+   <var name="DATETIME">
+   <path>properties/datetime</path></var>
+   <var name="OP">
+   <path>membership[@recstatus]</path><path>membership/member/role[@recstatus]</path></var>
+   <var name="USERID">
+   <path>membership/member/role/userid</path><path>membership/member/sourcedid/id</path></var>
+   <var name="GROUPID">
+   <path>membership/sourcedid/id</path></var>
+   <var name="ROLETYPE">
+   <path>membership/member/role[@roletype]</path></var>
+   <var name="SOURCE">
+   <path>membership/sourcedid/source</path><path>membership/member/sourcedid/source</path></var>
+</pathinfo>

@@ -1,0 +1,9 @@
+<?php
+$message["SECTION_CHANGE_BUTTON"]["de"] = "Abschnitt speichern";
+$message["SECTION_CHOOSE_POSITION"]["de"] = "Einfügen an Position:";
+$message["SECTION_DELETE"]["de"] = "Abschnitt löschen";
+$message["SECTION_EDIT"]["de"] = "Abschnitt ändern";
+$message["SECTION_ENTER_NEW"]["de"] = "Neuer Abschnitt";
+$message["SECTION_OTHER_SECTIONS"]["de"] = "Alle Abschnitte";
+$message["SECTION_SAVE_BUTTON"]["de"] = "Abschnitt anlegen";
+?>

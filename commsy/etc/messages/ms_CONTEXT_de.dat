@@ -1,0 +1,33 @@
+<?php
+$message["CONTEXT_ACTIVITY"]["de"] = "Aktivität";
+$message["CONTEXT_ACTUALITY"]["de"] = "Angezeigt auf der Home";
+$message["CONTEXT_ENTER"]["de"] = "Raum betreten";
+$message["CONTEXT_ENTER_AS_GUEST"]["de"] = "Raum als Gast betreten";
+$message["CONTEXT_ENTER_LOGIN"]["de"] = "Um diesen Raum zu betreten, müssen Sie sich einloggen oder die %1.";
+$message["CONTEXT_ENTER_LOGIN2"]["de"] = "Um diesen Raum zu betreten, müssen Sie sich einloggen.";
+$message["CONTEXT_ENTER_LOGIN_EXTERNAL_PAGES"]["de"] = "Um diesen Raum zu betreten, müssen Sie sich einloggen oder die %1.";
+$message["CONTEXT_ENTER_LOGIN_EXTERNAL_PAGES2"]["de"] = "Um diesen Raum zu betreten, müssen Sie sich einloggen.";
+$message["CONTEXT_ENTER_LOGIN_NOT_ALLOWED"]["de"] = "Sie dürfen diesen Raum nicht betreten.";
+$message["CONTEXT_ENTER_NEED_TO_BECOME_GROUP_MEMBER"]["de"] = "Sie müssen erst Mitglied der Gruppe %1 in Raum %2 werden.";
+$message["CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER"]["de"] = "Sie müssen erst Mitglied im Raum %1 und dann in der Gruppe %2 werden.";
+$message["CONTEXT_IS_DELETED"]["de"] = "Dieser Raum (%1) ist gelöscht worden.";
+$message["CONTEXT_IS_LOCKED"]["de"] = "Dieser Raum (%1) ist von der Moderation gesperrt worden.";
+$message["CONTEXT_JOIN"]["de"] = "Teilnahme beantragen";
+$message["CONTEXT_LANGUAGE"]["de"] = "Sprache";
+$message["CONTEXT_LANGUAGE_DESC"]["de"] = "In dieser Sprache wird der Raum allen Teilnehmenden präsentiert.";
+$message["CONTEXT_LANGUAGE_DESC2"]["de"] = "In dieser Sprache wird der Raum allen Teilnehmenden präsentiert.";
+$message["CONTEXT_LANGUAGE_USER"]["de"] = "Benutzereinstellungen";
+$message["CONTEXT_MODERATOR"]["de"] = "Moderation";
+$message["CONTEXT_MOVE_ROOM"]["de"] = "Raum für ein anderes Portal anmelden";
+$message["CONTEXT_NOT_SHOWN_ON_HOME"]["de"] = "Nein";
+$message["CONTEXT_NOT_SHOW_ON_HOME"]["de"] = "Auf der Home ausblenden";
+$message["CONTEXT_NO_ROOM"]["de"] = "Kein %_PROJECT_SUB_NOMS_BIG";
+$message["CONTEXT_ROOM_ARCHIVE"]["de"] = "Raum archivieren";
+$message["CONTEXT_ROOM_ARCHIVE_DESCRIPTION_NOT_POSSIBLE"]["de"] = "Vorlagen können nicht archiviert werden.";
+$message["CONTEXT_ROOM_LOCK"]["de"] = "Raum sperren";
+$message["CONTEXT_ROOM_OPEN"]["de"] = "Raum aktivieren";
+$message["CONTEXT_ROOM_UNDELETE"]["de"] = "Raum wieder herstellen";
+$message["CONTEXT_ROOM_UNLOCK"]["de"] = "Raum entsperren";
+$message["CONTEXT_SHOWN_ON_HOME"]["de"] = "Ja";
+$message["CONTEXT_SHOW_ON_HOME"]["de"] = "Auf der Home anzeigen";
+?>

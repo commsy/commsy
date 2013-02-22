@@ -1,0 +1,4 @@
+<?php
+$message["MYROOM_INDEX"]["en"] = "My workspaces";
+$message["MYROOM_SORTED_BY_ACTIVITY"]["en"] = "sorted by activity";
+?>

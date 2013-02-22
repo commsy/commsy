@@ -1,0 +1,9 @@
+<?php
+$message["SEARCH_FIELD_RESTRICTION"]["de"] = "begrenzt auf";
+$message["SEARCH_INDEX"]["de"] = "Suche";
+$message["SEARCH_LINKED_ENTRIES_ONLY"]["de"] = "nur verknüpfte Beiträge";
+$message["SEARCH_ONLY_FILES_TEXT"]["de"] = "nur Einträge mit Dateien";
+$message["SEARCH_ONLY_IN_FILES_TEXT"]["de"] = "Nur in Einträge mit Dateien suchen";
+$message["SEARCH_RELEVANZ"]["de"] = "Relevanz";
+$message["SEARCH_RUBRIC_RESTRICTION"]["de"] = "Auswahl der Rubrik";
+?>

@@ -1,0 +1,38 @@
+<?php
+$message["INDEX_ACTION_FORM_BCC"]["de"] = "bcc an Absender";
+$message["INDEX_ACTION_FORM_BCC_MODERATOR"]["de"] = "bcc an die Moderation";
+$message["INDEX_ACTION_FORM_CC"]["de"] = "cc und/oder";
+$message["INDEX_ACTION_FORM_CC_BCC"]["de"] = "cc / bcc";
+$message["INDEX_ACTION_FORM_CC_MODERATOR"]["de"] = "cc und/oder";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_DELETE"]["de"] = "Kennung löschen";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_FREE"]["de"] = "Kennung freischalten";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_LOCK"]["de"] = "Kennung sperren";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_MERGE"]["de"] = "E-Mail: Kennungen zusammenführen";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_PASSWORD"]["de"] = "E-Mail: Kennung und Passwort";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_EMAIL_SEND"]["de"] = "E-Mail schicken";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_MAKE_CONTACT_PERSON"]["de"] = "Zum / Zur AnprechparterIn machen";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR"]["de"] = "Status ändern auf Moderator";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_STATUS_USER"]["de"] = "Status ändern auf BenutzerIn";
+$message["INDEX_ACTION_FORM_HEADLINE_USER_UNMAKE_CONTACT_PERSON"]["de"] = "Status AnprechparterIn entfernen";
+$message["INDEX_ACTION_FORM_MAIL"]["de"] = "E-Mail";
+$message["INDEX_ACTION_FORM_MAIL_OPTION"]["de"] = "E-Mail verschicken";
+$message["INDEX_ACTION_FORM_MAIL_TO"]["de"] = "an Kennung(en)";
+$message["INDEX_ACTION_FORM_USER_ACCOUNT_DELETE_WARNING"]["de"] = "Mit der Kennung werden auch alle Einträge dieser Person &quot;gelöscht&quot;. Gelöscht bedeutet hier, dass die Einträge durch einen Dummy-Text ersetzt werden, um die Struktur in diesem Raum nicht zu zerstören. Ggf. sollten Sie diese Kennung nur sperren.";
+$message["INDEX_ACTION_PERFORM_USER_ACCOUNT_DELETE_BUTTON"]["de"] = "Kennung löschen";
+$message["INDEX_ACTION_PERFORM_USER_ACCOUNT_FREE_BUTTON"]["de"] = "Kennung freischalten";
+$message["INDEX_ACTION_PERFORM_USER_ACCOUNT_LOCK_BUTTON"]["de"] = "Kennung sperren";
+$message["INDEX_ACTION_PERFORM_USER_MAKE_CONTACT_PERSON_BUTTON"]["de"] = "Status ändern";
+$message["INDEX_ACTION_PERFORM_USER_STATUS_MODERATOR_BUTTON"]["de"] = "Status ändern";
+$message["INDEX_ACTION_PERFORM_USER_STATUS_USER_BUTTON"]["de"] = "Status ändern";
+$message["INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON"]["de"] = "Status ändern";
+$message["INDEX_ACTION_SEND_MAIL_BUTTON"]["de"] = "E-Mail senden";
+$message["INDEX_USER_ACCOUNT_MERGE_ERROR"]["de"] = "Die angewählten Personen haben entweder nicht den Status eines Mitglieds oder haben keine doppelten Kennungen.<br />
+<br />
+Ihre Auswahl wurde zurückgesetzt.";
+$message["INDEX_USER_MAKE_CONTACT_ERROR"]["de"] = "Personen, die noch nicht Mitglieder sind, können nicht zu AnsprechpartnerInnen gemacht werden.<br />
+<br />
+Alle Personen, die noch nicht für diesen Raum zugelassen sind, sind nun nicht mehr selektiert.";
+$message["INDEX_USER_UNMAKE_CONTACT_ERROR"]["de"] = "Personen, die nicht AnsprechpartnerInnen sind, denen kann auch der Status nicht entzogen werden.<br />
+<br />
+Alle Personen, die keine AnsprechpartnerInnen sind, sind nun nicht mehr selektiert.";
+?>

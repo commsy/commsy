@@ -1,0 +1,34 @@
+<?php
+$message["DATE_ALTERNATIVE_DISPLAY"]["en"] = "Change display";
+$message["DATE_BACK_TO_CALENDAR"]["en"] = "calendar";
+$message["DATE_COLOR_BLUE"]["en"] = "blue";
+$message["DATE_COLOR_DARK_BLUE"]["en"] = "dark blue";
+$message["DATE_COLOR_DEFAULT_YELLOW"]["en"] = "yellow";
+$message["DATE_COLOR_GREEN"]["en"] = "green";
+$message["DATE_COLOR_GREY"]["en"] = "grey";
+$message["DATE_COLOR_LIGHT_YELLOW"]["en"] = "light yellow (default)";
+$message["DATE_COLOR_ORANGE"]["en"] = "orange";
+$message["DATE_COLOR_PURPLE"]["en"] = "purple";
+$message["DATE_COLOR_RED"]["en"] = "red";
+$message["DATE_COLOR_TURQUOISE"]["en"] = "turquoise";
+$message["DATE_COLOR_UNKNOWN"]["en"] = "unknown";
+$message["DATE_ENDDAY"]["en"] = "Day (end)";
+$message["DATE_ENDTIME"]["en"] = "Time (end)";
+$message["DATE_ENTER"]["en"] = "Accept participation";
+$message["DATE_EXPORT_ITEM_ZIP"]["en"] = "Date";
+$message["DATE_EXPORT_ZIP"]["en"] = "Dates";
+$message["DATE_IMPORT_FORM1"]["en"] = "Import events from external source (step 1 of 2)";
+$message["DATE_IMPORT_FORM2"]["en"] = "Import events from external source (step 2 of 2)";
+$message["DATE_IMPORT_PUBLIC"]["en"] = "Type of event";
+$message["DATE_INDEX"]["en"] = "Events";
+$message["DATE_LEAVE"]["en"] = "Cancel participation";
+$message["DATE_LOCATION"]["en"] = "Location";
+$message["DATE_MONTH_PRESENTATION"]["en"] = "month view";
+$message["DATE_PARTICIPANTS"]["en"] = "Participants";
+$message["DATE_PRIVATE_ENTRY"]["en"] = "private item";
+$message["DATE_PUBLIC_NO"]["en"] = "Upload events as private items";
+$message["DATE_STARTDAY"]["en"] = "Day (start)";
+$message["DATE_STARTTIME"]["en"] = "Time (start)";
+$message["DATE_TITLE_DESC"]["en"] = "Please relate the categories of the uploaded file.";
+$message["DATE_WEEK_PRESENTATION"]["en"] = "week view";
+?>

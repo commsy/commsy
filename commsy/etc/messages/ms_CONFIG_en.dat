@@ -1,0 +1,6 @@
+<?php
+$message["CONFIG_BASIC_DESC"]["en"] = "Please define workspace basics, i.e. title, logo, language.";
+$message["CONFIG_BASIC_DESC_TITLE"]["en"] = "Workspace basics";
+$message["CONFIG_META_TITLE"]["en"] = "workspace settings";
+$message["CONFIG_MODERATION_TITLE"]["en"] = "Moderation support";
+?>

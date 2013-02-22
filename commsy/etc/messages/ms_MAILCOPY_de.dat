@@ -1,0 +1,4 @@
+<?php
+$message["MAILCOPY_TO_SENDER"]["de"] = "Kopie an Absender";
+$message["MAILCOPY_TO_SENDER_DESC"]["de"] = "Möchten Sie, als Absender, eine Kopie der E-Mail erhalten?";
+?>

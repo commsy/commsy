@@ -1,0 +1,6 @@
+<?php
+$message["MODULE_CONFIG_NO"]["de"] = "ausgeblendet";
+$message["MODULE_CONFIG_NONE"]["de"] = "nicht verfügbar";
+$message["MODULE_CONFIG_SHORT"]["de"] = "ausgeklappt";
+$message["MODULE_CONFIG_TINY"]["de"] = "zugeklappt";
+?>

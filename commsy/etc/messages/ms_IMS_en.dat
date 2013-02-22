@@ -1,0 +1,4 @@
+<?php
+$message["IMS_PASSWORD_ERROR"]["en"] = "The password phrases you entered are not valid! Please enter valid, identical password phrases.";
+$message["IMS_UPLOAD_DESCRIPTION"]["en"] = "Indicate a ZIP-compressed IMS-package on your local harddisk to import it into CommSy. The ZIP-compressed package will be automatically decompressed and imported after the upload.";
+?>

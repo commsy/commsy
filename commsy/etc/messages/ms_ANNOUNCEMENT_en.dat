@@ -1,0 +1,16 @@
+<?php
+$message["ANNOUNCEMENT_ACTUAL_TITLE"]["en"] = "Latest announcements";
+$message["ANNOUNCEMENT_CHANGE_BUTTON"]["en"] = "Save announcement";
+$message["ANNOUNCEMENT_DETAIL"]["en"] = "Announcement";
+$message["ANNOUNCEMENT_EDIT"]["en"] = "Change announcement";
+$message["ANNOUNCEMENT_ENTER_NEW"]["en"] = "Enter announcement";
+$message["ANNOUNCEMENT_EXPORT_ITEM_ZIP"]["en"] = "Announcement";
+$message["ANNOUNCEMENT_EXPORT_ZIP"]["en"] = "Announcements";
+$message["ANNOUNCEMENT_INDEX"]["en"] = "Announcements";
+$message["ANNOUNCEMENT_SAVE_BUTTON"]["en"] = "Save announcement";
+$message["ANNOUNCEMENT_SHOW_HOME_DATE"]["en"] = "Visible until";
+$message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["en"] = "At this date your announcement's highlight status expires and it will no longer be displayed on the Home / notice board page.<br/>
+<br/>
+date: month/day/year<br/>
+time: hour:minute";
+?>

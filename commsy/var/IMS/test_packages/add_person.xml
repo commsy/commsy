@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<enterprise>
+   <properties>
+      <datasource>${DATASOURCE}</datasource>
+      <datetime>${DATETIME}</datetime>
+      <extension>
+         <targets>${TARGET}</targets>
+      </extension>
+   </properties>
+   <person recstatus="${OP}">
+      <sourcedid>
+         <source>${SOURCE}</source>
+         <id>${USERID}</id>
+      </sourcedid>
+      <userid password="${PASSWORD}" pwencryptiontype="${PWENC}">${USERID}</userid>
+      <name>
+         <fn>${PREFIX} ${GIVEN} ${FAMILY}</fn>
+         <n>
+            <family>${FAMILY}</family>
+            <given>${GIVEN}</given>
+            <prefix>${PREFIX}</prefix>
+            <suffix>${SUFFIX}</suffix>
+         </n>
+      </name>
+      <email>${EMAIL}</email>
+      <datasource>${DATASOURCE}</datasource>
+      <extension>
+         <institution>${INSTITUTION}</institution>
+         <faculty>${FACULTY}</faculty>
+         <comment>${COMMENT}</comment>
+         <birthdate>${BIRTHDATE}</birthdate>
+         <role>${ROLE}</role>
+         <id>${ID}</id>
+      </extension>
+   </person>
+</enterprise>
+

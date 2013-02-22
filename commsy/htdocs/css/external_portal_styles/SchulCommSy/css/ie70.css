@@ -1,0 +1,13 @@
+#mainnavigation li{
+	display: inline;
+	text-transform: uppercase;
+	color: #124877;
+	font-weight: bold;
+	padding: 0px 10px 5px 10px;
+	border-bottom: 3px solid #759FC5;
+}
+
+#mainnavigation {
+	margin: 3px 0px 0px 7px;
+}
+

@@ -1,0 +1,3 @@
+<?php
+$message["CC_TO"]["de"] = "CC:";
+?>

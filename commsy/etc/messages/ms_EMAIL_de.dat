@@ -1,0 +1,30 @@
+<?php
+$message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
+$message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
+$message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
+$message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
+$message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
+$message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["de"] = "Hallo %1,
+
+der Upload per E-Mail in Ihren pers&ouml;nlichen Raum war leider nicht erfolgreich.
+
+Bitte &uuml;berpr&uuml;fen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
+
+%2: IHR_UPLOAD_KENNWORT
+
+Gru&szlig; ... CommSy Administrator";
+$message["EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE"]["de"] = "Folgende Dateien waren leider gr&ouml;&szlig;er als die erlaubte Upload-Grenze des Portals (%1 MB):
+
+%2
+Diese Dateien wurden nicht an das neue Material angeh&auml;ngt.";
+$message["EMAIL_TO_COMMSY_RESULT_REGARDS"]["de"] = "Gru&szlig; ... CommSy Administrator";
+$message["EMAIL_TO_COMMSY_RESULT_SUCCESS"]["de"] = "Hallo %1,
+
+der Upload per E-Mail in Ihre pers&ouml;nliche Ablage war erfolgreich.
+
+Das neue Material finden sie in Ihrer CommSy-Leiste.
+";
+$message["EMAIL_TO_INSTITUTION_TITLE"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW &quot;%1&quot;";
+$message["EMAIL_TO_INSTITUTION_TITLE_WITHOUT"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW";
+$message["EMAIL_TO_TOPIC_TITLE"]["de"] = "Email an die Personen, die sich %_TOPICS_ART_DEF_DATS_LOW %_TOPICS_SUB_DATS_BIG &quot;%1&quot; zugeordneten haben.";
+?>

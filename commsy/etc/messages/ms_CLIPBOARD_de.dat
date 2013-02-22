@@ -1,0 +1,6 @@
+<?php
+$message["CLIPBOARD_DELETE_BUTTON"]["de"] = "Auswahl löschen";
+$message["CLIPBOARD_HEADER"]["de"] = "Kopien";
+$message["CLIPBOARD_PASTE_BUTTON"]["de"] = "Auswahl einfügen";
+$message["CLIPBOARD_PASTE_STACK"]["de"] = "Auswahl in &quot;Meine Ablage&quot; einfügen";
+?>

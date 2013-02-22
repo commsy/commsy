@@ -1,0 +1,4 @@
+<?php
+$message["GROUPS_EMAIL_TO_GROUP_BIG"]["en"] = "Send e-mail to group";
+$message["GROUPS_EMAIL_TO_GROUP_TITLE"]["en"] = "Send e-mail to the members of this group";
+?>

@@ -1,0 +1,11 @@
+<?php
+$message["ACTIVITY_ACTIVE_MEMBERS"]["de"] = "Mitglieder, die angemeldet waren";
+$message["ACTIVITY_ACTIVE_MEMBERS_DESC"]["de"] = "aktive Personen (%1 Tage)";
+$message["ACTIVITY_ACTIVE_MEMBERS_DESC_NEW"]["de"] = "aktive Personen";
+$message["ACTIVITY_NEW_ENTRIES"]["de"] = "neue Beiträge";
+$message["ACTIVITY_NEW_ENTRIES_NEW"]["de"] = "neue Beiträge (%1 Tage)";
+$message["ACTIVITY_NEW_ENTRIES_NEW_SINGULAR"]["de"] = "neuer Beitrag (%1 Tage)";
+$message["ACTIVITY_NEW_ENTRIES_SINGULAR"]["de"] = "neuer Beitrag";
+$message["ACTIVITY_PAGE_IMPRESSIONS"]["de"] = "Seitenaufrufe";
+$message["ACTIVITY_PAGE_IMPRESSIONS_SINGULAR"]["de"] = "Seitenaufruf";
+?>

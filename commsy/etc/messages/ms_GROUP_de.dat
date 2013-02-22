@@ -1,0 +1,19 @@
+<?php
+$message["GROUP_ALL_DESC"]["de"] = "In diese Gruppe werden automatisch alle Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG eingetragen. Sie wurde vom System erzeugt und kann nicht gelöscht werden.";
+$message["GROUP_ALL_NAME_DESC"]["de"] = "Diese Gruppe wurde vom System angelegt und ihr Name kann nicht verändert werden.";
+$message["GROUP_CHANGE_BUTTON"]["de"] = "Gruppe speichern";
+$message["GROUP_DISCUSSIONS"]["de"] = "zugeordnete Wiki-Foren";
+$message["GROUP_EDIT"]["de"] = "Gruppe bearbeiten";
+$message["GROUP_ENTER"]["de"] = "Beitreten";
+$message["GROUP_ENTER_LONG"]["de"] = "Der Gruppe beitreten";
+$message["GROUP_ENTER_NEW"]["de"] = "Gruppe eingeben";
+$message["GROUP_EXPORT_ITEM_ZIP"]["de"] = "Gruppe";
+$message["GROUP_HEADER"]["de"] = "Gruppen";
+$message["GROUP_INDEX"]["de"] = "Gruppen";
+$message["GROUP_LEAVE"]["de"] = "Austreten";
+$message["GROUP_LEAVE_LONG"]["de"] = "Aus der Gruppe austreten";
+$message["GROUP_MAIL_NO_RECIPIENTS_ERROR"]["de"] = "Den ausgewählten Gruppen haben sich keine Personen zu geordnet, d.h. die Adressatenliste dieser E-Mail ist leer.";
+$message["GROUP_MEMBERS"]["de"] = "Mitglieder";
+$message["GROUP_PICTURE_FILE_DESC"]["de"] = "Hier können Sie ein Bild für die Gruppe hinzufügen.";
+$message["GROUP_SAVE_BUTTON"]["de"] = "Gruppe speichern";
+?>

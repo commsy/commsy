@@ -1,0 +1,30 @@
+<?php
+$message["MYAREA_ACCOUNT"]["en"] = "User ID";
+$message["MYAREA_ACCOUNT_CHANGE"]["en"] = "Change user ID";
+$message["MYAREA_ACCOUNT_PROFIL"]["en"] = "My profile";
+$message["MYAREA_AUTH_PASSWORD_SET"]["en"] = "Change password";
+$message["MYAREA_CHANGE_MY_ACTUAL_ROOMS"]["en"] = "Change room:";
+$message["MYAREA_CLIPBOARD_HEADER"]["en"] = "copies";
+$message["MYAREA_CLIPBOARD_HEADER_1"]["en"] = "copy";
+$message["MYAREA_COMMUNITY_INDEX"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["MYAREA_CONTEXT_GUEST_IN"]["en"] = "Guest in";
+$message["MYAREA_CONTEXT_JOIN"]["en"] = "apply for membership";
+$message["MYAREA_LOGIN_ACCOUNT_FORGET_LINK"]["en"] = "Forgot your user ID?";
+$message["MYAREA_LOGIN_ACCOUNT_WANT_LINK"]["en"] = "Create new account";
+$message["MYAREA_LOGIN_AS_GUEST"]["en"] = "In workspace as guest";
+$message["MYAREA_LOGIN_BUTTON"]["en"] = "Login";
+$message["MYAREA_LOGIN_NOT_LOGGED_IN"]["en"] = "Not logged in";
+$message["MYAREA_LOGIN_PASSWORD_FORGET_LINK"]["en"] = "Forgot your password?";
+$message["MYAREA_LOGIN_TO_ALL_PORTALS"]["en"] = "Server (portals overview)";
+$message["MYAREA_LOGIN_TO_OWN_ROOM"]["en"] = "My private workspace";
+$message["MYAREA_LOGIN_TO_PORTAL_OVERVIEW"]["en"] = "exit workspace";
+$message["MYAREA_LOGOUT"]["en"] = "Logout";
+$message["MYAREA_MY_ACTUAL_ROOMS"]["en"] = "My workspaces";
+$message["MYAREA_MY_COPIES"]["en"] = "My online clipboard";
+$message["MYAREA_MY_PROFILE"]["en"] = "My user account";
+$message["MYAREA_PASSWORD"]["en"] = "Password";
+$message["MYAREA_PROFILE"]["en"] = "Profile";
+$message["MYAREA_PROFILE_EDIT"]["en"] = "Edit profile";
+$message["MYAREA_PROJECT_INDEX"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["MYAREA_USER_AUTH_SOURCE_SHORT"]["en"] = "Source";
+?>

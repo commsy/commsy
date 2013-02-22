@@ -1,0 +1,3 @@
+<?php
+$message["NO_DATES_FILE_FOUND"]["de"] = "Sie müssen eine Datei auswählen, bevor Sie fortfahren.";
+?>

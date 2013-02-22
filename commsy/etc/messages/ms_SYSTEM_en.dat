@@ -1,0 +1,4 @@
+<?php
+$message["SYSTEM_MAIL_MESSAGE"]["en"] = "%1";
+$message["SYSTEM_MAIL_REPLY_INFO"]["en"] = "Feel free to contact";
+?>

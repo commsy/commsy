@@ -1,0 +1,52 @@
+<?php
+$message["RUBRIC_ADMIN"]["en"] = "Choose workspace rubrics";
+$message["RUBRIC_ADMIN_DESC"]["en"] = "Select and configure workspace rubrics.";
+$message["RUBRIC_ALL_ATTACHMENTS"]["en"] = "... display all (%1)";
+$message["RUBRIC_CONFIG_NO"]["en"] = "Hidden on the noticed board";
+$message["RUBRIC_CONFIG_NO_2"]["en"] = "hidden";
+$message["RUBRIC_CONFIG_SHORT"]["en"] = "Expanded on the noticed board";
+$message["RUBRIC_CONFIG_TINY"]["en"] = "Collapsed on the noticed board";
+$message["RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON"]["en"] = "Add announc. reference/s";
+$message["RUBRIC_DO_ATTACH_DATE_BUTTON"]["en"] = "Add event reference/s";
+$message["RUBRIC_DO_ATTACH_DISCUSSION_BUTTON"]["en"] = "Add discuss. reference/s";
+$message["RUBRIC_DO_ATTACH_GROUP_BUTTON"]["en"] = "Add group reference/s";
+$message["RUBRIC_DO_ATTACH_INSTITUTION_BUTTON"]["en"] = "Search %_INSTITUTION_SUB_NOMPL_LOW";
+$message["RUBRIC_DO_ATTACH_MATERIAL_BUTTON"]["en"] = "Add material reference/s";
+$message["RUBRIC_DO_ATTACH_PROJECT_BUTTON"]["en"] = "Attach %_PROJECT_SUB_AKKS_LOW.";
+$message["RUBRIC_DO_ATTACH_TODO_BUTTON"]["en"] = "Add task reference/s";
+$message["RUBRIC_DO_ATTACH_TOPIC_BUTTON"]["en"] = "Search %_TOPICS_SUB_NOMPL_LOW";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY"]["en"] = "This e-mail was sent out of the %_COMMUNITY_SUB_NOMS_BIG '%1'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_PL"]["en"] = "This e-mail was sent out of the %_COMMUNITY_SUB_NOMS_BIG '%1' to the following %_INSTITUTION_SUB_NOMPL_BIG:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_S"]["en"] = "This e-mail was sent out of the %_COMMUNITY_SUB_NOMS_BIG '%1' to the %_INSTITUTION_SUB_NOMS_BIG '%2'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_TOPIC_PL"]["en"] = "This e-mail was sent out of the %_COMMUNITY_SUB_NOMS_BIG '%1' to the following %_TOPIC_SUB_NOMPL_BIG:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_TOPIC_S"]["en"] = "This e-mail was sent out of the %_COMMUNITY_SUB_NOMS_BIG '%1' to the %_TOPIC_SUB_NOMS_BIG '%2'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_GROUPROOM"]["en"] = "This e-mail was sent from group workspace '%1'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PORTAL"]["en"] = "This e-mail was sent out of the portal '%1'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_PL"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the following groups:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_S"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the group '%2'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_PL"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the following %_INSTITUTION_SUB_NOMPL_BIG:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_S"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the %_INSTITUTION_SUB_NOMS_BIG '%2'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_PL"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the following %_TOPIC_SUB_NOMPL_BIG:
+%2";
+$message["RUBRIC_EMAIL_ADDED_BODY_PROJECT_TOPIC_S"]["en"] = "This e-mail was sent out of the %_PROJECT_SUB_NOMS_BIG '%1' to the %_TOPIC_SUB_NOMS_BIG '%2'.";
+$message["RUBRIC_EMAIL_ADDED_BODY_SERVER"]["en"] = "This e-mail was sent from the server '%1'.";
+$message["RUBRIC_EMAIL_DEFAULT_COMMUNITY"]["en"] = "This e-mail was sent from the %_COMMUNITY_SUB_NOMS_BIG &quot;%1&quot;.
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_GROUPROOM"]["en"] = "This e-mail was sent from the group workspace &quot;%1&quot;.
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_PROJECT"]["en"] = "This e-mail was sent from the %_PROJECT_SUB_NOMS_BIG &quot;%1&quot;.
+<br/>---<br/>";
+$message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["en"] = "<br/>---<br/>
+Link:
+%1";
+$message["RUBRIC_PUBLIC"]["en"] = "Edit permission";
+$message["RUBRIC_PUBLIC_DESC"]["en"] = "Choose who else may edit this item.";
+$message["RUBRIC_PUBLIC_NO"]["en"] = "Only %1";
+$message["RUBRIC_PUBLIC_YES"]["en"] = "All workspace members";
+$message["RUBRIC_WARN_CHANGER"]["en"] = "Attention";
+?>

@@ -1,0 +1,3 @@
+<?php
+$message["REPLY_TO"]["en"] = "Reply-to:";
+?>

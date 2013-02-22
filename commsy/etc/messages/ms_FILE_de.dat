@@ -1,0 +1,6 @@
+<?php
+$message["FILE_ERROR_GET_FILE"]["de"] = "Die von Ihnen angeforderte Datei konnte nicht ausgeliefert werden, da nicht genügend Zugriffsrechte auf die Datei bestehen.";
+$message["FILE_ERROR_GET_FILE_NOT_EXISTS"]["de"] = "Die von Ihnen angeforderte Datei konnte nicht ausgeliefert werden, da die Datei nicht existiert.";
+$message["FILE_ZIP_UPLOAD_PROCESS_DESC"]["de"] = "Anzahl zu integrierende Dateien";
+$message["FILE_ZIP_UPLOAD_PROCESS_TITLE"]["de"] = "Das Archiv *%1* wird entpackt und die enthaltenen Dateien integriert. Bitte brechen Sie diesen Prozess nicht ab.";
+?>

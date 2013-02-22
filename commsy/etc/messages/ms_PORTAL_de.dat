@@ -1,0 +1,39 @@
+<?php
+$message["PORTAL_ADMINISTRATION_DESC"]["de"] = "dieses Portals";
+$message["PORTAL_ANNOUNCEMENT_FROM_COMMUNITIES_DESC"]["de"] = "aus %_COMMUNITY_ART_DEF_DATPL_LOW aktivsten %_COMMUNITY_SUB_DATPL_LOW";
+$message["PORTAL_ARCHIVED_ROOMS"]["de"] = "Archivierte Räume";
+$message["PORTAL_AUTOACCOUNTS_LINK"]["de"] = "Kennungen automatisch anlegen";
+$message["PORTAL_AUTOACCOUNTS_LINK_DESC"]["de"] = "Hier können Sie mehrere Kennungen auf einmal anlegen.";
+$message["PORTAL_COMMUNITY_ROOM_LIST_ROOMS"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["PORTAL_CONFIGURATION_ACTION"]["de"] = "Portal konfigurieren";
+$message["PORTAL_CONFIGURATION_NEWS_SHOW_SERVER"]["de"] = "Serverinfos<br/>
+anzeigen?";
+$message["PORTAL_COUNT_ROOMS"]["de"] = "%1 Räume, %2 Mitglieder";
+$message["PORTAL_DELETED_ROOMS"]["de"] = "Gelöschte Räume";
+$message["PORTAL_DELETE_BUTTON"]["de"] = "Portal löschen";
+$message["PORTAL_EDIT_ROOM"]["de"] = "Raum bearbeiten";
+$message["PORTAL_ENTER_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG neu eröffnen";
+$message["PORTAL_ENTER_NEW"]["de"] = "Portal initialisieren";
+$message["PORTAL_ENTER_PROJECT"]["de"] = "%_PROJECT_SUB_NOMS_BIG neu eröffnen";
+$message["PORTAL_ENTER_ROOM"]["de"] = "Raum neu eröffnen";
+$message["PORTAL_ERROR_DELETED"]["de"] = "Sie können nicht mehr auf das CommSy-Portal <span class=&quot;bold&quot;>%1</span> zugreifen, da es gelöscht wurde.";
+$message["PORTAL_ERROR_DELETED_ROOM"]["de"] = "Sie können nicht mehr auf den CommSy-Raum <span class=&quot;bold&quot;>%2</span> zugreifen, da das CommSy-Portal <span class=&quot;bold&quot;>%1</span> gelöscht wurde.";
+$message["PORTAL_EXPORT_ROOM"]["de"] = "Raum exportieren";
+$message["PORTAL_EXPORT_ROOM_BUTTON"]["de"] = "Raum exportieren";
+$message["PORTAL_LOGIN_TO_SEE_ROOMS"]["de"] = "Bitte loggen Sie sich ein, um die Räume zu sehen.";
+$message["PORTAL_MOVE_ROOM"]["de"] = "Raum umziehen";
+$message["PORTAL_MOVE_ROOM_REGISTER_BUTTON"]["de"] = "Anmelden";
+$message["PORTAL_MY_COMMUNITY_ROOMS"]["de"] = "Meine %_COMMUNITY_SUB_NOMPL_BIG";
+$message["PORTAL_MY_PROJECT_ROOMS"]["de"] = "Meine %_PROJECT_SUB_NOMPL_BIG";
+$message["PORTAL_MY_ROOMS"]["de"] = "Meine Räume";
+$message["PORTAL_NEWS_LINK"]["de"] = "Portal-Ankündigungen";
+$message["PORTAL_NEWS_LINK_DESC"]["de"] = "Einstellungen zu portalweiten Ankündigungen.";
+$message["PORTAL_NORMAL_ROOMS"]["de"] = "Nutzbare Räume";
+$message["PORTAL_NO_ANNOUNCEMENTS"]["de"] = "Zurzeit keine aktuelle Ankündigung";
+$message["PORTAL_OPEN_ROOM"]["de"] = "Raumeröffnung";
+$message["PORTAL_ROOM_DESCRIPTION"]["de"] = "Raumbeschreibung";
+$message["PORTAL_ROOM_LIST_ROOMS"]["de"] = "Art";
+$message["PORTAL_ROOM_MOVE_REQUESTED"]["de"] = "Umzug";
+$message["PORTAL_ROOM_OVERVIEW"]["de"] = "Raumübersicht";
+$message["PORTAL_SEARCH_FIELD"]["de"] = "Titel, Moderation, Beschreibung";
+?>

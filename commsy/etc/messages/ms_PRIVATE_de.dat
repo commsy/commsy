@@ -1,0 +1,19 @@
+<?php
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY"]["de"] = "E-Mail Upload";
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX"]["de"] = "(E-Mails an diese Adresse schicken: %1)";
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX_NEW"]["de"] = "E-Mails an diese Adresse schicken:";
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY_NO_SECRET"]["de"] = "Bitte geben Sie ein Kennwort für den E-Mail Upload an.";
+$message["PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT"]["de"] = "Bitte ein Upload-Kennwort angeben. Dieses muss im Text der E-Mail in einer Zeile stehen:<br/>
+<b>Upload-Kennwort: IHR_UPLOAD_KENNWORT</b><br/>
+Wenn Sie mehrere Kennungen mit der selben E-Mail-Adresse benutzen, wird das Material in sämtlichen persönlichen Räumen angelegt. Wenn Sie das Material hingegen nur im persönlichen Raum einer bestimmten Kennung anlegen wollen, können Sie diese Angabe in einer einzelnen Zeile im Text der E-Mail verwenden:<br/>
+<b>Kennung: IHRE_KENNUNG</b>";
+$message["PRIVATE_ROOM_PROJECTROOM_CLOSED"]["de"] = "archiviert";
+$message["PRIVATE_ROOM_PROJECTROOM_LOCKED"]["de"] = "gesperrt";
+$message["PRIVATE_ROOM_PROJECTROOM_TEMPLATE"]["de"] = "Vorlage";
+$message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EMPTY_RESULT"]["de"] = "Keine Einträge gefunden";
+$message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_ROOMS"]["de"] = "Suche auf folgende Räume einschränken";
+$message["PRIVATE_ROOM_ROOMWIDE_SEARCH_EXT_TYPES"]["de"] = "Suche auf folgende Rubriken einschränken";
+$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION"]["de"] = "Neue Einträge der letzten %1 Tage";
+$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2"]["de"] = "Neue Einträge seit gestern";
+$message["PRIVATE_ROOM_TITLE"]["de"] = "Persönlicher Raum von";
+?>

@@ -1,0 +1,4 @@
+<?php
+$message["DELETE_ENTRY_WANT_MAIL"]["en"] = "Mail when an own entry is deleted.";
+$message["DELETE_ENTRY_WANT_MAIL_DESC"]["en"] = "";
+?>

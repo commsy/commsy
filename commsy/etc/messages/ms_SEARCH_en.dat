@@ -1,0 +1,9 @@
+<?php
+$message["SEARCH_FIELD_RESTRICTION"]["en"] = "limited to";
+$message["SEARCH_INDEX"]["en"] = "Suche";
+$message["SEARCH_LINKED_ENTRIES_ONLY"]["en"] = "only linked items";
+$message["SEARCH_ONLY_FILES_TEXT"]["en"] = "Items with files only";
+$message["SEARCH_ONLY_IN_FILES_TEXT"]["en"] = "Entries with attachments only";
+$message["SEARCH_RELEVANZ"]["en"] = "Relevanz";
+$message["SEARCH_RUBRIC_RESTRICTION"]["en"] = "Rubric selection";
+?>

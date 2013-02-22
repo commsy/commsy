@@ -1,0 +1,3 @@
+<?php
+$message["ERRORBOX_TITLE"]["en"] = "Attention!";
+?>

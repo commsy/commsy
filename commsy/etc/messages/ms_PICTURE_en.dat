@@ -1,0 +1,3 @@
+<?php
+$message["PICTURE_UPLOAD"]["en"] = "Portal picture";
+?>

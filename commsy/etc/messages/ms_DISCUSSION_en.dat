@@ -1,0 +1,25 @@
+<?php
+$message["DISCUSSION_ARTICLE"]["en"] = "Post";
+$message["DISCUSSION_ARTICLES"]["en"] = "Posts";
+$message["DISCUSSION_CLOSE"]["en"] = "Close discussion";
+$message["DISCUSSION_CLOSE_ALL_ARTICLES"]["en"] = "display all posts";
+$message["DISCUSSION_CLOSE_BUTTON"]["en"] = "Close discussion";
+$message["DISCUSSION_CLOSE_TITLE"]["en"] = "Closing summary post";
+$message["DISCUSSION_DISCARTICLE_COUNT"]["en"] = "Number of items";
+$message["DISCUSSION_EDIT"]["en"] = "Edit discussion";
+$message["DISCUSSION_ENTER_NEW"]["en"] = "Add new discussion";
+$message["DISCUSSION_EXPORT_ITEM_ZIP"]["en"] = "Discussion";
+$message["DISCUSSION_EXPORT_ZIP"]["en"] = "Discussions";
+$message["DISCUSSION_FORM_TYPE_1"]["en"] = "Discussion";
+$message["DISCUSSION_FORM_TYPE_2"]["en"] = "style";
+$message["DISCUSSION_HEADER"]["en"] = "Discussions";
+$message["DISCUSSION_INDEX"]["en"] = "Discussions";
+$message["DISCUSSION_INIT_ARTICLE"]["en"] = "initial post";
+$message["DISCUSSION_IS_CLOSED"]["en"] = "closed";
+$message["DISCUSSION_LAST_ENTRY"]["en"] = "last item";
+$message["DISCUSSION_SIMPLE"]["en"] = "flat";
+$message["DISCUSSION_THREADED"]["en"] = "threaded";
+$message["DISCUSSION_THREADED_HIDE_ALL"]["en"] = "[Hide all articles]";
+$message["DISCUSSION_THREADED_LOADING"]["en"] = "Tree view is loading";
+$message["DISCUSSION_THREADED_SHOW_ALL"]["en"] = "[Show all articles]";
+?>
