@@ -43,14 +43,14 @@
 	</target>
 	
 	<target name="post">
-		<delete dir=".settings"/>
-		<delete file=".buildpath"/>
-		<delete file=".project"/>
-		<move todir=".">
-			<fileset dir="commsy">
+		<delete dir="${env.WORKSPACE}/.settings"/>
+		<delete file="${env.WORKSPACE}/.buildpath"/>
+		<delete file="${env.WORKSPACE}/.project"/>
+		<move todir="${env.WORKSPACE}/">
+			<fileset dir="${env.WORKSPACE}/commsy">
 				<include name="**"/>
 			</fileset>
 		</move>
-		<delete dir="commsy"/>
+		<delete dir="${env.WORKSPACE}/commsy"/>
 	</target>
 </project>
