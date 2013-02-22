@@ -1,4 +1,0 @@
-<?php
-$message["MYCALENDAR_CONFIGURATION"]["de"] = "Mein Kalender konfigurieren";
-$message["MYCALENDAR_INDEX"]["de"] = "Mein Kalender";
-?>

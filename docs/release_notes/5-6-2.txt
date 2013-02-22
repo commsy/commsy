@@ -1,6 +1,0 @@
-CommSy Verison 5.6.2
-
-Bugs:
------
-* DTML-Probleme bei sehr vielen Schlagwörtern
-* buzzword / tags: formulare für IE angepasst

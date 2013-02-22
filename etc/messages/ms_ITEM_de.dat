@@ -1,9 +1,0 @@
-<?php
-$message["ITEM_DOES_NOT_EXIST"]["de"] = "Die Daten, auf die Sie zu greifen wollen, existieren nicht.";
-$message["ITEM_EXPORT_TO_WIKI"]["de"] = "Im Wiki darstellen";
-$message["ITEM_EXPORT_TO_WORDPRESS"]["de"] = "Im Blog darstellen";
-$message["ITEM_NOT_AVAILABLE"]["de"] = "Sie haben versucht, auf einen bereits gelöschten Eintrag zuzugreifen.";
-$message["ITEM_TITLE_SHORT"]["de"] = "Aktuelle Einträge";
-$message["ITEM_WORKFLOW_MARK_NOT_READ"]["de"] = "Als nicht gelesen markieren";
-$message["ITEM_WORKFLOW_MARK_READ"]["de"] = "Als gelesen markieren";
-?>
