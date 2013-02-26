@@ -1,4 +1,9 @@
 ############
+## CommSy
+############
+commsy/etc/cs_config.php
+
+############
 ## OSX
 ############
 .DS_Store
