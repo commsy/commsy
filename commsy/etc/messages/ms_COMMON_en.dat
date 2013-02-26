@@ -181,6 +181,7 @@ $message["COMMON_COLOR_SCHEMA_RED"]["en"] = "Red";
 $message["COMMON_COLOR_SCHEMA_REDGREY"]["en"] = "Red-grey";
 $message["COMMON_COLOR_SCHEMA_SCHULEHH"]["en"] = "SchulCommSy HH";
 $message["COMMON_COLOR_SCHEMA_STARS"]["en"] = "Stars";
+$message["COMMON_COLOR_SCHEMA_UHH"]["en"] = "University of Hamburg";
 $message["COMMON_COLOR_SCHEMA_YELLOW"]["en"] = "Sun";
 $message["COMMON_COMMSY_CONFIGURE"]["en"] = "Settings - Main menu";
 $message["COMMON_COMMSY_CONFIGURE_HOME"]["en"] = "Settings - Main menu";

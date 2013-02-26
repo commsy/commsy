@@ -92,18 +92,11 @@ $theme_array['confetti'] = array(
 	'value'		=> 'confetti',
 	'disabled'	=> false
 );
-$theme_array['yellow'] = array(
-	'text'		=> 'COMMON_COLOR_SCHEMA_YELLOW',
-	'value'		=> 'yellow',
-	'disabled'	=> false
-);
-
 $theme_array['grey'] = array(
 	'text'		=> 'COMMON_COLOR_SCHEMA_GREY',
 	'value'		=> 'grey',
 	'disabled'	=> false
 );
-
 $theme_array['redgrey'] = array(
 	'text'		=> 'COMMON_COLOR_SCHEMA_REDGREY',
 	'value'		=> 'redgrey',
@@ -178,6 +171,11 @@ $theme_array['commsy'] = array(
 	'text'		=> 'CommSy',
 	'value'		=> 'commsy',
 	'disabled'	=> false
+);
+$theme_array['uhh'] = array(
+   'text'      => 'COMMON_COLOR_SCHEMA_UHH',
+   'value'     => 'uhh',
+   'disabled'  => false
 );
 
 //$cs_max_list_length = 20;
