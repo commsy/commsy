@@ -2,6 +2,9 @@
 ## CommSy
 ############
 commsy/etc/cs_config.php
+commsy/etc/commsy/*.php
+commsy/htdocs/javascript/jQuery/commsy_min/*
+commsy/htdocs/templates/templates_c/*
 
 ############
 ## OSX
