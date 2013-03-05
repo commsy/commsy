@@ -359,7 +359,7 @@
         					break;
         			}
 
-        			if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
+        			if(isset($user) and $linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
         				$activatring_date = $linked_item->getActivatingDate();
         				if(strstr($activating_date, '9999-00-00')) {
         					$link_creator_text = $translator->getMessage('COMMON_NOT_ACTIVATED');
