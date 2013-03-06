@@ -3421,7 +3421,7 @@ $html .='
   <div class="clear"></div>'.LF;
 $lang = $this->_environment->getSelectedLanguage();
 
-$external_link_url= 'http://www.agora.uni-hamburg.de/';
+$external_link_url= 'http://www.agora.uni-hamburg.de';
 $session = $this->_environment->getSessionItem();
 $language_addon = '';
 if ($session->issetValue('message_language_select')){
@@ -3480,43 +3480,43 @@ $html .='  <!-- end #logo-container -->
 
 if ( $lang == 'en' ) {
 	$html .='        <h2>Menü</h2><ul class="menu">
-  <li class="first leaf menu-mlid-646"><a href="/en" title="AGORA homepage, News">Homepage</a></li>
+  <li class="first leaf menu-mlid-646"><a href="'.$external_link_url.'/en" title="AGORA homepage, News">Homepage</a></li>
   <li class="leaf active-trail active menu-mlid-585">'.ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', '','Workspaces','List of AGORA workspaces','','','','','','class="active-trail active"').'</li>
-  <li class="expanded menu-mlid-649"><a href="/en/usage-information" title="First steps, FAQ, Tutorials">Usage information</a>
+  <li class="expanded menu-mlid-649"><a href="'.$external_link_url.'/en/usage-information" title="First steps, FAQ, Tutorials">Usage information</a>
     <ul class="menu">
-      <li class="first leaf menu-mlid-666"><a href="/en/usage-information/first-steps" title="First steps on AGORA">First steps</a></li>
-      <li class="leaf menu-mlid-707"><a href="/en/usage-information/faq" title="Frequently Asked Questions">FAQ</a></li>
-      <li class="leaf menu-mlid-667"><a href="/en/usage-information/glossary" title="Important AGORA terms and their meaning">Glossary</a></li>
-      <li class="leaf menu-mlid-701"><a href="/en/usage-information/legal-questions" title="Legal questions concerning the usage of AGORA">Legal questions</a></li>
-      <li class="leaf menu-mlid-668"><a href="/en/usage-information/support" title="Helpdesk, office hours">Support</a></li>
-      <li class="leaf menu-mlid-669"><a href="/en/usage-information/tips-of-the-month" title="Tips how to use AGORA">Tips of the month</a></li>
-      <li class="leaf menu-mlid-670"><a href="/en/usage-information/tutorials" title="Docs about the usage of AGORA">Tutorials</a></li>
-      <li class="leaf menu-mlid-671"><a href="/en/usage-information/workshops" title="Workshops for students and lecturers">Workshops</a></li>
+      <li class="first leaf menu-mlid-666"><a href="'.$external_link_url.'/en/usage-information/first-steps" title="First steps on AGORA">First steps</a></li>
+      <li class="leaf menu-mlid-707"><a href="'.$external_link_url.'/en/usage-information/faq" title="Frequently Asked Questions">FAQ</a></li>
+      <li class="leaf menu-mlid-667"><a href="'.$external_link_url.'/en/usage-information/glossary" title="Important AGORA terms and their meaning">Glossary</a></li>
+      <li class="leaf menu-mlid-701"><a href="'.$external_link_url.'/en/usage-information/legal-questions" title="Legal questions concerning the usage of AGORA">Legal questions</a></li>
+      <li class="leaf menu-mlid-668"><a href="'.$external_link_url.'/en/usage-information/support" title="Helpdesk, office hours">Support</a></li>
+      <li class="leaf menu-mlid-669"><a href="'.$external_link_url.'/en/usage-information/tips-of-the-month" title="Tips how to use AGORA">Tips of the month</a></li>
+      <li class="leaf menu-mlid-670"><a href="'.$external_link_url.'/en/usage-information/tutorials" title="Docs about the usage of AGORA">Tutorials</a></li>
+      <li class="leaf menu-mlid-671"><a href="'.$external_link_url.'/en/usage-information/workshops" title="Workshops for students and lecturers">Workshops</a></li>
     </ul>
   </li>
-  <li class="collapsed menu-mlid-672"><a href="/en/about-agora" title="Concept, features, and academic activities">About AGORA</a></li>
-  <li class="last collapsed menu-mlid-676"><a href="/en/contact" title="Contact details, office hours, contact form">Contact</a></li>
+  <li class="collapsed menu-mlid-672"><a href="'.$external_link_url.'/en/about-agora" title="Concept, features, and academic activities">About AGORA</a></li>
+  <li class="last collapsed menu-mlid-676"><a href="'.$external_link_url.'/en/contact" title="Contact details, office hours, contact form">Contact</a></li>
 						 <li>'.$this->_getFlagsAsHTML().'
 	    		
 	</ul>'.LF;
 }else{   
 	$html .='        <h2>Menue</h2><ul class="menu">
-  <li class="first leaf menu-mlid-218"><a title="AGORA-Homepage, Aktuelle Meldungen" href="/">Startseite</a></li>
+  <li class="first leaf menu-mlid-218"><a title="AGORA-Homepage, Aktuelle Meldungen" href="'.$external_link_url.'/">Startseite</a></li>
   <li class="leaf active-trail active menu-mlid-585">'.ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', '','Raumübersicht','Liste der Projekt- und Gemeinschaftsräume','','','','','','class="active-trail active"').'</li>
-  <li class="expanded menu-mlid-555"><a title="Erste Schritte, FAQ, Tutorials" href="/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a>
+  <li class="expanded menu-mlid-555"><a title="Erste Schritte, FAQ, Tutorials" href="'.$external_link_url.'/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a>
     <ul class="menu">
-      <li class="first leaf menu-mlid-651"><a href="/hilfe-bei-der-nutzung/erste-schritte" title="Erste Schritte mit AGORA">Erste Schritte</a></li>
-      <li class="leaf menu-mlid-488"><a href="/hilfe-bei-der-nutzung/faq" title="Frequented Asked Questions">FAQ</a></li>
-      <li class="leaf active-trail active menu-mlid-652"><a href="/hilfe-bei-der-nutzung/glossar" title="Wichtige AGORA-Begriffe und was sie bedeuten">Glossar</a></li>
-      <li class="leaf menu-mlid-700"><a href="/hilfe-bei-der-nutzung/rechtliche-fragen" title="Rechtliche Fragen bei der AGORA-Nutzung">Rechtliche Fragen</a></li>
-      <li class="leaf menu-mlid-653"><a href="/hilfe-bei-der-nutzung/support" title="Beratung, Sprechstunden und andere Support-Angebote">Support</a></li>
-      <li class="leaf menu-mlid-654"><a href="/hilfe-bei-der-nutzung/tipps-des-monats" title="Tipps zur Arbeit mit AGORA">Tipps des Monats</a></li>
-      <li class="leaf has-children menu-mlid-655"><a href="/hilfe-bei-der-nutzung/tutorials" title="Dokumente zur Handhabung von AGORA">Tutorials</a></li>
-      <li class="last leaf menu-mlid-656"><a href="/hilfe-bei-der-nutzung/workshops" title="AGORA-Workshops für Lehrende und Studierende">Workshops</a></li>
+      <li class="first leaf menu-mlid-651"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/erste-schritte" title="Erste Schritte mit AGORA">Erste Schritte</a></li>
+      <li class="leaf menu-mlid-488"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/faq" title="Frequented Asked Questions">FAQ</a></li>
+      <li class="leaf active-trail active menu-mlid-652"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/glossar" title="Wichtige AGORA-Begriffe und was sie bedeuten">Glossar</a></li>
+      <li class="leaf menu-mlid-700"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/rechtliche-fragen" title="Rechtliche Fragen bei der AGORA-Nutzung">Rechtliche Fragen</a></li>
+      <li class="leaf menu-mlid-653"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/support" title="Beratung, Sprechstunden und andere Support-Angebote">Support</a></li>
+      <li class="leaf menu-mlid-654"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/tipps-des-monats" title="Tipps zur Arbeit mit AGORA">Tipps des Monats</a></li>
+      <li class="leaf has-children menu-mlid-655"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/tutorials" title="Dokumente zur Handhabung von AGORA">Tutorials</a></li>
+      <li class="last leaf menu-mlid-656"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/workshops" title="AGORA-Workshops für Lehrende und Studierende">Workshops</a></li>
     </ul>
   </li>
-  <li class="collapsed menu-mlid-573"><a title="Konzept, Funktionen und wissenschaftliche Arbeit von AGORA" href="/ueber-agora">Über AGORA</a></li>
-  <li class="last collapsed menu-mlid-580"><a title="Kontaktdaten, Sprechstunden, Kontaktformular" href="/kontakt">Kontakt</a></li>
+  <li class="collapsed menu-mlid-573"><a title="Konzept, Funktionen und wissenschaftliche Arbeit von AGORA" href="'.$external_link_url.'/ueber-agora">Über AGORA</a></li>
+  <li class="last collapsed menu-mlid-580"><a title="Kontaktdaten, Sprechstunden, Kontaktformular" href="'.$external_link_url.'/kontakt">Kontakt</a></li>
 						 <li>'.$this->_getFlagsAsHTML().'
 	   
 	</ul>'.LF;
@@ -3795,11 +3795,11 @@ $html.= '  </div>
     <div class="grid_24">
       <div id="menu-footer">
         <ul class="menu">
-  		<li class="first leaf menu-mlid-218"><a title="AGORA homepage, News" href="/en">Homepage</a></li>
+  		<li class="first leaf menu-mlid-218"><a title="AGORA homepage, News" href="'.$external_link_url.'/en">Homepage</a></li>
           <li class="leaf active-trail active menu-mlid-585">'.ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', '','Workspaces','List of AGORA workspaces','','','','','','class="active-trail active"').'</li>
-          <li class="leaf has-children menu-mlid-555"><a title="First steps, FAQ, Tutorials" href="/en/usage-information">Usage information</a></li>
-          <li class="leaf has-children menu-mlid-573"><a title="Concept, features, and academic activities" href="/en/about-agora">About AGORA</a></li>
-          <li class="last leaf has-children menu-mlid-580"><a title="Contact details, office hours, contact form" href="/en/contact">Contact</a></li>
+          <li class="leaf has-children menu-mlid-555"><a title="First steps, FAQ, Tutorials" href="'.$external_link_url.'/en/usage-information">Usage information</a></li>
+          <li class="leaf has-children menu-mlid-573"><a title="Concept, features, and academic activities" href="'.$external_link_url.'/en/about-agora">About AGORA</a></li>
+          <li class="last leaf has-children menu-mlid-580"><a title="Contact details, office hours, contact form" href="'.$external_link_url.'/en/contact">Contact</a></li>
         </ul>
       </div>
     </div>
@@ -3829,11 +3829,11 @@ $html.= '  </div>
     <div class="grid_24">
       <div id="menu-footer">
         <ul class="menu">
-          <li class="first leaf menu-mlid-218"><a title="AGORA-Homepage, Aktuelle Meldungen" href="/">Startseite</a></li>
+          <li class="first leaf menu-mlid-218"><a title="AGORA-Homepage, Aktuelle Meldungen" href="'.$external_link_url.'/">Startseite</a></li>
           <li class="leaf active-trail active menu-mlid-585">'.ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', '','Raumübersicht','Liste der Projekt- und Gemeinschaftsräume','','','','','','class="active-trail active"').'</li>
-          <li class="leaf has-children menu-mlid-555"><a title="Erste Schritte, FAQ, Tutorials" href="/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a></li>
-          <li class="leaf has-children menu-mlid-573"><a title="Konzept, Funktionen und wissenschaftliche Arbeit von AGORA" href="/ueber-agora">Über AGORA</a></li>
-          <li class="last leaf has-children menu-mlid-580"><a title="Kontaktdaten, Sprechstunden, Kontaktformular" href="/kontakt">Kontakt</a></li>
+          <li class="leaf has-children menu-mlid-555"><a title="Erste Schritte, FAQ, Tutorials" href="'.$external_link_url.'/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a></li>
+          <li class="leaf has-children menu-mlid-573"><a title="Konzept, Funktionen und wissenschaftliche Arbeit von AGORA" href="'.$external_link_url.'/ueber-agora">Über AGORA</a></li>
+          <li class="last leaf has-children menu-mlid-580"><a title="Kontaktdaten, Sprechstunden, Kontaktformular" href="'.$external_link_url.'/kontakt">Kontakt</a></li>
         </ul>
       </div>
     </div>
