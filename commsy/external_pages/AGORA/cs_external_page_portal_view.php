@@ -3684,9 +3684,9 @@ $html .='<a id="content" name="content"></a> <!-- Skiplink-Anker: Content -->
 
   if (($cs_module == 'project') or ($cs_module == 'community') or ($cs_module == 'configuration' and $cs_function =='common')){
       if(isset($_GET['iid']) and $_GET['iid'] != 'NEW'){
-         $html .= '<h2>'.$this->_translator->getMessage('PORTAL_EDIT_ROOM').'</h2>'.LF;
+#         $html .= '<h2>'.$this->_translator->getMessage('PORTAL_EDIT_ROOM').'</h2>'.LF;
       }else{
-         $html .= '<h2>'.$this->_translator->getMessage('PORTAL_ENTER_ROOM').'</h2>'.LF;
+#         $html .= '<h2>'.$this->_translator->getMessage('PORTAL_ENTER_ROOM').'</h2>'.LF;
       }
   }
 
@@ -3763,8 +3763,26 @@ isset($this->_agb_view)
 $html .='
     
     <!-- 2. Sidebar -->
-    <div id="sidebar-second" class="sidebar grid_5">
-      <div id="news" class="block">'.LF;
+    <div id="sidebar-second" class="sidebar grid_5">'.LF;
+
+    $current_user = $this->_environment->getCurrentUser();
+    $params = $this->_environment->getCurrentParameterArray();
+    if ($current_user->isUser()){
+		
+		$html .='		<div id="news" class="block">'.LF;
+			if ( $lang == 'en' ) {
+				$html .='<h2>Create workspaces</h2>';
+				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
+				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a>'.LF;
+				
+		}else{
+			$html .='<h2>Raum anlegen</h2>';
+			$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
+			$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a>'.LF;
+		}
+		$html .='	</div>'.LF;	
+    }
+$html .='	<div id="news" class="block">'.LF;
 
 
 
