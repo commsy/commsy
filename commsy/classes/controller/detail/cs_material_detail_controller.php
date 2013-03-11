@@ -597,16 +597,23 @@
       			if(!empty($desc)) {
       				//$desc = $converter->cleanDataFromTextArea($desc);
       				$converter->setFileArray($this->getItemFileList());
-					$desc = $converter->_activate_urls($desc);
-      				//$desc = $converter->text_as_html_long($desc);
+      				if ( $this->_with_old_text_formating ) {
+      					$desc = $converter->text_as_html_long($desc);
+      				} else {
+					      $desc = $converter->_activate_urls($desc);
+      				}
 
       				/*
-					$temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
+					     $temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
          			  $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
-         			  */
+         			*/
       			}
       		}else{
-				$desc = $converter->_activate_urls($desc);
+      		   if ( $this->_with_old_text_formating ) {
+      				$desc = $converter->text_as_html_long($desc);
+      		   } else {
+					   $desc = $converter->_activate_urls($desc);
+      			}
       		}
 
       		$is_latest_version = true;
@@ -1262,10 +1269,12 @@
 		            $description = $section->getDescription();
 					//$description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
-					//$description = $converter->text_as_html_long($description);
-					$description = $converter->_activate_urls($description);
-					$description = $converter->showImages($description, $section, true);
-
+      		   if ( $this->_with_old_text_formating ) {
+					   $description = $converter->text_as_html_long($description);
+      		   } else {
+					   $description = $converter->_activate_urls($description);
+					   $description = $converter->showImages($description, $section, true);
+      		   }
 
 					$files = array();
 					$file_list = $section->getFileList();

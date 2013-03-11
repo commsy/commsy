@@ -124,4 +124,9 @@ $c_debug = false;
 // default: true
 // at performance problems you should try false
 // $c_portal_show_rooms_for_guests = false;
+
+// old text formating
+// activate old text formating for rooms
+#$c_old_text_formating_array = array();
+#$c_old_text_formating_array[] = 12345;
 ?>

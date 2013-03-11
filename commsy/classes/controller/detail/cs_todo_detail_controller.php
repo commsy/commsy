@@ -375,8 +375,11 @@
 						//TODO:
 						//$desc = $converter->compareWithSearchText($desc);
 						$converter->setFileArray($this->getItemFileList());
-						$desc = $converter->_activate_urls($desc);
-						//$desc = $converter->text_as_html_long($desc);
+						if ( $this->_with_old_text_formating ) {
+      				   $desc = $converter->text_as_html_long($desc);
+      			   } else {
+						   $desc = $converter->_activate_urls($desc);
+      			   }
 						//$desc = $this->_show_images($desc,$item,true);
          				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
          				$entry['description'] = $desc;
@@ -547,8 +550,11 @@
             	//TODO:
             	//$desc = $converter->compareWithSearchText($desc);
             	$converter->setFileArray($this->getItemFileList());
-				$desc = $converter->_activate_urls($desc);
-            	//$desc = $converter->text_as_html_long($desc);
+      			if ( $this->_with_old_text_formating ) {
+      				$desc = $converter->text_as_html_long($desc);
+      			} else {
+            	   $desc = $converter->_activate_urls($desc);
+      			}
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
 			$return = array(

@@ -874,11 +874,14 @@ if ($type != CS_DISCUSSION_TYPE) {
 			$description = $root->getDescription();
 			//$description = $converter->cleanDataFromTextArea($description);
 			$converter->setFileArray($this->getItemFileList());
-			//description = $converter->text_as_html_long($description);
-			$description = $converter->_activate_urls($description);
-			$description = $converter->showImages($description, $root, true);
-			//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
-
+         if ( $this->_with_old_text_formating ) {
+      		$description = $converter->text_as_html_long($description);
+      	} else {
+			   $description = $converter->_activate_urls($description);
+			   $description = $converter->showImages($description, $root, true);
+      	}
+      	//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
+      	    
 			$return[] = array(
 				'item_id'			=> $root->getItemID(),
 				'position'			=> '',
@@ -1003,10 +1006,13 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$description = $item->getDescription();
 				//$description = $converter->cleanDataFromTextArea($description);
 				$converter->setFileArray($this->getItemFileList());
-				//$description = $converter->text_as_html_long($description);
-				$description = $converter->_activate_urls($description);
-				$description = $converter->showImages($description, $item, true);
-
+      		if ( $this->_with_old_text_formating ) {
+      			$description = $converter->text_as_html_long($description);
+      		} else {
+				   $description = $converter->_activate_urls($description);
+				   $description = $converter->showImages($description, $item, true);
+      		}
+      		
 				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
 
 				// append return

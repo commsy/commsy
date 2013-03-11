@@ -295,11 +295,15 @@ class cs_date_detail_controller extends cs_detail_controller {
         if(!empty($desc)) {
 
             $converter->setFileArray($this->getItemFileList());
-            //$desc = $converter->cleanDataFromTextArea($desc);
-            //$desc = $converter->compareWithSearchText...
-            //$desc = $converter->text_as_html_long($desc);
-            //$desc = $converter->show_images($desc, $this->_item, true);
-			$desc = $converter->_activate_urls($desc);
+      		if ( $this->_with_old_text_formating ) {
+      			$desc = $converter->text_as_html_long($desc);
+      		} else {
+               //$desc = $converter->cleanDataFromTextArea($desc);
+               //$desc = $converter->compareWithSearchText...
+               //$desc = $converter->text_as_html_long($desc);
+               //$desc = $converter->show_images($desc, $this->_item, true);
+			      $desc = $converter->_activate_urls($desc);
+      		}
         }
 
 		// set up style of days and times
