@@ -280,7 +280,7 @@
 	                				{$numDates = $cc.content.display[$i][$j]|count}
 
 	                				{* if there is more than one date to display in this cell, shrink them *}
-	                				{$width = (98 - 10 * $numDates) / $numDates}
+	                				{$width = (97 - 10 * $numDates) / $numDates}
 
 	                				{foreach $cc.content.display[$i][$j] as $date}
 	                					<div>
