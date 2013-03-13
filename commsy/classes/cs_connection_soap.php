@@ -3101,6 +3101,10 @@ class cs_connection_soap {
          $xml .= "<date_ending_date><![CDATA[".$date_item->getDateTime_end()."]]></date_ending_date>\n";
          $xml .= "<date_place><![CDATA[".$date_item->getPlace()."]]></date_place>\n";
          $temp_description = $date_item->getDescription();
+         $allow_edit = true;
+         if(stristr($temp_description, '<table')){
+            $allow_edit = false;
+         }
          $temp_description = $this->prepareText($temp_description);
          $xml .= "<date_description><![CDATA[".$temp_description."]]></date_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($date_item->getItemID(), $user_item->getItemID());
@@ -3111,7 +3115,7 @@ class cs_connection_soap {
          } else {
             $xml .= "<date_read><![CDATA[]]></date_read>\n";
          }
-         if($date_item->mayEdit($user_item)){
+         if($date_item->mayEdit($user_item) && $allow_edit){
             $xml .= "<date_edit><![CDATA[edit]]></date_edit>\n";
          } else {
             $xml .= "<date_edit><![CDATA[non_edit]]></date_edit>\n";
@@ -3321,6 +3325,10 @@ class cs_connection_soap {
          $temp_title = $this->prepareText($temp_title);
          $xml .= "<material_title><![CDATA[".$temp_title."]]></material_title>\n";
          $temp_description = $material_item->getDescription();
+         $allow_edit = true;
+         if(stristr($temp_description, '<table')){
+            $allow_edit = false;
+         }
          $temp_description = $this->prepareText($temp_description);
          $xml .= "<material_description><![CDATA[".$temp_description."]]></material_description>\n";
          $reader = $reader_manager->getLatestReaderForUserByID($material_item->getItemID(), $user_item->getItemID());
@@ -3331,7 +3339,7 @@ class cs_connection_soap {
          } else {
             $xml .= "<material_read><![CDATA[]]></material_read>\n";
          }
-         if($material_item->mayEdit($user_item)){
+         if($material_item->mayEdit($user_item) && $allow_edit){
             $xml .= "<material_edit><![CDATA[edit]]></material_edit>\n";
          } else {
             $xml .= "<material_edit><![CDATA[non_edit]]></material_edit>\n";
@@ -3635,6 +3643,10 @@ class cs_connection_soap {
             $temp_title = $this->prepareText($temp_title);
             $xml .= "<discussion_article_title><![CDATA[".$temp_title."]]></discussion_article_title>\n";
             $temp_description = $temp_article->getDescription();
+            $allow_edit = true;
+            if(stristr($temp_description, '<table')){
+               $allow_edit = false;
+            }
             $temp_description = $this->prepareText($temp_description);
             $xml .= "<discussion_article_description><![CDATA[".$temp_description."]]></discussion_article_description>\n";
             $xml .= "<discussion_article_files>\n";
@@ -3653,7 +3665,7 @@ class cs_connection_soap {
             $modifier_user = $temp_article->getModificatorItem();
             $xml .= "<discussion_article_last_modifier><![CDATA[".$modifier_user->getFullname()."]]></discussion_article_last_modifier>\n";
             $xml .= "<discussion_article_last_modification_date><![CDATA[".$temp_article->getModificationDate()."]]></discussion_article_last_modification_date>\n";
-            if($temp_article->mayEdit($user_item)){
+            if($temp_article->mayEdit($user_item) && $allow_edit){
                $xml .= "<discussion_article_edit><![CDATA[edit]]></discussion_article_edit>\n";
             } else {
                $xml .= "<discussion_article_edit><![CDATA[non_edit]]></discussion_article_edit>\n";

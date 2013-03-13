@@ -25,7 +25,8 @@ class misc_text_converter {
    private $_environment = NULL;
    private $_div_number = NULL;
    private $_file_array = array();
-
+   private $_with_old_text_formating = false;
+   
    public function __construct ($params) {
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
