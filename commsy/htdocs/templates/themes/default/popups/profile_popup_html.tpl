@@ -52,17 +52,17 @@
                     {if $popup.form.config.show_password_change_form === true}
                       <div class="input_row">
                         <label for="old_password">___USER_PASSWORD_OLD___:</label>
-                        <input id="old_password" type="text" class="size_200" name="form_data[old_password]" />
+                        <input id="old_password" type="password" class="size_200" name="form_data[old_password]" />
                       </div>
 
                       <div class="input_row">
                         <label for="new_password">___USER_PASSWORD_NEW___:</label>
-                        <input id="new_password" type="text" class="size_200" name="form_data[new_password]" />
+                        <input id="new_password" type="password" class="size_200" name="form_data[new_password]" />
                       </div>
 
                       <div class="input_row">
                         <label for="new_password_confirm">___USER_PASSWORD_NEW2___:</label>
-                        <input id="new_password_confirm" type="text" class="size_200" name="form_data[new_password_confirm]" />
+                        <input id="new_password_confirm" type="password" class="size_200" name="form_data[new_password_confirm]" />
                       </div>
                     {/if}
 
