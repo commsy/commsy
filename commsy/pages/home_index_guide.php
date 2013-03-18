@@ -105,17 +105,30 @@ if ( isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON')) 
 elseif ( isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON')) ) {
    $manager = $environment->getRoomManager();
    $item = $manager->getItem($current_item_id);
-   $current_user_item = $environment->getCurrentUserItem();
-   if ( $current_user_item->isModerator()
-        or ( isset($item)
-             and $item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
-           )
-      ) {
-      $item->delete();
+   $toggle_archive_mode = false;
+   if ( !isset($item) ) {
+	   $environment->toggleArchiveMode();
+      $toggle_archive_mode = true;
+	   $manager = $environment->getRoomManager();
+   	$item = $manager->getItem($current_item_id);
+   	unset($manager);
    }
-   unset($item);
+   if ( isset($item) ) {
+	   $current_user_item = $environment->getCurrentUserItem();
+	   if ( $current_user_item->isModerator()
+	        or ( isset($item)
+	             and $item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
+	           )
+	      ) {
+	      $item->delete();
+	   }
+	   unset($item);
+      unset($current_user_item);
+   }
    unset($manager);
-   unset($current_user_item);
+   if ($toggle_archive_mode) {
+   	$environment->toggleArchiveMode();
+   }
    redirect($environment->getCurrentContextID(), 'home', 'index', '');
 }
 

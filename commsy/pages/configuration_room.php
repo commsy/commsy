@@ -74,40 +74,42 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
    if ($command == 'automatic') {
       // change room status
       if ($status == 'lock') {
-         $room->lock();
+         if ($archive) {
+            $environment->toggleArchiveMode();
+         }
+      	$room->lock();
+      	if ($archive) {
+            $room->save();
+      		$environment->toggleArchiveMode();
+         }
       } elseif ($status == 'unlock') {
-         $room->unlock();
+         if ($archive) {
+            $environment->toggleArchiveMode();
+         }
+      	$room->unlock();
+         if ($archive) {
+            $room->save();
+         	$environment->toggleArchiveMode();
+         }
       } elseif ($status == 'delete') {
-         $room->delete();
+         if ($archive) {
+            $environment->toggleArchiveMode();
+         }
+      	$room->delete();
+         if ($archive) {
+            $environment->toggleArchiveMode();
+         }
       } elseif ($status == 'undelete') {
-         $room->undelete();
+         if ($archive) {
+            $environment->toggleArchiveMode();
+         }
+      	$room->undelete();
+         if ($archive) {
+            $environment->toggleArchiveMode();
+         }
       }elseif ($status == 'archive') {
          if ( !$room->isTemplate() ) {
             $room->moveToArchive();
-         } else {
-         	// templates can not closed / archived
-         	// so do nothing
-         	/*
-            $room->close();
-
-            // Fix: Find Group-Rooms if existing
-            if( $room->isGrouproomActive() ) {
-               $groupRoomList = $room->getGroupRoomList();
-
-               if( !$groupRoomList->isEmpty() ) {
-                  $room_item = $groupRoomList->getFirst();
-
-                  while($room_item) {
-                     // All GroupRooms have to be closed too
-                     $room_item->close();
-                     $room_item->save();
-
-                     $room_item = $groupRoomList->getNext();
-                  }
-               }
-            }
-            // ~Fix
-            */
          }
 
          // TBD: close wiki

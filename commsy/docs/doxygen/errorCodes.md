@@ -43,6 +43,9 @@ Einleitung...
     * 1011 - Kennungsänderung - Kennung belegt
     * 1012 - Kennungsänderung - Kennung enthält Umlaute
     * 1013 - Kennungsänderung - Fehler in Authentifizierungsquelle
+    * 1014 - Zusammenlegung - Anonyme Kennung
+    * 1015 - Zusammenlegung - Ungültige Kennung
+    * 1016 - Zusammenlegung - Ungültige Logindaten
 
 - Spezial-Errors 9xx
   + 901 - Feld stimmt nicht mit anderem überein
