@@ -72,6 +72,10 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
          $radio_values[4]['text'] = $this->_translator->getMessage('CONFIGURATION_PRESELECT_MY_ROOMS');
          $radio_values[4]['value'] = '5';
          $this->_form->addRadioGroup('preselection',$this->_translator->getMessage('CONFIGURATION_SELECTION'),'',$radio_values,'',true,false);
+         
+         // templates in room list
+         $this->_form->combine();
+         $this->_form->addCheckbox('with_templates', 1, '', '', $this->_translator->getMessage('CONFIGURATION_ROOM_LIST_TEMPLATES'));
 
          $radio_values = array();
          $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_SORT_ROOMS_ACTIVITY');
@@ -128,6 +132,10 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
             $this->_values['preselection'] ='1';
          }
          $this->_values['number'] = $room->getNumberRoomsOnHome();
+         
+         if ($room->showTemplatesInRoomList()) {
+         	$this->_values['with_templates'] = 1;
+         }
       }
    }
 

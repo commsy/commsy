@@ -92,6 +92,14 @@ else {
             $room_item->setNumberRoomsOnHome($_POST['number']);
          }
 
+         if ( !empty($_POST['with_templates'])
+         	  and$_POST['with_templates'] == 1
+         	) {
+            $room_item->setShowTemplatesInRoomListON();
+         } else {
+            $room_item->setShowTemplatesInRoomListOFF();
+         }
+         
          // Save item
          $room_item->save();
          $form_view->setItemIsSaved();

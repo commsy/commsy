@@ -256,6 +256,7 @@ $message["CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED_ERROR_EMPTY"]["en"] = "You ca
 $message["CONFIGURATION_ROOM_DESCRIPTION"]["en"] = "Insert an additional Description. Max. 1000 characters are allowed.";
 $message["CONFIGURATION_ROOM_HOME"]["en"] = "Configure Home / notice board";
 $message["CONFIGURATION_ROOM_HOME_DESC"]["en"] = "Configure display of workspace rubric teasers and boxes on Home.";
+$message["CONFIGURATION_ROOM_LIST_TEMPLATES"]["en"] = "Show templates in workplace list";
 $message["CONFIGURATION_ROOM_OPENING_LINK"]["en"] = "Workspaces";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["en"] = "Define creation of new workspaces, private workspaces and archiving.";
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["en"] = "Please define workspace basics, i.e. <span class=&quot;bold&quot;>title</span>, <span class=&quot;bold&quot;>logo</span>, <span class=&quot;bold&quot;>color theme</span>.";
