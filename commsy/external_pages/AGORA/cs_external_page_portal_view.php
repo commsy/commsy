@@ -621,7 +621,229 @@ class cs_external_page_portal_view extends cs_page_view {
     *
     * param cs_project_item project room item
     */
+
+   
    function _getRoomAccessAsHTML ($item, $mode = 'none') {
+   	$current_user = $this->_environment->getCurrentUserItem();
+   	$may_enter = $item->mayEnter($current_user);
+   	$html ='';
+   	//Projektraum User
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_manager->setUserIDLimit($current_user->getUserID());
+   	$user_manager->setAuthSourceLimit($current_user->getAuthSource());
+   	$user_manager->setContextLimit($item->getItemID());
+   	$user_manager->select();
+   	$user_list = $user_manager->get();
+   	if (!empty($user_list)) {
+   		$room_user = $user_list->getFirst();
+   	} else {
+   		$room_user = '';
+   	}
+   	 
+   	// archive
+   	if ( $may_enter
+   			and empty($room_user)
+   			and $item->isClosed()
+   			and !$this->_environment->isArchiveMode()
+   	) {
+   		$user_manager = $this->_environment->getZzzUserManager();
+   		$user_manager->setUserIDLimit($current_user->getUserID());
+   		$user_manager->setAuthSourceLimit($current_user->getAuthSource());
+   		$user_manager->setContextLimit($item->getItemID());
+   		$user_manager->select();
+   		$user_list = $user_manager->get();
+   		if (!empty($user_list)) {
+   			$room_user = $user_list->getFirst();
+   		} else {
+   			$room_user = '';
+   		}
+   		unset($user_list);
+   	}
+   
+   	$current_user = $this->_environment->getCurrentUserItem();
+   
+   	//Anzeige außerhalb des Anmeldeprozesses
+   	if ($mode !='member' and $mode !='info' and $mode !='email'){
+   		$current_user = $this->_environment->getCurrentUserItem();
+   		$may_enter = $item->mayEnter($current_user);
+   		// Eintritt erlaubt
+   		if ( $may_enter and ( ( !empty($room_user) and $room_user->isUser() ) or $current_user->isRoot() ) ) {
+   			$actionCurl = curl( $item->getItemID(),
+   					'home',
+   					'index',
+   					'');
+   			$html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
+   			$actionCurl = curl( $item->getItemID(),
+   					'home',
+   					'index',
+   					'');
+   			$html .= '<div style="padding-top:8px;">&nbsp;</div>'.BRLF;
+   			//als Gast Zutritt erlaubt, aber kein Mitglied
+   		} elseif ( $item->isLocked() ) {
+   			$html .= '<img src="images/door_closed_large.gif" alt="door closed" />'.LF;
+   		} elseif ( $item->isOpenForGuests()
+   				and empty($room_user)
+   		) {
+   			$actionCurl = curl( $item->getItemID(),
+   					'home',
+   					'index',
+   					'');
+   			$html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
+   			$actionCurl = curl( $item->getItemID(),
+   					'home',
+   					'index',
+   					'');
+   			$html .= '<div style="padding-top:5px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
+   			if ( $item->isOpen()
+   					and !$this->_current_user->isOnlyReadUser()
+   			) {
+   				$params = array();
+   				$params = $this->_environment->getCurrentParameterArray();
+   				$params['account'] = 'member';
+   				$params['room_id'] = $item->getItemID();
+   				$actionCurl = curl( $this->_environment->getCurrentContextID(),
+   						'home',
+   						'index',
+   						$params,
+   						'');
+   				$html .= '<div style="padding-top:3px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
+   				unset($params);
+   			} else {
+   				$html .= '<div style="padding-top:3px;">> <span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
+   			}
+   
+   			//Um Erlaubnis gefragt
+   		} elseif ( !empty($room_user) and $room_user->isRequested() ) {
+   			if ( $item->isOpenForGuests() ) {
+   				$actionCurl = curl( $item->getItemID(),
+   						'home',
+   						'index',
+   						'');
+   				$html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
+   				$actionCurl = curl( $item->getItemID(),
+   						'home',
+   						'index',
+   						'');
+   				$html .= '<div style="padding-top:7px; text-align: center;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
+   			} else {
+   				$html .= '<img src="images/door_closed_large.gif" alt="door closed"/>'.LF;
+   			}
+   			$html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED_YET').'</p></div>'.LF;
+   			//Erlaubnis verweigert
+   		} elseif ( !empty($room_user) and $room_user->isRejected() ) {
+   			if ( $item->isOpenForGuests() ) {
+   				$actionCurl = curl( $item->getItemID(),
+   						'home',
+   						'index',
+   						'');
+   				$html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open"/></a>'.BRLF;
+   				$actionCurl = curl( $item->getItemID(),
+   						'home',
+   						'index',
+   						'');
+   				$html .= '<div style="padding-top:7px;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
+   			} else {
+   				$html .= '<img src="images/door_closed_large.gif" alt="door closed"/>'.LF;
+   			}
+   			$html .= '<div style="padding-top:7px;"><p style=" margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED').'</p></div>'.LF;
+   
+   			// noch nicht angemeldet als Mitglied im Raum
+   		} else {
+   			$html .= '<img src="images/door_closed_large.gif" alt="door closed" style="vertical-align: middle; "/>'.BRLF;
+   			if ( $item->isOpen()
+   					and !$this->_current_user->isOnlyReadUser()
+   			) {
+   				$params = array();
+   				$params = $this->_environment->getCurrentParameterArray();
+   				$params['account'] = 'member';
+   				$params['room_id'] = $item->getItemID();
+   				$actionCurl = curl( $this->_environment->getCurrentContextID(),
+   						'home',
+   						'index',
+   						$params,
+   						'');
+   				$session_item = $this->_environment->getSessionItem();
+   				if ($session_item->issetValue('login_redirect')) {
+   					$html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">';
+   					if ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
+   						$html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN','<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a>');
+   					} else {
+   						$current_user_item = $this->_environment->getCurrentUserItem();
+   						$current_user_item = $current_user_item->getRelatedCommSyUserItem();
+   						if ( isset($current_user_item) and $current_user_item->isUser() ) {
+   							$html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN_NOT_ALLOWED').LF;
+   							if($item->isGroupRoom()){
+   								$linked_project_item = $item->getLinkedProjectItem();
+   								$user_related_project_list = $current_user_item->getRelatedProjectList();
+   								$user_is_room_member = false;
+   								if ( $user_related_project_list->isNotEmpty() ) {
+   									$room_item = $user_related_project_list->getFirst();
+   									while ($room_item) {
+   										if($room_item->getItemID() == $linked_project_item->getItemID()){
+   											$user_is_room_member = true;
+   											break;
+   										}
+   										$room_item = $user_related_project_list->getNext();
+   									}
+   								}
+   								$html .= '<br/><br/>';
+   								if($user_is_room_member){
+   									$html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_GROUP_MEMBER', $item->getTitle(), $linked_project_item->getTitle());
+   									$html .= '<br/><br/>';
+   									$actionCurl = curl($linked_project_item->getItemID(),
+   											'group',
+   											'detail',
+   											array('account' => 'member', 'iid' => $item->getLinkedGroupItemID()),
+   											'');
+   									$html .= '<a href="'.$actionCurl.'">' . $this->_translator->getMessage('COMMON_REGISTER_HERE') . '</a>'.LF;
+   								} else {
+   									$user_manager->setUserIDLimit($current_user->getUserID());
+   									$user_manager->setAuthSourceLimit($current_user->getAuthSource());
+   									$user_manager->setContextLimit($linked_project_item->getItemID());
+   									$user_manager->select();
+   									$user_list = $user_manager->get();
+   									if (!empty($user_list)) {
+   										$room_user = $user_list->getFirst();
+   									} else {
+   										$room_user = '';
+   									}
+   									if(!$room_user->isRejected()){
+   										$html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
+   										$html .= '<br/><br/>';
+   										$actionCurl = curl($this->_environment->getCurrentContextID(),
+   												'home',
+   												'index',
+   												array('room_id' => $linked_project_item->getItemID(), 'account' => 'member'),
+   												'');
+   										$html .= '<a href="'.$actionCurl.'">' . $this->_translator->getMessage('COMMON_REGISTER_HERE') . '</a>'.LF;
+   									} else {
+   										$html .= $this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED');
+   									}
+   								}
+   							}
+   						} else {
+   							$html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN2');
+   						}
+   						unset($current_user_item);
+   					}
+   					$html .= '</p></div>'.LF;
+   					unset($session_item);
+   				} elseif ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
+   					$html .= '<div style="padding-top:5px;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
+   				}
+   				unset($params);
+   			} elseif ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
+   				$html .= '<div style="padding-top:5px;">> <span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
+   			}
+   			$html .= '<div style="padding-top:6px;">&nbsp;</div>'.LF;
+   		}
+   	}
+   	return $html;
+   }
+   
+    
+   
+   function _getRoomAccessAsHTMLOld ($item, $mode = 'none') {
       $current_user = $this->_environment->getCurrentUserItem();
       $may_enter = $item->mayEnter($current_user);
       $html ='';
@@ -639,7 +861,7 @@ class cs_external_page_portal_view extends cs_page_view {
       }
       $current_user = $this->_environment->getCurrentUserItem();
 
-      //Anzeige au�erhalb des Anmeldeprozesses
+      //Anzeige außerhalb des Anmeldeprozesses
       if ($mode !='member' and $mode !='info' and $mode !='email'){
          $current_user = $this->_environment->getCurrentUserItem();
          $may_enter = $item->mayEnter($current_user);
@@ -1364,8 +1586,8 @@ class cs_external_page_portal_view extends cs_page_view {
                                           '','','','','','','class="room_detail_link"').''.LF;
             unset($params);
          } else {
-           $html .=  ' | <span class="room_detail_disabled"> '.$this->_translator->getMessage('PORTAL_EDIT_ROOM').'</span> '.LF;
-           $html .=  ' | <span class="room_detail_disabled"> '.$this->_translator->getMessage('COMMON_DELETE_ROOM').'</span> '.LF;
+#           $html .=  ' | <span class="room_detail_disabled"> '.$this->_translator->getMessage('PORTAL_EDIT_ROOM').'</span> '.LF;
+#           $html .=  ' | <span class="room_detail_disabled"> '.$this->_translator->getMessage('COMMON_DELETE_ROOM').'</span> '.LF;
          }
          $html .= LF;
 
@@ -1982,7 +2204,7 @@ class cs_external_page_portal_view extends cs_page_view {
       if ( !isset($selroom) || ($selroom == 1 or $selroom == 2) ) {
          $html .= ' selected="selected"';
       }
-      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+      $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').' '.$this->_translator->getMessage('COMMON_ROOMS').'</option>'.LF;
 
       $current_context = $this->_environment->getCurrentContextItem();
       if ($show_rooms !='onlycommunityrooms'){
@@ -2031,7 +2253,8 @@ class cs_external_page_portal_view extends cs_page_view {
          if ( !isset($seltime) or $seltime == 0 or $seltime == -3) {
             $html .= ' selected="selected"';
          }
-         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+         $time_item = $time_list->getFirst();
+         $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').' '.$this->_translator->getMessage('COMMON_TIME_NAME').'</option>'.LF;
          $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          if ($time_list->isNotEmpty()) {
             $time_item = $time_list->getFirst();
@@ -3444,7 +3667,7 @@ if ( $lang == 'en' ) {
 	
    <!-- end .grid_5 -->
     <div class="grid_19">
-      <a title="AGORA-Homepage" href="'.$external_link_url.'/en"><img title="AGORA" src="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/img/logo-agora_eng.gif" alt="logo"></a>
+      <a title="AGORA-Homepage" href="'.$external_link_url.'/en"><img title="AGORA" src="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/img/logo-agora-en.png" alt="logo"></a>
 	</div>
     <!-- end .grid_19 -->
   </div>'.LF;
@@ -3457,7 +3680,7 @@ if ( $lang == 'en' ) {
 
    <!-- end .grid_5 -->
     <div class="grid_19">
-      <a title="AGORA-Startseite" href="'.$external_link_url.'/"><img title="AGORA" src="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/img/logo-agora.gif" alt="logo"></a>
+      <a title="AGORA-Startseite" href="'.$external_link_url.'/"><img title="AGORA" src="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/img/logo-agora.png" alt="logo"></a>
 	</div>
     <!-- end .grid_19 -->
   </div>'.LF;
@@ -3479,7 +3702,7 @@ $html .='  <!-- end #logo-container -->
     
 
 if ( $lang == 'en' ) {
-	$html .='        <h2>Menü</h2><ul class="menu">
+	$html .='        <h2>Menu</h2><ul class="menu">
   <li class="first leaf menu-mlid-646"><a href="'.$external_link_url.'/en" title="AGORA homepage, News">Homepage</a></li>
   <li class="leaf active-trail active menu-mlid-585">'.ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', '','Workspaces','List of AGORA workspaces','','','','','','class="active-trail active"').'</li>
   <li class="expanded menu-mlid-649"><a href="'.$external_link_url.'/en/usage-information" title="First steps, FAQ, Tutorials">Usage information</a>
@@ -3500,7 +3723,7 @@ if ( $lang == 'en' ) {
 	    		
 	</ul>'.LF;
 }else{   
-	$html .='        <h2>Menue</h2><ul class="menu">
+	$html .='        <h2>Menü</h2><ul class="menu">
   <li class="first leaf menu-mlid-218"><a title="AGORA-Homepage, Aktuelle Meldungen" href="'.$external_link_url.'/">Startseite</a></li>
   <li class="leaf active-trail active menu-mlid-585">'.ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', '','Raumübersicht','Liste der Projekt- und Gemeinschaftsräume','','','','','','class="active-trail active"').'</li>
   <li class="expanded menu-mlid-555"><a title="Erste Schritte, FAQ, Tutorials" href="'.$external_link_url.'/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a>
@@ -3657,13 +3880,16 @@ $html .='<!-- Main Content -->
 	$html .= $this->getSearchBoxAsHTML().LF;
 	$html .='</div>'.LF;
 
+	
+	
+	
 	$html .='<div id="raumsuche" class="block">'.LF;
 	
 	if ($cs_room_id) {
 		$html .= '<h2>'.$this->_translator->getMessage('PORTAL_ROOM_DESCRIPTION').'</h2>'.LF;
 	}else{
 
-#		$html .= $this->_getMyCommSyAsHTML();
+		$html .= $this->_getMyCommSyAsHTML();
 
 	}
 	
@@ -3773,12 +3999,16 @@ $html .='
 			if ( $lang == 'en' ) {
 				$html .='<h2>Create workspaces</h2>';
 				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
-				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a>'.LF;
-				
+				if ($current_user->isModerator()){
+					$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a>'.LF;
+				}
 		}else{
 			$html .='<h2>Raum anlegen</h2>';
 			$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
-			$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a>'.LF;
+			if ($current_user->isModerator()){
+				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a>'.LF;
+		
+			}
 		}
 		$html .='	</div>'.LF;	
     }
@@ -3937,13 +4167,37 @@ $html.= '  </div>
            and !$current_user->isRoot()
          ) {
          $retour .= '<h2>myAGORA</h2>'.LF;
-         $profile_link = $this->_getProfileLinkAsHTML();
-         if ( !empty($profile_link) ) {
-            $retour .= '<div class="agora_portal_profile_link" style="float: right;">';
-            $retour .= $profile_link;
-            $retour .= '</div>'.LF;
-         }
-         $retour .= '<div>'.$this->_getPrivateRoomLinkAsHTML().'</div>'.LF;
+         $retour .='<div style="padding:10px 5px; background-color:#F9F9F9; margin-bottom:60px;">';
+   		 $currentUser = $this->_environment->getCurrentUserItem();
+   		 $translator = $this->_environment->getTranslationObject();
+   		 $ownRoomItem = $currentUser->getOwnRoom();
+   		 
+   		 if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
+         	$retour .= '- <a href="#" onclick="document.getElementById(\'tm_user\').click();" title="' . $this->_translator->getMessage("MYAREA_ACCOUNT_PROFIL") . '">'.$this->_translator->getMessage("MYAREA_ACCOUNT_PROFIL").'</a><br/>';
+   		 	
+   		 	if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
+         	{
+         		$retour .= '- <a href="#" onclick="document.getElementById(\'tm_portfolio\').click();" title="' . $this->_translator->getMessage("CS_BAR_PORTFOLIO") . '">'.$this->_translator->getMessage("CS_BAR_PORTFOLIO").'</a><br/>';
+         	}
+         	
+         	if ( $ownRoomItem->getCSBarShowWidgets() == "1" )
+         	{
+         		$retour .= '- <a href="#" onclick="document.getElementById(\'tm_widgets\').click();" title="' . $this->_translator->getMessage("MYWIDGETS_INDEX") . '">'.$this->_translator->getMessage("MYWIDGETS_INDEX").'</a><br/>';
+         	}
+         	
+         	if ( $ownRoomItem->getCSBarShowCalendar() == "1" )
+         	{
+         		$retour .= '- <a href="#" onclick="document.getElementById(\'tm_mycalendar\').click();" title="' . $this->_translator->getMessage("MYCALENDAR_INDEX") . '">'.$this->_translator->getMessage("MYCALENDAR_INDEX").'</a><br/>';
+         	}
+         	
+         	if ( $ownRoomItem->getCSBarShowStack() == "1" )
+         	{
+         		$retour .= '- <a href="#" onclick="document.getElementById(\'tm_stack\').click();" title="' . $this->_translator->getMessage("CS_BAR_STACK") . '">'.$this->_translator->getMessage("CS_BAR_STACK").'</a>';
+         	}
+         	
+   		 }
+   		 $retour .='</div>';
+          
       }
       return $retour;
    }

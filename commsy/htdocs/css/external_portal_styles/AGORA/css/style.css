@@ -62,8 +62,19 @@ body {
 
 #room_detail{
 	margin-bottom:60px;
+    background-color: #F9F9F9;
+    padding:10px 5px;
+
 }
 
+div.search_box{
+    background-color: #F9F9F9;
+    padding:10px 5px;
+}
+
+#room_detail_actions{
+	font-size:8pt;
+}
 
 /* Grid */
 .grid_5,
@@ -242,7 +253,6 @@ h1#page-title,
   font-weight: normal;
   color: #ad6b20;
   border-bottom: 2px solid #ddd;
-  margin-bottom: 7px;
 }
 h3 {
   font-size: 15px;
