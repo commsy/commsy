@@ -179,9 +179,11 @@ define([	"dojo/_base/declare",
 
 				DomAttr.set(Query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
+			
+			console.log(part);
 
 			// setup data to send via ajax
-			if(part === "user" || part === "newsletter" || part === "cs_bar" || "addon_configuration") {
+			if(part === "user" || part === "newsletter" || part === "cs_bar" || part === "addon_configuration" ) {
 				var search = {
 					tabs: [
 					    { id: part }
@@ -208,7 +210,8 @@ define([	"dojo/_base/declare",
 					tabs: [],
 					nodeLists: [
 						{ query: Query("input[name='form_data[merge_user_id]']", this.contentNode) },
-						{ query: Query("input[name='form_data[merge_user_password]']", this.contentNode) }
+						{ query: Query("input[name='form_data[merge_user_password]']", this.contentNode) },
+						{ query: Query("select[name='form_data[auth_source]']", this.contentNode) }
 					]
 				};
 			} else {
@@ -264,6 +267,27 @@ define([	"dojo/_base/declare",
 					break;
 				
 				case "1013":			/* error in auth source */
+					break;
+				
+				case "1014":			/* anonymous account */
+					var errorNode = Query("input[name='form_data[merge_user_id]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1014, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;
+				
+				case "1015":			/* invalid account */
+					var errorNode = Query("input[name='form_data[merge_user_id]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1015, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;
+				
+				case "1016":			/* authentication errror */
+					var errorNode = Query("input[name='form_data[merge_user_id]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1016, errorNode);
+					this.errorNodes.push(errorNode);
+					
 					break;
 			}
 		}

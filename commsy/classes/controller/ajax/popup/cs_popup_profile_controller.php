@@ -114,17 +114,55 @@ class cs_popup_profile_controller implements cs_popup_controller {
 				switch($tab) {
 					/**** ACCOUNT ****/
 					case 'account_merge':
-						if($this->_popup_controller->checkFormData('merge')) {
+						if ( $this->_popup_controller->checkFormData('merge') )
+						{
+							
 							$authentication = $this->_environment->getAuthenticationObject();
-							$current_user = $this->_environment->getCurrentUserItem();
+							
+							global $c_annonymous_account_array;
+							
+							$currentUser = $this->_environment->getCurrentUserItem();
+							if ( !empty($c_annonymous_account_array[mb_strtolower($currentUser->getUserID(), 'UTF-8') . '_' . $currentUser->getAuthSource()]) && $currentUser->isOnlyReadUser() )
+							{
+								$this->_popup_controller->setErrorReturn("1014", "anonymous account");
+								exit;
+							}
+							else
+							{
+								if ( $currentUser->getUserID() == $form_data['merge_user_id'] && ( empty($form_data['auth_source']) || $currentUser->getAuthSource() == $form_data['auth_source'] ) )
+								{
+									$this->_popup_controller->setErrorReturn("1015", "invalid account");
+								}
+								else
+								{
+									$authManager = $authentication->getAuthManager($form_data['auth_source']);
+									
+									if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
+									{
+										$this->_popup_controller->setErrorReturn("1016", "authentication error");
+										exit;
+									}
+								}
+							}
+							
+							$currentUser = $this->_environment->getCurrentUserItem();
+							
+							if ( isset($form_data['auth_source']) )
+							{
+								$authSourceOld = $form_data['auth_source'];
+							}
+							else
+							{
+								$authSourceOld = $this->_environment->getCurrentPortalItem()->getAuthDefault();
+							}
+							
+							ini_set('display_errors', 'on');
+							error_reporting(E_ALL);
 
-							if(isset($form_data['auth_source'])) $auth_source_old = $form_data['auth_source'];
-							else $auth_source_old = $current_portal_item->getAuthDefault();
-
-							$authentication->mergeAccount($current_user->getUserID(), $current_user->getAuthSource(), $form_data['merge_user_id'], $auth_source_old);
-
+							$authentication->mergeAccount($currentUser->getUserID(), $currentUser->getAuthSource(), $form_data['merge_user_id'], $authSourceOld);
+							
 							// set return
-							$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
+							$this->_popup_controller->setSuccessfullItemIDReturn($currentUser->getItemID());
 						}
 						break;
 
@@ -1217,8 +1255,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 				array('name' => 'newsletter', 'type' => 'radio', 'mandatory' => true)
 			),
 			'merge'	=> array(
-				array('name' => 'merge_user_id', 'type' => 'text', 'mandatory' => false),
-				array('name' => 'merge_user_password', 'type' => 'text', 'mandatory' => false)
+				array('name' => 'merge_user_id', 'type' => 'text', 'mandatory' => true),
+				array('name' => 'merge_user_password', 'type' => 'text', 'mandatory' => true)
 			),
 			'account'	=> array(
 				array('name' => 'forname', 'type' => 'text', 'mandatory' => true),
