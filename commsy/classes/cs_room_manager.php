@@ -118,7 +118,6 @@ class cs_room_manager extends cs_context_manager {
 
   function setArchiveLimit () {
      $this->_archive_limit = true;
-     $this->setClosedLimit();
   }
 
   function setRoomTypeLimit ($value) {
@@ -409,7 +408,19 @@ class cs_room_manager extends cs_context_manager {
         include_once('functions/error_functions.php');
         trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_ERROR);
      } else {
-        if ( !empty($this->_id_array_limit)
+       if ( isset($this->_archive_limit)
+        		and $this->_archive_limit
+       		and $mode == 'select'
+           ) {
+       	  $result2 = array();
+           foreach ( $result as $key => $row ) {
+              $row['zzz_table'] = 1;
+              $result2[$key] = $row;
+           }
+           $result = $result2;
+           unset($result2);
+       }
+     	if ( !empty($this->_id_array_limit)
              and $this->_order == 'id_array'
            ) {
            // sort result

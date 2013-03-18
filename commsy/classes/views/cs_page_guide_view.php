@@ -1402,7 +1402,7 @@ class cs_page_guide_view extends cs_page_view {
       return $html;
    }
 
-   function getDeleteBoxAsHTML ($type='room') {
+   function getDeleteBoxAsHTML ($type='room', $archived_room = false) {
       if ( $this->_environment->getCurrentModule() != 'home'
            and !( $this->_environment->getCurrentModule() == 'configuration'
                   and $this->_environment->getCurrentFunction() == 'preferences'
@@ -1440,6 +1440,8 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</h2>';
       if ( $type == 'portal' ) {
          $html .= '<p style="text-align:left; font-weight:normal;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_PORTAL');
+      } elseif ( $archived_room ) {
+         $html .= '<p style="text-align:left; font-weight:normal;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM_ARCHIVED');
       } else {
          $html .= '<p style="text-align:left; font-weight:normal;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
       }
@@ -1447,7 +1449,9 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<div style="height:20px;">';
       $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
       $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
-      if ( $type != 'portal' ) {
+      if ( $type != 'portal'
+      	  and !$archived_room
+         ) {
          $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
       }
       $html .= '</div>';
@@ -1683,8 +1687,15 @@ class cs_page_guide_view extends cs_page_view {
             ) {
             $params = array();
             $params['iid'] = $item->getItemID();
-            $params['automatic'] = 'archive';
-            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+            if ( $item->isLocked()
+            	  and $item->isArchived()
+               ) {
+            	$params['automatic'] = 'open';
+            	$html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_OPEN'),'','','','','','','class="portal_link"').LF;
+            } else {
+               $params['automatic'] = 'archive';
+               $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+            }
             unset($params);
          }elseif( $current_user->isModerator()
               and $this->_with_modifying_actions
@@ -1813,7 +1824,13 @@ class cs_page_guide_view extends cs_page_view {
 
       $html .= '</div>'.LF;
       if ($this->_with_delete_box) {
-         $html .= $this->getDeleteBoxAsHTML();
+      	if ( isset($item)
+      		  and $item->isArchived()
+      	   ) {
+      		$html .= $this->getDeleteBoxAsHTML('room',true);
+      	} else {
+            $html .= $this->getDeleteBoxAsHTML();
+      	}
       }
       $html .= '</div>'.LF;
       return $html;
