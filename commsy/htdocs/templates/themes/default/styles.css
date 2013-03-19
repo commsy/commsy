@@ -2650,6 +2650,11 @@ a#sort_down {
     font-size: 10px;
     }
 
+.editor_content span
+{
+	font-size: inherit;
+}
+
 .post_content .editor_content {
     padding: 5px 0px 20px 0px;
     line-height: 18px;
