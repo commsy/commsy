@@ -267,13 +267,9 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 		               $user_item->setLanguage($form_data['language']);
 		            }
 
-		            if (isset($form_data['want_mail_get_account'])) {
+		            if (isset($form_data['want_mail_get_account']))
+		            {
 		               $user_item->setAccountWantMail($form_data['want_mail_get_account']);
-		            }
-		            if (isset($form_data['mail_delete_entry'])) {
-		               $user_item->setAccountWantMail('yes');
-		            }else{
-		               $user_item->setAccountWantMail('no');
 		            }
 
 					if(isset($form_data['mail_delete_entry'])) {
@@ -300,7 +296,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 	                // Add modifier to all users who ever edited this item
 	                $manager = $environment->getLinkModifierItemManager();
 	                $manager->markEdited($user_item->getItemID());
-
+	                
 	                // set return
 	                $this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 	            }
