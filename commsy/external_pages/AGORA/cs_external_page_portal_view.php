@@ -526,10 +526,14 @@ class cs_external_page_portal_view extends cs_page_view {
 
    function _getSystemInfoAsHTML(){
       $html ='';
-      $html .='<div style="font-size:8pt; padding-left:10px; padding-top:0px; margin-top:3px;">'.LF;
+      $html .='<div style="font-size:8pt; padding-top:0px; margin-top:3px;">'.LF;
       $html .= '<div class="footer" style="text-align:left; padding-left:0px; padding-right:0px; padding-top:0px; padding-bottom:10px;">'.LF;
-      $html .= '<a href="http://tidy.sourceforge.net/" target="_top" title="HTML Tidy">'.'<img src="images/checked_by_tidy.gif" style="height:14px; vertical-align: bottom;" alt="Tidy"/></a>';
+      #$html .= '<a href="http://tidy.sourceforge.net/" target="_top" title="HTML Tidy">'.'<img src="images/checked_by_tidy.gif" style="height:14px; vertical-align: bottom;" alt="Tidy"/></a>';
       $html .= '&nbsp;&nbsp;<a href="http://www.commsy.net" target="_top" title="'.$this->_translator->getMessage('COMMON_COMMSY_LINK_TITLE').'">CommSy '.getCommSyVersion().'</a>';
+      $version_addon = $this->_environment->getConfiguration('c_version_addon');
+      if ( !empty($version_addon) ) {
+         $html .= ' - '.$version_addon;
+      }
       $html .= '</div>'.LF;
       $html .='</div>'.LF;
       return $html;
@@ -2178,8 +2182,11 @@ class cs_external_page_portal_view extends cs_page_view {
       #}else{
       #   $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_COMMUNITY_ROOM_LIST_ROOMS').':'.BRLF;
       #}
-      $html .= '<div style="text-align:left; font-size: 8pt; font-weight:normal; margin-bottom:10px; margin-top:3px;">
-      <input type="radio" checked="checked" value="2" name="sel_archive_room"> '.LF;
+      $html .= '<div style="text-align:left; font-size: 8pt; font-weight:normal; margin-bottom:10px; margin-top:3px;"> <input type="radio" ';
+      if ( !isset($sel_archive_room) || empty($sel_archive_room) || ($sel_archive_room == 2) ) {
+		$html .=' checked="checked"';
+	 }
+	  $html .=' value="2" name="sel_archive_room"> '.LF;
    		$current_user = $this->_environment->getCurrentUserItem();
       $session = $this->_environment->getSessionItem();
 	$language_addon = '';
@@ -2195,7 +2202,11 @@ class cs_external_page_portal_view extends cs_page_view {
 			$html .= 'Nutzbare Räume'.LF;
 				
 		}
-      $html .= '<input type="radio" value="1" name="sel_archive_room"> '.$this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS').'
+      $html .= '<input type="radio" ';
+	  if ($sel_archive_room == 1) {
+		$html .= ' checked="checked"';
+	  }
+	  $html .=' value="1" name="sel_archive_room"> '.$this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS').'
       </div>'.LF;
 
       $html .= '   <select style="width: 215px; font-size:10pt;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
@@ -3708,12 +3719,10 @@ if ( $lang == 'en' ) {
   <li class="expanded menu-mlid-649"><a href="'.$external_link_url.'/en/usage-information" title="First steps, FAQ, Tutorials">Usage information</a>
     <ul class="menu">
       <li class="first leaf menu-mlid-666"><a href="'.$external_link_url.'/en/usage-information/first-steps" title="First steps on AGORA">First steps</a></li>
+      <li class="leaf menu-mlid-670"><a href="'.$external_link_url.'/en/usage-information/tutorials" title="Docs about the usage of AGORA">Tutorials</a></li>
       <li class="leaf menu-mlid-707"><a href="'.$external_link_url.'/en/usage-information/faq" title="Frequently Asked Questions">FAQ</a></li>
       <li class="leaf menu-mlid-667"><a href="'.$external_link_url.'/en/usage-information/glossary" title="Important AGORA terms and their meaning">Glossary</a></li>
-      <li class="leaf menu-mlid-701"><a href="'.$external_link_url.'/en/usage-information/legal-questions" title="Legal questions concerning the usage of AGORA">Legal questions</a></li>
-      <li class="leaf menu-mlid-668"><a href="'.$external_link_url.'/en/usage-information/support" title="Helpdesk, office hours">Support</a></li>
       <li class="leaf menu-mlid-669"><a href="'.$external_link_url.'/en/usage-information/tips-of-the-month" title="Tips how to use AGORA">Tips of the month</a></li>
-      <li class="leaf menu-mlid-670"><a href="'.$external_link_url.'/en/usage-information/tutorials" title="Docs about the usage of AGORA">Tutorials</a></li>
       <li class="leaf menu-mlid-671"><a href="'.$external_link_url.'/en/usage-information/workshops" title="Workshops for students and lecturers">Workshops</a></li>
     </ul>
   </li>
@@ -3729,12 +3738,10 @@ if ( $lang == 'en' ) {
   <li class="expanded menu-mlid-555"><a title="Erste Schritte, FAQ, Tutorials" href="'.$external_link_url.'/hilfe-bei-der-nutzung">Hilfe bei der Nutzung</a>
     <ul class="menu">
       <li class="first leaf menu-mlid-651"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/erste-schritte" title="Erste Schritte mit AGORA">Erste Schritte</a></li>
+      <li class="leaf has-children menu-mlid-655"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/tutorials" title="Dokumente zur Handhabung von AGORA">Tutorials</a></li>
       <li class="leaf menu-mlid-488"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/faq" title="Frequented Asked Questions">FAQ</a></li>
       <li class="leaf active-trail active menu-mlid-652"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/glossar" title="Wichtige AGORA-Begriffe und was sie bedeuten">Glossar</a></li>
-      <li class="leaf menu-mlid-700"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/rechtliche-fragen" title="Rechtliche Fragen bei der AGORA-Nutzung">Rechtliche Fragen</a></li>
-      <li class="leaf menu-mlid-653"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/support" title="Beratung, Sprechstunden und andere Support-Angebote">Support</a></li>
       <li class="leaf menu-mlid-654"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/tipps-des-monats" title="Tipps zur Arbeit mit AGORA">Tipps des Monats</a></li>
-      <li class="leaf has-children menu-mlid-655"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/tutorials" title="Dokumente zur Handhabung von AGORA">Tutorials</a></li>
       <li class="last leaf menu-mlid-656"><a href="'.$external_link_url.'/hilfe-bei-der-nutzung/workshops" title="AGORA-Workshops für Lehrende und Studierende">Workshops</a></li>
     </ul>
   </li>
@@ -3874,7 +3881,7 @@ $html .='<!-- Main Content -->
 $html .='<!-- Main Content -->
     <div id="main-content" class="grid_14">
       <h1 id="page-title" class="invisible">Raumübersicht</h1>'.LF;
-	$html .='<div id="raumsuche" class="block" style="margin-bottom:60px;">'.LF;
+	$html .='<div id="raumsuche" class="block" style="margin-bottom:20px;">'.LF;
 
 	$html .= '<h2>'.$this->_translator->getMessage('COMMON_ROOM_SEARCH').'</h2>'.LF;
 	$html .= $this->getSearchBoxAsHTML().LF;
@@ -3887,10 +3894,6 @@ $html .='<!-- Main Content -->
 	
 	if ($cs_room_id) {
 		$html .= '<h2>'.$this->_translator->getMessage('PORTAL_ROOM_DESCRIPTION').'</h2>'.LF;
-	}else{
-
-		$html .= $this->_getMyCommSyAsHTML();
-
 	}
 	
 }
@@ -3994,24 +3997,31 @@ $html .='
     $current_user = $this->_environment->getCurrentUser();
     $params = $this->_environment->getCurrentParameterArray();
     if ($current_user->isUser()){
-		
+
+		$html .='		<div id="news" class="block">'.LF;
+		$html .= $this->_getMyCommSyAsHTML();
+		$html .='	</div>'.LF;	
+
+	
 		$html .='		<div id="news" class="block">'.LF;
 			if ( $lang == 'en' ) {
-				$html .='<h2>Create workspaces</h2>';
-				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
+				$html .='<h2>Create workspaces</h2><div style="padding:10px 5px; white-space:nowrap;">';
+				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
 				if ($current_user->isModerator()){
-					$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a>'.LF;
+					$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a></div>'.LF;
 				}
 		}else{
-			$html .='<h2>Raum anlegen</h2>';
-			$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
+			$html .='<h2>Raum anlegen</h2><div style="padding:10px 5px; white-space:nowrap;">';
+			$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
 			if ($current_user->isModerator()){
-				$html.= '&gt; <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a>'.LF;
+				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a></div>'.LF;
 		
 			}
 		}
 		$html .='	</div>'.LF;	
-    }
+
+
+	}
 $html .='	<div id="news" class="block">'.LF;
 
 
@@ -4024,11 +4034,13 @@ $html .='	<div id="news" class="block">'.LF;
 $html .= $this->_getServerNewsAsHTML();
 
 	$html.='
-      </div>
+      </div><div style="margin-top:40px;">'.$this->_getSystemInfoAsHTML().'</div>
     </div>
     <!-- end #sidebar-second -->'.LF;
 }	
 
+
+$html .= '';
 
 if ( $lang == 'en' ) {
 $html.= '  </div>
@@ -4167,7 +4179,7 @@ $html.= '  </div>
            and !$current_user->isRoot()
          ) {
          $retour .= '<h2>myAGORA</h2>'.LF;
-         $retour .='<div style="padding:10px 5px; background-color:#F9F9F9; margin-bottom:60px;">';
+         $retour .='<div style="padding:10px 5px; background-color:#FFFFFF; margin-bottom:20px;">';
    		 $currentUser = $this->_environment->getCurrentUserItem();
    		 $translator = $this->_environment->getTranslationObject();
    		 $ownRoomItem = $currentUser->getOwnRoom();

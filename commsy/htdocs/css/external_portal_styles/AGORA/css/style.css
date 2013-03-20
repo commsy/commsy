@@ -61,10 +61,16 @@ body {
 }
 
 #room_detail{
-	margin-bottom:60px;
+	margin-bottom:20px;
     background-color: #F9F9F9;
     padding:10px 5px;
 
+}
+
+#tm_breadcrumb_old {
+    float: left;
+    height: 27px;
+    padding: 6px 5px 0;
 }
 
 div.search_box{
