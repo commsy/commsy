@@ -1320,7 +1320,7 @@
 
 					$entry['actions']			= $this->getEditActions($this->_item, $current_user);
 					$entry['num_files'] 		= sizeof($files);
-					$entry['title']				= $converter->text_as_html_short($section->getTitle());
+					$entry['title']				= $section->getTitle();
 					$entry['iid']				= $section->getItemID();
 					$entry['description']		= $description;
 					$entry['num_attachments']	= sizeof($files);
