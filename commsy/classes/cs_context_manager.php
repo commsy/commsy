@@ -423,7 +423,9 @@ class cs_context_manager extends cs_manager {
             } elseif ( !empty($result[0]) ) {
                $data_array = $result[0];
                if ( !empty($data_array) ) {
-               	if ( strstr(get_called_class(),'_zzz_') ) {
+               	if ( function_exists('get_called_class')
+               		  and strstr(get_called_class(),'_zzz_')
+               	   ) {
                		$data_array['zzz_table'] = 1;
                	}
                   $retour = $this->_buildItem($data_array);
