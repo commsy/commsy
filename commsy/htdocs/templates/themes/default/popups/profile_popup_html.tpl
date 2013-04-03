@@ -52,17 +52,17 @@
                     {if $popup.form.config.show_password_change_form === true}
                       <div class="input_row">
                         <label for="old_password">___USER_PASSWORD_OLD___:</label>
-                        <input id="old_password" type="text" class="size_200" name="form_data[old_password]" />
+                        <input id="old_password" type="password" class="size_200" name="form_data[old_password]" />
                       </div>
 
                       <div class="input_row">
                         <label for="new_password">___USER_PASSWORD_NEW___:</label>
-                        <input id="new_password" type="text" class="size_200" name="form_data[new_password]" />
+                        <input id="new_password" type="password" class="size_200" name="form_data[new_password]" />
                       </div>
 
                       <div class="input_row">
                         <label for="new_password_confirm">___USER_PASSWORD_NEW2___:</label>
-                        <input id="new_password_confirm" type="text" class="size_200" name="form_data[new_password_confirm]" />
+                        <input id="new_password_confirm" type="password" class="size_200" name="form_data[new_password_confirm]" />
                       </div>
                     {/if}
 
@@ -139,10 +139,13 @@
                     </div>
                   </fieldset>
                   
-                  {*
                   {if $popup.form.config.show_merge_form === true}
                     <fieldset>
                       <legend>___ACCOUNT_MERGE___:</legend>
+                      
+                      <div id="mandatory_missing" class="input_row hidden">
+                      	___COMMON_MANDATORY_FIELDS_CONTENT___
+                      </div>
 
                       <div class="input_row">
                         <div>
@@ -162,13 +165,13 @@
                       {/if}
 
                       <div class="input_row">
-                        <label for="merge_user_id">___USER_USER_ID___:</label>
+                        <label for="merge_user_id">___USER_USER_ID___<span class="required">*</span>:</label>
                         <input id="merge_user_id" type="text" class="size_200 mandatory" name="form_data[merge_user_id]" />
                       </div>
 
                       <div class="input_row">
-                        <label for="merge_user_password">___USER_PASSWORD___:</label>
-                        <input id="merge_user_password" type="text" class="size_200 mandatory" name="form_data[merge_user_password]" />
+                        <label for="merge_user_password">___USER_PASSWORD___<span class="required">*</span>:</label>
+                        <input id="merge_user_password" type="password" class="size_200 mandatory" name="form_data[merge_user_password]" />
                       </div>
 
                       <div class="input_row">
@@ -183,7 +186,7 @@
                         </div>
                       </div>
                     </fieldset>
-                  {/if}*}
+                  {/if}
                 </div>
               </div>
 

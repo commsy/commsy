@@ -57,6 +57,9 @@ class cs_portal_item extends cs_guide_item {
    private $_private_id_array_active_user = NULL;
    private $_room_list_continuous_nlct = NULL;
    private $_grouproom_list_count = NULL;
+   private $_count_archived_grouprooms = NULL;
+   private $_count_archived_project_and_community_rooms = NULL;
+   private $_count_project_and_community_rooms_without_templates = NULL;
 
    /** constructor: cs_server_item
     * the only available constructor, initial values for internal variables
@@ -2174,7 +2177,40 @@ class cs_portal_item extends cs_guide_item {
       }
       return $retour;
    }
+   
+   // show tempates in room list
 
+   private function _setShowTemplateInRoomList ($value) {
+   	$this->_setExtra('SHOW_TEMPLATE_IN_ROOM_LIST',(int)$value);
+   }
+    
+   private function _getShowTemplateInRoomList () {
+      $retour = 1;
+      if ($this->_issetExtra('SHOW_TEMPLATE_IN_ROOM_LIST')) {
+         $retour = $this->_getExtra('SHOW_TEMPLATE_IN_ROOM_LIST');
+      }
+      return $retour;
+   }
+   
+   public function showTemplatesInRoomList () {
+   	$retour = true;
+   	$value = $this->_getShowTemplateInRoomList();
+   	if ( !empty($value)
+   		  and $value == -1
+   	   ) {
+   		$retour = false;
+   	}
+   	return $retour;
+   }
+   
+   public function setShowTemplatesInRoomListON () {
+   	$this->_setShowTemplateInRoomList(1);
+   }
+
+   public function setShowTemplatesInRoomListOFF () {
+   	$this->_setShowTemplateInRoomList(-1);
+   }
+    
    ############################################
    # archiving - BEGIN
    ############################################
@@ -2708,6 +2744,41 @@ class cs_portal_item extends cs_guide_item {
       if ( $save ) {
          $this->save();
       }
+   }
+   
+   public function getCountArchivedProjectAndCommunityRooms () {
+   	if ( !isset($this->_count_archived_project_and_community_rooms) ) {
+   	   $manager = $this->_environment->getZzzRoomManager();
+   	   $manager->setContextLimit($this->getItemID());
+   	   $this->_count_archived_project_and_community_rooms = $manager->getCountAll();
+   	   unset($manager);
+   	}
+   	return $this->_count_archived_project_and_community_rooms;
+   }
+
+   public function getCountProjectAndCommunityRoomsWithoutTemplates () {
+   	if ( !isset($this->_count_project_and_community_rooms_without_templates) ) {
+   		$manager = $this->_environment->getRoomManager();
+   		$manager->setContextLimit($this->getItemID());
+   		$manager->setNotTemplateLimit();
+   		$this->_count_project_and_community_rooms_without_templates = $manager->getCountAll();
+   		unset($manager);
+   	}
+   	return $this->_count_project_and_community_rooms_without_templates;
+   }
+    
+   /** get count group rooms from manager
+    *
+    * @return int count group rooms
+    */
+   public function getCountArchivedGroupRooms () {
+      if (!isset($this->_count_archived_grouprooms)) {
+         $manager = $this->_environment->getZzzGrouproomManager();
+         $manager->setContextLimit($this->getItemID());
+         $this->_count_archived_grouprooms = $manager->getCountAll();
+         unset($manager);
+      }
+      return $this->_count_archived_grouprooms;
    }
 }
 ?>

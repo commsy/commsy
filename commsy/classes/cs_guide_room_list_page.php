@@ -106,7 +106,6 @@ class cs_guide_room_list_page extends cs_page {
 	            if ($seltime == -2 or $seltime == -3) {
 	               $seltime = '';
 	            }
-	         } else {
 	         }
 	
 	         // get data
@@ -127,26 +126,41 @@ class cs_guide_room_list_page extends cs_page {
 	         } elseif ($show_rooms == 'onlyprojectrooms'){
 	            $manager->setRoomTypeLimit(CS_PROJECT_TYPE);
 	         }
-	
-	         # old
-	         # $count_all = $manager->getCountAll();
-	         # new - changes for count room redundancy
-	         if ( $show_rooms == 'onlycommunityrooms' ) {
-	            $count_all = $current_context->getCountCommunityRooms();
-	         } elseif ( $show_rooms == 'onlyprojectrooms' ) {
-	            $count_all = $current_context->getCountProjectRooms();
-	         } else {
-	            $count_all = $current_context->getCountProjectAndCommunityRooms();
-	         }
-	
+	         
 	         #if ( empty($sel_archive_room) ) {
 	         #   $manager->setOpenedLimit();
 	         #}
 	         if ( !empty($sel_archive_room) 
 	              and $sel_archive_room == 1
-	            ) {	
+	            ) {
 	            $manager->setArchiveLimit();
+	            $count_all = $current_context->getCountArchivedProjectAndCommunityRooms();
+	         } else {
+	         	# old
+	         	# $count_all = $manager->getCountAll();
+	         	# new - changes for count room redundancy
+	         	if ( $show_rooms == 'onlycommunityrooms' ) {
+	         		$count_all = $current_context->getCountCommunityRooms();
+	         	} elseif ( $show_rooms == 'onlyprojectrooms' ) {
+	         		$count_all = $current_context->getCountProjectRooms();
+	         	} else {
+			         if ( $current_context->isPortal()
+			         	  and !$current_context->showTemplatesInRoomList()
+			         	) {
+			         	$count_all = $current_context->getCountProjectAndCommunityRoomsWithoutTemplates();
+			         } else {
+	         		   $count_all = $current_context->getCountProjectAndCommunityRooms();
+			         }
+	         	}
 	         }
+	         
+	      	// template limit -> not show templates
+	         if ( $current_context->isPortal()
+	         	  and !$current_context->showTemplatesInRoomList()
+	         	) {
+	         	$manager->setNotTemplateLimit();
+	         }
+	         
 	         if (!empty($selroom)) {
 	            if ($selroom == 3) {
 	               $manager->setRoomTypeLimit(CS_PROJECT_TYPE);
@@ -158,7 +172,13 @@ class cs_guide_room_list_page extends cs_page {
 	               $manager->setAuthSourceLimit($current_user->getAuthSource());
 	            } elseif ($selroom == 6) {
 	               $manager->setRoomTypeLimit(CS_GROUPROOM_TYPE);
-	               $count_all = $current_context->getCountGroupRooms();
+			         if ( !empty($sel_archive_room) 
+			              and $sel_archive_room == 1
+			            ) {
+			            $count_all = $current_context->getCountArchivedGroupRooms();
+			         } else {
+		               $count_all = $current_context->getCountGroupRooms();
+			         }
 	            } elseif ($selroom == 9) {
 	               $manager->setDeletedLimit();
 	               $count_all = $manager->getCountAll();
@@ -179,8 +199,10 @@ class cs_guide_room_list_page extends cs_page {
 	         }else {
 	            $manager->setOrder('activity_rev');
 	         }
+	         
 	         $ids = $manager->getIDArray();
 	         $count_all_shown = count($ids);
+	         
 	         if ( empty($interval) ) {
 	            $interval = count($ids);
 	         }

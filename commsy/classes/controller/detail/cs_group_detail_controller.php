@@ -482,7 +482,7 @@
 			$this->_manager = $this->_environment->getGroupManager();
 			$this->_item = $this->_manager->getItem($current_item_id);
 			
-			$this->checkNotSet();
+			//$this->checkNotSet();
 		}
 
 		protected function getAdditionalActions(&$return) {
@@ -608,7 +608,9 @@
 					// TODO: implement
 					//$desc = $converter->compareWithSearchText($desc);
 					$converter->setFileArray($this->getItemFileList());
-					//$desc = $converter->text_as_html_long($desc);
+      			if ( $this->_with_old_text_formating ) {
+      				$desc = $converter->text_as_html_long($desc);
+      			}
 					//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
 
 					$return['description'] = $desc;

@@ -24,7 +24,25 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 				// TODO: check rights
 
 				$this->_popup_controller->assign('item', 'title', $item->getTitle());
-				$this->_popup_controller->assign('item', 'description', $item->getDescription());
+
+				// old formating
+			   $c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
+			   if ( !empty($c_old_text_formating_array)
+				     and is_array($c_old_text_formating_array)
+					  and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
+			      ) {
+				   $this->_with_old_text_formating = true;
+			   }
+				if ( $this->_with_old_text_formating ) {
+					$desc_string = $item->getDescription();
+					$desc_string = preg_replace('/(?:[ \t]*(?:\n|\r\n?)){2,}/', "\n", $desc_string);
+					$desc_string = nl2br($desc_string);
+					$desc_string = str_replace('<br /><br />','<br />',$desc_string);
+					$this->_popup_controller->assign('item', 'description', $desc_string);
+				} else {
+				   $this->_popup_controller->assign('item', 'description', $item->getDescription());
+				}
+				
 				$this->_popup_controller->assign('item', 'want_mail_get_account', $item->getAccountWantMail());
 				$this->_popup_controller->assign('item', 'mail_delete_entry', $item->getDeleteEntryWantMail());
 				$this->_popup_controller->assign('item', 'want_mail_open_room', $item->getOpenRoomWantMail());
@@ -249,13 +267,9 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 		               $user_item->setLanguage($form_data['language']);
 		            }
 
-		            if (isset($form_data['want_mail_get_account'])) {
+		            if (isset($form_data['want_mail_get_account']))
+		            {
 		               $user_item->setAccountWantMail($form_data['want_mail_get_account']);
-		            }
-		            if (isset($form_data['mail_delete_entry'])) {
-		               $user_item->setAccountWantMail('yes');
-		            }else{
-		               $user_item->setAccountWantMail('no');
 		            }
 
 					if(isset($form_data['mail_delete_entry'])) {
@@ -282,7 +296,7 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 	                // Add modifier to all users who ever edited this item
 	                $manager = $environment->getLinkModifierItemManager();
 	                $manager->markEdited($user_item->getItemID());
-
+	                
 	                // set return
 	                $this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 	            }

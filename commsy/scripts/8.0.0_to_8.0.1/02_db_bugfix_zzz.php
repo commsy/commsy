@@ -1,11 +1,9 @@
+<?php
 // $Id$
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
-// Oliver Hankel, Iver Jackewitz, Michael Janneck, Monique Janneck, Martti Jeenicke,
-// Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Thorsten Ries, Bernd Pape,
-// Edouard Simon, José Manuel González Vázquez
+// Copyright (c)2012 Dr. Iver Jackewitz
 //
 //    This file is part of CommSy.
 //
@@ -21,4 +19,19 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-//
+
+// headline
+$this->_flushHeadline('db: bugfix item_link_file');
+
+$success = true;
+
+$sql = "INSERT INTO zzz_item_link_file SELECT item_link_file.* FROM item_link_file WHERE file_id IN (SELECT zzz_files.files_id FROM zzz_files)";
+$success = $success AND $this->_select($sql);
+
+if ($success) {
+   $sql = "DELETE FROM item_link_file WHERE file_id IN (SELECT zzz_files.files_id FROM zzz_files)";
+   $success = $success AND $this->_select($sql);
+}
+
+$this->_flushHTML(BRLF);
+?>

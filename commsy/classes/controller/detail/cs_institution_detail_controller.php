@@ -192,7 +192,9 @@
 				//TODO:
 				//$desc = $converter->compareWithSearchText($desc);
 				$converter->setFileArray($this->getItemFileList());
-				//$desc = $converter->text_as_html_long($desc);
+      		if ( $this->_with_old_text_formating ) {
+      			$desc = $converter->text_as_html_long($desc);
+      		}
 				$return['description'] = $desc;
 				//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
 			}

@@ -53,7 +53,12 @@
 			    $entry = $entry_manager->getItem($id);
 				$return_array['title'] = $entry->getTitle();
 				$converter = $this->_environment->getTextConverter();
-				$desc = $entry->getDescription();
+			   
+				$desc = '';
+            if ( method_exists($entry,'getDescription') ) {
+               $desc = $entry->getDescription();
+            }
+				
 				if(!empty($desc)) {
 					$converter->setFileArray($this->getItemFileList());
 					//$desc = $converter->_text_as_html_long2($desc);

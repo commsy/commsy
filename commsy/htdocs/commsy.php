@@ -845,6 +845,9 @@ if ( !$outofservice
      and !( $environment->getCurrentModule() == 'room'
             and $environment->getCurrentFunction() == 'change'
           )
+     and !( $environment->getCurrentModule() == 'context'
+            and $environment->getCurrentFunction() == 'login'
+          )
    ) {
    include_once('pages/context_reload.php');
    exit();

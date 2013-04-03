@@ -15,6 +15,7 @@
 		const USER_HAS_LINK = 'user_has_link';
 		const USER_IS_DELETED = 'user_is_deleted';
 		const USER_NOT_VISIBLE = 'user_not_visible';
+		protected $_with_old_text_formating = false;
 
 		/**
 		 * constructor
@@ -33,6 +34,14 @@
 				'limit'		=> 20
 			);
 			*/
+			$c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
+			if ( !empty($c_old_text_formating_array)
+					and is_array($c_old_text_formating_array)
+					and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
+			   ) {
+				$this->_with_old_text_formating = true;
+			}
+					
 		}
 
 		/*
@@ -694,8 +703,12 @@
 						if(!empty($desc)) {
 							$desc = $desc;
 							$converter->setFileArray($this->getItemFileList());
-							$desc = $desc;
-							//$html .= $this->getScrollableContent($desc,$item,'',true);
+      				   if ( $this->_with_old_text_formating ) {
+      					   $desc = $converter->text_as_html_long($desc);
+      				   } else {
+							   $desc = $desc;
+							   //$html .= $this->getScrollableContent($desc,$item,'',true);
+      				   }
 						}
 
 						$current_version = $annotated_item->getVersionID();
@@ -1733,7 +1746,14 @@
 		                        'status' => self::USER_IS_DELETED);
 		                    $userEditArray[] = $userArray;
 		                }
+		                
+		                // kann das weg? (IJ 03.04.2013)
+		                if ( !isset($temp_text) ) {
+		                	 $temp_text = '';
+		                }
 		                $modifier_array[] = $temp_text;
+		                //
+		                
 		            } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
 		            || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
 		            || (isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {

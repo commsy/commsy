@@ -299,8 +299,11 @@
             	//TODO:
             	//$desc = $converter->compareWithSearchText($desc);
             	$converter->setFileArray($this->getItemFileList());
-				$desc = $converter->_activate_urls($desc);
-            	//$desc = $converter->text_as_html_long($desc);
+      			if ( $this->_with_old_text_formating ) {
+      				$desc = $converter->text_as_html_long($desc);
+      			} else {
+            	   $desc = $converter->_activate_urls($desc);
+      			}
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
 
@@ -359,7 +362,7 @@
         					break;
         			}
 
-        			if($linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
+        			if(isset($user) and $linked_item->isNotActivated() && !($linked_item->getCreatorID() === $user->getItemID() || $user->isModerator())) {
         				$activatring_date = $linked_item->getActivatingDate();
         				if(strstr($activating_date, '9999-00-00')) {
         					$link_creator_text = $translator->getMessage('COMMON_NOT_ACTIVATED');

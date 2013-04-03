@@ -401,7 +401,14 @@
 			$return = array();
 			$weekStart = $this->_calendar['week'];
 			
-			$weekStartZeroHour = $weekStart - 3 * 60 * 60;// don't know why, but weekStart was set TO 03:00 am
+			//$weekStartZeroHour = $weekStart - 3 * 60 * 60;// don't know why, but weekStart was set TO 03:00 am
+			
+			// don't know why, but weekStart seems to be 03:00 am or 01:00 according to DST
+			// we correct this to zero hour
+			$weekStartZeroHourYear = date("Y", $weekStart);
+			$weekStartZeroHourMonth = date("n", $weekStart);
+			$weekStartZeroHourDay = date("j", $weekStart);
+			$weekStartZeroHour = mktime(0, 0, 0, $weekStartZeroHourMonth, $weekStartZeroHourDay, $weekStartZeroHourYear);
 
 			/************************************************************************************
 			 * First, build the needed information for the table head

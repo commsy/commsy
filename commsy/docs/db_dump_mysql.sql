@@ -1,25 +1,43 @@
--- phpMyAdmin SQL Dump
--- version 3.2.4
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Erstellungszeit: 09. November 2012 um 15:27
--- Server Version: 5.1.44
--- PHP-Version: 5.3.1
+# ************************************************************
+# Sequel Pro SQL dump
+# Version 4004
+#
+# http://www.sequelpro.com/
+# http://code.google.com/p/sequel-pro/
+#
+# Host: commsy.dev (MySQL 5.1.63-0+squeeze1)
+# Datenbank: commsy_vanilla
+# Erstellungsdauer: 2013-03-25 12:40:33 +0000
+# ************************************************************
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 
---
--- Datenbank: `commsy`
---
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `annotations`
---
+# Export von Tabelle annotation_portfolio
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `annotations` (
+CREATE TABLE `annotation_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `a_id` int(11) NOT NULL DEFAULT '0',
+  `row` int(11) NOT NULL DEFAULT '0',
+  `column` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`p_id`,`a_id`),
+  KEY `row` (`row`,`column`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
+# Export von Tabelle annotations
+# ------------------------------------------------------------
+
+CREATE TABLE `annotations` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -33,44 +51,19 @@ CREATE TABLE IF NOT EXISTS `annotations` (
   `linked_item_id` int(11) NOT NULL DEFAULT '0',
   `linked_version_id` int(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `linked_item_id` (`linked_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `annotations`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle announcement
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `annotation_portfolio`
---
-
-CREATE TABLE IF NOT EXISTS `annotation_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
-  `a_id` int(11) NOT NULL DEFAULT '0',
-  `row` int(11) NOT NULL DEFAULT '0',
-  `column` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`p_id`,`a_id`),
-  KEY `row` (`row`,`column`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Daten für Tabelle `annotation_portfolio`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `announcement`
---
-
-CREATE TABLE IF NOT EXISTS `announcement` (
+CREATE TABLE `announcement` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -89,18 +82,12 @@ CREATE TABLE IF NOT EXISTS `announcement` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `announcement`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle assessments
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `assessments`
---
-
-CREATE TABLE IF NOT EXISTS `assessments` (
+CREATE TABLE `assessments` (
   `item_id` int(11) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL,
@@ -116,18 +103,12 @@ CREATE TABLE IF NOT EXISTS `assessments` (
   KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `assessments`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle auth
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `auth`
---
-
-CREATE TABLE IF NOT EXISTS `auth` (
+CREATE TABLE `auth` (
   `commsy_id` int(11) NOT NULL DEFAULT '0',
   `user_id` varchar(32) NOT NULL,
   `password_md5` varchar(32) NOT NULL,
@@ -138,20 +119,21 @@ CREATE TABLE IF NOT EXISTS `auth` (
   PRIMARY KEY (`commsy_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `auth`
---
+LOCK TABLES `auth` WRITE;
+/*!40000 ALTER TABLE `auth` DISABLE KEYS */;
 
-INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`) VALUES
-(99, 'root', '63a9f0ea7bb98050796b649e85481845', 'CommSy', 'Administrator', '', 'de');
+INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`)
+VALUES
+	(99,'root','63a9f0ea7bb98050796b649e85481845','CommSy','Administrator','','de');
 
--- --------------------------------------------------------
+/*!40000 ALTER TABLE `auth` ENABLE KEYS */;
+UNLOCK TABLES;
 
---
--- Tabellenstruktur für Tabelle `auth_source`
---
 
-CREATE TABLE IF NOT EXISTS `auth_source` (
+# Export von Tabelle auth_source
+# ------------------------------------------------------------
+
+CREATE TABLE `auth_source` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -167,20 +149,21 @@ CREATE TABLE IF NOT EXISTS `auth_source` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `auth_source`
---
+LOCK TABLES `auth_source` WRITE;
+/*!40000 ALTER TABLE `auth_source` DISABLE KEYS */;
 
-INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`) VALUES
-(100, 99, 99, 99, NULL, '2006-09-14 12:32:24', '2006-09-14 12:32:24', NULL, 'CommSy', 'a:4:{s:14:"COMMSY_DEFAULT";s:1:"1";s:6:"SOURCE";s:5:"MYSQL";s:13:"CONFIGURATION";a:5:{s:11:"ADD_ACCOUNT";s:1:"0";s:13:"CHANGE_USERID";s:1:"0";s:14:"DELETE_ACCOUNT";s:1:"0";s:15:"CHANGE_USERDATA";s:1:"1";s:15:"CHANGE_PASSWORD";s:1:"1";}s:4:"SHOW";s:1:"1";}');
+INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`)
+VALUES
+	(100,99,99,99,NULL,'2006-09-14 12:32:24','2006-09-14 12:32:24',NULL,'CommSy','a:4:{s:14:\"COMMSY_DEFAULT\";s:1:\"1\";s:6:\"SOURCE\";s:5:\"MYSQL\";s:13:\"CONFIGURATION\";a:5:{s:11:\"ADD_ACCOUNT\";s:1:\"0\";s:13:\"CHANGE_USERID\";s:1:\"0\";s:14:\"DELETE_ACCOUNT\";s:1:\"0\";s:15:\"CHANGE_USERDATA\";s:1:\"1\";s:15:\"CHANGE_PASSWORD\";s:1:\"1\";}s:4:\"SHOW\";s:1:\"1\";}');
 
--- --------------------------------------------------------
+/*!40000 ALTER TABLE `auth_source` ENABLE KEYS */;
+UNLOCK TABLES;
 
---
--- Tabellenstruktur für Tabelle `dates`
---
 
-CREATE TABLE IF NOT EXISTS `dates` (
+# Export von Tabelle dates
+# ------------------------------------------------------------
+
+CREATE TABLE `dates` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -209,18 +192,12 @@ CREATE TABLE IF NOT EXISTS `dates` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `dates`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle discussionarticles
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `discussionarticles`
---
-
-CREATE TABLE IF NOT EXISTS `discussionarticles` (
+CREATE TABLE `discussionarticles` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `discussion_id` int(11) NOT NULL DEFAULT '0',
@@ -234,23 +211,18 @@ CREATE TABLE IF NOT EXISTS `discussionarticles` (
   `description` mediumtext,
   `position` varchar(255) NOT NULL DEFAULT '1',
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `discussionarticles`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle discussions
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `discussions`
---
-
-CREATE TABLE IF NOT EXISTS `discussions` (
+CREATE TABLE `discussions` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -271,53 +243,48 @@ CREATE TABLE IF NOT EXISTS `discussions` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `discussions`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle external_viewer
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `external2commsy_id`
---
+CREATE TABLE `external_viewer` (
+  `item_id` int(11) NOT NULL,
+  `user_id` varchar(32) NOT NULL,
+  KEY `item_id` (`item_id`,`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `external2commsy_id` (
+
+
+# Export von Tabelle external2commsy_id
+# ------------------------------------------------------------
+
+CREATE TABLE `external2commsy_id` (
   `external_id` varchar(255) NOT NULL,
   `source_system` varchar(60) NOT NULL,
   `commsy_id` int(11) NOT NULL,
   PRIMARY KEY (`external_id`,`source_system`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `external2commsy_id`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle file_multi_upload
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `external_viewer`
---
-
-CREATE TABLE IF NOT EXISTS `external_viewer` (
-  `item_id` int(11) NOT NULL,
-  `user_id` varchar(32) NOT NULL,
-  KEY `item_id` (`item_id`,`user_id`)
+CREATE TABLE `file_multi_upload` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `session_id` varchar(150) NOT NULL,
+  `file_array` text NOT NULL,
+  `cid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `external_viewer`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle files
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `files`
---
-
-CREATE TABLE IF NOT EXISTS `files` (
+CREATE TABLE `files` (
   `files_id` int(11) NOT NULL AUTO_INCREMENT,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -334,39 +301,14 @@ CREATE TABLE IF NOT EXISTS `files` (
   PRIMARY KEY (`files_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
-
---
--- Daten für Tabelle `files`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `file_multi_upload`
---
+# Export von Tabelle hash
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `file_multi_upload` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `session_id` varchar(150) NOT NULL,
-  `file_array` text NOT NULL,
-  `cid` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `file_multi_upload`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `hash`
---
-
-CREATE TABLE IF NOT EXISTS `hash` (
+CREATE TABLE `hash` (
   `user_item_id` int(11) NOT NULL,
   `rss` char(32) DEFAULT NULL,
   `ical` char(32) DEFAULT NULL,
@@ -375,18 +317,12 @@ CREATE TABLE IF NOT EXISTS `hash` (
   KEY `ical` (`ical`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `hash`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle homepage_link_page_page
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `homepage_link_page_page`
---
-
-CREATE TABLE IF NOT EXISTS `homepage_link_page_page` (
+CREATE TABLE `homepage_link_page_page` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
   `from_item_id` int(11) NOT NULL DEFAULT '0',
   `to_item_id` int(11) NOT NULL DEFAULT '0',
@@ -402,20 +338,14 @@ CREATE TABLE IF NOT EXISTS `homepage_link_page_page` (
   KEY `from_item_id` (`from_item_id`),
   KEY `context_id` (`context_id`),
   KEY `to_item_id` (`to_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `homepage_link_page_page`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `homepage_page`
---
+# Export von Tabelle homepage_page
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `homepage_page` (
+CREATE TABLE `homepage_page` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -433,45 +363,12 @@ CREATE TABLE IF NOT EXISTS `homepage_page` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `homepage_page`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle item_backup
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `items`
---
-
-CREATE TABLE IF NOT EXISTS `items` (
-  `item_id` int(11) NOT NULL AUTO_INCREMENT,
-  `context_id` int(11) DEFAULT NULL,
-  `type` varchar(15) NOT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `modification_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`item_id`),
-  KEY `context_id` (`context_id`),
-  KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=160 ;
-
---
--- Daten für Tabelle `items`
---
-
-INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`) VALUES
-(98, 99, 'user', NULL, NULL, NULL),
-(99, 0, 'server', NULL, NULL, NULL),
-(100, 99, 'auth_source', NULL, NULL, '2006-09-14 12:32:24');
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `item_backup`
---
-
-CREATE TABLE IF NOT EXISTS `item_backup` (
+CREATE TABLE `item_backup` (
   `item_id` int(11) NOT NULL,
   `backup_date` datetime NOT NULL,
   `modification_date` datetime DEFAULT NULL,
@@ -482,18 +379,12 @@ CREATE TABLE IF NOT EXISTS `item_backup` (
   PRIMARY KEY (`item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `item_backup`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle item_link_file
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `item_link_file`
---
-
-CREATE TABLE IF NOT EXISTS `item_link_file` (
+CREATE TABLE `item_link_file` (
   `item_iid` int(11) NOT NULL DEFAULT '0',
   `item_vid` int(11) NOT NULL DEFAULT '0',
   `file_id` int(11) NOT NULL DEFAULT '0',
@@ -502,18 +393,40 @@ CREATE TABLE IF NOT EXISTS `item_link_file` (
   PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `item_link_file`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle items
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `labels`
---
+CREATE TABLE `items` (
+  `item_id` int(11) NOT NULL AUTO_INCREMENT,
+  `context_id` int(11) DEFAULT NULL,
+  `type` varchar(15) NOT NULL,
+  `deleter_id` int(11) DEFAULT NULL,
+  `deletion_date` datetime DEFAULT NULL,
+  `modification_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`item_id`),
+  KEY `context_id` (`context_id`),
+  KEY `type` (`type`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `labels` (
+LOCK TABLES `items` WRITE;
+/*!40000 ALTER TABLE `items` DISABLE KEYS */;
+
+INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`)
+VALUES
+	(98,99,'user',NULL,NULL,NULL),
+	(99,0,'server',NULL,NULL,'2013-03-25 13:39:22'),
+	(100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24');
+
+/*!40000 ALTER TABLE `items` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+# Export von Tabelle labels
+# ------------------------------------------------------------
+
+CREATE TABLE `labels` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -533,49 +446,12 @@ CREATE TABLE IF NOT EXISTS `labels` (
   KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `labels`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle link_items
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `links`
---
-
-CREATE TABLE IF NOT EXISTS `links` (
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `from_version_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_version_id` int(11) NOT NULL DEFAULT '0',
-  `link_type` char(30) NOT NULL,
-  `context_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `x` int(11) DEFAULT NULL,
-  `y` int(11) DEFAULT NULL,
-  PRIMARY KEY (`from_item_id`,`from_version_id`,`to_item_id`,`to_version_id`,`link_type`),
-  KEY `context_id` (`context_id`),
-  KEY `link_type` (`link_type`),
-  KEY `from_item_id` (`from_item_id`),
-  KEY `from_version_id` (`from_version_id`),
-  KEY `to_item_id` (`to_item_id`),
-  KEY `to_version_id` (`to_version_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Daten für Tabelle `links`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `link_items`
---
-
-CREATE TABLE IF NOT EXISTS `link_items` (
+CREATE TABLE `link_items` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -600,35 +476,62 @@ CREATE TABLE IF NOT EXISTS `link_items` (
   KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `link_items`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle link_modifier_item
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `link_modifier_item`
---
-
-CREATE TABLE IF NOT EXISTS `link_modifier_item` (
+CREATE TABLE `link_modifier_item` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `modifier_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `link_modifier_item`
---
+LOCK TABLES `link_modifier_item` WRITE;
+/*!40000 ALTER TABLE `link_modifier_item` DISABLE KEYS */;
+
+INSERT INTO `link_modifier_item` (`item_id`, `modifier_id`)
+VALUES
+	(99,98);
+
+/*!40000 ALTER TABLE `link_modifier_item` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
--- --------------------------------------------------------
+# Export von Tabelle links
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `log`
---
+CREATE TABLE `links` (
+  `from_item_id` int(11) NOT NULL DEFAULT '0',
+  `from_version_id` int(11) NOT NULL DEFAULT '0',
+  `to_item_id` int(11) NOT NULL DEFAULT '0',
+  `to_version_id` int(11) NOT NULL DEFAULT '0',
+  `link_type` char(30) NOT NULL,
+  `context_id` int(11) DEFAULT NULL,
+  `deleter_id` int(11) DEFAULT NULL,
+  `deletion_date` datetime DEFAULT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  PRIMARY KEY (`from_item_id`,`from_version_id`,`to_item_id`,`to_version_id`,`link_type`),
+  KEY `context_id` (`context_id`),
+  KEY `link_type` (`link_type`),
+  KEY `from_item_id` (`from_item_id`),
+  KEY `from_version_id` (`from_version_id`),
+  KEY `to_item_id` (`to_item_id`),
+  KEY `to_version_id` (`to_version_id`),
+  KEY `link_type_2` (`link_type`),
+  KEY `from_item_id_2` (`from_item_id`),
+  KEY `from_version_id_2` (`from_version_id`),
+  KEY `to_item_id_2` (`to_item_id`),
+  KEY `to_version_id_2` (`to_version_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `log` (
+
+
+# Export von Tabelle log
+# ------------------------------------------------------------
+
+CREATE TABLE `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(15) DEFAULT NULL,
   `agent` varchar(250) DEFAULT NULL,
@@ -648,20 +551,49 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`),
   KEY `timestamp` (`timestamp`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `log`
---
+LOCK TABLES `log` WRITE;
+/*!40000 ALTER TABLE `log` DISABLE KEYS */;
+
+INSERT INTO `log` (`id`, `ip`, `agent`, `timestamp`, `request`, `post_content`, `method`, `uid`, `ulogin`, `cid`, `module`, `fct`, `param`, `iid`, `queries`, `time`)
+VALUES
+	(1,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:42','/commsy.php?','NULL','GET',0,'',99,'home','index','',0,0,0),
+	(2,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:42','/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&SID=3667347c4e62464c210eb97dc08156a5&https=-1&flash=1','NULL','GET',0,'guest',99,'home','index','jscheck=1&isJS=1&https=-1&flash=1',0,12,0.593),
+	(3,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:48','/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&https=-1&flash=1','NULL','GET',98,'root',99,'home','index','jscheck=1&isJS=1&https=-1&flash=1',0,12,0.198),
+	(4,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:50','/commsy.php?cid=99&mod=configuration&fct=index','NULL','GET',98,'root',99,'configuration','index','',0,9,0.247),
+	(5,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:53','/commsy.php?cid=99&mod=configuration&fct=update','NULL','GET',98,'root',99,'configuration','update','',0,13,0.601),
+	(6,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:53','/commsy.php?cid=99&mod=configuration&fct=update','NULL','GET',98,'root',99,'configuration','update','',0,12,0.441),
+	(7,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:58','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<6_3_3_TO_6_5_0>1</6_3_3_TO_6_5_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,32,0.362),
+	(8,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:03','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<6_5_0_TO_6_5_1>1</6_5_0_TO_6_5_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,34,0.373),
+	(9,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:09','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<6_5_1_TO_7_0_0>1</6_5_1_TO_7_0_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,39,0.313),
+	(10,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:16','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_0_3_TO_7_0_4>1</7_0_3_TO_7_0_4>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,26,0.328),
+	(11,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:19','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_0_4_TO_7_1_0>1</7_0_4_TO_7_1_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.301),
+	(12,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:23','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_1_0_TO_7_1_1>1</7_1_0_TO_7_1_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,19,0.285),
+	(13,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:28','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_1_1_TO_7_1_2>1</7_1_1_TO_7_1_2>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,18,0.28),
+	(14,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:32','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_1_2_TO_7_2_0>1</7_1_2_TO_7_2_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,32,0.312),
+	(15,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:36','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_0_TO_7_2_1>1</7_2_0_TO_7_2_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,43,0.294),
+	(16,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:40','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_1_TO_7_2_2>1</7_2_1_TO_7_2_2>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,21,0.262),
+	(17,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:43','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_2_TO_7_2_3>1</7_2_2_TO_7_2_3>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.277),
+	(18,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:46','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_3_TO_7_2_4>1</7_2_3_TO_7_2_4>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,17,0.21),
+	(19,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:50','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_4_TO_7_3_0>1</7_2_4_TO_7_3_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.263),
+	(20,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:54','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_3_0_TO_7_5_0>1</7_3_0_TO_7_5_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,134,0.352),
+	(21,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:58','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_0_TO_7_5_1>1</7_5_0_TO_7_5_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,17,0.205),
+	(22,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:02','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_1_TO_7_5_2>1</7_5_1_TO_7_5_2>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,18,0.297),
+	(23,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:04','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_2_TO_7_5_3>1</7_5_2_TO_7_5_3>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,18,0.191),
+	(24,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:10','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_3_TO_7_5_4>1</7_5_3_TO_7_5_4>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.249),
+	(25,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:13','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_4_TO_7_5_5>1</7_5_4_TO_7_5_5>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,31,0.258),
+	(26,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:16','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_5_TO_8_0_0>1</7_5_5_TO_8_0_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,187,0.395),
+	(27,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:22','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<8_0_0_TO_8_0_1>1</8_0_0_TO_8_0_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,23,0.241);
+
+/*!40000 ALTER TABLE `log` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
--- --------------------------------------------------------
+# Export von Tabelle log_ads
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `log_ads`
---
-
-CREATE TABLE IF NOT EXISTS `log_ads` (
+CREATE TABLE `log_ads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `cid` int(11) DEFAULT NULL,
   `aim` varchar(255) NOT NULL,
@@ -669,20 +601,14 @@ CREATE TABLE IF NOT EXISTS `log_ads` (
   PRIMARY KEY (`id`),
   KEY `cid` (`cid`),
   KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `log_ads`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `log_archive`
---
+# Export von Tabelle log_archive
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `log_archive` (
+CREATE TABLE `log_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(15) DEFAULT NULL,
   `agent` varchar(250) DEFAULT NULL,
@@ -702,20 +628,14 @@ CREATE TABLE IF NOT EXISTS `log_archive` (
   PRIMARY KEY (`id`),
   KEY `ulogin` (`ulogin`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `log_archive`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `log_error`
---
+# Export von Tabelle log_error
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `log_error` (
+CREATE TABLE `log_error` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `datetime` datetime NOT NULL,
   `number` int(11) NOT NULL,
@@ -730,40 +650,37 @@ CREATE TABLE IF NOT EXISTS `log_error` (
   `function` varchar(255) NOT NULL,
   `user` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=71202 ;
-
---
--- Daten für Tabelle `log_error`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `log_message_tag`
---
+# Export von Tabelle log_message_tag
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `log_message_tag` (
+CREATE TABLE `log_message_tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(255) NOT NULL,
   `version` varchar(50) NOT NULL,
   `datetime` datetime NOT NULL,
   `language` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `log_message_tag`
---
+LOCK TABLES `log_message_tag` WRITE;
+/*!40000 ALTER TABLE `log_message_tag` DISABLE KEYS */;
+
+INSERT INTO `log_message_tag` (`id`, `tag`, `version`, `datetime`, `language`)
+VALUES
+	(1,'USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM','8.0.1','2013-03-25 13:37:53','de');
+
+/*!40000 ALTER TABLE `log_message_tag` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
--- --------------------------------------------------------
+# Export von Tabelle materials
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `materials`
---
-
-CREATE TABLE IF NOT EXISTS `materials` (
+CREATE TABLE `materials` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -791,18 +708,12 @@ CREATE TABLE IF NOT EXISTS `materials` (
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `materials`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle noticed
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `noticed`
---
-
-CREATE TABLE IF NOT EXISTS `noticed` (
+CREATE TABLE `noticed` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '0',
@@ -810,18 +721,12 @@ CREATE TABLE IF NOT EXISTS `noticed` (
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `noticed`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle portal
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `portal`
---
-
-CREATE TABLE IF NOT EXISTS `portal` (
+CREATE TABLE `portal` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -842,18 +747,12 @@ CREATE TABLE IF NOT EXISTS `portal` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `portal`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle portfolio
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `portfolio`
---
-
-CREATE TABLE IF NOT EXISTS `portfolio` (
+CREATE TABLE `portfolio` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `creator_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
   `modifier_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
@@ -867,18 +766,12 @@ CREATE TABLE IF NOT EXISTS `portfolio` (
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='General Portfolio Information';
 
---
--- Daten für Tabelle `portfolio`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle reader
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `reader`
---
-
-CREATE TABLE IF NOT EXISTS `reader` (
+CREATE TABLE `reader` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '0',
@@ -886,18 +779,12 @@ CREATE TABLE IF NOT EXISTS `reader` (
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `reader`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle room
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `room`
---
-
-CREATE TABLE IF NOT EXISTS `room` (
+CREATE TABLE `room` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -935,18 +822,12 @@ CREATE TABLE IF NOT EXISTS `room` (
   KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `room`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle room_privat
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `room_privat`
---
-
-CREATE TABLE IF NOT EXISTS `room_privat` (
+CREATE TABLE `room_privat` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -975,18 +856,12 @@ CREATE TABLE IF NOT EXISTS `room_privat` (
   KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `room_privat`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle search_index
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `search_index`
---
-
-CREATE TABLE IF NOT EXISTS `search_index` (
+CREATE TABLE `search_index` (
   `si_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `si_sw_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
   `si_item_id` int(11) NOT NULL DEFAULT '0',
@@ -995,56 +870,38 @@ CREATE TABLE IF NOT EXISTS `search_index` (
   PRIMARY KEY (`si_id`),
   UNIQUE KEY `un_si_sw_id` (`si_item_id`,`si_sw_id`,`si_item_type`),
   KEY `si_sw_id` (`si_sw_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `search_index`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `search_time`
---
+# Export von Tabelle search_time
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `search_time` (
+CREATE TABLE `search_time` (
   `st_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `st_item_id` int(11) NOT NULL DEFAULT '0',
   `st_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`st_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `search_time`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `search_word`
---
+# Export von Tabelle search_word
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `search_word` (
+CREATE TABLE `search_word` (
   `sw_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `sw_word` varchar(32) NOT NULL DEFAULT '',
   `sw_lang` varchar(5) NOT NULL,
   PRIMARY KEY (`sw_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `search_word`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `section`
---
+# Export von Tabelle section
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `section` (
+CREATE TABLE `section` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1059,24 +916,19 @@ CREATE TABLE IF NOT EXISTS `section` (
   `number` smallint(6) NOT NULL DEFAULT '0',
   `material_item_id` int(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `section`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle server
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `server`
---
-
-CREATE TABLE IF NOT EXISTS `server` (
+CREATE TABLE `server` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1097,20 +949,21 @@ CREATE TABLE IF NOT EXISTS `server` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `server`
---
+LOCK TABLES `server` WRITE;
+/*!40000 ALTER TABLE `server` DISABLE KEYS */;
 
-INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`) VALUES
-(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 36, 'server', 1, NULL);
+INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`)
+VALUES
+	(99,0,99,0,NULL,'2006-09-13 12:16:38','2013-03-25 13:39:22',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.0.1\";}','1',61,'server',1,'');
 
--- --------------------------------------------------------
+/*!40000 ALTER TABLE `server` ENABLE KEYS */;
+UNLOCK TABLES;
 
---
--- Tabellenstruktur für Tabelle `session`
---
 
-CREATE TABLE IF NOT EXISTS `session` (
+# Export von Tabelle session
+# ------------------------------------------------------------
+
+CREATE TABLE `session` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(150) NOT NULL,
   `session_key` varchar(30) NOT NULL,
@@ -1118,20 +971,24 @@ CREATE TABLE IF NOT EXISTS `session` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `session`
---
+LOCK TABLES `session` WRITE;
+/*!40000 ALTER TABLE `session` DISABLE KEYS */;
+
+INSERT INTO `session` (`id`, `session_id`, `session_key`, `session_value`, `created`)
+VALUES
+	(1,'3667347c4e62464c210eb97dc08156a5','new_session_type','a:7:{s:7:\"user_id\";s:5:\"guest\";s:9:\"commsy_id\";i:99;s:6:\"cookie\";s:1:\"1\";s:10:\"javascript\";i:1;s:5:\"https\";i:-1;s:5:\"flash\";i:1;s:7:\"history\";a:1:{i:0;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:4:\"home\";s:8:\"function\";s:5:\"index\";s:9:\"parameter\";a:4:{s:7:\"jscheck\";s:1:\"1\";s:4:\"isJS\";s:1:\"1\";s:5:\"https\";s:2:\"-1\";s:5:\"flash\";s:1:\"1\";}}}}','2013-03-25 13:37:42'),
+	(2,'da24b11d81405846ff4c327ec947ad27','new_session_type','a:8:{s:7:\"user_id\";s:4:\"root\";s:6:\"cookie\";i:1;s:10:\"javascript\";i:1;s:5:\"https\";i:-1;s:5:\"flash\";i:1;s:9:\"commsy_id\";i:99;s:11:\"auth_source\";s:3:\"100\";s:7:\"history\";a:3:{i:0;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:13:\"configuration\";s:8:\"function\";s:6:\"update\";s:9:\"parameter\";a:0:{}}i:1;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:13:\"configuration\";s:8:\"function\";s:5:\"index\";s:9:\"parameter\";a:0:{}}i:2;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:4:\"home\";s:8:\"function\";s:5:\"index\";s:9:\"parameter\";a:4:{s:7:\"jscheck\";s:1:\"1\";s:4:\"isJS\";s:1:\"1\";s:5:\"https\";s:2:\"-1\";s:5:\"flash\";s:1:\"1\";}}}}','2013-03-25 13:39:22');
+
+/*!40000 ALTER TABLE `session` ENABLE KEYS */;
+UNLOCK TABLES;
 
 
--- --------------------------------------------------------
+# Export von Tabelle step
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `step`
---
-
-CREATE TABLE IF NOT EXISTS `step` (
+CREATE TABLE `step` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1146,24 +1003,19 @@ CREATE TABLE IF NOT EXISTS `step` (
   `time_type` smallint(6) NOT NULL DEFAULT '1',
   `todo_item_id` int(11) NOT NULL,
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `todo_item_id` (`todo_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `step`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle tag
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `tag`
---
-
-CREATE TABLE IF NOT EXISTS `tag` (
+CREATE TABLE `tag` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1177,18 +1029,27 @@ CREATE TABLE IF NOT EXISTS `tag` (
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `tag`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle tag_portfolio
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `tag2tag`
---
+CREATE TABLE `tag_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `t_id` int(11) NOT NULL DEFAULT '0',
+  `row` int(11) DEFAULT '0',
+  `column` int(11) DEFAULT '0',
+  `description` text,
+  PRIMARY KEY (`p_id`,`t_id`),
+  KEY `row` (`row`,`column`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `tag2tag` (
+
+
+# Export von Tabelle tag2tag
+# ------------------------------------------------------------
+
+CREATE TABLE `tag2tag` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
   `from_item_id` int(11) NOT NULL DEFAULT '0',
   `to_item_id` int(11) NOT NULL DEFAULT '0',
@@ -1205,40 +1066,14 @@ CREATE TABLE IF NOT EXISTS `tag2tag` (
   KEY `context_id` (`context_id`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `tag2tag`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `tag_portfolio`
---
-
-CREATE TABLE IF NOT EXISTS `tag_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
-  `t_id` int(11) NOT NULL DEFAULT '0',
-  `row` int(11) DEFAULT '0',
-  `column` int(11) DEFAULT '0',
-  PRIMARY KEY (`p_id`,`t_id`),
-  KEY `row` (`row`,`column`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `tag_portfolio`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle tasks
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `tasks`
---
-
-CREATE TABLE IF NOT EXISTS `tasks` (
+CREATE TABLE `tasks` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1254,18 +1089,12 @@ CREATE TABLE IF NOT EXISTS `tasks` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `tasks`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle todos
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `todos`
---
-
-CREATE TABLE IF NOT EXISTS `todos` (
+CREATE TABLE `todos` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1287,18 +1116,12 @@ CREATE TABLE IF NOT EXISTS `todos` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `todos`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle user
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `user`
---
-
-CREATE TABLE IF NOT EXISTS `user` (
+CREATE TABLE `user` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1329,55 +1152,44 @@ CREATE TABLE IF NOT EXISTS `user` (
   KEY `is_contact` (`is_contact`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `user`
---
+LOCK TABLES `user` WRITE;
+/*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`) VALUES
-(98, 99, 99, 99, NULL, '2006-09-13 12:17:17', '2006-09-13 12:17:17', NULL, 'root', 3, 1, 'CommSy', 'Administrator', '', '', NULL, 1, '', 100, NULL);
+INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`)
+VALUES
+	(98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL);
 
--- --------------------------------------------------------
+/*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
 
---
--- Tabellenstruktur für Tabelle `user_portfolio`
---
 
-CREATE TABLE IF NOT EXISTS `user_portfolio` (
+# Export von Tabelle user_portfolio
+# ------------------------------------------------------------
+
+CREATE TABLE `user_portfolio` (
   `p_id` int(11) NOT NULL DEFAULT '0',
   `u_id` varchar(32) NOT NULL,
   PRIMARY KEY (`p_id`,`u_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `user_portfolio`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle workflow_read
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `workflow_read`
---
-
-CREATE TABLE IF NOT EXISTS `workflow_read` (
+CREATE TABLE `workflow_read` (
   `item_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   KEY `item_id` (`item_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `workflow_read`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_annotations
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_annotations`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_annotations` (
+CREATE TABLE `zzz_annotations` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1391,24 +1203,19 @@ CREATE TABLE IF NOT EXISTS `zzz_annotations` (
   `linked_item_id` int(11) NOT NULL DEFAULT '0',
   `linked_version_id` int(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `linked_item_id` (`linked_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_annotations`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_announcement
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_announcement`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_announcement` (
+CREATE TABLE `zzz_announcement` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1427,18 +1234,12 @@ CREATE TABLE IF NOT EXISTS `zzz_announcement` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_announcement`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_assessments
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_assessments`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_assessments` (
+CREATE TABLE `zzz_assessments` (
   `item_id` int(11) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL,
@@ -1454,18 +1255,12 @@ CREATE TABLE IF NOT EXISTS `zzz_assessments` (
   KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_assessments`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_dates
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_dates`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_dates` (
+CREATE TABLE `zzz_dates` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1494,18 +1289,12 @@ CREATE TABLE IF NOT EXISTS `zzz_dates` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_dates`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_discussionarticles
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_discussionarticles`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_discussionarticles` (
+CREATE TABLE `zzz_discussionarticles` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `discussion_id` int(11) NOT NULL DEFAULT '0',
@@ -1519,23 +1308,18 @@ CREATE TABLE IF NOT EXISTS `zzz_discussionarticles` (
   `description` mediumtext,
   `position` varchar(255) NOT NULL DEFAULT '1',
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_discussionarticles`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_discussions
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_discussions`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_discussions` (
+CREATE TABLE `zzz_discussions` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1556,35 +1340,23 @@ CREATE TABLE IF NOT EXISTS `zzz_discussions` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_discussions`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_external_viewer
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_external_viewer`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_external_viewer` (
+CREATE TABLE `zzz_external_viewer` (
   `item_id` int(11) NOT NULL,
   `user_id` varchar(32) NOT NULL,
   KEY `item_id` (`item_id`,`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_external_viewer`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_files
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_files`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_files` (
+CREATE TABLE `zzz_files` (
   `files_id` int(11) NOT NULL AUTO_INCREMENT,
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1601,20 +1373,14 @@ CREATE TABLE IF NOT EXISTS `zzz_files` (
   PRIMARY KEY (`files_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
-
---
--- Daten für Tabelle `zzz_files`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_hash`
---
+# Export von Tabelle zzz_hash
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `zzz_hash` (
+CREATE TABLE `zzz_hash` (
   `user_item_id` int(11) NOT NULL,
   `rss` char(32) DEFAULT NULL,
   `ical` char(32) DEFAULT NULL,
@@ -1623,18 +1389,12 @@ CREATE TABLE IF NOT EXISTS `zzz_hash` (
   KEY `ical` (`ical`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_hash`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_homepage_link_page_page
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_homepage_link_page_page`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_homepage_link_page_page` (
+CREATE TABLE `zzz_homepage_link_page_page` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
   `from_item_id` int(11) NOT NULL DEFAULT '0',
   `to_item_id` int(11) NOT NULL DEFAULT '0',
@@ -1650,20 +1410,14 @@ CREATE TABLE IF NOT EXISTS `zzz_homepage_link_page_page` (
   KEY `from_item_id` (`from_item_id`),
   KEY `context_id` (`context_id`),
   KEY `to_item_id` (`to_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `zzz_homepage_link_page_page`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_homepage_page`
---
+# Export von Tabelle zzz_homepage_page
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `zzz_homepage_page` (
+CREATE TABLE `zzz_homepage_page` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1681,18 +1435,26 @@ CREATE TABLE IF NOT EXISTS `zzz_homepage_page` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_homepage_page`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_item_link_file
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_items`
---
+CREATE TABLE `zzz_item_link_file` (
+  `item_iid` int(11) NOT NULL DEFAULT '0',
+  `item_vid` int(11) NOT NULL DEFAULT '0',
+  `file_id` int(11) NOT NULL DEFAULT '0',
+  `deleter_id` int(11) DEFAULT NULL,
+  `deletion_date` datetime DEFAULT NULL,
+  PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `zzz_items` (
+
+
+# Export von Tabelle zzz_items
+# ------------------------------------------------------------
+
+CREATE TABLE `zzz_items` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
   `context_id` int(11) DEFAULT NULL,
   `type` varchar(15) NOT NULL,
@@ -1702,40 +1464,14 @@ CREATE TABLE IF NOT EXISTS `zzz_items` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=137 ;
-
---
--- Daten für Tabelle `zzz_items`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `zzz_item_link_file`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_item_link_file` (
-  `item_iid` int(11) NOT NULL DEFAULT '0',
-  `item_vid` int(11) NOT NULL DEFAULT '0',
-  `file_id` int(11) NOT NULL DEFAULT '0',
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`item_iid`,`item_vid`,`file_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_item_link_file`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_labels
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_labels`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_labels` (
+CREATE TABLE `zzz_labels` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1755,49 +1491,12 @@ CREATE TABLE IF NOT EXISTS `zzz_labels` (
   KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_labels`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_link_items
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_links`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_links` (
-  `from_item_id` int(11) NOT NULL DEFAULT '0',
-  `from_version_id` int(11) NOT NULL DEFAULT '0',
-  `to_item_id` int(11) NOT NULL DEFAULT '0',
-  `to_version_id` int(11) NOT NULL DEFAULT '0',
-  `link_type` char(30) NOT NULL,
-  `context_id` int(11) DEFAULT NULL,
-  `deleter_id` int(11) DEFAULT NULL,
-  `deletion_date` datetime DEFAULT NULL,
-  `x` int(11) DEFAULT NULL,
-  `y` int(11) DEFAULT NULL,
-  PRIMARY KEY (`from_item_id`,`from_version_id`,`to_item_id`,`to_version_id`,`link_type`),
-  KEY `context_id` (`context_id`),
-  KEY `link_type` (`link_type`),
-  KEY `from_item_id` (`from_item_id`),
-  KEY `from_version_id` (`from_version_id`),
-  KEY `to_item_id` (`to_item_id`),
-  KEY `to_version_id` (`to_version_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
---
--- Daten für Tabelle `zzz_links`
---
-
-
--- --------------------------------------------------------
-
---
--- Tabellenstruktur für Tabelle `zzz_link_items`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_link_items` (
+CREATE TABLE `zzz_link_items` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1822,35 +1521,48 @@ CREATE TABLE IF NOT EXISTS `zzz_link_items` (
   KEY `deleter_id` (`deleter_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_link_items`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_link_modifier_item
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_link_modifier_item`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_link_modifier_item` (
+CREATE TABLE `zzz_link_modifier_item` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `modifier_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_link_modifier_item`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_links
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_materials`
---
+CREATE TABLE `zzz_links` (
+  `from_item_id` int(11) NOT NULL DEFAULT '0',
+  `from_version_id` int(11) NOT NULL DEFAULT '0',
+  `to_item_id` int(11) NOT NULL DEFAULT '0',
+  `to_version_id` int(11) NOT NULL DEFAULT '0',
+  `link_type` char(30) NOT NULL,
+  `context_id` int(11) DEFAULT NULL,
+  `deleter_id` int(11) DEFAULT NULL,
+  `deletion_date` datetime DEFAULT NULL,
+  `x` int(11) DEFAULT NULL,
+  `y` int(11) DEFAULT NULL,
+  PRIMARY KEY (`from_item_id`,`from_version_id`,`to_item_id`,`to_version_id`,`link_type`),
+  KEY `context_id` (`context_id`),
+  KEY `link_type` (`link_type`),
+  KEY `from_item_id` (`from_item_id`),
+  KEY `from_version_id` (`from_version_id`),
+  KEY `to_item_id` (`to_item_id`),
+  KEY `to_version_id` (`to_version_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `zzz_materials` (
+
+
+# Export von Tabelle zzz_materials
+# ------------------------------------------------------------
+
+CREATE TABLE `zzz_materials` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1878,18 +1590,12 @@ CREATE TABLE IF NOT EXISTS `zzz_materials` (
   KEY `modifier_id` (`modifier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_materials`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_noticed
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_noticed`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_noticed` (
+CREATE TABLE `zzz_noticed` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '0',
@@ -1897,18 +1603,12 @@ CREATE TABLE IF NOT EXISTS `zzz_noticed` (
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_noticed`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_reader
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_reader`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_reader` (
+CREATE TABLE `zzz_reader` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `user_id` int(11) NOT NULL DEFAULT '0',
@@ -1916,18 +1616,12 @@ CREATE TABLE IF NOT EXISTS `zzz_reader` (
   PRIMARY KEY (`item_id`,`version_id`,`user_id`,`read_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_reader`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_room
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_room`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_room` (
+CREATE TABLE `zzz_room` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -1965,18 +1659,12 @@ CREATE TABLE IF NOT EXISTS `zzz_room` (
   KEY `status_2` (`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_room`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_section
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_section`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_section` (
+CREATE TABLE `zzz_section` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1991,24 +1679,19 @@ CREATE TABLE IF NOT EXISTS `zzz_section` (
   `number` smallint(6) NOT NULL DEFAULT '0',
   `material_item_id` int(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_section`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_step
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_step`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_step` (
+CREATE TABLE `zzz_step` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -2023,24 +1706,19 @@ CREATE TABLE IF NOT EXISTS `zzz_step` (
   `time_type` smallint(6) NOT NULL DEFAULT '1',
   `todo_item_id` int(11) NOT NULL,
   `extras` text,
+  `public` tinyint(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `todo_item_id` (`todo_item_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_step`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_tag
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_tag`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_tag` (
+CREATE TABLE `zzz_tag` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -2054,18 +1732,12 @@ CREATE TABLE IF NOT EXISTS `zzz_tag` (
   KEY `context_id` (`context_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_tag`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_tag2tag
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_tag2tag`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_tag2tag` (
+CREATE TABLE `zzz_tag2tag` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
   `from_item_id` int(11) NOT NULL DEFAULT '0',
   `to_item_id` int(11) NOT NULL DEFAULT '0',
@@ -2082,20 +1754,14 @@ CREATE TABLE IF NOT EXISTS `zzz_tag2tag` (
   KEY `context_id` (`context_id`),
   KEY `deletion_date` (`deletion_date`),
   KEY `deleter_id` (`deleter_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
---
--- Daten für Tabelle `zzz_tag2tag`
---
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
--- --------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_tasks`
---
+# Export von Tabelle zzz_tasks
+# ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS `zzz_tasks` (
+CREATE TABLE `zzz_tasks` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -2111,18 +1777,12 @@ CREATE TABLE IF NOT EXISTS `zzz_tasks` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_tasks`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_todos
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_todos`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_todos` (
+CREATE TABLE `zzz_todos` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -2144,18 +1804,12 @@ CREATE TABLE IF NOT EXISTS `zzz_todos` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_todos`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_user
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_user`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_user` (
+CREATE TABLE `zzz_user` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
   `creator_id` int(11) NOT NULL DEFAULT '0',
@@ -2186,24 +1840,24 @@ CREATE TABLE IF NOT EXISTS `zzz_user` (
   KEY `is_contact` (`is_contact`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_user`
---
 
 
--- --------------------------------------------------------
+# Export von Tabelle zzz_workflow_read
+# ------------------------------------------------------------
 
---
--- Tabellenstruktur für Tabelle `zzz_workflow_read`
---
-
-CREATE TABLE IF NOT EXISTS `zzz_workflow_read` (
+CREATE TABLE `zzz_workflow_read` (
   `item_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
   KEY `item_id` (`item_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
---
--- Daten für Tabelle `zzz_workflow_read`
---
+
+
+
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

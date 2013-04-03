@@ -215,10 +215,11 @@ class cs_manager {
     *
     * @param array array of ids to be loaded from db
     */
-   function setIDArrayLimit ($id_array){
-      // ------------------
-      // --->UTF8 - OK<----
-      // ------------------
+   function setIDArrayLimit ($id_array) {
+   	if ( is_array($id_array) ) {
+   		// remove NULL, FALSE and Empty Strings (""), but leave values of 0 (zero)
+   		$id_array = array_filter( $id_array, 'strlen' );
+   	}
       $this->_id_array_limit = (array)$id_array;
    }
 

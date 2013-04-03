@@ -177,13 +177,18 @@ class cs_context_manager extends cs_manager {
            and !$this->_sql_with_extra ) {
          $item->unsetLoadExtras();
       }
+      if ( !empty($db_array['zzz_table'])
+      	  and $db_array['zzz_table'] == 1
+      	) {
+      	$item->setArchiveStatus();
+      }
 
       if ( $this->_cache_on ) {
          if ( empty($this->_cache_object[$item->getItemID()]) ) {
             $this->_cache_object[$item->getItemID()] = $item;
          }
       }
-
+      
       return $item;
    }
 
@@ -418,6 +423,11 @@ class cs_context_manager extends cs_manager {
             } elseif ( !empty($result[0]) ) {
                $data_array = $result[0];
                if ( !empty($data_array) ) {
+               	if ( function_exists('get_called_class')
+               		  and strstr(get_called_class(),'_zzz_')
+               	   ) {
+               		$data_array['zzz_table'] = 1;
+               	}
                   $retour = $this->_buildItem($data_array);
                }
                unset($result);

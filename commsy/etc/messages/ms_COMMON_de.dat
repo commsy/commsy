@@ -181,6 +181,7 @@ $message["COMMON_COLOR_SCHEMA_RED"]["de"] = "Knallrot";
 $message["COMMON_COLOR_SCHEMA_REDGREY"]["de"] = "Rot-grau";
 $message["COMMON_COLOR_SCHEMA_SCHULEHH"]["de"] = "SchulCommSy HH";
 $message["COMMON_COLOR_SCHEMA_STARS"]["de"] = "Sterne";
+$message["COMMON_COLOR_SCHEMA_UHH"]["de"] = "Universität Hamburg";
 $message["COMMON_COLOR_SCHEMA_YELLOW"]["de"] = "Sonne";
 $message["COMMON_COMMSY_CONFIGURE"]["de"] = "Übersicht der Einstellungsoptionen";
 $message["COMMON_COMMSY_CONFIGURE_HOME"]["de"] = "Übersicht der Einstellungsoptionen";
@@ -348,6 +349,7 @@ $message["COMMON_DELETE_BOX_DESCRIPTION_MATERIAL_VERSION"]["de"] = "Eine gelösc
 $message["COMMON_DELETE_BOX_DESCRIPTION_MODERATOR"]["de"] = "<span class=&quot;bold&quot;>Achtung:</span> Als Moderator können Sie auch fremde Beiträge löschen.";
 $message["COMMON_DELETE_BOX_DESCRIPTION_PORTAL"]["de"] = "Ein gelöschtes Portal kann nicht wieder rekonstruiert werden. Möchten Sie das Portal endgültig löschen?";
 $message["COMMON_DELETE_BOX_DESCRIPTION_ROOM"]["de"] = "Ein gelöschter Raum kann nicht wieder rekonstruiert werden. Möchten Sie diesen Raum endgültig löschen?<br/><br/><b>Achtung:</b> Beim Löschen eines Raums löschen Sie in der Regel auch fremde Beiträge.<br/><br/>Alternativ zum Löschen können Sie den Raum archivieren, d.h. alle Mitglieder können weiterhin auf die Inhalte des Raums zugreifen, es können allerdings keine Änderungen mehr vorgenommen werden.";
+$message["COMMON_DELETE_BOX_DESCRIPTION_ROOM_ARCHIVED"]["de"] = "Ein gelöschter Raum kann nicht wieder rekonstruiert werden. Möchten Sie diesen Raum endgültig löschen?<br/><br/><b>Achtung:</b> Beim Löschen eines Raums löschen Sie in der Regel auch fremde Beiträge.";
 $message["COMMON_DELETE_BOX_DESCRIPTION_WIKI"]["de"] = "Ein gelöschtes Wiki kann nicht wieder rekonstruiert werden. Möchten Sie dieses Wiki endgültig löschen?";
 $message["COMMON_DELETE_BOX_DESCRIPTION_WORDPRESS"]["de"] = "Alle Daten im Blog werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.

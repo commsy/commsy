@@ -554,7 +554,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                                  	            
          	            // wiki
                         if($current_context->existWiki() and $c_use_soap_for_wiki){
-                           $wiki_manager = $environment->getWikiManager();
+                           $wiki_manager = $this->_environment->getWikiManager();
                            $wiki_manager->openWiki();
                         }            
 				         }
