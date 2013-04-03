@@ -248,7 +248,7 @@ class cs_authentication {
             include_once('classes/cs_auth_typo3.php');
             $auth_manager = new cs_auth_typo3();
             $auth_manager->setAuthSourceItem($auth_source_item);
-         } elseif ( $type == 'Typo3Web' ) {
+         } elseif ( $type == 'Shibboleth' ) {
          	$auth_manager = new cs_auth_shibboleth();
          	$auth_manager->setAuthSourceItem($auth_source_item);
          }
