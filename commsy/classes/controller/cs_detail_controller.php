@@ -1746,7 +1746,14 @@
 		                        'status' => self::USER_IS_DELETED);
 		                    $userEditArray[] = $userArray;
 		                }
+		                
+		                // kann das weg? (IJ 03.04.2013)
+		                if ( !isset($temp_text) ) {
+		                	 $temp_text = '';
+		                }
 		                $modifier_array[] = $temp_text;
+		                //
+		                
 		            } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
 		            || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
 		            || (isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {

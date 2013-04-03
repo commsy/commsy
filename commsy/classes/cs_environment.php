@@ -1683,7 +1683,7 @@ class cs_environment {
             return $this->getDateManager();
          } elseif ($type == CS_TODO_TYPE or $type == 'todos') {
             return $this->getTodosManager();
-         } elseif ($type == 'contact' or $type == 'contacts' or $type == CS_USER_TYPE or $type == 'users') {
+         } elseif ($type == 'contact' or $type == 'contacts' or $type == CS_USER_TYPE or $type == 'users' or $type == 'account') {
             return $this->getUserManager();
          } elseif ($type == CS_MATERIAL_TYPE or $type == 'materials') {
             return $this->getMaterialManager();
