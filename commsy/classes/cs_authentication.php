@@ -249,6 +249,7 @@ class cs_authentication {
             $auth_manager = new cs_auth_typo3();
             $auth_manager->setAuthSourceItem($auth_source_item);
          } elseif ( $type == 'Shibboleth' ) {
+         	include_once('classes/cs_auth_shibboleth.php');
          	$auth_manager = new cs_auth_shibboleth();
          	$auth_manager->setAuthSourceItem($auth_source_item);
          }
