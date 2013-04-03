@@ -8,6 +8,7 @@ $message["AUTH_ERROR_ACCOUNT_REJECTED"]["de"] = "Ihre Kennung <span style=&quot;
 $message["AUTH_ERROR_ACCOUNT_TO_MANY"]["de"] = "Es ist eine Inkonsistenz in der Datenbank bezüglich Ihrer Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> aufgetreten. Bitte wenden Sie sich mit dieser Fehlermeldung an die Moderation des CommSy-Raumes <span style=&quot;font-weight:bold;&quot;>%2</span>.";
 $message["AUTH_ERROR_LDAP_ROOTUSER"]["de"] = "Kein Zugriff auf die Authentifizierungsquelle möglich. Bitte melden Sie diesen Fehler der Portalmoderation.";
 $message["AUTH_ERROR_PASSWORD_WRONG"]["de"] = "Das eingegebene <span style=&quot;font-weight:bold;&quot;>Passwort</span> passt nicht zur Kennung %1.";
+$message["AUTH_ERROR_SHIBBOLETH"]["de"] = "Die Anmeldung �ber Shibboleth ist fehlgeschlagen";
 $message["AUTH_ERROR_TYPO3WEB_NOT_YET_IMPLEMENTED"]["de"] = "Eine Authentifizierung am TYPO3-System ist noch nicht möglich.";
 $message["AUTH_NOT_AVAILABLE"]["de"] = "Diese Funktion steht über CommSy nicht zur Verfügung.";
 $message["AUTH_NOT_AVAILABLE2"]["de"] = "Diese Funktion steht nicht zur Verfügung. Bitten wenden Sie sich an die Portalmoderatoren.";

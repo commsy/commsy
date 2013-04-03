@@ -65,8 +65,70 @@ if ( !empty($_POST['password']) ) {
 } elseif ( !empty($_GET['password']) ) {
    $password = $_GET['password'];
 }
+//Shibboleth
+$auth_source_manager = $environment->getAuthSourceManager();
+$auth_source_item = $auth_source_manager->getItem($_POST['auth_source']);
+$source_type = $auth_source_item->getSourceType();
+$auth_data = $auth_source_item->getAuthData();
+$host = $auth_data['HOST'];
+#pr($source_type);pr($_SERVER['HTTP_HOST']);
+if($source_type == "Shibboleth"){
+    if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
 
-if (!empty($user_id) and !empty($password) ) {
+        if($host == $_SERVER['HTTP_HOST']){
+            // Benutzer ist eingeloggt // root extra!?
+            $session = new cs_session_item();
+            // Session from Shibboleth identity provider
+            $session->setSessionID($_SERVER['Shib_Session_ID']);
+            #$session->createSessionID($user_id);
+            if ( $cookie == '1' ) {
+                $session->setValue('cookie',2);
+            } elseif ( empty($cookie) ) {
+                // do nothing, so CommSy will try to save cookie
+            } else {
+                $session->setValue('cookie',0);
+            }
+            if ($javascript == '1') {
+                $session->setValue('javascript',1);
+            } elseif ($javascript == '-1') {
+                $session->setValue('javascript',-1);
+            }
+            if ($https == '1') {
+                $session->setValue('https',1);
+            } elseif ($https == '-1') {
+                $session->setValue('https',-1);
+            }
+            if ($flash == '1') {
+                $session->setValue('flash',1);
+            } elseif ($flash == '-1') {
+                $session->setValue('flash',-1);
+            }
+
+            // save portal id in session to be sure, that user didn't
+            // switch between portals
+            if ( $environment->inServer() ) {
+ 				$session->setValue('commsy_id',$environment->getServerID());
+            } else {
+ 				$session->setValue('commsy_id',$environment->getCurrentPortalID());
+            }
+
+            // external tool
+            if ( mb_stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
+                $session->setToolName('homepage');
+            }
+
+            // auth_source
+            if ( empty($auth_source) ) {
+                $auth_source = $authentication->getAuthSourceItemID();
+            }
+            $session->setValue('auth_source',$auth_source);
+        }
+    } else {
+        // Benutzer nicht beim IDP eingeloggt, redirect zum idp?
+        redirect_with_url('https://'.$host.'/Shibboleth.sso/Login');
+    }# and $source_type != "SHIBBOLETH"
+} elseif (!empty($user_id) and !empty($password) and $source_type != "Shibboleth") { 
+//if (!empty($user_id) and !empty($password) ) {
    $authentication = $environment->getAuthenticationObject();
    if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
       $auth_source = $_POST['auth_source'];

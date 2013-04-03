@@ -1707,8 +1707,16 @@ class cs_page_view extends cs_view {
 		               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
 		               $auth_source_item = $auth_source_list->getFirst();
 		               $auth_source_selected = false;
+		               //Shibboleth
+		               $auth_shibboleth_default = false;
 		               while ( $auth_source_item ) {
-		                  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
+		                  //Shibboleth
+		                  if($auth_source_item->getItemID() == $current_portal->getAuthDefault()){
+		                  	if($auth_source_item->getSourceType() == 'Shibboleth'){
+		                  		$auth_shibboleth_default = true;
+		                  	}
+		                  }
+		               	  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
 		                  if ( !$auth_source_selected ) {
 		                     if ( isset($_GET['auth_source'])
 		                          and !empty($_GET['auth_source'])
@@ -1723,6 +1731,10 @@ class cs_page_view extends cs_view {
 		                  $auth_source_item = $auth_source_list->getNext();
 		               }
 		               $html .= '</select>'.LF;
+		               //Shibboleth
+		               if($auth_shibboleth_default){
+		               	 $html .= 'Link zum IDP';
+		               }
 		               $html .= '</td></tr>'.LF;
 		            }
 		            unset($auth_source_list);

@@ -207,6 +207,8 @@ class cs_auth_manager {
             $retour = 'TYPO3';
          } elseif ( get_class($this) == 'cs_auth_typo3' ) {
             $retour = 'TYPO3WEB';
+         } elseif ( get_class($this) == 'cs_auth_shibboleth' ) {
+         	$retour = 'SHIBBOLETH';
          }
       }
       return $retour;

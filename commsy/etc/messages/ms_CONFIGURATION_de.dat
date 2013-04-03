@@ -30,6 +30,7 @@ $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE"]["de"] = "Quelle
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE"]["de"] = "Typ";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["de"] = "Server";
 $message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["de"] = "Bitte ergänzen Sie https:// oder http:// bei der Server-Adresse.";
+$message["CONFIGURATION_AUTHENTICATION_IDP"]["de"] = "Identity Provider";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["de"] = "UserID";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC"]["de"] = "In welchem Feld wird die UserID gespeichert? cn, uid, ...";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION"]["de"] = "Verschlüsselung der Passwörter der Nutzenden";

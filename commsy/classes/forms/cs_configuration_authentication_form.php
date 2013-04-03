@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -145,6 +145,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $counter++;
          $this->_auth_type_array[$counter]['text'] = 'Typo3';
          $this->_auth_type_array[$counter]['value'] = 'Typo3Web';
+         $counter++;
+         $this->_auth_type_array[$counter]['text'] = 'Shibboleth';
+         $this->_auth_type_array[$counter]['value'] = 'Shibboleth';
          $this->_disable_default = false;
          $this->_disable_show = false;
       }
@@ -370,6 +373,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          #$this->_form->addText('encryption_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION'));
 
          $this->_form->addEmptyLine();
+      }
+      
+      // Shibboleth
+      elseif ( $this->_auth_type == 'Shibboleth'){
+      	$this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_IDP'),'','',21,true,'','','','','','',false,'');
+      	$this->_form->addEmptyline();
       }
 
       if ( !$this->_commsy_default and !empty($this->_auth_type) ) {
@@ -692,6 +701,14 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             #   $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
             #}
          }
+         
+         elseif ($this->_values['auth_type'] == 'Shibboleth'){
+         	$auth_data_array = $this->_item->getAuthData();
+         	if( !empty($auth_data_array['HOST'])){
+         		$this->_values['host'] = $auth_data_array['HOST'];
+         	}
+         }
+        
       } else {
          $this->_values['auth_source'] = -1;
       }

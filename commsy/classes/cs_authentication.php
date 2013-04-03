@@ -248,6 +248,9 @@ class cs_authentication {
             include_once('classes/cs_auth_typo3.php');
             $auth_manager = new cs_auth_typo3();
             $auth_manager->setAuthSourceItem($auth_source_item);
+         } elseif ( $type == 'Typo3Web' ) {
+         	$auth_manager = new cs_auth_shibboleth();
+         	$auth_manager->setAuthSourceItem($auth_source_item);
          }
       } else {
          include_once('classes/cs_auth_mysql_commsy.php');
@@ -302,6 +305,9 @@ class cs_authentication {
       } elseif ( $value == 'Typo3Web' ) {
          include_once('classes/cs_auth_typo3.php');
          $auth_manager = new cs_auth_typo3();
+      } elseif ( $value == 'Shibboleth' ) {
+      	 include_once ('classes/cs_auth_shibboleth.php');
+      	 $auth_manager = new cs_auth_shibboleth();
       } else {
          include_once('functions/error_functions.php');
          trigger_error('don\'t know '.$value,E_USER_WARNING);
