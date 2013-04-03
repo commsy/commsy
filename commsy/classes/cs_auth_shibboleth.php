@@ -234,7 +234,8 @@ class cs_auth_shibboleth extends cs_auth_manager {
            }
        } else {
            // Zum idp weiterleiten, wenn man sich anmelden möchte
-           pr($this->_server);
+           pr("WEITERLEITEN!!!");
+           //pr($this->_server);
        }
 
 
