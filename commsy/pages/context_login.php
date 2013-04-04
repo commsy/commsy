@@ -75,7 +75,11 @@ pr($_SERVER);
 if($source_type == "Shibboleth"){
     if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
     	$authentication = $environment->getAuthenticationObject();
-    	pr($_POST['auth_source']);
+    	if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
+      		$auth_source = $_POST['auth_source'];
+   		} else {
+      		$auth_source = '';
+   		}
     	
         #if($host == $_SERVER['HTTP_HOST']){
             // Benutzer ist eingeloggt // root extra!?
