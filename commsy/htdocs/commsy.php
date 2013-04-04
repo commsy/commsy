@@ -579,12 +579,11 @@ if ( !empty($SID) ) {
       		$user_item->setAuthSource();
       		$user_item->makeUser();
       		$user_item->save();
+      		$user_item->getOwnRoom();
       		$environment->setCurrentUser($user_item);
       		
       	}
-      	if($current_user->isUser()){
-      		pr("TST");
-      	}
+      	
       	unset($user_manager);
       	unset($user_item);
       }
