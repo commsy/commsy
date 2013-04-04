@@ -79,7 +79,7 @@ if($source_type == "Shibboleth"){
             // Benutzer ist eingeloggt // root extra!?
             $session = new cs_session_item();
             // Session from Shibboleth identity provider
-            $session->setSessionID($_SERVER['Shib_Session_ID']);
+            $session->setSessionID(substr($_SERVER['Shib_Session_ID'],1));
             #$session->createSessionID($user_id);
             if ( $cookie == '1' ) {
                 $session->setValue('cookie',2);

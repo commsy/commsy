@@ -357,7 +357,7 @@ if (!empty($_GET['SID'])) {
       $SID = $session->getSessionID();
    }
 }
-pr($_SERVER);
+
 if ( !empty($SID) ) {
    // there is a session_id,
    // and there must be a session,
