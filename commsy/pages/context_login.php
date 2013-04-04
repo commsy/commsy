@@ -75,7 +75,7 @@ pr($source_type);pr($_SERVER);
 if($source_type == "Shibboleth"){
     if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
 
-        if($host == $_SERVER['HTTP_HOST']){
+        #if($host == $_SERVER['HTTP_HOST']){
             // Benutzer ist eingeloggt // root extra!?
             $session = new cs_session_item();
             // Session from Shibboleth identity provider
@@ -122,7 +122,7 @@ if($source_type == "Shibboleth"){
                 $auth_source = $authentication->getAuthSourceItemID();
             }
             $session->setValue('auth_source',$auth_source);
-        }
+       # }
     } else {
         // Benutzer nicht beim IDP eingeloggt, redirect zum idp?
         redirect_with_url('https://'.$host.'/Shibboleth.sso/Login');
