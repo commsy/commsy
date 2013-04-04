@@ -71,7 +71,7 @@ $auth_source_item = $auth_source_manager->getItem($_POST['auth_source']);
 $source_type = $auth_source_item->getSourceType();
 $auth_data = $auth_source_item->getAuthData();
 $host = $auth_data['HOST'];
-#pr($source_type);pr($_SERVER['HTTP_HOST']);
+pr($source_type);pr($_SERVER);
 if($source_type == "Shibboleth"){
     if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
 
