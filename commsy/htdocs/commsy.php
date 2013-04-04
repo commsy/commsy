@@ -579,10 +579,10 @@ if ( !empty($SID) ) {
       	// Wenn der Benutzer noch nicht in der Mysql Datenbank existiert, aber bei Shibboleth eingeloggt ist
       	// Muss der Benutzer in der Datenbank angelegt werden
       	// Daten werde vom IDP übergeben und können übernommen werden
-      	
+      	$user_manager = $environment->getUserManager();
       	if(!$user_manager->exists($_SERVER['uid'])){
       		// Benutzer in die Datenbank schreiben
-      		$user_manager = $environment->getUserManager();
+      		
       		$user_item = $user_manager->getNewItem();
       		$user_item->setUserID($_SERVER['uid']);
       		$user_item->setEmail($_SERVER['email']);
