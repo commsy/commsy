@@ -65,7 +65,7 @@ function cleanupSession($session, $environment){
       $session->unsetValue('linked_items_post_vars');
    }
 }
-pr($_SERVER);
+
 // include base-config
 include_once('etc/cs_constants.php');
 @include_once('etc/cs_config.php');
@@ -357,7 +357,7 @@ if (!empty($_GET['SID'])) {
       $SID = $session->getSessionID();
    }
 }
-
+pr($_SERVER);
 if ( !empty($SID) ) {
    // there is a session_id,
    // and there must be a session,
