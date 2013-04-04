@@ -563,18 +563,8 @@ if ( !empty($SID) ) {
 
 /* Shibboleth Anbindung */
       
-      $shibboleth_session_id = '';
-      if ( !empty($_GET['ses_id']) ) { // Session ID für Shibboleth angeben.
-      	$shibboleth_session_id = $_GET['ses_id'];
-      } elseif ( !empty($_POST['ses_id']) ) {
-      	$shibboleth_session_id = $_POST['ses_id'];
-      } elseif ( !empty($_COOKIE['ses_id']) ) {
-      	$shibboleth_session_id = $_COOKIE['ses_id'];
-      }
       // Wenn der Benutzer bereits in der Mysql Datenbank existiert
-      if(!empty($shibboleth_session_id)){
-      	
-      } else {
+      if(!empty($_SERVER['Shib_Session_ID'])){
       	
       	// Wenn der Benutzer noch nicht in der Mysql Datenbank existiert, aber bei Shibboleth eingeloggt ist
       	// Muss der Benutzer in der Datenbank angelegt werden
@@ -591,33 +581,13 @@ if ( !empty($SID) ) {
       		$user_item->save();
       		$environment->setCurrentUser($user_item);
       		
-//       		$new_account_data = $user_data_array;
-//       		if ( !empty($new_account_data)
-//       		#and !empty($new_account_data['firstname'])
-//       		#and !empty($new_account_data['lastname'])
-//       		) {
-//       			$user_item = $user_manager->getNewItem();
-//       			$user_item->setUserID($new_account_data['user_id']);
-//       			$user_item->setFirstname($new_account_data['firstname']);
-//       			$user_item->setLastname($new_account_data['lastname']);
-//       			if(!empty($new_account_data['email'])){
-//       				$user_item->setEmail($new_account_data['email']);
-//       			} else {
-//       				$server_item = $environment->getServerItem();
-//       				$email = $server_item->getDefaultSenderAddress();
-//       				$user_item->setEmail($email);
-//       				$user_item->setHasToChangeEmail();
-//       			}
-//       			$user_item->setAuthSource($typo3web_manager->getAuthSourceItemID());
-//       			$user_item->makeUser();
-//       			$user_item->save();
-//       			$environment->setCurrentUser($user_item);
-//       		}
       	}
-      	
-      	
+      	if($current_user->isUser()){
+      		pr("TST");
+      	}
+      	unset($user_manager);
+      	unset($user_item);
       }
-      
       
 /* Ende Shibboleth Anbindung */
    }
