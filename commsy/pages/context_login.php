@@ -80,14 +80,16 @@ if($source_type == "Shibboleth"){
    		} else {
       		$auth_source = '';
    		}
-    	
         #if($host == $_SERVER['HTTP_HOST']){
             // Benutzer ist eingeloggt // root extra!?
             $session = new cs_session_item();
             // Session from Shibboleth identity provider
             $session->setSessionID(substr($_SERVER['Shib_Session_ID'],1));
             $session->setValue("user_id", $_SERVER["uid"]);
+            // Benutzer muss erstellt werden
+            
             #$session->createSessionID($user_id);
+            
             if ( $cookie == '1' ) {
                 $session->setValue('cookie',2);
             } elseif ( empty($cookie) ) {

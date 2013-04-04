@@ -561,7 +561,64 @@ if ( !empty($SID) ) {
       }
 /*Ende TYPO3-Anbindung*/
 
-
+/* Shibboleth Anbindung */
+      
+      $shibboleth_session_id = '';
+      if ( !empty($_GET['ses_id']) ) { // Session ID für Shibboleth angeben.
+      	$shibboleth_session_id = $_GET['ses_id'];
+      } elseif ( !empty($_POST['ses_id']) ) {
+      	$shibboleth_session_id = $_POST['ses_id'];
+      } elseif ( !empty($_COOKIE['ses_id']) ) {
+      	$shibboleth_session_id = $_COOKIE['ses_id'];
+      }
+      // Wenn der Benutzer bereits in der Mysql Datenbank existiert
+      if(!empty($shibboleth_session_id)){
+      	
+      } else {
+      	
+      	// Wenn der Benutzer noch nicht in der Mysql Datenbank existiert, aber bei Shibboleth eingeloggt ist
+      	// Muss der Benutzer in der Datenbank angelegt werden
+      	// Daten werde vom IDP übergeben und können übernommen werden
+      	
+      	if(!$user_manager->exists($_SERVER['uid'])){
+      		// Benutzer in die Datenbank schreiben
+      		$user_item = $user_manager->getNewItem();
+      		$user_item->setUserID($_SERVER['uid']);
+      		$user_item->setEmail($_SERVER['email']);
+      		$user_item->setAuthSource();
+      		$user_item->makeUser();
+      		$user_item->save();
+      		$environment->setCurrentUser($user_item);
+      		
+//       		$new_account_data = $user_data_array;
+//       		if ( !empty($new_account_data)
+//       		#and !empty($new_account_data['firstname'])
+//       		#and !empty($new_account_data['lastname'])
+//       		) {
+//       			$user_item = $user_manager->getNewItem();
+//       			$user_item->setUserID($new_account_data['user_id']);
+//       			$user_item->setFirstname($new_account_data['firstname']);
+//       			$user_item->setLastname($new_account_data['lastname']);
+//       			if(!empty($new_account_data['email'])){
+//       				$user_item->setEmail($new_account_data['email']);
+//       			} else {
+//       				$server_item = $environment->getServerItem();
+//       				$email = $server_item->getDefaultSenderAddress();
+//       				$user_item->setEmail($email);
+//       				$user_item->setHasToChangeEmail();
+//       			}
+//       			$user_item->setAuthSource($typo3web_manager->getAuthSourceItemID());
+//       			$user_item->makeUser();
+//       			$user_item->save();
+//       			$environment->setCurrentUser($user_item);
+//       		}
+      	}
+      	
+      	
+      }
+      
+      
+/* Ende Shibboleth Anbindung */
    }
 
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
