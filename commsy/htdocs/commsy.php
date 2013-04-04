@@ -582,6 +582,7 @@ if ( !empty($SID) ) {
       	
       	if(!$user_manager->exists($_SERVER['uid'])){
       		// Benutzer in die Datenbank schreiben
+      		$user_manager = $environment->getUserManager();
       		$user_item = $user_manager->getNewItem();
       		$user_item->setUserID($_SERVER['uid']);
       		$user_item->setEmail($_SERVER['email']);
