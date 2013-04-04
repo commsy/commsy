@@ -74,13 +74,13 @@ $host = $auth_data['HOST'];
 pr($source_type);pr($_SERVER);
 if($source_type == "Shibboleth"){
     if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
-
+    	$authentication = $environment->getAuthenticationObject();
         #if($host == $_SERVER['HTTP_HOST']){
             // Benutzer ist eingeloggt // root extra!?
             $session = new cs_session_item();
             // Session from Shibboleth identity provider
             $session->setSessionID(substr($_SERVER['Shib_Session_ID'],1));
-            $session->setValue("user_id", $_SERVER["uid"]);
+            //$session->setValue("user_id", $_SERVER["uid"]);
             #$session->createSessionID($user_id);
             if ( $cookie == '1' ) {
                 $session->setValue('cookie',2);
