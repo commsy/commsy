@@ -804,7 +804,7 @@ class cs_page_guide_view extends cs_page_view {
                               } else {
                                  $room_user = '';
                               }
-                              if(!$room_user->isRejected()){
+                              if( !empty($room_user) and !$room_user->isRejected()){
                                  $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
                                  $html .= '<br/><br/>';
                                  $actionCurl = curl($this->_environment->getCurrentContextID(),
