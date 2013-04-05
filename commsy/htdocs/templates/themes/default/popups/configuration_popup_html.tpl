@@ -572,6 +572,7 @@
 										</div>
 									</fieldset>
 
+                           {if $popup.additional.with_archiving_rooms == true}
 									<fieldset>
 										<p>
 											<strong>___CONTEXT_ROOM_ARCHIVE___:</strong> {if $popup.additional.template == false}___ROOM_STATUS_LONG_DESCRIPTION___{else}___CONTEXT_ROOM_ARCHIVE_DESCRIPTION_NOT_POSSIBLE___{/if}
@@ -584,6 +585,7 @@
 										   </div>
 										{/if}
 									</fieldset>
+                           {/if}
 
 									<fieldset>
 										<p>

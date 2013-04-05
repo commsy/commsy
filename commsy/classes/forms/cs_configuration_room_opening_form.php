@@ -187,13 +187,18 @@ var $_template_array = array();
       $this->_form->addRadioGroup('private_room_link',$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK'),'',$radio_values,'',true,false);
       
       // archiving
-      $this->_form->addEmptyLine();
-      $this->_form->addCheckbox('room_archiving',1,'',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING'),strtolower($this->_translator->getMessage('COMMON_ACTIVATE')));
-      $this->_form->combine();
-      $this->_form->addTextfield('room_archiving_days_unused','','','',4,4,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED2'));
-      $this->_form->combine();
-      $this->_form->addTextfield('room_archiving_days_unused_mail','','','',2,2,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED2'));
-
+      $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
+      if ( isset($with_archving_rooms)
+      	  and $with_archving_rooms
+         ) {
+         $this->_form->addEmptyLine();
+         $this->_form->addCheckbox('room_archiving',1,'',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING'),strtolower($this->_translator->getMessage('COMMON_ACTIVATE')));
+         $this->_form->combine();
+         $this->_form->addTextfield('room_archiving_days_unused','','','',4,4,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED2'));
+         $this->_form->combine();
+         $this->_form->addTextfield('room_archiving_days_unused_mail','','','',2,2,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED2'));
+      }
+      
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
