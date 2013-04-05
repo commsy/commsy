@@ -717,6 +717,15 @@ class cs_manager {
       $item = $this->getNewItem();
       if ( isset($item) ) {
          $item->_setItemData(encode(FROM_DB,$db_array));
+         
+         // archive
+        	if ( function_exists('get_called_class')
+        		  and strstr(get_called_class(),'_zzz_')
+        	   ) {
+            $item->setArchiveStatus();	
+        	}
+         // archive
+         
       }
       if ( $this->_cache_on
            and method_exists($item,'getItemID')

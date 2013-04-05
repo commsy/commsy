@@ -2107,8 +2107,20 @@ class cs_item {
    }
 
    function _copyFileList () {
-      $file_list = $this->getFileList();
-      $file_new_list = new cs_list();
+      $file_list = $this->getFileList();		
+		$file_new_list = new cs_list();
+
+		// archive
+		if ( $file_list->isEmpty() 
+		     and $this->isArchived()
+			  and !$this->_environment->isArchiveMode()
+		   ) {
+			$this->_environment->toggleArchiveMode();
+         $file_list = $this->getFileList();		
+			$this->_environment->toggleArchiveMode();
+		}
+		// archive		
+      
       if ( !empty($file_list) and $file_list->getCount() > 0 ) {
          $file_item = $file_list->getFirst();
          while ( $file_item ) {
