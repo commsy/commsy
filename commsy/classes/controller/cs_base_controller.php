@@ -93,7 +93,17 @@
 		protected function processTemplate() {
 			//sanitize
 			if(!empty($_POST) and isset($_POST)){
-				array_walk_recursive($_POST, array($this, 'sanitize'));
+				if ( function_exists('get_called_class')
+					  and ( get_called_class() == 'cs_annotation_edit_controller'
+					  		  or get_called_class() == 'cs_discarticle_edit_controller'
+					  		  #or get_called_class() == 'cs_discussion_edit_controller'
+					  		  or get_called_class() == 'cs_step_edit_controller'
+					      )
+					) {
+					// do nothing
+				} else {
+				   array_walk_recursive($_POST, array($this, 'sanitize'));
+				}
 			}
 
 			if(!empty($_GET) and isset($_GET)){
