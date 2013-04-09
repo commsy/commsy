@@ -77,6 +77,28 @@ define([	"dojo/_base/declare",
 				domConstruct.empty(node);
 				this.tree.placeAt(node);
 				
+				/**
+				 * Hotfix
+				 * --------
+				 * This will convert any touch end event into a click event,
+				 * fixing a bug on iphone devices not able to click on a tree node
+				 * and emitting a click event
+				 */
+				On(node, "touchend", function(event)
+				{
+					// prevent native lick
+					event.preventDefault();
+					
+					On.emit(event.target, "click",
+					{
+						cancelable: true,
+						bubbles: true
+					});
+				});
+				/**
+				 * ~Hotfix
+				 */
+				
 				// auto expand
 				if (this.expanded === true) {
 					this.autoExpandToLevel(this.tree, 0, true);
