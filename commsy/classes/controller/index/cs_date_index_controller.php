@@ -60,7 +60,11 @@
 		    $ical_url = '';
 		    $ical_url .= $_SERVER['HTTP_HOST'];
 		    global $c_single_entry_point;
-		    $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
+		    if ( strstr($_SERVER['PHP_SELF'],'commsy.php') ) {
+             $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
+          } else {
+             $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
+          }
 		    $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).LF;
 			$this->assign('date','ical_adress', $ical_url);
 

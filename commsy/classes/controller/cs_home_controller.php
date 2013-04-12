@@ -2,6 +2,9 @@
 	require_once('classes/controller/cs_list_controller.php');
 
 	class cs_home_controller extends cs_list_controller {
+		
+		protected $_with_old_text_formating = false;
+		
 		/**
 		 * constructor
 		 */
@@ -10,6 +13,15 @@
 			parent::__construct($environment);
 
 			$this->_tpl_file = 'room_home';
+
+		   // old_text_formating
+			$c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
+			if ( !empty($c_old_text_formating_array)
+					and is_array($c_old_text_formating_array)
+					and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
+			   ) {
+				$this->_with_old_text_formating = true;
+			}
 		}
 
 		protected function getAdditionalRestrictions(){}
@@ -61,8 +73,12 @@
 				
 				if(!empty($desc)) {
 					$converter->setFileArray($this->getItemFileList());
-					//$desc = $converter->_text_as_html_long2($desc);
-					#$desc = $converter->cleanDataFromTextArea($desc);
+               if ( $this->_with_old_text_formating ) {
+                  $desc = $converter->text_as_html_long($desc);
+               } else {
+                  //$desc = $converter->_text_as_html_long2($desc);
+                  #$desc = $converter->cleanDataFromTextArea($desc);
+               }
 				}
 				$return_array['content'] = $desc;
 				$return_array['rubric'] = $entry->getItemType();

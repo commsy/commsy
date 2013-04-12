@@ -259,6 +259,7 @@ $message["CONFIGURATION_ROOM_HOME_DESC"]["en"] = "Configure display of workspace
 $message["CONFIGURATION_ROOM_LIST_TEMPLATES"]["en"] = "Show templates in workplace list";
 $message["CONFIGURATION_ROOM_OPENING_LINK"]["en"] = "Workspaces";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["en"] = "Define creation of new workspaces, private workspaces and archiving.";
+$message["CONFIGURATION_ROOM_OPENING_LINK_DESC2"]["en"] = "Define creation of new workspaces, private workspaces.";
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["en"] = "Please define workspace basics, i.e. <span class=&quot;bold&quot;>title</span>, <span class=&quot;bold&quot;>logo</span>, <span class=&quot;bold&quot;>color theme</span>.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["en"] = "Design workspace";
 $message["CONFIGURATION_ROOM_URL"]["en"] = "URL";

@@ -158,7 +158,14 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_ROOM_OPENING_LINK'));
       $link_item->setIconPath('images/cs_config/PORTAL_ENTER_NEW.gif');
-      $link_item->setDescription($translator->getMessage('CONFIGURATION_ROOM_OPENING_LINK_DESC'));
+      $with_archving_rooms = $environment->getConfiguration('c_archive_rooms');
+      if ( isset($with_archving_rooms)
+      	  and $with_archving_rooms
+         ) {
+         $link_item->setDescription($translator->getMessage('CONFIGURATION_ROOM_OPENING_LINK_DESC'));
+      } else {
+      	$link_item->setDescription($translator->getMessage('CONFIGURATION_ROOM_OPENING_LINK_DESC2'));
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('room_opening');

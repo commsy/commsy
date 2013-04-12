@@ -255,6 +255,7 @@ $message["CONFIGURATION_ROOM_HOME_DESC"]["de"] = "Hier können Sie die Darstellu
 $message["CONFIGURATION_ROOM_LIST_TEMPLATES"]["de"] = "Vorlagen in der Raumliste anzeigen";
 $message["CONFIGURATION_ROOM_OPENING_LINK"]["de"] = "Räume";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Einstellungen zur Raumeröffnung, zum privaten Raum, zur Raumarchivierung.";
+$message["CONFIGURATION_ROOM_OPENING_LINK_DESC2"]["de"] = "Einstellungen zur Raumeröffnung, zum privaten Raum.";
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["de"] = "Stellen Sie z.B. <span class=&quot;bold&quot;>Raumname</span>, <span class=&quot;bold&quot;>Logo</span>, <span class=&quot;bold&quot;>Farbschema</span> ein.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["de"] = "Raumgestaltung";
 $message["CONFIGURATION_ROOM_URL"]["de"] = "URL";

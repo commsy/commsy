@@ -94,9 +94,18 @@
 		protected function processTemplate() {
 			//sanitize
 			if(!empty($_POST) and isset($_POST)){
-				// sanitize every title which is send from POST
-				$this->sanitize($_POST['form_data']['title']);
-				//array_walk_recursive($this->_data["form_data"][$key]["value"], array($this, 'sanitize'));
+				if ( function_exists('get_called_class')
+				and ( get_called_class() == 'cs_annotation_edit_controller'
+						or get_called_class() == 'cs_discarticle_edit_controller'
+						#or get_called_class() == 'cs_discussion_edit_controller'
+						or get_called_class() == 'cs_step_edit_controller'
+				)
+				) {
+					// do nothing
+				} else {
+					// sanitize every title which is send from POST
+					$this->sanitize($_POST['form_data']['title']);
+				}
 			}
 
 			if(!empty($_GET) and isset($_GET)){

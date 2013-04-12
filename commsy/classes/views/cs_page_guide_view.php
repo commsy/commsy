@@ -804,7 +804,7 @@ class cs_page_guide_view extends cs_page_view {
                               } else {
                                  $room_user = '';
                               }
-                              if(!$room_user->isRejected()){
+                              if( !empty($room_user) and !$room_user->isRejected()){
                                  $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
                                  $html .= '<br/><br/>';
                                  $actionCurl = curl($this->_environment->getCurrentContextID(),
@@ -1693,8 +1693,13 @@ class cs_page_guide_view extends cs_page_view {
             	$params['automatic'] = 'open';
             	$html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_OPEN'),'','','','','','','class="portal_link"').LF;
             } else {
-               $params['automatic'] = 'archive';
-               $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+               $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
+			      if ( isset($with_archving_rooms)
+			      	  and $with_archving_rooms
+			         ) {
+            	   $params['automatic'] = 'archive';
+                  $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+			      }
             }
             unset($params);
          }elseif( $current_user->isModerator()

@@ -77,7 +77,9 @@
 
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
+			if ( $current_context->isClosed() || $current_user->isOnlyReadUser()
+				  or $current_context->isLocked()
+				) {
 				$this->_with_modifying_actions = false;
 			}
 
