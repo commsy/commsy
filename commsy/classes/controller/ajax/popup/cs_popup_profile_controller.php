@@ -299,15 +299,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}
 							
 							if(isset($form_data['mail_account'])){
-								// TODO PRINT ENTFERNEN!
-// 								pr('mail_account:'.$form_data['mail_account']);
-// 								pr('daten vorher:'.$portalUser->getAccountWantMail());
 								$currentUser->setAccountWantMail('yes');
 								$currentUser->save();
 								#$save = true;
 							} else {
-// 								pr('mail_account:'.$form_data['mail_account']);
-// 								pr('daten vorher:'.$portalUser->getAccountWantMail());
 								$currentUser->setAccountWantMail('no');
 								$currentUser->save();
 								#$save = true;
