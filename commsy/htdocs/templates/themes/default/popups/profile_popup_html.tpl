@@ -80,8 +80,8 @@
                         <label for="mail_account">___USER_EMAIL___:</label>
 
                         <div class="input_container_180">
-                          <input id="mail_account" name="form_data[mail_account]" type="checkbox"{if $popup.form.account.email_account == true} checked="checked"{/if}/> ___USER_MAIL_GET_ACCOUNT___<br/>
-                          <input id="mail_room" name="form_data[mail_room]" type="checkbox"{if $popup.form.account.email_room == true} checked="checked"{/if}/> ___USER_MAIL_OPEN_ROOM_PO___
+                          <input id="mail_account" name="form_data[mail_account]" type="checkbox"{if $popup.form.account.mail_account == true} checked="checked"{/if}/> ___USER_MAIL_GET_ACCOUNT___<br/>
+                          <input id="mail_room" name="form_data[mail_room]" type="checkbox"{if $popup.form.account.mail_room == true} checked="checked"{/if}/> ___USER_MAIL_OPEN_ROOM_PO___
                         </div>
                       </div>
                     {/if}

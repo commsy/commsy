@@ -546,7 +546,8 @@ class Mail_RFC822 extends PEAR{
         $comment = '';
 
         // Catch any RFC822 comments and store them separately
-        ereg("\(.*\)", $mailbox, $regs);
+        #ereg("\(.*\)", $mailbox, $regs); // depricated in php5
+        preg_match("&\(.*\)&", $mailbox, $regs);
         if (is_array($regs)) {
             foreach ($regs as $string) {
                 $mailbox = str_replace($string, ' ', $mailbox);

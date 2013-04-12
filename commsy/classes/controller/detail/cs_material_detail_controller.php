@@ -631,7 +631,6 @@
 				'moredetails'		=> $this->getCreatorInformationAsArray($this->_item),
 				'workflow'			=> $this->getWorkflowInformation($this->_item)
 			);
-
 			return $return;
 		}
 
@@ -1317,7 +1316,6 @@
 							$entry['formal']['files'] = $files;
 						}
 					}
-
 					$entry['actions']			= $this->getEditActions($this->_item, $current_user);
 					$entry['num_files'] 		= sizeof($files);
 					$entry['title']				= $section->getTitle();

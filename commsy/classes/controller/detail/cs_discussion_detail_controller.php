@@ -1008,6 +1008,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				$converter->setFileArray($this->getItemFileList());
       		if ( $this->_with_old_text_formating ) {
       			$description = $converter->text_as_html_long($description);
+      			
       		} else {
 				   $description = $converter->_activate_urls($description);
 				   $description = $converter->showImages($description, $item, true);

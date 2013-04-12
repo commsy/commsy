@@ -297,31 +297,56 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									$currentUser->save();
 								}
 							}
+							
+							if(isset($form_data['mail_account'])){
+								// TODO PRINT ENTFERNEN!
+// 								pr('mail_account:'.$form_data['mail_account']);
+// 								pr('daten vorher:'.$portalUser->getAccountWantMail());
+								$currentUser->setAccountWantMail('yes');
+								$currentUser->save();
+								#$save = true;
+							} else {
+// 								pr('mail_account:'.$form_data['mail_account']);
+// 								pr('daten vorher:'.$portalUser->getAccountWantMail());
+								$currentUser->setAccountWantMail('no');
+								$currentUser->save();
+								#$save = true;
+							}
+							
+							if(isset($form_data['mail_room'])){
+								$currentUser->setOpenRoomWantMail('yes');
+								$currentUser->save();
+								#$save = true;
+							} else {
+								$currentUser->setOpenRoomWantMail('no');
+								$currentUser->save();
+								#$save = true;
+							}
 
 							// mail settings
-							if(!empty($form_data['mail_account'])) {
-								if($portalUser->getAccountWantMail() == 'no') {
-									$portalUser->setAccountWantMail('yes');
-									$save = true;
-								}
-							} else {
-								if($portalUser->getAccountWantMail() == 'yes') {
-									$portalUser->setAccountWantMail('no');
-									$save = true;
-								}
-							}
+// 							if(!empty($form_data['mail_account'])) {
+// 								if($portalUser->getAccountWantMail() == 'no') {
+// 									$portalUser->setAccountWantMail('yes');
+// 									$save = true;
+// 								}
+// 							} else {
+// 								if($portalUser->getAccountWantMail() == 'yes') {
+// 									$portalUser->setAccountWantMail('no');
+// 									$save = true;
+// 								}
+// 							}
 
-							if(!empty($form_data['mail_room'])) {
-								if($portalUser->getOpenRoomWantMail() == 'no') {
-									$portalUser->setOpenRoomWantMail('yes');
-									$save = true;
-								}
-							} else {
-								if($portalUser->getOpenRoomWantMail() == 'yes') {
-									$portalUser->setOpenRoomWantMail('no');
-									$save = true;
-								}
-							}
+// 							if(!empty($form_data['mail_room'])) {
+// 								if($portalUser->getOpenRoomWantMail() == 'no') {
+// 									$portalUser->setOpenRoomWantMail('yes');
+// 									$save = true;
+// 								}
+// 							} else {
+// 								if($portalUser->getOpenRoomWantMail() == 'yes') {
+// 									$portalUser->setOpenRoomWantMail('no');
+// 									$save = true;
+// 								}
+// 							}
 
 /*							if(!empty($form_data['mail_delete_entry'])) {
 								if($portalUser->getDeleteEntryWantMail() == 'no') {
@@ -1365,8 +1390,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$return['lastname'] = $this->_user->getLastname();
 		$return['user_id'] = $this->_user->getUserID();
 		$return['language'] = $this->_user->getLanguage();
-		$return['email_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
-		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
+		$return['mail_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
+		//TODO PRINT ENTFERNEN
+		#pr($this->_user->getAccountWantMail());
+		$return['mail_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
 //		$return['mail_delete_entry'] = ($this->_user->getDeleteEntryWantMail() === 'yes') ? true : false;
 //		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
 		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;

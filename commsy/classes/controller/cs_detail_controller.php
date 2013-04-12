@@ -1314,12 +1314,11 @@
 		        $return['read_count'] = $read_count;
 		        $return['read_since_modification_count'] = $read_since_modification_count;
 		    }
-
 			$moddate = $item->getModificationDate();
 			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
      			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getModificationDate());
   			} else {
-     			$mod_date = '';
+     			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getCreationDate());
   			}
  		    $return['last_modification_date'] = $mod_date;
 		    $return['creation_date'] = $translator->getDateTimeInLang($item->getCreationDate());
@@ -1746,7 +1745,14 @@
 		                        'status' => self::USER_IS_DELETED);
 		                    $userEditArray[] = $userArray;
 		                }
+		                
+		                // kann das weg? (IJ 03.04.2013)
+		                if ( !isset($temp_text) ) {
+		                	 $temp_text = '';
+		                }
 		                $modifier_array[] = $temp_text;
+		                //
+		                
 		            } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
 		            || (!$user->isUser() and isset($modificator) and $modificator->isVisibleForAll())
 		            || (isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {

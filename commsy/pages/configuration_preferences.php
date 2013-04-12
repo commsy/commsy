@@ -349,8 +349,9 @@ if ($current_user->isGuest()) {
                $community_manager = $environment->getCommunityManager();
                $community_manager->reset();
                $community_item = $community_manager->getItem($_POST['communityrooms']);
-
+               
                $temp_array['name'] = $community_item->getTitle();
+               
                $temp_array['id'] = $community_item->getItemID();
                $community_room_array[] = $temp_array;
                $new_community_room_ids[] = $temp_array['id'];
@@ -684,7 +685,11 @@ if ($current_user->isGuest()) {
                   //******************************************//
        // Set attributes
        if ( isset($_POST['title']) ) {
-          $item->setTitle($_POST['title']);
+       	  $text_converter = $environment->getTextConverter();
+       	 
+       	  // sanitize title
+       	  $item->setTitle($text_converter->_htmlentities_cleanbadcode($_POST['title']));
+          //$item->setTitle($_POST['title']);
        }
        if (isset($_POST['public'])) {
           $item->setPublic($_POST['public']);

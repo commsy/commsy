@@ -377,7 +377,7 @@ class cs_date_detail_controller extends cs_detail_controller {
 				}
 
 				if($parse_time_start['conforms'] === true) {
-					$start_time_rpint .= ' ' . $translator->getMessage('DATES_OCLOCK');
+					$start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
 				}
 
 				$date_print =	$translator->getMessage('DATES_AS_OF') . ' ' . $start_day_print . ', ' . $start_time_print . '<br/>' .
@@ -452,7 +452,8 @@ class cs_date_detail_controller extends cs_detail_controller {
 		if(!empty($color)) {
 			$color = $converter->text_as_html_short($color);
 		}
-
+       
+		 $formal = array();
 	    if ($this->_item->isNotActivated()){
 	        $activating_date = $this->_item->getActivatingDate();
 	        $text = '';

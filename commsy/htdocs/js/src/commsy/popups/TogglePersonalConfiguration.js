@@ -202,7 +202,9 @@ define([	"dojo/_base/declare",
 						{ query: Query("input[name='form_data[new_password_confirm]']", this.contentNode) },
 						{ query: Query("select[name='form_data[language]']", this.contentNode) },
 						{ query: Query("input[name='form_data[upload]']", this.contentNode) },
-						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) }
+						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) },
+						{ query: Query("input[name='form_data[mail_account]']", this.contentNode) },
+						{ query: Query("input[name='form_data[mail_room]']", this.contentNode) }
 					]
 				};
 			} else if(part === "account_merge") {

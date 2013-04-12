@@ -275,7 +275,7 @@ class misc_text_converter {
    }
 
    public function text_as_html_short ($text) {
-      $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
+      #$text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
       $text = $this->_emphasize_text($text);
       $text = $this->_decode_backslashes($text);
       return $text;
@@ -860,7 +860,7 @@ class misc_text_converter {
       $value = str_replace('<','&lt;',$value);
       $value = str_replace('>','&gt;',$value);
       $value = str_replace('"','&quot;',$value);
-      $value = str_replace('\'','&quot;',$value);
+      $value = str_replace('\'','&#039;',$value);
       return $value;
    }
 

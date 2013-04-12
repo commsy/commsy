@@ -1536,16 +1536,16 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		}
 
 		// color schemes
-		$this->_color_array[] = array(
-			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
-			'value'		=> $default_color_value,
-			'disabled'	=> false
-		);
-		$this->_color_array[] = array(
-			'text'		=> '-----',
-			'value'		=> '-1',
-			'disabled'	=> true
-		);
+// 		$this->_color_array[] = array(
+// 			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
+// 			'value'		=> $default_color_value,
+// 			'disabled'	=> false
+// 		);
+// 		$this->_color_array[] = array(
+// 			'text'		=> '-----',
+// 			'value'		=> '-1',
+// 			'disabled'	=> true
+// 		);
 
 /*		$temp_color_array = array();
 		for($i=1; $i <= 26; $i++) {
@@ -1564,6 +1564,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 		ksort($temp_color_array);
 		$this->_color_array = array_merge($this->_color_array, $temp_color_array);
+		
+		$this->_color_array[] = array(
+				'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
+				'value'		=> $default_color_value,
+				'disabled'	=> false
+		);
 
 		$this->_color_array[] = array(
 			'text'		=> '-----',
@@ -1575,7 +1581,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			'value'		=> 'individual',
 			'disabled'	=> false
 		);
-
 		/*
 
 

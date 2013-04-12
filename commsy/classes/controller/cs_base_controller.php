@@ -14,6 +14,7 @@
 		 */
 		public function __construct(cs_environment $environment) {
 			$this->_environment = $environment;
+			
 			$this->_tpl_engine  = $this->_environment->getTemplateEngine();
 			$this->_tpl_file = null;
 
@@ -93,10 +94,13 @@
 		protected function processTemplate() {
 			//sanitize
 			if(!empty($_POST) and isset($_POST)){
-				array_walk_recursive($_POST, array($this, 'sanitize'));
+				// sanitize every title which is send from POST
+				$this->sanitize($_POST['form_data']['title']);
+				//array_walk_recursive($this->_data["form_data"][$key]["value"], array($this, 'sanitize'));
 			}
 
 			if(!empty($_GET) and isset($_GET)){
+				// sanitize everything which comes from get
 				array_walk_recursive($_GET, array($this, 'sanitize'));
 			}
 
