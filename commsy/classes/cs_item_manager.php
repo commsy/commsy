@@ -54,6 +54,8 @@ class cs_item_manager extends cs_manager {
    var $_user_authsourceid_limit = NULL;
    var $_user_since_lastlogin_limit = NULL;
    var $_cache_row = array();
+   private $_no_interval_limit = false;
+   
   /**
    * integer - containing the age of material as a limit
    */
@@ -87,6 +89,7 @@ class cs_item_manager extends cs_manager {
       $this->_user_userid_limit = NULL;
       $this->_user_authsourceid_limit = NULL;
       $this->_user_since_lastlogin_limit = NULL;
+      $this->_no_interval_limit = false;
    }
 
    /** set age limit
@@ -102,6 +105,10 @@ class cs_item_manager extends cs_manager {
 
    function setIntervalLimit ($interval) {
      $this->_interval_limit = (int)$interval;
+   }
+
+   function setNoIntervalLimit () {
+     $this->_no_interval_limit = true;
    }
 
    function setTypeArrayLimit ($array) {
@@ -231,7 +238,9 @@ class cs_item_manager extends cs_manager {
       }
         $query .= ' ORDER BY '.$this->addDatabasePrefix('items').'.modification_date DESC';
       if (!isset($this->_id_array_limit)) {
-         if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)) {
+         if ($mode == 'select' and !(isset($this->_user_sincelastlogin_limit) and $this->_user_sincelastlogin_limit)
+         	 and !$this->_no_interval_limit
+         	) {
             $query .= ' LIMIT ';
             if ( isset($this->_interval_limit) ) {
                $query .= $this->_interval_limit;
@@ -240,6 +249,7 @@ class cs_item_manager extends cs_manager {
             }
          }
       }
+     
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -957,33 +967,32 @@ class cs_item_manager extends cs_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
+         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
          } else {
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.item_id = "'.$context_id.'"';
+            $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               trigger_error('Problems deleting after move to backup-table: '.$query,E_USER_WARNING);
             } elseif ( !empty($result[0]) ) {
                $retour = true;
             }
          }
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
+         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
          } else {
-            $db_prefix = '';
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
+            $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               trigger_error('Problems deleting after move to backup-table: '.$query,E_USER_WARNING);
                $retour = false;
             } elseif ( !empty($result[0]) ) {
                $retour = true;
@@ -999,62 +1008,28 @@ class cs_item_manager extends cs_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithoutDatabasePrefix();
-         }
-      	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithDatabasePrefix();
-         }
+      	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
       	$result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
          } else {
-            // archive
-            if ( $this->_environment->isArchiveMode() ) {
-    	         $this->setWithoutDatabasePrefix();
-            }
-         	$query = 'DELETE FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.item_id = "'.$context_id.'"';
-            // archive
-            if ( $this->_environment->isArchiveMode() ) {
-    	         $this->setWithDatabasePrefix();
-            }
+         	$query = 'DELETE FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
          	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+               trigger_error('Problems deleting after move from backup-table: '.$query,E_USER_WARNING);
             } elseif ( !empty($result[0]) ) {
                $retour = true;
             }
          }
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithoutDatabasePrefix();
-         }
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithDatabasePrefix();
-         }
+         $query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.context_id = "'.$context_id.'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
          } else {
-            $db_prefix = '';
-            $db_prefix .= $c_db_backup_prefix.'_';
-            // archive
-            if ( $this->_environment->isArchiveMode() ) {
-    	         $this->setWithoutDatabasePrefix();
-            }
-            $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
-            // archive
-            if ( $this->_environment->isArchiveMode() ) {
-    	         $this->setWithDatabasePrefix();
-            }
+            $query = 'DELETE FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.context_id = "'.$context_id.'"';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
@@ -1099,11 +1074,11 @@ class cs_item_manager extends cs_manager {
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
-            $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).' SELECT * FROM '.$this->addDatabasePrefix($db_table).' WHERE '.$this->addDatabasePrefix($db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_table).'.user_id IN ('.implode(",", $id_array_users).')';
+            $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$db_table.' SELECT * FROM '.$db_table.' WHERE '.$db_table.'.item_id IN ('.implode(",", $id_array_items).') OR '.$db_table.'.user_id IN ('.implode(",", $id_array_users).')';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems while copying data of "'.$db_table.'" to backup-table.',E_USER_WARNING);
+               trigger_error('Problems while copying data of "'.$db_table.'" to backup-table: '.$query,E_USER_WARNING);
             } else {
                $retour = $this->_deleteFromDbWorkflow($context_id);
             }
@@ -1141,17 +1116,11 @@ class cs_item_manager extends cs_manager {
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
-            if ( $this->_environment->isArchiveMode() ) {
-    	         $this->setWithoutDatabasePrefix();
-            }
-         	$query = 'INSERT INTO '.$this->addDatabasePrefix($db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$db_table).'.user_id IN ('.implode(",", $id_array_users).')';
-            if ( $this->_environment->isArchiveMode() ) {
-    	         $this->setWithDatabasePrefix();
-            }
+         	$query = 'INSERT INTO '.$db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$db_table.' WHERE '.$c_db_backup_prefix.'_'.$db_table.'.item_id IN ('.implode(",", $id_array_items).') OR '.$c_db_backup_prefix.'_'.$db_table.'.user_id IN ('.implode(",", $id_array_users).')';
          	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems while copying data of "'.$db_table.'" from backup-table.',E_USER_WARNING);
+               trigger_error('Problems while copying data of "'.$db_table.'" from backup-table: '.$query,E_USER_WARNING);
             } else {
                $retour = $this->_deleteFromDbWorkflow($context_id, true);
             }
@@ -1212,17 +1181,11 @@ class cs_item_manager extends cs_manager {
       }
       
       if(!empty($id_array_items) and !empty($id_array_users)){
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithoutDatabasePrefix();
-         }
-      	$query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$db_table).'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.$db_table).'.user_id IN ('.implode(",", $id_array_users).')';
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithDatabasePrefix();
-         }
+      	$query = 'DELETE FROM '.$db_prefix.$db_table.' WHERE '.$db_prefix.$db_table.'.item_id IN ('.implode(",", $id_array_items).') OR '.$db_prefix.$db_table.'.user_id IN ('.implode(",", $id_array_users).')';
       	$result = $this->_db_connector->performQuery($query);
 	      if ( !isset($result) ) {
 	         include_once('functions/error_functions.php');
-	         trigger_error('Problems deleting data of "'.$db_table.'" after move to or from backup-table.',E_USER_WARNING);
+	         trigger_error('Problems deleting data of "'.$db_table.'" after move to or from backup-table: '.$query,E_USER_WARNING);
 	      } elseif ( !empty($result[0]) ) {
 	         $retour = true;
 	      }

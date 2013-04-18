@@ -136,11 +136,11 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
       $retour = false;
       if(!empty($id_array)){
 	      if ( !empty($context_id) ) {
-	         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
+	         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.modifier_id IN ('.implode(",", $id_array).')';
 	         $result = $this->_db_connector->performQuery($query);
 	         if ( !isset($result) ) {
 	            include_once('functions/error_functions.php');
-	            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+	            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
 	         } else {
 	            $retour = $this->deleteFromDb($context_id);
 	         }
@@ -165,19 +165,11 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
       $retour = false;
       if(!empty($id_array)){
          if ( !empty($context_id) ) {
-           	// archive
-            if ( $this->_environment->isArchiveMode() ) {
-      	      $this->setWithoutDatabasePrefix();
-            }
-         	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
-            // archive
-            if ( $this->_environment->isArchiveMode() ) {
-      	      $this->setWithDatabasePrefix();
-            }
+         	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.modifier_id IN ('.implode(",", $id_array).')';
          	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+               trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
             } else {
                $retour = $this->deleteFromDb($context_id, true);
             }
@@ -216,19 +208,11 @@ class cs_link_modifier_item_manager extends cs_link_father_manager {
       }
       
       if(!empty($id_array)){
-        	// archive
-         if ( $this->_environment->isArchiveMode() ) {
-   	      $this->setWithoutDatabasePrefix();
-         }
-      	$query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.modifier_id IN ('.implode(",", $id_array).')';
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-   	      $this->setWithDatabasePrefix();
-         }
+      	$query = 'DELETE FROM '.$db_prefix.$this->_db_table.' WHERE '.$db_prefix.$this->_db_table.'.modifier_id IN ('.implode(",", $id_array).')';
       	$result = $this->_db_connector->performQuery($query);
 	      if ( !isset($result) ) {
 	         include_once('functions/error_functions.php');
-	         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	         trigger_error('Problems deleting after move to or from backup-table: '.$query,E_USER_WARNING);
 	      } elseif ( !empty($result[0]) ) {
 	         $retour = true;
 	      }
