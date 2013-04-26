@@ -372,7 +372,7 @@
 							$count = 1;
 							foreach($detail['sw_ids'] as $sw_id) {
 								if($empty === false || ($count < $size && $count > 1)) $query .= ', ';
-								$query .= '(' . mysql_real_escape_string($count_index+$sw_id) . ', ' . mysql_real_escape_string($detail['index_id']) . ', "' . mysql_real_escape_string($detail['type']) . '", 1)';
+								$query .= '(' . mysql_real_escape_string(/*$count_index+*/$sw_id) . ', ' . mysql_real_escape_string($detail['index_id']) . ', "' . mysql_real_escape_string($detail['type']) . '", 1)';
 
 								if($empty === true) $empty = false;
 
