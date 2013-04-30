@@ -137,7 +137,7 @@
 			}
 			
 			$externalViewer = $portfolioManager->getExternalViewer($portfolioId);
-			$externalViewerString = implode(" ", $externalViewer);
+			$externalViewerString = implode(";", $externalViewer);
 			
 			$return = array(
 				"contextId"			=> $privateRoom->getItemID(),
@@ -299,7 +299,7 @@
 			$item->setModificationDate(getCurrentDateTimeInMySQL());
 			$item->setModificatorItem($privateRoomUser);
 			
-			$externalViewerUserIds = explode(" ", trim($portfolioExternalViewer));
+			$externalViewerUserIds = explode(";", trim($portfolioExternalViewer));
 			$item->setExternalViewer($externalViewerUserIds);
 				
 			$item->save();
