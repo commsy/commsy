@@ -6,7 +6,7 @@ define({
 	close:						"schließen",
 	formTitle:					"Titel",
 	formDescription:			"Beschreibung",
-	formExternalViewer:			"Freigeben für (Angabe der Kennungen durch Leerzeichen getrennt)",
+	formExternalViewer:			"Freigeben für (Angabe der Kennungen durch Semikola \";\" getrennt)",
 	titleCreate:				"Neues Portfolio anlegen",
 	titleEdit:					"Portfolio editieren"
 });

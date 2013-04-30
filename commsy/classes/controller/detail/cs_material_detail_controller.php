@@ -1031,7 +1031,7 @@
 					$public_info = $translator->getMessage('MATERIAL_WORLD_PUBLISH_STATUS_2');
 				}
 
-				$temp_array[] = $translator->getMessage('MATERIAL_WROLD_PUBLISH');
+				$temp_array[] = $translator->getMessage('MATERIAL_WORLD_PUBLISH');
 				$temp_array[] = $public_info;
 				$return[] = $temp_array;
 			}

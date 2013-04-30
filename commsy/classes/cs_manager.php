@@ -1722,11 +1722,11 @@ class cs_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-         $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id = "'.$context_id.'"';
+         $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.context_id = "'.$context_id.'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
          } else {
             $retour = $this->deleteFromDb($context_id);
          }
@@ -1738,19 +1738,11 @@ class cs_manager {
       global $c_db_backup_prefix;
       $retour = false;
       if ( !empty($context_id) ) {
-        	// archive
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithoutDatabasePrefix();
-         }
-      	$query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.$this->_db_table).'.context_id = "'.$context_id.'"';
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-    	      $this->setWithDatabasePrefix();
-         }
+      	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.context_id = "'.$context_id.'"';
       	$result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
-            trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+            trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
          } else {
             $retour = $this->deleteFromDb($context_id, true);
          }
@@ -1766,20 +1758,12 @@ class cs_manager {
       if($from_backup){
          $db_prefix .= $c_db_backup_prefix.'_';
       }
+      $query = 'DELETE FROM '.$db_prefix.$this->_db_table.' WHERE '.$db_prefix.$this->_db_table.'.context_id = "'.$context_id.'"';
 
-      // archive
-      if ( $this->_environment->isArchiveMode() ) {
- 	      $this->setWithoutDatabasePrefix();
-      }
-      $query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.$this->_db_table).' WHERE '.$this->addDatabasePrefix($db_prefix.$this->_db_table).'.context_id = "'.$context_id.'"';
-      // archive
-      if ( $this->_environment->isArchiveMode() ) {
- 	      $this->setWithDatabasePrefix();
-      }
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
-         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+         trigger_error('Problems deleting after move to or from backup-table: '.$query,E_USER_WARNING);
       } elseif ( !empty($result[0]) ) {
          $retour = true;
       }
