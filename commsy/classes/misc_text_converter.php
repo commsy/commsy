@@ -202,7 +202,7 @@ class misc_text_converter {
       //$text = nl2br($text);
       //$text = $this->_decode_backslashes_1($text);
       //$text = $this->_preserve_whitespaces($text);
-      $text = $this->_newFormating($text);
+      #$text = $this->_newFormating($text);
       //$text = $this->_emphasize_text($text);
 #      if($_GET['mod'] != 'ajax' && $_GET['fct'] != 'index'){
 #	      $text = $this->_activate_urls($text);
@@ -338,14 +338,11 @@ class misc_text_converter {
          $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
       }
 
-
       // search (with yellow background)
       $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
 
-
       // search (with green background)
       $text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
-
 
       // search
       // maybe with yellow or orange background ???
@@ -1014,6 +1011,8 @@ class misc_text_converter {
       $reg_exp_father_array[]       = '~\[(.*?)\]~eu';
 
       $reg_exp_array = array();
+      // reference
+      #$reg_exp_array['[']			  = '~\\[[0-9]+\|[\w]+\]~eu';
       $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:quicktime']   = '~\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -1110,9 +1109,9 @@ class misc_text_converter {
                      // decode file names
                      #$value_new = $this->_decode_file_names($value_new);
 
-                     // replace umlaut for embedding
-                     // $value_new = str_replace (array("ä", "ö", "ü", "ß", "Ä", "Ö", "Ü"), array("%ae%", "%oe%", "%ue%", "%ss%", "%AE%", "%OE%", "%UE%"), $value_new);
-
+                     /*if ( $key == '[' and mb_stristr($value_new,'[') ){#pr($args_array);
+                     	$value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
+                     } else*/
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
                         break;
@@ -1205,6 +1204,47 @@ class misc_text_converter {
       }
       return $text;
    }
+   
+//    private function _formatRef ($text, $array) {
+//    	 $retour = '';
+//    	 // explode id and text
+//    	 if (!empty($array['0'])){
+//    	 	$ref = explode('|', $array['0']);
+//    	 	$ref['0'] = substr($ref['0'], 1);
+//    	 	$ref['1'] = substr($ref['1'],0,-1);
+//    	 }
+   	 
+//    	 if( !empty($ref['1'])){
+//    	 	$params = array();
+//    	 	$params['iid'] = $ref['0'];
+//    	 	$word = $ref['1'];
+//    	 }
+   	 
+//    	 include_once('functions/curls_functions.php');
+//    	 $item_manager = $this->_environment->getItemManager();
+//    	 $item_manager->resetLimits();
+//    	 $type = $item_manager->getItemType($params['iid']);
+//    	 unset($item_manager);
+   	 
+//    	 if(   $type == CS_ROOM_TYPE ||
+//    	    		$type == CS_COMMUNITY_TYPE ||
+//    	    		$type == CS_PRIVATEROOM_TYPE ||
+//    	    		$type == CS_GROUPROOM_TYPE ||
+//    	    		$type == CS_MYROOM_TYPE ||
+//    	    		$type == CS_PROJECT_TYPE ||
+//    	    		$type == CS_PORTAL_TYPE/* ||
+//    	    		$type == CS_SERVER_TYPE*/) {
+//    	    		$link_text = ahref_curl($params['iid'], 'home', 'index', '', $word);
+//    	    		} else {
+//    	    			$link_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', '');
+//    	    		}
+//    	    	if ( !empty($link_text) ) {
+//    	    		$text = str_replace($array[0],$link_text,$text);
+//    	    	}
+   	 
+//    	    	$retour = $text;
+//    	    	return $retour;   	
+//    }
 
    private function _formatFile ( $text, $array, $file_name_array ) {
       $retour = '';
@@ -3722,6 +3762,118 @@ class misc_text_converter {
          }
       }
       return $text;
+   }
+   
+   /*
+    * 	This function cleans input text to prevent cross site scripting
+    * 	or mysql injection
+    */
+   public function sanitize($text) {
+   	  // search for javascript tags
+   	  $this->_cleanBadCode($text);
+   	  // replace " ' > < with html
+   	  $this->_htmlentities_small($text);
+   	  
+   	  
+   	  
+   	// Funktion um Eingaben von Schadcode zu säubern
+   	// array oder text 
+   	// _cleanBadCode
+   	// prevent XSS, 
+//    	_htmlentities_small
+   }
+   
+//    public function textFormating($text, $type){
+//    	$text = $this->_textFormating($text,$type);
+//    	return $text;
+//    }
+   
+   public function emphasizeFilename($text) {
+	   	// search (with yellow background)
+	   	$text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
+	   	
+	   	// search (with green background)
+	   	$text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
+	   	
+	   	// search
+	   	// maybe with yellow or orange background ???
+	   	$text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
+	   	// $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
+	   	
+	   	return $text;
+   }
+   
+   public function filenameFormatting($text) {
+   		$text = $this->emphasizeFilename($text);
+   		
+   		return $text;
+   }
+   
+   
+   /*
+    * 	format full html content
+    */
+   public function textFullHTMLFormatting($text) {
+   	  
+   		//TODO Fehler in der Anzeige von H2. Bild wird über css angehängt
+   		#$text = $this->_display_headers($text);
+   		#$text = $this->_emphasize_text($text);
+   		#$text = $this->_format_html_long($text);
+   		//ersetzt durch _old_htmlformat
+   	
+   		// nl 2 br
+   		$text = nl2br($text);
+   		
+   		// bold italic list healines separator etc
+   		$text = $this->_old_htmlformat($text);
+   		
+   		// Formatierungsfunktionen auf Text anwenden
+   		$text = $this->_newFormating($text);
+   		
+   		// format reference to link
+   		$text = $this->_parseText2ID($text);
+   		
+   		// activate url which is not added by the
+   		$text = $this->_activate_urls($text);
+   		
+   	
+//    	$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
+//    	$text = nl2br($text);
+//    	$text = $this->_decode_backslashes_1($text);	?
+//    	$text = $this->_preserve_whitespaces($text);	?
+//    	$text = $this->_newFormating($text);			-
+//    	$text = $this->_emphasize_text($text);			-
+//    	$text = $this->_activate_urls($text);			-
+//    	$text = $this->_display_headers($text);			-
+//    	$text = $this->_format_html_long($text);		?
+//    	$text = $this->_parseText2ID($text);			-
+//    	$text = $this->_decode_backslashes_2($text);	?
+//    	$text = $this->_delete_unnecassary_br($text);	?
+//    	$text = $this->_br_with_nl($text);				?
+	return $text;
+   }
+   
+   /*
+    * 	This function replaces:
+    * 	# 		to a numeric list
+    * 	- 		to a list
+    * 	---		to horizontal line
+    * 	*text*	to bold text
+    * 	_text_	to italic text
+    * 	!text	to headline4
+    * 	!!text	to headline3
+    * 	!!!text to headline2
+    */
+   public function _old_htmlformat($text) {
+   	  // 
+   	  // display header !text !!text !!!text
+   	  $text = $this->_display_headers($text);
+   	  // Listen, Trennlinie // # , - , ---
+   	  $text = $this->_format_html_long($text);
+   	  // use emphasized color search !? // bold kursiv
+   	  $text = $this->_emphasize_text($text);
+   	  
+   	  return $text;
    }
 }
 ?>

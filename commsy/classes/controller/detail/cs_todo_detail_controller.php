@@ -376,9 +376,11 @@
 						//$desc = $converter->compareWithSearchText($desc);
 						$converter->setFileArray($this->getItemFileList());
 						if ( $this->_with_old_text_formating ) {
-      				   $desc = $converter->text_as_html_long($desc);
+      				   //$desc = $converter->text_as_html_long($desc);
+      				   $desc = $converter->textFullHTMLFormatting($desc);
       			   } else {
-						   $desc = $converter->_activate_urls($desc);
+      			   		$desc = $converter->textFullHTMLFormatting($desc);
+						   #$desc = $converter->_activate_urls($desc);
       			   }
 						//$desc = $this->_show_images($desc,$item,true);
          				//$retour .= $this->getScrollableContent($desc,$item,'',true).LF;
@@ -546,12 +548,14 @@
             // description
             $desc = $this->_item->getDescription();
             if(!empty($desc)) {
+            	$desc = $converter->textFullHTMLFormatting($desc);
             	//$desc = $converter->cleanDataFromTextArea($desc);
             	//TODO:
             	//$desc = $converter->compareWithSearchText($desc);
             	$converter->setFileArray($this->getItemFileList());
       			if ( $this->_with_old_text_formating ) {
-      				$desc = $converter->text_as_html_long($desc);
+      				#$desc = $converter->text_as_html_long($desc);
+      				$desc = $converter->textFullHTMLFormatting($desc);
       			} else {
             	   $desc = $converter->_activate_urls($desc);
       			}

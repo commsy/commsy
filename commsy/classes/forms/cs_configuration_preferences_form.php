@@ -432,7 +432,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                      $temp_array['value'] = 'disabled';
                      $this->_with_template_form_element2 = true;
                      $this->_template_array[] = $temp_array;
-                     $this->_javascript_array[$default_item->getItemID()] = $this->_environment->getTextConverter()->text_as_html_long($this->_environment->getTextConverter()->cleanDataFromTextArea($default_item->getTemplateDescription()));
+                     #$this->_javascript_array[$default_item->getItemID()] = $this->_environment->getTextConverter()->text_as_html_long($this->_environment->getTextConverter()->cleanDataFromTextArea($default_item->getTemplateDescription()));
+                     $this->_javascript_array[$default_item->getItemID()] = $this->_environment->getTextConverter()->textFullHTMLFormatting($this->_environment->getTextConverter()->cleanDataFromTextArea($default_item->getTemplateDescription()));
                   }
                }
             }

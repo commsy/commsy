@@ -38,7 +38,8 @@
 
 				$file = $file_list->getFirst();
 				while($file) {
-					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					#$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_name']	= $converter->filenameFormatting($file->getDisplayName());
 					$info['file_icon']	= $file->getFileIcon();
 					$info['file_id']	= $file->getFileID();
 

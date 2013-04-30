@@ -34,29 +34,30 @@
 
 			$this->_data = json_decode(file_get_contents('php://input'), true);
 
-			if(empty($this->_data)) {
-				$this->_data = $_POST;
-				array_walk_recursive($_POST, array($this, 'sanitize'));
-			} else {
-				if ( isset($this->_data["form_data"]) && !empty($this->_data["form_data"]) )
-				{
-					foreach ( $this->_data["form_data"] as $key => $data )
-					{
-						$filterHTML = true;
-						$name = $this->_data['form_data'][$key]['name'];
+			// use converter->sanitize ;
+// 			if(empty($this->_data)) {
+// 				$this->_data = $_POST;
+// 				array_walk_recursive($_POST, array($this, 'sanitize'));
+// 			} else {
+// 				if ( isset($this->_data["form_data"]) && !empty($this->_data["form_data"]) )
+// 				{
+// 					foreach ( $this->_data["form_data"] as $key => $data )
+// 					{
+// 						$filterHTML = true;
+// 						$name = $this->_data['form_data'][$key]['name'];
 						
-						if ( $name == "description" || mb_substr($name, 0, 22) == "moderation_description" || mb_substr($name, 0, 8) == "agb_text" ) {
-							$filterHTML = false;
-						}
+// 						if ( $name == "description" || mb_substr($name, 0, 22) == "moderation_description" || mb_substr($name, 0, 8) == "agb_text" ) {
+// 							$filterHTML = false;
+// 						}
 						
-						if ( $filterHTML === true && isset($this->_data["form_data"][$key]["value"]) )
-						{
-							$this->sanitize($this->_data["form_data"][$key]["value"]);
-							//array_walk_recursive($this->_data["form_data"][$key]["value"], array($this, 'sanitize'));
-						}
-					}
-				}
-			}
+// 						if ( $filterHTML === true && isset($this->_data["form_data"][$key]["value"]) )
+// 						{
+// 							//$this->sanitize($this->_data["form_data"][$key]["value"]);
+// 							array_walk_recursive($this->_data["form_data"][$key]["value"], array($this, 'sanitize'));
+// 						}
+// 					}
+// 				}
+// 			}
 			
 			// the actual function determes the method to call
 			$function = 'action' . ucfirst($_GET['action']);

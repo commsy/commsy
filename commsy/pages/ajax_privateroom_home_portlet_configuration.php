@@ -188,7 +188,8 @@ if(isset($_GET['portlet'])){
       $text_html = str_ireplace('COMMSY_BR', "\n\r", $text);
       $text_html = str_ireplace('COMMSY_DOUBLE_QUOTE', '"', $text_html);
       $text_html = str_ireplace('COMMSY_SINGLE_QUOTE', "'", $text_html);
-      $text_html = $text_converter->text_as_html_long($text_converter->cleanDataFromTextArea($text_html));
+      #$text_html = $text_converter->text_as_html_long($text_converter->cleanDataFromTextArea($text_html));
+      $text_html = $text_converter->textFullHTMLFormatting($text_converter->cleanDataFromTextArea($text_html));
       $text_html = str_ireplace("\n\r", '', $text_html);
       $text_html = str_ireplace('"', '\"', $text_html);
       $text_html = str_ireplace("'", "\'", $text_html);

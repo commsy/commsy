@@ -704,7 +704,8 @@
 							$desc = $desc;
 							$converter->setFileArray($this->getItemFileList());
       				   if ( $this->_with_old_text_formating ) {
-      					   $desc = $converter->text_as_html_long($desc);
+      					   // $desc = $converter->text_as_html_long($desc);
+      					   $desc = $converter->textFullHTMLFormatting($desc);
       				   } else {
 							   $desc = $desc;
 							   //$html .= $this->getScrollableContent($desc,$item,'',true);
@@ -1243,9 +1244,11 @@
 				$file = $file_list->getFirst();
 				while($file) {
 					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-						$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						#$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
 					} else {
-						$file_string = '<a href="' . $file->getUrl() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						#$file_string = '<a href="' . $file->getUrl() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						$file_string = '<a href="' . $file->getUrl() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
 					}
 
 					$files[] = $file_string;

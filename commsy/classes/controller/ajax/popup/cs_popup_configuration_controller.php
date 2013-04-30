@@ -459,7 +459,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 					            	// old: should be impossible
 					            	else {
 					            		// Fix: Find Group-Rooms if existing
-					            		if( $current_context->isGrouproomActive() ) {
+					            		if( $current_context->isGrouproomActive() ) { // GrouproomActive schmeißt fehler gucken ob er hier rein rennt wegen Kategorie einstellungen
 					            			$groupRoomList = $current_context->getGroupRoomList();
 					            			 
 					            			if( !$groupRoomList->isEmpty() ) {
