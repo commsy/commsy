@@ -396,14 +396,12 @@
 		        $manager->select();
 		        $tasks = $manager->get();
 		        $task = $tasks->getFirst();
-		        $show_user_config = false;
 		        $count_new_accounts = 0;
 		        while($task){
 		           $mode = $task->getTitle();
 		           $task = $tasks->getNext();
 		           if ($mode == 'TASK_USER_REQUEST'){
 		              $count_new_accounts ++;
-		              $show_user_config = true;
 		           }
 		        }
 
