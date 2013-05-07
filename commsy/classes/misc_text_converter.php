@@ -992,7 +992,8 @@ class misc_text_converter {
    #private function _newFormating ( $text ) {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
-
+      #$temp = $this->_environment->getCurrentContextItem();
+      #pr($temp);
       //////////////////////////////////////////////////////////////
       // this is for preventing parsing of (: and :)
       //////////////////////////////////////////////////////////////
@@ -1011,6 +1012,7 @@ class misc_text_converter {
       $reg_exp_father_array[]       = '~\[(.*?)\]~eu';
 
       $reg_exp_array = array();
+      
       // reference
       #$reg_exp_array['[']			  = '~\\[[0-9]+\|[\w]+\]~eu';
       $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -1037,10 +1039,14 @@ class misc_text_converter {
       $reg_exp_array['(:mdo']         = '~\\(:mdo (.*?):\\)~eu';
       $reg_exp_array['(:geogebra']    = '~\\(:geogebra (.*?):\\)~eu';
       $reg_exp_array['(:scratch']     = '~\\(:scratch (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-
+      
+      
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
 
+      // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
+      $reg_exp_image['<img']		  = '~\\<img(.*?)\\>~eu'; // \<img.*?\>
+      
       // plugins
       $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
       if ( !empty($plugin_reg_exp_array) ) {
@@ -1069,18 +1075,41 @@ class misc_text_converter {
             }
          }
       }
-
+      ############ lightbox images ckEditor ###############
+      $matchesImages = array();
+      	foreach ($reg_exp_image as $key => $exp) {
+      		$found = preg_match_all($exp,$text,$matchesImages);
+      		if($found > 0) {
+      			foreach ($matchesImages[0] as $value) {
+      				// found an image tag
+      				$args_array = $this->_getArgs($value, $exp);
+      				// search for src attribute
+      				$src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
+      				$value_new = $value;
+      				if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
+      					$params = $this->_environment->getCurrentParameterArray();
+      					$tempArray[0] = $args_array[0];
+      					$tempArray[2] = $src[1];
+      					$tempArray[3] = $args_array[1];
+      					$value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
+      					$text = str_replace($value,$value_new,$text);
+      					unset($value_new);
+      				}
+      			}
+      		}
+      	}
+      
+      ############ lightbox images ckEditor ###############
+      
       // clean wikistyle text from HTML-Code (via fckeditor)
       // and replace wikisyntax
       if ($clean_text) {
-
          $matches = array();
          foreach ($reg_exp_father_array as $exp) {
             $found = preg_match_all($exp,$text,$matches);
             if ( $found > 0 ) {
-               $matches[0] = array_unique($matches[0]); // doppelte einsparen
+               $matches[0] = array_unique($matches[0]); // doppelte einsparen 
                foreach ($matches[0] as $value) {
-
                   # delete HTML-tags and string conversion #########
                   $value_new = strip_tags($value);
                   $value_new = str_replace('&nbsp;',' ',$value_new);
@@ -2381,7 +2410,23 @@ class misc_text_converter {
       $retour = $text;
       return $retour;
    }
-
+   
+   private function _formatImageLightboxCkEditor ($text, $imgTag,$link, $fileID){
+   	$retour = '';
+   	$image_text .= '<a class="lightbox_'.$fileID.'" href="' . $link . '" target="blank">';
+   	#$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
+   	#$image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
+   	$image_text .= $imgTag;
+   	$image_text .= '</a>';
+   	
+   	if ( !empty($image_text) ) {
+   		$retour = $image_text;
+   		#$retour = str_replace($imgTag, $image_text, $text);
+   		#$retour = str_replace($array[0],$image_text,$text);
+   	}
+   	return $retour;
+   }
+   
    private function _formatImage ( $text, $array, $file_name_array ) {
       $retour = '';
       $image_text = '';
@@ -2441,7 +2486,7 @@ class misc_text_converter {
       } else {
          $args = array();
       }
-
+      
       $href_title = '';
       if ( !empty($args['alt']) ) {
          $alt = $args['alt'];
@@ -2502,7 +2547,8 @@ class misc_text_converter {
 
       if ( !empty($source) ) {
          $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
-         $image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
+         $image_text .= '<a class="lightbox_'.$file->getFileID().'" href="' . $source2 . '" target="blank">';
+         #$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
          $image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
          $image_text .= '</a>';
          $image_text .= '</div>';
