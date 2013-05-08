@@ -106,8 +106,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 							foreach($form_data as $key => $value) {
 								if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
 							}
-
-							$current_context->setCommunityListByID($community_room_array);
+							
+							/*
+							 * if assignment is mandatory, the array must not be empty
+							 */
+							if (	$this->_environment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" ||
+									sizeof($community_room_array) > 0 )
+							{
+								$current_context->setCommunityListByID($community_room_array);
+							}
 						} elseif($current_context->isCommunityRoom()) {
 							if(isset($form_data['room_assignment'])) {
 								if($form_data['room_assignment'] === 'open') $current_context->setAssignmentOpenForAnybody();

@@ -46,6 +46,8 @@ Einleitung...
     * 1014 - Zusammenlegung - Anonyme Kennung
     * 1015 - Zusammenlegung - Ungültige Kennung
     * 1016 - Zusammenlegung - Ungültige Logindaten
+  + Raumkonfiguration 102y
+    * 1021 - Mindestens eine Zuordnung zu einem Gruppenraum muss erhalten bleiben
 
 - Spezial-Errors 9xx
   + 901 - Feld stimmt nicht mit anderem überein

@@ -482,6 +482,7 @@
 			$to_javascript['environment']['lang'] = $this->_environment->getSelectedLanguage();
 			$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
+			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();
