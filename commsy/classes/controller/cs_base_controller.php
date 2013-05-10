@@ -85,20 +85,21 @@
 		}
 
 		public function sanitize (&$item, $key){
-			$item = $this->getUtils()->sanitize($item);
+			#$item = $this->getUtils()->sanitize($item);
 		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
-	protected function processTemplate() {
+		protected function processTemplate() {
+			$converter = $this->_environment->getTextConverter();
 			//sanitize
-			if(!empty($_POST) and isset($_POST)){
-				array_walk_recursive($_POST, array($this, 'sanitize'));
-			}
+// 			if(!empty($_POST) and isset($_POST)){
+// 				array_walk_recursive($_POST, array($this, 'sanitize'));
+// 			}
 
 			if(!empty($_GET) and isset($_GET)){
-				array_walk_recursive($_GET, array($this, 'sanitize'));
+				array_walk_recursive($_GET, array($converter, 'sanitizeHTML'));
 			}
 
 			// the actual function determes the method to call

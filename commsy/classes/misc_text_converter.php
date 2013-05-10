@@ -26,10 +26,13 @@ class misc_text_converter {
    private $_div_number = NULL;
    private $_file_array = array();
    private $_with_old_text_formating = false;
+   private $_HTMLPurifier = NULL;
+   private $_FullHTMLPurifier = NULL;
    
    public function __construct ($params) {
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
+         $this->_constructHTMLPurifier();
       } else {
          include_once('functions/error_functions.php');
          trigger_error('no environment defined '.__FILE__.' '.__LINE__,E_USER_ERROR);
@@ -3810,24 +3813,49 @@ class misc_text_converter {
       return $text;
    }
    
-   /*
-    * 	This function cleans input text to prevent cross site scripting
-    * 	or mysql injection
-    */
-   public function sanitize($text) {
+   private function _constructHTMLPurifier() {
    	require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
+   	// Allow Full HTML
+   	$configFullHTML = $this->_getFullHTMLPurifierConfig();
+   	$this->_FullHTMLPurifier = new HTMLPurifier($config);
+   	// Do not allow HTML
+   	$configHTML = $this->_getHTMLPurifierConfig();
+   	$this->_HTMLPurifier = new HTMLPurifier($configHTML);
    	
-   	
+   }
+   
+   private function _getHTMLPurifierConfig() {
    	$config = HTMLPurifier_Config::createDefault();
-   	// only allow <p> // if Allowed == null everything is allowed
-   	$config->set('HTML', 'Allowed', 'b');
-   	#$config->set('Core', 'EscapeInvalidTags', true);
-   	#pr($config);
-   	$purifier = new HTMLPurifier($config);
    	
-   	#$purifier = new HTMLPurifier();
+   	$config->set('HTML', 'Allowed', '');
+   }
+   
+   private function _getFullHTMLPurifierConfig() {
+   	$config = HTMLPurifier_Config::createDefault();
    	
-   	$clean_html = $purifier->purify($text);
+   	$config->set('HTML', 'Allowed', NULL);
+   	
+   	// config for description ckeditor
+   	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
+   	#$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
+   	
+   	return $config;
+   }
+   
+   public function sanitizeHTML($text) {
+   	
+   	$clean_html = $this->_HTMLPurifier->purify($text);
+   	
+   	return $clean_html;
+   }
+   
+   /*
+    * 	This function uses HTMLPurifier to clean user input
+    * 	Allows HTML Tags
+    */
+   public function sanitizeFullHTML($text) {
+   	#pr($text);
+   	$clean_html = $this->_FullHTMLPurifier->purify($text);
    	
    	return $clean_html;
    	
@@ -3886,7 +3914,7 @@ class misc_text_converter {
    		// activate url which is not added by the
    		$text = $this->_activate_urls($text);
    		
-   		$text = $this->sanitize($text);
+   		#$text = $this->sanitize($text);
    	
 //    	$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
 //    	$text = nl2br($text);

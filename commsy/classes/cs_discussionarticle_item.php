@@ -88,14 +88,14 @@ class cs_discussionarticle_item extends cs_item {
    function setSubject ($value) {
    	  // sanitize subject
    	  $converter = $this->_environment->getTextConverter();
-   	  $value = $converter->sanitize($value);
+   	  $value = $converter->sanitizeHTML($value);
       $this->_setValue('subject', $value);
    }
 
    function setTitle ($value) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
-   	  $value = $converter->sanitize($value);
+   	  $value = $converter->sanitizeHTML($value);
       $this->setSubject($value);
    }
 
@@ -126,7 +126,7 @@ class cs_discussionarticle_item extends cs_item {
    function setDescription ($value) {
    	  // sanitize description
    	  $converter = $this->_environment->getTextConverter();
-   	  $value = $converter->sanitize($value);
+   	  $value = $converter->sanitizeFullHTML($value);
       $this->_setValue('description', $value);
    }
 

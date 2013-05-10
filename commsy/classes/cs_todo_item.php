@@ -64,7 +64,7 @@ class cs_todo_item extends cs_item {
    function setTitle($title) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
-   	  $title = $converter->sanitize($title);
+   	  $title = $converter->sanitizeHTML($title);
       $this->_setValue('title', $title);
    }
 
@@ -94,7 +94,7 @@ class cs_todo_item extends cs_item {
    function setDescription($description) {
    	  // sanitize description
    	  $converter = $this->_environment->getTextConverter();
-   	  $description = $converter->sanitize($description);
+   	  $description = $converter->sanitizeFullHTML($description);
       $this->_setValue('description', $description);
    }
 

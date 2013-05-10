@@ -70,7 +70,7 @@ class cs_section_item extends cs_item {
    function setTitle($title) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
-   	  $title = $converter->sanitize($title);
+   	  $title = $converter->sanitizeHTML($title);
       $this->_setValue('title', $title);
 
    }
@@ -129,9 +129,9 @@ class cs_section_item extends cs_item {
    * @author CommSy Development Group
    */
    function setDescription($description) {
-   	  // sanitize title
+   	  // sanitize description
    	  $converter = $this->_environment->getTextConverter();
-   	  $description = $converter->sanitize($description);
+   	  $description = $converter->sanitizeFullHTML($description);
       $this->_setValue('description', $description);
 
    }

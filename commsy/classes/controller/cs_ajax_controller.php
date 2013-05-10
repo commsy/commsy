@@ -20,10 +20,10 @@
 			$this->_environment->setOutputMode('JSON');
 		}
 
-		public function sanitize (&$item, $key){
-			$item = $this->getUtils()->sanitize($item);
-			#$item = $item.' abc';
-		}
+// 		public function sanitize (&$item, $key){
+// 			$item = $this->getUtils()->sanitize($item);
+// 			#$item = $item.' abc';
+// 		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
@@ -33,6 +33,10 @@
 			// TODO: sanitize
 
 			$this->_data = json_decode(file_get_contents('php://input'), true);
+			
+			if(empty($this->_data)) {
+				$this->_data = $_POST;
+			}
 
 			// use converter->sanitize ;
 // 			if(empty($this->_data)) {
