@@ -72,7 +72,7 @@ function getDescription(){
    function setTitle($title) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
-   	  $value = $converter->sanitize($value);
+   	  $title = $converter->sanitize($title);
       $this->_setValue('title', $title);
    }
 

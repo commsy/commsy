@@ -69,7 +69,7 @@ class cs_step_item extends cs_item {
    function setTitle($title) {
    	  // sanitize title
    	  $converter = $this->_environment->getTextConverter();
-   	  $value = $converter->sanitize($value);
+   	  $title = $converter->sanitize($title);
       $this->_setValue('title', $title);
 
    }
@@ -144,7 +144,7 @@ class cs_step_item extends cs_item {
    function setDescription($description) {
    	  // sanitize description
    	  $converter = $this->_environment->getTextConverter();
-   	  $value = $converter->sanitize($value);
+   	  $description = $converter->sanitize($description);
       $this->_setValue('description', $description);
    }
 
