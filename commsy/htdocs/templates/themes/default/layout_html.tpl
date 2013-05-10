@@ -125,7 +125,7 @@
 	                    		{elseif isset($environment.post.form_data.selrubric) && !empty($environment.post.form_data.selrubric)}
 	                    			<input type="hidden" name="form_data[selrubric]" value="{$environment.post.form_data.selrubric}"/>
 	                    		{/if}
-	                        	<input name="form_data[keywords]"{if $environment.with_indexed_search != true} onclick="javascript:document.getElementById('search_input').value=''"{/if} id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search|htmlentities}{/if}" />
+	                        	<input name="form_data[keywords]"{if $environment.with_indexed_search != true} onclick="javascript:document.getElementById('search_input').value=''"{/if} id="search_input" type="text" value="{if $environment.module != 'search'}{if $environment.module === 'home'}___CAMPUS_SEARCH_INDEX___{else}___COMMON_SEARCHFIELD___{/if}{else}{show var=$search.parameters.search}{/if}" />
 	                        	{if $environment.with_indexed_search}
 	                        		<input id="search_suggestion" type="text" value="" />
 	                        	{/if}
