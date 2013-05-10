@@ -75,6 +75,9 @@ class cs_announcement_item extends cs_item {
     * @author CommSy Development Group
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('title', $value);
    }
 
@@ -102,6 +105,9 @@ class cs_announcement_item extends cs_item {
     * @author CommSy Development Group
     */
    function setDescription ($value) {
+   	  // sanitize description
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('description', $value);
    }
 

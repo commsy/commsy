@@ -68,6 +68,9 @@ class cs_section_item extends cs_item {
    * @author CommSy Development Group
    */
    function setTitle($title) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('title', $title);
 
    }
@@ -126,6 +129,9 @@ class cs_section_item extends cs_item {
    * @author CommSy Development Group
    */
    function setDescription($description) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('description', $description);
 
    }

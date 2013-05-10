@@ -63,6 +63,9 @@ class cs_homepage_item extends cs_item {
     * @param string value title of the homepage
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('title', $value);
    }
 
@@ -81,6 +84,9 @@ class cs_homepage_item extends cs_item {
     * @param string value description of the homepage
     */
    function setDescription ($value) {
+   	  // sanitize description
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('description', $value);
    }
 

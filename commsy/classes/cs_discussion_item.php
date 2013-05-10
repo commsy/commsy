@@ -70,6 +70,9 @@ function getDescription(){
    * @author CommSy Development Group
    */
    function setTitle($title) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('title', $title);
    }
 

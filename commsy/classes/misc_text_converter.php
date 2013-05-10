@@ -3815,18 +3815,22 @@ class misc_text_converter {
     * 	or mysql injection
     */
    public function sanitize($text) {
-   	  // search for javascript tags
-   	  $this->_cleanBadCode($text);
-   	  // replace " ' > < with html
-   	  $this->_htmlentities_small($text);
-   	  
-   	  
-   	  
-   	// Funktion um Eingaben von Schadcode zu säubern
-   	// array oder text 
-   	// _cleanBadCode
-   	// prevent XSS, 
-//    	_htmlentities_small
+   	require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
+   	
+   	
+   	$config = HTMLPurifier_Config::createDefault();
+   	// only allow <p> // if Allowed == null everything is allowed
+   	$config->set('HTML', 'Allowed', 'b');
+   	#$config->set('Core', 'EscapeInvalidTags', true);
+   	#pr($config);
+   	$purifier = new HTMLPurifier($config);
+   	
+   	#$purifier = new HTMLPurifier();
+   	
+   	$clean_html = $purifier->purify($text);
+   	
+   	return $clean_html;
+   	
    }
    
 //    public function textFormating($text, $type){
@@ -3882,6 +3886,7 @@ class misc_text_converter {
    		// activate url which is not added by the
    		$text = $this->_activate_urls($text);
    		
+   		$text = $this->sanitize($text);
    	
 //    	$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
 //    	$text = nl2br($text);

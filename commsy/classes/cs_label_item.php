@@ -273,6 +273,9 @@ class cs_label_item extends cs_item {
     * @param string value title of the item
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('name', $value);
    }
 
@@ -310,6 +313,9 @@ class cs_label_item extends cs_item {
     * @param string value description of the item
     */
    function setDescription ($value) {
+   	  // sanitize description
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('description', $value);
    }
 

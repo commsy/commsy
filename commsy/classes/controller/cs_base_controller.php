@@ -91,53 +91,13 @@
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
-		protected function processTemplate() {
-			
+	protected function processTemplate() {
+			//sanitize
 			if(!empty($_POST) and isset($_POST)){
-				#pr($_POST['form_data']);
- 				if ( function_exists('get_called_class')
- 				and ( get_called_class() == 'cs_annotation_edit_controller'
- 						or get_called_class() == 'cs_discarticle_edit_controller'
- 						#or get_called_class() == 'cs_discussion_edit_controller'
- 						or get_called_class() == 'cs_step_edit_controller'
- 				)
- 				) {
- 					// do nothing
- 				} else {
- 					foreach ( $_POST['form_data'] as $key => $data )
- 					{
- 						$filterHTML = true;
- 						$name = $_POST['form_data'][$key]['name'];
- 						if ( $name == "description" || mb_substr($name, 0, 22) == "moderation_description" || mb_substr($name, 0, 8) == "agb_text" ) {
- 							$filterHTML = false;
- 						}
- 						if ( $filterHTML === true && isset($_POST['form_data'][$key]) )
- 						{
- 							array_walk_recursive($_POST['form_data'][$key], array($this, 'sanitize'));
- 						}
- 					}
- 				}
+				array_walk_recursive($_POST, array($this, 'sanitize'));
 			}
-			
-			
- 			//sanitize
- 			if(!empty($_POST) and isset($_POST)){
- 				if ( function_exists('get_called_class')
- 				and ( get_called_class() == 'cs_annotation_edit_controller'
- 						or get_called_class() == 'cs_discarticle_edit_controller'
- 						#or get_called_class() == 'cs_discussion_edit_controller'
- 						or get_called_class() == 'cs_step_edit_controller'
- 				)
- 				) {
- 					// do nothing
- 				} else {
- 					// sanitize every title which is send from POST
-					$this->sanitize($_POST['form_data']['title']);
- 				}
- 			}
 
 			if(!empty($_GET) and isset($_GET)){
-				// sanitize everything which comes from get
 				array_walk_recursive($_GET, array($this, 'sanitize'));
 			}
 

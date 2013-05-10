@@ -84,6 +84,9 @@ class cs_material_item extends cs_item {
     * @param string value title of the material
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitize($value);
       $this->_setValue('title',$value);
    }
 
