@@ -2,44 +2,40 @@ define(
 [
 	"dojo/_base/declare",
 	"dijit/_WidgetBase",
+	"commsy/base",
 	"dijit/_TemplatedMixin",
-	"dojo/text!./templates/Calendar.html",
-	"dojo/i18n!./nls/calendar",
+	"dojo/text!./templates/MyWidgetsRssWidget.html",
+	"dojo/i18n!./nls/MyWidgetsRssWidget",
 	"dojo/_base/lang",
+	"dojo/dom-construct",
 	"dojo/on",
 	"dojo/dom-class",
 	"dojo/query",
-	"commsy/store/Json",
-	"dojo/topic",
-	"dojox/calendar/Calendar",
-	"dojo/date/stamp"
+	"dojo/topic"
 ], function
 (
 	declare,
 	WidgetBase,
+	BaseClass,
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
 	Lang,
+	DomConstruct,
 	On,
 	DomClass,
 	Query,
-	Json,
-	Topic,
-	Calendar,
-	Stamp
+	Topic
 ) {
-	return declare([WidgetBase, TemplatedMixin],
+	return declare([BaseClass, WidgetBase, TemplatedMixin],
 	{
 		templateString:		Template,
-		baseClass:			"CommSyWidget",
+		baseClass:			"CommSyWidgetBorderless",
 		
 		constructor: function(options)
 		{
 			options = options || {};
 			declare.safeMixin(this, options);
-			
-			this.popupTranslations = PopupTranslations;
 		},
 		
 		/**
@@ -57,10 +53,19 @@ define(
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			Topic.subscribe("updatePrivateCalendar", Lang.hitch(this, function(data) {
-				declare.safeMixin(this.options, data.setConfig);
-				declare.safeMixin(this.calendar.store.options, data.setConfig);
-				this.calendar.set("store", this.calendar.store);
+			//this.itemId = this.from_php.ownRoom.id;
+			
+			Topic.subscribe("refreshRssList", Lang.hitch(this, function(object)
+			{
+				this.updateList();
+			}));
+			
+			this.updateList();
+			
+			require(["commsy/popups/ClickRssPopup"], Lang.hitch(this, function(ClickPopup)
+			{
+				var handler = new ClickPopup();
+				handler.init(this.rssEditNode, { module: "rss", contextId: this.itemId });
 			}));
 		},
 		
@@ -84,57 +89,45 @@ define(
 		/************************************************************************************
 		 * Helper Functions
 		 ************************************************************************************/
-		createCalendar: function() {
-			this.calendar = new Calendar({
-				decodeDate:			function(s) {
-					return Stamp.fromISOString(s);
-				},
-				encodeDate:			function(d) {
-					return Stamp.toISOString(d);
-				},
-				selectionMode:		"none",
-				moveEnabled:		false,
-				dateInterval:		"day",
-				style:				"position: relative; height: 500px;",
-				columnViewProps:	{
-					minHours:		0,
-					maxHours:		24
-				}
-			});
-			
-			// set store
-			var store = /*new Observable(*/new Json({
-				options:		this.options,
-				fct:			"myCalendar"
-			})/*)*/;
-			
-			this.calendar.on("timeIntervalChange", Lang.hitch(this, function(event) {
-				this.onTimeIntervalChange(event);
-				this.calendar.set("store", store);
-			}));
-			
-			this.calendar.placeAt(this.calendarNode);
-			
-			return this.calendar;
-		},
-		
+		updateList: function()
+		{
+			this.AJAXRequest("widget_rss_ticker", "getRssFeeds", { },
+				Lang.hitch(this, function(response)
+				{	
+					DomConstruct.empty(this.rssContentNode);
+					
+					dojo.forEach(response.feeds, Lang.hitch(this, function(feed, index, arr) {
+						if (feed.display == "1") {
+							
+							this.AJAXRequest("widget_rss_ticker", "getFeed", { address: feed.adress },
+								Lang.hitch(this, function(feeds) {
+									var content = "";
+									
+									dojo.forEach(feeds, Lang.hitch(this, function(feed, index, arr) {
+										console.log(feed);
+										if (feed.title && feed.link) {
+											content += "<a href='" + feed.link + "'>" + feed.title + "</a><br/>";
+										}
+									}));
+									
+									var divNode = DomConstruct.create("div", {
+									}, this.rssContentNode, "last");
+									
+										DomConstruct.create("h3", {
+											innerHTML:		feed.title
+										}, divNode, "last");
+										
+										DomConstruct.create("div", {
+											innerHTML:		content
+										}, divNode, "last");
+								})
+							);
+						}						
+					}));
+				}));
+		}
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
-		/**
-		 * \brief	timeIntervalChange Event
-		 * 
-		 * Event dispatched when the displayed time interval has changed.
-		 * 
-		 * @param	event		oldStartTime, startTime, oldEndTime, endTime
-		 */
-		onTimeIntervalChange: function(event)
-		{
-			var startISOTime = Stamp.toISOString(event.startTime);
-			var endISOTime = Stamp.toISOString(event.endTime);
-			
-			this.options.startISOTime = startISOTime;
-			this.options.endISOTime = endISOTime;
-		}
 	});
 });
