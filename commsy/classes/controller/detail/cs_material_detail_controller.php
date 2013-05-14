@@ -597,10 +597,15 @@
       			if(!empty($desc)) {
       				//$desc = $converter->cleanDataFromTextArea($desc);
       				$converter->setFileArray($this->getItemFileList());
+      				#pr($desc);
       				if ( $this->_with_old_text_formating ) {
-      					$desc = $converter->text_as_html_long($desc);
+      					#$desc = $converter->text_as_html_long($desc);
+      					// use new formating function
+      					$desc = $converter->textFullHTMLFormatting($desc);
       				} else {
-					      $desc = $converter->_activate_urls($desc);
+					    #$desc = $converter->_activate_urls($desc);
+      					// use new formating function
+      					$desc = $converter->textFullHTMLFormatting($desc);
       				}
 
       				/*
@@ -610,9 +615,9 @@
       			}
       		}else{
       		   if ( $this->_with_old_text_formating ) {
-      				$desc = $converter->text_as_html_long($desc);
+      				$desc = $converter->textFullHTMLFormatting($desc);
       		   } else {
-					   $desc = $converter->_activate_urls($desc);
+					   $desc = $converter->textFullHTMLFormatting($desc);
       			}
       		}
 
@@ -993,9 +998,11 @@
 					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
 						if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
 							//$this->_with_slimbox = true;
-							$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+							#$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+							$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
 						} else {
-							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+							#$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
 						}
 					} else {
 						$file_string = $file->getFileIcon() . ' ' . $converter->text_as_html_short($file->getDisplayName());
@@ -1269,9 +1276,10 @@
 					//$description = $converter->cleanDataFromTextArea($description);
 					$converter->setFileArray($this->getItemFileList());
       		   if ( $this->_with_old_text_formating ) {
-					   $description = $converter->text_as_html_long($description);
+					   $description = $converter->textFullHTMLFormatting($description);
       		   } else {
-					   $description = $converter->_activate_urls($description);
+					   //$description = $converter->_activate_urls($description);
+					   $description = $converter->textFullHTMLFormatting($description);
 					   $description = $converter->showImages($description, $section, true);
       		   }
 

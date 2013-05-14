@@ -26,10 +26,13 @@ class misc_text_converter {
    private $_div_number = NULL;
    private $_file_array = array();
    private $_with_old_text_formating = false;
+   private $_HTMLPurifier = NULL;
+   private $_FullHTMLPurifier = NULL;
    
    public function __construct ($params) {
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
+         $this->_constructHTMLPurifier();
       } else {
          include_once('functions/error_functions.php');
          trigger_error('no environment defined '.__FILE__.' '.__LINE__,E_USER_ERROR);
@@ -202,7 +205,7 @@ class misc_text_converter {
       //$text = nl2br($text);
       //$text = $this->_decode_backslashes_1($text);
       //$text = $this->_preserve_whitespaces($text);
-      $text = $this->_newFormating($text);
+      #$text = $this->_newFormating($text);
       //$text = $this->_emphasize_text($text);
 #      if($_GET['mod'] != 'ajax' && $_GET['fct'] != 'index'){
 #	      $text = $this->_activate_urls($text);
@@ -338,14 +341,11 @@ class misc_text_converter {
          $text = str_replace('COMMSY_DNC'.$key.' ',$value,$text);
       }
 
-
       // search (with yellow background)
       $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
 
-
       // search (with green background)
       $text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
-
 
       // search
       // maybe with yellow or orange background ???
@@ -995,7 +995,8 @@ class misc_text_converter {
    #private function _newFormating ( $text ) {
    public function _newFormating ( $text ) {
       $file_array = $this->_getFileArray();
-
+      #$temp = $this->_environment->getCurrentContextItem();
+      #pr($temp);
       //////////////////////////////////////////////////////////////
       // this is for preventing parsing of (: and :)
       //////////////////////////////////////////////////////////////
@@ -1014,6 +1015,9 @@ class misc_text_converter {
       $reg_exp_father_array[]       = '~\[(.*?)\]~eu';
 
       $reg_exp_array = array();
+      
+      // reference
+      #$reg_exp_array['[']			  = '~\\[[0-9]+\|[\w]+\]~eu';
       $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:quicktime']   = '~\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -1038,10 +1042,14 @@ class misc_text_converter {
       $reg_exp_array['(:mdo']         = '~\\(:mdo (.*?):\\)~eu';
       $reg_exp_array['(:geogebra']    = '~\\(:geogebra (.*?):\\)~eu';
       $reg_exp_array['(:scratch']     = '~\\(:scratch (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-
+      
+      
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
 
+      // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
+      $reg_exp_image['<img']		  = '~\\<img(.*?)\\>~eu'; // \<img.*?\>
+      
       // plugins
       $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
       if ( !empty($plugin_reg_exp_array) ) {
@@ -1070,18 +1078,41 @@ class misc_text_converter {
             }
          }
       }
-
+      ############ lightbox images ckEditor ###############
+      $matchesImages = array();
+      	foreach ($reg_exp_image as $key => $exp) {
+      		$found = preg_match_all($exp,$text,$matchesImages);
+      		if($found > 0) {
+      			foreach ($matchesImages[0] as $value) {
+      				// found an image tag
+      				$args_array = $this->_getArgs($value, $exp);
+      				// search for src attribute
+      				$src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
+      				$value_new = $value;
+      				if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
+      					$params = $this->_environment->getCurrentParameterArray();
+      					$tempArray[0] = $args_array[0];
+      					$tempArray[2] = $src[1];
+      					$tempArray[3] = $args_array[1];
+      					$value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
+      					$text = str_replace($value,$value_new,$text);
+      					unset($value_new);
+      				}
+      			}
+      		}
+      	}
+      
+      ############ lightbox images ckEditor ###############
+      
       // clean wikistyle text from HTML-Code (via fckeditor)
       // and replace wikisyntax
       if ($clean_text) {
-
          $matches = array();
          foreach ($reg_exp_father_array as $exp) {
             $found = preg_match_all($exp,$text,$matches);
             if ( $found > 0 ) {
-               $matches[0] = array_unique($matches[0]); // doppelte einsparen
+               $matches[0] = array_unique($matches[0]); // doppelte einsparen 
                foreach ($matches[0] as $value) {
-
                   # delete HTML-tags and string conversion #########
                   $value_new = strip_tags($value);
                   $value_new = str_replace('&nbsp;',' ',$value_new);
@@ -1110,9 +1141,9 @@ class misc_text_converter {
                      // decode file names
                      #$value_new = $this->_decode_file_names($value_new);
 
-                     // replace umlaut for embedding
-                     // $value_new = str_replace (array("ä", "ö", "ü", "ß", "Ä", "Ö", "Ü"), array("%ae%", "%oe%", "%ue%", "%ss%", "%AE%", "%OE%", "%UE%"), $value_new);
-
+                     /*if ( $key == '[' and mb_stristr($value_new,'[') ){#pr($args_array);
+                     	$value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
+                     } else*/
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
                         break;
@@ -1205,6 +1236,47 @@ class misc_text_converter {
       }
       return $text;
    }
+   
+//    private function _formatRef ($text, $array) {
+//    	 $retour = '';
+//    	 // explode id and text
+//    	 if (!empty($array['0'])){
+//    	 	$ref = explode('|', $array['0']);
+//    	 	$ref['0'] = substr($ref['0'], 1);
+//    	 	$ref['1'] = substr($ref['1'],0,-1);
+//    	 }
+   	 
+//    	 if( !empty($ref['1'])){
+//    	 	$params = array();
+//    	 	$params['iid'] = $ref['0'];
+//    	 	$word = $ref['1'];
+//    	 }
+   	 
+//    	 include_once('functions/curls_functions.php');
+//    	 $item_manager = $this->_environment->getItemManager();
+//    	 $item_manager->resetLimits();
+//    	 $type = $item_manager->getItemType($params['iid']);
+//    	 unset($item_manager);
+   	 
+//    	 if(   $type == CS_ROOM_TYPE ||
+//    	    		$type == CS_COMMUNITY_TYPE ||
+//    	    		$type == CS_PRIVATEROOM_TYPE ||
+//    	    		$type == CS_GROUPROOM_TYPE ||
+//    	    		$type == CS_MYROOM_TYPE ||
+//    	    		$type == CS_PROJECT_TYPE ||
+//    	    		$type == CS_PORTAL_TYPE/* ||
+//    	    		$type == CS_SERVER_TYPE*/) {
+//    	    		$link_text = ahref_curl($params['iid'], 'home', 'index', '', $word);
+//    	    		} else {
+//    	    			$link_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', '');
+//    	    		}
+//    	    	if ( !empty($link_text) ) {
+//    	    		$text = str_replace($array[0],$link_text,$text);
+//    	    	}
+   	 
+//    	    	$retour = $text;
+//    	    	return $retour;   	
+//    }
 
    private function _formatFile ( $text, $array, $file_name_array ) {
       $retour = '';
@@ -2341,7 +2413,23 @@ class misc_text_converter {
       $retour = $text;
       return $retour;
    }
-
+   
+   private function _formatImageLightboxCkEditor ($text, $imgTag,$link, $fileID){
+   	$retour = '';
+   	$image_text .= '<a class="lightbox_'.$fileID.'" href="' . $link . '" target="blank">';
+   	#$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
+   	#$image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
+   	$image_text .= $imgTag;
+   	$image_text .= '</a>';
+   	
+   	if ( !empty($image_text) ) {
+   		$retour = $image_text;
+   		#$retour = str_replace($imgTag, $image_text, $text);
+   		#$retour = str_replace($array[0],$image_text,$text);
+   	}
+   	return $retour;
+   }
+   
    private function _formatImage ( $text, $array, $file_name_array ) {
       $retour = '';
       $image_text = '';
@@ -2401,7 +2489,7 @@ class misc_text_converter {
       } else {
          $args = array();
       }
-
+      
       $href_title = '';
       if ( !empty($args['alt']) ) {
          $alt = $args['alt'];
@@ -2462,7 +2550,8 @@ class misc_text_converter {
 
       if ( !empty($source) ) {
          $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
-         $image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
+         $image_text .= '<a class="lightbox_'.$file->getFileID().'" href="' . $source2 . '" target="blank">';
+         #$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
          $image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
          $image_text .= '</a>';
          $image_text .= '</div>';
@@ -3722,6 +3811,148 @@ class misc_text_converter {
          }
       }
       return $text;
+   }
+   
+   private function _constructHTMLPurifier() {
+   	require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
+   	// Allow Full HTML
+   	$configFullHTML = $this->_getFullHTMLPurifierConfig();
+   	$this->_FullHTMLPurifier = new HTMLPurifier($config);
+   	// Do not allow HTML
+   	$configHTML = $this->_getHTMLPurifierConfig();
+   	$this->_HTMLPurifier = new HTMLPurifier($configHTML);
+   	
+   }
+   
+   private function _getHTMLPurifierConfig() {
+   	$config = HTMLPurifier_Config::createDefault();
+   	
+   	$config->set('HTML', 'Allowed', '');
+   }
+   
+   private function _getFullHTMLPurifierConfig() {
+   	$config = HTMLPurifier_Config::createDefault();
+   	
+   	$config->set('HTML', 'Allowed', NULL);
+   	
+   	// config for description ckeditor
+   	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
+   	#$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
+   	
+   	return $config;
+   }
+   
+   public function sanitizeHTML($text) {
+   	
+   	$clean_html = $this->_HTMLPurifier->purify($text);
+   	
+   	return $clean_html;
+   }
+   
+   /*
+    * 	This function uses HTMLPurifier to clean user input
+    * 	Allows HTML Tags
+    */
+   public function sanitizeFullHTML($text) {
+   	#pr($text);
+   	$clean_html = $this->_FullHTMLPurifier->purify($text);
+   	
+   	return $clean_html;
+   	
+   }
+   
+//    public function textFormating($text, $type){
+//    	$text = $this->_textFormating($text,$type);
+//    	return $text;
+//    }
+   
+   public function emphasizeFilename($text) {
+	   	// search (with yellow background)
+	   	$text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
+	   	
+	   	// search (with green background)
+	   	$text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
+	   	
+	   	// search
+	   	// maybe with yellow or orange background ???
+	   	$text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
+	   	// $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
+	   	
+	   	return $text;
+   }
+   
+   public function filenameFormatting($text) {
+   		$text = $this->emphasizeFilename($text);
+   		
+   		return $text;
+   }
+   
+   
+   /*
+    * 	format full html content
+    */
+   public function textFullHTMLFormatting($text) {
+   	  
+   		//TODO Fehler in der Anzeige von H2. Bild wird über css angehängt
+   		#$text = $this->_display_headers($text);
+   		#$text = $this->_emphasize_text($text);
+   		#$text = $this->_format_html_long($text);
+   		//ersetzt durch _old_htmlformat
+   	
+   		// nl 2 br
+   		$text = nl2br($text);
+   		
+   		// bold italic list healines separator etc
+   		$text = $this->_old_htmlformat($text);
+   		
+   		// Formatierungsfunktionen auf Text anwenden
+   		$text = $this->_newFormating($text);
+   		
+   		// format reference to link
+   		$text = $this->_parseText2ID($text);
+   		
+   		// activate url which is not added by the
+   		$text = $this->_activate_urls($text);
+   		
+   		#$text = $this->sanitize($text);
+   	
+//    	$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
+//    	$text = nl2br($text);
+//    	$text = $this->_decode_backslashes_1($text);	?
+//    	$text = $this->_preserve_whitespaces($text);	?
+//    	$text = $this->_newFormating($text);			-
+//    	$text = $this->_emphasize_text($text);			-
+//    	$text = $this->_activate_urls($text);			-
+//    	$text = $this->_display_headers($text);			-
+//    	$text = $this->_format_html_long($text);		?
+//    	$text = $this->_parseText2ID($text);			-
+//    	$text = $this->_decode_backslashes_2($text);	?
+//    	$text = $this->_delete_unnecassary_br($text);	?
+//    	$text = $this->_br_with_nl($text);				?
+	return $text;
+   }
+   
+   /*
+    * 	This function replaces:
+    * 	# 		to a numeric list
+    * 	- 		to a list
+    * 	---		to horizontal line
+    * 	*text*	to bold text
+    * 	_text_	to italic text
+    * 	!text	to headline4
+    * 	!!text	to headline3
+    * 	!!!text to headline2
+    */
+   public function _old_htmlformat($text) {
+   	  // 
+   	  // display header !text !!text !!!text
+   	  $text = $this->_display_headers($text);
+   	  // Listen, Trennlinie // # , - , ---
+   	  $text = $this->_format_html_long($text);
+   	  // use emphasized color search !? // bold kursiv
+   	  $text = $this->_emphasize_text($text);
+   	  
+   	  return $text;
    }
 }
 ?>

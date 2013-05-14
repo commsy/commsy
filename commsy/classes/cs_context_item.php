@@ -215,6 +215,9 @@ class cs_context_item extends cs_item {
    * @param string value title of the context
    */
   function setTitle ($value) {
+  	// sanitize title
+  	$converter = $this->_environment->getTextConverter();
+  	$value = $converter->sanitizeHTML($value);
     $this->_setValue('title', $value, TRUE);
   }
 

@@ -296,13 +296,13 @@ class cs_date_detail_controller extends cs_detail_controller {
 
             $converter->setFileArray($this->getItemFileList());
       		if ( $this->_with_old_text_formating ) {
-      			$desc = $converter->text_as_html_long($desc);
+      			$desc = $converter->textFullHTMLFormatting($desc);
       		} else {
                //$desc = $converter->cleanDataFromTextArea($desc);
                //$desc = $converter->compareWithSearchText...
                //$desc = $converter->text_as_html_long($desc);
                //$desc = $converter->show_images($desc, $this->_item, true);
-			      $desc = $converter->_activate_urls($desc);
+			      $desc = $converter->textFullHTMLFormatting($desc);
       		}
         }
 

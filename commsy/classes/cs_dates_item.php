@@ -82,6 +82,9 @@ class cs_dates_item extends cs_item {
     * @author CommSy Development Group
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitizeHTML($value);
       $this->_setValue('title', $value);
    }
 
@@ -152,6 +155,9 @@ class cs_dates_item extends cs_item {
     * @author CommSy Development Group
     */
    function setDescription ($value) {
+   	  // sanitize description
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitizeFullHTML($value);
       $this->_setValue('description', $value);
    }
 

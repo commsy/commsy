@@ -76,6 +76,9 @@ class cs_task_item extends cs_item {
     * @author CommSy Development Group
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitizeHTML($value);
       $this->_setValue('title', $value);
    }
 

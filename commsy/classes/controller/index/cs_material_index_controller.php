@@ -213,7 +213,8 @@
 					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
 
 					$info = array();
-					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					#$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_name']	= $converter->filenameFormatting($file->getDisplayName());
 					$info['file_icon']	= $file->getFileIcon();
 					$info['file_url']	= $file->getURL();
 					$info['file_size']	= $file->getFileSize();

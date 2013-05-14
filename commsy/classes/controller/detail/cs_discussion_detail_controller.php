@@ -875,9 +875,9 @@ if ($type != CS_DISCUSSION_TYPE) {
 			//$description = $converter->cleanDataFromTextArea($description);
 			$converter->setFileArray($this->getItemFileList());
          if ( $this->_with_old_text_formating ) {
-      		$description = $converter->text_as_html_long($description);
+      		$description = $converter->textFullHTMLFormatting($description);
       	} else {
-			   $description = $converter->_activate_urls($description);
+			   $description = $converter->textFullHTMLFormatting($description);
 			   $description = $converter->showImages($description, $root, true);
       	}
       	//$retour .= $this->getScrollableContent($desc,$root,'',true).LF;
@@ -1007,10 +1007,10 @@ if ($type != CS_DISCUSSION_TYPE) {
 				//$description = $converter->cleanDataFromTextArea($description);
 				$converter->setFileArray($this->getItemFileList());
       		if ( $this->_with_old_text_formating ) {
-      			$description = $converter->text_as_html_long($description);
+      			$description = $converter->textFullHTMLFormatting($description);
       			
       		} else {
-				   $description = $converter->_activate_urls($description);
+				   $description = $converter->textFullHTMLFormatting($description);
 				   $description = $converter->showImages($description, $item, true);
       		}
       		

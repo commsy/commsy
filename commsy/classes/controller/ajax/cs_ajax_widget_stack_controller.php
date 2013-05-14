@@ -47,7 +47,7 @@
 			 */
 			
 			$entryList = $itemManager->getAllPrivateRoomEntriesOfUserList($privateRoomIdArray, $userIdArray);
-			
+			#pr($entryList);
 			// ToDo: Nur Einträge in der Liste belassen, die auch angezeigt werden -> sonst gibt es leere Seiten über die geblättert wird!
 			
 			

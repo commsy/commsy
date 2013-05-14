@@ -67,6 +67,9 @@ class cs_step_item extends cs_item {
    * @author CommSy Development Group
    */
    function setTitle($title) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $title = $converter->sanitizeHTML($title);
       $this->_setValue('title', $title);
 
    }
@@ -139,6 +142,9 @@ class cs_step_item extends cs_item {
    * @author CommSy Development Group
    */
    function setDescription($description) {
+   	  // sanitize description
+   	  $converter = $this->_environment->getTextConverter();
+   	  $description = $converter->sanitizeFullHTML($description);
       $this->_setValue('description', $description);
    }
 
