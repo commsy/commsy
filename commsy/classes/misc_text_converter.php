@@ -3817,7 +3817,7 @@ class misc_text_converter {
    	require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
    	// Allow Full HTML
    	$configFullHTML = $this->_getFullHTMLPurifierConfig();
-   	$this->_FullHTMLPurifier = new HTMLPurifier($config);
+   	$this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
    	// Do not allow HTML
    	$configHTML = $this->_getHTMLPurifierConfig();
    	$this->_HTMLPurifier = new HTMLPurifier($configHTML);
@@ -3827,13 +3827,13 @@ class misc_text_converter {
    private function _getHTMLPurifierConfig() {
    	$config = HTMLPurifier_Config::createDefault();
    	
-   	$config->set('HTML', 'Allowed', '');
+   	$config->set('HTML.Allowed', '');
    }
    
    private function _getFullHTMLPurifierConfig() {
    	$config = HTMLPurifier_Config::createDefault();
    	
-   	$config->set('HTML', 'Allowed', NULL);
+   	$config->set('HTML.Allowed', NULL);
    	
    	// config for description ckeditor
    	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
