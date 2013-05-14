@@ -32,6 +32,10 @@ define(
 		templateString:		Template,
 		baseClass:			"CommSyWidgetBorderless",
 		
+		// attributes
+		title:				"",
+		_setTitleAttr:		{ node: "titleNode", type: "innerHTML" },
+		
 		constructor: function(options)
 		{
 			options = options || {};
@@ -53,7 +57,7 @@ define(
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			//this.itemId = this.from_php.ownRoom.id;
+			this.set("title", PopupTranslations.title);
 			
 			Topic.subscribe("refreshRssList", Lang.hitch(this, function(object)
 			{
@@ -96,15 +100,16 @@ define(
 				{	
 					DomConstruct.empty(this.rssContentNode);
 					
-					dojo.forEach(response.feeds, Lang.hitch(this, function(feed, index, arr) {
+					dojo.forEach(response.feeds, Lang.hitch(this, function(feed, index, arr)
+					{
 						if (feed.display == "1") {
 							
 							this.AJAXRequest("widget_rss_ticker", "getFeed", { address: feed.adress },
 								Lang.hitch(this, function(feeds) {
 									var content = "";
 									
-									dojo.forEach(feeds, Lang.hitch(this, function(feed, index, arr) {
-										console.log(feed);
+									dojo.forEach(feeds, Lang.hitch(this, function(feed, index, arr)
+									{
 										if (feed.title && feed.link) {
 											content += "<a href='" + feed.link + "'>" + feed.title + "</a><br/>";
 										}

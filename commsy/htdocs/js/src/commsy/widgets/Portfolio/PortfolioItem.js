@@ -139,7 +139,7 @@ define(
 		 ************************************************************************************/
 		insertHTMLForTableCell: function(node, column, row) {
 			var filteredArray = dojo.filter(this.response.tags, Lang.hitch(this, function(tag, index, arr) {
-				return (tag.column == column && tag.row == 0) || (tag.row == row && tag.column == 0)
+				return (tag.column == column && tag.row == 0) || (tag.row == row && tag.column == 0);
 			}));
 			
 			// extract the tag ids an item has to match

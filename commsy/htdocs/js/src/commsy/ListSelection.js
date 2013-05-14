@@ -50,7 +50,7 @@ define([	"dojo/_base/declare",
 			if (inputSubmitNode) {
 				On(inputSubmitNode, "click", Lang.hitch(this, function(event) {
 					this.onClickListActionSubmit(event.target);
-				}))
+				}));
 			}
 			
 			// setup select all handler
@@ -81,9 +81,27 @@ define([	"dojo/_base/declare",
 				var id = name.substr(18).substr(0, name.length - 19);
 				
 				if(BaseArray.indexOf(this.cookieObject.selectedIDs, id) !== -1) {
-					DomAttr.set(node, "checked", "checked");
+					DomAttr.set(node, "checked", true);
 				}
 			}));
+			
+			// if all checkboxes on this page are checked, set the "select all" checkbox enabled
+			// otherwise deselect it
+			var checkboxNodes = Query("div.row_even input[type='checkbox'], div.row_odd input[type='checkbox']");
+			var checkedCheckboxNodes = Query("div.row_even input[type='checkbox']:checked, div.row_odd input[type='checkbox']:checked");
+			
+			var inputSelectAllNode = Query("input#selectAll")[0];
+			if ( checkboxNodes && checkedCheckboxNodes && inputSelectAllNode )
+			{
+				if ( checkboxNodes.length == checkedCheckboxNodes.length )
+				{
+					DomAttr.set(inputSelectAllNode, "checked", true);
+				}
+				else
+				{
+					DomAttr.set(inputSelectAllNode, "checked", false);
+				}
+			}
 			
 			// restore number of selected entries
 			if(this.counterNode) DomAttr.set(this.counterNode, "innerHTML", this.cookieObject.selectedIDs.length);
@@ -140,10 +158,76 @@ define([	"dojo/_base/declare",
 			Cookie(this.cookieName, dojo.toJson(this.cookieObject));
 		},
 		
-		onSelectAll: function(inputNode) {
-			dojo.forEach(Query("div.row_even input[type='checkbox'], div.row_odd input[type='checkbox']"), Lang.hitch(this, function(checkboxNode, index, arr) {
-				checkboxNode.click();
-			}));
+		onSelectAll: function(inputNode)
+		{
+			var checkboxNodes = Query("div.row_even input[type='checkbox'], div.row_odd input[type='checkbox']");
+			var checkedCheckboxNodes = Query("div.row_even input[type='checkbox']:checked, div.row_odd input[type='checkbox']:checked");
+			
+			if ( checkboxNodes && checkedCheckboxNodes )
+			{
+				/*
+				 * If the number of current checked checkboxes is lower than the total number of checkboxes, select all.
+				 * Otherwise deselect all
+				 */
+				if ( checkedCheckboxNodes.length < checkboxNodes.length )
+				{
+					dojo.forEach(checkboxNodes, function(checkboxNode, index, arr)
+					{
+						DomAttr.set(checkboxNode, "checked", true);
+					});
+					
+					var inputSelectAllNode = Query("input#selectAll")[0];
+					if (inputSelectAllNode)
+					{
+						DomAttr.set(inputSelectAllNode, "checked", true);
+					}
+				}
+				else
+				{
+					dojo.forEach(checkboxNodes, function(checkboxNode, index, arr)
+					{
+						DomAttr.set(checkboxNode, "checked", false);
+					});
+					
+					var inputSelectAllNode = Query("input#selectAll")[0];
+					if (inputSelectAllNode)
+					{
+						DomAttr.set(inputSelectAllNode, "checked", false);
+					}
+				}
+				
+				// update cookie
+				dojo.forEach(this.inputNodes, Lang.hitch(this, function(node, index, arr)
+				{
+					var name = DomAttr.get(node, "name");
+					var id = name.substr(18).substr(0, name.length - 19);
+					
+					// get current checkbox status
+					var isChecked = (DomAttr.get(node, "checked"));
+					
+					if ( isChecked )
+					{
+						// add id to selected
+						this.cookieObject.selectedIDs.push(id);
+					}
+					else
+					{
+						// remove id from selected
+						this.cookieObject.selectedIDs.splice(BaseArray.indexOf(this.cookieObject.selectedIDs, id), 1);
+					}
+					
+					
+					if(BaseArray.indexOf(this.cookieObject.selectedIDs, id) !== -1) {
+						DomAttr.set(node, "checked", true);
+					}
+				}));
+				
+				// save cookie
+				Cookie(this.cookieName, dojo.toJson(this.cookieObject));
+				
+				// restore selection
+				this.restoreSelection();
+			}
 		}
 	});
 });

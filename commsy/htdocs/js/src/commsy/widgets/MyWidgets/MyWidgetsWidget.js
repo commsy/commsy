@@ -70,18 +70,21 @@ define(
 			 	[ "commsy/widgets/MyWidgets/MyWidgetsNewEntries", {}, true ],
 			 	[ "commsy/widgets/MyWidgets/MyWidgetsReleasedEntries", {}, true ],
 			 	[ "commsy/widgets/MyWidgets/MyWidgetsReleasedForMeEntries", {}, true ],
-			 	[ "commsy/widgets/myWidgets/MyWidgetsRssTicker", {}, true ]
+			 	[ "commsy/widgets/MyWidgets/MyWidgetsRssTicker", {}, true ],
+			 	[ "commsy/widgets/MyWidgets/MyWidgetsRoomwideSearch", {}, true ] 
 			]).then(Lang.hitch(this, function(deferred)
 			{
 				var myWidgetsNewEntries = deferred[0].instance;
 				var myWidgetsReleasedEntries = deferred[1].instance;
 				var myWidgetsReleasedForMeEntries = deferred[2].instance;
 				var myWidgetsRssTicker = deferred[3].instance;
+				var myWidgetsRoomwideSearch = deferred[4].instance;
 				
 				// place widgets
 				myWidgetsNewEntries.placeAt(this.mainNode);
 				myWidgetsReleasedEntries.placeAt(this.mainNode);
 				myWidgetsReleasedForMeEntries.placeAt(this.mainNode);
+				myWidgetsRoomwideSearch.placeAt(this.mainNode);
 				myWidgetsRssTicker.placeAt(this.sidebarNode);
 			}));
 		},
