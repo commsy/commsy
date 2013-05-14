@@ -1999,7 +1999,7 @@ class cs_privateroom_item extends cs_room_item {
    	$return = new cs_list;
    	for($position = 0; $position <= $end; $position++) {
    		if(isset($titles[$position])) {
-   			$room_item = new cs_room_item;
+   			$room_item = new cs_room_item($this->_environment);
    			$room_item->setItemID(-1);
    			$room_item->setTitle(mb_substr($titles[$position], 4));
    			$return->add($room_item);
