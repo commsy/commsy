@@ -44,7 +44,7 @@ class cs_popup_annotation_controller implements cs_rubric_popup_controller {
 			$this->_popup_controller->assign('item', 'files', $attachment_infos);
 
 			// TODO: check rights
-			$this->_popup_controller->assign('item', 'title', $converter->sanitizeHTML($item->getTitle()));
+			$this->_popup_controller->assign('item', 'title', $item->getTitle());
 				
 			// old formating
 			$c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
