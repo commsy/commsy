@@ -83,11 +83,7 @@
 					}
 					
 					// sort by sorting_place
-					usort($entries_sorted, function($a, $b) {
-						if($a['sorting_place'] == $b['sorting_place']) return 0;
-						
-						return ($a['sorting_place'] < $b['sorting_place']) ? -1 : 1;
-					});
+					usort($entries_sorted, array($this, "sortFunction"));
 					
 					$return = array_merge($entries_sorted, $entries_unsorted);
 				}
@@ -95,6 +91,13 @@
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
+		}
+		
+		private function sortFunction($a, $b)
+		{
+			if($a['sorting_place'] == $b['sorting_place']) return 0;
+			
+			return ($a['sorting_place'] < $b['sorting_place']) ? -1 : 1;
 		}
 		
 		public function actionSavePath() {
