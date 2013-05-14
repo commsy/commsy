@@ -74,9 +74,12 @@
 			
 			// an array of all rubrics, containing files
 			$file_rubric_array = $this->getRubricsWithFiles();
-
+			
+			$converter = $this->_environment->getTextConverter();
+			
 			// setup template variables
-			$this->assign('search', 'parameters', $this->_params);
+			// sanitize search
+			$this->assign('search', 'parameters', $converter->sanitizeHTML($this->_params));
 			$this->assign("search", "indexed_search", $this->_indexed_search);
 
 			// find current option
@@ -280,8 +283,12 @@ if ( $environment->inPrivateRoom()
 			foreach($rubric_array as $rubric) {
 				$item_types[] = encode(AS_DB, $this->rubric2ItemType($rubric));
 			}
-
-			$search_words = explode(' ', $this->_params['search']);
+			
+			$converter = $this->_environment->getTextConverter();
+			#$this->_params['search'] = $converter->sanitizeHTML($this->_params['search']);
+			#pr($this->_params['search']);
+			// sanitize search words
+			$search_words = explode(' ', $converter->sanitizeHTML($this->_params['search']));
 			$search_words_num = (self::SEARCH_WORDS_LIMIT > sizeof($search_words) ? sizeof($search_words) : self::SEARCH_WORDS_LIMIT);
 
 			$search_words = array_slice($search_words, 0, $search_words_num);
@@ -1152,11 +1159,8 @@ unset($ftsearch_manager);
 			$this->_params['search'] = '';
 			if(isset($_POST['form_data']['keywords'])) {
 				$text_converter = $this->_environment->getTextConverter();
-				//$this->_params['search'] = $text_converter->_htmlentities_cleanbadcode($_POST['form_data']['keywords']);
 				$this->_params['search'] = $_POST['form_data']['keywords'];
 				//$from = 1;
-				//CrossSiteScripting
-				//$search = $text_converter->_htmlentities_cleanbadcode($this->_params['search']);
 				$search = $this->_params['search'];
 				$this->_environment->setCurrentParameter('search', $search);
 			} elseif(isset($_GET['search'])) {
