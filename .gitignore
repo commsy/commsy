@@ -6,6 +6,7 @@ commsy/etc/commsy/*.php
 commsy/htdocs/javascript/jQuery/commsy_min/*
 commsy/htdocs/templates/templates_c/*
 commsy/var/*
+commsy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
 
 ############
 ## OSX

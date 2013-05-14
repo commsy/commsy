@@ -1,6 +1,6 @@
 define({
 	root: {
-		title:					"Latest entries from all rooms you have a membership"
+		title:					"RSS Feeds"
 	},
 	
 	"de":		true

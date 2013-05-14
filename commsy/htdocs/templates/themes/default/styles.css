@@ -5025,7 +5025,15 @@ Portfolio
 	z-index: 1;
 }
 
-#portfolioCreate img
+#portfolioRefresh
+{
+	position: absolute;
+	right: 50px;
+	z-index: 1;
+}
+
+#portfolioCreate img,
+#portfolioRefresh a
 {
 	top: 4px;
 	position: relative;
