@@ -80,7 +80,7 @@
 						break;
 					case CS_USER_TYPE:
 						// if we assign a user...
-						if ( $item->getType() === CS_TODO_TYPE )
+						if ( isset($item) && $item->getType() === CS_TODO_TYPE )
 						{
 							// ...to a task
 							$item->addProcessor($linked_item);
