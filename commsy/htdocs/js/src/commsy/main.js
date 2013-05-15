@@ -77,7 +77,7 @@ require([	"dojo/_base/declare",
 				var aStackNode = query("a#tm_stack")[0];
 				if (aStackNode) {
 					require(["commsy/popups/ToggleStack"], function(StackPopup) {
-						var handler = new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
+						new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
 					});
 				}
 				
