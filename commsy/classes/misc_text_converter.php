@@ -3902,6 +3902,8 @@ class misc_text_converter {
    		// nl 2 br
    		$text = nl2br($text);
    		
+   		$text = $this->_decode_backslashes($text);
+   		
    		// bold italic list healines separator etc
    		$text = $this->_old_htmlformat($text);
    		
@@ -3913,6 +3915,7 @@ class misc_text_converter {
    		
    		// activate url which is not added by the
    		$text = $this->_activate_urls($text);
+   		
    		
    		#$text = $this->sanitize($text);
    	
