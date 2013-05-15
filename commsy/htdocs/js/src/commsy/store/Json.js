@@ -10,6 +10,8 @@ define([	"dojo/_base/declare",
 		
 		constructor: function(options) {
 			declare.safeMixin(this, options);
+			
+			this.currentRequest = null;
 		},
 		
 		get: function(id, options) {
@@ -184,14 +186,20 @@ define([	"dojo/_base/declare",
 			declare.safeMixin(requestOptions, this.options);
 			declare.safeMixin(requestOptions, options);
 			
-			var request = this.request(this.fct, "query", { query: query, options: requestOptions });
+			// if there is already a request - cancel it
+			if ( this.currentRequest )
+			{
+				this.currentRequest.cancel();
+			}
+			
+			this.currentRequest = this.request(this.fct, "query", { query: query, options: requestOptions });
 			
 			if ( completeCallback !== null )
 			{
-				request.then(completeCallback);
+				this.currentRequest.then(completeCallback);
 			}
 			
-			return QueryResults(request);
+			return QueryResults(this.currentRequest);
 		}
 	});
 });

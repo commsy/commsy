@@ -55,13 +55,24 @@ class jsonRPCClient {
 	 */
 	private $notification = false;
 	
+	/*
+	 * MODIFIED: $proxy variable added
+	 */
+	private $proxy = '';
+	/*
+	 * MODIFIED: $proxy variable addedMODIFIED: $proxy variable added
+	 */
+	
 	/**
 	 * Takes the connection parameters
 	 *
 	 * @param string $url
 	 * @param boolean $debug
 	 */
-	public function __construct($url,$debug = false) {
+	/*
+	 * MODIFIED: $proxy parameter added
+	 */
+	public function __construct($url,$debug = false,$proxy = '') {
 		// server URL
 		$this->url = $url;
 		// proxy
@@ -119,6 +130,16 @@ class jsonRPCClient {
 						'params' => $params,
 						'id' => $currentId
 						);
+		/*
+		 * MODIFIED: Proxy handling added
+		 */
+		if ( !empty($this->proxy) )
+		{
+			$request['proxy'] = $this->proxy;
+		}
+		/*
+		 * MODIFIED: Proxy handling added
+		*/
 		$request = json_encode($request);
 		$this->debug && $this->debug.='***** Request *****'."\n".$request."\n".'***** End Of request *****'."\n\n";
 		

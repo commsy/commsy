@@ -94,6 +94,7 @@ define([	"dojo/_base/declare",
 				},
 				postData:	dojo.toJson(data),
 				handleAs:	"json",
+				failOk:		true,
 				error:		Lang.hitch(this, function(errorMessage, ioargs) {
 					/************************************************************************************
 					 * A fatal error occured while performing the ajax request, maybe something went wrong

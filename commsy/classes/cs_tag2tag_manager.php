@@ -60,7 +60,7 @@ class cs_tag2tag_manager extends cs_manager {
     *
     * @return object link
     */
-  public function getItem ($father_id, $child_id) {
+  public function getItem ($father_id, $child_id = null) {
      $retour = NULL;
      $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".from_item_id = '".encode(AS_DB,$father_id)."' AND ".$this->addDatabasePrefix($this->_db_table).".to_item_id = '".encode(AS_DB,$child_id)."'";
      $result = $this->_db_connector->performQuery($query);
@@ -203,7 +203,7 @@ class cs_tag2tag_manager extends cs_manager {
      unset($item);
   }
 
-  function delete ($father_id, $child_id) {
+  function delete ($father_id, $child_id = null) {
      include_once('functions/date_functions.php');
      $current_datetime = getCurrentDateTimeInMySQL();
      $user_id = $this->_current_user->getItemID();
@@ -460,7 +460,7 @@ class cs_tag2tag_manager extends cs_manager {
   /** get all links
     * this method get all links
     */
-   public function _performQuery () {
+   public function _performQuery ($mode = '') {
       $query = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
       $query .= ' WHERE 1';
