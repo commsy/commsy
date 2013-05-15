@@ -670,7 +670,12 @@
 			$displayConfig = $privateRoomItem->getMyCalendarDisplayConfig();
 			$lookFor = $roomId . "_" . $type;
 			
-			if ($key = array_search($lookFor, $displayConfig)) {
+			if ( !isset($displayConfig) )
+			{
+				$displayConfig = array();
+			}
+			
+			if (($key = array_search($lookFor, $displayConfig, true)) !== false) {
 				if ($checked === false) {
 					unset($displayConfig[$key]);
 				}
@@ -736,7 +741,7 @@
 			while ($roomEntry) {
 				$lookUp = $roomEntry->getItemID() . "_" . $type;
 				
-				if ( $key = array_search($lookUp, $displayConfig) )
+				if ( ($key = array_search($lookUp, $displayConfig, true)) !== false )
 				{
 					array_splice($displayConfig, $key, 1);
 					//$displayConfig[] = $lookUp;

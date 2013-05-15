@@ -38,10 +38,9 @@
 			                        	<select id="list_action" size="1">
 			                        		<option value="-1">*___COMMON_LIST_ACTION_NO___</option>
 			                        		<option disabled="disabled">------------------------------</option>
-                                       {if $popup.archive.status === false}
+                                       {if $popup.archive.status === false && $popup.environment.inPortal === false}
 			                        		   <option selected="selected" value="paste">___CLIPBOARD_PASTE_BUTTON___</option>
-			                           {/if}
-                                       {if $popup.archive.status === true}
+			                           {else}
                                           <option value="-1" class="disabled" disabled="disabled">___CLIPBOARD_PASTE_BUTTON___</option>
                                        {/if}
 			                        		<option value="paste_stack">___CLIPBOARD_PASTE_STACK___</option>
