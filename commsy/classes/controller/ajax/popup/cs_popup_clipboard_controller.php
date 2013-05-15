@@ -19,6 +19,7 @@ class cs_popup_clipboard_controller implements cs_popup_controller {
 
 	public function initPopup($data) {
 	   $this->_popup_controller->assign('popup', 'archive', array('status' => $this->_environment->isArchiveMode()));
+	   $this->_popup_controller->assign('popup', 'environment', array('inPortal' => $this->_environment->inPortal()));
 	}
 
 	public function getFieldInformation($sub) {

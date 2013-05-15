@@ -3433,24 +3433,20 @@ class cs_external_page_portal_view extends cs_page_view {
    				{
    					$html .= '	<a href="#" id="tm_stack" title="' . $translator->getMessage("COMMON_ENTRY_INDEX") . '">&nbsp;</a>';
    				}
+   					
+   				$html .= '<a href="#" id="tm_clipboard" title="' . $translator->getMESSAGE("MYAREA_MY_COPIES") . '">&nbsp;</a>';
+   				$numCopies = 0;
+   				$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
+   				$session = $this->_environment->getSessionItem();
+   				foreach ($rubric_copy_array as $rubric){
+   					$numCopies += count($session->getValue($rubric.'_clipboard'));
+   				}
+   					
+   				if ( $numCopies > 0)
+   				{
+   					$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
+   				}
    			}
-   
-   
-   			/*
-   			 $html .= '		<a href="#" id="tm_clipboard" title="' . $translator->getMessage("MYAREA_MY_COPIES") . '">&nbsp;</a>';
-   
-   			$numCopies = 0;
-   			$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
-   			$session = $this->_environment->getSessionItem();
-   			foreach ($rubric_copy_array as $rubric){
-   			$numCopies += count($session->getValue($rubric.'_clipboard'));
-   			}
-   
-   			if ( $numCopies > 0)
-   			{
-   			$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
-   			}
-   			*/
    
    			$html .= '
    							<div class="clear"></div>
