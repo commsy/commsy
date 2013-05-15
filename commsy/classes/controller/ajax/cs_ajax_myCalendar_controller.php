@@ -157,6 +157,7 @@
 				 * Filter id array
 				************************************************************************************/
 				$temp = array();
+				
 				foreach ($datesLimit as $limit) {
 					if (in_array($limit, $roomIdArray)) {
 						$temp[] = $limit;
@@ -403,13 +404,14 @@
 				if ( !$currentUserItem->isRoot() )
 				{
 					$userList = $currentUserItem->getRelatedUserList();
+					$userList->add($currentUserItem);
+					
 					$dateEntry = $dateList->getFirst();
 					
 					while ( $dateEntry )
 					{
 						// check all related users for participation
 						$user = $userList->getFirst();
-						
 						$isParticipant = false;
 						while ( $user )
 						{
@@ -497,7 +499,6 @@
 						$timestampEnd += 60 * 60;
 					}
 				}
-				
 				// check for all day events
 				if ( $timeStampStart - $timestampEnd >= 60 * 60 * 24 ) {
 					$allDay = true;
@@ -513,7 +514,6 @@
 				
 				$dateEntry = $dateList->getNext();
 			}
-			
 			$this->rawDataReturn($dates);
 		}
 		
