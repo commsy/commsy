@@ -91,7 +91,7 @@
 			{elseif $detail.browsing_information.paging.forward_type == 'search_path'}
 				<a href="commsy.php?cid={$environment.cid}&mod=search&fct=index&back_to_search=true" class="context_nav">___COMMON_BACK_TO_SEARCH___</a>
 			{else}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true" class="context_nav">___COMMON_BACK_TO_LIST___</a>
+				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&back_to_index=true{params params=$entry.params}" class="context_nav">___COMMON_BACK_TO_LIST___</a>
 			{/if}
 			</div>
 		</div>
