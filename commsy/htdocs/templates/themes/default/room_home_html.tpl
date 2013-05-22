@@ -154,6 +154,11 @@
 		                        		{$item.column_1_addon}
 		                        	</p>
 	                        	{/if}
+	                        	{if $rubric@key == 'date' && $item.column_1_addon}
+	                        		<p class="column_addon">
+	                        			<img title="" src="{$basic.tpl_path}img/calendar_recurring.gif" alt="" />
+		                        	</p>
+	                        	{/if}
 	                        	<p>
 									{if $rubric@key == 'project'}
 										{if $item.may_enter}
