@@ -10,6 +10,8 @@ define([	"dojo/_base/declare",
 		
 		constructor: function(options) {
 			declare.safeMixin(this, options);
+			
+			this.currentRequest = null;
 		},
 		
 		get: function(id, options) {
@@ -107,7 +109,7 @@ define([	"dojo/_base/declare",
 			 */
 		},
 		
-		query: function(query, options) {
+		query: function(query, options, completeCallback) {
 			/*
 			 * // summary:
 		//		Queries the store for objects. This will trigger a GET request to the server, with the
@@ -157,6 +159,8 @@ define([	"dojo/_base/declare",
 			 */
 			options = options || {};
 			
+			completeCallback = completeCallback || null;
+			
 			/*
 			 * var hasQuestionMark = this.target.indexOf("?") > -1;
 				if(query && typeof query == "object"){
@@ -178,9 +182,24 @@ define([	"dojo/_base/declare",
 			}
 			 */
 			
-			var request = this.request(this.fct, "query", { query: query, options: this.options });
+			var requestOptions = {};
+			declare.safeMixin(requestOptions, this.options);
+			declare.safeMixin(requestOptions, options);
 			
-			return QueryResults(request);
+			// if there is already a request - cancel it
+			if ( this.currentRequest )
+			{
+				this.currentRequest.cancel();
+			}
+			
+			this.currentRequest = this.request(this.fct, "query", { query: query, options: requestOptions });
+			
+			if ( completeCallback !== null )
+			{
+				this.currentRequest.then(completeCallback);
+			}
+			
+			return QueryResults(this.currentRequest);
 		}
 	});
 });

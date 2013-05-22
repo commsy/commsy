@@ -85,32 +85,21 @@
 		}
 
 		public function sanitize (&$item, $key){
-			$item = $this->getUtils()->sanitize($item);
+			#$item = $this->getUtils()->sanitize($item);
 		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		protected function processTemplate() {
+			$converter = $this->_environment->getTextConverter();
 			//sanitize
-			if(!empty($_POST) and isset($_POST)){
-				if ( function_exists('get_called_class')
-				and ( get_called_class() == 'cs_annotation_edit_controller'
-						or get_called_class() == 'cs_discarticle_edit_controller'
-						#or get_called_class() == 'cs_discussion_edit_controller'
-						or get_called_class() == 'cs_step_edit_controller'
-				)
-				) {
-					// do nothing
-				} else {
-					// sanitize every title which is send from POST
-					$this->sanitize($_POST['form_data']['title']);
-				}
-			}
+// 			if(!empty($_POST) and isset($_POST)){
+// 				array_walk_recursive($_POST, array($this, 'sanitize'));
+// 			}
 
 			if(!empty($_GET) and isset($_GET)){
-				// sanitize everything which comes from get
-				array_walk_recursive($_GET, array($this, 'sanitize'));
+				array_walk_recursive($_GET, array($converter, 'sanitizeHTML'));
 			}
 
 			// the actual function determes the method to call
@@ -368,14 +357,12 @@
 		        $manager->select();
 		        $tasks = $manager->get();
 		        $task = $tasks->getFirst();
-		        $show_user_config = false;
 		        $count_new_accounts = 0;
 		        while($task){
 		           $mode = $task->getTitle();
 		           $task = $tasks->getNext();
 		           if ($mode == 'TASK_USER_REQUEST'){
 		              $count_new_accounts ++;
-		              $show_user_config = true;
 		           }
 		        }
 
@@ -482,6 +469,9 @@
 			$to_javascript['environment']['lang'] = $this->_environment->getSelectedLanguage();
 			$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
+			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
+			$to_javascript['environment']['user_name'] = $current_user->getFullName();
+			$to_javascript['own']['id'] = $ownRoomItem->getItemId();
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();

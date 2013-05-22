@@ -74,7 +74,8 @@
 				if(!empty($desc)) {
 					$converter->setFileArray($this->getItemFileList());
                if ( $this->_with_old_text_formating ) {
-                  $desc = $converter->text_as_html_long($desc);
+                  //$desc = $converter->text_as_html_long($desc);
+                  $desc = $converter->textFullHTMLFormatting($desc);
                } else {
                   //$desc = $converter->_text_as_html_long2($desc);
                   #$desc = $converter->cleanDataFromTextArea($desc);
@@ -478,6 +479,7 @@
 				 	$column1_addon = '';
 				 	$modificator_id = '';
 	               	$item = $list->getFirst();
+	               	$recurringDateArray = array();
 	               	$params = array();
 					$params['environment'] = $environment;
 					$params['with_modifying_actions'] = false;
@@ -500,26 +502,65 @@
 								$modificator_id = $item->getModificatorItem()->getItemID();
 								break;
 	                  		case CS_DATE_TYPE:
-								$column1 = $item->getTitle();
-      							$parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
-      							$conforms = $parse_day_start['conforms'];
-      							if ($conforms == TRUE) {
-         							$date = $translator->getDateInLang($parse_day_start['datetime']);
-      							} else {
-         							$date = $item->getStartingDay();
-      							}
-      							$parse_time_start = convertTimeFromInput($item->getStartingTime());
-      							$conforms = $parse_time_start['conforms'];
-      							if ($conforms == TRUE) {
-         							$time = getTimeLanguage($parse_time_start['datetime']);
-      							} else {
-         							$time = $item->getStartingTime();
-      							}
-      							if (!empty($time)){
-      								$time = ', '.$time;
-      							}
-      							$column2 = $view->_text_as_html_short($date.$time);
-								$column3 = $item->getPlace();
+	                  			$displayDate = true;
+	                  			$column1_addon = false;
+	                  			
+								// is this a recurring date?
+								if ( $item->getRecurrencePattern() )
+								{
+									// did we already displayed the first date?
+									if ( !isset($recurringDateArray[$item->getRecurrenceId()]) )
+									{
+										// if not - this is the starting date
+										$recurringDateArray[$item->getRecurrenceId()] = $item;
+									}
+									else
+									{
+										$displayDate = false;
+									}
+								}
+								
+								if ( $displayDate )
+								{
+									$column1 = $item->getTitle();
+									
+									if ( $item->getRecurrencePattern() )
+									{
+										$column1_addon = true;
+									}
+									
+									$parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
+									$conforms = $parse_day_start['conforms'];
+									if ($conforms == TRUE) {
+										$date = $translator->getDateInLang($parse_day_start['datetime']);
+									} else {
+										$date = $item->getStartingDay();
+									}
+									$parse_time_start = convertTimeFromInput($item->getStartingTime());
+									$conforms = $parse_time_start['conforms'];
+									if ($conforms == TRUE) {
+										$time = getTimeLanguage($parse_time_start['datetime']);
+									} else {
+										$time = $item->getStartingTime();
+									}
+									if (!empty($time)){
+										$time = ', '.$time;
+									}
+									$column2 = $view->_text_as_html_short($date.$time);
+									$column3 = $item->getPlace();
+								}
+								else
+								{
+									// go to next item
+									$item = $list->getNext();
+									
+									/*
+									 * the "2" is needed, to continue the while loop an not only
+									 * the nested switch statement
+									 */
+									continue 2;					
+								}
+								
 								break;
 	                  		case CS_DISCUSSION_TYPE:
 								$column1 = $item->getTitle();
@@ -678,7 +719,8 @@
 								if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) $lightbox = true;
 
 								$info = array();
-								$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+								#$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+								$info['file_name']	= $converter->filenameFormatting($file->getDisplayName());
 								$info['file_icon']	= $file->getFileIcon();
 								$info['file_url']	= $file->getURL();
 								$info['file_size']	= $file->getFileSize();

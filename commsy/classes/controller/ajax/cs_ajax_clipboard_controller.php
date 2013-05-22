@@ -304,6 +304,11 @@
 				   }
 				   // archive
 				   
+				   elseif ( $this->_environment->inPortal() )
+				   {
+				   	$error_array[] = 'ERROR: copy items in portal is not allowed';
+				   }
+				   
 					elseif (!empty($ids)) {
 						foreach ($ids as $id) {
 							// get item to copy

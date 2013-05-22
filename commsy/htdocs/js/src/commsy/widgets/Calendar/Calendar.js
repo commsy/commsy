@@ -90,7 +90,7 @@ define(
 					return Stamp.fromISOString(s);
 				},
 				encodeDate:			function(d) {
-					return Stamp.toISOString(d)
+					return Stamp.toISOString(d);
 				},
 				selectionMode:		"none",
 				moveEnabled:		false,
@@ -110,7 +110,15 @@ define(
 			
 			this.calendar.on("timeIntervalChange", Lang.hitch(this, function(event) {
 				this.onTimeIntervalChange(event);
-				this.calendar.set("store", store);
+				
+				if ( this.calendar.store == null )
+				{
+					this.calendar.set("store", store);
+				}
+				else
+				{
+					this.calendar.store.query("*", this.options);
+				}
 			}));
 			
 			this.calendar.placeAt(this.calendarNode);

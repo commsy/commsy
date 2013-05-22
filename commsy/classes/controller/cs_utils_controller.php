@@ -848,14 +848,6 @@
 		}
 
 
-		public function sanitize( $value ) {
-			$text_converter = $this->_environment->getTextConverter();
-			$value = $text_converter->_htmlentities_cleanbadcode($value);
-
-      		return $value;
-
-		}
-
 		public function getLogoInformationForType($type) {
 			$translator = $this->_environment->getTranslationObject();
 

@@ -77,31 +77,9 @@ require([	"dojo/_base/declare",
 				var aStackNode = query("a#tm_stack")[0];
 				if (aStackNode) {
 					require(["commsy/popups/ToggleStack"], function(StackPopup) {
-						var handler = new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
+						new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
 					});
 				}
-				
-				var aWidgetsNode = query("a#tm_widgets")[0];
-				if (aWidgetsNode) {
-					require(["commsy/popups/ToggleWidgets"], function(WidgetsPopup) {
-						var handler = new WidgetsPopup(aWidgetsNode, query("div#tm_menus div#tm_dropmenu_widget_bar")[0]);
-					});
-				}
-				
-				/*
-				var aPortfolioNode = query("a#tm_portfolio")[0];
-				if (aPortfolioNode) {
-					require(["commsy/popups/TogglePortfolio"], function(PortfolioPopup) {
-						var handler = new PortfolioPopup(aPortfolioNode, query("div#tm_menus div#tm_dropmenu_portfolio")[0]);
-					});
-				}
-				
-				/*
-				
-				require(["commsy/popups/ToggleMyCalendar"], function(MyCalendarPopup) {
-					var handler = newMyCalendarPopup(query("a#tm_mycalendar")[0], query("div#tm_menus div#tm_dropmenu_mycalendar")[0]);
-				});
-				*/
 				
 				// setup rubric forms
 				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
@@ -385,6 +363,26 @@ require([	"dojo/_base/declare",
 							
 							// register click event
 							widgetManager.RegisterOpenCloseClick(widgetInstance, aPortfolioNode);
+							
+							// open widget
+							widgetInstance.Open();
+						});
+					}));
+				}
+				
+				var aMyWidgetsNode = Query("a#tm_widgets")[0];
+				if ( aMyWidgetsNode )
+				{
+					On.once(aMyWidgetsNode, "click", Lang.hitch(this, function(event)
+					{
+						var widgetManager = this.getWidgetManager();
+						
+						widgetManager.GetInstance("commsy/widgets/MyWidgets/MyWidgetsWidget", {}).then(function(deferred)
+						{
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							widgetManager.RegisterOpenCloseClick(widgetInstance, aMyWidgetsNode);
 							
 							// open widget
 							widgetInstance.Open();

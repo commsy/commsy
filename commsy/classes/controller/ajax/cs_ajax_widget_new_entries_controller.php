@@ -10,13 +10,13 @@
 			parent::__construct($environment);
 		}
 
-		public function actionGetListContent() {
+		public function actionQuery() {
 			$return = array(
 				"items"		=> array()
 			);
 
-			$start = $this->_data["start"];
-			$numEntries = $this->_data["numEntries"];
+			$start = $this->_data["options"]["start"];
+			$numEntries = $this->_data["options"]["numEntries"];
 
 			$itemManager = $this->_environment->getItemManager();
 			$currentUser = $this->_environment->getCurrentUserItem();
@@ -119,8 +119,12 @@
 						}
 					}
 				}
+				
+				if ( isset($entry) && !empty($entry) && $entry->getType() !== CS_PORTFOLIO_TYPE )
+				{
+					$count++;
+				}
 
-				$count++;
 				$entry = $new_entry_list->getNext();
 			}
 

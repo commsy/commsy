@@ -207,6 +207,28 @@ define([	"dojo/_base/declare",
 				// reload list to get changes
 				this.performRequest();
 				
+				
+				this.AJAXRequest("accounts", "GetNewUserAccount",{},Lang.hitch(this, function(response){
+					var commsyBarAccountNode = Query("span#tm_settings_count_new_accounts")[0];
+					var commsyTabAccountNode = Query("a#popup_account_tab > span")[0];
+					
+					//console.log(commsyTabAccountNode);
+					if(commsyBarAccountNode && response.count > 0){
+						DomAttr.set(commsyBarAccountNode,"innerHTML",response.count);
+					} else if(commsyBarAccountNode && response.count == 0){
+						DomConstruct.destroy(commsyBarAccountNode);
+					}
+					
+					if(commsyTabAccountNode && response.count > 0){
+						DomAttr.set(commsyTabAccountNode,"innerHTML","("+response.count+")")
+					} else if(commsyTabAccountNode && response.count == 0){
+						DomConstruct.destroy(commsyTabAccountNode);
+					}
+				}));
+				
+				
+				
+				
 				// load mail popup information
 				if (selectedIds.length > 0) {
 					this.AJAXRequest("popup", "getHTML", { ids: selectedIds, action: action, module: "configuration_mail" }, Lang.hitch(this, function(html) {

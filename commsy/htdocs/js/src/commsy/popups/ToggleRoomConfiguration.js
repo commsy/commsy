@@ -5,7 +5,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/on",
-        	"dojo/_base/lang"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
+        	"dijit/Tooltip",
+        	"dojo/_base/lang",
+        	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Tooltip, Lang, ErrorTranslations) {
 	return declare(TogglePopupHandler, {
 		sendImages: [],
 		
@@ -27,6 +29,7 @@ define([	"dojo/_base/declare",
 			} else {
 				DomClass.remove(this.popup_button_node, "tm_settings_hover");
 				DomClass.add(this.contentNode, "hidden");
+				this.closeErrorTooltips();
 			}
 		},
 
@@ -36,6 +39,16 @@ define([	"dojo/_base/declare",
 				// register click for community room assign button
 				On(communityRoomInputNode, "click", Lang.hitch(this, function(event) {
 					this.onClickAssignCommunityRoom();
+				}));
+			}
+			
+			// register click for community room assign checkboxes
+			var communityRoomCheckboxNodes = Query("input[name^='form_data[communityroomlist_']");
+			if ( communityRoomCheckboxNodes)
+			{
+				On(communityRoomCheckboxNodes, "click", Lang.hitch(this, function(event)
+				{
+					this.onClickCommunityRoomCheckbox(event);
 				}));
 			}
 
@@ -287,7 +300,7 @@ define([	"dojo/_base/declare",
 					// append new entry
 					var divNode = Query("div#assigned_community_rooms", this.contentNode)[0];
 
-					DomConstruct.create("input", {
+					var inputNode = DomConstruct.create("input", {
 						id:			"room_communityroomlist",
 						type:		"checkbox",
 						checked:	true,
@@ -299,6 +312,31 @@ define([	"dojo/_base/declare",
 					DomConstruct.create("span", {
 						innerHTML:	roomName
 					}, divNode, "last");
+					
+					On(inputNode, "click", Lang.hitch(this, function(event)
+					{
+						this.onClickCommunityRoomCheckbox(event);
+					}));
+				}
+			}
+		},
+		
+		onClickCommunityRoomCheckbox: function(event)
+		{
+			// if project rooms must be linked to community rooms
+			if ( this.from_php.environment.portal_link_status === "mandatory" )
+			{
+				// get number of all checked checkboxes
+				var numChecked = Query("input[name^='form_data[communityroomlist_']:checked").length;
+				if ( numChecked === 0 )
+				{
+					// display info box
+					var errorNode = Query("select#room_communityrooms", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.contextRoom1021, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					event.preventDefault();
+					event.stopPropagation();
 				}
 			}
 		},
@@ -340,7 +378,7 @@ define([	"dojo/_base/declare",
 			// set image path for preview and handle own schema
 			var selectedOptionNode = Query("select#room_color_choice option:checked", this.contentNode)[0];
 			var selectedValue = DomAttr.get(selectedOptionNode, "value");
-			var selectedText = DomAttr.get(selectedOptionNode, "innerHTML");
+			//var selectedText = DomAttr.get(selectedOptionNode, "innerHTML");
 			var imageNode = Query("div#room_color_preview img", this.contentNode)[0];
 			var imageDivNode = Query("div#room_color_preview", this.contentNode)[0];
 			var divNode = Query("div#room_color_own", this.contentNode)[0];
@@ -354,7 +392,7 @@ define([	"dojo/_base/declare",
 				DomClass.remove(imageDivNode, "hidden");
 				DomClass.add(divNode, "hidden");
 
-				if(selectedValue === "default") selectedText = "default";
+				//if(selectedValue === "default") selectedText = "default";
 				DomAttr.set(imageNode, "src", "templates/themes/" + selectedValue + "/preview.gif");
 			}
 		},
@@ -382,13 +420,13 @@ define([	"dojo/_base/declare",
 
 			// hide all
 			dojo.forEach(Query("textarea[id^='moderation_mail_body_']", this.contentNode), function(node, index, arr) {
-				DomClass.add(node.parentNode, "hidden")
+				DomClass.add(node.parentNode, "hidden");
 				DomClass.add(node.parentNode.parentNode, "hidden");
 			});
 
 			// show selected
 			dojo.forEach(Query("textarea#moderation_mail_body_de_" + index + ", textarea#moderation_mail_body_en_" + index, this.contentNode), function(node, index, arr) {
-				DomClass.remove(node.parentNode, "hidden")
+				DomClass.remove(node.parentNode, "hidden");
 				DomClass.remove(node.parentNode.parentNode, "hidden");
 			});
 		},
@@ -396,7 +434,7 @@ define([	"dojo/_base/declare",
 		updateUsageContract: function(selectedValue) {
 			// hide all
 			dojo.forEach(Query("div[id^='agb_text_']", this.contentNode), function(node, index, arr) {
-				DomClass.add(node.parentNode, "hidden")
+				DomClass.add(node.parentNode, "hidden");
 				DomClass.add(node.parentNode.parentNode, "hidden");
 			});
 
@@ -412,7 +450,6 @@ define([	"dojo/_base/declare",
 
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 
 				DomAttr.set(Query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());

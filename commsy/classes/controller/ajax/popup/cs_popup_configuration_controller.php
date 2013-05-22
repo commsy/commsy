@@ -106,8 +106,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 							foreach($form_data as $key => $value) {
 								if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
 							}
-
-							$current_context->setCommunityListByID($community_room_array);
+							
+							/*
+							 * if assignment is mandatory, the array must not be empty
+							 */
+							if (	$this->_environment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" ||
+									sizeof($community_room_array) > 0 )
+							{
+								$current_context->setCommunityListByID($community_room_array);
+							}
 						} elseif($current_context->isCommunityRoom()) {
 							if(isset($form_data['room_assignment'])) {
 								if($form_data['room_assignment'] === 'open') $current_context->setAssignmentOpenForAnybody();
@@ -384,7 +391,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->unsetBuzzwordShowExpanded();
 				        }
 
-
+				        
 				        /**********save tag options*******/
 				        if ( isset($form_data['tags']) and !empty($form_data['tags']) and $form_data['tags'] == 'yes') {
 				           $current_context->setWithTags();
@@ -440,7 +447,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setTemplateDescription($form_data['template_description']);
 				         }
 
-
+				         
 				         $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
 				         if ( isset($with_archving_rooms)
 				         		and $with_archving_rooms
@@ -459,7 +466,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 					            	// old: should be impossible
 					            	else {
 					            		// Fix: Find Group-Rooms if existing
-					            		if( $current_context->isGrouproomActive() ) {
+					            		if( $current_context->isGrouproomActive() ) {  // GrouproomActive schmeißt fehler gucken ob er hier rein rennt wegen Kategorie einstellungen
 					            			$groupRoomList = $current_context->getGroupRoomList();
 					            			 
 					            			if( !$groupRoomList->isEmpty() ) {
@@ -536,9 +543,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	                        else {
 	                        	
 	                        	// Fix: Find Group-Rooms if existing
-	                        	if( $current_context->isGrouproomActive() ) {
+	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom()) {
 	                        		$groupRoomList = $current_context->getGroupRoomList();
-	                        	
 	                        		if( !$groupRoomList->isEmpty() ) {
 	                        			$room_item = $groupRoomList->getFirst();
 	                        	

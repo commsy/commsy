@@ -30,6 +30,32 @@
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
 		}
+		
+		public function actionGetNewUserAccount() {
+			$current_user = $this->_environment->getCurrentUserItem();
+			$count_new_accounts = 0;
+			if ($current_user->isModerator()){
+				// tasks
+				$manager = $this->_environment->getTaskManager();
+				$manager->resetLimits();
+				$manager->setContextLimit($this->_environment->getCurrentContextID());
+				$manager->setStatusLimit('REQUEST');
+				$manager->select();
+				$tasks = $manager->get();
+				$task = $tasks->getFirst();
+				$count_new_accounts = 0;
+				while($task){
+					$mode = $task->getTitle();
+					$task = $tasks->getNext();
+					if ($mode == 'TASK_USER_REQUEST'){
+						$count_new_accounts ++;
+					}
+				
+				}
+			}
+			$this->setSuccessfullDataReturn(array("count" => $count_new_accounts));
+			echo $this->_return;
+		}
 
 		public function actionPerformUserAction() {
 			$return = array();

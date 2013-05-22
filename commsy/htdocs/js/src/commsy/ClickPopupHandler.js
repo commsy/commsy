@@ -16,6 +16,7 @@ define([	"dojo/_base/declare",
 			this.item_id		= null;
 			this.ref_iid		= null;
 			this.ticks			= 0;
+			this.timer			= null;
 			this.ajaxHTMLSource	= "rubric_popup";
 		},
 		
@@ -81,12 +82,12 @@ define([	"dojo/_base/declare",
 
 		setupAutoSave: function() {
 			var mode = this.from_php.autosave.mode;
-			var limit = this.from_php.autosave.limit;
+			var limit = this.from_php.autosave.limit * 60;
 
 			if(mode > 0) {
 				// autosave is enabled
 				require(["dojox/timing", "dojox/string/sprintf"], lang.hitch(this, function() {
-					var timer = new dojox.timing.Timer(1000);
+					this.timer = new dojox.timing.Timer(1000);
 
 					if(mode == 2) {
 						// show countdown
@@ -96,13 +97,16 @@ define([	"dojo/_base/declare",
 						}, query("div#crt_actions_area", this.contentNode)[0], "first");
 					}
 
-					timer.onTick = lang.hitch(this, function() {
+					this.timer.onTick = lang.hitch(this, function() {
 						this.ticks++;
 
 						if(this.ticks === limit) {
 							// get custom data object
 							var customObject = this.getAttrAsObject(query("input.submit", this.contentNode)[0], "data-custom");
 							this.onPopupSubmit(customObject);
+							
+							// reset ticks
+							this.ticks = 0;
 						}
 
 						if(mode == 2) {
@@ -119,13 +123,16 @@ define([	"dojo/_base/declare",
 
 							// seconds
 							var secondsLeft = timeLeft;
-
-							var display = dojox.string.sprintf("%02u:%02u:%02u", hoursLeft, minutesLeft, secondsLeft);
-							dom_attr.set(timerDiv, "innerHTML", display);
+							
+							if ( timerDiv )
+							{
+								var display = dojox.string.sprintf("%02u:%02u:%02u", hoursLeft, minutesLeft, secondsLeft);
+								dom_attr.set(timerDiv, "innerHTML", display);
+							}
 						}
 					});
 
-					timer.start();
+					this.timer.start();
 				}));
 			}
 		},
@@ -152,6 +159,13 @@ define([	"dojo/_base/declare",
 
 			// destroy Loading
 			this.destroyLoading();
+			
+			// destroy timer
+			if ( this.timer )
+			{
+				this.timer.stop();
+				this.ticks = 0;
+			}
 
 			this.is_open = false;
 		}

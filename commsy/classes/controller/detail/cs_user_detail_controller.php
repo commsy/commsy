@@ -896,14 +896,17 @@
 			// description of the user
 			$desc = $this->_item->getDescription();
 			if(!empty($desc)) {
+				$desc = $converter->textFullHTMLFormatting($desc);
 				//$desc = $converter->cleanDataFromTextArea($desc);
 				//TODO:
 				//$desc = $converter->compareWithSearchText($desc);
 				$converter->setFileArray($this->getItemFileList());
       		if ( $this->_with_old_text_formating ) {
-      			$desc = $converter->text_as_html_long($desc);
+      			//$desc = $converter->text_as_html_long($desc);
+      			$desc = $converter->textFullHTMLFormatting($desc);
       		} else {
-      			$desc = $converter->_activate_urls($desc);
+      			//$desc = $converter->_activate_urls($desc);
+      			$desc = $converter->textFullHTMLFormatting($desc);
       		}
 				$return['description'] = $desc;
 			}
