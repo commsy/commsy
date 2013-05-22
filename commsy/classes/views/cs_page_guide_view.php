@@ -125,6 +125,8 @@ class cs_page_guide_view extends cs_page_view {
 
    public  $_login_redirect = NULL;
 
+   protected $_has_to_change_email = false;
+    
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -141,6 +143,10 @@ class cs_page_guide_view extends cs_page_view {
       $this->_delete_box_hidden_values = $array;
    }
 
+   public function setHasToChangeEmail () {
+   	$this->_has_to_change_email = true;
+   }
+   
    public function setLoginRedirect () {
       $this->_login_redirect = true;
    }

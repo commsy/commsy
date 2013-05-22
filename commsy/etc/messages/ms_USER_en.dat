@@ -1,4 +1,5 @@
 <?php
+$message["USER_ACCOUNT_CHANGE_MAIL_SUCCESS_SET"]["en"] = "These accounts must change there mail address at next login:";
 $message["USER_ACCOUNT_FORGET_HEADLINE"]["en"] = "Send account data";
 $message["USER_ACCOUNT_FORGET_MAIL_BODY"]["en"] = "There are the following accounts registered in the CommSy *%1*:
 
@@ -98,6 +99,7 @@ $message["USER_LANGUAGE_DESC"]["en"] = "This CommSy will be presented to you in 
 $message["USER_LASTLOGIN"]["en"] = "Last log-in";
 $message["USER_LASTLOGIN_ADMIN_DESC"]["en"] = "Last log-in time.";
 $message["USER_LASTNAME"]["en"] = "Last name";
+$message["USER_LIST_ACTION_CHANGE_MAIL"]["en"] = "Change email at next login";
 $message["USER_LIST_ACTION_DELETE_ACCOUNT"]["en"] = "Delete account/s";
 $message["USER_LIST_ACTION_EMAIL_ACCOUNT_PASSWORD"]["en"] = "e-mail: user ID & password";
 $message["USER_LIST_ACTION_EMAIL_MERGE_ACCOUNTS"]["en"] = "e-mail: merge accounts";

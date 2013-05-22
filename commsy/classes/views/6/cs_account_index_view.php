@@ -538,6 +538,7 @@ class cs_account_index_view extends cs_index_view {
       $html .= '   <option value="1">'.$this->_translator->getMessage('USER_LIST_ACTION_DELETE_ACCOUNT').'</option>'.LF;
       $html .= '   <option value="2">'.$this->_translator->getMessage('USER_LIST_ACTION_LOCK_ACCOUNT').'</option>'.LF;
       $html .= '   <option value="3">'.$this->_translator->getMessage('USER_LIST_ACTION_FREE_ACCOUNT').'</option>'.LF;
+      $html .= '   <option value="5">'.$this->_translator->getMessage('USER_LIST_ACTION_CHANGE_MAIL').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="11">'.$this->_translator->getMessage('USER_LIST_ACTION_STATUS_USER').'</option>'.LF;
       $html .= '   <option value="14">'.$this->_translator->getMessage('USER_LIST_ACTION_STATUS_MODERATOR').'</option>'.LF;
