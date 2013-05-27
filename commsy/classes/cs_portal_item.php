@@ -994,6 +994,12 @@ class cs_portal_item extends cs_guide_item {
       if ( $this->isActivatedArchivingUnusedRooms() ) {
       	$cron_array[] = $this->_cronArchiveUnusedRooms();
       	$cron_array[] = $this->_cronArchiveUnusedRoomsSendMailBefore();
+         if ( $this->isActivatedDeletingUnusedRooms() ) {
+         	$this->_environment->toggleArchiveMode();
+      	   $cron_array[] = $this->_cronDeleteUnusedRooms();
+      	   $cron_array[] = $this->_cronDeleteUnusedRoomsSendMailBefore();
+         	$this->_environment->toggleArchiveMode();
+         }
       }
       
       return $cron_array;
@@ -1249,7 +1255,254 @@ class cs_portal_item extends cs_guide_item {
    ##############################################################
    # archive unused rooms - END
    ##############################################################
-      
+
+   ##############################################################
+   # delete unused rooms - BEGIN
+   ##############################################################
+    
+   private function _cronDeleteUnusedRooms () {
+   	$cron_array = array();
+   	$cron_array['title'] = 'delete unused rooms';
+   	$cron_array['description'] = 'if rooms (project and community) are unused for '.$this->getDaysUnusedBeforeDeletingRooms().' days this cron deletes it';
+   	$cron_array['success'] = false;
+   	$cron_array['success_text'] = 'cron failed';
+   	 
+   	$days_mail_send_before = $this->getDaysSendMailBeforeDeletingRooms();
+   	 
+   	// unused project rooms
+   	// group rooms will be deleted with project room
+   	$count_project = 0;
+   	$room_manager = $this->_environment->getProjectManager();
+   	include_once('functions/date_functions.php');
+   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeDeletingRooms());
+   	$room_manager->setLastLoginOlderLimit($datetime_border);
+   	$room_manager->setContextLimit($this->getItemID());
+   	#$room_manager->setNotTemplateLimit();
+   	$room_manager->select();
+   	$room_list = $room_manager->get();
+   	$count_project_all = 0;
+   	if ( !empty($room_list)
+   			and $room_list->isNotEmpty()
+   	   ) {
+   		$count_project_all = $room_list->getCount();
+   		$datetime_border_send_mail = getCurrentDateTimeMinusHoursInMySQL(($this->getDaysSendMailBeforeDeletingRooms()-0.5)*24);
+   		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms()+21);
+   		$room_item = $room_list->getFirst();
+   		while ( $room_item ) {
+   			 
+   			$delete = true;
+   			if ( !empty($days_mail_send_before) ) {
+   				$send_mail_datetime = $room_item->getDeleteMailSendDateTime();
+   
+   				// room will only deleted configured days after sending email
+   				if ( empty($send_mail_datetime)
+   					  or $send_mail_datetime > $datetime_border_send_mail
+   				   ) {
+   					$delete = false;
+   				}
+   
+   				// maybe mail was send and user login into room
+   				// after one period room will be deleted without sending mail,
+   				// because there is a datetime from sending mail a period before
+   				// this if clause reset the datetime of sending the email
+   				// $datetime_border_send_mail = 3 weeks before border to send mail
+   				elseif ( $send_mail_datetime < $datetime_border_send_mail2 ) {
+   					$delete = false;
+   					$room_item->setDeleteMailSendDateTime('');
+   					$room_item->saveWithoutChangingModificationInformation();
+   				}
+   			}
+   			 
+   			if ( $delete ) {
+   				$room_item->delete();
+   				$count_project++;
+   			}
+   			 
+   			unset($room_item);
+   			$room_item = $room_list->getNext();
+   		}
+   	}
+   	unset($room_list);
+   	unset($room_manager);
+   	 
+   	// unused community rooms
+   	$count_community = 0;
+   	$room_manager = $this->_environment->getCommunityManager();
+   	include_once('functions/date_functions.php');
+   	$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeDeletingRooms());
+   	$room_manager->setLastLoginOlderLimit($datetime_border);
+   	$room_manager->setContextLimit($this->getItemID());
+   	#$room_manager->setNotTemplateLimit();
+   	$room_manager->select();
+   	$room_list = $room_manager->get();
+   	$count_community_all = 0;
+   	if ( !empty($room_list)
+   			and $room_list->isNotEmpty()
+   	   ) {
+   		$count_community_all = $room_list->getCount();
+   		$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms());
+   		$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms()+21);
+   		$room_item = $room_list->getFirst();
+   		while ( $room_item ) {
+   			 
+   			$delete = true;
+   			if ( !empty($days_mail_send_before) ) {
+   				$send_mail_datetime = $room_item->getDeleteMailSendDateTime();
+   
+   				// room will only deleted configured days after sending email
+   				if ( empty($send_mail_datetime)
+   					  or $send_mail_datetime > $datetime_border_send_mail
+   				   ) {
+   					$delete = false;
+   				}
+   
+   				// maybe mail was send and user login into room
+   				// after one period room will be deleted without sending mail,
+   				// because there is a datetime from sending mail a period before
+   				// this if clause reset the datetime of sending the email
+   				// $datetime_border_send_mail = 3 weeks before border to send mail
+   				elseif ( $send_mail_datetime < $datetime_border_send_mail2 ) {
+   					$delete = false;
+   					$room_item->setDeleteMailSendDateTime('');
+   					$room_item->saveWithoutChangingModificationInformation();
+   				}
+   			}
+   			 
+   			if ( $delete ) {
+   				$room_item->delete();
+   				$count_community++;
+   			}
+   			 
+   			unset($room_item);
+   			$room_item = $room_list->getNext();
+   		}
+   	}
+   	unset($room_list);
+   	unset($room_manager);
+   	 
+   	$cron_array['success'] = true;
+   	$cron_array['success_text'] = 'delete project rooms: '.$count_project. ' (possible: '.$count_project_all.') - delete community rooms: '.$count_community.' (possible: '.$count_community_all.')';
+   	 
+   	return $cron_array;
+   }
+   
+   private function _cronDeleteUnusedRoomsSendMailBefore () {
+   	$cron_array = array();
+   	$cron_array['title'] = 'send mail before delete unused rooms';
+   	$cron_array['description'] = 'if rooms are unused for '.($this->getDaysUnusedBeforeDeletingRooms()-$this->getDaysSendMailBeforeDeletingRooms()).' days this cron sends a notifications about deleting the room in '.$this->getDaysSendMailBeforeDeletingRooms().' days';
+   	$cron_array['success'] = false;
+   	$cron_array['success_text'] = 'cron failed';
+   	 
+   	$days_mail_send_before = $this->getDaysSendMailBeforeDeletingRooms();
+   	 
+   	if ( !empty($days_mail_send_before) ) {
+   		// unused project rooms
+   		// group rooms will be archived with project room
+   		$count_project = 0;
+   		$room_manager = $this->_environment->getProjectManager();
+   		include_once('functions/date_functions.php');
+   		$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeDeletingRooms()-$this->getDaysSendMailBeforeDeletingRooms());
+   		$room_manager->setLastLoginOlderLimit($datetime_border);
+   		$room_manager->setContextLimit($this->getItemID());
+   		#$room_manager->setNotTemplateLimit();
+   		$room_manager->select();
+   		$room_list = $room_manager->get();
+   		$count_project_all = 0;
+   		if ( !empty($room_list)
+   				and $room_list->isNotEmpty()
+   		   ) {
+   			$count_project_all = $room_list->getCount();
+   			$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms());
+   			$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms()+21);
+   			$room_item = $room_list->getFirst();
+   			while ( $room_item ) {
+   
+   				$send_mail = true;
+   				$send_mail_datetime = $room_item->getDeleteMailSendDateTime();
+   				 
+   				if ( !empty($send_mail_datetime)
+   					  and !($send_mail_datetime < $datetime_border_send_mail2)
+   				   ) {
+   					$send_mail = false;
+   				}
+   				 
+   				if ( $send_mail ) {
+   					 
+   					// send mail
+   					$success = $room_item->sendMailDeleteInfoToModeration();
+   					 
+   					// save room
+   					include_once('functions/date_functions.php');
+   					$room_item->setDeleteMailSendDateTime(getCurrentDateTimeInMySQL());
+   					$room_item->saveWithoutChangingModificationInformation();
+   					$count_project++;
+   				}
+   
+   				unset($room_item);
+   				$room_item = $room_list->getNext();
+   			}
+   		}
+   		unset($room_list);
+   		unset($room_manager);
+   		 
+   		// unused community rooms
+   		$count_community = 0;
+   		$room_manager = $this->_environment->getCommunityManager();
+   		include_once('functions/date_functions.php');
+   		$datetime_border = getCurrentDateTimeMinusDaysInMySQL($this->getDaysUnusedBeforeDeletingRooms()-$this->getDaysSendMailBeforeDeletingRooms());
+   		$room_manager->setLastLoginOlderLimit($datetime_border);
+   		$room_manager->setContextLimit($this->getItemID());
+   		#$room_manager->setNotTemplateLimit();
+   		$room_manager->select();
+   		$room_list = $room_manager->get();
+   		$count_community_all = 0;
+   		if ( !empty($room_list)
+   				and $room_list->isNotEmpty()
+   		   ) {
+   			$count_community_all = $room_list->getCount();
+   			$datetime_border_send_mail = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms());
+   			$datetime_border_send_mail2 = getCurrentDateTimeMinusDaysInMySQL($this->getDaysSendMailBeforeDeletingRooms()+21);
+   			$room_item = $room_list->getFirst();
+   			while ( $room_item ) {
+   
+   				$send_mail = true;
+   				$send_mail_datetime = $room_item->getDeleteMailSendDateTime();
+   				 
+   				if ( !empty($send_mail_datetime)
+   					  and !($send_mail_datetime < $datetime_border_send_mail2)
+   				   ) {
+   					$send_mail = false;
+   				}
+   				 
+   				if ( $send_mail ) {
+   					 
+   					// send mail
+   					$success = $room_item->sendMailDeleteInfoToModeration();
+   					 
+   					// save room
+   					include_once('functions/date_functions.php');
+   					$room_item->setDeleteMailSendDateTime(getCurrentDateTimeInMySQL());
+   					$room_item->saveWithoutChangingModificationInformation();
+   					$count_community++;
+   				}
+   
+   				unset($room_item);
+   				$room_item = $room_list->getNext();
+   			}
+   		}
+   		unset($room_list);
+   		unset($room_manager);
+   	}
+   	 
+   	$cron_array['success'] = true;
+   	$cron_array['success_text'] = 'send delete info project rooms: '.$count_project. ' (possible: '.$count_project_all.') - send delete info community rooms: '.$count_community.' (possible: '.$count_community_all.')';
+   	return $cron_array;
+   }
+   
+   ##############################################################
+   # delete unused rooms - END
+   ##############################################################
+    
    /** cron log, INTERNAL
     *  daily cron
     *
@@ -2293,7 +2546,86 @@ class cs_portal_item extends cs_guide_item {
    public function setDaysSendMailBeforeArchivingRooms ($value) {
    	$this->_addExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_ARCHIVE',(int)$value);
    }
+
+   public function isActivatedDeletingUnusedRooms () {
+   	$retour = false;
+   	$status = $this->_getStatusDeletingUnusedRooms();
+   	if ( !empty($status)
+   			and $status == 1
+   	) {
+   		$retour = true;
+   	}
+   	return $retour;
+   }
    
+   public function turnOnDeletingUnusedRooms () {
+   	$this->_setStatusDeletingUnusedRooms(1);
+   }
+   
+   public function turnOffDeletingUnusedRooms () {
+   	$this->_setStatusDeletingUnusedRooms(-1);
+   }
+   
+   /** get status of deleting unused rooms
+    *
+    * @return int status of deleting unused rooms (1 = on, -1 = off)
+    */
+   private function _getStatusDeletingUnusedRooms () {
+   	$retour = -1;
+   	if ($this->_issetExtra('DELETING_ROOMS_STATUS')) {
+   		$retour = $this->_getExtra('DELETING_ROOMS_STATUS');
+   	}
+   	return $retour;
+   }
+    
+   /** set status deleting unused rooms
+    *
+    * @param int status deleting unused rooms (1 = on, -1 = off)
+    */
+   private function _setStatusDeletingUnusedRooms ($value) {
+   	$this->_addExtra('DELETING_ROOMS_STATUS',(int)$value);
+   }
+   
+   /** get days before deleting an unused archived room
+    *
+    * @return int days before deleting an unused archived room
+    */
+   public function getDaysUnusedBeforeDeletingRooms () {
+   	$retour = 365; //default
+   	if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE')) {
+   		$retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE');
+   	}
+   	return $retour;
+   }
+    
+   /** set days before deleting an unused archived room
+    *
+    * @param int days before deleting an unused archived room
+    */
+   public function setDaysUnusedBeforeDeletingRooms ($value) {
+   	$this->_addExtra('ARCHIVING_ROOMS_DAYS_UNUSED_BEFORE_DELETE',(int)$value);
+   }
+    
+   /** get days send an email before deleting an unused archived room
+    *
+    * @return int days send email before deleting an unused archived room
+    */
+   public function getDaysSendMailBeforeDeletingRooms () {
+   	$retour = 0;
+   	if ($this->_issetExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE')) {
+   		$retour = $this->_getExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE');
+   	}
+   	return $retour;
+   }
+    
+   /** set days sed mail before deleting an unused archived room
+    *
+    * @param int days send mail before deleting an unused archived room
+    */
+   public function setDaysSendMailBeforeDeletingRooms ($value) {
+   	$this->_addExtra('ARCHIVING_ROOMS_DAYS_SEND_MAIL_BEFORE_DELETE',(int)$value);
+   }
+    
    ############################################
    # archiving - END
    ############################################
