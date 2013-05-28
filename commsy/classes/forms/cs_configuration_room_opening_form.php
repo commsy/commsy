@@ -197,6 +197,12 @@ var $_template_array = array();
          $this->_form->addTextfield('room_archiving_days_unused','','','',4,4,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED2'));
          $this->_form->combine();
          $this->_form->addTextfield('room_archiving_days_unused_mail','','','',2,2,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_MAIL_UNUSED2'));
+         $this->_form->addEmptyLine();
+         $this->_form->addCheckbox('room_deleting',1,'',$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING'),strtolower($this->_translator->getMessage('COMMON_ACTIVATE')));
+         $this->_form->combine();
+         $this->_form->addTextfield('room_deleting_days_unused','','','',4,4,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_UNUSED2'));
+         $this->_form->combine();
+         $this->_form->addTextfield('room_deleting_days_unused_mail','','','',2,2,false,'','','','left',$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_MAIL_UNUSED1'),'',false,$this->_translator->getMessage('CONFIGURATION_ROOM_DELETING_DAYS_MAIL_UNUSED2'));
       }
       
       // buttons
@@ -246,6 +252,13 @@ var $_template_array = array();
          }
          $this->_values['room_archiving_days_unused'] = $room->getDaysUnusedBeforeArchivingRooms();
          $this->_values['room_archiving_days_unused_mail'] = $room->getDaysSendMailBeforeArchivingRooms();
+         
+         // deleting
+         if ( $room->isActivatedDeletingUnusedRooms() ) {
+         	$this->_values['room_deleting'] = 1;
+         }
+         $this->_values['room_deleting_days_unused'] = $room->getDaysUnusedBeforeDeletingRooms();
+         $this->_values['room_deleting_days_unused_mail'] = $room->getDaysSendMailBeforeDeletingRooms();
       }
    }
 
@@ -253,6 +266,8 @@ var $_template_array = array();
     * this methods check the entered values
     */
    function _checkValues () {
+   	
+   	// archiving
       if ( !empty($this->_form_post['room_archiving'])
            and $this->_form_post['room_archiving'] == 1
            and empty($this->_form_post['room_archiving_days_unused'])
@@ -267,6 +282,37 @@ var $_template_array = array();
            and $this->_form_post['room_archiving_days_unused_mail'] > $this->_form_post['room_archiving_days_unused'] 
          ) {
          $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED_ERROR_DAYS');
+         $this->_form->setFailure('room_archiving_days_unused','');
+      }
+      
+      // deleting
+      if ( !empty($this->_form_post['room_deleting'])
+           and $this->_form_post['room_deleting'] == 1
+      	  and empty($this->_form_post['room_archiving'])
+      	) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DELETING_ARCHIVE_NOT_ACTIVATED');
+      	$this->_form->setFailure('room_archiving','');
+      }
+      if ( !empty($this->_form_post['room_archiving'])
+           and $this->_form_post['room_archiving'] == 1
+      	  and !empty($this->_form_post['room_deleting'])
+           and $this->_form_post['room_deleting'] == 1
+      	  and empty($this->_form_post['room_deleting_days_unused'])
+         ) {
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED_ERROR_EMPTY');
+         $this->_error_array = array_unique($this->_error_array);
+         $this->_form->setFailure('room_deleting_days_unused','');
+      }
+      if ( !empty($this->_form_post['room_archiving'])
+           and $this->_form_post['room_archiving'] == 1
+      	  and !empty($this->_form_post['room_deleting'])
+      	  and $this->_form_post['room_deleting'] == 1
+      	  and !empty($this->_form_post['room_deleting_days_unused'])
+           and !empty($this->_form_post['room_deleting_days_unused_mail'])
+           and $this->_form_post['room_deleting_days_unused_mail'] > $this->_form_post['room_deleting_days_unused'] 
+         ) {
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_DAYS_UNUSED_ERROR_DAYS');
+         $this->_error_array = array_unique($this->_error_array);
          $this->_form->setFailure('room_archiving_days_unused','');
       }
    }   

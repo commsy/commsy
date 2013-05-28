@@ -354,10 +354,10 @@ class cs_page_view extends cs_view {
       unset($views);
       unset($view);
 
-
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       $retour  = '';
+
       if (!$this->_environment->inServer()){
          $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
@@ -594,6 +594,13 @@ class cs_page_view extends cs_view {
    			$to_javascript['autosave']['mode'] = $c_autosave_mode;
    			$to_javascript['autosave']['limit'] = $c_autosave_limit;
    		}
+   	}
+   	
+      // has to change email (new) at portal
+   	if ( isset($this->_has_to_change_email) and $this->_has_to_change_email ) {
+   	   $to_javascript['autoOpenPopup']['popup'] = 'tm_user';
+   	   $to_javascript['autoOpenPopup']['tab'] = 'user';
+   	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
    	
    	switch ($mode) {
@@ -869,6 +876,7 @@ class cs_page_view extends cs_view {
          unset($views);
          unset($view);
       }
+
       $retour .= '</head>'.LF;
       return $retour;
    }

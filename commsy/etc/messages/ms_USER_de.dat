@@ -1,4 +1,5 @@
 <?php
+$message["USER_ACCOUNT_CHANGE_MAIL_SUCCESS_SET"]["de"] = "Folgende Kennungen müssen beim nächsten Login Ihre E-Mail-Adresse ändern:";
 $message["USER_ACCOUNT_FORGET_HEADLINE"]["de"] = "Kennung zusenden";
 $message["USER_ACCOUNT_FORGET_MAIL_BODY"]["de"] = "Im CommSy *%1* sind folgende Kennungen auf Ihre E-Mail-Adresse registriert:
 
@@ -99,6 +100,7 @@ $message["USER_LANGUAGE_DESC"]["de"] = "In dieser Sprache wird Ihnen dieses Comm
 $message["USER_LASTLOGIN"]["de"] = "Zuletzt online";
 $message["USER_LASTLOGIN_ADMIN_DESC"]["de"] = "Zeitpunkt, zu dem die/der Benutzende das letzte Mal angemeldet war.";
 $message["USER_LASTNAME"]["de"] = "Nachname";
+$message["USER_LIST_ACTION_CHANGE_MAIL"]["de"] = "Kennung(en): E-Mail ändern bei nächstem Login";
 $message["USER_LIST_ACTION_DELETE_ACCOUNT"]["de"] = "Kennung(en) löschen";
 $message["USER_LIST_ACTION_EMAIL_ACCOUNT_PASSWORD"]["de"] = "E-Mail: Kennung & Passwort";
 $message["USER_LIST_ACTION_EMAIL_MERGE_ACCOUNTS"]["de"] = "E-Mail: Kennungen zusammenführen";

@@ -774,16 +774,21 @@ if (isset($cs_external_login_redirect) and !empty($cs_external_login_redirect)
 }
 /* Ende Typo Login Anbindung*/
 
-
+$has_to_change_mail = false;
 if ( isset($current_user_item) ) {
    $current_portal_user_item = $current_user_item->getRelatedCommSyUserItem();
    if ( isset($current_portal_user_item)
         and $current_portal_user_item->hasToChangeEmail()
       ) {
-      $_GET['uid'] = $current_user_item->getItemID();
-      $_GET['show_profile'] = 'yes';
-      $_GET['profile_page'] = 'user';
-      $error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+   	// old profile at portal
+      #$_GET['uid'] = $current_user_item->getItemID();
+      #$_GET['show_profile'] = 'yes';
+      #$_GET['profile_page'] = 'user';
+      #$error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+      
+      // new profile at portal
+      $has_to_change_mail = true;
+      // used at page object      
    }
    unset($current_portal_user_item);
 }
@@ -1193,6 +1198,15 @@ if(isset($c_smarty) && $c_smarty === true) {
 	         }
 	      }
 	   }
+	}
+	
+	// has to change email (new) at portal
+	if ( isset($has_to_change_mail)
+		  and $has_to_change_mail
+		  and isset($page)
+		  and method_exists($page, 'setHasToChangeEmail')
+	   ) {
+		$page->setHasToChangeEmail();
 	}
 
 	if ( isset($session) ) {

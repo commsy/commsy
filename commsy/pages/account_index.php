@@ -345,6 +345,46 @@ if (!isset($error) or !$error) {
                $action = '';
             }
             break;
+         case 5:
+            $action = 'USER_ACCOUNT_CHANGE_MAIL';
+            $set_user = array();
+            $not_set_user = array();
+            foreach ($selected_ids as $id) {
+               $user = $user_manager->getItem($id);
+               if ( !$user->hasToChangeEmail() ) {
+               	$user->setHasToChangeEmail();
+               	$user->save();
+               	$set_user[] = $user;
+               } else {
+               	$not_set_user[] = $user;
+               }
+               unset($user);
+            }
+            $error = true;
+            $text_user_set = '';
+            foreach ($set_user as $user) {
+            	$text_user_set .= BRLF.$user->getFullname().' ('.$user->getUserID().') '.$user->getEmail();
+            	unset($user);
+            }
+            $text_user_set_not = '';
+            foreach ($not_set_user as $user) {
+            	$text_user_set_not .= BRLF.$user->getFullname().' ('.$user->getUserID().') '.$user->getEmail();
+            	unset($user);
+            }
+            $error_text_on_selection = '';
+            if ( !empty($text_user_set) ) {
+            	$error_text_on_selection .= $translator->getMessage('USER_ACCOUNT_CHANGE_MAIL_SUCCESS_SET').$text_user_set;
+            }
+            if ( !empty($text_user_set_not) ) {
+            	if ( !empty($error_text_on_selection) ) {
+            		$error_text_on_selection .= BRLF.'---';
+            	} else {
+            		$error_text_on_selection .= $translator->getMessage('USER_ACCOUNT_CHANGE_MAIL_SUCCESS_SET');
+            	}
+            	$error_text_on_selection .= $text_user_set_not;
+            }
+            $action = '';
+            break;
          case 11:
             $action = 'USER_STATUS_USER';
             if ($room_moderator_count - $selected_moderator_count < 1) {

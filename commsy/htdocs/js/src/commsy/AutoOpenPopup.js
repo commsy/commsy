@@ -14,12 +14,21 @@ define([	"dojo/_base/declare",
 				if (openPopup.popup == "tm_settings") {
 					this.openRoomConfiguration(openPopup.parameters);
 				}
-			}
+			    // check for entry in from_php_portal
+				if (openPopup.popup == "tm_user") {
+					this.openUserConfiguration(openPopup.parameters);
+				}
+			}			
 		},
 		
 		openRoomConfiguration: function(parameters) {
 			// open popup
 			Query("a#tm_settings")[0].click();
+		},
+		
+		openUserConfiguration: function(parameters) {
+			// open popup
+			Query("a#tm_user")[0].click();
 		}
 	});
 });

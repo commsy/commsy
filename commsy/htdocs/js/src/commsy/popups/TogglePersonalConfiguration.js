@@ -70,6 +70,15 @@ define([	"dojo/_base/declare",
 					}));
 				}));
 			}));
+
+			// check for auto load tab
+			var autoOpen = this.from_php.autoOpenPopup;
+			if (autoOpen) {
+				var aNode = Query("a[href='" + autoOpen.tab + "']")[0];
+				if (aNode) {
+					aNode.click();
+				}
+			}
 			
 		   // confirm delete Wordpress
          var deleteWordpressButton = Query("#submit_delete_wordpress", this.contentNode)[0];

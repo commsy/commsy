@@ -6,6 +6,9 @@ $message["COMMUNITY_MAIL_BODY_ARCHIVE_INFO"]["en"] = "%_COMMUNITY_ART_DEF_NOMS_B
 
 If can stop the storage with login into %_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW within the following %2 days.";
 $message["COMMUNITY_MAIL_BODY_DELETE"]["en"] = "Deletion of a %_COMMUNITY_SUB_NOMS_LOW.";
+$message["COMMUNITY_MAIL_BODY_DELETE_INFO"]["en"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW %1 is unused for almost %3 days. It will be deleted in %2 days.
+
+If can stop the deletion with login into %_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW within the following %2 days.";
 $message["COMMUNITY_MAIL_BODY_LOCK"]["en"] = "Blocking of a %_COMMUNITY_SUB_NOMS_LOW.";
 $message["COMMUNITY_MAIL_BODY_OPEN"]["en"] = "Initiation of a %_COMMUNITY_SUB_NOMS_LOW.";
 $message["COMMUNITY_MAIL_BODY_REOPEN"]["en"] = "Reopening of a %_COMMUNITY_SUB_NOMS_LOW.";

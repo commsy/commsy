@@ -547,11 +547,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							setValue($currentUser, $portalUser, 'setTitle', $form_data['title']);
 							setValue($currentUser, $portalUser, 'setBirthday', $form_data['birthday']);
 
+							$email_old = $portalUser->getEmail();
 							setValue($currentUser, $portalUser, 'setEmail', $form_data['mail']);
-							if($portalUser->hasToChangeEmail()) {
-								$portalUser_item->unsetHasToChangeEmail();
+							if ( $portalUser->hasToChangeEmail()
+								  and $email_old != $form_data['mail']
+								) {
+								$portalUser->unsetHasToChangeEmail();
 								$form_data['mail_all'] = 1;
 							}
+							unset($email_old);
 
 							setValue($currentUser, $portalUser, 'setTelephone', $form_data['telephone']);
 							setValue($currentUser, $portalUser, 'setCellularphone', $form_data['cellularphone']);
@@ -1264,6 +1268,16 @@ class cs_popup_profile_controller implements cs_popup_controller {
 			$overwrite = false;
 		}
 		$this->_config['datenschutz_overwrite'] = $overwrite;
+		
+		// has to change email
+		$this->_config['has_to_change_email'] = false;
+		if ( isset($this->_user)
+			  and $this->_user->hasToChangeEmail()
+			) {
+			$this->_config['has_to_change_email'] = true;
+		   $translator = $this->_environment->getTranslationObject();
+			$this->_config['has_to_change_email_text'] = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+		}
 
 		// assign template vars
 		$this->assignTemplateVars();

@@ -253,9 +253,12 @@
                     <legend>Kontakt</legend>
 
                     <div class="input_row">
+                        {if $popup.form.config.has_to_change_email === true}
+                        <div style="color:red; padding-left: 180px;">{show var=$popup.form.config.has_to_change_email_text}</div>
+                        {/if}
                       <label for="data_mail">___USER_EMAIL___</label>
                       <input id="data_mail" type="text" class="mandatory size_200 float-left" name="form_data[mail]" value="{show var=$popup.form.user.mail}" />
-                      <input id="data_mail_all" type="checkbox" class="float-left" name="form_data[mail_all]" />
+                      <input id="data_mail_all" type="checkbox" class="float-left" name="form_data[mail_all]" {if $popup.form.config.has_to_change_email === true}checked=checked{/if}/>
                       <label for="data_mail_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
                       <div class="clear"></div>
                     </div>
