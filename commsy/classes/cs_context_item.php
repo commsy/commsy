@@ -3589,6 +3589,17 @@ class cs_context_item extends cs_item {
 //    return $retour;
 //  }
 
+  
+  function withLimeSurveyFunctions()
+  {
+  	global $c_limesurvey;
+  	if ( !isset($c_limesurvey) || !$c_limesurvey )
+  	{
+  		return false;
+  	}
+  	
+  	return true;
+  }
 
   ##########################################
   # Wiki - Raum-Wiki

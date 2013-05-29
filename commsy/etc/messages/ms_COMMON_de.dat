@@ -214,6 +214,7 @@ $message["COMMON_CONFIGURATION_HOME_FORM_TITLE"]["de"] = "Konfiguration der Home
 $message["COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE"]["de"] = "Textfelddarstellung einstellen";
 $message["COMMON_CONFIGURATION_IMS_FORM_TITLE"]["de"] = "IMS-Account Einstellungen";
 $message["COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE"]["de"] = "Verfügbare Sprachen";
+$message["COMMON_CONFIGURATION_LIMESURVEY_FORM_TITLE"]["de"] = "Limesurvey";
 $message["COMMON_CONFIGURATION_MAIL_FORM_TITLE"]["de"] = "E-Mail-Texte";
 $message["COMMON_CONFIGURATION_MOVE_FORM_TITLE"]["de"] = "Raum auf anderes Portal umziehen";
 $message["COMMON_CONFIGURATION_NEWS_FORM_TITLE"]["de"] = "Ankündigungen bearbeiten";
