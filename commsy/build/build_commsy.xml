@@ -13,7 +13,7 @@
 	<target name="js">
         <echo>WORKSPACE: ${project.workspace}</echo>
 		<chmod file="${project.workspace}/htdocs/js/src/util/buildscripts/build.sh" perm="u+x"></chmod>
-        <exec dir="${project.workspace}/htdocs/js/" executable="./src/util/buildscripts/build.sh">
+        <exec dir="${project.workspace}/htdocs/js/" executable="./src/util/buildscripts/build.sh" failonerror="true">
            <arg value="--profile build.js"></arg>
         </exec>
     </target>
