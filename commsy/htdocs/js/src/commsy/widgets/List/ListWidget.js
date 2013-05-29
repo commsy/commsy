@@ -173,13 +173,13 @@ define(
 			{
 				type:			"text",
 				size:			"20"
-			}, this.searchContainerNode, "Last");
+			}, this.searchContainerNode, "last");
 			
 			var searchButtonNode = DomConstruct.create("input",
 			{
 				type:			"button",
-				value:			PopupTranslations.searchButton,
-			}, this.searchContainerNode, "Last");
+				value:			PopupTranslations.searchButton
+			}, this.searchContainerNode, "last");
 			
 			On(searchButtonNode, "click", Lang.hitch(this, Lang.partial(this.onClickSearchButton, searchInputNode)));
 		},
