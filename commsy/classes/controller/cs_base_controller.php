@@ -471,7 +471,7 @@
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
 			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
 			$to_javascript['environment']['user_name'] = $current_user->getFullName();
-			$to_javascript['own']['id'] = $ownRoomItem->getItemId();
+			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();
@@ -479,7 +479,9 @@
 			$to_javascript['autosave']['limit'] = 0;
 
 
-			if ($ownRoomItem) {
+			if ($ownRoomItem)
+			{
+				$to_javascript['own']['id'] = $ownRoomItem->getItemId();
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
 			}
 
