@@ -989,6 +989,14 @@ class cs_grouproom_item extends cs_room_item {
    private function _sendMailToModeration2 ($room_item, $room_change) {
       $translator = $this->_environment->getTranslationObject();
       $default_language = 'de';
+      
+      // maybe in archive mode
+      $toggle_archive = false;
+      if ( $this->_environment->isArchiveMode() ) {
+      	$toggle_archive = true;
+      	$this->_environment->toggleArchiveMode();
+      }
+      
       $server_item = $this->_environment->getServerItem();
       $default_sender_address = $server_item->getDefaultSenderAddress();
       if ( empty($default_sender_address) ) {
@@ -1006,6 +1014,12 @@ class cs_grouproom_item extends cs_room_item {
          }
       }
       $current_user = $this->_environment->getCurrentUserItem();
+      
+      if ( $toggle_archive ) {
+      	$this->_environment->toggleArchiveMode();
+      }
+      unset($toggle_archive);
+      
       $moderator_list = $room_item->getModeratorList();
 
       // get moderators
