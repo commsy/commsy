@@ -226,7 +226,7 @@
 		   
 		   // item data
 		   $data[$index]["items"][] = array(
-		   "disabled"			=> ($entry->isNotActivated() && !($$entry>getCreatorID() == $current_user->getItemID() || $current_user->isModerator())) ? true : false,
+		   "disabled"			=> ($entry->isNotActivated() && !($entry->getCreatorID() == $current_user->getItemID() || $current_user->isModerator())) ? true : false,
 		   "item_id"			=> $entry->getItemID(),
 		   "title"				=> $title,
 		      "rubric"			=> $this->getUtils()->getLogoInformationForType($entry->getItemType()),
