@@ -177,6 +177,11 @@ $theme_array['uhh'] = array(
    'value'     => 'uhh',
    'disabled'  => false
 );
+$theme_array['eww'] = array(
+   'text'      => 'effectiveWEBWORK GmbH',
+   'value'     => 'eww',
+   'disabled'  => false
+);
 
 //$cs_max_list_length = 20;
 
