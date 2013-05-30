@@ -32,10 +32,12 @@
 						{if !$environment.is_guest}
 							___COMMON_WELCOME___, {$environment.username|truncate:20}
 						{/if}
-						{if $environment.is_guest}
-							___COMMON_WELCOME___, ___COMMON_GUEST___
-						{/if}
 					</a>
+						{if $environment.is_guest}
+							<a href="commsy.php?cid={$environment.pid}&mod=home&fct=index&room_id={$environment.cid}&login_redirect=1" class="tm_user" style="width:70px;" title="___COMMON_WELCOME___, ___COMMON_GUEST___">___COMMON_WELCOME___, ___COMMON_GUEST___</a>
+							</a>
+						{/if}
+					
                {/if}					
                {if $environment.archive_mode}
                <div id="tm_user">
