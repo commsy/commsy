@@ -382,6 +382,7 @@
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
+			$this->assign('environment', 'current_user_id', $this->_environment->getCurrentUserID());
 			$this->assign('environment', 'function', $this->_environment->getCurrentFunction());
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
 			$this->assign('environment', 'module_name', $translator->getMessage(strtoupper($this->_environment->getCurrentModule())).'_INDEX');
