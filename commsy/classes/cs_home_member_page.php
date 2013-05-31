@@ -59,17 +59,21 @@ class cs_home_member_page extends cs_left_page {
         ) {
         $correct = $form->check();
         if ( $correct ) {
+        	$text_converter = $this->_environment->getTextConverter();
+        	
+        	$Firstname = $text_converter->sanitizeHTML($this->_post_vars['firstname']);
+        	$Lastname = $text_converter->sanitizeHTML($this->_post_vars['lastname']);
 
            // Create new item
            $authentication = $this->_environment->getAuthenticationObject();
            $new_account = $authentication->getNewItem();
            $new_account->setUserID($this->_post_vars['user_id']);
            $new_account->setPassword($this->_post_vars['password']);
-           $new_account->setFirstname($this->_post_vars['firstname']);
-           $new_account->setLastname($this->_post_vars['lastname']);
+           $new_account->setFirstname($Firstname);
+           $new_account->setLastname($Lastname);
            $new_account->setLanguage($this->_post_vars['language']);
            $new_account->setEmail($this->_post_vars['email']);
-           $new_account->setPortalID($this->_environment->getCurrentPortalID());
+           $new_account->setPortalID($this->_environment->getCurrentPortalID());pr($new_account);
             if ( isset($this->_post_vars['auth_source']) and !empty($this->_post_vars['auth_source']) ) {
                $new_account->setAuthSourceID($this->_post_vars['auth_source']);
                $auth_source = $this->_post_vars['auth_source'];
