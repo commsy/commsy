@@ -677,7 +677,7 @@
 									$startingCellSpaceLeftInHours = $startingCellSpaceLeft / self::CELLDEFAULTHEIGHT;
 
 									// the complete date duration
-									if ($endDay == $day AND $endingDay == $year.'-'.$month.'-'.$day) {
+									if ($endDay == $day) {
 										// date will end today
 										$durationInHours = ($endTime - $startTime) / 3600;		// this is floating point
 									} else {
