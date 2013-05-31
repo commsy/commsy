@@ -28,9 +28,8 @@ $_skin_array = array();
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_limesurvey_form extends cs_rubric_form {
-
-   var $_set_deletion_values = false;
+class cs_configuration_limesurvey_form extends cs_rubric_form
+{
 
    /** constructor
     * the only available constructor
@@ -42,27 +41,11 @@ class cs_configuration_limesurvey_form extends cs_rubric_form {
       $this->_translator = $this->_environment->getTranslationObject();
    }
 
-   function setDeletionValues(){
-      $this->_set_deletion_values = true;
-   }
-
-   function setSkinArray($array){
-      $this->_skin_array = $array;
-   }
-
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
       $this->_item = $this->_environment->getCurrentContextItem();
-      $this->_array_info_text = array();
-      foreach($this->_skin_array as $skin){
-         $temp_array = array();
-         $temp_array['text']  = $skin;
-         $temp_array['value'] = $skin; //hvv
-         $this->_array_info_text[$skin] = $temp_array;
-      }
-      ksort($this->_array_info_text);
    }
 
    /** create the form, INTERNAL
@@ -103,14 +86,7 @@ class cs_configuration_limesurvey_form extends cs_rubric_form {
    									true );
    		
       // buttons
-   	  $this->_form->addButtonBar('option',$this->_translator->getMessage('WIKI_SAVE_BUTTON'));
-   		
-   		
-      if ( isset($this->_item) and $this->_item->existWiki() )  {
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'',$this->_translator->getMessage('WIKI_DELETE_BUTTON'),'','');
-      } else {
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('WIKI_SAVE_BUTTON'));
-      }
+   	  $this->_form->addButtonBar('option',$this->_translator->getMessage('LIMESURVEY_SAVE_BUTTON'));
    }
 
 
@@ -118,184 +94,50 @@ class cs_configuration_limesurvey_form extends cs_rubric_form {
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the context item or the form_post data
     */
-   function _prepareValues () {
+   function _prepareValues ()
+   {
       $this->_values = array();
-      if (isset($this->_form_post) and !$this->_set_deletion_values) {
+      
+      if ( isset($this->_form_post) )
+      {
          $this->_values = $this->_form_post;
-         $this->_values['new_discussion'] = '';
-      } elseif (isset($this->_item) and !$this->_set_deletion_values) {
-         $this->_values['iid'] = $this->_item->getItemID();
-         $this->_values['wikititle'] = $this->_item->getWikiTitle();
-         $home_link = $this->_item->getWikiHomeLink();
-         if ($home_link=='1'){
-            $this->_values['wikilink'] = 1;
-         }
-         $portal_link = $this->_item->getWikiPortalLink();
-         if ($portal_link=='1'){
-            $this->_values['wikilink2'] = 1;
-         }
-         if ($this->_item->WikiShowCommSyLogin() == "1"){
-            $this->_values['show_login_box'] = 1;
-         }
-         //  new features
-         if ($this->_item->WikiEnableFCKEditor() == "1"){
-            $this->_values['enable_fckeditor'] = 1;
-         }
-         if ($this->_item->WikiEnableSitemap() == "1"){
-            $this->_values['enable_sitemap'] = 1;
-         }
-         if ($this->_item->WikiEnableStatistic() == "1"){
-            $this->_values['enable_statistic'] = 1;
-         }
-         if ($this->_item->WikiEnableSearch() == "1"){
-            $this->_values['enable_search'] = 1;
-         }
-         if ($this->_item->WikiEnableRss() == "1"){
-            $this->_values['enable_rss'] = 1;
-         }
-         if ($this->_item->WikiEnableCalendar() == "1"){
-            $this->_values['enable_calendar'] = 1;
-         }
-         if ($this->_item->WikiEnableGallery() == "1"){
-            $this->_values['enable_gallery'] = 1;
-         }
-         if ($this->_item->WikiEnableNotice() == "1"){
-            $this->_values['enable_notice'] = 1;
-         }
-         if ($this->_item->WikiEnablePdf() == "1"){
-            $this->_values['enable_pdf'] = 1;
-         }
-         if ($this->_item->WikiEnableRater() == "1"){
-            $this->_values['enable_rater'] = 1;
-         }
-         if ($this->_item->WikiEnableListCategories() == "1"){
-            $this->_values['enable_listcategories'] = 1;
-         }
-         if ($this->_item->WikiNewPageTemplate() != "-1"){
-            $this->_values['new_page_template'] = $this->_item->WikiNewPageTemplate();
-         }
-
-         if ($this->_item->WikiEnableSwf() == "1"){
-            $this->_values['enable_swf'] = 1;
-         }
-         if ($this->_item->WikiEnableWmplayer() == "1"){
-            $this->_values['enable_wmplayer'] = 1;
-         }
-         if ($this->_item->WikiEnableQuicktime() == "1"){
-            $this->_values['enable_quicktime'] = 1;
-         }
-         if ($this->_item->WikiEnableYoutubeGoogleVimeo() == "1"){
-            $this->_values['enable_youtube_google_vimeo'] = 1;
-         }
-         if ($this->_item->WikiEnableDiscussion() == "1"){
-            $this->_values['enable_discussion'] = 1;
-         }
-         if ($this->_item->WikiEnableDiscussionNotification() == "1"){
-            $this->_values['enable_discussion_notification'] = 1;
-         }
-         if ($this->_item->WikiEnableDiscussionNotificationGroups() == "1"){
-            $this->_values['enable_discussion_notification_groups'] = 1;
-         }
-         if ($this->_item->WikiUseCommSyLogin() == "1"){
-            $this->_values['use_commsy_login'] = 1;
-         }
-         if ($this->_item->WikiCommunityReadAccess() == "1"){
-            $this->_values['community_read_access'] = 1;
-         }
-         if ($this->_item->WikiCommunityWriteAccess() == "1"){
-            $this->_values['community_write_access'] = 1;
-         }
-         if ($this->_item->WikiPortalReadAccess() == "1"){
-            $this->_values['portal_read_access'] = 1;
-         }
-         if ( $this->_item->isWikiRoomModWriteAccess() ) {
-            $this->_values['room_mod_write_access'] = 1;
-         }
-         $this->_values['new_discussion'] = '';
-         // /new features
-         if ( $this->_item->wikiWithSectionEdit() ) {
-            $this->_values['wiki_section_edit'] = 1;
-         }
-         if ( $this->_item->wikiWithHeaderForSectionEdit() ) {
-            $this->_values['wiki_section_edit_header'] = 1;
-         }
-         $this->_values['skin_choice'] = $this->_item->getWikiSkin();
-         $this->_values['admin'] = $this->_item->getWikiAdminPW();
-         $this->_values['edit'] = $this->_item->getWikiEditPW();
-         $this->_values['read'] = $this->_item->getWikiReadPW();
-      } else {
-         $this->_values['wikititle'] = $this->_item->getWikiTitle();
-         $this->_values['skin_choice'] = 'pmwiki';
-         $this->_values['admin'] = 'admin';
-         $this->_values['edit'] = 'edit';
-         $this->_values['read'] = 'read';
-         $this->_values['show_login_box'] = '1';
-         $this->_values['wikilink'] = '1';
-         $this->_values['use_commsy_login'] = '1';
+      }
+      elseif ( isset($this->_item) )
+      {
+      		if ( $this->_item->isLimeSurveyActive() )
+      		{
+      			$this->_values['ls_activate'] = 1;
+      		}
+      		
+      		$this->_values['ls_remote_url'] = $this->_item->getLimeSurveyJsonRpcUrl();
+      		$this->_values['ls_admin_user'] = $this->_item->getLimeSurveyAdminUser();
+      		$this->_values['ls_admin_pw'] = $this->_item->getLimeSurveyAdminPassword();
       }
    }
 
-   function _checkValues () {
-      $context_item = $this->_environment->getCurrentContextItem();
-      $discussion_array = $context_item->getWikiDiscussionArray();
-//      if ( !empty($this->_form_post['enable_discussion'])
-//           and empty($this->_form_post['new_discussion'])
-//           and !isset($discussion_array[0])
-//         ) {
-//         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_EMPTY_ERROR');
-//         $this->_form->setFailure('new_discussion','');
-//      }
-      if ( !empty($this->_form_post['enable_discussion'])
-           and !empty($this->_form_post['new_discussion'])
-           and isset($discussion_array[0])
-         ) {
-            $wiki_manager = $this->_environment->getWikiManager();
-        $tempDiscussion = $wiki_manager->getDiscussionWikiName($this->_form_post['new_discussion']);
-
-        $exists = false;
-
-        foreach($discussion_array as $discussion){
-            $discussion = $wiki_manager->getDiscussionWikiName($discussion);
-           if ($discussion == $tempDiscussion){
-              $exists = true;
-           }
-        }
-
-        if($exists){
-           $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_EXISTS_ERROR');
-            $this->_form->setFailure('new_discussion','');
-        }
-
-      }
-      if ( empty($this->_form_post['enable_discussion'])
-           and (!empty($this->_form_post['enable_discussion_notification']) or !empty($this->_form_post['enable_discussion_notification_groups']))
-         ) {
-         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NOT_SELECTED_ERROR');
-         $this->_form->setFailure('enable_discussion','');
-      }
-
-      if ( !empty($this->_form_post['enable_discussion'])
-           and empty($this->_form_post['enable_discussion_notification'])
-           and !empty($this->_form_post['enable_discussion_notification_groups'])
-         ) {
-         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
-         $this->_form->setFailure('enable_discussion_notification','');
-      }
-
-//      if(!empty($this->_form_post['enable_discussion'])
-//          and empty($this->_form_post['new_discussion'])
-//          and empty($this->_form_post['enable_discussion_discussions'])
-//        ) {
-//         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
-//         $this->_form->setFailure('enable_discussion_notification','');
-//      }
-
-      if ( empty($this->_form_post['community_read_access'])
-           and (!empty($this->_form_post['community_write_access']))
-         ) {
-         $this->_error_array[] = $this->_translator->getMessage('WIKI_COOMUNITY_NO_READ_ACCESS_ERROR');
-         $this->_form->setFailure('community_read_access','');
-      }
+   function _checkValues()
+   {
+   		// if active 
+   		if ( !empty($this->_form_post['ls_activate']) && $this->_form_post['ls_activate'] == "1" )
+   		{
+   			if ( empty($this->_form_post['ls_remote_url']) )
+   			{
+   				$this->_error_array[] = $this->_translator->getMessage('LIMESURVEY_CONFIGURATION_MISSING_URL');
+   				$this->_form->setFailure('ls_remote_url','');
+   			}
+   			
+   			if ( empty($this->_form_post['ls_admin_user']) )
+   			{
+   				$this->_error_array[] = $this->_translator->getMessage('LIMESURVEY_CONFIGURATION_MISSING_ADMIN_USER');
+   				$this->_form->setFailure('ls_admin_user','');
+   			}
+   			
+   			if ( empty($this->_form_post['ls_admin_pw']) )
+   			{
+   				$this->_error_array[] = $this->_translator->getMessage('LIMESURVEY_CONFIGURATION_MISSING_ADMIN_PW');
+   				$this->_form->setFailure('ls_admin_pw','');
+   			}
+   		}
    }
 }
 ?>

@@ -3600,6 +3600,71 @@ class cs_context_item extends cs_item {
   	
   	return true;
   }
+  
+  function setLimeSurveyActive()
+  {
+  	$this->_addExtra('LIMESURVEY', 1);
+  }
+  
+  function setLimeSurveyInactive()
+  {
+  	$this->_addExtra('LIMESURVEY', -1);
+  }
+  
+  function isLimeSurveyActive()
+  {
+  	if ( $this->_issetExtra('LIMESURVEY') && $this->_getExtra('LIMESURVEY') === 1 )
+  	{
+  		return true;
+  	}
+  	
+  	return false;
+  }
+  
+  function setLimeSurveyJsonRpcUrl($url)
+  {
+  	$this->_addExtra('LIMESURVEYJSONRPCURL', $url);
+  }
+  
+  function getLimeSurveyJsonRpcUrl()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYJSONRPCURL') )
+  	{
+  		return $this->_getExtra('LIMESURVEYJSONRPCURL');
+  	}
+  	
+  	return '';
+  }
+  
+  function setLimeSurveyAdminUser($username)
+  {
+  	$this->_addExtra('LIMESURVEYADMINUSER', $username);
+  }
+  
+  function getLimeSurveyAdminUser()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYADMINUSER') )
+  	{
+  		return $this->_getExtra('LIMESURVEYADMINUSER');
+  	}
+  	
+  	return '';
+  }
+  
+  function setLimeSurveyAdminPassword($password)
+  {
+  	$this->_addExtra('LIMESURVEYADMINPASSWORD', $password);
+  }
+  
+  function getLimeSurveyAdminPassword()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYADMINPASSWORD') )
+  	{
+  		return $this->_getExtra('LIMESURVEYADMINPASSWORD');
+  	}
+  	
+  	return '';
+  }
 
   ##########################################
   # Wiki - Raum-Wiki
