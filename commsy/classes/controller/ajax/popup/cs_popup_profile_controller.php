@@ -553,7 +553,6 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							setValue($currentUser, $portalUser, 'setTitle', $text_converter->sanitizeHTML($form_data['title']));
 							setValue($currentUser, $portalUser, 'setBirthday', $text_converter->sanitizeHTML($form_data['birthday']));
 
-
 							$email_old = $portalUser->getEmail();
 							setValue($currentUser, $portalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
 							if ( $portalUser->hasToChangeEmail()
@@ -561,7 +560,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								) {
 								$portalUser->unsetHasToChangeEmail();
 
-							setValue($currentUser, $portalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
+								$form_data['mail_all'] = 1;
 							}
 							unset($email_old);
 
