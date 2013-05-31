@@ -8,5 +8,6 @@ $message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_PW"]["de"] = "Bitte geben Sie d
 $message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_USER"]["de"] = "Bitte geben Sie den Benutzernames des Administrators an.";
 $message["LIMESURVEY_CONFIGURATION_MISSING_URL"]["de"] = "Bitte geben Sie die URL zur Schnittstelle an.";
 $message["LIMESURVEY_CONFIGURATION_REMOTE_URL"]["de"] = "JSON-RPC Interface URL";
+$message["LIMESURVEY_CONFIGURATION_ROOM_ACTIVATE"]["de"] = "Umfragen in diesem Raum aktivieren";
 $message["LIMESURVEY_SAVE_BUTTON"]["de"] = "Speichern";
 ?>

@@ -8,5 +8,6 @@ $message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_PW"]["en"] = "Admin password is
 $message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_USER"]["en"] = "Admin username is mandatory.";
 $message["LIMESURVEY_CONFIGURATION_MISSING_URL"]["en"] = "JSON-RPC Interface URL missing.";
 $message["LIMESURVEY_CONFIGURATION_REMOTE_URL"]["en"] = "JSON-RPC Interface URL";
+$message["LIMESURVEY_CONFIGURATION_ROOM_ACTIVATE"]["en"] = "Use Limesurvey in this room";
 $message["LIMESURVEY_SAVE_BUTTON"]["en"] = "Save";
 ?>

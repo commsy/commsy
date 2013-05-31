@@ -459,8 +459,8 @@
 				$this->assign('cs_bar', 'show_stack', false);
 				$this->assign('cs_bar', 'show_portfolio', false);
 			}
-
-
+			
+			$this->assign('cs_bar', 'show_limesurvey', $current_context->isLimeSurveyActive());
 
 			// to javascript
 			$to_javascript = array();

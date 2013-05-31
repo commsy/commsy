@@ -76,17 +76,6 @@ else {
       $command = '';
    }
 
-    // Find out what to do
-    if ( isset($_POST['delete_option']) ) {
-       $delete_command = $_POST['delete_option'];
-    }elseif ( isset($_GET['delete_option']) ) {
-       $delete_command = $_GET['delete_option'];
-    } else {
-       $delete_command = '';
-    }
-
-
-
    // Initialize the form
    $form = $class_factory->getClass(CONFIGURATION_LIMESURVEY_FORM,array('environment' => $environment));
    
@@ -106,42 +95,7 @@ else {
    elseif ( isset($item) ) {
       $form->setItem($item);
    }
-
-    if ( !empty($delete_command) and
-        isOption($delete_command, $translator->getMessage('COMMON_DELETE_BUTTON'))   ) {
-
-    	/*
-      $current_user = $environment->getCurrentUserItem();
-      $item->setModificatorItem($current_user);
-      $item->setModificationDate(getCurrentDateTimeInMySQL());
-      $item->unsetWikiExists();
-      $item->setWikiInActive();
-      $item->setWikiSkin('pmwiki');
-      $item->setWikiTitle($item->getTitle());
-      $item->unsetWikiEnableDiscussion();
-      $item->unsetWikiEnableDiscussionNotification();
-      $item->unsetWikiEnableDiscussionNotificationGroups();
-      $item->unsetWikiDiscussionArray();
-      // Save item
-      $item->save();
-
-      // delete wiki
-      $wiki_manager = $environment->getWikiManager();
-      $wiki_manager->deleteWiki($item);
-      $form_view->setItemIsSaved();
-      $form->setDeletionValues();
-      $is_saved = true;*/
-   }
-      // Cancel editing
-   elseif ( !empty($delete_command) and
-        isOption($delete_command, $translator->getMessage('COMMON_CANCEL_BUTTON'))    ) {
-        redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
-   }
-
    
-
-
-
    // Save item
     if ( !empty($command) && isOption($command, $translator->getMessage('LIMESURVEY_SAVE_BUTTON')) )
     {

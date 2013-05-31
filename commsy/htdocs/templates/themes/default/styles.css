@@ -3570,6 +3570,17 @@ a.tm_settings_hover {
     background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
     }
 
+#tm_limesurvey
+{
+    background: url(img/tm_settings_limesurvey.gif) no-repeat;
+}
+
+#tm_limesurvey:hover,
+.tm_limesurvey_hover
+{
+	background: url(img/tm_settings_limesurvey.gif) -36px 0px no-repeat !important;
+}
+
 #tm_mycalendar {
     background: url(img/tm_mycalendar.gif) no-repeat;
     }

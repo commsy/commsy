@@ -125,7 +125,7 @@ class cs_annotations_manager extends cs_manager {
       return $result;
    }
 
-   function _performQuery () {
+   function _performQuery ($mode = 'select') {
       return $this->performQuery();
    }
 
