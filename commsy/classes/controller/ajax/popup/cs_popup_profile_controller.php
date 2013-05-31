@@ -553,12 +553,18 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							setValue($currentUser, $portalUser, 'setTitle', $text_converter->sanitizeHTML($form_data['title']));
 							setValue($currentUser, $portalUser, 'setBirthday', $text_converter->sanitizeHTML($form_data['birthday']));
 
+<<<<<<< master
 							$email_old = $portalUser->getEmail();
 							setValue($currentUser, $portalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
 							if ( $portalUser->hasToChangeEmail()
 								  and $email_old != $form_data['mail']
 								) {
 								$portalUser->unsetHasToChangeEmail();
+=======
+							setValue($currentUser, $portalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
+							if($portalUser->hasToChangeEmail()) {
+								$portalUser_item->unsetHasToChangeEmail();
+>>>>>>> a5592f9 purifier input felder
 								$form_data['mail_all'] = 1;
 							}
 							unset($email_old);
