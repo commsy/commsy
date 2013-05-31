@@ -65,6 +65,7 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
+        $text_converter = $this->_environment->getTextConverter();
 
         if(isset($additional['action']) && $additional['action'] === 'upload_picture') $current_iid = $additional['iid'];
         else $current_iid = $form_data['iid'];
@@ -170,7 +171,7 @@ class cs_popup_institution_controller implements cs_rubric_popup_controller {
 
 					// Set attributes
 					if ( isset($form_data['name']) ) {
-						$item->setName($form_data['name']);
+						$item->setName($text_converter->sanitizeHTML($form_data['name']));
 					}
 					if ( isset($form_data['description']) ) {
 						$item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));
