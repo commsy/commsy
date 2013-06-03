@@ -1,30 +1,36 @@
 define(
 [
- 	"dojo/_base/declare",
- 	"commsy/widgets/PopupBase",
- 	"dijit/_TemplatedMixin",
- 	"dojo/text!./templates/LimeSurveyWidget.html",
- 	"dojo/i18n!./nls/LimeSurveyWidget",
- 	"dojo/_base/lang",
+	"dojo/_base/declare",
+	"dijit/_WidgetBase",
+	"commsy/base",
+	"dijit/_TemplatedMixin",
+	"dojo/text!./templates/LimeSurveyMenu.html",
+	"dojo/i18n!./nls/LimeSurveyMenu",
+	"dojo/_base/lang",
+	"dojo/dom-construct",
+	"dojo/on",
 	"dojo/dom-class",
-	"dojo/query"
+	"dojo/query",
+	"dojo/topic"
 ], function
 (
 	declare,
-	PopupBase,
+	WidgetBase,
+	BaseClass,
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
 	Lang,
+	DomConstruct,
+	On,
 	DomClass,
-	Query
+	Query,
+	Topic
 ) {
-	return declare([PopupBase, TemplatedMixin],
+	return declare([BaseClass, WidgetBase, TemplatedMixin],
 	{
 		templateString:		Template,
-		baseClass:			"toggleWidget",
-		
-		toggle:				true,							///< Determs if this is a switchable popup
+		baseClass:			"CommSyWidget",
 		
 		// attributes
 		title:				"",
@@ -53,23 +59,7 @@ define(
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			this.set("title", this.popupTranslations.title);
-			
-			// load child widgets silently
-			var widgetManager = this.getWidgetManager();
-			widgetManager.GetInstances(
-			[
-			 	[ "commsy/widgets/LimeSurvey/LimeSurveyOverview", {}, true ],
-			 	[ "commsy/widgets/LimeSurvey/LimeSurveyMenu", { }, true ]
-			]).then(Lang.hitch(this, function(deferred)
-			{
-				var limeSurveyOverview = deferred[0].instance;
-				var limeSurveyMenu = deferred[1].instance;
-				
-				// place widgets
-				limeSurveyOverview.placeAt(this.mainNode);
-				limeSurveyMenu.placeAt(this.sidebarNode);
-			}));
+			this.set("title", PopupTranslations.title);
 		},
 		
 		/**
@@ -89,7 +79,6 @@ define(
 		 * Getter / Setter
 		 ************************************************************************************/
 		
-		
 		/************************************************************************************
 		 * Helper Functions
 		 ************************************************************************************/
@@ -97,45 +86,9 @@ define(
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
-		
-		/**
-		 * \brief	toggle event
-		 * 
-		 * Triggered on popup opening. Overwritten to specify some custom behavior.
-		 * 
-		 * @return	Deferred - resolves when opening is done
-		 */
-		OnOpenPopup: function()
+		onClickCreate: function(event)
 		{
-			// call parent
-			return this.inherited(arguments).then(Lang.hitch(this, function(response)
-			{
-				// set class for widget button
-				var buttonNode = Query("a#tm_limesurvey")[0];
-				
-				if ( buttonNode )
-				{
-					DomClass.add(buttonNode, "tm_limesurvey_hover");
-				}
-			}));
-		},
-		
-		/**
-		 * \brief	close event
-		 * 
-		 * Triggered on popup closing. Overwritten to specify some custom behavior.
-		 */
-		OnClosePopup: function()
-		{
-			this.inherited(arguments);
-			
-			// set class for widget button
-			var buttonNode = Query("a#tm_limesurvey")[0];
-			
-			if ( buttonNode )
-			{
-				DomClass.remove(buttonNode, "tm_limesurvey_hover");
-			}
+			console.log("create");
 		}
 	});
 });
