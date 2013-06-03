@@ -22,6 +22,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	public function save($form_data, $additional = array()) {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_user = $this->_environment->getCurrentUserItem();
+		$text_converter = $this->_environment->getTextConverter();
 
 		// check access rights
 		if($current_user->isGuest()) {
@@ -444,7 +445,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setTemplateTitle($form_data['template_title']);
 				         }
 				         if ( isset($form_data['template_description'])){
-				            $current_context->setTemplateDescription($form_data['template_description']);
+				            $current_context->setTemplateDescription($text_converter->sanitizeHTML($form_data['template_description']));
 				         }
 
 				         
@@ -584,12 +585,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setAGBTextArray($agbtext_array);
 				            $current_context->setAGBChangeDate();
 				         }
+				         
+				         $text_converter = $this->_environment->getTextConverter();
 
 				         // extra todo status
 				         $status_array = array();
 				         foreach($form_data as $key => $value) {
 				         	if(mb_substr($key, 0, 18) === 'additional_status_') {
-				         		$status_array[mb_substr($key, 18)] = $value;
+				         		$status_array[mb_substr($key, 18)] = $text_converter->sanitizeHTML($value);
 				         	}
 				         }
 
@@ -633,17 +636,17 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->setWithoutWorkflowReader();
 				        }
 				        if ( isset($form_data['workflow_trafic_light_default']) and !empty($form_data['workflow_trafic_light_default'])) {
-				           $current_context->setWorkflowTrafficLightDefault($form_data['workflow_trafic_light_default']);
+				           $current_context->setWorkflowTrafficLightDefault($text_converter->sanitizeHTML($form_data['workflow_trafic_light_default']));
 				        }
 
 				        if ( isset($form_data['workflow_trafic_light_green_text']) and !empty($form_data['workflow_trafic_light_green_text'])) {
-				           $current_context->setWorkflowTrafficLightTextGreen($form_data['workflow_trafic_light_green_text']);
+				           $current_context->setWorkflowTrafficLightTextGreen($text_converter->sanitizeHTML($form_data['workflow_trafic_light_green_text']));
 				        }
 				        if ( isset($form_data['workflow_trafic_light_yellow_text']) and !empty($form_data['workflow_trafic_light_yellow_text'])) {
-				           $current_context->setWorkflowTrafficLightTextYellow($form_data['workflow_trafic_light_yellow_text']);
+				           $current_context->setWorkflowTrafficLightTextYellow($text_converter->sanitizeHTML($form_data['workflow_trafic_light_yellow_text']));
 				        }
 				        if ( isset($form_data['workflow_trafic_light_red_text']) and !empty($form_data['workflow_trafic_light_red_text'])) {
-				           $current_context->setWorkflowTrafficLightTextRed($form_data['workflow_trafic_light_red_text']);
+				           $current_context->setWorkflowTrafficLightTextRed($text_converter->sanitizeHTML($form_data['workflow_trafic_light_red_text']));
 				        }
 
 				        if ( isset($form_data['workflow_reader_group']) and !empty($form_data['workflow_reader_group'])) {
@@ -788,7 +791,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 				        	// set title
 				        	if (!empty($form_data["moderation_title_" . $info_rubric])) {
-				        		$current_context->setUsageInfoHeaderForRubric($info_rubric, $form_data["moderation_title_" . $info_rubric]);
+				        		$text_converter = $this->_environment->getTextConverter();
+				        		$current_context->setUsageInfoHeaderForRubric($info_rubric, $text_converter->sanitizeHTML($form_data["moderation_title_" . $info_rubric]));
 				        	}
 
 				        	// set text

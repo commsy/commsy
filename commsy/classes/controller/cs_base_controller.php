@@ -382,6 +382,7 @@
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
+			$this->assign('environment', 'current_user_id', $this->_environment->getCurrentUserID());
 			$this->assign('environment', 'function', $this->_environment->getCurrentFunction());
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
 			$this->assign('environment', 'module_name', $translator->getMessage(strtoupper($this->_environment->getCurrentModule())).'_INDEX');
@@ -471,7 +472,7 @@
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
 			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
 			$to_javascript['environment']['user_name'] = $current_user->getFullName();
-			$to_javascript['own']['id'] = $ownRoomItem->getItemId();
+			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();
@@ -479,7 +480,9 @@
 			$to_javascript['autosave']['limit'] = 0;
 
 
-			if ($ownRoomItem) {
+			if ($ownRoomItem)
+			{
+				$to_javascript['own']['id'] = $ownRoomItem->getItemId();
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
 			}
 

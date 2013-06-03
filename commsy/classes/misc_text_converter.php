@@ -3900,7 +3900,7 @@ class misc_text_converter {
    		//ersetzt durch _old_htmlformat
    	
    		// nl 2 br
-   		$text = nl2br($text);
+   		#$text = nl2br($text);
    		
    		$text = $this->_decode_backslashes($text);
    		

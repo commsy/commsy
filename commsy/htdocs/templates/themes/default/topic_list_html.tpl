@@ -44,8 +44,14 @@
 			</div>
 			<div class="column_list_20">
 				<p>
-         			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
-        			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+					{if !$item.activated && $item.creator_id != $environment.current_user_id}
+						<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+        				<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+					{else}
+         				<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+        				<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
+        			{/if}
+         			
 				</p>
 			</div>
 			<div class="column_280">

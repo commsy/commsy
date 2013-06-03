@@ -23,9 +23,11 @@ error_reporting(E_ALL);
 /**
 * We need the child classes
 */
-function __autoload($class){
-    require_once($class.'.php');
-} // end function
+function autoload($class)
+{
+    require_once('classes/external_classes/ical/' . $class.'.php');
+}
+spl_autoload_register("autoload");
 
 /**
 * Create a iCalendar file for download

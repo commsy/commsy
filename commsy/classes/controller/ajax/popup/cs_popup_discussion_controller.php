@@ -89,6 +89,7 @@
 		public function save($form_data, $additional = array()) {
 
 			$environment = $this->_environment;
+			$text_converter = $this->_environment->getTextConverter();
 
 			if ($additional["contextId"]) {
 				$itemManager = $this->_environment->getItemManager();
@@ -274,7 +275,7 @@
 						$buzzword_manager = $environment->getBuzzwordManager();
 						$buzzword_item = $buzzword_manager->getNewItem();
 						$buzzword_item->setLabelType('buzzword');
-						$buzzword_item->setName($new_buzzword);
+						$buzzword_item->setName($text_converter->sanitizeHTML($new_buzzword));
 						$buzzword_item->setCreatorItem($current_user);
 						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
 						$buzzword_item->save();

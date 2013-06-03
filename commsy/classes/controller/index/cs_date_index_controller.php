@@ -677,71 +677,75 @@
 									$startingCellSpaceLeftInHours = $startingCellSpaceLeft / self::CELLDEFAULTHEIGHT;
 
 									// the complete date duration
-									if ($endDay == $day) {
+									if ($endDay == $day AND $endingDay == $year.'-'.$month.'-'.$day) {
 										// date will end today
 										$durationInHours = ($endTime - $startTime) / 3600;		// this is floating point
 									} else {
 										// date will end in future days
 										$durationInHours = 60 * 24 - ((int) date("H", $startTime)) * 60 - ((int) date("i", $startTime));
+										// whole time date
+										$viewRow = -1;
 									}
-
-									// now fill the start cell and following cells until end
-									$durationLeftInHours = $durationInHours - $durationDoneInHours;
-
-									// starting cell
-									if ($durationLeftInHours <= $startingCellSpaceLeftInHours) {
-										// cell can take it all
-										$dateHeight += self::CELLDEFAULTHEIGHT * $durationLeftInHours;
-										$durationLeftInHours = 0;
-									} else {
-										// date is going over starting cell
-										$dateHeight = self::CELLDEFAULTHEIGHT - $topMargin;
-										$durationLeftInHours -= $this->spaceToHours($dateHeight - self::DATEDEFAULTHEIGHT);
-
-										$actualRow = $viewRow;
-										$spaceLeft = self::CELLDEFAULTHEIGHT;
-										while ($durationLeftInHours > 0) {
-											// determ the new cell
-											$actualRow++;
-
-											// determ the height to use and update duration left
-											if ($durationLeftInHours > 1) {
-												$insertDateHeight = self::CELLDEFAULTHEIGHT;
-												$durationLeftInHours--;
-											} else {
-												$insertDateHeight = $this->hoursToSpace($durationLeftInHours);
-												$durationLeftInHours = 0;
+									
+									if($viewRow != -1){
+										// now fill the start cell and following cells until end
+										$durationLeftInHours = $durationInHours - $durationDoneInHours;
+	
+										// starting cell
+										if ($durationLeftInHours <= $startingCellSpaceLeftInHours) {
+											// cell can take it all
+											$dateHeight += self::CELLDEFAULTHEIGHT * $durationLeftInHours;
+											$durationLeftInHours = 0;
+										} else {
+											// date is going over starting cell
+											$dateHeight = self::CELLDEFAULTHEIGHT - $topMargin;
+											$durationLeftInHours -= $this->spaceToHours($dateHeight - self::DATEDEFAULTHEIGHT);
+	
+											$actualRow = $viewRow;
+											$spaceLeft = self::CELLDEFAULTHEIGHT;
+											while ($durationLeftInHours > 0) {
+												// determ the new cell
+												$actualRow++;
+	
+												// determ the height to use and update duration left
+												if ($durationLeftInHours > 1) {
+													$insertDateHeight = self::CELLDEFAULTHEIGHT;
+													$durationLeftInHours--;
+												} else {
+													$insertDateHeight = $this->hoursToSpace($durationLeftInHours);
+													$durationLeftInHours = 0;
+												}
+	
+									      		// participants
+									      		$participants = array();
+									      		$participantsList = $date->getParticipantsItemList();
+									      		if(!$participantsList->isEmpty()) {
+									      			$participant = $participantsList->getFirst();
+	
+									      			while($participant) {
+									      				$participants[] = array(
+									      					"name"	=> $participant->getFullName()
+									      				);
+	
+									      				$participant = $participantsList->getNext();
+									      			}
+									      		}
+	
+	
+												// create new view entries
+												$date_tooltip_array[$date->getItemID()] = $this->getTooltipDate($date);
+												$displayArray[$actualRow][$viewColumn][] = array(
+													"title"			=> "",					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+													"display_title"	=> $date->getTitle(),					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+													"date"			=> $date_tooltip_array[$date->getItemID()],					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+													"place"			=> $date->getPlace(),					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+													"participants"	=> $participants,					// leave empty, so only the starting cell will hold the title(and day beginning cells)
+													"color"			=> $colorStr,
+													"dateHeight"	=> $insertDateHeight,
+													"topMargin"		=> 0,
+													"href"			=> $href
+												);
 											}
-
-								      		// participants
-								      		$participants = array();
-								      		$participantsList = $date->getParticipantsItemList();
-								      		if(!$participantsList->isEmpty()) {
-								      			$participant = $participantsList->getFirst();
-
-								      			while($participant) {
-								      				$participants[] = array(
-								      					"name"	=> $participant->getFullName()
-								      				);
-
-								      				$participant = $participantsList->getNext();
-								      			}
-								      		}
-
-
-											// create new view entries
-											$date_tooltip_array[$date->getItemID()] = $this->getTooltipDate($date);
-											$displayArray[$actualRow][$viewColumn][] = array(
-												"title"			=> "",					// leave empty, so only the starting cell will hold the title(and day beginning cells)
-												"display_title"	=> $date->getTitle(),					// leave empty, so only the starting cell will hold the title(and day beginning cells)
-												"date"			=> $date_tooltip_array[$date->getItemID()],					// leave empty, so only the starting cell will hold the title(and day beginning cells)
-												"place"			=> $date->getPlace(),					// leave empty, so only the starting cell will hold the title(and day beginning cells)
-												"participants"	=> $participants,					// leave empty, so only the starting cell will hold the title(and day beginning cells)
-												"color"			=> $colorStr,
-												"dateHeight"	=> $insertDateHeight,
-												"topMargin"		=> 0,
-												"href"			=> $href
-											);
 										}
 									}
 								}

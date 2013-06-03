@@ -39,12 +39,12 @@ var profile = (function(){
     		"final/commsy": {
     			include: [
     			    "commsy/main",
-    			    "commsy/popups/ToggleRoomConfiguration",
+//    			    "commsy/popups/ToggleRoomConfiguration",
     			    /*"commsy/popups/TogglePersonalConfiguration",*/
     			    "commsy/popups/ToggleBreadcrumb",
     			    "commsy/popups/ToggleClipboard",
     			    "commsy/popups/ToggleStack",
-    			    "commsy/popups/ToggleWidgets",
+    			    /*"commsy/popups/ToggleWidgets",*/
     			    /*"commsy/popups/TogglePortfolio",*/
     			    
     			    "commsy/widgets/WidgetManager",
@@ -106,7 +106,7 @@ var profile = (function(){
         	location:		"cbtree"
         },{
         	name:			"ckeditor",
-        	location:		"../3rdParty/ckeditor"
+        	location:		"../3rdParty/ckeditor_4.1.1"
         },{
         	name:			"commsy",
         	location:		"commsy"

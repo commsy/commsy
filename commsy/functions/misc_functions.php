@@ -700,7 +700,10 @@ function isURLValid () {
         $module != 'scorm' and
    		
    		// download
-   		$module != 'download'
+   		$module != 'download' and
+   		
+   		// individual css
+   		$module != 'individual'
       ) {
       return false;
     }
