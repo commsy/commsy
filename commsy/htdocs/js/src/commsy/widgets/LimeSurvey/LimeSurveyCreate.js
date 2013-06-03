@@ -1,11 +1,10 @@
 define(
 [
 	"dojo/_base/declare",
-	"dijit/_WidgetBase",
-	"commsy/base",
+	"commsy/widgets/PopupBase",
 	"dijit/_TemplatedMixin",
-	"dojo/text!./templates/LimeSurveyMenu.html",
-	"dojo/i18n!./nls/LimeSurveyMenu",
+	"dojo/text!./templates/LimeSurveyCreate.html",
+	"dojo/i18n!./nls/LimeSurveyCreate",
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
@@ -15,8 +14,7 @@ define(
 ], function
 (
 	declare,
-	WidgetBase,
-	BaseClass,
+	PopupBase,
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
@@ -27,10 +25,12 @@ define(
 	Query,
 	Topic
 ) {
-	return declare([BaseClass, WidgetBase, TemplatedMixin],
+	return declare([PopupBase, TemplatedMixin],
 	{
 		templateString:		Template,
-		baseClass:			"CommSyWidget",
+		baseClass:			"LimeSurveyCreateWidget",
+		
+		canOverlay:			true,							///< Determs if popup can overlay other popus
 		
 		// attributes
 		title:				"",
@@ -73,7 +73,7 @@ define(
 		startup: function()
 		{
 			this.inherited(arguments);
-		},
+		}
 		
 		/************************************************************************************
 		 * Getter / Setter
@@ -86,15 +86,5 @@ define(
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
-		onClickCreate: function(event)
-		{
-			var widgetManager = this.getWidgetManager();
-			widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyCreate", { }).then(Lang.hitch(this, function(deferred)
-			{
-				var widgetInstance = deferred.instance;
-				
-				widgetInstance.Open();
-			}));
-		}
 	});
 });

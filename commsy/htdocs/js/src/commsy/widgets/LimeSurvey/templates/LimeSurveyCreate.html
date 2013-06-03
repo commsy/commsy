@@ -1,0 +1,31 @@
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
+
+	<div id="popup_wrapper">
+		<div id="popup_edit_stack">
+			<div id="popup_frame">
+				<div id="popup_inner" class="scrollPopup">
+	
+					<div id="popup_pagetitle">
+						<a id="popup_close" title="${popupTranslations.close}" href="#" data-dojo-attach-event="onclick:Close">
+							<img alt="${popupTranslations.close}" src="${templatePath}img/popup_close.gif"/>
+						</a>
+						<h2 data-dojo-attach-point="titleNode"></h2>
+						<div class="clear"></div>
+					</div>
+					
+					<div id="popup_content_wrapper">
+					
+						<div id="popup_content">
+							<div class="input_row">
+								<label for="portfolioTitle">test</label>
+		                        <input id="portfolioTitle" type="text" class="size_200" name="form_data[title]" data-dojo-attach-point="portfolioTitleNode" />
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	
+</div>
