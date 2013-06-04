@@ -3112,5 +3112,53 @@ class cs_portal_item extends cs_guide_item {
       }
       return $this->_count_archived_grouprooms;
    }
+   
+   // Datenschutz
+   public function getLockTime() {
+   	$retour = 0;
+   	if($this->_issetExtra('LOCK_TIME')){
+   		$retour = $this->_getExtra('LOCK_TIME');
+   	}
+   	return $retour;
+   }
+   
+   public function setLockTime($time) {
+   	$this->_addExtra('LOCK_TIME', $time);
+   }
+   
+   public function getPasswordGeneration () {
+   	$retour = 0;
+   	if ($this->_issetExtra('PASSWORD_GENERATION')) {
+   		$retour = $this->_getExtra('PASSWORD_GENERATION');
+   	}
+   	return $retour;
+   	
+   }
+   
+   public function isPasswordGenerationActive () {
+   	$retour = false;
+   	if($this->_issetExtra('PASSWORD_GENERATION')) {
+   		if($this->getPasswordGeneration() > 0){
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function setPasswordGeneration ($value) {
+   	$this->_addExtra('PASSWORD_GENERATION', $value);
+   }
+   
+   public function getPasswordExpiration() {
+   	$retour = 0;
+   	if ($this->_issetExtra('PASSWORD_EXPIRATION')) {
+   		$retour = $this->_getExtra('PASSWORD_EXPIRATION');
+   	}
+   	return $retour;
+   }
+   
+   public function setPasswordExpiration($value) {
+   	$this->_addExtra('PASSWORD_EXPIRATION', $value);
+   }
 }
 ?>

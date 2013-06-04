@@ -73,7 +73,31 @@ if (!empty($user_id) and !empty($password) ) {
    } else {
       $auth_source = '';
    }
-   if ($authentication->isAccountGranted($user_id,$password,$auth_source)) {
+   if(!empty($auth_source)){
+   	$auth_manager = $environment->getAuthSourceManager();
+   	$auth_item = $auth_manager->getItem($auth_source);
+   	unset($auth_manager);
+   }
+   // get user item if temporary lock is enabled
+   $userExists = false;
+   $locked = false;
+   $login_status = $authentication->isAccountGranted($user_id,$password,$auth_source);
+   if(isset($auth_item) AND !empty($auth_item)){
+   	if($auth_item->isTemporaryLockActivated()){
+   		$user_manager = $environment->getUserManager();
+   		$userExists = $user_manager->exists($user_id);
+   		unset($user_manager);
+   		if($userExists){
+   			$user_locked = $authentication->_getPortalUserItem($user_id,$authentication->_auth_source_granted);
+	   		if(isset($user_locked)){
+		   		$locked = $user_locked->isTemporaryLocked();
+	   		}
+
+   		}
+   	}
+   }
+   // user access granted
+   if ($login_status AND !$locked) {
       $session = new cs_session_item();
       $session->createSessionID($user_id);
       if ( $cookie == '1' ) {
@@ -119,12 +143,79 @@ if (!empty($user_id) and !empty($password) ) {
       $session->setValue('auth_source',$auth_source);
 
    } else {
+   	  // user access is not granted 
+   	  // Datenschutz
       $error_array = $authentication->getErrorArray();
+      
+      if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
+      	$auth_source = $_POST['auth_source'];
+      } else {
+      	$auth_source = '';
+      }
+      // auth_source
+      if ( empty($auth_source) ) {
+      	$auth_source = $authentication->getAuthSourceItemID();
+      }
+      if(!empty($auth_source)){
+      	$auth_manager = $environment->getAuthSourceManager();
+      	$auth_item = $auth_manager->getItem($auth_source);
+      	unset($auth_manager);
+      }
+            
+      if($auth_item->isTemporaryLockActivated()){
+	      // Passwort tempLock
+	      $userExists = false;
+	      $user_manager = $environment->getUserManager();
+	      $userExists = $user_manager->exists($user_id);
+	      $tempUser = $session->getValue('userid');
+	      if(!isset($tempUser)){
+	      	$session->setValue('userid', $user_id);
+	      	$tempUser = $user_id;
+	      }
+	      $count = $session->getValue('countWrongPassword');
+	      // Passwort tempLock ende
+      }
       if ( !isset($session) ) {
          $session = new cs_session_item();
          $session->createSessionID('guest');
+         //Passwort tempLock
+         $session->setValue('countWrongPassword', 1);
+      } else {
+      	if($auth_item->isTemporaryLockActivated()){
+	       	$count = $session->getValue('countWrongPassword');
+	       	if(!isset($count) AND empty($count)){
+	       		$session->setValue('countWrongPassword', 1);
+	       	}
+	       	if(!isset($count)){
+	       		$count = 0;
+	       	}
+	       	if($user_id == $tempUser){
+	       		$count++;
+	       	} else {
+	       		$count = 0;
+	       		$session->setValue('countWrongPassword', 0);
+	       		$session->setValue('userid', $user_id);
+	       	}
+	       	if($count >= 2 AND $userExists AND !$locked){
+	       		$user = $authentication->_getPortalUserItem($tempUser,$authentication->_auth_source_granted);
+	       		$user->setTemporaryLock();
+	       		$user->save();
+	       		$count = 0;
+	       		$session->setValue('countWrongPassword', 0);
+	       	}
+      	}
+       	#$count++;
+       	$session->setValue('countWrongPassword', $count);
       }
+      // Passwort tempLock ende 
       $session->setValue('error_array',$error_array);
+      unset($user_manager);
+   } 
+   if($locked){
+   	$translator = $environment->getTranslationObject();
+   	$error_array = array();
+   	$error_array[] = $translator->getMessage('COMMON_TEMPORARY_LOCKED');#'Kennung ist vorübergehend gesperrt';
+   	$session->setValue('error_array',$error_array);
    }
 } elseif ( empty($user_id) or empty($password) ) {
    $translator = $environment->getTranslationObject();
@@ -164,12 +255,12 @@ if ( !empty($_POST['login_redirect']) ) {
    unset($params['cid']);
    unset($params['mod']);
    unset($params['fct']);
-   redirect($cid,$mod,$fct,$params);
+   #redirect($cid,$mod,$fct,$params);
 } elseif ( !empty($_GET['target_cid']) ) {
    $mod = 'home';
    $fct = 'index';
    $params = array();
-   redirect($_GET['target_cid'],$mod,$fct,$params);
+   #redirect($_GET['target_cid'],$mod,$fct,$params);
 } else {
    if ( !empty($history[0]['context']) ) {
       $cid = $history[0]['context'];
