@@ -3636,6 +3636,21 @@ class cs_context_item extends cs_item {
   	return '';
   }
   
+  function setLimeSurveySurveyIDs($ids)
+  {
+  	$this->_addExtra('LIMESURVEYSURVEYIDS', $ids);
+  }
+  
+  function getLimeSurveySurveyIDs()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYSURVEYIDS') )
+  	{
+  		return $this->_getExtra('LIMESURVEYSURVEYIDS');
+  	}
+  	
+  	return array();
+  }
+  
   function setLimeSurveyAdminUser($username)
   {
   	$this->_addExtra('LIMESURVEYADMINUSER', $username);

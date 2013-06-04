@@ -7,10 +7,11 @@ define(
 	"dojo/i18n!./nls/LimeSurveyCreate",
 	"dojo/_base/lang",
 	"dojo/dom-construct",
+	"dojo/dom-attr",
 	"dojo/on",
 	"dojo/dom-class",
 	"dojo/query",
-	"dojo/topic"
+	"dojox/form/Manager"
 ], function
 (
 	declare,
@@ -20,10 +21,11 @@ define(
 	PopupTranslations,
 	Lang,
 	DomConstruct,
+	DomAttr,
 	On,
 	DomClass,
 	Query,
-	Topic
+	Manager
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
@@ -60,6 +62,8 @@ define(
 			 * Initialization is done here
 			 ************************************************************************************/
 			this.set("title", PopupTranslations.title);
+			
+			On(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
 		},
 		
 		/**
@@ -73,7 +77,37 @@ define(
 		startup: function()
 		{
 			this.inherited(arguments);
-		}
+			
+			this.AJAXRequest(	"limesurvey",
+								"getTemplates",
+								{},
+								Lang.hitch(this, function(response)
+			{
+				// destroy the loading animation
+				DomConstruct.destroy(this.loadingTemplatesNode);
+				
+				// if response is not empty, remove the default select option
+				// and enable the submit button
+				if ( response.surveys.length > 0 )
+				{
+					DomConstruct.empty(this.templateSelectNode);
+					DomAttr.remove(this.submitNode, "disabled");
+				}
+				
+				// go through all surveys and add them
+				dojo.forEach(response.surveys, Lang.hitch(this, function(survey)
+				{
+					DomConstruct.create("option",
+					{
+						value:			survey.sid,
+						innerHTML:		survey.surveyls_title
+					}, this.templateSelectNode, "last");
+				}));
+				
+				// make the select field visible
+				DomClass.remove(this.templateSelectNode, "hidden");
+			}));
+		},
 		
 		/************************************************************************************
 		 * Getter / Setter
@@ -86,5 +120,19 @@ define(
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
+		onSubmit: function(event)
+		{
+			event.preventDefault();
+			this.setupLoading();
+			
+			this.AJAXRequest(	"limesurvey",
+								"createSurvey",
+								{ templateId: DomAttr.get(this.templateSelectNode, "value") },
+								Lang.hitch(this, function(response)
+			{
+				this.destroyLoading();
+				this.Close();
+			}));
+		}
 	});
 });

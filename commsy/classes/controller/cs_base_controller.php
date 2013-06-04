@@ -461,7 +461,10 @@
 				$this->assign('cs_bar', 'show_portfolio', false);
 			}
 			
-			$this->assign('cs_bar', 'show_limesurvey', $current_context->isLimeSurveyActive());
+			$this->assign('cs_bar', 'show_limesurvey',	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
+														$current_context->isLimeSurveyActive() &&
+														$portal_item->isLimeSurveyActive() &&
+														$portal_item->withLimeSurveyFunctions() );
 
 			// to javascript
 			$to_javascript = array();

@@ -16,10 +16,34 @@
 					<div id="popup_content_wrapper">
 					
 						<div id="popup_content">
-							<div class="input_row">
-								<label for="portfolioTitle">test</label>
-		                        <input id="portfolioTitle" type="text" class="size_200" name="form_data[title]" data-dojo-attach-point="portfolioTitleNode" />
-							</div>
+							<form data-dojo-type="dojox/form/Manager" data-dojo-attach-point="formNode">
+								<div class="input_row">
+									Um eine Umfrage von LimeSurvey in diesem Raum nutzen zu können, müssen Sie eine Vorlage auswählen.<br/>
+									LimeSurvey bietet bisher nicht die Möglichkeit Umfragen als Vorlagen zur Verfügung zu stellen. Möchten
+									Sie CommSy eine Umfrage als Vorlage bereitstellen, so konfigurieren Sie diese bitte mit der aktiven
+									Einstellung "Umfragen öffentlich listen".<br/>
+									<br/>
+									Möchten Sie eine neue Vorlage in LimeSurvey erstellen, so können Sie dies
+									<a href="#">hier</a>
+									tun.
+								</div>
+								
+								<div class="input_row">
+									<label for="lsCreateTemplate">Vorlagen</label>
+									<div data-dojo-attach-point="loadingTemplatesNode">
+										<span >Anfrage an LimeSurvey...</span>
+										<img src="${templatePath}img/ajax_loader.gif"/>
+									</div>
+									
+			                        <select class="size_200 hidden" name="template" data-dojo-attach-point="templateSelectNode">
+			                        	<option disabled="disabled" value="none">Keine Vorlagen vorhanden</option>
+			                        </select>
+								</div>
+								
+								<div class="input_row">
+									<input type="submit" disabled="disabled" value="Umfrage erstellen" data-dojo-attach-point="submitNode" />
+								</div>
+							</form>
 						</div>
 					</div>
 				</div>

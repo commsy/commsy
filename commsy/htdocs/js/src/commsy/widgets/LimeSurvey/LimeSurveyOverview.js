@@ -45,6 +45,93 @@ define(
 			 * Initialization is done here
 			 ************************************************************************************/
 			this.set("title", PopupTranslations.title);
+			
+			// configure columns definition
+			this.addColumn(0, Lang.hitch(this, function(rowNode, rowData)
+			{
+				// first column
+				var firstColumnNode = DomConstruct.create("div",
+				{
+					className:		"column_260"
+				}, rowNode, "last");
+				
+					var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
+
+						DomConstruct.create("a",
+						{
+							"id":		"listItem" + rowData.sid,
+							className:	"stack_link",
+							href:		"#",
+							innerHTML:	/*rowData.sid*/ "titel"
+						}, pNode, "last");
+			}));
+			
+			this.addColumn(1, function(rowNode, rowData)
+			{
+				// second column
+				var secondColumnNode = DomConstruct.create("div",
+				{
+					className:		"column_80"
+				}, rowNode, "last");
+
+					DomConstruct.create("p",
+					{
+						innerHTML:		rowData.sid
+					}, secondColumnNode, "last");
+			});
+			
+			this.addColumn(2, Lang.hitch(this, function(rowNode, rowData)
+			{
+				// third column
+				var thirdColumnNode = DomConstruct.create("div",
+				{
+					className:		"column_45"
+				}, rowNode, "last");
+
+					var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
+
+						DomConstruct.create("img",
+						{
+							src:		this.from_php.template.tpl_path + "img/" + (rowData.active ? "add.png" : "cross.png"),
+							height:		"16px"
+						}, pNode, "last");
+			}));
+			
+			this.addColumn(3, function(rowNode, rowData)
+			{
+				// fourth column
+				var fourthColumnNode = DomConstruct.create("div",
+				{
+					className:		"column_100"
+				}, rowNode, "last");
+
+					DomConstruct.create("p",
+					{
+						innerHTML:		rowData.datecreated
+					}, fourthColumnNode, "last");
+			});
+			
+			this.addColumn(4, function(rowNode, rowData)
+			{
+				// fifth column
+				var fourthColumnNode = DomConstruct.create("div",
+				{
+					className:		"column_100"
+				}, rowNode, "last");
+
+					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
+
+					DomConstruct.create("a",
+					{
+						"id":		"listItem" + rowData.sid,
+						className:	"stack_link",
+						href:		"#",
+						innerHTML:	/*rowData.sid*/ "Teilnehmer"
+					}, pNode, "last");
+			});
+			
+			// set the store
+			this.setStore("limesurvey");
 		},
 		
 		/**
