@@ -11,7 +11,11 @@ define(
 	"dojo/on",
 	"dojo/dom-class",
 	"dojo/query",
-	"dojox/form/Manager"
+	"dojo/parser",
+	"dojox/form/Manager",
+	"dijit/registry",
+	"dijit/form/ValidationTextBox",
+	"dojox/validate/web"
 ], function
 (
 	declare,
@@ -25,7 +29,9 @@ define(
 	On,
 	DomClass,
 	Query,
-	Manager
+	Parser,
+	Manager,
+	Registry
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
@@ -78,6 +84,11 @@ define(
 		{
 			this.inherited(arguments);
 			
+			Parser.parse(this.widgetNode);
+			
+			console.log(this.formNode);
+			console.log(Registry.byId("12345"));
+			
 			this.AJAXRequest(	"limesurvey",
 								"getTemplates",
 								{},
@@ -123,6 +134,9 @@ define(
 		onSubmit: function(event)
 		{
 			event.preventDefault();
+			
+			//this.formNode.validate();
+			
 			this.setupLoading();
 			
 			this.AJAXRequest(	"limesurvey",

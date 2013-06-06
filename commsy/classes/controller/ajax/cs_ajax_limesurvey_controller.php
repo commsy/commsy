@@ -64,22 +64,16 @@
 			$this->initClient();
 			
 			$surveyList = $this->client->list_surveys($this->sessionKey);
-			foreach ( $surveyList as $survey )
+			if ( !(isset($surveyList["status"]) && $surveyList["status"] === "No surveys found") )
 			{
-				$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $survey['sid'], array("listpublic"));
-				
-				// if there was an error
-				if ( !isset($surveyProperties["listpublic"]) )
+				foreach ( $surveyList as $survey )
 				{
-					$this->closeClient();
-					$this->setErrorReturn("903", $surveyProperties["status"]);
-					echo $this->_return;
-					exit;
-				}
-				
-				if ( $surveyProperties["listpublic"] === "Y" )
-				{
-					$return["surveys"][] = $survey;
+					// templates are identified by the "4CS:" prefix in survey name
+					if ( mb_substr($survey["surveyls_title"], 0, 4) === "4CS:" )
+					{
+						$survey["surveyls_title"] = mb_substr($survey["surveyls_title"], 4);
+						$return["surveys"][] = $survey;
+					}
 				}
 			}
 			
@@ -142,40 +136,42 @@
 		{
 			$return = array(
 				"items"	=> array(),
-				"total"	=> null
+				"total"	=> 0
 			);
 			
 			// get all survey ids for the current room
 			$currentContextItem = $this->_environment->getCurrentContextItem();
 			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
 			
-			// open rpc connection
-			$this->initClient();
-			
-			// collect the survey data
-			foreach ( $surveyIDs as $surveyID )
+			if ( !empty($surveyIDs) )
 			{
-				$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("active", "datecreated"));
-				// if there was an error
-				if ( isset($surveyProperties["status"]) )
+				// open rpc connection
+				$this->initClient();
+					
+				// collect the survey data
+				foreach ( $surveyIDs as $surveyID )
 				{
-					$this->closeClient();
-					$this->setErrorReturn("903", $surveyProperties["status"]);
-					echo $this->_return;
-					exit;
+					$valid = true;
+					$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("active", "datecreated"));
+					
+					// if there was an error
+					if ( isset($surveyProperties["status"]) )
+					{
+						$valid = false;
+					}
+				
+					$return["items"][] = array
+					(
+							"sid"			=> $surveyID,
+							"valid"			=> $valid,
+							"active"		=> $surveyProperties["active"] === "Y" ? true : false,
+							"datecreated"	=> $surveyProperties["datecreated"]
+					);
 				}
-				
-				
-				$return["items"][] = array
-				(
-					"sid"			=> $surveyID,
-					"active"		=> $surveyProperties["active"] === "Y" ? true : false,
-					"datecreated"	=> $surveyProperties["datecreated"]
-				);
+					
+				// close
+				$this->closeClient();
 			}
-			
-			// close
-			$this->closeClient();
 			
 			$return["total"] = sizeof($surveyIDs);
 			
