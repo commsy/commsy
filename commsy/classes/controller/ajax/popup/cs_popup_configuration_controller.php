@@ -545,7 +545,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	                        	
 	                        	// Fix: Find Group-Rooms if existing
 	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom()) {
-	                        		$groupRoomList = $current_context->getGroupRoomList();
+	                        		$groupRoomList = $current_context->getProjectRoomList();
 	                        		if( !$groupRoomList->isEmpty() ) {
 	                        			$room_item = $groupRoomList->getFirst();
 	                        	
