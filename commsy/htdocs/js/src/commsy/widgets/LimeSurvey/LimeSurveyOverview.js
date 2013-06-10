@@ -62,7 +62,7 @@ define(
 							"id":		"listItem" + rowData.sid,
 							className:	"stack_link",
 							href:		"#",
-							innerHTML:	/*rowData.sid*/ "titel"
+							innerHTML:	rowData.title
 						}, pNode, "last");
 			}));
 			
@@ -85,11 +85,11 @@ define(
 				// third column
 				var thirdColumnNode = DomConstruct.create("div",
 				{
-					className:		"column_45"
+					className:		"column_65"
 				}, rowNode, "last");
 
 					var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
-
+						
 						DomConstruct.create("img",
 						{
 							src:		this.from_php.template.tpl_path + "img/" + (rowData.active ? "add.png" : "cross.png"),
@@ -107,31 +107,75 @@ define(
 
 					DomConstruct.create("p",
 					{
-						innerHTML:		rowData.datecreated
+						innerHTML:		rowData.expires
 					}, fourthColumnNode, "last");
 			});
 			
-			this.addColumn(4, function(rowNode, rowData)
+			this.addColumn(4, Lang.hitch(this, function(rowNode, rowData)
 			{
 				// fifth column
 				var fourthColumnNode = DomConstruct.create("div",
 				{
-					className:		"column_100"
+					className:		"column_90"
 				}, rowNode, "last");
 
 					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
 
-					DomConstruct.create("a",
+						var aNode = DomConstruct.create("a",
+						{
+							href:		"#",
+							innerHTML:	/*rowData.sid*/ "Teilnehmer"
+						}, pNode, "last");
+				
+				On(aNode, "click", Lang.hitch(this, function()
+				{
+					var widgetManager = this.getWidgetManager();
+					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyParticipants", { surveyId: rowData.surveyId }).then(Lang.hitch(this, function(deferred)
 					{
-						"id":		"listItem" + rowData.sid,
-						className:	"stack_link",
-						href:		"#",
-						innerHTML:	/*rowData.sid*/ "Teilnehmer"
-					}, pNode, "last");
-			});
+						var widgetInstance = deferred.instance;
+						
+						widgetInstance.Open();
+					}));
+				}));
+			}));
+			
+			this.addColumn(5, Lang.hitch(this, function(rowNode, rowData)
+			{
+				// sixth column
+				var fourthColumnNode = DomConstruct.create("div",
+				{
+					className:		"column_90"
+				}, rowNode, "last");
+
+					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
+
+						var aNode = DomConstruct.create("a",
+						{
+							href:		"#",
+							innerHTML:	/*rowData.sid*/ "Exportieren"
+						}, pNode, "last");
+				
+				On(aNode, "click", Lang.hitch(this, function()
+				{
+					console.log("export");
+					/*var widgetManager = this.getWidgetManager();
+					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyParticipants", { surveyId: rowData.surveyId }).then(Lang.hitch(this, function(deferred)
+					{
+						var widgetInstance = deferred.instance;
+						
+						widgetInstance.Open();
+					}));*/
+				}));
+			}));
 			
 			// set the store
 			this.setStore("limesurvey");
+			
+			// subsribe to the update event
+			this.subscribe("updateSurveys", Lang.hitch(this, function(object)
+			{
+				this.setStore("limesurvey");
+			}));
 		},
 		
 		/**

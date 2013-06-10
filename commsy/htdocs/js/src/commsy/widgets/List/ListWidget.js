@@ -81,9 +81,6 @@ define(
 			
 			if ( this.hasSearchMask === true )
 			{
-				// clear the loading animation and create the search mask
-				DomConstruct.empty(this.itemListNode);
-				
 				this.createSearchMask();
 			}
 		},
@@ -118,7 +115,7 @@ define(
 			// fetch data
 			if ( this.hasSearchMask === false )
 			{
-				this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+				this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			}
 		},
 		
@@ -184,6 +181,33 @@ define(
 			On(searchButtonNode, "click", Lang.hitch(this, Lang.partial(this.onClickSearchButton, searchInputNode)));
 		},
 		
+		createLoadingAnimation: function()
+		{
+			var loadingDivNode = DomConstruct.create("div",
+			{
+				style:			"margin-left: 10px: width: 200px;"
+			}, this.itemListNode, "first");
+			
+				DomConstruct.create("span",
+				{
+					innerHTML:		this.popupTranslations.loading
+				}, loadingDivNode, "last");
+				
+				DomConstruct.create("img",
+				{
+					src:			this.templatePath + "img/ajax_loader.gif",
+					style:			"margin-left: 5px, top: 2px, position: relative;"
+				}, loadingDivNode, "last");
+		},
+		
+		doQuery: function(query, options, callback)
+		{
+			// loading animation
+			this.createLoadingAnimation();
+			
+			this.store.query(query, options, callback);
+		},
+		
 		/************************************************************************************
 		 * EventHandler
 		 ************************************************************************************/
@@ -192,7 +216,7 @@ define(
 			this.query = DomAttr.get(inputNode, "value");
 			
 			// send a new query
-			this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+			this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 		},
 		
 		onClickPagingFirst: function(event)
@@ -202,7 +226,7 @@ define(
 				this.set("currentPage", 1);
 				this.queryOptions.start = (this.currentPage - 1) * this.entriesPerPage;
 				this.queryOptions.numEntries = this.entriesPerPage;
-				this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+				this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			}
 		},
 		
@@ -213,7 +237,7 @@ define(
 				this.set("currentPage", --this.currentPage);
 				this.queryOptions.start = (this.currentPage - 1) * this.entriesPerPage;
 				this.queryOptions.numEntries = this.entriesPerPage;
-				this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+				this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			}
 		},
 		
@@ -224,7 +248,7 @@ define(
 				this.set("currentPage", ++this.currentPage);
 				this.queryOptions.start = (this.currentPage - 1) * this.entriesPerPage;
 				this.queryOptions.numEntries = this.entriesPerPage;
-				this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+				this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			}
 		},
 		
@@ -235,7 +259,7 @@ define(
 				this.set("currentPage", this.maxPage);
 				this.queryOptions.start = (this.currentPage - 1) * this.entriesPerPage;
 				this.queryOptions.numEntries = this.entriesPerPage;
-				this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+				this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			}
 		},
 		
@@ -249,7 +273,7 @@ define(
 			
 			this.queryOptions.start = (this.currentPage - 1) * this.entriesPerPage;
 			this.queryOptions.numEntries = this.entriesPerPage;
-			this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+			this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			DomAttr.set(this.paging50Node, "innerHTML", "50");
 			DomAttr.set(this.paging20Node, "innerHTML", "<b>20</b>");
 		},
@@ -264,7 +288,7 @@ define(
 			
 			this.queryOptions.start = (this.currentPage - 1) * this.entriesPerPage;
 			this.queryOptions.numEntries = this.entriesPerPage;
-			this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+			this.doQuery(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
 			DomAttr.set(this.paging50Node, "innerHTML", "<b>50</b>");
 			DomAttr.set(this.paging20Node, "innerHTML", "20");
 		}

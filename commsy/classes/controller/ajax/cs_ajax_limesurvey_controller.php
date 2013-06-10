@@ -83,9 +83,59 @@
 			echo $this->_return;
 		}
 		
+		public function actionGetGroups()
+		{
+			$return = array(
+				"groups"	=> array()
+			);
+			
+			$currentContextItem = $this->_environment->getCurrentContextItem();
+			
+			$groupManager = $this->_environment->getGroupManager();
+			$groupManager->reset();
+			$groupManager->setContextLimit($this->_environment->getCurrentContextID());
+			$groupManager->setTypeLimit("group");
+			
+			$groupManager->select();
+			$groupList = $groupManager->get();
+			
+			$group = $groupList->getFirst();
+			while ( $group )
+			{
+				
+				$members = array();
+				$memberList = $group->getMemberItemList();
+				
+				$member = $memberList->getFirst();
+				while( $member )
+				{
+					$members[] = array(
+						"email"		=> $member->getEmail(),
+						"forname"	=> $member->getFirstName(),
+						"surname"	=> $member->getLastName()
+					);
+					
+					$member = $memberList->getNext();
+				}
+				
+				$return["groups"][] = array
+				(
+					"id"			=> $group->getItemID(),
+					"title"			=> $group->getTitle(),
+					"memberList"	=> $members
+				);
+				
+				$group = $groupList->getNext();
+			}
+			
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+		}
+		
 		public function actionCreateSurvey()
 		{
 			$templateId = $this->_data["templateId"];
+			$newSurveyTitle = $this->_data["surveyTitle"];
 			
 			$return = array(
 				"newSurveyId"	=> null
@@ -93,12 +143,40 @@
 			
 			$this->initClient();
 			
+			$currentContextItem = $this->_environment->getCurrentContextItem();
+			
 			// export the template survey as lss
 			$templateLSSBase64 = $this->client->export_survey($this->sessionKey, $templateId);
-			$return["test"] = $templateLSSBase64;
+			
+			// get a new title
+			$newSurveyTitle = trim($newSurveyTitle);
+			if ( empty($newSurveyTitle) )
+			{
+				// get the title from the survey template
+				$survey = $this->getSurveyFromLimeSurvey($this->sessionKey, $templateId);
+				
+				// templates are identified by the "4CS:" prefix in survey name
+				if ( mb_substr($survey["surveyls_title"], 0, 4) === "4CS:" )
+				{
+					$newSurveyTitle = mb_substr($survey["surveyls_title"], 4);
+				}
+				else
+				{
+					$newSurveyTitle = $survey["surveyls_title"];
+				}
+			}
+			else
+			{
+				// sanitize the input
+				$textConverter = $this->_environment->getTextConverter();
+				$newSurveyTitle = $textConverter->sanitizeHTML($newSurveyTitle);
+			}
+			
+			// append room name
+			$newSurveyTitle .= " - " . $currentContextItem->getTitle();
 			
 			// reimport
-			$newSurveyId = $this->client->import_survey($this->sessionKey, $templateLSSBase64, "lss");
+			$newSurveyId = $this->client->import_survey($this->sessionKey, $templateLSSBase64, "lss", $newSurveyTitle);
 			$return["newSurveyId"] = $newSurveyId;
 			
 			if ( !is_integer($newSurveyId) )
@@ -109,18 +187,7 @@
 				exit;
 			}
 			
-			// set public listing to false
-			$newProperties = $this->client->set_survey_properties($this->sessionKey, $newSurveyId, array("listpublic" => "N"));
-			if ( !isset($newProperties["listpublic"]) || $newProperties["listpublic"] !== true )
-			{
-				$this->closeClient();
-				$this->setErrorReturn("903", $newProperties["status"]);
-				echo $this->_return;
-				exit;
-			}
-			
 			// store this survey in the list of the current room
-			$currentContextItem = $this->_environment->getCurrentContextItem();
 			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
 			$surveyIDs[] = $newSurveyId;
 			$currentContextItem->setLimeSurveySurveyIDs($surveyIDs);
@@ -142,41 +209,99 @@
 			// get all survey ids for the current room
 			$currentContextItem = $this->_environment->getCurrentContextItem();
 			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
+			$markedForDeletionIDs = array();
 			
 			if ( !empty($surveyIDs) )
 			{
 				// open rpc connection
 				$this->initClient();
-					
-				// collect the survey data
-				foreach ( $surveyIDs as $surveyID )
-				{
-					$valid = true;
-					$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("active", "datecreated"));
-					
-					// if there was an error
-					if ( isset($surveyProperties["status"]) )
-					{
-						$valid = false;
-					}
 				
-					$return["items"][] = array
-					(
-							"sid"			=> $surveyID,
-							"valid"			=> $valid,
-							"active"		=> $surveyProperties["active"] === "Y" ? true : false,
-							"datecreated"	=> $surveyProperties["datecreated"]
-					);
+				// get the LimeSurvey survey list
+				$surveyList = $this->client->list_surveys($this->sessionKey);
+				
+				if ( !(isset($surveyList["status"]) && $surveyList["status"] === "No surveys found") )
+				{
+					// collect the survey data
+					foreach ( $surveyIDs as $surveyID )
+					{
+						$valid = true;
+						$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("active", "expires"));
+						
+						// get the survey name from the list
+						$surveyTitle = "";
+						$isInList = false;
+						foreach ( $surveyList as $listEntry )
+						{
+							if ( $listEntry["sid"] == $surveyID )
+							{
+								$surveyTitle = $listEntry["surveyls_title"];
+								$isInList = true;
+								break;
+							}
+						}
+						
+						// If the survey was not in the list, then it has been deleted in LimeSurvey, but not in CommSy.
+						// Store the id, to remove the survey from the room survey list
+						if ( !$isInList )
+						{
+							$markedForDeletionIDs[] = $surveyID;
+						}
+						else
+						{
+							// if there was an error
+							if ( isset($surveyProperties["status"]) )
+							{
+								$valid = false;
+							}
+								
+							$return["items"][] = array
+							(
+									"sid"			=> $surveyID,
+									"valid"			=> $valid,
+									"active"		=> $surveyProperties["active"] === "Y" ? true : false,
+									"expires"		=> $surveyProperties["expires"] ? getDateTimeInLang($surveyProperties["expires"]) : "-",
+									"title"			=> $surveyTitle
+							);
+						}
+					}
 				}
 					
 				// close
 				$this->closeClient();
 			}
 			
+			if ( !empty($markedForDeletionIDs) )
+			{
+				$newSurveyIDs = array_diff($surveyIDs, $markedForDeletionIDs);
+				
+				$currentContextItem->setLimeSurveySurveyIDs($newSurveyIDs);
+				$currentContextItem->save();
+			}
+			
 			$return["total"] = sizeof($surveyIDs);
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
+		}
+		
+		private function getSurveyFromLimeSurvey($sessionKey, $surveyId)
+		{
+			if ( isset($sessionKey) )
+			{
+				$surveyList = $this->client->list_surveys($sessionKey);
+				if ( !(isset($surveyList["status"]) && $surveyList["status"] === "No surveys found") )
+				{
+					foreach ( $surveyList as $survey )
+					{
+						if ( $survey["sid"] == $surveyId )
+						{
+							return $survey;
+						}
+					}
+				}
+			}
+			
+			return null;
 		}
 
 		/*

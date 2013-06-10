@@ -2,7 +2,7 @@ define({
 	root: {
 		buttonClose:			"Close",
 		close:					"close",
-		title:					"Create a new survey"
+		title:					"Participants"
 	},
 	
 	"de":		true

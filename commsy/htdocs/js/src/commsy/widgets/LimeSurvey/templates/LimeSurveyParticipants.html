@@ -1,0 +1,57 @@
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
+
+	<div id="popup_wrapper">
+		<div id="popup_edit_stack">
+			<div id="popup_frame">
+				<div id="popup_inner" class="scrollPopup">
+	
+					<div id="popup_pagetitle">
+						<a id="popup_close" title="${popupTranslations.close}" href="#" data-dojo-attach-event="onclick:Close">
+							<img alt="${popupTranslations.close}" src="${templatePath}img/popup_close.gif"/>
+						</a>
+						<h2 data-dojo-attach-point="titleNode"></h2>
+						<div class="clear"></div>
+					</div>
+					
+					<div id="popup_content_wrapper">
+					
+						<div id="popup_content">
+							<form data-dojo-type="dojox/form/Manager" id="limesurveyParticipantsForm" data-dojo-attach-point="formNode">
+								<div class="input_row">
+									Sie können die Mitglieder dieses Raumes zu der ausgewählten Umfrage einladen.<br/>
+								</div>
+								
+								<div class="input_row">
+									<label for="lsAddParticipants">Gruppe</label>
+									<div data-dojo-attach-point="loadingGroupsNode">
+										<span >Lade Gruppen...</span>
+										<img src="${templatePath}img/ajax_loader.gif"/>
+									</div>
+									
+			                        <select class="size_200 hidden" name="group" data-dojo-attach-point="groupSelectNode">
+			                        </select>
+								</div>
+								
+								<div class="input_row">
+									<label for="lsWithTokens">Zugangsschlüssel</label>
+									<input id="lsWithTokens" class="float-left" name="withTokens" type="checkbox"/>
+									<div class="column_563">
+										Wenn Sie diese Funktion aktiveren wird die Umfrage nur für eingeladene Raummitglieder zugänglich sein.
+									</div>
+									
+									<div class="clear"></div>
+								</div>
+								
+								<div class="input_row">
+									<input class="popup_button" type="submit" disabled="disabled" value="Teilnehmer einladen" data-dojo-attach-point="submitNode" />
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+		</div>
+	</div>
+	
+</div>

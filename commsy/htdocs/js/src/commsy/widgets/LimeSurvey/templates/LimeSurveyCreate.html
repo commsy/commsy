@@ -16,7 +16,7 @@
 					<div id="popup_content_wrapper">
 					
 						<div id="popup_content">
-							<form data-dojo-type="dojox/form/Manager" id="12345" data-dojo-attach-point="formNode">
+							<form data-dojo-type="dojox/form/Manager" id="limesurveyCreateForm" data-dojo-attach-point="formNode">
 								<div class="input_row">
 									Um eine Umfrage von LimeSurvey in diesem Raum nutzen zu können, müssen Sie eine Vorlage auswählen.<br/>
 									LimeSurvey bietet bisher nicht die Möglichkeit Umfragen als Vorlagen zur Verfügung zu stellen. Möchten
@@ -29,20 +29,20 @@
 								</div>
 								
 								<div class="input_row">
-									<label for="lsCreateTemplate">Vorlagen</label>
+									<label for="lsCreateTemplate">Vorlagen<span class="required">*</span></label>
 									<div data-dojo-attach-point="loadingTemplatesNode">
 										<span >Anfrage an LimeSurvey...</span>
 										<img src="${templatePath}img/ajax_loader.gif"/>
 									</div>
 									
-			                        <select class="size_200 hidden" name="template" data-dojo-attach-point="templateSelectNode">
+			                        <select id="lsCreateTemplate" class="size_200 hidden" name="template" data-dojo-attach-point="templateSelectNode">
 			                        	<option disabled="disabled" value="none">Keine Vorlagen vorhanden</option>
 			                        </select>
 								</div>
 								
 								<div class="input_row">
-									<label for="lsTitle">Titel</label>
-									<input class="size_200" name="title"
+									<label for="lsTitle">Titel<span class="required">*</span></label>
+									<input id="lsTitle" class="size_200" name="title"
 										data-dojo-type="dijit/form/ValidationTextBox"
 										data-dojo-props="validator:dojox.validate.isText,
 											invalidMessage:'empty'" />- ${from_php.limesurvey.roomName}

@@ -3,8 +3,8 @@ define(
 	"dojo/_base/declare",
 	"commsy/widgets/PopupBase",
 	"dijit/_TemplatedMixin",
-	"dojo/text!./templates/LimeSurveyCreate.html",
-	"dojo/i18n!./nls/LimeSurveyCreate",
+	"dojo/text!./templates/LimeSurveyParticipants.html",
+	"dojo/i18n!./nls/LimeSurveyParticipants",
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/dom-attr",
@@ -38,7 +38,7 @@ define(
 	return declare([PopupBase, TemplatedMixin],
 	{
 		templateString:		Template,
-		baseClass:			"LimeSurveyCreateWidget",
+		baseClass:			"LimeSurveyParticipantsWidget",
 		
 		canOverlay:			true,							///< Determs if popup can overlay other popus
 		
@@ -89,33 +89,31 @@ define(
 			Parser.parse(this.widgetNode);
 			
 			this.AJAXRequest(	"limesurvey",
-								"getTemplates",
+								"getGroups",
 								{},
 								Lang.hitch(this, function(response)
 			{
 				// destroy the loading animation
-				DomConstruct.destroy(this.loadingTemplatesNode);
+				DomConstruct.destroy(this.loadingGroupsNode);
 				
-				// if response is not empty, remove the default select option
-				// and enable the submit button
-				if ( response.surveys.length > 0 )
+				// if response is not empty, nable the submit button
+				if ( response.groups.length > 0 )
 				{
-					DomConstruct.empty(this.templateSelectNode);
 					DomAttr.remove(this.submitNode, "disabled");
 				}
 				
-				// go through all surveys and add them
-				dojo.forEach(response.surveys, Lang.hitch(this, function(survey)
+				// go through all groups and add them
+				dojo.forEach(response.groups, Lang.hitch(this, function(group)
 				{
 					DomConstruct.create("option",
 					{
-						value:			survey.sid,
-						innerHTML:		survey.surveyls_title
-					}, this.templateSelectNode, "last");
+						value:			group.id,
+						innerHTML:		group.title
+					}, this.groupSelectNode, "last");
 				}));
-				
+									
 				// make the select field visible
-				DomClass.remove(this.templateSelectNode, "hidden");
+				DomClass.remove(this.groupSelectNode, "hidden");
 			}));
 		},
 		
@@ -134,10 +132,10 @@ define(
 		{
 			event.preventDefault();
 			
-			var formManager = Registry.byId("limesurveyCreateForm");
+			var formManager = Registry.byId("limesurveyParticipantsForm");
 			
 			if ( formManager.validate() )
-			{
+			{/*
 				this.setupLoading();
 				var formValues = formManager.gatherFormValues();
 				
@@ -155,7 +153,7 @@ define(
 					// remove loading indicator and close this popup
 					this.destroyLoading();
 					this.Close();
-				}));
+				}));*/
 			}
 		}
 	});
