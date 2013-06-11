@@ -925,7 +925,7 @@ class cs_external_page_portal_view extends cs_page_view {
         if (isset($get_params['sel_archive_room'])){
            $html .= '   <input type="hidden" name="selroom" value="'.$get_params['sel_archive_room'].'"/>'.LF;
         }elseif (isset($_POST['sel_archive_room'])){
-           $html .= '   <input type="hidden" name="selroom" value="'.$_POST['sel_archive_room'].'"/>'.LF;
+           $html .= '   <input type="hidden" name="selroom" value="'.$get_params['sel_archive_room'].'"/>'.LF;
         }
 
         if ($item->checkNewMembersWithCode()) {
