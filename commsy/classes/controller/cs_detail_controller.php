@@ -1406,7 +1406,7 @@
                                      'style="font-size:10pt;"'); */
 		                $return['last_modificator'] = $modificator->getFullname();
 		                $return['last_modificator_status'] = self::USER_HAS_LINK;
-		                $return['modifcator_id'] = $modificator->getItemID();
+		                $return['last_modificator_id'] = $modificator->getItemID();
 		            }
 		            else
 		            {
@@ -1664,6 +1664,7 @@
 		                $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname()))); */
 		                $return['creator'] = $creator->getFullname();
 		                $return['creator_status'] = self::USER_HAS_LINK;
+		                $return['creator_id'] = $creator->getItemID();
 		            }else{
 		              //  $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
 		              $return['creator'] = $creator->getFullname();
