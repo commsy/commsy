@@ -14,8 +14,10 @@ define(
 	"dojo/query",
 	"dojo/parser",
 	"dojox/form/Manager",
+	"dojo/fx",
 	"dijit/registry",
 	"dijit/form/ValidationTextBox",
+	"commsy/ValidationTextArea",
 	"dojox/validate/web"
 ], function
 (
@@ -33,6 +35,7 @@ define(
 	Query,
 	Parser,
 	Manager,
+	FX,
 	Registry
 ) {
 	return declare([PopupBase, TemplatedMixin],
@@ -72,6 +75,7 @@ define(
 			this.set("title", PopupTranslations.title);
 			
 			On(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
+			On(this.withTokensNode, "change", Lang.hitch(this, this.onChangeWithTokens));
 		},
 		
 		/**
@@ -128,6 +132,32 @@ define(
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
+		onChangeWithTokens: function(event)
+		{
+			// get the checkbox state
+			var checked = DomAttr.get(this.withTokensNode, "checked");
+			
+			// show / hide the mail forms
+			if ( checked )
+			{
+				FX.wipeOut(
+				{
+					node:			this.noTokensNode
+				}).play();
+			}
+			else
+			{
+				FX.wipeIn(
+				{
+					node:			this.noTokensNode,
+					beforeBegin:	Lang.hitch(this, function()
+					{
+						DomClass.remove(this.noTokensNode, "hidden");
+					})
+				}).play();
+			}
+		},
+		
 		onSubmit: function(event)
 		{
 			event.preventDefault();

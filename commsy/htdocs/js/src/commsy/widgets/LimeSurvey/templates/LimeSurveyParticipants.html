@@ -34,12 +34,42 @@
 								
 								<div class="input_row">
 									<label for="lsWithTokens">Zugangsschlüssel</label>
-									<input id="lsWithTokens" class="float-left" name="withTokens" type="checkbox"/>
+									<input id="lsWithTokens" class="float-left" name="withTokens" type="checkbox" checked="checked"
+										data-dojo-attach-point="withTokensNode" />
+									
 									<div class="column_563">
 										Wenn Sie diese Funktion aktiveren wird die Umfrage nur für eingeladene Raummitglieder zugänglich sein.
 									</div>
 									
 									<div class="clear"></div>
+								</div>
+								
+								<div id="lsNoTokens" class="hidden" style="height: 0px" data-dojo-attach-point="noTokensNode">
+									<div class="input_row">
+										<label for="lsFirstParticipantMails">Mail</label>
+										<div class="column_585">
+											<div>
+												In dieser Textbox können Sie beliebig viele Mailadressen angeben. Als Trennzeichen können Sie ein Leerzeichen,
+												eine neue Zeile, ein Semikolon oder ein Komma verwenden.
+											</div>
+											<textarea id="lsFirstParticipantMails" name="firstParticipantMails" rows="5" cols="60"
+												data-dojo-type="commsy/ValidationTextArea"
+												data-dojo-props="
+													validator:dojox.validate.isEmailAddressList,
+													invalidMessage:'Die E-Mailadressen sind nicht gültig'"></textarea>
+										</div>
+										
+										<div class="clear"></div>
+									</div>
+									
+									<div class="input_row">
+										<label for="lsParticipantMailtext">Mailtext</label>
+										<textarea id="lsParticipantMailtext" name="participantMailtext" rows="10" cols="105"
+											data-dojo-type="commsy/ValidationTextArea"
+											data-dojo-props="
+												validator:dojox.validate.isText,
+												invalidMessage:'Bitte geben Sie einen Text ein'">${popupTranslations.mailText}</textarea>
+									</div>
 								</div>
 								
 								<div class="input_row">
