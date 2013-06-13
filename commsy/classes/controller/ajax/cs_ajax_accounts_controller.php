@@ -578,7 +578,12 @@
 				if($item->isContact()) $status .= ' [' . $translator->getMessage('USER_STATUS_CONTACT_SHORT') . ']';
 
 				$entry['item_id']			= $item->getItemID();
-				$entry['fullname']			= $item->getFullName().' ('.$item->getUserID().')';
+				// Datenschutz
+				if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+					$entry['fullname']			= $item->getFullName();
+				} else {
+					$entry['fullname']			= $item->getFullName().' ('.$item->getUserID().')';
+				}
 				$entry['email']				= $item->getEmail();
 				$entry['status']			= $status;
 

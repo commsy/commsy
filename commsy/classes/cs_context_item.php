@@ -2306,6 +2306,41 @@ class cs_context_item extends cs_item {
   function setWithoutLogArchive () {
     $this->_setExtraConfig('LOGARCHIVE',-1);
   }
+  
+  function getLogDeleteInterval () {
+  	$retour = 0;
+    $value = $this->_getExtraConfig('LOGDELETEDAYS');
+    if (!empty($value)) {
+      $retour = $this->_getExtraConfig('LOGDELETEDAYS');;
+    }
+    return $retour;
+  }
+  
+  function setLogDeleteInterval ($days) {
+  	$this->_setExtraConfig('LOGDELETEDAYS', $days);
+  }
+  
+  ##########################################
+  # log-ip flag
+  ##########################################
+  
+  function withLogIPCover () {
+  	$retour = false;
+  	$value = $this->_getExtraConfig('LOGIPCOVER');
+  	if ($value == 1) {
+  		$retour = true;
+  	}
+  	return $retour;
+  	
+  }
+  
+  function setWithLogIPCover () {
+  	$this->_setExtraConfig('LOGIPCOVER', 1);
+  }
+  
+  function setWithoutLogIPCover () {
+  	$this->_setExtraConfig('LOGIPCOVER', -1);
+  }
 
   ##########################################
   # assessment flag
@@ -6765,5 +6800,25 @@ class cs_context_item extends cs_item {
   function setWithoutWorkflowFunctions () {
     $this->_setExtraConfig('WORKFLOW',0);
   }
+  
+  function setHideAccountname(){
+  	$this->_setExtraConfig('HIDE_ACCOUNTNAME', '1');
+  }
+  
+  function unsetHideAccountname(){
+  	$this->_setExtraConfig('HIDE_ACCOUNTNAME', '2');
+  }
+  
+  function getHideAccountname(){
+  	$retour = false;
+  	$value = $this->_getExtraConfig('HIDE_ACCOUNTNAME');
+  	if($value == 2){
+  		$retour = false;
+  	} else if($value == 1){
+  		$retour = true;
+  	}
+  	return $retour;
+  }
+ 
 }
 ?>
