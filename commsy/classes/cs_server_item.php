@@ -335,7 +335,7 @@ class cs_server_item extends cs_guide_item {
     *
     * @return array results of running this cron
     */
-   function _cronLog () {
+	function _cronLog () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
 
@@ -344,6 +344,8 @@ class cs_server_item extends cs_guide_item {
       $cron_array['description'] = 'move old logs to log archive';
       $cron_array['success'] = false;
       $cron_array['success_text'] = 'cron failed';
+      
+      $context_item = $this->_environment->getCurrentContextItem();
 
       $log_DB = $this->_environment->getLogManager();
       $log_DB->resetlimits();
@@ -354,8 +356,15 @@ class cs_server_item extends cs_guide_item {
       $log_DB->setRangeLimit($from,$range);
       // only archive logs that are older then the beginning of the actual day
       // getCurrentDate() returns date("Ymd");
+            // Datenschutz : Logdaten nach bestimmtem Zeitraum löschen
+      // Wenn im context_item das Extra eingestellt ist, dann
       include_once('functions/date_functions.php');
-      $log_DB->setTimestampOlderLimit(getCurrentDate());
+      if($context_item->getLogDeleteInterval() <= 1){
+      	$log_DB->setTimestampOlderLimit(getCurrentDate());
+      } else {
+      	$log_DB->setTimestampOlderLimit(getCurrentDateTimeMinusDaysInMySQL($context_item->getLogDeleteInterval()));
+      }
+      #$log_DB->setTimestampOlderLimit(getCurrentDate());
       $data_array = $log_DB->select();
       $count = count($data_array);
       if ($count == 0) {

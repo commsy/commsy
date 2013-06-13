@@ -728,6 +728,7 @@ function isURLValid () {
          $funct != 'meta' and
          $funct != 'process' and
          $funct != 'getfile' and
+         $funct != 'getlogfile' and
     	 $funct != 'getTemp' and
          $funct != 'admin' and
          $funct != 'move' and
@@ -789,6 +790,7 @@ function isURLValid () {
          $funct != 'portalhome' and
          $funct != 'portalupload' and
          $funct != 'scribd' and
+         $funct != 'datasecurity' and
 
          $funct != 'account_options' and
          $funct != 'structure_options' and
