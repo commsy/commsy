@@ -365,6 +365,7 @@ class cs_user_detail_view extends cs_detail_view {
            and ( $current_user->isRoot()
                  or $current_user->isModerator()
                )
+           and !$current_user->isDeactivatedLoginAsAnotherUser()
          ) {
          $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
       }
@@ -924,6 +925,18 @@ class cs_user_detail_view extends cs_detail_view {
          unset($params);
       } elseif (!$this->_environment->inPrivateRoom()) {
          $html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_CLOSE_PARTICIPATION').'</span>'.BRLF;
+      }
+      
+      if($this->_environment->inPortal()
+      and $this->_environment->getCurrentUser()->isRoot()){
+      	$params['mode'] = 'deactivateLoginAs';
+      	$params['iid'] = $item->getItemID();
+      	if($item->isDeactivatedLoginAsAnotherUser()) {
+      		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('COMMON_LOGIN_AS_ANOTHER_USER_ACTIVATE')).BRLF;
+      	} else {
+      		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('COMMON_LOGIN_AS_ANOTHER_USER_DEACTIVATE')).BRLF;
+      	}
+      	
       }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

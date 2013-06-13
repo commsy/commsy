@@ -2304,5 +2304,26 @@ class cs_user_item extends cs_item {
    	unset($portal_item);
    	return $retour;
    }
+   
+   function deactivateLoginAsAnotherUser () {
+   	$this->_addExtra('DEACTIVATE_LOGIN_AS', '1');
+   }
+   
+   function unsetDeactivateLoginAsAnotherUser () {
+   	$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+   }
+   
+   function isDeactivatedLoginAsAnotherUser () {
+   	$retour = false;
+   	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
+   		$flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
+   		if($flag){
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+
+   }
+   
 }
 ?>

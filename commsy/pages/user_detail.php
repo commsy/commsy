@@ -126,6 +126,18 @@ if ($type != CS_USER_TYPE) {
       $environment->setSessionItem($session);
       redirect($environment->getCurrentContextID(),'home','index',array());
 
+   } else if ($current_user->isRoot() 
+   				and $environment->inPortal()
+   				and isset($_GET['mode'])
+              	and $_GET['mode'] == 'deactivateLoginAs') {
+   	  
+   	  if($user_item->isDeactivatedLoginAsAnotherUser()){
+   	  	 $user_item->unsetDeactivateLoginAsAnotherUser();
+   	  } else {
+   	  	 $user_item->deactivateLoginAsAnotherUser();
+   	  }
+   	  $user_item->save();
+   	  redirect($environment->getCurrentContextID(),'account','detail',array('iid' => $current_item_id));
    } else {
 
       // Mark as read
