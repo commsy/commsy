@@ -144,7 +144,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
    ###############################################
    if($context_item->isServer() or $context_item->isPortal()){
 	   $link_item = new cs_link();
-	   $link_item->setTitle($translator->getMessage('CONFIGURATION_DATA_SECURITY');
+	   $link_item->setTitle($translator->getMessage('CONFIGURATION_DATA_SECURITY'));
 	   $link_item->setIconPath('images/cs_config/CONFIGURATION_SERVICE.gif');
 	   $link_item->setDescription($translator->getMessage('CONFIGURATION_DATA_SECURITY_DESC'));
 	   $link_item->setContextID($environment->getCurrentContextID());
