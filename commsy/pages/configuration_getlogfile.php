@@ -64,22 +64,27 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
 
 	   	$output = fopen('php://output', 'w');
 	   	
-	   	fputcsv($output, array('id','ip','agent','timestamp','request','post_content','method','uid','ulogin','cid','module','fct','param','iid','queries','time'));
-
+	   	fputcsv($output, array('id','ip','agent','timestamp','request','post_content','method','ulogin','cid','module','fct','param','iid','queries','time'));
+	   	
+	   	$user = array();
+	   	// Datenschutz
 	   	foreach ($data as $log) {
-	   		fputcsv($output, array($log['id'],$log['ip'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
-	   								$log['method'],$log['uid'],$log['ulogin'],$log['cid'],$log['module'],$log['fct'],$log['param'],
+	   		$remote_adress_array = explode('.', $log['ip']);
+	   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+	   		$userkey = '';
+	   		if(array_key_exists($log['ulogin'],$user)){
+	   			$userkey = $user[$log['ulogin']];
+	   		} else {
+	   			$uniqid = uniqid();
+	   			$user[$log['ulogin']] = $uniqid;
+	   			$userkey = $uniqid;
+	   		}
+	   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
+	   								$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
 	   								$log['iid'],$log['queries'],$log['time']));
-
 	   	}
-	   	exit;
-
-
-
-	   	// pseudonymisierte Daten in eine Datei schreiben
-	   	#pr($data);
+	    exit;
 	   }
-	   
 	   unset($log_manager);
    }
 

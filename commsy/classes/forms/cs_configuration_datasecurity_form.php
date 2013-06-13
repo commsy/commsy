@@ -110,9 +110,9 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       
       $context_item = $this->_environment->getCurrentContextItem();
       if($context_item->isServer()){
-      $this->_form->addText('Test', 'Log-Daten', '');
+      $this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
       // Zeitraum zur Löschung alter Log Daten
-      $this->_form->addTextfield('log_delete_interval','','Löschung nach X Tagen','',3,10,false,'','','','','','',false);
+      $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,false,'','','','','','',false);
       // Räume für langfristige Archivierung
       // Log-Daten runterladen für bestimmte Räume (pseudonymisiert)
       // Log-Daten für bestimmte Räume löschen
@@ -123,7 +123,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
 // 	  //Datenschutz
 // 	  $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',1,10,false,'','','','','','',$disabled);
 	  #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
-	  $this->_form->addText('logdata', 'Raum Log-Daten löschen', '');
+	  $this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '');
 	  
 	  $this->_form->addSelect( 'portal',
                                $this->_array_portal,
@@ -143,7 +143,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
 
       // description text
       #$this->_form->addText('description',$translator->getMessage('COMMON_DESCRIPTION'),'');
-      $this->_form->addText('','Beschreibung', $translator->getMessage('COMMON_CONFIGURATION_DELETE_LOG_DESCRIPTION'));
+      $this->_form->addText('',$translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'), $translator->getMessage('COMMON_CONFIGURATION_DELETE_LOG_DESCRIPTION'));
       $this->_form->addHidden('description_hidden','');
 
       // generate checkboxes for rooms
