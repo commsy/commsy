@@ -187,6 +187,19 @@
 				exit;
 			}
 			
+			// activate the survey
+			$activateSurvey = $this->client->activate_survey($this->sessionKey, $newSurveyId);
+			if ( isset($activateSurvey["status"]) && $activateSurvey["status"] !== "OK" )
+			{
+				// something went wrong - delete the survey
+				$this->client->delete_survey($this->sessionKey, $newSurveyId);
+				
+				$this->closeClient();
+				$this->setErrorReturn("903", $activateSurvey["status"]);
+				echo $this->_return;
+				exit;
+			}
+			
 			// store this survey in the list of the current room
 			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
 			$surveyIDs[] = $newSurveyId;
@@ -281,6 +294,191 @@
 			$return["total"] = sizeof($surveyIDs);
 			
 			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+		}
+		
+		public function actionExport()
+		{
+			$surveyId = $this->_data["surveyId"];
+			
+			// LimeSurvey RPC
+			$this->initClient();
+			
+			/*
+			 * collect export data
+			 */
+			// survey as lss
+			$surveyLSSBase64 = $this->client->export_survey($this->sessionKey, $surveyId);
+			if ( isset($surveyLSSBase64) && is_array($surveyLSSBase64) )
+			{
+				$this->closeClient();
+				$this->setErrorReturn("903", $surveyLSSBase64["status"]);
+				echo $this->_return;
+				exit;
+			}
+			
+			// export statistics as pdf
+			$surveyStatisticsPDFBase64 = $this->client->export_statistics($this->sessionKey, $surveyId, "pdf", null, "1");
+			if ( isset($surveyStatisticsPDFBase64) && is_array($surveyStatisticsPDFBase64) )
+			{
+				$this->closeClient();
+				$this->setErrorReturn("903", $surveyLSSBase64["status"]);
+				echo $this->_return;
+				exit;
+			}
+			
+			// export responses as csv
+			$surveyResponsesCSVBase64 = $this->client->export_responses($this->sessionKey, $surveyId, "csv", null, "all");
+			if ( isset($surveyResponsesCSVBase64) && is_array($surveyResponsesCSVBase64) )
+			{
+				if ( isset($surveyResponsesCSVBase64["status"]) && $surveyResponsesCSVBase64["status"] === "No Data" )
+				{
+					$surveyResponsesCSVBase64 = "";
+				}
+				else
+				{
+					$this->closeClient();
+					$this->setErrorReturn("903", $surveyLSSBase64["status"]);
+					echo $this->_return;
+					exit;
+				}
+			}
+			
+			/*
+			 * write data to disk
+			 */
+			// create folder if not present
+			$discManager = $this->_environment->getDiscManager();
+			$filePath = $discManager->getFilePath() . "limesurvey_export/" . $surveyId . "/" . time() . "/";
+			
+			if ( !is_dir($filePath) )
+			{
+				mkdir($filePath, 0777, true);
+			}
+			
+			// write files
+			file_put_contents($filePath . "survey.lss", base64_decode($surveyLSSBase64));
+			file_put_contents($filePath . "statistics.pdf", base64_decode($surveyStatisticsPDFBase64));
+			
+			if ( !empty($surveyResponsesCSVBase64) )
+			{
+				file_put_contents($filePath . "responses.csv", base64_decode($surveyResponsesCSVBase64));
+			}
+			
+			// close
+			$this->closeClient();
+			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
+		public function actionInviteParticipants()
+		{
+			$groupId = $this->_data["groupId"];
+			$mailAddresses = $this->_data["participantMails"];
+			$mailSubject = $this->_data["participantMailSubject"];
+			$mailText = $this->_data["participantMailtext"];
+			$withTokens = $this->_data["withTokens"];
+			$surveyId = $this->_data["surveyId"];
+			
+			$currentContextItem = $this->_environment->getCurrentContextItem();
+			
+			// LimeSurvey RPC
+			$this->initClient();
+			
+			if ( $withTokens === true )
+			{
+				// get all member of the selected group
+				$groupManager = $this->_environment->getGroupManager();
+				$groupItem = $groupManager->getItem($groupId);
+				if ( $groupItem !== null )
+				{
+					$members = array();
+					$memberList = $groupItem->getMemberItemList();
+					
+					$member = $memberList->getFirst();
+					while( $member )
+					{
+						$members[] = array(
+							"email"		=> $member->getEmail(),
+							"firstname"	=> $member->getFirstName(),
+							"lastname"	=> $member->getLastName()
+						);
+						
+						$member = $memberList->getNext();
+					}
+				}
+				
+				// activate tokens
+				// unfortunately survey properties does not reflect the correct usetokens setting
+				$tokenStatus = $this->client->activate_tokens($this->sessionKey, $surveyId);
+				
+				// add participants
+				$participantData = $this->client->add_participants($this->sessionKey, $surveyId, $members, true);
+				
+				// check for errors
+				if ( isset($participantData["status"]) )
+				{
+					$this->closeClient();
+					$this->setErrorReturn("903", $participantData["status"]);
+					echo $this->_return;
+					exit;
+				}
+				
+				// remind participants
+				$inviteData = $this->client->invite_participants($this->sessionKey, $surveyId);
+			}
+			else
+			{
+				// sanitize
+				$textConverter = $this->_environment->getTextConverter();
+				$mailAddresses = $textConverter->sanitizeHTML($mailAddresses);
+				$mailSubject = $textConverter->sanitizeHTML($mailSubject);
+				$mailText = $textConverter->sanitizeFullHTML($mailText);
+				
+				$survey = $this->getSurveyFromLimeSurvey($this->sessionKey, $surveyId);
+				$surveyTitle = $survey["surveyls_title"];
+				
+				$portalItem = $this->_environment->getCurrentPortalItem();
+				$rpcPathParsed = parse_url($portalItem->getLimeSurveyJsonRpcUrl());
+				$surveyUrl = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/" . $surveyId;
+				
+				// extract the reciever
+				$mailArray = array_unique(array_merge(	explode(" ", $mailAddresses),
+														explode("\n", $mailAddresses),
+														explode(";", $mailAddresses),
+														explode(",", $mailAddresses)));
+				
+				// replace placeholders in mail text
+				$mailText = str_replace("{SURVEY_TITLE}", $surveyTitle, $mailText);
+				$mailText = str_replace("{SURVEY_URL}", $surveyUrl, $mailText);
+				
+				$currentUserItem = $this->_environment->getCurrentUserItem();
+				
+				// send mails
+				include_once("classes/cs_mail.php");
+				$mail = new cs_mail();
+				
+				$mail->set_from_email($currentUserItem->getEmail());
+				$mail->set_from_name($currentUserItem->getFullname());
+				$mail->set_reply_to_email($currentUserItem->getEmail());
+				$mail->set_reply_to_name($currentUserItem->getFullname());
+				
+				$mail->set_subject($mailSubject);
+				$mail->set_message($mailText);
+				
+				foreach ( $mailArray as $mailAddress )
+				{
+					$mail->set_to($mailAddress);
+					
+					$mail->send();
+				}
+			}
+			
+			// close
+			$this->closeClient();
+			
+			$this->setSuccessfullDataReturn(array());
 			echo $this->_return;
 		}
 		

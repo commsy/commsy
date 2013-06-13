@@ -2,7 +2,7 @@ define({
 	root: {
 		buttonClose:			"Close",
 		close:					"close",
-		title:					"Overview - active surveys"
+		title:					"Overview - exported surveys"
 	},
 	
 	"de":		true

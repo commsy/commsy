@@ -18,13 +18,13 @@
 						<div id="popup_content">
 							<form data-dojo-type="dojox/form/Manager" id="limesurveyParticipantsForm" data-dojo-attach-point="formNode">
 								<div class="input_row">
-									Sie können die Mitglieder dieses Raumes zu der ausgewählten Umfrage einladen.<br/>
+									${popupTranslations.inviteIntro}
 								</div>
 								
 								<div class="input_row">
-									<label for="lsAddParticipants">Gruppe</label>
+									<label for="lsAddParticipants">${popupTranslations.group}</label>
 									<div data-dojo-attach-point="loadingGroupsNode">
-										<span >Lade Gruppen...</span>
+										<span >${popupTranslations.groupLoading}</span>
 										<img src="${templatePath}img/ajax_loader.gif"/>
 									</div>
 									
@@ -33,12 +33,12 @@
 								</div>
 								
 								<div class="input_row">
-									<label for="lsWithTokens">Zugangsschlüssel</label>
+									<label for="lsWithTokens">${popupTranslations.useTokens}</label>
 									<input id="lsWithTokens" class="float-left" name="withTokens" type="checkbox" checked="checked"
 										data-dojo-attach-point="withTokensNode" />
 									
 									<div class="column_563">
-										Wenn Sie diese Funktion aktiveren wird die Umfrage nur für eingeladene Raummitglieder zugänglich sein.
+										${popupTranslations.tokenDescription}
 									</div>
 									
 									<div class="clear"></div>
@@ -46,13 +46,13 @@
 								
 								<div id="lsNoTokens" class="hidden" style="height: 0px" data-dojo-attach-point="noTokensNode">
 									<div class="input_row">
-										<label for="lsFirstParticipantMails">Mail</label>
+										<label for="lsParticipantMails">${popupTranslations.mailAddresses}<span class="required">*</span></label>
 										<div class="column_585">
 											<div>
-												In dieser Textbox können Sie beliebig viele Mailadressen angeben. Als Trennzeichen können Sie ein Leerzeichen,
-												eine neue Zeile, ein Semikolon oder ein Komma verwenden.
+												${popupTranslations.mailAddressesDesc}
 											</div>
-											<textarea id="lsFirstParticipantMails" name="firstParticipantMails" rows="5" cols="60"
+											<textarea id="lsParticipantMails" name="participantMails" rows="5" cols="60" disabled="disabled" required="true"
+												data-dojo-attach-point="participantMailsNode"
 												data-dojo-type="commsy/ValidationTextArea"
 												data-dojo-props="
 													validator:dojox.validate.isEmailAddressList,
@@ -63,17 +63,31 @@
 									</div>
 									
 									<div class="input_row">
-										<label for="lsParticipantMailtext">Mailtext</label>
-										<textarea id="lsParticipantMailtext" name="participantMailtext" rows="10" cols="105"
+										<label for="lsParticipantMailSubject">${popupTranslations.mailSubject}<span class="required">*</span></label>
+										<input id="lsParticipantMailSubject" name="participantMailSubject" disabled="disabled" required="true"
+											data-dojo-attach-point="participantMailSubjectNode"
+											data-dojo-type="dijit/form/ValidationTextBox"
+											data-dojo-props="
+												validator:dojox.validate.isText,
+												invalidMessage:'Sie müssen einen Betreff angeben'" />
+									</div>
+									
+									<div class="input_row">
+										<label for="lsParticipantMailtext">${popupTranslations.mailText}<span class="required">*</span></label>
+										<div class="column_585">
+											${popupTranslations.mailTextDesc}
+										</div>
+										<textarea id="lsParticipantMailtext" name="participantMailtext" rows="10" cols="105" disabled="disabled" required="true"
+											data-dojo-attach-point="participantMailtextNode"
 											data-dojo-type="commsy/ValidationTextArea"
 											data-dojo-props="
 												validator:dojox.validate.isText,
-												invalidMessage:'Bitte geben Sie einen Text ein'">${popupTranslations.mailText}</textarea>
+												invalidMessage:'Bitte geben Sie einen Text ein'">${popupTranslations.mailTemplate}</textarea>
 									</div>
 								</div>
 								
 								<div class="input_row">
-									<input class="popup_button" type="submit" disabled="disabled" value="Teilnehmer einladen" data-dojo-attach-point="submitNode" />
+									<input class="popup_button" type="submit" disabled="disabled" value="${popupTranslations.buttonSubmit}" data-dojo-attach-point="submitNode" />
 								</div>
 							</form>
 						</div>

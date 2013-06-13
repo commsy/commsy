@@ -43,7 +43,9 @@ define(
 		templateString:		Template,
 		baseClass:			"LimeSurveyParticipantsWidget",
 		
-		canOverlay:			true,							///< Determs if popup can overlay other popus
+		canOverlay:			true,							///< Determs if popup can overlay other popups
+		
+		surveyId:			null,							///< Given by LimeSurveyOverview.js
 		
 		// attributes
 		title:				"",
@@ -142,7 +144,13 @@ define(
 			{
 				FX.wipeOut(
 				{
-					node:			this.noTokensNode
+					node:			this.noTokensNode,
+					onEnd:			Lang.hitch(this, function()
+					{
+						Registry.byId("lsParticipantMails").set("disabled", true);
+						Registry.byId("lsParticipantMailSubject").set("disabled", true);
+						Registry.byId("lsParticipantMailtext").set("disabled", true);
+					})
 				}).play();
 			}
 			else
@@ -152,6 +160,9 @@ define(
 					node:			this.noTokensNode,
 					beforeBegin:	Lang.hitch(this, function()
 					{
+						Registry.byId("lsParticipantMails").set("disabled", false);
+						Registry.byId("lsParticipantMailSubject").set("disabled", false);
+						Registry.byId("lsParticipantMailtext").set("disabled", false);
 						DomClass.remove(this.noTokensNode, "hidden");
 					})
 				}).play();
@@ -164,26 +175,31 @@ define(
 			
 			var formManager = Registry.byId("limesurveyParticipantsForm");
 			
-			if ( formManager.validate() )
-			{/*
+			if ( formManager.isValid() )
+			{
 				this.setupLoading();
 				var formValues = formManager.gatherFormValues();
 				
 				this.AJAXRequest(	"limesurvey",
-									"createSurvey",
+									"inviteParticipants",
 									{
-										templateId:		formValues.template,
-										surveyTitle:	formValues.title
+										groupId:				formValues.group,
+										withTokens:				formValues.withTokens,
+										participantMails:		formValues.participantMails,
+										participantMailSubject:	formValues.participantMailSubject,
+										participantMailtext:	formValues.participantMailtext,
+										surveyId:				this.surveyId
 									},
 									Lang.hitch(this, function(response)
 				{
-					// update the survey list in the main widget
-					Topic.publish("updateSurveys", { });
-					
 					// remove loading indicator and close this popup
 					this.destroyLoading();
 					this.Close();
-				}));*/
+				}));
+			}
+			else
+			{
+				formManager.validate();
 			}
 		}
 	});

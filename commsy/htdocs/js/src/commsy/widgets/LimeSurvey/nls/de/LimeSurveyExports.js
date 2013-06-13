@@ -1,5 +1,5 @@
 define({
 	buttonClose:				"Schließen",
 	close:						"schließen",
-	title:						"Übersicht - aktive Umfragen"
+	title:						"Übersicht - exportierte Umfragen"
 });

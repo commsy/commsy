@@ -54,7 +54,7 @@ class cs_topic_manager extends cs_labels_manager {
 	*
 	*  @return cs_label_item a time label
 	*/
-	function getNewItem() {
+	function getNewItem($label_type = '') {
 		include_once('classes/cs_topic_item.php');
 		$item = new cs_topic_item($this->_environment);
 		return $item;

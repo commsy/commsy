@@ -60,14 +60,17 @@ define(
 			widgetManager.GetInstances(
 			[
 			 	[ "commsy/widgets/LimeSurvey/LimeSurveyOverview", {}, true ],
-			 	[ "commsy/widgets/LimeSurvey/LimeSurveyMenu", { }, true ]
+			 	[ "commsy/widgets/LimeSurvey/LimeSurveyMenu", { }, true ],
+			 	[ "commsy/widgets/LimeSurvey/LimeSurveyExports", {}, true ]
 			]).then(Lang.hitch(this, function(deferred)
 			{
 				var limeSurveyOverview = deferred[0].instance;
 				var limeSurveyMenu = deferred[1].instance;
+				var limeSurveyExports = deferred[2].instance;
 				
 				// place widgets
 				limeSurveyOverview.placeAt(this.mainNode);
+				limeSurveyExports.placeAt(this.mainNode);
 				limeSurveyMenu.placeAt(this.sidebarNode);
 			}));
 		},

@@ -2,7 +2,7 @@ define(
 [
 	"dojo/_base/declare",
 	"commsy/widgets/List/ListWidget",
-	"dojo/i18n!./nls/LimeSurveyOverview",
+	"dojo/i18n!./nls/LimeSurveyExports",
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
@@ -172,12 +172,12 @@ define(
 			}));
 			
 			// set the store
-			this.setStore("limesurvey");
+			this.setStore("limesurveyExports");
 			
 			// subsribe to the update event
-			this.subscribe("updateSurveys", Lang.hitch(this, function(object)
+			this.subscribe("updateExportedSurveys", Lang.hitch(this, function(object)
 			{
-				this.setStore("limesurvey");
+				this.setStore("limesurveyExports");
 			}));
 		},
 		
