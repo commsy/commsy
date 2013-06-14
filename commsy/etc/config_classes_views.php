@@ -935,4 +935,12 @@ $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_configuration_datasecurity_form_view';
+define('CONFIGURATION_DATASECURITY_FORM_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 ?>

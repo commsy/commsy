@@ -93,9 +93,9 @@ $message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["en"] = "Your account at the port
    %2
 
 If you also have forgotten your password, just follow the link &quot;Forgot your password?&quot; on the left side of the portal %1.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG %2 has changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal %2 has changed: You are now a contact person.";
-$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["en"] = "your status for the CommSy %_COMMUNITY_SUB_NOMS_BIG %2 has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["en"] = "your status for the CommSy portal %2 has been changed: You are now a contact person.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["en"] = "your status for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has been changed: you are denominated as contact person for this workspace. Your name, along with a contact link, will appear aside the workspace description.";
 $message["MAIL_BODY_USER_PASSWORD_CHANGE_PO"]["en"] = "your password of your account
    %1
 
@@ -126,9 +126,9 @@ You are a &quot;moderator&quot; now of %2. You now have access to user and works
 $message["MAIL_BODY_USER_STATUS_MODERATOR_PR"]["en"] = "the status of your account
    %1
 
-for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has changed: You are now a &quot;moderator&quot;.
+for the CommSy %_PROJECT_SUB_NOMS_BIG %2 has been changed: You are now a &quot;moderator&quot;.
 
-No you can configure %_PROJECT_SUB_NOMS_BIG: Select colours, administrate accounts, ...";
+As a moderator you can configure %_PROJECT_SUB_NOMS_BIG: Select colours, administrate accounts, ...";
 $message["MAIL_BODY_USER_STATUS_USER_GP"]["en"] = "your account
    %1
 

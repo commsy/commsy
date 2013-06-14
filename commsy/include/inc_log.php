@@ -44,7 +44,15 @@ if ( isset($_POST) ) {
 } else {
    $post_content = '';
 }
-$array['remote_addr']      = $_SERVER['REMOTE_ADDR'];
+//Datenschutz
+if($environment->getCurrentContextItem()->withLogIPCover()){
+	// if datasecurity is active dont show last two fields
+	$remote_adress_array = explode('.', $_SERVER['REMOTE_ADDR']);
+	$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+} else {
+	$array['remote_addr']      = $_SERVER['REMOTE_ADDR'];
+}
+
 $array['script_name']      = $_SERVER['SCRIPT_NAME'];
 $array['query_string']     = $_SERVER['QUERY_STRING'];
 $array['request_method']   = $_SERVER['REQUEST_METHOD'];

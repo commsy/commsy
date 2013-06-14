@@ -3838,7 +3838,10 @@ class misc_text_converter {
    	// config for description ckeditor
    	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
    	#$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
+   	#$config->set('HTML.AllowedAttributes','a.target');
    	
+   	// allow target=
+   	$config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
    	return $config;
    }
    
