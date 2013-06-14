@@ -93,10 +93,20 @@
 						if ( $entry->getType() !== CS_PORTFOLIO_TYPE )
 						{
 							$moddate = $entry->getModificationDate();
-							if ( $entry->getCreationDate() != $entry->getModificationDate() && !strstr($moddate,'9999-00-00')){
-								$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
-							} else {
-								$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+							if ( mb_strstr($moddate, '9999-00-00') )
+							{
+								$mod_date = "'";
+							}
+							else
+							{
+								if ( $entry->getCreationDate() != $entry->getModificationDate() )
+								{
+									$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
+								}
+								else
+								{
+									$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+								}
 							}
 	
 							if ($type === CS_MATERIAL_TYPE) {

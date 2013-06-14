@@ -205,6 +205,7 @@ $message["COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI"]["en"] = "CommSy-accounts";
 $message["COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI_DESC"]["en"] = "Use CommSy-accounts to log into the wiki.";
 $message["COMMON_CONFIGURATION_DATES_FORM_TITLE"]["en"] = "Configure events";
 $message["COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE"]["en"] = "Choose workspace preset";
+$message["COMMON_CONFIGURATION_DELETE_LOG_DESCRIPTION"]["en"] = "Attention! The data will be deleted! Recovery is impossible!";
 $message["COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE"]["en"] = "Configure discussions";
 $message["COMMON_CONFIGURATION_EXPORT_FORM_TITLE"]["en"] = "Export workspace";
 $message["COMMON_CONFIGURATION_EXTRA_FORM_TITLE"]["en"] = "Edit extras";
@@ -481,6 +482,8 @@ $message["COMMON_LIST_SHOWN_ENTRIES"]["en"] = "Items displayed:";
 $message["COMMON_LIST_VIEW"]["en"] = "List view";
 $message["COMMON_LIST_WHOLE_CONTENT"]["en"] = "Show text in whole width";
 $message["COMMON_LOGIN"]["en"] = "login";
+$message["COMMON_LOGIN_AS_ANOTHER_USER_ACTIVATE"]["en"] = "activate login as ...";
+$message["COMMON_LOGIN_AS_ANOTHER_USER_DEACTIVATE"]["en"] = "deactivate login as ...";
 $message["COMMON_LOGO"]["en"] = "logo";
 $message["COMMON_MAILTO_GROUPS"]["en"] = "Send to choosen groups";
 $message["COMMON_MAIL_ALL_IN_ROOM"]["en"] = "Total members in workspace (%1 persons)";
@@ -770,6 +773,7 @@ $message["COMMON_TAG_BOX_EDIT"]["en"] = "Add category/ies";
 $message["COMMON_TAG_NEW_ATTACH"]["en"] = "Add categories";
 $message["COMMON_TAG_RESTRICTION"]["en"] = "Appl. category";
 $message["COMMON_TEMPLATE_DESCRIPTION"]["en"] = "Template description";
+$message["COMMON_TEMPORARY_LOCKED"]["en"] = 'Your user id is temporary locked. Please try again in a few minutes';
 $message["COMMON_TEXT"]["en"] = "Text";
 $message["COMMON_TEXT_FORMATING_FORMAT_TEXT"]["en"] = "<span style=&quot;font-weight:bold;&quot;>Lists:</span> <span style=&quot;font-weight:normal;&quot;>- for bulleted, # for numbered lists</span><br/>
 <span style=&quot;font-weight:bold;&quot;>Emphasis:</span> <span style=&quot;font-weight:normal;&quot;>*text* becomes </span> <span style=&quot;font-weight:bold;&quot;>text</span>, <span style=&quot;font-weight:normal;&quot;>_text_ becomes </span><span style=&quot;font-weight:normal;font-style:italic;&quot;>text</span><br/>

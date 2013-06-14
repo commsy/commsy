@@ -83,6 +83,9 @@ else {
       elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_LOGARCHIVE_DESC');
+      } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_LOG_IP') {
+         $extra = $_POST['extra'];
+         $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_LOG_IP_DESC');
       } elseif ($_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE') {
          $extra = $_POST['extra'];
          $values['description'] = $translator->getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE_DESC');
@@ -123,6 +126,7 @@ else {
          if (
               ( $extra == 'CONFIGURATION_EXTRA_SPONSORING'   and $portal->withAds() ) or
               #( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $portal->withGrouproomFunctions() ) or
+         	  ( $extra == 'CONFIGURATION_EXTRA_LOG_IP'   and $portal->withLogIPCover() ) or
               ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'   and $portal->withLogArchive() ) or
               ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $portal->withPDAView() ) or
               ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
@@ -147,6 +151,7 @@ else {
                if (
                    ( $extra == 'CONFIGURATION_EXTRA_SPONSORING'   and $room->withAds() ) or
                     #( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $room->withGrouproomFunctions() ) or
+               		( $extra == 'CONFIGURATION_EXTRA_LOG_IP'   and $room->withLogIPCover() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'    and $room->withLogArchive() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $room->withPDAView() ) or
                     ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
@@ -193,6 +198,7 @@ else {
          if (
               $_POST['extra'] == 'CONFIGURATION_EXTRA_SPONSORING' or
               #$_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM' or
+        	  $_POST['extra'] == 'CONFIGURATION_EXTRA_LOG_IP' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE' or
               $_POST['extra'] == 'CONFIGURATION_EXTRA_PDA' or
               $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
@@ -225,6 +231,8 @@ else {
                */
                elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
                   $portal->setWithLogArchive();
+               } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' ) {
+                  	$portal->setWithLogIPCover();
                } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
                   $portal->setWithHomepageLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
@@ -253,6 +261,8 @@ else {
                */
                elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
                   $portal->setWithoutLogArchive();
+               } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' ) {
+                  $portal->setWithoutLogIPCover();
                } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
                   $portal->setWithoutHomepageLink();
                } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
@@ -293,6 +303,9 @@ else {
                      elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and !$room->withLogArchive()) {
                         $room->setWithLogArchive();
                         $save_flag = true;
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' and !$room->withLogIPCover()) {
+                        $room->setWithLogIPCover();
+                        $save_flag = true;
                      } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and !$room->WithHomepageLink() ) {
                         $room->setWithHomepageLink();
                         $save_flag = true;
@@ -331,6 +344,9 @@ else {
                      */
                      elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and $room->withLogArchive()) {
                         $room->setWithoutLogArchive();
+                        $save_flag = true;
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_LOG_IP' and $room->withLogIPCover()) {
+                        $room->setWithoutLogIPCover();
                         $save_flag = true;
                      } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->WithHomepageLink() ) {
                         $room->setWithoutHomepageLink();

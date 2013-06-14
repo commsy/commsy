@@ -207,6 +207,31 @@ else {
             if ( isset($_POST['password_length']) ) {
                $auth_item->setPasswordLength($_POST['password_length']);
             }
+            
+            //Datenschutz
+         	if ( isset($_POST['temporary_lock']) ) {
+               $auth_item->setTemporaryLock($_POST['temporary_lock']);
+            }
+            
+            if( isset($_POST['temporary_minutes'])) {
+            	$portal_item = $environment->getCurrentPortalItem();
+            	$portal_item->setLockTime($_POST['temporary_minutes']);
+            	$portal_item->save();
+            	unset($portal_item);
+            }
+            
+            if( isset($_POST['password_generation'])) {
+            	$portal_item = $environment->getCurrentPortalItem();
+            	$portal_item->setPasswordGeneration($_POST['password_generation']);
+            	$portal_item->save();
+            	unset($portal_item);
+            }
+            if( isset($_POST['password_expiration'])) {
+            	$portal_item = $environment->getCurrentPortalItem();
+            	$portal_item->setPasswordExpiration($_POST['password_expiration']);
+            	$portal_item->save();
+            	unset($portal_item);
+            }
 
             // special data
             $auth_data_array = array();

@@ -139,6 +139,21 @@ class cs_log_archive_manager extends cs_manager {
       }
       return $success;
    }
+   
+   function deleteByContextID ($cid) {
+   	  $retour = false;
+   	  $query = 'DELETE FROM '.$this->addDatabasePrefix('log_archive').' WHERE 1';
+   	  $query .= ' AND cid = '.encode(AS_DB,$cid);
+   	  // perform query
+   	  $result = $this->_db_connector->performQuery($query);
+   	  if ( !isset($result) or !$result ) {
+   	  	include_once('functions/error_functions.php');
+   	  	trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+   	  } else {
+   	  	$retour = $result;
+   	  }
+   	  return $retour;
+   }
 
    function deleteByContextArray ($array) {
       $retour = false;
@@ -164,6 +179,22 @@ class cs_log_archive_manager extends cs_manager {
          $retour = $result;
       }
       return $retour;
+   }
+   
+   function getLogdataByContextID ($cid) {
+   	  $retour = false;
+   	  $query = 'SELECT * FROM '.$this->addDatabasePrefix('log_archive').' WHERE 1';
+   	  $query .= ' AND cid = '.encode(AS_DB,$cid);
+   	  // perform query
+   	  $result = $this->_db_connector->performQuery($query);
+   	  if ( !isset($result) or !$result ) {
+   	  	#include_once('functions/error_functions.php');
+   	  	#trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+   	  } else {
+   	  	$retour = $result;
+   	  }
+   	  return $retour;
+   	
    }
 }
 ?>

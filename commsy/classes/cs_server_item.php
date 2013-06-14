@@ -161,7 +161,8 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronLog(); // this function must run AFTER all other portal crons
       $cron_array[] = $this->_cronLogArchive();
       $cron_array[] = $this->_cronRoomActivity();
-      $cron_array[] = $this->_cronReallyDelete();
+      $cron_array[] = $this->_cronReallyDelete();      
+      $cron_array[] = $this->_cronReallyDeleteArchive();
       $cron_array[] = $this->_cronCleanTempDirectory();
       $cron_array[] = $this->_cronUnlinkFiles();
       $cron_array[] = $this->_cronItemBackup();
@@ -334,7 +335,7 @@ class cs_server_item extends cs_guide_item {
     *
     * @return array results of running this cron
     */
-   function _cronLog () {
+	function _cronLog () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
 
@@ -343,6 +344,8 @@ class cs_server_item extends cs_guide_item {
       $cron_array['description'] = 'move old logs to log archive';
       $cron_array['success'] = false;
       $cron_array['success_text'] = 'cron failed';
+      
+      $context_item = $this->_environment->getCurrentContextItem();
 
       $log_DB = $this->_environment->getLogManager();
       $log_DB->resetlimits();
@@ -353,8 +356,15 @@ class cs_server_item extends cs_guide_item {
       $log_DB->setRangeLimit($from,$range);
       // only archive logs that are older then the beginning of the actual day
       // getCurrentDate() returns date("Ymd");
+            // Datenschutz : Logdaten nach bestimmtem Zeitraum löschen
+      // Wenn im context_item das Extra eingestellt ist, dann
       include_once('functions/date_functions.php');
-      $log_DB->setTimestampOlderLimit(getCurrentDate());
+      if($context_item->getLogDeleteInterval() <= 1){
+      	$log_DB->setTimestampOlderLimit(getCurrentDate());
+      } else {
+      	$log_DB->setTimestampOlderLimit(getCurrentDateTimeMinusDaysInMySQL($context_item->getLogDeleteInterval()));
+      }
+      #$log_DB->setTimestampOlderLimit(getCurrentDate());
       $data_array = $log_DB->select();
       $count = count($data_array);
       if ($count == 0) {
@@ -433,7 +443,7 @@ class cs_server_item extends cs_guide_item {
     * @return array results of running this cron
     */
    function _cronRoomActivity () {
-      include_once('functions/misc_functions.php');
+   	include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
 
       $quotient = 4;
@@ -538,6 +548,78 @@ class cs_server_item extends cs_guide_item {
       $time = round($time_end - $time_start,0);
       $cron_array['time'] = $time;
 
+      return $cron_array;
+   }
+
+   /** cron delete archived items, INTERNAL
+   *  daily cron, delete archived items
+   *
+   * @return array results of running this cron
+   */
+   function _cronReallyDeleteArchive () {
+      // toggle archive mode
+      $toggle_archive_mode = false;
+      if ( !$this->_environment->isArchiveMode() ) {
+      	$toggle_archive_mode = true;
+      	$this->_environment->toggleArchiveMode();
+      }
+         	
+   	include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
+      $cron_array = array();
+      $cron_array['title'] = 'delete archived items';
+      $cron_array['description'] = 'delete archived items older than x days';
+      $cron_array['success'] = true;
+      $cron_array['success_text'] = '';
+
+      $item_type_array = array();
+      $item_type_array[] = CS_ANNOTATION_TYPE;
+      $item_type_array[] = CS_ANNOUNCEMENT_TYPE;
+      $item_type_array[] = CS_DATE_TYPE;
+      $item_type_array[] = CS_DISCUSSION_TYPE;
+      $item_type_array[] = CS_DISCARTICLE_TYPE;
+      $item_type_array[] = CS_LINKITEMFILE_TYPE;
+      $item_type_array[] = CS_FILE_TYPE;
+      $item_type_array[] = CS_ITEM_TYPE;
+      $item_type_array[] = CS_LABEL_TYPE;
+      $item_type_array[] = CS_LINK_TYPE;
+      $item_type_array[] = CS_LINKITEM_TYPE;
+      $item_type_array[] = CS_MATERIAL_TYPE;
+      $item_type_array[] = CS_ROOM_TYPE;
+      $item_type_array[] = CS_SECTION_TYPE;
+      $item_type_array[] = CS_TAG_TYPE;
+      $item_type_array[] = CS_TAG2TAG_TYPE;
+      $item_type_array[] = CS_TASK_TYPE;
+      $item_type_array[] = CS_TODO_TYPE;
+      $item_type_array[] = CS_USER_TYPE;
+
+      foreach ($item_type_array as $item_type) {
+         $manager = $this->_environment->getManager($item_type);
+         global $c_delete_days;
+         if ( !empty($c_delete_days) and is_numeric($c_delete_days) ) {
+         	
+            $success = $manager->deleteReallyOlderThan($c_delete_days);
+            
+         	$cron_array['success'] = $success and $cron_array['success'];
+            $cron_array['success_text'] = 'delete entries in database marked as deleted older than '.$c_delete_days.' days';
+         } else {
+            $cron_array['success_text'] = 'nothing to do - please activate etc/commsy/settings.php -> c_delete_days if needed';
+         }
+         unset($manager);
+      }
+      unset($item_type_array);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+      
+      // toggle archive mode
+      if ( $toggle_archive_mode ) {
+      	$this->_environment->toggleArchiveMode();
+      }
+      unset($toggle_archive_mode);     
+      
       return $cron_array;
    }
 

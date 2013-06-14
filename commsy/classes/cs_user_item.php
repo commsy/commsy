@@ -2230,5 +2230,100 @@ class cs_user_item extends cs_item {
    function setLastLoginPlugin ($value, $plugin) {
       $this->_addExtra('LASTLOGIN_'.mb_strtoupper($plugin),(string)$value);
    }
+   
+   function isTemporaryLocked () {
+   	$retour = false;
+   	if( $this->_issetExtra('TEMPORARY_LOCK')){
+   		include_once('functions/date_functions.php');
+   		$date = $this->_getExtra('TEMPORARY_LOCK');
+   		if(getCurrentDateTimeInMySQL() > $date){
+   			$retour = false;
+   		} else {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   // Datum übergeben, für zeitliche Sperrung der Kennung
+   function setTemporaryLock () {
+   	include_once('functions/date_functions.php');
+   	$lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
+   	$this->_addExtra('TEMPORARY_LOCK', getCurrentDateTimePlusMinutesInMySQL($lock_time));
+   }
+   
+   function getTemporaryLock () {
+   	$retour = '';
+   	if ( $this->_issetExtra('TEMPORARY_LOCK') ) {
+   		$retour = $this->_getExtra('TEMPORARY_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function unsetTemporaryLock () {
+   	$this->_unsetExtra('TEMPORARY_LOCK');
+   }
+   // save last used passwords
+   function setGenerationPassword ($generation, $password){
+   	$this->_addExtra('PW_GENERATION_'.$generation, $password);
+   }
+   
+   function getGenerationPassword($generation){
+   	if($this->_issetExtra('PW_GENERATION_'.$generation)){
+   		$retour = $this->_getExtra('PW_GENERATION_'.$generation);
+   	}
+   }
+   
+   function setNewGenerationPassword ($password) {
+   	$portal_item = $this->_environment->getCurrentPortalItem();
+   	
+   	$i = $portal_item->getPasswordGeneration();
+   	if($i != 0){
+	   	// shift hashes for a new generation password
+	   	for($i;$i > 0;$i--){
+	   		if($this->_issetExtra('PW_GENERATION_'.($i-1)) AND $i != 1){
+	   			$this->_addExtra('PW_GENERATION_'.$i, $this->_getExtra('PW_GENERATION_'.($i-1)));
+	   		}
+	   	}
+	   	$this->_addExtra('PW_GENERATION_1', $password);
+   	}
+   	unset($portal_item);
+   }
+   
+   function isPasswordInGeneration($password) {
+   	$portal_item = $this->_environment->getCurrentPortalItem();
+   	
+   	$retour = false;
+   	$i=$portal_item->getPasswordGeneration();
+   	for($i;$i > 0;$i--){
+   		if($this->_issetExtra('PW_GENERATION_'.($i))){
+   			if($this->_getExtra('PW_GENERATION_'.$i) == $password){
+   				$retour = true;
+   			}
+   		}
+   	}
+   	unset($portal_item);
+   	return $retour;
+   }
+   
+   function deactivateLoginAsAnotherUser () {
+   	$this->_addExtra('DEACTIVATE_LOGIN_AS', '1');
+   }
+   
+   function unsetDeactivateLoginAsAnotherUser () {
+   	$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+   }
+   
+   function isDeactivatedLoginAsAnotherUser () {
+   	$retour = false;
+   	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
+   		$flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
+   		if($flag){
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+
+   }
+   
 }
 ?>

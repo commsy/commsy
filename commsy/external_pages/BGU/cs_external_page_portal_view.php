@@ -1694,7 +1694,7 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_environment->getCurrentModule()).'"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_environment->getCurrentFunction()).'"/>'.LF;
       $html .= '   <input type="hidden" name="selroom" value="1"/>'.LF;
-      $html .= '   <input type="hidden" name="sel_archive_room" value="1"/>'.LF;
+      $html .= '   <input type="hidden" name="sel_archive_room" value="2"/>'.LF;
       if ( isset($this->_room_list_view) ) {
          $html .= '   <input type="hidden" name="sort" value="'.$this->_text_as_form($this->_room_list_view->getSortKey()).'"/>'.LF;
       }

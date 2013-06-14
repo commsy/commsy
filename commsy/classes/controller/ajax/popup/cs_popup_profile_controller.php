@@ -217,18 +217,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$authentication = $this->_environment->getAuthenticationObject();
 
 							$currentUser = $this->_environment->getCurrentUserItem();
-
-							// password
-							if(!empty($form_data['new_password'])) {
-								$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
-								$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
-								$error_number = $auth_manager->getErrorNumber();
-
-								if(!empty($error_number)) {
-									// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
-								}
-							}
-
+							
 							// get portal user if in room context
 							if ( !$this->_environment->inPortal() )
 							{
@@ -238,6 +227,50 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							{
 								$portalUser = $this->_environment->getCurrentUserItem();
 							}
+							
+							// Datenschutz
+							if($current_portal_item->getPasswordGeneration() > 0){
+
+								if(!$portalUser->isPasswordInGeneration(md5($form_data['new_password']))) {
+									// password
+									if(!empty($form_data['new_password'])) {
+										$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
+										$old_password = $auth_manager->getItem($form_data['user_id'])->getPasswordMD5();
+										if($old_password == md5($form_data['old_password'])){
+											$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+										} else {
+											$this->_popup_controller->setErrorReturn('1009', 'password change error');
+										}
+										$error_number = $auth_manager->getErrorNumber();
+		
+										if(!empty($error_number)) {
+											// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+										} else {
+											$portalUser->setNewGenerationPassword($old_password);
+										}
+									}
+								} else {
+									$this->_popup_controller->setErrorReturn('1010', 'password generation error');
+								}
+							} else {
+								if(!empty($form_data['new_password'])) {
+									$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
+									$old_password = $auth_manager->getItem($form_data['user_id'])->getPasswordMD5();
+									if($old_password == $form_data['old_password']){
+										$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+									} else {
+										$this->_popup_controller->setErrorReturn('1009', 'password change error');
+									}
+									$error_number = $auth_manager->getErrorNumber();
+								
+									if(!empty($error_number)) {
+										// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+									} else {
+										$portalUser->setNewGenerationPassword($old_password);
+									}
+								}
+							}
+
 
 							// user id
 							if(!empty($form_data['user_id']) && $form_data['user_id'] != $portalUser->getUserID()) {
