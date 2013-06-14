@@ -212,6 +212,36 @@
 			echo $this->_return;
 		}
 		
+		public function actionDelete()
+		{
+			$surveyId = $this->_data["surveyId"];
+			
+			$this->initClient();
+			
+			// delete the survey
+			$deleteStatus = $this->client->delete_survey($this->sessionKey, $surveyId);
+			
+			if ( isset($deleteStatus["status"]) && $deleteStatus["status"] !== "OK" )
+			{
+				$this->setErrorReturn("904", $deleteStatus["status"]);
+				echo $this->_return;
+				exit;
+			}
+			
+			$this->closeClient();
+			
+			// delete from room extras
+			$currentContextItem = $this->_environment->getCurrentContextItem();
+			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
+			array_splice($surveyIDs, array_search($surveyId, $surveyIDs), 1);
+			$currentContextItem->setLimeSurveySurveyIDs($surveyIDs);
+			$currentContextItem->save();
+			
+			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
 		public function actionQuery()
 		{
 			$return = array(
@@ -238,7 +268,7 @@
 					foreach ( $surveyIDs as $surveyID )
 					{
 						$valid = true;
-						$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("active", "expires"));
+						$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("expires"));
 						
 						// get the survey name from the list
 						$surveyTitle = "";
@@ -271,7 +301,6 @@
 							(
 									"sid"			=> $surveyID,
 									"valid"			=> $valid,
-									"active"		=> $surveyProperties["active"] === "Y" ? true : false,
 									"expires"		=> $surveyProperties["expires"] ? getDateTimeInLang($surveyProperties["expires"]) : "-",
 									"title"			=> $surveyTitle
 							);

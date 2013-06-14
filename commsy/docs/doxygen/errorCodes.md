@@ -55,3 +55,4 @@ Einleitung...
   + 901 - Feld stimmt nicht mit anderem überein
   + 902 - Portfolio-Tag bereits vergeben
   + 903 - LimeSurvey RPC Fehler
+  + 904 - LimeSurvey Fehler beim Löschen

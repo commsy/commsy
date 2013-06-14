@@ -701,6 +701,7 @@ function isURLValid () {
    		
    		// download
    		$module != 'download' and
+   		$module != 'limesurvey' and
    		
    		// individual css
    		$module != 'individual'

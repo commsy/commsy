@@ -8,7 +8,9 @@ define(
 	"dojo/on",
 	"dojo/dom-class",
 	"dojo/query",
-	"dojo/topic"
+	"dojo/topic",
+	"dijit/form/Button",
+	"dijit/Dialog"
 ], function
 (
 	declare,
@@ -19,7 +21,9 @@ define(
 	On,
 	DomClass,
 	Query,
-	Topic
+	Topic,
+	Button,
+	Dialog
 ) {
 	return declare([ListWidget],
 	{	
@@ -59,7 +63,7 @@ define(
 
 						DomConstruct.create("a",
 						{
-							"id":		"listItem" + rowData.sid,
+							"id":		"listItem" + rowData.surveyId,
 							className:	"stack_link",
 							href:		"#",
 							innerHTML:	rowData.title
@@ -76,7 +80,7 @@ define(
 
 					DomConstruct.create("p",
 					{
-						innerHTML:		rowData.sid
+						innerHTML:		rowData.surveyId
 					}, secondColumnNode, "last");
 			});
 			
@@ -89,12 +93,55 @@ define(
 				}, rowNode, "last");
 
 					var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
-						
-						DomConstruct.create("img",
+					
+						var aNode = DomConstruct.create("a",
 						{
-							src:		this.from_php.template.tpl_path + "img/" + (rowData.active ? "add.png" : "cross.png"),
-							height:		"16px"
+							href:		"#",
+							className:	"limeSurveyDelete",
+							innerHTML:	"&nbsp;",
+							title:		"Löschen"
 						}, pNode, "last");
+						
+				On(aNode, "click", Lang.hitch(this, function()
+				{
+					// create the dialog
+					var deleteDialog = new Dialog(
+					{
+						title:			"Löschen"
+					});
+					
+					// create the delete button
+					var deleteButton = new Button(
+					{
+						label:			"Löschen",
+						onClick:		Lang.hitch(this, function(event)
+						{
+							// delete survey export
+							this.setupLoading();
+							
+							this.AJAXRequest(	"limesurveyExports",
+												"delete",
+												{
+													surveyId:				rowData.surveyId,
+													timestamp:				rowData.timestamp
+												},
+												Lang.hitch(this, function(response)
+							{
+								this.destroyLoading();
+								Topic.publish("updateExportedSurveys", {});
+							}));
+
+							// destroy the dialog
+							deleteDialog.destroyRecursive();
+						})
+					});
+					
+					// place button in dialog
+					dojo.place(deleteButton.domNode, deleteDialog.containerNode, "last");
+					
+					// show dialog
+					deleteDialog.show();
+				}));
 			}));
 			
 			this.addColumn(3, function(rowNode, rowData)
@@ -107,68 +154,64 @@ define(
 
 					DomConstruct.create("p",
 					{
-						innerHTML:		rowData.expires
+						innerHTML:		rowData.exportDate
 					}, fourthColumnNode, "last");
 			});
 			
 			this.addColumn(4, Lang.hitch(this, function(rowNode, rowData)
 			{
 				// fifth column
-				var fourthColumnNode = DomConstruct.create("div",
+				var fifthColumnNode = DomConstruct.create("div",
 				{
 					className:		"column_90"
 				}, rowNode, "last");
-
-					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
-
-						var aNode = DomConstruct.create("a",
-						{
-							href:		"#",
-							innerHTML:	/*rowData.sid*/ "Teilnehmer"
-						}, pNode, "last");
 				
-				On(aNode, "click", Lang.hitch(this, function()
-				{
-					var widgetManager = this.getWidgetManager();
-					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyParticipants", { surveyId: rowData.sid }).then(Lang.hitch(this, function(deferred)
-					{
-						var widgetInstance = deferred.instance;
-						
-						widgetInstance.Open();
-					}));
-				}));
-			}));
-			
-			this.addColumn(5, Lang.hitch(this, function(rowNode, rowData)
-			{
-				// sixth column
-				var fourthColumnNode = DomConstruct.create("div",
-				{
-					className:		"column_90"
-				}, rowNode, "last");
-
-					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
-
-						var aNode = DomConstruct.create("a",
-						{
-							href:		"#",
-							innerHTML:	/*rowData.sid*/ "Exportieren"
-						}, pNode, "last");
-				
-				On(aNode, "click", Lang.hitch(this, function()
-				{
-					this.setupLoading();
+					var pNode = DomConstruct.create("p", {}, fifthColumnNode, "last");
 					
-					this.AJAXRequest(	"limesurvey",
-										"export",
-										{
-											surveyId:				rowData.sid
-										},
-										Lang.hitch(this, function(response)
-					{
-						this.destroyLoading();
-					}));
-				}));
+						if ( rowData.files.survey )
+						{
+							DomConstruct.create("a",
+							{
+								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp + "&file=survey",
+								target:		"blank",
+								id:			"limeSurveyFileSurvey",
+								innerHTML:	"&nbsp;",
+								title:		"Umfrage"
+							}, pNode, "last");
+						}
+						
+						if ( rowData.files.statistics )
+						{
+							DomConstruct.create("a",
+							{
+								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp + "&file=statistics",
+								id:			"limeSurveyFileStatistics",
+								innerHTML:	"&nbsp;",
+								title:		"Statistik"
+							}, pNode, "last");
+						}
+						
+						if ( rowData.files.responses )
+						{
+							DomConstruct.create("a",
+							{
+								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp + "&file=responses",
+								id:			"limeSurveyFileResponses",
+								innerHTML:	"&nbsp;",
+								title:		"Antworten"
+							}, pNode, "last");
+						}
+						
+						if ( rowData.files.create || rowData.files.statistics || rowData.files.responses )
+						{
+							DomConstruct.create("a",
+							{
+								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp,
+								id:			"limeSurveyFileZip",
+								innerHTML:	"&nbsp;",
+								title:		"Zip-Archiv"
+							}, pNode, "last");
+						}
 			}));
 			
 			// set the store

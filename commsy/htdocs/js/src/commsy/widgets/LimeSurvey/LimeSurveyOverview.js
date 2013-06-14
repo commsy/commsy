@@ -8,7 +8,9 @@ define(
 	"dojo/on",
 	"dojo/dom-class",
 	"dojo/query",
-	"dojo/topic"
+	"dojo/topic",
+	"dijit/form/Button",
+	"dijit/Dialog"
 ], function
 (
 	declare,
@@ -19,7 +21,9 @@ define(
 	On,
 	DomClass,
 	Query,
-	Topic
+	Topic,
+	Button,
+	Dialog
 ) {
 	return declare([ListWidget],
 	{	
@@ -90,11 +94,53 @@ define(
 
 					var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
 						
-						DomConstruct.create("img",
+						var aNode = DomConstruct.create("a",
 						{
-							src:		this.from_php.template.tpl_path + "img/" + (rowData.active ? "add.png" : "cross.png"),
-							height:		"16px"
+							href:		"#",
+							className:	"limeSurveyDelete",
+							innerHTML:	"&nbsp;",
+							title:		"Löschen"
 						}, pNode, "last");
+				
+				On(aNode, "click", Lang.hitch(this, function()
+				{
+					// create the dialog
+					var deleteDialog = new Dialog(
+					{
+						title:			"Löschen"
+					});
+					
+					// create the delete button
+					var deleteButton = new Button(
+					{
+						label:			"Löschen",
+						onClick:		Lang.hitch(this, function(event)
+						{
+							// delete survey
+							this.setupLoading();
+							
+							this.AJAXRequest(	"limesurvey",
+												"delete",
+												{
+													surveyId:				rowData.sid
+												},
+												Lang.hitch(this, function(response)
+							{
+								this.destroyLoading();
+								Topic.publish("updateSurveys", {});
+							}));
+
+							// destroy the dialog
+							deleteDialog.destroyRecursive();
+						})
+					});
+					
+					// place button in dialog
+					dojo.place(deleteButton.domNode, deleteDialog.containerNode, "last");
+					
+					// show dialog
+					deleteDialog.show();
+				}));
 			}));
 			
 			this.addColumn(3, function(rowNode, rowData)
@@ -114,12 +160,12 @@ define(
 			this.addColumn(4, Lang.hitch(this, function(rowNode, rowData)
 			{
 				// fifth column
-				var fourthColumnNode = DomConstruct.create("div",
+				var fifthColumnNode = DomConstruct.create("div",
 				{
 					className:		"column_90"
 				}, rowNode, "last");
 
-					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
+					var pNode = DomConstruct.create("p", {}, fifthColumnNode, "last");
 
 						var aNode = DomConstruct.create("a",
 						{
@@ -142,12 +188,12 @@ define(
 			this.addColumn(5, Lang.hitch(this, function(rowNode, rowData)
 			{
 				// sixth column
-				var fourthColumnNode = DomConstruct.create("div",
+				var sixthColumnNode = DomConstruct.create("div",
 				{
 					className:		"column_90"
 				}, rowNode, "last");
 
-					var pNode = DomConstruct.create("p", {}, fourthColumnNode, "last");
+					var pNode = DomConstruct.create("p", {}, sixthColumnNode, "last");
 
 						var aNode = DomConstruct.create("a",
 						{
@@ -167,6 +213,7 @@ define(
 										Lang.hitch(this, function(response)
 					{
 						this.destroyLoading();
+						Topic.publish("updateExportedSurveys", {});
 					}));
 				}));
 			}));
