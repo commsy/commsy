@@ -27,6 +27,7 @@ $success = true;
 
 $server_item = $this->_environment->getServerItem();
 $server_mail = $server_item->getDefaultSenderAddress();
+$count_cannot = 0;
 
 if ( !empty($server_mail) ) {
 	$sql = "SELECT item_id, context_id, user_id from user WHERE email = '".$server_mail."'";
@@ -35,7 +36,6 @@ if ( !empty($server_mail) ) {
 		$user_manager = $this->_environment->getUserManager();
 		$count = count($result);
 		$this->_initProgressBar($count);
-		$count_cannot = 0;
 		foreach ( $result as $row ) {
 			if ( !empty($row['item_id']) ) {
 				$user_item = $user_manager->getItem($row['item_id']);
@@ -56,7 +56,11 @@ if ( !empty($server_mail) ) {
 			}
 			$this->_updateProgressBar($count);
 		}
+	} else {
+		$this->_flushHTML('all data okay -> nothing to do');
 	}
+} else {
+	$this->_flushHTML('default server email address not set -> nothing to do');
 }
 
 if ( $count_cannot > 0 ) {
