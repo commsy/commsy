@@ -230,6 +230,17 @@ else {
             	$portal_item = $environment->getCurrentPortalItem();
             	$portal_item->setPasswordExpiration($_POST['password_expiration']);
             	$portal_item->save();
+            	
+            	// set a new expire date for all portal users
+            	// Datenschutz
+            	$portal_users = $portal_item->getUserList();
+            	$portal_user = $portal_users->getFirst();
+            	while ($portal_user){
+            		$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            		$portal_user->save();
+            		
+            		$portal_user = $portal_users->getNext();
+            	}
             	unset($portal_item);
             }
 

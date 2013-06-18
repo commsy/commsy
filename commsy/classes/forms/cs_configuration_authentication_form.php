@@ -426,7 +426,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',1,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
-	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',1,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
 	      #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
       }
 
