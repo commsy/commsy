@@ -33,8 +33,10 @@ $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE"]["en"] = "Source
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE"]["en"] = "Type";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["en"] = "Server";
 $message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["en"] = "Please add https:// or http:// at the server address.";
-$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["en"] = "Login";
-$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC"]["en"] = "What's the name of the login field? cn, uid, ...";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["en"] = "Userid (in path)";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC"]["en"] = "What's the name of the userid field in the path? (cn)";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID"]["en"] = "Userid (LDAP)";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID_DESC"]["en"] = "What's the name of the userid field in LDAP?";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION"]["en"] = "Encryption of passwords of user";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE"]["en"] = "Subtree";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR"]["en"] = "and additionally to find the path of persons automatically an account (if path is not equal just enter as dn) that can read the whole ldap tree";
@@ -157,8 +159,6 @@ $message["CONFIGURATION_EXTRA_GROUPROOM"]["en"] = "group workspaces";
 $message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["en"] = "This enables the group workspace feature (2nd level, user-moderated workspaces). On order to actually use group workspaces in a project workspace, the moderator has to enable the feature in his or her workspace settings.
 <br/><br/>
 Once activated, all moderators in the CommSy portal will be able to enable group workspaces in their project workspaces.";
-$message["CONFIGURATION_EXTRA_LOG_IP"]["de"] = "Garble ip log";
-$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["de"] = "If activated, the last ip block will be garbled.";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE"]["en"] = "Save log data";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE_DESC"]["en"] = "If activated, the log data of the room will not deleted after some time.";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["en"] = "Import materials automatically";

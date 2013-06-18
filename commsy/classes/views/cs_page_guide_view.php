@@ -2565,7 +2565,7 @@ class cs_page_guide_view extends cs_page_view {
 
             // service link
             if ( $current_context->showServiceLink()
-                 and $current_user->isUser()
+                 #and $current_user->isUser() // guest should use the link too (18.06.2013 IJ)
                ) {
 
                // exernal link: BEGIN
@@ -2588,7 +2588,7 @@ class cs_page_guide_view extends cs_page_view {
                if ( !empty($service_link_ext) ) {
                   if ( strstr($service_link_ext,'%') ) {
                      $text_convert = $this->_environment->getTextConverter();
-                     $service_link_ext = $text_convert->convertPercent($service_link_ext,false,true);
+                     $service_link_ext = $text_convert->convertPercent($service_link_ext,true,true);
                   }
                   $email_to_service = '<a href="'.$service_link_ext.'" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'" target="_blank">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>';
                } else {
