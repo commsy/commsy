@@ -72,6 +72,12 @@ class cs_home_member2_form extends cs_rubric_form {
       $this->_form->addTextField('email','',$this->_translator->getMessage('USER_EMAIL'),'','',21,true,'','','','left','',13);
       $this->_form->addTextField('email_confirmation','',$this->_translator->getMessage('USER_EMAIL_CONFIRMATION'),'','',21,true,'','','','left','',13);
       $this->_form->addHidden('language','');
+      
+      // Datenschutz
+      if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+      	$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new');
+      	$this->_form->addCheckbox('terms_of_use', '1', false, '', $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT').$link);
+      }
 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('ACCOUNT_GET_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.5,6.5);
@@ -93,6 +99,13 @@ class cs_home_member2_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
+   	
+   	if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+   		if (!isset($this->_form_post['terms_of_use'])){
+   			$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT_ERROR');
+   			$this->_form->setFailure('terms_of_use','');
+   		}
+   	}
       // check email adresses for equality
       if ($this->_form_post['email'] != $this->_form_post['email_confirmation']) {
          $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_ERROR');

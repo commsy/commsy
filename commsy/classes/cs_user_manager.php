@@ -1112,6 +1112,8 @@ class cs_user_manager extends cs_manager {
      $query .= 'city="'.encode(AS_DB,$user_item->getCity()).'",';
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
+     // Datenschutz
+     $query .= 'expire_date="'.encode(AS_DB,$user_item->getPasswordExpireDate()).'",';
 
      // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
      // see methode _create()
@@ -1206,7 +1208,8 @@ class cs_user_manager extends cs_manager {
                'city="'.encode(AS_DB,$item->getCity()).'",'.
                'visible="'.encode(AS_DB,$item->getVisible()).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'";
+               'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
+               'expire_date="'.encode(AS_DB,serialize($item->getPasswordExpireDate())).'"';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -1765,6 +1768,91 @@ class cs_user_manager extends cs_manager {
 			}	
 		}
 		return $retour;
+	}
+	
+	public function getUserPasswordExpired() {
+		$current_date = getCurrentDateTimeInMySQL();
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$current_date)."'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		
+		return $user_array;
+		
+
+	}
+	
+	public function getCountUserPasswordExpired() {
+		$retour = 0;
+		$date = getCurrentDateTimeInMySQL();
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".email) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
+		$query .= " and deletion_date IS NULL";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems counting open accounts.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs) {
+				$retour = $rs['number'];
+			}
+			unset($result);
+		}
+		return $retour;
+	}
+	
+	public function getCountUserPasswordExpiredSoon() {
+		$retour = 0;
+		if(isset($c_password_expiration_email_days)){
+			$date = $c_password_expiration_email_days;
+		} else {
+			$date = getCurrentDateTimeMinusDaysInMySQL('14');
+		}
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".email) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
+		$query .= " and deletion_date IS NULL";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems counting open accounts.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs) {
+				$retour = $rs['number'];
+			}
+			unset($result);
+		}
+		return $retour;
+	}
+	
+	public function getUserPasswordExpiredSoon() {
+		if(isset($c_password_expiration_email_days)){
+			$date = $c_password_expiration_email_days;
+		} else {
+			$date = getCurrentDateTimeMinusDaysInMySQL('14');
+		}
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $rs;
+			}
+			unset($result);
+			unset($query);
+		}
+		$user_item_array = $this->_buildItem($user_array);
+		pr($user_item_array);
+		return $user_item_array;
 	}
 }
 ?>

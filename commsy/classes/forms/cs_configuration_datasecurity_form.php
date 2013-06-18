@@ -190,7 +190,8 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       	#############################
         // Datenschutz Portal Ebene
         #############################
-        $this->_form->addRadioGroup('hide_accountname','Verstecke Kennungen','',$this->_yes_no_array,'','',true,'','',$disabled);
+        $this->_form->addRadioGroup('hide_accountname',$translator->getMessage('CONFIGURATION_HIDE_USERLOGIN'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+        $this->_form->addRadioGroup('use_ds_agb',$translator->getMessage('CONFIGURATION_AGB_DATASECURITY'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
 
       #$this->_form->addEmptyLine();
@@ -210,7 +211,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
-
+         
       } elseif ( !empty($this->_item) ) {
          
          
@@ -224,10 +225,17 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
          	}
          } else if($current_context->isPortal()){
          	$this->_values['hide_accountname'] = $current_context->getHideAccountname();
+         	$this->_values['use_ds_agb'] = $current_context->withAGBDatasecurity();
          	
          	if( empty($this->_values['hide_accountname'])){
          		$this->_values['hide_accountname'] = 2;
          	}
+         	
+         	if (empty($this->_values['use_ds_agb'])){
+         		$this->_values['use_ds_agb'] = 2;
+         	}
+         	
+         	
          }
          
    	}
