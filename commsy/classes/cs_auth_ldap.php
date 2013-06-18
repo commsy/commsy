@@ -62,6 +62,11 @@ class cs_auth_ldap extends cs_auth_manager {
    */
    var $_field_userid = 'uid';
 
+  /**
+   * string - search userid in LDAP field
+   */
+   var $_search_userid = 'samaccountname';
+
    /**
     * string - containing a uid from a user with write access
     */
@@ -124,6 +129,11 @@ class cs_auth_ldap extends cs_auth_manager {
       if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
          $this->_field_userid = $auth_data_array['DBCOLUMNUSERID'];
       }
+      if ( !empty($auth_data_array['DBSEARCHUSERID']) ) {
+         $this->_search_userid = $auth_data_array['DBSEARCHUSERID'];
+      } elseif ( !empty($this->_field_userid) ) {
+      	$this->_search_userid = $this->_field_userid;
+      }
    }
 
    /** set user with write access
@@ -182,7 +192,7 @@ class cs_auth_ldap extends cs_auth_manager {
                     and !empty($this->_rootuser_password)
                   ) {
             $access_first = $access;
-            $suchfilter = "(".$this->_field_userid."=".$uid.")";
+            $suchfilter = "(".$this->_search_userid."=".$uid.")";
             if ( ( strstr($this->_rootuser,',')
                    and strstr($this->_rootuser,'=')
                  )

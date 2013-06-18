@@ -30,8 +30,10 @@ $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE"]["de"] = "Quelle
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE"]["de"] = "Typ";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["de"] = "Server";
 $message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["de"] = "Bitte ergänzen Sie https:// oder http:// bei der Server-Adresse.";
-$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["de"] = "UserID";
-$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC"]["de"] = "In welchem Feld wird die UserID gespeichert? cn, uid, ...";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["de"] = "UserID (im Pfad)";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC"]["de"] = "In welchem Feld wird die UserID im Pfad gespeichert? (CN)";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID"]["de"] = "UserID (LDAP-Feld)";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID_DESC"]["de"] = "In welchem Feld wird die UserID in LDAP gespeichert? (samaccountname)";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION"]["de"] = "Verschlüsselung der Passwörter der Nutzenden";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE"]["de"] = "Pfadname";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR"]["de"] = "und ggf. zum Herausfinden des Pfades einer Person die Angabe einer Kennung (falls abweichend zum Pfad auch als dn angebbar) mit umfassenden Leserechten";
@@ -155,10 +157,10 @@ $message["CONFIGURATION_EXTRA_GROUPROOM"]["de"] = "Gruppenräume";
 $message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["de"] = "Mit dieser Funktion stehen in Projekträumen Gruppenräume zur Verfügung. Zur Nutzung müssen die Gruppenräume im Raum noch von den jeweiligen Raummoderatoren aktiviert werden.
 <br/><br/>
 Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
-$message["CONFIGURATION_EXTRA_LOG_IP"]["de"] = "IP-Adressen im Log unkenntlich machen";
-$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["de"] = "Sofern bei einem Raum aktiviert, wird der letzte Block der IP-Adressen in den von CommSy gesammelten Logdaten unkenntlich gemacht.";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE"]["de"] = "Logdaten archivieren";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE_DESC"]["de"] = "Sofern bei einem Raum aktiviert, werden die in CommSy gesammelten Logdaten nicht nach einer Karenzzeit gelöscht.";
+$message["CONFIGURATION_EXTRA_LOG_IP"]["de"] = "Garble ip log";
+$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["de"] = "If activated, the last ip block will be garbled.";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["de"] = "Automatischer Materialimport";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["de"] = "Über diese Einstellung wird ein Formular in die Rubrik Materialien eingebunden. Über dieses Formular lassen sich externe Inhalte über ein standardisiertes Austauschformat direkt in CommSy importieren. Dazu wird das *IMS-Content*-Format verwendet. IMS Content Packaging ist eine Spezifikation, die vorrangig ein Datenformat für E-Learning beschreibt. Das spezifizierte Datenformat auf XML-Basis soll Online- Materialien vereinheitlichen, und wurde von der Organisation IMS Global Learning Consortium entworfen.";
 $message["CONFIGURATION_EXTRA_PDA"]["de"] = "PDA-Export";

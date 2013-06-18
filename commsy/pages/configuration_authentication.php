@@ -255,6 +255,10 @@ else {
                  and !empty($_POST['dbcolumnuserid']) ) {
                $auth_data_array['DBCOLUMNUSERID'] = $_POST['dbcolumnuserid'];
             }
+            if ( isset($_POST['dbsearchuserid'])
+                 and !empty($_POST['dbsearchuserid']) ) {
+               $auth_data_array['DBSEARCHUSERID'] = $_POST['dbsearchuserid'];
+            }
             if ( isset($_POST['dbcolumnpasswd'])
                  and !empty($_POST['dbcolumnpasswd']) ) {
                 $auth_data_array['DBCOLUMNPASSWD'] = $_POST['dbcolumnpasswd'];

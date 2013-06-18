@@ -341,6 +341,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       elseif ( $this->_auth_type == 'LDAP' ) {
          $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
          $this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
+         $this->_form->addTextfield('dbsearchuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID'),'','',21,true,'','','','','','',false,'');
+         $this->_form->combine();
+         $this->_form->addText('dbsearchuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID_DESC'));
          $this->_form->addTextfield('dbcolumnuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID'),'','',21,true,'','','','','','',false,'');
          $this->_form->combine();
          $this->_form->addText('dbcolumnuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC'));
@@ -699,6 +702,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             }
             if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
                $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
+            }
+            if ( !empty($auth_data_array['DBSEARCHUSERID']) ) {
+               $this->_values['dbsearchuserid'] = $auth_data_array['DBSEARCHUSERID'];
             }
          }
          
