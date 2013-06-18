@@ -1,6 +1,9 @@
 <?php
 $message["CONFIGURATION_ACCOUNT_OPTIONS_DESC"]["en"] = "Please set approval policy, terms and conditions.";
 $message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["en"] = "Conditions of approval / usage";
+$message["CONFIGURATION_AGB_ACCEPT"]["en"] = "I agree with ";
+$message["CONFIGURATION_AGB_ACCEPT_ERROR"]["de"] = "To complete the process please agree with General Terms and Conditions";
+$message["CONFIGURATION_AGB_DATASECURITY"]["en"] = "General Terms and Conditions datasecurity";
 $message["CONFIGURATION_AGB_FORM_HEADLINE"]["en"] = "General Terms and Conditions";
 $message["CONFIGURATION_AGB_FORM_TEXT"]["en"] = "Description";
 $message["CONFIGURATION_AGB_FORM_WANT"]["en"] = "Activate?";
@@ -173,6 +176,7 @@ $message["CONFIGURATION_EXTRA_WORKFLOW"]["en"] = "Workspace Workflow";
 $message["CONFIGURATION_EXTRA_WORKFLOW_DESC"]["en"] = "This option enables the workflow support. Once enabled, all moderators will be able so set up a seperate wordpress along with their project workspace.";
 $message["CONFIGURATION_GROUPROOM_LINK"]["en"] = "Group workspaces";
 $message["CONFIGURATION_GROUPROOM_LINK_DESC"]["en"] = "Enable or disable group workspaces.";
+$message["CONFIGURATION_HIDE_USERLOGIN"]["en"] = "Hide users login data";
 $message["CONFIGURATION_HOME_STATUS"]["en"] = "Display options";
 $message["CONFIGURATION_HTMLTEXTAREA"]["en"] = "Select text editor";
 $message["CONFIGURATION_HTMLTEXTAREA_CHANGE"]["en"] = "Formatting text ";

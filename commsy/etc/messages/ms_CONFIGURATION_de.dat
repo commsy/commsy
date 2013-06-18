@@ -1,6 +1,9 @@
 <?php
 $message["CONFIGURATION_ACCOUNT_OPTIONS_DESC"]["de"] = "Stellen Sie die Bedingungen der Teilnahme und Nutzungsvereinbarungen ein.";
 $message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["de"] = "Zutrittsbedingungen";
+$message["CONFIGURATION_AGB_ACCEPT"]["de"] = "Hiermit akzeptiere ich die ";
+$message["CONFIGURATION_AGB_ACCEPT_ERROR"]["de"] = "Bitte bestätigen Sie die Nutzungsvereinbarungen, um den Anmeldeprozess abzuschließen";
+$message["CONFIGURATION_AGB_DATASECURITY"]["de"] = "Nutzungsvereinbarungen Datenschutzkonform";
 $message["CONFIGURATION_AGB_FORM_HEADLINE"]["de"] = "Nutzungsvereinbarungen";
 $message["CONFIGURATION_AGB_FORM_TEXT"]["de"] = "Text";
 $message["CONFIGURATION_AGB_FORM_WANT"]["de"] = "Einschalten?";
@@ -173,6 +176,7 @@ $message["CONFIGURATION_EXTRA_WORKFLOW"]["de"] = "Raum-Workflow";
 $message["CONFIGURATION_EXTRA_WORKFLOW_DESC"]["de"] = "Mit dieser Einstellung wird eine Workflow-Unterst&uuml;tzung erm&ouml;glicht. Wird die Funktion f&uuml;r das Portal aktiviert, steht sie automatisch in allen R&auml;umen bereit.";
 $message["CONFIGURATION_GROUPROOM_LINK"]["de"] = "Gruppenräume";
 $message["CONFIGURATION_GROUPROOM_LINK_DESC"]["de"] = "Aktivieren oder deaktivieren Sie hier die Möglichkeit, Gruppen- räume einrichten zu können.";
+$message["CONFIGURATION_HIDE_USERLOGIN"]["de"] = "Benutzerkennung verstecken";
 $message["CONFIGURATION_HOME_STATUS"]["de"] = "Art der Darstellung";
 $message["CONFIGURATION_HTMLTEXTAREA"]["de"] = "Textfelddarstellung";
 $message["CONFIGURATION_HTMLTEXTAREA_CHANGE"]["de"] = "Textformatierung";
