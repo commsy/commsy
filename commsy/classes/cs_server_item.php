@@ -265,6 +265,7 @@ class cs_server_item extends cs_guide_item {
 	   	  	  	  
 	   	  	  	  if ( $mail->send() ) {
 	   	  	  	  	$user->setPasswordExpiredEmailSend();
+	   	  	  	  	$user->save();
 	   	  	  	  	$retour['success'] = true;
 	   	  	  	  	$retour['success_text'] = 'send mail to '.$to;
 	   	  	  	  	$this->_send_newsletter = true;
