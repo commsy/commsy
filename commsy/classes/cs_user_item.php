@@ -2348,6 +2348,22 @@ class cs_user_item extends cs_item {
    	
    }
    
+   function isPasswordExpiredEmailSend() {
+   	$retour = false;
+   	if( $this->_issetExtra('PASSWORD_EXPIRED_EMAIL')){
+   		$retour = true;
+   	}
+   	return $retour;
+   }
+   
+   function setPasswordExpiredEmailSend() {
+   	$this->_addExtra('PASSWORD_EXPIRED_EMAIL', '1');
+   }
+   
+   function unsetPasswordExpiredEmailSend() {
+   	$this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
+   }
+   
    
 }
 ?>

@@ -105,10 +105,7 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
 	      			if(isset($_POST['ROOM_'.$room->getItemID()]) AND !empty($_POST['ROOM_'.$room->getItemID()])){
 	      				if($_POST['ROOM_'.$room->getItemID()] == $room->getItemID()){
 	      					// delete log data from rooms
-	      					// wenn keine Daten vorhanden, dann nicht die Daten holen. mysql darf keinen Fehler werfen
-	      					#$logarchive_manager->setContextLimit($room->getItemID());
-	      					pr($logarchive_manager->getLogdataByContextID($room->getItemID()));
-	      					#$logarchive_manager->deleteByContextID($room->getItemID());
+	      					$logarchive_manager->deleteByContextID($room->getItemID());
 	      				}
 	      			}
 	      			$room = $room_list->getNext();
