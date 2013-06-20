@@ -59,15 +59,10 @@ define(
 					className:		"column_260"
 				}, rowNode, "last");
 				
-					var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
-
-						DomConstruct.create("a",
-						{
-							"id":		"listItem" + rowData.sid,
-							className:	"stack_link",
-							href:		"#",
-							innerHTML:	rowData.title
-						}, pNode, "last");
+					DomConstruct.create("p",
+					{
+						innerHTML:	rowData.title
+					}, firstColumnNode, "last");
 			}));
 			
 			this.addColumn(1, function(rowNode, rowData)
@@ -99,7 +94,7 @@ define(
 							href:		"#",
 							className:	"limeSurveyDelete",
 							innerHTML:	"&nbsp;",
-							title:		"Löschen"
+							title:		PopupTranslations.deleteSurvey
 						}, pNode, "last");
 				
 				On(aNode, "click", Lang.hitch(this, function()
@@ -107,13 +102,13 @@ define(
 					// create the dialog
 					var deleteDialog = new Dialog(
 					{
-						title:			"Löschen"
+						title:			PopupTranslations.deleteSurvey
 					});
 					
 					// create the delete button
 					var deleteButton = new Button(
 					{
-						label:			"Löschen",
+						label:			PopupTranslations.deleteSurvey,
 						onClick:		Lang.hitch(this, function(event)
 						{
 							// delete survey
@@ -170,7 +165,7 @@ define(
 						var aNode = DomConstruct.create("a",
 						{
 							href:		"#",
-							innerHTML:	/*rowData.sid*/ "Teilnehmer"
+							innerHTML:	PopupTranslations.participants
 						}, pNode, "last");
 				
 				On(aNode, "click", Lang.hitch(this, function()
@@ -198,7 +193,7 @@ define(
 						var aNode = DomConstruct.create("a",
 						{
 							href:		"#",
-							innerHTML:	/*rowData.sid*/ "Exportieren"
+							innerHTML:	PopupTranslations.exportSurvey
 						}, pNode, "last");
 				
 				On(aNode, "click", Lang.hitch(this, function()

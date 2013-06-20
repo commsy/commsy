@@ -22,26 +22,30 @@
 								</div>
 								
 								<div class="input_row">
-									<label for="lsAddParticipants">${popupTranslations.group}</label>
-									<div data-dojo-attach-point="loadingGroupsNode">
-										<span >${popupTranslations.groupLoading}</span>
-										<img src="${templatePath}img/ajax_loader.gif"/>
-									</div>
-									
-			                        <select class="size_200 hidden" name="group" data-dojo-attach-point="groupSelectNode">
-			                        </select>
-								</div>
-								
-								<div class="input_row">
-									<label for="lsWithTokens">${popupTranslations.useTokens}</label>
-									<input id="lsWithTokens" class="float-left" name="withTokens" type="checkbox" checked="checked"
-										data-dojo-attach-point="withTokensNode" />
+									<label for="lsWithTokensCheckbox">${popupTranslations.useTokens}</label>
+									<input id="lsWithTokensCheckbox" class="float-left" name="withTokensCheckbox" type="checkbox" checked="checked"
+										data-dojo-attach-point="withTokensCheckboxNode" />
 									
 									<div class="column_563">
 										${popupTranslations.tokenDescription}
 									</div>
 									
 									<div class="clear"></div>
+								</div>
+								
+								<div id="lsWithTokens" data-dojo-attach-point="withTokensNode">
+									<div class="input_row">
+										<label for="lsGroup">${popupTranslations.group}</label>
+										<div data-dojo-attach-point="loadingGroupsNode">
+											<span >${popupTranslations.groupLoading}</span>
+											<img src="${templatePath}img/ajax_loader.gif"/>
+										</div>
+										
+				                        <select id="lsGroup" class="size_200 hidden" name="group" data-dojo-attach-point="groupSelectNode">
+				                        </select>
+				                        
+				                        <div class="clear"></div>
+									</div>
 								</div>
 								
 								<div id="lsNoTokens" class="hidden" style="height: 0px" data-dojo-attach-point="noTokensNode">

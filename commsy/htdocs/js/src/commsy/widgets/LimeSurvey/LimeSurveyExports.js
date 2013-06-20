@@ -59,15 +59,10 @@ define(
 					className:		"column_260"
 				}, rowNode, "last");
 				
-					var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
-
-						DomConstruct.create("a",
-						{
-							"id":		"listItem" + rowData.surveyId,
-							className:	"stack_link",
-							href:		"#",
-							innerHTML:	rowData.title
-						}, pNode, "last");
+					DomConstruct.create("p",
+					{
+						innerHTML:	rowData.title
+					}, firstColumnNode, "last");
 			}));
 			
 			this.addColumn(1, function(rowNode, rowData)
@@ -99,7 +94,7 @@ define(
 							href:		"#",
 							className:	"limeSurveyDelete",
 							innerHTML:	"&nbsp;",
-							title:		"Löschen"
+							title:		PopupTranslations.deleteExport
 						}, pNode, "last");
 						
 				On(aNode, "click", Lang.hitch(this, function()
@@ -107,13 +102,13 @@ define(
 					// create the dialog
 					var deleteDialog = new Dialog(
 					{
-						title:			"Löschen"
+						title:			PopupTranslations.deleteExport
 					});
 					
 					// create the delete button
 					var deleteButton = new Button(
 					{
-						label:			"Löschen",
+						label:			PopupTranslations.deleteExport,
 						onClick:		Lang.hitch(this, function(event)
 						{
 							// delete survey export
@@ -176,7 +171,7 @@ define(
 								target:		"blank",
 								id:			"limeSurveyFileSurvey",
 								innerHTML:	"&nbsp;",
-								title:		"Umfrage"
+								title:		PopupTranslations.downloadSurvey
 							}, pNode, "last");
 						}
 						
@@ -187,7 +182,7 @@ define(
 								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp + "&file=statistics",
 								id:			"limeSurveyFileStatistics",
 								innerHTML:	"&nbsp;",
-								title:		"Statistik"
+								title:		PopupTranslations.downloadStatistics
 							}, pNode, "last");
 						}
 						
@@ -198,7 +193,7 @@ define(
 								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp + "&file=responses",
 								id:			"limeSurveyFileResponses",
 								innerHTML:	"&nbsp;",
-								title:		"Antworten"
+								title:		PopupTranslations.downloadResponses
 							}, pNode, "last");
 						}
 						
@@ -209,7 +204,7 @@ define(
 								href:		"commsy.php?cid=" + this.uri_object.cid + "&mod=limesurvey&fct=getfile&surveyId=" + rowData.surveyId + "&timestamp=" + rowData.timestamp,
 								id:			"limeSurveyFileZip",
 								innerHTML:	"&nbsp;",
-								title:		"Zip-Archiv"
+								title:		PopupTranslations.downloadZip
 							}, pNode, "last");
 						}
 			}));

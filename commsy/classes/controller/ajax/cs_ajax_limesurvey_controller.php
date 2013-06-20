@@ -23,7 +23,16 @@
 			// try to connect
 			try
 			{
-				$this->client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl());
+				global $c_proxy_ip;
+				global $c_proxy_port;
+				if ( isset($c_proxy_ip) && isset($c_proxy_port) && !empty($c_proxy_ip) && !empty($c_proxy_port) )
+				{
+					$this->client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl(), false, $c_proxy_ip . ":" . $c_proxy_port);
+				}
+				else
+				{
+					$this->client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl());
+				}
 				
 				/*
 				 * On success:	A session key (string)

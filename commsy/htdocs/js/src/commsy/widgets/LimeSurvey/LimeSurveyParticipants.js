@@ -77,7 +77,7 @@ define(
 			this.set("title", PopupTranslations.title);
 			
 			On(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
-			On(this.withTokensNode, "change", Lang.hitch(this, this.onChangeWithTokens));
+			On(this.withTokensCheckboxNode, "change", Lang.hitch(this, this.onChangeWithTokens));
 		},
 		
 		/**
@@ -137,7 +137,7 @@ define(
 		onChangeWithTokens: function(event)
 		{
 			// get the checkbox state
-			var checked = DomAttr.get(this.withTokensNode, "checked");
+			var checked = DomAttr.get(this.withTokensCheckboxNode, "checked");
 			
 			// show / hide the mail forms
 			if ( checked )
@@ -152,6 +152,15 @@ define(
 						Registry.byId("lsParticipantMailtext").set("disabled", true);
 					})
 				}).play();
+				
+				FX.wipeIn(
+				{
+					node:			this.withTokensNode,
+					beforeBegin:	Lang.hitch(this, function()
+					{
+						DomAttr.set(this.groupSelectNode, "disabled", false);
+					})
+				}).play();
 			}
 			else
 			{
@@ -164,6 +173,15 @@ define(
 						Registry.byId("lsParticipantMailSubject").set("disabled", false);
 						Registry.byId("lsParticipantMailtext").set("disabled", false);
 						DomClass.remove(this.noTokensNode, "hidden");
+					})
+				}).play();
+				
+				FX.wipeOut(
+				{
+					node:			this.withTokensNode,
+					onEnd:			Lang.hitch(this, function()
+					{
+						DomAttr.set(this.groupSelectNode, "disabled", true);
 					})
 				}).play();
 			}
@@ -184,7 +202,7 @@ define(
 									"inviteParticipants",
 									{
 										groupId:				formValues.group,
-										withTokens:				formValues.withTokens,
+										withTokens:				formValues.withTokensCheckbox,
 										participantMails:		formValues.participantMails,
 										participantMailSubject:	formValues.participantMailSubject,
 										participantMailtext:	formValues.participantMailtext,

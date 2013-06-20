@@ -253,6 +253,32 @@
 								</div>
 							</div>
            				{/if}
+           				{if $room.sidebar_configuration.active.limesurvey}
+           					<div class="portlet_rc">
+           						<div class="btn_head_rc2" style="padding-top:0px">
+           							<a href="#" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="divToggle" data-custom="toggleId: 'limesurveyToggle'">
+										<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+									</a>
+           						</div>
+           						
+           						<h2>___LIMESURVEY_SIDEBAR_TITLE___</h2>
+           						
+           						<div class="clear"> </div>
+
+								<div id="limesurveyToggle" class="portlet_rc_body">
+									
+									{if $room.surveys}<ul>{/if}
+									{foreach $room.surveys as $survey}
+										<li>
+											<a class="keywords_s1" href="{$survey.url}" target="_blank">{$survey.title}</a>
+										</li>
+									{foreachelse}
+										___COMMON_NONE___
+									{/foreach}
+									{if $room.surveys}</ul>{/if}
+								</div>
+           					</div>
+           				{/if}
            				{if $room.sidebar_configuration.active.buzzwords}
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}
 							<div class="portlet_rc">
