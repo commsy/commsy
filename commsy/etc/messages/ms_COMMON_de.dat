@@ -1010,6 +1010,7 @@ $message["COMMON_WIKI_EDIT_PW"]["de"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WIKI_EXISTING_DISCUSSIONS"]["de"] = "Vorhandene Foren";
 $message["COMMON_WIKI_GROUP_ORGANISATION"]["de"] = "Folgende Wiki-Gruppen öffentlich zum Lesen freigeben";
 $message["COMMON_WIKI_LINK"]["de"] = "Wiki";
+$message["COMMON_WIKI_PERSONAL"]["de"] = "Persönliches Wiki";
 $message["COMMON_WIKI_PWS"]["de"] = "Passwörter";
 $message["COMMON_WIKI_PWS_DESC"]["de"] = "Setzen Sie die verschiedenen Passwörter.";
 $message["COMMON_WIKI_READ_PW"]["de"] = "<div style=&quot;float:left; width:120px;&quot;>Lesen:</div>";

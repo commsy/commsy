@@ -611,7 +611,7 @@
                      <hr/>
                      <fieldset>
                         <p>
-                           <strong>___CONFIGURATION_EXTRA_WIKI___:</strong>
+                           <strong>___COMMON_WIKI_PERSONAL___:</strong>
                         </p>
                         <div class="input_row_200">
                            <label for="wikititle"><div style="float:left; width:120px;">___COMMON_TITLE___:</div><span class="required">*</span></label>

@@ -995,6 +995,7 @@ $message["COMMON_WIKI_EDIT_PW"]["en"] = "<div style=&quot;float:left; width:120p
 $message["COMMON_WIKI_EXISTING_DISCUSSIONS"]["en"] = "Used forums";
 $message["COMMON_WIKI_GROUP_ORGANISATION"]["en"] = "Grant public read-access to the following wiki-groups";
 $message["COMMON_WIKI_LINK"]["en"] = "Wiki";
+$message["COMMON_WIKI_PERSONAL"]["en"] = " My Wiki";
 $message["COMMON_WIKI_PWS"]["en"] = "Passwords";
 $message["COMMON_WIKI_PWS_DESC"]["en"] = "Set different passwords.";
 $message["COMMON_WIKI_READ_PW"]["en"] = "<div style=&quot;float:left; width:120px;&quot;>Read:</div>";
