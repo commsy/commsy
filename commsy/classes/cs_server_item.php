@@ -184,7 +184,7 @@ class cs_server_item extends cs_guide_item {
    	  	  require_once 'classes/cs_mail.php';
    	  	  foreach ($expired_user_array as $user){
    	  	  	  $auth_manager = $authentication->getAuthManager($user->getAuthSource());
-   	  	  	  $auth_manager->changePassword($user->getItemID(), uniqid());
+   	  	  	  $auth_manager->changePassword($user->getItemID(), uniqid('',true));
    	  	  	  
    	  	  	  $mail = new cs_mail();
    	  	  
