@@ -29,4 +29,7 @@
 // set flag = flag
 $c_datenschutz_disable_overwriting = true;
 
+// Datenschutz expiration email
+$c_password_expiration_email_days = '14';
+
 ?>
