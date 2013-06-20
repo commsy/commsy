@@ -77,8 +77,9 @@
                   //$desc = $converter->text_as_html_long($desc);
                   $desc = $converter->textFullHTMLFormatting($desc);
                } else {
-                  //$desc = $converter->_text_as_html_long2($desc);
+                  #$desc = $converter->_text_as_html_long2($desc);
                   #$desc = $converter->cleanDataFromTextArea($desc);
+                  $desc = $converter->textFullHTMLFormatting($desc);
                }
 				}
 				$return_array['content'] = $desc;

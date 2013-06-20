@@ -119,6 +119,7 @@ class cs_home_member2_page extends cs_left_page {
             $new_account->setEmail($this->_post_vars['email']);
             $new_account->setPortalID($this->_environment->getCurrentPortalID());
             $new_account->setAuthSourceID($auth_source);
+            
             $save_only_user = true;
             $authentication->save($new_account,$save_only_user);
 
@@ -129,6 +130,11 @@ class cs_home_member2_page extends cs_left_page {
               $success = true;
 
               $portal_item = $this->_environment->getCurrentPortalItem();
+              if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+              	if($this->_post_vars['terms_of_use']){
+              		$portal_user->setAGBAcceptance();
+              	}
+              }
               #if ( $portal_item->checkNewMembersAlways()
               #     or $portal_item->checkNewMembersSometimes()
               #   ) {

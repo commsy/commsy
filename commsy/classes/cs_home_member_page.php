@@ -73,7 +73,7 @@ class cs_home_member_page extends cs_left_page {
            $new_account->setLastname($Lastname);
            $new_account->setLanguage($this->_post_vars['language']);
            $new_account->setEmail($this->_post_vars['email']);
-           $new_account->setPortalID($this->_environment->getCurrentPortalID());pr($new_account);
+           $new_account->setPortalID($this->_environment->getCurrentPortalID());
             if ( isset($this->_post_vars['auth_source']) and !empty($this->_post_vars['auth_source']) ) {
                $new_account->setAuthSourceID($this->_post_vars['auth_source']);
                $auth_source = $this->_post_vars['auth_source'];
@@ -82,15 +82,28 @@ class cs_home_member_page extends cs_left_page {
                $new_account->setAuthSourceID($current_portal->getAuthDefault());
                $auth_source = $current_portal->getAuthDefault();
             }
+            
            $save_only_user = false;
            $authentication->save($new_account,$save_only_user);
 
            $portal_user = $authentication->getUserItem();
            $error = $authentication->getErrorMessage();
            if (empty($error)) {
+           	 
               $success = true;
 
               $portal_item = $this->_environment->getCurrentPortalItem();
+              
+              // acceptance date (agb) Datenschutz
+              if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+              	if($this->_post_vars['terms_of_use']){
+              		$portal_user->setAGBAcceptance();
+              	}
+              }
+              
+              if($this->_environment->getCurrentContextItem()->isPasswordExpirationActive()){
+              	$portal_user->setPasswordExpireDate($this->_environment->getCurrentContextItem()->getPasswordExpiration());
+              }
               #if ( $portal_item->checkNewMembersAlways()
               #     or $portal_item->checkNewMembersSometimes()
               #   ) {

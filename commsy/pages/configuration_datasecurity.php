@@ -105,10 +105,7 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
 	      			if(isset($_POST['ROOM_'.$room->getItemID()]) AND !empty($_POST['ROOM_'.$room->getItemID()])){
 	      				if($_POST['ROOM_'.$room->getItemID()] == $room->getItemID()){
 	      					// delete log data from rooms
-	      					// wenn keine Daten vorhanden, dann nicht die Daten holen. mysql darf keinen Fehler werfen
-	      					#$logarchive_manager->setContextLimit($room->getItemID());
-	      					pr($logarchive_manager->getLogdataByContextID($room->getItemID()));
-	      					#$logarchive_manager->deleteByContextID($room->getItemID());
+	      					$logarchive_manager->deleteByContextID($room->getItemID());
 	      				}
 	      			}
 	      			$room = $room_list->getNext();
@@ -122,13 +119,25 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
       	if(!empty($_POST['hide_accountname'])){
       		$hide_accountname = $_POST['hide_accountname'];
       	} else {
-      		$hide_accountname = 1;
+      		#$hide_accountname = 1;
       	}
       	
       	if($hide_accountname == 2){
       		$context_item->unsetHideAccountname();
       	} else if($hide_accountname == 1){
       		$context_item->setHideAccountname();
+      	}
+      	
+      	if (!empty($_POST['use_ds_agb'])){
+      		$ds_agb = $_POST['use_ds_agb'];
+      	} else {
+      		#$ds_agb = 1;
+      	}
+      	
+      	if($ds_agb == 2){
+      		$context_item->unsetAGBDatasecurity();
+      	} else {
+      		$context_item->setAGBDatasecurity();
       	}
 
       }

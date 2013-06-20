@@ -3756,7 +3756,9 @@ class misc_text_converter {
             if ( $urlencode ) {
                $lastname = rawurlencode($lastname);
             }
-            if ( !empty($lastname) ) {
+            if ( !empty($lastname)
+            	  and $lastname != 'GUEST'
+               ) {
                $text = str_replace('%LASTNAME%',$lastname,$text);
             } elseif ($empty) {
                $text = str_replace('%LASTNAME%','',$text);

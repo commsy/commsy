@@ -166,7 +166,127 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronCleanTempDirectory();
       $cron_array[] = $this->_cronUnlinkFiles();
       $cron_array[] = $this->_cronItemBackup();
+      $cron_array[] = $this->_cronCheckPasswordExpired();
+      $cron_array[] = $this->_cronCheckPasswordExpiredSoon();
       return $cron_array;
+   }
+   
+   function _cronCheckPasswordExpired() {
+   	  // Datenschutz
+   	  $time_start = getmicrotime();
+   	  $user_manager = $this->_environment->getUserManager();
+   	  $authentication = $this->_environment->getAuthenticationObject();
+   	  $translator = $this->_environment->getTranslationObject();
+   	  // send mail to user if password expires soon
+   	  // if password is expired set new random password
+   	  if($user_manager->getCountUserPasswordExpired() > 0){
+   	  	  $expired_user_array = $user_manager->getUserPasswordExpired();
+   	  	  require_once 'classes/cs_mail.php';
+   	  	  foreach ($expired_user_array as $user){
+   	  	  	  $auth_manager = $authentication->getAuthManager($user->getAuthSource());
+   	  	  	  $auth_manager->changePassword($user->getItemID(), uniqid('',true));
+   	  	  	  $user->unsetPasswordExpiredEmailSend();
+   	  	  	  
+   	  	  	  $mail = new cs_mail();
+   	  	  
+	   	  	  $subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SUBJECT');
+	   	  	  $to = $user->getEmail();
+	   	  	  //from
+	   	  	  $server_item = $this->_environment->getServerItem();
+	   	  	  $default_sender_address = $server_item->getDefaultSenderAddress();
+	   	  	  if (!empty($default_sender_address)) {
+	   	  	  	$mail->set_from_email($default_sender_address);
+	   	  	  } else {
+	   	  	  	$mail->set_from_email('@');
+	   	  	  }
+	   	  	  //content
+	   	  	  $body = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_BODY', $user->getFullName());
+	   	  	  
+	   	  	  $mail->set_subject($subject);
+	   	  	  $mail->set_message($body);
+	   	  	  $mail->set_to($to);
+   	  	  	  $mail->setSendAsHTML();
+   	  	  	  if ( $mail->send() ) {
+   	  	  	  	$retour['success'] = true;
+   	  	  	  	$retour['success_text'] = 'send mail to '.$to;
+   	  	  	  	$this->_send_newsletter = true;
+   	  	  	  }
+	   	  	  
+   	  	  }
+   	  	  
+   	  	
+	   	  if ( $retour['success'] ) {
+	   		$cron_array['success'] = true;
+	   		$cron_array['success_text'] = 'cron done';
+	   	  } else {
+	   		$cron_array['success'] = false;
+	   	  	$cron_array['success_text'] = 'failed to send mail: '.$to;
+	   	  }
+	   	  
+	   	  $time_end = getmicrotime();
+	   	  $time = round($time_end - $time_start,0);
+	   	  $cron_array['time'] = $time;
+	   	  return $cron_array;
+   	  }
+   }
+   
+   function _cronCheckPasswordExpiredSoon() {
+   	  // Datenschutz
+   	  $time_start = getmicrotime();
+   	  $user_manager = $this->_environment->getUserManager();
+   	  $translator = $this->_environment->getTranslationObject();
+   	  // send mail to user if password expires soon
+   	  // if password is expired set new random password
+   	  if($user_manager->getCountUserPasswordExpiredSoon() > 0){
+   	  	  $expired_user_array = $user_manager->getUserPasswordExpired();
+   	  	  require_once 'classes/cs_mail.php';
+   	  	  foreach ($expired_user_array as $user){
+   	  	  	  if (!$user->isPasswordExpiredEmailSend()){
+	   	  	  	  $mail = new cs_mail();
+	   	  	  	  
+	   	  	  	  $subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT');
+		   	  	  $to = $user->getEmail();
+		 
+		   	  	  //from
+		   	  	  $server_item = $this->_environment->getServerItem();
+		   	  	  $default_sender_address = $server_item->getDefaultSenderAddress();
+		   	  	  if (!empty($default_sender_address)) {
+		   	  	  	$mail->set_from_email($default_sender_address);
+		   	  	  } else {
+		   	  	  	$mail->set_from_email('@');
+		   	  	  }
+		   	  	  //content
+		   	  	  $body = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY',$user->getFullName(),getDifference($user->getPasswordExpireDate(),getCurrentDateTimeInMySQL()));
+		   	  	  
+		   	  	  $mail->set_subject($subject);
+		   	  	  $mail->set_message($body);
+		   	  	  $mail->set_to($to);
+	   	  	  	  $mail->setSendAsHTML();
+	   	  	  	  
+	   	  	  	  if ( $mail->send() ) {
+	   	  	  	  	$user->setPasswordExpiredEmailSend();
+	   	  	  	  	$user->save();
+	   	  	  	  	$retour['success'] = true;
+	   	  	  	  	$retour['success_text'] = 'send mail to '.$to;
+	   	  	  	  	$this->_send_newsletter = true;
+	   	  	  	  }
+   	  	  	  }
+   	  	  }
+   	  	  
+   	  	
+	   	  if ( $retour['success'] ) {
+	   		$cron_array['success'] = true;
+	   		$cron_array['success_text'] = 'cron done';
+	   	  } else {
+	   		$cron_array['success'] = false;
+	   	  	$cron_array['success_text'] = 'failed to send mail: '.$to;
+	   	  }
+	   	  
+	   	  $time_end = getmicrotime();
+	   	  $time = round($time_end - $time_start,0);
+	   	  $cron_array['time'] = $time;
+	   	  return $cron_array;
+   	  }
    }
 
    function _cronCleanTempDirectory () {

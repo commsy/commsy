@@ -79,6 +79,46 @@
 						$linked_item = $material_manager->getItem($linked_iid);
 						break;
 					case CS_USER_TYPE:
+						if ( isset($item) && $item->isGrouproomActivated()){
+							// room exists in group
+							$group_room = $item->getGroupRoomItem();
+							// build new user_item
+							$user_manager = $this->_environment->getUserManager();
+							$related_user = $user_manager->getItem($link_id);
+							$private_room_user_item = $related_user->getRelatedPrivateRoomUserItem();
+							if ( isset($private_room_user_item) ) {
+								$user_item = $private_room_user_item->cloneData();
+								$picture = $private_room_user_item->getPicture();
+							} else {
+								$user_item = $related_user->cloneData();
+								$picture = $related_user->getPicture();
+							}
+							$user_item->setVisibleToLoggedIn();
+							$user_item->setContextID($group_room->getItemID());
+							if (!empty($picture)) {
+								$value_array = explode('_',$picture);
+								$value_array[0] = 'cid'.$user_item->getContextID();
+								$new_picture_name = implode('_',$value_array);
+							
+								$disc_manager = $environment->getDiscManager();
+								$disc_manager->copyImageFromRoomToRoom($picture,$user_item->getContextID());
+								$user_item->setPicture($new_picture_name);
+							}
+							
+							// check room entry
+							
+							if($group_room->checkNewMembersAlways()){
+								// 
+							} else if($group_room->checkNewMembersWithCode()){
+								// user must enter the correct code if he wants to join the room
+								#$user_item->save();
+							} else if($group_room->checkNewMembersNever()){
+								// user is now member of the room
+								$user_item->save();
+							}
+							#$room_item = $linked_item->getLinkedProjectItem();
+							#$room_item->a
+						}
 						// if we assign a user...
 						if ( isset($item) && $item->getType() === CS_TODO_TYPE )
 						{

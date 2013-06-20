@@ -2325,5 +2325,45 @@ class cs_user_item extends cs_item {
 
    }
    
+   function setPasswordExpireDate($days) {
+   	$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
+   	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function getPasswordExpireDate() {
+   	return $this->_getValue('expire_date');
+//    	$retour = '';
+//    	if($this->_issetExtra('PW_EXPIRE_DATE')){
+//    		$retour = $this->_getExtra('PW_EXPIRE_DATE');
+//    	}
+//    	return $retour;
+   }
+   
+   function isPasswordExpired() {
+   	$retour = false;
+   	if ($this->_getValue('expire_date') < getCurrentDateTimeInMySQL()){
+   		$retour = true;
+   	}
+   	return $retour;
+   	
+   }
+   
+   function isPasswordExpiredEmailSend() {
+   	$retour = false;
+   	if( $this->_issetExtra('PASSWORD_EXPIRED_EMAIL')){
+   		$retour = true;
+   	}
+   	return $retour;
+   }
+   
+   function setPasswordExpiredEmailSend() {
+   	$this->_addExtra('PASSWORD_EXPIRED_EMAIL', '1');
+   }
+   
+   function unsetPasswordExpiredEmailSend() {
+   	$this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
+   }
+   
+   
 }
 ?>

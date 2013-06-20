@@ -60,6 +60,10 @@ function getCurrentDateTimePlusMinutesInMySQL ( $minutes ) {
 	return date('Y-m-d H:i:s', mktime(date('H'), (date('i')+$minutes), date('s'), date('m'), date('d'), date('Y')));
 }
 
+function getCurrentDateTimePlusDaysInMySQL ( $days ) {
+	return date('Y-m-d H:i:s', mktime(date('H'), (date('i')), date('s'), date('m'), date('d')+$days, date('Y')));
+}
+
    function convertDateFromInput ( $date,$language) {
       $region = '';
       $converted = array();

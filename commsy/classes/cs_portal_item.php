@@ -3149,6 +3149,16 @@ class cs_portal_item extends cs_guide_item {
    	$this->_addExtra('PASSWORD_GENERATION', $value);
    }
    
+   public function isPasswordExpirationActive() {
+   	$retour = false;
+   	if($this->_issetExtra('PASSWORD_EXPIRATION')) {
+   		if($this->getPasswordExpiration() > 0){
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
    public function getPasswordExpiration() {
    	$retour = 0;
    	if ($this->_issetExtra('PASSWORD_EXPIRATION')) {
