@@ -162,8 +162,8 @@ $message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["de"] = "Mit dieser Funktion steh
 Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE"]["de"] = "Logdaten archivieren";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE_DESC"]["de"] = "Sofern bei einem Raum aktiviert, werden die in CommSy gesammelten Logdaten nicht nach einer Karenzzeit gelöscht.";
-$message["CONFIGURATION_EXTRA_LOG_IP"]["de"] = "Garble ip log";
-$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["de"] = "If activated, the last ip block will be garbled.";
+$message["CONFIGURATION_EXTRA_LOG_IP"]["de"] = "IP-Adressen maskieren";
+$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["de"] = "Der letzte IP-Adressen Block wird maskiert.";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["de"] = "Automatischer Materialimport";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["de"] = "Über diese Einstellung wird ein Formular in die Rubrik Materialien eingebunden. Über dieses Formular lassen sich externe Inhalte über ein standardisiertes Austauschformat direkt in CommSy importieren. Dazu wird das *IMS-Content*-Format verwendet. IMS Content Packaging ist eine Spezifikation, die vorrangig ein Datenformat für E-Learning beschreibt. Das spezifizierte Datenformat auf XML-Basis soll Online- Materialien vereinheitlichen, und wurde von der Organisation IMS Global Learning Consortium entworfen.";
 $message["CONFIGURATION_EXTRA_PDA"]["de"] = "PDA-Export";
