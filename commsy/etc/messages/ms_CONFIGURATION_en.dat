@@ -162,7 +162,7 @@ Once activated, all moderators in the CommSy portal will be able to enable group
 $message["CONFIGURATION_EXTRA_LOGARCHIVE"]["en"] = "Save log data";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE_DESC"]["en"] = "If activated, the log data of the room will not deleted after some time.";
 $message["CONFIGURATION_EXTRA_LOG_IP"]["en"] = "Garble ip log";
-$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["en"] = "If activated, the last ip block will be garbled.";
+$message["CONFIGURATION_EXTRA_LOG_IP_DESC"]["en"] = "If activated, the last ip block will be garbled in the log.";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["en"] = "Import materials automatically";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["en"] = "This option include an import form in materials.
 With this webform you can directly import data into your CommSy workspace through the standard content format IMS. This format is XML-based and principally serves as a standard exchange format for e-learning contents. The format design was created by the IMS Global Learning Consortium.";
