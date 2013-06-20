@@ -215,6 +215,7 @@ $message["COMMON_CONFIGURATION_HOME_FORM_TITLE"]["en"] = "Configue Home / notice
 $message["COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE"]["en"] = "Configure text editor";
 $message["COMMON_CONFIGURATION_IMS_FORM_TITLE"]["en"] = "IMS-account configuration";
 $message["COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE"]["en"] = "Available languages";
+$message["COMMON_CONFIGURATION_LIMESURVEY_FORM_TITLE"]["en"] = "Limesurvey";
 $message["COMMON_CONFIGURATION_MAIL_FORM_TITLE"]["en"] = "Edit e-mail texts";
 $message["COMMON_CONFIGURATION_MOVE_FORM_TITLE"]["en"] = "Move workspace to another portal";
 $message["COMMON_CONFIGURATION_NEWS_FORM_TITLE"]["en"] = "Edit news";

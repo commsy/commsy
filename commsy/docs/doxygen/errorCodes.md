@@ -15,6 +15,8 @@ Einleitung...
     * 000 - Unzureichende Rechte
   + Item 01x
     * 010 - Item nicht gefunden
+  + Verbindung 02x
+    * 020 - Verbindungsfehler
 
 - mandatory-Errors 11x
   + 111 - Feld leer
@@ -52,3 +54,5 @@ Einleitung...
 - Spezial-Errors 9xx
   + 901 - Feld stimmt nicht mit anderem überein
   + 902 - Portfolio-Tag bereits vergeben
+  + 903 - LimeSurvey RPC Fehler
+  + 904 - LimeSurvey Fehler beim Löschen

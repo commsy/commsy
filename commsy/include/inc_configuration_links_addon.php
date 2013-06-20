@@ -85,6 +85,19 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
       $addon_link_list->add($link_item);
    }
+   
+   $contextItem = $environment->getCurrentContextItem();
+   if ( $context_item->withLimesurveyFunctions() && $contextItem->isPortal() )
+   {
+   		$link_item = new cs_link();
+   		$link_item->setTitle($translator->getMessage('LIMESURVEY_CONFIGURATION_LINK'));
+   		$link_item->setIconPath('images/cs_config/LIMESURVEY_CONFIGURATION_IMAGE.gif');
+   		$link_item->setDescription($translator->getMessage('LIMESURVEY_CONFIGURATION_DESC'));
+   		$link_item->setContextID($environment->getCurrentContextID());
+   		$link_item->setModule('configuration');
+   		$link_item->setFunction('limesurvey');
+   		$addon_link_list->add($link_item);
+   }
 
    #########################################
    # Wiki - Raum-Wiki

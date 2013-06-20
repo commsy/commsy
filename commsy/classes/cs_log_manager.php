@@ -103,7 +103,7 @@ class cs_log_manager extends cs_manager {
       return $retour;
    }
 
-   function delete () {
+   function delete ($item_id) {
       return $this->_performQuery('delete');
    }
 

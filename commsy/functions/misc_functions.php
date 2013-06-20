@@ -701,6 +701,7 @@ function isURLValid () {
    		
    		// download
    		$module != 'download' and
+   		$module != 'limesurvey' and
    		
    		// individual css
    		$module != 'individual'
@@ -759,6 +760,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
+    	 $funct != 'limesurvey' and
          $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and

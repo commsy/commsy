@@ -308,6 +308,9 @@ class cs_configuration_form_view extends cs_form_view {
                case 'CONFIGURATION_WIKI':
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE');	// Nutzungshinweise bearbeiten OK
                   break;
+               case 'CONFIGURATION_LIMESURVEY':
+               	  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_LIMESURVEY_FORM_TITLE');
+               	  break;
                case 'CONFIGURATION_OUTOFSERVICE':
                   $tempMessage = $this->_translator->getMessage('CONFIGURATION_OUTOFSERVICE_FORM_TITLE');	// Wartungsseite OK
                   break;

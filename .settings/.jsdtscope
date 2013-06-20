@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="">
+	<classpathentry excluding="commsy/htdocs/js/src/cbtree/|commsy/htdocs/js/src/dijit/|commsy/htdocs/js/src/dojo/|commsy/htdocs/js/src/dojox/|commsy/htdocs/js/src/util/" including="commsy/htdocs/js/src/" kind="src" path="">
 		<attributes>
 			<attribute name="provider" value="org.eclipse.wst.jsdt.web.core.internal.project.ModuleSourcePathProvider"/>
 		</attributes>

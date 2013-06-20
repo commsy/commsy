@@ -927,6 +927,23 @@
                            {/if}
                            </div>
                            {/if}
+                           
+                           {if $popup.external.limesurvey}
+                           {if $popup.external.length > 1}<hr/>{/if}
+                           <fieldset>
+                              <p>
+                                 <strong>___LIMESURVEY_CONFIGURATION_LINK___:</strong>
+                              </p>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[limesurvey_room]" value="yes" {if $popup.external.limesurvey_room == true} checked="checked"{/if}/> ___LIMESURVEY_CONFIGURATION_ROOM_ACTIVATE___
+                                 <div class="clear"></div>
+                              </div>
+                           </fieldset>
+                           <div class="input_row">
+                           		 <input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'save_limesurvey'" name="save" value="___LIMESURVEY_SAVE_BUTTON___"/>
+                           </div>
+                           {/if}
+                           
                            {if $popup.external.chat}
                            <hr/>
                            <fieldset>

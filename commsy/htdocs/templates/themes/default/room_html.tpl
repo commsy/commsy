@@ -115,8 +115,11 @@
 				{if $environment.is_moderator}
 					<div id="tm_icons_left_bar">
 						<a href="#" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
-						{if ($environment.count_new_accounts >0)}
+						{if ($environment.count_new_accounts > 0)}
 							<span id="tm_settings_count_new_accounts">{$environment.count_new_accounts}</span>
+						{/if}
+						{if $cs_bar.show_limesurvey == true}
+							<a href="#" id="tm_limesurvey" title="___LIMESURVEY_CONFIGURATION_LINK___">&nbsp;</a>
 						{/if}
 						<div class="clear"></div>
 					</div>
@@ -249,6 +252,32 @@
 									{$room.usage_info_content.content}
 								</div>
 							</div>
+           				{/if}
+           				{if $room.sidebar_configuration.active.limesurvey}
+           					<div class="portlet_rc">
+           						<div class="btn_head_rc2" style="padding-top:0px">
+           							<a href="#" title="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" class="divToggle" data-custom="toggleId: 'limesurveyToggle'">
+										<img src="{$basic.tpl_path}img/{if $h}btn_open_rc.gif{else}btn_close_rc.gif{/if}" alt="{if $h}___COMMON_SHOW___{else}___COMMON_HIDE___{/if}" />
+									</a>
+           						</div>
+           						
+           						<h2>___LIMESURVEY_SIDEBAR_TITLE___</h2>
+           						
+           						<div class="clear"> </div>
+
+								<div id="limesurveyToggle" class="portlet_rc_body">
+									
+									{if $room.surveys}<ul>{/if}
+									{foreach $room.surveys as $survey}
+										<li>
+											<a class="keywords_s1" href="{$survey.url}" target="_blank">{$survey.title}</a>
+										</li>
+									{foreachelse}
+										___COMMON_NONE___
+									{/foreach}
+									{if $room.surveys}</ul>{/if}
+								</div>
+           					</div>
            				{/if}
            				{if $room.sidebar_configuration.active.buzzwords}
 	           				{$h = $room.sidebar_configuration.hidden.buzzwords}

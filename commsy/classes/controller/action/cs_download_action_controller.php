@@ -217,7 +217,7 @@
 			// create zip file
 			$zipFile = $exportTempFolder . DIRECTORY_SEPARATOR . $mod . "_" . $itemId . ".zip";
 			
-			if (file_exists(realpath($zipfile))) unlink($zipfile);
+			if (file_exists(realpath($zipFile))) unlink($zipFile);
 			
 			if (class_exists("ZipArchive")) {
 				include_once('functions/misc_functions.php');

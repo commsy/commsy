@@ -460,8 +460,11 @@
 				$this->assign('cs_bar', 'show_stack', false);
 				$this->assign('cs_bar', 'show_portfolio', false);
 			}
-
-
+			
+			$this->assign('cs_bar', 'show_limesurvey',	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
+														$current_context->isLimeSurveyActive() &&
+														$portal_item->isLimeSurveyActive() &&
+														$portal_item->withLimeSurveyFunctions() );
 
 			// to javascript
 			$to_javascript = array();
@@ -506,7 +509,17 @@
 					$to_javascript['autosave']['limit'] = $c_autosave_limit;
 				}
 			}
-
+			
+			// limesurvey
+			if (	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
+					$current_context->isLimeSurveyActive() &&
+					$portal_item->isLimeSurveyActive() &&
+					$portal_item->withLimeSurveyFunctions() )
+			{
+				$rpcPathParsed = parse_url($portal_item->getLimeSurveyJsonRpcUrl());
+				$to_javascript["limesurvey"]["newSurveyPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/admin/survey/sa/index";
+				$to_javascript["limesurvey"]["roomName"] = $current_context = $current_context->getTitle();
+			}
 
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {

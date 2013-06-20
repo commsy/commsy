@@ -3570,6 +3570,17 @@ a.tm_settings_hover {
     background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
     }
 
+#tm_limesurvey
+{
+    background: url(img/tm_settings_limesurvey.gif) no-repeat;
+}
+
+#tm_limesurvey:hover,
+.tm_limesurvey_hover
+{
+	background: url(img/tm_settings_limesurvey.gif) -36px 0px no-repeat !important;
+}
+
 #tm_mycalendar {
     background: url(img/tm_mycalendar.gif) no-repeat;
     }
@@ -5039,35 +5050,56 @@ Portfolio
 	position: relative;
 }
 
-/*
-.portfolioWidget .dijitTabListWrapper {
-	overflow: hidden !important;
-	background: url(img/pop_tabnav_bg.jpg) left bottom repeat-x #D3D3D3 !important;
-    padding: 10px 0px 0px 10px !important;
+#limeSurveyFileSurvey
+{
+	background: url(img/limesurvey_ui_icons.png) no-repeat -52px -149px;
+	width: 16px;
+	height: 16px;
+	display: block;
+	float: left;
 }
 
-
-
-/*
-.portfolioWidget .dijitTabHover div.dijitTabInner {
-	border-color: #767676;
-	color: #393939;
-	text-shadow: #E8E8E8 0 1px;
+#limeSurveyFileStatistics
+{
+	background: url(img/limesurvey_ui_icons.png) no-repeat -365px -197px;
+	width: 16px;
+	height: 16px;
+	display: block;
+	float: left;
 }
 
-
-
-
-.portfolioWidget .dijitTabPaneWrapperNested {
-	overflow-y: scroll;
+#limeSurveyFileResponses
+{
+	background: url(img/limesurvey_ui_icons.png) no-repeat -220px -149px;
+	width: 16px;
+	height: 16px;
+	display: block;
+	float: left;
 }
 
-.portfolioWidget .dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent .tabLabel,
-.portfolioWidget .dijitTabContainerTabListNested .dijitTabHover .dijitTabContent .tabLabel {
-    text-decoration: none !important;
-}*/
-/*
+#limeSurveyFileZip
+{
+	background: url(img/limesurvey_ui_icons.png) no-repeat -28px -149px;
+	width: 17px;
+	height: 16px;
+	display: block;
+	float: right;
+}
 
+.limeSurveyDelete
+{
+	background: url(img/limesurvey_ui_icons.png) no-repeat -269px -149px;
+	width: 16px;
+	height: 16px;
+	display: block;
+	float: left;
+}
 
-
-/**********************/
+#limeSurveyFileSurvey:hover,
+#limeSurveyFileStatistics:hover,
+#limeSurveyFileResponses:hover,
+#limeSurveyFileZip:hover,
+.limeSurveyDelete:hover
+{
+	text-decoration: none;
+}

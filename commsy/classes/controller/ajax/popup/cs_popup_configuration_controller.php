@@ -925,7 +925,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				      $current_context->setModificatorItem($current_user);
 				      $current_context->setModificationDate(getCurrentDateTimeInMySQL());
 				      $wordpress_manager = $this->_environment->getWordpressManager();
-                  $wiki_manager = $this->_environment->getWikiManager();
+                  	  $wiki_manager = $this->_environment->getWikiManager();
 
 				      if($additional['action'] == 'create_wordpress'){
                           if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
@@ -1259,6 +1259,21 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                             $current_context->setChatLinkInactive();
                          }
                          $current_context->save();
+				      }
+				      
+				      // limesurvey
+				      elseif ( $additional['action'] == 'save_limesurvey' )
+				      {
+				      	if ( isset($form_data['limesurvey_room']) && $form_data['limesurvey_room'] === "yes" )
+				      	{
+				      		$current_context->setLimeSurveyActive();
+				      	}
+				      	else
+				      	{
+				      		$current_context->setLimeSurveyInactive();
+				      	}
+				      	
+				      	$current_context->save();
 				      }
 				      
 				      // plugins
@@ -2286,6 +2301,25 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      if($current_context->isChatLinkActive() == '1'){
 	         $return['chatlink'] = 'yes';
 	      }
+	   }
+	   
+	   // Limesurvey
+	   $portalItem = $this->_environment->getCurrentPortalItem();
+	   if ( $portalItem->withLimeSurveyFunctions() && $portalItem->isLimeSurveyActive() )
+	   {
+	   	 $return['limesurvey'] = true;
+	   	 if ( $current_context->isLimeSurveyActive() )
+	   	 {
+	   	 	$return['limesurvey_room'] = true;
+	   	 }
+	   	 else
+	   	 {
+	   	 	$return['limesurvey_room'] = false;
+	   	 }
+	   }
+	   else
+	   {
+	   	$return['limesurvey'] = false;
 	   }
 	   
 	   // plugins - TODO

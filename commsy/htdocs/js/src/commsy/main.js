@@ -302,6 +302,26 @@ require([	"dojo/_base/declare",
 			    	}));
 			    }
 			    
+			    var aLimeSurveyConfigurationNode = Query("a#tm_limesurvey")[0];
+			    if ( aLimeSurveyConfigurationNode )
+			    {
+			    	On.once(aLimeSurveyConfigurationNode, "click", Lang.hitch(this, function(event)
+			    	{
+			    		var widgetManager = this.getWidgetManager();
+    					
+    					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyWidget", {}).then(function(deferred)
+						{
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							widgetManager.RegisterOpenCloseClick(widgetInstance, aLimeSurveyConfigurationNode);
+							
+							// open widget
+							widgetInstance.Open();
+						});
+			    	}));
+			    }
+			    
 			    var aPersonalNode = Query("a#tm_user")[0];
 			    if (aPersonalNode) {
 			    	On.once(aPersonalNode, "click", Lang.hitch(this, function(event) {
