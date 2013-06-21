@@ -4,8 +4,8 @@ define(
 	"dijit/_WidgetBase",
 	"commsy/base",
 	"dijit/_TemplatedMixin",
-	"dojo/text!./templates/LimeSurveyMenu.html",
-	"dojo/i18n!./nls/LimeSurveyMenu",
+	"dojo/text!./templates/LimeSurveyUserWidget.html",
+	"dojo/i18n!./nls/LimeSurveyUserWidget",
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
@@ -30,11 +30,9 @@ define(
 	return declare([BaseClass, WidgetBase, TemplatedMixin],
 	{
 		templateString:		Template,
-		baseClass:			"CommSyWidget",
+		baseClass:			"CommSyUserWidget",
 		
 		// attributes
-		title:				"",
-		_setTitleAttr:		{ node: "titleNode", type: "innerHTML" },
 		
 		constructor: function(options)
 		{
@@ -59,7 +57,6 @@ define(
 			/************************************************************************************
 			 * Initialization is done here
 			 ************************************************************************************/
-			this.set("title", PopupTranslations.title);
 		},
 		
 		/**
@@ -73,7 +70,49 @@ define(
 		startup: function()
 		{
 			this.inherited(arguments);
-		},
+			
+			this.AJAXRequest(	"limesurvey",
+								"getDisplayedSurveys",
+								{ },
+								Lang.hitch(this, function(response)
+			{
+				// destroy the loading animation
+				var loadingNode = Query("div#limesurveyLoading")[0];
+				if ( loadingNode )
+				{
+					DomConstruct.destroy(loadingNode);
+				}
+				
+				// add the response as html
+				if ( response.surveys.length == 0 )
+				{
+					DomConstruct.create("span",
+					{
+						innerHTML:		PopupTranslations.noSurveys
+					}, this.contentNode, "last");
+				}
+				else
+				{
+					var ulNode = DomConstruct.create("ul",
+					{
+					}, this.contentNode, "last");
+					
+					dojo.forEach(response.surveys, function(survey)
+					{
+						var liNode = DomConstruct.create("li",
+						{
+						}, ulNode, "last");
+						
+							DomConstruct.create("a",
+							{
+								href:		survey.url,
+								target:		"_blank",
+								innerHTML:	survey.title
+							}, liNode, "last");
+					});
+				}
+			}));
+		}
 		
 		/************************************************************************************
 		 * Getter / Setter
@@ -86,21 +125,5 @@ define(
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
-		onClickCreate: function(event)
-		{
-			var widgetManager = this.getWidgetManager();
-			widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyCreate", { }).then(Lang.hitch(this, function(deferred)
-			{
-				var widgetInstance = deferred.instance;
-				
-				widgetInstance.Open();
-			}));
-		},
-		
-		onClickRefresh: function(event)
-		{
-			Topic.publish("updateSurveys", { });
-			Topic.publish("updateExportedSurveys", { });
-		}
 	});
 });

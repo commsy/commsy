@@ -145,6 +145,7 @@
 		{
 			$templateId = $this->_data["templateId"];
 			$newSurveyTitle = $this->_data["surveyTitle"];
+			$surveyExpires = $this->_data["surveyExpires"];
 			
 			$return = array(
 				"newSurveyId"	=> null
@@ -196,17 +197,20 @@
 				exit;
 			}
 			
-			// activate the survey
-			$activateSurvey = $this->client->activate_survey($this->sessionKey, $newSurveyId);
-			if ( isset($activateSurvey["status"]) && $activateSurvey["status"] !== "OK" )
+			// expires
+			if ( isset($surveyExpires) && !empty($surveyExpires) )
 			{
-				// something went wrong - delete the survey
-				$this->client->delete_survey($this->sessionKey, $newSurveyId);
-				
-				$this->closeClient();
-				$this->setErrorReturn("903", $activateSurvey["status"]);
-				echo $this->_return;
-				exit;
+				$propertiesResult = $this->client->set_survey_properties($this->sessionKey, $newSurveyId, array("expires" => $surveyExpires));
+				if ( !isset($propertiesResult["expires"]) || $propertiesResult["expires"] !== true )
+				{
+					// something went wrong, delete the survey
+					$this->client->delete_survey($this->sessionKey, $newSurveyId);
+					
+					$this->closeClient();
+					$this->setErrorReturn("903", $propertiesResult["status"]);
+					echo $this->_return;
+					exit;
+				}
 			}
 			
 			// store this survey in the list of the current room
@@ -246,8 +250,89 @@
 			$currentContextItem->setLimeSurveySurveyIDs($surveyIDs);
 			$currentContextItem->save();
 			
+			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
+		public function actionActivateSurvey()
+		{
+			$surveyId = $this->_data["surveyId"];
+			
+			$this->initclient();
+			
+			// set new active state
+			$activateSurvey = $this->client->activate_survey($this->sessionKey, $surveyId);
+			if ( isset($activateSurvey["status"]) && $activateSurvey["status"] !== "OK" )
+			{
+				$this->closeClient();
+				$this->setErrorReturn("903", $activateSurvey["status"]);
+				echo $this->_return;
+				exit;
+			}
+			
+			$this->closeClient();
 			
 			$this->setSuccessfullDataReturn(array());
+			echo $this->_return;
+		}
+		
+		public function actionGetDisplayedSurveys()
+		{
+			$currentContextItem = $this->_environment->getCurrentContextItem();
+			$currentPortalItem = $this->_environment->getCurrentPortalItem();
+			$currentUserItem = $this->_environment->getCurrentUserItem();
+			$currentUserMail = $currentUserItem->getEmail();
+			
+			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
+			$rpcPathParsed = parse_url($currentPortalItem->getLimeSurveyJsonRpcUrl());
+			$surveyBaseUrl = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/";
+			
+			$return = array(
+				"surveys"	=> array()
+			);
+			
+			$this->initClient();
+			
+			$surveyList = $this->client->list_surveys($this->sessionKey);
+			if ( !(isset($surveyList["status"]) && $surveyList["status"] === "No surveys found") )
+			{
+				foreach ( $surveyList as $survey )
+				{
+					if ( $survey["active"] === "Y" && in_array($survey["sid"], $surveyIDs) )
+					{
+						$surveyUrl = $surveyBaseUrl;
+						
+						// check if this is a survey with tokens
+						$participantList = $this->client->list_participants($this->sessionKey, $survey['sid']);
+						if ( !isset($participantList['status']) || $participantList['status'] !== "Error: No token table" )
+						{
+							foreach ( $participantList as $participant )
+							{
+								// compare the participant mail with the one of the current user
+								if ( isset($participant['participant_info']['email']) && $participant['participant_info']['email'] == $currentUserMail )
+								{
+									$surveyUrl .= "survey/index/sid/" . $survey['sid'] . "/token/" . $participant['token'];
+									break;
+								}
+							}
+						}
+						else
+						{
+							$surveyUrl .= $survey['sid'];
+						}
+						
+						$return["surveys"][] = array
+						(
+							'title'			=> $survey['surveyls_title'],
+							'url'			=> $surveyUrl
+						);
+					}
+				}
+			}
+			
+			$this->closeClient();
+			
+			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
 		}
 		
@@ -276,43 +361,23 @@
 					// collect the survey data
 					foreach ( $surveyIDs as $surveyID )
 					{
-						$valid = true;
-						$surveyProperties = $this->client->get_survey_properties($this->sessionKey, $surveyID, array("expires"));
+						$survey = $this->getSurveyFromLimeSurvey($this->sessionKey, $surveyID);
 						
-						// get the survey name from the list
-						$surveyTitle = "";
-						$isInList = false;
-						foreach ( $surveyList as $listEntry )
+						if ( $survey !== null )
 						{
-							if ( $listEntry["sid"] == $surveyID )
-							{
-								$surveyTitle = $listEntry["surveyls_title"];
-								$isInList = true;
-								break;
-							}
-						}
-						
-						// If the survey was not in the list, then it has been deleted in LimeSurvey, but not in CommSy.
-						// Store the id, to remove the survey from the room survey list
-						if ( !$isInList )
-						{
-							$markedForDeletionIDs[] = $surveyID;
+							$return["items"][] = array
+							(
+								"sid"			=> $surveyID,
+								"active"		=> ($survey["active"] === "Y") ? true : false,
+								"expires"		=> $survey["expires"] ? getDateInLang($survey["expires"]) : "-",
+								"title"			=> $survey["surveyls_title"]
+							);
 						}
 						else
 						{
-							// if there was an error
-							if ( isset($surveyProperties["status"]) )
-							{
-								$valid = false;
-							}
-								
-							$return["items"][] = array
-							(
-									"sid"			=> $surveyID,
-									"valid"			=> $valid,
-									"expires"		=> $surveyProperties["expires"] ? getDateTimeInLang($surveyProperties["expires"]) : "-",
-									"title"			=> $surveyTitle
-							);
+							// If the survey was not in the list, then it has been deleted in LimeSurvey, but not in CommSy.
+							// Store the id, to remove the survey from the room survey list
+							$markedForDeletionIDs[] = $surveyID;
 						}
 					}
 				}

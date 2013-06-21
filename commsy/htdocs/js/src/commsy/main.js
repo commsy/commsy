@@ -135,6 +135,18 @@ require([	"dojo/_base/declare",
 					});
 				});
 				
+				// limesurvey
+				var limeSurveyNode = query("div.limesurveyList")[0];
+				if ( limeSurveyNode )
+				{
+					require(["commsy/widgets/LimeSurvey/LimeSurveyUserWidget"], function(LimeSurvey)
+					{
+						var limeSurvey = new LimeSurvey();
+						limeSurvey.startup();
+						limeSurvey.placeAt(limeSurveyNode);
+					});
+				}
+				
 				// threaded discussion tree
 				if (this.uri_object.mod == "discussion" && this.uri_object.fct == "detail") {
 					var treeNode = query("div#discussion_tree")[0];
