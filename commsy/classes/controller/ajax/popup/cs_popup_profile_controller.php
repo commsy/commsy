@@ -1078,6 +1078,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						                   and method_exists($plugin_class,'isConfigurableInRoom')
 						                   and $plugin_class->isConfigurableInRoom(CS_PRIVATEROOM_TYPE)
 						                 )
+						                 or 
+						                 (
+						                 	!$this->_environment->inServer()
+						                 	and method_exists($plugin_class,'isConfigurableInRoom')
+						                 	and $plugin_class->isConfigurableInRoom()
+						                 	and $plugin == 'voyeur'
+						                 )
 						               ) {
 						               if ( !empty($form_data[$plugin.'_on'])
 						                    and $form_data[$plugin.'_on'] == 'yes'
@@ -1748,6 +1755,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	                and method_exists($plugin_class,'isConfigurableInRoom')
 	                and $plugin_class->isConfigurableInRoom(CS_PRIVATEROOM_TYPE)
 	              	and $plugin != 'onyx'
+	              )
+	              or 
+	              (
+	              	!$this->_environment->inServer()
+	              	and $current_portal_item->isPluginOn($plugin)
+	              	and method_exists($plugin_class,'isConfigurableInRoom')
+	              	and $plugin_class->isConfigurableInRoom()
+	              	and $plugin != 'onyx'
+	              	and $plugin == 'voyeur'
 	              )
 	            ) {
 	            $array_plugins[$plugin_class->getIdentifier()]['title'] = $plugin_class->getTitle();
