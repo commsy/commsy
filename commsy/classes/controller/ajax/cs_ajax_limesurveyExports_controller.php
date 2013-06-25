@@ -4,8 +4,6 @@
 
 	class cs_ajax_limesurveyExports_controller extends cs_ajax_controller
 	{
-		private $client = null;
-		private $sessionKey = null;
 		
 		/**
 		 * constructor
@@ -67,89 +65,92 @@
 			$discManager = $this->_environment->getDiscManager();
 			$filePath = $discManager->getFilePath() . "limesurvey_export/";
 			
-			// open rpc connection
-			$this->initClient();
-				
-			// get the LimeSurvey survey list
-			$surveyList = $this->client->list_surveys($this->sessionKey);
-			if ( !(isset($surveyList["status"]) && $surveyList["status"] === "No surveys found") )
+			// scan the limesurvey_export directory in the room folder
+			$surveyDirectoryArray = $this->getDirectoryArray($filePath);
+			foreach ( $surveyDirectoryArray as $surveyDirectory )
 			{
-				// scan the limesurvey_export directory in the room folder
-				$surveyDirectoryArray = $this->getDirectoryArray($filePath);
-				foreach ( $surveyDirectoryArray as $surveyDirectory )
+				// get the survey id from the path
+				$surveyDirectoryExplode = explode("/", $surveyDirectory);
+				$secondLastIndex = sizeof($surveyDirectoryExplode) - 2;
+				if ( isset($surveyDirectoryExplode[$secondLastIndex]) )
 				{
-					// get the survey id from the path
-					$surveyDirectoryExplode = explode("/", $surveyDirectory);
-					$secondLastIndex = sizeof($surveyDirectoryExplode) - 2;
-					if ( isset($surveyDirectoryExplode[$secondLastIndex]) )
+					$surveyId = $surveyDirectoryExplode[$secondLastIndex];
+					
+					// scan the timestamp folder in the survey folder
+					$timestampDirectoryArray = $this->getDirectoryArray($surveyDirectory);
+					foreach ( $timestampDirectoryArray as $timestampDirectory )
 					{
-						$surveyId = $surveyDirectoryExplode[$secondLastIndex];
+						// extract the timestamp from the path
+						$timestampDirectoryExplode = explode("/", $timestampDirectory);
 							
-						// get rpc survey data
-						$title = "";
-						foreach ( $surveyList as $rpcSurvey )
+						$secondLastIndex = sizeof($timestampDirectoryExplode) - 2;
+						if ( isset($timestampDirectoryExplode[$secondLastIndex]) )
 						{
-							if ( $surveyId == $rpcSurvey["sid"] )
+							$timestamp = $timestampDirectoryExplode[$secondLastIndex];
+							
+							// look for exported files
+							$fileSurvey = "";
+							$fileStatistics = "";
+							$fileResponses = "";
+							
+							if ( is_file($timestampDirectory . "survey.lss") )
 							{
-								$title = $rpcSurvey["surveyls_title"];
-								
-								break;
+								$fileSurvey = $timestampDirectory . "survey.lss";
 							}
-						}
-						
-						// scan the timestamp folder in the survey folder
-						$timestampDirectoryArray = $this->getDirectoryArray($surveyDirectory);
-						foreach ( $timestampDirectoryArray as $timestampDirectory )
-						{
-							// extract the timestamp from the path
-							$timestampDirectoryExplode = explode("/", $timestampDirectory);
-								
-							$secondLastIndex = sizeof($timestampDirectoryExplode) - 2;
-							if ( isset($timestampDirectoryExplode[$secondLastIndex]) )
+							if ( is_file($timestampDirectory . "statistics.pdf") )
 							{
-								$timestamp = $timestampDirectoryExplode[$secondLastIndex];
+								$fileStatistics = $timestampDirectory . "statistics.pdf";
+							}
+							if ( is_file($timestampDirectory . "responses.csv") )
+							{
+								$fileResponses = $timestampDirectory . "responses.csv";
+							}
+							
+							// get the survey title by parsing the survey.lss file
+							$title = "";
+							if ( !empty($fileSurvey) )
+							{
+								$lssFileContent = file_get_contents($fileSurvey);
+								if ( $lssFileContent )
+								{
+									if ( class_exists("SimpleXMLElement") )
+									{
+										$lssXml = new SimpleXMLElement($lssFileContent, LIBXML_NOCDATA);
+											
+										$result = $lssXml->xpath('/document/surveys_languagesettings/rows/row/surveyls_title');
+										$simpleXMLElement = $result[0];
+										if ( $simpleXMLElement )
+										{
+											$elementArray = (array) $simpleXMLElement;
+											if ( isset($elementArray[0]) )
+											{
+												$title = $elementArray[0];
+											}
+										}
+									}
+								}
+							}
 								
-								// look for exported files
-								$fileSurvey = "";
-								$fileStatistics = "";
-								$fileResponses = "";
-								
-								if ( is_file($timestampDirectory . "survey.lss") )
-								{
-									$fileSurvey = $timestampDirectory . "survey.lss";
-								}
-								if ( is_file($timestampDirectory . "statistics.pdf") )
-								{
-									$fileStatistics = $timestampDirectory . "statistics.pdf";
-								}
-								if ( is_file($timestampDirectory . "responses.csv") )
-								{
-									$fileResponses = $timestampDirectory . "responses.csv";
-								}
-									
-								// add item
-								$return["items"][] = array
+							// add item
+							$return["items"][] = array
+							(
+								"surveyId"		=> $surveyId,
+								"timestamp"		=> $timestamp,
+								"title"			=> $title,
+								"exportDate"	=> getDateTimeInLang(date("Y-m-d H:i:s", $timestamp)),
+								"files"			=> array
 								(
-										"surveyId"		=> $surveyId,
-										"timestamp"		=> $timestamp,
-										"title"			=> $title,
-										"exportDate"	=> getDateTimeInLang(date("Y-m-d H:i:s", $timestamp)),
-										"files"			=> array
-										(
-											"survey"		=> $fileSurvey,
-											"statistics"	=> $fileStatistics,
-											"responses"		=> $fileResponses
-										)
-								);
-									
-								$return["total"]++;
-							}
+									"survey"		=> $fileSurvey,
+									"statistics"	=> $fileStatistics,
+									"responses"		=> $fileResponses
+								)
+							);
+								
+							$return["total"]++;
 						}
 					}
 				}
 			}
-			
-			$this->closeClient();
 				
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
@@ -180,55 +181,6 @@
 			}
 			
 			return $return;
-		}
-		
-		private function initClient()
-		{
-			// get the current portal item
-			$currentPortalItem = $this->_environment->getCurrentPortalItem();
-				
-			// try to connect
-			try
-			{
-				global $c_proxy_ip;
-				global $c_proxy_port;
-				if ( isset($c_proxy_ip) && isset($c_proxy_port) && !empty($c_proxy_ip) && !empty($c_proxy_port) )
-				{
-					$this->client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl(), false, $c_proxy_ip . ":" . $c_proxy_port);
-				}
-				else
-				{
-					$this->client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl());
-				}
-		
-				/*
-				 * On success:	A session key (string)
-				* On failure:	For protocol-level errors (invalid format etc), an error message. For invalid username and password,
-				* 				returns a null error and the result body contains a 'status' name-value pair with the error message.
-				*/
-				$this->sessionKey = $this->client->get_session_key($currentPortalItem->getLimeSurveyAdminUser(), $currentPortalItem->getLimeSurveyAdminPassword());
-		
-				if ( is_array($this->sessionKey) && isset($this->sessionKey['status']) )
-				{
-					$this->setErrorReturn("020", $this->sessionKey['status']);
-					echo $this->_return;
-					exit;
-				}
-			}
-			catch ( Exception $e )
-			{
-				$this->setErrorReturn("020", "connection problems");
-				echo $this->_return;
-				exit;
-			}
-		}
-		
-		private function closeClient()
-		{
-			if ( !(is_array($this->sessionKey) && isset($this->sessionKey['status'])) )
-			{
-				$this->client->release_session_key($this->sessionKey);
-			}
 		}
 
 		/*

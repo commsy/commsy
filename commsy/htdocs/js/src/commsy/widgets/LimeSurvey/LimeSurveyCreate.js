@@ -15,6 +15,7 @@ define(
 	"dojo/parser",
 	"dojox/form/Manager",
 	"dijit/registry",
+	"commsy/Calendar",
 	"dijit/form/ValidationTextBox",
 	"dojox/validate/web"
 ], function
@@ -33,7 +34,8 @@ define(
 	Query,
 	Parser,
 	Manager,
-	Registry
+	Registry,
+	Calendar
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
@@ -117,6 +119,10 @@ define(
 				// make the select field visible
 				DomClass.remove(this.templateSelectNode, "hidden");
 			}));
+			
+			// create the dojo calendar
+			var expiresCalendar = new Calendar();
+			expiresCalendar.setup(this.expiresInputNode);
 		},
 		
 		/************************************************************************************
@@ -145,7 +151,8 @@ define(
 									"createSurvey",
 									{
 										templateId:		formValues.template,
-										surveyTitle:	formValues.title
+										surveyTitle:	formValues.title,
+										surveyExpires:	DomAttr.get(Query("input[name='expires']")[0], "value")
 									},
 									Lang.hitch(this, function(response)
 				{

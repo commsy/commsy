@@ -58,11 +58,71 @@ define(
 				{
 					className:		"column_260"
 				}, rowNode, "last");
-				
-					DomConstruct.create("p",
+					
+					var title = rowData.title;
+					if ( rowData.active === false )
 					{
-						innerHTML:	rowData.title
+						title += " ";
+					}
+					
+					var pNode = DomConstruct.create("p",
+					{
+						innerHTML:	title,
+						style:		(rowData.active === true) ? "" : "background-color: rgba(250, 139, 139, 0.38)"
 					}, firstColumnNode, "last");
+					
+						if ( rowData.active === false )
+						{
+							var aNode = DomConstruct.create("a",
+							{
+								href:		"#",
+								innerHTML:	"(" + PopupTranslations.activate + ")"
+							}, pNode, "last");
+							
+							On(aNode, "click", Lang.hitch(this, function()
+							{
+								// create the dialog
+								var activateDialog = new Dialog(
+								{
+									title:			PopupTranslations.activateDialogTitle,
+									content:		DomConstruct.create("div",
+									{
+										innerHTML:		PopupTranslations.activateDialogContent
+									})
+								});
+								
+								// create the delete button
+								var activateButton = new Button(
+								{
+									label:			PopupTranslations.activateDialogButton,
+									onClick:		Lang.hitch(this, function(event)
+									{
+										// activate survey
+										this.setupLoading();
+										
+										this.AJAXRequest(	"limesurvey",
+															"activateSurvey",
+															{
+																surveyId:				rowData.sid
+															},
+															Lang.hitch(this, function(response)
+										{
+											this.destroyLoading();
+											Topic.publish("updateSurveys", {});
+										}));
+
+										// destroy the dialog
+										activateDialog.destroyRecursive();
+									})
+								});
+								
+								// place button in dialog
+								dojo.place(activateButton.domNode, activateDialog.containerNode, "last");
+								
+								// show dialog
+								activateDialog.show();
+							}));
+						}
 			}));
 			
 			this.addColumn(1, function(rowNode, rowData)

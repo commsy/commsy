@@ -267,15 +267,11 @@
 
 								<div id="limesurveyToggle" class="portlet_rc_body">
 									
-									{if $room.surveys}<ul>{/if}
-									{foreach $room.surveys as $survey}
-										<li>
-											<a class="keywords_s1" href="{$survey.url}" target="_blank">{$survey.title}</a>
-										</li>
-									{foreachelse}
-										___COMMON_NONE___
-									{/foreach}
-									{if $room.surveys}</ul>{/if}
+									<div class="limesurveyList">
+										<div id="limesurveyLoading">
+											<img src="{$basic.tpl_path}img/ajax_loader.gif"/>
+										</div>
+									</div>
 								</div>
            					</div>
            				{/if}

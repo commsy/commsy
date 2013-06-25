@@ -276,8 +276,6 @@
 			{
 				$this->_sidebar_configuration['hidden']['limesurvey'] = false;
 				$this->_sidebar_configuration['active']['limesurvey'] = true;
-				
-				$this->assign('room', 'surveys', $this->getSurveys());
 			}	
 			
 			// buzzwords
@@ -555,61 +553,6 @@
 			}
 
 			return $return;
-		}
-		
-		protected function getSurveys()
-		{
-			$currentContextItem = $this->_environment->getCurrentContextItem();
-			$currentPortalItem = $this->_environment->getCurrentPortalItem();
-			
-			$surveyIDs = $currentContextItem->getLimeSurveySurveyIDs();
-			$rpcPathParsed = parse_url($currentPortalItem->getLimeSurveyJsonRpcUrl());
-			$surveyBaseUrl = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/";
-			
-			$surveys = array();
-			
-			try
-			{
-				require_once("libs/jsonrpcphp/jsonRPCClient.php");
-				
-				global $c_proxy_ip;
-				global $c_proxy_port;
-				if ( isset($c_proxy_ip) && isset($c_proxy_port) && !empty($c_proxy_ip) && !empty($c_proxy_port) )
-				{
-					$client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl(), false, $c_proxy_ip . ":" . $c_proxy_port);
-				}
-				else
-				{
-					$client = new jsonRPCClient($currentPortalItem->getLimeSurveyJsonRpcUrl());
-				}
-				
-				$sessionKey = $client->get_session_key($currentPortalItem->getLimeSurveyAdminUser(), $currentPortalItem->getLimeSurveyAdminPassword());
-				
-				$surveyList = $client->list_surveys($sessionKey);
-				if ( !(isset($surveyList["status"]) && $surveyList["status"] === "No surveys found") )
-				{
-					foreach ( $surveyList as $survey )
-					{
-						if ( in_array($survey["sid"], $surveyIDs) )
-						{
-							$surveys[] = array
-							(
-								'surveyId'		=> $survey['sid'],
-								'title'			=> $survey['surveyls_title'],
-								'url'			=> $surveyBaseUrl . $survey['sid']
-							);
-						}
-					}
-				}
-				
-				$client->release_session_key($sessionKey);
-				
-			}
-			catch ( Exception $e)
-			{
-			}
-			
-			return $surveys;
 		}
 
 		/**
