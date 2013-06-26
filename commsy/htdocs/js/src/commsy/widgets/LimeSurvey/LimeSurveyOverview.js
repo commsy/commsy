@@ -242,35 +242,38 @@ define(
 			
 			this.addColumn(5, Lang.hitch(this, function(rowNode, rowData)
 			{
-				// sixth column
-				var sixthColumnNode = DomConstruct.create("div",
+				if ( rowData.active == true )
 				{
-					className:		"column_90"
-				}, rowNode, "last");
-
-					var pNode = DomConstruct.create("p", {}, sixthColumnNode, "last");
-
-						var aNode = DomConstruct.create("a",
-						{
-							href:		"#",
-							innerHTML:	PopupTranslations.exportSurvey
-						}, pNode, "last");
-				
-				On(aNode, "click", Lang.hitch(this, function()
-				{
-					this.setupLoading();
-					
-					this.AJAXRequest(	"limesurvey",
-										"export",
-										{
-											surveyId:				rowData.sid
-										},
-										Lang.hitch(this, function(response)
+					// sixth column
+					var sixthColumnNode = DomConstruct.create("div",
 					{
-						this.destroyLoading();
-						Topic.publish("updateExportedSurveys", {});
+						className:		"column_90"
+					}, rowNode, "last");
+
+						var pNode = DomConstruct.create("p", {}, sixthColumnNode, "last");
+
+							var aNode = DomConstruct.create("a",
+							{
+								href:		"#",
+								innerHTML:	PopupTranslations.exportSurvey
+							}, pNode, "last");
+					
+					On(aNode, "click", Lang.hitch(this, function()
+					{
+						this.setupLoading();
+						
+						this.AJAXRequest(	"limesurvey",
+											"export",
+											{
+												surveyId:				rowData.sid
+											},
+											Lang.hitch(this, function(response)
+						{
+							this.destroyLoading();
+							Topic.publish("updateExportedSurveys", {});
+						}));
 					}));
-				}));
+				}
 			}));
 			
 			// set the store

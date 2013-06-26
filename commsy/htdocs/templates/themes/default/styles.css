@@ -3543,6 +3543,7 @@ a#tm_user:hover .tm_dropdown {
 
 #tm_icons_left_bar {
     float: left;
+    width: 120px;
     }
 
 #tm_icons_left_bar a {
@@ -3559,9 +3560,10 @@ a#tm_user:hover .tm_dropdown {
 
 #tm_settings_count_new_accounts {
     font-size: 8pt;
-    left: -33px;
+    left: 3px;
     position: relative;
     top: 22px;
+    color: #CCC;
 	}
 
 

@@ -518,6 +518,7 @@
 			{
 				$rpcPathParsed = parse_url($portal_item->getLimeSurveyJsonRpcUrl());
 				$to_javascript["limesurvey"]["newSurveyPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/admin/survey/sa/index";
+				$to_javascript["limesurvey"]["adminPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/admin/";
 				$to_javascript["limesurvey"]["roomName"] = $current_context = $current_context->getTitle();
 			}
 

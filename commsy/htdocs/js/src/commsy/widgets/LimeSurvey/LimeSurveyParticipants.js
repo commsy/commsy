@@ -18,7 +18,8 @@ define(
 	"dijit/registry",
 	"dijit/form/ValidationTextBox",
 	"commsy/ValidationTextArea",
-	"dojox/validate/web"
+	"dojox/validate/web",
+	"dojo/NodeList-traverse"
 ], function
 (
 	declare,
@@ -46,6 +47,7 @@ define(
 		canOverlay:			true,							///< Determs if popup can overlay other popups
 		
 		surveyId:			null,							///< Given by LimeSurveyOverview.js
+		additionalIndex:	1,
 		
 		// attributes
 		title:				"",
@@ -78,6 +80,7 @@ define(
 			
 			On(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
 			On(this.withTokensCheckboxNode, "change", Lang.hitch(this, this.onChangeWithTokens));
+			On(this.addAdditionalNode, "click", Lang.hitch(this, this.onClickAddAdditional));
 		},
 		
 		/**
@@ -130,6 +133,107 @@ define(
 		/************************************************************************************
 		 * Helper Functions
 		 ************************************************************************************/
+		addAdditionalFormElements: function()
+		{
+			var lastRowNode = Query(this.addAdditionalNode).parent()[0];
+			
+			if ( lastRowNode )
+			{
+				var inputRowNode = DomConstruct.create("div",
+				{
+					className:			"input_row",
+					style:				"display: none"
+				}, lastRowNode, "before");
+				
+					var divNode = DomConstruct.create("div",
+					{
+						style:			"float: left; width: 180px;"
+					}, inputRowNode, "last");
+					
+						var aNode = DomConstruct.create("a",
+						{
+							href:			"#",
+							innerHTML:		"entfernen"
+						}, divNode, "last");
+				
+					DomConstruct.create("input",
+					{
+						className:			"float-left",
+						name:				"additionalFirstName_" + this.additionalIndex,
+						required:			true,
+						displayedValue:		PopupTranslations.additionalFirstName,
+						"data-dojo-type":	"dijit/form/ValidationTextBox",
+						"data-dojo-props":	"validator:dojox.validate.isText, invalidMessage:'" + PopupTranslations.errorMissing + "'"
+						
+					}, inputRowNode, "last");
+					
+					DomConstruct.create("input",
+					{
+						className:			"float-left",
+						name:				"additionalLastName_" + this.additionalIndex,
+						required:			true,
+						displayedValue:		PopupTranslations.additionalLastName,
+						"data-dojo-type":	"dijit/form/ValidationTextBox",
+						"data-dojo-props":	"validator:dojox.validate.isText, invalidMessage:'" + PopupTranslations.errorMissing + "'"
+						
+					}, inputRowNode, "last");
+					
+					DomConstruct.create("input",
+					{
+						className:			"float-left",
+						name:				"additionalMail_" + this.additionalIndex,
+						required:			true,
+						displayedValue:		PopupTranslations.additionalMail,
+						"data-dojo-type":	"dijit/form/ValidationTextBox",
+						"data-dojo-props":	"validator:dojox.validate.isEmailAddress, invalidMessage:'" + PopupTranslations.errorMail + "'",
+						style:				"margin-left: 20px;"
+						
+					}, inputRowNode, "last");
+					
+					DomConstruct.create("div",
+					{
+						className:			"clear"
+					}, inputRowNode, "last");
+				
+				this.additionalIndex++;
+				
+				var formManager = Registry.byId("limesurveyParticipantsForm");
+				
+				On(aNode, "click", Lang.hitch(this, function()
+				{
+					FX.wipeOut(
+					{
+						node:		inputRowNode,
+						onEnd:		Lang.hitch(this, function()
+						{
+							var widgetsInRow = Registry.findWidgets(inputRowNode);
+							dojo.forEach(widgetsInRow, function(widget)
+							{
+								formManager.unregisterWidget(widget);
+								formManager.unregisterWidgetDescendants(widget);
+								widget.set("disabled", true);
+								widget.set("displayedValue", "");
+							});
+							
+							DomConstruct.destroy(inputRowNode);
+						})
+					}).play();
+				}));
+				
+				Parser.parse(inputRowNode).then(Lang.hitch(this, function(instances)
+				{
+					dojo.forEach(instances, function(instance)
+					{
+						formManager.registerWidget(instance);
+					});
+					
+					FX.wipeIn(
+					{
+						node:		inputRowNode
+					}).play();
+				}));
+			}
+		},
 		
 		/************************************************************************************
 		 * Event Handling
@@ -159,6 +263,12 @@ define(
 					beforeBegin:	Lang.hitch(this, function()
 					{
 						DomAttr.set(this.groupSelectNode, "disabled", false);
+						
+						dojo.forEach(Query("input[name^='additional']"), Lang.hitch(this, function(node)
+						{
+							var widget = Registry.getEnclosingWidget(node);
+							widget.set("disabled", false);
+						}));
 					})
 				}).play();
 			}
@@ -182,9 +292,20 @@ define(
 					onEnd:			Lang.hitch(this, function()
 					{
 						DomAttr.set(this.groupSelectNode, "disabled", true);
+						
+						dojo.forEach(Query("input[name^='additional']"), Lang.hitch(this, function(node)
+						{
+							var widget = Registry.getEnclosingWidget(node);
+							widget.set("disabled", true);
+						}));
 					})
 				}).play();
 			}
+		},
+		
+		onClickAddAdditional: function(event)
+		{
+			this.addAdditionalFormElements();
 		},
 		
 		onSubmit: function(event)
@@ -206,6 +327,7 @@ define(
 										participantMails:		formValues.participantMails,
 										participantMailSubject:	formValues.participantMailSubject,
 										participantMailtext:	formValues.participantMailtext,
+										formValues:				formValues,
 										surveyId:				this.surveyId
 									},
 									Lang.hitch(this, function(response)

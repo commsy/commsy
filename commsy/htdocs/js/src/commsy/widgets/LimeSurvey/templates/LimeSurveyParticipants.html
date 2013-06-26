@@ -42,9 +42,21 @@
 										</div>
 										
 				                        <select id="lsGroup" class="size_200 hidden" name="group" data-dojo-attach-point="groupSelectNode">
+				                        	<option value="none" selected="selected">${popupTranslations.groupNone}</option>
 				                        </select>
 				                        
 				                        <div class="clear"></div>
+									</div>
+									
+									<div class="input_row">
+										<label for="lsFirstAdditional">${popupTranslations.additionalLabel}</label>
+										<div class="column_585">${popupTranslations.additionalDescription}</div>
+										
+										<div class="clear"></div>
+									</div>
+									
+									<div class="input_row">
+										<a href="#" title="${popupTranslations.additionalAdd}" data-dojo-attach-point="addAdditionalNode">${popupTranslations.additionalAdd}</a>
 									</div>
 								</div>
 								
@@ -60,7 +72,7 @@
 												data-dojo-type="commsy/ValidationTextArea"
 												data-dojo-props="
 													validator:dojox.validate.isEmailAddressList,
-													invalidMessage:'Die E-Mailadressen sind nicht gültig'"></textarea>
+													invalidMessage:'${popupTranslations.errorMail}'"></textarea>
 										</div>
 										
 										<div class="clear"></div>
@@ -73,7 +85,7 @@
 											data-dojo-type="dijit/form/ValidationTextBox"
 											data-dojo-props="
 												validator:dojox.validate.isText,
-												invalidMessage:'Sie müssen einen Betreff angeben'" />
+												invalidMessage:'${popupTranslations.errorMissing}'" />
 									</div>
 									
 									<div class="input_row">
@@ -86,7 +98,7 @@
 											data-dojo-type="commsy/ValidationTextArea"
 											data-dojo-props="
 												validator:dojox.validate.isText,
-												invalidMessage:'Bitte geben Sie einen Text ein'">${popupTranslations.mailTemplate}</textarea>
+												invalidMessage:'${popupTranslations.errorMissing}'">${popupTranslations.mailTemplate}</textarea>
 									</div>
 								</div>
 								
