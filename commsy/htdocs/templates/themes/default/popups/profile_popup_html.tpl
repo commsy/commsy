@@ -669,10 +669,12 @@
                            <div class="clear"></div>
                         </div>
                         {/if}
+                        {if false}
                         <div class="input_row_200">
                            <input type="checkbox" name="form_data[wikilink2]" value="yes" {if $popup.external.wiki.wikilink2 == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE___
                            <div class="clear"></div>
                         </div>
+                        {/if}
                         <div class="input_row_200">
                            <input type="checkbox" name="form_data[show_login_box]" value="yes" {if $popup.external.wiki.show_login_box == 'yes'} checked="checked"{/if}/> ___COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX___
                            <div class="clear"></div>
@@ -763,10 +765,12 @@
                            <input type="checkbox" name="form_data[enable_discussion_notification]" value="yes" {if $popup.external.wiki.enable_discussion_notification == 'yes'} checked="checked"{/if}/> ___COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC___
                            <div class="clear"></div>
                         </div>
+                        {if false}
                         <div class="input_row_200">
                            <input type="checkbox" name="form_data[enable_discussion_notification_groups]" value="yes" {if $popup.external.wiki.enable_discussion_notification_groups == 'yes'} checked="checked"{/if}/> ___COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC___
                            <div class="clear"></div>
                         </div>
+                        {/if}
                      </fieldset>
                      <div class="input_row">
                      <input id="submit" type="button" class="popup_button submit" data-custom="part: 'cs_bar', action: 'create_wiki'" name="save" value="{if $popup.external.wiki.wiki_active == 'yes'}___PREFERENCES_SAVE_BUTTON_WIKI___{else}___PREFERENCES_SAVE_BUTTON_WIKI_CREATE___{/if}"/>
