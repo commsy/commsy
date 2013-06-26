@@ -166,8 +166,9 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronCleanTempDirectory();
       $cron_array[] = $this->_cronUnlinkFiles();
       $cron_array[] = $this->_cronItemBackup();
-      $cron_array[] = $this->_cronCheckPasswordExpired();
       $cron_array[] = $this->_cronCheckPasswordExpiredSoon();
+      $cron_array[] = $this->_cronCheckPasswordExpired();
+      
       return $cron_array;
    }
    
@@ -183,9 +184,10 @@ class cs_server_item extends cs_guide_item {
    	  	  $expired_user_array = $user_manager->getUserPasswordExpired();
    	  	  require_once 'classes/cs_mail.php';
    	  	  foreach ($expired_user_array as $user){
+   	  	  	if (!$user->isPasswordExpiredEmailSend()){
    	  	  	  $auth_manager = $authentication->getAuthManager($user->getAuthSource());
    	  	  	  $auth_manager->changePassword($user->getItemID(), uniqid('',true));
-   	  	  	  $user->unsetPasswordExpiredEmailSend();
+   	  	  	  //$user->unsetPasswordExpiredEmailSend();
    	  	  	  
    	  	  	  $mail = new cs_mail();
    	  	  
@@ -207,21 +209,12 @@ class cs_server_item extends cs_guide_item {
 	   	  	  $mail->set_to($to);
    	  	  	  $mail->setSendAsHTML();
    	  	  	  if ( $mail->send() ) {
-   	  	  	  	$retour['success'] = true;
-   	  	  	  	$retour['success_text'] = 'send mail to '.$to;
-   	  	  	  	$this->_send_newsletter = true;
+   	  	  	  	$cron_array['success'] = true;
+   	  	  	  	$cron_array['success_text'] = 'send mail to '.$to;
    	  	  	  }
+   	  	  	}
 	   	  	  
    	  	  }
-   	  	  
-   	  	
-	   	  if ( $retour['success'] ) {
-	   		$cron_array['success'] = true;
-	   		$cron_array['success_text'] = 'cron done';
-	   	  } else {
-	   		$cron_array['success'] = false;
-	   	  	$cron_array['success_text'] = 'failed to send mail: '.$to;
-	   	  }
 	   	  
 	   	  $time_end = getmicrotime();
 	   	  $time = round($time_end - $time_start,0);
@@ -266,22 +259,12 @@ class cs_server_item extends cs_guide_item {
 	   	  	  	  if ( $mail->send() ) {
 	   	  	  	  	$user->setPasswordExpiredEmailSend();
 	   	  	  	  	$user->save();
-	   	  	  	  	$retour['success'] = true;
-	   	  	  	  	$retour['success_text'] = 'send mail to '.$to;
-	   	  	  	  	$this->_send_newsletter = true;
+	   	  	  	  	$cron_array['success'] = true;
+	   	  	  	  	$cron_array['success_text'] = 'send mail to '.$to;
 	   	  	  	  }
    	  	  	  }
    	  	  }
-   	  	  
-   	  	
-	   	  if ( $retour['success'] ) {
-	   		$cron_array['success'] = true;
-	   		$cron_array['success_text'] = 'cron done';
-	   	  } else {
-	   		$cron_array['success'] = false;
-	   	  	$cron_array['success_text'] = 'failed to send mail: '.$to;
-	   	  }
-	   	  
+
 	   	  $time_end = getmicrotime();
 	   	  $time = round($time_end - $time_start,0);
 	   	  $cron_array['time'] = $time;
