@@ -114,10 +114,14 @@
 				{/if}
 				{if $environment.is_moderator}
 					<div id="tm_icons_left_bar">
-						<a href="#" id="tm_settings" title="___COMMON_CONFIGURATION___">&nbsp;</a>
-						{if ($environment.count_new_accounts > 0)}
-							<span id="tm_settings_count_new_accounts">{$environment.count_new_accounts}</span>
-						{/if}
+						<a href="#" id="tm_settings" title="___COMMON_CONFIGURATION___">
+							{if ($environment.count_new_accounts > 0)}
+								<span id="tm_settings_count_new_accounts">{$environment.count_new_accounts}</span>
+							{else}
+								&nbsp;
+							{/if}
+						</a>
+						
 						{if $cs_bar.show_limesurvey == true}
 							<a href="#" id="tm_limesurvey" title="___LIMESURVEY_CONFIGURATION_LINK___">&nbsp;</a>
 						{/if}

@@ -491,26 +491,60 @@
 			
 			if ( $withTokens === true )
 			{
-				// get all member of the selected group
-				$groupManager = $this->_environment->getGroupManager();
-				$groupItem = $groupManager->getItem($groupId);
-				if ( $groupItem !== null )
+				$members = array();
+				
+				// get all member of the selected group - if set
+				if ( $groupId !== "none" )
 				{
-					$members = array();
-					$memberList = $groupItem->getMemberItemList();
-					
-					$member = $memberList->getFirst();
-					while( $member )
+					$groupManager = $this->_environment->getGroupManager();
+					$groupItem = $groupManager->getItem($groupId);
+					if ( $groupItem !== null )
 					{
-						$members[] = array(
-							"email"		=> $member->getEmail(),
-							"firstname"	=> $member->getFirstName(),
-							"lastname"	=> $member->getLastName()
-						);
-						
-						$member = $memberList->getNext();
+						$memberList = $groupItem->getMemberItemList();
+							
+						$member = $memberList->getFirst();
+						while( $member )
+						{
+							$members[] = array(
+								"email"		=> $member->getEmail(),
+								"firstname"	=> $member->getFirstName(),
+								"lastname"	=> $member->getLastName()
+							);
+					
+							$member = $memberList->getNext();
+						}
 					}
 				}
+				
+				// add additional participants, if given
+				$additionalParticipants = array();
+				foreach ( $this->_data['formValues'] as $formKey => $formValue )
+				{
+					if ( !empty($formValue) && preg_match('/^additional(FirstName|LastName|Mail)_(\d+)/', $formKey, $matches) === 1 )
+					{
+						$key = '';
+						if ( $matches[1] === "FirstName" )
+						{
+							$key = 'firstname';
+						}
+						else if ( $matches[1] === "LastName" )
+						{
+							$key = 'lastname';
+						}
+						else
+						{
+							$key = 'mail';
+						}
+						
+						$additionalParticipants[$matches[2]][$key] = $formValue;
+					}
+				}
+				
+				if ( !empty($additionalParticipants) )
+				{
+					$members = array_merge($members, $additionalParticipants);
+				}
+				
 				
 				// activate tokens
 				// unfortunately survey properties does not reflect the correct usetokens setting
