@@ -2330,6 +2330,10 @@ class cs_user_item extends cs_item {
    	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
    }
    
+   function unsetPasswordExpireDate() {
+   	$this->_setValue('expire_date', '');
+   }
+   
    function getPasswordExpireDate() {
    	return $this->_getValue('expire_date');
 //    	$retour = '';
