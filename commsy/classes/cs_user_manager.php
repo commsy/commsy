@@ -1102,6 +1102,8 @@ class cs_user_manager extends cs_manager {
      if ( empty($contact_status) ) {
         $contact_status = 0;
      }
+  	 
+     
      $query .= 'status="'.encode(AS_DB,$user_item->getStatus()).'",';
      $query .= 'is_contact="'.encode(AS_DB,$contact_status).'",';
      $query .= 'user_id="'.encode(AS_DB,$user_item->getUserID()).'",';
@@ -1113,7 +1115,11 @@ class cs_user_manager extends cs_manager {
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
      // Datenschutz
-     $query .= 'expire_date="'.encode(AS_DB,$user_item->getPasswordExpireDate()).'",';
+     $expire_date = $user_item->getPasswordExpireDate();
+     if ( !empty ($expire_date)){
+     	$query .= 'expire_date="'.encode(AS_DB,$expire_date).'",';
+     }
+     
 
      // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
      // see methode _create()
@@ -1195,6 +1201,10 @@ class cs_user_manager extends cs_manager {
      if ( empty($creator_id) ) {
         $creator_id = $item->getItemID();
      }
+     $expire_date = $item->getPasswordExpireDate();
+     if ( empty ($expire_date)){
+     	$expire_date = 'NULL';
+     }
      $query .= 'context_id="'.encode(AS_DB,$item->getContextID()).'", ';
      $query .= 'creator_id="'.encode(AS_DB,$creator_id).'",'.
                'creation_date="'.$current_datetime.'",'.
@@ -1209,7 +1219,7 @@ class cs_user_manager extends cs_manager {
                'visible="'.encode(AS_DB,$item->getVisible()).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
-               'expire_date="'.encode(AS_DB,serialize($item->getPasswordExpireDate())).'"';
+               'expire_date='.encode(AS_DB,$expire_date).'';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -1770,10 +1780,11 @@ class cs_user_manager extends cs_manager {
 		return $retour;
 	}
 	
-	public function getUserPasswordExpired() {
+	public function getUserPasswordExpiredByContextID($cid) {
+		$user_array = array();
 		$current_date = getCurrentDateTimeInMySQL();
 		$user = NULL;
-		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$current_date)."'";
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$current_date)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');
@@ -1791,10 +1802,10 @@ class cs_user_manager extends cs_manager {
 
 	}
 	
-	public function getCountUserPasswordExpired() {
+	public function getCountUserPasswordExpiredByContextID($cid) {
 		$retour = 0;
 		$date = getCurrentDateTimeInMySQL();
-		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".email) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
 		$query .= " and deletion_date IS NULL";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
@@ -1809,15 +1820,14 @@ class cs_user_manager extends cs_manager {
 		return $retour;
 	}
 	
-	public function getCountUserPasswordExpiredSoon() {
+	public function getCountUserPasswordExpiredSoonByContextID($cid) {
 		$retour = 0;
 		if(isset($c_password_expiration_email_days)){
 			$date = $c_password_expiration_email_days;
 		} else {
-			$date = getCurrentDateTimeMinusDaysInMySQL('14');
+			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
-		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".email) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
-		$query .= " and deletion_date IS NULL";
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');
@@ -1831,28 +1841,26 @@ class cs_user_manager extends cs_manager {
 		return $retour;
 	}
 	
-	public function getUserPasswordExpiredSoon() {
+	public function getUserPasswordExpiredSoonByContextID($cid) {
 		if(isset($c_password_expiration_email_days)){
 			$date = $c_password_expiration_email_days;
 		} else {
-			$date = getCurrentDateTimeMinusDaysInMySQL('14');
+			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
 		$user = NULL;
-		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');
 			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
 		} else {
 			foreach ($result as $rs ) {
-				$user_array[] = $rs;
+				$user_array[] = $this->_buildItem($rs);
 			}
 			unset($result);
 			unset($query);
 		}
-		$user_item_array = $this->_buildItem($user_array);
-		pr($user_item_array);
-		return $user_item_array;
+		return $user_array;
 	}
 }
 ?>

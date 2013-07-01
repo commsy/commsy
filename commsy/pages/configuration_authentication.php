@@ -236,7 +236,11 @@ else {
             	$portal_users = $portal_item->getUserList();
             	$portal_user = $portal_users->getFirst();
             	while ($portal_user){
-            		$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            		if ($_POST['password_expiration'] > 0){
+            			$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            		} else {
+            			$portal_user->unsetPasswordExpireDate();
+            		}
             		$portal_user->save();
             		
             		$portal_user = $portal_users->getNext();
