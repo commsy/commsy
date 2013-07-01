@@ -34,7 +34,7 @@ $c_delete_days = 182;
 $c_session_lifetime = 6;
 
 // proxy settings
-// if you use commsy behind a proxy, just set here the proxy informations
+// if you use commsy behind a proxy, just set the proxy information here
 // $c_proxy_ip   = '100.200.300.400';
 // $c_proxy_port = '3128';
 
