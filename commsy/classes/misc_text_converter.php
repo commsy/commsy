@@ -1049,6 +1049,7 @@ class misc_text_converter {
 
       // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
       $reg_exp_image['<img']		  = '~\\<img(.*?)\\>~eu'; // \<img.*?\>
+      #$reg_exp_image['link']		  = '~<a(.*?)><img(.*?)></a>~eu'; // \<img.*?\>
       
       // plugins
       $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
@@ -1080,24 +1081,29 @@ class misc_text_converter {
       }
       ############ lightbox images ckEditor ###############
       $matchesImages = array();
+      $found_link = preg_match_all('~<a.*?>(<img.*?>)</a>~eu',$text,$matchesLink);
       	foreach ($reg_exp_image as $key => $exp) {
       		$found = preg_match_all($exp,$text,$matchesImages);
       		if($found > 0) {
       			foreach ($matchesImages[0] as $value) {
-      				// found an image tag
-      				$args_array = $this->_getArgs($value, $exp);
-      				// search for src attribute
-      				$src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
-      				$value_new = $value;
-      				if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
-      					$params = $this->_environment->getCurrentParameterArray();
-      					$tempArray[0] = $args_array[0];
-      					$tempArray[2] = $src[1];
-      					$tempArray[3] = $args_array[1];
-      					$value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
-      					$text = str_replace($value,$value_new,$text);
-      					unset($value_new);
-      				}
+      				// found an <a> tag dont use lightbox
+      				if(!in_array($value, $matchesLink[1])){
+	      				// found an image tag
+	      				$args_array = $this->_getArgs($value, $exp);
+	      				// search for src attribute
+	      				$src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
+	      				$value_new = $value;
+	      				if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
+	      					$params = $this->_environment->getCurrentParameterArray();
+	      					$tempArray[0] = $args_array[0];
+	      					$tempArray[2] = $src[1];
+	      					$tempArray[3] = $args_array[1];
+	      					
+	      					$value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
+	      					$text = str_replace($value,$value_new,$text);
+	      					unset($value_new);
+	      				}
+	      			}
       			}
       		}
       	}
