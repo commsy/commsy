@@ -135,7 +135,7 @@ define([	"dojo/_base/declare",
 					// room background
 					
 					// setup preview
-					var formNode = this.featureHandles["upload-single"][0].uploader.form;
+					var formNode = this.featureHandles["upload-single"][1].uploader.form;
 					var previewNode = Query("div.filePreview", formNode)[0];
 					
 					DomConstruct.empty(previewNode);
