@@ -97,6 +97,12 @@
 												<input type="radio" name="form_data[open_for_guests]" value="open" {if $popup.room.open_for_guests == 'open'}checked{/if}/>___COMMON_ON___
 												<div class="clear"></div>
 											</div>
+											<div class="input_row_100">
+												<label for="material_guests">___PREFERENCES_MATERIAL_OPEN_FOR_GUESTS___:</label>
+										        <input type="radio" name="form_data[material_guests]" value="closed" {if $popup.room.material_guests == 'closed'}checked{/if}/>___COMMON_OFF___
+												<input type="radio" name="form_data[material_guests]" value="open" {if $popup.room.material_guests == 'open'}checked{/if}/>___COMMON_ON___
+												<div class="clear"></div>
+											</div>
 										{/if}
 
 										{* assignment *}

@@ -157,7 +157,7 @@
 			{/if}
 			<div class="column_{$w}">
 				<p>
-					{if $item.activated and (!$environment.is_guest or $item.worldpublic)}
+					{if $item.activated and (!$environment.is_guest or $item.worldpublic or $popup.room.material_guests == 'open' or $room.room_information.material_guests)}
 						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
 					{elseif (!$environment.is_guest or $item.worldpublic)}
 						{if $environment.is_moderator || $environment.user_item_id == $item.creator_id}

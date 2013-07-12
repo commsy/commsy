@@ -120,6 +120,7 @@
 				   $page->add($errorbox);
 				 */
 			} elseif(	!(($this->_item_id === 'NEW' && $current_user->isUser()) ||
+						($room_item->isMaterialOpenForGuests() && $current_user->isGuest()) ||
 						($this->_item_id !== 'NEW' && isset($annotation_item) && $annotation_item->mayEdit($current_user)) ||
 						($this->_item_id === 'NEW' && isset($_GET['ref_iid']) && $item_manager->getExternalViewerForItem($_GET['ref_iid'], $current_user->getUserID())))) {
 						/*

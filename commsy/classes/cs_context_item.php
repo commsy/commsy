@@ -130,6 +130,22 @@ class cs_context_item extends cs_item {
   function setClosedForGuests () {
     $this->_setValue('is_open_for_guests', 0, TRUE);
   }
+  
+  function isMaterialOpenForGuests () {
+  if ($this->_issetExtra('MATERIAL_GUESTS') and $this->_getExtra('MATERIAL_GUESTS') == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  function setMaterialOpenForGuests () {
+  	$this->_addExtra('MATERIAL_GUESTS', 1, TRUE);
+  }
+  
+  function setMaterialClosedForGuests () {
+  	$this->_addExtra('MATERIAL_GUESTS', 0, TRUE);
+  }
 
   function isAssignmentOnlyOpenForRoomMembers () {
     $retour = false;

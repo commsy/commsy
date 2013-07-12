@@ -345,11 +345,12 @@
 			$modificator = $item->getModificatorItem();
 			$translator = $this->_environment->getTranslationObject();
 			$converter = $this->_environment->getTextConverter();
+			$current_context = $this->_environment->getCurrentContextItem();
 
 			if(isset($modificator) && !$modificator->isDeleted()) {
 				$current_user = $this->_environment->getCurrentUserItem();
 
-				if($current_user->isGuest() && $modificator->isVisibleForLoggedIn()) {
+				if($current_user->isGuest() && $modificator->isVisibleForLoggedIn() && !$current_context->isMaterialOpenForGuests()) {
 					$fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 				} else {
 					$fullname = $modificator->getFullName();
@@ -487,6 +488,9 @@
 
 			// portal name
 			$return['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
+			
+			// material open for guests
+			$return['material_guests'] = $context_item->isMaterialOpenForGuests();
 
 			return $return;
 		}

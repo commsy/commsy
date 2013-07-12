@@ -321,6 +321,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				               $current_context->setClosedForGuests();
 				            }
 				         }
+				         // material open for guests
+				         if ( isset($form_data['material_guests'])){
+				         	if($form_data['material_guests'] == 'open'){
+				         		$current_context->setMaterialOpenForGuests();
+				         	} elseif ($form_data['material_guests'] == 'closed'){
+				         		$current_context->setMaterialClosedForGuests();
+				         	}
+				         }
 
 
 						// save
@@ -2561,6 +2569,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
             $return['open_for_guests'] = 'open';
          } else {
             $return['open_for_guests'] = 'closed';
+         }
+         
+         if($current_context->isMaterialOpenForGuests()){
+         	$return['material_guests'] = 'open';
+         } else {
+         	$return['material_guests'] = 'closed';
          }
 
 

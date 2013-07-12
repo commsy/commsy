@@ -58,6 +58,7 @@
 				$material_version_list = $this->_manager->getVersionList($this->_item->getItemID());
 				$material_item = $material_version_list->getFirst();
 				$current_user = $this->_environment->getCurrentUser();
+				$context_item = $this->_environment->getCurrentContextItem();
 
 				// check for deleted item
 				if(empty($material_item)) {
@@ -84,7 +85,7 @@
 				}
 
 				// check for viewing rights
-				elseif(!$material_item->maySee($current_user) && !$material_item->mayExternalSee($current_user)) {
+				elseif(!$material_item->maySee($current_user) && !$material_item->mayExternalSee($current_user) && !$context_item->isMaterialOpenForGuests()) {
 					//TODO: error handling
 					/*
 					 * $params = array();

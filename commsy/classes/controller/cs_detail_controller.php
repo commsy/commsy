@@ -616,6 +616,13 @@
 			} else {
 				//$html .= $this->_getNewActionDisabled();
 			}
+			
+			if($current_context->isMaterialOpenForGuests() && $current_user->isGuest()){
+				$return['edit']		= true;
+				$return['delete']	= true;
+				$return['mail']		= true;
+				$return['copy']		= true;
+			}
 
 			// download
 			$return['downloadparams'] = $this->_environment->getCurrentParameterArray();
@@ -1682,7 +1689,7 @@
 		    } else {
 		        if(isset($creator) and !$creator->isDeleted()){
 		            $current_user_item = $this->_environment->getCurrentUserItem();
-		            if ( $current_user_item->isGuest() ) {
+		            if ( $current_user_item->isGuest() && !$context->isMaterialOpenForGuests()) {
 		                //$temp_html = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 		                $return['creator'] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 
@@ -1797,7 +1804,7 @@
 		            } else {
 		                if(isset($modificator) and !$modificator->isDeleted()){
 		                    $current_user_item = $this->_environment->getCurrentUserItem();
-		                    if ( $current_user_item->isGuest() ) {
+		                    if ( $current_user_item->isGuest() && !$context->isMaterialOpenForGuests()) {
 		                        //$modifier_array[] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 		                        $userArray = array(
                                     'name' => $translator->getMessage('COMMON_USER_NOT_VISIBLE'),
