@@ -248,6 +248,15 @@ class cs_log_manager extends cs_manager {
          ) {
          $delayed = ' ';
       }
+      $current_context = $this->_environment->getCurrentContextItem();
+      
+      //Datenschutz
+      if($current_context->withLogIPCover()){
+      	// if datasecurity is active dont show last two fields
+      	$remote_adress_array = explode('.', $array['remote_addr']);
+      	$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+      }
+      unset($current_context);
       
       $query = 'INSERT'.$delayed.'INTO '.$this->addDatabasePrefix('log').' SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.
