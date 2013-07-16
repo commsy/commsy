@@ -267,6 +267,30 @@ define([	"dojo/_base/declare",
 			this.inherited(arguments);
 			
 			switch (response.code) {
+				case "1022":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1022, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;	
+				case "1023":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1023, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;	
+				case "1024":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1024, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;	
+				case "1025":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;	
 				case "1011":			/* user id already registered */
 					var errorNode = Query("input[name='form_data[user_id]']", this.contentNode)[0];
 					Tooltip.show(ErrorTranslations.personalPopup1011, errorNode);
