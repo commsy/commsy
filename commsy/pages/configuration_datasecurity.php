@@ -82,6 +82,22 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
    if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
       
    	if($context_item->isServer()){
+   		  if(!empty($_POST['log_ip'])){
+   		  	if($_POST['log_ip'] == 1){
+   		  		$log_manager = $environment->getLogManager();
+   		  		$log_manager->hideAllLogIP();
+   		  		$log_archive_manager = $environment->getLogArchiveManager();
+   		  		$log_archive_manager->hideAllLogArchiveIP();
+   		  		unset($log_archive_manager);
+   		  		unset($log_manager);
+   		  		$context_item->setWithLogIPCover();
+   		  	} else {
+   		  		$context_item->setWithoutLogIPCover();
+   		  	}
+   		  }
+   		  
+   		  
+   		  
 	   	  if(!empty($_POST['log_delete_interval'])){
 	   	  	$log_delete_interval = $_POST['log_delete_interval'];
 	   	  	

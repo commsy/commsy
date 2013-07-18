@@ -212,6 +212,49 @@ class cs_log_manager extends cs_manager {
          return $return_array;
       }
    }
+   
+   function hideAllLogIP() {
+   	  $query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log');
+   	  
+   	  $result = $this->_db_connector->performQuery($query);
+   	  if ( !isset($result) ) {
+   	  	include_once('functions/error_functions.php');
+   	  	trigger_error('Problems log from query: "'.$query.'"',E_USER_WARNING);
+   	  } else {
+   	  	$return_array = array();
+   	  	foreach ($result as $r){
+   	  		// Hide all ip adresses and update db
+   	  		$remote_adress_array = explode('.', $r['ip']);
+   	  		$ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+   	  		$query2 = 'UPDATE '.$this->addDatabasePrefix('log').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'"';
+   	  		
+   	  		$result2 = $this->_db_connector->performQuery($query2);
+   	  		if ( !isset($result2) ) {
+   	  			include_once('functions/error_functions.php');
+   	  			trigger_error('Problems log from query: "'.$query2.'"',E_USER_WARNING);
+   	  		} else {
+   	  			
+   	  		}
+   	  		
+   	  	}
+   	  }
+   }
+   
+   function getLogdataByContextID ($cid) {
+   	$retour = false;
+   	$query = 'SELECT * FROM '.$this->addDatabasePrefix('log').' WHERE 1';
+   	$query .= ' AND cid = '.encode(AS_DB,$cid);
+   	// perform query
+   	$result = $this->_db_connector->performQuery($query);
+   	if ( !isset($result) or !$result ) {
+   		#include_once('functions/error_functions.php');
+   		#trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+   	} else {
+   		$retour = $result;
+   	}
+   	return $retour;
+   
+   }
 
 
    public function saveArray ( $array ) {

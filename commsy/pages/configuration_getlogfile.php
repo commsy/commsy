@@ -52,41 +52,56 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
 	   $id = $_GET['id'];
    
 	   // get log file of a room
-	   $log_manager = $environment->getLogArchiveManager();
+	   $log_archive_manager = $environment->getLogArchiveManager();
 	   
-	   $data = $log_manager->getLogdataByContextID($id);
+	   $data1 = $log_archive_manager->getLogdataByContextID($id);
 	   
-	   if(!empty($data)){
-	   	header('Content-Type: text/csv; charset=utf-8');
-	   	header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-	   	header('Content-Disposition: attachment; filename=log_room'.$id.'.csv');
-	   	header('Pragma: no-cache');
+	   $log_manager = $environment->getLogManager();
+	   
+	   $data2 = $log_manager->getLogdataByContextID($id);
+	   
+	   if(!empty($data1) and !empty($data2)){
 
-	   	$output = fopen('php://output', 'w');
+		   $data = array_merge($data1,$data2);
+		   
+		   if(!empty($data)){
+		   	header('Content-Type: text/csv; charset=utf-8');
+		   	header('Expires: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+		   	header('Content-Disposition: attachment; filename=log_room'.$id.'.csv');
+		   	header('Pragma: no-cache');
+	
+		   	$output = fopen('php://output', 'w');
+		   	
+		   	fputcsv($output, array('id','ip','agent','timestamp','request','post_content','method','ulogin','cid','module','fct','param','iid','queries','time'));
+		   	
+		   	$user = array();
+		   	// Datenschutz
+		   	foreach ($data as $log) {
+		   		$remote_adress_array = explode('.', $log['ip']);
+		   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+		   		$userkey = '';
+		   		if(array_key_exists($log['ulogin'],$user)){
+		   			$userkey = $user[$log['ulogin']];
+		   		} else {
+		   			$uniqid = uniqid();
+		   			$user[$log['ulogin']] = $uniqid;
+		   			$userkey = $uniqid;
+		   		}
+		   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
+		   								$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
+		   								$log['iid'],$log['queries'],$log['time']));
+		   	}
+		    exit;
+		   }
+	   } else {
+	   	include_once('functions/error_functions.php');
+	   	commSyErrorHandler();
+// 	   	trigger_error("get log file: File is empty no log data available
+//             <br />environment reports context id ".$environment->getCurrentContextID()."");
 	   	
-	   	fputcsv($output, array('id','ip','agent','timestamp','request','post_content','method','ulogin','cid','module','fct','param','iid','queries','time'));
-	   	
-	   	$user = array();
-	   	// Datenschutz
-	   	foreach ($data as $log) {
-	   		$remote_adress_array = explode('.', $log['ip']);
-	   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
-	   		$userkey = '';
-	   		if(array_key_exists($log['ulogin'],$user)){
-	   			$userkey = $user[$log['ulogin']];
-	   		} else {
-	   			$uniqid = uniqid();
-	   			$user[$log['ulogin']] = $uniqid;
-	   			$userkey = $uniqid;
-	   		}
-	   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
-	   								$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
-	   								$log['iid'],$log['queries'],$log['time']));
-	   	}
-	    exit;
 	   }
 	   unset($log_manager);
-   }
+   }  
 
 }
 

@@ -196,5 +196,32 @@ class cs_log_archive_manager extends cs_manager {
    	  return $retour;
    	
    }
+   
+   function hideAllLogArchiveIP() {
+   	$query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log_archive');
+   	 
+   	$result = $this->_db_connector->performQuery($query);
+   	if ( !isset($result) ) {
+   		include_once('functions/error_functions.php');
+   		trigger_error('Problems log from query: "'.$query.'"',E_USER_WARNING);
+   	} else {
+   		$return_array = array();
+   		foreach ($result as $r){
+   			// Hide all ip adresses and update db
+   			$remote_adress_array = explode('.', $r['ip']);
+   			$ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+   			$query2 = 'UPDATE '.$this->addDatabasePrefix('log_archive').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'"';
+   			 
+   			$result2 = $this->_db_connector->performQuery($query2);
+   			if ( !isset($result2) ) {
+   				include_once('functions/error_functions.php');
+   				trigger_error('Problems log from query: "'.$query2.'"',E_USER_WARNING);
+   			} else {
+   
+   			}
+   			 
+   		}
+   	}
+   }
 }
 ?>

@@ -123,7 +123,8 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
 // 	  //Datenschutz
 // 	  $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',1,10,false,'','','','','','',$disabled);
 	  #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
-	  $this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '');
+      $this->_form->addRadioGroup('log_ip', $translator->getMessage('CONFIGURATION_EXTRA_LOG_IP'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+      $this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '');
 	  
 	  $this->_form->addSelect( 'portal',
                                $this->_array_portal,
@@ -170,12 +171,25 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       				$type = ' ('.$translator->getMessage('ROOM_TYPE_COMMUNITY').')';
       			}
       			$this->_form->combine();
+      			
+      			$log_manager = $this->_environment->getLogManager();
+      			$log_archive_manager = $this->_environment->getLogArchiveManager();
+      			
+      			$log_archive_data = $log_archive_manager->getLogdataByContextID($room->getItemID());
+      			$log_data = $log_manager->getLogdataByContextID($room->getItemID());
+      			
+      			if(!empty($log_data) and !empty($log_archive_data)){
+      				// Link für das pseudonymisierte herunterladen
+      				$link = ahref_curl( $this->_environment->getCurrentContextID(),
+      							$this->_environment->getCurrentModule(),
+      							'getlogfile',
+      							array('id' => $room->getItemID()), ' exportieren');
+      			} else {
+      				$link = ' exportieren';
+      			}
+      			
 
-      			// Link für das pseudonymisierte herunterladen
-      			$link = ahref_curl( $this->_environment->getCurrentContextID(),
-      								 $this->_environment->getCurrentModule(), 
-      								'getlogfile',
-      								array('id' => $room->getItemID()), ' [.csv]');
+      			
       			
       			$this->_form->addCheckbox('ROOM_'.$room->getItemID(),$room->getItemID(),'','',$room->getTitle().$type.$link,'','',$disabled);
       			unset($type);
@@ -219,9 +233,16 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
          
          if($current_context->isServer()){
          	$this->_values['log_delete_interval'] = $current_context->getLogDeleteInterval();
+         	
+         	if($current_context->withLogIPCover()){
+         		$this->_values['log_ip'] = 1;
+         	} else {
+         		$this->_values['log_ip'] = 2;
+         	}
+         	
          	 
          	if( empty($this->_values['log_delete_interval'])){
-         		$this->_values['log_delete_interval'] = 1;
+         		$this->_values['log_delete_interval'] = 50;
          	}
          } else if($current_context->isPortal()){
          	$this->_values['hide_accountname'] = $current_context->getHideAccountname();

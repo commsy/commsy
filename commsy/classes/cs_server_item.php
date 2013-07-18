@@ -1292,5 +1292,23 @@ class cs_server_item extends cs_guide_item {
       $manager = $this->_environment->getServerManager();
       return $manager->getStatistics($this,$date_start,$date_end);
    }
+   
+   function withLogIPCover () {
+   	$retour = false;
+   	$value = $this->_getExtraConfig('LOGIPCOVER');
+   	if ($value == 1) {
+   		$retour = true;
+   	}
+   	return $retour;
+   	 
+   }
+   
+   function setWithLogIPCover () {
+   	$this->_setExtraConfig('LOGIPCOVER', 1);
+   }
+   
+   function setWithoutLogIPCover () {
+   	$this->_setExtraConfig('LOGIPCOVER', -1);
+   }
 }
 ?>
