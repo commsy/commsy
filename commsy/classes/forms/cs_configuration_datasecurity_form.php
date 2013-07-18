@@ -52,7 +52,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
     */
    function _initForm () {
    	
-   	$this->_headline = 'Datenschutz';
+   	$this->_headline = $this->_translator->getMessage('CONFIGURATION_DATA_SECURITY');
    	
    	// portal option choice
    	$this->_array_portal[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL');
