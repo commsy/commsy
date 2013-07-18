@@ -207,6 +207,7 @@ $message["COMMON_CONFIGURATION_DATES_FORM_TITLE"]["en"] = "Configure events";
 $message["COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE"]["en"] = "Choose workspace preset";
 $message["COMMON_CONFIGURATION_DELETE_LOG_DESCRIPTION"]["en"] = "Attention! The data will be deleted! Recovery is impossible!";
 $message["COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE"]["en"] = "Configure discussions";
+$message["COMMON_CONFIGURATION_EXPORT"]["en"] = "export";
 $message["COMMON_CONFIGURATION_EXPORT_FORM_TITLE"]["en"] = "Export workspace";
 $message["COMMON_CONFIGURATION_EXTRA_FORM_TITLE"]["en"] = "Edit extras";
 $message["COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE"]["en"] = "Group workspaces";

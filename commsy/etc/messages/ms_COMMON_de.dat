@@ -207,6 +207,7 @@ $message["COMMON_CONFIGURATION_DATES_FORM_TITLE"]["de"] = "Termindarstellung";
 $message["COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE"]["de"] = "Voreinstellungen für Räume";
 $message["COMMON_CONFIGURATION_DELETE_LOG_DESCRIPTION"]["de"] = "Achtung! Die Log-Daten der einzelnen Räume werden komplett gelöscht und können nicht wieder hergestellt werden!";
 $message["COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE"]["de"] = "Art der Diskussionen";
+$message["COMMON_CONFIGURATION_EXPORT"]["de"] = "exportieren";
 $message["COMMON_CONFIGURATION_EXPORT_FORM_TITLE"]["de"] = "Raum exportieren";
 $message["COMMON_CONFIGURATION_EXTRA_FORM_TITLE"]["de"] = "Extras einstellen";
 $message["COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE"]["de"] = "Gruppenräume";

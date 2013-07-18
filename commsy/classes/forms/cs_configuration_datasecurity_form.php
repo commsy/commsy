@@ -52,7 +52,13 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
     */
    function _initForm () {
    	
-   	$this->_headline = $this->_translator->getMessage('CONFIGURATION_DATA_SECURITY');
+   	$context_item = $this->_environment->getCurrentContextItem();
+   	if($context_item->isServer()){
+   		$this->_headline = $this->_translator->getMessage('CONFIGURATION_LOG_DATA');
+   	} else {
+   		$this->_headline = $this->_translator->getMessage('CONFIGURATION_DATA_SECURITY');
+   	}
+   	
    	
    	// portal option choice
    	$this->_array_portal[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL');
@@ -110,7 +116,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       
       $context_item = $this->_environment->getCurrentContextItem();
       if($context_item->isServer()){
-      $this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
+      //$this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
       // Zeitraum zur Löschung alter Log Daten
       $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,false,'','','','','','',false);
       // Räume für langfristige Archivierung
@@ -124,8 +130,10 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
 // 	  $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',1,10,false,'','','','','','',$disabled);
 	  #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
       $this->_form->addRadioGroup('log_ip', $translator->getMessage('CONFIGURATION_EXTRA_LOG_IP'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-      $this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '');
-	  
+      #$this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '','','','','','','','colspan=2');
+      $this->_form->addEmptyline();
+      $this->_form->addSubHeadline( 'logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '', '', 4 );
+      
 	  $this->_form->addSelect( 'portal',
                                $this->_array_portal,
                                '',
@@ -178,14 +186,14 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       			$log_archive_data = $log_archive_manager->getLogdataByContextID($room->getItemID());
       			$log_data = $log_manager->getLogdataByContextID($room->getItemID());
       			
-      			if(!empty($log_data) and !empty($log_archive_data)){
+      			if(!empty($log_data) or !empty($log_archive_data)){
       				// Link für das pseudonymisierte herunterladen
       				$link = ahref_curl( $this->_environment->getCurrentContextID(),
       							$this->_environment->getCurrentModule(),
       							'getlogfile',
-      							array('id' => $room->getItemID()), ' exportieren');
+      							array('id' => $room->getItemID()), ' '.$this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT'));
       			} else {
-      				$link = ' exportieren';
+      				$link = ' '.$this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT');
       			}
       			
 

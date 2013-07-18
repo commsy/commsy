@@ -166,7 +166,13 @@ class cs_log_archive_manager extends cs_manager {
       }
 
       include_once('functions/date_functions.php');
-      $days = 50;
+      $current_context = $this->_environment->getCurrentContextItem();
+      //$days = 50;
+      $days = $current_context->getLogDeleteInterval();
+      if(empty($days)){
+      	$days = 50;
+      }
+      
       $datetime = getCurrentDateTimeMinusDaysInMySQL($days);
       $query .= ' AND timestamp < "'.$datetime.'"';
 

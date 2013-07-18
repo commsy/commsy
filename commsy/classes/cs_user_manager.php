@@ -1822,8 +1822,8 @@ class cs_user_manager extends cs_manager {
 	
 	public function getCountUserPasswordExpiredSoonByContextID($cid) {
 		$retour = 0;
-		if(isset($c_password_expiration_email_days)){
-			$date = $c_password_expiration_email_days;
+		if(isset($c_password_expiration_send_email_days)){
+			$date = $c_password_expiration_send_email_days;
 		} else {
 			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
@@ -1842,8 +1842,8 @@ class cs_user_manager extends cs_manager {
 	}
 	
 	public function getUserPasswordExpiredSoonByContextID($cid) {
-		if(isset($c_password_expiration_email_days)){
-			$date = $c_password_expiration_email_days;
+		if(isset($c_password_expiration_send_email_days)){
+			$date = $c_password_expiration_send_email_days;
 		} else {
 			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
