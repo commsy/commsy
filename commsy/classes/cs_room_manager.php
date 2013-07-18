@@ -722,9 +722,12 @@ class cs_room_manager extends cs_context_manager {
          $disc_manager->removeRoomDir($portal_id, $iid);
          unset($disc_manager);
 
-         // delete db content
+         // delete db content or archive content
          $from_backup = false;
-
+         if ( $this->_environment->isArchiveMode() ) {
+            $from_backup = true;
+         }
+         
          // managers need data from other tables
          $hash_manager = $this->_environment->getHashManager();
          $hash_manager->deleteFromDb($iid, $from_backup);
@@ -746,7 +749,7 @@ class cs_room_manager extends cs_context_manager {
          $reader_manager->deleteFromDb($iid, $from_backup);
          unset($reader_manager);
 
-         // plain copy of the rest
+         // plain deletion of the rest
          $annotation_manager = $this->_environment->getAnnotationManager();
          $annotation_manager->deleteFromDb($iid, $from_backup);
          unset($annotation_manager);
