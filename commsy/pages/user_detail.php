@@ -82,6 +82,7 @@ if ($type != CS_USER_TYPE) {
               and $environment->inPortal()
               and isset($_GET['mode'])
               and $_GET['mode'] == 'take_over'
+   			  and !$current_user->isDeactivatedLoginAsAnotherUser()
             ) {
       $history = $session->getValue('history');
       $cookie = $session->getValue('cookie');
