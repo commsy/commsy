@@ -207,6 +207,12 @@ else {
             if ( isset($_POST['password_length']) ) {
                $auth_item->setPasswordLength($_POST['password_length']);
             }
+            if ( isset($_POST['password_smallchar']) ) {
+            	$auth_item->setPasswordSecureSmallchar($_POST['password_smallchar']);
+            }
+            if ( isset($_POST['password_number']) ) {
+            	$auth_item->setPasswordSecureNumber($_POST['password_number']);
+            }
             
             //Datenschutz
          	if ( isset($_POST['temporary_lock']) ) {

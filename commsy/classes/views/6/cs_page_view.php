@@ -760,6 +760,8 @@ class cs_page_view extends cs_view {
 									var B=H.replace(/[A-Z]/g,"");
 									var I=(H.length-B.length);
 									if(I>3){I=3}
+									var Z=H.replace(/[a-z]/g,"");
+									var S=(H.length-Z.length);
 									var E=((D*10)-20)+(G*10)+(C*15)+(I*10);';
 
 									if($auth_source_item->isPasswordSecureActivated()){
@@ -769,6 +771,12 @@ class cs_page_view extends cs_view {
 										}
 										if($auth_source_item->getPasswordSecureBigchar() == 1){
 											$retour .= '&& (I >= 1) ';
+										}
+										if($auth_source_item->getPasswordSecureSmallchar() == 1){
+											$retour .= '&& (S >= 1) ';
+										}
+										if($auth_source_item->getPasswordSecureNumber() == 1){
+											$retour .= '&& (G >= 1) ';
 										}
 										if($auth_source_item->getPasswordLength() > 0){
 											$retour .= '&& (L >= '.$auth_source_item->getPasswordLength().')';

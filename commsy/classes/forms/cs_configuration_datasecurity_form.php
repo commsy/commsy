@@ -256,9 +256,12 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
          	$this->_values['hide_accountname'] = $current_context->getHideAccountname();
          	$this->_values['use_ds_agb'] = $current_context->withAGBDatasecurity();
          	
-         	if( empty($this->_values['hide_accountname'])){
+         	if( $this->_values['hide_accountname']){
+         		$this->_values['hide_accountname'] = 1;
+         	} else {
          		$this->_values['hide_accountname'] = 2;
          	}
+         	
          	
          	if ($this->_values['use_ds_agb']){
          		$this->_values['use_ds_agb'] = 1;

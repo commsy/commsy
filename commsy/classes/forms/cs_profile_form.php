@@ -704,6 +704,20 @@ class cs_profile_form extends cs_rubric_form {
                         $this->_form->setFailure('password2');
                      }
                   }
+                  if($auth_source_item->getPasswordSecureSmallchar() == 1){
+                  	if(!preg_match('~[a-z]~u', $this->_form_post['password'])) {
+                  		$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_SMALLCHAR_ERROR');
+                  		$this->_form->setFailure('password');
+                  		$this->_form->setFailure('password2');
+                  	}
+                  }
+                  if($auth_source_item->getPasswordSecureNumber() == 1){
+                  	if(!preg_match('~[0-9]~u', $this->_form_post['password'])) {
+                  		$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_NUMBER_ERROR');
+                  		$this->_form->setFailure('password');
+                  		$this->_form->setFailure('password2');
+                  	}
+                  }
                   if($auth_source_item->getPasswordSecureSpecialchar() == 1){
                      if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
                         $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_SPECIALCHAR_ERROR');

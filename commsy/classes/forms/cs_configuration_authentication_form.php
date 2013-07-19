@@ -419,6 +419,8 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	$this->_form->addEmptyLine();
       	$this->_form->addRadioGroup('password_secure_check',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_CONTROL'),'',$this->_yes_no_array,'','',true,'','',$disabled);	      
 	      $this->_form->addRadioGroup('password_bigchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_BIGCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      $this->_form->addRadioGroup('password_number',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_NUMBER'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      $this->_form->addRadioGroup('password_smallchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SMALLCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addRadioGroup('password_specialchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',1,10,false,'','','','','','',$disabled);
 	      $this->_form->addEmptyLine();
@@ -491,6 +493,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['password_bigchar'] = $this->_item->getPasswordSecureBigchar();
          $this->_values['password_specialchar'] = $this->_item->getPasswordSecureSpecialchar();
          $this->_values['password_length'] = $this->_item->getPasswordLength();
+         $this->_values['password_smallchar'] = $this->_item->getPasswordSecureSmallchar();
+         $this->_values['password_number'] = $this->_item->getPasswordSecureNumber();
+         
          
          $current_context = $this->_environment->getCurrentContextItem();
          
@@ -518,6 +523,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          }
          if( empty($this->_values['password_specialchar'])){
          	$this->_values['password_specialchar'] = 2;
+         }
+         if( empty($this->_values['password_number'])){
+         	$this->_values['password_number'] = 2;
+         }
+         if( empty($this->_values['password_smallchar'])){
+         	$this->_values['password_smallchar'] = 2;
          }
          
          // Datenschutz

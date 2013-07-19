@@ -255,6 +255,18 @@ class cs_popup_profile_controller implements cs_popup_controller {
 													$change_pw = false;
 												}
 											}
+											if($auth_source_item->getPasswordSecureSmallchar() == 1){
+												if(!preg_match('~[a-z]+~u', $form_data['new_password'])) {
+													$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureNumber() == 1){
+												if(!preg_match('~[0-9]+~u', $form_data['new_password'])) {
+													$this->_popup_controller->setErrorReturn('1027', 'new password no number');
+													$change_pw = false;
+												}
+											}
 											if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 												if(!preg_match('~[^a-zA-Z0-9]+~u',$form_data['new_password'])){
 													$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
@@ -284,11 +296,50 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								if(!empty($form_data['new_password'])) {
 									$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
 									$old_password = $auth_manager->getItem($form_data['user_id'])->getPasswordMD5();
-									if($old_password == $form_data['old_password']){
-										$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
-									} else {
-										$this->_popup_controller->setErrorReturn('1008', 'password change error');
-									}
+									if($old_password == md5($form_data['old_password'])){
+											$change_pw = true;
+											// if password options are set, check password
+											$auth_source_manager = $this->_environment->getAuthSourceManager();
+											$auth_source_item = $auth_source_manager->getItem($currentUser->getAuthSource());
+											
+											if($auth_source_item->getPasswordLength() > 0){
+												if(strlen($form_data['new_password']) < $auth_source_item->getPasswordLength()) {
+													$this->_popup_controller->setErrorReturn('1022', 'new password too short');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureBigchar() == 1){
+												if(!preg_match('~[A-Z]+~u', $form_data['new_password'])) {
+													$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureSmallchar() == 1){
+												if(!preg_match('~[a-z]+~u', $form_data['new_password'])) {
+													$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureNumber() == 1){
+												if(!preg_match('~[0-9]+~u', $form_data['new_password'])) {
+													$this->_popup_controller->setErrorReturn('1027', 'new password no number');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+												if(!preg_match('~[^a-zA-Z0-9]+~u',$form_data['new_password'])){
+													$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
+													$change_pw = false;
+												}
+											}
+											unset($auth_source);
+											if($change_pw) {
+												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+											}
+											
+										} else {
+											$this->_popup_controller->setErrorReturn('1008', 'password change error');
+										}
 									$error_number = $auth_manager->getErrorNumber();
 								
 									if(!empty($error_number)) {

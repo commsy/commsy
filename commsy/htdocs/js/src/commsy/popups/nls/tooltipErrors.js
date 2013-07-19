@@ -8,7 +8,9 @@ define({
 		personalPopup1022:				"Password is too short",
 		personalPopup1023:				"Password contains no upper case",
 		personalPopup1024:				"Password contains no special character",
-		personalPopup1025:				"This password was used last time"
+		personalPopup1025:				"This password was used last time",
+		personalPopup1026:				"Password contains no small letter",
+		personalPopup1027:				"Password contains no number"
 	},
 	
 	"de":		true

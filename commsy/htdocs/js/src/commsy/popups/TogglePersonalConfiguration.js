@@ -290,6 +290,18 @@ define([	"dojo/_base/declare",
 					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
 					this.errorNodes.push(errorNode);
 					
+					break;
+				case "1026":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1026, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;	
+				case "1027":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1027, errorNode);
+					this.errorNodes.push(errorNode);
+					
 					break;	
 				case "1011":			/* user id already registered */
 					var errorNode = Query("input[name='form_data[user_id]']", this.contentNode)[0];

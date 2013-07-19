@@ -7,5 +7,7 @@ define({
 	personalPopup1022:				"Passwort ist zu kurz",
 	personalPopup1023:				"Passwort enthält kein Großbuchstaben",
 	personalPopup1024:				"Passwort enthält kein Sonderzeichen",
-	personalPopup1025:				"Passwort wurde in den letzten Generationen schonmal verwendet"
+	personalPopup1025:				"Passwort wurde in den letzten Generationen schonmal verwendet",
+	personalPopup1026:				"Passwort enthält kein Kleinbuchstaben",
+	personalPopup1027:				"Passwort enthält keine Zahl"
 });
