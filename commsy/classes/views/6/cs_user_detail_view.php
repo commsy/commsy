@@ -365,9 +365,14 @@ class cs_user_detail_view extends cs_detail_view {
            and ( $current_user->isRoot()
                  or $current_user->isModerator()
                )
-           and !$current_user->isDeactivatedLoginAsAnotherUser()
+           
          ) {
-         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
+      	if(!$current_user->isDeactivatedLoginAsAnotherUser()){
+      		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
+      	} else {
+      		$html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname()).'</span>'.BRLF;
+      	}
+         
       }
 
       $html .= '</div>'.LF;
@@ -928,7 +933,8 @@ class cs_user_detail_view extends cs_detail_view {
       }
       
       if($this->_environment->inPortal()
-      and $this->_environment->getCurrentUser()->isRoot()){
+      	and $this->_environment->getCurrentUser()->isRoot()
+      	and $item->isModerator()){
       	$params['mode'] = 'deactivateLoginAs';
       	$params['iid'] = $item->getItemID();
       	if($item->isDeactivatedLoginAsAnotherUser()) {
