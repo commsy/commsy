@@ -167,7 +167,7 @@ class cs_home_member_form extends cs_rubric_form {
       }
       if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
       	if (!isset($this->_form_post['terms_of_use'])){
-      		$this->_error_array[] = $translator->getMessage('CONFIGURATION_AGB_ACCEPT_ERROR');
+      		$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT_ERROR');
       		$this->_form->setFailure('terms_of_use','');
       	}
       }
