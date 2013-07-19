@@ -193,7 +193,7 @@ class cs_server_item extends cs_guide_item {
    	  				$expired_user_array = $user_manager->getUserPasswordExpiredByContextID($portal_item->getItemID());
    	  				require_once 'classes/cs_mail.php';
    	  				foreach ($expired_user_array as $user){
-   	  					if (!$user->isPasswordExpiredEmailSend()){
+//    	  					if (!$user->isPasswordExpiredEmailSend()){
    	  						$auth_manager = $authentication->getAuthManager($user->getAuthSource());
    	  						$auth_manager->changePassword($user->getUserID(), uniqid('',true));
    	  						//$user->unsetPasswordExpiredEmailSend();
@@ -224,7 +224,7 @@ class cs_server_item extends cs_guide_item {
    	  							$cron_array['success'] = false;
    	  							$cron_array['success_text'] = 'failed send mail to '.$to;
    	  						}
-   	  					}
+//    	  					}
    	  			
    	  				}
    	  				 
@@ -265,7 +265,7 @@ class cs_server_item extends cs_guide_item {
    	  				$expired_user_array = $user_manager->getUserPasswordExpiredSoonByContextID($portal_item->getItemID());
    	  				require_once 'classes/cs_mail.php';
    	  				foreach ($expired_user_array as $user){
-   	  					if (!$user->isPasswordExpiredEmailSend()){
+//    	  					if (!$user->isPasswordExpiredEmailSend()){
    	  						$mail = new cs_mail();
    	  						 
    	  						$subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT');
@@ -279,8 +279,18 @@ class cs_server_item extends cs_guide_item {
    	  						} else {
    	  							$mail->set_from_email('@');
    	  						}
+   	  						
+   	  						if($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()){
+   	  							$start_date = new DateTime(getCurrentDateTimeInMySQL());
+   	  							$since_start = $start_date->diff(new DateTime($user->getPasswordExpireDate()));
+   	  							$days = $since_start->d;
+   	  							if($days == 0){
+   	  								$days = 1;
+   	  							}
+   	  						}
+   	  						
    	  						//content
-   	  						$body = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY',$user->getFullName(),getDifference($user->getPasswordExpireDate(),getCurrentDateTimeInMySQL()));
+   	  						$body = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY',$user->getFullName(),$days);
    	  							
    	  						$mail->set_subject($subject);
    	  						$mail->set_message($body);
@@ -296,7 +306,7 @@ class cs_server_item extends cs_guide_item {
    	  							$cron_array['success'] = false;
    	  							$cron_array['success_text'] = 'failed send mail to '.$to;
    	  						}
-   	  					}
+//    	  					}
    	  				}
    	  			
    	  				$time_end = getmicrotime();
