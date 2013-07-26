@@ -541,7 +541,7 @@
 			{
 				if ( file_exists("version") )
 				{
-					$versionFromFile = file_get_contents("version");
+					$versionFromFile = trim(file_get_contents("version"));
 
 					/*
 					 * It is very important to replace " " whitespaces, otherwhise dojo shows some odd behaviour
