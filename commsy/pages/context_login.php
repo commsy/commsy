@@ -145,6 +145,7 @@ if (!empty($user_id) and !empty($password) ) {
    } else {
    	  // user access is not granted 
    	  // Datenschutz
+   	  $current_context = $environment->getCurrentContextItem();
       $error_array = $authentication->getErrorArray();
       
       if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
@@ -163,7 +164,8 @@ if (!empty($user_id) and !empty($password) ) {
       }
             
       if($auth_item->isTemporaryLockActivated()){
-	      // Passwort tempLock
+      	// Erster Fehlversuch // Timestamp in session speichern und
+	      // Password tempLock
 	      $userExists = false;
 	      $user_manager = $environment->getUserManager();
 	      $userExists = $user_manager->exists($user_id);
@@ -172,13 +174,16 @@ if (!empty($user_id) and !empty($password) ) {
 	      	$session->setValue('userid', $user_id);
 	      	$tempUser = $user_id;
 	      }
+	      if(!$session->issetValue('TMSP_'.$user_id) or $session->getValue('TMSP_'.$user_id) < getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
+	      	$session->setValue('TMSP_'.$user_id, getCurrentDateTimeInMySQL());
+	      }
 	      $count = $session->getValue('countWrongPassword');
-	      // Passwort tempLock ende
+	      // Password tempLock ende
       }
       if ( !isset($session) ) {
          $session = new cs_session_item();
          $session->createSessionID('guest');
-         //Passwort tempLock
+         //Password tempLock
          $session->setValue('countWrongPassword', 1);
       } else {
       	if($auth_item->isTemporaryLockActivated()){
@@ -196,18 +201,18 @@ if (!empty($user_id) and !empty($password) ) {
 	       		$session->setValue('countWrongPassword', 0);
 	       		$session->setValue('userid', $user_id);
 	       	}
-	       	if($count >= 2 AND $userExists AND !$locked){
-	       		$user = $authentication->_getPortalUserItem($tempUser,$authentication->_auth_source_granted);
-	       		$user->setTemporaryLock();
-	       		$user->save();
-	       		$count = 0;
-	       		$session->setValue('countWrongPassword', 0);
+	       	if($count >= 2 AND $userExists AND !$locked AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
+       			$user = $authentication->_getPortalUserItem($tempUser,$authentication->_auth_source_granted);
+       			$user->setTemporaryLock();
+       			$user->save();
+       			$count = 0;
+       			$session->setValue('countWrongPassword', 0);
 	       	}
       	}
        	#$count++;
        	$session->setValue('countWrongPassword', $count);
       }
-      // Passwort tempLock ende 
+      // Password tempLock ende 
       $session->setValue('error_array',$error_array);
       unset($user_manager);
    } 
@@ -255,12 +260,12 @@ if ( !empty($_POST['login_redirect']) ) {
    unset($params['cid']);
    unset($params['mod']);
    unset($params['fct']);
-   #redirect($cid,$mod,$fct,$params);
+   redirect($cid,$mod,$fct,$params);
 } elseif ( !empty($_GET['target_cid']) ) {
    $mod = 'home';
    $fct = 'index';
    $params = array();
-   #redirect($_GET['target_cid'],$mod,$fct,$params);
+   redirect($_GET['target_cid'],$mod,$fct,$params);
 } else {
    if ( !empty($history[0]['context']) ) {
       $cid = $history[0]['context'];

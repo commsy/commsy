@@ -2,22 +2,14 @@
 $message["EMAIL_CONTACT_MODERATOR"]["en"] = "Contact via e-mail";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["en"] = "Send an e-mail to contact persons";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["en"] = "Password will expire soon";
+$message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "Login as another user is deactivated";
+$message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "Hello %1,
+
+your right to login as another user is deactivated now.
+
+Best regards ... CommSy Administrator";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["en"] = "Password is expired";
-$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["en"] = "Hello %1,
-
-your password is expired.
-
-Please change your password with the link password forget.
-
-Best regards ... CommSy Administrator";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["en"] = "Hello %1,
-
-your password will expire in the next %2 days. Please change your password.
-
-Please change your password with the link password forget.
-
-Best regards ... CommSy Administrator";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["en"] = "Password will expire soon";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["en"] = "Account";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["en"] = "Upload-Password";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["en"] = "Hello %1,

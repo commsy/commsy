@@ -275,6 +275,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 											}
 											unset($auth_source);
 											if($change_pw) {
+												$portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
+												$portalUser->save();
 												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
 											}
 											
@@ -334,6 +336,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 											}
 											unset($auth_source);
 											if($change_pw) {
+												$portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
+												$portalUser->save();
 												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
 											}
 											

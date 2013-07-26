@@ -2,20 +2,14 @@
 $message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "Ihr Passwort wird demn&auml;chst ablaufen";
+$message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "Einloggen als XYZ ist abgelaufen";
+$message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "Hallo %1,
+
+die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.
+
+Gru&szlig; ... CommSy Administrator";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "Ihr Passwort ist abgelaufen";
-$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Hallo %1,
-
-Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert ge&auml;ndert.
-
-Bitte &auml;ndern Sie Ihr Passwort über den Passwort vergessen Link.
-
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Hallo %1,
-
-Ihr Passwort l&auml;uft in %2 Tagen ab. Bitte &auml;ndern Sie Ihr Passwort innerhalb dieser Zeit.
-
-Gru&szlig; ... CommSy Administrator";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "Ihr Passwort wird demn&auml;chst ablaufen";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["de"] = "Hallo %1,

@@ -426,7 +426,8 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addEmptyLine();
 	      //Datenschutz
 	      $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-	      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',1,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
 	      #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
@@ -501,6 +502,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          
          // Datenschutz
          $this->_values['temporary_lock'] = $this->_item->getTemporaryLock();
+         $this->_values['seconds_interval'] = $current_context->getLockTimeInterval();
          $this->_values['temporary_minutes'] = $current_context->getLockTime();
          $this->_values['password_generation'] = $current_context->getPasswordGeneration();
          $this->_values['password_expiration'] = $current_context->getPasswordExpiration();
@@ -534,6 +536,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          // Datenschutz
          if( empty($this->_values['temporary_lock'])){
          	$this->_values['temporary_lock'] = 2;
+         }
+         if( empty($this->_values['seconds_interval'])){
+         	$this->_values['seconds_interval'] = 0;
          }
          if( empty($this->_values['temporary_minutes'])) {
          	$this->_values['temporary_minutes'] = 0;

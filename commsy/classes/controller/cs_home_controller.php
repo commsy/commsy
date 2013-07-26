@@ -65,11 +65,27 @@
 			    $entry = $entry_manager->getItem($id);
 				$return_array['title'] = $entry->getTitle();
 				$converter = $this->_environment->getTextConverter();
+				
 			   
 				$desc = '';
             if ( method_exists($entry,'getDescription') ) {
                $desc = $entry->getDescription();
             }
+            if(empty($desc)){
+            	if($item->getItemType() == 'discussion'){
+            		$discussion_article_manager = $this->_environment->getDiscussionArticleManager();
+            		$all_disc_entrys = $discussion_article_manager->getAllArticlesForItem($entry);
+            		$item = $all_disc_entrys->getFirst();
+//             		while($item){
+//             			// bla
+//             			$desc .= $item->getDescription();
+//             			$item = $all_disc_entrys->getNext();
+//             		}
+					$desc = $item->getDescription();
+            		unset($all_disc_entrys);
+            	}
+            }
+            
 				
 				if(!empty($desc)) {
 					$converter->setFileArray($this->getItemFileList());

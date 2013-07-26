@@ -476,6 +476,28 @@
 			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
 			$to_javascript['environment']['user_name'] = $current_user->getFullName();
 			
+			$current_portal_user = $this->_environment->getPortalUserItem();
+			// password expires soon alert
+			if($current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+				$start_date = new DateTime(getCurrentDateTimeInMySQL());
+				$since_start = $start_date->diff(new DateTime($current_portal_user->getPasswordExpireDate()));
+				$days = $since_start->d;
+				if($days == 0){
+					$days = 1;
+				}
+				if(isset($c_password_expiration_send_email_days) AND $days <= $c_password_expiration_send_email_days){
+					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+					$to_javascript['environment']['password_expire_soon'] = true;
+				} else if(!isset($c_password_expiration_send_email_days) AND $days <= 14){
+					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+					$to_javascript['environment']['password_expire_soon'] = true;
+				}
+			} else {
+				$to_javascript['environment']['password_expire_soon'] = false;
+			}
+			
+			
+			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();
@@ -492,6 +514,7 @@
 			// translations - should be managed elsewhere soon
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
 			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
+			
 
 			// dev
 			global $c_indexed_search;
@@ -541,7 +564,7 @@
 			{
 				if ( file_exists("version") )
 				{
-					$versionFromFile = file_get_contents("version");
+					$versionFromFile = trim(file_get_contents("version"));
 
 					/*
 					 * It is very important to replace " " whitespaces, otherwhise dojo shows some odd behaviour

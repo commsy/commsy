@@ -301,6 +301,8 @@ if ( empty($command) and empty($command_delete) ) {
             } else {
                $user->makeNoContactPerson();
             }
+            
+            
 
             ################################
             # FLAG: group room
@@ -345,6 +347,18 @@ if ( empty($command) and empty($command_delete) ) {
                $user->makeContactPerson();
             } else {
                $user->makeNoContactPerson();
+            }
+            
+            if($_POST['login_as'] == 1){
+            	$user->deactivateLoginAsAnotherUser();
+            } else {
+            	$user->unsetDeactivateLoginAsAnotherUser();
+            }
+            
+            if(!empty($_POST['days_interval'])){
+            	$user->setDaysForLoginAs($_POST['days_interval']);
+            } else if($_POST['days_interval'] == 0){
+            	$user->unsetDaysForLoginAs();
             }
 
             ################################

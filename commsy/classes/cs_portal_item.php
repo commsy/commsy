@@ -3135,6 +3135,18 @@ class cs_portal_item extends cs_guide_item {
    	
    }
    
+   public function setLockTimeInterval($seconds){
+   	$this->_addExtra('LOCK_INTERVAL', $seconds);
+   }
+   
+   public function getLockTimeInterval(){
+   	$retour = 0;
+   	if($this->_issetExtra('LOCK_INTERVAL')){
+   		$retour = $this->_getExtra('LOCK_INTERVAL');
+   	}
+   	return $retour;
+   }
+   
    public function isPasswordGenerationActive () {
    	$retour = false;
    	if($this->_issetExtra('PASSWORD_GENERATION')) {
