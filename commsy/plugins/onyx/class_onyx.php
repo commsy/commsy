@@ -455,9 +455,8 @@ class class_onyx extends cs_plugin {
 	    			} else {
 	    			   return new SoapFault('ERROR',$this->_title.': no data item found for file id (onyx test)');
 	    			}
-	    			
 	    		} else {
-	    			return new SoapFault('ERROR',$this->_title.': no link item found  for file id (onyx test)');
+	    			return new SoapFault('ERROR',$this->_title.': no link item found for file id (onyx test)');
 	    		}
     		} else {
     			return 1; // 1 = nothing saved
