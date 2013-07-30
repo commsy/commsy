@@ -487,6 +487,7 @@
 			{
 				$to_javascript['own']['id'] = $ownRoomItem->getItemId();
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+				$to_javascript['ownRoom']['withPortfolio'] = $own_room_item->getCSBarShowPortfolio();
 			}
 
 			// translations - should be managed elsewhere soon
