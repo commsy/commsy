@@ -367,7 +367,7 @@ class cs_user_detail_view extends cs_detail_view {
                )
            
          ) {
-      	if(!$current_user->isDeactivatedLoginAsAnotherUser()){
+      	if(!$current_user->isDeactivatedLoginAsAnotherUser() or $current_user->isTemporaryAllowedToLoginAs()){
       		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
       	} else {
       		$html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname()).'</span>'.BRLF;
@@ -492,7 +492,31 @@ class cs_user_detail_view extends cs_detail_view {
                $temp_array[] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_user_detail_view(362) ";
                break;
          }
+         $formal_data[] = $temp_array;
+         // Datenschutz expired password date
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_LOGIN_AS_ACTIV');
+         
+         if(!$item->isDeactivatedLoginAsAnotherUser()){
+         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+         } else if($item->isTemporaryAllowedToLoginAs()){
+         	$temp_array[] = $item->getTimestampForLoginAs();
+         } else {
+         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+         }
 
+         $formal_data[] = $temp_array;
+         
+         // Datenschutz expired password date
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_EXPIRED_PASSWORD');
+          
+         if($item->isPasswordExpired()){
+         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+         } else {
+         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+         }
+         
          $formal_data[] = $temp_array;
 
          if ($this->_environment->inCommunityRoom()) {

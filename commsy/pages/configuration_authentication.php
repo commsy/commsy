@@ -219,6 +219,13 @@ else {
                $auth_item->setTemporaryLock($_POST['temporary_lock']);
             }
             
+            if( isset($_POST['seconds_interval'])) {
+            	$portal_item = $environment->getCurrentPortalItem();
+            	$portal_item->setLockTimeInterval($_POST['seconds_interval']);
+            	$portal_item->save();
+            	unset($portal_item);
+            }
+            
             if( isset($_POST['temporary_minutes'])) {
             	$portal_item = $environment->getCurrentPortalItem();
             	$portal_item->setLockTime($_POST['temporary_minutes']);
@@ -234,22 +241,24 @@ else {
             }
             if( isset($_POST['password_expiration'])) {
             	$portal_item = $environment->getCurrentPortalItem();
-            	$portal_item->setPasswordExpiration($_POST['password_expiration']);
-            	$portal_item->save();
-            	
-            	// set a new expire date for all portal users
-            	// Datenschutz
-            	$portal_users = $portal_item->getUserList();
-            	$portal_user = $portal_users->getFirst();
-            	while ($portal_user){
-            		if ($_POST['password_expiration'] > 0){
-            			$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
-            		} else {
-            			$portal_user->unsetPasswordExpireDate();
-            		}
-            		$portal_user->save();
-            		
-            		$portal_user = $portal_users->getNext();
+            	if($portal_item->getPasswordExpiration() != $_POST['password_expiration']){
+	            	$portal_item->setPasswordExpiration($_POST['password_expiration']);
+	            	$portal_item->save();
+	            	
+	            	// set a new expire date for all portal users
+	            	// Datenschutz
+	            	$portal_users = $portal_item->getUserList();
+	            	$portal_user = $portal_users->getFirst();
+	            	while ($portal_user){
+	            		if ($_POST['password_expiration'] > 0){
+	            			$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+	            		} else {
+	            			$portal_user->unsetPasswordExpireDate();
+	            		}
+	            		$portal_user->save();
+	            		
+	            		$portal_user = $portal_users->getNext();
+	            	}
             	}
             	unset($portal_item);
             }

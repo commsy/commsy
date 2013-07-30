@@ -655,6 +655,7 @@ $message["COMMON_PAGETITLE_USER"]["en"] = "Members";
 $message["COMMON_PAGE_ENTRIES"]["en"] = "Max. items per page";
 $message["COMMON_PAGE_ENTRIES_ALL"]["en"] = "all";
 $message["COMMON_PASSWORD"]["en"] = "Password";
+$message["COMMON_PASSWORD_EXPIRE_ALERT"]["en"] = "Your password expires in %1 day(s). Please change your password.";
 $message["COMMON_PASSWORD_SECURE_MEDIUM"]["en"] = "allowed";
 $message["COMMON_PASSWORD_SECURE_STRONG"]["en"] = "strong";
 $message["COMMON_PASSWORD_SECURE_WEAK"]["en"] = "weak";

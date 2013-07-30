@@ -166,10 +166,106 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronCleanTempDirectory();
       $cron_array[] = $this->_cronUnlinkFiles();
       $cron_array[] = $this->_cronItemBackup();
+      $cron_array[] = $this->_cronTemporaryLoginAs();
       $cron_array[] = $this->_cronCheckPasswordExpiredSoon();
       $cron_array[] = $this->_cronCheckPasswordExpired();
       
       return $cron_array;
+   }
+   
+   function _cronTemporaryLoginAs() {
+   	$time_start = getmicrotime();
+   	$cron_array = array();
+   	$cron_array['title'] = 'Temporary login as expired';
+   	$cron_array['description'] = 'check if a temporary login is expired';
+   	$success = false;
+   	$translator = $this->_environment->getTranslationObject();
+   	
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_list = $user_manager->getUserTempLoginExpired();
+   	require_once 'classes/cs_mail.php';
+   	foreach ($user_list as $user) {
+   		if($user->getTimestampForLoginAs() <= getCurrentDateTimeInMySQL()) {
+   			$success = true;
+   			// unset login as timestamp
+   			$user->unsetDaysForLoginAs();
+   			$user->save();
+   			// send mail
+   			$mail = new cs_mail();
+   				
+   			$subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT');
+   			$to = $user->getEmail();
+   			//from
+   			$server_item = $this->_environment->getServerItem();
+   			$default_sender_address = $server_item->getDefaultSenderAddress();
+   			if (!empty($default_sender_address)) {
+   				$mail->set_from_email($default_sender_address);
+   			} else {
+   				$mail->set_from_email('@');
+   			}
+   			// get all portal moderators
+   			$current_context = $this->_environment->getCurrentContextItem();
+   			$mod_list = $current_context->getModeratorList();
+   			$cc_array = array();
+   			if (!$mod_list->isEmpty()) {
+   				$moderator_item = $mod_list->getFirst();
+   			
+   				while ($moderator_item) {
+   					$email = $moderator_item->getEmail();
+   					if (!empty($email)) {
+   						$cc_array[] = $email;
+   					}
+   			
+   					unset($email);
+   					$moderator_item = $mod_list->getNext();
+   				}
+   			}
+   			// make unique
+   			if (!empty($cc_array)) $cc_array = array_unique($cc_array);
+   			
+   			// build strings
+   			$cc_string = implode(",", $cc_array);
+   			
+   			if (!empty($cc_string)) {
+   				$mail->set_cc_to($cc_string);
+   			}
+   			
+   			unset($cc_string);
+   			
+   			
+   			//content
+   			$body = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_BODY', $user->getFullName());
+   			 
+   			$mail->set_subject($subject);
+   			$mail->set_message($body);
+   			$mail->set_to($to);
+   			$mail->setSendAsHTML();
+   			if ( $mail->send() ) {
+   				$cron_array['success'] = true;
+   				$cron_array['success_text'] = 'send mail to '.$to;
+   			} else {
+   				$cron_array['success'] = false;
+   				$cron_array['success_text'] = 'failed send mail to '.$to;
+   			}
+   		}
+   	}
+   	if($success){
+   		$cron_array['success'] = true;
+   		$cron_array['success_text'] = 'mails send';
+   	} else {
+   		$cron_array['success'] = true;
+   		$cron_array['success_text'] = 'nothing to do';
+   	}
+   	
+   	
+   	$time_end = getmicrotime();
+   	$time = round($time_end - $time_start,0);
+   	$cron_array['time'] = $time;
+   	
+   	unset($user_manager);
+   	unset($user_list);
+   	
+   	return $cron_array;
    }
    
    function _cronCheckPasswordExpired() {
@@ -211,7 +307,14 @@ class cs_server_item extends cs_guide_item {
    	  							$mail->set_from_email('@');
    	  						}
    	  						//content
-   	  						$body = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_BODY', $user->getFullName());
+   	  						$email_text_array = $portal_item->getEmailTextArray();
+   	  						if(isset($email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'])){
+   	  							$body = $email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'];;
+   	  							$body = str_replace('%1', (string)$user->getFullName(), $body[$this->_environment->_selected_language]);
+   	  							
+   	  						} else {
+   	  							$body = $translator->getEmailMessage('MAIL_BODY_PASSWORD_EXPIRATION', $user->getFullName());
+   	  						}
    	  			
    	  						$mail->set_subject($subject);
    	  						$mail->set_message($body);
@@ -290,7 +393,14 @@ class cs_server_item extends cs_guide_item {
    	  						}
    	  						
    	  						//content
-   	  						$body = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY',$user->getFullName(),$days);
+   	  						$email_text_array = $portal_item->getEmailTextArray();
+   	  						if(isset($email_text_array['EMAIL_PASSWORD_EXPIRATION_SOON_BODY'])){
+   	  							$body = $email_text_array['EMAIL_PASSWORD_EXPIRATION_SOON_BODY'];
+   	  							$body = str_replace('%1', (string)$user->getFullName(), $body[$this->_environment->_selected_language]);
+   	  							$body = str_replace('%2', (string)$days, $body);
+   	  						} else {
+   	  							$body = $translator->getEmailMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY', $user->getFullName(),$days);
+   	  						}
    	  							
    	  						$mail->set_subject($subject);
    	  						$mail->set_message($body);

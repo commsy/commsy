@@ -664,6 +664,7 @@ $message["COMMON_PAGETITLE_USER"]["de"] = "Personen";
 $message["COMMON_PAGE_ENTRIES"]["de"] = "Einträge pro Seite";
 $message["COMMON_PAGE_ENTRIES_ALL"]["de"] = "alle";
 $message["COMMON_PASSWORD"]["de"] = "Passwort";
+$message["COMMON_PASSWORD_EXPIRE_ALERT"]["de"] = "Ihr Passwort läuft in %1 Tag(en) ab. Bitte ändern Sie Ihr Passwort.";
 $message["COMMON_PASSWORD_SECURE_MEDIUM"]["de"] = "erlaubt";
 $message["COMMON_PASSWORD_SECURE_STRONG"]["de"] = "sicher";
 $message["COMMON_PASSWORD_SECURE_WEAK"]["de"] = "zu leicht";

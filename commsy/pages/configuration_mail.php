@@ -128,6 +128,10 @@ else {
             $message_tag = 'MAIL_BODY_ROOM_DELETE';
          } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_ROOM_OPEN') {
             $message_tag = 'MAIL_BODY_ROOM_OPEN';
+         } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON') {
+            $message_tag = 'MAIL_BODY_PASSWORD_EXPIRATION_SOON';
+         } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_PASSWORD_EXPIRATION') {
+            $message_tag = 'MAIL_BODY_PASSWORD_EXPIRATION';
          } else {
             include_once('functions/error_functions.php');
             trigger_error('choice of mail text lost',E_USER_WARNING);
@@ -196,11 +200,15 @@ else {
                 $message_tag = 'MAIL_BODY_USER_MAKE_CONTACT_PERSON';
              }elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON') {
                 $message_tag = 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON';
+             } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON') {
+                $message_tag = 'MAIL_BODY_PASSWORD_EXPIRATION_SOON';
+             } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_PASSWORD_EXPIRATION') {
+                $message_tag = 'MAIL_BODY_PASSWORD_EXPIRATION';
              }else {
                include_once('functions/error_functions.php');
                trigger_error('choice of mail text lost',E_USER_WARNING);
             }
-
+            
             $values = $_POST['text'];
             $values_for_form = $_POST['text'];
             $reset = false;

@@ -150,6 +150,9 @@ class cs_account_status_form extends cs_rubric_form {
       $this->_form->addHidden('lastlogin','');
       $this->_form->addHidden('user_id','');
       $this->_form->addHidden('status_old',$this->_status_old);
+      
+      $user = false;
+      $moderator = false;
 
       // content form fields
       $this->_form->addText('fullname_text',
@@ -170,9 +173,11 @@ class cs_account_status_form extends cs_rubric_form {
       switch ( $this->_status_message ){
          case 'USER_STATUS_MODERATOR':
             $tempMessage = $this->_translator->getMessage('USER_STATUS_MODERATOR');
+            $moderator = true;
             break;
          case 'USER_STATUS_USER':
             $tempMessage = $this->_translator->getMessage('USER_STATUS_USER');
+            $user = true;
             break;
          case 'USER_STATUS_REQUESTED':
             $tempMessage = $this->_translator->getMessage('USER_STATUS_REQUESTED');
@@ -207,6 +212,25 @@ class cs_account_status_form extends cs_rubric_form {
                                 $this->_translator->getMessage('ROOM_CONTACT'),
                                 ''
                                );
+      if($moderator){
+      	
+      	$this->_yes_no_array[0]['text'] = $this->_translator->getMessage('COMMON_YES');
+      	$this->_yes_no_array[0]['value'] = 1;
+      	$this->_yes_no_array[1]['text'] = $this->_translator->getMessage('COMMON_NO');
+      	$this->_yes_no_array[1]['value'] = 2;
+      	
+      	$this->_form->addRadioGroup('login_as',$this->_translator->getMessage('USER_LOGIN_AS'),'',$this->_yes_no_array,'','',true,'','','');
+      	$this->_form->addTextfield('days_interval','',$this->_translator->getMessage('USER_LOGIN_AS_DAYS'),'',3,10,false,'','','','','','','');
+      } else {
+      	
+      	$this->_yes_no_array[0]['text'] = $this->_translator->getMessage('COMMON_YES');
+      	$this->_yes_no_array[0]['value'] = 1;
+      	$this->_yes_no_array[1]['text'] = $this->_translator->getMessage('COMMON_NO');
+      	$this->_yes_no_array[1]['value'] = 2;
+      	
+      	$this->_form->addRadioGroup('login_as',$this->_translator->getMessage('USER_LOGIN_AS'),'',$this->_yes_no_array,'','',true,'','',true);
+      	$this->_form->addTextfield('days_interval','',$this->_translator->getMessage('USER_LOGIN_AS_DAYS'),'',3,10,false,'','','','','','',false);
+      }
 
       // buttons
       $this->_form->addButtonBar('option',
@@ -228,6 +252,13 @@ class cs_account_status_form extends cs_rubric_form {
          $this->_values['lastlogin']      = $this->_item->getLastlogin();
          $this->_values['user_id']        = $this->_item->getUserID();
          $this->_values['contact_person'] = $this->_item->isContact();
+         if($this->_item->isDeactivatedLoginAsAnotherUser()){
+         	$this->_values['login_as']		  = 1;
+         } else {
+         	$this->_values['login_as']		  = 2;
+         }
+         $this->_values['days_interval'] = 0;
+         
       } else {
          $this->_values = $this->_form_post;
       }
@@ -237,6 +268,7 @@ class cs_account_status_form extends cs_rubric_form {
      * this methods check the entered values
      */
      function _checkValues () {
+     	$return = true;
         //Don't loose last moderator by closing or downgrading to user
         if ( ( isset($this->_form_post['option'])
                and $this->_form_post['option'] == $this->_translator->getMessage('ACCOUNT_DELETE_BUTTON')
@@ -257,9 +289,11 @@ class cs_account_status_form extends cs_rubric_form {
               if ($moderator_item->getItemID() == $this->_form_post['iid']) {
                  $this->_error_array[] = $this->_translator->getMessage('ERROR_LAST_MODERATOR');
                  $this->_form->setFailure('status');
+                 $return = false;
               }
            }
         }
+        return $return;
      }
 }
 ?>

@@ -1862,5 +1862,22 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
+	
+	public function getUserTempLoginExpired(){
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".status = '3' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".extras LIKE '%LOGIN_AS_TMSP%'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
+	}
 }
 ?>

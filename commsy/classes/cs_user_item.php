@@ -2368,6 +2368,33 @@ class cs_user_item extends cs_item {
    	$this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
    }
    
+   function setDaysForLoginAs($days){
+   	$this->_addExtra('LOGIN_AS_TMSP', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function unsetDaysForLoginAs() {
+   	$this->_unsetExtra('LOGIN_AS_TMSP');
+   }
+   
+   function getTimestampForLoginAs(){
+   	$return = false;
+   	if($this->_issetExtra('LOGIN_AS_TMSP')){
+   		$return = $this->_getExtra('LOGIN_AS_TMSP');
+   	}
+   	return $return;
+   }
+   
+   function isTemporaryAllowedToLoginAs(){
+   	$return = false;
+   	if($this->_issetExtra('LOGIN_AS_TMSP')){
+   		if($this->_getExtra('LOGIN_AS_TMSP') >= getCurrentDateTimeInMySQL()){
+   			$return = true;
+   		}
+   	}
+   	return $return;
+   }
+  
+   
    
 }
 ?>

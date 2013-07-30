@@ -179,6 +179,18 @@ require([	"dojo/_base/declare",
 						});
 					}
 				}
+				// password expire soon alert to change password
+				if(this.from_php.environment.password_expire_soon) {
+					require(["dijit/Dialog"], function(Overlay) {
+						// create the dialog:
+						var myDialog = new dijit.Dialog({
+						    title: "Passwort läuft ab",
+						    content: "Ihr Passwort läuft demnächst ab. Bitte ändern Sie Ihr Passwort.",
+						    style: "width: 300px"
+						});
+						myDialog.show();
+					});
+				}
 				
 				// overlays
 				query("a.new_item_2, a.new_item, a.attachment, span#detail_assessment, div.cal_days_events a, div.cal_days_week_events a").forEach(function(node, index, arr) {
