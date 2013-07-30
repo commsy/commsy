@@ -38,6 +38,10 @@ define([	"dojo/_base/declare",
 				betweenThreshold:	5,
 				checkBoxes:			this.checkboxes,
 				onClick:			Lang.hitch(this, function(item, node, evt) {
+					if ( this.popup && this.popup.onTagSelected && item.item_id && item.item_id[0] )
+					{
+						this.popup.onTagSelected(item.item_id[0]);
+					}
 				}),
 				widget: {
 					type:			CheckBox,
@@ -59,15 +63,9 @@ define([	"dojo/_base/declare",
 				rootLabel:		"",
 
 				// event handling
-
 				onChildrenChange:	Lang.hitch(this, function(parent, newChildrenList) {
 					this.onChildrenChange(parent, newChildrenList);
-				})/*,
-
-				onDelete:	Lang.hitch(this, function(item) {
-					this.onDelete(item);
 				})
-				*/
 			});
 		},
 
@@ -83,12 +81,6 @@ define([	"dojo/_base/declare",
 
 				// add "+" and "rename" to all node labels
 				this.addCreateAndRenameToAllLabels();
-
-				/*
-				On(this.store, "New", Lang.hitch(this, function(newItem, parentInfo) {
-					this.onStoreNew(newItem, parentInfo);
-				}));
-				*/
 
 				On(this.store, "Set", Lang.hitch(this, function(item, attribute, oldValue, newValue) {
 					this.onStoreSet(item, attribute, oldValue, newValue);
@@ -115,10 +107,6 @@ define([	"dojo/_base/declare",
 					})
 				);
 			}
-		},
-
-		onStore: function(newItem, parentInfo) {
-			//console.log("new");
 		},
 
 		onStoreSet: function(item, attribute, oldValue, newValue) {
@@ -253,7 +241,7 @@ define([	"dojo/_base/declare",
 
 		addCreateAndRenameToAllLabels: function() {
 			// create a link after all labels and connect event handling
-			dojo.forEach(Query("div#popup_tabcontent span.dijitTreeLabel"), Lang.hitch(this, function(spanNode, index, arr) {
+			dojo.forEach(Query("div#popup_tabcontent span.dijitTreeLabel, div.portfolioEditWidget span.dijitTreeLabel"), Lang.hitch(this, function(spanNode, index, arr) {
 
 				// check if link wasn't already created
 				var nodeCreatorNode = Query("a.nodeCreator", spanNode.parentNode)[0];
@@ -264,32 +252,23 @@ define([	"dojo/_base/declare",
 						href:			"#",
 						innerHTML:		"| Erstellen"
 					}, spanNode, "after");
-
-						/*DomConstruct.create("img", {
-							src:		this.from_php.template.tpl_path + "img/btn_add_new_tag.gif"
-						}, createLinkNode, "last");*/
+					
+					var renameLinkNode = null;
+					var deleteLinkNode = null;
 
 					// check if not root node
 					if (DomAttr.get(spanNode, "innerHTML") !== "ROOT" && DomAttr.get(spanNode, "innerHTML") !== "") {
-						var renameLinkNode = DomConstruct.create("a", {
+						renameLinkNode = DomConstruct.create("a", {
 							className:		"nodeCreator",
 							href:			"#",
 							innerHTML:		" | Bearbeiten"
 						}, createLinkNode, "after");
 
-							/*DomConstruct.create("img", {
-								src:		this.from_php.template.tpl_path + "img/btn_edit_rc.gif"
-							}, renameLinkNode, "last");*/
-
-						var deleteLinkNode = DomConstruct.create("a", {
+						deleteLinkNode = DomConstruct.create("a", {
 							className:		"nodeCreator",
 							href:			"#",
 							innerHTML:		" | Löschen"
 						}, renameLinkNode, "after");
-
-							/*DomConstruct.create("img", {
-								src:		this.from_php.template.tpl_path + "img/btn_del_tag.gif"
-							}, deleteLinkNode, "last");*/
 					}
 
 					// get widget id from appropriated dijitTreeNode

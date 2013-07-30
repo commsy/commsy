@@ -7,13 +7,16 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/on",
         	"dojo/query",
-        	"dojo/topic"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query, Topic) {
+        	"dojo/topic",
+        	"dojo/dnd/Source"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query, Topic, Source) {
 
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
 		widgetHandler:		null,
 
 		itemId:				null,
+		
+		dndSource:			null,
 
 		currentPage:		1,
 		maxPage:			1,
@@ -43,14 +46,23 @@ define([	"dojo/_base/declare",
 			Topic.subscribe("newOwnRoomItem", Lang.hitch(this, function(object) {
 				this.updateList();
 			}));
+			
+			// create dnd source
+			this.dndSource = new Source(this.itemListNode, {
+				creator:	Lang.hitch(this, this.createDnDItem),
+				accept:		[],
+				copyOnly:	true,
+				selfAccept:	false
+			});
 
 			// update list
 			this.updateList();
 		},
 
 		updateList: function() {
-			// empty list
+			// empty list and dnd
 			DomConstruct.empty(this.itemListNode);
+			this.dndSource.selectAll().deleteSelectedNodes();
 
 			this.AJAXRequest("widget_stack", "getListContent", {
 					search:					this.search.toLowerCase(),
@@ -59,79 +71,11 @@ define([	"dojo/_base/declare",
 					buzzwordRestrictions:	dojo.map(this.restrictions.buzzwords, function(item) { return item.id; }),
 					tagRestrictions:		dojo.map(this.restrictions.tags, function(item) { return item.id; })
 				},
-				Lang.hitch(this, function(response) {
-					// fill list
+				Lang.hitch(this, function(response) {					
+					// create dnd items
 					dojo.forEach(response.items, Lang.hitch(this, function(item, index, arr) {
-
-						// create list entries
-						var rowNode = DomConstruct.create("div", {
-							className:		(index % 2 == 0) ? "row_even even_sep_search" : "row_odd odd_sep_search"
-						}, this.itemListNode, "last");
-
-							var firstColumnNode = DomConstruct.create("div", {
-								className:		"column_280"
-							}, rowNode, "last");
-
-								var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
-
-									var aNode = DomConstruct.create("a", {
-										"id":		"listItem" + item.itemId,
-										className:	"stack_link",
-										href:		"#",
-										innerHTML:	item.title
-									}, pNode, "last");
-
-							var secondColumnNode = DomConstruct.create("div", {
-								className:		"column_45"
-							}, rowNode, "last");
-
-								var pNode = DomConstruct.create("p", {}, secondColumnNode, "last");
-
-									if (item.fileCount > 0) {
-										DomConstruct.create("a", {
-											className:		"attachment",
-											href:			"#",
-											innerHTML:		item.fileCount
-										}, pNode, "last");
-									}
-
-							var thirdColumnNode = DomConstruct.create("div", {
-								className:		"column_65"
-							}, rowNode, "last");
-
-								var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
-
-									DomConstruct.create("img", {
-										src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
-										title:		item.image.text
-									}, pNode, "last");
-
-							var fourthColumnNode = DomConstruct.create("div", {
-								className:		"column_90"
-							}, rowNode, "last");
-
-								DomConstruct.create("p", {
-									innerHTML:		item.modificationDate
-								}, fourthColumnNode, "last");
-							
-							/*
-							var fifthColumnNode = DomConstruct.create("div", {
-								className:		"column_155"
-							}, rowNode, "last");
-
-								DomConstruct.create("p", {
-									innerHTML:		item.creator
-								}, fifthColumnNode, "last");
-							*/
-
-							DomConstruct.create("div", {
-								className:		"clear"
-							}, rowNode, "last");
-
-						require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
-							var handler = new ClickPopup();
-							handler.init(aNode, { iid: item.itemId, module: item.module, contextId: this.itemId, versionId: item.versionId });
-						}));
+						item.index = index;
+						this.dndSource.insertNodes(false, [{data: item}]);
 					}));
 
 					// update max page
@@ -142,6 +86,74 @@ define([	"dojo/_base/declare",
 					this.maxPageNode.innerHTML = this.maxPage;
 				})
 			);
+		},
+		
+		createDnDItem: function(data, hint)
+		{
+			var item = data.data;
+			var index = item.index;
+			
+			// create list entries
+			var rowNode = DomConstruct.create("div", {
+				className:		(index % 2 == 0) ? "row_even even_sep_search" : "row_odd odd_sep_search"
+			});
+
+				var firstColumnNode = DomConstruct.create("div", {
+					className:		"column_280"
+				}, rowNode, "last");
+
+					var pNode = DomConstruct.create("p", {}, firstColumnNode, "last");
+
+						var aNode = DomConstruct.create("a", {
+							"id":		"listItem" + item.itemId,
+							className:	"stack_link",
+							href:		"#",
+							innerHTML:	item.title
+						}, pNode, "last");
+
+				var secondColumnNode = DomConstruct.create("div", {
+					className:		"column_45"
+				}, rowNode, "last");
+
+					var pNode = DomConstruct.create("p", {}, secondColumnNode, "last");
+
+						if (item.fileCount > 0) {
+							DomConstruct.create("a", {
+								className:		"attachment",
+								href:			"#",
+								innerHTML:		item.fileCount
+							}, pNode, "last");
+						}
+
+				var thirdColumnNode = DomConstruct.create("div", {
+					className:		"column_65"
+				}, rowNode, "last");
+
+					var pNode = DomConstruct.create("p", {}, thirdColumnNode, "last");
+
+						DomConstruct.create("img", {
+							src:		this.from_php.template.tpl_path + "img/netnavigation/" + item.image.img,
+							title:		item.image.text
+						}, pNode, "last");
+
+				var fourthColumnNode = DomConstruct.create("div", {
+					className:		"column_90"
+				}, rowNode, "last");
+
+					DomConstruct.create("p", {
+						innerHTML:		item.modificationDate
+					}, fourthColumnNode, "last");
+
+				DomConstruct.create("div", {
+					className:		"clear"
+				}, rowNode, "last");
+
+			require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
+				var handler = new ClickPopup();
+				handler.init(aNode, { iid: item.itemId, module: item.module, contextId: this.itemId, versionId: item.versionId });
+			}));
+			
+			return { node: rowNode, data: data };
 		},
 
 		addBuzzwordRestriction: function(buzzwordId, buzzwordName) {

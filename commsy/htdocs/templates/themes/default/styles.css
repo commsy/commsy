@@ -1502,11 +1502,11 @@ div.widgetArea .row_odd {
 
 
 .odd_sep_search {
-    background: url(img/sep_search.gif) repeat-y #F5F5F5;
+    background: url(img/sep_search.gif) repeat-y #F5F5F5 !important;
     }
 
 .even_sep_search {
-    background: url(img/sep_search.gif) repeat-y #FFF;
+    background: url(img/sep_search.gif) repeat-y #FFF !important;
     }
 
 .odd_sep_disdetail {
@@ -4448,6 +4448,10 @@ widgets
 	width: 208px;
 }
 
+.widget_280 {
+	width: 280px;
+}
+
 .widget_325 {
 	width: 325px;
 }
@@ -4455,6 +4459,10 @@ widgets
 .widget_500{
 	width:500px;
 	}
+
+.widget_620 {
+	width: 620px;
+}
 
 .widget_694 {
 	width: 694px;
@@ -5104,4 +5112,26 @@ Portfolio
 .limeSurveyDelete:hover
 {
 	text-decoration: none;
+}
+
+div#previewPortfolio {
+    overflow-x: scroll;
+}
+
+div#previewPortfolio td.portfolioTagName {
+	font-weight: bold;
+}
+
+div#previewPortfolio tr {
+    vertical-align: top;
+}
+
+div#previewPortfolio th,
+div#previewPortfolio td {
+    min-width: 60px;
+}
+
+div#previewPortfolio ul {
+    border: 1px dotted;
+    min-height: 20px;
 }
