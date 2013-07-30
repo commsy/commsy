@@ -29,7 +29,8 @@ class class_onyx extends cs_plugin {
    private $_player_url_wsdl = NULL;
    private $_player_url_run = NULL;
    private $_player_lms_key = NULL;
-    
+   private $_proxy_use = NULL;
+       
    /** constructor
     * the only available constructor
     *
@@ -46,6 +47,7 @@ class class_onyx extends cs_plugin {
       $this->_player_url_wsdl = $this->_player_url_base.'/services?wsdl'; 
       $this->_player_url_run = $this->_player_url_base.'/onyxrun'; 
       $this->_player_lms_key = $this->_getConfigValueFor($this->_identifier.'_lms_name');
+      $this->_proxy_use = $this->_getConfigValueFor($this->_identifier.'_proxy');
    }
 
    public function getDescription () {
@@ -104,6 +106,21 @@ class class_onyx extends cs_plugin {
                                    10,
                                    true,
                                    false);
+            $proxy_host = $this->_environment->getConfiguration('c_proxy_ip');
+            $proxy_port = $this->_environment->getConfiguration('c_proxy_port');
+            if ( !empty($proxy_host)
+                 and !empty($proxy_port)
+               ) {
+               $retour->combine();
+               $retour->addCheckbox( $this->_identifier.'_proxy',
+                                     -1,
+                                     false,
+                                     $this->_translator->getMessage('ONYX_CONFIG_FORM_TITLE_CONFIG_PROXY'),
+                                     $this->_translator->getMessage('ONYX_CONFIG_FORM_TITLE_CONFIG_DESC_PROXY',$proxy_host.':'.$proxy_port),
+                                     false,
+                                     false
+                                   );
+            }
          }
       } elseif ( $type == 'save_config'
                  and !empty($values['current_context_item'])
@@ -114,6 +131,11 @@ class class_onyx extends cs_plugin {
          }
          if ( isset( $values[$this->_identifier.'_lms_name'] ) ) {
             $config_array[$this->_identifier.'_lms_name'] = $values[$this->_identifier.'_lms_name'];
+         }
+         if ( isset( $values[$this->_identifier.'_proxy'] ) ) {
+            $config_array[$this->_identifier.'_proxy'] = $values[$this->_identifier.'_proxy'];
+         } else {
+            $config_array[$this->_identifier.'_proxy'] = '';
          }
          $values['current_context_item']->setPluginConfigForPlugin($this->_identifier,$config_array);
       } elseif ( $type == 'load_values_item'
@@ -126,6 +148,9 @@ class class_onyx extends cs_plugin {
          }
          if ( !empty($config[$this->_identifier.'_lms_name']) ) {
             $retour[$this->_identifier.'_lms_name'] = $config[$this->_identifier.'_lms_name'];
+         }
+         if ( !empty($config[$this->_identifier.'_proxy']) ) {
+            $retour[$this->_identifier.'_proxy'] = $config[$this->_identifier.'_proxy'];
          }
       }
       return $retour;
@@ -284,10 +309,24 @@ class class_onyx extends cs_plugin {
          if ( class_exists('SoapClient') ) {            
             $options = array("trace" => 1, "exceptions" => 0, 'user_agent'=>'PHP-SOAP/php-version', 'connection_timeout' => 150);
             if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
-              $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+               if ( isset($this->_proxy_use)
+                    and !empty($this->_proxy_use)
+                    and $this->_proxy_use == '-1'
+                  ) {
+                  // no proxy use
+               } else {
+                  $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+               }
             }
             if ( $this->_environment->getConfiguration('c_proxy_port') ) {
-              $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+               if ( isset($this->_proxy_use)
+                    and !empty($this->_proxy_use)
+                    and $this->_proxy_use == '-1'
+                  ) {
+                  // no proxy use
+               } else {
+                  $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+               }
             }
             $this->_player = new SoapClient($this->_player_url_wsdl, $options);
          } else {

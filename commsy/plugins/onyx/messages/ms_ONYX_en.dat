@@ -2,6 +2,7 @@
 $message["ONYX_CONFIG_FORM_LMS_NAME"]["de"] = "LMS key for Onyx";
 $message["ONYX_CONFIG_FORM_TITLE_CONFIG"]["en"] = "configuration";
 $message["ONYX_CONFIG_FORM_TITLE_CONFIG_DESC"]["en"] = "configuration options for the plugin %1";
+$message["ONYX_CONFIG_FORM_TITLE_CONFIG_DESC_PROXY"]["en"] = "use NOT proxy %1";
 $message["ONYX_CONFIG_FORM_TITLE_URL"]["en"] = "url to player";
 $message["ONYX_DESCRIPTION"]["en"] = "With this plugin you can show self tests (QTI standard) with the onxy webplayer.";
 $message["ONYX_ERROR_ID_LOST"]["en"] = "Error: Could not load the test. Please close the window and retry.";
