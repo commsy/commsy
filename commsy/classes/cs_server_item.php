@@ -480,7 +480,7 @@ class cs_server_item extends cs_guide_item {
    	// überprüfen ob Mails verschickt werden müssen
    	
    	
-   	break;
+   	#break;
    	if($success){
    		$cron_array['success'] = true;
    		$cron_array['success_text'] = 'mails send';
