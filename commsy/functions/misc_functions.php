@@ -625,6 +625,7 @@ function isURLValid () {
         $module != 'campus_search' and
    		$module != 'search' and
         $module != 'agb' and
+        $module != 'agbroom' and
 
         // project room
         $module != 'project' and
@@ -793,6 +794,7 @@ function isURLValid () {
          $funct != 'portalupload' and
          $funct != 'scribd' and
          $funct != 'datasecurity' and
+         $funct != 'inactive' and
 
          $funct != 'account_options' and
          $funct != 'structure_options' and
