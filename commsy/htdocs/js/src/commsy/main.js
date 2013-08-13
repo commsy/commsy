@@ -75,9 +75,10 @@ require([	"dojo/_base/declare",
 				
 				// widget popups
 				var aStackNode = query("a#tm_stack")[0];
+				var widgetManager = this.getWidgetManager();
 				if (aStackNode) {
 					require(["commsy/popups/ToggleStack"], function(StackPopup) {
-						new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
+						new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0], widgetManager);
 					});
 				}
 				

@@ -284,11 +284,14 @@ function getPortfolioTags($portfolioId) {
   			" . $this->addDatabasePrefix("tag") . " AS tag
   		ON
   			tag_portfolio.t_id = tag.item_id
+  		LEFT JOIN
+  			" . $this->addDatabasePrefix("tag2tag") . " AS tag2tag
+  	    ON
+  			tag.item_id = tag2tag.to_item_id
   		WHERE
   			tag_portfolio.p_id = '" . encode(AS_DB, $portfolioId) . "'
   		ORDER BY
-  			tag_portfolio.`row`,
-  			tag_portfolio.`column`
+  			tag2tag.sorting_place
   	";
   	$result = $this->_db_connector->performQuery($query);
   	 

@@ -97,35 +97,56 @@ define(
 			this.inherited(arguments);
 			
 			// insert tree
-			require(["commsy/PortfolioTree"], Lang.hitch(this, function(PortfolioTree)
-			{
-				this.tree = new PortfolioTree(
-				{
+			require(["commsy/EditTree"], Lang.hitch(this, function(EditTree)
+			{	
+				this.tree = new EditTree({
 					followUrl:		false,
 					checkboxes:		false,
 					room_id:		this.from_php.ownRoom.id,
 					expanded:		false,
-					item_id:		this.tag_id,
+					item_id:		this.item_id,
 					popup:			this
 				});
+				
+				/*
+				var instance = this;
+				declare.safeMixin(this.tree, {
+					deleteTagEntry: function(itemId)
+					{
+						DomAttr.set(instance.submitButtonNode, 'disabled', 'disabled');
+						instance.selectedTagId = null;
+						
+						this.inherited(arguments);
+					}
+				});
+				*/
 				
 				this.tree.setupTree(this.treeNode, Lang.hitch(this, function(tree)
 				{
 					// if in edit mode, expand the tree and select the tag we are editing
-					if ( this.tagId !== null )
-					{
+					if ( this.tagId !== null ) {
 						var pathToTag = tree.buildPath(this.tagId);
-						tree.tree.set("paths", [pathToTag]);
+						tree.tree.set("paths", [pathToTag]).then(function()
+						{
+							if (tree.addCreateAndRenameToAllLabels) {
+								tree.addCreateAndRenameToAllLabels();
+							}
+						});
 						
 						DomAttr.remove(this.submitButtonNode, "disabled");
 						this.selectedTagId = this.tagId;
+					} else {
+						if (tree.addCreateAndRenameToAllLabels) {
+							On(tree.tree, "open", Lang.hitch(this, function(item, node) {
+								tree.addCreateAndRenameToAllLabels();
+							}));
+						}
 					}
 				}));
 			}));
 			
 			// if in edit mode
-			if ( this.tagId !== null )
-			{
+			if ( this.tagId !== null ) {
 				// add delete button
 				var deleteButtonNode = DomConstruct.create("input",
 				{
