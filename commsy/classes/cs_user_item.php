@@ -1801,7 +1801,7 @@ class cs_user_item extends cs_item {
       return $value;
    }
 
-   function deleteAllEntriesOfUser(){
+   function deleteAllEntriesOfUser($inactivity = false){
 
    	// datenschutz: overwrite or not (03.09.2012 IJ)
    	$overwrite = true;
@@ -1822,6 +1822,7 @@ class cs_user_item extends cs_item {
          $tag_manager = $this->_environment->getTagManager();
          $todo_manager = $this->_environment->getToDoManager();
          $step_manager = $this->_environment->getStepManager();
+         
 
          // replace users entries with the standart message for deleted entries
          $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
@@ -1836,7 +1837,17 @@ class cs_user_item extends cs_item {
          	$tag_manager->deleteTagsOfUser($this->getItemID());
    		 }
          $step_manager->deleteStepsOfUser($this->getItemID());
+         
+         
    	}
+   	$room_manager = $this->_environment->getRoomManager();
+   	$room_manager->deleteRoomOfUser($this->getItemID());
+//    	if($inactivity){
+//    		// delete rooms if the user that will be deleted is member only 
+//    		$room_manager = $this->_environment->getRoomManager();
+   		
+//    		pr($room_manager->getRelatedRoomListForUser);
+//    	}
    }
 
    function setAGBAcceptance () {
@@ -2244,7 +2255,34 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    }
-   // Datum übergeben, für zeitliche Sperrung der Kennung
+   
+   function setLock($days){
+   	include_once('functions/date_functions.php');
+   	$this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function getLock(){
+   	$retour = '';
+   	if ( $this->_issetExtra('LOCK') ) {
+   		$retour = $this->_getExtra('LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function isLocked(){
+   	$retour = false;
+   	if( $this->_issetExtra('LOCK')){
+   		include_once('functions/date_functions.php');
+   		$date = $this->_getExtra('LOCK');
+   		if(getCurrentDateTimeInMySQL() > $date){
+   			$retour = false;
+   		} else {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
    function setTemporaryLock () {
    	include_once('functions/date_functions.php');
    	$lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
@@ -2326,7 +2364,12 @@ class cs_user_item extends cs_item {
    }
    
    function setPasswordExpireDate($days) {
-   	$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
+   	if($days == 0){
+   		$this->_setValue('expire_date', 'NULL');
+   	} else {
+   		$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
+   	}
+   	
    	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
    }
    
@@ -2393,6 +2436,38 @@ class cs_user_item extends cs_item {
    	}
    	return $return;
    }
+   
+   function setMailSendBeforeLock(){
+   	$this->_addExtra('MAIL_SEND_LOCK', '1');
+   }
+   
+   function unsetMailSendBeforeLock(){
+   	$this->_unsetExtra('MAIL_SEND_LOCK');
+   }
+   
+   function getMailSendBeforeLock(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_LOCK')){
+   		$retour = $this->_getExtra('MAIL_SEND_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function setMailSendBeforeDelete(){
+   	$this->_addExtra('MAIL_SEND_DELETE', '1');
+   }
+   
+   function unsetMailSendBeforeDelete(){
+   	$this->_unsetExtra('MAIL_SEND_DELETE');
+   }
+   
+   function getMailSendBeforeDelete(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_DELETE')){
+   		$retour = $this->_getExtra('MAIL_SEND_DELETE');
+   	}
+   	return $retour;
+   	}
   
    
    

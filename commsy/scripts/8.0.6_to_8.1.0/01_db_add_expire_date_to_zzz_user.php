@@ -3,7 +3,9 @@
 //
 // Release $Name$
 //
-// Copyright (c)2012 Iver Jackewitz
+// Copyright (c)2002-2007 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
 //
 //    This file is part of CommSy.
 //
@@ -20,19 +22,16 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// data security (in german "Datenschutz")
+// headline
+$this->_flushHeadline('db: add expire_date to user table');
 
-// overwrite entries with "overwritten because of data security"
-// when deleting a user
-// default = false
-// do nothing = true
-// set flag = flag
-$c_datenschutz_disable_overwriting = true;
+$success = true;
 
-// data security expiration email
-$c_password_expiration_send_email_days = '14';
+if ( !$this->_existsIndex('user','expire_date') ) {
+   $sql = "ALTER TABLE zzz_user ADD expire_date DATETIME DEFAULT NULL;";
+   $success = $success AND $this->_select($sql);
+}
 
-// data security
-$c_default_value_login_as_xy_for_new_moderator = true;
 
+$this->_flushHTML(BRLF);
 ?>

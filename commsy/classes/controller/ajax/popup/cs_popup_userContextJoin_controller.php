@@ -29,11 +29,26 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		      $room_item = $room_manager->getItem($form_data['iid']);
 		      $current_item_id = $form_data['iid'];
 		      $translator = $this->_environment->getTranslationObject();
+		      $portal_item = $this->_environment->getCurrentPortalItem();
+		      $agb_flag = false;
+		      
+		      if($portal_item->withAGBDatasecurity()){
+				if($room_item->getAGBStatus()){
+					if($form_data['agb']){
+						$agb_flag = true;
+					} else {
+						$agb_flag = false;
+					}
+				}
+			  } else {
+			  	$agb_flag = false;
+			  }
 
 		      // build new user_item
-		      if ( !$room_item->checkNewMembersWithCode()
+		      if ( (!$room_item->checkNewMembersWithCode()
 		      or ( $room_item->getCheckNewMemberCode() == $form_data['code'])
 		      or ( $room_item->getCheckNewMemberCode() and !empty($form_data['description_user']))
+		      			) and $agb_flag
 		      ) {
 		         $current_user = $this->_environment->getCurrentUserItem();
 		         $private_room_user_item = $current_user->getRelatedPrivateRoomUserItem();
@@ -244,6 +259,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		         }
 		      } elseif ( $room_item->checkNewMembersWithCode()
 		      and $room_item->getCheckNewMemberCode() != $form_data['code']
+		      and $agb_flag
 		      ) {
 		         $account_mode = 'member';
 		         $error = 'code';
@@ -265,6 +281,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 	public function initPopup($item, $data) {
 		$current_user = $this->_environment->getCurrentUserItem();
 		$portal_item = $this->_environment->getCurrentPortalItem();
+		$translator = $this->_environment->getTranslationObject();
 
 		// user information
 		$user_information = array();
@@ -276,7 +293,21 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		if($item->checkNewMembersWithCode()){
 		   $room_information['check_with_code'] = true;
 		}
+		if($portal_item->withAGBDatasecurity()){
+			if($item->getAGBStatus() == 1){
+				$agb_text = $item->getAGBTextArray();
+				$room_information['agb_text'] = $agb_text[strtoupper($translator->_selected_language)];
+			}
+		}
 		$this->_popup_controller->assign('popup', 'room', $room_information);
+		
+		// agb Datenschutz
+		if($portal_item->withAGBDatasecurity()){
+			if($item->getAGBStatus() == 1){
+				$agb_information['agb_datasecurity'] = true;
+			}
+		}
+		$this->_popup_controller->assign('popup', 'agb', $agb_information);
 	}
 
 	

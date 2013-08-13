@@ -35,17 +35,19 @@ define([	"dojo/_base/declare",
 			var context_id = customObject.context_id;
 			var action = customObject.action;
 			var description_user = customObject.description_user;
+			var agb = customObject.agb;
 			
 			// setup data to send via ajax
 			var search = {
 				tabs: [],
 				nodeLists: [
 				   { query: query("textarea[name='form_data[description_user]']", this.contentNode) },
+				   { query: query("input[name='form_data[agb]']", this.contentNode) },
 				   { query: query("input[name='form_data[code]']", this.contentNode) }
 				]
 			};
 			
-			this.submit(search,  { part: part, user_id: user_id, context_id: context_id, action: action, description_user: description_user });
+			this.submit(search,  { part: part, user_id: user_id, context_id: context_id, action: action, description_user: description_user, agb: agb });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {

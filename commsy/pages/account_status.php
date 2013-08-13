@@ -343,6 +343,7 @@ if ( empty($command) and empty($command_delete) ) {
 
          } elseif ( $status == 'moderator' ) {
             $user->makeModerator();
+            
             if (!empty($_POST['contact_person'])) {
                $user->makeContactPerson();
             } else {
@@ -353,6 +354,11 @@ if ( empty($command) and empty($command_delete) ) {
             	$user->deactivateLoginAsAnotherUser();
             } else {
             	$user->unsetDeactivateLoginAsAnotherUser();
+            }
+            // deactivate by default the login as feature
+            global $c_default_value_login_as_xy_for_new_moderator;
+            if(!$c_default_value_login_as_xy_for_new_moderator){
+            	$user->deactivateLoginAsAnotherUser();
             }
             
             if(!empty($_POST['days_interval'])){

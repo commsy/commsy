@@ -1010,6 +1010,7 @@ class cs_page_guide_view extends cs_page_view {
    function _getRoomForm($item, $mode){
      $html ='';
      $current_user = $this->_environment->getCurrentUser();
+     $current_context = $this->_environment->getCurrentContextItem();
      // Person ist User und will Mitglied werden
      if ($mode=='member' and $current_user->isUser()) {
         $translator = $this->_environment->getTranslationObject();
@@ -1075,10 +1076,27 @@ class cs_page_guide_view extends cs_page_view {
            if ( isset($get_params['error']) and !empty($get_params['error']) ) {
               $temp_array[0] = $this->_translator->getMessage('COMMON_ATTENTION').': ';
               $temp_array[1] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE_ERROR');
+              if($_GET['error'] == 'agb'){
+              	$temp_array[1] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_AGB_ERROR');
+              }
               $formal_data[] = $temp_array;
            }
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
+           
+           if($item->getAGBStatus()){
+           	$text_array = $item->getAGBTextArray();
+           	$lang = strtoupper($this->_translator->_selected_language);
+           
+           	$usage_info = $text_array[$lang];
+           
+           	$temp_array[1] .= BRLF;
+           	$temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	$temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	$temp_array[1] .= BRLF;
+           
+           	$temp_array[1] .= $usage_info;
+           }
            $formal_data[] = $temp_array;
 
          $temp_array = array();
@@ -1109,6 +1127,21 @@ class cs_page_guide_view extends cs_page_view {
               $value = str_replace('%20',' ',$value);
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
+           // if code is set for room
+        if($item->getAGBStatus()){
+           	  $text_array = $item->getAGBTextArray();
+           	  $lang = strtoupper($this->_translator->_selected_language);
+           	  
+           	  $usage_info = $text_array[$lang];
+           	
+           	  $temp_array[1] .= BRLF;
+           	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	  $temp_array[1] .= BRLF;
+           	  
+           	  $temp_array[1] .= $usage_info;
+           }
+           
            $formal_data[] = $temp_array;
 
         } else {
@@ -1120,6 +1153,22 @@ class cs_page_guide_view extends cs_page_view {
               $value = str_replace('%20',' ',$value);
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
+
+           if($item->getAGBStatus()){
+           	  $toggle_id = rand(0,1000000);
+           	  $text_array = $item->getAGBTextArray();
+           	  $lang = strtoupper($this->_translator->_selected_language);
+           	  
+           	  $usage_info = $text_array[$lang];
+           	
+           	  $temp_array[1] .= BRLF;
+           	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	  $temp_array[1] .= BRLF;
+           	  $temp_array[1] .= $html;
+           	  $temp_array[1] .= $usage_info;
+           }
+           
            $formal_data[] = $temp_array;
         }
 

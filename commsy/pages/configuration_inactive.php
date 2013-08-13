@@ -64,12 +64,12 @@ if ($current_user->isGuest()) {
    $command = 'error';
 }
 
-if ($command != 'error') { // only if user is allowed to edit datasecurity
+if ($command != 'error') { // only if user is allowed to edit inactive
 
    // include form
    $class_params= array();
    $class_params['environment'] = $environment;
-   $form = $class_factory->getClass(CONFIGURATION_DATASECURITY_FORM,$class_params);
+   $form = $class_factory->getClass(CONFIGURATION_INACTIVE_FORM,$class_params);
    unset($class_params);
    $form->setItem($context_item);
    // display form
@@ -81,79 +81,25 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
    // Save item
    if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
       
-   	if($context_item->isServer()){
-   		  if(!empty($_POST['log_ip'])){
-   		  	if($_POST['log_ip'] == 1){
-   		  		$log_manager = $environment->getLogManager();
-   		  		$log_manager->hideAllLogIP();
-   		  		$log_archive_manager = $environment->getLogArchiveManager();
-   		  		$log_archive_manager->hideAllLogArchiveIP();
-   		  		unset($log_archive_manager);
-   		  		unset($log_manager);
-   		  		$context_item->setWithLogIPCover();
-   		  	} else {
-   		  		$context_item->setWithoutLogIPCover();
-   		  	}
-   		  }
-   		  
-   		  
-   		  
-	   	  if(!empty($_POST['log_delete_interval'])){
-	   	  	$log_delete_interval = $_POST['log_delete_interval'];
-	   	  	
-	   	  } else {
-	   	  	$log_delete_interval = 50;
-	   	  }
-	   	  
-	      $context_item->setLogDeleteInterval($log_delete_interval);
-	
-	      if(isset($_POST['portal']) AND $_POST['portal'] != -1){
-	      	$portal_manager = $environment->getPortalManager();
-	      	$portal = $portal_manager->getItem($_POST['portal']);
-	      	
-	      	$logarchive_manager = $environment->getLogArchiveManager();
-	      	
-	      	$room_list = $portal->getRoomList();
-	      	 
-	      	if ( !$room_list->isEmpty() ) {
-	      		$room = $room_list->getFirst();
-	      		while ($room) {
-	      			if(isset($_POST['ROOM_'.$room->getItemID()]) AND !empty($_POST['ROOM_'.$room->getItemID()])){
-	      				if($_POST['ROOM_'.$room->getItemID()] == $room->getItemID()){
-	      					// delete log data from rooms
-	      					$logarchive_manager->deleteByContextID($room->getItemID());
-	      				}
-	      			}
-	      			$room = $room_list->getNext();
-	      		}
-	      	}
-	      }
-	      unset($portal_manager);
-	      unset($logarchive_manager);
-	      
-      } else if($context_item->isPortal()){
-      	if(!empty($_POST['hide_accountname'])){
-      		$hide_accountname = $_POST['hide_accountname'];
-      	} else {
-      		#$hide_accountname = 1;
+   	if($context_item->isPortal()){
+   		if(!empty($_POST['overwrite_content'])){
+   			$context_item->setInactivityOverwriteContent($_POST['overwrite_content']);
+   		}
+   		
+      	if(!empty($_POST['lock_user'])){
+      		$context_item->setInactivityLockDays($_POST['lock_user']);
       	}
       	
-      	if($hide_accountname == 2){
-      		$context_item->unsetHideAccountname();
-      	} else if($hide_accountname == 1){
-      		$context_item->setHideAccountname();
+      	if (!empty($_POST['email_before_lock'])){
+      		$context_item->setInactivitySendMailBeforeLockDays($_POST['email_before_lock']);
       	}
       	
-      	if (!empty($_POST['use_ds_agb'])){
-      		$ds_agb = $_POST['use_ds_agb'];
-      	} else {
-      		#$ds_agb = 1;
+      	if (!empty($_POST['delete_user'])){
+      		$context_item->setInactivityDeleteDays($_POST['delete_user']);
       	}
       	
-      	if($ds_agb == 2){
-      		$context_item->unsetAGBDatasecurity();
-      	} else {
-      		$context_item->setAGBDatasecurity();
+      	if (!empty($_POST['email_before_delete'])){
+      		$context_item->setInactivitySendMailBeforeDeleteDays($_POST['email_before_delete']);
       	}
 
       }

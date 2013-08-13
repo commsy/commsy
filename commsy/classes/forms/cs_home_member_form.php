@@ -127,7 +127,8 @@ class cs_home_member_form extends cs_rubric_form {
          // link which refers to the terms of use
          // Datenschutz
          if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
-         	$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new');
+         	$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new','','','onClick="window.open(href,target,\'toolbar=no, location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,copyhistory=yes,width=600,height=400\');"');
+         	#$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new');
          	$this->_form->addCheckbox('terms_of_use', '1', false, '', $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT').$link);
          }
 

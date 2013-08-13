@@ -1116,7 +1116,10 @@ class cs_user_manager extends cs_manager {
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
      // Datenschutz
      $expire_date = $user_item->getPasswordExpireDate();
-     if ( !empty ($expire_date)){
+     
+     if ( empty ($expire_date) or $expire_date == 0){
+     	$query .= 'expire_date=NULL,';
+     } else {
      	$query .= 'expire_date="'.encode(AS_DB,$expire_date).'",';
      }
      
@@ -1219,7 +1222,7 @@ class cs_user_manager extends cs_manager {
                'visible="'.encode(AS_DB,$item->getVisible()).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
-               'expire_date='.encode(AS_DB,$expire_date).'';
+               'expire_date="'.encode(AS_DB,$expire_date).'"';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -1820,10 +1823,11 @@ class cs_user_manager extends cs_manager {
 		return $retour;
 	}
 	
-	public function getCountUserPasswordExpiredSoonByContextID($cid) {
+	public function getCountUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
 		$retour = 0;
-		if(isset($c_password_expiration_send_email_days)){
-			$date = $c_password_expiration_send_email_days;
+		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+		if(isset($days_before_expiring_sendmail)){
+			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
 		} else {
 			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
@@ -1841,9 +1845,11 @@ class cs_user_manager extends cs_manager {
 		return $retour;
 	}
 	
-	public function getUserPasswordExpiredSoonByContextID($cid) {
-		if(isset($c_password_expiration_send_email_days)){
-			$date = $c_password_expiration_send_email_days;
+	public function getUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
+		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+		
+		if(isset($days_before_expiring_sendmail)){
+			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
 		} else {
 			$date = getCurrentDateTimePlusDaysInMySQL('14');
 		}
@@ -1866,6 +1872,23 @@ class cs_user_manager extends cs_manager {
 	public function getUserTempLoginExpired(){
 		$user = NULL;
 		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".status = '3' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".extras LIKE '%LOGIN_AS_TMSP%'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
+	}
+	
+	public function getUserLastLoginLaterAs($date,$cid){
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');

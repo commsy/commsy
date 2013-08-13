@@ -182,6 +182,20 @@ if($context_item->isPortal()){
 	   #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
 	   $addon_link_list->add($link_item);
    }
+   ###############################################
+   # delete inactive user
+   ###############################################
+   if($context_item->isPortal()){
+   	$link_item = new cs_link();
+   	$link_item->setTitle($translator->getMessage('CONFIGURATION_DELETE_INACTIVE_USER'));
+   	$link_item->setIconPath('images/cs_config/SERVER_AUTOACCOUNTS_LINK.gif');
+   	$link_item->setDescription($translator->getMessage('CONFIGURATION_DELETE_INACTIVE_USER_DESC'));
+   	$link_item->setContextID($environment->getCurrentContextID());
+   	$link_item->setModule('configuration');
+   	$link_item->setFunction('inactive');
+   	#$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+   	$addon_link_list->add($link_item);
+   }
    ################################################
    # plugins - special configuration of one plugin
    ################################################

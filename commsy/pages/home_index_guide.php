@@ -240,6 +240,18 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
 }
 
 if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))) {
+   if($current_context->withAGBDatasecurity()){
+   	$agb_acceptance = false;
+   	if(isset($_POST['agb_acceptance']) and $_POST['agb_acceptance'] == 1){
+   		$agb_acceptance = true;
+   	} else {
+   		$error = 'agb';
+   		$account_mode = 'member';
+   	}
+   } else {
+   	$agb_acceptance = true;
+   }
+
    include_once('classes/cs_mail.php');
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($current_item_id);
@@ -263,7 +275,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
    $params['room_id'] = $current_item_id;
 
    // build new user_item
-   if ( !$room_item->checkNewMembersWithCode()
+   if ( (!$room_item->checkNewMembersWithCode()
         or ( $room_item->checkNewMembersWithCode()
              and $room_item->getCheckNewMemberCode() == $_POST['code']
            )
@@ -271,6 +283,8 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              and empty($_POST['code'])
              and isset($_POST['description_user'])
            )
+        )
+        and $agb_acceptance
       ) {
 
       $room_check_code = $room_item->getCheckNewMemberCode();
@@ -392,9 +406,23 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                 $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),getTimeInLang(getCurrentDateTimeInMySQL()));
                 $body .= LF.LF;
                 if ( $room_item->isCommunityRoom() ) {
-                   $body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+                	$portal = $environment->getCurrentContextItem();
+                	if($portal->getHideAccountname()){
+                		// Hide useraccountname
+                		$user_id = $translator->getMessage('USER_ACCOUNT_NOT_VISIBLE');
+                		$body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY',$user_item->getFullname(),$user_id,$user_item->getEmail(),$room_item->getTitle());
+                	} else {
+                		$body .= $translator->getMessage('USER_JOIN_COMMUNITY_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+                	}
                 } else {
-                   $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+                	$portal = $environment->getCurrentContextItem();
+                	if($portal->getHideAccountname()){
+                		// Hide useraccountname
+                		$user_id = $translator->getMessage('USER_ACCOUNT_NOT_VISIBLE');
+                   		$body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_id,$user_item->getEmail(),$room_item->getTitle());
+                	} else {
+                		$body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+                	}
                 }
                 $body .= LF.LF;
                 if ($check_message == 'YES') {
@@ -486,6 +514,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
    } elseif ( $room_item->checkNewMembersWithCode()
               and $room_item->getCheckNewMemberCode() != $_POST['code']
               and isset($_POST['code'])
+   			and $agb_acceptance
             ) {
       $account_mode = 'member';
       $error = 'code';
@@ -515,6 +544,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
       }
       redirect($environment->getCurrentContextID(), 'home', 'index', $params);
    }
+   
 }
 
 if ( $environment->inServer() ) {

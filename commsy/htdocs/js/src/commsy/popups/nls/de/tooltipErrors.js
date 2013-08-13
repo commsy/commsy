@@ -5,9 +5,9 @@ define({
 	personalPopup1015: 				"Ungültige Kennung!",
 	personalPopup1016: 				"Ungültige Logindaten!",
 	personalPopup1022:				"Passwort ist zu kurz",
-	personalPopup1023:				"Passwort enthält kein Großbuchstaben",
-	personalPopup1024:				"Passwort enthält kein Sonderzeichen",
-	personalPopup1025:				"Passwort wurde in den letzten Generationen schonmal verwendet",
-	personalPopup1026:				"Passwort enthält kein Kleinbuchstaben",
+	personalPopup1023:				"Passwort enthält keinen Großbuchstaben",
+	personalPopup1024:				"Passwort enthält keinen Sonderzeichen",
+	personalPopup1025:				"Verwenden Sie bitte ein Passwort, welches Sie bei den letzten Malen nicht verwendet haben",
+	personalPopup1026:				"Passwort enthält keinen Kleinbuchstaben",
 	personalPopup1027:				"Passwort enthält keine Zahl"
 });

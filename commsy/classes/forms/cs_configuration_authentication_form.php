@@ -422,16 +422,19 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addRadioGroup('password_number',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_NUMBER'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addRadioGroup('password_smallchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SMALLCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addRadioGroup('password_specialchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',1,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('days_before_expiring_sendmail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SEND_MAIL'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
 	      $this->_form->addEmptyLine();
 	      //Datenschutz
 	      $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',2,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',$disabled);
-	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
-	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('trys_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',$disabled);
 	      #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
       }
+      
 
 
       // specific options
@@ -506,6 +509,8 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['temporary_minutes'] = $current_context->getLockTime();
          $this->_values['password_generation'] = $current_context->getPasswordGeneration();
          $this->_values['password_expiration'] = $current_context->getPasswordExpiration();
+         $this->_values['try_until_lock'] = $current_context->getTryUntilLock();
+         $this->_values['days_before_expiring_sendmail'] = $current_context->getDaysBeforeExpiringPasswordSendMail();
          
          if( empty($this->_values['password_secure_check'])){
          	$this->_values['password_secure_check'] = 2;
@@ -549,6 +554,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          if( empty($this->_values['password_expiration'])) {
          	$this->_values['password_expiration'] = 0;
          }
+         if( empty($this->_values['try_until_lock'])) {
+         	$this->_values['try_until_lock'] = 0;
+         }
+         
          
 //          if($this->_values['temporary_lock'] == 2){
 //          	$this->

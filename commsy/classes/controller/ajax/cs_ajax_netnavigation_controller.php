@@ -109,11 +109,14 @@
 							
 							if($group_room->checkNewMembersAlways()){
 								// 
+								$user_item->request();
+								$user_item->save();
 							} else if($group_room->checkNewMembersWithCode()){
 								// user must enter the correct code if he wants to join the room
 								#$user_item->save();
 							} else if($group_room->checkNewMembersNever()){
 								// user is now member of the room
+								$user_item->makeUser();
 								$user_item->save();
 							}
 							#$room_item = $linked_item->getLinkedProjectItem();

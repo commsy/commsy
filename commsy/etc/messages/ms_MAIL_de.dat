@@ -182,19 +182,7 @@ $message["MAIL_EDIT_RESET_TEXT"]["de"] = "Wollen Sie den E-Mail-Text auf den vom
 $message["MAIL_FROM"]["de"] = "Von:";
 $message["MAIL_NOT_SEND_BUTTON"]["de"] = "E-Mail nicht senden";
 $message["MAIL_CHOICE_PASSWORD_EXPIRATION"]["de"] = "Passwort ist abgelaufen";
-$message["MAIL_BODY_PASSWORD_EXPIRATION"]["de"] = "Hallo %1,
-
-Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert ge&auml;ndert.
-
-Bitte &auml;ndern Sie Ihr Passwort über den Passwort vergessen Link.
-
-Gru&szlig; ... CommSy Administrator";
 $message["MAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["de"] = "Passwort läuft ab";
-$message["MAIL_BODY_PASSWORD_EXPIRATION_SOON"]["de"] = "Hallo %1,
-
-Ihr Passwort l&auml;uft in %2 Tagen ab. Bitte &auml;ndern Sie Ihr Passwort innerhalb dieser Zeit.
-
-Gru&szlig; ... CommSy Administrator";
 $message["MAIL_SENDER"]["de"] = "Sender";
 $message["MAIL_SENDER_EMAIL"]["de"] = "Ihre E-Mail Adresse";
 $message["MAIL_SENDER_NAME"]["de"] = "Ihr Name";

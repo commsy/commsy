@@ -478,17 +478,19 @@
 			
 			$current_portal_user = $this->_environment->getPortalUserItem();
 			// password expires soon alert
-			if($current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+			if(!empty($current_portal_user) AND $current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
 				$start_date = new DateTime(getCurrentDateTimeInMySQL());
 				$since_start = $start_date->diff(new DateTime($current_portal_user->getPasswordExpireDate()));
-				$days = $since_start->d;
+				$days = $since_start->days;
 				if($days == 0){
 					$days = 1;
 				}
-				if(isset($c_password_expiration_send_email_days) AND $days <= $c_password_expiration_send_email_days){
+
+				$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+				if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail){
 					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
 					$to_javascript['environment']['password_expire_soon'] = true;
-				} else if(!isset($c_password_expiration_send_email_days) AND $days <= 14){
+				} else if(!isset($days_before_expiring_sendmail) AND $days <= 14){
 					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
 					$to_javascript['environment']['password_expire_soon'] = true;
 				}
@@ -509,6 +511,7 @@
 			{
 				$to_javascript['own']['id'] = $ownRoomItem->getItemId();
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+				$to_javascript['ownRoom']['withPortfolio'] = $own_room_item->getCSBarShowPortfolio();
 			}
 
 			// translations - should be managed elsewhere soon
