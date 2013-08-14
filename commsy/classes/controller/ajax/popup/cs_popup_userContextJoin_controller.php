@@ -41,8 +41,9 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 					}
 				}
 			  } else {
-			  	$agb_flag = false;
+			  	$agb_flag = true;
 			  }
+			  pr($agb_flag);
 
 		      // build new user_item
 		      if ( (!$room_item->checkNewMembersWithCode()
