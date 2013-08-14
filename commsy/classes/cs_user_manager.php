@@ -1204,10 +1204,6 @@ class cs_user_manager extends cs_manager {
      if ( empty($creator_id) ) {
         $creator_id = $item->getItemID();
      }
-     $expire_date = $item->getPasswordExpireDate();
-     if ( empty ($expire_date)){
-     	$expire_date = 'NULL';
-     }
      $query .= 'context_id="'.encode(AS_DB,$item->getContextID()).'", ';
      $query .= 'creator_id="'.encode(AS_DB,$creator_id).'",'.
                'creation_date="'.$current_datetime.'",'.
@@ -1222,7 +1218,7 @@ class cs_user_manager extends cs_manager {
                'visible="'.encode(AS_DB,$item->getVisible()).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
-               'expire_date="'.encode(AS_DB,$expire_date).'"';
+               'expire_date=NULL';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
