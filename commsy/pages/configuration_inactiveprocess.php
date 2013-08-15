@@ -108,12 +108,12 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 	if($count_delete != 0 or $count_lock != 0){
 		$html = '<br>';
 		if($count_delete > 0){
-			$html .= $count_delete.' Kennung(en) wird in den nächsten 2 Tagen gelöscht.<br>';
+			$html .= $count_delete.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE');
 		}
 		if($count_lock > 0){
-			$html .= $count_lock.' Kennung(en) wird in den nächsten 2 Tagen gesperrt.<br>';
+			$html .= $count_lock.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_LOCK');
 		}
-		$html .= 'Falls Sie damit einverstanden sind, drücken Sie bitte erneut auf Einstellung speichern.';
+		$html .= $translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_INFO');
 		
 		if(isset($_GET['save']) and $_GET['save']){
 			$save_flag = true;
