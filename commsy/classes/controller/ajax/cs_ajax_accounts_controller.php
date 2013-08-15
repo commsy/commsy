@@ -560,6 +560,8 @@
 
 			// get user list
 			$user_list = $user_manager->get();
+			
+			$portal_item = $this->_environment->getCurrentPortalItem();
 
 			// prepare return
 			$return['list'] = array();
@@ -579,13 +581,17 @@
 
 				$entry['item_id']			= $item->getItemID();
 				// Datenschutz
-				if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+				if($portal_item->getHideAccountname()){
 					$entry['fullname']			= $item->getFullName();
 				} else {
 					$entry['fullname']			= $item->getFullName().' ('.$item->getUserID().')';
 				}
 				$entry['email']				= $item->getEmail();
 				$entry['status']			= $status;
+				if($portal_item->withAGBDatasecurity()){
+					$entry['agb'] = $item->getAGBAcceptanceDate();
+				}
+				
 
 				$return['list'][] = $entry;
 				$item = $user_list->getNext();

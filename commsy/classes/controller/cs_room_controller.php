@@ -97,7 +97,7 @@
 
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
-
+			
 			// sidebar information
 			$this->setupSidebarInformation();
 

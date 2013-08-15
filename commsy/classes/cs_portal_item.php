@@ -2066,6 +2066,12 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_LANGUAGE':
                   $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_LANGUAGE_FORM');
                   break;
+               case 'CONFIGURATION_DATASECURITY':
+               	  $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               	  break;
+               case 'CONFIGURATION_INACTIVE':
+               	  $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               	  break;
                default:
                   $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;

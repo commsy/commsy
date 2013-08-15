@@ -795,6 +795,7 @@ function isURLValid () {
          $funct != 'scribd' and
          $funct != 'datasecurity' and
          $funct != 'inactive' and
+         $funct != 'inactiveprocess' and
 
          $funct != 'account_options' and
          $funct != 'structure_options' and

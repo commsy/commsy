@@ -743,13 +743,20 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    $save_language = $translator->getSelectedLanguage();
    $translator->setSelectedLanguage($room_item->getLanguage());
 
+   // Datenschutz
+   if($environment->getCurrentPortalItem()->getHideAccountname()){
+   	$userid = ' ';
+   } else {
+   	$userid = $user->getUserID();
+   }
+   
    // email texts
    $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle());
    $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
    $body .= LF.LF;
    $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
    $body .= LF.LF;
-   $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
+   $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room_item->getTitle());
    $body .= LF.LF;
    if($password_generated){
       $body .= $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_PASSWORD_GENERATED',$temp_account_password);

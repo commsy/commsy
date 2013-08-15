@@ -1898,5 +1898,22 @@ class cs_user_manager extends cs_manager {
 		}
 		return $user_array;
 	}
+	
+	public function getAllUserItemArray($uid){
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".user_id = '".encode(AS_DB,$uid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
+	}
 }
 ?>

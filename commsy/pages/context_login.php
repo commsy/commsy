@@ -78,21 +78,22 @@ if (!empty($user_id) and !empty($password) ) {
    	$auth_item = $auth_manager->getItem($auth_source);
    	unset($auth_manager);
    }
+   $portal_item = $environment->getCurrentContextItem();
    // get user item if temporary lock is enabled
    $userExists = false;
    $locked_temp = false;
    $locked = false;
    $login_status = $authentication->isAccountGranted($user_id,$password,$auth_source);
    if(isset($auth_item) AND !empty($auth_item)){
-   	if($auth_item->isTemporaryLockActivated()){
+   	if($auth_item->isTemporaryLockActivated() or $portal_item->getInactivityLockDays() > 0){
    		$user_manager = $environment->getUserManager();
    		$userExists = $user_manager->exists($user_id);
    		unset($user_manager);
    		if($userExists){
    			$user_locked = $authentication->_getPortalUserItem($user_id,$authentication->_auth_source_granted);
 	   		if(isset($user_locked)){
+	   			$locked = $user_locked->isLocked();
 		   		$locked_temp = $user_locked->isTemporaryLocked();
-		   		$locked = $user_locked->isLocked();
 	   		}
 
    		}

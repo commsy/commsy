@@ -157,7 +157,13 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               $subject = $translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$user_item->getFullname(),$room_item->getTitle());
 		               $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
 		               $body .= LF.LF;
-		               $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+		               // Datenschutz
+		               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+		               	$userid = ' ';
+		               } else {
+		               	$userid = $user->getUserID();
+		               }
+		               $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$userid,$user_item->getEmail(),$room_item->getTitle());
 		               $body .= LF.LF;
 		      
 		               $tempMessage = "";
@@ -225,6 +231,13 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		                     $language = $this->_environment->getSelectedLanguage();
 		                  }
 		               }
+		               
+		               // Datenschutz
+		               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+		               	$userid = ' ';
+		               } else {
+		               	$userid = $user->getUserID();
+		               }
 		      
 		               $translator->setSelectedLanguage($language);
 		      
@@ -234,7 +247,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               $body .= LF.LF;
 		               $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
 		               $body .= LF.LF;
-		               $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
+		               $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room_item->getTitle());
 		               $body .= LF.LF;
 		               $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
 		               $body .= LF.LF;

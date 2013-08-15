@@ -307,6 +307,13 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              }
 
              $translator->setSelectedLanguage($language);
+             
+             // Datenschutz
+             if($environment->getCurrentPortalItem()->getHideAccountname()){
+             	$userid = ' ';
+             } else {
+             	$userid = $user->getUserID();
+             }
 
              // email texts
              $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle());
@@ -314,7 +321,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              $body .= LF.LF;
              $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
              $body .= LF.LF;
-             $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
+             $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room_item->getTitle());
              $body .= LF.LF;
              $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
              $body .= LF.LF;

@@ -82,25 +82,25 @@ if ($command != 'error') { // only if user is allowed to edit inactive
    if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
       
    	if($context_item->isPortal()){
-   		if(!empty($_POST['overwrite_content'])){
-   			$context_item->setInactivityOverwriteContent($_POST['overwrite_content']);
-   		}
+//    		if(!empty($_POST['overwrite_content'])){
+//    			$context_item->setInactivityOverwriteContent($_POST['overwrite_content']);
+//    		}
    		
-      	if(!empty($_POST['lock_user'])){
-      		$context_item->setInactivityLockDays($_POST['lock_user']);
-      	}
+//       	if(!empty($_POST['lock_user'])){
+//       		$context_item->setInactivityLockDays($_POST['lock_user']);
+//       	}
       	
-      	if (!empty($_POST['email_before_lock'])){
-      		$context_item->setInactivitySendMailBeforeLockDays($_POST['email_before_lock']);
-      	}
+//       	if (!empty($_POST['email_before_lock'])){
+//       		$context_item->setInactivitySendMailBeforeLockDays($_POST['email_before_lock']);
+//       	}
       	
-      	if (!empty($_POST['delete_user'])){
-      		$context_item->setInactivityDeleteDays($_POST['delete_user']);
-      	}
+//       	if (!empty($_POST['delete_user'])){
+//       		$context_item->setInactivityDeleteDays($_POST['delete_user']);
+//       	}
       	
-      	if (!empty($_POST['email_before_delete'])){
-      		$context_item->setInactivitySendMailBeforeDeleteDays($_POST['email_before_delete']);
-      	}
+//       	if (!empty($_POST['email_before_delete'])){
+//       		$context_item->setInactivitySendMailBeforeDeleteDays($_POST['email_before_delete']);
+//       	}
 
       }
 
@@ -126,7 +126,8 @@ if ($command != 'error') { // only if user is allowed to edit inactive
    $form->prepareForm();
    $form->loadValues();
 
-   $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
+   //$form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
+   $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),'inactiveprocess',''));
    $form_view->setForm($form);
    if ( $environment->inPortal() or $environment->inServer() ){
       $page->addForm($form_view);

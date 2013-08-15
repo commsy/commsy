@@ -205,8 +205,9 @@ else {
                $auth_item->setPasswordSecureSpecialchar($_POST['password_specialchar']);
             }
             if ( isset($_POST['password_length'])) {
-            	if(is_int($_POST['password_length']) AND $_POST['password_length'] >= 0){
-            		$auth_item->setPasswordLength($_POST['password_length']);
+            	if($_POST['password_length'] >= 0){
+            		$password_length = preg_replace('/[^0-9]+/', '', $_POST['password_length']);
+            		$auth_item->setPasswordLength($password_length);
             	}
             }
             if ( isset($_POST['password_smallchar']) ) {

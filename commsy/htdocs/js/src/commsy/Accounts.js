@@ -7,7 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/_base/array",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, Lang, Query, On, DomConstruct, DomAttr, DomStyle, BaseArray) {
+        	"dijit/Tooltip",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, Lang, Query, On, DomConstruct, DomAttr, DomStyle, BaseArray, tooltip) {
 	return declare(BaseClass, {		
 		cid: 						null,
 		tpl_path: 					'',
@@ -152,7 +153,7 @@ define([	"dojo/_base/declare",
 								checked:	(BaseArray.indexOf(this.store.selected_ids, entry.item_id) !== -1) ? true : false
 							}, checkboxDivNode, "last");
 						
-						DomConstruct.create("div", {
+						var nameColumnNode = DomConstruct.create("div", {
 							className:		"pop_col_270",
 							innerHTML:		entry.fullname
 						}, rowDivNode, "last");
@@ -170,6 +171,7 @@ define([	"dojo/_base/declare",
 						DomConstruct.create("div", {
 							className:		"clear"
 						}, rowDivNode, "last");
+						
 				}));
 				
 				// register input event handler and store / remove selected ids

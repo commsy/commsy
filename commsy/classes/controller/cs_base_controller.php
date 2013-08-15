@@ -518,6 +518,37 @@
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
 			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
 			
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			$auth_source_manager = $this->_environment->getAuthSourceManager();
+			$auth_source_item = $auth_source_manager->getItem($current_user->getAuthSource());
+			
+			if(isset($auth_source_item)){
+				// password
+				if($auth_source_item->getPasswordLength() > 0){
+					$to_javascript["password"]["length"] = $translator->getMessage('PASSWORD_INFO2_LENGTH', $auth_source_item->getPasswordLength());
+				}
+				if($auth_source_item->getPasswordSecureBigchar() == 1){
+					$to_javascript["password"]["big"] = $translator->getMessage('PASSWORD_INFO2_BIG');
+				}
+				if($auth_source_item->getPasswordSecureSmallchar() == 1){
+					$to_javascript["password"]["small"] = $translator->getMessage('PASSWORD_INFO2_SMALL');
+				}
+				if($auth_source_item->getPasswordSecureNumber() == 1){
+					$to_javascript["password"]["special"] = $translator->getMessage('PASSWORD_INFO2_SPECIAL');
+				}
+				if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+					$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
+				}
+			}
+			
+			
+			
+			
+			
+			
+			
+			
 
 			// dev
 			global $c_indexed_search;

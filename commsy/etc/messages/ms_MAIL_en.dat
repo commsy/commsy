@@ -179,6 +179,7 @@ $message["MAIL_EDIT_RESET"]["en"] = "Reset?";
 $message["MAIL_EDIT_RESET_TEXT"]["en"] = "Reset the e-mail text to system default?";
 $message["MAIL_FROM"]["en"] = "From:";
 $message["MAIL_NOT_SEND_BUTTON"]["en"] = "Do not send e-mail";
+$message["MAIL_ONLY_VISIBLE_FOR"]["en"] = "XXX (account only visible for %1)";
 $message["MAIL_CHOICE_PASSWORD_EXPIRATION"]["en"] = "Password is expired";
 $message["MAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["en"] = "Password expires";
 $message["MAIL_SENDER"]["en"] = "Sender";

@@ -1801,7 +1801,7 @@ class cs_user_item extends cs_item {
       return $value;
    }
 
-   function deleteAllEntriesOfUser($inactivity = false){
+   function deleteAllEntriesOfUser(){
 
    	// datenschutz: overwrite or not (03.09.2012 IJ)
    	$overwrite = true;
@@ -1840,14 +1840,53 @@ class cs_user_item extends cs_item {
          
          
    	}
+
+   }
+   
+   function deleteAllEntriesOfUserByInactivity(){
+
+   	$portal_manager = $this->_environment->getPortalManager();
+   	$portal = $portal_manager->getItem($this->getContextID());
+   	
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_array = $user_manager->getAllUserItemArray($this->getUserID());
+   	// falscher benutzer wird durchlaufen: es müssen alle user items durchlaufen werden
+   	// replace entries
+   	#pr($user_array);
+   	if($portal->isInactivityOverwriteContent()) {
+   		$announcement_manager = $this->_environment->getAnnouncementManager();
+   		$dates_manager = $this->_environment->getDatesManager();
+   		$discussion_manager = $this->_environment->getDiscussionManager();
+   		$discarticle_manager = $this->_environment->getDiscussionarticleManager();
+   		$material_manager = $this->_environment->getMaterialManager();
+   		$section_manager = $this->_environment->getSectionManager();
+   		$annotation_manager = $this->_environment->getAnnotationManager();
+   		$label_manager = $this->_environment->getLabelManager();
+   		$tag_manager = $this->_environment->getTagManager();
+   		$todo_manager = $this->_environment->getToDoManager();
+   		$step_manager = $this->_environment->getStepManager();
+   		 
+   	foreach ($user_array as $user){
+   		// replace users entries with the standart message for deleted entries
+   		$announcement_manager->deleteAnnouncementsofUser($user->getItemID());
+   		$dates_manager->deleteDatesOfUser($user->getItemID());
+   		$discussion_manager->deleteDiscussionsOfUser($user->getItemID());
+   		$discarticle_manager->deleteDiscarticlesOfUser($user->getItemID());
+   		$material_manager->deleteMaterialsOfUser($user->getItemID());
+   		$section_manager->deleteSectionsOfUser($user->getItemID());
+   		$annotation_manager->deleteAnnotationsOfUser($user->getItemID());
+   		$label_manager->deleteLabelsOfUser($user->getItemID());
+   		if ( empty($disable_overwrite) or $disable_overwrite != 'flag'){
+   			$tag_manager->deleteTagsOfUser($user->getItemID());
+   		}
+   		$step_manager->deleteStepsOfUser($user->getItemID());
+   	}
+   		 
+   		 
+   	}
    	$room_manager = $this->_environment->getRoomManager();
-   	$room_manager->deleteRoomOfUser($this->getItemID());
-//    	if($inactivity){
-//    		// delete rooms if the user that will be deleted is member only 
-//    		$room_manager = $this->_environment->getRoomManager();
-   		
-//    		pr($room_manager->getRelatedRoomListForUser);
-//    	}
+   	$room_manager->deleteRoomOfUserAndUserItemsInactivity($this->getUserID());
+   	
    }
 
    function setAGBAcceptance () {

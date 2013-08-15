@@ -228,6 +228,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$portalUser = $this->_environment->getCurrentUserItem();
 							}
 							
+							$translator = $this->_environment->getTranslationObject();
+							
 							// Datenschutz
 							if($current_portal_item->getPasswordGeneration() > 0){
 
@@ -243,41 +245,51 @@ class cs_popup_profile_controller implements cs_popup_controller {
 											$auth_source_manager = $this->_environment->getAuthSourceManager();
 											$auth_source_item = $auth_source_manager->getItem($currentUser->getAuthSource());
 											
+											$error_array = array();
+											
 											if($auth_source_item->getPasswordLength() > 0){
 												if(strlen($form_data['new_password']) < $auth_source_item->getPasswordLength()) {
-													$this->_popup_controller->setErrorReturn('1022', 'new password too short');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_LENGTH',$auth_source_item->getPasswordLength());
+													//$this->_popup_controller->setErrorReturn('1022', 'new password too short');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureBigchar() == 1){
 												if(!preg_match('~[A-Z]+~u', $form_data['new_password'])) {
-													$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_BIG');
+													//$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureSmallchar() == 1){
 												if(!preg_match('~[a-z]+~u', $form_data['new_password'])) {
-													$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SMALL');
+													//$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureNumber() == 1){
 												if(!preg_match('~[0-9]+~u', $form_data['new_password'])) {
-													$this->_popup_controller->setErrorReturn('1027', 'new password no number');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_NUMBER');
+													//$this->_popup_controller->setErrorReturn('1027', 'new password no number');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 												if(!preg_match('~[^a-zA-Z0-9]+~u',$form_data['new_password'])){
-													$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SPECIAL');
+													//$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
 													$change_pw = false;
 												}
 											}
+								
 											unset($auth_source);
 											if($change_pw) {
 												$portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
 												$portalUser->save();
 												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+											} else {
+												$this->_popup_controller->setErrorReturn('1022', $error_array);
 											}
 											
 										} else {
@@ -304,33 +316,40 @@ class cs_popup_profile_controller implements cs_popup_controller {
 											$auth_source_manager = $this->_environment->getAuthSourceManager();
 											$auth_source_item = $auth_source_manager->getItem($currentUser->getAuthSource());
 											
+											$error_array = array();
+											
 											if($auth_source_item->getPasswordLength() > 0){
 												if(strlen($form_data['new_password']) < $auth_source_item->getPasswordLength()) {
-													$this->_popup_controller->setErrorReturn('1022', 'new password too short');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_LENGTH',$auth_source_item->getPasswordLength()).'<br>';
+													//$this->_popup_controller->setErrorReturn('1022', 'new password too short');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureBigchar() == 1){
 												if(!preg_match('~[A-Z]+~u', $form_data['new_password'])) {
-													$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_BIG');
+													//$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureSmallchar() == 1){
 												if(!preg_match('~[a-z]+~u', $form_data['new_password'])) {
-													$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SMALL');
+													//$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureNumber() == 1){
 												if(!preg_match('~[0-9]+~u', $form_data['new_password'])) {
-													$this->_popup_controller->setErrorReturn('1027', 'new password no number');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_NUMBER');
+													//$this->_popup_controller->setErrorReturn('1027', 'new password no number');
 													$change_pw = false;
 												}
 											}
 											if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 												if(!preg_match('~[^a-zA-Z0-9]+~u',$form_data['new_password'])){
-													$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SPECIAL');
+													//$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
 													$change_pw = false;
 												}
 											}
@@ -339,6 +358,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 												$portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
 												$portalUser->save();
 												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+											} else {
+												$this->_popup_controller->setErrorReturn('1022', $error_array);
 											}
 											
 										} else {

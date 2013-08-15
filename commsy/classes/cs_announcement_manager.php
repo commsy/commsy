@@ -621,6 +621,7 @@ class cs_announcement_manager extends cs_manager {
             $insert_query .= ' modification_date = "'.$current_datetime.'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
+            pr($insert_query);
             if ( !isset($result2) or !$result2 ) {
                include_once('functions/error_functions.php');
                trigger_error('Problems automatic deleting '.$this->_db_table.'.',E_USER_WARNING);

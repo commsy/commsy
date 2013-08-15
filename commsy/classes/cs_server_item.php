@@ -220,12 +220,12 @@ class cs_server_item extends cs_guide_item {
    						if($days >= $portal_item->getInactivityDeleteDays()-1){
    							if($user->getMailSendBeforeDelete()){
    								// delete user and every room which the user is member only
-   								$user->deleteAllEntriesOfUser(); // delete content
+   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
 								$authentication = $this->_environment->getAuthenticationObject();
 								$authentication->delete($user->getItemID()); // delete authentication
    								$user->delete(); 
    								$user->save();
-   								pr("DELETE USER:".$user->getFullName());
+   								#pr("DELETE USER:".$user->getFullName());
    								
    							} else {
    								// Send mail to user that the user will be deleted in one day
@@ -480,7 +480,7 @@ class cs_server_item extends cs_guide_item {
    	// überprüfen ob Mails verschickt werden müssen
    	
    	
-   	#break;
+   	break;
    	if($success){
    		$cron_array['success'] = true;
    		$cron_array['success_text'] = 'mails send';
@@ -1536,6 +1536,9 @@ class cs_server_item extends cs_guide_item {
                break;
             case 'CONFIGURATION_HTMLTEXTAREA':
                $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
+               break;
+            case 'CONFIGURATION_DATASECURITY':
+               $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
                break;
             default:
                $tempMessage      = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item (".__LINE__.")";

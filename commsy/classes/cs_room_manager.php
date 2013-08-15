@@ -837,7 +837,7 @@ class cs_room_manager extends cs_context_manager {
       return $retour;
    }
    
-   function deleteRoomOfUser($uid) {
+   function deleteRoomOfUserAndUserItemsInactivity($uid) {
    	
    	// create backup of item
    	$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
@@ -850,19 +850,23 @@ class cs_room_manager extends cs_context_manager {
    	if ( isset($result) ) {
    		foreach ( $result as $rs ) {
    			$insert_query = 'UPDATE '.$this->addDatabasePrefix('room').' SET';
-   			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-   				$insert_query .= ' modification_date = "'.$current_datetime.'"';
-   				$insert_query .= ' deletion_date = "'.$current_datetime.'"';
-   			}else{
-   				$insert_query .= ' modification_date = "'.$current_datetime.'",';
-   				$insert_query .= ' deletion_date = "'.$current_datetime.'"';
-   			}
+   			$insert_query .= ' modification_date = "'.$current_datetime.'",';
+   			$insert_query .= ' deletion_date = "'.$current_datetime.'"';
    			$insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
    			$result2 = $this->_db_connector->performQuery($insert_query);
    			if ( !isset($result2) or !$result2 ) {
    				include_once('functions/error_functions.php');
    				trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"',E_USER_WARNING);
    			}
+   		}
+   		$user_query = 'UPDATE '.$this->addDatabasePrefix('user').' SET';
+   		$user_query .= ' modification_date = "'.$current_datetime.'",';
+   		$user_query .= ' deletion_date = "'.$current_datetime.'"';
+   		$user_query .=' WHERE user_id = "'.$rs['user_id'].'"';
+   		$result3 = $this->_db_connector->performQuery($user_query);
+   		if ( !isset($result3) or !$result3 ) {
+   			include_once('functions/error_functions.php');
+   			trigger_error('Problems automatic deleting materials from query: "'.$user_query.'"',E_USER_WARNING);
    		}
    	}
    }

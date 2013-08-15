@@ -1069,7 +1069,9 @@ class cs_page_guide_view extends cs_page_view {
         }elseif (isset($_POST['sel_archive_room'])){
            $html .= '   <input type="hidden" name="selroom" value="'.$get_params['sel_archive_room'].'"/>'.LF;
         }
-
+        
+        $portal_item = $this->_environment->getCurrentPortalItem();
+        
         if ($item->checkNewMembersWithCode()) {
            $toggle_id = rand(0,1000000);
            $html .= $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT');
@@ -1084,10 +1086,10 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
            
-           if($item->getAGBStatus()){
+           if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
            	$text_array = $item->getAGBTextArray();
-           	$lang = strtoupper($this->_translator->_selected_language);
            
+           	$lang = strtoupper($this->_translator->_selected_language);
            	$usage_info = $text_array[$lang];
            
            	$temp_array[1] .= BRLF;
@@ -1127,8 +1129,9 @@ class cs_page_guide_view extends cs_page_view {
               $value = str_replace('%20',' ',$value);
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
+           
            // if code is set for room
-        if($item->getAGBStatus()){
+        if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
            	  $text_array = $item->getAGBTextArray();
            	  $lang = strtoupper($this->_translator->_selected_language);
            	  
@@ -1154,18 +1157,17 @@ class cs_page_guide_view extends cs_page_view {
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
 
-           if($item->getAGBStatus()){
+           if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
            	  $toggle_id = rand(0,1000000);
            	  $text_array = $item->getAGBTextArray();
            	  $lang = strtoupper($this->_translator->_selected_language);
-           	  
            	  $usage_info = $text_array[$lang];
            	
            	  $temp_array[1] .= BRLF;
            	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
            	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
            	  $temp_array[1] .= BRLF;
-           	  $temp_array[1] .= $html;
+           	  #$temp_array[1] .= $html;
            	  $temp_array[1] .= $usage_info;
            }
            

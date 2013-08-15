@@ -132,6 +132,7 @@ $message["CONFIGURATION_CONFIRMATION_FORM_TITLE"]["en"] = "Terms and<br/>
 Conditions";
 $message["CONFIGURATION_DATA_SECURITY"]["en"] = "Datasecurity";
 $message["CONFIGURATION_DATA_SECURITY_DESC"]["en"] = "Log data export, masking, archive, delete.";
+$message["CONFIGURATION_DATA_SECURITY_DESC_2"]["en"] = "Settings for datasecurity";
 $message["CONFIGURATION_DATES"]["en"] = "Default display";
 $message["CONFIGURATION_DATES_CHANGE"]["en"] = "Type of display for events";
 $message["CONFIGURATION_DATES_DESC"]["en"] = "Select list of events , or the calendar-view with weeks or months as default view for the events workspace page.";
