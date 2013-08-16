@@ -362,7 +362,7 @@ if (!$shib_direct_login){
 	
 	$authentication = $environment->getAuthenticationObject();
 	$shibboleth_auth = $authentication->getShibbolethAuthSource();
-	#pr($shibboleth_auth->getItemID());exit;
+	
 	$user_manager = $environment->getUserManager();
 	if (!$user_manager->exists($_SERVER['Shib_userId'])) {
 		$user_item = $user_manager->getNewItem();
