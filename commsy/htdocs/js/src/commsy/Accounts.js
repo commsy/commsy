@@ -7,7 +7,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/_base/array",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, Lang, Query, On, DomConstruct, DomAttr, DomStyle, BaseArray) {
+        	"dijit/Tooltip",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, Lang, Query, On, DomConstruct, DomAttr, DomStyle, BaseArray, tooltip) {
 	return declare(BaseClass, {		
 		cid: 						null,
 		tpl_path: 					'',
@@ -152,7 +153,7 @@ define([	"dojo/_base/declare",
 								checked:	(BaseArray.indexOf(this.store.selected_ids, entry.item_id) !== -1) ? true : false
 							}, checkboxDivNode, "last");
 						
-						DomConstruct.create("div", {
+						var nameColumnNode = DomConstruct.create("div", {
 							className:		"pop_col_270",
 							innerHTML:		entry.fullname
 						}, rowDivNode, "last");
@@ -170,6 +171,7 @@ define([	"dojo/_base/declare",
 						DomConstruct.create("div", {
 							className:		"clear"
 						}, rowDivNode, "last");
+						
 				}));
 				
 				// register input event handler and store / remove selected ids
@@ -206,6 +208,28 @@ define([	"dojo/_base/declare",
 				
 				// reload list to get changes
 				this.performRequest();
+				
+				
+				this.AJAXRequest("accounts", "GetNewUserAccount",{},Lang.hitch(this, function(response){
+					var commsyBarAccountNode = Query("span#tm_settings_count_new_accounts")[0];
+					var commsyTabAccountNode = Query("a#popup_account_tab > span")[0];
+					
+					//console.log(commsyTabAccountNode);
+					if(commsyBarAccountNode && response.count > 0){
+						DomAttr.set(commsyBarAccountNode,"innerHTML",response.count);
+					} else if(commsyBarAccountNode && response.count == 0){
+						DomConstruct.destroy(commsyBarAccountNode);
+					}
+					
+					if(commsyTabAccountNode && response.count > 0){
+						DomAttr.set(commsyTabAccountNode,"innerHTML","("+response.count+")")
+					} else if(commsyTabAccountNode && response.count == 0){
+						DomConstruct.destroy(commsyTabAccountNode);
+					}
+				}));
+				
+				
+				
 				
 				// load mail popup information
 				if (selectedIds.length > 0) {

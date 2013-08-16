@@ -1102,6 +1102,8 @@ class cs_user_manager extends cs_manager {
      if ( empty($contact_status) ) {
         $contact_status = 0;
      }
+  	 
+     
      $query .= 'status="'.encode(AS_DB,$user_item->getStatus()).'",';
      $query .= 'is_contact="'.encode(AS_DB,$contact_status).'",';
      $query .= 'user_id="'.encode(AS_DB,$user_item->getUserID()).'",';
@@ -1112,6 +1114,15 @@ class cs_user_manager extends cs_manager {
      $query .= 'city="'.encode(AS_DB,$user_item->getCity()).'",';
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
      $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
+     // Datenschutz
+     $expire_date = $user_item->getPasswordExpireDate();
+     
+     if ( empty ($expire_date) or $expire_date == 0){
+     	$query .= 'expire_date=NULL,';
+     } else {
+     	$query .= 'expire_date="'.encode(AS_DB,$expire_date).'",';
+     }
+     
 
      // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
      // see methode _create()
@@ -1206,7 +1217,8 @@ class cs_user_manager extends cs_manager {
                'city="'.encode(AS_DB,$item->getCity()).'",'.
                'visible="'.encode(AS_DB,$item->getVisible()).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'";
+               'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
+               'expire_date=NULL';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -1765,6 +1777,143 @@ class cs_user_manager extends cs_manager {
 			}	
 		}
 		return $retour;
+	}
+	
+	public function getUserPasswordExpiredByContextID($cid) {
+		$user_array = array();
+		$current_date = getCurrentDateTimeInMySQL();
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$current_date)."'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		
+		return $user_array;
+		
+
+	}
+	
+	public function getCountUserPasswordExpiredByContextID($cid) {
+		$retour = 0;
+		$date = getCurrentDateTimeInMySQL();
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date  <= '".encode(AS_DB,$date)."'";
+		$query .= " and deletion_date IS NULL";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems counting open accounts.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs) {
+				$retour = $rs['number'];
+			}
+			unset($result);
+		}
+		return $retour;
+	}
+	
+	public function getCountUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
+		$retour = 0;
+		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+		if(isset($days_before_expiring_sendmail)){
+			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
+		} else {
+			$date = getCurrentDateTimePlusDaysInMySQL('14');
+		}
+		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix("user").".item_id) as number FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems counting open accounts.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs) {
+				$retour = $rs['number'];
+			}
+			unset($result);
+		}
+		return $retour;
+	}
+	
+	public function getUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
+		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+		
+		if(isset($days_before_expiring_sendmail)){
+			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
+		} else {
+			$date = getCurrentDateTimePlusDaysInMySQL('14');
+		}
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".expire_date IS NOT NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
+	}
+	
+	public function getUserTempLoginExpired(){
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".status = '3' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".extras LIKE '%LOGIN_AS_TMSP%'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
+	}
+	
+	public function getUserLastLoginLaterAs($date,$cid){
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."'";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
+	}
+	
+	public function getAllUserItemArray($uid){
+		$user = NULL;
+		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".user_id = '".encode(AS_DB,$uid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL";
+		$result = $this->_db_connector->performQuery($query);
+		if ( !isset($result) ) {
+			include_once('functions/error_functions.php');
+			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+		} else {
+			foreach ($result as $rs ) {
+				$user_array[] = $this->_buildItem($rs);
+			}
+			unset($result);
+			unset($query);
+		}
+		return $user_array;
 	}
 }
 ?>

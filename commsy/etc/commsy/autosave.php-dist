@@ -26,8 +26,8 @@
 $c_autosave_mode = 2;
 
 // autosave limit in minutes
-$c_autosave_limit = 6*60;
+$c_autosave_limit = 6;
 if ( !empty($c_session_lifetime) ) {
-   $c_autosave_limit = $c_session_lifetime*60-0.2;
+   $c_autosave_limit = $c_session_lifetime-0.2;
 }
 ?>

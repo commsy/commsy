@@ -36,7 +36,8 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 
 				$file = $file_list->getFirst();
 				while($file) {
-					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					#$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_name']	= $converter->filenameFormatting($file->getDisplayName());
 					$info['file_icon']	= $file->getFileIcon();
 					$info['file_id']	= $file->getFileID();
 
@@ -96,6 +97,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
         $environment = $this->_environment;
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
+        $text_converter = $this->_environment->getTextConverter();
 
         if(isset($additional['action']) && $additional['action'] === 'upload_picture') $current_iid = $additional['iid'];
         else $current_iid = $form_data['iid'];
@@ -202,7 +204,7 @@ class cs_popup_topic_controller implements cs_rubric_popup_controller {
 
 					// Set attributes
 					if ( isset($form_data['title']) ) {
-						$item->setName($form_data['title']);
+						$item->setName($text_converter->sanitizeHTML($form_data['title']));
 					}
 					if ( isset($form_data['description']) ) {
 						$item->setDescription($this->_popup_controller->getUtils()->cleanCKEditor($form_data['description']));

@@ -1,4 +1,4 @@
-<div class="{literal}${baseClass}{/literal} widget_694 float-left">
+<div class="{literal}${baseClass}{/literal} widget_620 float-left">
 	<div class="innerWidgetArea">
 		<div class="widget_head">
 			<div style="float:right; margin-right:10px;padding-top:5px;">
@@ -22,7 +22,7 @@
 				<div class="clear"></div>
 			</div>
 		</div>
-		<div data-dojo-attach-point="itemListNode"></div>
+		<div class="stackList" data-dojo-attach-point="itemListNode"></div>
 		<div class="widget_footer">
 			___COMMON_PAGE_ENTRIES___:
 			<span class="cursor_pointer" data-dojo-attach-event="onclick:onClickPaging20" data-dojo-attach-point="paging20"><strong>20</strong></span> |

@@ -344,6 +344,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       elseif ( $this->_auth_type == 'LDAP' ) {
          $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
          $this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
+         $this->_form->addTextfield('dbsearchuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID'),'','',21,true,'','','','','','',false,'');
+         $this->_form->combine();
+         $this->_form->addText('dbsearchuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID_DESC'));
          $this->_form->addTextfield('dbcolumnuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID'),'','',21,true,'','','','','','',false,'');
          $this->_form->combine();
          $this->_form->addText('dbcolumnuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC'));
@@ -425,9 +428,23 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	$this->_form->addEmptyLine();
       	$this->_form->addRadioGroup('password_secure_check',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_CONTROL'),'',$this->_yes_no_array,'','',true,'','',$disabled);	      
 	      $this->_form->addRadioGroup('password_bigchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_BIGCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      $this->_form->addRadioGroup('password_number',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_NUMBER'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      $this->_form->addRadioGroup('password_smallchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SMALLCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
 	      $this->_form->addRadioGroup('password_specialchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',1,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('days_before_expiring_sendmail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SEND_MAIL'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
+	      
+	      
       }
+      $this->_form->addEmptyLine();
+      //Datenschutz
+      $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',false);
+      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',2,10,false,'','','','','','',false);
+      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',false);
+      $this->_form->addTextfield('trys_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
+      #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
 
 
       // specific options
@@ -438,7 +455,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       }
 
       // buttons
-      $this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_SAVE_BUTTON'),'','','','','',$disabled);
+      $this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_SAVE_BUTTON'),'','','','','',false);
    }
 
    /** loads the selected and given values to the form
@@ -490,8 +507,21 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['password_bigchar'] = $this->_item->getPasswordSecureBigchar();
          $this->_values['password_specialchar'] = $this->_item->getPasswordSecureSpecialchar();
          $this->_values['password_length'] = $this->_item->getPasswordLength();
+         $this->_values['password_smallchar'] = $this->_item->getPasswordSecureSmallchar();
+         $this->_values['password_number'] = $this->_item->getPasswordSecureNumber();
+         
+         
          $current_context = $this->_environment->getCurrentContextItem();
-
+         
+         // Datenschutz
+         $this->_values['temporary_lock'] = $this->_item->getTemporaryLock();
+         $this->_values['seconds_interval'] = $current_context->getLockTimeInterval();
+         $this->_values['temporary_minutes'] = $current_context->getLockTime();
+         $this->_values['password_generation'] = $current_context->getPasswordGeneration();
+         $this->_values['password_expiration'] = $current_context->getPasswordExpiration();
+         $this->_values['try_until_lock'] = $current_context->getTryUntilLock();
+         $this->_values['days_before_expiring_sendmail'] = $current_context->getDaysBeforeExpiringPasswordSendMail();
+         
          if( empty($this->_values['password_secure_check'])){
          	$this->_values['password_secure_check'] = 2;
          	$this->_disable_password_check = true;
@@ -511,6 +541,40 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          if( empty($this->_values['password_specialchar'])){
          	$this->_values['password_specialchar'] = 2;
          }
+         if( empty($this->_values['password_number'])){
+         	$this->_values['password_number'] = 2;
+         }
+         if( empty($this->_values['password_smallchar'])){
+         	$this->_values['password_smallchar'] = 2;
+         }
+         
+         // Datenschutz
+         if( empty($this->_values['temporary_lock'])){
+         	$this->_values['temporary_lock'] = 2;
+         }
+         if( empty($this->_values['seconds_interval'])){
+         	$this->_values['seconds_interval'] = 0;
+         }
+         if( empty($this->_values['temporary_minutes'])) {
+         	$this->_values['temporary_minutes'] = 0;
+         }
+         if( empty($this->_values['password_generation'])) {
+         	$this->_values['password_generation'] = 0;
+         }
+         if( empty($this->_values['password_expiration'])) {
+         	$this->_values['password_expiration'] = 0;
+         }
+         if( empty($this->_values['try_until_lock'])) {
+         	$this->_values['try_until_lock'] = 0;
+         }
+         
+         
+//          if($this->_values['temporary_lock'] == 2){
+//          	$this->
+//          } else {
+         	
+//          }
+         
 
          if ( $this->_item->getItemID() == $current_context->getAuthDefault() ) {
             $this->_values['default'] = 1;
@@ -674,6 +738,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
                $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
             }
+            if ( !empty($auth_data_array['DBSEARCHUSERID']) ) {
+               $this->_values['dbsearchuserid'] = $auth_data_array['DBSEARCHUSERID'];
+            }
          }
          
          // Typo3Web
@@ -710,6 +777,17 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          }
         
       } else {
+      	// Datenschutz
+      	if( empty($this->_values['temporary_lock'])){
+      		$this->_values['temporary_lock'] = 2;
+      	}
+      	if( empty($this->_values['seconds_interval'])){
+      		$this->_values['seconds_interval'] = 0;
+      	}
+      	if( empty($this->_values['temporary_minutes'])) {
+      		$this->_values['temporary_minutes'] = 0;
+      	}
+      	
          $this->_values['auth_source'] = -1;
       }
    }

@@ -36,20 +36,25 @@
 
 			// get ids of linked items
 			$selected_ids = $this->getLinkedItemIDArray($item);
-
+			
+			// get linked item
+			$temp_item = $item_manager->getItem($link_id);
+			
+			if(isset($temp_item)) {
+				$manager = $this->_environment->getManager($temp_item->getItemType());
+				$linked_item = $manager->getItem($link_id);
+			}
+			
+			$type = $linked_item->getType();
+			if($type === 'label') {
+				$type = $linked_item->getLabelType();
+			}
+			
 			// update id array
 			if($checked === true) {
 				// add
 				$selected_ids[] = $link_id;
 				$selected_ids = array_unique($selected_ids);	// ensure uniqueness
-
-				// get linked item
-				$temp_item = $item_manager->getItem($link_id);
-
-				if(isset($temp_item)) {
-					$manager = $this->_environment->getManager($temp_item->getItemType());
-					$linked_item = $manager->getItem($link_id);
-				}
 
 				// collect new item information
 				$entry = array();
@@ -57,17 +62,11 @@
 				$converter = $this->_environment->getTextConverter();
 				$translator = $this->_environment->getTranslationObject();
 
-				$type = $linked_item->getType();
-				if($type === 'label') {
-					$type = $linked_item->getLabelType();
-				}
-
 				$logoInformation = $this->getUtils()->getLogoInformationForType($type);
 				$text = $logoInformation["text"];
 				$img = $logoInformation["img"];
 
 				$link_creator_text = $text . ' - ' . $translator->getMessage('COMMON_LINK_CREATOR') . ' ' . $entry['creator'];
-
 				switch($type) {
 					case CS_DISCARTICLE_TYPE:
 						$linked_iid = $linked_item->getDiscussionID();
@@ -79,6 +78,57 @@
 						$material_manager = $this->_environment->getMaterialManager();
 						$linked_item = $material_manager->getItem($linked_iid);
 						break;
+					case CS_USER_TYPE:
+						if ( isset($item) && $item->isGrouproomActivated()){
+							// room exists in group
+							$group_room = $item->getGroupRoomItem();
+							// build new user_item
+							$user_manager = $this->_environment->getUserManager();
+							$related_user = $user_manager->getItem($link_id);
+							$private_room_user_item = $related_user->getRelatedPrivateRoomUserItem();
+							if ( isset($private_room_user_item) ) {
+								$user_item = $private_room_user_item->cloneData();
+								$picture = $private_room_user_item->getPicture();
+							} else {
+								$user_item = $related_user->cloneData();
+								$picture = $related_user->getPicture();
+							}
+							$user_item->setVisibleToLoggedIn();
+							$user_item->setContextID($group_room->getItemID());
+							if (!empty($picture)) {
+								$value_array = explode('_',$picture);
+								$value_array[0] = 'cid'.$user_item->getContextID();
+								$new_picture_name = implode('_',$value_array);
+							
+								$disc_manager = $environment->getDiscManager();
+								$disc_manager->copyImageFromRoomToRoom($picture,$user_item->getContextID());
+								$user_item->setPicture($new_picture_name);
+							}
+							
+							// check room entry
+							
+							if($group_room->checkNewMembersAlways()){
+								// 
+								$user_item->request();
+								$user_item->save();
+							} else if($group_room->checkNewMembersWithCode()){
+								// user must enter the correct code if he wants to join the room
+								#$user_item->save();
+							} else if($group_room->checkNewMembersNever()){
+								// user is now member of the room
+								$user_item->makeUser();
+								$user_item->save();
+							}
+							#$room_item = $linked_item->getLinkedProjectItem();
+							#$room_item->a
+						}
+						// if we assign a user...
+						if ( isset($item) && $item->getType() === CS_TODO_TYPE )
+						{
+							// ...to a task
+							$item->addProcessor($linked_item);
+							break;
+						}
 					default:
 						$linked_iid = $linked_item->getItemID();
 				}
@@ -123,7 +173,14 @@
 				$return['linked_item'] = $entry;
 			} else {
 				// remove
-				if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
+				if ( $type === CS_USER_TYPE && $item->getType() === CS_TODO_TYPE )
+				{
+					$item->removeProcessor($linked_item);
+				}
+				else
+				{
+					if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
+				}
 			}
 
 			// update item

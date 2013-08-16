@@ -85,6 +85,19 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
       $addon_link_list->add($link_item);
    }
+   
+   $contextItem = $environment->getCurrentContextItem();
+   if ( $context_item->withLimesurveyFunctions() && $contextItem->isPortal() )
+   {
+   		$link_item = new cs_link();
+   		$link_item->setTitle($translator->getMessage('LIMESURVEY_CONFIGURATION_LINK'));
+   		$link_item->setIconPath('images/cs_config/LIMESURVEY_CONFIGURATION_IMAGE.gif');
+   		$link_item->setDescription($translator->getMessage('LIMESURVEY_CONFIGURATION_DESC'));
+   		$link_item->setContextID($environment->getCurrentContextID());
+   		$link_item->setModule('configuration');
+   		$link_item->setFunction('limesurvey');
+   		$addon_link_list->add($link_item);
+   }
 
    #########################################
    # Wiki - Raum-Wiki
@@ -138,7 +151,51 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
       $addon_link_list->add($link_item);
    }
-
+   
+   ################################################
+   # Datenschutz data security Server
+   ###############################################
+   
+if($context_item->isPortal()){
+	   $link_item = new cs_link();
+	   $link_item->setTitle($translator->getMessage('CONFIGURATION_DATA_SECURITY'));
+	   $link_item->setIconPath('images/cs_config/CONFIGURATION_DATASECURITY_PREFERENCES.gif');
+	   $link_item->setDescription($translator->getMessage('CONFIGURATION_DATA_SECURITY_DESC_2'));
+	   $link_item->setContextID($environment->getCurrentContextID());
+	   $link_item->setModule('configuration');
+	   $link_item->setFunction('datasecurity');
+	   #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+	   $addon_link_list->add($link_item);
+   }
+   
+   ###############################################
+   # Datenschutz data security Server
+   ###############################################
+   if($context_item->isServer()){
+	   $link_item = new cs_link();
+	   $link_item->setTitle($translator->getMessage('CONFIGURATION_LOG_DATA'));
+	   $link_item->setIconPath('images/cs_config/PREFERENCES_LISTVIEWS_CONFIGURATION.gif');
+	   $link_item->setDescription($translator->getMessage('CONFIGURATION_DATA_SECURITY_DESC'));
+	   $link_item->setContextID($environment->getCurrentContextID());
+	   $link_item->setModule('configuration');
+	   $link_item->setFunction('datasecurity');
+	   #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+	   $addon_link_list->add($link_item);
+   }
+   ###############################################
+   # delete inactive user
+   ###############################################
+   if($context_item->isPortal()){
+   	$link_item = new cs_link();
+   	$link_item->setTitle($translator->getMessage('CONFIGURATION_DELETE_INACTIVE_USER'));
+   	$link_item->setIconPath('images/cs_config/SERVER_AUTOACCOUNTS_LINK.gif');
+   	$link_item->setDescription($translator->getMessage('CONFIGURATION_DELETE_INACTIVE_USER_DESC'));
+   	$link_item->setContextID($environment->getCurrentContextID());
+   	$link_item->setModule('configuration');
+   	$link_item->setFunction('inactive');
+   	#$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+   	$addon_link_list->add($link_item);
+   }
    ################################################
    # plugins - special configuration of one plugin
    ################################################

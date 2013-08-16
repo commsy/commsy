@@ -29,4 +29,10 @@
 // set flag = flag
 $c_datenschutz_disable_overwriting = true;
 
+// data security expiration email
+$c_password_expiration_send_email_days = '14';
+
+// data security
+$c_default_value_login_as_xy_for_new_moderator = true;
+
 ?>

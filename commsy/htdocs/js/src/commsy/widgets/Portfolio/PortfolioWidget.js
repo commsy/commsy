@@ -261,6 +261,11 @@ define(
 			}));
 		},
 		
+		onRefreshPortfolios: function(event)
+		{
+			this.loadPortfolios();
+		},
+		
 		/**
 		 * \brief	toggle event
 		 * 

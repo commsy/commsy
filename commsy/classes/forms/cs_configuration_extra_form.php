@@ -97,6 +97,8 @@ class cs_configuration_extra_form extends cs_rubric_form {
       #$this->_array_extra[7]['value'] = 'CONFIGURATION_EXTRA_GROUPROOM';
       $this->_array_extra[8]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_LOGARCHIVE');
       $this->_array_extra[8]['value'] = 'CONFIGURATION_EXTRA_LOGARCHIVE';
+//       $this->_array_extra[9]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_LOG_IP');
+//       $this->_array_extra[9]['value'] = 'CONFIGURATION_EXTRA_LOG_IP';
       $this->_array_extra[20]['text']  = '----------------------';
       $this->_array_extra[20]['value'] = 'disabled';
 

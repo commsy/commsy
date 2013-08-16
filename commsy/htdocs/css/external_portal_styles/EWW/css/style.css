@@ -1,0 +1,1022 @@
+@CHARSET "UTF-8";
+
+/*
+Theme Name: www.effective-webwork.de
+Theme URI: http://www.effective-webwork.de/
+Description: Theme for effective-webwork.de.
+Author: effective WEBWORK
+Author URI: http://www.effective-webwork.de/
+Version: 1.0
+*/
+
+/* 
+----------------------------------------------------------------------
+build in: April 2013
+copyright: banality GmbH
+----------------------------------------------------------------------
+*/
+
+
+
+/*
+----------------------------------------------------------------------
+global structure - tag definitions
+----------------------------------------------------------------------
+*/
+
+body {
+    margin: 0px;
+    border: 0px none;
+    padding: 0px;
+    background-color: #FFF;
+    color: #686868;
+    font-family: verdana, sans-serif;
+    text-align: left;
+    font-size: 12px;
+    line-height: 18px;
+    }
+
+p, form, ul, ol, li, h1, h2, h3, h4, h5, h6 {
+    margin: 0px;
+    border: 0px none;
+    padding: 0px;
+    }
+
+img {
+    border: 0px none;
+    }
+
+   
+   
+/*
+----------------------------------------------------------------------
+id and class selectors
+----------------------------------------------------------------------
+*/ 
+   
+.clear {
+    clear: both;
+    }
+    
+.wrapper {
+    width: 980px;
+    margin: 0px auto;
+   
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+header
+----------------------------------------------------------------------
+*/ 
+
+#header {
+
+    }
+
+#header_logo {
+    display: block;
+    float: left;
+    padding: 20px 0;
+    }
+  
+#main_navigation {
+    list-style-type: none;
+    float: right;
+    margin-right: -26px;
+    }
+
+#main_navigation li {
+    float: left;
+    }
+
+#main_navigation li a {
+    font-size: 13px;
+    text-transform: uppercase;
+    display: block;
+    padding: 40px 26px 32px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-right: -1px;
+    }
+
+#main_navigation li a#mn_home {
+    color: #686868;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/mn_home_bg.gif) center 0px no-repeat; 
+    }
+
+#main_navigation li a#mn_home:hover, #main_navigation li a#mn_home_active {
+    color: #FFF;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/mn_home_bg.gif) center -90px no-repeat;
+    }
+
+#main_navigation li a.mn_normal {
+    color: #686868;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/mn_normal_bg.png) 0px 0px no-repeat;
+    }
+
+#main_navigation li a.mn_normal:hover, #main_navigation li a.mn_normal_active {
+    color: #FFF;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/mn_normal_bg.png) 0px -90px no-repeat;
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+stage
+----------------------------------------------------------------------
+*/
+
+.stage_area {
+    
+    }
+
+.rotator_content {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/stage_shadow.png) repeat-x;
+    height: 400px;
+    }
+
+.rotator_item {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/rot_item_bg.png) no-repeat;
+    height: 200px;
+    width: 460px;
+    float: right;
+    margin-top: 150px;
+    margin-bottom: 40px;
+    }
+
+a.rot_more {
+    float: right;
+    display: block;
+    height: 34px;
+    width: 34px;
+    margin: 8px 8px 0px 0px;
+    text-decoration: none;
+    }
+
+a.rot_more:hover {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_rot_more.jpg) no-repeat;
+    }
+
+.rotator_item h2 {
+    font-size: 22px;
+    font-weight: normal;
+    padding: 40px 25px 20px 25px;
+    }
+
+.rotator_item h2 strong {
+    text-transform: uppercase;
+    }
+
+.rotator_item h3 {
+    font-size: 13px;
+    font-weight: normal;
+    font-style: italic;
+    padding: 0px 25px;
+    }
+
+.rotator_item h2 a, .rotator_item h3 a {
+    color: #FFF;
+    text-decoration: none;
+    }
+
+#rot_navigation {
+    height: 10px;
+    background: #FFF;
+    padding: 2px 0px 0px 2px;
+    }
+
+#rot_navigation a {
+    height: 8px;
+    width: 100px;
+    display: block;
+    text-decoration: none;
+    line-height: 2px;
+    font-size: 2px;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_rot_item.jpg) no-repeat 0px -8px;
+    float: left;
+    margin-right: 2px;
+    }
+
+#rot_navigation a.rot_active {
+    background-position: 0px 0px;   
+    }
+
+#rot_navigation a:hover, #rot_navigation a.rot_active:hover {
+    background-position: 0px -16px;
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+home
+----------------------------------------------------------------------
+*/
+
+#home_area {
+    padding: 50px 0px;
+    }
+
+#home_area h1 {
+    font-size: 22px;
+    font-weight: normal;
+    text-align: center;
+    padding-bottom: 25px;
+    }
+
+#home_area h2, #home_area h3 {
+    font-size: 15px;
+    line-height: 23px;
+    font-weight: normal;
+    text-align: center;
+    width: 600px;
+    margin: 0px auto;
+    padding-bottom: 20px;
+    }
+
+#home_area h2 a, #home_area h3 a {
+    color: #E60003;
+    text-decoration: none;
+    }
+
+#home_area h2 a:hover, #home_area h3 a:hover {
+    color: #000;
+    border-bottom: 1px dotted #000;
+    }
+
+#home_teaser {
+    padding-top: 30px;
+    margin-right: -25px;
+    }
+
+.ht_item {
+    width: 310px;
+    float: left;
+    margin-right: 25px;
+    }
+
+a#hti_work {
+    font-size: 22px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #686868;
+    display: block;
+    text-align: center;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_work.png) no-repeat center 25px #F0F0F0;
+    padding: 115px 0px 25px 0px;
+    }
+
+a#hti_work:hover {
+    color: #FFF;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_work.png) no-repeat center -160px #BFBFBF;
+    }
+
+a#hti_solutions {
+    font-size: 22px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #686868;
+    display: block;
+    text-align: center;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_solutions.png) no-repeat center 25px #F0F0F0;
+    padding: 115px 0px 25px 0px;
+    }
+
+a#hti_solutions:hover {
+    color: #FFF;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_solutions.png) no-repeat center -160px #BFBFBF;
+    }
+
+a#hti_projects {
+    font-size: 22px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #686868;
+    display: block;
+    text-align: center;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_projects.png) no-repeat center 25px #F0F0F0;
+    padding: 115px 0px 25px 0px;
+    }
+
+a#hti_projects:hover {
+    color: #FFF;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_projects.png) no-repeat center -160px #BFBFBF;
+    }
+
+.ht_item p {
+    text-align: center;
+    padding: 25px 0px;
+    }
+
+.btn_actions {
+    text-align: center;
+    padding: 12px 0px;
+    }
+
+a.btn_item {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_bg.jpg) no-repeat top right;
+    color: #FFF;
+    height: 40px;
+    margin-right: 10px;
+    padding: 12px 5px 12px 0px;
+    text-decoration: none;
+    }
+
+a.btn_item span {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_bg_span.jpg) no-repeat;
+    text-transform: uppercase;
+    line-height: 16px;
+    padding: 12px 15px 12px 20px;
+    }
+
+a.btn_item:hover {
+    background-position: bottom right;
+    color: #FFF;
+    }
+
+a.btn_item:hover span {
+    background-position: bottom left;
+    } 
+
+
+
+/*
+----------------------------------------------------------------------
+follow
+----------------------------------------------------------------------
+*/
+
+
+#page_title_bg {
+    padding-top: 114px;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/stage_shadow.png) repeat-x;
+    }
+
+#page_title_bg h3 {
+    font-size: 40px;
+    line-height: 40px;
+    text-transform: uppercase;
+    color: #B3B3B3;
+    }
+
+#sec_navigation {
+    border-bottom: 1px solid #BFBFBF;
+    margin: 50px 0px 40px 0px;
+    }
+
+#sec_navigation ul {
+    list-style-type: none;
+    }
+
+#sec_navigation li {
+    float: left;
+    padding: 0px 25px 5px 0px;
+    }
+
+#sec_navigation a {
+    text-transform: uppercase;
+    color: #ADADAD;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 13px;
+    }
+
+#sec_navigation a:hover {
+    color: #686868;
+    padding-bottom: 6px;
+    border-bottom: 3px solid #686868;
+    }
+
+#sec_navigation a#sec_active {
+    text-transform: uppercase;
+    color: #E60003;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 13px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid #E60003;
+    }
+
+#sec_navigation li.align_right {
+    float: right;
+    padding: 0px 0px 5px 25px !important;
+    }
+
+#hd_image_content {
+    padding-bottom: 40px;
+    }
+
+#columnset {
+    padding-bottom: 50px;
+    }
+
+#left_column {
+    width: 630px;
+    margin-right: 40px;
+    float: left;
+    }
+
+#right_column {
+    width: 310px;
+    float: left;
+    }
+
+#right_column h2 {
+    font-size: 13px;
+    line-height: 17px;
+    font-weight: normal;
+    padding-bottom: 10px;
+    border-bottom: 1px dotted #B9B9B9;
+    }
+
+#right_column .teaser {
+    padding-bottom: 40px;
+    }
+
+#right_column .teaser_content {
+    border-top: 1px solid #FFF;
+    background: #F0F0F0;
+    padding: 20px;
+    }
+
+.teaser_content ul {
+    padding: 0px 0px 20px 15px;
+    margin: 0px;
+    }
+
+.teaser_content li {
+    list-style-type: square;
+    }
+
+.teaser_content a.link_extern {
+    color: #E60003;
+    text-decoration: none;
+    }
+
+.teaser_content a.link_extern:hover {
+    color: #000;
+    border-bottom: 1px dotted #000;
+    }
+
+.addres_sep {
+    width: 35px;
+    display: block;
+    float: left;
+    }
+
+#google_maps {
+    padding-bottom: 50px;
+    }
+
+#google_maps h2 {
+    font-size: 22px;
+    line-height: 26px;
+    font-weight: normal;
+    padding: 40px 0px 30px 0px;
+    }
+
+#person_area {
+    
+    }
+
+.person_item {
+    padding-bottom: 50px;
+    }
+
+.person_left {
+    width: 310px;
+    margin-right: 40px;
+    float: left;
+    }
+
+.person_right {
+    width: 630px;
+    float: left;
+    }
+
+.person_right h2 {
+    font-size: 22px;
+    font-weight: normal;
+    padding-bottom: 15px;
+    }
+
+.person_right h3 {
+    font-size: 13px;
+    font-weight: normal;
+    padding-bottom: 15px;
+    }
+
+.person_contact {
+    padding-bottom: 15px;
+    }
+
+.person_right .btn_red_phone {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_red_phone.gif) no-repeat left center;
+    padding-left: 15px;
+    color: #E60003;
+    display: block;
+    width: 200px;
+    float: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+    }
+
+.person_right .btn_red_mess {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_red_mess.gif) no-repeat left center;
+    padding-left: 15px;
+    font-weight: bold;
+    }
+
+.person_right .btn_red_xing {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_red_xing.gif) no-repeat left center;
+    padding-left: 15px;
+    }
+    
+.person_right .btn_red_twitter {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_red_twitter.gif) no-repeat left center;
+    padding-left: 15px;
+    }
+    
+.person_right .btn_red_extern {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_red_extern.gif) no-repeat left center;
+    padding-left: 15px;
+    }        
+
+.person_right a {
+    color: #E60003;
+    text-decoration: none;
+    }
+
+.person_right a:hover {
+    color: #000;
+    text-decoration: underline;
+    }
+
+.person_contact a {
+    display: block;
+    width: 200px;
+    float: left;
+    margin-bottom: 5px;
+    }
+
+
+
+
+
+
+/*
+----------------------------------------------------------------------
+maincontent
+----------------------------------------------------------------------
+*/
+
+#maincontent {
+    
+    }
+
+#maincontent h1 {
+    font-size: 22px;
+    line-height: 26px;
+    font-weight: normal;
+    padding-bottom: 30px;
+    }
+
+#maincontent h2 {
+    font-size: 13px;
+    line-height: 17px;
+    font-weight: normal;
+    padding-bottom: 10px;
+    } 
+    
+#maincontent h3 {
+    font-size: 18px;
+    line-height: 22px;
+    font-weight: bold;
+    } 
+    
+#maincontent h4 {
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: bold;
+    } 
+    
+#maincontent h5 {
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: bold;
+    } 
+    
+#maincontent h6 {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: bold;
+    }                 
+    
+#maincontent p {
+    padding-bottom: 20px;
+    line-height: 20px;
+    }
+
+#maincontent ul, #maincontent ol {
+    margin: 0px 0px 25px 20px;
+    } 
+
+.form_view_plain table {
+	border-top: 1px dotted #B9B9B9;    
+	margin-bottom: 25px;
+    }
+
+#old_maincontent th {
+    background: #F0F0F0;
+    }
+
+#old_maincontent td, #old_maincontent th {
+    border-left: 2px solid #E9E6E6;
+    border-bottom: 2px solid #E9E6E6;
+    padding: 5px;
+    }
+
+#maincontent a {
+    color: #E60003;
+    text-decoration: none;
+    }
+
+#maincontent a:hover {
+    color: #000;
+    border-bottom: 1px dotted #000;
+    }
+
+
+
+/*
+----------------------------------------------------------------------
+projects
+----------------------------------------------------------------------
+*/
+
+#project_area {
+    margin-right: -25px;
+    padding-bottom: 25px;
+    }
+
+.project_item {
+    width: 310px;
+    float: left;
+    margin: 0px 25px 25px 0px;
+    }
+
+.pi_content {
+    height: 345px;
+    width: 310px;
+    position: relative;
+    }
+
+.pi_logo {
+    background: #F0F0F0;
+    text-align: center;
+    border-bottom: 1px solid #FFF;
+    height: 250px;
+    }
+
+.pi_content h3 {
+    border-top: 1px dotted #B9B9B9;
+    font-weight: normal;
+    font-size: 10px;
+    padding: 10px 0px 3px 0px;
+    }
+
+.pi_content h2 {
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 26px;
+    }
+
+.project_item:hover h3, .project_item:hover h2 {
+    color: #E60003;
+    }
+   
+.project_item:hover h3.hl_no_more, .project_item:hover h2.hl_no_more {
+    color: #444 !important;
+    }   
+    
+.project_item:hover .pi_overlay_more, .project_item:hover .pi_overlay_no_more {
+    display: block;
+    z-index: 100;
+    }
+
+.pi_overlay_more {
+    position: absolute;
+    width: 310px;
+    height: 250px;
+    display: none;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/pi_more.png);
+    }
+
+.pi_overlay_no_more {
+    position: absolute;
+    width: 310px;
+    height: 250px;
+    display: none;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/pi_nomore.png);
+    }
+
+.pi_o_content {
+    padding: 25px;
+    }
+
+.pi_overlay_more h4 {
+    color: #FFF;
+    font-size: 22px;
+    font-weight: normal;
+    line-height: 28px;
+    height: 170px;
+    }
+
+.pi_o_content a.btn_item {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_pi_bg.jpg) no-repeat top right !important;
+    }
+
+.pi_o_content a.btn_item span {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_pi_bg_span.jpg) no-repeat !important;
+    }
+
+.pi_o_content a.btn_item:hover {
+    background-position: bottom right !important;
+    color: #FFF;
+    }
+
+.pi_o_content a.btn_item:hover span {
+    background-position: bottom left !important;
+    } 
+
+.pi_overlay_no_more p {
+    color: #FFF;
+    font-size: 13px;
+    padding-bottom: 10px;
+    }
+
+.pi_overlay_no_more a {
+    color: #FFF;
+    font-size: 13px;
+    text-decoration: none;
+    border-bottom: 1px dotted #FFF;
+    }
+
+.pi_overlay_no_more a:hover {
+    color: #444;
+    border-bottom: 1px dotted #444;
+    }
+    
+#client_list {
+    padding-bottom: 50px;
+    }    
+    
+#client_list th {
+    background: #F0F0F0;
+    text-transform: uppercase;
+    font-weight: normal;
+    padding: 25px;
+    }    
+    
+#client_list td {
+    font-size: 10px;
+    padding-left: 10px;
+    border-bottom: 1px dotted #BFBFBF;
+    }     
+
+#client_list tr:hover {
+    background: #FEFEFE;
+    }
+
+#client_list td strong {
+    font-weight: normal;
+    font-size: 14px;
+    display: block;
+    }
+    
+.cl_check {
+    width: 125px;
+    text-align: center;
+    padding: 20px 0px !important;
+    }    
+
+#client_list td a {    
+    color: #E60003;
+    text-decoration: none;  
+    }
+  
+#client_list td a:hover {    
+    color: #B3B3B3;
+    text-decoration: none;  
+    }  
+
+#client_list td strong i {
+    display: none;
+    color: #E60003 !important;
+    }  
+    
+#client_list td a:hover strong i {
+    display: inline;
+    }
+    
+#ps_imagerotator {
+    padding-bottom: 40px;
+    }    
+ 
+ 
+ 
+/*
+----------------------------------------------------------------------
+forms
+----------------------------------------------------------------------
+*/ 
+ 
+form {
+    xborder-top: 1px dotted #B9B9B9;
+    padding-top: 40px;
+    } 
+ 
+form .form_left {
+    float: left;
+    }    
+  
+form .form_right {
+    float: right;
+    }   
+  
+textarea, input {
+    border: 1px solid #B9B9B9;
+    padding: 5px;
+    font-size: 13px;
+    font-style: italic;
+    color: #686868;
+    font-weight: normal;
+    font-family: verdana, sans-serif;
+    margin-bottom: 10px;
+    }    
+    
+textarea:hover, input:hover {
+    background: #FEFEFE;
+    border: 1px dotted #B9B9B9;
+    }   
+    
+form .btn_actions {
+    text-align: left !important;
+    border-top: 1px dotted #B9B9B9;
+    padding: 40px 0px 0px 150px !important;
+    margin-top: 30px;
+    }
+        
+    
+
+/*
+----------------------------------------------------------------------
+footer
+----------------------------------------------------------------------
+*/
+
+#footer {
+    border-top: 5px solid #BFBFBF;
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/footer_bg.gif) no-repeat #323232 center top;
+    height: 250px;
+    font-size: 13px;
+    }
+
+#copyright {
+    background: #252525;
+    }
+
+#copyright p {
+    text-align: right;
+    padding: 20px 0px;
+    }
+
+#footer_col_left:hover a {
+    border-bottom: 1px dotted #666;
+    }
+
+#footer_col_right:hover ul a {
+    border-bottom: 1px dotted #666;
+    }
+
+#footer_col_left {
+    float: left;
+    width: 310px;
+    color: #C7C7C7;
+    }
+
+#footer_col_right {
+    float: right;
+    width: 640px;
+    text-align: right;
+    }
+
+#footer_col_left h2 {
+    padding: 40px 0px 5px 0px;
+    font-size: 22px;
+    color: #FFF;
+    font-weight: normal;
+    }
+
+#footer_col_left h3 {
+    padding: 0px 0px 20px 0px;
+    font-size: 13px;
+    font-weight: normal;
+    border-bottom: 1px dotted #C7C7C7;
+    margin-bottom: 20px;
+    }
+
+#footer_col_left p {
+    padding-bottom: 15px;
+    }
+
+#footer_col_left a {
+    color: #C7C7C7;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 3px 0px 0px 18px;
+    }
+
+#footer_col_left a:hover {
+    color: #FFF;
+    border-bottom: 1px dotted #FFF;
+    }
+
+#footer_col_left strong#btn_phone {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_phone.gif) no-repeat 0px 2px;
+    padding: 0px 0px 0px 18px;
+    }
+
+#footer_col_left a#btn_message {
+    background: url(http://www.effective-webwork.de/wp-content/themes/www.effective-webwork.de/img/btn_message.gif) no-repeat 0px 7px;
+    }
+
+#footer_col_right ul {
+    list-style-type: none;
+    padding: 40px 0px 115px 0px;
+    }
+
+#footer_col_right li {
+    display: inline;
+    padding-left: 20px;
+    }
+
+#footer_col_right li a {
+    color: #C7C7C7;
+    text-decoration: none;
+    text-transform: uppercase;
+    }
+
+#footer_col_right li a:hover {
+    color: #FFF;
+    border-bottom: 1px dotted #FFF;
+    }
+    
+    
+/*
+----------------------------------------------------------------------
+contact
+----------------------------------------------------------------------
+*/
+
+.contact_nachricht,
+.contact_firma,
+.contact_email {
+   width: 470px;
+}
+
+.contact_vorname,
+.contact_telefon {
+   float: left;
+   width: 220px;
+}
+
+.contact_name,
+.contact_fax {
+   float: right;
+   width: 220px;
+}
+
+.contact_strasse {
+   float: left;
+   width: 380px;
+}
+
+.contact_nr {
+   float: right;
+   width: 60px;
+}
+
+.contact_plz {
+   float: left;
+   width: 60px;
+}
+
+.contact_ort {
+   float: right;
+   width: 380px;
+}

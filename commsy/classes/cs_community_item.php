@@ -894,12 +894,20 @@ class cs_community_item extends cs_room_item {
       $translator = $this->_environment->getTranslationObject();
       $default_language = 'de';
       $server_item = $this->_environment->getServerItem();
-      $default_sender_address = $server_item->getDefaultSenderAddress();
+      
+      // maybe in archive mode
+      $toggle_archive = false;
+   	if ( $this->_environment->isArchiveMode() ) {
+   		$toggle_archive = true;
+   		$this->_environment->toggleArchiveMode();
+   	}
+      
+   	$default_sender_address = $server_item->getDefaultSenderAddress();
       if ( empty($default_sender_address) ) {
          $default_sender_address = '@';
       }
       $current_portal = $this->_environment->getCurrentPortalItem();
-         if ( empty($current_portal)
+      if ( empty($current_portal)
            or !$current_portal->isPortal()
          ) {
          $current_portal = $this->getContextItem();
@@ -916,6 +924,12 @@ class cs_community_item extends cs_room_item {
          	$current_user->setEmail($default_sender_address);
          }	
       }
+      
+      if ( $toggle_archive ) {
+      	$this->_environment->toggleArchiveMode();
+      }
+      unset($toggle_archive);
+      
       $moderator_list = $room_item->getModeratorList();
 
       // get moderators

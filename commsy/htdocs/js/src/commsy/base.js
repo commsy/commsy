@@ -9,7 +9,8 @@ define([	"dojo/_base/declare",
         	"commsy/widgets/WidgetManager",
         	"dojo/window",
         	"dojo/dom-geometry",
-        	"dojo/_base/lang"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, Lang) {
+        	"dojo/_base/lang",
+        	"dojo/NodeList-traverse"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, Lang) {
 	return declare(null, {
 		// static
 		baseStatics: {
@@ -93,6 +94,7 @@ define([	"dojo/_base/declare",
 				},
 				postData:	dojo.toJson(data),
 				handleAs:	"json",
+				failOk:		true,
 				error:		Lang.hitch(this, function(errorMessage, ioargs) {
 					/************************************************************************************
 					 * A fatal error occured while performing the ajax request, maybe something went wrong
@@ -189,13 +191,25 @@ define([	"dojo/_base/declare",
 			return request;
 		},
 
-		scrollToNodeAnimated: function(node) {
+		scrollToNodeAnimated: function(node)
+		{
+			/*
+			 * try to find a parent node with class "scrollPopup"
+			 * if not given use main window context as container
+			 */
+			var container = new dojo.NodeList(node).closest(".scrollPopup")[0];
+			
+			if ( container == null )
+			{
+				container = window;
+			}
+			
 			var vs = Window.getBox();
 			var nodePosition = domGeometry.position(node);
 			if(nodePosition.y > vs.t + vs.h || nodePosition.y + nodePosition.h < vs.t) {
 				DojoxFX.smoothScroll({
 					node:		node,
-					win:		window,
+					win:		container,
 					duration:	400
 				}).play();
 			}

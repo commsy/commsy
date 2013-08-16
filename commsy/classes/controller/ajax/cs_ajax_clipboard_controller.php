@@ -226,7 +226,7 @@
 		   
 		   // item data
 		   $data[$index]["items"][] = array(
-		   "disabled"			=> ($entry->isNotActivated() && !($$entry>getCreatorID() == $current_user->getItemID() || $current_user->isModerator())) ? true : false,
+		   "disabled"			=> ($entry->isNotActivated() && !($entry->getCreatorID() == $current_user->getItemID() || $current_user->isModerator())) ? true : false,
 		   "item_id"			=> $entry->getItemID(),
 		   "title"				=> $title,
 		      "rubric"			=> $this->getUtils()->getLogoInformationForType($entry->getItemType()),
@@ -303,6 +303,11 @@
 				      $error_array[] = 'ERROR: copy items in archived workspaces is not allowed';
 				   }
 				   // archive
+				   
+				   elseif ( $this->_environment->inPortal() )
+				   {
+				   	$error_array[] = 'ERROR: copy items in portal is not allowed';
+				   }
 				   
 					elseif (!empty($ids)) {
 						foreach ($ids as $id) {

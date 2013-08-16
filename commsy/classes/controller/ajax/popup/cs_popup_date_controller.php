@@ -35,7 +35,8 @@ class cs_popup_date_controller {
 
 				$file = $file_list->getFirst();
 				while($file) {
-					$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					#$info['file_name']	= $converter->text_as_html_short($file->getDisplayName());
+					$info['file_name']	= $converter->filenameFormatting($file->getDisplayName());
 					$info['file_icon']	= $file->getFileIcon();
 					$info['file_id']	= $file->getFileID();
 
@@ -181,6 +182,7 @@ class cs_popup_date_controller {
     public function save($form_data, $additional = array()) {
 
         $environment = $this->_environment;
+        $text_converter = $this->_environment->getTextConverter();
 
         if ($additional["contextId"]) {
         	$itemManager = $this->_environment->getItemManager();
@@ -463,7 +465,7 @@ class cs_popup_date_controller {
 						$buzzword_manager = $environment->getBuzzwordManager();
 						$buzzword_item = $buzzword_manager->getNewItem();
 						$buzzword_item->setLabelType('buzzword');
-						$buzzword_item->setName($new_buzzword);
+						$buzzword_item->setName($text_converter->sanitizeHTML($new_buzzword));
 						$buzzword_item->setCreatorItem($current_user);
 						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
 						$buzzword_item->save();

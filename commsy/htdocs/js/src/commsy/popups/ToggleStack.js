@@ -7,11 +7,13 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/_base/lang"], function(declare, WidgetPopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang) {
 	return declare(WidgetPopupHandler, {
-		constructor: function(button_node, content_node) {
+		constructor: function(button_node, content_node, widgetManager) {
 			// parent constructor is called automatically
 			this.module = "stack";
 			
 			this.features = [ ];
+			
+			this.widgetManager = widgetManager;
 		},
 		
 		onTogglePopup: function() {
@@ -35,6 +37,8 @@ define([	"dojo/_base/declare",
 			
 			this.loadWidgetsManual(widgetArray).then(
 				Lang.hitch(this, function(results) {
+					// old method
+					
 					// place widgets
 					dojo.forEach(results, Lang.hitch(this, function(result, index, arr) {
 						if (index === 0) {
@@ -43,6 +47,17 @@ define([	"dojo/_base/declare",
 							result.handle.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
 						}
 					}));
+					
+					if ( this.from_php.ownRoom.withPortfolio ) {
+						// new method
+						this.widgetManager.GetInstances([
+						    [ "commsy/widgets/Stack/StackPortfolioMini", {}, true ]
+						]).then(Lang.hitch(this, function(deferred) {
+							var stackPortfolioMini = deferred[0].instance;
+							
+							stackPortfolioMini.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
+						}));
+					}
 				})
 			);
 		}

@@ -1458,7 +1458,7 @@ class cs_form_view extends cs_view {
             if ($first) {
                $first = false;
             }
-         }elseif ($form_element['type'] == 'titletext') {
+         }elseif ($form_element['type'] == 'titletext' AND $form_element['name'] != 'logdata') {
             $html .= '         '.$this->_getTitleTextAsHTML($form_element);
             if ($first) {
                $first = false;

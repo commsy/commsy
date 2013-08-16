@@ -504,6 +504,16 @@
 			$context_array = $this->_getAllOpenContextsForCurrentUser();
 			$current_portal = $this->_environment->getCurrentPortalItem();
 			$context_manager = $this->_environment->getRoomManager();
+
+         $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
+         if ( isset($with_archving_rooms)
+      	     and $with_archving_rooms
+            ) {
+			   $this->_environment->toggleArchiveMode();
+			   $context_manager2 = $this->_environment->getRoomManager();
+			   $this->_environment->toggleArchiveMode();
+         }
+         
 			$room_array = array();
 			
 			// this holds last headline and subline
@@ -559,6 +569,13 @@
 				$checked_room_id_array[] = $item_id;
 				
 				$context_item = $context_manager->getItem($item_id);
+				
+				if ( !isset($context_item)
+					  and isset($context_manager2)
+					) {
+					$context_item = $context_manager2->getItem($item_id);
+				}
+				
 				if (is_object($context_item)){
 					$room['color_array'] = $context_item->getColorArray();
 					$room['activity_array'] = $context_item->getActiveAndAllMembersAsArray();

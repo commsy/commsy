@@ -342,6 +342,7 @@
 	      	$html = '';
 	      	$restriction_array= array();
 			$environment = $this->_environment;
+			$converter = $environment->getTextConverter();
 			$translator = $environment->getTranslationObject();
            	$params = $environment->getCurrentParameterArray();
       		if ( isset($params['seltag'])
@@ -481,6 +482,12 @@
 	   			$parameters['environment'] = $environment;
 	   			$parameters['with_modifying_actions'] = 'no';
 	         	$view_object = new cs_view($parameters);
+	         	
+	         	if ( isset($params['search']) and !empty($params['search']) ){
+	         		
+	         		$params['search'] = $converter->sanitizeHTML($params['search']);
+	         	}
+	         	
 	         	/*
 	         	if ( isset($params['search']) and !empty($params['search']) ){
 	            	$new_params = $params;

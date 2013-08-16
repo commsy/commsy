@@ -1822,6 +1822,7 @@ class cs_user_item extends cs_item {
          $tag_manager = $this->_environment->getTagManager();
          $todo_manager = $this->_environment->getToDoManager();
          $step_manager = $this->_environment->getStepManager();
+         
 
          // replace users entries with the standart message for deleted entries
          $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
@@ -1836,7 +1837,56 @@ class cs_user_item extends cs_item {
          	$tag_manager->deleteTagsOfUser($this->getItemID());
    		 }
          $step_manager->deleteStepsOfUser($this->getItemID());
+         
+         
    	}
+
+   }
+   
+   function deleteAllEntriesOfUserByInactivity(){
+
+   	$portal_manager = $this->_environment->getPortalManager();
+   	$portal = $portal_manager->getItem($this->getContextID());
+   	
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_array = $user_manager->getAllUserItemArray($this->getUserID());
+   	// falscher benutzer wird durchlaufen: es müssen alle user items durchlaufen werden
+   	// replace entries
+   	#pr($user_array);
+   	if($portal->isInactivityOverwriteContent()) {
+   		$announcement_manager = $this->_environment->getAnnouncementManager();
+   		$dates_manager = $this->_environment->getDatesManager();
+   		$discussion_manager = $this->_environment->getDiscussionManager();
+   		$discarticle_manager = $this->_environment->getDiscussionarticleManager();
+   		$material_manager = $this->_environment->getMaterialManager();
+   		$section_manager = $this->_environment->getSectionManager();
+   		$annotation_manager = $this->_environment->getAnnotationManager();
+   		$label_manager = $this->_environment->getLabelManager();
+   		$tag_manager = $this->_environment->getTagManager();
+   		$todo_manager = $this->_environment->getToDoManager();
+   		$step_manager = $this->_environment->getStepManager();
+   		 
+   	foreach ($user_array as $user){
+   		// replace users entries with the standart message for deleted entries
+   		$announcement_manager->deleteAnnouncementsofUser($user->getItemID());
+   		$dates_manager->deleteDatesOfUser($user->getItemID());
+   		$discussion_manager->deleteDiscussionsOfUser($user->getItemID());
+   		$discarticle_manager->deleteDiscarticlesOfUser($user->getItemID());
+   		$material_manager->deleteMaterialsOfUser($user->getItemID());
+   		$section_manager->deleteSectionsOfUser($user->getItemID());
+   		$annotation_manager->deleteAnnotationsOfUser($user->getItemID());
+   		$label_manager->deleteLabelsOfUser($user->getItemID());
+   		if ( empty($disable_overwrite) or $disable_overwrite != 'flag'){
+   			$tag_manager->deleteTagsOfUser($user->getItemID());
+   		}
+   		$step_manager->deleteStepsOfUser($user->getItemID());
+   	}
+   		 
+   		 
+   	}
+   	$room_manager = $this->_environment->getRoomManager();
+   	$room_manager->deleteRoomOfUserAndUserItemsInactivity($this->getUserID());
+   	
    }
 
    function setAGBAcceptance () {
@@ -2230,5 +2280,235 @@ class cs_user_item extends cs_item {
    function setLastLoginPlugin ($value, $plugin) {
       $this->_addExtra('LASTLOGIN_'.mb_strtoupper($plugin),(string)$value);
    }
+   
+   function isTemporaryLocked () {
+   	$retour = false;
+   	if( $this->_issetExtra('TEMPORARY_LOCK')){
+   		include_once('functions/date_functions.php');
+   		$date = $this->_getExtra('TEMPORARY_LOCK');
+   		if(getCurrentDateTimeInMySQL() > $date){
+   			$retour = false;
+   		} else {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
+   function setLock($days){
+   	include_once('functions/date_functions.php');
+   	$this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function getLock(){
+   	$retour = '';
+   	if ( $this->_issetExtra('LOCK') ) {
+   		$retour = $this->_getExtra('LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function isLocked(){
+   	$retour = false;
+   	if( $this->_issetExtra('LOCK')){
+   		include_once('functions/date_functions.php');
+   		$date = $this->_getExtra('LOCK');
+   		if(getCurrentDateTimeInMySQL() > $date){
+   			$retour = false;
+   		} else {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
+   function setTemporaryLock () {
+   	include_once('functions/date_functions.php');
+   	$lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
+   	$this->_addExtra('TEMPORARY_LOCK', getCurrentDateTimePlusMinutesInMySQL($lock_time));
+   }
+   
+   function getTemporaryLock () {
+   	$retour = '';
+   	if ( $this->_issetExtra('TEMPORARY_LOCK') ) {
+   		$retour = $this->_getExtra('TEMPORARY_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function unsetTemporaryLock () {
+   	$this->_unsetExtra('TEMPORARY_LOCK');
+   }
+   // save last used passwords
+   function setGenerationPassword ($generation, $password){
+   	$this->_addExtra('PW_GENERATION_'.$generation, $password);
+   }
+   
+   function getGenerationPassword($generation){
+   	if($this->_issetExtra('PW_GENERATION_'.$generation)){
+   		$retour = $this->_getExtra('PW_GENERATION_'.$generation);
+   	}
+   }
+   
+   function setNewGenerationPassword ($password) {
+   	$portal_item = $this->_environment->getCurrentPortalItem();
+   	
+   	$i = $portal_item->getPasswordGeneration();
+   	if($i != 0){
+	   	// shift hashes for a new generation password
+	   	for($i;$i > 0;$i--){
+	   		if($this->_issetExtra('PW_GENERATION_'.($i-1)) AND $i != 1){
+	   			$this->_addExtra('PW_GENERATION_'.$i, $this->_getExtra('PW_GENERATION_'.($i-1)));
+	   		}
+	   	}
+	   	$this->_addExtra('PW_GENERATION_1', $password);
+   	}
+   	unset($portal_item);
+   }
+   
+   function isPasswordInGeneration($password) {
+   	$portal_item = $this->_environment->getCurrentPortalItem();
+   	
+   	$retour = false;
+   	$i=$portal_item->getPasswordGeneration();
+   	for($i;$i > 0;$i--){
+   		if($this->_issetExtra('PW_GENERATION_'.($i))){
+   			if($this->_getExtra('PW_GENERATION_'.$i) == $password){
+   				$retour = true;
+   			}
+   		}
+   	}
+   	unset($portal_item);
+   	return $retour;
+   }
+   
+   function deactivateLoginAsAnotherUser () {
+   	$this->_addExtra('DEACTIVATE_LOGIN_AS', '1');
+   }
+   
+   function unsetDeactivateLoginAsAnotherUser () {
+   	$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+   }
+   
+   function isDeactivatedLoginAsAnotherUser () {
+   	$retour = false;
+   	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
+   		$flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
+   		if($flag){
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+
+   }
+   
+   function setPasswordExpireDate($days) {
+   	if($days == 0){
+   		$this->_setValue('expire_date', 'NULL');
+   	} else {
+   		$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
+   	}
+   	
+   	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function unsetPasswordExpireDate() {
+   	$this->_setValue('expire_date', '');
+   }
+   
+   function getPasswordExpireDate() {
+   	return $this->_getValue('expire_date');
+//    	$retour = '';
+//    	if($this->_issetExtra('PW_EXPIRE_DATE')){
+//    		$retour = $this->_getExtra('PW_EXPIRE_DATE');
+//    	}
+//    	return $retour;
+   }
+   
+   function isPasswordExpired() {
+   	$retour = false;
+   	if ($this->_getValue('expire_date') < getCurrentDateTimeInMySQL()){
+   		$retour = true;
+   	}
+   	return $retour;
+   	
+   }
+   
+   function isPasswordExpiredEmailSend() {
+   	$retour = false;
+   	if( $this->_issetExtra('PASSWORD_EXPIRED_EMAIL')){
+   		$retour = true;
+   	}
+   	return $retour;
+   }
+   
+   function setPasswordExpiredEmailSend() {
+   	$this->_addExtra('PASSWORD_EXPIRED_EMAIL', '1');
+   }
+   
+   function unsetPasswordExpiredEmailSend() {
+   	$this->_unsetExtra('PASSWORD_EXPIRED_EMAIL');
+   }
+   
+   function setDaysForLoginAs($days){
+   	$this->_addExtra('LOGIN_AS_TMSP', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function unsetDaysForLoginAs() {
+   	$this->_unsetExtra('LOGIN_AS_TMSP');
+   }
+   
+   function getTimestampForLoginAs(){
+   	$return = false;
+   	if($this->_issetExtra('LOGIN_AS_TMSP')){
+   		$return = $this->_getExtra('LOGIN_AS_TMSP');
+   	}
+   	return $return;
+   }
+   
+   function isTemporaryAllowedToLoginAs(){
+   	$return = false;
+   	if($this->_issetExtra('LOGIN_AS_TMSP')){
+   		if($this->_getExtra('LOGIN_AS_TMSP') >= getCurrentDateTimeInMySQL()){
+   			$return = true;
+   		}
+   	}
+   	return $return;
+   }
+   
+   function setMailSendBeforeLock(){
+   	$this->_addExtra('MAIL_SEND_LOCK', '1');
+   }
+   
+   function unsetMailSendBeforeLock(){
+   	$this->_unsetExtra('MAIL_SEND_LOCK');
+   }
+   
+   function getMailSendBeforeLock(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_LOCK')){
+   		$retour = $this->_getExtra('MAIL_SEND_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function setMailSendBeforeDelete(){
+   	$this->_addExtra('MAIL_SEND_DELETE', '1');
+   }
+   
+   function unsetMailSendBeforeDelete(){
+   	$this->_unsetExtra('MAIL_SEND_DELETE');
+   }
+   
+   function getMailSendBeforeDelete(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_DELETE')){
+   		$retour = $this->_getExtra('MAIL_SEND_DELETE');
+   	}
+   	return $retour;
+   	}
+  
+   
+   
 }
 ?>

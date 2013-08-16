@@ -1,0 +1,337 @@
+/* used individual colors */
+/* Sonnenuntergang.jpg -> Background-Image */
+/* ___CS_BG_COLOR___={#fcc7dc} */
+/* #822248 -> CS_COLOR_ACTIVE_MENUE*/
+/* #dfa5bc -> CS_COLOR_MENUE*/
+/* #b9386c -> CS_COLOR_RIGHT_COLUMN*/
+/* #fd9dc3 -> CS_CONTENT_BG_COLOR*/
+/* #ae2b5f -> CS_LINK_COLOR*/
+/* #881543 -> CS_LINK_HOVER_COLOR*/
+/* #dfa5bc -> CS_ACTION_BG_COLOR*/
+/* #c26b8e -> CS_ACTION_ICON_COLOR*/
+ /*#ac5175 -> CS_ACTION_ICON_HOVER_COLOR*/
+
+/**************************/
+
+
+/* Body*/
+
+body {
+    background-image: url("img/bg.jpg"); /* Background-Image */
+    background-repeat: no-repeat;
+    background-position: 50% 0%;
+    background-color: #FFF /*CS_BG_COLOR*/
+}
+
+#logo_area span {
+   color: #B3B3B3;
+   font-size: 40px;
+   line-height: 40px;
+   text-transform: uppercase;    
+   xfont-family: verdana, sans-serif;
+}
+
+#main_navigation h1 {
+    color: #B3B3B3;
+    font-size: 12px;
+    padding: 12px 10px;
+    text-transform: uppercase !important;    
+   font-family: verdana, sans-serif;
+}
+
+#logo_area {
+    float: left;
+    overflow: hidden;
+    width: 735px;
+    white-space:nowrap;
+}
+
+#search_area {
+    background: url("img/search_area_bg.gif") no-repeat scroll 0 0 transparent;
+    float: left;
+    height: 55px;
+    width: 245px;
+}
+
+/* Navigation */
+
+#main_navigation {
+	background: url("img/main_nav_bg.jpg") repeat-x scroll 0 0 transparent;
+	}
+
+#main_navigation li{
+border-top: 1px solid #999999;
+	}
+
+
+
+#main_navigation #active {
+	background: url("img/active_bg.jpg") repeat-x scroll 0 0 transparent;
+	border-bottom: 1px solid #f0f0f0; /*CS_COLOR_ACTIVE_MENUE*/
+}
+
+#main_navigation #site_actions {
+    background: none;
+    border-left: 1px solid #d5d5d5;
+}
+
+#main_navigation .non_active {
+    background-image: url("img/nonactive_bg.jpg") repeat-x scroll 0 0 transparent;
+}
+
+#main_navigation .non_active a:hover{
+    background-color: #e60003;
+    border-left: 1px solid #e60003;
+}
+
+#header{
+	padding-top:55px !important;
+}
+/* Right Column */
+#right_column {
+    border-top: none;
+}
+#left_column {
+    border-top: none;
+}
+
+#columnset {
+	background: url("img/columns_bg.jpg") repeat-y scroll right top #FFF;
+    border-left: 1px solid #999999;
+}
+
+#info_area_row_1, #info_area_row_2, #info_area_row_3 {
+    border-right: 1px solid #f0f0f0;
+}
+
+#rc_portlet_area {
+    background: none;
+}
+
+#info_addon {
+	background:none;
+	border-bottom: 1px solid #f0f0f0;
+    border-top: 1px solid #f0f0f0;
+    color: #B3B3B3;
+    text-shadow: none;
+}
+
+#footer_right {
+	background: url("img/columns_bg.jpg") repeat-y scroll right top #D7D7D9;
+    color: #B3B3B3;
+    border-right: 1px solid #c30009;
+}
+
+#addon_area_row_1 {
+    border-left: 0px solid #b9386c; /*CS_COLOR_RIGHT_COLUMN*/
+}
+
+.portlet_rc h2 {
+    border-bottom: 1px solid #999999;
+    color: #B3B3B3;
+    text-shadow: none;
+}
+
+.portlet_rc_body {
+    border-top: 0px solid #999999;
+    color: #B3B3B3;
+}
+
+.portlet_rc_body .change_view select {
+    background: #efefef; /*CS_COLOR_RIGHT_COLUMN*/
+    border: 1px solid #999999;
+    color: #B3B3B3;
+}
+
+a.keywords_s1, a.keywords_s2, a.keywords_s3, a.keywords_s4 {
+    color: #B3B3B3;
+    text-shadow: none;
+}
+
+#dis_navigation {
+    border-top: 0px solid #999999;
+}
+
+/*Content*/
+
+.content_item {
+    background: url("img/content_item.jpg") repeat-x scroll 0 0 transparent;
+}
+
+.content_item h2 {
+	background-image:none;
+	background-color: #f0efef;
+}
+
+
+#footer_right span {
+    border-top: 1px solid #999999;
+    display: block;
+    padding: 10px 0 8px;
+}
+
+#footer_right p {
+	border-top: none;
+    text-shadow: none;
+}
+
+
+#detailcontent a, .content_item a {
+    color: #E60003;
+    text-decoration: none;
+    }
+
+#detailcontent a:hover, .content_item a:hover {
+    color: #000;
+    border-bottom: 1px dotted #000;
+    }
+
+.table_head {
+    background-image:none;
+}
+
+.row_odd_no_hover a, .row_even_no_hover a, #dis_navigation a, a.context_nav  {
+    color: #E60003;
+    text-decoration: none;
+}
+
+.row_odd_no_hover a:hover, .row_even_no_hover a:hover, #dis_navigation a:hover, a.context_nav :hover {
+     color: #000;
+    border-bottom: 1px dotted #000;
+}
+
+#dis_navigation a, a.context_nav  {
+    color: #E60003;
+    text-decoration: none;
+}
+
+#dis_navigation a:hover{
+    border-bottom: 1px dotted #000;
+}
+
+#maincontent h2 a{
+   color:#5E5E5E;
+}
+
+#maincontent h2 a:hover{
+   color:#5E5E5E;
+}
+
+.content_item h3 {
+	background-color: #f0efef;
+    float: left;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 8px 0 8px 10px;
+}
+
+.table_head{
+	background-color: #f0efef;
+
+}
+
+/* FORM */
+
+#item_postnew {
+    background: none;
+}
+
+.row_even {
+    background-color: #F5F5F5;
+}
+
+.row_odd {
+    background-color: #FFFFFF;
+}
+
+.content_item .item_info {
+    background-image: none;
+	background-color:#f0efef;
+	border-bottom: 1px solid #B3B3B3;
+}
+
+.fade_in_ground_actions {
+    background-image: none;
+	background-color: #f0efef;
+	border-bottom: 1px dotted #B3B3B3;
+    padding: 8px 10px 8px 5px;
+}
+
+#footer_left {
+    background: url("img/footer_left_bg.jpg") repeat-x scroll 0 0 #f0efef;
+    border-left: 1px solid #999999;
+    color: #898989;
+    float: left;
+    height: 75px;
+    width: 734px;
+}
+
+.digitTreeLabel{
+   color: #E60003;
+    text-decoration: none;
+}
+
+.digitTreeLabel:hover{
+     color: #000;
+    border-bottom: 1px dotted #000 !important;
+}
+
+#footer_right {
+    background: url("img/columns_bg.jpg") repeat-y scroll right top #f0efef;
+    border-right: 1px solid #f0efef;
+    color: #B3B3B3;
+}
+
+#footer_right span {
+    border-top: 1px solid #f0efef;
+    display: block;
+    padding: 10px 0 8px;
+}
+
+#footer_right a {
+    color: #E60003;
+    text-decoration: none;
+    display: inline;
+    font-size: 10px;
+    line-height: 14px;
+    text-decoration: none;
+}
+
+
+#footer_right a:hover {
+     color: #000;
+    border-bottom: 1px dotted #000;
+    display: inline;
+    font-size: 10px;
+    line-height: 14px;
+}
+
+#content_with_actions {
+    background: url(img/cwa_bg.jpg) repeat-y;
+    }
+
+	.item_actions a:hover {
+    display: block;
+    background: url(img/ia_active_bg_2.jpg) repeat-y;
+	text-decoration:none;
+	border-bottom:none;
+    }
+
+	div#popup_stack .item_actions a{
+    display: block;
+    padding: 8px 0px;
+    background: url(img/ia_norm_bg.jpg) repeat-y;
+    margin-bottom: 1px;
+    text-align: center;
+    text-decoration: none;
+    }
+
+	.item_actions a {
+    display: block;
+    padding: 8px 0px;
+    background: url(img/ia_norm_bg.jpg) repeat-y;
+    margin-bottom: 1px;
+    text-align: center;
+    text-decoration: none;
+    }
+

@@ -18,9 +18,11 @@
 			// call parent
 			parent::__construct($environment);
 
+			$this->_sidebar_configuration['active']['limesurvey'] = false;
 			$this->_sidebar_configuration['active']['buzzwords'] = false;
 			$this->_sidebar_configuration['active']['tags'] = false;
 			$this->_sidebar_configuration['active']['netnavigation'] = false;
+			$this->_sidebar_configuration['hidden']['limesurvey'] = true;
 			$this->_sidebar_configuration['hidden']['buzzwords'] = true;
 			$this->_sidebar_configuration['hidden']['tags'] = true;
 			$this->_sidebar_configuration['hidden']['netnavigation'] = true;
@@ -77,7 +79,9 @@
 
 			$current_context = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-			if($current_context->isClosed() || $current_user->isOnlyReadUser()) {
+			if ( $current_context->isClosed() || $current_user->isOnlyReadUser()
+				  or $current_context->isLocked()
+				) {
 				$this->_with_modifying_actions = false;
 			}
 
@@ -93,7 +97,7 @@
 
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
-
+			
 			// sidebar information
 			$this->setupSidebarInformation();
 
@@ -261,7 +265,19 @@
 		private function setupSidebarInformation() {
 			$context_item = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
-
+			$portal_item = $this->_environment->getCurrentPortalItem();
+			
+			// limesurvey
+			if (	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
+					$this->_environment->getCurrentModule() === "home" &&
+					$context_item->isLimeSurveyActive() &&
+					$portal_item->isLimeSurveyActive() &&
+					$portal_item->withLimeSurveyFunctions() )
+			{
+				$this->_sidebar_configuration['hidden']['limesurvey'] = false;
+				$this->_sidebar_configuration['active']['limesurvey'] = true;
+			}	
+			
 			// buzzwords
 			if($context_item->isBuzzwordShowExpanded()) $this->_sidebar_configuration['hidden']['buzzwords'] = false;
 			if($this->getUtils()->showBuzzwords()) {
@@ -329,11 +345,12 @@
 			$modificator = $item->getModificatorItem();
 			$translator = $this->_environment->getTranslationObject();
 			$converter = $this->_environment->getTextConverter();
+			$current_context = $this->_environment->getCurrentContextItem();
 
 			if(isset($modificator) && !$modificator->isDeleted()) {
 				$current_user = $this->_environment->getCurrentUserItem();
 
-				if($current_user->isGuest() && $modificator->isVisibleForLoggedIn()) {
+				if($current_user->isGuest() && $modificator->isVisibleForLoggedIn() && !$current_context->isMaterialOpenForGuests()) {
 					$fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 				} else {
 					$fullname = $modificator->getFullName();
@@ -471,6 +488,9 @@
 
 			// portal name
 			$return['portal_name'] = $this->_environment->getCurrentPortalItem()->getTitle();
+			
+			// material open for guests
+			$return['material_guests'] = $context_item->isMaterialOpenForGuests();
 
 			return $return;
 		}

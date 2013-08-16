@@ -190,7 +190,15 @@
                $subject = $translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$user_item->getFullname(),$room_item->getTitle());
                $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                $body .= LF.LF;
-               $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+               
+               // Datenschutz
+               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+               	$userid = ' ';
+               } else {
+               	$userid = $user->getUserID();
+               }
+               
+               $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$userid,$user_item->getEmail(),$room_item->getTitle());
                $body .= LF.LF;
 
                switch ( $check_message )
@@ -271,7 +279,15 @@
                $body .= LF.LF;
                $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
                $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
+               
+               // Datenschutz
+               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+               	$userid = ' ';
+               } else {
+               	$userid = $user->getUserID();
+               }
+               
+               $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room_item->getTitle());
                $body .= LF.LF;
                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
                $body .= LF.LF;
@@ -604,12 +620,13 @@
 				// description
 				$desc = $this->_item->getDescription();
 				if(!empty($desc)) {
+					$desc = $converter->textFullHTMLFormatting($desc);
 					//$desc = $converter->cleanDataFromTextArea($desc);
 					// TODO: implement
 					//$desc = $converter->compareWithSearchText($desc);
 					$converter->setFileArray($this->getItemFileList());
       			if ( $this->_with_old_text_formating ) {
-      				$desc = $converter->text_as_html_long($desc);
+      				$desc = $converter->textFullHTMLFormatting($desc);
       			}
 					//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
 

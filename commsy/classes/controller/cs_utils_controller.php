@@ -815,11 +815,16 @@
 			$bg_fixed = ($room_item->issetBGImageFixed() == true) ? 'fixed' : 'scroll';
 
 			// set complete path for background image
-			$bg_image = '../../../commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=picture&fct=getfile&picture=' . $bg_image;
-
-			$master = 'htdocs/templates/themes/individual/styles_cid.css';
-			$path = 'htdocs/templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
-
+			$bg_image = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID().'&mod=picture&fct=getfile&picture='.$bg_image;
+			//$bg_image = 'http://192.168.2.230/workspace/htdocs/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=picture&fct=getfile&picture=' . $bg_image;
+			
+			// In commsy/var abspeichern (für Loadbalacing)
+// 			$master = 'htdocs/templates/themes/individual/styles_cid.css';
+// 			$path = 'htdocs/templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
+			
+			$master = 'var/templates/individual/styles_cid.css';
+			$path = 'var/templates/individual/styles_' . $room_item->getItemID() . '.css';
+			
 			// load master file
 			$css_file = file_get_contents($master);
 
@@ -847,14 +852,6 @@
 			file_put_contents($path, $css_file);
 		}
 
-
-		public function sanitize( $value ) {
-			$text_converter = $this->_environment->getTextConverter();
-			$value = $text_converter->_htmlentities_cleanbadcode($value);
-
-      		return $value;
-
-		}
 
 		public function getLogoInformationForType($type) {
 			$translator = $this->_environment->getTranslationObject();

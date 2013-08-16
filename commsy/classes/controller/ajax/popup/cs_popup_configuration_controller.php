@@ -22,6 +22,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	public function save($form_data, $additional = array()) {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$current_user = $this->_environment->getCurrentUserItem();
+		$text_converter = $this->_environment->getTextConverter();
 
 		// check access rights
 		if($current_user->isGuest()) {
@@ -106,8 +107,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 							foreach($form_data as $key => $value) {
 								if(mb_substr($key, 0, 18) === 'communityroomlist_') $community_room_array[] = $value;
 							}
-
-							$current_context->setCommunityListByID($community_room_array);
+							
+							/*
+							 * if assignment is mandatory, the array must not be empty
+							 */
+							if (	$this->_environment->getCurrentPortalItem()->getProjectRoomLinkStatus() !== "mandatory" ||
+									sizeof($community_room_array) > 0 )
+							{
+								$current_context->setCommunityListByID($community_room_array);
+							}
 						} elseif($current_context->isCommunityRoom()) {
 							if(isset($form_data['room_assignment'])) {
 								if($form_data['room_assignment'] === 'open') $current_context->setAssignmentOpenForAnybody();
@@ -313,6 +321,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				               $current_context->setClosedForGuests();
 				            }
 				         }
+				         // material open for guests
+				         if ( isset($form_data['material_guests'])){
+				         	if($form_data['material_guests'] == 'open'){
+				         		$current_context->setMaterialOpenForGuests();
+				         	} elseif ($form_data['material_guests'] == 'closed'){
+				         		$current_context->setMaterialClosedForGuests();
+				         	}
+				         }
 
 
 						// save
@@ -384,7 +400,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->unsetBuzzwordShowExpanded();
 				        }
 
-
+				        
 				        /**********save tag options*******/
 				        if ( isset($form_data['tags']) and !empty($form_data['tags']) and $form_data['tags'] == 'yes') {
 				           $current_context->setWithTags();
@@ -437,128 +453,132 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setTemplateTitle($form_data['template_title']);
 				         }
 				         if ( isset($form_data['template_description'])){
-				            $current_context->setTemplateDescription($form_data['template_description']);
+				            $current_context->setTemplateDescription($text_converter->sanitizeHTML($form_data['template_description']));
 				         }
 
-
-				         global $c_use_soap_for_wiki;
-				         if ( isset($form_data['room_status']) ) {
-				            if ($form_data['room_status'] == '') {
-
-				            	// archive
-				            	if ( $this->_environment->isArchiveMode() ) {
-				            		$current_context->backFromArchive();
-				            		$this->_environment->deactivateArchiveMode();
-				            	}
-				            	// archive
-				            	
-				            	// old: should be impossible
-				            	else {
-				            		// Fix: Find Group-Rooms if existing
-				            		if( $current_context->isGrouproomActive() ) {
-				            			$groupRoomList = $current_context->getGroupRoomList();
-				            			 
-				            			if( !$groupRoomList->isEmpty() ) {
-				            				$room_item = $groupRoomList->getFirst();
-				            				 
-				            				while($room_item) {
-				            					// All GroupRooms have to be opened too
-				            					$room_item->open();
-				            					$room_item->save();
-				            					 
-				            					$room_item = $groupRoomList->getNext();
-				            				}
-				            			}
-				            		}
-				            		// ~Fix
-				            		 
-				            		$current_context->open();
-				            	}
-				            	
-				            	// wiki
-				            	if($current_context->existWiki() and $c_use_soap_for_wiki){
-				            		$wiki_manager = $environment->getWikiManager();
-				            		$wiki_manager->openWiki();
-				            	}
-				            	 
-				            } elseif ($form_data['room_status'] == 2) {
-				               // template or not: template close, others archive
-				               if ( !$current_context->isTemplate() ) {				               	
-	   			               // close wiki
-				            	   if($current_context->existWiki() and $c_use_soap_for_wiki){
-				                     $wiki_manager = $this->_environment->getWikiManager();
-				                     $wiki_manager->closeWiki();
-				                  }
-				               
-				               	$current_context->moveToArchive();
-                              $this->_environment->activateArchiveMode();                             
-				               } else {
-				               	// templates can not closed / archived
-				               	// so do nothing
-				               	/*
-					               $current_context->close();
-					               // Fix: Find Group-Rooms if existing
-					               if( $current_context->isGrouproomActive() ) {
-					                  $groupRoomList = $current_context->getGroupRoomList();
+				         
+				         $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
+				         if ( isset($with_archving_rooms)
+				         		and $with_archving_rooms
+				            ) {
+					         global $c_use_soap_for_wiki;
+					         if ( isset($form_data['room_status']) ) {
+					            if ($form_data['room_status'] == '') {
 	
-					                  if( !$groupRoomList->isEmpty() ) {
-					                     $room_item = $groupRoomList->getFirst();
-	
-					                     while($room_item) {
-					                        // All GroupRooms have to be closed too
-					                        $room_item->close();
-					                        $room_item->save();
-	
-					                        $room_item = $groupRoomList->getNext();
-					                     }
+					            	// archive
+					            	if ( $this->_environment->isArchiveMode() ) {
+					            		$current_context->backFromArchive();
+					            		$this->_environment->deactivateArchiveMode();
+					            	}
+					            	// archive
+					            	
+					            	// old: should be impossible
+					            	else {
+					            		// Fix: Find Group-Rooms if existing
+					            		if( $current_context->isGrouproomActive() ) {  // GrouproomActive schmeißt fehler gucken ob er hier rein rennt wegen Kategorie einstellungen
+					            			$groupRoomList = $current_context->getGroupRoomList();
+					            			 
+					            			if( !$groupRoomList->isEmpty() ) {
+					            				$room_item = $groupRoomList->getFirst();
+					            				 
+					            				while($room_item) {
+					            					// All GroupRooms have to be opened too
+					            					$room_item->open();
+					            					$room_item->save();
+					            					 
+					            					$room_item = $groupRoomList->getNext();
+					            				}
+					            			}
+					            		}
+					            		// ~Fix
+					            		 
+					            		$current_context->open();
+					            	}
+					            	
+					            	// wiki
+					            	if($current_context->existWiki() and $c_use_soap_for_wiki){
+					            		$wiki_manager = $environment->getWikiManager();
+					            		$wiki_manager->openWiki();
+					            	}
+					            	 
+					            } elseif ($form_data['room_status'] == 2) {
+					               // template or not: template close, others archive
+					               if ( !$current_context->isTemplate() ) {				               	
+		   			               // close wiki
+					            	   if($current_context->existWiki() and $c_use_soap_for_wiki){
+					                     $wiki_manager = $this->_environment->getWikiManager();
+					                     $wiki_manager->closeWiki();
 					                  }
+					               
+					               	$current_context->moveToArchive();
+	                              $this->_environment->activateArchiveMode();                             
+					               } else {
+					               	// templates can not closed / archived
+					               	// so do nothing
+					               	/*
+						               $current_context->close();
+						               // Fix: Find Group-Rooms if existing
+						               if( $current_context->isGrouproomActive() ) {
+						                  $groupRoomList = $current_context->getGroupRoomList();
+		
+						                  if( !$groupRoomList->isEmpty() ) {
+						                     $room_item = $groupRoomList->getFirst();
+		
+						                     while($room_item) {
+						                        // All GroupRooms have to be closed too
+						                        $room_item->close();
+						                        $room_item->save();
+		
+						                        $room_item = $groupRoomList->getNext();
+						                     }
+						                  }
+						               }
+						               // ~Fix
+						               */
 					               }
-					               // ~Fix
-					               */
-				               }
-				            }
+					            }
+					         }
+					         
+					         // status != 2 and =! empty
+					         else {
+					            // archive
+					            if ( $this->_environment->isArchiveMode() ) {
+	            	            $current_context->backFromArchive();
+	            	            $this->_environment->deactivateArchiveMode();
+	                        }
+	                        // archive
+	                        
+	                        // old: should be impossible
+	                        else {
+	                        	
+	                        	// Fix: Find Group-Rooms if existing
+	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom()) {
+	                        		$groupRoomList = $current_context->getGroupRoomList();
+	                        		if( !$groupRoomList->isEmpty() ) {
+	                        			$room_item = $groupRoomList->getFirst();
+	                        	
+	                        			while($room_item) {
+	                        				// All GroupRooms have to be opened too
+	                        				$room_item->open();
+	                        				$room_item->save();
+	                        	
+	                        				$room_item = $groupRoomList->getNext();
+	                        			}
+	                        		}
+	                        	}
+	                        	// ~Fix
+	                        	
+	                        	$current_context->open();                        	 
+	                        }
+	                                 	            
+	         	            // wiki
+	                        if($current_context->existWiki() and $c_use_soap_for_wiki){
+	                           $wiki_manager = $this->_environment->getWikiManager();
+	                           $wiki_manager->openWiki();
+	                        }            
+					         }
 				         }
 				         
-				         // status != 2 and =! empty
-				         else {
-				            // archive
-				            if ( $this->_environment->isArchiveMode() ) {
-            	            $current_context->backFromArchive();
-            	            $this->_environment->deactivateArchiveMode();
-                        }
-                        // archive
-                        
-                        // old: should be impossible
-                        else {
-                        	
-                        	// Fix: Find Group-Rooms if existing
-                        	if( $current_context->isGrouproomActive() ) {
-                        		$groupRoomList = $current_context->getGroupRoomList();
-                        	
-                        		if( !$groupRoomList->isEmpty() ) {
-                        			$room_item = $groupRoomList->getFirst();
-                        	
-                        			while($room_item) {
-                        				// All GroupRooms have to be opened too
-                        				$room_item->open();
-                        				$room_item->save();
-                        	
-                        				$room_item = $groupRoomList->getNext();
-                        			}
-                        		}
-                        	}
-                        	// ~Fix
-                        	
-                        	$current_context->open();                        	 
-                        }
-                                 	            
-         	            // wiki
-                        if($current_context->existWiki() and $c_use_soap_for_wiki){
-                           $wiki_manager = $this->_environment->getWikiManager();
-                           $wiki_manager->openWiki();
-                        }            
-				         }
-
 				         $languages = $this->_environment->getAvailableLanguageArray();
 				         foreach ($languages as $language) {
 				            if (!empty($form_data['agb_text_'.mb_strtolower($language, 'UTF-8')])) {
@@ -573,12 +593,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setAGBTextArray($agbtext_array);
 				            $current_context->setAGBChangeDate();
 				         }
+				         
+				         $text_converter = $this->_environment->getTextConverter();
 
 				         // extra todo status
 				         $status_array = array();
 				         foreach($form_data as $key => $value) {
 				         	if(mb_substr($key, 0, 18) === 'additional_status_') {
-				         		$status_array[mb_substr($key, 18)] = $value;
+				         		$status_array[mb_substr($key, 18)] = $text_converter->sanitizeHTML($value);
 				         	}
 				         }
 
@@ -622,17 +644,17 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->setWithoutWorkflowReader();
 				        }
 				        if ( isset($form_data['workflow_trafic_light_default']) and !empty($form_data['workflow_trafic_light_default'])) {
-				           $current_context->setWorkflowTrafficLightDefault($form_data['workflow_trafic_light_default']);
+				           $current_context->setWorkflowTrafficLightDefault($text_converter->sanitizeHTML($form_data['workflow_trafic_light_default']));
 				        }
 
 				        if ( isset($form_data['workflow_trafic_light_green_text']) and !empty($form_data['workflow_trafic_light_green_text'])) {
-				           $current_context->setWorkflowTrafficLightTextGreen($form_data['workflow_trafic_light_green_text']);
+				           $current_context->setWorkflowTrafficLightTextGreen($text_converter->sanitizeHTML($form_data['workflow_trafic_light_green_text']));
 				        }
 				        if ( isset($form_data['workflow_trafic_light_yellow_text']) and !empty($form_data['workflow_trafic_light_yellow_text'])) {
-				           $current_context->setWorkflowTrafficLightTextYellow($form_data['workflow_trafic_light_yellow_text']);
+				           $current_context->setWorkflowTrafficLightTextYellow($text_converter->sanitizeHTML($form_data['workflow_trafic_light_yellow_text']));
 				        }
 				        if ( isset($form_data['workflow_trafic_light_red_text']) and !empty($form_data['workflow_trafic_light_red_text'])) {
-				           $current_context->setWorkflowTrafficLightTextRed($form_data['workflow_trafic_light_red_text']);
+				           $current_context->setWorkflowTrafficLightTextRed($text_converter->sanitizeHTML($form_data['workflow_trafic_light_red_text']));
 				        }
 
 				        if ( isset($form_data['workflow_reader_group']) and !empty($form_data['workflow_reader_group'])) {
@@ -777,7 +799,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 				        	// set title
 				        	if (!empty($form_data["moderation_title_" . $info_rubric])) {
-				        		$current_context->setUsageInfoHeaderForRubric($info_rubric, $form_data["moderation_title_" . $info_rubric]);
+				        		$text_converter = $this->_environment->getTextConverter();
+				        		$current_context->setUsageInfoHeaderForRubric($info_rubric, $text_converter->sanitizeHTML($form_data["moderation_title_" . $info_rubric]));
 				        	}
 
 				        	// set text
@@ -910,7 +933,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				      $current_context->setModificatorItem($current_user);
 				      $current_context->setModificationDate(getCurrentDateTimeInMySQL());
 				      $wordpress_manager = $this->_environment->getWordpressManager();
-                  $wiki_manager = $this->_environment->getWikiManager();
+                  	  $wiki_manager = $this->_environment->getWikiManager();
 
 				      if($additional['action'] == 'create_wordpress'){
                           if ( isset($form_data['use_comments']) and !empty($form_data['use_comments']) and $form_data['use_comments'] == 'yes') {
@@ -1246,6 +1269,21 @@ class cs_popup_configuration_controller implements cs_popup_controller {
                          $current_context->save();
 				      }
 				      
+				      // limesurvey
+				      elseif ( $additional['action'] == 'save_limesurvey' )
+				      {
+				      	if ( isset($form_data['limesurvey_room']) && $form_data['limesurvey_room'] === "yes" )
+				      	{
+				      		$current_context->setLimeSurveyActive();
+				      	}
+				      	else
+				      	{
+				      		$current_context->setLimeSurveyInactive();
+				      	}
+				      	
+				      	$current_context->save();
+				      }
+				      
 				      // plugins
 				      elseif ( substr($additional['action'],0,7) == 'plugin_' ) {
 				         $plugin = substr($additional['action'],7);
@@ -1536,16 +1574,16 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		}
 
 		// color schemes
-		$this->_color_array[] = array(
-			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
-			'value'		=> $default_color_value,
-			'disabled'	=> false
-		);
-		$this->_color_array[] = array(
-			'text'		=> '-----',
-			'value'		=> '-1',
-			'disabled'	=> true
-		);
+// 		$this->_color_array[] = array(
+// 			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
+// 			'value'		=> $default_color_value,
+// 			'disabled'	=> false
+// 		);
+// 		$this->_color_array[] = array(
+// 			'text'		=> '-----',
+// 			'value'		=> '-1',
+// 			'disabled'	=> true
+// 		);
 
 /*		$temp_color_array = array();
 		for($i=1; $i <= 26; $i++) {
@@ -1564,6 +1602,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 		ksort($temp_color_array);
 		$this->_color_array = array_merge($this->_color_array, $temp_color_array);
+		
+		$this->_color_array[] = array(
+				'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
+				'value'		=> $default_color_value,
+				'disabled'	=> false
+		);
 
 		$this->_color_array[] = array(
 			'text'		=> '-----',
@@ -1575,7 +1619,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			'value'		=> 'individual',
 			'disabled'	=> false
 		);
-
 		/*
 
 
@@ -1933,6 +1976,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
          } else {
             $return['room_status'] = '2';
          }
+         
+         $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
+         if ( isset($with_archving_rooms)
+         	  and $with_archving_rooms
+            ) {
+         	$return['with_archiving_rooms'] = true;
+         } else {
+         	$return['with_archiving_rooms'] = false;
+         }
 
          $agb_text_array = $current_context->getAGBTextArray();
          $languages = $this->_environment->getAvailableLanguageArray();
@@ -2259,6 +2311,25 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      }
 	   }
 	   
+	   // Limesurvey
+	   $portalItem = $this->_environment->getCurrentPortalItem();
+	   if ( $portalItem->withLimeSurveyFunctions() && $portalItem->isLimeSurveyActive() )
+	   {
+	   	 $return['limesurvey'] = true;
+	   	 if ( $current_context->isLimeSurveyActive() )
+	   	 {
+	   	 	$return['limesurvey_room'] = true;
+	   	 }
+	   	 else
+	   	 {
+	   	 	$return['limesurvey_room'] = false;
+	   	 }
+	   }
+	   else
+	   {
+	   	$return['limesurvey'] = false;
+	   }
+	   
 	   // plugins - TODO
 	   $c_plugin_array = $this->_environment->getConfiguration('c_plugin_array');
 	   if (isset($c_plugin_array) and !empty($c_plugin_array)) {
@@ -2498,6 +2569,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
             $return['open_for_guests'] = 'open';
          } else {
             $return['open_for_guests'] = 'closed';
+         }
+         
+         if($current_context->isMaterialOpenForGuests()){
+         	$return['material_guests'] = 'open';
+         } else {
+         	$return['material_guests'] = 'closed';
          }
 
 

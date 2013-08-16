@@ -217,18 +217,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							$authentication = $this->_environment->getAuthenticationObject();
 
 							$currentUser = $this->_environment->getCurrentUserItem();
-
-							// password
-							if(!empty($form_data['new_password'])) {
-								$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
-								$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
-								$error_number = $auth_manager->getErrorNumber();
-
-								if(!empty($error_number)) {
-									// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
-								}
-							}
-
+							
 							// get portal user if in room context
 							if ( !$this->_environment->inPortal() )
 							{
@@ -238,6 +227,154 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							{
 								$portalUser = $this->_environment->getCurrentUserItem();
 							}
+							
+							$translator = $this->_environment->getTranslationObject();
+							
+							// Datenschutz
+							if($current_portal_item->getPasswordGeneration() > 0){
+
+								if(!$portalUser->isPasswordInGeneration(md5($form_data['new_password']))) {
+									// password
+									if(!empty($form_data['new_password'])) {
+										$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
+										$auth_source = $currentUser->getAuthSource();
+										$old_password = $auth_manager->getItem($form_data['user_id'])->getPasswordMD5();
+										if($old_password == md5($form_data['old_password'])){
+											$change_pw = true;
+											// if password options are set, check password
+											$auth_source_manager = $this->_environment->getAuthSourceManager();
+											$auth_source_item = $auth_source_manager->getItem($currentUser->getAuthSource());
+											
+											$error_array = array();
+											
+											if($auth_source_item->getPasswordLength() > 0){
+												if(strlen($form_data['new_password']) < $auth_source_item->getPasswordLength()) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_LENGTH',$auth_source_item->getPasswordLength());
+													//$this->_popup_controller->setErrorReturn('1022', 'new password too short');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureBigchar() == 1){
+												if(!preg_match('~[A-Z]+~u', $form_data['new_password'])) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_BIG');
+													//$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureSmallchar() == 1){
+												if(!preg_match('~[a-z]+~u', $form_data['new_password'])) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SMALL');
+													//$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureNumber() == 1){
+												if(!preg_match('~[0-9]+~u', $form_data['new_password'])) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_NUMBER');
+													//$this->_popup_controller->setErrorReturn('1027', 'new password no number');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+												if(!preg_match('~[^a-zA-Z0-9]+~u',$form_data['new_password'])){
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SPECIAL');
+													//$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
+													$change_pw = false;
+												}
+											}
+								
+											unset($auth_source);
+											if($change_pw) {
+												$portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
+												$portalUser->save();
+												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+											} else {
+												$this->_popup_controller->setErrorReturn('1022', $error_array);
+											}
+											
+										} else {
+											$this->_popup_controller->setErrorReturn('1009', 'password change error');
+										}
+										$error_number = $auth_manager->getErrorNumber();
+		
+										if(!empty($error_number)) {
+											// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+										} else {
+											$portalUser->setNewGenerationPassword($old_password);
+										}
+									}
+								} else {
+									$this->_popup_controller->setErrorReturn('1025', 'password generation error');
+								}
+							} else {
+								if(!empty($form_data['new_password'])) {
+									$auth_manager = $authentication->getAuthManager($currentUser->getAuthSource());
+									$old_password = $auth_manager->getItem($form_data['user_id'])->getPasswordMD5();
+									if($old_password == md5($form_data['old_password'])){
+											$change_pw = true;
+											// if password options are set, check password
+											$auth_source_manager = $this->_environment->getAuthSourceManager();
+											$auth_source_item = $auth_source_manager->getItem($currentUser->getAuthSource());
+											
+											$error_array = array();
+											
+											if($auth_source_item->getPasswordLength() > 0){
+												if(strlen($form_data['new_password']) < $auth_source_item->getPasswordLength()) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_LENGTH',$auth_source_item->getPasswordLength()).'<br>';
+													//$this->_popup_controller->setErrorReturn('1022', 'new password too short');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureBigchar() == 1){
+												if(!preg_match('~[A-Z]+~u', $form_data['new_password'])) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_BIG');
+													//$this->_popup_controller->setErrorReturn('1023', 'new password no big character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureSmallchar() == 1){
+												if(!preg_match('~[a-z]+~u', $form_data['new_password'])) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SMALL');
+													//$this->_popup_controller->setErrorReturn('1026', 'new password no small character');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureNumber() == 1){
+												if(!preg_match('~[0-9]+~u', $form_data['new_password'])) {
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_NUMBER');
+													//$this->_popup_controller->setErrorReturn('1027', 'new password no number');
+													$change_pw = false;
+												}
+											}
+											if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+												if(!preg_match('~[^a-zA-Z0-9]+~u',$form_data['new_password'])){
+													$error_array[] = $translator->getMessage('PASSWORD_INFO_SPECIAL');
+													//$this->_popup_controller->setErrorReturn('1024', 'new password no special character');
+													$change_pw = false;
+												}
+											}
+											unset($auth_source);
+											if($change_pw) {
+												$portalUser->setPasswordExpireDate($current_portal_item->getPasswordExpiration());
+												$portalUser->save();
+												$auth_manager->changePassword($form_data['user_id'], $form_data['new_password']);
+											} else {
+												$this->_popup_controller->setErrorReturn('1022', $error_array);
+											}
+											
+										} else {
+											$this->_popup_controller->setErrorReturn('1008', 'password change error');
+										}
+									$error_number = $auth_manager->getErrorNumber();
+								
+									if(!empty($error_number)) {
+										// TODO:$error_string .= $translator->getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+									} else {
+										$portalUser->setNewGenerationPassword($old_password);
+									}
+								}
+							}
+
 
 							// user id
 							if(!empty($form_data['user_id']) && $form_data['user_id'] != $portalUser->getUserID()) {
@@ -297,31 +434,51 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									$currentUser->save();
 								}
 							}
+							
+							if(isset($form_data['mail_account'])){
+								$currentUser->setAccountWantMail('yes');
+								$currentUser->save();
+								#$save = true;
+							} else {
+								$currentUser->setAccountWantMail('no');
+								$currentUser->save();
+								#$save = true;
+							}
+							
+							if(isset($form_data['mail_room'])){
+								$currentUser->setOpenRoomWantMail('yes');
+								$currentUser->save();
+								#$save = true;
+							} else {
+								$currentUser->setOpenRoomWantMail('no');
+								$currentUser->save();
+								#$save = true;
+							}
 
 							// mail settings
-							if(!empty($form_data['mail_account'])) {
-								if($portalUser->getAccountWantMail() == 'no') {
-									$portalUser->setAccountWantMail('yes');
-									$save = true;
-								}
-							} else {
-								if($portalUser->getAccountWantMail() == 'yes') {
-									$portalUser->setAccountWantMail('no');
-									$save = true;
-								}
-							}
+// 							if(!empty($form_data['mail_account'])) {
+// 								if($portalUser->getAccountWantMail() == 'no') {
+// 									$portalUser->setAccountWantMail('yes');
+// 									$save = true;
+// 								}
+// 							} else {
+// 								if($portalUser->getAccountWantMail() == 'yes') {
+// 									$portalUser->setAccountWantMail('no');
+// 									$save = true;
+// 								}
+// 							}
 
-							if(!empty($form_data['mail_room'])) {
-								if($portalUser->getOpenRoomWantMail() == 'no') {
-									$portalUser->setOpenRoomWantMail('yes');
-									$save = true;
-								}
-							} else {
-								if($portalUser->getOpenRoomWantMail() == 'yes') {
-									$portalUser->setOpenRoomWantMail('no');
-									$save = true;
-								}
-							}
+// 							if(!empty($form_data['mail_room'])) {
+// 								if($portalUser->getOpenRoomWantMail() == 'no') {
+// 									$portalUser->setOpenRoomWantMail('yes');
+// 									$save = true;
+// 								}
+// 							} else {
+// 								if($portalUser->getOpenRoomWantMail() == 'yes') {
+// 									$portalUser->setOpenRoomWantMail('no');
+// 									$save = true;
+// 								}
+// 							}
 
 /*							if(!empty($form_data['mail_delete_entry'])) {
 								if($portalUser->getDeleteEntryWantMail() == 'no') {
@@ -336,7 +493,12 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}
 */
 							$change_name = false;
-
+							
+							$text_converter = $this->_environment->getTextConverter();
+							
+							$form_data['forname'] = $text_converter->sanitizeHTML($form_data['forname']);
+							$form_data['surname'] = $text_converter->sanitizeHTML($form_data['surname']);
+							
 							// forname
 							if(!empty($form_data['forname']) && $portalUser->getFirstName() != $form_data['forname']) {
 								$portalUser->setFirstName($form_data['forname']);
@@ -507,6 +669,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 					case 'user':
 						$currentUser = $this->_environment->getCurrentUserItem();
 						$portalUser = $currentUser->getRelatedCommSyUserItem();
+						$text_converter = $this->_environment->getTextConverter();
 
 						if ( $this->_popup_controller->checkFormData('user') )
 						{
@@ -524,29 +687,33 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								}
 							}
 
-							setValue($currentUser, $portalUser, 'setTitle', $form_data['title']);
-							setValue($currentUser, $portalUser, 'setBirthday', $form_data['birthday']);
+							setValue($currentUser, $portalUser, 'setTitle', $text_converter->sanitizeHTML($form_data['title']));
+							setValue($currentUser, $portalUser, 'setBirthday', $text_converter->sanitizeHTML($form_data['birthday']));
 
-							setValue($currentUser, $portalUser, 'setEmail', $form_data['mail']);
-							if($portalUser->hasToChangeEmail()) {
-								$portalUser_item->unsetHasToChangeEmail();
+							$email_old = $portalUser->getEmail();
+							setValue($currentUser, $portalUser, 'setEmail', $text_converter->sanitizeHTML($form_data['mail']));
+							if ( $portalUser->hasToChangeEmail()
+								  and $email_old != $form_data['mail']
+								) {
+								$portalUser->unsetHasToChangeEmail();
 								$form_data['mail_all'] = 1;
 							}
+							unset($email_old);
 
-							setValue($currentUser, $portalUser, 'setTelephone', $form_data['telephone']);
-							setValue($currentUser, $portalUser, 'setCellularphone', $form_data['cellularphone']);
-							setValue($currentUser, $portalUser, 'setStreet', $form_data['street']);
-							setValue($currentUser, $portalUser, 'setZipcode', $form_data['zipcode']);
-							setValue($currentUser, $portalUser, 'setCity', $form_data['city']);
-							setValue($currentUser, $portalUser, 'setRoom', $form_data['room']);
-							setValue($currentUser, $portalUser, 'setOrganisation', $form_data['organisation']);
-							setValue($currentUser, $portalUser, 'setPosition', $form_data['position']);
-							setValue($currentUser, $portalUser, 'setICQ', $form_data['icq']);
-							setValue($currentUser, $portalUser, 'setMSN', $form_data['msn']);
-							setValue($currentUser, $portalUser, 'setSkype', $form_data['skype']);
-							setValue($currentUser, $portalUser, 'setYahoo', $form_data['yahoo']);
-							setValue($currentUser, $portalUser, 'setJabber', $form_data['jabber']);
-							setValue($currentUser, $portalUser, 'setHomepage', $form_data['homepage']);
+							setValue($currentUser, $portalUser, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
+							setValue($currentUser, $portalUser, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
+							setValue($currentUser, $portalUser, 'setStreet', $text_converter->sanitizeHTML($form_data['street']));
+							setValue($currentUser, $portalUser, 'setZipcode', $text_converter->sanitizeHTML($form_data['zipcode']));
+							setValue($currentUser, $portalUser, 'setCity', $text_converter->sanitizeHTML($form_data['city']));
+							setValue($currentUser, $portalUser, 'setRoom', $text_converter->sanitizeHTML($form_data['room']));
+							setValue($currentUser, $portalUser, 'setOrganisation', $text_converter->sanitizeHTML($form_data['organisation']));
+							setValue($currentUser, $portalUser, 'setPosition', $text_converter->sanitizeHTML($form_data['position']));
+							setValue($currentUser, $portalUser, 'setICQ', $text_converter->sanitizeHTML($form_data['icq']));
+							setValue($currentUser, $portalUser, 'setMSN', $text_converter->sanitizeHTML($form_data['msn']));
+							setValue($currentUser, $portalUser, 'setSkype', $text_converter->sanitizeHTML($form_data['skype']));
+							setValue($currentUser, $portalUser, 'setYahoo', $text_converter->sanitizeHTML($form_data['yahoo']));
+							setValue($currentUser, $portalUser, 'setJabber', $text_converter->sanitizeHTML($form_data['jabber']));
+							setValue($currentUser, $portalUser, 'setHomepage', $text_converter->sanitizeHTML($form_data['homepage']));
 							setValue($currentUser, $portalUser, 'setDescription', $form_data['description']);
 
 							// delete picture handling
@@ -1015,6 +1182,13 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						                   and method_exists($plugin_class,'isConfigurableInRoom')
 						                   and $plugin_class->isConfigurableInRoom(CS_PRIVATEROOM_TYPE)
 						                 )
+						                 or 
+						                 (
+						                 	!$this->_environment->inServer()
+						                 	and method_exists($plugin_class,'isConfigurableInRoom')
+						                 	and $plugin_class->isConfigurableInRoom()
+						                 	and $plugin == 'voyeur'
+						                 )
 						               ) {
 						               if ( !empty($form_data[$plugin.'_on'])
 						                    and $form_data[$plugin.'_on'] == 'yes'
@@ -1244,6 +1418,16 @@ class cs_popup_profile_controller implements cs_popup_controller {
 			$overwrite = false;
 		}
 		$this->_config['datenschutz_overwrite'] = $overwrite;
+		
+		// has to change email
+		$this->_config['has_to_change_email'] = false;
+		if ( isset($this->_user)
+			  and $this->_user->hasToChangeEmail()
+			) {
+			$this->_config['has_to_change_email'] = true;
+		   $translator = $this->_environment->getTranslationObject();
+			$this->_config['has_to_change_email_text'] = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+		}
 
 		// assign template vars
 		$this->assignTemplateVars();
@@ -1365,8 +1549,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$return['lastname'] = $this->_user->getLastname();
 		$return['user_id'] = $this->_user->getUserID();
 		$return['language'] = $this->_user->getLanguage();
-		$return['email_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
-		$return['email_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
+		$return['mail_account'] = ($this->_user->getAccountWantMail() === 'yes') ? true : false;
+		//TODO PRINT ENTFERNEN
+		#pr($this->_user->getAccountWantMail());
+		$return['mail_room'] = ($this->_user->getOpenRoomWantMail() === 'yes') ? true : false;
 //		$return['mail_delete_entry'] = ($this->_user->getDeleteEntryWantMail() === 'yes') ? true : false;
 //		$return['new_upload'] = ($this->_user->isNewUploadOn()) ? true : false;
 		$return['auto_save'] = ($this->_user->isAutoSaveOn()) ? true : false;
@@ -1664,6 +1850,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	                $this->_environment->inPortal()
 	                and method_exists($plugin_class,'isConfigurableInPortal')
 	                and $plugin_class->isConfigurableInPortal()
+	         		and $plugin != 'onyx'
 	              )
 	              or
 	              (
@@ -1671,6 +1858,16 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	                and $current_portal_item->isPluginOn($plugin)
 	                and method_exists($plugin_class,'isConfigurableInRoom')
 	                and $plugin_class->isConfigurableInRoom(CS_PRIVATEROOM_TYPE)
+	              	and $plugin != 'onyx'
+	              )
+	              or 
+	              (
+	              	!$this->_environment->inServer()
+	              	and $current_portal_item->isPluginOn($plugin)
+	              	and method_exists($plugin_class,'isConfigurableInRoom')
+	              	and $plugin_class->isConfigurableInRoom()
+	              	and $plugin != 'onyx'
+	              	and $plugin == 'voyeur'
 	              )
 	            ) {
 	            $array_plugins[$plugin_class->getIdentifier()]['title'] = $plugin_class->getTitle();

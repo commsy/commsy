@@ -413,6 +413,7 @@ class cs_noticed_manager {
       $id_array_items = array();
       $item_manager = $this->_environment->getItemManager();
       $item_manager->setContextLimit($context_id);
+      $item_manager->setNoIntervalLimit();
       $item_manager->select();
       $item_list = $item_manager->get();
       $temp_item = $item_list->getFirst();
@@ -436,11 +437,11 @@ class cs_noticed_manager {
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
-            $query = 'INSERT INTO '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' SELECT * FROM '.$this->addDatabasePrefix('noticed').' WHERE '.$this->addDatabasePrefix('noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix('noticed').'.user_id IN ('.implode(",", $id_array_users).')';
+            $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.'noticed'.' SELECT * FROM '.'noticed'.' WHERE '.'noticed'.'.item_id IN ('.implode(",", $id_array_items).') OR '.'noticed'.'.user_id IN ('.implode(",", $id_array_users).')';
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+               trigger_error('Problems while copying to backup-table: '.$query,E_USER_WARNING);
             } else {
                $retour = $this->deleteFromDb($context_id);
             }
@@ -453,6 +454,7 @@ class cs_noticed_manager {
       $id_array_items = array();
       $zzz_item_manager = $this->_environment->getZzzItemManager();
       $zzz_item_manager->setContextLimit($context_id);
+      $zzz_item_manager->setNoIntervalLimit();
       $zzz_item_manager->select();
       $item_list = $zzz_item_manager->get();
       $temp_item = $item_list->getFirst();
@@ -476,19 +478,11 @@ class cs_noticed_manager {
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
-           	// archive
-            if ( $this->_environment->isArchiveMode() ) {
-      	      $this->setWithoutDatabasePrefix();
-            }
-         	$query = 'INSERT INTO '.$this->addDatabasePrefix('noticed').' SELECT * FROM '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').' WHERE '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($c_db_backup_prefix.'_'.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-            // archive
-            if ( $this->_environment->isArchiveMode() ) {
-      	      $this->setWithDatabasePrefix();
-            }
+         	$query = 'INSERT INTO '.'noticed'.' SELECT * FROM '.$c_db_backup_prefix.'_'.'noticed'.' WHERE '.$c_db_backup_prefix.'_'.'noticed'.'.item_id IN ('.implode(",", $id_array_items).') OR '.$c_db_backup_prefix.'_'.'noticed'.'.user_id IN ('.implode(",", $id_array_users).')';
          	$result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
                include_once('functions/error_functions.php');
-               trigger_error('Problems while copying to backup-table.',E_USER_WARNING);
+               trigger_error('Problems while copying from backup-table: '.$query,E_USER_WARNING);
             } else {
                $retour = $this->deleteFromDb($context_id, true);
             }
@@ -507,6 +501,7 @@ class cs_noticed_manager {
       if(!$from_backup){
 	      $item_manager = $this->_environment->getItemManager();
 	      $item_manager->setContextLimit($context_id);
+         $item_manager->setNoIntervalLimit();
 	      $item_manager->select();
 	      $item_list = $item_manager->get();
 	      $temp_item = $item_list->getFirst();
@@ -527,6 +522,7 @@ class cs_noticed_manager {
 	      $db_prefix .= $c_db_backup_prefix.'_';
 	      $zzz_item_manager = $this->_environment->getZzzItemManager();
 	      $zzz_item_manager->setContextLimit($context_id);
+         $zzz_item_manager->setNoIntervalLimit();
 	      $zzz_item_manager->select();
 	      $item_list = $zzz_item_manager->get();
 	      $temp_item = $item_list->getFirst();
@@ -546,19 +542,11 @@ class cs_noticed_manager {
       }
 
       if(!empty($id_array_items) and !empty($id_array_users)){
-       	// archive
-         if ( $this->_environment->isArchiveMode() ) {
-         	$this->setWithoutDatabasePrefix();
-         }
-      	$query = 'DELETE FROM '.$this->addDatabasePrefix($db_prefix.'noticed').' WHERE '.$this->addDatabasePrefix($db_prefix.'noticed').'.item_id IN ('.implode(",", $id_array_items).') OR '.$this->addDatabasePrefix($db_prefix.'noticed').'.user_id IN ('.implode(",", $id_array_users).')';
-         // archive
-         if ( $this->_environment->isArchiveMode() ) {
-     	      $this->setWithDatabasePrefix();
-         }
+      	$query = 'DELETE FROM '.$db_prefix.'noticed'.' WHERE '.$db_prefix.'noticed'.'.item_id IN ('.implode(",", $id_array_items).') OR '.$db_prefix.'noticed'.'.user_id IN ('.implode(",", $id_array_users).')';
       	$result = $this->_db_connector->performQuery($query);
 	      if ( !isset($result) ) {
 	         include_once('functions/error_functions.php');
-	         trigger_error('Problems deleting after move to backup-table.',E_USER_WARNING);
+	         trigger_error('Problems deleting after move to or from backup-table: '.$query,E_USER_WARNING);
 	      } elseif ( !empty($result[0]) ) {
 	         $retour = true;
 	      }

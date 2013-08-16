@@ -204,9 +204,97 @@ else {
             if ( isset($_POST['password_specialchar']) ) {
                $auth_item->setPasswordSecureSpecialchar($_POST['password_specialchar']);
             }
-            if ( isset($_POST['password_length']) ) {
-               $auth_item->setPasswordLength($_POST['password_length']);
+            if ( isset($_POST['password_length'])) {
+            	if($_POST['password_length'] >= 0){
+            		$password_length = preg_replace('/[^0-9]+/', '', $_POST['password_length']);
+            		$auth_item->setPasswordLength($password_length);
+            	}
             }
+            if ( isset($_POST['password_smallchar']) ) {
+            	$auth_item->setPasswordSecureSmallchar($_POST['password_smallchar']);
+            }
+            if ( isset($_POST['password_number']) ) {
+            	$auth_item->setPasswordSecureNumber($_POST['password_number']);
+            }
+            
+            //Datenschutz
+         	if ( isset($_POST['temporary_lock']) ) {
+               $auth_item->setTemporaryLock($_POST['temporary_lock']);
+            }
+            
+            $portal_item = $environment->getCurrentPortalItem();
+            
+            if ( isset($_POST['try_until_lock'])) {
+            	$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            }
+            
+            if( isset($_POST['seconds_interval'])) {
+            	$portal_item->setLockTimeInterval($_POST['seconds_interval']);
+            }
+            
+            if( isset($_POST['temporary_minutes'])) {
+            	$temporary_minutes = $_POST['temporary_minutes'];
+            	$temporary_minutes = preg_replace('/[^0-9]+/', '', $temporary_minutes);
+            	
+            	if($temporary_minutes >= 0 and !empty($temporary_minutes)){
+            		$portal_item->setLockTime($_POST['temporary_minutes']);
+            	}
+            }
+            
+            if( isset($_POST['password_generation'])) {
+            	$generation = $_POST['password_generation'];
+            	$generation = preg_replace('/[^0-9]+/', '', $generation);
+            	if($generation >= 0 and !empty($generation))
+            	{
+            		$portal_item->setPasswordGeneration($generation);
+            	}
+            }
+            if( isset($_POST['password_expiration'])) {
+            	if(($portal_item->getPasswordExpiration() != $_POST['password_expiration'] 
+            		and $_POST['password_expiration'] >= 0)
+            		or empty($_POST['password_expiration']))
+            	{
+            		if($_POST['password_expiration'] == 0 or empty($_POST['password_expiration'])){
+            			$portal_item->setPasswordExpiration(0);
+            			
+            			$portal_users = $portal_item->getUserList();
+            			$portal_user = $portal_users->getFirst();
+            			while ($portal_user){
+            				$portal_user->setPasswordExpireDate('NULL');
+            				$portal_user->save();
+            				 
+            				$portal_user = $portal_users->getNext();
+            			}
+            		} else {
+            			$portal_item->setPasswordExpiration($_POST['password_expiration']);
+            			$portal_item->save();
+            			
+            			// set a new expire date for all portal users
+            			// Datenschutz
+            			$portal_users = $portal_item->getUserList();
+            			$portal_user = $portal_users->getFirst();
+            			while ($portal_user){
+            				if ($_POST['password_expiration'] > 0){
+            					$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            				} else {
+            					$portal_user->unsetPasswordExpireDate();
+            				}
+            				$portal_user->save();
+            				 
+            				$portal_user = $portal_users->getNext();
+            			}
+            		}
+	            	
+            	}
+
+            }
+            if( isset($_POST['days_before_expiring_sendmail'])){
+            	if($_POST['days_before_expiring_sendmail'] > 0){
+            		$portal_item->setDaysBeforeExpiringPasswordSendMail($_POST['days_before_expiring_sendmail']);
+            	}
+            }
+            $portal_item->save();
+            unset($portal_item);
 
             // special data
             $auth_data_array = array();
@@ -229,6 +317,10 @@ else {
             if ( isset($_POST['dbcolumnuserid'])
                  and !empty($_POST['dbcolumnuserid']) ) {
                $auth_data_array['DBCOLUMNUSERID'] = $_POST['dbcolumnuserid'];
+            }
+            if ( isset($_POST['dbsearchuserid'])
+                 and !empty($_POST['dbsearchuserid']) ) {
+               $auth_data_array['DBSEARCHUSERID'] = $_POST['dbsearchuserid'];
             }
             if ( isset($_POST['dbcolumnpasswd'])
                  and !empty($_POST['dbcolumnpasswd']) ) {

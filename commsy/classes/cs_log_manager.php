@@ -103,7 +103,7 @@ class cs_log_manager extends cs_manager {
       return $retour;
    }
 
-   function delete () {
+   function delete ($item_id) {
       return $this->_performQuery('delete');
    }
 
@@ -212,6 +212,49 @@ class cs_log_manager extends cs_manager {
          return $return_array;
       }
    }
+   
+   function hideAllLogIP() {
+   	  $query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log');
+   	  
+   	  $result = $this->_db_connector->performQuery($query);
+   	  if ( !isset($result) ) {
+   	  	include_once('functions/error_functions.php');
+   	  	trigger_error('Problems log from query: "'.$query.'"',E_USER_WARNING);
+   	  } else {
+   	  	$return_array = array();
+   	  	foreach ($result as $r){
+   	  		// Hide all ip adresses and update db
+   	  		$remote_adress_array = explode('.', $r['ip']);
+   	  		$ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+   	  		$query2 = 'UPDATE '.$this->addDatabasePrefix('log').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'" AND ip NOT LIKE "%XXX"';
+   	  		
+   	  		$result2 = $this->_db_connector->performQuery($query2);
+   	  		if ( !isset($result2) ) {
+   	  			include_once('functions/error_functions.php');
+   	  			trigger_error('Problems log from query: "'.$query2.'"',E_USER_WARNING);
+   	  		} else {
+   	  			
+   	  		}
+   	  		
+   	  	}
+   	  }
+   }
+   
+   function getLogdataByContextID ($cid) {
+   	$retour = false;
+   	$query = 'SELECT * FROM '.$this->addDatabasePrefix('log').' WHERE 1';
+   	$query .= ' AND cid = '.encode(AS_DB,$cid);
+   	// perform query
+   	$result = $this->_db_connector->performQuery($query);
+   	if ( !isset($result) or !$result ) {
+   		#include_once('functions/error_functions.php');
+   		#trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+   	} else {
+   		$retour = $result;
+   	}
+   	return $retour;
+   
+   }
 
 
    public function saveArray ( $array ) {
@@ -248,6 +291,15 @@ class cs_log_manager extends cs_manager {
          ) {
          $delayed = ' ';
       }
+      $current_context = $this->_environment->getCurrentContextItem();
+      
+      //Datenschutz
+      if($current_context->withLogIPCover()){
+      	// if datasecurity is active dont show last two fields
+      	$remote_adress_array = explode('.', $array['remote_addr']);
+      	$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+      }
+      unset($current_context);
       
       $query = 'INSERT'.$delayed.'INTO '.$this->addDatabasePrefix('log').' SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.

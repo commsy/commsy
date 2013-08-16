@@ -82,6 +82,38 @@ if ( $command != 'error' ) {
       $form->setMailObject($mail_obj);
       $form->prepareForm();
       $form->loadValues();
+      
+      $status = $session->getValue('status');
+      if(isset($status)){
+      	$userid = $session->getValue('userAccount');
+	      if ($status == 'reject' or $status == 'close') {
+	      	$subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$context_item->getTitle());
+	      	$body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
+	      	$body .= LF.LF;
+	      	$body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$userid,$context_item->getTitle());
+	      	$body .= LF.LF;
+	      	$body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
+	      } elseif ($status == 'user') {
+	      	$subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$context_item->getTitle());
+	      	$body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
+	      	$body .= LF.LF;
+	      	$body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$context_item->getTitle());
+	      	$body .= LF.LF;
+	      	$body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
+	      } elseif ($status == 'moderator') {
+	      	$subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR',$context_item->getTitle());
+	      	$body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
+	      	$body .= LF.LF;
+	      	$body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$userid,$context_item->getTitle());
+	      	$body .= LF.LF;
+	      	$body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
+	      } else {
+	      	include_once('functions/error_functions.php');trigger_error('lost change status',E_USER_ERROR);
+	      }
+	      $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
+	      $body .= LF.LF.$url;
+	      $_POST['content'] = $body;
+      }
 
       if ( !empty($command) AND isOption($command,$translator->getMessage('MAIL_SEND_BUTTON')) ) {
          $correct = $form->check();

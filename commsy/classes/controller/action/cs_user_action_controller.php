@@ -562,11 +562,16 @@
                     or $action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON'
                     or $action_array['action'] == 'USER_MAKE_CONTACT_PERSON'
                   ) {
-                  $content = str_replace('%2',$user->getUserID(),$content);
+               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+               	  $userid = $user->getFullName();
+               } else {
+               	  $userid = $user->getUserID();
+               }
+                  $content = str_replace('%2',$userid,$content);
                   $content = str_replace('%3',$room->getTitle(),$content);
                } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_PASSWORD' ) {
                   $content = str_replace('%2',$room->getTitle(),$content);
-                  $content = str_replace('%3',$user->getUserID(),$content);
+                  $content = str_replace('%3',$userid,$content);
                } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE' ) {
                   $account_text = '';
                   $user_manager->resetLimits();

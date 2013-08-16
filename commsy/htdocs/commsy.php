@@ -332,6 +332,11 @@ if (!empty($_GET['SID'])) {
          ) {
    include_once('pages/picture_getfile.php');
    exit();
+} elseif ( strtolower($environment->getCurrentFunction()) == 'getfile'
+           and strtolower($environment->getCurrentModule()) == 'individual'
+         ) {
+   include_once('pages/individual_getfile.php');
+   exit();
 } else {
    // no session created
    // so create session and redirect to requested page
@@ -796,16 +801,21 @@ if (isset($cs_external_login_redirect) and !empty($cs_external_login_redirect)
 }
 /* Ende Typo Login Anbindung*/
 
-
+$has_to_change_mail = false;
 if ( isset($current_user_item) ) {
    $current_portal_user_item = $current_user_item->getRelatedCommSyUserItem();
    if ( isset($current_portal_user_item)
         and $current_portal_user_item->hasToChangeEmail()
       ) {
-      $_GET['uid'] = $current_user_item->getItemID();
-      $_GET['show_profile'] = 'yes';
-      $_GET['profile_page'] = 'user';
-      $error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+   	// old profile at portal
+      #$_GET['uid'] = $current_user_item->getItemID();
+      #$_GET['show_profile'] = 'yes';
+      #$_GET['profile_page'] = 'user';
+      #$error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+      
+      // new profile at portal
+      $has_to_change_mail = true;
+      // used at page object      
    }
    unset($current_portal_user_item);
 }
@@ -1051,7 +1061,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 
 	// portal AGB
 	$current_context = $environment->getCurrentContextItem();
-	if (!$current_context->isPortal() && !$current_context->isServer()) {
+	if (!$current_context->isPortal() && !$current_context->isServer() && !$current_context->withAGBDatasecurity()) {
 
 		$portal_user = $current_user->getRelatedCommSyUserItem();
 		if ( isset($portal_user) and $portal_user->isUser() and !$portal_user->isRoot() ) {
@@ -1065,7 +1075,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 		}
 	}
 
-	if ( $current_user->isUser() && !$current_user->isRoot() ) {
+	if ( $current_user->isUser() && !$current_user->isRoot() && !$current_context->withAGBDatasecurity() ) {
 		$user_agb_date = $current_user->getAGBAcceptanceDate();
 		$context_agb_date = $current_context->getAGBChangeDate();
 		if ( $user_agb_date < $context_agb_date && $current_context->getAGBStatus() == 1 ) {
@@ -1215,6 +1225,15 @@ if(isset($c_smarty) && $c_smarty === true) {
 	         }
 	      }
 	   }
+	}
+	
+	// has to change email (new) at portal
+	if ( isset($has_to_change_mail)
+		  and $has_to_change_mail
+		  and isset($page)
+		  and method_exists($page, 'setHasToChangeEmail')
+	   ) {
+		$page->setHasToChangeEmail();
 	}
 
 	if ( isset($session) ) {

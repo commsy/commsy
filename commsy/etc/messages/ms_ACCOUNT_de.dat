@@ -33,6 +33,7 @@ $message["ACCOUNT_NOT_ACCEPTED"]["de"] = "Ihre Kennung ist für diesen Raum gesp
 $message["ACCOUNT_NOT_ACCEPTED_AS_GUEST"]["de"] = "Mit der Gastkennung können Sie keine Teilnahme beantragen.";
 $message["ACCOUNT_NOT_ACCEPTED_YET"]["de"] = "Die ModeratorInnen haben der Teilnahme <b>noch nicht</b> zugestimmt.";
 $message["ACCOUNT_PASSWORD_CHANGE"]["de"] = "Passwort ändern";
+$message["ACCOUNT_PROCESS_ROOM_AGB_ERROR"]["de"] = "Bitte Nutzungsvereinbarungen akzeptieren";
 $message["ACCOUNT_PROCESS_CONFIRMATION"]["de"] = "Bestätigung";
 $message["ACCOUNT_PROCESS_ROOM_CODE"]["de"] = "Teilnahme-Code";
 $message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["de"] = "<b>Sie haben einen falschen Code eingegeben.</b> Wenn Sie den Freischalt-Code nicht kennen, können Sie sich auch über 'Anmelden ohne Freischaltcode' anmelden.";

@@ -984,7 +984,8 @@ class cs_form {
                                  $headerText,
                                  $headerDescription = '',
                                  $headerRight = '',
-                                 $size =2 ) {
+                                 $size =2, 
+        						 $colspan = '') {
 
                 $element['type']  = 'subheadline';
                 $element['name']  = $name;
@@ -993,6 +994,7 @@ class cs_form {
                 $element['right']       = $headerRight;
                 $element['mandatory']   = false;
                 $element['size']        = $size;
+                $element['colspan']		= $colspan;
 
                 $this -> _formElements -> addElement($element);
         }

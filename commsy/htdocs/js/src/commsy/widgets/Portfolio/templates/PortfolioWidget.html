@@ -18,6 +18,11 @@
 					<!-- tab container -->
 					<div id="portfolioContentContainer">
 					
+						<div id="portfolioRefresh">
+							<a href="#" data-dojo-attach-event="onclick: onRefreshPortfolios" title="${popupTranslations.refreshPortfolios}">
+								${popupTranslations.refreshPortfolios}
+							</a>
+						</div>
 						<div id="portfolioCreate">
 							<a href="#" data-dojo-attach-point="createNewPortfolioNode" data-dojo-attach-event="onclick: onClickNewPortfolio" title="${popupTranslations.createPortfolio}">
 								<img src="${templatePath}img/btn_add_new.gif" alt="${popupTranslations.createPortfolio}">

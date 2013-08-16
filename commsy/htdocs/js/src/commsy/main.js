@@ -75,33 +75,12 @@ require([	"dojo/_base/declare",
 				
 				// widget popups
 				var aStackNode = query("a#tm_stack")[0];
+				var widgetManager = this.getWidgetManager();
 				if (aStackNode) {
 					require(["commsy/popups/ToggleStack"], function(StackPopup) {
-						var handler = new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0]);
+						new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0], widgetManager);
 					});
 				}
-				
-				var aWidgetsNode = query("a#tm_widgets")[0];
-				if (aWidgetsNode) {
-					require(["commsy/popups/ToggleWidgets"], function(WidgetsPopup) {
-						var handler = new WidgetsPopup(aWidgetsNode, query("div#tm_menus div#tm_dropmenu_widget_bar")[0]);
-					});
-				}
-				
-				/*
-				var aPortfolioNode = query("a#tm_portfolio")[0];
-				if (aPortfolioNode) {
-					require(["commsy/popups/TogglePortfolio"], function(PortfolioPopup) {
-						var handler = new PortfolioPopup(aPortfolioNode, query("div#tm_menus div#tm_dropmenu_portfolio")[0]);
-					});
-				}
-				
-				/*
-				
-				require(["commsy/popups/ToggleMyCalendar"], function(MyCalendarPopup) {
-					var handler = newMyCalendarPopup(query("a#tm_mycalendar")[0], query("div#tm_menus div#tm_dropmenu_mycalendar")[0]);
-				});
-				*/
 				
 				// setup rubric forms
 				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
@@ -157,6 +136,18 @@ require([	"dojo/_base/declare",
 					});
 				});
 				
+				// limesurvey
+				var limeSurveyNode = query("div.limesurveyList")[0];
+				if ( limeSurveyNode )
+				{
+					require(["commsy/widgets/LimeSurvey/LimeSurveyUserWidget"], function(LimeSurvey)
+					{
+						var limeSurvey = new LimeSurvey();
+						limeSurvey.startup();
+						limeSurvey.placeAt(limeSurveyNode);
+					});
+				}
+				
 				// threaded discussion tree
 				if (this.uri_object.mod == "discussion" && this.uri_object.fct == "detail") {
 					var treeNode = query("div#discussion_tree")[0];
@@ -187,6 +178,23 @@ require([	"dojo/_base/declare",
 							handler.setup(inputNode);
 						});
 					}
+				}
+				// password expire soon alert to change password
+				if(this.from_php.environment.password_expire_soon) {
+					require(["dijit/Dialog","dojo/i18n!commsy/nls/tooltipErrors","dojo/cookie"], function(Overlay, ErrorTranslations,Cookie) {
+						// create the dialog:
+						var cookieName = 'expired_password_shown';
+						if(!Cookie(cookieName)){
+							var myDialog = new dijit.Dialog({
+							    title: "Passwort läuft ab",
+							    content: ErrorTranslations.password_expire,
+							    style: "width: 300px"
+							});
+							myDialog.show();
+							Cookie(cookieName,true);
+						}
+						
+					});
 				}
 				
 				// overlays
@@ -324,6 +332,26 @@ require([	"dojo/_base/declare",
 			    	}));
 			    }
 			    
+			    var aLimeSurveyConfigurationNode = Query("a#tm_limesurvey")[0];
+			    if ( aLimeSurveyConfigurationNode )
+			    {
+			    	On.once(aLimeSurveyConfigurationNode, "click", Lang.hitch(this, function(event)
+			    	{
+			    		var widgetManager = this.getWidgetManager();
+    					
+    					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyWidget", {}).then(function(deferred)
+						{
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							widgetManager.RegisterOpenCloseClick(widgetInstance, aLimeSurveyConfigurationNode);
+							
+							// open widget
+							widgetInstance.Open();
+						});
+			    	}));
+			    }
+			    
 			    var aPersonalNode = Query("a#tm_user")[0];
 			    if (aPersonalNode) {
 			    	On.once(aPersonalNode, "click", Lang.hitch(this, function(event) {
@@ -385,6 +413,26 @@ require([	"dojo/_base/declare",
 							
 							// register click event
 							widgetManager.RegisterOpenCloseClick(widgetInstance, aPortfolioNode);
+							
+							// open widget
+							widgetInstance.Open();
+						});
+					}));
+				}
+				
+				var aMyWidgetsNode = Query("a#tm_widgets")[0];
+				if ( aMyWidgetsNode )
+				{
+					On.once(aMyWidgetsNode, "click", Lang.hitch(this, function(event)
+					{
+						var widgetManager = this.getWidgetManager();
+						
+						widgetManager.GetInstance("commsy/widgets/MyWidgets/MyWidgetsWidget", {}).then(function(deferred)
+						{
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							widgetManager.RegisterOpenCloseClick(widgetInstance, aMyWidgetsNode);
 							
 							// open widget
 							widgetInstance.Open();

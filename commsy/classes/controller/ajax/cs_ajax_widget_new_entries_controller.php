@@ -10,13 +10,13 @@
 			parent::__construct($environment);
 		}
 
-		public function actionGetListContent() {
+		public function actionQuery() {
 			$return = array(
 				"items"		=> array()
 			);
 
-			$start = $this->_data["start"];
-			$numEntries = $this->_data["numEntries"];
+			$start = $this->_data["options"]["start"];
+			$numEntries = $this->_data["options"]["numEntries"];
 
 			$itemManager = $this->_environment->getItemManager();
 			$currentUser = $this->_environment->getCurrentUserItem();
@@ -93,10 +93,20 @@
 						if ( $entry->getType() !== CS_PORTFOLIO_TYPE )
 						{
 							$moddate = $entry->getModificationDate();
-							if ( $entry->getCreationDate() != $entry->getModificationDate() && !strstr($moddate,'9999-00-00')){
-								$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
-							} else {
-								$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+							if ( mb_strstr($moddate, '9999-00-00') )
+							{
+								$mod_date = "'";
+							}
+							else
+							{
+								if ( $entry->getCreationDate() != $entry->getModificationDate() )
+								{
+									$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getModificationDate());
+								}
+								else
+								{
+									$mod_date = $this->_environment->getTranslationObject()->getDateInLang($entry->getCreationDate());
+								}
 							}
 	
 							if ($type === CS_MATERIAL_TYPE) {
@@ -119,8 +129,12 @@
 						}
 					}
 				}
+				
+				if ( isset($entry) && !empty($entry) && $entry->getType() !== CS_PORTFOLIO_TYPE )
+				{
+					$count++;
+				}
 
-				$count++;
 				$entry = $new_entry_list->getNext();
 			}
 

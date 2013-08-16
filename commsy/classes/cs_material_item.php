@@ -84,6 +84,9 @@ class cs_material_item extends cs_item {
     * @param string value title of the material
     */
    function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitizeHTML($value);
       $this->_setValue('title',$value);
    }
 
@@ -316,6 +319,9 @@ class cs_material_item extends cs_item {
     * @author CommSy Development Group
     */
    function setDescription ($value) {
+   	  // sanitize description
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitizeFullHTML($value);
       $this->_setValue('description',$value);
    }
 

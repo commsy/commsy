@@ -625,6 +625,7 @@ function isURLValid () {
         $module != 'campus_search' and
    		$module != 'search' and
         $module != 'agb' and
+        $module != 'agbroom' and
 
         // project room
         $module != 'project' and
@@ -700,7 +701,11 @@ function isURLValid () {
         $module != 'scorm' and
    		
    		// download
-   		$module != 'download'
+   		$module != 'download' and
+   		$module != 'limesurvey' and
+   		
+   		// individual css
+   		$module != 'individual'
       ) {
       return false;
     }
@@ -725,6 +730,7 @@ function isURLValid () {
          $funct != 'meta' and
          $funct != 'process' and
          $funct != 'getfile' and
+         $funct != 'getlogfile' and
     	 $funct != 'getTemp' and
          $funct != 'admin' and
          $funct != 'move' and
@@ -755,6 +761,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
+    	 $funct != 'limesurvey' and
          $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and
@@ -786,6 +793,9 @@ function isURLValid () {
          $funct != 'portalhome' and
          $funct != 'portalupload' and
          $funct != 'scribd' and
+         $funct != 'datasecurity' and
+         $funct != 'inactive' and
+         $funct != 'inactiveprocess' and
 
          $funct != 'account_options' and
          $funct != 'structure_options' and

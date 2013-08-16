@@ -162,6 +162,9 @@ class cs_tag_item extends cs_item {
     * @param string value title of the tag
     */
    public function setTitle ($value) {
+   	  // sanitize title
+   	  $converter = $this->_environment->getTextConverter();
+   	  $value = $converter->sanitizeHTML($value);
       $this->_setValue('title', $value);
    }
 

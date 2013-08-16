@@ -30,6 +30,32 @@
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
 		}
+		
+		public function actionGetNewUserAccount() {
+			$current_user = $this->_environment->getCurrentUserItem();
+			$count_new_accounts = 0;
+			if ($current_user->isModerator()){
+				// tasks
+				$manager = $this->_environment->getTaskManager();
+				$manager->resetLimits();
+				$manager->setContextLimit($this->_environment->getCurrentContextID());
+				$manager->setStatusLimit('REQUEST');
+				$manager->select();
+				$tasks = $manager->get();
+				$task = $tasks->getFirst();
+				$count_new_accounts = 0;
+				while($task){
+					$mode = $task->getTitle();
+					$task = $tasks->getNext();
+					if ($mode == 'TASK_USER_REQUEST'){
+						$count_new_accounts ++;
+					}
+				
+				}
+			}
+			$this->setSuccessfullDataReturn(array("count" => $count_new_accounts));
+			echo $this->_return;
+		}
 
 		public function actionPerformUserAction() {
 			$return = array();
@@ -534,6 +560,8 @@
 
 			// get user list
 			$user_list = $user_manager->get();
+			
+			$portal_item = $this->_environment->getCurrentPortalItem();
 
 			// prepare return
 			$return['list'] = array();
@@ -552,9 +580,18 @@
 				if($item->isContact()) $status .= ' [' . $translator->getMessage('USER_STATUS_CONTACT_SHORT') . ']';
 
 				$entry['item_id']			= $item->getItemID();
-				$entry['fullname']			= $item->getFullName().' ('.$item->getUserID().')';
+				// Datenschutz
+				if($portal_item->getHideAccountname()){
+					$entry['fullname']			= $item->getFullName();
+				} else {
+					$entry['fullname']			= $item->getFullName().' ('.$item->getUserID().')';
+				}
 				$entry['email']				= $item->getEmail();
 				$entry['status']			= $status;
+				if($portal_item->withAGBDatasecurity()){
+					$entry['agb'] = $item->getAGBAcceptanceDate();
+				}
+				
 
 				$return['list'][] = $entry;
 				$item = $user_list->getNext();

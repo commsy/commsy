@@ -40,6 +40,10 @@
 							<span class="input_label_150">___ACCOUNT_PROCESS_ROOM_REASON___:</span>
 							<div class="input_container_180">
 								<textarea cols="80" rows="10" name="form_data[description_user]"></textarea>
+								{if $popup.agb.agb_datasecurity}
+								<input type="checkbox" name="form_data[agb]" value="1"> ___AGB_CONFIRMATION_LINK_INPUT___<br/>
+								{$popup.room.agb_text}
+								{/if}
 							</div>
 						</div>
 						<div class="clear"></div>

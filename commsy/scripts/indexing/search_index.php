@@ -183,7 +183,8 @@
 			echo "found " . $indexing_size . " items\n";
 			echo "\n";
 
-			if($indexing_size > 0) {
+			if( $indexing_size > 0 )
+			{
 				echo "getting word list...";
 				$word_result = array();
 				$running_new_id = 1;
@@ -200,11 +201,16 @@
 				$res = mysql_query($query);
 				while($row = mysql_fetch_assoc($res)) {
 					$word_result[md5($row['sw_word'])] = array(
-							'sw_id'		=> $row['sw_id'],
-							'sw_word'	=> $row['sw_word']
+						'sw_id'		=> $row['sw_id'],
+						'sw_word'	=> $row['sw_word']
 					);
 				}
-				if(isset($row)) $running_new_id = $row['sw_id'] + 1;
+				
+				if ( !empty($word_result) )
+				{
+					$lastEntry = current($word_result);
+					$running_new_id = ((int) $lastEntry['sw_id']) + 1;
+				}
 
 				echo "done\n";
 
@@ -351,28 +357,44 @@
 
 				}
 				echo "done\n";
-
+				
 				// write index entries
 				echo "writing index entries";
 				$progress = 1;
-				foreach($index_structure as $item_id => $version) {
-					foreach($version as $version_id => $detail) {
+				foreach($index_structure as $item_id => $version)
+				{
+					foreach($version as $version_id => $detail)
+					{
+						/*
+						 * Delete all references to the current item.
+						 * This also ensures, that only the latest version - if existing - is written to the index table.
+						 * Indexing times are not affected!
+						 */
+						$query = '
+							DELETE FROM
+								search_index
+							WHERE
+								search_index.si_item_id = ' . mysql_real_escape_string($item_id) . '
+						';
+						if(!mysql_query($query)) {
+							echo $query . "\n";
+							echo mysql_error(); exit;
+						}
+						
 						$size = sizeof($detail['sw_ids']);
 
 						if($size > 0) {
-
-
 							$query = '
-							INSERT INTO
-							search_index(si_sw_id, si_item_id, si_item_type, si_count)
-							VALUES
+								INSERT INTO
+									search_index(si_sw_id, si_item_id, si_item_type, si_count)
+								VALUES
 							';
 							$empty = true;
 
 							$count = 1;
 							foreach($detail['sw_ids'] as $sw_id) {
 								if($empty === false || ($count < $size && $count > 1)) $query .= ', ';
-								$query .= '(' . mysql_real_escape_string($count_index+$sw_id) . ', ' . mysql_real_escape_string($detail['index_id']) . ', "' . mysql_real_escape_string($detail['type']) . '", 1)';
+								$query .= '(' . mysql_real_escape_string(/*$count_index+*/$sw_id) . ', ' . mysql_real_escape_string($detail['index_id']) . ', "' . mysql_real_escape_string($detail['type']) . '", 1)';
 
 								if($empty === true) $empty = false;
 
@@ -428,7 +450,7 @@
 						}
 
 						$query = '
-						INSERT INTO
+						REPLACE INTO
 						search_time(st_item_id, st_version_id, st_date)
 						VALUES(
 						' . mysql_real_escape_string($item_id) . ',
@@ -478,7 +500,7 @@
 			$indexer->createDatabaseTables();
 		}
 	}
-
+	
 	////////////////////////////
 	////// Announcement ////////
 	////////////////////////////
@@ -499,7 +521,7 @@
 			announcement.deletion_date IS NULL
 	';
 	$indexer->add(CS_ANNOUNCEMENT_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Sections ////////////
 	////////////////////////////
@@ -521,16 +543,16 @@
 	';
 	/*
 	 * section.version_id = (
-			SELECT
-			MAX(s2.version_id)
-			FROM
-			section as s2
-			WHERE
-			s2.item_id = section.item_id
-			)
-	 */
+	 		SELECT
+	 		MAX(s2.version_id)
+	 		FROM
+	 		section as s2
+	 		WHERE
+	 		s2.item_id = section.item_id
+	 )
+	*/
 	$indexer->add(CS_SECTION_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Materials ///////////
 	////////////////////////////
@@ -583,7 +605,7 @@
 			labels.deletion_date IS NULL
 	';
 	$indexer->add(CS_INSTITUTION_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Topics //////////////
 	////////////////////////////
@@ -605,7 +627,7 @@
 			labels.deletion_date IS NULL
 	';
 	$indexer->add(CS_TOPIC_TYPE, $query);
-
+	
 	////////////////////////////
 	////// User ////////////////
 	////////////////////////////
@@ -622,7 +644,7 @@
 			user.deletion_date IS NULL
 	';
 	$indexer->add(CS_USER_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Todos ///////////////
 	////////////////////////////
@@ -643,7 +665,7 @@
 			todos.deletion_date IS NULL
 	';
 	$indexer->add(CS_TODO_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Steps ///////////////
 	////////////////////////////
@@ -664,7 +686,7 @@
 			step.deletion_date IS NULL
 	';
 	$indexer->add(CS_STEP_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Dates ///////////////
 	////////////////////////////
@@ -685,7 +707,7 @@
 			dates.deletion_date IS NULL
 	';
 	$indexer->add(CS_DATE_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Discussions /////////
 	////////////////////////////
@@ -706,7 +728,7 @@
 			discussions.deletion_date IS NULL
 	';
 	$indexer->add(CS_DISCUSSION_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Discussion Articles /
 	////////////////////////////
@@ -727,15 +749,15 @@
 			discussionarticles.deletion_date IS NULL
 	';
 	$indexer->add(CS_DISCARTICLE_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Groups //////////////
 	////////////////////////////
 	$indexer->add(CS_GROUP_TYPE, '', 'updateGroupIndex');
-
+	
 	function updateGroupIndex($indexing, $search_time) {
 		echo "collecting " . CS_GROUP_TYPE . " data..";
-
+	
 		// process the group itself
 		$query = '
 			SELECT
@@ -759,7 +781,7 @@
 		while($row = mysql_fetch_assoc($res)) {
 			$group_data[] = $row;
 		}
-
+	
 		// process members of groups
 		$user_data = array();
 		$query = '
@@ -786,7 +808,7 @@
 		while($row = mysql_fetch_assoc($res)) {
 			$user_data[$row['item_id']][] = $row['search_data'];
 		}
-
+	
 		$query = '
 			SELECT
 				labels.item_id AS item_id,
@@ -811,49 +833,49 @@
 		while($row = mysql_fetch_assoc($res)) {
 			$user_data[$row['item_id']][] = $row['search_data'];
 		}
-
+	
 		// merge together
 		foreach($group_data as $group) {
 			if(	!isset($search_time[$group['item_id']][$group['version_id']])
 					|| $search_time[$group['item_id']][$group['version_id']] < $group['modification_date']) {
-
+	
 				if(isset($user_data[$group['item_id']])) {
 					$group['search_data'] .= " " . implode(" ", $user_data[$group['item_id']]);
-
+	
 					$indexing[] = array('db' => $group, 'type' => CS_GROUP_TYPE);
 				}
 			}
 		}
-
+	
 		unset($group_data);
 		unset($user_data);
-
+	
 		echo "done\n";
 	}
-
+	
 	////////////////////////////
 	////// Tasks ///////////////
 	////////////////////////////
 	/*
-	$query = '
-		SELECT
-			tasks.item_id AS item_id,
-			tasks.item_id AS index_id,
-			NULL AS version_id,
-			tasks.modification_date,
-			CONCAT(tasks.title, " ", user.firstname, " ", user.lastname) AS search_data
-		FROM
-			tasks
-		LEFT JOIN
-			user
-		ON
-			user.item_id = tasks.creator_id
-		WHERE
-			tasks.deletion_date IS NULL
+	 $query = '
+	SELECT
+	tasks.item_id AS item_id,
+	tasks.item_id AS index_id,
+	NULL AS version_id,
+	tasks.modification_date,
+	CONCAT(tasks.title, " ", user.firstname, " ", user.lastname) AS search_data
+	FROM
+	tasks
+	LEFT JOIN
+	user
+	ON
+	user.item_id = tasks.creator_id
+	WHERE
+	tasks.deletion_date IS NULL
 	';
 	$indexer->add(CS_TASK_TYPE, $query);
 	*/
-
+	
 	////////////////////////////
 	////// Buzzwords ///////////
 	////////////////////////////
@@ -875,7 +897,7 @@
 			labels.deletion_date IS NULL
 	';
 	$indexer->add(CS_BUZZWORD_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Tags ////////////////
 	////////////////////////////
@@ -896,7 +918,7 @@
 			tag.deletion_date IS NULL
 	';
 	$indexer->add(CS_TAG_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Group Rooms /////////
 	////////////////////////////
@@ -918,7 +940,7 @@
 			room.deletion_date IS NULL
 	';
 	$indexer->add(CS_GROUPROOM_TYPE, $query);
-
+	
 	////////////////////////////
 	////// Annotations /////////
 	////////////////////////////
@@ -939,5 +961,5 @@
 			annotations.deletion_date IS NULL
 	';
 	$indexer->add(CS_ANNOTATION_TYPE, $query);
-
+	
 	$indexer->generateIndex();

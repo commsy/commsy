@@ -34,7 +34,7 @@ $c_delete_days = 182;
 $c_session_lifetime = 6;
 
 // proxy settings
-// if you use commsy behind a proxy, just set here the proxy informations
+// if you use commsy behind a proxy, just set the proxy information here
 // $c_proxy_ip   = '100.200.300.400';
 // $c_proxy_port = '3128';
 
@@ -42,4 +42,13 @@ $c_session_lifetime = 6;
 // $c_return_path_mail_address = 'SENDER';                     // use sender email address as return path
 // $c_return_path_mail_address = 'mailreturn@your-domain.net'; // use this email address as return path
 // $c_return_path_mail_address = '';                           // do not use a return path
+
+// archive rooms
+// not working correctly with php < 5.2
+// so only use archive rooms with php 5.3 and higher
+if ( function_exists('get_called_class') ) {
+   $c_archive_rooms = true;
+} else {
+   $c_archive_rooms = false;
+}
 ?>

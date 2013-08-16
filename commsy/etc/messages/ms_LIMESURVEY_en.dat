@@ -1,0 +1,14 @@
+<?php
+$message["LIMESURVEY_CONFIGURATION_ACTIVATE"]["en"] = "Use Limesurvey";
+$message["LIMESURVEY_CONFIGURATION_ADMIN_USER"]["en"] = "admin username";
+$message["LIMESURVEY_CONFIGURATION_ADMIN_PW"]["en"] = "admin password";
+$message["LIMESURVEY_CONFIGURATION_DESC"]["en"] = "Limesurvey settings";
+$message["LIMESURVEY_CONFIGURATION_LINK"]["en"] = "Limesurvey";
+$message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_PW"]["en"] = "Admin password is mandatory.";
+$message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_USER"]["en"] = "Admin username is mandatory.";
+$message["LIMESURVEY_CONFIGURATION_MISSING_URL"]["en"] = "JSON-RPC Interface URL missing.";
+$message["LIMESURVEY_CONFIGURATION_REMOTE_URL"]["en"] = "JSON-RPC Interface URL";
+$message["LIMESURVEY_CONFIGURATION_ROOM_ACTIVATE"]["en"] = "Use Limesurvey in this room";
+$message["LIMESURVEY_SAVE_BUTTON"]["en"] = "Save";
+$message["LIMESURVEY_SIDEBAR_TITLE"]["en"] = "Surveys";
+?>

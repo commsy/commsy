@@ -365,8 +365,14 @@ class cs_user_detail_view extends cs_detail_view {
            and ( $current_user->isRoot()
                  or $current_user->isModerator()
                )
+           
          ) {
-         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
+      	if(!$current_user->isDeactivatedLoginAsAnotherUser() or $current_user->isTemporaryAllowedToLoginAs()){
+      		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
+      	} else {
+      		$html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname()).'</span>'.BRLF;
+      	}
+         
       }
 
       $html .= '</div>'.LF;
@@ -486,7 +492,40 @@ class cs_user_detail_view extends cs_detail_view {
                $temp_array[] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_user_detail_view(362) ";
                break;
          }
+         $formal_data[] = $temp_array;
+         // Datenschutz expired password date
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_LOGIN_AS_ACTIV');
+         
+         if(!$item->isDeactivatedLoginAsAnotherUser()){
+         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+         } else if($item->isTemporaryAllowedToLoginAs()){
+         	$temp_array[] = $item->getTimestampForLoginAs();
+         } else {
+         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+         }
 
+         $formal_data[] = $temp_array;
+         
+         // Datenschutz expired password date
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_EXPIRED_PASSWORD');
+          
+         if($item->isPasswordExpired()){
+         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+         } else {
+         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+         }
+         
+         $formal_data[] = $temp_array;
+         
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_ACCEPTED_AGB');
+         
+         $agb = $item->getAGBAcceptanceDate();
+         if(!empty($agb)){
+         	$temp_array[] = $item->getAGBAcceptanceDate();
+         }
          $formal_data[] = $temp_array;
 
          if ($this->_environment->inCommunityRoom()) {
@@ -924,6 +963,19 @@ class cs_user_detail_view extends cs_detail_view {
          unset($params);
       } elseif (!$this->_environment->inPrivateRoom()) {
          $html .= '<span class="disabled">> '.$this->_translator->getMessage('COMMON_CLOSE_PARTICIPATION').'</span>'.BRLF;
+      }
+      
+      if($this->_environment->inPortal()
+      	and $this->_environment->getCurrentUser()->isRoot()
+      	and $item->isModerator()){
+      	$params['mode'] = 'deactivateLoginAs';
+      	$params['iid'] = $item->getItemID();
+      	if($item->isDeactivatedLoginAsAnotherUser()) {
+      		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('COMMON_LOGIN_AS_ANOTHER_USER_ACTIVATE')).BRLF;
+      	} else {
+      		$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('COMMON_LOGIN_AS_ANOTHER_USER_DEACTIVATE')).BRLF;
+      	}
+      	
       }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

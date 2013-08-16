@@ -139,6 +139,21 @@ class cs_log_archive_manager extends cs_manager {
       }
       return $success;
    }
+   
+   function deleteByContextID ($cid) {
+   	  $retour = false;
+   	  $query = 'DELETE FROM '.$this->addDatabasePrefix('log_archive').' WHERE 1';
+   	  $query .= ' AND cid = '.encode(AS_DB,$cid);
+   	  // perform query
+   	  $result = $this->_db_connector->performQuery($query);
+   	  if ( !isset($result) or !$result ) {
+   	  	include_once('functions/error_functions.php');
+   	  	trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+   	  } else {
+   	  	$retour = $result;
+   	  }
+   	  return $retour;
+   }
 
    function deleteByContextArray ($array) {
       $retour = false;
@@ -151,7 +166,13 @@ class cs_log_archive_manager extends cs_manager {
       }
 
       include_once('functions/date_functions.php');
-      $days = 50;
+      $current_context = $this->_environment->getCurrentContextItem();
+      //$days = 50;
+      $days = $current_context->getLogDeleteInterval();
+      if(empty($days)){
+      	$days = 50;
+      }
+      
       $datetime = getCurrentDateTimeMinusDaysInMySQL($days);
       $query .= ' AND timestamp < "'.$datetime.'"';
 
@@ -164,6 +185,49 @@ class cs_log_archive_manager extends cs_manager {
          $retour = $result;
       }
       return $retour;
+   }
+   
+   function getLogdataByContextID ($cid) {
+   	  $retour = false;
+   	  $query = 'SELECT * FROM '.$this->addDatabasePrefix('log_archive').' WHERE 1';
+   	  $query .= ' AND cid = '.encode(AS_DB,$cid);
+   	  // perform query
+   	  $result = $this->_db_connector->performQuery($query);
+   	  if ( !isset($result) or !$result ) {
+   	  	#include_once('functions/error_functions.php');
+   	  	#trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+   	  } else {
+   	  	$retour = $result;
+   	  }
+   	  return $retour;
+   	
+   }
+   
+   function hideAllLogArchiveIP() {
+   	$query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log_archive');
+   	 
+   	$result = $this->_db_connector->performQuery($query);
+   	if ( !isset($result) ) {
+   		include_once('functions/error_functions.php');
+   		trigger_error('Problems log from query: "'.$query.'"',E_USER_WARNING);
+   	} else {
+   		$return_array = array();
+   		foreach ($result as $r){
+   			// Hide all ip adresses and update db
+   			$remote_adress_array = explode('.', $r['ip']);
+   			$ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+   			$query2 = 'UPDATE '.$this->addDatabasePrefix('log_archive').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'"';
+   			 
+   			$result2 = $this->_db_connector->performQuery($query2);
+   			if ( !isset($result2) ) {
+   				include_once('functions/error_functions.php');
+   				trigger_error('Problems log from query: "'.$query2.'"',E_USER_WARNING);
+   			} else {
+   
+   			}
+   			 
+   		}
+   	}
    }
 }
 ?>

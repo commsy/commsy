@@ -123,6 +123,14 @@ class cs_home_member_form extends cs_rubric_form {
          // Hinweis für das bauen des Passwortes
          $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),'','',21,true,13);
          $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),'','',21,true,13);
+         
+         // link which refers to the terms of use
+         // Datenschutz
+         if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+         	$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new','','','onClick="window.open(href,target,\'toolbar=no, location=no,directories=no,status=no,menubar=yes,scrollbars=yes,resizable=yes,copyhistory=yes,width=600,height=400\');"');
+         	#$link = ahref_curl($this->_environment->getCurrentContextID(), 'agb', 'index', '', $this->_translator->getMessage('CONFIGURATION_AGB_FORM_HEADLINE'),'','_new');
+         	$this->_form->addCheckbox('terms_of_use', '1', false, '', $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT').$link);
+         }
 
          // buttons
          $this->_form->addButtonBar('option',$this->_translator->getMessage('ACCOUNT_GET_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.5,6.5);
@@ -158,7 +166,14 @@ class cs_home_member_form extends cs_rubric_form {
             $this->_form->setFailure('email_confirmation','');
          }
       }
-
+      if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+      	if (!isset($this->_form_post['terms_of_use'])){
+      		$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AGB_ACCEPT_ERROR');
+      		$this->_form->setFailure('terms_of_use','');
+      	}
+      }
+      
+      
       // password check
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
          $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');

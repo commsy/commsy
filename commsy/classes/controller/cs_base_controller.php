@@ -14,6 +14,7 @@
 		 */
 		public function __construct(cs_environment $environment) {
 			$this->_environment = $environment;
+			
 			$this->_tpl_engine  = $this->_environment->getTemplateEngine();
 			$this->_tpl_file = null;
 
@@ -84,20 +85,21 @@
 		}
 
 		public function sanitize (&$item, $key){
-			$item = $this->getUtils()->sanitize($item);
+			#$item = $this->getUtils()->sanitize($item);
 		}
 
 		/*
 		 * every derived class needs to implement an processTemplate function
 		 */
 		protected function processTemplate() {
+			$converter = $this->_environment->getTextConverter();
 			//sanitize
-			if(!empty($_POST) and isset($_POST)){
-				array_walk_recursive($_POST, array($this, 'sanitize'));
-			}
+// 			if(!empty($_POST) and isset($_POST)){
+// 				array_walk_recursive($_POST, array($this, 'sanitize'));
+// 			}
 
 			if(!empty($_GET) and isset($_GET)){
-				array_walk_recursive($_GET, array($this, 'sanitize'));
+				array_walk_recursive($_GET, array($converter, 'sanitizeHTML'));
 			}
 
 			// the actual function determes the method to call
@@ -355,14 +357,12 @@
 		        $manager->select();
 		        $tasks = $manager->get();
 		        $task = $tasks->getFirst();
-		        $show_user_config = false;
 		        $count_new_accounts = 0;
 		        while($task){
 		           $mode = $task->getTitle();
 		           $task = $tasks->getNext();
 		           if ($mode == 'TASK_USER_REQUEST'){
 		              $count_new_accounts ++;
-		              $show_user_config = true;
 		           }
 		        }
 
@@ -382,6 +382,7 @@
 			$this->assign('basic', 'tpl_path', $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
+			$this->assign('environment', 'current_user_id', $this->_environment->getCurrentUserID());
 			$this->assign('environment', 'function', $this->_environment->getCurrentFunction());
 			$this->assign('environment', 'module', $this->_environment->getCurrentModule());
 			$this->assign('environment', 'module_name', $translator->getMessage(strtoupper($this->_environment->getCurrentModule())).'_INDEX');
@@ -459,8 +460,11 @@
 				$this->assign('cs_bar', 'show_stack', false);
 				$this->assign('cs_bar', 'show_portfolio', false);
 			}
-
-
+			
+			$this->assign('cs_bar', 'show_limesurvey',	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
+														$current_context->isLimeSurveyActive() &&
+														$portal_item->isLimeSurveyActive() &&
+														$portal_item->withLimeSurveyFunctions() );
 
 			// to javascript
 			$to_javascript = array();
@@ -469,6 +473,33 @@
 			$to_javascript['environment']['lang'] = $this->_environment->getSelectedLanguage();
 			$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
+			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
+			$to_javascript['environment']['user_name'] = $current_user->getFullName();
+			
+			$current_portal_user = $this->_environment->getPortalUserItem();
+			// password expires soon alert
+			if(!empty($current_portal_user) AND $current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+				$start_date = new DateTime(getCurrentDateTimeInMySQL());
+				$since_start = $start_date->diff(new DateTime($current_portal_user->getPasswordExpireDate()));
+				$days = $since_start->days;
+				if($days == 0){
+					$days = 1;
+				}
+
+				$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+				if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail){
+					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+					$to_javascript['environment']['password_expire_soon'] = true;
+				} else if(!isset($days_before_expiring_sendmail) AND $days <= 14){
+					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+					$to_javascript['environment']['password_expire_soon'] = true;
+				}
+			} else {
+				$to_javascript['environment']['password_expire_soon'] = false;
+			}
+			
+			
+			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
 			$to_javascript['security']['token'] = getToken();
@@ -476,13 +507,48 @@
 			$to_javascript['autosave']['limit'] = 0;
 
 
-			if ($ownRoomItem) {
+			if ($ownRoomItem)
+			{
+				$to_javascript['own']['id'] = $ownRoomItem->getItemId();
 				$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+				$to_javascript['ownRoom']['withPortfolio'] = $own_room_item->getCSBarShowPortfolio();
 			}
 
 			// translations - should be managed elsewhere soon
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
 			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
+			
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			$auth_source_manager = $this->_environment->getAuthSourceManager();
+			$auth_source_item = $auth_source_manager->getItem($current_user->getAuthSource());
+			
+			if(isset($auth_source_item)){
+				// password
+				if($auth_source_item->getPasswordLength() > 0){
+					$to_javascript["password"]["length"] = $translator->getMessage('PASSWORD_INFO2_LENGTH', $auth_source_item->getPasswordLength());
+				}
+				if($auth_source_item->getPasswordSecureBigchar() == 1){
+					$to_javascript["password"]["big"] = $translator->getMessage('PASSWORD_INFO2_BIG');
+				}
+				if($auth_source_item->getPasswordSecureSmallchar() == 1){
+					$to_javascript["password"]["small"] = $translator->getMessage('PASSWORD_INFO2_SMALL');
+				}
+				if($auth_source_item->getPasswordSecureNumber() == 1){
+					$to_javascript["password"]["special"] = $translator->getMessage('PASSWORD_INFO2_SPECIAL');
+				}
+				if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+					$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
+				}
+			}
+			
+			
+			
+			
+			
+			
+			
+			
 
 			// dev
 			global $c_indexed_search;
@@ -500,7 +566,18 @@
 					$to_javascript['autosave']['limit'] = $c_autosave_limit;
 				}
 			}
-
+			
+			// limesurvey
+			if (	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
+					$current_context->isLimeSurveyActive() &&
+					$portal_item->isLimeSurveyActive() &&
+					$portal_item->withLimeSurveyFunctions() )
+			{
+				$rpcPathParsed = parse_url($portal_item->getLimeSurveyJsonRpcUrl());
+				$to_javascript["limesurvey"]["newSurveyPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/admin/survey/sa/index";
+				$to_javascript["limesurvey"]["adminPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/admin/";
+				$to_javascript["limesurvey"]["roomName"] = $current_context = $current_context->getTitle();
+			}
 
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {
@@ -521,7 +598,7 @@
 			{
 				if ( file_exists("version") )
 				{
-					$versionFromFile = file_get_contents("version");
+					$versionFromFile = trim(file_get_contents("version"));
 
 					/*
 					 * It is very important to replace " " whitespaces, otherwhise dojo shows some odd behaviour

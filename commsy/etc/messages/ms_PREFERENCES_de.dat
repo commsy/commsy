@@ -58,6 +58,7 @@ $message["PREFERENCES_LOCK_BUTTON"]["de"] = "Teilnahme beenden (%1)";
 $message["PREFERENCES_LOCK_BUTTON_ROOM"]["de"] = "Teilnahme beenden in diesem Raum";
 $message["PREFERENCES_MAIL_DESC"]["de"] = "Konfiguration der E-Mail-Texte, die über das System verschickt werden.";
 $message["PREFERENCES_MAIL_LINK"]["de"] = "E-Mail-Texte";
+$message["PREFERENCES_MATERIAL_OPEN_FOR_GUESTS"]["de"] = "Materialien zugänglich für Gäste";
 $message["PREFERENCES_NO_COMMUNITY_ROOM"]["de"] = "keine weitere Auswahl";
 $message["PREFERENCES_NO_DISCUSSION_NOTIFICATION"]["de"] = "keine weitere Auswahl";
 $message["PREFERENCES_OPEN_FOR_GUESTS"]["de"] = "Gastzugang";

@@ -616,6 +616,13 @@
 			} else {
 				//$html .= $this->_getNewActionDisabled();
 			}
+			
+			if($current_context->isMaterialOpenForGuests() && $current_user->isGuest()){
+				$return['edit']		= true;
+				$return['delete']	= true;
+				$return['mail']		= true;
+				$return['copy']		= true;
+			}
 
 			// download
 			$return['downloadparams'] = $this->_environment->getCurrentParameterArray();
@@ -704,7 +711,8 @@
 							$desc = $desc;
 							$converter->setFileArray($this->getItemFileList());
       				   if ( $this->_with_old_text_formating ) {
-      					   $desc = $converter->text_as_html_long($desc);
+      					   // $desc = $converter->text_as_html_long($desc);
+      					   $desc = $converter->textFullHTMLFormatting($desc);
       				   } else {
 							   $desc = $desc;
 							   //$html .= $this->getScrollableContent($desc,$item,'',true);
@@ -1243,9 +1251,11 @@
 				$file = $file_list->getFirst();
 				while($file) {
 					if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-						$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						#$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
 					} else {
-						$file_string = '<a href="' . $file->getUrl() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						#$file_string = '<a href="' . $file->getUrl() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
+						$file_string = '<a href="' . $file->getUrl() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)'.'<br/>';
 					}
 
 					$files[] = $file_string;
@@ -1314,12 +1324,11 @@
 		        $return['read_count'] = $read_count;
 		        $return['read_since_modification_count'] = $read_since_modification_count;
 		    }
-
 			$moddate = $item->getModificationDate();
 			if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
      			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getModificationDate());
   			} else {
-     			$mod_date = '';
+     			$mod_date = $this->_environment->getTranslationObject()->getDateTimeInLang($item->getCreationDate());
   			}
  		    $return['last_modification_date'] = $mod_date;
 		    $return['creation_date'] = $translator->getDateTimeInLang($item->getCreationDate());
@@ -1404,7 +1413,7 @@
                                      'style="font-size:10pt;"'); */
 		                $return['last_modificator'] = $modificator->getFullname();
 		                $return['last_modificator_status'] = self::USER_HAS_LINK;
-		                $return['modifcator_id'] = $modificator->getItemID();
+		                $return['last_modificator_id'] = $modificator->getItemID();
 		            }
 		            else
 		            {
@@ -1662,6 +1671,7 @@
 		                $this->_text_as_html_short($this->_compareWithSearchText($creator->getFullname()))); */
 		                $return['creator'] = $creator->getFullname();
 		                $return['creator_status'] = self::USER_HAS_LINK;
+		                $return['creator_id'] = $creator->getItemID();
 		            }else{
 		              //  $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
 		              $return['creator'] = $creator->getFullname();
@@ -1679,7 +1689,7 @@
 		    } else {
 		        if(isset($creator) and !$creator->isDeleted()){
 		            $current_user_item = $this->_environment->getCurrentUserItem();
-		            if ( $current_user_item->isGuest() ) {
+		            if ( $current_user_item->isGuest() && !$context->isMaterialOpenForGuests()) {
 		                //$temp_html = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 		                $return['creator'] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 
@@ -1794,7 +1804,7 @@
 		            } else {
 		                if(isset($modificator) and !$modificator->isDeleted()){
 		                    $current_user_item = $this->_environment->getCurrentUserItem();
-		                    if ( $current_user_item->isGuest() ) {
+		                    if ( $current_user_item->isGuest() && !$context->isMaterialOpenForGuests()) {
 		                        //$modifier_array[] = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
 		                        $userArray = array(
                                     'name' => $translator->getMessage('COMMON_USER_NOT_VISIBLE'),

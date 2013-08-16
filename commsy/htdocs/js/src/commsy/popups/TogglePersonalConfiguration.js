@@ -71,6 +71,51 @@ define([	"dojo/_base/declare",
 				}));
 			}));
 			
+			if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
+				var ulNode = DomConstruct.create('ul',{
+					
+				});
+				if(this.from_php.password.length){
+					DomConstruct.create('li',{
+						innerHTML: this.from_php.password.length
+					},ulNode,'last');
+				}
+				if(this.from_php.password.big){
+					DomConstruct.create('li',{
+						innerHTML: this.from_php.password.big
+					},ulNode,'last');
+				}
+				if(this.from_php.password.small){
+					DomConstruct.create('li',{
+						innerHTML: this.from_php.password.small
+					},ulNode,'last');
+				}
+				if(this.from_php.password.special){
+					DomConstruct.create('li',{
+						innerHTML: this.from_php.password.special
+					},ulNode,'last');
+				}
+				if(this.from_php.password.number){
+					DomConstruct.create('li',{
+						innerHTML: this.from_php.password.number
+					},ulNode,'last');
+				}
+				new Tooltip({
+			        connectId: Query("input[name='form_data[new_password]']", this.contentNode),
+			        label: ulNode.outerHTML
+			    });
+			}
+			
+
+			// check for auto load tab
+			var autoOpen = this.from_php.autoOpenPopup;
+			if (autoOpen) {
+				var aNode = Query("a[href='" + autoOpen.tab + "']")[0];
+				if (aNode) {
+					aNode.click();
+				}
+			}
+			
 		   // confirm delete Wordpress
          var deleteWordpressButton = Query("#submit_delete_wordpress", this.contentNode)[0];
          if (deleteWordpressButton) {
@@ -202,9 +247,12 @@ define([	"dojo/_base/declare",
 						{ query: Query("input[name='form_data[new_password_confirm]']", this.contentNode) },
 						{ query: Query("select[name='form_data[language]']", this.contentNode) },
 						{ query: Query("input[name='form_data[upload]']", this.contentNode) },
-						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) }
+						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) },
+						{ query: Query("input[name='form_data[mail_account]']", this.contentNode) },
+						{ query: Query("input[name='form_data[mail_room]']", this.contentNode) }
 					]
 				};
+				
 			} else if(part === "account_merge") {
 				var search = {
 					tabs: [],
@@ -256,6 +304,52 @@ define([	"dojo/_base/declare",
 			this.inherited(arguments);
 			
 			switch (response.code) {
+				case "1022":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					//console.log(response.reason);
+					var ulNode = DomConstruct.create('ul',{
+					});
+					for(var i=0; i<response.reason.length; i++){
+						DomConstruct.create('li',{
+							innerHTML: response.reason[i]
+						},ulNode,'last');
+						  //console.debug(response.reason[i], "at index", i);
+					}
+					console.log(response.reason.length);
+					Tooltip.show(ulNode.outerHTML, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;	
+//				case "1023":
+//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+//					Tooltip.show(ErrorTranslations.personalPopup1023, errorNode);
+//					this.errorNodes.push(errorNode);
+//					
+//					break;	
+//				case "1024":
+//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+//					Tooltip.show(ErrorTranslations.personalPopup1024, errorNode);
+//					this.errorNodes.push(errorNode);
+//					
+//					break;	
+//				case "1025":
+//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+//					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
+//					this.errorNodes.push(errorNode);
+//					
+//					break;
+//				case "1026":
+//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+//					Tooltip.show(ErrorTranslations.personalPopup1026, errorNode);
+//					this.errorNodes.push(errorNode);
+//					
+//					break;	
+//				case "1027":
+//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+//					Tooltip.show(ErrorTranslations.personalPopup1027, errorNode);
+//					this.errorNodes.push(errorNode);
+					
+					break;	
 				case "1011":			/* user id already registered */
 					var errorNode = Query("input[name='form_data[user_id]']", this.contentNode)[0];
 					Tooltip.show(ErrorTranslations.personalPopup1011, errorNode);

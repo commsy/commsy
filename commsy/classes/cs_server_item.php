@@ -161,11 +161,617 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronLog(); // this function must run AFTER all other portal crons
       $cron_array[] = $this->_cronLogArchive();
       $cron_array[] = $this->_cronRoomActivity();
-      $cron_array[] = $this->_cronReallyDelete();
+      $cron_array[] = $this->_cronReallyDelete();      
+      $cron_array[] = $this->_cronReallyDeleteArchive();
       $cron_array[] = $this->_cronCleanTempDirectory();
       $cron_array[] = $this->_cronUnlinkFiles();
       $cron_array[] = $this->_cronItemBackup();
+      $cron_array[] = $this->_cronInactiveUserDelete();
+      $cron_array[] = $this->_cronTemporaryLoginAs();
+      $cron_array[] = $this->_cronCheckPasswordExpiredSoon();
+      $cron_array[] = $this->_cronCheckPasswordExpired();
+      
       return $cron_array;
+   }
+   
+   function _cronInactiveUserDelete() {
+   	$time_start = getmicrotime();
+   	$cron_array = array();
+   	$cron_array['title'] = 'Temporary login as expired';
+   	$cron_array['description'] = 'check if a temporary login is expired';
+   	$success = false;
+   	$translator = $this->_environment->getTranslationObject();
+   	$server_item = $this->_environment->getServerItem();
+   	
+   	require_once 'classes/cs_mail.php';
+   	
+   	$user_manager = $this->_environment->getUserManager();
+   	//$current_portal = $this->_environment->getCurrentContextItem();
+   	
+   	$portal_list = $this->getPortalList();
+   	if ( $portal_list->isNotEmpty() ) {
+   		$portal_item = $portal_list->getFirst();
+   		while ($portal_item) {
+   			if($portal_item->getInactivityLockDays() != 0
+   				or $portal_item->getInactivitySendMailBeforeLockDays() != 0
+   				or $portal_item->getInactivityDeleteDays() != 0
+   				or $portal_item->getInactivitySendMailBeforeDeleteDays() != 0
+   			){
+   				
+   				$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($portal_item->getInactivitySendMailBeforeLockDays());
+   				$user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$portal_item->getItemID());
+   				if(!empty($user_array)){
+   					foreach ($user_array as $user) {
+   						$start_date = new DateTime(getCurrentDateTimeInMySQL());
+   						$since_start = $start_date->diff(new DateTime($user->getLastLogin()));
+   						$days = $since_start->days;
+   						if($days == 0){
+   							$days = 1;
+   						}
+   						
+//    						pr('Diff: '.$days);
+//    						pr($user->getLastLogin());
+//    						pr('SendMailBeforeDelete: '.$portal_item->getInactivitySendMailBeforeDeleteDays());
+//    						pr('InactivityDeleteDays: '.$portal_item->getInactivityDeleteDays());
+//    						pr('SendMailBeforeLock: '.$portal_item->getInactivitySendMailBeforeLockDays());
+//    						pr('InactivityLockDays: '.$portal_item->getInactivityLockDays());
+//    						pr('USERNAME: '.$user->getFullName());
+   						// delete user
+   						if($days >= $portal_item->getInactivityDeleteDays()-1){
+   							if($user->getMailSendBeforeDelete()){
+   								// delete user and every room which the user is member only
+   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
+								$authentication = $this->_environment->getAuthenticationObject();
+								$authentication->delete($user->getItemID()); // delete authentication
+   								$user->delete(); 
+   								$user->save();
+   								#pr("DELETE USER:".$user->getFullName());
+   								
+   							} else {
+   								// Send mail to user that the user will be deleted in one day
+   								// set MailSentBeforeDelete
+
+   								// send mail next day delete
+   								$mail = new cs_mail();
+   									
+   								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT');
+   								$to = $user->getEmail();
+   								$body = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getFullName());
+   								
+   								$default_sender_address = $server_item->getDefaultSenderAddress();
+   								if (!empty($default_sender_address)) {
+   									$mail->set_from_email($default_sender_address);
+   								} else {
+   									$mail->set_from_email('@');
+   								}
+   								
+   								$mail->set_subject($subject);
+   								$mail->set_message($body);
+   								$mail->set_to($to);
+   								$mail->setSendAsHTML();
+   								if ( $mail->send() ) {
+   									$user->setMailSendBeforeDelete();
+   									$user->save();
+   									
+   									$cron_array['success'] = true;
+   									$cron_array['success_text'] = 'send mail to '.$to;
+   								} else {
+   									$cron_array['success'] = false;
+   									$cron_array['success_text'] = 'failed send mail to '.$to;
+   								}
+   							}
+   							// step over
+   							continue;
+   						}
+   						// 1 Tag vor dem löschen noch eine Email verschicken
+   						if($days >= $portal_item->getInactivityDeleteDays()-1){
+   							if(!$user->getMailSendBeforeDelete()){
+   								// Send mail delete tomorrow
+
+   								// send mail next day delete
+   								$mail = new cs_mail();
+   								
+   								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT');
+   								$to = $user->getEmail();
+   								$body = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getFullName());
+   									
+   								$default_sender_address = $server_item->getDefaultSenderAddress();
+   								if (!empty($default_sender_address)) {
+   									$mail->set_from_email($default_sender_address);
+   								} else {
+   									$mail->set_from_email('@');
+   								}
+   									
+   								$mail->set_subject($subject);
+   								$mail->set_message($body);
+   								$mail->set_to($to);
+   								$mail->setSendAsHTML();
+   								if ( $mail->send() ) {
+   									$user->setMailSendBeforeDelete();
+   									$user->save();
+   									
+   									$cron_array['success'] = true;
+   									$cron_array['success_text'] = 'send mail to '.$to;
+   								} else {
+   									$cron_array['success'] = false;
+   									$cron_array['success_text'] = 'failed send mail to '.$to;
+   								}
+   							}
+   						}
+   						
+   						if($days >= $portal_item->getInactivitySendMailBeforeDeleteDays()){
+   							// send mail delete in the next y days
+   							if($user->getMailSendBeforeDelete()){
+   							} else {
+
+	   							if( ($portal_item->getInactivityDeleteDays() - $days) <= $portal_item->getInactivitySendMailBeforeDeleteDays()){
+	   							
+		   							$mail = new cs_mail();
+		   								#$portal_item->getInactivitySendMailBeforeDeleteDays()
+		   							$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT', ($portal_item->getInactivityDeleteDays() - $days));
+		   							$to = $user->getEmail();
+		   							$body = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getFullName(), ($portal_item->getInactivityDeleteDays() - $days));
+		   							
+		   							$default_sender_address = $server_item->getDefaultSenderAddress();
+		   							if (!empty($default_sender_address)) {
+		   								$mail->set_from_email($default_sender_address);
+		   							} else {
+		   								$mail->set_from_email('@');
+		   							}
+		   							
+		   							$mail->set_subject($subject);
+		   							$mail->set_message($body);
+		   							$mail->set_to($to);
+		   							$mail->setSendAsHTML();
+		   							if ( $mail->send() ) {
+		   								#$user->setInactivityMailSendBeforeDelete();
+		   								#$user->save();
+		   							
+		   								$cron_array['success'] = true;
+		   								$cron_array['success_text'] = 'send mail to '.$to;
+		   							} else {
+		   								$cron_array['success'] = false;
+		   								$cron_array['success_text'] = 'failed send mail to '.$to;
+		   							}
+		   							// step over
+		   							continue;
+	   							}
+   							}
+   						}
+   						// lock tomorrow
+   						if($days >= $portal_item->getInactivityLockDays()-1){
+
+   							if($user->getMailSendBeforeLock()){
+   								// lock user  set lock date to delete date
+   								$user->setLock($portal_item->getInactivityDeleteDays()); // days till delete
+   								$user->save();
+   								// SPerre den Benutzer, wenn er noch nicht gesperrt ist
+   								
+   							} else {
+   								// send mail to user that the user will be locked in one day
+   								
+   								if(($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()){
+	   								$mail = new cs_mail();
+	   									
+	   								$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT', ($portal_item->getInactivityLockDays() - $portal_item->getInactivitySendMailBeforeLockDays()));
+	   								$to = $user->getEmail();
+	   								$body = $translator->getMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $user->getFullName(), ($portal_item->getInactivityLockDays() - $portal_item->getInactivitySendMailBeforeLockDays()));
+	   								
+	   								$default_sender_address = $server_item->getDefaultSenderAddress();
+	   								if (!empty($default_sender_address)) {
+	   									$mail->set_from_email($default_sender_address);
+	   								} else {
+	   									$mail->set_from_email('@');
+	   								}
+	   								
+	   								$mail->set_subject($subject);
+	   								$mail->set_message($body);
+	   								$mail->set_to($to);
+	   								$mail->setSendAsHTML();
+	   								if ( $mail->send() ) {
+	   									$user->setMailSendBeforeLock();
+	   									$user->save();
+	   								
+	   									$cron_array['success'] = true;
+	   									$cron_array['success_text'] = 'send mail to '.$to;
+	   								} else {
+	   									$cron_array['success'] = false;
+	   									$cron_array['success_text'] = 'failed send mail to '.$to;
+	   								}
+	   							}
+	   							// step over
+	   							continue;
+   							}
+   						}
+   						// lock in x days
+   						if($days >= $portal_item->getInactivitySendMailBeforeLockDays()){
+   							// send mail lock in x days
+   							
+   							if($user->getMailSendBeforeLock()){
+   								
+   							} else {
+
+	   							if( ($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()){
+		   							$mail = new cs_mail();
+		   								
+		   							$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT', ($portal_item->getInactivityLockDays() - $days));
+		   							$to = $user->getEmail();
+		   							$body = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getFullName(), ($portal_item->getInactivityLockDays() - $days));
+		   							
+		   							$default_sender_address = $server_item->getDefaultSenderAddress();
+		   							if (!empty($default_sender_address)) {
+		   								$mail->set_from_email($default_sender_address);
+		   							} else {
+		   								$mail->set_from_email('@');
+		   							}
+		   							
+		   							$mail->set_subject($subject);
+		   							$mail->set_message($body);
+		   							$mail->set_to($to);
+		   							$mail->setSendAsHTML();
+		   							if ( $mail->send() ) {
+		   								#$user->setMailSendBeforeLock();
+		   								#$user->save();
+		   							
+		   								$cron_array['success'] = true;
+		   								$cron_array['success_text'] = 'send mail to '.$to;
+		   							} else {
+		   								$cron_array['success'] = false;
+		   								$cron_array['success_text'] = 'failed send mail to '.$to;
+		   							}
+		   							
+		   							// step over
+		   							continue;
+	   							}
+   							}
+   						}
+   						
+//    						if($days >= $portal_item->getInactivitySendMailBeforeLockDays()){
+//    							// send mail lock in y days
+   							
+   							
+//    							$mail = new cs_mail();
+   								
+//    							$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT', ($portal_item->getInactivityDeleteDays() - $portal_item->getInactivitySendMailBeforeDeleteDays()));
+//    							$to = $user->getEmail();
+//    							$body = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getFullName(), ($portal_item->getInactivityDeleteDays() - $portal_item->getInactivitySendMailBeforeDeleteDays()));
+   							
+//    							$default_sender_address = $server_item->getDefaultSenderAddress();
+//    							if (!empty($default_sender_address)) {
+//    								$mail->set_from_email($default_sender_address);
+//    							} else {
+//    								$mail->set_from_email('@');
+//    							}
+   							
+//    							$mail->set_subject($subject);
+//    							$mail->set_message($body);
+//    							$mail->set_to($to);
+//    							$mail->setSendAsHTML();
+//    							if ( $mail->send() ) {
+//    								$user->setMailSendBeforeLock();
+//    								$user->save();
+   							
+//    								$cron_array['success'] = true;
+//    								$cron_array['success_text'] = 'send mail to '.$to;
+//    							} else {
+//    								$cron_array['success'] = false;
+//    								$cron_array['success_text'] = 'failed send mail to '.$to;
+//    							}
+   							
+//    							// step over
+//    							continue;
+//    						}
+   						
+   					
+   					}
+   				}
+   				
+   				
+//    				pr($user_array);
+   			}
+   			$portal_item = $portal_list->getNext();
+   		}
+   	}
+   	
+   	// überprüfen ob benutzer gelöscht oder gesperrt werden muss
+   	
+   	// wenn gelöscht, überprüfen ob Räume existieren, in denen nur diese Person benutzer ist, wenn ja dann auch diese Räume löschen
+   	
+   	// überprüfen ob Mails verschickt werden müssen
+   	
+   	
+   	break;
+   	if($success){
+   		$cron_array['success'] = true;
+   		$cron_array['success_text'] = 'mails send';
+   	} else {
+   		$cron_array['success'] = true;
+   		$cron_array['success_text'] = 'nothing to do';
+   	}
+   	
+   	
+   	$time_end = getmicrotime();
+   	$time = round($time_end - $time_start,0);
+   	$cron_array['time'] = $time;
+   	
+   	unset($user_manager);
+   	
+   	return $cron_array;
+   }
+   
+   function _cronTemporaryLoginAs() {
+   	$time_start = getmicrotime();
+   	$cron_array = array();
+   	$cron_array['title'] = 'Temporary login as expired';
+   	$cron_array['description'] = 'check if a temporary login is expired';
+   	$success = false;
+   	$translator = $this->_environment->getTranslationObject();
+   	
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_list = $user_manager->getUserTempLoginExpired();
+   	require_once 'classes/cs_mail.php';
+   	if(!empty($user_list)) {
+	   	foreach ($user_list as $user) {
+	   		if($user->getTimestampForLoginAs() <= getCurrentDateTimeInMySQL()) {
+	   			$success = true;
+	   			// unset login as timestamp
+	   			$user->unsetDaysForLoginAs();
+	   			$user->save();
+	   			// send mail
+	   			$mail = new cs_mail();
+	   				
+	   			$subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT');
+	   			$to = $user->getEmail();
+	   			//from
+	   			// get all portal moderators
+	   			$current_context = $this->_environment->getCurrentContextItem();
+	   			$mod_list = $current_context->getModeratorList();
+	   			$cc_array = array();
+	   			if (!$mod_list->isEmpty()) {
+	   				$moderator_item = $mod_list->getFirst();
+	   			
+	   				while ($moderator_item) {
+	   					$email = $moderator_item->getEmail();
+	   					if (!empty($email)) {
+	   						$cc_array[] = $email;
+	   					}
+	   			
+	   					unset($email);
+	   					$moderator_item = $mod_list->getNext();
+	   				}
+	   			}
+	   			// make unique
+	   			if (!empty($cc_array)) $cc_array = array_unique($cc_array);
+	   			
+	   			// build strings
+	   			$cc_string = implode(",", $cc_array);
+	   			
+	   			if (!empty($cc_string)) {
+	   				$mail->set_cc_to($cc_string);
+	   			}
+	   			
+	   			unset($cc_string);
+	   			
+	   			
+	   			//content
+	   			$body = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_BODY', $user->getFullName());
+	   			 
+	   			$mail->set_subject($subject);
+	   			$mail->set_message($body);
+	   			$mail->set_to($to);
+	   			$mail->setSendAsHTML();
+	   			if ( $mail->send() ) {
+	   				$cron_array['success'] = true;
+	   				$cron_array['success_text'] = 'send mail to '.$to;
+	   			} else {
+	   				$cron_array['success'] = false;
+	   				$cron_array['success_text'] = 'failed send mail to '.$to;
+	   			}
+	   		}
+	   	}
+   	}
+   	if($success){
+   		$cron_array['success'] = true;
+   		$cron_array['success_text'] = 'mails send';
+   	} else {
+   		$cron_array['success'] = true;
+   		$cron_array['success_text'] = 'nothing to do';
+   	}
+   	
+   	
+   	$time_end = getmicrotime();
+   	$time = round($time_end - $time_start,0);
+   	$cron_array['time'] = $time;
+   	
+   	unset($user_manager);
+   	unset($user_list);
+   	
+   	return $cron_array;
+   }
+   
+   function _cronCheckPasswordExpired() {
+   	  // Datenschutz
+   	  $time_start = getmicrotime();
+   	  $cron_array = array();
+   	  $cron_array['title'] = 'Password expire';
+   	  $cron_array['description'] = 'check if a password is expired';
+   	  
+   	  $user_manager = $this->_environment->getUserManager();
+   	  $authentication = $this->_environment->getAuthenticationObject();
+   	  $translator = $this->_environment->getTranslationObject();
+   	  $portal_list = $this->getPortalList();
+   	  // send mail to user if password expires soon
+   	  // if password is expired set new random password
+   	  if ( $portal_list->isNotEmpty() ) {
+   	  	$portal_item = $portal_list->getFirst();
+   	  	while ($portal_item) {
+   	  		if($portal_item->isPasswordExpirationActive()){
+   	  			if($user_manager->getCountUserPasswordExpiredByContextID($portal_item->getItemID()) > 0){
+   	  				$expired_user_array = $user_manager->getUserPasswordExpiredByContextID($portal_item->getItemID());
+   	  				require_once 'classes/cs_mail.php';
+   	  				foreach ($expired_user_array as $user){
+   	  					$auth_manager = $this->_environment->getAuthSourceManager();
+   	  					$auth_item = $auth_manager->getItem($user->getAuthSource());
+   	  					if($auth_item->getSourceType() == 'MYSQL'){
+	    	  					if (!$user->isPasswordExpiredEmailSend()){
+	   	  						$auth_manager = $authentication->getAuthManager($user->getAuthSource());
+	   	  						$auth_manager->changePassword($user->getUserID(), uniqid('',true));
+	   	  						//$user->unsetPasswordExpiredEmailSend();
+	   	  			
+	   	  						$mail = new cs_mail();
+	   	  						 
+	   	  						$subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SUBJECT', $portal_item->getTitle());
+	   	  						$to = $user->getEmail();
+	   	  						//from
+	//    	  						$server_item = $this->_environment->getServerItem();
+	//    	  						$default_sender_address = $server_item->getDefaultSenderAddress();
+	//    	  						if (!empty($default_sender_address)) {
+	//    	  							$mail->set_from_email($default_sender_address);
+	//    	  						} else {
+	//    	  							$mail->set_from_email('@');
+	//    	  						}
+	   	  						$mod_contact_list = $portal_item->getContactModeratorList();
+	   	  						$mod_user_first = $mod_contact_list->getFirst();
+	   	  						$mail->set_from_email($mod_user_first->getEmail());
+	   	  						
+	   	  						$pw_forgot_link = ahref_curl($portal_item->getContextID(), 'home', 'index', array('cs_modus' => 'password_forget'), '');
+	   	  						
+	   	  						//content
+	   	  						$email_text_array = $portal_item->getEmailTextArray();
+	   	  						if(isset($email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'])){
+	   	  							$body = $email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'];;
+	   	  							$body = str_replace('%1', (string)$user->getFullName(), $body[$this->_environment->_selected_language]);
+	   	  							$body = str_replace('%2', (string)$pw_forgot_link, $body);
+	   	  							$body = str_replace('%3', (string)$mod_user_first->getFullName(), $body);
+	   	  							
+	   	  						} else {
+	   	  							$body = $translator->getEmailMessage('MAIL_BODY_PASSWORD_EXPIRATION', $user->getFullName());
+	   	  						}
+	   	  			
+	   	  						$mail->set_subject($subject);
+	   	  						$mail->set_message($body);
+	   	  						$mail->set_to($to);
+	   	  						$mail->setSendAsHTML();
+	   	  						if ( $mail->send() ) {
+	   	  							$cron_array['success'] = true;
+	   	  							$cron_array['success_text'] = 'send mail to '.$to;
+	   	  						} else {
+	   	  							$cron_array['success'] = false;
+	   	  							$cron_array['success_text'] = 'failed send mail to '.$to;
+	   	  						}
+	   	  					}
+	   	  				}
+   	  			
+   	  				}
+   	  				 
+   	  				$time_end = getmicrotime();
+   	  				$time = round($time_end - $time_start,0);
+   	  				$cron_array['time'] = $time;
+   	  			} else {
+   	  				$cron_array['success'] = true;
+   	  				$cron_array['success_text'] = 'nothing to do';
+   	  			}
+   	  			 
+   	  		}
+   	  
+   	  		unset($portal_item);
+   	  		$portal_item = $portal_list->getNext();
+   	  	}
+   	  }
+   	  return $cron_array; 	  
+   }
+   
+   function _cronCheckPasswordExpiredSoon() {
+   	  include('functions/curl_functions.php');
+   	  // Datenschutz
+   	  $time_start = getmicrotime();
+   	  $cron_array = array();
+   	  $cron_array['title'] = 'Password expire soon';
+   	  $cron_array['description'] = 'check if a password is expired soon';
+   	  
+   	  $user_manager = $this->_environment->getUserManager();
+   	  $translator = $this->_environment->getTranslationObject();
+   	  $portal_list = $this->getPortalList();
+   	  // send mail to user if password expires soon
+   	  // if password is expired set new random password
+   	  if ( $portal_list->isNotEmpty() ) {
+   	  	$portal_item = $portal_list->getFirst();
+   	  	while ($portal_item) {
+   	  		if($portal_item->isPasswordExpirationActive()){
+   	  			if($user_manager->getCountUserPasswordExpiredSoonByContextID($portal_item->getItemID(), $portal_item) > 0){
+   	  				$expired_user_array = $user_manager->getUserPasswordExpiredSoonByContextID($portal_item->getItemID(), $portal_item);
+   	  				require_once 'classes/cs_mail.php';
+   	  				foreach ($expired_user_array as $user){
+	   	  				$auth_manager = $this->_environment->getAuthSourceManager();
+	   	  				$auth_item = $auth_manager->getItem($user->getAuthSource());
+	   	  					if($auth_item->getSourceType() == 'MYSQL'){
+	//    	  					if (!$user->isPasswordExpiredEmailSend()){
+	   	  						$mail = new cs_mail();
+	   	
+	   	  						$mod_contact_list = $portal_item->getContactModeratorList();
+	   	  						$mod_user_first = $mod_contact_list->getFirst();
+	   	  						$mail->set_from_email($mod_user_first->getEmail());
+	   	  						
+	   	  						if($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()){
+	   	  							$start_date = new DateTime(getCurrentDateTimeInMySQL());
+	   	  							$since_start = $start_date->diff(new DateTime($user->getPasswordExpireDate()));
+	   	  							$days = $since_start->d;
+	   	  							if($days == 0){
+	   	  								$days = 1;
+	   	  							}
+	   	  						}
+	   	  						
+	
+	   	  						$subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT', $portal_item->getTitle(),$days);
+	   	  						$to = $user->getEmail();
+	   	  						
+	   	  						$pw_forgot_link = ahref_curl($portal_item->getContextID(), 'home', 'index', array('cs_modus' => 'password_forget'), '');
+	   	  						
+	   	  						//content
+	   	  						$email_text_array = $portal_item->getEmailTextArray();
+	   	  						if(isset($email_text_array['EMAIL_PASSWORD_EXPIRATION_SOON_BODY'])){
+	   	  							$body = $email_text_array['EMAIL_PASSWORD_EXPIRATION_SOON_BODY'];
+	   	  							$body = str_replace('%1', (string)$user->getFullName(), $body[$this->_environment->_selected_language]);
+	   	  							$body = str_replace('%2', (string)$days, $body);
+	   	  							$body = str_replace('%3', (string)$pw_forgot_link, $body);
+	   	  							$body = str_replace('%4', (string)$mod_user_first->getFullName(), $body);
+	   	  						} else {
+	   	  							$body = $translator->getEmailMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY', $user->getFullName(),$days,$pw_forgot_link,$mod_user_first->getFullName());
+	   	  						}
+	   	  							
+	   	  						$mail->set_subject($subject);
+	   	  						$mail->set_message($body);
+	   	  						$mail->set_to($to);
+	   	  						$mail->setSendAsHTML();
+	   	  						 
+	   	  						if ( $mail->send() ) {
+	   	  							$user->setPasswordExpiredEmailSend();
+	   	  							$user->save();
+	   	  							$cron_array['success'] = true;
+	   	  							$cron_array['success_text'] = 'send mail to '.$to;
+	   	  						} else {
+	   	  							$cron_array['success'] = false;
+	   	  							$cron_array['success_text'] = 'failed send mail to '.$to;
+	   	  						}
+   	  						}
+   	  				}
+   	  			
+   	  				$time_end = getmicrotime();
+   	  				$time = round($time_end - $time_start,0);
+   	  				$cron_array['time'] = $time;
+   	  			}
+   	  			
+   	  		} else {
+   	  			$cron_array['success'] = true;
+   	  			$cron_array['success_text'] = 'nothing to do';
+   	  		}
+   	  		
+   	  		unset($portal_item);
+   	  		$portal_item = $portal_list->getNext();
+   	  	}
+   	  }
+   	  return $cron_array;
+   	  
    }
 
    function _cronCleanTempDirectory () {
@@ -334,7 +940,7 @@ class cs_server_item extends cs_guide_item {
     *
     * @return array results of running this cron
     */
-   function _cronLog () {
+	function _cronLog () {
       include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
 
@@ -343,6 +949,8 @@ class cs_server_item extends cs_guide_item {
       $cron_array['description'] = 'move old logs to log archive';
       $cron_array['success'] = false;
       $cron_array['success_text'] = 'cron failed';
+      
+      $context_item = $this->_environment->getCurrentContextItem();
 
       $log_DB = $this->_environment->getLogManager();
       $log_DB->resetlimits();
@@ -351,9 +959,16 @@ class cs_server_item extends cs_guide_item {
       $from = 0;
       $range = 500;
       $log_DB->setRangeLimit($from,$range);
-      // only archive logs that are older then the beginning of the actual day
-      // getCurrentDate() returns date("Ymd");
-      include_once('functions/date_functions.php');
+//       // only archive logs that are older then the beginning of the actual day
+//       // getCurrentDate() returns date("Ymd");
+//             // Datenschutz : Logdaten nach bestimmtem Zeitraum löschen
+//       // Wenn im context_item das Extra eingestellt ist, dann
+//       include_once('functions/date_functions.php');
+//       if($context_item->getLogDeleteInterval() <= 1){
+//       	$log_DB->setTimestampOlderLimit(getCurrentDate());
+//       } else {
+//       	$log_DB->setTimestampOlderLimit(getCurrentDateTimeMinusDaysInMySQL($context_item->getLogDeleteInterval()));
+//       }
       $log_DB->setTimestampOlderLimit(getCurrentDate());
       $data_array = $log_DB->select();
       $count = count($data_array);
@@ -433,7 +1048,7 @@ class cs_server_item extends cs_guide_item {
     * @return array results of running this cron
     */
    function _cronRoomActivity () {
-      include_once('functions/misc_functions.php');
+   	include_once('functions/misc_functions.php');
       $time_start = getmicrotime();
 
       $quotient = 4;
@@ -538,6 +1153,78 @@ class cs_server_item extends cs_guide_item {
       $time = round($time_end - $time_start,0);
       $cron_array['time'] = $time;
 
+      return $cron_array;
+   }
+
+   /** cron delete archived items, INTERNAL
+   *  daily cron, delete archived items
+   *
+   * @return array results of running this cron
+   */
+   function _cronReallyDeleteArchive () {
+      // toggle archive mode
+      $toggle_archive_mode = false;
+      if ( !$this->_environment->isArchiveMode() ) {
+      	$toggle_archive_mode = true;
+      	$this->_environment->toggleArchiveMode();
+      }
+         	
+   	include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
+      $cron_array = array();
+      $cron_array['title'] = 'delete archived items';
+      $cron_array['description'] = 'delete archived items older than x days';
+      $cron_array['success'] = true;
+      $cron_array['success_text'] = '';
+
+      $item_type_array = array();
+      $item_type_array[] = CS_ANNOTATION_TYPE;
+      $item_type_array[] = CS_ANNOUNCEMENT_TYPE;
+      $item_type_array[] = CS_DATE_TYPE;
+      $item_type_array[] = CS_DISCUSSION_TYPE;
+      $item_type_array[] = CS_DISCARTICLE_TYPE;
+      $item_type_array[] = CS_LINKITEMFILE_TYPE;
+      $item_type_array[] = CS_FILE_TYPE;
+      $item_type_array[] = CS_ITEM_TYPE;
+      $item_type_array[] = CS_LABEL_TYPE;
+      $item_type_array[] = CS_LINK_TYPE;
+      $item_type_array[] = CS_LINKITEM_TYPE;
+      $item_type_array[] = CS_MATERIAL_TYPE;
+      $item_type_array[] = CS_ROOM_TYPE;
+      $item_type_array[] = CS_SECTION_TYPE;
+      $item_type_array[] = CS_TAG_TYPE;
+      $item_type_array[] = CS_TAG2TAG_TYPE;
+      $item_type_array[] = CS_TASK_TYPE;
+      $item_type_array[] = CS_TODO_TYPE;
+      $item_type_array[] = CS_USER_TYPE;
+
+      foreach ($item_type_array as $item_type) {
+         $manager = $this->_environment->getManager($item_type);
+         global $c_delete_days;
+         if ( !empty($c_delete_days) and is_numeric($c_delete_days) ) {
+         	
+            $success = $manager->deleteReallyOlderThan($c_delete_days);
+            
+         	$cron_array['success'] = $success and $cron_array['success'];
+            $cron_array['success_text'] = 'delete entries in database marked as deleted older than '.$c_delete_days.' days';
+         } else {
+            $cron_array['success_text'] = 'nothing to do - please activate etc/commsy/settings.php -> c_delete_days if needed';
+         }
+         unset($manager);
+      }
+      unset($item_type_array);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+      
+      // toggle archive mode
+      if ( $toggle_archive_mode ) {
+      	$this->_environment->toggleArchiveMode();
+      }
+      unset($toggle_archive_mode);     
+      
       return $cron_array;
    }
 
@@ -850,6 +1537,9 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_HTMLTEXTAREA':
                $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
                break;
+            case 'CONFIGURATION_DATASECURITY':
+               $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               break;
             default:
                $tempMessage      = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item (".__LINE__.")";
                break;
@@ -1061,6 +1751,24 @@ class cs_server_item extends cs_guide_item {
    public function getStatistics ($date_start,$date_end) {
       $manager = $this->_environment->getServerManager();
       return $manager->getStatistics($this,$date_start,$date_end);
+   }
+   
+   function withLogIPCover () {
+   	$retour = false;
+   	$value = $this->_getExtraConfig('LOGIPCOVER');
+   	if ($value == 1) {
+   		$retour = true;
+   	}
+   	return $retour;
+   	 
+   }
+   
+   function setWithLogIPCover () {
+   	$this->_setExtraConfig('LOGIPCOVER', 1);
+   }
+   
+   function setWithoutLogIPCover () {
+   	$this->_setExtraConfig('LOGIPCOVER', -1);
    }
 }
 ?>

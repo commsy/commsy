@@ -2,6 +2,52 @@
 $message["EMAIL_CONTACT_MODERATOR"]["en"] = "Contact via e-mail";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["en"] = "Send an e-mail to contact persons";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";
+$message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["en"] = "Your account will be deleted in %1 days";
+$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Hello %1,
+
+Your account will be deleted in %2 days. Please contact the portal user.
+
+Best regards ... CommSy Administrator";
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["en"] = "Account will be deleted tomorrow";
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Hello %1,
+
+Your account will be deleted tomorrow. Please contact the portal user.
+
+Best regards ... CommSy Administrator";
+$message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["en"] = "Account will be locked in %1 days";
+$message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["en"] = "Hello %1,
+
+your account will be locked in %2 days because of inactivity. Log on to your account will prevent you from getting locked.
+
+Best regards ... CommSy Administrator";
+$message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["en"] = "Account will be locked tomorrow";
+$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["en"] = "Hello %1,
+
+your account will be locked tomorrow. Log on to your account will prevent you from getting locked.
+
+Best regards ... CommSy Administrator";
+$message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["en"] = "Login as another user is deactivated";
+$message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "Hello %1,
+
+your right to login as another user is deactivated now.
+
+Best regards ... CommSy Administrator";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["en"] = "Hello %1,
+
+your password will expire in the next %2 days. Please change your password.
+
+Best regards ... %3
+[This e-mail was sent automatically.]";
+$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["en"] = "Hello %1,
+
+your password is expired.
+
+Please change your password with the link password forget.
+
+Best regards ... %3
+[This e-mail was sent automatically.]";
+$message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["en"] = "Password is expired";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["en"] = "%1: Password will expire in %2 days";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["en"] = "Account";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["en"] = "Upload-Password";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["en"] = "Hello %1,

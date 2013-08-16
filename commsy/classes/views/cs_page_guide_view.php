@@ -125,6 +125,8 @@ class cs_page_guide_view extends cs_page_view {
 
    public  $_login_redirect = NULL;
 
+   protected $_has_to_change_email = false;
+    
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -141,6 +143,10 @@ class cs_page_guide_view extends cs_page_view {
       $this->_delete_box_hidden_values = $array;
    }
 
+   public function setHasToChangeEmail () {
+   	$this->_has_to_change_email = true;
+   }
+   
    public function setLoginRedirect () {
       $this->_login_redirect = true;
    }
@@ -804,7 +810,7 @@ class cs_page_guide_view extends cs_page_view {
                               } else {
                                  $room_user = '';
                               }
-                              if(!$room_user->isRejected()){
+                              if( !empty($room_user) and !$room_user->isRejected()){
                                  $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
                                  $html .= '<br/><br/>';
                                  $actionCurl = curl($this->_environment->getCurrentContextID(),
@@ -1004,6 +1010,7 @@ class cs_page_guide_view extends cs_page_view {
    function _getRoomForm($item, $mode){
      $html ='';
      $current_user = $this->_environment->getCurrentUser();
+     $current_context = $this->_environment->getCurrentContextItem();
      // Person ist User und will Mitglied werden
      if ($mode=='member' and $current_user->isUser()) {
         $translator = $this->_environment->getTranslationObject();
@@ -1062,17 +1069,36 @@ class cs_page_guide_view extends cs_page_view {
         }elseif (isset($_POST['sel_archive_room'])){
            $html .= '   <input type="hidden" name="selroom" value="'.$get_params['sel_archive_room'].'"/>'.LF;
         }
-
+        
+        $portal_item = $this->_environment->getCurrentPortalItem();
+        
         if ($item->checkNewMembersWithCode()) {
            $toggle_id = rand(0,1000000);
            $html .= $this->_translator->getMessage('ACCOUNT_GET_CODE_TEXT');
            if ( isset($get_params['error']) and !empty($get_params['error']) ) {
               $temp_array[0] = $this->_translator->getMessage('COMMON_ATTENTION').': ';
               $temp_array[1] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE_ERROR');
+              if($_GET['error'] == 'agb'){
+              	$temp_array[1] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_AGB_ERROR');
+              }
               $formal_data[] = $temp_array;
            }
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
+           
+           if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
+           	$text_array = $item->getAGBTextArray();
+           
+           	$lang = strtoupper($this->_translator->_selected_language);
+           	$usage_info = $text_array[$lang];
+           
+           	$temp_array[1] .= BRLF;
+           	$temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	$temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	$temp_array[1] .= BRLF;
+           
+           	$temp_array[1] .= $usage_info;
+           }
            $formal_data[] = $temp_array;
 
          $temp_array = array();
@@ -1103,6 +1129,22 @@ class cs_page_guide_view extends cs_page_view {
               $value = str_replace('%20',' ',$value);
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
+           
+           // if code is set for room
+        if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
+           	  $text_array = $item->getAGBTextArray();
+           	  $lang = strtoupper($this->_translator->_selected_language);
+           	  
+           	  $usage_info = $text_array[$lang];
+           	
+           	  $temp_array[1] .= BRLF;
+           	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	  $temp_array[1] .= BRLF;
+           	  
+           	  $temp_array[1] .= $usage_info;
+           }
+           
            $formal_data[] = $temp_array;
 
         } else {
@@ -1114,6 +1156,21 @@ class cs_page_guide_view extends cs_page_view {
               $value = str_replace('%20',' ',$value);
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
+
+           if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
+           	  $toggle_id = rand(0,1000000);
+           	  $text_array = $item->getAGBTextArray();
+           	  $lang = strtoupper($this->_translator->_selected_language);
+           	  $usage_info = $text_array[$lang];
+           	
+           	  $temp_array[1] .= BRLF;
+           	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	  $temp_array[1] .= BRLF;
+           	  #$temp_array[1] .= $html;
+           	  $temp_array[1] .= $usage_info;
+           }
+           
            $formal_data[] = $temp_array;
         }
 
@@ -1693,8 +1750,13 @@ class cs_page_guide_view extends cs_page_view {
             	$params['automatic'] = 'open';
             	$html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_OPEN'),'','','','','','','class="portal_link"').LF;
             } else {
-               $params['automatic'] = 'archive';
-               $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+               $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
+			      if ( isset($with_archving_rooms)
+			      	  and $with_archving_rooms
+			         ) {
+            	   $params['automatic'] = 'archive';
+                  $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+			      }
             }
             unset($params);
          }elseif( $current_user->isModerator()
@@ -2092,24 +2154,20 @@ class cs_page_guide_view extends cs_page_view {
    				{
    					$html .= '	<a href="#" id="tm_stack" title="' . $translator->getMessage("COMMON_ENTRY_INDEX") . '">&nbsp;</a>';
    				}
+   				
+   				$html .= '<a href="#" id="tm_clipboard" title="' . $translator->getMESSAGE("MYAREA_MY_COPIES") . '">&nbsp;</a>';
+   				$numCopies = 0;
+   				$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
+   				$session = $this->_environment->getSessionItem();
+   				foreach ($rubric_copy_array as $rubric){
+   					$numCopies += count($session->getValue($rubric.'_clipboard'));
+   				}
+   				
+   				if ( $numCopies > 0)
+   				{
+   					$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
+   				}
    			}
-   			
-   			
-   			/*
-   			$html .= '		<a href="#" id="tm_clipboard" title="' . $translator->getMessage("MYAREA_MY_COPIES") . '">&nbsp;</a>';
-   			
-   			$numCopies = 0;
-   			$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
-   			$session = $this->_environment->getSessionItem();
-   			foreach ($rubric_copy_array as $rubric){
-   				$numCopies += count($session->getValue($rubric.'_clipboard'));
-   			}
-   			
-   			if ( $numCopies > 0)
-   			{
-   				$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
-   			}
-   			*/
    			
    			$html .= '
    							<div class="clear"></div>
@@ -2558,7 +2616,7 @@ class cs_page_guide_view extends cs_page_view {
 
             // service link
             if ( $current_context->showServiceLink()
-                 and $current_user->isUser()
+                 #and $current_user->isUser() // guest should use the link too (18.06.2013 IJ)
                ) {
 
                // exernal link: BEGIN
@@ -2581,7 +2639,7 @@ class cs_page_guide_view extends cs_page_view {
                if ( !empty($service_link_ext) ) {
                   if ( strstr($service_link_ext,'%') ) {
                      $text_convert = $this->_environment->getTextConverter();
-                     $service_link_ext = $text_convert->convertPercent($service_link_ext,false,true);
+                     $service_link_ext = $text_convert->convertPercent($service_link_ext,true,true);
                   }
                   $email_to_service = '<a href="'.$service_link_ext.'" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'" target="_blank">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>';
                } else {

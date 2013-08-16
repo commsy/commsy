@@ -2,6 +2,7 @@
    header("Content-Type: text/xml");
    chdir('..');
    $plugin_config_file = 'etc/commsy/plugin.php';
+   $soap_functions_array = array();
    if ( file_exists($plugin_config_file) ) {
       include_once($plugin_config_file);
       include_once('etc/cs_constants.php');
@@ -10,7 +11,24 @@
       include_once('classes/cs_environment.php');
       $environment = new cs_environment();
       
-      $soap_functions_array = plugin_hook_output_all('getSOAPAPIArray',array(),'ARRAY');
+      if ( !empty($_GET['plugin']) ) {
+      	// full wsdl only for plugin
+      	$plugin_name = $_GET['plugin'];
+      	$plugin_class = $environment->getPluginClass($plugin_name);
+      	if ( !empty($plugin_class)
+      		  and method_exists($plugin_class, 'getFullWSDL') 
+      	   ) {
+      		$wsdl = $plugin_class->getFullWSDL();
+      		unset($plugin_class);
+      		if ( !empty($wsdl) ) {
+      		   echo($wsdl);
+      		   exit();
+      		}
+      	}
+      } else {
+      	// merge plugin soap functions into CommSy soap functions
+         $soap_functions_array = plugin_hook_output_all('getSOAPAPIArray',array(),'ARRAY');
+      }
    }
 ?>
 <<?php echo('?'); ?>xml version ='1.0' encoding ='UTF-8'?>

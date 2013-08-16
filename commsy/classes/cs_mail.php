@@ -272,6 +272,16 @@ class cs_mail extends Mail
                   echo('HEADER: '.LF);
                   echo('BODY:'.BRLF.nl2br($multipart_message).LF);
                   echo('<hr/>'.LF);
+                  
+                  $body = '<hr/>'.LF;
+                  $body .= 'TO: '.$email.BRLF;
+                  $body .= 'HEADER: '.LF;
+                  $body .= 'BODY:'.BRLF.nl2br($multipart_message).LF;
+                  
+                  $datei = fopen('mailtest.txt','a+');
+                  fwrite($datei, $body);
+                  fclose($datei);
+                  
                }
             }
          }

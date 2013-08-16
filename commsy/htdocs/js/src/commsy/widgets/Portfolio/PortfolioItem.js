@@ -137,16 +137,12 @@ define(
 		/************************************************************************************
 		 * Helper Functions
 		 ************************************************************************************/
-		insertHTMLForTableCell: function(node, column, row) {
-			var filteredArray = dojo.filter(this.response.tags, Lang.hitch(this, function(tag, index, arr) {
-				return (tag.column == column && tag.row == 0) || (tag.row == row && tag.column == 0)
-			}));
-			
-			// extract the tag ids an item has to match
+		insertHTMLForTableCell: function(node, columnIndex, columnTag, rowIndex, rowTag)
+		{
+			// get the tag ids an item has to matchx
 			var tagIdsToMatch = [];
-			dojo.forEach(filteredArray, Lang.hitch(this, function(tag, index, arr) {
-				tagIdsToMatch.push(tag.t_id);
-			}));
+			tagIdsToMatch.push(columnTag.t_id);
+			tagIdsToMatch.push(rowTag.t_id);
 
 			// create content div
 			var divContentNode = DomConstruct.create("div", { className: "ep_cell_content" }, node, "last");
@@ -154,7 +150,7 @@ define(
 			var numItems = 0;
 			var numComments = 0;
 			
-			if (this.response.numAnnotations[row] && this.response.numAnnotations[row][column]) numComments = this.response.numAnnotations[row][column];
+			if (this.response.numAnnotations[rowIndex] && this.response.numAnnotations[rowIndex][columnIndex]) numComments = this.response.numAnnotations[rowIndex][columnIndex];
 			
 			// check if there is content for this cell - because this is a matrix, tagIDsToMatch needs to have two entries
 			if (tagIdsToMatch.length == 2) {
@@ -194,7 +190,7 @@ define(
 				// register onclick
 				On(aContentNode, "click", Lang.hitch(this, function(event)
 				{
-					this.onClickPortfolioItemListPopup(event, row, column, itemIdArray);
+					this.onClickPortfolioItemListPopup(event, rowIndex, columnIndex, itemIdArray);
 				}));
 			}
 			
@@ -333,19 +329,19 @@ define(
 									}));
 								}
 							}));
-						
-						// create html for table cells
-						var numCells = rowTags.length * columnTags.length;
-						var trNode = null;
-						for (var i=0; i < numCells; i++) {
-							if (i % columnTags.length === 0) {
-								trNode = DomConstruct.create("tr", {}, this.tableNode, "last");
-							}
 							
-								var tdNode = DomConstruct.create("td", { }, trNode, "last");
+						// create html for table cells
+						dojo.forEach(rowTags, Lang.hitch(this, function(rowTag, rowIndex)
+						{
+							var trNode = DomConstruct.create("tr", {}, this.tableNode, "last");
+							
+							dojo.forEach(columnTags, Lang.hitch(this, function(columnTag, columnIndex)
+							{
+								var tdNode = DomConstruct.create("td", {}, trNode, "last");
 								
-									this.insertHTMLForTableCell(tdNode, (i % columnTags.length) + 1, parseInt(i / columnTags.length) + 1);
-						}
+								this.insertHTMLForTableCell(tdNode, columnIndex, columnTag, rowIndex, rowTag);
+							}));
+						}));
 					})
 				);
 		},

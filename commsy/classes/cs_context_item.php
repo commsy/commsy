@@ -130,6 +130,22 @@ class cs_context_item extends cs_item {
   function setClosedForGuests () {
     $this->_setValue('is_open_for_guests', 0, TRUE);
   }
+  
+  function isMaterialOpenForGuests () {
+  if ($this->_issetExtra('MATERIAL_GUESTS') and $this->_getExtra('MATERIAL_GUESTS') == 1) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  function setMaterialOpenForGuests () {
+  	$this->_addExtra('MATERIAL_GUESTS', 1, TRUE);
+  }
+  
+  function setMaterialClosedForGuests () {
+  	$this->_addExtra('MATERIAL_GUESTS', 0, TRUE);
+  }
 
   function isAssignmentOnlyOpenForRoomMembers () {
     $retour = false;
@@ -215,6 +231,9 @@ class cs_context_item extends cs_item {
    * @param string value title of the context
    */
   function setTitle ($value) {
+  	// sanitize title
+  	$converter = $this->_environment->getTextConverter();
+  	$value = $converter->sanitizeHTML($value);
     $this->_setValue('title', $value, TRUE);
   }
 
@@ -2303,6 +2322,41 @@ class cs_context_item extends cs_item {
   function setWithoutLogArchive () {
     $this->_setExtraConfig('LOGARCHIVE',-1);
   }
+  
+  function getLogDeleteInterval () {
+  	$retour = 0;
+    $value = $this->_getExtraConfig('LOGDELETEDAYS');
+    if (!empty($value)) {
+      $retour = $this->_getExtraConfig('LOGDELETEDAYS');;
+    }
+    return $retour;
+  }
+  
+  function setLogDeleteInterval ($days) {
+  	$this->_setExtraConfig('LOGDELETEDAYS', $days);
+  }
+  
+  ##########################################
+  # log-ip flag
+  ##########################################
+  
+  function withLogIPCover () {
+  	$retour = false;
+  	$value = $this->_getExtraConfig('LOGIPCOVER');
+  	if ($value == 1) {
+  		$retour = true;
+  	}
+  	return $retour;
+  	
+  }
+  
+  function setWithLogIPCover () {
+  	$this->_setExtraConfig('LOGIPCOVER', 1);
+  }
+  
+  function setWithoutLogIPCover () {
+  	$this->_setExtraConfig('LOGIPCOVER', -1);
+  }
 
   ##########################################
   # assessment flag
@@ -3586,6 +3640,97 @@ class cs_context_item extends cs_item {
 //    return $retour;
 //  }
 
+  
+  function withLimeSurveyFunctions()
+  {
+  	global $c_limesurvey;
+  	if ( !isset($c_limesurvey) || !$c_limesurvey )
+  	{
+  		return false;
+  	}
+  	
+  	return true;
+  }
+  
+  function setLimeSurveyActive()
+  {
+  	$this->_addExtra('LIMESURVEY', 1);
+  }
+  
+  function setLimeSurveyInactive()
+  {
+  	$this->_addExtra('LIMESURVEY', -1);
+  }
+  
+  function isLimeSurveyActive()
+  {
+  	if ( $this->_issetExtra('LIMESURVEY') && $this->_getExtra('LIMESURVEY') === 1 )
+  	{
+  		return true;
+  	}
+  	
+  	return false;
+  }
+  
+  function setLimeSurveyJsonRpcUrl($url)
+  {
+  	$this->_addExtra('LIMESURVEYJSONRPCURL', $url);
+  }
+  
+  function getLimeSurveyJsonRpcUrl()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYJSONRPCURL') )
+  	{
+  		return $this->_getExtra('LIMESURVEYJSONRPCURL');
+  	}
+  	
+  	return '';
+  }
+  
+  function setLimeSurveySurveyIDs($ids)
+  {
+  	$this->_addExtra('LIMESURVEYSURVEYIDS', $ids);
+  }
+  
+  function getLimeSurveySurveyIDs()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYSURVEYIDS') )
+  	{
+  		return $this->_getExtra('LIMESURVEYSURVEYIDS');
+  	}
+  	
+  	return array();
+  }
+  
+  function setLimeSurveyAdminUser($username)
+  {
+  	$this->_addExtra('LIMESURVEYADMINUSER', $username);
+  }
+  
+  function getLimeSurveyAdminUser()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYADMINUSER') )
+  	{
+  		return $this->_getExtra('LIMESURVEYADMINUSER');
+  	}
+  	
+  	return '';
+  }
+  
+  function setLimeSurveyAdminPassword($password)
+  {
+  	$this->_addExtra('LIMESURVEYADMINPASSWORD', $password);
+  }
+  
+  function getLimeSurveyAdminPassword()
+  {
+  	if ( $this->_issetExtra('LIMESURVEYADMINPASSWORD') )
+  	{
+  		return $this->_getExtra('LIMESURVEYADMINPASSWORD');
+  	}
+  	
+  	return '';
+  }
 
   ##########################################
   # Wiki - Raum-Wiki
@@ -6762,5 +6907,44 @@ class cs_context_item extends cs_item {
   function setWithoutWorkflowFunctions () {
     $this->_setExtraConfig('WORKFLOW',0);
   }
+  
+  function setHideAccountname(){
+  	$this->_setExtraConfig('HIDE_ACCOUNTNAME', '1');
+  }
+  
+  function unsetHideAccountname(){
+  	$this->_setExtraConfig('HIDE_ACCOUNTNAME', '2');
+  }
+  
+  function getHideAccountname(){
+  	$retour = false;
+  	$value = $this->_getExtraConfig('HIDE_ACCOUNTNAME');
+  	if($value == 2){
+  		$retour = false;
+  	} else if($value == 1){
+  		$retour = true;
+  	}
+  	return $retour;
+  }
+  
+  function setAGBDatasecurity() {
+  	$this->_setExtraConfig('AGB_DATASECURITY', '1');
+  }
+  
+  function unsetAGBDatasecurity() {
+  	$this->_setExtraConfig('AGB_DATASECURITY', '2');
+  }
+  
+  function withAGBDatasecurity() {
+  	$retour = false;
+  	$value = $this->_getExtraConfig('AGB_DATASECURITY');
+  	if($value == 2){
+  		$retour = false;
+  	} else if($value == 1){
+  		$retour = true;
+  	}
+  	return $retour;
+  }
+ 
 }
 ?>

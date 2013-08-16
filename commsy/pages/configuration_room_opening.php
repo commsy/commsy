@@ -122,6 +122,25 @@ else {
          	$room_item->setDaysSendMailBeforeArchivingRooms(0);
          }
          
+   	   // deleting
+         if ( !empty($_POST['room_deleting'])
+              and $_POST['room_deleting'] == 1
+            ) {
+            $room_item->turnOnDeletingUnusedRooms();
+         } else {
+         	$room_item->turnOffDeletingUnusedRooms();
+         }
+         if ( !empty($_POST['room_deleting_days_unused']) ) {
+         	$room_item->setDaysUnusedBeforeDeletingRooms($_POST['room_deleting_days_unused']);
+         } else {
+         	$room_item->setDaysUnusedBeforeDeletingRooms(0);
+         }
+         if ( !empty($_POST['room_deleting_days_unused_mail']) ) {
+         	$room_item->setDaysSendMailBeforeDeletingRooms($_POST['room_deleting_days_unused_mail']);
+         } else {
+         	$room_item->setDaysSendMailBeforeDeletingRooms(0);
+         }
+          
          // Save item
          $room_item->save();
          $form_view->setItemIsSaved();

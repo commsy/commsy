@@ -368,6 +368,32 @@ class cs_auth_source_item extends cs_item {
    public function setPasswordSecureSpecialchar($value) {
    	$this->_addExtra('PASSWORD_SPECIALCHAR',$value);
    }
+   
+   public function getPasswordSecureNumber() {
+   	$retour = '';
+   	$value = $this->_getExtra('PASSWORD_NUMBER');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   public function setPasswordSecureNumber($value) {
+   	$this->_addExtra('PASSWORD_NUMBER',$value);
+   }
+   
+   public function getPasswordSecureSmallchar() {
+   	$retour = '';
+   	$value = $this->_getExtra('PASSWORD_SMALLCHAR');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   public function setPasswordSecureSmallchar($value) {
+   	$this->_addExtra('PASSWORD_SMALLCHAR',$value);
+   }
 
 
    public function getPasswordSecureCheck() {
@@ -389,6 +415,29 @@ class cs_auth_source_item extends cs_item {
    	   } else {
    	   	return false;
    	   }
+   }
+   
+   // Datenschutz
+   public function setTemporaryLock($value) {
+   	$this->_addExtra('TEMPORARY_LOCK',$value);
+   }
+
+
+   public function getTemporaryLock() {
+   	$retour = '';
+      $value = $this->_getExtra('TEMPORARY_LOCK');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+   
+   public function isTemporaryLockActivated(){
+   	if(($this->getTemporaryLock() == 1)){
+   		return true;
+   	} else {
+   		return false;
+   	}
    }
 
 }

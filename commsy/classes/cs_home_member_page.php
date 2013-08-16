@@ -59,14 +59,18 @@ class cs_home_member_page extends cs_left_page {
         ) {
         $correct = $form->check();
         if ( $correct ) {
+        	$text_converter = $this->_environment->getTextConverter();
+        	
+        	$Firstname = $text_converter->sanitizeHTML($this->_post_vars['firstname']);
+        	$Lastname = $text_converter->sanitizeHTML($this->_post_vars['lastname']);
 
            // Create new item
            $authentication = $this->_environment->getAuthenticationObject();
            $new_account = $authentication->getNewItem();
            $new_account->setUserID($this->_post_vars['user_id']);
            $new_account->setPassword($this->_post_vars['password']);
-           $new_account->setFirstname($this->_post_vars['firstname']);
-           $new_account->setLastname($this->_post_vars['lastname']);
+           $new_account->setFirstname($Firstname);
+           $new_account->setLastname($Lastname);
            $new_account->setLanguage($this->_post_vars['language']);
            $new_account->setEmail($this->_post_vars['email']);
            $new_account->setPortalID($this->_environment->getCurrentPortalID());
@@ -78,15 +82,28 @@ class cs_home_member_page extends cs_left_page {
                $new_account->setAuthSourceID($current_portal->getAuthDefault());
                $auth_source = $current_portal->getAuthDefault();
             }
+            
            $save_only_user = false;
            $authentication->save($new_account,$save_only_user);
 
            $portal_user = $authentication->getUserItem();
            $error = $authentication->getErrorMessage();
            if (empty($error)) {
+           	 
               $success = true;
 
               $portal_item = $this->_environment->getCurrentPortalItem();
+              
+              // acceptance date (agb) Datenschutz
+              if ($this->_environment->getCurrentContextItem()->withAGB() and $this->_environment->getCurrentContextItem()->withAGBDatasecurity()){
+              	if($this->_post_vars['terms_of_use']){
+              		$portal_user->setAGBAcceptance();
+              	}
+              }
+              
+              if($this->_environment->getCurrentContextItem()->isPasswordExpirationActive()){
+              	$portal_user->setPasswordExpireDate($this->_environment->getCurrentContextItem()->getPasswordExpiration());
+              }
               #if ( $portal_item->checkNewMembersAlways()
               #     or $portal_item->checkNewMembersSometimes()
               #   ) {
