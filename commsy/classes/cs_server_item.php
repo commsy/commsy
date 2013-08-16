@@ -480,7 +480,7 @@ class cs_server_item extends cs_guide_item {
    	// überprüfen ob Mails verschickt werden müssen
    	
    	
-   	break;
+   	#break; ??? 16.08.2013 IJ
    	if($success){
    		$cron_array['success'] = true;
    		$cron_array['success_text'] = 'mails send';
@@ -942,6 +942,8 @@ class cs_server_item extends cs_guide_item {
     */
 	function _cronLog () {
       include_once('functions/misc_functions.php');
+      include_once('functions/date_functions.php');
+      
       $time_start = getmicrotime();
 
       $cron_array = array();
@@ -963,7 +965,6 @@ class cs_server_item extends cs_guide_item {
 //       // getCurrentDate() returns date("Ymd");
 //             // Datenschutz : Logdaten nach bestimmtem Zeitraum löschen
 //       // Wenn im context_item das Extra eingestellt ist, dann
-//       include_once('functions/date_functions.php');
 //       if($context_item->getLogDeleteInterval() <= 1){
 //       	$log_DB->setTimestampOlderLimit(getCurrentDate());
 //       } else {

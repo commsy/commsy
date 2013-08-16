@@ -118,7 +118,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       if($context_item->isServer()){
       //$this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
       // Zeitraum zur Löschung alter Log Daten
-      $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,false,'','','','','','',false);
+      $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,true,'','','','','','',false);
       // Räume für langfristige Archivierung
       // Log-Daten runterladen für bestimmte Räume (pseudonymisiert)
       // Log-Daten für bestimmte Räume löschen
@@ -278,9 +278,27 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      // check choosen auth source
-      
-  
+   	/* sollte automatisch passieren, 16.08.2013 IJ
+   	if ( empty($this->_form_post['log_delete_interval']) ) {
+   		$this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_FIELD',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'));
+   		$this->_form->setFailure('log_delete_interval');
+   	}
+   	*/
+   	/* _checkValues wird nicht aufgerufen daher greift dies hier nicht, 16.08.2013 IJ
+      if ( !empty($this->_form_post['log_delete_interval'])
+      	  and !is_numeric($this->_form_post['log_delete_interval'])
+      	) {
+   		$this->_error_array[] = $this->_translator->getMessage('TBD');
+   		$this->_form->setFailure('log_delete_interval');
+   	}
+      if ( !empty($this->_form_post['log_delete_interval'])
+      	  and is_numeric($this->_form_post['log_delete_interval'])
+      	  and $this->_form_post['log_delete_interval'] <= 0
+      	) {
+   		$this->_error_array[] = $this->_translator->getMessage('TBD');
+   		$this->_form->setFailure('log_delete_interval');
+   	}
+   	*/
    }
 }
 ?>
