@@ -44,7 +44,29 @@ require_once('classes/cs_connection_soap.php');
     Erzeugt eine neue SoapServer Instanz. Der erste Parameter (null) bedeutet, dass keine WSDL Datei verwendet werden soll.
     Wenn keine WSDL Datei angegeben wird, muss die uri Option gesetzt sein.
 */
-$server = new SoapServer(null, array('uri' => 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']));
+$uri = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+
+// plugins
+if ( !empty($_GET['plugin']) ) {
+   $plugin_config_file = 'etc/commsy/plugin.php';
+   if ( file_exists($plugin_config_file) ) {
+      include_once($plugin_config_file);
+      $plugin_name = $_GET['plugin'];
+      $plugin_class = $environment->getPluginClass($plugin_name);
+      if ( !empty($plugin_class)
+      	  and method_exists($plugin_class, 'getURIforSoapServer') 
+      	) {
+         $uri_server = $plugin_class->getURIforSoapServer();
+         unset($plugin_class);
+         if ( !empty($uri_server) ) {
+         	$uri = $uri_server;
+         }
+      }
+   }
+}
+
+$server = new SoapServer(null, array('uri' => $uri));
+   
 #$wsdl_url = 'http://';
 #$wsdl_url .= $_SERVER['HTTP_HOST'];
 #$wsdl_url .= str_replace('soap.php','soap_wsdl.php',$_SERVER['PHP_SELF']);

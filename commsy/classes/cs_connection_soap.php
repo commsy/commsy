@@ -4322,7 +4322,7 @@ class cs_connection_soap {
    			}
    			if ( !empty($arg_array['SID']) ) {
    				$sid = $arg_array['SID'];
-   			} elseif ( !empty($arg_array['SID']) ) {
+   			} elseif ( !empty($arg_array['sid']) ) {
    				$sid = $arg_array['sid'];
    			}
    		}

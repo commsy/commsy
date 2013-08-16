@@ -6,5 +6,9 @@ $message["ONYX_CONFIG_FORM_TITLE_CONFIG_DESC_PROXY"]["en"] = "use NOT proxy %1";
 $message["ONYX_CONFIG_FORM_TITLE_URL"]["en"] = "url to player";
 $message["ONYX_DESCRIPTION"]["en"] = "With this plugin you can show self tests (QTI standard) with the onxy webplayer.";
 $message["ONYX_ERROR_ID_LOST"]["en"] = "Error: Could not load the test. Please close the window and retry.";
+$message["ONYX_ERROR_URL_LOST"]["en"] = "Error: Could not load the reporter. Please close the window and retry.";
+$message["ONYX_ERROR_URL_SECURITY"]["de"] = "A security flag in your session is lost, so you are not allowed to see the results.";
+$message["ONYX_REPORTER_LINK"]["en"] = "analysis";
+$message["ONYX_REPORTER_NO_RESULTS"]["en"] = "There are no results so far.";
 $message["ONYX_TEXTFORMATING_DESCRIPTION"]["en"] = "<span style=&quot;font-weight:bold&quot;>Self-Assessment (QTI)</span>:<br/><ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;><li>(:qti FILENAME:) for a questionary in qti-standard</li><li>arguments:<ul><li>embedded - test will display inside the CommSy page, if set.</li><li>text='TEXT' - text for the link to the test, if embedded is not set.</li><li>navi=true | navi=false - turn on or off the navigation inside the test.<br/>default: off, if embedded is set, otherwise true.</li></ul></li></ul>";
 ?>
