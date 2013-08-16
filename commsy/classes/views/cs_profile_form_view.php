@@ -50,17 +50,19 @@ class cs_profile_form_view extends cs_form_view {
       $html .= '<div id="profile_tablist">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['is_saved']);
-      $params['profile_page'] = 'account';
-      $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
-                           $this->_environment->getCurrentFunction(),
-                           $params,
-                           $this->_translator->getMessageInLang($this->_language,'PROFILE_ACCOUNT_DATA'));
-      if (!isset($_GET['profile_page']) or $_GET['profile_page'] == 'account'){
-         $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
-              }else{
-         $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
-      }
+      if (!isset($_GET['show_no_account'])  or empty($_GET['show_no_account'])){
+		  $params['profile_page'] = 'account';
+		  $title = ahref_curl( $this->_environment->getCurrentContextID(),
+							   $this->_environment->getCurrentModule(),
+							   $this->_environment->getCurrentFunction(),
+							   $params,
+							   $this->_translator->getMessageInLang($this->_language,'PROFILE_ACCOUNT_DATA'));
+		  if (!isset($_GET['profile_page']) or $_GET['profile_page'] == 'account'){
+			 $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
+				  }else{
+			 $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
+		  }
+	  }
       $params['profile_page'] = 'user';
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
