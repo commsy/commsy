@@ -2,8 +2,13 @@
 $message["ONYX_CONFIG_FORM_LMS_NAME"]["de"] = "LMS Name für Onyx";
 $message["ONYX_CONFIG_FORM_TITLE_CONFIG"]["de"] = "Konfiguration";
 $message["ONYX_CONFIG_FORM_TITLE_CONFIG_DESC"]["de"] = "Einstellungen zum Plugin %1";
+$message["ONYX_CONFIG_FORM_TITLE_CONFIG_DESC_PROXY"]["de"] = "Proxy %1 NICHT verwenden";
 $message["ONYX_CONFIG_FORM_TITLE_URL"]["de"] = "URL zum Player";
 $message["ONYX_DESCRIPTION"]["de"] = "Mit diesem Plugin können Selbsttest nach dem QTI Standard mit dem Onyx-Player angezeigt werden.";
 $message["ONYX_ERROR_ID_LOST"]["de"] = "Fehler: Der Test konnte nicht geladen werden. Bitte schließen Sie das Fenster und versuchen es erneut.";
+$message["ONYX_ERROR_URL_LOST"]["de"] = "Fehler: Der Reporter konnte nicht geladen werden. Bitte schließen Sie das Fenster und versuchen es erneut.";
+$message["ONYX_ERROR_URL_SECURITY"]["de"] = "Es fehlt ein Sicherheitsmerkmal in Ihrer Session, so dass Sie die Auswertung nicht sehen dürfen.";
+$message["ONYX_REPORTER_LINK"]["de"] = "Auswertung";
+$message["ONYX_REPORTER_NO_RESULTS"]["de"] = "Es liegen noch keine Testergebnisse vor.";
 $message["ONYX_TEXTFORMATING_DESCRIPTION"]["de"] = "<span style=&quot;font-weight:bold&quot;>Selbsttest / Fragebögen (QTI)</span>:<br/><ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;><li>(:qti DATEINAME:) für Fragebögen im QTI-Standard</li><li>Argumente:<ul><li>embedded - sofern gesetzt, wird die Darstellung in die CommSy-Seite eingebettet.</li><li>text='TEXT' - Text für den Link auf den Test, sofern embedded nicht gesetzt ist.</li><li>navi=true | navi=false - Schalter zur Ein- bzw. Ausblendung der Navigation im Test.<br/>Bei embedded standardmäßig aus, sonst an.</li></ul></li></ul>";
-?>
+?> 

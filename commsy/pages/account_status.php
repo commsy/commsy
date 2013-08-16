@@ -251,6 +251,13 @@ if ( empty($command) and empty($command_delete) ) {
             $lanugage = $environment->getSelectedLanguage();
          }
       }
+      // Datenschutz
+      if($environment->getCurrentPortalItem()->getHideAccountname()){
+      	$userid = 'XXX';
+      } else {
+      	$userid = $user->getUserID();
+      }
+      
       include_once('classes/cs_mail_obj.php');
       $mail_obj = new cs_mail_obj();
       $mail_obj->setMailFormHeadLine($translator->getMessage('ADMIN_USER_FORM_TITLE',$user->getFullname(),$translator->getMessage('COMMON_STEP_END')));
@@ -258,7 +265,7 @@ if ( empty($command) and empty($command_delete) ) {
       $mail_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE',$context_item->getTitle());
       $mail_body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
       $mail_body .= LF.LF;
-      $mail_body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$user->getUserID(),$context_item->getTitle());
+      $mail_body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$userid,$context_item->getTitle());
       $mail_body .= LF.LF;
       $mail_body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
 
@@ -343,6 +350,7 @@ if ( empty($command) and empty($command_delete) ) {
 
          } elseif ( $status == 'moderator' ) {
             $user->makeModerator();
+            
             if (!empty($_POST['contact_person'])) {
                $user->makeContactPerson();
             } else {
@@ -353,6 +361,11 @@ if ( empty($command) and empty($command_delete) ) {
             	$user->deactivateLoginAsAnotherUser();
             } else {
             	$user->unsetDeactivateLoginAsAnotherUser();
+            }
+            // deactivate by default the login as feature
+            global $c_default_value_login_as_xy_for_new_moderator;
+            if(!$c_default_value_login_as_xy_for_new_moderator){
+            	$user->deactivateLoginAsAnotherUser();
             }
             
             if(!empty($_POST['days_interval'])){
@@ -471,26 +484,35 @@ if ( empty($command) and empty($command_delete) ) {
          // change language for user
          $save_language = $translator->getSelectedLanguage();
          $translator->setSelectedLanguage($user->getLanguage());
+         
+         // Datenschutz
+         if($environment->getCurrentPortalItem()->getHideAccountname()){
+         	$userid = $translator->getMessage('MAIL_ONLY_VISIBLE_FOR',$user->getFullName());
+         	$session->setValue('status', $status);
+         	$session->setValue('userAccount',$user->getUserID());
+         } else {
+         	$userid = $user->getUserID();
+         }
 
          if ($status == 'reject' or $status == 'close') {
             $subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$context_item->getTitle());
             $body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
             $body .= LF.LF;
-            $body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$user->getUserID(),$context_item->getTitle());
+            $body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$userid,$context_item->getTitle());
             $body .= LF.LF;
             $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
          } elseif ($status == 'user') {
             $subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$context_item->getTitle());
             $body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
             $body .= LF.LF;
-            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$context_item->getTitle());
+            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$context_item->getTitle());
             $body .= LF.LF;
             $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
          } elseif ($status == 'moderator') {
             $subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR',$context_item->getTitle());
             $body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
             $body .= LF.LF;
-            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$user->getUserID(),$context_item->getTitle());
+            $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$userid,$context_item->getTitle());
             $body .= LF.LF;
             $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
          } else {
@@ -513,6 +535,7 @@ if ( empty($command) and empty($command_delete) ) {
          $mail_obj->setSender($sender);
          $receiver[$user->getFullName()] = $user->getEMail();
          $mail_obj->addReceivers($receiver);
+
 
          // get back link out of history
          $history = $session->getValue('history');

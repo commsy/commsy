@@ -89,26 +89,31 @@ if ($command == 'automatic') {
       $translator->setSelectedLanguage($user->getLanguage());
    }
 
+   if($environment->getCurrentPortalItem()->getHideAccountname()){
+   	$userid = ' ';
+   } else {
+   	$userid = $user->getUserID();
+   }
    $current_user = $environment->getCurrentUserItem();
    if ($status == 'reject' or $status == 'close') {
       $subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$context_item->getTitle());
       $body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
       $body .= LF.LF;
-      $body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$user->getUserID(),$context_item->getTitle());
+      $body .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$userid,$context_item->getTitle());
       $body .= LF.LF;
       $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
    } elseif ($status == 'free') {
       $subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$context_item->getTitle());
       $body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
       $body .= LF.LF;
-      $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$context_item->getTitle());
+      $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$context_item->getTitle());
       $body .= LF.LF;
       $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
    } elseif ($status == 'user') {
       $subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$context_item->getTitle());
       $body  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
       $body .= LF.LF;
-      $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$context_item->getTitle());
+      $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$context_item->getTitle());
       $body .= LF.LF;
       $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$current_user->getFullname(),$context_item->getTitle());
    }

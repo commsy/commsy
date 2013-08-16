@@ -72,6 +72,17 @@ if (!isOption($command,'error')) {
          if (empty($error_string)) {
             $auth_manager = $authentication->getAuthManager($_POST['auth_source_id']);
             $auth_manager->changePassword($_POST['user_id'],$_POST['password']);
+            
+            //set new expire date
+            $user_manager = $environment->getUserManager();
+            $user = $user_manager->getItem($_POST['iid']);
+            $portal_item = $environment->getCurrentPortalItem();
+            $user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            $user->save();
+            
+            unset($user_manager);
+            unset($portal_manager);
+            
             $error_number = $auth_manager->getErrorNumber();
             if($environment->getCurrentUserItem()->isRoot()){
 	            $user_item = $environment->getCurrentUserItem();

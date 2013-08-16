@@ -131,9 +131,8 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
 	  #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
       $this->_form->addRadioGroup('log_ip', $translator->getMessage('CONFIGURATION_EXTRA_LOG_IP'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       #$this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '','','','','','','','colspan=2');
-      $this->_form->addEmptyline();
-      $this->_form->addSubHeadline( 'logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '', '', 4 );
-      
+      #$this->_form->addEmptyline();
+      $this->_form->addTitleText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'));//( 'logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '', '', 4 ,2);
 	  $this->_form->addSelect( 'portal',
                                $this->_array_portal,
                                '',

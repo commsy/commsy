@@ -78,26 +78,29 @@ if (!empty($user_id) and !empty($password) ) {
    	$auth_item = $auth_manager->getItem($auth_source);
    	unset($auth_manager);
    }
+   $portal_item = $environment->getCurrentContextItem();
    // get user item if temporary lock is enabled
    $userExists = false;
+   $locked_temp = false;
    $locked = false;
    $login_status = $authentication->isAccountGranted($user_id,$password,$auth_source);
    if(isset($auth_item) AND !empty($auth_item)){
-   	if($auth_item->isTemporaryLockActivated()){
+   	if($auth_item->isTemporaryLockActivated() or $portal_item->getInactivityLockDays() > 0){
    		$user_manager = $environment->getUserManager();
    		$userExists = $user_manager->exists($user_id);
    		unset($user_manager);
    		if($userExists){
    			$user_locked = $authentication->_getPortalUserItem($user_id,$authentication->_auth_source_granted);
 	   		if(isset($user_locked)){
-		   		$locked = $user_locked->isTemporaryLocked();
+	   			$locked = $user_locked->isLocked();
+		   		$locked_temp = $user_locked->isTemporaryLocked();
 	   		}
 
    		}
    	}
    }
    // user access granted
-   if ($login_status AND !$locked) {
+   if ($login_status AND !$locked_temp AND !$locked) {
       $session = new cs_session_item();
       $session->createSessionID($user_id);
       if ( $cookie == '1' ) {
@@ -201,7 +204,11 @@ if (!empty($user_id) and !empty($password) ) {
 	       		$session->setValue('countWrongPassword', 0);
 	       		$session->setValue('userid', $user_id);
 	       	}
-	       	if($count >= 2 AND $userExists AND !$locked AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
+	       	$trys_login = $current_context->getTryUntilLock();
+	       	if(empty($trys_login)){
+	       		$trys_login = 3;
+	       	}
+	       	if($count >= $trys_login AND $userExists AND !locked AND !$locked_temp AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
        			$user = $authentication->_getPortalUserItem($tempUser,$authentication->_auth_source_granted);
        			$user->setTemporaryLock();
        			$user->save();
@@ -219,7 +226,13 @@ if (!empty($user_id) and !empty($password) ) {
    if($locked){
    	$translator = $environment->getTranslationObject();
    	$error_array = array();
-   	$error_array[] = $translator->getMessage('COMMON_TEMPORARY_LOCKED');#'Kennung ist vorübergehend gesperrt';
+   	$error_array[] = $translator->getMessage('COMMON_TEMPORARY_LOCKED_DAYS');#'Kennung ist vorübergehend gesperrt';
+   	$session->setValue('error_array',$error_array);
+   }
+   if($locked_temp){
+   	$translator = $environment->getTranslationObject();
+   	$error_array = array();
+   	$error_array[] = $translator->getMessage('COMMON_TEMPORARY_LOCKED', $current_context->getLockTime());#'Kennung ist vorübergehend gesperrt';
    	$session->setValue('error_array',$error_array);
    }
 } elseif ( empty($user_id) or empty($password) ) {

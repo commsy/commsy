@@ -1,4 +1,5 @@
 <?php
+$message["USER_ACCEPTED_AGB"]["en"] = "Acceptance date";
 $message["USER_ACCOUNT_CHANGE_MAIL_SUCCESS_SET"]["en"] = "These accounts must change there mail address at next login:";
 $message["USER_ACCOUNT_FORGET_HEADLINE"]["en"] = "Send account data";
 $message["USER_ACCOUNT_FORGET_MAIL_BODY"]["en"] = "There are the following accounts registered in the CommSy *%1*:
@@ -7,6 +8,7 @@ $message["USER_ACCOUNT_FORGET_MAIL_BODY"]["en"] = "There are the following accou
 $message["USER_ACCOUNT_FORGET_MAIL_SUBJECT"]["en"] = "%1: accounts";
 $message["USER_ACCOUNT_FORGET_SUCCESS_TEXT"]["en"] = "Your account data has been sent to your e-mail address <span style=&quot;font-weight: bold;&quot;>%1</span>.";
 $message["USER_ACCOUNT_FORGET_TEXT"]["en"] = "Please type your e-mail address. You will receive an e-mail with your account data shortly.";
+$message["USER_ACCOUNT_NOT_VISIBLE"]["de"] = "Account name not visible";
 $message["USER_ASK_MAIL_SUBJECT"]["en"] = "%2: Request [%1]";
 $message["USER_AUTH_SOURCE"]["en"] = "Authentication source";
 $message["USER_AUTH_SOURCE_ERROR"]["en"] = "Error: Lost authentication source.";

@@ -226,7 +226,7 @@ class cs_log_manager extends cs_manager {
    	  		// Hide all ip adresses and update db
    	  		$remote_adress_array = explode('.', $r['ip']);
    	  		$ip_adress = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
-   	  		$query2 = 'UPDATE '.$this->addDatabasePrefix('log').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'"';
+   	  		$query2 = 'UPDATE '.$this->addDatabasePrefix('log').' SET ip = "'.encode(AS_DB,$ip_adress).'" WHERE id = "'.encode(AS_DB,$r['id']).'" AND ip NOT LIKE "%XXX"';
    	  		
    	  		$result2 = $this->_db_connector->performQuery($query2);
    	  		if ( !isset($result2) ) {

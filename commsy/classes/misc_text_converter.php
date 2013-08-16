@@ -2554,7 +2554,7 @@ class misc_text_converter {
          $source2 = $source;
       }
 
-      if ( !empty($source) ) {
+      if ( !empty($source) and !empty($file)) {
          $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
          $image_text .= '<a class="lightbox_'.$file->getFileID().'" href="' . $source2 . '" target="blank">';
          #$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';

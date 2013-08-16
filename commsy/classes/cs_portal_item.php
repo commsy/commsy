@@ -2066,6 +2066,12 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_LANGUAGE':
                   $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_LANGUAGE_FORM');
                   break;
+               case 'CONFIGURATION_DATASECURITY':
+               	  $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               	  break;
+               case 'CONFIGURATION_INACTIVE':
+               	  $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               	  break;
                default:
                   $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;
@@ -3147,6 +3153,17 @@ class cs_portal_item extends cs_guide_item {
    	return $retour;
    }
    
+   public function setTryUntilLock($number){
+   	$this->_addExtra('TRY_UNTIL_LOCK', $number);
+   }
+   
+   public function getTryUntilLock(){
+   	$retour = 0;
+   	if($this->_issetExtra('TRY_UNTIL_LOCK')){
+   		$retour = $this->_getExtra('TRY_UNTIL_LOCK');
+   	}
+   }
+   
    public function isPasswordGenerationActive () {
    	$retour = false;
    	if($this->_issetExtra('PASSWORD_GENERATION')) {
@@ -3181,6 +3198,84 @@ class cs_portal_item extends cs_guide_item {
    
    public function setPasswordExpiration($value) {
    	$this->_addExtra('PASSWORD_EXPIRATION', $value);
+   }
+   
+   public function setInactivityLockDays($days) {
+   	$this->_addExtra('INACTIVITY_LOCK', $days);
+   }
+   
+   public function getInactivityLockDays() {
+   	$retour = 0;
+   	if ($this->_issetExtra('INACTIVITY_LOCK')) {
+   		$retour = $this->_getExtra('INACTIVITY_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   public function setInactivitySendMailBeforeLockDays($days){
+   	$this->_addExtra('INACTIVITY_MAIL_BEFORE_LOCK', $days);
+   }
+   
+   public function getInactivitySendMailBeforeLockDays(){
+   	$retour = 0;
+   	if ($this->_issetExtra('INACTIVITY_MAIL_BEFORE_LOCK')) {
+   		$retour = $this->_getExtra('INACTIVITY_MAIL_BEFORE_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   public function setInactivityDeleteDays($days){
+   	$this->_addExtra('INACTIVITY_DELETE', $days);
+   }
+   
+   public function getInactivityDeleteDays(){
+   	$retour = 0;
+   	if ($this->_issetExtra('INACTIVITY_DELETE')) {
+   		$retour = $this->_getExtra('INACTIVITY_DELETE');
+   	}
+   	return $retour;
+   }
+   
+   public function setInactivitySendMailBeforeDeleteDays($days){
+   	$this->_addExtra('INACTIVITY_MAIL_DELETE', $days);
+   }
+   
+   public function getInactivitySendMailBeforeDeleteDays(){
+   	$retour = 0;
+   	if ($this->_issetExtra('INACTIVITY_MAIL_DELETE')) {
+   		$retour = $this->_getExtra('INACTIVITY_MAIL_DELETE');
+   	}
+   	return $retour;
+   }
+   
+   public function setInactivityOverwriteContent($flag){
+   	$this->_addExtra('INACTIVITY_OVERWRITE_CONTENT', $flag);
+   }
+   
+   public function isInactivityOverwriteContent(){
+   	$retour = false;
+   	if($this->_issetExtra('INACTIVITY_OVERWRITE_CONTENT')) {
+   		if($this->_getExtra('INACTIVITY_OVERWRITE_CONTENT') == 1){
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function unsetInactivityOverwriteContent(){
+   	$this->_unsetExtra('INACTIVITY_OVERWRITE_CONTENT');
+   }
+   
+   public function setDaysBeforeExpiringPasswordSendMail($days){
+   	$this->_addExtra('DAYSBEFORE_EXPIRINGPW_SENDMAIL', $days);
+   }
+   
+   public function getDaysBeforeExpiringPasswordSendMail(){
+   	$retour = 0;
+   	if ($this->_issetExtra('DAYSBEFORE_EXPIRINGPW_SENDMAIL')) {
+   		$retour = $this->_getExtra('DAYSBEFORE_EXPIRINGPW_SENDMAIL');
+   	}
+   	return $retour;
    }
 }
 ?>

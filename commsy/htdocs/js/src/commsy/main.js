@@ -181,14 +181,19 @@ require([	"dojo/_base/declare",
 				}
 				// password expire soon alert to change password
 				if(this.from_php.environment.password_expire_soon) {
-					require(["dijit/Dialog"], function(Overlay) {
+					require(["dijit/Dialog","dojo/i18n!commsy/nls/tooltipErrors","dojo/cookie"], function(Overlay, ErrorTranslations,Cookie) {
 						// create the dialog:
-						var myDialog = new dijit.Dialog({
-						    title: "Passwort läuft ab",
-						    content: "Ihr Passwort läuft demnächst ab. Bitte ändern Sie Ihr Passwort.",
-						    style: "width: 300px"
-						});
-						myDialog.show();
+						var cookieName = 'expired_password_shown';
+						if(!Cookie(cookieName)){
+							var myDialog = new dijit.Dialog({
+							    title: "Passwort läuft ab",
+							    content: ErrorTranslations.password_expire,
+							    style: "width: 300px"
+							});
+							myDialog.show();
+							Cookie(cookieName,true);
+						}
+						
 					});
 				}
 				

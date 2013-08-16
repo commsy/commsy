@@ -28,7 +28,7 @@ $this->_flushHeadline('db: add expire_date to user table');
 $success = true;
 
 if ( !$this->_existsIndex('user','expire_date') ) {
-   $sql = "ALTER TABLE user ADD expire_date DATETIME;";
+   $sql = "ALTER TABLE user ADD expire_date DATETIME DEFAULT NULL;";
    $success = $success AND $this->_select($sql);
 }
 

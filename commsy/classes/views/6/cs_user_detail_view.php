@@ -518,6 +518,15 @@ class cs_user_detail_view extends cs_detail_view {
          }
          
          $formal_data[] = $temp_array;
+         
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_ACCEPTED_AGB');
+         
+         $agb = $item->getAGBAcceptanceDate();
+         if(!empty($agb)){
+         	$temp_array[] = $item->getAGBAcceptanceDate();
+         }
+         $formal_data[] = $temp_array;
 
          if ($this->_environment->inCommunityRoom()) {
             $current_context = $this->_environment->getCurrentContextItem();

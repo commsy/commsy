@@ -1822,6 +1822,7 @@ class cs_user_item extends cs_item {
          $tag_manager = $this->_environment->getTagManager();
          $todo_manager = $this->_environment->getToDoManager();
          $step_manager = $this->_environment->getStepManager();
+         
 
          // replace users entries with the standart message for deleted entries
          $announcement_manager->deleteAnnouncementsofUser($this->getItemID());
@@ -1836,7 +1837,56 @@ class cs_user_item extends cs_item {
          	$tag_manager->deleteTagsOfUser($this->getItemID());
    		 }
          $step_manager->deleteStepsOfUser($this->getItemID());
+         
+         
    	}
+
+   }
+   
+   function deleteAllEntriesOfUserByInactivity(){
+
+   	$portal_manager = $this->_environment->getPortalManager();
+   	$portal = $portal_manager->getItem($this->getContextID());
+   	
+   	$user_manager = $this->_environment->getUserManager();
+   	$user_array = $user_manager->getAllUserItemArray($this->getUserID());
+   	// falscher benutzer wird durchlaufen: es müssen alle user items durchlaufen werden
+   	// replace entries
+   	#pr($user_array);
+   	if($portal->isInactivityOverwriteContent()) {
+   		$announcement_manager = $this->_environment->getAnnouncementManager();
+   		$dates_manager = $this->_environment->getDatesManager();
+   		$discussion_manager = $this->_environment->getDiscussionManager();
+   		$discarticle_manager = $this->_environment->getDiscussionarticleManager();
+   		$material_manager = $this->_environment->getMaterialManager();
+   		$section_manager = $this->_environment->getSectionManager();
+   		$annotation_manager = $this->_environment->getAnnotationManager();
+   		$label_manager = $this->_environment->getLabelManager();
+   		$tag_manager = $this->_environment->getTagManager();
+   		$todo_manager = $this->_environment->getToDoManager();
+   		$step_manager = $this->_environment->getStepManager();
+   		 
+   	foreach ($user_array as $user){
+   		// replace users entries with the standart message for deleted entries
+   		$announcement_manager->deleteAnnouncementsofUser($user->getItemID());
+   		$dates_manager->deleteDatesOfUser($user->getItemID());
+   		$discussion_manager->deleteDiscussionsOfUser($user->getItemID());
+   		$discarticle_manager->deleteDiscarticlesOfUser($user->getItemID());
+   		$material_manager->deleteMaterialsOfUser($user->getItemID());
+   		$section_manager->deleteSectionsOfUser($user->getItemID());
+   		$annotation_manager->deleteAnnotationsOfUser($user->getItemID());
+   		$label_manager->deleteLabelsOfUser($user->getItemID());
+   		if ( empty($disable_overwrite) or $disable_overwrite != 'flag'){
+   			$tag_manager->deleteTagsOfUser($user->getItemID());
+   		}
+   		$step_manager->deleteStepsOfUser($user->getItemID());
+   	}
+   		 
+   		 
+   	}
+   	$room_manager = $this->_environment->getRoomManager();
+   	$room_manager->deleteRoomOfUserAndUserItemsInactivity($this->getUserID());
+   	
    }
 
    function setAGBAcceptance () {
@@ -2244,7 +2294,34 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    }
-   // Datum übergeben, für zeitliche Sperrung der Kennung
+   
+   function setLock($days){
+   	include_once('functions/date_functions.php');
+   	$this->_addExtra('LOCK', getCurrentDateTimePlusDaysInMySQL($days));
+   }
+   
+   function getLock(){
+   	$retour = '';
+   	if ( $this->_issetExtra('LOCK') ) {
+   		$retour = $this->_getExtra('LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function isLocked(){
+   	$retour = false;
+   	if( $this->_issetExtra('LOCK')){
+   		include_once('functions/date_functions.php');
+   		$date = $this->_getExtra('LOCK');
+   		if(getCurrentDateTimeInMySQL() > $date){
+   			$retour = false;
+   		} else {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
+   
    function setTemporaryLock () {
    	include_once('functions/date_functions.php');
    	$lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
@@ -2326,7 +2403,12 @@ class cs_user_item extends cs_item {
    }
    
    function setPasswordExpireDate($days) {
-   	$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
+   	if($days == 0){
+   		$this->_setValue('expire_date', 'NULL');
+   	} else {
+   		$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
+   	}
+   	
    	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
    }
    
@@ -2393,6 +2475,38 @@ class cs_user_item extends cs_item {
    	}
    	return $return;
    }
+   
+   function setMailSendBeforeLock(){
+   	$this->_addExtra('MAIL_SEND_LOCK', '1');
+   }
+   
+   function unsetMailSendBeforeLock(){
+   	$this->_unsetExtra('MAIL_SEND_LOCK');
+   }
+   
+   function getMailSendBeforeLock(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_LOCK')){
+   		$retour = $this->_getExtra('MAIL_SEND_LOCK');
+   	}
+   	return $retour;
+   }
+   
+   function setMailSendBeforeDelete(){
+   	$this->_addExtra('MAIL_SEND_DELETE', '1');
+   }
+   
+   function unsetMailSendBeforeDelete(){
+   	$this->_unsetExtra('MAIL_SEND_DELETE');
+   }
+   
+   function getMailSendBeforeDelete(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_DELETE')){
+   		$retour = $this->_getExtra('MAIL_SEND_DELETE');
+   	}
+   	return $retour;
+   	}
   
    
    

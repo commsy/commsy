@@ -478,17 +478,19 @@
 			
 			$current_portal_user = $this->_environment->getPortalUserItem();
 			// password expires soon alert
-			if($current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+			if(!empty($current_portal_user) AND $current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
 				$start_date = new DateTime(getCurrentDateTimeInMySQL());
 				$since_start = $start_date->diff(new DateTime($current_portal_user->getPasswordExpireDate()));
-				$days = $since_start->d;
+				$days = $since_start->days;
 				if($days == 0){
 					$days = 1;
 				}
-				if(isset($c_password_expiration_send_email_days) AND $days <= $c_password_expiration_send_email_days){
+
+				$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+				if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail){
 					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
 					$to_javascript['environment']['password_expire_soon'] = true;
-				} else if(!isset($c_password_expiration_send_email_days) AND $days <= 14){
+				} else if(!isset($days_before_expiring_sendmail) AND $days <= 14){
 					$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
 					$to_javascript['environment']['password_expire_soon'] = true;
 				}
@@ -515,6 +517,37 @@
 			// translations - should be managed elsewhere soon
 			$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
 			$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
+			
+			$current_user = $this->_environment->getCurrentUserItem();
+			
+			$auth_source_manager = $this->_environment->getAuthSourceManager();
+			$auth_source_item = $auth_source_manager->getItem($current_user->getAuthSource());
+			
+			if(isset($auth_source_item)){
+				// password
+				if($auth_source_item->getPasswordLength() > 0){
+					$to_javascript["password"]["length"] = $translator->getMessage('PASSWORD_INFO2_LENGTH', $auth_source_item->getPasswordLength());
+				}
+				if($auth_source_item->getPasswordSecureBigchar() == 1){
+					$to_javascript["password"]["big"] = $translator->getMessage('PASSWORD_INFO2_BIG');
+				}
+				if($auth_source_item->getPasswordSecureSmallchar() == 1){
+					$to_javascript["password"]["small"] = $translator->getMessage('PASSWORD_INFO2_SMALL');
+				}
+				if($auth_source_item->getPasswordSecureNumber() == 1){
+					$to_javascript["password"]["special"] = $translator->getMessage('PASSWORD_INFO2_SPECIAL');
+				}
+				if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+					$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
+				}
+			}
+			
+			
+			
+			
+			
+			
+			
 			
 
 			// dev

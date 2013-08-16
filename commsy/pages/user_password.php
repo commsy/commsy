@@ -95,6 +95,12 @@ if ( isOption($command,$translator->getMessage('ADMIN_CANCEL_BUTTON')) or isOpti
             if (empty($error_string)) {
                $auth_manager = $authentication->getAuthManager($user->getAuthSource());
                $auth_manager->changePassword($_POST['user_id'],$_POST['password']);
+               // set new expire date
+               $portal_manager = $environment->getPortalManager();
+               $portal_item = $portal_manager->getItem($user->getContextID());
+               $user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+               $user->save();
+               unset($portal_manager);
                $error_number = $auth_manager->getErrorNumber();
                if (empty($error_number)) {
                   $params = array();

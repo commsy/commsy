@@ -737,6 +737,7 @@ class cs_manager {
             $this->_cache_object[$item_id] = $item;
          }
       }
+      
       return $item;
    }
 

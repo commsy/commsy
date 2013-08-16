@@ -268,9 +268,9 @@ class cs_popup_configuration_mail_controller implements cs_popup_controller {
         		$subject = $translator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON',$room->getTitle());
         		
         		if($needTranslation) {
-        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON',$userid,$room->getTitle());
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR',$userid,$room->getTitle());
         		} else {
-        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON');
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR');
         			$content_temp = str_replace('%2','%3',$content_temp);
         			$content_temp = str_replace('%1','%2',$content_temp);
         			$content .= $content_temp;
@@ -289,9 +289,9 @@ class cs_popup_configuration_mail_controller implements cs_popup_controller {
         		$subject = $translator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON',$room->getTitle());
         		
         		if($needTranslation) {
-        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',$userid,$room->getTitle());
+        			$content .= $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR',$userid,$room->getTitle());
         		} else {
-        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON');
+        			$content_temp = $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR');
         			$content_temp = str_replace('%2','%3',$content_temp);
         			$content_temp = str_replace('%1','%2',$content_temp);
         			$content .= $content_temp;
