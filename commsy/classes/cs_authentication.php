@@ -401,6 +401,23 @@ class cs_authentication {
    private function getAuthSourceList () {
       return $this->_auth_source_list;
    }
+   
+   public function getShibbolethAuthSource () {
+   	$auth_source_list = $this->getAuthSourceList();
+   	if(isset($auth_source_list) and !empty($auth_source_list)){
+   		$auth_source_item = $auth_source_list->getFirst();
+   		$found = false;
+   		while ( $auth_source_item and !$found ) {
+   			if ( $auth_source_item->getSourceType() == 'Shibboleth') {
+   				$found = true;
+   			} else {
+   				$auth_source_item = $auth_source_list->getNext();
+   			}
+   		}
+   		return $auth_source_item;
+   	}
+   	
+   }
 
    public function checkAccount ($uid, $password, $auth_source = '') {
       $allowed = false;

@@ -183,7 +183,7 @@ class cs_auth_shibboleth extends cs_auth_manager {
   function get ($user_id) {
      // not implemented yet
      include_once('functions/error_functions.php');
-     trigger_error('The methode GET [TYPO3WEB] is not implemented!',E_USER_ERROR);
+     trigger_error('The methode GET [shibboleth] is not implemented!',E_USER_ERROR);
   }
 
   /** get commsy error text
@@ -203,7 +203,7 @@ class cs_auth_shibboleth extends cs_auth_manager {
    function getItem () {
       #return $this->_item;
       include_once('functions/error_functions.php');
-      trigger_error('The methode getItem [TYPO3WEB] is not implemented!',E_USER_ERROR);
+      trigger_error('The methode getItem [shibboleth] is not implemented!',E_USER_ERROR);
    }
 
    /** get user information out of the auth source
@@ -249,15 +249,5 @@ class cs_auth_shibboleth extends cs_auth_manager {
 //       return $granted;
 //    }
 
-//    public function sendSessionToTypo3 ($ses_id, $sid) {
-//       $retour = array();
-//       $url = $this->_server.'&cmd=setSessionId&ses_id='.$ses_id.'&cses_id='.$sid;
-//       $curl = curl_init();
-//       curl_setopt($curl, CURLOPT_URL, $url);
-//       curl_setopt($curl, CURLOPT_HEADER, 0);
-//       curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-//       curl_exec($curl);
-//       curl_close($curl);
-//    }
 }
 ?>

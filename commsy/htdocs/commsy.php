@@ -337,11 +337,66 @@ if (!empty($_GET['SID'])) {
          ) {
    include_once('pages/individual_getfile.php');
    exit();
+} elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
+	$_SERVER['Shib_Session_ID'] = '12345678';
+	$_SERVER['Shib_userId'] = 'commsy_shib';
+	$_SERVER['Shib_mail'] = 'email@email.de';
+	$_SERVER['Shib_givenName'] = 'Max';
+	$_SERVER['Shib_sn'] = 'Mustermann';
+	
+	include_once('pages/context_login.php'); 
+	exit();
 } else {
-   // no session created
-   // so create session and redirect to requested page
-   $session = new cs_session_item();
-   $session->createSessionID('guest');
+
+// 	/* Shibboleth */
+	
+// 	// SHIBBOLETH TEST DATEN
+	
+
+// 	if (!empty($_SERVER['Shib_Session_ID'])) {
+
+// 		$user_manager = $environment->getUserManager();
+// 		$authentication = $environment->getAuthenticationObject();
+// 		$shibboleth_auth = $authentication->getShibbolethAuthSource();
+		 
+// 		// user does not exist
+// 		if (!$user_manager->exists($_SERVER['uid'])) {
+// 			$user_item = $user_manager->getNewItem();
+// 			$user_item->setUserID($_SERVER['uid']);
+// 			$user_item->setEmail($_SERVER['email']);
+// 			$user_item->setFirstname($_SERVER['givenName']);
+// 			$user_item->setLastname($_SERVER['sn']);
+// 			$user_item->setAuthSource($shibboleth_auth->getItemID());
+// 			$user_item->makeUser();
+// 			$user_item->save();
+// 			$user_item->getOwnRoom();
+// 			$environment->setCurrentUser($user_item);
+// 		}
+// 		// session exist
+// 		if(isset($session) and !empty($session)){
+// 			if($session->getValue('user_id') != $_SERVER['uid']){
+// 				// user not valid
+// 				$session = new cs_session_item();
+// 				$session->createSessionID($_SERVER['uid']);
+// 			}
+	
+// 		} else {
+// 			// session does not exist
+// 			$session = new cs_session_item();
+// 			$session->createSessionID($_SERVER['uid']);
+// 		}
+// 		// no shibboleth authentication
+// 	} 
+		// no session created
+		// so create session and redirect to requested page
+	$session = new cs_session_item();
+	$session->createSessionID('guest');
+
+	
+   
+   
+   // gucken ob shib session, wenn ja dann gucken ob benutzer existiert sonst anlegen  .... shib session anlegen mit uid
+   
    $current_portal_id = $environment->getCurrentPortalID();
    if ( !empty($current_portal_id) ) {
       $session->setValue('commsy_id',$current_portal_id);
@@ -369,6 +424,19 @@ if ( !empty($SID) ) {
    // so we can load the session information
    $session_manager = $environment->getSessionManager();
    $session = $session_manager->get($SID);
+   
+   if ($environment->getConfiguration('c_shibboleth_direct_login')){
+   	if ($_SERVER['Shib_userId'] != $session->getValue('user_id')){pr($_SERVER['Shib_userId']);exit;
+   		#$session->reset();
+   		
+   		$session->createSessionID($_SERVER['Shib_userId']);
+   		$SID = $session->getSessionID();
+   		$session = $session_manager->get($SID);
+   		
+   		$environment->setSessionItem($session);
+   	}
+   }
+   
    if ( isset($session) ) {
       $environment->setSessionItem($session);
    }
@@ -566,34 +634,7 @@ if ( !empty($SID) ) {
       }
 /*Ende TYPO3-Anbindung*/
 
-/* Shibboleth Anbindung */
-      
-      // Wenn der Benutzer bereits in der Mysql Datenbank existiert
-      if(!empty($_SERVER['Shib_Session_ID'])){
-      	
-      	// Wenn der Benutzer noch nicht in der Mysql Datenbank existiert, aber bei Shibboleth eingeloggt ist
-      	// Muss der Benutzer in der Datenbank angelegt werden
-      	// Daten werde vom IDP übergeben und können übernommen werden
-      	$user_manager = $environment->getUserManager();
-      	if(!$user_manager->exists($_SERVER['uid'])){
-      		// Benutzer in die Datenbank schreiben
-      		
-      		$user_item = $user_manager->getNewItem();
-      		$user_item->setUserID($_SERVER['uid']);
-      		$user_item->setEmail($_SERVER['email']);
-      		$user_item->setAuthSource();
-      		$user_item->makeUser();
-      		$user_item->save();
-      		$user_item->getOwnRoom();
-      		$environment->setCurrentUser($user_item);
-      		
-      	}
-      	
-      	unset($user_manager);
-      	unset($user_item);
-      }
-      
-/* Ende Shibboleth Anbindung */
+
    }
 
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
