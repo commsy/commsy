@@ -3162,6 +3162,7 @@ class cs_portal_item extends cs_guide_item {
    	if($this->_issetExtra('TRY_UNTIL_LOCK')){
    		$retour = $this->_getExtra('TRY_UNTIL_LOCK');
    	}
+   	return $retour;
    }
    
    public function isPasswordGenerationActive () {
