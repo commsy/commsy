@@ -328,6 +328,13 @@ if (!$shib_direct_login){
 	   $session->setValue('error_array',$error_array);
 	}
 } else {
+    
+    // check if we are in portal context
+    if (!$environment->inPortal()) {
+        redirect($environment->getCurrentPortalID(), 'home', 'index');
+        exit;
+    }
+    
 	// shibboleth direct login
 	
 	$portal_item = $environment->getCurrentContextItem();
