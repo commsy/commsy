@@ -35,7 +35,8 @@ $flash = $session->getValue('flash');
 if ( $session->issetValue('root_session_id') ) {
    $root_session_id = $session->getValue('root_session_id');
 }
-if ($environment->getConfiguration('c_shibboleth_direct_login') and !empty($environment->getConfiguration('c_shibboleth_redirect_url'))){
+$config = $environment->getConfiguration('c_shibboleth_redirect_url');
+if ($environment->getConfiguration('c_shibboleth_direct_login') and !empty($config)){
 	if ($_SERVER['Shib_userId']){
 		$session_manager->delete($SID,true);
 		$session->reset();
