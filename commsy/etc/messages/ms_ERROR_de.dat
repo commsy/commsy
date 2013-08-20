@@ -17,4 +17,5 @@ $message["ERROR_MAIL_TO"]["de"] = "An:";
 $message["ERROR_SEND_EMAIL_TO"]["de"] = "Beim Versenden der E-Mail ist ein Fehler aufgetreten. Die E-Mail wurde nicht an folgende Personen verschickt:";
 $message["ERROR_SEND_MAIL"]["de"] = "Beim Verschicken der folgenden Nachricht ist ein Fehler aufgetreten:";
 $message["ERROR_UPLOADIFY_FILE_SIZE"]["de"] = "Die zulässige Dateigröße wurde überschritten!";
+$message["ERROR_VALUE_DELETE_LOG_DATA"]["de"] = "Bitte geben Sie einen Wert zwischen 1 und 999 Tagen an";
 ?>

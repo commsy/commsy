@@ -77,10 +77,22 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
    $params['environment'] = $environment;
    $form_view = $class_factory->getClass(CONFIGURATION_DATASECURITY_FORM_VIEW,$params);
    unset($params);
-
    // Save item
+  
+   if(!empty($_GET['modus']) and $_GET['modus'] == 'delete'){
+   	$logarchive_manager = $environment->getLogArchiveManager();
+   	$room_id = $_GET['id'];
+   	$logarchive_manager->deleteByContextID($room_id);
+   	unset($logarchive_manager);
+   } else if(!empty($_GET['modus']) and $_GET['modus'] == 'remove'){
+   	$room_manager = $environment->getRoomManager();
+   	$room_id = $_GET['id'];
+   	$room = $room_manager->getItem($room_id);
+   	$room->setWithoutLogArchive();
+   	$room->save();
+   }
    if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
-      
+   	
    	if($context_item->isServer()){
    		  if(!empty($_POST['log_ip'])){
    		  	if($_POST['log_ip'] == 1){
@@ -96,10 +108,20 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
    		  	}
    		  }
    		  
-   		  
-   		  
 	   	  if(!empty($_POST['log_delete_interval'])){
-	   	  	$log_delete_interval = $_POST['log_delete_interval'];
+	   	  	// save only integer
+	   	  	$temporary_days = preg_replace('/[^1-9][0-9]+/', '', $_POST['log_delete_interval']);
+	   	  	// should not be empty
+	   	  	if(empty($temporary_days)){
+	   	  		$params = array();
+	   	  		$params['environment'] = $environment;
+	   	  		$params['with_modifying_actions'] = true;
+	   	  		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	   	  		$errorbox->setText($translator->getMessage('ERROR_VALUE_DELETE_LOG_DATA'));
+	   	  		$page->add($errorbox);
+	   	  		$log_delete_interval = 50;
+	   	  	}
+	   	  	$log_delete_interval = $temporary_days;
 	   	  	
 	   	  } else {
 	   	  	$log_delete_interval = 50;
@@ -107,29 +129,29 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
 	   	  
 	      $context_item->setLogDeleteInterval($log_delete_interval);
 	
-	      if(isset($_POST['portal']) AND $_POST['portal'] != -1){
-	      	$portal_manager = $environment->getPortalManager();
-	      	$portal = $portal_manager->getItem($_POST['portal']);
+// 	      if(isset($_POST['portal']) AND $_POST['portal'] != -1){
+// 	      	$portal_manager = $environment->getPortalManager();
+// 	      	$portal = $portal_manager->getItem($_POST['portal']);
 	      	
-	      	$logarchive_manager = $environment->getLogArchiveManager();
+// 	      	$logarchive_manager = $environment->getLogArchiveManager();
 	      	
-	      	$room_list = $portal->getRoomList();
+// 	      	$room_list = $portal->getRoomList();
 	      	 
-	      	if ( !$room_list->isEmpty() ) {
-	      		$room = $room_list->getFirst();
-	      		while ($room) {
-	      			if(isset($_POST['ROOM_'.$room->getItemID()]) AND !empty($_POST['ROOM_'.$room->getItemID()])){
-	      				if($_POST['ROOM_'.$room->getItemID()] == $room->getItemID()){
-	      					// delete log data from rooms
-	      					$logarchive_manager->deleteByContextID($room->getItemID());
-	      				}
-	      			}
-	      			$room = $room_list->getNext();
-	      		}
-	      	}
-	      }
-	      unset($portal_manager);
-	      unset($logarchive_manager);
+// 	      	if ( !$room_list->isEmpty() ) {
+// 	      		$room = $room_list->getFirst();
+// 	      		while ($room) {
+// 	      			if(isset($_POST['ROOM_'.$room->getItemID()]) AND !empty($_POST['ROOM_'.$room->getItemID()])){
+// 	      				if($_POST['ROOM_'.$room->getItemID()] == $room->getItemID()){
+// 	      					// delete log data from rooms
+// 	      					$logarchive_manager->deleteByContextID($room->getItemID());
+// 	      				}
+// 	      			}
+// 	      			$room = $room_list->getNext();
+// 	      		}
+// 	      	}
+// 	      }
+// 	      unset($portal_manager);
+// 	      unset($logarchive_manager);
 	      
       } else if($context_item->isPortal()){
       	if(!empty($_POST['hide_accountname'])){
