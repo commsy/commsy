@@ -328,10 +328,13 @@ if (!$shib_direct_login){
 	   $session->setValue('error_array',$error_array);
 	}
 } else {
+    $user_manager = $environment->getUserManager();
     
-    // check if we are in portal context
-    if (!$environment->inPortal()) {
-        redirect($environment->getCurrentPortalID(), 'home', 'index');
+    // if the user object does not exists, make sure we are in portal context before creating it
+    if (!$environment->inPortal() && !$user_manager->exists($_SERVER['Shib_userId'])) {
+        $parameterArray = $environment->getCurrentParameterArray();
+        $parameterArray['room_id'] = $environment->getCurrentContextID();
+        redirect($environment->getCurrentPortalID(), 'home', 'index', $parameterArray);
         exit;
     }
     
@@ -370,7 +373,6 @@ if (!$shib_direct_login){
 	$authentication = $environment->getAuthenticationObject();
 	$shibboleth_auth = $authentication->getShibbolethAuthSource();
 	
-	$user_manager = $environment->getUserManager();
 	if (!$user_manager->exists($_SERVER['Shib_userId'])) {
 		$user_item = $user_manager->getNewItem();
 		$user_item->setUserID($_SERVER['Shib_userId']);
