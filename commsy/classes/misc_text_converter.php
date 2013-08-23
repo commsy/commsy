@@ -1479,10 +1479,10 @@ class misc_text_converter {
             $image_text .= '   height="'.$args['height'].'"'.LF;
          }
          $image_text .= '>'.LF;
-         $image_text .= '<param name="movie" value="http://www.youtube.com/v/'.$source.'" />'.LF;
+         $image_text .= '<param name="movie" value="https://www.youtube.com/v/'.$source.'" />'.LF;
          $image_text .= '<param name="wmode" value="opaque" />'.LF;
          $image_text .= '<embed type="application/x-shockwave-flash"'.LF;
-         $image_text .= '   src="http://www.youtube.com/v/'.$source.'"'.LF;
+         $image_text .= '   src="https://www.youtube.com/v/'.$source.'"'.LF;
          $image_text .= '   wmode="opaque"'.LF;
          if ( !empty($args['width']) ) {
             $image_text .= '   width="'.$args['width'].'"'.LF;
@@ -1495,7 +1495,7 @@ class misc_text_converter {
          $image_text .= '</object>';
          } else { // only for development, remove after change to new style
          # new code, not stable now
-         $image_text .= '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="http://www.youtube.com/embed/'.$source.'?showinfo=0&showsearch=0&iv_load_policy=3" frameborder="0"></iframe>';
+         $image_text .= '<iframe class="youtube-player" type="text/html" width="'.$width.'" height="'.$height.'" src="https://www.youtube.com/embed/'.$source.'?showinfo=0&showsearch=0&iv_load_policy=3" frameborder="0"></iframe>';
          } // only for development, remove after change to new style
          $image_text .= '</div>'.LF;
          $text = str_replace($array[0],$image_text,$text);
