@@ -59,6 +59,7 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
 	   $log_manager = $environment->getLogManager();
 	   
 	   $data2 = $log_manager->getLogdataByContextID($id);
+
 	   if(!empty($data1) or !empty($data2)){
 	   	
 		   #$data = array_merge($data1,$data2);
@@ -97,35 +98,39 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
 		   	
 		   	$user = array();
 		   	// Datenschutz
-		   	foreach ($data1 as $log) {
-		   		$remote_adress_array = explode('.', $log['ip']);
-		   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
-		   		$userkey = '';
-		   		if(array_key_exists($log['ulogin'],$user)){
-		   			$userkey = $user[$log['ulogin']];
-		   		} else {
-		   			$uniqid = uniqid();
-		   			$user[$log['ulogin']] = $uniqid;
-		   			$userkey = $uniqid;
-		   		}
-		   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
-		   								$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
-		   								$log['iid'],$log['queries'],$log['time']));
+		   	if ( !empty($data1) ) {
+			   	foreach ($data1 as $log) {
+			   		$remote_adress_array = explode('.', $log['ip']);
+			   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+			   		$userkey = '';
+			   		if(array_key_exists($log['ulogin'],$user)){
+			   			$userkey = $user[$log['ulogin']];
+			   		} else {
+			   			$uniqid = uniqid();
+			   			$user[$log['ulogin']] = $uniqid;
+			   			$userkey = $uniqid;
+			   		}
+			   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
+			   								$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
+			   								$log['iid'],$log['queries'],$log['time']));
+			   	}
 		   	}
-		   	foreach ($data2 as $log) {
-		   		$remote_adress_array = explode('.', $log['ip']);
-		   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
-		   		$userkey = '';
-		   		if(array_key_exists($log['ulogin'],$user)){
-		   			$userkey = $user[$log['ulogin']];
-		   		} else {
-		   			$uniqid = uniqid();
-		   			$user[$log['ulogin']] = $uniqid;
-		   			$userkey = $uniqid;
-		   		}
-		   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
-		   		$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
-		   		$log['iid'],$log['queries'],$log['time']));
+		   	if ( !empty($data2) ) {
+			   	foreach ($data2 as $log) {
+			   		$remote_adress_array = explode('.', $log['ip']);
+			   		$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+			   		$userkey = '';
+			   		if(array_key_exists($log['ulogin'],$user)){
+			   			$userkey = $user[$log['ulogin']];
+			   		} else {
+			   			$uniqid = uniqid();
+			   			$user[$log['ulogin']] = $uniqid;
+			   			$userkey = $uniqid;
+			   		}
+			   		fputcsv($output, array($log['id'],$array['remote_addr'],$log['agent'],$log['timestamp'],$log['request'],$log['post_content'],
+			   		$log['method'],$userkey,$log['cid'],$log['module'],$log['fct'],$log['param'],
+			   		$log['iid'],$log['queries'],$log['time']));
+			   	}
 		   	}
 		   	fclose($output);
 		   	

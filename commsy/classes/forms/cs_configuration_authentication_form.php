@@ -432,9 +432,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_form->addEmptyLine();
       //Datenschutz
       $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',false);
-      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',2,10,false,'','','','','','',false);
+      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',3,10,false,'','','','','','',false);
+      $this->_form->addTextfield('try_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
       $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',false);
-      $this->_form->addTextfield('trys_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
       #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
 
 
@@ -512,7 +512,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['password_expiration'] = $current_context->getPasswordExpiration();
          $this->_values['try_until_lock'] = $current_context->getTryUntilLock();
          $this->_values['days_before_expiring_sendmail'] = $current_context->getDaysBeforeExpiringPasswordSendMail();
-         
+
          if( empty($this->_values['password_secure_check'])){
          	$this->_values['password_secure_check'] = 2;
          	$this->_disable_password_check = true;
