@@ -130,7 +130,7 @@ $message["USER_MSN"]["en"] = "MSN";
 $message["USER_NAME"]["en"] = "Name";
 $message["USER_NEVER_LOGIN"]["en"] = "never logged in";
 $message["USER_NEW_PASSWORD_BIGCHAR_ERROR"]["en"] = "The new <b>password</b> does not contain a<b>capital letter</b>.";
-$message["USER_NEW_PASSWORD_LENGTH_ERROR"]["en"] = "The new <b>password</b> is <b>to short</b>.";
+$message["USER_NEW_PASSWORD_LENGTH_ERROR"]["en"] = "The new <b>password</b> must contain %1 characters.";
 $message["USER_NEW_PASSWORD_NUMBER_ERROR"]["en"] = "The new <b>password</b> does not contain <b>numbers</b>.";
 $message["USER_NEW_PASSWORD_SMALLCHAR_ERROR"]["en"] = "The new <b>password</b> does not contain a <b>small letter</b>.";
 $message["USER_NEW_PASSWORD_SPECIALCHAR_ERROR"]["en"] = "The new <b>password</b> does not contain a <b>special character</b>.";
@@ -151,6 +151,7 @@ $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "Further information was s
 <br/><br/>
 If you are not receiving this email, please contact the portal moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["en"] = "Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.";
+$message["USER_PASSWORD_GUIDELINE"]["en"] = "guideline";
 $message["USER_PASSWORD_MAIL_BODY"]["en"] = "the mechanism &quot;password forget&quot; has been activated for your account
    %1
 

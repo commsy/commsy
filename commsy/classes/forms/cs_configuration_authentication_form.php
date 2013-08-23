@@ -425,8 +425,8 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',2,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('days_before_expiring_sendmail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SEND_MAIL'),'',2,10,false,'','','','','','',$disabled);
-	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
-	      
+	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->addText('Info', $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION_INFO'));
 	      
       }
       $this->_form->addEmptyLine();
@@ -524,7 +524,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          }
 
          if( empty($this->_values['password_length'])){
-         	$this->_values['password_length'] = 1;
+         	$this->_values['password_length'] = 0;
          }
          if( empty($this->_values['password_bigchar'])){
          	$this->_values['password_bigchar'] = 2;

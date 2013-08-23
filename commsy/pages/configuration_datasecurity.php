@@ -110,7 +110,7 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
    		  
 	   	  if(!empty($_POST['log_delete_interval'])){
 	   	  	// save only integer
-	   	  	$temporary_days = preg_replace('/[^1-9][0-9]+/', '', $_POST['log_delete_interval']);
+	   	  	$temporary_days = preg_replace('/[^1-9][^0-9]+/', '', $_POST['log_delete_interval']);
 	   	  	// should not be empty
 	   	  	if(empty($temporary_days)){
 	   	  		$params = array();

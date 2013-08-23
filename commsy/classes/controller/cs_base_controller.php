@@ -541,14 +541,17 @@
 					$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
 				}
 			}
+			if ($this->_environment->getCurrentFunction() == 'detail'
+						and $this->_environment->getCurrentModule() == 'group'){
+				$params = $this->_environment->getCurrentParameterArray();
+				$group_manager = $this->_environment->getGroupManager();
+				$group_item = $group_manager->getItem($params['iid']);
+				if ($group_item->isGroupRoomActivated() ){
+					$to_javascript['dev']['room_id'] = $group_item->getGroupRoomItemID();
+				}
+			}
 			
-			
-			
-			
-			
-			
-			
-			
+		
 
 			// dev
 			global $c_indexed_search;

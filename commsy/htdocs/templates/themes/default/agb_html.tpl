@@ -79,11 +79,13 @@
 	                	<br />
 	                	{$agb.text}
 	               		<br /><br />
+	               		{if !$smarty.get.agb}
 	               		<form action="commsy.php?cid={$environment.cid}&mod=agb&fct=index" method="post">
 	               			<input type="submit" name="submit[accept]" value="___AGB_ACCEPTANCE_BUTTON___" />
 		               		<input type="submit" name="submit[cancel]" value="___COMMON_CANCEL_BUTTON___" />
 		               		<input type="submit" name="submit[not_accept]" value="___AGB_ACCEPTANCE_NOT_BUTTON_ROOM___" />
 	               		</form>
+	               		{/if}
                 	</div>
                 </div>
 

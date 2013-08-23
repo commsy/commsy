@@ -18,4 +18,9 @@ $message["ERROR_SEND_EMAIL_TO"]["de"] = "Beim Versenden der E-Mail ist ein Fehle
 $message["ERROR_SEND_MAIL"]["de"] = "Beim Verschicken der folgenden Nachricht ist ein Fehler aufgetreten:";
 $message["ERROR_UPLOADIFY_FILE_SIZE"]["de"] = "Die zulässige Dateigröße wurde überschritten!";
 $message["ERROR_VALUE_DELETE_LOG_DATA"]["de"] = "Bitte geben Sie einen Wert zwischen 1 und 999 Tagen an";
+$message["ERROR_VALUE_PASSWORD_EXPIRE"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 999 Tagen an (Ablauf des Passworts in Tagen)";
+$message["ERROR_VALUE_PASSWORD_EXPIRE_MAIL"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 Tagen an (Meldung vor Ablauf in Tagen)";
+$message["ERROR_VALUE_PASSWORD_GENERATION"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 an (Password Generationen)";
+$message["ERROR_VALUE_PASSWORD_LENGTH"]["de"] = "Bitte geben Sie bei der Mindestlänge einen Wert zwischen 0 und 99 an";
+
 ?>

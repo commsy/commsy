@@ -148,6 +148,7 @@ else {
                $auth_item = $auth_source_manager->getNewItem();
                $auth_item->setContextID($environment->getCurrentContextID());
             }
+            
 
             $auth_item->setTitle($_POST['title']);
             if ( $_POST['changeUserID'] == 1 ) {
@@ -207,16 +208,26 @@ else {
             if ( isset($_POST['password_length'])) {
             	if($_POST['password_length'] >= 0){
             		$password_length = preg_replace('/[^0-9]+/', '', $_POST['password_length']);
+            		if(empty($password_length) and $password_length != 0){
+            			$params = array();
+            			$params['environment'] = $environment;
+            			$params['with_modifying_actions'] = true;
+            			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            			$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_LENGTH'));
+            			$page->add($errorbox);
+            			$password_length = 0;
+            		}
             		$auth_item->setPasswordLength($password_length);
             	}
             }
+            
             if ( isset($_POST['password_smallchar']) ) {
             	$auth_item->setPasswordSecureSmallchar($_POST['password_smallchar']);
             }
             if ( isset($_POST['password_number']) ) {
             	$auth_item->setPasswordSecureNumber($_POST['password_number']);
             }
-            
+            #$auth_item->save();
             //Datenschutz
          	if ( isset($_POST['temporary_lock']) ) {
                $auth_item->setTemporaryLock($_POST['temporary_lock']);
@@ -243,56 +254,100 @@ else {
             
             if( isset($_POST['password_generation'])) {
             	$generation = $_POST['password_generation'];
-            	$generation = preg_replace('/[^0-9]+/', '', $generation);
-            	if($generation >= 0 and !empty($generation))
-            	{
+            	$empty_flag = false;
+            	if(empty($_POST['password_generation'])){
+            		$empty_flag = true;
+            	}
+            	
+            	$generation = preg_replace('/[^0-9]+/', '', $_POST['password_generation']);
+            	if(empty($generation) and !$empty_flag){
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_GENERATION'));
+            		$page->add($errorbox);
+            	} else {
             		$portal_item->setPasswordGeneration($generation);
+            		
             	}
             }
             if( isset($_POST['password_expiration'])) {
-            	if(($portal_item->getPasswordExpiration() != $_POST['password_expiration'] 
-            		and $_POST['password_expiration'] >= 0)
-            		or empty($_POST['password_expiration']))
+            	if(true)
             	{
-            		if($_POST['password_expiration'] == 0 or empty($_POST['password_expiration'])){
-            			$portal_item->setPasswordExpiration(0);
-            			
-            			$portal_users = $portal_item->getUserList();
-            			$portal_user = $portal_users->getFirst();
-            			while ($portal_user){
-            				$portal_user->setPasswordExpireDate('NULL');
-            				$portal_user->save();
-            				 
-            				$portal_user = $portal_users->getNext();
-            			}
+            		$empty_flag = false;
+            		if(empty($_POST['password_expiration'])){
+            			$empty_flag = true;
+            		}
+            		$password_expiration = preg_replace('/[^0-9]+/', '', $_POST['password_expiration']);
+            		#pr($password_expiration);breaK;
+            		if(empty($password_expiration) and !$empty_flag){
+            			$params = array();
+            			$params['environment'] = $environment;
+            			$params['with_modifying_actions'] = true;
+            			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            			$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_EXPIRE'));
+            			$page->add($errorbox);
             		} else {
-            			$portal_item->setPasswordExpiration($_POST['password_expiration']);
-            			$portal_item->save();
-            			
-            			// set a new expire date for all portal users
-            			// Datenschutz
-            			$portal_users = $portal_item->getUserList();
-            			$portal_user = $portal_users->getFirst();
-            			while ($portal_user){
-            				if ($_POST['password_expiration'] > 0){
-            					$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
-            				} else {
-            					$portal_user->unsetPasswordExpireDate();
-            				}
-            				$portal_user->save();
+            			if($password_expiration == 0 or empty($password_expiration)){
+            				$portal_item->setPasswordExpiration(0);
             				 
-            				$portal_user = $portal_users->getNext();
+            				$portal_users = $portal_item->getUserList();
+            				$portal_user = $portal_users->getFirst();
+            				while ($portal_user){
+            					$portal_user->setPasswordExpireDate('NULL');
+            					$portal_user->save();
+            					 
+            					$portal_user = $portal_users->getNext();
+            				}
+            			} else {
+            				$portal_item->setPasswordExpiration($password_expiration);
+            				$portal_item->save();
+            				 
+            				// set a new expire date for all portal users
+            				// Datenschutz
+            				$portal_users = $portal_item->getUserList();
+            				$portal_user = $portal_users->getFirst();
+            				while ($portal_user){
+            					if ($_POST['password_expiration'] > 0){
+            						$auth_source_manager = $environment->getAuthSourceManager();
+            						$auth_item = $auth_source_manager->getItem($portal_user->getAuthSource());
+            						if($auth_item->getSourceType() == 'MYSQL'){
+            							$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            						}
+            					} else {
+            						$portal_user->unsetPasswordExpireDate();
+            					}
+            					$portal_user->save();
+            					 
+            					$portal_user = $portal_users->getNext();
+            				}
             			}
             		}
-	            	
             	}
 
             }
             if( isset($_POST['days_before_expiring_sendmail'])){
-            	if($_POST['days_before_expiring_sendmail'] > 0){
-            		$portal_item->setDaysBeforeExpiringPasswordSendMail($_POST['days_before_expiring_sendmail']);
+            	if(true){
+            		$empty_flag = false;
+            		if(empty($_POST['days_before_expiring_sendmail'])){
+            			$empty_flag = true;
+            		}
+            		$days_before_expiring_sendmail = preg_replace('/[^0-9]+/', '', $_POST['days_before_expiring_sendmail']);
+            		if(empty($days_before_expiring_sendmail) and !$empty_flag){
+            			$params = array();
+            			$params['environment'] = $environment;
+            			$params['with_modifying_actions'] = true;
+            			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            			$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_EXPIRE_MAIL'));
+            			$page->add($errorbox);
+            		} else {
+            			$portal_item->setDaysBeforeExpiringPasswordSendMail($days_before_expiring_sendmail);
+            		}
             	}
             }
+            
+            pr($portal_item->getExtraConfig());
             $portal_item->save();
             unset($portal_item);
 

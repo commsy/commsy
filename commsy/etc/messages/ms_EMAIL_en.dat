@@ -32,12 +32,11 @@ $message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "Hello %1,
 your right to login as another user is deactivated now.
 
 Best regards ... CommSy Administrator";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["en"] = "Hello %1,
-
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["en"] = "
 your password will expire in the next %2 days. Please change your password.
 
-Best regards ... %3
-[This e-mail was sent automatically.]";
+%3
+";
 $message["EMAIL_PASSWORD_EXPIRATION_BODY"]["en"] = "Hello %1,
 
 your password is expired.
