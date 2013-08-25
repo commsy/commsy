@@ -282,7 +282,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                                   $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                   'option');
       }
-      $this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,20,true,'','','','','','',$disabled);
+      if(!$disabled){
+      	$this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,20,true,'','','','','','',$disabled);
+      }
+      
       if ( $this->_disable_default ) {
          $this->_form->addHidden('disable_default','yes');
          $this->_form->addHidden('default',1);
@@ -505,7 +508,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $current_context = $this->_environment->getCurrentContextItem();
          
          // Datenschutz
-         $this->_values['temporary_lock'] = $this->_item->getTemporaryLock();
+         $this->_values['temporary_lock'] = $current_context->getTemporaryLock();
          $this->_values['seconds_interval'] = $current_context->getLockTimeInterval();
          $this->_values['temporary_minutes'] = $current_context->getLockTime();
          $this->_values['password_generation'] = $current_context->getPasswordGeneration();
@@ -760,7 +763,14 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             #}
          }
       } else {
+      	$current_context = $this->_environment->getCurrentContextItem();
+      	
       	// Datenschutz
+      	$this->_values['temporary_lock'] = $current_context->getTemporaryLock();
+      	$this->_values['seconds_interval'] = $current_context->getLockTimeInterval();
+      	$this->_values['temporary_minutes'] = $current_context->getLockTime();
+      	$this->_values['try_until_lock'] = $current_context->getTryUntilLock();
+      	
       	if( empty($this->_values['temporary_lock'])){
       		$this->_values['temporary_lock'] = 2;
       	}
@@ -769,6 +779,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	}
       	if( empty($this->_values['temporary_minutes'])) {
       		$this->_values['temporary_minutes'] = 0;
+      	}
+      	if( empty($this->_values['try_until_lock'])) {
+      		$this->_values['try_until_lock'] = 0;
       	}
       	
          $this->_values['auth_source'] = -1;

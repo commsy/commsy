@@ -3278,5 +3278,28 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
+   
+   // Datenschutz
+   public function setTemporaryLock($value) {
+   	$this->_addExtra('TEMPORARY_LOCK',$value);
+   }
+   
+   
+   public function getTemporaryLock() {
+   	$retour = '';
+   	$value = $this->_getExtra('TEMPORARY_LOCK');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+    
+   public function isTemporaryLockActivated(){
+   	if(($this->getTemporaryLock() == 1)){
+   		return true;
+   	} else {
+   		return false;
+   	}
+   }
 }
 ?>

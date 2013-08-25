@@ -229,18 +229,60 @@ else {
             }
             #$auth_item->save();
             //Datenschutz
-         	if ( isset($_POST['temporary_lock']) ) {
-               $auth_item->setTemporaryLock($_POST['temporary_lock']);
-            }
-            
             $portal_item = $environment->getCurrentPortalItem();
             
+         	if ( isset($_POST['temporary_lock']) ) {
+         		$temporary_lock = $_POST['temporary_lock'];
+         		$temporary_lock = preg_replace('/[^0-9]+/', '', $temporary_lock);
+         		 
+         		if($temporary_lock >= 0 and !empty($temporary_lock)){
+         			$portal_item->setTemporaryLock($_POST['temporary_lock']);
+         		} else {
+         			$params = array();
+         			$params['environment'] = $environment;
+         			$params['with_modifying_actions'] = true;
+         			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         			$errorbox->setText('TEMPORARY LOCK');
+         			$page->add($errorbox);
+         			$password_length = 0;
+         		}
+               #$portal_item->setTemporaryLock($_POST['temporary_lock']);
+            }
+            
             if ( isset($_POST['try_until_lock'])) {
-            	$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            	$try_until_lock = $_POST['try_until_lock'];
+            	$try_until_lock = preg_replace('/[^0-9]+/', '', $try_until_lock);
+            	
+            	if($try_until_lock >= 0 and !empty($try_until_lock)){
+            		$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            	} else {
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText('TRY UNTIL LOCK');
+            		$page->add($errorbox);
+            		$password_length = 0;
+            	}
+            	#$portal_item->setTryUntilLock($_POST['try_until_lock']);
             }
             
             if( isset($_POST['seconds_interval'])) {
-            	$portal_item->setLockTimeInterval($_POST['seconds_interval']);
+            	$seconds_interval = $_POST['temporary_minutes'];
+            	$seconds_interval = preg_replace('/[^0-9]+/', '', $seconds_interval);
+            	
+            	if($seconds_interval >= 0 and !empty($seconds_interval)){
+            		$portal_item->setLockTimeInterval($_POST['seconds_interval']);
+            	} else {
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText('SECONDS INTERVAL');
+            		$page->add($errorbox);
+            		$password_length = 0;
+            	}
+            	#$portal_item->setLockTimeInterval($_POST['seconds_interval']);
             }
             
             if( isset($_POST['temporary_minutes'])) {
@@ -249,6 +291,14 @@ else {
             	
             	if($temporary_minutes >= 0 and !empty($temporary_minutes)){
             		$portal_item->setLockTime($_POST['temporary_minutes']);
+            	} else {
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText('TEMPORARY MINUTES');
+            		$page->add($errorbox);
+            		$password_length = 0;
             	}
             }
             
@@ -347,7 +397,6 @@ else {
             	}
             }
             
-            pr($portal_item->getExtraConfig());
             $portal_item->save();
             unset($portal_item);
 
