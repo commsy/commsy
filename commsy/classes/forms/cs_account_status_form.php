@@ -253,9 +253,20 @@ class cs_account_status_form extends cs_rubric_form {
          $this->_values['lastlogin']      = $this->_item->getLastlogin();
          $this->_values['user_id']        = $this->_item->getUserID();
          $this->_values['contact_person'] = $this->_item->isContact();
-         if($this->_item->isDeactivatedLoginAsAnotherUser()){
+         // deactivate by default the login as feature
+         
+         $deactived_login_as = $this->_item->isDeactivatedLoginAsAnotherUser();
+         #pr($deactived_login_as);
+         if($deactived_login_as == 1){
          	$this->_values['login_as']		  = 1;
-         } else {
+         } elseif (empty($deactived_login_as)) {
+         	global $c_default_value_login_as_xy_for_new_moderator;
+         	if(!$c_default_value_login_as_xy_for_new_moderator){
+         		$this->_values['login_as']		  = 1;
+         	} else {
+         		$this->_values['login_as']		  = 2;
+         	}
+         } else{
          	$this->_values['login_as']		  = 2;
          }
          $this->_values['days_interval'] = 0;

@@ -2398,17 +2398,19 @@ class cs_user_item extends cs_item {
    }
    
    function unsetDeactivateLoginAsAnotherUser () {
-   	$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+   	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
+   		$this->_addExtra('DEACTIVATE_LOGIN_AS', '-1');
+   	}
+   	#$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
    }
    
    function isDeactivatedLoginAsAnotherUser () {
-   	$retour = false;
+   	$retour = '';
    	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
    		$flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
-   		if($flag){
-   			$retour = true;
-   		}
+   		$retour = $flag;
    	}
+   	
    	return $retour;
 
    }
