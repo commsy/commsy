@@ -212,7 +212,8 @@ class cs_account_status_form extends cs_rubric_form {
                                 $this->_translator->getMessage('ROOM_CONTACT'),
                                 ''
                                );
-      if($moderator){
+      $current_user = $this->_environment->getCurrentUser();
+      if($current_user->isRoot()){
       	
       	$this->_yes_no_array[0]['text'] = $this->_translator->getMessage('COMMON_YES');
       	$this->_yes_no_array[0]['value'] = 1;
@@ -229,7 +230,7 @@ class cs_account_status_form extends cs_rubric_form {
       	$this->_yes_no_array[1]['value'] = 2;
       	
       	$this->_form->addRadioGroup('login_as',$this->_translator->getMessage('USER_LOGIN_AS'),'',$this->_yes_no_array,'','',true,'','',true);
-      	$this->_form->addTextfield('days_interval','',$this->_translator->getMessage('USER_LOGIN_AS_DAYS'),'',3,10,false,'','','','','','',false);
+      	$this->_form->addTextfield('days_interval','',$this->_translator->getMessage('USER_LOGIN_AS_DAYS'),'',3,10,false,'','','','','','',true);
       }
 
       // buttons
