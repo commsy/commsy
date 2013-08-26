@@ -25,8 +25,8 @@
 
 		public function actionIndex() {
 			$current_user = $this->_environment->getCurrentUserItem();
-			$current_context = $this->_environment->GetCurrentContextItem();
-		
+			$current_context = $this->_environment->getCurrentContextItem();
+		    $portal_user = $this->_environment->getPortalUserItem();
 			// portal AGB - redirected in commy.php to portal context
 			/*
 			 * $current_context = $environment->getCurrentContextItem();
@@ -47,15 +47,15 @@
 			
 			// check for agb
 			$showAGB = false;
-			
-			if ( $current_user->isUser() && !$current_user->isRoot() ) {
+			if ( ($current_user->isUser() or $portal_user->isUser()) && !$current_user->isRoot()) {
 				$user_agb_date = $current_user->getAGBAcceptanceDate();
 				$context_agb_date = $current_context->getAGBChangeDate();
 				if ( $user_agb_date < $context_agb_date && $current_context->getAGBStatus() == 1 ) {
 					$showAGB = true;
+				} else if($portal_user->isUser() && $current_context->getAGBStatus() == 1){
+					$showAGB = true;
 				}
 			}
-			
 			if ($showAGB) {
 				if (empty($_POST)) {
 					$currentContext = $this->_environment->getCurrentContextItem();

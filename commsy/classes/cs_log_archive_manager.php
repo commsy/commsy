@@ -204,7 +204,7 @@ class cs_log_archive_manager extends cs_manager {
    }
    
    function hideAllLogArchiveIP() {
-   	$query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log_archive');
+   	$query = 'SELECT id,ip FROM '.$this->addDatabasePrefix('log_archive').' ip NOT LIKE "%XXX"';
    	 
    	$result = $this->_db_connector->performQuery($query);
    	if ( !isset($result) ) {

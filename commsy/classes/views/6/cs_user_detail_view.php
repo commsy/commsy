@@ -524,7 +524,7 @@ class cs_user_detail_view extends cs_detail_view {
          
          $agb = $item->getAGBAcceptanceDate();
          if(!empty($agb)){
-         	$temp_array[] = $item->getAGBAcceptanceDate();
+         	$temp_array[] = getDateTimeInLang($item->getAGBAcceptanceDate());
          }
          $formal_data[] = $temp_array;
 

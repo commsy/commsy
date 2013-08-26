@@ -50,6 +50,23 @@
 			if(!empty($_GET['account'])) {
 				$account_mode = $_GET['account'];
 			}
+			
+			// use agb datasecurity
+			$portal_item = $this->_environment->getCurrentPortalItem();
+			
+			$agb_checked = $_GET['agb']; // true or false
+			
+			if($portal_item->getAGBStatus() == 1 and $portal_item->withAGBDatasecurity()){
+				if($agb_checked == "true"){
+					$check_agb_ds = true;
+				} else {
+					$check_agb_ds = false;
+				}
+			} else {
+				$check_agb_ds = true;
+			}
+			
+			
 
 			$option = 'none';
 			if(isset($_POST['option'])) {
@@ -104,8 +121,10 @@
       								$params['iid']= $this->_item->getItemID();
 
       // build new user_item
-      if ( !$room_item->checkNewMembersWithCode()
-           or ( $room_item->getCheckNewMemberCode() == $_GET/*$_POST*/['code'])
+      if ( (!$room_item->checkNewMembersWithCode()
+           or ( $room_item->getCheckNewMemberCode() == $_GET/*$_POST*/['code']))
+           and $check_agb_ds
+           
          ) {
          $current_user = $environment->getCurrentUserItem();
          $user_item = $current_user->cloneData();
@@ -134,6 +153,12 @@
             $user_item->makeUser(); // for mail body
             $check_message = 'NO';
             $account_mode = 'to_room';
+         }
+         
+         if($portal_item->getAGBStatus() == 1 and $portal_item->withAGBDatasecurity()){
+         	if($agb_checked){
+         		$user_item->setAGBAcceptance();
+         	}
          }
 
          // test if user id allready exist (reload page)
@@ -365,6 +390,9 @@
 							if(isset($grouproom_item) && !empty($grouproom_item)) {
 								if( $grouproom_item->checkNewMembersWithCode()) {
 									$this->assign("join", "code", true);
+								}
+								if($grouproom_item->getAGBStatus() != 2){
+									$this->assign("join", "agb", true);
 								}
 							}
 						}

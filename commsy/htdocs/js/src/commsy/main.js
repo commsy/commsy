@@ -35,27 +35,53 @@ require([	"dojo/_base/declare",
 						
 						var qry = dojo.objectToQuery(this.replaceOrSetURIParam("group_option", "1"));
 						
-						if (customObject.needsCode) {
+						var objectQry = dojo.queryToObject(qry);
+						
+						if (customObject.needsCode || customObject.agb) {
 							
-							require(["dojo/on","dijit/form/TextBox","dijit/form/Button","dijit/Dialog"], function(On, TextBox, Button, Dialog) {
+							require(["dojo/on","dijit/form/TextBox","dijit/form/Button","dijit/Dialog","dijit/form/CheckBox","dojo/dom-construct"], Lang.hitch(this, function(On, TextBox, Button, Dialog, CheckBox, domConstruct) {
 								
 								On(joinNode, "click", Lang.hitch(this, function(event) {
 									var input = new dijit.form.TextBox({
 										
 									});
 									
+									if (customObject.agb){
+										var checkBox = new CheckBox({
+									        name: "agb",
+									        value: "1",
+									        checked: false
+										});
+									}
+									
 									var button = new dijit.form.Button({
 										label:	"betreten",
 										onClick:	Lang.hitch(this, function(event) {
-											location.href = "commsy.php?" + qry + "&code=" + input.value;
+											location.href = "commsy.php?" + qry + "&code=" + input.value + "&agb=" + checkBox.checked;
 											
 											dialog.destroyRecursive();
 										})
 									});
-									var dialog = new dijit.Dialog({
-										title:		"Teilnahme-Code"
+									if (customObject.needsCode) {
+										var dialog = new dijit.Dialog({
+											title:		"Teilnahme-Code"
+										});
+									} else if (customObject.agb) {
+										var dialog = new dijit.Dialog({
+											title:		"Nutzungsvereinbarungen"
+										});
+									}
+									console.log("commsy.php?" + qry + "&code=" + input.value + "&agb=" + checkBox.checked);
+									var node = domConstruct.create("div",{
+										innerHTML: "Ich stimme den <a onclick=\"window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');\" target=\"agb\" href=\"commsy.php?cid=" + this.from_php.dev.room_id + "&mod=agb&fct=index&agb=1\">Nutzungsvereinbarungen</a> zu"
 									});
+									
+									
 									dojo.place(input.domNode, dialog.containerNode, "last");
+									if (customObject.agb) {
+										dojo.place(checkBox.domNode, dialog.containerNode, "after");
+										dojo.place(node, dialog.containerNode, "after");
+									}
 									dojo.place(button.domNode, dialog.containerNode, "last");
 									
 									
@@ -66,7 +92,7 @@ require([	"dojo/_base/declare",
 								}));
 								
 								
-							});
+							}));
 						}
 					}
 				}

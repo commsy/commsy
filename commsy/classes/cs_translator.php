@@ -523,8 +523,8 @@ class cs_translator {
                case 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON':
                   $retour = $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_BODY_PASSWORD_EXPIRATION':
-                  $retour = $this->getMessageInLang($language, 'MAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_BODY_PASSWORD_EXPIRATION':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
                   break;
                default:
                   $retour = $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5);
@@ -578,11 +578,11 @@ class cs_translator {
                case 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON':
                   $retour = $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_BODY_PASSWORD_EXPIRATION':
-                  $retour = $this->getMessageInLang($language, 'MAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_BODY_PASSWORD_EXPIRATION':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON':
-                  $retour = $this->getMessageInLang($language, 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5);
                   break;
                default:
                   $retour = $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5);
@@ -609,11 +609,11 @@ class cs_translator {
                case 'MAIL_BODY_USER_STATUS_USER':
                   $retour = $this->getMessageInLang($language, 'MAIL_BODY_USER_STATUS_USER_GP', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_BODY_PASSWORD_EXPIRATION':
-                  $retour = $this->getMessageInLang($language, 'MAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_BODY_PASSWORD_EXPIRATION':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON':
-                  $retour = $this->getMessageInLang($language, 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5);
                   break;
                default:
                   $retour = $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5);
@@ -670,11 +670,11 @@ class cs_translator {
                case 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON':
                   $retour = $this->getMessageInLang($language, 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_BODY_PASSWORD_EXPIRATION':
-                  $retour = $this->getMessageInLang($language, 'MAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_BODY_PASSWORD_EXPIRATION':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_BODY_PASSWORD_EXPIRATION', $param1, $param2, $param3, $param4, $param5);
                   break;
-               case 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON':
-                  $retour = $this->getMessageInLang($language, 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5);
+               case 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON':
+                  $retour = $this->getMessageInLang($language, 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON', $param1, $param2, $param3, $param4, $param5);
                   break;
                default:
                   $retour = $this->getMessageInLang($language, $MsgID, $param1, $param2, $param3, $param4, $param5);

@@ -345,6 +345,10 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              $user_item->setGroupByID($group->getItemID());
           }
        }
+       // set new agb date
+       if($current_context->withAGBDatasecurity()){
+       	$user_item->setAGBAcceptance();
+       }
 
        // test if user id allready exist (reload page)
        $user_id = $user_item->getUserID();

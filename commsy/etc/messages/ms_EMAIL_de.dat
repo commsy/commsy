@@ -44,16 +44,10 @@ Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.
 
 Gru&szlig; ... %3
 [Diese E-Mail wurde automatisch vom System verschickt.]";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Hallo %1,
-
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "
 Ihr Passwort l&auml;uft in %2 Tagen ab. Bitte &auml;ndern Sie Ihr Passwort innerhalb dieser Zeit.
 
-%3
-
-Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.
-
-Gru&szlig; ... %4
-[Diese E-Mail wurde automatisch vom System verschickt.]";
+%3";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
 $message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen aus";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";

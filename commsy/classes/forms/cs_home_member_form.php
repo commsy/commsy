@@ -121,8 +121,36 @@ class cs_home_member_form extends cs_rubric_form {
          $this->_form->addHidden('language','');
          $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'',100,21,true,'','','','left','',13);
          // Hinweis für das bauen des Passwortes
-         $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),'','',21,true,13);
-         $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),'','',21,true,13);
+         
+         #$link_pw = ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index', array('cs_modus' => 'portalmember'), $this->_translator->getMessage('USER_PASSWORD_GUIDELINE'),'','','','','title="test"');
+         
+         $auth_source_manager = $this->_environment->getAuthSourceManager();
+         $auth_source_item = $auth_source_manager->getItem($this->_auth_source_array[0]['value']);
+         
+         if($auth_source_item->getPasswordLength() > 0){
+         	$password_length = $auth_source_item->getPasswordLength();
+         	$output_password = 'Passwortlänge: '.$password_length;
+         }
+         if($auth_source_item->getPasswordSecureBigchar() == 1){
+         	$output_password .= ', Großbuchstaben';
+         }
+         if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+         	$output_password .= ', Sonderzeichen';
+         }
+         if($auth_source_item->getPasswordSecureNumber() == 1){
+         	$output_password .= ', Zahlen';
+         }
+         if($auth_source_item->getPasswordSecureSmallchar() == 1){
+         	$output_password .= ', Kleinbuchstaben';
+         }
+         if(!empty($output_password)){
+         	$link_pw = ' <a href="#" title="'.$output_password.'">'. $this->_translator->getMessage('USER_PASSWORD_GUIDELINE').'</a>';
+         } else {
+         	$link_pw = '';
+         }
+         
+         $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD').''.$link_pw,'','',21,true,13);
+         $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),'','',21,true,13);  
          
          // link which refers to the terms of use
          // Datenschutz
@@ -185,18 +213,28 @@ class cs_home_member_form extends cs_rubric_form {
 	      $auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source']);
 	      if($auth_source_item->getPasswordLength() > 0){
 		      if(strlen($this->_form_post['password']) < $auth_source_item->getPasswordLength()) {
-		      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_LENGTH_ERROR');
+		      	$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_LENGTH_ERROR', $auth_source_item->getPasswordLength());
 		      }
 	      }
 	      if($auth_source_item->getPasswordSecureBigchar() == 1){
 		      if(!preg_match('~[A-Z]+~u', $this->_form_post['password'])) {
-		      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_BIGCHAR_ERROR');
+		      	$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_BIGCHAR_ERROR');
 		      }
 	      }
 	      if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 		      if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
-		      	$this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_NEW_PASSWORD_SPECIALCHAR_ERROR');
+		      	$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_SPECIALCHAR_ERROR');
 		      }
+	      }
+	      if($auth_source_item->getPasswordSecureNumber() == 1){
+	      	if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+	      		$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_NUMBER_ERROR');
+	      	}
+	      }
+	      if($auth_source_item->getPasswordSecureSmallchar() == 1){
+	      	if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+	      		$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_SMALLCHAR_ERROR');
+	      	}
 	      }
 	      unset($auth_source_manager);
       }

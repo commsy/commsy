@@ -2371,13 +2371,24 @@ class cs_user_item extends cs_item {
    	
    	$retour = false;
    	$i=$portal_item->getPasswordGeneration();
-   	for($i;$i > 0;$i--){
-   		if($this->_issetExtra('PW_GENERATION_'.($i))){
-   			if($this->_getExtra('PW_GENERATION_'.$i) == $password){
-   				$retour = true;
+   	if($i == 0){
+   		$authentication = $this->_environment->getAuthenticationObject();
+   		
+   		$authManager = $authentication->getAuthManager($this->getAuthSource());
+   		$auth_item = $authManager->getItem($this->getUserID());
+   		if ($auth_item->getPasswordMD5() == $password) {
+   			$retour = true;
+   		}
+   	} else {
+   		for($i;$i > 0;$i--){
+   			if($this->_issetExtra('PW_GENERATION_'.($i))){
+   				if($this->_getExtra('PW_GENERATION_'.$i) == $password){
+   					$retour = true;
+   				}
    			}
    		}
    	}
+   	
    	unset($portal_item);
    	return $retour;
    }
