@@ -85,7 +85,7 @@ if (!empty($user_id) and !empty($password) ) {
    $locked = false;
    $login_status = $authentication->isAccountGranted($user_id,$password,$auth_source);
    if(isset($auth_item) AND !empty($auth_item)){
-   	if($auth_item->isTemporaryLockActivated() or $portal_item->getInactivityLockDays() > 0){
+   	if($portal_item->isTemporaryLockActivated() or $portal_item->getInactivityLockDays() > 0){
    		$user_manager = $environment->getUserManager();
    		$userExists = $user_manager->exists($user_id);
    		unset($user_manager);
@@ -166,7 +166,7 @@ if (!empty($user_id) and !empty($password) ) {
       	unset($auth_manager);
       }
             
-      if($auth_item->isTemporaryLockActivated()){
+      if($portal_item->isTemporaryLockActivated()){
       	// Erster Fehlversuch // Timestamp in session speichern und
 	      // Password tempLock
 	      $userExists = false;
@@ -189,7 +189,7 @@ if (!empty($user_id) and !empty($password) ) {
          //Password tempLock
          $session->setValue('countWrongPassword', 1);
       } else {
-      	if($auth_item->isTemporaryLockActivated()){
+      	if($portal_item->isTemporaryLockActivated()){
 	       	$count = $session->getValue('countWrongPassword');
 	       	if(!isset($count) AND empty($count)){
 	       		$session->setValue('countWrongPassword', 1);
@@ -208,7 +208,14 @@ if (!empty($user_id) and !empty($password) ) {
 	       	if(empty($trys_login)){
 	       		$trys_login = 3;
 	       	}
-	       	if($count >= $trys_login AND $userExists AND !locked AND !$locked_temp AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
+// 	       	pr($count >= $trys_login);
+// 	       	pr($userExists);
+// 	       	pr(!$locked);
+// 	       	pr(!$locked_temp);
+// 	       	pr($session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval()));
+// 	       	pr($session);
+	       	#break;
+	       	if($count >= $trys_login AND $userExists AND !$locked AND !$locked_temp AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
        			$user = $authentication->_getPortalUserItem($tempUser,$authentication->_auth_source_granted);
        			$user->setTemporaryLock();
        			$user->save();
