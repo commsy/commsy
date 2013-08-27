@@ -64,6 +64,73 @@ if ($current_user->isGuest()) {
 	$page->add($errorbox);
 	$command = 'error';
 }
+$save = '';
+if(isset($_POST['lock_user'])){
+	$lock_user = $_POST['lock_user'];
+	$lock_user = preg_replace('/[^0-9]+/', '', $lock_user);
+	
+	if($lock_user >= 0 and !empty($lock_user)){
+		#$portal_item->setTemporaryLock($_POST['lock_user']);
+	} else {
+		$params = array();
+		$params['environment'] = $environment;
+		$params['with_modifying_actions'] = true;
+		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+		$errorbox->setText($translator->getMessage('ERROR_VALUE_INACTIVE_LOCK'));
+		$page->add($errorbox);
+		$save = 'error';
+	}
+}
+if(isset($_POST['email_before_lock'])){
+	$email_before_lock = $_POST['email_before_lock'];
+	$email_before_lock = preg_replace('/[^0-9]+/', '', $email_before_lock);
+	
+	if($email_before_lock >= 0 and !empty($email_before_lock)){
+		#$portal_item->setTemporaryLock($_POST['lock_user']);
+	} else {
+		$params = array();
+		$params['environment'] = $environment;
+		$params['with_modifying_actions'] = true;
+		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+		$errorbox->setText($translator->getMessage('ERROR_VALUE_INACTIVE_LOCK_MAIL'));
+		$page->add($errorbox);
+		$save = 'error';
+	}
+}
+if(isset($_POST['delete_user'])){
+	$delete_user = $_POST['delete_user'];
+	$delete_user = preg_replace('/[^0-9]+/', '', $delete_user);
+	
+	if($delete_user >= 0 and !empty($delete_user)){
+		#$portal_item->setTemporaryLock($_POST['lock_user']);
+	} else {
+		$params = array();
+		$params['environment'] = $environment;
+		$params['with_modifying_actions'] = true;
+		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+		$errorbox->setText($translator->getMessage('ERROR_VALUE_INACTIVE_DELETE'));
+		$page->add($errorbox);
+		$save = 'error';
+	}
+}
+if(isset($_POST['email_before_delete'])){
+	if(empty($_POST['email_before_delete'])){
+		$empty = true;
+	}
+	$email_before_delete = $_POST['email_before_delete'];
+	$email_before_delete = preg_replace('/[^0-9]+/', '', $email_before_delete);
+	// if(!empty 
+	if(!($email_before_delete >= 0) and !$empty){
+		$params = array();
+		$params['environment'] = $environment;
+		$params['with_modifying_actions'] = true;
+		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+		$errorbox->setText($translator->getMessage('ERROR_VALUE_INACTIVE_DELETE_MAIL'));
+		$page->add($errorbox);
+		$save = 'error';
+	}
+}
+
 
 if ($command != 'error') { // only if user is allowed to edit inactive
 
@@ -79,7 +146,22 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 	$portal_item = $environment->getCurrentPortalItem();
 	$user_manager = $environment->getUserManager();
 	
-	$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($portal_item->getInactivitySendMailBeforeLockDays());
+	if(isset($lock_days)){
+		if(isset($mail_before_lock)){
+			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($lock_days + $mail_before_lock));
+		} else {
+			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($lock_days);
+		}
+		
+	} elseif(isset($delete_days) and !isset($lock_days)){
+		if(isset($mail_before_delete)){
+			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days + $mail_before_delete);
+		} else {
+			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days);
+		}
+	}
+	
+	#$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($portal_item->getInactivitySendMailBeforeLockDays()));
 	$user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$portal_item->getItemID());
 	if(!empty($user_array)){
 		$count_delete = 0;
@@ -92,11 +174,11 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 				$days = 1;
 			}
 	
-			if($days >= $portal_item->getInactivityDeleteDays()-1){
+			if($days >= $delete_days-1){
 				$count_delete++;
 				continue;
 			}
-			if($days >= $portal_item->getInactivityLockDays()-1){
+			if($days >= $lock_days-1){
 				$count_lock++;
 				continue;
 			}
@@ -105,7 +187,7 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 
 	}
 	
-	if($count_delete != 0 or $count_lock != 0){
+	if(($count_delete != 0 or $count_lock != 0) and $save != 'error'){
 		$html = '<br>';
 		if($count_delete > 0){
 			$html .= $count_delete.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE');
@@ -128,7 +210,10 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
 		$errorbox->setDescription($html);
 		$page->add($errorbox);
+	} else {
+		$save_flag = true;
 	}
+	
 	
 	// include form
 	$class_params= array();
@@ -141,10 +226,11 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 	$params['environment'] = $environment;
 	$form_view = $class_factory->getClass(CONFIGURATION_DATASECURITY_FORM_VIEW,$params);
 	unset($params);
-
+	
+	#pr($save);pr($command);pr($save_flag);
+	pr($save);
 	// Save item
-	if ( !empty($command) and $save_flag and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
-
+	if ( !empty($command) and $save != 'error' and $save_flag and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
 		if($context_item->isPortal()){
 			if(!empty($_POST['overwrite_content'])){
 				$context_item->setInactivityOverwriteContent($_POST['overwrite_content']);

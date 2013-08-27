@@ -152,7 +152,7 @@ class cs_popup_configuration_mail_controller implements cs_popup_controller {
         
         // Datenschutz
         if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-        	$userid = ' ';
+        	$userid = 'XXX';
         } else {
         	$userid = $user->getUserID();
         }

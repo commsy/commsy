@@ -240,7 +240,7 @@ else {
          		$temporary_lock = preg_replace('/[^0-9]+/', '', $temporary_lock);
          		 
          		if($temporary_lock >= 0 and !empty($temporary_lock)){
-         			$portal_item->setTemporaryLock($_POST['temporary_lock']);
+         			$portal_item->setTemporaryLock($temporary_lock);
          		} else {
          			$params = array();
          			$params['environment'] = $environment;

@@ -145,7 +145,13 @@ if ( isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))
                $subject = $translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$user_item->getFullname(),$room_item->getTitle());
                $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                $body .= LF.LF;
-               $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+               // Datenschutz
+               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+               	$userid = 'XXX';
+               } else {
+               	$userid = $portal_user->getUserID();
+               }
+               $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$userid,$user_item->getEmail(),$room_item->getTitle());
                $body .= LF.LF;
 
                switch ( $check_message )
@@ -222,7 +228,7 @@ if ( isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))
                
                // Datenschutz
                if($environment->getCurrentPortalItem()->getHideAccountname()){
-               	$userid = ' ';
+               	$userid = 'XXX';
                } else {
                	$userid = $user->getUserID();
                }
