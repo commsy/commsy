@@ -615,7 +615,14 @@ class class_onyx extends cs_plugin {
    }
    
    public function getTextFormatingInformationAsHTML () {
-      $retour = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION');
+      $retour = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION',$this->_environment->getCurrentContextID(),$this->_identifier,'showtextformatinginfo');
+      return $retour;
+   }
+   
+   public function getTextFormatingInformationForWindowAsHTML () {
+      $retour  = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION_WINDOW');
+      $retour .= BRLF;
+      $retour .= $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION_WINDOW_REP');
       return $retour;
    }
    
