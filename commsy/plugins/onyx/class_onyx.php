@@ -830,6 +830,37 @@ class class_onyx extends cs_plugin {
 	    					$data_item->setFileIDArray($file_id_array);
 	    					$data_item->save();
 	    					unlink($temp_file);
+	    					
+	    					// save onyx hash in user_item
+                     if ( $saveResult == 2 ) { // 2 = pseudonym
+		    					$session_manager = $this->_environment->getSessionManager();
+				            $session_item = $session_manager->get($sid);
+		    					$user_id = $session_item->getValue('user_id');
+		    					$auth_source = $session_item->getValue('auth_source');
+		    					$user_manager = $this->_environment->getUserManager();
+		    					$user_manager->setContextLimit($cid);
+		    					$user_manager->setUserIDLimit($user_id);
+		    					$user_manager->setAuthSourceLimit($auth_source);
+		    					$user_manager->select();
+		    					$user_list = $user_manager->get();
+		    					if ($user_list->getCount() == 1) {
+		    						$current_user = $user_list->getFirst();
+			    					$onyx_hash = md5($session_item->getValue('user_id').'-'.$session_item->getValue('auth_source'));
+			    					$user_item_plugin_array = $current_user->getPluginConfigForPlugin($this->_identifier);
+			    					if ( empty($user_item_plugin_array['userhash'])
+			    						  or $user_item_plugin_array['userhash'] != $onyx_hash
+			    						) {
+			    						$user_item_plugin_array['userhash'] = $onyx_hash;
+			    						$current_user->setPluginConfigForPlugin($this->_identifier,$user_item_plugin_array);
+			    						$current_user->save();
+			    					}
+			    					unset($current_user);
+		    					}
+		    					unset($user_list);
+		    					unset($user_manager);
+		    					unset($session_item);
+		    					unset($session_manager);
+                     }
 
 	    					return $file_item->getFileID();	    					 
 	    				} else {
@@ -903,6 +934,22 @@ class class_onyx extends cs_plugin {
      }
      fwrite($fd, $str . "\n");
      fclose($fd);
+   }
+   
+   public function getUserDetailConfigArray ( $params ) {
+   	$retour = array();
+   	if ( !empty($params['user_item'])
+   		  and $params['user_item']->isA(CS_USER_TYPE)
+   		) {
+   		$plugin_config_array = $params['user_item']->getPluginConfigForPlugin($this->_identifier);
+   		if ( !empty($plugin_config_array)
+   			  and !empty($plugin_config_array['userhash'])
+   			) {
+   			$retour['title'] = $this->_translator->getMessage('ONYX_USER_DETAIL_HASH_TITLE');
+   			$retour['desc'] = $plugin_config_array['userhash'];
+   			return $retour;
+   		}
+   	}
    }
 }
 
