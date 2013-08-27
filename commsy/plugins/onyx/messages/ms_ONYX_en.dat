@@ -10,5 +10,9 @@ $message["ONYX_ERROR_URL_LOST"]["en"] = "Error: Could not load the reporter. Ple
 $message["ONYX_ERROR_URL_SECURITY"]["de"] = "A security flag in your session is lost, so you are not allowed to see the results.";
 $message["ONYX_REPORTER_LINK"]["en"] = "analysis";
 $message["ONYX_REPORTER_NO_RESULTS"]["en"] = "There are no results so far.";
+$message["ONYX_SAVE_TITLE_RESULT"]["de"] = "Results";
+$message["ONYX_SAVE_TITLE_RESULT_DAY"]["de"] = "Results at %2/%1/%3";
+$message["ONYX_SAVE_TITLE_RESULT_WEEK"]["de"] = "Results of the week %1 in %2";
+$message["ONYX_SAVE_TITLE_RESULT_MONTH"]["de"] = "Results in %1/%2";
 $message["ONYX_TEXTFORMATING_DESCRIPTION"]["en"] = "<span style=&quot;font-weight:bold&quot;>Self-Assessment (QTI)</span>:<br/><ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;><li>(:qti FILENAME:) for a questionary in qti-standard</li><li>arguments:<ul><li>embedded - test will display inside the CommSy page, if set.</li><li>text='TEXT' - text for the link to the test, if embedded is not set.</li><li>navi=true | navi=false - turn on or off the navigation inside the test.<br/>default: off, if embedded is set, otherwise true.</li></ul></li></ul>";
 ?>

@@ -180,21 +180,23 @@
 									{/foreach}
 									</td>
 								</tr>
-								<tr>
-									<td><h4>___MATERIAL_ABSTRACT___:</h4></td>
-									<td>
-										{$detail.content.description}
-									</td>
-								</tr>
+                        {if !empty($detail.content.description)}
+								   <tr>
+									   <td><h4>___MATERIAL_ABSTRACT___:</h4></td>
+									   <td>
+										   &nbsp;
+									   </td>
+								   </tr>
+								{/if}
 							{/if}
 						</table>
 				{/if}
 
-				{if $detail.content.description && (!isset($detail.content.sections) || empty($detail.content.sections))}
-					<div class="detail_description">
-						{$detail.content.description}
-					</div>
-				{/if}
+            {if $detail.content.description }
+               <div class="detail_description">
+                  {$detail.content.description}
+               </div>
+            {/if}
 				</div>
 		</div> <!-- Ende item_legend -->
 		{if $room.workflow}
