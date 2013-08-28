@@ -402,6 +402,10 @@ function getDayNameFromInt($day) {
    return $ret;
 }
 
+function getLongMonthNameFromInt ($int) {
+	return getLongMonthName(($int-1));
+}
+
 function getLongMonthName($month) {
    global $environment;
    $translator = $environment->getTranslationObject();

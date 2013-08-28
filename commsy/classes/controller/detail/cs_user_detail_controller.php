@@ -384,7 +384,7 @@
 
 			// user id
 			$return['user_id'] = $this->_item->getUserID();
-
+			
 			// portal
 			$portal_item = $this->_environment->getCurrentPortalItem();
 			if($portal_item->getCountAuthSourceListEnabled() !== 1) {
@@ -624,6 +624,10 @@
 				 */
 			}
 
+			// plugin
+			include_once('functions/misc_functions.php');
+			$return['plugin_array'] = plugin_hook_output_all ('getUserDetailConfigArray', array('user_item' => $this->_item), 'MULTIARRAY');
+			
 			return $return;
 		}
 
