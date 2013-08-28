@@ -213,6 +213,15 @@
 					$mail->set_to($sendTo);
 				}
 				
+				// Datenschutz
+				if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+					$mail_user = $mail;
+					$user_description = str_replace('XXX',$user->getUserID(),$description);
+					$mail_user->set_message($user_description);
+					$mail_user->send();
+				}
+				
+				
 				// cc / bcc
 				$cc_array = array();
 				$bcc_array = array();
@@ -283,6 +292,7 @@
 				unset($bcc_string);
 
 				// send mail
+				
 				$response_array[] = array(
 					$mail_success = $mail->send(),
 					$mail_error_array = $mail->getErrorArray()
