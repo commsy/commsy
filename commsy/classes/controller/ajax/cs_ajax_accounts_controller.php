@@ -219,6 +219,7 @@
 					$user_description = str_replace('XXX',$user->getUserID(),$description);
 					$mail_user->set_message($user_description);
 					$mail_user->send();
+					$mail->set_to($admin->getEmail());
 				}
 				
 				
