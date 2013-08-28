@@ -31,6 +31,7 @@ $message["CONFIGURATION_AUTHENTICATION_DBTABLE_HINT_JOOMLA"]["en"] = "e.g. jos_u
 $message["CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE"]["en"] = "Delete account";
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE"]["en"] = "Source";
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE"]["en"] = "Type";
+$message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE_SETTING"]["en"] = "General settings";
 $message["CONFIGURATION_AUTHENTICATION_GENERATION"]["en"] = "Generation";
 $message["CONFIGURATION_AUTHENTICATION_GENERATION_INFO"]["en"] = "It is not allowed to repeat the password for the next x times";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["en"] = "Server";
