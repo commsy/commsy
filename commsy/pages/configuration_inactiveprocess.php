@@ -66,12 +66,13 @@ if ($current_user->isGuest()) {
 }
 $save = '';
 if(isset($_POST['lock_user'])){
+	if(empty($_POST['lock_user'])){
+		$empty = true;
+	}
 	$lock_user = $_POST['lock_user'];
 	$lock_user = preg_replace('/[^0-9]+/', '', $lock_user);
 	
-	if($lock_user >= 0 and !empty($lock_user)){
-		#$portal_item->setTemporaryLock($_POST['lock_user']);
-	} else {
+	if(!($lock_user >= 0) and !$empty){
 		$params = array();
 		$params['environment'] = $environment;
 		$params['with_modifying_actions'] = true;
@@ -82,12 +83,13 @@ if(isset($_POST['lock_user'])){
 	}
 }
 if(isset($_POST['email_before_lock'])){
+	if(empty($_POST['email_before_lock'])){
+		$empty = true;
+	}
 	$email_before_lock = $_POST['email_before_lock'];
 	$email_before_lock = preg_replace('/[^0-9]+/', '', $email_before_lock);
 	
-	if($email_before_lock >= 0 and !empty($email_before_lock)){
-		#$portal_item->setTemporaryLock($_POST['lock_user']);
-	} else {
+	if(!($email_before_lock >= 0) and !$empty){
 		$params = array();
 		$params['environment'] = $environment;
 		$params['with_modifying_actions'] = true;
@@ -98,12 +100,13 @@ if(isset($_POST['email_before_lock'])){
 	}
 }
 if(isset($_POST['delete_user'])){
+	if(empty($_POST['delete_user'])){
+		$empty = true;
+	}
 	$delete_user = $_POST['delete_user'];
 	$delete_user = preg_replace('/[^0-9]+/', '', $delete_user);
 	
-	if($delete_user >= 0 and !empty($delete_user)){
-		#$portal_item->setTemporaryLock($_POST['lock_user']);
-	} else {
+	if(!($delete_user >= 0) and !$empty){
 		$params = array();
 		$params['environment'] = $environment;
 		$params['with_modifying_actions'] = true;
@@ -146,23 +149,27 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 	$portal_item = $environment->getCurrentPortalItem();
 	$user_manager = $environment->getUserManager();
 	
-	if(isset($lock_days)){
-		if(isset($mail_before_lock)){
+	if(isset($lock_days) and !empty($lock_days)){
+		if(isset($mail_before_lock) and !empty($mail_before_lock)){
 			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($lock_days + $mail_before_lock));
 		} else {
 			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($lock_days);
 		}
 		
-	} elseif(isset($delete_days) and !isset($lock_days)){
-		if(isset($mail_before_delete)){
+	} elseif(isset($delete_days) and !isset($lock_days) and !empty($lock_days)){
+		if(isset($mail_before_delete) and !empty($mail_before_delete)){
 			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days + $mail_before_delete);
 		} else {
 			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days);
 		}
 	}
-	
+	pr($date_lastlogin_do);
 	#$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($portal_item->getInactivitySendMailBeforeLockDays()));
-	$user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$portal_item->getItemID());
+	if(isset($date_lastlogin_do)){
+		$user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$portal_item->getItemID());
+	}
+	
+	
 	if(!empty($user_array)){
 		$count_delete = 0;
 		$count_lock = 0;
@@ -232,24 +239,28 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 	// Save item
 	if ( !empty($command) and $save != 'error' and $save_flag and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
 		if($context_item->isPortal()){
-			if(!empty($_POST['overwrite_content'])){
+			if(isset($_POST['overwrite_content'])){
 				$context_item->setInactivityOverwriteContent($_POST['overwrite_content']);
 			}
 			 
-			if(!empty($_POST['lock_user'])){
-				$context_item->setInactivityLockDays($_POST['lock_user']);
+			if(isset($_POST['lock_user'])){
+				$lock_user = preg_replace('/[^0-9]+/', '', $lock_user);
+				$context_item->setInactivityLockDays($lock_user);
 			}
 			 
-			if (!empty($_POST['email_before_lock'])){
-				$context_item->setInactivitySendMailBeforeLockDays($_POST['email_before_lock']);
+			if (isset($_POST['email_before_lock'])){
+				$email_before_lock = preg_replace('/[^0-9]+/', '', $email_before_lock);
+				$context_item->setInactivitySendMailBeforeLockDays($email_before_lock);
 			}
 			 
-			if (!empty($_POST['delete_user'])){
+			if (isset($_POST['delete_user'])){
+				$delete_user = preg_replace('/[^0-9]+/', '', $delete_user);
 				$context_item->setInactivityDeleteDays($_POST['delete_user']);
 			}
 			 
-			if (!empty($_POST['email_before_delete'])){
-				$context_item->setInactivitySendMailBeforeDeleteDays($_POST['email_before_delete']);
+			if (isset($_POST['email_before_delete'])){
+				$email_before_delete = preg_replace('/[^0-9]+/', '', $email_before_delete);
+				$context_item->setInactivitySendMailBeforeDeleteDays($email_before_delete);
 			}
 
 		}
