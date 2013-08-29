@@ -261,7 +261,7 @@ else {
             	$try_until_lock = $_POST['try_until_lock'];
             	$try_until_lock = preg_replace('/[^0-9]+/', '', $try_until_lock);
             	
-            	if($try_until_lock >= 0 or $empty_flag){
+            	if($try_until_lock >= 0 or !empty($try_until_lock)){
             		$portal_item->setTryUntilLock($_POST['try_until_lock']);
             	} else {
             		$params = array();
