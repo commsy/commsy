@@ -119,7 +119,7 @@ else {
          $temp_values['text'] = $values;
          $form->setFormPost($temp_values);
       } elseif ( !empty($_POST['auth_source']) and $_POST['auth_source'] == -1) {
-         // do nothing
+      	// do nothing
       } elseif ( !empty($_POST) ) {
          $form->setFormPost($_POST);
       }
@@ -234,6 +234,7 @@ else {
             #$auth_item->save();
             //Datenschutz
             $portal_item = $environment->getCurrentPortalItem();
+            $errortext_array = array();
             
          	if ( isset($_POST['temporary_lock']) ) {
          		$temporary_lock = $_POST['temporary_lock'];
@@ -253,57 +254,31 @@ else {
                #$portal_item->setTemporaryLock($_POST['temporary_lock']);
             }
             
-            if ( isset($_POST['try_until_lock'])) {
-            	$try_until_lock = $_POST['try_until_lock'];
-            	$try_until_lock = preg_replace('/[^0-9]+/', '', $try_until_lock);
-            	
-            	if($try_until_lock >= 0 and !empty($try_until_lock)){
-            		$portal_item->setTryUntilLock($_POST['try_until_lock']);
-            	} else {
-            		$params = array();
-            		$params['environment'] = $environment;
-            		$params['with_modifying_actions'] = true;
-            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-            		$errorbox->setText('TRY UNTIL LOCK');
-            		$page->add($errorbox);
-            		$password_length = 0;
-            	}
-            	#$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            // login locking after trys
+            if ( !empty($_POST['try_until_lock'])
+            		and !is_numeric($_POST['try_until_lock'])
+               ) {
+            	$errortext_array[] = $translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'));
+            } else {
+            	$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            }           
+            
+            // login locking interval
+            if ( !empty($_POST['seconds_interval'])
+            		and !is_numeric($_POST['seconds_interval'])
+               ) {
+            	$errortext_array[] = $translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'));
+            } else {
+            	$portal_item->setLockTimeInterval($_POST['seconds_interval']);
             }
             
-            if( isset($_POST['seconds_interval'])) {
-            	$seconds_interval = $_POST['temporary_minutes'];
-            	$seconds_interval = preg_replace('/[^0-9]+/', '', $seconds_interval);
-            	
-            	if($seconds_interval >= 0 and !empty($seconds_interval)){
-            		$portal_item->setLockTimeInterval($_POST['seconds_interval']);
-            	} else {
-            		$params = array();
-            		$params['environment'] = $environment;
-            		$params['with_modifying_actions'] = true;
-            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-            		$errorbox->setText('SECONDS INTERVAL');
-            		$page->add($errorbox);
-            		$password_length = 0;
-            	}
-            	#$portal_item->setLockTimeInterval($_POST['seconds_interval']);
-            }
-            
-            if( isset($_POST['temporary_minutes'])) {
-            	$temporary_minutes = $_POST['temporary_minutes'];
-            	$temporary_minutes = preg_replace('/[^0-9]+/', '', $temporary_minutes);
-            	
-            	if($temporary_minutes >= 0 and !empty($temporary_minutes)){
-            		$portal_item->setLockTime($_POST['temporary_minutes']);
-            	} else {
-            		$params = array();
-            		$params['environment'] = $environment;
-            		$params['with_modifying_actions'] = true;
-            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-            		$errorbox->setText('TEMPORARY MINUTES');
-            		$page->add($errorbox);
-            		$password_length = 0;
-            	}
+            // login locking time
+            if ( !empty($_POST['temporary_minutes'])
+            		and !is_numeric($_POST['temporary_minutes'])
+               ) {
+            	$errortext_array[] = $translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'));
+            } else {
+            	$portal_item->setLockTime($_POST['temporary_minutes']);
             }
             
             if( isset($_POST['password_generation'])) {
@@ -401,7 +376,26 @@ else {
             	}
             }
             
+            // display error array
+            if ( !empty($errortext_array) ) {
+            	$params = array();
+            	$params['environment'] = $environment;
+            	$params['with_modifying_actions'] = true;
+            	$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            	$errorbox->setText(implode(BRLF,$errortext_array));
+            	$page->add($errorbox);
+            }
+            unset($errortext_array);
+            
+            
             $portal_item->save();
+            if ( isOption($_POST['option'], $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
+            	  and !empty($_POST['auth_source'])
+            	  and $_POST['auth_source'] == -1
+            	) {
+               // to show crrect data on site none-auth-type
+            	$form->loadValues();
+            }
             unset($portal_item);
 
             // special data

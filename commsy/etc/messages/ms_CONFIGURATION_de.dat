@@ -47,6 +47,7 @@ $message["CONFIGURATION_AUTHENTICATION_LINK"]["de"] = "Authentifizierung";
 $message["CONFIGURATION_AUTHENTICATION_LINK_DESC"]["de"] = "Hier können Sie weitere Authentifizierungsquellen einstellen und konfigurieren.";
 $message["CONFIGURATION_AUTHENTICATION_NONE"]["de"] = "*keine";
 $message["CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED"]["de"] = "nicht implementiert";
+$message["CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR"]["de"] = "Bitte geben Sie bei &quot;%1&quot; eine Zahl ein oder lassen Sie das Feld leer.";
 $message["CONFIGURATION_AUTHENTICATION_PATH"]["de"] = "Pfad";
 $message["CONFIGURATION_AUTHENTICATION_PATH_DESC"]["de"] = "/pfad/zu/cas/login";
 $message["CONFIGURATION_AUTHENTICATION_PORT"]["de"] = "Port";

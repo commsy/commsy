@@ -46,6 +46,7 @@ $message["CONFIGURATION_AUTHENTICATION_LINK"]["en"] = "Authentification";
 $message["CONFIGURATION_AUTHENTICATION_LINK_DESC"]["en"] = "Define and configure other authentification sources here.";
 $message["CONFIGURATION_AUTHENTICATION_NONE"]["en"] = "*clear";
 $message["CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED"]["en"] = "not implemented";
+$message["CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR"]["en"] = "Please insert a number at &quot;%1&quot; or leave it blank.";
 $message["CONFIGURATION_AUTHENTICATION_PATH"]["en"] = "Path";
 $message["CONFIGURATION_AUTHENTICATION_PATH_DESC"]["en"] = "/path/to/cas/login";
 $message["CONFIGURATION_AUTHENTICATION_PORT"]["en"] = "Port";

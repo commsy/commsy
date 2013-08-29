@@ -129,22 +129,22 @@ class cs_home_member_form extends cs_rubric_form {
          
          if($auth_source_item->getPasswordLength() > 0){
          	$password_length = $auth_source_item->getPasswordLength();
-         	$output_password = 'Passwortlänge: '.$password_length;
+         	$output_password = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH').': '.$password_length;
          }
          if($auth_source_item->getPasswordSecureBigchar() == 1){
-         	$output_password .= ', Großbuchstaben';
+         	$output_password .= ', '.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_BIGCHAR');
          }
          if($auth_source_item->getPasswordSecureSpecialchar() == 1){
-         	$output_password .= ', Sonderzeichen';
+         	$output_password .= ', '.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR');
          }
          if($auth_source_item->getPasswordSecureNumber() == 1){
-         	$output_password .= ', Zahlen';
+         	$output_password .= ', '.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_NUMBER');
          }
          if($auth_source_item->getPasswordSecureSmallchar() == 1){
-         	$output_password .= ', Kleinbuchstaben';
+         	$output_password .= ', '.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SMALLCHAR');
          }
          if(!empty($output_password)){
-         	$link_pw = ' <a href="#" title="'.$output_password.'">'. $this->_translator->getMessage('USER_PASSWORD_GUIDELINE').'</a>';
+         	$link_pw = ' (<a href="#" title="'.$output_password.'">'. $this->_translator->getMessage('USER_PASSWORD_GUIDELINE').'</a>)';
          } else {
          	$link_pw = '';
          }
@@ -227,12 +227,12 @@ class cs_home_member_form extends cs_rubric_form {
 		      }
 	      }
 	      if($auth_source_item->getPasswordSecureNumber() == 1){
-	      	if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+	      	if(!preg_match('~[0-9]+~u',$this->_form_post['password'])){
 	      		$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_NUMBER_ERROR');
 	      	}
 	      }
 	      if($auth_source_item->getPasswordSecureSmallchar() == 1){
-	      	if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+	      	if(!preg_match('~[a-z]+~u',$this->_form_post['password'])){
 	      		$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_SMALLCHAR_ERROR');
 	      	}
 	      }

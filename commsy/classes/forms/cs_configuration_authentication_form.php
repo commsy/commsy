@@ -183,7 +183,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                  and $this->_form_post['auth_source'] != -1
                ) {
                $auth_manager = $auth_object->getAuthManager($this->_form_post['auth_source']);
-            } else {
+            } elseif ($this->_form_post['auth_type'] != -1) {
                $auth_manager = $auth_object->getAuthManagerByType($this->_form_post['auth_type']);
             }
             $this->_auth_type = $this->_form_post['auth_type'];
@@ -441,6 +441,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('days_before_expiring_sendmail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SEND_MAIL'),'',2,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->combine();
 	      $this->_form->addText('Info', $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION_INFO'));
 	      
       }
@@ -448,12 +449,15 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	$this->_form->addEmptyLine();
       }
       //Datenschutz
-      $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',false);
-      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',3,10,false,'','','','','','',false);
-      $this->_form->addTextfield('try_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
-      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',false);
-      #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
-
+      if ( empty($this->_auth_type)
+      	  and !isset($this->_auth_type_array)     		
+      	) {
+         $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',false);
+         $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',3,10,false,'','','','','','',false);
+         $this->_form->addTextfield('try_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
+         $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',false);
+         #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
+      }
 
       // specific options
       if ( !$this->_commsy_default ) {
@@ -473,7 +477,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
-         if ( mb_strlen($this->_values['auth_source']) == 2 and $this->_values['auth_source'] != -1) {
+         if ( !empty($this->_values['auth_source']) and mb_strlen($this->_values['auth_source']) == 2 and $this->_values['auth_source'] != -1) {
             $this->_values['auth_source'] = -1;
          }
          if ( isset($this->_values['auth_type_hidden']) and !empty($this->_values['auth_type_hidden']) ) {
@@ -830,6 +834,23 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST_ERROR');
          $this->_form->setFailure('host','');
       }
+      
+      // password_length
+      if ( !empty($this->_form_post['password_length'])
+      	  and !is_numeric($this->_form_post['password_length'])
+      	) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'));
+      	$this->_form->setFailure('password_length','');
+      }
+      
+      // login locking
+      if ( !empty($this->_form_post['try_until_lock'])
+      	  and !is_numeric($this->_form_post['try_until_lock'])
+      	) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'));
+      	$this->_form->setFailure('try_until_lock','');
+      }
+      
    }
 }
 ?>
