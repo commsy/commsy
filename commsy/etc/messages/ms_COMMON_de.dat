@@ -784,8 +784,8 @@ $message["COMMON_TAG_BOX_EDIT"]["de"] = "Kategorien zuordnen";
 $message["COMMON_TAG_NEW_ATTACH"]["de"] = "Kategorien zuordnen";
 $message["COMMON_TAG_RESTRICTION"]["de"] = "Kategorie";
 $message["COMMON_TEMPLATE_DESCRIPTION"]["de"] = "Beschreibung der Vorlage";
-$message["COMMON_TEMPORARY_LOCKED"]["de"] = 'Ihre Kennung wurde aus Sicherheitsgründen und aufgrund von fehlgeschlagenen Login-Versuchen vorübergehend für %1 Minuten gesperrt';
-$message["COMMON_TEMPORARY_LOCKED_DAYS"]["de"] = 'Ihre Kennung wurde wegen Inaktivit&auml;t gesperrt. Bitte kontaktieren Sie den Portal-Moderator';
+$message["COMMON_TEMPORARY_LOCKED"]["de"] = "Ihre Kennung wurde aus Sicherheitsgründen und aufgrund von fehlgeschlagenen Login-Versuchen vorübergehend für %1 Minuten gesperrt";
+$message["COMMON_TEMPORARY_LOCKED_DAYS"]["de"] = "Your account is locked because of inactivity. Please contact the portal moderator";
 $message["COMMON_TEXT"]["de"] = "Text";
 $message["COMMON_TEXT_FORMATING_FORMAT_TEXT"]["de"] = "<span style=&quot;font-weight:bold;&quot;>Listen:</span> <span style=&quot;font-weight:normal;&quot;># für numerierte, - für unnumerierte Listen</span><br/>
 <span style=&quot;font-weight:bold;&quot;>Auszeichnungen:</span> <span style=&quot;font-weight:normal;&quot;>*text* wird zu </span> <span style=&quot;font-weight:bold;&quot;>text</span>, <span style=&quot;font-weight:normal;&quot;>_text_ wird zu </span><span style=&quot;font-weight:normal; font-style:italic;&quot;>text</span><br/>

@@ -8,7 +8,7 @@ $message["USER_ACCOUNT_FORGET_MAIL_BODY"]["de"] = "Im CommSy *%1* sind folgende 
 $message["USER_ACCOUNT_FORGET_MAIL_SUBJECT"]["de"] = "%1: Kennungen";
 $message["USER_ACCOUNT_FORGET_SUCCESS_TEXT"]["de"] = "Ihre Kennungen wurden an Ihre E-Mail-Adresse <span style=&quot;font-weight: bold;&quot;>%1</span> geschickt. Bitte schauen Sie in Ihrem E-Mail-Postfach nach.";
 $message["USER_ACCOUNT_FORGET_TEXT"]["de"] = "Bitte geben Sie Ihre E-Mail-Adresse an. Ihre unter dieser E-Mail-Adresse registrierten Kennungen werden Ihnen sofort per E-Mail zu geschickt.";
-$message["USER_ACCOUNT_NOT_VISIBLE"]["de"] = "XXX (Kennung aus Datenschutzgründen nicht sichtbar)";
+$message["USER_ACCOUNT_NOT_VISIBLE"]["de"] = "XXX (Account name not visible)";
 $message["USER_ASK_MAIL_SUBJECT"]["de"] = "%2: Nachfrage [%1]";
 $message["USER_AUTH_SOURCE"]["de"] = "Authentifizierungsquelle";
 $message["USER_AUTH_SOURCE_ERROR"]["de"] = "Fehler: Keine Authentifizierungsquelle vorhanden.";

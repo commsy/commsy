@@ -26,5 +26,4 @@ $message["ERROR_VALUE_PASSWORD_EXPIRE"]["de"] = "Bitte geben Sie einen Wert zwis
 $message["ERROR_VALUE_PASSWORD_EXPIRE_MAIL"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 Tagen an (Meldung vor Ablauf in Tagen)";
 $message["ERROR_VALUE_PASSWORD_GENERATION"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 an (Password Generationen)";
 $message["ERROR_VALUE_PASSWORD_LENGTH"]["de"] = "Bitte geben Sie bei der Mindestlänge einen Wert zwischen 0 und 99 an";
-
 ?>

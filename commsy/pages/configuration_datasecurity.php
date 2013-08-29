@@ -124,7 +124,13 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
 	   	  	$log_delete_interval = $temporary_days;
 	   	  	
 	   	  } else {
-	   	  	$log_delete_interval = 50;
+	   	  	 $params = array();
+	   	  	 $params['environment'] = $environment;
+	   	  	 $params['with_modifying_actions'] = true;
+	   	  	 $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	   	  	 $errorbox->setText($translator->getMessage('ERROR_VALUE_DELETE_LOG_DATA'));
+	   	  	 $page->add($errorbox);
+	   	  	 $log_delete_interval = 50;
 	   	  }
 	   	  
 	      $context_item->setLogDeleteInterval($log_delete_interval);
