@@ -21,118 +21,180 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-include_once('functions/curl_functions.php');
 
-// Get the translator object
+// Get the current user
+$current_user = $environment->getCurrentUserItem();
 $translator = $environment->getTranslationObject();
+$current_context = $environment->getCurrentContextItem();
 
-if (!empty($_POST['option'])) {
-   $command = $_POST['option'];
-} else {
-   $command = '';
-}
-$is_saved = false;
-
-$context_item = $environment->getCurrentContextItem();
-
-// Check access rights
-if ($current_user->isGuest()) {
-   if (!$context_item->isOpenForGuests()) {
-      redirect($environment->getCurrentPortalId(),'home','index','');
-   } else {
-      $params = array() ;
-      $params['cid'] = $context_item->getItemId();
-      redirect($environment->getCurrentPortalId(),'home','index',$params);
-   }
-} elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = true;
-   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-   unset($params);
-   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
-   $page->add($errorbox);
-   $command = 'error';
-} elseif (!$current_user->isModerator()) {
+if ( !$current_user->isModerator()
+	  and !$current_context->mayEdit($current_user)
+	  and !$current_context->isPortal()
+   ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
    $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
-   $page->add($errorbox);
-   $command = 'error';
-}
+   $page->addWarning($errorbox);
+} else {
+   //access granted
 
-if ($command != 'error') { // only if user is allowed to edit inactive
-
-   // include form
-   $class_params= array();
-   $class_params['environment'] = $environment;
-   $form = $class_factory->getClass(CONFIGURATION_INACTIVE_FORM,$class_params);
-   unset($class_params);
-   $form->setItem($context_item);
-   // display form
-   $params = array();
-   $params['environment'] = $environment;
-   $form_view = $class_factory->getClass(CONFIGURATION_DATASECURITY_FORM_VIEW,$params);
-   unset($params);
-
-   // Save item
-   if ( !empty($command) and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
-      
-   	if($context_item->isPortal()){
-//    		if(!empty($_POST['overwrite_content'])){
-//    			$context_item->setInactivityOverwriteContent($_POST['overwrite_content']);
-//    		}
-   		
-//       	if(!empty($_POST['lock_user'])){
-//       		$context_item->setInactivityLockDays($_POST['lock_user']);
-//       	}
-      	
-//       	if (!empty($_POST['email_before_lock'])){
-//       		$context_item->setInactivitySendMailBeforeLockDays($_POST['email_before_lock']);
-//       	}
-      	
-//       	if (!empty($_POST['delete_user'])){
-//       		$context_item->setInactivityDeleteDays($_POST['delete_user']);
-//       	}
-      	
-//       	if (!empty($_POST['email_before_delete'])){
-//       		$context_item->setInactivitySendMailBeforeDeleteDays($_POST['email_before_delete']);
-//       	}
-
-      }
-
-      // save room_item
-      $context_item->save();
-
-      $form_view->setItemIsSaved();
-      $is_saved = true;
-      if ( !empty($_POST)) {
-         $form->setFormPost($_POST);
-      } elseif ( isset($context_item) ) {
-         $form->setItem($context_item);
-      }
-   } else{
-      // init form, create form and loadValues
-      // Load form data from postvars
-      if ( !empty($_POST)) {
-         $form->setFormPost($_POST);
-      } elseif ( isset($context_item) ) {
-         $form->setItem($context_item);
-      }
+   // Find out what to do
+   if ( isset($_POST['option']) ) {
+      $command = $_POST['option'];
+   } else {
+      $command = '';
    }
-   $form->prepareForm();
-   $form->loadValues();
 
-   //$form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
-   $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),'inactiveprocess',''));
-   $form_view->setForm($form);
-   if ( $environment->inPortal() or $environment->inServer() ){
+   // Cancel editing
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
+      redirect($environment->getCurrentContextID(),'configuration','index',array());
+   }
+
+   // Show form and/or save item
+   else {
+
+      // Initialize the form
+      $form = $class_factory->getClass(CONFIGURATION_INACTIVE_FORM,array('environment' => $environment));
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(CONFIGURATION_DATASECURITY_FORM_VIEW,$params);
+      unset($params);
+
+      // Load form data from postvars
+      if ( !empty($_POST) ) {
+         $values = $_POST;
+         $form->setFormPost($values);
+      } else {
+         $form->setItem($current_context);
+      }
+
+      $form->prepareForm();
+      $form->loadValues();
+
+      if ( !empty($command)
+           and ( isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON')) )
+         ) {
+         if ( $form->check() ) {
+	         if(isset($_POST['overwrite_content'])){
+					$current_context->setInactivityOverwriteContent($_POST['overwrite_content']);
+				}
+				 
+				if( !empty($_POST['lock_user']) ) {
+					$current_context->setInactivityLockDays($_POST['lock_user']);
+				} else {
+					$current_context->setInactivityLockDays('');
+				}
+				 
+				if ( !empty($_POST['email_before_lock']) ) {
+					$current_context->setInactivitySendMailBeforeLockDays($_POST['email_before_lock']);
+				} else {
+					$current_context->setInactivitySendMailBeforeLockDays('');
+				}
+				 
+				if ( !empty($_POST['delete_user']) ) {
+					$current_context->setInactivityDeleteDays($_POST['delete_user']);
+				} else {
+					$current_context->setInactivityDeleteDays('');
+				}
+				 
+				if ( !empty($_POST['email_before_delete']) ) {
+					$current_context->setInactivitySendMailBeforeDeleteDays($_POST['email_before_delete']);
+				} else {
+					$current_context->setInactivitySendMailBeforeDeleteDays('');
+				}
+		      
+				// save room_item
+		      $current_context->save();
+		      $form_view->setItemIsSaved();
+
+            // warning of locked and deleted user        
+		      $lock_days 			  = $_POST['lock_user'];
+		      $mail_before_lock   = $_POST['email_before_lock'];
+		      $delete_days 		  = $_POST['delete_user'];
+		      $mail_before_delete = $_POST['email_before_delete'];
+		      
+		      $user_manager = $environment->getUserManager();
+		      
+		      if(isset($lock_days) and !empty($lock_days)){
+		      	if(isset($mail_before_lock) and !empty($mail_before_lock)){
+		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($lock_days + $mail_before_lock));
+		      	} else {
+		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($lock_days);
+		      	}
+		      
+		      } elseif(isset($delete_days) and !isset($lock_days) and !empty($lock_days)){
+		      	if(isset($mail_before_delete) and !empty($mail_before_delete)){
+		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days + $mail_before_delete);
+		      	} else {
+		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days);
+		      	}
+		      }
+		      if(isset($date_lastlogin_do)){
+		         $user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$current_context->getItemID());
+		      }
+		      	      
+		      if(!empty($user_array)){
+		         $count_delete = 0;
+		         $count_lock = 0;
+		         foreach ($user_array as $user) {
+		            $start_date = new DateTime(getCurrentDateTimeInMySQL());
+		            $since_start = $start_date->diff(new DateTime($user->getLastLogin()));
+		            $days = $since_start->days;
+		            if($days == 0){
+		               $days = 1;
+		            }
+		            if($days >= $delete_days-1){
+		               $count_delete++;
+		               continue;
+		            }
+		            if($days >= $lock_days-1){
+		               $count_lock++;
+		               continue;
+		            }
+		         }
+		      }
+		      
+		      if($count_delete != 0 or $count_lock != 0){
+		         $html = '';
+		         if($count_delete > 0){
+		            $html .= $count_delete.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE');
+		         }
+		         if($count_lock > 0){
+			         $html .= $count_lock.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_LOCK');
+		         }
+		         #$html .= $translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_INFO');		      
+		      
+		         $params = array();
+		      	$params['environment'] = $environment;
+		      	$params['with_modifying_actions'] = true;
+		      	$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+		         $errorbox->setText($html);
+		      	$page->add($errorbox);
+            }
+         }
+      }
+
+      // display form
+      if (isset($current_context) and !$current_context->mayEditRegular($current_user)) {
+         $form_view->warnChanger();
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->addWarning($errorbox);
+      }
+
+      include_once('functions/curl_functions.php');
+      $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
+      $form_view->setForm($form);
       $page->addForm($form_view);
-   }else{
-      $page->add($form_view);
    }
 }
 ?>

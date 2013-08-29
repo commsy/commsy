@@ -163,7 +163,7 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 			$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days);
 		}
 	}
-	pr($date_lastlogin_do);
+	#pr($date_lastlogin_do);
 	#$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($portal_item->getInactivitySendMailBeforeLockDays()));
 	if(isset($date_lastlogin_do)){
 		$user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$portal_item->getItemID());
@@ -235,7 +235,7 @@ if ($command != 'error') { // only if user is allowed to edit inactive
 	unset($params);
 	
 	#pr($save);pr($command);pr($save_flag);
-	pr($save);
+	#pr($save);
 	// Save item
 	if ( !empty($command) and $save != 'error' and $save_flag and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
 		if($context_item->isPortal()){
