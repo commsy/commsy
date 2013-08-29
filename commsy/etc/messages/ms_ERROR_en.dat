@@ -24,4 +24,7 @@ $message["ERROR_VALUE_PASSWORD_EXPIRE"]["en"] = "Please enter a number between 0
 $message["ERROR_VALUE_PASSWORD_EXPIRE_MAIL"]["en"] = "Please enter a number between 0 and 99 for password expire message";
 $message["ERROR_VALUE_PASSWORD_GENERATION"]["en"] = "Please enter a number between 0 and 99 for password generation";
 $message["ERROR_VALUE_PASSWORD_LENGTH"]["en"] = "Please enter a password length between 0 and 99.";
+$message["ERROR_VALUE_TEMPORARY_MINUTES"]["en"] = "Please enter a number between 0 and 99 for temporary minutes";
+$message["ERROR_VALUE_TRY_UNTIL_LOCK"]["en"] = "Please enter a number between 0 and 99 for trys until lock";
+$message["ERROR_VALUE_SECONDS_INTERVAL"]["en"] = "Please enter a number between 0 and 999 for seconds interval";
 ?>

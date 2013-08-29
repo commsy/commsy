@@ -26,5 +26,7 @@ $message["ERROR_VALUE_PASSWORD_EXPIRE"]["de"] = "Bitte geben Sie einen Wert zwis
 $message["ERROR_VALUE_PASSWORD_EXPIRE_MAIL"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 Tagen an (Meldung vor Ablauf in Tagen)";
 $message["ERROR_VALUE_PASSWORD_GENERATION"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 an (Password Generationen)";
 $message["ERROR_VALUE_PASSWORD_LENGTH"]["de"] = "Bitte geben Sie bei der Mindestlänge einen Wert zwischen 0 und 99 an";
-
+$message["ERROR_VALUE_TEMPORARY_MINUTES"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 an (Sperrung in Minuten)";
+$message["ERROR_VALUE_TRY_UNTIL_LOCK"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 99 an (Anzahl der Fehlversuche)";
+$message["ERROR_VALUE_SECONDS_INTERVAL"]["de"] = "Bitte geben Sie einen Wert zwischen 0 und 999 an (Intervall in Sekunden)";
 ?>

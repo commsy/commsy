@@ -57,7 +57,12 @@ require([	"dojo/_base/declare",
 									var button = new dijit.form.Button({
 										label:	"betreten",
 										onClick:	Lang.hitch(this, function(event) {
-											location.href = "commsy.php?" + qry + "&code=" + input.value + "&agb=" + checkBox.checked;
+											if(checkBox){
+												location.href = "commsy.php?" + qry + "&code=" + input.value + "&agb=" + checkBox.checked;
+											} else {
+												location.href = "commsy.php?" + qry + "&code=" + input.value;
+											}
+											
 											
 											dialog.destroyRecursive();
 										})
@@ -71,7 +76,7 @@ require([	"dojo/_base/declare",
 											title:		"Nutzungsvereinbarungen"
 										});
 									}
-									console.log("commsy.php?" + qry + "&code=" + input.value + "&agb=" + checkBox.checked);
+									//console.log("commsy.php?" + qry + "&code=" + input.value + "&agb=" + checkBox.checked);
 									var node = domConstruct.create("div",{
 										innerHTML: "Ich stimme den <a onclick=\"window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');\" target=\"agb\" href=\"commsy.php?cid=" + this.from_php.dev.room_id + "&mod=agb&fct=index&agb=1\">Nutzungsvereinbarungen</a> zu"
 									});
