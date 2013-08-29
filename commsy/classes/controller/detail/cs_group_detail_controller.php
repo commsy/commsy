@@ -56,7 +56,7 @@
 			
 			$agb_checked = $_GET['agb']; // true or false
 			
-			if($portal_item->getAGBStatus() == 1 and $portal_item->withAGBDatasecurity()){
+			if($portal_item->getAGBStatus() == 2 and $portal_item->withAGBDatasecurity()){
 				if($agb_checked == "true"){
 					$check_agb_ds = true;
 				} else {
@@ -65,7 +65,6 @@
 			} else {
 				$check_agb_ds = true;
 			}
-			
 			
 
 			$option = 'none';
@@ -155,7 +154,7 @@
             $account_mode = 'to_room';
          }
          
-         if($portal_item->getAGBStatus() == 1 and $portal_item->withAGBDatasecurity()){
+         if($portal_item->getAGBStatus() == 2 and $portal_item->withAGBDatasecurity()){
          	if($agb_checked){
          		$user_item->setAGBAcceptance();
          	}
