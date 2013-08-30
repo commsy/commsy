@@ -168,6 +168,9 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
    if ( !empty($parameter) and is_array($parameter) ) {
       $param_string = '';
       foreach ($parameter as $key => $value) {
+      	#if ( !stristr($value,'%') ) {
+      	#	$value = rawurlencode($value);
+      	#}
          $param_string .= $amp_flag.$key.'='.$value;
       }
       $parameter = $param_string;

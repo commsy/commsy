@@ -101,6 +101,7 @@ $message["MAIL_BODY_USER_ACCOUNT_PASSWORD_PO"]["de"] = "Ihre Kennung für auf de
    %2
 
 Wenn Sie auch Ihr Passwort vergessen haben, dann können Sie sich auf der linken Seite des Portals %1 ein neues Passwort zuschicken lassen, indem Sie dort dem Link &quot;Password vergessen?&quot; folgen.";
+$message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
 $message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
 $message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für das Portal.";
 $message["MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR"]["de"] = "Ihr Status in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun AnsprechpartnerIn für den Raum und werden außerhalb des Raumes entsprechend angezeigt.";
@@ -152,6 +153,7 @@ $message["MAIL_BODY_USER_STATUS_USER_PR"]["de"] = "Ihre Kennung
    %1
 
 für den CommSy-%_PROJECT_SUB_AKKS_BIG %2 hat nun den Status &quot;BenutzerIn&quot; und Sie können alle Möglichkeiten im %2 nutzen.";
+$message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raums nicht mehr angezeigt.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR"]["de"] = "Ihr Status in %_PROJECT_ART_DEF_DATS_LOW CommSy-%_PROJECT_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";

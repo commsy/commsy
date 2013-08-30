@@ -240,7 +240,11 @@ if (isOption($option, $translator->getMessage('CONTACT_MAIL_SEND_BUTTON'))){
 }
 
 if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))) {
-   if($current_context->withAGBDatasecurity()){
+   include_once('classes/cs_mail.php');
+   $room_manager = $environment->getRoomManager();
+   $room_item = $room_manager->getItem($current_item_id);
+
+   if($room_item->withAGBDatasecurity()){
    	$agb_acceptance = false;
    	if(isset($_POST['agb_acceptance']) and $_POST['agb_acceptance'] == 1){
    		$agb_acceptance = true;
@@ -251,10 +255,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
    } else {
    	$agb_acceptance = true;
    }
-
-   include_once('classes/cs_mail.php');
-   $room_manager = $environment->getRoomManager();
-   $room_item = $room_manager->getItem($current_item_id);
+   
    $session = $environment->getSessionItem();
    $get_params = $environment->getCurrentParameterArray();
    if (isset($get_params['sort'])){
