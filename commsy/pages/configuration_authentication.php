@@ -119,7 +119,11 @@ else {
          $temp_values['text'] = $values;
          $form->setFormPost($temp_values);
       } elseif ( !empty($_POST['auth_source']) and $_POST['auth_source'] == -1) {
-         // do nothing
+      	if ( !empty($command)
+              and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
+      		) {
+      	   $form->setFormPost($_POST);
+      	}
       } elseif ( !empty($_POST) ) {
          $form->setFormPost($_POST);
       }
@@ -151,8 +155,8 @@ else {
                $auth_item->setContextID($environment->getCurrentContextID());
             }
             
-			if($_POST['auth_source'] != -1){
-				$auth_item->setTitle($_POST['title']);
+			   if($_POST['auth_source'] != -1){
+				   $auth_item->setTitle($_POST['title']);
 			
 	            if ( $_POST['changeUserID'] == 1 ) {
 	               $auth_item->setAllowChangeUserID();
@@ -230,8 +234,14 @@ else {
 	            if ( isset($_POST['password_number']) ) {
 	            	$auth_item->setPasswordSecureNumber($_POST['password_number']);
 	            }
-			}
-            $auth_item->save();
+			   }
+			   
+			   if ( $_POST['auth_source'] != -1
+			   	  and isset($auth_item)
+			      ) {
+			   	$auth_item->save();
+			   }
+			   
             //Datenschutz
             $portal_item = $environment->getCurrentPortalItem();
             
@@ -473,7 +483,9 @@ else {
                $auth_item->setAuthData($auth_data_array);
             }
             
-            if($_POST['auth_source'] != -1){
+            if ( $_POST['auth_source'] != -1
+                 and isset($auth_item)
+               ) {
             	$auth_item->save();
             }
             
