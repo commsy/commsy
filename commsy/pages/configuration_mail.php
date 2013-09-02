@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// get room item and current user
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 
@@ -129,9 +128,9 @@ else {
          } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_ROOM_OPEN') {
             $message_tag = 'MAIL_BODY_ROOM_OPEN';
          } elseif ($_POST['mail_text'] == 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON') {
-            $message_tag = 'EMAIL_PASSWORD_EXPIRATION_SOON_BODY';
+            $message_tag = 'EMAIL_BODY_PASSWORD_EXPIRATION_SOON';
          } elseif ($_POST['mail_text'] == 'EMAIL_CHOICE_PASSWORD_EXPIRATION') {
-            $message_tag = 'EMAIL_PASSWORD_EXPIRATION_BODY';
+            $message_tag = 'EMAIL_BODY_PASSWORD_EXPIRATION';
          } else {
             include_once('functions/error_functions.php');
             trigger_error('choice of mail text lost',E_USER_WARNING);
@@ -234,7 +233,7 @@ else {
                      $values_for_form[$language] = $translator->getEmailMessageInLang($language,$message_tag);
                   }
                }
-            // reset form
+               // reset form
             $form->reset();
 #            $form->prepareForm();
 #            $form->loadValues();

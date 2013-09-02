@@ -2421,8 +2421,7 @@ class cs_user_item extends cs_item {
    	} else {
    		$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
    	}
-   	
-   	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
+   	$this->unsetPasswordExpiredEmailSend();
    }
    
    function unsetPasswordExpireDate() {

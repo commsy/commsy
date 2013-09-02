@@ -30,22 +30,16 @@ $message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "Hallo %1,
 
 die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.";
 $message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "%1: Einloggen als XYZ ist abgelaufen";
-$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Hallo %1,
+$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert geändert.
 
-Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert ge&auml;ndert.
+Bitte ändern Sie Ihr Passwort über den Passwort vergessen Link.
 
-Bitte &auml;ndern Sie Ihr Passwort über den Passwort vergessen Link.
+%1
 
-%2
+Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Ihr Passwort läuft in %1 Tagen ab. Bitte ändern Sie Ihr Passwort innerhalb dieser Zeit.
 
-Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.
-
-Gru&szlig; ... %3
-[Diese E-Mail wurde automatisch vom System verschickt.]";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "
-Ihr Passwort l&auml;uft in %2 Tagen ab. Bitte &auml;ndern Sie Ihr Passwort innerhalb dieser Zeit.
-
-%3";
+%2";
 $message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen aus";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";

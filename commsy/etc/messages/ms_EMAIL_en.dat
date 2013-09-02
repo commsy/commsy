@@ -32,19 +32,14 @@ your right to login as another user is deactivated now.
 
 Best regards ... %2";
 $message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["en"] = "%1: Login as another user is deactivated";
-$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["en"] = "Hello %1,
-
-your password is expired.
+$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["en"] = "your password is expired.
 
 Please change your password with the link password forget.
 
-Best regards ... %3
-[This e-mail was sent automatically.]";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["en"] = "
-your password will expire in the next %2 days. Please change your password.
+%1";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["en"] = "your password will expire in the next %1 days. Please change your password.
 
-%3
-";
+%2";
 $message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["en"] = "%1: Password will expire in %2 days";
 $message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["en"] = "Password is expired";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["en"] = "Account";

@@ -2724,7 +2724,7 @@ class cs_page_guide_view extends cs_page_view {
                   if ($email_to_moderators != '' ) {
                      $html .= '&nbsp;-&nbsp;';
                   }
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('COMMON_AGB_LINK_TEXT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
                }
                $html .= '     </td>'.LF;
                if ( !empty($email_to_service) ) {

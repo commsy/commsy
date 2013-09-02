@@ -575,68 +575,50 @@ class cs_server_item extends cs_guide_item {
 	    	  					if (!$user->isPasswordExpiredEmailSend()){
 	   	  						$auth_manager = $authentication->getAuthManager($user->getAuthSource());
 	   	  						$auth_manager->changePassword($user->getUserID(), uniqid('',true));
-	   	  						//$user->unsetPasswordExpiredEmailSend();
 	   	  			
 	   	  						$mail = new cs_mail();
 	   	  						 
 	   	  						$subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SUBJECT', $portal_item->getTitle());
 	   	  						$to = $user->getEmail();
-	   	  						//from
-	//    	  						$server_item = $this->_environment->getServerItem();
-	//    	  						$default_sender_address = $server_item->getDefaultSenderAddress();
-	//    	  						if (!empty($default_sender_address)) {
-	//    	  							$mail->set_from_email($default_sender_address);
-	//    	  						} else {
-	//    	  							$mail->set_from_email('@');
-	//    	  						}
+	    	  						$to_name = $user->getFullname();
+	   	  						if ( !empty($to_name) ) {
+	   	  							$to = $to_name." <".$to.">";
+	   	  						}
 	   	  						$mod_contact_list = $portal_item->getContactModeratorList();
 	   	  						$mod_user_first = $mod_contact_list->getFirst();
 	   	  						$mail->set_from_email($mod_user_first->getEmail());
+	   	  						$mail->set_from_name($mod_user_first->getFullname());
+	   	  						 
+	   	  						$single_entry = $this->_environment->getConfiguration('c_single_entry_point');
+	   	  						if ( empty($single_entry) ) {
+	   	  							$single_entry = 'commsy.php';
+	   	  						}
+	   	  						$link = $this->_environment->getConfiguration('c_commsy_domain');
+	   	  						$url_path = $this->_environment->getConfiguration('c_commsy_url_path');
+	   	  						if ( !empty($url_path) ) {
+	   	  							$link .= $url_path;
+	   	  						}
+	   	  						$link .= '/'.$single_entry.'?cid='.$portal_item->getContextID().'&mod=home&fct=index&cs_modus=password_forget';
 	   	  						
-// 	   	  						$pw_forgot_link = ahref_curl($portal_item->getContextID(), 'home', 'index', array('cs_modus' => 'password_forget'), '');
-	   	  						
-// 	   	  						//content
-// 	   	  						$email_text_array = $portal_item->getEmailTextArray();
-// 	   	  						if(isset($email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'])){
-// 	   	  							$body = $email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'];;
-// 	   	  							$body = str_replace('%1', (string)$user->getFullName(), $body[$this->_environment->_selected_language]);
-// 	   	  							$body = str_replace('%2', (string)$pw_forgot_link, $body);
-// 	   	  							$body = str_replace('%3', (string)$mod_user_first->getFullName(), $body);
-	   	  							
-// 	   	  						} else {
-// 	   	  							$body = $translator->getEmailMessage('MAIL_BODY_PASSWORD_EXPIRATION', $user->getFullName());
-// 	   	  						}
-	   	  						#####################################
-	   	  						$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
-	   	  						pr($portal_item->getTitle());
 	   	  						//content
 	   	  						$email_text_array = $portal_item->getEmailTextArray();
-	   	  						if(isset($email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'])){
-	   	  							$email_body = $email_text_array['MAIL_BODY_PASSWORD_EXPIRATION'];
-	   	  							$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	   	  							$body.= "\n\n";
-	   	  							#$email_body = str_replace('%2', (string)$days, $email_body[$this->_environment->_selected_language]);
-	   	  							$email_body = str_replace('%3', (string)$link, $email_body);
-	   	  							$body .= $email_body;
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_BODY_CIAO_PR', $mod_user->getFullName(), $portal_item->getTitle());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeLang(getCurrentDateTimeInMySQL()));
-	   	  						} else {
-	   	  							$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getEmailMessage('MAIL_BODY_PASSWORD_EXPIRATION', $user->getFullName(),$link,$mod_user_first->getFullName());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user->getFullName(), $portal_item->getTitle());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-	   	  						}
-	   	  			
+	   	  						$translator->setEmailTextArray($portal_item->getEmailTextArray());
+
+	   	  						$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   	  						$body.= "\n\n";
+	   	  						$body .= $translator->getEmailMessage('EMAIL_BODY_PASSWORD_EXPIRATION', $link);
+	   	  						$body.= "\n\n";
+	   	  						$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
+	   	  						$body.= "\n\n";
+	   	  						$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+	   	  						
 	   	  						$mail->set_subject($subject);
 	   	  						$mail->set_message($body);
 	   	  						$mail->set_to($to);
-	   	  						$mail->setSendAsHTML();
+
 	   	  						if ( $mail->send() ) {
+	   	  							$user->setPasswordExpiredEmailSend();
+	   	  							$user->save();
 	   	  							$cron_array['success'] = true;
 	   	  							$cron_array['success_text'] = 'send mail to '.$to;
 	   	  						} else {
@@ -644,8 +626,7 @@ class cs_server_item extends cs_guide_item {
 	   	  							$cron_array['success_text'] = 'failed send mail to '.$to;
 	   	  						}
 	   	  					}
-	   	  				}
-   	  			
+	   	  				} 	  			
    	  				}
    	  				 
    	  				$time_end = getmicrotime();
@@ -695,6 +676,7 @@ class cs_server_item extends cs_guide_item {
 	   	  						$mod_contact_list = $portal_item->getContactModeratorList();
 	   	  						$mod_user_first = $mod_contact_list->getFirst();
 	   	  						$mail->set_from_email($mod_user_first->getEmail());
+	   	  						$mail->set_from_name($mod_user_first->getFullname());
 	   	  						
 	   	  						if($user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()){
 	   	  							$start_date = new DateTime(getCurrentDateTimeInMySQL());
@@ -705,43 +687,44 @@ class cs_server_item extends cs_guide_item {
 	   	  							}
 	   	  						}
 	   	  						
-	
 	   	  						$subject = $translator->getMessage('EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT', $portal_item->getTitle(),$days);
 	   	  						$to = $user->getEmail();
+	   	  						$to_name = $user->getFullname();
+	   	  						if ( !empty($to_name) ) {
+	   	  							$to = $to_name." <".$to.">";
+	   	  						}
 	   	  						
+	   	  						$single_entry = $this->_environment->getConfiguration('c_single_entry_point');
+	   	  						if ( empty($single_entry) ) {
+	   	  							$single_entry = 'commsy.php';
+	   	  						}
+	   	  						$link = $this->_environment->getConfiguration('c_commsy_domain');
+	   	  						$url_path = $this->_environment->getConfiguration('c_commsy_url_path');
+	   	  						if ( !empty($url_path) ) {
+	   	  							$link .= $url_path;
+	   	  						}
+	   	  						$link .= '/'.$single_entry.'?cid='.$portal_item->getContextID().'&mod=home&fct=index';
 	   	  						
-	   	  						$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
 	   	  						//content
 	   	  						$email_text_array = $portal_item->getEmailTextArray();
-	   	  						if(isset($email_text_array['EMAIL_PASSWORD_EXPIRATION_SOON_BODY'])){
-	   	  							$email_body = $email_text_array['EMAIL_PASSWORD_EXPIRATION_SOON_BODY'];
-	   	  							$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	   	  							$body.= "\n\n";
-	   	  							$email_body = str_replace('%2', (string)$days, $email_body[$this->_environment->_selected_language]);
-	   	  							$email_body = str_replace('%3', (string)$link, $email_body);
-	   	  							$body .= $email_body;
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(),$portal_item->getTitle());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeLang(getCurrentDateTimeInMySQL()));
-	   	  						} else {
-	   	  							$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getEmailMessage('EMAIL_PASSWORD_EXPIRATION_SOON_BODY', $user->getFullName(),$days,$link,$mod_user_first->getFullName());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
-	   	  							$body.= "\n\n";
-	   	  							$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-	   	  						}
+	   	  						$translator->setEmailTextArray($portal_item->getEmailTextArray());
+	   	  						
+	   	  						$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   	  						$body.= "\n\n";
+	   	  						$body .= $translator->getEmailMessage('EMAIL_BODY_PASSWORD_EXPIRATION_SOON', $days,$link);
+	   	  						$body.= "\n\n";
+	   	  						$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
+	   	  						$body.= "\n\n";
+	   	  						$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+	   	  						
+	   	  						$context_item = $this->_environment->getServerItem();
+	   	  						$translator->setEmailTextArray($context_item->getEmailTextArray());
 	   	  							
 	   	  						$mail->set_subject($subject);
 	   	  						$mail->set_message($body);
 	   	  						$mail->set_to($to);
-	   	  						$mail->setSendAsHTML();
 	   	  						 
 	   	  						if ( $mail->send() ) {
-	   	  							$user->setPasswordExpiredEmailSend();
-	   	  							$user->save();
 	   	  							$cron_array['success'] = true;
 	   	  							$cron_array['success_text'] = 'send mail to '.$to;
 	   	  						} else {
