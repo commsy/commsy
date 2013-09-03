@@ -29,14 +29,16 @@ class class_onyx extends cs_plugin {
    private $_player_url_wsdl = NULL;
    private $_player_url_run = NULL;
    private $_player_lms_key = NULL;
-   
+   private $_player_url_xsschema = NULL;
+    
    private $_reporter = NULL;
    private $_reporter_url_wsdl = NULL;
     
    private $_proxy_use = NULL;
 
    private $_plugin_folder = NULL;
-       
+   private $_plugin_config_folder = NULL;
+    
    /** constructor
     * the only available constructor
     *
@@ -57,6 +59,13 @@ class class_onyx extends cs_plugin {
       $this->_proxy_use = $this->_getConfigValueFor($this->_identifier.'_proxy');
       
       $this->_plugin_folder = 'plugins'.DIRECTORY_SEPARATOR.$this->getIdentifier();
+
+      // config file
+      $this->_plugin_config_folder = $this->_plugin_folder.DIRECTORY_SEPARATOR.'etc';
+      if ( file_exists($this->_plugin_config_folder.DIRECTORY_SEPARATOR.'config.php') ) {
+      	include_once($this->_plugin_config_folder.DIRECTORY_SEPARATOR.'config.php');
+      	$this->_player_url_xsschema = $c_onyx_url_xsschema;
+      }
    }
 
    public function getDescription () {
@@ -904,17 +913,7 @@ class class_onyx extends cs_plugin {
    	   }
    	   $soap_url .= '/'.$soap_url_file;
    	   $retour = str_replace('<!--SOAP-ADDRESS-LOCATION-->', $soap_url, $retour);
-   	   
-   	   $xsd_url_file = 'commsy.php?mod=onyx&amp;fct=showxsschema';
-   	   $sxd_url = '';
-   	   if ( !empty($soap_url_domain) ) {
-   	      $sxd_url .= $soap_url_domain;
-   	   }
-   	   if ( !empty($soap_url_path) ) {
-   	      $sxd_url .= $soap_url_path;
-   	   }
-   	   $sxd_url .= '/'.$xsd_url_file;
-   	   $retour = str_replace('<!--XSD-SCHEMA-LOCATION-->', $sxd_url, $retour);
+   	   $retour = str_replace('<!--XSD-SCHEMA-LOCATION-->', $this->_player_url_xsschema, $retour);
    	}
    	return $retour;
    }
