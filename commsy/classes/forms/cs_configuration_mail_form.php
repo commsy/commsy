@@ -97,10 +97,10 @@ class cs_configuration_mail_form extends cs_rubric_form {
       $this->_array_mail_text[9]['value'] = 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON';
       $this->_array_mail_text[10]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
       $this->_array_mail_text[10]['value'] = 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON';
-      $this->_array_mail_text[40]['text']  = $this->_translator->getMessage('MAIL_CHOICE_PASSWORD_EXPIRATION_SOON');
-      $this->_array_mail_text[40]['value'] = 'MAIL_CHOICE_PASSWORD_EXPIRATION_SOON';
-      $this->_array_mail_text[41]['text']  = $this->_translator->getMessage('MAIL_CHOICE_PASSWORD_EXPIRATION');
-      $this->_array_mail_text[41]['value'] = 'MAIL_CHOICE_PASSWORD_EXPIRATION';
+      $this->_array_mail_text[40]['text']  = $this->_translator->getMessage('EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON');
+      $this->_array_mail_text[40]['value'] = 'EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON';
+      $this->_array_mail_text[41]['text']  = $this->_translator->getMessage('EMAIL_CHOICE_PASSWORD_EXPIRATION');
+      $this->_array_mail_text[41]['value'] = 'EMAIL_CHOICE_PASSWORD_EXPIRATION';
       if ($this->_environment->inCommunityRoom()) {
          $this->_array_mail_text[11]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
          $this->_array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';

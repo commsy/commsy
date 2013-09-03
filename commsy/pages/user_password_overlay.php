@@ -67,6 +67,7 @@ if (!isOption($command,'error')) {
       $form->setFormPost($_POST);
       $form->prepareForm();
       $form->loadValues();
+      
       if ( $form->check() ) {
          // change password and email
          if (empty($error_string)) {

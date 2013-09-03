@@ -170,6 +170,37 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_form->setFailure('password');
          $this->_form->setFailure('password2');
       }
+      if(isset($this->_form_post['auth_source_id'])) {
+      	$auth_source_manager = $this->_environment->getAuthSourceManager();
+      	$auth_source_item = $auth_source_manager->getItem($this->_form_post['auth_source_id']);
+      	if($auth_source_item->getPasswordLength() > 0){
+      		if(strlen($this->_form_post['password']) < $auth_source_item->getPasswordLength()) {
+      			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_LENGTH_ERROR', $auth_source_item->getPasswordLength());
+      		}
+      	}
+      	if($auth_source_item->getPasswordSecureBigchar() == 1){
+      		if(!preg_match('~[A-Z]+~u', $this->_form_post['password'])) {
+      			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_BIGCHAR_ERROR');
+      		}
+      	}
+      	if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+      		if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+      			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_SPECIALCHAR_ERROR');
+      		}
+      	}
+      	if($auth_source_item->getPasswordSecureNumber() == 1){
+      		if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+      			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_NUMBER_ERROR');
+      		}
+      	}
+      	if($auth_source_item->getPasswordSecureSmallchar() == 1){
+      		if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+      			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_SMALLCHAR_ERROR');
+      		}
+      	}
+      	unset($auth_source_manager);
+      }
+      	
       if($this->_environment->getCurrentUserItem()->isRoot()){
 	      if(!isEmailValid($this->_form_post['email'])) {
 	         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');

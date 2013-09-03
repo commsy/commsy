@@ -1254,7 +1254,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 	   $errorbox_left = $class_factory->getClass(ERRORBOX_VIEW,$params);
 	   unset($params);
 	   $errorbox_left->setText(implode('<br/>',$session->getValue('error_array')));
-	   $session->unsetValue('error_array');
+	   #$session->unsetValue('error_array');
 	   $page->setMyAreaErrorBox($errorbox_left);
 	}
 

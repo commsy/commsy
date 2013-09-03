@@ -1,7 +1,7 @@
 <?php
 $message["LIMESURVEY_CONFIGURATION_ACTIVATE"]["de"] = "Benutze Limesurvey";
-$message["LIMESURVEY_CONFIGURATION_ADMIN_USER"]["de"] = "Benutzername des Administrators";
 $message["LIMESURVEY_CONFIGURATION_ADMIN_PW"]["de"] = "Passwort des Administrators";
+$message["LIMESURVEY_CONFIGURATION_ADMIN_USER"]["de"] = "Benutzername des Administrators";
 $message["LIMESURVEY_CONFIGURATION_DESC"]["de"] = "Konfiguration für eine verknüpfte Limesurvey Installation.";
 $message["LIMESURVEY_CONFIGURATION_LINK"]["de"] = "Limesurvey";
 $message["LIMESURVEY_CONFIGURATION_MISSING_ADMIN_PW"]["de"] = "Bitte geben Sie das Passwort des Administrators an.";

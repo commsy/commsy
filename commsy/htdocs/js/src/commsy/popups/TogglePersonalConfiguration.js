@@ -70,7 +70,8 @@ define([	"dojo/_base/declare",
 					}));
 				}));
 			}));
-			
+
+			console.log(this.from_php);
 			if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
 				var ulNode = DomConstruct.create('ul',{
 					
@@ -105,7 +106,6 @@ define([	"dojo/_base/declare",
 			        label: ulNode.outerHTML
 			    });
 			}
-			
 
 			// check for auto load tab
 			var autoOpen = this.from_php.autoOpenPopup;
@@ -332,10 +332,10 @@ define([	"dojo/_base/declare",
 //					this.errorNodes.push(errorNode);
 //					
 //					break;	
-//				case "1025":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
-//					this.errorNodes.push(errorNode);
+				case "1025":
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
+					this.errorNodes.push(errorNode);
 //					
 //					break;
 //				case "1026":

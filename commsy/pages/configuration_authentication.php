@@ -119,7 +119,11 @@ else {
          $temp_values['text'] = $values;
          $form->setFormPost($temp_values);
       } elseif ( !empty($_POST['auth_source']) and $_POST['auth_source'] == -1) {
-         // do nothing
+      	if ( !empty($command)
+              and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
+      		) {
+      	   $form->setFormPost($_POST);
+      	}
       } elseif ( !empty($_POST) ) {
          $form->setFormPost($_POST);
       }
@@ -138,161 +142,287 @@ else {
                // TBD
             } elseif ( isset($_POST['auth_source']) and $_POST['auth_source'] > 100 ) {
                $auth_item = $room_item->getAuthSource($_POST['auth_source']);
+            } elseif ($_POST['auth_source'] == -1) {
+            	
             } else {
                include_once('functions/error_functions.php');
                trigger_error('id of auth source lost',E_USER_WARNING);
             }
 
-            if ( !isset($auth_item) ) {
+            if ( !isset($auth_item) and $_POST['auth_source'] != -1) {
                $auth_source_manager = $environment->getAuthSourceManager();
                $auth_item = $auth_source_manager->getNewItem();
                $auth_item->setContextID($environment->getCurrentContextID());
             }
-
-            $auth_item->setTitle($_POST['title']);
-            if ( $_POST['changeUserID'] == 1 ) {
-               $auth_item->setAllowChangeUserID();
-            } elseif ( $_POST['changeUserID'] == 2 ) {
-               $auth_item->unsetAllowChangeUserID();
-            }
-            /*
-            if ( $_POST['changeUserData'] == 1 ) {
-               $auth_item->setAllowChangeUserData();
-            } elseif ( $_POST['changeUserData'] == 2 ) {
-               $auth_item->unsetAllowChangeUserData();
-            }
-            */
-            if ( $_POST['changePassword'] == 1 ) {
-               $auth_item->setAllowChangePassword();
-            } elseif ( $_POST['changePassword'] == 2 ) {
-               $auth_item->unsetAllowChangePassword();
-            }
-            if ( $_POST['addAccount'] == 1 ) {
-               $auth_item->setAllowAddAccount();
-            } elseif ( $_POST['addAccount'] == 2 ) {
-               $auth_item->unsetAllowAddAccount();
-            }
-            if ( $_POST['deleteAccount'] == 1 ) {
-               $auth_item->setAllowDeleteAccount();
-            } elseif ( $_POST['deleteAccount'] == 2 ) {
-               $auth_item->unsetAllowDeleteAccount();
-            }
-            if ( $_POST['show'] == 1 ) {
-               $auth_item->setShow();
-            } elseif ( $_POST['show'] == 2 ) {
-               $auth_item->unsetShow();
-            }
-            if ( isset($_POST['auth_type'])
-                 and !empty($_POST['auth_type']) ) {
-               $auth_item->setSourceType($_POST['auth_type']);
-            }
-            if ( isset($_POST['change_password_url']) ) {
-               $auth_item->setPasswordChangeLink($_POST['change_password_url']);
-            }
-            if ( isset($_POST['contact_mail']) ) {
-               $auth_item->setContactEMail($_POST['contact_mail']);
-            }
-            if ( isset($_POST['contact_fon']) ) {
-               $auth_item->setContactFon($_POST['contact_fon']);
-            }
-            if ( isset($_POST['password_secure_check']) ) {
-               $auth_item->setPasswordSecureCheck($_POST['password_secure_check']);
-            }
-            if ( isset($_POST['password_bigchar']) ) {
-               $auth_item->setPasswordSecureBigchar($_POST['password_bigchar']);
-            }
-            if ( isset($_POST['password_specialchar']) ) {
-               $auth_item->setPasswordSecureSpecialchar($_POST['password_specialchar']);
-            }
-            if ( isset($_POST['password_length'])) {
-            	if($_POST['password_length'] >= 0){
-            		$password_length = preg_replace('/[^0-9]+/', '', $_POST['password_length']);
-            		$auth_item->setPasswordLength($password_length);
-            	}
-            }
-            if ( isset($_POST['password_smallchar']) ) {
-            	$auth_item->setPasswordSecureSmallchar($_POST['password_smallchar']);
-            }
-            if ( isset($_POST['password_number']) ) {
-            	$auth_item->setPasswordSecureNumber($_POST['password_number']);
-            }
             
+			   if($_POST['auth_source'] != -1){
+				   $auth_item->setTitle($_POST['title']);
+			
+	            if ( $_POST['changeUserID'] == 1 ) {
+	               $auth_item->setAllowChangeUserID();
+	            } elseif ( $_POST['changeUserID'] == 2 ) {
+	               $auth_item->unsetAllowChangeUserID();
+	            }
+	            /*
+	            if ( $_POST['changeUserData'] == 1 ) {
+	               $auth_item->setAllowChangeUserData();
+	            } elseif ( $_POST['changeUserData'] == 2 ) {
+	               $auth_item->unsetAllowChangeUserData();
+	            }
+	            */
+	            if ( $_POST['changePassword'] == 1 ) {
+	               $auth_item->setAllowChangePassword();
+	            } elseif ( $_POST['changePassword'] == 2 ) {
+	               $auth_item->unsetAllowChangePassword();
+	            }
+	            if ( $_POST['addAccount'] == 1 ) {
+	               $auth_item->setAllowAddAccount();
+	            } elseif ( $_POST['addAccount'] == 2 ) {
+	               $auth_item->unsetAllowAddAccount();
+	            }
+	            if ( $_POST['deleteAccount'] == 1 ) {
+	               $auth_item->setAllowDeleteAccount();
+	            } elseif ( $_POST['deleteAccount'] == 2 ) {
+	               $auth_item->unsetAllowDeleteAccount();
+	            }
+	            if ( $_POST['show'] == 1 ) {
+	               $auth_item->setShow();
+	            } elseif ( $_POST['show'] == 2 ) {
+	               $auth_item->unsetShow();
+	            }
+	            if ( isset($_POST['auth_type'])
+	                 and !empty($_POST['auth_type']) ) {
+	               $auth_item->setSourceType($_POST['auth_type']);
+	            }
+	            if ( isset($_POST['change_password_url']) ) {
+	               $auth_item->setPasswordChangeLink($_POST['change_password_url']);
+	            }
+	            if ( isset($_POST['contact_mail']) ) {
+	               $auth_item->setContactEMail($_POST['contact_mail']);
+	            }
+	            if ( isset($_POST['contact_fon']) ) {
+	               $auth_item->setContactFon($_POST['contact_fon']);
+	            }
+	            if ( isset($_POST['password_secure_check']) ) {
+	               $auth_item->setPasswordSecureCheck($_POST['password_secure_check']);
+	            }
+	            if ( isset($_POST['password_bigchar']) ) {
+	               $auth_item->setPasswordSecureBigchar($_POST['password_bigchar']);
+	            }
+	            if ( isset($_POST['password_specialchar']) ) {
+	               $auth_item->setPasswordSecureSpecialchar($_POST['password_specialchar']);
+	            }
+	            if ( isset($_POST['password_length'])) {
+	            	if($_POST['password_length'] >= 0){
+	            		$password_length = preg_replace('/[^0-9]+/', '', $_POST['password_length']);
+	            		if(empty($password_length) and $password_length != 0){
+	            			$params = array();
+	            			$params['environment'] = $environment;
+	            			$params['with_modifying_actions'] = true;
+	            			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+	            			$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_LENGTH'));
+	            			$page->add($errorbox);
+	            			$password_length = 0;
+	            		}
+	            		$auth_item->setPasswordLength($password_length);
+	            	}
+	            }
+	            
+	            if ( isset($_POST['password_smallchar']) ) {
+	            	$auth_item->setPasswordSecureSmallchar($_POST['password_smallchar']);
+	            }
+	            if ( isset($_POST['password_number']) ) {
+	            	$auth_item->setPasswordSecureNumber($_POST['password_number']);
+	            }
+			   }
+			   
+			   if ( $_POST['auth_source'] != -1
+			   	  and isset($auth_item)
+			      ) {
+			   	$auth_item->save();
+			   }
+			   
             //Datenschutz
-         	if ( isset($_POST['temporary_lock']) ) {
-               $auth_item->setTemporaryLock($_POST['temporary_lock']);
-            }
-            
             $portal_item = $environment->getCurrentPortalItem();
             
+         	if ( isset($_POST['temporary_lock']) ) {
+         		$temporary_lock = $_POST['temporary_lock'];
+         		$temporary_lock = preg_replace('/[^0-9]+/', '', $temporary_lock);
+         		 
+         		if($temporary_lock >= 0 and !empty($temporary_lock)){
+         			$portal_item->setTemporaryLock($temporary_lock);
+         		} else {
+         			$params = array();
+         			$params['environment'] = $environment;
+         			$params['with_modifying_actions'] = true;
+         			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         			$errorbox->setText('TEMPORARY LOCK');
+         			$page->add($errorbox);
+         			$password_length = 0;
+         		}
+               #$portal_item->setTemporaryLock($_POST['temporary_lock']);
+            }
+            
             if ( isset($_POST['try_until_lock'])) {
-            	$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            	$empty_flag = false;
+            	if(empty($_POST['try_until_lock'])){
+            		$empty_flag = true;
+            	}
+            	$try_until_lock = $_POST['try_until_lock'];
+            	$try_until_lock = preg_replace('/[^0-9]+/', '', $try_until_lock);
+            	
+            	if($try_until_lock >= 0 or !empty($try_until_lock)){
+            		$portal_item->setTryUntilLock($_POST['try_until_lock']);
+            	} else {
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText($translator->getMessage('ERROR_VALUE_TRY_UNTIL_LOCK'));
+            		$page->add($errorbox);
+            		$password_length = 0;
+            	}
+            	#$portal_item->setTryUntilLock($_POST['try_until_lock']);
             }
             
             if( isset($_POST['seconds_interval'])) {
-            	$portal_item->setLockTimeInterval($_POST['seconds_interval']);
+            	$empty_flag = false;
+            	if(empty($_POST['seconds_interval'])){
+            		$empty_flag = true;
+            	}
+            	$seconds_interval = $_POST['seconds_interval'];
+            	$seconds_interval = preg_replace('/[^0-9]+/', '', $seconds_interval);
+            	
+            	if($seconds_interval >= 0 or $empty_flag){
+            		$portal_item->setLockTimeInterval($_POST['seconds_interval']);
+            	} else {
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText($translator->getMessage('ERROR_VALUE_SECONDS_INTERVAL'));
+            		$page->add($errorbox);
+            		$password_length = 0;
+            	}
+            	#$portal_item->setLockTimeInterval($_POST['seconds_interval']);
             }
             
             if( isset($_POST['temporary_minutes'])) {
+            	$empty_flag = false;
+            	if(empty($_POST['temporary_minutes'])){
+            		$empty_flag = true;
+            	}
             	$temporary_minutes = $_POST['temporary_minutes'];
             	$temporary_minutes = preg_replace('/[^0-9]+/', '', $temporary_minutes);
             	
-            	if($temporary_minutes >= 0 and !empty($temporary_minutes)){
+            	if($temporary_minutes >= 0 or $empty_flag){
             		$portal_item->setLockTime($_POST['temporary_minutes']);
+            	} else {
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText($translator->getMessage('ERROR_VALUE_TEMPORARY_MINUTES'));
+            		$page->add($errorbox);
+            		$password_length = 0;
             	}
             }
             
             if( isset($_POST['password_generation'])) {
             	$generation = $_POST['password_generation'];
-            	$generation = preg_replace('/[^0-9]+/', '', $generation);
-            	if($generation >= 0 and !empty($generation))
-            	{
+            	$empty_flag = false;
+            	if(empty($_POST['password_generation'])){
+            		$empty_flag = true;
+            	}
+            	
+            	$generation = preg_replace('/[^0-9]+/', '', $_POST['password_generation']);
+            	if(empty($generation) and !$empty_flag){
+            		$params = array();
+            		$params['environment'] = $environment;
+            		$params['with_modifying_actions'] = true;
+            		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            		$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_GENERATION'));
+            		$page->add($errorbox);
+            	} else {
             		$portal_item->setPasswordGeneration($generation);
+            		
             	}
             }
             if( isset($_POST['password_expiration'])) {
-            	if(($portal_item->getPasswordExpiration() != $_POST['password_expiration'] 
-            		and $_POST['password_expiration'] >= 0)
-            		or empty($_POST['password_expiration']))
+            	if(true)
             	{
-            		if($_POST['password_expiration'] == 0 or empty($_POST['password_expiration'])){
-            			$portal_item->setPasswordExpiration(0);
-            			
-            			$portal_users = $portal_item->getUserList();
-            			$portal_user = $portal_users->getFirst();
-            			while ($portal_user){
-            				$portal_user->setPasswordExpireDate('NULL');
-            				$portal_user->save();
-            				 
-            				$portal_user = $portal_users->getNext();
-            			}
+            		$empty_flag = false;
+            		if(empty($_POST['password_expiration'])){
+            			$empty_flag = true;
+            		}
+            		$password_expiration = preg_replace('/[^0-9]+/', '', $_POST['password_expiration']);
+            		#pr($password_expiration);breaK;
+            		if(empty($password_expiration) and !$empty_flag){
+            			$params = array();
+            			$params['environment'] = $environment;
+            			$params['with_modifying_actions'] = true;
+            			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            			$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_EXPIRE'));
+            			$page->add($errorbox);
             		} else {
-            			$portal_item->setPasswordExpiration($_POST['password_expiration']);
-            			$portal_item->save();
-            			
-            			// set a new expire date for all portal users
-            			// Datenschutz
-            			$portal_users = $portal_item->getUserList();
-            			$portal_user = $portal_users->getFirst();
-            			while ($portal_user){
-            				if ($_POST['password_expiration'] > 0){
-            					$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
-            				} else {
-            					$portal_user->unsetPasswordExpireDate();
-            				}
-            				$portal_user->save();
+            			if($password_expiration == 0 or empty($password_expiration)){
+            				$portal_item->setPasswordExpiration(0);
             				 
-            				$portal_user = $portal_users->getNext();
+            				$portal_users = $portal_item->getUserList();
+            				$portal_user = $portal_users->getFirst();
+            				while ($portal_user){
+            					$portal_user->setPasswordExpireDate('NULL');
+            					$portal_user->save();
+            					 
+            					$portal_user = $portal_users->getNext();
+            				}
+            			} else {
+            				$portal_item->setPasswordExpiration($password_expiration);
+            				$portal_item->save();
+            				 
+            				// set a new expire date for all portal users
+            				// Datenschutz
+            				$portal_users = $portal_item->getUserList();
+            				$portal_user = $portal_users->getFirst();
+            				while ($portal_user){
+            					if ($_POST['password_expiration'] > 0){
+            						$auth_source_manager = $environment->getAuthSourceManager();
+            						$auth_item = $auth_source_manager->getItem($portal_user->getAuthSource());
+            						if($auth_item->getSourceType() == 'MYSQL'){
+            							$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
+            						}
+            					} else {
+            						$portal_user->unsetPasswordExpireDate();
+            					}
+            					$portal_user->save();
+            					 
+            					$portal_user = $portal_users->getNext();
+            				}
             			}
             		}
-	            	
             	}
 
             }
             if( isset($_POST['days_before_expiring_sendmail'])){
-            	if($_POST['days_before_expiring_sendmail'] > 0){
-            		$portal_item->setDaysBeforeExpiringPasswordSendMail($_POST['days_before_expiring_sendmail']);
+            	if(true){
+            		$empty_flag = false;
+            		if(empty($_POST['days_before_expiring_sendmail'])){
+            			$empty_flag = true;
+            		}
+            		$days_before_expiring_sendmail = preg_replace('/[^0-9]+/', '', $_POST['days_before_expiring_sendmail']);
+            		if(empty($days_before_expiring_sendmail) and !$empty_flag){
+            			$params = array();
+            			$params['environment'] = $environment;
+            			$params['with_modifying_actions'] = true;
+            			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            			$errorbox->setText($translator->getMessage('ERROR_VALUE_PASSWORD_EXPIRE_MAIL'));
+            			$page->add($errorbox);
+            		} else {
+            			$portal_item->setDaysBeforeExpiringPasswordSendMail($days_before_expiring_sendmail);
+            		}
             	}
             }
+            
             $portal_item->save();
             unset($portal_item);
 
@@ -352,8 +482,13 @@ else {
             if ( !empty($auth_data_array) ) {
                $auth_item->setAuthData($auth_data_array);
             }
-
-            $auth_item->save();
+            
+            if ( $_POST['auth_source'] != -1
+                 and isset($auth_item)
+               ) {
+            	$auth_item->save();
+            }
+            
 
             if ( isset($_POST['default']) and $_POST['default'] == 1 ) {
                if ( $room_item->getAuthDefault() != $_POST['auth_source']

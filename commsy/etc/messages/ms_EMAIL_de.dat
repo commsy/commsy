@@ -1,61 +1,47 @@
 <?php
+$message["EMAIL_CHOICE_PASSWORD_EXPIRATION"]["de"] = "Passwort ist abgelaufen";
+$message["EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["de"] = "Passwort läuft ab";
 $message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "Kennung wird in %1 Tagen gel&ouml;scht";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Hallo %1,
 
-Ihre Kennung wird in %2 Tagen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
-
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "Kennung wird morgen gel&ouml;scht";
+Ihre Kennung wird in %2 Tagen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.";
+$message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gel&ouml;scht";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Hallo %1,
 
 Ihre Kennung wird morgen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
 
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["de"] = "Kennung wird in %1 Tagen gesperrt";
+%2";
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gel&ouml;scht";
 $message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["de"] = "Hallo %1,
 
 Ihre Kennung wird in %2 Tagen wegen inaktivität gesperrt. Bitte loggen Sie sich innerhalb dieser Zeit ein, um einer Sperrung zu entgehen.
 
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["de"] = "Kennung wird morgen gesperrt";
+%3";
+$message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gesperrt";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Hallo %1,
 
 Ihre Kennung wird morgen gesperrt. Bitte loggen Sie sich bis morgen ein, um einer Sperrung zu entgehen.
 
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "Einloggen als XYZ ist abgelaufen";
+%2";
+$message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gesperrt";
 $message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "Hallo %1,
 
-die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.
+die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.";
+$message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "%1: Einloggen als XYZ ist abgelaufen";
+$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert geändert.
 
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Hallo %1,
+Bitte ändern Sie Ihr Passwort über den Passwort vergessen Link.
 
-Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert ge&auml;ndert.
+%1
 
-Bitte &auml;ndern Sie Ihr Passwort über den Passwort vergessen Link.
+Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.";
+$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Ihr Passwort läuft in %1 Tagen ab. Bitte ändern Sie Ihr Passwort innerhalb dieser Zeit.
 
-%2
-
-Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.
-
-Gru&szlig; ... %3
-[Diese E-Mail wurde automatisch vom System verschickt.]";
-$message["EMAIL_PASSWORD_EXPIRATION_SOON_BODY"]["de"] = "Hallo %1,
-
-Ihr Passwort l&auml;uft in %2 Tagen ab. Bitte &auml;ndern Sie Ihr Passwort innerhalb dieser Zeit.
-
-%3
-
-Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.
-
-Gru&szlig; ... %4
-[Diese E-Mail wurde automatisch vom System verschickt.]";
-$message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
+%2";
 $message["EMAIL_PASSWORD_EXPIRATION_SOON_SUBJECT"]["de"] = "%1: Ihr Passwort l&auml;uft in %2 Tagen aus";
+$message["EMAIL_PASSWORD_EXPIRATION_SUBJECT"]["de"] = "%1: Ihr Passwort ist abgelaufen";
 $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["de"] = "Hallo %1,
@@ -81,5 +67,4 @@ Das neue Material finden sie in Ihrer CommSy-Leiste.
 $message["EMAIL_TO_INSTITUTION_TITLE"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW &quot;%1&quot;";
 $message["EMAIL_TO_INSTITUTION_TITLE_WITHOUT"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW";
 $message["EMAIL_TO_TOPIC_TITLE"]["de"] = "Email an die Personen, die sich %_TOPICS_ART_DEF_DATS_LOW %_TOPICS_SUB_DATS_BIG &quot;%1&quot; zugeordneten haben.";
-
 ?>

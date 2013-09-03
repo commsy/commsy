@@ -1086,18 +1086,23 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
            
-           if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
+           if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
            	$text_array = $item->getAGBTextArray();
            
            	$lang = strtoupper($this->_translator->_selected_language);
            	$usage_info = $text_array[$lang];
            
            	$temp_array[1] .= BRLF;
-           	$temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
-           	$temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	$checkbox = '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  
+           	$link = ahref_curl($item->getItemID(), 'agb', 'index', '', $this->_translator->getMessage('AGB_CONFIRMATION'));
+           	  
+           	$link_agb = '<a onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');" target="agb" href="commsy.php?cid='.$item->getItemID().'&mod=agb&fct=index&agb=1">'.$this->_translator->getMessage('AGB_CONFIRMATION').'</a>';
+           	  
+           	$temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT', $checkbox,$link_agb).LF;
            	$temp_array[1] .= BRLF;
            
-           	$temp_array[1] .= $usage_info;
+           	#$temp_array[1] .= $usage_info;
            }
            $formal_data[] = $temp_array;
 
@@ -1131,44 +1136,66 @@ class cs_page_guide_view extends cs_page_view {
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
            
            // if code is set for room
-        if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
+        if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
            	  $text_array = $item->getAGBTextArray();
            	  $lang = strtoupper($this->_translator->_selected_language);
            	  
            	  $usage_info = $text_array[$lang];
            	
            	  $temp_array[1] .= BRLF;
-           	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
-           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	  #$temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  
+           	  $checkbox = '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  
+           	  $link = ahref_curl($item->getItemID(), 'agb', 'index', '', $this->_translator->getMessage('AGB_CONFIRMATION'));
+           	  
+           	  $link_agb = '<a onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');" target="agb" href="commsy.php?cid='.$item->getItemID().'&mod=agb&fct=index&agb=1">'.$this->_translator->getMessage('AGB_CONFIRMATION').'</a>';
+           	  
+           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT', $checkbox,$link_agb).LF;
+           	  
+           	  #$temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
            	  $temp_array[1] .= BRLF;
            	  
-           	  $temp_array[1] .= $usage_info;
+           	  #$temp_array[1] .= $usage_info;
            }
            
            $formal_data[] = $temp_array;
 
         } else {
            $html .= $this->_translator->getMessage('ACCOUNT_GET_4_TEXT');
+           if ( isset($get_params['error']) and !empty($get_params['error']) ) {
+           	$temp_array[0] = $this->_translator->getMessage('COMMON_ATTENTION').': ';
+           	$temp_array[1] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE_ERROR');
+           	if($_GET['error'] == 'agb'){
+           		$temp_array[1] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_AGB_ERROR');
+           	}
+           	$formal_data[] = $temp_array;
+           }
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_REASON').': ';
            $value = '';
            if (!empty($get_params['description_user'])) {
               $value = $get_params['description_user'];
               $value = str_replace('%20',' ',$value);
            }
+           
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
 
-           if($item->getAGBStatus() and $portal_item->withAGBDatasecurity()){
-           	  $toggle_id = rand(0,1000000);
+           if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
            	  $text_array = $item->getAGBTextArray();
            	  $lang = strtoupper($this->_translator->_selected_language);
-           	  $usage_info = $text_array[$lang];
+           	  #$usage_info = $text_array[$lang];
            	
            	  $temp_array[1] .= BRLF;
-           	  $temp_array[1] .= '<input type="checkbox" name="agb_acceptance" value="1">';
-           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT').LF;
+           	  $checkbox = '<input type="checkbox" name="agb_acceptance" value="1">';
+           	  
+           	  $link = ahref_curl($item->getItemID(), 'agb', 'index', '', $this->_translator->getMessage('AGB_CONFIRMATION'));
+           	  
+           	  $link_agb = '<a onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');" target="agb" href="commsy.php?cid='.$item->getItemID().'&mod=agb&fct=index&agb=1">'.$this->_translator->getMessage('AGB_CONFIRMATION').'</a>';
+           	  
+           	  $temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT', $checkbox,$link_agb).LF;
            	  $temp_array[1] .= BRLF;
            	  #$temp_array[1] .= $html;
-           	  $temp_array[1] .= $usage_info;
+           	  #$temp_array[1] .= $usage_info;
            }
            
            $formal_data[] = $temp_array;
@@ -2697,7 +2724,7 @@ class cs_page_guide_view extends cs_page_view {
                   if ($email_to_moderators != '' ) {
                      $html .= '&nbsp;-&nbsp;';
                   }
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('COMMON_AGB_LINK_TEXT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
                }
                $html .= '     </td>'.LF;
                if ( !empty($email_to_service) ) {

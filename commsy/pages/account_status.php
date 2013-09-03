@@ -362,11 +362,6 @@ if ( empty($command) and empty($command_delete) ) {
             } else {
             	$user->unsetDeactivateLoginAsAnotherUser();
             }
-            // deactivate by default the login as feature
-            global $c_default_value_login_as_xy_for_new_moderator;
-            if(!$c_default_value_login_as_xy_for_new_moderator){
-            	$user->deactivateLoginAsAnotherUser();
-            }
             
             if(!empty($_POST['days_interval'])){
             	$user->setDaysForLoginAs($_POST['days_interval']);

@@ -138,40 +138,17 @@ class cs_configuration_inactive_form extends cs_rubric_form {
          
       } elseif ( !empty($this->_item) ) {
          
-         $current_context = $this->_environment->getCurrentContextItem();
-            
-         if($current_context->isPortal()){
-         	
-			$this->_values['overwrite_content'] = $current_context->isInactivityOverwriteContent();
-         	$this->_values['lock_user'] = $current_context->getInactivityLockDays();
-         	$this->_values['email_before_lock'] = $current_context->getInactivitySendMailBeforeLockDays();
-         	$this->_values['delete_user'] = $current_context->getInactivityDeleteDays();
-         	$this->_values['email_before_delete'] = $current_context->getInactivitySendMailBeforeDeleteDays();
+			$this->_values['overwrite_content'] = $this->_item->isInactivityOverwriteContent();
+         $this->_values['lock_user'] = $this->_item->getInactivityLockDays();
+         $this->_values['email_before_lock'] = $this->_item->getInactivitySendMailBeforeLockDays();
+         $this->_values['delete_user'] = $this->_item->getInactivityDeleteDays();
+         $this->_values['email_before_delete'] = $this->_item->getInactivitySendMailBeforeDeleteDays();
 
-         	if($this->_values['overwrite_content']){
-         		$this->_values['overwrite_content'] = 1;
-         	} else {
-         		$this->_values['overwrite_content'] = 2;
-         	}
-         	
-         	if(empty($this->_values['lock_user'])){
-         		$this->_values['lock_user'] = 0;
-         	}
-         	
-         	if(empty($this->_values['email_before_lock'])){
-         		$this->_values['email_before_lock'] = 0;
-         	}
-         	
-         	if(empty($this->_values['delete_user'])){
-         		$this->_values['delete_user'] = 0;
-         	}
-         	
-         	if(empty($this->_values['email_before_delete'])){
-         		$this->_values['email_before_delete'] = 0;
-         	}
-         	
+         if($this->_values['overwrite_content']){
+         	$this->_values['overwrite_content'] = 1;
+         } else {
+         	$this->_values['overwrite_content'] = 2;
          }
-         
    	}
    }
 
@@ -180,8 +157,30 @@ class cs_configuration_inactive_form extends cs_rubric_form {
     */
    function _checkValues () {
       // check choosen auth source
-      
-  
+      if ( !empty($this->_form_post['lock_user'])
+      	  and !is_numeric($this->_form_post['lock_user'])
+      	) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_INACTIVITY_LOCK'));
+      	$this->_form->setFailure('lock_user');
+      }     
+      if ( !empty($this->_form_post['email_before_lock'])
+      		and !is_numeric($this->_form_post['email_before_lock'])
+         ) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_INACTIVITY_EMAIL_LOCK'));
+      	$this->_form->setFailure('email_before_lock');
+      }
+      if ( !empty($this->_form_post['delete_user'])
+      		and !is_numeric($this->_form_post['delete_user'])
+         ) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_INACTIVITY_DELETE'));
+      	$this->_form->setFailure('delete_user');
+      }
+      if ( !empty($this->_form_post['email_before_delete'])
+      		and !is_numeric($this->_form_post['email_before_delete'])
+         ) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_INACTIVITY_EMAIL_DELETE'));
+      	$this->_form->setFailure('email_before_delete');
+      }
    }
 }
 ?>

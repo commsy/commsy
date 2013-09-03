@@ -475,7 +475,7 @@
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
 			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
 			$to_javascript['environment']['user_name'] = $current_user->getFullName();
-			
+
 			$current_portal_user = $this->_environment->getPortalUserItem();
 			// password expires soon alert
 			if(!empty($current_portal_user) AND $current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
@@ -524,31 +524,53 @@
 			$auth_source_item = $auth_source_manager->getItem($current_user->getAuthSource());
 			
 			if(isset($auth_source_item)){
+				$show_tooltip = true;
 				// password
 				if($auth_source_item->getPasswordLength() > 0){
 					$to_javascript["password"]["length"] = $translator->getMessage('PASSWORD_INFO2_LENGTH', $auth_source_item->getPasswordLength());
+				} else {
+					$show_tooltip = false;
 				}
 				if($auth_source_item->getPasswordSecureBigchar() == 1){
 					$to_javascript["password"]["big"] = $translator->getMessage('PASSWORD_INFO2_BIG');
+				} else {
+					$show_tooltip = false;
 				}
 				if($auth_source_item->getPasswordSecureSmallchar() == 1){
 					$to_javascript["password"]["small"] = $translator->getMessage('PASSWORD_INFO2_SMALL');
+				} else {
+					$show_tooltip = false;
 				}
 				if($auth_source_item->getPasswordSecureNumber() == 1){
 					$to_javascript["password"]["special"] = $translator->getMessage('PASSWORD_INFO2_SPECIAL');
+				} else {
+					$show_tooltip = false;
 				}
 				if($auth_source_item->getPasswordSecureSpecialchar() == 1){
 					$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
+				} else {
+					$show_tooltip = false;
+				}
+			} else {
+				$show_tooltip = false;
+			}
+			if($show_tooltip){
+				$to_javascript["password"]["tooltip"] = 1;
+			} else {
+				$to_javascript["password"]["tooltip"] = 0;
+			}
+			
+			if ($this->_environment->getCurrentFunction() == 'detail'
+						and $this->_environment->getCurrentModule() == 'group'){
+				$params = $this->_environment->getCurrentParameterArray();
+				$group_manager = $this->_environment->getGroupManager();
+				$group_item = $group_manager->getItem($params['iid']);
+				if ($group_item->isGroupRoomActivated() ){
+					$to_javascript['dev']['room_id'] = $group_item->getGroupRoomItemID();
 				}
 			}
 			
-			
-			
-			
-			
-			
-			
-			
+		
 
 			// dev
 			global $c_indexed_search;

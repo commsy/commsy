@@ -2371,13 +2371,24 @@ class cs_user_item extends cs_item {
    	
    	$retour = false;
    	$i=$portal_item->getPasswordGeneration();
-   	for($i;$i > 0;$i--){
-   		if($this->_issetExtra('PW_GENERATION_'.($i))){
-   			if($this->_getExtra('PW_GENERATION_'.$i) == $password){
-   				$retour = true;
+   	if($i == 0){
+   		$authentication = $this->_environment->getAuthenticationObject();
+   		
+   		$authManager = $authentication->getAuthManager($this->getAuthSource());
+   		$auth_item = $authManager->getItem($this->getUserID());
+   		if ($auth_item->getPasswordMD5() == $password) {
+   			$retour = true;
+   		}
+   	} else {
+   		for($i;$i > 0;$i--){
+   			if($this->_issetExtra('PW_GENERATION_'.($i))){
+   				if($this->_getExtra('PW_GENERATION_'.$i) == $password){
+   					$retour = true;
+   				}
    			}
    		}
    	}
+   	
    	unset($portal_item);
    	return $retour;
    }
@@ -2387,17 +2398,19 @@ class cs_user_item extends cs_item {
    }
    
    function unsetDeactivateLoginAsAnotherUser () {
-   	$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
+   	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
+   		$this->_addExtra('DEACTIVATE_LOGIN_AS', '-1');
+   	}
+   	#$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
    }
    
    function isDeactivatedLoginAsAnotherUser () {
-   	$retour = false;
+   	$retour = '';
    	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
    		$flag = $this->_getExtra('DEACTIVATE_LOGIN_AS');
-   		if($flag){
-   			$retour = true;
-   		}
+   		$retour = $flag;
    	}
+   	
    	return $retour;
 
    }
@@ -2408,8 +2421,7 @@ class cs_user_item extends cs_item {
    	} else {
    		$this->_setValue('expire_date', getCurrentDateTimePlusDaysInMySQL($days));
    	}
-   	
-   	#$this->_addExtra('PW_EXPIRE_DATE', getCurrentDateTimePlusDaysInMySQL($days));
+   	$this->unsetPasswordExpiredEmailSend();
    }
    
    function unsetPasswordExpireDate() {

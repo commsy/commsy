@@ -8,7 +8,7 @@ $message["USER_ACCOUNT_FORGET_MAIL_BODY"]["de"] = "Im CommSy *%1* sind folgende 
 $message["USER_ACCOUNT_FORGET_MAIL_SUBJECT"]["de"] = "%1: Kennungen";
 $message["USER_ACCOUNT_FORGET_SUCCESS_TEXT"]["de"] = "Ihre Kennungen wurden an Ihre E-Mail-Adresse <span style=&quot;font-weight: bold;&quot;>%1</span> geschickt. Bitte schauen Sie in Ihrem E-Mail-Postfach nach.";
 $message["USER_ACCOUNT_FORGET_TEXT"]["de"] = "Bitte geben Sie Ihre E-Mail-Adresse an. Ihre unter dieser E-Mail-Adresse registrierten Kennungen werden Ihnen sofort per E-Mail zu geschickt.";
-$message["USER_ACCOUNT_NOT_VISIBLE"]["de"] = "Kennung nicht sichtbar";
+$message["USER_ACCOUNT_NOT_VISIBLE"]["de"] = "XXX (Account name not visible)";
 $message["USER_ASK_MAIL_SUBJECT"]["de"] = "%2: Nachfrage [%1]";
 $message["USER_AUTH_SOURCE"]["de"] = "Authentifizierungsquelle";
 $message["USER_AUTH_SOURCE_ERROR"]["de"] = "Fehler: Keine Authentifizierungsquelle vorhanden.";
@@ -131,8 +131,8 @@ $message["USER_MSN"]["de"] = "MSN";
 $message["USER_NAME"]["de"] = "Name";
 $message["USER_NEVER_LOGIN"]["de"] = "noch nie";
 $message["USER_NEW_PASSWORD_BIGCHAR_ERROR"]["de"] = "Das neue <b>Passwort</b> enthält keinen <b>Gro&szlig;buchstaben</b>.";
-$message["USER_NEW_PASSWORD_LENGTH_ERROR"]["de"] = "Das neue <b>Passwort</b> ist nicht <b>lang genug</b>.";
-$message["USER_NEW_PASSWORD_NUMBER_ERROR"]["de"] = "Das neue <b>Passwort</b> enthält keinen <b>Zahlen</b>.";
+$message["USER_NEW_PASSWORD_LENGTH_ERROR"]["de"] = "Das neue <b>Passwort</b> muss %1 Zeichen enthalten.";
+$message["USER_NEW_PASSWORD_NUMBER_ERROR"]["de"] = "Das neue <b>Passwort</b> enthält keine <b>Zahlen</b>.";
 $message["USER_NEW_PASSWORD_SMALLCHAR_ERROR"]["de"] = "Das neue <b>Passwort</b> enthält keinen <b>Kleinbuchstaben</b>.";
 $message["USER_NEW_PASSWORD_SPECIALCHAR_ERROR"]["de"] = "Das neue <b>Passwort</b> enthält kein <b>Sonderzeichen</b>.";
 $message["USER_NORMAL_USER"]["de"] = "BenutzerIn";
@@ -152,6 +152,7 @@ $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wur
 <br/><br/>
 Sofern Sie keine E-Mail erhalten, wenden Sie sich bitte an die Portal-Moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.";
+$message["USER_PASSWORD_GUIDELINE"]["de"] = "Richtlinie";
 $message["USER_PASSWORD_MAIL_BODY"]["de"] = "für Ihre Kennung
    %1
 

@@ -369,9 +369,16 @@
 								</tr>
 							{/if}
 
-
-
-
+                     {if !empty($detail.configcontent.plugin_array)}
+                        {foreach from=$detail.configcontent.plugin_array item=plugin_item}
+                        <tr>
+                           <td class="label"><h4>{$plugin_item.title}</h4></td>
+                           <td>
+                              {$plugin_item.desc}
+                           </td>
+                        </tr>
+                        {/foreach}
+                     {/if}
 
 					    </table>
 

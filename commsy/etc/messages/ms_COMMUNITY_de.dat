@@ -6,9 +6,9 @@ $message["COMMUNITY_MAIL_BODY_ARCHIVE_INFO"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_B
 
 Wenn Sie nicht wollen, dass %_COMMUNITY_ART_DEF_NOMS_LOW  %_COMMUNITY_SUB_NOMS_BIG archiviert wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_NOMS_BIG ein.";
 $message["COMMUNITY_MAIL_BODY_DELETE"]["de"] = "Löschung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
-$message["COMMUNITY_MAIL_BODY_DELETE_INFO"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_BIG %1 wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung  %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG in %2 Tagen statt.
+$message["COMMUNITY_MAIL_BODY_DELETE_INFO"]["de"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_BIG %1 wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG in %2 Tagen statt.
 
-Wenn Sie nicht wollen, dass %_COMMUNITY_ART_DEF_NOMS_LOW  %_COMMUNITY_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_NOMS_BIG ein.";
+Wenn Sie nicht wollen, dass %_COMMUNITY_ART_DEF_NOMS_LOW %_COMMUNITY_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_NOMS_BIG ein.";
 $message["COMMUNITY_MAIL_BODY_LOCK"]["de"] = "Sperrung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_MAIL_BODY_OPEN"]["de"] = "Eröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";
 $message["COMMUNITY_MAIL_BODY_REOPEN"]["de"] = "Wiedereröffnung %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG.";

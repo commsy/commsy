@@ -38,6 +38,8 @@ if ( $session->issetValue('root_session_id') ) {
 $session_manager->delete($SID,true);
 $session->reset();
 
+setcookie("expired_password_shown", null);
+
 include_once('classes/cs_session_item.php');
 $session = new cs_session_item();
 $session->createSessionID('guest');

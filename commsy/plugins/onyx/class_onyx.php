@@ -234,7 +234,22 @@ class class_onyx extends cs_plugin {
          if ( isset($args_array['save']) ) {
             $saveResult = $args_array['save'];
          }
-         
+         $saveAim = '';
+         if ( isset($args_array['saveaim'])
+         	  and $args_array['saveaim'] == 'section'
+            ) {
+         	$saveAim = $args_array['saveaim'];
+         }
+         $savePeriod = '';
+         if ( isset($args_array['saveperiod'])
+         	  and ( $args_array['saveperiod'] == 'day'
+         	  		  or $args_array['saveperiod'] == 'week'
+         	  		  or $args_array['saveperiod'] == 'month'
+         	  )
+         	) {
+         	$savePeriod = $args_array['saveperiod'];
+         }
+          
          if ( !empty($args['target'])
               and ( $args['target'] == '_blank'
                     or $args['target'] == 'newwin'
@@ -262,6 +277,12 @@ class class_onyx extends cs_plugin {
             $id_array['cid'] = $this->_environment->getCurrentContextID();
             $id_array['fid'] = $file->getFileID();
             $id_array['save'] = $saveResult;
+            if ( !empty($saveAim) ) {
+            	$id_array['saveaim'] = $saveAim;
+            }
+            if ( !empty($savePeriod) ) {
+            	$id_array['saveperiod'] = $savePeriod;
+            }
             include_once('functions/date_functions.php');
             $id_array['time'] = getCurrentDateTimeInMySQL();
             $id = json_encode($id_array);
@@ -594,7 +615,14 @@ class class_onyx extends cs_plugin {
    }
    
    public function getTextFormatingInformationAsHTML () {
-      $retour = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION');
+      $retour = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION',$this->_environment->getCurrentContextID(),$this->_identifier,'showtextformatinginfo');
+      return $retour;
+   }
+   
+   public function getTextFormatingInformationForWindowAsHTML () {
+      $retour  = $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION_WINDOW');
+      $retour .= BRLF;
+      $retour .= $this->_translator->getMessage('ONYX_TEXTFORMATING_DESCRIPTION_WINDOW_REP');
       return $retour;
    }
    
@@ -647,6 +675,14 @@ class class_onyx extends cs_plugin {
     		if ( !empty($uniqueID_array['save']) ) {
     			$saveResult = $uniqueID_array['save'];
     		}
+   	   $saveAim = '';
+   	   if ( !empty($uniqueID_array['saveaim']) ) {
+    			$saveAim = $uniqueID_array['saveaim'];
+    		}
+   	   $savePeriod = '';
+   	   if ( !empty($uniqueID_array['saveperiod']) ) {
+    			$savePeriod = $uniqueID_array['saveperiod'];
+    		}
     		$resultFile = $args[1];
     		
     		if ( !empty($saveResult)
@@ -655,6 +691,7 @@ class class_onyx extends cs_plugin {
     			  		)
     		   ) {
             $this->_environment->setCurrentContextID($cid);
+    			$this->_environment->setSessionID($sid);
     			
 	    		// get link file item
 	    		$lif_manager = $this->_environment->getLinkItemFileManager();
@@ -695,12 +732,143 @@ class class_onyx extends cs_plugin {
 	    					$file_item->setTempName($temp_file);
 	    					$file_item->save();
 	    					
+	    					// maybe section at a material item
+	    					if ( !empty($saveAim) ) {
+	    						if ( $saveAim == 'section'
+	    							  and $data_item->isA(CS_MATERIAL_TYPE) 
+	    							) {
+	    							$section_key = 'one';
+	    							$section_title = $this->_translator->getMessage('ONYX_SAVE_TITLE_RESULT');
+	    							if ( !empty($savePeriod) ) {
+	    								if ( $savePeriod == 'day' ) {
+	    									$section_key = date('Y.m.d');
+	    							      $section_title = $this->_translator->getMessage('ONYX_SAVE_TITLE_RESULT_DAY',date('d'),date('m'),date('Y'));
+	    								} elseif ($savePeriod == 'week') {
+	    									$section_key = date('Y-W');
+	    							      $section_title = $this->_translator->getMessage('ONYX_SAVE_TITLE_RESULT_WEEK',date('W'),date('Y'));
+	    								} elseif ($savePeriod == 'month') {
+	    									$section_key = date('Y.m');
+	    									include_once('functions/date_funtions.php');
+	    									$month = getLongMonthNameFromInt(date('n'));
+	    							      $section_title = $this->_translator->getMessage('ONYX_SAVE_TITLE_RESULT_MONTH',$month,date('Y'));
+	    								}
+	    							}
+	    							$plugin_config = $data_item->getPluginConfigForPlugin($this->_identifier);
+	    							$section_manager = $this->_environment->getSectionManager();
+	    							$create_new = true;
+	    							if ( isset($plugin_config)
+	    								  and is_array($plugin_config)
+	    								  and !empty($plugin_config['saveResult'][$fid][$section_key])
+	    								) {
+	    								// use old section
+	    								$section_item = $section_manager->getItem($plugin_config['saveResult'][$fid][$section_key]);
+	    								if ( !empty($section_item)
+	    									  and !$section_item->isDeleted() 
+	    									) {
+	    									$create_new = false;
+	    									$data_item = $section_item;
+	    								}
+	    							}
+	    							if ($create_new) {
+	    								// create new section
+			                     $session_manager = $this->_environment->getSessionManager();
+			                     $session_item = $session_manager->get($sid);
+			                     $user_id = $session_item->getValue('user_id');
+			                     $auth_source = $session_item->getValue('auth_source');
+			                     $user_manager = $this->_environment->getUserManager();
+			                     $user_manager->setContextLimit($cid);
+			                     $user_manager->setUserIDLimit($user_id);
+			                     $user_manager->setAuthSourceLimit($auth_source);
+			                     $user_manager->select();
+			                     $user_list = $user_manager->get();
+			                     if ($user_list->getCount() == 1) {
+			                     	$current_user = $user_list->getFirst();
+			                     	$this->_environment->setCurrentUserItem($current_user);
+			                     
+			                        $section_item = $section_manager->getNewItem();
+	    								   $section_item->setContextID($cid);
+	    								   $section_item->setCreatorItem($current_user);
+	    								   include_once('functions/date_functions.php');
+	    								   $section_item->setCreationDate(getCurrentDateTimeInMySQL());
+			                        $section_item->setModificatorItem($current_user);
+                                 $section_item->setModificationDate(getCurrentDateTimeInMySQL());
+
+							            // Set attributes
+						               $section_item->setTitle($section_title);
+							            #$section_item->setNumber($_POST['number']);
+						               $section_item->setLinkedItemID($data_item->getItemID());
+						               $section_item->save();
+
+						               // Update the material regarding the latest section informations...
+						               // (this takes care of saving the section itself, too)
+						               $data_item->setModificatorItem($current_user);
+						               if (!$data_item->isNotActivated()){
+						               	$data_item->setModificationDate($section_item->getModificationDate());
+						               }else{
+						               	$data_item->setModificationDate($data_item->getModificationDate());
+						               }
+						               $section_list = $data_item->getSectionList();
+						               $section_list->set($section_item);
+						               $data_item->setSectionList($section_list);
+						               $data_item->setSectionSaveID($section_item->getItemId());
+						               
+						               #$external_view_array = $data_item->getExternalViewerArray();
+						               #$data_item->setExternalViewerAccounts($external_view_array);
+						               
+						               $data_item->save();
+
+						               // saveResult_key
+						               $plugin_config['saveResult'][$fid][$section_key] = $section_item->getItemID();
+						               $data_item->setPluginConfigForPlugin($this->_identifier,$plugin_config);
+						               $data_item->save();
+						               
+	    								   $data_item = $section_manager->getItem($plugin_config['saveResult'][$fid][$section_key]);
+			                     }		
+	    							}
+	    						}
+	    					}
+	    					
 	    					// file item to data item
 	    					$file_id_array = $data_item->getFileIDArray();
+	    					if ( !isset($file_id_array) ) {
+	    						$file_id_array = array();
+	    					}
 	    					$file_id_array[] = $file_item->getFileID();
 	    					$data_item->setFileIDArray($file_id_array);
 	    					$data_item->save();
 	    					unlink($temp_file);
+	    					
+	    					// save onyx hash in user_item
+                     if ( $saveResult == 2 ) { // 2 = pseudonym
+		    					$session_manager = $this->_environment->getSessionManager();
+				            $session_item = $session_manager->get($sid);
+		    					$user_id = $session_item->getValue('user_id');
+		    					$auth_source = $session_item->getValue('auth_source');
+		    					$user_manager = $this->_environment->getUserManager();
+		    					$user_manager->setContextLimit($cid);
+		    					$user_manager->setUserIDLimit($user_id);
+		    					$user_manager->setAuthSourceLimit($auth_source);
+		    					$user_manager->select();
+		    					$user_list = $user_manager->get();
+		    					if ($user_list->getCount() == 1) {
+		    						$current_user = $user_list->getFirst();
+			    					$onyx_hash = md5($session_item->getValue('user_id').'-'.$session_item->getValue('auth_source'));
+			    					$user_item_plugin_array = $current_user->getPluginConfigForPlugin($this->_identifier);
+			    					if ( empty($user_item_plugin_array['userhash'])
+			    						  or $user_item_plugin_array['userhash'] != $onyx_hash
+			    						) {
+			    						$user_item_plugin_array['userhash'] = $onyx_hash;
+			    						$current_user->setPluginConfigForPlugin($this->_identifier,$user_item_plugin_array);
+			    						$current_user->save();
+			    					}
+			    					unset($current_user);
+		    					}
+		    					unset($user_list);
+		    					unset($user_manager);
+		    					unset($session_item);
+		    					unset($session_manager);
+                     }
+
 	    					return $file_item->getFileID();	    					 
 	    				} else {
 	    					return new SoapFault('ERROR',$this->_title.': can not save temp file');
@@ -773,6 +941,22 @@ class class_onyx extends cs_plugin {
      }
      fwrite($fd, $str . "\n");
      fclose($fd);
+   }
+   
+   public function getUserDetailConfigArray ( $params ) {
+   	$retour = array();
+   	if ( !empty($params['user_item'])
+   		  and $params['user_item']->isA(CS_USER_TYPE)
+   		) {
+   		$plugin_config_array = $params['user_item']->getPluginConfigForPlugin($this->_identifier);
+   		if ( !empty($plugin_config_array)
+   			  and !empty($plugin_config_array['userhash'])
+   			) {
+   			$retour['title'] = $this->_translator->getMessage('ONYX_USER_DETAIL_HASH_TITLE');
+   			$retour['desc'] = $plugin_config_array['userhash'];
+   			return $retour;
+   		}
+   	}
    }
 }
 

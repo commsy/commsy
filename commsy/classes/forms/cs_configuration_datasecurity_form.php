@@ -118,7 +118,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       if($context_item->isServer()){
       //$this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
       // Zeitraum zur Löschung alter Log Daten
-      $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,false,'','','','','','',false);
+      $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,true,'','','','','','',false);
       // Räume für langfristige Archivierung
       // Log-Daten runterladen für bestimmte Räume (pseudonymisiert)
       // Log-Daten für bestimmte Räume löschen
@@ -187,18 +187,29 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       			
       			if(!empty($log_data) or !empty($log_archive_data)){
       				// Link für das pseudonymisierte herunterladen
-      				$link = ahref_curl( $this->_environment->getCurrentContextID(),
+      				$link_export = ahref_curl( $this->_environment->getCurrentContextID(),
       							$this->_environment->getCurrentModule(),
       							'getlogfile',
-      							array('id' => $room->getItemID()), ' '.$this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT'));
+      							array('id' => $room->getItemID()), '<img src="images/archive_found.png" alt="'.$this->_translator->getMessage('CONFIGURATION_LOG_EXPORT').'">',$this->_translator->getMessage('CONFIGURATION_LOG_EXPORT'));
+      				
+      				$link_delete = ahref_curl( $this->_environment->getCurrentContextID(),
+      							$this->_environment->getCurrentModule(),
+      							'datasecurity',
+      							array('modus' => 'delete','id' => $room->getItemID()), '<img src="images/delete_restriction.gif" width="14">',$this->_translator->getMessage('CONFIGURATION_LOG_DELETE'));
       			} else {
-      				$link = ' '.$this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT');
+      				$link_export = '<img src="images/archive.png">'; //.$this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT')
+      				$link_delete = '<img src="images/delete_restriction.gif">';
       			}
       			
-
+      			$link_disable_archive = ahref_curl( $this->_environment->getCurrentContextID(),
+      							$this->_environment->getCurrentModule(),
+      							'datasecurity',
+      							array('modus' => 'remove','id' => $room->getItemID()), '<img src="images/less.gif" width="14">',$this->_translator->getMessage('CONFIGURATION_LOG_DEARCHIVE'));
       			
       			
-      			$this->_form->addCheckbox('ROOM_'.$room->getItemID(),$room->getItemID(),'','',$room->getTitle().$type.$link,'','',$disabled);
+      			
+      			$this->_form->addText('Name', 'Label', $room->getTitle().$type.' '.$link_export.' '.$link_delete.' '.$link_disable_archive);
+      			#$this->_form->addCheckbox('ROOM_'.$room->getItemID(),$room->getItemID(),'','',$room->getTitle().$type.$link_export.' '.$link_delete,'','',$disabled);
       			unset($type);
       			unset($room);
       			$room = $room_list->getNext();
@@ -278,9 +289,27 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      // check choosen auth source
-      
-  
+   	/* sollte automatisch passieren, 16.08.2013 IJ
+   	if ( empty($this->_form_post['log_delete_interval']) ) {
+   		$this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_FIELD',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'));
+   		$this->_form->setFailure('log_delete_interval');
+   	}
+   	*/
+   	/* _checkValues wird nicht aufgerufen daher greift dies hier nicht, 16.08.2013 IJ
+      if ( !empty($this->_form_post['log_delete_interval'])
+      	  and !is_numeric($this->_form_post['log_delete_interval'])
+      	) {
+   		$this->_error_array[] = $this->_translator->getMessage('TBD');
+   		$this->_form->setFailure('log_delete_interval');
+   	}
+      if ( !empty($this->_form_post['log_delete_interval'])
+      	  and is_numeric($this->_form_post['log_delete_interval'])
+      	  and $this->_form_post['log_delete_interval'] <= 0
+      	) {
+   		$this->_error_array[] = $this->_translator->getMessage('TBD');
+   		$this->_form->setFailure('log_delete_interval');
+   	}
+   	*/
    }
 }
 ?>

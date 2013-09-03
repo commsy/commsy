@@ -183,7 +183,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                  and $this->_form_post['auth_source'] != -1
                ) {
                $auth_manager = $auth_object->getAuthManager($this->_form_post['auth_source']);
-            } else {
+            } elseif ($this->_form_post['auth_type'] != -1) {
                $auth_manager = $auth_object->getAuthManagerByType($this->_form_post['auth_type']);
             }
             $this->_auth_type = $this->_form_post['auth_type'];
@@ -264,11 +264,17 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                                $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                'option');
       $context_item = $this->_environment->getCurrentContextItem();
-
+      
+      
       $this->_form->addEmptyLine();
       if ( !isset($this->_auth_type_array) ) {
-         $this->_form->addText('auth_type',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE'),$this->_auth_type);
-         $this->_form->addHidden('auth_type_hidden',$this->_auth_type);
+      	if($disabled){
+      		$this->_form->addText('auth_type',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE_SETTING'));
+      	} else {
+      		$this->_form->addText('auth_type',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE'),$this->_auth_type);
+      		$this->_form->addHidden('auth_type_hidden',$this->_auth_type);
+      	}
+         
       } else {
          $this->_form->addSelect( 'auth_type',
                                   $this->_auth_type_array,
@@ -282,7 +288,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                                   $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                   'option');
       }
-      $this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,20,true,'','','','','','',$disabled);
+      if(!$disabled){
+      	$this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,20,true,'','','','','','',$disabled);
+      }
+      
       if ( $this->_disable_default ) {
          $this->_form->addHidden('disable_default','yes');
          $this->_form->addHidden('default',1);
@@ -290,10 +299,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       if ( $this->_disable_show ) {
          $this->_form->addHidden('show',1);
       }
-      $this->_form->addRadioGroup('default',$translator->getMessage('COMMON_DEFAULT'),'',$this->_yes_no_array,'','',true,'','',$disabled or $this->_disable_default);
-      $this->_form->addRadioGroup('ims',$translator->getMessage('COMMON_IMS'),'',$this->_yes_no_array,'','',true,'','',$disabled or $this->_disable_ims);
-      $this->_form->addRadioGroup('show',$translator->getMessage('COMMON_ACTIVATED'),'',$this->_yes_no_array,'','',true,'','',$disabled or $this->_disable_show);
-      $this->_form->addEmptyLine();
+      if(!$disabled){
+	      $this->_form->addRadioGroup('default',$translator->getMessage('COMMON_DEFAULT'),'',$this->_yes_no_array,'','',true,'','',$disabled or $this->_disable_default);
+	      $this->_form->addRadioGroup('ims',$translator->getMessage('COMMON_IMS'),'',$this->_yes_no_array,'','',true,'','',$disabled or $this->_disable_ims);
+	      $this->_form->addRadioGroup('show',$translator->getMessage('COMMON_ACTIVATED'),'',$this->_yes_no_array,'','',true,'','',$disabled or $this->_disable_show);
+	      $this->_form->addEmptyLine();
+      }
 
       // CAS
       if ( $this->_auth_type == 'CAS' ) {
@@ -381,40 +392,44 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_form->addTextfield('change_password_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_URL'),'',255,40,false,'','','','','','',$disabled);
          $this->_form->addEmptyLine();
       }
-
-      if ( $this->_disable_change_user_id ) {
-         $this->_form->addhidden('changeUserID',2);
-         $this->_form->addText('textchangeUserID',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
-      } else {
-         $this->_form->addRadioGroup('changeUserID',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+      
+      if(!$disabled){
+	
+	      if ( $this->_disable_change_user_id ) {
+	         $this->_form->addhidden('changeUserID',2);
+	         $this->_form->addText('textchangeUserID',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
+	      } else {
+	         $this->_form->addRadioGroup('changeUserID',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      }
+	
+	      if ( $this->_disable_change_user_data ) {
+	         $this->_form->addhidden('changeUserData',2);
+	         $this->_form->addText('textchangeUserData',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERDATA_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
+	      } else {
+	         $this->_form->addRadioGroup('changeUserData',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERDATA_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      }
+	
+	      if ( $this->_disable_change_password ) {
+	         $this->_form->addhidden('changePassword',2);
+	         $this->_form->addText('textchangePassword',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
+	      } else {
+	         $this->_form->addRadioGroup('changePassword',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      }
+	
+	      if ( $this->_disable_add_user ) {
+	         $this->_form->addhidden('addAccount',2);
+	         $this->_form->addText('textaddAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
+	      } else {
+	         $this->_form->addRadioGroup('addAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      }
+	      if ( $this->_disable_delete_user) {
+	         $this->_form->addhidden('deleteAccount',2);
+	         $this->_form->addText('textdeleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
+	      } else {
+	         $this->_form->addRadioGroup('deleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+	      }
       }
-
-      if ( $this->_disable_change_user_data ) {
-         $this->_form->addhidden('changeUserData',2);
-         $this->_form->addText('textchangeUserData',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERDATA_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
-      } else {
-         $this->_form->addRadioGroup('changeUserData',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERDATA_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-      }
-
-      if ( $this->_disable_change_password ) {
-         $this->_form->addhidden('changePassword',2);
-         $this->_form->addText('textchangePassword',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
-      } else {
-         $this->_form->addRadioGroup('changePassword',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-      }
-
-      if ( $this->_disable_add_user ) {
-         $this->_form->addhidden('addAccount',2);
-         $this->_form->addText('textaddAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
-      } else {
-         $this->_form->addRadioGroup('addAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-      }
-      if ( $this->_disable_delete_user) {
-         $this->_form->addhidden('deleteAccount',2);
-         $this->_form->addText('textdeleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
-      } else {
-         $this->_form->addRadioGroup('deleteAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-      }
+      
       if($this->_commsy_default){
       	$this->_form->addEmptyLine();
       	$this->_form->addRadioGroup('password_secure_check',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_CONTROL'),'',$this->_yes_no_array,'','',true,'','',$disabled);	      
@@ -425,18 +440,24 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 	      $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',2,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',3,10,false,'','','','','','',$disabled);
 	      $this->_form->addTextfield('days_before_expiring_sendmail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SEND_MAIL'),'',2,10,false,'','','','','','',$disabled);
-	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',1,10,false,'','','','','','',$disabled);
-	      
+	      $this->_form->addTextfield('password_generation','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_GENERATION'),'',2,10,false,'','','','','','',$disabled);
+	      $this->_form->combine();
+	      $this->_form->addText('Info', $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION'), $translator->getMessage('CONFIGURATION_AUTHENTICATION_GENERATION_INFO'));
 	      
       }
-      $this->_form->addEmptyLine();
+      if(!$disabled){
+      	$this->_form->addEmptyLine();
+      }
       //Datenschutz
-      $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',false);
-      $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',2,10,false,'','','','','','',false);
-      $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',false);
-      $this->_form->addTextfield('trys_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
-      #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
-
+      if ( empty($this->_auth_type)
+      	  and !isset($this->_auth_type_array)     		
+      	) {
+         $this->_form->addRadioGroup('temporary_lock', $translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK'),'',$this->_yes_no_array,'','',true,'','',false);
+         $this->_form->addTextfield('seconds_interval','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_INTERVAL'),'',3,10,false,'','','','','','',false);
+         $this->_form->addTextfield('try_until_lock','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'),'',2,10,false,'','','','','','',false);
+         $this->_form->addTextfield('temporary_minutes','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER_LOCK_TIME'),'',2,10,false,'','','','','','',false);
+         #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
+      }
 
       // specific options
       if ( !$this->_commsy_default ) {
@@ -456,7 +477,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
-         if ( mb_strlen($this->_values['auth_source']) == 2 and $this->_values['auth_source'] != -1) {
+         if ( !empty($this->_values['auth_source']) and mb_strlen($this->_values['auth_source']) == 2 and $this->_values['auth_source'] != -1) {
             $this->_values['auth_source'] = -1;
          }
          if ( isset($this->_values['auth_type_hidden']) and !empty($this->_values['auth_type_hidden']) ) {
@@ -505,14 +526,14 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $current_context = $this->_environment->getCurrentContextItem();
          
          // Datenschutz
-         $this->_values['temporary_lock'] = $this->_item->getTemporaryLock();
+         $this->_values['temporary_lock'] = $current_context->getTemporaryLock();
          $this->_values['seconds_interval'] = $current_context->getLockTimeInterval();
          $this->_values['temporary_minutes'] = $current_context->getLockTime();
          $this->_values['password_generation'] = $current_context->getPasswordGeneration();
          $this->_values['password_expiration'] = $current_context->getPasswordExpiration();
          $this->_values['try_until_lock'] = $current_context->getTryUntilLock();
          $this->_values['days_before_expiring_sendmail'] = $current_context->getDaysBeforeExpiringPasswordSendMail();
-         
+
          if( empty($this->_values['password_secure_check'])){
          	$this->_values['password_secure_check'] = 2;
          	$this->_disable_password_check = true;
@@ -524,7 +545,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          }
 
          if( empty($this->_values['password_length'])){
-         	$this->_values['password_length'] = 1;
+         	$this->_values['password_length'] = 0;
          }
          if( empty($this->_values['password_bigchar'])){
          	$this->_values['password_bigchar'] = 2;
@@ -760,7 +781,14 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             #}
          }
       } else {
+      	$current_context = $this->_environment->getCurrentContextItem();
+      	
       	// Datenschutz
+      	$this->_values['temporary_lock'] = $current_context->getTemporaryLock();
+      	$this->_values['seconds_interval'] = $current_context->getLockTimeInterval();
+      	$this->_values['temporary_minutes'] = $current_context->getLockTime();
+      	$this->_values['try_until_lock'] = $current_context->getTryUntilLock();
+      	
       	if( empty($this->_values['temporary_lock'])){
       		$this->_values['temporary_lock'] = 2;
       	}
@@ -769,6 +797,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	}
       	if( empty($this->_values['temporary_minutes'])) {
       		$this->_values['temporary_minutes'] = 0;
+      	}
+      	if( empty($this->_values['try_until_lock'])) {
+      		$this->_values['try_until_lock'] = 0;
       	}
       	
          $this->_values['auth_source'] = -1;
@@ -803,6 +834,23 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST_ERROR');
          $this->_form->setFailure('host','');
       }
+      
+      // password_length
+      if ( !empty($this->_form_post['password_length'])
+      	  and !is_numeric($this->_form_post['password_length'])
+      	) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'));
+      	$this->_form->setFailure('password_length','');
+      }
+      
+      // login locking
+      if ( !empty($this->_form_post['try_until_lock'])
+      	  and !is_numeric($this->_form_post['try_until_lock'])
+      	) {
+      	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'));
+      	$this->_form->setFailure('try_until_lock','');
+      }
+      
    }
 }
 ?>

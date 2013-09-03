@@ -21,7 +21,7 @@ $message["PROJECT_MAIL_BODY_COMMUNITIY_ROOMS_UNLINKED"]["de"] = "%_PROJECT_ART_D
 $message["PROJECT_MAIL_BODY_DELETE"]["de"] = "Löschung %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.";
 $message["PROJECT_MAIL_BODY_DELETE_INFO"]["de"] = "%_PROJECT_ART_DEF_NOMS_BIG %_PROJECT_SUB_NOMS_BIG %1 wurde seit %3 Tagen nicht mehr verwendet. Daher findet eine Löschung  %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG in %2 Tagen statt.
 
-Wenn Sie nicht wollen, dass %_PROJECT_ART_DEF_NOMS_LOW  %_PROJECT_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_NOMS_BIG ein.";
+Wenn Sie nicht wollen, dass %_PROJECT_ART_DEF_NOMS_LOW %_PROJECT_SUB_NOMS_BIG gelöscht wird, loggen Sie sich einmal innerhalb der nächsten %2 Tage in %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_NOMS_BIG ein.";
 $message["PROJECT_MAIL_BODY_INFORMATION"]["de"] = "Die Informationen im Einzelnen:
 Name des Raumes: %1
 Bearbeiter:      %2
