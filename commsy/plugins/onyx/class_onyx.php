@@ -776,6 +776,13 @@ class class_onyx extends cs_plugin {
 	    									) {
 	    									$create_new = false;
 	    									$data_item = $section_item;
+		    					         $file_id_array = $data_item->getFileIDArray();
+		    					         if ( !isset($file_id_array) ) {
+		    						         $file_id_array = array();
+		    					         }
+					    					$file_id_array[] = $file_item->getFileID();
+					    					$data_item->setFileIDArray($file_id_array);
+					    					$data_item->save();
 	    								}
 	    							}
 	    							if ($create_new) {
@@ -802,49 +809,47 @@ class class_onyx extends cs_plugin {
 			                        $section_item->setModificatorItem($current_user);
                                  $section_item->setModificationDate(getCurrentDateTimeInMySQL());
 
-							            // Set attributes
+							            // section: set attributes
 						               $section_item->setTitle($section_title);
-							            #$section_item->setNumber($_POST['number']);
+						               $section_list = $data_item->getSectionList();
+						               $number = $section_list->getCount();
+						               $section_item->setNumber(($number+1));
 						               $section_item->setLinkedItemID($data_item->getItemID());
+						               
+						               $file_id_array = array();
+						               $file_id_array[] = $file_item->getFileID();
+						               $section_item->setFileIDArray($file_id_array);
 						               $section_item->save();
-
-						               // Update the material regarding the latest section informations...
-						               // (this takes care of saving the section itself, too)
+						                
+						               // save material item
 						               $data_item->setModificatorItem($current_user);
 						               if (!$data_item->isNotActivated()){
 						               	$data_item->setModificationDate($section_item->getModificationDate());
 						               }else{
 						               	$data_item->setModificationDate($data_item->getModificationDate());
 						               }
-						               $section_list = $data_item->getSectionList();
-						               $section_list->set($section_item);
-						               $data_item->setSectionList($section_list);
-						               $data_item->setSectionSaveID($section_item->getItemId());
 						               
-						               #$external_view_array = $data_item->getExternalViewerArray();
-						               #$data_item->setExternalViewerAccounts($external_view_array);
-						               
-						               $data_item->save();
-
 						               // saveResult_key
 						               $plugin_config['saveResult'][$fid][$section_key] = $section_item->getItemID();
 						               $data_item->setPluginConfigForPlugin($this->_identifier,$plugin_config);
 						               $data_item->save();
-						               
-	    								   $data_item = $section_manager->getItem($plugin_config['saveResult'][$fid][$section_key]);
 			                     }		
 	    							}
 	    						}
 	    					}
 	    					
-	    					// file item to data item
-	    					$file_id_array = $data_item->getFileIDArray();
-	    					if ( !isset($file_id_array) ) {
-	    						$file_id_array = array();
+	    					// not section
+	    					else {	    					
+		    					// file item to data item
+		    					$file_id_array = $data_item->getFileIDArray();
+		    					if ( !isset($file_id_array) ) {
+		    						$file_id_array = array();
+		    					}
+		    					$file_id_array[] = $file_item->getFileID();
+		    					$data_item->setFileIDArray($file_id_array);
+		    					$data_item->save();
 	    					}
-	    					$file_id_array[] = $file_item->getFileID();
-	    					$data_item->setFileIDArray($file_id_array);
-	    					$data_item->save();
+	    					
 	    					unlink($temp_file);
 	    					
 	    					// save onyx hash in user_item
@@ -877,8 +882,8 @@ class class_onyx extends cs_plugin {
 		    					unset($session_item);
 		    					unset($session_manager);
                      }
-
-	    					return $file_item->getFileID();	    					 
+                     $retour = (int)$file_item->getFileID();
+	    					return $retour;	    					 
 	    				} else {
 	    					return new SoapFault('ERROR',$this->_title.': can not save temp file');
 	    				}  					    			    		

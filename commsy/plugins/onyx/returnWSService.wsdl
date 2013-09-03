@@ -17,7 +17,9 @@
 <part name="uniqueId" type="xsd:string"/>
 <part name="resultFile" type="xsd:base64Binary"/>
 </message>
-<message name="saveResultResponse"/>
+<message name="saveResultResponse">
+<part name="file_id" type="xsd:integer"/>
+</message>
 <message name="saveResultLocal">
 <part name="uniqueId" type="xsd:string"/>
 <part name="resultLocalFile" type="xsd:string"/>
