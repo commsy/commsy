@@ -574,6 +574,7 @@ class cs_page_view extends cs_view {
    	
    	if ($ownRoomItem) {
    		$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+   		$to_javascript['own']['id'] = $ownRoomItem->getItemId();
    	}
    	
    	// translations - should be managed elsewhere soon
