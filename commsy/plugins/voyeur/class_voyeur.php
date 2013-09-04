@@ -32,7 +32,7 @@ class class_voyeur extends cs_plugin {
       parent::__construct($environment);
       $this->_translator->addMessageDatFolder('plugins/voyeur/messages');
       $this->_identifier = 'voyeur';
-      $this->_title      = 'Voyeur';
+      $this->_title      = 'Voyant';
       $this->_image_path = 'plugins/'.$this->getIdentifier();
    }
 
@@ -140,7 +140,7 @@ class class_voyeur extends cs_plugin {
          } else {
             $url .= '?';
          }
-         $url .= 'inputFormat=zip';
+         #$url .= 'inputFormat=zip';
          $url .= '&input='.urlencode($url_to_zip);
          $url = str_replace('&&','&',$url);
       }
