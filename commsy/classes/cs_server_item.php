@@ -589,16 +589,35 @@ class cs_server_item extends cs_guide_item {
 	   	  						$mail->set_from_email($mod_user_first->getEmail());
 	   	  						$mail->set_from_name($mod_user_first->getFullname());
 	   	  						 
-	   	  						$single_entry = $this->_environment->getConfiguration('c_single_entry_point');
-	   	  						if ( empty($single_entry) ) {
-	   	  							$single_entry = 'commsy.php';
+	   	  						// link
+	   	  						$url_to_portal = '';
+	   	  						if ( !empty($portal_item) ) {
+	   	  							$url_to_portal = $portal_item->getURL();
 	   	  						}
-	   	  						$link = $this->_environment->getConfiguration('c_commsy_domain');
-	   	  						$url_path = $this->_environment->getConfiguration('c_commsy_url_path');
-	   	  						if ( !empty($url_path) ) {
-	   	  							$link .= $url_path;
+	   	  						$c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+	   	  						if ( isset($c_commsy_cron_path) ) {
+	   	  							$link = $c_commsy_cron_path;
+	   	  						} elseif ( !empty($url_to_portal) ) {
+	   	  							$c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+	   	  							if ( stristr($c_commsy_domain,'https://') ) {
+	   	  								$link = 'https://';
+	   	  							} else {
+	   	  								$link = 'http://';
+	   	  							}
+	   	  							$link .= $url_to_portal;
+	   	  							$file = 'commsy.php';
+	   	  							$c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+	   	  							if ( !empty($c_single_entry_point) ) {
+	   	  								$file = $c_single_entry_point;
+	   	  							}
+	   	  							$link .= '/'.$file;
+	   	  						} else {
+	   	  							$file = $_SERVER['PHP_SELF'];
+	   	  							$file = str_replace('cron','commsy',$file);
+	   	  							$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 	   	  						}
-	   	  						$link .= '/'.$single_entry.'?cid='.$portal_item->getContextID().'&mod=home&fct=index&cs_modus=password_forget';
+	   	  						$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+	   	  						// link	   	  						
 	   	  						
 	   	  						//content
 	   	  						$email_text_array = $portal_item->getEmailTextArray();
@@ -694,17 +713,36 @@ class cs_server_item extends cs_guide_item {
 	   	  							$to = $to_name." <".$to.">";
 	   	  						}
 	   	  						
-	   	  						$single_entry = $this->_environment->getConfiguration('c_single_entry_point');
-	   	  						if ( empty($single_entry) ) {
-	   	  							$single_entry = 'commsy.php';
+	   	  						// link
+	   	  						$url_to_portal = '';
+	   	  						if ( !empty($portal_item) ) {
+	   	  							$url_to_portal = $portal_item->getURL();
 	   	  						}
-	   	  						$link = $this->_environment->getConfiguration('c_commsy_domain');
-	   	  						$url_path = $this->_environment->getConfiguration('c_commsy_url_path');
-	   	  						if ( !empty($url_path) ) {
-	   	  							$link .= $url_path;
+	   	  						$c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+	   	  						if ( isset($c_commsy_cron_path) ) {
+	   	  							$link = $c_commsy_cron_path;
+	   	  						} elseif ( !empty($url_to_portal) ) {
+	   	  							$c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+	   	  							if ( stristr($c_commsy_domain,'https://') ) {
+	   	  								$link = 'https://';
+	   	  							} else {
+	   	  								$link = 'http://';
+	   	  							}
+	   	  							$link .= $url_to_portal;
+	   	  							$file = 'commsy.php';
+	   	  							$c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+	   	  							if ( !empty($c_single_entry_point) ) {
+	   	  								$file = $c_single_entry_point;
+	   	  							}
+	   	  							$link .= '/'.$file;
+	   	  						} else {
+	   	  							$file = $_SERVER['PHP_SELF'];
+	   	  							$file = str_replace('cron','commsy',$file);
+	   	  							$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 	   	  						}
-	   	  						$link .= '/'.$single_entry.'?cid='.$portal_item->getContextID().'&mod=home&fct=index';
-	   	  						
+	   	  						$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
+	   	  						// link
+	   	  							   	  
 	   	  						//content
 	   	  						$email_text_array = $portal_item->getEmailTextArray();
 	   	  						$translator->setEmailTextArray($portal_item->getEmailTextArray());
