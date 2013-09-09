@@ -150,7 +150,7 @@
 						if(	isset($c_virus_scan) &&
 								$c_virus_scan &&
 								isset($c_virus_scan_cron) &&
-								!empty($c_virus_scan_cron) &&
+								//!empty($c_virus_scan_cron) &&
 								!$c_virus_scan_cron) {
 								
 							// use virus scanner
@@ -196,7 +196,7 @@
 					if(	isset($c_virus_scan) &&
 							$c_virus_scan &&
 							isset($c_virus_scan_cron) &&
-							!empty($c_virus_scan_cron) &&
+							//!empty($c_virus_scan_cron) &&
 							!$c_virus_scan_cron) {
 							
 						// use virus scanner
