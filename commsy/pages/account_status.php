@@ -253,7 +253,7 @@ if ( empty($command) and empty($command_delete) ) {
       }
       // Datenschutz
       if($environment->getCurrentPortalItem()->getHideAccountname()){
-      	$userid = 'XXX';
+      	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
       } else {
       	$userid = $user->getUserID();
       }
@@ -357,7 +357,21 @@ if ( empty($command) and empty($command_delete) ) {
                $user->makeNoContactPerson();
             }
             
-            if($_POST['login_as'] == 1){
+            if(empty($_POST['login_as'])){
+            	#$deactived_login_as = $this->_item->isDeactivatedLoginAsAnotherUser();
+            	#pr($deactived_login_as);
+        
+            	global $c_default_value_login_as_xy_for_new_moderator;
+            	if(!$c_default_value_login_as_xy_for_new_moderator){
+            		$login_as = 1;
+            	} else {
+            		$login_as = 2;
+            	}
+
+            }
+            
+            #pr($_POST);breaK;
+            if($_POST['login_as'] == 1 or $login_as == 1){
             	$user->deactivateLoginAsAnotherUser();
             } else {
             	$user->unsetDeactivateLoginAsAnotherUser();

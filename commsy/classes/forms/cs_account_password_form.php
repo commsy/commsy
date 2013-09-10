@@ -189,12 +189,12 @@ class cs_account_password_form extends cs_rubric_form {
       		}
       	}
       	if($auth_source_item->getPasswordSecureNumber() == 1){
-      		if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+      		if(!preg_match('~[0-9]+~u',$this->_form_post['password'])){
       			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_NUMBER_ERROR');
       		}
       	}
       	if($auth_source_item->getPasswordSecureSmallchar() == 1){
-      		if(!preg_match('~[^a-zA-Z0-9]+~u',$this->_form_post['password'])){
+      		if(!preg_match('~[a-z]+~u',$this->_form_post['password'])){
       			$this->_error_array[] = $this->_translator->getMessage('USER_NEW_PASSWORD_SMALLCHAR_ERROR');
       		}
       	}

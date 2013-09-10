@@ -310,7 +310,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              
              // Datenschutz
              if($environment->getCurrentPortalItem()->getHideAccountname()){
-             	$userid = 'XXX';
+             	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
              } else {
              	$userid = $user->getUserID();
              }

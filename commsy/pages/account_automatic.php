@@ -90,7 +90,7 @@ if ($command == 'automatic') {
    }
 
    if($environment->getCurrentPortalItem()->getHideAccountname()){
-   	$userid = ' ';
+   	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
    } else {
    	$userid = $user->getUserID();
    }

@@ -164,7 +164,7 @@ class cs_home_member_page extends cs_left_page {
                     }
                     // Datenschutz
                     if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-                    	$userid = 'XXX';
+                    	$userid = 'XXX '.$this->_translator->getMessage('COMMON_DATASECURITY');
                     } else {
                     	$userid = $portal_user->getUserID();
                     }

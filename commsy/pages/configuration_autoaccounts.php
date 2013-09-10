@@ -745,7 +745,7 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
 
    // Datenschutz
    if($environment->getCurrentPortalItem()->getHideAccountname()){
-   	$userid = ' ';
+   	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
    } else {
    	$userid = $user->getUserID();
    }

@@ -56,7 +56,12 @@ define([	"dojo/_base/declare",
 		
 		onPopupSubmitError: function(response){
 			require(["dojo/dom-style", "dojo/query", "dojo/NodeList-dom"], function(domStyle, query){
-				domStyle.set("error_wrong_code", 'display', 'block');
+				if(response.code === "111"){
+					domStyle.set("error_wrong_code", 'display', 'block');
+				} else if(response.code === "115"){
+					domStyle.set("error_agb_accept",'display','block');
+				}
+				
 			});
 			//query("input[name='form_data[code]']", this.contentNode).value = '';
 		}

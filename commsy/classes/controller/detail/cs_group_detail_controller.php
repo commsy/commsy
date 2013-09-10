@@ -217,7 +217,7 @@
                
                // Datenschutz
                if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-               	$userid = ' ';
+               	$userid = 'XXX (aus Datenschutzgründen verborgen)';
                } else {
                	$userid = $user->getUserID();
                }

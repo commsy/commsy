@@ -445,7 +445,7 @@
 			);
 
 			// edit
-			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel()) {
+			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel() ) {
 				$return['edit'] = true;
 				/*
 				 * if ( empty($module) ) {

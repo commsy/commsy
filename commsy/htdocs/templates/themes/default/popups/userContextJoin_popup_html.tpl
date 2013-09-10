@@ -19,6 +19,11 @@
 								___ACCOUNT_PROCESS_ROOM_CODE_ERROR_NEW___
 							</div>
 						</div>
+						<div class="input_row" id="error_agb_accept" style="margin: 10px 0 20px 180px; border: 2px solid red; padding:10px; display:none;">
+							<div>
+								___ACCOUNT_PROCESS_ROOM_AGB_ERROR___
+							</div>
+						</div>
                    		{if $popup.room.check_with_code}
 						<div class="input_row">
 							<div class="input_container_180">
@@ -41,8 +46,8 @@
 							<div class="input_container_180">
 								<textarea cols="80" rows="10" name="form_data[description_user]"></textarea>
 								{if $popup.agb.agb_datasecurity}
-								<input type="checkbox" name="form_data[agb]" value="1"> ___AGB_CONFIRMATION_LINK_INPUT___<br/>
-								{$popup.room.agb_text}
+								<input type="checkbox" name="form_data[agb]" value="1">
+								<a onclick="window.open(href, target, 'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400');" target="agb" href="commsy.php?cid={$popup.room.room_id}&mod=agb&fct=index&agb=1">{i18n tag=AGB_COMFIRMATION_TEXT param1=___AGB_CONFIRMATION_LINK_INPUT___}</a>
 								{/if}
 							</div>
 						</div>

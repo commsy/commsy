@@ -457,6 +457,19 @@ function performAction ( $environment, $action_array, $post_array ) {
             }
          }
          $mail->set_to($send_to);
+         // Datenschutz
+         if($environment->getCurrentPortalItem()->getHideAccountname()){
+         	$mail_user = $mail;
+         	$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$content);
+         	$mail_user->set_to($user->getEmail());
+         	$mail_user->set_message($user_description);
+         	$mail_user->send();
+         	$mail->set_to($admin->getEmail());
+         	$mail->set_message($content);
+         }
+         
+         
+         
 
          #// cc / bcc
          $cc_string = '';

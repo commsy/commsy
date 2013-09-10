@@ -2,7 +2,7 @@
 $message["CONFIGURATION_ACCOUNT_OPTIONS_DESC"]["de"] = "Stellen Sie die Bedingungen der Teilnahme und Nutzungsvereinbarungen ein.";
 $message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["de"] = "Zutrittsbedingungen";
 $message["CONFIGURATION_AGB_ACCEPT"]["de"] = "Hiermit akzeptiere ich die ";
-$message["CONFIGURATION_AGB_ACCEPT_ERROR"]["de"] = "To complete the process please agree with General Terms and Conditions";
+$message["CONFIGURATION_AGB_ACCEPT_ERROR"]["de"] = "Akzeptieren Sie bitte die Nutzungsvereinbarungen um den Vorgang abzuschließen";
 $message["CONFIGURATION_AGB_DATASECURITY"]["de"] = "Nutzungsvereinbarungen Datenschutzkonform";
 $message["CONFIGURATION_AGB_FORM_HEADLINE"]["de"] = "Nutzungsvereinbarungen";
 $message["CONFIGURATION_AGB_FORM_TEXT"]["de"] = "Text";

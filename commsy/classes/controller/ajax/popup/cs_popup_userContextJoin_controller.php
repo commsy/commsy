@@ -97,6 +97,14 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               $user_item->setGroupByID($group->getItemID());
 		            }
 		         }
+		         
+		         if($portal_item->withAGBDatasecurity()){
+		         	if($room_item->getAGBStatus()){
+		         		if($form_data['agb']){
+		         			$user_item->setAGBAcceptance();
+		         		}
+		         	}
+		         }
 		      
 		         // test if user id already exists (reload page)
 		         $user_id = $user_item->getUserID();
@@ -159,7 +167,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               $body .= LF.LF;
 		               // Datenschutz
 		               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-		               	$userid = ' ';
+		               	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
 		               } else {
 		               	$userid = $user->getUserID();
 		               }
@@ -234,7 +242,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               
 		               // Datenschutz
 		               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-		               	$userid = ' ';
+		               	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
 		               } else {
 		               	$userid = $user->getUserID();
 		               }
@@ -273,12 +281,14 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		         }
 		      } elseif ( $room_item->checkNewMembersWithCode()
 		      and $room_item->getCheckNewMemberCode() != $form_data['code']
-		      and $agb_flag
 		      ) {
 		         $account_mode = 'member';
 		         $error = 'code';
 		         $this->_popup_controller->setErrorReturn(111, 'wrong_code', array());
+		      } elseif (!$agb_flag and $portal_item->withAGBDatasecurity() and $room_item->getAGBStatus()){
+		      	 $this->_popup_controller->setErrorReturn(115, 'agb_not_accepted', array());
 		      }
+		      
 		      if ($account_mode =='to_room'){
 		         $this->_popup_controller->setSuccessfullItemIDReturn($form_data['iid']);
 		      } else {
@@ -310,6 +320,9 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		if($portal_item->withAGBDatasecurity()){
 			if($item->getAGBStatus() == 1){
 				$agb_text = $item->getAGBTextArray();
+				
+				$agb_link = '';
+				
 				$room_information['agb_text'] = $agb_text[strtoupper($translator->_selected_language)];
 			}
 		}

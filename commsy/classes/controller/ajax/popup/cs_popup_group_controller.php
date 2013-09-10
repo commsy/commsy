@@ -47,7 +47,6 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				} else {
 				   $this->_popup_controller->assign('item', 'description', $item->getDescription());
 				}   
-				
  				$this->_popup_controller->assign('item', 'public', $item->isPublic());
 			    $this->_popup_controller->assign('item', 'picture', $item->getPicture());
 			    if ($item->isGroupRoomActivated()){

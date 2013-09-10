@@ -216,10 +216,11 @@
 				// Datenschutz
 				if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
 					$mail_user = $mail;
-					$user_description = str_replace('XXX',$user->getUserID(),$description);
+					$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$description);
 					$mail_user->set_message($user_description);
 					$mail_user->send();
 					$mail->set_to($admin->getEmail());
+					$mail->set_message($description);
 				}
 				
 				

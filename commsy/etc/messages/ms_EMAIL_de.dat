@@ -8,23 +8,21 @@ $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Hallo %1,
 
 Ihre Kennung wird in %2 Tagen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gel&ouml;scht";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Hallo %1,
+$message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gel&ouml;scht";
+$message["EMAIL_INACTIVITY_DELETE_NOW_BODY"]["de"] = "Ihre Kennung wurde gelöscht. Bitte wenden Sie sich an den Portal-Moderator.
 
-Ihre Kennung wird morgen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
+%1";
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
 
-%2";
+%1";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gel&ouml;scht";
-$message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["de"] = "Hallo %1,
-
-Ihre Kennung wird in %2 Tagen wegen inaktivität gesperrt. Bitte loggen Sie sich innerhalb dieser Zeit ein, um einer Sperrung zu entgehen.
-
-%3";
-$message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gesperrt";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Hallo %1,
-
-Ihre Kennung wird morgen gesperrt. Bitte loggen Sie sich bis morgen ein, um einer Sperrung zu entgehen.
+$message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["de"] = "Ihre Kennung wird in %1 Tagen wegen inaktivität gesperrt. Bitte loggen Sie sich innerhalb dieser Zeit ein, um einer Sperrung zu entgehen.
 
 %2";
+$message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gesperrt";
+$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen gesperrt. Bitte loggen Sie sich bis morgen ein, um einer Sperrung zu entgehen.
+
+%1";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gesperrt";
 $message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "Hallo %1,
 

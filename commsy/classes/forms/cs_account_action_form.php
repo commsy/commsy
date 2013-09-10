@@ -105,6 +105,13 @@ class cs_account_action_form extends cs_rubric_form {
          if ( count($array_user_item_id) == 1 ) {
             $translate = true;
          }
+         
+         // Datenschutz
+         if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+         	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+         } else {
+         	$userid = $user->getUserID();
+         }
 
          if ( $translate ) {
             $this->_content  = $translator->getEmailMessage('MAIL_BODY_HELLO',$user->getFullname());
@@ -129,7 +136,7 @@ class cs_account_action_form extends cs_rubric_form {
 
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE',$room->getTitle());
             if ( $translate ) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_DELETE');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -143,7 +150,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_LOCK');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_LOCK',$room->getTitle());
             if ( $translate ) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_LOCK');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -157,7 +164,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_FREE');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$room->getTitle());
             if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -171,7 +178,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_USER');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room->getTitle());
             if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -185,7 +192,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_MODERATOR',$room->getTitle());
             if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_MODERATOR');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -199,7 +206,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_MAKE_CONTACT_PERSON');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON',$room->getTitle());
             if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -213,7 +220,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_UNMAKE_CONTACT_PERSON');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON',$room->getTitle());
             if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',$user->getUserID(),$room->getTitle());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON',$userid,$room->getTitle());
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON');
                $content_temp = str_replace('%2','%3',$content_temp);
@@ -238,7 +245,7 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_ACCOUNT_PASSWORD');
             $this->_subject  = $translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_PASSWORD',$room->getTitle());
             if ($translate) {
-               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_PASSWORD',$room->getTitle(),$user->getUserID());
+               $this->_content .= $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_PASSWORD',$room->getTitle(),$userid);
             } else {
                $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_ACCOUNT_PASSWORD');
                $content_temp = str_replace('%2','%3',$content_temp);

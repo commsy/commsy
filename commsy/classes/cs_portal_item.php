@@ -1030,7 +1030,7 @@ class cs_portal_item extends cs_guide_item {
    				$subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT',$this->getTitle());
    				$to = $user->getEmail();
    				
-   				$mod_contact_list = $portal_item->getContactModeratorList();
+   				$mod_contact_list = $this->getContactModeratorList();
    				$mod_user_first = $mod_contact_list->getFirst();
    				$mail->set_from_email($mod_user_first->getEmail());
    				
@@ -1091,7 +1091,6 @@ class cs_portal_item extends cs_guide_item {
    		$cron_array['success'] = true;
    		$cron_array['success_text'] = 'nothing to do';
    	}
-   
    
    	$time_end = getmicrotime();
    	$time = round($time_end - $time_start,0);
