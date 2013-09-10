@@ -1025,55 +1025,67 @@ class cs_portal_item extends cs_guide_item {
    				$user->unsetDaysForLoginAs();
    				$user->save();
    				// send mail
-   				$mail = new cs_mail();
-   
-   				$subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT',$this->getTitle());
-   				$to = $user->getEmail();
    				
+   				$mail = new cs_mail();
+   				
+   				$subject = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_SUBJECT', $this->getTitle());
+   				$to = $user->getEmail();
+   				$to_name = $user->getFullname();
+   				if ( !empty($to_name) ) {
+   					$to = $to_name." <".$to.">";
+   				}
    				$mod_contact_list = $this->getContactModeratorList();
    				$mod_user_first = $mod_contact_list->getFirst();
    				$mail->set_from_email($mod_user_first->getEmail());
+   				$mail->set_from_name($mod_user_first->getFullname());
    				
-   				//from
-   				// get all portal moderators
-   				$current_context = $this->_environment->getCurrentContextItem();
-   				$mod_list = $current_context->getModeratorList();
-   				$cc_array[] = $this->_environment->getRootUserItem()->getEmail();
-   				$cc_array = array();
-   				if (!$mod_list->isEmpty()) {
-   					$moderator_item = $mod_list->getFirst();
-   					 
-   					while ($moderator_item) {
-   						$email = $moderator_item->getEmail();
-   						if (!empty($email)) {
-   							$cc_array[] = $email;
-   						}
-   						 
-   						unset($email);
-   						$moderator_item = $mod_list->getNext();
+   				// link
+   				$url_to_portal = '';
+   				if ( !empty($this) ) {
+   					$url_to_portal = $this->getURL();
+   				}
+   				$c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+   				if ( isset($c_commsy_cron_path) ) {
+   					$link = $c_commsy_cron_path;
+   				} elseif ( !empty($url_to_portal) ) {
+   					$c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+   					if ( stristr($c_commsy_domain,'https://') ) {
+   						$link = 'https://';
+   					} else {
+   						$link = 'http://';
    					}
+   					$link .= $url_to_portal;
+   					$file = 'commsy.php';
+   					$c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+   					if ( !empty($c_single_entry_point) ) {
+   						$file = $c_single_entry_point;
+   					}
+   					$link .= '/'.$file;
+   				} else {
+   					$file = $_SERVER['PHP_SELF'];
+   					$file = str_replace('cron','commsy',$file);
+   					$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
    				}
-   				// make unique
-   				if (!empty($cc_array)) $cc_array = array_unique($cc_array);
-   				 
-   				// build strings
-   				$cc_string = implode(",", $cc_array);
-   				 
-   				if (!empty($cc_string)) {
-   					$mail->set_cc_to($cc_string);
-   				}
-   				 
-   				unset($cc_string);
-   				 
-   				 
+   				$link .= '?cid='.$this->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+   				// link
+   					
    				//content
-   				$body = $translator->getMessage('EMAIL_LOGIN_EXPIRATION_BODY', $user->getFullName(),$mod_user_first->getFullName());
-   				$body .= $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-   				 
+   				$email_text_array = $this->getEmailTextArray();
+   				$translator->setEmailTextArray($this->getEmailTextArray());
+   				
+   				$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+   				$body.= "\n\n";
+   				$body .= $translator->getEmailMessage('EMAIL_LOGIN_EXPIRATION_BODY');
+   				$body.= "\n\n";
+   				$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $this->getTitle());
+   				$body.= "\n\n";
+   				$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+   					
    				$mail->set_subject($subject);
    				$mail->set_message($body);
    				$mail->set_to($to);
-   				$mail->setSendAsHTML();
+   				
+   				#$mail->setSendAsHTML();
    				if ( $mail->send() ) {
    					$cron_array['success'] = true;
    					$cron_array['success_text'] = 'send mail to '.$to;

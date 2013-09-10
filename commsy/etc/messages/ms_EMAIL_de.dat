@@ -24,9 +24,7 @@ $message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morge
 
 %1";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gesperrt";
-$message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "Hallo %1,
-
-die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.";
+$message["EMAIL_LOGIN_EXPIRATION_BODY"]["de"] = "die Funktion, Einloggen als XYZ, ist automatisch deaktiviert worden.";
 $message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["de"] = "%1: Einloggen als XYZ ist abgelaufen";
 $message["EMAIL_PASSWORD_EXPIRATION_BODY"]["de"] = "Ihr Passwort ist nun leider abgelaufen und wurde auf einen zufälligen Wert geändert.
 

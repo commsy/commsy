@@ -20,9 +20,7 @@ $message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["en"] = "your account will be lo
 
 %1";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["en"] = "%1: Account will be locked tomorrow";
-$message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "Hello %1,
-
-your right to login as another user is deactivated now.
+$message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "your right to login as another user is deactivated now.
 
 Best regards ... %2";
 $message["EMAIL_LOGIN_EXPIRATION_SUBJECT"]["en"] = "%1: Login as another user is deactivated";
