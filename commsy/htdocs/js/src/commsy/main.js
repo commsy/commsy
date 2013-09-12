@@ -284,8 +284,11 @@ require([	"dojo/_base/declare",
 						On(printNode, "click", function(event) {
 							require(["commsy/PrintDivToggle"], function(PrintDivToggle) {
 								var printToggle = new PrintDivToggle();
-								printToggle.setup();
-							});							
+								printToggle.setup(printNode);
+								
+							});	
+							event.preventDefault();
+							return false;
 						});
 					}
 				}

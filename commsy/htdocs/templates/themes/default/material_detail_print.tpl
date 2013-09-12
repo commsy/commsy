@@ -80,7 +80,6 @@
 				{if $detail.content.description && (!isset($detail.content.sections) || empty($detail.content.sections))}
 					<div class="detail_description_print">
 						{$detail.content.description}
-						{$smarty.cookies.hiddenDivs}
 					</div>
 				{/if}
 				</div>

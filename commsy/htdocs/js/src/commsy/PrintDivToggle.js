@@ -12,7 +12,7 @@ function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomStyle, DomClas
 	return declare(BaseClass, {
 		
 
-		setup: function() {
+		setup: function(printNode) {
 		
 			var aNodes = Query("div.content_item div");
 			
@@ -25,7 +25,8 @@ function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomStyle, DomClas
 			});
 			
 			Cookie("hiddenDivs", cookieArray, { expires: 5 });
-			//console.log(cookieArray);
+			window.open(window.location+"&mode=print", "Zweitfenster");
+			console.log(cookieArray);
 		}
 	}); 
 });
