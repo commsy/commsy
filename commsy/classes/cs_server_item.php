@@ -224,7 +224,7 @@ class cs_server_item extends cs_guide_item {
    						
    						if($sourceType == 'MYSQL'){
 	   						// delete user
-	   						if($days >= $portal_item->getInactivityDeleteDays()-1){
+	   						if($days >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeLock()){
 	   							if($user->getMailSendBeforeDelete()){
 	   								
 	   								$auth_source_manager = $this->_environment->getAuthSourceManager();
@@ -245,7 +245,7 @@ class cs_server_item extends cs_guide_item {
 	   								
 	   								$mail = new cs_mail();
 	   								
-	   								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NOW_SUBJECT', $portal_item->getTitle());
+	   								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NOW_SUBJECT','' ,$portal_item->getTitle());
 	   								$to = $user->getEmail();
 	   								$to_name = $user->getFullname();
 	   								if ( !empty($to_name) ) {
@@ -302,7 +302,18 @@ class cs_server_item extends cs_guide_item {
 	   								$mail->set_message($body);
 	   								$mail->set_to($to);
 	   								
-	   							} else {
+	   								if ( $mail->send() ) {
+	   									$user->setMailSendBeforeDelete();
+	   									$user->save();
+	   										
+	   									$cron_array['success'] = true;
+	   									$cron_array['success_text'] = 'send delete mail to '.$to;
+	   								} else {
+	   									$cron_array['success'] = false;
+	   									$cron_array['success_text'] = 'failed send mail to '.$to;
+	   								}
+	   								
+	   							} else if($user->getMailSendBeforeLock()){
 	   								// Send mail to user that the user will be deleted in one day
 	   								// set MailSentBeforeDelete
 	
@@ -414,7 +425,7 @@ class cs_server_item extends cs_guide_item {
 	   								
 	   								
 	   								#$mail->setSendAsHTML();
-	   								if ( $mail->send() ) {breaK;
+	   								if ( $mail->send() ) {
 	   									$user->setMailSendBeforeDelete();
 	   									$user->save();
 	   									
@@ -429,7 +440,7 @@ class cs_server_item extends cs_guide_item {
 	   							continue;
 	   						}
 	   						// 1 Tag vor dem löschen noch eine Email verschicken
-	   						if($days >= $portal_item->getInactivityDeleteDays()-1){
+	   						if($days >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeLock()){
 	   							if(!$user->getMailSendBeforeDelete()){
 	   								// Send mail delete tomorrow
 	
@@ -557,10 +568,9 @@ class cs_server_item extends cs_guide_item {
 	   							}
 	   						}
 	   						
-	   						if($days >= $portal_item->getInactivitySendMailBeforeDeleteDays()){
+	   						if($days >= $portal_item->getInactivitySendMailBeforeDeleteDays() and $user->getMailSendBeforeLock()){
 	   							// send mail delete in the next y days
-	   							if($user->getMailSendBeforeDelete()){
-	   							} else {
+	   							if(!$user->getMailSendBeforeDelete()){
 	
 		   							if( ($portal_item->getInactivityDeleteDays() - $days) <= $portal_item->getInactivitySendMailBeforeDeleteDays()){
 		   								
@@ -1216,6 +1226,9 @@ class cs_server_item extends cs_guide_item {
    	  				$time_end = getmicrotime();
    	  				$time = round($time_end - $time_start,0);
    	  				$cron_array['time'] = $time;
+   	  			} else {
+   	  				$cron_array['success'] = true;
+   	  				$cron_array['success_text'] = 'nothing to do';
    	  			}
    	  			
    	  		} else {
