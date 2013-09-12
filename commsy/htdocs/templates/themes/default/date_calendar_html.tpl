@@ -119,7 +119,7 @@
 	                				<div class="cal_daynumber">{$cc.content.days[$pos].day}</div>
 
 	                				{if isset($cc.content.days[$pos].dates) && !empty($cc.content.days[$pos].dates)}
-	                					<div class="cal_days_events">
+	                					<div class="cal_days_events" style="height:{$cc.content.days[$pos].dates|@count * 20}px;">
 		                					{foreach $cc.content.days[$pos].dates as $date}
 		                						<div>
 			                						<div>
@@ -176,9 +176,9 @@
 		                						</div>
 		                					{/foreach}
 	                					</div>
-	                					<a style="height:10px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.days[$pos].date_new}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
+	                					<a style="height:{if $cc.content.days[$pos].dates|@count <= 4}{70 - $cc.content.days[$pos].dates|@count * 15}{else}10{/if}px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.days[$pos].date_new}'" href="#" title="___COMMON_NEW_ITEM___">{*<img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" />*}</a>
 	                				{else}
-	                					<a style="height:70px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.days[$pos].date_new}'" href="#" title="___COMMON_NEW_ITEM___"><img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" /></a>
+	                					<a style="height:70px;" class="open_popup" data-custom="iid: 'NEW', module: '{$environment.module}', date_new: '{$cc.content.days[$pos].date_new}'" href="#" title="___COMMON_NEW_ITEM___">{*<img src="{$basic.tpl_path}img/empty_calendar_week.png" alt="___COMMON_NEW_ITEM___" />*}</a>
 	                				{/if}
 	                			</td>
 	                		{/section}

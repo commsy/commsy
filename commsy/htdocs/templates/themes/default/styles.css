@@ -4232,7 +4232,7 @@ table#hour_index td, table#hour_index_head td {
     }
 
 .cal_days_events {
-    height: 70px;
+    max-height: 70px;
     overflow: auto;
     }
 
