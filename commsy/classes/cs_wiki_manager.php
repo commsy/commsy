@@ -1790,7 +1790,7 @@ function exportItemToWiki($current_item_id,$rubric){
              $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
              $mail->set_subject($subject);
 
-             $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY', $room_title, $item->getTitle(), $item->getExportToWikiLink());
+             $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY', $room_title, $user_item->getFullname(), $item->getTitle(), $item->getExportToWikiLink());
              $mail->set_message($body);
              $mail->setSendAsHTML();
 
