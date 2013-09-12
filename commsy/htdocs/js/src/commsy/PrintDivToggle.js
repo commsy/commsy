@@ -26,7 +26,7 @@ function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomStyle, DomClas
 			
 			Cookie("hiddenDivs", cookieArray, { expires: 5 });
 			window.open(window.location+"&mode=print", "Zweitfenster");
-			console.log(cookieArray);
+			//console.log(cookieArray);
 		}
 	}); 
 });
