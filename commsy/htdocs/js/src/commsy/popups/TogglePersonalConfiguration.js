@@ -305,7 +305,7 @@ define([	"dojo/_base/declare",
 			
 			switch (response.code) {
 				case "1022":
-					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
+					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];//form_data[old_password]
 					//console.log(response.reason);
 					var ulNode = DomConstruct.create('ul',{
 					});
@@ -315,11 +315,27 @@ define([	"dojo/_base/declare",
 						},ulNode,'last');
 						  //console.debug(response.reason[i], "at index", i);
 					}
-					console.log(response.reason.length);
+					//console.log(response.reason.length);
 					Tooltip.show(ulNode.outerHTML, errorNode);
 					this.errorNodes.push(errorNode);
 					
 					break;	
+				case "1023":
+					var errorNode = Query("input[name='form_data[old_password]']", this.contentNode)[0];
+					//console.log(response.reason);
+					var ulNode = DomConstruct.create('ul',{
+					});
+					for(var i=0; i<response.reason.length; i++){
+						DomConstruct.create('li',{
+							innerHTML: response.reason[i]
+						},ulNode,'last');
+						  //console.debug(response.reason[i], "at index", i);
+					}
+					//console.log(response.reason.length);
+					Tooltip.show(ulNode.outerHTML, errorNode);
+					this.errorNodes.push(errorNode);
+					
+					break;
 //				case "1023":
 //					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
 //					Tooltip.show(ErrorTranslations.personalPopup1023, errorNode);
