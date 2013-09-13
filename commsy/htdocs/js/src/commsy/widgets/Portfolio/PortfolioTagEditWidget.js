@@ -96,10 +96,30 @@ define(
 		{
 			this.inherited(arguments);
 			
+			var submitButtonNode = this.submitButtonNode;
+			
 			// insert tree
 			require(["commsy/EditTree"], Lang.hitch(this, function(EditTree)
 			{	
-				this.tree = new EditTree({
+				// redeclare the edit tree class
+				var Tree = declare(EditTree, {
+					onCreateEntrySuccessfull: function(newTag)
+					{
+						var pathToTag = this.buildPath(newTag.item_id[0].toString());
+						
+						this.tree.set("paths", [pathToTag]).then(Lang.hitch(this, function()
+						{
+							this.tree.focusNode(this.tree.get('selectedNode'));
+						}));
+					},
+					
+					onDeleteEntrySuccessfull: function(itemId)
+					{
+						DomAttr.set(submitButtonNode, "disabled", "disabled");
+					}
+				});
+				
+				this.tree = new Tree({
 					followUrl:		false,
 					checkboxes:		false,
 					room_id:		this.from_php.ownRoom.id,
@@ -107,19 +127,6 @@ define(
 					item_id:		this.item_id,
 					popup:			this
 				});
-				
-				/*
-				var instance = this;
-				declare.safeMixin(this.tree, {
-					deleteTagEntry: function(itemId)
-					{
-						DomAttr.set(instance.submitButtonNode, 'disabled', 'disabled');
-						instance.selectedTagId = null;
-						
-						this.inherited(arguments);
-					}
-				});
-				*/
 				
 				this.tree.setupTree(this.treeNode, Lang.hitch(this, function(tree)
 				{
@@ -133,14 +140,18 @@ define(
 							}
 						});
 						
-						DomAttr.remove(this.submitButtonNode, "disabled");
-						this.selectedTagId = this.tagId;
-					} else {
-						if (tree.addCreateAndRenameToAllLabels) {
-							On(tree.tree, "open", Lang.hitch(this, function(item, node) {
-								tree.addCreateAndRenameToAllLabels();
-							}));
+						if (this.submitButtonNode) {
+							DomAttr.remove(this.submitButtonNode, "disabled");
 						}
+						
+						this.selectedTagId = this.tagId;
+					}
+					
+					// add basic actions to all tree entries
+					if (tree.addCreateAndRenameToAllLabels) {
+						On(tree.tree, "open", Lang.hitch(this, function(item, node) {
+							tree.addCreateAndRenameToAllLabels();
+						}));
 					}
 				}));
 			}));
@@ -171,10 +182,9 @@ define(
 		 * Helper Functions
 		 ************************************************************************************/
 		
-		
 		/************************************************************************************
 		 * Event Handling
-		 ************************************************************************************/
+		 ************************************************************************************/		
 		onTagSelected: function(tagId) {
 			DomAttr.remove(this.submitButtonNode, "disabled");
 			
