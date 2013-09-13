@@ -91,7 +91,7 @@ define([	"dojo/_base/declare",
 		},
 
 		/************************************************************************************
-		 *** event handler
+		 *** Event handler
 		 ************************************************************************************/
 		onChildrenChange: function(parent, newChildrenList) {
 			// fetch changes to root node, that are not handled by onStoreSet(dunno why)
@@ -128,6 +128,14 @@ define([	"dojo/_base/declare",
 				);
 			}
 		},
+		
+		onCreateEntrySuccessfull: function(newTag)
+		{
+		},
+		
+		onDeleteEntrySuccessfull: function(itemId)
+		{
+		},
 
 		/************************************************************************************
 		 *** Tree Actions
@@ -142,8 +150,11 @@ define([	"dojo/_base/declare",
 			this.createNewInputDialog(Lang.hitch(this, function(tagName) {
 				// create tag and update tree
 				this.AJAXRequest("tags", "createNewTag", { tagName: tagName, parentId: parentId, roomId: this.room_id }, Lang.hitch(this, function(response) {
-					model.newItem( { title: tagName, item_id: response.tagId, children: [] }, parentItem);
+					var newTag = model.newItem( { title: tagName, item_id: response.tagId, children: [] }, parentItem);
+					
 					this.addCreateAndRenameToAllLabels();
+					
+					this.onCreateEntrySuccessfull(newTag);
 				}));
 			}));
 		},
@@ -174,6 +185,8 @@ define([	"dojo/_base/declare",
 				this.AJAXRequest("tags", "deleteTag", { tagId: itemId, roomId: this.room_id },
 					Lang.hitch(this, function(response) {
 						model.deleteItem(item);
+						
+						this.onDeleteEntrySuccessfull(itemId);
 						
 						// publish topic
 						Topic.publish("updateTree", { widgetId: this.tree.get("id") });
