@@ -165,6 +165,7 @@ div#loadingScreenInner .img {
 	margin: 0px auto 20px;
     width: 990px;
 	position: relative;
+	text-align: left;
 	}
 
 #popup_inner{
