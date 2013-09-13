@@ -157,24 +157,25 @@ if ( !$current_user->isModerator()
 		            }
 		         }
 		      }
-		      
-		      if($count_delete != 0 or $count_lock != 0){
-		         $html = '';
-		         if($count_delete > 0){
-		            $html .= $count_delete.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE');
-		         }
-		         if($count_lock > 0){
-			         $html .= $count_lock.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_LOCK');
-		         }
-		         #$html .= $translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_INFO');		      
-		      
-		         $params = array();
-		      	$params['environment'] = $environment;
-		      	$params['with_modifying_actions'] = true;
-		      	$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-		         $errorbox->setText($html);
-		      	$page->add($errorbox);
-            }
+			  if(isset($count_delete) or isset($count_lock)){    
+			      if($count_delete != 0 or $count_lock != 0){
+			         $html = '';
+			         if($count_delete > 0){
+			            $html .= $count_delete.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_DELETE');
+			         }
+			         if($count_lock > 0){
+				         $html .= $count_lock.' '.$translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_LOCK');
+			         }
+			         #$html .= $translator->getMessage('CONFIGURATION_INACTIVITY_ALERT_INFO');		      
+			      
+			         $params = array();
+			      	$params['environment'] = $environment;
+			      	$params['with_modifying_actions'] = true;
+			      	$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+			         $errorbox->setText($html);
+			      	$page->add($errorbox);
+	            }
+         	}
          }
       }
 

@@ -48,6 +48,8 @@ Einleitung...
     * 1014 - Zusammenlegung - Anonyme Kennung
     * 1015 - Zusammenlegung - Ungültige Kennung
     * 1016 - Zusammenlegung - Ungültige Logindaten
+    * 1022 - Neues Passwort ungültig
+    * 1023 - Altes Passwort ungültig
   + Raumkonfiguration 102y
     * 1021 - Mindestens eine Zuordnung zu einem Gruppenraum muss erhalten bleiben
 
