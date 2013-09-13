@@ -293,7 +293,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 											}
 											
 										} else {
-											$this->_popup_controller->setErrorReturn('1009', 'password change error');
+											$error_array[] = $translator->getMessage('PASSWORD_OLD_NOT_EQUAL');
+											$this->_popup_controller->setErrorReturn('1023', $error_array);
+											#$this->_popup_controller->setErrorReturn('1009', 'password change error');
 										}
 										$error_number = $auth_manager->getErrorNumber();
 		
@@ -363,7 +365,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 											}
 											
 										} else {
-											$this->_popup_controller->setErrorReturn('1008', 'password change error');
+											$error_array[] = $translator->getMessage('PASSWORD_OLD_NOT_EQUAL');
+											$this->_popup_controller->setErrorReturn('1023', $error_array);
+											#$this->_popup_controller->setErrorReturn('1008', 'password change error');
 										}
 									$error_number = $auth_manager->getErrorNumber();
 								
