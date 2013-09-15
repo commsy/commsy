@@ -145,6 +145,121 @@ else {
          $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
+         
+         // show info if archiving or deleting rooms
+         $message_array = array();
+         if ( $room_item->isActivatedArchivingUnusedRooms()
+         	  and !empty($_POST['room_archiving_days_unused'])
+         	) {
+         	$room_manager = $environment->getProjectManager();
+         	include_once('functions/date_functions.php');
+         	if ( !empty($_POST['room_archiving_days_unused_mail']) ) {
+         		$datetime_border = getCurrentDateTimeMinusDaysInMySQL($room_item->getDaysUnusedBeforeArchivingRooms()-$room_item->getDaysSendMailBeforeArchivingRooms());
+         	} else {
+         		$datetime_border = getCurrentDateTimeMinusDaysInMySQL($room_item->getDaysUnusedBeforeArchivingRooms());
+         	}
+         	$room_manager->setLastLoginOlderLimit($datetime_border);
+         	$room_manager->setContextLimit($room_item->getItemID());
+         	$room_manager->setNotTemplateLimit();
+         	$number1 = $room_manager->getCountAll();
+         	$room_manager = $environment->getCommunityManager();
+         	$room_manager->setLastLoginOlderLimit($datetime_border);
+         	$room_manager->setContextLimit($room_item->getItemID());
+         	$room_manager->setNotTemplateLimit();
+         	$number2 = $room_manager->getCountAll();
+         	$number = $number1 + $number2;
+         	if ( !empty($number) ) {
+         	   if ( !empty($number1) and $number1 == 1 ) {
+	         	   $project = $translator->getMessage('COMMON_PROJECT_NUMBER_SI',$number1);
+	         	} else {
+	         		$project = $translator->getMessage('COMMON_PROJECT_NUMBER_PL',$number1);
+	         	}
+         		if ( !empty($number2) and $number2 == 1 ) {
+	         	   $community = $translator->getMessage('COMMON_COMMUNITY_NUMBER_SI',$number2);
+         		} else {
+         			$community = $translator->getMessage('COMMON_COMMUNITY_NUMBER_PL',$number2);
+         		}
+         		if ( !empty($_POST['room_archiving_days_unused_mail']) ) {
+         			if ( $number == 1 ) {
+         				$message_array[] = $translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_MAIL_INFO_SI',$number,$project,$community);
+         			} else {
+	         		   $message_array[] = $translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_MAIL_INFO',$number,$project,$community);
+         			}
+	         	} else {
+         			if ( $number == 1 ) {
+         				$message_array[] = $translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_INFO_SI',$number,$project,$community);
+         			} else {
+	         		   $message_array[] = $translator->getMessage('CONFIGURATION_ROOM_ARCHIVING_INFO',$number,$project,$community);
+         			}
+	         	}
+         	}
+         	unset($room_manager);
+         	unset($number);
+         	unset($number1);
+         	unset($number2);
+         }
+         
+   	   if ( $room_item->isActivatedDeletingUnusedRooms()
+         	  and !empty($_POST['room_deleting_days_unused'])
+         	) {
+         	$room_manager = $environment->getZzzProjectManager();
+         	include_once('functions/date_functions.php');
+         	if ( !empty($_POST['room_deleting_days_unused_mail']) ) {
+         		$datetime_border = getCurrentDateTimeMinusDaysInMySQL($room_item->getDaysUnusedBeforeDeletingRooms()-$room_item->getDaysSendMailBeforeDeletingRooms());
+         	} else {
+         		$datetime_border = getCurrentDateTimeMinusDaysInMySQL($room_item->getDaysUnusedBeforeDeletingRooms());
+         	}
+         	$room_manager->setLastLoginOlderLimit($datetime_border);
+         	$room_manager->setContextLimit($room_item->getItemID());
+         	$room_manager->setNotTemplateLimit();
+         	$number1 = $room_manager->getCountAll();
+         	$room_manager = $environment->getZzzCommunityManager();
+         	$room_manager->setLastLoginOlderLimit($datetime_border);
+         	$room_manager->setContextLimit($room_item->getItemID());
+         	$room_manager->setNotTemplateLimit();
+         	$number2 = $room_manager->getCountAll();
+         	$number = $number1 + $number2;
+         	if ( !empty($number) ) {
+         		if ( !empty($number1) and $number1 == 1 ) {
+	         	   $project = $translator->getMessage('COMMON_PROJECT_NUMBER_SI',$number1);
+	         	} else {
+	         		$project = $translator->getMessage('COMMON_PROJECT_NUMBER_PL',$number1);
+	         	}
+         		if ( !empty($number2) and $number2 == 1 ) {
+	         	   $community = $translator->getMessage('COMMON_COMMUNITY_NUMBER_SI',$number2);
+         		} else {
+         			$community = $translator->getMessage('COMMON_COMMUNITY_NUMBER_PL',$number2);
+         		}
+	         	if ( !empty($_POST['room_deleting_days_unused_mail']) ) {
+         			if ( $number == 1 ) {
+         				$message_array[] = $translator->getMessage('CONFIGURATION_ROOM_DELETING_MAIL_INFO_SI',$number,$project,$community);
+         			} else {
+         				$message_array[] = $translator->getMessage('CONFIGURATION_ROOM_DELETING_MAIL_INFO',$number,$project,$community);        				 
+         			}
+	         	} else {
+         			if ( $number == 1 ) {
+         				$message_array[] = $translator->getMessage('CONFIGURATION_ROOM_DELETING_INFO_SI',$number,$project,$community);
+         			} else {
+         				$message_array[] = $translator->getMessage('CONFIGURATION_ROOM_DELETING_INFO',$number,$project,$community);        				 
+         			}
+	         	}
+         	}
+         	unset($room_manager);
+         	unset($number);
+         	unset($number1);
+         	unset($number2);
+         	unset($project);
+         	unset($community);
+   	   }
+         
+         if ( !empty($message_array) ) {
+         	$params = array();
+         	$params['environment'] = $environment;
+         	$params['with_modifying_actions'] = true;
+         	$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         	$errorbox->setText(implode(BRLF,$message_array));
+         	$page->add($errorbox);
+         }
 
       }
    }
