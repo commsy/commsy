@@ -280,6 +280,15 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
             	} else {
             		$todo_item->setPrivateEditing('1');
             	}
+            	
+            	if($form_data['external_viewer'] == '1'){
+            		if(isset($form_data['external_viewer_accounts'])){
+            			$user_ids = explode(" ", $form_data['external_viewer_accounts']);
+            			$todo_item->setExternalViewerAccounts($user_ids);
+            		}
+            	} else{
+	               $item->unsetExternalViewerAccounts();
+	            }
 
                 if (isset($form_data['rights_tab'])){
 	                if (isset($form_data['public'])) {
