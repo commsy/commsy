@@ -1227,6 +1227,11 @@ class cs_room_item extends cs_context_item {
       }
       unset($type);
 
+      // set lastlogin to now
+      // cause than the deleting prozess will start now
+      // and not at the original last login date
+      $this->saveLastlogin();      
+      
       $this->close();
       $this->saveWithoutChangingModificationInformation();
 
@@ -1481,6 +1486,11 @@ class cs_room_item extends cs_context_item {
       $this->open();
       $this->saveWithoutChangingModificationInformation();
 
+      // set lastlogin to now
+      // cause than the archiving prozess will start now
+      // and not at the original last login date
+      $this->saveLastlogin();
+      
       return $retour;
    }
    
