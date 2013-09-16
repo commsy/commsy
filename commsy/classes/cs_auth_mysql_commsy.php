@@ -271,7 +271,7 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
      * @param string user_id the user id of the user
      * @param string password the new password of the user
      */
-   function changePassword($user_id, $password) {
+   function changePassword($user_id = null, $password = null) {
       if ($user_id == 'root') {
          $this->_commsy_id = 99;
       }
@@ -302,7 +302,7 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
       return $retour;
    }
 
-   function changeUserID($new, $old) {
+   function changeUserID($new = null, $old = null) {
       $update = "UPDATE auth SET ";
       $update .= " user_id = '" . encode(AS_DB, $new) . "'";
       $update .= " WHERE user_id = '" . encode(AS_DB, $old) . "'";
