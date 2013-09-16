@@ -29,9 +29,13 @@
 			$myPortfolios = array();
 			$portfolioItem = $portfolioList->getFirst();
 			while ($portfolioItem) {
+			    $externalViewer = $portfolioManager->getExternalViewer($portfolioItem->getItemID());
+			    $externalViewerString = implode(";", $externalViewer);
+			    
 				$myPortfolios[] = array(
 					"id"		=> $portfolioItem->getItemID(),
-					"title"		=> $portfolioItem->getTitle()
+					"title"		=> $portfolioItem->getTitle(),
+				    "external"  => $externalViewerString != "" ? $externalViewer : array()
 				);
 				
 				$portfolioItem = $portfolioList->getNext();

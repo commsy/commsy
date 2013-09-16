@@ -217,7 +217,8 @@ define(
 										{
 											portfolioId: portfolio.id,
 											title: title,
-											titleFull: portfolio.title
+											titleFull: portfolio.title,
+											iconClass: portfolio.external.length > 0 ? "dijitIconUsers" : ""
 										},
 										true).then(Lang.hitch(this, function(deferred)
 			{
@@ -225,6 +226,13 @@ define(
 				
 				tab.addChild(widget, 0);
 				if (select) tab.selectChild(widget);
+				
+				// tooltip
+				if (portfolio.external.length > 0) {
+					widget.set("tooltip", PopupTranslations.external + ": " + portfolio.external.join(", "));
+				} else {
+					widget.set("tooltip", title);
+				}
 			}));
 		},
 		
