@@ -65,7 +65,7 @@ define(
 				
 				require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
 					var handler = new ClickPopup();
-					handler.init(aNode, { iid: rowData.itemId, module: rowData.module, contextId: this.from_php.own.id, versionId: rowData.versionId });
+					handler.init(aNode, { iid: rowData.itemId, module: rowData.module, contextId: rowData.contextId, versionId: rowData.versionId });
 				}));
 			}));
 			
