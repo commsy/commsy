@@ -60,9 +60,9 @@ define([	"dojo/_base/declare",
 		},
 
 		updateList: function() {
-			// empty list and dnd
-			DomConstruct.empty(this.itemListNode);
+			// empty dnd and list
 			this.dndSource.selectAll().deleteSelectedNodes();
+			DomConstruct.empty(this.itemListNode);
 
 			this.AJAXRequest("widget_stack", "getListContent", {
 					search:					this.search.toLowerCase(),
