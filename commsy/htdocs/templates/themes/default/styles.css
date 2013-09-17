@@ -5136,3 +5136,7 @@ div#previewPortfolio ul {
     border: 1px dotted;
     min-height: 20px;
 }
+
+div#previewPortfolio li.dojoDndItem {
+    display: none;
+}

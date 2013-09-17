@@ -212,6 +212,7 @@ define(
 					this.dndSources.push(source);
 					
 					// insert all items matching row and column tag ids
+					var numItems = 0;
 					if (items[rowTag.id] && items[columnTag.id]) {
 						// scan both tags for the same items
 						dojo.forEach(items[rowTag.id], function(rowItem)
@@ -225,9 +226,14 @@ define(
 									className:	'dojoDndItem'
 								});
 								source.insertNodes(false, [{node: itemNode, data: rowItem.title}]);
+								numItems++;
 							};
 						});
 					}
+					
+					DomConstruct.create('li', {
+						innerHTML: numItems,
+					}, source.node, "first");
 					
 					// watch the source for changes
 					On(source, 'Drop', Lang.hitch(this, Lang.partial(this.onItemHasDropped, source)));
@@ -272,6 +278,16 @@ define(
 									{ tagIdArray: [columnTagId, rowTagId], itemId: itemId, roomId: this.from_php.ownRoom.id },
 									Lang.hitch(this, function(response)
 				{
+					// is the columnTagId or the rowTagId not already assigned?
+					if (response.already_assigned.length < 2) {
+						var infoNodeList = Query('li:first-child', targetSource.node);
+						if (infoNodeList[0]) {
+							var infoNode = infoNodeList[0];
+							
+							DomAttr.set(infoNode, 'innerHTML', parseInt(DomAttr.get(infoNode, 'innerHTML')) + 1);
+						}
+					}
+					
 					this.destroyLoading();
 				}));
 			}

@@ -52,34 +52,35 @@ class cs_ajax_tags_controller extends cs_ajax_controller
                 $tagManager = $this->_environment->getTagManager();
                 
                 $tagList = $item->getTagList();
-                $newTagList = new cs_list();
-                $newTagIdArray = array();
+                $currentTagArray = array();
                 
-                // add new tags
-                foreach ($tagIdArray as $tagId) {
-                    if (!in_array($tagId, $newTagIdArray)) {
-                        $newTagList->add($tagManager->getItem($tagId));
-                        $newTagIdArray[] = $tagId;
-                    }
-                }
-                
-                // add old tags
+                // iterate already assigned tags
                 $tag = $tagList->getFirst();
                 while ($tag) {
-                    if (!in_array($tag->getItemID(), $newTagIdArray)) {
-                        $newTagList->add($tag);
-                        $newTagIdArray[] = $tag->getItemID();
-                    }
-                    
+                    $currentTagArray[] = $tag->getItemID();
+                
                     $tag = $tagList->getNext();
                 }
+                // add new tags
+                $newTagIdArray = array();
+                $alreadyAssigned = array();
+                foreach ($tagIdArray as $tagId) {
+                    if (!in_array($tagId, $currentTagArray)) {
+                        $newTagIdArray[] = $tagId;
+                    } else {
+                        $alreadyAssigned[] = $tagId;
+                    }
+                }
+                
+                $newTagIdArray = array_unique($newTagIdArray);
+                $alreadyAssigned = array_unique($alreadyAssigned);
                 
                 $item->setModificatorItem($currentUser);
                 
-                $item->setTagList($newTagList);
+                $item->setTagListByID($newTagIdArray);
                 $item->save();
                 
-                $this->setSuccessfullDataReturn(array());
+                $this->setSuccessfullDataReturn(array("already_assigned" => $alreadyAssigned));
                 echo $this->_return;
             }
         }
