@@ -1066,20 +1066,23 @@ class cs_portal_item extends cs_guide_item {
    					$file = str_replace('cron','commsy',$file);
    					$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
    				}
-   				$link .= '?cid='.$this->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+   				$link .= '?cid='.$this->getItemID().'&mod=home&fct=index';
    				// link
    					
    				//content
    				$email_text_array = $this->getEmailTextArray();
    				$translator->setEmailTextArray($this->getEmailTextArray());
    				
-   				$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
-   				$body.= "\n\n";
-   				$body .= $translator->getEmailMessage('EMAIL_LOGIN_EXPIRATION_BODY');
-   				$body.= "\n\n";
-   				$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $this->getTitle());
-   				$body.= "\n\n";
+   				$body  = '';
    				$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+   				$body .= "\n\n";
+   				$body .= $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+   				$body .= "\n\n";
+   				$body .= $translator->getEmailMessage('EMAIL_LOGIN_EXPIRATION_BODY');
+   				$body .= "\n\n";
+   				$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $this->getTitle());
+   				$body .= "\n\n";
+   				$body .= $link;
    					
    				$mail->set_subject($subject);
    				$mail->set_message($body);
