@@ -283,7 +283,7 @@ class cs_server_item extends cs_guide_item {
 	   									$file = str_replace('cron','commsy',$file);
 	   									$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 	   								}
-	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
 	   								// link
 	   									
 	   								//content
@@ -363,7 +363,7 @@ class cs_server_item extends cs_guide_item {
 	   									$file = str_replace('cron','commsy',$file);
 	   									$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 	   								}
-	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
 	   								// link
 	   								 
 	   								//content
@@ -490,7 +490,7 @@ class cs_server_item extends cs_guide_item {
 	   									$file = str_replace('cron','commsy',$file);
 	   									$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 	   								}
-	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
 	   								// link
 	   								
 	   								//content
@@ -620,7 +620,7 @@ class cs_server_item extends cs_guide_item {
 		   									$file = str_replace('cron','commsy',$file);
 		   									$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 		   								}
-		   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+		   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
 		   								// link
 		   									
 		   								//content
@@ -755,7 +755,7 @@ class cs_server_item extends cs_guide_item {
 	   										$file = str_replace('cron','commsy',$file);
 	   										$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 	   									}
-	   									$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+	   									$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
 	   									// link
 	   										
 	   									//content
@@ -890,7 +890,7 @@ class cs_server_item extends cs_guide_item {
 		   									$file = str_replace('cron','commsy',$file);
 		   									$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
 		   								}
-		   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index&cs_modus=password_forget';
+		   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
 		   								// link
 		   									
 		   								//content
