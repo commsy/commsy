@@ -40,10 +40,10 @@ define([	"dojo/_base/declare",
 				],
 				nodeLists: [
 				    { query: query("input[name='form_data[description]']", this.contentNode) },
-				    { query: query("input[name='form_data[title]']", this.contentNode) }
+				    { query: query("input[name='form_data[title]']", this.contentNode) },
+				    { query: query("select[name='form_data[template]']", this.contentNode) }
 				]
 			};
-
 			this.submit(search);
 		},
 
