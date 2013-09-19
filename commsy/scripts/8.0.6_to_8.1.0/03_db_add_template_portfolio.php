@@ -27,14 +27,10 @@ $this->_flushHeadline('db: add expire_date to user table');
 
 $success = true;
 
-
-   $sql = "CREATE TABLE `template_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
-  `u_id` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  PRIMARY KEY (`p_id`,`u_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+if ( !$this->_existsIndex('portfolio','template') ) {
+   $sql = "ALTER TABLE portfolio ADD template tinyint(4) NOT NULL DEFAULT '-1'";
    $success = $success AND $this->_select($sql);
-
+}
 
 
 $this->_flushHTML(BRLF);

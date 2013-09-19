@@ -758,6 +758,7 @@ CREATE TABLE `portfolio` (
   `modifier_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
   `title` varchar(255) NOT NULL,
   `description` mediumtext NOT NULL,
+  `template` tinyint(4) NOT NULL DEFAULT '-1',
   `creation_date` datetime NOT NULL,
   `modification_date` datetime NOT NULL,
   `deletion_date` datetime DEFAULT NULL,
@@ -1069,11 +1070,11 @@ CREATE TABLE `tag2tag` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-# Export von Tabelle 
+# Export von Tabelle template_portfolio
 # ------------------------------------------------------------
 
 CREATE TABLE `template_portfolio` (
-  `p_id` int(11) NOT NULL DEFAULT '0',
+  `id` int(11) NOT NULL DEFAULT '0',
   `u_id` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
   PRIMARY KEY (`p_id`,`u_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
