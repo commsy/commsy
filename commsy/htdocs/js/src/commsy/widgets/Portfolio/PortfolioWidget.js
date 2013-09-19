@@ -217,8 +217,7 @@ define(
 										{
 											portfolioId: portfolio.id,
 											title: title,
-											titleFull: portfolio.title,
-											iconClass: portfolio.external.length > 0 ? "dijitIconUsers" : ""
+											titleFull: portfolio.title
 										},
 										true).then(Lang.hitch(this, function(deferred)
 			{
@@ -228,7 +227,8 @@ define(
 				if (select) tab.selectChild(widget);
 				
 				// tooltip
-				if (portfolio.external.length > 0) {
+				if (portfolio.external && portfolio.external.length > 0) {
+					widget.set("iconClass", portfolio.external.length > 0 ? "dijitIconUsers" : "");
 					widget.set("tooltip", PopupTranslations.external + ": " + portfolio.external.join(", "));
 				} else {
 					widget.set("tooltip", title);
