@@ -210,7 +210,6 @@ define(
 			{
 				title = title.substr(0, 18) + "...";
 			}
-			
 			// load child widgets silently
 			var widgetManager = this.getWidgetManager();
 			widgetManager.GetInstance(	"commsy/widgets/Portfolio/PortfolioItem",

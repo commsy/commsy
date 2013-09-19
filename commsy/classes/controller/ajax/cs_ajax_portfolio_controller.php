@@ -143,11 +143,18 @@
 			$externalViewer = $portfolioManager->getExternalViewer($portfolioId);
 			$externalViewerString = implode(";", $externalViewer);
 			
+			$externalTemplate = $portfolioManager->getExternalTemplate($portfolioId);
+			$externalViewerString = implode(";", $externalTemplate);
+			
+			$template = $portfolioItem->isTemplate();
+			
 			$return = array(
 				"contextId"			=> $privateRoom->getItemID(),
 				"title"				=> $portfolioItem->getTitle(),
 				"description"		=> $portfolioItem->getDescription(),
 				"externalViewer"	=> $externalViewerString,
+				"externalTemplate"	=> $externalTemplate,
+				"template"			=> $template,
 				"creator"			=> $fullname,
 				"tags"				=> $tags,
 				"links"				=> $linkArray,
@@ -269,6 +276,8 @@
 			$portfolioTitle = $this->_data["title"];
 			$portfolioDescription = $this->_data["description"];
 			$portfolioExternalViewer = $this->_data["externalViewer"];
+			$template = $this->_data["template"];
+			$externalTemplate = $this->_data["externalTemplate"];
 			
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			
@@ -305,6 +314,14 @@
 			
 			$externalViewerUserIds = explode(";", trim($portfolioExternalViewer));
 			$item->setExternalViewer($externalViewerUserIds);
+ 
+			if($template){
+				$item->setTemplate();
+			} else {
+				$item->unsetTemplate();
+			}
+			$externalTemplateUserIds = explode(";", trim($externTemplate));
+			$item->setExternalTemplate($externalTemplateUserIds);
 				
 			$item->save();
 				

@@ -50,6 +50,12 @@ define(
 		portfolioExternalViewer:		"",
 		_setPortfolioExternalViewerAttr:	{ node: "portfolioExternalViewerNode", type: "attribute", attribute: "value" },
 		
+		portfolioTemplate:		"",
+		_setPortfolioTemplateAttr:	{ node: "portfolioTemplateNode", type: "attribute", attribute: "checked" },
+		
+		portfolioExternalTemplate:		"",
+		_setPortfolioExternalTemplateAttr:	{ node: "portfolioExternalTemplateNode", type: "attribute", attribute: "value" },
+		
 		constructor: function(options)
 		{
 			options = options || {};
@@ -133,6 +139,14 @@ define(
 		{
 			return DomAttr.get(this.portfolioExternalViewerNode, "value");
 		},
+		_getPortfolioTemplateAttr: function()
+		{
+			return DomAttr.get(this.portfolioTemplateNode, "checked");
+		},
+		_getPortfolioExternalTemplateAttr: function()
+		{
+			return DomAttr.get(this.portfolioExternalTemplateNode, "value");
+		},
 		
 		/************************************************************************************
 		 * Helper Functions
@@ -149,9 +163,11 @@ define(
 				id:				this.portfolioId || "NEW",
 				title:			this.get("portfolioTitle"),
 				description:	this.get("portfolioDescription"),
-				externalViewer:	this.get("portfolioExternalViewer")
+				externalViewer:	this.get("portfolioExternalViewer"),
+				template:		this.get("portfolioTemplate"),
+				externalTemplate: this.get("portfolioExternalTemplate")
 			};
-			
+			console.log(data);
 			this.AJAXRequest(	"portfolio",
 								"savePortfolio",
 								data,

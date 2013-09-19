@@ -51,6 +51,10 @@ define(
 		
 		externalViewer:		"",
 		
+		externalTemplate:	"",
+		
+		template:			"",
+		
 		titleFull:			"",
 		_setTitleFullAttr:	{ node: "titleNode", type: "attribute", attribute: "title" },
 		
@@ -220,6 +224,8 @@ define(
 						this.set("creator", response.creator);
 						this.set("descriptionFull", response.description);
 						this.set("externalViewer", response.externalViewer);
+						this.set("externalTemplate", response.externalTemplate);
+						this.set("template", response.externalTemplate);
 						
 						this.set("contextId", response.contextId);
 						
@@ -361,6 +367,8 @@ define(
 				widgetInstance.set("portfolioTitle", this.get("titleFull"));
 				widgetInstance.set("portfolioDescription", this.get("descriptionFull"));
 				widgetInstance.set("portfolioExternalViewer", this.get("externalViewer"));
+				widgetInstance.set("portfolioExternalTemplate", this.get("externalTemplate"));
+				widgetInstance.set("portfolioTemplate", this.get("template"));
 				
 				widgetInstance.Open();
 			}));

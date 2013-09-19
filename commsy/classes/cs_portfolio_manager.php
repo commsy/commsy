@@ -126,11 +126,18 @@ class cs_portfolio_manager extends cs_manager {
   function _update ($portfolio_item) {
      parent::_update($portfolio_item);
      $modification_date = getCurrentDateTimeInMySQL();
+     $portfolio_template = $portfolio_item->getTemplate();
+     if(empty($portfolio_template)){
+     	$template = -1;
+     } else {
+     	$template = $portfolio_item->getTemplate();
+     }
      $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'modification_date="'.$modification_date.'",'.
               'modifier_id="'.encode(AS_DB,$portfolio_item->getModificatorID()).'",'.
               'title="'.encode(AS_DB,$portfolio_item->getTitle()).'",'.
-              'description="'.encode(AS_DB,$portfolio_item->getDescription()).'"'.
+              'description="'.encode(AS_DB,$portfolio_item->getDescription()).'",'.
+              'template="'.encode(AS_DB,$template).'"'.
               ' WHERE item_id="'.encode(AS_DB,$portfolio_item->getItemID()).'"';
 
      $result = $this->_db_connector->performQuery($query);
@@ -142,8 +149,42 @@ class cs_portfolio_manager extends cs_manager {
      }
      
      $this->_updateExternalViewer($portfolio_item);
+     $this->_updateExternalTemplate($portfolio_item);
      
      unset($portfolio_item);
+  }
+  
+  function _updateExternalTemplate($portfolio_item) {
+  	$query = "
+  		DELETE FROM
+  			" . $this->addDatabasePrefix("template_portfolio") . "
+  		WHERE
+  			p_id = '" . encode(AS_DB, $portfolio_item->getItemID()) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');
+  		trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  	}
+  	 
+  	foreach ($portfolio_item->getExternalTemplate() as $viewer) {
+  		$query = "
+	  		INSERT INTO
+	  			" . $this->addDatabasePrefix("template_portfolio") . "
+	  		(
+	  			p_id,
+	  			u_id
+	  		) VALUES (
+	  			'" . encode(AS_DB, $portfolio_item->getItemID()) . "',
+	  			'" . encode(AS_DB, $viewer) . "'
+	  		);
+  		";
+  		$result = $this->_db_connector->performQuery($query);
+  		if ( !isset($result) ) {
+  			include_once('functions/error_functions.php');
+  			trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  		}
+  	}
   }
   
   function _updateExternalViewer($portfolio_item) {
@@ -204,6 +245,14 @@ class cs_portfolio_manager extends cs_manager {
   function _newPortfolio ($portfolio_item) {
      $user = $portfolio_item->getCreatorItem();
      $modification_date = getCurrentDateTimeInMySQL();
+     
+     $portfolio_template = $portfolio_item->getTemplate();
+     if(empty($portfolio_template)){
+     	$template = -1;
+     } else {
+     	$template = $portfolio_item->getTemplate();
+     }
+     
      $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
               'item_id="'.encode(AS_DB,$portfolio_item->getItemID()).'",'.
               'creator_id="'.encode(AS_DB,$portfolio_item->getCreatorID()).'",'.
@@ -211,6 +260,7 @@ class cs_portfolio_manager extends cs_manager {
               'modification_date="'.$modification_date.'",'.
               'creation_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$portfolio_item->getTitle()).'",'.
+              'template="'.encode(AS_DB,$template).'",'.
               'description="'.encode(AS_DB,$portfolio_item->getDescription()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -630,6 +680,52 @@ function deletePortfolioTags($portfolioId) {
   	if ( !isset($result) ) {
   		include_once('functions/error_functions.php');trigger_error('Problems deleting annotation for portfolio reference.',E_USER_WARNING);
   	}
+  }
+  
+  
+  // portfolio template
+  function getPortfolioForExternalTemplate($userId) {
+  	$query = "
+	  	SELECT
+	  		p_id
+	  	FROM
+	  		" . $this->addDatabasePrefix("template_portfolio") . "
+	  	WHERE
+	  		u_id = '" . encode(AS_DB, $userId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
+  	}
+  
+  	$portfolioArray = array();
+  	foreach ($result as $row) {
+  		$portfolioArray[] = $row["p_id"];
+  	}
+  
+  	return $portfolioArray;
+  }
+  
+  function getExternalTemplate($portfolioId) {
+  	$query = "
+	  	SELECT
+	  		u_id
+	  	FROM
+	  		" . $this->addDatabasePrefix("template_portfolio") . "
+	  	WHERE
+	  		p_id= '" . encode(AS_DB, $portfolioId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
+  	}
+  	 
+  	$userArray = array();
+  	foreach ($result as $row) {
+  		$userArray[] = $row["u_id"];
+  	}
+  	 
+  	return $userArray;
   }
 
 /****************************************/

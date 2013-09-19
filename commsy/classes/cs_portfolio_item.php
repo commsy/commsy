@@ -62,5 +62,34 @@ class cs_portfolio_item extends cs_item {
    function setExternalViewer($userIdArray) {
    	$this->_setValue("externalViewer", $userIdArray);
    }
+   
+   function setTemplate() {
+   	$this->_setValue("template", '1');
+   }
+   
+   function unsetTemplate() {
+   	$this->_unsetValue("template");
+   }
+   
+   function getTemplate() {
+   	return $this->_getValue("template");
+   }
+   
+   function isTemplate() {
+   	$flag = false;
+   	if($this->_getValue("template") == 1){
+   		$flag = true;
+   	}
+   	return $flag;
+   }
+   
+   function setExternalTemplate($userIdArray) {
+   	$this->_setValue("externalTemplate", $userIdArray);
+   }
+   
+   function getExternalTemplate() {
+   	$this->_getValue("externalTemplate", $userIdArray);
+   	
+   }
 }
 ?>
