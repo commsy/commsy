@@ -1069,6 +1069,15 @@ CREATE TABLE `tag2tag` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
+# Export von Tabelle 
+# ------------------------------------------------------------
+
+CREATE TABLE `template_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `u_id` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
+  PRIMARY KEY (`p_id`,`u_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 
 # Export von Tabelle tasks
 # ------------------------------------------------------------
