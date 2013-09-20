@@ -87,7 +87,6 @@
 			$return['templates'] = $itemArray;
 			
 			$test = $portfolioManager->getTemplatePortfoliosByCreatorID($currentUser->getItemID());
-			pr($test);
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
