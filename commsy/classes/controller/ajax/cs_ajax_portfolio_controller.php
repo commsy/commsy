@@ -84,8 +84,15 @@
 				$itemArray['title'] = $item->getTitle();
 				$return['templates'][] = $itemArray;
 			}
+			$privateRoom = $currentUser->getOwnRoom();
+			$privateRoomUserItem = $currentUser->getRelatedUserItemInContext($privateRoom->getItemID());
 			
-			$ownTemplates = $portfolioManager->getTemplatePortfoliosByCreatorID($currentUser->getItemID());
+			$ownTemplates = $portfolioManager->getTemplatePortfoliosByCreatorID($privateRoomUserItem->getItemID());
+			foreach ($ownTemplates as $template => $key) {
+				$itemArray['id'] = $template;
+				$itemArray['title'] = $key;
+				$return['templates'][] = $itemArray;
+			}
 			
 			$this->setSuccessfullDataReturn($return);
 			echo $this->_return;
