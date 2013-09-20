@@ -188,10 +188,10 @@ define(
 			});
 			
 			// create table body
-			dojo.forEach(rowTags, Lang.hitch(this, function(rowTag)
+			dojo.forEach(rowTags, Lang.hitch(this, function(rowTag, index)
 			{
 				// first column is the title of the row tag
-				trNode = DomConstruct.create("tr", {}, tableNode, "last");
+				trNode = DomConstruct.create("tr", {id:"portfolioMiniTableRow_"+index}, tableNode, "last");
 				DomConstruct.create("td", {
 					className:	"portfolioTagName",
 					innerHTML:	rowTag.title
@@ -260,8 +260,8 @@ define(
 				var trNode = tdNode.parentNode;
 				
 				var column = tdNode.cellIndex - 1;
-				var row = trNode.sectionRowIndex - 1;
-				
+				var row = trNode.id.substr(22);
+
 				// get the tag ids
 				var columnTagId = this.tags.column[column].id;
 				var rowTagId = this.tags.row[row].id;
