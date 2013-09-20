@@ -119,6 +119,48 @@ define(
 				
 				// register event
 				On(deleteButtonNode, "click", Lang.hitch(this, this.onDeletePortfolio));
+			} else {
+				this.AJAXRequest (	"portfolio",
+									"getTemplates",
+									{},
+									Lang.hitch(this, function(response)
+				{
+					var titleInputRowNode = this.portfolioTitleNode.parentNode;
+					
+					var rowNode = DomConstruct.create('div', {
+						className:		"input_row"
+					}, titleInputRowNode, "after");	
+					
+						var labelNode = DomConstruct.create('label', {
+							"for":		"portfolioTemplate",
+							innerHTML:	PopupTranslations.template+":"
+						}, rowNode, "last");
+						
+						var selectNode = DomConstruct.create('select', {
+							id:			"portfolioTemplate",
+							name:		"template"
+						}, rowNode, "last");
+						
+							DomConstruct.create('option', {
+								value:		"none",
+								innerHTML:	PopupTranslations.templateSelect
+							}, selectNode, "last");
+					dojo.forEach(response.templates, Lang.hitch(this, function(portfolio){
+						DomConstruct.create('option', {
+							value:		portfolio.id,
+							innerHTML:	portfolio.title
+						}, selectNode, "last");
+					}));
+					
+					/*
+					<div class="input_row" data-dojo-attach-point="templateRow">
+	                    <label for="portfolioTitle">${popupTranslations.formTitle}:</label>
+	                    <select name="template" data-dojo-attach-event="change: onTemplateChange">
+	                    	<option value="none">Keine Vorlage ausgewählt</option>
+	                    	
+	                    </select>
+					</div>*/
+				}));
 			}
 		},
 		
@@ -176,6 +218,22 @@ define(
 				Topic.publish("updatePortfolios", { itemId: response.portfolioId });
 				this.Close();
 			}));
+		},
+		
+		onTemplateChange: function (event)
+		{
+			if(event.target.value == "none") 
+			{
+				this.portfolioTemplateNode.disabled = false;
+				this.portfolioExternalTemplateNode.disabled = false;
+			} 
+			else 
+			{
+				this.portfolioTemplateNode.disabled = true;
+				this.portfolioExternalTemplateNode.disabled = true;
+			}
+			
+			
 		},
 		
 		onDeletePortfolio: function(event)

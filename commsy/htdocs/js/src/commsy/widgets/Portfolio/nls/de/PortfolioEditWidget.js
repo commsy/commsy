@@ -9,6 +9,8 @@ define({
 	formExternalViewer:			"Freigeben für (Angabe der Kennungen durch Semikola \";\" getrennt)",
 	formExternalTemplate:		"Vorlage Freigeben für",
 	formTemplate:				"Als Vorlage verwenden",
+	template:					"Vorlage",
+	templateSelect:				"Keine Vorlage ausgewählt",
 	titleCreate:				"Neues Portfolio anlegen",
 	titleEdit:					"Portfolio editieren"
 });

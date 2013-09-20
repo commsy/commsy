@@ -9,6 +9,7 @@ include_once('functions/text_functions.php');
 class cs_portfolio_manager extends cs_manager {
 
   var $_user_limit = NULL;
+  var $_template_limit = NULL;
   var $_delete_limit = true;
   var $_db_table = CS_PORTFOLIO_TYPE;
   var $_sort_order = NULL;
@@ -26,11 +27,17 @@ class cs_portfolio_manager extends cs_manager {
      $this->_user_limit = NULL;
      $this->_delete_limit = true;
      $this->_sort_order = NULL;
+     $this->_template_limit = NULL;
   }
 
 
    function setUserLimit ($limit) {
       $this->_user_limit = (int)$limit;
+   }
+   
+   function setTemplateLimit ($limit) 
+   {
+   	$this->_template_limit = (int)$limit;
    }
 
    function setDeleteLimit ($limit) {
@@ -56,6 +63,9 @@ class cs_portfolio_manager extends cs_manager {
       $query .= ' WHERE 1';
       if ( isset($this->_user_limit) ) {
          $query .= ' AND creator_id = "'.encode(AS_DB,$this->_user_limit).'"';
+      }
+      if ( isset($this->_template_limit) ) {
+      	$query .= ' AND template = "'.encode(AS_DB,$this->_template_limit).'"';
       }
       if ($this->_delete_limit == true) {
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL';
@@ -725,6 +735,28 @@ function deletePortfolioTags($portfolioId) {
   		$userArray[] = $row["u_id"];
   	}
   	 
+  	return $userArray;
+  }
+  
+  function getTemplatePortfoliosByCreatorID($creatorID) {
+  	$query = "
+	  	SELECT
+	  		item_id, title
+	  	FROM
+	  		" . $this->addDatabasePrefix("portfolio") . "
+	  	WHERE
+	  		creator_id= '" . encode(AS_DB, $creatorID) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);pr($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
+  	}
+  
+  	$userArray = array();
+  	foreach ($result as $row) {
+  		$userArray[$row["item_id"]] = $row["title"];
+  	}
+  
   	return $userArray;
   }
 

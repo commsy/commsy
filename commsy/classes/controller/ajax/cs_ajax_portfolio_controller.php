@@ -69,6 +69,30 @@
 			echo $this->_return;
 		}
 		
+		public function actionGetTemplates()
+		{
+			$return = array();
+			
+			$currentUser = $this->_environment->getCurrentUser();
+			$portfolioManager = $this->_environment->getPortfolioManager();
+			$templateId = $portfolioManager->getPortfolioForExternalTemplate($currentUser->getUserID());
+			$itemArray = array();
+			
+			foreach ($templateId as $Id) {
+				$item = $portfolioManager->getItem($Id);
+				$itemArray['id'] = $Id;
+				$itemArray['title'] = $item->getTitle();
+			}
+			
+			$return['templates'] = $itemArray;
+			
+			$test = $portfolioManager->getTemplatePortfoliosByCreatorID($currentUser->getItemID());
+			pr($test);
+			
+			$this->setSuccessfullDataReturn($return);
+			echo $this->_return;
+		}
+		
 		public function actionGetPortfolio() {
 			// get data
 			$portfolioId = $this->_data["portfolioId"];
@@ -144,7 +168,7 @@
 			$externalViewerString = implode(";", $externalViewer);
 			
 			$externalTemplate = $portfolioManager->getExternalTemplate($portfolioId);
-			$externalViewerString = implode(";", $externalTemplate);
+			$externalTemplateString = implode(";", $externalTemplate);
 			
 			$template = $portfolioItem->isTemplate();
 			
@@ -153,7 +177,7 @@
 				"title"				=> $portfolioItem->getTitle(),
 				"description"		=> $portfolioItem->getDescription(),
 				"externalViewer"	=> $externalViewerString,
-				"externalTemplate"	=> $externalTemplate,
+				"externalTemplate"	=> $externalTemplateString,
 				"template"			=> $template,
 				"creator"			=> $fullname,
 				"tags"				=> $tags,
@@ -271,6 +295,7 @@
 		
 		public function actionSavePortfolio()
 		{
+			
 			// get data
 			$portfolioId = $this->_data["id"];
 			$portfolioTitle = $this->_data["title"];
@@ -278,7 +303,7 @@
 			$portfolioExternalViewer = $this->_data["externalViewer"];
 			$template = $this->_data["template"];
 			$externalTemplate = $this->_data["externalTemplate"];
-			
+
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			
 			$currentUser = $this->_environment->getCurrentUser();
@@ -320,11 +345,12 @@
 			} else {
 				$item->unsetTemplate();
 			}
-			$externalTemplateUserIds = explode(";", trim($externTemplate));
+
+			$externalTemplateUserIds = explode(";", trim($externalTemplate));
 			$item->setExternalTemplate($externalTemplateUserIds);
 				
 			$item->save();
-				
+			
 			$this->setSuccessfullDataReturn(array("portfolioId" => $item->getItemID()));
 			echo $this->_return;
 			exit;

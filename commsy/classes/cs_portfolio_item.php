@@ -88,7 +88,7 @@ class cs_portfolio_item extends cs_item {
    }
    
    function getExternalTemplate() {
-   	$this->_getValue("externalTemplate", $userIdArray);
+   	return $this->_getValue("externalTemplate");
    	
    }
 }
