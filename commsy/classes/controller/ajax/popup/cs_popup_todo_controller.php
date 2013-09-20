@@ -287,7 +287,7 @@ class cs_popup_todo_controller implements cs_rubric_popup_controller {
             			$todo_item->setExternalViewerAccounts($user_ids);
             		}
             	} else{
-	               $item->unsetExternalViewerAccounts();
+	               $todo_item->unsetExternalViewerAccounts();
 	            }
 
                 if (isset($form_data['rights_tab'])){
