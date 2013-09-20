@@ -747,7 +747,7 @@ function deletePortfolioTags($portfolioId) {
 	  	WHERE
 	  		creator_id= '" . encode(AS_DB, $creatorID) . "';
   	";
-  	$result = $this->_db_connector->performQuery($query);pr($query);
+  	$result = $this->_db_connector->performQuery($query);
   	if ( !isset($result) ) {
   		include_once('functions/error_functions.php');trigger_error('Problems getting user ids.',E_USER_WARNING);
   	}
