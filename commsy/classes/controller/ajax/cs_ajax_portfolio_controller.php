@@ -82,9 +82,10 @@
 				$item = $portfolioManager->getItem($Id);
 				$itemArray['id'] = $Id;
 				$itemArray['title'] = $item->getTitle();
+				$return['templates'][] = $itemArray;
 			}
 			
-			$return['templates'] = $itemArray;
+			
 			
 			$test = $portfolioManager->getTemplatePortfoliosByCreatorID($currentUser->getItemID());
 			

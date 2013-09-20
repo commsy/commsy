@@ -145,6 +145,7 @@ define(
 								value:		"none",
 								innerHTML:	PopupTranslations.templateSelect
 							}, selectNode, "last");
+					console.log(response);
 					dojo.forEach(response.templates, Lang.hitch(this, function(portfolio){
 						DomConstruct.create('option', {
 							value:		portfolio.id,
