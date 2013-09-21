@@ -278,6 +278,7 @@ class cs_portfolio_manager extends cs_manager {
         trigger_error('Problems creating portfolio.',E_USER_WARNING);
      } else {
      	$this->_updateExternalViewer($portfolio_item);
+     	$this->_updateExternalTemplate($portfolio_item);
         unset($result);
      }
      unset($portfolio_item);
