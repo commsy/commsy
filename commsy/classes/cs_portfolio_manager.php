@@ -760,7 +760,8 @@ function deletePortfolioTags($portfolioId) {
 	  	FROM
 	  		" . $this->addDatabasePrefix("portfolio") . "
 	  	WHERE
-	  		creator_id= '" . encode(AS_DB, $creatorID) . "';
+	  		creator_id= '" . encode(AS_DB, $creatorID) . "' AND
+	  		" . $this->addDatabasePrefix("portfolio") . ".deletion_date IS NULL;
   	";
   	$result = $this->_db_connector->performQuery($query);
   	if ( !isset($result) ) {
