@@ -298,6 +298,7 @@ class cs_portfolio_manager extends cs_manager {
          $this->deletePortfolioTags($item_id);
          $this->deletePortfolioAnnotations($item_id);
          $this->deletePortfolioUsers($item_id);
+         $this->deletePortfolioTemplateUsers($item_id);
      }
   }
 
@@ -487,6 +488,19 @@ function deletePortfolioTags($portfolioId) {
   	$query = "
 	  	DELETE FROM
 	  		" . $this->addDatabasePrefix("user_portfolio") . "
+	  	WHERE
+	  		p_id = '" . encode(AS_DB, $portfolioId) . "';
+  	";
+  	$result = $this->_db_connector->performQuery($query);
+  	if ( !isset($result) ) {
+  		include_once('functions/error_functions.php');trigger_error('Problems deleting users for portfolio.',E_USER_WARNING);
+  	}
+  }
+  
+  public function deletePortfolioTemplateUsers($portfolioId) {
+  	$query = "
+	  	DELETE FROM
+	  		" . $this->addDatabasePrefix("template_portfolio") . "
 	  	WHERE
 	  		p_id = '" . encode(AS_DB, $portfolioId) . "';
   	";
