@@ -34,6 +34,8 @@ define(
 		
 		portfolioId:		null,							///< Mixed in by calling class
 		
+		fromTemplateNode:	null,
+		
 		// attributes
 		title:				"",
 		_setTitleAttr:		{ node: "titleNode", type: "innerHTML" },
@@ -131,7 +133,7 @@ define(
 						className:		"input_row"
 					}, titleInputRowNode, "after");	
 					
-						var labelNode = DomConstruct.create('label', {
+						DomConstruct.create('label', {
 							"for":		"portfolioTemplate",
 							innerHTML:	PopupTranslations.template+":"
 						}, rowNode, "last");
@@ -145,7 +147,7 @@ define(
 								value:		"none",
 								innerHTML:	PopupTranslations.templateSelect
 							}, selectNode, "last");
-					console.log(response);
+					
 					dojo.forEach(response.templates, Lang.hitch(this, function(portfolio){
 						DomConstruct.create('option', {
 							value:		portfolio.id,
@@ -153,14 +155,7 @@ define(
 						}, selectNode, "last");
 					}));
 					
-					/*
-					<div class="input_row" data-dojo-attach-point="templateRow">
-	                    <label for="portfolioTitle">${popupTranslations.formTitle}:</label>
-	                    <select name="template" data-dojo-attach-event="change: onTemplateChange">
-	                    	<option value="none">Keine Vorlage ausgewählt</option>
-	                    	
-	                    </select>
-					</div>*/
+					this.fromTemplateNode = selectNode;
 				}));
 			}
 		},
@@ -210,7 +205,12 @@ define(
 				template:		this.get("portfolioTemplate"),
 				externalTemplate: this.get("portfolioExternalTemplate")
 			};
-			console.log(data);
+			if (this.fromTemplateNode && this.fromTemplateNode.value != 'none') {
+				data.fromTemplate = this.fromTemplateNode.value;
+			} else {
+				data.fromTemplate = false;
+			}
+			
 			this.AJAXRequest(	"portfolio",
 								"savePortfolio",
 								data,
