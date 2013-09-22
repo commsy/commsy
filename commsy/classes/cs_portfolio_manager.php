@@ -178,21 +178,23 @@ class cs_portfolio_manager extends cs_manager {
   	}
   	 
   	foreach ($portfolio_item->getExternalTemplate() as $viewer) {
-  		$query = "
-	  		INSERT INTO
-	  			" . $this->addDatabasePrefix("template_portfolio") . "
-	  		(
-	  			p_id,
-	  			u_id
-	  		) VALUES (
-	  			'" . encode(AS_DB, $portfolio_item->getItemID()) . "',
-	  			'" . encode(AS_DB, $viewer) . "'
-	  		);
-  		";
-  		$result = $this->_db_connector->performQuery($query);
-  		if ( !isset($result) ) {
-  			include_once('functions/error_functions.php');
-  			trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  		if (!empty($viewer)) {
+  			$query = "
+		  		INSERT INTO
+		  			" . $this->addDatabasePrefix("template_portfolio") . "
+		  		(
+		  			p_id,
+		  			u_id
+		  		) VALUES (
+		  			'" . encode(AS_DB, $portfolio_item->getItemID()) . "',
+		  			'" . encode(AS_DB, $viewer) . "'
+		  		);
+	  		";
+  			$result = $this->_db_connector->performQuery($query);
+  			if ( !isset($result) ) {
+  				include_once('functions/error_functions.php');
+  				trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  			}
   		}
   	}
   }
@@ -211,21 +213,23 @@ class cs_portfolio_manager extends cs_manager {
   	}
   	
   	foreach ($portfolio_item->getExternalViewer() as $viewer) {
-  		$query = "
-	  		INSERT INTO
-	  			" . $this->addDatabasePrefix("user_portfolio") . "
-	  		(
-	  			p_id,
-	  			u_id
-	  		) VALUES (
-	  			'" . encode(AS_DB, $portfolio_item->getItemID()) . "',
-	  			'" . encode(AS_DB, $viewer) . "'
-	  		);
-  		";
-  		$result = $this->_db_connector->performQuery($query);
-  		if ( !isset($result) ) {
-  			include_once('functions/error_functions.php');
-  			trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  		if (!empty($viewer)) {
+  			$query = "
+		  		INSERT INTO
+		  			" . $this->addDatabasePrefix("user_portfolio") . "
+		  		(
+		  			p_id,
+		  			u_id
+		  		) VALUES (
+		  			'" . encode(AS_DB, $portfolio_item->getItemID()) . "',
+		  			'" . encode(AS_DB, $viewer) . "'
+		  		);
+	  		";
+  			$result = $this->_db_connector->performQuery($query);
+  			if ( !isset($result) ) {
+  				include_once('functions/error_functions.php');
+  				trigger_error('Problems updating portfolio.',E_USER_WARNING);
+  			}
   		}
   	}
   }
@@ -760,7 +764,8 @@ function deletePortfolioTags($portfolioId) {
 	  	FROM
 	  		" . $this->addDatabasePrefix("portfolio") . "
 	  	WHERE
-	  		creator_id= '" . encode(AS_DB, $creatorID) . "' AND
+	  		creator_id = '" . encode(AS_DB, $creatorID) . "' AND
+	  		template = '1' AND
 	  		" . $this->addDatabasePrefix("portfolio") . ".deletion_date IS NULL;
   	";
   	$result = $this->_db_connector->performQuery($query);
