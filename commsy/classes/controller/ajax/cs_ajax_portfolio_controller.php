@@ -300,7 +300,6 @@
 		
 		public function actionSavePortfolio()
 		{
-			
 			// get data
 			$portfolioId = $this->_data["id"];
 			$portfolioTitle = $this->_data["title"];
@@ -308,6 +307,7 @@
 			$portfolioExternalViewer = $this->_data["externalViewer"];
 			$template = $this->_data["template"];
 			$externalTemplate = $this->_data["externalTemplate"];
+			$fromTemplate = $this->_data["fromTemplate"];
 
 			$portfolioManager = $this->_environment->getPortfolioManager();
 			
@@ -330,11 +330,15 @@
 				*/
 			}
 			
+			$editMode = true;
+			
 			if ( $item === null )
 			{
 				$item = $portfolioManager->getNewItem();
 				$item->setCreationDate(getCurrentDateTimeInMySQL());
 				$item->setCreatorItem($privateRoomUser);
+				
+				$editMode = false;
 			}
 			
 			$item->setTitle($portfolioTitle);
@@ -353,8 +357,109 @@
 
 			$externalTemplateUserIds = explode(";", trim($externalTemplate));
 			$item->setExternalTemplate($externalTemplateUserIds);
-				
+			
 			$item->save();
+			
+			if ($editMode == false)
+			{
+				// create from template
+				if ($fromTemplate !== false) {
+					// get the template portfolio
+					$templatePortfolioItem = $portfolioManager->getItem($fromTemplate);
+					$templatePortfolioCreator = $templatePortfolioItem->getCreator();
+					$templatePortfolioContext = $templatePortfolioCreator->getOwnRoom();
+						
+					// create a portfolio tag under "ROOT" for the template in the users "private" context
+					$tagManager = $this->_environment->getTagManager();
+						
+					$privateRoom = $privateRoomUser->getOwnRoom();
+					$rootTagItem = $tagManager->getRootTagItemFor($privateRoom->getItemId());
+						
+					$this->_environment->changeContextToPrivateRoom($privateRoom->getItemId());
+						
+					$newPortfolioTag = $tagManager->getNewItem();
+					$newPortfolioTag->setTitle("Portfolio Import: " . $templatePortfolioItem->getTitle());
+					$newPortfolioTag->setContextID($privateRoom->getItemId());
+					$newPortfolioTag->setCreatorItem($privateRoomUser);
+					$newPortfolioTag->setCreationDate(getCurrentDateTimeInMySQL());
+					$newPortfolioTag->setPosition($rootTagItem->getItemID(), $rootTagItem->getChildrenList()->getCount() + 1);
+					$newPortfolioTag->save();
+						
+					// gather template tag information and create new tags for all
+					// portfolio template tags under the created one
+					$templatePortfolioTags = $portfolioManager->getPortfolioTags($fromTemplate);
+					$templateTagIdArray = array();
+					$tagMapping = array();
+					foreach ($templatePortfolioTags as $templatePortfolioTag) {
+						$templateTag = $tagManager->getItem($templatePortfolioTag['t_id']);
+						
+						$newTag = $tagManager->getNewItem();
+						$newTag->setTitle($templateTag->getTitle());
+						$newTag->setContextID($privateRoom->getItemId());
+						$newTag->setCreatorItem($privateRoomUser);
+						$newTag->setCreationDate(getCurrentDateTimeInMySQL());
+						$newTag->setPosition($newPortfolioTag->getItemID(), $position);
+						$newTag->save();
+						
+						// add tags to new portfolio
+						$portfolioManager->addTagToPortfolio(	$item->getItemID(),
+																$newTag->getItemID(),
+																$templatePortfolioTag['column'] == "0" ? "row" : "column",
+																$templatePortfolioTag['column'] == "0" ? (int) $templatePortfolioTag['row'] : (int) $templatePortfolioTag['column'],
+																$templatePortfolioTag['description']);
+						
+						$templateTagIdArray[] = $templatePortfolioTag['t_id'];
+						$tagMapping[$templatePortfolioTag['t_id']] = $newTag->getItemID();
+					}
+					
+					// gather linked cell information
+					$linkManager = $this->_environment->getLinkItemManager();
+					$links = $linkManager->getALlLinksByTagIDArray($templatePortfolioContext->getItemID(), $templateTagIdArray);
+						
+					$rubricArray = array();
+						
+					// structure links by rubric
+					foreach ($links as $link) {
+						if ($link["first_item_type"] === CS_TAG_TYPE) {
+							if (!in_array($link["second_item_id"], $rubricArray[$link["second_item_type"]])) {
+								$rubricArray[$link["second_item_type"]][] = $link["second_item_id"];
+							}
+						} else if($link["second_item_type"] === CS_TAG_TYPE) {
+							if (!in_array($link["first_item_id"], $rubricArray[$link["first_item_type"]])) {
+								$rubricArray[$link["first_item_type"]][] = $link["first_item_id"];
+							}
+						}
+					}
+					
+					// copy items
+					$linkArray = array();
+					foreach ($rubricArray as $rubric => $itemArray) {
+						foreach($itemArray as $itemId) {
+							$this->_environment->changeContextToPrivateRoom($templatePortfolioContext->getItemId());
+							
+							$manager = $this->_environment->getManager($rubric);
+							$templateItem = $manager->getItem($itemId);
+							
+							$this->_environment->changeContextToPrivateRoom($privateRoom->getItemId());
+							
+							$copyItem = $templateItem->copy();
+							
+							$templateItemTagList = $templateItem->getTagList();
+							$templateItemTag = $templateItemTagList->getFirst();
+							
+							$copyTagArray = array();
+							while ($templateItemTag) {
+								$copyTagArray[] = $tagMapping[$templateItemTag->getItemID()];
+									
+								$templateItemTag = $templateItemTagList->getNext();
+							}
+							
+							$copyItem->setTagListByID($copyTagArray);
+							$copyItem->save();
+						}
+					}
+				}
+			}
 			
 			$this->setSuccessfullDataReturn(array("portfolioId" => $item->getItemID()));
 			echo $this->_return;
