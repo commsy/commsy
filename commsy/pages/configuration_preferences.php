@@ -804,11 +804,11 @@ if ($current_user->isGuest()) {
           if (in_array('cont',$_POST['time2'])) {
              $item->setContinuous();
           } else {
-             $item->setTimeListByID($_POST['time2']);
+             $item->setTimeListByID2($_POST['time2']);
              $item->setNotContinuous();
           }
        } elseif ($item->isProjectRoom()) {
-          $item->setTimeListByID(array());
+          $item->setTimeListByID2(array());
           $item->setNotContinuous();
        }
 
