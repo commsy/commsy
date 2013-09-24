@@ -218,8 +218,8 @@
 					$mail_user = $mail;
 					$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$description);
 					$mail_user->set_message($user_description);
-					$mail_user->send();
-					$mail->set_to($admin->getEmail());
+					$mail_success = $mail_user->send();
+// 					$mail->set_to($admin->getEmail());
 					$mail->set_message($description);
 				}
 				
@@ -289,6 +289,11 @@
 				if (!empty($bcc_string)) {
 					$mail->set_bcc_to($bcc_string);
 				}
+				
+				if(!empty($cc_string) or !empty($bcc_string)){
+					$mail->set_to('');
+					$mail_success = $mail->send();
+				}
 
 				unset($cc_string);
 				unset($bcc_string);
@@ -296,7 +301,7 @@
 				// send mail
 				
 				$response_array[] = array(
-					$mail_success = $mail->send(),
+					$mail_success,
 					$mail_error_array = $mail->getErrorArray()
 				);
 			}

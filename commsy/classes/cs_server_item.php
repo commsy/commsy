@@ -209,34 +209,56 @@ class cs_server_item extends cs_guide_item {
    						}
    						
    						
-//    						pr('Diff: '.$days);
-//    						pr($user->getLastLogin());
-//    						pr('SendMailBeforeDelete: '.$portal_item->getInactivitySendMailBeforeDeleteDays());
-//    						pr('InactivityDeleteDays: '.$portal_item->getInactivityDeleteDays());
-//    						pr('SendMailBeforeLock: '.$portal_item->getInactivitySendMailBeforeLockDays());
-//    						pr('InactivityLockDays: '.$portal_item->getInactivityLockDays());
-//    						pr('USERNAME: '.$user->getFullName());
-//    						pr($user->getAuthSource());
+   						pr('Diff: '.$days);
+   						pr($user->getLastLogin());
+   						pr('SendMailBeforeDelete: '.$portal_item->getInactivitySendMailBeforeDeleteDays());
+   						pr('InactivityDeleteDays: '.$portal_item->getInactivityDeleteDays());
+   						pr('SendMailBeforeLock: '.$portal_item->getInactivitySendMailBeforeLockDays());
+   						pr('InactivityLockDays: '.$portal_item->getInactivityLockDays());
+   						pr('USERNAME: '.$user->getFullName());
+   						pr($user->getAuthSource());
+   						
+   						$inactivitySendMailDelete = $portal_item->getInactivitySendMailBeforeDeleteDays();
+   						$inactivityDeleteDays = $portal_item->getInactivityDeleteDays();
+   						$inactivitySendMailLock = $portal_item->getInactivitySendMailBeforeLockDays();
+   						$inactivityLockDays = $portal_item->getInactivityLockDays();
    						
    						$auth_source_manager = $this->_environment->getAuthSourceManager();
    						$auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
    						$sourceType = $auth_source_item->getSourceType();
    						
+   						$lockSendMailDate = $user->getLockSendMailDate();
+   						$daysTillLock = 0;
+   						if(!empty($lockSendMailDate)){
+   							$start_date_lock = new DateTime($user->getLockSendMailDate());
+   							$since_start_lock = $start_date_lock->diff(new DateTime(getCurrentDateTimeInMySQL()));
+   							$daysTillLock = $since_start_lock->days;
+   							if($daysTillLock == 0){
+   								$daysTillLock = 1;
+   							}
+   						}
+   						pr($inactivityDeleteDays);
+   						pr($inactivitySendMailDelete);
+   						pr($inactivityLockDays);
+   						pr($inactivitySendMailLock);
+   						if(empty($inactivitySendMailLock) and empty($inactivityLockDays)){
+   							$daysTillLock = $days;
+   						}
+   						pr($daysTillLock);
    						if($sourceType == 'MYSQL'){
 	   						// delete user
-	   						if($days >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeLock()){
-	   							if($user->getMailSendBeforeDelete()){
+	   						if($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)){
+	   							if($user->getMailSendLocked() or (empty($inactivitySendMailLock) and empty($inactivityLockDays))){
 	   								
 	   								$auth_source_manager = $this->_environment->getAuthSourceManager();
 	   								$auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
 	   								
 	   								// delete user and every room which the user is member only
-	   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
-									$authentication = $this->_environment->getAuthenticationObject();
-									$authentication->delete($user->getItemID()); // delete authentication
-	   								$user->delete(); 
-	   								$user->save();
-	   								#pr("DELETE USER:".$user->getFullName());
+// 	   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
+// 									$authentication = $this->_environment->getAuthenticationObject();
+// 									$authentication->delete($user->getItemID()); // delete authentication
+// 	   								$user->delete(); 
+// 	   								$user->save();
 	   								
 	   								
 	   								##########################
@@ -313,7 +335,7 @@ class cs_server_item extends cs_guide_item {
 	   									$cron_array['success_text'] = 'failed send mail to '.$to;
 	   								}
 	   								
-	   							} else if($user->getMailSendBeforeLock()){
+	   							} else if($user->getMailSendLocked() or (empty($inactivitySendMailLock) and empty($inactivityLockDays))){
 	   								// Send mail to user that the user will be deleted in one day
 	   								// set MailSentBeforeDelete
 	
@@ -440,7 +462,7 @@ class cs_server_item extends cs_guide_item {
 	   							continue;
 	   						}
 	   						// 1 Tag vor dem löschen noch eine Email verschicken
-	   						if($days >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeLock()){
+	   						if($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and ($user->getMailSendLocked() or (empty($inactivitySendMailLock) and empty($inactivityLockDays))) and !empty($inactivityDeleteDays)){
 	   							if(!$user->getMailSendBeforeDelete()){
 	   								// Send mail delete tomorrow
 	
@@ -568,7 +590,7 @@ class cs_server_item extends cs_guide_item {
 	   							}
 	   						}
 	   						
-	   						if($days >= $portal_item->getInactivitySendMailBeforeDeleteDays() and $user->getMailSendBeforeLock()){
+	   						if($daysTillLock >= $portal_item->getInactivitySendMailBeforeDeleteDays() and ($user->getMailSendLocked() or empty($inactivitySendMailLock) and empty($inactivityLockDays)) and !empty($inactivitySendMailDelete)){
 	   							// send mail delete in the next y days
 	   							if(!$user->getMailSendBeforeDelete()){
 	
@@ -582,7 +604,7 @@ class cs_server_item extends cs_guide_item {
 	
 		   								$mail = new cs_mail();
 		   								
-		   								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT', $portal_item->getTitle());
+		   								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT', ($portal_item->getInactivityDeleteDays() - $daysTillLock), $portal_item->getTitle());
 		   								$to = $user->getEmail();
 		   								$to_name = $user->getFullname();
 		   								if ( !empty($to_name) ) {
@@ -629,7 +651,7 @@ class cs_server_item extends cs_guide_item {
 		   								
 		   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
 		   								$body.= "\n\n";
-		   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $link);
+		   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', ($portal_item->getInactivityDeleteDays() - $daysTillLock),$link);
 		   								$body.= "\n\n";
 		   								$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
 		   								$body.= "\n\n";
@@ -694,14 +716,93 @@ class cs_server_item extends cs_guide_item {
 		   							}
 	   							}
 	   						}
+	   						if($daysTillLock > 0){
+	   							continue;
+	   						}
+	   						
 	   						// lock tomorrow
-	   						if($days >= $portal_item->getInactivityLockDays()-1){
+	   						if($days >= $portal_item->getInactivityLockDays()-1 and !empty($inactivityLockDays)){
 	
 	   							if($user->getMailSendBeforeLock()){
 	   								// lock user  set lock date to delete date
 	   								$user->setLock($portal_item->getInactivityDeleteDays()); // days till delete
 	   								$user->save();
 	   								// SPerre den Benutzer, wenn er noch nicht gesperrt ist
+	   								
+	   								$mail = new cs_mail();
+	   									
+	   								$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NOW_SUBJECT', $portal_item->getTitle());
+	   								$to = $user->getEmail();
+	   								$to_name = $user->getFullname();
+	   								if ( !empty($to_name) ) {
+	   									$to = $to_name." <".$to.">";
+	   								}
+	   								$mod_contact_list = $portal_item->getContactModeratorList();
+	   								$mod_user_first = $mod_contact_list->getFirst();
+	   								$mail->set_from_email($mod_user_first->getEmail());
+	   								$mail->set_from_name($mod_user_first->getFullname());
+	   									
+	   								// link
+	   								$url_to_portal = '';
+	   								if ( !empty($portal_item) ) {
+	   									$url_to_portal = $portal_item->getURL();
+	   								}
+	   								$c_commsy_cron_path = $this->_environment->getConfiguration('c_commsy_cron_path');
+	   								if ( isset($c_commsy_cron_path) ) {
+	   									$link = $c_commsy_cron_path;
+	   								} elseif ( !empty($url_to_portal) ) {
+	   									$c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+	   									if ( stristr($c_commsy_domain,'https://') ) {
+	   										$link = 'https://';
+	   									} else {
+	   										$link = 'http://';
+	   									}
+	   									$link .= $url_to_portal;
+	   									$file = 'commsy.php';
+	   									$c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+	   									if ( !empty($c_single_entry_point) ) {
+	   										$file = $c_single_entry_point;
+	   									}
+	   									$link .= '/'.$file;
+	   								} else {
+	   									$file = $_SERVER['PHP_SELF'];
+	   									$file = str_replace('cron','commsy',$file);
+	   									$link = 'http://'.$_SERVER['HTTP_HOST'].$file;
+	   								}
+	   								$link .= '?cid='.$portal_item->getItemID().'&mod=home&fct=index';
+	   								// link
+	   								
+	   								//content
+	   								$email_text_array = $portal_item->getEmailTextArray();
+	   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
+	   									
+	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   								$body.= "\n\n";
+	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NOW_BODY', $link);
+	   								$body.= "\n\n";
+	   								$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
+	   								$body.= "\n\n";
+	   								$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+	   								
+	   								$mail->set_subject($subject);
+	   								$mail->set_message($body);
+	   								$mail->set_to($to);
+	   								
+	   								if ( $mail->send() ) {
+	   									$user->setMailSendLocked();
+	   									$user->setLockSendMailDate();
+	   									$user->save();
+	   										
+	   									$cron_array['success'] = true;
+	   									$cron_array['success_text'] = 'send mail to '.$to;
+	   								} else {
+	   									$cron_array['success'] = false;
+	   									$cron_array['success_text'] = 'failed send mail to '.$to;
+	   								}
+	   								
+	   								
+	   								
+	   								
 	   								
 	   							} else {
 	   								// send mail to user that the user will be locked in one day
@@ -835,7 +936,7 @@ class cs_server_item extends cs_guide_item {
 	   							}
 	   						}
 	   						// lock in x days
-	   						if($days >= $portal_item->getInactivitySendMailBeforeLockDays()){
+	   						if($days >= $portal_item->getInactivitySendMailBeforeLockDays() and !empty($inactivitySendMailLock)){
 	   							// send mail lock in x days
 	   							
 	   							if($user->getMailSendBeforeLock()){
@@ -852,7 +953,7 @@ class cs_server_item extends cs_guide_item {
 	
 		   								$mail = new cs_mail();
 		   								
-		   								$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT', $portal_item->getTitle());
+		   								$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT',($portal_item->getInactivityLockDays() - $days), $portal_item->getTitle());
 		   								$to = $user->getEmail();
 		   								$to_name = $user->getFullname();
 		   								if ( !empty($to_name) ) {
@@ -899,7 +1000,7 @@ class cs_server_item extends cs_guide_item {
 		   								
 		   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
 		   								$body.= "\n\n";
-		   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $link);
+		   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', ($portal_item->getInactivityLockDays() - $days), $link);
 		   								$body.= "\n\n";
 		   								$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
 		   								$body.= "\n\n";
@@ -994,8 +1095,8 @@ class cs_server_item extends cs_guide_item {
    	$time_end = getmicrotime();
    	$time = round($time_end - $time_start,0);
    	$cron_array['time'] = $time;
+   	break;
    	unset($user_manager);
-   	
    	return $cron_array;
    }
    
@@ -1117,7 +1218,7 @@ class cs_server_item extends cs_guide_item {
    }
    
    function _cronCheckPasswordExpiredSoon() {
-   	  include('functions/curl_functions.php');
+   	  require_once 'functions/curl_functions.php';
    	  // Datenschutz
    	  $time_start = getmicrotime();
    	  $cron_array = array();
