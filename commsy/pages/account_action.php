@@ -463,8 +463,7 @@ function performAction ( $environment, $action_array, $post_array ) {
          	$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$content);
          	$mail_user->set_to($user->getEmail());
          	$mail_user->set_message($user_description);
-         	$mail_user->send();
-         	$mail->set_to($admin->getEmail());
+         	$mail_success = $mail_user->send();
          	$mail->set_message($content);
          }
          
@@ -540,10 +539,20 @@ function performAction ( $environment, $action_array, $post_array ) {
          if (!empty($bcc_string)) {
             $mail->set_bcc_to($bcc_string);
          }
+      	 if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+		 	if(!empty($cc_string) or !empty($bcc_string)){
+				$mail->set_to('');
+				$mail_success = $mail->send();
+			}
+		} else {
+			$mail_success = $mail->send();
+		}
+         
+         
          unset($cc_string);
          unset($bcc_string);
 
-         $mail_success = $mail->send();
+         #$mail_success = $mail->send();
          $mail_error_array = $mail->getErrorArray();
          unset($mail);
       }

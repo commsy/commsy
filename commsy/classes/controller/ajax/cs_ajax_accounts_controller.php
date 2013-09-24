@@ -289,9 +289,12 @@
 				if (!empty($bcc_string)) {
 					$mail->set_bcc_to($bcc_string);
 				}
-				
-				if(!empty($cc_string) or !empty($bcc_string)){
-					$mail->set_to('');
+				if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+					if(!empty($cc_string) or !empty($bcc_string)){
+						$mail->set_to('');
+						$mail_success = $mail->send();
+					}
+				} else {
 					$mail_success = $mail->send();
 				}
 
