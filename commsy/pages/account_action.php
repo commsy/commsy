@@ -398,7 +398,12 @@ function performAction ( $environment, $action_array, $post_array ) {
          $subject = $_POST['subject'];
          $content = $_POST['content'];
          $content = str_replace('%1',$user->getFullname(),$content);
-
+         
+         if($environment->getCurrentPortalItem()->getHideAccountname()){
+         	$userID = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+         } else {
+         	$userID = $user->getUserID();
+         }
          // now prepare for each action separately
          if ( $action_array['action'] == 'USER_ACCOUNT_DELETE'
               or $action_array['action'] == 'USER_ACCOUNT_LOCK'
@@ -408,11 +413,11 @@ function performAction ( $environment, $action_array, $post_array ) {
               or $action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON'
               or $action_array['action'] == 'USER_MAKE_CONTACT_PERSON'
             ) {
-            $content = str_replace('%2',$user->getUserID(),$content);
+            $content = str_replace('%2',$userID,$content);
             $content = str_replace('%3',$room->getTitle(),$content);
          } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_PASSWORD' ) {
             $content = str_replace('%2',$room->getTitle(),$content);
-            $content = str_replace('%3',$user->getUserID(),$content);
+            $content = str_replace('%3',$userID,$content);
          } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE' ) {
             $account_text = '';
             $user_manager->resetLimits();
@@ -431,7 +436,12 @@ function performAction ( $environment, $action_array, $post_array ) {
                      } else {
                         $account_text .= LF;
                      }
-                     $account_text .= $user_item->getUserID();
+                     if($environment->getCurrentPortalItem()->getHideAccountname()){
+                     	$userID = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+                     } else {
+                     	$userID = $user->getUserID();
+                     }
+                     $account_text .= $userID;
                      $user_item = $user_list->getNext();
                   }
                } else {
@@ -547,7 +557,7 @@ function performAction ( $environment, $action_array, $post_array ) {
          if (!empty($bcc_string)) {
             $mail->set_bcc_to($bcc_string);
          }
-      	 if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+      	 if($environment->getCurrentPortalItem()->getHideAccountname()){
 		 	if(!empty($cc_string) or !empty($bcc_string)){
 				$mail->set_to('');
 				$mail_success = $mail->send();
@@ -555,7 +565,6 @@ function performAction ( $environment, $action_array, $post_array ) {
 		} else {
 			$mail_success = $mail->send();
 		}
-         
          
          unset($cc_string);
          unset($bcc_string);
