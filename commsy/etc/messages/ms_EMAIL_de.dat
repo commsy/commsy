@@ -7,15 +7,15 @@ $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung wird in %1 Tagen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
 
 %2";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gel&ouml;scht";
-$message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gel&ouml;scht";
+$message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gelöscht";
+$message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gelöscht";
 $message["EMAIL_INACTIVITY_DELETE_NOW_BODY"]["de"] = "Ihre Kennung wurde gelöscht. Bitte wenden Sie sich an den Portal-Moderator.
 
 %1";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen gelöscht. Bitte wenden Sie sich an den Portal-Moderator.
 
 %1";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gel&ouml;scht";
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gelöscht";
 $message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["de"] = "Ihre Kennung wird in %1 Tagen wegen Inaktivität gesperrt. Bitte loggen Sie sich innerhalb dieser Zeit ein, um eine automatischen Sperrung zu verhindern.
 
 %2";
@@ -24,7 +24,7 @@ $message["EMAIL_INACTIVITY_LOCK_NOW_BODY"]["de"] = "Ihre Kennung wurde wegen Ina
 
 %1";
 $message["EMAIL_INACTIVITY_LOCK_NOW_SUBJECT"]["de"] = "%1: Ihre Kennung wurde gesperrt";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen gesperrt. Bitte loggen Sie sich bis morgen ein, um einer Sperrung zu entgehen.
+$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen wegen Inaktivität gesperrt. Bitte loggen Sie sich bis morgen ein, um eine automatische Sperrung zu verhindern.
 
 %1";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gesperrt";
