@@ -28,8 +28,9 @@ $translator = $environment->getTranslationObject();
 $current_context = $environment->getCurrentContextItem();
 
 if ( !$current_user->isModerator()
-	  and !$current_context->mayEdit($current_user)
-	  and !$current_context->isPortal()
+	  or !$current_context->mayEdit($current_user)
+	  or !$current_context->isPortal()
+	  or $current_user->isGuest()
    ) {
    $params = array();
    $params['environment'] = $environment;
