@@ -113,7 +113,7 @@ if ( !$current_user->isModerator()
 		      $form_view->setItemIsSaved();
 
             // warning of locked and deleted user        
-		      $lock_days 			  = $_POST['lock_user'];
+		      $lock_days 	      = $_POST['lock_user'];
 		      $mail_before_lock   = $_POST['email_before_lock'];
 		      $delete_days 		  = $_POST['delete_user'];
 		      $mail_before_delete = $_POST['email_before_delete'];

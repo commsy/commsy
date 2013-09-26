@@ -196,8 +196,16 @@ class cs_server_item extends cs_guide_item {
    				or $portal_item->getInactivityDeleteDays() != 0
    				or $portal_item->getInactivitySendMailBeforeDeleteDays() != 0
    			){
+   				$inactivitySendMailDelete = $portal_item->getInactivitySendMailBeforeDeleteDays();
+   				$inactivityDeleteDays = $portal_item->getInactivityDeleteDays();
+   				$inactivitySendMailLock = $portal_item->getInactivitySendMailBeforeLockDays();
+   				$inactivityLockDays = $portal_item->getInactivityLockDays();
    				
-   				$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($portal_item->getInactivitySendMailBeforeLockDays());
+   				if(isset($inactivitySendMailLock) and !empty($inactivitySendMailLock)){
+   					$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($portal_item->getInactivitySendMailBeforeLockDays());
+   				} else {
+   					$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($portal_item->getInactivitySendMailBeforeDeleteDays());
+   				}
    				$user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do,$portal_item->getItemID());
    				if(!empty($user_array)){
    					foreach ($user_array as $user) {
@@ -209,19 +217,16 @@ class cs_server_item extends cs_guide_item {
    						}
    						
    						
-   						pr('Diff: '.$days);
-   						pr($user->getLastLogin());
-   						pr('SendMailBeforeDelete: '.$portal_item->getInactivitySendMailBeforeDeleteDays());
-   						pr('InactivityDeleteDays: '.$portal_item->getInactivityDeleteDays());
-   						pr('SendMailBeforeLock: '.$portal_item->getInactivitySendMailBeforeLockDays());
-   						pr('InactivityLockDays: '.$portal_item->getInactivityLockDays());
-   						pr('USERNAME: '.$user->getFullName());
-   						pr($user->getAuthSource());
+//    						pr('Diff: '.$days);
+//    						pr($user->getLastLogin());
+//    						pr('SendMailBeforeDelete: '.$portal_item->getInactivitySendMailBeforeDeleteDays());
+//    						pr('InactivityDeleteDays: '.$portal_item->getInactivityDeleteDays());
+//    						pr('SendMailBeforeLock: '.$portal_item->getInactivitySendMailBeforeLockDays());
+//    						pr('InactivityLockDays: '.$portal_item->getInactivityLockDays());
+//    						pr('USERNAME: '.$user->getFullName());
+//    						pr($user->getAuthSource());
    						
-   						$inactivitySendMailDelete = $portal_item->getInactivitySendMailBeforeDeleteDays();
-   						$inactivityDeleteDays = $portal_item->getInactivityDeleteDays();
-   						$inactivitySendMailLock = $portal_item->getInactivitySendMailBeforeLockDays();
-   						$inactivityLockDays = $portal_item->getInactivityLockDays();
+   						
    						
    						$auth_source_manager = $this->_environment->getAuthSourceManager();
    						$auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
@@ -237,28 +242,29 @@ class cs_server_item extends cs_guide_item {
    								$daysTillLock = 1;
    							}
    						}
-   						pr($inactivityDeleteDays);
-   						pr($inactivitySendMailDelete);
-   						pr($inactivityLockDays);
-   						pr($inactivitySendMailLock);
+   						
    						if(empty($inactivitySendMailLock) and empty($inactivityLockDays)){
    							$daysTillLock = $days;
    						}
-   						pr($daysTillLock);
+//    						pr('DeleteDays '.$inactivityDeleteDays);
+//    						pr('SendMailDelete '.$inactivitySendMailDelete);
+//    						pr('LockDays '.$inactivityLockDays);
+//    						pr('SendMailLock '.$inactivitySendMailLock);
+//    						pr('daysTillLock '.$daysTillLock);
    						if($sourceType == 'MYSQL'){
 	   						// delete user
 	   						if($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)){
-	   							if($user->getMailSendLocked() or (empty($inactivitySendMailLock) and empty($inactivityLockDays))){
+	   							if(($user->getMailSendLocked() or (empty($inactivitySendMailLock) and empty($inactivityLockDays)))){
 	   								
 	   								$auth_source_manager = $this->_environment->getAuthSourceManager();
 	   								$auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
 	   								
 	   								// delete user and every room which the user is member only
-// 	   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
-// 									$authentication = $this->_environment->getAuthenticationObject();
-// 									$authentication->delete($user->getItemID()); // delete authentication
-// 	   								$user->delete(); 
-// 	   								$user->save();
+	   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
+									$authentication = $this->_environment->getAuthenticationObject();
+									$authentication->delete($user->getItemID()); // delete authentication
+	   								$user->delete(); 
+	   								$user->save();
 	   								
 	   								
 	   								##########################
@@ -404,49 +410,7 @@ class cs_server_item extends cs_guide_item {
 	   								$mail->set_message($body);
 	   								$mail->set_to($to);
 	   								
-	   								
-	   								
-	   								########################################
-	   								########################################
-	
-	   								
-	   								
-	//    								$mail = new cs_mail();
-	   									
-	//    								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT', $portal_item->getTitle());
-	//    								$to = $user->getEmail();
-	//    								#$body = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getFullName());
-	   								
-	//    								$default_sender_address = $server_item->getDefaultSenderAddress();
-	//    								if (!empty($default_sender_address)) {
-	//    									$mail->set_from_email($default_sender_address);
-	//    								} else {
-	//    									$mail->set_from_email('@');
-	//    								}
-	   								
-	   								
-	//    								$mod_contact_list = $portal_item->getContactModeratorList();
-	//    								$mod_user_first = $mod_contact_list->getFirst();
-	//    								$mail->set_from_email($mod_user_first->getEmail());
-	   								 
-	   								
-	//    								$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
-	   								
-	//    								#$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	//    								#$body.= "\n\n";
-	//    								$body = $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getFullName(),$link,$mod_user_first->getFullName());
-	//    								$body.= "\n\n";
-	//    								$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
-	//    								$body.= "\n\n";
-	//    								$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-	
-	   								
-	//    								$mail->set_subject($subject);
-	//    								$mail->set_message($body);
-	//    								$mail->set_to($to);
-	   								
-	   								
-	   								#$mail->setSendAsHTML();
+
 	   								if ( $mail->send() ) {
 	   									$user->setMailSendBeforeDelete();
 	   									$user->save();
@@ -532,51 +496,6 @@ class cs_server_item extends cs_guide_item {
 	   								$mail->set_to($to);
 	   								
 	   								
-	   								
-	   								######################################
-	   								######################################
-	   								
-	   								
-	   								
-	   								
-	//    								$mail = new cs_mail();
-	   								
-	//    								$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT', $portal_item->getTitle());
-	//    								$to = $user->getEmail();
-	//    								#$body = $translator->getMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getFullName());
-	   									
-	//    								$default_sender_address = $server_item->getDefaultSenderAddress();
-	//    								if (!empty($default_sender_address)) {
-	//    									$mail->set_from_email($default_sender_address);
-	//    								} else {
-	//    									$mail->set_from_email('@');
-	//    								}
-	   								
-	   								
-	//    								$mod_contact_list = $portal_item->getContactModeratorList();
-	//    								$mod_user_first = $mod_contact_list->getFirst();
-	//    								$mail->set_from_email($mod_user_first->getEmail());
-	   								
-	   									
-	//    								$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
-	   									
-	//    								#$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	//    								#$body.= "\n\n";
-	//    								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getFullName(),$link,$mod_user_first->getFullName());
-	//    								$body.= "\n\n";
-	//    								$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user->getFullName(), $portal_item->getTitle());
-	//    								$body.= "\n\n";
-	//    								$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-	   									
-	   									
-	//    								$mail->set_subject($subject);
-	//    								$mail->set_message($body);
-	//    								$mail->set_to($to);
-	   								
-	   								
-	   								
-	   								
-	   								#$mail->setSendAsHTML();
 	   								if ( $mail->send() ) {
 	   									$user->setMailSendBeforeDelete();
 	   									$user->save();
@@ -662,45 +581,6 @@ class cs_server_item extends cs_guide_item {
 		   								$mail->set_to($to);
 		   								
 		   								
-		   								#########################################
-		   								#########################################
-		   								
-		   							
-	// 		   							$mail = new cs_mail();
-	// 		   								#$portal_item->getInactivitySendMailBeforeDeleteDays()
-	// 		   							$subject = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT', ($portal_item->getInactivityDeleteDays() - $days), $portal_item->getTitle());
-	// 		   							$to = $user->getEmail();
-	// 		   							#$body = $translator->getMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getFullName(), ($portal_item->getInactivityDeleteDays() - $days));
-			   							
-	// 		   							$default_sender_address = $server_item->getDefaultSenderAddress();
-	// 		   							if (!empty($default_sender_address)) {
-	// 		   								$mail->set_from_email($default_sender_address);
-	// 		   							} else {
-	// 		   								$mail->set_from_email('@');
-	// 		   							}
-			   							
-	// 		   							$mod_contact_list = $portal_item->getContactModeratorList();
-	// 		   							$mod_user_first = $mod_contact_list->getFirst();
-	// 		   							$mail->set_from_email($mod_user_first->getEmail());
-			   							
-			   								
-	// 		   							$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
-			   								
-	// 		   							#$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	// 		   							#$body.= "\n\n";
-	// 		   							$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', $user->getFullName(),($portal_item->getInactivityDeleteDays() - $days),$link,$mod_user_first->getFullName());
-	// 		   							$body.= "\n\n";
-	// 		   							$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
-	// 		   							$body.= "\n\n";
-	// 		   							$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-			   								
-			   							
-	// 		   							$mail->set_subject($subject);
-	// 		   							$mail->set_message($body);
-	// 		   							$mail->set_to($to);
-			   							
-			   							
-			   							#$mail->setSendAsHTML();
 			   							if ( $mail->send() ) {
 			   								#$user->setInactivityMailSendBeforeDelete();
 			   								#$user->save();
@@ -874,52 +754,7 @@ class cs_server_item extends cs_guide_item {
 	   									$mail->set_subject($subject);
 	   									$mail->set_message($body);
 	   									$mail->set_to($to);
-	   									
-	   									
-	   									
-	   									
-	   									
-	   									##################################
-	   									##################################
-	   									
-	//    								$mail = new cs_mail();
-		   									
-	// 	   								$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT',  $portal_item->getTitle());
-	// 	   								$to = $user->getEmail();
-	// 	   								#$body = $translator->getMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $user->getFullName(), ($portal_item->getInactivityLockDays() - $portal_item->getInactivitySendMailBeforeLockDays()));
-		   								
-	// 	   								$default_sender_address = $server_item->getDefaultSenderAddress();
-	// 	   								if (!empty($default_sender_address)) {
-	// 	   									$mail->set_from_email($default_sender_address);
-	// 	   								} else {
-	// 	   									$mail->set_from_email('@');
-	// 	   								}
-		   								
-		   								
-		   								
-	// 	   								$mod_contact_list = $portal_item->getContactModeratorList();
-	// 	   								$mod_user_first = $mod_contact_list->getFirst();
-	// 	   								$mail->set_from_email($mod_user_first->getEmail());
-		   								
-		   									
-	// 	   								$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
-		   									
-	// 	   								#$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	// 	   								$body = "\n\n";
-	// 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $user->getFullName(),$link,$mod_user_first->getFullName());
-	// 	   								$body.= "\n\n";
-	// 	   								$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
-	// 	   								$body.= "\n\n";
-	// 	   								$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-		   									
-		   								
-	// 	   								$mail->set_subject($subject);
-	// 	   								$mail->set_message($body);
-	// 	   								$mail->set_to($to);
-		   								
-		   								
-		   								
-		   								#$mail->setSendAsHTML();
+
 		   								if ( $mail->send() ) {
 		   									$user->setMailSendBeforeLock();
 		   									$user->save();
@@ -1011,50 +846,6 @@ class cs_server_item extends cs_guide_item {
 		   								$mail->set_to($to);
 		   								
 		   								
-		   								
-		   								##############################
-		   								##############################
-		   								
-	// 		   							$mail = new cs_mail();
-			   								
-	// 		   							$subject = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT', ($portal_item->getInactivityLockDays() - $days), $portal_item->getTitle());
-	// 		   							$to = $user->getEmail();
-	// 		   							#$body = $translator->getMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getFullName(), ($portal_item->getInactivityLockDays() - $days));
-			   							
-	// 		   							$default_sender_address = $server_item->getDefaultSenderAddress();
-	// 		   							if (!empty($default_sender_address)) {
-	// 		   								$mail->set_from_email($default_sender_address);
-	// 		   							} else {
-	// 		   								$mail->set_from_email('@');
-	// 		   							}
-			   							
-			   							
-			   							
-	// 		   							$mod_contact_list = $portal_item->getContactModeratorList();
-	// 		   							$mod_user_first = $mod_contact_list->getFirst();
-	// 		   							$mail->set_from_email($mod_user_first->getEmail());
-			   							
-			   								
-	// 		   							$link = '<a href="'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index">'.$this->_environment->getConfiguration('c_commsy_domain').'/commsy.php?cid='.$portal_item->getContextID().'&mod=home&fct=index</a>';
-			   								
-	// 		   							#$body = $translator->getMessage('MAIL_BODY_HELLO_GR', $user->getFullName());
-	// 		   							$body.= "\n\n";
-	// 		   							$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', $user->getFullName(),($portal_item->getInactivityLockDays() - $days),$link,$mod_user_first->getFullName());
-	// 		   							$body.= "\n\n";
-	// 		   							$body .= $translator->getMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
-	// 		   							$body.= "\n\n";
-	// 		   							$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-	
-	// 		   							$mail->set_subject($subject);
-	// 		   							$mail->set_message($body);
-	// 		   							$mail->set_to($to);
-	
-		   								
-		   								
-		   								
-		   								
-		   								
-			   							#$mail->setSendAsHTML();
 			   							if ( $mail->send() ) {
 			   								#$user->setMailSendBeforeLock();
 			   								#$user->save();
@@ -1095,7 +886,6 @@ class cs_server_item extends cs_guide_item {
    	$time_end = getmicrotime();
    	$time = round($time_end - $time_start,0);
    	$cron_array['time'] = $time;
-   	break;
    	unset($user_manager);
    	return $cron_array;
    }
