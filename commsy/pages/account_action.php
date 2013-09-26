@@ -263,6 +263,14 @@ function performAction ( $environment, $action_array, $post_array ) {
          }
 
          $user->makeModerator();
+         
+         global $c_default_value_login_as_xy_for_new_moderator;
+         if(!$c_default_value_login_as_xy_for_new_moderator){
+         	$user->deactivateLoginAsAnotherUser();
+         } else {
+         	$user->unsetDeactivateLoginAsAnotherUser();
+         }
+         
          $user->save();
          $send_to = $user->getEmail();
 
