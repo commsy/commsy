@@ -206,6 +206,13 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 		        $this->_popup_controller->assign('item', 'url', $item->getURL());
 		        $this->_popup_controller->assign('item', 'url_date', $item->getURLDate());
 		        $this->_popup_controller->assign('item', 'publishing_date', $item->getPublishingDate());
+		        
+		        /** Foto Dokumententyp **/
+		        $this->_popup_controller->assign('item', 'foto_copyright', $item->getFotoCopyright());
+		        $this->_popup_controller->assign('item', 'foto_reason', $item->getFotoReason());
+		        $this->_popup_controller->assign('item', 'foto_date', $item->getFotoDate());
+		        /** Foto Dokumenttyp **/
+		        
 
 		        /** Start Dokumentenverwaltung **/
 		        $this->_popup_controller->assign('item', 'document_editor', $item->getDocumentEditor());
@@ -468,6 +475,15 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 	               $item->setDocumentReleaseDate( $form_data['document_release_date']);
 	            }
 	            /** Ende Dokumentenverwaltung **/
+	            if ( isset( $form_data['foto_copyright']) and $item->getDocumentReleaseDate() !=  $form_data['foto_copyright'] ) {
+	            	$item->setFotoCopyright( $form_data['foto_copyright']);
+	            }
+	            if ( isset( $form_data['foto_reason']) and $item->getDocumentReleaseDate() !=  $form_data['foto_reason'] ) {
+	            	$item->setFotoReason( $form_data['foto_reason']);
+	            }
+	            if ( isset( $form_data['foto_date']) and $item->getDocumentReleaseDate() !=  $form_data['foto_date'] ) {
+	            	$item->setFotoDate( $form_data['foto_date']);
+	            }
 
 	            if ( isset( $form_data['external_viewer']) and isset( $form_data['external_viewer_accounts']) ) {
 	               $user_ids = explode(" ", $form_data['external_viewer_accounts']);

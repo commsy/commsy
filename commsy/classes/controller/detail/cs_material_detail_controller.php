@@ -925,6 +925,27 @@
          			$return[] = $temp_array;
                	}
                	break;
+			case 'foto':
+				$formal_data_bib = array();
+				if ( $this->_item->getFotoCopyright() ) {
+					$temp_array = array();
+					$temp_array[] = $translator->getMessage('MATERIAL_BIB_FOTO_COPYRIGHT');
+					$temp_array[] = $this->_item->getFotoCopyright();
+					$return[] = $temp_array;
+				}
+				if ( $this->_item->getFotoReason() ) {
+					$temp_array = array();
+					$temp_array[] = $translator->getMessage('MATERIAL_BIB_FOTO_REASON');
+					$temp_array[] = $this->_item->getFotoReason();
+					$return[] = $temp_array;
+				}
+				if ( $this->_item->getFotoDate() ) {
+					$temp_array = array();
+					$temp_array[] = $translator->getMessage('MATERIAL_BIB_FOTO_DATE');
+					$temp_array[] = $this->_item->getFotoDate();
+					$return[] = $temp_array;
+				}
+				break;
             case 'none':
             default:
                $biblio .= $this->_item->getBibliographicValues();
