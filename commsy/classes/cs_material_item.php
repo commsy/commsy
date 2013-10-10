@@ -306,6 +306,29 @@ class cs_material_item extends cs_item {
       return (string) $this->_getExtra('BIB_DOCUMENT_RELEASE_DATE');
    }
 /** Ende Dokumentenverwaltung **/
+   function setFotoCopyright($value) {
+   	$this->_addExtra('BIB_FOTO_COPYRIGHT', (string)$value);
+   }
+   
+   function getFotoCopyright() {
+   	return (string) $this->_getExtra('BIB_FOTO_COPYRIGHT');
+   }
+   
+   function setFotoReason($value) {
+   	$this->_addExtra('BIB_FOTO_REASON', (string)$value);
+   }
+   
+   function getFotoReason() {
+   	return (string) $this->_getExtra('BIB_FOTO_REASON');
+   }
+   
+   function setFotoDate($value) {
+   	$this->_addExtra('BIB_FOTO_DATE', (string)$value);
+   }
+   
+   function getFotoDate() {
+   	return (string) $this->_getExtra('BIB_FOTO_DATE');
+   }
 
 
 /** End: detailed bib values **/

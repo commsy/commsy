@@ -75,7 +75,8 @@
 							if (!empty($value)) {
 								//$text = $this->_environment->getTextConverter()->cleanDataFromTextArea($textArray[mb_strtoupper($key, 'UTF-8')]);
 								$text = $textArray[mb_strtoupper($key, 'UTF-8')];
-								$text .= '<br/><br/><b>'.$this->_translator->getMessage('AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE').'</b>';
+					         $translator = $this->_environment->getTranslationObject();
+								$text .= '<br/><br/><b>'.$translator->getMessage('AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE').'</b>';
 							}
 						}
 					}

@@ -2488,6 +2488,24 @@ class cs_user_item extends cs_item {
    	return $return;
    }
    
+   function setMailSendLocked(){
+   	$this->_addExtra('MAIL_SEND_LOCKED', '1');
+   }
+   
+   function unsetMailSendLocked(){
+   	$this->_unsetExtra('MAIL_SEND_LOCKED');
+   }
+   
+   function getMailSendLocked(){
+   	$retour = false;
+   	if($this->_issetExtra('MAIL_SEND_LOCKED')){
+   		$retour = $this->_getExtra('MAIL_SEND_LOCKED');
+   	}
+   	return $retour;
+   }
+
+   
+   
    function setMailSendBeforeLock(){
    	$this->_addExtra('MAIL_SEND_LOCK', '1');
    }
@@ -2519,6 +2537,14 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    	}
+   	
+   function setLockSendMailDate(){
+   	$this->_addExtra('LOCK_SEND_MAIL_DATE', getCurrentDateTimeInMySQL());
+   }
+   
+   function getLockSendMailDate(){
+   	return $this->_getExtra('LOCK_SEND_MAIL_DATE');
+   }
   
    
    

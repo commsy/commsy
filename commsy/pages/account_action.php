@@ -263,6 +263,14 @@ function performAction ( $environment, $action_array, $post_array ) {
          }
 
          $user->makeModerator();
+         
+         global $c_default_value_login_as_xy_for_new_moderator;
+         if(!$c_default_value_login_as_xy_for_new_moderator){
+         	$user->deactivateLoginAsAnotherUser();
+         } else {
+         	$user->unsetDeactivateLoginAsAnotherUser();
+         }
+         
          $user->save();
          $send_to = $user->getEmail();
 
@@ -390,7 +398,12 @@ function performAction ( $environment, $action_array, $post_array ) {
          $subject = $_POST['subject'];
          $content = $_POST['content'];
          $content = str_replace('%1',$user->getFullname(),$content);
-
+         $account_text_uid = '';
+         if($environment->getCurrentPortalItem()->getHideAccountname()){
+         	$userID = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+         } else {
+         	$userID = $user->getUserID();
+         }
          // now prepare for each action separately
          if ( $action_array['action'] == 'USER_ACCOUNT_DELETE'
               or $action_array['action'] == 'USER_ACCOUNT_LOCK'
@@ -400,11 +413,11 @@ function performAction ( $environment, $action_array, $post_array ) {
               or $action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON'
               or $action_array['action'] == 'USER_MAKE_CONTACT_PERSON'
             ) {
-            $content = str_replace('%2',$user->getUserID(),$content);
+            $content = str_replace('%2',$userID,$content);
             $content = str_replace('%3',$room->getTitle(),$content);
          } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_PASSWORD' ) {
             $content = str_replace('%2',$room->getTitle(),$content);
-            $content = str_replace('%3',$user->getUserID(),$content);
+            $content = str_replace('%3',$userID,$content);
          } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE' ) {
             $account_text = '';
             $user_manager->resetLimits();
@@ -422,8 +435,15 @@ function performAction ( $environment, $action_array, $post_array ) {
                         $first = false;
                      } else {
                         $account_text .= LF;
+                        $account_text_uid .= LF;
                      }
-                     $account_text .= $user_item->getUserID();
+                     if($environment->getCurrentPortalItem()->getHideAccountname()){
+                     	$userID = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+                     	$account_text_uid .= $user_item->getUserID();
+                     } else {
+                     	$userID = $user_item->getUserID();
+                     }
+                     $account_text .= $userID;
                      $user_item = $user_list->getNext();
                   }
                } else {
@@ -436,6 +456,7 @@ function performAction ( $environment, $action_array, $post_array ) {
             }
             $content = str_replace('%2',$user->getEmail(),$content);
             $content = str_replace('%3',$room->getTitle(),$content);
+            $content_with_uid = str_replace('%4',$account_text_uid,$content);
             $content = str_replace('%4',$account_text,$content);
          }
 
@@ -460,11 +481,16 @@ function performAction ( $environment, $action_array, $post_array ) {
          // Datenschutz
          if($environment->getCurrentPortalItem()->getHideAccountname()){
          	$mail_user = $mail;
-         	$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$content);
+         	$user_item = $user_list->getFirst();
+         	$content_with_uid = $content;
+         	while ($user_item) {pr($user_item->getUserID());
+         		$content_with_uid = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user_item->getFullname()),$user_item->getUserID(),$content_with_uid);
+         		$user_item = $user_list->getNext();
+         	}
+         	#$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$content);
          	$mail_user->set_to($user->getEmail());
-         	$mail_user->set_message($user_description);
-         	$mail_user->send();
-         	$mail->set_to($admin->getEmail());
+         	$mail_user->set_message($content_with_uid);
+         	$mail_success = $mail_user->send();
          	$mail->set_message($content);
          }
          
@@ -540,10 +566,19 @@ function performAction ( $environment, $action_array, $post_array ) {
          if (!empty($bcc_string)) {
             $mail->set_bcc_to($bcc_string);
          }
+      	 if($environment->getCurrentPortalItem()->getHideAccountname()){
+		 	if(!empty($cc_string) or !empty($bcc_string)){
+				$mail->set_to('');
+				$mail_success = $mail->send();
+			}
+		} else {
+			$mail_success = $mail->send();
+		}
+         
          unset($cc_string);
          unset($bcc_string);
 
-         $mail_success = $mail->send();
+         #$mail_success = $mail->send();
          $mail_error_array = $mail->getErrorArray();
          unset($mail);
       }

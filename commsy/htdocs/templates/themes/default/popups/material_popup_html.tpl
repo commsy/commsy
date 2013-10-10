@@ -112,6 +112,7 @@
 					            <option value="manuscript" {if $item.bib_kind == 'manuscript'} selected="selected" {/if}>___MATERIAL_BIB_MANUSCRIPT___</option>
 					            <option value="website" {if $item.bib_kind == 'website'} selected="selected" {/if}>___MATERIAL_BIB_WEBSITE___</option>
 					            <option value="document" {if $item.bib_kind == 'document'} selected="selected" {/if}>___MATERIAL_BIB_DOCUMENT___</option>
+					            <option value="foto" {if $item.bib_kind == 'foto'} selected="selected" {/if}>___MATERIAL_BIB_FOTO___</option>
 	         				</select>
 	         			</div>
 
@@ -568,6 +569,31 @@
 	         						<label for="bib_document_release_date">___MATERIAL_BIB_DOCUMENT_RELEASE_DATE___:</label>
 	         						<input id="bib_document_release_date" class="size_200 datepicker" type="text" name="form_data[document_release_date]" value="{show var=$item.document_release_date}" />
 	         					</div>
+	         				</div>
+	         				
+	         				<div id="bib_content_foto" class="hidden">
+	         					<div class="input_row">
+	         						<label for="bib_foto_copyright">___MATERIAL_BIB_FOTO_COPYRIGHT___:</label>
+	         						<input id="bib_foto_copyright" type="text" class="size_200" name="form_data[foto_copyright]" value="{show var=$item.foto_copyright}" />
+	         					</div>
+
+	         					<div class="input_row">
+	         						<label for="bib_foto_reason">___MATERIAL_BIB_FOTO_REASON___:</label>
+	         						<input id="bib_foto_reason" type="text" class="size_200" name="form_data[foto_reason]" value="{show var=$item.foto_reason}" />
+	         					</div>
+	         					
+	         					<div class="input_row">
+	         						<label for="bib_foto_date">___MATERIAL_BIB_FOTO_DATE___:</label>
+	         						<input id="bib_foto_date" type="text" class="size_200 datepicker" name="form_data[foto_date]" value="{show var=$item.foto_date}" />
+	         					</div>
+
+	         					<div class="input_row">
+	         						___MATERIAL_BIBLIOGRAPHIC___:
+	         					</div>
+
+								<div class="editor_content">
+									<div id="common" class="ckeditor">{show var=$item.common}</div>
+								</div>
 	         				</div>
 	         			</div>
 

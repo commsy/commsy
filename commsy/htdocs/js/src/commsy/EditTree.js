@@ -29,6 +29,14 @@ define([	"dojo/_base/declare",
 		 *** overwritten tree methods
 		 ************************************************************************************/
 		createTree: function() {
+			// extend the DndSource object and disable the copy function
+			dojo.extend(DndSource, {
+				copyState: function(keyPressed, self)
+				{
+					return false;
+				}
+			});
+			
 			return new Tree({
 				autoExpand:			this.expanded,
 				model:				this.model,

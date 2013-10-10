@@ -327,7 +327,29 @@ class cs_room_item extends cs_context_item {
       }
       $this->_setValue('in_time', $time_array, FALSE);
    }
-
+   
+   /******************************************
+    *  diese Funktion wird in der configuration_preferences verwendet,
+    *  weil die obige aufgrund eines PHP-Bugs mehrmals aufgerufen wird
+    *  und dies zu einer zeitlichen Verzögerung von 30 Sekunden kommt
+    *  
+    *  Datum:  20.09.2013
+    *  Autor:  Iver Jackewitz
+    *  Kernel: Linux RZ-CS-WEB01 3.2.0-53-virtual #81-Ubuntu SMP Thu Aug 22 21:21:26 UTC 2013 x86_64
+    *  PHP:    PHP Version 5.3.10-1ubuntu3.8
+    *  
+    *  völlig unerklärlich
+    */
+   function setTimeListByID2 ($value) {
+   	$time_array = array();
+   	foreach ( $value as $iid ) {
+   		$tmp_data = array();
+   		$tmp_data['iid'] = $iid;
+   		$time_array[] = $tmp_data;
+   	}
+   	$this->_setValue('in_time', $time_array, FALSE);
+   }
+    
    /** set clock pulses of a room
    * this method sets a list of clock pulses which are linked to the room
    *

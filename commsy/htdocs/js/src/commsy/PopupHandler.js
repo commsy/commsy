@@ -344,6 +344,8 @@ define([	"dojo/_base/declare",
 					
 					// call the popups error handling or in case it is not implemented, the default handling defined in this class
 					this.onPopupSubmitError(response);
+					// destroy loading after showing error
+					this.destroyLoading();
 				})
 			);
 		},

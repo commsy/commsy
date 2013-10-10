@@ -4,9 +4,9 @@ $message["EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["en"] = "Password expires";
 $message["EMAIL_CONTACT_MODERATOR"]["en"] = "Contact via e-mail";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["en"] = "Send an e-mail to contact persons";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Hello %1,
+$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Your account will be deleted in %1 days. Please contact the portal user.
 
-Your account will be deleted in %2 days. Please contact the portal user.";
+%2";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["en"] = "Your account will be deleted in %1 days";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Your account will be deleted tomorrow. Please contact the portal user.
 
@@ -16,6 +16,10 @@ $message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["en"] = "your account will be locked
 
 %2";
 $message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["en"] = "%2: Account will be locked in %1 days";
+$message["EMAIL_INACTIVITY_LOCK_NOW_BODY"]["en"] = "your account is locked because of inactivity.
+
+%1";
+$message["EMAIL_INACTIVITY_LOCK_NOW_SUBJECT"]["en"] = "%1: Your account is locked";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["en"] = "your account will be locked tomorrow. Log on to your account will prevent you from getting locked.
 
 %1";
