@@ -4,7 +4,7 @@ $message["EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["de"] = "Passwort läuft ab";
 $message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung wird in %1 Tagen gel&ouml;scht. Bitte wenden Sie sich an den Portal-Moderator.
+$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung wird in %1 Tagen gelöscht. Bitte wenden Sie sich an den Portal-Moderator.
 
 %2";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gelöscht";

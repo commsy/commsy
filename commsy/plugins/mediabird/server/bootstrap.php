@@ -11,7 +11,11 @@ include_once("dbo.php");
 include_once("utility.php");
 
 //include HTML purifier
-include_once("filterlib/HTMLPurifier.standalone.php");
+if ( !class_exists('HTMLPurifier') ) {
+   include_once("filterlib/HTMLPurifier.standalone.php");
+}
+// if-clause because CommSy from version 8.1.0 also uses HTMLPurifier
+
 //include equation support
 include_once("equationsupport/LaTeXrender.php");
 

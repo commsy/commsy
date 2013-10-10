@@ -513,7 +513,7 @@ class cs_server_item extends cs_guide_item {
 	   							// send mail delete in the next y days
 	   							if(!$user->getMailSendBeforeDelete()){
 	
-		   							if( ($portal_item->getInactivityDeleteDays() - $days) <= $portal_item->getInactivitySendMailBeforeDeleteDays()){
+		   							if( ($portal_item->getInactivityDeleteDays() - $daysTillLock) <= $portal_item->getInactivitySendMailBeforeDeleteDays()){
 		   								
 		   								
 		   								#########################################
@@ -606,6 +606,7 @@ class cs_server_item extends cs_guide_item {
 	   							if($user->getMailSendBeforeLock()){
 	   								// lock user  set lock date to delete date
 	   								$user->setLock($portal_item->getInactivityDeleteDays()); // days till delete
+	   								$user->reject();
 	   								$user->save();
 	   								// SPerre den Benutzer, wenn er noch nicht gesperrt ist
 	   								

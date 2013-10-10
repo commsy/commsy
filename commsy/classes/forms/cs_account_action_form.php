@@ -277,9 +277,9 @@ class cs_account_action_form extends cs_rubric_form {
                            $account_text .= LF;
                         }
                         if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-                        	$userID = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+                        	$userID = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user_item->getFullname());
                         } else {
-                        	$userID = $user->getUserID();
+                        	$userID = $user_item->getUserID();
                         }
                         $account_text .= $userID;
                         $user_item = $user_list->getNext();
