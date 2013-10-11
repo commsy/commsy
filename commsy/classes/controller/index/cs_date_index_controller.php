@@ -1607,7 +1607,8 @@
 								if ($first_char == '0'){
 									$real_month = mb_substr($real_month,1,2);
 								}
-								$dates_manager->setMonthLimit2($real_month);
+								$month = date("m", $_GET['week']);
+								$dates_manager->setMonthLimit2($month);
 							}
 						}
 
