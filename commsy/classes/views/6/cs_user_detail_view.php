@@ -506,18 +506,19 @@ class cs_user_detail_view extends cs_detail_view {
          }
 
          $formal_data[] = $temp_array;
-         
+         if ($portal_item->getPasswordExpiration() != 0) {
          // Datenschutz expired password date
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_EXPIRED_PASSWORD');
-          
-         if($item->isPasswordExpired()){
-         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
-         } else {
-         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+	         $temp_array = array();
+	         $temp_array[] = $this->_translator->getMessage('USER_EXPIRED_PASSWORD');
+	          
+	         if($item->isPasswordExpired()){
+	         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+	         } else {
+	         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+	         }
+	         
+	         $formal_data[] = $temp_array;
          }
-         
-         $formal_data[] = $temp_array;
          
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_ACCEPTED_AGB');
