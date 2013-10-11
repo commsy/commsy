@@ -47,7 +47,7 @@
 								<textarea cols="80" rows="10" name="form_data[description_user]"></textarea>
 								{if $popup.agb.agb_datasecurity}
 								<input type="checkbox" name="form_data[agb]" value="1">
-								<a onclick="window.open(href, target, 'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400');" target="agb" href="commsy.php?cid={$popup.room.room_id}&mod=agb&fct=index&agb=1">{i18n tag=AGB_COMFIRMATION_TEXT param1=___AGB_CONFIRMATION_LINK_INPUT___}</a>
+								{i18n tag=AGB_COMFIRMATION_TEXT} <a onclick="window.open(href, target, 'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400');" target="agb" href="commsy.php?cid={$popup.room.room_id}&mod=agb&fct=index&agb=1">{i18n tag=AGB_CONFIRMATION}</a> {i18n tag=AGB_COMFIRMATION_TEXT2}
 								{/if}
 							</div>
 						</div>

@@ -4,7 +4,8 @@ $message["AGB_ACCEPTANCE_NOT_BUTTON"]["de"] = "Beantragung abbrechen";
 $message["AGB_ACCEPTANCE_NOT_BUTTON_PORTAL"]["de"] = "Mitgliedschaft beenden";
 $message["AGB_ACCEPTANCE_NOT_BUTTON_ROOM"]["de"] = "Teilnahme ablehnen";
 $message["AGB_CHANGE_TITLE"]["de"] = "Neue Nutzungsvereinbarungen";
-$message["AGB_COMFIRMATION_TEXT"]["de"] = "Ich stimme den %1 zu.";
+$message["AGB_COMFIRMATION_TEXT"]["de"] = "Ich stimme den ";
+$message["AGB_COMFIRMATION_TEXT2"]["de"] = "zu.";
 $message["AGB_CONFIRMATION"]["de"] = "Nutzungsvereinbarungen";
 $message["AGB_CONFIRMATION_GUIDE"]["de"] = "Nutzungsver-
 einbarungen";
