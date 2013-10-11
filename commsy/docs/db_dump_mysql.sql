@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 4004
+# Version 4096
 #
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: commsy.dev (MySQL 5.1.63-0+squeeze1)
+# Host: commsy.dev (MySQL 5.5.31-1~dotdeb.0)
 # Datenbank: commsy_vanilla
-# Erstellungsdauer: 2013-03-25 12:40:33 +0000
+# Erstellungsdauer: 2013-10-11 08:17:36 +0000
 # ************************************************************
 
 
@@ -23,6 +23,8 @@
 # Export von Tabelle annotation_portfolio
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `annotation_portfolio`;
+
 CREATE TABLE `annotation_portfolio` (
   `p_id` int(11) NOT NULL DEFAULT '0',
   `a_id` int(11) NOT NULL DEFAULT '0',
@@ -36,6 +38,8 @@ CREATE TABLE `annotation_portfolio` (
 
 # Export von Tabelle annotations
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `annotations`;
 
 CREATE TABLE `annotations` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -63,6 +67,8 @@ CREATE TABLE `annotations` (
 # Export von Tabelle announcement
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `announcement`;
+
 CREATE TABLE `announcement` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -87,6 +93,8 @@ CREATE TABLE `announcement` (
 # Export von Tabelle assessments
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `assessments`;
+
 CREATE TABLE `assessments` (
   `item_id` int(11) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
@@ -107,6 +115,8 @@ CREATE TABLE `assessments` (
 
 # Export von Tabelle auth
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `auth`;
 
 CREATE TABLE `auth` (
   `commsy_id` int(11) NOT NULL DEFAULT '0',
@@ -132,6 +142,8 @@ UNLOCK TABLES;
 
 # Export von Tabelle auth_source
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `auth_source`;
 
 CREATE TABLE `auth_source` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -162,6 +174,8 @@ UNLOCK TABLES;
 
 # Export von Tabelle dates
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `dates`;
 
 CREATE TABLE `dates` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -197,6 +211,8 @@ CREATE TABLE `dates` (
 # Export von Tabelle discussionarticles
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `discussionarticles`;
+
 CREATE TABLE `discussionarticles` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -221,6 +237,8 @@ CREATE TABLE `discussionarticles` (
 
 # Export von Tabelle discussions
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `discussions`;
 
 CREATE TABLE `discussions` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -248,6 +266,8 @@ CREATE TABLE `discussions` (
 # Export von Tabelle external_viewer
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `external_viewer`;
+
 CREATE TABLE `external_viewer` (
   `item_id` int(11) NOT NULL,
   `user_id` varchar(32) NOT NULL,
@@ -258,6 +278,8 @@ CREATE TABLE `external_viewer` (
 
 # Export von Tabelle external2commsy_id
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `external2commsy_id`;
 
 CREATE TABLE `external2commsy_id` (
   `external_id` varchar(255) NOT NULL,
@@ -271,6 +293,8 @@ CREATE TABLE `external2commsy_id` (
 # Export von Tabelle file_multi_upload
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `file_multi_upload`;
+
 CREATE TABLE `file_multi_upload` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `session_id` varchar(150) NOT NULL,
@@ -283,6 +307,8 @@ CREATE TABLE `file_multi_upload` (
 
 # Export von Tabelle files
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `files`;
 
 CREATE TABLE `files` (
   `files_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -308,6 +334,8 @@ CREATE TABLE `files` (
 # Export von Tabelle hash
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `hash`;
+
 CREATE TABLE `hash` (
   `user_item_id` int(11) NOT NULL,
   `rss` char(32) DEFAULT NULL,
@@ -321,6 +349,8 @@ CREATE TABLE `hash` (
 
 # Export von Tabelle homepage_link_page_page
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `homepage_link_page_page`;
 
 CREATE TABLE `homepage_link_page_page` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -345,6 +375,8 @@ CREATE TABLE `homepage_link_page_page` (
 # Export von Tabelle homepage_page
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `homepage_page`;
+
 CREATE TABLE `homepage_page` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -368,6 +400,8 @@ CREATE TABLE `homepage_page` (
 # Export von Tabelle item_backup
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `item_backup`;
+
 CREATE TABLE `item_backup` (
   `item_id` int(11) NOT NULL,
   `backup_date` datetime NOT NULL,
@@ -384,6 +418,8 @@ CREATE TABLE `item_backup` (
 # Export von Tabelle item_link_file
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `item_link_file`;
+
 CREATE TABLE `item_link_file` (
   `item_iid` int(11) NOT NULL DEFAULT '0',
   `item_vid` int(11) NOT NULL DEFAULT '0',
@@ -397,6 +433,8 @@ CREATE TABLE `item_link_file` (
 
 # Export von Tabelle items
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `items`;
 
 CREATE TABLE `items` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -416,7 +454,7 @@ LOCK TABLES `items` WRITE;
 INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`)
 VALUES
 	(98,99,'user',NULL,NULL,NULL),
-	(99,0,'server',NULL,NULL,'2013-03-25 13:39:22'),
+	(99,0,'server',NULL,NULL,'2013-10-11 10:15:24'),
 	(100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24');
 
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
@@ -425,6 +463,8 @@ UNLOCK TABLES;
 
 # Export von Tabelle labels
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `labels`;
 
 CREATE TABLE `labels` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -450,6 +490,8 @@ CREATE TABLE `labels` (
 
 # Export von Tabelle link_items
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `link_items`;
 
 CREATE TABLE `link_items` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -481,6 +523,8 @@ CREATE TABLE `link_items` (
 # Export von Tabelle link_modifier_item
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `link_modifier_item`;
+
 CREATE TABLE `link_modifier_item` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `modifier_id` int(11) NOT NULL DEFAULT '0',
@@ -500,6 +544,8 @@ UNLOCK TABLES;
 
 # Export von Tabelle links
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `links`;
 
 CREATE TABLE `links` (
   `from_item_id` int(11) NOT NULL DEFAULT '0',
@@ -531,6 +577,8 @@ CREATE TABLE `links` (
 # Export von Tabelle log
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `log`;
+
 CREATE TABLE `log` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ip` varchar(15) DEFAULT NULL,
@@ -553,45 +601,12 @@ CREATE TABLE `log` (
   KEY `cid` (`cid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-LOCK TABLES `log` WRITE;
-/*!40000 ALTER TABLE `log` DISABLE KEYS */;
-
-INSERT INTO `log` (`id`, `ip`, `agent`, `timestamp`, `request`, `post_content`, `method`, `uid`, `ulogin`, `cid`, `module`, `fct`, `param`, `iid`, `queries`, `time`)
-VALUES
-	(1,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:42','/commsy.php?','NULL','GET',0,'',99,'home','index','',0,0,0),
-	(2,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:42','/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&SID=3667347c4e62464c210eb97dc08156a5&https=-1&flash=1','NULL','GET',0,'guest',99,'home','index','jscheck=1&isJS=1&https=-1&flash=1',0,12,0.593),
-	(3,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:48','/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&https=-1&flash=1','NULL','GET',98,'root',99,'home','index','jscheck=1&isJS=1&https=-1&flash=1',0,12,0.198),
-	(4,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:50','/commsy.php?cid=99&mod=configuration&fct=index','NULL','GET',98,'root',99,'configuration','index','',0,9,0.247),
-	(5,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:53','/commsy.php?cid=99&mod=configuration&fct=update','NULL','GET',98,'root',99,'configuration','update','',0,13,0.601),
-	(6,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:53','/commsy.php?cid=99&mod=configuration&fct=update','NULL','GET',98,'root',99,'configuration','update','',0,12,0.441),
-	(7,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:37:58','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<6_3_3_TO_6_5_0>1</6_3_3_TO_6_5_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,32,0.362),
-	(8,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:03','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<6_5_0_TO_6_5_1>1</6_5_0_TO_6_5_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,34,0.373),
-	(9,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:09','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<6_5_1_TO_7_0_0>1</6_5_1_TO_7_0_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,39,0.313),
-	(10,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:16','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_0_3_TO_7_0_4>1</7_0_3_TO_7_0_4>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,26,0.328),
-	(11,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:19','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_0_4_TO_7_1_0>1</7_0_4_TO_7_1_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.301),
-	(12,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:23','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_1_0_TO_7_1_1>1</7_1_0_TO_7_1_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,19,0.285),
-	(13,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:28','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_1_1_TO_7_1_2>1</7_1_1_TO_7_1_2>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,18,0.28),
-	(14,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:32','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_1_2_TO_7_2_0>1</7_1_2_TO_7_2_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,32,0.312),
-	(15,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:36','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_0_TO_7_2_1>1</7_2_0_TO_7_2_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,43,0.294),
-	(16,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:40','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_1_TO_7_2_2>1</7_2_1_TO_7_2_2>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,21,0.262),
-	(17,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:43','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_2_TO_7_2_3>1</7_2_2_TO_7_2_3>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.277),
-	(18,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:46','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_3_TO_7_2_4>1</7_2_3_TO_7_2_4>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,17,0.21),
-	(19,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:50','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_2_4_TO_7_3_0>1</7_2_4_TO_7_3_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.263),
-	(20,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:54','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_3_0_TO_7_5_0>1</7_3_0_TO_7_5_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,134,0.352),
-	(21,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:38:58','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_0_TO_7_5_1>1</7_5_0_TO_7_5_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,17,0.205),
-	(22,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:02','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_1_TO_7_5_2>1</7_5_1_TO_7_5_2>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,18,0.297),
-	(23,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:04','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_2_TO_7_5_3>1</7_5_2_TO_7_5_3>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,18,0.191),
-	(24,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:10','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_3_TO_7_5_4>1</7_5_3_TO_7_5_4>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,20,0.249),
-	(25,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:13','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_4_TO_7_5_5>1</7_5_4_TO_7_5_5>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,31,0.258),
-	(26,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:16','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<7_5_5_TO_8_0_0>1</7_5_5_TO_8_0_0>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,187,0.395),
-	(27,'192.168.2.12','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_3) AppleWebKit/537.22 (KHTML, like Gecko) Chrome/25.0.1364.172 Safari/537.22','2013-03-25 13:39:22','/commsy.php?cid=99&mod=configuration&fct=update','<SECURITY_TOKEN>eeebc83a3eb1338d16e7a9c05771977b</SECURITY_TOKEN>\n<8_0_0_TO_8_0_1>1</8_0_0_TO_8_0_1>\n<OPTION>Update durchführen</OPTION>\n','POST',98,'root',99,'configuration','update','',0,23,0.241);
-
-/*!40000 ALTER TABLE `log` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Export von Tabelle log_ads
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `log_ads`;
 
 CREATE TABLE `log_ads` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -607,6 +622,8 @@ CREATE TABLE `log_ads` (
 
 # Export von Tabelle log_archive
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `log_archive`;
 
 CREATE TABLE `log_archive` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -635,6 +652,8 @@ CREATE TABLE `log_archive` (
 # Export von Tabelle log_error
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `log_error`;
+
 CREATE TABLE `log_error` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `datetime` datetime NOT NULL,
@@ -657,6 +676,8 @@ CREATE TABLE `log_error` (
 # Export von Tabelle log_message_tag
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `log_message_tag`;
+
 CREATE TABLE `log_message_tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(255) NOT NULL,
@@ -666,19 +687,12 @@ CREATE TABLE `log_message_tag` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-LOCK TABLES `log_message_tag` WRITE;
-/*!40000 ALTER TABLE `log_message_tag` DISABLE KEYS */;
-
-INSERT INTO `log_message_tag` (`id`, `tag`, `version`, `datetime`, `language`)
-VALUES
-	(1,'USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM','8.0.1','2013-03-25 13:37:53','de');
-
-/*!40000 ALTER TABLE `log_message_tag` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Export von Tabelle materials
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `materials`;
 
 CREATE TABLE `materials` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -713,6 +727,8 @@ CREATE TABLE `materials` (
 # Export von Tabelle noticed
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `noticed`;
+
 CREATE TABLE `noticed` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
@@ -725,6 +741,8 @@ CREATE TABLE `noticed` (
 
 # Export von Tabelle portal
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `portal`;
 
 CREATE TABLE `portal` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -752,6 +770,8 @@ CREATE TABLE `portal` (
 # Export von Tabelle portfolio
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `portfolio`;
+
 CREATE TABLE `portfolio` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `creator_id` int(11) NOT NULL DEFAULT '0' COMMENT 'ID of private room user',
@@ -772,6 +792,8 @@ CREATE TABLE `portfolio` (
 # Export von Tabelle reader
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `reader`;
+
 CREATE TABLE `reader` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
@@ -784,6 +806,8 @@ CREATE TABLE `reader` (
 
 # Export von Tabelle room
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `room`;
 
 CREATE TABLE `room` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -828,6 +852,8 @@ CREATE TABLE `room` (
 # Export von Tabelle room_privat
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `room_privat`;
+
 CREATE TABLE `room_privat` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -862,6 +888,8 @@ CREATE TABLE `room_privat` (
 # Export von Tabelle search_index
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `search_index`;
+
 CREATE TABLE `search_index` (
   `si_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `si_sw_id` mediumint(8) unsigned NOT NULL DEFAULT '0',
@@ -878,6 +906,8 @@ CREATE TABLE `search_index` (
 # Export von Tabelle search_time
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `search_time`;
+
 CREATE TABLE `search_time` (
   `st_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `st_item_id` int(11) NOT NULL DEFAULT '0',
@@ -890,6 +920,8 @@ CREATE TABLE `search_time` (
 # Export von Tabelle search_word
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `search_word`;
+
 CREATE TABLE `search_word` (
   `sw_id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
   `sw_word` varchar(32) NOT NULL DEFAULT '',
@@ -901,6 +933,8 @@ CREATE TABLE `search_word` (
 
 # Export von Tabelle section
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `section`;
 
 CREATE TABLE `section` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -929,6 +963,8 @@ CREATE TABLE `section` (
 # Export von Tabelle server
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `server`;
+
 CREATE TABLE `server` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -955,7 +991,7 @@ LOCK TABLES `server` WRITE;
 
 INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`)
 VALUES
-	(99,0,99,0,NULL,'2006-09-13 12:16:38','2013-03-25 13:39:22',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.0.1\";}','1',61,'server',1,'');
+	(99,0,99,0,NULL,'2006-09-13 12:16:38','2013-10-11 10:15:24',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.0\";}','1',69,'server',1,'');
 
 /*!40000 ALTER TABLE `server` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -963,6 +999,8 @@ UNLOCK TABLES;
 
 # Export von Tabelle session
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `session`;
 
 CREATE TABLE `session` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -974,20 +1012,12 @@ CREATE TABLE `session` (
   KEY `session_id` (`session_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-LOCK TABLES `session` WRITE;
-/*!40000 ALTER TABLE `session` DISABLE KEYS */;
-
-INSERT INTO `session` (`id`, `session_id`, `session_key`, `session_value`, `created`)
-VALUES
-	(1,'3667347c4e62464c210eb97dc08156a5','new_session_type','a:7:{s:7:\"user_id\";s:5:\"guest\";s:9:\"commsy_id\";i:99;s:6:\"cookie\";s:1:\"1\";s:10:\"javascript\";i:1;s:5:\"https\";i:-1;s:5:\"flash\";i:1;s:7:\"history\";a:1:{i:0;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:4:\"home\";s:8:\"function\";s:5:\"index\";s:9:\"parameter\";a:4:{s:7:\"jscheck\";s:1:\"1\";s:4:\"isJS\";s:1:\"1\";s:5:\"https\";s:2:\"-1\";s:5:\"flash\";s:1:\"1\";}}}}','2013-03-25 13:37:42'),
-	(2,'da24b11d81405846ff4c327ec947ad27','new_session_type','a:8:{s:7:\"user_id\";s:4:\"root\";s:6:\"cookie\";i:1;s:10:\"javascript\";i:1;s:5:\"https\";i:-1;s:5:\"flash\";i:1;s:9:\"commsy_id\";i:99;s:11:\"auth_source\";s:3:\"100\";s:7:\"history\";a:3:{i:0;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:13:\"configuration\";s:8:\"function\";s:6:\"update\";s:9:\"parameter\";a:0:{}}i:1;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:13:\"configuration\";s:8:\"function\";s:5:\"index\";s:9:\"parameter\";a:0:{}}i:2;a:4:{s:7:\"context\";i:99;s:6:\"module\";s:4:\"home\";s:8:\"function\";s:5:\"index\";s:9:\"parameter\";a:4:{s:7:\"jscheck\";s:1:\"1\";s:4:\"isJS\";s:1:\"1\";s:5:\"https\";s:2:\"-1\";s:5:\"flash\";s:1:\"1\";}}}}','2013-03-25 13:39:22');
-
-/*!40000 ALTER TABLE `session` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 # Export von Tabelle step
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `step`;
 
 CREATE TABLE `step` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1016,6 +1046,8 @@ CREATE TABLE `step` (
 # Export von Tabelle tag
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `tag`;
+
 CREATE TABLE `tag` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1035,6 +1067,8 @@ CREATE TABLE `tag` (
 # Export von Tabelle tag_portfolio
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `tag_portfolio`;
+
 CREATE TABLE `tag_portfolio` (
   `p_id` int(11) NOT NULL DEFAULT '0',
   `t_id` int(11) NOT NULL DEFAULT '0',
@@ -1049,6 +1083,8 @@ CREATE TABLE `tag_portfolio` (
 
 # Export von Tabelle tag2tag
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tag2tag`;
 
 CREATE TABLE `tag2tag` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1070,18 +1106,11 @@ CREATE TABLE `tag2tag` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-# Export von Tabelle template_portfolio
-# ------------------------------------------------------------
-
-CREATE TABLE `template_portfolio` (
-  `id` int(11) NOT NULL DEFAULT '0',
-  `u_id` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
-  PRIMARY KEY (`p_id`,`u_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 
 # Export von Tabelle tasks
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `tasks`;
 
 CREATE TABLE `tasks` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1101,8 +1130,23 @@ CREATE TABLE `tasks` (
 
 
 
+# Export von Tabelle template_portfolio
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `template_portfolio`;
+
+CREATE TABLE `template_portfolio` (
+  `p_id` int(11) NOT NULL DEFAULT '0',
+  `u_id` varchar(32) NOT NULL DEFAULT '',
+  PRIMARY KEY (`p_id`,`u_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
 # Export von Tabelle todos
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `todos`;
 
 CREATE TABLE `todos` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1130,6 +1174,8 @@ CREATE TABLE `todos` (
 
 # Export von Tabelle user
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1166,9 +1212,9 @@ CREATE TABLE `user` (
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 
-INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`)
+INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`, `description`, `expire_date`)
 VALUES
-	(98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL);
+	(98,99,99,99,NULL,'2006-09-13 12:17:17','2006-09-13 12:17:17',NULL,'root',3,1,'CommSy','Administrator','','',NULL,1,'',100,NULL,NULL);
 
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1176,6 +1222,8 @@ UNLOCK TABLES;
 
 # Export von Tabelle user_portfolio
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `user_portfolio`;
 
 CREATE TABLE `user_portfolio` (
   `p_id` int(11) NOT NULL DEFAULT '0',
@@ -1188,6 +1236,8 @@ CREATE TABLE `user_portfolio` (
 # Export von Tabelle workflow_read
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `workflow_read`;
+
 CREATE TABLE `workflow_read` (
   `item_id` int(11) NOT NULL,
   `user_id` int(11) DEFAULT NULL,
@@ -1199,6 +1249,8 @@ CREATE TABLE `workflow_read` (
 
 # Export von Tabelle zzz_annotations
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_annotations`;
 
 CREATE TABLE `zzz_annotations` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1226,6 +1278,8 @@ CREATE TABLE `zzz_annotations` (
 # Export von Tabelle zzz_announcement
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_announcement`;
+
 CREATE TABLE `zzz_announcement` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1250,6 +1304,8 @@ CREATE TABLE `zzz_announcement` (
 # Export von Tabelle zzz_assessments
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_assessments`;
+
 CREATE TABLE `zzz_assessments` (
   `item_id` int(11) NOT NULL,
   `context_id` int(11) DEFAULT NULL,
@@ -1270,6 +1326,8 @@ CREATE TABLE `zzz_assessments` (
 
 # Export von Tabelle zzz_dates
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_dates`;
 
 CREATE TABLE `zzz_dates` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1305,6 +1363,8 @@ CREATE TABLE `zzz_dates` (
 # Export von Tabelle zzz_discussionarticles
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_discussionarticles`;
+
 CREATE TABLE `zzz_discussionarticles` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1329,6 +1389,8 @@ CREATE TABLE `zzz_discussionarticles` (
 
 # Export von Tabelle zzz_discussions
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_discussions`;
 
 CREATE TABLE `zzz_discussions` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1356,6 +1418,8 @@ CREATE TABLE `zzz_discussions` (
 # Export von Tabelle zzz_external_viewer
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_external_viewer`;
+
 CREATE TABLE `zzz_external_viewer` (
   `item_id` int(11) NOT NULL,
   `user_id` varchar(32) NOT NULL,
@@ -1366,6 +1430,8 @@ CREATE TABLE `zzz_external_viewer` (
 
 # Export von Tabelle zzz_files
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_files`;
 
 CREATE TABLE `zzz_files` (
   `files_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1391,6 +1457,8 @@ CREATE TABLE `zzz_files` (
 # Export von Tabelle zzz_hash
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_hash`;
+
 CREATE TABLE `zzz_hash` (
   `user_item_id` int(11) NOT NULL,
   `rss` char(32) DEFAULT NULL,
@@ -1404,6 +1472,8 @@ CREATE TABLE `zzz_hash` (
 
 # Export von Tabelle zzz_homepage_link_page_page
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_homepage_link_page_page`;
 
 CREATE TABLE `zzz_homepage_link_page_page` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1428,6 +1498,8 @@ CREATE TABLE `zzz_homepage_link_page_page` (
 # Export von Tabelle zzz_homepage_page
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_homepage_page`;
+
 CREATE TABLE `zzz_homepage_page` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1451,6 +1523,8 @@ CREATE TABLE `zzz_homepage_page` (
 # Export von Tabelle zzz_item_link_file
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_item_link_file`;
+
 CREATE TABLE `zzz_item_link_file` (
   `item_iid` int(11) NOT NULL DEFAULT '0',
   `item_vid` int(11) NOT NULL DEFAULT '0',
@@ -1464,6 +1538,8 @@ CREATE TABLE `zzz_item_link_file` (
 
 # Export von Tabelle zzz_items
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_items`;
 
 CREATE TABLE `zzz_items` (
   `item_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1481,6 +1557,8 @@ CREATE TABLE `zzz_items` (
 
 # Export von Tabelle zzz_labels
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_labels`;
 
 CREATE TABLE `zzz_labels` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1506,6 +1584,8 @@ CREATE TABLE `zzz_labels` (
 
 # Export von Tabelle zzz_link_items
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_link_items`;
 
 CREATE TABLE `zzz_link_items` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1537,6 +1617,8 @@ CREATE TABLE `zzz_link_items` (
 # Export von Tabelle zzz_link_modifier_item
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_link_modifier_item`;
+
 CREATE TABLE `zzz_link_modifier_item` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `modifier_id` int(11) NOT NULL DEFAULT '0',
@@ -1547,6 +1629,8 @@ CREATE TABLE `zzz_link_modifier_item` (
 
 # Export von Tabelle zzz_links
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_links`;
 
 CREATE TABLE `zzz_links` (
   `from_item_id` int(11) NOT NULL DEFAULT '0',
@@ -1572,6 +1656,8 @@ CREATE TABLE `zzz_links` (
 
 # Export von Tabelle zzz_materials
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_materials`;
 
 CREATE TABLE `zzz_materials` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1606,6 +1692,8 @@ CREATE TABLE `zzz_materials` (
 # Export von Tabelle zzz_noticed
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_noticed`;
+
 CREATE TABLE `zzz_noticed` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
@@ -1619,6 +1707,8 @@ CREATE TABLE `zzz_noticed` (
 # Export von Tabelle zzz_reader
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_reader`;
+
 CREATE TABLE `zzz_reader` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
@@ -1631,6 +1721,8 @@ CREATE TABLE `zzz_reader` (
 
 # Export von Tabelle zzz_room
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_room`;
 
 CREATE TABLE `zzz_room` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1675,6 +1767,8 @@ CREATE TABLE `zzz_room` (
 # Export von Tabelle zzz_section
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_section`;
+
 CREATE TABLE `zzz_section` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `version_id` int(11) NOT NULL DEFAULT '0',
@@ -1701,6 +1795,8 @@ CREATE TABLE `zzz_section` (
 
 # Export von Tabelle zzz_step
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_step`;
 
 CREATE TABLE `zzz_step` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1729,6 +1825,8 @@ CREATE TABLE `zzz_step` (
 # Export von Tabelle zzz_tag
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_tag`;
+
 CREATE TABLE `zzz_tag` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1747,6 +1845,8 @@ CREATE TABLE `zzz_tag` (
 
 # Export von Tabelle zzz_tag2tag
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_tag2tag`;
 
 CREATE TABLE `zzz_tag2tag` (
   `link_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1772,6 +1872,8 @@ CREATE TABLE `zzz_tag2tag` (
 # Export von Tabelle zzz_tasks
 # ------------------------------------------------------------
 
+DROP TABLE IF EXISTS `zzz_tasks`;
+
 CREATE TABLE `zzz_tasks` (
   `item_id` int(11) NOT NULL DEFAULT '0',
   `context_id` int(11) DEFAULT NULL,
@@ -1792,6 +1894,8 @@ CREATE TABLE `zzz_tasks` (
 
 # Export von Tabelle zzz_todos
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_todos`;
 
 CREATE TABLE `zzz_todos` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1819,6 +1923,8 @@ CREATE TABLE `zzz_todos` (
 
 # Export von Tabelle zzz_user
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_user`;
 
 CREATE TABLE `zzz_user` (
   `item_id` int(11) NOT NULL DEFAULT '0',
@@ -1856,6 +1962,8 @@ CREATE TABLE `zzz_user` (
 
 # Export von Tabelle zzz_workflow_read
 # ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `zzz_workflow_read`;
 
 CREATE TABLE `zzz_workflow_read` (
   `item_id` int(11) NOT NULL,
