@@ -423,6 +423,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->unsetTagsShowExpanded();
 
 				        }
+				        
+				        if ( isset($form_data['announcement_date']) and !empty($form_data['announcement_date']) and $form_data['announcement_date'] == 'yes') {
+				        	$current_context->setWithAnnouncementDates();
+				        } else {
+				        	$current_context->setWithoutAnnouncementDates();
+				        }
 
 						if (!empty($form_data['time_spread'])) {
 				            $current_context->setTimeSpread($form_data['time_spread']);
@@ -1930,6 +1936,11 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			$return['rss'] = 'yes';
 		} else {
 			$return['rss'] = 'no';
+		}
+		
+		// announcement date
+		if ($current_context->withAnnouncementDates()){
+			$return['announcement_date'] = 'yes';
 		}
 
          //buzzwords
