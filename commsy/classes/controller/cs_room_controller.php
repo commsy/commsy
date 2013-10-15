@@ -491,6 +491,9 @@
 			
 			// material open for guests
 			$return['material_guests'] = $context_item->isMaterialOpenForGuests();
+			
+			// announcement_date
+			$return['announcement_date'] = $context_item->withAnnouncementDates();
 
 			return $return;
 		}

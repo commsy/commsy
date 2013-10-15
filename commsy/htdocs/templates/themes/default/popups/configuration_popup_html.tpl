@@ -516,6 +516,16 @@
 									</fieldset>
 									<fieldset>
 										<p>
+											<strong>___COMMON_CONFIGURATION_ANNOUNCEMENT_DATE___:</strong> ___COMMON_CONFIGURATION_ANNOUNCEMENT_DATE_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___CONFIGURATION_DATES_LABEL___:</label>
+											<input id="announcement_date" type="checkbox" name="form_data[announcement_date]" value="yes"{if $popup.additional.announcement_date == 'yes'} checked="checked"{/if} />___GROUPROOM_FORM_CHECKBOX_TEXT___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
 											<strong>___COMMON_CONFIGURATION_DATES_FORM_TITLE___:</strong> ___CONFIGURATION_DATES_DESC___
 										</p>
 										<div class="input_row_100">

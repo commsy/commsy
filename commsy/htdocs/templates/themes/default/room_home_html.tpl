@@ -214,7 +214,15 @@
 								{/if}
 							</div>
                         	<div class="column_140">
-                            	<p>{$item.column_2}</p>
+                        		{if $rubric@key == 'announcement'}
+                        			{if $room.room_information.announcement_date == 'yes'}
+                        				<p></p>
+                        			{else}
+                        				<p>{$item.column_2}</p>
+                        			{/if}
+                        		{else}
+                        			<p>{$item.column_2}</p>
+                        		{/if}
 	                        	{if $rubric@key == 'todo'}
 	                        	  {$item.column_2_addon}
 								{/if}
