@@ -232,7 +232,7 @@ define(
 					}
 					
 					DomConstruct.create('li', {
-						innerHTML: numItems,
+						innerHTML: numItems
 					}, source.node, "first");
 					
 					// watch the source for changes
