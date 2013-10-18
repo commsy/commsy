@@ -832,8 +832,6 @@
 				mkdir('var/templates/individual/img/');
 			}
 			if(!file_exists('var/templates/individual/styles_cid.css')){
-				//mkdir('var/templates/individual/');
-// 				copy('htdocs/templates/individual/styles_cid.css', 'var/templates/individual/styles_cid.css');
 			$file_old = 'htdocs/templates/themes/individual/styles_cid.css';
 			$file_new = 'var/templates/individual/styles_cid.css';
 				if (!copy($file_old, $file_new)) {
