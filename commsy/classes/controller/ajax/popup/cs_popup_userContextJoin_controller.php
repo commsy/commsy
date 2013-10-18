@@ -33,18 +33,20 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		      $agb_flag = false;
 		      
 		      if($portal_item->withAGBDatasecurity()){
-				if($room_item->getAGBStatus()){
+				if($room_item->getAGBStatus() == 1){
 					if($form_data['agb']){
 						$agb_flag = true;
 					} else {
 						$agb_flag = false;
 					}
+				} else {
+					$agb_flag = true;
 				}
 			  } else {
 			  	$agb_flag = true;
 			  }
 			  #pr($agb_flag);
-
+			  
 		      // build new user_item
 		      if ( (!$room_item->checkNewMembersWithCode()
 		      or ( $room_item->getCheckNewMemberCode() == $form_data['code'])
@@ -285,14 +287,21 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		         $account_mode = 'member';
 		         $error = 'code';
 		         $this->_popup_controller->setErrorReturn(111, 'wrong_code', array());
-		      } elseif (!$agb_flag and $portal_item->withAGBDatasecurity() and $room_item->getAGBStatus()){
+		      } elseif (!$agb_flag and $portal_item->withAGBDatasecurity() and $room_item->getAGBStatus() == 1){
 		      	 $this->_popup_controller->setErrorReturn(115, 'agb_not_accepted', array());
 		      }
 		      
 		      if ($account_mode =='to_room'){
-		         $this->_popup_controller->setSuccessfullItemIDReturn($form_data['iid']);
+// 		        $this->_popup_controller->setSuccessfullItemIDReturn($form_data['iid']);
+// 		      	$this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentContextID());
+		      	$data['cid'] = $this->_environment->getCurrentContextID();
+		      	$data['room_id'] = $room_item->getItemID();
+		      	$this->_popup_controller->setSuccessfullDataReturn($data);
 		      } else {
-		         $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentContextID());
+		      	$data['cid'] = $this->_environment->getCurrentContextID();
+		      	$data['room_id'] = $room_item->getItemID();
+		      	$this->_popup_controller->setSuccessfullDataReturn($data);
+// 		        $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentContextID());
 		      }
 		      //---
 		      
