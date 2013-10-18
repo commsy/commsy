@@ -822,6 +822,30 @@
 // 			$master = 'htdocs/templates/themes/individual/styles_cid.css';
 // 			$path = 'htdocs/templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
 			
+			if(!file_exists('var/templates/')){
+				mkdir('var/templates/');
+			}
+			if(!file_exists('var/templates/individual/')){
+				mkdir('var/templates/individual/');
+			}
+			if(!file_exists('var/templates/individual/img/')){
+				mkdir('var/templates/individual/img/');
+			}
+			if(!file_exists('var/templates/individual/styles_cid.css')){
+				//mkdir('var/templates/individual/');
+// 				copy('htdocs/templates/individual/styles_cid.css', 'var/templates/individual/styles_cid.css');
+			$file_old = 'htdocs/templates/themes/individual/styles_cid.css';
+			$file_new = 'var/templates/individual/styles_cid.css';
+				if (!copy($file_old, $file_new)) {
+					$content = file_get_contents($file_old);
+					if(!empty($content)){
+						$openfile = fopen($file_new, 'w');
+						fwrite($openfile, $content);
+						fclose($openfile);
+					}
+				}
+			}
+			
 			$master = 'var/templates/individual/styles_cid.css';
 			$path = 'var/templates/individual/styles_' . $room_item->getItemID() . '.css';
 			
