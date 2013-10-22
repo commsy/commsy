@@ -634,6 +634,7 @@
 		protected function getDetailContent() {
 			$converter = $this->_environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();
+			$portal_item = $this->_environment->getCurrentPortalItem();
 
 			$return = array();
 
@@ -914,6 +915,34 @@
       		}
 				$return['description'] = $desc;
 			}
+			
+			##################################################
+			//if($this->_item->isModerator() or )
+				$temp_array = array();
+				if ($portal_item->getPasswordExpiration() != 0) {
+					// Datenschutz expired password date
+					#$temp_array = array();
+					#$temp_array[] = $translator->getMessage('USER_EXPIRED_PASSWORD');
+					$portal_user_item = $this->_item->getRelatedPortalUserItem();
+					if($portal_user_item->isPasswordExpired()){
+						$temp = $translator->getMessage('COMMON_YES');
+					} else {
+						$temp = $translator->getMessage('COMMON_NO');
+					}
+					 
+					$return['expired_password'] = $temp;
+				}
+				$temp = ''; 
+				#$temp_array = array();
+				#$temp_array[] = $translator->getMessage('USER_ACCEPTED_AGB');
+				
+				$agb = $this->_item->getAGBAcceptanceDate();
+				if(!empty($agb)){
+					$temp = getDateTimeInLang($this->_item->getAGBAcceptanceDate());
+				}
+				$return['agb_acceptance'] = $temp;
+				
+			##############################################
 
 			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
 

@@ -240,7 +240,7 @@
 			<div class="row_odd">
 					<div class="user_account_blocks">
 						{*
-							$html .= '<div style="float:right">';
+							 $html .= '<div style="float:right">';
 					         $html .= $this->getAccountActionsAsHTML($item);
 					         $html .= '</div>';
 					    *}
@@ -379,7 +379,26 @@
                         </tr>
                         {/foreach}
                      {/if}
-
+                     
+                     {if $detail.config.show_configuration or $environment.is_moderator}
+	                     {if !empty($detail.content.expired_password)}
+	                     <tr>
+							<td class="label"><h4>___USER_EXPIRED_PASSWORD___</h4></td>
+							<td>
+								{$detail.content.expired_password}
+							</td>
+						</tr>
+						{/if}
+						
+						{if !empty($detail.content.agb_acceptance)}
+						<tr>
+							<td class="label"><h4>___USER_ACCEPTED_AGB___</h4></td>
+							<td>
+								{$detail.content.agb_acceptance}
+							</td>
+						</tr>
+						{/if}
+					{/if}
 					    </table>
 
 					</div>
@@ -389,7 +408,40 @@
 		<div id="detail_expand" {if !$detail.is_details_bar_visible}class="hidden"{/if}>
 			{include file="include/detail_moredetails_html.tpl" data=$detail.content.moredetails}
 		</div>
+	{else}
+		{if $environment.is_moderator}
+		<h2>___USER_PREFERENCES___({i18n tag=COMMON_READABLE_ONLY_USER param1=$detail.content.first_block.fullname})</h2>
+		<div id="item_legend"> <!-- Start item_legend -->
+			<div class="row_odd">
+					<div class="user_account_blocks">
+					    <table>
+					    {if $detail.config.show_configuration or $environment.is_moderator}
+		                     {if !empty($detail.content.expired_password)}
+		                     <tr>
+								<td class="label"><h4>___USER_EXPIRED_PASSWORD___</h4></td>
+								<td>
+									{$detail.content.expired_password}
+								</td>
+							</tr>
+							{/if}
+							
+							{if !empty($detail.content.agb_acceptance)}
+							<tr>
+								<td class="label"><h4>___USER_ACCEPTED_AGB___</h4></td>
+								<td>
+									{$detail.content.agb_acceptance}
+								</td>
+							</tr>
+							{/if}
+						{/if}
+					    </table>
+					 </div>
+				</div>
+			</div>
+		{/if}
 	{/if}
+	
+	
 
 	</div> <!-- Ende item body -->
 	<div class="clear"> </div>
