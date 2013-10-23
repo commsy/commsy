@@ -322,6 +322,8 @@ class cs_server_item extends cs_guide_item {
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NOW_BODY', $link);
 	   								$body.= "\n\n";
+	   								$body .= $translator->getMessage('EMAIL_COMMSY_PORTAL_MODERATION');
+	   								$body .= "\n\n";
 	   								$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
 	   								$body.= "\n\n";
 	   								$body .= $translator->getMessage('MAIL_AUTO', $translator->getDateInLang(getCurrentDateTimeInMySQL()), $translator->getTimeInLang(getCurrentDateTimeInMySQL()));
@@ -401,6 +403,8 @@ class cs_server_item extends cs_guide_item {
 	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $link);
+	   								$body.= "\n\n";
+	   								$body .= $translator->getMessage('EMAIL_COMMSY_PORTAL_MODERATION');
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $portal_item->getTitle());
 	   								$body.= "\n\n";

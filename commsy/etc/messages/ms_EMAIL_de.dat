@@ -1,6 +1,7 @@
 <?php
 $message["EMAIL_CHOICE_PASSWORD_EXPIRATION"]["de"] = "Passwort ist abgelaufen";
 $message["EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["de"] = "Passwort läuft ab";
+$message["EMAIL_COMMSY_PORTAL_MODERATION"]["de"] = "Bei Fragen wenden Sie sich bitte an Ihre CommSy-Portalmoderation.";
 $message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";

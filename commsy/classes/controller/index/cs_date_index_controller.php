@@ -1608,6 +1608,12 @@
 									$real_month = mb_substr($real_month,1,2);
 								}
 								$month = date("m", $_GET['week']);
+								$year = date("Y", $_GET['week']);
+								$first_char = mb_substr($month,0,1);
+								if ($first_char == '0'){
+									$month = mb_substr($month,1,2);
+								}
+								$dates_manager->setYearLimit($year);
 								$dates_manager->setMonthLimit2($month);
 							}
 						}
