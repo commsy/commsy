@@ -10,7 +10,6 @@ define([	"dojo/_base/declare",
 			declare.safeMixin(this, options);
 			
 			this.threshold = 3;
-			this.used = false;
 			this.matches = [];
 			this.ajaxRequests = [];
 		},
@@ -19,10 +18,6 @@ define([	"dojo/_base/declare",
 			// register handler
 			On(node, "keyup", lang.hitch(this, function(event) {
 				this.onKeyUp(event);
-			}));
-			
-			On(node, "click", lang.hitch(this, function(event) {
-				this.onClick(event);
 			}));
 		},
 		
@@ -33,7 +28,7 @@ define([	"dojo/_base/declare",
 			DomAttr.set(Query("input#search_suggestion")[0], "value", event.target.value);
 			
 			// only update if threshold is met
-			if(event.target.value.length === this.threshold) {
+			if(event.target.value.length >= this.threshold && this.matches.length == 0) {
 				// abort all running ajax requests
 				dojo.forEach(this.ajaxRequests, function(request, index, arr) {
 					request.cancel();
@@ -61,15 +56,6 @@ define([	"dojo/_base/declare",
 				// autosuggest
 				this.autoSuggest(event.target.value);
 			}
-		},
-		
-		onClick: function(event) {
-			if(this.used === false) {
-				// initial use
-				DomAttr.set(event.target, "value", "");
-				DomAttr.set(Query("input#search_suggestion")[0], "value", "");
-				this.used = true;
-			}	
 		},
 		
 		autoSuggest: function(userInput) {
