@@ -1052,3 +1052,7 @@ input.searchbox-button {
 input.searchbox-button:hover {
     background: #00529C;
     }
+
+div#workflow_tab div.input_row_100 label {
+	width: 200px;
+	}
