@@ -3193,65 +3193,79 @@ class cs_external_page_portal_view extends cs_page_view {
 
 
 	$html .= '
-	<div id="wrapper-outer">
-
-
-		<img id="background-img" class="hintergrundbild" src="css/external_portal_styles/'.$current_portal->getItemID().'/img/bgi/hintergrund.jpg" alt="" /> <!-- Das eingebundene Hintergrundbild -->
-
-
-
-
-	<div id="wrapper" class="cf">';
-
-	$html .='
-		<!-- start header -->
-		<!-- end header -->
-		<div  class="cf suppage-banner">
-			<ul class="smallicon-set alignleft">
-				<li><a href="'.$typo_url.'index.php?id=553" title="Orga-Handbuch" class="smallicon1">Orgahandbuch</a></li>
-				<li><a href="'.$typo_url.'index.php?id=506" title="Standards" class="smallicon2">Standards</a></li>
-				<li><a href="'.$typo_url.'index.php?id=507" title="Formulare" class="smallicon3">Formulare</a></li>
-				<li><a href="'.$typo_url.'index.php?id=455" title="Sicherheit" class="smallicon4">Notfallpläne</a></li>
-			</ul>
-			<ul class="smallicon-set last alignleft">
-                                <li><a href="'.$typo_url.'index.php?id=457" title="Auftrag erteilen" class="smallicon5">Auftrag erteilen</a></li>
-                                <li><a href="'.$typo_url.'index.php?id=458" title="Projekträume" class="smallicon7">Projekträume</a></li>
-                                <li><a href="'.$typo_url.'index.php?id=453" title="Who is Who" class="smallicon6">Who is Who</a></li>
-                                <li><a href="'.$typo_url.'index.php?id=456" title="Speiseplan" class="smallicon8">Speiseplan</a></li>
-                        </ul>
-			<ul class="smallicon-set last alignleft">
-                                <li><a href="'.$typo_url.'index.php?id=460" title="Mein BGU" class="smallicon9">Mein BGU</a></li>
-                                <li><a href="'.$typo_url.'index.php?id=503" title="Abteilungen" class="smallicon10">Abteilungen</a></li>
-                                <li><a href="'.$typo_url.'index.php?id=521" title="Betriebsrat" class="smallicon11">Betriebsrat</a></li>
-				<li><a href="'.$typo_url.'index.php?id=454" title="Wissenschaft &amp; Forschung" class="smallicon12">Wissenschaft &amp; Forschung</a></li>
-                        </ul>
-		</div>
-				<div class="configure-App cf" style="height:35px;">
-				<div style="float:right;"><a title="Abmelden" href="'.$typo_url.'?logintype=logout">
-<img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/logout_small.png" alt="">
-</a></div>
-		<div id="search" style="float:right; z-index:500;">
-				<div id="commsy_search">
-				<form method="post" action="commsy.php?cid=176&mod=search&fct=index">
-				<input id="search_input" type="text" value="Suche im Orga-Handbuch" onclick="javascript:document.getElementById(\'search_input\').value=\'\'" name="form_data[keywords]">
-				<input id="search_submit" class="search_button" type="submit" value="">
-				</form>
-				</div>
-			</div>
-			<a id="home_link" title="Home" href="'.$typo_url.'index.php?id=531"> Home </a>
-             </div>
-		<!-- start content -->'.LF;
-
-	if ($current_user->isUser()){
-		$html .= '<div id="logged_in"> Angemeldet als: ';
-		$html .= $current_user->getFullName();
-		$html .= '</div>';
+		<!-- Start headandnav -->
+	    <div id="headandnav">
+	    
+	        <div id="header">
+	            <a id="bgu_logo" href="http://intranet.bgu-frankfurt.de/index.php?id=531" title="Startseite">Mitarbeiterportal der BGU Frankfurt</a>
+	';
+	
+	if (!$current_user->isGuest()) {
+		$html .= '
+				<a href="'.$typo_url.'index.php?logout"" id="btn_logout" title="Abmelden">
+            		<img src="templates/themes/bgu/img/btn_logout.png" alt="Abmelden"/>
+            	</a>
+		';
 	}
-
-
-
-	$html .='<div id="container" class="cf">'.LF;
-
+	
+	$html .= '
+				<div id="portal_controls">
+					Angemeldet als: ' . $current_user->getFullName() . '
+				</div>
+				
+				<div class="clear"> </div>
+		    </div>
+	
+			<div id="nav_area">
+				<ul>
+		            <li><a href="'.$typo_url.'index.php?id=553"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/projektraeume_s.png" alt="" /><span class="tooltip">Orga-Handbuch</span></a></li>
+		            <li id="nav_active"><a href="'.$typo_url.'index.php?id=506"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/standards_s.png" alt="" /><span class="tooltip">Standards</span></a></li>
+		            <!--<li><a href=""><img src="templates/themes/bgu/img/formulare_s.png" alt="" /><span class="tooltip">Formulare</span></a></li>-->
+		            <li><a href="'.$typo_url.'index.php?id=904"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/mail_s.png" alt="" /><span class="tooltip">Webmailer</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=455"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/notfallplaene_s.png" alt="" /><span class="tooltip">Notfallpl&auml;ne</span></a></li>
+		        </ul>
+		        <ul>
+		            <li><a href="'.$typo_url.'index.php?id=457"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/auftragerteilen_s.png" alt="" /><span class="tooltip">Auftrag erteilen</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=458"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/commsy_s.png" alt="" /><span class="tooltip">Projektr&auml;ume</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=453"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/whoiswho_s.png" alt="" /><span class="tooltip">Who is Who</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=456"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/speiseplaene_s.png" alt="" /><span class="tooltip">Speiseplan</span></a></li>
+		        </ul>
+		        <ul>
+		            <li><a href="'.$typo_url.'index.php?id=460"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/meinbgu_s.png" alt="" /><span class="tooltip">Mein BGU</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=503"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/prozesse_s.png" alt="" /><span class="tooltip">Abteilungen</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=521"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/betriebsrat_s.png" alt="" /><span class="tooltip">Betriebsrat</span></a></li>
+		            <li><a href="'.$typo_url.'index.php?id=454"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/img/mikroskop_s.png" alt="" /><span class="tooltip">Wissenschaft</span></a></li>
+		        </ul>
+		        <div class="clear"> </div>
+		    </div>
+	    </div>
+	    <!-- Ende headandnav -->
+		            		
+		<!-- Start searcharea -->
+	    <div id="searcharea"><a id="home_link" title="Home" href="'.$typo_url.'index.php?id=531"> Home </a>
+	        <form id="indexedsearch" method="post" action="commsy.php?cid=176&mod=search&fct=index">
+	
+	            <div id="searchbox_main">
+	                <input class="searchbox-sword" type="text" name="form_data[keywords]" onblur="if(this.value === \'\') this.value = \'Suche im Orga-Handbuch\';" onfocus="if(this.value === \'Suche im Orga-Handbuch\') this.value = \'\';" value="Suche im Orga-Handbuch" />
+	                <input class="searchbox-button" type="image" value="Search" src="css/external_portal_styles/'.$current_portal->getItemID().'/img/btn_search.png" name="search" />
+	            </div>
+	            
+	            <div class="clear"> </div>
+	        </form>
+	        <div class="clear"> </div>
+	    </div>
+	    <!-- Ende searcharea -->
+	    
+	    <!-- start content -->
+	    <div id="bgu_i_maincontent">
+	    	<div id="bgu_i_columnset">
+	';
+	
+	
+	
+	
+	
+	
     if ( !(isset($this->_agb_view) or
           ($cs_room_id and $cs_module == 'configuration') or
           ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
@@ -3263,50 +3277,51 @@ class cs_external_page_portal_view extends cs_page_view {
                ) or
           ( $cs_module == 'language' ))
     ) {
-    $html .= '         	<!--  CONTENT ELEMENT, uid:4/templavoila_pi1 [begin] -->
-		<div class="narrowcolumn alignleft">'.LF;
-    $html .= '            <div id="sidebar" >'.LF;
-    $html .= '<div id="portal_search">'.LF;
-    $html .='<div class="sidehead">Raumsuche</div>'.LF;
-    $html .= $this->getSearchBoxAsHTML().LF;
-    $current_user = $this->_environment->getCurrentUser();
-#	if (!$current_user->isUser()){
-	    $html .= $this->getMyAreaAsHTML(str_replace('commsy_session_id='.$sid.'&','',$wiki_url));
-#	}else{
-#		$html .='<div>';
-#	}
-
-    $current_user = $this->_environment->getCurrentUser();
-    $params = $this->_environment->getCurrentParameterArray();
-    if ($current_user->isUser()){
-       $html .= '<div id="portal_action" style="margin-top:15px; padding:0px; margin-left:0px; margin-right:0px;">'.LF;
-       $html .='<div>'.LF;
-#       $html .='<div class="sidehead">'.getMessage('PORTAL_OPEN_ROOM').'</div>'.LF;
-       $html .= '<div id="room_actions" style="padding:5px;">'.LF;
-#       $html .= $this->_room_list_view->_getListActionsAsHTML();
-    if ($current_user->isModerator()){
-
-	   $html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Projektraum neu eröffnen</a>
-<br/>';
+	    $html .= '<div id="bgu_i_left_column">'.LF;
+	    $html .= '	<div class="bgu_i_teaser_left">'.LF;
+	    $html .= '		<h2>Raumsuche</h2>'.LF;
+	    $html .= '		<div class="bgu_i_teaser_content">'.LF;
+	    $html .= $this->getSearchBoxAsHTML().LF;
+	    $html .= '		</div>'.LF;
+	    
+	    $html .= '	<div class="bgu_i_teaser_left">'.LF;
+	    //$html .= '		<h2>Raumsuche</h2>'.LF;
+	    //$html .= '		<div class="bgu_i_teaser_content">'.LF;
+	    
+	    
+	
+	    
+	    $current_user = $this->_environment->getCurrentUser();
+		$html .= $this->getMyAreaAsHTML(str_replace('commsy_session_id='.$sid.'&','',$wiki_url));
+	
+	    $current_user = $this->_environment->getCurrentUser();
+	    $params = $this->_environment->getCurrentParameterArray();
+	    if ($current_user->isUser()){
+	       $html .= '<div id="portal_action" style="margin-top:15px; padding:0px; margin-left:0px; margin-right:0px;">'.LF;
+	       $html .='<div>'.LF;
+	       $html .= '<div id="room_actions" style="padding:5px;">'.LF;
+		    if ($current_user->isModerator()){
+		
+					   $html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Projektraum neu eröffnen</a>
+				<br/>';
+		    }
+	            $html .= ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="display:inline;"').'<br/>'.BRLF;
+	
+	       if ( $current_user->isModerator() ) {
+			$html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=configuration&fct=index&iid=NEW">Portal konfigurieren</a>';
+	       } else {
+	          $html .=BRLF;
+	       }
+	       $html .= '</div>'.LF;
+	       $html .= '</div>'.LF;
+	       $html .= '</div>'.LF;
+	    }
+	    $html.= '</div></div></div>'.LF;
     }
-            $html .= ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="display:inline;"').'<br/>'.BRLF;
-
-       if ( $current_user->isModerator() ) {
-		$html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=configuration&fct=index&iid=NEW">Portal konfigurieren</a>';
-#          $html .= $this->_room_list_view->_getConfigurationBoxAsHTML();
-       } else {
-          $html .=BRLF;
-       }
-       $html .= '</div>'.LF;
-       $html .= '</div>'.LF;
-       $html .= '</div>'.LF;
-    }else{
-    }
-    $html.= '</div></div></div>'.LF;
-    }
+    
 $html.='
 
-	            <div class="widecolumn alignright">
+				<div id="bgu_i_right_column">
             	<h2>BGU Projekträume</h2>
 
 '.LF;
@@ -3381,24 +3396,20 @@ $html.='
 
     $html .= '         </div>'.LF;
 $html .= '
-		</div></div>
+			</div>
+		
+			<div class="bgu_i_clear"></div>
+		</div>
 		<!-- end content -->
-
-		<!-- start footer -->
-		<div id="footer" class="cf">
-        	<span class="alignleft copy-Right">&copy; Verein f&uuml;r Berufsgenossenschaftliche Heilbehandlung Frankfurt am Main e. V.</span>
-            <div class="alignright">
-            	<ul>
-                    <li class="last"><a href="'.$typo_url.'index.php?id=651" title="Zug&auml;nglichkeit">Kontakt Intranet-Redaktion</a></li>
-                	<li><a href="'.$typo_url.'index.php?id=654" title="Impressum">Impressum</a></li>
-                    <li><a href="'.$typo_url.'index.php?id=655" title="Rechtliche Hinweise">Rechtliche Hinweise</a></li>
-                </ul>
-            </div>
-
-        </div>
-		<!-- end footer -->
 	</div>
-</div>
+		
+	<!-- start footer -->
+	<div id="footer">
+        <p id="footer_left">&copy; Verein f&uuml;r Berufsgenossenschaftliche Heilbehandlung Frankfurt am Main e. V.</p>
+        <p id="footer_right"><a href="">Kontakt Intranet-Redaktion</a><a href="">Impressum</a><a href="">Rechtliche Hinweise</a></p>
+        <div class="bgu_i_clear"></div>  
+    </div>
+	<!-- end footer -->
 </body>
 '.LF;
 /*

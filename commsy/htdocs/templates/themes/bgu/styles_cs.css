@@ -17,13 +17,12 @@
 /* Body*/
 
 body{
-	background-image: url(img/hintergrund.jpg);
-	background-repeat: no-repeat;
-	background-attachment: fixed;
+	background-color: #F6F6F6;
+	color: #333333;
 	}
 
 #wrapper{
-	background-color: #FFF;
+	#background-color: #FFF;
 	padding:0px 10px 10px 10px;
 	}
 
@@ -276,7 +275,7 @@ a#tm_user:hover,
 a.tm_user:hover,
 a.tm_user_hover {
     color: #FFF;
-    text-shadow: none !important;
+    text-shadow: none;
     background-image: none;
     }
 
@@ -340,26 +339,29 @@ a#tm_user:hover{
 }
 
 #search_input {
-    background: none repeat scroll 0 0 transparent;
-    border: 0 none;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 6px 5px 5px 35px;
-    position: absolute;
-    width: 130px;
+    background: none;
+    width: 230px;
+    padding: 1px 2px 1px 8px;
+    font-size: 0.916666em;
+    border: 1px solid #DEE0E6;
     z-index: 5;
+    position: absolute;
+    font-weight: normal;
 }
 
 input#search_suggestion {
-  position: absolute;
-  z-index: 0;
-  background: none repeat scroll 0 0 transparent;
-    padding: 6px 5px 5px 35px;
-    width: 130px;
-    font-size: 12px;
-    font-weight: bold;
-    border: 0px none;
-    color: #999999;
+	position: absolute;
+	z-index: 3;
+	width: 230px;
+	margin: 1px 0px 0px -240px;
+	height: 1.63636em;
+	padding: 1px 2px 1px 8px;
+	color: #bbbbbb;
+	font-weight: normal;
+	font-size: 0.916666em;
+	background: #ffffff;
+	border: 0px solid #DEE0E6;
+	line-height: 1.63636em;
   }
 
 .search_button {
