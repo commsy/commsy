@@ -555,17 +555,22 @@ class cs_tag2tag_manager extends cs_manager {
       // get all linked items
       $linkedIDsItem_1 = $item_1->getAllLinkedItemIDArray();
       $linkedIDsItem_2 = $item_2->getAllLinkedItemIDArray();
-
+       
       // delete tags, but keep children alive
-      $tag_manager->delete($item_id_1, false);
-      $tag_manager->delete($item_id_2, false);
+      if ( $this->isASuccessorOfB($item_id_1, $item_id_2)) {
+      	$tag_manager->delete($item_id_1, false);
+      	$tag_manager->delete($item_id_2, false);
+      } else {
+      	$tag_manager->delete($item_id_2, false);
+      	$tag_manager->delete($item_id_1, false);
+      }
 
       unset($item_1);
       unset($item_2);
 
       // create new tag and set linked items
       $mergedLinkedIDs = array_unique(array_merge($linkedIDsItem_1, $linkedIDsItem_2));
-      
+
       $new = $tag_manager->getNewItem();
       $new->setTitle($item_title_1 . '/' . $item_title_2);
       $new->setContextID($this->_environment->getCurrentContextID());
@@ -598,6 +603,21 @@ class cs_tag2tag_manager extends cs_manager {
 
       unset($tag_manager);
       unset($new);
+   }
+   
+   /**
+    * 
+    */
+   public function isASuccessorOfB($itemIdA, $itemIdB)
+   {
+   	  // get all father items of item A
+   	  $aFatherArray = $this->getFatherItemIDArray($itemIdA);
+   	  
+   	  if (in_array($itemIdB, $aFatherArray)) {
+   	  	return true;
+   	  }
+   	  
+   	  return false;
    }
 
    private function _cacheAllLinkRows () {
