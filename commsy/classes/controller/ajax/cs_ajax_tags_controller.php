@@ -397,23 +397,20 @@ class cs_ajax_tags_controller extends cs_ajax_controller
             } else {
                 $tagManager = $this->_environment->getTagManager();
                 $tag2TagManager = $this->_environment->getTag2TagManager();
+
+                if ( $tag2TagManager->isASuccessorOfB($tagIdOne, $tagIdTwo) ) {
+                	$tagIdOneTemp = $tagIdOne;
+                	$tagIdOne = $tagIdTwo;
+                	$tagIdTwo = $tagIdOneTemp;
+                }
                 
                 // get both
                 $tagItemOne = $tagManager->getItem($tagIdOne);
                 $tagItemTwo = $tagManager->getItem($tagIdTwo);
                 
+                //TODO: Welches Element liegt auf der höheren Ebene
                 // for now, we put the combined tags under the parent of the first one
                 $putId = $tag2TagManager->getFatherItemId($tagIdOne);
-                
-                // get children ids of both
-                $childrenIdsOne = $tag2TagManager->getRecursiveChildrenItemIDArray($tagIdOne);
-                $childrenIdsTwo = $tag2TagManager->getRecursiveChildrenItemIDArray($tagIdTwo);
-                
-                // check wheter putId is not a child of the selected categories
-                // if (!in_array($put, $childrenIdsOne) && !in_array($put, $childrenIdsTwo)) {
-                
-                // } else {
-                // }
                 
                 // merge them
                 $tag2TagManager->combine($tagIdOne, $tagIdTwo, $putId);
