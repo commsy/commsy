@@ -263,10 +263,15 @@ class cs_server_item extends cs_guide_item {
 	   								
 	   								// delete user and every room which the user is member only
 	   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
-									$authentication = $this->_environment->getAuthenticationObject();
-									$authentication->delete($user->getItemID()); // delete authentication
-	   								$user->delete(); 
-	   								$user->save();
+	   								
+	   								$portalUser_item = $user->getRelatedCommSyUserItem();
+	   								$authentication = $this->_environment->getAuthenticationObject();
+	   								$authentication->delete($portalUser_item->getItemID());
+	   								
+// 									$authentication = $this->_environment->getAuthenticationObject();
+// 									$authentication->delete($user->getItemID()); // delete authentication
+// 	   								$user->delete(); 
+// 	   								$user->save();
 	   								
 	   								
 	   								##########################

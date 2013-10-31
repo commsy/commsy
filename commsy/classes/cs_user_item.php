@@ -1546,7 +1546,10 @@ class cs_user_item extends cs_item {
 
       $room_id_array = array();
       if ($this->_environment->getCurrentPortalID() != $current_context_id) {
-         $room_id_array[] = $this->_environment->getCurrentPortalID();
+      	 $portalID = $this->_environment->getCurrentPortalID();
+      	 if(!empty($portalID)){
+      	 	$room_id_array[] = $this->_environment->getCurrentPortalID();
+      	 }
       }
 
       $community_manager = $this->_environment->getCommunityManager();
@@ -1565,7 +1568,7 @@ class cs_user_item extends cs_item {
       unset($community_manager);
 
       $project_manager = $this->_environment->getProjectManager();
-      $project_list = $project_manager->getRelatedProjectListForUser($this);
+      $project_list = $project_manager->getRelatedProjectListForUser($this, $current_context_id);
       if ($project_list->isNotEmpty()) {
          $project_room = $project_list->getFirst();
          while ($project_room) {
