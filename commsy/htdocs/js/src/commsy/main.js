@@ -26,7 +26,7 @@ require([	"dojo/_base/declare",
 				}));
 				
 				/* temporary inline hotfix */
-				
+				/*
 				if (this.uri_object.mod == "group") {
 					var joinNode = query("a#group_detail_group_enter")[0];
 					
@@ -101,7 +101,7 @@ require([	"dojo/_base/declare",
 						}
 					}
 				}
-				
+				*/
 				/* ~temporary inline hotfix */
 				
 				// widget popups

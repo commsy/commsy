@@ -1151,6 +1151,14 @@ class cs_user_item extends cs_item {
 
       // ContactPersonString
       $context_item = $this->getContextItem();
+      // get grouproom
+      if($context_item->getType() == 'group'){
+      	$grouproom_array = $context_item->_getItemData();
+      	$grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
+      	$room_manager = $this->_environment->getRoomManager();
+		$context_item = $room_manager->getItem($grouproom_id);
+      }
+      
       if ( isset($context_item)
            and !$context_item->isPortal()
            and !$context_item->isServer()
@@ -1200,12 +1208,17 @@ class cs_user_item extends cs_item {
       $user_manager->updateLastLoginOf($this);
    }
 
-   function getOwnRoom () {
+   function getOwnRoom ($context_id = NULL) {
       if ( $this->isRoot() ) {
          return NULL;
       } else {
          $private_room_manager = $this->_environment->getPrivateRoomManager();
-         return $private_room_manager->getRelatedOwnRoomForUser($this,$this->_environment->getCurrentPortalID());
+         if(!empty($context_id)) {
+         	return $private_room_manager->getRelatedOwnRoomForUser($this,$context_id);
+         } else {
+         	return $private_room_manager->getRelatedOwnRoomForUser($this,$this->_environment->getCurrentPortalID());
+         }
+         
       }
    }
 
