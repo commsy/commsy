@@ -1039,6 +1039,9 @@ class cs_portal_item extends cs_guide_item {
    				$mail->set_from_email($mod_user_first->getEmail());
    				$mail->set_from_name($mod_user_first->getFullname());
    				
+   				$mail->set_cc_to($mod_user_first->getEmail());
+   				$mail->set_cc_to($this->_environment->getRootUserItem()->getEmail());
+   				
    				// link
    				$url_to_portal = '';
    				if ( !empty($this) ) {

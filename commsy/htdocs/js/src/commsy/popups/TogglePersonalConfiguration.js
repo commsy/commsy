@@ -71,7 +71,7 @@ define([	"dojo/_base/declare",
 				}));
 			}));
 
-			console.log(this.from_php);
+			//console.log(this.from_php);
 			if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
 				var ulNode = DomConstruct.create('ul',{
 					

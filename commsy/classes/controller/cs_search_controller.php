@@ -79,7 +79,9 @@
 			
 			// setup template variables
 			// sanitize search
-			$this->assign('search', 'parameters', $converter->sanitizeHTML($this->_params));
+
+			$this->_params['search'] = $converter->sanitizeHTML($this->_params['search']);
+			$this->assign('search', 'parameters', $this->_params);
 			$this->assign("search", "indexed_search", $this->_indexed_search);
 
 			// find current option

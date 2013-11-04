@@ -623,6 +623,16 @@
 				$return['mail']		= true;
 				$return['copy']		= true;
 			}
+			
+			// grouproom
+			if($this->_item->getType() != 'project'){
+				if($this->_item->isGroupRoomActivated()){
+					$return['grouproom'] = $this->_item->getGroupRoomItemID();
+				} else {
+					$return['grouproom'] = false;
+				}
+			}
+			
 
 			// download
 			$return['downloadparams'] = $this->_environment->getCurrentParameterArray();

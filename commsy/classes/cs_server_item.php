@@ -252,6 +252,8 @@ class cs_server_item extends cs_guide_item {
 //    						pr('SendMailLock '.$inactivitySendMailLock);
 //    						pr('daysTillLock '.$daysTillLock);
    						if($sourceType == 'MYSQL'){
+   							$userid = $user->getUserID();
+   							
 	   						// delete user
 	   						if($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)){
 	   							if(($user->getMailSendLocked() or (empty($inactivitySendMailLock) and empty($inactivityLockDays)))){
@@ -261,10 +263,26 @@ class cs_server_item extends cs_guide_item {
 	   								
 	   								// delete user and every room which the user is member only
 	   								$user->deleteAllEntriesOfUserByInactivity(); // delete content
-									$authentication = $this->_environment->getAuthenticationObject();
-									$authentication->delete($user->getItemID()); // delete authentication
-	   								$user->delete(); 
-	   								$user->save();
+	   								
+	   								$portalUser_item = $user->getRelatedCommSyUserItem();
+	   								
+	   								// delete own room user item
+	   								$ownRoom = $user->getOwnRoom($portal_item->getItemID());
+	   								$ownRoomUser = $portalUser_item->getRelatedUserItemInContext($ownRoom->getItemID());
+	   								$ownRoomUser->delete();
+	   								$ownRoomUser->save();
+	   								unset($ownRoom);
+	   								unset($ownRoomUser);
+	   								
+	   								$authentication = $this->_environment->getAuthenticationObject();
+	   								$authentication->delete($portalUser_item->getItemID());
+	   								
+	   								
+	   								
+// 									$authentication = $this->_environment->getAuthenticationObject();
+// 									$authentication->delete($user->getItemID()); // delete authentication
+// 	   								$user->delete(); 
+// 	   								$user->save();
 	   								
 	   								
 	   								##########################
@@ -318,7 +336,7 @@ class cs_server_item extends cs_guide_item {
 	   								$email_text_array = $portal_item->getEmailTextArray();
 	   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
 	   								
-	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NOW_BODY', $link);
 	   								$body.= "\n\n";
@@ -400,7 +418,7 @@ class cs_server_item extends cs_guide_item {
 	   								$email_text_array = $portal_item->getEmailTextArray();
 	   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
 	   								
-	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $link);
 	   								$body.= "\n\n";
@@ -487,7 +505,7 @@ class cs_server_item extends cs_guide_item {
 	   								$email_text_array = $portal_item->getEmailTextArray();
 	   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
 	   									
-	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $link);
 	   								$body.= "\n\n";
@@ -572,7 +590,7 @@ class cs_server_item extends cs_guide_item {
 		   								$email_text_array = $portal_item->getEmailTextArray();
 		   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
 		   								
-		   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+		   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 		   								$body.= "\n\n";
 		   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_NEXT_BODY', ($portal_item->getInactivityDeleteDays() - $daysTillLock),$link);
 		   								$body.= "\n\n";
@@ -661,7 +679,7 @@ class cs_server_item extends cs_guide_item {
 	   								$email_text_array = $portal_item->getEmailTextArray();
 	   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
 	   									
-	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 	   								$body.= "\n\n";
 	   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NOW_BODY', $link);
 	   								$body.= "\n\n";
@@ -748,7 +766,7 @@ class cs_server_item extends cs_guide_item {
 	   									$email_text_array = $portal_item->getEmailTextArray();
 	   									$translator->setEmailTextArray($portal_item->getEmailTextArray());
 	   									
-	   									$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+	   									$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 	   									$body.= "\n\n";
 	   									$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_TOMORROW_BODY', $link);
 	   									$body.= "\n\n";
@@ -838,7 +856,7 @@ class cs_server_item extends cs_guide_item {
 		   								$email_text_array = $portal_item->getEmailTextArray();
 		   								$translator->setEmailTextArray($portal_item->getEmailTextArray());
 		   								
-		   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullName());
+		   								$body = $translator->getEmailMessage('MAIL_BODY_HELLO', $userid);
 		   								$body.= "\n\n";
 		   								$body .= $translator->getEmailMessage('EMAIL_INACTIVITY_LOCK_NEXT_BODY', ($portal_item->getInactivityLockDays() - $days), $link);
 		   								$body.= "\n\n";
