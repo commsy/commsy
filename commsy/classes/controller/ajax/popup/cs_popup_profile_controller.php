@@ -22,87 +22,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
 
 		// check context
-		if(!$current_context->isOpen()) {
-			// TODO:
-			// 			$params = array();
-			// 			$params['environment'] = $environment;
-			// 			$params['with_modifying_actions'] = true;
-			// 			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-			// 			unset($params);
-			// 			$error_string = $translator->getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
-			// 			$errorbox->setText($error_string);
-			// 			$page->add($errorbox);
-			// 			$command = 'error';
+		if(/*!$current_context->isOpen()*/false) {
 		}
 
 		// access granted
 		else {
-			// 			// include form
-			// 			$class_params= array();
-			// 			$class_params['environment'] = $environment;
-			// 			$form = $class_factory->getClass(PROFILE_FORM,$class_params);
-			// 			unset($class_params);
-
-			// 			if ( isset($error_message_for_profile_form)
-			// 					and !empty($error_message_for_profile_form)
-			// 			) {
-			// 				$form->setFailure('email','',$error_message_for_profile_form);
-			// 			}
-
-			// 			$form->setProfilePageName($profile_page);
-
-			// 			$current_portal_item = $environment->getCurrentPortalItem();
-
-			// 			// cancel edit process
-			// 			if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
-			// 				$params = $environment->getCurrentParameterArray();
-			// 				redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
-			// 			}
-
-			// 			// lock user (room)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_LOCK_BUTTON_ROOM')) ) {
-			// 				$user_item->reject();
-			// 				$user_item->save();
-			// 				unset($user_item);
-			// 				redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
-			// 			}
-
-			// 			// delte user (room)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_REALLY_DELETE_BUTTON_ROOM')) ) {
-			// 				$user_item->delete();
-			// 				unset($user_item);
-			// 				redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
-			// 			}
-
-			// 			// lock user (portal)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle())) ) {
-			// 				$portalUser_item = $user_item->getRelatedCommSyUserItem();
-			// 				$portalUser_item->reject();
-			// 				$portalUser_item->save();
-			// 				$session = $environment->getSessionItem();
-			// 				$session_manager = $environment->getSessionManager();
-			// 				$session_manager->delete($session->getSessionID());
-			// 				unset($session);
-			// 				unset($session_manager);
-			// 				unset($portalUser_item);
-			// 				unset($user_item);
-			// 				$environment->setSessionItem(NULL);
-			// 				redirect($environment->getCurrentPortalID(), 'home','index', array());
-			// 			}
-
-			// 			// delete user (portal)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())) ) {
-			// 				$authentication = $environment->getAuthenticationObject();
-			// 				$authentication->delete($user_item->getItemID());
-			// 				unset($authentication);
-			// 				$session = $environment->getSessionItem();
-			// 				$session_manager = $environment->getSessionManager();
-			// 				$session_manager->delete($session->getSessionID());
-			// 				unset($session);
-			// 				unset($session_manager);
-			// 				$environment->setSessionItem(NULL);
-			// 				redirect($environment->getCurrentPortalID(), 'home','index', array());
-			// 			}
 			if(false) {
 
 			}
