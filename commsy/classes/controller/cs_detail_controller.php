@@ -618,10 +618,10 @@
 			}
 			
 			if($current_context->isMaterialOpenForGuests() && $current_user->isGuest()){
-				$return['edit']		= true;
-				$return['delete']	= true;
-				$return['mail']		= true;
-				$return['copy']		= true;
+				$return['edit']		= false;
+				$return['delete']	= false;
+				$return['mail']		= false;
+				$return['copy']		= false;
 			}
 			// grouproom
 			if($this->_item->getType() == 'label'){
