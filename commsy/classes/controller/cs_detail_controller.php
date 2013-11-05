@@ -623,9 +623,8 @@
 				$return['mail']		= true;
 				$return['copy']		= true;
 			}
-			
 			// grouproom
-			if($this->_item->getType() != 'project'){
+			if($this->_item->getType() == 'label'){
 				if($this->_item->isGroupRoomActivated()){
 					$return['grouproom'] = $this->_item->getGroupRoomItemID();
 				} else {
