@@ -219,7 +219,7 @@
                if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
                	$userid = 'XXX (aus Datenschutzgründen verborgen)';
                } else {
-               	$userid = $user->getUserID();
+               	$userid = $user_item->getUserID();
                }
                
                $body .= $translator->getMessage('GROUPROOM_USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$userid,$user_item->getEmail(),$room_item->getTitle());
@@ -308,7 +308,7 @@
                if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
                	$userid = ' ';
                } else {
-               	$userid = $user->getUserID();
+               	$userid = $user_item->getUserID();
                }
                
                $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$userid,$room_item->getTitle());
