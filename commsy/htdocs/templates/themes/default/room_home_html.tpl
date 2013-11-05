@@ -168,7 +168,7 @@
 										{/if}
 									{/if}
 
-									{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+									{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic or $room.room_information.material_guests == 'open'}
 		                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 									{else}
 										{$item.column_1}
@@ -191,7 +191,7 @@
 													<ul>
 													{foreach $item.attachment_infos as $file}
 														<li>
-															{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+															{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic or $room.room_information.material_guests == 'open'}
 																<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
 															{/if}
 																{$file.file_icon} {$file.file_name}
