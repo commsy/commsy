@@ -558,8 +558,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	                        else {
 	                        	
 	                        	// Fix: Find Group-Rooms if existing
-	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom()) {
-	                        		$groupRoomList = $current_context->getProjectRoomList();
+	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom() and !$current_context->isCommunityRoom()) {
+	                        		$groupRoomList = $current_context->getGroupRoomList();
 	                        		if( !$groupRoomList->isEmpty() ) {
 	                        			$room_item = $groupRoomList->getFirst();
 	                        	
@@ -598,6 +598,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setAGBStatus($form_data['agb_status']);
 				            $current_context->setAGBTextArray($agbtext_array);
 				            $current_context->setAGBChangeDate();
+				            $current_user->setAGBAcceptance();
+				            $current_user->save();
 				         }
 				         
 				         $text_converter = $this->_environment->getTextConverter();
