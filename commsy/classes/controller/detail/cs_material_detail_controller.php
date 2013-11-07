@@ -1227,7 +1227,7 @@
 		protected function getAdditionalActions(&$perms) {
 			$current_context = $this->_environment->getCurrentContextItem();
       		$current_user = $this->_environment->getCurrentUserItem();
-      		if($current_context->withWorkflow() and $current_context->withWorkflowReader() == '1' and $current_user->getUserID() != 'root' and $this->_item->isReadByUser($current_user)){
+      		if($current_context->withWorkflow() and $current_context->withWorkflowReader() == '1' and $current_user->getUserID() != 'root' and !$current_user->isGuest() and $this->_item->isReadByUser($current_user)){
 				$perms['workflow_unread'] = true;
 			} elseif ($current_context->withWorkflow() and $current_context->withWorkflowReader() == '1' and $current_user->getUserID() != 'root' ) {
 				$perms['workflow_read'] = true;
