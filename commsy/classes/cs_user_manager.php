@@ -118,6 +118,8 @@ class cs_user_manager extends cs_manager {
    * document this limit (TBD)
    */
    var $_user_limit = NULL;
+   
+   var $_user_limit_binary = NULL;
 
   /**
    * document this limit (TBD)
@@ -204,6 +206,7 @@ class cs_user_manager extends cs_manager {
       $this->_limit_no_membership = NULL;
       $this->_only_from_portal = false;
       $this->_limit_email = NULL;
+      $this->_user_limit_binary = NULL;
    }
 
    public function setEMailLimit ($value) {
@@ -369,6 +372,15 @@ class cs_user_manager extends cs_manager {
     */
   function setUserIDLimit ($value) {
      $this->_user_limit = (string)$value;
+  }
+  
+  /** set user id limit with mysql binary (case sensitive)
+   *  this method sets a user id limit for user (case sensitive)
+   *  
+   *  @param string value user id limit for selected user
+   */
+  function setUserIDLimitBinary($value) {
+  	$this->_user_limit_binary = (string)$value;
   }
 
   function setContactModeratorLimit(){
@@ -596,6 +608,10 @@ class cs_user_manager extends cs_manager {
      if (isset($this->_user_limit)) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id = "'.encode(AS_DB,$this->_user_limit).'"';
      }
+     if (isset($this->_user_limit_binary)) {
+     	$query .= ' AND BINARY '.$this->addDatabasePrefix('user').'.user_id = "'.encode(AS_DB,$this->_user_limit_binary).'"';
+     }
+      
      if ( empty($this->_id_array_limit) ) {
         if ( isset($this->_context_array_limit)
              and !empty($this->_context_array_limit)

@@ -59,11 +59,28 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								}
 								else
 								{
-									$authManager = $authentication->getAuthManager($form_data['auth_source']);
+									$user_manager = $this->_environment->getUserManager();
+									$user_manager->setUserIDLimitBinary($form_data['merge_user_id']);
 									
-									if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
-									{
-										$this->_popup_controller->setErrorReturn("1016", "authentication error");
+									$user_manager->select();
+									$user = $user_manager->get();
+									$first_user = $user->getFirst();
+									
+									$current_user = $this->_environment->getCurrentUserItem();
+
+									if(!empty($first_user)){
+										if(empty($form_data['auth_source'])){
+											$authManager = $authentication->getAuthManager($current_user->getAuthSource());
+										} else {
+											$authManager = $authentication->getAuthManager($form_data['auth_source']);
+										}
+										if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
+										{
+											$this->_popup_controller->setErrorReturn("1016", "authentication error");
+											exit;
+										}
+									} else {
+										$this->_popup_controller->setErrorReturn("1015", "invalid account");
 										exit;
 									}
 								}
