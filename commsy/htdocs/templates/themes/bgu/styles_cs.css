@@ -339,7 +339,7 @@ a#tm_user:hover{
 }
 
 #search_input {
-    background: none;
+    background: url(img/transparent.png) repeat;
     width: 230px;
     padding: 1px 2px 1px 8px;
     font-size: 0.916666em;
