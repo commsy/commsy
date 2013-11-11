@@ -1511,6 +1511,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	       $return['email_to_commsy_secret'] = $own_room->getEmailToCommSySecret();
 	       global $c_email_upload_email_account;
 	       $return['email_to_commsy_mailadress'] = $c_email_upload_email_account;
+	       $mail_address = $this->_environment->getConfiguration('c_email_upload_email_address');
+	       if ( !empty($mail_address) ) {
+	       	 $return['email_to_commsy_mailadress'] = $mail_address;
+	       }
 	    }
 
       $this->_popup_controller->assign('popup', 'external', $this->getExternalInformation());
