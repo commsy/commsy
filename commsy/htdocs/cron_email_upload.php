@@ -342,18 +342,29 @@ $server_item = $environment->getServerItem();
 $portal_id_array = $server_item->getPortalIDArray();
 
 // open connection
-$mbox = imap_open('{'.$c_email_upload_server.':'.$c_email_upload_server_port.'}', $c_email_upload_email_account, $c_email_upload_email_password);
-
-// get and process e-mails
-$message_count = imap_num_msg($mbox);
-for ($msgno = 1; $msgno <= $message_count; ++$msgno) {
-   email_to_commsy($mbox,$msgno);
+$options = $environment->getConfiguration('c_email_upload_server_options');
+if ( !isset($options) ) {
+	$options = '';
 }
+$mbox = imap_open('{'.$c_email_upload_server.':'.$c_email_upload_server_port.$options.'}', $c_email_upload_email_account, $c_email_upload_email_password);
 
-// remove deleted e-mails
-imap_expunge($mbox);
+if ( !empty($mbox) ) {
+	// get and process e-mails
+	$message_count = imap_num_msg($mbox);
+	for ($msgno = 1; $msgno <= $message_count; ++$msgno) {
+		email_to_commsy($mbox,$msgno);
+	}
+	#echo('email: '.$message_count.LF);
 
-// close connection
-imap_close($mbox);
+	// remove deleted e-mails
+	imap_expunge($mbox);
 
+	// close connection
+	imap_close($mbox);
+} else {
+	$error_array = imap_errors();
+	if ( !empty($error_array) ) {
+		echo(implode(LF,$error_array).LF);
+	}
+}
 ?>
