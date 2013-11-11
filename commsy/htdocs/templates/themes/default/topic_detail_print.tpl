@@ -40,7 +40,9 @@
 					<tr>
 						<td class="label"><h4>___MATERIAL_FILES___</h4></td>
 						<td>
-							{$detail.content.files}
+							{foreach $detail.content.files as $file}
+								{$file}
+							{/foreach}
 						</td>
 					</tr>
 				</table>

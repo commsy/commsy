@@ -240,74 +240,13 @@
 			$return['show_picture'] = false;
 			$return['moredetails'] = $this->getCreatorInformationAsArray($this->_item);
 
-            // files
-            $files = array();
-            $file_list = $this->_item->getFileList();
-            if(!$file_list->isEmpty()) {
-            	$file = $file_list->getFirst();
-
-            	while($file) {
-            		if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
-            			if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
-            				//TODO: $this->_with_slimbox = true;
-
-            				$display_name = $file->getDisplayName();
-            				$file_size = $file->getFileSize();
-            				$file_icon = $file->getFileIcon();
-
-            				/*
-            				 *  TODO
-                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)">'.
-
-                  // jQuery
-                  $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
-            				 */
-
-            				$display_name = $file->getDisplayName();
-            				//TODO:
-	            			//$display_name = $converter->compareWithSearchText($display_name);
-	            			$display_name = $converter->text_as_html_short($display_name);
-
-            				$file_string = $file->getFileIcon() . ' ' . $display_name;
-            			} else {
-            				$file_string = '<a href="' . $file->getUrl() . '" target="blank">';
-
-            				$display_name = $file->getDisplayName();
-	            			//TODO:
-	            			//$display_name = $converter->compareWithSearchText($display_name);
-	            			$display_name = $converter->text_as_html_short($display_name);
-	            			$file_string .= $file->getFileIcon() . ' ' . $display_name . '</a> (' . $file->getFileSize() . ' KB)';
-            			}
-            		} else {
-            			$display_name = $file->getDisplayName();
-            			//TODO:
-            			//$display_name = $converter->compareWithSearchText($display_name);
-            			$display_name = $converter->text_as_html_short($display_name);
-            			$file_string = $file->getFileIcon() . ' ' . $display_name;
-            		}
-
-            		$files[] = $file_string;
-
-            		$file = $file_list->getNext();
-            	}
-            }
-
             // description
-            $desc = $this->_item->getDescription();
-            if(!empty($desc)) {
-            	$desc = $converter->textFullHTMLFormatting($desc);
-            	//$desc = $converter->cleanDataFromTextArea($desc);
-            	//TODO:
-            	//$desc = $converter->compareWithSearchText($desc);
-            	$converter->setFileArray($this->getItemFileList());
-      			if ( $this->_with_old_text_formating ) {
-      				// $desc = $converter->text_as_html_long($desc);
-      				$desc = $converter->textFullHTMLFormatting($desc);
-      			} else {
-            	   $desc = $converter->_activate_urls($desc);
-      			}
-            	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
-            }
+			$desc = $this->_item->getDescription();
+			if(!empty($desc)) {
+				$converter->setFileArray($this->getItemFileList());
+				
+				$desc = $converter->textFullHTMLFormatting($desc);
+			}
 
             $path_shown = false;
             $path_items = array();
@@ -405,7 +344,7 @@
 			$return = array(
 				'formal'		=> $formal,
 				'title'			=> $this->_item->getTitle(),
-				'files'			=> implode(BRLF, $files),
+				'files'			=> $this->getFileContent(),
 				'description'	=> $desc,
 				'item_id'		=> $this->_item->getItemID(),
 				'path_shown'	=> $path_shown,
