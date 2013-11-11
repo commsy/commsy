@@ -624,7 +624,7 @@
 				$return['copy']		= false;
 			}
 			// grouproom
-			if($this->_item->getType() == 'label'){
+			if($this->_item->getType() == 'label' && $this->_item->getLabelType() == 'group'){
 				if($this->_item->isGroupRoomActivated()){
 					$return['grouproom'] = $this->_item->getGroupRoomItemID();
 				} else {
