@@ -726,7 +726,8 @@ class cs_file_manager extends cs_manager {
          $retour = false;
       } else {
          $retour = true;
-
+         
+         // get all file ids in the given context
          $sql = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.files_id, '.$this->addDatabasePrefix($this->_db_table).'.context_id, '.$this->addDatabasePrefix($this->_db_table).'.filename FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.context_id="'.$context_id.'";';
          $result = $this->_db_connector->performQuery($sql);
          if ( !isset($result) ) {
@@ -740,7 +741,8 @@ class cs_file_manager extends cs_manager {
                   $file_id_array[] = $query_result['files_id'];
                }
             }
-
+            
+            // try to get the same file ids from the item_link_file table
             if ( !empty($file_id_array) ) {
                $sql2 = 'SELECT file_id FROM '.$this->addDatabasePrefix('item_link_file').' WHERE file_id IN ('.implode(',',$file_id_array).');';
                $result2 = $this->_db_connector->performQuery($sql2);
@@ -757,6 +759,8 @@ class cs_file_manager extends cs_manager {
                   }
                }
             }
+            
+            // file_id_diff will contain all file ids that are not linked anymore
             if ( !empty($file_id_array) ) {
                $file_id_array = array_unique($file_id_array);
             }
@@ -766,13 +770,14 @@ class cs_file_manager extends cs_manager {
             } else {
                $file_id_diff = array();
             }
-
+            
             $disc_manager = $this->_environment->getDiscManager();
             foreach ($result as $query_result) {
                if ( !empty($query_result['files_id']) and in_array($query_result['files_id'],$file_id_diff) ) {
                   $sql = 'DELETE FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE files_id="'.$query_result['files_id'].'";';
                   $result_delete = $this->_db_connector->performQuery($sql);
-
+                  
+                  // get the current portal id, if it was not given
                   if ( empty($portal_id) ) {
                      $query2 = 'SELECT context_id as portal_id FROM '.$this->addDatabasePrefix('room').' WHERE item_id="'.$query_result['context_id'].'"';
                      $result2 = $this->_db_connector->performQuery($query2);
