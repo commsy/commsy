@@ -28,7 +28,7 @@
 				{/if}
 				{if $detail.actions.member == 'no_member'}
 					{if $detail.actions.grouproom}
-						<a class="open_popup" id="group_detail_group_enter" data-custom="iid: 507, module: 'userContextJoin', agb: {if isset($join.agb) && $join.agb}true{else}false{/if}" href="#">___GROUP_ENTER___</a> |
+						<a class="open_popup" id="group_detail_group_enter" data-custom="iid: {$detail.item_id}, module: 'userContextJoin', agb: {if isset($join.agb) && $join.agb}true{else}false{/if}" href="#">___GROUP_ENTER___</a> |
 					{else}
 						<a id="group_detail_group_enter" data-custom="needsCode: {if isset($join.code) && $join.code}true{else}false{/if}, agb: {if isset($join.agb) && $join.agb}true{else}false{/if}" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=1">___GROUP_ENTER___</a> |
 					{/if}
