@@ -24,6 +24,18 @@
                 <div class="clear"> </div>
                 <div class="row_even" style="padding:10px;">
                 	<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto; ">
+                		<p>
+                		<div class="user_profil_blocks">
+		                   <table class="detail_content_table">
+								<tr>
+									<td class="label"><h5>___DATES_DATETIME___</h5></td>
+									<td style="font-size:12px;">{$room.informationbox.date}</td>
+								</tr>
+		                    </table>
+		                </div>
+                		</p>
+                		<div class="clear"></div>
+                	
                 		<div class="detail_description">
                 			{$room.informationbox.content}
                 		</div>

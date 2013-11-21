@@ -98,6 +98,11 @@
                   $desc = $converter->textFullHTMLFormatting($desc);
                }
 				}
+				if($entry->getItemType() == 'date'){
+					//$return_array['date'] = $entry->getStartingDay();
+					$return_array['date'] = getDateTimeInLang($entry->getDateTime_start());
+				}
+				
 				$return_array['content'] = $desc;
 				$return_array['rubric'] = $entry->getItemType();
 				$return_array['iid'] = $id;
