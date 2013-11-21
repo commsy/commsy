@@ -28,8 +28,8 @@
                 		<div class="user_profil_blocks">
 		                   <table class="detail_content_table">
 								<tr>
-									<td class="label"><h5>___DATES_DATETIME___</h5></td>
-									<td style="font-size:12px;">{$room.informationbox.date}</td>
+									<td class="label"><h4>___DATES_DATETIME___</h4></td>
+									<td style="font-size:12px;">{$room.informationbox.date}, {$room.informationbox.time}</td>
 								</tr>
 		                    </table>
 		                </div>

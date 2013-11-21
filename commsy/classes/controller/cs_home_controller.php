@@ -100,7 +100,8 @@
 				}
 				if($entry->getItemType() == 'date'){
 					//$return_array['date'] = $entry->getStartingDay();
-					$return_array['date'] = getDateTimeInLang($entry->getDateTime_start());
+					$return_array['date'] = getDateInLang($entry->getDateTime_start());
+					$return_array['time'] = getTimeInLang($entry->getDateTime_start());
 				}
 				
 				$return_array['content'] = $desc;
