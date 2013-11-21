@@ -2712,6 +2712,68 @@ div.detail_description ol li,  div.editor_content ol li, div.detail_content ol l
 	list-style-type: decimal;
 	}
 
+/*
+-----------------------------------
+special description text
+-----------------------------------
+*/
+div.detail_description h1 {
+	padding: 8px;
+}
+
+div.detail_description h2 {
+	padding: 8px;
+	background: none;
+}
+
+div.detail_description h3 {
+	padding: 8px;
+	float: none;
+	font-weight: bold;
+}
+
+div.detail_description h4 {
+	padding: 8px;
+}
+
+div.detail_description h5 {
+	padding: 8px;
+}
+
+div.detail_description h6 {
+	padding: 8px;
+}
+
+div.editor_content h1 {
+	padding: 8px;
+}
+
+div.editor_content h2 {
+	padding: 8px;
+	background: none;
+}
+
+div.editor_content h3 {
+	padding: 8px;
+	float: none;
+	font-weight: bold;
+}
+
+div.editor_content h4 {
+	padding: 8px;
+}
+
+div.editor_content h5 {
+	padding: 8px;
+}
+
+div.editor_content h6 {
+	padding: 8px;
+}
+
+/*
+----------------------------------
+*/
 
 div.user_profil_blocks {
   float: left;
