@@ -2338,6 +2338,10 @@ class cs_user_item extends cs_item {
    	return $retour;
    }
    
+   function unsetLock(){
+   	$this->_unsetExtra('LOCK');
+   }
+   
    function setTemporaryLock () {
    	include_once('functions/date_functions.php');
    	$lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
@@ -2560,6 +2564,10 @@ class cs_user_item extends cs_item {
    
    function getLockSendMailDate(){
    	return $this->_getExtra('LOCK_SEND_MAIL_DATE');
+   }
+   
+   function unsetLockSendMailDate(){
+   	$this->_unsetExtra('LOCK_SEND_MAIL_DATE');
    }
   
    
