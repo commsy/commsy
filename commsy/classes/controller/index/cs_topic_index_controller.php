@@ -20,7 +20,7 @@
 			parent::processTemplate();
 
 			// assign rubric to template
-			$this->assign('room', 'rubric', CS_USER_TYPE);
+			$this->assign('room', 'rubric', CS_TOPIC_TYPE);
 		}
 
 		/*****************************************************************************/

@@ -29,7 +29,7 @@
 		                   <table class="detail_content_table">
 								<tr>
 									<td class="label"><h4>___DATES_DATETIME___</h4></td>
-									<td style="font-size:12px;">{$room.informationbox.date}, {$room.informationbox.time}</td>
+									<td style="font-size:12px;">{$room.informationbox.date}{if $room.informationbox.time}, {$room.informationbox.time}{/if}</td>
 								</tr>
 		                    </table>
 		                </div>
