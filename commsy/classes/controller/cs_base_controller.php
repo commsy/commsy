@@ -454,11 +454,17 @@
 				$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
 				$this->assign('cs_bar', 'show_portfolio', $own_room_item->getCSBarShowPortfolio());
 				$this->assign('cs_bar', 'addon_information', $this->getAddonInformation());
+				if ( $own_room_item->showCSBarConnection() ) {
+				   $this->assign('cs_bar', 'show_connection', $own_room_item->getCSBarShowConnection());
+				} else {
+					$this->assign('cs_bar', 'show_connection', false);
+				}
 			}else{
 				$this->assign('cs_bar', 'show_widgets', false);
 				$this->assign('cs_bar', 'show_calendar', false);
 				$this->assign('cs_bar', 'show_stack', false);
 				$this->assign('cs_bar', 'show_portfolio', false);
+				$this->assign('cs_bar', 'show_connection', false);
 			}
 			
 			$this->assign('cs_bar', 'show_limesurvey',	!($this->_environment->inPortal() || $this->_environment->inServer()) &&

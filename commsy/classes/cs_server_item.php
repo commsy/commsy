@@ -2248,5 +2248,17 @@ class cs_server_item extends cs_guide_item {
    		}
    	}
    }
+   
+   public function isServerConnectionAvailable () {
+   	$retour = false;
+   	$server_array = $this->getServerConnectionArray();
+   	if ( !empty($server_array)
+   		  and is_array($server_array)
+   		  and count($server_array) > 0
+   		) {
+   		$retour = true;
+   	}
+   	return $retour;
+   }
 }
 ?>
