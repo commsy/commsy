@@ -81,6 +81,9 @@
 	                  {$wo = $cs_bar.addon_information.wordpress}
 	                  <a href="{$wo.path}/{$environment.pid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank" id="tm_wordpress">&nbsp;</a>
 	               {/if}
+                  {if $cs_bar.show_connection == "1"}
+                     <a href="#" id="tm_connection" title="___CS_BAR_CONNECTION___">&nbsp;</a>
+                  {/if}
 						{if $cs_bar.show_portfolio == "1"}
 							<a href="#" id="tm_portfolio" title="___CS_BAR_PORTFOLIO___">&nbsp;</a>
 						{/if}
@@ -136,6 +139,7 @@
 		<div id="tm_menus">
 			<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
 			<div id="tm_dropmenu_widget_bar" class="hidden"></div>
+         <div id="tm_dropmenu_connection" class="hidden"></div>
 			<div id="tm_dropmenu_portfolio" class="hidden"></div>
 			<div id="tm_dropmenu_mycalendar" class="hidden"></div>
 			<div id="tm_dropmenu_stack" class="hidden"></div>
