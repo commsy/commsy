@@ -40,6 +40,8 @@ if (isset($cs_max_list_length) and !empty($cs_max_list_length)){
 }
 */
 
+define('CS_YES',1);
+define('CS_NO',-1);
 
 $no_room = 0;
 define('CS_NO_ROOM',0);

@@ -1,5 +1,15 @@
 <?php
 $message["SERVER_CONFIGURATION_ACTION"]["en"] = "Configure server";
+$message["SERVER_CONFIGURATION_CONNECTION_DELETE_CONNECTION"]["en"] = "Delete connection";
+$message["SERVER_CONFIGURATION_CONNECTION_EDIT_CONNECTION"]["en"] = "Edit connection";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_CONNECTION"]["en"] = "Connection";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_KEY"]["en"] = "Key";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_PROXY"]["en"] = "Use proxy";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_TITLE"]["en"] = "Title";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_URL"]["en"] = "URL";
+$message["SERVER_CONFIGURATION_CONNECTION_OWN_KEY"]["en"] = "Own key";
+$message["SERVER_CONFIGURATION_CONNECTION_SAVED_CONNECTION"]["en"] = "Connections";
+$message["SERVER_CONFIGURATION_CONNECTION_TITLE_FORM"]["en"] = "Connection options";
 $message["SERVER_CONFIGURATION_IMS_PASSWORD"]["en"] = "Password";
 $message["SERVER_CONFIGURATION_IMS_PASSWORD_AGAIN"]["en"] = "Repeat password";
 $message["SERVER_CONFIGURATION_IMS_USERID"]["en"] = "IMS user id";
