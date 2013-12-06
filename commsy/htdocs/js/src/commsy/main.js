@@ -407,11 +407,10 @@ require([	"dojo/_base/declare",
     			}
 			    
 			    // portal2portal
-			    // simulate room change now (TBD)
 			    var aConnectionNode = Query("a#tm_connection")[0];
 			    if (aConnectionNode) {
 			    	On.once(aConnectionNode, "click", Lang.hitch(this, function(event) {
-			    		require(["commsy/popups/ToggleBreadcrumb"], function(ConnectionPopup) {
+			    		require(["commsy/popups/ToggleConnection"], function(ConnectionPopup) {
 	    					var handler = new ConnectionPopup(aConnectionNode, Query("div#tm_menus div#tm_dropmenu_connection")[0]);
 	    					handler.open();
 	    				});
