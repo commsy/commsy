@@ -3842,6 +3842,12 @@ class misc_text_converter {
    	$config = HTMLPurifier_Config::createDefault();
    	
    	$config->set('HTML.Allowed', NULL);
+   	// allow flash
+   	$config->set('HTML.SafeObject', true);
+   	$config->set('HTML.SafeEmbed', true);
+   	$config->set('Output.FlashCompat', true);
+   	// allow to embed youtube videos
+   	$config->set('Filter.YouTube', true);
    	
    	// config for description ckeditor
    	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');

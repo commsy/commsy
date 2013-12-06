@@ -139,26 +139,12 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     				if (isset($additional['version_id'])){
     				   $material_manager = $this->_environment->getMaterialManager();
     				   $item = $material_manager->getItemByVersion($item_id, $additional['version_id']);
-    				   // set deletion date for included files
-    				   $file_list = $item->getFileList();
-    				   $file_item = $file_list->getFirst();
-    				   while($file_item){
-    				   	  $file_item->delete();
-    				   	  $file_item = $file_list->getNext();
-    				   }
     				   $item->delete();
     				   $this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => false, "item_id" => $item_id));
     				} else {
     					$material_manager = $this->_environment->getMaterialManager();
     					$material_version_list = $material_manager->getVersionList($item_id);
     					$item = $material_version_list->getFirst();
-    					// set deletion date for included files
-    					$file_list = $item->getFileList();
-    					$file_item = $file_list->getFirst();
-    					while($file_item){
-    						$file_item->delete();
-    						$file_item = $file_list->getNext();
-    					}
     					$item->delete(CS_ALL);
     					$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => true));
     				}
@@ -189,13 +175,6 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     			default:
     				$manager = $this->_environment->getManager($delType);
     				$item = $manager->getItem($item_id);
-    				// set deletion date for included files
-    				$file_list = $item->getFileList();
-    				$file_item = $file_list->getFirst();
-    				while($file_item){
-    					$file_item->delete();
-    					$file_item = $file_list->getNext();
-    				}
     				$item->delete();
     				
     				$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => true));
