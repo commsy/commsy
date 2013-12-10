@@ -22,8 +22,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 					
 					var SelectBoxItems = new Array(
 					        new Array( 'MediaPlayer', 'mediaplayer' ),
-					        new Array( 'wmaPlayer', 'wmaplayer' ),
-					        new Array( 'Podcampus', 'podcampus' )
+					        new Array( 'wmaPlayer', 'wmaplayer' )
 					);
 					
 					return {
@@ -64,15 +63,6 @@ CKEDITOR.plugins.add( "CommSyAudio",
 														{
 															alert( 'noCode' );
 															return false;
-														}
-														else{
-//															video = ytVidId(this.getValue());
-
-//															if ( this.getValue().length === 0 ||  video === false)
-//															{
-//																alert( 'invalid' );
-//																return false;
-//															}
 														}
 													}
 												}
@@ -129,16 +119,16 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									},
 								]
 							},
-							{
-								id:	'tab2',
-								label: 'internal Video',
-								title: 'blaaaa',
-								elements: [{
-									type: 'text',
-									label: 'testststst',
-									'default': 'helloworld!'
-								}]
-							}
+//							{
+//								id:	'tab2',
+//								label: 'internal Video',
+//								title: 'blaaaa',
+//								elements: [{
+//									type: 'text',
+//									label: 'testststst',
+//									'default': 'helloworld!'
+//								}]
+//							}
 						],
 						onOk: function()
 						{
@@ -155,17 +145,17 @@ CKEDITOR.plugins.add( "CommSyAudio",
 //								content += '<embed width="'+ width +'" height="'+ height +'" type="application/x-shockwave-flash" src="mediaplayer.swf" style="undefined" name="mpl" quality="high" wmode="opaque" flashvars="file='+ audioUrl +'&amp;autostart=true&amp;showstop=true&amp;type=mp3&amp;showdigits=true&amp;shownavigation=true" id="mpl">';
 								//content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrl +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="undefined" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
 								
-								content += '<object height="'+ height +'" width="'+ width +'" data="' + audioUrl +'">';
-								content += '<param name="allowscriptaccess" value="always"></param>';
-								content += '<embed src="' + audioUrl + '" type="audio/mpeg" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
+//								content += '<object height="'+ height +'" width="'+ width +'" data="' + audioUrl +'">';
+//								content += '<param name="allowscriptaccess" value="always"></param>';
+//								content += '<embed src="' + audioUrl + '" type="audio/mpeg" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
+//								content += '</object>';
+								
+//								content += '<object type="application/x-shockwave-flash" data="emff_standard.swf" width="' + width + '" height="' + height + '">';
+//								content += '<param name="movie" value="emff_standard.swf">';
+//								content += '<param name="flashvars" value="src=' + audioUrl + '">';
+								content += '<object data="' + audioUrl + '" type="application/x-shockwave-flash" width="200" height="300">';
+								content += '<embed src="' + audioUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
 								content += '</object>';
-								
-//								content += '<audio controls>';
-//								content += '<source src="' + audioUrl + '" type="audio/mpeg">';
-//								content += '<embed height="' + height + '" width="' + width + '" src="' + audioUrl + '">';
-//								content += '</audio>';
-								
-								
 								
 								alert(content);
 							} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
@@ -175,8 +165,6 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								var height = this.getValueOf( 'audioTab', 'audioHeight' );
 	
 								
-								
-							} else if(this.getValueOf('audioTab', 'selectbox') == 'podcampus'){
 								
 							}
 							

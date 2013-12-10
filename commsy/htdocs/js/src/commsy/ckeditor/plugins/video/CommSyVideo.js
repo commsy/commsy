@@ -45,11 +45,17 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										style: 'width=100%',
 										label: 'Video Type',
 										items: SelectBoxItems,
+										onChange: function ()
+										{
+											var dialog = this.getDialog();
+											var chkRelated = dialog.getContentElement( 'videoTab', 'chkRelated' );
+											if(this.getValue() == 'youtube'){
+												chkRelated.enable();
+											} else {
+												chkRelated.disable();
+											}
+										}
 									},
-//									{
-//										type : 'html',
-//										html : 'test' + '<hr>'
-//									},
 									{
 										type : 'hbox',
 										widths : [ '70%', '15%', '15%' ],
@@ -58,24 +64,15 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											{
 												id : 'videoUrl',
 												type : 'text',
-												label : 'Url / Dateiname',
+												label : 'Url zum Video',
 												validate : function ()
 												{
 													if ( this.isEnabled() )
 													{
 														if ( !this.getValue() )
 														{
-															alert( 'noCode' );
+															alert( 'Bitte eine Url hinzufügen' );
 															return false;
-														}
-														else{
-															video = ytVidId(this.getValue());
-
-//															if ( this.getValue().length === 0 ||  video === false)
-//															{
-//																alert( 'invalid' );
-//																return false;
-//															}
 														}
 													}
 												}
@@ -145,29 +142,29 @@ CKEDITOR.plugins.add( "CommSyVideo",
 									},
 								]
 							},
-							{
-								id:	'tab2',
-								label: 'internal Video',
-								title: 'blaaaa',
-								elements: [{
-									type: 'text',
-									label: 'testststst',
-									'default': 'helloworld!'
-								}]
-							}
+//							{
+//								id:	'tab2',
+//								label: 'internal Video',
+//								title: 'blaaaa',
+//								elements: [{
+//									type: 'text',
+//									label: 'testststst',
+//									'default': 'helloworld!'
+//								}]
+//							}
 						],
 						onOk: function()
 						{
-							var content = '';
+							var content = '',
+							width = this.getValueOf( 'videoTab', 'videoWidth' ),
+							height = this.getValueOf( 'videoTab', 'videoHeight' ),
+							videoUrl = this.getValueOf( 'videoTab', 'videoUrl');
 							
 							if(this.getValueOf('videoTab', 'selectbox') == 'lecture2go'){
 								
 //								content = 'http://lecture2go.uni-hamburg.de/';
 								
-								var width = this.getValueOf( 'videoTab', 'videoWidth' );
-								var height = this.getValueOf( 'videoTab', 'videoHeight' );
-								var videoUrl = this.getValueOf( 'videoTab', 'videoUrl');
-								
+
 								content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrl +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="undefined" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
 								
 								
@@ -211,9 +208,44 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += 'width="' + width + '" height="' + height + '" allowscriptaccess="always" ';
 								content += 'allowfullscreen="true"></embed>';
 								content += '</object>';
-							}
-							
+								
+							} else if(this.getValueOf('videoTab', 'selectbox') == 'podcampus'){
 
+								if(videoUrl.substr((videoUrl.length - 4),4) != '.swf'){
+									videoUrl += '.swf';
+								}
+								content += '<object width="' + width + '" height="' + height + '">';
+								content += '<param value="' + videoUrl + '" name="movie">';
+								content += '<embed width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="' + videoUrl + '">';
+								content += '</object>';
+								
+							} else if(this.getValueOf('videoTab', 'selectbox') == 'quicktime'){
+								
+								content += '<object width="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
+								content += '<param value="true" name="controller">';
+								content += '<param value="high" name="quality">';
+								content += '<param value="tofit" name="scale">';
+								content += '<param value="#000000" name="bgcolor">';
+								content += '<param value="opaque" name="wmode">';
+								content += '<param value="true" name="autoplay">';
+								content += '<param value="false" name="loop">';
+								content += '<param value="true" name="devicefont">';
+								content += '<param value="mov" name="class">';
+								content += '<embed width="400" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" autoplay="true" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '">';
+								content += '</object>';
+								
+							} else if(this.getValueOf('videoTab', 'selectbox') == 'mediaplayer'){
+							
+								content += '<object width="400" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18">';
+								content += '<param value="' + videoUrl + '" name="fileName">';
+								content += '<param value="true" name="autoStart">';
+								content += '<param value="true" name="showControls">';
+								content += '<param value="true" name="showStatusBar">';
+								content += '<param value="opaque" name="wmode">';
+								content += '<embed width="400" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
+								content += '</object>';
+								
+							}
 							var instance = this.getParentEditor();
 							instance.insertHtml( content );
 						}
@@ -223,8 +255,3 @@ CKEDITOR.plugins.add( "CommSyVideo",
 	}
 } );
 
-function ytVidId( url )
-{
-	var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
-	return ( url.match( p ) ) ? RegExp.$1 : false;
-}
