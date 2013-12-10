@@ -22,7 +22,7 @@ define([	"dojo/_base/declare",
 			height:						'150px',
 			enterMode:					CKEDITOR.ENTER_BR,
 			shiftEnterMode:				CKEDITOR.ENTER_P,
-			extraPlugins:				"CommSyAbout,CommSyVideo,CommSyAudio,youtube",
+			extraPlugins:				"CommSyAbout,CommSyVideo,CommSyAudio,CommSyDocument,youtube",
 			//extraPlugins: 'CommSyImages,CommSyMDO',
 			toolbar: [
 			    ['Preview', 'Cut', 'Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo'],
@@ -33,7 +33,7 @@ define([	"dojo/_base/declare",
 			    ['TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Source'],
 			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Image', 'Flash', 'CommSyAbout'],
 			    //CommSy group
-			    ['Image', 'Flash', 'CommSyVideo', 'CommSyAudio', 'Youtube']
+			    ['Image', 'Flash', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument', 'Youtube']
 			    
 			]
 		},
@@ -67,7 +67,7 @@ define([	"dojo/_base/declare",
 			
 			CKEDITOR.plugins.addExternal( "CommSyVideo", "../../src/commsy/ckeditor/plugins/video/", "CommSyVideo.js");
 			CKEDITOR.plugins.addExternal( "CommSyAudio", "../../src/commsy/ckeditor/plugins/audio/", "CommSyAudio.js");
-			
+			CKEDITOR.plugins.addExternal( "CommSyDocument", "../../src/commsy/ckeditor/plugins/document/", "CommSyDocument.js");
 			
 			if ( node.nodeName === "TEXTAREA" )
 			{

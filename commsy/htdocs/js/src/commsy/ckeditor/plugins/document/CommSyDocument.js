@@ -3,43 +3,49 @@ Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
 For licensing, see LICENSE.html or http://ckeditor.com/license
 */
 
-CKEDITOR.plugins.add( "CommSyAudio",
+CKEDITOR.plugins.add( "CommSyDocument",
 {
 	init: function( editor )
 	{
-		editor.addCommand( "CommSyAudio", new CKEDITOR.dialogCommand( "CommSyAudio" ) );
+		editor.addCommand( "CommSyDocument", new CKEDITOR.dialogCommand( "CommSyDocument" ) );
 		
-		editor.ui.addButton( "CommSyAudio",
+		editor.ui.addButton( "CommSyDocument",
 		{
-			label:		"CommSy Audio",
-			command:	"CommSyAudio",
+			label:		"CommSy document",
+			command:	"CommSyDocument",
 			icon:		"../../src/commsy/ckeditor/plugins/audio/images/icon.png"
 		} );
 		
-		CKEDITOR.dialog.add( 'CommSyAudio', function ( instance )
+		CKEDITOR.dialog.add( 'CommSyDocument', function ( instance )
 				{
 					var audio;
 					
 					var SelectBoxItems = new Array(
-					        new Array( 'MediaPlayer (mp3)', 'mediaplayer' ),
-					        new Array( 'wmaPlayer (wma)', 'wmaplayer' )
+					        new Array( 'Slideshare', 'slideshare' )
+//					        new Array( 'wmaPlayer', 'wmaplayer' )
+					);
+					
+					var floatItems = new Array (
+							new Array ('<nichts>','null'),
+							new Array ('Links','left'),
+							new Array ('Rechts','right')
 					);
 					
 					return {
-						title : 'CommSy Audio',
+						title : 'CommSy document',
 						minWidth : 500,
 						minHeight : 200,
 						contents :
 							[{
-								id : 'audioTab',
-								label: 'Audio',
+								id : 'documentTab',
+								label: 'Document',
 								expand : true,
 								elements :
 									[{
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Audio Type',
+										label: 'Document Type',
 										items: SelectBoxItems,
 									},
 //									{
@@ -52,9 +58,9 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										children :
 										[
 											{
-												id : 'audioUrl',
+												id : 'documentUrl',
 												type : 'text',
-												label : 'Url / Dateiname',
+												label : 'DOC-ID (Bsp: quicktour-1209540124077378-8)',
 												validate : function ()
 												{
 													if ( this.isEnabled() )
@@ -69,7 +75,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											},
 											{
 												type : 'text',
-												id : 'audioWidth',
+												id : 'documentWidth',
 												width : '60px',
 												label : 'Breite',
 												'default' : '640',
@@ -93,7 +99,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											},
 											{
 												type : 'text',
-												id : 'audioHeight',
+												id : 'documentHeight',
 												width : '60px',
 												label : 'Höhe',
 												'default' : '360',
@@ -118,20 +124,10 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										]
 									},
 									{
-										id : 'autostart',
-										type : 'checkbox',
-										'default' : false,
-										label : 'Autostart'
-									},
-									{
 										type : 'select',
 										id : 'float',
 										label : 'Ausrichtung',
-										items : new Array (
-													new Array ('<nichts>','null'),
-													new Array ('Links','left'),
-													new Array ('Rechts','right')
-												)
+										items : floatItems
 									}
 								]
 							},
@@ -149,38 +145,37 @@ CKEDITOR.plugins.add( "CommSyAudio",
 						onOk: function()
 						{
 							var content = '';
-							var width = this.getValueOf( 'audioTab', 'audioWidth' );
-							var height = this.getValueOf( 'audioTab', 'audioHeight' );
-							var audioUrl = this.getValueOf( 'audioTab', 'audioUrl');
-							var autostart = this.getValueOf( 'audioTab', 'autostart');
-							var float = this.getValueOf( 'audioTab', 'float');
+							var float = this.getValueOf( 'documentTab', 'float');
 							
-							var floatValue = '';
-							
-							if(float != 'null' && float == 'right'){
-								floatValue += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
-								floatValue += 'float:left;';
-							} else {
-								floatValue = '';
-							}
-							
-							if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
-
-								content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" style="' + floatValue + '">';
-//								content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
-								content += '<param value="sameDomain" name="allowScriptAccess">';
-								content += '<param value="internal" name="allowNetworking">';
-								content += '<embed src="' + audioUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
+							if(this.getValueOf('documentTab', 'selectbox') == 'slideshare'){
+								
+//								content = 'http://lecture2go.uni-hamburg.de/';
+								
+								var width = this.getValueOf( 'documentTab', 'documentWidth' );
+								var height = this.getValueOf( 'documentTab', 'documentHeight' );
+								var documentUrl = this.getValueOf( 'documentTab', 'documentUrl');
+								var floatValue = '';
+								
+								if(float != 'null' && float == 'right'){
+									floatValue += 'float:right;';
+								} else if (float != 'null' && float == 'left') {
+									floatValue += 'float:left;';
+								} else {
+									floatValue = '';
+								}
+								content += '<object width="' + width + '" height="' + height + '" style="margin:0px;' + floatValue + '">';
+								content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + documentUrl + '&amp;rel=0&amp;stripped_title=building-a-better-debt-lead" name="movie">';
+								content += '<param value="true" name="allowFullScreen">';
+								content += '<param value="always" name="allowScriptAccess">';
+								content += '<embed width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + documentUrl + '&amp;rel=0">';
 								content += '</object>';
 								
-//								alert(content);
-							} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
 								
-//								var url = 'https://', params = [], startSecs;
-//								var width = this.getValueOf( 'audioTab', 'audioWidth' );
-//								var height = this.getValueOf( 'audioTab', 'audioHeight' );
-
+//								content += '<object data="' + documentUrl + '" type="application/x-shockwave-flash" width="200" height="300">';
+//								content += '<embed src="' + documentUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
+//								content += '</object>';
+								
+//								alert(content);
 							}
 							
 
