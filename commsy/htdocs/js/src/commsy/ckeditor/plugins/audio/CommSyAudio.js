@@ -19,10 +19,24 @@ CKEDITOR.plugins.add( "CommSyAudio",
 		CKEDITOR.dialog.add( 'CommSyAudio', function ( instance )
 				{
 					var audio;
+					// parse filenames from edit dialog
+					var files = document.getElementsByName('file_name');
+					var urlDecodeFlag = true;
+					
+					fileItems = new Array (
+							new Array( '<Auswahl>' , 'null')
+					);
+					
+					// fill select with filenames
+					var i,fileId;
+					for(i = 0; i < files.length; i++){
+						fileId = document.getElementsByName('form_data[file_' + i + ']');
+						fileItems.push(new Array(files[i].innerHTML, fileId[0].value));
+					}
 					
 					var SelectBoxItems = new Array(
-					        new Array( 'MediaPlayer', 'mediaplayer' ),
-					        new Array( 'wmaPlayer', 'wmaplayer' )
+					        new Array( 'MediaPlayer (mp3)', 'mediaplayer' ),
+					        new Array( 'wmaPlayer (wma)', 'wmaplayer' )
 					);
 					
 					return {
@@ -42,10 +56,37 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										label: 'Audio Type',
 										items: SelectBoxItems,
 									},
-//									{
-//										type : 'html',
-//										html : 'test' + '<hr>'
-//									},
+									{
+										type : 'select',
+										id: 'fileselect',
+										label: 'Dateiauswahl',
+										items : fileItems,
+										onChange : function () 
+										{
+											// disable textInput if file is selected
+											var dialog = this.getDialog();
+											var inputUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
+											if(this.getValue() == 'null'){
+												inputUrl.enable();
+												inputUrl.setValue('');
+												urlDecodeFlag = true;
+											} else {
+												inputUrl.disable();
+												// set file url in textInput
+												var cid = getUrlParam('cid');
+												var mod = getUrlParam('mod');
+												var iid = getUrlParam('iid');
+												
+												// build url for embedding
+												fileUrl = 'commsy.php/' + this.getValue() + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+												
+												encodeFileUrl = encodeURIComponent(fileUrl);
+//												alert(encodeFileUrl);
+												inputUrl.setValue(encodeFileUrl);
+												urlDecodeFlag = false;
+											}
+										}
+									},
 									{
 										type : 'hbox',
 										widths : [ '70%', '15%', '15%' ],
@@ -54,7 +95,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											{
 												id : 'audioUrl',
 												type : 'text',
-												label : 'Url / Dateiname',
+												label : 'Url',
 												validate : function ()
 												{
 													if ( this.isEnabled() )
@@ -117,58 +158,76 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											}
 										]
 									},
+									{
+										id : 'autostart',
+										type : 'checkbox',
+										'default' : false,
+										label : 'Autostart'
+									},
+									{
+										type : 'select',
+										id : 'float',
+										label : 'Ausrichtung',
+										items : new Array (
+													new Array ('<nichts>','null'),
+													new Array ('Links','left'),
+													new Array ('Rechts','right')
+												)
+									}
 								]
 							},
 //							{
 //								id:	'tab2',
 //								label: 'internal Video',
-//								title: 'blaaaa',
-//								elements: [{
-//									type: 'text',
-//									label: 'testststst',
-//									'default': 'helloworld!'
-//								}]
+//								title: 'blaaaa'
 //							}
 						],
 						onOk: function()
 						{
 							var content = '';
+							var width = this.getValueOf( 'audioTab', 'audioWidth' );
+							var height = this.getValueOf( 'audioTab', 'audioHeight' );
+							var audioUrl = this.getValueOf( 'audioTab', 'audioUrl');
+							var autostart = this.getValueOf( 'audioTab', 'autostart');
+							var float = this.getValueOf( 'audioTab', 'float');
+							
+							var floatValue = '';
+							
+							if(float != 'null' && float == 'right'){
+								floatValue += 'float:right;';
+							} else if (float != 'null' && float == 'left') {
+								floatValue += 'float:left;';
+							} else {
+								floatValue = '';
+							}
 							
 							if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
 								
-//								content = 'http://lecture2go.uni-hamburg.de/';
-								
-								var width = this.getValueOf( 'audioTab', 'audioWidth' );
-								var height = this.getValueOf( 'audioTab', 'audioHeight' );
-								var audioUrl = this.getValueOf( 'audioTab', 'audioUrl');
-								
-//								content += '<embed width="'+ width +'" height="'+ height +'" type="application/x-shockwave-flash" src="mediaplayer.swf" style="undefined" name="mpl" quality="high" wmode="opaque" flashvars="file='+ audioUrl +'&amp;autostart=true&amp;showstop=true&amp;type=mp3&amp;showdigits=true&amp;shownavigation=true" id="mpl">';
-								//content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrl +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="undefined" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
-								
-//								content += '<object height="'+ height +'" width="'+ width +'" data="' + audioUrl +'">';
-//								content += '<param name="allowscriptaccess" value="always"></param>';
-//								content += '<embed src="' + audioUrl + '" type="audio/mpeg" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
-//								content += '</object>';
-								
-//								content += '<object type="application/x-shockwave-flash" data="emff_standard.swf" width="' + width + '" height="' + height + '">';
-//								content += '<param name="movie" value="emff_standard.swf">';
-//								content += '<param name="flashvars" value="src=' + audioUrl + '">';
-								content += '<object data="' + audioUrl + '" type="application/x-shockwave-flash" width="200" height="300">';
+								if(urlDecodeFlag){
+									audioUrl = encodeURI(audioUrl);
+								}
+
+								content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" style="' + floatValue + '">';
+//								content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
+								content += '<param value="sameDomain" name="allowScriptAccess">';
+								content += '<param value="internal" name="allowNetworking">';
 								content += '<embed src="' + audioUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
 								content += '</object>';
 								
-								alert(content);
+//								alert(content);
 							} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
 								
-								var url = 'https://', params = [], startSecs;
-								var width = this.getValueOf( 'audioTab', 'audioWidth' );
-								var height = this.getValueOf( 'audioTab', 'audioHeight' );
-	
-								
+								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" style="' + floatValue + '">';
+								content += '<param value="' + audioUrl + '" name="fileName">';
+								content += '<param value="false" name="autoStart">';
+								content += '<param value="true" name="showControls">';
+								content += '<param value="true" name="showStatusBar">';
+								content += '<param value="opaque" name="wmode">';
+								content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="false" wmode="opaque" name="MediaPlayer18" src="' + audioUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
+								content += '</object>';
 								
 							}
 							
-
 							var instance = this.getParentEditor();
 							instance.insertHtml( content );
 						}
@@ -177,3 +236,17 @@ CKEDITOR.plugins.add( "CommSyAudio",
 		
 	}
 } );
+
+function getUrlParam( param )
+{
+	param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+
+	var regexS = "[\\?&]"+param+"=([^&#]*)";
+	var regex = new RegExp( regexS );
+	var results = regex.exec( window.location.href );
+
+	if ( results == null )
+		return "";
+	else
+		return results[1];
+}
