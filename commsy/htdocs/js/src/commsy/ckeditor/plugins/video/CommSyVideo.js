@@ -19,7 +19,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 		CKEDITOR.dialog.add( 'CommSyVideo', function ( instance )
 				{
 					var video;
-					
+					var urlDecodeFlag = false;
 					// parse filenames from edit dialog
 					var files = document.getElementsByName('file_name');
 					
@@ -89,6 +89,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											if(this.getValue() == 'null'){
 												inputUrl.enable();
 												inputUrl.setValue('');
+												inputUrl.focus();
 											} else {
 												inputUrl.disable();
 												// set file url in textInput

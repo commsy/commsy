@@ -21,6 +21,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 					var audio;
 					// parse filenames from edit dialog
 					var files = document.getElementsByName('file_name');
+					var urlDecodeFlag = true;
 					
 					fileItems = new Array (
 							new Array( '<Auswahl>' , 'null')
@@ -68,6 +69,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											if(this.getValue() == 'null'){
 												inputUrl.enable();
 												inputUrl.setValue('');
+												urlDecodeFlag = true;
 											} else {
 												inputUrl.disable();
 												// set file url in textInput
@@ -81,6 +83,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												encodeFileUrl = encodeURIComponent(fileUrl);
 //												alert(encodeFileUrl);
 												inputUrl.setValue(encodeFileUrl);
+												urlDecodeFlag = false;
 											}
 										}
 									},
@@ -176,12 +179,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 //							{
 //								id:	'tab2',
 //								label: 'internal Video',
-//								title: 'blaaaa',
-//								elements: [{
-//									type: 'text',
-//									label: 'testststst',
-//									'default': 'helloworld!'
-//								}]
+//								title: 'blaaaa'
 //							}
 						],
 						onOk: function()
@@ -204,6 +202,10 @@ CKEDITOR.plugins.add( "CommSyAudio",
 							}
 							
 							if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
+								
+								if(urlDecodeFlag){
+									audioUrl = encodeURI(audioUrl);
+								}
 
 								content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" style="' + floatValue + '">';
 //								content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
