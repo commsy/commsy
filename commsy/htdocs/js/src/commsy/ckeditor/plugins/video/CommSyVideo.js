@@ -20,6 +20,19 @@ CKEDITOR.plugins.add( "CommSyVideo",
 				{
 					var video;
 					
+					// parse filenames from edit dialog
+					var files = document.getElementsByName('file_name');
+					
+					fileItems = new Array (
+							new Array( '<Auswahl>' , 'null')
+					);
+					
+					// fill select with filenames
+					var i;
+					for(i = 0; i < files.length; i++){
+						fileItems.push(new Array(files[i].innerHTML, files[i].innerHTML));
+					}
+					
 					var SelectBoxItems = new Array(
 					        new Array( 'Youtube', 'youtube' ),
 					        new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
@@ -43,7 +56,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Video Type',
+										label: 'Video Typ',
 										items: SelectBoxItems,
 										onChange: function ()
 										{
@@ -53,6 +66,41 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												chkRelated.enable();
 											} else {
 												chkRelated.disable();
+											}
+											// set url info
+											var inputLabel = dialog.getContentElement('videoTab' , 'videoUrl');
+											if(this.getValue() == 'lecture2go'){
+												inputLabel.setLabel('URL (mp4:<beispiel>/<dateiname>.mp4)');
+											} else {
+												inputLabel.setLabel('URL');
+											}
+										}
+									},
+									{
+										type : 'select',
+										id: 'fileselect',
+										label: 'Dateiauswahl',
+										items : fileItems,
+										onChange : function () 
+										{
+											// disable textInput if file is selected
+											var dialog = this.getDialog();
+											var inputUrl = dialog.getContentElement( 'videoTab', 'videoUrl' );
+											if(this.getValue() == 'null'){
+												inputUrl.enable();
+												inputUrl.setValue('');
+											} else {
+												inputUrl.disable();
+												// set file url in textInput
+												var cid = getUrlParam('cid');
+												var mod = getUrlParam('mod');
+												var iid = getUrlParam('iid');
+												
+												fileUrl = 'commsy.php/' + this.getValue() + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + iid;
+												
+												encodeFileUrl = encodeURI(fileUrl);
+//												alert(encodeFileUrl);
+												inputUrl.setValue(encodeFileUrl);
 											}
 										}
 									},
@@ -64,14 +112,14 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											{
 												id : 'videoUrl',
 												type : 'text',
-												label : 'Url zum Video oder zur Datei',
+												label : 'URL',
 												validate : function ()
 												{
 													if ( this.isEnabled() )
 													{
 														if ( !this.getValue() )
 														{
-															alert( 'Bitte eine Url hinzufügen' );
+															alert( 'Bitte eine URL hinzufügen' );
 															return false;
 														} else {
 															video = ytVidId(this.getValue());
@@ -164,11 +212,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //								id:	'tab2',
 //								label: 'internal Video',
 //								title: 'blaaaa',
-//								elements: [{
-//									type: 'text',
-//									label: 'testststst',
-//									'default': 'helloworld!'
-//								}]
 //							}
 						],
 						onOk: function()
@@ -197,6 +240,17 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 
 								content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrl +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="' + floatValue + '" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
+//								alert(content);
+								
+//								content += '<object type="application/x-shockwave-flash" data="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" width="'+ width +'" height="'+ height +'" id="VideoPlayback">';
+//								content += '<param name="movie" value="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" />';
+//								content += '<param name="allowScriptAcess" value="sameDomain" />';
+//								content += '<param name="quality" value="best" />';
+//								content += '<param name="bgcolor" value="#FFFFFF" />';
+//								content += '<param name="scale" value="noScale" />';
+//								content += '<param name="salign" value="TL" />';
+//								content += '<param name="flashvars" value="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrl +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1 />';
+//								content += '</object>';
 								
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'youtube'){
@@ -308,4 +362,17 @@ function ytVidId( url )
 {
 	var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 	return ( url.match( p ) ) ? RegExp.$1 : false;
+}
+function getUrlParam( param )
+{
+	param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+
+	var regexS = "[\\?&]"+param+"=([^&#]*)";
+	var regex = new RegExp( regexS );
+	var results = regex.exec( window.location.href );
+
+	if ( results == null )
+		return "";
+	else
+		return results[1];
 }

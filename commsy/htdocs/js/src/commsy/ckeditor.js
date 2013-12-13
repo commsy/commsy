@@ -22,7 +22,7 @@ define([	"dojo/_base/declare",
 			height:						'150px',
 			enterMode:					CKEDITOR.ENTER_BR,
 			shiftEnterMode:				CKEDITOR.ENTER_P,
-			extraPlugins:				"CommSyAbout,CommSyVideo,CommSyAudio,CommSyDocument,youtube",
+			extraPlugins:				"CommSyAbout,CommSyVideo,CommSyAudio,CommSyDocument",
 			//extraPlugins: 'CommSyImages,CommSyMDO',
 			toolbar: [
 			    ['Preview', 'Cut', 'Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo'],
@@ -33,7 +33,7 @@ define([	"dojo/_base/declare",
 			    ['TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Source'],
 			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Image', 'Flash', 'CommSyAbout'],
 			    //CommSy group
-			    ['Image', 'Flash', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument', 'Youtube']
+			    ['Image', 'Flash', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument']
 			    
 			]
 		},
@@ -61,6 +61,8 @@ define([	"dojo/_base/declare",
 			domAttr.set(hiddenNode, "type", "hidden");
 			domAttr.set(hiddenNode, "name", "form_data[" + id + "]");
 			domConstruct.place(hiddenNode, node, "after");
+			
+			CKEDITOR.config.allowedContent = true;
 			
 			/*CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );*/
 			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.php?cid="+this.uri_object.cid );
