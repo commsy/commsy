@@ -11,7 +11,7 @@ define([	"dojo/_base/declare",
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
 			this.contentNode = content_node;
-			this.module = "breadcrumb";
+			this.module = "connection";
 			
 			this.features = [];
 			
