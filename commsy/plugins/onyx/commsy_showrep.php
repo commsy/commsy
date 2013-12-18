@@ -34,29 +34,64 @@
    </head>
    <body>
 <?php
+   $show = false;
+   $url = '';
+   
+   // via onyx url
    if ( !empty($_GET['url']) ) {
       
       // check security
       $session_item = $environment->getSessionItem();
-      $show = false;
       if ( isset($session_item)
            and $session_item->issetValue('onyx_reporter_url_array')
       	) {
       	$onyx_reporter_url_array = $session_item->getValue('onyx_reporter_url_array');
       	if ( in_array(rawurldecode($_GET['url']),$onyx_reporter_url_array) ) {
       		$show = true;
+      		$url = rawurldecode($_GET['url']);
       	}
       }
-      
-      // show
-      if ( $show ) {
-         echo('<div><iframe class="onyx" src="'.rawurldecode($_GET['url']).'"></iframe></div>');      	
-      } else {
-         echo($translator->getMessage('ONYX_ERROR_URL_SECURITY'));      	
+   }
+   
+   // via file-id
+   elseif ( !empty($_GET['fid']) ) {
+   	
+      $choice = 4;   	
+      if ( !empty($_GET['choice']) ) {
+         $choice = $_GET['choice'];
       }
-   } else {
+      
+      $plugin_class = $environment->getPluginClass('onyx');
+      $url = $plugin_class->getReporterUrlByFileID($_GET['fid'], $choice);
+      if ( !empty($url) ) {
+      	$show = true;
+      }
+
+      // get url
+      if ( !empty($file_item)
+           and !empty($file_array)
+      	) {
+      	$plugin_class = $environment->getPluginClass('onyx');
+      	$url = $plugin_class->getReporterUrl($file, $file_array, $choice);
+      	if ( !empty($url) ) {
+            $show = true;
+      	}
+      }
+   }
+   
+   else {
       echo($translator->getMessage('ONYX_ERROR_URL_LOST'));
    } 
+
+   // show
+   if ( $show
+        and !empty($url)
+      ) {
+   	echo('<div><iframe class="onyx" src="'.$url.'"></iframe></div>');
+   } else {
+   	echo($translator->getMessage('ONYX_ERROR_URL_SECURITY'));
+   }
+    
 ?>
    </body>
 </html>

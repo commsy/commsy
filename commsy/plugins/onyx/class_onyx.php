@@ -380,9 +380,12 @@ class class_onyx extends cs_plugin {
 
       // params
       $embedded = false;
-      if ( !empty($args_array['embedded']) ) {
-         $embedded = true;
-      }
+      # problems with ONYX performance
+      #if ( !empty($args_array['embedded'])
+      #	  or in_array('embedded',$args_array['#'])
+      #   ) {
+      #   $embedded = true;
+      #}
 
       $name = '';
       if ( !empty($args_array['text']) ) {
@@ -412,99 +415,13 @@ class class_onyx extends cs_plugin {
       }
 
       if ( isset($file) ) {
-
-         // now connect onyx web reporter
-         $reporter = $this->_getReporterObject();
-
-         // first: Anmeldung des LMS
-         $version = 2;
-         $current_user_item = $this->_environment->getCurrentUserItem();
-         $user_id = $current_user_item->getUserID();
-         $role = 1;
-         if ( !$current_user_item->isModerator() ) {
-         	$role = 0;
-         }
-         $session_item = $this->_environment->getSessionItem();
-         $session_id = $session_item->getSessionID();
-         $firstname = $current_user_item->getFirstName();
-         $lastname = $current_user_item->getLastName();
-         
-         $reporter_session = $reporter->armSiteXML(
-         		$version, // 1 oder 2
-         		$user_id,
-         		$role, // 0 = student , 1 = tutor
-         		$session_id, // secretToShare,
-         		$firstname, // optionalUserLastName,
-         		$lastname, // optionalUserFirstName,
-         		"" // additionalParams
-         );
-          
-         // second: Initialisierung des Tests
-         $arrOnyxResults = array();
-         foreach ($file_array as $file_item) {
-         	if ( !empty($file_item)
-         		  and $file_item->getFileID() != $file->getFileID()
-         		  and strtolower($file_item->getExtension()) == 'zip'
-         		  and stristr($file_item->getFileName(), $file->getFileID().'_')
-         		) {
-         		$zip = new ZipArchive;
-         		$res = $zip->open($file_item->getDiskFileName());
-         		if ( $res === TRUE ) {
-         			$result_xml = $zip->getFromName('result.xml');
-         			if ( !empty($result_xml) ) {
-         				
-         				$resultUserIdent = md5($file_item->getFileName());
-         				
-         				$file_name_array = explode('_', $file_item->getFileName());
-         				$userFirstname = 'Should be';
-         				if ( !empty($file_name_array[3] ) ) {
-         					$userFirstname = $file_name_array[3];
-         					if ( stristr($userFirstname,'.zip') ) {
-         						$userFirstname = str_replace('.zip','',$userFirstname);
-         					}
-         				}
-         				$userLastname = 'overwritten';
-         				if ( !empty($file_name_array[2] ) ) {
-         					$userLastname = $file_name_array[2];
-         					if ( stristr($userLastname,'.zip') ) {
-         						$userLastname = str_replace('.zip','',$userLastname);
-         					}
-         				}
-         				 
-         				$OnyxResult = new ONYX_StdClass();
-         				$OnyxResult->studentId = $resultUserIdent;
-         				$OnyxResult->firstname = $userFirstname;
-         				$OnyxResult->lastname  = $userLastname;
-         				$OnyxResult->groupname = "";
-         				$OnyxResult->tutorname = "";
-         				$OnyxResult->contentFile = $file->getString();
-         				$OnyxResult->resultsFile = $result_xml;
-         				
-         				$arrOnyxResults[] = $OnyxResult;
-         			}
-         			$zip->close();
-         		} else {
-         			# error TBD
-         		}
-         	}
-         }
-         
-         if ( !empty($arrOnyxResults) ) {
-	         $contentPackage = $file->getString();
-	         $success = $reporter->initiateSiteXML(
-	         		$version, // 1 oder 2
-	         		$reporter_session, // sessionId,
-	         		$session_id, // secretToShare,
-	         		$arrOnyxResults,
-	         		$contentPackage, // optionalContentPackage,
-	         		NULL // additionalParams
-	         );
-	
-	         // third: show reporter
-	         if ( $success and !is_soap_fault($success) ) {
-	            $url = $success.$choice.'?sid='.$reporter_session.'&secret='.$session_id;
-	         	if ($embedded) {
-	               $retour .= '<style type="text/css">
+      	if ( !empty($file)
+      		  and !empty($file_array)
+      	   ) {
+	         if ($embedded) {
+      		   $url = $this->_getReporterUrl($file,$file_array,$choice);
+	            if ( !empty($url) ) {      
+	         	   $retour .= '<style type="text/css">
 	   <!--
 	      iframe.onyx {
 	         width: 630px;
@@ -515,36 +432,208 @@ class class_onyx extends cs_plugin {
 	   </style>';
 	               $retour .= '<div><iframe class="onyx" src="'.$url.'"></iframe></div>';
 	            } else {
-	               if ( $display == 'newwin'
-	                    or $display == '_blank'
-	                    or $display == 'tab'
-	                  ) {
-	                  $target = 'target="_blank"';
-	                  $onclick = '';
-	               } else {
-	                  $target = 'target="help"';
-	                  $onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, dependent=yes, copyhistory=yes, width=900, height=600\');"';
-	               }
-	                  
-	               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-	               $retour = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod='.$this->_identifier.'&amp;fct=showrep&amp;url='.rawurlencode($url).'" '.$target.' '.$onclick.'>'.$name.'</a>';
-
-	               // save url in session for security reason
-	               $onyx_reporter_url_array = array();
-	               if ( $session_item->issetValue('onyx_reporter_url_array') ) {
-	               	$onyx_reporter_url_array = $session_item->getValue('onyx_reporter_url_array');
-	               }
-	               $onyx_reporter_url_array[] = $url;
-	               $session_item->setValue('onyx_reporter_url_array',$onyx_reporter_url_array);
+	            	$retour = $this->_translator->getMessage('ONYX_REPORTER_NO_RESULTS');
 	            }
-	         } else {
-	         	// error TBD
-	         }
+            } else {
+            	if ( $display == 'newwin'
+                    or $display == '_blank'
+                    or $display == 'tab'
+                  ) {
+                  $target = 'target="_blank"';
+                  $onclick = '';
+               } else {
+                  $target = 'target="help"';
+                  $onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, dependent=yes, copyhistory=yes, width=900, height=600\');"';
+               }
+                  
+               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+               
+               // onyx reporter has performance problems with moere than 100 test results
+               // so implement new style, so onyx reporter will only used, if user wants it      
+               
+               // new style: generate reporter url / object after klicking the link
+               $retour = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod='.$this->_identifier.'&amp;fct=showrep&amp;fid='.$file->getFileID().'&amp;choice='.$choice.'" '.$target.' '.$onclick.'>'.$name.'</a>';
+               
+               // old style: generate reporter url / object bevore klicking the link
+               #$url = $this->_getReporterUrl($file,$file_array,$choice);
+               #$retour = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod='.$this->_identifier.'&amp;fct=showrep&amp;url='.rawurlencode($url).'" '.$target.' '.$onclick.'>'.$name.'</a>';
+                       
+               // save url in session for security reason
+               /*
+               $onyx_reporter_url_array = array();
+               if ( !isset($session_item) ) {
+               	$session_item = $this->_environment->getSessionItem();
+               }
+               if ( $session_item->issetValue('onyx_reporter_url_array') ) {
+               	$onyx_reporter_url_array = $session_item->getValue('onyx_reporter_url_array');
+               }
+               $onyx_reporter_url_array[] = $url;
+               $session_item->setValue('onyx_reporter_url_array',$onyx_reporter_url_array);
+               */
+            }
          } else {
          	$retour = $this->_translator->getMessage('ONYX_REPORTER_NO_RESULTS');
          }          
       }
    	return $retour;
+   }
+   
+   public function getReporterUrlByFileID ( $fid, $choice = 4 ) {
+   	$retour = '';
+
+   	if ( !empty($fid) ) {
+	   	// get file_item
+	      $file_manager = $this->_environment->getFileManager();
+	      $file_item = $file_manager->getItem($fid);
+	      if ( !empty($file_item) ) {
+	
+	         // get file_array
+	         $item_link_file_manager = $this->_environment->getLinkItemFileManager();
+	         $item_link_file_manager->setFileIDLimit($file_item->getFileID());
+	         $item_link_file_manager->select();
+		      $item_link_array = $item_link_file_manager->get();
+		      if ($item_link_array->getCount() == 1 ) {
+		      	$link_item = $item_link_array->getFirst();
+		      	$item = $link_item->getLinkedItem();
+		      	if ( !empty($item) ) {
+		      		if ( $item->isA(CS_SECTION_TYPE)
+	                    or $item->isA(CS_DISCARTICLE_TYPE)
+	                    or $item->isA(CS_STEP_TYPE)
+		      		   ) {
+		      			$item = $item->getLinkedItem();
+		      		}
+		      		if ( !empty($item) ) {
+	                  if ( $item->isA(CS_MATERIAL_TYPE) ) {
+		                  $file_list = $item->getFileListWithFilesFromSections();
+							} elseif ( $item->isA(CS_DISCUSSION_TYPE) ) {
+								$file_list = $item->getFileListWithFilesFromArticles();
+							} elseif ( $item->isA(CS_TODO_TYPE) ) {
+								$file_list = $item->getFileListWithFilesFromSteps();
+							} else {
+								$file_list = $item->getFileList();
+							}
+	
+	                  $file_list_array = $file_list->to_Array();
+	                  $file_name_array = array();
+	                  foreach($file_list_array as $file) {
+	                     $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
+	                  }
+	                  if ( !empty($file_name_array) ) {
+	                  	$file_array = $file_name_array;
+	                  }
+		      		}
+		      	}
+		      }
+	      }
+	   	
+	      $retour = $this->_getReporterUrl($file_item, $file_array, $choice);
+   	}
+   	
+   	return $retour;
+   }
+   
+   private function _getReporterUrl ( $file, $file_array, $choice = 4 ) {
+      $retour = '';
+      
+      if ( !empty($file)
+      	  and !empty($file_array)
+      	) {
+      
+	      // now connect onyx web reporter
+	      $reporter = $this->_getReporterObject();
+	      
+	      // first: Anmeldung des LMS
+	      $version = 2;
+	      $current_user_item = $this->_environment->getCurrentUserItem();
+	      $user_id = $current_user_item->getUserID();
+	      $role = 1;
+	      if ( !$current_user_item->isModerator() ) {
+	      	$role = 0;
+	      }
+	      $session_item = $this->_environment->getSessionItem();
+	      $session_id = $session_item->getSessionID();
+	      $firstname = $current_user_item->getFirstName();
+	      $lastname = $current_user_item->getLastName();
+	       
+	      $reporter_session = $reporter->armSiteXML(
+	      		$version, // 1 oder 2
+	      		$user_id,
+	      		$role, // 0 = student , 1 = tutor
+	      		$session_id, // secretToShare,
+	      		$firstname, // optionalUserLastName,
+	      		$lastname, // optionalUserFirstName,
+	      		"" // additionalParams
+	      );
+	      
+	      // second: Initialisierung des Tests
+	      $arrOnyxResults = array();
+	      foreach ($file_array as $file_item) {
+	      	if ( !empty($file_item)
+	      			and $file_item->getFileID() != $file->getFileID()
+	      			and strtolower($file_item->getExtension()) == 'zip'
+	      			and stristr($file_item->getFileName(), $file->getFileID().'_')
+	      	) {
+	      		$zip = new ZipArchive;
+	      		$res = $zip->open($file_item->getDiskFileName());
+	      		if ( $res === TRUE ) {
+	      			$result_xml = $zip->getFromName('result.xml');
+	      			if ( !empty($result_xml) ) {
+	      				 
+	      				$resultUserIdent = md5($file_item->getFileName());
+	      				 
+	      				$file_name_array = explode('_', $file_item->getFileName());
+	      				$userFirstname = 'Should be';
+	      				if ( !empty($file_name_array[3] ) ) {
+	      					$userFirstname = $file_name_array[3];
+	      					if ( stristr($userFirstname,'.zip') ) {
+	      						$userFirstname = str_replace('.zip','',$userFirstname);
+	      					}
+	      				}
+	      				$userLastname = 'overwritten';
+	      				if ( !empty($file_name_array[2] ) ) {
+	      					$userLastname = $file_name_array[2];
+	      					if ( stristr($userLastname,'.zip') ) {
+	      						$userLastname = str_replace('.zip','',$userLastname);
+	      					}
+	      				}
+	      
+	      				$OnyxResult = new ONYX_StdClass();
+	      				$OnyxResult->studentId = $resultUserIdent;
+	      				$OnyxResult->firstname = $userFirstname;
+	      				$OnyxResult->lastname  = $userLastname;
+	      				$OnyxResult->groupname = "";
+	      				$OnyxResult->tutorname = "";
+	      				$OnyxResult->contentFile = $file->getString();
+	      				$OnyxResult->resultsFile = $result_xml;
+	      				 
+	      				$arrOnyxResults[] = $OnyxResult;
+	      			}
+	      			$zip->close();
+	      		} else {
+	      			# error TBD
+	      		}
+	      	}
+	      }
+	       
+	      if ( !empty($arrOnyxResults) ) {
+	      	$contentPackage = $file->getString();
+	      	$success = $reporter->initiateSiteXML(
+	      			$version, // 1 oder 2
+	      			$reporter_session, // sessionId,
+	      			$session_id, // secretToShare,
+	      			$arrOnyxResults,
+	      			$contentPackage, // optionalContentPackage,
+	      			NULL // additionalParams
+	      	);
+	      
+	      	// third: make reporter url
+	      	if ( $success and !is_soap_fault($success) ) {
+	      		$retour = $success.$choice.'?sid='.$reporter_session.'&secret='.$session_id;
+	      	}      
+	      }
+      }
+      
+      return $retour;
    }
    
    private function _getPlayerObject () {
