@@ -756,6 +756,7 @@ class class_onyx extends cs_plugin {
    }
    
    public function saveResult ($args) {
+   	$save_current_user = '';
    	if ( !empty($args[0]) 
    		  and !empty($args[1])
    	   ) {
@@ -791,7 +792,23 @@ class class_onyx extends cs_plugin {
             $this->_environment->setCurrentContextID($cid);
     			$this->_environment->setSessionID($sid);
     			
-	    		// get link file item
+    		   // set current user
+	    		$session_manager = $this->_environment->getSessionManager();
+	    		$session_item = $session_manager->get($sid);
+	    		$user_id = $session_item->getValue('user_id');
+	    		$auth_source = $session_item->getValue('auth_source');
+	    		$user_manager = $this->_environment->getUserManager();
+	    		$user_manager->setContextLimit($cid);
+	    		$user_manager->setUserIDLimit($user_id);
+	    		$user_manager->setAuthSourceLimit($auth_source);
+	    		$user_manager->select();
+	    		$user_list = $user_manager->get();
+	    		if ($user_list->getCount() == 1) {
+	    			$current_user = $user_list->getFirst();
+	    			$this->_environment->setCurrentUserItem($current_user);
+	    		}
+	    				
+    			// get link file item
 	    		$lif_manager = $this->_environment->getLinkItemFileManager();
 	    		$lif_manager->setContextLimit($cid);
 	    		$lif_manager->setFileIDLimit($fid);
@@ -805,6 +822,13 @@ class class_onyx extends cs_plugin {
 	    			// get data item
 	    			$data_item = $lif_item->getLinkedItem();
 	    			if ( !empty($data_item) ) {
+	    				
+	    				// save results anonym
+	    				$creator_item = $data_item->getCreatorItem();
+	    				if ( !empty($creator_item) ) {
+	    					$save_current_user = $this->_environment->getCurrentUserItem();
+	    					$this->_environment->setCurrentUserItem($creator_item);
+	    				}
 	    			
                   // new file on disc
                   $file_name = $fid.'_result';
@@ -940,6 +964,12 @@ class class_onyx extends cs_plugin {
 	    					}
 	    					
 	    					unlink($temp_file);
+	    					
+	    					// save anonym recovery
+	    					if ( !empty($save_current_user) ) {
+	    						$this->_environment->setCurrentUserItem($save_current_user);
+	    						unset($save_current_user);
+	    					}
 	    					
 	    					// save onyx hash in user_item
                      if ( $saveResult == 2 ) { // 2 = pseudonym
