@@ -7,6 +7,8 @@
 		private $_index_items = array();
 		private $_indexing = array();
 		private $_regex = array();
+		
+		private $quiet = false;
 
 		public function __construct() {
 			mb_internal_encoding('UTF-8');
@@ -32,10 +34,22 @@
 			// setup regex
 			$this->setupRegex();
 		}
+		
+		public function setQuiet($quiet)
+		{
+			$this->quiet = $quiet;
+		}
+		
+		private function out($string)
+		{
+			if ($this->quiet == false) {
+				echo $string;
+			}
+		}
 
 		public function createDatabaseTables() {
 			// add database tables
-			echo "creating database tables, if not existing...";
+			$this->out("creating database tables, if not existing...");
 			$sql = "
 			CREATE TABLE IF NOT EXISTS `search_index` (
 			`si_id` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -71,11 +85,11 @@
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 			";
 			mysql_query($sql);
-			echo "done\n";
+			$this->out("done\n");
 		}
 
 		public function truncateTables() {
-			echo "truncating tables...";
+			$this->out("truncating tables...");
 			$sql = "TRUNCATE `search_index`;";
 			mysql_query($sql);
 
@@ -84,11 +98,11 @@
 
 			$sql = "TRUNCATE `search_word`;";
 			mysql_query($sql);
-			echo "done\n";
+			$this->out("done\n");
 		}
 
 		public function dropTables() {
-			echo "dropping tables...";
+			$this->out("dropping tables...");
 			$sql = "DROP TABLE IF EXISTS `search_index`;";
 			mysql_query($sql);
 
@@ -97,11 +111,11 @@
 
 			$sql = "DROP TABLE IF EXISTS `search_word`;";
 			mysql_query($sql);
-			echo "done\n";
+			$this->out("done\n");
 		}
 
 		public function generateIndex() {
-			echo "getting information about already indexed items...";
+			$this->out("getting information about already indexed items...");
 			$search_time = array();
 			$query = '
 				SELECT
@@ -115,7 +129,7 @@
 			while($row = mysql_fetch_assoc($res)) {
 				$search_time[$row['st_item_id']][$row['st_version_id']] = $row['st_date'];
 			}
-			echo "done\n";
+			$this->out("done\n");
 
 			foreach($this->_index_items as $detail) {
 				if($detail['callback'] !== null) {
@@ -123,8 +137,8 @@
 				} else {
 					$type = $detail['type'];
 					$query = $detail['query'];
-
-					echo "collection " . $type . " data..";
+					
+					$this->out("collection " . $type . " data..");
 					$res = mysql_query($query);
 					while($row = mysql_fetch_assoc($res)) {
 						if(	!isset($search_time[$row['item_id']][$row['version_id']])
@@ -133,7 +147,7 @@
 							$this->_indexing[] = array('db' => $row, 'type' => $type);
 						}
 					}
-					echo "done\n";
+					$this->out("done\n");
 				}
 
 				$this->buildIndex();
@@ -180,12 +194,12 @@
 
 		private function buildIndex() {
 			$indexing_size = sizeof($this->_indexing);
-			echo "found " . $indexing_size . " items\n";
-			echo "\n";
+			$this->out("found " . $indexing_size . " items\n");
+			$this->out("\n");
 
 			if( $indexing_size > 0 )
 			{
-				echo "getting word list...";
+				$this->out("getting word list...");
 				$word_result = array();
 				$running_new_id = 1;
 				$query = '
@@ -211,21 +225,21 @@
 					$lastEntry = current($word_result);
 					$running_new_id = ((int) $lastEntry['sw_id']) + 1;
 				}
+				
+				$this->out("done\n");
 
-				echo "done\n";
-
-				echo "indexing...\n";
+				$this->out("indexing...\n");
 				$words = array();
 				$index_structure = array();
 				$word_update = array();
 				$word_new = array();
-
-				echo "building needed information...\n";
+				
+				$this->out("building needed information...\n");
 				$count = 1;
 				$word_result_size = sizeof($word_result);
 
 				foreach($this->_indexing as $result_row) {
-					echo "processing item " . $count . "/" . $indexing_size . " ";
+					$this->out("processing item " . $count . "/" . $indexing_size . " ");
 
 					$item_id = $result_row['db']['item_id'];
 					$index_id = $result_row['db']['index_id'];
@@ -236,7 +250,7 @@
 					$item_type_tmp = $result_row['type'];
 
 					if(empty($item_type_tmp)) {
-						echo "type is empty\n";
+						$this->out("type is empty\n");
 						continue;
 					}
 
@@ -315,14 +329,14 @@
 
 					$index_structure[$item_id][$version_id]['modification_date'] = $modification_date;
 					$index_structure[$item_id][$version_id]['index_id'] = $index_id;
-
-					echo $word_result_size . " words found\n";
+					
+					$this->out($word_result_size . " words found\n");
 
 					$count++;
 				}
 
 				// insert new words
-				echo "writing words in database";
+				$this->out("writing words in database");
 				$size = sizeof($word_new);
 				$progress = 1;
 
@@ -346,8 +360,8 @@
 					$query .= '("' . mysql_real_escape_string($word_result[$word]['sw_word']) . '")';
 
 					if(!mysql_query($query)) {
-						echo $query . "\n";
-						echo mysql_error(); exit;
+						$this->out($query . "\n");
+						$this->out(mysql_error()); exit;
 					}
 
 
@@ -356,10 +370,10 @@
 					$progress++;
 
 				}
-				echo "done\n";
+				$this->out("done\n");
 				
 				// write index entries
-				echo "writing index entries";
+				$this->out("writing index entries");
 				$progress = 1;
 				foreach($index_structure as $item_id => $version)
 				{
@@ -377,8 +391,8 @@
 								search_index.si_item_id = ' . mysql_real_escape_string($item_id) . '
 						';
 						if(!mysql_query($query)) {
-							echo $query . "\n";
-							echo mysql_error(); exit;
+							$this->out($query . "\n");
+							$this->out(mysql_error()); exit;
 						}
 						
 						$size = sizeof($detail['sw_ids']);
@@ -402,8 +416,8 @@
 							}
 
 							if(!mysql_query($query)) {
-								echo $query . "\n";
-								echo mysql_error(); exit;
+								$this->out($query . "\n");
+								$this->out(mysql_error()); exit;
 							}
 
 							$this->displayProgress($progress, $indexing_size);
@@ -411,10 +425,10 @@
 						}
 					}
 				}
-				echo "done\n";
+				$this->out("done\n");
 
 				// update search_index
-				echo "updating index entries";
+				$this->out("updating index entries");
 				$progress = 1;
 				$word_update_size = sizeof($word_update);
 				foreach($word_update as $id => $detail) {
@@ -429,17 +443,18 @@
 						si_item_id = ' . mysql_real_escape_string($item_id) . '
 						';
 						if(!mysql_query($query)) {
-							echo mysql_error(); exit;
+							$this->out($query . "\n");
+							$this->out(mysql_error()); exit;
 						}
 					}
 
 					$this->displayProgress($progress, $word_update_size);
 					$progress++;
 				}
-				echo "done\n";
+				$this->out("done\n");
 
 				// write search time
-				echo "writing search times";
+				$this->out("writing search times");
 				$progress = 1;
 				foreach($index_structure as $item_id => $version) {
 					foreach($version as $version_id => $detail) {
@@ -460,17 +475,18 @@
 						';
 
 						if(!mysql_query($query)) {
-							echo mysql_error(); exit;
+							$this->out($query . "\n");
+							$this->out(mysql_error()); exit;
 						}
 
 						$this->displayProgress($progress, $indexing_size);
 						$progress++;
 					}
 				}
-				echo "done\n";
+				$this->out("done\n");
 			}
-
-			echo "\n\n";
+			
+			$this->out("\n\n");
 		}
 
 		private function displayProgress($count, $total) {
@@ -482,7 +498,7 @@
 
 			if($items_per_step == 0) $items_per_step = 1;
 			if($count % $items_per_step === 0) {
-				echo '.';
+				$this->out('.');
 			}
 		}
 	}
@@ -498,6 +514,10 @@
 		if(in_array('-d', $argv)) {
 			$indexer->dropTables();
 			$indexer->createDatabaseTables();
+		}
+		
+		if (in_array('-q', $argv)) {
+			$indexer->setQuiet(true);
 		}
 	}
 	
@@ -756,7 +776,7 @@
 	$indexer->add(CS_GROUP_TYPE, '', 'updateGroupIndex');
 	
 	function updateGroupIndex($indexing, $search_time) {
-		echo "collecting " . CS_GROUP_TYPE . " data..";
+		$this->out("collecting " . CS_GROUP_TYPE . " data..");
 	
 		// process the group itself
 		$query = '
@@ -849,8 +869,8 @@
 	
 		unset($group_data);
 		unset($user_data);
-	
-		echo "done\n";
+		
+		$this->out("done\n");
 	}
 	
 	////////////////////////////
