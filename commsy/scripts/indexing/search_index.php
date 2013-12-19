@@ -40,7 +40,7 @@
 			$this->quiet = $quiet;
 		}
 		
-		private function out($string)
+		public function out($string)
 		{
 			if ($this->quiet == false) {
 				echo $string;
@@ -504,6 +504,13 @@
 	}
 
 	$indexer = new Indexer();
+	
+	if(isset($argv)) {
+		if (in_array('-q', $argv)) {
+			$indexer->setQuiet(true);
+		}
+	}
+	
 	$indexer->createDatabaseTables();
 
 	if(isset($argv)) {
@@ -514,10 +521,6 @@
 		if(in_array('-d', $argv)) {
 			$indexer->dropTables();
 			$indexer->createDatabaseTables();
-		}
-		
-		if (in_array('-q', $argv)) {
-			$indexer->setQuiet(true);
 		}
 	}
 	
