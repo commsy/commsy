@@ -133,7 +133,7 @@
 
 			foreach($this->_index_items as $detail) {
 				if($detail['callback'] !== null) {
-					call_user_func_array($detail['callback'], array(&$this->_indexing, &$search_time));
+					call_user_func_array($detail['callback'], array($this, &$this->_indexing, &$search_time));
 				} else {
 					$type = $detail['type'];
 					$query = $detail['query'];
@@ -775,8 +775,8 @@
 	////////////////////////////
 	$indexer->add(CS_GROUP_TYPE, '', 'updateGroupIndex');
 	
-	function updateGroupIndex($indexing, $search_time) {
-		$this->out("collecting " . CS_GROUP_TYPE . " data..");
+	function updateGroupIndex($indexer, $indexing, $search_time) {
+		$indexer->out("collecting " . CS_GROUP_TYPE . " data..");
 	
 		// process the group itself
 		$query = '
@@ -870,7 +870,7 @@
 		unset($group_data);
 		unset($user_data);
 		
-		$this->out("done\n");
+		$indexer->out("done\n");
 	}
 	
 	////////////////////////////
