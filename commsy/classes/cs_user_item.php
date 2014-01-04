@@ -2570,7 +2570,88 @@ class cs_user_item extends cs_item {
    	$this->_unsetExtra('LOCK_SEND_MAIL_DATE');
    }
   
+   ## commsy user connections: portal2portal
+   public function getOwnConnectionKey () {
+   	$retour = '';
+   	$value = $this->_getExtra('CONNECTION_OWNKEY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	} else {
+   		$this->_generateOwnConnectionKey();
+   		$retour = $this->_getExtra('CONNECTION_OWNKEY');
+   	}
+   	return $retour;
+   }
    
+   private function _setOwnConnectionKey ($value) {
+   	$this->_setExtra('CONNECTION_OWNKEY', $value);
+   }
+    
+   private function _generateOwnConnectionKey () {
+   	$key = '';
+   	$key .= $this->getItemID();
+   	$key .= rand(0,9);
+   	$key .= $this->getFullName();
+   	$key .= rand(0,9);
+   	$key .= $this->getEmail();
+   	$key .= rand(0,9);
+   	include_once('functions/date_functions.php');
+   	$key .= getCurrentDateTimeInMySQL();
+   	$this->_setOwnConnectionKey(md5($key));
+   	$this->save();
+   }
+   
+   public function getPortalConnectionArray() {
+   	$retour = array();
+   	$value = $this->_getExtra('CONNECTION_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	
+   	// test - delete [TBD]
+   	else {
+   		$retour = $this->_generatePortalConnectionArray();
+   	}
+   	// test
+   	
+   	return $retour;
+   }
+   
+   public function getPortalConnectionInfo ( $id ) {
+   	$retour = array();
+   	$connection_array = $this->getPortalConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['id'] == $id ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
+   	}
+   	
+   	return $retour;
+   }
+   
+   // test - delete [TBD]
+   private function _generatePortalConnectionArray () {
+   	$retour = array();
+
+   	$temp_array = array();
+   	$temp_array['id'] = 'juhu';
+   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
+   	$temp_array['portal_connection_id'] = 541;
+   	$temp_array['title'] = 'Wo anders';
+   	$retour[] = $temp_array;
+   	
+   	$temp_array = array();
+   	$temp_array['id'] = 'dodeldue';
+   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
+   	$temp_array['portal_connection_id'] = 160;
+   	$temp_array['title'] = 'Hier';
+   	$retour[] = $temp_array;
+   	
+   	return $retour;
+   }
    
 }
 ?>

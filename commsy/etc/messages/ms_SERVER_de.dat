@@ -23,6 +23,8 @@ $message["SERVER_CONFIGURATION_OOS_DEFAULT_TEXT"]["de"] = "Wartungsarbeiten
 Der CommSy-Server steht wegen Wartungsarbeiten zurzeit nicht zur Verfügung.
 
 Wir bitten die Unannehmlichkeiten zu entschuldigen.";
+$message["SERVER_CONNECTION_ERROR_SOAP_COMPATIBLE"]["de"] = "Der CommSy-Server mit der URL %1 ist nicht mit Ihrem CommSy Server kompatibel.";
+$message["SERVER_CONNECTION_ERROR_SOAP_CONNECT"]["de"] = "Der CommSy-Server mit der URL %1 ist nicht erreichbar.";
 $message["SERVER_DEFAULT_SENDER_ADDRESS"]["de"] = "E-Mail-Adresse <br/>(default)";
 $message["SERVER_DEFAULT_SENDER_ADDRESS_DESC"]["de"] = "Unter dieser Adresse werden System-Mails verschickt.";
 $message["SERVER_IMS_LINK"]["de"] = "IMS-Account Einstellungen";

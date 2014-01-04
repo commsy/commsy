@@ -4360,5 +4360,26 @@ class cs_connection_soap {
    public static function __callStatic($name, $arguments) {
    	$this->__call($name, $arguments);
    }
+   
+   // portal2portal
+   public function getSessionIdFromConnectionKey ($session_id, $portal_id, $user_key, $server_key) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->getSessionIdFromConnectionKeySOAP($session_id, $portal_id, $user_key, $server_key);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+
+   public function getRoomListAsJson ($session_id) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->getRoomListAsJsonSOAP($session_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
 }
 ?>

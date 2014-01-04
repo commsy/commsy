@@ -2184,6 +2184,19 @@ class cs_server_item extends cs_guide_item {
    	   $temp_array['url'] = $url;
    	   $temp_array['key'] = $key;
    		$temp_array['proxy'] = $proxy;
+   		
+   		$key = '';
+   		$key .= $title;
+   		$key .= rand(0,9);
+   		$key .= $url;
+   		$key .= rand(0,9);
+   		$key .= $key;
+   		$key .= rand(0,9);
+   		include_once('functions/date_functions.php');
+   		$key .= getCurrentDateTimeInMySQL();
+   		$key = md5($key);   		 
+   		$temp_array['id'] = $key;
+   		
    		$connection_array[(count($connection_array)+1)] = $temp_array;
    		$this->setServerConnectionArray($connection_array);
    	}
@@ -2202,6 +2215,21 @@ class cs_server_item extends cs_guide_item {
    	   $temp_array['url'] = $url;
    	   $temp_array['key'] = $key;
    		$temp_array['proxy'] = $proxy;
+   		if ( !empty($connection_array[$id]['id']) ) {
+   		   $temp_array['id'] = $connection_array[$id]['id'];
+   		} else {
+   			$key = '';
+   			$key .= $title;
+   			$key .= rand(0,9);
+   			$key .= $url;
+   			$key .= rand(0,9);
+   			$key .= $key;
+   			$key .= rand(0,9);
+   			include_once('functions/date_functions.php');
+   			$key .= getCurrentDateTimeInMySQL();
+   			$key = md5($key);
+   			$temp_array['id'] = $key;
+   		}
    		$connection_array[$id] = $temp_array;
    		$this->setServerConnectionArray($connection_array);
    	}
@@ -2212,6 +2240,34 @@ class cs_server_item extends cs_guide_item {
    	$value = $this->_getExtraConfig('CONNECTION_ARRAY');
    	if ( !empty($value) ) {
    		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   public function getServerConnectionInfo ( $id ) {
+   	$retour = array();
+   	$connection_array = $this->getServerConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['id'] == $id ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function getServerConnectionInfoByKey ( $key ) {
+   	$retour = array();
+   	$connection_array = $this->getServerConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['key'] == $key ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
    	}
    	return $retour;
    }

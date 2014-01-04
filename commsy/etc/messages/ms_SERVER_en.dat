@@ -21,6 +21,8 @@ $message["SERVER_CONFIGURATION_NEWS_TEXT"]["en"] = "Text";
 $message["SERVER_CONFIGURATION_OOS_DEFAULT_TEXT"]["en"] = "Out of Service
 
 The CommSy server is temporary not available.";
+$message["SERVER_CONNECTION_ERROR_SOAP_COMPATIBLE"]["en"] = "The CommSy server %1 is not campatible with your CommSy server.";
+$message["SERVER_CONNECTION_ERROR_SOAP_CONNECT"]["en"] = "The CommSy server %1 is not accessible.";
 $message["SERVER_DEFAULT_SENDER_ADDRESS"]["en"] = "E-mail address <br/>(default)";
 $message["SERVER_DEFAULT_SENDER_ADDRESS_DESC"]["en"] = "CommSy uses this as a sender address for system e-mails.";
 $message["SERVER_IMS_LINK"]["en"] = "IMS-Account configuration";

@@ -6,13 +6,21 @@
 		private $_translator = null;
 		private $_popup_controller = null;
 		private $_toggle_archive_mode = false;
-	
+		private $_tab_id = '';
+		private $_tab_id_first = '';
+		
 		/**
 		* constructor
 		*/
-		public function __construct(cs_environment $environment, cs_ajax_popup_controller $popup_controller) {
+		public function __construct(cs_environment $environment, cs_ajax_popup_controller $popup_controller=null) {
 			$this->_environment = $environment;
 			$this->_popup_controller = $popup_controller;
+		}
+		
+		public function setTabID ( $value ) {
+			if ( !empty($value) )  {
+			   $this->_tab_id = $value;
+			}
 		}
 	
 		public function save($form_data, $additional = array()) {
@@ -67,20 +75,43 @@
 	
 		public function initPopup($data) {
 			$this->_popup_controller->assign('popup', 'tabs', $this->getTabInformation());
-			$this->_popup_controller->assign('popup', 'rooms', $this->getRoomListArray());
+			
+			if ( !empty($this->_tab_id) ) {
+				$this->_popup_controller->assign('popup', 'with_tabs', -1);
+			   $this->_popup_controller->assign('popup', 'rooms', $this->_getExternalRoomListArray($this->_tab_id));
+			} elseif ( !empty($this->_tab_id_first) ) {
+				$this->_popup_controller->assign('popup', 'with_tabs', 1);
+			   $this->_popup_controller->assign('popup', 'rooms', $this->_getExternalRoomListArray($this->_tab_id_first));
+			} else {
+				// only edit tab
+				$this->_popup_controller->assign('popup', 'with_tabs', 1);
+			}
 		}
 	
 		private function getTabInformation() {
 			$return = array();
 	
-			$portal_item = $this->_environment->getCurrentPortalItem();
-	
-			// portal
-			$return[] = array(
-					'id'	=> $portal_item->getItemID(),
-					'title'	=> $portal_item->getTitle()
-			);
-		
+			// get tab infos from portal user
+			$current_user = $this->_environment->getCurrentUserItem();
+			if ( !$this->_environment->inPortal() ) {
+				$portal_user = $current_user->getRelatedCommSyUserItem();
+			} else {
+				$portal_user = $current_user;
+			}
+			$portal_connection_array = $portal_user->getPortalConnectionArray();
+			if ( !empty($portal_connection_array) ) {
+				$first = true;
+				foreach ( $portal_connection_array as $portal_connection_info ) {
+					if ( $first ) {
+						$first = false;
+						$this->_tab_id_first = $portal_connection_info['id'];
+					}
+					$return[] = array(
+							'id'	=> $portal_connection_info['id'],
+							'title'	=> $portal_connection_info['title']
+					);
+				}
+			}
 			return $return;
 		}
 	
@@ -448,7 +479,18 @@
 	     }
 	   }
 	
-	
+      private function _getExternalRoomListArray ( $id ) {
+      	$retour = array();
+      	$connection_obj = $this->_environment->getCommSyConnectionObject();
+      	if ( !empty($connection_obj) ) {
+      	   $context_array = $connection_obj->getAllOpenContextsForCurrentUser($id);
+      	   if ( !empty($context_array) ) {
+      	   	$retour = $context_array;
+      	   }
+      	}
+      	return $retour;
+      }
+	   
 		function getRoomListArray() {
 			$return = array();
 			

@@ -3,10 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
-// Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
-// Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Copyright (c)2013 Dr. Iver Jackewitz
 //
 //    This file is part of CommSy.
 //

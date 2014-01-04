@@ -23,6 +23,7 @@ define([	"dojo/_base/declare",
 			this.editType			= null;
 			this.version_id			= null;
 			this.contextId			= null;
+			this.currentNode		= null;
 		},
 		
 		onCreate: function() {
@@ -50,8 +51,24 @@ define([	"dojo/_base/declare",
 				dojo.forEach(content_nodes, lang.hitch(this, function(node, index, arr) {
 					var tabName = dom_attr.get(event.target, "href");
 					if(tabName === dom_attr.get(node, "id")) {
+						
+						// CONNECTION TO OTHER PORTALS
+						if ( this.module === 'connection' ) {
+							
+							var newcontent = this.loadContent(tabName,dom_attr.get(node, "class"));
+							if (newcontent) {
+								// set newcontent
+								dom_attr.set(node, "innerHTML", newcontent);
+								// only once
+								dom_class.remove(node, "notloaded");
+								// register click for new rooms
+								this.setupSpecific();
+							}							
+						}
+						
+						// show node (= tab)
 						dom_class.remove(node, "hidden");
-
+						
 						var hiddenNode = query("input[name='form_data[" + tabName + "]']", this.contentNode)[0];
 						if (!hiddenNode) {
 							// add a hidden input to mark this tab content as opened
