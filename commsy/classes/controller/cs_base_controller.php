@@ -606,6 +606,9 @@
 				$to_javascript["limesurvey"]["adminPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . "/index.php/admin/";
 				$to_javascript["limesurvey"]["roomName"] = $current_context = $current_context->getTitle();
 			}
+			
+			// portal2portal
+			$to_javascript["i18n"]["CS_BAR_CONNECTION_PLEASE_WAIT_JS"] = $translator->getMessage('CS_BAR_CONNECTION_PLEASE_WAIT_JS');
 
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {

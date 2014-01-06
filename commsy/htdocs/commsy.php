@@ -565,9 +565,19 @@ if ( !empty($SID) ) {
          unset($portal);
       }
 /*Ende TYPO3-Anbindung*/
-
-
    }
+   
+   // commsy: portal2portal
+   if ( isset($session)
+   	  and $session->issetValue('cookie')
+        and $session->getValue('cookie') == 3 // 3 = session made via soap with connection key
+   	) {
+   	$session_manager = $environment->getSessionManager();
+      // save cookie with save session
+   	$session_manager->save($session);
+   	unset($session_manager);
+   }
+   // END: commsy: portal2portal
 
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
       if (!$session->issetValue('cookie')) {    // second time a user get a commsy page

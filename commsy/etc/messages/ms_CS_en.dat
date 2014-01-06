@@ -10,6 +10,7 @@ $message["CS_BAR_COMMON_SHOW"]["en"] = "Show";
 $message["CS_BAR_CONNECTION"]["en"] = "Connections";
 $message["CS_BAR_CONNECTION_DESC"]["en"] = "In this area of your CommSy bar you can configure and use connections to other commsy portals.";
 $message["CS_BAR_CONNECTION_PLEASE_WAIT"]["en"] = "Please wait ...";
+$message["CS_BAR_CONNECTION_PLEASE_WAIT_JS"]["en"] = "It may takes a while to receive the workspace informations. Please be patient.";
 $message["CS_BAR_CONNECTION_VIEW"]["en"] = "Show connections";
 $message["CS_BAR_PORTFOLIO"]["en"] = "My portfolios";
 $message["CS_BAR_PORTFOLIO_CELL_HEADER"]["en"] = "Cell details";

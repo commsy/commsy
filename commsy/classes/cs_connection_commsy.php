@@ -261,16 +261,26 @@ class cs_connection_commsy {
             $session->setValue('user_id',$user_id);
             $session->setValue('commsy_id',$portal_id);
             $session->setValue('auth_source',$auth_source_id);
-            $session->setValue('cookie','0');
-            $session->setSoapSession(); // can not login ?? [TBD] // weg, dann im Session-Manager auch weg
             $session->setValue('CONNECTION_KEY',$user_key);
-
+            $session->setValue('cookie','3'); // special handling for commsy connections
+            $session->setValue('javascript','1');
+            
             // save session
             $session_manager = $this->_environment->getSessionManager();
             $session_manager->save($session);
 
             $retour = $session->getSessionID();
          } else {
+         	// cookie management
+         	$session_manager = $this->_environment->getSessionManager();
+         	$session_item = $session_manager->get($result);
+         	if ( $session_item->issetValue('cookie')
+         		  and $session_item->getValue('cookie') != 3
+         		) {
+         		// save cookie again when user jump to other portal
+         		$session_item->setValue('cookie',3);
+         		$session_manager->save($session_item);
+         	}
          	$retour = $result;
          }
       }
@@ -357,7 +367,7 @@ class cs_connection_commsy {
          			$url .= '/'.$file.'?cid=';
          			
          			$url .= $room['item_id'];
-         			$url .= '&sid='.$session_id;
+         			$url .= '&SID='.$session_id;
          			
          			$result[$key][$key2]['rooms'][$key3]['url'] = $url;
          		}

@@ -2634,21 +2634,33 @@ class cs_user_item extends cs_item {
    
    // test - delete [TBD]
    private function _generatePortalConnectionArray () {
-   	$retour = array();
-
-   	$temp_array = array();
-   	$temp_array['id'] = 'juhu';
-   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
-   	$temp_array['portal_connection_id'] = 541;
-   	$temp_array['title'] = 'Wo anders';
-   	$retour[] = $temp_array;
+   	$pid = $this->_environment->getCurrentPortalID();
    	
-   	$temp_array = array();
-   	$temp_array['id'] = 'dodeldue';
-   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
-   	$temp_array['portal_connection_id'] = 160;
-   	$temp_array['title'] = 'Hier';
-   	$retour[] = $temp_array;
+   	$retour = array();
+   	if ( $pid != 541 ) {
+   	   $temp_array = array();
+   	   $temp_array['id'] = 'juhu';
+   	   $temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
+   	   $temp_array['portal_connection_id'] = 541;
+   	   $temp_array['title'] = 'Wo anders';
+   	   $retour[] = $temp_array;
+   	}
+   	if ( $pid != 160 ) {
+	   	$temp_array = array();
+	   	$temp_array['id'] = 'dodeldue';
+	   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
+	   	$temp_array['portal_connection_id'] = 160;
+	   	$temp_array['title'] = 'Hier';
+	   	$retour[] = $temp_array;
+   	}
+      if ( $pid != 552 ) {
+	   	$temp_array = array();
+	   	$temp_array['id'] = 'dodeldue';
+	   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
+	   	$temp_array['portal_connection_id'] = 552;
+	   	$temp_array['title'] = 'Nummer DREI';
+	   	$retour[] = $temp_array;
+   	}
    	
    	return $retour;
    }

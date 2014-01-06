@@ -44,7 +44,7 @@ define([	"dojo/_base/declare",
 					  );
 		        
 				// sonst ist retour leer [TBD]
-				alert('LOADING ...');
+				alert(this.from_php.i18n["CS_BAR_CONNECTION_PLEASE_WAIT_JS"]);
 				this.destroyLoading();
 			}
 			return retour;
