@@ -38,19 +38,29 @@ html {
   font-size: 12px;
 }
 
-a {
-   color: #A38105;
-   text-decoration:none;
-}
+
 
 .ads{
 width:150px;
 }
 
 #Content_Box_Rahmen_Detail{
-   border: 5px solid #004994;
-   margin-bottom:20px;
+	/*
+   border: 1px dotted #B9B9B9;    
+   margin-bottom: 25px;
    padding:20px;
+   */
+   padding: 5px;
+}
+
+a{
+  color: #4868C8;
+  text-decoration:none;
+}
+
+a:hover{
+  color: #4868C8;
+  text-decoration:underline;
 }
 
 
@@ -70,37 +80,36 @@ width:150px;
 }
 
 .room_list_head{
-    height:30px;
+    /*height:30px;*/
 }
 
-#room_list .portal_section_title{
-    color: #525252;
-   font-weight:bold;
+#room_list .portal_section_title,
+span.section_title {
+    color: #ADADAD;
+   font-weight: bold;
+   text-decoration: none;
+   text-transform: uppercase;
 }
 
 #room_list .portal_forward_links{
-    color: #525252;
-   font-weight:bold;
+    color: #ADADAD;
 }
 
 #room_list .portal_description{
-    color: #525252;
-   font-weight:bold;
+    color: #ADADAD;
 }
 
 #room_list .portal-head{
-   background-color: #004994;
+   background-color: #F0F0F0;
    padding: 5px;
+   font-weight: bold;
+   text-decoration: none;
+   text-transform: uppercase;
 }
 
-#room_list a.head{
-   color: #FFFFFF;
-   font-weight:bold;
-}
 
 #room_list .portal_link{
-   color: #FFFFFF;
-   font-weight:bold;
+   color: #686868;
 }
 
 #room_list .portal-even, #portal_config_overview td.even{
@@ -131,11 +140,11 @@ width:150px;
 
 
 #room_list .gauge-bar{
-   background-color: #004994;
+   background-color: #ADADAD;
 }
 
 #room_list .gauge{
-   border: 1px solid #DFE7F7;
+   border: 1px solid #ADADAD;
 }
 
 #portal_search, #portal_action, #left_box, #portal_news, #portal_news2, #portal_announcements{
@@ -208,7 +217,7 @@ width:150px;
 }
 
 #portal_config_overview a.index_system_link, #portal_config_overview div.index_forward_links{
-   color: #606060;
+   color: #ADADAD;
 }
 
 #portal_announcements .info-link-h1{
@@ -265,6 +274,7 @@ width:150px;
    width:100%;
    text-align:right;
    font-size:8pt;
+   margin-bottom: 20px;
 }
 
 .anouncement_background{
@@ -367,7 +377,7 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
    margin:0px 0px 0px 0px;
    background-color: #EEEEEE;
    font-size: 14px;
-   border-bottom:1px solid <?php echo($color['tabs_background'])?>;
+   border-bottom: 1px dotted #B9B9B9;    
 }
 
 #profile_tablist{
@@ -377,34 +387,28 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
 }
 
 .profile_tab{
-    border-right:1px solid <?php echo($color['tabs_background'])?>;
+	border-right: 1px dotted #B9B9B9;    
     padding:3px 10px;
     display:inline;
 }
 
 .profile_tab_current{
-    border-right:1px solid <?php echo($color['tabs_background'])?>;
+	border-right: 1px dotted #B9B9B9;    
     padding:3px 10px;
     display:inline;
-    font-weight:bold;
+    color: #ADADAD !important;
 }
 
-#profile_title, .profile_title{
-   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
-   background-color:#DFE7F7;
-   color:<?php echo($color['headline_text'])?>;
-   vertical-align:top;
-   margin:0px;
-   padding:5px 10px;
-   font-size: 14pt;
+.profile_tab_current a{
+    color: #ADADAD !important;
 }
+
 
 #profile_content{
    margin-bottom:20px;
    padding:0px
    background-color: #FFFFFF;
-   border: 2px solid #44629E;
-   font-family: Arial,Helvetica,sans-serif;
+	border-right: 1px dotted #B9B9B9;    
 
 }
 
@@ -439,28 +443,33 @@ div.right_box_title, div.right_box_main, .search_link, .netnavigation{
     font-weight:bold;
     text-decoration:none;
 }
-**--- styles from bgw --------------------**
 
-#content-box {
-	background:#FFFFFF none repeat scroll 0 0;
-	left:215px;
-	margin:0;
-	padding:0;
-	position:absolute;
-	top:50px;
-	width:940px;
-	text-align:left;
-}
-#content-box h1{
-    font-weight:bold;
-    font-size:0.8em;
-    margin-bottom:0px;
-    margin-top:10px;
+#Column_Box_Blank, #Column_Box_Blank_2, #Column_Box_Blank_3{
+    /*border-top: 1px dotted #666666; margin: 20px auto; padding-top: 10px; width: 170px; color: #666666;*/
+    width: 170px;
 }
 
-.orangebox {
-    background-color:#FFCC66;
-    margin:0 0 10px;
-    padding:10px 10px 12px 15px;
+#Column_Box_Blank span, #Column_Box_Blank_3 span{
+   line-height:20px;
 }
-**--- End styles from bgw --------------------**
+
+.T5{
+  text-decoration: none;
+}
+
+#profile_content {
+	border: 1px dotted #B9B9B9;    
+    font-family: verdana, sans-serif;
+	margin-bottom: 25px;
+}
+
+#profile_title, .profile_title {
+   color: #ADADAD;
+   padding:10px;
+   font-weight: bold !important;
+   text-decoration: none;
+   text-transform: uppercase;
+}
+
+
+

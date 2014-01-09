@@ -17,10 +17,10 @@
 /* Body*/
 
 body {
-    background-image: url("img/pagefond_verlauf.jpg"); /* Background-Image */
-    background-repeat: repeat-x;
-    background-attachment: fixed;
-    background-color: #FFF /*CS_BG_COLOR*/
+    /*background-image: url("img/pagefond_verlauf.jpg");*/ /* Background-Image */
+    /*background-repeat: repeat-x;*/
+    /*background-attachment: fixed;*/
+    background-color: #F6F6F6 /*CS_BG_COLOR*/
 }
 
 #search_area {
