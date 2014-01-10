@@ -3111,7 +3111,7 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-list? -->'.LF;
       $html .= '<div id="room_list" style="padding:0px;">'."\n";
       if ( isset($this->_room_list_view) ){
-         $html .='<table style="margin:0px; padding:0px; border-bottom:0px;" summary="Layout">'.LF;
+         $html .='<table style="margin:0px; padding:0px; border-bottom:0px; width: 100%;" summary="Layout">'.LF;
          $html .='<tr>'.LF;
          $html .='<td class="room_list_head" style="width:55%; vertical-align:bottom; white-space:nowrap;">'.LF;
          $html .='<div>'.LF;
