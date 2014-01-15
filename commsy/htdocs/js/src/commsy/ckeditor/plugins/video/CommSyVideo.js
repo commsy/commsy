@@ -28,9 +28,11 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					);
 					
 					// fill select with filenames
-					var i;
+					// fill select with filenames
+					var i,fileId;
 					for(i = 0; i < files.length; i++){
-						fileItems.push(new Array(files[i].innerHTML, files[i].innerHTML));
+						fileId = document.getElementsByName('form_data[file_' + i + ']');
+						fileItems.push(new Array(files[i].innerHTML, fileId[0].value));
 					}
 					
 					var SelectBoxItems = new Array(
@@ -70,7 +72,9 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											// set url info
 											var inputLabel = dialog.getContentElement('videoTab' , 'videoUrl');
 											if(this.getValue() == 'lecture2go'){
-												inputLabel.setLabel('URL (mp4:<beispiel>/<dateiname>.mp4)');
+												inputLabel.setLabel('URL (<iframe>...</iframe>)');
+											} else if (this.getValue() == 'podcampus') {
+												inputLabel.setLabel('URL (http://www.podcampus.de/nodes/XXYZ)');
 											} else {
 												inputLabel.setLabel('URL');
 											}
@@ -97,7 +101,10 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												var mod = getUrlParam('mod');
 												var iid = getUrlParam('iid');
 												
-												fileUrl = 'commsy.php/' + this.getValue() + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + iid;
+												var input = this.getInputElement().$;
+//												alert(input.options[input.selectedIndex].text);
+												
+												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
 												
 												encodeFileUrl = encodeURI(fileUrl);
 //												alert(encodeFileUrl);
@@ -239,8 +246,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 //								content = 'http://lecture2go.uni-hamburg.de/';
 								
-
-								content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrl +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="' + floatValue + '" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
+								// use regex if iframe tag is set
+								var regEx = '(mp4:).*mp4';
+								var match = videoUrl.match(regEx);
+								
+								var videoUrlRegEx = match[0];
+								
+								content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrlRegEx +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="' + floatValue + '" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
 //								alert(content);
 								
 //								content += '<object type="application/x-shockwave-flash" data="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" width="'+ width +'" height="'+ height +'" id="VideoPlayback">';

@@ -11,7 +11,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 		editor.ui.addButton( "CommSyDocument",
 		{
-			label:		"CommSy document",
+			label:		"CommSy Dokumente",
 			command:	"CommSyDocument",
 			icon:		"../../src/commsy/ckeditor/plugins/audio/images/icon.png"
 		} );
@@ -21,9 +21,23 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					var audio;
 					
 					var SelectBoxItems = new Array(
-					        new Array( 'Slideshare', 'slideshare' )
-//					        new Array( 'wmaPlayer', 'wmaplayer' )
+					        new Array( 'Slideshare', 'slideshare' ),
+					        new Array( 'Onyx', 'onyx' )
 					);
+					
+					// parse filenames from edit dialog
+					var files = document.getElementsByName('file_name');
+					
+					fileItems = new Array (
+							new Array( '<Auswahl>' , 'null')
+					);
+					
+					// fill select with filenames
+					var i,fileId;
+					for(i = 0; i < files.length; i++){
+						fileId = document.getElementsByName('form_data[file_' + i + ']');
+						fileItems.push(new Array(files[i].innerHTML, fileId[0].value));
+					}
 					
 					var floatItems = new Array (
 							new Array ('<nichts>','null'),
@@ -32,7 +46,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					);
 					
 					return {
-						title : 'CommSy document',
+						title : 'CommSy Dokumente',
 						minWidth : 500,
 						minHeight : 200,
 						contents :
@@ -47,11 +61,64 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										style: 'width=100%',
 										label: 'Document Type',
 										items: SelectBoxItems,
+										onChange : function ()
+										{
+											// show input if onyx is selected
+											var dialog = this.getDialog();
+											var textInput = dialog.getContentElement('documentTab', 'linkText');
+											var elementInputText = textInput.getElement();
+											if(this.getValue() == 'onyx'){
+												elementInputText.show();
+											} else {
+												elementInputText.hide();
+											}
+										}
 									},
-//									{
-//										type : 'html',
-//										html : 'test' + '<hr>'
-//									},
+									{
+										type : 'select',
+										id: 'fileselect',
+										label: 'Dateiauswahl',
+										items : fileItems,
+										onChange : function () 
+										{
+											// disable textInput if file is selected
+											var dialog = this.getDialog();
+											var inputUrl = dialog.getContentElement( 'documentTab', 'documentUrl' );
+											if(this.getValue() == 'null'){
+												inputUrl.enable();
+												inputUrl.setValue('');
+												inputUrl.focus();
+											} else {
+												inputUrl.disable();
+												// set file url in textInput
+												var cid = getUrlParam('cid');
+												var mod = getUrlParam('mod');
+												var iid = getUrlParam('iid');
+												
+												var input = this.getInputElement().$;
+												
+												if(dialog.getContentElement('documentTab', 'selectbox').getValue() == 'onyx') {
+													fileUrl = 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + this.getValue();
+												} else {
+													fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+												}
+												
+												encodeFileUrl = encodeURI(fileUrl);
+//												alert(encodeFileUrl);
+												inputUrl.setValue(encodeFileUrl);
+											}
+										}
+									},
+									{
+										id : 'linkText',
+										type : 'text',
+										label : 'Text',
+										onLoad : function () 
+										{
+											var textinput = this.getElement();
+											textinput.hide();
+										}
+									},
 									{
 										type : 'hbox',
 										widths : [ '70%', '15%', '15%' ],
@@ -176,6 +243,35 @@ CKEDITOR.plugins.add( "CommSyDocument",
 //								content += '</object>';
 								
 //								alert(content);
+							} else if(this.getValueOf('documentTab', 'selectbox') == 'onyx') {
+								
+								var cid = getUrlParam('cid');
+								
+								var dialog = this;
+								var linkText = this.getValueOf('documentTab','linkText');
+								var link = this.getValueOf('documentTab', 'documentUrl');
+								
+					            var a = editor.document.createElement( 'a' );
+					            a.setAttribute( 'href', link);
+					            
+//					            a.setAttribute( 'href', 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + file_id + '');
+					            a.setAttribute('target', 'help');
+					            
+					            a.setText( linkText );
+
+
+					            editor.insertElement( a );
+								
+//								
+//								var id = 75;
+//								
+//								target = 'target="help"';
+//			                    onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, dependent=yes, copyhistory=yes, width=900, height=600\');"';
+//								
+////								$content = '<a href="' + $c_single_entry_point + '?cid=' + $this->_environment->getCurrentContextID() + '&amp;mod=' + $this->_identifier + '&amp;fct=showqti&amp;iid=' + $id + '" ' + $target + ' ' + $onclick + '>' + $name + '</a>';
+//								$content = '<a href="commsy.php?cid=' + cid + '&amp;mod=onyx&amp;fct=showqti&amp;iid=' + id + '" ' + target + ' ' + onclick + '>';
+//								$content = 'Test';
+//								$content = '</a>';
 							}
 							
 
@@ -187,3 +283,17 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 	}
 } );
+
+function getUrlParam( param )
+{
+	param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
+
+	var regexS = "[\\?&]"+param+"=([^&#]*)";
+	var regex = new RegExp( regexS );
+	var results = regex.exec( window.location.href );
+
+	if ( results == null )
+		return "";
+	else
+		return results[1];
+}

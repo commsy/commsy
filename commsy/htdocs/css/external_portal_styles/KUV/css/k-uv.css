@@ -52,51 +52,6 @@ general id and class selectors
     clear: both;
     }
 
-
-
-/*
-----------------------------------------------------------------------
-kuv-header
-----------------------------------------------------------------------
-*/
-
-#kuvhead {
-    background: #FFF;
-    }
-    
-#kuvhead_logo {
-    padding: 25px 0px;
-    }
- 
-#kuvhead_nav {
-    background: #004994;
-    margin-bottom: 15px;
-    border-bottom: 5px solid #FFF;
-    }
-
-#kuvhead_nav .wrapper {
-    border-left: 1px solid #336DAA;
-    }
-   
-#kuvhead_nav a {
-    display: block;
-    float: left;
-    color: #FFF;
-    text-decoration: none;
-    border-right: 1px solid #336DAA;
-    padding: 5px 15px;
-    }   
-
-#kuvhead_nav a:hover {
-    background: #4F81B5;
-    } 
-
-#kn_active {
-    background: #2362A3;
-    color: #FFF !important;
-    }   
-    
-
 /*
 ----------------------------------------------------------------------
 header
@@ -104,7 +59,7 @@ header
 */
 
 #header {
-    padding: 0px 0px 10px 0px;
+    padding: 20px 0px;
     }
 
 #header_login {
@@ -131,8 +86,9 @@ header
     }
 
 #search {
-    float: left;
-    display: block;
+    text-align: right;
+    border-top: 1px solid #CCC;
+    padding-top: 15px;
     }
 
 #searchinput {
@@ -467,7 +423,107 @@ columnset
     text-decoration: underline;
     }   
 
+#content_full {
+	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
 
+/*
+----------------------------------------------------------------------
+CommSy Bar
+----------------------------------------------------------------------
+*/
+
+#top_menu {
+	background-color: #004994;
+	background-image: none;
+}
+
+#tm_clipboard {
+    background: url(../img/tm_clipboard.gif) no-repeat;
+    }
+
+#tm_clipboard:hover,
+.tm_clipboard_hover {
+    background: url(../img/tm_clipboard.gif) -36px 0px no-repeat !important;
+    }
+
+#tm_settings {
+    background: url(../img/tm_settings.gif) no-repeat;
+    }
+
+#tm_settings_count_new_accounts {
+    font-size: 8pt;
+    left: 3px;
+    position: relative;
+    top: 22px;
+    color: #CCC;
+}
+
+#tm_settings:hover,
+a.tm_settings_hover {
+    background: url(../img/tm_settings.gif) -36px 0px no-repeat !important;
+    }
+
+#tm_portfolio {
+    background: url(../img/tm_eportfolio.gif) no-repeat;
+}
+
+#tm_portfolio:hover,
+.tm_portfolio_hover {
+    background: url(../img/tm_eportfolio.gif) -36px 0px no-repeat !important;
+}
+
+#tm_mycalendar {
+    background: url(../img/tm_mycalendar.gif) no-repeat;
+}
+
+#tm_mycalendar:hover,
+.tm_mycalendar_hover {
+    background: url(../img/tm_mycalendar.gif) -36px 0px no-repeat !important;
+}
+
+#tm_widgets {
+    background: url(../img/tm_widgets.gif) no-repeat;
+}
+
+#tm_widgets:hover,
+.tm_widgets_hover {
+    background: url(../img/tm_widgets.gif) -36px 0px no-repeat !important;
+}
+
+#tm_stack {
+    background: url(../img/tm_stack.gif) no-repeat;
+}
+
+#tm_stack:hover,
+.tm_stack_hover {
+    background: url(../img/tm_stack.gif) -36px 0px no-repeat !important;
+}
+    
+#tm_breadcrumb {
+    background: url(../img/tm_separator.jpg) top right no-repeat;
+}
+
+#tm_wrapper {
+    background: url(../img/tm_separator.jpg) no-repeat;
+}
+
+#tm_pers_bar {
+    background-image: none;
+    padding: 11px 1px 0px 0px;
+}
+
+#popup_wrapper,
+#popup_top_wrapper {
+	position: relative;
+}
+
+.toggleWidget {
+	top: 156px;
+}
 
 /*
 ----------------------------------------------------------------------
@@ -478,7 +534,6 @@ login
 #login_ground {
     width: 330px;
     margin: 0px auto;
-    padding-top: 40px;
     }
 
 #login_ground fieldset {
@@ -513,7 +568,7 @@ login
 #login_ground input {
 	border: 1px solid #AFB1B9 !important;
     background: #FFF !important;
-    padding: 8px 10px !important;
+    /*padding: 8px 10px !important;*/
     width: 270px !important;
 }
 
@@ -525,11 +580,22 @@ login
 #login_ground input[type="submit"] {
     background: url(../img/send_normal_bg_combined.jpg) no-repeat !important;
 	border: none !important;
-	padding: 7px 0px 7px 0px !important;
     color: #FFF !important;
     font-size: 12px !important;
     width: 100px !important;
     height: 29px !important;
+    font-family: verdana, sans-serif;
+}
+
+#button_long {
+	background: url(../img/send_normal_bg_combined_long.jpg) no-repeat !important;
+	border: none !important;
+	/*padding: 7px 0px 7px 0px !important;*/
+    color: #FFF !important;
+    font-size: 12px !important;
+    width: 154px !important;
+    height: 29px !important;
+    font-family: verdana, sans-serif;
 }
 
 .input_box {
@@ -575,7 +641,7 @@ label {
 #login_button {
 	background: url(../img/send_normal_bg_combined.jpg) no-repeat;
 	border: none;
-	padding: 7px 0px 7px 0px;
+	/*padding: 7px 0px 7px 0px;*/
     color: #FFF;
     font-size: 12px;
     width: 100px;
@@ -588,11 +654,15 @@ label {
     }
 
 a.send_normal {
-    background: url(../img/send_normal_bg.jpg) no-repeat;
-    padding: 7px 0px 7px 10px;
+	display: inline-block;
+	padding: 8px 10px;
+	margin-bottom: 0px;
+	text-align: center;
+	vertical-align: middle;
+    background: url(../img/send_normal_bg.jpg) left no-repeat;
     color: #FFF;
     text-decoration: none !important;
-    }
+    }	
 
 a.send_normal:hover {
     color: #B2C8DF;
@@ -604,8 +674,8 @@ a.send_normal:active {
     }
 
 a.send_normal span {
-    background: url(../img/send_normal_bg_right.jpg) right top no-repeat;
-    padding: 7px 10px 7px 0px;
+    background: url(../img/send_normal_bg_right.jpg) right no-repeat;
+	padding: 8px 10px;
     }
     
 
@@ -703,3 +773,29 @@ calendar
     transform: rotate(-45deg);
     }
 
+/*
+----------------------------------------------------------------------
+footer
+----------------------------------------------------------------------
+*/
+
+#footer_login {
+    margin: 10px 0px 30px 0px;
+    text-align: center;
+    }
+
+#footer {
+    margin: 10px 0px 30px 0px;
+    text-align: right;
+    border: none;
+    }
+
+#footer a, #footer_login a {
+    color: #004994;
+    text-decoration: none;
+    }
+
+#footer a:hover, #footer_login a:hover {
+    border-bottom: 1px dotted #6A6A6A;
+    color: #6A6A6A;
+    }

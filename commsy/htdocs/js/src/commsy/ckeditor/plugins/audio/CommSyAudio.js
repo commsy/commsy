@@ -77,8 +77,10 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												var mod = getUrlParam('mod');
 												var iid = getUrlParam('iid');
 												
+												var input = this.getInputElement().$;
+												
 												// build url for embedding
-												fileUrl = 'commsy.php/' + this.getValue() + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
 												
 												encodeFileUrl = encodeURIComponent(fileUrl);
 //												alert(encodeFileUrl);
@@ -102,7 +104,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 													{
 														if ( !this.getValue() )
 														{
-															alert( 'noCode' );
+															alert( 'Bitte eine URL eingeben' );
 															return false;
 														}
 													}
@@ -219,7 +221,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								
 								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" style="' + floatValue + '">';
 								content += '<param value="' + audioUrl + '" name="fileName">';
-								content += '<param value="false" name="autoStart">';
+								content += '<param value="' + autostart + '" name="autoStart">';
 								content += '<param value="true" name="showControls">';
 								content += '<param value="true" name="showStatusBar">';
 								content += '<param value="opaque" name="wmode">';

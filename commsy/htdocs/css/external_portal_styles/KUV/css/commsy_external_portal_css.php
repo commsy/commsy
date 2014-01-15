@@ -44,13 +44,29 @@ html {
 width:150px;
 }
 
+#Content_Box_Rahmen,
+#Content_Box_Rahmen_config {
+    border: 1px solid #CCC;
+    background: #FFF;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
 #Content_Box_Rahmen_Detail{
 	/*
    border: 1px dotted #B9B9B9;    
    margin-bottom: 25px;
    padding:20px;
    */
-   padding: 5px;
+   border: 1px solid #CCC;
+    background: #FFF;
+    margin-bottom: 20px;
+    margin-top: 10px;
+	padding: 5px;
+}
+
+#room_detail_headline {
+	margin: -5px;
 }
 
 a{
@@ -85,10 +101,21 @@ a:hover{
 
 #room_list .portal_section_title,
 span.section_title {
-    color: #ADADAD;
-   font-weight: bold;
-   text-decoration: none;
-   text-transform: uppercase;
+	color: #004994;
+	font-weight: bold;
+	text-decoration: none;
+	border-bottom: 1px solid #CCC;
+	width: 188px;
+	display: block;
+	padding: 10px 15px;
+}
+
+#room_list .portal_section_title {
+	border: none;
+}
+
+div.section_content {
+	padding: 15px;
 }
 
 #room_list .portal_forward_links{
@@ -446,7 +473,11 @@ div.right_box_title, div.right_box_main, .search_link, .netnavigation{
 
 #Column_Box_Blank, #Column_Box_Blank_2, #Column_Box_Blank_3{
     /*border-top: 1px dotted #666666; margin: 20px auto; padding-top: 10px; width: 170px; color: #666666;*/
-    width: 170px;
+    width: 218px;
+    border: 1px solid #CCC;
+    background: #FFF;
+    margin-bottom: 20px;
+    margin-top: 10px;
 }
 
 #Column_Box_Blank span, #Column_Box_Blank_3 span{
