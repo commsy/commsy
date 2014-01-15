@@ -4381,5 +4381,10 @@ class cs_connection_soap {
    		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
    	}
    }
+   
+   public function getPortalListAsJson () {
+   	$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   	return $connection_obj->getPortalListAsJsonSOAP();
+   }
 }
 ?>

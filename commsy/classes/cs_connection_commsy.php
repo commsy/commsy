@@ -126,14 +126,6 @@ class cs_connection_commsy {
    	$temp_array = array();
    	$temp_array['in'] = array();
    	$temp_array['in']['session_id'] = 'string';
-   	$temp_array['out'] = array();
-   	$temp_array['out']['result'] = 'string';
-   	$retour['getPortalsAsJson'] = $temp_array;
-   	unset($temp_array);
-   	
-   	$temp_array = array();
-   	$temp_array['in'] = array();
-   	$temp_array['in']['session_id'] = 'string';
    	$temp_array['in']['portal_id'] = 'integer';
    	$temp_array['in']['user_key'] = 'string';
    	$temp_array['in']['server_key'] = 'string';
@@ -150,11 +142,38 @@ class cs_connection_commsy {
    	$retour['getRoomListAsJson'] = $temp_array;
    	unset($temp_array);
    	
+   	$temp_array = array();
+   	$temp_array['in'] = array();
+   	$temp_array['out'] = array();
+   	$temp_array['out']['result'] = 'string';
+   	$retour['getPortalListAsJson'] = $temp_array;
+   	unset($temp_array);
+   	
    	return $retour;
    }
    
    public function getSoapFunctionArray () {
    	return $this->_getNeededFunctionArray();
+   }
+   
+   public function getPortalArrayFromServer ( $server_id ) {
+   	$retour = array();
+   	
+   	$server_item = $this->_environment->getServerItem();
+   	$server_info = $server_item->getServerConnectionInfo($server_id);
+   	if ( !empty($server_info)
+   		  and !empty($server_info['url'])
+   		  and !empty($server_info['proxy'])
+   	   ) {
+   		if ( $this->_initConnection($server_info['url'],$server_info['proxy']) ) {
+  				$result = $this->_connection->getPortalListAsJson($sid);
+  				if ( !empty($result) ) {
+  					$retour = json_decode($result,true);
+  				}
+   		}
+   	}
+   	
+   	return $retour;
    }
    
    public function getAllOpenContextsForCurrentUser ( $tab_id ) {
@@ -376,6 +395,33 @@ class cs_connection_commsy {
       }
       
       // result to json
+      if ( !empty($result) ) {
+      	$retour = json_encode($result);
+      }
+      
+   	return $retour;
+   }
+   
+   public function getPortalListAsJsonSOAP() {
+   	$retour = '';
+   	
+   	$result = array();
+   	$portal_manager = $this->_environment->getPortalManager();
+   	$portal_manager->select();
+   	$portal_list = $portal_manager->get();
+   	$xml = "<portal_list>\n";
+   	$portal_item = $portal_list->getFirst();
+   	while($portal_item) {
+   		$temp_array = array();
+   		$temp_array['id'] = $portal_item->getItemID();
+   		$temp_array['title'] = $portal_item->getTitle();
+   		$result[] = $temp_array;
+   		unset($temp_array);
+   		$portal_item = $portal_list->getNext();
+   	}
+   	$xml .= "</portal_list>";
+      
+   	// result to json
       if ( !empty($result) ) {
       	$retour = json_encode($result);
       }

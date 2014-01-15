@@ -24,53 +24,69 @@
 		}
 	
 		public function save($form_data, $additional = array()) {
-			$room_config = $form_data['room_config'];
 			
-			// prepare sorting array
-			$sorting = array();
-			$num_latest_dummies = 0;
-			foreach($room_config as $config) {
-				switch($config['type']) {
-					case 'title':
-						$sorting[] = '-1$$' . $config['value'];
-						$num_latest_dummies = 0;
-						break;
-					case 'room':
-						$sorting[] = $config['value'];
-						$num_latest_dummies = 0;
-						break;
-					case 'dummy':
-						$sorting[] = '-3';
-						$num_latest_dummies++;
-						break;
+			// data conversion
+			$tabid_array = array();
+			foreach ( $form_data as $key => $value ) {
+				if ( substr($key,0,6) == 'tabid_') {
+					$tabid_array[] = $value;
 				}
 			}
 			
-			// remove all tailing dummies per title
-			$sorting = array_reverse($sorting);
-			$is_before_title = true;
-			foreach($sorting as $key => $id) {
-				// if dummy
-				if($id == '-3' && $is_before_title) {
-					unset($sorting[$key]);
-					
-				// if title
-				} elseif(mb_stristr($id, '-1$$')) {
-					$is_before_title = true;
-				} else {
-					$is_before_title = false;
+			if ( !empty($tabid_array) ) {
+				
+				// get portal user
+				$user_item = $this->_environment->getCurrentUserItem();
+				if ( !$this->_environment->inPortal() ) {
+					$user_item = $user_item->getRelatedCommSyUserItem();
 				}
+				
+				$portal_conn_array = $user_item->getPortalConnectionArrayDB();
+				
+				// handle data
+				$delete = false;
+	         foreach ( $tabid_array as $tab_id ) {
+	         	
+	         	if ( stristr($tab_id,'new') ) {
+	         		$new_tab = array();
+	         		$new_tab['id'] = md5($tab_id.rand(0,100).date(YmdHis).rand(0,100).$form_data['name_'.$tab_id]);
+	         		$new_tab['server_connection_id'] = $form_data['server_connection_id_'.$tab_id];
+	         		$new_tab['portal_connection_id'] = $form_data['portal_connection_id_'.$tab_id];
+	         		$new_tab['title'] = $form_data['name_'.$tab_id];
+	         		$new_tab['title_original'] = $form_data['name_orig_'.$tab_id];
+	         	} else {
+	         	
+	         		foreach ( $portal_conn_array as $key =>  $connection ) {
+		         		if ( $connection['id'] == $tab_id ) {
+		         			
+		         			if ( !empty($form_data['delete_'.$tab_id]) ) {
+		         				unset($portal_conn_array[$key]);
+		         				$delete = true;
+		         			} else {
+		         			   if ( !empty($form_data['name_'.$tab_id]) ) {
+		         				   $portal_conn_array[$key]['title'] = $form_data['name_'.$tab_id];
+		         			   }
+		         			}
+		         			break;
+		         		}
+		         	}
+	         	}
+	         }
+	         
+	         if ( $delete ) {
+	         	$new_portal_conn_array = array();
+	         	foreach ( $portal_conn_array as $conn ) {
+	         		$new_portal_conn_array[] = $conn;
+	         	}
+	         	$portal_conn_array = $new_portal_conn_array;
+	         }
+	         
+	         $user_item->setPortalConnectionInfoDB($portal_conn_array);
+	         $user_item->save();	         
 			}
-			$sorting = array_reverse($sorting);
-			
-			// save
-			$current_user = $this->_environment->getCurrentUserItem();
-			$own_room_item = $current_user->getOwnRoom();
-			$own_room_item->setCustomizedRoomIDArray($sorting);
-			$own_room_item->save();
 			
 			// set return
-			$this->_popup_controller->setSuccessfullItemIDReturn($own_room_item->getItemID());
+			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 		}
 	
 		public function initPopup($data) {
@@ -86,6 +102,32 @@
 				// only edit tab
 				$this->_popup_controller->assign('popup', 'with_tabs', 1);
 			}
+			
+			// edit infos
+			$this->_popup_controller->assign('popup', 'server', $this->_getServerAndPortalInfoArray());
+			
+		}
+		
+		private function _getServerAndPortalInfoArray () {
+			$retour = array();
+			
+			$server_item = $this->_environment->getServerItem();
+			$server_conn_array = $server_item->getServerConnectionArray();
+			
+			foreach ( $server_conn_array as $server_info ) {
+			   
+			   // get portals from server
+			   $connection_obj = $this->_environment->getCommSyConnectionObject();
+      	   if ( !empty($connection_obj) ) {
+      	      $portal_array = $connection_obj->getPortalArrayFromServer($server_info['id']);
+      	      foreach ( $portal_array as $portal_info ) {
+      	      	$portal_info['server_id'] = $server_info['id'];
+      	      	$retour[$server_info['title']][] = $portal_info;
+      	      }
+      	   }
+			}
+			
+			return $retour;
 		}
 	
 		private function getTabInformation() {
@@ -108,7 +150,9 @@
 					}
 					$return[] = array(
 							'id'	=> $portal_connection_info['id'],
-							'title'	=> $portal_connection_info['title']
+							'title'	=> $portal_connection_info['title'],
+							'title_orig'	=> $portal_connection_info['title_original'],
+							'server_name' => $portal_connection_info['server_info']['title']
 					);
 				}
 			}

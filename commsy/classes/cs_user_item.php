@@ -2601,18 +2601,32 @@ class cs_user_item extends cs_item {
    	$this->save();
    }
    
-   public function getPortalConnectionArray() {
+   public function getPortalConnectionArrayDB() {
    	$retour = array();
    	$value = $this->_getExtra('CONNECTION_ARRAY');
    	if ( !empty($value) ) {
    		$retour = $value;
    	}
-   	
+   
    	// test - delete [TBD]
    	else {
    		$retour = $this->_generatePortalConnectionArray();
    	}
    	// test
+   
+   	return $retour;
+   }
+   
+   public function getPortalConnectionArray() {
+   	$retour = $this->getPortalConnectionArrayDB();
+
+   	// add infos
+   	if ( !empty($retour) ) {
+   		$server_item = $this->_environment->getServerItem();
+   		foreach ( $retour as $key => $row ) {
+   			$retour[$key]['server_info'] = $server_item->getServerConnectionInfo($row['server_connection_id']);
+   		}
+   	}
    	
    	return $retour;
    }
@@ -2632,6 +2646,10 @@ class cs_user_item extends cs_item {
    	return $retour;
    }
    
+   public function setPortalConnectionInfoDB ( $value ) {
+   	$this->_setExtra('CONNECTION_ARRAY',$value);
+   }
+   
    // test - delete [TBD]
    private function _generatePortalConnectionArray () {
    	$pid = $this->_environment->getCurrentPortalID();
@@ -2643,6 +2661,7 @@ class cs_user_item extends cs_item {
    	   $temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
    	   $temp_array['portal_connection_id'] = 541;
    	   $temp_array['title'] = 'Wo anders';
+   	   $temp_array['title_original'] = 'EduCommSy';
    	   $retour[] = $temp_array;
    	}
    	if ( $pid != 160 ) {
@@ -2651,6 +2670,7 @@ class cs_user_item extends cs_item {
 	   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
 	   	$temp_array['portal_connection_id'] = 160;
 	   	$temp_array['title'] = 'Hier';
+   	   $temp_array['title_original'] = 'MINCommSy';
 	   	$retour[] = $temp_array;
    	}
       if ( $pid != 552 ) {
@@ -2659,6 +2679,7 @@ class cs_user_item extends cs_item {
 	   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
 	   	$temp_array['portal_connection_id'] = 552;
 	   	$temp_array['title'] = 'Nummer DREI';
+   	   $temp_array['title_original'] = 'AGORA';
 	   	$retour[] = $temp_array;
    	}
    	

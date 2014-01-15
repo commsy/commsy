@@ -52,273 +52,125 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			// register click for edit button
-			var aEditNode = Query("a#edit_roomlist", this.contentNode)[0]
+			this.setupSpecificEdit();
+			
+			// save
+			// register click for additional status button
+			On(Query("input#submit_current", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
+				this.saveCurrentTabs();
+			}));
+			
+			// save new
+			// register click for additional status button
+			On(Query("input#submit_new", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
+				this.saveNewTab();
+			}));
+
+			// drag and drop [TBD]
+			//var wishListNode = Query("ol#wishListNode", this.contentNode)[0]
+			//var wishlist = new Source(wishListNode);
+
+		},
+		
+		setupSpecificEdit: function() {
+			// register click for edit button
+			var aEditNode = Query("a#edit_connections", this.contentNode)[0]
 			if (aEditNode) {
 				On.once(aEditNode, "click", Lang.hitch(this, function(event) {
 					this.setupEditMode();
 				}));
-			}
-			
-			// register click for room links
-			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
-				// get href
-				var href = this.getAttrAsObject(node, "data-custom").href;
-				
-				On(node, "click", function(event) {
-					location.href = href;
-				});
-			}));
+			};			
 		},
 		
-		onPopupSubmit: function(customObject) {
-			var part = customObject.part;
+		saveNewTab: function() {
 			
-			// setup data to send via ajax
+			var data = [];
+			
+			// get all form fields
+			var nodeList = [];
+			var inputNodes = Query("input", this.contentNode);
+			var selectNodes = Query("select", this.contentNode);
+			inputNodes.push(selectNodes[0]);
+			
+			// get all new_fields
+			for (index = 0; index < inputNodes.length; ++index) {
+	            var node = inputNodes[index];
+				var nodeName = DomAttr.get(node, "name");
+				var nodeKey = /new_/;
+				var nodeMatch = nodeName.search(nodeKey);
+				if (nodeMatch != -1) {
+					nodeList.push(node);
+				}			    
+			}
+			
+			// add new to form
+			var newTabNode = DomConstruct.create('div',{
+				innerHTML: 'HALLO DIE ENTEN'
+			});
+			var newNodeBegin = Query("div#new_tabs_for_edit", this.contentNode)[0];
+			DomConstruct.place(newTabNode,newNodeBegin,'after');
+			
+
+		},
+
+		saveCurrentTabs: function() {
+			
+			var data = [];
+			var part = 'tabs';
+			var action = 'save';
+			var inputNodes = Query("input", this.contentNode);
+			
+			for (index = 0; index < inputNodes.length; ++index) {
+	            var node = inputNodes[index];
+				var nodeName = DomAttr.get(node, "name");
+				var nodeKey = /form_data/;
+				var nodeMatch = nodeName.search(nodeKey);
+				if (nodeMatch != -1) {
+					var nodeList = [];
+					nodeList.push(node);
+					data.push({ query: nodeList } );
+				}			    
+			}
+
 			var search = {
-				tabs: [
-				    { id: part }
-				],
-				nodeLists: [
-				]
+				tabs: [],
+				nodeLists: data
 			};
 			
-			this.submit(search, { part: part });
+			this.submit(search, { part: part, action: action });
+			
 		},
-		
+
 		setupEditMode: function() {
-			var contentObjects = Query(	"div#profile_content_row_three, div#profile_content_row_four", this.contentNode);
 			
-			// make hidden rooms visible
-			DomClass.remove(contentObjects[1], "hidden");
-			
-			// process each room block
-			dojo.forEach(Query("div.room_block", this.contentNode), Lang.hitch(this, function(blockNode, index, arr) {
-				var roomAreaObjects = Query("div.breadcrumb_room_area", blockNode);
-				
-				// group h3-tags together
-				var ref = null;
-				var divNode = null;
-				dojo.forEach(roomAreaObjects, Lang.hitch(this, function(roomAreaObject, index, arr) {
-					// save first room area
-					if(index === 0) {
-						ref = roomAreaObject;
-						divNode = Query("div.clear", ref)[0];
-					}
-					
-					// otherwise move its rooms to first room
-					else {
-						dojo.forEach(Query("div.room_change_item", roomAreaObject), function(roomAreaRoom, index, arr) {
-							DomConstruct.place(roomAreaRoom, divNode, "before");
-						});
-						
-						// remove room area
-						DomConstruct.destroy(roomAreaObject);
-					}
-				}));
-				
-				/*
-				 * holds the latest appearance of a room
-				 * D D D D R D D R D D D D D
-				 * 				/\
-				 * 				||
-				 */
-				var latestRoomAppearance = -1;
-				
-				var count = 0;
-				dojo.forEach(Query("div.room_change_item, div.room_dummy", ref), Lang.hitch(this, function(node, index, arr) {
-					// determ type
-					if(DomClass.contains(node, "room_dummy")) {
-						// dummy - make visible
-						DomClass.remove(node, "room_dummy_no_border");
-					} else {
-						// room - update latest appearance
-						latestRoomAppearance = index;
-					}
-					
-					count++;
-				}));
-				
-				var dummiesToAdd = 0;
-				
-				// not fully filled rows
-				if(count % 4 !== 0) dummiesToAdd = 4 + 4 - count % 4;		// this is one complete row + filled last one
-				
-				// last row contains a room
-				else if(latestRoomAppearance > count - 3) {
-					dummiesToAdd = 4;
-				}
-				
-				// add dummies
-				for(var i=0; i < dummiesToAdd; i++) {
-					DomConstruct.create("div", {
-						className:	"room_dummy"
-					}, divNode, "before");
-				}
-				
-				// remove all h3-tags
-				dojo.forEach(Query("> h3", blockNode), function(h3Node, index, arr) {
-					DomConstruct.destroy(h3Node, blockNode);
-				});
-				
-				// make h2-tags to inputs
-				dojo.forEach(Query("> h2", blockNode), function(h2Node, index, arr) {
-					// replace
-					DomConstruct.create("input", {
-						value:	DomAttr.get(h2Node, "innerHTML")
-					}, h2Node, "replace");
-				});
-			}));
-			
-			// add new block area link
-			var newBlockDivNode = DomConstruct.create("div", {
-				className:	"roomlist_append_block"
-			});
-			
-				var newBlockANode = DomConstruct.create("a", {
-					"id":		"roomlist_append_block",
-					href:		"#",
-					innerHTML:	this.from_php.i18n["COMMON_NEW_BLOCK"]
-				}, newBlockDivNode, "last");
-			
-			DomConstruct.place(	newBlockDivNode,
-								Query("div#profile_content_row_three div.room_block:last-child", this.contentNode)[0],
-								"after");
-			
-			// register click event
-			On(newBlockANode, "click", Lang.hitch(this, function(event) {
-				this.appendNewBlock();
-				
-				event.preventDefault();
-			}));
-			
-			// add save link
-			var saveDivNode = DomConstruct.create("div", {
-				className:	"roomlist_save"
-			});
-			
-				var saveANode = DomConstruct.create("a", {
-					"id":		"roomlist_save",
-					href:		"#",
-					innerHTML:	this.from_php.i18n["COMMON_SAVE_BUTTON"]
-				}, saveDivNode, "last");
-			
-			DomConstruct.place(	saveDivNode,
-								Query("div#profile_content_row_three", this.contentNode)[0],
-								"last");
-			
-			DomConstruct.create("div", {
-				className:		"clear"
-			}, saveDivNode, "after");
-			
-			// register click event
-			On(saveANode, "click", Lang.hitch(this, function(event) {
-				this.saveRoomList();
-				
-				event.preventDefault();
-			}));
-			
-			// setup sortabes
-			this.setupSortables(contentObjects);
-		},
-		
-		setupSortables: function(contentObjects) {
-			// first we get all sources
-			var sourceNodes = [];
-			dojo.forEach(contentObjects, function(contentObject, index, arr) {
-				dojo.forEach(Query("div.breadcrumb_room_area", contentObject), function(sourceNode, index, arr) {
-					sourceNodes.push(sourceNode);
-				});
-			});
-			
-			// make all sources a dojo.dnd.Source and set nodes
-			var sources = [];
-			dojo.forEach(sourceNodes, Lang.hitch(this, function(sourceNode, index, arr) {
-				// register
-				sources.push(new Source(sourceNode, {
-					singular:	true/*,
-					horizontal:	true*/
-				}));
-				
-				// set nodes
-				var roomNodes = Query("div.room_change_item, div.room_dummy", sourceNode);
-				sources[index].insertNodes(false, roomNodes, Query("div.clear", sourceNode)[0]);
-			}));
-		},
-		
-		appendNewBlock: function() {
-			// build main structure
-			var roomBlockDiv = DomConstruct.create("div", {
-				className:		"room_block"
-			}, Query("div#profile_content_row_three div.roomlist_append_block", this.contentNode)[0], "before");
-			
-				DomConstruct.create("input", {
-					value:	this.from_php.i18n["COMMON_NEW_BLOCK"]
-				}, roomBlockDiv, "last");		
-				
-				var roomBlockAreaDiv = DomConstruct.create("div", {
-					className:	"breadcrumb_room_area"
-				}, roomBlockDiv, "last");
-			
-			// append eight dummies
-			for(var i=0; i < 8; i++) {
-				DomConstruct.create("div", {
-					className:	"room_dummy"
-				}, roomBlockAreaDiv, "last");
+			// tabs
+			var contentTabs = Query("div#tabs", this.contentNode)[0];
+			var contentTabsClass = DomAttr.get(contentTabs, "class");
+			if (contentTabsClass == "hidden") {
+			   DomClass.remove(contentTabs,"hidden");
+			} else {
+			   DomClass.add(contentTabs,"hidden");				
 			}
 			
-			// append clearing div
-			DomConstruct.create("div", {
-				className:	"clear"
-			}, roomBlockAreaDiv, "last");
+			// edit
+			var contentTabsEdit = Query("div#tabs_edit", this.contentNode)[0];
+			var contentTabsEditClass = DomAttr.get(contentTabsEdit, "class");
+			if (contentTabsEditClass == "hidden") {
+               DomClass.remove(contentTabsEdit, "hidden");
+			} else {
+			   DomClass.add(contentTabsEdit,"hidden");				
+			}			
 			
-			// make sortable
-			this.setupSortables(new dojo.NodeList(roomBlockDiv));
+			this.setupSpecificEdit();
 		},
 		
+		/************************************************************************************
+		 * Success Handling
+		 ************************************************************************************/
+
 		onPopupSubmitSuccess: function(item_id) {
-			this.close();
-		},
-		
-		saveRoomList: function() {
-			var data = {
-				module:		"breadcrumb",
-				form_data:	[]
-			};
-			var roomConfig = [];
-			
-			// prepare form data
-			dojo.forEach(Query("div#profile_content_row_three div.room_block"), function(node, index, arr) {
-				// get title from input
-				roomConfig.push({
-					type:		"title",
-					value:		DomAttr.get(Query(">input", node)[0], "value")
-				});
-				
-				// get room and spaces
-				dojo.forEach(Query("div.breadcrumb_room_area div.room_change_item, div.breadcrumb_room_area div.room_dummy", node), function(roomNode) {
-					// determ type
-					var type = "room";
-					var value = "";
-					
-					if(DomClass.contains(roomNode, "room_dummy")) type = "dummy";
-					else value = DomAttr.get(Query("input[name='hidden_item_id']", roomNode)[0], "value");
-					
-					roomConfig.push({
-						type:		type,
-						value:		value
-					});
-				});
-			});
-			
-			data.form_data.push({
-				'name':		'room_config',
-				'value':	roomConfig
-			});
-			
-			// save
-			this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
-				this.close();
-			}));
+			location.reload();
 		}
+		
 	});
 });
