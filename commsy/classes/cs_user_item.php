@@ -2419,7 +2419,7 @@ class cs_user_item extends cs_item {
    
    function unsetDeactivateLoginAsAnotherUser () {
    	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
-   		$this->_addExtra('DEACTIVATE_LOGIN_AS', '-1');
+   		$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
    	}
    	#$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
    }
