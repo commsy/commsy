@@ -31,7 +31,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 					var i,fileId;
 					for(i = 0; i < files.length; i++){
 						fileId = document.getElementsByName('form_data[file_' + i + ']');
-						fileItems.push(new Array(files[i].innerHTML, fileId[0].value));
+						fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
 					}
 					
 					var SelectBoxItems = new Array(
@@ -55,6 +55,47 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										style: 'width=100%',
 										label: 'Audio Type',
 										items: SelectBoxItems,
+										onLoad: function ()
+										{
+											var dialog = this.getDialog();
+											var fileSelect = dialog.getContentElement( 'audioTab' , 'fileselect' );
+											var j;
+											fileSelect.clear();
+											fileSelect.add('<Auswahl>', 'null');
+											for(j = 0; j < fileItems.length; j++) {
+												if(fileItems[j][2] == 'mp3'){
+													fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+												}
+											}
+										},
+										onChange : function ()
+										{
+											var dialog = this.getDialog();
+											var audioUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
+											var fileSelect = dialog.getContentElement( 'audioTab', 'fileselect' );
+											audioUrl.disable();
+											
+											if(this.getValue() == 'mediaplayer'){
+												var j;
+												fileSelect.clear();
+												fileSelect.add('<Auswahl>', 'null');
+												for(j = 0; j < fileItems.length; j++) {
+													if(fileItems[j][2] == 'mp3'){
+														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+													}
+												}
+											} else if(this.getValue() == 'wmaplayer') {
+												var j;
+												fileSelect.clear();
+												fileSelect.add('<Auswahl>', 'null');
+												for(j = 0; j < fileItems.length; j++) {
+													if(fileItems[j][2] == 'wma'){
+														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+													}
+												}
+											}
+											
+										}
 									},
 									{
 										type : 'select',
@@ -91,13 +132,17 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									},
 									{
 										type : 'hbox',
-										widths : [ '70%', '15%', '15%' ],
+										widths : [ '70%' ],
 										children :
 										[
 											{
 												id : 'audioUrl',
 												type : 'text',
 												label : 'Url',
+												onLoad : function ()
+												{
+													this.disable();
+												},
 												validate : function ()
 												{
 													if ( this.isEnabled() )
@@ -109,9 +154,22 @@ CKEDITOR.plugins.add( "CommSyAudio",
 														}
 													}
 												}
-											},
-											{
-												type : 'text',
+											}
+										]
+									},
+									{
+										id : 'autostart',
+										type : 'checkbox',
+										'default' : false,
+										label : 'Autostart'
+									},
+									{
+										type : 'hbox',
+										widths : ['20%','20%','20%','20%','20%'],
+										children : 
+										[
+										 	{
+										 		type : 'text',
 												id : 'audioWidth',
 												width : '60px',
 												label : 'Breite',
@@ -133,9 +191,9 @@ CKEDITOR.plugins.add( "CommSyAudio",
 														return false;
 													}
 												}
-											},
-											{
-												type : 'text',
+										 	},
+										 	{
+										 		type : 'text',
 												id : 'audioHeight',
 												width : '60px',
 												label : 'Höhe',
@@ -157,24 +215,32 @@ CKEDITOR.plugins.add( "CommSyAudio",
 														return false;
 													}
 												}
-											}
+										 	},
+										 	{
+										 		type : 'select',
+												id : 'float',
+												label : 'Ausrichtung',
+												items : new Array (
+															new Array ('<nichts>','null'),
+															new Array ('Links','left'),
+															new Array ('Rechts','right')
+														)
+										 	},
+										 	{
+												type : 'text',
+												id : 'border',
+												width : '60px',
+												label : 'Rahmen',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'padding',
+												width : '60px',
+												label : 'Abstand',
+												'default' : '',
+											},
 										]
-									},
-									{
-										id : 'autostart',
-										type : 'checkbox',
-										'default' : false,
-										label : 'Autostart'
-									},
-									{
-										type : 'select',
-										id : 'float',
-										label : 'Ausrichtung',
-										items : new Array (
-													new Array ('<nichts>','null'),
-													new Array ('Links','left'),
-													new Array ('Rechts','right')
-												)
 									}
 								]
 							},

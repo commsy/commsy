@@ -24,24 +24,23 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					var files = document.getElementsByName('file_name');
 					
 					fileItems = new Array (
-							new Array( '<Auswahl>' , 'null')
+							new Array( '<Auswahl>' , 'null', 'null')
 					);
 					
-					// fill select with filenames
-					// fill select with filenames
+					// fill select with filenames and file extension
 					var i,fileId;
 					for(i = 0; i < files.length; i++){
 						fileId = document.getElementsByName('form_data[file_' + i + ']');
-						fileItems.push(new Array(files[i].innerHTML, fileId[0].value));
+						fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
 					}
 					
 					var SelectBoxItems = new Array(
-					        new Array( 'Youtube', 'youtube' ),
+							new Array( 'Lecture2Go', 'lecture2go' ),
 					        new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
+					        new Array( 'Podcampus', 'podcampus' ),
 					        new Array( 'Quicktime (mov, wav, mpeg, mp4)', 'quicktime' ),
 //					        new Array( 'GoogleVideo', 'googlevideo' ),
-					        new Array( 'Lecture2Go', 'lecture2go' ),
-					        new Array( 'Podcampus', 'podcampus' )
+					        new Array( 'Youtube', 'youtube' )
 					);
 					
 					return {
@@ -58,33 +57,77 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Video Typ',
+										label: 'Video Type',
 										items: SelectBoxItems,
 										onChange: function ()
 										{
 											var dialog = this.getDialog();
 											var chkRelated = dialog.getContentElement( 'videoTab', 'chkRelated' );
-											if(this.getValue() == 'youtube'){
+											var urlInput = dialog.getContentElement( 'videoTab', 'videoUrl');
+											var fileSelect = dialog.getContentElement( 'videoTab', 'fileselect');
+											
+											// youtube video offer
+											if(this.getValue() == 'youtube') {
 												chkRelated.enable();
 											} else {
 												chkRelated.disable();
 											}
 											// set url info
-											var inputLabel = dialog.getContentElement('videoTab' , 'videoUrl');
-											if(this.getValue() == 'lecture2go'){
-												inputLabel.setLabel('URL (<iframe>...</iframe>)');
+											if(this.getValue() == 'lecture2go') {
+												urlInput.setLabel('URL (<iframe>...</iframe>)');
 											} else if (this.getValue() == 'podcampus') {
-												inputLabel.setLabel('URL (http://www.podcampus.de/nodes/XXYZ)');
+												urlInput.setLabel('URL (http://www.podcampus.de/nodes/XXYZ)');
 											} else {
-												inputLabel.setLabel('URL');
+												urlInput.setLabel('URL');
+											}
+											
+											// disable/enable inputUrl or select file
+											if(this.getValue() == 'lecture2go') {
+												urlInput.enable();
+												fileSelect.disable();
+											} else if (this.getValue() == 'mediaplayer') {
+												urlInput.disable();
+												fileSelect.enable();
+												// only show files wma wmv avi
+												var j;
+												fileSelect.clear();
+												fileSelect.add('<Auswahl>', 'null');
+												for(j = 0; j < fileItems.length; j++) {
+													if(fileItems[j][2] == 'avi' ||  fileItems[j][2] == 'wma' || fileItems[j][2] == 'wmv'){
+														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+													}
+												}
+												
+											} else if (this.getValue() == 'podcampus') {
+												urlInput.enable();
+												fileSelect.disable();
+											} else if (this.getValue() == 'quicktime') {
+												urlInput.disable();
+												fileSelect.enable();
+												// only show files mov wav mpeg mp4
+												var j;
+												fileSelect.clear();
+												fileSelect.add('<Auswahl>', 'null');
+												for(j = 0; j < fileItems.length; j++) {
+													if(fileItems[j][2] == 'mov' ||  fileItems[j][2] == 'wav' || fileItems[j][2] == 'mpeg' || fileItems[j][2] == 'mp4'){
+														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+													}
+												}
+											} else if (this.getValue() == 'youtube') {
+												urlInput.enable();
+												fileSelect.disable();
 											}
 										}
 									},
 									{
 										type : 'select',
 										id: 'fileselect',
-										label: 'Dateiauswahl',
+										label: 'vorhandene Datei auswählen',
 										items : fileItems,
+										onLoad : function ()
+										{
+											this.disable();
+										},
 										onChange : function () 
 										{
 											// disable textInput if file is selected
@@ -114,7 +157,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 									},
 									{
 										type : 'hbox',
-										widths : [ '70%', '15%', '15%' ],
+										widths : [ '70%' ],
 										children :
 										[
 											{
@@ -135,6 +178,43 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													}
 												}
 											},
+										]
+									},
+									{
+										type : 'hbox',
+										widths : [ '55%', '45%' ],
+										children :
+										[
+											{
+												id : 'chkRelated',
+												type : 'checkbox',
+												'default' : true,
+												label : 'Video Vorschläge'
+											},
+											{
+												id : 'autostart',
+												type : 'checkbox',
+												'default' : false,
+												label : 'Autostart'
+											}
+										]
+									},
+									{
+										type : 'hbox',
+										widths : ['20%'],
+										children : 
+										[
+										 	{
+										 		type : 'html',
+										 		html : '<div>&nbsp;</div>'
+										 	}
+										 ]
+									},
+									{
+										type : 'hbox',
+										widths : [ '20%', '20%', '20%' ],
+										children :
+										[
 											{
 												type : 'text',
 												id : 'videoWidth',
@@ -182,38 +262,33 @@ CKEDITOR.plugins.add( "CommSyVideo",
 														return false;
 													}
 												}
-											}
-										]
-									},
-									{
-										type : 'hbox',
-										widths : [ '55%', '45%' ],
-										children :
-										[
-											{
-												id : 'chkRelated',
-												type : 'checkbox',
-												'default' : true,
-												label : 'Video Vorschläge'
 											},
 											{
-												id : 'autostart',
-												type : 'checkbox',
-												'default' : false,
-												label : 'Autostart'
-											}
+												type : 'select',
+												id : 'float',
+												label : 'Ausrichtung',
+												items : new Array (
+															new Array ('<nichts>','null'),
+															new Array ('Links','left'),
+															new Array ('Rechts','right')
+														)
+											},
+											{
+												type : 'text',
+												id : 'border',
+												width : '60px',
+												label : 'Rahmen',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'padding',
+												width : '60px',
+												label : 'Abstand',
+												'default' : '',
+											},
 										]
 									},
-									{
-										type : 'select',
-										id : 'float',
-										label : 'Ausrichtung',
-										items : new Array (
-													new Array ('<nichts>','null'),
-													new Array ('Links','left'),
-													new Array ('Rechts','right')
-												)
-									}
 								]
 							},
 //							{

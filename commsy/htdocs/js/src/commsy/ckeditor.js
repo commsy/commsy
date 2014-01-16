@@ -1,12 +1,11 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
-        	"ckeditor/ckeditor",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/_base/lang",
         	"dojo/on",
         	"dojo/query",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, CKEditor, domAttr, domConstruct, Lang, On, Query) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, domAttr, domConstruct, Lang, On, Query) {
 	return declare(BaseClass, {
 		instance:	null,
 		node:		null,
@@ -31,7 +30,7 @@ define([	"dojo/_base/declare",
 			    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
 			    ['Format', 'Font', 'FontSize'],
 			    ['TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Source'],
-			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Image', 'Flash', 'CommSyAbout'],
+			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'CommSyAbout'],
 			    //CommSy group
 			    ['Image', 'Flash', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument']
 			    
