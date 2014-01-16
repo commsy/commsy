@@ -36,7 +36,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					var i,fileId;
 					for(i = 0; i < files.length; i++){
 						fileId = document.getElementsByName('form_data[file_' + i + ']');
-						fileItems.push(new Array(files[i].innerHTML, fileId[0].value));
+						fileItems.push(new Array(files[i].innerHTML, fileId[0].value, files[i].innerHTML.substr(files[i].innerHTML.lastIndexOf('.')+1, 3)));
 					}
 					
 					var floatItems = new Array (
@@ -66,11 +66,24 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											// show input if onyx is selected
 											var dialog = this.getDialog();
 											var textInput = dialog.getContentElement('documentTab', 'linkText');
-											var elementInputText = textInput.getElement();
+											var fileSelect = dialog.getContentElement( 'documentTab', 'fileselect' );
+											
 											if(this.getValue() == 'onyx'){
-												elementInputText.show();
+												textInput.enable();
+												fileSelect.enable();
+												
+												// select only zip files for onyx
+												var j;
+												fileSelect.clear();
+												fileSelect.add('<Auswahl>', 'null');
+												for(j = 0; j < fileItems.length; j++) {
+													if(fileItems[j][2] == 'zip'){
+														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
+													}
+												}
 											} else {
-												elementInputText.hide();
+												textInput.disable();
+												fileSelect.disable();
 											}
 										}
 									},
@@ -79,6 +92,10 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										id: 'fileselect',
 										label: 'Dateiauswahl',
 										items : fileItems,
+										onLoad : function ()
+										{
+											this.disable();
+										},
 										onChange : function () 
 										{
 											// disable textInput if file is selected
@@ -115,8 +132,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										label : 'Text',
 										onLoad : function () 
 										{
-											var textinput = this.getElement();
-											textinput.hide();
+											this.disable();
 										}
 									},
 									{
@@ -139,9 +155,16 @@ CKEDITOR.plugins.add( "CommSyDocument",
 														}
 													}
 												}
-											},
-											{
-												type : 'text',
+											}
+										]
+									},
+									{
+										type : 'hbox',
+										widths : ['20%', '20%', '20%', '20%', '20%'],
+										children :
+										[
+										 	{
+										 		type : 'text',
 												id : 'documentWidth',
 												width : '60px',
 												label : 'Breite',
@@ -187,14 +210,28 @@ CKEDITOR.plugins.add( "CommSyDocument",
 														return false;
 													}
 												}
-											}
+										 	},
+										 	{
+										 		type : 'select',
+												id : 'float',
+												label : 'Ausrichtung',
+												items : floatItems
+										 	},
+										 	{
+										 		type : 'text',
+												id : 'border',
+												width : '60px',
+												label : 'Rahmen',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'padding',
+												width : '60px',
+												label : 'Abstand',
+												'default' : '',
+											},
 										]
-									},
-									{
-										type : 'select',
-										id : 'float',
-										label : 'Ausrichtung',
-										items : floatItems
 									}
 								]
 							},
