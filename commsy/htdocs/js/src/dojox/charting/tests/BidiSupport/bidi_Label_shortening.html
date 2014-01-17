@@ -21,7 +21,7 @@
 			@import "../../../../dijit/tests/css/dijitTests.css";
 			@import "../../../../dijit/themes/claro/claro.css";
 		</style>
-		<script type="text/javascript" src="../../../../dojo/dojo.js" djConfig="isDebug: true, parseOnLoad: true"></script>
+		<script type="text/javascript" src="../../../../dojo/dojo.js" data-dojo-config="isDebug: true, parseOnLoad: true, has:{'dojo-bidi': true}"></script>
 		<script type="text/javascript">
 			dojo.require("dojo.parser");
 			dojo.require("doh.runner");
@@ -39,9 +39,6 @@
 			dojo.require("dojox.charting.plot2d.Grid");
 			dojo.require("dojox.charting.widget.Legend");
 			dojo.require("dojox.data.HtmlStore");
-
-			dojo.require("dojox.charting.BidiSupport");
-			dojo.require("dojox.charting.widget.BidiSupport");
 
 			var seriesB = [260, 180, 200, 100, 140, 70, 200]
 				, chart1, chart2, chart3, chart4;
@@ -195,7 +192,7 @@ textDir = rtl.</h2>
 		<div id="test4" style="width: 300px; height: 200px;"></div>
 		<h2>5: Label shortening for HTML declared chart
 textDir = auto.</h2>
-		<div dojoType="dojox.data.HtmlStore" dataId="tableExample" jsId="tableStore"></div>
+		<div dojoType="dojox.data.HtmlStore" dataId="tableExample" data-dojo-id="tableStore"></div>
 		<table id="tableExample" style="display: none;">
 			<thead>
 				<tr><th>value</th></tr>

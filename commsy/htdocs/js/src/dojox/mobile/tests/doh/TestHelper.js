@@ -1,7 +1,7 @@
 define([
 	"dojo/_base/declare",
 	"dojo/_base/lang",
-	"dojo/_base/sniff",
+	"dojo/sniff",
 	"dojo/dom-class",
 	"dijit/registry",
 	"doh/runner"
@@ -22,8 +22,13 @@ define([
 			}else{
 				node = obj;
 			}
-			this.fireOnEvent(node, "mousedown");
-			this.fireOnEvent(node, "mouseup");
+			if (has("ie") === 10 || (!has("ie") && has("trident") > 6)){
+				this.fireOnEvent(node, "MSPointerDown");
+				this.fireOnEvent(node, "MSPointerUp");
+			}else{
+				this.fireOnEvent(node, "mousedown");
+				this.fireOnEvent(node, "mouseup");
+			}
 		};
 
 		this.fireOnEvent = function(node, evstr){

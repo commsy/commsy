@@ -28,35 +28,41 @@ define([
 
 			simulatedDefine = function(mid, dependencies, factory){
 				defineApplied = 1;
-				var
-					arity = arguments.length,
+				var arity = arguments.length,
 					args = 0,
 					defaultDeps = ["require", "exports", "module"];
 
 				// TODO: add the factory scan?
-				if(0){
-					if(arity==1){
-						dependencies = [];
-						mid.toString()
-							.replace(/(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/mg, "")
-							.replace(/require\(["']([\w\!\-_\.\/]+)["']\)/g, function(match, dep){
-								dependencies.push(dep);
-							});
-						args = [0, defaultDeps.concat(dependencies), mid];
-					}
+				if(bc.factoryScan && arity == 1 && typeof mid === 'function'){
+					dependencies = [];
+					mid.toString()
+						.replace(/(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/mg, "")
+						.replace(/require\(["']([\w\!\-_\.\/]+)["']\)/g, function(match, dep){
+							dependencies.push(dep);
+						});
+					args = [0, defaultDeps.concat(dependencies), mid];
+					resource.text = resource.text.replace(/define\s*\(/, 'define(["' + args[1].join('","') + '"],');
 				}
+
 				if(!args){
-					args = arity==1 ? [0, defaultDeps, mid] :
-						(arity==2 ? (mid instanceof Array ? [0, mid, dependencies] : [mid, defaultDeps, dependencies]) :
+					args = arity == 1 ? [0, defaultDeps, mid] :
+						(arity == 2 ? (mid instanceof Array ? [0, mid, dependencies] : [mid, defaultDeps, dependencies]) :
 							[mid, dependencies, factory]);
 				}
 
-				if(args[1].some(function(item){return !lang.isString(item);})){
+				if(args[1].some(function(item){
+					return !lang.isString(item);
+				})){
 					throw new Error("define dependency vector contains elements that are not of type string.");
 				}
 
 				absMid = args[0];
 				aggregateDeps = aggregateDeps.concat(args[1]);
+			},
+
+			_tag_simulatedDefine = simulatedDefine.amd = {
+				vendor:"dojotoolkit.org",
+				context:"build"
 			},
 
 			simulatedRequire = function(depsOrConfig, callbackOrDeps){
@@ -413,7 +419,7 @@ define([
 				// if not root, don't process any localized bundles; a missing root bundle serves as a signal
 				// to other transforms (e.g., writeAmd) to ignore this bundle family
 				if(!rootBundle){
-					bc.log("i18nNoRoot" ["bundle", resource.mid]);
+					bc.log("i18nNoRoot", ["bundle", resource.mid]);
 					return;
 				}
 				// accumulate all the localized versions in the root bundle
@@ -448,7 +454,7 @@ define([
 
 			interningLocalDojoUriRegExp = new RegExp(interningDojoUriRegExpString),
 
-			internStrings = function(){
+			internStrings = function() {
 				var getText = function(src){
 						return fs.readFileSync(src, "utf8");
 					},
@@ -521,9 +527,9 @@ define([
 			processWithRegExs = function(){
 				// try to figure out if the module is legacy or AMD and then process the loader applications found
 				//
-				// Warning: the process is flawed because regexs will find things that are not there and miss things that are
-				// there is no way around this without a proper parser.	 Note however, this kind of process has been in use
-				// with the v1.x build system for a long time.
+				// Warning: the process is flawed because regexs will find things that are not there and miss things that are,
+				// and there is no way around this without a proper parser.	 Note however, this kind of process has been in use
+				// with the v1.x build system from the beginning.
 				//
 				// TODO: replace this process with a parser
 				//
@@ -586,14 +592,14 @@ define([
 						"\tdef:function(" + names.join(",") + "){" + newline + extractResult[1] + "}" + newline +
 						"});" + newline;
 					mid = resource.mid + "-loadInit";
-					pluginResource = mix({}, mix(resource, {
+					pluginResource = mix(mix({}, resource), {
 						src:resource.src.substring(0, resource.src.length-3) + "-loadInit.js",
 						dest:bc.getDestModuleInfo(mid).url,
 						mid:mid,
 						tag:{loadInitResource:1},
 						deps:[],
 						getText:function(){ return pluginText; }
-					}));
+					});
 					bc.start(pluginResource);
 
 					pluginResourceId = "dojo/loadInit!" + mid;

@@ -13,7 +13,7 @@
                 height: 40em;
             }
         </style>
-        <script type="text/javascript" src="../../../dojo/dojo.js"  djConfig="isDebug:true, parseOnLoad: true"></script>
+        <script type="text/javascript" src="../../../dojo/dojo.js"  data-dojo-config="isDebug:true, parseOnLoad: true"></script>
         <script type="text/javascript">
             dojo.require("dojox.grid.TreeGrid");
             dojo.require("dijit.tree.ForestStoreModel");
@@ -108,24 +108,24 @@
     <body class="claro">
         <h1 class="testTitle">Test: dojox.grid.TreeGrid - Model-based</h1>
         <span dojoType="dojo.data.ItemFileWriteStore"
-              jsId="jsonStore" data="dataItems">
+              data-dojo-id="jsonStore" data="dataItems">
         </span>
 
-        <div dojoType="dijit.tree.ForestStoreModel" jsId="continentModel"
+        <div dojoType="dijit.tree.ForestStoreModel" data-dojo-id="continentModel"
         store="jsonStore" query="{type:'continent'}"
         rootId="continentRoot" rootLabel="Continents" childrenAttrs="children"></div>
 
         <h4 class="testSubtitle">dojox.grid.TreeGrid n-Level</h4>
         <button dojoType="dijit.form.Button">
             Add Belgium
-            <script type="dojo/connect" event="onClick">
+            <script type="dojo/connect" data-dojo-event="onClick">
                 add_item({ id: 'EU_BE', name: 'Belgium', type: 'country' }, "EU");
 				this.set("disabled", true);
             </script>
         </button>
         <button dojoType="dijit.form.Button">
             Delete Italy
-            <script type="dojo/connect" event="onClick">
+            <script type="dojo/connect" data-dojo-event="onClick">
 				jsonStore.fetchItemByIdentity({
 					identity: 'IT',
 					onItem: function(item){
@@ -139,15 +139,15 @@
         </button>
         <button dojoType="dijit.form.Button">
             Add California
-            <script type="dojo/connect" event="onClick">
+            <script type="dojo/connect" data-dojo-event="onClick">
                 add_item({ id: 'US_CA', name: 'California', type: 'state' }, "US");
 				delCal.attr("disabled", false);
 				this.set("disabled", true);
             </script>
         </button>
-        <button dojoType="dijit.form.Button" disabled jsId="delCal">
+        <button dojoType="dijit.form.Button" disabled data-dojo-id="delCal">
             Delete California
-            <script type="dojo/connect" event="onClick">
+            <script type="dojo/connect" data-dojo-event="onClick">
 				jsonStore.fetchItemByIdentity({
 					identity: 'US_CA',
 					onItem: function(item){
@@ -159,9 +159,9 @@
 				this.set("disabled", true);
             </script>
         </button>
-        <button dojoType="dijit.form.Button" jsId="delEU">
+        <button dojoType="dijit.form.Button" data-dojo-id="delEU">
             Delete Europe
-            <script type="dojo/connect" event="onClick">
+            <script type="dojo/connect" data-dojo-event="onClick">
 				jsonStore.fetchItemByIdentity({
 					identity: 'EU',
 					onItem: function(item){
@@ -173,9 +173,9 @@
 				this.set("disabled", true);
             </script>
         </button>
-        <button dojoType="dijit.form.Button" jsId="empty">
+        <button dojoType="dijit.form.Button" data-dojo-id="empty">
             Empty
-            <script type="dojo/connect" event="onClick">
+            <script type="dojo/connect" data-dojo-event="onClick">
 				jsonStore.fetch({
 					query: { id: '*' },
 					queryOptions: { deep: true },
@@ -191,7 +191,7 @@
 				this.set("disabled", true);
             </script>
         </button>
-        <table jsid="grid" dojoType="dojox.grid.TreeGrid" class="grid" treeModel="continentModel">
+        <table data-dojo-id="grid" dojoType="dojox.grid.TreeGrid" class="grid" treeModel="continentModel">
             <thead>
                 <tr>
                     <th field="name" width="auto">Name</th>

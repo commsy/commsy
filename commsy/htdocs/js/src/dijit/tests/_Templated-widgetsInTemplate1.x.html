@@ -22,7 +22,6 @@
 			dojo.require("dijit._Container");
 			dojo.require("dijit._Contained");
 			dojo.require("dijit.layout._LayoutWidget");
-			dojo.require("dijit.focus");	// dijit.focus()
 
 			dojo.ready(function(){
 				var testW;
@@ -64,7 +63,7 @@
 		
 				function validateTest4Widget(t, testW){
 					var selectedTab = dojo.query(".dijitTabChecked", testW.domNode)[0];
-					var selectedPane = dojo.query(".dijitTabPane.dijitVisible", testW.domNode)[0];
+					var selectedPane = dojo.query(".dijitVisible > .dijitTabPane", testW.domNode)[0];
 					var tabBox = selectedTab ? dojo.contentBox(selectedTab) : null;
 					var paneBox = selectedPane ? dojo.contentBox(selectedPane) : null;
 					t.t(tabBox && tabBox.w > 0 && tabBox.h > 0, "tabBox && tabBox.w > 0 && tabBox.h > 0");
@@ -318,9 +317,8 @@
 							// Compare programmatic and declaratively created widget with layout widgets in template
 							name: "programmatic vs declarative with layout widgets",
 							runTest: function(t){
-								// Focus the body, so that we don't have different classes on our
-								// two widgets
-								dijit.focus(dojo.body());
+								// Focus unrelated element, so that we don't have different classes on our two widgets
+								dojo.byId("plainInput").focus();
 								var declW = dijit.byId("test4Widget");
 								var progW = test4WidgetProgrammatic;
 
@@ -486,6 +484,7 @@
 	<div dojoType="Test5Widget" id="test5Widget" ></div>
 
 	<div dojoType="Missing" id="missing"></div>
+	<input id="plainInput"/>
 	</body>
 </html>
 

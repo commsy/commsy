@@ -34,7 +34,7 @@
 
 	<!-- required: dojo.js -->
 	<script type="text/javascript" src="../../dojo/dojo.js"
-		djConfig="isDebug: true, parseOnLoad: true"></script>
+		data-dojo-config="isDebug: true, parseOnLoad: true"></script>
 
 	<script type="text/javascript">
 		dojo.require("dijit.dijit"); // optimize: load dijit layer
@@ -454,7 +454,7 @@
 					region="top"
 					style="height:50%;"
 					>
-					<script type="dojo/connect" event="_onFetchBegin" args="size, req">
+					<script type="dojo/connect" data-dojo-event="_onFetchBegin" data-dojo-args="size, req">
 						dojo.byId("totalErrors").innerHTML = size;
 					</script>
 					<thead>

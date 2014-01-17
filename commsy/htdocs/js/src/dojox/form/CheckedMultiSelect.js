@@ -22,7 +22,7 @@ define([
 	"dojo/i18n!dojox/form/nls/CheckedMultiSelect",
 	"dijit/form/CheckBox" // template
 ], function(declare, lang, array, event, domGeometry, domClass, domConstruct, i18n, Widget, TemplatedMixin, WidgetsInTemplateMixin, registry, Menu, MenuItem, Tooltip, FormSelectWidget, ComboButton, CheckedMultiSelectMenuItem, CheckedMultiSelectItem, CheckedMultiSelect, nlsCheckedMultiSelect){
-
+ 
 // module:
 //		dojox/form/CheckedMultiSelect
 // summary:
@@ -57,7 +57,13 @@ var formCheckedMultiSelectItem = declare("dojox.form._CheckedMultiSelectItem", [
 		this._type = this.parent.multiple ?
 			{type: "checkbox", baseClass: "dijitCheckBox"} :
 			{type: "radio", baseClass: "dijitRadio"};
-		this.disabled = this.option.disabled = this.option.disabled||false;
+		// use global disabled/readOnly if set to true, otherwise use per-option setting
+		if(!this.disabled){
+			this.disabled = this.option.disabled = this.option.disabled||false;
+		}
+		if(!this.readOnly){
+			this.readOnly = this.option.readOnly = this.option.readOnly||false;
+		}
 		this.inherited(arguments);
 	},
 
@@ -212,7 +218,7 @@ var formCheckedMultiSelectMenuItem = declare("dojox.form._CheckedMultiSelectMenu
 	parent: null,
 
 	// icon of the checkbox/radio button
-	_iconClass: "",
+	iconClass: "",
 
 	postMixInProperties: function(){
 		// summary:
@@ -307,20 +313,6 @@ var formCheckedMultiSelect = declare("dojox.form.CheckedMultiSelect", FormSelect
 	//		See description of `Tooltip.defaultPosition` for details on this parameter.
 	tooltipPosition: [],
 
-	setStore: function(store, selectedValue, fetchArgs){
-		// summary:
-		//		If there is any items selected in the store, the value
-		//		of the widget will be set to the values of these items.
-		this.inherited(arguments);
-		var setSelectedItems = function(items){
-			var value = array.map(items, function(item){ return item.value[0]; });
-			if(value.length){
-				this.set("value", value);
-			}
-		};
-		this.store.fetch({query:{selected: true}, onComplete: setSelectedItems, scope: this});
-	},
-
 	postMixInProperties: function(){
 		this.inherited(arguments);
 		this._nlsResources = i18n.getLocalization("dojox.form", "CheckedMultiSelect", this.lang);
@@ -351,7 +343,6 @@ var formCheckedMultiSelect = declare("dojox.form.CheckedMultiSelect", FormSelect
 	startup: function(){
 		// summary:
 		//		Set the value to be the first, or the selected index
-		this.inherited(arguments);
 		if(this.dropDown){
 			this.dropDownButton = new ComboButton({
 				label: this.labelText,
@@ -360,6 +351,7 @@ var formCheckedMultiSelect = declare("dojox.form.CheckedMultiSelect", FormSelect
 				maxHeight: this.maxHeight
 			}, this.comboButtonNode);
 		}
+		this.inherited(arguments);
 	},
 
 	_onMouseDown: function(e){
@@ -434,7 +426,9 @@ var formCheckedMultiSelect = declare("dojox.form.CheckedMultiSelect", FormSelect
 		}else{
 			item = new formCheckedMultiSelectItem({
 				option: option,
-				parent: this
+				parent: this,
+				disabled: this.disabled,
+				readOnly: this.readOnly
 			});
 			this.wrapperDiv.appendChild(item.domNode);
 		}
@@ -531,7 +525,7 @@ var formCheckedMultiSelect = declare("dojox.form.CheckedMultiSelect", FormSelect
 		//		Sets read only (or unsets) all the children as well
 		this.inherited(arguments);
 		if("readOnly" in this.attributeMap){
-			this._attrToDom("readOnly", value);
+			this[this.attributeMap.readOnly].setAttribute("readonly", value);
 		}
 		this.readOnly = value;
 		array.forEach(this._getChildren(), function(node){

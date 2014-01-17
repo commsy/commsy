@@ -63,7 +63,7 @@ define([
 		},
 
 		// flag to _HasDropDown to make drop down Calendar width == <input> width
-		forceWidth: true,
+		autoWidth: true,
 
 		format: function(/*Date*/ value, /*locale.__FormatOptions*/ constraints){
 			// summary:
@@ -188,7 +188,8 @@ define([
 
 		_set: function(attr, value){
 			// Avoid spurious watch() notifications when value is changed to new Date object w/the same value
-			if(attr == "value" && this.value instanceof Date && this.compare(value, this.value) == 0){
+			var oldValue = this._get("value");
+			if(attr == "value" && oldValue instanceof Date && this.compare(value, oldValue) == 0){
 				return;
 			}
 			this.inherited(arguments);
@@ -199,7 +200,7 @@ define([
 				// convert null setting into today's date, since there needs to be *some* default at all times.
 				 val = new this.dateClassObj();
 			}
-			this.dropDownDefaultValue = val;
+			this._set("dropDownDefaultValue", val);
 		},
 
 		openDropDown: function(/*Function*/ callback){
@@ -219,6 +220,7 @@ define([
 				dir: textBox.dir,
 				lang: textBox.lang,
 				value: value,
+				textDir: textBox.textDir,
 				currentFocus: !this._isInvalidDate(value) ? value : this.dropDownDefaultValue,
 				constraints: textBox.constraints,
 				filterString: textBox.filterString, // for TimeTextBox, to filter times shown

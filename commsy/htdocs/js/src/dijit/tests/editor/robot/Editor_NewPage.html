@@ -12,7 +12,6 @@
 		<script type="text/javascript" src="../../../../dojo/dojo.js"></script>
 
 		<script type="text/javascript">
-			dojo.require("dojo.DeferredList");
 			dojo.require("dojo.window");
 			dojo.require("dijit.robotx");
 			dojo.require("dijit.tests.helpers");	// functions to help test
@@ -34,21 +33,24 @@
 					throw new Error("didn't find plugin");
 				}
 
-				doh.register("NewPage_tests", [
+				var registry;
+				doh.register("setup", [
 					{
 						name: "wait for editors to load",
 						timeout: 5000,
-						runTest: function(){
-						    return new dojo.DeferredList(
-						        dijit.registry.filter(function(w){ return w.onLoadDeferred; }).map(function(w){ return w.onLoadDeferred; })
-						    );
-						}
+						runTest: waitForLoad
 					},
+					function setVars(){
+						registry = doh.robot.window.require("dijit/registry");
+					}
+				]);
+
+				doh.register("NewPage_tests", [
 					{
 						name: "Mouse: Click new page clears editor",
 						timeout: 20000,
 						setUp: function(){
-							editor = dijit.byId("editor0");
+							editor = registry.byId("editor0");
 							npPlugin = getPlugin(editor);
 						},
 						runTest: function(){
@@ -64,13 +66,7 @@
 
 							doh.robot.sequence(d.getTestCallback(function(){
 								//Now check the state!
-								var newVal = editor.get("value");
-								doh.isNot(value, newVal, "Verify the contents have changed.");
-								newVal = dojo.trim(newVal);
-								newVal = newVal.replace("/>", ">");
-								newVal = newVal.replace(" >", ">");
-								newVal = newVal.toLowerCase();
-								doh.is("<br>", newVal, "Validate the contents are a single br");
+								doh.is("", editor.get("value"), "editor.get('value')");
 							}), 1000);
 
 							return d;
@@ -84,7 +80,7 @@
 						name: "Mouse: Click new page sets editor with default content.",
 						timeout: 20000,
 						setUp: function(){
-							editor = dijit.byId("editor1");
+							editor = registry.byId("editor1");
 							npPlugin = getPlugin(editor);
 						},
 						runTest: function(){

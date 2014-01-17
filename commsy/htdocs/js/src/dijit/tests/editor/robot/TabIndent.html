@@ -12,7 +12,6 @@
 		<script type="text/javascript" src="../../../../dojo/dojo.js"></script>
 
 		<script type="text/javascript">
-			dojo.require("dojo.DeferredList");
 			dojo.require("dijit.robotx");
 			dojo.require("dijit.tests.helpers");	// functions to help test
 
@@ -20,24 +19,27 @@
 				doh.robot.initRobot('../test_TabIndent.html');
 					
 				var metaKey = {ctrl: true};
-					
-				doh.register("testTabIndent", [
+
+				var registry;
+				doh.register("setup", [
 					{
 						name: "wait for editors to load",
 						timeout: 5000,
-						runTest: function(){
-						    return new dojo.DeferredList(
-						        dijit.registry.filter(function(w){ return w.onLoadDeferred; }).map(function(w){ return w.onLoadDeferred; })
-						    );
-						}
+						runTest: waitForLoad
 					},
+					function setVars(){
+						registry = doh.robot.window.require("dijit/registry");
+					}
+				]);
+
+				doh.register("testTabIndent", [
 					{
 						name: "toggleOn",
 						timeout: 6000,
 						runTest: function(){
 							var d = new doh.Deferred();
 							
-							var editor = dijit.byId("tiTest");
+							var editor = registry.byId("tiTest");
 							
 							doh.robot.sequence(d.getTestErrback(function(){
 								editor.setValue("<ol><li>a list item.</li><li>a list item2.</li></ol>");
@@ -61,7 +63,7 @@
 						timeout: 2000,
 						runTest: function(){
 							var d = new doh.Deferred();
-							var editor = dijit.byId("tiTest");
+							var editor = registry.byId("tiTest");
 							doh.robot.keyPress(dojo.keys.TAB, 500, {shift: true});
 							
 							doh.robot.sequence(d.getTestCallback(function(){
@@ -80,7 +82,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 							
-							var editor = dijit.byId("tiTest");
+							var editor = registry.byId("tiTest");
 							var origValue;
 							doh.robot.sequence(d.getTestErrback(function(){ origValue = editor.getValue(); }), 1000); 
 							doh.robot.mouseMoveAt(dojo.query(".dijitEditorIconTabIndent")[0], 1000);
@@ -102,7 +104,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 							
-							var editor = dijit.byId("tiTest");
+							var editor = registry.byId("tiTest");
 
 							doh.robot.mouseMoveAt(function(){ return editor.editNode }, 500);
 							doh.robot.mouseClick({left: true}, 500);
@@ -124,7 +126,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 							
-							var editor = dijit.byId("tiTest");
+							var editor = registry.byId("tiTest");
 							var origValue;
 							doh.robot.sequence(d.getTestErrback(function(){ origValue = editor.getValue(); }), 1000); 
 							doh.robot.mouseMoveAt(function(){ return editor.editNode }, 500);

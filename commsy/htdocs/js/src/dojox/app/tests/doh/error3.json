@@ -21,8 +21,7 @@
 	"views": {
 
 		"home": { 
-			"definition" : "none",
-			"template": "dojox/app/tests/doh/config.html"
+			"template": "dojox/app/tests/doh/error3.html"
 		}
 
 	}

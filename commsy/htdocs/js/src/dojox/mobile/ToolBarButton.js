@@ -5,14 +5,16 @@ define([
 	"dojo/dom-class",
 	"dojo/dom-construct",
 	"dojo/dom-style",
+	"dojo/dom-attr",
 	"./sniff",
-	"./_ItemBase"
-], function(declare, lang, win, domClass, domConstruct, domStyle, has, ItemBase){
+	"./_ItemBase",
+	"dojo/has!dojo-bidi?dojox/mobile/bidi/ToolBarButton"
+], function(declare, lang, win, domClass, domConstruct, domStyle, domAttr, has, ItemBase, BidiToolBarButton){
 
 	// module:
 	//		dojox/mobile/ToolBarButton
 
-	return declare("dojox.mobile.ToolBarButton", ItemBase, {
+	var ToolBarButton = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiToolBarButton" : "dojox.mobile.ToolBarButton", ItemBase, {
 		// summary:
 		//		A button widget which is placed in the Heading widget.
 		// description:
@@ -26,15 +28,19 @@ define([
 		//		If true, the button is in the selected state.
 		selected: false,
 
-		// arrow: String
+		// arrow: [const] String
 		//		Specifies "right" or "left" to be an arrow button.
+		//		Note that changing the value of the property after the widget 
+		//		creation has no effect.
 		arrow: "",
 
-		// light: Boolean
+		// light: [const] Boolean
 		//		If true, this widget produces only a single `<span>` node when it
 		//		has only an icon or only a label, and has no arrow. In that
 		//		case, you cannot have both icon and label, or arrow even if you
 		//		try to set them.
+		//		Note that changing the value of the property after the widget 
+		//		creation has no effect.
 		light: true,
 
 		// defaultColor: String
@@ -64,6 +70,7 @@ define([
 			this.label = lang.trim(this.label);
 			this.domNode = (this.srcNodeRef && this.srcNodeRef.tagName === "SPAN") ?
 				this.srcNodeRef : domConstruct.create("span");
+			domAttr.set(this.domNode, "role", "button");
 			this.inherited(arguments);
 
 			if(this.light && !this.arrow && (!this.icon || !this.label)){
@@ -78,13 +85,18 @@ define([
 				this.arrowNode = domConstruct.create("span", {
 					className: "mblToolBarButtonArrow mblToolBarButton" +
 					(this.arrow === "left" ? "Left" : "Right") + "Arrow " +
-					(has("ie") ? "" : (this.defaultColor + " " + this.defaultColor + "45"))
+					(has("ie") < 10 ? "" : (this.defaultColor + " " + this.defaultColor + "45"))
 				}, this.domNode);
 				domClass.add(this.domNode, "mblToolBarButtonHas" +
 					(this.arrow === "left" ? "Left" : "Right") + "Arrow");
 			}
 			this.bodyNode = domConstruct.create("span", {className:"mblToolBarButtonBody"}, this.domNode);
 			this.tableNode = domConstruct.create("table", {cellPadding:"0",cellSpacing:"0",border:"0"}, this.bodyNode);
+			if(!this.label && this.arrow){
+				// The class mblToolBarButtonText is needed for arrow shape too.
+				// If the button has a label, the class is set by _setLabelAttr. If no label, do it here.
+				this.tableNode.className = "mblToolBarButtonText";
+			}
 
 			var row = this.tableNode.insertRow(-1);
 			this.iconParentNode = row.insertCell(-1);
@@ -103,7 +115,7 @@ define([
 		startup: function(){
 			if(this._started){ return; }
 
-			this._keydownHandle = this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
+			this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
 
 			this.inherited(arguments);
 			if(!this._isOnLine){
@@ -137,7 +149,7 @@ define([
 			// summary:
 			//		Sets the button label text.
 			this.inherited(arguments);
-			domClass.toggle(this.tableNode, "mblToolBarButtonText", text);
+			domClass.toggle(this.tableNode, "mblToolBarButtonText", text || this.arrow); // also needed if only arrow
 		},
 
 		_setSelectedAttr: function(/*Boolean*/selected){
@@ -149,12 +161,12 @@ define([
 			this.inherited(arguments);
 			if(selected){
 				domClass.replace(this.bodyNode, this.selColor, this.defaultColor);
-				if(!has("ie") && this.arrowNode){
+				if(!(has("ie") < 10) && this.arrowNode){
 					replace(this.arrowNode, this.selColor, this.defaultColor);
 				}
 			}else{
 				domClass.replace(this.bodyNode, this.defaultColor, this.selColor);
-				if(!has("ie") && this.arrowNode){
+				if(!(has("ie") < 10) && this.arrowNode){
 					replace(this.arrowNode, this.defaultColor, this.selColor);
 				}
 			}
@@ -162,4 +174,5 @@ define([
 			domClass.toggle(this.bodyNode, "mblToolBarButtonBodySelected", selected);
 		}
 	});
+	return has("dojo-bidi") ? declare("dojox.mobile.ToolBarButton", [ToolBarButton, BidiToolBarButton]) : ToolBarButton;
 });

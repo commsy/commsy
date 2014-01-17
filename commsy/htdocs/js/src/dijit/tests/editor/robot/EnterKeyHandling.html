@@ -12,7 +12,6 @@
 		<script type="text/javascript" src="../../../../dojo/dojo.js"></script>
 
 		<script type="text/javascript">
-			dojo.require("dojo.DeferredList");
 			dojo.require("dijit.robotx");
 			dojo.require("dijit.tests.helpers");	// functions to help test
 
@@ -56,16 +55,16 @@
 				doh.robot.initRobot('../EnterKeyHandling.html');
 
 				var metaKey = dojo.isMac? {meta: true} : {ctrl: true};
-				
-				doh.register("init", [
+
+				var registry;
+				doh.register("setup", [
 					{
 						name: "wait for editors to load",
 						timeout: 5000,
-						runTest: function(){
-							return new dojo.DeferredList(
-								dijit.registry.filter(function(w){ return w.onLoadDeferred; }).map(function(w){ return w.onLoadDeferred; })
-							);
-						}
+						runTest: waitForLoad
+					},
+					function setVars(){
+						registry = doh.robot.window.require("dijit/registry");
 					}
 				]);
 
@@ -75,9 +74,7 @@
 						name: "wait for editors to load",
 						timeout: 5000,
 						runTest: function(){
-						    return new dojo.DeferredList(
-						        dijit.registry.filter(function(w){ return w.onLoadDeferred; }).map(function(w){ return w.onLoadDeferred; })
-						    );
+						    return waitForLoad
 						}
 					},
 					{
@@ -86,7 +83,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var br = dijit.byId("br");
+							var br = registry.byId("br");
 							br.set("value", "");
 							br.focus();
 							
@@ -107,7 +104,7 @@
 								value = value.replace(/&nbsp;/g, "");
 								value = value.replace(/ /g, "");
 								value = value.replace(/\xA0/g, "");
-								doh.is('ab345<br/>ab345<br/>ab345<br/>ab345<br/>',
+								doh.is('ab345<br/>ab345<br/>ab345<br/>ab345',
 										value,
 										"get('value')");
 							}), 1000);
@@ -121,7 +118,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var br = dijit.byId("br");
+							var br = registry.byId("br");
 							br.set("value", "");
 							br.focus();
 							
@@ -149,12 +146,8 @@
 									value = value.replace(/\n/g, "");
 									value = value.replace(/\r\f/g, "");
 								}
-								
-								// Safari may end with a trailing/extra br, so we need to remove it.
-								if(/<br\/><br\/>$/.test(value)){
-									value = value.substring(0, value.length - 5);
-								}
-								doh.is('testingCopyAndPastetestingCopyAndPastetestingCopyAndPaste<br/>',
+
+								doh.is('testingCopyAndPastetestingCopyAndPastetestingCopyAndPaste',
 										value,
 										"get('value')");
 							}), 1000);
@@ -167,7 +160,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var br = dijit.byId("br");
+							var br = registry.byId("br");
 							br.set("value", "");
 							br.focus();
 							
@@ -221,7 +214,7 @@
 							var d = new doh.Deferred();
 							// The initial input was a div with a line of text with a bold tag in the middle.
 							// we want to focus on the bold and enter there, splitting it.
-							var editor = dijit.byId("div2");
+							var editor = registry.byId("div2");
 							dojo.window.scrollIntoView(editor.iframe);
 							var node = dojo.byId("boldLine0", editor.document);
 
@@ -229,7 +222,7 @@
 							doh.robot.mouseClick({left:true}, 500);
 
 							doh.robot.sequence(d.getTestErrback(function(){
-								editor._sCall("selectElementChildren", [node]);
+								editor.selection.selectElementChildren(node);
 							}), 500);
 							
 							// Keyboard kill the selection and shift position between I and S.
@@ -256,7 +249,7 @@
 							var d = new doh.Deferred();
 							// The initial input was a div with a line of text with a bold tag in the middle.
 							// we want to focus on the bold and enter there, splitting it.
-							var editor = dijit.byId("div3");
+							var editor = registry.byId("div3");
 							dojo.window.scrollIntoView(editor.iframe);
 							var node = dojo.byId("boldLine1", editor.document);
 							
@@ -264,7 +257,7 @@
 							doh.robot.mouseClick({left:true}, 500);
 
 							doh.robot.sequence(d.getTestErrback(function(){
-								editor._sCall("selectElementChildren", [node]);
+								editor.selection.selectElementChildren(node);
 							}), 500);
 							
 							// Keyboard kill the selection and shift position between I and S.
@@ -291,7 +284,7 @@
 							var d = new doh.Deferred();
 							// The initial input was a div with a line of text with a font tag in the middle.
 							// we want to focus on the font and enter there, splitting it.
-							var editor = dijit.byId("div4");
+							var editor = registry.byId("div4");
 							dojo.window.scrollIntoView(editor.iframe);
 							var node = dojo.byId("fontLine1", editor.document);
 							
@@ -299,7 +292,7 @@
 							doh.robot.mouseClick({left:true}, 500);
 
 							doh.robot.sequence(d.getTestErrback(function(){
-								editor._sCall("selectElementChildren", [node]);
+								editor.selection.selectElementChildren(node);
 							}), 500);
 							
 							// Keyboard kill the selection and shift position between I and S.
@@ -325,7 +318,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var editor = dijit.byId("div3");
+							var editor = registry.byId("div3");
 							dojo.window.scrollIntoView(editor.iframe);
 							editor.set("value", "");
 							editor.focus();
@@ -351,7 +344,7 @@
 									value = value.replace(/\n/g, "");
 									value = value.replace(/\r\f/g, "");
 								}
-								doh.is('<div>testingCopyAndPastetestingCopyAndPastetestingCopyAndPaste</div><div></div>',
+								doh.is('<div>testingCopyAndPastetestingCopyAndPastetestingCopyAndPaste</div>',
 										value,
 										"get('value')");
 							}), 1000);
@@ -364,7 +357,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var editor = dijit.byId("div3");
+							var editor = registry.byId("div3");
 							dojo.window.scrollIntoView(editor.iframe);
 							editor.set("value", "");
 							editor.focus();
@@ -412,7 +405,7 @@
 							var d = new doh.Deferred();
 							// The initial input was a div with a line of text with a bold tag in the middle.
 							// we want to focus on the bold and enter there, splitting it.
-							var editor = dijit.byId("p2");
+							var editor = registry.byId("p2");
 							dojo.window.scrollIntoView(editor.iframe);
 							var node = dojo.byId("boldLine2", editor.document);
 							
@@ -420,7 +413,7 @@
 							doh.robot.mouseClick({left:true}, 500);
 
 							doh.robot.sequence(d.getTestErrback(function(){
-								editor._sCall("selectElementChildren", [node]);
+								editor.selection.selectElementChildren(node);
 							}), 500);
 							
 							// Keyboard kill the selection and shift position between I and S.
@@ -444,7 +437,7 @@
 						timeout: 10000,
 						runTest: function(){
 							var d = new doh.Deferred();
-							var editor = dijit.byId("p2");
+							var editor = registry.byId("p2");
 							editor.set('value','<p>ab</p>');
 							var selection=dijit.range.getSelection(editor.window);
 							selection.removeAllRanges();
@@ -466,7 +459,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var editor = dijit.byId("p2");
+							var editor = registry.byId("p2");
 							dojo.window.scrollIntoView(editor.iframe);
 							editor.set("value", "");
 							editor.focus();
@@ -493,7 +486,7 @@
 									value = value.replace(/\r\f/g, "");
 								}
 								
-								doh.is('<p>testingCopyAndPastetestingCopyAndPastetestingCopyAndPaste</p><p></p>',
+								doh.is('<p>testingCopyAndPastetestingCopyAndPastetestingCopyAndPaste</p>',
 									value,
 									"get('value')");
 							}), 1000);
@@ -506,7 +499,7 @@
 						runTest: function(){
 							var d = new doh.Deferred();
 
-							var editor = dijit.byId("p2");
+							var editor = registry.byId("p2");
 							dojo.window.scrollIntoView(editor.iframe);
 							editor.set("value", "");
 							editor.focus();

@@ -6,18 +6,6 @@ define([
 	"dojo/json"
 ], function(bc, fileUtils, fs, lang, json){
 	var
-		setText = function(resource, text){
-			if(!resource.setText){
-				resource.setText = function(text){
-					resource.text = text;
-					resource.getText = function(){ return this.text; };
-					return text;
-				};
-			}
-			resource.setText(text);
-			return text;
-		},
-
 		computingLayers
 			// the set of layers being computed; use this to detect circular layer dependencies
 			= {},
@@ -116,10 +104,20 @@ define([
 				text : text.replace(/(define\s*\(\s*)(.*)/, "$1\"" + resource.mid + "\", $2");
 		},
 
-		getCacheEntry = function(
+		pushString = function(
+			strings,
 			pair
 		){
-			return "'" + pair[0] + "':" + pair[1];
+			strings[pair[0]] = pair[1];
+		},
+
+		appendStringsToCache = function(
+			strings,
+			cache
+		) {
+			for(var p in strings){
+				cache.push("'" + p + "':" + strings[p])
+			}
 		},
 
 		getPreloadL10nRootPath = function(
@@ -184,14 +182,17 @@ define([
 
 		getLayerText = function(
 			resource,
-			resourceText // ===false => put the resource in the cache
-						 // ===undefined => AMD define() the resource at the end of the layer
+			resourceText // ===undefined (normal case) => AMD define() the resource at the end of the layer
+						 // ===false => put the resource in the cache
 						 // otherwise write the value of resourceText at the end of the layer (so far only used in the writeDojo transform)
 		){
 			var newline = bc.newline,
 				rootBundles = [],
+				strings = {},
 				cache = [],
-				moduleSet = computeLayerContents(resource, resource.layer.include, resource.layer.exclude);
+				layer = resource.layer,
+				moduleSet = computeLayerContents(resource, layer.include, layer.exclude),
+				includeLocales = "includeLocales" in layer ? layer.includeLocales : bc.includeLocales;			
 			for(var p in moduleSet){
 				// always put modules!=resource in the cache; put resource in the cache if it's a boot layer and an explicit resourceText wasn't given
 				if(p!=resource.mid || resourceText===false){
@@ -201,8 +202,24 @@ define([
 						// therefore, add this bundle to the set to be flattened, but don't write the root bundle
 						// to the cache since the loader will explicitly load the flattened bundle
 						rootBundles.push(module);
+						if(includeLocales){
+							// include the ROOT always
+							cache.push("'" + p + "':function(){" + newline + module.getText() + newline + "}");
+							// now include each locale in the layer
+							includeLocales.forEach(function(locale){
+								var parts = locale.split("-");
+								for(var i = parts.length; i > 0; i--){
+									var localizedSet = module.localizedSet[parts.slice(0, i).join("-")];
+									// see if the localized set is there
+									if(localizedSet){
+										// put the bundle in the cache
+										cache.push("'" + localizedSet.mid + "':function(){" + newline + localizedSet.getText() + newline + "}");
+									}
+								}
+							});
+						}
 					}else if(module.internStrings){
-						cache.push(getCacheEntry(module.internStrings()));
+						pushString(strings, module.internStrings());
 					}else if(module.getText){
 						cache.push("'" + p + "':function(){" + newline + module.getText() + newline + "}");
 					}else{
@@ -210,19 +227,22 @@ define([
 					}
 				}
 			}
+			appendStringsToCache(strings, cache);
 
 			// compute the flattened layer bundles (if any)
 			if(rootBundles.length){
 				getFlattenedBundles(resource, rootBundles);
 				// push an *now into the cache that causes the flattened layer bundles to be loaded immediately
-				cache.push("'*now':function(r){r(['dojo/i18n!*preload*" + getPreloadL10nRootPath(resource.mid) + "*" + json.stringify(bc.localeList) + "']);}" + newline);
+				cache.push("'*now':function(r){r(['dojo/i18n!*preload*" + getPreloadL10nRootPath(resource.mid) + "*" + 
+					json.stringify(bc.localeList.filter(function(locale){
+						return !includeLocales || (includeLocales.indexOf(locale) == -1 && locale != "ROOT");
+					})) + "']);}" + newline);
 			}
 
 			// construct the cache text
 			if(cache.length && resource.layer.noref){
 				cache.push("'*noref':1");
 			}
-
 			return	(cache.length ? "require({cache:{" + newline + cache.join("," + newline) + "}});" + newline : "") +
 				(resourceText===undefined ?	 insertAbsMid(resource.getText(), resource) : (resourceText==false ? "" : resourceText)) +
 				(resource.layer.postscript ? resource.layer.postscript : "");
@@ -231,13 +251,15 @@ define([
 		getStrings = function(
 			resource
 		){
-			var cache = [],
+			var strings = {},
+				cache = [],
 				newline = bc.newline;
 			resource.deps && resource.deps.forEach(function(dep){
 				if(dep.internStrings){
-					cache.push(getCacheEntry(dep.internStrings()));
+					pushString(strings, dep.internStrings());
 				}
 			});
+			appendStringsToCache(strings, cache);
 			return cache.length ? "require({cache:{" + newline + cache.join("," + newline) + "}});" + newline : "";
 		},
 
@@ -259,7 +281,7 @@ define([
 				// do a check that all localizations mentioned in the root actually exist
 				var missing = [];
 				for(p in resource.bundleValue){
-					if(p!="root" && !resource.localizedSet[p]){
+					if(p!="root" && resource.bundleValue[p] && !resource.localizedSet[p]){
 						missing.push("'" + p + "'");
 					}
 				}
@@ -286,7 +308,6 @@ define([
 			}
 		},
 
-
 		write = function(
 			resource,
 			callback
@@ -311,20 +332,24 @@ define([
 				text = processNlsBundle(resource);
 			}else if(resource.layer){
 				// don't insertAbsMid or internStrings since that's done in getLayerText
-				text= resource.layerText = getLayerText(resource);
+				text= getLayerText(resource);
 				if(resource.layer.compat=="1.6"){
-					text = resource.layerText= text + "require(" + json.stringify(resource.layer.include) + ");" + bc.newline;
+					text += "require(" + json.stringify(resource.layer.include) + ");" + bc.newline;
 				}
 				copyright = resource.layer.copyright || "";
 			}else{
 				text = insertAbsMid(resource.getText(), resource);
-				text = (bc.internStrings ? getStrings(resource) : "") + text;
+				if(bc.internStrings){
+					text = getStrings(resource) + text;
+				}
 			}
 
-			setText(resource, text);
+			// remember the uncompressed text for the optimizer
+			resource.uncompressedText = text;
+
 			var destFilename = getDestFilename(resource);
 			fileUtils.ensureDirectoryByFilename(destFilename);
-			fs.writeFile(destFilename, bc.newlineFilter(resource.getText(), resource, "writeAmd"), resource.encoding, function(err){
+			fs.writeFile(destFilename, bc.newlineFilter(text, resource, "writeAmd"), resource.encoding, function(err){
 				callback(resource, err);
 			});
 			return callback;

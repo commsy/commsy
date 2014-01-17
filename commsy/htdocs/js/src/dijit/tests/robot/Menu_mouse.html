@@ -47,7 +47,7 @@
 
 								// However, just moving over the MenuBarItem shouldn't have opened the menu
 								doh.t(helpers.isHidden("fileMenu"), "File menu is hidden");
-							}), 1000);	// 1000ms == give IE time to make that backgroune iframe
+							}), 1000);	// 1000ms == give IE time to make that background iframe
 
 							return d;
 						}
@@ -280,6 +280,8 @@
 								doh.t(menuCoords.x < linkCoords.x + linkCoords.w, "to left of link right edge");
 								doh.t(menuCoords.y > linkCoords.y, "menu (" + menuCoords.y + ") starts below top of link (" + linkCoords.y + ")");
 								doh.t(menuCoords.y < linkCoords.y + linkCoords.h, "menu (" + menuCoords.y + ") starts above bottom of link (" + linkCoords.y + "+" + linkCoords.h + ")");
+
+								doh.f(domClass.contains("windowContextMenuFirstChoice", "dijitMenuItemSelected"), "first choice not marked as selected");
 							}), 1000);
 
 							return d;
@@ -319,19 +321,23 @@
 							// right-click on form widget
 							robot.mouseMoveAt("formwidget", 500, 1);
 							robot.mouseClick({right: true}, 500);
-	
+
 							robot.sequence(d.getTestCallback(function(){
 								doh.t(helpers.isVisible(menu), "menu is now shown");
 	
 								var widgetCoords = domGeom.position("formwidget");
 									menuCoords = domGeom.position(menu.domNode);
-	
+
 								doh.t(((menuCoords.x > widgetCoords.x) && (menuCoords.x < (widgetCoords.x + widgetCoords.w))) ||
 									(((menuCoords.x + menuCoords.w) > widgetCoords.x) && ((menuCoords.x + menuCoords.w) < (widgetCoords.x + widgetCoords.w))),
 									"begins or ends within the form widget horizontal boundaries");
 								doh.t(((menuCoords.y > widgetCoords.y) && (menuCoords.y < (widgetCoords.y + widgetCoords.h))) ||
 									(((menuCoords.y + menuCoords.h) > widgetCoords.y) && ((menuCoords.y + menuCoords.h) < (widgetCoords.y + widgetCoords.h))),
 									"begins or ends within the form widget vertical boundaries");
+
+								var cm = dom.byId("windowContextMenu");
+								doh.is("region", cm.parentNode.getAttribute("role"), "context menu's wrapper node needs role=region");
+                				doh.is("windowContextMenu", cm.parentNode.getAttribute("aria-label"), "menu's wrapper node needs aria-label");
 							}), 1000);
 	
 							return d;
@@ -482,7 +488,9 @@
 								doh.t(helpers.isHidden("editMenu"), "View menu is hidden");
 							}), 500);
 
-							// move to View item with keyboard
+							// Move to View item with keyboard.  Focus should still on "File".  Previously this test
+							// assumed that hovering "edit" would move focus there.
+							robot.keyPress(keys.RIGHT_ARROW, 1000, {});
 							robot.keyPress(keys.RIGHT_ARROW, 1000, {});
 							robot.sequence(d.getTestCallback(function(){
 								doh.t(helpers.isHidden("viewMenu"), "View menu is hidden");
@@ -554,6 +562,75 @@
 						}
 					}
 				]);
+
+				doh.register("passivePopupDelay", [
+					function setup(){
+						registry.byId("menubar").set("passivePopupDelay", 300);
+					},
+					{
+						name: "mouse over file MenuBarItem",
+						timeout: 4000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							// Check initial conditions
+							doh.f(domClass.contains("file", "dijitMenuItemHover"), "File MenuBarItem doesn't have hover effect");
+							doh.t(helpers.isHidden("fileMenu"), "File menu is hidden");
+
+							// Move over the File MenuBarItem
+							robot.mouseMoveAt("file", 500, 1000);
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.t(helpers.isVisible("fileMenu"), "File menu is visible");
+								doh.f(domClass.contains("new", "dijitMenuItemSelected"),
+										"New MenuItem should not have selected class, actual class is: " + dom.byId("new").className);
+							}), 1000);
+
+							return d;
+						}
+					},
+
+					{
+						name: "hover edit menu item",
+						timeout: 4000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							robot.mouseMoveAt("edit", 500, 500);
+
+							robot.sequence(d.getTestCallback(function(){
+								// Since we've already activated the MenuBar by clicking "File",
+								// hovering over "Edit" should automatically show the edit menu
+								doh.t(helpers.isVisible("editMenu"), "Edit menu is visible");
+
+								// And also, the file menu should have disappeared
+								doh.t(helpers.isHidden("fileMenu"), "File menu is hidden");
+							}), 500);
+
+							return d;
+						}
+					},
+
+
+					{
+						name: "close menu by click",
+						timeout: 4000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							robot.mouseMoveAt("link", 500, 500);
+							robot.mouseClick({left: true}, 500);
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.f(helpers.isVisible("editMenu"), "Edit menu is hidden");
+							}), 500);
+
+							return d;
+						}
+					}
+
+				]);
+
 
 				doh.run();
 			});

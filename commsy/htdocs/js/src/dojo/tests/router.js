@@ -1,14 +1,34 @@
-define(["doh", "../hash", "../router"], function(doh, hash, router){
+define([
+	"../_base/array",
+	"../hash",
+	"../router/RouterBase",
+	"doh"
+], function(arrayUtil, hash, RouterBase, doh){
+	// This test uses RouterBase so that I can test a few different behaviors of the router
+	// which require re-initializing a new router
 	var count = 0,
+		router = new RouterBase(),
 		handle, foo;
+
+	// Simple helper to make tearDown simpler
+	function removeAll(handles) {
+		arrayUtil.forEach(handles, function(handle){
+			handle.remove();
+		});
+	}
 
 	doh.register("tests.router", [
 		{
 			name: "Router API",
+			setUp: function(t){
+				// Reset the hash to make sure we get a clean test
+				hash("", true);
+			},
 			runTest: function(t){
 				t.t(router.register, "Router has a register");
 				t.t(router.go, "Router has a go");
 				t.t(router.startup, "Router has a startup");
+				t.t(router.destroy, "Router has a destroy");
 			}
 		},
 		{
@@ -94,12 +114,15 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 		{
 			name: "Registering a route by regexp",
 			runTest: function(t){
-				router.register(/^\/bar$/, function(){
+				handle = router.register(/^\/bar$/, function(){
 					count++;
 				});
 				router.go("/bar");
 
 				t.t(count === 4, "Count should have been 4, was " + count);
+			},
+			tearDown: function(){
+				handle.remove();
 			}
 		},
 		{
@@ -109,13 +132,12 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 
 				router.go("");
 
-				router.register("/checkEventObject/:foo", function(e){
-					console.log("e:",e);
-					oldPath = e.oldPath;
-					newPath = e.newPath;
-					params = e.params;
-					stopImmediatePropagation = typeof e.stopImmediatePropagation;
-					preventDefault = typeof e.preventDefault;
+				handle = router.register("/checkEventObject/:foo", function(event){
+					oldPath = event.oldPath;
+					newPath = event.newPath;
+					params = event.params;
+					stopImmediatePropagation = typeof event.stopImmediatePropagation;
+					preventDefault = typeof event.preventDefault;
 				});
 
 				router.go("/checkEventObject/bar");
@@ -127,6 +149,47 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 				t.t(params.foo === "bar", "params.foo should be bar, was " + params.foo);
 				t.t(stopImmediatePropagation === "function", "stopImmediatePropagation should be a function, was " + stopImmediatePropagation);
 				t.t(preventDefault === "function", "preventDefault should be a function, was " + preventDefault);
+			},
+			tearDown: function(){
+				handle.remove();
+			}
+		},
+		{
+			name: "Checking extra arguments - string route",
+			runTest: function(t){
+				var a, b;
+
+				handle = router.register("/stringtest/:applied/:arg", function(event, applied, arg){
+					a = applied;
+					b = arg;
+				});
+
+				router.go("/stringtest/extra/args");
+
+				t.t(a === "extra", "a should have been 'extra', was " + a);
+				t.t(b === "args", "b should have been 'args', was " + b);
+			},
+			tearDown: function(){
+				handle.remove();
+			}
+		},
+		{
+			name: "Checking extra arguments - regex route",
+			runTest: function(t){
+				var a, b;
+				
+				handle = router.register(/\/regextest\/(\w+)\/(\w+)/, function(event, applied, arg){
+					a = applied;
+					b = arg;
+				});
+
+				router.go("/regextest/extra/args");
+
+				t.t(a === "extra", "a should have been 'extra', was " + a);
+				t.t(b === "args", "b should have been 'args', was " + b);
+			},
+			tearDown: function(){
+				handle.remove();
 			}
 		},
 		{
@@ -134,8 +197,8 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 			runTest: function(t){
 				var testObject;
 
-				router.register("/path/:to/:some/:long/*thing", function(e){
-					testObject = e.params;
+				handle = router.register("/path/:to/:some/:long/*thing", function(event){
+					testObject = event.params;
 				});
 
 				router.go("/path/to/some/long/thing/this/is/in/splat");
@@ -155,6 +218,9 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 				t.t(testObject.some === "2", "testObject.some should have been '2', was " + testObject.some);
 				t.t(testObject["long"] === "3", "testObject.long should have been '3', was " + testObject["long"]);
 				t.t(testObject.thing === "4/5/6", "testObject.thing should have been '4/5/6', was " + testObject.thing);
+			},
+			tearDown: function(){
+				handle.remove();
 			}
 		},
 		{
@@ -162,8 +228,8 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 			runTest: function(t){
 				var testObject;
 
-				router.register(/^\/path\/(\w+)\/(\d+)$/, function(e){
-					testObject = e.params;
+				handle = router.register(/^\/path\/(\w+)\/(\d+)$/, function(event){
+					testObject = event.params;
 				});
 
 				router.go("/path/abcdef/1234");
@@ -187,6 +253,9 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 				t.t(testObject instanceof Array, "testObject should have been an array, but wasn't");
 				t.t(testObject[0] === "abc123", "testObject[0] should have been 'abc123', was " + testObject[0]);
 				t.t(testObject[1] === "456", "testObject[1] should have been '456', was " + testObject[1]);
+			},
+			tearDown: function(){
+				handle.remove();
 			}
 		},
 		{
@@ -194,29 +263,34 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 			runTest: function(t){
 				var test = "";
 
-				router.register("/isBefore", function(){
+				handle = [];
+
+				handle.push(router.register("/isBefore", function(){
 					test += "1";
-				});
+				}));
 
-				router.registerBefore("/isBefore", function(){
+				handle.push(router.registerBefore("/isBefore", function(){
 					test += "2";
-				});
+				}));
 
-				router.register("/isBefore", function(){
+				handle.push(router.register("/isBefore", function(){
 					test += "3";
-				});
+				}));
 
-				router.registerBefore("/isBefore", function(){
+				handle.push(router.registerBefore("/isBefore", function(){
 					test += "4";
-				});
+				}));
 
-				router.register("/isBefore", function(){
+				handle.push(router.register("/isBefore", function(){
 					test += "5";
-				});
+				}));
 
 				router.go("/isBefore");
 
 				t.t(test === "42135", "test should have been '42135', was " + test);
+			},
+			tearDown: function(){
+				removeAll(handle);
 			}
 		},
 		{
@@ -224,20 +298,25 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 			runTest: function(t){
 				var test = "";
 
-				router.register("/stopImmediatePropagation", function(){ test += "A"; });
-				router.register("/stopImmediatePropagation", function(){ test += "B"; });
+				handle = [];
 
-				router.register("/stopImmediatePropagation", function(e){
-					e.stopImmediatePropagation();
+				handle.push(router.register("/stopImmediatePropagation", function(){ test += "A"; }));
+				handle.push(router.register("/stopImmediatePropagation", function(){ test += "B"; }));
+
+				handle.push(router.register("/stopImmediatePropagation", function(event){
+					event.stopImmediatePropagation();
 					test += "C";
-				});
+				}));
 
-				router.register("/stopImmediatePropagation", function(){ test += "D"; });
-				router.register("/stopImmediatePropagation", function(){ test += "E"; });
+				handle.push(router.register("/stopImmediatePropagation", function(){ test += "D"; }));
+				handle.push(router.register("/stopImmediatePropagation", function(){ test += "E"; }));
 
 				router.go("/stopImmediatePropagation");
 
 				t.t(test === "ABC", "test should have been 'ABC', was " + test);
+			},
+			tearDown: function(){
+				removeAll(handle);
 			}
 		},
 		{
@@ -249,9 +328,9 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 
 				t.t(hash() === "", "hash should be empty");
 
-				router.register("/preventDefault", function(e){
-					e.preventDefault();
-				});
+				handle.push(router.register("/preventDefault", function(event){
+					event.preventDefault();
+				}));
 
 				goResult = router.go("/preventDefault");
 
@@ -263,9 +342,37 @@ define(["doh", "../hash", "../router"], function(doh, hash, router){
 				t.t(hash() === "/someOtherPath", "hash should be '/someOtherPath'");
 				t.t(goResult === true, "goResult should be true");
 
-				router.register("/allowDefault", function(e){
+				handle.push(router.register("/allowDefault", function(event){
 					console.log("Doing something here without explicitly stopping");
+				}));
+			},
+			tearDown: function(){
+				removeAll(handle);
+			}
+		},
+		{
+			name: "Default router path",
+			setUp: function(){
+				// Set up a new router for use in this test
+				router.destroy();
+				router = new RouterBase();
+
+				// Start with a clean hash
+				hash("");
+			},
+			runTest: function(t){
+				var routeHit = false;
+
+				handle = router.register("/default", function(event){
+					routeHit = true;
 				});
+
+				router.startup("/default");
+
+				t.t(routeHit, "Our route was not hit, but should have been");
+			},
+			tearDown: function(){
+				handle.remove();
 			}
 		}
 	]);
