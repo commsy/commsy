@@ -4386,5 +4386,25 @@ class cs_connection_soap {
    	$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
    	return $connection_obj->getPortalListAsJsonSOAP();
    }
+   
+   public function saveExternalConnectionKey ($session_id, $user_key) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->saveExternalConnectionKeySOAP($session_id, $user_key);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+
+   public function getOwnConnectionKey ($session_id) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->getOwnConnectionKeySOAP($session_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
 }
 ?>

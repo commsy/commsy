@@ -149,6 +149,23 @@ class cs_connection_commsy {
    	$retour['getPortalListAsJson'] = $temp_array;
    	unset($temp_array);
    	
+   	$temp_array = array();
+   	$temp_array['in'] = array();
+   	$temp_array['in']['session_id'] = 'string';
+   	$temp_array['in']['user_key'] = 'string';
+   	$temp_array['out'] = array();
+   	$temp_array['out']['result'] = 'string';
+   	$retour['saveExternalConnectionKey'] = $temp_array;
+   	unset($temp_array);
+   	
+   	$temp_array = array();
+   	$temp_array['in'] = array();
+   	$temp_array['in']['session_id'] = 'string';
+   	$temp_array['out'] = array();
+   	$temp_array['out']['result'] = 'string';
+   	$retour['getOwnConnectionKey'] = $temp_array;
+   	unset($temp_array);
+   	
    	return $retour;
    }
    
@@ -229,6 +246,99 @@ class cs_connection_commsy {
    	$retour['server_url'] = $server_info['url'];
    	$retour['proxy'] = $server_info['proxy'];
    	
+   	return $retour;
+   }
+   
+   public function saveNewConnection ( $server_id, $portal_id, $userid, $password ) {
+   	$retour = '';
+   	
+   	if ( !empty($server_id)
+   			and !empty($portal_id)
+   			and !empty($userid)
+   			and !empty($password)
+   	   ) {
+   		
+   	   // server info
+   	   $server_item = $this->_environment->getServerItem();
+   	   $server_info = $server_item->getServerConnectionInfo($server_id);
+   	   
+   		if ( $this->_initConnection($server_info['url'],$server_info['proxy']) ) {
+   			
+   			// login
+   			$sid = $this->_connection->authenticate($userid,$password,$portal_id);
+   			if ( !empty($sid)
+   				  and !is_soap_fault($sid)
+   				) {
+   				
+   				// change personal keys
+   				// first: save local key to external portal user
+   				
+   				// getPortalUser
+   				$current_user = $this->_environment->getCurrentUserItem();
+   				if ( !$this->_environment->inPortal() ) {
+   					$portal_user = $current_user->getRelatedCommSyUserItem();
+   				} else {
+   					$portal_user = $current_user;
+   				}
+   				$result = $this->_connection->saveExternalConnectionKey($sid,$portal_user->getOwnConnectionKey());
+   				if ( $result == 'success' ) {
+   					
+   					// second: get external own key and save
+   					$result = $this->_connection->getOwnConnectionKey($sid);
+   					if ( !empty($result)
+   						  and !is_soap_fault($result)
+   						) {
+   						$portal_user->addExternalConnectionKey($result);
+   						$portal_user->save();
+   					}
+
+   					// save tabs  					
+   					// first: save tab local
+   					$new_tab = array();
+   					$new_tab['server_connection_id'] = $server_id;
+   					$new_tab['portal_connection_id'] = $portal_id;
+   					$portal_array = $this->getPortalArrayFromServer($server_id);
+   					foreach ( $portal_array as $portal_info ) {
+   						if ( $portal_info['id'] == $portal_id ) {
+   							$new_tab['title'] = $portal_info['title'];
+   							$new_tab['title_original'] = $portal_info['title'];
+   							break;
+   						}
+   					}
+   					if ( empty($new_tab['title']) ) {
+   					   $new_tab['title'] = 'Portal';
+   					}
+   				   if ( empty($new_tab['title_original']) ) {
+   					   $new_tab['title_original'] = 'unknown';
+   					}
+   					$new_tab['id'] = md5($new_tab['portal_connection_id'].rand(0,100).date(YmdHis).rand(0,100).$new_tab['title_original']);
+   					
+   					$tab_array = $portal_user->getPortalConnectionArrayDB();
+   					$tab_array[] = $new_tab;
+   					unset($temp_array);
+   					$portal_user->setPortalConnectionInfoDB($tab_array);
+   					$portal_user->save();
+   					
+   					// second: save tab external
+   					// [TBD] SOAP
+   					$result = $this->_connection->setPortalConnectionInfo($sid,$server_item->getOwnConnectionKey(),$portal_user->getContextID());
+   					if ( $result != 'success' ) {
+   					   $retour = 'SAVE_TAB_FAILED';
+   					}
+   					
+   				} else {
+   					$retour = 'SAVE_KEY_FAILED';
+   				}
+   				
+   			} else {
+   				$retour = 'LOGIN_FAILED';
+   			}
+   		}
+   	} else {
+   		$retour = 'DATA_LOST';
+   	}
+
+   	// return   	
    	return $retour;
    }
    
@@ -426,6 +536,88 @@ class cs_connection_commsy {
       	$retour = json_encode($result);
       }
       
+   	return $retour;
+   }
+   
+   public function saveExternalConnectionKeySOAP ($session_id,$user_key) {
+   	$retour = 'failed';
+   	
+   	if ( !empty($session_id)
+   		  and !empty($user_key)
+   		) {
+   	
+   	   // set context
+   	   $context = false;
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         
+         $user_list = $user_manager->get();
+         $retour = $user_list->getCount();
+         if ( $user_list->getCount() == 1 ) {
+         	$user_item = $user_list->getFirst();
+            if ( !empty($user_item) ) {
+               $this->_environment->setCurrentUserItem($user_item);
+               $context = true;
+            }
+         }
+         
+         // save key
+         if ( $context ) {
+         	$user_item->addExternalConnectionKey($user_key);
+         	$user_item->save();
+         	$retour = 'success';
+         }
+   		   	
+   	}
+   	
+   	return $retour;
+   }
+
+   public function getOwnConnectionKeySOAP ($session_id) {
+   	$retour = '';
+   	
+   	if ( !empty($session_id) ) {
+   	
+   	   // set context
+   	   $context = false;
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         
+         $user_list = $user_manager->get();
+         $retour = $user_list->getCount();
+         if ( $user_list->getCount() == 1 ) {
+         	$user_item = $user_list->getFirst();
+            if ( !empty($user_item) ) {
+               $this->_environment->setCurrentUserItem($user_item);
+               $context = true;
+            }
+         }
+         
+         // get key
+         if ( $context ) {
+         	$retour = $user_item->getOwnConnectionKey();
+         }
+   		   	
+   	}
+   	
    	return $retour;
    }
 }

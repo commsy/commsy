@@ -245,8 +245,7 @@ define([	"dojo/_base/declare",
 				//alert(nodeList.toString());
 				var group = nodeList.group || null;
 				var nodes = nodeList.query;
-				//alert(nodes.toString());
-
+				
 				dojo.forEach(nodes, function(node, index, arr) {
 					var formNodes = null;
 

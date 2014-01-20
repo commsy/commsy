@@ -85,9 +85,10 @@ define([	"dojo/_base/declare",
 		saveNewTab: function() {
 			
 			var data = [];
+			var part = 'tabs';
+			var action = 'saveNew';
 			
 			// get all form fields
-			var nodeList = [];
 			var inputNodes = Query("input", this.contentNode);
 			var selectNodes = Query("select", this.contentNode);
 			inputNodes.push(selectNodes[0]);
@@ -99,16 +100,26 @@ define([	"dojo/_base/declare",
 				var nodeKey = /new_/;
 				var nodeMatch = nodeName.search(nodeKey);
 				if (nodeMatch != -1) {
+					var nodeList = [];
 					nodeList.push(node);
+					data.push({ query: nodeList } );
 				}			    
 			}
 			
+			// save new tab
+			var search = {
+					tabs: [],
+					nodeLists: data
+			};
+				
+			this.submit(search, { part: part, action: action });
+			
 			// add new to form
-			var newTabNode = DomConstruct.create('div',{
-				innerHTML: 'HALLO DIE ENTEN'
-			});
-			var newNodeBegin = Query("div#new_tabs_for_edit", this.contentNode)[0];
-			DomConstruct.place(newTabNode,newNodeBegin,'after');
+			//var newTabNode = DomConstruct.create('div',{
+			//	innerHTML: 'HALLO DIE ENTEN'
+			//});
+			//var newNodeBegin = Query("div#new_tabs_for_edit", this.contentNode)[0];
+			//DomConstruct.place(newTabNode,newNodeBegin,'after');
 			
 
 		},
@@ -169,7 +180,21 @@ define([	"dojo/_base/declare",
 		 ************************************************************************************/
 
 		onPopupSubmitSuccess: function(item_id) {
-			location.reload();
+			var key = /error_/;
+			var match = item_id.search(key);
+			if ( match != -1 ) {
+			   if ( item_id == 'error_1') {
+				  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_1"]);
+			   } else if ( item_id == 'error_2') {
+				  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_2"]);
+			   } else if ( item_id == 'error_3') {
+				  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_3"]);
+			   } else {
+			      alert(item_id);
+			   }
+			} else {
+			   location.reload();
+			}
 		}
 		
 	});

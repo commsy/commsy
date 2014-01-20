@@ -22,9 +22,56 @@
 			   $this->_tab_id = $value;
 			}
 		}
+		
+		public function save ( $form_data, $additional = array() ) {
+			if ( !empty($additional)
+				  and !empty($additional['action'])
+				  and $additional['action'] == 'saveNew'
+				) {
+				$this->saveNew($form_data,$additional);
+			} else {
+				$this->saveCurrent($form_data,$additional);
+			}
+		}
+		
+		public function saveNew ($form_data, $additional = array()) {
+			if ( empty($form_data['new_userid'])
+				  or empty($form_data['new_pwd'])
+				  or empty($form_data['new_portal'])
+				  or !stristr($form_data['new_portal'],'_')
+			   ) {
+				$this->_popup_controller->setSuccessfullItemIDReturn('error_1');
+			} else {
+				
+				// data conversion
+				$userid = $form_data['new_userid'];
+				$password = $form_data['new_pwd'];
+				$new_portal_array = explode('_', $form_data['new_portal']);
+				$portal_id = $new_portal_array[1];
+				$server_id = $new_portal_array[0];
+				
+				// save new connection
+				$commsy_connection_obj = $this->_environment->getCommSyConnectionObject();
+				$result = $commsy_connection_obj->saveNewConnection($server_id,$portal_id,$userid,$password);
+				if ( $result == 'LOGIN_FAILED' ) {
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_2');
+				} elseif ( $result == 'SAVE_FAILED' ) {
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+				} elseif ( $result == 'SAVE_KEY_FAILED' ) {
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+				} elseif ( $result == 'SAVE_TAB_FAILED' ) {
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+				} elseif ( $result == 'DATA_LOST' ) {
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+				} else {
+					$this->_popup_controller->setSuccessfullItemIDReturn(42);
+				}
+				
+			}
+		} 
 	
-		public function save($form_data, $additional = array()) {
-			
+		public function saveCurrent($form_data, $additional = array()) {
+
 			// data conversion
 			$tabid_array = array();
 			foreach ( $form_data as $key => $value ) {

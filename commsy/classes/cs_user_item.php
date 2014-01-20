@@ -2601,6 +2601,29 @@ class cs_user_item extends cs_item {
    	$this->save();
    }
    
+   public function addExternalConnectionKey ( $key ) {
+   	$key_array = $this->_getExternalConnectionKeyArray();
+   	if ( !in_array($key, $key_array) ) {
+   		$key_array[] = $key;
+   		$this->_setExternalConnectionKeyArray($key_array);
+   	}
+   }
+   
+   private function _getExternalConnectionKeyArray () {
+   	$retour = array();
+   	
+   	$value = $this->_getExtra('CONNECTION_EXTERNAL_KEY_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	
+  	   return $retour;
+   }
+   
+   private function _setExternalConnectionKeyArray ( $value ) {
+   	$this->_setExtra('CONNECTION_EXTERNAL_KEY_ARRAY',$value);
+   }
+   
    public function getPortalConnectionArrayDB() {
    	$retour = array();
    	$value = $this->_getExtra('CONNECTION_ARRAY');
