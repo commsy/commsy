@@ -343,6 +343,7 @@
 						                        		<option value="lock">___USER_LIST_ACTION_LOCK_ACCOUNT___</option>
 						                        		<option value="free">___USER_LIST_ACTION_FREE_ACCOUNT___</option>
 						                        		<option disabled="disabled">------------------------------</option>
+						                        		<option value="status_readonly_user">___USER_LIST_ACTION_STATUS_READ_ONLY_USER___</option>
 						                        		<option value="status_user">___USER_LIST_ACTION_STATUS_USER___</option>
 						                        		<option value="status_moderator">___USER_LIST_ACTION_STATUS_MODERATOR___</option>
 						                        		<option disabled="disabled">------------------------------</option>

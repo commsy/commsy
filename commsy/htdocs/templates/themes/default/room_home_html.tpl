@@ -51,7 +51,7 @@
 		{foreach $room.home_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
-	            	{if $rubric@key != 'user'}
+	            	{if $rubric@key != 'user' and $rubric.rights.new}
 		            	<a class="open_popup" data-custom="iid: 'NEW', module: '{$rubric@key}'"	href="#" title="___COMMON_NEW_ITEM___">
 		            		<img src="{$basic.tpl_path}img/btn_add_new_home.gif" alt="___COMMON_NEW_ITEM___" />
 		            	</a>

@@ -916,6 +916,10 @@ class cs_user_item extends cs_item {
    function makeUser () {
       $this->_setValue('status', 2);
    }
+   
+   function makeReadOnlyUser() {
+   	  $this->_setValue('status', 4);
+   }
 
    /** make a user moderator
     * this method sets the status of the user to moderator
@@ -1019,6 +1023,10 @@ class cs_user_item extends cs_item {
     */
    function isModerator () {
       return $this->_getValue('status') == 3;
+   }
+   
+   function isReadOnlyUser() {
+   	  return $this->_getValue('status') == 4;
    }
 
    function getRelatedRoomItem () {
@@ -2210,6 +2218,10 @@ class cs_user_item extends cs_item {
    }
 
    public function isOnlyReadUser () {
+   	  if ($this->isReadOnlyUser()) {
+   	  	return true;
+   	  }
+   	
       $retour = false;
       global $c_read_account_array;
       if ( isset($c_read_account_array)
