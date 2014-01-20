@@ -13,7 +13,7 @@
 		}
 	</style> 
 	<script type="text/javascript" src="../../../dojo/dojo.js"  
-		djConfig="isDebug: true, debugAtAllCosts: false, parseOnLoad: true"></script> 
+		data-dojo-config="isDebug: true, debugAtAllCosts: false, parseOnLoad: true"></script>
 	<script type="text/javascript"> 
 		dojo.require("dijit.dijit");
 		dojo.require("dojox.grid.DataGrid"); 
@@ -44,7 +44,7 @@
 			store="jsonStore" structure="layoutCountries" rowSelector="20px"> 
 		</div> 
 		<button dojoType="dijit.form.Button"> 
-			<script type="dojo/method" event="onClick"> 
+			<script type="dojo/method" data-dojo-event="onClick">
 				numItems++; 
 				dojo.connect(jsonStore, "fetch", function(){
 					console.error("Calling newItem should not trigger a fetch.");

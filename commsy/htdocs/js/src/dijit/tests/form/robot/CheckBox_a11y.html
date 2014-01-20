@@ -130,6 +130,38 @@
 
 				doh.register("Radio button a11y",[
 					{
+						name: "reset blank value",
+						runTest: function(){
+							doh.is("", dijit.byId('g1rb3').params.value, "blank parameter");
+							doh.is("", dijit.byId('g1rb3').value, "initially blank");
+							dijit.byId('g1rb3').reset();
+							doh.is("", dijit.byId('g1rb3').value, "blank after reset");
+						}
+					},
+					{
+						timeout: 5000,
+						name: "initial tab order",
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							dojo.byId("enableWeatherButton").focus();
+							doh.robot.keyPress(dojo.keys.TAB, 500, {
+								shift: true
+							});
+							doh.robot.keyPress(dojo.keys.TAB, 500, {
+								shift: true
+							});
+							doh.robot.keyPress(dojo.keys.TAB, 500, {});
+							doh.robot.keyPress(dojo.keys.SPACE, 500);
+
+							doh.robot.sequence(d.getTestCallback(function(){
+								doh.t(dijit.byId('g1rb2').checked, "talk should have been checked");
+							}), 500);
+
+							return d;
+						}
+					},
+					{
 						timeout:6000,
 						name:"weather enabled a11y",
 						runTest:function(){
@@ -152,8 +184,31 @@
 						}
 					},
 					{
+						timeout: 5000,
+						name: "changed tab order",
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							dojo.byId("enableWeatherButton").focus();
+							doh.robot.keyPress(dojo.keys.TAB, 500, {
+								shift: true
+							});
+							doh.robot.keyPress(dojo.keys.TAB, 500, {
+								shift: true
+							});
+							doh.robot.keyPress(dojo.keys.TAB, 500, {});
+							doh.robot.keyPress(dojo.keys.LEFT_ARROW, 500);
+
+							doh.robot.sequence(d.getTestCallback(function(){
+								doh.t(dijit.byId('g1rb2').checked, "talk should have been checked");
+							}), 500);
+
+							return d;
+						}
+					},
+					{
 						timeout:6000,
-						name:"change value to county a11y",
+						name:"change value to country a11y",
 						runTest:function(){
 							var d = new doh.Deferred();
  
@@ -340,29 +395,6 @@
 						}
 					}
 				]);
-
-				doh.register("CheckBox watch",
-					[
-						function w(){
-							var cb = dijit.byId('cb2');
-							cb.set("checked", true);
-
-							var oldWatch, newWatch;
-							cb.watch("checked", function(name, o, n){
-								oldWatch = o;
-								newWatch = n;
-							});
-
-							cb.set("checked", false);
-							doh.t(oldWatch, "old value was checked");
-							doh.f(newWatch, "new value is unchecked");
-
-							cb.set("checked", true);
-							doh.f(oldWatch, "old value was unchecked");
-							doh.t(newWatch, "new value is checked");
-						}
-					]
-				);
 
 				doh.run();
 			});

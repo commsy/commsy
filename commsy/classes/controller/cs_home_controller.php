@@ -231,9 +231,16 @@
 				// TODO: where does activity come from?
 				// continue if name of rubric is activity
 				if($rubric_name === 'activity') continue;
-
+				
 				// store hidden state
 				$return[$rubric_name]['hidden'] = ($postfix === 'short') ? false : true;
+				
+				// check rights
+				if ($current_user->isUser() && $this->_with_modifying_actions && $rubric_name != CS_USER_TYPE) {
+					$return[$rubric_name]['rights']['new'] = true;
+				} else {
+					$return[$rubric_name]['rights']['new'] = false;
+				}
 
 				$rubric_list[] = $rubric_name;
 

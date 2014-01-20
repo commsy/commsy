@@ -11,13 +11,14 @@ define([
 	"dijit/_WidgetBase",
 	"./TransitionEvent",
 	"./iconUtils",
-	"./sniff"
-], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has){
+	"./sniff",
+	"dojo/has!dojo-bidi?dojox/mobile/bidi/_ItemBase"
+], function(array, declare, lang, win, domClass, touch, registry, Contained, Container, WidgetBase, TransitionEvent, iconUtils, has, BidiItemBase){
 
 	// module:
 	//		dojox/mobile/_ItemBase
 
-	return declare("dojox.mobile._ItemBase", [WidgetBase, Container, Contained],{
+	var _ItemBase = declare(has("dojo-bidi") ? "dojox.mobile._NonBidiItemBase" : "dojox.mobile._ItemBase", [WidgetBase, Container, Contained], {
 		// summary:
 		//		A base class for item classes (e.g. ListItem, IconItem, etc.).
 		// description:
@@ -185,9 +186,7 @@ define([
 			if(!this._isOnLine){
 				this.inheritParams();
 			}
-			if(this._handleClick && this._selStartMethod === "touch"){
-				this._onTouchStartHandle = this.connect(this.domNode, touch.press, "_onTouchStart");
-			}
+			this._updateHandles();
 			this.inherited(arguments);
 		},
 
@@ -213,6 +212,21 @@ define([
 			return !!parent;
 		},
 
+		_updateHandles: function(){
+			// tags:
+			//		private
+			if(this._handleClick && this._selStartMethod === "touch"){
+				if(!this._onTouchStartHandle){
+					this._onTouchStartHandle = this.connect(this.domNode, touch.press, "_onTouchStart");
+				}
+			}else{
+				if(this._onTouchStartHandle){
+					this.disconnect(this._onTouchStartHandle);
+					this._onTouchStartHandle = null;
+				}
+			}
+		},
+		
 		getTransOpts: function(){
 			// summary:
 			//		Copies from the parent and returns the values of parameters  
@@ -245,7 +259,7 @@ define([
 			// Before transitioning, we want the visual effect of selecting the item.
 			// To ensure this effect happens even if _delayedSelection is true:
 			if(this._delayedSelection){
-			  this.set("selected", true);
+				this.set("selected", true);
 			} // the item will be deselected after transition.
 
 			if(this._onTouchEndHandle){
@@ -262,9 +276,8 @@ define([
 				if(this._selEndMethod === "touch"){
 					this.set("selected", false);
 				}else if(this._selEndMethod === "timer"){
-					var _this = this;
 					this.defer(function(){
-						_this.set("selected", false);
+						this.set("selected", false);
 					}, this._duration);
 				}
 			}
@@ -277,7 +290,7 @@ define([
 				history.back();	
 				return;
 			}	
-			if (this.href && this.hrefTarget) {
+			if (this.href && this.hrefTarget && this.hrefTarget != "_self") {
 				win.global.open(this.href, this.hrefTarget || "_blank");
 				this._onNewWindowOpened(e);
 				return;
@@ -301,7 +314,7 @@ define([
 			// summary:
 			//		Subclasses may want to implement it.
 		},
-		
+
 		_onTouchStart: function(e){
 			// tags:
 			//		private
@@ -319,7 +332,9 @@ define([
 
 			if(this._delayedSelection){
 				// so as not to make selection when the user flicks on ScrollableView
-				this._selTimer = setTimeout(lang.hitch(this, function(){ this.set("selected", true); }), 100);
+				this._selTimer = this.defer(function(){
+					this.set("selected", true);
+				}, 100);
 			}else{
 				this.set("selected", true);
 			}
@@ -361,7 +376,7 @@ define([
 			// summary:
 			//		Cancels an ongoing selection (if any).
 			if(this._selTimer){
-				clearTimeout(this._selTimer);
+				this._selTimer.remove(); 
 				this._selTimer = null;
 			}
 			this._disconnect();
@@ -447,4 +462,5 @@ define([
 			this._set("selected", selected);
 		}
 	});
+	return has("dojo-bidi") ? declare("dojox.mobile._ItemBase", [_ItemBase, BidiItemBase]) : _ItemBase;
 });

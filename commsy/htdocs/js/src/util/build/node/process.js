@@ -1,5 +1,9 @@
 define(["../fileHandleThrottle", "../messages"], function(fht, messages){
-	var version = Number(process.version.match(/\d+\.\d+/)[0]),
+
+	var match = process.version.match(/(\d+)\.(\d+)\.(\d+)/),
+		versionMajor = Number(match[1]),
+		versionMinor = Number(match[2]),
+		versionPatch = Number(match[3]),
 		spawn = require.nodeRequire("child_process").spawn;
 	return {
 		cwd:process.cwd,
@@ -38,10 +42,10 @@ define(["../fileHandleThrottle", "../messages"], function(fht, messages){
 				process.on("exit", finish);
 				// for node>=0.8, close is called; for node <0.8 close appears to not be called (verified for 0.6)
 				// in 0.8+ releasing the file handle before close is called can use up file handles too fast (see #15620)
-				if(version>=0.8){
-					process.on("close", finish);
-				}else{
+				if(versionMajor==0 && versionMinor<=7){
 					++status;
+				}else{
+					process.on("close", finish);
 				}
 				process.stdout.on("data", function(data){
 					text+= data;

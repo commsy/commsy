@@ -15,7 +15,7 @@
 				vertical-align: top;
 			}
 		</style>
-		<script type="text/javascript" src="../../../dojo/dojo.js" djConfig="isDebug: true, parseOnLoad: true">
+		<script type="text/javascript" src="../../../dojo/dojo.js" data-dojo-config="isDebug: true, parseOnLoad: true">
 		</script>
 		<script src="../../../dijit/tests/_testCommon.js">
 		</script>
@@ -81,12 +81,12 @@
 			<option value="opel">Opel</option>
 			<option value="audi">Audi</option>
 		</select>
-		<form dojoType="dijit.form.Form" jsId="form">
+		<form dojoType="dijit.form.Form" data-dojo-id="form">
 			<hr><h2>Multi-select</h2>
 			<table>
 				<tr>
 				<td>
-					<select jsId="ms1" multiple="true" name="ms1" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
+					<select data-dojo-id="ms1" multiple="true" name="ms1" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
 						<option value="TN">Tennessee</option>
 						<option value="VA" selected="selected">Virginia</option>
 						<option value="WA" selected="selected">Washington</option>
@@ -96,21 +96,21 @@
 				</td>
 				<td>
 					<button dojoType="dijit.form.Button">
-						<script type="dojo/method" event="onClick">
+						<script type="dojo/method" data-dojo-event="onClick">
 							ms1.invertSelection(true);
 							return false;
 						</script>
 						Invert Selection
 					</button>
 					<button dojoType="dijit.form.Button">
-						<script type="dojo/method" event="onClick">
+						<script type="dojo/method" data-dojo-event="onClick">
 							ms1.set("disabled", !ms1.disabled);
 							return false;
 						</script>
 						Toggle Disabled
 					</button>
 					<button dojoType="dijit.form.Button">
-						<script type="dojo/method" event="onClick">
+						<script type="dojo/method" data-dojo-event="onClick">
 							console.log(ms1.get("displayedValue"));
 							return false;
 						</script>
@@ -119,7 +119,7 @@
 				</td>
 				<tr>
 					<td>
-						<select jsId="ms2" multiple="true" name="ms2" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
+						<select data-dojo-id="ms2" multiple="true" name="ms2" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
 							<option value="UT">Utah</option>
 							<option value="TX" selected="selected">Texas</option>
 							<option value="GA" selected="selected">Georgia</option>
@@ -131,7 +131,7 @@
 					</td>
 					<td>
 						<button dojoType="dijit.form.Button">
-							<script type="dojo/method" event="onClick">
+							<script type="dojo/method" data-dojo-event="onClick">
 								ms2.set("readOnly", !ms2.readOnly);
 								return false;
 							</script>
@@ -141,12 +141,12 @@
 				</tr>
 				<tr>
 					<td>
-						<select jsId="ms3" multiple="true" maxHeight="125" name="ms3" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
+						<select data-dojo-id="ms3" multiple="true" maxHeight="125" name="ms3" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
 						</select>
 					</td>
 					<td>
 						<button dojoType="dijit.form.Button">
-							<script type="dojo/method" event="onClick">
+							<script type="dojo/method" data-dojo-event="onClick">
 								checkOptions++;
 								ms3.addOption({value: checkOptions + "", label: "Option " + (checkOptions)});
 								return false;
@@ -154,7 +154,7 @@
 							Add Check Option
 						</button>
 						<button dojoType="dijit.form.Button">
-							<script type="dojo/method" event="onClick">
+							<script type="dojo/method" data-dojo-event="onClick">
 								if(checkOptions > 0){
 									checkOptions--;
 									ms3.removeOption(checkOptions);
@@ -167,7 +167,7 @@
 				</tr>
 				<tr>
 					<td>
-						<select jsId="ms4" multiple="true" maxHeight="125" size="5" name="ms4" store="readStore" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
+						<select data-dojo-id="ms4" multiple="true" maxHeight="125" size="5" name="ms4" store="readStore" dojoType="dojox.form.CheckedMultiSelect" dropdown="false">
 						</select>
 					</td>
 					<td>
@@ -176,11 +176,11 @@
 				</tr>
 			</table>
 			<hr><h2>Validation</h2>
-			<select jsId="rq1" multiple="true" required="true" name="rq1" store="readStore" dojoType="dojox.form.CheckedMultiSelect" invalidMessage="You need to select at least one" dropdown="false">
+			<select data-dojo-id="rq1" multiple="true" required="true" name="rq1" store="readStore" dojoType="dojox.form.CheckedMultiSelect" invalidMessage="You need to select at least one" dropdown="false">
 			</select>
 			<button dojoType="dijit.form.Button">
 				Validate
-				<script type='dojo/method' event='onClick'>
+				<script type='dojo/method' data-dojo-event='onClick'>
 					var isvalid = rq1.isValid();
 					console.warn("isvalid?", isvalid, form, form.validate);
 					try{
@@ -194,7 +194,7 @@
 			</button>
 			<hr><h2>Output values in console</h2>
 			<button dojoType="dijit.form.Button">
-				<script type="dojo/method" event="onClick">
+				<script type="dojo/method" data-dojo-event="onClick">
 					console.dir(form.get("value"));
 					return false;
 				</script>

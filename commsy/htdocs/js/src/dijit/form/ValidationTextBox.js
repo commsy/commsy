@@ -94,7 +94,7 @@ define([
 		},
 		_setRegExpGenAttr: function(/*Function*/ newFcn){
 			this._deprecateRegExp("regExpGen", newFcn);
-			this.regExpGen = this._getPatternAttr; // backward compat with this.regExpGen(this.constraints)
+			this._set("regExpGen", this._computeRegexp); // backward compat with this.regExpGen(this.constraints)
 		},
 		_setRegExpAttr: function(/*String*/ value){
 			this._deprecateRegExp("regExp", value);
@@ -104,7 +104,7 @@ define([
 			// summary:
 			//		Hook so set('value', ...) works.
 			this.inherited(arguments);
-			this.validate(this.focused);
+			this._refreshState();
 		},
 
 		validator: function(/*anything*/ value, /*__Constraints*/ constraints){
@@ -112,7 +112,7 @@ define([
 			//		Overridable function used to validate the text input against the regular expression.
 			// tags:
 			//		protected
-			return (new RegExp("^(?:" + this._getPatternAttr(constraints) + ")"+(this.required?"":"?")+"$")).test(value) &&
+			return (new RegExp("^(?:" + this._computeRegexp(constraints) + ")"+(this.required?"":"?")+"$")).test(value) &&
 				(!this.required || !this._isEmpty(value)) &&
 				(this._isEmpty(value) || this.parse(value, constraints) !== undefined); // Boolean
 		},
@@ -130,7 +130,7 @@ define([
 			//		Can override with your own routine in a subclass.
 			// tags:
 			//		protected
-			return this.validator(this.textbox.value, this.constraints);
+			return this.validator(this.textbox.value, this.get('constraints'));
 		},
 
 		_isEmpty: function(value){
@@ -204,7 +204,7 @@ define([
 
 		_refreshState: function(){
 			// Overrides TextBox._refreshState()
-			if(this._created){
+			if(this._created){ // should instead be this._started but that would require all programmatic ValidationTextBox instantiations to call startup()
 				this.validate(this.focused);
 			}
 			this.inherited(arguments);
@@ -241,15 +241,16 @@ define([
 
 		_setPatternAttr: function(/*String|Function*/ pattern){
 			this._set("pattern", pattern); // don't set on INPUT to avoid native HTML5 validation
+			this._refreshState();
 		},
 
-		_getPatternAttr: function(/*__Constraints*/ constraints){
+		_computeRegexp: function(/*__Constraints*/ constraints){
 			// summary:
 			//		Hook to get the current regExp and to compute the partial validation RE.
+
 			var p = this.pattern;
-			var type = (typeof p).toLowerCase();
-			if(type == "function"){
-				p = this.pattern(constraints || this.constraints);
+			if(typeof p == "function"){
+				p = p.call(this, constraints);
 			}
 			if(p != this._lastRegExp){
 				var partialre = "";

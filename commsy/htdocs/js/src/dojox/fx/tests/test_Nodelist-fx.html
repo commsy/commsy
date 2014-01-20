@@ -4,7 +4,7 @@
 <head>
 	<title>dojo.NodeList-fx and dojox.fx.ext-dojo.Nodelist | fx add-ons to dojo.query()</title>
 		
-	<script type="text/javascript" src="../../../dojo/dojo.js" djConfig="parseOnLoad:true, isDebug:true"></script>
+	<script type="text/javascript" src="../../../dojo/dojo.js" data-dojo-config="parseOnLoad:true, isDebug:true"></script>
 	<style type="text/css">
 		@import "../../../dojo/resources/dojo.css";
 		@import "../../../dijit/themes/dijit.css";
@@ -198,7 +198,7 @@
 			<label for="g2rb8">.fadeTo (35% opacity)</label><br>
 
 		</p>
-		<script type="dojo/method" event="onSubmit">
+		<script type="dojo/method" data-dojo-event="onSubmit">
 			// it's like cheating, but we don't event want this form to submit. you can type
 			// a query(), use the arrows to select a method, and hit enter. (or should be able to)
 			return false; 
@@ -206,7 +206,7 @@
 
 		<button dojoType="dijit.form.Button" type="submit" id="runnerButton" >
 			Run
-			<script type="dojo/method" event="onClick">
+			<script type="dojo/method" data-dojo-event="onClick">
 				// our runner / submit button				
 				var str = dojo.byId("customStr").value;
 				var animType;

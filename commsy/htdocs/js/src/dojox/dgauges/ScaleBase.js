@@ -236,3 +236,4 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojox/gfx", "dojo/_base/array"
 		}
 	});
 });
+

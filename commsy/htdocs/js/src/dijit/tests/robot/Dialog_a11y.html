@@ -5,12 +5,13 @@
 		<title>robot Dialog A11Y Test</title>
 
 		<style>
+		<style>
 			@import "../../../util/doh/robot/robot.css";
 		</style>
 
 		<!-- required: dojo.js -->
 		<script type="text/javascript" src="../../../dojo/dojo.js"
-			djConfig="isDebug: true"></script>
+			data-dojo-config="isDebug: true"></script>
 
 		<script type="text/javascript">
 			require([
@@ -454,6 +455,159 @@
 								doh.t(helpers.isHidden("dialog1"), "dialog 1 was closed");
 								doh.is("dialog1button", dfocus.curNode.id, "focus returned to button");
 							}), 2000);
+
+							return d;
+						}
+					}
+				]);
+
+				// Testing if focus somehow gets shifted to an element behind the underlay, by (for example)
+				// access keys, or tabbing in from the URL bar, or clicking the underlay, thus focusing <body>.
+				doh.register("focus return", [
+					{
+						name: "open first",
+						timeout: 10000,
+						runTest: function(){
+							return registry.byId('dialog1').show();
+						}
+					},
+					{
+						name: "open second",
+						timeout: 10000,
+						runTest: function(){
+							var fifthDlg = registry.byId('fifthDlg');
+							return fifthDlg.show().then(function(){
+								return fifthDlg.onLoadDeferred;
+							});
+						}
+					},
+					{
+						name: "focus main page",
+						timeout: 10000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							dom.byId("plainInput").focus();
+
+							setTimeout(d.getTestCallback(function(){
+								doh.t(helpers.isVisible("fifthDlg"), "dialog 5 still visible");
+								doh.is("timeref", dfocus.curNode && dfocus.curNode.id,
+										"focus remains on / returned to dialog");
+							}), 1000);
+
+							return d;
+						}
+					},
+					{
+						name: "close second",
+						timeout: 10000,
+						runTest: function(){
+							return registry.byId('fifthDlg').hide();
+						}
+					},
+					{
+						name: "focus main page again",
+						timeout: 10000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							dom.byId("plainInput").focus();
+
+							setTimeout(d.getTestCallback(function(){
+								doh.t(helpers.isVisible("dialog1"), "dialog 1 still visible");
+								doh.is("name", dfocus.curNode && dfocus.curNode.id,
+										"focus remains on / returned to dialog");
+							}), 1000);
+
+							return d;
+						}
+					},
+					{
+						name: "close first",
+						timeout: 10000,
+						runTest: function(){
+							return registry.byId('dialog1').hide();
+						}
+					}
+				]);
+
+				// Negative test for "focus return".   If the execute() handler shifts focus somewhere,
+				// make sure it isn't automatically shifted back to the Dialog (which is fading out but
+				// not yet hidden).
+				doh.register("focus in execute", [
+					{
+						name: "use dialog",
+						timeout: 15000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							// Open the dialog
+							dom.byId("insertTextButton", robot.doc).focus();
+							robot.keyPress(keys.SPACE, 500, {});
+
+							// Enter some info
+							robot.typeKeys("Hello world", 2000, 600);
+
+							// Submit
+							robot.keyPress(keys.TAB, 1000, {});
+							robot.keyPress(keys.SPACE, 1000, {});
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.is("editor", dfocus.curNode.id, "focus returned to editor");
+								doh.is("Hello world", dom.byId("editor", robot.doc).value, "text inserted");
+							}), 1000);
+
+							return d;
+						}
+					}
+				]);
+
+				doh.register("closable", [
+					{
+						name: "open dialog",
+						timeout: 10000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							dom.byId("unclosableButton").focus();
+							robot.keyPress(keys.SPACE, 1000, {});
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.t(helpers.isVisible("unclosable"), "visible");
+								doh.t(helpers.isHidden(registry.byId("unclosable").closeButtonNode), "close icon hidden");
+							}), 500);
+
+							return d;
+						}
+					},
+
+					{
+						name: "close via ESC",
+						timeout: 4000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							robot.keyPress(keys.ESCAPE, 500, {});
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.t(helpers.isVisible("unclosable"), "still visible");
+							}), 1000);
+
+							return d;
+						}
+					},
+
+					{
+						name: "close via ENTER on OK button",
+						timeout: 4000,
+						runTest: function(){
+							var d = new doh.Deferred();
+
+							robot.keyPress(keys.ENTER, 500, {});
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.t(helpers.isHidden("unclosable"), "hidden");
+							}), 1000);
 
 							return d;
 						}

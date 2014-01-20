@@ -1,12 +1,9 @@
-define("doh/runner", ["dojo/main"], function(dojo){
+define("doh/runner", ["dojo/_base/lang"], function(lang){
 
 var doh = {
 	// summary:
 	//		Functions for registering and running automated tests.
 };
-
-// Remove for 2.0
-dojo.mixin(doh, dojo);
 
 // intentionally define global tests and global doh symbols
 // TODO: scrub these globals from tests and remove this pollution for 2.0
@@ -34,7 +31,9 @@ doh.error = function(){
 
 doh._AssertFailure = function(msg, hint){
 	if (doh.breakOnError) {
+		//>>excludeStart("debuggerCrashesRhino", /^shrinksafe.comments/.test(kwArgs.optimize));
 		debugger;
+		//>>excludeEnd("debuggerCrashesRhino")
 	}
 	if(!(this instanceof doh._AssertFailure)){
 		return new doh._AssertFailure(msg, hint);
@@ -59,7 +58,7 @@ doh.Deferred = function(canceller){
 	this.silentlyCancelled = false;
 };
 
-doh.extend(doh.Deferred, {
+lang.extend(doh.Deferred, {
 	getTestErrback: function(cb, scope){
 		// summary:
 		//		Replaces outer getTextCallback's in nested situations to avoid multiple callback(true)'s
@@ -68,7 +67,7 @@ doh.extend(doh.Deferred, {
 			try{
 				cb.apply(scope||doh.global||_this, arguments);
 			}catch(e){
-				_this.errback(e);
+				_this.reject(e);
 			}
 		};
 	},
@@ -79,26 +78,11 @@ doh.extend(doh.Deferred, {
 			try{
 				cb.apply(scope||doh.global||_this, arguments);
 			}catch(e){
-				_this.errback(e);
+				_this.reject(e);
 				return;
 			}
-			_this.callback(true);
+			_this.resolve(true);
 		};
-	},
-
-	getFunctionFromArgs: function(){
-		// TODO: this looks like dojo.hitch? remove and replace?
-		var a = arguments;
-		if((a[0])&&(!a[1])){
-			if(typeof a[0] == "function"){
-				return a[0];
-			}else if(typeof a[0] == "string"){
-				return doh.global[a[0]];
-			}
-		}else if((a[0])&&(a[1])){
-			return doh.hitch(a[0], a[1]);
-		}
-		return null;
 	},
 
 	_nextId: (function(){
@@ -114,7 +98,7 @@ doh.extend(doh.Deferred, {
 				this.silentlyCancelled = true;
 			}
 			if(this.fired == -1){
-				this.errback(new Error("Deferred(unfired)"));
+				this.reject(new Error("Deferred(unfired)"));
 			}
 		}else if(this.fired == 0 && this.results[0] && this.results[0].cancel){
 			this.results[0].cancel();
@@ -152,12 +136,12 @@ doh.extend(doh.Deferred, {
 		}
 	},
 
-	callback: function(res){
+	resolve: function(res){
 		this._check();
 		this._resback(res);
 	},
 
-	errback: function(res){
+	reject: function(res){
 		this._check();
 		if(!(res instanceof Error)){
 			res = new Error(res);
@@ -165,39 +149,32 @@ doh.extend(doh.Deferred, {
 		this._resback(res);
 	},
 
-	addBoth: function(cb, cbfn){
-		// TODO: this looks like dojo.hitch? remove and replace?
-		var enclosed = this.getFunctionFromArgs(cb, cbfn);
-		if(arguments.length > 2){
-			enclosed = doh.hitch(null, enclosed, arguments, 2);
-		}
-		return this.addCallbacks(enclosed, enclosed);
-	},
-
-	addCallback: function(cb, cbfn){
-		// TODO: this looks like dojo.hitch? remove and replace?
-		var enclosed = this.getFunctionFromArgs(cb, cbfn);
-		if(arguments.length > 2){
-			enclosed = doh.hitch(null, enclosed, arguments, 2);
-		}
-		return this.addCallbacks(enclosed, null);
-	},
-
-	addErrback: function(cb, cbfn){
-		// TODO: this looks like dojo.hitch? remove and replace?
-		var enclosed = this.getFunctionFromArgs(cb, cbfn);
-		if(arguments.length > 2){
-			enclosed = doh.hitch(null, enclosed, arguments, 2);
-		}
-		return this.addCallbacks(null, enclosed);
-	},
-
-	addCallbacks: function(cb, eb){
+	then: function(cb, eb){
 		this.chain.push([cb, eb]);
 		if(this.fired >= 0){
 			this._fire();
 		}
 		return this;
+	},
+
+	always: function(cb){
+		this.then(cb, cb);
+	},
+
+	otherwise: function(eb){
+		this.then(null, eb);
+	},
+
+	isFulfilled: function(){
+		return this.fired >= 0;
+	},
+
+	isResolved: function(){
+		return this.fired == 0;
+	},
+
+	isRejected: function(){
+		return this.fired == 1;
 	},
 
 	_fire: function(){
@@ -216,7 +193,7 @@ doh.extend(doh.Deferred, {
 			try {
 				res = f(res);
 				fired = ((res instanceof Error) ? 1 : 0);
-				if(res && res.addCallback){
+				if(res && res.then){
 					cb = function(res){
 						self._continue(res);
 					};
@@ -230,8 +207,63 @@ doh.extend(doh.Deferred, {
 		this.fired = fired;
 		this.results[fired] = res;
 		if((cb)&&(this.paused)){
-			res.addBoth(cb);
+			res.always(cb);
 		}
+	}
+});
+
+lang.extend(doh.Deferred, {
+	// Back compat methods, remove for 2.0
+
+	getFunctionFromArgs: function(){
+		// Like lang.hitch but first arg (context) is optional
+		var a = arguments;
+		if((a[0])&&(!a[1])){
+			if(typeof a[0] == "function"){
+				return a[0];
+			}else if(typeof a[0] == "string"){
+				return doh.global[a[0]];
+			}
+		}else if((a[0])&&(a[1])){
+			return lang.hitch(a[0], a[1]);
+		}
+		return null;
+	},
+
+	addCallbacks: function(cb, eb){
+		this.then(cb, eb);
+	},
+
+	addCallback: function(cb, cbfn){
+		var enclosed = this.getFunctionFromArgs(cb, cbfn);
+		if(arguments.length > 2){
+			enclosed = lang.hitch(null, enclosed, arguments, 2);
+		}
+		return this.then(enclosed);
+	},
+
+	addErrback: function(cb, cbfn){
+		var enclosed = this.getFunctionFromArgs(cb, cbfn);
+		if(arguments.length > 2){
+			enclosed = lang.hitch(null, enclosed, arguments, 2);
+		}
+		return this.otherwise(enclosed);
+	},
+
+	addBoth: function(cb, cbfn){
+		var enclosed = this.getFunctionFromArgs(cb, cbfn);
+		if(arguments.length > 2){
+			enclosed = lang.hitch(null, enclosed, arguments, 2);
+		}
+		return this.always(enclosed);
+	},
+
+	callback: function(val){
+		this.resolve(val);
+	},
+
+	errback: function(val){
+		this.reject(val);
 	}
 });
 
@@ -318,12 +350,12 @@ var
 	createFixture= function(group, test, type){
 		// test is a function, string, or fixture object
 		var tObj = test;
-		if(dojo.isString(test)){
+		if(lang.isString(test)){
 			tObj = {
 				name: test.replace("/\s/g", "_"), // FIXME: bad escapement
 				runTest: new Function("t", test)
 			};
-		}else if(dojo.isFunction(test)){
+		}else if(lang.isFunction(test)){
 			// if we didn't get a fixture, wrap the function
 			tObj = { "runTest": test };
 			if(test["name"]){
@@ -340,7 +372,7 @@ var
 				}
 			}
 			// FIXME: try harder to get the test name here
-		}else if(dojo.isString(tObj.runTest)){
+		}else if(lang.isString(tObj.runTest)){
 			tObj.runTest= new Function("t", tObj.runTest);
 		}
 		if(!tObj.runTest){
@@ -362,7 +394,7 @@ var
 	},
 
 	dumpArg= function(arg){
-		if(dojo.isString(arg)){
+		if(lang.isString(arg)){
 			return "string(" + arg + ")";
 		} else {
 			return typeof arg;
@@ -376,9 +408,9 @@ var
 		}
 		doh.debug("ERROR:");
 		if(testArgPosition){
-			doh.debug("\tillegal arguments provided to dojo.register; the test at argument " + testArgPosition + " wasn't a test.");
+			doh.debug("\tillegal arguments provided to doh.register; the test at argument " + testArgPosition + " wasn't a test.");
 		}else{
-			doh.debug("\tillegal arguments provided to dojo.register");
+			doh.debug("\tillegal arguments provided to doh.register");
 		}
 		doh.debug(hint);
 	};
@@ -429,9 +461,9 @@ doh._registerTest = function(group, test, type){
 
 	// create the test fixture
 	var tObj;
-	if(dojo.isFunction(test) || dojo.isString(test) || "runTest" in test){
+	if(lang.isFunction(test) || lang.isString(test) || "runTest" in test){
 		return createFixture(group, test, type) ? groupObj : 0;
-	}else if(dojo.isArray(test)){
+	}else if(lang.isArray(test)){
 		// a vector of tests...
 		for(var i=0; i<test.length; i++){
 			tObj = createFixture(group, test[i], type);
@@ -446,7 +478,7 @@ doh._registerTest = function(group, test, type){
 		// a hash of tests...
 		for(var testName in test){
 			var theTest = test[testName];
-			if(dojo.isFunction(theTest) || dojo.isString(theTest)){
+			if(lang.isFunction(theTest) || lang.isString(theTest)){
 				tObj = createFixture(group, {name: testName, runTest: theTest}, type);
 			}else{
 				// should be an object
@@ -783,8 +815,8 @@ doh.register = function(a1, a2, a3, a4, a5){
 
 doh.registerDocTests = function(module){
 	// summary:
-	//		Get all the doctests from the given module and register each of them
-	//		as a single test case here.
+	//		Deprecated.    Won't work unless you manually load dojox.testing.DocTest, and likely not even then.
+	//		Gets all the doctests from the given module and register each of them as a single test case here.
 
 	var docTest = new dojox.testing.DocTest();
 	var docTests = docTest.getTests(module);
@@ -858,7 +890,7 @@ doh.t = doh.assertTrue = function(/*Object*/ condition, /*String?*/ hint){
 	if(arguments.length < 1){
 		throw new doh._AssertFailure("assertTrue failed because it was not passed at least 1 argument");
 	}
-	//if(dojo.isString(condition) && condition.length){
+	//if(lang.isString(condition) && condition.length){
 	//	return true;
 	//}
 	if(!eval(condition)){
@@ -914,7 +946,7 @@ doh.is = doh.assertEqual = function(/*Object*/ expected, /*Object*/ actual, /*St
 
 		return true;
 	}
-	if( (this.isArray(expected) && this.isArray(actual))&&
+	if( (lang.isArray(expected) && lang.isArray(actual))&&
 		(this._arrayEq(expected, actual)) ){
 		return true;
 	}
@@ -944,7 +976,7 @@ doh.isNot = doh.assertNotEqual = function(/*Object*/ notExpected, /*Object*/ act
 	if((notExpected === actual)||(notExpected == actual)){
 				throw new doh._AssertFailure("assertNotEqual() failed: not expected |"+notExpected+"| but got |"+actual+"|", hint);
 	}
-	if( (this.isArray(notExpected) && this.isArray(actual))&&
+	if( (lang.isArray(notExpected) && lang.isArray(actual))&&
 		(this._arrayEq(notExpected, actual)) ){
 		throw new doh._AssertFailure("assertNotEqual() failed: not expected |"+notExpected+"| but got |"+actual+"|", hint);
 	}
@@ -988,12 +1020,15 @@ doh._objPropEq = function(expected, actual){
 	var x;
 	// Make sure ALL THE SAME properties are in both objects!
 	for(x in actual){ // Lets check "actual" here, expected is checked below.
-		if(expected[x] === undefined){
+		if(!(x in expected)){
 			return false;
 		}
 	}
 
 	for(x in expected){
+		if(!(x in actual)){
+			return false;
+		}
 		if(!doh.assertEqual(expected[x], actual[x], 0, true)){
 			return false;
 		}
@@ -1040,7 +1075,7 @@ doh._handleFailure = function(groupName, fixture, e){
 	}
 };
 
-doh._runPerfFixture = function(/*String*/groupName, /*Object*/fixture){
+doh._runPerfFixture = function(/*String*/ groupName, /*Object*/ fixture){
 	// summary:
 	//		This function handles how to execute a 'performance' test
 	//		which is different from a straight UT style test.  These
@@ -1064,13 +1099,15 @@ doh._runPerfFixture = function(/*String*/groupName, /*Object*/fixture){
 	def.fixture = fixture;
 
 	var threw = false;
-	def.addErrback(function(err){
+	def.otherwise(function(err){
 		doh._handleFailure(groupName, fixture, err);
 		threw = true;
 	});
 
 	// Set up the finalizer.
+	var fulfilled;
 	var retEnd = function(){
+		fulfilled = true;
 		if(fixture["tearDown"]){ fixture.tearDown(doh); }
 		tg.inFlight--;
 		if((!tg.inFlight)&&(tg.iterated)){
@@ -1088,12 +1125,12 @@ doh._runPerfFixture = function(/*String*/groupName, /*Object*/fixture){
 	var to = fixture.timeout;
 	if(to > 0) {
 		timer = setTimeout(function(){
-			def.errback(new Error("test timeout in "+fixture.name.toString()));
+			def.reject(new Error("test timeout in "+fixture.name.toString()));
 		}, to);
 	}
 
 	// Set up the end calls to the test into the deferred we'll return.
-	def.addBoth(function(){
+	def.always(function(){
 		if(timer){
 			clearTimeout(timer);
 		}
@@ -1109,105 +1146,113 @@ doh._runPerfFixture = function(/*String*/groupName, /*Object*/fixture){
 
 	// Try to figure out how many calls are needed to hit a particular threshold.
 	var itrDef = doh._calcTrialIterations(groupName, fixture);
-	itrDef.addErrback(function(err){
-		fixture.endTime = new Date();
-		def.errback(err);
-	});
 
 	// Blah, since tests can be deferred, the actual run has to be deferred until after
 	// we know how many iterations to run.  This is just plain ugly.
-	itrDef.addCallback(function(iterations){
-		if(iterations){
-			var countdown = fixture.trialIterations;
-			doh.debug("TIMING TEST: [" + fixture.name +
-						"]\n\t\tITERATIONS PER TRIAL: " +
-						iterations + "\n\tTRIALS: " +
-						countdown);
+	itrDef.then(
+		function(iterations){
+			if(iterations){
+				var countdown = fixture.trialIterations;
+				doh.debug("TIMING TEST: [" + fixture.name +
+							"]\n\t\tITERATIONS PER TRIAL: " +
+							iterations + "\n\tTRIALS: " +
+							countdown);
 
-			// Figure out how many times we want to run our 'trial'.
-			// Where each trial consists of 'iterations' of the test.
+				// Figure out how many times we want to run our 'trial'.
+				// Where each trial consists of 'iterations' of the test.
 
-			var trialRunner = function() {
-				// Set up our function to execute a block of tests
-				var start = new Date();
-				var tTimer = new doh.Deferred();
+				var trialRunner = function() {
+					// Set up our function to execute a block of tests
+					var start = new Date();
+					var tTimer = new doh.Deferred();
 
-				var tState = {
-					countdown: iterations
-				};
-				var testRunner = function(state){
-					while(state){
-						try{
-							state.countdown--;
-							if(state.countdown){
-								var ret = fixture.runTest(doh);
-								if(ret && ret.addCallback){
-									// Deferreds have to be handled async,
-									// otherwise we just keep looping.
-									var atState = {
-										countdown: state.countdown
-									};
-									ret.addCallback(function(){
-										testRunner(atState);
-									});
-									ret.addErrback(function(err) {
-										doh._handleFailure(groupName, fixture, err);
-										fixture.endTime = new Date();
-										def.errback(err);
-									});
+					var tState = {
+						countdown: iterations
+					};
+					var testRunner = function(state){
+						while(state){
+							try{
+								state.countdown--;
+								if(state.countdown){
+									var ret = fixture.runTest(doh);
+									if(ret && ret.then){
+										// Deferreds have to be handled async,
+										// otherwise we just keep looping.
+										var atState = {
+											countdown: state.countdown
+										};
+										ret.then(
+											function(){
+												testRunner(atState)
+											},
+											function(err){
+												doh._handleFailure(groupName, fixture, err);
+												fixture.endTime = new Date();
+												def.reject(err);
+											}
+										);
+										state = null;
+									}
+								}else{
+									tTimer.resolve(new Date());
 									state = null;
 								}
-							}else{
-								tTimer.callback(new Date());
-								state = null;
+							}catch(err){
+								fixture.endTime = new Date();
+								tTimer.reject(err);
 							}
-						}catch(err){
-							fixture.endTime = new Date();
-							tTimer.errback(err);
 						}
-					}
-				};
-				tTimer.addCallback(function(end){
-					// Figure out the results and try to factor out function call costs.
-					var tResults = {
-						trial: (fixture.trialIterations - countdown),
-						testIterations: iterations,
-						executionTime: (end.getTime() - start.getTime()),
-						average: (end.getTime() - start.getTime())/iterations
 					};
-					res.trials.push(tResults);
-					doh.debug("\n\t\tTRIAL #: " +
-								tResults.trial + "\n\tTIME: " +
-								tResults.executionTime + "ms.\n\tAVG TEST TIME: " +
-								(tResults.executionTime/tResults.testIterations) + "ms.");
+					tTimer.then(
+						function(end){
+							// Figure out the results and try to factor out function call costs.
+							var tResults = {
+								trial: (fixture.trialIterations - countdown),
+								testIterations: iterations,
+								executionTime: (end.getTime() - start.getTime()),
+								average: (end.getTime() - start.getTime())/iterations
+							};
+							res.trials.push(tResults);
+							doh.debug("\n\t\tTRIAL #: " +
+										tResults.trial + "\n\tTIME: " +
+										tResults.executionTime + "ms.\n\tAVG TEST TIME: " +
+										(tResults.executionTime/tResults.testIterations) + "ms.");
 
-					// Okay, have we run all the trials yet?
-					countdown--;
-					if(countdown){
-						setTimeout(trialRunner, fixture.trialDelay);
-					}else{
-						// Okay, we're done, lets compute some final performance results.
-						var t = res.trials;
+							// Okay, have we run all the trials yet?
+							countdown--;
+							if(countdown){
+								setTimeout(trialRunner, fixture.trialDelay);
+							}else{
+								// Okay, we're done, let's compute some final performance results.
+								var t = res.trials;
 
+								// We're done.
+								fixture.endTime = new Date();
+								def.resolve(true);
+							}
+						},
 
+						// Handler if tTimer gets an error
+						function(err){
+							fixture.endTime = new Date();
+							def.reject(err);
+						}
+					);
+					testRunner(tState);
+				};
+				trialRunner();
+			}
+		},
 
-						// We're done.
-						fixture.endTime = new Date();
-						def.callback(true);
-					}
-				});
-				tTimer.addErrback(function(err){
-					fixture.endTime = new Date();
-					def.errback(err);
-				});
-				testRunner(tState);
-			};
-			trialRunner();
+		// Handler if itrDef gets an error
+		function(err){
+			fixture.endTime = new Date();
+			def.reject(err);
 		}
-	});
+	);
 
 	// Set for a pause, returned the deferred.
-	if(def.fired < 0){
+	if(!fulfilled){
 		doh.pause();
 	}
 	return def;
@@ -1225,7 +1270,7 @@ doh._calcTrialIterations =	function(/*String*/ groupName, /*Object*/ fixture){
 	//		The test fixture we want to calculate iterations for.
 	var def = new doh.Deferred();
 	var calibrate = function () {
-		var testFunc = doh.hitch(fixture, fixture.runTest);
+		var testFunc = lang.hitch(fixture, fixture.runTest);
 
 		// Set the initial state.	We have to do this as a loop instead
 		// of a recursive function.	Otherwise, it blows the call stack
@@ -1240,26 +1285,28 @@ doh._calcTrialIterations =	function(/*String*/ groupName, /*Object*/ fixture){
 				if(state.curIter < state.iterations){
 					try{
 						var ret = testFunc(doh);
-						if(ret && ret.addCallback){
+						if(ret && ret.then){
 							var aState = {
 								start: state.start,
 								curIter: state.curIter + 1,
 								iterations: state.iterations
 							};
-							ret.addCallback(function(){
-								handleIteration(aState);
-							});
-							ret.addErrback(function(err) {
-								fixture.endTime = new Date();
-								def.errback(err);
-							});
+							ret.then(
+								function(){
+									handleIteration(aState);
+								},
+								function(err) {
+									fixture.endTime = new Date();
+									def.reject(err);
+								}
+							);
 							state = null;
 						}else{
 							state.curIter++;
 						}
 					}catch(err){
 						fixture.endTime = new Date();
-						def.errback(err);
+						def.reject(err);
 						return;
 					}
 				}else{
@@ -1277,7 +1324,7 @@ doh._calcTrialIterations =	function(/*String*/ groupName, /*Object*/ fixture){
 						}, 50);
 					}else{
 						var itrs = state.iterations;
-						setTimeout(function(){def.callback(itrs)}, 50);
+						setTimeout(function(){def.resolve(itrs)}, 50);
 						state = null;
 					}
 				}
@@ -1289,62 +1336,103 @@ doh._calcTrialIterations =	function(/*String*/ groupName, /*Object*/ fixture){
 	return def;
 };
 
-doh._runRegFixture = function(/*String*/groupName, /*Object*/fixture){
+doh._runRegFixture = function(/*String*/ groupName, /*Object*/ fixture){
 	// summary:
-	//		Function to run a generic doh test.  These are not
+	//		Function to help run a generic doh test.  Called from _runFixture().  These are not
 	//		specialized tests, like performance groups and such.
 	// groupName:
 	//		The groupName of the test.
 	// fixture:
 	//		The test fixture to execute.
+
 	var tg = this._groups[groupName];
+
 	fixture.startTime = new Date();
+
 	var ret = fixture.runTest(this);
-	fixture.endTime = new Date();
+
 	// if we get a deferred back from the test runner, we know we're
 	// gonna wait for an async result. It's up to the test code to trap
 	// errors and give us an errback or callback.
-	if(ret && ret.addCallback){
+	if(ret && ret.then){
+
+		// If ret is a dojo/Deferred, get the corresponding Promise; it has some additional methods we need.
+		if(ret.promise){
+			ret = ret.promise;
+		}
+
 		tg.inFlight++;
 		ret.groupName = groupName;
 		ret.fixture = fixture;
 
+		// Setup handler for when test fails.
 		var threw = false;
-		ret.addErrback(function(err){
+		ret.otherwise(function(err){
+			if(threw){
+				// the fixture timeout (below) must have already fired
+				return;
+			}
 			doh._handleFailure(groupName, fixture, err);
 			threw = true;
 		});
 
+		var fulfilled;
 		var retEnd = function(){
+			// summary:
+			//		Called when tests finishes successfully, fails, or times out
 
-			if(fixture["tearDown"]){ fixture.tearDown(doh); }
+			if(fulfilled){
+				// retEnd() has already executed; probably the timeout above fired and then later ret completed.
+				return;
+			}
+			fulfilled = true;
+
+			fixture.endTime = new Date();
+
+			if(fixture.tearDown){
+				try {
+					fixture.tearDown(doh);
+				}catch(e){
+					this.debug("Error tearing down test: "+e.message);
+				}
+			}
 			tg.inFlight--;
 			doh._testFinished(groupName, fixture, !threw);
+
 			if((!tg.inFlight)&&(tg.iterated)){
 				doh._groupFinished(groupName, !tg.failures);
 			}
+
+			// Go on to next test
 			if(doh._paused){
 				doh.run();
 			}
 		};
 
-		var timeoutFunction = function(){
-			fixture.endTime = new Date();
-			ret.errback(new Error("test timeout in "+fixture.name.toString()));
-		};
+		var timer = setTimeout(function(){
+			if(!timer){
+				// we already called clearTimeout(), but it fired anyway, due to IE bug; just ignore.
+				return;
+			}
+			// Note: cannot call ret.reject() because ret may be a readonly promise
+			doh._handleFailure(groupName, fixture, new Error("test timeout in " + fixture.name.toString()));
+			threw = true;
+			retEnd();
+		}, fixture["timeout"]||1000);
 
-		var timer = setTimeout(function(){ timeoutFunction(); }, fixture["timeout"]||1000);
-
-		ret.addBoth(function(){
-			timeoutFunction = function(){}; // in IE8, the clearTimeout does not always stop the timer, so clear the function as well
+		ret.always(function(){
 			clearTimeout(timer);
-			fixture.endTime = new Date();
+			timer = null;
 			retEnd();
 		});
-		if(ret.fired < 0){
+
+		if(!fulfilled){
 			doh.pause();
 		}
+
 		return ret;
+	}else{
+		// Synchronous test; tearDown etc. handled in _runFixture(), the function that called me
 	}
 };
 
@@ -1369,26 +1457,30 @@ doh._runFixture = function(groupName, fixture){
 				// May or may not by async.
 				var ret = doh._runRegFixture(groupName, fixture);
 				if(ret){
+					// this design is ridiculous, but tearDown etc. is handled in _runRegFixture iff fixture is async;
+					// likewise with runPerfFixture
 					return ret;
 				}
 			}
 		}
-		if(fixture["tearDown"]){ fixture.tearDown(this); }
 	}catch(e){
-		// should try to tear down regardless whether test passed or failed...
-		try{
-			if(fixture["tearDown"]){ fixture.tearDown(this); }
-		}catch(e){
-			this.debug("Error tearing down test: "+e.message);
-		}
 		threw = true;
 		err = e;
-		if(!fixture.endTime){
-			fixture.endTime = new Date();
-		}
 	}
+
+	// The rest of the code in this function executes only if test returns synchronously...
+
+	fixture.endTime = new Date();
+
+	// should try to tear down regardless whether test passed or failed...
+	try{
+		if(fixture["tearDown"]){ fixture.tearDown(this); }
+	}catch(e){
+		this.debug("Error tearing down test: "+e.message);
+	}
+
 	var d = new doh.Deferred();
-	setTimeout(this.hitch(this, function(){
+	setTimeout(lang.hitch(this, function(){
 		if(threw){
 			this._handleFailure(groupName, fixture, err);
 		}
@@ -1397,7 +1489,7 @@ doh._runFixture = function(groupName, fixture){
 		if((!tg.inFlight)&&(tg.iterated)){
 			doh._groupFinished(groupName, !tg.failures);
 		}else if(tg.inFlight > 0){
-			setTimeout(this.hitch(this, function(){
+			setTimeout(lang.hitch(this, function(){
 				doh.runGroup(groupName);
 			}), 100);
 			this._paused = true;
@@ -1426,7 +1518,7 @@ doh.runGroup = function(/*String*/ groupName, /*Integer*/ idx){
 	idx = idx || 0;
 	var tg = this._groups[groupName];
 	if(tg.skip === true){ return; }
-	if(this.isArray(tg)){
+	if(lang.isArray(tg)){
 		if(tg.iterated===undefined){
 			tg.iterated = false;
 			tg.inFlight = 0;
@@ -1524,7 +1616,9 @@ doh.run = function(){
 };
 
 doh.runOnLoad = function(){
-	dojo.ready(doh, "run");
+	require(["dojo/ready"], function(ready){
+		ready(doh, "run");
+	});
 };
 
 return doh;

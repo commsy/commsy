@@ -1,4 +1,4 @@
-define(["doh/runner", "require"], function(doh, require){
+define(["doh/runner", "require", "dojo/_base/config"], function(doh, require, config){
 	/*=====
 	return {
 		// summary:
@@ -21,10 +21,10 @@ define(["doh/runner", "require"], function(doh, require){
 	};
 
 	console.log("\n"+doh._line);
-	console.log("The Dojo Unit Test Harness, $Rev: 23869 $");
+	console.log("The Dojo Unit Test Harness, $Rev: e6490e5 $");
 	console.log("Copyright (c) 2011, The Dojo Foundation, All Rights Reserved");
 	console.log("Running with node.js");
-	for (var tests= [], args=doh.config["commandLineArgs"], i= 0, arg; i<args.length; i++) {
+	for (var tests= [], args= config["commandLineArgs"], i= 0, arg; i<args.length; i++) {
 		arg= args[i];
 		if (arg.length==2 && arg[0]=="test") {
 			var test= arg[1];

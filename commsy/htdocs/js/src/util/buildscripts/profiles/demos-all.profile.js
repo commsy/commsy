@@ -339,7 +339,18 @@ dependencies = {
 				"dojox/mobile/Opener",
 				"dojox/mobile/SpinWheelDatePicker",
 				"dojo/date/stamp",
+				"dojox/app/main",
+				"dojox/app/View",
+				"dojox/app/ViewBase",
+				"dojox/app/controllers/Load",
+				"dojox/app/controllers/History",
+				"dojox/app/controllers/Transition",
+				"dojox/app/controllers/LayoutBase",
+				"dojox/app/controllers/Layout",
 				"dojox/app/widgets/Container",
+				"dojox/css3/transit",
+				"dojox/css3/transition",
+				"dojox/json/ref",
 				"dojo/store/Memory",
 				"dojo/data/ItemFileWriteStore",
 				"dojo/store/DataStore",
@@ -351,6 +362,7 @@ dependencies = {
 				"dojox/mvc/Output",
 				"dojox/mvc/at",
 				"dojox/app/main",
+				"demos/todoApp/utils/utils",
 				"demos.todoApp.src"
 			]
 		}
