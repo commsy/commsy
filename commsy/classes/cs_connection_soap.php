@@ -691,7 +691,7 @@ class cs_connection_soap {
    }
 
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-      el('authenticate '. $user_id);
+   	el('authenticate '. $user_id);
       el('authenticate');
       
       $user_id = $this->_encode_input($user_id);
@@ -723,8 +723,8 @@ class cs_connection_soap {
                if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
                   el('authenticate 6');
                   if ($this->_isSessionActive($user_id,$portal_id)) {
-                     el('authenticate 7');
-                     $result = $this->_getActiveSessionID($user_id,$portal_id);
+                  	el('authenticate 7');
+                  	$result = $this->_getActiveSessionID($user_id,$portal_id);
                      if ( empty($result) ) {
                         el('authenticate 8');
                         $info = 'ERROR';
@@ -917,7 +917,7 @@ class cs_connection_soap {
       $retour = '';
       el('_getActiveSessionID '.$user_id);
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
-         el('_getActiveSessionID !empty');
+      	el('_getActiveSessionID !empty');
          $retour = $this->_session_id_array[$portal_id][$user_id];
       } else {
          $session_manager = $this->_environment->getSessionManager();
@@ -4402,6 +4402,16 @@ class cs_connection_soap {
    		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
    		$this->_updateSessionCreationDate($session_id);
    		return $connection_obj->getOwnConnectionKeySOAP($session_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+   
+   public function setPortalConnectionInfo ($session_id, $server_key, $portal_id, $tab_id) {
+      	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->setPortalConnectionInfoSOAP($session_id, $server_key, $portal_id, $tab_id);
    	} else {
    		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
    	}

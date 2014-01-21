@@ -2329,6 +2329,10 @@ class cs_privateroom_item extends cs_room_item {
    	return $retour;
    }
 
+   public function switchOnCSBarConnection () {
+   	$this->setCSBarShowConnection('1');
+   }
+   
    function getPortletShowActiveRoomList () {
       $retour = true;
       if ($this->_issetExtra('PORTLET_ACTIVE_ROOM_LIST')) {

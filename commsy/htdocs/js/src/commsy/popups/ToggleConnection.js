@@ -56,9 +56,12 @@ define([	"dojo/_base/declare",
 			
 			// save
 			// register click for additional status button
-			On(Query("input#submit_current", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
-				this.saveCurrentTabs();
-			}));
+			var editButtonArray = Query("input#submit_current", this.contentNode);
+			if (editButtonArray.length > 0) {
+			   On(Query("input#submit_current", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
+				   this.saveCurrentTabs();
+			   }));
+			}
 			
 			// save new
 			// register click for additional status button
@@ -69,7 +72,16 @@ define([	"dojo/_base/declare",
 			// drag and drop [TBD]
 			//var wishListNode = Query("ol#wishListNode", this.contentNode)[0]
 			//var wishlist = new Source(wishListNode);
-
+			
+			// register click for room links
+			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
+				// get href
+				var href = this.getAttrAsObject(node, "data-custom").href;
+				
+				On(node, "click", function(event) {
+					location.href = href;
+				});
+			}));
 		},
 		
 		setupSpecificEdit: function() {

@@ -74,7 +74,9 @@
                            </ol>
                            -->
                            <div class="input_row" style="margin-bottom:40px;">
-                              <input id="submit_current" class="submit popup_button" data-custom="part: 'connection'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+                              {if !empty($popup.tabs)}
+                                 <input id="submit_current" class="submit popup_button" data-custom="part: 'connection'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
+                              {/if}
                            </div>
                            <div class="clear"></div>
                         </fieldset>

@@ -166,6 +166,17 @@ class cs_connection_commsy {
    	$retour['getOwnConnectionKey'] = $temp_array;
    	unset($temp_array);
    	
+   	$temp_array = array();
+   	$temp_array['in'] = array();
+   	$temp_array['in']['session_id'] = 'string';
+   	$temp_array['in']['server_key'] = 'string';
+   	$temp_array['in']['portal_id'] = 'integer';
+   	$temp_array['in']['tab_id'] = 'string';
+   	$temp_array['out'] = array();
+   	$temp_array['out']['result'] = 'string';
+   	$retour['setPortalConnectionInfo'] = $temp_array;
+   	unset($temp_array);
+   	
    	return $retour;
    }
    
@@ -207,7 +218,7 @@ class cs_connection_commsy {
    			$sid = $this->_connection->getGuestSession($connect_info_array['portal_id']);
    			if ( !empty($sid) ) {
    		      $sid = $this->_connection->getSessionIdFromConnectionKey($sid,$connect_info_array['portal_id'],$connect_info_array['user_key'],$connect_info_array['server_key']);
-   				if ( !empty($sid) ) {
+   		      if ( !empty($sid) ) {
    					$result = $this->_connection->getRoomListAsJson($sid);
    					if ( !empty($result) ) {
    						$retour = json_decode($result,true);
@@ -313,19 +324,22 @@ class cs_connection_commsy {
    					}
    					$new_tab['id'] = md5($new_tab['portal_connection_id'].rand(0,100).date(YmdHis).rand(0,100).$new_tab['title_original']);
    					
+   					// second: save tab external
+   					$result = $this->_connection->setPortalConnectionInfo($sid,$server_item->getOwnConnectionKey(),$portal_user->getContextID(), $new_tab['id']);
+   					if ( !empty($result)
+   						  and !is_soap_fault($result)
+   					   ) {
+   						$new_tab['id_external'] = $result;
+   					} else {
+   					   $retour = 'SAVE_TAB_FAILED';
+   					}
+   					
    					$tab_array = $portal_user->getPortalConnectionArrayDB();
    					$tab_array[] = $new_tab;
    					unset($temp_array);
    					$portal_user->setPortalConnectionInfoDB($tab_array);
    					$portal_user->save();
-   					
-   					// second: save tab external
-   					// [TBD] SOAP
-   					$result = $this->_connection->setPortalConnectionInfo($sid,$server_item->getOwnConnectionKey(),$portal_user->getContextID());
-   					if ( $result != 'success' ) {
-   					   $retour = 'SAVE_TAB_FAILED';
-   					}
-   					
+   							
    				} else {
    					$retour = 'SAVE_KEY_FAILED';
    				}
@@ -354,16 +368,11 @@ class cs_connection_commsy {
    		$auth = false;
    	}
    	
-   	// find user with user_key [TBD]
+   	// find user with user_key
    	if ( $auth ) {
    		$user_manager = $this->_environment->getUserManager();
    		$user_manager->setContextLimit($portal_id);
-   		// TBD
-   		/*
-   	    [user_key] => 954c534de6646a0a71a8ed37e7374b98
-   	   */
-   		#$user_manager->setExternalConnectionUserKeyLimit($user_key);
-   		$user_manager->setUserIDLimit('jackewit'); // test - delete [TBD]
+   		$user_manager->setExternalConnectionUserKeyLimit($user_key);
    		$user_manager->select();
    		$user_list = $user_manager->get();
    		if ( !empty($user_list)
@@ -575,6 +584,9 @@ class cs_connection_commsy {
          	$user_item->addExternalConnectionKey($user_key);
          	$user_item->save();
          	$retour = 'success';
+         } else {
+         	#$retour = $session_id;
+         	// guest session ??? [TBD]
          }
    		   	
    	}
@@ -616,6 +628,91 @@ class cs_connection_commsy {
          	$retour = $user_item->getOwnConnectionKey();
          }
    		   	
+   	}
+   	
+   	return $retour;
+   }
+   
+   public function setPortalConnectionInfoSOAP ($session_id,$server_key,$portal_id,$tab_id) {
+   	$retour = 'failed';
+   	
+   	if ( !empty($session_id)
+   		  and !empty($server_key)
+   		  and !empty($portal_id)
+   		  and !empty($tab_id)
+   	   ) {
+   		
+   	   // set context - get portal user
+   	   $context = false;
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         
+         $user_list = $user_manager->get();
+         $retour = $user_list->getCount();
+         if ( $user_list->getCount() == 1 ) {
+         	$portal_user = $user_list->getFirst();
+            if ( !empty($portal_user) ) {
+               $this->_environment->setCurrentUserItem($portal_user);
+               $context = true;
+            }
+         }
+
+         // get server connection infos
+         if ( $context ) {
+         	$server_item = $this->_environment->getServerItem();
+         	$server_info = $server_item->getServerConnectionInfoByKey($server_key);
+         	
+            if ( !empty($server_info['id'])
+            	  and !empty($server_info['url'])
+            	) {
+            	// get portal name
+            	$new_tab = array();
+            	$new_tab['server_connection_id'] = $server_info['id'];
+            	$new_tab['portal_connection_id'] = $portal_id;
+            	$portal_array = $this->getPortalArrayFromServer($server_info['id']);
+            	foreach ( $portal_array as $portal_info ) {
+            		if ( $portal_info['id'] == $portal_id ) {
+            			$new_tab['title'] = $portal_info['title'];
+            			$new_tab['title_original'] = $portal_info['title'];
+            			break;
+            		}
+            	}
+            	if ( empty($new_tab['title']) ) {
+            		$new_tab['title'] = 'Portal';
+            	}
+            	if ( empty($new_tab['title_original']) ) {
+            		$new_tab['title_original'] = 'unknown';
+            	}
+            	$new_tab['id'] = md5($new_tab['portal_connection_id'].rand(0,100).date(YmdHis).rand(0,100).$new_tab['title_original']);
+            	$new_tab['id_external'] = $tab_id;
+            	
+            	$tab_array = $portal_user->getPortalConnectionArrayDB();
+            	$tab_array[] = $new_tab;
+            	unset($temp_array);
+            	$portal_user->setPortalConnectionInfoDB($tab_array);
+            	
+            	// is connection activated? if not, active it
+            	$own_room = $portal_user->getOwnRoom();
+            	if ( !empty($own_room)
+            		  and !$own_room->showCSBarConnection()
+            		) {
+            		$own_room->switchOnCSBarConnection();
+            		$own_room->save();
+            	}
+            	
+            	$portal_user->save();
+            	$retour = $new_tab['id'];             	
+            }
+         }
    	}
    	
    	return $retour;

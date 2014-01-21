@@ -160,6 +160,8 @@ class cs_user_manager extends cs_manager {
    private $_limit_no_membership = NULL;
 
    private $_limit_email = NULL;
+   
+   private $_limit_connection_key = NULL;
 
    /** constructor
     * the only available constructor, initial values for internal variables<br />
@@ -207,6 +209,11 @@ class cs_user_manager extends cs_manager {
       $this->_only_from_portal = false;
       $this->_limit_email = NULL;
       $this->_user_limit_binary = NULL;
+      $this->_limit_connection_key = NULL;
+   }
+
+   public function setExternalConnectionUserKeyLimit ($value) {
+      $this->_limit_connection_key = $value;
    }
 
    public function setEMailLimit ($value) {
@@ -715,6 +722,13 @@ class cs_user_manager extends cs_manager {
      if ( !empty($this->_id_array_limit) ) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.item_id IN ('.implode(", ", $this->_id_array_limit).')';
      }
+     
+     // portal2Portal: connection key limit
+     if ( !empty($this->_limit_connection_key) ) {
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%CONNECTION_EXTERNAL_KEY_ARRAY%"';
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_key).'%"';
+     }
+      
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {

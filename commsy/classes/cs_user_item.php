@@ -2644,9 +2644,9 @@ class cs_user_item extends cs_item {
    	}
    
    	// test - delete [TBD]
-   	else {
-   		$retour = $this->_generatePortalConnectionArray();
-   	}
+   	#else {
+   	#	$retour = $this->_generatePortalConnectionArray();
+   	#}
    	// test
    
    	return $retour;
