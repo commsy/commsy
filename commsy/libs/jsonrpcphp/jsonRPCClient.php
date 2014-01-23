@@ -59,9 +59,6 @@ class jsonRPCClient {
 	 * MODIFIED: $proxy variable added
 	 */
 	private $proxy = '';
-	/*
-	 * MODIFIED: $proxy variable addedMODIFIED: $proxy variable added
-	 */
 	
 	/**
 	 * Takes the connection parameters
@@ -130,16 +127,7 @@ class jsonRPCClient {
 						'params' => $params,
 						'id' => $currentId
 						);
-		/*
-		 * MODIFIED: Proxy handling added
-		 */
-		if ( !empty($this->proxy) )
-		{
-			$request['proxy'] = $this->proxy;
-		}
-		/*
-		 * MODIFIED: Proxy handling added
-		*/
+		
 		$request = json_encode($request);
 		$this->debug && $this->debug.='***** Request *****'."\n".$request."\n".'***** End Of request *****'."\n\n";
 		
@@ -149,6 +137,16 @@ class jsonRPCClient {
 							'header'  => 'Content-type: application/json',
 							'content' => $request
 							));
+
+		/*
+		 * MODIFIED: Proxy handling added
+		*/
+		if ( !empty($this->proxy) )
+		{
+			$opts['http']['proxy'] = 'tcp://' . $this->proxy;
+			$opts['http']['request_fulluri'] = true;
+		}
+		
 		$context  = stream_context_create($opts);
 		if ($fp = fopen($this->url, 'r', false, $context)) {
 			$response = '';
