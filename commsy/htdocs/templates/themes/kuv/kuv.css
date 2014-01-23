@@ -1,0 +1,212 @@
+/*
+----------------------------------------------------------------------
+header
+----------------------------------------------------------------------
+*/
+
+#kuv_header {
+    padding: 20px 0px;
+    }
+
+#header_login {
+    padding: 10px 0px;
+    width: 330px;
+    margin: 80px auto 10px auto;
+    }
+
+#kuv_logo {
+    float: left;
+    display: block;
+    }
+
+#header_right {
+    float: right;
+    display: block;
+    font-weight: bold;
+    min-width: 350px;
+    }
+
+#portal_controls {
+    text-align: right;
+    padding-bottom: 15px;
+    }
+
+#search {
+    text-align: right;
+    border-top: 1px solid #CCC;
+    padding-top: 15px;
+    }
+
+#searchinput {
+    width: 155px;
+    margin-right: 5px;
+    border: 1px solid #AFB1B9;
+    padding: 4px 8px;
+    background: #FFF;
+    }    
+
+#searchinput:hover {
+    border: 1px solid #99B6D5;
+    background: #E5EDF5;
+    }  
+
+#btn_logout {
+    background: url(img/btn_logout.png) no-repeat top right;
+    padding: 0px 21px 0px 10px;
+    color: #BB1043;
+    font-weight: bold;
+    text-decoration: none;
+    }
+
+#btn_logout:hover {
+    text-decoration: underline;
+    }
+
+/*
+----------------------------------------------------------------------
+CommSy Bar
+----------------------------------------------------------------------
+*/
+
+#tm_portfolio {
+    background: url(img/tm_eportfolio.gif) no-repeat;
+}
+
+#tm_portfolio:hover,
+.tm_portfolio_hover {
+    background: url(img/tm_eportfolio.gif) -36px 0px no-repeat !important;
+}
+
+#tm_widgets {
+    background: url(img/tm_widgets.gif) no-repeat;
+}
+
+#tm_widgets:hover,
+.tm_widgets_hover {
+    background: url(img/tm_widgets.gif) -36px 0px no-repeat !important;
+}
+
+#tm_mycalendar {
+    background: url(img/tm_mycalendar.gif) no-repeat;
+}
+
+#tm_mycalendar:hover,
+.tm_mycalendar_hover {
+    background: url(img/tm_mycalendar.gif) -36px 0px no-repeat !important;
+}
+
+#tm_stack {
+    background: url(img/tm_stack.gif) no-repeat;
+}
+
+#tm_stack:hover,
+.tm_stack_hover {
+    background: url(img/tm_stack.gif) -36px 0px no-repeat !important;
+}
+
+#tm_clipboard {
+    background: url(img/tm_clipboard.gif) no-repeat;
+}
+
+#tm_clipboard:hover,
+.tm_clipboard_hover {
+    background: url(img/tm_clipboard.gif) -36px 0px no-repeat !important;
+}
+
+#tm_settings {
+    background: url(img/tm_settings.gif) no-repeat;
+}
+
+#tm_settings:hover,
+a.tm_settings_hover {
+    background: url(img/tm_settings.gif) -36px 0px no-repeat !important;
+}
+
+#top_menu {
+	background-color: #004994;
+	background-image: none;
+}
+
+#tm_breadcrumb {
+    background: url(img/tm_separator.jpg) top right no-repeat;
+}
+
+#tm_wrapper {
+    background: url(img/tm_separator.jpg) no-repeat;
+}
+
+#tm_pers_bar {
+    background-image: none;
+    padding: 11px 1px 0px 0px;
+}
+
+#popup_wrapper,
+#popup_top_wrapper {
+	position: absolute;
+	left: 0px;
+}
+
+.toggleWidget {
+	top: 152px;
+}
+
+/*
+----------------------------------------------------------------------
+Search
+----------------------------------------------------------------------
+*/
+
+#search_area {
+	background: none;
+}
+
+/*
+----------------------------------------------------------------------
+Navigation
+----------------------------------------------------------------------
+*/
+
+#main_navigation #active {
+    background: #01366C;
+    border-bottom: 1px solid #00458A;
+    }
+
+#main_navigation {
+	background: url("img/main_nav_bg.jpg") repeat-x scroll 0 0 transparent;
+}
+
+/*
+----------------------------------------------------------------------
+Footer
+----------------------------------------------------------------------
+*/
+#footer_left {
+    background-color: #003467; /*CS_CONTENT_BG_COLOR*/
+    border-left: 1px solid #999999;
+    color: #FFF;
+}
+
+/*
+----------------------------------------------------------------------
+Sidebar
+----------------------------------------------------------------------
+*/
+
+#right_column {
+    width: 244px;
+    float: left;
+    border-top: 1px solid #0055A8;
+}
+
+/*
+----------------------------------------------------------------------
+Footer
+----------------------------------------------------------------------
+*/
+
+#kuv_footer {
+	width: 980px;
+    margin: 0px auto 20px auto;
+    text-align: right;
+    border: none;
+}

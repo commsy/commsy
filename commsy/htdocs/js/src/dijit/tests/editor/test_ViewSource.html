@@ -1,28 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Editor Test: ViewSource Plugin</title>
-	<style type="text/css">
-		@import "../../themes/claro/document.css";
-		@import "../css/dijitTests.css";
-	</style>
-	<script type="text/javascript" src="../../../dojo/dojo.js"
-		data-dojo-config="parseOnLoad: true, isDebug: true"></script>
 
-	<!-- required: a default dijit theme: -->
-	<link id="themeStyles" rel="stylesheet" href="../../../dijit/themes/claro/claro.css"/>
-
-	<!--<script type="text/javascript" src="../_testCommon.js"></script>-->
+	<script type="text/javascript" src="../boilerplate.js"></script>
 
 	<script type="text/javascript">
-		dojo.require("dijit.Editor");
-		dojo.require("dijit._editor.plugins.ViewSource");
-		dojo.require("dijit._editor.plugins.FullScreen");
-		dojo.require("dojo.parser");	// scan page for widgets and instantiate them
+		require([
+			"dojo/parser",
+			"dijit/Editor",
+			"dijit/_editor/plugins/ViewSource",
+			"dijit/_editor/plugins/FullScreen",
+			"dojo/domReady!"
+		], function(parser){
+			parser.parse();
+		});
 	</script>
 </head>
-<body class="claro">
+<body class="claro" role="main">
 	<br>
 	<br>
 	<div>Content before the editors.</div>
@@ -30,7 +26,7 @@
 	<br>
 	<div>
 		<div id="editor0" data-dojo-type="dijit/Editor"
-			data-dojo-props='extraPlugins:["viewSource"], style:"background-color: white; width: 800px;", height:"400px" '>
+			data-dojo-props='"aria-label":"editor0",extraPlugins:["viewSource"], style:"background-color: white; width: 800px;", height:"400px" '>
 			<h1>ViewSource Plugin details</h1>
 			<ol>
 				<li>The ViewSource plugin provides an extra button on the toolbar to allow switching the
@@ -61,7 +57,7 @@
 	<br>
 	<div>
 		<div id="editor1" data-dojo-type="dijit/Editor"
-			data-dojo-props='extraPlugins:["fullScreen","viewSource"], style:"background-color: white; width: 800px;", height:"300px" '>
+			data-dojo-props='"aria-label":"editor1",extraPlugins:["fullScreen","viewSource"], style:"background-color: white; width: 800px;", height:"300px" '>
 			<h1>ViewSource Plugin with FullScreen Plugin details</h1>
 			<ol>
 				<li>The ViewSource plugin is FullScreen aware.  It will  should work appropriately when in full screen mode.</li>
@@ -78,7 +74,7 @@
 	<br>
 	<div>
 		<div id="editor2" data-dojo-type="dijit/Editor"
-			data-dojo-props='extraPlugins:["fullScreen",{name: "viewSource", readOnly: true}], style:"background-color: white; width: 800px;", height:"300px" '>
+			data-dojo-props='"aria-label":"editor2",extraPlugins:["fullScreen",{name: "viewSource", readOnly: true}], style:"background-color: white; width: 800px;", height:"300px" '>
 			<h1>ViewSource Plugin with readOnly enabled details</h1>
 			<ol>
 				<li>The ViewSource plugin supports a readonly mode.  This should display the content but not allow any edits..</li>
@@ -94,7 +90,7 @@
 	<br>
 	<div>
 		<div id="editor3" data-dojo-type="dijit/Editor"
-			data-dojo-props='extraPlugins:["fullScreen",{name: "viewSource", stripScripts: false, stripComments: false, stripIFrames: false}],
+			data-dojo-props='"aria-label":"editor3",extraPlugins:["fullScreen",{name: "viewSource", stripScripts: false, stripComments: false, stripIFrames: false}],
 			style:"background-color: white; width: 800px;", height:"300px" '>
 			<h1>ViewSource Plugin with script* disabled</h1>
 			<ol>

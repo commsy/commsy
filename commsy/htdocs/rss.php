@@ -989,7 +989,7 @@ if ( isset($_GET['cid']) ) {
                       setFileArray($item);
                      #$description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                      #$description = $environment->getTextConverter()->text_as_html_long($item->getDescription());
-                     $description = $environment->getTextConverter()->testFullHTMLFormatting($item->getDescription());
+                     $description = $environment->getTextConverter()->textFullHTMLFormatting($item->getDescription());
                      $user_item = $item->getModificatorItem();
                      $fullname = $user_item->getFullName();
                      $email = $user_item->getEmail();

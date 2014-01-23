@@ -21,7 +21,6 @@
 
 				var submitCount = 0, resetCount = 0;
 
-
 				doh.register("setup", function(){
 					doh.robot.sequence(function(){
 						dojo.connect(dijit.byId("testForm"), "onSubmit", function(){
@@ -224,11 +223,71 @@
 							}), 1000);
 							return d;
 						}
-					}
+					},
+					{
+						name: "aria role and attributes",
+						timeout: 2000,
+						runTest: function(){
+							var d = new doh.Deferred(),
+							button = dijit.byId("dropdown_default");	//testing dropDownButton
+								
+							doh.is("button", button._popupStateNode.getAttribute("role"), "button._popupStateNode role");
+							doh.t(button._popupStateNode.getAttribute("aria-haspopup"), "button._popupStateNode aria-haspopup");
+							doh.is("dropdown_default_label", button._popupStateNode.getAttribute("aria-labelledby"), "aria-labelledby");
+							doh.f(button._popupStateNode.getAttribute("aria-expanded"), "dont expect initial aria-expanded");
+							doh.f(button._popupStateNode.getAttribute("aria-owns"), "initally missing aria-owns");
+							
+							// open the drop down, check that button now has aria-owns to the dropDown
+							button.focus();
+							doh.robot.keyPress(dojo.keys.ENTER, 1000, {});
 
+							doh.robot.sequence(d.getTestCallback(function(){
+								doh.t(button._popupStateNode.getAttribute("aria-expanded"), "now aria-expanded should be true");
+								doh.is("dijit_ColorPalette_0", button._popupStateNode.getAttribute("aria-owns"), "should aria-own the Dlg");
+								// Check roles and attributes on the popped out ColorPalette					
+								var popup = dijit.byId("dijit_ColorPalette_0");
+								doh.is("grid", popup.domNode.getAttribute("role"), "popup domNode role");
+								doh.is("dropdown_default", popup.domNode.getAttribute("aria-labelledby"), "aria-labelledby of popup should point to the button");
+							}), 500);
+							
+							return d;
+						},
+						tearDown: function(){
+						    dijit.byId("combo_default").focus();
+						}
+					}
 				]);
 
 				doh.register("dijit.form.ComboButton", [
+					{
+						name: "aria role and attributes",
+						timeout: 20000,
+						runTest: function(){
+							var d = new doh.Deferred(),
+							button = dijit.byId("combo_default");
+															
+							doh.is("button", button._popupStateNode.getAttribute("role"), "button._popupStateNode role");
+							doh.t(button._popupStateNode.getAttribute("aria-haspopup"), "button._popupStateNode aria-haspopup");
+							doh.f(button._popupStateNode.getAttribute("aria-expanded"), "dont expect initial aria-expanded");
+							doh.f(button._popupStateNode.getAttribute("aria-owns"), "initally missing aria-owns");
+
+							button.focus();		//calling focus() on a ComboButton focuses the dropDownArrow node
+							doh.robot.keyPress(dojo.keys.ENTER, 2000, {});
+
+							doh.robot.sequence(d.getTestCallback(function(){
+								doh.t(button._popupStateNode.getAttribute("aria-expanded"), "post click aria-expanded");
+								doh.is("dijit_Menu_0", button._popupStateNode.getAttribute("aria-owns"), "should aria-own the Menu");
+								var popup = dijit.byId("dijit_Menu_0");
+								doh.is("menu", popup.domNode.getAttribute("role"), "popup domNode role");		
+								doh.is("combo_default", popup.domNode.getAttribute("aria-labelledby"), "aria-labelledby of popup should point to the button");
+							}), 500);
+							
+							return d;
+						},
+						tearDown: function(){
+							dijit.byId("combo_default").focus();
+						}
+					},
 					{
 						name: "tab to button",
 						timeout: 4000,
@@ -392,21 +451,22 @@
 						name: "uncheck",
 						timeout: 4000,
 						runTest: function(){
-							var d = new doh.Deferred();
-
-							var checked = dijit.byId("toggle1").get("checked");
+							var toggle1 = dijit.byId("toggle1");
+							var checked = toggle1.get("checked");
 							doh.t(checked, "toggle1 initially checked");
 							doh.is("true", dojo.byId('toggle1').getAttribute("aria-pressed"), "aria-pressed 1");
 
+							var d = new doh.Deferred();
+
 							var watchOld, watchNew;
-							dijit.byId("toggle1").set("onChange", function(v){ checked = v; });
-							dijit.byId("toggle1").watch("checked", function(name, o, n){
+							toggle1.set("onChange", function(v){ checked = v; });
+							toggle1.watch("checked", function(name, o, n){
 								watchOld = o;
 								watchNew = n;
 							});
 
-							dijit.byId("toggle1").focus();
-							doh.robot.keyPress(dojo.keys.SPACE, 1000, {});
+							toggle1.focus();
+							doh.robot.typeKeys(' ', 1000, 250);
 
 							doh.robot.sequence(d.getTestCallback(function(){
 								doh.f(checked, "toggle1 unchecked");
@@ -421,21 +481,21 @@
 						name: "check",
 						timeout: 4000,
 						runTest: function(){
-							var d = new doh.Deferred();
-
-							var checked = dijit.byId("toggle1").get("checked");
+							var toggle1 = dijit.byId("toggle1");
+							var checked = toggle1.get("checked");
 							doh.f(checked, "toggle1 unchecked");
 							doh.is("false", dojo.byId('toggle1').getAttribute("aria-pressed"), "aria-pressed 1");
 
+							var d = new doh.Deferred();
+
 							var watchOld, watchNew;
-							dijit.byId("toggle1").set("onChange", function(v){ checked = v; });
-							dijit.byId("toggle1").watch("checked", function(name, o, n){
+							toggle1.set("onChange", function(v){ checked = v; });
+							toggle1.watch("checked", function(name, o, n){
 								watchOld = o;
 								watchNew = n;
 							});
 
-							dijit.byId("toggle1").focus();
-							doh.robot.keyPress(dojo.keys.SPACE, 1000, {});
+							doh.robot.typeKeys(' ', 500, 250);
 
 							doh.robot.sequence(d.getTestCallback(function(){
 								doh.t(checked, "toggle1 checked");

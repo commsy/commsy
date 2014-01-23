@@ -7,7 +7,7 @@
 			@import "../../../dojo/resources/dojo.css";
 			@import "../../../dijit/tests/css/dijitTests.css";
 		</style>
-		<script type="text/javascript" src="../../../dojo/dojo.js" djConfig="isDebug: true"></script>
+		<script type="text/javascript" src="../../../dojo/dojo.js" data-dojo-config="isDebug: true"></script>
 		<script type="text/javascript" src="../../../util/doh/runner.js"></script>
 		<script type="text/javascript">
 			dojo.require("doh.runner");
@@ -87,6 +87,23 @@
 								d.errback(e);
 							}
 							return d;
+						}
+					},{
+						name: "_isRendered",
+						timeout: 1000,
+						setUp: function(){
+							if(!drawing){
+								var dn = dojo.byId("gfxObject");
+								drawing = dojox.gfx.createSurface(dn, 300, 300);
+							}
+						},
+						runTest: function(t){
+							var g = drawing.createGroup();
+							var rect = g.createRect();
+							t.assertTrue(dojox.gfx._base._isRendered(rect), "Unexpected value for parented rect.");
+							g.removeShape();
+							t.assertFalse(dojox.gfx._base._isRendered(rect), "Unexpected value for unparented rect.");
+							t.assertFalse(dojox.gfx._base._isRendered(g), "Unexpected value for unparented g.");
 						}
 					}
 				]);

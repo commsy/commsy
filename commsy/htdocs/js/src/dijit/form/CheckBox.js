@@ -8,7 +8,8 @@ define([
 	"./ToggleButton",
 	"./_CheckBoxMixin",
 	"dojo/text!./templates/CheckBox.html",
-	"dojo/NodeList-dom" // NodeList.addClass/removeClass
+	"dojo/NodeList-dom", // NodeList.addClass/removeClass
+	"../a11yclick"	// template uses ondijitclick
 ], function(require, declare, domAttr, has, query, ready, ToggleButton, _CheckBoxMixin, template){
 
 	// module:
@@ -77,19 +78,21 @@ define([
 			// description:
 			//		If the CheckBox is checked, returns the value attribute.
 			//		Otherwise returns false.
-			return (this.checked ? this.value : false);
+			return this.checked && this._get("value");
 		},
 
-		// Override behavior from Button, since we don't have an iconNode
+		// Override behavior from Button, since we don't have an iconNode or valueNode
 		_setIconClassAttr: null,
+		_setNameAttr: "focusNode",
 
 		postMixInProperties: function(){
 			this.inherited(arguments);
 
-			// Need to set initial checked state as part of template, so that form submit works.
+			// Need to set initial checked state via node.setAttribute so that form submit works
+			// and IE8 radio button tab order is preserved.
 			// domAttr.set(node, "checked", bool) doesn't work on IE until node has been attached
 			// to <body>, see #8666
-			this.checkedAttrSetting = this.checked ? "checked" : "";
+			this.checkedAttrSetting = "";
 		},
 
 		 _fillContent: function(){

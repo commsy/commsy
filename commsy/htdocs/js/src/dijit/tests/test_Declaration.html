@@ -5,34 +5,23 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 
 	<title>Dojo Toolkit - Declaration test</title>
-	<style type="text/css">
-		@import "../themes/claro/document.css";
-		@import "css/dijitTests.css";
-	</style>
 
-	<!-- required: a default dijit theme: -->
-	<link id="themeStyles" rel="stylesheet" href="../../dijit/themes/claro/claro.css"/>
-
-	<!-- required: dojo.js -->
-	<script type="text/javascript" src="../../dojo/dojo.js"
-		data-dojo-config="isDebug: true"></script>
-
-	<!-- not needed, for testing alternate themes -->
-	<script type="text/javascript" src="_testCommon.js"></script>
+	<script type="text/javascript" src="boilerplate.js"></script>
 
 	<script type="text/javascript">
-		dojo.require("dijit.dijit"); // optimize: load dijit layer
-		dojo.require("dijit.Declaration");
-		dojo.require("dijit.ProgressBar");
-		dojo.require("dojo.parser");	// scan page for widgets and instantiate them
-		dojo.require("dojo.on");
-		dojo.require("doh.runner");
+		require([
+			"doh/runner",
+			"dojo/on",
+			"dojo/parser",
+			"dijit/Declaration",
+			"dijit/ProgressBar",
+				"dojo/domReady!"
+		], function(doh, on, parser){
 
-		dojo.ready(function(){
 			doh.register("dijit.Declaration", [
 				function parse(){
 					// run parser inside of DOH so we can tell if there are any exceptions
-					dojo.parser.parse();
+					parser.parse();
 
 					// test instantiation of dojo.Declaration widgets
 					doh.t(hideButtonA, "hideButtonA instantiated");
@@ -53,9 +42,13 @@
 					doh.is("blah", m1.foo, "m1.foo");
 					doh.is(73, m2.progress, "m2.progress");
 	
-					// test <script type="dojo/connect">
+					// test <script type="dojo/aspect">
 					doh.t(foo1, "foo1 exists");
-					doh.t(/modified by dojo\/connect event=startup/.test(foo1.domNode.innerHTML), "dojo/connect fired");
+					doh.t(/modified by dojo\/aspect method=startup/.test(foo1.domNode.innerHTML), "dojo/aspect fired");
+				},
+
+				function functions(){
+					doh.is(3, m1.plus(1, 2), "testing function definition with data-dojo-args")
 				},
 
 				function events(){
@@ -66,7 +59,7 @@
 					button1.on("ButtonClick", function(){
 						clicked = true;
 					});
-					dojo.on.emit(button1.domNode, "click", {});
+					on.emit(button1.domNode, "click", {});
 					doh.t(clicked, "clicked");
 				}
 			]);
@@ -114,6 +107,9 @@
 			this.inherited(arguments);
 			this.baz.innerHTML += " (created via custom postCreate) ";
 		</script>
+		<script type='dojo/method' data-dojo-event='plus' data-dojo-args="a, b">
+			return a + b;
+		</script>
 
 		<p>thinger blah stuff ${foo}</p>
 
@@ -125,10 +121,10 @@
 	<div data-dojo-id="m1" data-dojo-type="m" data-dojo-props='foo:"blah", progress:50'></div>
 	<div data-dojo-id="m2" data-dojo-type="m" data-dojo-props='foo:"thinger", progress:73'></div>
 
-	<h3>Using dojo/connect:</h3>
+	<h3>Using dojo/aspect:</h3>
 	<div data-dojo-type="dijit/Declaration" data-dojo-props='widgetClass:"foo", defaults:{ foo: "thud", progress: 10 }'>
-		<script type='dojo/connect' data-dojo-event='startup'>
-			this.baz.innerHTML += " (modified by dojo/connect event=startup) ";
+		<script type='dojo/aspect' data-dojo-method='startup'>
+			this.baz.innerHTML += " (modified by dojo/aspect method=startup) ";
 		</script>
 
 		<p>thinger blah stuff ${foo}</p>

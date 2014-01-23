@@ -56,6 +56,7 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojox/dgauges/RectangularGauge
 				}),
 				labelPosition: "trailing",
 				paddingTop: 15
+
 			});
 			this.addElement("scale", scale);
 			

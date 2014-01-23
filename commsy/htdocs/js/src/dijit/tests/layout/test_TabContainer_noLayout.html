@@ -1,58 +1,42 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>TabContainer doLayout=false Demo</title>
 
-	<style type="text/css">
-		@import "../../themes/claro/document.css";
-		@import "../css/dijitTests.css";
-
-		body {
-			font-family : sans-serif;
-			margin:20px;
-		}
-
-		/* add padding to each contentpane inside the tab container, and scrollbar if necessary */
-		.dojoTabPane {
-			padding : 10px 10px 10px 10px;
-			overflow: auto;
-		}
-	</style>
-
-	<!-- required: the default dijit theme: -->
-	<link id="themeStyles" rel="stylesheet" href="../../../dijit/themes/claro/claro.css"/>
-
-	<!-- required: dojo.js -->
-	<script type="text/javascript" src="../../../dojo/dojo.js"
-		data-dojo-config="isDebug: true, parseOnLoad: true"></script>
-
-	<!-- only needed for alternate theme testing: do NOT use in your code! -->
-	<script type="text/javascript" src="../_testCommon.js"></script>
+	<script src="../boilerplate.js"></script>
 
 	<script type="text/javascript">
-		dojo.require("dijit.dijit"); // optimize: load dijit layer
-		dojo.require("dijit.layout.ContentPane");
-		dojo.require("dijit.layout.TabContainer");
-		dojo.require("dijit.Tooltip");
-		dojo.require("dijit.form.Button");
-		dojo.require("dijit.layout.LinkPane");
-		dojo.require("dojo.parser");	// scan page for widgets and instantiate them
-
 		function testClose(pane,tab){
-		  return confirm("Please confirm that you want tab "+tab.title+" closed");
+			return confirm("Please confirm that you want tab "+tab.title+" closed");
 		}
 
-		var tab = 6;
+		require([
+			"dojo/parser",
+			"dijit/registry",
+			"dijit/layout/ContentPane",
+			"dijit/layout/TabContainer",
+			"dijit/Tooltip",
+			"dojo/domReady!"
+		], function(parser, registry, ContentPane){
 
-        function addTab(){
-			cp = new dijit.layout.ContentPane({id: 'newTab' + tab, title: 'Tab' + tab, closable: true});
-			cp.domNode.innerHTML = "Contents of Tab " + tab++;
-			dijit.byId("plainTabContainer").addChild(cp);
-        }
+			var tab = 6;
+
+			addTab = function(){
+				cp = new ContentPane({id: 'newTab' + tab, title: 'Tab' + tab, closable: true});
+				cp.domNode.innerHTML = "Contents of Tab " + tab++;
+				registry.byId("plainTabContainer").addChild(cp);
+			};
+
+			parser.parse();
+		});
 	</script>
 </head>
-<body class="claro">
+<body class="claro" role="main">
+
+	<script type="dojo/require">
+		registry: "dijit/registry"
+	</script>
 
 	<h1 class="testTitle">Dijit layout.TabContainer doLayout=false tests</h1>
 
@@ -64,8 +48,8 @@
 		With doLayout=false mode tabs only (the default) tabPosition=top is supported.
 	</p>
 
-	<button id="addTab" onclick="addTab();">add tab</button>
-	<button id="destroyTabContainer" onclick="dijit.byId('plainTabContainer').destroyRecursive();">destroy tab container</button>
+	<button id="addTabButton" onclick="addTab();">add tab</button>
+	<button id="destroyTabContainer" onclick="registry.byId('plainTabContainer').destroyRecursive();">destroy tab container</button>
 
 	<div id="plainTabContainer" data-dojo-type="dijit/layout/TabContainer" data-dojo-props='doLayout:false, style:"width: 700px;"'>
 
@@ -105,11 +89,11 @@
 		</div>
 
 		<div id="tab4" data-dojo-type="dijit/layout/TabContainer" data-dojo-props='title:"Tab 4", doLayout:false, nested:true'>
-			<a data-dojo-type="dijit/layout/LinkPane" data-dojo-props='href:"tab1.html"'>SubTab 1</a>
-			<a data-dojo-type="dijit/layout/LinkPane" data-dojo-props='href:"tab2.html", selected:true'>SubTab 2</a>
+			<div id="tab4a" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='href:"tab1.html"' title="SubTab 1"></div>
+			<div id="tab4b" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='href:"tab2.html", selected:true' title="SubTab 2"></div>
 		</div>
 
-		<a id="tab5" data-dojo-type="dijit/layout/LinkPane" data-dojo-props='href:"tab3_noLayout.html", doLayout:false'>Tab 5</a>
+		<div id="tab5" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='href:"tab3_noLayout.html", doLayout:false' title="Tab 5"></div>
 	</div>
 
 	<p id="textAfterTabContainer1">
@@ -159,11 +143,11 @@
 					</div>
 			
 					<div id="atab4" data-dojo-type="dijit/layout/TabContainer" data-dojo-props='title:"Tab 4", nested:true, doLayout:false'>
-						<a data-dojo-type="dijit/layout/LinkPane" data-dojo-props='href:"tab1.html"'>SubTab 1</a>
-						<a data-dojo-type="dijit/layout/LinkPane" data-dojo-props='href:"tab2.html", selected:true'>SubTab 2</a>
+						<div id="atab4a" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='href:"tab1.html"' title="SubTab 1"></div>
+						<div id="atab4b" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='href:"tab2.html", selected:true' title="SubTab 2"></div>
 					</div>
 			
-					<a id="atab5" data-dojo-type="dijit/layout/LinkPane" data-dojo-props='href:"tab3_noLayout.html", doLayout:false'>Tab 5</a>
+					<div id="atab5" data-dojo-type="dijit/layout/ContentPane" data-dojo-props='href:"tab3_noLayout.html", doLayout:false' title="Tab 5"></div>
 				</div>
 			</td>
 			</tr>

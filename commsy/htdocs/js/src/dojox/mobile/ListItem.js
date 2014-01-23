@@ -5,17 +5,20 @@ define([
 	"dojo/dom-class",
 	"dojo/dom-construct",
 	"dojo/dom-style",
+	"dojo/dom-attr",
 	"dijit/registry",
 	"dijit/_WidgetBase",
 	"./iconUtils",
 	"./_ItemBase",
-	"./ProgressIndicator"
-], function(array, declare, lang, domClass, domConstruct, domStyle, registry, WidgetBase, iconUtils, ItemBase, ProgressIndicator){
+	"./ProgressIndicator",
+	"dojo/has",
+	"dojo/has!dojo-bidi?dojox/mobile/bidi/ListItem"
+], function(array, declare, lang, domClass, domConstruct, domStyle, domAttr, registry, WidgetBase, iconUtils, ItemBase, ProgressIndicator, has,  BidiListItem){
 
 	// module:
 	//		dojox/mobile/ListItem
 
-	var ListItem = declare("dojox.mobile.ListItem", ItemBase, {
+	var ListItem = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiListItem" : "dojox.mobile.ListItem", ItemBase, {
 		// summary:
 		//		An item of either RoundRectList or EdgeToEdgeList.
 		// description:
@@ -96,10 +99,7 @@ define([
 		uncheckClass: "",
 
 		// variableHeight: Boolean
-		//		If true, the height of the item varies according to its
-		//		content. In dojo 1.6 or older, the "mblVariableHeight" class was
-		//		used for this purpose. In dojo 1.7, adding the mblVariableHeight
-		//		class still works for backward compatibility.
+		//		If true, the height of the item varies according to its content.
 		variableHeight: false,
 
 		// rightIconTitle: String
@@ -138,7 +138,11 @@ define([
 		_selClass: "mblListItemSelected",
 
 		buildRendering: function(){
-			this.domNode = this.containerNode = this.srcNodeRef || domConstruct.create(this.tag);
+			this._templated = !!this.templateString; // true if this widget is templated
+			if(!this._templated){
+				// Create root node if it wasn't created by _TemplatedMixin
+				this.domNode = this.containerNode = this.srcNodeRef || domConstruct.create(this.tag);
+			}
 			this.inherited(arguments);
 
 			if(this.selected){
@@ -148,33 +152,36 @@ define([
 				domClass.replace(this.domNode, "mblEdgeToEdgeCategory", this.baseClass);
 			}
 
-			this.labelNode =
-				domConstruct.create("div", {className:"mblListItemLabel"});
-			var ref = this.srcNodeRef;
-			if(ref && ref.childNodes.length === 1 && ref.firstChild.nodeType === 3){
-				// if ref has only one text node, regard it as a label
-				this.labelNode.appendChild(ref.firstChild);
-			}
-			this.domNode.appendChild(this.labelNode);
-
-			if(this.anchorLabel){
-				this.labelNode.style.display = "inline"; // to narrow the text region
-				this.labelNode.style.cursor = "pointer";
-				this._anchorClickHandle = this.connect(this.labelNode, "onclick", "_onClick");
-				this.onTouchStart = function(e){
-					return (e.target !== this.labelNode);
-				};
+			if(!this._templated){
+				this.labelNode =
+					domConstruct.create("div", {className:"mblListItemLabel"});
+				var ref = this.srcNodeRef;
+				if(ref && ref.childNodes.length === 1 && ref.firstChild.nodeType === 3){
+					// if ref has only one text node, regard it as a label
+					this.labelNode.appendChild(ref.firstChild);
+				}
+				this.domNode.appendChild(this.labelNode);
 			}
 			this._layoutChildren = [];
 		},
 
 		startup: function(){
 			if(this._started){ return; }
-
 			var parent = this.getParent();
 			var opts = this.getTransOpts();
+			// When using a template, labelNode may be created via an attach point.
+			// The attach points are not yet set when ListItem.buildRendering() 
+			// executes, hence the need to use them in startup().
+			if((!this._templated || this.labelNode) && this.anchorLabel){
+				this.labelNode.style.display = "inline"; // to narrow the text region
+				this.labelNode.style.cursor = "pointer";
+				this.connect(this.labelNode, "onclick", "_onClick");
+				this.onTouchStart = function(e){
+					return (e.target !== this.labelNode);
+				};
+			}
 			if(opts.moveTo || opts.href || opts.url || this.clickable || (parent && parent.select)){
-				this._keydownHandle = this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
+				this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
 			}else{
 				this._handleClick = false;
 			}
@@ -186,7 +193,7 @@ define([
 			}
 			if(this.variableHeight){
 				domClass.add(this.domNode, "mblVariableHeight");
-				this.defer(lang.hitch(this, "layoutVariableHeight"), 0);
+				this.defer("layoutVariableHeight");
 			}
 
 			if(!this._isOnLine){
@@ -211,6 +218,10 @@ define([
 				// retry applying the attributes for which the custom setter delays the actual 
 				// work until _isOnLine is true. 
 				this.set("checked", this._pendingChecked !== undefined ? this._pendingChecked : this.checked);
+				domAttr.set(this.domNode, "role", "option");
+				if(this._pendingChecked || this.checked){
+					domAttr.set(this.domNode, "aria-selected", "true");
+				}
 				// Not needed anymore (this code executes only once per life cycle):
 				delete this._pendingChecked; 
 			}
@@ -218,12 +229,34 @@ define([
 			this.layoutChildren();
 		},
 
+		_updateHandles: function(){
+			// tags:
+			//		private
+			var parent = this.getParent();
+			var opts = this.getTransOpts();
+			if(opts.moveTo || opts.href || opts.url || this.clickable || (parent && parent.select)){
+				if(!this._keydownHandle){
+					this._keydownHandle = this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
+				}
+				this._handleClick = true;
+			}else{
+				if(this._keydownHandle){
+					this.disconnect(this._keydownHandle);
+					this._keydownHandle = null;
+				}
+				this._handleClick = false;
+			}
+			this.inherited(arguments);
+		},
+
 		layoutChildren: function(){
 			var centerNode;
 			array.forEach(this.domNode.childNodes, function(n){
 				if(n.nodeType !== 1){ return; }
-				var layout = n.getAttribute("layout") || (registry.byNode(n) || {}).layout;
-				if(layout){
+				var layout = n.getAttribute("layout") || // TODO: Remove the non-HTML5-compliant attribute in 2.0
+					n.getAttribute("data-mobile-layout") || 
+					(registry.byNode(n) || {}).layout;
+				if(layout){ 
 					domClass.add(n, "mblListItemLayout" +
 						layout.charAt(0).toUpperCase() + layout.substring(1));
 					this._layoutChildren.push(n);
@@ -240,14 +273,18 @@ define([
 				this.layoutVariableHeight();
 			}
 
-			// If labelNode is empty, shrink it so as not to prevent user clicks.
-			this.labelNode.style.display = this.labelNode.firstChild ? "block" : "inline";
+			// labelNode may not exist only when using a template (if not created by an attach point)
+			if(!this._templated || this.labelNode){
+				// If labelNode is empty, shrink it so as not to prevent user clicks.
+				this.labelNode.style.display = this.labelNode.firstChild ? "block" : "inline";
+			}
 		},
 
 		_onTouchStart: function(e){
 			// tags:
 			//		private
-			if(e.target.getAttribute("preventTouch") ||
+			if(e.target.getAttribute("preventTouch") || // TODO: Remove the non-HTML5-compliant attribute in 2.0
+				e.target.getAttribute("data-mobile-prevent-touch") ||
 				(registry.getEnclosingWidget(e.target) || {}).preventTouch){
 				return;
 			}
@@ -262,9 +299,10 @@ define([
 			if(this.getParent().isEditing || e && e.type === "keydown" && e.keyCode !== 13){ return; }
 			if(this.onClick(e) === false){ return; } // user's click action
 			var n = this.labelNode;
-			if(this.anchorLabel && e.currentTarget === n){
+			// labelNode may not exist only when using a template 
+			if((this._templated || n) && this.anchorLabel && e.currentTarget === n){
 				domClass.add(n, "mblListItemLabelSelected");
-				setTimeout(function(){
+				this.defer(function(){
 					domClass.remove(n, "mblListItemLabelSelected");
 				}, this._duration);
 				this.onAnchorLabelClicked(e);
@@ -336,6 +374,7 @@ define([
 			if(opts.moveTo || opts.href || opts.url || this.clickable){
 				if(!this.noArrow && !(parent && parent.selectOne)){
 					c = this.arrowClass || "mblDomButtonArrow";
+					domAttr.set(this.domNode, "role", "button");
 				}
 			}
 			if(c){
@@ -396,7 +435,8 @@ define([
 		_setRightTextAttr: function(/*String*/text){
 			// tags:
 			//		private
-			if(!this.rightTextNode){
+			if(!this._templated && !this.rightTextNode){
+				// When using a template, let the template create the element.
 				this.rightTextNode = domConstruct.create("div", {className:"mblListItemRightText"}, this.labelNode, "before");
 			}
 			this.rightText = text;
@@ -432,7 +472,7 @@ define([
 			var parent = this.getParent();
 			if(parent && parent.select === "single" && checked){
 				array.forEach(parent.getChildren(), function(child){
-					child !== this && child.checked && child.set("checked", false);
+					child !== this && child.checked && child.set("checked", false) && domAttr.set(child.domNode, "aria-selected", "false");
 				}, this);
 			}
 			this._setRightIconAttr(this.checkClass || "mblDomButtonCheck");
@@ -447,6 +487,7 @@ define([
 				parent.onCheckStateChanged(this, checked);
 			}
 			this._set("checked", checked);
+			domAttr.set(this.domNode, "aria-selected", checked ? "true" : "false");
 		},
 
 		_setBusyAttr: function(/*Boolean*/busy){
@@ -456,7 +497,7 @@ define([
 			if(busy){
 				if(!this._progNode){
 					this._progNode = domConstruct.create("div", {className:"mblListItemIcon"});
-					prog = this._prog = new ProgressIndicator({size:25, center:false});
+					prog = this._prog = new ProgressIndicator({size:25, center:false, removeOnStop:false});
 					domClass.add(prog.domNode, this.progStyle);
 					this._progNode.appendChild(prog.domNode);
 				}
@@ -466,7 +507,7 @@ define([
 					domConstruct.place(this._progNode, this._findRef("icon"), "before");
 				}
 				prog.start();
-			}else{
+			}else if(this._progNode){
 				if(this.iconNode){
 					this.domNode.replaceChild(this.iconNode, this._progNode);
 				}else{
@@ -484,6 +525,34 @@ define([
 			//		private
 			this.inherited(arguments);
 			domClass.toggle(this.domNode, this._selClass, selected);
+		},
+		
+		_setClickableAttr: function(/*Boolean*/clickable){
+			// tags:
+			//		private
+			this._set("clickable", clickable);
+			this._updateHandles();
+		},
+		
+		_setMoveToAttr: function(/*String*/moveTo){
+			// tags:
+			//		private
+			this._set("moveTo", moveTo);
+			this._updateHandles();
+		},
+		
+		_setHrefAttr: function(/*String*/href){
+			// tags:
+			//		private
+			this._set("href", href);
+			this._updateHandles();
+		},
+		
+		_setUrlAttr: function(/*String*/url){
+			// tags:
+			//		private
+			this._set("url", url);
+			this._updateHandles();
 		}
 	});
 	
@@ -494,6 +563,7 @@ define([
 		// layout: String
 		//		Specifies the position of the ListItem child ("left", "center" or "right").
 		layout: "",
+
 		// preventTouch: Boolean
 		//		Disables touch events on the ListItem child.
 		preventTouch: false
@@ -504,5 +574,5 @@ define([
 	// This is for the benefit of the parser.   Remove for 2.0.  Also, hide from doc viewer.
 	lang.extend(WidgetBase, /*===== {} || =====*/ ListItem.ChildWidgetProperties);
 
-	return ListItem;
+	return has("dojo-bidi") ? declare("dojox.mobile.ListItem", [ListItem, BidiListItem]) : ListItem;	
 });
