@@ -47,6 +47,27 @@ require([	"dojo/_base/declare",
 					});
 				}));
 				
+				// send
+				var aSendNodes = query("a.popup_send");
+				if (aSendNodes) {
+					On.once(aSendNodes, "click", Lang.hitch(this, function(event) {
+						var widgetManager = this.getWidgetManager();
+						
+						// get custom data object
+						var customObject = this.getAttrAsObject(event.target, "data-custom");
+						
+						widgetManager.GetInstance("commsy/widgets/Send/Sendwidget", customObject).then(function(deferred) {
+							var widgetInstance = deferred.instance;
+							
+							// register click event
+							//widgetManager.RegisterOpenCloseClick(widgetInstance, event.target);
+							
+							// open widget
+							widgetInstance.Open();
+						});
+					}));
+				}
+				
 				// buzzwords and tags expander
 				if (this.uri_object.fct === "index") {
 					require(["commsy/DivToggle"], function(DivToggle) {
@@ -161,7 +182,7 @@ require([	"dojo/_base/declare",
 				if(this.uri_object.mod === "home") {
 					var objects = [];
 					query("div.content_item div[class^='list_wrap']").forEach(function(node, index, arr) {					
-						objects.push({ div: node, actor:	query("a.open_close", node.parentNode)[0] });
+						objects.push({ div: node, actor: query("a.open_close", node.parentNode)[0] });
 					});
 					
 					require(["commsy/DivExpander"], function(DivExpander) {
