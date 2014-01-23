@@ -98,37 +98,64 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										}
 									},
 									{
-										type : 'select',
-										id: 'fileselect',
-										label: 'Dateiauswahl',
-										items : fileItems,
-										onChange : function () 
-										{
-											// disable textInput if file is selected
-											var dialog = this.getDialog();
-											var inputUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
-											if(this.getValue() == 'null'){
-												inputUrl.enable();
-												inputUrl.setValue('');
-												urlDecodeFlag = true;
-											} else {
-												inputUrl.disable();
-												// set file url in textInput
-												var cid = getUrlParam('cid');
-												var mod = getUrlParam('mod');
-												var iid = getUrlParam('iid');
-												
-												var input = this.getInputElement().$;
-												
-												// build url for embedding
-												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
-												
-												encodeFileUrl = encodeURIComponent(fileUrl);
-//												alert(encodeFileUrl);
-												inputUrl.setValue(encodeFileUrl);
-												urlDecodeFlag = false;
-											}
-										}
+										type: 'hbox',
+										widths: ['50%','50%'],
+										children: 
+										[
+									 		{
+												type : 'select',
+												id: 'fileselect',
+												label: 'Dateiauswahl',
+												items : fileItems,
+												onChange : function () 
+												{
+													// disable textInput if file is selected
+													var dialog = this.getDialog();
+													var inputUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
+													if(this.getValue() == 'null'){
+														inputUrl.enable();
+														inputUrl.setValue('');
+														urlDecodeFlag = true;
+													} else {
+														inputUrl.disable();
+														// set file url in textInput
+														var cid = getUrlParam('cid');
+														var mod = getUrlParam('mod');
+														var iid = getUrlParam('iid');
+														
+														var input = this.getInputElement().$;
+														
+														// build url for embedding
+														fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+														
+														encodeFileUrl = encodeURIComponent(fileUrl);
+//															alert(encodeFileUrl);
+														inputUrl.setValue(encodeFileUrl);
+														urlDecodeFlag = false;
+													}
+												}
+										 	},
+										 	{
+												type: 'vbox',
+												children:
+												[
+													{
+													    type: 'file',
+													    id: 'upload',
+													    label: 'neue Datei hochladen',
+													    style: 'height:40px',
+													    size: 38
+													},
+													{
+													    type: 'fileButton',
+													    id: 'uploadButton',
+													    filebrowser: 'audioTab:audioUrl',
+													    label: 'Hochladen',
+													    'for': [ 'audioTab', 'upload' ],
+													}
+												]
+											},
+										]
 									},
 									{
 										type : 'hbox',
@@ -166,6 +193,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									{
 										type : 'hbox',
 										widths : ['20%','20%','20%','20%','20%'],
+										style: 'margin-top:20px;',
 										children : 
 										[
 										 	{
@@ -173,7 +201,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												id : 'audioWidth',
 												width : '60px',
 												label : 'Breite',
-												'default' : '640',
+												'default' : '320',
 												validate : function ()
 												{
 													if ( this.getValue() )
@@ -197,7 +225,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												id : 'audioHeight',
 												width : '60px',
 												label : 'Höhe',
-												'default' : '360',
+												'default' : '30',
 												validate : function ()
 												{
 													if ( this.getValue() )
@@ -235,9 +263,16 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											},
 											{
 												type : 'text',
-												id : 'padding',
+												id : 'marginH',
 												width : '60px',
-												label : 'Abstand',
+												label : 'H-Abstand',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'marginV',
+												width : '60px',
+												label : 'V-Abstand',
 												'default' : '',
 											},
 										]
@@ -261,13 +296,32 @@ CKEDITOR.plugins.add( "CommSyAudio",
 							
 							var floatValue = '';
 							
-							if(float != 'null' && float == 'right'){
-								floatValue += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
-								floatValue += 'float:left;';
-							} else {
-								floatValue = '';
+							var style,
+							borderWidth = this.getValueOf( 'audioTab', 'border' ),
+							horizontalMargin = this.getValueOf( 'audioTab', 'marginH'),
+							verticalMargin = this.getValueOf( 'audioTab', 'marginV');
+							
+							style = 'style="';
+							if ( borderWidth != null ) {
+								style += 'border-style: solid; border-width:' + borderWidth + 'px;';
 							}
+							
+							if ( horizontalMargin != null ) {
+								style += 'margin-top:' + horizontalMargin + 'px;';
+								style += 'margin-bottom:' + horizontalMargin + 'px;';
+							}
+							
+							if ( verticalMargin != null ) {
+								style += 'margin-left:' + verticalMargin + 'px;';
+								style += 'margin-right:' + verticalMargin + 'px;';
+							}
+							
+							if(float != 'null' && float == 'right'){
+								style += 'float:right;';
+							} else if (float != 'null' && float == 'left') {
+								style += 'float:left;';
+							}
+							style += '"';
 							
 							if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
 								
@@ -275,19 +329,24 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									audioUrl = encodeURI(audioUrl);
 								}
 
-								content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" style="' + floatValue + '">';
+								content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" ' + style + '>';
 //								content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
 								content += '<param value="sameDomain" name="allowScriptAccess">';
 								content += '<param value="internal" name="allowNetworking">';
+								if(this.getValueOf('audioTab', 'autostart')){
+									content += '<param value="' + autostart + '" name="autoStart">';
+								}
 								content += '<embed src="' + audioUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
 								content += '</object>';
 								
 //								alert(content);
 							} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
 								
-								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" style="' + floatValue + '">';
+								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
 								content += '<param value="' + audioUrl + '" name="fileName">';
-								content += '<param value="' + autostart + '" name="autoStart">';
+								if(this.getValueOf('audioTab', 'autostart')){
+									content += '<param value="' + autostart + '" name="autoStart">';
+								}
 								content += '<param value="true" name="showControls">';
 								content += '<param value="true" name="showStatusBar">';
 								content += '<param value="opaque" name="wmode">';

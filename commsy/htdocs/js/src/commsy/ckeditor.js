@@ -63,12 +63,12 @@ define([	"dojo/_base/declare",
 			
 			CKEDITOR.config.allowedContent = true;
 			
-			/*CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );*/
 			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.php?cid="+this.uri_object.cid );
 			
 			CKEDITOR.plugins.addExternal( "CommSyVideo", "../../src/commsy/ckeditor/plugins/video/", "CommSyVideo.js");
 			CKEDITOR.plugins.addExternal( "CommSyAudio", "../../src/commsy/ckeditor/plugins/audio/", "CommSyAudio.js");
 			CKEDITOR.plugins.addExternal( "CommSyDocument", "../../src/commsy/ckeditor/plugins/document/", "CommSyDocument.js");
+//			CKEDITOR.plugins.addExternal( "Image", "../../src/commsy/ckeditor/plugins/image/", "plugin.js");
 			
 			if ( node.nodeName === "TEXTAREA" )
 			{

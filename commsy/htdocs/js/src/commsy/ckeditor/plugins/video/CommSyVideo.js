@@ -18,10 +18,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 		
 		CKEDITOR.dialog.add( 'CommSyVideo', function ( instance )
 				{
-					var video;
-					var urlDecodeFlag = false;
+					var regexGetSize = /^\s*(\d+)((px)|\%)?\s*$/i,
+					regexGetSizeOrEmpty = /(^\s*(\d+)((px)|\%)?\s*$)|^$/i,
+					video,
+					urlDecodeFlag = false,
 					// parse filenames from edit dialog
-					var files = document.getElementsByName('file_name');
+					files = document.getElementsByName('file_name');
 					
 					fileItems = new Array (
 							new Array( '<Auswahl>' , 'null', 'null')
@@ -43,10 +45,106 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					        new Array( 'Youtube', 'youtube' )
 					);
 					
+					var numbering = function( id ) {
+						return CKEDITOR.tools.getNextId() + '_' + id;
+					},
+					btnLockSizesId = numbering( 'btnLockSizes' ),
+					btnResetSizeId = numbering( 'btnResetSize' );
+//					imagePreviewLoaderId = numbering( 'ImagePreviewLoader' ),
+//					previewLinkId = numbering( 'previewLink' ),
+//					previewImageId = numbering( 'previewImage' );
+					
+					
+					var onSizeChange = function() {
+						var value = this.getValue(),
+							// This = input element.
+							dialog = this.getDialog(),
+							aMatch = value.match( regexGetSize ); // Check value
+						if ( aMatch ) {
+							if ( aMatch[ 2 ] == '%' ) // % is allowed - > unlock ratio.
+							switchLockRatio( dialog, false ); // Unlock.
+							value = aMatch[ 1 ];
+						}
+
+						// Only if ratio is locked
+						if ( dialog.lockRatio ) {
+//							var oImageOriginal = dialog.originalElement;
+							if ( this.id == 'videoHeight' ) {
+								if ( value && value != '0' )
+									value = Math.round( 640 * ( value / 360 ) );
+								if ( !isNaN( value ) )
+									dialog.setValueOf( 'videoTab', 'videoWidth', value );
+							} else //this.id = txtWidth.
+							{
+								if ( value && value != '0' )
+									value = Math.round( 360 * ( value / 640 ) );
+								if ( !isNaN( value ) )
+									dialog.setValueOf( 'videoTab', 'videoHeight', value );
+							}
+						}
+//						updatePreview( dialog );
+					};
+					
+					var switchLockRatio = function( dialog, value ) {
+						if ( !dialog.getContentElement( 'videoTab', 'ratioLock' ) )
+							return null;
+
+						// Check image ratio and original image ratio, but respecting user's preference.
+						if ( value == 'check' ) {
+							if ( !dialog.userlockRatio) {
+								var width = dialog.getValueOf( 'videoTab', 'videoWidth' ),
+									height = dialog.getValueOf( 'videoTab', 'videoHeight' ),
+									originalRatio = 640 * 1000 / 360,
+									thisRatio = width * 1000 / height;
+								dialog.lockRatio = false; // Default: unlock ratio
+
+								if ( !width && !height )
+									dialog.lockRatio = true;
+								else if ( !isNaN( originalRatio ) && !isNaN( thisRatio ) ) {
+									if ( Math.round( originalRatio ) == Math.round( thisRatio ) )
+										dialog.lockRatio = true;
+								}
+							}
+						} else if ( value != undefined )
+							dialog.lockRatio = value;
+						else {
+							dialog.userlockRatio = 1;
+							dialog.lockRatio = !dialog.lockRatio;
+						}
+
+						var ratioButton = CKEDITOR.document.getById( btnLockSizesId );
+						if ( dialog.lockRatio )
+							ratioButton.removeClass( 'cke_btn_unlocked' );
+						else
+							ratioButton.addClass( 'cke_btn_unlocked' );
+
+						ratioButton.setAttribute( 'aria-checked', dialog.lockRatio );
+
+						// Ratio button hc presentation - WHITE SQUARE / BLACK SQUARE
+						if ( CKEDITOR.env.hc ) {
+							var icon = ratioButton.getChild( 0 );
+							icon.setHtml( dialog.lockRatio ? CKEDITOR.env.ie ? '\u25A0' : '\u25A3' : CKEDITOR.env.ie ? '\u25A1' : '\u25A2' );
+						}
+
+						return dialog.lockRatio;
+					};
+					
+					var resetSize = function( dialog ) {
+							var widthField = dialog.getContentElement( 'videoTab', 'videoWidth' ),
+								heightField = dialog.getContentElement( 'videoTab', 'videoHeight' );
+							widthField && widthField.setValue( '640' );
+							heightField && heightField.setValue( '360' );
+//						updatePreview( dialog );
+					};
+					
 					return {
 						title : 'CommSy Video',
 						minWidth : 500,
 						minHeight : 200,
+						onShow: function ()
+						{
+							this.lockRatio = true;
+						},
 						contents :
 							[{
 								id : 'videoTab',
@@ -120,41 +218,122 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										}
 									},
 									{
-										type : 'select',
-										id: 'fileselect',
-										label: 'vorhandene Datei auswählen',
-										items : fileItems,
-										onLoad : function ()
-										{
-											this.disable();
-										},
-										onChange : function () 
-										{
-											// disable textInput if file is selected
-											var dialog = this.getDialog();
-											var inputUrl = dialog.getContentElement( 'videoTab', 'videoUrl' );
-											if(this.getValue() == 'null'){
-												inputUrl.enable();
-												inputUrl.setValue('');
-												inputUrl.focus();
-											} else {
-												inputUrl.disable();
-												// set file url in textInput
-												var cid = getUrlParam('cid');
-												var mod = getUrlParam('mod');
-												var iid = getUrlParam('iid');
-												
-												var input = this.getInputElement().$;
-//												alert(input.options[input.selectedIndex].text);
-												
-												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
-												
-												encodeFileUrl = encodeURI(fileUrl);
-//												alert(encodeFileUrl);
-												inputUrl.setValue(encodeFileUrl);
-											}
-										}
+										type : 'hbox',
+										widths : ['50%','50%'],
+										children : 
+										[
+											{
+												type : 'select',
+												id: 'fileselect',
+												label: 'vorhandene Datei auswählen',
+												items : fileItems,
+												onLoad : function ()
+												{
+													this.disable();
+												},
+												onChange : function () 
+												{
+													// disable textInput if file is selected
+													var dialog = this.getDialog();
+													var inputUrl = dialog.getContentElement( 'videoTab', 'videoUrl' );
+													if(this.getValue() == 'null'){
+														inputUrl.enable();
+														inputUrl.setValue('');
+														inputUrl.focus();
+													} else {
+														inputUrl.disable();
+														// set file url in textInput
+														var cid = getUrlParam('cid');
+														var mod = getUrlParam('mod');
+														var iid = getUrlParam('iid');
+														
+														var input = this.getInputElement().$;
+											//			alert(input.options[input.selectedIndex].text);
+														
+														fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+														
+														encodeFileUrl = encodeURI(fileUrl);
+											//			alert(encodeFileUrl);
+														inputUrl.setValue(encodeFileUrl);
+													}
+												}
+											},
+											{
+												type: 'vbox',
+												children:
+												[
+													{
+													    type: 'file',
+													    id: 'upload',
+													    label: 'neue Datei hochladen',
+													    style: 'height:40px',
+													    size: 38
+													},
+													{
+													    type: 'fileButton',
+													    id: 'uploadButton',
+													    filebrowser: 'videoTab:videoUrl',
+													    label: 'Hochladen',
+													    'for': [ 'videoTab', 'upload' ],
+													}
+												]
+											},
+//											{
+//									            type: 'file',
+//									            id: 'upload',
+//									            label: 'neue Datei hochladen',
+//									            style: 'height:40px',
+//									            size: 38
+//									        },
+//									        {
+//									            type: 'fileButton',
+//									            id: 'uploadButton',
+//									            filebrowser: 'videoTab:videoUrl',
+//									            label: 'btnUpload',
+//									            'for': [ 'videoTab', 'upload' ],
+//									            onSelect : function() 
+//									            {
+//									            	
+//									            }
+//									        }
+										]
 									},
+//									{
+//										type : 'select',
+//										id: 'fileselect',
+//										label: 'vorhandene Datei auswählen',
+//										items : fileItems,
+//										onLoad : function ()
+//										{
+//											this.disable();
+//										},
+//										onChange : function () 
+//										{
+//											// disable textInput if file is selected
+//											var dialog = this.getDialog();
+//											var inputUrl = dialog.getContentElement( 'videoTab', 'videoUrl' );
+//											if(this.getValue() == 'null'){
+//												inputUrl.enable();
+//												inputUrl.setValue('');
+//												inputUrl.focus();
+//											} else {
+//												inputUrl.disable();
+//												// set file url in textInput
+//												var cid = getUrlParam('cid');
+//												var mod = getUrlParam('mod');
+//												var iid = getUrlParam('iid');
+//												
+//												var input = this.getInputElement().$;
+////												alert(input.options[input.selectedIndex].text);
+//												
+//												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+//												
+//												encodeFileUrl = encodeURI(fileUrl);
+////												alert(encodeFileUrl);
+//												inputUrl.setValue(encodeFileUrl);
+//											}
+//										}
+//									},
 									{
 										type : 'hbox',
 										widths : [ '70%' ],
@@ -201,18 +380,8 @@ CKEDITOR.plugins.add( "CommSyVideo",
 									},
 									{
 										type : 'hbox',
-										widths : ['20%'],
-										children : 
-										[
-										 	{
-										 		type : 'html',
-										 		html : '<div>&nbsp;</div>'
-										 	}
-										 ]
-									},
-									{
-										type : 'hbox',
-										widths : [ '20%', '20%', '20%' ],
+										widths : [ '50px', '50px', '50px' ],
+										style: 'margin-top:20px',
 										children :
 										[
 											{
@@ -221,22 +390,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												width : '60px',
 												label : 'Breite',
 												'default' : '640',
-												validate : function ()
-												{
-													if ( this.getValue() )
-													{
-														var width = parseInt ( this.getValue() ) || 0;
-
-														if ( width === 0 )
-														{
-															alert( 'invalidWidth' );
-															return false;	
-														}
-													}
-													else {
-														alert( 'noWidth' );
-														return false;
-													}
+												onKeyUp: onSizeChange,
+												validate: function() {
+													var aMatch = this.getValue().match( regexGetSizeOrEmpty ),
+														isValid = !!( aMatch && parseInt( aMatch[ 1 ], 10 ) !== 0 );
+													if ( !isValid )
+														alert( 'invalid width' );
+													return isValid;
 												}
 											},
 											{
@@ -245,23 +405,68 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												width : '60px',
 												label : 'Höhe',
 												'default' : '360',
-												validate : function ()
-												{
-													if ( this.getValue() )
-													{
-														var height = parseInt ( this.getValue() ) || 0;
-
-														if ( height === 0 )
-														{
-															alert( 'invalidHeight' );
-															return false;	
-														}
+												onKeyUp: onSizeChange,
+//												onChange: function() {
+//													commitInternally.call( this, 'advanced:txtdlgGenStyle' );
+//												},
+												validate: function() {
+													var aMatch = this.getValue().match( regexGetSizeOrEmpty ),
+														isValid = !!( aMatch && parseInt( aMatch[ 1 ], 10 ) !== 0 );
+													if ( !isValid )
+														alert( 'invalid height' );
+													return isValid;
+												},
+											},
+											{
+												id: 'ratioLock',
+												type: 'html',
+												style: 'margin-top:20px;width:40px;height:40px;',
+												onLoad: function() {
+													// Activate Reset button
+													var resetButton = CKEDITOR.document.getById( btnResetSizeId ),
+														ratioButton = CKEDITOR.document.getById( btnLockSizesId );
+													if ( resetButton ) {
+														resetButton.on( 'click', function( evt ) {
+															resetSize( this );
+															evt.data && evt.data.preventDefault();
+														}, this.getDialog() );
+														resetButton.on( 'mouseover', function() {
+															this.addClass( 'cke_btn_over' );
+														}, resetButton );
+														resetButton.on( 'mouseout', function() {
+															this.removeClass( 'cke_btn_over' );
+														}, resetButton );
 													}
-													else {
-														alert( 'noHeight' );
-														return false;
+													// Activate (Un)LockRatio button
+													if ( ratioButton ) {
+														ratioButton.on( 'click', function( evt ) {
+															var locked = switchLockRatio( this ),
+//																oImageOriginal = this.originalElement,
+																width = this.getValueOf( 'videoTab', 'videoWidth' );
+			
+															if ( width ) {
+																var height = 360 / 640 * width;
+																if ( !isNaN( height ) ) {
+																	this.setValueOf( 'videoTab', 'videoHeight', Math.round( height ) );
+//																	updatePreview( this );
+																}
+															}
+															evt.data && evt.data.preventDefault();
+														}, this.getDialog() );
+														ratioButton.on( 'mouseover', function() {
+															this.addClass( 'cke_btn_over' );
+														}, ratioButton );
+														ratioButton.on( 'mouseout', function() {
+															this.removeClass( 'cke_btn_over' );
+														}, ratioButton );
 													}
-												}
+												},
+												html: '<div>' +
+													'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.image.lockRatio +
+													'" class="cke_btn_locked" id="' + btnLockSizesId + '" role="checkbox"><span class="cke_icon"></span><span class="cke_label">' + editor.lang.image.lockRatio + '</span></a>' +
+													'<a href="javascript:void(0)" tabindex="-1" title="' + editor.lang.image.resetSize +
+													'" class="cke_btn_reset" id="' + btnResetSizeId + '" role="button"><span class="cke_label">' + editor.lang.image.resetSize + '</span></a>' +
+													'</div>'
 											},
 											{
 												type : 'select',
@@ -282,9 +487,16 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											},
 											{
 												type : 'text',
-												id : 'padding',
+												id : 'marginH',
 												width : '60px',
-												label : 'Abstand',
+												label : 'H-Abstand',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'marginV',
+												width : '60px',
+												label : 'V-Abstand',
 												'default' : '',
 											},
 										]
@@ -305,17 +517,37 @@ CKEDITOR.plugins.add( "CommSyVideo",
 							videoUrl = this.getValueOf( 'videoTab', 'videoUrl');
 							
 							var autostart = this.getValueOf( 'videoTab', 'autostart');
-							var float = this.getValueOf( 'videoTab', 'float');
 							
+							// define styles
+							var float = this.getValueOf( 'videoTab', 'float');
 							var floatValue = '';
 							
-							if(float != 'null' && float == 'right'){
-								floatValue += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
-								floatValue += 'float:left;';
-							} else {
-								floatValue = '';
+							var style,
+							borderWidth = this.getValueOf( 'videoTab', 'border' ),
+							horizontalMargin = this.getValueOf( 'videoTab', 'marginH'),
+							verticalMargin = this.getValueOf( 'videoTab', 'marginV');
+							
+							style = 'style="';
+							if ( borderWidth != null ) {
+								style += 'border-style: solid; border-width:' + borderWidth + 'px;';
 							}
+							
+							if ( horizontalMargin != null ) {
+								style += 'margin-top:' + horizontalMargin + 'px;';
+								style += 'margin-bottom:' + horizontalMargin + 'px;';
+							}
+							
+							if ( verticalMargin != null ) {
+								style += 'margin-left:' + verticalMargin + 'px;';
+								style += 'margin-right:' + verticalMargin + 'px;';
+							}
+							
+							if(float != 'null' && float == 'right'){
+								style += 'float:right;';
+							} else if (float != 'null' && float == 'left') {
+								style += 'float:left;';
+							}
+							style += '"';
 							
 							if(this.getValueOf('videoTab', 'selectbox') == 'lecture2go'){
 								
@@ -327,7 +559,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 								var videoUrlRegEx = match[0];
 								
-								content += '<embed id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrlRegEx +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="' + floatValue + '" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
+								content += '<embed ' + style + ' id="ply2" width="'+ width +'" height="'+ height +'" flashvars="autostart=false&image=http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg&bufferlength=2&streamer=rtmp://fms.rrz.uni-hamburg.de:80/vod&file='+ videoUrlRegEx +'&backcolor=FFFFFF&frontcolor=000000&lightcolor=000000&screencolor=FFFFFF&id=id1" wmode="opaque" allowscriptaccess="always" allowfullscreen="true" quality="high" bgcolor="FFFFFF" name="ply" style="' + floatValue + '" src="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" type="application/x-shockwave-flash">';
 //								alert(content);
 								
 //								content += '<object type="application/x-shockwave-flash" data="http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf" width="'+ width +'" height="'+ height +'" id="VideoPlayback">';
@@ -367,7 +599,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 	
 								url += 'hl=pt_BR&amp;version=3';
-								
+
 								if(this.getValueOf('videoTab', 'autostart')){
 									url += '&autoplay=1';
 								}
@@ -377,13 +609,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 									url += '&amp;rel=0';
 								}
 	
-								content = '<object width="' + width + '" height="' + height + '" style="' + floatValue + '">';
+								content = '<object width="' + width + '" height="' + height + '">';
 								content += '<param name="movie" value="' + url + '"></param>';
 								content += '<param name="allowFullScreen" value="true"></param>';
 								content += '<param name="allowscriptaccess" value="always"></param>';
 								content += '<embed src="' + url + '" type="application/x-shockwave-flash" ';
 								content += 'width="' + width + '" height="' + height + '" allowscriptaccess="always" ';
-								content += 'allowfullscreen="true"></embed>';
+								content += 'allowfullscreen="true" ' + style + '></embed>';
 								content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'podcampus'){
@@ -391,14 +623,14 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								if(videoUrl.substr((videoUrl.length - 4),4) != '.swf'){
 									videoUrl += '.swf';
 								}
-								content += '<object width="' + width + '" height="' + height + '" style="' + floatValue + '">';
+								content += '<object width="' + width + '" height="' + height + '" ' + style + '>';
 								content += '<param value="' + videoUrl + '" name="movie">';
 								content += '<embed width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="' + videoUrl + '">';
 								content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'quicktime'){
 								
-								content += '<object width="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime" style="' + floatValue + '"><param value="' + videoUrl + '" name="src">';
+								content += '<object width="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
 								content += '<param value="true" name="controller">';
 								content += '<param value="high" name="quality">';
 								content += '<param value="tofit" name="scale">';
@@ -412,12 +644,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += '<param value="false" name="loop">';
 								content += '<param value="true" name="devicefont">';
 								content += '<param value="mov" name="class">';
-								content += '<embed width="400" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" autoplay="true" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '">';
+								content += '<embed width="400" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" autoplay="true" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true">';
 								content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'mediaplayer'){
 							
-								content += '<object width="400" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" style="' + floatValue + '">';
+								content += '<object width="400" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
 								content += '<param value="' + videoUrl + '" name="fileName">';
 								if(this.getValueOf('videoTab', 'autostart')){
 									content += '<param value="true" name="autoStart">';

@@ -53,6 +53,8 @@ class HTMLPurifier_AttrTransform_SafeParam extends HTMLPurifier_AttrTransform
                 // we're going to allow arbitrary inputs to the SWF, on
                 // the reasoning that it could only hack the SWF, not us.
                 break;
+            case 'pluginspage':
+            	break;
             // add other cases to support other param name/value pairs
             default:
                 $attr['name'] = $attr['value'] = null;
