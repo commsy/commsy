@@ -83,51 +83,13 @@ define([	"dojo/_base/declare",
 				}).play();
 			}
 		},
-		
-		request: function(fct, action, data) {
-			// execute a HTTP POST request
-			var args = {
-				url:		"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
-				headers:	{
-							"Content-Type":		"application/json; charset=utf-8",
-							"Accept":			"application/json"
-				},
-				postData:	dojo.toJson(data),
-				handleAs:	"json",
-				failOk:		true,
-				error:		Lang.hitch(this, function(errorMessage, ioargs) {
-					/************************************************************************************
-					 * A fatal error occured while performing the ajax request, maybe something went wrong
-					 * on php side or while transporting data. Show error message in console and setup a
-					 * user-friendly error widget
-					************************************************************************************/
-					
-					// ignore the case of status code 0 - aborted xhr requests(search auto-completion, etc.)
-					if (ioargs.xhr.status !== 0) {
-						if (this.from_php.dev.xhr_error_reporting && this.from_php.dev.xhr_error_reporting === true) {
-							/*
-							 * we overwrite all success and error handler, so failing to send
-							 * this request will not lead into a recursive loop
-							 */
-							this.AJAXRequest("actions", "sendXHRErrorReporting", { ioargs: ioargs, error: errorMessage },
-								function() {},
-								function() {},
-								false,
-								{ error: function() {} }
-							);
-						}
-					}
-				})
-			};
-			
-			return xhr.post(args);
-		},
 
-		AJAXRequest: function(fct, action, data, callback, error_callback, sync, mixin) {
+		AJAXRequest: function(fct, action, data, callback, error_callback, sync, mixin, skip) {
 			callback = callback || function(response) {};
 			error_callback = error_callback || function(response) {};
 			sync = sync || false;
 			mixin = mixin || {};
+			skip = skip || false;
 
 			// execute a HTTP POST request
 			var args = {
@@ -160,33 +122,23 @@ define([	"dojo/_base/declare",
 								{ error: function() {} }
 							);
 						}
-						
-						/*
-						// destroy any existing loading screen
-						this.destroyLoading();
-						
-						
-						// setup error dialog
-						require(["commsy/widgets/ErrorDialog"], function(ErrorDialog) {
-							var dialog = new ErrorDialog({});
-							dialog.show();
-						});
-						*/
 					}
 				})
 			};
 			
 			declare.safeMixin(args, mixin);
 			var request = xhr.post(args);
-
-			// setup deferred
-			request.then(function(response) {
-				if(response.status === "success") {
-					callback(response.data);
-				} else {
-					error_callback(response);
-				}
-			});
+			
+			if (!skip) {
+				// setup deferred
+				request.then(function(response) {
+					if(response.status === "success") {
+						callback(response.data);
+					} else {
+						error_callback(response);
+					}
+				});
+			}
 			
 			return request;
 		},

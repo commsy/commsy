@@ -192,7 +192,7 @@ define([	"dojo/_base/declare",
 				this.currentRequest.cancel();
 			}
 			
-			this.currentRequest = this.request(this.fct, "query", { query: query, options: requestOptions });
+			this.currentRequest = this.AJAXRequest(this.fct, "query", { query: query, options: requestOptions }, null, null, false, {}, true);
 			
 			if ( completeCallback !== null )
 			{
