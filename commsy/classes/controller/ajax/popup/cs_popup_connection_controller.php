@@ -107,6 +107,13 @@
 		         		if ( $connection['id'] == $tab_id ) {
 		         			
 		         			if ( !empty($form_data['delete_'.$tab_id]) ) {
+		         				// delete tab external
+		         				$connection_obj = $this->_environment->getCommSyConnectionObject();
+		         				if ( !empty($connection_obj) ) {
+		         					$result2 = $connection_obj->deleteConnection($portal_conn_array[$key]['id']);
+		         				}
+		         				
+		         				// delete tab local
 		         				unset($portal_conn_array[$key]);
 		         				$delete = true;
 		         			} else {

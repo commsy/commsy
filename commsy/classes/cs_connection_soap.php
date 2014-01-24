@@ -4416,5 +4416,15 @@ class cs_connection_soap {
    		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
    	}
    }
+
+   public function deleteConnection ($session_id, $tab_id) {
+      	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->deleteConnectionSOAP($session_id, $tab_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
 }
 ?>

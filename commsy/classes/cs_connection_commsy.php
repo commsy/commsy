@@ -177,6 +177,15 @@ class cs_connection_commsy {
    	$retour['setPortalConnectionInfo'] = $temp_array;
    	unset($temp_array);
    	
+   	$temp_array = array();
+   	$temp_array['in'] = array();
+   	$temp_array['in']['session_id'] = 'string';
+   	$temp_array['in']['tab_id'] = 'string';
+   	$temp_array['out'] = array();
+   	$temp_array['out']['result'] = 'string';
+   	$retour['deleteConnection'] = $temp_array;
+   	unset($temp_array);
+   	
    	return $retour;
    }
    
@@ -256,6 +265,41 @@ class cs_connection_commsy {
    	$server_info = $server_item->getServerConnectionInfo($tab_info['server_connection_id']);
    	$retour['server_url'] = $server_info['url'];
    	$retour['proxy'] = $server_info['proxy'];
+   	
+   	// add info from external portal
+   	$retour['id_external'] = $tab_info['id_external'];
+   	
+   	return $retour;
+   }
+   
+   public function deleteConnection ( $tab_id ) {
+   	$retour = false;
+   	
+   	// get connection infos
+   	$connect_info_array = $this->_getConnectInfosFromTabID($tab_id);   	
+   	if ( !empty($connect_info_array['server_url'])
+   			and !empty($connect_info_array['server_key'])
+   			and !empty($connect_info_array['portal_id'])
+   			and !empty($connect_info_array['user_key'])
+   			and !empty($connect_info_array['proxy'])
+   			and !empty($connect_info_array['id_external'])
+   	   ) {
+   		if ( $this->_initConnection($connect_info_array['server_url'],$connect_info_array['proxy']) ) {
+   			$sid = $this->_connection->getGuestSession($connect_info_array['portal_id']);
+   			if ( !empty($sid) ) {
+   				$sid = $this->_connection->getSessionIdFromConnectionKey($sid,$connect_info_array['portal_id'],$connect_info_array['user_key'],$connect_info_array['server_key']);
+   				if ( !empty($sid) ) {
+   					$result = $this->_connection->deleteConnection($sid,$connect_info_array['id_external']);
+   					if ( !empty($result)
+   						  and !is_soap_fault($result)
+   						  and $result == 'success'
+   						) {
+   						$retour = true;
+   					}
+   				}
+   			}
+   		}
+   	}
    	
    	return $retour;
    }
@@ -712,6 +756,67 @@ class cs_connection_commsy {
             	$portal_user->save();
             	$retour = $new_tab['id'];             	
             }
+         }
+   	}
+   	
+   	return $retour;
+   }
+
+   public function deleteConnectionSOAP ($session_id, $tab_id) {
+   	$retour = 'failed';
+   	
+   	if ( !empty($session_id)
+   		  and !empty($tab_id)
+   		) {
+   	
+   	   // set context
+   	   $context = false;
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         
+         $user_list = $user_manager->get();
+         $retour = $user_list->getCount();
+         if ( $user_list->getCount() == 1 ) {
+         	$user_item = $user_list->getFirst();
+            if ( !empty($user_item) ) {
+               $this->_environment->setCurrentUserItem($user_item);
+               $context = true;
+            }
+         }
+         
+         // save key
+         if ( $context ) {
+         	$delete = false;
+         	$portal_conn_array = $user_item->getPortalConnectionArrayDB();
+         	foreach ( $portal_conn_array as $key =>  $connection ) {
+         		if ( $connection['id'] == $tab_id ) {
+         			unset($portal_conn_array[$key]);
+         			$delete = true;
+         		}
+         		break;
+         	}
+         	
+         	if ( $delete ) {
+         		$new_portal_conn_array = array();
+         		foreach ( $portal_conn_array as $conn ) {
+         			$new_portal_conn_array[] = $conn;
+         		}
+         		$portal_conn_array = $new_portal_conn_array;
+         		
+         		$user_item->setPortalConnectionInfoDB($portal_conn_array);
+         		$user_item->save();
+         		
+         		$retour = 'success';	
+         	}	
          }
    	}
    	
