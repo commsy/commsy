@@ -2643,12 +2643,6 @@ class cs_user_item extends cs_item {
    		$retour = $value;
    	}
    
-   	// test - delete [TBD]
-   	#else {
-   	#	$retour = $this->_generatePortalConnectionArray();
-   	#}
-   	// test
-   
    	return $retour;
    }
    
@@ -2684,42 +2678,5 @@ class cs_user_item extends cs_item {
    public function setPortalConnectionInfoDB ( $value ) {
    	$this->_setExtra('CONNECTION_ARRAY',$value);
    }
-   
-   // test - delete [TBD]
-   private function _generatePortalConnectionArray () {
-   	$pid = $this->_environment->getCurrentPortalID();
-   	
-   	$retour = array();
-   	if ( $pid != 541 ) {
-   	   $temp_array = array();
-   	   $temp_array['id'] = 'juhu';
-   	   $temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
-   	   $temp_array['portal_connection_id'] = 541;
-   	   $temp_array['title'] = 'Wo anders';
-   	   $temp_array['title_original'] = 'EduCommSy';
-   	   $retour[] = $temp_array;
-   	}
-   	if ( $pid != 160 ) {
-	   	$temp_array = array();
-	   	$temp_array['id'] = 'dodeldue';
-	   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
-	   	$temp_array['portal_connection_id'] = 160;
-	   	$temp_array['title'] = 'Hier';
-   	   $temp_array['title_original'] = 'MINCommSy';
-	   	$retour[] = $temp_array;
-   	}
-      if ( $pid != 552 ) {
-	   	$temp_array = array();
-	   	$temp_array['id'] = 'dodeldue';
-	   	$temp_array['server_connection_id'] = 'c4a904d747c78696a9d7c56fa69e9e90';
-	   	$temp_array['portal_connection_id'] = 552;
-	   	$temp_array['title'] = 'Nummer DREI';
-   	   $temp_array['title_original'] = 'AGORA';
-	   	$retour[] = $temp_array;
-   	}
-   	
-   	return $retour;
-   }
-   
 }
 ?>
