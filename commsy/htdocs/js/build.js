@@ -106,7 +106,7 @@ var profile = (function(){
         	location:		"cbtree"
         },{
         	name:			"ckeditor",
-        	location:		"../3rdParty/ckeditor_4.1.1"
+        	location:		"../3rdParty/ckeditor_4.3.1"
         },{
         	name:			"commsy",
         	location:		"commsy"
