@@ -50,6 +50,21 @@ define([	"dojo/_base/declare",
 			return retour;
 		},
 		
+		onPopupSubmit: function(customObject) {
+			var part = customObject.part;
+			
+			// setup data to send via ajax
+			var search = {
+				tabs: [
+				    { id: part }
+				],
+				nodeLists: [
+				]
+			};
+			
+			//this.submit(search, { part: part });
+		},
+		
 		setupSpecific: function() {
 			// register click for edit button
 			this.setupSpecificEdit();
@@ -192,20 +207,25 @@ define([	"dojo/_base/declare",
 		 ************************************************************************************/
 
 		onPopupSubmitSuccess: function(item_id) {
-			var key = /error_/;
-			var match = item_id.search(key);
-			if ( match != -1 ) {
-			   if ( item_id == 'error_1') {
-				  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_1"]);
-			   } else if ( item_id == 'error_2') {
-				  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_2"]);
-			   } else if ( item_id == 'error_3') {
-				  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_3"]);
-			   } else {
-			      alert(item_id);
-			   }
+			if ( item_id == 42 ) {
+				// success
+				location.reload();				
 			} else {
-			   location.reload();
+				var key = /error_/;
+				var match = item_id.search(key);
+				if ( match != -1 ) {
+				   if ( item_id == 'error_1') {
+					  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_1"]);
+				   } else if ( item_id == 'error_2') {
+					  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_2"]);
+				   } else if ( item_id == 'error_3' || item_id == 'error_4' || item_id == 'error_5' || item_id == 'error_6' ) {
+					  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_3"]);
+				   } else {
+				      alert(item_id);
+				   }
+				} else {
+				   location.reload();
+				}
 			}
 		}
 		

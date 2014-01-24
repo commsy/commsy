@@ -58,15 +58,14 @@
 				} elseif ( $result == 'SAVE_FAILED' ) {
 					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
 				} elseif ( $result == 'SAVE_KEY_FAILED' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_4');
 				} elseif ( $result == 'SAVE_TAB_FAILED' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_5');
 				} elseif ( $result == 'DATA_LOST' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+					$this->_popup_controller->setSuccessfullItemIDReturn('error_6');
 				} else {
 					$this->_popup_controller->setSuccessfullItemIDReturn(42);
-				}
-				
+				}				
 			}
 		} 
 	

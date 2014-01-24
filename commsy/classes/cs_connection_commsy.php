@@ -321,8 +321,11 @@ class cs_connection_commsy {
    			
    			// login
    			$sid = $this->_connection->authenticate($userid,$password,$portal_id);
+   			$userid_session = $this->_connection->authenticateViaSession($sid);
    			if ( !empty($sid)
    				  and !is_soap_fault($sid)
+   				  and $userid_session != 'guest'
+   				  and $userid_session == $userid
    				) {
    				
    				// change personal keys
@@ -372,6 +375,7 @@ class cs_connection_commsy {
    					$result = $this->_connection->setPortalConnectionInfo($sid,$server_item->getOwnConnectionKey(),$portal_user->getContextID(), $new_tab['id']);
    					if ( !empty($result)
    						  and !is_soap_fault($result)
+   						  and $result != 'failed'
    					   ) {
    						$new_tab['id_external'] = $result;
    					} else {
@@ -701,7 +705,6 @@ class cs_connection_commsy {
          $user_manager->select();
          
          $user_list = $user_manager->get();
-         $retour = $user_list->getCount();
          if ( $user_list->getCount() == 1 ) {
          	$portal_user = $user_list->getFirst();
             if ( !empty($portal_user) ) {
@@ -754,7 +757,7 @@ class cs_connection_commsy {
             	}
             	
             	$portal_user->save();
-            	$retour = $new_tab['id'];             	
+            	$retour = $new_tab['id'];
             }
          }
    	}

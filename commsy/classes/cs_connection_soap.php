@@ -752,8 +752,6 @@ class cs_connection_soap {
                      $session_manager->save($session);
 
                      $result = $session->getSessionID();
-                     
-                     
                   }
                } else {
                   $info = 'ERROR';

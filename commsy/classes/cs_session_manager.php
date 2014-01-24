@@ -324,7 +324,7 @@ class cs_session_manager {
 
    public function getActiveSOAPSessionID ($user_id, $portal_id) {
       $retour = '';
-      $query = 'SELECT session_id FROM session WHERE (session_value LIKE "%'.encode(AS_DB,'s:12:"SOAP_SESSION";i:1').'%" or session_value LIKE "%'.encode(AS_DB,'s:10:"SOAP_LOGIN";i:1').'%") and (session_value LIKE "%i:'.encode(AS_DB,$portal_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$portal_id).'\"'.'%") ORDER BY created DESC;';
+      $query = 'SELECT session_id FROM session WHERE (session_value LIKE "%'.encode(AS_DB,'s:12:"SOAP_SESSION";i:1').'%" or session_value LIKE "%'.encode(AS_DB,'s:10:"SOAP_LOGIN";i:1').'%") and (session_value LIKE "%i:'.encode(AS_DB,$portal_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$portal_id).'\"'.'%") and (session_value LIKE "%i:'.encode(AS_DB,$user_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$user_id).'\"'.'%") ORDER BY created DESC;';
       $this->_last_query = $query;
       
       $result = $this->_db_conntector->performQuery($query);
