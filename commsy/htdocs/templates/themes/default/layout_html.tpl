@@ -41,9 +41,7 @@
 		{block name="js"}
 			<!-- SCRIPTS -->
 			<script src="
-				{if $environment.c_js_mode === "build"}
-					js/src/buildConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}
-				{elseif $environment.c_js_mode === "layer"}
+				{if $environment.c_js_mode === "layer"}
 					js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}
 				{else}
 					js/src/sourceConfig.js
@@ -56,24 +54,22 @@
 				{if isset($javascript.version) && !empty($javascript.version)}dojoConfig.cacheBust = '{$javascript.version}';{/if}
 			</script>
 			<script src="js/3rdParty/ckeditor_4.3.1/ckeditor.js"></script>
-	
-			{if $environment.c_js_mode === "build"}
-				<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
-				<script src="js/build/release/commsy/main.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
-	
-			{elseif $environment.c_js_mode === "layer"}
+			
+			{if $environment.c_js_mode === "layer"}
 				<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
 				<script>
-					require(["layer/commsy"], function() {
-						require(["commsy/main"], function() {
-	
-						});
+					require(["layer/commsy", "commsy/main"], function(main) {
+						(new main).init();
 					});
 				</script>
 	
 			{else}
 				<script src="js/src/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
-				<script src="js/src/commsy/main.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
+				<script>
+					require(["commsy/main"], function(main) {
+						(new main).init();
+					});
+				</script>
 			{/if}
 	
 	        <script type="text/javascript" src="javascript/swfobject.js"></script>
