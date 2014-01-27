@@ -214,7 +214,6 @@ define([	"dojo/_base/declare",
 					var commsyBarAccountNode = Query("span#tm_settings_count_new_accounts")[0];
 					var commsyTabAccountNode = Query("a#popup_account_tab > span")[0];
 					
-					//console.log(commsyTabAccountNode);
 					if(commsyBarAccountNode && response.count > 0){
 						DomAttr.set(commsyBarAccountNode,"innerHTML",response.count);
 					} else if(commsyBarAccountNode && response.count == 0){

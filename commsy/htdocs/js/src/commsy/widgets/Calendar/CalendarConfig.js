@@ -191,12 +191,10 @@ define(
 		 * Event Handling
 		 ************************************************************************************/
 		onClickConfigToDo: function(event) {
-			console.log("event");
 			event.preventDefault();
 		},
 		
 		onClickConfigRestrictions: function(event) {
-			console.log("event");
 			event.preventDefault();
 		},
 		

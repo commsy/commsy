@@ -70,8 +70,7 @@ define([	"dojo/_base/declare",
 					}));
 				}));
 			}));
-
-			//console.log(this.from_php);
+			
 			if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
 				var ulNode = DomConstruct.create('ul',{
 					
@@ -224,8 +223,6 @@ define([	"dojo/_base/declare",
 
 				DomAttr.set(Query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
-			console.log(part);
 
 			// setup data to send via ajax
 			if(part === "user" || part === "newsletter" || part === "cs_bar" || part === "addon_configuration" ) {
@@ -306,64 +303,34 @@ define([	"dojo/_base/declare",
 			switch (response.code) {
 				case "1022":
 					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];//form_data[old_password]
-					//console.log(response.reason);
 					var ulNode = DomConstruct.create('ul',{
 					});
 					for(var i=0; i<response.reason.length; i++){
 						DomConstruct.create('li',{
 							innerHTML: response.reason[i]
 						},ulNode,'last');
-						  //console.debug(response.reason[i], "at index", i);
 					}
-					//console.log(response.reason.length);
 					Tooltip.show(ulNode.outerHTML, errorNode);
 					this.errorNodes.push(errorNode);
 					
 					break;	
 				case "1023":
 					var errorNode = Query("input[name='form_data[old_password]']", this.contentNode)[0];
-					//console.log(response.reason);
 					var ulNode = DomConstruct.create('ul',{
 					});
 					for(var i=0; i<response.reason.length; i++){
 						DomConstruct.create('li',{
 							innerHTML: response.reason[i]
 						},ulNode,'last');
-						  //console.debug(response.reason[i], "at index", i);
 					}
-					//console.log(response.reason.length);
 					Tooltip.show(ulNode.outerHTML, errorNode);
 					this.errorNodes.push(errorNode);
 					
 					break;
-//				case "1023":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1023, errorNode);
-//					this.errorNodes.push(errorNode);
-//					
-//					break;	
-//				case "1024":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1024, errorNode);
-//					this.errorNodes.push(errorNode);
-//					
-//					break;	
 				case "1025":
 					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
 					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
 					this.errorNodes.push(errorNode);
-//					
-//					break;
-//				case "1026":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1026, errorNode);
-//					this.errorNodes.push(errorNode);
-//					
-//					break;	
-//				case "1027":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1027, errorNode);
-//					this.errorNodes.push(errorNode);
 					
 					break;	
 				case "1011":			/* user id already registered */

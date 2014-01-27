@@ -274,9 +274,6 @@ define([	"dojo/_base/declare",
 			// get buzzword
 			var buzzword = Lang.trim(DomAttr.get(Query("input#buzzword_create_name")[0], "value"));
 			
-			console.log(buzzword);
-			
-			
 			if(buzzword !== "") {
 				// send ajax request
 				this.AJAXRequest("buzzwords", "createNewBuzzword", { buzzword: buzzword, roomId: this.contextId },

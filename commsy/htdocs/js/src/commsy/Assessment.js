@@ -22,7 +22,7 @@ define([	"dojo/_base/declare",
 				if(DomClass.contains(node, "rateable")) {
 					var starImageNodes = Query("img", node);
 					
-					var oldStatus = [];
+					var oldStatus = new Array();
 					dojo.forEach(starImageNodes, Lang.hitch(this, function(starImageNode, index, arr) {
 						// store old status
 						oldStatus[index] = DomAttr.get(starImageNode, "src");

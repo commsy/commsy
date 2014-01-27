@@ -21,7 +21,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		setup: function(nodeList) {
-			var dialog = dojo.declare("CustomLightboxDialog", [dojox.image.LightboxDialog, dijit._TemplatedMixin ], {
+			dojo.declare("CustomLightboxDialog", [dojox.image.LightboxDialog, dijit._TemplatedMixin ], {
 				id:					"dojoxLightboxDialog",
 				templateString: 	Template
 			});

@@ -45,7 +45,6 @@ define([	"dojo/_base/declare",
 					}),
 					
 					lang.hitch(this, function(err) {
-						console.log(err);
 					}),
 					false);
 				

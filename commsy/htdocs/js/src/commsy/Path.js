@@ -86,7 +86,7 @@ define([	"dojo/_base/declare",
 			if ( pathListNode )
 			{
 				// collect data
-				var ids = [];
+				var ids = new Array();
 				dojo.forEach(Query("input[type='checkbox']:checked", pathListNode), function(checkbox, index, arr) {
 					// extract item id
 					var regex = new RegExp("path_(.*)");

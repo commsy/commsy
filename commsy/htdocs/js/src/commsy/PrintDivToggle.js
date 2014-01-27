@@ -16,7 +16,7 @@ function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomStyle, DomClas
 		
 			var aNodes = Query("div.content_item div");
 			
-			var cookieArray = [];
+			var cookieArray = new Array();
 			dojo.forEach(aNodes, function(node, index, arr)
 			{
 				if(DomClass.contains(node, "hidden") || DomStyle.get(node, "display") == "none") {
@@ -26,7 +26,6 @@ function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomStyle, DomClas
 			
 			Cookie("hiddenDivs", cookieArray, { expires: 5 });
 			window.open(window.location+"&mode=print", "Zweitfenster");
-			//console.log(cookieArray);
 		}
 	}); 
 });

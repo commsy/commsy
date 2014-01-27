@@ -45,20 +45,11 @@ define([	"dojo/_base/declare",
 				if(split[3] && split[3] == "preferences") widgetPath += "Preferences";
 				
 				this.loadWidget(widgetPath);
-				
-				
-				/*
-				// check if widget exists
-				if (Lang.exists("widgets." + widgetName)) {
-					
-					console.log(widgetName + " found");
-				}
-				*/
 			}));
 		},
 		
 		loadWidgetsManual: function(widgetArray) {
-			var promiseList = [];
+			var promiseList = new Array();
 			
 			dojo.forEach(widgetArray, Lang.hitch(this, function(widget, index, arr) {
 				promiseList.push(this.loadWidget(widget));
@@ -90,7 +81,7 @@ define([	"dojo/_base/declare",
 						
 						deferred.resolve({ handle: widgetHandler });
 					})
-				)
+				);
 			}));
 			
 			return deferred;

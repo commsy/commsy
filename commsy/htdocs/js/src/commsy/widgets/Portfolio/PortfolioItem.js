@@ -219,7 +219,6 @@ define(
 						widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioEditWidget");
 						widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioTagEditWidget");
 						widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioItemListWidget");
-						console.log(response);
 						// set data for this portfolio - title is already set
 						this.set("creator", response.creator);
 						this.set("descriptionFull", response.description);
@@ -371,7 +370,7 @@ define(
 				widgetInstance.set("portfolioTemplate", this.get("template"));
 				
 				widgetInstance.Open();
-			}));console.log(this);
+			}));
 		},
 		
 		onInsertNewTag: function(event)
