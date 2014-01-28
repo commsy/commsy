@@ -2,11 +2,12 @@ define([	"dojo/_base/declare",
         	"commsy/PopupHandler",
         	"dojo/on",
         	"dojo/_base/lang",
+        	"commsy/request",
         	"dojo/query",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
-        	"dojo/dom-style"], function(declare, PopupHandler, on, lang, query, dom_class, dom_attr, domConstruct, domStyle) {
+        	"dojo/dom-style"], function(declare, PopupHandler, on, lang, request, query, dom_class, dom_attr, domConstruct, domStyle) {
 	return declare(PopupHandler, {
 		constructor: function(args) {
 			this.fct			= "rubric_popup";
@@ -41,42 +42,52 @@ define([	"dojo/_base/declare",
 				declare.safeMixin(data, this.initData);
 
 				// setup ajax request for getting html
-				this.AJAXRequest(this.ajaxHTMLSource, "getHTML", data, lang.hitch(this, function(html) {
-					// append html to body
-					domConstruct.place(html, query("body")[0], "first");
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	this.ajaxHTMLSource,
+						action:	'getHTML'
+					},
+					data: data
+				}).then(
+					lang.hitch(this, function(response) {
+						// append html to body
+						domConstruct.place(response.data, query("body")[0], "first");
 
-					this.contentNode = query("div#popup_wrapper")[0];
-					this.scrollToNodeAnimated(this.contentNode);
+						this.contentNode = query("div#popup_wrapper")[0];
+						this.scrollToNodeAnimated(this.contentNode);
 
-					this.setupTabs();
-					this.setupFeatures();
-					this.setupSpecific();
-					this.setupAutoSave();
-					this.onCreate();
+						this.setupTabs();
+						this.setupFeatures();
+						this.setupSpecific();
+						this.setupAutoSave();
+						this.onCreate();
 
-					// register close
-					on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
-						this.close();
+						// register close
+						on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
+							this.close();
 
-						event.preventDefault();
-					}));
+							event.preventDefault();
+						}));
 
-					// register submit clicks
-					on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
-						// setup loading
-						this.setupLoading();
+						// register submit clicks
+						on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+							// setup loading
+							this.setupLoading();
 
-						// get custom data object
-						var customObject = this.getAttrAsObject(event.target, "data-custom");
-						this.onPopupSubmit(customObject);
+							// get custom data object
+							var customObject = this.getAttrAsObject(event.target, "data-custom");
+							this.onPopupSubmit(customObject);
 
-						event.preventDefault();
-					}));
+							event.preventDefault();
+						}));
 
-					this.is_open = !this.is_open;
+						this.is_open = !this.is_open;
 
-					this.destroyLoading();
-				}));
+						this.destroyLoading();
+					})
+				);
 			}
 		},
 
@@ -88,10 +99,11 @@ define([	"dojo/_base/declare",
 				// autosave is enabled
 				require(["dojox/timing", "dojox/string/sprintf"], lang.hitch(this, function() {
 					this.timer = new dojox.timing.Timer(1000);
+					var timerDiv = false;
 
 					if(mode == 2) {
 						// show countdown
-						var timerDiv = domConstruct.create("div", {
+						timerDiv = domConstruct.create("div", {
 							className:	"autosave",
 							innerHTML:	"00:00:00"
 						}, query("div#crt_actions_area", this.contentNode)[0], "first");

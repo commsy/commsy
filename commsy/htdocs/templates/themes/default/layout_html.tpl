@@ -34,19 +34,20 @@
 		{block name="css"}
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
+		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 		{/block}
 
 	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 
 		{block name="js"}
 			<!-- SCRIPTS -->
-			<script src="
-				{if $environment.c_js_mode === "layer"}
-					js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}
-				{else}
-					js/src/sourceConfig.js
-				{/if}">
-			</script>
+			{if $environment.c_js_mode === "layer"}
+				<script src="js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
+				<script src="js/src/commsyConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
+			{else}
+				<script src="js/src/sourceConfig.js"></script>
+				<script src="js/src/commsyConfig.js"></script>
+			{/if}
 	
 			<script>
 				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
@@ -78,10 +79,7 @@
 	            <script type="text/javascript" src="{$environment.c_jsmath_url}/jsMath.js"></script>
 	        {/if}
         {/block}
-
-		<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
-
-
+        
 	    <title>{$environment.room_title} - ___{$environment.module_name}___</title>
 
 	</head>

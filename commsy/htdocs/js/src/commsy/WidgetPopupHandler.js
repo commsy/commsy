@@ -4,10 +4,11 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"commsy/request",
         	"dojo/on",
         	"dojo/_base/lang",
         	"dojo/_base/Deferred",
-        	"dojo/promise/all"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Deferred, All) {
+        	"dojo/promise/all"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, request, On, lang, Deferred, All) {
 	return declare(TogglePopupHandler, {		
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
@@ -25,19 +26,24 @@ define([	"dojo/_base/declare",
 		setupSpecific: function() {
 			// get configuration for this popup
 			var action = "get" + this.ucFirst(this.module) + "Configuration";
-			this.AJAXRequest("widgets", action, {},
-				Lang.hitch(this, function(response) {
-					// we recieved a list of widgets to display
-					this.widgetArray = this.widgetArray.concat(response.displayConfig);
-					
-					// load widgets
-					this.loadWidgets();
-				})
-			);
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'widgets',
+					action:	action
+				}
+			}).then(lang.hitch(this, function(response) {
+				// we recieved a list of widgets to display
+				this.widgetArray = this.widgetArray.concat(response.data.displayConfig);
+				
+				// load widgets
+				this.loadWidgets();
+			}));
 		},
 		
 		loadWidgets: function() {
-			dojo.forEach(this.widgetArray, Lang.hitch(this, function(widget, index, arr) {
+			dojo.forEach(this.widgetArray, lang.hitch(this, function(widget, index, arr) {
 				// determ name of widget
 				var split = widget.split("_");
 				var widgetPath = "widgets/" + this.ucFirst(this.module) + this.ucFirst(split[1]);
@@ -51,7 +57,7 @@ define([	"dojo/_base/declare",
 		loadWidgetsManual: function(widgetArray) {
 			var promiseList = new Array();
 			
-			dojo.forEach(widgetArray, Lang.hitch(this, function(widget, index, arr) {
+			dojo.forEach(widgetArray, lang.hitch(this, function(widget, index, arr) {
 				promiseList.push(this.loadWidget(widget));
 			}));
 			
@@ -63,25 +69,34 @@ define([	"dojo/_base/declare",
 			
 			var deferred = new Deferred();
 			
-			require(["commsy/" + widgetPath], Lang.hitch(this, function(widgetObject) {
+			require(["commsy/" + widgetPath], lang.hitch(this, function(widgetObject) {
 				// get template
-				this.AJAXRequest("widgets", "getHTMLForWidget", { widgetPath: widgetPath },
-					Lang.hitch(this, function(templateString) {
-						var params = {
-							templateString:		templateString,
-							widgetHandler:		this
-						};
-						declare.safeMixin(params, mixin);
-						
-						// init widget
-						var widgetHandler = new widgetObject(params);
-						widgetHandler.startup();
-						
-						this.widgetHandles.push({ path: widgetPath, handler: widgetHandler });
-						
-						deferred.resolve({ handle: widgetHandler });
-					})
-				);
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'widgets',
+						action:	'getHTMLForWidget'
+					},
+					data: {
+						widgetPath: widgetPath
+					}
+				}).then(lang.hitch(this, function(response) {
+					var params = {
+						templateString:		response.data,
+						widgetHandler:		this
+					};
+					declare.safeMixin(params, mixin);
+					
+					// init widget
+					var widgetHandler = new widgetObject(params);
+					widgetHandler.startup();
+					
+					this.widgetHandles.push({ path: widgetPath, handler: widgetHandler });
+					
+					deferred.resolve({ handle: widgetHandler });
+				
+				}));
 			}));
 			
 			return deferred;

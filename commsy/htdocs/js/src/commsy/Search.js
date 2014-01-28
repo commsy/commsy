@@ -2,8 +2,9 @@ define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/_base/lang",
         	"dojo/query",
+        	"commsy/request",
         	"dojo/on",
-        	"dojo/dom-attr"], function(declare, BaseClass, lang, Query, On, DomAttr) {
+        	"dojo/dom-attr"], function(declare, BaseClass, lang, Query, request, On, DomAttr) {
 	return declare(BaseClass, {		
 		constructor: function(options) {
 			options = options || {};
@@ -35,21 +36,27 @@ define([	"dojo/_base/declare",
 				});
 				
 				// send ajax request
-				var request = this.AJAXRequest("search", "getAutocompleteSuggestions", { search_text: event.target.value.toLowerCase() },
-					lang.hitch(this, function(words) {
-						// update matches
-						this.matches = words;
-						
-						// autosuggest
-						this.autoSuggest(DomAttr.get(Query("input#search_input")[0], "value"));
-					}),
+				var ajaxRequest = request.ajax({
+					sync: true,
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'search',
+						action:	'getAutocompleteSuggestions'
+					},
+					data: {
+						search_text: event.target.value.toLowerCase()
+					}
+				}).then(lang.hitch(this, function(response) {
+					// update matches
+					this.matches = response.data;
 					
-					lang.hitch(this, function(err) {
-					}),
-					false);
+					// autosuggest
+					this.autoSuggest(DomAttr.get(Query("input#search_input")[0], "value"));
+				}));
 				
 				// store this request in array
-				this.ajaxRequests.push(request);
+				this.ajaxRequests.push(ajaxRequest);
 				
 			} else if(event.target.value.length > this.threshold) {
 				// autosuggest
