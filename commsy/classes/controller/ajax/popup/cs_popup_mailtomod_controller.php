@@ -32,15 +32,20 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 
 	public function save($form_data, $additional = array()) {
 		$mail = new cs_mail();
-		//TODO: feed mail with formdata etc.
+		
 		$mail->set_from_email($this->_environment->getCurrentUser()->getEmail());
 		$mail->set_from_name($this->_environment->getCurrentUser()->getFullName());
+		
+		$roomId = null;
+		if (isset($additional['roomId']) && !empty($additional['roomId'])) {
+			$roomId = $additional['roomId'];
+		}
 
 		if (!empty($form_data['reciever'])) {
 			$recipients = implode(', ', $form_data['reciever']);
 			$mail->set_to($recipients);
 		} else {
-		    $list = $this->getRecieverList();
+		    $list = $this->getRecieverList($roomId);
 			if(count($list) == 1) {
 			    $mail->set_to($list[0] ['value']);
 			} else {
@@ -110,8 +115,7 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 		} else {
 			$mod_information['list'] = $this->getRecieverList();
 		}
-
-		//pr($this->getRecieverList());
+		
 		$this->_popup_controller->assign('popup', 'mod', $mod_information);
 
 		$translator = $this->_environment->getTranslationObject();
