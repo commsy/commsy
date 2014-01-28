@@ -1922,7 +1922,10 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_HTMLTEXTAREA':
                $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
                break;
-            case 'CONFIGURATION_DATASECURITY':
+            case 'CONFIGURATION_CONNECTION':
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_CONNECTION_FORM');
+               break;
+               case 'CONFIGURATION_DATASECURITY':
                $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
                break;
             default:
@@ -2144,8 +2147,7 @@ class cs_server_item extends cs_guide_item {
    	if ($value == 1) {
    		$retour = true;
    	}
-   	return $retour;
-   	 
+   	return $retour;   	 
    }
    
    function setWithLogIPCover () {
@@ -2154,6 +2156,195 @@ class cs_server_item extends cs_guide_item {
    
    function setWithoutLogIPCover () {
    	$this->_setExtraConfig('LOGIPCOVER', -1);
+   }
+   
+   ## commsy server connections: portal2portal
+   public function getOwnConnectionKey () {
+   	$retour = '';
+   	$value = $this->_getExtraConfig('CONNECTION_OWNKEY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+
+   public function setOwnConnectionKey ($value) {
+   	$this->_setExtraConfig('CONNECTION_OWNKEY', $value);
+   }
+   
+   public function setNewServerConnection($title, $url, $key, $proxy = CS_NO) {
+   	if ( !empty($title)
+   		  and !empty($url)
+   		  and !empty($key)
+   		  and !empty($proxy)
+   	   ) {
+   	   $connection_array = $this->getServerConnectionArray();
+   	   $temp_array = array();
+   	   $temp_array['title'] = $title;
+   	   $temp_array['url'] = $url;
+   	   $temp_array['key'] = $key;
+   		$temp_array['proxy'] = $proxy;
+   		
+   		$key = '';
+   		$key .= $title;
+   		$key .= rand(0,9);
+   		$key .= $url;
+   		$key .= rand(0,9);
+   		$key .= $key;
+   		$key .= rand(0,9);
+   		include_once('functions/date_functions.php');
+   		$key .= getCurrentDateTimeInMySQL();
+   		$key = md5($key);   		 
+   		$temp_array['id'] = $key;
+   		
+   		$connection_array[(count($connection_array)+1)] = $temp_array;
+   		$this->setServerConnectionArray($connection_array);
+   	}
+   }
+   
+   public function setOldServerConnection($id, $title, $url, $key, $proxy = CS_NO) {
+   	if ( !empty($title)
+   		  and !empty($url)
+   		  and !empty($key)
+   		  and !empty($proxy)
+   		  and !empty($id)
+   	   ) {
+   	   $connection_array = $this->getServerConnectionArray();
+   	   $temp_array = array();
+   	   $temp_array['title'] = $title;
+   	   $temp_array['url'] = $url;
+   	   $temp_array['key'] = $key;
+   		$temp_array['proxy'] = $proxy;
+   		if ( !empty($connection_array[$id]['id']) ) {
+   		   $temp_array['id'] = $connection_array[$id]['id'];
+   		} else {
+   			$key = '';
+   			$key .= $title;
+   			$key .= rand(0,9);
+   			$key .= $url;
+   			$key .= rand(0,9);
+   			$key .= $key;
+   			$key .= rand(0,9);
+   			include_once('functions/date_functions.php');
+   			$key .= getCurrentDateTimeInMySQL();
+   			$key = md5($key);
+   			$temp_array['id'] = $key;
+   		}
+   		$connection_array[$id] = $temp_array;
+   		$this->setServerConnectionArray($connection_array);
+   	}
+   }
+   
+   public function getServerConnectionArray() {
+   	$retour = array();
+   	$value = $this->_getExtraConfig('CONNECTION_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   public function getServerConnectionInfo ( $id ) {
+   	$retour = array();
+   	$connection_array = $this->getServerConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['id'] == $id ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function getServerConnectionInfoByKey ( $key ) {
+   	$retour = array();
+   	$connection_array = $this->getServerConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['key'] == $key ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function setServerConnectionArray ($value) {
+   	$this->_setExtraConfig('CONNECTION_ARRAY', $value);
+   }
+   
+   public function deleteServerConnection ( $key ) {
+   	if ( !empty($key)
+   		  or $key == 0
+   		) {
+   		$connection_array = $this->getServerConnectionArray();
+   		if ( !empty($connection_array[$key]) ) {
+   			
+   			// delete all tabs on this server
+   			$server_to_delete = $connection_array[$key];
+   			$portal_id_array = $this->getPortalIDArray();
+   			
+   			if ( !empty($server_to_delete['id'])
+   				  and !empty($portal_id_array)
+   				) {
+   				$portal_id_array = $this->getPortalIDArray();
+   				
+   			   $user_manager = $this->_environment->getUserManager();
+   			   $user_manager->setContextArrayLimit($portal_id_array);
+   			   $user_manager->setExternalConnectionServerKeyLimit($server_to_delete['id']);
+   			   $user_manager->select();
+   			   $user_list = $user_manager->get();
+   			   if ( !empty($user_list)
+   			   	  and $user_list->isNotEmpty()
+   			   	) {
+   			   	$user_item = $user_list->getFirst();
+   			   	while ( $user_item ) {
+   			   		
+   			   		// delete tabs from server
+   			   		$user_item->deletePortalConnectionFromServer($server_to_delete['id']);
+   			   		$user_item->save();
+   			   	   $user_item = $user_list->getNext();
+   			   	}
+   			   }
+   			}
+   			
+   			// delete server
+   			unset($connection_array[$key]);
+   			
+   			// reset keys
+   			if ( !empty($connection_array) ) {
+   				$key_array = array_keys($connection_array);
+   				$temp_array = array();
+   				$i = 0;
+   				foreach ( $key_array as $key ) {
+   					$i++;
+   					$temp_array[$i] = $connection_array[$key];
+   				}
+   				$connection_array = $temp_array;
+   				unset($i);
+   				unset($temp_array);
+   				unset($key_array);
+   				unset($key);
+   			}
+   			
+   			$this->setServerConnectionArray($connection_array);
+   		}
+   	}
+   }
+   
+   public function isServerConnectionAvailable () {
+   	$retour = false;
+   	$server_array = $this->getServerConnectionArray();
+   	if ( !empty($server_array)
+   		  and is_array($server_array)
+   		  and count($server_array) > 0
+   		) {
+   		$retour = true;
+   	}
+   	return $retour;
    }
 }
 ?>

@@ -454,11 +454,17 @@
 				$this->assign('cs_bar', 'show_stack', $own_room_item->getCSBarShowStack());
 				$this->assign('cs_bar', 'show_portfolio', $own_room_item->getCSBarShowPortfolio());
 				$this->assign('cs_bar', 'addon_information', $this->getAddonInformation());
+				if ( $own_room_item->showCSBarConnection() ) {
+				   $this->assign('cs_bar', 'show_connection', $own_room_item->getCSBarShowConnection());
+				} else {
+					$this->assign('cs_bar', 'show_connection', false);
+				}
 			}else{
 				$this->assign('cs_bar', 'show_widgets', false);
 				$this->assign('cs_bar', 'show_calendar', false);
 				$this->assign('cs_bar', 'show_stack', false);
 				$this->assign('cs_bar', 'show_portfolio', false);
+				$this->assign('cs_bar', 'show_connection', false);
 			}
 			
 			$this->assign('cs_bar', 'show_limesurvey',	!($this->_environment->inPortal() || $this->_environment->inServer()) &&
@@ -607,7 +613,12 @@
 				$to_javascript["limesurvey"]["adminPath"] = $rpcPathParsed['scheme'] . "://" . $rpcPathParsed['host'] . $subPath . "/index.php/admin/";
 				$to_javascript["limesurvey"]["roomName"] = $current_context = $current_context->getTitle();
 			}
-
+			
+			// portal2portal
+			$to_javascript["i18n"]["CS_BAR_CONNECTION_PLEASE_WAIT_JS"] = $translator->getMessage('CS_BAR_CONNECTION_PLEASE_WAIT_JS');
+			$to_javascript["i18n"]["CS_BAR_CONNECTION_JS_ERROR_1"] = $translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_1');
+			$to_javascript["i18n"]["CS_BAR_CONNECTION_JS_ERROR_2"] = $translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_2');
+				
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {
 				$to_javascript = array_merge($to_javascript, $this->_toJSMixin);

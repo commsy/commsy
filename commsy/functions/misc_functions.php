@@ -819,7 +819,8 @@ function isURLValid () {
          $funct != 'news' and
          $funct != 'language' and
          $funct != 'outofservice' and
-         $funct != 'update' and
+         $funct != 'connection' and
+    		$funct != 'update' and
 
          // admin portal
          $funct != 'room' and

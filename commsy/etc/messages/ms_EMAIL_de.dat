@@ -9,10 +9,10 @@ $message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung wird in %1 T
 
 %2";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gelöscht";
-$message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gelöscht";
 $message["EMAIL_INACTIVITY_DELETE_NOW_BODY"]["de"] = "Ihre Kennung wurde gelöscht. Bitte wenden Sie sich an den Portal-Moderator.
 
 %1";
+$message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gelöscht";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung wird morgen gelöscht. Bitte wenden Sie sich an den Portal-Moderator.
 
 %1";

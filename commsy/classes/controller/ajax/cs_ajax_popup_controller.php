@@ -22,6 +22,13 @@
 			require_once('classes/controller/ajax/popup/cs_popup_' . $module . '_controller.php');
 			$class_name = 'cs_popup_' . $module . '_controller';
 			$this->_popup_controller = new $class_name($this->_environment, $this);
+			
+			// connection portal2portal
+			if ( $module == 'connection' ) {
+				if ( !empty($this->_data['id']) ) {
+					$this->_popup_controller->setTabID($this->_data['id']);
+				}
+			}
 
 			// initPopup
 			$this->initPopup();

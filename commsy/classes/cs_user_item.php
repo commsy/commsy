@@ -2582,7 +2582,114 @@ class cs_user_item extends cs_item {
    	$this->_unsetExtra('LOCK_SEND_MAIL_DATE');
    }
   
+   ## commsy user connections: portal2portal
+   public function getOwnConnectionKey () {
+   	$retour = '';
+   	$value = $this->_getExtra('CONNECTION_OWNKEY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	} else {
+   		$this->_generateOwnConnectionKey();
+   		$retour = $this->_getExtra('CONNECTION_OWNKEY');
+   	}
+   	return $retour;
+   }
    
+   private function _setOwnConnectionKey ($value) {
+   	$this->_setExtra('CONNECTION_OWNKEY', $value);
+   }
+    
+   private function _generateOwnConnectionKey () {
+   	$key = '';
+   	$key .= $this->getItemID();
+   	$key .= rand(0,9);
+   	$key .= $this->getFullName();
+   	$key .= rand(0,9);
+   	$key .= $this->getEmail();
+   	$key .= rand(0,9);
+   	include_once('functions/date_functions.php');
+   	$key .= getCurrentDateTimeInMySQL();
+   	$this->_setOwnConnectionKey(md5($key));
+   	$this->save();
+   }
    
+   public function addExternalConnectionKey ( $key ) {
+   	$key_array = $this->_getExternalConnectionKeyArray();
+   	if ( !in_array($key, $key_array) ) {
+   		$key_array[] = $key;
+   		$this->_setExternalConnectionKeyArray($key_array);
+   	}
+   }
+   
+   private function _getExternalConnectionKeyArray () {
+   	$retour = array();
+   	
+   	$value = $this->_getExtra('CONNECTION_EXTERNAL_KEY_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	
+  	   return $retour;
+   }
+   
+   private function _setExternalConnectionKeyArray ( $value ) {
+   	$this->_setExtra('CONNECTION_EXTERNAL_KEY_ARRAY',$value);
+   }
+   
+   public function getPortalConnectionArrayDB() {
+   	$retour = array();
+   	$value = $this->_getExtra('CONNECTION_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   
+   	return $retour;
+   }
+   
+   public function getPortalConnectionArray() {
+   	$retour = $this->getPortalConnectionArrayDB();
+
+   	// add infos
+   	if ( !empty($retour) ) {
+   		$server_item = $this->_environment->getServerItem();
+   		foreach ( $retour as $key => $row ) {
+   			$retour[$key]['server_info'] = $server_item->getServerConnectionInfo($row['server_connection_id']);
+   		}
+   	}
+   	
+   	return $retour;
+   }
+   
+   public function getPortalConnectionInfo ( $id ) {
+   	$retour = array();
+   	$connection_array = $this->getPortalConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['id'] == $id ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
+   	}
+   	
+   	return $retour;
+   }
+   
+   public function setPortalConnectionInfoDB ( $value ) {
+   	$this->_setExtra('CONNECTION_ARRAY',$value);
+   }
+   
+   public function deletePortalConnectionFromServer ( $id ) {
+   	$tab_array = $this->getPortalConnectionArray();
+   	$tab_new_array = array();
+   	if ( !empty($tab_array) ) {
+   	   foreach ( $tab_array as $tab_info ) {
+   		   if ( $tab_info['server_connection_id'] != $id ) {
+   		   	$tab_new_array[] = $tab_info;
+   		   }
+   	   }
+   	   $this->setPortalConnectionInfoDB($tab_new_array);
+   	}
+   }
 }
 ?>

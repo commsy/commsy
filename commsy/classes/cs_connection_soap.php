@@ -691,7 +691,7 @@ class cs_connection_soap {
    }
 
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-      el('authenticate '. $user_id);
+   	el('authenticate '. $user_id);
       el('authenticate');
       
       $user_id = $this->_encode_input($user_id);
@@ -723,8 +723,8 @@ class cs_connection_soap {
                if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
                   el('authenticate 6');
                   if ($this->_isSessionActive($user_id,$portal_id)) {
-                     el('authenticate 7');
-                     $result = $this->_getActiveSessionID($user_id,$portal_id);
+                  	el('authenticate 7');
+                  	$result = $this->_getActiveSessionID($user_id,$portal_id);
                      if ( empty($result) ) {
                         el('authenticate 8');
                         $info = 'ERROR';
@@ -752,8 +752,6 @@ class cs_connection_soap {
                      $session_manager->save($session);
 
                      $result = $session->getSessionID();
-                     
-                     
                   }
                } else {
                   $info = 'ERROR';
@@ -917,7 +915,7 @@ class cs_connection_soap {
       $retour = '';
       el('_getActiveSessionID '.$user_id);
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
-         el('_getActiveSessionID !empty');
+      	el('_getActiveSessionID !empty');
          $retour = $this->_session_id_array[$portal_id][$user_id];
       } else {
          $session_manager = $this->_environment->getSessionManager();
@@ -4359,6 +4357,72 @@ class cs_connection_soap {
    }
    public static function __callStatic($name, $arguments) {
    	$this->__call($name, $arguments);
+   }
+   
+   // portal2portal
+   public function getSessionIdFromConnectionKey ($session_id, $portal_id, $user_key, $server_key) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->getSessionIdFromConnectionKeySOAP($session_id, $portal_id, $user_key, $server_key);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+
+   public function getRoomListAsJson ($session_id) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->getRoomListAsJsonSOAP($session_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+   
+   public function getPortalListAsJson () {
+   	$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   	return $connection_obj->getPortalListAsJsonSOAP();
+   }
+   
+   public function saveExternalConnectionKey ($session_id, $user_key) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->saveExternalConnectionKeySOAP($session_id, $user_key);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+
+   public function getOwnConnectionKey ($session_id) {
+   	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->getOwnConnectionKeySOAP($session_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+   
+   public function setPortalConnectionInfo ($session_id, $server_key, $portal_id, $tab_id) {
+      	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->setPortalConnectionInfoSOAP($session_id, $server_key, $portal_id, $tab_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   }
+
+   public function deleteConnection ($session_id, $tab_id) {
+      	if ($this->_isSessionValid($session_id)) {
+   		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
+   		$this->_updateSessionCreationDate($session_id);
+   		return $connection_obj->deleteConnectionSOAP($session_id, $tab_id);
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
    }
 }
 ?>

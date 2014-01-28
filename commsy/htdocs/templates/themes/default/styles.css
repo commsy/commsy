@@ -3664,6 +3664,15 @@ a.tm_settings_hover {
     background: url(img/tm_eportfolio.gif) -36px 0px no-repeat !important;
     }
 
+#tm_connection {
+    background: url(img/tm_connection.gif) no-repeat;
+    }
+
+#tm_connection:hover,
+.tm_connection_hover {
+    background: url(img/tm_connection.gif) -36px 0px no-repeat !important;
+    }
+
 #tm_wiki {
     background: url(img/tm_wiki.gif) no-repeat;
     }
@@ -3883,6 +3892,10 @@ div.room_change_item {
     height: 40px;
     line-height: 12px;
     padding: 8px;
+}
+
+#popup_tabcontent p.room_connection_content_element {
+    padding-bottom: 0px;
 }
 
 div.room_dummy {

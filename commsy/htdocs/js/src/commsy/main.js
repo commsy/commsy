@@ -327,6 +327,17 @@ require([	"dojo/_base/declare",
 			    	}));
     			}
 			    
+			    // portal2portal
+			    var aConnectionNode = Query("a#tm_connection")[0];
+			    if (aConnectionNode) {
+			    	On.once(aConnectionNode, "click", Lang.hitch(this, function(event) {
+			    		require(["commsy/popups/ToggleConnection"], function(ConnectionPopup) {
+	    					var handler = new ConnectionPopup(aConnectionNode, Query("div#tm_menus div#tm_dropmenu_connection")[0]);
+	    					handler.open();
+	    				});
+			    	}));
+    			}
+			    
 			    var aClipboardNode = Query("a#tm_clipboard")[0];
 			    if (aClipboardNode) {
 			    	On.once(aClipboardNode, "click", Lang.hitch(this, function(event) {
