@@ -2006,7 +2006,7 @@ class cs_external_page_portal_view extends cs_page_view {
         unset($page);
      }
 
-/*
+
      // change password
      elseif ($cs_mod == 'password_change') {
         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
@@ -2026,7 +2026,7 @@ class cs_external_page_portal_view extends cs_page_view {
         $html .= $page->execute();
         unset($page);
      }
-*/
+
      // change account
      elseif ($cs_mod == 'account_change') {
         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
@@ -2707,7 +2707,7 @@ class cs_external_page_portal_view extends cs_page_view {
 #        $html .= '</div>'.LF;
       }
 
-/*
+
      // change password
       elseif (!empty($cs_mod) and $cs_mod == 'password_change') {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
@@ -2729,7 +2729,7 @@ class cs_external_page_portal_view extends cs_page_view {
          unset($left_page);
 #         $html .= '</div>'.LF;
       }
-*/
+
 
      // change account
      elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
