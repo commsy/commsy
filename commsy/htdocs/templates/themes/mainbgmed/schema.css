@@ -259,4 +259,26 @@ a.item_actions_glow {
     background: none;
 }
 
+/* Search */
 
+#search_input {
+    background: url(img/transparent.png) repeat;
+    width: 130px;
+    padding: 10px 5px 5px 35px;
+    font-size: 12px;
+    border: none;
+    z-index: 5;
+    position: absolute;
+    font-weight: normal;
+}
+
+input#search_suggestion {
+	position: absolute;
+	z-index: 3;
+	width: 130px;
+	padding: 10px 5px 5px 35px;
+	color: #888888;
+	font-weight: normal;
+	font-size: 12px;
+	border: 0px solid #DEE0E6;
+}

@@ -87,5 +87,7 @@ commsy/htdocs/js/build/*
 commsy/htdocs/templates/templates_c/*
 commsy/var/*
 commsy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
+commsy/external_pages/[0-9]*
+commsy/htdocs/css/external_portal_styles/[0-9]*
 
 web/commsy
