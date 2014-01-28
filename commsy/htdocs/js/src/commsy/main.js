@@ -150,7 +150,7 @@ define([	"dojo/_base/declare",
 				
 				// div expander
 				if(this.uri_object.mod === "home") {
-					var objects = new Array();
+					var objects = [];
 					query("div.content_item div[class^='list_wrap']").forEach(function(node, index, arr) {					
 						objects.push({ div: node, actor:	query("a.open_close", node.parentNode)[0] });
 					});

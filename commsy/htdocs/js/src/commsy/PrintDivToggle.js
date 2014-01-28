@@ -16,7 +16,7 @@ function(declare, BaseClass, Lang, Query, On, Cookie, DomAttr, DomStyle, DomClas
 		
 			var aNodes = Query("div.content_item div");
 			
-			var cookieArray = new Array();
+			var cookieArray = [];
 			dojo.forEach(aNodes, function(node, index, arr)
 			{
 				if(DomClass.contains(node, "hidden") || DomStyle.get(node, "display") == "none") {

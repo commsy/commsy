@@ -4,10 +4,11 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"commsy/request",
         	"dojo/on",
         	"dijit/Tooltip",
         	"dojo/_base/lang",
-        	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Tooltip, Lang, ErrorTranslations) {
+        	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, request, On, Tooltip, lang, ErrorTranslations) {
 	return declare(TogglePopupHandler, {
 		sendImages: [],
 		
@@ -37,7 +38,7 @@ define([	"dojo/_base/declare",
 			var communityRoomInputNode = Query("input#add_community_room", this.contentNode)[0];
 			if(communityRoomInputNode) {
 				// register click for community room assign button
-				On(communityRoomInputNode, "click", Lang.hitch(this, function(event) {
+				On(communityRoomInputNode, "click", lang.hitch(this, function(event) {
 					this.onClickAssignCommunityRoom();
 				}));
 			}
@@ -46,26 +47,26 @@ define([	"dojo/_base/declare",
 			var communityRoomCheckboxNodes = Query("input[name^='form_data[communityroomlist_']");
 			if ( communityRoomCheckboxNodes)
 			{
-				On(communityRoomCheckboxNodes, "click", Lang.hitch(this, function(event)
+				On(communityRoomCheckboxNodes, "click", lang.hitch(this, function(event)
 				{
 					this.onClickCommunityRoomCheckbox(event);
 				}));
 			}
 
 			// register click for additional status button
-			On(Query("input#add_additional_status", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
+			On(Query("input#add_additional_status", this.contentNode)[0], "click", lang.hitch(this, function(event) {
 				this.onClickAdditionalStatus();
 			}));
 
 			// update schema preview and set onchange handler
 			this.updateConfigurationSchemaPreview();
 
-			On(Query("select#room_color_choice", this.contentNode)[0], "change", Lang.hitch(this, function(event) {
+			On(Query("select#room_color_choice", this.contentNode)[0], "change", lang.hitch(this, function(event) {
 				this.updateConfigurationSchemaPreview();
 			}));
 
 			// participation code hiding
-			dojo.forEach(Query("input[name='form_data[member_check]']", this.contentNode), Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(Query("input[name='form_data[member_check]']", this.contentNode), lang.hitch(this, function(node, index, arr) {
 				if(DomAttr.get(node, "value") === "withcode") {
 					// enable
 					On(node, "click", function(event) {
@@ -83,7 +84,7 @@ define([	"dojo/_base/declare",
 			var moderationRubricNode = Query("select#moderation_rubric", this.contentNode)[0];
 			this.updateUsageHints(DomAttr.get(moderationRubricNode, "value"));
 
-			On(moderationRubricNode, "change", Lang.hitch(this, function(event) {
+			On(moderationRubricNode, "change", lang.hitch(this, function(event) {
 				// get active moderation rubric
 				var moderationRubricNode = Query("select#moderation_rubric", this.contentNode)[0];
 				var activeRubric = DomAttr.get(moderationRubricNode, "value");
@@ -95,7 +96,7 @@ define([	"dojo/_base/declare",
 			var mailTextRubricChildrenNode = Query("option:checked", mailTextRubricNode)[0];
 			this.updateMailText(DomAttr.get(mailTextRubricChildrenNode, "id"));
 
-			On(mailTextRubricNode, "change", Lang.hitch(this, function(event) {
+			On(mailTextRubricNode, "change", lang.hitch(this, function(event) {
 				// get active value
 				var mailTextRubricChildrenNode = Query("option:checked", mailTextRubricNode)[0];
 				var activeMailtext = DomAttr.get(mailTextRubricChildrenNode, "id");
@@ -106,16 +107,16 @@ define([	"dojo/_base/declare",
 			var usageContractNode = Query("select#additional_agb_description_text", this.contentNode)[0];
 			this.updateUsageContract(DomAttr.get(usageContractNode, "value"));
 
-			On(usageContractNode, "change", Lang.hitch(this, function(event) {
+			On(usageContractNode, "change", lang.hitch(this, function(event) {
 				// get active value
 				var usageContractNode = Query("select#additional_agb_description_text", this.contentNode)[0];
-				var activeLang = DomAttr.get(usageContractNode, "value");
-				this.updateUsageContract(activeLang);
+				var activelang = DomAttr.get(usageContractNode, "value");
+				this.updateUsageContract(activelang);
 			}));
 
-			dojo.ready(Lang.hitch(this, function() {
+			dojo.ready(lang.hitch(this, function() {
 				// setup callback for single uploads
-				this.featureHandles["upload-single"][0].setCallback(Lang.hitch(this, function(fileInfo) {
+				this.featureHandles["upload-single"][0].setCallback(lang.hitch(this, function(fileInfo) {
 					// room logo upload
 					
 					// setup preview
@@ -131,7 +132,7 @@ define([	"dojo/_base/declare",
 					this.sendImages.push({ part: "room_logo", fileInfo: fileInfo });
 				}));
 
-				this.featureHandles["upload-single"][1].setCallback(Lang.hitch(this, function(fileInfo) {
+				this.featureHandles["upload-single"][1].setCallback(lang.hitch(this, function(fileInfo) {
 					// room background
 					
 					// setup preview
@@ -149,7 +150,7 @@ define([	"dojo/_base/declare",
 			}));
 
 			// setup accounts tab
-			require(["commsy/Accounts"], Lang.hitch(this, function(Accounts) {
+			require(["commsy/Accounts"], lang.hitch(this, function(Accounts) {
 				var accounts = new Accounts();
 				accounts.init(this.cid, this.from_php.template.tpl_path);
 
@@ -167,10 +168,10 @@ define([	"dojo/_base/declare",
 			// confirm delete Wordpress
 			var deleteWordpressButton = Query("#submit_delete_wordpress", this.contentNode)[0];
 			if (deleteWordpressButton) {
-				On(deleteWordpressButton, "click", Lang.hitch(this, function(event) {
+				On(deleteWordpressButton, "click", lang.hitch(this, function(event) {
 					this.button_delete = new dijit.form.Button({
 						label:		"Blog endg&uuml;ltig l&ouml;schen",
-						onClick:	Lang.hitch(this, function(event) {
+						onClick:	lang.hitch(this, function(event) {
 							this.onPopupSubmit({
                         part: "external_configuration",
                         action: "delete_wordpress"
@@ -182,7 +183,7 @@ define([	"dojo/_base/declare",
 					
 					this.button_cancel = new dijit.form.Button({
 						label:		"Abbrechen",
-						onClick:	Lang.hitch(this, function(event) {
+						onClick:	lang.hitch(this, function(event) {
 							// destroy the dialog
 							this.dialog.destroyRecursive();
 						})
@@ -204,10 +205,10 @@ define([	"dojo/_base/declare",
 		   // confirm delete Wiki
          var deleteWikiButton = Query("#submit_delete_wiki", this.contentNode)[0];
          if (deleteWikiButton) {
-            On(deleteWikiButton, "click", Lang.hitch(this, function(event) {
+            On(deleteWikiButton, "click", lang.hitch(this, function(event) {
                this.button_delete = new dijit.form.Button({
                   label:      "Wiki endg&uuml;ltig l&ouml;schen",
-                  onClick: Lang.hitch(this, function(event) {
+                  onClick: lang.hitch(this, function(event) {
                      this.onPopupSubmit({
                         part: "external_configuration",
                         action: "delete_wiki"
@@ -219,7 +220,7 @@ define([	"dojo/_base/declare",
                
                this.button_cancel = new dijit.form.Button({
                   label:      "Abbrechen",
-                  onClick: Lang.hitch(this, function(event) {
+                  onClick: lang.hitch(this, function(event) {
                      // destroy the dialog
                      this.dialog.destroyRecursive();
                   })
@@ -241,10 +242,10 @@ define([	"dojo/_base/declare",
          	// confirm delete room
 			var deleteWordpressButton = Query("#submit_delete_room", this.contentNode)[0];
 			if (deleteWordpressButton) {
-				On(deleteWordpressButton, "click", Lang.hitch(this, function(event) {
+				On(deleteWordpressButton, "click", lang.hitch(this, function(event) {
 					this.button_delete = new dijit.form.Button({
 						label:		"Raum endg&uuml;ltig l&ouml;schen",
-						onClick:	Lang.hitch(this, function(event) {
+						onClick:	lang.hitch(this, function(event) {
 							this.onPopupSubmit({
 			                   part: "room_configuration",
 			                   action: "delete_room"
@@ -256,7 +257,7 @@ define([	"dojo/_base/declare",
 					
 					this.button_cancel = new dijit.form.Button({
 						label:		"Abbrechen",
-						onClick:	Lang.hitch(this, function(event) {
+						onClick:	lang.hitch(this, function(event) {
 							// destroy the dialog
 							this.dialog.destroyRecursive();
 						})
@@ -313,7 +314,7 @@ define([	"dojo/_base/declare",
 						innerHTML:	roomName
 					}, divNode, "last");
 					
-					On(inputNode, "click", Lang.hitch(this, function(event)
+					On(inputNode, "click", lang.hitch(this, function(event)
 					{
 						this.onClickCommunityRoomCheckbox(event);
 					}));
@@ -471,30 +472,50 @@ define([	"dojo/_base/declare",
 			// save images
 			if (this.sendImages.length > 0) {
 				var data = {
-						module:			"configuration",
-						additional: {
-						    part:		this.sendImages[0].part,
-						    fileInfo:	this.sendImages[0].fileInfo
-						}
-					};
+					module:			"configuration",
+					additional: {
+					    part:		this.sendImages[0].part,
+					    fileInfo:	this.sendImages[0].fileInfo
+					}
+				};
 				
-				this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
-					if (this.sendImages[1]) {
-						var data = {
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'popup',
+						action:	'save'
+					},
+					data: data
+				}).then(
+					lang.hitch(this, function(response) {
+						if (this.sendImages[1]) {
+							var data = {
 								module:			"configuration",
 								additional: {
 								    part:		this.sendImages[1].part,
 								    fileInfo:	this.sendImages[1].fileInfo
 								}
 							};
-						
-						this.AJAXRequest("popup", "save", data, function(response) {
+							
+							request.ajax({
+								query: {
+									cid:	this.uri_object.cid,
+									mod:	'ajax',
+									fct:	'popup',
+									action:	'save'
+								},
+								data: data
+							}).then(
+								lang.hitch(this, function(response) {
+									location.reload();
+								})
+							);
+						} else {
 							location.reload();
-						});
-					} else {
-						location.reload();
-					}
-				}));
+						}
+					})
+				);
 			} else {
 				if (!item_id) {
 					location.reload();

@@ -6,6 +6,7 @@ define(
  	"dojo/text!./templates/PortfolioEditWidget.html",
  	"dojo/i18n!./nls/PortfolioEditWidget",
  	"dojo/query",
+ 	"commsy/request",
  	"dojo/_base/lang",
  	"dojo/topic",
  	"dojo/dom-construct",
@@ -19,7 +20,8 @@ define(
 	Template,
 	PopupTranslations,
 	Query,
-	Lang,
+	request,
+	lang,
 	Topic,
 	DomConstruct,
 	DomAttr,
@@ -120,43 +122,48 @@ define(
 				}, this.buttonDivNode, "last");
 				
 				// register event
-				On(deleteButtonNode, "click", Lang.hitch(this, this.onDeletePortfolio));
+				On(deleteButtonNode, "click", lang.hitch(this, this.onDeletePortfolio));
 			} else {
-				this.AJAXRequest (	"portfolio",
-									"getTemplates",
-									{},
-									Lang.hitch(this, function(response)
-				{
-					var titleInputRowNode = this.portfolioTitleNode.parentNode;
-					
-					var rowNode = DomConstruct.create('div', {
-						className:		"input_row"
-					}, titleInputRowNode, "after");	
-					
-						DomConstruct.create('label', {
-							"for":		"portfolioTemplate",
-							innerHTML:	PopupTranslations.template+":"
-						}, rowNode, "last");
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'portfolio',
+						action:	'getTemplates'
+					}
+				}).then(
+					lang.hitch(this, function(response) {
+						var titleInputRowNode = this.portfolioTitleNode.parentNode;
 						
-						var selectNode = DomConstruct.create('select', {
-							id:			"portfolioTemplate",
-							name:		"template"
-						}, rowNode, "last");
+						var rowNode = DomConstruct.create('div', {
+							className:		"input_row"
+						}, titleInputRowNode, "after");	
 						
+							DomConstruct.create('label', {
+								"for":		"portfolioTemplate",
+								innerHTML:	PopupTranslations.template+":"
+							}, rowNode, "last");
+							
+							var selectNode = DomConstruct.create('select', {
+								id:			"portfolioTemplate",
+								name:		"template"
+							}, rowNode, "last");
+							
+								DomConstruct.create('option', {
+									value:		"none",
+									innerHTML:	PopupTranslations.templateSelect
+								}, selectNode, "last");
+						
+						dojo.forEach(response.data.templates, lang.hitch(this, function(portfolio){
 							DomConstruct.create('option', {
-								value:		"none",
-								innerHTML:	PopupTranslations.templateSelect
+								value:		portfolio.id,
+								innerHTML:	portfolio.title
 							}, selectNode, "last");
-					
-					dojo.forEach(response.templates, Lang.hitch(this, function(portfolio){
-						DomConstruct.create('option', {
-							value:		portfolio.id,
-							innerHTML:	portfolio.title
-						}, selectNode, "last");
-					}));
-					
-					this.fromTemplateNode = selectNode;
-				}));
+						}));
+						
+						this.fromTemplateNode = selectNode;
+					})
+				);
 			}
 		},
 		
@@ -211,14 +218,20 @@ define(
 				data.fromTemplate = false;
 			}
 			
-			this.AJAXRequest(	"portfolio",
-								"savePortfolio",
-								data,
-								Lang.hitch(this, function(response)
-			{
-				Topic.publish("updatePortfolios", { itemId: response.portfolioId });
-				this.Close();
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'savePortfolio'
+				},
+				data: data
+			}).then(
+				lang.hitch(this, function(response) {
+					Topic.publish("updatePortfolios", { itemId: response.data.portfolioId });
+					this.Close();
+				})
+			);
 		},
 		
 		onTemplateChange: function (event)
@@ -239,14 +252,22 @@ define(
 		
 		onDeletePortfolio: function(event)
 		{
-			this.AJAXRequest(	"portfolio",
-								"deletePortfolio",
-								{ id: this.portfolioId },
-								Lang.hitch(this, function(response)
-			{
-				Topic.publish("updatePortfolios", { itemId: this.portfolioId });
-				this.Close();
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'deletePortfolio'
+				},
+				data: {
+					id: this.portfolioId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					Topic.publish("updatePortfolios", { itemId: this.portfolioId });
+					this.Close();
+				})
+			);
 		}
 	});
 });

@@ -4,10 +4,11 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/_base/fx",
         	"dojo/query",
+        	"commsy/request",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
-        	"dojo/dom-style"], function(declare, BaseClass, On, Lang, FX, Query, DomClass, DomAttr, DomConstruct, DomStyle) {
+        	"dojo/dom-style"], function(declare, BaseClass, On, lang, FX, Query, request, DomClass, DomAttr, DomConstruct, DomStyle) {
 	return declare(BaseClass, {
 		constructor: function(args) {
 			args = args || {};
@@ -16,13 +17,13 @@ define([	"dojo/_base/declare",
 		
 		setup: function(nodeList) {
 			// get custom attribute data for all nodes
-			dojo.forEach(nodeList, Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(nodeList, lang.hitch(this, function(node, index, arr) {
 				var customObject = this.getAttrAsObject(node, "data-custom");
 				
 				// register click
-				On(node, "click", Lang.hitch(this, function(event) {
+				On(node, "click", lang.hitch(this, function(event) {
 					// call function if exist
-					if(this[customObject.action]) Lang.hitch(this, this[customObject.action](customObject));
+					if(this[customObject.action]) lang.hitch(this, this[customObject.action](customObject));
 				}));
 			}));
 		},
@@ -31,25 +32,37 @@ define([	"dojo/_base/declare",
 			var itemId = customObject.iid;
 			
 			// send ajax requets
-			this.AJAXRequest("actions", "addToClipboard", { itemId: itemId }, Lang.hitch(this, function(response) {
-				// item was added, update number of items in clipboard
-				var ClipboardButtonNode = Query("a#tm_clipboard")[0];
-				
-				if(ClipboardButtonNode) {
-					var spanNode = Query("span#tm_clipboard_copies")[0];
-					
-					if(!spanNode) {
-						// create span
-						spanNode = DomConstruct.create("span", {
-							"id":		"tm_clipboard_copies",
-							innerHTML:	0
-						}, ClipboardButtonNode, "after");
-					}
-					
-					// increase count
-					DomAttr.set(spanNode, "innerHTML", parseInt(DomAttr.get(spanNode, "innerHTML")) + 1);
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'actions',
+					action:	'addToClipboard'
+				},
+				data: {
+					itemId: itemId
 				}
-			}));
+			}).then(
+				lang.hitch(this, function(response) {
+					// item was added, update number of items in clipboard
+					var ClipboardButtonNode = Query("a#tm_clipboard")[0];
+					
+					if(ClipboardButtonNode) {
+						var spanNode = Query("span#tm_clipboard_copies")[0];
+						
+						if(!spanNode) {
+							// create span
+							spanNode = DomConstruct.create("span", {
+								"id":		"tm_clipboard_copies",
+								innerHTML:	0
+							}, ClipboardButtonNode, "after");
+						}
+						
+						// increase count
+						DomAttr.set(spanNode, "innerHTML", parseInt(DomAttr.get(spanNode, "innerHTML")) + 1);
+					}
+				})
+			);
 		},
 		
 		versionMakeNew: function(customObject) {
@@ -57,27 +70,64 @@ define([	"dojo/_base/declare",
 			var versionID = customObject.vid;
 
 			// send ajax requets
-			this.AJAXRequest("actions", "versionMakeNew", { itemId: itemId, versionID: versionID }, Lang.hitch(this, function(response) {
-				this.reload(itemId);
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'actions',
+					action:	'versionMakeNew'
+				},
+				data: {
+					itemId:		itemId,
+					versionID:	versionID
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.reload(itemId);
+				})
+			);
 		},
 		
 		exportToWordpress: function(customObject) {
 			var itemId = customObject.iid;
 
 			// send ajax requets
-			this.AJAXRequest("actions", "exportToWordpress", { itemId: itemId }, Lang.hitch(this, function(response) {
-				this.reload(itemId);
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'actions',
+					action:	'exportToWordpress'
+				},
+				data: {
+					itemId:		itemId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.reload(itemId);
+				})
+			);
 		},
 		
 		exportToWiki: function(customObject) {
 			var itemId = customObject.iid;
 
 			// send ajax requets
-			this.AJAXRequest("actions", "exportToWiki", { itemId: itemId }, Lang.hitch(this, function(response) {
-				this.reload(itemId);
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'actions',
+					action:	'exportToWiki'
+				},
+				data: {
+					itemId:		itemId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.reload(itemId);
+				})
+			);
 		}
 	});
 });

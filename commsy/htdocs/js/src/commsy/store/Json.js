@@ -1,7 +1,8 @@
 define([	"dojo/_base/declare",
-       	"commsy/base",
-       	"dojo/store/util/QueryResults",
-       	"dojo/store/util/SimpleQueryEngine"], function(declare, BaseClass, QueryResults, SimpleQueryEngine) {
+	       	"commsy/base",
+	       	"commsy/request",
+	       	"dojo/store/util/QueryResults",
+	       	"dojo/store/util/SimpleQueryEngine"], function(declare, BaseClass, request, QueryResults, SimpleQueryEngine) {
 	
 	return declare([BaseClass], {
 		
@@ -192,7 +193,18 @@ define([	"dojo/_base/declare",
 				this.currentRequest.cancel();
 			}
 			
-			this.currentRequest = this.AJAXRequest(this.fct, "query", { query: query, options: requestOptions }, null, null, false, {}, true);
+			this.currentRequest = request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	this.fct,
+					action:	'query'
+				},
+				data: {
+					query:		query,
+					options:	requestOptions
+				}
+			});
 			
 			if ( completeCallback !== null )
 			{

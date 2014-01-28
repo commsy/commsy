@@ -3,10 +3,11 @@ define([	"dojo/_base/declare",
         	"commsy/base",
         	"dijit/_TemplatedMixin",
         	"dojo/_base/lang",
+        	"commsy/request",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/on",
-        	"dojo/query"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query) {
+        	"dojo/query"], function(declare, WidgetBase, BaseClass, TemplatedMixin, lang, request, DomConstruct, DomAttr, On, Query) {
 	
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -29,9 +30,20 @@ define([	"dojo/_base/declare",
 			 ************************************************************************************/
 			
 			// load detail content
-			this.AJAXRequest("widget_detail_view", "getDetailContent", { module: this.module, itemId: this.itemId },
-				Lang.hitch(this, function(html) {
-					this.detailContentNode.innerHTML = html;
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'widget_detail_view',
+					action:	'getDetailContent'
+				},
+				data: {
+					module:	this.module,
+					itemId:	this.itemId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.detailContentNode.innerHTML = response.data;
 					
 					// take the title and set it also as widget header title
 					var titleH2Node = Query("div.content_item h2", this.detailContentNode)[0];
@@ -42,7 +54,7 @@ define([	"dojo/_base/declare",
 					
 					/* we need to reinvoke all those JS modules, that handles detail view interaction */
 					// setup rubric forms
-					Query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
+					Query(".open_popup").forEach(lang.hitch(this, function(node, index, arr) {
 						// get custom data object
 						var customObject = this.getAttrAsObject(node, "data-custom");
 						

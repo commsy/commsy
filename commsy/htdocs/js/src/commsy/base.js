@@ -1,5 +1,4 @@
 define([	"dojo/_base/declare",
-        	"dojo/_base/xhr",
         	"dojo/io-query",
         	"dojox/fx",
         	"dojox/fx/scroll",
@@ -10,7 +9,7 @@ define([	"dojo/_base/declare",
         	"dojo/window",
         	"dojo/dom-geometry",
         	"dojo/_base/lang",
-        	"dojo/NodeList-traverse"], function(declare, xhr, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, Lang) {
+        	"dojo/NodeList-traverse"], function(declare, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, lang) {
 	return declare(null, {
 		// static
 		baseStatics: {
@@ -82,65 +81,6 @@ define([	"dojo/_base/declare",
 					}
 				}).play();
 			}
-		},
-
-		AJAXRequest: function(fct, action, data, callback, error_callback, sync, mixin, skip) {
-			callback = callback || function(response) {};
-			error_callback = error_callback || function(response) {};
-			sync = sync || false;
-			mixin = mixin || {};
-			skip = skip || false;
-
-			// execute a HTTP POST request
-			var args = {
-				url:		"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
-				headers:	{
-							"Content-Type":		"application/json; charset=utf-8",
-							"Accept":			"application/json"
-				},
-				postData:	dojo.toJson(data),
-				handleAs:	"json",
-				sync:		sync,
-				error:		Lang.hitch(this, function(errorMessage, ioargs) {
-					/************************************************************************************
-					 * A fatal error occured while performing the ajax request, maybe something went wrong
-					 * on php side or while transporting data. Show error message in console and setup a
-					 * user-friendly error widget
-					************************************************************************************/
-					
-					// ignore the case of status code 0 - aborted xhr requests(search auto-completion, etc.)
-					if (ioargs.xhr.status !== 0) {
-						if (this.from_php.dev.xhr_error_reporting && this.from_php.dev.xhr_error_reporting === true) {
-							/*
-							 * we overwrite all success and error handler, so failing to send
-							 * this request will not lead into a recursive loop
-							 */
-							this.AJAXRequest("actions", "sendXHRErrorReporting", { ioargs: ioargs, error: errorMessage },
-								function() {},
-								function() {},
-								false,
-								{ error: function() {} }
-							);
-						}
-					}
-				})
-			};
-			
-			declare.safeMixin(args, mixin);
-			var request = xhr.post(args);
-			
-			if (!skip) {
-				// setup deferred
-				request.then(function(response) {
-					if(response.status === "success") {
-						callback(response.data);
-					} else {
-						error_callback(response);
-					}
-				});
-			}
-			
-			return request;
 		},
 
 		scrollToNodeAnimated: function(node)

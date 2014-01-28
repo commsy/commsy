@@ -4,10 +4,11 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
+        	"commsy/request",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/on",
-        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On) {
+        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, lang, DomConstruct, request, DomAttr, DomStyle, On) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 			
@@ -28,7 +29,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupSpecific: function() {
-			require(["commsy/EditTree"], Lang.hitch(this, function(EditTree) {
+			require(["commsy/EditTree"], lang.hitch(this, function(EditTree) {
 				this.tree = new EditTree({
 					followUrl:		false,
 					checkboxes:		false,
@@ -36,8 +37,8 @@ define([	"dojo/_base/declare",
 					expanded:		false,
 					item_id:		this.item_id
 				});
-				this.tree.setupTree(Query("div.tree", this.contentNode)[0], Lang.hitch(this, function(tree) {					
-					On(tree.tree, "open", Lang.hitch(this, function(item, node) {
+				this.tree.setupTree(Query("div.tree", this.contentNode)[0], lang.hitch(this, function(tree) {					
+					On(tree.tree, "open", lang.hitch(this, function(item, node) {
 						this.tree.addCreateAndRenameToAllLabels();
 					}));
 				}));
@@ -47,23 +48,23 @@ define([	"dojo/_base/declare",
 			var selectOneNode = Query("select#tag_merge_one")[0];
 			var selectTwoNode = Query("select#tag_merge_two")[0];
 			
-			On(selectOneNode, "change", Lang.hitch(this, function(event) {
+			On(selectOneNode, "change", lang.hitch(this, function(event) {
 				// when changing box one, disable the selected value in box two
 				this.enableAllOptionsExceptOne(selectTwoNode, DomAttr.get(event.target, "value"));
 			}));
-			On(selectTwoNode, "change", Lang.hitch(this, function(event) {
+			On(selectTwoNode, "change", lang.hitch(this, function(event) {
 				// when changing box two, disable the selected value in box one
 				this.enableAllOptionsExceptOne(selectOneNode, DomAttr.get(event.target, "value"));
 			}));
 			
 			// setup list
-			require(["commsy/List"], Lang.hitch(this, function(List) {
+			require(["commsy/List"], lang.hitch(this, function(List) {
 				this.list = new List();
 				this.list.init(this.cid, this.from_php.template.tpl_path, {
 					activatorNode:	Query("a.list_activator")[0],
 					module:			"tags",
 					roomId:			this.contextId,
-					OnInitDone:		Lang.hitch(this, function() {
+					OnInitDone:		lang.hitch(this, function() {
 						this.list.performRequest();
 					})
 				});
@@ -78,8 +79,8 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// connect all assignment buttons in attach tab
-			dojo.forEach(Query("input.tag_attach"), Lang.hitch(this, function(inputNode, index, arr) {
-				On(inputNode, "click", Lang.hitch(this, function(event) {
+			dojo.forEach(Query("input.tag_attach"), lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", lang.hitch(this, function(event) {
 					// get name and extract buzzword id
 					var nameAttr = DomAttr.get(inputNode, "name");
 					var tagId = nameAttr.substr(10, nameAttr.length-11);
@@ -100,7 +101,7 @@ define([	"dojo/_base/declare",
 			var optionNodes = Query("option", selectNode);
 			
 			// handle disabled state
-			dojo.forEach(optionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+			dojo.forEach(optionNodes, lang.hitch(this, function(optionNode, index, arr) {
 				if(DomAttr.get(optionNode, "value") === exception) {
 					DomAttr.set(optionNode, "disabled", "disabled");
 				} else {
@@ -113,7 +114,7 @@ define([	"dojo/_base/declare",
 			// try to find a value, that is not the excepted one - this happens when it was selected before
 			if(DomAttr.get(selectNode, "value") === exception) {
 				var skip = false;
-				dojo.some(optionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+				dojo.some(optionNodes, lang.hitch(this, function(optionNode, index, arr) {
 					if(skip) return false;
 					
 					var optionValue = DomAttr.get(optionNode, "value");
@@ -126,7 +127,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		addTagToLists: function(tag) {
-			dojo.forEach(Query("ul.popup_tag_list"), Lang.hitch(this, function(listNode, index, arr) {
+			dojo.forEach(Query("ul.popup_tag_list"), lang.hitch(this, function(listNode, index, arr) {
 				var clearNode = Query("div.clear", listNode)[0];
 				
 				DomConstruct.create("li", {
@@ -137,7 +138,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		removeTagFromLists: function(tag) {
-			dojo.forEach(Query("li.popup_tag_item"), Lang.hitch(this, function(itemNode, index, arr) {
+			dojo.forEach(Query("li.popup_tag_item"), lang.hitch(this, function(itemNode, index, arr) {
 				if(DomAttr.get(itemNode, "innerHTML") === tag) {
 					DomConstruct.destroy(itemNode);
 				}
@@ -162,7 +163,7 @@ define([	"dojo/_base/declare",
 		removeTagFromMergeSelects: function(tag) {
 			var OptionNodes = Query("select#tag_merge_one option, select#tag_merge_two option");
 			
-			dojo.forEach(OptionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+			dojo.forEach(OptionNodes, lang.hitch(this, function(optionNode, index, arr) {
 				if(DomAttr.get(optionNode, "innerHTML") === tag) {
 					DomConstruct.destroy(optionNode);
 				}
@@ -180,8 +181,18 @@ define([	"dojo/_base/declare",
 		},
 		
 		onSortABC: function() {
-			this.AJAXRequest("tags", "sortABC", { roomId: this.contextId },
-				Lang.hitch(this, function(response) {
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'tags',
+					action:	'sortABC'
+				},
+				data: {
+					roomId: this.contextId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					this.close();
 				})
 			);
@@ -194,25 +205,20 @@ define([	"dojo/_base/declare",
 			
 			if(mergeIdOne !== mergeIdTwo) {
 				// send ajax request
-				this.AJAXRequest("tags", "mergeTags", { idOne: mergeIdOne, idTwo: mergeIdTwo },
-					Lang.hitch(this, function(response) {
-						// remove both tags from all lists and add the new one
-						//this.removeTagFromLists(response.tagOne);
-						//this.removeTagFromLists(response.tagTwo);
-						//this.addTagToLists(response.newTag);
-						
-						// remove both tags from the merge select boxes and add the new one
-						/*
-						this.removeTagFromMergeSelects(response.tagOne);
-						this.removeTagFromMergeSelects(response.tagTwo);
-						this.addTagToMergeSelects(mergeIdOne, response.newTag);
-						*/
-						
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'tags',
+						action:	'mergeTags'
+					},
+					data: {
+						idOne:	mergeIdOne,
+						idTwo:	mergeIdTwo
+					}
+				}).then(
+					lang.hitch(this, function(response) {
 						this.close();
-					}),
-					
-					Lang.hitch(this, function(response) {
-						
 					})
 				);
 			}

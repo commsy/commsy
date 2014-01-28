@@ -2,13 +2,14 @@ define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/_base/lang",
         	"dojo/query",
+        	"commsy/request",
         	"dojo/dnd/Source",
         	"dojo/on",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/fx",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, Lang, Query, Source, On, DomConstruct, DomAttr, DomStyle, FX) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, lang, Query, request, Source, On, DomConstruct, DomAttr, DomStyle, FX) {
 	return declare(BaseClass, {		
 		cid: 						null,
 		item_id: 					null,
@@ -32,7 +33,7 @@ define([	"dojo/_base/declare",
 				// TODO: Hotfix: If topic is saved and path tab was not clicked,
 				// DOM for checkboxes is not generated and status will not be saved.
 				// For now, load always
-				//On(triggerNode, "click", Lang.hitch(this, function(event) {
+				//On(triggerNode, "click", lang.hitch(this, function(event) {
 					var list = Query("ul#popup_path_list")[0];
 					
 					// setup sortable
@@ -42,51 +43,63 @@ define([	"dojo/_base/declare",
 					
 					// get all connected entries for this item
 					if(this.item_id !== "NEW") {
-						this.AJAXRequest("path", "getConnectedEntries", { item_id: item_id }, Lang.hitch(this, function(data) {
-							// clear list
-							dojo.forEach(Query(">", list), function(liNode, index, arr) {
-								DomConstruct.destroy(liNode);
-							});
-							
-							// append items to list
-							dojo.forEach(data, Lang.hitch(this, function(entry, index, arr) {
-								var liNode = DomConstruct.create("li", {
-									className:	"netnavigation"
-								}, list, "last");
+						request.ajax({
+							query: {
+								cid:	this.uri_object.cid,
+								mod:	'ajax',
+								fct:	'path',
+								action:	'getConnectedEntries'
+							},
+							data: {
+								item_id: item_id
+							}
+						}).then(
+							lang.hitch(this, function(response) {
+								// clear list
+								dojo.forEach(Query(">", list), function(liNode, index, arr) {
+									DomConstruct.destroy(liNode);
+								});
 								
-									DomConstruct.create("input", {
-										type:		"checkbox",
-										id:			"path_" + entry.linked_id,
-										checked:	entry.path_active
-									}, liNode, "last");
+								// append items to list
+								dojo.forEach(response.data, lang.hitch(this, function(entry, index, arr) {
+									var liNode = DomConstruct.create("li", {
+										className:	"netnavigation"
+									}, list, "last");
 									
-									DomConstruct.create("img", {
-										src:		this.from_php.template.tpl_path + "img/netnavigation/" + entry.img
-									}, liNode, "last");
-									
-									DomConstruct.create("span", {
-										innerHTML:	entry.text
-									}, liNode, "last");
-							}));
-							
-							this.sortable.insertNodes(false, Query(">", list));
-						}));
+										DomConstruct.create("input", {
+											type:		"checkbox",
+											id:			"path_" + entry.linked_id,
+											checked:	entry.path_active
+										}, liNode, "last");
+										
+										DomConstruct.create("img", {
+											src:		this.from_php.template.tpl_path + "img/netnavigation/" + entry.img
+										}, liNode, "last");
+										
+										DomConstruct.create("span", {
+											innerHTML:	entry.text
+										}, liNode, "last");
+								}));
+								
+								this.sortable.insertNodes(false, Query(">", list));
+							})
+						);
 					}
 				//}));
 			}
 		},
 		
-		save: function(item_id, callback) {
+		save: function(item_id, callback)
+		{
 			var request_item_id = this.item_id;
 			if(item_id) request_item_id = item_id;
 			
 			// check if path tab is set up
 			var pathListNode = Query("ul#popup_path_list")[0];
 			
-			if ( pathListNode )
-			{
+			if ( pathListNode ) {
 				// collect data
-				var ids = new Array();
+				var ids = [];
 				dojo.forEach(Query("input[type='checkbox']:checked", pathListNode), function(checkbox, index, arr) {
 					// extract item id
 					var regex = new RegExp("path_(.*)");
@@ -96,11 +109,31 @@ define([	"dojo/_base/declare",
 					ids.push(id);
 				});
 				
-				this.AJAXRequest("path", "savePath", { item_id: request_item_id, linked_ids: ids }, callback);
-			}
-			else
-			{
-				this.AJAXRequest("path", "savePath", { item_id: request_item_id, onlyUpdate: true }, callback);
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'path',
+						action:	'savePath'
+					},
+					data: {
+						item_id:	request_item_id,
+						linked_ids:	ids
+					}
+				}).then(callback);
+			} else {
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'path',
+						action:	'savePath'
+					},
+					data: {
+						item_id:	request_item_id,
+						onlyUpdate: true
+					}
+				}).then(callback);
 			}
 		}
 	});

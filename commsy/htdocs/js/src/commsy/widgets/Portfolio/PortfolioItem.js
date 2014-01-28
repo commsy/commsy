@@ -7,6 +7,7 @@ define(
 	"dojo/text!./templates/PortfolioItem.html",
  	"dojo/i18n!./nls/PortfolioItem",
 	"dojo/_base/lang",
+	"commsy/request",
 	"dojo/_base/array",
 	"dojo/dom-construct",
 	"dojo/dom-attr",
@@ -24,7 +25,8 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
+	request,
 	Array,
 	DomConstruct,
 	DomAttr,
@@ -101,13 +103,13 @@ define(
 				this.update();
 				
 				// subscribe
-				this.subscribe("updatePortfolio", Lang.hitch(this, function(object) {
+				this.subscribe("updatePortfolio", lang.hitch(this, function(object) {
 					if (object.portfolioId == this.portfolioId) {
 						this.update();
 					}
 				}));
 				
-				this.subscribe("openPortfolioList", Lang.hitch(this, function(object)
+				this.subscribe("openPortfolioList", lang.hitch(this, function(object)
 				{
 					if ( object.portfolioId == this.portfolioId )
 					{
@@ -169,18 +171,18 @@ define(
 				// check for items matching
 				if(this.response.links[tagIdOne] && this.response.links[tagIdTwo]) {
 					// go through all item ids in first tag
-					dojo.forEach(this.response.links[tagIdOne], Lang.hitch(this, function(item, index, arr) {
+					dojo.forEach(this.response.links[tagIdOne], lang.hitch(this, function(item, index, arr) {
 						var itemId = item.itemId;
 						
 						// check if the second tag also contains this id
-						var match = dojo.some(this.response.links[tagIdTwo], Lang.hitch(this, function(item2, index2, arr2) {
+						var match = dojo.some(this.response.links[tagIdTwo], lang.hitch(this, function(item2, index2, arr2) {
 							return item2.itemId == itemId;
 						}));
 						
 						if (match) {
 							// only three
 							if (numItems < 3) {
-								var spanNode = DomConstruct.create("span", {
+								DomConstruct.create("span", {
 									innerHTML:		item.title.substring(0, 20)
 								}, aContentNode, "last");
 							};
@@ -192,7 +194,7 @@ define(
 				}
 				
 				// register onclick
-				On(aContentNode, "click", Lang.hitch(this, function(event)
+				On(aContentNode, "click", lang.hitch(this, function(event)
 				{
 					this.onClickPortfolioItemListPopup(event, rowIndex, columnIndex, itemIdArray);
 				}));
@@ -211,144 +213,153 @@ define(
 		},
 		
 		update: function() {
-			return this.AJAXRequest("portfolio", "getPortfolio", { portfolioId: this.portfolioId },
-					Lang.hitch(this, function(response)
+			return request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'getPortfolio'
+				},
+				data: {
+					portfolioId: this.portfolioId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					// clean up previous widget instances
+					var widgetManager = this.getWidgetManager();
+					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioEditWidget");
+					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioTagEditWidget");
+					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioItemListWidget");
+					// set data for this portfolio - title is already set
+					this.set("creator", response.data.creator);
+					this.set("descriptionFull", response.data.description);
+					this.set("externalViewer", response.daat.externalViewer);
+					this.set("externalTemplate", response.data.externalTemplate);
+					this.set("template", response.data.template);
+					
+					this.set("contextId", response.data.contextId);
+					
+					var description = response.data.description;
+					if ( description.length > 80 )
 					{
-						// clean up previous widget instances
-						var widgetManager = this.getWidgetManager();
-						widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioEditWidget");
-						widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioTagEditWidget");
-						widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioItemListWidget");
-						// set data for this portfolio - title is already set
-						this.set("creator", response.creator);
-						this.set("descriptionFull", response.description);
-						this.set("externalViewer", response.externalViewer);
-						this.set("externalTemplate", response.externalTemplate);
-						this.set("template", response.template);
-						
-						this.set("contextId", response.contextId);
-						
-						var description = response.description;
-						if ( description.length > 80 )
-						{
-							description = description.substr(0, 80) + "...";
-						}
-						this.set("description", description);
-						
-						this.response = response;
-						
-						// separate row and column nodes
-						var rowTags = dojo.filter(response.tags, function(item, index) {
-							return item.row > 0;
-						});
-						
-						var columnTags = dojo.filter(response.tags, function(item, index) {
-							return item.column > 0;
-						});
-						
-						if (this.withEditing === false) {
-							DomStyle.set(this.lastVerticalTag, "display", "none");
-							DomStyle.set(this.portfolioEditDivNode, "display", "none");
-							DomStyle.set(this.portfolioEditColumnNode, "display", "none");
-						}
-						
-						// create html for row tags
-						var createdRowNodes = Query(this.lastVerticalTag).prevAll("div.ep_vert_col_cell");
-						dojo.forEach(createdRowNodes, Lang.hitch(this, function(rowNode, index, arr) {
-							DomConstruct.destroy(rowNode);
-						}));
-						
-						dojo.forEach(rowTags, Lang.hitch(this, function(rowTag, index, arr) {
-							var divNode = DomConstruct.create("div", { className: "ep_vert_col_cell" }, this.lastVerticalTag, "before");
+						description = description.substr(0, 80) + "...";
+					}
+					this.set("description", description);
+					
+					this.response = response.data;
+					
+					// separate row and column nodes
+					var rowTags = dojo.filter(response.data.tags, function(item, index) {
+						return item.row > 0;
+					});
+					
+					var columnTags = dojo.filter(response.data.tags, function(item, index) {
+						return item.column > 0;
+					});
+					
+					if (this.withEditing === false) {
+						DomStyle.set(this.lastVerticalTag, "display", "none");
+						DomStyle.set(this.portfolioEditDivNode, "display", "none");
+						DomStyle.set(this.portfolioEditColumnNode, "display", "none");
+					}
+					
+					// create html for row tags
+					var createdRowNodes = Query(this.lastVerticalTag).prevAll("div.ep_vert_col_cell");
+					dojo.forEach(createdRowNodes, lang.hitch(this, function(rowNode, index, arr) {
+						DomConstruct.destroy(rowNode);
+					}));
+					
+					dojo.forEach(rowTags, lang.hitch(this, function(rowTag, index, arr) {
+						var divNode = DomConstruct.create("div", { className: "ep_vert_col_cell" }, this.lastVerticalTag, "before");
+							
+							var divTitleNode = DomConstruct.create("div", { className: "ep_vert_col_title" }, divNode, "last");
+								if (this.withEditing === true) {
+									var aEditNode = DomConstruct.create("a", {
+										href:			"#",
+										"data-custom":	"tagId: '" + rowTag.t_id + "', position: 'row', module: 'tagPortfolio'"
+									}, divTitleNode, "last");
+									
+										DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
+								}
 								
-								var divTitleNode = DomConstruct.create("div", { className: "ep_vert_col_title" }, divNode, "last");
+								DomConstruct.create("strong", { innerHTML: rowTag.title }, divTitleNode, "last");
+								
+								if ( rowTag.description )
+								{
+									var description = rowTag.description;
+									if ( description.length > 60 )
+									{
+										description = description.substr(0, 60) + "...";
+									}
+									DomConstruct.create("div", { innerHTML: description, title: rowTag.description }, divTitleNode, "last");
+								}
+							
+							DomConstruct.create("div", { className: "clear" }, divNode, "last");
+						
+						// register edit
+						if ( this.withEditing === true ) {
+							On(aEditNode, "click", lang.hitch(this, function(event)
+							{
+								this.onClickEditTag(event, "row", rowTag);
+							}));
+						}
+					}));
+					
+					DomConstruct.empty(this.tableNode);
+					
+					// create html for column tags	
+					var trNode = DomConstruct.create("tr", {}, this.tableNode, "last");
+					
+						dojo.forEach(columnTags, lang.hitch(this, function(columnTag, index, arr) {
+							var thNode = DomConstruct.create("th", {}, trNode, "last");
+							
+								var divTitleNode = DomConstruct.create("div", { className: "ep_hor_col_title" }, thNode, "last");
 									if (this.withEditing === true) {
 										var aEditNode = DomConstruct.create("a", {
 											href:			"#",
-											"data-custom":	"tagId: '" + rowTag.t_id + "', position: 'row', module: 'tagPortfolio'"
+											"data-custom":	"tagId: '" + columnTag.t_id + "', position: 'row', module: 'tagPortfolio'"
 										}, divTitleNode, "last");
 										
 											DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
 									}
 									
-									DomConstruct.create("strong", { innerHTML: rowTag.title }, divTitleNode, "last");
+									DomConstruct.create("strong", { innerHTML: columnTag.title }, divTitleNode, "last");
 									
-									if ( rowTag.description )
+									if ( columnTag.description )
 									{
-										var description = rowTag.description;
+										var description = columnTag.description;
 										if ( description.length > 60 )
 										{
 											description = description.substr(0, 60) + "...";
 										}
-										DomConstruct.create("div", { innerHTML: description, title: rowTag.description }, divTitleNode, "last");
+										DomConstruct.create("div", { innerHTML: description, title: columnTag.description }, divTitleNode, "last");
 									}
 								
-								DomConstruct.create("div", { className: "clear" }, divNode, "last");
+								DomConstruct.create("div", { className: "clear" }, thNode, "last");
 							
 							// register edit
-							if ( this.withEditing === true ) {
-								On(aEditNode, "click", Lang.hitch(this, function(event)
+							if (this.withEditing === true) {
+								On(aEditNode, "click", lang.hitch(this, function(event)
 								{
-									this.onClickEditTag(event, "row", rowTag);
+									this.onClickEditTag(event, "column", columnTag);
 								}));
 							}
 						}));
 						
-						DomConstruct.empty(this.tableNode);
-						
-						// create html for column tags	
+					// create html for table cells
+					dojo.forEach(rowTags, lang.hitch(this, function(rowTag, rowIndex)
+					{
 						var trNode = DomConstruct.create("tr", {}, this.tableNode, "last");
 						
-							dojo.forEach(columnTags, Lang.hitch(this, function(columnTag, index, arr) {
-								var thNode = DomConstruct.create("th", {}, trNode, "last");
-								
-									var divTitleNode = DomConstruct.create("div", { className: "ep_hor_col_title" }, thNode, "last");
-										if (this.withEditing === true) {
-											var aEditNode = DomConstruct.create("a", {
-												href:			"#",
-												"data-custom":	"tagId: '" + columnTag.t_id + "', position: 'row', module: 'tagPortfolio'"
-											}, divTitleNode, "last");
-											
-												DomConstruct.create("img", { src: this.from_php.template.tpl_path + "img/ep_icon_editdarkgrey.gif" }, aEditNode, "last");
-										}
-										
-										DomConstruct.create("strong", { innerHTML: columnTag.title }, divTitleNode, "last");
-										
-										if ( columnTag.description )
-										{
-											var description = columnTag.description;
-											if ( description.length > 60 )
-											{
-												description = description.substr(0, 60) + "...";
-											}
-											DomConstruct.create("div", { innerHTML: description, title: columnTag.description }, divTitleNode, "last");
-										}
-									
-									DomConstruct.create("div", { className: "clear" }, thNode, "last");
-								
-								// register edit
-								if (this.withEditing === true) {
-									On(aEditNode, "click", Lang.hitch(this, function(event)
-									{
-										this.onClickEditTag(event, "column", columnTag);
-									}));
-								}
-							}));
-							
-						// create html for table cells
-						dojo.forEach(rowTags, Lang.hitch(this, function(rowTag, rowIndex)
+						dojo.forEach(columnTags, lang.hitch(this, function(columnTag, columnIndex)
 						{
-							var trNode = DomConstruct.create("tr", {}, this.tableNode, "last");
+							var tdNode = DomConstruct.create("td", {}, trNode, "last");
 							
-							dojo.forEach(columnTags, Lang.hitch(this, function(columnTag, columnIndex)
-							{
-								var tdNode = DomConstruct.create("td", {}, trNode, "last");
-								
-								this.insertHTMLForTableCell(tdNode, columnIndex, columnTag, rowIndex, rowTag);
-							}));
+							this.insertHTMLForTableCell(tdNode, columnIndex, columnTag, rowIndex, rowTag);
 						}));
-					})
-				);
+					}));
+				})
+			);
 		},
 		
 		/************************************************************************************
@@ -358,7 +369,7 @@ define(
 		{
 			var widgetManager = this.getWidgetManager();
 			
-			widgetManager.GetInstance("commsy/widgets/Portfolio/PortfolioEditWidget", { portfolioId: this.portfolioId }).then(Lang.hitch(this, function(deferred)
+			widgetManager.GetInstance("commsy/widgets/Portfolio/PortfolioEditWidget", { portfolioId: this.portfolioId }).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
 				
@@ -380,7 +391,7 @@ define(
 			var widgetManager = this.getWidgetManager();
 			
 			widgetManager.GetInstance(	"commsy/widgets/Portfolio/PortfolioTagEditWidget",
-										{ position: customObject.position, portfolioId: this.portfolioId }).then(Lang.hitch(this, function(deferred)
+										{ position: customObject.position, portfolioId: this.portfolioId }).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
 				
@@ -402,7 +413,7 @@ define(
 			var widgetManager = this.getWidgetManager();
 			
 			widgetManager.GetInstance(	"commsy/widgets/Portfolio/PortfolioTagEditWidget",
-										initData).then(Lang.hitch(this, function(deferred)
+										initData).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
 				
@@ -425,7 +436,7 @@ define(
 			var widgetManager = this.getWidgetManager();
 			
 			widgetManager.GetInstance(	"commsy/widgets/Portfolio/PortfolioItemListWidget",
-										initData).then(Lang.hitch(this, function(deferred)
+										initData).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
 				

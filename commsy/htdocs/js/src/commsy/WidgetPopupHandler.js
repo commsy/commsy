@@ -55,7 +55,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		loadWidgetsManual: function(widgetArray) {
-			var promiseList = new Array();
+			var promiseList = [];
 			
 			dojo.forEach(widgetArray, lang.hitch(this, function(widget, index, arr) {
 				promiseList.push(this.loadWidget(widget));
