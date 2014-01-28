@@ -50,7 +50,27 @@ else {
    $https = '';
    $flash = '';
 }
-$shib_direct_login = $environment->getConfiguration("c_shibboleth_direct_login") ? true : false;
+$portal_item = $environment->getCurrentPortalItem();
+if(!empty($portal_item)){
+	// shibboleth auth source and direct login configured?
+	$shib_auth_source = NULL;
+	$auth_source_list = $portal_item->getAuthSourceList();
+	$auth_item = $auth_source_list->getFirst();
+	while($auth_item) {
+		if($auth_item->getSourceType() == 'Shibboleth') {
+			$shib_auth_source = $auth_item;
+		}
+		$auth_item = $auth_source_list->getNext();
+	}
+	if(!empty($shib_auth_source)) {
+		// activate shibboleth redirect if configured
+		$shib_direct_login = $shib_auth_source->getShibbolethDirectLogin();
+	}
+	
+// 	pr($shib_direct_login);exit;
+}
+// $shib_direct_login = $environment->getConfiguration("c_shibboleth_direct_login") ? true : false;
+
 // user_id and password
 $user_id = '';
 if ( !empty($_POST['user_id']) ) {
@@ -69,16 +89,18 @@ if ( !empty($_POST['password']) ) {
 }
 
 
-
-
-if (!$shib_direct_login){	
+if (!$shib_direct_login){
 	//Shibboleth
-	$auth_source_manager = $environment->getAuthSourceManager();
-	$auth_source_item = $auth_source_manager->getItem($_POST['auth_source']);
-	$source_type = $auth_source_item->getSourceType();
-	$auth_data = $auth_source_item->getAuthData();
-	$host = $auth_data['HOST'];
-	if($source_type == "Shibboleth"){
+	// Über das Portal überprüfen, ob Shibboleth als Auth eingestellt ist
+	
+	if(!empty($_POST['auth_source'])){
+		$auth_source_manager = $environment->getAuthSourceManager();
+		$auth_source_item = $auth_source_manager->getItem($_POST['auth_source']);
+		$source_type = $auth_source_item->getSourceType();
+		$auth_data = $auth_source_item->getAuthData();
+		$host = $auth_data['HOST'];
+	}
+	if(!empty($source_type) AND $source_type == "Shibboleth"){
 	    if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
 	    	$authentication = $environment->getAuthenticationObject();
 	    	if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
@@ -91,7 +113,7 @@ if (!$shib_direct_login){
 	            $session = new cs_session_item();
 	            // Session from Shibboleth identity provider
 	            $session->setSessionID(substr($_SERVER['Shib_Session_ID'],1));
-	            $session->setValue("user_id", $_SERVER["uid"]);
+	            $session->setValue("user_id", $_SERVER["Shib_uid"]);
 	            // Benutzer muss erstellt werden
 	            
 	            #$session->createSessionID($user_id);
@@ -330,8 +352,16 @@ if (!$shib_direct_login){
 } else {
     $user_manager = $environment->getUserManager();
     
+    if(empty($_SERVER['Shib_Session_ID']) AND empty($_SERVER['Shib_uid'])){
+    	// Normales Anmelden funktioniert nicht mehr!
+//     	$session = new cs_session_item();
+// 		$session->createSessionID('guest');
+// 		redirect($environment->getCurrentPortalID(), 'home', 'index', $parameterArray);
+// 		exit;
+    }
+    
     // if the user object does not exists, make sure we are in portal context before creating it
-    if (!$environment->inPortal() && !$user_manager->exists($_SERVER['Shib_userId'])) {
+    if (!$environment->inPortal() && !$user_manager->exists($_SERVER['Shib_uid'])) {
         $parameterArray = $environment->getCurrentParameterArray();
         $parameterArray['room_id'] = $environment->getCurrentContextID();
         redirect($environment->getCurrentPortalID(), 'home', 'index', $parameterArray);
@@ -373,11 +403,12 @@ if (!$shib_direct_login){
 	$authentication = $environment->getAuthenticationObject();
 	$shibboleth_auth = $authentication->getShibbolethAuthSource();
 	
-	if (!$user_manager->exists($_SERVER['Shib_userId'])) {
+	// create new user item
+	if (!empty($_SERVER['Shib_uid']) AND !$user_manager->exists($_SERVER['Shib_uid'])) {
 		$user_item = $user_manager->getNewItem();
-		$user_item->setUserID($_SERVER['Shib_userId']);
+		$user_item->setUserID($_SERVER['Shib_uid']);
 		$user_item->setEmail($_SERVER['Shib_mail']);
-		$user_item->setFirstname($_SERVER['Shib_givenName']);
+		$user_item->setFirstname($_SERVER['Shib_cn']);
 		$user_item->setLastname($_SERVER['Shib_sn']);
 		$user_item->setAuthSource($shibboleth_auth->getItemID());
 		$user_item->setStatus('2');

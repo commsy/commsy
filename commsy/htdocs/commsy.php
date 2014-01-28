@@ -300,6 +300,30 @@ if ( !isset($context_item_current)
 
 /*********** SESSION AND AUTHENTICATION ***********/
 
+// Shibboleth Configuration #######################
+$portal_item = $environment->getCurrentPortalItem();
+$shib_direct_login = false;
+if(!empty($portal_item)){
+	// shibboleth auth source and direct login configured?
+	$shib_auth_source = NULL;
+	$auth_source_list = $portal_item->getAuthSourceList();
+	$auth_item = $auth_source_list->getFirst();
+	// search for shibboleth auth source
+	while($auth_item) {
+		if($auth_item->getSourceType() == 'Shibboleth') {
+			$shib_auth_source = $auth_item;
+		}
+		$auth_item = $auth_source_list->getNext();
+	}
+	if(!empty($shib_auth_source) AND $environment->getConfiguration('c_shibboleth_deactivate_direct_login_by_portal_id') != $portal_item->getItemID()) {
+		// activate shibboleth redirect if configured
+		$shib_direct_login = $shib_auth_source->getShibbolethDirectLogin();
+	}
+
+// 		pr($shib_direct_login);exit;
+}
+// Shibboleth Configuration ########################
+pr($_SERVER);$shib_direct_login = false;
 // get Session ID (SID)
 if (!empty($_GET['SID'])) {
    $SID = $_GET['SID'];                     // session id via GET-VARS (url)
@@ -337,7 +361,8 @@ if (!empty($_GET['SID'])) {
          ) {
    include_once('pages/individual_getfile.php');
    exit();
-} elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
+// } elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
+} elseif ($shib_direct_login) {
 	include_once('pages/context_login.php'); 
 	exit();
 } else {
@@ -376,17 +401,19 @@ if ( !empty($SID) ) {
    $session_manager = $environment->getSessionManager();
    $session = $session_manager->get($SID);
    
-   if ($environment->getConfiguration('c_shibboleth_direct_login')){
-   	if ($_SERVER['Shib_userId'] != $session->getValue('user_id')){
+   if ($shib_direct_login OR !empty($_SERVER['Shib-Session-ID'])){
+   	if ($_SERVER['Shib_uid'] != $session->getValue('user_id')){
    		$session->reset();
-   		$session->createSessionID($_SERVER['Shib_userId']);
-   		$SID = $session->getSessionID();
-   		$session = $session_manager->get($SID);
-   		
+   		$session->createSessionID($_SERVER['Shib_uid']);
+   		$session->setValue('commsy_id', $environment->getCurrentPortalItem()->getItemID());
+//    		$session->setSessionID($_SERVER['Shib-Session-ID']);
    		$environment->setSessionItem($session);
+   		$SID = $session->getSessionID();
+//    		$session = $session_manager->get($SID);pr($session);
+
    	}
    }
-   
+
    if ( isset($session) ) {
       $environment->setSessionItem($session);
    }
