@@ -37,7 +37,7 @@ define([	"dojo/_base/declare",
 				]
 			};
 			
-			this.submit(search);
+			this.submit(search, { roomId: this.item_id });
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
