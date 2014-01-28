@@ -2282,6 +2282,36 @@ class cs_server_item extends cs_guide_item {
    		) {
    		$connection_array = $this->getServerConnectionArray();
    		if ( !empty($connection_array[$key]) ) {
+   			
+   			// delete all tabs on this server
+   			$server_to_delete = $connection_array[$key];
+   			$portal_id_array = $this->getPortalIDArray();
+   			
+   			if ( !empty($server_to_delete['id'])
+   				  and !empty($portal_id_array)
+   				) {
+   				$portal_id_array = $this->getPortalIDArray();
+   				
+   			   $user_manager = $this->_environment->getUserManager();
+   			   $user_manager->setContextArrayLimit($portal_id_array);
+   			   $user_manager->setExternalConnectionServerKeyLimit($server_to_delete['id']);
+   			   $user_manager->select();
+   			   $user_list = $user_manager->get();
+   			   if ( !empty($user_list)
+   			   	  and $user_list->isNotEmpty()
+   			   	) {
+   			   	$user_item = $user_list->getFirst();
+   			   	while ( $user_item ) {
+   			   		
+   			   		// delete tabs from server
+   			   		$user_item->deletePortalConnectionFromServer($server_to_delete['id']);
+   			   		$user_item->save();
+   			   	   $user_item = $user_list->getNext();
+   			   	}
+   			   }
+   			}
+   			
+   			// delete server
    			unset($connection_array[$key]);
    			
    			// reset keys

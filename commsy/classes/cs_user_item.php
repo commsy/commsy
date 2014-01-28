@@ -2678,5 +2678,18 @@ class cs_user_item extends cs_item {
    public function setPortalConnectionInfoDB ( $value ) {
    	$this->_setExtra('CONNECTION_ARRAY',$value);
    }
+   
+   public function deletePortalConnectionFromServer ( $id ) {
+   	$tab_array = $this->getPortalConnectionArray();
+   	$tab_new_array = array();
+   	if ( !empty($tab_array) ) {
+   	   foreach ( $tab_array as $tab_info ) {
+   		   if ( $tab_info['server_connection_id'] != $id ) {
+   		   	$tab_new_array[] = $tab_info;
+   		   }
+   	   }
+   	   $this->setPortalConnectionInfoDB($tab_new_array);
+   	}
+   }
 }
 ?>
