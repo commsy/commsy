@@ -569,16 +569,16 @@ CKEDITOR.plugins.add( "CommSyVideo",
 							verticalMargin = this.getValueOf( 'videoTab', 'marginV');
 							
 							style = 'style="';
-							if ( borderWidth != null ) {
+							if ( borderWidth !== "" ) {
 								style += 'border-style: solid; border-width:' + borderWidth + 'px;';
 							}
 							
-							if ( horizontalMargin != null ) {
+							if ( horizontalMargin !== "" ) {
 								style += 'margin-top:' + horizontalMargin + 'px;';
 								style += 'margin-bottom:' + horizontalMargin + 'px;';
 							}
 							
-							if ( verticalMargin != null ) {
+							if ( verticalMargin !== "" ) {
 								style += 'margin-left:' + verticalMargin + 'px;';
 								style += 'margin-right:' + verticalMargin + 'px;';
 							}
