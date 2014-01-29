@@ -55,7 +55,7 @@
 				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
 				{if isset($javascript.version) && !empty($javascript.version)}dojoConfig.cacheBust = '{$javascript.version}';{/if}
 			</script>
-			<script src="js/3rdParty/ckeditor_4.3.1/ckeditor.js"></script>
+			<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>
 	
 			{if $environment.c_js_mode === "build"}
 				<script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>

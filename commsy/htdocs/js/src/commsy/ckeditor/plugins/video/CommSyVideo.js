@@ -157,18 +157,35 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										style: 'width=100%',
 										label: 'Video Type',
 										items: SelectBoxItems,
+										onLoad: function ()
+										{
+											var dialog = this.getDialog();
+											var chkRelated = dialog.getContentElement( 'videoTab', 'chkRelated' );
+											var dataSecurityBox = dialog.getContentElement( 'videoTab', 'dataSecurity');
+											var startAt = dialog.getContentElement( 'videoTab', 'startAt');
+											
+											chkRelated.disable();
+											dataSecurityBox.disable();
+											startAt.disable();
+										},
 										onChange: function ()
 										{
 											var dialog = this.getDialog();
 											var chkRelated = dialog.getContentElement( 'videoTab', 'chkRelated' );
 											var urlInput = dialog.getContentElement( 'videoTab', 'videoUrl');
 											var fileSelect = dialog.getContentElement( 'videoTab', 'fileselect');
+											var dataSecurityBox = dialog.getContentElement( 'videoTab', 'dataSecurity');
+											var startAt = dialog.getContentElement( 'videoTab', 'startAt');
 											
 											// youtube video offer
 											if(this.getValue() == 'youtube') {
 												chkRelated.enable();
+												dataSecurityBox.enable();
+												startAt.enable();
 											} else {
 												chkRelated.disable();
+												dataSecurityBox.disable();
+												startAt.disable();
 											}
 											// set url info
 											if(this.getValue() == 'lecture2go') {
@@ -375,6 +392,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												type : 'checkbox',
 												'default' : false,
 												label : 'Autostart'
+											},
+											{
+												id : 'dataSecurity',
+												type : 'checkbox',
+												'default' : false,
+												label : 'Datenschutzmodus'
 											}
 										]
 									},
@@ -501,8 +524,26 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											},
 										]
 									},
+									{
+										type: 'hbox',
+										widths : [ '50px', '50px', '50px' ],
+//										style: 'margin-top:px',
+										children: 
+										[
+										 	{
+												type : 'text',
+												id : 'startAt',
+												width : '60px',
+												label : 'Startpunkt in Sekunden',
+												'default' : '',
+											}
+
+										]
+									}
+									
 								]
 							},
+							
 //							{
 //								id:	'tab2',
 //								label: 'internal Video',
@@ -578,9 +619,15 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								var url = 'https://', params = [], startSecs;
 								var width = this.getValueOf( 'videoTab', 'videoWidth' );
 								var height = this.getValueOf( 'videoTab', 'videoHeight' );
-	
+								var dataSecurity = this.getValueOf( 'videoTab', 'dataSecurity');
+								var startAt = this.getValueOf( 'videoTab', 'startAt');
 								
-								url += 'www.youtube.com/';
+								if(dataSecurity){
+									url += 'www.youtube-nocookie.com/';
+								} else {
+									url += 'www.youtube.com/';
+								}
+								
 								
 	
 								url += 'embed/' + video;
@@ -603,6 +650,11 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								if(this.getValueOf('videoTab', 'autostart')){
 									url += '&autoplay=1';
 								}
+								
+								if(startAt !== ""){
+									url += '&start='+startAt;
+								}
+								
 								
 								if ( this.getContentElement( 'videoTab', 'chkRelated' ).getValue() === false )
 								{

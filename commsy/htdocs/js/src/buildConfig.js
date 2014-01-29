@@ -22,4 +22,4 @@ var dojoConfig = {
 	isDebug:					false
 };
 
-var CKEDITOR_BASEPATH = "js/3rdParty/ckeditor_4.3.1/";
+var CKEDITOR_BASEPATH = "js/3rdParty/ckeditor_4.3.2/";

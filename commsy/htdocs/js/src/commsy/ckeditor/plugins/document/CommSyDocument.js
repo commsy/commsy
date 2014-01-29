@@ -61,16 +61,25 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										style: 'width=100%',
 										label: 'Document Type',
 										items: SelectBoxItems,
+										onLoad : function () 
+										{
+											var dialog = this.getDialog();
+											var startAt = dialog.getContentElement( 'documentTab', 'startAt');
+											
+											startAt.enable();
+										},
 										onChange : function ()
 										{
 											// show input if onyx is selected
 											var dialog = this.getDialog();
 											var textInput = dialog.getContentElement('documentTab', 'linkText');
 											var fileSelect = dialog.getContentElement( 'documentTab', 'fileselect' );
+											var startAt = dialog.getContentElement( 'documentTab', 'startAt');
 											
 											if(this.getValue() == 'onyx'){
 												textInput.enable();
 												fileSelect.enable();
+												startAt.disable();
 												
 												// select only zip files for onyx
 												var j;
@@ -82,6 +91,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 													}
 												}
 											} else {
+												startAt.enable();
 												textInput.disable();
 												fileSelect.disable();
 											}
@@ -266,6 +276,22 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												'default' : '',
 											},
 										]
+									},
+									{
+										type: 'hbox',
+										widths : [ '50px', '50px', '50px' ],
+//										style: 'margin-top:px',
+										children: 
+										[
+										 	{
+												type : 'text',
+												id : 'startAt',
+												width : '60px',
+												label : 'Start mit Folie',
+												'default' : '',
+											}
+
+										]
 									}
 								]
 							},
@@ -293,16 +319,16 @@ CKEDITOR.plugins.add( "CommSyDocument",
 							
 							style = 'style="';
 
-							if ( borderWidth != null ) {
+							if ( borderWidth !== "" ) {
 								tempStyle += 'border-style: solid; border-width:' + borderWidth + 'px;';
 							}
 
-							if ( horizontalMargin != null ) {
+							if ( horizontalMargin != "" ) {
 								tempStyle += 'margin-top:' + horizontalMargin + 'px;';
 								tempStyle += 'margin-bottom:' + horizontalMargin + 'px;';
 							}
 							
-							if ( verticalMargin != null ) {
+							if ( verticalMargin !== "" ) {
 								tempStyle += 'margin-left:' + verticalMargin + 'px;';
 								tempStyle += 'margin-right:' + verticalMargin + 'px;';
 							}
@@ -322,10 +348,13 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								var width = this.getValueOf( 'documentTab', 'documentWidth' );
 								var height = this.getValueOf( 'documentTab', 'documentHeight' );
 								var documentUrl = this.getValueOf( 'documentTab', 'documentUrl');
+								var startAt = this.getValueOf( 'documentTab', 'startAt');
 								var floatValue = '';
+								var param = '';
 								
-								
-								// find url type
+								if (startAt !== "") {
+									param += '&startSlide='+startAt;
+								}
 								
 								// wordpress shortcode regex
 								var wp_regex = /\[slideshare id=\d*&doc=(.*)]/,
@@ -341,7 +370,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 //								content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '" name="movie">';
 //								content += '<param value="true" name="allowFullScreen">';
 //								content += '<param value="always" name="allowScriptAccess">';
-								content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0">';
+								content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0' + param +'">';
 //								content += '</object>';
 								
 								
