@@ -1924,6 +1924,7 @@ class cs_user_manager extends cs_manager {
 	
 	public function getUserLastLoginLaterAs($date,$cid){
 		$user = NULL;
+		$user_array = array();
 		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
@@ -1941,6 +1942,7 @@ class cs_user_manager extends cs_manager {
 	
 	public function getAllUserItemArray($uid){
 		$user = NULL;
+		$user_array = array();
 		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".user_id = '".encode(AS_DB,$uid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
