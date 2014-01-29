@@ -13,7 +13,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		{
 			label:		"CommSy Dokumente",
 			command:	"CommSyDocument",
-			icon:		"../../src/commsy/ckeditor/plugins/audio/images/icon.png"
+			icon:		"../../src/commsy/ckeditor/plugins/document/images/icon.png"
 		} );
 		
 		CKEDITOR.dialog.add( 'CommSyDocument', function ( instance )
@@ -88,43 +88,70 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										}
 									},
 									{
-										type : 'select',
-										id: 'fileselect',
-										label: 'Dateiauswahl',
-										items : fileItems,
-										onLoad : function ()
-										{
-											this.disable();
-										},
-										onChange : function () 
-										{
-											// disable textInput if file is selected
-											var dialog = this.getDialog();
-											var inputUrl = dialog.getContentElement( 'documentTab', 'documentUrl' );
-											if(this.getValue() == 'null'){
-												inputUrl.enable();
-												inputUrl.setValue('');
-												inputUrl.focus();
-											} else {
-												inputUrl.disable();
-												// set file url in textInput
-												var cid = getUrlParam('cid');
-												var mod = getUrlParam('mod');
-												var iid = getUrlParam('iid');
-												
-												var input = this.getInputElement().$;
-												
-												if(dialog.getContentElement('documentTab', 'selectbox').getValue() == 'onyx') {
-													fileUrl = 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + this.getValue();
-												} else {
-													fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+										type: 'hbox',
+										widths: ['50%','50%'],
+										children:
+										[
+										 	{
+												type : 'select',
+												id: 'fileselect',
+												label: 'Dateiauswahl',
+												items : fileItems,
+												onLoad : function ()
+												{
+													this.disable();
+												},
+												onChange : function () 
+												{
+													// disable textInput if file is selected
+													var dialog = this.getDialog();
+													var inputUrl = dialog.getContentElement( 'documentTab', 'documentUrl' );
+													if(this.getValue() == 'null'){
+														inputUrl.enable();
+														inputUrl.setValue('');
+														inputUrl.focus();
+													} else {
+														inputUrl.disable();
+														// set file url in textInput
+														var cid = getUrlParam('cid');
+														var mod = getUrlParam('mod');
+														var iid = getUrlParam('iid');
+														
+														var input = this.getInputElement().$;
+														
+														if(dialog.getContentElement('documentTab', 'selectbox').getValue() == 'onyx') {
+															fileUrl = 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + this.getValue();
+														} else {
+															fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+														}
+														
+														encodeFileUrl = encodeURI(fileUrl);
+		//												alert(encodeFileUrl);
+														inputUrl.setValue(encodeFileUrl);
+													}
 												}
-												
-												encodeFileUrl = encodeURI(fileUrl);
-//												alert(encodeFileUrl);
-												inputUrl.setValue(encodeFileUrl);
-											}
-										}
+											},
+											{
+												type: 'vbox',
+												children:
+												[
+													{
+													    type: 'file',
+													    id: 'upload',
+													    label: 'neue Datei hochladen',
+													    style: 'height:40px',
+													    size: 38
+													},
+													{
+													    type: 'fileButton',
+													    id: 'uploadButton',
+													    filebrowser: 'documentTab:documentUrl',
+													    label: 'Hochladen',
+													    'for': [ 'documentTab', 'upload' ],
+													}
+												]
+											},	
+										]
 									},
 									{
 										id : 'linkText',
@@ -143,7 +170,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											{
 												id : 'documentUrl',
 												type : 'text',
-												label : 'DOC-ID (Bsp: quicktour-1209540124077378-8)',
+												label : 'Shortcode für Wordpress Blogs [Slideshare id=...]',
 												validate : function ()
 												{
 													if ( this.isEnabled() )
@@ -226,9 +253,16 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											},
 											{
 												type : 'text',
-												id : 'padding',
+												id : 'marginH',
 												width : '60px',
-												label : 'Abstand',
+												label : 'H-Abstand',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'marginV',
+												width : '60px',
+												label : 'V-Abstand',
 												'default' : '',
 											},
 										]
@@ -251,6 +285,36 @@ CKEDITOR.plugins.add( "CommSyDocument",
 							var content = '';
 							var float = this.getValueOf( 'documentTab', 'float');
 							
+							var style = '',
+							tempStyle = '',
+							borderWidth = this.getValueOf( 'documentTab', 'border' ),
+							horizontalMargin = this.getValueOf( 'documentTab', 'marginH'),
+							verticalMargin = this.getValueOf( 'documentTab', 'marginV');
+							
+							style = 'style="';
+
+							if ( borderWidth != null ) {
+								tempStyle += 'border-style: solid; border-width:' + borderWidth + 'px;';
+							}
+
+							if ( horizontalMargin != null ) {
+								tempStyle += 'margin-top:' + horizontalMargin + 'px;';
+								tempStyle += 'margin-bottom:' + horizontalMargin + 'px;';
+							}
+							
+							if ( verticalMargin != null ) {
+								tempStyle += 'margin-left:' + verticalMargin + 'px;';
+								tempStyle += 'margin-right:' + verticalMargin + 'px;';
+							}
+							
+							if(float != 'null' && float == 'right'){
+								tempStyle += 'float:right;';
+							} else if (float != 'null' && float == 'left') {
+								tempStyle += 'float:left;';
+							}
+							style += tempStyle;
+							style += '"';
+							
 							if(this.getValueOf('documentTab', 'selectbox') == 'slideshare'){
 								
 //								content = 'http://lecture2go.uni-hamburg.de/';
@@ -260,26 +324,27 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								var documentUrl = this.getValueOf( 'documentTab', 'documentUrl');
 								var floatValue = '';
 								
-								if(float != 'null' && float == 'right'){
-									floatValue += 'float:right;';
-								} else if (float != 'null' && float == 'left') {
-									floatValue += 'float:left;';
-								} else {
-									floatValue = '';
+								
+								// find url type
+								
+								// wordpress shortcode regex
+								var wp_regex = /\[slideshare id=\d*&doc=(.*)]/,
+									match,
+									docId;
+								
+								if(documentUrl.match(wp_regex)){
+									match = documentUrl.match(wp_regex);
+									docId = match[1];
 								}
-								content += '<object width="' + width + '" height="' + height + '" style="margin:0px;' + floatValue + '">';
-								content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + documentUrl + '&amp;rel=0&amp;stripped_title=building-a-better-debt-lead" name="movie">';
-								content += '<param value="true" name="allowFullScreen">';
-								content += '<param value="always" name="allowScriptAccess">';
-								content += '<embed width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + documentUrl + '&amp;rel=0">';
-								content += '</object>';
 								
-								
-//								content += '<object data="' + documentUrl + '" type="application/x-shockwave-flash" width="200" height="300">';
-//								content += '<embed src="' + documentUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
+//								content += '<object width="' + width + '" height="' + height + '>';
+//								content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '" name="movie">';
+//								content += '<param value="true" name="allowFullScreen">';
+//								content += '<param value="always" name="allowScriptAccess">';
+								content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0">';
 //								content += '</object>';
 								
-//								alert(content);
+								
 							} else if(this.getValueOf('documentTab', 'selectbox') == 'onyx') {
 								
 								var cid = getUrlParam('cid');
@@ -293,22 +358,12 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					            
 //					            a.setAttribute( 'href', 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + file_id + '');
 					            a.setAttribute('target', 'help');
-					            
+					            a.setAttribute('style', tempStyle);
 					            a.setText( linkText );
 
 
 					            editor.insertElement( a );
 								
-//								
-//								var id = 75;
-//								
-//								target = 'target="help"';
-//			                    onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, dependent=yes, copyhistory=yes, width=900, height=600\');"';
-//								
-////								$content = '<a href="' + $c_single_entry_point + '?cid=' + $this->_environment->getCurrentContextID() + '&amp;mod=' + $this->_identifier + '&amp;fct=showqti&amp;iid=' + $id + '" ' + $target + ' ' + $onclick + '>' + $name + '</a>';
-//								$content = '<a href="commsy.php?cid=' + cid + '&amp;mod=onyx&amp;fct=showqti&amp;iid=' + id + '" ' + target + ' ' + onclick + '>';
-//								$content = 'Test';
-//								$content = '</a>';
 							}
 							
 
