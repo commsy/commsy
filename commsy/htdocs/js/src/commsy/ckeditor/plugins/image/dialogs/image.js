@@ -262,7 +262,7 @@
 				previewImageId = numbering( 'previewImage' );
 
 			return {
-				title: editor.lang.image[ dialogType == 'image' ? 'title' : 'titleButton' ],
+				title: editor.lang.image[ dialogType == 'CommSyImage' ? 'title' : 'titleButton' ],
 				minWidth: 480,
 				minHeight: 360,
 				onShow: function() {
@@ -313,7 +313,7 @@
 							}
 						}
 						// Fill out all fields.
-						if ( dialogType == 'image' )
+						if ( dialogType == 'CommSyImage' )
 							this.setupContent( LINK, link );
 					}
 
@@ -355,7 +355,7 @@
 						var imgTagName = this.imageEditMode;
 
 						// Image dialog and Input element.
-						if ( dialogType == 'image' && imgTagName == 'input' && confirm( editor.lang.image.button2Img ) ) {
+						if ( dialogType == 'CommSyImage' && imgTagName == 'input' && confirm( editor.lang.image.button2Img ) ) {
 							// Replace INPUT-> IMG
 							imgTagName = 'img';
 							this.imageElement = editor.document.createElement( 'img' );
@@ -363,7 +363,7 @@
 							editor.insertElement( this.imageElement );
 						}
 						// ImageButton dialog and Image element.
-						else if ( dialogType != 'image' && imgTagName == 'img' && confirm( editor.lang.image.img2Button ) ) {
+						else if ( dialogType != 'CommSyImage' && imgTagName == 'img' && confirm( editor.lang.image.img2Button ) ) {
 							// Replace IMG -> INPUT
 							imgTagName = 'input';
 							this.imageElement = editor.document.createElement( 'input' );
@@ -380,7 +380,7 @@
 					} else // Create a new image.
 					{
 						// Image dialog -> create IMG element.
-						if ( dialogType == 'image' )
+						if ( dialogType == 'CommSyImage' )
 							this.imageElement = editor.document.createElement( 'img' );
 						else {
 							this.imageElement = editor.document.createElement( 'input' );
@@ -427,7 +427,7 @@
 					}
 				},
 				onLoad: function() {
-					if ( dialogType != 'image' )
+					if ( dialogType != 'CommSyImage' )
 						this.hidePage( 'Link' ); //Hide Link tab.
 					var doc = this._.element.getDocument();
 
