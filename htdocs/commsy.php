@@ -66,6 +66,9 @@ function cleanupSession($session, $environment){
    }
 }
 
+// require composer autoloader
+require 'vendor/autoload.php';
+
 // include base-config
 include_once('etc/cs_constants.php');
 @include_once('etc/cs_config.php');
