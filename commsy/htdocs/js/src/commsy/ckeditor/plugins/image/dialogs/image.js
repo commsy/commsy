@@ -248,7 +248,7 @@
 						this.preview.setAttribute( 'src', noimage );
 
 					// Hide loader
-					CKEDITOR.document.getById( imagePreviewLoaderId ).setStyle( 'display', 'none' );
+//					CKEDITOR.document.getById( imagePreviewLoaderId ).setStyle( 'display', 'none' );
 					switchLockRatio( this, false ); // Unlock.
 				};
 
