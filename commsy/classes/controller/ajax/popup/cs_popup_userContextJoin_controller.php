@@ -187,7 +187,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
 		               	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
 		               } else {
-		               	$userid = $user->getUserID();
+		               	$userid = $user_item->getUserID();
 		               }
 		               $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$userid,$user_item->getEmail(),$room_item->getTitle());
 		               $body .= LF.LF;
@@ -262,7 +262,7 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 		               if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
 		               	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY');
 		               } else {
-		               	$userid = $user->getUserID();
+		               	$userid = $user_item->getUserID();
 		               }
 		      
 		               $translator->setSelectedLanguage($language);
