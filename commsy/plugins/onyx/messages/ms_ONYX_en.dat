@@ -7,6 +7,7 @@ $message["ONYX_CONFIG_FORM_TITLE_URL"]["en"] = "url to ONYX";
 $message["ONYX_DESCRIPTION"]["en"] = "With this plugin you can show self tests (QTI standard) with the onxy webplayer.";
 $message["ONYX_ERROR_ID_LOST"]["en"] = "Error: Could not load the test. Please close the window and retry.";
 $message["ONYX_ERROR_URL_LOST"]["en"] = "Error: Could not load the reporter. Please close the window and retry.";
+$message["ONYX_ERROR_URL_LOST_PLAYER"]["en"] = "Error: Could not load the test. Please close the window and retry.";
 $message["ONYX_ERROR_URL_SECURITY"]["de"] = "A security flag in your session is lost, so you are not allowed to see the results.";
 $message["ONYX_REPORTER_LINK"]["en"] = "analysis";
 $message["ONYX_REPORTER_NO_RESULTS"]["en"] = "There are no results so far.";

@@ -182,7 +182,7 @@ class class_onyx extends cs_plugin {
    }
    
    public function formatMedia ( $params ) {
-      $retour = '';
+   	$retour = '';
       if ( !empty($params['key'])
            and $params['key'] == $this->_format_media_key.'rep'
            and !empty($params['value_new'])
@@ -220,7 +220,7 @@ class class_onyx extends cs_plugin {
          } elseif ( !empty($file_array[html_entity_decode($temp_file_name,ENT_COMPAT,'UTF-8')]) ) {
             $file = $file_array[html_entity_decode($temp_file_name,ENT_COMPAT,'UTF-8')];
          }
-
+         
          // params
          $embedded = false;
          if ( !empty($args_array['embedded']) ) {
@@ -273,52 +273,53 @@ class class_onyx extends cs_plugin {
          }
 
          if ( isset($file) ) {
-
-            // now connect onyx web player
-            $player = $this->_getPlayerObject();
-            
-            // first: Anmeldung des Tests
-            $session_item = $this->_environment->getSessionItem();
-            
-            // id a json_string with infos
-            $id_array = array();
-            $id_array['SID'] = $session_item->getSessionID();
-            $id_array['cid'] = $this->_environment->getCurrentContextID();
-            $id_array['fid'] = $file->getFileID();
-            $id_array['save'] = $saveResult;
-            if ( !empty($saveAim) ) {
-            	$id_array['saveaim'] = $saveAim;
-            }
-            if ( !empty($savePeriod) ) {
-            	$id_array['saveperiod'] = $savePeriod;
-            }
-            include_once('functions/date_functions.php');
-            $id_array['time'] = getCurrentDateTimeInMySQL();
-            $id = json_encode($id_array);
-            $id = str_replace('"','\'',$id);
-            
-            $qti = $file->getString();
-            $lang = $this->_environment->getSelectedLanguage();
-            $inst = '';
-            if ( !isset($navi) ) { 
-               if ($embedded) {
-                  $navi = 'onyxwithoutnav';
-               } else {
-                  $navi = '';
-               }
-            } else {
-               if ( !empty($navi) and $navi == 'true' ) {
-                  $navi = '';                  
-               } else {
-                  $navi = 'onyxwithoutnav';                  
-               }
-            }
-            $lms = $this->_player_lms_key;
-            $solution = 'true';
-            
-            $success = $player->run($id,$qti,$lang,$inst,$navi,$lms,$solution);  
-            if ( $success and !is_soap_fault($success) ) {
-               if ($embedded) {
+         	
+         	if ($embedded) {
+         	
+	            // now connect onyx web player
+	            $player = $this->_getPlayerObject();
+	            
+	            // first: Anmeldung des Tests
+	            $session_item = $this->_environment->getSessionItem();
+	            
+	            // id a json_string with infos
+	            $id_array = array();
+	            $id_array['SID'] = $session_item->getSessionID();
+	            $id_array['cid'] = $this->_environment->getCurrentContextID();
+	            $id_array['fid'] = $file->getFileID();
+	            $id_array['save'] = $saveResult;
+	            if ( !empty($saveAim) ) {
+	            	$id_array['saveaim'] = $saveAim;
+	            }
+	            if ( !empty($savePeriod) ) {
+	            	$id_array['saveperiod'] = $savePeriod;
+	            }
+	            include_once('functions/date_functions.php');
+	            $id_array['time'] = getCurrentDateTimeInMySQL();
+	            $id = json_encode($id_array);
+	            $id = str_replace('"','\'',$id);
+	            
+	            $qti = $file->getString();
+	            $lang = $this->_environment->getSelectedLanguage();
+	            $inst = '';
+	            if ( !isset($navi) ) { 
+	               if ($embedded) {
+	                  $navi = 'onyxwithoutnav';
+	               } else {
+	                  $navi = '';
+	               }
+	            } else {
+	               if ( !empty($navi) and $navi == 'true' ) {
+	                  $navi = '';                  
+	               } else {
+	                  $navi = 'onyxwithoutnav';                  
+	               }
+	            }
+	            $lms = $this->_player_lms_key;
+	            $solution = 'true';
+	            
+	            $success = $player->run($id,$qti,$lang,$inst,$navi,$lms,$solution);  
+	            if ( $success and !is_soap_fault($success) ) {
                   $retour .= '<style type="text/css">
    <!--
       iframe.onyx {
@@ -329,22 +330,30 @@ class class_onyx extends cs_plugin {
    -->
    </style>';
                   $retour .= '<div><iframe class="onyx" src="'.$this->_player_url_run.'?id='.$id.'"></iframe></div>';
+	            } else {
+	            	// error
+	            }
+            } else {
+               if ( $display == 'newwin'
+                    or $display == '_blank'
+                    or $display == 'tab'
+                  ) {
+                  $target = 'target="_blank"';
+                  $onclick = '';
                } else {
-                  if ( $display == 'newwin'
-                       or $display == '_blank'
-                       or $display == 'tab'
-                     ) {
-                     $target = 'target="_blank"';
-                     $onclick = '';
-                  } else {
-                     $target = 'target="help"';
-                     $onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, dependent=yes, copyhistory=yes, width=900, height=600\');"';
-                  }
-                  
-                  $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
-                  $retour = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod='.$this->_identifier.'&amp;fct=showqti&amp;iid='.$id.'" '.$target.' '.$onclick.'>'.$name.'</a>';                  
+                  $target = 'target="help"';
+                  $onclick = 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, dependent=yes, copyhistory=yes, width=900, height=600\');"';
                }
-            }            
+               
+               $param_string = '';
+               if ( !empty($args_array) ) {
+                  $param_string = rawurlencode(json_encode($args_array));
+               }
+                  
+               $c_single_entry_point = $this->_environment->getConfiguration('c_single_entry_point');
+               #$retour = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod='.$this->_identifier.'&amp;fct=showqti&amp;iid='.$id.'" '.$target.' '.$onclick.'>'.$name.'</a>';                  
+               $retour = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod='.$this->_identifier.'&amp;fct=showqti&amp;iid='.$file->getFileID().'&amp;params='.$param_string.'" '.$target.' '.$onclick.'>'.$name.'</a>';                  
+            }
          }
       }
       return $retour;
@@ -710,6 +719,97 @@ class class_onyx extends cs_plugin {
    
    public function getPlayerRunUrl () {
       return $this->_player_url_run;
+   }
+   
+   public function getPlayerRunUrlByFileID ( $fid, $params = '' ) {
+   	$retour = '';
+   	$args_array = array();
+   	if ( !empty($params) ) {
+   		$args_array = json_decode(rawurldecode($params),true);
+   	}
+   	
+   	$name = '';
+   	if ( !empty($args_array['text']) ) {
+   		$name = $args_array['text'];
+   	} elseif ( !empty($file) ) {
+   		$name = $file->getDisplayName();
+   	}
+   	
+   	$navi = NULL;
+   	if ( isset($args_array['navi']) ) {
+   		$navi = $args_array['navi'];
+   	}
+   	
+   	$saveResult = 0;
+   	if ( isset($args_array['save']) ) {
+   		$saveResult = $args_array['save'];
+   	}
+   	$saveAim = '';
+   	if ( isset($args_array['saveaim'])
+   			and $args_array['saveaim'] == 'section'
+   	   ) {
+   		$saveAim = $args_array['saveaim'];
+   	}
+   	$savePeriod = '';
+   	if ( isset($args_array['saveperiod'])
+   			and ( $args_array['saveperiod'] == 'day'
+   					or $args_array['saveperiod'] == 'week'
+   					or $args_array['saveperiod'] == 'month'
+   			)
+   	   ) {
+   		$savePeriod = $args_array['saveperiod'];
+   	}
+   	
+   	$file_manager = $this->_environment->getFileManager();
+   	$file = $file_manager->getItem($fid);
+   	
+   	if ( isset($file) ) {
+   		
+   		// now connect onyx web player
+   		$player = $this->_getPlayerObject();
+   		 
+   		// first: Anmeldung des Tests
+   		$session_item = $this->_environment->getSessionItem();
+   		 
+   		// id a json_string with infos
+   		$id_array = array();
+   		$id_array['SID'] = $session_item->getSessionID();
+   		$id_array['cid'] = $this->_environment->getCurrentContextID();
+   		$id_array['fid'] = $file->getFileID();
+   		$id_array['save'] = $saveResult;
+   		if ( !empty($saveAim) ) {
+   			$id_array['saveaim'] = $saveAim;
+   		}
+   		if ( !empty($savePeriod) ) {
+   			$id_array['saveperiod'] = $savePeriod;
+   		}
+   		include_once('functions/date_functions.php');
+   		$id_array['time'] = getCurrentDateTimeInMySQL();
+   		$id = json_encode($id_array);
+   		$id = str_replace('"','\'',$id);
+   		 
+   		$qti = $file->getString();
+   		$lang = $this->_environment->getSelectedLanguage();
+   		$inst = '';
+   		if ( !isset($navi) ) {
+   			$navi = '';
+   		} else {
+   			if ( !empty($navi) and $navi == 'true' ) {
+   				$navi = '';
+   			} else {
+   				$navi = 'onyxwithoutnav';
+   			}
+   		}
+   		$lms = $this->_player_lms_key;
+   		$solution = 'true';
+   		 
+   		$success = $player->run($id,$qti,$lang,$inst,$navi,$lms,$solution);
+   		if ( $success and !is_soap_fault($success) ) {
+   			$retour .= $this->_player_url_run.'?id='.$id;
+   		}
+   	}
+   	
+   	return $retour;
    }
    
    public function getTextFormatingInformationAsHTML () {
