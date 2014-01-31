@@ -498,7 +498,7 @@
 												var input = this.getInputElement().$;
 									//			alert(input.options[input.selectedIndex].text);
 												
-												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
+												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=material&fct=getfile&iid=' + this.getValue();
 												
 												encodeFileUrl = encodeURI(fileUrl);
 //												alert(encodeFileUrl);
