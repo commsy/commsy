@@ -164,7 +164,14 @@
 									<td>{$formal[1]}</td>
 								</tr>
 							{/foreach}
-
+							{if $detail.content.description }
+							</table>
+               					<div class="detail_description">
+                  					{$detail.content.description}
+               					</div>
+               				<table class="detail_content_table">
+            				{/if}
+								
 							{if $detail.content.sections}
 								<tr>
 									<td><h4>___MATERIAL_SECTIONS___:</h4></td>
@@ -180,23 +187,17 @@
 									{/foreach}
 									</td>
 								</tr>
-                        {if !empty($detail.content.description)}
-								   <tr>
-									   <td><h4>___MATERIAL_ABSTRACT___:</h4></td>
-									   <td>
-										   &nbsp;
-									   </td>
-								   </tr>
-								{/if}
+                        		
 							{/if}
 						</table>
+					{else}
+					<div class="detail_description">
+                  		{$detail.content.description}
+               		</div>
 				{/if}
+				
 
-            {if $detail.content.description }
-               <div class="detail_description">
-                  {$detail.content.description}
-               </div>
-            {/if}
+            
 				</div>
 		</div> <!-- Ende item_legend -->
 		{if $room.workflow}
