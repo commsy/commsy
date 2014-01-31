@@ -6,7 +6,14 @@ define(
  	"dojo/text!./templates/SendWidget.html",
  	"dojo/i18n!./nls/SendWidget",
  	"dojo/dom-construct",
- 	"dojo/_base/lang"
+ 	"dojo/on",
+ 	"dojo/query",
+ 	"dijit/registry",
+ 	"dojo/parser",
+ 	"dojox/form/Manager",
+ 	"dojo/_base/lang",
+ 	"dijit/form/ValidationTextBox",
+	"dojox/validate/web"
 ], function
 (
 	declare,
@@ -15,6 +22,11 @@ define(
 	Template,
 	PopupTranslations,
 	DomConstruct,
+	on,
+	query,
+	registry,
+	parser,
+	Manager,
 	Lang
 ) {
 	return declare([PopupBase, TemplatedMixin],
@@ -53,6 +65,9 @@ define(
 			 * Initialization is done here
 			 ************************************************************************************/
 			this.set("title", this.popupTranslations.title);
+			
+			on(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
+			on(this.addAdditionalNode, "click", Lang.hitch(this, this.onClickAddAdditional));
 		},
 		
 		/**
@@ -226,10 +241,117 @@ define(
 				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
 		},
 		
+		addAdditionalFormElements: function()
+		{
+			var lastRowNode = query(this.addAdditionalNode).parent()[0];
+			
+			if ( lastRowNode )
+			{
+				var inputRowNode = DomConstruct.create("div",
+				{
+					className:			"input_row",
+					style:				"display: none"
+				}, lastRowNode, "before");
+				
+					var divNode = DomConstruct.create("div",
+					{
+						style:			"float: left; width: 180px;"
+					}, inputRowNode, "last");
+					
+						var aNode = DomConstruct.create("a",
+						{
+							href:			"#",
+							innerHTML:		"entfernen"
+						}, divNode, "last");
+				
+					DomConstruct.create("input",
+					{
+						className:			"float-left",
+						name:				"additionalFirstName_" + this.additionalIndex,
+						required:			true,
+						displayedValue:		PopupTranslations.additionalFirstName,
+						"data-dojo-type":	"dijit/form/ValidationTextBox",
+						"data-dojo-props":	"validator:dojox.validate.isText, invalidMessage:'" + PopupTranslations.errorMissing + "'"
+						
+					}, inputRowNode, "last");
+					
+					DomConstruct.create("input",
+					{
+						className:			"float-left",
+						name:				"additionalLastName_" + this.additionalIndex,
+						required:			true,
+						displayedValue:		PopupTranslations.additionalLastName,
+						"data-dojo-type":	"dijit/form/ValidationTextBox",
+						"data-dojo-props":	"validator:dojox.validate.isText, invalidMessage:'" + PopupTranslations.errorMissing + "'"
+						
+					}, inputRowNode, "last");
+					
+					DomConstruct.create("input",
+					{
+						className:			"float-left",
+						name:				"additionalMail_" + this.additionalIndex,
+						required:			true,
+						displayedValue:		PopupTranslations.additionalMail,
+						"data-dojo-type":	"dijit/form/ValidationTextBox",
+						"data-dojo-props":	"validator:dojox.validate.isEmailAddress, invalidMessage:'" + PopupTranslations.errorMail + "'",
+						style:				"margin-left: 20px;"
+						
+					}, inputRowNode, "last");
+					
+					DomConstruct.create("div",
+					{
+						className:			"clear"
+					}, inputRowNode, "last");
+				
+				this.additionalIndex++;
+				
+				var formManager = registry.byId("sendForm");
+				
+				on(aNode, "click", Lang.hitch(this, function()
+				{
+					FX.wipeOut(
+					{
+						node:		inputRowNode,
+						onEnd:		Lang.hitch(this, function()
+						{
+							var widgetsInRow = registry.findWidgets(inputRowNode);
+							dojo.forEach(widgetsInRow, function(widget)
+							{
+								formManager.unregisterWidget(widget);
+								formManager.unregisterWidgetDescendants(widget);
+								widget.set("disabled", true);
+								widget.set("displayedValue", "");
+							});
+							
+							DomConstruct.destroy(inputRowNode);
+						})
+					}).play();
+				}));
+				
+				parser.parse(inputRowNode).then(Lang.hitch(this, function(instances)
+				{
+					dojo.forEach(instances, function(instance)
+					{
+						formManager.registerWidget(instance);
+					});
+					
+					FX.wipeIn(
+					{
+						node:		inputRowNode
+					}).play();
+				}));
+			}
+		},
+		
 		/************************************************************************************
 		 * Event Handling
 		 ************************************************************************************/
-		onSend: function(event)
+		onClickAddAdditional: function(event)
+		{
+			this.addAdditionalFormElements();
+		},
+		
+		onSubmit: function(event)
 		{
 			
 		}

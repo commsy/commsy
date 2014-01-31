@@ -56,7 +56,7 @@ require([	"dojo/_base/declare",
 						// get custom data object
 						var customObject = this.getAttrAsObject(event.target, "data-custom");
 						
-						widgetManager.GetInstance("commsy/widgets/Send/Sendwidget", customObject).then(function(deferred) {
+						widgetManager.GetInstance("commsy/widgets/Send/SendWidget", customObject).then(function(deferred) {
 							var widgetInstance = deferred.instance;
 							
 							// register click event

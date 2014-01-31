@@ -1,5 +1,6 @@
 define({
 	root: {
+		additionalAdd:			"Add another recipient",
 		all:					"Total members in workspace",
 		buttonClose:			"Close",
 		buttonSend:				"Send",

@@ -1,4 +1,5 @@
 define({
+	additionalAdd:				"Weiteren Empfänger hinzufügen",
 	all:						"Alle Mitglieder im Raum",
 	buttonClose:				"Schließen",
 	buttonSend:					"Versenden",

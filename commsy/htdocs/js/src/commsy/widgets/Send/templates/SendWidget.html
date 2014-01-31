@@ -14,36 +14,44 @@
 					</div>
 					<div id="popup_content_wrapper">
 						<div id="popup_content">
-	    					<div id="mandatory_missing" class="input_row hidden">
-								___COMMON_MANDATORY_FIELDS_CONTENT___
-							</div>
-							<div class="input_row">
-								<span class="input_label_150">${popupTranslations.subject}<span class="required">*</span></span>
-								<div class="input_container_180" id="reciever">
-									<input type="text" name="form_data[subject]" class="size_400" />
+							<form data-dojo-type="dojox/form/Manager" id="sendForm" data-dojo-attach-point="formNode">
+							
+		    					<div id="mandatory_missing" class="input_row hidden">
+									___COMMON_MANDATORY_FIELDS_CONTENT___
 								</div>
-							</div>
-							<div class="editor_content">
-								<br/>
-								<textarea name="form_data[body]" rows="20" cols="100" data-dojo-attach-point="bodyNode"></textarea>
-								<br/>
-								<br/>
-							</div>
-	
-							<div class="input_row" data-dojo-attach-point="lastFormRow">
-								<span class="input_label_150">${popupTranslations.copyToSender}:</span>
-								<div class="input_container_180">
-									<input type="radio" name="form_data[copyToSender]" value="true" />${popupTranslations.yes}
-									<input type="radio" name="form_data[copyToSender]" value="false" checked="checked" />${popupTranslations.no}
+								<div class="input_row">
+									<span class="input_label_150">${popupTranslations.subject}<span class="required">*</span></span>
+									<div class="input_container_180" id="reciever">
+										<input type="text" name="form_data[subject]" class="size_400" />
+									</div>
 								</div>
-								<div class="clear"></div>
-							</div>
+								<div class="editor_content">
+									<br/>
+									<textarea name="form_data[body]" rows="20" cols="100" data-dojo-attach-point="bodyNode"></textarea>
+									<br/>
+									<br/>
+								</div>
+		
+								<div class="input_row" data-dojo-attach-point="lastFormRow">
+									<span class="input_label_150">${popupTranslations.copyToSender}:</span>
+									<div class="input_container_180">
+										<input type="radio" name="form_data[copyToSender]" value="true" />${popupTranslations.yes}
+										<input type="radio" name="form_data[copyToSender]" value="false" checked="checked" />${popupTranslations.no}
+									</div>
+									<div class="clear"></div>
+								</div>
+								
+								<div class="input_row">
+									<a href="#" title="${popupTranslations.additionalAdd}" data-dojo-attach-point="addAdditionalNode">${popupTranslations.additionalAdd}</a>
+								</div>
+							
+							</form>
 							
 	    				</div>
 						<div id="popup_tabs">
 							<div id="content_buttons">
 								<div id="crt_actions_area">
-									<input class="popup_button" type="button" value="${popupTranslations.buttonSend}" name="" data-custom="" data-dojo-attach-event="onclick:onSend"/>
+									<input class="popup_button" type="button" value="${popupTranslations.buttonSend}" name="" data-custom="" data-dojo-attach-point="submitNode"/>
 									<input class="popup_button" type="button" value="${popupTranslations.buttonClose}" name="" data-custom="" data-dojo-attach-event="onclick:Close"/>
 								</div>
 							</div>
