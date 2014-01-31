@@ -7,6 +7,7 @@ $message["ONYX_CONFIG_FORM_TITLE_URL"]["de"] = "URL zu ONYX";
 $message["ONYX_DESCRIPTION"]["de"] = "Mit diesem Plugin können Selbsttest nach dem QTI Standard mit dem Onyx-Player angezeigt werden.";
 $message["ONYX_ERROR_ID_LOST"]["de"] = "Fehler: Der Test konnte nicht geladen werden. Bitte schließen Sie das Fenster und versuchen es erneut.";
 $message["ONYX_ERROR_URL_LOST"]["de"] = "Fehler: Der Reporter konnte nicht geladen werden. Bitte schließen Sie das Fenster und versuchen es erneut.";
+$message["ONYX_ERROR_URL_LOST_PLAYER"]["de"] = "Fehler: Der Test konnte nicht geladen werden. Bitte schließen Sie das Fenster und versuchen es erneut.";
 $message["ONYX_ERROR_URL_SECURITY"]["de"] = "Es fehlt ein Sicherheitsmerkmal in Ihrer Session, so dass Sie die Auswertung nicht sehen dürfen.";
 $message["ONYX_REPORTER_LINK"]["de"] = "Auswertung";
 $message["ONYX_REPORTER_NO_RESULTS"]["de"] = "Es liegen noch keine Testergebnisse vor.";
