@@ -506,7 +506,9 @@ class cs_configuration_form_view extends cs_form_view {
              or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'service')
              or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'wiki')
              or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'htmltextarea')
-            ){
+             or ( $this->_environment->inServer() and $this->_environment->getCurrentFunction() == 'datasecurity')
+         	 or ( $this->_environment->inServer() and $this->_environment->getCurrentFunction() == 'connection')
+         ){
             $show_entry = '2';
          }else{
             $show_entry = '3';

@@ -20,6 +20,7 @@ define([	"dojo/_base/declare",
 			this.description_user = customObject.description_user;
 			this.module = "userContextJoin";
 			
+			
 			this.features = [];
 			
 			// register click for node
@@ -50,8 +51,8 @@ define([	"dojo/_base/declare",
 			this.submit(search,  { part: part, user_id: user_id, context_id: context_id, action: action, description_user: description_user, agb: agb });
 		},
 		
-		onPopupSubmitSuccess: function(item_id) {
-			location.href = "commsy.php?cid=" + item_id + "&mod=project&fct=index";
+		onPopupSubmitSuccess: function(data) {
+			location.href = "commsy.php?cid=" + data.cid + "&mod=project&fct=detail&iid=" + data.room_id;
 		},
 		
 		onPopupSubmitError: function(response){

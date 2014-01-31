@@ -1,6 +1,7 @@
 <?php
 $message["EMAIL_CHOICE_PASSWORD_EXPIRATION"]["en"] = "Password is expired";
 $message["EMAIL_CHOICE_PASSWORD_EXPIRATION_SOON"]["en"] = "Password expires";
+$message["EMAIL_COMMSY_PORTAL_MODERATION"]["en"] = "If you have questions contact the portal moderation.";
 $message["EMAIL_CONTACT_MODERATOR"]["en"] = "Contact via e-mail";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["en"] = "Send an e-mail to contact persons";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";

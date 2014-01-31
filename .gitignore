@@ -1,18 +1,22 @@
-############
-## CommSy
-############
-commsy/etc/cs_config.php
-commsy/etc/commsy/*.php
-commsy/htdocs/javascript/jQuery/commsy_min/*
-commsy/htdocs/js/build/*
-commsy/htdocs/templates/templates_c/*
-commsy/var/*
-commsy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
+######################
+# OS generated files #
+######################
+.*
+!.gitignore
+*~
 
-############
-## OSX
-############
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
 .DS_Store
+.DS_Store?
 .AppleDouble
 .LSOverride
 Icon
@@ -24,15 +28,66 @@ Icon
 .Spotlight-V100
 .Trashes
 
-############
-## Windows
-############
-# Windows image file caches
-Thumbs.db
-ehthumbs.db
+######################
+# Symfony 2 related  #
+######################
+# Bootstrap
+app/bootstrap*
 
-# Folder config file
-Desktop.ini
+# Symfony directories
+vendor/*
+*/logs/*
+*/cache/*
+web/uploads/*
+web/bundles/*
 
-# Recycle Bin used on file shares
-$RECYCLE.BIN/
+# Configuration files
+app/config/parameters.ini
+app/config/parameters.yml
+app/phpunit.xml
+
+######################
+# Eclipse related    #
+######################
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+/vendor
+
+######################
+# CommSy related     #
+######################
+commsy/etc/cs_config.php
+commsy/etc/commsy/*.php
+commsy/htdocs/javascript/jQuery/commsy_min/*
+commsy/htdocs/js/build/*
+commsy/htdocs/templates/templates_c/*
+commsy/var/*
+commsy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
+commsy/external_pages/[0-9]*
+commsy/htdocs/css/external_portal_styles/[0-9]*
+
+web/commsy

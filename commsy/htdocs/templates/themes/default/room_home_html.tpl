@@ -24,6 +24,18 @@
                 <div class="clear"> </div>
                 <div class="row_even" style="padding:10px;">
                 	<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto; ">
+                		<p>
+                		<div class="user_profil_blocks">
+		                   <table class="detail_content_table">
+								<tr>
+									<td class="label"><h4>___DATES_DATETIME___</h4></td>
+									<td style="font-size:12px;">{$room.informationbox.date}{if $room.informationbox.time}, {$room.informationbox.time}{/if}</td>
+								</tr>
+		                    </table>
+		                </div>
+                		</p>
+                		<div class="clear"></div>
+                	
                 		<div class="detail_description">
                 			{$room.informationbox.content}
                 		</div>
@@ -39,7 +51,7 @@
 		{foreach $room.home_content as $rubric}
 			<div class="content_item"> <!-- Start content_item -->
             	<div class="ci_head_actions">
-	            	{if $rubric@key != 'user'}
+	            	{if $rubric@key != 'user' and $rubric.rights.new}
 		            	<a class="open_popup" data-custom="iid: 'NEW', module: '{$rubric@key}'"	href="#" title="___COMMON_NEW_ITEM___">
 		            		<img src="{$basic.tpl_path}img/btn_add_new_home.gif" alt="___COMMON_NEW_ITEM___" />
 		            	</a>
@@ -168,7 +180,7 @@
 										{/if}
 									{/if}
 
-									{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+									{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic or $room.room_information.material_guests == 'open'}
 		                            	<a href="commsy.php?cid={$environment.cid}&mod={$rubric@key}&fct=detail&iid={$item.iid}">{$item.column_1}</a>
 									{else}
 										{$item.column_1}
@@ -191,7 +203,7 @@
 													<ul>
 													{foreach $item.attachment_infos as $file}
 														<li>
-															{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic}
+															{if $rubric@key != 'material' or !$environment.is_guest or $item.worldpublic or $room.room_information.material_guests == 'open'}
 																<a class="{if $file.lightbox}lightbox_{$item.iid}{/if}" href="{$file.file_url}" target="blank">
 															{/if}
 																{$file.file_icon} {$file.file_name}
@@ -214,7 +226,15 @@
 								{/if}
 							</div>
                         	<div class="column_140">
-                            	<p>{$item.column_2}</p>
+                        		{if $rubric@key == 'announcement'}
+                        			{if $room.room_information.announcement_date == 'yes'}
+                        				<p></p>
+                        			{else}
+                        				<p>{$item.column_2}</p>
+                        			{/if}
+                        		{else}
+                        			<p>{$item.column_2}</p>
+                        		{/if}
 	                        	{if $rubric@key == 'todo'}
 	                        	  {$item.column_2_addon}
 								{/if}

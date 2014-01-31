@@ -1265,6 +1265,10 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '<div id="Content_Box_Rahmen_Detail">'.LF;
 #      $html .='<div class="sidehead">Raumbeschreibung</div>'.LF;
 
+      $html .= '<div id="room_detail_headline">'.LF;
+      $html .= $this->_getRoomHeaderAsHTML($item);
+      $html .= '</div>'.LF;
+
       // actions
       $html .= '<div>'.LF;
       $html .= '<div id="room_detail_actions">'.LF;
@@ -1367,9 +1371,7 @@ class cs_external_page_portal_view extends cs_page_view {
       // end actions
 
       $html .= '</div>'.LF;
-      $html .= '<div id="room_detail_headline">'.LF;
-      $html .= $this->_getRoomHeaderAsHTML($item);
-      $html .= '</div>'.LF;
+      
       $html .= '</div>'.LF;
 
 
@@ -1451,7 +1453,7 @@ class cs_external_page_portal_view extends cs_page_view {
    function _getRoomHeaderAsHTML($item) {
       $html  = LF.'<!-- BEGIN HEADER -->'.LF;
       // title
-      $html .='<table style=" width:100%; padding:0px; margin:0px;" summary="Layout">';
+      $html .='<table style=" width:100%; padding:0px; margin:0px; border-bottom: 1px solid #CCC; margin-bottom: 10px" summary="Layout">';
       $html .='<tr>';
       $html .='<td style="width: 1%; vertical-align:bottom;">';
       $logo_filename = $item->getLogoFilename();
@@ -1465,8 +1467,8 @@ class cs_external_page_portal_view extends cs_page_view {
       }
       $html .= '</td>';
       // logo
-      $html .=       '<td style="width: 99%; vertical-align:middle; padding-top:0px; padding-right:0px; text-align:left;">';
-      $html .= '      <span style="padding-bottom:0px; font-size: 14pt; font-weight: bold;">';
+      $html .=       '<td style="width: 99%; vertical-align:middle; padding-top: 10px; padding-bottom: 10px; padding-right:0px; text-align:left;">';
+      $html .= '      <span style="padding-bottom:0px; /*font-size: 14pt;*/ font-weight: bold; color: #004994;">';
       if ( !$item->isPrivateRoom() ) {
          $html .= $this->_text_as_html_short($item->getTitle());
       } else {
@@ -1478,19 +1480,19 @@ class cs_external_page_portal_view extends cs_page_view {
       }
       $html .= '</span>'.LF;
       if ($item->isDeleted()) {
-         $html .= '      <span style="padding-bottom:0px; font-size: 14pt; font-weight: normal;">';
+         $html .= '      <span style="padding-bottom:0px; /*font-size: 14pt;*/ font-weight: normal;">';
          $html .= ' ('.$this->_translator->getMessage('ROOM_STATUS_DELETED').')';
          $html .= '</span>'.LF;
       } elseif ($item->isLocked()) {
-         $html .= '      <span style="padding-bottom:0px; font-size: 14pt; font-weight: normal;">';
+         $html .= '      <span style="padding-bottom:0px; /*font-size: 14pt;*/ font-weight: normal;">';
          $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_LOCKED').')'.LF;
          $html .= '</span>'.LF;
       } elseif ($item->isProjectroom() and $item->isTemplate()) {
-         $html .= '      <span style="padding-bottom:0px; font-size: 14pt; font-weight: normal;">';
+         $html .= '      <span style="padding-bottom:0px; /*font-size: 14pt;*/ font-weight: normal;">';
          $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_TEMPLATE').')'.LF;
          $html .= '</span>'.LF;
       } elseif ($item->isClosed()) {
-         $html .= '      <span style="padding-bottom:0px; font-size: 14pt; font-weight: normal;">';
+         $html .= '      <span style="padding-bottom:0px; /*font-size: 14pt;*/ font-weight: normal;">';
          $html .= ' ('.$this->_translator->getMessage('PROJECTROOM_CLOSED').')'.LF;
          $html .= '</span>'.LF;
       }
@@ -1538,6 +1540,13 @@ class cs_external_page_portal_view extends cs_page_view {
       $retour .= '   <meta http-equiv="pragma" content="no-cache"/>'.LF;
       $retour .= '   <meta name="MSSmartTagsPreventParsing" content="TRUE"/>'.LF;
       $retour .= '   <meta name="CommsyBaseURL" content="'.$c_commsy_url_path.'"/>'.LF;
+      
+      /* CommSy Bar */
+      $currentUser = $this->_environment->getCurrentUserItem();
+      if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
+      	$retour .= $this->_includeDojoAsHTML();
+      }
+      
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( !($current_browser == 'msie' and strstr($current_browser_version,'5.')) ){
@@ -1578,7 +1587,7 @@ class cs_external_page_portal_view extends cs_page_view {
       if ( !empty($this->_name_room) and !empty($this->_name_page)) {
          $between .= ' - ';
       }
-      $retour .= '   <title>'.$this->_text_as_html_short($this->_name_room).$between.$this->_text_as_html_short($this->_name_page).'</title>'.LF;
+      $retour .= '   <title>KUV Workspace</title>'.LF;
       if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
          $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
          if ( isset($this->_form_view) ) {
@@ -1625,7 +1634,192 @@ class cs_external_page_portal_view extends cs_page_view {
       return $retour;
    }
 
-
+   private function _includeDojoAsHTML() {
+   	$html = "";
+   	 
+   	$current_user = $this->_environment->getCurrentUser();
+   	$ownRoomItem = $current_user->getOwnRoom();
+   	$templateEngine = $this->_environment->getTemplateEngine();
+   	$translator = $this->_environment->getTranslationObject();
+   	 
+   	if($templateEngine->getTheme() !== 'default') {
+   		$tpl_path = substr($templateEngine->getTemplateDir(1), 7);
+   	} else {
+   		$tpl_path = substr($templateEngine->getTemplateDir(0), 7);
+   	}
+   	 
+   	 
+   	 
+   	global $c_js_mode;
+   	$mode = (isset($c_js_mode) && ($c_js_mode === "build" || $c_js_mode === "layer")) ? $c_js_mode : "source";
+   	 
+   	$to_javascript = array();
+   	 
+   	$to_javascript['template']['tpl_path'] = $tpl_path;
+   	$to_javascript['environment']['lang'] = $this->_environment->getSelectedLanguage();
+   	$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
+   	$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
+   	$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
+   	$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
+   	$to_javascript['security']['token'] = getToken();
+   	$to_javascript['autosave']['mode'] = 0;
+   	$to_javascript['autosave']['limit'] = 0;
+   	 
+   	if ($ownRoomItem) {
+   		$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
+   		$to_javascript['own']['id'] = $ownRoomItem->getItemId();
+   	}
+   	 
+   	// translations - should be managed elsewhere soon
+   	$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
+   	$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
+   
+   	$portal_item = $this->_environment->getCurrentPortalItem();
+   	$current_portal_user = $this->_environment->getPortalUserItem();
+   	// password expires soon alert
+   	if(!empty($current_portal_user) AND $current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+    		$start_date = new DateTime(getCurrentDateTimeInMySQL());
+       		$since_start = $start_date->diff(new DateTime($current_portal_user->getPasswordExpireDate()));
+    		$days = $since_start->days;
+    		if($days == 0){
+    			$days = 1;
+    		}
+    
+    		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+    		if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail){
+    			$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+    			$to_javascript['environment']['password_expire_soon'] = true;
+    		} else if(!isset($days_before_expiring_sendmail) AND $days <= 14){
+    			$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+    			$to_javascript['environment']['password_expire_soon'] = true;
+    		}
+    	} else {
+   		$to_javascript['environment']['password_expire_soon'] = false;
+   	}
+   
+   	$current_user = $this->_environment->getCurrentUserItem();
+   	 
+   	$auth_source_manager = $this->_environment->getAuthSourceManager();
+   	$auth_source_item = $auth_source_manager->getItem($current_user->getAuthSource());
+   
+   	if(isset($auth_source_item)){
+   		$show_tooltip = true;
+   		// password
+   		if($auth_source_item->getPasswordLength() > 0){
+   			$to_javascript["password"]["length"] = $translator->getMessage('PASSWORD_INFO2_LENGTH', $auth_source_item->getPasswordLength());
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureBigchar() == 1){
+   			$to_javascript["password"]["big"] = $translator->getMessage('PASSWORD_INFO2_BIG');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureSmallchar() == 1){
+   			$to_javascript["password"]["small"] = $translator->getMessage('PASSWORD_INFO2_SMALL');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureNumber() == 1){
+   			$to_javascript["password"]["special"] = $translator->getMessage('PASSWORD_INFO2_SPECIAL');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+   			$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   	} else {
+   		$show_tooltip = false;
+   	}
+   	if($show_tooltip){
+   		$to_javascript["password"]["tooltip"] = 1;
+   	} else {
+   		$to_javascript["password"]["tooltip"] = 0;
+   	}
+   	 
+   	// dev
+   	global $c_indexed_search;
+   	global $c_xhr_error_reporting;
+   	$to_javascript['dev']['indexed_search'] = (isset($c_indexed_search) && $c_indexed_search === true) ? true : false;
+   	$to_javascript['dev']['xhr_error_reporting'] = (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) ? true : false;
+   	 
+   	if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
+   		global $c_autosave_mode;
+   		global $c_autosave_limit;
+   		 
+   		if(isset($c_autosave_mode) && isset($c_autosave_limit)) {
+   			$to_javascript['autosave']['mode'] = $c_autosave_mode;
+   			$to_javascript['autosave']['limit'] = $c_autosave_limit;
+   		}
+   	}
+   	 
+   	switch ($mode) {
+   		case "build":
+   			$html .= '<script src="js/src/buildConfig.js"></script>';
+   			 
+   			$html .= "
+   				<script>
+   					var from_php  = '" . json_encode($to_javascript) . "';
+   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
+   				</script>
+   			";
+   			 
+   			$html .= '<script src="js/build/release/dojo/dojo.js"></script>';
+   			$html .= '<script src="js/build/release/commsy/main.js"></script>';
+   			 
+   			break;
+   			 
+   		case "layer":
+   			$html .= '<script src="js/src/layerConfig.js"></script>';
+   			 
+   			$html .= "
+   				<script>
+   					var from_php  = '" . json_encode($to_javascript) . "';
+   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
+   				</script>
+   			";
+   			 
+   			$html .= '<script src="js/src/dojo/dojo.js"></script>';
+   			$html .= '
+   				<script>
+   					require(["layer/commsy"], function() {
+				   		require(["commsy/main"], function() {
+  
+				   		});
+				   	});
+   				</script>
+   			';
+   			break;
+   				
+   		default:
+   			$html .= '<script src="js/src/sourceConfig.js"></script>';
+   			 
+   			$html .= "
+   				<script>
+   					var from_php  = '" . json_encode($to_javascript) . "';
+   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
+   				</script>
+   			";
+   			 
+   			$html .= '<script src="js/src/dojo/dojo.js"></script>';
+   			$html .= '<script src="js/src/commsy/main.js"></script>';
+   	}
+   	 
+   	$html .= '
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dijit/themes/tundra/tundra.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/cbtree/themes/tundra/tundra.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/form/resources/UploaderFileList.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/image/resources/Lightbox.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/widget/ColorPicker/ColorPicker.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/calendar/themes/tundra/Calendar.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles.css" />
+   		<link rel="stylesheet" type="text/css" media="screen" href="templates/themes/default/styles_addon.css" />
+   	';
+   	 
+   	return $html;
+   }
 
    function _getIncludedCSSAsHTML(){
       global $c_commsy_url_path;
@@ -1656,12 +1850,9 @@ class cs_external_page_portal_view extends cs_page_view {
       $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_form_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/commsy_external_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/_default.css"/>'.LF;
-      $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/highslide.css"/>'.LF;
-      #$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/styles_hsk.css"/>'.LF;
-      #$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/commsy_form_css.php"/>'.LF;
-      #$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/hamburg-de.css"/>'.LF;
-      #$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/bgw.css"/>'.LF;
+#      $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/style.css"/>'.LF;
+
+      $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/css/k-uv.css"/>'.LF;
 
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -1679,15 +1870,16 @@ class cs_external_page_portal_view extends cs_page_view {
       $show_rooms = $current_context->getShowRoomsOnHome();
       $html  = '';
       $html .= '<div id="Column_Box_Blank">'.LF;
-      $html .= '<span class="T5">Raumsuche</span>'.LF;
-      $width = '100px';
+      $html .= '<span class="section_title">Raumsuche</span>'.LF;
+      $width = '85px;';
       // Search / select form
+      $html .= '<div class="section_content">';
       $html .= '<form style="width:100%; padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(),'').'" method="get" name="indexform">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_environment->getCurrentModule()).'"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_environment->getCurrentFunction()).'"/>'.LF;
       $html .= '   <input type="hidden" name="selroom" value="1"/>'.LF;
-      $html .= '   <input type="hidden" name="sel_archive_room" value="2"/>'.LF;
+      $html .= '   <input type="hidden" name="sel_archive_room" value="1"/>'.LF;
       if ( isset($this->_room_list_view) ) {
          $html .= '   <input type="hidden" name="sort" value="'.$this->_text_as_form($this->_room_list_view->getSortKey()).'"/>'.LF;
       }
@@ -1725,6 +1917,7 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '<input style="font-size:12px;" name="option" value="'.$this->_translator->getMessage('COMMON_SHOW_BUTTON').'" type="submit"/>'.LF;
       $html .= '</div>'.LF;
       $html .= '</form>'.LF;
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 
       return $html;
@@ -1776,8 +1969,10 @@ class cs_external_page_portal_view extends cs_page_view {
          ) {
          #$html .= '<div id="portal_config_overview">'.LF;
          $html .= '<div id="Content_Box_Rahmen_config">'.LF;
+         $html .= '<div style="padding: 10px;">';
          $html .= $this->_configuration_list_view->asHTML();
-         $html .= '</div>'.LF;//missing div in configuration_list_view
+         //$html .= '</div>'.LF;//missing div in configuration_list_view
+         $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       } elseif ( isset($this->_form_view) and !empty($this->_form_view) ) {
          $html .= '<div id="Content_Box_Rahmen_config">'.LF;
@@ -1788,8 +1983,10 @@ class cs_external_page_portal_view extends cs_page_view {
          $form_view->setForm($form_object);
          $html .= $form_view->asHTML();
          */
+         $html .= '<div style="padding: 10px;">';
          $html .= $this->_form_view->asHTML();
-         $html .= '</div>'.LF; //fehlendes Div in der Formularzusammensetzung
+         $html .= '</div>'.LF;
+         //$html .= '</div>'.LF; //fehlendes Div in der Formularzusammensetzung
          $html .= '</div>'.LF;
          if ( $this->_with_delete_box ) {
             $html .= $this->getDeleteBoxAsHTML('portal');
@@ -2006,7 +2203,7 @@ class cs_external_page_portal_view extends cs_page_view {
          $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
       }
       $retour .= '         </select>'.LF;
-      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change" value="'.$this->_translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
+      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:170px;" name="room_change" value="'.$this->_translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
       $retour .= '   </form>'.LF;
       unset($context_array);
       return $retour;
@@ -2031,6 +2228,7 @@ class cs_external_page_portal_view extends cs_page_view {
       $html  = LF;
 
 
+      /*
       if ( $this->_with_personal_area) {
          $html .= '<div id="Column_Box_Blank"> <!-- anfang "login-box" oder "Profillinks"--->'.LF;
          $html .= '<span class="T5">'.LF;
@@ -2049,7 +2247,8 @@ class cs_external_page_portal_view extends cs_page_view {
          }
          $html .= '</span>'.LF;
       }
-
+      */
+      
       if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
                                                and !$this->_environment->inServer()
                                                and !$this->_environment->inPortal()
@@ -2061,94 +2260,164 @@ class cs_external_page_portal_view extends cs_page_view {
 
       if ( $this->_with_personal_area and empty($cs_mod)) {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
-            if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
-                 and !$this->_environment->inServer()
-                 and !$this->_environment->inPortal()
-               ) {
-            }
             //login-box
-            $html .= '<div class="myarea_content" style="padding:3px;">'.LF;
+            
+         	
+         	
+         	$insert_auth_source_selectbox = false;
+         	if ( $current_portal->showAuthAtLogin() ) {
+         		$auth_source_list = $current_portal->getAuthSourceListEnabled();
+         		if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
+         			if ($auth_source_list->getCount() == 1) {
+         				$auth_source_item = $auth_source_list->getFirst();
+         				$html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
+         			} else {
+         				$insert_auth_source_selectbox = true;
+         			}
+         		}
+         	}
+         	
+         	// auth source
+         	$auth_source_list = $current_portal->getAuthSourceListEnabled();
+         	$count_auth_source_list_add_account = 0;
+         	if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
+         		$auth_source_item = $auth_source_list->getFirst();
+         		while ($auth_source_item) {
+         			$temp_array = array();
+         			if ( $auth_source_item->allowAddAccount() ) {
+         				$count_auth_source_list_add_account++;
+         			}
+         			$auth_source_item = $auth_source_list->getNext();
+         		}
+         	}
+            
+         	$html .= '
+         		<div id="header_login">
+         			<span id="kuv_logo">
+         				<img src="css/external_portal_styles/' . $this->_environment->getCurrentContextID() . '/img/logo_kuv.gif" alt="KUV" />
+         			</span>
+         			<div class="clear"></div>
+         		</div>
+	         	<div id="login_ground">
+		         	<form action="'.curl($this->_environment->getCurrentContextID(),'context','login','').'" method="post" name="login">
+			         	<fieldset>
+				         	<h2>KUV Workspace</h2>
+		    ';
 
-            if ($this->_environment->inPortal() or $this->_environment->inServer()) {
-               $context_id = $this->_environment->getCurrentContextID();
-            } else {
-               $context_id = $this->_environment->getCurrentPortalID();
-            }
-            $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.curl($context_id,'context','login','').'" name="login">'.LF;
-            $error_box = $this->getMyAreaErrorBox();
-            if ( isset($error_box) ){
-               $error_box->setWidth('12em');
-               $html .= $error_box->asHTML();
-            }
-            unset($context_id);
-            unset($error_box);
-            $insert_auth_source_selectbox = false;
-            if ( $current_portal->showAuthAtLogin() ) {
-               $auth_source_list = $current_portal->getAuthSourceListEnabled();
-               if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
-                  if ($auth_source_list->getCount() == 1) {
-                     $auth_source_item = $auth_source_list->getFirst();
-                     $html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
-                  } else {
-                     $insert_auth_source_selectbox = true;
-                  }
-               }
-            }
-
-            // login redirect
-            $session_item = $this->_environment->getSessionItem();
-            if ($session_item->issetValue('login_redirect')) {
-               $params = $session_item->getValue('login_redirect');
-               foreach ( $params as $key => $value ) {
-                  $html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
-               }
-               $session_item->unsetValue('login_redirect');
-            }
-
-            // login form
-            $html .= '<table summary="Layout">'.LF;
-            $html .= '<tr><td> <span class="T3">'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</span></td><td>';
-            $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6em;" tabindex="1"/>'.LF;
-            $html .= '</td></tr>'.LF.'<tr><td><span class="T3">'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_PASSWORD').':'.'</span></td>'.LF.'<td>';
-            $html .= '<input type="password" name="password" size="10" style="font-size:10pt; width:6em;" tabindex="2"/>'.'</td></tr>'.LF;
-            if ( $insert_auth_source_selectbox ) {
-               $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
-               $html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
-               // selectbox
-               $width_auth_selectbox = 6.5;
-               if ( mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8') == 'msie' ) {
-                  $width_auth_selectbox = 6.7;
-               }
-               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
-               $auth_source_item = $auth_source_list->getFirst();
-               $auth_source_selected = false;
-               while ( $auth_source_item ) {
-                  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
-                  if ( !$auth_source_selected ) {
-                     if ( isset($_GET['auth_source'])
-                          and !empty($_GET['auth_source'])
-                          and $auth_source_item->getItemID() == $_GET['auth_source']) {
-                        $html .= ' selected="selected"';
-                        $auth_source_selected = true;
-                     } elseif ( $auth_source_item->getItemID() == $current_portal->getAuthDefault() ) {
-                        $html .= ' selected="selected"';
-                     }
-                  }
-                  $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
-                  $auth_source_item = $auth_source_list->getNext();
-               }
-               $html .= '</select>'.LF;
-               $html .= '</td></tr>'.LF;
-            }
-            unset($auth_source_list);
-            $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
-            $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
-            $html .= '</td></tr>'.LF;
-            $html .= '</table>'.LF;
-            #$html .= '</div>'.LF;
-
+$error_box = $this->getMyAreaErrorBox();
+         	if ( isset($error_box) ){
+         		$error_box->setWidth('100%');
+         		$html .= $error_box->asHTML();
+         	}
+         	unset($error_box);
+         	
+         	// login redirect
+         	$session_item = $this->_environment->getSessionItem();
+         	if ($session_item->issetValue('login_redirect')) {
+         		$params = $session_item->getValue('login_redirect');
+         		foreach ( $params as $key => $value ) {
+         			$html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
+         		}
+         		$session_item->unsetValue('login_redirect');
+         	}
+         	
+         	$params = array();
+         	$params = $this->_environment->getCurrentParameterArray();
+         	$params['cs_modus'] = 'account_forget';
+         	
+         	$html .= '
+				         	<div class="form_item">
+					         	<label>Benutzername</label><a href="' . curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params) . '" id="lost_password">Kennung vergessen?</a>
+					         	<input name="user_id" type="text" class="input_box" />
+				         	</div>
+				         	
+				         	<div class="form_item">
+					         	<label>Passwort</label>
+         	';
+         	if ($count_auth_source_list_add_account != 0) {
+         		$params['cs_modus'] = 'password_forget';
+         		$html .= '<a href="' . curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params) . '" id="lost_password">Passwort vergessen?</a>';
+         	}
+         	$html .= '
+					         	<input name="password" type="password" class="input_box" />
+				         	</div>
+         	';
+         	unset($params);
+         	
+          		$auth_source_item = $auth_source_list->getFirst();
+          		while ($auth_source_item) {
+          			if ($auth_source_item->getItemID() == $current_portal->getAuthDefault()) {
+          				break;
+          			}
+          		}
+          		
+          		$html .= '<input type="hidden" value="' . $auth_source_item->getItemID() . '" name="auth_source"/>';
+         		
+//          		$html .= '
+// 	         		<div class="form_item">
+// 		         		<label>Quelle</label>
+//          				<input type="hidden" value="' . $auth_source_item->getItemID() . '" name="auth_source"/>
+// 		         		<input name="auth_source" type="text" disabled="disabled" class="input_box" value="' . $auth_source_item->getTitle() . '" />
+// 	         		</div>
+//          		';
+         		
+//          		/*
+         		
+//          		$html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
+//          		$html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
+//          		// selectbox
+//          		$width_auth_selectbox = 6.5;
+//          		if ( mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8') == 'msie' ) {
+//          			$width_auth_selectbox = 6.7;
+//          		}
+//          		$html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
+//          		$auth_source_item = $auth_source_list->getFirst();
+//          		$auth_source_selected = false;
+//          		while ( $auth_source_item ) {
+//          			$html .= '   <option value="'.$auth_source_item->getItemID().'"';
+//          			if ( !$auth_source_selected ) {
+//          				if ( isset($_GET['auth_source'])
+//          				and !empty($_GET['auth_source'])
+//          				and $auth_source_item->getItemID() == $_GET['auth_source']) {
+//          					$html .= ' selected="selected"';
+//          					$auth_source_selected = true;
+//          				} elseif ( $auth_source_item->getItemID() == $current_portal->getAuthDefault() ) {
+//          					$html .= ' selected="selected"';
+//          				}
+//          			}
+//          			$html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
+//          			$auth_source_item = $auth_source_list->getNext();
+//          		}
+//          		$html .= '</select>'.LF;
+//          		$html .= '</td></tr>'.LF;
+//          		*/
+//          	}
+//          	unset($auth_source_list);
+         	
+			$html .= '	         	
+				         	<div class="form_action">
+								<input type="submit" name="option" id="login_button" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'"/>
+			';
+			
+			if ( $count_auth_source_list_add_account != 0 ) {
+				$params = $this->_environment->getCurrentParameterArray();
+				$params['cs_modus'] = 'portalmember';
+				$html .= '';
+				$html .= '<a href="' . curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params) . '"><button id="button_long" onclick="window.location.href=\'' . curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params) . '\'; return false;">Kennung beantragen</button></a>';
+				unset($params);
+			}
+			
+			$html .= '
+					         	<div class="clear"> </div>
+				         	</div>
+			         	</fieldset>
+		         	</form>
+	         	</div>
+         	';
+            
+            $html .= '<form style="margin:0px; padding:0px;" method="post" action="" name="login">'.LF;
+            
+            
             if ( !$this->_environment->inServer() ) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();
@@ -2171,14 +2440,15 @@ class cs_external_page_portal_view extends cs_page_view {
             }
             $html .= LF;
             $html .= '</form>'.LF;
-            $html .= '</div> <!-- ende div f. formular-->'.LF;
             $html .= '</div> <!-- ende div column-box f. LoginForm-->'.LF;
 
             unset($auth_source_list);
             // @segment-end 2240
             // @segment-begin 83516 no_cs_modus/user=guest:links-want_account/account_forget/pasword_forget(log_in_form-end)
 			   // Box Kennungen beantragen/vergessen
+            /*
             $html .= '<div id="Column_Box_Blank"> <!-- div f. "Kennungen"-->';
+            
             $html .= '<span class="T5">Kennungen</span>'.BRLF;
             $html .= '<span class="T3">'.LF;
             if ( $count_auth_source_list_add_account != 0 ) {
@@ -2188,8 +2458,9 @@ class cs_external_page_portal_view extends cs_page_view {
                $html .= ' <span class="disabled">&gt; '.$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK').'</span>'.BRLF;
             }
             $html .= '</span>'.LF;
+            
             $params['cs_modus'] = 'account_forget';
-           $html .= '<span class="T3">&gt; '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_FORGET_LINK'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
+            $html .= '<span class="T3">&gt; '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_FORGET_LINK'),'','','','','','','style="display:inline;"').'</span>'.BRLF;
             $html .= '<span class="T3">'.LF;
             if ($count_auth_source_list_add_account != 0) {
                $params['cs_modus'] = 'password_forget';
@@ -2198,7 +2469,9 @@ class cs_external_page_portal_view extends cs_page_view {
                $html .= '<span class="disabled">&gt; '.$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK').'</span>'.BRLF;
             }
             $html .= '</span>'.LF;
+            
             $html .= '</div> <!-- ende div f. "Kennungen"-->'.LF;
+            */
             unset($params);
 
 
@@ -2344,14 +2617,14 @@ class cs_external_page_portal_view extends cs_page_view {
 
             $html .= '</div> <!--ende myareacontent-->'.LF;
 
-            $html .= '</div> <!--ende columnbox "Profillinks"-->'.LF;
+            //$html .= '</div> <!--ende columnbox "Profillinks"-->'.LF;
 
             if (!$this->_environment->inServer()) {
                $title = $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM');
                $user = $this->_environment->getCurrentUser();
                $current_user_item = $this->_environment->getCurrentUserItem();
                if ( !$current_user_item->isRoot() ) {
-                  $html .= '<div id="Column_Box_Blank"> <!-- div f. "Meine Räume"-->'.LF;
+                  $html .= '<div id="Column_Box_Blank_2"> <!-- div f. "Meine Räume"-->'.LF;
                   $html .= '<span class="T5">Meine Räume</span>'.LF;
                   $html .= '<div style="padding-bottom:5px; padding-top:5px;">'.$this->_getUserPersonalAreaAsHTML().'</div>'.LF;
                   $html .= '</div> <!--ende  div f. "Meine Räume"-->'.LF;
@@ -2455,7 +2728,16 @@ class cs_external_page_portal_view extends cs_page_view {
              }
 
            }
-         $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+         $html .= '
+         	<div id="header_login">
+         		<span id="kuv_logo">
+         			<img src="css/external_portal_styles/' . $this->_environment->getCurrentContextID() . '/img/logo_kuv.gif" alt="KUV" />
+         		</span>
+         		<div class="clear"></div>
+         	</div>
+         ';
+         $html .= '<div id="login_ground">'.LF;
+         $html .= '<fieldset>';
          if ( $cs_mod == 'portalmember' ) {
            include_once('classes/cs_home_member_page.php');
            $left_page = new cs_home_member_page($this->_environment);
@@ -2465,6 +2747,7 @@ class cs_external_page_portal_view extends cs_page_view {
          }
          $html .= $left_page->execute();
          unset($left_page);
+         $html .= '</fieldset>';
          $html .= '</div> <!--end myareacontent-->'.LF;
          $html .= '</div> <!--end content-box-->'.LF;
       }
@@ -2537,11 +2820,21 @@ class cs_external_page_portal_view extends cs_page_view {
               $fullname = $this->_current_user->getFullname();
             }
          }
-        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+         $html .= '
+         	<div id="header_login">
+         		<span id="kuv_logo">
+         			<img src="css/external_portal_styles/' . $this->_environment->getCurrentContextID() . '/img/logo_kuv.gif" alt="KUV" />
+         		</span>
+         		<div class="clear"></div>
+         	</div>
+         ';
+        $html .= '<div id="login_ground">'.LF;
+        $html .= '<fieldset>';
         include_once('classes/cs_account_forget_page.php');
         $left_page = new cs_account_forget_page($this->_environment);
         $html .= $left_page->execute();
         unset($left_page);
+        $html .= '</fieldset>';
         $html .= '</div>'.LF;//missing div im generierten Formular
         $html .= '</div>'.LF;//ende myareacontent
       }
@@ -2560,11 +2853,21 @@ class cs_external_page_portal_view extends cs_page_view {
               $fullname = $this->_current_user->getFullname();
             }
        }
-       $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
+       $html .= '
+         	<div id="header_login">
+         		<span id="kuv_logo">
+         			<img src="css/external_portal_styles/' . $this->_environment->getCurrentContextID() . '/img/logo_kuv.gif" alt="KUV" />
+         		</span>
+         		<div class="clear"></div>
+         	</div>
+         ';
+       $html .= '<div id="login_ground">'.LF;
+       $html .= '<fieldset>';
        include_once('classes/cs_password_forget_page.php');
        $left_page = new cs_password_forget_page($this->_environment);
        $html .= $left_page->execute();
        unset($left_page);
+       $html .= '</fieldset>';
       $html .= '</div>'.LF;// missing /div im generierten formular
       $html .= '</div>'.LF;// ende myareacontent
       }
@@ -2848,9 +3151,9 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-list? -->'.LF;
       $html .= '<div id="room_list" style="padding:0px;">'."\n";
       if ( isset($this->_room_list_view) ){
-         $html .='<table style="width:100%; margin:0px; padding:0px; border-bottom:0px;" summary="Layout">'.LF;
-         $html .='<tr>'.LF;
-         $html .='<td class="room_list_head" style="width:55%; vertical-align:bottom; white-space:nowrap;">'.LF;
+         $html .='<table style="margin:0px; padding:0px; border-bottom:0px; width: 100%;" summary="Layout">'.LF;
+         $html .='<tr style="border-bottom: 1px solid #CCC;">'.LF;
+         $html .='<td class="room_list_head" style="width:55%; vertical-align:bottom; white-space:nowrap; padding: 0px">'.LF;
          $html .='<div>'.LF;
          $html .='<div>'.LF;
          if ($this->_environment->inServer()) {
@@ -2968,17 +3271,17 @@ class cs_external_page_portal_view extends cs_page_view {
             // open a new project room
             $params = array();
             $params['iid'] = 'NEW';
-            $html .= '<span class="T3">> '.ahref_curl($this->_environment->getCurrentContextID(),'project','edit',$params,$this->_translator->getMessage('PORTAL_ENTER_PROJECT')).'</span>'.BRLF;
+            $html .= '<span class="T3">> '.ahref_curl($this->_environment->getCurrentContextID(),'project','edit',$params,'neuer Projektraum').'</span>'.BRLF;
             unset($params);
             $community_room_opening = $portal_item->getCommunityRoomCreationStatus();
             if ($community_room_opening == 'all' or $current_user->isModerator()){
                // open a new community room
                $params = array();
                $params['iid'] = 'NEW';
-               $html .= '<span class="T3">> '.ahref_curl($this->_environment->getCurrentContextID(),'community','edit',$params,$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY')).'</span>'.BRLF;
+               $html .= '<span class="T3">> '.ahref_curl($this->_environment->getCurrentContextID(),'community','edit',$params,'neuer Gemeinschaftsraum').'</span>'.BRLF;
                unset($params);
             } else {
-               $html .='<span class="T3"><span class="disabled">&gt;&nbsp;</span>'.'<span class="disabled" style="font-weight:normal">'.$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY').'</span></span>';
+               $html .='<span class="T3"><span class="disabled">&gt;&nbsp;</span>'.'<span class="disabled" style="font-weight:normal">'.'neuer Gemeinschaftsraum'.'</span></span>';
             }
          } elseif ( $this->_with_modifying_actions ) {
             $community_room_opening = $portal_item->getCommunityRoomCreationStatus();
@@ -2988,10 +3291,10 @@ class cs_external_page_portal_view extends cs_page_view {
                // open a new community room
                $params = array();
                $params['iid'] = 'NEW';
-               $html .= '<span class="T3">> '.ahref_curl($this->_environment->getCurrentContextID(),'community','edit',$params,$this->_translator->getMessage('PORTAL_ENTER_COMMUNITY')).'</span>'.BRLF;
+               $html .= '<span class="T3">> '.ahref_curl($this->_environment->getCurrentContextID(),'community','edit',$params,'neuer Gemeinschaftsraum').'</span>'.BRLF;
                unset($params);
             }
-            $this->addAction('<span class="T3"><span class="disabled">'.$this->_translator->getMessage('PORTAL_ENTER_ROOM').'</span></span>');
+            $this->addAction('<span class="T3"> <span class="disabled">'.$this->_translator->getMessage('PORTAL_ENTER_ROOM').'</span></span>');
          }
       }
 
@@ -2999,7 +3302,316 @@ class cs_external_page_portal_view extends cs_page_view {
       return $html;
    }
 
-
+   private function _getCommSyBarBeforeContentAsHTML() {
+   	$html = "";
+   	 
+   	$currentUser = $this->_environment->getCurrentUserItem();
+   	$translator = $this->_environment->getTranslationObject();
+   	if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
+   		$html .= '
+   			<div id="top_menu">
+   				<div id="tm_wrapper_outer">
+   					<div id="tm_wrapper">
+						<div id="tm_icons_bar">
+   		';
+   
+   		if ( !$currentUser->isReallyGuest() )
+   		{
+   			/*
+   			$html .= '
+   							<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=context&fct=logout&iid=' . $currentUser->getItemID() . '" id="tm_logout" title="' . $translator->getMessage("LOGOUT") . '">
+   								&nbsp;
+   							</a>
+   			';
+   			*/
+   		}
+   		else
+   		{
+   			$html .= '
+   							<a href="commsy.php?cid=' . $this->_environment->getCurrentPortalID() . '&mod=home&fct=index&room_id=' . $this->_environment->getCurrentContextID() . '&login_redirect=1" class="tm_user" style="width:70px;" title="' . $translator->getMessage("MYAREA_LOGIN_BUTTON") . '">
+   								' . $translator->getMessage("MYAREA_LOGIN_BUTTON") . '
+   							</a>
+   			';
+   		}
+   
+   		$html .= '
+   							<div class="clear"></div>
+   						</div>
+   
+   						<div id="tm_pers_bar">
+   							<a href="#" id="tm_user">
+   		';
+   
+   		if ( !$currentUser->isReallyGuest() )
+   		{
+   			$html .= 			$translator->getMessage("COMMON_WELCOME") . ", " . mb_substr($currentUser->getFullName(), 0, 20);
+   		}
+   		else
+   		{
+   			$html .= 			$translator->getMessage("COMMON_WELCOME") . ", " . $translator->getMessage("COMMON_GUEST");
+   		}
+   
+   		$html .= '
+   							</a>
+   						</div>
+   		';
+   
+   		if ( !$currentUser->isReallyGuest() && !$currentUser->isRoot() )
+   		{
+   			$ownRoomItem = $currentUser->getOwnRoom();
+   
+   			$return = array(
+   					'wiki'		=> array(
+   							'active'	=> false
+   					),
+   					'wordpress'	=> array(
+   							'active'	=> false
+   					)
+   			);
+   
+   			$current_user = $this->_environment->getPortalUserItem();
+   			$current_context = $ownRoomItem;
+   			$count = 0;
+   
+   			if ( isset($current_context) )
+   			{
+   				// wiki
+   				if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
+   					global $c_pmwiki_path_url;
+   						
+   					$count++;
+   					$return['wiki']['active'] = true;
+   					$return['wiki']['title'] = $current_context->getWikiTitle();
+   					$return['wiki']['path'] = $c_pmwiki_path_url;
+   					$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
+   					$return['wiki']['item_id'] = $current_context->getItemID();
+   						
+   					$url_session_id = '';
+   					if($current_context->withWikiUseCommSyLogin()) {
+   						$session_item = $this->_environment->getSessionItem();
+   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+   						unset($session_item);
+   					}
+   					$return['wiki']['session'] = $url_session_id;
+   				}
+   					
+   					
+   				// wordpress
+   				if($current_context->existWordpress()) {
+   					global $c_wordpress_path_url;
+   					$count++;
+   					$return['wordpress']['active'] = true;
+   					$return['wordpress']['title'] = $current_context->getWordpressTitle();
+   					$return['wordpress']['path'] = $c_wordpress_path_url;
+   					$return['wordpress']['item_id'] = $current_context->getItemID();
+   						
+   					$url_session_id = '';
+   					if($current_context->withWordpressUseCommSyLogin()) {
+   						$session_item = $this->_environment->getSessionItem();
+   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+   						unset($session_item);
+   					}
+   					$return['wordpress']['session'] = $url_session_id;
+   				}
+   					
+   				$addonInformation = $return;
+   					
+   
+   				$html .= '	<div id="tm_icons_bar">';
+   
+   				if ( $addonInformation["wiki"]["active"] === true )
+   				{
+   					$wiki = $addonInformation["wiki"];
+   					$html .= '	<a href="' . $wiki["path"] . '/wikis/' . $wiki["portal_id"] . '/' . $wiki["item_id"] . '/index.php' . $wiki["session"] . '" title="' . $translator->getMessage("COMMON_WIKI_LINK") . ': ' . $wiki["title"] . '" target="_blank" id="tm_wiki">
+	   								&nbsp;
+	   							</a>
+	   				';
+   				}
+   
+   				if ( $addonInformation["wordpress"]["active"] === true )
+   				{
+   					$wordpress = $addonInformation["wordpress"];
+   					$html .= '	<a href="' . $wordpress["path"] . '/' . $this->_environment->getCurrentPortalID() . '_' . $wordpress["item_id"] . '/' . $wordpress["session"] . '" title="' . $translator->getMessage("COMMON_WORDPRESS_LINK") . ': ' . $wordpress["title"] . '" target="_blank" id="tm_wordpress">
+	   								&nbsp;
+	   							</a>
+	   				';
+   				}
+   			}
+   			 
+   			if ( isset($ownRoomItem)) {
+   					
+   				if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
+   				{
+   					$html .= '	<a href="#" id="tm_portfolio" title="' . $translator->getMessage("CS_BAR_PORTFOLIO") . '">&nbsp;</a>';
+   				}
+   
+   				if ( $ownRoomItem->getCSBarShowWidgets() == "1" )
+   				{
+   					$html .= '	<a href="#" id="tm_widgets" title="' . $translator->getMessage("MYWIDGETS_INDEX") . '">&nbsp;</a>';
+   				}
+   
+   				if ( $ownRoomItem->getCSBarShowCalendar() == "1" )
+   				{
+   					$html .= '	<a href="#" id="tm_mycalendar" title="' . $translator->getMessage("MYCALENDAR_INDEX") . '">&nbsp;</a>';
+   				}
+   
+   				if ( $ownRoomItem->getCSBarShowStack() == "1" )
+   				{
+   					$html .= '	<a href="#" id="tm_stack" title="' . $translator->getMessage("COMMON_ENTRY_INDEX") . '">&nbsp;</a>';
+   				}
+   
+   				$html .= '<a href="#" id="tm_clipboard" title="' . $translator->getMESSAGE("MYAREA_MY_COPIES") . '">&nbsp;</a>';
+   				$numCopies = 0;
+   				$rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE, CS_TODO_TYPE);
+   				$session = $this->_environment->getSessionItem();
+   				foreach ($rubric_copy_array as $rubric){
+   					$numCopies += count($session->getValue($rubric.'_clipboard'));
+   				}
+   
+   				if ( $numCopies > 0)
+   				{
+   					$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
+   				}
+   			}
+   			 
+   			$html .= '
+   							<div class="clear"></div>
+   						</div>
+   			';
+   		}
+   
+   		if (isset($ownRoomItem) && $ownRoomItem->getCSBarShowOldRoomSwitcher() === "1" )
+   		{
+   			$html .= '	<div id="tm_breadcrumb_old">';
+   			 
+   			$retour  = '';
+   			$retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change_bar">'.LF;
+   			// jQuery
+   			//$retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+   			$retour .= '         <select onchange="document.room_change_bar.submit()" size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
+   			// jQuery
+   			$context_array = array();
+   			$context_array = $this->_getAllOpenContextsForCurrentUser();
+   			$current_portal = $this->_environment->getCurrentPortalItem();
+   			$translator = $this->_environment->getTranslationObject();
+   			$text_converter = $this->_environment->getTextConverter();
+   			if ( !$this->_environment->inServer() ) {
+   			$title = $this->_environment->getCurrentPortalItem()->getTitle();
+   			$title .= ' ('.$translator->getMessage('COMMON_PORTAL').')';
+   			$additional = '';
+   			if ($this->_environment->inPortal()){
+   			$additional = 'selected="selected"';
+   			}
+   			$retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$title.'</option>'.LF;
+   			 
+   			$current_portal_item = $this->_environment->getCurrentPortalItem();
+   			if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+   			$link_active = true;
+   	} else {
+   	$current_user_item = $this->_environment->getCurrentUserItem();
+   	if ( $current_user_item->isRoomMember() ) {
+   	$link_active = true;
+   			} else {
+   			$link_active = false;
+   	}
+   	unset($current_user_item);
+   	}
+   	unset($current_portal_item);
+   	 
+   	}
+   	 
+   	$first_time = true;
+   		foreach ($context_array as $con) {
+   		$title = $text_converter->text_as_html_short($con['title']);
+   		$additional = '';
+   		if (isset($con['selected']) and $con['selected']) {
+   		$additional = ' selected="selected"';
+   		}
+   		if ($con['item_id'] == -1) {
+   		$additional = ' class="disabled" disabled="disabled"';
+   		if (!empty($con['title'])) {
+   				$title = '----'.$text_converter->text_as_html_short($con['title']).'----';
+   		} else {
+   		$title = '&nbsp;';
+   		}
+   		}
+   		if ($con['item_id'] == -2) {
+   	$additional = ' class="disabled" disabled="disabled" style="font-style:italic;"';
+      	if (!empty($con['title'])) {
+   			$title = $text_converter->text_as_html_short($con['title']);
+   		} else {
+   		$title = '&nbsp;';
+   		}
+   		$con['item_id'] = -1;
+   	if ($first_time) {
+   			$first_time = false;
+   		} else {
+   		$retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>&nbsp;</option>'.LF;
+   		}
+   		}
+   		$retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>'.$title.'</option>'.LF;
+   		}
+   		 
+   		$current_user_item = $this->_environment->getCurrentUserItem();
+   		if (!$current_user_item->isUser() and $current_user_item->getUserID() != "guest") {
+   						$context = $this->_environment->getCurrentContextItem();
+      						if (!empty($context_array)) {
+   		$retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
+   		}
+   		$retour .= '            <option value="-1" class="disabled" disabled="disabled">----'.$translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
+   			$retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
+   		}
+   		$retour .= '         </select>'.LF;
+   	$retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change_bar" value="'.$translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
+      			$retour .= '   </form>'.LF;
+      					unset($context_array);
+   
+   				      $html .= $retour;
+      				      $html .= '	</div>';
+   		}
+   		else
+   		{
+   			$html .= '
+   						<div id="tm_breadcrumb">
+      						<a href="#" id="tm_bread_crumb">' . $translator->getMessage("COMMON_GO_BUTTON") . ': ' . $this->_environment->getCurrentPortalItem()->getTitle() . '</a>
+      					</div>
+      					';
+   		}
+   			
+   		if ( $currentUser->isModerator() )
+   		{
+   		$html .= '
+   			<div id="tm_icons_left_bar">
+   							<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=configuration&fct=index" id="tm_settings" title="' . $translator->getMessage("COMMON_CONFIGURATION") . '">&nbsp;</a>
+      									';
+      									 
+      									$html .= '
+      									<div class="clear"></div>
+      									</div>
+      				';
+   	}
+   
+   	$html .= '
+   		<div class="clear"></div>
+      		</div>
+      		</div>
+   
+      		<div id="tm_menus">
+   				<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
+      				<div id="tm_dropmenu_widget_bar" class="hidden"></div>
+      									<div id="tm_dropmenu_portfolio" class="hidden"></div>
+      											<div id="tm_dropmenu_mycalendar" class="hidden"></div>
+			   		<div id="tm_dropmenu_stack" class="hidden"></div>
+   			   		<div id="tm_dropmenu_pers_bar" class="hidden"></div>
+			   		<div id="tm_dropmenu_clipboard" class="hidden"></div>
+   			   		<div id="tm_dropmenu_configuration" class="hidden"></div>
+   		</div>
+   		</div>
+   		';
+   	}
+  
+   	return $html;
+   }
 
 
    function asHTML(){
@@ -3075,382 +3687,109 @@ class cs_external_page_portal_view extends cs_page_view {
 
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
-    $html .= '<body>';
-    $html .= '<div class="wrapper">';
+    $html .= '<body id="main_body" class="tundra">';
     if ($current_user->isUser()){
-    	$name = '<p>Willkommen, '.$current_user->getFullName().'</p>';
+    	$name = 'Willkommen, '.$current_user->getFullName().'';
     }else{
 #   	$name = '<a href="'.$typo_link.'">Anmelden</a>';
+		$name = '';
+		if (isset($cs_room_id)) {
+			$cs_room_id = false;
+		}
     }
 
-
-
-$html .='<div id="overallContainer">
-
-
-<div id="topbar">
-    <div class="centerBox">
-
-
-	  			  <div id="logoBox"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/logo_vbgk_de.gif" usemap="#logoMap" border="0" height="100" width="880">
-			    <map name="logoMap">
-				  <area shape="rect" coords="0,0,270,100" href="http://www.k-uv.de/" target="_top" alt="http://www.k-uv.de" title="http://www.k-uv.de">
-				</map>
-			  </div>
-			  				<div id="topnavFloater"><a href="http://www.k-uv.de/de/main/kontakt.htm" target="_top">Kontakt</a> | <a href="http://www.k-uv.de/de/main/impressum.htm" target="_top">Impressum</a> | <a href="http://www.k-uv.de/de/main/sitemap.htm" target="_top">Sitemap</a><!-- | <a href="/en/" target="_top">English</a> --></div>
-
-
-
-
-		<div id="nav1"><ul>
-	<li><a id="linktag0" href="http://www.k-uv.de/de/main/home.htm" target="_top">Home</a></li>
-	<li><a id="linktag1" href="http://www.k-uv.de/de/main/standorte.htm" target="_top">Standorte</a></li>
-
-	<li><a id="linktag2" href="http://www.k-uv.de/de/main/medizinische_kompetenz.htm" target="_top">Medizinische Kompetenz</a></li>
-
-	<li><a id="linktag3" href="http://www.k-uv.de/de/main/leistungen.htm" target="_top">Leistungen</a></li>
-
-	<li><a id="linktag4" href="http://www.k-uv.de/de/main/qualitaet.htm" target="_top">Qualität</a></li>
-
-	<li><a id="linktag5" href="http://www.k-uv.de/de/main/wirtschaftlichkeit.htm" target="_top">Wirtschaftlichkeit</a></li>
-
-	<li><a id="linktag6" href="http://www.dguv.de/inhalt/rehabilitation/fitimsport/bg-kliniktour-2012/index.jsp" target="_blank">BG Kliniktour 2012</a></li>
-
-	<li><a id="linktag7" href="http://www.k-uv.de/de/main/downloads.htm" target="_top">Downloads</a></li>
-
-	<li><a id="linktag8" href="http://www.k-uv.de/de/main/presse_2.htm" target="_top">Presse</a></li>
-
-	<li><a id="linktag9" href="http://www.k-uv.de/de/main/stellen_2.htm" target="_top">Stellen</a></li>
-
-	<li class="aktiv"><a id="linktag10" href="https://workspace.k-uv.de/" target="_top">Workspace</a></li>
-
-
-
-</ul></div>
-		<div id="breadcrumb"><ul><li class="bc first">Sie befinden sich hier:</li>
-
-
-      <li class="bc last first"><a href="http://workspace.k-uv.de">Workspace des KUV</a></li>
-
-
-</ul></div>
-</div>
-</div><!-- topbar -->
-
-
-<div class="mainContainer centerBox">'.LF;
-
-  if ( isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'){
-    $html .= $this->getProfileBoxAsHTML();
-  }
-
-
-$html.='
-<div id="container3">
-    <div id="container2">
-        <div id="container1">
-
-            <div id="col1">
-			<div id="leftnav"></div>
-			<div style="width: 80px; font-size: 1px;"></div>
-
-<div class="ceWrapper pc6 colw180">
-<div class="pcMainrow">'.LF;
-
-			      $html .= $this->getMyAreaAsHTML();
-
-			      $current_user = $this->_environment->getCurrentUser();
-			      if ($current_user->isUser()){
-			         #$html .= '<div id="portal_action" style="margin-top:15px; padding:0px; margin-left:0px margin-right:0px;">'.LF;
-			         $html .= '<div id="Column_Box_Blank"> <!-- div. f. "raumeröffnung"-->'.LF;
-			         $html .='<span class="T5">'.getMessage('PORTAL_OPEN_ROOM').'</span>'.BRLF;
-			         #$html .= '<div id="room_actions" style="padding:5px;">'.LF;
-			         $html .= $this->_getListActionsAsHTML();
-			         if ( $current_user->isModerator() ) {
-						$html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=configuration&fct=index">Portal konfigurieren</a>';
-			         } else {
-			            #$html .=BRLF;
-			         }
-			         $html .= '</div> <!--ende div. f. "raumeröffnung"-->'.LF;
-
-			      }
-
-$html .= '
-
-
-
-
-
-      <div style="clear: both;"></div>
-</div>
-</div><!-- ceWrapper -->
-
-
-			<div style="width: 80px; height: 80px; clear: both;">&nbsp;</div>
-			</div><!-- col1 -->'.LF;
-if  ($cs_module == 'account'){
-
-$html .='            <div id="col2" style="width:700px; background-color:white;">'.LF;
-}else{
-$html .='            <div id="col2">'.LF;
-}
-$html .='<div class="ceWrapper pc2 colw520">
-<div class="pcMainrow">'.LF;
-
-			$html .='<!-- BEGINN CONTENT --><div id="Content_solid">'.LF;
-			# Hauptbereich, der zu füllen ist.
-			      $show_list = true;
-			      if ( isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' )
-			      ) {
-			         #$html .= '<div style="width:100%; vertical-align:top; xborder: 1px solid #ccccff; padding:3px;">'.LF;
-			         #$html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-detail -->'.LF;
-			      }else{
-			         #$html .= '<div style="width:100%; vertical-align:top; xborder: 1px solid #ccccff; padding:3px;">'.LF;
-			         #$html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-detail -->'.LF;
-			      }
-			      if ( isset($this->_agb_view) ) {
-			         $html .= $this->_getAGBViewAsHTML().LF;
-			      }
-			      elseif ($cs_room_id and $cs_module == 'configuration' ){
-			         $room_manager = $this->_environment->getRoomManager();
-			         $room_item = $room_manager->getItem($cs_room_id);
-			         $html .= $this->_getRoomFormAsHTML($room_item);
-			         $show_list = false;
-			      } elseif ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator'){
-			         $html .= $this->_getModeratorMailTextAsHTML();
-			         $show_list = false;
-			      } elseif ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ){
-			         if ($cs_module == 'account'){
-			            $html .='<div style="background-color:white; width: 100%; font-size:8pt;">';
-			            $html .= $this->getConfigurationAsHTML();
-			            $html .= '</div>';
-			         }else{
-			            $html .= $this->getConfigurationAsHTML();
-			         }
-			         $show_list = false;
-			      } elseif ( $cs_module == 'language' ) {
-			         $html .= $this->_getLanguageIndexAsHTML();
-			         $show_list = false;
-			      } elseif ($cs_room_id) {
-			         $room_manager = $this->_environment->getRoomManager();
-			         $room_item = $room_manager->getItem($_GET['room_id']);
-			         if ( isset($room_item) ) {
-			            $html .= $this->getRoomItemAsHTML($room_item);
-			         }
-			      }
-
-			      if ($show_list){
-			         $html .= $this->getContentListAsHTML();
-			      }
-
-			      $html .= '</div> <!--ende content-box-->'.LF;
-
-  			      if ( !(isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' ))
-			      ) {
-			      $html .= '</div> <!-- end id=content-->'.LF;
-			      #$html .= '</div>'.LF;
-			      #$html .= '</div> '.LF;
-			      }
-
-			      $html .= ''.LF;
-
-			      if ( !empty( $this->_views_overlay ) ) {
-			           foreach ( $this->_views_overlay as $view ) {
-			             $html .= $this->_getOverlayBoxAsHTML($view);
-			           }
-			       }
-
-
-$html .='
-
-
-
-
-<div style="clear: both;"></div>
-</div><!-- ceWrapper -->
-</div>
-
-			<!-- col2 -->
-'.LF;
-if  ($cs_module != 'account'){
-$html .='
-			<div id="col3"><div class="ceWrapper pc6 colw180" style="margin-bottom:10px;">
-
-
-<div class="pcMainrow">'.LF;
-
-			      $html .= $this->getSearchBoxAsHTML().LF;
-
-
-$html .='<div style="clear: both;"></div>
-</div>
-</div><!-- ceWrapper -->'.LF;
-
+    
+
+$html .= '<div class="wrapper">';
+		
+if ( !$current_user->isReallyGuest() )
+{
+	$html .= '
+		<div id="header">
+			<a href="http://k-uv.de" id="kuv_logo"><img src="css/external_portal_styles/' . $this->_environment->getCurrentContextID() . '/img/logo_kuv.gif" alt="KUV" /></a>
+	            
+	        <div id="header_right">
+	                
+	            <div id="portal_controls">
+	                ' . $name . '
+	                		
+					<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=context&fct=logout&iid=' . $current_user->getItemID() . '" id="btn_logout" title="Logout"/>Logout</a>
+
+	            </div>
+	            
+	            <!--
+	            <form name="1" action="2">
+	                <div id="search">
+	                    <input id="searchinput" value="Suche" size="20" type="text" />
+	                    <input alt="Suchen" src="css/external_portal_styles/' . $this->_environment->getCurrentContextID() . '/img/btn_search.gif" type="image" />
+	                </div>
+	            </form>
+	            -->
+	        </div>
+	            
+	        <div class="clear"> </div>
+	    </div>
+
+		<!--
+		<div id="nav_area">
+            <ul>
+                <li><a href="" id="btn_home"><span class="tooltip">Startseite</span></a></li>
+                <li><a href="" id="btn_mykuv"><span class="tooltip">pers&ouml;nlicher Bereich</span></a></li>
+                <li id="nav_active"><a href="" id="btn_room"><span class="tooltip">Projektr&auml;ume</span></a></li>
+                <li><a href="" id="btn_fields"><span class="tooltip">Gremien &amp; Arbeitsbereiche</span></a></li>
+                <li><a href="" id="btn_calendar"><span class="tooltip">Kalender</span></a></li>
+                <li><a href="" id="btn_whoiswho"><span class="tooltip">Kontaktbuch</span></a></li>
+                <li><a href="" id="btn_knowhow"><span class="tooltip">Forschung</span></a></li>
+                <li><a href="" id="btn_talk"><span class="tooltip">Mitteilungen</span></a></li>
+            </ul>
+            <div class="clear"> </div>
+			
+        </div>
+		-->
+' . LF;
 
 }
 
-
-$html .='
-<div class="ceWrapper pc6 colw180">
-<div class="pcMainrow">
-
-<h1>Klinikverbund der gesetzlichen Unfallversicherung e.V. (KUV)</h1>
-
-
-
-
-
-
-
-      Friedrichstraße 152<br>10117 Berlin<br>Tel.: 030 / 330960200<br>Fax:&nbsp;030 / 330960222<br><a href="mailto:info@k-uv.de">info@k-uv.de</a><br><a href="http://www.k-uv.de/">www.k-uv.de</a><br>
-
-
-
-
-      <div class="pcServicelinks">
-                                                                      </div>
-
-<div style="clear: both;"></div>
-</div>
-</div><!-- ceWrapper -->
-
-
-
-
-</div>
-</div>
-</div>
-</div><!-- mainContainer centerBox -->
-
-  <div style="clear: both;"></div>
-  <div id="footbar">
-    <div class="centerBox">
-      <div class="footline"></div>
-      <div class="content"><a href="javascript:self.print();"><img src="KUV%20-%20Klinikverbund%20der%20gesetzlichen%20Unfallversicherung%20e.V-Dateien/print.gif" alt="" align="texttop" border="0" height="13" width="16">&nbsp;&nbsp;&nbsp;Drucken</a>
-	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(c) 2012 Alle Rechte sind dem
-Klinikverbund der gesetzlichen Unfallversicherung vorbehalten			  </div>
-
-	</div>
-	</div><!-- footbar -->
-
-</div><!-- overallContainer -->
-</body>';
+/* CommSy Bar */
+$html .= $this->_getCommSyBarBeforeContentAsHTML();
 
 /*
-$html .= '<div id="meta_menue" style="height:40px;">&nbsp;
-<div class="clear"> </div>
-</div>'.LF;
+if ( (!isset($cs_room_id) or empty($cs_room_id)) and (!$current_user->isModerator())){
+	$html .= $this->getMyAreaAsHTML();
+}
+*/
 
-    $html .= '<div id="hsk_header">
-            <a id="hsk_logo" href="" title="Intranet Startseite"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/css/images/hsk_logo.gif" alt="HSK" /></a>
-            <a id="rhoen_logo" href="http://www.rhoen-klinikum-ag.com" target="_blank" title="Rh&ouml;n-Klinikum"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/css/images/rhoen_logo.gif" alt="Rh&ouml;n-Klinikum" /></a>
-
-            <div class="clear"> </div>
-        </div>
-
-        <div id="hsk_main_navigation">
+if (!$current_user->isUser()) {
+	$html .= $this->getMyAreaAsHTML();
+} else {
 
 
-			<ul>
-				<li><a id="mn_home" target="_self" href="'.$typo_link.'/index.php?id=2214"><span id="button_home">Home</span></a></li>
-				<li><a id="mn_emergency" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2246"><span id="button_emergency">Notfallpläne</span></a></li>
-				<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2223">Aktuelles</a>
-					<ul>
-						<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2218">Neuigkeiten</a></li>
-						<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2142">Veranstaltungen</a></li>
-						<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2220">Foren</a></li></ul></li>
-						<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2224">Kontakte</a>
-							<ul>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2247">Telefonliste</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2229">Klinik-Übersicht</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2230">Kooperationspartner</a></li>
-							</ul>
-						</li>
-						<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2225">Organisation/Prozesse</a>
-							<ul>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2258">Notfall</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2231">Patientenprozesse</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2232">Führungs- und Mitarbeiterprozesse</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2233">Unterstützende Prozesse</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2234">Prozesslandkarte</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2253">Dokumentenablage</a></li>
-							</ul>
-						</li>
-						<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2226">Angebote</a>
-							<ul>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2237">Auftrag erteilen</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2109">Speiseplan</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2168">Kinderbetreuung</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2240">Online-Bibliothek</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2241">Sportangebote</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2155">HSK-Service</a></li>
-							</ul>
-						</li>
-						<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2227">Karriere</a>
-							<ul>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2111">Interne Stellenangebote</a></li>
-								<li><a onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2041">Fortbildungsangebote</a></li>
-							</ul>
-						</li>
-						<li><a class="mn_item" onfocus="blurLink(this);" target="_self" href="'.$typo_link.'/index.php?id=2108">Betriebsrat</a></li>
-					</ul>
 
-            <div class="clear"> </div>
-        </div>
+// if ((isset($cs_room_id) and !empty($cs_room_id) or ($current_user->isModerator()))){
+// 	$html .= '<div style="float: left; width: 180px; margin-right: 20px;">';
+// 	$html .= $this->getMyAreaAsHTML();
+// 	$html .= '</div>';
+	
+// }
+
+$current_user = $this->_environment->getCurrentUser();
+
+$html .= '<div id="content_full">';
+
+$html .='           <div id="maincontent" style="float: left; width: 740px;">'.LF;
+
+
+
+if ( isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'){
+	$html .= $this->getProfileBoxAsHTML();
+}
 
 
 
 
-                    <!-- Start content_columnset -->
-                    <div id="content_columnset">
-					<div id="main-frame">
-						<div id="main">'.LF;
 
-
-
-			$html .='<!-- BEGINN CONTENT --><div id="Content_solid">'.LF;
 			# Hauptbereich, der zu füllen ist.
 			      $show_list = true;
-			      if ( isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' )
-			      ) {
-			         #$html .= '<div style="width:100%; vertical-align:top; xborder: 1px solid #ccccff; padding:3px;">'.LF;
-			         #$html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-detail -->'.LF;
-			      }else{
-			         #$html .= '<div style="width:100%; vertical-align:top; xborder: 1px solid #ccccff; padding:3px;">'.LF;
-			         #$html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-detail -->'.LF;
-			      }
 			      if ( isset($this->_agb_view) ) {
 			         $html .= $this->_getAGBViewAsHTML().LF;
 			      }
@@ -3487,31 +3826,11 @@ $html .= '<div id="meta_menue" style="height:40px;">&nbsp;
 			         }
 			      }
 
-			      if ($show_list){
+//			      if ($show_list and $current_user->isModerator()){
 			         $html .= $this->getContentListAsHTML();
-			      }
+//			      }
 
 			      $html .= '</div> <!--ende content-box-->'.LF;
-
-  			      if ( !(isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' ))
-			      ) {
-			      $html .= '</div> <!-- end id=content-->'.LF;
-			      #$html .= '</div>'.LF;
-			      #$html .= '</div> '.LF;
-			      }
-
-			      if ( isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'){
-			        $html .= $this->getProfileBoxAsHTML();
-			      }
 
 			      $html .= ''.LF;
 
@@ -3520,257 +3839,41 @@ $html .= '<div id="meta_menue" style="height:40px;">&nbsp;
 			             $html .= $this->_getOverlayBoxAsHTML($view);
 			           }
 			       }
+			       
+			       
+			       
+			       
 
-			      $html .='						</div><!-- \#main -->
-						<div class="clear"/>
-					</div><!-- \#main-frame -->
-                    <!-- Ende content_columnset -->
-                </div>
-                <!-- Ende left_column -->
+       $html .= '<div style="float: left; width: 220px; margin-left: 20px;">';
+       
+       //if  ($cs_module != 'account' and $current_user->isModerator()){
+       	$html .= $this->getSearchBoxAsHTML().LF;
+       	if ($current_user->isModerator()) {
+       		$html .= '<div id="Column_Box_Blank_3"> <!-- div. f. "raumeröffnung"-->'.LF;
+       		$html .='<span class="section_title">'.getMessage('PORTAL_OPEN_ROOM').'</span>'.LF;
+       		$html .= '<div class="section_content">';
+       		$html .= $this->_getListActionsAsHTML();
+       		$html.= '> <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=configuration&fct=index">Portal konfigurieren</a>';
+       		$html .= '</div>';
+       		$html .= '</div> <!--ende div. f. "raumeröffnung"-->'.LF;
+       	}
+       //}
+       
+       $html .= '</div>';
+	
 
-                <!-- Start right_column -->
-                <div id="right_column">
-                  			<div id="cs_myarea">'.LF;
-
-
-			      $html .= $this->getMyAreaAsHTML(str_replace('commsy_session_id='.$sid.'&','',$wiki_url));
-
-			      $html .= $this->getSearchBoxAsHTML().LF;
-
-			      $current_user = $this->_environment->getCurrentUser();
-			      if ($current_user->isUser()){
-			         #$html .= '<div id="portal_action" style="margin-top:15px; padding:0px; margin-left:0px margin-right:0px;">'.LF;
-			         $html .= '<div id="Column_Box_Blank"> <!-- div. f. "raumeröffnung"-->'.LF;
-			         $html .='<span class="T5">'.getMessage('PORTAL_OPEN_ROOM').'</span>'.BRLF;
-			         #$html .= '<div id="room_actions" style="padding:5px;">'.LF;
-			         $html .= $this->_getListActionsAsHTML();
-			         if ( $current_user->isModerator() ) {
-#			            $html .= $this->_room_list_view->_getConfigurationBoxAsHTML();
-			         } else {
-			            #$html .=BRLF;
-			         }
-			         $html .= '</div> <!--ende div. f. "raumeröffnung"-->'.LF;
-
-			      }else{
-  			 #       $html .='<div class="sidehead" style="margin-top:15px;">Projektpartner</div>'.LF;
-			      }
-
-$html .= '</div>
-               			</div>
-                <!-- Ende right_column -->
-                <div class="clear"> </div>
-
-    <!-- Ende columnset -->
-
-<div id="footer">
-&copy;2012 HSK, Dr. Horst Schmidt Kliniken GmbH |
-<a href="'.$typo_link.'index.php?id=2217">Impressum</a>
-|
-<a href="'.$typo_link.'index.php?id=2216">Datenschutz</a>
-</div>    </div>
-    <!-- Ende footer -->
-</body>'.LF;
-*/
-/*
-    $html .= '<div id="page">
-	             <div id="full-height-container">
-				    <div id="header" class="" style="padding:0px;">
-			        	<div id="main-navigation-bar"> <!-- Nur das Menu! -->
-                      		<div id="main-navigation">
-			       			</div>
-                  			<br class="clear">
-			      		</div>
-               			<div  id="quick-search" class="quick-search" >
-                  			<div id="quick-search-header">
-                     			<img src="css/external_portal_styles/typo_int.png" style="padding-top: 3px;">
-                  			</div>
-                  			<div id="cs_myarea">'.LF;
-
-
-			      $html .= $this->getMyAreaAsHTML(str_replace('commsy_session_id='.$sid.'&','',$wiki_url));
-
-			      $html .= $this->getSearchBoxAsHTML().LF;
-
-			      $current_user = $this->_environment->getCurrentUser();
-			      if ($current_user->isUser()){
-			         #$html .= '<div id="portal_action" style="margin-top:15px; padding:0px; margin-left:0px margin-right:0px;">'.LF;
-			         $html .= '<div id="Column_Box_Blank"> <!-- div. f. "raumeröffnung"-->'.LF;
-			         $html .='<span class="T5">'.getMessage('PORTAL_OPEN_ROOM').'</span>'.BRLF;
-			         #$html .= '<div id="room_actions" style="padding:5px;">'.LF;
-			         $html .= $this->_getListActionsAsHTML();
-			         if ( $current_user->isModerator() ) {
-#			            $html .= $this->_room_list_view->_getConfigurationBoxAsHTML();
-			         } else {
-			            #$html .=BRLF;
-			         }
-			         $html .= '</div> <!--ende div. f. "raumeröffnung"-->'.LF;
-
-			      }else{
-  			 #       $html .='<div class="sidehead" style="margin-top:15px;">Projektpartner</div>'.LF;
-			      }
-
-$html .= '</div>
-               			</div>
-               			<a style="text-decoration:none;" href="http://hsk-commsy.effective-webwork.de/"><img style="border:0px;" id="logo" src="css/external_portal_styles/logo_hea.png"></a>
-            		</div>
-					<div id="breadcrumbs-frame">&nbsp;</div>
-					<div id="main-frame">
-						<div id="main">'.LF;
-
-
-#			$html .='<div id="Banner"><img src="css/external_portal_styles/'.$current_context->getItemID().'/Bilder/Banner.png" width="870" height="200" alt="SchulCommSy-Banner" /></div>'.LF;
-
-			$html .='<!-- BEGINN CONTENT -->
-            <div id="Content_solid">'.LF;
-			# Hauptbereich, der zu füllen ist.
-			      $show_list = true;
-			      if ( isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' )
-			      ) {
-			         #$html .= '<div style="width:100%; vertical-align:top; xborder: 1px solid #ccccff; padding:3px;">'.LF;
-			         #$html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-detail -->'.LF;
-			      }else{
-			         #$html .= '<div style="width:100%; vertical-align:top; xborder: 1px solid #ccccff; padding:3px;">'.LF;
-			         #$html .= '<div id="Content_Box_Rahmen"> <!-- BEGINN Bereich Room-detail -->'.LF;
-			      }
-			      if ( isset($this->_agb_view) ) {
-			         $html .= $this->_getAGBViewAsHTML().LF;
-			      }
-			      elseif ($cs_room_id and $cs_module == 'configuration' ){
-			         $room_manager = $this->_environment->getRoomManager();
-			         $room_item = $room_manager->getItem($cs_room_id);
-			         $html .= $this->_getRoomFormAsHTML($room_item);
-			         $show_list = false;
-			      } elseif ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator'){
-			         $html .= $this->_getModeratorMailTextAsHTML();
-			         $show_list = false;
-			      } elseif ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ){
-			         if ($cs_module == 'account'){
-			            $html .='<div style="background-color:white; width: 100%; font-size:8pt;">';
-			            $html .= $this->getConfigurationAsHTML();
-			            $html .= '</div>';
-			         }else{
-			            $html .= $this->getConfigurationAsHTML();
-			         }
-			         $show_list = false;
-			      } elseif ( $cs_module == 'language' ) {
-			         $html .= $this->_getLanguageIndexAsHTML();
-			         $show_list = false;
-			      } elseif ($cs_room_id) {
-			         $room_manager = $this->_environment->getRoomManager();
-			         $room_item = $room_manager->getItem($_GET['room_id']);
-			         if ( isset($room_item) ) {
-			            $html .= $this->getRoomItemAsHTML($room_item);
-			         }
-			      }
-
-			      if ($show_list){
-			         $html .= $this->getContentListAsHTML();
-			      }
-
-			      $html .= '</div> <!--ende content-box-->'.LF;
-
-  			      if ( !(isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' ))
-			      ) {
-			      $html .= '</div> <!-- end id=content-->'.LF;
-			      #$html .= '</div>'.LF;
-			      #$html .= '</div> '.LF;
-			      }
-
-			      if ( isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'){
-			        $html .= $this->getProfileBoxAsHTML();
-			      }
-
-			      $html .= ''.LF;
-
-			      if ( !empty( $this->_views_overlay ) ) {
-			           foreach ( $this->_views_overlay as $view ) {
-			             $html .= $this->_getOverlayBoxAsHTML($view);
-			           }
-			       }
-
-			      $html .='						</div><!-- \#main -->
-						<br class="clear">
-					</div><!-- \#main-frame -->
-					<div id="footer-frame">
-						<div id="footer-content-links">			</div>
-						<div id="footer-content-meta">
-							<ul>
-								<li class="first"><a href="#">Impressum</a></li>
-								<li>|</li>
-								<li class="last"><a href="#">Datenschutz</a></li>
-							</ul>
-							<img src="css/external_portal_styles/footer_logo.gif">
-							<br class="clear">
-						</div>
-						<div id="footer-content-meta-shadow">
-							<div id="footer-content-meta-shadow-left"></div>
-							<div id="footer-content-meta-shadow-right"></div>
-							<br class="clear">
-						</div>
-    				</div>
-				</div><!-- \#full-height-container -->
-			</div><!-- \#page -->' .LF;
-
-			      $html .='<!-- ENDE DESIGN -->'.LF;
-
-			      $html .='<div id="Back"></div>'.LF;
-
-			      			      $html .= '</body>'.LF;
-*/
-			      			      return $html;
-			   #}
-
-			$html .= ' <br>'.LF;
-			$html .= ' <br>'.LF;
-
-
-
-			# rechte Box, die zu füllen ist.
-			    if ( !(isset($this->_agb_view) or
-			          ($cs_room_id and $cs_module == 'configuration') or
-			          ($cs_module == 'mail' and $this->_environment->getCurrentFunction() == 'to_moderator') or
-			          ($cs_module == 'configuration'
-			                or $cs_module == 'account'
-			                or ($cs_module == 'mail' and $cs_function == 'process')
-			                or ($cs_module == 'project' and $cs_function == 'edit' )
-			                or ($cs_module == 'community' and $cs_function == 'edit')
-			               ) or
-			          ( $cs_module == 'language' ))
-			    ) {
-
-			    $html .= '         <div id="Column">'.LF;
-
-			    }else{
-			       $html .= '       <div id="Column">'.LF;
-
-			    }
-
-
+$html.='         <div style="clear: both;"></div></div>
+		<div id="footer">
+			© 2013 KUV - Klinikverbund der gesetzlichen Unfallversicherung
+		</div>
+		
+		</div></body>'.LF;
+  
+}
+			 return $html;
 
    }
+   
    function getProfileBoxAsHTML(){
       $html = '';
       $environment = $this->_environment;

@@ -156,7 +156,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
    # Datenschutz data security Server
    ###############################################
    
-if($context_item->isPortal()){
+   if($context_item->isPortal()){
 	   $link_item = new cs_link();
 	   $link_item->setTitle($translator->getMessage('CONFIGURATION_DATA_SECURITY'));
 	   $link_item->setIconPath('images/cs_config/CONFIGURATION_DATASECURITY_PREFERENCES.gif');
@@ -210,6 +210,20 @@ if($context_item->isPortal()){
             }
          }
       }
+   }
+   
+   ###############################################
+   # connection to other commsys
+   ###############################################
+   if ( $context_item->isServer() ) {
+   	$link_item = new cs_link();
+   	$link_item->setTitle($translator->getMessage('CONFIGURATION_CONNECTION'));
+   	$link_item->setIconPath('images/cs_config/PORTAL_ENTER_NEW.gif');
+   	$link_item->setDescription($translator->getMessage('CONFIGURATION_CONNECTION_DESC'));
+   	$link_item->setContextID($environment->getCurrentContextID());
+   	$link_item->setModule('configuration');
+   	$link_item->setFunction('connection');
+   	$addon_link_list->add($link_item);
    }
 
    if ( $addon_link_list->getFirst() ){

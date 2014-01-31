@@ -221,6 +221,13 @@ $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_configuration_connection_form';
+define('CONFIGURATION_CONNECTION_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_configuration_path_form';
 define('CONFIGURATION_PATH_FORM',$class_name);
 $class_config[$class_name]['name']       = $class_name;

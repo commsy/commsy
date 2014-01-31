@@ -186,12 +186,13 @@ function displayCronResults ( $array ) {
    unset($html);
 }
 
-function cron_workflow($portal){
+function cron_workflow($logFile, $portal){
    global $c_workflow;
    global $environment;
-   global $file;
    global $cs_special_language_tags;
    if($c_workflow){
+   	fwrite($logFile, 'Workflow is active'.LF);
+   	
       $material_manager = $environment->getMaterialManager();
       $item_array = $material_manager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
@@ -204,7 +205,7 @@ function cron_workflow($portal){
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
 	         
 	         // check if context of room is current portal
-	         if ( $temp_room->getContextID() !== $portal->getItemID()) continue;
+	         if ( $temp_room->getContextID() != $portal->getItemID()) continue;
 	
 	         if($temp_material->getWorkflowResubmission() and $temp_room->withWorkflowResubmission()){
 	            $email_receiver_array = array();
@@ -281,7 +282,7 @@ function cron_workflow($portal){
 	            }
 	            $mail->setSendAsHTML();
 	            if ( $mail->send() ) {
-	               fwrite($file, 'workflow resubmission e-mail send for item: '.$item['item_id']);
+	               fwrite($logFile, 'workflow resubmission e-mail send for item: '.$item['item_id']);
 	            }
 	
 	            // change the status of the material
@@ -308,7 +309,7 @@ function cron_workflow($portal){
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
 	         
 	         // check if context of room is current portal
-	         if ( $temp_room->getContextID() !== $portal->getItemID()) continue;
+	         if ( $temp_room->getContextID() != $portal->getItemID()) continue;
 	
 	         if($temp_material->getWorkflowValidity() and $temp_room->withWorkflowValidity()){
 	            $email_receiver_array = array();
@@ -385,7 +386,7 @@ function cron_workflow($portal){
 	            }
 	            $mail->setSendAsHTML();
 	            if ( $mail->send() ) {
-	               fwrite($file, 'workflow validity e-mail send for item: '.$item['item_id']);
+	               fwrite($logFile, 'workflow validity e-mail send for item: '.$item['item_id']);
 	            }
 	
 	            // change the status of the material
@@ -402,6 +403,8 @@ function cron_workflow($portal){
       }
 	   unset($item_array);
 	   unset($material_manager);
+   } else {
+   	fwrite($logFile, 'Workflow is NOT active'.LF);
    }
 }
 
@@ -519,8 +522,10 @@ foreach ( $portal_id_array as $portal_id ) {
       performRoomIDArray($id_array,$portal->getTitle());
       unset($id_array);
       fwrite($file, '<hr/>'.LF);
-
-      cron_workflow($portal);
+      
+      fwrite($file, '<h4>Workflow</h4>'.LF);
+      cron_workflow($file, $portal);
+      fwrite($file, '<hr/>'.LF);
 
       // unset
       unset($portal);

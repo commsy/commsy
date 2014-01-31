@@ -30,6 +30,23 @@
          $soap_functions_array = plugin_hook_output_all('getSOAPAPIArray',array(),'ARRAY');
       }
    }
+   
+   // soap_functions from classes
+   if ( !isset($environment) ) {
+   	include_once('etc/cs_constants.php');
+   	include_once('etc/cs_config.php');
+   	include_once('functions/misc_functions.php');
+   	include_once('classes/cs_environment.php');
+   	$environment = new cs_environment();
+   }
+   	
+   $connection_obj = $environment->getCommSyConnectionObject();
+   if ( !empty($connection_obj) ) {
+   	$soap_functions_array_from_class = $connection_obj->getSoapFunctionArray();
+   	if ( !empty($soap_functions_array_from_class) ) {
+   	   $soap_functions_array = array_merge($soap_functions_array,$soap_functions_array_from_class);
+   	}
+   }
 ?>
 <<?php echo('?'); ?>xml version ='1.0' encoding ='UTF-8'?>
 <definitions name='CommSy'

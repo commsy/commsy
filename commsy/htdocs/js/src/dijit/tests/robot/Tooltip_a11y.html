@@ -10,7 +10,7 @@
 
 		<!-- required: dojo.js -->
 		<script type="text/javascript" src="../../../dojo/dojo.js"
-			djConfig="isDebug: true"></script>
+			data-dojo-config="isDebug: true"></script>
 
 		<script type="text/javascript">
 			require([
@@ -373,7 +373,7 @@
 
 								var tooltipPos = domGeom.position(masterTT.domNode),
 									anchorPos = domGeom.position("nested");
-								doh.t(tooltipPos.x >= anchorPos.x + anchorPos.w,
+								doh.t(Math.round(tooltipPos.x) >= Math.round(anchorPos.x + anchorPos.w),
 										"tooltip pos " + tooltipPos.x + " > anchor right edge at " +
 												anchorPos.x + " + " + anchorPos.w);
 							}), 500);

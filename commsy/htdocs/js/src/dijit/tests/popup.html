@@ -1,13 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
 		"http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<html lang="en">
 <head>
 	<title>popup and BackgroundIFrame unit test</title>
-	<style type="text/css">
-		@import "../themes/claro/document.css";
-		@import "../themes/dijit.css";
-		@import "css/dijitTests.css";
 
+	<script src="boilerplate.js"></script>
+
+	<style type="text/css">
 		body {
 			height: 100%;
 			padding: 0;
@@ -28,9 +27,6 @@
 			background: #ccc;
 		}
 	</style>
-	<script type="text/javascript" src="../../dojo/dojo.js"
-		djConfig="isDebug: true, parseOnLoad: false"></script>
-	<script type="text/javascript" src="_testCommon.js"></script>
 
 	<script type="text/javascript">
 		function log(str){
@@ -40,11 +36,11 @@
 		require([
 			"doh/runner",
 			"dojo/_base/declare",
-			"dojo/dom", "dojo/dom-construct", "dojo/dom-geometry",
-			"dojo/query", "dojo/sniff","dojo/_base/window",
+			"dojo/dom", "dojo/dom-construct", "dojo/dom-geometry", "dojo/dom-style",
+			"dojo/query", "dojo/sniff", "dojo/_base/window", "dojo/window",
 			"dijit/popup", "dijit/registry", "dijit/_WidgetBase", "dijit/_TemplatedMixin",
 			"dijit/tests/helpers", "dojo/domReady!"
-		], function(doh, declare, dom, domConstruct, domGeometry, query, has, win,
+		], function(doh, declare, dom, domConstruct, domGeometry, domStyle, query, has, win, winUtils,
 					popupUtil, registry, _WidgetBase, _TemplatedMixin){
 
 
@@ -102,6 +98,29 @@
 				templateString: "<span>i'm a popup</span>"
 			});
 
+			declare("Tooltip", [_WidgetBase, _TemplatedMixin], {
+				// summary:
+				//		A popup with an orient() method to adjust arrows
+
+				templateString: "<span>i'm a tooltip</span>",
+				constructor: function(){
+					this.orientCalls = [];
+				},
+				orient: function(node, aroundCorner, corner, spaceAvailable, aroundNodeCoords){
+					this.orientCalls.push({
+						node: node,
+						aroundCorner: aroundCorner,
+						corner: corner,
+						spaceAvailable: spaceAvailable,
+						aroundNodeCoords: aroundNodeCoords
+					});
+				},
+				onOpen: function(pos){
+					// should be called with pos.corner and pos.aroundCorner set
+					this.onOpenArg = pos;
+				}
+			});
+
 			declare("SimpleChoiceWidget",  [_WidgetBase, _TemplatedMixin], {
 				// summary:
 				//		A list of values; select a value by pressing an entry in the list.
@@ -129,12 +148,33 @@
 				}
 			});
 
+			declare("LotsOfChoicesWidget",  [_WidgetBase], {
+				// summary:
+				//		A list of values; select a value by pressing an entry in the list.
+
+				length: 100,
+
+				postCreate: function(){
+					for(var i=0; i< this.length; i++){
+						domConstruct.place("<div>choice #" + i + "</div>", this.domNode);
+					}
+				}
+			});
+
 			// Create a button that displays a simple drop down
 			choiceDropDown = new SimpleChoiceWidget();
 			(choiceDropDownButton = new SimpleDropDownButton({
 				id: "choiceDropDownButton",
 				label: "show choice drop down",
 				popup: choiceDropDown
+			})).placeAt(dom.byId("widgets"));
+
+			// Create a tall drop down, should get scroll bar
+			tallChoiceDropDown = new LotsOfChoicesWidget({length: 100});
+			(tallChoiceDropDownButton = new SimpleDropDownButton({
+				id: "tallChoiceDropDownButton",
+				label: "show tall drop down",
+				popup: tallChoiceDropDown
 			})).placeAt(dom.byId("widgets"));
 
 			declare("DialogWithPopupWidget",  [_WidgetBase, _TemplatedMixin], {
@@ -427,7 +467,73 @@
 				doh.is("inputAtEnd", tabbable[tabbable.length - 1].id, "last tabbable node");
 			});
 
-			// TODO: test x/y placement
+			doh.register("x/y placement", function xyPlacement(){
+				// Trivial test of x/y placement.    Could also test other orientations.
+				var popup = new SimpleChoiceWidget();
+
+				popupUtil.open({
+					popup: popup,
+					orient: "R",
+					x: 10,
+					y: 15
+				});
+
+				var popupCoords = domGeometry.position(popup.domNode);
+				doh.is(10, popupCoords.x, "popup x coord");
+				doh.is(15, popupCoords.y, "popup y coord");
+
+				popupUtil.close(popup);
+			});
+
+			doh.register("orientCallback", [
+				function setup(){
+					tooltip = new Tooltip({});
+					(tooltipDropDownButton = new SimpleDropDownButton({
+						id: "tooltipDropDownButton",
+						label: "show tooltip",
+						popup: tooltip
+					})).placeAt(dom.byId("widgets"));
+				},
+				function orientCallbackAround(){
+					// Test whether orient() is called correctly for popup around a node
+					tooltipDropDownButton.openPopup();
+					tooltipDropDownButton.closePopup();
+
+					// The final call to orient(), as well as the call to onOpen(), should have been for the final
+					// position of the node, where corner == TL and aroundCorner == BL
+					doh.t(tooltip.orientCalls.length, "orient was called");
+					var final = tooltip.orientCalls.pop();
+					doh.is("TL", final.corner, "popup corner");
+					doh.is("BL", final.aroundCorner, "aroundNode corner");
+
+					doh.t(tooltip.onOpenArg, "onOpen called");
+					doh.is("TL", tooltip.onOpenArg.corner, "popup corner");
+					doh.is("BL", tooltip.onOpenArg.aroundCorner, "aroundNode corner");
+				},
+				function orientCallbackAt(){
+					// Test whether orient() is called correctly for popup around a point
+					tooltip.orientCalls = [];
+					delete tooltip.onOpenArg;
+
+					popupUtil.open({
+						popup: tooltip,
+						orient: "R",
+						x: 10,
+						y: 15
+					});
+
+					// The final call to orient(), as well as the call to onOpen(), should have been for the final
+					// position of the node, where corner == TL and aroundCorner == BR (they are caddy-corner).
+					doh.t(tooltip.orientCalls.length, "orient was called");
+					var final = tooltip.orientCalls.pop();
+					doh.is("TL", final.corner, "popup corner");
+					doh.is("BR", final.aroundCorner, "aroundNode corner");
+
+					doh.t(tooltip.onOpenArg, "onOpen called");
+					doh.is("TL", tooltip.onOpenArg.corner, "popup corner");
+					doh.is("BR", tooltip.onOpenArg.aroundCorner, "aroundNode corner");
+				}
+			]);
 
 			// Test that onCancel goes back one level.
 			// Call nestedChoice2.onCancel() and that should trigger nestedChoice2 to close
@@ -452,14 +558,58 @@
 			// and dialogNestedPopupOpener to close, but not dialogWithNestedPopup.
 			// (TODO)
 
+			doh.register("a11y tests", function ariaOnWrapper(){
+				var popup = new SimpleChoiceWidget({id: "scwPopup"});
+
+				popupUtil.open({
+					popup: popup,
+					orient: "R",
+					x: 10,
+					y: 15
+				});
+
+				var w = popup.domNode;
+				doh.is("region", w.parentNode.getAttribute("role"), "popup's wrapper node needs role=region");
+				doh.is("scwPopup", w.parentNode.getAttribute("aria-label"), "popup's wrapper node needs aria-label");
+			});
+
+			doh.register("scrollbar tests", [
+				function scrollbarAt(){
+					var popup = new LotsOfChoicesWidget({id: "tallPopup1"});
+
+					popupUtil.open({
+						popup: popup,
+						orient: "R",
+						x: 10,
+						y: 15
+					});
+
+					var w = popup.domNode;
+					doh.t(domStyle.get(w, "height") > winUtils.getBox().h, "popup is taller than the viewport");
+					doh.t(domStyle.get(w.parentNode, "height") < winUtils.getBox().h, "but wrapper " +
+							domStyle.get(w.parentNode, "height") + " is shorter than viewport " + winUtils.getBox().h);
+				},
+				function scrollbarAround(){
+					tallChoiceDropDownButton.openPopup();
+
+					var w = tallChoiceDropDown.domNode;
+					doh.t(domStyle.get(w, "height") > winUtils.getBox().h, "popup is taller than the viewport");
+					doh.t(domStyle.get(w.parentNode, "height") < winUtils.getBox().h, "but wrapper is shorter than viewport");
+				}
+			]);
+
 			doh.run();
 		});
 	</script>
 </head>
 <body>
 	<h1>popup and BackgroundIFrame Unit Test</h1>
-	<input id="inputAtStart">
-	<span id="widgets"></span>
-	<input id="inputAtEnd">
+	<label for="inputAtStart">label:</label><input id="inputAtStart">
+	<div style="height: 150px; overflow: auto; margin: 10px 0px;">
+		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis cursus odio eu nisl ultrices dictum. Sed tincidunt metus et magna placerat eget vehicula dolor faucibus. Nunc nec augue ac mi rutrum congue. Donec at augue felis. Proin et lectus at mauris adipiscing pulvinar tempor vitae lacus. Aliquam erat volutpat. Sed eget sem eu turpis ultrices ullamcorper sed ut augue. Nunc in augue lectus. Curabitur ac posuere libero. Duis luctus dignissim nisl suscipit vehicula. Cras ut augue odio. Integer blandit ligula congue erat pellentesque nec egestas mi hendrerit</p>
+		<span id="widgets"></span>
+		<p>Nunc sollicitudin nisl sed est porta vitae viverra nulla rutrum. Praesent erat tortor, scelerisque sit amet gravida a, sodales a libero. Pellentesque nec arcu nulla, id laoreet orci. Vivamus sit amet quam eu ante pulvinar rhoncus sit amet non ipsum. Sed mattis felis sed risus tincidunt in sagittis justo rhoncus. Praesent ut justo feugiat neque gravida convallis eget mattis felis. Vestibulum vitae velit ante, sed convallis sem. Curabitur gravida volutpat odio eget tincidunt. Mauris pellentesque placerat massa ut venenatis. Mauris ultrices hendrerit dui vel fermentum.</p>
+	</div>
+	<label for="inputAtEnd">label:</label><input id="inputAtEnd">
 </body>
 </html>

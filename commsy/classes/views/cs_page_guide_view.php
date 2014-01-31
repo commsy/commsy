@@ -2041,6 +2041,9 @@ class cs_page_guide_view extends cs_page_view {
    			
    			
 						   				$return = array(
+						   						'connection'	=> array(
+						   								'active'	=> false
+						   						),
 						   						'wiki'		=> array(
 						   								'active'	=> false
 						   						),
@@ -2059,6 +2062,13 @@ class cs_page_guide_view extends cs_page_view {
 						   				$current_context = $this->_environment->getCurrentContextItem();
 						   				$current_user = $this->_environment->getCurrentUserItem();
 						   				$count = 0;
+						   				
+						   				// portal2portal
+						   				if ( !empty($ownRoomItem)
+						   					  and $ownRoomItem->showCSBarConnection()
+						   					) {
+						   					$return['connection']['active'] = true;
+						   				}
 						   			
 						   				// wiki
 						   				if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
@@ -2162,6 +2172,13 @@ class cs_page_guide_view extends cs_page_view {
    			}
    			
    			if ( isset($ownRoomItem)) {
+   				// portal2portal
+   				if ( !empty($ownRoomItem)
+   					  and $ownRoomItem->showCSBarConnection()
+   					) {
+   					$html .= '	<a href="#" id="tm_connection" title="' . $translator->getMessage("CS_BAR_CONNECTION") . '">&nbsp;</a>';
+   				}
+   				
    				if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
    				{
    					$html .= '	<a href="#" id="tm_portfolio" title="' . $translator->getMessage("CS_BAR_PORTFOLIO") . '">&nbsp;</a>';
@@ -2319,7 +2336,8 @@ class cs_page_guide_view extends cs_page_view {
    				
    				<div id="tm_menus">
    					<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
-			   		<div id="tm_dropmenu_widget_bar" class="hidden"></div>
+			   		<div id="tm_dropmenu_connection" class="hidden"></div>
+   				   <div id="tm_dropmenu_widget_bar" class="hidden"></div>
 			   		<div id="tm_dropmenu_portfolio" class="hidden"></div>
 			   		<div id="tm_dropmenu_mycalendar" class="hidden"></div>
 			   		<div id="tm_dropmenu_stack" class="hidden"></div>

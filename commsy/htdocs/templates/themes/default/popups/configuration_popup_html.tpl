@@ -343,6 +343,7 @@
 						                        		<option value="lock">___USER_LIST_ACTION_LOCK_ACCOUNT___</option>
 						                        		<option value="free">___USER_LIST_ACTION_FREE_ACCOUNT___</option>
 						                        		<option disabled="disabled">------------------------------</option>
+						                        		<option value="status_readonly_user">___USER_LIST_ACTION_STATUS_READ_ONLY_USER___</option>
 						                        		<option value="status_user">___USER_LIST_ACTION_STATUS_USER___</option>
 						                        		<option value="status_moderator">___USER_LIST_ACTION_STATUS_MODERATOR___</option>
 						                        		<option disabled="disabled">------------------------------</option>
@@ -511,6 +512,16 @@
 											<label for="additional_dates_status">___COMMON_ANNOTATIONS___:</label>
 											<input type="radio" name="form_data[annotations_bar_visibility]" value="1" {if $popup.additional.annotations_bar_visibility == '1'} checked="checked"{/if}/> ___COMMON_BARS_VISIBLE___
 									        <input type="radio" name="form_data[annotations_bar_visibility]" value="-1" {if $popup.additional.annotations_bar_visibility == '-1'} checked="checked"{/if}/> ___COMMON_BARS_NOT_VISIBLE___
+											<div class="clear"></div>
+										</div>
+									</fieldset>
+									<fieldset>
+										<p>
+											<strong>___COMMON_CONFIGURATION_ANNOUNCEMENT_DATE___:</strong> ___COMMON_CONFIGURATION_ANNOUNCEMENT_DATE_DESC___
+										</p>
+										<div class="input_row_100">
+											<label for="additional_dates_status">___CONFIGURATION_DATES_LABEL___:</label>
+											<input id="announcement_date" type="checkbox" name="form_data[announcement_date]" value="yes"{if $popup.additional.announcement_date == 'yes'} checked="checked"{/if} />___GROUPROOM_FORM_CHECKBOX_TEXT___
 											<div class="clear"></div>
 										</div>
 									</fieldset>

@@ -67,9 +67,6 @@
 			// rubric information for room navigation
 			$this->assign('room', 'rubric_information', $this->getRubricInformation());
 			
-			// call parent
-			parent::processTemplate();
-
 			// TODO: implement old commsy check - calling rubrics not set as active
 
 			$params = $this->_environment->getCurrentParameterArray();
@@ -92,9 +89,10 @@
 				!$this->_environment->inGroupRoom()) {
 				die('you are not in room context, so no room template should be processed');
 			}
-
 			
-
+			// call parent
+			parent::processTemplate();
+			
 			// room information
 			$this->assign('room', 'room_information', $this->getRoomInformation());
 			
@@ -491,6 +489,9 @@
 			
 			// material open for guests
 			$return['material_guests'] = $context_item->isMaterialOpenForGuests();
+			
+			// announcement_date
+			$return['announcement_date'] = $context_item->withAnnouncementDates();
 
 			return $return;
 		}

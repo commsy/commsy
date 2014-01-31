@@ -7,12 +7,13 @@
 			@import "../../../dojo/resources/dojo.css";
 			@import "../../../dijit/tests/css/dijitTests.css";
 		</style>
-		<script type="text/javascript" src="../../../dojo/dojo.js" djConfig="isDebug: true"></script>
+		<script type="text/javascript" src="../../../dojo/dojo.js" data-dojo-config="isDebug: true"></script>
 		<script type="text/javascript" src="../../../util/doh/runner.js"></script>
 		<script type="text/javascript">
 			dojo.require("doh.runner");
 			dojo.require("dojox.gfx");
 			dojo.require("dojox.gfx.shape");
+			dojo.require("dojox.gfx.registry");
 		</script>
 		<script type="text/javascript">
 			dojo.addOnLoad(function(){
@@ -90,7 +91,7 @@
 								t.t(o === s, "Checking dojox.gfx.shape.byId()");
 								// rawNode binding
 								var p = s.rawNode.tag ? 'tag' : '__gfxObject__';
-								t.t(s.rawNode[p] == s.getUID(),"Checking rawNode<->gfx binding.");
+								t.t(s.rawNode[p] == s,"Checking rawNode<->gfx binding.");
 								dic[name] = s.getUID();
 							});
 							// successive registration

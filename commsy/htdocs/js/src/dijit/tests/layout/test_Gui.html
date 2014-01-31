@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>Dijit UI Tester</title>
 
-	<!-- required: a default theme -->
-	<link id="themeStyles" rel="stylesheet" href="../../../dijit/themes/claro/claro.css"/>
-	<style type="text/css">
-		@import "../../themes/claro/document.css";
+	<script src="../boilerplate.js"></script>
 
+	<style type="text/css">
 		html, body {
 			height: 100%;
 			width: 100%;
@@ -34,28 +32,21 @@
 		}
 	</style>
 
-	<!-- required: dojo.js -->
-	<script type="text/javascript" src="../../../dojo/dojo.js"
-		data-dojo-config="parseOnLoad: true, isDebug: false"></script>
-
-	<!-- do not use: only for debugging / testing themes -->
-	<script type="text/javascript" src="../../tests/_testCommon.js"></script>
-
 	<script type="text/javascript">
-		// dojo.requires()
-		dojo.require("dijit.dijit");
-		dojo.require("dijit.dijit-all");
-
-		// layouts used in page
-		dojo.require("dijit.layout.AccordionContainer");
-		dojo.require("dijit.layout.ContentPane");
-		dojo.require("dijit.layout.TabContainer");
-		dojo.require("dijit.layout.BorderContainer");
-		dojo.require("dijit.TitlePane");
-
+		require([
+			"dojo/parser",
+			"dijit/layout/BorderContainer",
+			"dijit/layout/AccordionContainer",
+			"dijit/layout/TabContainer",
+			"dijit/layout/ContentPane",
+			"dijit/TitlePane",
+			"dojo/domReady!"
+		], function(parser){
+			parser.parse();
+		});
 	</script>
 </head>
-<body class="claro">
+<body class="claro" role="main">
 
 	<!-- "main" BorderContainer just contains page title and another BorderContainer -->
 	<div id="main" data-dojo-type="dijit/layout/BorderContainer" data-dojo-props='gutters:true, style:"height:700px;"'>

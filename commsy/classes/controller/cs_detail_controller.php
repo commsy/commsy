@@ -618,11 +618,20 @@
 			}
 			
 			if($current_context->isMaterialOpenForGuests() && $current_user->isGuest()){
-				$return['edit']		= true;
-				$return['delete']	= true;
-				$return['mail']		= true;
-				$return['copy']		= true;
+				$return['edit']		= false;
+				$return['delete']	= false;
+				$return['mail']		= false;
+				$return['copy']		= false;
 			}
+			// grouproom
+			if($this->_item->getType() == 'label' && $this->_item->getLabelType() == 'group'){
+				if($this->_item->isGroupRoomActivated()){
+					$return['grouproom'] = $this->_item->getGroupRoomItemID();
+				} else {
+					$return['grouproom'] = false;
+				}
+			}
+			
 
 			// download
 			$return['downloadparams'] = $this->_environment->getCurrentParameterArray();

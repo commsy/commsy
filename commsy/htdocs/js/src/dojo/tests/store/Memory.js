@@ -1,16 +1,14 @@
-dojo.provide("dojo.tests.store.Memory");
-dojo.require("dojo.store.Memory");
-(function(){
-	var store = new dojo.store.Memory({
+define(["doh", "dojo/store/Memory"], function(doh, Memory){
+	var store = new Memory({
 		data: [
-			{id: 1, name: "one", prime: false, mappedTo: "E"}, 
-			{id: 2, name: "two", even: true, prime: true, mappedTo: "D"}, 
-			{id: 3, name: "three", prime: true, mappedTo: "C"}, 
-			{id: 4, name: "four", even: true, prime: false, mappedTo: null}, 
-			{id: 5, name: "five", prime: true, mappedTo: "A"} 		
+			{id: 1, name: "one", prime: false, mappedTo: "E", date: new Date(1970, 0, 1) },
+			{id: 2, name: "two", even: true, prime: true, mappedTo: "D", date: new Date(1980, 1, 2) },
+			{id: 3, name: "three", prime: true, mappedTo: "C", date: new Date(1990, 2, 3) },
+			{id: 4, name: "four", even: true, prime: false, mappedTo: null, date: new Date(1972, 3, 6, 12, 1) },
+			{id: 5, name: "five", prime: true, mappedTo: "A", date: new Date(1972, 3, 6, 6, 2) }
 		]
 	});
-	tests.register("dojo.tests.store.Memory",
+	doh.register("dojo.tests.store.Memory",
 		[
 			function testGet(t){
 				t.is(store.get(1).name, "one");
@@ -42,6 +40,10 @@ dojo.require("dojo.store.Memory");
 						return a.name < b.name ? -1 : 1;
 					}})[1].name, "two");
 				t.is(store.query(null, {sort:[{attribute:"mappedTo"}]})[4].name, "four");
+
+				t.is([ 1, 5, 4, 2, 3 ], store.query({}, { sort: [ { attribute: "date", descending: false } ] }).map(function (item) {
+					return item.id;
+				}));
 			},
 			function testQueryWithPaging(t){
 				t.is(store.query({prime: true}, {start: 1, count: 1}).length, 1);
@@ -94,7 +96,7 @@ dojo.require("dojo.store.Memory");
 				t.is(store.query({perfect: true}).length, 1);
 			},
 			function testIFRSStyleData(t){
-				var anotherStore = new dojo.store.Memory({
+				var anotherStore = new Memory({
 					data: {
 						items:[
 							{name: "one", prime: false},
@@ -116,4 +118,4 @@ dojo.require("dojo.store.Memory");
 			}
 		]
 	);
-})();
+});

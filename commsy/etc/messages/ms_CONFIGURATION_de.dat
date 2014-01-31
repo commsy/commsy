@@ -135,6 +135,8 @@ $message["CONFIGURATION_COMMUNITYROOM_OPENING_ALL"]["de"] = "durch alle NutzerIn
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_MODERATOR"]["de"] = "nur durch PortalmoderatorInnen";
 $message["CONFIGURATION_CONFIRMATION_FORM_TITLE"]["de"] = "Nutzungsver-<br/>
 einbarungen";
+$message["CONFIGURATION_CONNECTION"]["de"] = "Verbindungen";
+$message["CONFIGURATION_CONNECTION_DESC"]["de"] = "Verbindungen zu anderen CommSy-Servern konfigurieren.";
 $message["CONFIGURATION_DATA_SECURITY"]["de"] = "Datenschutz";
 $message["CONFIGURATION_DATA_SECURITY_DESC"]["de"] = "Log-Daten exportieren, maskieren, archivieren, löschen.";
 $message["CONFIGURATION_DATA_SECURITY_DESC_2"]["de"] = "Einstellungen zum Datenschutz";

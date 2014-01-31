@@ -423,6 +423,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				           $current_context->unsetTagsShowExpanded();
 
 				        }
+				        
+				        if ( isset($form_data['announcement_date']) and !empty($form_data['announcement_date']) and $form_data['announcement_date'] == 'yes') {
+				        	$current_context->setWithAnnouncementDates();
+				        } else {
+				        	$current_context->setWithoutAnnouncementDates();
+				        }
 
 						if (!empty($form_data['time_spread'])) {
 				            $current_context->setTimeSpread($form_data['time_spread']);
@@ -552,7 +558,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	                        else {
 	                        	
 	                        	// Fix: Find Group-Rooms if existing
-	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom()) {
+	                        	if( $current_context->isGrouproomActive() and !$current_context->isGroupRoom() and !$current_context->isCommunityRoom()) {
 	                        		$groupRoomList = $current_context->getGroupRoomList();
 	                        		if( !$groupRoomList->isEmpty() ) {
 	                        			$room_item = $groupRoomList->getFirst();
@@ -592,6 +598,8 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				            $current_context->setAGBStatus($form_data['agb_status']);
 				            $current_context->setAGBTextArray($agbtext_array);
 				            $current_context->setAGBChangeDate();
+				            $current_user->setAGBAcceptance();
+				            $current_user->save();
 				         }
 				         
 				         $text_converter = $this->_environment->getTextConverter();
@@ -1930,6 +1938,11 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			$return['rss'] = 'yes';
 		} else {
 			$return['rss'] = 'no';
+		}
+		
+		// announcement date
+		if ($current_context->withAnnouncementDates()){
+			$return['announcement_date'] = 'yes';
 		}
 
          //buzzwords

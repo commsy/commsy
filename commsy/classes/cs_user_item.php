@@ -916,6 +916,10 @@ class cs_user_item extends cs_item {
    function makeUser () {
       $this->_setValue('status', 2);
    }
+   
+   function makeReadOnlyUser() {
+   	  $this->_setValue('status', 4);
+   }
 
    /** make a user moderator
     * this method sets the status of the user to moderator
@@ -1019,6 +1023,10 @@ class cs_user_item extends cs_item {
     */
    function isModerator () {
       return $this->_getValue('status') == 3;
+   }
+   
+   function isReadOnlyUser() {
+   	  return $this->_getValue('status') == 4;
    }
 
    function getRelatedRoomItem () {
@@ -1151,6 +1159,14 @@ class cs_user_item extends cs_item {
 
       // ContactPersonString
       $context_item = $this->getContextItem();
+      // get grouproom
+      if($context_item->getType() == 'group'){
+      	$grouproom_array = $context_item->_getItemData();
+      	$grouproom_id = $grouproom_array['extras']['GROUP_ROOM_ID'];
+      	$room_manager = $this->_environment->getRoomManager();
+		$context_item = $room_manager->getItem($grouproom_id);
+      }
+      
       if ( isset($context_item)
            and !$context_item->isPortal()
            and !$context_item->isServer()
@@ -1200,12 +1216,17 @@ class cs_user_item extends cs_item {
       $user_manager->updateLastLoginOf($this);
    }
 
-   function getOwnRoom () {
+   function getOwnRoom ($context_id = NULL) {
       if ( $this->isRoot() ) {
          return NULL;
       } else {
          $private_room_manager = $this->_environment->getPrivateRoomManager();
-         return $private_room_manager->getRelatedOwnRoomForUser($this,$this->_environment->getCurrentPortalID());
+         if(!empty($context_id)) {
+         	return $private_room_manager->getRelatedOwnRoomForUser($this,$context_id);
+         } else {
+         	return $private_room_manager->getRelatedOwnRoomForUser($this,$this->_environment->getCurrentPortalID());
+         }
+         
       }
    }
 
@@ -1546,7 +1567,10 @@ class cs_user_item extends cs_item {
 
       $room_id_array = array();
       if ($this->_environment->getCurrentPortalID() != $current_context_id) {
-         $room_id_array[] = $this->_environment->getCurrentPortalID();
+      	 $portalID = $this->_environment->getCurrentPortalID();
+      	 if(!empty($portalID)){
+      	 	$room_id_array[] = $this->_environment->getCurrentPortalID();
+      	 }
       }
 
       $community_manager = $this->_environment->getCommunityManager();
@@ -1565,7 +1589,7 @@ class cs_user_item extends cs_item {
       unset($community_manager);
 
       $project_manager = $this->_environment->getProjectManager();
-      $project_list = $project_manager->getRelatedProjectListForUser($this);
+      $project_list = $project_manager->getRelatedProjectListForUser($this, $current_context_id);
       if ($project_list->isNotEmpty()) {
          $project_room = $project_list->getFirst();
          while ($project_room) {
@@ -2194,6 +2218,10 @@ class cs_user_item extends cs_item {
    }
 
    public function isOnlyReadUser () {
+   	  if ($this->isReadOnlyUser()) {
+   	  	return true;
+   	  }
+   	
       $retour = false;
       global $c_read_account_array;
       if ( isset($c_read_account_array)
@@ -2322,6 +2350,10 @@ class cs_user_item extends cs_item {
    	return $retour;
    }
    
+   function unsetLock(){
+   	$this->_unsetExtra('LOCK');
+   }
+   
    function setTemporaryLock () {
    	include_once('functions/date_functions.php');
    	$lock_time = $this->_environment->getCurrentContextItem()->getLockTime();
@@ -2399,7 +2431,7 @@ class cs_user_item extends cs_item {
    
    function unsetDeactivateLoginAsAnotherUser () {
    	if( $this->_issetExtra('DEACTIVATE_LOGIN_AS')){
-   		$this->_addExtra('DEACTIVATE_LOGIN_AS', '-1');
+   		$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
    	}
    	#$this->_unsetExtra('DEACTIVATE_LOGIN_AS');
    }
@@ -2545,8 +2577,119 @@ class cs_user_item extends cs_item {
    function getLockSendMailDate(){
    	return $this->_getExtra('LOCK_SEND_MAIL_DATE');
    }
+   
+   function unsetLockSendMailDate(){
+   	$this->_unsetExtra('LOCK_SEND_MAIL_DATE');
+   }
   
+   ## commsy user connections: portal2portal
+   public function getOwnConnectionKey () {
+   	$retour = '';
+   	$value = $this->_getExtra('CONNECTION_OWNKEY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	} else {
+   		$this->_generateOwnConnectionKey();
+   		$retour = $this->_getExtra('CONNECTION_OWNKEY');
+   	}
+   	return $retour;
+   }
    
+   private function _setOwnConnectionKey ($value) {
+   	$this->_setExtra('CONNECTION_OWNKEY', $value);
+   }
+    
+   private function _generateOwnConnectionKey () {
+   	$key = '';
+   	$key .= $this->getItemID();
+   	$key .= rand(0,9);
+   	$key .= $this->getFullName();
+   	$key .= rand(0,9);
+   	$key .= $this->getEmail();
+   	$key .= rand(0,9);
+   	include_once('functions/date_functions.php');
+   	$key .= getCurrentDateTimeInMySQL();
+   	$this->_setOwnConnectionKey(md5($key));
+   	$this->save();
+   }
    
+   public function addExternalConnectionKey ( $key ) {
+   	$key_array = $this->_getExternalConnectionKeyArray();
+   	if ( !in_array($key, $key_array) ) {
+   		$key_array[] = $key;
+   		$this->_setExternalConnectionKeyArray($key_array);
+   	}
+   }
+   
+   private function _getExternalConnectionKeyArray () {
+   	$retour = array();
+   	
+   	$value = $this->_getExtra('CONNECTION_EXTERNAL_KEY_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	
+  	   return $retour;
+   }
+   
+   private function _setExternalConnectionKeyArray ( $value ) {
+   	$this->_setExtra('CONNECTION_EXTERNAL_KEY_ARRAY',$value);
+   }
+   
+   public function getPortalConnectionArrayDB() {
+   	$retour = array();
+   	$value = $this->_getExtra('CONNECTION_ARRAY');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   
+   	return $retour;
+   }
+   
+   public function getPortalConnectionArray() {
+   	$retour = $this->getPortalConnectionArrayDB();
+
+   	// add infos
+   	if ( !empty($retour) ) {
+   		$server_item = $this->_environment->getServerItem();
+   		foreach ( $retour as $key => $row ) {
+   			$retour[$key]['server_info'] = $server_item->getServerConnectionInfo($row['server_connection_id']);
+   		}
+   	}
+   	
+   	return $retour;
+   }
+   
+   public function getPortalConnectionInfo ( $id ) {
+   	$retour = array();
+   	$connection_array = $this->getPortalConnectionArray();
+   	if ( !empty($connection_array) ) {
+   		foreach ( $connection_array as $connection_info ) {
+   			if ( $connection_info['id'] == $id ) {
+   				$retour = $connection_info;
+   				break;
+   			}
+   		}
+   	}
+   	
+   	return $retour;
+   }
+   
+   public function setPortalConnectionInfoDB ( $value ) {
+   	$this->_setExtra('CONNECTION_ARRAY',$value);
+   }
+   
+   public function deletePortalConnectionFromServer ( $id ) {
+   	$tab_array = $this->getPortalConnectionArray();
+   	$tab_new_array = array();
+   	if ( !empty($tab_array) ) {
+   	   foreach ( $tab_array as $tab_info ) {
+   		   if ( $tab_info['server_connection_id'] != $id ) {
+   		   	$tab_new_array[] = $tab_info;
+   		   }
+   	   }
+   	   $this->setPortalConnectionInfoDB($tab_new_array);
+   	}
+   }
 }
 ?>

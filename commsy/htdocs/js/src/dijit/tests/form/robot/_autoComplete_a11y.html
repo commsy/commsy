@@ -770,20 +770,24 @@
 
 				// Test that you can't focus a disabled combobox
 				{
-					timeout:60000,
+					timeout: 5000,
 					name:"tab over disabled elements",
 					runTest: function(){
 						var d = new doh.Deferred();
 
 						dojo.byId("datatestDijit").focus();
-						doh.is("datatestDijit", dojo.global.dijit.focus.curNode.id, "focused on elem before disabled combo");
+
+						doh.robot.sequence(d.getTestErrback(function(){
+							// use sequence because focus on IE9+ is asynchronous
+							doh.is("datatestDijit", dojo.global.dijit.focus.curNode.id, "focused on elem before disabled combo");
+						}), 100);
 
 						// Tab over the disabled ComboBox
-						doh.robot.keyPress(dojo.keys.TAB, 1000);
+						doh.robot.keyPress(dojo.keys.TAB, 100);
 
 						doh.robot.sequence(d.getTestCallback(function(){
 							doh.is("combobox4", dojo.global.dijit.focus.curNode.id, "focused on 'enable' button after disabled combo");
-						}), 1000);
+						}), 200);
 
 						return d;
 					}
@@ -808,36 +812,51 @@
 
 			doh.register("specialchars", [
 				{
-					timeout:60000,
+					timeout:10000,
 					name:"specialchars_type",
 					combo:"specialchars",
 					runTest:function(){
 						return robot_typeValue(dijit.byId(this.combo), "sticks & stones", isComboBox? undefined : "sticks");
 					}
 				},
-
 				{
-					timeout:60000,
+					timeout:10000,
 					name:"specialchars_a11y",
 					combo:"specialchars",
 					runTest:function(){
 						return robot_a11ySelectValue(dijit.byId(this.combo), "more\\less", isComboBox? undefined : "more");
 					}
 				},
-
 				{
-					timeout:60000,
+					timeout:10000,
+					name:"specialchars_escape",
+					combo:"specialchars",
+					runTest:function(){
+						var combo = dijit.byId(this.combo);
+						combo.focusNode.focus();
+						doh.robot.sequence(function(){ combo.set("value", null); }, 1000);
+						var d = new doh.Deferred();
+						doh.robot.typeKeys("3 *", 500, 600);
+						doh.robot.keyPress(dojo.keys.BACKSPACE, 500);
+						doh.robot.sequence(d.getTestCallback(function(){
+							doh.is("3 *", combo.focusNode.value);
+						}), 500);
+						return d;
+					}
+				},
+				{
+					timeout:10000,
 					name:"specialchars_highlight",
 					combo:"specialchars",
 					runTest:function(){
 						var combo = dijit.byId(this.combo);
-						combo.queryExpr='*${0}*';
+						combo.queryExpr = '*${0}*';
 						combo.focusNode.focus();
 						doh.robot.sequence(function(){ combo.set("value", null); }, 500);
 						var d = new doh.Deferred();
 						doh.robot.typeKeys("t", 1, 100);
 						doh.robot.sequence(d.getTestCallback(function(){
-							var item=findMenuItem(combo, 'riches to');
+							var item = findMenuItem(combo, 'riches to');
 							doh.t(item, 'item "rags --> riches to" should be visible');
 							doh.is('rags --&gt; riches <>t<>o',item.innerHTML.replace(/<[^>]*>/g,'<>'), '"t" in "to" should be highlighted');
 						}), 1000, 500);

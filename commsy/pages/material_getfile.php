@@ -97,6 +97,7 @@ if ( !empty($_GET['iid']) ) {
               and $linked_item->isA(CS_MATERIAL_TYPE)
               and !$linked_item->isDeleted()
               and !$linked_item->isPublished()
+              and !$current_context_item->isMaterialOpenForGuests()
             ) {
             $send_file = false;
             break;

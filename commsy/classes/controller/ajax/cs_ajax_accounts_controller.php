@@ -19,6 +19,7 @@
 			$translations['USER_LIST_ACTION_DELETE_ACCOUNT'] = $translator->getMessage('USER_LIST_ACTION_DELETE_ACCOUNT');
 			$translations['USER_LIST_ACTION_LOCK_ACCOUNT'] = $translator->getMessage('USER_LIST_ACTION_LOCK_ACCOUNT');
 			$translations['USER_LIST_ACTION_FREE_ACCOUNT'] = $translator->getMessage('USER_LIST_ACTION_FREE_ACCOUNT');
+			$translations['USER_LIST_ACTION_STATUS_READ_ONLY_USER'] = $translator->getMessage('USER_LIST_ACTION_STATUS_READ_ONLY_USER');
 			$translations['USER_LIST_ACTION_STATUS_USER'] = $translator->getMessage('USER_LIST_ACTION_STATUS_USER');
 			$translations['USER_LIST_ACTION_STATUS_MODERATOR'] = $translator->getMessage('USER_LIST_ACTION_STATUS_MODERATOR');
 			$translations['USER_LIST_ACTION_STATUS_CONTACT_MODERATOR'] = $translator->getMessage('USER_LIST_ACTION_STATUS_CONTACT_MODERATOR');
@@ -394,6 +395,7 @@
 						}
 					}
 					break;
+				case "status_readonly_user":
 				case "status_user":
 					// link to group 'ALL' in project rooms
 					if($this->_environment->inProjectRoom()) {
@@ -417,8 +419,13 @@
 							}
 						}
 					}
-
-					$user->makeUser();
+					
+					if ($action == "status_user") {
+						$user->makeUser();
+					} else {
+						$user->makeReadOnlyUser();
+					}
+					
 					$user->save();
 
 					if($this->_environment->inGroupRoom()) {
@@ -591,6 +598,7 @@
 
 				$status = '';
 				if($item->isModerator()) $status = $translator->getMessage('USER_STATUS_MODERATOR');
+				elseif($item->isReadOnlyUser()) $status = $translator->getMessage('USER_STATUS_READ_ONLY_USER');
 				elseif($item->isUser()) $status = $translator->getMessage('USER_STATUS_USER');
 				elseif($item->isRequested()) $status = $translator->getMessage('USER_STATUS_REQUESTED');
 				else {

@@ -10,7 +10,7 @@
 			color:#fff;
 		}
 	</style>
-	<script type="text/javascript" djConfig="parseOnLoad:true, isDebug:true" src="../../../dojo/dojo.js"></script>
+	<script type="text/javascript" data-dojo-config="parseOnLoad:true, isDebug:true" src="../../../dojo/dojo.js"></script>
 	<script type="text/javascript">
 		dojo.require("dijit.form.Button");
 	
@@ -188,7 +188,7 @@
 			<div attachId="warn2" id="warn2tt" dojoType="demo.Tooltip"><p style="margin-top:0">Canvas renderer doesn't implement event handling.
 				<button dojoType="dijit.form.Button">
 					Button
-					<script type="dojo/method" event="onClick">
+					<script type="dojo/method" data-dojo-event="onClick">
 						alert(" woo hoo! ");
 						dijit.byId("warn2tt")._hide();
 					</script>

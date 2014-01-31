@@ -1,12 +1,11 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
-        	"ckeditor/ckeditor",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/_base/lang",
         	"dojo/on",
         	"dojo/query",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, CKEditor, domAttr, domConstruct, Lang, On, Query) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, domAttr, domConstruct, Lang, On, Query) {
 	return declare(BaseClass, {
 		instance:	null,
 		node:		null,
@@ -22,7 +21,7 @@ define([	"dojo/_base/declare",
 			height:						'150px',
 			enterMode:					CKEDITOR.ENTER_BR,
 			shiftEnterMode:				CKEDITOR.ENTER_P,
-			extraPlugins:				"CommSyAbout",
+			extraPlugins:				"CommSyAbout,CommSyVideo,CommSyAudio,CommSyDocument,CommSyImage",
 			//extraPlugins: 'CommSyImages,CommSyMDO',
 			toolbar: [
 			    ['Preview', 'Cut', 'Copy', 'Paste', 'PasteFromWord', '-', 'Undo', 'Redo'],
@@ -31,7 +30,10 @@ define([	"dojo/_base/declare",
 			    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
 			    ['Format', 'Font', 'FontSize'],
 			    ['TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Source'],
-			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Image', 'CommSyAbout']
+			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Flash', 'CommSyAbout'],
+			    //CommSy group
+			    ['CommSyImage', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument']
+			    
 			]
 		},
 
@@ -59,8 +61,14 @@ define([	"dojo/_base/declare",
 			domAttr.set(hiddenNode, "name", "form_data[" + id + "]");
 			domConstruct.place(hiddenNode, node, "after");
 			
-			/*CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.js" );*/
+			CKEDITOR.config.allowedContent = true;
+			
 			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.php?cid="+this.uri_object.cid );
+			
+			CKEDITOR.plugins.addExternal( "CommSyVideo", "../../src/commsy/ckeditor/plugins/video/", "CommSyVideo.js");
+			CKEDITOR.plugins.addExternal( "CommSyAudio", "../../src/commsy/ckeditor/plugins/audio/", "CommSyAudio.js");
+			CKEDITOR.plugins.addExternal( "CommSyDocument", "../../src/commsy/ckeditor/plugins/document/", "CommSyDocument.js");
+			CKEDITOR.plugins.addExternal( "CommSyImage", "../../src/commsy/ckeditor/plugins/image/", "plugin.js");
 			
 			if ( node.nodeName === "TEXTAREA" )
 			{

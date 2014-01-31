@@ -27,7 +27,11 @@
 					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'send'" href="#">___COMMON_EMAIL_TO___</a> |
 				{/if}
 				{if $detail.actions.member == 'no_member'}
-					<a id="group_detail_group_enter" data-custom="needsCode: {if isset($join.code) && $join.code}true{else}false{/if}, agb: {if isset($join.agb) && $join.agb}true{else}false{/if}" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=1">___GROUP_ENTER___</a> |
+					{if $detail.actions.grouproom}
+						<a class="open_popup" id="group_detail_group_enter" data-custom="iid: {$detail.item_id}, module: 'userContextJoin', agb: {if isset($join.agb) && $join.agb}true{else}false{/if}" href="#">___GROUP_ENTER___</a> |
+					{else}
+						<a id="group_detail_group_enter" data-custom="needsCode: {if isset($join.code) && $join.code}true{else}false{/if}, agb: {if isset($join.agb) && $join.agb}true{else}false{/if}" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=1">___GROUP_ENTER___</a> |
+					{/if}
 				{elseif $detail.actions.member == 'no_member_false'}
 					<span title="___COMMON_NO_ACTION___" class="disabled_action">___GROUP_ENTER___</span> |
 				{elseif $detail.actions.member == 'member_false'}

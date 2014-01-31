@@ -118,6 +118,8 @@ class cs_user_manager extends cs_manager {
    * document this limit (TBD)
    */
    var $_user_limit = NULL;
+   
+   var $_user_limit_binary = NULL;
 
   /**
    * document this limit (TBD)
@@ -158,6 +160,9 @@ class cs_user_manager extends cs_manager {
    private $_limit_no_membership = NULL;
 
    private $_limit_email = NULL;
+   
+   private $_limit_connection_key = NULL;
+   private $_limit_connection_server_key = NULL;
 
    /** constructor
     * the only available constructor, initial values for internal variables<br />
@@ -204,6 +209,17 @@ class cs_user_manager extends cs_manager {
       $this->_limit_no_membership = NULL;
       $this->_only_from_portal = false;
       $this->_limit_email = NULL;
+      $this->_user_limit_binary = NULL;
+      $this->_limit_connection_key = NULL;
+      $this->_limit_connection_server_key = NULL;
+   }
+
+   public function setExternalConnectionUserKeyLimit ($value) {
+      $this->_limit_connection_key = $value;
+   }
+
+   public function setExternalConnectionServerKeyLimit ($value) {
+      $this->_limit_connection_server_key = $value;
    }
 
    public function setEMailLimit ($value) {
@@ -369,6 +385,15 @@ class cs_user_manager extends cs_manager {
     */
   function setUserIDLimit ($value) {
      $this->_user_limit = (string)$value;
+  }
+  
+  /** set user id limit with mysql binary (case sensitive)
+   *  this method sets a user id limit for user (case sensitive)
+   *  
+   *  @param string value user id limit for selected user
+   */
+  function setUserIDLimitBinary($value) {
+  	$this->_user_limit_binary = (string)$value;
   }
 
   function setContactModeratorLimit(){
@@ -596,6 +621,10 @@ class cs_user_manager extends cs_manager {
      if (isset($this->_user_limit)) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.user_id = "'.encode(AS_DB,$this->_user_limit).'"';
      }
+     if (isset($this->_user_limit_binary)) {
+     	$query .= ' AND BINARY '.$this->addDatabasePrefix('user').'.user_id = "'.encode(AS_DB,$this->_user_limit_binary).'"';
+     }
+      
      if ( empty($this->_id_array_limit) ) {
         if ( isset($this->_context_array_limit)
              and !empty($this->_context_array_limit)
@@ -698,6 +727,17 @@ class cs_user_manager extends cs_manager {
 
      if ( !empty($this->_id_array_limit) ) {
         $query .= ' AND '.$this->addDatabasePrefix('user').'.item_id IN ('.implode(", ", $this->_id_array_limit).')';
+     }
+     
+     // portal2Portal: connection key limit
+     if ( !empty($this->_limit_connection_key) ) {
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%CONNECTION_EXTERNAL_KEY_ARRAY%"';
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_key).'%"';
+     }
+     // portal2Portal: connection server key limit
+     if ( !empty($this->_limit_connection_server_key) ) {
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%CONNECTION_ARRAY%"';
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_server_key).'%"';
      }
 
       // restrict sql-statement by search limit, create wheres
@@ -1884,6 +1924,7 @@ class cs_user_manager extends cs_manager {
 	
 	public function getUserLastLoginLaterAs($date,$cid){
 		$user = NULL;
+		$user_array = array();
 		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".context_id = '".encode(AS_DB,$cid)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
@@ -1901,6 +1942,7 @@ class cs_user_manager extends cs_manager {
 	
 	public function getAllUserItemArray($uid){
 		$user = NULL;
+		$user_array = array();
 		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".user_id = '".encode(AS_DB,$uid)."' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {

@@ -23,36 +23,46 @@ function(win, Application, jsonRef, config, has){
 			}
 		}]
 	};
-	modelApp.repeatData = [{
-		"First": "Chad",
-		"Last": "Chapman",
-		"Location": "CA",
-		"Office": "1278",
-		"Email": "c.c@test.com",
-		"Tel": "408-764-8237",
-		"Fax": "408-764-8228"
-	}, {
-		"First": "Irene",
-		"Last": "Ira",
-		"Location": "NJ",
-		"Office": "F09",
-		"Email": "i.i@test.com",
-		"Tel": "514-764-6532",
-		"Fax": "514-764-7300"
-	}, {
-		"First": "John",
-		"Last": "Jacklin",
-		"Location": "CA",
-		"Office": "6701",
-		"Email": "j.j@test.com",
-		"Tel": "408-764-1234",
-		"Fax": "408-764-4321"
-	}];
-	var config = jsonRef.fromJson(config);
-	// on IE use the HistoryHash controller instead of the History controller.
-	//console.log("has(ie)="+has("ie"));
-	config.controllers[0] = has("ie") ? "dojox/app/controllers/HistoryHash" : "dojox/app/controllers/History";		
-	//console.log("config.controllers[0]="+config.controllers[0]);
-	Application(config);
+
+	modelApp.listData = { 
+		identifier: "id",
+		'items':[{
+			"id": "item1",
+			"label": "Chad Chapman",
+			"rightIcon":"mblDomButtonBlueCircleArrow",
+			"First": "Chad",
+			"Last": "Chapman",
+			"Location": "CA",
+			"Office": "1278",
+			"Email": "c.c@test.com",
+			"Tel": "408-764-8237",
+			"Fax": "408-764-8228"
+		}, {
+			"id": "item2",
+			"label": "Irene Ira",
+			"rightIcon":"mblDomButtonBlueCircleArrow",
+			"First": "Irene",
+			"Last": "Ira",
+			"Location": "NJ",	
+			"Office": "F09",
+			"Email": "i.i@test.com",
+			"Tel": "514-764-6532",
+			"Fax": "514-764-7300"
+		}, {
+			"id": "item3",
+			"label": "John Jacklin",
+			"rightIcon":"mblDomButtonBlueCircleArrow",
+			"First": "John",
+			"Last": "Jacklin",
+			"Location": "CA",
+			"Office": "6701",
+			"Email": "j.j@test.com",
+			"Tel": "408-764-1234",
+			"Fax": "408-764-4321"
+		}]
+	};
+	var cfg = jsonRef.fromJson(config);
+	has.add("ie9orLess", has("ie") && (has("ie") <= 9));
+	Application(cfg);
 
 });

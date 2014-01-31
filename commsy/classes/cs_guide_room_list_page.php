@@ -135,6 +135,14 @@ class cs_guide_room_list_page extends cs_page {
 	            ) {
 	            $manager->setArchiveLimit();
 	            $count_all = $current_context->getCountArchivedProjectAndCommunityRooms();
+	         } else if (!empty($sel_archive_room) 
+	              and $sel_archive_room == 2) {
+	         	// add archive rooms to list
+	         	$manager->setArchiveLimit();
+	         	$manager->select();
+	         	$archive_list = $manager->get();
+	         	$manager->resetLimits();
+	         	$count_all = $current_context->getCountArchivedProjectAndCommunityRooms();
 	         } else {
 	         	# old
 	         	# $count_all = $manager->getCountAll();
@@ -213,6 +221,12 @@ class cs_guide_room_list_page extends cs_page {
 	            $manager->setQueryWithoutExtra();
 	            $manager->select();
 	            $list = $manager->get();
+	            
+	            // add archived rooms to list
+	            if(isset($archive_list) and !empty($archive_list)){
+	            	$list->addList($archive_list);
+	            }
+
 	         } else {
 	            # sortby log-table, not by activity points
 	            # not performant (ij 26.01.2010)

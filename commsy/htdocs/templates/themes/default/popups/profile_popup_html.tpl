@@ -530,6 +530,19 @@
                     </div>
                  </fieldset>
 
+                  {if $popup.form.cs_bar.show_connection_view != 'inactive'}
+                    <fieldset>
+                      <p>
+                        <strong>___CS_BAR_CONNECTION___</strong>: ___CS_BAR_CONNECTION_DESC___
+                      </p>
+                      <div class="input_row_180">
+                        <label for="widget_connection_view">___CS_BAR_CONNECTION_VIEW___:</label>
+                        <input id="show_connnection_view" type="checkbox" name="form_data[show_connection_view]" value="yes"{if $popup.form.cs_bar.show_connection_view == 'yes'} checked="checked"{/if} />___COMMON_SHOW_ON_CS_BAR___
+                        <div class="clear"></div>
+                      </div>
+                    </fieldset>
+                  {/if}
+                  
                   <fieldset>
                     <p>
                       <strong>___CS_BAR_SWITCH_ROOMS___</strong>: ___CS_BAR_SWITCH_ROOMS_DESC___

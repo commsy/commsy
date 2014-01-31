@@ -455,6 +455,44 @@ class cs_user_detail_view extends cs_detail_view {
          }
          unset($current_context);
       }
+      
+      if ($item->isModerator() or $item->isUser()){
+      	// Datenschutz expired password date
+      	$temp_array = array();
+      	$temp_array[] = $this->_translator->getMessage('USER_LOGIN_AS_ACTIV');
+      	 
+      	if(!$item->isDeactivatedLoginAsAnotherUser()){
+      		$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+      	} else if($item->isTemporaryAllowedToLoginAs()){
+      		$temp_array[] = $item->getTimestampForLoginAs();
+      	} else {
+      		$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+      	}
+      	
+      	$formal_data[] = $temp_array;
+      	if ($portal_item->getPasswordExpiration() != 0) {
+      		// Datenschutz expired password date
+      		$temp_array = array();
+      		$temp_array[] = $this->_translator->getMessage('USER_EXPIRED_PASSWORD');
+      		 
+      		if($item->isPasswordExpired()){
+      			$temp_array[] = $this->_translator->getMessage('COMMON_YES');
+      		} else {
+      			$temp_array[] = $this->_translator->getMessage('COMMON_NO');
+      		}
+      	
+      		$formal_data[] = $temp_array;
+      	}
+      	
+      	$temp_array = array();
+      	$temp_array[] = $this->_translator->getMessage('USER_ACCEPTED_AGB');
+      	 
+      	$agb = $item->getAGBAcceptanceDate();
+      	if(!empty($agb)){
+      		$temp_array[] = getDateTimeInLang($item->getAGBAcceptanceDate());
+      	}
+      	$formal_data[] = $temp_array;
+      }
 
       if ( $item->isModerator() and !$this->_environment->inPrivateRoom() ) {
          $temp_array = array();
@@ -493,40 +531,7 @@ class cs_user_detail_view extends cs_detail_view {
                break;
          }
          $formal_data[] = $temp_array;
-         // Datenschutz expired password date
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_LOGIN_AS_ACTIV');
          
-         if(!$item->isDeactivatedLoginAsAnotherUser()){
-         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
-         } else if($item->isTemporaryAllowedToLoginAs()){
-         	$temp_array[] = $item->getTimestampForLoginAs();
-         } else {
-         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
-         }
-
-         $formal_data[] = $temp_array;
-         
-         // Datenschutz expired password date
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_EXPIRED_PASSWORD');
-          
-         if($item->isPasswordExpired()){
-         	$temp_array[] = $this->_translator->getMessage('COMMON_YES');
-         } else {
-         	$temp_array[] = $this->_translator->getMessage('COMMON_NO');
-         }
-         
-         $formal_data[] = $temp_array;
-         
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_ACCEPTED_AGB');
-         
-         $agb = $item->getAGBAcceptanceDate();
-         if(!empty($agb)){
-         	$temp_array[] = getDateTimeInLang($item->getAGBAcceptanceDate());
-         }
-         $formal_data[] = $temp_array;
 
          if ($this->_environment->inCommunityRoom()) {
             $current_context = $this->_environment->getCurrentContextItem();

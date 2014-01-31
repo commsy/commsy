@@ -153,7 +153,7 @@ define([	"dojo/_base/declare",
 								checked:	(BaseArray.indexOf(this.store.selected_ids, entry.item_id) !== -1) ? true : false
 							}, checkboxDivNode, "last");
 						
-						var nameColumnNode = DomConstruct.create("div", {
+						DomConstruct.create("div", {
 							className:		"pop_col_270",
 							innerHTML:		entry.fullname
 						}, rowDivNode, "last");
@@ -222,14 +222,11 @@ define([	"dojo/_base/declare",
 					}
 					
 					if(commsyTabAccountNode && response.count > 0){
-						DomAttr.set(commsyTabAccountNode,"innerHTML","("+response.count+")")
+						DomAttr.set(commsyTabAccountNode,"innerHTML","("+response.count+")");
 					} else if(commsyTabAccountNode && response.count == 0){
 						DomConstruct.destroy(commsyTabAccountNode);
 					}
 				}));
-				
-				
-				
 				
 				// load mail popup information
 				if (selectedIds.length > 0) {

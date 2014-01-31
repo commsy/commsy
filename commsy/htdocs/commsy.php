@@ -565,9 +565,19 @@ if ( !empty($SID) ) {
          unset($portal);
       }
 /*Ende TYPO3-Anbindung*/
-
-
    }
+   
+   // commsy: portal2portal
+   if ( isset($session)
+   	  and $session->issetValue('cookie')
+        and $session->getValue('cookie') == 3 // 3 = session made via soap with connection key
+   	) {
+   	$session_manager = $environment->getSessionManager();
+      // save cookie with save session
+   	$session_manager->save($session);
+   	unset($session_manager);
+   }
+   // END: commsy: portal2portal
 
    if (isset($session) and $session->issetValue('user_id')) {       // session is in database, so session is valid and user has already logged on
       if (!$session->issetValue('cookie')) {    // second time a user get a commsy page
@@ -951,26 +961,20 @@ if(isset($c_smarty) && $c_smarty === true) {
 	if(isset($c_smarty_caching) && $c_smarty_caching === true) {
 		$smarty->caching = Smarty::CACHING_LIFETIME_CURRENT;
 	}
-	//$smarty->debugging = true;
 
 	// set smarty in environment
 	$environment->setTemplateEngine($smarty);
 
 	// set output mode
 	if(isset($_GET['mode'])) $environment->setOutputMode($_GET['mode']);
-
-
-	// determ template
-	//$tpl = $environment->getCurrentModule() . '_' . $environment->getCurrentFunction();
 }
 
 /*********** PAGE ***********/
 
 global $c_smarty;
-$context_item = $environment->getCurrentContextItem();
+$c_smarty = true;
 
-global $c_smarty_always;
-if(isset($c_smarty_always) && $c_smarty_always === true) $c_smarty = true;
+$context_item = $environment->getCurrentContextItem();
 
 if(isset($_GET['smarty'])) {
 	if($_GET['smarty'] === 'off') {

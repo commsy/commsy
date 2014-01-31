@@ -151,6 +151,15 @@ function performAction ( $environment, $action_array, $post_array ) {
          // don't change users with status user or Moderator
          if ( (!$user->isUser()) and (!$user->isModerator()) ) {
             $user->makeUser();
+            
+            if($user->getMailSendBeforeLock()){
+            	$user->unsetMailSendBeforeLock();
+            	$user->unsetMailSendLocked();
+            	$user->unsetMailSendBeforeDelete();
+            	$user->unsetLockSendMailDate();
+            	$user->unsetLock();
+            }
+            
             $user->save();
 
             ################################

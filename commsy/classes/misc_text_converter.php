@@ -3830,6 +3830,9 @@ class misc_text_converter {
    	$configHTML = $this->_getHTMLPurifierConfig();
    	$this->_HTMLPurifier = new HTMLPurifier($configHTML);
    	
+   	
+   	
+   	
    }
    
    private function _getHTMLPurifierConfig() {
@@ -3842,14 +3845,50 @@ class misc_text_converter {
    	$config = HTMLPurifier_Config::createDefault();
    	
    	$config->set('HTML.Allowed', NULL);
+   	// allow flash
+   	$config->set('HTML.SafeObject', true);
+   	$config->set('HTML.SafeEmbed', true);
+   	$config->set('Output.FlashCompat', true);
+   	
+   	// allow to embed youtube videos
+   	$config->set('Filter.YouTube', true);
+   	
+   	// allow target=
+   	$config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
+   	
+   	$def = $config->getHTMLDefinition(true);
+   	
+   	// Attribute for object
+   	$def->addAttribute('object', 'autoplay', 'Enum#true,false');
+   	$def->addAttribute('object', 'classid', 'Text');
+   	$def->addAttribute('object', 'codebase', 'Text');
+   	$def->addAttribute('object', 'standby', 'Text');
+   	
+   	// Attribute for param
+   	$def->addAttribute('param', 'bgcolor', 'Text');
+   	
+   	// Attribute for embed
+   	$def->addAttribute('embed', 'autoplay', 'Enum#true,false');
+   	$def->addAttribute('embed', 'bgcolor', 'Text');
+   	$def->addAttribute('embed', 'controller', 'Text');
+   	$def->addAttribute('embed', 'devicefont', 'Text');
+   	$def->addAttribute('embed', 'loop', 'Text');
+   	$def->addAttribute('embed', 'pluginspage', 'Text');
+   	$def->addAttribute('embed', 'quality', 'Text');
+   	$def->addAttribute('embed', 'scale', 'Text');
+   	$def->addAttribute('embed', 'type', 'Text');
+   	$def->addAttribute('embed', 'autostart', 'Text');
+   	$def->addAttribute('embed', 'showcontrols', 'Text');
+   	$def->addAttribute('embed', 'showstatusbar', 'Text');
+   	$def->addAttribute('embed', 'standby', 'Text');
+   	
    	
    	// config for description ckeditor
    	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
    	#$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
    	#$config->set('HTML.AllowedAttributes','a.target');
    	
-   	// allow target=
-   	$config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
+   	
    	return $config;
    }
    

@@ -5,7 +5,7 @@
 			
 			<div id="files_attached">
 				{foreach $item.files as $file}
-					<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
+					<div style="float:left;"><input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" /></div><div id="file_name" name="file_name">{$file.file_name}</div><br/>
 				{/foreach}
 			</div>
 			

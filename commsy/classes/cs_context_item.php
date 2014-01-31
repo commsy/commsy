@@ -6945,6 +6945,27 @@ class cs_context_item extends cs_item {
   	}
   	return $retour;
   }
+
+  function setWithAnnouncementDates() {
+  	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',2);
+  }
+  
+  function setWithoutAnnouncementDates() {
+  	$this->_addExtra('HIDE_ANNOUNCEMENT_DATE',1);
+  }
+  
+  function withAnnouncementDates() {
+  	$retour = false;
+  	if ($this->_issetExtra('HIDE_ANNOUNCEMENT_DATE') ) {
+  		$re = $this->_getExtra('HIDE_ANNOUNCEMENT_DATE');
+  		if ($re == 2) {
+  			$retour = true;
+  		}
+  	}else {
+  		$retour = false;
+  	}
+  	return $retour;
+  }
  
 }
 ?>

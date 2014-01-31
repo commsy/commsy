@@ -108,10 +108,9 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 				var clipPathProp = this.rawNode.getAttribute("clip-path");
 				if(clipPathProp){
 					var clipNode = dom.byId(clipPathProp.match(/gfx_clip[\d]+/)[0]);
-					clipNode && clipNode.parentNode.removeChild(clipNode);
+					if(clipNode){ clipNode.parentNode.removeChild(clipNode); }
 				}
 			}
-			this.rawNode = null;
 			gs.Shape.prototype.destroy.apply(this, arguments);
 		},
 
@@ -207,15 +206,16 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 				}
 				if(da instanceof Array){
 					da = lang._toArray(da);
-					for(var i = 0; i < da.length; ++i){
+					var i;
+					for(i = 0; i < da.length; ++i){
 						da[i] *= s.width;
 					}
 					if(s.cap != "butt"){
-						for(var i = 0; i < da.length; i += 2){
+						for(i = 0; i < da.length; i += 2){
 							da[i] -= s.width;
 							if(da[i] < 1){ da[i] = 1; }
 						}
-						for(var i = 1; i < da.length; i += 2){
+						for(i = 1; i < da.length; i += 2){
 							da[i] += s.width;
 						}
 					}
@@ -316,7 +316,7 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 			r.setAttribute("stroke-miterlimit", 4);
 			// Bind GFX object with SVG node for ease of retrieval - that is to
 			// save code/performance to keep this association elsewhere
-			r.__gfxObject__ = this.getUID();
+			r.__gfxObject__ = this;
 		},
 
 		setShape: function(newShape){
@@ -434,7 +434,7 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 			this.rawNode = rawNode;
 			// Bind GFX object with SVG node for ease of retrieval - that is to
 			// save code/performance to keep this association elsewhere
-			this.rawNode.__gfxObject__ = this.getUID();
+			this.rawNode.__gfxObject__ = this;
 		},
 		destroy: function(){
 			// summary:
@@ -528,7 +528,7 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 			_setAttributeNS(rawNode, svg.xmlns.xlink, "xlink:href", this.shape.src);
 			// Bind GFX object with SVG node for ease of retrieval - that is to
 			// save code/performance to keep this association elsewhere
-			rawNode.__gfxObject__ = this.getUID();
+			rawNode.__gfxObject__ = this;
 			return this;	// self
 		}
 	});
@@ -586,6 +586,19 @@ else
 			}
 			oldParent.removeChild(_measurementNode);
 			return _width;
+		},
+		getBoundingBox: function(){
+			var s = this.getShape(), bbox = null;
+			if(s.text){
+				// try/catch the FF native getBBox error.
+				try {
+					bbox = this.rawNode.getBBox();
+				} catch (e) {
+					// under FF when the node is orphan (all other browsers return a 0ed bbox.
+					bbox = {x:0, y:0, width:0, height:0};
+				}
+			}
+			return bbox;
 		}
 	});
 	svg.Text.nodeType = "text";
@@ -774,6 +787,8 @@ else
 		s._parent = dom.byId(parentNode);
 		s._parent.appendChild(s.rawNode);
 
+		g._base._fixMsTouchAction(s);
+
 		return s;	// dojox/gfx.Surface
 	};
 
@@ -799,15 +814,21 @@ else
 			// summary:
 			//		starts a new batch, subsequent new child shapes will be held in
 			//		the batch instead of appending to the container directly
-			this.fragment = _createFragment();
+			if(!this._batch){
+				this.fragment = _createFragment();
+			}
+			++this._batch;
+			return this;
 		},
 		closeBatch: function() {
 			// summary:
 			//		submits the current batch, append all pending child shapes to DOM
-			if (this.fragment) {
+			this._batch = this._batch > 0 ? --this._batch : 0;
+			if (this.fragment && !this._batch) {
 				this.rawNode.appendChild(this.fragment);
 				delete this.fragment;
 			}
+			return this;
 		},
 		add: function(shape){
 			// summary:
@@ -912,9 +933,9 @@ else
 		if (!event.gfxTarget) {
 			if (safMobile && event.target.wholeText) {
 				// Workaround iOS bug when touching text nodes
-				event.gfxTarget = gs.byId(event.target.parentElement.__gfxObject__);
+				event.gfxTarget = event.target.parentElement.__gfxObject__;
 			} else {
-				event.gfxTarget = gs.byId(event.target.__gfxObject__);
+				event.gfxTarget = event.target.__gfxObject__;
 			}
 		}
 		return true;

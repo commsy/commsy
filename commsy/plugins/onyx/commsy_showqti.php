@@ -36,8 +36,22 @@
 <?php
    if ( !empty($_GET['iid']) ) {
       $onyx_class = $environment->getPluginClass('onyx');
-      $player_url_run = $onyx_class->getPlayerRunUrl(); 
-      echo('<div><iframe class="onyx" src="'.$player_url_run.'?id='.$_GET['iid'].'"></iframe></div>');
+      $player_url_run = '';
+      
+      // via file-id
+      if ( is_numeric($_GET['iid']) ) {
+         $player_url_run = $onyx_class->getPlayerRunUrlByFileID($_GET['iid'],$_GET['params']);
+      }
+      
+      // old style
+      else {
+         $player_url_run = $onyx_class->getPlayerRunUrl().'?id='.$_GET['iid'];
+      }
+      if ( !empty($player_url_run) ) {
+         echo('<div><iframe class="onyx" src="'.$player_url_run.'"></iframe></div>');
+      } else {
+      	echo($translator->getMessage('ONYX_ERROR_URL_LOST_PLAYER'));
+      }
    } else {
       echo($translator->getMessage('ONYX_ERROR_ID_LOST'));
    } 

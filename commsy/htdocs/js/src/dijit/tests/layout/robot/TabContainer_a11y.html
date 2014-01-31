@@ -10,14 +10,14 @@
 
 		<!-- required: dojo.js -->
 		<script type="text/javascript" src="../../../../dojo/dojo.js"
-			djConfig="isDebug: true"></script>
+			data-dojo-config="isDebug: true"></script>
 
 		<script type="text/javascript">
 			require([
 				"doh/runner", "dojo/robotx",
-				"dojo/dom", "dojo/keys", "dojo/query", "dojo/sniff",
-				"dijit/tests/helpers", "dojo/domReady!"
-			], function(doh, robot, dom, keys, query, has, helpers){
+				"dojo/dom", "dojo/keys", "dojo/query", "dojo/sniff", "dojo/window",
+				"dijit/tests/helpers"
+			], function(doh, robot, dom, keys, query, has, winUtils, helpers){
 	
 				robot.initRobot('../test_TabContainer.html');
 
@@ -29,15 +29,58 @@
 						registry = robot.window.require("dijit/registry");
 					}
 				]);
+				
+				doh.register("aria", [
+					{
+						name: "tab container attributes",
+						timeout: 10000,
+						runTest: function(t){
+							var d = new doh.Deferred();
+							var tc = registry.byId("mainTabContainer");
+							
+							doh.is("tabpanel", tc.containerNode.children[0].getAttribute("role"), "containerNode child role");
+							doh.is("mainTabContainer_tablist_tab1", tc.containerNode.children[0].getAttribute("aria-labelledby"), "containerNode.child (the tabpanel) labelledby");
+							
+							var tablist = tc.tablist;
+							
+							// The tablist that stretches across the top
+							doh.is("tablist", tablist.containerNode.getAttribute("role"), "tablist role");
+							doh.is("tab", tablist.getChildren()[0].focusNode.getAttribute("role"), "tablist child's role should be tab");
+							
+							// Now the drop down button
+							doh.is("button", tablist._menuBtn.domNode.getAttribute("role"), "_menuBtn role");
+							doh.f(tablist._menuBtn.domNode.getAttribute("aria-expanded"), "aria-expanded should initially be absent");
+							doh.f(tablist._menuBtn.domNode.getAttribute("aria-owns"), "aria-owns should initially be absent");
 
-				doh.register("basic navigation",[
+							// Now open the drop down to verify changes in aria-expanded, aria-owns, and aria-labelledby
+							tablist._menuBtn.focus();
+							robot.keyPress(keys.ENTER, 500, {});
+
+							robot.sequence(d.getTestCallback(function(){
+								doh.t(tablist._menuBtn.domNode.getAttribute("aria-expanded"), "aria-expanded with open dropdown");
+								doh.is("mainTabContainer_menu", tablist._menuBtn.domNode.getAttribute("aria-owns"), "menuBtn should own the menu dropdown");
+								
+								var menu = registry.byId("mainTabContainer_menu");
+								doh.is("menu", menu.domNode.getAttribute("role"), "the dropdown role");
+								doh.is("mainTabContainer_tablist_menuBtn", menu.domNode.getAttribute("aria-labelledby"), "aria-labelledby on menu dropdown");
+							
+							}), 500);
+							
+							return d;
+						}
+					}
+				]);
+
+				doh.register("basic navigation", [
 					{
 						name: "focus on button before TabContainer",
 						timeout: 10000,
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							// Note: for this to work, focus needs to start somewhere else; otherwise there will be no
+							// focus event.
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 
 							query("button")[0].focus();							
@@ -51,7 +94,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 							
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is("mainTabContainer_tablist_tab2", node.id, "focus");
 							}));
 
@@ -66,7 +109,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								var tc = registry.byId("mainTabContainer");
 								doh.is('mainTabContainer_tablist_tab3', node.id, "currently chosen tab");
 								doh.is("tab3", tc.selectedChildWidget.id, "currently displayed pane");
@@ -84,7 +127,7 @@
 							var d = new doh.Deferred();
 							
 							var tc = registry.byId("mainTabContainer");							
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab2', node.id, "currently chosen tab");
 								doh.is("tab2", tc.selectedChildWidget.id, "currently chosen pane");
 							}));
@@ -101,7 +144,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 							
 							robot.keyPress(keys.RIGHT_ARROW, 500, {});
@@ -115,7 +158,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 							
 							robot.keyPress(keys.RIGHT_ARROW, 500, {});
@@ -130,7 +173,7 @@
 						runTest: function(t){
 								var d = new doh.Deferred();
 
-								onFocus(d.getTestCallback(function(node){
+								helpers.onFocus(d.getTestCallback(function(node){
 									doh.is('inlined_tablist_tab2href', node.id);
 								}));								
 								
@@ -146,7 +189,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 							
 							robot.keyPress(keys.RIGHT_ARROW, 500, {});
@@ -160,7 +203,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 							
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 
 							robot.keyPress(keys.TAB, 750, {shift:true});
@@ -174,7 +217,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 							
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab3', node.id);
 							}));
 
@@ -189,7 +232,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 							
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 
 							robot.keyPress(keys.RIGHT_ARROW, 500, {});
@@ -204,7 +247,7 @@
 							var d = new doh.Deferred();
 							
 							//verify that the third nested tab is still selected
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('inlined_tablist_subtab3', node.id);
 							}));
 
@@ -224,8 +267,10 @@
 
 							registry.byId("mainTabContainer").selectChild(registry.byId("tab3"), false);
 
-							setTimeout(d.getTestCallback(function(){
+							setTimeout(d.getTestErrback(function(){
+								// on IE the focus event lands after control releases (after the NEXT test has set its focus handler) so do 0 timeout to let focus happen
 								dom.byId("mainTabContainer_tablist_tab3href").focus();
+								setTimeout(d.getTestCallback(function(){}),0);
 							}), 500);
 
 							return d;
@@ -237,7 +282,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 								
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab1', node.id);
 							}));
 
@@ -252,7 +297,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 								
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_embedded', node.id);
 							}));
 
@@ -267,7 +312,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 								
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab4href', node.id);
 							}));
 
@@ -299,7 +344,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 							}));
 
 							query("button")[0].focus();
@@ -313,7 +358,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is("mainTabContainer_tablist_tab2", node.id, "focus");
 							}));
 
@@ -328,7 +373,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								var tc = registry.byId("mainTabContainer");
 								doh.is('mainTabContainer_tablist_inlined', node.id, "currently chosen tab");
 								doh.is("inlined", tc.selectedChildWidget.id, "currently displayed pane");
@@ -346,7 +391,7 @@
 							var d = new doh.Deferred();
 
 							var tc = registry.byId("mainTabContainer");
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab2', node.id, "currently chosen tab");
 								doh.is("tab2", tc.selectedChildWidget.id, "currently chosen pane");
 							}));
@@ -362,7 +407,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab4href', node.id);
 							}));
 
@@ -377,7 +422,7 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							onFocus(d.getTestCallback(function(node){
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('mainTabContainer_tablist_tab2', node.id);
 							}));
 
@@ -405,17 +450,21 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							registry.byId("mainTabContainer").selectChild("tab4href");
+							var tc = registry.byId("mainTabContainer");
 
-							// Go to "Sub TabContainer from href" tab, and close it
+							// Select "SplitContainer from href tab"
+							tc.selectChild("tab4href");
+
+							// Go to "Embedded layout widgets" tab, and close it.
+							// This puts focus back on "SplitContainer from href".
 							robot.keyPress(keys.RIGHT_ARROW, 500, {});
 							robot.keyPress(keys.DELETE, 750, {});
 
-							var tc = registry.byId("mainTabContainer");
 							robot.sequence(d.getTestCallback(function(){
-								doh.is(6, tc.getChildren().length);
+								doh.is(6, tc.getChildren().length, "six tabs left");
+								doh.is("tab4href", tc.selectedChildWidget.id, "selection moved to previous tab");
 							}), 500);
-							
+
 							return d;
 						}
 					},
@@ -424,15 +473,16 @@
 						timeout: 10000,
 						runTest: function(t){
 							var d = new doh.Deferred();
-							
+
 							robot.sequence(function(){
 								dom.byId("mainTabContainer_tablist_tab1").focus();
 							}, 500);
 
 							// Go to "Tab 3", and close it.
-							// This puts the focus back on "Tab 1".
-							robot.keyPress(keys.RIGHT_ARROW, 500, {});
-							robot.keyPress(keys.RIGHT_ARROW, 750, {});
+							// This puts the focus back on "Tab 2".
+							robot.keyPress(keys.LEFT_ARROW, 500, {});
+							robot.keyPress(keys.LEFT_ARROW, 750, {});
+							robot.keyPress(keys.LEFT_ARROW, 750, {});
 							if(has("chrome")){
 								// on chrome ctrl+w isn't trapped, and closes the whole browser!
 								robot.keyPress(keys.DELETE, 750, {});
@@ -443,6 +493,7 @@
 							var tc = registry.byId("mainTabContainer");
 							robot.sequence(d.getTestCallback(function(){
 								doh.is(5, tc.getChildren().length);
+								doh.is("tab2", tc.selectedChildWidget.id, "selection moved to previous tab");
 							}), 500);
 							return d;
 						}
@@ -460,11 +511,11 @@
 						runTest: function(t){
 							var d = new doh.Deferred();
 
-							// Go to "SplitContainer from href" tab
-							robot.keyPress(keys.RIGHT_ARROW, 500, {});
-							robot.keyPress(keys.RIGHT_ARROW, 750, {});
-							robot.keyPress(keys.RIGHT_ARROW, 750, {});
-							
+							var tc = registry.byId("ttabs");
+							winUtils.scrollIntoView(tc.domNode);
+
+							dom.byId("ttabs_tablist_ttab1").focus();
+
 							// Open context menu via keyboard
 							if(has("mac")){
 								robot.keyPress(keys.SPACE, 500, {
@@ -478,12 +529,13 @@
 
 							// Close tab
 							robot.keyPress(keys.ENTER, 500, {});
-							
-							var tc = registry.byId("mainTabContainer");
+
 							robot.sequence(d.getTestCallback(function(){
-								doh.is(4, tc.getChildren().length);
+								doh.is(2, tc.getChildren().length, "remaining tabs");
+								doh.is("ttab2", tc.selectedChildWidget.id,
+										"selection moved to next tab (since first tab was deleted)");
 							}), 500);
-							
+
 							return d;
 						}
 					});
@@ -495,16 +547,19 @@
 						timeout: 10000,
 						runTest: function(t){
 							var d = new doh.Deferred();
-							
-							dom.byId("ltabs_tablist_HanselGretel1").focus();
 
 							var tc = registry.byId("ltabs");
-							onFocus(d.getTestCallback(function(node){
-								doh.is('ltabs_tablist_GreenTwigs1', node.id, "currently chosen tab");
-								doh.is("GreenTwigs1", tc.selectedChildWidget.id, "currently displayed pane");
-							}));
+							winUtils.scrollIntoView(tc.domNode);
 
-							robot.keyPress(keys.DOWN_ARROW, 500, {});
+							dom.byId("ltabs_tablist_HanselGretel1").focus();
+							setTimeout(d.getTestErrback(function(){
+								helpers.onFocus(d.getTestCallback(function(node){
+									doh.is('ltabs_tablist_GreenTwigs1', node.id, "currently chosen tab");
+									doh.is("GreenTwigs1", tc.selectedChildWidget.id, "currently displayed pane");
+								}));
+
+								robot.keyPress(keys.DOWN_ARROW, 500, {});
+							}), 0);
 
 							return d;
 						}
@@ -514,20 +569,20 @@
 						timeout: 10000,
 						runTest: function(t){
 							var d = new doh.Deferred();
-							
-							var tc = registry.byId("ltabs");							
-							onFocus(d.getTestCallback(function(node){
+
+							var tc = registry.byId("ltabs");
+							helpers.onFocus(d.getTestCallback(function(node){
 								doh.is('ltabs_tablist_HanselGretel1', node.id, "currently chosen tab");
 								doh.is("HanselGretel1", tc.selectedChildWidget.id, "currently chosen pane");
 							}));
 
 							robot.keyPress(keys.UP_ARROW, 500, {});
-							
+
 							return d;
 						}
 					}
 				]);
-				
+
 				doh.run();
 			});
 		</script>

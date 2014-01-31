@@ -243,10 +243,11 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
    include_once('classes/cs_mail.php');
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($current_item_id);
-
-   if($room_item->withAGBDatasecurity()){
+   $portal_item = $environment->getCurrentPortalItem();
+   
+   if($portal_item->withAGBDatasecurity() and $room_item->getAGBStatus() == 1){
    	$agb_acceptance = false;
-   	if(isset($_POST['agb_acceptance']) and $_POST['agb_acceptance'] == 1){
+   	if($room_item->getAGBStatus() == 1 AND isset($_POST['agb_acceptance']) and $_POST['agb_acceptance'] == 1){
    		$agb_acceptance = true;
    	} else {
    		$error = 'agb';
@@ -255,7 +256,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
    } else {
    	$agb_acceptance = true;
    }
-   
+
    $session = $environment->getSessionItem();
    $get_params = $environment->getCurrentParameterArray();
    if (isset($get_params['sort'])){

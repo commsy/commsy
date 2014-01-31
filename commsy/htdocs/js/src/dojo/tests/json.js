@@ -1,4 +1,4 @@
-define(["../main", "doh/main", "../json"], function(dojo, doh, JSON){
+define(["doh/main", "../json", "../has"], function(doh, JSON, has){
 
 	var mustThrow = function(json){
 		try{
@@ -17,6 +17,7 @@ define(["../main", "doh/main", "../json"], function(dojo, doh, JSON){
 		function simpleNull(t){ t.is(null, JSON.parse('{"foo":null}').foo); },
 		function simpleNumber(t){ t.is(3.3, JSON.parse('{"foo":3.3}', true).foo); },
 		function strictString(t){ t.is("bar", JSON.parse('{"foo":"bar"}', true).foo); },
+		function strictEmptyString(t){ t.is("", JSON.parse('{"foo":""}', true).foo); },
 		function strictStringEsc(t){ t.is("b\n\t\"ar()", JSON.parse('{"foo":"b\\n\\t\\"ar()"}', true).foo); },
 		function strictTrue(t){ t.is(true, JSON.parse('{"foo":true}', true).foo); },
 		function strictFalse(t){ t.is(false, JSON.parse('{"foo":false}', true).foo); },
@@ -42,25 +43,30 @@ define(["../main", "doh/main", "../json"], function(dojo, doh, JSON){
 		function serializeInfinity(t){ t.is('{"foo":null}', JSON.stringify({"foo":Infinity})); },
 		// there is differences in how many decimals of accuracies in seconds in how Dates are serialized between browsers
 		function serializeDate(t){ t.t(/1970-01-01T00:00:00.*Z/.test(JSON.parse(JSON.stringify({"foo":new Date(1)})).foo)); },
-		function serializeCircular(t){
-			try{
-				var a = {};
-				a.a = a;
-				console.log("circular: " + JSON.stringify(a));
-			}catch(e){
-				return;
-			}
-			throw new Error("stringify must throw for circular references");
-
+		function serializeInherited(t){
+			function FooBar() { this.foo = "foo"; }
+			FooBar.prototype.bar = "bar";
+			t.is('{"foo":"foo"}', JSON.stringify(new FooBar()));
 		},
-		function serializeInherited(t){ 
- 			function FooBar() { this.foo = "foo"; }
- 			FooBar.prototype.bar = "bar";
- 			t.is('{"foo":"foo"}', JSON.stringify(new FooBar())); 
- 		},
 		/*Apparently Firefox doesn't pass the key to the toJSON method*/
 		function serializeToJSON(t){ t.is('{"foo":{"name":"value"}}', JSON.stringify({foo:{toJSON:function(key){return {name:"value"}; }}})); }
 	]);
+
+	if(!has("host-rhino")){
+		doh.register("tests.json.circular", [
+			function serializeCircular(t){
+				try{
+					var a = {};
+					a.a = a;
+					console.log("circular: " + JSON.stringify(a));
+				}catch(e){
+					return;
+				}
+				throw new Error("stringify must throw for circular references");
+
+			}
+		]);
+	}
 
 var smallDataSet = {
 	prop1: null,

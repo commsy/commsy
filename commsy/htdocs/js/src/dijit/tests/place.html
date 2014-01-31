@@ -3,17 +3,17 @@
 <html>
 <head>
 	<title>dijit/place unit test</title>
-	<style type="text/css">
-		@import "../themes/claro/document.css";
-		@import "css/dijitTests.css";
 
+	<script src="boilerplate.js"></script>
+
+	<style type="text/css">
 		html {
 			overflow: hidden; /* ie6 needs this */
 		}
 		body {
 			height: 100%;
 			padding: 0;
-			margin: 0;
+			margin: 10px; /* negative test for #16148; shouldn't affect placement unless body position relative/absolute */
 			border: 0;
 		}
 
@@ -31,9 +31,6 @@
 			color: white;
 		}
 	</style>
-	<script type="text/javascript" src="../../dojo/dojo.js"
-		data-dojo-config="isDebug: true, parseOnLoad: false"></script>
-	<script type="text/javascript" src="_testCommon.js"></script>
 
 	<script type="text/javascript">
 		require([
@@ -62,6 +59,26 @@
 					doh.is("7px", popup.style.top, "y coord");
 					doh.is(75, ret.w, "it's 75px wide");
 				},
+				function atTooltip(t){
+					// Same as above test except that shape of drop down changes depending on where it's positioned.
+					// Simulates tooltip placement (tooltip shape changes b/c of the arrow).
+
+					function layoutNode(node, aroundCorner, nodeCorner){
+						node.style.width = (nodeCorner == "TL" ? "80px" : "75px");
+					}
+					var ret = place.at(
+							popup,
+							{x: 10, y: 7},		// center of aroundNode
+							["TR", "BR", "BL", "TL"],
+							{x: 5, y: 5},		// half of width and height of aroundNode
+							layoutNode
+					);
+
+					doh.is("TL", ret.corner, "popup's corner");
+					doh.is("BR", ret.aroundCorner, "around corner");
+					doh.is("80px", popup.style.width, "layout node width");
+					popup.style.width = "75px";
+				},
 				function atTR(t){
 					// Place popup at top right... place.at() should choose the top-right corner, because
 					// any of the other corner would make the popup go partially off the screen
@@ -89,7 +106,8 @@
 					doh.is("BL", ret.aroundCorner, "around corner");
 					doh.is("TL", ret.corner, "popup's corner");
 					doh.is("20px", popup.style.top, "underneath around node");
-					doh.is(domGeometry.position(aroundTop).x+"px", popup.style.left, "left sides aligned");
+					doh.is(Math.round(domGeometry.position(aroundTop).x), Math.round(popup.style.left.replace("px", "")),
+							"left sides aligned");
 				},
 				function aroundTooltip(t){
 					// Same as above test except that shape of drop down changes depending on where it's positioned.

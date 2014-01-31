@@ -869,6 +869,7 @@ class cs_external_page_portal_view extends cs_page_view {
    function _getRoomForm($item, $mode){
      $html ='';
      $current_user = $this->_environment->getCurrentUser();
+     $portal_item = $this->_environment->getCurrentPortalItem();
      // Person ist User und will Mitglied werden
      if ($mode=='member' and $current_user->isUser()) {
         $translator = $this->_environment->getTranslationObject();
@@ -937,7 +938,7 @@ class cs_external_page_portal_view extends cs_page_view {
            }
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE').': ';
            $temp_array[1] = '<input type="text" name="code" tabindex="14" size="30"/>'.LF;
-           $formal_data[] = $temp_array;
+           #$formal_data[] = $temp_array;
         } else {
            $html .= $this->_translator->getMessage('ACCOUNT_GET_4_TEXT');
            $temp_array[0] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_REASON').': ';
@@ -947,8 +948,27 @@ class cs_external_page_portal_view extends cs_page_view {
               $value = str_replace('%20',' ',$value);
            }
            $temp_array[1] = '<textarea name="description_user" cols="31" rows="10" tabindex="14">'.$value.'</textarea>'.LF;
-           $formal_data[] = $temp_array;
+           #$formal_data[] = $temp_array;
         }
+        //$temp_array = array();
+        if($item->getAGBStatus() != 2 and $portal_item->withAGBDatasecurity()){
+        	$text_array = $item->getAGBTextArray();
+        	$lang = strtoupper($this->_translator->_selected_language);
+        	#$usage_info = $text_array[$lang];
+        
+        	$temp_array[1] .= BRLF;
+        	$checkbox = '<input type="checkbox" name="agb_acceptance" value="1">';
+        
+        	$link = ahref_curl($item->getItemID(), 'agb', 'index', '', $this->_translator->getMessage('AGB_CONFIRMATION'));
+        
+        	$link_agb = '<a onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');" target="agb" href="commsy.php?cid='.$item->getItemID().'&mod=agb&fct=index&agb=1">'.$this->_translator->getMessage('AGB_CONFIRMATION').'</a>';
+        
+        	$temp_array[1] .= $this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT', $checkbox,$link_agb).LF;
+        	$temp_array[1] .= BRLF;
+        	#$temp_array[1] .= $html;
+        	#$temp_array[1] .= $usage_info;
+        }
+        $formal_data[] = $temp_array;
 
         $temp_array = array();
         $temp_array[0] = '&nbsp;';
@@ -1550,6 +1570,71 @@ class cs_external_page_portal_view extends cs_page_view {
    	// translations - should be managed elsewhere soon
    	$to_javascript["translations"]["common_hide"] = $translator->getMessage("COMMON_HIDE");
    	$to_javascript["translations"]["common_show"] = $translator->getMessage("COMMON_SHOW");
+   	
+   	$portal_item = $this->_environment->getCurrentPortalItem();
+   	$current_portal_user = $this->_environment->getPortalUserItem();
+   	// password expires soon alert
+   	if(!empty($current_portal_user) AND $current_portal_user->getPasswordExpireDate() > getCurrentDateTimeInMySQL()) {
+   		$start_date = new DateTime(getCurrentDateTimeInMySQL());
+   		$since_start = $start_date->diff(new DateTime($current_portal_user->getPasswordExpireDate()));
+   		$days = $since_start->days;
+   		if($days == 0){
+   			$days = 1;
+   		}
+   	
+   		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+   		if(isset($days_before_expiring_sendmail) AND $days <= $days_before_expiring_sendmail){
+   			$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+   			$to_javascript['environment']['password_expire_soon'] = true;
+   		} else if(!isset($days_before_expiring_sendmail) AND $days <= 14){
+   			$to_javascript["translations"]["password_expire_soon_alert"] = $translator->getMessage("COMMON_PASSWORD_EXPIRE_ALERT", $days);
+   			$to_javascript['environment']['password_expire_soon'] = true;
+   		}
+   	} else {
+   		$to_javascript['environment']['password_expire_soon'] = false;
+   	}
+   	
+   	$current_user = $this->_environment->getCurrentUserItem();
+   	 
+   	$auth_source_manager = $this->_environment->getAuthSourceManager();
+   	$auth_source_item = $auth_source_manager->getItem($current_user->getAuthSource());
+   	
+   	if(isset($auth_source_item)){
+   		$show_tooltip = true;
+   		// password
+   		if($auth_source_item->getPasswordLength() > 0){
+   			$to_javascript["password"]["length"] = $translator->getMessage('PASSWORD_INFO2_LENGTH', $auth_source_item->getPasswordLength());
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureBigchar() == 1){
+   			$to_javascript["password"]["big"] = $translator->getMessage('PASSWORD_INFO2_BIG');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureSmallchar() == 1){
+   			$to_javascript["password"]["small"] = $translator->getMessage('PASSWORD_INFO2_SMALL');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureNumber() == 1){
+   			$to_javascript["password"]["special"] = $translator->getMessage('PASSWORD_INFO2_SPECIAL');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   		if($auth_source_item->getPasswordSecureSpecialchar() == 1){
+   			$to_javascript["password"]["number"] = $translator->getMessage('PASSWORD_INFO2_NUMBER');
+   		} else {
+   			$show_tooltip = false;
+   		}
+   	} else {
+   		$show_tooltip = false;
+   	}
+   	if($show_tooltip){
+   		$to_javascript["password"]["tooltip"] = 1;
+   	} else {
+   		$to_javascript["password"]["tooltip"] = 0;
+   	}
    
    	// dev
    	global $c_indexed_search;

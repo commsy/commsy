@@ -7,16 +7,19 @@ define([
 	"dojo/dom-class",
 	"dojo/dom-construct",
 	"dojo/dom-style",
+	"dojo/dom-attr",
+	"./View",
 	"./iconUtils",
 	"./_ItemBase",
 	"./Badge",
-	"./sniff"
-], function(connect, declare, event, lang, dom, domClass, domConstruct, domStyle, iconUtils, ItemBase, Badge, has){
+	"./sniff",
+	"dojo/has!dojo-bidi?dojox/mobile/bidi/TabBarButton"
+], function(connect, declare, event, lang, dom, domClass, domConstruct, domStyle, domAttr, View, iconUtils, ItemBase, Badge, has, BidiTabBarButton){
 
 	// module:
 	//		dojox/mobile/TabBarButton
 
-	return declare("dojox.mobile.TabBarButton", ItemBase,{
+	var TabBarButton = declare(has("dojo-bidi") ? "dojox.mobile.NonBidiTabBarButton" : "dojox.mobile.TabBarButton", ItemBase,{
 		// summary:
 		//		A button widget that is placed in the TabBar widget.
 		// description:
@@ -75,6 +78,10 @@ define([
 
 		_selStartMethod: "touch",
 		_selEndMethod: "touch",
+		
+		// _moveTo: String
+		//		id of destination view
+		_moveTo: "",
 
 		destroy: function(){
 			if(this.badgeObj){
@@ -117,7 +124,6 @@ define([
 
 		buildRendering: function(){
 			this.domNode = this.srcNodeRef || domConstruct.create(this.tag);
-
 			if(this.srcNodeRef){
 				if(!this.label){
 					this.label = lang.trim(this.srcNodeRef.innerHTML);
@@ -126,7 +132,19 @@ define([
 			}
 
 			this.labelNode = this.box = domConstruct.create("div", {className:"mblTabBarButtonLabel"}, this.domNode);
-
+			
+			domAttr.set(this.domNode, "role", "tab");
+			domAttr.set(this.domNode, "aria-selected", "false");
+			this._moveTo = this._getMoveToId();
+			if(this._moveTo){
+				var tabPanelNode = dom.byId(this._moveTo);
+				if(tabPanelNode){
+					domAttr.set(this.domNode, "aria-controls", this._moveTo);
+					domAttr.set(tabPanelNode, "role", "tabpanel");
+					domAttr.set(tabPanelNode, "aria-labelledby", this.id);
+				}
+			}
+			
 			this.inherited(arguments);
 		},
 
@@ -134,7 +152,7 @@ define([
 			if(this._started){ return; }
 
 			this._dragstartHandle = this.connect(this.domNode, "ondragstart", event.stop);
-			this._keydownHandle = this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
+			this.connect(this.domNode, "onkeydown", "_onClick"); // for desktop browsers
 			var parent = this.getParent();
 			if(parent && parent.closable){
 				this._clickCloseHandler = this.connect(this.iconDivNode, "onclick", "_onCloseButtonClick");
@@ -213,6 +231,25 @@ define([
 			this["icon" + n] = icon;
 			domClass.toggle(this.domNode, "mblTabBarButtonHasIcon", icon && icon !== "none");
 		},
+		
+		_getMoveToId: function(){
+			// summary:
+			//		Return the id of the destination view.
+			//		If there is no id, return an empty string.
+			if(this.moveTo){
+				if(this.moveTo === "#"){ return ""; }
+				var toId = "";
+				if(typeof(this.moveTo) === "object" && this.moveTo.moveTo){
+					toId = this.moveTo.moveTo;
+				}else{
+					toId = this.moveTo;
+				}
+				if(toId){
+					toId = View.prototype.convertToId(toId);
+				}
+				return toId;
+			}
+		},
 
 		_setIcon1Attr: function(icon){
 			this._setIcon(icon, 1);
@@ -251,6 +288,15 @@ define([
 			//		Makes this widget in the selected or unselected state.
 			this.inherited(arguments);
 			domClass.toggle(this.domNode, "mblTabBarButtonSelected", selected);
+			domAttr.set(this.domNode, "aria-selected", selected ? "true" : "false");
+			if(this._moveTo){
+				var tabPanelNode = dom.byId(this._moveTo);
+				if(tabPanelNode){
+					domAttr.set(tabPanelNode, "aria-hidden", selected ? "false" : "true");
+				}
+			}
 		}
 	});
+
+	return has("dojo-bidi")?declare("dojox.mobile.TabBarButton", [TabBarButton, BidiTabBarButton]):TabBarButton;
 });

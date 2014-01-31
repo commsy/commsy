@@ -22,87 +22,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
 
 		// check context
-		if(!$current_context->isOpen()) {
-			// TODO:
-			// 			$params = array();
-			// 			$params['environment'] = $environment;
-			// 			$params['with_modifying_actions'] = true;
-			// 			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-			// 			unset($params);
-			// 			$error_string = $translator->getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
-			// 			$errorbox->setText($error_string);
-			// 			$page->add($errorbox);
-			// 			$command = 'error';
+		if(/*!$current_context->isOpen()*/false) {
 		}
 
 		// access granted
 		else {
-			// 			// include form
-			// 			$class_params= array();
-			// 			$class_params['environment'] = $environment;
-			// 			$form = $class_factory->getClass(PROFILE_FORM,$class_params);
-			// 			unset($class_params);
-
-			// 			if ( isset($error_message_for_profile_form)
-			// 					and !empty($error_message_for_profile_form)
-			// 			) {
-			// 				$form->setFailure('email','',$error_message_for_profile_form);
-			// 			}
-
-			// 			$form->setProfilePageName($profile_page);
-
-			// 			$current_portal_item = $environment->getCurrentPortalItem();
-
-			// 			// cancel edit process
-			// 			if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
-			// 				$params = $environment->getCurrentParameterArray();
-			// 				redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
-			// 			}
-
-			// 			// lock user (room)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_LOCK_BUTTON_ROOM')) ) {
-			// 				$user_item->reject();
-			// 				$user_item->save();
-			// 				unset($user_item);
-			// 				redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
-			// 			}
-
-			// 			// delte user (room)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_REALLY_DELETE_BUTTON_ROOM')) ) {
-			// 				$user_item->delete();
-			// 				unset($user_item);
-			// 				redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
-			// 			}
-
-			// 			// lock user (portal)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle())) ) {
-			// 				$portalUser_item = $user_item->getRelatedCommSyUserItem();
-			// 				$portalUser_item->reject();
-			// 				$portalUser_item->save();
-			// 				$session = $environment->getSessionItem();
-			// 				$session_manager = $environment->getSessionManager();
-			// 				$session_manager->delete($session->getSessionID());
-			// 				unset($session);
-			// 				unset($session_manager);
-			// 				unset($portalUser_item);
-			// 				unset($user_item);
-			// 				$environment->setSessionItem(NULL);
-			// 				redirect($environment->getCurrentPortalID(), 'home','index', array());
-			// 			}
-
-			// 			// delete user (portal)
-			// 			elseif ( isOption($command, $translator->getMessage('PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())) ) {
-			// 				$authentication = $environment->getAuthenticationObject();
-			// 				$authentication->delete($user_item->getItemID());
-			// 				unset($authentication);
-			// 				$session = $environment->getSessionItem();
-			// 				$session_manager = $environment->getSessionManager();
-			// 				$session_manager->delete($session->getSessionID());
-			// 				unset($session);
-			// 				unset($session_manager);
-			// 				$environment->setSessionItem(NULL);
-			// 				redirect($environment->getCurrentPortalID(), 'home','index', array());
-			// 			}
 			if(false) {
 
 			}
@@ -135,11 +59,28 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								}
 								else
 								{
-									$authManager = $authentication->getAuthManager($form_data['auth_source']);
+									$user_manager = $this->_environment->getUserManager();
+									$user_manager->setUserIDLimitBinary($form_data['merge_user_id']);
 									
-									if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
-									{
-										$this->_popup_controller->setErrorReturn("1016", "authentication error");
+									$user_manager->select();
+									$user = $user_manager->get();
+									$first_user = $user->getFirst();
+									
+									$current_user = $this->_environment->getCurrentUserItem();
+
+									if(!empty($first_user)){
+										if(empty($form_data['auth_source'])){
+											$authManager = $authentication->getAuthManager($current_user->getAuthSource());
+										} else {
+											$authManager = $authentication->getAuthManager($form_data['auth_source']);
+										}
+										if ( !$authManager->checkAccount($form_data['merge_user_id'], $form_data['merge_user_password']) )
+										{
+											$this->_popup_controller->setErrorReturn("1016", "authentication error");
+											exit;
+										}
+									} else {
+										$this->_popup_controller->setErrorReturn("1015", "invalid account");
 										exit;
 									}
 								}
@@ -1292,7 +1233,18 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}else{
 								$room_item->setCSBarShowPortfolio('-1');
 							}
-
+							
+							// portal2portal
+							if(isset($form_data['show_connection_view']) && !empty($form_data['show_connection_view'])) {
+								if($form_data['show_connection_view'] == 'yes'){
+									$room_item->setCSBarShowConnection('1');
+								} else{
+									$room_item->setCSBarShowConnection('-1');
+								}
+							}else{
+								$room_item->setCSBarShowConnection('-1');
+							}
+								
 							if(isset($form_data['show_old_room_switcher']) && !empty($form_data['show_old_room_switcher'])) {
 								if($form_data['show_old_room_switcher'] == 'yes'){
 								   $room_item->setCSBarShowOldRoomSwitcher('1');
@@ -1570,6 +1522,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	       $return['email_to_commsy_secret'] = $own_room->getEmailToCommSySecret();
 	       global $c_email_upload_email_account;
 	       $return['email_to_commsy_mailadress'] = $c_email_upload_email_account;
+	       $mail_address = $this->_environment->getConfiguration('c_email_upload_email_address');
+	       if ( !empty($mail_address) ) {
+	       	 $return['email_to_commsy_mailadress'] = $mail_address;
+	       }
 	    }
 
       $this->_popup_controller->assign('popup', 'external', $this->getExternalInformation());
@@ -1970,6 +1926,19 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 		if ($room->getCSBarShowOldRoomSwitcher() == '1'){
 			$return['show_old_room_switcher'] = 'yes';
+		}
+		
+		// portal2portal
+		$return['show_connection_view'] = 'inactive';
+		$server_item = $this->_environment->getServerItem();
+		if ( !empty($server_item) ) {
+			if ( $server_item->isServerConnectionAvailable() ) {
+				if ($room->getCSBarShowConnection() == '1') {
+					$return['show_connection_view'] = 'yes';
+				} else {
+					$return['show_connection_view'] = 'no';
+				}
+			}
 		}
 
 		return $return;
