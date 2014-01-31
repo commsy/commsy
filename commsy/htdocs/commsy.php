@@ -930,6 +930,7 @@ if ( $environment->getCurrentModule() == 'context'
 
 /*********** SMARTY *****************/
 global $c_smarty;
+$c_smarty = true;
 if(isset($c_smarty) && $c_smarty === true) {
 	require_once('classes/cs_smarty.php');
 	global $c_theme;
@@ -970,9 +971,6 @@ if(isset($c_smarty) && $c_smarty === true) {
 }
 
 /*********** PAGE ***********/
-
-global $c_smarty;
-$c_smarty = true;
 
 $context_item = $environment->getCurrentContextItem();
 
