@@ -439,12 +439,12 @@
 							
 							$manager = $this->_environment->getManager($rubric);
 							$templateItem = $manager->getItem($itemId);
+							$templateItemTagList = $templateItem->getTagList();
 							
 							$this->_environment->changeContextToPrivateRoom($privateRoom->getItemId());
 							
 							$copyItem = $templateItem->copy();
 							
-							$templateItemTagList = $templateItem->getTagList();
 							$templateItemTag = $templateItemTagList->getFirst();
 							
 							$copyTagArray = array();
