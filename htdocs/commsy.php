@@ -66,6 +66,9 @@ function cleanupSession($session, $environment){
    }
 }
 
+// require composer autoloader
+require 'vendor/autoload.php';
+
 // include base-config
 include_once('etc/cs_constants.php');
 @include_once('etc/cs_config.php');
@@ -930,6 +933,7 @@ if ( $environment->getCurrentModule() == 'context'
 
 /*********** SMARTY *****************/
 global $c_smarty;
+$c_smarty = true;
 if(isset($c_smarty) && $c_smarty === true) {
 	require_once('classes/cs_smarty.php');
 	global $c_theme;
@@ -970,9 +974,6 @@ if(isset($c_smarty) && $c_smarty === true) {
 }
 
 /*********** PAGE ***********/
-
-global $c_smarty;
-$c_smarty = true;
 
 $context_item = $environment->getCurrentContextItem();
 

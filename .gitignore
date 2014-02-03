@@ -80,14 +80,14 @@ local.properties
 ######################
 # CommSy related     #
 ######################
-commsy/etc/cs_config.php
-commsy/etc/commsy/*.php
-commsy/htdocs/javascript/jQuery/commsy_min/*
-commsy/htdocs/js/build/*
-commsy/htdocs/templates/templates_c/*
-commsy/var/*
-commsy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
-commsy/external_pages/[0-9]*
-commsy/htdocs/css/external_portal_styles/[0-9]*
+etc/cs_config.php
+etc/commsy/*.php
+htdocs/javascript/jQuery/commsy_min/*
+htdocs/js/build/*
+htdocs/templates/templates_c/*
+var/*
+libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
+external_pages/[0-9]*
+htdocs/css/external_portal_styles/[0-9]*
 
 web/commsy
