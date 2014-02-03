@@ -3,7 +3,7 @@
 <project name="CommSy Dojo Build" default="build">
 	
 	<property environment="env"/>
-	<property name="project.workspace" value="${env.WORKSPACE}/commsy"/>
+	<property name="project.workspace" value="${env.WORKSPACE}"/>
 	
 	<target name="build" depends="clean,prepare,lint,phploc,js,post"/>
 	
