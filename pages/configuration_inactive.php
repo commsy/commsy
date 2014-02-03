@@ -119,7 +119,6 @@ if ( !$current_user->isModerator()
 		      $mail_before_delete = $_POST['email_before_delete'];
 		      
 		      $user_manager = $environment->getUserManager();
-		      
 		      if(isset($lock_days) and !empty($lock_days)){
 		      	if(isset($mail_before_lock) and !empty($mail_before_lock)){
 		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL(($lock_days + $mail_before_lock));
@@ -127,7 +126,8 @@ if ( !$current_user->isModerator()
 		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($lock_days);
 		      	}
 		      
-		      } elseif(isset($delete_days) and !isset($lock_days) and !empty($lock_days)){
+		      }
+		      if(isset($delete_days) and !empty($delete_days)){
 		      	if(isset($mail_before_delete) and !empty($mail_before_delete)){
 		      		$date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($delete_days + $mail_before_delete);
 		      	} else {
@@ -148,11 +148,11 @@ if ( !$current_user->isModerator()
 		            if($days == 0){
 		               $days = 1;
 		            }
-		            if($days >= $delete_days-1){
+		            if($days >= $delete_days-1 and !empty($delete_days)){
 		               $count_delete++;
 		               continue;
 		            }
-		            if($days >= $lock_days-1){
+		            if($days >= $lock_days-1 and !empty($lock_days)){
 		               $count_lock++;
 		               continue;
 		            }
