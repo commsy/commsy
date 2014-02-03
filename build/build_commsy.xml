@@ -46,11 +46,5 @@
 		<delete dir="${env.WORKSPACE}/.settings"/>
 		<delete file="${env.WORKSPACE}/.buildpath"/>
 		<delete file="${env.WORKSPACE}/.project"/>
-		<move todir="${env.WORKSPACE}/">
-			<fileset dir="${env.WORKSPACE}/commsy">
-				<include name="**"/>
-			</fileset>
-		</move>
-		<delete dir="${env.WORKSPACE}/commsy"/>
 	</target>
 </project>
