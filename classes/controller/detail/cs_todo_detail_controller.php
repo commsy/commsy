@@ -557,7 +557,7 @@
       				#$desc = $converter->text_as_html_long($desc);
       				$desc = $converter->textFullHTMLFormatting($desc);
       			} else {
-            	   $desc = $converter->_activate_urls($desc);
+            	   $desc = $converter->textFullHTMLFormatting($desc);
       			}
             	//$html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
