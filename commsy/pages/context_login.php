@@ -78,7 +78,7 @@ if ( !empty($_POST['user_id']) ) {
 } elseif ( !empty($_GET['user_id']) ) {
    $user_id = $_GET['user_id'];
 } elseif ($shib_direct_login) {
-	$user_id = $_SERVER['Shib_userId'];
+	$user_id = $_SERVER['Shib_uid'];
 }
 
 $password = '';
@@ -403,13 +403,21 @@ if (!$shib_direct_login){
 	$authentication = $environment->getAuthenticationObject();
 	$shibboleth_auth = $authentication->getShibbolethAuthSource();
 	
-	// create new user item
-	if (!empty($_SERVER['Shib_uid']) AND !$user_manager->exists($_SERVER['Shib_uid'])) {
+	// get shibboleth keys from configuration
+	if(isset($shibboleth_auth)){
+		$uidKey = $shibboleth_auth->getShibbolethUsername();
+		$mailKey = $shibboleth_auth->getShibbolethEmail();
+		$commonNameKey = $shibboleth_auth->getShibbolethFirstname();
+		$sureNameKey = $shibboleth_auth->getShibbolethLastname();
+	}
+	
+	// create new user item if not exist
+	if (!empty($_SERVER[$uidKey]) AND !$user_manager->exists($_SERVER[$uidKey])) {
 		$user_item = $user_manager->getNewItem();
-		$user_item->setUserID($_SERVER['Shib_uid']);
-		$user_item->setEmail($_SERVER['Shib_mail']);
-		$user_item->setFirstname($_SERVER['Shib_cn']);
-		$user_item->setLastname($_SERVER['Shib_sn']);
+		$user_item->setUserID($_SERVER[$uidKey]);
+		$user_item->setEmail($_SERVER[$mailKey]);
+		$user_item->setFirstname($_SERVER[$commonNameKey]);
+		$user_item->setLastname($_SERVER[$sureNameKey]);
 		$user_item->setAuthSource($shibboleth_auth->getItemID());
 		$user_item->setStatus('2');
 		$user_item->makeUser();

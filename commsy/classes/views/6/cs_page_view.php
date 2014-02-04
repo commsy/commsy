@@ -1772,11 +1772,14 @@ class cs_page_view extends cs_view {
 		               $auth_shibboleth_default = false;
 		               while ( $auth_source_item ) {
 		                  //Shibboleth
-		                  if($auth_source_item->getItemID() == $current_portal->getAuthDefault()){
+// 		                  if($auth_source_item->getItemID() == $current_portal->getAuthDefault()){
 		                  	if($auth_source_item->getSourceType() == 'Shibboleth'){
+		                  		$sessionInitatorUrl = $auth_source_item->getShibbolethSessionInitiator();
 		                  		$auth_shibboleth_default = true;
+		                  		$auth_source_item = $auth_source_list->getNext();
+		                  		continue;
 		                  	}
-		                  }
+// 		                  }
 		               	  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
 		                  if ( !$auth_source_selected ) {
 		                     if ( isset($_GET['auth_source'])
@@ -1794,7 +1797,7 @@ class cs_page_view extends cs_view {
 		               $html .= '</select>'.LF;
 		               //Shibboleth
 		               if($auth_shibboleth_default){
-		               	 $html .= 'Link zum IDP';
+		               	 $html .= '<a href="'.$sessionInitatorUrl.'">Login Shibboleth</a>';
 		               }
 		               $html .= '</td></tr>'.LF;
 		            }
