@@ -79,7 +79,12 @@
 						$linked_item = $material_manager->getItem($linked_iid);
 						break;
 					case CS_USER_TYPE:
-						if ( isset($item) && $item->isGrouproomActivated()){
+						if( $item->getType() == 'label') {
+							$item_type = $item->getLabelType();
+						} else {
+							$item_type = $item->getType();
+						}
+						if ( isset($item) && $item_type == 'group' && $item->isGrouproomActivated()){
 							// room exists in group
 							$group_room = $item->getGroupRoomItem();
 							// build new user_item
