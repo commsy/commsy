@@ -176,6 +176,10 @@ define([	"dojo/_base/declare",
 					if(this.module === "user" && entry.system_label === true) {
 						disabled = true;
 					}
+					// if current entry is "All Members" disable checkbox
+					if(entry.system_label === true){
+						disabled = true;
+					}
 					
 					var rowDiv = DomConstruct.create("div", {
 						className:		(index % 2 === 0) ? "pop_row_even" : "pop_row_odd"
