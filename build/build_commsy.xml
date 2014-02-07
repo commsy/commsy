@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="CommSy" default="build">
-
-	<property environment="env" />
-	<property name="project.workspace" value="${env.WORKSPACE}" />
-
 	<target name="build" depends="prepare,composer,lint,phploc,pdepend,phpmd-ci,phpcs-ci,phpcpd,phpdox,phpunit,js,post" />
 
 	<target name="build-parallel" depends="prepare,composer,lint,tools-parallel,phpunit,js,post" />
@@ -24,24 +20,25 @@
 	</target>
 
 	<target name="clean" description="Cleanup build artifacts">
-		<delete dir="${project.workspace}/build/api" />
-		<delete dir="${project.workspace}/build/coverage" />
-		<delete dir="${project.workspace}/build/logs" />
-		<delete dir="${project.workspace}/build/pdepend" />
+		<delete dir="${project.basedir}/build/api" />
+		<delete dir="${project.basedir}/build/coverage" />
+		<delete dir="${project.basedir}/build/logs" />
+		<delete dir="${project.basedir}/build/pdepend" />
 	</target>
 
 	<target name="prepare" depends="clean" description="Prepare for build">
-		<mkdir dir="${project.workspace}/build/api" />
-		<mkdir dir="${project.workspace}/build/coverage" />
-		<mkdir dir="${project.workspace}/build/logs" />
-		<mkdir dir="${project.workspace}/build/pdepend" />
-		<mkdir dir="${project.workspace}/build/phpdox" />
+		<mkdir dir="${project.basedir}/build/api" />
+		<mkdir dir="${project.basedir}/build/coverage" />
+		<mkdir dir="${project.basedir}/build/logs" />
+		<mkdir dir="${project.basedir}/build/pdepend" />
+		<mkdir dir="${project.basedir}/build/phpdox" />
 	</target>
 
 	<target name="composer" description="Install composer dependencies">
-		<exec dir="${project.workspace}" executable="php" failonerror="true">
-			<arg value="composer.phar install">
-			</arg>
+		<chmod file="${project.basedir}/composer.phar" perm="u+x">
+		</chmod>
+		<exec dir="${project.basedir}/" executable="./composer.phar" failonerror="true">
+			<arg value="install" />
 		</exec>
 	</target>
 
@@ -50,7 +47,7 @@
 			<arg value="-l">
 			</arg>
 
-			<fileset dir="${project.workspace}">
+			<fileset dir="${project.basedir}">
 				<include name="**/*.php" />
 				<exclude name="htdocs/js/**" />
 				<modified />
@@ -62,44 +59,59 @@
 		<exec executable="phploc">
 			<arg value="--count-tests" />
 			<arg value="--log-csv" />
-			<arg value="${project.workspace}/build/logs/phploc.csv" />
-			<arg path="${project.workspace}" />
+			<arg value="${project.basedir}/build/logs/phploc.csv" />
+			<arg path="${project.basedir}" />
 		</exec>
 	</target>
 
 	<target name="pdepend" description="Calculate software metrics using PHP_Depend">
 		<exec executable="pdepend">
-			<arg value="--jdepend-xml=${project.workspace}/build/logs/jdepend.xml" />
-			<arg value="--jdepend-chart=${project.workspace}/build/pdepend/dependencies.svg" />
-			<arg value="--overview-pyramid=${project.workspace}/build/pdepend/overview-pyramid.svg" />
-			<arg path="${project.workspace}" />
+			<arg value="--jdepend-xml=${project.basedir}/build/logs/jdepend.xml" />
+			<arg value="--jdepend-chart=${project.basedir}/build/pdepend/dependencies.svg" />
+			<arg value="--overview-pyramid=${project.basedir}/build/pdepend/overview-pyramid.svg" />
+			<arg path="${project.basedir}" />
+		</exec>
+	</target>
+
+	<target name="phpmd" description="Perform project mess detection using PHPMD and print human readable output. Intended for usage on the command line before committing.">
+		<exec executable="phpmd">
+			<arg path="${basedir}" />
+			<arg value="text" />
+			<arg value="${basedir}/build/phpmd.xml" />
 		</exec>
 	</target>
 
 	<target name="phpmd-ci" description="Perform project mess detection using PHPMD creating a log file for the continuous integration server">
 		<exec executable="phpmd">
-			<arg path="${project.workspace}" />
+			<arg path="${project.basedir}" />
 			<arg value="xml" />
-			<arg value="${project.workspace}/build/phpmd.xml" />
+			<arg value="${project.basedir}/build/phpmd.xml" />
 			<arg value="--reportfile" />
-			<arg value="${project.workspace}/build/logs/pmd.xml" />
+			<arg value="${project.basedir}/build/logs/pmd.xml" />
+		</exec>
+	</target>
+
+	<target name="phpcs" description="Find coding standard violations using PHP_CodeSniffer and print human readable output. Intended for usage on the command line before committing.">
+		<exec executable="phpcs">
+			<arg value="--standard=${basedir}/build/phpcs.xml" />
+			<arg path="${basedir}" />
 		</exec>
 	</target>
 
 	<target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer creating a log file for the continuous integration server">
 		<exec executable="phpcs" output="/dev/null">
 			<arg value="--report=checkstyle" />
-			<arg value="--report-file=${project.workspace}/build/logs/checkstyle.xml" />
-			<arg value="--standard=${project.workspace}/build/phpcs.xml" />
-			<arg path="${project.workspace}" />
+			<arg value="--report-file=${project.basedir}/build/logs/checkstyle.xml" />
+			<arg value="--standard=${project.basedir}/build/phpcs.xml" />
+			<arg path="${project.basedir}" />
 		</exec>
 	</target>
 
 	<target name="phpcpd" description="Find duplicate code using PHPCPD">
 		<exec executable="phpcpd">
 			<arg value="--log-pmd" />
-			<arg value="${project.workspace}/build/logs/pmd-cpd.xml" />
-			<arg path="${project.workspace}" />
+			<arg value="${project.basedir}/build/logs/pmd-cpd.xml" />
+			<arg path="${project.basedir}" />
 		</exec>
 	</target>
 
@@ -111,19 +123,18 @@
 		<exec executable="phpunit" failonerror="true" />
 	</target>
 
-	<target name="js">
-		<echo>WORKSPACE: ${project.workspace}</echo>
-		<chmod file="${project.workspace}/htdocs/js/src/util/buildscripts/build.sh" perm="u+x">
+	<target name="js" description="Build Dojo source">
+		<chmod file="${project.basedir}/htdocs/js/src/util/buildscripts/build.sh" perm="u+x">
 		</chmod>
-		<exec dir="${project.workspace}/htdocs/js/" executable="./src/util/buildscripts/build.sh" failonerror="true">
+		<exec dir="${project.basedir}/htdocs/js/" executable="./src/util/buildscripts/build.sh" failonerror="true">
 			<arg value="--profile build.js">
 			</arg>
 		</exec>
 	</target>
 
-	<target name="post">
-		<delete dir="${env.WORKSPACE}/.settings" />
-		<delete file="${env.WORKSPACE}/.buildpath" />
-		<delete file="${env.WORKSPACE}/.project" />
+	<target name="post" description="Post processing">
+		<delete dir="${project.basedir}/.settings" />
+		<delete file="${project.basedir}/.buildpath" />
+		<delete file="${project.basedir}/.project" />
 	</target>
 </project>
