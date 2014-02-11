@@ -3863,6 +3863,7 @@ class misc_text_converter {
    	$def->addAttribute('object', 'classid', 'Text');
    	$def->addAttribute('object', 'codebase', 'Text');
    	$def->addAttribute('object', 'standby', 'Text');
+   	$def->addAttribute('object', 'commsytype', 'Text');
    	
    	// Attribute for param
    	$def->addAttribute('param', 'bgcolor', 'Text');
@@ -3881,6 +3882,7 @@ class misc_text_converter {
    	$def->addAttribute('embed', 'showcontrols', 'Text');
    	$def->addAttribute('embed', 'showstatusbar', 'Text');
    	$def->addAttribute('embed', 'standby', 'Text');
+   	$def->addAttribute('embed', 'commsytype', 'Text');
    	
    	
    	// config for description ckeditor
