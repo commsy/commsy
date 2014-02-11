@@ -35,12 +35,13 @@ CKEDITOR.plugins.add( "CommSyAudio",
 					}
 					
 					var SelectBoxItems = new Array(
+							new Array( '<Bitte Audiotyp auswählen>', 'null'),
 					        new Array( 'MediaPlayer (mp3)', 'mediaplayer' ),
 					        new Array( 'wmaPlayer (wma)', 'wmaplayer' )
 					);
 					
 					return {
-						title : 'CommSy Audio',
+						title : 'Audio-Eigenschaften',
 						minWidth : 500,
 						minHeight : 200,
 						contents :
@@ -55,6 +56,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										style: 'width=100%',
 										label: 'Audio Type',
 										items: SelectBoxItems,
+										'default' : 'null',
 										onLoad: function ()
 										{
 											var dialog = this.getDialog();
@@ -73,7 +75,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											var dialog = this.getDialog();
 											var audioUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
 											var fileSelect = dialog.getContentElement( 'audioTab', 'fileselect' );
-											audioUrl.disable();
+//											audioUrl.disable();
 											
 											if(this.getValue() == 'mediaplayer'){
 												var j;
@@ -105,7 +107,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									 		{
 												type : 'select',
 												id: 'fileselect',
-												label: 'Dateiauswahl',
+												label: 'Angehängte Datei auswählen',
 												items : fileItems,
 												onChange : function () 
 												{
@@ -152,6 +154,20 @@ CKEDITOR.plugins.add( "CommSyAudio",
 													    filebrowser: 'audioTab:audioUrl',
 													    label: 'Hochladen',
 													    'for': [ 'audioTab', 'upload' ],
+													    onClick : function () 
+													    {
+													    	var dialog = this.getDialog();
+															var fileSelect = dialog.getContentElement( 'audioTab' , 'selectbox' );
+															if(fileSelect.getValue() == 'mediaplayer'){
+																
+															} else if (fileSelect.getValue() == 'wmaplayer') {
+																
+															} else {
+																alert('Dateiupload nicht möglich. Bitte wählen Sie einen entsprechenden Audiotyp.');
+														    	return false;
+															}
+													    	
+													    }
 													}
 												]
 											},
@@ -165,7 +181,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											{
 												id : 'audioUrl',
 												type : 'text',
-												label : 'Url',
+												label : 'Aus URL einfügen',
 												onLoad : function ()
 												{
 													this.disable();
@@ -225,7 +241,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 												id : 'audioHeight',
 												width : '60px',
 												label : 'Höhe',
-												'default' : '30',
+												'default' : '20',
 												validate : function ()
 												{
 													if ( this.getValue() )
@@ -287,76 +303,93 @@ CKEDITOR.plugins.add( "CommSyAudio",
 						],
 						onOk: function()
 						{
-							var content = '';
-							var width = this.getValueOf( 'audioTab', 'audioWidth' );
-							var height = this.getValueOf( 'audioTab', 'audioHeight' );
-							var audioUrl = this.getValueOf( 'audioTab', 'audioUrl');
-							var autostart = this.getValueOf( 'audioTab', 'autostart');
-							var float = this.getValueOf( 'audioTab', 'float');
 							
-							var floatValue = '';
-							
-							var style,
-							borderWidth = this.getValueOf( 'audioTab', 'border' ),
-							horizontalMargin = this.getValueOf( 'audioTab', 'marginH'),
-							verticalMargin = this.getValueOf( 'audioTab', 'marginV');
-							
-							style = 'style="';
-							if ( borderWidth != null ) {
-								style += 'border-style: solid; border-width:' + borderWidth + 'px;';
-							}
-							
-							if ( horizontalMargin != null ) {
-								style += 'margin-top:' + horizontalMargin + 'px;';
-								style += 'margin-bottom:' + horizontalMargin + 'px;';
-							}
-							
-							if ( verticalMargin != null ) {
-								style += 'margin-left:' + verticalMargin + 'px;';
-								style += 'margin-right:' + verticalMargin + 'px;';
-							}
-							
-							if(float != 'null' && float == 'right'){
-								style += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
-								style += 'float:left;';
-							}
-							style += '"';
-							
-							if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
+							var type = this.getValueOf( 'audioTab', 'selectbox');
+							if( type == 'null') {
+								alert('Bitte einen Audiotyp auswählen!');
+								return false;
+							} else {
+								var content = '';
+								var width = this.getValueOf( 'audioTab', 'audioWidth' );
+								var height = this.getValueOf( 'audioTab', 'audioHeight' );
+								var audioUrl = this.getValueOf( 'audioTab', 'audioUrl');
+								var autostart = this.getValueOf( 'audioTab', 'autostart');
+								var float = this.getValueOf( 'audioTab', 'float');
 								
-								if(urlDecodeFlag){
-									audioUrl = encodeURI(audioUrl);
+								var floatValue = '';
+								
+								var style,
+								borderWidth = this.getValueOf( 'audioTab', 'border' ),
+								horizontalMargin = this.getValueOf( 'audioTab', 'marginH'),
+								verticalMargin = this.getValueOf( 'audioTab', 'marginV');
+								
+								style = 'style="';
+								if ( borderWidth != null ) {
+									style += 'border-style: solid; border-width:' + borderWidth + 'px;';
 								}
+								
+								if ( horizontalMargin != null ) {
+									style += 'margin-top:' + horizontalMargin + 'px;';
+									style += 'margin-bottom:' + horizontalMargin + 'px;';
+								}
+								
+								if ( verticalMargin != null ) {
+									style += 'margin-left:' + verticalMargin + 'px;';
+									style += 'margin-right:' + verticalMargin + 'px;';
+								}
+								
+								if(float != 'null' && float == 'right'){
+									style += 'float:right;';
+								} else if (float != 'null' && float == 'left') {
+									style += 'float:left;';
+								}
+								style += '"';
+								
+								if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
+									
+									if(urlDecodeFlag){
+										audioUrl = encodeURI(audioUrl);
+									}
 
-								content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" ' + style + '>';
-//								content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
-								content += '<param value="sameDomain" name="allowScriptAccess">';
-								content += '<param value="internal" name="allowNetworking">';
-								if(this.getValueOf('audioTab', 'autostart')){
-									content += '<param value="' + autostart + '" name="autoStart">';
+									content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3&showstop=true&showdigits=true&shownavigation=true" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" ' + style + ' commsytype="audio" wmode="opaque">';
+//									content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
+									content += '<param value="sameDomain" name="allowScriptAccess">';
+									content += '<param value="internal" name="allowNetworking">';
+									if(this.getValueOf('audioTab', 'autostart')){
+										content += '<param value="' + autostart + '" name="autoStart">';
+									}
+									content += '<embed src="' + audioUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
+									content += '</object>';
+									
+//									if(this.getValueOf('audioTab', 'autostart')){
+//										url = '&amp;autostart=true';
+//									} else {
+//										url = '&amp;autostart=false';
+//									}
+//									
+//									
+//									content += '<embed width="' + width + '" height="20" flashvars="file=' + audioUrl + ''+url+'" wmode="opaque" quality="high" name="mpl" id="mpl" ' + style + ' src="mediaplayer.swf" type="application/x-shockwave-flash">';
+									
+//									alert(content);
+								} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
+									
+									content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
+									content += '<param value="' + audioUrl + '" name="fileName">';
+									if(this.getValueOf('audioTab', 'autostart')){
+										content += '<param value="' + autostart + '" name="autoStart">';
+									}
+									content += '<param value="true" name="showControls">';
+									content += '<param value="true" name="showStatusBar">';
+									content += '<param value="opaque" name="wmode">';
+									content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="false" wmode="opaque" name="MediaPlayer18" src="' + audioUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
+									content += '</object>';
+									
 								}
-								content += '<embed src="' + audioUrl + '" width="' + width + '" height="' + height + '" allowscriptaccess="always" allowfullscreen="true"></embed>';
-								content += '</object>';
 								
-//								alert(content);
-							} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
-								
-								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
-								content += '<param value="' + audioUrl + '" name="fileName">';
-								if(this.getValueOf('audioTab', 'autostart')){
-									content += '<param value="' + autostart + '" name="autoStart">';
-								}
-								content += '<param value="true" name="showControls">';
-								content += '<param value="true" name="showStatusBar">';
-								content += '<param value="opaque" name="wmode">';
-								content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="false" wmode="opaque" name="MediaPlayer18" src="' + audioUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
-								content += '</object>';
-								
+								var instance = this.getParentEditor();
+								instance.insertHtml( content );
 							}
 							
-							var instance = this.getParentEditor();
-							instance.insertHtml( content );
 						}
 					};
 				});

@@ -905,6 +905,13 @@ class cs_user_detail_view extends cs_detail_view {
             $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$this->_translator->getMessage('PRIVATEROOM_EXPORT')).BRLF;
             unset($params);
          }
+         
+         if ($user->isRoot()) {
+         	$params = array();
+         	$params['iid'] = $item->getItemID();
+         	$html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'account','assignroom',$params,'Raum zuordnen').BRLF;
+         	unset($params);
+         }
 
          if ($this->_environment->inCommunityRoom()) {
             $params = array();

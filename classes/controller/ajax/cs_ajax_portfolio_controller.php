@@ -449,7 +449,11 @@
 							
 							$copyTagArray = array();
 							while ($templateItemTag) {
-								$copyTagArray[] = $tagMapping[$templateItemTag->getItemID()];
+								$templateItemTagId = $templateItemTag->getItemID();
+								
+								if ($tagMapping[$templateItemTagId]) {
+									$copyTagArray[] = $tagMapping[$templateItemTagId];
+								}
 									
 								$templateItemTag = $templateItemTagList->getNext();
 							}

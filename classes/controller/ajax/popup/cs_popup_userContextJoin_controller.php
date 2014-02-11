@@ -311,11 +311,24 @@ class cs_popup_userContextJoin_controller implements cs_rubric_popup_controller 
 // 		        $this->_popup_controller->setSuccessfullItemIDReturn($form_data['iid']);
 // 		      	$this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentContextID());
 		      	$data['cid'] = $this->_environment->getCurrentContextID();
-		      	$data['room_id'] = $room_item->getItemID();
+		      	if($label_item){
+		      		$data['item_id'] = $label_item->getItemID();
+		      		$data['mod'] = 'group';
+		      	} else {
+		      		$data['item_id'] = $room_item->getItemID();
+		      		$data['mod'] = 'project';
+		      	}
 		      	$this->_popup_controller->setSuccessfullDataReturn($data);
 		      } else {
 		      	$data['cid'] = $this->_environment->getCurrentContextID();
-		      	$data['room_id'] = $room_item->getItemID();
+		      	if($label_item){
+		      		$data['item_id'] = $label_item->getItemID();
+		      		$data['mod'] = 'group';
+		      	} else {
+		      		$data['item_id'] = $room_item->getItemID();
+		      		$data['mod'] = 'project';
+		      	}
+		      	
 		      	$this->_popup_controller->setSuccessfullDataReturn($data);
 // 		        $this->_popup_controller->setSuccessfullItemIDReturn($this->_environment->getCurrentContextID());
 		      }

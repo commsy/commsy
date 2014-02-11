@@ -21,6 +21,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					var audio;
 					
 					var SelectBoxItems = new Array(
+							new Array( '<Bitte Audiotyp auswählen>', 'null'),
 					        new Array( 'Slideshare', 'slideshare' ),
 					        new Array( 'Onyx', 'onyx' )
 					);
@@ -46,7 +47,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					);
 					
 					return {
-						title : 'CommSy Dokumente',
+						title : 'Dokument-Eigenschaften',
 						minWidth : 500,
 						minHeight : 200,
 						contents :
@@ -59,12 +60,18 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Document Type',
+										label: 'Dokument Type',
 										items: SelectBoxItems,
+										'default' : 'null',
 										onLoad : function () 
 										{
 											var dialog = this.getDialog();
 											var startAt = dialog.getContentElement( 'documentTab', 'startAt');
+											var uploadButton = dialog.getContentElement( 'documentTab', 'uploadButton');
+											var upload = dialog.getContentElement( 'documentTab', 'upload');
+											
+											uploadButton.disable();
+											upload.disable();
 											
 											startAt.enable();
 										},
@@ -75,11 +82,15 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											var textInput = dialog.getContentElement('documentTab', 'linkText');
 											var fileSelect = dialog.getContentElement( 'documentTab', 'fileselect' );
 											var startAt = dialog.getContentElement( 'documentTab', 'startAt');
+											var uploadButton = dialog.getContentElement( 'documentTab', 'uploadButton');
+											var upload = dialog.getContentElement( 'documentTab', 'upload');
 											
 											if(this.getValue() == 'onyx'){
 												textInput.enable();
 												fileSelect.enable();
 												startAt.disable();
+												uploadButton.enable();
+												upload.enable();
 												
 												// select only zip files for onyx
 												var j;
@@ -94,6 +105,8 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												startAt.enable();
 												textInput.disable();
 												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
 											}
 										}
 									},
@@ -105,7 +118,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										 	{
 												type : 'select',
 												id: 'fileselect',
-												label: 'Dateiauswahl',
+												label: 'Angehängte Datei auswählen',
 												items : fileItems,
 												onLoad : function ()
 												{
@@ -180,7 +193,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											{
 												id : 'documentUrl',
 												type : 'text',
-												label : 'Shortcode für Wordpress Blogs [Slideshare id=...]',
+												label : '"Shortcode für Wordpress" von Slideshare unter "Share" verwenden [slideshare id"..."]',
 												validate : function ()
 												{
 													if ( this.isEnabled() )

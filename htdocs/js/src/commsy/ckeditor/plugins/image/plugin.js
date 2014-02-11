@@ -52,15 +52,15 @@
 				var element = evt.data.element;
 
 				if ( element.is( 'img' ) && !element.data( 'cke-realelement' ) && !element.isReadOnly() )
-					evt.data.dialog = 'image';
+					evt.data.dialog = 'CommSyImage';
 			});
 
 			// If the "menu" plugin is loaded, register the menu items.
 			if ( editor.addMenuItems ) {
 				editor.addMenuItems({
 					image: {
-						label: editor.lang.image.menu,
-						command: 'image',
+						label: 'Bild-Eigenschaften',
+						command: 'CommSyImage',
 						group: 'image'
 					}
 				});
@@ -69,7 +69,7 @@
 			// If the "contextmenu" plugin is loaded, register the listeners.
 			if ( editor.contextMenu ) {
 				editor.contextMenu.addListener( function( element, selection ) {
-					if ( getSelectedImage( editor, element ) )
+					if ( !getSelectedImage( editor, element ) )
 						return { image: CKEDITOR.TRISTATE_OFF };
 				});
 			}

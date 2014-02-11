@@ -37,11 +37,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					}
 					
 					var SelectBoxItems = new Array(
+							new Array( '<Bitte Audiotyp auswählen>', 'null'),
 							new Array( 'Lecture2Go', 'lecture2go' ),
 					        new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
 					        new Array( 'Podcampus', 'podcampus' ),
 					        new Array( 'Quicktime (mov, wav, mpeg, mp4)', 'quicktime' ),
 //					        new Array( 'GoogleVideo', 'googlevideo' ),
+					        new Array( 'Vimeo', 'vimeo' ),
 					        new Array( 'Youtube', 'youtube' )
 					);
 					
@@ -138,7 +140,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					};
 					
 					return {
-						title : 'CommSy Video',
+						title : 'Video-Eigenschaften',
 						minWidth : 500,
 						minHeight : 200,
 						onShow: function ()
@@ -155,15 +157,24 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Video Type',
+										label: 'Videotyp',
 										items: SelectBoxItems,
+										'default' : 'null',
 										onLoad: function ()
 										{
 											var dialog = this.getDialog();
 											var chkRelated = dialog.getContentElement( 'videoTab', 'chkRelated' );
 											var dataSecurityBox = dialog.getContentElement( 'videoTab', 'dataSecurity');
 											var startAt = dialog.getContentElement( 'videoTab', 'startAt');
+											var urlInput = dialog.getContentElement( 'videoTab', 'videoUrl');
 											
+											var uploadButton = dialog.getContentElement( 'videoTab', 'uploadButton');
+											var upload = dialog.getContentElement( 'videoTab', 'upload');
+											
+											uploadButton.disable();
+											upload.disable();
+											
+											urlInput.setLabel('Aus URL einfügen');
 											chkRelated.disable();
 											dataSecurityBox.disable();
 											startAt.disable();
@@ -176,6 +187,9 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											var fileSelect = dialog.getContentElement( 'videoTab', 'fileselect');
 											var dataSecurityBox = dialog.getContentElement( 'videoTab', 'dataSecurity');
 											var startAt = dialog.getContentElement( 'videoTab', 'startAt');
+											var uploadButton = dialog.getContentElement( 'videoTab', 'uploadButton');
+											var upload = dialog.getContentElement( 'videoTab', 'upload');
+											
 											
 											// youtube video offer
 											if(this.getValue() == 'youtube') {
@@ -189,20 +203,24 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											}
 											// set url info
 											if(this.getValue() == 'lecture2go') {
-												urlInput.setLabel('URL (<iframe>...</iframe>)');
+												urlInput.setLabel('Einbettungscode von Lecture2Go (innerhalb des iFrames)');
 											} else if (this.getValue() == 'podcampus') {
-												urlInput.setLabel('URL (http://www.podcampus.de/nodes/XXYZ)');
+												urlInput.setLabel('Aus URL einfügen (http://www.podcampus.de/nodes/XXYZ)');
 											} else {
-												urlInput.setLabel('URL');
+												urlInput.setLabel('Aus URL einfügen');
 											}
 											
 											// disable/enable inputUrl or select file
 											if(this.getValue() == 'lecture2go') {
 												urlInput.enable();
 												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
 											} else if (this.getValue() == 'mediaplayer') {
 												urlInput.disable();
 												fileSelect.enable();
+												uploadButton.enable();
+												upload.enable();
 												// only show files wma wmv avi
 												var j;
 												fileSelect.clear();
@@ -216,9 +234,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											} else if (this.getValue() == 'podcampus') {
 												urlInput.enable();
 												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
 											} else if (this.getValue() == 'quicktime') {
 												urlInput.disable();
 												fileSelect.enable();
+												uploadButton.enable();
+												upload.enable();
 												// only show files mov wav mpeg mp4
 												var j;
 												fileSelect.clear();
@@ -228,9 +250,16 @@ CKEDITOR.plugins.add( "CommSyVideo",
 														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
 													}
 												}
+											} else if (this.getValue() == 'vimeo') {
+												urlInput.enable();
+												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
 											} else if (this.getValue() == 'youtube') {
 												urlInput.enable();
 												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
 											}
 										}
 									},
@@ -242,7 +271,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											{
 												type : 'select',
 												id: 'fileselect',
-												label: 'vorhandene Datei auswählen',
+												label: 'Angehängte Datei auswählen',
 												items : fileItems,
 												onLoad : function ()
 												{
@@ -292,6 +321,20 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													    filebrowser: 'videoTab:videoUrl',
 													    label: 'Hochladen',
 													    'for': [ 'videoTab', 'upload' ],
+													    onClick : function () 
+													    {
+													    	var dialog = this.getDialog();
+															var fileSelect = dialog.getContentElement( 'videoTab' , 'selectbox' );
+															if(fileSelect.getValue() != 'youtube' && 
+																	fileSelect.getValue() != 'vimeo' &&
+																	fileSelect.getValue() != 'podcampus' &&
+																	fileSelect.getValue() != 'lecture2go'){
+																
+																alert('Dateiupload nicht möglich. Bitte wählen Sie einen entsprechenden Videotyp.');
+														    	return false;
+															}
+													    	
+													    }
 													}
 												]
 											},
@@ -359,7 +402,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											{
 												id : 'videoUrl',
 												type : 'text',
-												label : 'URL',
+												label : 'Aus URL einfügen',
 												validate : function ()
 												{
 													if ( this.isEnabled() )
@@ -382,22 +425,27 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										children :
 										[
 											{
-												id : 'chkRelated',
-												type : 'checkbox',
-												'default' : true,
-												label : 'Video Vorschläge'
-											},
-											{
 												id : 'autostart',
 												type : 'checkbox',
 												'default' : false,
 												label : 'Autostart'
 											},
 											{
+												id : 'chkRelated',
+												type : 'checkbox',
+												'default' : true,
+												label : 'Video Vorschläge'
+											},
+											{
 												id : 'dataSecurity',
 												type : 'checkbox',
 												'default' : false,
 												label : 'Datenschutzmodus'
+											},
+											{
+												id : 'helpds',
+												type : 'html',
+												html : '<a href="">[?]</a>'
 											}
 										]
 									},
@@ -534,7 +582,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												type : 'text',
 												id : 'startAt',
 												width : '60px',
-												label : 'Startpunkt in Sekunden',
+												label : 'Startpunkt in Sekunden (Funktioniert nur bei Youtube Videos)',
 												'default' : '',
 											}
 
@@ -682,7 +730,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'quicktime'){
 								
-								content += '<object width="400" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
+								content += '<object width="' + width + '" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
 								content += '<param value="true" name="controller">';
 								content += '<param value="high" name="quality">';
 								content += '<param value="tofit" name="scale">';
@@ -696,12 +744,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += '<param value="false" name="loop">';
 								content += '<param value="true" name="devicefont">';
 								content += '<param value="mov" name="class">';
-								content += '<embed width="400" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" autoplay="true" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true">';
+								content += '<embed width="' + width + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" autoplay="true" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true">';
 								content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'mediaplayer'){
 							
-								content += '<object width="400" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
+								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
 								content += '<param value="' + videoUrl + '" name="fileName">';
 								if(this.getValueOf('videoTab', 'autostart')){
 									content += '<param value="true" name="autoStart">';
@@ -711,8 +759,33 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += '<param value="true" name="showControls">';
 								content += '<param value="true" name="showStatusBar">';
 								content += '<param value="opaque" name="wmode">';
-								content += '<embed width="400" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
+								content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
 								content += '</object>';
+								
+							} else if(this.getValueOf('videoTab', 'selectbox') == 'vimeo'){
+								
+								var vimeo_regex = /vimeo.com\/(.*)/,
+									url,
+									vimeo_id = videoUrl.match(vimeo_regex)[1];
+								
+								if(this.getValueOf('videoTab', 'autostart')){
+									url += '&amp;autoplay=1';
+								}
+								
+								content += '<object width="' + width + '" height="' + height + '" ' + style + '>';
+								content += '<param name="allowfullscreen" value="true" />';
+								content += '<param name="allowscriptaccess" value="always" />';
+								content += '<param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=' + vimeo_id + '&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;loop=0' + url + '" />';
+								content += '<embed src="http://vimeo.com/moogaloop.swf?clip_id=' + vimeo_id + '&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;loop=0' + url + '" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="' + width + '" height="' + height + '" ' + style + '>';
+								content += '</embed></object>';
+								content += '';
+								
+//								<object width="500" height="281">
+//								<param name="allowfullscreen" value="true" />
+//								<param name="allowscriptaccess" value="always" />
+//								<param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=60210872&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" />
+//								<embed src="http://vimeo.com/moogaloop.swf?clip_id=60210872&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="500" height="281">
+//								</embed></object>
 								
 							}
 							var instance = this.getParentEditor();

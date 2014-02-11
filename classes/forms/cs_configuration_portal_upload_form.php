@@ -48,25 +48,25 @@ class cs_configuration_portal_upload_form extends cs_rubric_form {
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD');
       $this->setHeadline($this->_headline);
       
-      $portal = $this->_environment->getCurrentPortalItem();
-      $room_list = $portal->getRoomList();
-      $room_list->reset();
-      $item = $room_list->getFirst();
-      while($item) {
-         // add room name to name array
-         $limit_text = '';
-         if($item->getMaxUploadSizeExtraOnly() != '') {
-            $limit_text = '(' . $item->getMaxUploadSizeExtraOnly() . ')';
-         }
-         $this->room_array[] = array(   'text'   =>   $item->getTitle() . $limit_text,
-                                        'value'	 =>   $item->getItemId());
+//       $portal = $this->_environment->getCurrentPortalItem();
+//       $room_list = $portal->getRoomList();
+//       $room_list->reset();
+//       $item = $room_list->getFirst();
+//       while($item) {
+//          // add room name to name array
+//          $limit_text = '';
+//          if($item->getMaxUploadSizeExtraOnly() != '') {
+//             $limit_text = '(' . $item->getMaxUploadSizeExtraOnly() . ')';
+//          }
+//          $this->room_array[] = array(   'text'   =>   $item->getTitle() . $limit_text,
+//                                         'value'	 =>   $item->getItemId());
          
-         // save room limits
-         $this->room_limits[] = array(   'id'      =>   $item->getItemId(),
-                                         'limit'   =>   $item->getMaxUploadSizeExtraOnly());
+//          // save room limits
+//          $this->room_limits[] = array(   'id'      =>   $item->getItemId(),
+//                                          'limit'   =>   $item->getMaxUploadSizeExtraOnly());
          
-         $item = $room_list->getNext();
-      }
+//          $item = $room_list->getNext();
+//       }
    }
 
    /** create the form, INTERNAL
@@ -74,7 +74,6 @@ class cs_configuration_portal_upload_form extends cs_rubric_form {
     */
    function _createForm () {
       $session = $this->_environment->getSession();
-      $isJSEnabled = false;
       if($session->issetValue('javascript') and $session->getValue('javascript') == '1') {
          $isJSEnabled = true;
       }
@@ -106,71 +105,142 @@ class cs_configuration_portal_upload_form extends cs_rubric_form {
       							$this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_RVALUE_DESC'),
       							'');
       
-      $room_array = $this->room_array;
-      $selected = array();
-      if(!$isJSEnabled) {
-         $room_array = array_merge(array(array('text' => "---------------", 'value' => -1)), $room_array);
-         
-         if($this->room_selection != 0) {
-	         foreach($this->room_array as $room) {
-	            if($room['value'] == $this->room_selection) {
-	               $selected = array($room['value']);
-	               break;
-	            }
-	         }
-         }
-      }
-      $this->_form->addSelect(   'configuration_data_upload_room_select',
-                                 $room_array,
-                                 $selected,
-                                 $this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_ROOM_SELECT'),
-                                 '');
-      if(!$isJSEnabled || $this->room_selection != 0) {
-         $this->_form->combine('horizontal');
-         $this->_form->addButton('configuration_data_upload_room_select_confirm', $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'));
-      }
-      if($isJSEnabled || $this->room_selection != 0) {
-         $value = '';
-         if($isJSEnabled) {
-            $value = $this->room_limits[0]['limit'];
-         } else {
-            foreach($this->room_limits as $limit) {
-               if($limit['id'] == $this->room_selection) {
-                  $value = $limit['limit'];
-                  break;
-               }
-            }
-         }
-         
-         $this->_form->combine('vertical');
-         $this->_form->addTextfield(   'configuration_data_upload_room_value',
-	                                   $value,
-	                                   '',
-	                                   '',
-	                                   255,
-	                                   20,
-	                                   false,
-	                                   '',
-	                                   '',
-	                                   '',
-	                                   '',
-	                                   '',
-	                                   '',
-	                                   false,
-	                                   $this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_INPUT_DESC'));
+      if(!empty($_POST['room_search'])) {
+      	$room_search = $_POST['room_search'];
+      } else {
+      	$room_search = '';
       }
       
-      // create hidden fields for room limits
-      if($isJSEnabled) {
-	      foreach($this->room_limits as $room) {
-	         if ( !empty($room['limit']) ) {
-	            $this->_form->addHidden('room_limit_' . $room['id'], $room['limit']);
-	         }
-	      }
+      $this->_form->addTextfield(	'room_search',
+      		$room_search,
+      		'Suche nach Raum',
+      		'',
+      		255,
+      		20,
+      		false,
+      		'Suchen',
+      		'submit',
+      		'',
+      		'',
+      		'',
+      		'',
+      		false,
+      		'');
+      
+      if(!empty($_POST['room_search'])) {
+      	// search for room
+      	$project_manager = $this->_environment->getProjectManager();
+      	$room_search = $_POST['room_search'];
+      	$items = $project_manager->getRoomsByTitle($room_search);
+      	#pr($items);
+      	
+      	$item = $items->getFirst();
+      	while($item) {
+      		$limit_text = '';
+      		if($item->getMaxUploadSizeExtraOnly() != '') {
+      			$limit_text = ' (' . $item->getMaxUploadSizeExtraOnly() . ')';
+      		}
+      		$this->room_array[] = array(   'text'   =>   $item->getTitle() . $limit_text,
+      			                           'value'	=>   $item->getItemId());
+      		
+      		$item = $items->getNext();
+      	}
+      	$room_array = $this->room_array;
+      	
+      	$this->_form->addSelect(   'configuration_data_upload_room_select',
+      			$room_array,
+      			'',
+      			$this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_ROOM_SELECT'),
+      			'');
+      	
+      	$this->_form->addTextfield(   'configuration_data_upload_room_value',
+      			'',
+      			'',
+      			'',
+      			255,
+      			20,
+      			false,
+      			'',
+      			'',
+      			'',
+      			'',
+      			'',
+      			'',
+      			false,
+      			$this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_INPUT_DESC'));
+      	
       }
       
-      // buttons
-      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      
+      
+            // buttons
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      
+//       $room_array = $this->room_array;
+//       $selected = array();
+//       if(!$isJSEnabled) {
+//          $room_array = array_merge(array(array('text' => "---------------", 'value' => -1)), $room_array);
+         
+//          if($this->room_selection != 0) {
+// 	         foreach($this->room_array as $room) {
+// 	            if($room['value'] == $this->room_selection) {
+// 	               $selected = array($room['value']);
+// 	               break;
+// 	            }
+// 	         }
+//          }
+//       }
+//       $this->_form->addSelect(   'configuration_data_upload_room_select',
+//                                  $room_array,
+//                                  $selected,
+//                                  $this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_ROOM_SELECT'),
+//                                  '');
+//       if(!$isJSEnabled || $this->room_selection != 0) {
+//          $this->_form->combine('horizontal');
+//          $this->_form->addButton('configuration_data_upload_room_select_confirm', $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'));
+//       }
+//       if($isJSEnabled || $this->room_selection != 0) {
+//          $value = '';
+//          if($isJSEnabled) {
+//             $value = $this->room_limits[0]['limit'];
+//          } else {
+//             foreach($this->room_limits as $limit) {
+//                if($limit['id'] == $this->room_selection) {
+//                   $value = $limit['limit'];
+//                   break;
+//                }
+//             }
+//          }
+         
+//          $this->_form->combine('vertical');
+//          $this->_form->addTextfield(   'configuration_data_upload_room_value',
+// 	                                   $value,
+// 	                                   '',
+// 	                                   '',
+// 	                                   255,
+// 	                                   20,
+// 	                                   false,
+// 	                                   '',
+// 	                                   '',
+// 	                                   '',
+// 	                                   '',
+// 	                                   '',
+// 	                                   '',
+// 	                                   false,
+// 	                                   $this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_INPUT_DESC'));
+//       }
+      
+//       // create hidden fields for room limits
+// //       if($isJSEnabled) {
+// // 	      foreach($this->room_limits as $room) {
+// // 	         if ( !empty($room['limit']) ) {
+// // 	            $this->_form->addHidden('room_limit_' . $room['id'], $room['limit']);
+// // 	         }
+// // 	      }
+// //       }
+      
+//       // buttons
+//       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
    
    public function setRoomSelection($room_id) {

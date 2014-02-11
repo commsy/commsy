@@ -249,7 +249,9 @@ define([	"dojo/_base/declare",
 						{ query: Query("input[name='form_data[upload]']", this.contentNode) },
 						{ query: Query("input[name='form_data[auto_save]']", this.contentNode) },
 						{ query: Query("input[name='form_data[mail_account]']", this.contentNode) },
-						{ query: Query("input[name='form_data[mail_room]']", this.contentNode) }
+						{ query: Query("input[name='form_data[mail_room]']", this.contentNode) },
+						{ query: Query("input[name='form_data[email_to_commsy]']", this.contentNode) },
+						{ query: Query("input[name='form_data[email_to_commsy_secret]']", this.contentNode) }
 					]
 				};
 				

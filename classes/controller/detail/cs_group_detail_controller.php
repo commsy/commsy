@@ -680,10 +680,10 @@
 					$moderator_string = '';
 					while($morderator_item){
 						$moderator_string .= $morderator_item->getFullname();
-						if ($morderator_list->getNext()){
+						$morderator_item = $morderator_list->getNext();
+						if($morderator_item){
 							$moderator_string .=', ';
 						}
-						$morderator_item = $morderator_list->getNext();
 					}
 					$return['grouproom_moderators'] = $moderator_string;
 				    $user_manager = $this->_environment->getUserManager();
