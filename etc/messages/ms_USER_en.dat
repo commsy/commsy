@@ -89,7 +89,19 @@ Complete information:
 Name: %1
 Account: %2
 E-mail: %3";
+$message["USER_JOIN_COMMUNITY_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_COMMUNITY_SUB_NOMS_BIG %4.
+
+Complete information:
+Name: %1
+Account: %2
+E-mail: %3";
 $message["USER_JOIN_CONTEXT_MAIL_BODY"]["en"] = "%1 requests an account [%2] for the %_PROJECT_SUB_NOMS_BIG %4.
+
+Complete information:
+Name: %1
+Account: %2
+E-mail: %3";
+$message["USER_JOIN_CONTEXT_MAIL_BODY_BY_MODERATOR"]["en"] = "%1 requests an account [%2] by %5 for the %_PROJECT_SUB_NOMS_BIG %4.
 
 Complete information:
 Name: %1
