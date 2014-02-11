@@ -332,6 +332,11 @@ define([	"dojo/_base/declare",
 						this.removeBuzzwordFromMergeSelects(response.buzzwordTwo);
 						this.addBuzzwordToMergeSelects(mergeIdOne, response.newBuzzword);
 						
+						// remove both buzzwords from edit tab
+						this.removeBuzzwordFromEditTab(response.buzzwordOne);
+						this.removeBuzzwordFromEditTab(response.buzzwordTwo);
+						this.addBuzzwordToEditTab(mergeIdOne, response.newBuzzword);
+						
 						this.destroyLoading();
 						
 						if (this.contextId) {
