@@ -76,9 +76,8 @@
 			if(!is_array($moderator_ids)) $moderator_ids = array();
 			$room_moderator_count = count($moderator_ids);
 
-			$selected_moderator_count = count(array_intersect($selected_ids, $moderator_ids));
+			$selected_moderator_count = count(array_intersect($ids, $moderator_ids));
 			$room_moderator_count = count($moderator_ids);
-
 			// perform checks
 			switch($action) {
 				case "delete":
