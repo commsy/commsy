@@ -52,7 +52,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmitSuccess: function(data) {
-			location.href = "commsy.php?cid=" + data.cid + "&mod=project&fct=detail&iid=" + data.room_id;
+			location.href = "commsy.php?cid=" + data.cid + "&mod=" + data.mod + "&fct=detail&iid=" + data.item_id;
 		},
 		
 		onPopupSubmitError: function(response){
