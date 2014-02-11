@@ -473,7 +473,7 @@
 										type : 'select',
 										id: 'fileselect',
 										style: 'margin-bottom:30px',
-										label: 'vorhandene Datei auswählen',
+										label: 'Angehängte Datei auswählen',
 										items : fileItems,
 //										onLoad : function ()
 //										{
@@ -536,7 +536,7 @@
 								{
 								id: 'txtUrl',
 								type: 'text',
-								label: editor.lang.common.url,
+								label: 'Aus URL einfügen',
 								required: true,
 								onChange: function() {
 									var dialog = this.getDialog(),
