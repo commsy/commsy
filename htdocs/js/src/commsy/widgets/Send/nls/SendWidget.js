@@ -1,11 +1,18 @@
 define({
 	root: {
 		additionalAdd:			"Add another recipient",
+		additionalDescription:	"In addition, you are free to specify additional receivers below.",
+		additionalFirstName:	"first name",
+		additionalLabel:		"Additional receivers",
+		additionalLastName:		"last name",
+		additionalMail:			"mail address",
 		all:					"Total members in workspace",
 		buttonClose:			"Close",
 		buttonSend:				"Send",
 		close:					"close",
 		copyToSender:			"Copy to sender",
+		errorMail:				"Wrong mail format",
+		errorMissing:			"Missing value",
 		no:						"No",
 		receiver:				"Addressee:",
 		sendTo:					"Send to:",

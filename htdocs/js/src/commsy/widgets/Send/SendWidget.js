@@ -10,6 +10,7 @@ define(
  	"dojo/query",
  	"dijit/registry",
  	"dojo/parser",
+ 	"dojo/fx",
  	"dojox/form/Manager",
  	"dojo/_base/lang",
  	"dijit/form/ValidationTextBox",
@@ -26,8 +27,9 @@ define(
 	query,
 	registry,
 	parser,
+	fx,
 	Manager,
-	Lang
+	lang
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
@@ -66,8 +68,8 @@ define(
 			 ************************************************************************************/
 			this.set("title", this.popupTranslations.title);
 			
-			on(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
-			on(this.addAdditionalNode, "click", Lang.hitch(this, this.onClickAddAdditional));
+			on(this.formNode, "submit", lang.hitch(this, this.onSubmit));
+			on(this.addAdditionalNode, "click", lang.hitch(this, this.onClickAddAdditional));
 		},
 		
 		/**
@@ -82,10 +84,12 @@ define(
 		{
 			this.inherited(arguments);
 			
+			parser.parse(this.widgetNode);
+			
 			this.AJAXRequest(	"send",
 								"init",
 								{ itemId: this.iid },
-								Lang.hitch(this, function(response)
+								lang.hitch(this, function(response)
 			{
 				if (response) {
 					// mail body
@@ -110,7 +114,6 @@ define(
 						this.createAllMembersHTML();
 					}
 				}
-				console.log(response);
 			}));
 		},
 		
@@ -307,12 +310,12 @@ define(
 				
 				var formManager = registry.byId("sendForm");
 				
-				on(aNode, "click", Lang.hitch(this, function()
+				on(aNode, "click", lang.hitch(this, function()
 				{
-					FX.wipeOut(
+					fx.wipeOut(
 					{
 						node:		inputRowNode,
-						onEnd:		Lang.hitch(this, function()
+						onEnd:		lang.hitch(this, function()
 						{
 							var widgetsInRow = registry.findWidgets(inputRowNode);
 							dojo.forEach(widgetsInRow, function(widget)
@@ -328,14 +331,14 @@ define(
 					}).play();
 				}));
 				
-				parser.parse(inputRowNode).then(Lang.hitch(this, function(instances)
+				parser.parse(inputRowNode).then(lang.hitch(this, function(instances)
 				{
 					dojo.forEach(instances, function(instance)
 					{
 						formManager.registerWidget(instance);
 					});
 					
-					FX.wipeIn(
+					fx.wipeIn(
 					{
 						node:		inputRowNode
 					}).play();
@@ -353,7 +356,36 @@ define(
 		
 		onSubmit: function(event)
 		{
+			event.preventDefault();console.log('submit');
 			
+			var formManager = Registry.byId("sendForm");
+			
+			if (formManager.isValid()) {
+				this.setupLoading();
+				var formValues = formManager.gatherFormValues();
+				
+				console.log(formValues);
+				/*
+				this.AJAXRequest(	"limesurvey",
+									"inviteParticipants",
+									{
+										groupId:				formValues.group,
+										withTokens:				formValues.withTokensCheckbox,
+										participantMails:		formValues.participantMails,
+										participantMailSubject:	formValues.participantMailSubject,
+										participantMailtext:	formValues.participantMailtext,
+										formValues:				formValues,
+										surveyId:				this.surveyId
+									},
+									Lang.hitch(this, function(response) {
+					// remove loading indicator and close this popup
+					this.destroyLoading();
+					this.Close();
+				}));
+				*/
+			} else {
+				formManager.validate();
+			}
 		}
 	});
 });

@@ -1,4 +1,4 @@
-<div class="${baseClass}">
+<div class="${baseClass}" data-dojo-attach-point="widgetNode">
 
 	<div id="popup_wrapper">
 		<div id="popup_edit">
@@ -38,6 +38,13 @@
 										<input type="radio" name="form_data[copyToSender]" value="true" />${popupTranslations.yes}
 										<input type="radio" name="form_data[copyToSender]" value="false" checked="checked" />${popupTranslations.no}
 									</div>
+									<div class="clear"></div>
+								</div>
+								
+								<div class="input_row">
+									<label for="lsFirstAdditional">${popupTranslations.additionalLabel}</label>
+									<div class="column_585">${popupTranslations.additionalDescription}</div>
+									
 									<div class="clear"></div>
 								</div>
 								
