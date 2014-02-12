@@ -311,9 +311,10 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 		$iid = $this->_data['itemId'];
 
 		$rubric_item = $manager->getItem($iid);
-		$module = $rubric_item->getItemType();
-
-		if($this->_popup_controller->checkFormData()) {
+		
+		if($rubric_item && $this->_data['subject']) {
+		    $module = $rubric_item->getItemType();
+		    
 			$user_manager = $this->_environment->getUserManager();
 			$user_manager->resetLimits();
 			$user_manager->setUserLimit();
@@ -324,7 +325,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$label_manager = $this->_environment->getLabelManager();
 			$topic_list = new cs_list();
 
-			if (isset($form_data["allMembers"])) {	//send to all members of a community room, if no institutions and topics are availlable
+			if (isset($this->_data["allMembers"])) {	//send to all members of a community room, if no institutions and topics are availlable
 				$cid = $this->_environment->getCurrentContextId();
 				$user_manager->setContextLimit($cid);
 				$user_manager->select();
@@ -365,7 +366,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 				$topic_item = $topic_list->getNext();
 			}
 
-			if (isset($form_data["copyToAttendees"]) && $form_data["copyToAttendees"] == "true") {
+			if (isset($this->_data["copyToAttendees"]) && $this->_data["copyToAttendees"] == "true") {
 				if($module == CS_DATE_TYPE) {
 					$date_manager = $this->_environment->getDateManager();
 					$date_item = $date_manager->getItem($rubric_item->getItemID());
@@ -406,7 +407,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 
 			// build group id array
 			$groupIdArray = array();
-			foreach ($form_data as $key => $value) {
+			foreach ($this->_data as $key => $value) {
 				if (mb_stristr($key, "group_")) {
 					$groupIdArray[] = $value;
 				}
@@ -442,7 +443,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 
 			// build institution id array
 			$institutionIdArray = array();
-			foreach ($form_data as $key => $value) {
+			foreach ($this->_data as $key => $value) {
 				if (mb_stristr($key, "institution_")) {
 					$institutionIdArray[] = $value;
 				}
@@ -470,6 +471,14 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 				}
 				$institution_item = $institution_list->getNext();
 			}
+			
+			// additional recipients
+			$additionalRecipientsArray = array();
+			foreach ($this->_data as $key => $value) {
+			    if (mb_stristr($key, "additional")) {
+			        // TODO: ...
+			    }
+			}
 
 			$recipients = array_unique($recipients);
 			$recipients_display = array_unique($recipients_display);
@@ -493,8 +502,8 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$mail['from_name'] = $current_user->getFullName();
 			$mail['from_email'] = $current_user->getEmail();
 			$mail['to'] = implode(", ", $recipients);
-			$mail['subject'] = $form_data["subject"];
-			$mail['message'] = $form_data["body"];
+			$mail['subject'] = $this->_data["subject"];
+			$mail['message'] = $this->_data["body"];
 
 			$email = new cs_mail();
 			$email->set_from_email($mail['from_email']);
@@ -503,7 +512,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$email->set_subject($mail['subject']);
 			$email->set_message($mail['message']);
 
-			if (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true) {
+			if (isset($this->_data["copyToSender"]) && $this->_data["copyToSender"] == true) {
 				$email->set_cc_to($current_user->getEmail());
 			}
 			if ( !empty($recipients_bcc) ) {
@@ -517,17 +526,24 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 					"from"			=> $mail['from_email'],
 					"to"			=> $recipients,
 					"reply"			=> $mail['from_email'],
-					"copyToSender"	=> (isset($form_data["copyToSender"]) && $form_data["copyToSender"] == true),
+					"copyToSender"	=> (isset($this->_data["copyToSender"]) && $this->_data["copyToSender"] == true),
 					"recipientsBcc"	=> $recipients_bcc,
-					"subject"		=> $form_data["subject"],
-					"body"			=> nl2br($form_data["body"])
+					"subject"		=> $this->_data["subject"],
+					"body"			=> nl2br($this->_data["body"])
 				);
 				
-				$this->_popup_controller->setSuccessfullDataReturn($confirmPopupData);
+				$this->setSuccessfullDataReturn(array($confirmPopupData));
+				echo $this->_return;
 			} // ~email->send()
 			else { // Mail could not be send
-				$this->_popup_controller->setErrorReturn("110", "mail could not be delivered", array());
+			    $this->setErrorReturn("110", "mail could not be delivered", array());
+			    echo $this->_return;
+			    exit;
 			}
+		} else {
+		    $this->setErrorReturn("111", "missing mandatory field", array());
+		    echo $this->_return;
+		    exit;
 		}
 	}
 
