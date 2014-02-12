@@ -150,7 +150,20 @@ if ( empty($command)) {
    			$room_user_item = $room_item->getUserByUserID($user_id, $auth_source);
    			
    			if($room_user_item) {
-   				// user is already existing
+   				// user is already existing - set errorbox
+   				$params = array();
+   				$params['environment'] = $environment;
+   				$params['with_modifying_actions'] = true;
+   				$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   				unset($params);
+   				$errorbox->setText($translator->getMessage('MEMBER_EDIT_ERROR_EXISTS'));
+//    				if ( $environment->inProjectRoom() or $environment->inCommunityRoom() ) {
+//    					$errorbox->setText($translator->getMessage('MEMBER_EDIT_ERROR_JUST_DELETED',$user->getFullname()));
+//    				} else {
+//    					$errorbox->setText($translator->getMessage('ACCOUNT_EDIT_ERROR_JUST_DELETED',$user->getFullname(),$user->getUserID()));
+//    				}
+   				$page->add($errorbox);
+   				$command = 'error';
    			} else {
    				// user does not exist
    				// create user item for room
@@ -164,6 +177,8 @@ if ( empty($command)) {
    				$check_message = 'YES';
    				
    				$user_item->save();
+   				
+   				$current_item_id = $room_item->getItemID();
    				
    				// send mail to user + moderator
 
@@ -257,25 +272,18 @@ if ( empty($command)) {
    						$translator->setSelectedLanguage($old_lang);
    					}
    				}
-   				
-//    				$user_item = $current_user->cloneData();
-//    				$picture = $current_user->getPicture();
-//    				}
-//    				$user_item->setVisibleToLoggedIn();
-//    				$user_item->setContextID($current_item_id);
-   				
-//    				$user_item->request();
-//    				$check_message = 'YES'; // for mail body
-//    				$account_mode = 'info';
-//    				} else {
-//    					$user_item->makeUser(); // for mail body
-//    					$check_message = 'NO';
-//    					$account_mode = 'to_room';
    			}
    			
    		} else {
    			// room id existiert nicht
-   			
+   			$params = array();
+   			$params['environment'] = $environment;
+   			$params['with_modifying_actions'] = true;
+   			$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   			unset($params);
+   			$errorbox->setText($translator->getMessage('MEMBER_EDIT_ERROR_ROOM_NOT_EXISTS'));
+   			$page->add($errorbox);
+   			$command = 'error';
    		}
    	}
    	
