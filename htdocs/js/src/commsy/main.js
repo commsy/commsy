@@ -60,7 +60,7 @@ require([	"dojo/_base/declare",
 							var widgetInstance = deferred.instance;
 							
 							// register click event
-							//widgetManager.RegisterOpenCloseClick(widgetInstance, event.target);
+							widgetManager.RegisterOpenCloseClick(widgetInstance, event.target);
 							
 							// open widget
 							widgetInstance.Open();

@@ -1,9 +1,9 @@
 define({
 	root: {
 		additionalAdd:			"Add another recipient",
-		additionalDescription:	"In addition, you are free to specify additional receivers below.",
+		additionalDescription:	"In addition, you are free to specify additional recipients below.",
 		additionalFirstName:	"first name",
-		additionalLabel:		"Additional receivers",
+		additionalLabel:		"Additional recipients",
 		additionalLastName:		"last name",
 		additionalMail:			"mail address",
 		all:					"Total members in workspace",
@@ -14,7 +14,7 @@ define({
 		errorMail:				"Wrong mail format",
 		errorMissing:			"Missing value",
 		no:						"No",
-		receiver:				"Addressee:",
+		recipient:				"Addressee:",
 		sendTo:					"Send to:",
 		sendToAttendees:		'Send to attendees',
 		sendToGroups:			"Send to choosen groups:",

@@ -13,7 +13,7 @@ define({
 	errorMail:					"Falsches Mail-Format",
 	errorMissing:				"Bitte geben Sie einen Wert an",
 	no:							"Nein",
-	receiver:					"EmpfängerIn:",
+	recipient:					"EmpfängerIn:",
 	sendTo:						"Senden an:",
 	sendToAttendees:			"An die Teilnehmenden senden",
 	sendToInstitution:			"An Institution senden:",

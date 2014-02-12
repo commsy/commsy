@@ -36,6 +36,10 @@ define(
 		templateString:		Template,
 		baseClass:			"sendWidget",
 		
+		toggle:				true,
+		
+		additionalIndex:	1,
+		
 		// attributes
 		title:				"",
 		_setTitleAttr:		{ node: "titleNode", type: "innerHTML" },
@@ -102,11 +106,11 @@ define(
 						this.createAttendeesHTML(response.attendeeType);
 					}
 					
-					// group receivers / institution receivers
-					if (response.showGroupReceivers) {
-						this.createGroupReceiversHTML(response.withGroups, response.groups);
-					} else if(response.showInstitutionReceivers) {
-						this.createInstitutionsReceiversHTML(response.institutions);
+					// group recipients / institution recipients
+					if (response.showGroupRecipients) {
+						this.createGroupRecipientsHTML(response.withGroups, response.groups);
+					} else if(response.showInstitutionRecipients) {
+						this.createInstitutionsRecipientsHTML(response.institutions);
 					}
 					
 					// all members
@@ -143,7 +147,7 @@ define(
 						type:		'checkbox',
 						value:		'true',
 						checked:	'checked',
-						name:		'form_data[copyToAttendees]'
+						name:		'copyToAttendees'
 					}, divNode, 'last');
 					
 					DomConstruct.create('span', {
@@ -153,15 +157,17 @@ define(
 				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
 		},
 		
-		createGroupReceiversHTML: function(withGroups, groups)
+		createGroupRecipientsHTML: function(withGroups, groups)
 		{
+			var formManager = registry.byId("sendForm");
+			
 			var rowNode = DomConstruct.create('div', {
 				className:	'input_row'
 			}, this.lastFormRow, "before");
 			
 				DomConstruct.create('span', {
 					className:	'input_label_150',
-					innerHTML:	withGroups ? this.popupTranslations.sendToGroups : this.popupTranslations.receiver
+					innerHTML:	withGroups ? this.popupTranslations.sendToGroups : this.popupTranslations.recipient
 				}, rowNode, 'last');
 				
 			dojo.forEach(groups, function(group) {
@@ -169,23 +175,25 @@ define(
 					className:	'input_container_180'
 				}, rowNode, 'last');
 				
-					DomConstruct.create('input', {
+					var inputNode = DomConstruct.create('input', {
 						type:		'checkbox',
 						value:		group.value,
 						checked:	group.checked,
-						name:		'form_data[group_]' + group.value + ']'
+						name:		'group_' + group.value
 					}, divNode, 'last');
 					
 					DomConstruct.create('span', {
 						innerHTML:	withGroups ? group.text : this.popupTranslations.all
 					}, divNode, 'last');
-			});
 				
-				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
+				formManager.registerNode(inputNode);
+			});
 		},
 		
-		createInstitutionsReceiversHTML: function(institutions)
+		createInstitutionsRecipientsHTML: function(institutions)
 		{
+			var formManager = registry.byId("sendForm");
+			
 			var rowNode = DomConstruct.create('div', {
 				className:	'input_row'
 			}, this.lastFormRow, "before");
@@ -200,16 +208,18 @@ define(
 					className:	'input_container_180'
 				}, rowNode, 'last');
 				
-					DomConstruct.create('input', {
+					var inputNode = DomConstruct.create('input', {
 						type:		'checkbox',
 						value:		institution.value,
 						checked:	institution.checked,
-						name:		'form_data[institution_]' + institution.value + ']'
+						name:		'institution_' + institution.value
 					}, divNode, 'last');
 					
 					DomConstruct.create('span', {
 						innerHTML:	institution.text
 					}, divNode, 'last');
+				
+				formManager.registerNode(inputNode);
 			});
 				
 				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
@@ -223,18 +233,18 @@ define(
 			
 				DomConstruct.create('span', {
 					className:	'input_label_150',
-					innerHTML:	this.popupTranslations.receiver
+					innerHTML:	this.popupTranslations.recipient
 				}, rowNode, 'last');
 				
 				var divNode = DomConstruct.create('div', {
 					className:	'input_container_180'
 				}, rowNode, 'last');
 				
-					DomConstruct.create('input', {
+					var inputNode = DomConstruct.create('input', {
 						type:		'checkbox',
 						value:		'true',
 						checked:	'checked',
-						name:		'form_data[allMembers]'
+						name:		'allMembers'
 					}, divNode, 'last');
 					
 					DomConstruct.create('span', {
@@ -242,6 +252,9 @@ define(
 					}, divNode, 'last');
 				
 				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
+			
+			var formManager = registry.byId("sendForm");
+			formManager.registerNode(inputNode);
 		},
 		
 		addAdditionalFormElements: function()
@@ -356,33 +369,41 @@ define(
 		
 		onSubmit: function(event)
 		{
-			event.preventDefault();console.log('submit');
+			event.preventDefault();
 			
-			var formManager = Registry.byId("sendForm");
+			var formManager = registry.byId("sendForm");
 			
 			if (formManager.isValid()) {
 				this.setupLoading();
 				var formValues = formManager.gatherFormValues();
+				formValues.itemId = this.iid
 				
-				console.log(formValues);
-				/*
-				this.AJAXRequest(	"limesurvey",
-									"inviteParticipants",
-									{
-										groupId:				formValues.group,
-										withTokens:				formValues.withTokensCheckbox,
-										participantMails:		formValues.participantMails,
-										participantMailSubject:	formValues.participantMailSubject,
-										participantMailtext:	formValues.participantMailtext,
-										formValues:				formValues,
-										surveyId:				this.surveyId
-									},
-									Lang.hitch(this, function(response) {
+				this.AJAXRequest(	"send",
+									"send",
+									formValues,
+									lang.hitch(this, function(response) {
 					// remove loading indicator and close this popup
 					this.destroyLoading();
 					this.Close();
+					
+					/*
+					// prepare mixin data
+					var mixin = {
+						mailSuccess:	true,
+						mail:			confirmData
+					};
+					
+					// get instance of confirm widget
+					var widgetManager = this.getWidgetManager();
+					widgetManager.GetInstance("commsy/widgets/MailConfirmWidget/MailConfirmWidget", mixin).then(function(deferred)
+					{
+						var widgetInstance = deferred.instance;
+						
+						// open widget
+						widgetInstance.Open();
+					});
+					*/
 				}));
-				*/
 			} else {
 				formManager.validate();
 			}
