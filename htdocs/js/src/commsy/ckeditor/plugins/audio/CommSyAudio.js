@@ -117,7 +117,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 													if(this.getValue() == 'null'){
 														inputUrl.enable();
 														inputUrl.setValue('');
-														urlDecodeFlag = true;
+//														urlDecodeFlag = true;
 													} else {
 														inputUrl.disable();
 														// set file url in textInput
@@ -130,10 +130,10 @@ CKEDITOR.plugins.add( "CommSyAudio",
 														// build url for embedding
 														fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
 														
-														encodeFileUrl = encodeURIComponent(fileUrl);
+//														encodeFileUrl = encodeURIComponent(fileUrl);
 //															alert(encodeFileUrl);
-														inputUrl.setValue(encodeFileUrl);
-														urlDecodeFlag = false;
+														inputUrl.setValue(fileUrl);
+//														urlDecodeFlag = false;
 													}
 												}
 										 	},
@@ -316,6 +316,8 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								var autostart = this.getValueOf( 'audioTab', 'autostart');
 								var float = this.getValueOf( 'audioTab', 'float');
 								
+								audioUrl = encodeURIComponent(audioUrl);
+								
 								var floatValue = '';
 								
 								var style,
@@ -347,9 +349,9 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								
 								if(this.getValueOf('audioTab', 'selectbox') == 'mediaplayer'){
 									
-									if(urlDecodeFlag){
-										audioUrl = encodeURI(audioUrl);
-									}
+//									if(urlDecodeFlag){
+//										audioUrl = encodeURI(audioUrl);
+//									}
 
 									content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3&showstop=true&showdigits=true&shownavigation=true" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" ' + style + ' commsytype="audio" wmode="opaque">';
 //									content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
