@@ -1,8 +1,9 @@
-<phpdox xmlns="http://phpdox.de/config">
-	<project name="CommSy" source="src" workdir="build/phpdox">
+<phpdox xmlns="http://phpdox.net/config">
+	<project name="CommSy" source="../" workdir="build/phpdox">
 		<collector publiconly="false">
 			<include mask="*.php" />
 			<exclude mask="*Autoload.php" />
+			<exclude mask="vendor" />
 		</collector>
 
 		<generator output="build">
