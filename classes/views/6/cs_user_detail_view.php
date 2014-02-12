@@ -366,7 +366,7 @@ class cs_user_detail_view extends cs_detail_view {
                  or $current_user->isModerator()
                )
            
-         ) {pr($item->getUserID(). '==' . $current_user->getUserID());
+         ) {
       	if(!$current_user->isDeactivatedLoginAsAnotherUser() or $current_user->isTemporaryAllowedToLoginAs()){
       		if($item->getUserID() != $current_user->getUserID()){
       			$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
