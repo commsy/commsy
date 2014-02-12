@@ -75,7 +75,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 											var dialog = this.getDialog();
 											var audioUrl = dialog.getContentElement( 'audioTab', 'audioUrl' );
 											var fileSelect = dialog.getContentElement( 'audioTab', 'fileselect' );
-//											audioUrl.disable();
+											audioUrl.enable();
 											
 											if(this.getValue() == 'mediaplayer'){
 												var j;
