@@ -131,12 +131,10 @@
 	</target>
 
 	<target name="js" description="Build Dojo source">
-		<chmod file="${project.basedir}/htdocs/js/src/util/buildscripts/build.sh" perm="u+x">
-		</chmod>
-		<exec dir="${project.basedir}/htdocs/js/src/util/buildscripts/" executable="./build.sh" failonerror="true">
-			<arg value="--profile ${project.basedir}/htdocs/js/build.js">
-			</arg>
-		</exec>
+		<chmod file="${project.basedir}/htdocs/js/src/util/buildscripts/build.sh" perm="u+x" />
+		<exec dir="${project.basedir}/htdocs/js/" executable="./src/util/buildscripts/build.sh" failonerror="true">
+                <arg value="--profile build.js" />
+        </exec>
 	</target>
 
 	<target name="post" description="Post processing">
