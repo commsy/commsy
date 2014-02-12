@@ -1,0 +1,117 @@
+<?php
+$message["SERVER_CONFIGURATION_ACTION"]["en"] = "Configure server";
+$message["SERVER_CONFIGURATION_CONNECTION_DELETE_CONNECTION"]["en"] = "Delete connection";
+$message["SERVER_CONFIGURATION_CONNECTION_EDIT_CONNECTION"]["en"] = "Edit connection";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_CONNECTION"]["en"] = "Connection";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_KEY"]["en"] = "Key";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_PROXY"]["en"] = "Use proxy";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_TITLE"]["en"] = "Title";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_URL"]["en"] = "URL";
+$message["SERVER_CONFIGURATION_CONNECTION_OWN_KEY"]["en"] = "Own key";
+$message["SERVER_CONFIGURATION_CONNECTION_SAVED_CONNECTION"]["en"] = "Connections";
+$message["SERVER_CONFIGURATION_CONNECTION_TITLE_FORM"]["en"] = "Connection options";
+$message["SERVER_CONFIGURATION_IMS_PASSWORD"]["en"] = "Password";
+$message["SERVER_CONFIGURATION_IMS_PASSWORD_AGAIN"]["en"] = "Repeat password";
+$message["SERVER_CONFIGURATION_IMS_USERID"]["en"] = "IMS user id";
+$message["SERVER_CONFIGURATION_IMS_USER_EXIST"]["en"] = "Activate IMS-Account";
+$message["SERVER_CONFIGURATION_NEWS_LINK"]["en"] = "Link";
+$message["SERVER_CONFIGURATION_NEWS_LINK_DESC"]["en"] = "Hyperlink to an external page";
+$message["SERVER_CONFIGURATION_NEWS_SHOW"]["en"] = "Display?";
+$message["SERVER_CONFIGURATION_NEWS_TEXT"]["en"] = "Text";
+$message["SERVER_CONFIGURATION_OOS_DEFAULT_TEXT"]["en"] = "Out of Service
+
+The CommSy server is temporary not available.";
+$message["SERVER_CONNECTION_ERROR_SOAP_COMPATIBLE"]["en"] = "The CommSy server %1 is not campatible with your CommSy server.";
+$message["SERVER_CONNECTION_ERROR_SOAP_CONNECT"]["en"] = "The CommSy server %1 is not accessible.";
+$message["SERVER_DEFAULT_SENDER_ADDRESS"]["en"] = "E-mail address <br/>(default)";
+$message["SERVER_DEFAULT_SENDER_ADDRESS_DESC"]["en"] = "CommSy uses this as a sender address for system e-mails.";
+$message["SERVER_IMS_LINK"]["en"] = "IMS-Account configuration";
+$message["SERVER_IMS_LINK_DESC"]["en"] = "Create or delete IMS-Account";
+$message["SERVER_INITIALIZE_FORM_HINTS"]["en"] = "With the account <span style=&quot;font-weight:bold;&quot;>root</span>, you can initialize CommSys.";
+$message["SERVER_INITIALIZE_FORM_TITLE"]["en"] = "Initialize CommSy-Server";
+$message["SERVER_INITIALIZE_HEADER_DESC"]["en"] = "Initialize CommSy-Server";
+$message["SERVER_NEWS_LINK"]["en"] = "Server news";
+$message["SERVER_NEWS_LINK_DESC"]["en"] = "Options for server-wide announcements.";
+$message["SERVER_OUTOFSERVICE_NAVBAR_TITLE"]["en"] = "Out of service";
+$message["SERVER_PORTAL_OVERVIEW"]["en"] = "Portal overview";
+$message["SERVER_STATISTIC_ACCOUNTS"]["en"] = "Users (e-mail adresses)";
+$message["SERVER_STATISTIC_ACCOUNTS_ALL"]["en"] = "all";
+$message["SERVER_STATISTIC_ACCOUNTS_OPEN"]["en"] = "open";
+$message["SERVER_STATISTIC_ACCOUNTS_USED"]["en"] = "active";
+$message["SERVER_STATISTIC_CHOICE_DAY"]["en"] = "Day";
+$message["SERVER_STATISTIC_CHOICE_MONTH"]["en"] = "Month";
+$message["SERVER_STATISTIC_CHOICE_ROOM"]["en"] = "Display";
+$message["SERVER_STATISTIC_CHOICE_ROOM_ACTIVE"]["en"] = "active workspaces";
+$message["SERVER_STATISTIC_CHOICE_ROOM_COMMUNITY"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_CHOICE_ROOM_NONE"]["en"] = "no workspaces";
+$message["SERVER_STATISTIC_CHOICE_ROOM_USED"]["en"] = "used workspaces";
+$message["SERVER_STATISTIC_CHOICE_YEAR"]["en"] = "Year";
+$message["SERVER_STATISTIC_COMMUNITYROOM"]["en"] = "%_COMMUNITY_SUB_NOMS_BIG";
+$message["SERVER_STATISTIC_LEGEND"]["en"] = "<h3>Legend</h3>
+<span style=&quot;font-weight:bold;&quot;>rooms</span>
+
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>all</span> = all rooms</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>used</span> = one person has loggind in within the period</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>active</span> = more the 10 items new or changed within the period</li>
+
+</ul>
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>cr</span> = community room / workspace</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>pr</span> = project room / workspace</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>gr</span> = group room / workspace</li>
+
+</ul>
+
+<span style=&quot;font-weight:bold;&quot;>User (email addresses)</span><br />
+
+<br />
+
+User will be distinct by their email addresses.<br />
+
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>active</span> = has logged in within the period</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>open</span> = User with open (not locked) accounts</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>all</span> = all registered accounts</li>
+
+</ul>
+
+<span style=&quot;font-weight:bold;&quot;>Attention</span><br />
+
+<br />
+
+CommSy stored only the last login per user. So if the period is go to far in the past, the result is inexact.";
+$message["SERVER_STATISTIC_LINK"]["en"] = "Server statistics";
+$message["SERVER_STATISTIC_LINK_DESC"]["en"] = "Statistical information on workspaces and users.";
+$message["SERVER_STATISTIC_NAME"]["en"] = "Name";
+$message["SERVER_STATISTIC_NO"]["en"] = "No.";
+$message["SERVER_STATISTIC_NO_ACTIVE_PROJECTROOMS"]["en"] = "No active %_PROJECT_SUB_NOMPL_LOW at that time";
+$message["SERVER_STATISTIC_PROJECTROOM"]["en"] = "%_PROJECT_SUB_NOMS_BIG";
+$message["SERVER_STATISTIC_PROJECTROOMS_ACTIVE"]["en"] = "active";
+$message["SERVER_STATISTIC_PROJECTROOMS_ALL"]["en"] = "all";
+$message["SERVER_STATISTIC_PROJECTROOMS_USED"]["en"] = "used";
+$message["SERVER_STATISTIC_ROOMS"]["en"] = "Workspaces";
+$message["SERVER_STATISTIC_RUBRICS"]["en"] = "Activity in workspace rubrics";
+$message["SERVER_STATISTIC_RUBRIC_ANNOUNCEMENT"]["en"] = "Announcements";
+$message["SERVER_STATISTIC_RUBRIC_DATE"]["en"] = "Events";
+$message["SERVER_STATISTIC_RUBRIC_DISCUSSION"]["en"] = "Discussions";
+$message["SERVER_STATISTIC_RUBRIC_GROUP"]["en"] = "Groups";
+$message["SERVER_STATISTIC_RUBRIC_INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_RUBRIC_MATERIAL"]["en"] = "Materials";
+$message["SERVER_STATISTIC_RUBRIC_PROJECT"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_RUBRIC_TODO"]["en"] = "Todos";
+$message["SERVER_STATISTIC_RUBRIC_TOPIC"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_RUBRIC_USER"]["en"] = "Users";
+$message["SERVER_STATISTIC_START"]["en"] = "Start";
+$message["SERVER_STATISTIC_SUM"]["en"] = "Sum";
+$message["SERVER_STATISTIC_TITLE"]["en"] = "Server statistics";
+?>

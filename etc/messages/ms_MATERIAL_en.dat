@@ -1,0 +1,158 @@
+<?php
+$message["MATERIAL_ABSTRACT"]["en"] = "Abstract";
+$message["MATERIAL_ADDRESS"]["en"] = "Address";
+$message["MATERIAL_ADDRESS_DESC"]["en"] = "/Hamburg/";
+$message["MATERIAL_ADMIN_INDEX"]["en"] = "Publishing";
+$message["MATERIAL_ADMIN_TINY_DESCRIPTION"]["en"] = "Overview of materials that are world-wide public";
+$message["MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION"]["en"] = "Pubishing (materials)";
+$message["MATERIAL_AUTHORS"]["en"] = "Author/s";
+$message["MATERIAL_AUTHORS_DESC"]["en"] = "/Mustermann, Max; Musterfrau, Maxima/";
+$message["MATERIAL_BIBLIOGRAPHIC"]["en"] = "Bibl. reference";
+$message["MATERIAL_BIBLIOGRAPHIC_DESC"]["en"] = "/In: Meier,M; Schulze,S.(eds.):<br />
+The phases of life.<br />
+Köln: Beispiel-Verlag, p. 1-99./";
+$message["MATERIAL_BIB_ARTICLE"]["en"] = "Journal article";
+$message["MATERIAL_BIB_BOOK"]["en"] = "Book";
+$message["MATERIAL_BIB_CHAPTER"]["en"] = "Book chapter";
+$message["MATERIAL_BIB_COLLECTION"]["en"] = "Collection";
+$message["MATERIAL_BIB_DOCUMENT"]["en"] = "Document management";
+$message["MATERIAL_BIB_DOCUMENT_ADMINISTRATION_INFO"]["en"] = "Information for document administration:";
+$message["MATERIAL_BIB_DOCUMENT_EDITOR"]["en"] = "Document editor";
+$message["MATERIAL_BIB_DOCUMENT_MAINTAINER"]["en"] = "Maintainer";
+$message["MATERIAL_BIB_DOCUMENT_RELEASE_DATE"]["en"] = "Version date";
+$message["MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER"]["en"] = "Version";
+$message["MATERIAL_BIB_EDITION"]["en"] = "%1 edition";
+$message["MATERIAL_BIB_EDITOR"]["en"] = "%1 (ed.)";
+$message["MATERIAL_BIB_FOTO"]["en"] = "Foto";
+$message["MATERIAL_BIB_FOTO_COPYRIGHT"]["en"] = "Copyright";
+$message["MATERIAL_BIB_FOTO_DATE"]["en"] = "Date";
+$message["MATERIAL_BIB_FOTO_REASON"]["en"] = "Reason";
+$message["MATERIAL_BIB_IN"]["en"] = "In";
+$message["MATERIAL_BIB_INCOLLECTION"]["en"] = "Article from edited volume";
+$message["MATERIAL_BIB_INPAPER"]["en"] = "Newspaper article";
+$message["MATERIAL_BIB_ISBN"]["en"] = "ISBN: %1";
+$message["MATERIAL_BIB_KIND_BUTTON"]["en"] = "Change";
+$message["MATERIAL_BIB_MANUSCRIPT"]["en"] = "Manuscript";
+$message["MATERIAL_BIB_NONE"]["en"] = "Plain text";
+$message["MATERIAL_BIB_NOTHING"]["en"] = "Select reference type";
+$message["MATERIAL_BIB_PAGES"]["en"] = "p. %1";
+$message["MATERIAL_BIB_SERIES"]["en"] = "Series %1";
+$message["MATERIAL_BIB_THESIS"]["en"] = "Thesis";
+$message["MATERIAL_BIB_URL"]["en"] = "Internet: %1";
+$message["MATERIAL_BIB_URL_DATE"]["en"] = "last visited: %1";
+$message["MATERIAL_BIB_VOLUME"]["en"] = "Volume %1";
+$message["MATERIAL_BIB_WEBSITE"]["en"] = "Website";
+$message["MATERIAL_BOOKTITLE"]["en"] = "Book title";
+$message["MATERIAL_BOOKTITLE_DESC"]["en"] = "/Things that Matter/";
+$message["MATERIAL_BUTTON_MULTI_UPLOAD_YES"]["en"] = "Upload multiple files [requires Java]";
+$message["MATERIAL_BUZZWORDS"]["en"] = "Tags";
+$message["MATERIAL_CHANGE_BUTTON"]["en"] = "Save material";
+$message["MATERIAL_CURRENT_VERSION_DATE"]["en"] = "Current version, revision";
+$message["MATERIAL_EDIT"]["en"] = "Edit material";
+$message["MATERIAL_EDITION"]["en"] = "Edition";
+$message["MATERIAL_EDITION_DESC"]["en"] = "/2/";
+$message["MATERIAL_EDITOR"]["en"] = "Editors";
+$message["MATERIAL_EDITOR_DESC"]["en"] = "/Müller, Michael; Meier, Christine/";
+$message["MATERIAL_ENTER_NEW"]["en"] = "Enter material";
+$message["MATERIAL_EXPORT_ITEM_ZIP"]["en"] = "Material";
+$message["MATERIAL_EXPORT_TO_WIKI"]["en"] = "Show in wiki";
+$message["MATERIAL_EXPORT_TO_WIKI_LINK"]["en"] = "Page in wiki";
+$message["MATERIAL_EXPORT_TO_WORDPRESS_LINK"]["en"] = "Page in wordpress";
+$message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["en"] = "The following material - also edited by you - from the CommSy-Room &quot;%1&quot; was published to the room-wiki by %2:<br/>
+<br/>
+&quot;%3&quot;<br/>
+<br/>
+You can view the published version in the room-wiki at:<br/>
+<br/>
+%4";
+$message["MATERIAL_EXPORT_WIKI_MAIL_SUBJECT"]["en"] = "Material-export to wiki";
+$message["MATERIAL_EXPORT_WORDPRESS_MAIL_SUBJECT"]["en"] = "Material-export to wordpress";
+$message["MATERIAL_EXPORT_ZIP"]["en"] = "Materials";
+$message["MATERIAL_FACULTY"]["en"] = "Faculty";
+$message["MATERIAL_FACULTY_DESC"]["en"] = "/Faculty of Informatics/";
+$message["MATERIAL_FILES"]["en"] = "Files";
+$message["MATERIAL_FILES_DESC"]["en"] = "You can add more files. Unchecked files will be deleted.";
+$message["MATERIAL_FULL_FIELD_SEARCH"]["en"] = "no limitation";
+$message["MATERIAL_IMS_IMPORT"]["en"] = "Import material";
+$message["MATERIAL_IMS_IMPORT_BUTTON"]["en"] = "Import material";
+$message["MATERIAL_IMS_UPLOADLINK"]["en"] = "Direct <br/>import";
+$message["MATERIAL_IMS_UPLOAD_LINK_HEADER"]["en"] = "Go to Beluga Library";
+$message["MATERIAL_IMS_WRONG_FILE_FORMAT"]["en"] = "To import serveral materials the file format has to be ZIP and IMS content.
+<br/><br/>
+If you only want to upload a file (PDF, word, open office, an image file, ...), please follow the &quot;green&quot; cross or this link:
+%1";
+$message["MATERIAL_INDEX"]["en"] = "Materials";
+$message["MATERIAL_INSERT_NEW_LABEL"]["en"] = "Upload file";
+$message["MATERIAL_INSERT_NEW_LINK"]["en"] = "Insert new material";
+$message["MATERIAL_INSERT_NEW_TEXT"]["en"] = "To upload a file follow the &quot;green&quot; cross or this link:
+%1";
+$message["MATERIAL_ISBN"]["en"] = "ISBN";
+$message["MATERIAL_ISBN_DESC"]["en"] = "/3830913680/";
+$message["MATERIAL_ISSN"]["en"] = "ISSN";
+$message["MATERIAL_ISSN_DESC"]["en"] = "/1618162X/";
+$message["MATERIAL_ISSUE"]["en"] = "Number";
+$message["MATERIAL_ISSUE_DESC"]["en"] = "/2/";
+$message["MATERIAL_JOURNAL"]["en"] = "Journal";
+$message["MATERIAL_JOURNAL_DESC"]["en"] = "/i-Com/";
+$message["MATERIAL_LABEL"]["en"] = "Material type";
+$message["MATERIAL_MAKE_NOT_PUBLIC"]["en"] = "Publish commsy-wide";
+$message["MATERIAL_MAKE_PUBLIC"]["en"] = "Publish world-wide";
+$message["MATERIAL_MAX_FILE_SIZE"]["en"] = "<span class=&quot;key&quot;>Upload file size limit: %1 MB</span>";
+$message["MATERIAL_META_DATA"]["en"] = "Metadata";
+$message["MATERIAL_NEW_SECTION_INSERT"]["en"] = "<NEW>";
+$message["MATERIAL_NOT_PUBLISHED"]["en"] = "not public world-wide";
+$message["MATERIAL_ONLY_AUTHOR"]["en"] = "Restrict search to &quot;author&quot;";
+$message["MATERIAL_ONLY_TITLE"]["en"] = "Restrict search to &quot;title&quot;";
+$message["MATERIAL_PAGES"]["en"] = "Pages";
+$message["MATERIAL_PAGES_DESC"]["en"] = "/312-320/";
+$message["MATERIAL_PAPER"]["en"] = "Newspaper";
+$message["MATERIAL_PAPER_DESC"]["en"] = "/New York Times/";
+$message["MATERIAL_PUBLISHED"]["en"] = "published";
+$message["MATERIAL_PUBLISHER"]["en"] = "Publisher";
+$message["MATERIAL_PUBLISHER_DESC"]["en"] = "/Hamburg University Press/";
+$message["MATERIAL_PUBLISHING_DATE"]["en"] = "Year";
+$message["MATERIAL_REQUEST_PUBLISHED"]["en"] = "requested";
+$message["MATERIAL_SAVE_BUTTON"]["en"] = "Save material";
+$message["MATERIAL_SECTIONS"]["en"] = "Sections";
+$message["MATERIAL_SECTION_ADD"]["en"] = "Add section";
+$message["MATERIAL_SERIES"]["en"] = "Series";
+$message["MATERIAL_SERIES_DESC"]["en"] = "/New Learning with Media/";
+$message["MATERIAL_TAGS"]["en"] = "Categories";
+$message["MATERIAL_THESIS_BACHELOR"]["en"] = "BA thesis";
+$message["MATERIAL_THESIS_DIPLOMA"]["en"] = "Diploma thesis";
+$message["MATERIAL_THESIS_DISSERTATION"]["en"] = "Dissertation";
+$message["MATERIAL_THESIS_EXAM"]["en"] = "MA thesis";
+$message["MATERIAL_THESIS_KIND"]["en"] = "Kind of thesis";
+$message["MATERIAL_THESIS_KIND_DESC"]["en"] = "";
+$message["MATERIAL_THESIS_MASTER"]["en"] = "MA thesis";
+$message["MATERIAL_THESIS_OTHER"]["en"] = "other";
+$message["MATERIAL_THESIS_POSTDOC"]["en"] = "Professorial dissertation";
+$message["MATERIAL_THESIS_TERM"]["en"] = "Term paper";
+$message["MATERIAL_TITLE"]["en"] = "Title";
+$message["MATERIAL_UNIVERSITY"]["en"] = "University";
+$message["MATERIAL_UNIVERSITY_DESC"]["en"] = "/University of Hamburg/";
+$message["MATERIAL_UPLOADFILE"]["en"] = "Import<br/>an ims<br/>package";
+$message["MATERIAL_UPLOADFILE_BUTTON"]["en"] = "Upload selected file";
+$message["MATERIAL_UPLOAD_DESC"]["en"] = "You can add multiple files.<br />
+(Max. file size: %1 MB)";
+$message["MATERIAL_URL"]["en"] = "URL";
+$message["MATERIAL_URL_DATE"]["en"] = "Last visited";
+$message["MATERIAL_VERSION"]["en"] = "Versions";
+$message["MATERIAL_VERSION_BUTTON"]["en"] = "Save as new version";
+$message["MATERIAL_VERSION_DATE"]["en"] = "Outdated version, revision";
+$message["MATERIAL_VOLUME"]["en"] = "Volume";
+$message["MATERIAL_VOLUME_DESC"]["en"] = "/3/";
+$message["MATERIAL_VOLUME_J"]["en"] = "Volume";
+$message["MATERIAL_VOLUME_J_DESC"]["en"] = "/12/";
+$message["MATERIAL_WORKFLOW_RESUBMISSION_UNTIL"]["en"] = "Resubmission at";
+$message["MATERIAL_WORKFLOW_VALID_UNTIL"]["en"] = "valid until";
+$message["MATERIAL_WORLD_PUBLISH"]["en"] = "Public";
+$message["MATERIAL_WORLD_PUBLISH_CHANGE_STATUS_0"]["en"] = "present world-wide";
+$message["MATERIAL_WORLD_PUBLISH_CHANGE_STATUS_1"]["en"] = "do not present world-wide (requested at the moment)";
+$message["MATERIAL_WORLD_PUBLISH_CHANGE_STATUS_2"]["en"] = "do not present world-wide (public world-wide at the moment)";
+$message["MATERIAL_WORLD_PUBLISH_DESC"]["en"] = "You can present your material worldwide.";
+$message["MATERIAL_WORLD_PUBLISH_STATUS_0"]["en"] = "not public world-wide";
+$message["MATERIAL_WORLD_PUBLISH_STATUS_1"]["en"] = "Request for world-wide presentation";
+$message["MATERIAL_WORLD_PUBLISH_STATUS_2"]["en"] = "public world-wide";
+$message["MATERIAL_YEAR"]["en"] = "Year";
+?>

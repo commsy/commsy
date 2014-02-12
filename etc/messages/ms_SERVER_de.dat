@@ -1,0 +1,120 @@
+<?php
+$message["SERVER_CONFIGURATION_ACTION"]["de"] = "Server konfigurieren";
+$message["SERVER_CONFIGURATION_CONNECTION_DELETE_CONNECTION"]["de"] = "Verbindung löschen";
+$message["SERVER_CONFIGURATION_CONNECTION_EDIT_CONNECTION"]["de"] = "Verbindung bearbeiten";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_CONNECTION"]["de"] = "Verbindung";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_KEY"]["de"] = "Schlüssel";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_PROXY"]["de"] = "Proxy verwenden";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_TITLE"]["de"] = "Name";
+$message["SERVER_CONFIGURATION_CONNECTION_NEW_URL"]["de"] = "URL";
+$message["SERVER_CONFIGURATION_CONNECTION_OWN_KEY"]["de"] = "Eigener Schlüssel";
+$message["SERVER_CONFIGURATION_CONNECTION_SAVED_CONNECTION"]["de"] = "Verbindungen";
+$message["SERVER_CONFIGURATION_CONNECTION_TITLE_FORM"]["de"] = "Verbindungen konfigurieren";
+$message["SERVER_CONFIGURATION_IMS_PASSWORD"]["de"] = "Passwort";
+$message["SERVER_CONFIGURATION_IMS_PASSWORD_AGAIN"]["de"] = "Passwort wiederholen";
+$message["SERVER_CONFIGURATION_IMS_USERID"]["de"] = "IMS-Benutzerkennung";
+$message["SERVER_CONFIGURATION_IMS_USER_EXIST"]["de"] = "IMS-Account aktivieren";
+$message["SERVER_CONFIGURATION_NEWS_LINK"]["de"] = "Link";
+$message["SERVER_CONFIGURATION_NEWS_LINK_DESC"]["de"] = "Hyperlink zu einer externen Seite";
+$message["SERVER_CONFIGURATION_NEWS_SHOW"]["de"] = "Anzeigen?";
+$message["SERVER_CONFIGURATION_NEWS_TEXT"]["de"] = "Text";
+$message["SERVER_CONFIGURATION_OOS_DEFAULT_TEXT"]["de"] = "Wartungsarbeiten
+
+Der CommSy-Server steht wegen Wartungsarbeiten zurzeit nicht zur Verfügung.
+
+Wir bitten die Unannehmlichkeiten zu entschuldigen.";
+$message["SERVER_CONNECTION_ERROR_SOAP_COMPATIBLE"]["de"] = "Der CommSy-Server mit der URL %1 ist nicht mit Ihrem CommSy Server kompatibel.";
+$message["SERVER_CONNECTION_ERROR_SOAP_CONNECT"]["de"] = "Der CommSy-Server mit der URL %1 ist nicht erreichbar.";
+$message["SERVER_DEFAULT_SENDER_ADDRESS"]["de"] = "E-Mail-Adresse <br/>(default)";
+$message["SERVER_DEFAULT_SENDER_ADDRESS_DESC"]["de"] = "Unter dieser Adresse werden System-Mails verschickt.";
+$message["SERVER_IMS_LINK"]["de"] = "IMS-Account Einstellungen";
+$message["SERVER_IMS_LINK_DESC"]["de"] = "IMS-Account erstellen oder löschen";
+$message["SERVER_INITIALIZE_FORM_HINTS"]["de"] = "Mit der Kennung <span style=&quot;font-weight:bold;&quot;>root</span> können CommSys angelegt werden.";
+$message["SERVER_INITIALIZE_FORM_TITLE"]["de"] = "CommSy-Server initializieren";
+$message["SERVER_INITIALIZE_HEADER_DESC"]["de"] = "CommSy-Server initializieren";
+$message["SERVER_NEWS_LINK"]["de"] = "Server-Ankündigungen";
+$message["SERVER_NEWS_LINK_DESC"]["de"] = "Einstellungen zu serverweiten Ankündigungen.";
+$message["SERVER_OUTOFSERVICE_NAVBAR_TITLE"]["de"] = "Wartungsarbeiten";
+$message["SERVER_OUTOFSERVICE_ROOT_LOGIN"]["de"] = "Administration";
+$message["SERVER_PORTAL_OVERVIEW"]["de"] = "Portalübersicht";
+$message["SERVER_STATISTIC_ACCOUNTS"]["de"] = "Nutzende (E-Mail-Adressen)";
+$message["SERVER_STATISTIC_ACCOUNTS_ALL"]["de"] = "alle";
+$message["SERVER_STATISTIC_ACCOUNTS_OPEN"]["de"] = "offen";
+$message["SERVER_STATISTIC_ACCOUNTS_USED"]["de"] = "aktiv";
+$message["SERVER_STATISTIC_CHOICE_DAY"]["de"] = "Tag";
+$message["SERVER_STATISTIC_CHOICE_MONTH"]["de"] = "Monat";
+$message["SERVER_STATISTIC_CHOICE_ROOM"]["de"] = "Anzeige";
+$message["SERVER_STATISTIC_CHOICE_ROOM_ACTIVE"]["de"] = "aktive Räume";
+$message["SERVER_STATISTIC_CHOICE_ROOM_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_CHOICE_ROOM_NONE"]["de"] = "keine Räume";
+$message["SERVER_STATISTIC_CHOICE_ROOM_USED"]["de"] = "benutzte Räume";
+$message["SERVER_STATISTIC_CHOICE_YEAR"]["de"] = "Jahr";
+$message["SERVER_STATISTIC_COMMUNITYROOM"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG";
+$message["SERVER_STATISTIC_LEGEND"]["de"] = "<h3>Legende</h3>
+<span style=&quot;font-weight:bold;&quot;>Räume</span>
+
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>alle</span> bezeichnet alle Räume</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>benutzt</span> bedeutet, dass mindestens einmal sich jemand in dem Raum (ob offen oder archiviert) innerhalb des Zeitraumes aufgehalten hat</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>aktiv</span> bedeutet, dass innerhalb des Zeitraums 10 oder mehr Einträge gemacht oder verändert wurden</li>
+
+</ul>
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>cr</span> = Gemeinschaftsraum (community room)</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>pr</span> = Projektraum</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>gr</span> = Gruppenraum</li>
+
+</ul>
+
+<span style=&quot;font-weight:bold;&quot;>Nutzende (E-Mail-Adressen)</span><br />
+
+<br />
+
+Nutzenden werden anhand verschiedenen E-Mail-Adressen pro Portal identifiziert.<br />
+
+<ul>
+
+<li><span style=&quot;font-weight:bold;&quot;>aktiv</span> bedeutet, dass diese Anzahl an Nutzenden sich mindestens einmal in dem entsprechenden Zeitraum eingeloggt haben</li>
+
+<li><span style=&quot;font-weight:bold;&quot;>offen</span> bedeutet, dass diese Anzahl an Nutzenden eine gültige Kennung besitzt</li>
+
+<li>unter <span style=&quot;font-weight:bold;&quot;>alle</span> sind alle jemals existierenden Nutzenden aufgezählt</li>
+
+</ul>
+
+<span style=&quot;font-weight:bold;&quot;>Achtung</span><br />
+
+<br />
+
+Je weiter der Zeitraum in die Vergangenheit zurückreicht, desto ungenauer wird das Ergebnis, da z.B. bei den Nutzenden immer nur der letzte Login gespeichert wird und nicht jeder.";
+$message["SERVER_STATISTIC_LINK"]["de"] = "Serverstatistik";
+$message["SERVER_STATISTIC_LINK_DESC"]["de"] = "Statistiken zu Räumen und Nutzenden pro Portal.";
+$message["SERVER_STATISTIC_NAME"]["de"] = "Name";
+$message["SERVER_STATISTIC_NO"]["de"] = "Nr.";
+$message["SERVER_STATISTIC_NO_ACTIVE_PROJECTROOMS"]["de"] = "Keine aktiven %_PROJECT_SUB_NOMPL_BIG in diesem Zeitraum";
+$message["SERVER_STATISTIC_PROJECTROOM"]["de"] = "%_PROJECT_SUB_NOMS_BIG";
+$message["SERVER_STATISTIC_PROJECTROOMS_ACTIVE"]["de"] = "aktiv";
+$message["SERVER_STATISTIC_PROJECTROOMS_ALL"]["de"] = "alle";
+$message["SERVER_STATISTIC_PROJECTROOMS_USED"]["de"] = "benutzt";
+$message["SERVER_STATISTIC_ROOMS"]["de"] = "Räume";
+$message["SERVER_STATISTIC_RUBRICS"]["de"] = "Aktivität in Rubriken";
+$message["SERVER_STATISTIC_RUBRIC_ANNOUNCEMENT"]["de"] = "Ankündigungen";
+$message["SERVER_STATISTIC_RUBRIC_DATE"]["de"] = "Termine";
+$message["SERVER_STATISTIC_RUBRIC_DISCUSSION"]["de"] = "Diskussionen";
+$message["SERVER_STATISTIC_RUBRIC_GROUP"]["de"] = "Gruppen";
+$message["SERVER_STATISTIC_RUBRIC_INSTITUTION"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_RUBRIC_MATERIAL"]["de"] = "Materialien";
+$message["SERVER_STATISTIC_RUBRIC_PROJECT"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_RUBRIC_TODO"]["de"] = "Aufgaben";
+$message["SERVER_STATISTIC_RUBRIC_TOPIC"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
+$message["SERVER_STATISTIC_RUBRIC_USER"]["de"] = "Personen";
+$message["SERVER_STATISTIC_START"]["de"] = "Start";
+$message["SERVER_STATISTIC_SUM"]["de"] = "Summe";
+$message["SERVER_STATISTIC_TITLE"]["de"] = "Serverstatistik";
+?>
