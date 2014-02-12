@@ -1,12 +1,12 @@
 <phpdox xmlns="http://phpdox.net/config">
-	<project name="CommSy" source="../" workdir="build/phpdox">
+	<project name="CommSy" source="../" workdir="${basedir}/build/phpdox">
 		<collector publiconly="false">
 			<include mask="*.php" />
 			<exclude mask="*Autoload.php" />
 			<exclude mask="**vendor**" />
 		</collector>
 
-		<generator output="build">
+		<generator output="${basedir}/build">
 			<build engine="html" enabled="true" output="api" />
 		</generator>
 	</project>
