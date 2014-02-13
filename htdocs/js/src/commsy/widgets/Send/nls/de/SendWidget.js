@@ -1,6 +1,6 @@
 define({
 	additionalAdd:				"Weiteren Empfänger hinzufügen",
-	additionalDescription:		"Zusätzlich zur Auswahl können Sie hier unabhängig davon weitere Empfänger ergänzen.",
+	additionalDescription:		"Zusätzlich zur Auswahl können Sie hier weitere Empfänger ergänzen.",
 	additionalFirstName:		"Vorname",
 	additionalLabel:			"Zusätzlicher Empfänger",
 	additionalLastName:			"Nachname",

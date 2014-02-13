@@ -7,6 +7,7 @@ define(
  	"dojo/i18n!./nls/SendWidget",
  	"dojo/dom-construct",
  	"dojo/on",
+ 	"dojo/dom-class",
  	"dojo/query",
  	"dijit/registry",
  	"dojo/parser",
@@ -24,6 +25,7 @@ define(
 	PopupTranslations,
 	DomConstruct,
 	on,
+	domclass,
 	query,
 	registry,
 	parser,
@@ -117,6 +119,11 @@ define(
 					if (response.allMembers) {
 						this.createAllMembersHTML();
 					}
+					
+					// add additional
+					if (response.allowAdditional) {
+						domclass.remove(this.addAdditionalWrapperNode, 'hidden');
+					}
 				}
 			}));
 		},
@@ -130,6 +137,8 @@ define(
 		 ************************************************************************************/
 		createAttendeesHTML: function(type)
 		{
+			var formManager = registry.byId("sendForm");
+			
 			var rowNode = DomConstruct.create('div', {
 				className:	'input_row'
 			}, this.lastFormRow, "before");
@@ -143,7 +152,7 @@ define(
 					className:	'input_container_180'
 				}, rowNode, 'last');
 				
-					DomConstruct.create('input', {
+					var inputNode = DomConstruct.create('input', {
 						type:		'checkbox',
 						value:		'true',
 						checked:	'checked',
@@ -155,6 +164,8 @@ define(
 					}, divNode, 'last');
 				
 				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
+			
+			formManager.registerNode(inputNode);
 		},
 		
 		createGroupRecipientsHTML: function(withGroups, groups)
@@ -188,6 +199,8 @@ define(
 				
 				formManager.registerNode(inputNode);
 			});
+			
+				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
 		},
 		
 		createInstitutionsRecipientsHTML: function(institutions)

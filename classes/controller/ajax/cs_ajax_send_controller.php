@@ -241,22 +241,22 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 		$response['attendeeType'] = $attendeeType;
 
 
-		$showGroupReceivers = false;
-		$showInstitutionReceivers = false;
+		$showGroupRecipients = false;
+		$showInstitutionRecipients = false;
 		if ( $this->_environment->inProjectRoom() and !empty($groupArray) ) {
 			if ( $current_context->withRubric(CS_GROUP_TYPE) ) {
-				$showGroupReceivers = true;
+				$showGroupRecipients = true;
 			}
 		} else {
 			if ( $current_context->withRubric(CS_INSTITUTION_TYPE) and !empty($institutionArray) ) {
-				$showInstitutionReceivers = true;
+				$showInstitutionRecipients = true;
 			}
 		}
 
 		//Projectroom and no groups enabled -> send mails to group all
 		$withGroups = true;
 		if ( $current_context->isProjectRoom() && !$current_context->withRubric(CS_GROUP_TYPE)) {
-			$showGroupReceivers = true;
+			$showGroupRecipients = true;
 			$withGroups = false;
 
 			// get number of users
@@ -270,7 +270,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$groupArray = array_slice($groupArray, 0, 1);
 		}
 		
-		$response['showGroupReceivers'] = $showGroupReceivers;
+		$response['showGroupRecipients'] = $showGroupRecipients;
 		$response['withGroups'] = $withGroups;
 		$response['groups'] = $groupArray;
 
@@ -288,9 +288,10 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$response['numMebers'] = $count;
 		}
 		
-		$response['showInstitutionReceivers'] = $showInstitutionReceivers;
+		$response['showInstitutionRecipients'] = $showInstitutionRecipients;
 		$response['institutions'] = $institutionArray;
 		$response['allMembers'] = $allMembers;
+		$response['allowAdditional'] = true;
 		
 		$this->setSuccessfullDataReturn($response);
 		echo $this->_return;
@@ -475,9 +476,18 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			// additional recipients
 			$additionalRecipientsArray = array();
 			foreach ($this->_data as $key => $value) {
-			    if (mb_stristr($key, "additional")) {
-			        // TODO: ...
+			    if (mb_substr($key, 0, 10) == "additional") {
+			    	$shortKey = mb_substr($key, 10);
+			    	
+			    	list($field, $index) = explode('_', $shortKey);
+			    	
+			    	$additionalRecipientsArray[$index-1][$field] = $value;
 			    }
+			}
+			
+			foreach ($additionalRecipientsArray as $additionalRecipient) {
+				$recipients[] = $additionalRecipient['FirstName'] . ' ' . $additionalRecipient['LastName'] . " <" . $additionalRecipient['Mail'] . ">";
+				$recipients_display[] = $additionalRecipient['FirstName'] . ' ' . $additionalRecipient['LastName'] . " &lt;" . $additionalRecipient['Mail'] . "&gt;";
 			}
 
 			$recipients = array_unique($recipients);

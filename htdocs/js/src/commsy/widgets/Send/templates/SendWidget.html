@@ -22,7 +22,11 @@
 								<div class="input_row">
 									<span class="input_label_150">${popupTranslations.subject}<span class="required">*</span></span>
 									<div class="input_container_180" id="reciever">
-										<input type="text" name="subject" class="size_400" />
+										<input type="text" name="subject" class="size_400" required="true"
+											data-dojo-type="dijit/form/ValidationTextBox"
+											data-dojo-props="
+												validator:dojox.validate.isText,
+												invalidMessage: '${popupTranslations.errorMissing}'" />
 									</div>
 								</div>
 								<div class="editor_content">
@@ -41,15 +45,17 @@
 									<div class="clear"></div>
 								</div>
 								
-								<div class="input_row">
-									<label for="lsFirstAdditional">${popupTranslations.additionalLabel}</label>
-									<div class="column_585">${popupTranslations.additionalDescription}</div>
+								<div class="hidden" data-dojo-attach-point="addAdditionalWrapperNode">
+									<div class="input_row">
+										<div style="float: left; width: 180px;">${popupTranslations.additionalLabel}</div>
+										<div class="column_585">${popupTranslations.additionalDescription}</div>
+										
+										<div class="clear"></div>
+									</div>
 									
-									<div class="clear"></div>
-								</div>
-								
-								<div class="input_row">
-									<a href="#" title="${popupTranslations.additionalAdd}" data-dojo-attach-point="addAdditionalNode">${popupTranslations.additionalAdd}</a>
+									<div class="input_row">
+										<a href="#" title="${popupTranslations.additionalAdd}" data-dojo-attach-point="addAdditionalNode">${popupTranslations.additionalAdd}</a>
+									</div>
 								</div>
 								
 								<div class="input_row">
