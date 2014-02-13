@@ -56,6 +56,7 @@ define([	"dojo/_base/declare",
 						if ( this.module === 'connection' ) {
 							this.loadContent(tabName,dom_attr.get(node, "class"));
 							dom_class.remove(node, "notloaded");
+							
 							/*
 							var newcontent = this.loadContent2(tabName,dom_attr.get(node, "class"));
 							if (newcontent) {

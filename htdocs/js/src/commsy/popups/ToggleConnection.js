@@ -90,12 +90,22 @@ define([	"dojo/_base/declare",
 	    						DomAttr.remove(node, "notloaded");
 								// set newcontent
 	    						DomAttr.set(node, "innerHTML", response.data);
-								// register click for edit
-								this.setupSpecific();
+	    						// register click for room links
+								dojo.forEach(Query("div.room_change_item",this.contentNode), Lang.hitch(this, function(node2, index, arr) {
+									// get href
+									var href1 = DomAttr.get(node2, "data-custom");
+									var href2 = dojo.fromJson("{" + href1 + "}");
+									var href = href2.href;
+									On(node2, "click", function(event) {
+										location.href = href;
+									});
+									
+								}));
+								
 	    					}
 	    				});
 
-	    				this.destroyLoading();
+						this.destroyLoading();
 	    			}
 	    			
 					// edit button
