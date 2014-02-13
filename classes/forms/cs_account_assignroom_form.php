@@ -155,16 +155,70 @@ class cs_account_assignroom_form extends cs_rubric_form {
                             $this->_user_id
                            );
       
-      $this->_form->addTextfield('room_id',
-                          		 '',
-                          		 'Raum ID',
-                          		 '',
-                          		 '',
-                          		 '20',
-                          		 false,
-                          		 '',
-                          		 ''
-   								);
+      
+      if(!empty($_POST['room_search'])) {
+      	$room_search = $_POST['room_search'];
+      } else {
+      	$room_search = '';
+      }
+      
+      $this->_form->addTextfield(	'room_search',
+      		$room_search,
+      		'Suche nach Raum',
+      		'',
+      		255,
+      		20,
+      		false,
+      		'Suchen',
+      		'submit',
+      		'',
+      		'',
+      		'',
+      		'',
+      		false,
+      		'');
+      $disabled = true;
+      if(!empty($_POST['room_search'])) {
+      	// search for room
+      	$project_manager = $this->_environment->getProjectManager();
+      	$room_search = $_POST['room_search'];
+      	$items = $project_manager->getRoomsByTitle($room_search);
+      	#pr($items);
+      	 
+      	$item = $items->getFirst();
+      	while($item) {
+      		$this->room_array[] = array(   'text'   =>   $item->getTitle(),
+      				'value'	=>   $item->getItemId());
+      
+      		$item = $items->getNext();
+      	}
+      	$room_array = $this->room_array;
+      	 
+      	$this->_form->addSelect(   'room_id',
+      			$room_array,
+      			'',
+      			$this->_translator->getMessage('CONFIGURATION_PORTAL_UPLOAD_ROOM_SELECT'),
+      			'',
+      			'',
+      			'',
+      			'',
+      			true);
+      	
+      	$disabled = false;
+      }
+      
+//       $this->_form->addTextfield('room_id',
+//                           		 '',
+//                           		 'Raum ID',
+//                           		 '',
+//                           		 '',
+//                           		 '20',
+//                           		 false,
+//                           		 '',
+//                           		 ''
+//    								);
+      
+      
       
       $this->_form->addTextarea('description',
                               	'',
@@ -174,12 +228,13 @@ class cs_account_assignroom_form extends cs_rubric_form {
                               	'',
                               	'',
                               	false,
-                              	'',
+                              	$disabled,
                               	'',
                               	'',
                               	'',
                               	''
    								);
+      
 
       $current_user = $this->_environment->getCurrentUser();
 

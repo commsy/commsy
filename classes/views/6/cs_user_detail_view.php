@@ -911,7 +911,7 @@ class cs_user_detail_view extends cs_detail_view {
             unset($params);
          }
          
-         if ($user->isRoot()) {
+         if ($user->isModerator() or $user->isRoot()) {
          	$params = array();
          	$params['iid'] = $item->getItemID();
          	$html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'account','assignroom',$params,'Raum zuordnen').BRLF;

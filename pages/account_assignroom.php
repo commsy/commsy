@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -285,6 +285,16 @@ if ( empty($command)) {
    			$page->add($errorbox);
    			$command = 'error';
    		}
+   	} else {
+   		// room id existiert nicht
+   		$params = array();
+   		$params['environment'] = $environment;
+   		$params['with_modifying_actions'] = true;
+   		$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   		unset($params);
+   		$errorbox->setText($translator->getMessage('MEMBER_EDIT_ERROR_ID'));
+   		$page->add($errorbox);
+   		$command = 'error';
    	}
    	
       
