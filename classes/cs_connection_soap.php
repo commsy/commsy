@@ -4405,11 +4405,11 @@ class cs_connection_soap {
    	}
    }
    
-   public function setPortalConnectionInfo ($session_id, $server_key, $portal_id, $tab_id) {
+   public function setPortalConnectionInfo ($session_id, $server_key, $portal_id, $tab_id, $user_key) {
       	if ($this->_isSessionValid($session_id)) {
    		$connection_obj = $this->_environment->getCommSyConnectionObject();   		 
    		$this->_updateSessionCreationDate($session_id);
-   		return $connection_obj->setPortalConnectionInfoSOAP($session_id, $server_key, $portal_id, $tab_id);
+   		return $connection_obj->setPortalConnectionInfoSOAP($session_id, $server_key, $portal_id, $tab_id, $user_key);
    	} else {
    		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
    	}
