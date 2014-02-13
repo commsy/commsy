@@ -77,7 +77,7 @@
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span> |
 				{/if}
 				{if $detail.actions.mail}
-					<a class="open_popup" data-custom="iid: {$detail.item_id}, module: 'send'" href="#">___COMMON_EMAIL_TO___</a> |
+					<a class="popup_send" data-custom="iid: {$detail.item_id}, module: 'send'" href="#">___COMMON_EMAIL_TO___</a> |
 				{/if}
 				{if $detail.actions.copy}
 					<a class="ajax_action" data-custom="iid: {$detail.item_id}, action: 'addToClipboard'" href="#">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |

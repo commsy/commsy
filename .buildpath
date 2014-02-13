@@ -20,7 +20,6 @@
 	<buildpathentry kind="src" path="commsy/etc"/>
 	<buildpathentry excluding="AUL/|BGU/|HSK/|HTK/|KUV/|MAINBGMED/|SchulCommSy/" kind="src" path="commsy/external_pages"/>
 	<buildpathentry kind="src" path="commsy/functions"/>
-	<buildpathentry kind="src" path="commsy/htdocs"/>
 	<buildpathentry kind="src" path="commsy/include"/>
 	<buildpathentry excluding="smarty/" kind="src" path="commsy/libs"/>
 	<buildpathentry kind="src" path="commsy/pages"/>
