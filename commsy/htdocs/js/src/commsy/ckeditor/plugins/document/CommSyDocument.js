@@ -21,7 +21,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					var audio;
 					
 					var SelectBoxItems = new Array(
-							new Array( '<Bitte Audiotyp auswählen>', 'null'),
+							new Array( '<Bitte Dokumententyp auswählen>', 'null'),
 					        new Array( 'Slideshare', 'slideshare' ),
 					        new Array( 'Onyx', 'onyx' )
 					);

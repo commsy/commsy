@@ -37,7 +37,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					}
 					
 					var SelectBoxItems = new Array(
-							new Array( '<Bitte Audiotyp auswählen>', 'null'),
+							new Array( '<Bitte Videotyp auswählen>', 'null'),
 							new Array( 'Lecture2Go', 'lecture2go' ),
 					        new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
 					        new Array( 'Podcampus', 'podcampus' ),
