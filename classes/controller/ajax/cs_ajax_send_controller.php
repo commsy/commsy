@@ -522,7 +522,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$email->set_subject($mail['subject']);
 			$email->set_message($mail['message']);
 
-			if (isset($this->_data["copyToSender"]) && $this->_data["copyToSender"] == true) {
+			if (isset($this->_data["copyToSender"]) && $this->_data["copyToSender"] == 'true') {
 				$email->set_cc_to($current_user->getEmail());
 			}
 			if ( !empty($recipients_bcc) ) {
@@ -536,7 +536,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 					"from"			=> $mail['from_email'],
 					"to"			=> $recipients,
 					"reply"			=> $mail['from_email'],
-					"copyToSender"	=> (isset($this->_data["copyToSender"]) && $this->_data["copyToSender"] == true),
+					"copyToSender"	=> (isset($this->_data["copyToSender"]) && $this->_data["copyToSender"] == 'true'),
 					"recipientsBcc"	=> $recipients_bcc,
 					"subject"		=> $this->_data["subject"],
 					"body"			=> nl2br($this->_data["body"])
