@@ -1,4 +1,5 @@
 define([	"dojo/_base/declare",
+        	"dojo/_base/xhr",
         	"commsy/TogglePopupHandler",
         	"dojo/query",
         	"dojo/dom-class",
@@ -6,7 +7,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/on",
         	"dojo/_base/lang",
-        	"dojo/dnd/Source"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Source) {
+        	"dojo/dnd/Source"], function(declare, xhr, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Source) {
 	return declare(TogglePopupHandler, {
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
@@ -30,15 +31,16 @@ define([	"dojo/_base/declare",
 			}
 		},
 		
-		loadContent: function(name, notloaded) {
+		loadContent2: function(name, notloaded) {
 			var retour = '';
 			if (notloaded.indexOf('notloaded') >= 0) {
 				this.setupLoading();
-				var result = this.request("popup", "getHTML", { module: this.module, id: name});
 				
+				var result = this.request("popup", "getHTML", { module: this.module, id: name});
 				result.then(
 					      function(response){
 					    	  retour = response.data;
+					    	  alert('RESULT');
 					    	  return retour;
 					      }
 					  );
@@ -52,6 +54,64 @@ define([	"dojo/_base/declare",
 			this.setupSpecificEdit();
 			
 			return retour;
+		},
+		
+		loadContent: function(name, notloaded) {
+			if (notloaded.indexOf('notloaded') >= 0) {
+			   var content_nodes = Query("div#popup_tabcontent div.tab, div.popup_tabcontent div.tab", this.contentNode);
+			   var index;
+			   for (index = 0; index < content_nodes.length; ++index) {
+				   var node = content_nodes[index];
+				   var nodeName = DomAttr.get(node, "id");
+				   if (name === nodeName) {
+	    				this.setupLoading();
+
+						// perform ajax request
+	    				var fct = "popup";
+	    				var action = "getHTML";
+	    				var data = { module: this.module, id: name};
+	    				var args = {
+	    						url:		"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
+	    						headers:	{
+	    									"Content-Type":		"application/json; charset=utf-8",
+	    									"Accept":			"application/json"
+	    						},
+	    						postData:	dojo.toJson(data),
+	    						handleAs:	"json"
+	    					};
+	    				
+	    				//declare.safeMixin(args, mixin);
+	    				var request = xhr.post(args);
+
+	    				// setup deferred
+	    				request.then(function(response) {
+	    					if(response.status === "success") {
+								// only once
+	    						DomAttr.remove(node, "notloaded");
+								// set newcontent
+	    						DomAttr.set(node, "innerHTML", response.data);
+	    						// register click for room links
+								dojo.forEach(Query("div.room_change_item",this.contentNode), Lang.hitch(this, function(node2, index, arr) {
+									// get href
+									var href1 = DomAttr.get(node2, "data-custom");
+									var href2 = dojo.fromJson("{" + href1 + "}");
+									var href = href2.href;
+									On(node2, "click", function(event) {
+										location.href = href;
+									});
+									
+								}));
+								
+	    					}
+	    				});
+
+						this.destroyLoading();
+	    			}
+	    			
+					// edit button
+					this.setupSpecificEdit();
+				}
+			}
 		},
 		
 		onPopupSubmit: function(customObject) {

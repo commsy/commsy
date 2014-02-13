@@ -54,8 +54,11 @@ define([	"dojo/_base/declare",
 						
 						// CONNECTION TO OTHER PORTALS
 						if ( this.module === 'connection' ) {
+							this.loadContent(tabName,dom_attr.get(node, "class"));
+							dom_class.remove(node, "notloaded");
 							
-							var newcontent = this.loadContent(tabName,dom_attr.get(node, "class"));
+							/*
+							var newcontent = this.loadContent2(tabName,dom_attr.get(node, "class"));
 							if (newcontent) {
 								// set newcontent
 								dom_attr.set(node, "innerHTML", newcontent);
@@ -63,7 +66,8 @@ define([	"dojo/_base/declare",
 								dom_class.remove(node, "notloaded");
 								// register click for edit
 								this.setupSpecific();
-							}							
+							}
+							*/
 						}
 						
 						// show node (= tab)
