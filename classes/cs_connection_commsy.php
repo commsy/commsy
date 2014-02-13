@@ -325,7 +325,9 @@ class cs_connection_commsy {
    			
    			// login
    			$sid = $this->_connection->authenticate($userid,$password,$portal_id);
-   			$userid_session = $this->_connection->authenticateViaSession($sid);
+   			if ( !empty($sid) ) {
+   				$userid_session = $this->_connection->authenticateViaSession($sid);
+   			}
    			if ( !empty($sid)
    				  and !is_soap_fault($sid)
    				  and $userid_session != 'guest'

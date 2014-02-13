@@ -618,8 +618,6 @@
 			
 			// portal2portal
 			$to_javascript["i18n"]["CS_BAR_CONNECTION_PLEASE_WAIT_JS"] = $translator->getMessage('CS_BAR_CONNECTION_PLEASE_WAIT_JS');
-			$to_javascript["i18n"]["CS_BAR_CONNECTION_JS_ERROR_1"] = $translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_1');
-			$to_javascript["i18n"]["CS_BAR_CONNECTION_JS_ERROR_2"] = $translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_2');
 				
 			// mixin javascript variables
 			if(is_array($this->_toJSMixin)) {

@@ -47,6 +47,10 @@ define([	"dojo/_base/declare",
 				alert(this.from_php.i18n["CS_BAR_CONNECTION_PLEASE_WAIT_JS"]);
 				this.destroyLoading();
 			}
+			
+			// edit button
+			this.setupSpecificEdit();
+			
 			return retour;
 		},
 		
@@ -227,7 +231,19 @@ define([	"dojo/_base/declare",
 				   location.reload();
 				}
 			}
-		}
+		},
 		
+		/************************************************************************************
+		 * Error Handling
+		 ************************************************************************************/
+		onPopupSubmitError: function(response) {
+			if (response.reason) {
+			   alert(response.reason);
+			} else if (response.code) {
+			   alert(response.code);				
+			} else {
+			   alert('ERROR');
+			}
+		}		
 	});
 });

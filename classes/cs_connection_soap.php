@@ -715,7 +715,7 @@ class cs_connection_soap {
             $info = 'ERROR';
             $info_text = 'environment lost';
          } else {
-            el('authenticate 4');
+         	el('authenticate 4');
             $this->_environment->setCurrentContextID($portal_id);
             $authentication = $this->_environment->getAuthenticationObject();
             if ( isset($authentication) ) {

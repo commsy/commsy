@@ -35,12 +35,13 @@
 		}
 		
 		public function saveNew ($form_data, $additional = array()) {
+			$translator = $this->_environment->getTranslationObject();
 			if ( empty($form_data['new_userid'])
 				  or empty($form_data['new_pwd'])
 				  or empty($form_data['new_portal'])
 				  or !stristr($form_data['new_portal'],'_')
 			   ) {
-				$this->_popup_controller->setSuccessfullItemIDReturn('error_1');
+				$this->_popup_controller->setErrorReturn("1001",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_1'));
 			} else {
 				
 				// data conversion
@@ -54,15 +55,15 @@
 				$commsy_connection_obj = $this->_environment->getCommSyConnectionObject();
 				$result = $commsy_connection_obj->saveNewConnection($server_id,$portal_id,$userid,$password);
 				if ( $result == 'LOGIN_FAILED' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_2');
+					$this->_popup_controller->setErrorReturn("1002",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_2'));
 				} elseif ( $result == 'SAVE_FAILED' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_3');
+				   $this->_popup_controller->setErrorReturn("1003",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 				} elseif ( $result == 'SAVE_KEY_FAILED' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_4');
+				   $this->_popup_controller->setErrorReturn("1003",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 				} elseif ( $result == 'SAVE_TAB_FAILED' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_5');
+					$this->_popup_controller->setErrorReturn("1003",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 				} elseif ( $result == 'DATA_LOST' ) {
-					$this->_popup_controller->setSuccessfullItemIDReturn('error_6');
+				   $this->_popup_controller->setErrorReturn("1003",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 				} else {
 					$this->_popup_controller->setSuccessfullItemIDReturn(42);
 				}				
