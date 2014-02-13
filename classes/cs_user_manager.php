@@ -163,6 +163,7 @@ class cs_user_manager extends cs_manager {
    
    private $_limit_connection_key = NULL;
    private $_limit_connection_server_key = NULL;
+   private $_limit_connection_own_key = NULL;
 
    /** constructor
     * the only available constructor, initial values for internal variables<br />
@@ -212,6 +213,7 @@ class cs_user_manager extends cs_manager {
       $this->_user_limit_binary = NULL;
       $this->_limit_connection_key = NULL;
       $this->_limit_connection_server_key = NULL;
+      $this->_limit_connection_own_key = NULL;
    }
 
    public function setExternalConnectionUserKeyLimit ($value) {
@@ -220,6 +222,10 @@ class cs_user_manager extends cs_manager {
 
    public function setExternalConnectionServerKeyLimit ($value) {
       $this->_limit_connection_server_key = $value;
+   }
+
+   public function setOwnConnectionUserKeyLimit ($value) {
+      $this->_limit_connection_own_key = $value;
    }
 
    public function setEMailLimit ($value) {
@@ -739,7 +745,11 @@ class cs_user_manager extends cs_manager {
      	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%CONNECTION_ARRAY%"';
      	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_server_key).'%"';
      }
-
+     // portal2Portal: connection own key limit
+     if ( !empty($this->_limit_connection_own_key) ) {
+     	  $query .= ' AND '.$this->addDatabasePrefix('user').'.extras LIKE "%s:17:\"CONNECTION_OWNKEY\";s:32:\"'.$this->_limit_connection_own_key.'\"%"';
+     }
+     
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND ( 1 = 1';
