@@ -50,7 +50,7 @@ require([	"dojo/_base/declare",
 				// send
 				var aSendNodes = query("a.popup_send");
 				if (aSendNodes) {
-					On.once(aSendNodes, "click", Lang.hitch(this, function(event) {
+					On(aSendNodes, "click", Lang.hitch(this, function(event) {
 						var widgetManager = this.getWidgetManager();
 						
 						// get custom data object
@@ -58,9 +58,6 @@ require([	"dojo/_base/declare",
 						
 						widgetManager.GetInstance("commsy/widgets/Send/SendWidget", customObject).then(function(deferred) {
 							var widgetInstance = deferred.instance;
-							
-							// register click event
-							widgetManager.RegisterOpenCloseClick(widgetInstance, event.target);
 							
 							// open widget
 							widgetInstance.Open();

@@ -38,8 +38,6 @@ define(
 		templateString:		Template,
 		baseClass:			"sendWidget",
 		
-		toggle:				true,
-		
 		additionalIndex:	1,
 		
 		// attributes
