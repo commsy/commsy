@@ -178,11 +178,12 @@ class cs_account_assignroom_form extends cs_rubric_form {
       		false,
       		'');
       $disabled = true;
+      $this->room_array = array();
       if(!empty($_POST['room_search'])) {
       	// search for room
       	$project_manager = $this->_environment->getProjectManager();
       	$room_search = $_POST['room_search'];
-      	$items = $project_manager->getRoomsByTitle($room_search);
+      	$items = $project_manager->getRoomsByTitle($room_search, $this->_environment->getCurrentPortalID());
       	#pr($items);
       	 
       	$item = $items->getFirst();

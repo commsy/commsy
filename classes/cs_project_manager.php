@@ -563,11 +563,14 @@ class cs_project_manager extends cs_room2_manager {
    }
    
    
-   function getRoomsByTitle($string) {
+   function getRoomsByTitle($string, $portalid) {
    	if (empty($string)) {
    		return new cs_list();
    	} else {
-   		$query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL AND '.$this->addDatabasePrefix($this->_db_table).'.title LIKE "%'.$string.'%" OR '.$this->addDatabasePrefix($this->_db_table).'.item_id LIKE "%'.$string.'%" LIMIT 20';
+   		$query = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.deletion_date IS NULL AND
+   				 '.$this->addDatabasePrefix($this->_db_table).'.context_id = '.$portalid.' AND
+   				 		 ('.$this->addDatabasePrefix($this->_db_table).'.title LIKE "%'.$string.'%" OR
+   				 		 		 '.$this->addDatabasePrefix($this->_db_table).'.item_id LIKE "%'.$string.'%") LIMIT 20';
 //    		$query .= " ORDER BY ".encode(AS_DB,$sortBy);
    		$result = $this->_db_connector->performQuery($query);
    		if (!isset($result)) {
