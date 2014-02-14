@@ -131,7 +131,7 @@ class cs_configuration_portal_upload_form extends cs_rubric_form {
       	// search for room
       	$project_manager = $this->_environment->getProjectManager();
       	$room_search = $_POST['room_search'];
-      	$items = $project_manager->getRoomsByTitle($room_search);
+      	$items = $project_manager->getRoomsByTitle($room_search, $this->_environment->getCurrentPortalID());
       	#pr($items);
       	
       	$item = $items->getFirst();
