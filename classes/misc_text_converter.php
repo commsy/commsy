@@ -1018,30 +1018,30 @@ class misc_text_converter {
       
       // reference
       #$reg_exp_array['[']			  = '~\\[[0-9]+\|[\w]+\]~eu';
-      $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:quicktime']   = '~\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:image']       = '~\\(:image (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:item']        = '~\\(:item ([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:link']        = '~\\(:link (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:file']        = '~\\(:file (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:zip']         = '~\\(:zip (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:youtube']     = '~\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:podcampus']   = '~\\(:podcampus (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:vimeo']       = '~\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:mp3']         = '~\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
-      $reg_exp_array['(:lecture2go']  = '~\\(:lecture2go (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:flash']       = '~\\(:flash\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:quicktime']   = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:image']       = '~\\(:image\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:item']        = '~\\(:item\\s([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:link']        = '~\\(:link\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:file']        = '~\\(:file\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:zip']         = '~\\(:zip\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:youtube']     = '~\\(:youtube\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:podcampus']   = '~\\(:podcampus\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:vimeo']       = '~\\(:vimeo\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:mp3']         = '~\\(:mp3\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:lecture2go']  = '~\\(:lecture2go\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
       if ( $this->_environment->isScribdAvailable() ) {
-         $reg_exp_array['(:office']   = '~\\(:office (.*?)(\\s.*?)?\\s*?:\\)~eu';
+         $reg_exp_array['(:office']   = '~\\(:office\\s(.*?)(\\s.*?)?\\s*?:\\)~eu';
       }
-      $reg_exp_array['(:slideshare']  = '~\\(:slideshare (.*?):\\)~eu';
-      $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
-      $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
-      $reg_exp_array['(:scorm']       = '~\\(:scorm (.*?):\\)~eu';
-      $reg_exp_array['(:mdo']         = '~\\(:mdo (.*?):\\)~eu';
-      $reg_exp_array['(:geogebra']    = '~\\(:geogebra (.*?):\\)~eu';
-      $reg_exp_array['(:scratch']     = '~\\(:scratch (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:slideshare']  = '~\\(:slideshare\\s(.*?):\\)~eu';
+      $reg_exp_array['[slideshare']   = '~\[slideshare\\s(.*?)\]~eu';
+      $reg_exp_array['(:flickr']      = '~\\(:flickr\\s(.*?):\\)~eu';
+      $reg_exp_array['(:scorm']       = '~\\(:scorm\\s(.*?):\\)~eu';
+      $reg_exp_array['(:mdo']         = '~\\(:mdo\\s(.*?):\\)~eu';
+      $reg_exp_array['(:geogebra']    = '~\\(:geogebra\\s(.*?):\\)~eu';
+      $reg_exp_array['(:scratch']     = '~\\(:scratch\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       
       
       // Test auf erforderliche Software; Windows-Server?
