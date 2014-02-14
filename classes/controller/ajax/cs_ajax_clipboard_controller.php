@@ -309,6 +309,10 @@
 				   	$error_array[] = 'ERROR: copy items in portal is not allowed';
 				   }
 				   
+				   else if ($this->_environment->getCurrentUserItem()->isOnlyReadUser()) {
+				   	$error_array[] = 'ERROR: copy items as read only user is not allowed';
+				   }
+				   
 					elseif (!empty($ids)) {
 						foreach ($ids as $id) {
 							// get item to copy
