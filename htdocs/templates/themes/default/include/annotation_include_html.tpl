@@ -79,51 +79,55 @@
 				</div> <!-- Ende item body -->
 				<div class="clear"> </div>
 			{/foreach}
-
-			<div class="item_actions">&nbsp;</div>
-
-			<div class="item_body"> <!-- Start item body -->
-				<div class="item_post">
-					<div id="item_postnew">
-						<div class="column_80">
-							<p>
-								<a href="" title="{$environment.username}">
-									{if $environment.user_picture != ''}
-										<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="___USER_PICTURE_UPLOADFILE___" />
-									{else}
-										<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
-									{/if}
-								</a>
-							</p>
-						</div>
-
-						<div class="column_590">
-							{if isset($popup.overflow) && $popup.overflow}
-								<input class="open_popup" type="submit" data-custom="module: 'annotation', iid: 'NEW', annotatedId: {$detail.item_id}{if isset($detail.content.latest_version) && !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" value="___ANNOTATION_ENTER_NEW___" />
-							{else}
-								<a name="annotation-1"></a>
-								<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.item_id}&mode=annotate&iid=NEW" method="post">
-									<div class="post_content">
-										<h4>{$annotation@total + 1}. </h4>
-										<input type="hidden" value="" name="iid"/>
-										<input type="hidden" value="{$detail.item_id}" name="material_id"/>
-										<input type="hidden" value="1" name="ref_position"/>
-										<input type="hidden" value="{$detail.item_id}" name="ref_iid"/>
-										{if isset($detail.content.version)}<input type="hidden" value="{$detail.content.version}" name="version"/>{/if}
-										<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "annotation"} class="missing"{/if}/>
-										<div class="editor_content">
-											<div id="description_annotation" class="ckeditor"></div>
-										</div>
+			
+			{if !$environment.is_read_only}
+				<div class="item_actions">&nbsp;</div>
 	
-										<input class="popup_button" style="margin-bottom:20px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___ANNOTATION_ADD_NEW_BUTTON___" />
-									</div>
-								</form>
-							{/if}
+				<div class="item_body"> <!-- Start item body -->
+					<div class="item_post">
+						<div id="item_postnew">
+							<div class="column_80">
+								<p>
+									<a href="" title="{$environment.username}">
+										{if $environment.user_picture != ''}
+											<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="___USER_PICTURE_UPLOADFILE___" />
+										{else}
+											<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="___USER_PICTURE_UPLOADFILE___" />
+										{/if}
+									</a>
+								</p>
+							</div>
+	
+							<div class="column_590">
+								
+								{if isset($popup.overflow) && $popup.overflow}
+									<input class="open_popup" type="submit" data-custom="module: 'annotation', iid: 'NEW', annotatedId: {$detail.item_id}{if isset($detail.content.latest_version) && !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" value="___ANNOTATION_ENTER_NEW___" />
+								{else}
+									<a name="annotation-1"></a>
+									<form action="commsy.php?cid={$environment.cid}&mod=annotation&fct=edit&ref_iid={$detail.item_id}&mode=annotate&iid=NEW" method="post">
+										<div class="post_content">
+											<h4>{$annotation@total + 1}. </h4>
+											<input type="hidden" value="" name="iid"/>
+											<input type="hidden" value="{$detail.item_id}" name="material_id"/>
+											<input type="hidden" value="1" name="ref_position"/>
+											<input type="hidden" value="{$detail.item_id}" name="ref_iid"/>
+											{if isset($detail.content.version)}<input type="hidden" value="{$detail.content.version}" name="version"/>{/if}
+											<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "annotation"} class="missing"{/if}/>
+											<div class="editor_content">
+												<div id="description_annotation" class="ckeditor"></div>
+											</div>
+		
+											<input class="popup_button" style="margin-bottom:20px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___ANNOTATION_ADD_NEW_BUTTON___" />
+										</div>
+									</form>
+								{/if}
+							</div>
+							<div class="clear"> </div>
 						</div>
-						<div class="clear"> </div>
 					</div>
-				</div>
-			</div> <!-- Ende item body -->
+				</div> <!-- Ende item body -->
+			{/if}
+			
 			<div class="clear"> </div>
 		</div>
 	</div>

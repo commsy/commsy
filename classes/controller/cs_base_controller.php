@@ -394,6 +394,7 @@
 			$this->assign('environment', 'room_type_commnunity', $current_context->isCommunityRoom());
 			$this->assign('environment', 'room_type_group', $current_context->isGroupRoom());
 			$this->assign('environment', 'is_guest', $current_user->isReallyGuest());
+			$this->assign('environment', 'is_read_only', $current_user->isOnlyReadUser());
 			$this->assign('environment', 'is_moderator', $current_user->isModerator());
 			$this->assign('translation', 'act_month_long', getLongMonthName(date("n") - 1));
 			$this->assign('environment', 'lang', $this->_environment->getSelectedLanguage());
