@@ -1,0 +1,6 @@
+<?php
+$message["MEMBER_EDIT_ERROR_JUST_DELETED"]["de"] = "Die Teilnahme von %1 ist bereits entgültig gelöscht worden.";
+$message["MEMBER_EDIT_ERROR_EXISTS"]["de"] = "Die Kennung ist bereits in dem angegebenen Raum aktiv.";
+$message["MEMBER_EDIT_ERROR_ROOM_NOT_EXISTS"]["de"] = "Die angegebene ID gehört zu keinem Raum";
+$message["MEMBER_EDIT_ERROR_ID"]["de"] = "Wählen Sie bitte einen vorhandenen Raum aus";
+?>
