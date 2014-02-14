@@ -284,75 +284,77 @@
 		</div> <!-- Ende item body -->
 		<div class="clear"> </div>
 	{/foreach}
-
-	<div class="item_actions">&nbsp;</div>
-
-	<div class="item_body"> <!-- Start item body -->
-		<div class="item_post">
-			<div id="item_postnew">
-				<div class="column_80">
-					<p>
-						<a href="" title="{$environment.username}">
-							{if $environment.user_picture != ''}
-								<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-							{else}
-								<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-							{/if}
-						</a>
-					</p>
+	
+	{if !$environment.is_read_only}
+		<div class="item_actions">&nbsp;</div>
+	
+		<div class="item_body"> <!-- Start item body -->
+			<div class="item_post">
+				<div id="item_postnew">
+					<div class="column_80">
+						<p>
+							<a href="" title="{$environment.username}">
+								{if $environment.user_picture != ''}
+									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{else}
+									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+								{/if}
+							</a>
+						</p>
+					</div>
+	
+					<div class="column_590">
+						{if isset($popup.overflow) && $popup.overflow}
+							<input class="open_popup" type="submit" data-custom="module: 'step', iid: 'NEW', ref_iid: {$detail.item_id}" value="___COMMON_NEW_STEP_EDIT___" />
+						{else}
+							<a name="step_new"></a>
+							<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post" enctype="multipart/form-data">
+								<div class="post_content">
+									<h4>{$step@total + 1}. </h4>
+									<input type="hidden" value="NEW" name="iid"/>
+									<input type="hidden" value="{$detail.content.item_id}" name="todo_id"/>
+									<input type="hidden" value="" name="ref_position"/>
+									<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "step"} class="missing"{/if}/> <br>
+									___STEP_MINUTES___: <input type="text" size="4" name="form_data[minutes]" />
+									<select size="1" name="form_data[time_type]">
+										<option value="1">___TODO_TIME_MINUTES___</option>
+										<option value="2">___TODO_TIME_HOURS___</option>
+										<option value="3">___TODO_TIME_DAYS___</option>
+									</select>
+	
+									<div class="editor_content">
+										<div id="ckeditor_step" class="ckeditor"></div>
+									</div>
+									
+									{*
+									<div id="files_finished"></div>
+				
+									<div id="files_attached">
+										{foreach $item.files as $file}
+											<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
+										{/foreach}
+									</div>
+									
+									<div class="uploader">
+										   <input class="fileSelector"></input>
+										   
+										   <div class="fileList"></div>
+									</div>
+									*}
+	
+									<input class="popup_button" style="margin-bottom:10px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
+								</div>
+							</form>
+						{/if}
+					</div>
+					<div class="clear"> </div>
 				</div>
-
-				<div class="column_590">
-					{if isset($popup.overflow) && $popup.overflow}
-						<input class="open_popup" type="submit" data-custom="module: 'step', iid: 'NEW', ref_iid: {$detail.item_id}" value="___COMMON_NEW_STEP_EDIT___" />
-					{else}
-						<a name="step_new"></a>
-						<form action="commsy.php?cid={$environment.cid}&mod=step&fct=edit" method="post" enctype="multipart/form-data">
-							<div class="post_content">
-								<h4>{$step@total + 1}. </h4>
-								<input type="hidden" value="NEW" name="iid"/>
-								<input type="hidden" value="{$detail.content.item_id}" name="todo_id"/>
-								<input type="hidden" value="" name="ref_position"/>
-								<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "step"} class="missing"{/if}/> <br>
-								___STEP_MINUTES___: <input type="text" size="4" name="form_data[minutes]" />
-								<select size="1" name="form_data[time_type]">
-									<option value="1">___TODO_TIME_MINUTES___</option>
-									<option value="2">___TODO_TIME_HOURS___</option>
-									<option value="3">___TODO_TIME_DAYS___</option>
-								</select>
-
-								<div class="editor_content">
-									<div id="ckeditor_step" class="ckeditor"></div>
-								</div>
-								
-								{*
-								<div id="files_finished"></div>
-			
-								<div id="files_attached">
-									{foreach $item.files as $file}
-										<input type="checkbox" checked="checked" name="form_data[file_{$file@index}]" value="{$file.file_id}" />{$file.file_name}<br/>
-									{/foreach}
-								</div>
-								
-								<div class="uploader">
-									   <input class="fileSelector"></input>
-									   
-									   <div class="fileList"></div>
-								</div>
-								*}
-
-								<input class="popup_button" style="margin-bottom:10px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_STEP_EDIT___" />
-							</div>
-						</form>
-					{/if}
-				</div>
-
-				<div class="clear"> </div>
 			</div>
-		</div>
-	</div> <!-- Ende item body -->
+		</div> <!-- Ende item body -->
+	{/if}
+	
 	<div class="clear"> </div>
-
+	
 	{include file='include/annotation_include_html.tpl'}
 
 	<div class="clear"> </div>

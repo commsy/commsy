@@ -238,59 +238,62 @@
 	{/block}
 
 	{block name=discussion_inline_answer}
-		<div class="item_actions">&nbsp;</div>
-
-		<div class="item_body"> <!-- Start item body -->
-			<div class="item_post">
-				<div id="item_postnew">
-					<div class="column_80">
-						<p>
-							<a href="" title="{$environment.username}">
-								{if $environment.user_picture != ''}
-									<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-								{else}
-									<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
-								{/if}
-							</a>
-						</p>
-					</div>
-
-					<div class="column_590">
-						{if isset($popup.overflow) && $popup.overflow}
-							<input class="open_popup" type="submit" data-custom="module: 'discarticle', iid: 'NEW', discussion_id: {$detail.item_id}" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
-						{else}
-							<a name="discarticle_new"></a>
-							<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
-								<div class="post_content">
-									<h4>{$detail.content.new_num}. </h4>
-									<input type="hidden" value="" name="iid"/>
-									<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
-									<input type="hidden" value="1" name="ref_position"/>
-									<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "discarticle"} class="missing"{/if}/>
+		{if !$environment.is_read_only}
+			<div class="item_actions">&nbsp;</div>
 	
-									<div class="editor_content">
-										<div id="description" class="ckeditor"></div>
+			<div class="item_body"> <!-- Start item body -->
+				<div class="item_post">
+					<div id="item_postnew">
+						<div class="column_80">
+							<p>
+								<a href="" title="{$environment.username}">
+									{if $environment.user_picture != ''}
+										<img width="62" src="commsy.php?cid={$environment.cid}&mod=picture&fct=getfile&picture={$environment.user_picture}" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+									{else}
+										<img width="62" src="{$basic.tpl_path}img/user_unknown.gif" alt="{i18n tag=USER_PICTURE_NO_PICTURE param1=$article.creator}" />
+									{/if}
+								</a>
+							</p>
+						</div>
+	
+						<div class="column_590">
+							{if isset($popup.overflow) && $popup.overflow}
+								<input class="open_popup" type="submit" data-custom="module: 'discarticle', iid: 'NEW', discussion_id: {$detail.item_id}" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
+							{else}
+								<a name="discarticle_new"></a>
+								<form action="commsy.php?cid={$environment.cid}&mod=discarticle&fct=edit" method="post" enctype="multipart/form-data">
+									<div class="post_content">
+										<h4>{$detail.content.new_num}. </h4>
+										<input type="hidden" value="" name="iid"/>
+										<input type="hidden" value="{$detail.item_id}" name="discussion_id"/>
+										<input type="hidden" value="1" name="ref_position"/>
+										<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "discarticle"} class="missing"{/if}/>
+		
+										<div class="editor_content">
+											<div id="description" class="ckeditor"></div>
+										</div>
+		
+										{*
+										<div id="files_finished"></div>
+		
+										<div class="uploader">
+										   <input class="fileSelector"></input>
+		
+										   <div class="fileList"></div>
+										</div>
+										*}
+		
+										<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
 									</div>
-	
-									{*
-									<div id="files_finished"></div>
-	
-									<div class="uploader">
-									   <input class="fileSelector"></input>
-	
-									   <div class="fileList"></div>
-									</div>
-									*}
-	
-									<input type="submit" id="disc_article_submit" name="form_data[option][new]" value="___COMMON_NEW_DISCARTICLE_EDIT___" />
-								</div>
-							</form>
-						{/if}
+								</form>
+							{/if}
+						</div>
+						<div class="clear"> </div>
 					</div>
-					<div class="clear"> </div>
 				</div>
-			</div>
-		</div> <!-- Ende item body -->
+			</div> <!-- Ende item body -->
+		{/if}
+		
 		<div class="clear"> </div>
 	{/block}
 

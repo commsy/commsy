@@ -413,7 +413,7 @@ if ($type != CS_DISCUSSION_TYPE) {
 				 */
 			}
 
-			if ($user->isUser()) $return["answer"] = true;
+			if ($user->isUser() && !$user->isOnlyReadUser()) $return["answer"] = true;
 
 			return $return;
 		}
