@@ -11,7 +11,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 		
 		editor.ui.addButton( "CommSyAudio",
 		{
-			label:		"CommSy Audio",
+			label:		"Audio",
 			command:	"CommSyAudio",
 			icon:		"../../src/commsy/ckeditor/plugins/audio/images/icon.png"
 		} );
