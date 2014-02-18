@@ -11,7 +11,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 		editor.ui.addButton( "CommSyDocument",
 		{
-			label:		"CommSy Dokumente",
+			label:		"Dokumente",
 			command:	"CommSyDocument",
 			icon:		"../../src/commsy/ckeditor/plugins/document/images/icon.png"
 		} );

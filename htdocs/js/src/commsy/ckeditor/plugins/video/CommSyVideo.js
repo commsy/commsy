@@ -11,7 +11,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 		
 		editor.ui.addButton( "CommSyVideo",
 		{
-			label:		"CommSy Videos",
+			label:		"Video",
 			command:	"CommSyVideo",
 			icon:		"../../src/commsy/ckeditor/plugins/video/images/icon.png"
 		} );
@@ -203,7 +203,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											}
 											// set url info
 											if(this.getValue() == 'lecture2go') {
-												urlInput.setLabel('Einbettungscode von Lecture2Go (innerhalb des iFrames)');
+												urlInput.setLabel('Einbettungscode von Lecture2Go verwenden (<iframe src="...">)');
 											} else if (this.getValue() == 'podcampus') {
 												urlInput.setLabel('Aus URL einfügen (http://www.podcampus.de/nodes/XXYZ)');
 											} else {
@@ -445,7 +445,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											{
 												id : 'helpds',
 												type : 'html',
-												html : '<a href="">[?]</a>'
+												html : '<a href="#" onClick="(document.getElementById(\'ck_info_box\').style.display == \'none\') ? document.getElementById(\'ck_info_box\').style.display=\'block\' : document.getElementById(\'ck_info_box\').style.display=\'none\'">[?]</a><div id="ck_info_box" style="position:absolute; display: none; background: #FFFFFF; border: 1px solid;">Mit der Aktivierung dieser Option, <br\>speichert Youtube nur beim Abspielen des Videos Informationen</div>'
 											}
 										]
 									},
