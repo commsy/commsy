@@ -11,7 +11,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 		editor.ui.addButton( "CommSyDocument",
 		{
-			label:		"Dokumente",
+			label:		"sonstige Medien",
 			command:	"CommSyDocument",
 			icon:		"../../src/commsy/ckeditor/plugins/document/images/icon.png"
 		} );
@@ -21,7 +21,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					var audio;
 					
 					var SelectBoxItems = new Array(
-							new Array( '<Bitte Dokumententyp auswählen>', 'null'),
+							new Array( '<Bitte Medientyp auswählen>', 'null'),
 					        new Array( 'Slideshare', 'slideshare' ),
 					        new Array( 'Onyx', 'onyx' )
 					);
@@ -47,7 +47,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					);
 					
 					return {
-						title : 'Dokument-Eigenschaften',
+						title : 'Sonstige Medien-Eigenschaften',
 						minWidth : 500,
 						minHeight : 200,
 						contents :
@@ -60,7 +60,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Dokument Type',
+										label: 'Medien Typ',
 										items: SelectBoxItems,
 										'default' : 'null',
 										onLoad : function () 

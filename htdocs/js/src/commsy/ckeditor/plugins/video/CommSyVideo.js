@@ -203,7 +203,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											}
 											// set url info
 											if(this.getValue() == 'lecture2go') {
-												urlInput.setLabel('Einbettungscode von Lecture2Go verwenden (<iframe src="...">)');
+												urlInput.setLabel('Einbettungscode von Lecture2Go unter "Teilen" verwenden <iframe src="...">');
 											} else if (this.getValue() == 'podcampus') {
 												urlInput.setLabel('Aus URL einfügen (http://www.podcampus.de/nodes/XXYZ)');
 											} else {

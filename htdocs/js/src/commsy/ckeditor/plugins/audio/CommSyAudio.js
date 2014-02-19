@@ -54,7 +54,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Audio Type',
+										label: 'Audio Typ',
 										items: SelectBoxItems,
 										'default' : 'null',
 										onLoad: function ()
