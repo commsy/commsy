@@ -1,7 +1,9 @@
 {* include template functions *}
 {include file="include/functions.tpl" inline}
 
-{if $popup.with_tabs === 1}
+{if $popup.only_edit === 1}
+   {include file="popups/include/connection_new_include_html.tpl" inline}
+{elseif $popup.with_tabs === 1}
 
 <div id="popup_top_wrapper">
    <div id="popup_my_area">
@@ -47,73 +49,8 @@
                   </div>
                   
                   {* edit *}
-                  <div id="tabs_edit"{if !empty($popup.tabs)} class="hidden"{/if}>
-                     <div class="room_block">
-                        <fieldset>                        
-                           ___CS_BAR_CONNECTION_EDIT_TEXT___
-                        </fieldset>
-                     </div>
-                     <div class="room_block">
-                        <h2 class="room_block">___CS_BAR_CONNECTION_EDIT_HEADLINE_CURRENT___</h2>
-                        <fieldset>
-                           {foreach $popup.tabs as $key => $tab}
-                              <div class="input_row">
-                                 <input type="hidden" name="form_data[tabid_{$key}]" value="{$tab.id}"/>
-                                 <label for="{$tab.id}">{$tab.server_name}<span class="tm_bcb_next">{$tab.title_orig}</label>
-                                 <input id="{$tab.id}" type="text" class="size_200 mandatory" name="form_data[name_{$tab.id}]" value="{show var=$tab.title}"/>
-                                 <input name="form_data[delete_{$tab.id}]" type="checkbox" value="1"/>___COMMON_DELETE_BUTTON___
-                              </div>
-                           {/foreach}
-                           <div class="hidden" id="new_tabs_for_edit"></div>
-                           <!--
-                           <label for="wishList">___CS_BAR_CONNECTION_EDIT_ORDER___</label>                    
-                           <ol id="wishListNode" dojoType="dojo.dnd.Source" class="container">
-                              {foreach $popup.tabs as $tab}
-                                  <li class="dojoDndItem">{$tab.title}</li>
-                              {/foreach}
-                           </ol>
-                           -->
-                           <div class="input_row" style="margin-bottom:40px;">
-                              {if !empty($popup.tabs)}
-                                 <input id="submit_current" class="submit popup_button" data-custom="part: 'connection'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
-                              {/if}
-                           </div>
-                           <div class="clear"></div>
-                        </fieldset>
-                     </div>
-                     <div class="room_block">
-                        <h2 class="room_block">___CS_BAR_CONNECTION_EDIT_HEADLINE_NEW___</h2>
-                        <div class="breadcrumb_room_area">
-                           <fieldset>                        
-                              <div class="input_row">
-                                 <label for="new_portal">___COMMON_PORTAL___</label>
-                                 <select name="form_data[new_portal]" size="1">
-                                    <option value="-1">*___CS_BAR_CONNECTION_EDIT_NEW_PORTAL_CHOOSE___</option>
-                                    <option value="-2" disabled="disabled">------------</option>
-                                    {foreach $popup.server as $key => $portalarray}
-                                       {if !empty(portalarray)}
-                                          <option value="-2" disabled="disabled"></option>
-                                          <option value="-2" disabled="disabled">{$key}</option>
-                                          {foreach $portalarray as $portalinfo}
-                                             <option value="{$portalinfo.server_id}_{$portalinfo.id}">- {$portalinfo.title}</option>
-                                          {/foreach}
-                                       {/if}
-                                    {/foreach}
-                                 </select>
-                              </div>
-                              <div class="input_row">
-                                 <label for="new_userid">___COMMON_ACCOUNT___</label> 
-                                 <input id="new_userid" type="text" class="size_200 mandatory" name="form_data[new_userid]" value=""/>
-                              </div>
-                              <div class="input_row">
-                                 <label for="new_pwd">___COMMON_PASSWORD___</label>  
-                                 <input id="new_pwd" type="password" class="size_200 mandatory" name="form_data[new_pwd]" value=""/>
-                              </div>
-                              <input id="submit_new" class="submit popup_button" data-custom="part: 'connection'" type="button" name="save_new" value="___CS_BAR_CONNECTION_EDIT_NEW_PORTAL_SAVE___"/>
-                           </fieldset>
-                           <div class="clear"></div>
-                        </div>
-                     </div>
+                  <div id="tabs_edit"{if !empty($popup.tabs)} class="hidden notloaded"{/if}>
+                     {include file="popups/include/connection_edit_include_html.tpl" inline}
                   </div>
                   
                </div>

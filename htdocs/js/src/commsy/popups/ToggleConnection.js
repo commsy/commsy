@@ -17,6 +17,8 @@ define([	"dojo/_base/declare",
 			this.features = [];
 			this.loading_result = '';
 			
+			this.load = -1;
+			
 			// register click for node
 			this.registerPopupClick();
 		},
@@ -30,32 +32,7 @@ define([	"dojo/_base/declare",
 				DomClass.add(this.contentNode, "hidden");
 			}
 		},
-		
-		loadContent2: function(name, notloaded) {
-			var retour = '';
-			if (notloaded.indexOf('notloaded') >= 0) {
-				this.setupLoading();
-				
-				var result = this.request("popup", "getHTML", { module: this.module, id: name});
-				result.then(
-					      function(response){
-					    	  retour = response.data;
-					    	  alert('RESULT');
-					    	  return retour;
-					      }
-					  );
-		        
-				// sonst ist retour leer [TBD]
-				alert(this.from_php.i18n["CS_BAR_CONNECTION_PLEASE_WAIT_JS"]);
-				this.destroyLoading();
-			}
 			
-			// edit button
-			this.setupSpecificEdit();
-			
-			return retour;
-		},
-		
 		loadContent: function(name, notloaded) {
 			if (notloaded.indexOf('notloaded') >= 0) {
 			   var content_nodes = Query("div#popup_tabcontent div.tab, div.popup_tabcontent div.tab", this.contentNode);
@@ -64,7 +41,8 @@ define([	"dojo/_base/declare",
 				   var node = content_nodes[index];
 				   var nodeName = DomAttr.get(node, "id");
 				   if (name === nodeName) {
-	    				this.setupLoading();
+					    var node42 = node;
+					    this.setupLoading();
 
 						// perform ajax request
 	    				var fct = "popup";
@@ -86,10 +64,10 @@ define([	"dojo/_base/declare",
 	    				// setup deferred
 	    				request.then(function(response) {
 	    					if(response.status === "success") {
-								// only once
-	    						DomAttr.remove(node, "notloaded");
+	    						// only once
+	    						DomClass.remove(node42, "notloaded");
 								// set newcontent
-	    						DomAttr.set(node, "innerHTML", response.data);
+	    						DomAttr.set(node42, "innerHTML", response.data);
 	    						// register click for room links
 								dojo.forEach(Query("div.room_change_item",this.contentNode), Lang.hitch(this, function(node2, index, arr) {
 									// get href
@@ -144,9 +122,12 @@ define([	"dojo/_base/declare",
 			
 			// save new
 			// register click for additional status button
-			On(Query("input#submit_new", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
-				this.saveNewTab();
-			}));
+			var newButtonArray = Query("input#submit_new", this.contentNode);
+			if (newButtonArray.length > 0) {			
+				On(Query("input#submit_new", this.contentNode)[0], "click", Lang.hitch(this, function(event) {
+					this.saveNewTab();
+				}));
+			}
 
 			// drag and drop [TBD]
 			//var wishListNode = Query("ol#wishListNode", this.contentNode)[0]
@@ -257,8 +238,47 @@ define([	"dojo/_base/declare",
 			// edit
 			var contentTabsEdit = Query("div#tabs_edit", this.contentNode)[0];
 			var contentTabsEditClass = DomAttr.get(contentTabsEdit, "class");
-			if (contentTabsEditClass == "hidden") {
-               DomClass.remove(contentTabsEdit, "hidden");
+			if (contentTabsEditClass.indexOf('hidden') >= 0) {
+	           DomClass.remove(contentTabsEdit, "hidden");
+	           
+	           // edit nachladen
+			   if (contentTabsEditClass.indexOf('notloaded') >= 0) {
+   				   this.setupLoading();
+
+				   // perform ajax request
+				   var fct = "popup";
+				   var action = "getHTML";
+				   var name = "tabs_edit_new";
+				   var data = { module: this.module, id: name};
+				   var args = {
+						   url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=" + fct + "&action=" + action,
+						   headers:		{
+										"Content-Type":		"application/json; charset=utf-8",
+										"Accept":			"application/json"
+						   },
+						   postData:	dojo.toJson(data),
+						   handleAs:	"json"
+					   };
+				
+				   //declare.safeMixin(args, mixin);
+				   var request = xhr.post(args);
+
+				   // setup deferred
+				   request.then(function(response) {
+					   if(response.status === "success") {
+						   // only once
+				           DomClass.remove(contentTabsEdit, "notloaded");
+				           
+						   // set newcontent
+				           var contentTabsEditNew = Query("div#edit_tab_new", this.contentNode)[0];							
+						   DomAttr.set(contentTabsEditNew, "innerHTML", response.data);
+					   }
+				   });
+				   
+				   this.destroyLoading();
+   			   }
+   			   // edit nachladen
+   			   
 			} else {
 			   DomClass.add(contentTabsEdit,"hidden");				
 			}			

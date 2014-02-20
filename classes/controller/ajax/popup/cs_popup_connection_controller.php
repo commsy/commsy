@@ -146,7 +146,7 @@
 		public function initPopup($data) {
 			$this->_popup_controller->assign('popup', 'tabs', $this->getTabInformation());
 			
-			if ( !empty($this->_tab_id) ) {
+			if ( !empty($this->_tab_id) and $this->_tab_id != 'tabs_edit_new' ) {
 				$this->_popup_controller->assign('popup', 'with_tabs', -1);
 			   $this->_popup_controller->assign('popup', 'rooms', $this->_getExternalRoomListArray($this->_tab_id));
 			} elseif ( !empty($this->_tab_id_first) ) {
@@ -155,11 +155,16 @@
 			} else {
 				// only edit tab
 				$this->_popup_controller->assign('popup', 'with_tabs', 1);
+			   $this->_popup_controller->assign('popup', 'server', $this->_getServerAndPortalInfoArray());			
 			}
 			
 			// edit infos
-			$this->_popup_controller->assign('popup', 'server', $this->_getServerAndPortalInfoArray());
-			
+			if ( !empty($this->_tab_id) and $this->_tab_id == 'tabs_edit_new' ) {
+				$this->_popup_controller->assign('popup', 'only_edit', 1);
+			   $this->_popup_controller->assign('popup', 'server', $this->_getServerAndPortalInfoArray());
+			} else {
+				$this->_popup_controller->assign('popup', 'only_edit', 0);
+			}
 		}
 		
 		private function _getServerAndPortalInfoArray () {
