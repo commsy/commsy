@@ -445,7 +445,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											{
 												id : 'helpds',
 												type : 'html',
-												html : '<a href="#" onClick="(document.getElementById(\'ck_info_box\').style.display == \'none\') ? document.getElementById(\'ck_info_box\').style.display=\'block\' : document.getElementById(\'ck_info_box\').style.display=\'none\'">[?]</a><div id="ck_info_box" style="position:absolute; display: none; background: #FFFFFF; border: 1px solid;">Mit der Aktivierung dieser Option, <br\>speichert Youtube nur beim Abspielen des Videos Informationen</div>'
+												html : '<a href="#" onClick="(document.getElementById(\'ck_info_box\').style.display == \'none\') ? document.getElementById(\'ck_info_box\').style.display=\'block\' : document.getElementById(\'ck_info_box\').style.display=\'none\'">[?]</a><div id="ck_info_box" style="position:absolute; display: none; background: #FFFFFF; border: 1px solid; padding:5px;-moz-box-shadow:1px 1px 6px #292929;-webkit-box-shadow:1px 1px 6px #292929;-khtml-box-shadow:1px 1px 6px #292929;box-shadow:1px 1px 6px #292929;">Mit der Aktivierung dieser Option, <br\>speichert Youtube nur beim Abspielen des Videos Informationen</div>'
 											}
 										]
 									},
