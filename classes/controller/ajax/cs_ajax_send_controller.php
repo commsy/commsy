@@ -265,7 +265,7 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$user_manager->setUserLimit();
 			$user_manager->setContextLimit($cid);
 			$count = $user_manager->getCountAll();
-			$this->_popup_controller->assign("popup", "numMembers", $count);
+         $response['numMebers'] = $count;
 
 			$groupArray = array_slice($groupArray, 0, 1);
 		}
