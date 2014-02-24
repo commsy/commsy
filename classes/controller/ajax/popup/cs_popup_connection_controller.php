@@ -65,7 +65,16 @@
 				} elseif ( $result == 'DATA_LOST' ) {
 				   $this->_popup_controller->setErrorReturn("1003",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 				} else {
-					$this->_popup_controller->setSuccessfullItemIDReturn(42);
+					//$this->_popup_controller->setSuccessfullItemIDReturn(42);
+					$data = array();
+					$data['action'] = 'new';
+					$data['id'] = $result['id'];
+	            $server_item = $this->_environment->getServerItem();
+	            $server_info = $server_item->getServerConnectionInfo($result['server_connection_id']);
+					$data['server_name'] = $server_info['title'];
+					$data['portal_name'] = $result['title'];
+					$data['message_delete'] = $translator->getMessage('COMMON_DELETE_BUTTON');
+					$this->_popup_controller->setSuccessfullDataReturn($data);
 				}				
 			}
 		} 
@@ -74,9 +83,17 @@
 
 			// data conversion
 			$tabid_array = array();
+			$sort_array = array();
+			$sort = false;
 			foreach ( $form_data as $key => $value ) {
 				if ( substr($key,0,6) == 'tabid_') {
 					$tabid_array[] = $value;
+				}
+				if ( substr($key,0,5) == 'sort_') {
+					$sort_array[] = substr($key,5);
+					if ( count($sort_array)-1 !=  end($sort_array) ) {
+						$sort = true;
+					}
 				}
 			}
 			
@@ -89,6 +106,17 @@
 				}
 				
 				$portal_conn_array = $user_item->getPortalConnectionArrayDB();
+				
+				// sort
+				if ( $sort ) {
+					$sort_array = array_flip($sort_array);
+					$new_portal_conn_array = array();
+               foreach ( $portal_conn_array as $key => $conn ) {
+               	$new_portal_conn_array[$sort_array[$key]] = $conn;
+               }
+				   $portal_conn_array = $new_portal_conn_array;
+               ksort($portal_conn_array);
+				}
 				
 				// handle data
 				$delete = false;

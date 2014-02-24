@@ -129,9 +129,9 @@ define([	"dojo/_base/declare",
 				}));
 			}
 
-			// drag and drop [TBD]
-			//var wishListNode = Query("ol#wishListNode", this.contentNode)[0]
-			//var wishlist = new Source(wishListNode);
+			// drag and drop
+			var wishListNode = Query("ol#wishListNode", this.contentNode)[0]
+			var wishlist = new Source(wishListNode);
 			
 			// register click for room links
 			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
@@ -184,16 +184,7 @@ define([	"dojo/_base/declare",
 					nodeLists: data
 			};
 				
-			this.submit(search, { part: part, action: action });
-			
-			// add new to form
-			//var newTabNode = DomConstruct.create('div',{
-			//	innerHTML: 'HALLO DIE ENTEN'
-			//});
-			//var newNodeBegin = Query("div#new_tabs_for_edit", this.contentNode)[0];
-			//DomConstruct.place(newTabNode,newNodeBegin,'after');
-			
-
+			this.submit(search, { part: part, action: action });			
 		},
 
 		saveCurrentTabs: function() {
@@ -290,26 +281,42 @@ define([	"dojo/_base/declare",
 		 * Success Handling
 		 ************************************************************************************/
 
-		onPopupSubmitSuccess: function(item_id) {
-			if ( item_id == 42 ) {
-				// success
-				location.reload();				
+		onPopupSubmitSuccess: function(data) {
+			if ( data instanceof Object ) {
+			   if ( data['action'] == "new" ) {
+				  // "data":{"action":"new","id":"2fc4b5e214926118a8eb2a8de23edc15","server_name":"SERVER","portal_name":"PORTAL","message_delete":"L\u00f6schen"}
+				  
+				  /*
+				  // add new to form - delete
+			      var deleteTabs = Query("div#delete_tab", this.contentNode);
+			      var position = deleteTabs.length;
+			      alert(postion);
+			      var lastDeleteTab = deleteTabs[position-1];
+			      var newDeleteTab = DomConstruct.create('div',{
+						innerHTML: '<input type="hidden" name="form_data[tabid_'+position+']" value="'+data.id+'"/><label for="'+data.id+'">'+data.server_name+'<span class="tm_bcb_next">'+data.portal_name+'</label><input id="'+data.id+'" type="text" class="size_200 mandatory" name="form_data[name_'+data.id+']" value="'+data.portal_name+'"/><input name="form_data[delete_'+data.id+']" type="checkbox" value="1"/>'+data.message_delete+''
+					  });
+			      DomClass.add(newDeleteTab,"input_row");
+			      DomAttr.set(newDeleteTab, "id", "delete_tab");
+			      DomConstruct.place(newDeleteTab,lastDeleteTab,'after');
+			      
+                  // add new to tabs
+			      var navTabs = Query("a.pop_tab_active, a.pop_tab", this.contentNode);
+			      var position2 = navTabs.length;
+			      var lastNavTab = navTabs[position2-1];
+			      var newNavTab = DomConstruct.create('a',{
+						innerHTML: data.portal_name
+					  });
+			      DomClass.add(newNavTab,"pop_tab");
+			      DomAttr.set(newNavTab, "href", data.id);
+			      DomConstruct.place(newNavTab,lastNavTab,'after');			      
+			      */
+				  location.reload();
+			   } else {
+				  location.reload();
+			   }
 			} else {
-				var key = /error_/;
-				var match = item_id.search(key);
-				if ( match != -1 ) {
-				   if ( item_id == 'error_1') {
-					  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_1"]);
-				   } else if ( item_id == 'error_2') {
-					  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_2"]);
-				   } else if ( item_id == 'error_3' || item_id == 'error_4' || item_id == 'error_5' || item_id == 'error_6' ) {
-					  alert(this.from_php.i18n["CS_BAR_CONNECTION_JS_ERROR_3"]);
-				   } else {
-				      alert(item_id);
-				   }
-				} else {
-				   location.reload();
-				}
+				// nur zahl
+				location.reload();
 			}
 		},
 		

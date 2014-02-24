@@ -13,6 +13,7 @@ $message["CS_BAR_CONNECTION_EDIT_HEADLINE_CURRENT"]["en"] = "Current connections
 $message["CS_BAR_CONNECTION_EDIT_HEADLINE_NEW"]["en"] = "New connection";
 $message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_CHOOSE"]["en"] = "Please select a portal.";
 $message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_SAVE"]["en"] = "Save new connection";
+$message["CS_BAR_CONNECTION_EDIT_ORDER"]["en"] = "Order";
 $message["CS_BAR_CONNECTION_EDIT_TEXT"]["en"] = "You can connect your commsy account with other commsy accounts at other portals.";
 $message["CS_BAR_CONNECTION_JS_ERROR_1"]["en"] = "Please use all form fields for a new connection.";
 $message["CS_BAR_CONNECTION_JS_ERROR_2"]["en"] = "Login failed. Please retype userid and password.";

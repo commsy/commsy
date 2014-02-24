@@ -397,6 +397,8 @@ class cs_connection_commsy {
    					unset($temp_array);
    					$portal_user->setPortalConnectionInfoDB($tab_array);
    					$portal_user->save();
+   					
+   					$retour = $new_tab;
    							
    				} else {
    					$retour = 'SAVE_KEY_FAILED';

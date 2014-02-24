@@ -7,7 +7,7 @@
                         <h2 class="room_block">___CS_BAR_CONNECTION_EDIT_HEADLINE_CURRENT___</h2>
                         <fieldset>
                            {foreach $popup.tabs as $key => $tab}
-                              <div class="input_row">
+                              <div class="input_row" id="delete_tab">
                                  <input type="hidden" name="form_data[tabid_{$key}]" value="{$tab.id}"/>
                                  <label for="{$tab.id}">{$tab.server_name}<span class="tm_bcb_next">{$tab.title_orig}</label>
                                  <input id="{$tab.id}" type="text" class="size_200 mandatory" name="form_data[name_{$tab.id}]" value="{show var=$tab.title}"/>
@@ -15,15 +15,17 @@
                               </div>
                            {/foreach}
                            <div class="hidden" id="new_tabs_for_edit"></div>
-                           <!--
-                           <label for="wishList">___CS_BAR_CONNECTION_EDIT_ORDER___</label>                    
-                           <ol id="wishListNode" dojoType="dojo.dnd.Source" class="container">
-                              {foreach $popup.tabs as $tab}
-                                  <li class="dojoDndItem">{$tab.title}</li>
-                              {/foreach}
-                           </ol>
-                           -->
-                           <div class="input_row" style="margin-bottom:40px;">
+                           <div class="input_row">
+                              <label for="wishList">___CS_BAR_CONNECTION_EDIT_ORDER___</label>
+                              <div class="input_container_180">                  
+                                 <ol id="wishListNode" dojoType="dojo.dnd.Source" class="container">
+                                    {foreach $popup.tabs as $key => $tab}
+                                       <li class="dojoDndItem">{$tab.title}<input name="form_data[sort_{$key}]" value="{$tab.id}" type="hidden"></li>
+                                    {/foreach}
+                                 </ol>
+                              </div>
+                           </div>
+                           <div class="input_row" style="margin-bottom:20px;">
                               {if !empty($popup.tabs)}
                                  <input id="submit_current" class="submit popup_button" data-custom="part: 'connection'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>
                               {/if}
