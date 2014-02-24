@@ -15,6 +15,7 @@
                               </div>
                            {/foreach}
                            <div class="hidden" id="new_tabs_for_edit"></div>
+                           {if count($popup.tabs) > 1 }
                            <div class="input_row">
                               <label for="wishList">___CS_BAR_CONNECTION_EDIT_ORDER___</label>
                               <div class="input_container_180">                  
@@ -25,6 +26,7 @@
                                  </ol>
                               </div>
                            </div>
+                           {/if}
                            <div class="input_row" style="margin-bottom:20px;">
                               {if !empty($popup.tabs)}
                                  <input id="submit_current" class="submit popup_button" data-custom="part: 'connection'" type="button" name="save" value="___PREFERENCES_SAVE_BUTTON___"/>

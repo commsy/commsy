@@ -130,8 +130,10 @@ define([	"dojo/_base/declare",
 			}
 
 			// drag and drop
-			var wishListNode = Query("ol#wishListNode", this.contentNode)[0]
-			var wishlist = new Source(wishListNode);
+			var wishListNode = Query("ol#wishListNode", this.contentNode);
+			if (wishListNode.length > 0) {
+			   var wishlist = new Source(wishListNode[0]);
+			}
 			
 			// register click for room links
 			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
