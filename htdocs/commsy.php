@@ -285,7 +285,12 @@ if(isset($_GET['item_id'])){
 		$item_manager = $environment->getItemManager();
 		$item = $item_manager->getItem($iid);
 		if(isset($item) and !empty($item)){
-			redirect($item->getContextID(),$item->getItemType(),'detail','&iid='.$iid);
+			$item_type = $item->getItemType();
+			if($item_type == 'project' or $item_type == 'community'){
+				redirect($iid,'home','index');
+			} else {
+				redirect($item->getContextID(),$item->getItemType(),'detail','&iid='.$iid);
+			}
 		}
 		unset($item_manager);
 	}
