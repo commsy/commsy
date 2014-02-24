@@ -877,7 +877,7 @@
                }
                break;
             case 'website':
-               $biblio .= ' '.$translator->getMessage('MATERIAL_BIB_URL', $this->_item->getURL());
+               $biblio .= ' '.$translator->getMessage('MATERIAL_BIB_URL', $converter->textFullHTMLFormatting($this->_item->getURL()));
                if( $this->_item->getURLDate() ) {
                   $biblio .= ' ('.$translator->getMessage('MATERIAL_BIB_URL_DATE', $this->_item->getURLDate()).')';
                }
