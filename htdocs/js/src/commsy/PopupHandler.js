@@ -3,13 +3,14 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dojo/_base/lang",
         	"dojo/query",
+        	"commsy/request",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
         	"dojo/dom-style",
         	"dijit/Tooltip",
         	"dojo/i18n!./nls/tooltipErrors",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, dom_class, dom_attr, domConstruct, domStyle, Tooltip, ErrorTranslations) {
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, request, dom_class, dom_attr, domConstruct, domStyle, Tooltip, ErrorTranslations) {
 	return declare(BaseClass, {
 		constructor: function(args) {
 			this.errorNodes			= [];
@@ -59,7 +60,7 @@ define([	"dojo/_base/declare",
 						
 						// show node (= tab)
 						dom_class.remove(node, "hidden");
-						
+
 						var hiddenNode = query("input[name='form_data[" + tabName + "]']", this.contentNode)[0];
 						if (!hiddenNode) {
 							// add a hidden input to mark this tab content as opened
@@ -221,7 +222,7 @@ define([	"dojo/_base/declare",
 
 			// collect form data from given search params
 			var nodeLists = search.nodeLists;
-			
+
 			// add tabs to node lists
 			dojo.forEach(search.tabs, function(tabObject, index, arr) {
 				tabObject.query = query("div#" + tabObject.id);
@@ -229,14 +230,12 @@ define([	"dojo/_base/declare",
 
 				nodeLists = nodeLists.concat(tabObject);
 			});
-			
-			
+
 			// process node lists
 			dojo.forEach(nodeLists, function(nodeList, index, arr) {
-				//alert(nodeList.toString());
 				var group = nodeList.group || null;
 				var nodes = nodeList.query;
-				
+
 				dojo.forEach(nodes, function(node, index, arr) {
 					var formNodes = null;
 
@@ -301,13 +300,19 @@ define([	"dojo/_base/declare",
 			});
 
 			// send data
-			this.AJAXRequest(this.fct, "save", data,
-				lang.hitch(this, function(item_id) {
-					this.onPopupSubmitSuccess(item_id);
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	this.fct,
+					action:	'save'
+				},
+				data: data
+			}).then(lang.hitch(this, function(response) {
+				if (response.data.status === "success") {
+					this.onPopupSubmitSuccess(response.data);
 					this.destroyLoading();
-				}),
-
-				lang.hitch(this, function(response) {
+				} else {
 					/************************************************************************************
 					 * We recieved a failure, maybe a mandatory field is missing or the user entered
 					 * a wrong format. This can also be caused by any special controller checks. See
@@ -317,47 +322,23 @@ define([	"dojo/_base/declare",
 					************************************************************************************/
 					
 					if(response.status === "error" && response.code === "101") {
-						//var missingFields = response.detail;
-
 						// show missing mandatory text
 						var missingDivNode = query("div#mandatory_missing", this.contentNode)[0];
 						dom_class.remove(missingDivNode, "hidden");
 						this.scrollToNodeAnimated(missingDivNode);
-
-						/*
-						// create a red border around the missing fields and scroll to first one
-						dojo.forEach(missingFields, lang.hitch(this, function(field, index, arr) {
-							var fieldNode = query("[name='form_data[" + field + "]']", this.contentNode)[0];
-
-							var nodeType = dom_attr.get(fieldNode, "type");
-							if(nodeType === "hidden") {
-								fieldNode = new dojo.NodeList(fieldNode).prev()[0];
-							}
-
-							domStyle.set(fieldNode, "border", "2px solid red !important");
-
-							if(index === 0) {
-								this.scrollToNodeAnimated(fieldNode);
-							}
-						}));
-						*/
+						
 					} else if(response.status === "error" && response.code === "111") {
 						this.onPopupSubmitError(response);
 					} else if(response.status === "error" && response.code === "115"){
 						this.onPopupSubmitError(response);
 					}
 					
-					
-					/* else {
-						console.error("an unhandled error response occurred");
-					}*/
-					
 					// call the popups error handling or in case it is not implemented, the default handling defined in this class
 					this.onPopupSubmitError(response);
 					// destroy loading after showing error
 					this.destroyLoading();
-				})
-			);
+				}
+			}));
 		},
 		
 		/**

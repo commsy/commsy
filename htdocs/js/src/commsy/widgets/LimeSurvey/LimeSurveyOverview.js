@@ -6,6 +6,7 @@ define(
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
+	"commsy/request",
 	"dojo/dom-class",
 	"dojo/query",
 	"dojo/topic",
@@ -16,9 +17,10 @@ define(
 	declare,
 	ListWidget,
 	PopupTranslations,
-	Lang,
+	lang,
 	DomConstruct,
 	On,
+	request,
 	DomClass,
 	Query,
 	Topic,
@@ -51,7 +53,7 @@ define(
 			this.set("title", PopupTranslations.title);
 			
 			// configure columns definition
-			this.addColumn(0, Lang.hitch(this, function(rowNode, rowData)
+			this.addColumn(0, lang.hitch(this, function(rowNode, rowData)
 			{
 				// first column
 				var firstColumnNode = DomConstruct.create("div",
@@ -79,7 +81,7 @@ define(
 								innerHTML:	"(" + PopupTranslations.activate + ")"
 							}, pNode, "last");
 							
-							On(aNode, "click", Lang.hitch(this, function()
+							On(aNode, "click", lang.hitch(this, function()
 							{
 								// create the dialog
 								var activateDialog = new Dialog(
@@ -95,21 +97,27 @@ define(
 								var activateButton = new Button(
 								{
 									label:			PopupTranslations.activateDialogButton,
-									onClick:		Lang.hitch(this, function(event)
+									onClick:		lang.hitch(this, function(event)
 									{
 										// activate survey
 										this.setupLoading();
 										
-										this.AJAXRequest(	"limesurvey",
-															"activateSurvey",
-															{
-																surveyId:				rowData.sid
-															},
-															Lang.hitch(this, function(response)
-										{
-											this.destroyLoading();
-											Topic.publish("updateSurveys", {});
-										}));
+										request.ajax({
+											query: {
+												cid:	this.uri_object.cid,
+												mod:	'ajax',
+												fct:	'limesurvey',
+												action:	'activateSurvey'
+											},
+											data: {
+												surveyId:	rowData.sid
+											}
+										}).then(
+											lang.hitch(this, function(response) {
+												this.destroyLoading();
+												Topic.publish("updateSurveys", {});
+											})
+										);
 
 										// destroy the dialog
 										activateDialog.destroyRecursive();
@@ -139,7 +147,7 @@ define(
 					}, secondColumnNode, "last");
 			});
 			
-			this.addColumn(2, Lang.hitch(this, function(rowNode, rowData)
+			this.addColumn(2, lang.hitch(this, function(rowNode, rowData)
 			{
 				// third column
 				var thirdColumnNode = DomConstruct.create("div",
@@ -157,7 +165,7 @@ define(
 							title:		PopupTranslations.deleteSurvey
 						}, pNode, "last");
 				
-				On(aNode, "click", Lang.hitch(this, function()
+				On(aNode, "click", lang.hitch(this, function()
 				{
 					// create the dialog
 					var deleteDialog = new Dialog(
@@ -169,22 +177,28 @@ define(
 					var deleteButton = new Button(
 					{
 						label:			PopupTranslations.deleteSurvey,
-						onClick:		Lang.hitch(this, function(event)
+						onClick:		lang.hitch(this, function(event)
 						{
 							// delete survey
 							this.setupLoading();
 							
-							this.AJAXRequest(	"limesurvey",
-												"delete",
-												{
-													surveyId:				rowData.sid
-												},
-												Lang.hitch(this, function(response)
-							{
-								this.destroyLoading();
-								Topic.publish("updateSurveys", {});
-							}));
-
+							request.ajax({
+								query: {
+									cid:	this.uri_object.cid,
+									mod:	'ajax',
+									fct:	'limesurvey',
+									action:	'delete'
+								},
+								data: {
+									surveyId:	rowData.sid
+								}
+							}).then(
+								lang.hitch(this, function(response) {
+									this.destroyLoading();
+									Topic.publish("updateSurveys", {});
+								})
+							);
+							
 							// destroy the dialog
 							deleteDialog.destroyRecursive();
 						})
@@ -212,7 +226,7 @@ define(
 					}, fourthColumnNode, "last");
 			});
 			
-			this.addColumn(4, Lang.hitch(this, function(rowNode, rowData)
+			this.addColumn(4, lang.hitch(this, function(rowNode, rowData)
 			{
 				// fifth column
 				var fifthColumnNode = DomConstruct.create("div",
@@ -228,10 +242,10 @@ define(
 							innerHTML:	PopupTranslations.participants
 						}, pNode, "last");
 				
-				On(aNode, "click", Lang.hitch(this, function()
+				On(aNode, "click", lang.hitch(this, function()
 				{
 					var widgetManager = this.getWidgetManager();
-					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyParticipants", { surveyId: rowData.sid }).then(Lang.hitch(this, function(deferred)
+					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyParticipants", { surveyId: rowData.sid }).then(lang.hitch(this, function(deferred)
 					{
 						var widgetInstance = deferred.instance;
 						
@@ -240,7 +254,7 @@ define(
 				}));
 			}));
 			
-			this.addColumn(5, Lang.hitch(this, function(rowNode, rowData)
+			this.addColumn(5, lang.hitch(this, function(rowNode, rowData)
 			{
 				if ( rowData.active == true )
 				{
@@ -258,20 +272,26 @@ define(
 								innerHTML:	PopupTranslations.exportSurvey
 							}, pNode, "last");
 					
-					On(aNode, "click", Lang.hitch(this, function()
+					On(aNode, "click", lang.hitch(this, function()
 					{
 						this.setupLoading();
 						
-						this.AJAXRequest(	"limesurvey",
-											"export",
-											{
-												surveyId:				rowData.sid
-											},
-											Lang.hitch(this, function(response)
-						{
-							this.destroyLoading();
-							Topic.publish("updateExportedSurveys", {});
-						}));
+						request.ajax({
+							query: {
+								cid:	this.uri_object.cid,
+								mod:	'ajax',
+								fct:	'limesurvey',
+								action:	'export'
+							},
+							data: {
+								surveyId:	rowData.sid
+							}
+						}).then(
+							lang.hitch(this, function(response) {
+								this.destroyLoading();
+								Topic.publish("updateExportedSurveys", {});
+							})
+						);
 					}));
 				}
 			}));
@@ -280,7 +300,7 @@ define(
 			this.setStore("limesurvey");
 			
 			// subsribe to the update event
-			this.subscribe("updateSurveys", Lang.hitch(this, function(object)
+			this.subscribe("updateSurveys", lang.hitch(this, function(object)
 			{
 				this.setStore("limesurvey");
 			}));

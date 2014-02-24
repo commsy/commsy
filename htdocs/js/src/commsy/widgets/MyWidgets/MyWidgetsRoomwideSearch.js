@@ -6,6 +6,7 @@ define(
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
+	"commsy/request",
 	"dojo/dom-class",
 	"dojo/dom-attr",
 	"dojo/query",
@@ -22,6 +23,7 @@ define(
 	Lang,
 	DomConstruct,
 	On,
+	request,
 	DomClass,
 	DomAttr,
 	Query,
@@ -146,15 +148,23 @@ define(
 					}, fifthColumnNode, "last");
 			});
 			
-			this.AJAXRequest("widget_roomwide_search", "getSearchFilter", {}, Lang.hitch(this, function(response)
-			{
-				this.searchFilter = response;
-				
-				this.createMenu();
-				
-				// set the store
-				this.setStore("widget_roomwide_search");
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'widget_roomwide_search',
+					action:	'getSearchFilter'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.searchFilter = response.data;
+					
+					this.createMenu();
+					
+					// set the store
+					this.setStore("widget_roomwide_search");
+				})
+			);
 		},
 		
 		/**

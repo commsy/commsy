@@ -3,9 +3,10 @@ define([	"dojo/_base/declare",
         	"dojo/query",
         	"dojo/dom-class",
         	"dojo/_base/lang",
+        	"commsy/request",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
+        	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, request, domConstruct, domAttr, On) {
 	return declare(ClickPopupHandler, {
 		sendImages: [],
 		
@@ -46,7 +47,6 @@ define([	"dojo/_base/declare",
 		onPopupSubmit: function(customObject) {
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 				
 				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
@@ -66,9 +66,11 @@ define([	"dojo/_base/declare",
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
+			var data = null;
+			
 			if (this.sendImages.length > 0) {
 				// send ajax request
-				var data = {
+				data = {
 					module:			"user",
 					additional: {
 						action:		this.sendImages[0].part,
@@ -81,19 +83,39 @@ define([	"dojo/_base/declare",
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
-					if (this.sendImages.length > 0) {
-						this.AJAXRequest("popup", "save", data, lang.hitch(this, function(response) {
-							this.reload(item_id);
-						}));
+					if (data) {
+						request.ajax({
+							query: {
+								cid:	this.uri_object.cid,
+								mod:	'ajax',
+								fct:	'popup',
+								action:	'save'
+							},
+							data: data
+						}).then(
+							lang.hitch(this, function(response) {
+								this.reload(item_id);
+							})
+						);
 					} else {
 						this.reload(item_id);
 					}
 				}));
 			} else {
-				if (this.sendImages.length > 0) {
-					this.AJAXRequest("popup", "save", data, lang.hitch(this, function(response) {
-						this.reload(item_id);
-					}));
+				if (data) {
+					request.ajax({
+						query: {
+							cid:	this.uri_object.cid,
+							mod:	'ajax',
+							fct:	'popup',
+							action:	'save'
+						},
+						data: data
+					}).then(
+						lang.hitch(this, function(response) {
+							this.reload(item_id);
+						})
+					);
 				} else {
 					this.reload(item_id);
 				}

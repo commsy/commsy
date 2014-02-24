@@ -4,10 +4,11 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"commsy/request",
         	"dojo/on",
         	"dijit/Tooltip",
         	"dojo/_base/lang",
-        	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Tooltip, Lang, ErrorTranslations) {
+        	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, request, On, Tooltip, lang, ErrorTranslations) {
 	return declare(TogglePopupHandler, {
 		sendImages: [],
 		
@@ -35,9 +36,9 @@ define([	"dojo/_base/declare",
 		},
 
 		setupSpecific: function() {
-			dojo.ready(Lang.hitch(this, function() {
+			dojo.ready(lang.hitch(this, function() {
 				// setup callback for single upload
-				this.featureHandles["upload-single"][0].setCallback(Lang.hitch(this, function(fileInfo) {
+				this.featureHandles["upload-single"][0].setCallback(lang.hitch(this, function(fileInfo) {
 					// setup preview
 					var formNode = this.featureHandles["upload-single"][0].uploader.form;
 					var previewNode = Query("div.filePreview", formNode)[0];
@@ -52,26 +53,25 @@ define([	"dojo/_base/declare",
 				}));
 
 				// setup account delete handling
-				On(Query("input#delete", this.contentNode)[0], "click", Lang.hitch(this, function() {
+				On(Query("input#delete", this.contentNode)[0], "click", lang.hitch(this, function() {
 					DomClass.remove(Query("div#delete_options", this.contentNode)[0], "hidden");
 
 					// register handler
-					On(Query("input#lock_room", this.contentNode)[0], "click", Lang.hitch(this, function() {
+					On(Query("input#lock_room", this.contentNode)[0], "click", lang.hitch(this, function() {
 						this.onPopupSubmit({ part: "account_lock_room" });
 					}));
-					On(Query("input#delete_room", this.contentNode)[0], "click", Lang.hitch(this, function() {
+					On(Query("input#delete_room", this.contentNode)[0], "click", lang.hitch(this, function() {
 						this.onPopupSubmit({ part: "account_delete_room" });
 					}));
-					On(Query("input#lock_portal", this.contentNode)[0], "click", Lang.hitch(this, function() {
+					On(Query("input#lock_portal", this.contentNode)[0], "click", lang.hitch(this, function() {
 						this.onPopupSubmit({ part: "account_lock_portal" });
 					}));
-					On(Query("input#delete_portal", this.contentNode)[0], "click", Lang.hitch(this, function() {
+					On(Query("input#delete_portal", this.contentNode)[0], "click", lang.hitch(this, function() {
 						this.onPopupSubmit({ part: "account_delete_portal" });
 					}));
 				}));
 			}));
-
-			//console.log(this.from_php);
+			
 			if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
 				var ulNode = DomConstruct.create('ul',{
 					
@@ -119,10 +119,10 @@ define([	"dojo/_base/declare",
 		   // confirm delete Wordpress
          var deleteWordpressButton = Query("#submit_delete_wordpress", this.contentNode)[0];
          if (deleteWordpressButton) {
-            On(deleteWordpressButton, "click", Lang.hitch(this, function(event) {
+            On(deleteWordpressButton, "click", lang.hitch(this, function(event) {
                this.button_delete = new dijit.form.Button({
                   label:      "Blog endg&uuml;ltig l&ouml;schen",
-                  onClick: Lang.hitch(this, function(event) {
+                  onClick: lang.hitch(this, function(event) {
                      this.onPopupSubmit({
                         part: "cs_bar",
                         action: "delete_wordpress"
@@ -134,7 +134,7 @@ define([	"dojo/_base/declare",
                
                this.button_cancel = new dijit.form.Button({
                   label:      "Abbrechen",
-                  onClick: Lang.hitch(this, function(event) {
+                  onClick: lang.hitch(this, function(event) {
                      // destroy the dialog
                      this.dialog.destroyRecursive();
                   })
@@ -156,10 +156,10 @@ define([	"dojo/_base/declare",
          // confirm delete Wiki
          var deleteWikiButton = Query("#submit_delete_wiki", this.contentNode)[0];
          if (deleteWikiButton) {
-            On(deleteWikiButton, "click", Lang.hitch(this, function(event) {
+            On(deleteWikiButton, "click", lang.hitch(this, function(event) {
                this.button_delete = new dijit.form.Button({
                   label:      "Wiki endg&uuml;ltig l&ouml;schen",
-                  onClick: Lang.hitch(this, function(event) {
+                  onClick: lang.hitch(this, function(event) {
                      this.onPopupSubmit({
                         part: "cs_bar",
                         action: "delete_wiki"
@@ -171,7 +171,7 @@ define([	"dojo/_base/declare",
                
                this.button_cancel = new dijit.form.Button({
                   label:      "Abbrechen",
-                  onClick: Lang.hitch(this, function(event) {
+                  onClick: lang.hitch(this, function(event) {
                      // destroy the dialog
                      this.dialog.destroyRecursive();
                   })
@@ -195,7 +195,7 @@ define([	"dojo/_base/declare",
 			// create button
 			this.button = new dijit.form.Button({
 				label: "delete",
-				onClick:	Lang.hitch(this, function(event) {
+				onClick:	lang.hitch(this, function(event) {
 					// process submit
 					this.onPopupSubmit({ part: "account_delete" });
 
@@ -219,24 +219,22 @@ define([	"dojo/_base/declare",
 
 			// add ckeditor data to hidden div
 			dojo.forEach(this.featureHandles["editor"], function(editor, index, arr) {
-				var instance = editor.getInstance();
 				var node = editor.getNode().parentNode;
 
 				DomAttr.set(Query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
-			console.log(part);
 
 			// setup data to send via ajax
+			var search = {};
 			if(part === "user" || part === "newsletter" || part === "cs_bar" || part === "addon_configuration" ) {
-				var search = {
+				earch = {
 					tabs: [
 					    { id: part }
 					],
 					nodeLists: []
 				};
 			} else if(part === "account") {
-				var search = {
+				search = {
 					tabs: [],
 					nodeLists: [
 						{ query: Query("input[name='form_data[forname]']", this.contentNode) },
@@ -256,7 +254,7 @@ define([	"dojo/_base/declare",
 				};
 				
 			} else if(part === "account_merge") {
-				var search = {
+				search = {
 					tabs: [],
 					nodeLists: [
 						{ query: Query("input[name='form_data[merge_user_id]']", this.contentNode) },
@@ -266,7 +264,7 @@ define([	"dojo/_base/declare",
 				};
 			} else {
 				// account delete
-				var search = {
+				search = {
 					tabs: [],
 					nodeLists: []
 				};
@@ -282,9 +280,19 @@ define([	"dojo/_base/declare",
 					}
 				};
 				
-				this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
-					this.submit(search, { part: part, action: action });
-				}));
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'popup',
+						action:	'save'
+					},
+					data: data
+				}).then(
+					lang.hitch(this, function(response) {
+						this.submit(search, { part: part, action: action });
+					})
+				);
 			} else {
 				this.submit(search, { part: part, action: action });
 			}
@@ -308,64 +316,34 @@ define([	"dojo/_base/declare",
 			switch (response.code) {
 				case "1022":
 					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];//form_data[old_password]
-					//console.log(response.reason);
 					var ulNode = DomConstruct.create('ul',{
 					});
 					for(var i=0; i<response.reason.length; i++){
 						DomConstruct.create('li',{
 							innerHTML: response.reason[i]
 						},ulNode,'last');
-						  //console.debug(response.reason[i], "at index", i);
 					}
-					//console.log(response.reason.length);
 					Tooltip.show(ulNode.outerHTML, errorNode);
 					this.errorNodes.push(errorNode);
 					
 					break;	
 				case "1023":
 					var errorNode = Query("input[name='form_data[old_password]']", this.contentNode)[0];
-					//console.log(response.reason);
 					var ulNode = DomConstruct.create('ul',{
 					});
 					for(var i=0; i<response.reason.length; i++){
 						DomConstruct.create('li',{
 							innerHTML: response.reason[i]
 						},ulNode,'last');
-						  //console.debug(response.reason[i], "at index", i);
 					}
-					//console.log(response.reason.length);
 					Tooltip.show(ulNode.outerHTML, errorNode);
 					this.errorNodes.push(errorNode);
 					
 					break;
-//				case "1023":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1023, errorNode);
-//					this.errorNodes.push(errorNode);
-//					
-//					break;	
-//				case "1024":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1024, errorNode);
-//					this.errorNodes.push(errorNode);
-//					
-//					break;	
 				case "1025":
 					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
 					Tooltip.show(ErrorTranslations.personalPopup1025, errorNode);
 					this.errorNodes.push(errorNode);
-//					
-//					break;
-//				case "1026":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1026, errorNode);
-//					this.errorNodes.push(errorNode);
-//					
-//					break;	
-//				case "1027":
-//					var errorNode = Query("input[name='form_data[new_password_confirm]']", this.contentNode)[0];
-//					Tooltip.show(ErrorTranslations.personalPopup1027, errorNode);
-//					this.errorNodes.push(errorNode);
 					
 					break;	
 				case "1011":			/* user id already registered */

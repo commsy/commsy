@@ -78,8 +78,6 @@ define(
 		{
 			this.inherited(arguments);
 			
-			//console.log(this.mail);
-			
 			// set reciever
 			dojo.forEach(this.mail.to, Lang.hitch(this, function(reciever, index, arr)
 			{

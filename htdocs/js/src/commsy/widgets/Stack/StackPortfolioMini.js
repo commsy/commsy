@@ -8,6 +8,7 @@ define(
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
+	"commsy/request",
 	"dojo/dom-class",
 	"dojo/dom-attr",
 	"dojo/query",
@@ -22,9 +23,10 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
 	DomConstruct,
 	On,
+	request,
 	DomClass,
 	DomAttr,
 	Query,
@@ -86,33 +88,38 @@ define(
 		{
 			this.inherited(arguments);
 			
-			this.AJAXRequest(	"portfolio",
-								"getPortfolios",
-								{},
-								Lang.hitch(this, function(response)
-			{
-				// remove loading node
-				DomConstruct.destroy(this.loadingPortfoliosNode);
-				
-				// if the response is not empty, remove the default option
-				// and load the preview for the first portfolio
-				if (response.myPortfolios.length > 0) {
-					DomConstruct.empty(this.portfolioSelectNode);
-					this.loadPreview(response.myPortfolios[0].id);
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'getPortfolios'
 				}
-				
-				// insert select options
-				dojo.forEach(response.myPortfolios, Lang.hitch(this, function(portfolio)
-				{
-					DomConstruct.create("option", {
-						value:		portfolio.id,
-						innerHTML:	portfolio.title
-					}, this.portfolioSelectNode, "last");
-				}));
-				
-				// show select form
-				DomClass.remove(this.portfolioSelectNode, "hidden");
-			}));
+			}).then(
+				lang.hitch(this, function(response) {
+					// remove loading node
+					DomConstruct.destroy(this.loadingPortfoliosNode);
+					
+					// if the response is not empty, remove the default option
+					// and load the preview for the first portfolio
+					if (response.data.myPortfolios.length > 0) {
+						DomConstruct.empty(this.portfolioSelectNode);
+						this.loadPreview(response.data.myPortfolios[0].id);
+					}
+					
+					// insert select options
+					dojo.forEach(response.data.myPortfolios, lang.hitch(this, function(portfolio)
+					{
+						DomConstruct.create("option", {
+							value:		portfolio.id,
+							innerHTML:	portfolio.title
+						}, this.portfolioSelectNode, "last");
+					}));
+					
+					// show select form
+					DomClass.remove(this.portfolioSelectNode, "hidden");
+				})
+			);
 		},
 		
 		/************************************************************************************
@@ -135,40 +142,48 @@ define(
 			DomConstruct.empty(this.previewPortfolioNode);
 			
 			// load the portfolio data via ajax
-			this.AJAXRequest(	"portfolio",
-								"getPortfolio",
-								{ portfolioId: portfolioId },
-								Lang.hitch(this, function(response)
-			{
-				// process the tags and create two arrays with rows and columns
-				var rowTags = [];
-				var columnTags = [];
-				dojo.forEach(response.tags, function(tag)
-				{
-					// if column is "0", this is a row,
-					// otherwise its a column
-					if (tag.column == "0") {
-						rowTags.push({
-							id:		tag.t_id,
-							row:	tag.row,
-							title:	tag.title
-						});
-					} else {
-						columnTags.push({
-							id:		tag.t_id,
-							column:	tag.column,
-							title:	tag.title
-						});
-					}
-				});
-				
-				// store the tags
-				this.tags.row = rowTags;
-				this.tags.column = columnTags;
-				
-				// create html
-				this.createPreviewHTML(rowTags, columnTags, response.links);
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'getPortfolio'
+				},
+				data: {
+					portfolioId: portfolioId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					// process the tags and create two arrays with rows and columns
+					var rowTags = [];
+					var columnTags = [];
+					dojo.forEach(response.data.tags, function(tag)
+					{
+						// if column is "0", this is a row,
+						// otherwise its a column
+						if (tag.column == "0") {
+							rowTags.push({
+								id:		tag.t_id,
+								row:	tag.row,
+								title:	tag.title
+							});
+						} else {
+							columnTags.push({
+								id:		tag.t_id,
+								column:	tag.column,
+								title:	tag.title
+							});
+						}
+					});
+					
+					// store the tags
+					this.tags.row = rowTags;
+					this.tags.column = columnTags;
+					
+					// create html
+					this.createPreviewHTML(rowTags, columnTags, response.data.links);
+				})
+			);
 		},
 		
 		createPreviewHTML: function(rowTags, columnTags, items)
@@ -188,7 +203,7 @@ define(
 			});
 			
 			// create table body
-			dojo.forEach(rowTags, Lang.hitch(this, function(rowTag, index)
+			dojo.forEach(rowTags, lang.hitch(this, function(rowTag, index)
 			{
 				// first column is the title of the row tag
 				trNode = DomConstruct.create("tr", {id:"portfolioMiniTableRow_"+index}, tableNode, "last");
@@ -197,7 +212,7 @@ define(
 					innerHTML:	rowTag.title
 				}, trNode, "last");
 				
-				dojo.forEach(columnTags, Lang.hitch(this, function(columnTag)
+				dojo.forEach(columnTags, lang.hitch(this, function(columnTag)
 				{
 					var tdNode = DomConstruct.create("td", {}, trNode, "last");
 					
@@ -236,7 +251,7 @@ define(
 					}, source.node, "first");
 					
 					// watch the source for changes
-					On(source, 'Drop', Lang.hitch(this, Lang.partial(this.onItemHasDropped, source)));
+					On(source, 'Drop', lang.hitch(this, lang.partial(this.onItemHasDropped, source)));
 				}));
 			}));
 		},
@@ -273,23 +288,33 @@ define(
 				this.setupLoading();
 				
 				// save via ajax
-				this.AJAXRequest(	'tags',
-									'addTagsToItem',
-									{ tagIdArray: [columnTagId, rowTagId], itemId: itemId, roomId: this.from_php.ownRoom.id },
-									Lang.hitch(this, function(response)
-				{
-					// is the columnTagId or the rowTagId not already assigned?
-					if (response.already_assigned.length < 2) {
-						var infoNodeList = Query('li:first-child', targetSource.node);
-						if (infoNodeList[0]) {
-							var infoNode = infoNodeList[0];
-							
-							DomAttr.set(infoNode, 'innerHTML', parseInt(DomAttr.get(infoNode, 'innerHTML')) + 1);
-						}
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'tags',
+						action:	'addTagsToItem'
+					},
+					data: {
+						tagIdArray:	[columnTagId, rowTagId],
+						itemId:		itemId,
+						roomId:		this.from_php.ownRoom.id
 					}
-					
-					this.destroyLoading();
-				}));
+				}).then(
+					lang.hitch(this, function(response) {
+						// is the columnTagId or the rowTagId not already assigned?
+						if (response.data.already_assigned.length < 2) {
+							var infoNodeList = Query('li:first-child', targetSource.node);
+							if (infoNodeList[0]) {
+								var infoNode = infoNodeList[0];
+								
+								DomAttr.set(infoNode, 'innerHTML', parseInt(DomAttr.get(infoNode, 'innerHTML')) + 1);
+							}
+						}
+						
+						this.destroyLoading();
+					})
+				);
 			}
 		},
 		

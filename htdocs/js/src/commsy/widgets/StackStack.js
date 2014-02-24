@@ -6,9 +6,10 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/on",
+        	"commsy/request",
         	"dojo/query",
         	"dojo/topic",
-        	"dojo/dnd/Source"], function(declare, WidgetBase, BaseClass, TemplatedMixin, Lang, DomConstruct, DomAttr, On, Query, Topic, Source) {
+        	"dojo/dnd/Source"], function(declare, WidgetBase, BaseClass, TemplatedMixin, lang, DomConstruct, DomAttr, On, request, Query, Topic, Source) {
 
 	return declare([BaseClass, WidgetBase, TemplatedMixin], {
 		baseClass:			"CommSyWidget",
@@ -43,13 +44,13 @@ define([	"dojo/_base/declare",
 			this.itemId = this.from_php.ownRoom.id;
 
 			// subscribes
-			Topic.subscribe("newOwnRoomItem", Lang.hitch(this, function(object) {
+			Topic.subscribe("newOwnRoomItem", lang.hitch(this, function(object) {
 				this.updateList();
 			}));
 			
 			// create dnd source
 			this.dndSource = new Source(this.itemListNode, {
-				creator:	Lang.hitch(this, this.createDnDItem),
+				creator:	lang.hitch(this, this.createDnDItem),
 				accept:		[],
 				copyOnly:	true,
 				selfAccept:	false
@@ -63,17 +64,25 @@ define([	"dojo/_base/declare",
 			// empty dnd and list
 			this.dndSource.selectAll().deleteSelectedNodes();
 			DomConstruct.empty(this.itemListNode);
-
-			this.AJAXRequest("widget_stack", "getListContent", {
+			
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'widget_stack',
+					action:	'getListContent'
+				},
+				data: {
 					search:					this.search.toLowerCase(),
 					start:					(this.currentPage - 1) * this.entriesPerPage,
 					numEntries:				this.entriesPerPage,
 					buzzwordRestrictions:	dojo.map(this.restrictions.buzzwords, function(item) { return item.id; }),
 					tagRestrictions:		dojo.map(this.restrictions.tags, function(item) { return item.id; })
-				},
-				Lang.hitch(this, function(response) {					
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					// create dnd items
-					dojo.forEach(response.items, Lang.hitch(this, function(item, index, arr) {
+					dojo.forEach(response.data.items, lang.hitch(this, function(item, index, arr) {
 						item.index = index;
 						this.dndSource.insertNodes(false, [{data: item}]);
 					}));
@@ -148,7 +157,7 @@ define([	"dojo/_base/declare",
 					className:		"clear"
 				}, rowNode, "last");
 
-			require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
+			require(["commsy/popups/ClickDetailPopup"], lang.hitch(this, function(ClickPopup) {
 				var handler = new ClickPopup();
 				handler.init(aNode, { iid: item.itemId, module: item.module, contextId: this.itemId, versionId: item.versionId });
 			}));
@@ -275,7 +284,7 @@ define([	"dojo/_base/declare",
 		updateBuzzwordRestrictions: function() {
 			DomConstruct.empty(this.buzzwordRestrictionsNode);
 
-			dojo.forEach(this.restrictions.buzzwords, Lang.hitch(this, function(buzzword, index, arr) {
+			dojo.forEach(this.restrictions.buzzwords, lang.hitch(this, function(buzzword, index, arr) {
 				var liNode = DomConstruct.create("li", {
 					"id":		buzzword.id,
 					className:	"float-left"
@@ -293,7 +302,7 @@ define([	"dojo/_base/declare",
 							src:	this.from_php.template.tpl_path + "img/cross.gif"
 						}, aNode, "last");
 
-				On(aNode, "click", Lang.hitch(this, function(event) {
+				On(aNode, "click", lang.hitch(this, function(event) {
 					this.onBuzzwordRestrictionRemove(buzzword.id);
 				}));
 			}));
@@ -302,7 +311,7 @@ define([	"dojo/_base/declare",
 		updateTagRestrictions: function() {
 			DomConstruct.empty(this.tagRestrictionsNode);
 
-			dojo.forEach(this.restrictions.tags, Lang.hitch(this, function(tag, index, arr) {
+			dojo.forEach(this.restrictions.tags, lang.hitch(this, function(tag, index, arr) {
 				var liNode = DomConstruct.create("li", {
 					"id":		tag.id,
 					className:	"float-left"
@@ -320,7 +329,7 @@ define([	"dojo/_base/declare",
 							src:	this.from_php.template.tpl_path + "img/cross.gif"
 						}, aNode, "last");
 
-				On(aNode, "click", Lang.hitch(this, function(event) {
+				On(aNode, "click", lang.hitch(this, function(event) {
 					this.onTagRestrictionRemove(tag.id);
 				}));
 			}));

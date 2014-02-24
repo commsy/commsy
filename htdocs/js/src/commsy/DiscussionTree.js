@@ -3,6 +3,7 @@ define([	"dojo/_base/declare",
         	"dojo/io-query",
         	"commsy/tree",
         	"dojo/_base/lang",
+        	"commsy/request",
         	"dijit/Dialog",
         	"cbtree/Tree",
         	"dijit/form/TextBox",
@@ -15,7 +16,7 @@ define([	"dojo/_base/declare",
         	"cbtree/CheckBox",
         	"dojo/on",
         	"cbtree/models/StoreModel-API",
-        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, Lang, Dialog, Tree, TextBox, Button, Query, DomClass, ForestStoreModel, ItemFileWriteStore, DomAttr, CheckBox, On) {
+        	"dojo/NodeList-traverse"], function(declare, DomConstruct, ioQuery, TreeClass, lang, request, Dialog, Tree, TextBox, Button, Query, DomClass, ForestStoreModel, ItemFileWriteStore, DomAttr, CheckBox, On) {
 	return declare(TreeClass, {
 		textbox:	null,
 		dialog:		null,
@@ -36,7 +37,7 @@ define([	"dojo/_base/declare",
 				model:				this.model,
 				showRoot:			false,
 				checkBoxes:			false,
-				onClick:			Lang.hitch(this, function(item, node, evt) {
+				onClick:			lang.hitch(this, function(item, node, evt) {
 				})
 			});
 		},
@@ -55,7 +56,7 @@ define([	"dojo/_base/declare",
 				showRoot:			false,
 				checkBoxes:			this.checkboxes,
 				persist:			false,
-				onClick:			Lang.hitch(this, function(item, node, evt) {
+				onClick:			lang.hitch(this, function(item, node, evt) {
 					// follow item url
 					if(this.followUrl) {
 						var anchorNode = Query("a[name='article" + item.item_id + "']")[0];
@@ -79,14 +80,22 @@ define([	"dojo/_base/declare",
 			 * First of all, we need to load the store data via ajax. It will contain all
 			 * the needed information for building the discussion tree
 			 */
-			
-			this.AJAXRequest("threaded_discussion", "getTreeData", { discussionId: (this.item_id || this.uri_object.iid) }, Lang.hitch(this, function(results) {
-				
+			request.ajax({
+				query: {
+					cid:		this.uri_object.cid,
+					mod:		'ajax',
+					fct:		'threaded_discussion',
+					action:		'getTreeData'
+				},
+				data: {
+					discussionId: (this.item_id || this.uri_object.iid)
+				}
+			}).then(lang.hitch(this, function(response) {
 				this.store = new ItemFileWriteStore({
 					data: {
 						identifier:		"item_id",
 						label:			"subject",
-						items:			results
+						items:			response.data
 					}
 				});
 				
@@ -107,13 +116,13 @@ define([	"dojo/_base/declare",
 				var collapseAllNode = Query("a#discussionShortCollapseAll")[0];
 				
 				if (expandAllNode) {
-					On(expandAllNode, "click", Lang.hitch(this, function(event) {
+					On(expandAllNode, "click", lang.hitch(this, function(event) {
 						this.onClickExpandAll();
 					}));
 				}
 				
 				if (collapseAllNode) {
-					On(collapseAllNode, "click", Lang.hitch(this, function(event) {
+					On(collapseAllNode, "click", lang.hitch(this, function(event) {
 						this.onClickCollapseAll();
 					}));
 				}
