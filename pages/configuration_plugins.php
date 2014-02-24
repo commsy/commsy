@@ -74,6 +74,23 @@ else {
       $correct = $form->check();
       if ( $correct ) {
          $current_context_item = $environment->getCurrentContextItem();
+         
+         global $c_wordpress;
+         if ( isset($c_wordpress) and  $c_wordpress ) {
+         	if($environment->inPortal()) {
+         		$wp_url = $_POST['wp_url'];
+         		$wp_activate = $_POST['wp'];
+         		$current_context_item->setWordpressUrl($wp_url);
+         		if($wp_activate != '-1'){
+         			$current_context_item->setWordpressPortalActive(true);
+         		} else {
+         			$current_context_item->setWordpressPortalActive(false);
+         		}
+         		
+         		#pr($_POST);
+         	}
+         }
+         
          global $c_plugin_array;
          if (isset($c_plugin_array) and !empty($c_plugin_array)) {
             foreach ($c_plugin_array as $plugin) {

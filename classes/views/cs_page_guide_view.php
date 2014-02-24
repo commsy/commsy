@@ -2104,12 +2104,12 @@ class cs_page_guide_view extends cs_page_view {
 						   			
 						   				// wordpress
 						   				if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
-						   					global $c_wordpress_path_url;
-						   			
+						   					#global $c_wordpress_path_url;
+						   					$wordpress_path_url = $context_item->getWordpressUrl();
 						   					$count++;
 						   					$return['wordpress']['active'] = true;
 						   					$return['wordpress']['title'] = $current_context->getWordpressTitle();
-						   					$return['wordpress']['path'] = $c_wordpress_path_url;
+						   					$return['wordpress']['path'] = $wordpress_path_url;
 						   					$return['wordpress']['item_id'] = $current_context->getItemID();
 						   			
 						   					$url_session_id = '';

@@ -84,7 +84,8 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
    * this methods creates the form with the form definitions
    */
   function _createForm () {
-    global $c_wordpress_path_url;
+    #global $c_wordpress_path_url;
+    $wordpress_path_url = $current_portal_item->getWordpressUrl();
     // form fields
     $this->_form->addHidden('iid','');
     $this->_form->addTextfield('wordpresstitle','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('DATES_TITLE_DESC'),200,28,true);
@@ -121,19 +122,19 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
     unset($wp_manager);
 
     if ( !empty($this->_form_post['skin_choice']) ) {
-      $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_form_post['skin_choice'].'/'.$screenshot_file_name.'" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+      $desc = '<img src="'.$wordpress_path_url.'wp-content/themes/'.$this->_form_post['skin_choice'].'/'.$screenshot_file_name.'" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }elseif( isset($this->_item) and !$this->_set_deletion_values) {
       $skin = $this->_item->getWordpressSkin();
       if (!empty ($skin) ) {
-        $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_item->getWordpressSkin().'/'.$screenshot_file_name.'" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+        $desc = '<img src="'.$wordpress_path_url.'wp-content/themes/'.$this->_item->getWordpressSkin().'/'.$screenshot_file_name.'" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }else {
-        $desc = '<img src="'.$c_wordpress_path_url.'wp-content/themes/'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+        $desc = '<img src="'.$wordpress_path_url.'wp-content/themes/'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
         $this->_form->addText('example','',$desc);
       }
     }else {
-      $desc = '<img src="'.$c_wordpress_path_url.'/wp-content/themes/'.$this->_item->getWordpressSkin().'/'.$screenshot_file_name.'" style=" border:1px solid black; vertical-align: middle;"/>';
+      $desc = '<img src="'.$wordpress_path_url.'/wp-content/themes/'.$this->_item->getWordpressSkin().'/'.$screenshot_file_name.'" style=" border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addText('example','',$desc);
     }
 
@@ -146,7 +147,7 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
        unset($session_item);
        # direkte Verlinkung geht nicht, da die Authentifizierung über die Session zu spät erfolgt
        #$url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/wp-admin/themes.php'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
-       $url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
+       $url = '<a title="'.$title.'" href="'.$wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
     } else {
        $url = $this->_translator->getMessage('COMMON_WORDPRESS_LINK');
     }

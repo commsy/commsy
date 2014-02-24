@@ -2101,7 +2101,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	}
 
 	private function getExternalInformation() {
-	   global $c_wordpress;
+	   #global $c_wordpress;
 	   global $c_pmwiki;
 	   global $c_etchat_enable;
 
@@ -2111,7 +2111,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   $translator = $this->_environment->getTranslationObject();
 
 	   // Wordpress
-	   if(isset($c_wordpress) and $c_wordpress){
+	   if($current_portal->getWordpressPortalActive()){
    	   $wordpress_manager = $this->_environment->getWordpressManager();
 	      $wordpress = array();
    	   if($current_context->isWordpressActive()){

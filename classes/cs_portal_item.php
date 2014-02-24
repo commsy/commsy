@@ -3419,5 +3419,48 @@ class cs_portal_item extends cs_guide_item {
    		return false;
    	}
    }
+   
+   /** set wordpress url
+    *
+    * @param string url
+    */
+   public function setWordpressUrl($value){
+   	$this->_addExtra('WP_URL', $value);
+   }
+   
+   /** get wordpress url
+    *
+    * @param string url
+    */
+   public function getWordpressUrl(){
+   	$retour = '';
+   	$value = $this->_getExtra('WP_URL');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   /** set activate wordpress blog
+    *
+    * @param boolean
+    */
+   public function setWordpressPortalActive($value){
+   	$this->_addExtra('WP_PORTAL_ACTIVE', $value);
+   }
+    
+   /** get activate wordpress blog
+    *
+    * @param boolean
+    */
+   public function getWordpressPortalActive(){
+   	$retour = false;
+   	$value = $this->_getExtra('WP_PORTAL_ACTIVE');
+   	if ( $value ) {
+   		$retour = true;
+   	}
+   	return $retour;
+   }
+   
 }
 ?>
