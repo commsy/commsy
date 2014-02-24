@@ -17,6 +17,8 @@
 # http://www.mycommsy.de/12345 -> get to home of the room 12345
 #RewriteRule ^([0-9].*)$ commsy.php?cid=$1  [QSA,L]
 
+# http://www.mycommsy.de/123 -> get detail view of item 123 - TinyURL
+RewriteRule ^([0-9].*)$ commsy.php?item_id=$1  [QSA,L]
 
 #####################################
 # restrict access of cron_old.php and cron_new.php and redirect to cron.php
