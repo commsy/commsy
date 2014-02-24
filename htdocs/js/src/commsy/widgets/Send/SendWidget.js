@@ -179,7 +179,7 @@ define(
 					innerHTML:	withGroups ? this.popupTranslations.sendToGroups : this.popupTranslations.recipient
 				}, rowNode, 'last');
 				
-			dojo.forEach(groups, function(group) {
+			dojo.forEach(groups, lang.hitch(this, function(group) {
 				var divNode = DomConstruct.create('div', {
 					className:	'input_container_180'
 				}, rowNode, 'last');
@@ -196,7 +196,7 @@ define(
 					}, divNode, 'last');
 				
 				formManager.registerNode(inputNode);
-			});
+			}));
 			
 				DomConstruct.create('div', { className: 'clear' }, rowNode, 'last');
 		},
