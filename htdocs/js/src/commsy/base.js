@@ -9,7 +9,8 @@ define([	"dojo/_base/declare",
         	"dojo/window",
         	"dojo/dom-geometry",
         	"dojo/_base/lang",
-        	"dojo/NodeList-traverse"], function(declare, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, lang) {
+        	"dojo/NodeList-traverse",
+        	"dojo/_base/xhr"], function(declare, ioQuery, DojoxFX, Scroll, Query, DomAttr, domConstruct, widgetManager, Window, domGeometry, lang) {
 	return declare(null, {
 		// static
 		baseStatics: {

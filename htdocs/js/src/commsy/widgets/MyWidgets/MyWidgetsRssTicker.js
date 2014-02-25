@@ -7,7 +7,7 @@ define(
 	"dojo/text!./templates/MyWidgetsRssWidget.html",
 	"dojo/i18n!./nls/MyWidgetsRssWidget",
 	"dojo/_base/lang",
-	"commsy/reqest",
+	"commsy/request",
 	"dojo/dom-construct",
 	"dojo/on",
 	"dojo/dom-class",

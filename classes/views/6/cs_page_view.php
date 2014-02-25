@@ -670,21 +670,6 @@ class cs_page_view extends cs_view {
    	}
    	
    	switch ($mode) {
-   		case "build":
-   			$html .= '<script src="js/src/buildConfig.js"></script>';
-   			
-   			$html .= "
-   				<script>
-   					var from_php  = '" . json_encode($to_javascript) . "';
-   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
-   				</script>
-   			";
-   			
-   			$html .= '<script src="js/build/release/dojo/dojo.js"></script>';
-   			$html .= '<script src="js/build/release/commsy/main.js"></script>';
-   			
-   			break;
-   	
    		case "layer":
    			$html .= '<script src="js/src/layerConfig.js"></script>';
    			

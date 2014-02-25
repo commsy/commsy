@@ -1595,11 +1595,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 
 	   // Wordpress
-	   if($current_portal->getWordpressPortalActive()){
+	   if($current_portal_item->getWordpressPortalActive()){
    	   $wordpress_manager = $this->_environment->getWordpressManager();
 	      $wordpress = array();
-	   $wordpress_url = $current_portal->getWordpressUrl();
-   	   if($current_context->isWordpressActive() or !empty(wordpress_url)){
+	   $wordpress_url = $current_portal_item->getWordpressUrl();
+   	   if($current_context->isWordpressActive() || !empty($wordpress_url)){
             $wordpress['wordpress_active'] = 'yes';
    	   }
 	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();

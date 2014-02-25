@@ -233,7 +233,7 @@ define(
 					// set data for this portfolio - title is already set
 					this.set("creator", response.data.creator);
 					this.set("descriptionFull", response.data.description);
-					this.set("externalViewer", response.daat.externalViewer);
+					this.set("externalViewer", response.data.externalViewer);
 					this.set("externalTemplate", response.data.externalTemplate);
 					this.set("template", response.data.template);
 					
