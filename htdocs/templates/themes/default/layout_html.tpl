@@ -43,13 +43,9 @@
 			<!-- SCRIPTS -->
             {if $environment.c_js_mode === "layer"}
                 <script src="js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
-                <script src="js/src/commsyConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
             {else}
                 <script src="js/src/sourceConfig.js"></script>
-                <script src="js/src/commsyConfig.js"></script>
             {/if}
-
-
 	
 			<script>
 				{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
@@ -61,17 +57,13 @@
             {if $environment.c_js_mode === "layer"}
                 <script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
                 <script>
-                    require(["layer/commsy", "commsy/main"], function(main) {
-                        (new main).init();
-                    });
+                    require(["layer/commsy", "commsy/main"]);
                 </script>
     
             {else}
                 <script src="js/src/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
                 <script>
-                    require(["commsy/main"], function(main) {
-                        (new main).init();
-                    });
+                    require(["commsy/main"]);
                 </script>
             {/if}
 	

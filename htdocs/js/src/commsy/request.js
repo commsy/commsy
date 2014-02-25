@@ -46,8 +46,11 @@ define([	"dojo/request/registry",
 		ajax: function(optionsMixin)
 		{
 			var url = 'commsy.php';
-			if (commsyConfig && commsyConfig.remoteAjaxURL) {
-				url = commsyConfig.remoteAjaxURL + url;
+			
+			if (typeof(commsyConfig) != "undefined") {
+				if (commsyConfig.remoteAjaxURL) {
+					url = commsyConfig.remoteAjaxURL + url;
+				}
 			}
 			
 			return request.post(url, lang.mixin(options, optionsMixin)).then(

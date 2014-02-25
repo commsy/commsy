@@ -55,7 +55,6 @@ require([	"dojo/_base/declare",
 						});
 					}));
 				}
-
 				
 				// buzzwords and tags expander
 				if (this.uri_object.fct === "index") {
@@ -141,6 +140,7 @@ require([	"dojo/_base/declare",
 						});
 					}
 				}
+				
 				// password expire soon alert to change password
 				if(this.from_php.environment.password_expire_soon) {
 					require(["dijit/Dialog","dojo/i18n!commsy/nls/tooltipErrors","dojo/cookie"], function(Overlay, ErrorTranslations,Cookie) {

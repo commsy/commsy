@@ -65,8 +65,8 @@ define(
 				}
 			}).then(
 				lang.hitch(this, function(response) {
-					DomAttr.set(this.dateAboNode, "href", "webcal://" + response.date);
-					DomAttr.set(this.dateExportNode, "href", "http://" + response.date);
+					DomAttr.set(this.dateAboNode, "href", "webcal://" + response.data.date);
+					DomAttr.set(this.dateExportNode, "href", "http://" + response.data.date);
 				})
 			);
 		},

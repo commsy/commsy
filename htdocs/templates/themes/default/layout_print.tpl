@@ -28,20 +28,12 @@
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_print.css" />
 	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
+	    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 	{/block}
-	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
-	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles_print.css" />
-
-	<!-- SCRIPTS -->
-	<script>
-		{if isset($javascript.variables_as_json) && !empty($javascript.variables_as_json)}var from_php = '{$javascript.variables_as_json}';{/if}
-	</script>
-
-	<script src="javascript/commsy8_dojo/config.js"></script>
-	<script src="javascript/commsy8_dojo/libs/dojo/dojo.js" data-dojo-config="async: true"></script>
-	<script src="javascript/commsy8_dojo/main.js"></script>
-
-
+	
+    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
+    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles_print.css" />
+	    
     <title>{$environment.room_title} - ___{$environment.module_name}___</title>
 
     <!--

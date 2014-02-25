@@ -95,7 +95,7 @@ define(
 					column:			this.column
 				}
 			}).then(
-				lang.hitch(this, function(response) {
+				lang.hitch(this, function(response) {console.log(response);
 					this.createEntriesList(response.data.items);
 					this.createAnnotationList(response.data.annotationItems);
 					
