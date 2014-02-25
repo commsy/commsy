@@ -14,6 +14,7 @@ define(
  	"dojo/fx",
  	"dojox/form/Manager",
  	"dojo/_base/lang",
+ 	"commsy/request",
  	"dijit/form/ValidationTextBox",
 	"dojox/validate/web"
 ], function
@@ -31,7 +32,8 @@ define(
 	parser,
 	fx,
 	Manager,
-	lang
+	lang,
+	request
 ) {
 	return declare([PopupBase, TemplatedMixin],
 	{
@@ -89,37 +91,43 @@ define(
 			this.inherited(arguments);
 			
 			parser.parse(this.widgetNode);
-			
-			this.AJAXRequest(	"send",
-								"init",
-								{ itemId: this.iid },
-								lang.hitch(this, function(response)
-			{
-				if (response) {
+
+			request.ajax({
+				query: {
+					cid: this.uri_object.cid,
+					mod: 'ajax',
+					fct: 'send',
+					action: 'init'
+				},
+				data: {
+					itemId: this.iid
+				}
+			}).then(lang.hitch(this, function(response) {
+				if (response.data) {
 					// mail body
-					if (response.body) {
-						this.set("body", response.body);
+					if (response.data.body) {
+						this.set("body", response.data.body);
 					}
 					
 					// attendees
-					if (response.showAttendees) {
-						this.createAttendeesHTML(response.attendeeType);
+					if (response.data.showAttendees) {
+						this.createAttendeesHTML(response.data.attendeeType);
 					}
 					
 					// group recipients / institution recipients
-					if (response.showGroupRecipients) {
-						this.createGroupRecipientsHTML(response.withGroups, response.groups);
-					} else if(response.showInstitutionRecipients) {
-						this.createInstitutionsRecipientsHTML(response.institutions);
+					if (response.data.showGroupRecipients) {
+						this.createGroupRecipientsHTML(response.data.withGroups, response.data.groups);
+					} else if(response.data.showInstitutionRecipients) {
+						this.createInstitutionsRecipientsHTML(response.data.institutions);
 					}
 					
 					// all members
-					if (response.allMembers) {
+					if (response.data.allMembers) {
 						this.createAllMembersHTML();
 					}
 					
 					// add additional
-					if (response.allowAdditional) {
+					if (response.data.allowAdditional) {
 						domclass.remove(this.addAdditionalWrapperNode, 'hidden');
 					}
 				}
@@ -388,12 +396,18 @@ define(
 				this.setupLoading();
 				var formValues = formManager.gatherFormValues();
 				formValues.itemId = this.iid
-				
-				this.AJAXRequest(	"send",
-									"send",
-									formValues,
-									lang.hitch(this, function(response) {
-					// remove loading indicator and close this popup
+								
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'send',
+						action:	'send'
+					},
+					data:	formValues
+				}).then(
+					lang.hitch(this, function(response) {
+						// remove loading indicator and close this popup
 					this.destroyLoading();
 					this.Close();
 					
@@ -414,7 +428,7 @@ define(
 						widgetInstance.Open();
 					});
 					*/
-				}));
+					}));
 			} else {
 				formManager.validate();
 			}
