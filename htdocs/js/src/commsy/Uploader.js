@@ -145,7 +145,6 @@ define([	"dojo/_base/declare",
 		},
 
 		onUploadError: function(error) {
-			console.log(error);
 		},
 
 		onProgress: function(statusObject) {

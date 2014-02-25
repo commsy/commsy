@@ -9,6 +9,7 @@ define(
 	"dojo/_base/lang",
 	"dojo/promise/all",
 	"dojo/on",
+	"commsy/request",
 	"dojo/topic",
 	"dijit/MenuItem",
 	"dijit/CheckedMenuItem",
@@ -25,9 +26,10 @@ define(
 	TemplatedMixin,
 	Template,
 	CalendarTranslations,
-	Lang,
+	lang,
 	All,
 	On,
+	request,
 	Topic,
 	MenuItem,
 	CheckedMenuItem,
@@ -68,7 +70,7 @@ define(
 			[
 			 	this.loadRoomList(),
 			 	this.loadConfig()
-			]).then(Lang.hitch(this, function() {
+			]).then(lang.hitch(this, function() {
 				this.createMenu();
 				
 				var calendarWidget = this.parentWidget.calendar;
@@ -98,40 +100,43 @@ define(
 		 * Helper Functions
 		 ************************************************************************************/
 		loadRoomList: function() {
-			return this.AJAXRequest("myCalendar", "getRoomList", {}, Lang.hitch(this, function(response) {
-				this.roomList = response;
-			}));
+			return request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'getRoomList'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.roomList = response.data;
+				})
+			);
 		},
 		
 		loadConfig: function() {
-			return this.AJAXRequest("myCalendar", "getConfig", {}, Lang.hitch(this, function(response)
-			{
-				this.config = response;
-			}));
+			return request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'getConfig'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.config = response.data;
+				})
+			);
 		},
 		
 		createMenu: function() {
 			var menu = new DropDownMenu();
 			
-			/*
-			menu.addChild(new CheckedMenuItem({
-				label:			CalendarTranslations.configToDo,
-				onClick:		this.onClickConfigToDo
-			}));
-			
-			menu.addChild(new CheckedMenuItem({
-				label:			CalendarTranslations.configRestrictions,
-				onClick:		this.onClickConfigRestrictions
-			}));
-			
-			menu.addChild(new MenuSeparator());
-			*/
-			
 			menu.addChild(new CheckedMenuItem({
 				id:				"onlyAssignedMenuItem",
 				label:			CalendarTranslations.configOnlyAssigned,
 				checked:		this.config.assignedToMe,
-				onClick:		Lang.hitch(this, this.onClickConfigOnlyAssigned)
+				onClick:		lang.hitch(this, this.onClickConfigOnlyAssigned)
 			}));
 			
 			menu.addChild(new MenuSeparator());
@@ -146,18 +151,6 @@ define(
 				popup:			dateMenu
 			}));
 			
-			/* ToDo Menu */
-			/*
-			var todoMenu = new DropDownMenu();
-			
-			this.createRoomMenu(todoMenu, "checkedInTodo");
-			
-			menu.addChild(new PopupMenuItem({
-				label:			CalendarTranslations.configToDo,
-				popup:			todoMenu
-			}));
-			*/
-			
 			var button = new ComboButton({
 				label:			CalendarTranslations.configHeadline,
 				dropDown:		menu
@@ -168,21 +161,21 @@ define(
 		createRoomMenu: function(topMenu, checkedVar) {
 			topMenu.addChild(new MenuItem({
 				label:			CalendarTranslations.configFromAll,
-				onClick:		Lang.partial(Lang.hitch(this, this.onClickAllRooms), (checkedVar === "checkedInDates") ? "dates" : "todo", topMenu)
+				onClick:		lang.partial(lang.hitch(this, this.onClickAllRooms), (checkedVar === "checkedInDates") ? "dates" : "todo", topMenu)
 			}));
 			topMenu.addChild(new MenuItem({
 				label:			CalendarTranslations.configFromNone,
-				onClick:		Lang.partial(Lang.hitch(this, this.onClickNoneRooms), (checkedVar === "checkedInDates") ? "dates" : "todo", topMenu)
+				onClick:		lang.partial(lang.hitch(this, this.onClickNoneRooms), (checkedVar === "checkedInDates") ? "dates" : "todo", topMenu)
 			}));
 			
 			topMenu.addChild(new MenuSeparator());
 			
 			/* add room list */
-			dojo.forEach(this.roomList, Lang.hitch(this, function(room, index, arr) {
+			dojo.forEach(this.roomList, lang.hitch(this, function(room, index, arr) {
 				topMenu.addChild(new CheckedMenuItem({
 					label:		room.title,
 					checked:	room[checkedVar],
-					onChange:	Lang.partial(Lang.hitch(this, this.onRoomSelectChange), room.id, (checkedVar === "checkedInDates") ? "dates" : "todo")
+					onChange:	lang.partial(lang.hitch(this, this.onRoomSelectChange), room.id, (checkedVar === "checkedInDates") ? "dates" : "todo")
 				}));
 			}));
 		},
@@ -191,12 +184,10 @@ define(
 		 * Event Handling
 		 ************************************************************************************/
 		onClickConfigToDo: function(event) {
-			console.log("event");
 			event.preventDefault();
 		},
 		
 		onClickConfigRestrictions: function(event) {
-			console.log("event");
 			event.preventDefault();
 		},
 		
@@ -205,17 +196,40 @@ define(
 			var widget = Registry.byId("onlyAssignedMenuItem");
 			
 			// store change
-			this.AJAXRequest("myCalendar", "storeConfig", { config: { assignedToMe: widget.checked } }, Lang.hitch(this, function(response)
-			{
-				// reload calendar
-				Topic.publish("updatePrivateCalendar", { setConfig: { assignedToMe: widget.checked } });
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'storeConfig'
+				},
+				data: {
+					config: {
+						assignedToMe: widget.checked
+					}
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					// reload calendar
+					Topic.publish("updatePrivateCalendar", { setConfig: { assignedToMe: widget.checked } });
+				})
+			);
 		},
 		
 		onClickAllRooms: function(type, menuWidget, event) {
 			// store changes
-			this.AJAXRequest("myCalendar", "storeRoomSelectAll", { type: type },
-				Lang.hitch(this, function(response) {
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'storeRoomSelectAll'
+				},
+				data: {
+					type: type
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					// reload calendar
 					Topic.publish("updatePrivateCalendar", {});
 				})
@@ -233,9 +247,18 @@ define(
 		onClickNoneRooms: function(type, menuWidget, event)
 		{
 			// store changes
-			this.AJAXRequest("myCalendar", "storeRoomSelectNone", { type: type },
-				Lang.hitch(this, function(response)
-				{
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'storeRoomSelectNone'
+				},
+				data: {
+					type: type
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					// reload calendar
 					Topic.publish("updatePrivateCalendar", {});
 				})
@@ -254,8 +277,20 @@ define(
 		
 		onRoomSelectChange: function(roomId, type, checked) {
 			// store change
-			this.AJAXRequest("myCalendar", "storeRoomChange", { roomId: roomId, type: type, checked: checked },
-				Lang.hitch(this, function(response) {
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'storeRoomChange'
+				},
+				data: {
+					roomId:		roomId,
+					type:		type,
+					checked:	checked
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					// reload calendar
 					Topic.publish("updatePrivateCalendar", {});
 				})

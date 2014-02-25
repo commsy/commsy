@@ -409,8 +409,8 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			// build group id array
 			$groupIdArray = array();
 			foreach ($this->_data as $key => $value) {
-				if (mb_stristr($key, "group_")) {
-					$groupIdArray[] = $value;
+				if (mb_stristr($key, "group_") && $value == true) {
+					$groupIdArray[] = mb_substr($key, 6);
 				}
 			}
 
@@ -445,8 +445,8 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			// build institution id array
 			$institutionIdArray = array();
 			foreach ($this->_data as $key => $value) {
-				if (mb_stristr($key, "institution_")) {
-					$institutionIdArray[] = $value;
+				if (mb_stristr($key, "institution_") && $value == true) {
+					$institutionIdArray[] = mb_substr($key, 12);
 				}
 			}
 

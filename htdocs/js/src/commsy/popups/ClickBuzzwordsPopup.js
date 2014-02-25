@@ -3,12 +3,13 @@ define([	"dojo/_base/declare",
         	"dojo/query",
         	"dojo/dom-class",
         	"dojo/_base/lang",
+        	"commsy/request",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/on",
         	"dojo/topic",
-        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, Lang, DomConstruct, DomAttr, DomStyle, On, Topic) {
+        	"dojo/NodeList-traverse"], function(declare, ClickPopupHandler, Query, DomClass, lang, request, DomConstruct, DomAttr, DomStyle, On, Topic) {
 	return declare(ClickPopupHandler, {
 		constructor: function() {
 			
@@ -33,23 +34,23 @@ define([	"dojo/_base/declare",
 			var selectOneNode = Query("select#buzzword_merge_one")[0];
 			var selectTwoNode = Query("select#buzzword_merge_two")[0];
 			
-			On(selectOneNode, "change", Lang.hitch(this, function(event) {
+			On(selectOneNode, "change", lang.hitch(this, function(event) {
 				// when changing box one, disable the selected value in box two
 				this.enableAllOptionsExceptOne(selectTwoNode, DomAttr.get(event.target, "value"));
 			}));
-			On(selectTwoNode, "change", Lang.hitch(this, function(event) {
+			On(selectTwoNode, "change", lang.hitch(this, function(event) {
 				// when changing box two, disable the selected value in box one
 				this.enableAllOptionsExceptOne(selectOneNode, DomAttr.get(event.target, "value"));
 			}));
 			
 			// setup list
-			require(["commsy/List"], Lang.hitch(this, function(List) {
+			require(["commsy/List"], lang.hitch(this, function(List) {
 				this.list = new List();
 				this.list.init(this.cid, this.from_php.template.tpl_path, {
 					activatorNode:	Query("a.list_activator")[0],
 					module:			"buzzwords",
 					roomId:			this.contextId,
-					OnInitDone:		Lang.hitch(this, function() {
+					OnInitDone:		lang.hitch(this, function() {
 						this.list.performRequest();
 					})
 				});
@@ -64,8 +65,8 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// connect all assignment buttons in edit tab
-			dojo.forEach(Query("input.buzzword_attach"), Lang.hitch(this, function(inputNode, index, arr) {
-				On(inputNode, "click", Lang.hitch(this, function(event) {
+			dojo.forEach(Query("input.buzzword_attach"), lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", lang.hitch(this, function(event) {
 					// get name and extract buzzword id
 					var nameAttr = DomAttr.get(inputNode, "name");
 					var buzzwordId = nameAttr.substr(10, nameAttr.length-11);
@@ -82,8 +83,8 @@ define([	"dojo/_base/declare",
 			}));
 			
 			// connect all change buttons in edit tab
-			dojo.forEach(Query("input.buzzword_change"), Lang.hitch(this, function(inputNode, index, arr) {
-				On(inputNode, "click", Lang.hitch(this, function(event) {
+			dojo.forEach(Query("input.buzzword_change"), lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", lang.hitch(this, function(event) {
 					// get name and extract buzzword id
 					var nameAttr = DomAttr.get(inputNode, "name");
 					var buzzwordId = nameAttr.substr(10, nameAttr.length-11);
@@ -92,8 +93,19 @@ define([	"dojo/_base/declare",
 					var buzzwordName = DomAttr.get(new dojo.NodeList(inputNode).siblings("input.buzzword_change_name")[0], "value");
 					
 					// perform ajax request
-					this.AJAXRequest("buzzwords", "updateBuzzword", { buzzword_id: buzzwordId, buzzword: buzzwordName },
-						Lang.hitch(this, function(response) {
+					request.ajax({
+						query: {
+							cid:	this.uri_object.cid,
+							mod:	'ajax',
+							fct:	'buzzwords',
+							action:	'updateBuzzword'
+						},
+						data: {
+							buzzword_id:	buzzwordId,
+							buzzword:		buzzwordName
+						}
+					}).then(
+						lang.hitch(this, function(response) {
 							// update header if the buzzword was set in list
 							if(this.list.requestData.item_id === buzzwordId) {
 								DomAttr.set(Query("div.open_close_head span.text_important")[0], "innerHTML", "&bdquo;" + buzzwordName + "&rdquo;");
@@ -102,17 +114,14 @@ define([	"dojo/_base/declare",
 									Topic.publish("newOwnRoomBuzzword", {});
 								}
 							}
-						}),
-						Lang.hitch(this, function(response) {
-							
 						})
 					);
 				}));
 			}));
 			
 			// connect all delete buttons in edit tab
-			dojo.forEach(Query("input.buzzword_delete"), Lang.hitch(this, function(inputNode, index, arr) {
-				On(inputNode, "click", Lang.hitch(this, function(event) {
+			dojo.forEach(Query("input.buzzword_delete"), lang.hitch(this, function(inputNode, index, arr) {
+				On(inputNode, "click", lang.hitch(this, function(event) {
 					// get name and extract buzzword id
 					var nameAttr = DomAttr.get(inputNode, "name");
 					var buzzwordId = nameAttr.substr(10, nameAttr.length-11);
@@ -121,8 +130,18 @@ define([	"dojo/_base/declare",
 					var buzzwordName = DomAttr.get(new dojo.NodeList(inputNode).siblings("input.buzzword_change_name")[0], "value");
 					
 					// perform ajax request
-					this.AJAXRequest("buzzwords", "deleteBuzzword", { buzzword_id: buzzwordId },
-						Lang.hitch(this, function(response) {
+					request.ajax({
+						query: {
+							cid:	this.uri_object.cid,
+							mod:	'ajax',
+							fct:	'buzzwords',
+							action:	'deleteBuzzword'
+						},
+						data: {
+							buzzword_id: buzzwordId
+						}
+					}).then(
+						lang.hitch(this, function(response) {
 							// remove buzzword from all lists, merge selects and edit tab
 							this.removeBuzzwordFromLists(buzzwordName);
 							this.removeBuzzwordFromMergeSelects(buzzwordName);
@@ -131,9 +150,6 @@ define([	"dojo/_base/declare",
 							if (this.contextId) {
 								Topic.publish("newOwnRoomBuzzword", {});
 							}
-						}),
-						Lang.hitch(this, function(response) {
-							
 						})
 					);
 				}));
@@ -144,7 +160,7 @@ define([	"dojo/_base/declare",
 			var optionNodes = Query("option", selectNode);
 			
 			// handle disabled state
-			dojo.forEach(optionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+			dojo.forEach(optionNodes, lang.hitch(this, function(optionNode, index, arr) {
 				if(DomAttr.get(optionNode, "value") === exception) {
 					DomAttr.set(optionNode, "disabled", "disabled");
 				} else {
@@ -157,7 +173,7 @@ define([	"dojo/_base/declare",
 			// try to find a value, that is not the excepted one - this happens when it was selected before
 			if(DomAttr.get(selectNode, "value") === exception) {
 				var skip = false;
-				dojo.some(optionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+				dojo.some(optionNodes, lang.hitch(this, function(optionNode, index, arr) {
 					if(skip) return false;
 					
 					var optionValue = DomAttr.get(optionNode, "value");
@@ -180,7 +196,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		addBuzzwordToLists: function(buzzword) {
-			dojo.forEach(Query("ul.popup_buzzword_list"), Lang.hitch(this, function(listNode, index, arr) {
+			dojo.forEach(Query("ul.popup_buzzword_list"), lang.hitch(this, function(listNode, index, arr) {
 				var clearNode = Query("div.clear", listNode)[0];
 				
 				DomConstruct.create("li", {
@@ -191,7 +207,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		removeBuzzwordFromLists: function(buzzword) {
-			dojo.forEach(Query("li.popup_buzzword_item"), Lang.hitch(this, function(itemNode, index, arr) {
+			dojo.forEach(Query("li.popup_buzzword_item"), lang.hitch(this, function(itemNode, index, arr) {
 				if(DomAttr.get(itemNode, "innerHTML") === buzzword) {
 					DomConstruct.destroy(itemNode);
 				}
@@ -216,7 +232,7 @@ define([	"dojo/_base/declare",
 		removeBuzzwordFromMergeSelects: function(buzzword) {
 			var OptionNodes = Query("select#buzzword_merge_one option, select#buzzword_merge_two option");
 			
-			dojo.forEach(OptionNodes, Lang.hitch(this, function(optionNode, index, arr) {
+			dojo.forEach(OptionNodes, lang.hitch(this, function(optionNode, index, arr) {
 				if(DomAttr.get(optionNode, "innerHTML") === buzzword) {
 					DomConstruct.destroy(optionNode);
 				}
@@ -241,25 +257,25 @@ define([	"dojo/_base/declare",
 					type:			"button",
 					value:			"Ändern",
 					name:			"form_data[" + id + "]"
-				}, rowDivNode, "last")
+				}, rowDivNode, "last");
 				
 				DomConstruct.create("input", {
 					className:		"popup_button buzzword_attach",
 					type:			"button",
 					value:			"Einträge zuordnen",
 					name:			"form_data[" + id + "]"
-				}, rowDivNode, "last")
+				}, rowDivNode, "last");
 				
 				DomConstruct.create("input", {
 					className:		"popup_button buzzword_delete",
 					type:			"button",
 					value:			"Löschen",
 					name:			"form_data[" + id + "]"
-				}, rowDivNode, "last")
+				}, rowDivNode, "last");
 		},
 		
 		removeBuzzwordFromEditTab: function(buzzword) {
-			dojo.forEach(Query("input.buzzword_change_name"), Lang.hitch(this, function(inputNode, index, arr) {
+			dojo.forEach(Query("input.buzzword_change_name"), lang.hitch(this, function(inputNode, index, arr) {
 				if (inputNode.value == buzzword) {
 					var rowDivNode = new dojo.NodeList(inputNode).parents("div.input_row")[0];
 					DomConstruct.destroy(rowDivNode);
@@ -272,35 +288,40 @@ define([	"dojo/_base/declare",
 			roomId = roomId || null;
 			
 			// get buzzword
-			var buzzword = Lang.trim(DomAttr.get(Query("input#buzzword_create_name")[0], "value"));
-			
-			console.log(buzzword);
-			
+			var buzzword = lang.trim(DomAttr.get(Query("input#buzzword_create_name")[0], "value"));
 			
 			if(buzzword !== "") {
 				// send ajax request
-				this.AJAXRequest("buzzwords", "createNewBuzzword", { buzzword: buzzword, roomId: this.contextId },
-					Lang.hitch(this, function(response) {
-						// add the new buzzword to all lists
-						this.addBuzzwordToLists(buzzword);
-						
-						// add the new buzzwords to the merge select boxes
-						this.addBuzzwordToMergeSelects(response.id, buzzword);
-						
-						// add the new buzzword to the edit tab
-						this.addBuzzwordToEditTab(response.id, buzzword);
-						
-						this.destroyLoading();
-						
-						if (this.contextId) {
-							Topic.publish("newOwnRoomBuzzword", {});
-						}
-					}),
-					
-					Lang.hitch(this, function(response) {
-						// an error means the buzzwords is empty or already exists, so highlight things a little bit
-						if(response.code == "107") {
-							dojo.forEach(Query("li.popup_buzzword_item"), Lang.hitch(this, function(buzzwordNode, index, arr) {
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'buzzwords',
+						action:	'createNewBuzzword'
+					},
+					data: {
+						buzzword:	buzzword,
+						roomId:		this.contextId
+					}
+				}).then(
+					lang.hitch(this, function(response) {
+						if(response.code != "107") {
+							// add the new buzzword to all lists
+							this.addBuzzwordToLists(buzzword);
+							
+							// add the new buzzwords to the merge select boxes
+							this.addBuzzwordToMergeSelects(response.data.id, buzzword);
+							
+							// add the new buzzword to the edit tab
+							this.addBuzzwordToEditTab(response.data.id, buzzword);
+							
+							this.destroyLoading();
+							
+							if (this.contextId) {
+								Topic.publish("newOwnRoomBuzzword", {});
+							}
+						} else {
+							dojo.forEach(Query("li.popup_buzzword_item"), lang.hitch(this, function(buzzwordNode, index, arr) {
 								var buzzName = DomAttr.get(buzzwordNode, "innerHTML");
 								
 								DomStyle.set(buzzwordNode, "color", (buzzName === buzzword) ? "red" : "#393939");
@@ -320,32 +341,39 @@ define([	"dojo/_base/declare",
 			
 			if(mergeIdOne !== mergeIdTwo) {
 				// send ajax request
-				this.AJAXRequest("buzzwords", "mergeBuzzwords", { idOne: mergeIdOne, idTwo: mergeIdTwo },
-					Lang.hitch(this, function(response) {
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'buzzwords',
+						action:	'mergeBuzzwords'
+					},
+					data: {
+						idOne:	mergeIdOne,
+						idTwo:	mergeIdTwo
+					}
+				}).then(
+					lang.hitch(this, function(response) {
 						// remove both buzzwords from all lists and add the new one
-						this.removeBuzzwordFromLists(response.buzzwordOne);
-						this.removeBuzzwordFromLists(response.buzzwordTwo);
-						this.addBuzzwordToLists(response.newBuzzword);
+						this.removeBuzzwordFromLists(response.data.buzzwordOne);
+						this.removeBuzzwordFromLists(response.data.buzzwordTwo);
+						this.addBuzzwordToLists(response.data.newBuzzword);
 						
 						// remove both buzzwords from the merge select boxes and add the new one
-						this.removeBuzzwordFromMergeSelects(response.buzzwordOne);
-						this.removeBuzzwordFromMergeSelects(response.buzzwordTwo);
-						this.addBuzzwordToMergeSelects(mergeIdOne, response.newBuzzword);
+						this.removeBuzzwordFromMergeSelects(response.data.buzzwordOne);
+						this.removeBuzzwordFromMergeSelects(response.data.buzzwordTwo);
+						this.addBuzzwordToMergeSelects(mergeIdOne, response.data.newBuzzword);
 						
 						// remove both buzzwords from edit tab
-						this.removeBuzzwordFromEditTab(response.buzzwordOne);
-						this.removeBuzzwordFromEditTab(response.buzzwordTwo);
-						this.addBuzzwordToEditTab(mergeIdOne, response.newBuzzword);
+						this.removeBuzzwordFromEditTab(response.data.buzzwordOne);
+						this.removeBuzzwordFromEditTab(response.data.buzzwordTwo);
+						this.addBuzzwordToEditTab(mergeIdOne, response.data.newBuzzword);
 						
 						this.destroyLoading();
 						
 						if (this.contextId) {
 							Topic.publish("newOwnRoomBuzzword", {});
 						}
-					}),
-					
-					Lang.hitch(this, function(response) {
-						this.destroyLoading();
 					})
 				);
 			}

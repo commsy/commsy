@@ -2,11 +2,12 @@ define([	"dojo/_base/declare",
         	"commsy/PopupHandler",
         	"dojo/on",
         	"dojo/topic",
+        	"commsy/request",
         	"dojo/_base/lang",
         	"dojo/query",
         	"dojo/dom-class",
         	"dojo/dom-construct",
-        	"dojo/dom-attr"], function(declare, PopupHandler, on, topic, lang, query, dom_class, DomConstruct, dom_attr) {
+        	"dojo/dom-attr"], function(declare, PopupHandler, on, topic, request, lang, query, dom_class, DomConstruct, dom_attr) {
 	return declare(PopupHandler, {
 		is_loaded:				false,
 		is_open:				false,
@@ -32,9 +33,19 @@ define([	"dojo/_base/declare",
 				this.statics.togglePopups.push(this);
 				
 				// setup ajax request for getting html
-				this.AJAXRequest("popup", "getHTML", { module: this.module} , lang.hitch(this, function(html) {
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'popup',
+						action:	'getHTML'
+					},
+					data: {
+						module: this.module
+					}
+				}).then(lang.hitch(this, function(response) {
 					// append html to node
-					DomConstruct.place(html, this.contentNode, "last");
+					DomConstruct.place(response.data, this.contentNode, "last");
 					
 					this.setupTabs();
 					this.setupFeatures();
