@@ -312,6 +312,11 @@ require([	"dojo/_base/declare",
 						actor:		Query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]
 					},
 					{
+						node:		Query("a#tm_connection")[0],
+						widget:		"commsy/popups/ToggleConnection",
+						actor:		Query("div#tm_menus div#tm_dropmenu_connection")[0]
+					},
+					{
 						node:		Query("a#tm_clipboard")[0],
 						widget:		"commsy/popups/ToggleClipboard",
 						actor:		Query("div#tm_menus div#tm_dropmenu_clipboard")[0]
