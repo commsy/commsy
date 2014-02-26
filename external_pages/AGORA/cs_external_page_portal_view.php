@@ -2140,6 +2140,8 @@ class cs_external_page_portal_view extends cs_page_view {
    	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
    	
+   	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
+   	
    	switch ($mode) {
    		case "build":
    			$html .= '<script src="js/src/buildConfig.js"></script>';
