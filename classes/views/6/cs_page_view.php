@@ -575,7 +575,6 @@ class cs_page_view extends cs_view {
    	if ($ownRoomItem) {
    		$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
    		$to_javascript['own']['id'] = $ownRoomItem->getItemId();
-   		$to_javascript['ownRoom']['withPortfolio'] = $ownRoomItem->getCSBarShowPortfolio();
    	}
    	
    	// translations - should be managed elsewhere soon
@@ -669,6 +668,8 @@ class cs_page_view extends cs_view {
    	   $to_javascript['autoOpenPopup']['tab'] = 'user';
    	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
+   	
+   	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
    	
    	switch ($mode) {
    		case "layer":
