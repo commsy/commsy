@@ -1,6 +1,7 @@
 define([	"dojo/request/registry",
         	"dojo/request/script",
-        	"dojo/_base/lang"], function(request, script, lang) {
+        	"dojo/_base/lang",
+        	"dojo/_base/json"], function(request, script, lang, json) {
 	
 	/*
 	 * Register anything that starts with "http://" or "https://" to be send
@@ -52,6 +53,8 @@ define([	"dojo/request/registry",
 					url = commsyConfig.remoteAjaxURL + url;
 				}
 			}
+			
+			optionsMixin.data = json.toJson(optionsMixin.data);
 			
 			return request.post(url, lang.mixin(options, optionsMixin)).then(
 				function(response) {

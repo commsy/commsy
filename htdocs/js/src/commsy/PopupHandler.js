@@ -309,7 +309,7 @@ define([	"dojo/_base/declare",
 				},
 				data: data
 			}).then(lang.hitch(this, function(response) {
-				if (response.data.status === "success") {
+				if (response.status === "success") {
 					this.onPopupSubmitSuccess(response.data);
 					this.destroyLoading();
 				} else {
