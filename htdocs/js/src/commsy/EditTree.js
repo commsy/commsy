@@ -192,6 +192,11 @@ define([	"dojo/_base/declare",
 						this.addCreateAndRenameToAllLabels();
 						
 						this.onCreateEntrySuccessfull(newTag);
+						
+						var handler = this;
+						
+						var path = handler.buildPath(response.data.tagId);
+						handler.tree.set("paths", [path]);
 					})
 				);
 			}));
