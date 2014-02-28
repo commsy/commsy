@@ -3185,7 +3185,7 @@ class cs_external_page_portal_view extends cs_page_view {
     $wiki_url = $c_pmwiki_path_url;
     $wiki_image_url = $wiki_url.'/wikis/'.$current_portal->getItemID().'/';
     $wiki_url .= '/wikis/'.$current_portal->getItemID().'/index.php?commsy_session_id='.$sid.'&n=';
-    $commsy_url .= '/wikis/'.$current_portal->getItemID().'/index.php?commsy_session_id='.$sid.'&n=';
+    $commsy_url = '/wikis/'.$current_portal->getItemID().'/index.php?commsy_session_id='.$sid.'&n=';
 
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
@@ -3198,7 +3198,7 @@ class cs_external_page_portal_view extends cs_page_view {
     <div id="header">
         <div class="wrapper">
 
-            <a href="" title="Startseite"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/css/img/mob_logo.gif" alt="Mobilit&auml;t durch Partnerschaften" id="portal_logo" /></a>
+            <a href="" title="Startseite"><img src="css/external_portal_styles/'.$current_portal->getItemID().'/css/img/wege_ins_ausland.gif" alt="Mobilit&auml;t durch Partnerschaften" id="portal_logo" /></a>
 
             
             <div class="clear"></div>
@@ -3362,7 +3362,7 @@ $html.='                    <div class="clear"></div>
             </div>
 
             <div id="footer_logos">
-                <a href="http://www.mobilitaetsagentur-hamburg.de/europaeische-union.html" id="logo_eu" target="_blank">&nbsp;</a>
+                <a href="http://www.mobilitaetsagentur-hamburg.de/europaeische-union.html" id="logo_eu_neu" target="_blank">&nbsp;</a>
                 <a href="http://www.mobilitaetsagentur-hamburg.de/arbeit-und-leben-hamburg.html" id="logo_aul" target="_blank">&nbsp;</a>
                 <a href="http://www.mobilitaetsagentur-hamburg.de/hibb.html" id="logo_hib" target="_blank">&nbsp;</a>
                 <a href="http://www.mobilitaetsagentur-hamburg.de/hamburg.html" id="logo_hh" target="_blank">&nbsp;</a>

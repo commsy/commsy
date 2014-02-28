@@ -1582,7 +1582,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	}
 
 	private function getExternalInformation() {
-	   global $c_wordpress;
+	   #global $c_wordpress;
 	   global $c_pmwiki;
 
 	   $return = array();
@@ -1595,10 +1595,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 
 	   // Wordpress
-	   if(isset($c_wordpress) and $c_wordpress){
+	   if($current_portal_item->getWordpressPortalActive()){
    	   $wordpress_manager = $this->_environment->getWordpressManager();
 	      $wordpress = array();
-   	   if($current_context->isWordpressActive()){
+	   $wordpress_url = $current_portal_item->getWordpressUrl();
+   	   if($current_context->isWordpressActive() || !empty($wordpress_url)){
             $wordpress['wordpress_active'] = 'yes';
    	   }
 	      $wordpress['wordpresstitle'] = $current_context->getWordpressTitle();

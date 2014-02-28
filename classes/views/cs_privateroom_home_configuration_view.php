@@ -74,7 +74,8 @@ var  $_config_boxes = false;
       if (( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() )){
          $current_context = $this->_environment->getCurrentContextItem();
          if ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() ) {
-            global $c_wordpress_path_url;
+            #global $c_wordpress_path_url;
+         	$wordpress_path_url = $context_item->getWordpressUrl();
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                $image = '<img src="images/commsyicons_msie6/22x22/wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';
             } else {
@@ -88,7 +89,7 @@ var  $_config_boxes = false;
                unset($session_item);
             }
             $html .= '<tr>'.LF;
-            $html .= '<td>'.'<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a></td>'.LF;
+            $html .= '<td>'.'<a title="'.$title.'" href="'.$wordpress_path_url.'/'.$current_context->getContextID().'_'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a></td>'.LF;
             $html .= '<td>(<a href="http://localhost/commsy/htdocs/commsy.php?cid='.$current_context->getItemID().'&amp;mod=configuration&amp;fct=wordpress">'.$this->_translator->getMessage('COMMON_CONFIGURATION').'</a>)</td>';
             $html .= '</tr>'.LF;
          }

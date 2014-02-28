@@ -25,15 +25,6 @@ require([	"dojo/_base/declare",
 					}
 				}));
 				
-				// widget popups
-				var aStackNode = query("a#tm_stack")[0];
-				var widgetManager = this.getWidgetManager();
-				if (aStackNode) {
-					require(["commsy/popups/ToggleStack"], function(StackPopup) {
-						new StackPopup(aStackNode, query("div#tm_menus div#tm_dropmenu_stack")[0], widgetManager);
-					});
-				}
-				
 				// setup rubric forms
 				query(".open_popup").forEach(Lang.hitch(this, function(node, index, arr) {
 					// get custom data object
@@ -149,6 +140,7 @@ require([	"dojo/_base/declare",
 						});
 					}
 				}
+				
 				// password expire soon alert to change password
 				if(this.from_php.environment.password_expire_soon) {
 					require(["dijit/Dialog","dojo/i18n!commsy/nls/tooltipErrors","dojo/cookie"], function(Overlay, ErrorTranslations,Cookie) {
@@ -292,137 +284,98 @@ require([	"dojo/_base/declare",
 			         	"dojo/domReady!"], Lang.hitch(this, function(Query, On, ready) {
 			    
 	         	/*
-	         	 * initiate popup handler
-	         	 * new method: first click is handled here and not by module, so we only need to load it when requested
+	         	 * not migrated yet
 	         	 */
-			    var aConfigurationNode = Query("a#tm_settings")[0];
-			    if (aConfigurationNode) {
-			    	On.once(aConfigurationNode, "click", Lang.hitch(this, function(event) {
-			    		require(["commsy/popups/ToggleRoomConfiguration"], function(RoomConfigurationPopup) {
-			    			var handler = new RoomConfigurationPopup(aConfigurationNode, Query("div#tm_menus div#tm_dropmenu_configuration")[0]);
-			    			handler.open();
-		    			});
-			    	}));
-			    }
-			    
-			    var aLimeSurveyConfigurationNode = Query("a#tm_limesurvey")[0];
-			    if ( aLimeSurveyConfigurationNode )
-			    {
-			    	On.once(aLimeSurveyConfigurationNode, "click", Lang.hitch(this, function(event)
-			    	{
-			    		var widgetManager = this.getWidgetManager();
-    					
-    					widgetManager.GetInstance("commsy/widgets/LimeSurvey/LimeSurveyWidget", {}).then(function(deferred)
-						{
-							var widgetInstance = deferred.instance;
-							
-							// register click event
-							widgetManager.RegisterOpenCloseClick(widgetInstance, aLimeSurveyConfigurationNode);
-							
-							// open widget
-							widgetInstance.Open();
-						});
-			    	}));
-			    }
-			    
-			    var aPersonalNode = Query("a#tm_user")[0];
-			    if (aPersonalNode) {
-			    	On.once(aPersonalNode, "click", Lang.hitch(this, function(event) {
-			    		require(["commsy/popups/TogglePersonalConfiguration"], function(PersonalConfigurationPopup) {
-		    				var handler = new PersonalConfigurationPopup(aPersonalNode, Query("div#tm_menus div#tm_dropmenu_pers_bar")[0]);
-		    				handler.open();
-		    			});
-			    	}));
-			    }
-			    
-			    var aBreadcrumbNode = Query("a#tm_bread_crumb")[0];
-			    if (aBreadcrumbNode) {
-			    	On.once(aBreadcrumbNode, "click", Lang.hitch(this, function(event) {
-			    		require(["commsy/popups/ToggleBreadcrumb"], function(BreadcrumbPopup) {
-	    					var handler = new BreadcrumbPopup(aBreadcrumbNode, Query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]);
-	    					handler.open();
-	    				});
-			    	}));
-    			}
-			    
-			    // portal2portal
-			    var aConnectionNode = Query("a#tm_connection")[0];
-			    if (aConnectionNode) {
-			    	On.once(aConnectionNode, "click", Lang.hitch(this, function(event) {
-			    		require(["commsy/popups/ToggleConnection"], function(ConnectionPopup) {
-	    					var handler = new ConnectionPopup(aConnectionNode, Query("div#tm_menus div#tm_dropmenu_connection")[0]);
-	    					handler.open();
-	    				});
-			    	}));
-    			}
-			    
-			    var aClipboardNode = Query("a#tm_clipboard")[0];
-			    if (aClipboardNode) {
-			    	On.once(aClipboardNode, "click", Lang.hitch(this, function(event) {
-			    		require(["commsy/popups/ToggleClipboard"], function(ClipboardPopup) {
-	    					var handler = new ClipboardPopup(aClipboardNode, Query("div#tm_menus div#tm_dropmenu_clipboard")[0]);
-	    					handler.open();
-	    				});
-			    	}));
-    			}
-			    
-    			var aCalendarNode = Query("a#tm_mycalendar")[0];
-    			if (aCalendarNode) {
-    				On.once(aCalendarNode, "click", Lang.hitch(this, function(event) {
-    					var widgetManager = this.getWidgetManager();
-    					
-    					widgetManager.GetInstance("commsy/widgets/Calendar/CalendarWidget", {}).then(function(deferred)
-						{
-							var widgetInstance = deferred.instance;
-							
-							// register click event
-							widgetManager.RegisterOpenCloseClick(widgetInstance, aCalendarNode);
-							
-							// open widget
-							widgetInstance.Open();
-						});
-    				}));
-    			}
-    			
-    			var aPortfolioNode = Query("a#tm_portfolio")[0];
-				if (aPortfolioNode)
-				{
-					On.once(aPortfolioNode, "click", Lang.hitch(this, function(event)
-					{
-						var widgetManager = this.getWidgetManager();
-						
-						widgetManager.GetInstance("commsy/widgets/Portfolio/PortfolioWidget", {}).then(function(deferred)
-						{
-							var widgetInstance = deferred.instance;
-							
-							// register click event
-							widgetManager.RegisterOpenCloseClick(widgetInstance, aPortfolioNode);
-							
-							// open widget
-							widgetInstance.Open();
-						});
-					}));
+         		var aStackNode = Query("a#tm_stack")[0];
+				var widgetManager = this.getWidgetManager();
+				if (aStackNode) {
+					require(["commsy/popups/ToggleStack"], function(StackPopup) {
+						new StackPopup(aStackNode, Query("div#tm_menus div#tm_dropmenu_stack")[0], widgetManager);
+					});
 				}
 				
-				var aMyWidgetsNode = Query("a#tm_widgets")[0];
-				if ( aMyWidgetsNode )
-				{
-					On.once(aMyWidgetsNode, "click", Lang.hitch(this, function(event)
+         		dojo.forEach(
+	    		[
 					{
-						var widgetManager = this.getWidgetManager();
-						
-						widgetManager.GetInstance("commsy/widgets/MyWidgets/MyWidgetsWidget", {}).then(function(deferred)
-						{
-							var widgetInstance = deferred.instance;
-							
-							// register click event
-							widgetManager.RegisterOpenCloseClick(widgetInstance, aMyWidgetsNode);
-							
-							// open widget
-							widgetInstance.Open();
-						});
-					}));
-				}
+						node:		Query("a#tm_settings")[0],
+						widget:		"commsy/popups/ToggleRoomConfiguration",
+						actor:		Query("div#tm_menus div#tm_dropmenu_configuration")[0]
+					},
+					{
+						node:		Query("a#tm_user")[0],
+						widget:		"commsy/popups/TogglePersonalConfiguration",
+						actor:		Query("div#tm_menus div#tm_dropmenu_pers_bar")[0]
+					},
+					{
+						node:		Query("a#tm_bread_crumb")[0],
+						widget:		"commsy/popups/ToggleBreadcrumb",
+						actor:		Query("div#tm_menus div#tm_dropmenu_breadcrumb")[0]
+					},
+					{
+						node:		Query("a#tm_connection")[0],
+						widget:		"commsy/popups/ToggleConnection",
+						actor:		Query("div#tm_menus div#tm_dropmenu_connection")[0]
+					},
+					{
+						node:		Query("a#tm_clipboard")[0],
+						widget:		"commsy/popups/ToggleClipboard",
+						actor:		Query("div#tm_menus div#tm_dropmenu_clipboard")[0]
+					}
+			    ], Lang.hitch(this, function(object) {
+			    	if (object.node && object.actor) {
+			    		On.once(object.node, "click", Lang.hitch(this, function(event) {
+			    			require([object.widget], function(Widget) {
+				    			var handler = new Widget(object.node, object.actor);
+				    			handler.open();
+			    			});
+	    				}));
+			    	}
+			    }));
+			    
+			    /*
+			     * Widgets managed by WidgetManager
+			     */
+			    
+			    dojo.forEach(
+	    		[
+					{
+						node:		Query("a#tm_mycalendar")[0],
+						widget:		"commsy/widgets/Calendar/CalendarWidget",
+						mixin:		{}
+					},
+					{
+						node:		Query("a#tm_portfolio")[0],
+						widget:		"commsy/widgets/Portfolio/PortfolioWidget",
+						mixin:		{}
+					},
+					{
+						node:		Query("a#tm_widgets")[0],
+						widget:		"commsy/widgets/MyWidgets/MyWidgetsWidget",
+						mixin:		{}
+					},
+					{
+						node:		Query("a#tm_limesurvey")[0],
+						widget:		"commsy/widgets/LimeSurvey/LimeSurveyWidget",
+						mixin:		{}
+					}
+			    ], Lang.hitch(this, function(object) {
+			    	if (object.node) {
+			    		On.once(object.node, "click", Lang.hitch(this, function(event) {
+	    					var widgetManager = this.getWidgetManager();
+	    					
+	    					widgetManager.GetInstance(object.widget, object.mixin).then(function(deferred)
+							{
+								var widgetInstance = deferred.instance;
+								
+								// register click event
+								widgetManager.RegisterOpenCloseClick(widgetInstance, object.node);
+								
+								// open widget
+								widgetInstance.Open();
+							});
+	    				}));
+			    	}
+			    }));
 			}));
 		}
 	});

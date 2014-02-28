@@ -9,6 +9,7 @@ define(
 	"dojo/dom-construct",
 	"dojo/dom-attr",
 	"dojo/on",
+	"commsy/request",
 	"dojo/topic",
 	"dojo/dom-class",
 	"dojo/query",
@@ -27,10 +28,11 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
 	DomConstruct,
 	DomAttr,
 	On,
+	request,
 	Topic,
 	DomClass,
 	Query,
@@ -78,9 +80,9 @@ define(
 			 ************************************************************************************/
 			this.set("title", PopupTranslations.title);
 			
-			On(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
-			On(this.withTokensCheckboxNode, "change", Lang.hitch(this, this.onChangeWithTokens));
-			On(this.addAdditionalNode, "click", Lang.hitch(this, this.onClickAddAdditional));
+			On(this.formNode, "submit", lang.hitch(this, this.onSubmit));
+			On(this.withTokensCheckboxNode, "change", lang.hitch(this, this.onChangeWithTokens));
+			On(this.addAdditionalNode, "click", lang.hitch(this, this.onClickAddAdditional));
 		},
 		
 		/**
@@ -97,33 +99,38 @@ define(
 			
 			Parser.parse(this.widgetNode);
 			
-			this.AJAXRequest(	"limesurvey",
-								"getGroups",
-								{},
-								Lang.hitch(this, function(response)
-			{
-				// destroy the loading animation
-				DomConstruct.destroy(this.loadingGroupsNode);
-				
-				// if response is not empty, nable the submit button
-				if ( response.groups.length > 0 )
-				{
-					DomAttr.remove(this.submitNode, "disabled");
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'limesurvey',
+					action:	'getGroups'
 				}
-				
-				// go through all groups and add them
-				dojo.forEach(response.groups, Lang.hitch(this, function(group)
-				{
-					DomConstruct.create("option",
+			}).then(
+				lang.hitch(this, function(response) {
+					// destroy the loading animation
+					DomConstruct.destroy(this.loadingGroupsNode);
+					
+					// if response is not empty, nable the submit button
+					if ( response.data.groups.length > 0 )
 					{
-						value:			group.id,
-						innerHTML:		group.title
-					}, this.groupSelectNode, "last");
-				}));
-									
-				// make the select field visible
-				DomClass.remove(this.groupSelectNode, "hidden");
-			}));
+						DomAttr.remove(this.submitNode, "disabled");
+					}
+					
+					// go through all groups and add them
+					dojo.forEach(response.data.groups, lang.hitch(this, function(group)
+					{
+						DomConstruct.create("option",
+						{
+							value:			group.id,
+							innerHTML:		group.title
+						}, this.groupSelectNode, "last");
+					}));
+										
+					// make the select field visible
+					DomClass.remove(this.groupSelectNode, "hidden");
+				})
+			);
 		},
 		
 		/************************************************************************************
@@ -199,12 +206,12 @@ define(
 				
 				var formManager = Registry.byId("limesurveyParticipantsForm");
 				
-				On(aNode, "click", Lang.hitch(this, function()
+				On(aNode, "click", lang.hitch(this, function()
 				{
 					FX.wipeOut(
 					{
 						node:		inputRowNode,
-						onEnd:		Lang.hitch(this, function()
+						onEnd:		lang.hitch(this, function()
 						{
 							var widgetsInRow = Registry.findWidgets(inputRowNode);
 							dojo.forEach(widgetsInRow, function(widget)
@@ -220,7 +227,7 @@ define(
 					}).play();
 				}));
 				
-				Parser.parse(inputRowNode).then(Lang.hitch(this, function(instances)
+				Parser.parse(inputRowNode).then(lang.hitch(this, function(instances)
 				{
 					dojo.forEach(instances, function(instance)
 					{
@@ -249,7 +256,7 @@ define(
 				FX.wipeOut(
 				{
 					node:			this.noTokensNode,
-					onEnd:			Lang.hitch(this, function()
+					onEnd:			lang.hitch(this, function()
 					{
 						Registry.byId("lsParticipantMails").set("disabled", true);
 						Registry.byId("lsParticipantMailSubject").set("disabled", true);
@@ -260,11 +267,11 @@ define(
 				FX.wipeIn(
 				{
 					node:			this.withTokensNode,
-					beforeBegin:	Lang.hitch(this, function()
+					beforeBegin:	lang.hitch(this, function()
 					{
 						DomAttr.set(this.groupSelectNode, "disabled", false);
 						
-						dojo.forEach(Query("input[name^='additional']"), Lang.hitch(this, function(node)
+						dojo.forEach(Query("input[name^='additional']"), lang.hitch(this, function(node)
 						{
 							var widget = Registry.getEnclosingWidget(node);
 							widget.set("disabled", false);
@@ -277,7 +284,7 @@ define(
 				FX.wipeIn(
 				{
 					node:			this.noTokensNode,
-					beforeBegin:	Lang.hitch(this, function()
+					beforeBegin:	lang.hitch(this, function()
 					{
 						Registry.byId("lsParticipantMails").set("disabled", false);
 						Registry.byId("lsParticipantMailSubject").set("disabled", false);
@@ -289,11 +296,11 @@ define(
 				FX.wipeOut(
 				{
 					node:			this.withTokensNode,
-					onEnd:			Lang.hitch(this, function()
+					onEnd:			lang.hitch(this, function()
 					{
 						DomAttr.set(this.groupSelectNode, "disabled", true);
 						
-						dojo.forEach(Query("input[name^='additional']"), Lang.hitch(this, function(node)
+						dojo.forEach(Query("input[name^='additional']"), lang.hitch(this, function(node)
 						{
 							var widget = Registry.getEnclosingWidget(node);
 							widget.set("disabled", true);
@@ -319,23 +326,29 @@ define(
 				this.setupLoading();
 				var formValues = formManager.gatherFormValues();
 				
-				this.AJAXRequest(	"limesurvey",
-									"inviteParticipants",
-									{
-										groupId:				formValues.group,
-										withTokens:				formValues.withTokensCheckbox,
-										participantMails:		formValues.participantMails,
-										participantMailSubject:	formValues.participantMailSubject,
-										participantMailtext:	formValues.participantMailtext,
-										formValues:				formValues,
-										surveyId:				this.surveyId
-									},
-									Lang.hitch(this, function(response)
-				{
-					// remove loading indicator and close this popup
-					this.destroyLoading();
-					this.Close();
-				}));
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'limesurvey',
+						action:	'inviteParticipants'
+					},
+					data: {
+						groupId:				formValues.group,
+						withTokens:				formValues.withTokensCheckbox,
+						participantMails:		formValues.participantMails,
+						participantMailSubject:	formValues.participantMailSubject,
+						participantMailtext:	formValues.participantMailtext,
+						formValues:				formValues,
+						surveyId:				this.surveyId
+					}
+				}).then(
+					lang.hitch(this, function(response) {
+						// remove loading indicator and close this popup
+						this.destroyLoading();
+						this.Close();
+					})
+				);
 			}
 			else
 			{

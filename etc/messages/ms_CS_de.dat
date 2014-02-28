@@ -13,6 +13,7 @@ $message["CS_BAR_CONNECTION_EDIT_HEADLINE_CURRENT"]["de"] = "Aktuelle Verbindung
 $message["CS_BAR_CONNECTION_EDIT_HEADLINE_NEW"]["de"] = "Neue Verbindung";
 $message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_CHOOSE"]["de"] = "Bitte wählen Sie ein Portal aus.";
 $message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_SAVE"]["de"] = "Neue Verbindung speichern";
+$message["CS_BAR_CONNECTION_EDIT_ORDER"]["de"] = "Reihenfolge";
 $message["CS_BAR_CONNECTION_EDIT_TEXT"]["de"] = "Hier können Sie Ihren CommSy-Account mit Ihren andere CommSy-Accounts auf anderen Portal verknüpfen.";
 $message["CS_BAR_CONNECTION_JS_ERROR_1"]["de"] = "Bitte füllen Sie alle Felder für eine neue Verbindung sinnvoll aus.";
 $message["CS_BAR_CONNECTION_JS_ERROR_2"]["de"] = "Das Login ist fehlgeschlagen. Bitte überprüfen Sie Kennung und Passwort.";

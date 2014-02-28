@@ -575,6 +575,7 @@ class cs_page_view extends cs_view {
    	if ($ownRoomItem) {
    		$to_javascript['ownRoom']['id'] = $ownRoomItem->getItemId();
    		$to_javascript['own']['id'] = $ownRoomItem->getItemId();
+   		$to_javascript['ownRoom']['withPortfolio'] = $ownRoomItem->getCSBarShowPortfolio();
    	}
    	
    	// translations - should be managed elsewhere soon
@@ -672,21 +673,6 @@ class cs_page_view extends cs_view {
    	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
    	
    	switch ($mode) {
-   		case "build":
-   			$html .= '<script src="js/src/buildConfig.js"></script>';
-   			
-   			$html .= "
-   				<script>
-   					var from_php  = '" . json_encode($to_javascript) . "';
-   					dojoConfig.locale = '" . $this->_environment->getSelectedLanguage() . "';
-   				</script>
-   			";
-   			
-   			$html .= '<script src="js/build/release/dojo/dojo.js"></script>';
-   			$html .= '<script src="js/build/release/commsy/main.js"></script>';
-   			
-   			break;
-   	
    		case "layer":
    			$html .= '<script src="js/src/layerConfig.js"></script>';
    			

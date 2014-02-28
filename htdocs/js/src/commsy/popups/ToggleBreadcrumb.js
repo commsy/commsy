@@ -4,9 +4,10 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"commsy/request",
         	"dojo/on",
         	"dojo/_base/lang",
-        	"dojo/dnd/Source"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Source) {
+        	"dojo/dnd/Source"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, request, On, lang, Source) {
 	return declare(TogglePopupHandler, {
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
@@ -31,15 +32,15 @@ define([	"dojo/_base/declare",
 		
 		setupSpecific: function() {
 			// register click for edit button
-			var aEditNode = Query("a#edit_roomlist", this.contentNode)[0]
+			var aEditNode = Query("a#edit_roomlist", this.contentNode)[0];
 			if (aEditNode) {
-				On.once(aEditNode, "click", Lang.hitch(this, function(event) {
+				On.once(aEditNode, "click", lang.hitch(this, function(event) {
 					this.setupEditMode();
 				}));
 			}
 			
 			// register click for room links
-			dojo.forEach(Query("div.room_change_item", this.contentNode), Lang.hitch(this, function(node, index, arr) {
+			dojo.forEach(Query("div.room_change_item", this.contentNode), lang.hitch(this, function(node, index, arr) {
 				// get href
 				var href = this.getAttrAsObject(node, "data-custom").href;
 				
@@ -71,13 +72,13 @@ define([	"dojo/_base/declare",
 			DomClass.remove(contentObjects[1], "hidden");
 			
 			// process each room block
-			dojo.forEach(Query("div.room_block", this.contentNode), Lang.hitch(this, function(blockNode, index, arr) {
+			dojo.forEach(Query("div.room_block", this.contentNode), lang.hitch(this, function(blockNode, index, arr) {
 				var roomAreaObjects = Query("div.breadcrumb_room_area", blockNode);
 				
 				// group h3-tags together
 				var ref = null;
 				var divNode = null;
-				dojo.forEach(roomAreaObjects, Lang.hitch(this, function(roomAreaObject, index, arr) {
+				dojo.forEach(roomAreaObjects, lang.hitch(this, function(roomAreaObject, index, arr) {
 					// save first room area
 					if(index === 0) {
 						ref = roomAreaObject;
@@ -104,7 +105,7 @@ define([	"dojo/_base/declare",
 				var latestRoomAppearance = -1;
 				
 				var count = 0;
-				dojo.forEach(Query("div.room_change_item, div.room_dummy", ref), Lang.hitch(this, function(node, index, arr) {
+				dojo.forEach(Query("div.room_change_item, div.room_dummy", ref), lang.hitch(this, function(node, index, arr) {
 					// determ type
 					if(DomClass.contains(node, "room_dummy")) {
 						// dummy - make visible
@@ -164,7 +165,7 @@ define([	"dojo/_base/declare",
 								"after");
 			
 			// register click event
-			On(newBlockANode, "click", Lang.hitch(this, function(event) {
+			On(newBlockANode, "click", lang.hitch(this, function(event) {
 				this.appendNewBlock();
 				
 				event.preventDefault();
@@ -190,7 +191,7 @@ define([	"dojo/_base/declare",
 			}, saveDivNode, "after");
 			
 			// register click event
-			On(saveANode, "click", Lang.hitch(this, function(event) {
+			On(saveANode, "click", lang.hitch(this, function(event) {
 				this.saveRoomList();
 				
 				event.preventDefault();
@@ -211,7 +212,7 @@ define([	"dojo/_base/declare",
 			
 			// make all sources a dojo.dnd.Source and set nodes
 			var sources = [];
-			dojo.forEach(sourceNodes, Lang.hitch(this, function(sourceNode, index, arr) {
+			dojo.forEach(sourceNodes, lang.hitch(this, function(sourceNode, index, arr) {
 				// register
 				sources.push(new Source(sourceNode, {
 					singular:	true/*,
@@ -295,77 +296,19 @@ define([	"dojo/_base/declare",
 			});
 			
 			// save
-			this.AJAXRequest("popup", "save", data, Lang.hitch(this, function(response) {
-				this.close();
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'popup',
+					action:	'save'
+				},
+				data: data
+			}).then(
+				lang.hitch(this, function(response) {
+					this.close();
+				})
+			);
 		}
 	});
 });
-
-/*
-		
-		sortableOnStop: function(event, ui) {
-			// process each room area
-	    	jQuery('div.breadcrumb_room_area').each(function() {
-	    		// get number of elements in this area
-	    		var num_elements = jQuery(this).children('a.room_change_item, div.room_dummy').length;
-
-	    		// fill with dummies if elements missing
-	    		if(num_elements % 4 !== 0) {
-	    			for(var i = 0; i < 4 - (num_elements % 4); i++) {
-	    				jQuery(this).find('div.clear').before(jQuery('<div/>', {'class': 'room_dummy'}));
-	    			}
-	    		}
-
-	    		// ensure one empty row below the last room in area
-	    		/*
-				 * holds the latest appearance of a room
-				 * D D D D R D D R D D D D D
-				 * 				/\
-				 * 				||
-				 *//*
-				var latest_room_appearance = -1;
-
-				jQuery(this).find('a.room_change_item, div.room_dummy').each(function(index) {
-					// determ type
-					if(jQuery(this).hasClass('room_change_item')) {
-						// room
-						// update latest appearance
-						latest_room_appearance = index;
-					}
-				});
-
-				if(latest_room_appearance > -1) {
-					var num_dummies_after_last_room = num_elements - latest_room_appearance - 1;
-
-					if(num_dummies_after_last_room <= 3) {
-						// add a row of dummies
-						for(var i = 0; i < 4; i++) {
-		    				jQuery(this).find('div.clear').before(jQuery('<div/>', {'class': 'room_dummy'}));
-		    			}
-					} else if(num_dummies_after_last_room >= 5) {
-						// get new latest room appearance
-						var new_latest_room_appearance = -1;
-						jQuery(this).find('a.room_change_item, div.room_dummy').each(function(index) {
-							// determ type
-							if(jQuery(this).hasClass('room_change_item')) {
-								// room
-								// update latest appearance
-								new_latest_room_appearance = index;
-							}
-						});
-
-						// determe number to delete
-						var num_delete = num_elements - new_latest_room_appearance - 1 - 4 - ((num_elements - new_latest_room_appearance - 1 - 4) % 4);
-
-						// remove a row of dummies
-						for(var i = 0; i < num_delete; i++) {
-		    				jQuery(this).find('div.clear').prev().remove();
-		    			}
-					}
-				}
-	    	});
-		},
-
-		
-*/

@@ -646,6 +646,7 @@
 			$converter = $this->_environment->getTextConverter();
 			$context_item = $this->_environment->getCurrentContextItem();
 			$current_user = $this->_environment->getCurrentUserItem();
+			$portal_item = $this->_environment->getCurrentPortalItem();
 
 		    if ($this->_item->isNotActivated()){
 		        $activating_date = $this->_item->getActivatingDate();
@@ -999,8 +1000,8 @@
 				}
 			}
 
-			global $c_wordpress;
-			if($c_wordpress and $context_item->isWordpressActive()) {
+			#global $c_wordpress;
+			if($portal_item->getWordpressPortalActive() and $context_item->isWordpressActive()) {
 				if($this->_item->isExporttoWordpress()) {
 					$temp_array = array();
 					$temp_array[] = $translator->getMessage('MATERIAL_EXPORT_TO_WORDPRESS_LINK');
@@ -1201,8 +1202,8 @@
 			*/
 
 			// wordpress export
-			global $c_wordpress;
-			if($c_wordpress and $context_item->isWordpressActive() and !isset($_GET['version_id'])){
+			#global $c_wordpress;
+			if($portal_item->getWordpressPortalActive() and $context_item->isWordpressActive() and !isset($_GET['version_id'])){
    			$wordpress_manager = $this->_environment->getWordpressManager();
    			if ( $this->_item->mayEdit($current_user)
    			     #and $wordpress_manager->isUserAllowedToExportItem($context_item->getWordpressId(),$current_user->getUserID())

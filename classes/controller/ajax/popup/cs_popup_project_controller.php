@@ -101,7 +101,10 @@ class cs_popup_project_controller implements cs_rubric_popup_controller {
         			if (isset($form_data["template"])){
         				if($item->isProjectRoom()){
         					$_POST['template_select'] = $form_data["template"];
-        					include_once('include/inc_room_copy.php');
+        					if($_POST['template_select'] != 'leerer Raum'){
+        						include_once('include/inc_room_copy.php');
+        					}
+        					
         				}
         			}
         			

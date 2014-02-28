@@ -47,13 +47,15 @@ class cs_wordpress_manager extends cs_manager {
   private $_with_session_caching = false;
 
   function cs_wordpress_manager($environment) {
-    global $c_use_soap_for_wordpress, $c_wordpress_path_url;
+    global $c_use_soap_for_wordpress; #$c_wordpress_path_url;
     parent::cs_manager($environment);
 
     $this->wp_user = $this->_environment->getCurrentUser()->_getItemData();
-
-    global $c_wordpress;
-    if($c_wordpress){
+    
+    $portal_item = $this->_environment->getCurrentPortalItem();
+    $wordpress_path_url = $portal_item->getWordpressUrl();
+    #global $c_wordpress;
+    if($portal_item->getWordpressPortalActive()){
        $this->CW = $this->getSoapClient();
     }
   }
@@ -166,13 +168,16 @@ class cs_wordpress_manager extends cs_manager {
   //------------------------------------------
   //------------- Materialexport -------------
   function exportItemToWordpress($current_item_id,$rubric) {
-    global $c_wordpress_path_url;
+    #global $c_wordpress_path_url;
     global $c_commsy_domain;
     global $c_commsy_url_path;
     global $c_single_entry_point;
     global $class_factory;
 
     $wpUser = $this->_getCurrentAuthItem();
+    
+    $portal_item = $this->_environment->getCurrentPortalItem();
+    $wordpress_path_url = $portal_item->getWordpressUrl();
 
     $context = $this->_environment->getCurrentContextItem();
     $wordpressId = $context->getWordpressId();
@@ -410,13 +415,17 @@ class cs_wordpress_manager extends cs_manager {
   }
 
   function getExportToWordpressLink($wordpress_post_id) {
-    global $c_wordpress_path_url;
-    return '<a target="_blank" href="' . $c_wordpress_path_url . $this->_environment->getCurrentPortalID() . '_' . $this->_environment->getCurrentContextID() . '/?p='.$wordpress_post_id.'&commsy_session_id='.$this->_environment->getSessionID().'">zum Artikel</a>';
+    #global $c_wordpress_path_url;
+    $portal_item = $this->_environment->getCurrentPortalItem();
+    $wordpress_path_url = $portal_item->getWordpressUrl();
+    return '<a target="_blank" href="' . $wordpress_path_url . $this->_environment->getCurrentPortalID() . '_' . $this->_environment->getCurrentContextID() . '/?p='.$wordpress_post_id.'&commsy_session_id='.$this->_environment->getSessionID().'">zum Artikel</a>';
   }
 
   function getSoapWsdlUrl() {
-    global $c_wordpress_path_url;
-    return $c_wordpress_path_url . '?wsdl';
+    #global $c_wordpress_path_url;
+  	$portal_item = $this->_environment->getCurrentPortalItem();
+  	$wordpress_path_url = $portal_item->getWordpressUrl();
+    return $wordpress_path_url . '?wsdl';
   }
 
   function getSoapClient() {

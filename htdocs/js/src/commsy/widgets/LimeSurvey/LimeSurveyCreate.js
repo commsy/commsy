@@ -9,6 +9,7 @@ define(
 	"dojo/dom-construct",
 	"dojo/dom-attr",
 	"dojo/on",
+	"commsy/request",
 	"dojo/topic",
 	"dojo/dom-class",
 	"dojo/query",
@@ -25,10 +26,11 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
 	DomConstruct,
 	DomAttr,
 	On,
+	request,
 	Topic,
 	DomClass,
 	Query,
@@ -73,7 +75,7 @@ define(
 			 ************************************************************************************/
 			this.set("title", PopupTranslations.title);
 			
-			On(this.formNode, "submit", Lang.hitch(this, this.onSubmit));
+			On(this.formNode, "submit", lang.hitch(this, this.onSubmit));
 		},
 		
 		/**
@@ -90,35 +92,40 @@ define(
 			
 			Parser.parse(this.widgetNode);
 			
-			this.AJAXRequest(	"limesurvey",
-								"getTemplates",
-								{},
-								Lang.hitch(this, function(response)
-			{
-				// destroy the loading animation
-				DomConstruct.destroy(this.loadingTemplatesNode);
-				
-				// if response is not empty, remove the default select option
-				// and enable the submit button
-				if ( response.surveys.length > 0 )
-				{
-					DomConstruct.empty(this.templateSelectNode);
-					DomAttr.remove(this.submitNode, "disabled");
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'limesurvey',
+					action:	'getTemplates'
 				}
-				
-				// go through all surveys and add them
-				dojo.forEach(response.surveys, Lang.hitch(this, function(survey)
-				{
-					DomConstruct.create("option",
+			}).then(
+				lang.hitch(this, function(response) {
+					// destroy the loading animation
+					DomConstruct.destroy(this.loadingTemplatesNode);
+					
+					// if response is not empty, remove the default select option
+					// and enable the submit button
+					if ( response.data.surveys.length > 0 )
 					{
-						value:			survey.sid,
-						innerHTML:		survey.surveyls_title
-					}, this.templateSelectNode, "last");
-				}));
-				
-				// make the select field visible
-				DomClass.remove(this.templateSelectNode, "hidden");
-			}));
+						DomConstruct.empty(this.templateSelectNode);
+						DomAttr.remove(this.submitNode, "disabled");
+					}
+					
+					// go through all surveys and add them
+					dojo.forEach(response.data.surveys, lang.hitch(this, function(survey)
+					{
+						DomConstruct.create("option",
+						{
+							value:			survey.sid,
+							innerHTML:		survey.surveyls_title
+						}, this.templateSelectNode, "last");
+					}));
+					
+					// make the select field visible
+					DomClass.remove(this.templateSelectNode, "hidden");
+				})
+			);
 			
 			// create the dojo calendar
 			var expiresCalendar = new Calendar();
@@ -147,22 +154,28 @@ define(
 				this.setupLoading();
 				var formValues = formManager.gatherFormValues();
 				
-				this.AJAXRequest(	"limesurvey",
-									"createSurvey",
-									{
-										templateId:		formValues.template,
-										surveyTitle:	formValues.title,
-										surveyExpires:	DomAttr.get(Query("input[name='expires']")[0], "value")
-									},
-									Lang.hitch(this, function(response)
-				{
-					// update the survey list in the main widget
-					Topic.publish("updateSurveys", { });
-					
-					// remove loading indicator and close this popup
-					this.destroyLoading();
-					this.Close();
-				}));
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'limesurvey',
+						action:	'createSurvey'
+					},
+					data: {
+						templateId:		formValues.template,
+						surveyTitle:	formValues.title,
+						surveyExpires:	DomAttr.get(Query("input[name='expires']")[0], "value")
+					}
+				}).then(
+					lang.hitch(this, function(response) {
+						// update the survey list in the main widget
+						Topic.publish("updateSurveys", { });
+						
+						// remove loading indicator and close this popup
+						this.destroyLoading();
+						this.Close();
+					})
+				);
 			}
 		}
 	});

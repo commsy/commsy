@@ -7,6 +7,7 @@ define(
 	"dojo/text!./templates/LimeSurveyUserWidget.html",
 	"dojo/i18n!./nls/LimeSurveyUserWidget",
 	"dojo/_base/lang",
+	"commsy/request",
 	"dojo/dom-construct",
 	"dojo/on",
 	"dojo/dom-class",
@@ -20,7 +21,8 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
+	request,
 	DomConstruct,
 	On,
 	DomClass,
@@ -71,47 +73,52 @@ define(
 		{
 			this.inherited(arguments);
 			
-			this.AJAXRequest(	"limesurvey",
-								"getDisplayedSurveys",
-								{ },
-								Lang.hitch(this, function(response)
-			{
-				// destroy the loading animation
-				var loadingNode = Query("div#limesurveyLoading")[0];
-				if ( loadingNode )
-				{
-					DomConstruct.destroy(loadingNode);
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'limesurvey',
+					action:	'getDisplayedSurveys'
 				}
-				
-				// add the response as html
-				if ( response.surveys.length == 0 )
-				{
-					DomConstruct.create("span",
+			}).then(
+				lang.hitch(this, function(response) {
+					// destroy the loading animation
+					var loadingNode = Query("div#limesurveyLoading")[0];
+					if ( loadingNode )
 					{
-						innerHTML:		PopupTranslations.noSurveys
-					}, this.contentNode, "last");
-				}
-				else
-				{
-					var ulNode = DomConstruct.create("ul",
-					{
-					}, this.contentNode, "last");
+						DomConstruct.destroy(loadingNode);
+					}
 					
-					dojo.forEach(response.surveys, function(survey)
+					// add the response as html
+					if ( response.data.surveys.length == 0 )
 					{
-						var liNode = DomConstruct.create("li",
+						DomConstruct.create("span",
 						{
-						}, ulNode, "last");
+							innerHTML:		PopupTranslations.noSurveys
+						}, this.contentNode, "last");
+					}
+					else
+					{
+						var ulNode = DomConstruct.create("ul",
+						{
+						}, this.contentNode, "last");
 						
-							DomConstruct.create("a",
+						dojo.forEach(response.data.surveys, function(survey)
+						{
+							var liNode = DomConstruct.create("li",
 							{
-								href:		survey.url,
-								target:		"_blank",
-								innerHTML:	survey.title
-							}, liNode, "last");
-					});
-				}
-			}));
+							}, ulNode, "last");
+							
+								DomConstruct.create("a",
+								{
+									href:		survey.url,
+									target:		"_blank",
+									innerHTML:	survey.title
+								}, liNode, "last");
+						});
+					}
+				})
+			);
 		}
 		
 		/************************************************************************************

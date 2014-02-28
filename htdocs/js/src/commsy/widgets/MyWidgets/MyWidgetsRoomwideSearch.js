@@ -6,6 +6,7 @@ define(
 	"dojo/_base/lang",
 	"dojo/dom-construct",
 	"dojo/on",
+	"commsy/request",
 	"dojo/dom-class",
 	"dojo/dom-attr",
 	"dojo/query",
@@ -19,9 +20,10 @@ define(
 	declare,
 	ListWidget,
 	PopupTranslations,
-	Lang,
+	lang,
 	DomConstruct,
 	On,
+	request,
 	DomClass,
 	DomAttr,
 	Query,
@@ -101,7 +103,7 @@ define(
 						}
 			});
 			
-			this.addColumn(2, Lang.hitch(this, function(rowNode, rowData)
+			this.addColumn(2, lang.hitch(this, function(rowNode, rowData)
 			{
 				// third column
 				var thirdColumnNode = DomConstruct.create("div",
@@ -146,15 +148,23 @@ define(
 					}, fifthColumnNode, "last");
 			});
 			
-			this.AJAXRequest("widget_roomwide_search", "getSearchFilter", {}, Lang.hitch(this, function(response)
-			{
-				this.searchFilter = response;
-				
-				this.createMenu();
-				
-				// set the store
-				this.setStore("widget_roomwide_search");
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'widget_roomwide_search',
+					action:	'getSearchFilter'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					this.searchFilter = response.data;
+					
+					this.createMenu();
+					
+					// set the store
+					this.setStore("widget_roomwide_search");
+				})
+			);
 		},
 		
 		/**
@@ -184,13 +194,13 @@ define(
 			var roomMenu = new DropDownMenu();
 			
 			/* Rubric Menu */
-			dojo.forEach(this.searchFilter.rubrics, Lang.hitch(this, function(rubric)
+			dojo.forEach(this.searchFilter.rubrics, lang.hitch(this, function(rubric)
 			{
 				rubricMenu.addChild(new CheckedMenuItem(
 				{
 					label:		rubric.text,
 					checked:	true,
-					onChange:	Lang.partial(Lang.hitch(this, this.onRubricSelectChange), rubric)
+					onChange:	lang.partial(lang.hitch(this, this.onRubricSelectChange), rubric)
 				}));
 			}));
 			
@@ -201,13 +211,13 @@ define(
 			}));
 			
 			/* Room Menu */
-			dojo.forEach(this.searchFilter.rooms, Lang.hitch(this, function(room)
+			dojo.forEach(this.searchFilter.rooms, lang.hitch(this, function(room)
 			{
 				roomMenu.addChild(new CheckedMenuItem(
 				{
 					label:		room.title,
 					checked:	true,
-					onChange:	Lang.partial(Lang.hitch(this, this.onRoomSelectChange), room)
+					onChange:	lang.partial(lang.hitch(this, this.onRoomSelectChange), room)
 				}));
 			}));
 			
@@ -230,7 +240,7 @@ define(
 		onRubricSelectChange: function(rubric, checked)
 		{
 			// update search filter
-			dojo.forEach(this.searchFilter.rubrics, Lang.hitch(this, function(rubricElement, index)
+			dojo.forEach(this.searchFilter.rubrics, lang.hitch(this, function(rubricElement, index)
 			{
 				if ( rubric.type == rubricElement.type )
 				{
@@ -239,13 +249,13 @@ define(
 			}));
 			
 			this.queryOptions.filter = this.searchFilter;
-			this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+			this.store.query(this.query, this.queryOptions, lang.hitch(this, this.updateList));
 		},
 		
 		onRoomSelectChange: function(room, checked)
 		{
 			// update search filter
-			dojo.forEach(this.searchFilter.rooms, Lang.hitch(this, function(roomElement, index)
+			dojo.forEach(this.searchFilter.rooms, lang.hitch(this, function(roomElement, index)
 			{
 				if ( room.id == roomElement.id )
 				{
@@ -254,7 +264,7 @@ define(
 			}));
 			
 			this.queryOptions.filter = this.searchFilter;
-			this.store.query(this.query, this.queryOptions, Lang.hitch(this, this.updateList));
+			this.store.query(this.query, this.queryOptions, lang.hitch(this, this.updateList));
 		}
 	});
 });

@@ -126,6 +126,35 @@ class cs_configuration_plugins_form extends cs_rubric_form {
    function _createForm () {
       $this->setHeadline($this->_headline);
       $this->_form->addText('text','',$this->_translator->getMessage('CONFIGURATION_PLUGIN_DESC'),'');
+      
+      
+      global $c_wordpress;
+      if ( isset($c_wordpress) and  $c_wordpress ) {
+      	$this->_form->addEmptyLine();
+      	
+      	$temp_array = array();
+      	$temp_array2 = array();
+      	$temp_array2['text']  = $this->_translator->getMessage('COMMON_ON');
+      	$temp_array2['value'] = 1;
+      	$temp_array[] = $temp_array2;
+      	$temp_array2 = array();
+      	$temp_array2['text']  = $this->_translator->getMessage('COMMON_OFF');
+      	$temp_array2['value'] = -1;
+      	$temp_array[] = $temp_array2;
+      	
+      	$current_portal_item = $this->_environment->getCurrentPortalItem();
+      	if($current_portal_item->getWordpressPortalActive()){
+      		$value = 'ein';
+      	} else {
+      		$value = 'aus';
+      	}
+      	$wordpress_url = $current_portal_item->getWordpressUrl();
+      	$this->_form->addRadioGroup('wp',$this->_translator->getMessage('CONFIGURATION_EXTRA_WORDPRESS_PORTAL'),'',$temp_array,$value,true,true);
+      	$this->_form->addTextfield('wp_url',$wordpress_url,'Wordpress URL', '', '', '', '');
+      	$this->_form->addText('description','',$this->_translator->getMessage('CONFIGURATION_EXTRA_WORDPRESS_PORTAL_DESC'));
+//       	$this->_array_extra[24]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_WORDPRESS');
+//       	$this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_WORDPRESS';
+      }
 
       // plugins
       if ( !empty($this->_array_plugins ) ) {

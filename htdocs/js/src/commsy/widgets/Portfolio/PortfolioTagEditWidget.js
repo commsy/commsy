@@ -6,6 +6,7 @@ define(
  	"dojo/text!./templates/PortfolioTagEditWidget.html",
  	"dojo/i18n!./nls/PortfolioTagEditWidget",
  	"dojo/_base/lang",
+ 	"commsy/request",
  	"dojo/topic",
  	"dojo/dom-attr",
  	"dijit/Tooltip",
@@ -18,7 +19,8 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
+	request,
 	Topic,
 	DomAttr,
 	Tooltip,
@@ -99,7 +101,7 @@ define(
 			var submitButtonNode = this.submitButtonNode;
 			
 			// insert tree
-			require(["commsy/EditTree"], Lang.hitch(this, function(EditTree)
+			require(["commsy/EditTree"], lang.hitch(this, function(EditTree)
 			{	
 				// redeclare the edit tree class
 				var Tree = declare(EditTree, {
@@ -107,7 +109,7 @@ define(
 					{
 						var pathToTag = this.buildPath(newTag.item_id[0].toString());
 						
-						this.tree.set("paths", [pathToTag]).then(Lang.hitch(this, function()
+						this.tree.set("paths", [pathToTag]).then(lang.hitch(this, function()
 						{
 							this.tree.focusNode(this.tree.get('selectedNode'));
 						}));
@@ -128,7 +130,7 @@ define(
 					popup:			this
 				});
 				
-				this.tree.setupTree(this.treeNode, Lang.hitch(this, function(tree)
+				this.tree.setupTree(this.treeNode, lang.hitch(this, function(tree)
 				{
 					// if in edit mode, expand the tree and select the tag we are editing
 					if ( this.tagId !== null ) {
@@ -149,7 +151,7 @@ define(
 					
 					// add basic actions to all tree entries
 					if (tree.addCreateAndRenameToAllLabels) {
-						On(tree.tree, "open", Lang.hitch(this, function(item, node) {
+						On(tree.tree, "open", lang.hitch(this, function(item, node) {
 							tree.addCreateAndRenameToAllLabels();
 						}));
 					}
@@ -170,7 +172,7 @@ define(
 				}, this.buttonDivNode, "last");
 				
 				// register event
-				On(deleteButtonNode, "click", Lang.hitch(this, this.onDeleteTag));
+				On(deleteButtonNode, "click", lang.hitch(this, this.onDeleteTag));
 			}
 		},
 		
@@ -225,36 +227,46 @@ define(
 				description:		description
 			};
 			
-			this.AJAXRequest(	"portfolio",
-								"updatePortfolioTag",
-								data,
-								Lang.hitch(this, function(response)
-			{
-				Topic.publish("updatePortfolios", { itemId: this.portfolioId });
-				this.Close();
-			}), Lang.hitch(this, function(errorResponse)
-			{
-				switch (errorResponse.code) {
-					case "902":				/* 	portfolio tag already assigned */
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'updatePortfolioTag'
+				},
+				data: data
+			}).then(
+				lang.hitch(this, function(response) {
+					if (response.code == "902") {		/* 	portfolio tag already assigned */
 						widgetManager.createErrorTooltip(this.treeNode, this.popupTranslations.errorTagDouble, ["below"]);
-						
-						break;
-				}
-			}));
+					} else {
+						Topic.publish("updatePortfolios", { itemId: this.portfolioId });
+						this.Close();
+					}
+					
+				})
+			);
 		},
 		
 		onDeleteTag: function(event)
 		{
-			this.AJAXRequest(	"portfolio",
-								"deletePortfolioTag",
-								{
-									tagId:			this.tagId,
-									portfolioId:	this.portfolioId
-								}, Lang.hitch(this, function(response)
-			{
-				Topic.publish("updatePortfolios", { itemId: this.portfolioId });
-				this.Close();
-			}));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'deletePortfolioTag'
+				},
+				data: {
+					tagId:			this.tagId,
+					portfolioId:	this.portfolioId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					Topic.publish("updatePortfolios", { itemId: this.portfolioId });
+					this.Close();
+				})
+			);
 		}
 	});
 });

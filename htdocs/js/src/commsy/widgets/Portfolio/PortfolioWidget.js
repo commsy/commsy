@@ -7,6 +7,7 @@ define(
  	"dojo/i18n!./nls/Portfolio",
  	"dojo/dom-construct",
  	"dojo/_base/lang",
+ 	"commsy/request",
  	"dijit/registry",
  	"dojo/query",
  	"dojo/dom-class",
@@ -20,7 +21,8 @@ define(
 	Template,
 	PopupTranslations,
 	DomConstruct,
-	Lang,
+	lang,
+	request,
 	Registry,
 	Query,
 	DomClass,
@@ -72,14 +74,14 @@ define(
 			this.itemId = this.from_php.ownRoom.id;
 			
 			// subscribe
-			this.subscribe("updatePortfolios", Lang.hitch(this, function(object)
+			this.subscribe("updatePortfolios", lang.hitch(this, function(object)
 			{
 				this.ignoreTabChanges = true;
 				
 				// TODO: object contains id of portfolio that has been updates, a total refresh is overpowered
 				
 				// refresh portfolios
-				this.loadPortfolios().then(Lang.hitch(this, function()
+				this.loadPortfolios().then(lang.hitch(this, function()
 				{
 					// select edited portfolio, if not deleted
 					this.selectMyPortfolio(object.itemId);
@@ -102,19 +104,19 @@ define(
 			this.inherited(arguments);
 			
 			// parse declarative markup
-			Parser.parse(this.widgetNode).then(Lang.hitch(this, function(instances)
+			Parser.parse(this.widgetNode).then(lang.hitch(this, function(instances)
 			{
 				// get handles
 				this.myPortfolioTabNode = Registry.byId("myPortfolioTabNode");
 				this.activatedPortfolioTabNode = Registry.byId("activatedPortfolioTabNode");
 				
 				// watch changes of child widgets in my portfolio tab
-				this.myPortfolioTabNode.watch("selectedChildWidget", Lang.hitch(this, function(name, oldWidget, newWidget) {
+				this.myPortfolioTabNode.watch("selectedChildWidget", lang.hitch(this, function(name, oldWidget, newWidget) {
 					this.onTabChanged(name, oldWidget, newWidget, true);
 				}));
 				
 				// watch changes of child widgets in activated tab
-				this.activatedPortfolioTabNode.watch("selectedChildWidget", Lang.hitch(this, function(name, oldWidget, newWidget) {
+				this.activatedPortfolioTabNode.watch("selectedChildWidget", lang.hitch(this, function(name, oldWidget, newWidget) {
 					this.onTabChanged(name, oldWidget, newWidget, false);
 				}));
 				
@@ -172,29 +174,36 @@ define(
 		{
 			// reset tabs
 			var children = this.myPortfolioTabNode.getChildren();
-			dojo.forEach(children, Lang.hitch(this, function(child, index, arr) {
+			dojo.forEach(children, lang.hitch(this, function(child, index, arr) {
 				this.myPortfolioTabNode.removeChild(child);
 				child.destroyRecursive();
 			}));
 			
 			children = this.activatedPortfolioTabNode.getChildren();
-			dojo.forEach(children, Lang.hitch(this, function(child, index, arr) {
+			dojo.forEach(children, lang.hitch(this, function(child, index, arr) {
 				this.activatedPortfolioTabNode.removeChild(child);
 				child.destroyRecursive();
 			}));
 			
 			// load portfolios
-			return this.AJAXRequest("portfolio", "getPortfolios", {},
-				Lang.hitch(this, function(response) {
+			return request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'getPortfolios'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					// before adding portfolios, make sure all previous instances are cleaned up
 					var widgetManager = this.getWidgetManager();
 					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioItem");
 					
 					// add portfolios to tabs
-					dojo.forEach(response.myPortfolios, Lang.hitch(this, function(portfolio, index, arr) {
+					dojo.forEach(response.data.myPortfolios, lang.hitch(this, function(portfolio, index, arr) {
 						this.addPortfolio(portfolio, this.myPortfolioTabNode);
 					}));
-					dojo.forEach(response.activatedPortfolios, Lang.hitch(this, function(portfolio, index, arr) {
+					dojo.forEach(response.data.activatedPortfolios, lang.hitch(this, function(portfolio, index, arr) {
 						this.addPortfolio(portfolio, this.activatedPortfolioTabNode);
 					}));
 				})
@@ -218,7 +227,7 @@ define(
 											title: title,
 											titleFull: portfolio.title
 										},
-										true).then(Lang.hitch(this, function(deferred)
+										true).then(lang.hitch(this, function(deferred)
 			{
 				var widget = deferred.instance;
 				
@@ -260,7 +269,7 @@ define(
 		onClickNewPortfolio: function(event)
 		{
 			var widgetManager = this.getWidgetManager();
-			widgetManager.GetInstance("commsy/widgets/Portfolio/PortfolioEditWidget", { portfolioId: null }).then(Lang.hitch(this, function(deferred)
+			widgetManager.GetInstance("commsy/widgets/Portfolio/PortfolioEditWidget", { portfolioId: null }).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
 				
@@ -283,7 +292,7 @@ define(
 		OnOpenPopup: function()
 		{
 			// call parent
-			return this.inherited(arguments).then(Lang.hitch(this, function(response)
+			return this.inherited(arguments).then(lang.hitch(this, function(response)
 			{
 				// set class for widget button
 				var buttonNode = Query("a#tm_portfolio")[0];

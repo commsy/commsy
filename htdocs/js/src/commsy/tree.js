@@ -2,6 +2,7 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/io-query",
         	"commsy/base",
+        	"commsy/request",
         	"dojo/on",
         	"dojo/_base/lang",
         	"cbtree/Tree",
@@ -10,7 +11,7 @@ define([	"dojo/_base/declare",
         	"cbtree/models/ForestStoreModel",
         	"dojo/data/ItemFileWriteStore",
         	"cbtree/CheckBox",
-        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, On, lang, Tree, Query, Topic, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
+        	"cbtree/models/StoreModel-API"], function(declare, domConstruct, ioQuery, BaseClass, request, On, lang, Tree, Query, Topic, ForestStoreModel, ItemFileWriteStore, CheckBox, DndSource) {
 	return declare(BaseClass, {
 		followUrl:			true,
 		autoExpandLevel:	2,
@@ -56,9 +57,19 @@ define([	"dojo/_base/declare",
 			callback = callback || function() {};
 			
 			// get results from ajax call
-			this.AJAXRequest('tagtree', 'getTreeData', { item_id: this.item_id, room_id: this.room_id }, lang.hitch(this, function(results) {
-				
-				results = this.sanitizeResults(results);
+			request.ajax({
+				query: {
+					cid:		this.uri_object.cid,
+					mod:		'ajax',
+					fct:		'tagtree',
+					action:		'getTreeData'
+				},
+				data: {
+					item_id:	this.item_id,
+					room_id:	this.room_id
+				}
+			}).then(lang.hitch(this, function(response) {
+				results = this.sanitizeResults(response.data);
 				
 				this.store = new ItemFileWriteStore({
 					data: {
@@ -197,7 +208,7 @@ define([	"dojo/_base/declare",
 			callbackFunction(rootItem);
 			
 			// get all children
-			var children = this.tree.model.getChildren(rootItem, lang.hitch(this, function(children) {
+			this.tree.model.getChildren(rootItem, lang.hitch(this, function(children) {
 				// recursive call
 				dojo.forEach(children, lang.hitch(this, function(child, index, arr) {
 					this.iterateCallback(child, callbackFunction);

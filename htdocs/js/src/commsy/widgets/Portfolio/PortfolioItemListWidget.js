@@ -6,6 +6,7 @@ define(
 	"dojo/text!./templates/PortfolioItemListWidget.html",
  	"dojo/i18n!./nls/PortfolioItemListWidget",
 	"dojo/_base/lang",
+	"commsy/request",
 	"dojo/dom-construct",
 	"dojo/dom-attr",
 	"dojo/_base/array",
@@ -18,7 +19,8 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
+	request,
 	DomConstruct,
 	DomAttr,
 	Array,
@@ -79,64 +81,70 @@ define(
 			this.inherited(arguments);
 	
 			// request list
-			this.AJAXRequest(	"portfolio",
-								"getPortfolioList",
-								{
-									portfolioId:	this.portfolioId,
-									itemIdArray:	this.ItemIds,
-									row:			this.row,
-									column:			this.column
-								},
-								Lang.hitch(this, function(response)
-			{
-				this.createEntriesList(response.items);
-				this.createAnnotationList(response.annotationItems);
-				
-				// set number of entries
-				DomAttr.set(this.numEntriesNode, "innerHTML", response.items.length);
-				DomAttr.set(this.numAnnotationsNode, "innerHTML", response.annotationItems.length);
-				
-				// register event handling
-				var aDetailNodes = Query("a.openDetailPopup", this.contentNode);
-				dojo.forEach(aDetailNodes, Lang.hitch(this, function(node, index, arr) {
-					require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
-						var handler = new ClickPopup();
-						var customObject = this.getAttrAsObject(node, "data-custom");
-						
-						customObject.fromPortfolio = true;
-						customObject.portfolioId = this.portfolioId;
-						customObject.contextId = this.contextId;
-						
-						handler.init(node, customObject);
-						
-						this.own(On(node, "click", Lang.hitch(this, function(event) {
-							this.Close();
-						})));
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'getPortfolioList'
+				},
+				data: {
+					portfolioId:	this.portfolioId,
+					itemIdArray:	this.ItemIds,
+					row:			this.row,
+					column:			this.column
+				}
+			}).then(
+				lang.hitch(this, function(response) {console.log(response);
+					this.createEntriesList(response.data.items);
+					this.createAnnotationList(response.data.annotationItems);
+					
+					// set number of entries
+					DomAttr.set(this.numEntriesNode, "innerHTML", response.data.items.length);
+					DomAttr.set(this.numAnnotationsNode, "innerHTML", response.data.annotationItems.length);
+					
+					// register event handling
+					var aDetailNodes = Query("a.openDetailPopup", this.contentNode);
+					dojo.forEach(aDetailNodes, lang.hitch(this, function(node, index, arr) {
+						require(["commsy/popups/ClickDetailPopup"], lang.hitch(this, function(ClickPopup) {
+							var handler = new ClickPopup();
+							var customObject = this.getAttrAsObject(node, "data-custom");
+							
+							customObject.fromPortfolio = true;
+							customObject.portfolioId = this.portfolioId;
+							customObject.contextId = this.contextId;
+							
+							handler.init(node, customObject);
+							
+							this.own(On(node, "click", lang.hitch(this, function(event) {
+								this.Close();
+							})));
+						}));
 					}));
-				}));
-				
-				var aDetailNodes = Query("a.openDetailPopupAnnotation", this.contentNode);
-				dojo.forEach(aDetailNodes, Lang.hitch(this, function(node, index, arr) {
-					require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
-						var handler = new ClickPopup();
-						var customObject = this.getAttrAsObject(node, "data-custom");
-						
-						customObject.portfolioRow = this.row;
-						customObject.portfolioColumn = this.column;
-						customObject.fromPortfolio = true;
-						customObject.portfolioId = this.portfolioId;
-						customObject.contextId = this.contextId;
-						
-						handler.init(node, customObject);
-						
-						this.own(On(node, "click", Lang.hitch(this, function(event) {
-							this.Close();
-						})));
-						
-						//this.annotationDetailHandler.push({ annotationId: customObject.iid, handler: handler });
+					
+					var aDetailNodes = Query("a.openDetailPopupAnnotation", this.contentNode);
+					dojo.forEach(aDetailNodes, lang.hitch(this, function(node, index, arr) {
+						require(["commsy/popups/ClickDetailPopup"], lang.hitch(this, function(ClickPopup) {
+							var handler = new ClickPopup();
+							var customObject = this.getAttrAsObject(node, "data-custom");
+							
+							customObject.portfolioRow = this.row;
+							customObject.portfolioColumn = this.column;
+							customObject.fromPortfolio = true;
+							customObject.portfolioId = this.portfolioId;
+							customObject.contextId = this.contextId;
+							
+							handler.init(node, customObject);
+							
+							this.own(On(node, "click", lang.hitch(this, function(event) {
+								this.Close();
+							})));
+							
+							//this.annotationDetailHandler.push({ annotationId: customObject.iid, handler: handler });
+						}));
 					}));
-				}));
-			}));
+				})
+			);
 		},
 		
 		/************************************************************************************
@@ -148,7 +156,7 @@ define(
 		 ************************************************************************************/
 		createEntriesList: function(items)
 		{
-			dojo.forEach(items, Lang.hitch(this, function(item, index)
+			dojo.forEach(items, lang.hitch(this, function(item, index)
 			{
 				var divItemNode = DomConstruct.create("div",
 				{
@@ -189,7 +197,7 @@ define(
 		
 		createAnnotationList: function(items)
 		{
-			dojo.forEach(items, Lang.hitch(this, function(item, index)
+			dojo.forEach(items, lang.hitch(this, function(item, index)
 			{
 				var divItemNode = DomConstruct.create("div",
 				{
@@ -233,7 +241,7 @@ define(
 		 ************************************************************************************/
 		onClickCreateAnnotation: function(event)
 		{
-			require(["commsy/popups/ClickAnnotationPopup"], Lang.hitch(this, function(ClickPopup) {
+			require(["commsy/popups/ClickAnnotationPopup"], lang.hitch(this, function(ClickPopup) {
 				var handler = new ClickPopup();
 				
 				var data =

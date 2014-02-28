@@ -7,6 +7,7 @@ define(
 	"dojo/text!./templates/MyWidgetsRssWidget.html",
 	"dojo/i18n!./nls/MyWidgetsRssWidget",
 	"dojo/_base/lang",
+	"commsy/request",
 	"dojo/dom-construct",
 	"dojo/on",
 	"dojo/dom-class",
@@ -20,7 +21,8 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
+	request,
 	DomConstruct,
 	On,
 	DomClass,
@@ -59,14 +61,14 @@ define(
 			 ************************************************************************************/
 			this.set("title", PopupTranslations.title);
 			
-			Topic.subscribe("refreshRssList", Lang.hitch(this, function(object)
+			Topic.subscribe("refreshRssList", lang.hitch(this, function(object)
 			{
 				this.updateList();
 			}));
 			
 			this.updateList();
 			
-			require(["commsy/popups/ClickRssPopup"], Lang.hitch(this, function(ClickPopup)
+			require(["commsy/popups/ClickRssPopup"], lang.hitch(this, function(ClickPopup)
 			{
 				var handler = new ClickPopup();
 				handler.init(this.rssEditNode, { module: "rss", contextId: this.itemId });
@@ -95,20 +97,35 @@ define(
 		 ************************************************************************************/
 		updateList: function()
 		{
-			this.AJAXRequest("widget_rss_ticker", "getRssFeeds", { },
-				Lang.hitch(this, function(response)
-				{	
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'widget_rss_ticker',
+					action:	'getRssFeeds'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
 					DomConstruct.empty(this.rssContentNode);
 					
-					dojo.forEach(response.feeds, Lang.hitch(this, function(feed, index, arr)
+					dojo.forEach(response.data.feeds, lang.hitch(this, function(feed, index, arr)
 					{
 						if (feed.display == "1") {
-							
-							this.AJAXRequest("widget_rss_ticker", "getFeed", { address: feed.adress },
-								Lang.hitch(this, function(feeds) {
+							request.ajax({
+								query: {
+									cid:	this.uri_object.cid,
+									mod:	'ajax',
+									fct:	'widget_rss_ticker',
+									action:	'getFeed'
+								},
+								data: {
+									address: feed.adress
+								}
+							}).then(
+								lang.hitch(this, function(response) {
 									var content = "";
 									
-									dojo.forEach(feeds, Lang.hitch(this, function(feed, index, arr)
+									dojo.forEach(response.data, lang.hitch(this, function(feed, index, arr)
 									{
 										if (feed.title && feed.link) {
 											content += "<a href='" + feed.link + "'>" + feed.title + "</a><br/>";
@@ -129,7 +146,8 @@ define(
 							);
 						}						
 					}));
-				}));
+				})
+			);
 		}
 		/************************************************************************************
 		 * Event Handling

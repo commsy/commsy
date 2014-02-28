@@ -4,6 +4,7 @@ define(
  	"dijit/_WidgetBase",
  	"commsy/base",
  	"dojo/_base/lang",
+ 	"commsy/request",
  	"dojo/query",
  	"dojo/dom-style",
  	"dojo/_base/Deferred"
@@ -12,7 +13,8 @@ define(
 	declare,
 	WidgetBase,
 	CommSyBase,
-	Lang,
+	lang,
+	request,
 	Query,
 	DomStyle,
 	Deferred
@@ -89,15 +91,18 @@ define(
 			var loadingDeferred = new Deferred();
 			
 			// load popup if not already done and init data is given
-			if ( !this.loaded && this.initData )
-			{
+			if ( !this.loaded && this.initData ) {
 				// send ajax request to initiate popup
-				this.AJAXRequest(
-					this.initData.module,
-					this.initData.action,
-					this.initData.data,
-					Lang.hitch(this, function(reponse)
-					{
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	this.initData.module,
+						action:	this.initData.action
+					},
+					data: this.initData.data
+				}).then(
+					lang.hitch(this, function(response) {
 						/*
 						 * TooglePopupHandler
 						 * 
@@ -157,9 +162,7 @@ define(
 						loadingDeferred.resolve();
 					})
 				);
-			}
-			else
-			{
+			} else {
 				this._set("loaded", true);
 				loadingDeferred.resolve();
 			}
@@ -214,7 +217,7 @@ define(
 		{
 			var openDeferred = new Deferred();
 			
-			this._LoadPopup().then(Lang.hitch(this, function(response)
+			this._LoadPopup().then(lang.hitch(this, function(response)
 			{
 				// check if there are other switchable popups open
 				if ( this.statics.switchableIsOpen && this.canOverlay === false )

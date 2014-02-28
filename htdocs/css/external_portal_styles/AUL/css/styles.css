@@ -568,76 +568,87 @@ follow, columnset and content
 ----------------------------------------------------------------------
 footer
 ----------------------------------------------------------------------
-*/
+*/       
 
 #footer_links {
     border-bottom: 1px solid #C9C9C9;
     padding-bottom: 10px;
     margin-bottom: 30px;
     }
-
+    
 #footer_links a {
     color: #323232;
     text-decoration: none;
     }
-
+  
 #footer_links a:hover {
     color: #F07E01;
     text-decoration: underline;
-    }
+    }    
 
 #footer_logos a {
     text-decoration: none;
     display: block;
     float: left;
     }
-
+    
 #logo_eu {
     width: 158px;
     height: 97px;
     margin-right: 122px;
     background: url(img/logo_eu.gif) no-repeat;
-    }
+    }    
 
 #logo_eu:hover {
     background: url(img/logo_eu.gif) -158px top no-repeat;
-    }
+    }    
 
+#logo_eu_neu {
+    width: 254px;
+    height: 46px;
+    margin-right: 105px;
+    margin-top: 20px;
+    background: url(img/logo_eu_neu.gif) no-repeat;
+    }   
+
+#logo_eu_neu:hover {
+    background: url(img/logo_eu_neu.gif) -254px top no-repeat;
+    } 
+    
 #logo_aul {
     width: 115px;
     height: 54px;
-    margin-right: 160px;
+    margin-top: 12px;
+    margin-right: 124px;
+    /* margin-right: 160px; */
     background: url(img/logo_aul.gif) no-repeat;
-    }
+    }    
 
 #logo_aul:hover {
     background: url(img/logo_aul.gif) -115px top no-repeat;
-    }
-
+    }  
+    
 #logo_hib {
     width: 101px;
     height: 91px;
-    margin-right: 170px;
+    margin-right: 124px;
+    /* margin-right: 170px; */
     background: url(img/logo_hib.gif) no-repeat;
-    }
+    }    
 
 #logo_hib:hover {
     background: url(img/logo_hib.gif) -101px top no-repeat;
-    }
-
+    }  
+    
 #logo_hh {
     width: 114px;
     height: 74px;
     background: url(img/logo_hh.gif) no-repeat;
-    }
+    }    
 
 #logo_hh:hover {
     background: url(img/logo_hh.gif) -114px top no-repeat;
-    }
-
-
-
-
+    }        
 
 
 

@@ -2767,8 +2767,12 @@ class cs_context_item extends cs_item {
   }
 
   function withWordpressFunctions () {
-    global $c_wordpress;
-    if ( !isset($c_wordpress) or !$c_wordpress ) {
+    #global $c_wordpress;
+    $portal_item = $this->_environment->getCurrentPortalItem();
+    if(!empty($portal_item)) {
+    	$wordpress = $portal_item->getWordpressPortalActive();
+    }
+    if ( !isset($wordpress) or !$wordpress ) {
       return false;
     }
     $retour = false;

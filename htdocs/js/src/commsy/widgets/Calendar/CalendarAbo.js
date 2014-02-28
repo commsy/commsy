@@ -7,6 +7,7 @@ define(
 	"dojo/text!./templates/CalendarAbo.html",
 	"dojo/i18n!./nls/calendarAbo",
 	"dojo/_base/lang",
+	"commsy/request",
 	"dojo/dom-attr"
 ], function
 (
@@ -16,7 +17,8 @@ define(
 	TemplatedMixin,
 	Template,
 	PopupTranslations,
-	Lang,
+	lang,
+	request,
 	DomAttr
 ) {
 	return declare([BaseClass, WidgetBase, TemplatedMixin],
@@ -54,16 +56,17 @@ define(
 			 ************************************************************************************/
 			this.set("title", this.popupTranslations.title);
 			
-			this.AJAXRequest("myCalendar", "getIcalAdress", {},
-				Lang.hitch(this, function(response)
-				{
-					DomAttr.set(this.dateAboNode, "href", "webcal://" + response.date);
-					DomAttr.set(this.dateExportNode, "href", "http://" + response.date);
-					
-					/*
-					DomAttr.set(Query("a#todoAbo")[0], "href", "webcal://" + response.todo);
-					DomAttr.set(Query("a#todoExport")[0], "href", "http://" + response.todo);
-					*/
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'myCalendar',
+					action:	'getIcalAdress'
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					DomAttr.set(this.dateAboNode, "href", "webcal://" + response.data.date);
+					DomAttr.set(this.dateExportNode, "href", "http://" + response.data.date);
 				})
 			);
 		},

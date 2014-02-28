@@ -55,7 +55,7 @@ define([	"dojo/_base/declare",
 						]).then(Lang.hitch(this, function(deferred) {
 							var stackPortfolioMini = deferred[0].instance;
 							
-							stackPortfolioMini.placeAt(Query("div.widgetAreaRight", this.contentNode)[0]);
+							stackPortfolioMini.placeAt(Query("div.widgetAreaRight div.CommSyWidget", this.contentNode)[0], "after");
 						}));
 					}
 				})

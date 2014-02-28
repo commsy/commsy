@@ -20,7 +20,6 @@ define([	"dojo/_base/declare",
 		},
 		
 		setup: function(node) {
-			var nodeList = new dojo.NodeList(node);
 			var contentNode = Query("div.tooltip:first", node.parentNode.parentNode)[0];
 			
 			if(contentNode) {
