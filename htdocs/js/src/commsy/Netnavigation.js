@@ -241,7 +241,7 @@ define([	"dojo/_base/declare",
 					});
 					
 					// update selected
-					this.store.selected = ret.num_selected_total;
+					this.store.selected = response.num_selected_total;
 					//DomAttr.set(Query("span#pop_item_entries_selected")[0], "innerHTML", this.store.selected);
 					
 					// register checkbox events - unregistering is done when destroying
@@ -281,7 +281,7 @@ define([	"dojo/_base/declare",
 									dojo.anim(rowNode, {
 										"backgroundColor":		oldBgColor
 									});
-									
+
 									if(checked === true) {
 										// on check
 										this.store.selected++;
@@ -299,19 +299,19 @@ define([	"dojo/_base/declare",
 											
 												var linkNode = DomConstruct.create("a", {
 													target:		"_self",
-													href:		"commsy.php?cid=" + this.cid + "&mod=" + ret.linked_item.module + "&fct=detail&iid=" + ret.linked_item.linked_iid,
-													title:		ret.linked_item.title
+													href:		"commsy.php?cid=" + this.cid + "&mod=" + response.data.linked_item.module + "&fct=detail&iid=" + response.data.linked_item.linked_iid,
+													title:		response.data.linked_item.title
 												}, divNode, "last");
 												
 													DomConstruct.create("img", {
-														src:		this.tpl_path + "img/netnavigation/" + ret.linked_item.img,
-														title:		ret.linked_item.title
+														src:		this.tpl_path + "img/netnavigation/" + response.data.linked_item.img,
+														title:		response.data.linked_item.title
 													}, linkNode, "last");
 												
 												DomConstruct.create("a", {
 													target:		"_self",
-													href:		"commsy.php?cid=" + this.cid + "&mod=" + ret.linked_item.module + "&fct=detail&iid=" + ret.linked_item.linked_iid,
-													title:		ret.linked_item.title,
+													href:		"commsy.php?cid=" + this.cid + "&mod=" + response.data.linked_item.module + "&fct=detail&iid=" + response.data.linked_item.linked_iid,
+													title:		response.data.linked_item.title,
 													innerHTML:	" " + text
 												}, divNode, "last");
 										
@@ -323,12 +323,12 @@ define([	"dojo/_base/declare",
 											
 												DomConstruct.create("input", {
 													type:		"checkbox",
-													id:			"path_" + ret.linked_item.linked_iid,
+													id:			"path_" + response.data.linked_item.linked_iid,
 													checked:	false
 												}, pathListEntryNode, "last");
 												
 												DomConstruct.create("img", {
-													src:		this.tpl_path + "img/netnavigation/" + ret.linked_item.img
+													src:		this.tpl_path + "img/netnavigation/" + response.data.linked_item.img
 												}, pathListEntryNode, "last");
 												
 												DomConstruct.create("span", {
@@ -361,11 +361,11 @@ define([	"dojo/_base/declare",
 					}));
 					
 					// update current page and total number of pages
-					DomAttr.set(Query("#pop_item_current_page")[0], "innerHTML", (ret.list.length === 0) ? 0 : this.paging.current + 1);
-					DomAttr.set(Query("#pop_item_pages")[0], "innerHTML", ret.paging.pages);
+					DomAttr.set(Query("#pop_item_current_page")[0], "innerHTML", (response.data.list.length === 0) ? 0 : this.paging.current + 1);
+					DomAttr.set(Query("#pop_item_pages")[0], "innerHTML", response.paging.pages);
 					
 					// store pages
-					this.store.pages = ret.paging.pages;
+					this.store.pages = response.paging.pages;
 				})
 			);
 		},
