@@ -227,7 +227,7 @@ define([	"dojo/_base/declare",
 			// setup data to send via ajax
 			var search = {};
 			if(part === "user" || part === "newsletter" || part === "cs_bar" || part === "addon_configuration" ) {
-				earch = {
+				search = {
 					tabs: [
 					    { id: part }
 					],
