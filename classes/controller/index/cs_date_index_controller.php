@@ -676,8 +676,16 @@
 									$startingCellSpaceLeft = self::CELLDEFAULTHEIGHT - self::DATEDEFAULTHEIGHT - $topMargin;
 									$startingCellSpaceLeftInHours = $startingCellSpaceLeft / self::CELLDEFAULTHEIGHT;
 
+                           $compare_month = $month;
+                           if ($month < 10) {
+                              $compare_month = '0'.$month;
+                           }
+                           $compare_day = $day;
+                           if ($day < 10) {
+                              $compare_day = '0'.$day;
+                           }
 									// the complete date duration
-									if ($endDay == $day AND $endingDay == $year.'-'.$month.'-'.$day) {
+									if ($endDay == $day AND $endingDay == $year.'-'.$compare_month.'-'.$compare_day) {
 										// date will end today
 										$durationInHours = ($endTime - $startTime) / 3600;		// this is floating point
 									} else {
@@ -774,7 +782,7 @@
 							// set display information
 							$date_tooltip_array[$date->getItemID()] = $this->getTooltipDate($date);
 							$dateReturn["title"] = $date->getTitle();
-		      				$dateReturn["date"]  = $date_tooltip_array[$date->getItemID()];
+                     $dateReturn["date"]  = $date_tooltip_array[$date->getItemID()];
 							$dateReturn["display_title"] = $date->getTitle();
 							$dateReturn["place"] = $date->getPlace();
 							$dateReturn["participants"] = $participants;
