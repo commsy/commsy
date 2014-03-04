@@ -2348,7 +2348,7 @@ function getExportToWikiLink($current_item_id){
    }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
       $wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id;
    }
-   return '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=' . $wiki_file . '">' . $wiki_file . '</a>';
+   return '<a target="_blank" href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=' . $wiki_file . '&commsy_session_id='.$this->_environment->getSessionID().'">' . $wiki_file . '</a>';
 }
 
 //------------- Materialexport -------------
