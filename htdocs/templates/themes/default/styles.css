@@ -2718,30 +2718,41 @@ special description text
 -----------------------------------
 */
 div.detail_description h1 {
-	padding: 8px;
+	padding: 0px;
+	font-size: 2em; 
+    margin: .67em 0;
 }
 
 div.detail_description h2 {
-	padding: 8px;
+	padding: 0px;
 	background: none;
+	font-size: 1.5em; 
+    margin: .75em 0;
 }
 
 div.detail_description h3 {
-	padding: 8px;
+	padding: 0px !important;
 	float: none;
 	font-weight: bold;
+	font-size: 1.17em; 
+    margin: .83em 0;
 }
 
 div.detail_description h4 {
-	padding: 8px;
+	padding: 0px;
+	margin: 1.12em 0;
 }
 
 div.detail_description h5 {
-	padding: 8px;
+	padding: 0px;
+	font-size: .83em; 
+    margin: 1.5em 0;
 }
 
 div.detail_description h6 {
-	padding: 8px;
+	padding: 0px;
+	font-size: .75em; 
+    margin: 1.67em 0;
 }
 
 div.editor_content h1 {
