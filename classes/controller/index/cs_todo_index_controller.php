@@ -134,6 +134,9 @@
 				if ( !empty($this->_list_parameter_arrray['sort']) ) {
 	   				$todo_manager->setSortOrder($this->_list_parameter_arrray['sort']);
 				}
+				if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
+					$todo_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);
+				}
 				if ( !empty($this->_list_parameter_arrray['search']) ) {
 	   				$todo_manager->setSearchLimit($this->_list_parameter_arrray['search']);
 				}
