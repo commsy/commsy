@@ -1,0 +1,13 @@
+/* Copyright Scientec Internet Applications + Media GmbH - www.scientec.de */
+
+span.hide{font-weight:bold}
+span.hh{display:none}
+li.ende {display:none}
+
+.box-rechts-grau{float:right;width:200px;border:1px solid #ccc;margin:0 0 10px 10px;font-size:13px;clear:right}
+.box-rechts-grau .box-titel{margin:0;padding:3px 2px;font-size:14px;background-color:#ccc;color:#333;text-align:center;font-weight:bold}
+.box-rechts-grau .box-inhalt {padding:7px 5px;font-size:13px}
+.box-rechts-grau .box-inhalt p{margin:0 0 5px 0}
+.box-rechts-grau .box-inhalt ul{margin:0 0 5px 20px; padding:0}
+.box-rechts-grau .box-inhalt ol{margin:0 0 5px 20px; padding:0}
+
