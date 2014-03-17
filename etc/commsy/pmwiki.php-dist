@@ -35,4 +35,7 @@ $c_pmwiki = true;
 
 // enable use of the wiki-SOAP-connection
 $c_use_soap_for_wiki = true;
+
+// if proxy is enabled, do not use it via soap for pmwiki
+// $c_pmwiki_use_soap_without_proxy = true;
 ?>
