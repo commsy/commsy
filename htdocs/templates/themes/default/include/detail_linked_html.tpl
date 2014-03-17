@@ -36,6 +36,9 @@
 							{foreachelse}
 								___COMMON_NONE___
 							{/foreach}
+							<div class="subtree">
+								<img src="{$basic.tpl_path}img/ajax_loader.gif" />
+							</div>
 					</div>
 				{/if}
 

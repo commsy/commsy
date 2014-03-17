@@ -595,19 +595,20 @@
 		 * this method goes through the tree structure and generates a nested array of information
 		 * @param cs_tag_item $item
 		 */
-		private function buildTagArray(cs_tag_item $item) {
+		private function buildTagArray(cs_tag_item $item, $level = 0) {
 			$return = array();
 
 			if(isset($item)) {
 				$children_list = $item->getChildrenList();
-
+				$level++;
 				$item = $children_list->getFirst();
 				while($item) {
 					// attach to return
 					$return[] = array(
 						'title'		=> $item->getTitle(),
 						'item_id'	=> $item->getItemID(),
-						'children'	=> $this->buildTagArray($item)
+						'level'		=> $level,
+						'children'	=> $this->buildTagArray($item, $level)
 					);
 
 					$item = $children_list->getNext();
@@ -616,6 +617,33 @@
 
 			return $return;
 		}
+
+		
+		public function getSubtree(&$tag, $itemTagIdArray)
+		{
+			if (empty($tag['children'])) {
+				// no children
+				return in_array($tag['item_id'], $itemTagIdArray);
+			} else {
+				// iterate through all children
+				foreach($tag['children'] as $key => &$childTag) {
+					$matched = $this->getSubtree($childTag, $itemTagIdArray);
+					
+					if (!$matched) {
+						// unset child
+						#unset($tag['children'][$key]);
+						array_splice($tag['children'], $key, 1);
+					}
+				}
+				
+				if (empty($tag['children'])) {
+					return in_array($tag['item_id'], $itemTagIdArray);
+				}
+				
+				return true;
+			}
+		}
+		
 
 		public function markTags(&$tag_array, $item_tag_id_array) {
 			// compare and mark as highlighted

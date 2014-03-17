@@ -291,7 +291,7 @@ class cs_dates_manager extends cs_manager {
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS related_user_limit2 ON ( related_user_limit2.deletion_date IS NULL AND ((related_user_limit2.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND related_user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
      }
      if ( isset($this->_tag_limit) ) {
-        $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
+        $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
         $query .= ' LEFT JOIN '.$this->addDatabasePrefix('link_items').' AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->addDatabasePrefix('dates').'.item_id AND l42.first_item_type="'.CS_TAG_TYPE.'"))) ';
      }
@@ -406,7 +406,7 @@ class cs_dates_manager extends cs_manager {
       }
 
       if ( isset($this->_tag_limit) ) {
-         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
+         $tag_id_array = $this->_getTagIDArrayByTagIDArray($this->_tag_limit);
          $id_string = implode(', ',$tag_id_array);
          if( isset($tag_id_array[0]) and $tag_id_array[0] == -1 ){
             $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';
