@@ -89,7 +89,7 @@ define([	"dojo/_base/declare",
 					this.model = this.createModel();
 					
 					// create tree
-					this.tree = this.createTree();
+					this.tree = this.createSubTree();
 					
 					domConstruct.empty(node);
 					this.tree.placeAt(node);
@@ -195,6 +195,50 @@ define([	"dojo/_base/declare",
 				store:			this.store,
 				checkedAttr:	"match",
 				checkedStrict:	false
+			});
+		},
+		
+		createSubTree: function() {
+			return new Tree({
+				//autoExpand:			this.expanded,		// do not use the tree's routine for this, causing very long loading times in IE8
+				model:				this.model,
+				showRoot:			false,
+				persist:			false,
+				checkBoxes:			this.checkboxes,
+				branchIcons:		false,
+				nodeIcons:			false,
+				onClick:			lang.hitch(this, function(item, node, evt) {
+					// follow item url
+					if(this.followUrl) {
+						if (this.uri_object.mod == "home") {
+							this.replaceOrSetURIParam('mod', "search");
+						}
+						// multiselection - append tags
+						// if already selected, disselect
+						//location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+						this.replaceOrSetURIParam('fct', "index");
+						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+					} else {
+						// if click doesn't come from checkbox
+						if(evt.target.nodeName !== "INPUT") {
+							if(this.model.getChecked(item) === true) {
+								this.model.setChecked(item, false);
+							} else {
+								this.model.setChecked(item, true);
+							}
+						}
+					}
+				}),
+				widget: {
+					type:			CheckBox,
+					args: {
+						multiState:		true
+					},
+					mixin:		function(args) {
+						args["value"]	= this.item.item_id[0];
+						args["name"]	= "form_data[tags]";
+					}
+				}
 			});
 		},
 		
