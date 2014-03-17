@@ -63,6 +63,16 @@
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
 			$converter = $this->_environment->getTextConverter();
+			$params = $this->_environment->getCurrentParameterArray();
+
+			// get selected seltags
+			$seltag_array = array();
+			foreach($params as $key => $value) {
+				if(substr($key, 0, 6) == 'seltag'){
+					// set seltag array
+					$seltag_array[$key] = $value;
+				}
+			}
 
 			// Get data from database
 			$material_manager = $environment->getMaterialManager();
@@ -113,6 +123,9 @@
 			}
 			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
    				$material_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
+			}
+			if (!empty($seltag_array)) {
+				$material_manager->setTagArrayLimit($seltag_array);
 			}
 			if ( !empty($only_show_array) ) {
    				$material_manager->resetLimits();
