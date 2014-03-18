@@ -277,6 +277,12 @@
 	            }else{
 	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
 	            }
+	            $creator = $item->getCreatorItem();
+	            if(empty($creator)){
+	            	$creator_id = '';
+	            } else {
+	            	$creator_id = $item->getCreatorItem()->getItemID();
+	            }
 
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
@@ -290,7 +296,7 @@
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos,
 					'activated_text'	=> $activated_text,
-					'creator_id'		=> $item->getCreatorItem()->getItemID(),
+					'creator_id'		=> $creator_id,
 					'activated'			=> !$item->isNotActivated()
 				);
 
