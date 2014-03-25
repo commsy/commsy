@@ -17,7 +17,19 @@
 	<span>(___COMMON_ENTRIES___: {$list.page_text_fragments.count_entries})</span>
 {/block}
 
+{block name=header_content_print}
+	<div><h2>{$environment.room_title}</h2></div>
+	<br>
+	<div> <h4>___COMMON_RESTRICTIONS___</h4></div>
+	{foreach $list.restriction_text_parameters as $params}
+		{$params.name},
+	{/foreach}
+	<br>
+	<br>
+{/block}
+
 {block name=room_main_content}
+	<div id="main_navigation_print"><h1>{block name=room_navigation_rubric_title}{/block}</h1></div>
 	<div id="full_width_content">
 		<form action="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.list_entries_parameter.all}" method="post">
 			<input type="hidden" name="option" value="___COMMON_LIST_ACTION_BUTTON_GO___">
