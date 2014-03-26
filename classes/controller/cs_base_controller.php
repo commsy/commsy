@@ -78,7 +78,7 @@
 					$this->_tpl_engine->setPostToken(true);
 				}
 				// print - download pdf
-				if($this->_environment->getOutputMode() == 'print' && $_GET['debug'] == '1'){
+				if($this->_environment->getOutputMode() == 'print'){
 					require_once('classes/cs_mpdf.php');
 					$mpdf = new cs_mpdf();
 					// convert html code into pdf file
