@@ -5,7 +5,7 @@
 	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border" style="background-color:#DADADA;border: 1px solid #676767;">
 		<thead>
 			<tr>
-				<td class="table_head_2"></td>
+				{*<td class="table_head_2"></td>*}
 				<td class="table_head_2">
             		{if $list.sorting_parameters.sort_title == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
@@ -60,7 +60,7 @@
 		<tbody>
 			{foreach $material.list_content.items as $item }
     			<tr>
-    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+    				{*<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
     					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
     						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
     					{elseif $item.noticed.status == "new"}
@@ -74,7 +74,7 @@
     					{elseif $item.noticed.annotation_info.count_changed}
     						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
     					{/if}
-    				</td>
+    				</td>*}
     				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
             				<div class="print_title" style="border:1px solid #676767;">
                 				<p>

@@ -5,8 +5,8 @@
 	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
 		<thead>
 			<tr>
-				<td class="table_head">
-				</td>
+				{*<td class="table_head">
+				</td>*}
 				<td class="table_head">
 					{if $list.sorting_parameters.sort_title == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
@@ -47,11 +47,11 @@
 		<tbody>
 			{foreach $discussion.list_content.items as $item }
     			<tr>
-    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+    				{*<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
     					{if $item.noticed.show_info}
     						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" />
     					{/if}
-    				</td>
+    				</td>*}
         			<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
         				<div class="print_title">
             				<p>

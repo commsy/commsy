@@ -4,7 +4,7 @@
 	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border" style="background-color:#DADADA;border: 1px solid #676767;">
 		<thead>
 			<tr>
-				<td class="table_head_2"></td>
+				{*<td class="table_head_2"></td>*}
 				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_name == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_name_link}" id="sort_up"><strong>___USER_NAME___</strong></a></h3>
@@ -31,7 +31,7 @@
         <tbody>
         	{foreach $user.list_content.items as $item }
             	<tr>
-    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+    				{*<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
     					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
         					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
         				{elseif $item.noticed.status == "new"}
@@ -39,7 +39,7 @@
         				{elseif $item.noticed.status == "modified"}
         					<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2.gif" alt="*" /></a>
         				{/if}
-    				</td>
+    				</td>*}
     				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
     					<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
     				</td>
