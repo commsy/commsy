@@ -2,11 +2,11 @@
 
 {block name=room_list_content}
 	
-	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
+	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border" style="background-color:#DADADA;border: 1px solid #676767;">
 		<thead>
 			<tr>
-				<td class="table_head"></td>
-				<td class="table_head">
+				<td class="table_head_2"></td>
+				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_title == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_title == "down"}
@@ -15,7 +15,7 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
             		{/if}
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_status == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_status_link}" id="sort_up"><strong>___TODO_STATUS___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_status == "down"}
@@ -24,7 +24,7 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_status_link}" class="sort_none">___TODO_STATUS___</a></h3>
             		{/if}
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_date == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_date_link}" id="sort_up"><strong>___TODO_DATE___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_date == "down"}
@@ -33,14 +33,14 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_date_link}" class="sort_none">___TODO_DATE___</a></h3>
             		{/if}
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
 					<h3 class="w_65">___COMMON_TIME___</h3>
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
 					<h3 class="w_65">___TODO_PROCESSORS___</h3>
 				</td>
 				{if $room.assessment}
-					<td class="table_head">
+					<td class="table_head_2">
             			{if $list.sorting_parameters.sort_assessment == "up"}
             				<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
             			{elseif $list.sorting_parameters.sort_assessment == "down"}
@@ -67,9 +67,9 @@
             				</p>
             			</div>
             			<div class="print_files_icon">
-            				<p>
+            				{*<p>
             					<a href="" class="attachment{if $item.attachment_count == 0}_none_overlay{/if}">{$item.attachment_count}</a>
-            				</p>
+            				</p>*}
             			</div>
 					</td>
 					<td class="{if $item@iteration is odd}row_odd{else}row_even{/if} print_border">

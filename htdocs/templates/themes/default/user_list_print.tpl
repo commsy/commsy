@@ -1,11 +1,11 @@
 {extends file="room_list_print.tpl"}
 
 {block name=room_list_content}
-	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
+	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border" style="background-color:#DADADA;border: 1px solid #676767;">
 		<thead>
 			<tr>
-				<td class="table_head"></td>
-				<td class="table_head">
+				<td class="table_head_2"></td>
+				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_name == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_name_link}" id="sort_up"><strong>___USER_NAME___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_name == "down"}
@@ -14,10 +14,10 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_name_link}" class="sort_none">___USER_NAME___</a></h3>
             		{/if}
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
 					<h3>___USER_TELEPHONE___</h3>
             	</td>
-            	<td class="table_head">
+            	<td class="table_head_2">
             		{if $list.sorting_parameters.sort_email == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_email_link}" id="sort_up"><strong>___USER_EMAIL___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_email == "down"}

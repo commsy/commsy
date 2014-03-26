@@ -2,11 +2,11 @@
 
 {block name=room_list_content}
 	
-	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
+	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border" style="background-color:#DADADA;border: 1px solid #676767;">
 		<thead>
 			<tr>
-				<td class="table_head"></td>
-				<td class="table_head">
+				<td class="table_head_2"></td>
+				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_title == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_title == "down"}
@@ -15,7 +15,7 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
             		{/if}
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
 					{if $list.sorting_parameters.sort_time == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" id="sort_up"><strong>___DATES_TIME___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_time == "down"}
@@ -24,7 +24,7 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_time_link}" class="sort_none">___DATES_TIME___</a></h3>
             		{/if}
 				</td>
-				<td class="table_head">
+				<td class="table_head_2">
     				{if $list.sorting_parameters.sort_place== "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_place_link}" id="sort_up"><strong>___DATES_PLACE___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_place == "down"}

@@ -1,5 +1,5 @@
 <div class="fade_in_ground_annotations_print">
-	<div class="item_body_print"> <!-- Start item body -->
+	<div class="item_body_print" style="border:1px solid #DBDBDB;"> <!-- Start item body -->
 		<h2>
 			___COMMON_ANNOTATIONS___
 			{if $detail.annotations|@count == 1}
@@ -17,13 +17,13 @@
 
 	{foreach $detail.annotations as $annotation}
 
-		<div class="item_body_print"> <!-- Start item body -->
+		<div class="item_body_print" style="border:1px solid #DBDBDB;"> <!-- Start item body -->
 			<!-- Start fade_in_ground -->
 			<!-- Ende fade_in_ground -->
 
 			<a name="annotation{$annotation.item_id}"></a>
 			<a name="annotation_{$annotation@index}"></a>
-			<div class="item_post">
+			<div class="item_post" style="background-color:#FFFFFF">
 				<div class="row_{if $annotation@iteration is odd}odd{else}even{/if}_no_hover">
 
 					<div class="column_80">
@@ -37,7 +37,7 @@
 					</div>
 
 					<div>
-						<div class="post_content">
+						<div class="post_content" style="background-color:#FFFFFF">
 							<h4>
 								{$annotation.pos_number}. {$annotation.title}
 								{if $article.noticed != ''}<img src="{$basic.tpl_path}img/flag_neu.gif" alt="___COMMON_NEW___"/>{/if}

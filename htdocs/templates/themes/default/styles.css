@@ -3175,6 +3175,11 @@ fade-in
 	border-bottom: 1px solid #F9F9F9;
     border-top: 1px solid #D7D7D9;
     }
+.fade_in_ground_workflow_print {
+	background-color: #D7D7D9;
+	border-bottom: 1px solid #F9F9F9;
+    border-top: 1px solid #D7D7D9;
+    }
 
 .fade_in_ground_actions {
     background: url(img/fade_in_bg.jpg) repeat-x #D7D7D9;
