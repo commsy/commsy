@@ -91,6 +91,8 @@ require([	"dojo/_base/declare",
 							
 							var key;
 							var a = uri_object;
+							
+							var path_array = [];
 							// 
 							for (key in a) {
 								// if key fits to seltag_
@@ -100,10 +102,13 @@ require([	"dojo/_base/declare",
 										var item_id;
 										item_id = /^seltag_([1-9]\d*)$/.exec(key);
 										var path = handler.buildPath(item_id[1]);
-										handler.tree.set("paths", [path]);
+										path_array.push(path);
+										
 									}
 								}
 							}
+							
+							handler.tree.set("paths", path_array);
 						}, true);
 					});
 				});
