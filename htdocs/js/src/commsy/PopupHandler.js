@@ -34,13 +34,16 @@ define([	"dojo/_base/declare",
 			}));
 			//exec jsMath inside a popup
 			var nodes = dojo.query('div[class^="has_math_"]');
-			if(jsMath){
-				if(nodes){
-					dojo.forEach(nodes, function(nodes) {
-						jsMath.ProcessBeforeShowing(nodes.className);
-					});
+			if(typeof(jsMath) != 'undefined'){
+				if(jsMath){
+					if(nodes){
+						dojo.forEach(nodes, function(nodes) {
+							jsMath.ProcessBeforeShowing(nodes.className);
+						});
+					}
 				}
 			}
+			
 		},
 
 		setupTabs: function() {

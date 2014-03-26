@@ -7,26 +7,7 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 		has.add("event-orientationchange", has("touch") && !has("android")); // TODO: how do we detect this?
 		has.add("event-stopimmediatepropagation", window.Event && !!window.Event.prototype && !!window.Event.prototype.stopImmediatePropagation);
 		has.add("event-focusin", function(global, doc, element){
-			return 'onfocusin' in element || (element.addEventListener && (function () {
-				var hasFocusInEvent = false;
-				function testFocus() {
-					hasFocusInEvent = true;
-				}
-
-				try {
-					var element = doc.createElement('input'),
-						activeElement = doc.activeElement;
-					element.style.position = 'fixed';
-					element.addEventListener('focusin', testFocus, false);
-					doc.body.appendChild(element);
-					element.focus();
-					doc.body.removeChild(element);
-					element.removeEventListener('focusin', testFocus, false);
-					activeElement.focus();
-				} catch (e) {}
-
-				return hasFocusInEvent;
-			})());
+			return 'onfocusin' in element;
 		});
 	}
 	var on = function(target, type, listener, dontFix){
@@ -329,7 +310,8 @@ define(["./has!dom-addeventlistener?:./aspect", "./_base/kernel", "./sniff"], fu
 				// that would be a lot of extra code, with little benefit that I can see, seems 
 				// best to use the generic constructor and copy properties over, making it 
 				// easy to have events look like the ones created with specific initializers
-				var nativeEvent = target.ownerDocument.createEvent("HTMLEvents");
+				var ownerDocument = target.ownerDocument || document;
+				var nativeEvent = ownerDocument.createEvent("HTMLEvents");
 				nativeEvent.initEvent(type, !!event.bubbles, !!event.cancelable);
 				// and copy all our properties over
 				for(var i in event){

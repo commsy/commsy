@@ -1018,14 +1018,21 @@
 			if(!$file_list->isEmpty()) {
 				$file = $file_list->getFirst();
 				while($file) {
+					// truncate
+					if(strlen($file->getDisplayName()) > 70) {
+						$file_name = $converter->filenameFormatting(substr($file->getDisplayName(), 0, 70)).'...';
+					} else {
+						$file_name = $converter->filenameFormatting($file->getDisplayName());
+					}
+					
 					if(!(isset($_GET['mode']) && $_GET['mode'] === 'print') || (isset($_GET['download']) && $_GET['download'] === 'zip')) {
 						if((!isset($_GET['download']) || $_GET['download'] !== 'zip') && in_array($file->getExtension(), array('png', 'jpg', 'jpeg', 'gif'))) {
 							//$this->_with_slimbox = true;
 							#$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
-							$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+							$file_string = '<a href="' . $file->getUrl() . '" class="lightbox_' . $this->_item->getItemID() . '">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting(substr($file->getDisplayName(), 0, 100))) . '</a> (' . $file->getFileSize() . ' KB)';
 						} else {
 							#$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->text_as_html_short($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
-							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . ($converter->filenameFormatting($file->getDisplayName())) . '</a> (' . $file->getFileSize() . ' KB)';
+							$file_string = '<a href="' . $file->getUrl() . '" target="blank">' . $file->getFileIcon() . ' ' . $file_name . '</a> (' . $file->getFileSize() . ' KB)';
 						}
 					} else {
 						$file_string = $file->getFileIcon() . ' ' . $converter->text_as_html_short($file->getDisplayName());
