@@ -72,7 +72,7 @@
 				// perform list options
 				$this->performListOption(CS_DATE_TYPE);
 
-
+			$this->_display_mode = $current_context->getDatesPresentationStatus();
 			if($this->_display_mode === "list") {
 				// init list params
 #				$this->initListParameters(CS_DATE_TYPE);
