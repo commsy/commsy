@@ -63,7 +63,7 @@
 										___COMMON_LAST_MODIFIED_BY_UPPER___ {$annotation.modifier} ___DATES_ON_DAY___ {$annotation.modification_date}
 									</div>
 									<div class="editor_content">
-										{$annotation.description}
+										{embed param1=$annotation.description}
 									</div>
 								</div>
 							</div>

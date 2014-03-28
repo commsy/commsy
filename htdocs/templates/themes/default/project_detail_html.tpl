@@ -72,7 +72,7 @@
 				</div>
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
-						{$detail.content.description}
+						{embed param1=$detail.content.description}
 						<h4 style="margin-top:20px;">___USER_STATUS_CONTACT___</h4>
 						{if !empty($detail.content.moderator_array)}
 							<ul>

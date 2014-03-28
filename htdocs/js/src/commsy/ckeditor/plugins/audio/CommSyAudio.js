@@ -316,7 +316,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								var autostart = this.getValueOf( 'audioTab', 'autostart');
 								var float = this.getValueOf( 'audioTab', 'float');
 								
-								audioUrl = encodeURIComponent(audioUrl);
+								
 								
 								var floatValue = '';
 								
@@ -326,7 +326,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 								verticalMargin = this.getValueOf( 'audioTab', 'marginV');
 								
 								style = 'style="';
-								if ( borderWidth != null ) {
+								if ( borderWidth !== '' ) {
 									style += 'border-style: solid; border-width:' + borderWidth + 'px;';
 								}
 								
@@ -352,7 +352,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 //									if(urlDecodeFlag){
 //										audioUrl = encodeURI(audioUrl);
 //									}
-
+									audioUrl = encodeURIComponent(audioUrl);
 									content += '<object data="mediaplayer.swf?file=' + audioUrl + '&type=mp3&showstop=true&showdigits=true&shownavigation=true" type="application/x-shockwave-flash" width="' + width + '" height="' + height + '" ' + style + ' commsytype="audio" wmode="opaque">';
 //									content += '<param name="movie" value="mediaplayer.swf?file="' + audioUrl + '&type=mp3">';
 									content += '<param value="sameDomain" name="allowScriptAccess">';
@@ -374,7 +374,7 @@ CKEDITOR.plugins.add( "CommSyAudio",
 									
 //									alert(content);
 								} else if(this.getValueOf('audioTab', 'selectbox') == 'wmaplayer'){
-									
+									//audioUrl = audioUrl + '&SID='+session_id;
 									content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
 									content += '<param value="' + audioUrl + '" name="fileName">';
 									if(this.getValueOf('audioTab', 'autostart')){
