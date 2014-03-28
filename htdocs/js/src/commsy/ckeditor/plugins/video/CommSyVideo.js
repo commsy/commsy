@@ -214,12 +214,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											if(this.getValue() == 'lecture2go') {
 												urlInput.enable();
 												fileSelect.disable();
-												uploadButton.disable();
+												//uploadButton.disable();
 												upload.disable();
 											} else if (this.getValue() == 'mediaplayer') {
 												urlInput.disable();
 												fileSelect.enable();
-												uploadButton.enable();
+												//uploadButton.enable();
 												upload.enable();
 												// only show files wma wmv avi
 												var j;
@@ -234,12 +234,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											} else if (this.getValue() == 'podcampus') {
 												urlInput.enable();
 												fileSelect.disable();
-												uploadButton.disable();
+												//uploadButton.disable();
 												upload.disable();
 											} else if (this.getValue() == 'quicktime') {
 												urlInput.disable();
 												fileSelect.enable();
-												uploadButton.enable();
+												//uploadButton.enable();
 												upload.enable();
 												// only show files mov wav mpeg mp4
 												var j;
@@ -253,12 +253,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											} else if (this.getValue() == 'vimeo') {
 												urlInput.enable();
 												fileSelect.disable();
-												uploadButton.disable();
+												//uploadButton.disable();
 												upload.disable();
 											} else if (this.getValue() == 'youtube') {
 												urlInput.enable();
 												fileSelect.disable();
-												uploadButton.disable();
+												//uploadButton.disable();
 												upload.disable();
 											}
 										}
@@ -325,9 +325,9 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													    {
 													    	var dialog = this.getDialog();
 															var fileSelect = dialog.getContentElement( 'videoTab' , 'selectbox' );
-															if(fileSelect.getValue() == 'youtube' && 
-																	fileSelect.getValue() == 'vimeo' &&
-																	fileSelect.getValue() == 'podcampus' &&
+															if(fileSelect.getValue() == 'youtube' || 
+																	fileSelect.getValue() == 'vimeo' ||
+																	fileSelect.getValue() == 'podcampus' ||
 																	fileSelect.getValue() == 'lecture2go'){
 																
 																alert('Dateiupload nicht möglich. Bitte wählen Sie einen entsprechenden Videotyp.');
