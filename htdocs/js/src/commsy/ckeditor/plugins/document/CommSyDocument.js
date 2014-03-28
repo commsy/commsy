@@ -61,7 +61,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Medien Typ',
+										label: 'Medientyp',
 										items: SelectBoxItems,
 										'default' : 'null',
 										onLoad : function () 
