@@ -325,10 +325,10 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													    {
 													    	var dialog = this.getDialog();
 															var fileSelect = dialog.getContentElement( 'videoTab' , 'selectbox' );
-															if(fileSelect.getValue() != 'youtube' && 
-																	fileSelect.getValue() != 'vimeo' &&
-																	fileSelect.getValue() != 'podcampus' &&
-																	fileSelect.getValue() != 'lecture2go'){
+															if(fileSelect.getValue() == 'youtube' && 
+																	fileSelect.getValue() == 'vimeo' &&
+																	fileSelect.getValue() == 'podcampus' &&
+																	fileSelect.getValue() == 'lecture2go'){
 																
 																alert('Dateiupload nicht möglich. Bitte wählen Sie einen entsprechenden Videotyp.');
 														    	return false;

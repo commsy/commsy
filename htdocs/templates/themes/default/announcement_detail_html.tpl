@@ -103,7 +103,7 @@
 				</table>
 				{if !empty($detail.content.description)}
 					<div class="detail_description">
-						{$detail.content.description}
+						{embed param1=$detail.content.description}
 					</div>
 				{/if}
 			</div>

@@ -170,7 +170,7 @@
 		<div class="detail_content"> <!-- Start item_legend -->
 			{if !empty($detail.content.description)}
 				<div class="detail_description">
-					{$detail.content.description}
+					{embed param1=$detail.content.description}
 				</div>
 			{/if}
 		</div> <!-- Ende item_legend -->
