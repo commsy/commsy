@@ -148,7 +148,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 														} else {
 															fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
 														}
-														fileName = input.options[input.selectedIndex].text;
+														
 														encodeFileUrl = encodeURI(fileUrl);
 		//												alert(encodeFileUrl);
 														inputUrl.setValue(encodeFileUrl);
@@ -201,7 +201,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 													{
 														if ( !this.getValue() )
 														{
-															alert( 'noCode' );
+															alert( 'Bitte geben Sie eine URL an.' );
 															return false;
 														}
 													}
@@ -396,9 +396,12 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								var linkText = this.getValueOf('documentTab','linkText');
 								var link = this.getValueOf('documentTab', 'documentUrl');
 								
+								// regex filename
+								var fileNameRegEx = /commsy.php\/(.*)\?.*/;
 								if(linkText == ''){
 									//var filename = this.getValueOf('documentTab','fileselect');
-									linkText = fileName;
+									match = link.match(fileNameRegEx);
+									linkText = match[1];
 								}
 								
 					            var a = editor.document.createElement( 'a' );
