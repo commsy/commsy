@@ -167,7 +167,7 @@
 							{if $detail.content.description }
 							</table>
                					<div class="detail_description">
-                  					{$detail.content.description}
+                  					{embed param1=$detail.content.description}{*$detail.content.description*}
                					</div>
                				<table class="detail_content_table">
             				{/if}
@@ -192,7 +192,7 @@
 						</table>
 					{else}
 					<div class="detail_description">
-                  		{$detail.content.description}
+                  		{embed param1=$detail.content.description}
                		</div>
 				{/if}
 				
