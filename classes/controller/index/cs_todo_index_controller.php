@@ -79,27 +79,37 @@
 			$context_item = $environment->getCurrentContextItem();
 			$translator = $environment->getTranslationObject();
 			$converter = $this->_environment->getTextConverter();
+			$params = $environment->getCurrentParameterArray();
 			$return = array();
 
 			$last_selected_tag = '';
 			$seltag_array = array();
 
 			// Find current topic selection
-			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
-				$i = 0;
-				while(!isset($_GET['seltag_' . $i])) {
-					$i++;
+// 			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
+// 				$i = 0;
+// 				while(!isset($_GET['seltag_' . $i])) {
+// 					$i++;
+// 				}
+// 				$seltag_array[] = $_GET['seltag_' . $i];
+// 				$j = 0;
+// 				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
+// 					if(!empty($_GET['seltag_' . $i])) {
+// 						$seltag_array[$i] = $_GET['seltag_' . $i];
+// 						$j++;
+// 					}
+// 					$i++;
+// 				}
+// 				$last_selected_tag = $seltag_array[$j-1];
+// 			}
+			
+			// get selected seltags
+			$seltag_array = array();
+			foreach($params as $key => $value) {
+				if(substr($key, 0, 6) == 'seltag'){
+					// set seltag array
+					$seltag_array[$key] = $value;
 				}
-				$seltag_array[] = $_GET['seltag_' . $i];
-				$j = 0;
-				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
-					if(!empty($_GET['seltag_' . $i])) {
-						$seltag_array[$i] = $_GET['seltag_' . $i];
-						$j++;
-					}
-					$i++;
-				}
-				$last_selected_tag = $seltag_array[$j-1];
 			}
 
 			// Get data from database
@@ -161,8 +171,8 @@
    					$todo_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
 				}
 
-				if(!empty($last_selected_tag)) {
-					$todo_manager->setTagLimit($last_selected_tag);
+				if(!empty($seltag_array)) {
+					$todo_manager->setTagArrayLimit($seltag_array);
 				}
 
 				if ( $this->_list_parameter_arrray['interval'] > 0 ) {

@@ -40,6 +40,16 @@ define([	"dojo/_base/declare",
 			object[key] = value;
 			return object;
 		},
+		
+		removeOrSetURIParam: function(key, value) {
+			var object = this.uri_object;
+			if(object[key]){
+				delete object[key];
+			} else {
+				object[key] = value;
+			}
+			return object;
+		},
 
 		replaceOrSetAnchor: function(anchor) {
 			var splitLocation = location.href.split("#");

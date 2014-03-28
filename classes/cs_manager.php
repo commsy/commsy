@@ -106,6 +106,7 @@ class cs_manager {
    var $_search_array = array();
 
    var $_tag_limit = NULL;
+   var $_tag_limit_array = NULL;
    var $_buzzword_limit = NULL;
    var $_user_limit = NULL;
 
@@ -233,6 +234,25 @@ class cs_manager {
 
    function setTagLimit ($limit) {
       $this->_tag_limit = (int)$limit;
+   }
+   
+   function setTagArrayLimit ($limit) {
+   	 $this->_tag_limit = $limit;
+   }
+   
+   function _getTagIDArrayByTagIDArray($array) {
+   	 $id_array = array();
+   	 $first_element = array();
+   	 $tag2tag_manager = $this->_environment->getTag2TagManager();
+   	 foreach($array as $key => $value) {
+   	 	$first_element[] = substr($key, 7);
+   	 	if($array[$key]){
+   	 		$id_array = array_unique(array_merge($id_array,$tag2tag_manager->getRecursiveChildrenItemIDArray(substr($key, 7))));
+   	 	}
+   	 }
+   	 $id_array = array_merge($id_array,$first_element);
+   	 #pr($id_array);
+   	 return $id_array;
    }
 
    function _getTagIDArrayByTagID($id){

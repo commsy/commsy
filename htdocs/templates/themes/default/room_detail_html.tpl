@@ -79,7 +79,7 @@
 				{if !empty($entry.activating_text)}
 					<a title="{$entry.activating_text}"href="#">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
 				{else}
-					<a href="commsy.php?cid={$environment.cid}&mod={$entry.type}&fct={$environment.function}&iid={$entry.item_id}{params params=$entry.params}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
+					<a href="commsy.php?cid={$environment.cid}&mod={$entry.type}&fct={$environment.function}&iid={$entry.item_id}{params_without_key params=$entry.params key=date_option}">{$entry.position}. {if $entry.is_current}<strong>{/if}{$entry.title|truncate:25:'...':true}{if $entry.is_current}</strong>{/if}</a>
 				{/if}
 			{/foreach}
 			{*{block name=room_right_portlets_navigation}{/block}*}

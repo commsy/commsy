@@ -176,7 +176,10 @@ define([
 
 			// Push in the builtin filters now, making them the first executed, but not over-riding anything
 			// users passed in.  See: #6062
-			this.contentPreFilters = [lang.hitch(this, "_preFixUrlAttributes")].concat(this.contentPreFilters);
+			this.contentPreFilters = [
+				lang.trim,	// avoid IE10 problem hitting ENTER on last line when there's a trailing \n.
+				lang.hitch(this, "_preFixUrlAttributes")
+			].concat(this.contentPreFilters);
 			if(has("mozilla")){
 				this.contentPreFilters = [this._normalizeFontStyle].concat(this.contentPreFilters);
 				this.contentPostFilters = [this._removeMozBogus].concat(this.contentPostFilters);
@@ -362,7 +365,6 @@ define([
 				// relying on the initial content being contained within the target
 				// domNode.
 				html = this.value;
-				delete this.value;
 				dn.innerHTML = "";
 			}else if(dn.nodeName && dn.nodeName.toLowerCase() == "textarea"){
 				// if we were created from a textarea, then we need to create a
@@ -903,6 +905,15 @@ define([
 			// tags:
 			//		protected
 
+			// Modifier keys should not cause the onKeyPressed event because they do not cause any change to the
+			// display
+			if(e.keyCode === keys.SHIFT ||
+			   e.keyCode === keys.ALT ||
+			   e.keyCode === keys.META ||
+			   e.keyCode === keys.CTRL){
+				return true;
+			}
+
 			if(e.keyCode === keys.TAB && this.isTabIndent){
 				//prevent tab from moving focus out of editor
 				e.stopPropagation();
@@ -917,15 +928,19 @@ define([
 			}
 
 			// Make tab and shift-tab skip over the <iframe>, going from the nested <div> to the toolbar
-			// or next element after the editor.   Needed on IE<9 and firefox.
-			if(e.keyCode == keys.TAB && !this.isTabIndent){
-				if(e.shiftKey && !e.ctrlKey && !e.altKey){
+			// or next element after the editor
+			if(e.keyCode == keys.TAB && !this.isTabIndent && !e.ctrlKey && !e.altKey){
+				if(e.shiftKey){
 					// focus the <iframe> so the browser will shift-tab away from it instead
 					this.beforeIframeNode.focus();
-				}else if(!e.shiftKey && !e.ctrlKey && !e.altKey){
+				}else{
 					// focus node after the <iframe> so the browser will tab away from it instead
 					this.afterIframeNode.focus();
 				}
+
+				// Prevent onKeyPressed from firing in order to avoid triggering a display change event when the
+				// editor is tabbed away; this fixes toolbar controls being inappropriately disabled in IE9+
+				return true;
 			}
 
 			if(has("ie") < 9 && e.keyCode === keys.BACKSPACE && this.document.selection.type === "Control"){
@@ -1057,9 +1072,9 @@ define([
 			// tags:
 			//		protected
 
-			// Workaround IE9+ problems when you blur the browser windows while an editor is focused: IE hangs
+			// Workaround IE problem when you blur the browser windows while an editor is focused: IE hangs
 			// when you focus editor #1, blur the browser window, and then click editor #0.  See #16939.
-			if(has("ie") >= 9){
+			if(has("ie") || has("trident")){
 				this.defer(function(){
 					if(!focus.curNode){
 						this.ownerDocumentBody.focus();
@@ -1536,7 +1551,7 @@ define([
 				}
 			}
 
-			return this._postFilterContent(null, nonDestructive);
+			return this.isLoaded ? this._postFilterContent(null, nonDestructive) : this.value;
 		},
 		_getValueAttr: function(){
 			// summary:
@@ -1567,10 +1582,6 @@ define([
 				html = this._preFilterContent(html);
 				var node = this.isClosed ? this.domNode : this.editNode;
 
-				// Use &nbsp; to avoid webkit problems where editor is disabled until the user clicks it
-				if(!html && has("webkit")){
-					html = "&#160;";	// &nbsp;
-				}
 				node.innerHTML = html;
 				this._preDomFilterContent(node);
 			}
@@ -2972,14 +2983,14 @@ define([
 
 		_stripTrailingEmptyNodes: function(/*DOMNode*/ node){
 			// summary:
-			//		Function for stripping trailing <p> nodes without any text, but not stripping trailing nodes
+			//		Function for stripping trailing nodes without any text, excluding trailing nodes
 			//		like <img> or <div><img></div>, even though they don't have text either.
 
 			function isEmpty(node){
 				// If not for old IE we could check for Element children by node.firstElementChild
 				return (/^(p|div|br)$/i.test(node.nodeName) && node.children.length == 0 &&
-					lang.trim(node.textContent || node.innerText || "") == "") ||
-					(node.nodeType === 3/*text*/ && lang.trim(node.nodeValue) == "");
+					/^[\s\xA0]*$/.test(node.textContent || node.innerText || "")) ||
+					(node.nodeType === 3/*text*/ && /^[\s\xA0]*$/.test(node.nodeValue));
 			}
 			while(node.lastChild && isEmpty(node.lastChild)){
 				domConstruct.destroy(node.lastChild);

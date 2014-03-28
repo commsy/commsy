@@ -362,10 +362,10 @@ define([	"dojo/_base/declare",
 					
 					// update current page and total number of pages
 					DomAttr.set(Query("#pop_item_current_page")[0], "innerHTML", (response.data.list.length === 0) ? 0 : this.paging.current + 1);
-					DomAttr.set(Query("#pop_item_pages")[0], "innerHTML", response.paging.pages);
+					DomAttr.set(Query("#pop_item_pages")[0], "innerHTML", response.data.paging.pages);
 					
 					// store pages
-					this.store.pages = response.paging.pages;
+					this.store.pages = response.data.paging.pages;
 				})
 			);
 		},

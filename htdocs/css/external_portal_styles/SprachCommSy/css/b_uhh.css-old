@@ -1,0 +1,338 @@
+/* Copyright Scientec Internet Applications + Media GmbH - www.scientec.de */
+
+/* DO NOT REMOVE - onTEAM styles*/
+.otBlock{margin-bottom:1em; overflow: hidden}
+.otBoxLeft{float:left; width:auto; margin:0 1em 1em 0}
+.otBoxRight{float:right; width:auto; margin:0 0 1em 1em}
+.otBlock p{margin:0 0 1em 0}
+.otImageBox{}
+.otImageCaption{}
+/*end onTEAM styles*/
+
+
+#ie{
+   width:expression(document.body.clientWidth < 1005 ? "1005px": "auto");
+}
+
+body {
+	margin:0;
+	padding:0;
+    min-width:1005px;
+	background-color:#fff;
+	color:#111;
+	font-family: arial, helvetica, sans-serif;
+	font-size:95%;
+}
+a.browserinfo{display:none}
+
+#kopf{min-width:800px;background-color:#fff; height: 120px; margin-bottom:0px;padding-bottom:0px;}
+#kopf a {height: 100px;}
+#kopf a:hover{ background-color:#fff}
+#kopf img {border:0}
+#logo_uhh {float:left}
+#logo_rechts {float:right}
+
+#navigation {height: 18px; background-color:#808080;min-width:800px; clear: both;  border-top:1px solid #ccc; border-bottom:1px solid #333; color:#fff; font-size:85%;margin-top:0px;}
+#navigation .pad{}
+#pfad { background-color:#808080;color:#fff; padding:0 8px 0px 8px;float:left; width:75%}
+#navigation a {color:#FFF;text-decoration:none;font-weight:bold}
+#navigation a:hover{color:#FFF;text-decoration:underline}
+.pathseparator{font-weight:bold}
+#navigation div.toolbar{padding:1px 8px 1px 0; float:right; text-align: right; white-space:nowrap; margin:0px;}
+#navigation span.sprache{padding:0 5px 0 0}
+
+#container {
+	min-width:800px;
+	background:url(../images/grau_weiss.png);
+	background-position:23% 0;
+	background-repeat:repeat-y
+}
+#containerohnenavigation {min-width:800px;background-color:#fff}
+#container div.clear {width:800px}
+#subnavigation {
+	float:left;
+	font-size:85%;
+	width:23%;
+	xmin-width: 290px;
+	overflow:hidden}
+#subnavigation div.pad {padding:8px;}
+#subnavigation ul{margin-top:0; margin-left:0; padding-left:0}
+#subnavigation a{display:block}
+#subnavigation li{margin-bottom:0; margin-left: 0; list-style-type: none; background-repeat: no-repeat}
+li.seite{ border-bottom:1px solid #f0f0f0; margin-top:0;background-image: url(../images/arrow_page.gif)}
+li.intern{ border-bottom:1px solid #f0f0f0; margin-top:0;background-image: url(../images/arrow_link.gif)}
+li.extern{ border-bottom:1px solid #f0f0f0; margin-top:0;background-image: url(../images/arrow_out.gif)}
+li.tree{background-image: url(../images/arrow_down.gif)}
+li.spacer{border-bottom:1px solid #f0f0f0;font-size:1px;height:0; padding-left:0px; margin-top:5px; margin-bottom:5px}
+li.trenner {}
+#subnavigation ul li{background-position: 0px 4px;}
+#subnavigation ul ul li{background-position: 10px 4px;}
+#subnavigation ul ul ul li{background-position: 20px 4px;}
+#subnavigation ul ul ul ul li{background-position: 30px 4px;}
+#subnavigation ul ul ul ul ul li{background-position: 40px 4px;}
+#subnavigation ul ul ul ul ul ul li{background-position: 50px 4px;}
+#subnavigation ul ul ul ul ul ul ul li{background-position: 60px 4px;}
+#subnavigation ul li a{ margin-left:10px;}
+#subnavigation ul ul li a{ margin-left:20px;}
+#subnavigation ul ul ul li a{ margin-left:30px;}
+#subnavigation ul ul ul ul li a{ margin-left:40px;}
+#subnavigation ul ul ul ul ul li a{ margin-left:50px;}
+#subnavigation ul ul ul ul ul ul li a{ margin-left:60px;}
+#subnavigation ul ul ul ul ul ul ul li a{ margin-left:70px;}
+#subnavigation ul li.trenner{ padding-left:10px;}
+#subnavigation ul ul li.trenner{ padding-left:20px;}
+#subnavigation ul ul ul li.trenner{ padding-left:30px;}
+#subnavigation ul ul ul ul li.trenner{ padding-left:40px;}
+#subnavigation ul ul ul ul ul li.trenner{ padding-left:50px;}
+#subnavigation ul ul ul ul ul ul li.trenner{ padding-left:60px;}
+#subnavigation ul ul ul ul ul ul ul li.trenner{ padding-left:70px;}
+li.ende {display:none}
+li.hereweare {background-color:#fff;}
+li.hereweare li {background-color:#e0e0e0;}
+ul.tree{padding-left:0px}
+#subnavigation a{color:#000; text-decoration:none}
+#subnavigation a:hover{text-decoration:underline}
+
+#inhalt {
+	float: left;
+	xborder: 1px solid red;
+	padding:5px;
+	width: 760px;
+}
+
+div.mit {width:76%}
+div.ohne {width:100%;}
+#inhalt div.pad { color: #111;padding:15px}
+#inhalt div.pad2 { position:relative; width:100%;}
+#inhalt h1{margin-top:0}
+#inhalt table{font-size:90% }
+#inhalt table table{font-size:100% }
+#inhalt img{border: 0px;}
+#inhalt a{color:#000}
+#inhalt a:hover{text-decoration:none; color: red}
+#inhalt h1 a,#inhalt h2 a,#inhalt h3 a,#inhalt h4 a,#inhalt h5 a{color:#ff0303}
+#inhalt .geo-list li{padding-bottom: 10px;}
+
+#onTEAMcontent .font70, #inhalt .font70{ font-size:70%}
+#onTEAMcontent .font85, #inhalt .font85{ font-size:85%}
+#onTEAMcontent .font100, #inhalt .font100{ font-size:100%}
+#onTEAMcontent .font115, #inhalt .font115{ font-size:115%}
+#onTEAMcontent .font130, #inhalt .font130{ font-size:130%}
+
+
+
+#fuss {min-width:650px; clear: both; background-color:#808080; border-top:1px solid #ccc; border-bottom:1px solid #333; color:#fff; font-size:85%}
+#info { background-color:#808080;color:#fff; padding-left:8px; float:left}
+#fuss div.toolbar {float:right;text-align:right; padding-right:8px}
+#fuss a {color:#FFF;text-decoration:none;font-weight:bold}
+#fuss a:hover{color:#FFF;text-decoration:underline}
+#fuss div.toolbar{padding:1px 8px 1px 0; float:right; text-align: right; white-space:nowrap}
+#fuss div.clear {width:800px}
+div.clear{clear: both; height:1px;line-height:0px;font-size:0px; overflow:hidden; position:relative}
+div.leer{}
+span.hide, hr.hide{display:none}
+.hh{display:none}
+
+h1,h2,h3,h4,h5 {color: #000000; letter-spacing: 0.05em; text-decoration:none}
+h2 a {color:#ff0303}
+h1 {border-left:0px solid red;padding-left: 0px; font-size: 120%; text-transform: uppercase}
+h2 {border-bottom:1px solid #dddddd; padding-left: 0px;font-size: 110%}
+h3 {border-left:0px solid #ccc; padding-left: 0px;font-size: 100%}
+h4 {font-size: 95%}
+
+
+#uhhAktuelles .topthema {position:relative;margin:8px 0}
+#uhhAktuelles .topthematitel {position:relative;font-size:0.8em; margin:0;color:#000; }
+#uhhAktuelles .topthematext {position:relative;font-size:0.8em;}
+#uhhAktuelles .topthematext img{ border:1px solid #999; float:left; margin:2px 4px 2px 0}
+#uhhAktuelles .topthematext a{ color:#fe0000; text-decoration:none}
+#uhhAktuelles .topthematext a:hover{ color:#fe0000; text-decoration:underline}
+#uhhAktuelles .trenner {border-top:1px solid #000; overflow:hidden; margin:5px 0; clear:left}
+
+#subnavigation #abisz3 {margin:3px 4px -20px -10px; font-size:1.0em;text-align:center;}
+#subnavigation #abisz3 div{margin:0 0 2px 0 }
+#subnavigation #abisz3 a{display:inline;font-weight:bold; position:relative; border:1px solid #f00; border-color:#f8f8f8 #ccc #ccc #f8f8f8; background-color:#f0f0f0;padding:0 2px; margin:0 1px 0 0; text-decoration:none }
+#subnavigation #abisz3 a:hover{background-color:#f00; border:1px solid #f00; color:#fff; text-decoration:none}
+
+
+.veranstaltungtext {
+position:relative;
+background-color:#fff;
+color:#000000;
+font-size:0.9em;
+letter-spacing: 0.0em;
+padding:0 0 0px 0;
+margin:0 0 6px 0;
+font-weight:bold;
+text-decoration:none}
+
+.veranstaltungtitel {
+position:relative;
+background-color:#fff;
+color:#000000;
+font-size:0.8em;
+letter-spacing: 0.0em;
+padding:0 0 4px 0;
+margin:0 0 6px 0;
+border-bottom:1px solid #000;
+text-decoration:none}
+
+.vkslink {
+color:#fe0000; text-decoration:none}
+
+/* ***** 8.0 Content ***** */
+
+#content-wrapper{
+	width:940px;
+	padding-top:0px;
+	margin:0px;
+}
+
+#content {
+   padding: 5px;
+   margin: 0 15px 0 10px;
+   float: left;
+   overflow: hidden;
+   border: 5px solid #dddddd;
+
+}
+#content li{
+   font-size:10pt;
+}
+
+#content td{
+   font-size:10pt;
+}
+
+#content .indent{
+   font-size:10pt;
+}
+
+/* Allgemeines aus der hamburg-de.css
+--------------------------------------------------*/
+
+#content a {
+	color:#2b628a;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#content a:hover {
+	text-decoration: underline;
+}
+
+#content a.link, #content a.internal-link {
+	xbackground: url(../img/icon_link_dark.gif) left center no-repeat;
+	padding: 0 0 0 15px;
+	vertical-align: middle;
+	height: 1.3em;
+	line-height: 1.3em;
+}
+
+#content a.external-link-new-window, #content a.external-link, #content a.extlink {
+	xbackground: url(../img/icon_extlink_dark.gif) left center no-repeat;
+	padding: 0 0 0 15px;
+}
+
+div.clear {
+	clear: both;
+	line-height: 0px;
+	font-size: 0px;
+	height: 0px;
+}
+/* sidebar
+--------------------------------------------------*/
+#sidebar a {
+	color:#2b628a;
+	text-decoration: none;
+}
+#sidebar li a{
+	font-weight: bold;
+}
+
+#sidebar a:hover {
+	text-decoration: underline;
+}
+
+#sidebar a.link, #sidebar a.internal-link {
+	xbackground: url(../img/icon_link_dark.gif) left center no-repeat;
+	padding: 0 0 0 15px;
+	vertical-align: middle;
+	height: 1.3em;
+	line-height: 1.3em;
+}
+
+
+#sidebar-mapper {
+   xfloat: right;
+   xmargin: 0 0 0 20px;
+   width: 200px;
+   overflow: hidden;
+   border: 1px solid #dddddd;
+}
+
+#sidebar {
+   padding: 0px;
+}
+
+#sidebar p {
+   padding: 0;
+}
+
+#sidebar .sidehead, #room_detail .sidehead {
+   margin: 0px;
+   padding:2px 2px 2px 10px;
+   width:100%;
+   display:block;
+   background-color: #dddddd;
+   color:#000000;
+   text-transform: uppercase;
+   font-weight:bold;
+   font-size:10pt;
+}
+
+#sidebar ul {
+   margin: 10px 10px 0px 10px;
+   padding: 0;
+   font-weight:normal;
+}
+
+#sidebar ul li {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+   border: none;
+   font-size:8pt;
+}
+
+#sidebar ul li ul {
+   padding: 0;
+   margin: 0;
+}
+
+#sidebar ul li ul li{
+   padding: 2px 0 2px 0px;
+   border-bottom: 1px solid;
+   }
+#sidebar ul li ul li ul li{
+   padding: 1px 0 1px 10px;
+   border: none;
+   }
+
+#sidebar img {
+	border: none;
+}
+
+#content a {
+	color:#003D68;
+	font-weight: bold;
+	text-decoration: none;
+}
+
+#content a:hover {
+	text-decoration: underline;
+}
+
+h2.pagetitel {
+    background-color: #dddddd;
+}

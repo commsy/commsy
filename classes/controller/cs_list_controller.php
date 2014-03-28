@@ -345,7 +345,16 @@
 			$converter = $environment->getTextConverter();
 			$translator = $environment->getTranslationObject();
            	$params = $environment->getCurrentParameterArray();
-      		if ( isset($params['seltag'])
+           	
+           	$seltag_array = array();
+           	foreach($params as $key => $value) {
+           		if(substr($key, 0, 6) == 'seltag'){
+           			// set seltag array
+           			$seltag_array[$key] = $value;
+           		}
+           	}
+           	
+      		if ( !empty($seltag_array)
        			or isset($params['selbuzzword'])
        			or isset($params['selgroup'])
        			or isset($params['seluser'])
@@ -618,6 +627,30 @@
 	 				$tmp_array['link_parameter'] = $link_parameter_text;
 					$restriction_array[] = $tmp_array;
 	         	}
+	         	
+	         	foreach($params as $key => $value) {
+	         		if(substr($key, 0, 7) == 'seltag_'){
+	         			// build link for disselect
+	         			$new_params = $params;
+	         			$link_parameter_text = '';
+	         			if ( count($new_params) > 0 ) {
+	         				foreach ($new_params as $key_link => $parameter) {
+	         					if(substr($key, 7) != substr($key_link, 7)){
+	         						$link_parameter_text .= '&'.$key_link.'='.$parameter;
+	         					}
+	         				}
+	         			}
+	         			//set restriction
+	         			$tmp_array = array();
+	         			$tag_manager = $environment->getTagManager();
+	         			$tag_item = $tag_manager->getItem(substr($key, 7));
+	         			$tmp_array['name'] = $view_object->_text_as_html_short($tag_item->getTitle());
+	         			$tmp_array['type'] = 'seltag';
+	         			$tmp_array['link_parameter'] = $link_parameter_text;
+	         			$restriction_array[] = $tmp_array;
+	         		}
+	         	}
+	         	/*
 	         	if ( isset($params['seltag']) and !empty($params['seltag']) ){
 	         		$normal = false;
 	         		foreach($params as $key => $value) {
@@ -665,6 +698,7 @@
 	         			$restriction_array[] = $tmp_array;
 	         		}
 	         	}
+	         	*/
 	         	/*
 	         	if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) and $environment->current_module == "todo" ){
 	            	$new_params = $params;

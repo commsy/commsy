@@ -2147,7 +2147,9 @@ class misc_text_converter {
          $image_text .= '<div id="has_math_'.$div_number.'">'.LF;
          $image_text .= '<div class="math">'.$array[1].'</div>'.LF;
          $image_text .= '</div>'.LF;
+         $image_text .= '<div class="has_math_'.$div_number.'">'.LF;
          $image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
+         $image_text .= '</div>'.LF;
          if ( !empty($image_text) ) {
             $text = str_replace($array[0],$image_text,$text);
          }

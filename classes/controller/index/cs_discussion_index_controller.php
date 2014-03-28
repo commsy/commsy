@@ -70,29 +70,39 @@
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
 			$converter = $this->_environment->getTextConverter();
+			$params = $this->_environment->getCurrentParameterArray();
 			$return = array();
 
 			$last_selected_tag = '';
 			$seltag_array = array();
 
 			// Find current topic selection
-			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
-				$i = 0;
-				while(!isset($_GET['seltag_' . $i])) {
-					$i++;
-				}
-				$seltag_array[] = $_GET['seltag_' . $i];
-				$j = 0;
-				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
-					if(!empty($_GET['seltag_' . $i])) {
-						$seltag_array[$i] = $_GET['seltag_' . $i];
-						$j++;
-					}
-					$i++;
-				}
-				$last_selected_tag = $seltag_array[$j-1];
-			}
+// 			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
+// 				$i = 0;
+// 				while(!isset($_GET['seltag_' . $i])) {
+// 					$i++;
+// 				}
+// 				$seltag_array[] = $_GET['seltag_' . $i];
+// 				$j = 0;
+// 				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
+// 					if(!empty($_GET['seltag_' . $i])) {
+// 						$seltag_array[$i] = $_GET['seltag_' . $i];
+// 						$j++;
+// 					}
+// 					$i++;
+// 				}
+// 				$last_selected_tag = $seltag_array[$j-1];
+// 			}
 
+			// get selected seltags
+			$seltag_array = array();
+			foreach($params as $key => $value) {
+				if(substr($key, 0, 6) == 'seltag'){
+					// set seltag array
+					$seltag_array[$key] = $value;
+				}
+			}
+			
 			// Get data from database
 			$discussion_manager = $environment->getDiscussionManager();
 			$discussion_manager->setContextLimit($environment->getCurrentContextID());
@@ -140,8 +150,8 @@
 			if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
    				$discussion_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
 			}
-			if ( !empty($last_selected_tag) ){
-   				$discussion_manager->setTagLimit($last_selected_tag);
+			if ( !empty($seltag_array) ){
+   				$discussion_manager->setTagArrayLimit($seltag_array);
 			}
 			if ( $this->_list_parameter_arrray['interval'] > 0 ) {
    				$discussion_manager->setIntervalLimit($this->_list_parameter_arrray['from']-1,$this->_list_parameter_arrray['interval']);
@@ -267,6 +277,12 @@
 	            }else{
 	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
 	            }
+	            $creator = $item->getCreatorItem();
+	            if(empty($creator)){
+	            	$creator_id = '';
+	            } else {
+	            	$creator_id = $item->getCreatorItem()->getItemID();
+	            }
 
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
@@ -280,7 +296,7 @@
 					'attachment_count'	=> $file_count,
 					'attachment_infos'	=> $attachment_infos,
 					'activated_text'	=> $activated_text,
-					'creator_id'		=> $item->getCreatorItem()->getItemID(),
+					'creator_id'		=> $creator_id,
 					'activated'			=> !$item->isNotActivated()
 				);
 

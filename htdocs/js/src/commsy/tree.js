@@ -55,68 +55,139 @@ define([	"dojo/_base/declare",
 		
 		initDo: function(node, callback) {
 			callback = callback || function() {};
-			
-			// get results from ajax call
-			request.ajax({
-				query: {
-					cid:		this.uri_object.cid,
-					mod:		'ajax',
-					fct:		'tagtree',
-					action:		'getTreeData'
-				},
-				data: {
-					item_id:	this.item_id,
-					room_id:	this.room_id
-				}
-			}).then(lang.hitch(this, function(response) {
-				results = this.sanitizeResults(response.data);
-				
-				this.store = new ItemFileWriteStore({
+			//console.log(this);
+			if(this.uri_object.iid){
+				this.item_id = this.uri_object.iid;
+			}
+			if(this.uri_object.fct == 'detail' && node.className == 'subtree'){
+				// if the tree is a subtree (detail view)
+				// get results from ajax call
+				request.ajax({
+					query: {
+						cid:		this.uri_object.cid,
+						mod:		'ajax',
+						fct:		'tagtree',
+						action:		'getSubTreeData'
+					},
 					data: {
-						identifier:		"item_id",
-						label:			"title",
-						items:			results
+						item_id:	this.item_id,
+						room_id:	this.room_id,
+						fct:		this.uri_object.fct
 					}
-				});
-				
-				// create model
-				this.model = this.createModel();
-				
-				// create tree
-				this.tree = this.createTree();
-				
-				domConstruct.empty(node);
-				this.tree.placeAt(node);
-				
-				/**
-				 * Hotfix
-				 * --------
-				 * This will convert any touch end event into a click event,
-				 * fixing a bug on iphone devices not able to click on a tree node
-				 * and emitting a click event
-				 */
-				On(node, "touchend", function(event)
-				{
-					// prevent native lick
-					event.preventDefault();
+				}).then(lang.hitch(this, function(response) {
+					results = this.sanitizeResults(response.data);
 					
-					On.emit(event.target, "click",
-					{
-						cancelable: true,
-						bubbles: true
+					this.store = new ItemFileWriteStore({
+						data: {
+							identifier:		"item_id",
+							label:			"title",
+							items:			results
+						}
 					});
-				});
-				/**
-				 * ~Hotfix
-				 */
+					
+					// create model
+					this.model = this.createModel();
+					
+					// create tree
+					this.tree = this.createSubTree();
+					
+					domConstruct.empty(node);
+					this.tree.placeAt(node);
+					
+					/**
+					 * Hotfix
+					 * --------
+					 * This will convert any touch end event into a click event,
+					 * fixing a bug on iphone devices not able to click on a tree node
+					 * and emitting a click event
+					 */
+					On(node, "touchend", function(event)
+					{
+						// prevent native lick
+						event.preventDefault();
+						
+						On.emit(event.target, "click",
+						{
+							cancelable: true,
+							bubbles: true
+						});
+					});
+					/**
+					 * ~Hotfix
+					 */
+					
+					// auto expand
+					//if (this.expanded === true) {
+						this.autoExpandToLevel(this.tree, 0, true);
+					//}
+					
+					callback(this);
+				}));
 				
-				// auto expand
-				if (this.expanded === true) {
-					this.autoExpandToLevel(this.tree, 0, true);
-				}
-				
-				callback(this);
-			}));
+			} else {
+				// get results from ajax call
+				request.ajax({
+					query: {
+						cid:		this.uri_object.cid,
+						mod:		'ajax',
+						fct:		'tagtree',
+						action:		'getTreeData'
+					},
+					data: {
+						item_id:	this.item_id,
+						room_id:	this.room_id,
+						fct:		this.uri_object.fct
+					}
+				}).then(lang.hitch(this, function(response) {
+					results = this.sanitizeResults(response.data);
+					
+					this.store = new ItemFileWriteStore({
+						data: {
+							identifier:		"item_id",
+							label:			"title",
+							items:			results
+						}
+					});
+					
+					// create model
+					this.model = this.createModel();
+					
+					// create tree
+					this.tree = this.createTree();
+					
+					domConstruct.empty(node);
+					this.tree.placeAt(node);
+					
+					/**
+					 * Hotfix
+					 * --------
+					 * This will convert any touch end event into a click event,
+					 * fixing a bug on iphone devices not able to click on a tree node
+					 * and emitting a click event
+					 */
+					On(node, "touchend", function(event)
+					{
+						// prevent native lick
+						event.preventDefault();
+						
+						On.emit(event.target, "click",
+						{
+							cancelable: true,
+							bubbles: true
+						});
+					});
+					/**
+					 * ~Hotfix
+					 */
+					
+					// auto expand
+					if (this.expanded === true) {
+						this.autoExpandToLevel(this.tree, 0, true);
+					}
+					
+					callback(this);
+				}));
+			}
 		},
 		
 		createModel: function() {
@@ -124,6 +195,50 @@ define([	"dojo/_base/declare",
 				store:			this.store,
 				checkedAttr:	"match",
 				checkedStrict:	false
+			});
+		},
+		
+		createSubTree: function() {
+			return new Tree({
+				//autoExpand:			this.expanded,		// do not use the tree's routine for this, causing very long loading times in IE8
+				model:				this.model,
+				showRoot:			false,
+				persist:			false,
+				checkBoxes:			this.checkboxes,
+				branchIcons:		false,
+				nodeIcons:			false,
+				onClick:			lang.hitch(this, function(item, node, evt) {
+					// follow item url
+					if(this.followUrl) {
+						if (this.uri_object.mod == "home") {
+							this.replaceOrSetURIParam('mod', "search");
+						}
+						// multiselection - append tags
+						// if already selected, disselect
+						//location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+						this.replaceOrSetURIParam('fct', "index");
+						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+					} else {
+						// if click doesn't come from checkbox
+						if(evt.target.nodeName !== "INPUT") {
+							if(this.model.getChecked(item) === true) {
+								this.model.setChecked(item, false);
+							} else {
+								this.model.setChecked(item, true);
+							}
+						}
+					}
+				}),
+				widget: {
+					type:			CheckBox,
+					args: {
+						multiState:		true
+					},
+					mixin:		function(args) {
+						args["value"]	= this.item.item_id[0];
+						args["name"]	= "form_data[tags]";
+					}
+				}
 			});
 		},
 		
@@ -142,8 +257,11 @@ define([	"dojo/_base/declare",
 						if (this.uri_object.mod == "home") {
 							this.replaceOrSetURIParam('mod', "search");
 						}
+						// multiselection - append tags
+						// if already selected, disselect
+						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
 						
-						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag', item.item_id));
+//						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag', item.item_id));
 					} else {
 						// if click doesn't come from checkbox
 						if(evt.target.nodeName !== "INPUT") {
@@ -234,9 +352,8 @@ define([	"dojo/_base/declare",
 		
 		buildPath: function(tagId, path) {
 			path = path || [];
-			
 			// add item to path
-			path.push(tagId);
+			path.push(tagId.toString());
 			
 			// get item and parent
 			var item = this.model.fetchItem({item_id: tagId});

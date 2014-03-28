@@ -10,7 +10,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-style",
         	"dijit/Tooltip",
         	"dojo/i18n!./nls/tooltipErrors",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, request, dom_class, dom_attr, domConstruct, domStyle, Tooltip, ErrorTranslations) {
+        	"dojo/parser",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, On, lang, query, request, dom_class, dom_attr, domConstruct, domStyle, Tooltip, ErrorTranslations, parser) {
 	return declare(BaseClass, {
 		constructor: function(args) {
 			this.errorNodes			= [];
@@ -31,6 +32,18 @@ define([	"dojo/_base/declare",
 			On(this.contentNode, "click", lang.hitch(this, function(event) {
 				this.closeErrorTooltips();
 			}));
+			//exec jsMath inside a popup
+			var nodes = dojo.query('div[class^="has_math_"]');
+			if(typeof(jsMath) != 'undefined'){
+				if(jsMath){
+					if(nodes){
+						dojo.forEach(nodes, function(nodes) {
+							jsMath.ProcessBeforeShowing(nodes.className);
+						});
+					}
+				}
+			}
+			
 		},
 
 		setupTabs: function() {

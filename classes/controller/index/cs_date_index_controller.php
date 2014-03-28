@@ -72,7 +72,7 @@
 				// perform list options
 				$this->performListOption(CS_DATE_TYPE);
 
-
+			$this->_display_mode = $current_context->getDatesPresentationStatus();
 			if($this->_display_mode === "list") {
 				// init list params
 #				$this->initListParameters(CS_DATE_TYPE);
@@ -1383,6 +1383,7 @@
 			$context_item = $environment->getCurrentContextItem();
 			$converter = $environment->getTextConverter();
 			$translator = $this->_environment->getTranslationObject();
+			$params = $this->_environment->getCurrentParameterArray();
 			$return = array();
 
 			if ( isset($_GET['ref_iid']) ) {
@@ -1415,21 +1416,30 @@
 			}
 
 			// Find current topic selection
-			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
-				$i = 0;
-				while(!isset($_GET['seltag_' . $i])) {
-					$i++;
+// 			if(isset($_GET['seltag']) && $_GET['seltag'] == 'yes') {
+// 				$i = 0;
+// 				while(!isset($_GET['seltag_' . $i])) {
+// 					$i++;
+// 				}
+// 				$seltag_array[] = $_GET['seltag_' . $i];
+// 				$j = 0;
+// 				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
+// 					if(!empty($_GET['seltag_' . $i])) {
+// 						$seltag_array[$i] = $_GET['seltag_' . $i];
+// 						$j++;
+// 					}
+// 					$i++;
+// 				}
+// 				$last_selected_tag = $seltag_array[$j-1];
+// 			}
+
+			// get selected seltags
+			$seltag_array = array();
+			foreach($params as $key => $value) {
+				if(substr($key, 0, 6) == 'seltag'){
+					// set seltag array
+					$seltag_array[$key] = $value;
 				}
-				$seltag_array[] = $_GET['seltag_' . $i];
-				$j = 0;
-				while(isset($_GET['seltag_' . $i]) && $_GET['seltag_' . $i] != '-2') {
-					if(!empty($_GET['seltag_' . $i])) {
-						$seltag_array[$i] = $_GET['seltag_' . $i];
-						$j++;
-					}
-					$i++;
-				}
-				$last_selected_tag = $seltag_array[$j-1];
 			}
 
 			// Find current status selection
@@ -1568,6 +1578,9 @@
 
 				if ( !empty($this->_list_parameter_arrray['last_selected_tag']) ){
 					$dates_manager->setTagLimit($this->_list_parameter_arrray['last_selected_tag']);
+				}
+				if( !empty($seltag_array)) {
+					$dates_manager->setTagArrayLimit($seltag_array);
 				}
 				if ( !empty($this->_list_parameter_arrray['selgroup']) ) {
 	   				$dates_manager->setGroupLimit($this->_list_parameter_arrray['selgroup']);

@@ -289,7 +289,10 @@ if(isset($_GET['item_id'])){
 			if($item_type == 'project' or $item_type == 'community'){
 				redirect($iid,'home','index');
 			} else {
-				redirect($item->getContextID(),$item->getItemType(),'detail','&iid='.$iid);
+				$params = array();
+				$params['iid'] = $iid;
+				redirect($item->getContextID(),$item->getItemType(),'detail',$params);
+				unset($params);
 			}
 		}
 		unset($item_manager);

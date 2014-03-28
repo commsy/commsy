@@ -82,9 +82,25 @@
 
 // 			$this->_params['search'] = $converter->sanitizeHTML($this->_params['search']);
 			foreach($this->_params as $key => $value){
-				$this->_params[$key] = $converter->sanitizeHTML($value);
+				if(!is_array($value)){
+					$this->_params[$key] = $converter->sanitizeHTML($value);
+				}
 			}
+			// get selected seltags
+			$seltag_array = array();
+			foreach($this->_params['seltag'] as $key => $value) {
+				if(substr($key, 0, 6) == 'seltag'){
+					// set seltag array
+					$this->_params[$key] = $value;
+				}
+			}
+			$seltag_tmp = $this->_params['seltag'];
+			$this->_params['seltag'] = '';
+			
 			$this->assign('search', 'parameters', $this->_params);
+			
+			$this->_params['seltag'] = $seltag_tmp;
+			
 			$this->assign("search", "indexed_search", $this->_indexed_search);
 
 			// find current option
@@ -396,8 +412,12 @@ if ( $environment->inPrivateRoom()
 								$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
 							}
 
+// 							if(!empty($this->_params['seltag'])) {
+// 								$rubric_manager->setTagLimit($this->_params['seltag']);
+// 							}
+
 							if(!empty($this->_params['seltag'])) {
-								$rubric_manager->setTagLimit($this->_params['seltag']);
+								$rubric_manager->setTagArrayLimit($this->_params['seltag']);
 							}
 
 							/*
@@ -1193,10 +1213,24 @@ unset($ftsearch_manager);
 			}
 
 			//$this->_params['last_selected_tag'] = '';
-			$this->_params['seltag'] = '';
-			if(isset($_GET['seltag'])) {
-				$this->_params['seltag'] = $_GET['seltag'];
+// 			$this->_params['seltag'] = '';
+// 			if(isset($_GET['seltag'])) {
+// 				$this->_params['seltag'] = $_GET['seltag'];
+// 			}
+			#$this->_params['seltag'] = '';
+			$seltag_array = array();
+			foreach ($_GET as $key => $value){
+				// get all seltag ids
+				if(substr($key, 0, 6) == 'seltag'){
+					$seltag_array[$key] = $value;
+					
+				}
 			}
+			$this->_params['seltag'] = $seltag_array;
+			
+// 			if(isset($_GET['seltag'])) {
+// 				$this->_params['seltag'] = $_GET['seltag'];
+// 			}
 
 			// find selected topic
 			/*

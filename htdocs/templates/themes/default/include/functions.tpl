@@ -5,6 +5,10 @@
 {foreach $params as $param}{if $param@key == $key}&{$key}={$value}{else}&{$param@key}={$param}{/if}{/foreach}
 {/function}
 
+{function name=params_without_key}
+{foreach $params as $param}{if $param@key != $key}&{$param@key}={$param}{/if}{/foreach}
+{/function}
+
 {function name=restriction_params}
 {$add=true}{foreach $params as $param}{if $param@key == $key}&{$key}={$value}{$add=false}{else}&{$param@key}={$param}{/if}{/foreach}
 {if $add == true}&{$key}={$value}{/if}

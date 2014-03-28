@@ -88,6 +88,39 @@ require([	"dojo/_base/declare",
 						var handler = new Tree();
 						handler.setupTree(node, function() {
 							// highlight path
+							
+							var key;
+							var a = uri_object;
+							
+							var path_array = [];
+							// 
+							for (key in a) {
+								// if key fits to seltag_
+								if(/^seltag_[1-9]\d*$/.test(key)){
+									if(a[key]){
+										// get seltag id
+										var item_id;
+										item_id = /^seltag_([1-9]\d*)$/.exec(key);
+										var path = handler.buildPath(item_id[1]);
+										path_array.push(path);
+										
+									}
+								}
+							}
+							
+							handler.tree.set("paths", path_array);
+						}, true);
+					});
+				});
+				
+				// sub tree
+				// tree
+				query("div.subtree").forEach(function(node, index, arr) {
+					require(["commsy/tree"], function(Tree) {
+						var handler = new Tree();
+						handler.setupTree(node, function() {
+							// get every tag which is connected to the entry
+							// highlight path
 							if (uri_object.seltag) {
 								var seltag = uri_object.seltag;
 								var path = handler.buildPath(seltag);
