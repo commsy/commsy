@@ -430,8 +430,35 @@ class cs_authentication {
          $this->_used_auth_manager = $auth_manager;
          $this->_auth_source_granted = $auth_source;
       } elseif ( isset($this->_auth_source_list) and !$this->_auth_source_list->isEmpty() ) {
+         
+      	// first: default auth source
+      	$current_portal = $this->_environment->getCurrentPortalItem();
+      	if ( !empty($current_portal) ) {
+      	   $default_auth_source_id = $current_portal->getAuthDefault();
+      	   if ( !empty($default_auth_source_id) ) {
+      	   	$default_auth_source_item = NULL;
+               $auth_source_item = $this->_auth_source_list->getFirst();
+      	   	while ( $auth_source_item ) {
+      	   		if ( $default_auth_source_id == $auth_source_item->getItemID() ) {
+      	   			$default_auth_source_item = $auth_source_item;
+      	   			break;
+      	   		}
+     	   			$auth_source_item = $this->_auth_source_list->getNext();
+      	   	}
+      	   	if ( !empty($default_auth_source_item) ) {
+      	   		$auth_manager = $this->getAuthManager($auth_source_item->getItemID());
+      	   		$allowed = $auth_manager->checkAccount($uid,$password);
+      	   		if ( $allowed ) {
+      	   			$auth_source = $auth_source_item->getItemID();
+      	   			$this->_used_auth_manager = $auth_manager;
+      	   			$this->_auth_source_granted = $auth_source;
+      	   		}      	   		
+      	   	}
+      	   }
+      	}
+      	
+      	// second: all auth sources
          $auth_source_item = $this->_auth_source_list->getFirst();
-         $allowed = false;
          while ( $auth_source_item and !$allowed ) {
             if ( $auth_source_item->show() ) {
                $auth_manager = $this->getAuthManager($auth_source_item->getItemID());

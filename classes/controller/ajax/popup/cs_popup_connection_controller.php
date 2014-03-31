@@ -24,6 +24,9 @@
 		}
 		
 		public function save ( $form_data, $additional = array() ) {
+			#pr($form_data);
+			#pr($additional);
+			#exit;
 			if ( !empty($additional)
 				  and !empty($additional['action'])
 				  and $additional['action'] == 'saveNew'
@@ -65,7 +68,6 @@
 				} elseif ( $result == 'DATA_LOST' ) {
 				   $this->_popup_controller->setErrorReturn("1003",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 				} else {
-					//$this->_popup_controller->setSuccessfullItemIDReturn(42);
 					$data = array();
 					$data['action'] = 'new';
 					$data['id'] = $result['id'];
@@ -80,7 +82,8 @@
 		} 
 	
 		public function saveCurrent($form_data, $additional = array()) {
-
+			$translator = $this->_environment->getTranslationObject();
+				
 			// data conversion
 			$tabid_array = array();
 			$sort_array = array();
@@ -165,10 +168,13 @@
 	         
 	         $user_item->setPortalConnectionInfoDB($portal_conn_array);
 	         $user_item->save();	         
+			   
+	         // set return
+			   $this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
+			} else {
+			   // set return
+				$this->_popup_controller->setErrorReturn("1011",$translator->getMessage('CS_BAR_CONNECTION_JS_ERROR_3'));
 			}
-			
-			// set return
-			$this->_popup_controller->setSuccessfullItemIDReturn($user_item->getItemID());
 		}
 	
 		public function initPopup($data) {
