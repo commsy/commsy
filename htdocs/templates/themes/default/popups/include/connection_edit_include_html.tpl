@@ -21,7 +21,7 @@
                               <div class="input_container_180">                  
                                  <ol id="wishListNode" dojoType="dojo.dnd.Source" class="container">
                                     {foreach $popup.tabs as $key => $tab}
-                                       <li class="dojoDndItem">{$tab.title}<input name="form_data[sort_{$key}]" value="{$tab.id}" type="hidden"></li>
+                                       <li class="dojoDndItem netnavigation">{$tab.title}<input name="form_data[sort_{$key}]" value="{$tab.id}" type="hidden"></li>
                                     {/foreach}
                                  </ol>
                               </div>

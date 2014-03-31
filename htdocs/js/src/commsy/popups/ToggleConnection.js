@@ -5,9 +5,11 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
+        	"commsy/request",
+        	"dojo/_base/lang",
         	"dojo/on",
         	"dojo/_base/lang",
-        	"dojo/dnd/Source"], function(declare, xhr, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, On, Lang, Source) {
+        	"dojo/dnd/Source"], function(declare, xhr, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, request, lang, On, Lang, Source) {
 	return declare(TogglePopupHandler, {
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
@@ -148,7 +150,7 @@ define([	"dojo/_base/declare",
 		
 		setupSpecificEdit: function() {
 			// register click for edit button
-			var aEditNode = Query("a#edit_connections", this.contentNode)[0]
+			var aEditNode = Query("a#edit_connections", this.contentNode)[0];
 			if (aEditNode) {
 				On.once(aEditNode, "click", Lang.hitch(this, function(event) {
 					this.setupEditMode();
@@ -157,7 +159,7 @@ define([	"dojo/_base/declare",
 		},
 		
 		saveNewTab: function() {
-			
+			var index;
 			var data = [];
 			var part = 'tabs';
 			var action = 'saveNew';
@@ -186,11 +188,11 @@ define([	"dojo/_base/declare",
 					nodeLists: data
 			};
 				
-			this.submit(search, { part: part, action: action });			
+			this.submit(search, { part: part, action: action });
 		},
 
 		saveCurrentTabs: function() {
-			
+			var index;
 			var data = [];
 			var part = 'tabs';
 			var action = 'save';
@@ -214,7 +216,6 @@ define([	"dojo/_base/declare",
 			};
 			
 			this.submit(search, { part: part, action: action });
-			
 		},
 
 		setupEditMode: function() {
@@ -279,6 +280,75 @@ define([	"dojo/_base/declare",
 			this.setupSpecificEdit();
 		},
 		
+		reopen: function() {
+			if(this.is_loaded === false) {
+				this.setupLoading();
+				
+				//this.statics.togglePopups.push(this);
+				
+				// setup ajax request for getting html
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'popup',
+						action:	'getHTML'
+					},
+					data: {
+						module: this.module
+					}
+				}).then(lang.hitch(this, function(response) {
+					// append html to node
+					DomConstruct.place(response.data, this.contentNode, "replace");
+					
+					this.setupTabs();
+					this.setupFeatures();
+					this.setupSpecific();
+					this.setupSpecificEdit();
+					this.onCreate();
+					
+					// register close
+					On(Query("a", this.contentNode)[0], "click", lang.hitch(this, function(event) {
+						this.close();
+						
+						event.preventDefault();
+					}));
+					
+					// register submit click
+					On(Query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+						// get custom data object
+						var customObject = this.getAttrAsObject(event.target, "data-custom");
+						this.onPopupSubmit(customObject);
+						
+						event.preventDefault();
+					}));
+					
+					this.destroyLoading();
+				}));
+				
+				this.is_loaded = true;
+			}
+			
+			this.is_open = !this.is_open;
+			
+			if (this.is_open) {
+				// close all popups before open this
+				dojo.forEach(this.statics.togglePopups, lang.hitch(this, function(popup, index, arr) {
+					if (popup !== this) {
+						popup.close();
+						popup.is_open = false;
+					}
+				}));
+				
+				/* temporary, until all widgets are migrated to current version */
+				var widgetManager = this.getWidgetManager();
+				widgetManager.CloseAllWidgets();
+				/* ~temporary */
+			}
+			
+			this.onTogglePopup();
+		},
+
 		/************************************************************************************
 		 * Success Handling
 		 ************************************************************************************/
@@ -313,12 +383,18 @@ define([	"dojo/_base/declare",
 			      DomConstruct.place(newNavTab,lastNavTab,'after');			      
 			      */
 				  location.reload();
+				  //this.is_open = false;
+				  //this.is_loaded = false;
+			      //this.reopen();
 			   } else {
 				  location.reload();
 			   }
 			} else {
-				// nur zahl
+				// nur zahl - save current
 				location.reload();
+				//this.is_open = false;
+				//this.is_loaded = false;
+				//this.reopen();
 			}
 		},
 		
