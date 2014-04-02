@@ -178,9 +178,10 @@ class cs_smarty extends Smarty {
 	public function smarty_function_embed(array $params, Smarty_Internal_Template $template){
 		// ckeditor ausgabe
 		$param1 = isset($params['param1']) ? $params['param1'] : '';
-		if(preg_match('/<embed.*".*src="(\S*)".*>/', $param1, $matches)){
+		// only add session id for wma files
+		if(preg_match('/<embed.*".*src="(\S*.wma\S*)".*>/', $param1, $matches)){
 			//append session id
-			$param1 = preg_replace('/(<embed.*src=")(\S*)(".*>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
+			$param1 = preg_replace('/(<embed.*src=")(\S*.wma\S*)(".*>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
 			
 		}
 		return $param1;
