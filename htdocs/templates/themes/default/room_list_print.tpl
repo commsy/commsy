@@ -18,7 +18,7 @@
 {/block}
 
 {block name=header_content_print}
-	<div><h2>{$environment.room_title}</h2></div>
+	{*<div><h2>{$environment.room_title}</h2></div>*}
 	<br>
 	<div> <h4>___COMMON_RESTRICTIONS___</h4></div>
 	{foreach $list.restriction_text_parameters as $params}

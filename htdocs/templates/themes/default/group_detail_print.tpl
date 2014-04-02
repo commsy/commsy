@@ -1,7 +1,7 @@
 {extends file="room_detail_print.tpl"}
 
 {block name=header_content_print}
-	<div style="padding-bottom: 7px;"><h2>{$environment.room_title}</h2></div>
+	{*<div style="padding-bottom: 7px;"><h2>{$environment.room_title}</h2></div>*}
 	<h4>___COMMON_GROUP___</h4>
 	<br>
 	{*<div> <h4>___COMMON_RESTRICTIONS___</h4></div>
@@ -75,7 +75,7 @@
 				{/if}
 				{if !empty($detail.content.description)}
 					<div class="detail_description_print">
-					{$detail.content.description}
+					{embed param1=$detail.content.description}
 					</div>
 				{/if}
 				<div class="clear"> </div>

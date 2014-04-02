@@ -1,7 +1,7 @@
 {extends file="room_detail_print.tpl"}
 
 {block name=header_content_print}
-	<div style="padding-bottom: 7px;"><h2>{$environment.room_title}</h2></div>
+	{*<div style="padding-bottom: 7px;"><h2>{$environment.room_title}</h2></div>*}
 	<h4>___COMMON_MATERIAL___</h4>
 	<br>
 	{*<div> <h4>___COMMON_RESTRICTIONS___</h4></div>
@@ -166,7 +166,7 @@
 								<tr>
 									<td><h4>___MATERIAL_ABSTRACT___:</h4></td>
 									<td>
-										{$detail.content.description}
+										{embed param1=$detail.content.description}
 									</td>
 								</tr>
 							{/if}
@@ -175,7 +175,7 @@
 
 				{if $detail.content.description && (!isset($detail.content.sections) || empty($detail.content.sections))}
 					<div class="detail_description_print">
-						{$detail.content.description}
+						{embed param1=$detail.content.description}
 					</div>
 				{/if}
 				</div>
