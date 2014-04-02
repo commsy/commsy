@@ -18,6 +18,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 		CKEDITOR.dialog.add( 'CommSyDocument', function ( instance )
 				{
+					var fileName;
 					var audio;
 					
 					var SelectBoxItems = new Array(
@@ -60,7 +61,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										type: 'select',
 										id: 'selectbox',
 										style: 'width=100%',
-										label: 'Medien Typ',
+										label: 'Medientyp',
 										items: SelectBoxItems,
 										'default' : 'null',
 										onLoad : function () 
@@ -200,7 +201,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 													{
 														if ( !this.getValue() )
 														{
-															alert( 'noCode' );
+															alert( 'Bitte geben Sie eine URL an.' );
 															return false;
 														}
 													}
@@ -394,6 +395,14 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								var dialog = this;
 								var linkText = this.getValueOf('documentTab','linkText');
 								var link = this.getValueOf('documentTab', 'documentUrl');
+								
+								// regex filename
+								var fileNameRegEx = /commsy.php\/(.*)\?.*/;
+								if(linkText == ''){
+									//var filename = this.getValueOf('documentTab','fileselect');
+									match = link.match(fileNameRegEx);
+									linkText = match[1];
+								}
 								
 					            var a = editor.document.createElement( 'a' );
 					            a.setAttribute( 'href', link);

@@ -69,6 +69,7 @@ class cs_smarty extends Smarty {
 		$this->registerFilter('output', array($this, 'smarty_filter_i18n'));
 		$this->registerFilter("output", array($this, "smarty_filter_textfunctions"));
 		$this->registerPlugin('function', 'i18n', array($this, 'smarty_function_i18n'));
+		$this->registerPlugin('function', 'embed', array($this, 'smarty_function_embed'));
 	}
 	
 	public function setTheme($theme) {
@@ -172,6 +173,18 @@ class cs_smarty extends Smarty {
 	
 	public function compile_lang($key) {
 		return $this->translator->getMessage($key[1]);
+	}
+	
+	public function smarty_function_embed(array $params, Smarty_Internal_Template $template){
+		// ckeditor ausgabe
+		$param1 = isset($params['param1']) ? $params['param1'] : '';
+		// only add session id for wma files
+		if(preg_match('/<embed.*".*src="(\S*.wma\S*)".*>/', $param1, $matches)){
+			//append session id
+			$param1 = preg_replace('/(<embed.*src=")(\S*.wma\S*)(".*>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
+			
+		}
+		return $param1;
 	}
 }
 ?>
