@@ -78,24 +78,36 @@
 					$this->_tpl_engine->setPostToken(true);
 				}
 				// print - download pdf
-				if($this->_environment->getOutputMode() == 'print'){
+				if($this->_environment->getOutputMode() === 'print'){
 					require_once('classes/cs_mpdf.php');
 					$mpdf = new cs_mpdf();
 					// convert html code into pdf file
 					//$mpdf->WriteHTML($this->_tpl_engine->getOutput($this->_tpl_file, $this->_environment->getOutputMode()));
 					#$mpdf->WriteHTML($this->_tpl_engine->display_output($this->_tpl_file, $this->_environment->getOutputMode()));
 					
+					// debug
+					if($_GET['debug'] == 1){
+						$mpdf->showImageErrors = true;
+					}
+								
 					$image = '<img src="../htdocs/images/commsy_logo_transparent.gif"/>';
 					$mpdf->setHeader('CommSy | {DATE j.m.Y} ');
 					#$mpdf->setHTMLHeader($image);
 					$mpdf->setFooter('|{PAGENO}/{nbpg}');
 // 					$mpdf->setWatermarkImage('../htdocs/images/CommSy_Logo.png',0.05);
-					$mpdf->showWatermarkImage = true;
+// 					$mpdf->showWatermarkImage = true;
 					ob_start();
 					$this->_tpl_engine->display_output($this->_tpl_file, $this->_environment->getOutputMode());
 					$output = ob_get_clean();
 					$mpdf->WriteHTML($output);
-					$mpdf->Output();
+					$contextItem = $this->_environment->getCurrentContextItem();
+					$roomTitle = str_replace(' ', '_', $contextItem->getTitle());
+					if(!empty($_GET['iid'])){
+						$id = $_GET['iid'];
+						$mpdf->Output($roomTitle.'_'.$id.'.pdf', 'I');
+					} else {
+						$mpdf->Output($roomTitle.'.pdf', 'I');
+					}
 					exit;
 				}
 				$this->_tpl_engine->display_output($this->_tpl_file, $this->_environment->getOutputMode());
