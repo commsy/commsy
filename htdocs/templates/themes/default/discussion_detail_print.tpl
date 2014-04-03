@@ -185,7 +185,7 @@
 								{/if}
 
 								<div class="editor_content">
-									{$article.description}
+									{embed param1=$article.description}
 								</div>
 							</div>
 						</div>
