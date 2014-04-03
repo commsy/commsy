@@ -25,16 +25,16 @@
 
 	    <!-- CSS -->
 	    <link rel="stylesheet" type="text/css" media="screen" href="js/src/dijit/themes/tundra/tundra.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/src/cbtree/themes/tundra/tundra.css" />
-	 	<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/form/resources/UploaderFileList.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/image/resources/Lightbox.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/widget/ColorPicker/ColorPicker.css" />
-		<link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/calendar/themes/tundra/Calendar.css" />
+		 <link rel="stylesheet" type="text/css" media="screen" href="js/src/cbtree/themes/tundra/tundra.css" />
+	 	 <link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/form/resources/UploaderFileList.css" />
+		 <link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/image/resources/Lightbox.css" />
+		 <link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/widget/ColorPicker/ColorPicker.css" />
+		 <link rel="stylesheet" type="text/css" media="screen" href="js/src/dojox/calendar/themes/tundra/Calendar.css" />
+       <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 
 		{block name="css"}
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
 		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles_addon.css" />
-		    <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}cs_dojo.css" />
 		{/block}
 
 	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
