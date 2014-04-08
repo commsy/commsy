@@ -222,13 +222,11 @@ define([	"dojo/_base/declare",
 						}));
 							
 						DomConstruct.create("span", {
-							id:		"buttonPrevSpan",
-							innerHTML: "<"
+							id:		"buttonPrevSpan"
 						}, node, "last");
 							
 						DomConstruct.create("span", {
-							id:		"buttonNextSpan",
-							innerHTML: ">"
+							id:		"buttonNextSpan"
 						}, node, "last");
 						
 //						this.preloadEvents();
