@@ -184,7 +184,7 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 				} else {
 				   $this->_popup_controller->assign('item', 'description', $item->getDescription());
 				}
- 				$this->_popup_controller->assign('item', 'public', $item->isPublic());
+ 				  $this->_popup_controller->assign('item', 'public', $item->isPublic());
 		        $this->_popup_controller->assign('item', 'author',$item->getAuthor());
 		        $this->_popup_controller->assign('item', 'bib_kind', $item->getBibKind());
 		        $this->_popup_controller->assign('item', 'publisher', $item->getPublisher());
@@ -262,9 +262,9 @@ class cs_popup_material_controller implements cs_rubric_popup_controller {
 
 				$this->_popup_controller->assign('popup', 'activating', $activating);
 			}else{
- 				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? '1': '0';
+ 				$val = ($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? '1': '0';
  				$this->_popup_controller->assign('item', 'public', $val);
-				$val = ($this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
+				$val = ($this->_environment->inCommunityRoom() || $this->_environment->inProjectRoom() || $this->_environment->inGroupRoom()) ? false : true;
 		    	$this->_popup_controller->assign('item', 'private_editing', $val);
 		        if ($current_context->withWorkflow()){
 		           $this->_popup_controller->assign('item', 'workflow_traffic_light',$current_context->getWorkflowTrafficLightDefault());
