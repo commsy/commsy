@@ -214,9 +214,8 @@ require([	"dojo/_base/declare",
 				}
 				
 				// lightbox
-				require(["commsy/Lightbox"], function(Lightbox) {
-					var handler = new Lightbox();
-					handler.setup(query("a[class^='lightbox']"));
+				require(["commsy/lightbox"], function(lightbox) {
+					lightbox.addImageGroup(query("a[class^='lightbox']"));
 				});
 				
 				// progressbar
