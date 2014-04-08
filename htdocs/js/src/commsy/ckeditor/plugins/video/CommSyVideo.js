@@ -168,10 +168,10 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											var startAt = dialog.getContentElement( 'videoTab', 'startAt');
 											var urlInput = dialog.getContentElement( 'videoTab', 'videoUrl');
 											
-											var uploadButton = dialog.getContentElement( 'videoTab', 'uploadButton');
+											//var uploadButton = dialog.getContentElement( 'videoTab', 'uploadButton');
 											var upload = dialog.getContentElement( 'videoTab', 'upload');
 											
-											uploadButton.disable();
+											//uploadButton.disable();
 											upload.disable();
 											
 											urlInput.setLabel('Aus URL einfügen');
@@ -187,7 +187,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											var fileSelect = dialog.getContentElement( 'videoTab', 'fileselect');
 											var dataSecurityBox = dialog.getContentElement( 'videoTab', 'dataSecurity');
 											var startAt = dialog.getContentElement( 'videoTab', 'startAt');
-											var uploadButton = dialog.getContentElement( 'videoTab', 'uploadButton');
+											//var uploadButton = dialog.getContentElement( 'videoTab', 'uploadButton');
 											var upload = dialog.getContentElement( 'videoTab', 'upload');
 											
 											
@@ -730,6 +730,10 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'quicktime'){
 								
+								if(this.getValueOf('videoTab', 'autostart')){
+									params = 'autoplay="true"';
+								}
+								
 								content += '<object width="' + width + '" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
 								content += '<param value="true" name="controller">';
 								content += '<param value="high" name="quality">';
@@ -744,7 +748,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += '<param value="false" name="loop">';
 								content += '<param value="true" name="devicefont">';
 								content += '<param value="mov" name="class">';
-								content += '<embed width="' + width + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" autoplay="true" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true">';
+								content += '<embed width="' + width + '" height="' + height + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true"' + params + '>';
 								content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'mediaplayer'){
