@@ -905,7 +905,6 @@ class cs_server_item extends cs_guide_item {
    		$cron_array['success_text'] = 'nothing to do';
    	}
    	
-   	break;
    	$time_end = getmicrotime();
    	$time = round($time_end - $time_start,0);
    	$cron_array['time'] = $time;
