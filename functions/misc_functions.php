@@ -889,6 +889,7 @@ function isURLValid () {
          $funct != 'search_index' and
     	 $funct != 'rubric_popup' and
     	 $funct != 'path' and
+    	 $funct != 'picture' and
          
          $funct != 'workflow'
        ) {
