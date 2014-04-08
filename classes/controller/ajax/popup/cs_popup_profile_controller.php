@@ -1515,7 +1515,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		$return['email_to_commsy_on'] = false;
 
 	    global $c_email_upload;
-	    if ($c_email_upload ) {
+	    if ($c_email_upload && !$this->_user->isRoot()) {
 		   $return['email_to_commsy_on'] = true;
 	       $own_room = $this->_user->getOwnRoom();
 	       $return['email_to_commsy'] = $own_room->getEmailToCommSy();
@@ -1595,7 +1595,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 
 	   // Wordpress
-	   if($current_portal_item->getWordpressPortalActive()){
+	   if($current_portal_item->getWordpressPortalActive() && !$current_user->isRoot()){
    	   $wordpress_manager = $this->_environment->getWordpressManager();
 	      $wordpress = array();
 	   $wordpress_url = $current_portal_item->getWordpressUrl();
@@ -1676,7 +1676,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
          }
    	   $wiki['wiki_skin_array'] = $wiki_skins;
 
-   	   if($current_context->isWikiActive()){
+   	   if(!$current_user->isRoot() && $current_context->isWikiActive()){
             $wiki['wiki_active'] = 'yes';
 
             $wiki['wikititle'] = $current_context->getWikiTitle();
@@ -1786,7 +1786,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
             $wiki['enable_wiki_groups'] = $temp_wiki_groups_array;
 
-   	   } else {
+   	   } else if(!$current_user->isRoot()){
       	   $wiki['wikititle'] = $current_context->getWikiTitle();
             $wiki['wiki_skin_choice'] = 'pmwiki';
             $wiki['admin'] = 'admin';
@@ -1841,7 +1841,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	                  $array_plugins[$plugin_class->getIdentifier()]['homepage'] = '___CONFIGURATION_PLUGIN_HOMEPAGE___: <a href="'.$homepage.'" target="_blank" title="___CONFIGURATION_PLUGIN_HOMEPAGE___: '.$plugin_class->getTitle().'">'.$homepage.'</a>';
 	               }
 	            }
-               if ( $current_context->isPluginOn($plugin) ) {
+               if ( !$current_user->isRoot() && $current_context->isPluginOn($plugin) ) {
                   $array_plugins[$plugin_class->getIdentifier()]['on'] = 'yes';
                } else {
                   $array_plugins[$plugin_class->getIdentifier()]['on'] = 'no';
@@ -1875,74 +1875,78 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 	private function getNewsletterInformation() {
 		$return = array();
-
-		// get data from database
-		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
-		$newsletter = $room->getPrivateRoomNewsletterActivity();
-
-		switch($newsletter) {
-			case 'weekly':
-				$return['newsletter'] = '2';
-				break;
-			case 'daily':
-				$return['newsletter'] = '3';
-				break;
-			default:
-				$return['newsletter'] = '1';
-				break;
+		
+		if(!$this->_user->isRoot()){
+			// get data from database
+			$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
+			$newsletter = $room->getPrivateRoomNewsletterActivity();
+	
+			switch($newsletter) {
+				case 'weekly':
+					$return['newsletter'] = '2';
+					break;
+				case 'daily':
+					$return['newsletter'] = '3';
+					break;
+				default:
+					$return['newsletter'] = '1';
+					break;
+			}
+	
+			return $return;
 		}
-
-		return $return;
 	}
 
 	private function getCSBarInformation() {
 		$return = array();
-
-		// get data from database
-		$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
-		if ($room->getCSBarShowWidgets() == '1'){
-			$return['show_widget_view'] = 'yes';
-		}
-		if ($room->getPortletShowRoomWideSearchBox()){
-			$return['show_roomwide_search'] = 'yes';
-		}
-		if ($room->getPortletShowNewEntryList()){
-			$return['show_newest_entries'] = 'yes';
-		}
-		if ($room->getPortletShowActiveRoomList()){
-			$return['show_active_rooms'] = 'yes';
-		}
-
-		if ($room->getCSBarShowCalendar() == '1'){
-			$return['show_calendar_view'] = 'yes';
-		}
-
-		if ($room->getCSBarShowStack() == '1'){
-			$return['show_stack_view'] = 'yes';
-		}
-
-		if ($room->getCSBarShowPortfolio() == '1'){
-			$return['show_portfolio_view'] = 'yes';
-		}
-
-		if ($room->getCSBarShowOldRoomSwitcher() == '1'){
-			$return['show_old_room_switcher'] = 'yes';
-		}
 		
-		// portal2portal
-		$return['show_connection_view'] = 'inactive';
-		$server_item = $this->_environment->getServerItem();
-		if ( !empty($server_item) ) {
-			if ( $server_item->isServerConnectionAvailable() ) {
-				if ($room->getCSBarShowConnection() == '1') {
-					$return['show_connection_view'] = 'yes';
-				} else {
-					$return['show_connection_view'] = 'no';
+		if(!$this->_user->isRoot()){
+			// get data from database
+			$room = $this->_environment->getCurrentUserItem()->getOwnRoom();
+			if ($room->getCSBarShowWidgets() == '1'){
+				$return['show_widget_view'] = 'yes';
+			}
+			if ($room->getPortletShowRoomWideSearchBox()){
+				$return['show_roomwide_search'] = 'yes';
+			}
+			if ($room->getPortletShowNewEntryList()){
+				$return['show_newest_entries'] = 'yes';
+			}
+			if ($room->getPortletShowActiveRoomList()){
+				$return['show_active_rooms'] = 'yes';
+			}
+	
+			if ($room->getCSBarShowCalendar() == '1'){
+				$return['show_calendar_view'] = 'yes';
+			}
+	
+			if ($room->getCSBarShowStack() == '1'){
+				$return['show_stack_view'] = 'yes';
+			}
+	
+			if ($room->getCSBarShowPortfolio() == '1'){
+				$return['show_portfolio_view'] = 'yes';
+			}
+	
+			if ($room->getCSBarShowOldRoomSwitcher() == '1'){
+				$return['show_old_room_switcher'] = 'yes';
+			}
+			
+			// portal2portal
+			$return['show_connection_view'] = 'inactive';
+			$server_item = $this->_environment->getServerItem();
+			if ( !empty($server_item) ) {
+				if ( $server_item->isServerConnectionAvailable() ) {
+					if ($room->getCSBarShowConnection() == '1') {
+						$return['show_connection_view'] = 'yes';
+					} else {
+						$return['show_connection_view'] = 'no';
+					}
 				}
 			}
+	
+			return $return;
 		}
-
-		return $return;
 	}
 
 
