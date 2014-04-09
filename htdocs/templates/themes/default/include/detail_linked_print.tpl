@@ -1,5 +1,5 @@
-<!-- Start fade_in_ground -->
-<div id="linked_expand" {if !$detail.is_reference_bar_visible}class="hidden"{/if}>
+{*<!-- Start fade_in_ground -->
+<div id="linked_expand" {if in_array("linked_expand",$detail.printcookie)}class="hidden"{/if}>
 	<div class="fade_in_ground_linked">
 		<div class="fi_morelinked">
 			<div class="fi_md_linked_info">
@@ -39,4 +39,4 @@
 		</div>
 	</div>
 </div>
-<!-- Ende fade_in_ground -->
+<!-- Ende fade_in_ground -->*}

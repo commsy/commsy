@@ -2,11 +2,11 @@
 
 {block name=room_list_content}
 
-	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border">
+	<table width="100%" cellpadding="2" cellspacing="0" class="print_table_border" style="background-color:#DADADA;border: 1px solid #676767;">
 		<thead>
 			<tr>
-				<td class="table_head"></td>
-				<td class="table_head">
+				{*<td class="table_head_2"></td>*}
+				<td class="table_head_2">
             		{if $list.sorting_parameters.sort_title == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" id="sort_up"><strong>___COMMON_TITLE___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_title == "down"}
@@ -15,7 +15,7 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_title_link}" class="sort_none">___COMMON_TITLE___</a></h3>
             		{/if}
             	</td>
-            	<td class="table_head">
+            	<td class="table_head_2">
             		{if $list.sorting_parameters.sort_modified == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" id="sort_up"><strong>___COMMON_MODIFIED_AT___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_modified == "down"}
@@ -24,7 +24,7 @@
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modified_link}" class="sort_none">___COMMON_MODIFIED_AT___</a></h3>
             		{/if}
             	</td>
-            	<td class="table_head">
+            	<td class="table_head_2">
             		{if $list.sorting_parameters.sort_modificator == "up"}
             		 	<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_modificator_link}" id="sort_up"><strong>___COMMON_ENTERED_BY___</strong></a></h3>
             		{elseif $list.sorting_parameters.sort_modificator == "down"}
@@ -34,7 +34,7 @@
             		{/if}
             	</td>
             	{if $room.workflow}
-            		<td class="table_head">
+            		<td class="table_head_2">
             			{if $list.sorting_parameters.sort_workflow == "up"}
             				<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_workflow_link}" id="sort_up"><strong>___COMMON_WORKFLOW_INDEX___</strong></a></h3>
             			{elseif $list.sorting_parameters.sort_workflow == "down"}
@@ -45,7 +45,7 @@
             		</td>
         		{/if}
         		{if $room.assessment}
-        			<td class="table_head">
+        			<td class="table_head_2">
             			{if $list.sorting_parameters.sort_assessment == "up"}
             				<h3><a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct={$environment.function}&{$list.sorting_parameters.sort_assessment_link}" id="sort_up"><strong>___COMMON_ASSESSMENT_INDEX___</strong></a></h3>
             			{elseif $list.sorting_parameters.sort_assessment == "down"}
@@ -60,7 +60,7 @@
 		<tbody>
 			{foreach $material.list_content.items as $item }
     			<tr>
-    				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
+    				{*<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
     					{if $item.noticed.status == "new" and ($item.noticed.annotation_info.count_new or $item.noticed.annotation_info.count_changed)}
     						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_a.gif" alt="*" /></a>
     					{elseif $item.noticed.status == "new"}
@@ -74,18 +74,19 @@
     					{elseif $item.noticed.annotation_info.count_changed}
     						<img title="" class="new_item_2" src="{$basic.tpl_path}img/flag_neu_2_a.gif" alt="*" /></a>
     					{/if}
-    				</td>
+    				</td>*}
     				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if}">
-            				<div class="print_title">
+            				<div class="print_title" style="border:1px solid #676767;">
                 				<p>
                 					{if $item.activated}
-                						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a>
+                						&nbsp;&nbsp;<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&{$environment.params}&iid={$item.iid}">{$item.title}</a> 
                 					{else}
                 						{$item.title}</br>___COMMON_NOT_ACTIVATED___
                 					{/if}
                 				</p>
             				</div>
-            				<div class="print_files_icon">
+            				
+            				{*<div class="print_files_icon">
                 				<p>
                 					<a href="#" class="attachment">{$item.attachment_count}</a>
                 				</p>
@@ -113,7 +114,8 @@
             							</div>
             						</div>
             					</div>
-            				{/if}
+            				{/if}*}
+            				
     				</td>
     				<td class="{if $item@iteration is odd}row_odd{else}row_even{/if} print_border">
             				<p>{$item.date}</p>

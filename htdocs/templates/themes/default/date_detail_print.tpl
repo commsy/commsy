@@ -1,51 +1,96 @@
 {extends file="room_detail_print.tpl"}
 
+{block name=header_content_print}
+	{*<div style="padding-bottom: 7px;"><h2>{$environment.room_title}</h2></div>*}
+	<h4>___COMMON_DATE___</h4>
+	<br>
+	{*<div> <h4>___COMMON_RESTRICTIONS___</h4></div>
+	{foreach $list.restriction_text_parameters as $params}
+		{$params.name},
+	{/foreach}
+	<br>*}
+	
+{/block}
+
 {block name=room_detail_content}
-
+	<div id="main_navigation_print" style="border:1px solid #676767;"><h1>{$detail.content.title}</h1></div>
     <div class="item_body_print"> <!-- Start item body -->
-		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.content.item_id}" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |
-			{/if}
-			{if $detail.actions.date_leave}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=2" title="___DATE_LEAVE___">___DATE_LEAVE___</a> |
-			{/if}
+		
+	    {*{include file="include/detail_linked_print.tpl"}*}
 
-			{if $detail.actions.date_participate}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&date_option=1" title="___DATE_ENTER___">___DATE_ENTER___</a> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.delparams}" title="___COMMON_DELETE_ITEM___">___COMMON_DELETE_ITEM___</a> |
-			{/if}
-			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=mail&iid={$detail.content.item_id}" alt="___COMMON_EMAIL_TO___">___COMMON_EMAIL_TO___</a> |
-			{/if}
-			{if $detail.actions.copy}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.content.item_id}&add_to_{$environment.module}_clipboard={$detail.content.item_id}" title="___COMMON_ITEM_COPY_TO_CLIPBOARD___">___COMMON_ITEM_COPY_TO_CLIPBOARD___</a> |
-			{/if}
-			<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail{params params=$detail.actions.downloadparams}" title="___COMMON_DOWNLOAD___">___COMMON_DOWNLOAD___</a>
-		</div>
-		<!-- Ende fade_in_ground -->
-
-	    {include file="include/detail_linked_print.tpl"}
-
-        <h2>
+        {*<h2>
             {$detail.content.title}
-        </h2>
+        </h2>*}
+        
+        <div style="background-color:#E3E3E3;border-left:1px solid #676767;border-right:1px solid #676767;">
+			<div style="font-size:10px;padding: 0px 10px;">
+				{*{foreach $list.restriction_text_parameters as $params}
+					{$params.name},
+				{/foreach}
+				<br>*}
+				<div {if in_array("linked_expand",$detail.printcookie)}class="hidden"{/if}>
+					___COMMON_ATTACHED_BUZZWORDS___: 
+					{foreach $room.buzzwords as $buzzword}
+						{block name=sidebar_buzzwordbox_buzzword}
+							<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&selbuzzword={$buzzword.to_item_id}">{$buzzword.name}</a>{if !$buzzword@last}, {/if}
+						{/block}
+					{foreachelse}
+						___COMMON_NONE___
+					{/foreach}
+				</div>
+				<div {if in_array("linked_expand",$detail.printcookie)}class="hidden"{/if}>
+					___COMMON_ATTACHED_TAGS___:
+					{foreach $item.tags as $tag}
+						<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=index&name=selected&seltag_{$tag.level}={$tag.item_id}&seltag=yes">{$tag.title}</a>{if !$tag@last}, {/if}
+					{foreachelse}
+						___COMMON_NONE___
+					{/foreach}
+				</div>
+				<div {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+					___COMMON_REFNUMBER___: {$detail.content.moredetails.item_id}
+					<br>
+					{if isset($detail.content.moredetails.read_since_modification_percentage)}
+						___COMMON_READ_SINCE_MODIFICATION___:
+						{*<div class="progressbar">*}
+							<!--  <img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" /> -->
+							
+							<span class="value">{$detail.content.moredetails.read_since_modification_count}</span>
+							<span> - </span>
+							<span class="percent">{$detail.content.moredetails.read_since_modification_percentage}%</span>					
+						{*</div>*}
+					{/if}
+					<br>
+					___COMMON_CREATED_BY___:
+					{build_user_link status=$detail.content.moredetails.creator_status user_name=$detail.content.moredetails.creator id=$detail.content.moredetails.creator_id} - {$detail.content.moredetails.creation_date}
+					<br>
+					{if !empty($detail.content.moredetails.modifier)}
+						___COMMON_EDIT_BY___:
+						{foreach $detail.content.moredetails.modifier as $modifier}
+							{build_user_link status=$modifier.status user_name=$modifier.name id=$modifier.id}{if !$modifier@last}, {/if}
+						{/foreach}
+					<br><br>
+					{/if}
+					
+				</div>
+			___COMMON_LAST_MODIFIED_BY_UPPER___
+			{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
+			___DATES_ON_DAY___  {$detail.content.moredetails.last_modification_date}
+		</div>
+		</div>
+        
         <div class="clear"> </div>
 
-        <div id="item_credits">
+        <div id="item_credits" style="background-color: #FFFFFF;border-right:1px solid #676767;border-left:1px solid #676767;margin-bottom:0px;">
             <p id="ic_rating"></p>
-			<p>
+			{*<p>
 				___COMMON_LAST_MODIFIED_BY_UPPER___
 				{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
 				___DATES_ON_DAY___  {$detail.content.moredetails.last_modification_date}
-			</p>
+			</p>*}
 			<div class="clear"> </div>
 		</div>
 
-		<div class="detail_content detail_margin">
+		<div class="detail_content detail_margin" style="background-color: #FFFFFF;border-right:1px solid #676767;border-left:1px solid #676767">
             <p>
                 <div class="user_profil_blocks">
                     {* formal data *}
@@ -124,10 +169,10 @@
         </div>
 
 		<div id="item_legend"> <!-- Start item_legend -->
-			<div class="detail_content">
+			<div class="detail_content" style="background-color: #FFFFFF;border-right:1px solid #676767;border-left:1px solid #676767">
 				{if !empty($detail.content.description)}
 					<div class="detail_description_print">
-						{$detail.content.description}
+						{embed param1=$detail.content.description}
 					</div>
 				{/if}
 			</div>

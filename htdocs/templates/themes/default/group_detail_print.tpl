@@ -1,42 +1,72 @@
 {extends file="room_detail_print.tpl"}
 
+{block name=header_content_print}
+	{*<div style="padding-bottom: 7px;"><h2>{$environment.room_title}</h2></div>*}
+	<h4>___COMMON_GROUP___</h4>
+	<br>
+	{*<div> <h4>___COMMON_RESTRICTIONS___</h4></div>
+	{foreach $list.restriction_text_parameters as $params}
+		{$params.name},
+	{/foreach}
+	<br>*}
+	
+{/block}
+
 {block name=room_detail_content}
 	
+	<div id="main_navigation_print" style="border:1px solid #676767;"><h1>{$detail.content.title}</h1></div>
 	<div class="item_body_print"> <!-- Start item body -->
-		<!-- Start fade_in_ground -->
-		<div class="fade_in_ground_actions hidden">
-			{* TODO: add missing actions *}
-			{if $detail.actions.edit}
-				<a id="action_edit" href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EDIT_ITEM___</a> |
-			{/if}
-			{if $detail.actions.delete}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_DELETE_ITEM___</a> |
-			{/if}
-			{if $detail.actions.mail}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=edit&iid={$detail.item_id}">___COMMON_EMAIL_TO___</a> |
-			{/if}
-			{if $detail.actions.member=='no_member'}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=1">___GROUP_ENTER___</a> |
-			{else}
-				<a href="commsy.php?cid={$environment.cid}&mod={$environment.module}&fct=detail&iid={$detail.item_id}&group_option=2">___GROUP_LEAVE___</a> |
-			{/if}
+		<div style="background-color:#E3E3E3;border-left:1px solid #676767;border-right:1px solid #676767;">
+			<div style="font-size:10px;padding: 0px 10px;">
+				{*{foreach $list.restriction_text_parameters as $params}
+					{$params.name},
+				{/foreach}
+				<br>*}
+				<div {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
+					___COMMON_REFNUMBER___: {$detail.content.moredetails.item_id}
+					<br>
+					{if isset($detail.content.moredetails.read_since_modification_percentage)}
+						___COMMON_READ_SINCE_MODIFICATION___:
+						{*<div class="progressbar">*}
+							<!--  <img src="{$basic.tpl_path}img/ajax_loader.gif" alt="ajax_loader" /> -->
+							
+							<span class="value">{$detail.content.moredetails.read_since_modification_count}</span>
+							<span> - </span>
+							<span class="percent">{$detail.content.moredetails.read_since_modification_percentage}%</span>					
+						{*</div>*}
+					{/if}
+					<br>
+					___COMMON_CREATED_BY___:
+					{build_user_link status=$detail.content.moredetails.creator_status user_name=$detail.content.moredetails.creator id=$detail.content.moredetails.creator_id} - {$detail.content.moredetails.creation_date}
+					<br>
+					{if !empty($detail.content.moredetails.modifier)}
+						___COMMON_EDIT_BY___:
+						{foreach $detail.content.moredetails.modifier as $modifier}
+							{build_user_link status=$modifier.status user_name=$modifier.name id=$modifier.id}{if !$modifier@last}, {/if}
+						{/foreach}
+					<br><br>
+					{/if}
+					
+				</div>
+			___COMMON_LAST_MODIFIED_BY_UPPER___
+			{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
+			___DATES_ON_DAY___  {$detail.content.moredetails.last_modification_date}
 		</div>
-		<!-- Ende fade_in_ground -->
-
-		<h2>
+		</div>
+		{*<h2>
 			{$detail.content.title}
-		</h2>
+		</h2>*}
 		<div class="clear"> </div>
 
 		<div id="item_credits">
-			<p>
+			{*<p>
 				___COMMON_LAST_MODIFIED_BY_UPPER___
 				{build_user_link status=$detail.content.moredetails.last_modificator_status user_name=$detail.content.moredetails.last_modificator id=$detail.content.moredetails.last_modificator_id}
 				___DATES_ON_DAY___  {$detail.content.moredetails.last_modification_date}
-			</p>
+			</p>*}
 		</div>
 
-		<div id="item_legend"> <!-- Start item_legend -->
+		<div id="item_legend" style="border-left:1px solid #676767;border-right:1px solid #676767;"> <!-- Start item_legend -->
 			<div class="row_odd">
 				{if $detail.content.show_picture}
 					<div id="group_profil_picture">
@@ -45,7 +75,7 @@
 				{/if}
 				{if !empty($detail.content.description)}
 					<div class="detail_description_print">
-					{$detail.content.description}
+					{embed param1=$detail.content.description}
 					</div>
 				{/if}
 				<div class="clear"> </div>
@@ -119,7 +149,7 @@
 			</div>
 		</div> <!-- Ende item_legend -->
 		<div id="detail_expand" {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
-			{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}
+			{*{include file="include/detail_moredetails_print.tpl" data=$detail.content.moredetails}*}
 		</div>
 
 	</div> <!-- Ende item body -->
