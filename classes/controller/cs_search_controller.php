@@ -869,6 +869,7 @@ unset($ftsearch_manager);
 		private function _performIndexedSearch($rubric_array) {
 			$db = $this->_environment->getDBConnector();
 			$session = $this->_environment->getSessionItem();
+			$params = $this->_environment->getCurrentParameterArray();
 
 			/************************************************************************************
 			 * We can look up all search words in the database to get their ids...
@@ -1089,8 +1090,20 @@ unset($ftsearch_manager);
 					if(!empty($this->_params['selbuzzword'])) {
 						$rubric_manager->setBuzzwordLimit($this->_params['selbuzzword']);
 					}
-					if(!empty($this->_params['seltag'])) {
-						$rubric_manager->setTagLimit($this->_params['seltag']);
+// 					if(!empty($this->_params['seltag'])) {
+// 						$rubric_manager->setTagLimit($this->_params['seltag']);
+// 					}
+
+					// get selected seltags
+					$seltag_array = array();
+					foreach($params as $key => $value) {
+						if(substr($key, 0, 6) == 'seltag'){
+							// set seltag array
+							$seltag_array[$key] = $value;
+						}
+					}
+					if(!empty($seltag_array)) {
+						$rubric_manager->setTagArrayLimit($seltag_array);
 					}
 
 					/*

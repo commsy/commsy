@@ -10,6 +10,6 @@
 				{/block}
 
 {block name="css"}
-	<link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
+	 <link rel="stylesheet" type="text/css" media="screen" href="{$basic.tpl_path}styles.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="templates/themes/eww/schema.css" />
 {/block}

@@ -179,10 +179,19 @@ class cs_smarty extends Smarty {
 		// ckeditor ausgabe
 		$param1 = isset($params['param1']) ? $params['param1'] : '';
 		// only add session id for wma files
-		if(preg_match('/<embed.*".*src="(\S*.wma\S*)".*>/', $param1, $matches)){
+		if(preg_match('/<embed.+?".+?src="(\S+?.wma\S+?)".+?>/', $param1, $matches)){
 			//append session id
-			$param1 = preg_replace('/(<embed.*src=")(\S*.wma\S*)(".*>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
+			$param1 = preg_replace('/(<embed.+?src=")(\S+?.wma\S+?)(".+?>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
 			
+		}
+		// print view
+		if($this->environment->getOutputMode() === 'print'){
+			// commsy picture
+			if(preg_match('/<img.+?src="(commsy.php\S+?)".+?>/', $param1, $matches)){
+				//append session id to picture
+				$param1 = preg_replace('/(<img.+?src=")(commsy.php\S+?)(".+?>)/', '$1$2&amp;SID='.$this->environment->getSessionID().'$3', $param1);
+				
+			}
 		}
 		return $param1;
 	}

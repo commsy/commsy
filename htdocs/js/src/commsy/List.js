@@ -229,7 +229,7 @@ define([	"dojo/_base/declare",
 					});
 					
 					// update selected
-					this.store.selected = ret.num_selected_total;
+					this.store.selected = response.data.num_selected_total;
 					//DomAttr.set(Query("span#pop_item_entries_selected")[0], "innerHTML", this.store.selected);
 					
 					// register checkbox events - unregistering is done when destroying
@@ -285,11 +285,11 @@ define([	"dojo/_base/declare",
 					}));
 					
 					// update current page and total number of pages
-					DomAttr.set(Query("#pop_item_current_page, .pop_item_current_page", this.config.contentNode)[0], "innerHTML", (ret.list.length === 0) ? 0 : this.paging.current + 1);
-					DomAttr.set(Query("#pop_item_pages, .pop_item_pages", this.config.contentNode)[0], "innerHTML", ret.paging.pages);
+					DomAttr.set(Query("#pop_item_current_page, .pop_item_current_page", this.config.contentNode)[0], "innerHTML", (response.data.list.length === 0) ? 0 : this.paging.current + 1);
+					DomAttr.set(Query("#pop_item_pages, .pop_item_pages", this.config.contentNode)[0], "innerHTML", response.data.paging.pages);
 					
 					// store pages
-					this.store.pages = ret.paging.pages;
+					this.store.pages = response.data.paging.pages;
 				})
 			);
 		}

@@ -33,7 +33,7 @@
 								<div id="content_row_two" class="overflow_auto">
 									<ul class="popup_buzzword_list">
 										{foreach $popup.buzzwords as $buzzword}
-											<li class="ui-state-default popup_buzzword_item">{$buzzword.name}</li>
+											<li class="ui-state-default popup_buzzword_item" id="popup_buzzword_item_add_{$buzzword.item_id}">{$buzzword.name}</li>
 										{/foreach}
 										<div class="clear"></div>
 									</ul>
@@ -45,13 +45,13 @@
 									<div class="input_row">
 										<select id="buzzword_merge_one" class="size_200" size="1">
 											{foreach $popup.buzzwords as $buzzword}
-												<option value="{$buzzword.item_id}">{$buzzword.name}</option>
+												<option value="{$buzzword.item_id}" id="popup_buzzword_item_merge_one_{$buzzword.item_id}">{$buzzword.name}</option>
 											{/foreach}
 										</select>
 
 										<select id="buzzword_merge_two" class="size_200" size="1">
 											{foreach $popup.buzzwords as $buzzword}
-												<option{if $buzzword@index == 0} disabled="disabled"{/if} value="{$buzzword.item_id}">{$buzzword.name}</option>
+												<option{if $buzzword@index == 0} disabled="disabled"{/if} value="{$buzzword.item_id}" id="popup_buzzword_item_merge_two_{$buzzword.item_id}">{$buzzword.name}</option>
 											{/foreach}
 										</select>
 
@@ -62,7 +62,7 @@
 								<div id="content_row_two" class="overflow_auto">
 									<ul class="popup_buzzword_list">
 										{foreach $popup.buzzwords as $buzzword}
-											<li class="ui-state-default popup_buzzword_item">{$buzzword.name}</li>
+											<li class="ui-state-default popup_buzzword_item" id="popup_buzzword_item_edit_{$buzzword.item_id}">{$buzzword.name}</li>
 										{/foreach}
 										<div class="clear"></div>
 									</ul>

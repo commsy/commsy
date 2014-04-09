@@ -1828,14 +1828,14 @@ class misc_text_converter {
                $source_array = explode('/', $source);
                $picture = str_replace('.mp4','.jpg',$source_array[1]);
                if ( !empty($picture) ) {
-                  $image = 'http://lecture2go.uni-hamburg.de/videorep/images/'.$picture;
+                  $image = 'https://lecture2go.uni-hamburg.de/videorep/images/'.$picture;
                } else {
-                  $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
+                  $image = 'https://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
                }
             }
-            $endOfVideoOverlay = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
+            $endOfVideoOverlay = 'https://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
          } else {
-            $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
+            $image = 'https://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
          }
       }
 
@@ -1887,7 +1887,7 @@ class misc_text_converter {
              */
             $image_text .= '<!-- DNC -->'.LF;
             $image_text .= '<iframe'.LF;
-            $image_text .= ' src=\'http://lecture2go.uni-hamburg.de/strobemediaplayer/embed.html?autoPlay='.$play.'&endOfVideoOverlay='.$endOfVideoOverlay.'&poster='.$image.'&src=http://fms.rrz.uni-hamburg.de/vod/_definst_/mp4:'.$source.'/manifest.f4m\''.LF;
+            $image_text .= ' src=\'https://lecture2go.uni-hamburg.de/strobemediaplayer/embed.html?autoPlay='.$play.'&endOfVideoOverlay='.$endOfVideoOverlay.'&poster='.$image.'&src=https://fms.rrz.uni-hamburg.de/vod/_definst_/mp4:'.$source.'/manifest.f4m\''.LF;
             $image_text .= ' type=\'text/html\''.LF;
             $image_text .= ' style=\''.$float.' margin:10px;\''.LF;
             $image_text .= ' width=\''.$width.'\''.LF;
@@ -1900,7 +1900,7 @@ class misc_text_converter {
             /*
              * old style: swf object
              */
-            $image_text .= '<script type="text/javascript" src="http://lecture2go.uni-hamburg.de/jw/swfobject.js"></script>'.LF;
+            $image_text .= '<script type="text/javascript" src="https://lecture2go.uni-hamburg.de/jw/swfobject.js"></script>'.LF;
             $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.$translator->getMessage('COMMON_GET_FLASH').'</div>'.LF;
             $image_text .= '<script type="text/javascript">'.LF;
             $image_text .= '  var so = new SWFObject(\'http://lecture2go.uni-hamburg.de/jw5.0/player-licensed.swf\',\'ply\',\''.$width.'\',\''.$height.'\',\'9\',\''.$screencolor.'\');'.LF;

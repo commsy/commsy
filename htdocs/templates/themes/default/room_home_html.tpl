@@ -26,12 +26,14 @@
                 	<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto; ">
                 		<p>
                 		<div class="user_profil_blocks">
+		                   {if $room.informationbox.rubric == "date"}
 		                   <table class="detail_content_table">
 								<tr>
 									<td class="label"><h4>___DATES_DATETIME___</h4></td>
 									<td style="font-size:12px;">{$room.informationbox.date}{if $room.informationbox.time}, {$room.informationbox.time}{/if}</td>
 								</tr>
 		                    </table>
+		                    {/if}
 		                </div>
                 		</p>
                 		<div class="clear"></div>

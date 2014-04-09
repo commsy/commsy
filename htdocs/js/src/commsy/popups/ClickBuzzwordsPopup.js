@@ -109,6 +109,11 @@ define([	"dojo/_base/declare",
 							// update header if the buzzword was set in list
 							if(this.list.requestData.item_id === buzzwordId) {
 								DomAttr.set(Query("div.open_close_head span.text_important")[0], "innerHTML", "&bdquo;" + buzzwordName + "&rdquo;");
+								// update buzzwords
+								DomAttr.set(Query("li#popup_buzzword_item_add_" + buzzwordId)[0], "innerHTML", buzzwordName);
+								DomAttr.set(Query("li#popup_buzzword_item_edit_" + buzzwordId)[0], "innerHTML", buzzwordName);
+								DomAttr.set(Query("option#popup_buzzword_item_merge_one_" + buzzwordId)[0], "innerHTML", buzzwordName);
+								DomAttr.set(Query("option#popup_buzzword_item_merge_two_" + buzzwordId)[0], "innerHTML", buzzwordName);
 								
 								if (this.contextId) {
 									Topic.publish("newOwnRoomBuzzword", {});

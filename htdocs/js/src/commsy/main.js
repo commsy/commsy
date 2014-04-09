@@ -130,6 +130,18 @@ require([	"dojo/_base/declare",
 					});
 				});
 				
+				// gallery
+				var galleryNode = query("div.gallery")[0];
+				if ( galleryNode )
+				{
+					require(["commsy/Gallery"], function(Gallery)
+					{
+						var gallery = new Gallery();
+						gallery.init(galleryNode, uri_object.cid, uri_object.iid, uri_object.module);
+					});
+				}
+
+				
 				// limesurvey
 				var limeSurveyNode = query("div.limesurveyList")[0];
 				if ( limeSurveyNode )
@@ -214,9 +226,8 @@ require([	"dojo/_base/declare",
 				}
 				
 				// lightbox
-				require(["commsy/Lightbox"], function(Lightbox) {
-					var handler = new Lightbox();
-					handler.setup(query("a[class^='lightbox']"));
+				require(["commsy/lightbox"], function(lightbox) {
+					lightbox.addImageGroup(query("a[class^='lightbox']"));
 				});
 				
 				// progressbar
