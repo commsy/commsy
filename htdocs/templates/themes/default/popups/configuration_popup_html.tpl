@@ -208,7 +208,7 @@
 
 											<div class="input_row_100">
 												<label for="room_color_right_column">___ROOM_COLOR_RIGHT_COLUMN___:</label>
-												<input class="size_200 colorpicker" id="room_color_right_column" type="text" name="form_data[color_right_column]" value="{show var=$popup.room.color_right_menu}"/>
+												<input class="size_200 colorpicker" id="room_color_right_column" type="text" name="form_data[color_right_column]" value="{show var=$popup.room.color_right_column}"/>
 											</div>
 
 											<div class="input_row_100">
