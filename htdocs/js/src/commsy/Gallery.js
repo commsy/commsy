@@ -213,7 +213,7 @@ define([	"dojo/_base/declare",
 							// image title
 							var carouselBoxNode = DomConstruct.create("div", {
 								className:	"carouselImageTitle",
-								innerHTML:	data.name.substring(0,45)
+								innerHTML:	data.name.substring(0,20)
 							}, carouselBoxNode, "last");
 							
 //							DomConstruct.create
