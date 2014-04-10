@@ -190,9 +190,11 @@ class cs_smarty extends Smarty {
 			if(preg_match('/<img.+?src="(commsy.php\S+?)".+?>/', $param1, $matches)){
 				//append session id to picture
 				$param1 = preg_replace('/(<img.+?src=")(commsy.php\S+?)(".+?>)/', '$1$2&amp;SID='.$this->environment->getSessionID().'$3', $param1);
-				
+				$param1 = html_entity_decode($param1);
 			}
+			
 		}
+		
 		return $param1;
 	}
 }
