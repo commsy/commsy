@@ -2037,7 +2037,7 @@ class cs_item {
    function _saveFileLinks() {   // das ist so komplex, weil wir die filelinks nicht aus der db löschen können
                                  // wenn jemandem was eleganteres einfällt: nur zu
       if ( $this->_filelist_changed ) {
-         if (!$item->isNotActivated()){
+         if (!$this->isNotActivated()){
             $this->setModificationDate(NULL);
          }
          $link_manager = $this->_environment->getLinkManager();
