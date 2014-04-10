@@ -52,7 +52,7 @@ define([	"dojo/_base/declare",
 				DomConstruct.create("img",
 				{
 					src:			this.from_php.template.tpl_path + "img/ajax_loader.gif",
-					style:			"margin-left: 5px, top: 2px, position: relative;"
+					style:			"top: 50px; margin-bottom: 100px; position: relative;"
 				}, loadingDivNode, "last");
 		},
 		
@@ -168,10 +168,8 @@ define([	"dojo/_base/declare",
 				lang.hitch(this, function(response) {
 					// create html for gallery
 					if(response.data.length > 0){
-
-					this.createLoadingAnimation(node, 'LoadingAnimation');
 					
-					// carousel
+						// carousel
 						var carouselNode = DomConstruct.create("div", {
 							id:	"carousel"
 						}, node, "last");
@@ -202,8 +200,9 @@ define([	"dojo/_base/declare",
 									}, carouselImageNode, "last");
 										
 										var imageNode = DomConstruct.create("img", {
-											src:	data.url.replace(/&amp;/g, "&"),
-											id:		"gallery_image_" + this.imageCount
+											src:		data.url.replace(/&amp;/g, "&"),
+											id:			"gallery_image_" + this.imageCount,
+											className:	"gallery_image"
 										}, imageLink, "last");
 										
 										// preload image
@@ -232,7 +231,6 @@ define([	"dojo/_base/declare",
 //						this.preloadEvents();
 						this.clickEvents();
 						this.hoverEvents();
-						this.destroyLoadingAnimation('LoadingAnimation');
 						// set carousel scroller width
 						this.carouselScroller.setAttribute('style', 'width:' + (this.imageCount * 200) + 'px !important;');
 						
