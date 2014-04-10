@@ -470,7 +470,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							}
 
 						    global $c_email_upload;
-						    if ($c_email_upload ) {
+						    if ($c_email_upload && !$portalUser->isRoot()) {
 						       $own_room = $currentUser->getOwnRoom();
 						       if ( (isset($form_data['email_to_commsy']) and !empty($form_data['email_to_commsy'])) ) {
 						          $own_room->setEmailToCommSy();
