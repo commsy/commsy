@@ -5233,23 +5233,28 @@ div#previewPortfolio li.dojoDndItem {
     display: none;
 }
 /* carousel material image */
-div.gallery{
+div.gallery {
 	width:695px;
 	padding-left:46px;
-	position:relative;}
-#carousel{
+	position:relative;
+}
+
+#carousel {
 	width: 600px;
 	height: 130px;
 	overflow: hidden;
 	float:left;
 	position:relative;
 }
-div.carouselImages img{
+
+div.carouselImages img.gallery_image {
+	margin-top: 10px;
 	width:140px;
 	height:80px;
 	-moz-box-shadow: 0px 2px 5px 1px #BBBBBB;
 	-webkit-box-shadow: 0px 2px 5px 1px #BBBBBB;
-	box-shadow: 0px 2px 5px 1px #BBBBBB;}
+	box-shadow: 0px 2px 5px 1px #BBBBBB;
+}
 
 .carouselImageTitle {
 	margin-top:5px;
@@ -5266,22 +5271,18 @@ div.carouselImages img{
 
 #buttonPrevSpan{
 	position: absolute;
-	/*border: 1px solid;*/
 	width:25px;
 	height:25px;
-/*	margin:50px -40px;*/
-	left: 65px;
+	left: 45px;
 	top: 50px;
 	display: none;
 	background-image: url(img/ArrowLeft.png);}
 #buttonNextSpan{
 	position: absolute;
-	/*border: 1px solid;*/
 	width:25px;
 	height:25px;
-	/*margin:50px -43px;*/
 	display: none;
-	right: 113px;
+	right: 93px;
 	top: 50px;
 	background-image: url(img/ArrowRight.png);}
 #buttonPrevSpan:hover,#buttonNextSpan:hover{cursor:pointer}
