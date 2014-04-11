@@ -48,6 +48,7 @@
 						___COMMON_NONE___
 					{/foreach}
 				</div>
+				{if $room.workflow}
 				<div {if in_array("workflow_expand",$detail.printcookie)}class="hidden"{/if}>
 					<div></div><br>
 					<div>
@@ -79,6 +80,7 @@
 						{/if}
 					</div>
 				</div>
+				{/if}
 				<div {if in_array("detail_expand",$detail.printcookie)}class="hidden"{/if}>
 					___COMMON_REFNUMBER___: {$detail.content.moredetails.item_id}
 					<br>
