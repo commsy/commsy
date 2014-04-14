@@ -109,14 +109,16 @@ define(
 					}
 				}));
 				
-				this.subscribe("openPortfolioList", lang.hitch(this, function(object)
-				{
-					if ( object.portfolioId == this.portfolioId )
-					{
-						this.onClickPortfolioItemListPopup(	null,
-															this.lastListClickData.row,
-															this.lastListClickData.column,
-															this.lastListClickData.ItemIds);
+				this.subscribe("updateAndOpenPortfolioList", lang.hitch(this, function(object) {
+					if ( object.portfolioId == this.portfolioId ) {
+						
+						this.update().then(lang.hitch(this, function() {
+							this.onClickPortfolioItemListPopup(
+								this.lastListClickData.row,
+								this.lastListClickData.column,
+								this.lastListClickData.ItemIds
+							);
+						}));
 					}
 				}));
 				
@@ -196,7 +198,7 @@ define(
 				// register onclick
 				On(aContentNode, "click", lang.hitch(this, function(event)
 				{
-					this.onClickPortfolioItemListPopup(event, rowIndex, columnIndex, itemIdArray);
+					this.onClickPortfolioItemListPopup(rowIndex, columnIndex, itemIdArray);
 				}));
 			}
 			
@@ -230,6 +232,7 @@ define(
 					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioEditWidget");
 					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioTagEditWidget");
 					widgetManager.removeInstances("commsy/widgets/Portfolio/PortfolioItemListWidget");
+					
 					// set data for this portfolio - title is already set
 					this.set("creator", response.data.creator);
 					this.set("descriptionFull", response.data.description);
@@ -240,8 +243,7 @@ define(
 					this.set("contextId", response.data.contextId);
 					
 					var description = response.data.description;
-					if ( description.length > 80 )
-					{
+					if ( description.length > 80 ) {
 						description = description.substr(0, 80) + "...";
 					}
 					this.set("description", description);
@@ -394,7 +396,6 @@ define(
 										{ position: customObject.position, portfolioId: this.portfolioId }).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
-				
 				widgetInstance.Open();
 			}));
 		},
@@ -416,12 +417,11 @@ define(
 										initData).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
-				
 				widgetInstance.Open();
 			}));
 		},
 		
-		onClickPortfolioItemListPopup: function(event, row, column, itemIdArray)
+		onClickPortfolioItemListPopup: function(row, column, itemIdArray)
 		{
 			var initData =
 			{
@@ -439,7 +439,6 @@ define(
 										initData).then(lang.hitch(this, function(deferred)
 			{
 				var widgetInstance = deferred.instance;
-				
 				widgetInstance.Open();
 			}));
 		}
