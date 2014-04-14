@@ -95,7 +95,7 @@ define(
 					column:			this.column
 				}
 			}).then(
-				lang.hitch(this, function(response) {console.log(response);
+				lang.hitch(this, function(response) {
 					this.createEntriesList(response.data.items);
 					this.createAnnotationList(response.data.annotationItems);
 					
@@ -254,10 +254,10 @@ define(
 					portfolioColumn:	this.column
 				};
 				
+				this.Close();
+				
 				handler.init(this.createAnnotationNode, data);
 				handler.open();
-				
-				this.Close();
 			}));
 		}
 	});

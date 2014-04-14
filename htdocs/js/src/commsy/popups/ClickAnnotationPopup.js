@@ -75,9 +75,8 @@ define([	"dojo/_base/declare",
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
 				if (this.initData.portfolioId) {
-					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
-					Topic.publish("openPortfolioList", { portfolioId: this.initData.portfolioId });
 					this.close();
+					Topic.publish("updateAndOpenPortfolioList", { portfolioId: this.initData.portfolioId });
 				} else {
 					this.featureHandles["netnavigation"][0].afterItemCreation(item_id, lang.hitch(this, function() {
 						if (this.contextId) {
@@ -93,9 +92,8 @@ define([	"dojo/_base/declare",
 				}
 			} else {
 				if (this.initData.portfolioId) {
-					Topic.publish("updatePortfolio", { portfolioId: this.initData.portfolioId });
-					Topic.publish("openPortfolioList", { portfolioId: this.initData.portfolioId });
 					this.close();
+					Topic.publish("updateAndOpenPortfolioList", { portfolioId: this.initData.portfolioId });
 				} else {
 					if (this.contextId) {
 						this.close();
