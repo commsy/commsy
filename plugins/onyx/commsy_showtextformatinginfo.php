@@ -19,7 +19,7 @@
 //
 // You have received a copy of the GNU General Public License
 // along with the plugin.
-   header("Content-Type: text/html");
+   header("Content-Type: text/html; charset=utf-8");
    $onyx_class = $environment->getPluginClass('onyx');
    echo($onyx_class->getTextFormatingInformationForWindowAsHTML());
    exit(); 
