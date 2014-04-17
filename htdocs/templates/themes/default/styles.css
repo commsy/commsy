@@ -4373,27 +4373,27 @@ table#hour_index td, table#hour_index_head td {
 
 
 a.event_blue {
-    background: #BAC9FF;
+    background: #3366FF;
     padding: 1px 5px;
     }
 
 a.event_green {
-    background: #E7FFBA;
+    background: #33CC00;
     padding: 1px 5px;
     }
 
 a.event_red {
-    background: #FFBABA;
+    background: #CC0000;
     padding: 1px 5px;
     }
 
 a.event_purple {
-    background: #E2BAFF;
+    background: #CC33CC;
     padding: 1px 5px;
     }
 
 a.event_yellow {
-    background: #FFFCBA;
+    background: #FFCC00;
     padding: 1px 5px;
     }
 
