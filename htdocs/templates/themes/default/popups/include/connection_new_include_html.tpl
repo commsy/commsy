@@ -3,7 +3,7 @@
                                     <option value="-1">*___CS_BAR_CONNECTION_EDIT_NEW_PORTAL_CHOOSE___</option>
                                     <option value="-2" disabled="disabled">------------</option>
                                     {foreach $popup.server as $key => $portalarray}
-                                       {if !empty(portalarray)}
+                                       {if !empty($portalarray)}
                                           <option value="-2" disabled="disabled"></option>
                                           <option value="-2" disabled="disabled">{$key}</option>
                                           {foreach $portalarray as $portalinfo}
