@@ -57,8 +57,43 @@
 .tundra.dojoDndMove .dojoDndAvatarCanDrop .dojoDndAvatarHeader	{background-color: #C0C0C1;}
 .tundra.dojoDndCopy .dojoDndAvatarCanDrop .dojoDndAvatarHeader	{background-color: #C0C0C1;}
 
+
 .tundra .dijitTree {
 	overflow: auto !important;
+}
+
+.tundra .dijitTreeRow, .dijitTreeContent {
+    white-space: normal;
+}
+
+.tundra .dijitTreeRowSelected .dijitTreeLabel {
+	background: none !important;
+	background-color: none !important;
+	font-weight: bold !important;
+	text-decoration: underline !important;
+} 
+
+.tundra .dijitTreeExpandoLeaf {
+    float: left;
+    margin-right: 10px !important;
+}
+
+.tundra .dijitTreeExpandoOpened {
+	float: left;
+    margin-right: 10px !important;
+}
+
+.tundra .dijitTreeExpandoClosed {
+	float: left;
+    margin-right: 10px !important;
+}
+
+.tundra .dijitTreeLabel {
+    margin-left: -5px !important;
+}
+
+.tundra .dijitTreeRow {
+    padding-bottom: 3px;
 }
 
 .tundra .dojoxLightbox {
@@ -87,10 +122,3 @@
     background: none repeat scroll 0 0 #EEEEEE;
     opacity: 0 !important;
 }
-
-.tundra .dijitTreeRowSelected .dijitTreeLabel {
-	background: none !important;
-	background-color: none !important;
-	font-weight: bold !important;
-	text-decoration: underline !important;
-} 
