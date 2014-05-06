@@ -55,11 +55,9 @@ define([	"dojo/_base/declare",
 		
 		initDo: function(node, callback) {
 			callback = callback || function() {};
-			//console.log(this);
-			if(this.uri_object.iid){
-				this.item_id = this.uri_object.iid;
-			}
-			if(this.uri_object.fct == 'detail' && node.className == 'subtree'){
+			
+			if(this.uri_object.fct == 'detail' && node.className == 'subtree') {
+				
 				// if the tree is a subtree (detail view)
 				// get results from ajax call
 				request.ajax({
@@ -70,7 +68,7 @@ define([	"dojo/_base/declare",
 						action:		'getSubTreeData'
 					},
 					data: {
-						item_id:	this.item_id,
+						item_id:	this.uri_object.iid,
 						room_id:	this.room_id,
 						fct:		this.uri_object.fct
 					}
