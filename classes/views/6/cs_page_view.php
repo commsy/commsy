@@ -1565,7 +1565,7 @@ class cs_page_view extends cs_view {
          // title
             $html .= '<h1 style="padding-bottom:15px; font-size:24px; padding-top:0px; margin-top:0px;">'.LF;
             $link_text = $current_portal->getTitle();
-            $html .= ahref_curl($current_portal->getItemID(),'home','index','',$link_text,'','','','','','','style="color:#000000; text-decoration:none;"').''.LF;
+            $html .= ahref_curl($current_portal->getItemID(),'home','index','',$link_text,'','','','','','','style="color:#000000; text-decoration:none; line-height: 22px;"').''.LF;
             unset($link_text);
             $html .= '</h1>'.LF;
          }
