@@ -832,12 +832,12 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        		{
 				        			case 2: $messageTag	= "MAIL_BODY_HELLO";							break;
 				        			case 3: $messageTag = "MAIL_BODY_CIAO";								break;
-				        			case 5: $messageTag = "MAIL_CHOICE_USER_ACCOUNT_DELETE";			break;
-				        			case 6: $messageTag = "MAIL_CHOICE_USER_ACCOUNT_LOCK";				break;
-				        			case 7: $messageTag = "MAIL_CHOICE_USER_STATUS_USER";				break;
-				        			case 8: $messageTag = "MAIL_CHOICE_USER_STATUS_MODERATOR";			break;
+				        			case 5: $messageTag = "MAIL_BODY_USER_ACCOUNT_DELETE";			break;
+				        			case 6: $messageTag = "MAIL_BODY_USER_ACCOUNT_LOCK";				break;
+				        			case 7: $messageTag = "MAIL_BODY_USER_STATUS_USER";				break;
+				        			case 8: $messageTag = "MAIL_BODY_USER_STATUS_MODERATOR";			break;
 				        			case 9: $messageTag = "MAIL_BODY_USER_MAKE_CONTACT_PERSON";			break;
-				        			case 10: $messageTag = "MAIL_CHOICE_USER_MAKE_CONTACT_PERSON";		break;
+				        			case 10: $messageTag = "MAIL_BODY_USER_UNMAKE_CONTACT_PERSON";		break;
 				        			case 11: $messageTag = "MAIL_BODY_USER_ACCOUNT_PASSWORD";			break;
 				        			case 12: $messageTag = "MAIL_BODY_USER_ACCOUNT_MERGE";				break;
 				        		}
