@@ -352,6 +352,7 @@ h1.portal_main_title{
     padding:0px 10px 0px 0px;
     font-size:25px;
     font-weight:bold;
+    line-height: 22px;
     color:<?php echo($color['welcome_text'])?>;
 }
 
