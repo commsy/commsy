@@ -2693,7 +2693,7 @@ function getExternalViewerArray(){
 	           $url = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
 	        }
    			$url .= $context_item->getItemID();
-  			$body .= LF.$url;
+  			$body .= $translator->getMessage('COMMON_LINK_WORKSPACE').' '.$url;
     		$body .= LF.LF;
    			$body .= $translator->getMessage('MAIL_SEND_TO',implode(LF,$moderator_name_array));
    			$body .= LF.LF;

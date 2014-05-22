@@ -1,6 +1,6 @@
 <?php
-$message["MEMBER_EDIT_ERROR_JUST_DELETED"]["en"] = "The membership %1 has already been cancelled.";
 $message["MEMBER_EDIT_ERROR_EXISTS"]["en"] = "The member already exists in the room";
-$message["MEMBER_EDIT_ERROR_ROOM_NOT_EXISTS"]["en"] = "The room id does not exist";
 $message["MEMBER_EDIT_ERROR_ID"]["en"] = "Please choose a valid room";
+$message["MEMBER_EDIT_ERROR_JUST_DELETED"]["en"] = "The membership %1 has already been cancelled.";
+$message["MEMBER_EDIT_ERROR_ROOM_NOT_EXISTS"]["en"] = "The room id does not exist";
 ?>

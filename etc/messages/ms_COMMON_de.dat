@@ -488,6 +488,7 @@ $message["COMMON_LAST_CHANGE"]["de"] = "zuletzt verändert am";
 $message["COMMON_LAST_MODIFIED_BY"]["de"] = "zuletzt bearbeitet von";
 $message["COMMON_LAST_MODIFIED_BY_UPPER"]["de"] = "Zuletzt bearbeitet von";
 $message["COMMON_LINK_CREATOR"]["de"] = "zugeordnet von";
+$message["COMMON_LINK_WORKSPACE"]["de"] = "Link zum Raum:";
 $message["COMMON_LIST_ACTION_BUTTON_GO"]["de"] = "ausführen";
 $message["COMMON_LIST_ACTION_COPY"]["de"] = "Einträge kopieren";
 $message["COMMON_LIST_ACTION_DELETE"]["de"] = "Einträge löschen";

@@ -11,7 +11,6 @@ $message["CS_BAR_CONNECTION"]["en"] = "My platforms";
 $message["CS_BAR_CONNECTION_DESC"]["en"] = "In this area of your CommSy bar you can configure and use connections to other commsy portals.";
 $message["CS_BAR_CONNECTION_EDIT_HEADLINE_CURRENT"]["en"] = "Current connections";
 $message["CS_BAR_CONNECTION_EDIT_HEADLINE_NEW"]["en"] = "New connection";
-$message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_TITLE"]["de"] = "Platform";
 $message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_CHOOSE"]["en"] = "Please select a platform.";
 $message["CS_BAR_CONNECTION_EDIT_NEW_PORTAL_SAVE"]["en"] = "Save new connection";
 $message["CS_BAR_CONNECTION_EDIT_ORDER"]["en"] = "Order";
