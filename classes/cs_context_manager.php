@@ -26,10 +26,14 @@
  */
 include_once('classes/cs_manager.php');
 
+/** interface for ex- and import-functions
+ */
+include_once('interfaces/cs_export_import_interface.php'); 
+
 /** upper class for database connection to the database table "community", "project" and "portal"
  * this upper class implements a database manager for the table "community", "project" and "portal"
  */
-class cs_context_manager extends cs_manager {
+class cs_context_manager extends cs_manager implements cs_export_import_interface {
 
    var $_room_type = NULL;
 
@@ -747,5 +751,114 @@ class cs_context_manager extends cs_manager {
    public function setQueryWithoutExtra () {
       $this->_sql_with_extra = false;
    }
+   
+   function export_item($id) {
+      el('exporting '.$id);
+      $context_item = $this->getItem($id);
+      
+      if ($context_item != null) {
+         $xml = new SimpleXMLElement('<context></context>');
+         $xml->addChild('item_id', $context_item->getItemID());
+         $xml->addChild('context_id', $context_item->getContextID());
+         $xml->addChild('creator_id', $context_item->getCreatorID());
+         $xml->addChild('modifier_id', $context_item->getModificatorID());
+         $xml->addChild('deleter_id', $context_item->getDeleterID());
+         $xml->addChild('creation_date', $context_item->getCreationDate());
+         $xml->addChild('modification_date', $context_item->getModificationDate());
+         $xml->addChild('deletion_date', $context_item->getDeletionDate());
+         $xml->addChild('title', $context_item->getTitle());
+         //$xml->addChild('extras', $context_item->getExtras());
+         // getExtraKeys ...
+         
+         $xmlExtras = new SimpleXMLElement('<extras></extras>');
+         $extras_array = $context_item->getExtraInformation();
+         
+
+         $xmlExtras = $this->getExtraAsXML($xmlExtras, $extras_array);
+         //$xml->addChild('extras', $xmlExtras);
+         $this->simplexml_import_simplexml($xml, $xmlExtras);
+         
+         $xml->addChild('status', $context_item->getStatus());
+         $xml->addChild('activity', $context_item->getActivityPoints());
+         $xml->addChild('type', $context_item->getType());
+         $xml->addChild('public', $context_item->getPublic());
+         $xml->addChild('is_open_for_guests', $context_item->isOpenForGuests());
+         //$xml->addChild('continuous', $context_item->getItemID());
+         //$xml->addChild('template', $context_item->getItemID());
+         //$xml->addChild('contact_persons', $context_item->getItemID());
+         // getContactModeratorList
+         $xml->addChild('description', $context_item->getDescription());
+         //$xml->addChild('room_description', $context_item->getItemID());
+         //$xml->addChild('lastlogin', $context_item->getItemID());
+         
+         $dom = dom_import_simplexml($xml)->ownerDocument;
+         $dom->formatOutput = true;
+         el($dom->saveXML());
+      }
+   }
+   
+   function import_item($xml) {
+      
+   }
+   
+   function getExtraAsXML($xmlExtras, $extras_array){
+      foreach ($extras_array as $key => $value) {
+         if (!is_array($value)) {
+            $xmlExtras->addChild($key, $value);
+         } else {
+            $tempXmlExtras = new SimpleXMLElement('<'.$key.'></'.$key.'>');
+            $tempXML = $this->getExtraAsXML($tempXmlExtras, $value);
+            //$xmlExtras->addChild($key, $tempXML);
+            $this->simplexml_import_simplexml($xmlExtras, $tempXML);
+         }
+      }
+   }
+   
+   function simplexml_import_xml(SimpleXMLElement $parent, $xml, $before = false) {
+    $xml = (string)$xml;
+
+    // check if there is something to add
+    if ($nodata = !strlen($xml) or $parent[0] == NULL) {
+        return $nodata;
+    }
+
+    // add the XML
+    $node     = dom_import_simplexml($parent);
+    $fragment = $node->ownerDocument->createDocumentFragment();
+    $fragment->appendXML($xml);
+
+    if ($before) {
+        return (bool)$node->parentNode->insertBefore($fragment, $node);
+    }
+
+    return (bool)$node->appendChild($fragment);
+    }
+    
+    function simplexml_import_simplexml(SimpleXMLElement $parent, SimpleXMLElement $child, $before = false) {
+    // check if there is something to add
+    if ($child[0] == NULL) {
+        return true;
+    }
+
+    // if it is a list of SimpleXMLElements default to the first one
+    $child = $child[0];
+
+    // insert attribute
+    if ($child->xpath('.') != array($child)) {
+        $parent[$child->getName()] = (string)$child;
+        return true;
+    }
+
+    $xml = $child->asXML();
+
+    // remove the XML declaration on document elements
+    if ($child->xpath('/*') == array($child)) {
+        $pos = strpos($xml, "\n");
+        $xml = substr($xml, $pos + 1);
+    }
+
+    return $this->simplexml_import_xml($parent, $xml, $before);
+    }
+    
 }
 ?>
