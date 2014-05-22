@@ -30,10 +30,14 @@ include_once('classes/cs_list.php');
  */
 include_once('classes/cs_context_manager.php');
 
+/** interface for ex- and import-functions
+ */
+include_once('interfaces/cs_export_import_interface.php'); 
+
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community"
  */
-class cs_room_manager extends cs_context_manager {
+class cs_room_manager extends cs_context_manager implements cs_export_import_interface {
 
   /**
    * integer - containing a start point for the select community
@@ -869,6 +873,14 @@ class cs_room_manager extends cs_context_manager {
    			trigger_error('Problems automatic deleting materials from query: "'.$user_query.'"',E_USER_WARNING);
    		}
    	}
+   }
+   
+   function export_item($id) {
+      el('exporting '.$id);
+   }
+   
+   function import_item($xml) {
+      
    }
 }
 ?>

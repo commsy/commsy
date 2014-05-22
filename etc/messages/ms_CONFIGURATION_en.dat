@@ -161,6 +161,8 @@ $message["CONFIGURATION_DISCUSSION_WARNING"]["en"] = "<font color=&quot;#b9b4aa&
 $message["CONFIGURATION_ERROR_PORTAL_URL"]["en"] = "The url %1 is in use allready and points to the portal %2 on this server.";
 $message["CONFIGURATION_ERROR_SERVER_URL"]["en"] = "The url %1 is in use allready and points to the portal overview on this CommSy server.";
 $message["CONFIGURATION_ERROR_TIME_SPREAD_LONG"]["en"] = "Maximum of 365 days is allowed.";
+$message["CONFIGURATION_EXPORT_IMPORT_DESC"]["en"] = "Ex- and import rooms.";
+$message["CONFIGURATION_EXPORT_IMPORT_LINK"]["en"] = "Ex- and import";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["en"] = "Activate entries";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["en"] = "Hide entries by giving an activating date.";
 $message["CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL"]["en"] = "no portal";

@@ -226,6 +226,22 @@ if ( !isset($translator) and isset($this->_translator) ) {
    	$addon_link_list->add($link_item);
    }
 
+   #############################################
+   # export import
+   #############################################
+   $context_item = $environment->getCurrentContextItem();
+   if ( $context_item->isPortal()) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_EXPORT_IMPORT_LINK'));
+      $link_item->setIconPath('images/cs_config/CONFIGURATION_EXTRA_FORM.gif');
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_EXPORT_IMPORT_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('export_import');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      $addon_link_list->add($link_item);
+   }
+
    if ( $addon_link_list->getFirst() ){
       $addon_link_list->sortby('title');
    }

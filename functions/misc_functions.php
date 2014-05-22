@@ -796,7 +796,7 @@ function isURLValid () {
          $funct != 'datasecurity' and
          $funct != 'inactive' and
          $funct != 'inactiveprocess' and
-    	 $funct != 'assignroom' and
+    	   $funct != 'assignroom' and
 
          $funct != 'account_options' and
          $funct != 'structure_options' and
@@ -810,6 +810,8 @@ function isURLValid () {
          $funct != 'dbbackup' and
          
          $funct != 'mediaintegration' and
+
+         $funct != 'export_import' and
 
          //chat
          $funct != 'process' and
