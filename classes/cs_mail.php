@@ -260,7 +260,7 @@ class cs_mail extends Mail
             }
             $to_array = array_unique($to_array);
             foreach ($to_array as $email) {
-               if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print') ) {
+               if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print' and $c_send_email !== 'error_log') ) {
                   $result = $this->mail->send($email, $multipart_header, $multipart_message,$return_mail_address);
                   if (!$result) {
                      $this->_error_array[] = $email;
@@ -282,7 +282,15 @@ class cs_mail extends Mail
                   fwrite($datei, $body);
                   fclose($datei);
                   
+               } else if ($c_send_email === '') {
+                  error_log(print_r('------------------', true));
+                  error_log(print_r('TO: '.$email, true));
+                  error_log(print_r('HEADER: ', true));
+                  error_log(print_r($multipart_header, true));
+                  error_log(print_r('BODY:'.BRLF.nl2br($multipart_message), true));
+                  error_log(print_r('------------------', true));
                }
+
             }
          }
 
@@ -294,7 +302,7 @@ class cs_mail extends Mail
             if ( isset($this->bcc_recipients) ) {
                $multipart_header["Bcc"] = $this->bcc_recipients;
             }
-            if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print') ) {
+            if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print' and $c_send_email !== 'error_log') ) {
                $result = $this->mail->send($this->recipients, $multipart_header, $multipart_message,$return_mail_address);
                if (!$result) {
                   $this->_error_array[] = $this->recipients;
@@ -307,6 +315,13 @@ class cs_mail extends Mail
                pr($multipart_header);
                echo('BODY:'.BRLF.nl2br($multipart_message).LF);
                echo('<hr/>'.LF);
+            } else if ($c_send_email === 'error_log') {
+               error_log(print_r('------------------', true));
+               error_log(print_r('TO: '.$this->recipients.BRLF, true));
+               error_log(print_r('HEADER: ', true));
+               error_log(print_r($multipart_header, true));
+               error_log(print_r('BODY:'.BRLF.nl2br($multipart_message), true));
+               error_log(print_r('------------------', true));
             }
          }
 
