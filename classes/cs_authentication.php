@@ -1006,10 +1006,22 @@ class cs_authentication {
 				  	  $section_item = $section_manager->getItem($item_item->getItemID());
 				  	  $material_item = $section_item->getLinkedItem();
                       $value = $this->_isExternalUserAllowedToSee($uid,$material_item->getItemID()) || $material_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+                      
+                      if (!$value) {
+                      	// check if this is a community room and materials are open for guests
+                      	$currentContextItem = $this->_environment->getCurrentContextItem();
+                      	$value = $currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests();
+                      }
 				  }
 				  elseif ($item_type == 'material')
 				  {
                   	$value = $this->_isExternalUserAllowedToSee($uid,$item_item->getItemID()) || $item_item->mayPortfolioSee($portal_user->getRelatedPrivateRoomUserItem());
+                  	
+                  	if (!$value) {
+                  		// check if this is a community room and materials are open for guests
+                  		$currentContextItem = $this->_environment->getCurrentContextItem();
+                  		$value = $currentContextItem->isOpenForGuests() && $currentContextItem->isMaterialOpenForGuests();
+                  	}
 				  }
 				  elseif ($item_type == 'discarticle')
 				  {
