@@ -76,7 +76,7 @@
 										{if $detail.content.hidden.email == true}
 											___USER_EMAIL_HIDDEN___
 										{else}
-											{$detail.content.second_block.email}
+											<a href="mailto:{$detail.content.second_block.email}">{$detail.content.second_block.email}</a>
 										{/if}
 									</td>
 								</tr>
