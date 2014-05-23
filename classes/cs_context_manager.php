@@ -28,7 +28,7 @@ include_once('classes/cs_manager.php');
 
 /** interface for ex- and import-functions
  */
-include_once('interfaces/cs_export_import_interface.php'); 
+include_once('interfaces/cs_export_import_interface.php');
 
 /** upper class for database connection to the database table "community", "project" and "portal"
  * this upper class implements a database manager for the table "community", "project" and "portal"
@@ -780,7 +780,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChild('title', $context_item->getTitle());
          
          $extras_array = $context_item->getExtraInformation();
-         $xmlExtras = $this->getArrayAsXML($xmlExtras, $extras_array, true, 'extras');
+         $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
          $this->simplexml_import_simplexml($xml, $xmlExtras);
          
          $xml->addChild('status', $context_item->getStatus());
@@ -799,13 +799,67 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChild('room_description', $context_item->getDescription());
          $xml->addChild('lastlogin', $context_item->getLastLogin());
          
-         el($extras_array);
+         $xml = $this->export_sub_items($context_item, $xml);
+         
          $dom = new DOMDocument('1.0');
          $dom->preserveWhiteSpace = false;
          $dom->formatOutput = true;
          $dom->loadXML($xml->asXML());
          el($dom->saveXML());
       }
+   }
+   
+   function export_sub_items($top_item, $xml) {
+      $conf = $top_item->getHomeConf();
+      if (!empty($conf)) {
+         $rubrics = explode(',', $conf);
+      } else {
+         $rubrics = array();
+      }
+      $type_array = array();
+      foreach ($rubrics as $rubric) {
+         $rubric_array = explode('_', $rubric);
+         if ($rubric_array[1] != 'none') {
+            $type_array[] = $rubric_array[0];
+         }
+      }
+        
+      $rubric_xml = new SimpleXMLElement('<rubric></rubric>');
+      
+      /*
+       * Materials 
+       */
+      if (in_array('material', $type_array)) {
+         $material_manager = $this->_environment->getMaterialManager();
+         $material_manager->setContextLimit($top_item->getItemID());
+         $material_manager->select();
+         $material_list = $material_manager->get();
+         
+         // get XML for each material
+         $material_item_xml_array = array();
+         if (!$material_list->isEmpty()) {
+            $material_item = $material_list->getFirst();
+            while ($material_item) {
+               $material_id = $material_item->getItemID();
+               $material_item_xml_array[] = $material_manager->export_item($material_id);
+               $material_item = $material_list->getNext();
+            }
+         }
+
+         // combine in materials-Tag
+         $material_xml = new SimpleXMLElement('<material></material>');
+         foreach ($material_item_xml_array as $material_item_xml) {
+            $this->simplexml_import_simplexml($material_xml, $material_item_xml);
+         }
+      
+         // add to base xml
+         $this->simplexml_import_simplexml($rubric_xml, $material_xml);
+         
+      }
+
+      $this->simplexml_import_simplexml($xml, $rubric_xml);
+
+      return $xml;
    }
    
    function import_item($xml) {

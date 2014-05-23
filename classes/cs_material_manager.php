@@ -39,10 +39,14 @@ include_once('functions/date_functions.php');
  */
 include_once('functions/text_functions.php');
 
+/** interface for ex- and import-functions
+ */
+include_once('interfaces/cs_export_import_interface.php');
+
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material"
  */
-class cs_material_manager extends cs_manager {
+class cs_material_manager extends cs_manager implements cs_export_import_interface {
 
    /**
     * integer - containing the age of material as a limit
@@ -1280,5 +1284,22 @@ class cs_material_manager extends cs_manager {
 	   $query = 'SELECT item_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElement('<material_item></material_item>');
+   	$xml->addChild('item_id', $item->getItemID());
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
+   }
+	
 } // end of class
 ?>
