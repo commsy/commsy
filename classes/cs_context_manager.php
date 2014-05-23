@@ -753,11 +753,22 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function export_item($id) {
-      el('exporting '.$id);
-      $context_item = $this->getItem($id);
+      $item_manager = $this->_environment->getItemManager();
+      $item = $item_manager->getItem($id);
       
-      if ($context_item != null) {
-         $xml = new SimpleXMLElement('<context></context>');
+      if ($item != null) {
+         if ($item->getItemType() == 'community') {
+            $community_manager = $this->_environment->getCommunityManager();
+            $context_item = $community_manager->getItem($id);
+         } else if ($item->getItemType() == 'project') {
+            $project_manager = $this->_environment->getProjectManager();
+            $context_item = $project_manager->getItem($id);
+         } else if ($item->getItemType() == 'group') {
+            $grouproom_manager = $this->_environment->getGrouproomManager();
+            $context_item = $grouproom_manager->getItem($id);
+         }
+
+         $xml = new SimpleXMLElement('<context_item></context_item>');
          $xml->addChild('item_id', $context_item->getItemID());
          $xml->addChild('context_id', $context_item->getContextID());
          $xml->addChild('creator_id', $context_item->getCreatorID());
@@ -767,15 +778,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChild('modification_date', $context_item->getModificationDate());
          $xml->addChild('deletion_date', $context_item->getDeletionDate());
          $xml->addChild('title', $context_item->getTitle());
-         //$xml->addChild('extras', $context_item->getExtras());
-         // getExtraKeys ...
          
-         $xmlExtras = new SimpleXMLElement('<extras></extras>');
          $extras_array = $context_item->getExtraInformation();
-         
-
-         $xmlExtras = $this->getExtraAsXML($xmlExtras, $extras_array);
-         //$xml->addChild('extras', $xmlExtras);
+         $xmlExtras = $this->getArrayAsXML($xmlExtras, $extras_array, true, 'extras');
          $this->simplexml_import_simplexml($xml, $xmlExtras);
          
          $xml->addChild('status', $context_item->getStatus());
@@ -783,16 +788,22 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChild('type', $context_item->getType());
          $xml->addChild('public', $context_item->getPublic());
          $xml->addChild('is_open_for_guests', $context_item->isOpenForGuests());
-         //$xml->addChild('continuous', $context_item->getItemID());
-         //$xml->addChild('template', $context_item->getItemID());
-         //$xml->addChild('contact_persons', $context_item->getItemID());
-         // getContactModeratorList
-         $xml->addChild('description', $context_item->getDescription());
-         //$xml->addChild('room_description', $context_item->getItemID());
-         //$xml->addChild('lastlogin', $context_item->getItemID());
+         $xml->addChild('continuous', $context_item->isContinuous());
+         $xml->addChild('template', $context_item->isTemplate());
+         $xml->addChild('contact_persons', $context_item->getContactPersonString());
          
-         $dom = dom_import_simplexml($xml)->ownerDocument;
+         $description_array = $context_item->getDescriptionArray();
+         $xmlDescription = $this->getArrayAsXML($xmlExtras, $description_array, true, 'description');
+         $this->simplexml_import_simplexml($xml, $xmlDescription);
+         
+         $xml->addChild('room_description', $context_item->getDescription());
+         $xml->addChild('lastlogin', $context_item->getLastLogin());
+         
+         el($extras_array);
+         $dom = new DOMDocument('1.0');
+         $dom->preserveWhiteSpace = false;
          $dom->formatOutput = true;
+         $dom->loadXML($xml->asXML());
          el($dom->saveXML());
       }
    }
@@ -800,65 +811,5 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    function import_item($xml) {
       
    }
-   
-   function getExtraAsXML($xmlExtras, $extras_array){
-      foreach ($extras_array as $key => $value) {
-         if (!is_array($value)) {
-            $xmlExtras->addChild($key, $value);
-         } else {
-            $tempXmlExtras = new SimpleXMLElement('<'.$key.'></'.$key.'>');
-            $tempXML = $this->getExtraAsXML($tempXmlExtras, $value);
-            //$xmlExtras->addChild($key, $tempXML);
-            $this->simplexml_import_simplexml($xmlExtras, $tempXML);
-         }
-      }
-   }
-   
-   function simplexml_import_xml(SimpleXMLElement $parent, $xml, $before = false) {
-    $xml = (string)$xml;
-
-    // check if there is something to add
-    if ($nodata = !strlen($xml) or $parent[0] == NULL) {
-        return $nodata;
-    }
-
-    // add the XML
-    $node     = dom_import_simplexml($parent);
-    $fragment = $node->ownerDocument->createDocumentFragment();
-    $fragment->appendXML($xml);
-
-    if ($before) {
-        return (bool)$node->parentNode->insertBefore($fragment, $node);
-    }
-
-    return (bool)$node->appendChild($fragment);
-    }
-    
-    function simplexml_import_simplexml(SimpleXMLElement $parent, SimpleXMLElement $child, $before = false) {
-    // check if there is something to add
-    if ($child[0] == NULL) {
-        return true;
-    }
-
-    // if it is a list of SimpleXMLElements default to the first one
-    $child = $child[0];
-
-    // insert attribute
-    if ($child->xpath('.') != array($child)) {
-        $parent[$child->getName()] = (string)$child;
-        return true;
-    }
-
-    $xml = $child->asXML();
-
-    // remove the XML declaration on document elements
-    if ($child->xpath('/*') == array($child)) {
-        $pos = strpos($xml, "\n");
-        $xml = substr($xml, $pos + 1);
-    }
-
-    return $this->simplexml_import_xml($parent, $xml, $before);
-    }
-    
 }
 ?>

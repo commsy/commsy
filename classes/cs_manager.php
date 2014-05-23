@@ -1795,5 +1795,69 @@ class cs_manager {
       }
       return $retour;
    }
+   
+   
+   /*
+    * Functions needed for ex- and import of items
+    */
+   
+   function getArrayAsXML($xml, $array, $create_top_element = false, $top_element_name = ''){
+      if ($create_top_element) {
+         if ($top_element_name != '') {
+            $xml = new SimpleXMLElement('<'.$top_element_name.'></'.$top_element_name.'>');
+         }
+      }
+      foreach ($array as $key => $value) {
+         // Tag names must not start with a number.
+         if (is_numeric($key)) {
+            $key = 'COMMSY_'.$key;
+         }
+         if (!is_array($value)) {
+            $xml->addChild($key, $value);
+         } else {
+            $tempXml = new SimpleXMLElement('<'.$key.'></'.$key.'>');
+            $temp = $this->getArrayAsXML($tempXml, $value);
+            $this->simplexml_import_simplexml($xml, $temp);
+         }
+      }
+      return $xml;
+   }
+   
+   function simplexml_import_xml(SimpleXMLElement $parent, $xml, $before = false) {
+      $xml = (string)$xml;
+      // check if there is something to add
+      if ($nodata = !strlen($xml) or $parent[0] == NULL) {
+         return $nodata;
+      }
+      // add the XML
+      $node     = dom_import_simplexml($parent);
+      $fragment = $node->ownerDocument->createDocumentFragment();
+      $fragment->appendXML($xml);
+      if ($before) {
+         return (bool)$node->parentNode->insertBefore($fragment, $node);
+      }
+      return (bool)$node->appendChild($fragment);
+    }
+    
+    function simplexml_import_simplexml(SimpleXMLElement $parent, SimpleXMLElement $child, $before = false) {
+      // check if there is something to add
+      if ($child[0] == NULL) {
+         return true;
+      }
+      // if it is a list of SimpleXMLElements default to the first one
+      $child = $child[0];
+      // insert attribute
+      if ($child->xpath('.') != array($child)) {
+         $parent[$child->getName()] = (string)$child;
+         return true;
+      }
+      $xml = $child->asXML();
+      // remove the XML declaration on document elements
+      if ($child->xpath('/*') == array($child)) {
+         $pos = strpos($xml, "\n");
+         $xml = substr($xml, $pos + 1);
+      }
+      return $this->simplexml_import_xml($parent, $xml, $before);
+    }
 }
 ?>
