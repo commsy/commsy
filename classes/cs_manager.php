@@ -29,6 +29,9 @@
  * @author CommSy Development Group
  */
 
+/**
+ */
+include_once('custom/SimpleXMLElementExtended.php');
 
 class cs_manager {
 

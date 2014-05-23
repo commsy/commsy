@@ -1290,6 +1290,31 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 	
    	$xml = new SimpleXMLElement('<material_item></material_item>');
    	$xml->addChild('item_id', $item->getItemID());
+   	$xml->addChild('version_id', $item->getVersionID());
+   	$xml->addChild('context_id', $item->getContextID());
+   	$xml->addChild('creator_id', $item->getCreatorID());
+   	$xml->addChild('deleter_id', $item->getDeleterID());
+   	$xml->addChild('creation_date', $item->getCreationDate());
+   	$xml->addChild('modifier_id', $item->getModificatorID());
+   	$xml->addChild('modification_date', $item->getModificationDate());
+   	$xml->addChild('deletion_date', $item->getDeletionDate());
+   	$xml->addChild('title', $item->getTitle());
+   	$xml->addChild('description', $item->getDescription());
+   	$xml->addChild('author', $item->getAuthor());
+   	$xml->addChild('publishing_date', $item->getPublishingDate());
+   	$xml->addChild('public', $item->isPublic());
+   	$xml->addChild('world_public', $item->isWorldPublic());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   	
+   	//$xml->addChild('new_hack', $item->getItemID());
+   	$xml->addChild('copy_of', $item->getCopyItem());
+   	//$xml->addChild('workflow_status', $item->getWorkflowStatus());
+   	$xml->addChild('workflow_resubmission_date', $item->getWorkflowResubmissionDate());
+   	$xml->addChild('workflow_validity_date', $item->getWorkflowValidityDate());
+   	
    	return $xml;
 	}
 	
