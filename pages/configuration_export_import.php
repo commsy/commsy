@@ -63,7 +63,12 @@ else {
       ) {
       if ( $form->check() ) {
          $room_manager = $environment->getRoomManager();
-         $room_manager->export_item($_POST['room']);
+         $xml = $room_manager->export_item($_POST['room']);
+         $dom = new DOMDocument('1.0');
+         $dom->preserveWhiteSpace = false;
+         $dom->formatOutput = true;
+         $dom->loadXML($xml->asXML());
+         el($dom->saveXML());
       }
    }
 

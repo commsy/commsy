@@ -763,7 +763,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if ($item->getItemType() == 'project') {
             $project_manager = $this->_environment->getProjectManager();
             $context_item = $project_manager->getItem($id);
-         } else if ($item->getItemType() == 'group') {
+         } else if ($item->getItemType() == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getItem($id);
          }
@@ -801,11 +801,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          
          $xml = $this->export_sub_items($context_item, $xml);
          
-         $dom = new DOMDocument('1.0');
-         $dom->preserveWhiteSpace = false;
-         $dom->formatOutput = true;
-         $dom->loadXML($xml->asXML());
-         el($dom->saveXML());
+         return $xml;
       }
    }
    
@@ -819,7 +815,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $type_array = array();
       foreach ($rubrics as $rubric) {
          $rubric_array = explode('_', $rubric);
-         if ($rubric_array[1] != 'none' && $rubric_array[1] != 'user' && $rubric_array[1] != 'topic') {
+         if ($rubric_array[1] != 'none' && $rubric_array[1] != 'user' && $rubric_array[1] != 'topic' && $rubric_array[1] != 'group') {
             $type_array[] = $rubric_array[0];
          }
       }
@@ -860,6 +856,36 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       }
 
       $this->simplexml_import_simplexml($xml, $rubric_xml);
+
+      if ($top_item->getItemType() == 'community') {
+         $project_list_xml = new SimpleXMLElementExtended('<projects></projects>');
+         $project_list = $top_item->getProjectList();
+         if ($project_list->isNotEmpty()) {
+            $project_manager = $this->_environment->getProjectManager();
+            $project_item = $project_list->getFirst();
+            while ($project_item) {
+               $project_id = $project_item->getItemID();
+               $project_xml = $project_manager->export_item($project_id);
+               $this->simplexml_import_simplexml($project_list_xml, $project_xml);
+               $project_item = $project_list->getNext();
+            }
+         }
+         $this->simplexml_import_simplexml($xml, $project_list_xml);
+      } else if ($top_item->getItemType() == 'project') {
+         $grouproom_list_xml = new SimpleXMLElementExtended('<grouprooms></grouprooms>');
+         $grouproom_list = $top_item->getGroupRoomList();
+         if ($grouproom_list->isNotEmpty()) {
+            $grouproom_manager = $this->_environment->getGroupRoomManager();
+            $grouproom_item = $grouproom_list->getFirst();
+            while ($grouproom_item) {
+               $grouproom_id = $grouproom_item->getItemID();
+               $grouproom_xml = $grouproom_manager->export_item($grouproom_id);
+               $this->simplexml_import_simplexml($grouproom_list_xml, $grouproom_xml);
+               $grouproom_item = $grouproom_list->getNext();
+            }
+         }
+         $this->simplexml_import_simplexml($xml, $grouproom_list_xml);
+      }
 
       return $xml;
    }
