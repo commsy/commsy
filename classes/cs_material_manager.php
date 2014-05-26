@@ -1316,6 +1316,12 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
    	$xml->addChildWithCDATA('workflow_resubmission_date', $item->getWorkflowResubmissionDate());
    	$xml->addChildWithCDATA('workflow_validity_date', $item->getWorkflowValidityDate());
    	
+   	$xmlFiles = $this->getFilesAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlFiles);
+   	
+   	$xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
+   	
    	$section_manager = $this->_environment->getManager('section');
       $section_manager->setContextLimit($item->getContextID());
       $section_manager->setMaterialItemIDLimit($item->getItemID());
@@ -1341,9 +1347,6 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
    
       // add to base xml
       $this->simplexml_import_simplexml($xml, $section_xml);
-   	
-   	$xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
    	
    	return $xml;
 	}

@@ -857,6 +857,18 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
 
       $this->simplexml_import_simplexml($xml, $rubric_xml);
 
+      $tags_xml = new SimpleXMLElementExtended('<tags></tags>');
+      if ($top_item->withTags()) {
+         include_once('classes/controller/cs_utils_controller.php');
+      
+         $utils_controller = new cs_utils_controller($this->_environment);
+         $room_id = $top_item->getItemID();
+         $tag_array = $utils_controller->getTags($room_id);
+         
+         $xml_tags = $this->getTagsAsXML($tags_xml, $tag_array);
+         $this->simplexml_import_simplexml($xml, $xml_tags);
+      }
+
       if ($top_item->getItemType() == 'community') {
          $project_list_xml = new SimpleXMLElementExtended('<projects></projects>');
          $project_list = $top_item->getProjectList();

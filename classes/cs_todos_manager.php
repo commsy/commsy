@@ -678,6 +678,12 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
       $this->simplexml_import_simplexml($xml, $xmlExtras);
    
+      $xmlFiles = $this->getFilesAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlFiles);
+
+      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
+   
       $step_manager = $this->_environment->getManager('step');
       $step_manager->setContextLimit($item->getContextID());
       $step_manager->setTodoItemIDLimit($item->getItemID());
@@ -703,9 +709,6 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
    
       // add to base xml
       $this->simplexml_import_simplexml($xml, $step_xml);
-
-      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
-      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
 
    	return $xml;
 	}

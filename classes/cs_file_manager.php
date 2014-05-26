@@ -49,7 +49,7 @@ include_once('functions/file_functions.php');
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material"
  */
-class cs_file_manager extends cs_manager {
+class cs_file_manager extends cs_manager implements cs_export_import_interface {
 
    //maximal length of a picture side in pixel- if a picture that is showd inline is bigger, there is a thumbnale with this size shown
    var $_MAX_PICTURE_SIDE = 200;
@@ -877,6 +877,39 @@ class cs_file_manager extends cs_manager {
          }
       }
       return $file_list;
+   }
+   
+   function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<file_item></file_item>');
+   	$xml->addChildWithCDATA('files_id', $item->getFileID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+      $xml->addChildWithCDATA('filename', $item->getFileName());
+      $xml->addChildWithCDATA('size', $item->getFileSize());
+      $xml->addChildWithCDATA('has_html', $item->getHasHTML());
+      $xml->addChildWithCDATA('scan', $item->isScanned());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $xml->addChildWithCDATA('temp_upload_session_id', $item->getTempUploadFromEditorSessionID());
+
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
    }
 }
 ?>

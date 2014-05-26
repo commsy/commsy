@@ -1892,5 +1892,45 @@ class cs_manager {
    
        return $annotations_xml;
     }
+    
+    function getFilesAsXML ($itemID) {
+       $item_manager = $this->_environment->getManager('item');
+       $item = $item_manager->getItem($itemID);
+    
+       $file_manager = $this->_environment->getFileManager();
+       $file_list = $item->getFileList();
+          	
+   	 // get XML for each section
+       $file_item_xml_array = array();
+       if (!$file_list->isEmpty()) {
+          $file_item = $file_list->getFirst();
+          while ($file_item) {
+             $file_id = $file_item->getFileID();
+             $file_item_xml_array[] = $file_manager->export_item($file_id);
+             $file_item = $file_list->getNext();
+          }
+       }
+
+       // combine in tag
+       $file_xml = new SimpleXMLElementExtended('<files></files>');
+       foreach ($file_item_xml_array as $file_item_xml) {
+          $this->simplexml_import_simplexml($file_xml, $file_item_xml);
+       }
+   
+       return $file_xml;
+    }
+    
+    function getTagsAsXML ($xml, $tag_array) {
+      foreach ($tag_array as $tag) {
+         if (!is_array($tag)) {
+            $xml->addChildWithCDATA('tag', $tag->getItemID());
+         } else {
+            $tempXml = new SimpleXMLElementExtended('<tag_children></tag_children>');
+            $temp = $this->getTagsAsXML($tempXml, $tag);
+            $this->simplexml_import_simplexml($xml, $temp);
+         }
+      }
+      return $xml;
+    }
 }
 ?>

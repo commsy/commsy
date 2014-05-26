@@ -995,6 +995,9 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
       $this->simplexml_import_simplexml($xml, $xmlExtras);
 
+      $xmlFiles = $this->getFilesAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlFiles);
+
       $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
       $this->simplexml_import_simplexml($xml, $xmlAnnotations);
       

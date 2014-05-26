@@ -661,6 +661,9 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
    
       $xml->addChildWithCDATA('public', $item->isPublic());
    
+      $xmlFiles = $this->getFilesAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlFiles);
+   
    	return $xml;
 	}
 	

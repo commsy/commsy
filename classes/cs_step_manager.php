@@ -597,6 +597,9 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
    
       $xml->addChildWithCDATA('public', $item->isPublic());
    
+      $xmlFiles = $this->getFilesAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlFiles);
+   
    	return $xml;
 	}
 	

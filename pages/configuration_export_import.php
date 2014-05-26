@@ -68,7 +68,7 @@ else {
          $dom->preserveWhiteSpace = false;
          $dom->formatOutput = true;
          $dom->loadXML($xml->asXML());
-         el($dom->saveXML());
+         #el($dom->saveXML());
       }
    }
 
