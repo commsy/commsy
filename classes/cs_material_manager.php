@@ -39,10 +39,6 @@ include_once('functions/date_functions.php');
  */
 include_once('functions/text_functions.php');
 
-/** interface for ex- and import-functions
- */
-include_once('interfaces/cs_export_import_interface.php');
-
 /** class for database connection to the database table "material"
  * this class implements a database manager for the table "material"
  */
@@ -1288,32 +1284,66 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 	function export_item($id) {
 	   $item = $this->getItem($id);
 	
-   	$xml = new SimpleXMLElement('<material_item></material_item>');
-   	$xml->addChild('item_id', $item->getItemID());
-   	$xml->addChild('version_id', $item->getVersionID());
-   	$xml->addChild('context_id', $item->getContextID());
-   	$xml->addChild('creator_id', $item->getCreatorID());
-   	$xml->addChild('deleter_id', $item->getDeleterID());
-   	$xml->addChild('creation_date', $item->getCreationDate());
-   	$xml->addChild('modifier_id', $item->getModificatorID());
-   	$xml->addChild('modification_date', $item->getModificationDate());
-   	$xml->addChild('deletion_date', $item->getDeletionDate());
-   	$xml->addChild('title', $item->getTitle());
-   	$xml->addChild('description', $item->getDescription());
-   	$xml->addChild('author', $item->getAuthor());
-   	$xml->addChild('publishing_date', $item->getPublishingDate());
-   	$xml->addChild('public', $item->isPublic());
-   	$xml->addChild('world_public', $item->isWorldPublic());
+   	$xml = new SimpleXMLElementExtended('<material_item></material_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+   	$xml->addChildWithCDATA('version_id', $item->getVersionID());
+   	$xml->addChildWithCDATA('context_id', $item->getContextID());
+   	$xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+   	$xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+   	$xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+   	$xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+   	$xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+   	$xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+   	$xml->addChildWithCDATA('title', $item->getTitle());
+   	$xml->addChildWithCDATA('description', $item->getDescription());
+   	$xml->addChildWithCDATA('author', $item->getAuthor());
+   	$xml->addChildWithCDATA('publishing_date', $item->getPublishingDate());
+   	$xml->addChildWithCDATA('public', $item->isPublic());
+   	$xml->addChildWithCDATA('world_public', $item->isWorldPublic());
 
    	$extras_array = $item->getExtraInformation();
       $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
       $this->simplexml_import_simplexml($xml, $xmlExtras);
    	
    	//$xml->addChild('new_hack', $item->getItemID());
-   	$xml->addChild('copy_of', $item->getCopyItem());
+   	$copy_item = $item->getCopyItem();
+   	if ($copy_item != null) {
+   	   $xml->addChildWithCDATA('copy_of', $copy_item->getItemID());
+   	} else {
+      	$xml->addChildWithCDATA('copy_of', '');
+   	}
    	//$xml->addChild('workflow_status', $item->getWorkflowStatus());
-   	$xml->addChild('workflow_resubmission_date', $item->getWorkflowResubmissionDate());
-   	$xml->addChild('workflow_validity_date', $item->getWorkflowValidityDate());
+   	$xml->addChildWithCDATA('workflow_resubmission_date', $item->getWorkflowResubmissionDate());
+   	$xml->addChildWithCDATA('workflow_validity_date', $item->getWorkflowValidityDate());
+   	
+   	$section_manager = $this->_environment->getManager('section');
+      $section_manager->setContextLimit($item->getContextID());
+      $section_manager->setMaterialItemIDLimit($item->getItemID());
+      $section_manager->select();
+      $section_list = $section_manager->get();
+   	
+   	// get XML for each section
+      $section_item_xml_array = array();
+      if (!$section_list->isEmpty()) {
+         $section_item = $section_list->getFirst();
+         while ($section_item) {
+            $section_id = $section_item->getItemID();
+            $section_item_xml_array[] = $section_manager->export_item($section_id);
+            $section_item = $section_list->getNext();
+         }
+      }
+
+      // combine in tag
+      $section_xml = new SimpleXMLElementExtended('<section></section>');
+      foreach ($section_item_xml_array as $section_item_xml) {
+         $this->simplexml_import_simplexml($section_xml, $section_item_xml);
+      }
+   
+      // add to base xml
+      $this->simplexml_import_simplexml($xml, $section_xml);
+   	
+   	$xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
    	
    	return $xml;
 	}

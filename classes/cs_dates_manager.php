@@ -35,7 +35,7 @@ include_once('functions/date_functions.php');
 /** class for database connection to the database table "dates"
  * this class implements a database manager for the table "dates"
  */
-class cs_dates_manager extends cs_manager {
+class cs_dates_manager extends cs_manager implements cs_export_import_interface {
 
    /**
    * integer - containing the age of dates as a limit
@@ -963,5 +963,51 @@ class cs_dates_manager extends cs_manager {
 		';
 		$indexer->add(CS_DATE_TYPE, $query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<dates_item></dates_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('start_time', $item->getStartingTime());
+      $xml->addChildWithCDATA('end_time', $item->getEndingTime());
+      $xml->addChildWithCDATA('start_day', $item->getStartingDay());
+      $xml->addChildWithCDATA('end_day', $item->getEndingDay());
+      $xml->addChildWithCDATA('place', $item->getPlace());
+      $xml->addChildWithCDATA('datetime_start', $item->getDateTime_start());
+      $xml->addChildWithCDATA('datetime_end', $item->getDateTime_end());
+      $xml->addChildWithCDATA('public', $item->isPublic());
+      $xml->addChildWithCDATA('date_mode', $item->getDateMode());
+      $xml->addChildWithCDATA('color', $item->getColor());
+      $xml->addChildWithCDATA('recurrence_id', $item->getRecurrenceId());
+      $xml->addChildWithCDATA('recurrence_pattern', $item->getRecurrencePattern());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+
+      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
+      
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
+   }
+
 }
 ?>

@@ -44,7 +44,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "labels"
  * this class implements a database manager for the table "labels". Labels are groups, topics, labels, ...
  */
-class cs_labels_manager extends cs_manager {
+class cs_labels_manager extends cs_manager implements cs_export_import_interface {
 
   /**
    * integer - containing the age of last change as a limit in days
@@ -1159,6 +1159,39 @@ class cs_labels_manager extends cs_manager {
 
    public function resetCache () {
       $this->_internal_data = array();
+   }
+   
+   function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<labels_item></labels_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('name', $item->getName());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('type', $item->getLabelType());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $xml->addChildWithCDATA('public', $item->isPublic());
+   
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
    }
 }
 ?>

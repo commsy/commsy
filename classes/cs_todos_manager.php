@@ -35,7 +35,7 @@ include_once('functions/text_functions.php');
  * this class implements a database manager for the table "todo"
  */
 
-class cs_todos_manager extends cs_manager {
+class cs_todos_manager extends cs_manager implements cs_export_import_interface {
 
    var $_age_limit = NULL;
    var $_future_limit = NULL;
@@ -653,5 +653,69 @@ class cs_todos_manager extends cs_manager {
 		';
 		$indexer->add(CS_TODO_TYPE, $query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<todos_item></todos_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('date', $item->getDate());
+      $xml->addChildWithCDATA('status', $item->getStatus());
+      $xml->addChildWithCDATA('minutes', $item->getPlannedTime());
+      $xml->addChildWithCDATA('time_type', $item->getTimeType());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('public', $item->isPublic());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $step_manager = $this->_environment->getManager('step');
+      $step_manager->setContextLimit($item->getContextID());
+      $step_manager->setTodoItemIDLimit($item->getItemID());
+      $step_manager->select();
+      $step_list = $step_manager->get();
+      
+      // get XML for each discussion article
+      $step_item_xml_array = array();
+      if (!$step_list->isEmpty()) {
+         $step_item = $step_list->getFirst();
+         while ($step_item) {
+            $step_id = $step_item->getItemID();
+            $step_item_xml_array[] = $step_manager->export_item($step_id);
+            $step_item = $step_list->getNext();
+         }
+      }
+
+      // combine in tag
+      $step_xml = new SimpleXMLElementExtended('<step></step>');
+      foreach ($step_item_xml_array as $step_item_xml) {
+         $this->simplexml_import_simplexml($step_xml, $step_item_xml);
+      }
+   
+      // add to base xml
+      $this->simplexml_import_simplexml($xml, $step_xml);
+
+      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
+
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
+   }
 }
 ?>

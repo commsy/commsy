@@ -34,7 +34,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "announcement"
  * this class implements a database manager for the table "announcement"
  */
-class cs_announcement_manager extends cs_manager {
+class cs_announcement_manager extends cs_manager implements cs_export_import_interface {
 
   /**
    * integer - containing the age of announcement as a limit
@@ -652,6 +652,41 @@ class cs_announcement_manager extends cs_manager {
 		   		announcement.item_id = ' . $item->getItemID() . '
 	   	';
 	   	$indexer->add(CS_ANNOUNCEMENT_TYPE, $query);
+   }
+   
+   function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<announcement_item></announcement_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('enddate', $item->getSecondDateTime());
+      $xml->addChildWithCDATA('public', $item->isPublic());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
+      $this->simplexml_import_simplexml($xml, $xmlAnnotations);
+   
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
    }
 }
 ?>

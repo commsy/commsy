@@ -768,36 +768,36 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $context_item = $grouproom_manager->getItem($id);
          }
 
-         $xml = new SimpleXMLElement('<context_item></context_item>');
-         $xml->addChild('item_id', $context_item->getItemID());
-         $xml->addChild('context_id', $context_item->getContextID());
-         $xml->addChild('creator_id', $context_item->getCreatorID());
-         $xml->addChild('modifier_id', $context_item->getModificatorID());
-         $xml->addChild('deleter_id', $context_item->getDeleterID());
-         $xml->addChild('creation_date', $context_item->getCreationDate());
-         $xml->addChild('modification_date', $context_item->getModificationDate());
-         $xml->addChild('deletion_date', $context_item->getDeletionDate());
-         $xml->addChild('title', $context_item->getTitle());
+         $xml = new SimpleXMLElementExtended('<context_item></context_item>');
+         $xml->addChildWithCDATA('item_id', $context_item->getItemID());
+         $xml->addChildWithCDATA('context_id', $context_item->getContextID());
+         $xml->addChildWithCDATA('creator_id', $context_item->getCreatorID());
+         $xml->addChildWithCDATA('modifier_id', $context_item->getModificatorID());
+         $xml->addChildWithCDATA('deleter_id', $context_item->getDeleterID());
+         $xml->addChildWithCDATA('creation_date', $context_item->getCreationDate());
+         $xml->addChildWithCDATA('modification_date', $context_item->getModificationDate());
+         $xml->addChildWithCDATA('deletion_date', $context_item->getDeletionDate());
+         $xml->addChildWithCDATA('title', $context_item->getTitle());
          
          $extras_array = $context_item->getExtraInformation();
          $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
          $this->simplexml_import_simplexml($xml, $xmlExtras);
          
-         $xml->addChild('status', $context_item->getStatus());
-         $xml->addChild('activity', $context_item->getActivityPoints());
-         $xml->addChild('type', $context_item->getType());
-         $xml->addChild('public', $context_item->getPublic());
-         $xml->addChild('is_open_for_guests', $context_item->isOpenForGuests());
-         $xml->addChild('continuous', $context_item->isContinuous());
-         $xml->addChild('template', $context_item->isTemplate());
-         $xml->addChild('contact_persons', $context_item->getContactPersonString());
+         $xml->addChildWithCDATA('status', $context_item->getStatus());
+         $xml->addChildWithCDATA('activity', $context_item->getActivityPoints());
+         $xml->addChildWithCDATA('type', $context_item->getType());
+         $xml->addChildWithCDATA('public', $context_item->getPublic());
+         $xml->addChildWithCDATA('is_open_for_guests', $context_item->isOpenForGuests());
+         $xml->addChildWithCDATA('continuous', $context_item->isContinuous());
+         $xml->addChildWithCDATA('template', $context_item->isTemplate());
+         $xml->addChildWithCDATA('contact_persons', $context_item->getContactPersonString());
          
          $description_array = $context_item->getDescriptionArray();
          $xmlDescription = $this->getArrayAsXML($xmlExtras, $description_array, true, 'description');
          $this->simplexml_import_simplexml($xml, $xmlDescription);
          
-         $xml->addChild('room_description', $context_item->getDescription());
-         $xml->addChild('lastlogin', $context_item->getLastLogin());
+         $xml->addChildWithCDATA('room_description', $context_item->getDescription());
+         $xml->addChildWithCDATA('lastlogin', $context_item->getLastLogin());
          
          $xml = $this->export_sub_items($context_item, $xml);
          
@@ -819,42 +819,44 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $type_array = array();
       foreach ($rubrics as $rubric) {
          $rubric_array = explode('_', $rubric);
-         if ($rubric_array[1] != 'none') {
+         if ($rubric_array[1] != 'none' && $rubric_array[1] != 'user' && $rubric_array[1] != 'topic') {
             $type_array[] = $rubric_array[0];
          }
       }
-        
-      $rubric_xml = new SimpleXMLElement('<rubric></rubric>');
+      $type_array[] = 'label';
       
-      /*
-       * Materials 
-       */
-      if (in_array('material', $type_array)) {
-         $material_manager = $this->_environment->getMaterialManager();
-         $material_manager->setContextLimit($top_item->getItemID());
-         $material_manager->select();
-         $material_list = $material_manager->get();
-         
-         // get XML for each material
-         $material_item_xml_array = array();
-         if (!$material_list->isEmpty()) {
-            $material_item = $material_list->getFirst();
-            while ($material_item) {
-               $material_id = $material_item->getItemID();
-               $material_item_xml_array[] = $material_manager->export_item($material_id);
-               $material_item = $material_list->getNext();
-            }
-         }
+      $rubric_xml = new SimpleXMLElementExtended('<rubric></rubric>');
 
-         // combine in materials-Tag
-         $material_xml = new SimpleXMLElement('<material></material>');
-         foreach ($material_item_xml_array as $material_item_xml) {
-            $this->simplexml_import_simplexml($material_xml, $material_item_xml);
-         }
-      
-         // add to base xml
-         $this->simplexml_import_simplexml($rubric_xml, $material_xml);
+      foreach ($type_array as $type) {
+         $type_manager = $this->_environment->getManager($type);
+         if ($type_manager instanceof cs_export_import_interface) {
+            $type_manager->setContextLimit($top_item->getItemID());
+            if ($type == 'date') {
+               $type_manager->setWithoutDateModeLimit();
+            }
+            $type_manager->select();
+            $type_list = $type_manager->get();
+            
+            // get XML for each item
+            $type_item_xml_array = array();
+            if (!$type_list->isEmpty()) {
+               $type_item = $type_list->getFirst();
+               while ($type_item) {
+                  $type_id = $type_item->getItemID();
+                  $type_item_xml_array[] = $type_manager->export_item($type_id);
+                  $type_item = $type_list->getNext();
+               }
+            }
+   
+            // combine in tag
+            $type_xml = new SimpleXMLElementExtended('<'.$type.'></'.$type.'>');
+            foreach ($type_item_xml_array as $type_item_xml) {
+               $this->simplexml_import_simplexml($type_xml, $type_item_xml);
+            }
          
+            // add to base xml
+            $this->simplexml_import_simplexml($rubric_xml, $type_xml);
+         }
       }
 
       $this->simplexml_import_simplexml($xml, $rubric_xml);

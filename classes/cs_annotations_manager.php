@@ -37,7 +37,7 @@ include_once('classes/cs_manager.php');
 /** class for database connection to the database table "annotations"
  * this class implements a database manager for the table "annotations"
  */
-class cs_annotations_manager extends cs_manager {
+class cs_annotations_manager extends cs_manager implements cs_export_import_interface {
 
   /**
    * object manager - containing object to the select links for annotations
@@ -499,5 +499,39 @@ class cs_annotations_manager extends cs_manager {
 		';
 		$indexer->add(CS_ANNOTATION_TYPE, $query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<annotations_item></annotations_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('linked_item_id', $item->getLinkedItemID());
+      $xml->addChildWithCDATA('linked_version_id', $item->getLinkedVersionID());
+      
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $xml->addChildWithCDATA('public', $item->isPublic());
+   
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
+   }
 }
 ?>

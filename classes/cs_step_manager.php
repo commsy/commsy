@@ -42,7 +42,7 @@ include_once('functions/text_functions.php');
  * @version 2.1 $Revision$
  */
 
-class cs_step_manager extends cs_manager {
+class cs_step_manager extends cs_manager implements cs_export_import_interface {
 
    /**
    * integer - containing a start point for the select step
@@ -572,5 +572,41 @@ class cs_step_manager extends cs_manager {
 		';
 		$indexer->add(CS_STEP_TYPE, $query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<step_item></step_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('minutes', $item->getMinutes());
+      $xml->addChildWithCDATA('time_type', $item->getTimeType());
+      $xml->addChildWithCDATA('todo_item_id', $item->getTodoID());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $xml->addChildWithCDATA('public', $item->isPublic());
+   
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+   
+   }
+    
 }
 ?>

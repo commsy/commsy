@@ -36,7 +36,7 @@ include_once('functions/text_functions.php');
 /** class for database connection to the database table "discussion"
  * this class implements a database manager for the table "discussion"
  */
-class cs_discussion_manager extends cs_manager {
+class cs_discussion_manager extends cs_manager implements cs_export_import_interface {
 
    /**
    * integer - containing the age of discussion as a limit
@@ -712,5 +712,65 @@ class cs_discussion_manager extends cs_manager {
 		';
 		$indexer->add(CS_DISCUSSION_TYPE, $query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<discussions_item></discussions_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('latest_article_item_id', $item->getLatestArticleID());
+      $xml->addChildWithCDATA('latest_article_modification_date', $item->getLatestArticleModificationDate());
+      $xml->addChildWithCDATA('status', $item->getDiscussionStatus());
+      $xml->addChildWithCDATA('discussion_type', $item->getDiscussionType());
+      $xml->addChildWithCDATA('public', $item->isPublic());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   
+      $discussionarticle_manager = $this->_environment->getManager('discarticle');
+      $discussionarticle_manager->setContextLimit($item->getContextID());
+      $discussionarticle_manager->setDiscussionLimit($item->getItemID());
+      $discussionarticle_manager->select();
+      $discussionarticle_list = $discussionarticle_manager->get();
+      
+      // get XML for each discussion article
+      $discussionarticle_item_xml_array = array();
+      if (!$discussionarticle_list->isEmpty()) {
+         $discussionarticle_item = $discussionarticle_list->getFirst();
+         while ($discussionarticle_item) {
+            $discussionarticle_id = $discussionarticle_item->getItemID();
+            $discussionarticle_item_xml_array[] = $discussionarticle_manager->export_item($discussionarticle_id);
+            $discussionarticle_item = $discussionarticle_list->getNext();
+         }
+      }
+
+      // combine in tag
+      $discussionarticle_xml = new SimpleXMLElementExtended('<discarticle></discarticle>');
+      foreach ($discussionarticle_item_xml_array as $discussionarticle_item_xml) {
+         $this->simplexml_import_simplexml($discussionarticle_xml, $discussionarticle_item_xml);
+      }
+   
+      // add to base xml
+      $this->simplexml_import_simplexml($xml, $discussionarticle_xml);
+   
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($xml) {
+      
+   }
 }
 ?>
