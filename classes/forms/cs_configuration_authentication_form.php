@@ -61,6 +61,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
    var $_disable_add_user = false;
    var $_disable_delete_user = false;
    var $_disable_password_check = false;
+   
+   private $_current_additional_server = 0;
+   private $_add_additional_server = false;
+   private $_select_server = array();
 
   /** constructor
     * the only available constructor
@@ -70,6 +74,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
    function cs_configuration_authentication_form ($params) {
       $this->cs_rubric_form($params);
    }
+   
+   public function setAddOneAdditionalServer () {
+   	$this->_add_additional_server = true;
+   }
 
 
    /** init data for form, INTERNAL
@@ -77,7 +85,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
     */
    function _initForm () {
 
-      // auth text choice
+   	// auth text choice
       $this->_array_auth_source[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT');
       $this->_array_auth_source[0]['value'] = -1;
 
@@ -228,6 +236,46 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          }
 	      #$this->_disable_password_check = true;
       }
+      
+      // additonal server
+      if ( !empty($this->_item) ) {
+         $auth_data_array = $this->_item->getAuthData();
+         if ( !empty($auth_data_array['additional_server']) ) {
+         	$this->_current_additional_server = count($auth_data_array['additional_server']);
+         	if ( $this->_current_additional_server > 0 ) {
+         		$counter = 0;
+               $this->_select_server[$counter]['text']  = $auth_data_array['HOST'];
+               $this->_select_server[$counter]['value'] = $auth_data_array['HOST'];
+               foreach ( $auth_data_array['additional_server'] as $value_array ) {
+               	if ( !empty($value_array['host']) ) {
+                     $counter++;
+               		$this->_select_server[$counter]['text']  = $value_array['host'];
+               		$this->_select_server[$counter]['value'] = $value_array['host'];            		 
+               	}
+               }
+               unset($counter);
+         	}
+         }
+      } elseif (!empty($param['additional_server_count']) ) {
+      	$counter = 0;
+         foreach ( $param as $key => $value ) {
+         	if ( substr($key,0,4) == 'host'
+         		  and $key != 'host_new'
+         		  and !empty($value)
+         		) {
+      		   $this->_select_server[$counter]['text']  = $value;
+       		   $this->_select_server[$counter]['value'] = $value;         		
+        		   $counter++;
+         	}
+         }
+         unset($counter);
+         if ( !empty($this->_select_server)
+         	  and count($this->_select_server) == 1 
+         	) {
+         	$this->_select_server = array();
+         }
+      	$this->_current_additional_server = $param['additional_server_count'];
+      }
    }
 
    /** create the form, INTERNAL
@@ -352,6 +400,36 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       elseif ( $this->_auth_type == 'LDAP' ) {
          $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
          $this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
+         
+         // additional server
+         if ( !empty($this->_current_additional_server) ) {
+         	if ( !empty($this->_select_server) ) {
+               $this->_form->addSelect( 'select_server',
+                                        $this->_select_server,
+                                        '',
+                                        $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_SERVER'),
+                                        '',
+                                        '',
+                                        '',
+                                        '',
+                                        false);
+         	}
+         	for ( $count = 1; $count <=  $this->_current_additional_server; $count++ ) {
+         		$this->_form->addTextfield('host'.$count,'',($count+1).'. '.$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST').' ('.$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT').')','','',35,false,'','','','','','',false,'');
+         		$this->_form->combine('horizontal');
+         		$this->_form->addTextfield('port'.$count,'',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',4,false,'','','','',':','',false,'');
+         	}
+         	$this->_form->addHidden('additional_server_count',$this->_current_additional_server);
+         }
+         if ( $this->_add_additional_server ) {
+         	$count = '_new';
+            $this->_form->addTextfield('host'.$count,'',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST').':'.$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',35,false,'','','','','','',false,'');
+            $this->_form->combine('horizontal');
+            $this->_form->addTextfield('port'.$count,'',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',4,false,'','','','',':','',false,'');
+         } else {
+         	$this->_form->addButton('option_additional_server',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADDITIONAL_SERVER'));
+         }
+         
          $this->_form->addTextfield('dbsearchuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID'),'','',21,true,'','','','','','',false,'');
          $this->_form->combine();
          $this->_form->addText('dbsearchuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBSEARCHUSERID_DESC'));
@@ -507,7 +585,6 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                $this->_values['port'] = '389';
             }
          }
-
 
       } elseif ( !empty($this->_item) ) {
          $this->_values['auth_source'] = $this->_item->getItemID();
@@ -753,6 +830,18 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             if ( !empty($auth_data_array['DBSEARCHUSERID']) ) {
                $this->_values['dbsearchuserid'] = $auth_data_array['DBSEARCHUSERID'];
             }
+            
+            if ( !empty($auth_data_array['additional_server']) ) {
+               $count = 0;
+               foreach ( $auth_data_array['additional_server'] as $value_array ) {
+            	   $count++;
+            	   $this->_values['host'.$count] = $value_array['host'];
+            	   $this->_values['port'.$count] = $value_array['port'];
+               }
+            }
+            if ( !empty($auth_data_array['select_server']) ) {
+               $this->_values['select_server'] = $auth_data_array['select_server'];
+            }
          }
          
          // Typo3Web
@@ -849,8 +938,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       	) {
       	$this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_PASSWORD_LENGTH_ERROR',$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_TRY_UNTIL_LOCK'));
       	$this->_form->setFailure('try_until_lock','');
-      }
-      
+      }      
    }
 }
 ?>

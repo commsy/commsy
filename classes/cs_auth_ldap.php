@@ -99,7 +99,12 @@ class cs_auth_ldap extends cs_auth_manager {
     * Translation Object
     */
    private $_translator = null;
-
+   
+   private $_server_all           = array();
+   private $_server_failed        = array();
+   private $_server_selected      = NULL;
+   private $_server_selected_save = NULL;
+    
    /** constructor: cs_auth_ldap
     * the only available constructor, initial values for internal variables
     *
@@ -134,6 +139,40 @@ class cs_auth_ldap extends cs_auth_manager {
       } elseif ( !empty($this->_field_userid) ) {
       	$this->_search_userid = $this->_field_userid;
       }
+      
+      // additional server - BEGIN
+      if ( !empty($auth_data_array['additional_server']) ) {
+      	$temp_array = array();
+      	$temp_array['host'] = $this->_server;
+      	$temp_array['port'] = $this->_server_port;
+      	$this->_server_all[] = $temp_array;
+      	unset($temp_array);
+      	$this->_server_all = array_merge($this->_server_all,$auth_data_array['additional_server']);
+      }
+      if ( !empty($auth_data_array['select_server']) ) {
+      	$this->_server_selected = $auth_data_array['select_server'];
+      	$this->_server_selected_save = $auth_data_array['select_server'];
+      }
+      if ( !empty($this->_server_selected)
+      	  and $this->_server_selected != $this->_server
+      	) {
+      	$this->_server = $this->_server_selected;
+      	$this->_server_port = $this->_getPort($this->_server_all,$this->_server_selected);
+      }
+      // additional server - END
+   }
+   
+   private function _getPort ($array, $name) {
+   	$retour = '';
+   	foreach ( $array as $value_array ) {
+   		if ( $value_array['host'] == $name ) {
+   			if ( !empty($value_array['port']) ) {
+   			   $retour = $value_array['port'];
+   			}
+   			break; 
+   		}
+   	}
+   	return $retour;
    }
 
    /** set user with write access
@@ -179,10 +218,33 @@ class cs_auth_ldap extends cs_auth_manager {
       }
       $connect = @ldap_connect( $this->_server, $this->_server_port );
       if ( !$connect ) {
-         include_once('functions/error_functions.php');
-         trigger_error('could not connect to server '.$this->_server.', '.$this->_server_port,E_USER_WARNING);
+         // additional server
+         if ( !empty($this->_server_all)
+         	  and count($this->_server_all) > 1 
+         	) {
+         	// delete current server from array
+         	$temp_array = array();
+         	foreach ( $this->_server_all as $server_array ) {
+         		if ( $server_array['host'] != $this->_server_selected ) {
+         			$temp_array[] = $server_array;
+         		}
+         	}
+         	$this->_server_all = $temp_array;
+         	unset($temp_array);
+         	$this->_server_selected = $this->_server_all[0]['host'];
+         	$this->_server = $this->_server_all[0]['host'];
+         	if ( !empty($this->_server_all[0]['port']) ) {
+         	   $this->_server_port = $this->_server_all[0]['port'];
+         	} else {
+         		$this->_server_port = '';
+         	}
+         	$granted = $this->checkAccount($uid, $password);
+         } else {
+      	   include_once('functions/error_functions.php');
+            trigger_error('could not connect to server '.$this->_server.', '.$this->_server_port,E_USER_WARNING);
+         }
       } else {
-         @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
+      	@ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
          @ldap_set_option($connect,LDAP_OPT_REFERRALS,0);
          $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
          if ( $bind ) {
@@ -204,6 +266,19 @@ class cs_auth_ldap extends cs_auth_manager {
             }
             $bind = @ldap_bind($connect, $access_root, $this->encryptPassword($this->_rootuser_password));
             if ( $bind ) {
+            	
+            	// additional server
+            	// save auth source item - TEST
+            	if ( !empty($this->_server_all) ) {
+            		if ( $this->_server_selected != $this->_server_selected_save ) {
+            	      $auth_data_array = $this->_auth_source_item->getAuthData();
+            	      $auth_data_array['select_server'] = $this->_server_selected;
+            	      $this->_auth_source_item->setAuthData($auth_data_array);
+            	      $this->_auth_source_item->save();
+            		}
+               }
+            	// additional server
+            	
                $base_user_array = explode(',',$this->_baseuser);
                $count = count($base_user_array);
                for ( $i=0; $i<$count; $i++  ) {
@@ -232,7 +307,30 @@ class cs_auth_ldap extends cs_auth_manager {
                   $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
                }
             } else {
-               $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_LDAP_ROOTUSER');
+            	// additional server
+            	if ( !empty($this->_server_all)
+            		  and count($this->_server_all) > 1 
+            		) {
+            		// delete current server from array
+            		$temp_array = array();
+            		foreach ( $this->_server_all as $server_array ) {
+            			if ( $server_array['host'] != $this->_server_selected ) {
+            				$temp_array[] = $server_array;
+            			}
+            		}
+            		$this->_server_all = $temp_array;
+            		unset($temp_array);
+            		$this->_server_selected = $this->_server_all[0]['host'];
+              		$this->_server = $this->_server_all[0]['host'];
+            		if ( !empty($this->_server_all[0]['port']) ) {
+            		   $this->_server_port = $this->_server_all[0]['port'];
+            		} else {
+            			$this->_server_port = '';
+            		}
+            		$granted = $this->checkAccount($uid, $password);
+            	} else {
+                  $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_LDAP_ROOTUSER');
+            	}
             }
          } else {
             $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
@@ -240,6 +338,7 @@ class cs_auth_ldap extends cs_auth_manager {
          @ldap_unbind($connect);
          @ldap_close($connect);
       }
+      exit;
       return $granted;
    }
 
@@ -252,7 +351,7 @@ class cs_auth_ldap extends cs_auth_manager {
     * @return boolean true, if authentication already exists
     *                 false, if authentication not exists -> new user
     */
-  function exists ($user_id) {
+  public function exists ($user_id) {
      // not implemented yet
      include_once('functions/error_functions.php');
      trigger_error('The methode EXISTS [LDAP] is not implemented!',E_USER_ERROR);
