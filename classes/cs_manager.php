@@ -1921,16 +1921,17 @@ class cs_manager {
     }
     
     function getTagsAsXML ($xml, $tag_array) {
-      foreach ($tag_array as $tag) {
-         if (!is_array($tag)) {
-            $xml->addChildWithCDATA('tag', $tag->getItemID());
-         } else {
-            $tempXml = new SimpleXMLElementExtended('<tag_children></tag_children>');
-            $temp = $this->getTagsAsXML($tempXml, $tag);
-            $this->simplexml_import_simplexml($xml, $temp);
-         }
-      }
-      return $xml;
+       foreach ($tag_array as $tag) {
+          $tag_manager = $this->_environment->getTagManager();
+          $tag_xml = $tag_manager->export_item($tag['item_id']);
+          if (!empty($tag['children'])) {
+             $children_xml = new SimpleXMLElementExtended('<children></children>');
+             $children_xml_temp = $this->getTagsAsXML($children_xml, $tag['children']);
+             $this->simplexml_import_simplexml($tag_xml, $children_xml_temp);
+          }
+          $this->simplexml_import_simplexml($xml, $tag_xml);
+       }
+       return $xml;
     }
 }
 ?>
