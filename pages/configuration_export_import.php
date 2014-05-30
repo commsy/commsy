@@ -68,7 +68,66 @@ else {
          $dom->preserveWhiteSpace = false;
          $dom->formatOutput = true;
          $dom->loadXML($xml->asXML());
-         #el($dom->saveXML());
+
+         $filename = 'var/temp/commsy_xml_export_import_'.$_POST['room'].'.xml';
+         if ( file_exists($filename) ) {
+            unlink($filename);
+         }
+
+         $xmlfile = fopen($filename, 'a');   
+         fputs($xmlfile, $dom->saveXML());
+         fclose($xmlfile);
+
+         //Location where export is saved
+         $zipfile = 'var/temp/commsy_export_import_'.$_POST['room'].'.zip';
+         if ( file_exists($zipfile) ) {
+            unlink($zipfile);
+         }
+
+         //Location, that will be backuped
+         $disc_manager = $environment->getDiscManager();
+         $disc_manager->setPortalID($environment->getCurrentPortalID());
+         $disc_manager->setContextID($_POST['room']);
+         $backuppath = $disc_manager->getFilePath();
+         $disc_manager->setContextID($environment->getCurrentContextID());
+         unset($disc_manager);
+
+         if ( class_exists('ZipArchive') ) {
+            include_once('functions/misc_functions.php');
+            $zip = new ZipArchive();
+            $filename_zip = $zipfile;
+
+            if ( $zip->open($filename_zip, ZIPARCHIVE::CREATE) !== TRUE ) {
+               include_once('functions/error_functions.php');
+               trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
+            }
+            $temp_dir = getcwd();
+            chdir($backuppath);
+
+            $zip = addFolderToZip('.',$zip,'files');
+            chdir($temp_dir);
+
+            $zip->addFile($filename, basename($filename));
+            $zip->close();
+            unset($zip);
+            
+            header('Content-disposition: attachment; filename=commsy_export_import_'.$_POST['room'].'.zip');
+            header('Content-type: application/zip');
+            readfile($zipfile);
+         } else {
+            include_once('functions/error_functions.php');
+            trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
+         }
+       
+       
+            /*$params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $link = $class_factory->getClass(TEXT_VIEW,$params);
+            unset($params);
+            $link->setText('<a href="../'.$zipfile.'">Download</a> ('.getFilesize($zipfile).')');
+            $page->addForm($link);*/
+         
       }
    }
 
