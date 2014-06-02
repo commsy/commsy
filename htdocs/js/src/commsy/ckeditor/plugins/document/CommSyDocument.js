@@ -86,12 +86,22 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											var uploadButton = dialog.getContentElement( 'documentTab', 'uploadButton');
 											var upload = dialog.getContentElement( 'documentTab', 'upload');
 											
+											var naviParam = dialog.getContentElement( 'documentTab', 'naviParam');
+											var saveParam = dialog.getContentElement( 'documentTab', 'saveParam');
+											var saveaimParam = dialog.getContentElement( 'documentTab', 'saveaimParam');
+											var saveperiodParam = dialog.getContentElement( 'documentTab', 'saveperiodParam');
+											
 											if(this.getValue() == 'onyx'){
 												textInput.enable();
 												fileSelect.enable();
 												startAt.disable();
 												uploadButton.enable();
 												upload.enable();
+												
+												naviParam.enable();
+												saveParam.enable();
+												saveaimParam.enable();
+												saveperiodParam.enable();
 												
 												// select only zip files for onyx
 												var j;
@@ -108,6 +118,11 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												fileSelect.disable();
 												uploadButton.disable();
 												upload.disable();
+												
+												naviParam.disable();
+												saveParam.disable();
+												saveaimParam.disable();
+												saveperiodParam.disable();
 											}
 										}
 									},
@@ -144,6 +159,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 														var input = this.getInputElement().$;
 														
 														if(dialog.getContentElement('documentTab', 'selectbox').getValue() == 'onyx') {
+															fileName = input.options[input.selectedIndex].text;
 															fileUrl = 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + this.getValue();
 														} else {
 															fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
@@ -293,7 +309,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 									},
 									{
 										type: 'hbox',
-										widths : [ '50px', '50px', '50px' ],
+										widths : [ '50px', '50px', '50px', '50px','50px'],
 //										style: 'margin-top:px',
 										children: 
 										[
@@ -303,8 +319,54 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												width : '60px',
 												label : 'Start mit Folie',
 												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'naviParam',
+												width : '60px',
+												label : 'navi',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'saveParam',
+												width : '60px',
+												label : 'save',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'saveaimParam',
+												width : '60px',
+												label : 'saveaim',
+												'default' : '',
+											},
+											{
+												type : 'text',
+												id : 'saveperiodParam',
+												width : '60px',
+												label : 'saveperiode',
+												'default' : '',
 											}
 
+										]
+									},
+									{
+										type: 'hbox',
+										widths : [ '50px', '50px'],
+//										style: 'margin-top:px',
+										children: 
+										[
+										 	{
+										 		type : 'checkbox',
+										 		id : 'repParam',
+										 		label : 'Auswertung'
+										 	},
+										 	{
+										 		type : 'checkbox',
+										 		id : 'repMode',
+										 		label : 'Statistische Auswertung'
+										 	}
 										]
 									}
 								]
@@ -390,30 +452,117 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								
 							} else if(this.getValueOf('documentTab', 'selectbox') == 'onyx') {
 								
-								var cid = getUrlParam('cid');
+								var naviParam = this.getValueOf('documentTab','naviParam');
+								var saveParam = this.getValueOf('documentTab','saveParam');
+								var saveaimParam = this.getValueOf('documentTab','saveaimParam');
+								var saveperiodParam = this.getValueOf('documentTab','saveperiodParam');
 								
-								var dialog = this;
-								var linkText = this.getValueOf('documentTab','linkText');
-								var link = this.getValueOf('documentTab', 'documentUrl');
+								// rep
+								var repParam = this.getValueOf('documentTab','repParam');
+								var repMode = this.getValueOf('documentTab','repMode');
 								
-								// regex filename
-								var fileNameRegEx = /commsy.php\/(.*)\?.*/;
-								if(linkText == ''){
-									//var filename = this.getValueOf('documentTab','fileselect');
-									match = link.match(fileNameRegEx);
-									linkText = match[1];
+								if(repParam){
+									var repLinkParam = 4;
+									if(repMode){
+										repLinkParam = 5;
+									}
+									var linkText = this.getValueOf('documentTab','linkText');
+									var link = this.getValueOf('documentTab', 'documentUrl');
+									
+									link = link.replace("showqti", "showrep");
+									link = link.replace("iid", "fid");
+									
+									if(linkText == ''){
+										linkText = fileName;
+									}
+									
+						            var a = editor.document.createElement( 'a' );
+	//					            a.setAttribute( 'href', link);
+						            
+						            a.setAttribute( 'href', link+'&choice='+repLinkParam);
+						            a.setAttribute('target', '_blank');
+						            a.setAttribute('style', tempStyle);
+						            a.setText( linkText );
+	
+	
+						            editor.insertElement( a );
+						            
+								} else {
+									
+									var paramArray = new Array();
+									var paramArray2 = new Array();
+									
+									//var params;
+									//paramArray['#'] = new Array();
+									
+									//paramArray['0'] = "";
+									paramArray['1'] = fileName;
+									
+									if(naviParam != ''){ console.log("navi");
+										paramArray['navi'] = naviParam;
+										paramArray2.push('navi');
+										paramArray2.push(naviParam);
+										
+										//params = "navi="+naviParam;
+									}
+									if(saveParam != ''){
+										paramArray['save'] = saveParam;
+										paramArray2.push('save');
+										paramArray2.push(saveParam);
+										//params = params + "save="+saveParam;
+									}
+									if(saveaimParam != ''){
+										paramArray['saveaim'] = saveaimParam;
+										paramArray2.push('saveaim');
+										paramArray2.push(saveaimParam);
+										//params = params + "saveaim="+saveaimParam;
+									}
+									if(saveperiodParam != ''){
+										paramArray['saveperiod'] = saveperiodParam;
+										paramArray2.push('saveperiod');
+										paramArray2.push(saveperiodParam);
+										//params = params + "saveperiod="+saveperiodParam;
+									}
+									paramArray['#'] = paramArray2;
+									
+									var data = {
+											1: fileName,
+											navi: naviParam,
+											save: saveParam,
+											saveaim: saveaimParam,
+											saveperiod: saveperiodParam,
+											"#": ["navi",naviParam,"save",saveParam,"saveaim",saveaimParam,"saveperiod",saveperiodParam]
+									};
+									
+									console.log(paramArray);
+									
+									var jsonString = JSON.stringify(data);
+									var paramString = "&params="+encodeURI(jsonString);
+									
+									var cid = getUrlParam('cid');
+									
+									var dialog = this;
+									var linkText = this.getValueOf('documentTab','linkText');
+									var link = this.getValueOf('documentTab', 'documentUrl');
+									
+									//var fileIdRegEx = /commsy.php\/\.*iid=(\d*)/;
+									// regex filename
+									var fileNameRegEx = /commsy.php\/(.*)\?.*/;
+									if(linkText == ''){
+										linkText = fileName;
+									}
+									
+						            var a = editor.document.createElement( 'a' );
+	//					            a.setAttribute( 'href', link);
+						            
+						            a.setAttribute( 'href', link+paramString);
+						            a.setAttribute('target', '_blank');
+						            a.setAttribute('style', tempStyle);
+						            a.setText( linkText );
+	
+	
+						            editor.insertElement( a );
 								}
-								
-					            var a = editor.document.createElement( 'a' );
-					            a.setAttribute( 'href', link);
-					            
-//					            a.setAttribute( 'href', 'commsy.php?cid=' + cid + '&mod=onyx&fct=showqti&iid=' + file_id + '');
-					            a.setAttribute('target', 'help');
-					            a.setAttribute('style', tempStyle);
-					            a.setText( linkText );
-
-
-					            editor.insertElement( a );
 								
 							}
 							

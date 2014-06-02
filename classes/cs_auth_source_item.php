@@ -416,8 +416,5 @@ class cs_auth_source_item extends cs_item {
    	   	return false;
    	   }
    }
-   
-   
-
 }
 ?>

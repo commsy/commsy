@@ -357,7 +357,12 @@
 				$entry = array();
 				$entry['item_id']			= $item->getItemID();
 				$entry['title']				= $title;
-				$entry['modification_date']	= $item->getModificationDate();
+				if($item->getType() == "date"){
+					$entry['modification_date']	= $item->getDateTime_start();
+				} else {
+					$entry['modification_date']	= $item->getModificationDate();
+				}
+				//$entry['modification_date']	= $item->getModificationDate();
 				$entry['modificator']		= $item->getModificatorItem()->getFullName();
 				$entry['system_label']		= $item->isSystemLabel();
 

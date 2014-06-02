@@ -63,10 +63,12 @@ else {
       $command = $_POST['option'];
    } elseif (isset($_POST['mail_text']) ) {
       $command = $translator->getMessage('COMMON_CHOOSE_BUTTON');
+   } elseif (isset($_POST['option_additional_server']) ) {
+      $command = $_POST['option_additional_server'];
    } else {
       $command = '';
    }
-
+    
    // Cancel editing
    if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect( $environment->getCurrentContextID(),
@@ -74,12 +76,17 @@ else {
                 $environment->getCurrentFunction(),
                 '' );
    }
-
+   
    // Show form and/or save item
    else {
-
       // Initialize the form
       $form = $class_factory->getClass(CONFIGURATION_AUTHENTICATION_FORM,array('environment' => $environment));
+
+      // additional server
+      if ( isOption($command, $translator->getMessage('CONFIGURATION_AUTHENTICATION_ADDITIONAL_SERVER')) ) {
+         $form->setAddOneAdditionalServer();
+      }
+      
       // Display form
       $params = array();
       $params['environment'] = $environment;
@@ -98,6 +105,7 @@ else {
              and $_POST['auth_source'] != 'disabled'
              and $_POST['auth_source'] > 100
              and !isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
+             and !isOption($command, $translator->getMessage('CONFIGURATION_AUTHENTICATION_ADDITIONAL_SERVER'))
            )
          ) {
          $auth_source_item = $room_item->getAuthSource($_POST['auth_source']);
@@ -111,21 +119,21 @@ else {
                      or $_POST['auth_type'] == -1
                    )
              ) {
-         $temp_values = array();
+      	$temp_values = array();
          $temp_values['auth_source'] = $_POST['auth_source'];
          $form->setFormPost($temp_values);
       } elseif ( !empty($_POST) and !empty($values) and $_POST['auth_source'] != 'new') {
-         $temp_values = $_POST;
+      	$temp_values = $_POST;
          $temp_values['text'] = $values;
          $form->setFormPost($temp_values);
       } elseif ( !empty($_POST['auth_source']) and $_POST['auth_source'] == -1) {
       	if ( !empty($command)
               and isOption($command, $translator->getMessage('PREFERENCES_SAVE_BUTTON'))
       		) {
-      	   $form->setFormPost($_POST);
+      		$form->setFormPost($_POST);
       	}
       } elseif ( !empty($_POST) ) {
-         $form->setFormPost($_POST);
+      	$form->setFormPost($_POST);
       }
       $form->prepareForm();
       $form->loadValues();
@@ -477,7 +485,72 @@ else {
             if( isset($_POST['base']) and !empty($_POST['base'])) {
                $auth_data_array['BASE'] = $_POST['base'];
             }
-
+            
+            // additional server
+            if ( !empty($_POST['additional_server_count']) ) {
+            	if ( !isset($auth_data_array['additional_server']) ) {
+            		$auth_data_array['additional_server'] = array();
+            	}
+            	for ( $count = 1; $count <=  $_POST['additional_server_count']; $count++ ) {
+            		if ( !empty($_POST['host'.$count])
+            		     and !empty($_POST['port'.$count])
+            			) {
+            			$temp_array = array();
+            			$temp_array['host'] = $_POST['host'.$count];
+            			$temp_array['port'] = $_POST['port'.$count];
+            			$auth_data_array['additional_server'][] = $temp_array;
+            			unset($temp_array);
+            		}
+            	}
+            	if ( $_POST['additional_server_count'] != count($auth_data_array['additional_server']) ) {
+            		$_POST['additional_server_count'] = count($auth_data_array['additional_server']);
+            	   
+            		// form re-new
+            	   $form->reset();
+            	   $form->setFormPost($_POST);
+            	   $form->prepareForm();
+            	   $form->loadValues();
+            	}
+            }
+            
+            if ( empty($auth_data_array['additional_server']) ) {
+            	unset($auth_data_array['additional_server']);
+            }
+            
+            if ( !empty($_POST['host_new'])
+            		and !empty($_POST['port_new'])
+               ) {
+            	$temp_array = array();
+            	$temp_array['host'] = $_POST['host_new'];
+            	$temp_array['port'] = $_POST['port_new'];
+            	if ( !isset($auth_data_array['additional_server']) ) {
+            	   $auth_data_array['additional_server'] = array();
+            	}
+            	$auth_data_array['additional_server'][] = $temp_array;
+            	unset($temp_array);
+            	
+            	if ( !empty($_POST['additional_server_count']) ) {
+            		$_POST['additional_server_count']++;
+            	} else {
+            		$_POST['additional_server_count'] = 1;
+            	}
+            	$_POST['host'.$_POST['additional_server_count']] = $_POST['host_new'];
+            	$_POST['port'.$_POST['additional_server_count']] = $_POST['port_new'];
+            	
+            	// form re-new
+            	$form->reset();
+            	$form->setFormPost($_POST);
+            	$form->prepareForm();
+            	$form->loadValues();
+            }
+            
+            if ( !empty($_POST['select_server'])
+            	  and !empty($auth_data_array['additional_server'])
+            	  and count($auth_data_array['additional_server']) > 0
+            	) {
+            	$auth_data_array['select_server'] = $_POST['select_server'];
+            }
+            // additional server - END
 
             if ( !empty($auth_data_array) ) {
                $auth_item->setAuthData($auth_data_array);
@@ -487,8 +560,7 @@ else {
                  and isset($auth_item)
                ) {
             	$auth_item->save();
-            }
-            
+            } 
 
             if ( isset($_POST['default']) and $_POST['default'] == 1 ) {
                if ( $room_item->getAuthDefault() != $_POST['auth_source']

@@ -78,7 +78,7 @@
 					$this->_tpl_engine->setPostToken(true);
 				}
 				// print - download pdf
-				if($this->_environment->getOutputMode() === 'print'){
+				if($this->_environment->getOutputMode() === 'print' && $_GET['mod'] != "download"){
 					$contextItem = $this->_environment->getCurrentContextItem();
 					$roomTitle = str_replace(' ', '_', $contextItem->getTitle());
 					
