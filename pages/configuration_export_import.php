@@ -58,9 +58,7 @@ else {
    unset($params);
 
    // Export item
-   if ( !empty($command)
-        and (isOption($command, $translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON')))
-      ) {
+   if (!empty($command) and (isOption($command, $translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON')))) {
       if ( $form->check() ) {
          $room_manager = $environment->getRoomManager();
          $xml = $room_manager->export_item($_POST['room']);
@@ -68,6 +66,7 @@ else {
          $dom->preserveWhiteSpace = false;
          $dom->formatOutput = true;
          $dom->loadXML($xml->asXML());
+         #el($dom->saveXML());
 
          $filename = 'var/temp/commsy_xml_export_import_'.$_POST['room'].'.xml';
          if ( file_exists($filename) ) {
@@ -118,16 +117,28 @@ else {
             include_once('functions/error_functions.php');
             trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
          }
-       
-       
-            /*$params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = true;
-            $link = $class_factory->getClass(TEXT_VIEW,$params);
-            unset($params);
-            $link->setText('<a href="../'.$zipfile.'">Download</a> ('.getFilesize($zipfile).')');
-            $page->addForm($link);*/
-         
+      }
+   } else if (!empty($command) and (isOption($command, $translator->getMessage('COMMON_UPLOAD')))) {
+      if ( !empty($_FILES['upload']['tmp_name']) ) {
+         $temp_stamp = time();
+         //$files = file_get_contents($_FILES['upload']['tmp_name']);
+         move_uploaded_file($_FILES['upload']['tmp_name'], 'var/temp/upload.zip');
+         $zip = new ZipArchive;
+         $res = $zip->open('var/temp/upload.zip');
+         if ($res === TRUE) {
+            $zip->extractTo('var/temp/'.$temp_stamp);
+            $zip->close();
+            
+            chdir('var/temp/'.$temp_stamp);
+            foreach (glob("commsy_xml_export_import_*.xml") as $filename) {
+               $xml = simplexml_load_file($filename);
+               $dom = new DOMDocument('1.0');
+               $dom->preserveWhiteSpace = false;
+               $dom->formatOutput = true;
+               $dom->loadXML($xml->asXML());
+               #el($dom->saveXML());
+            }
+         }
       }
    }
 

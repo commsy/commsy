@@ -96,7 +96,7 @@ class cs_configuration_export_import_form extends cs_rubric_form {
                                '',
                                '',
                                true);
-                               
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_UPLOAD'), $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_DESC',$meg_val), 12, false, $this->_translator->getMessage('COMMON_UPLOAD'),'option',false);
       $this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON'));
    }
    
