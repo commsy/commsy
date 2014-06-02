@@ -1267,7 +1267,7 @@ class cs_material_manager extends cs_manager {
 	}
 
 	function getResubmissionItemIDsByDate($year, $month, $day){
-	   $query = 'SELECT item_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_resubmission_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
+	   $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_resubmission_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
 
@@ -1277,7 +1277,7 @@ class cs_material_manager extends cs_manager {
 	}
 
    function getValidityItemIDsByDate($year, $month, $day){
-	   $query = 'SELECT item_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
+	   $query = 'SELECT item_id, version_id FROM '.$this->addDatabasePrefix('materials').' WHERE workflow_validity_date = "'.$year.'-'.$month.'-'.$day.'" AND deletion_date IS NULL';
 	   return $this->_db_connector->performQuery($query);
 	}
 } // end of class
