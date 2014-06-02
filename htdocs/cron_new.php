@@ -197,10 +197,10 @@ function cron_workflow($logFile, $portal){
       $item_array = $material_manager->getResubmissionItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
       	$temp_material = $material_manager->getItem($item['item_id']);
-         if ( isset($temp_material) && !$temp_material->isDeleted() )
+         $item_id_current_version = $material_manager->getLatestVersionID($item['item_id']);
+         if ( isset($temp_material) && !$temp_material->isDeleted() && ($item['version_id'] == $item_id_current_version))
          {
 	      	//$temp_material = $material_manager->getItem($item['item_id']);
-	
 	         $room_manager = $environment->getRoomManager();
 	         $temp_room = $room_manager->getItem($temp_material->getContextID());
 	         
@@ -301,7 +301,8 @@ function cron_workflow($logFile, $portal){
       $item_array = $material_manager->getValidityItemIDsByDate(date('Y'), date('m'), date('d'));
       foreach($item_array as $item){
       	$temp_material = $material_manager->getItem($item['item_id']);
-         if ( isset($temp_material) && !$temp_material->isDeleted() )
+         $item_id_current_version = $material_manager->getLatestVersionID($item['item_id']);
+         if ( isset($temp_material) && !$temp_material->isDeleted() && ($item['version_id'] == $item_id_current_version))
          {
 	      	//$temp_material = $material_manager->getItem($item['item_id']);
 	
