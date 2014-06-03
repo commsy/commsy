@@ -939,8 +939,20 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $context_item->setPublic((string)$xml->public[0]);
          $context_item->setOpenForGuests((string)$xml->is_open_for_guests[0]);
          $context_item->setContinuous((string)$xml->continuous[0]);
-         $context_item->setTemplate((string)$xml->template[0]);
+         if ((string)$xml->template[0] == '1') {
+            $context_item->setTemplate();
+         } else {
+            $context_item->setNotTemplate();
+         }
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $context_item->setExtraInformation($extra_array['extras']);
          $context_item->save();
+         
+         // set additional values
+         if (((string)$xml->type[0]) == 'community') {
+         } else if (((string)$xml->type[0]) == 'project') {
+         } else if (((string)$xml->type[0]) == 'grouproom') {
+         }
          
          $this->import_sub_items($context_item, $xml);
          

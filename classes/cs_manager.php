@@ -1826,6 +1826,20 @@ class cs_manager {
       return $xml;
    }
    
+   function getXMLAsArray($xml){
+      $arr = array();
+      foreach ($xml as $element) {
+         $tag = $element->getName();
+         $e = get_object_vars($element);
+         if (!empty($e)) {
+            $arr[$tag] = $element instanceof SimpleXMLElement ? $this->getXMLAsArray($element) : $e;
+         } else {
+            $arr[$tag] = trim($element);
+         }
+      }
+      return $arr;
+   }
+   
    function simplexml_import_xml(SimpleXMLElementExtended $parent, $xml, $before = false) {
       $xml = (string)$xml;
       // check if there is something to add
