@@ -47,6 +47,19 @@ CKEDITOR.plugins.add( "CommSyDocument",
 							new Array ('Rechts','right')
 					);
 					
+					var saveItems = new Array (
+							new Array ('<nichts>',''),
+							new Array ('anonym','1'),
+							new Array ('pseudonym','2')
+					);
+					
+					var saveperiodItems = new Array (
+							new Array ('<nichts>',''),
+							new Array ('Tag','day'),
+							new Array ('Woche','week'),
+							new Array ('Monat','month')
+					);
+					
 					return {
 						title : 'Sonstige Medien-Eigenschaften',
 						minWidth : 500,
@@ -318,37 +331,46 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												id : 'startAt',
 												width : '60px',
 												label : 'Start mit Folie',
-												'default' : '',
-											},
-											{
-												type : 'text',
+												'default' : ''
+											}
+										]
+									},
+									{
+										type: 'hbox',
+										widths : [ '50px', '50px'],
+//										style: 'margin-top:px',
+										children: 
+										[
+										 	{
+												type : 'checkbox',
 												id : 'naviParam',
-												width : '60px',
-												label : 'navi',
-												'default' : '',
+												//width : '60px',
+												label : 'Navigation anzeigen',
+												'default' : ''
 											},
 											{
-												type : 'text',
-												id : 'saveParam',
-												width : '60px',
-												label : 'save',
-												'default' : '',
-											},
-											{
-												type : 'text',
+												type : 'checkbox',
 												id : 'saveaimParam',
 												width : '60px',
-												label : 'saveaim',
-												'default' : '',
+												label : 'In Abschnitte Speichern',
+												'default' : ''
 											},
 											{
-												type : 'text',
+												type : 'select',
+												id : 'saveParam',
+												width : '60px',
+												label : 'Speichern',
+												'default' : '',
+												items: saveItems
+											},
+											{
+												type : 'select',
 												id : 'saveperiodParam',
 												width : '60px',
-												label : 'saveperiode',
+												label : 'Abschnitt pro',
 												'default' : '',
+												items: saveperiodItems
 											}
-
 										]
 									},
 									{
@@ -496,48 +518,64 @@ CKEDITOR.plugins.add( "CommSyDocument",
 									//paramArray['#'] = new Array();
 									
 									//paramArray['0'] = "";
-									paramArray['1'] = fileName;
+									//paramArray['1'] = fileName;
 									
-									if(naviParam != ''){ console.log("navi");
+									paramString = '';
+									
+									if(naviParam){
 										paramArray['navi'] = naviParam;
 										paramArray2.push('navi');
 										paramArray2.push(naviParam);
 										
+										paramString = 'navi='+naviParam;
+										
 										//params = "navi="+naviParam;
 									}
-									if(saveParam != ''){
+									if(saveParam != 'null'){
 										paramArray['save'] = saveParam;
 										paramArray2.push('save');
 										paramArray2.push(saveParam);
+										
+										paramString = paramString+" save="+saveParam;
 										//params = params + "save="+saveParam;
 									}
 									if(saveaimParam != ''){
 										paramArray['saveaim'] = saveaimParam;
 										paramArray2.push('saveaim');
 										paramArray2.push(saveaimParam);
+										
+										paramString = paramString+" saveaim="+saveaimParam;
 										//params = params + "saveaim="+saveaimParam;
 									}
 									if(saveperiodParam != ''){
 										paramArray['saveperiod'] = saveperiodParam;
 										paramArray2.push('saveperiod');
 										paramArray2.push(saveperiodParam);
+										
+										paramString = paramString+" saveperiod="+saveperiodParam;
 										//params = params + "saveperiod="+saveperiodParam;
 									}
 									paramArray['#'] = paramArray2;
 									
+									var saveaimParam;
+									if(saveaimParam){
+										saveaimSection = "section";
+									} else {
+										saveaimSection = "";
+									}
+									
 									var data = {
+											0: "(:qti " + fileName + " "+paramString+":)",
 											1: fileName,
 											navi: naviParam,
 											save: saveParam,
-											saveaim: saveaimParam,
+											saveaim: saveaimSection,
 											saveperiod: saveperiodParam,
 											"#": ["navi",naviParam,"save",saveParam,"saveaim",saveaimParam,"saveperiod",saveperiodParam]
 									};
 									
-									console.log(paramArray);
-									
 									var jsonString = JSON.stringify(data);
-									var paramString = "&params="+encodeURI(jsonString);
+									var paramString = "&params="+encodeURIComponent(jsonString);
 									
 									var cid = getUrlParam('cid');
 									
