@@ -129,15 +129,23 @@ else {
             $zip->extractTo('var/temp/'.$temp_stamp);
             $zip->close();
             
+            $commsy_work_dir = getcwd();
             chdir('var/temp/'.$temp_stamp);
             foreach (glob("commsy_xml_export_import_*.xml") as $filename) {
-               $xml = simplexml_load_file($filename);
+               $xml = simplexml_load_file($filename, null, LIBXML_NOCDATA);
+               //el($xml);
                $dom = new DOMDocument('1.0');
                $dom->preserveWhiteSpace = false;
                $dom->formatOutput = true;
                $dom->loadXML($xml->asXML());
-               #el($dom->saveXML());
+               //el($dom->saveXML());
+               
+               chdir($commsy_work_dir);
+               $room_manager = $environment->getRoomManager();
+               $room_manager->import_item($xml);
+               chdir('var/temp/'.$temp_stamp);
             }
+            chdir($commsy_work_dir);
          }
       }
    }

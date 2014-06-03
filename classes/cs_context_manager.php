@@ -904,7 +904,29 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function import_item($xml) {
-      
+      xdebug_break();
+      el('import_item');
+      el(getcwd());
+      if ($xml != null) {
+         if (((string)$xml->type[0]) == 'community') {
+            $community_manager = $this->_environment->getCommunityManager();
+            $context_item = $community_manager->getNewItem();
+         } else if (((string)$xml->type[0]) == 'project') {
+            $project_manager = $this->_environment->getProjectManager();
+            $context_item = $project_manager->getNewItem();
+         } else if (((string)$xml->type[0]) == 'grouproom') {
+            $grouproom_manager = $this->_environment->getGrouproomManager();
+            $context_item = $grouproom_manager->getNewItem();
+         }
+         
+         $context_item->setTitle((string)$xml->title[0]);
+         $context_item->setStatus((string)$xml->status[0]);
+         $context_item->getActivityPoints((string)$xml->activity[0]);
+         $context_item->setPublic((string)$xml->public[0]);
+         $context_item->setOpenForGuests((string)$xml->is_open_for_guests[0]);
+         $context_item->setContinuous((string)$xml->continuous[0]);
+         $context_item->setTemplate((string)$xml->template[0]);
+      }
    }
 }
 ?>
