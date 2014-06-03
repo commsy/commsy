@@ -574,8 +574,6 @@ CKEDITOR.plugins.add( "CommSyDocument",
 											"#": ["navi",naviParam,"save",saveParam,"saveaim",saveaimParam,"saveperiod",saveperiodParam]
 									};
 									
-									console.log(paramArray);
-									
 									var jsonString = JSON.stringify(data);
 									var paramString = "&params="+encodeURIComponent(jsonString);
 									
