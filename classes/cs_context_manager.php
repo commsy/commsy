@@ -940,5 +940,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $context_item->save();
       }
    }
+   
+   function import_sub_items($xml) {
+      
+   }
 }
 ?>

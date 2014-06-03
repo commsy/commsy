@@ -1933,5 +1933,9 @@ class cs_manager {
        }
        return $xml;
     }
+    
+    function import_sub_items($xml) {
+      
+    }
 }
 ?>

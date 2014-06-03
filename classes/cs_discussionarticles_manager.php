@@ -569,5 +569,9 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
    function import_item($xml) {
       
    }
+   
+   function import_sub_items($xml) {
+      
+   }
 }
 ?>

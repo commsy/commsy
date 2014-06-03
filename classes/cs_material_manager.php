@@ -1359,5 +1359,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       
    }
 	
+	function import_sub_items($xml) {
+      
+   }
 } // end of class
 ?>
