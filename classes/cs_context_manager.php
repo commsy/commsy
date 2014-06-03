@@ -904,9 +904,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function import_item($xml) {
-      xdebug_break();
-      el('import_item');
-      el(getcwd());
       if ($xml != null) {
          if (((string)$xml->type[0]) == 'community') {
             $community_manager = $this->_environment->getCommunityManager();
@@ -918,6 +915,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $community_item = $community_list->getFirst();
             while ($community_item) {
                if ($community_item->getTitle() == ((string)$xml->title[0])) {
+                  $project_list = $community_item->getProjectList();
+                  $project_item = $project_list->getFirst();
+                  while ($project_item) {
+                     $project_item->delete();
+                     $project_item = $project_list->getNext();
+                  }
                   $community_item->delete();
                }
                $community_item = $community_list->getNext();
@@ -938,11 +941,29 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $context_item->setContinuous((string)$xml->continuous[0]);
          $context_item->setTemplate((string)$xml->template[0]);
          $context_item->save();
+         
+         $this->import_sub_items($context_item, $xml);
+         
+         return $context_item;
       }
    }
    
-   function import_sub_items($xml) {
-      
+   function import_sub_items($top_item, $xml) {
+      if ($xml != null) {
+         if (((string)$xml->type[0]) == 'community') {
+            $project_manager = $this->_environment->getProjectManager();
+            foreach ($xml->projects as $project) {
+               $temp_project_item = $project_manager->import_item($project->context_item);
+               $community_room_array = array();
+               $community_room_array[] = $top_item->getItemId();
+               $temp_project_item->setCommunityListByID($community_room_array);
+               $temp_project_item->save();
+            }
+         } else if (((string)$xml->type[0]) == 'project') {
+            $project_manager = $this->_environment->getProjectManager();
+            $context_item = $project_manager->getNewItem();
+         }
+      }
    }
 }
 ?>

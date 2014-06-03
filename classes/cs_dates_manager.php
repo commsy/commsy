@@ -1012,7 +1012,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       
    }
    
-   function import_sub_items($xml) {
+   function import_sub_items($top_item, $xml) {
       
    }
 }

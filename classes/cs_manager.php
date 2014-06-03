@@ -1934,7 +1934,7 @@ class cs_manager {
        return $xml;
     }
     
-    function import_sub_items($xml) {
+    function import_sub_items($top_item, $xml) {
       
     }
 }

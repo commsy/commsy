@@ -660,7 +660,7 @@ class cs_wordpress_manager extends cs_manager {
       return $retour;
    }
    
-   function import_sub_items($xml) {
+   function import_sub_items($top_item, $xml) {
       
    }
 }
