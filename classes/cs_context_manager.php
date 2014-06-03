@@ -911,6 +911,17 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          if (((string)$xml->type[0]) == 'community') {
             $community_manager = $this->_environment->getCommunityManager();
             $context_item = $community_manager->getNewItem();
+            
+            // delete previous version of the room and all associated project rooms.
+            $community_manager->select();
+            $community_list = $community_manager->get();
+            $community_item = $community_list->getFirst();
+            while ($community_item) {
+               if ($community_item->getTitle() == ((string)$xml->title[0])) {
+                  $community_item->delete();
+               }
+               $community_item = $community_list->getNext();
+            }
          } else if (((string)$xml->type[0]) == 'project') {
             $project_manager = $this->_environment->getProjectManager();
             $context_item = $project_manager->getNewItem();
@@ -926,6 +937,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $context_item->setOpenForGuests((string)$xml->is_open_for_guests[0]);
          $context_item->setContinuous((string)$xml->continuous[0]);
          $context_item->setTemplate((string)$xml->template[0]);
+         $context_item->save();
       }
    }
 }
