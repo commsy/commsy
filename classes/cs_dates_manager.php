@@ -1015,6 +1015,18 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $item->setTitle((string)$xml->title[0]);
          $item->setDescription((string)$xml->description[0]);
          $item->setContextId($top_item->getItemId());
+         $item->setStartingTime((string)$xml->start_time[0]);
+         $item->setEndingTime((string)$xml->end_time[0]);
+         $item->setStartingDay((string)$xml->start_day[0]);
+         $item->setEndingDay((string)$xml->end_day[0]);
+         $item->setPlace((string)$xml->place[0]);
+         $item->setDateTime_start((string)$xml->datetime_start[0]);
+         $item->setDateTime_end((string)$xml->datetime_end[0]);
+         $item->setPublic((string)$xml->public[0]);
+         $item->setDateMode((string)$xml->date_mode[0]);
+         $item->setColor((string)$xml->color[0]);
+         $item->setRecurrenceId((string)$xml->recurrence_id[0]);
+         $item->setRecurrencePattern((string)$xml->recurrence_pattern[0]);
          $item->save();
          $this->importAnnotationsFromXML($item, $xml);
       }

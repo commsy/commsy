@@ -1362,6 +1362,18 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $item->setTitle((string)$xml->title[0]);
          $item->setDescription((string)$xml->description[0]);
          $item->setContextId($top_item->getItemId());
+         $item->setVersionId((string)$xml->version_id[0]);
+         $item->setAuthor((string)$xml->author[0]);
+         $item->setPublishingDate((string)$xml->publishing_date[0]);
+         $item->setPublic((string)$xml->public[0]);
+         $item->setWorldPublic((string)$xml->world_public[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $temp_item = $this->getNewItem();
+         $temp_item->setItemID((string)$xml->copy_of[0]);
+         $item->setCopyItem($temp_item);
+         $item->setWorkflowResubmissionDate((string)$xml->workflow_resubmission_date[0]);
+         $item->setWorkflowValidityDate((string)$xml->workflow_validity_date[0]);
          $item->save();
          $this->importAnnotationsFromXML($item, $xml);
       }
