@@ -1907,6 +1907,17 @@ class cs_manager {
        return $annotations_xml;
     }
     
+    function importAnnotationsFromXML ($top_item, $xml) {
+       if ($xml != null) {
+         if ($xml->annotations != null) {
+            $annotation_manager = $this->_environment->getAnnotationManager();
+            foreach ($xml->annotations->children() as $annotation) {
+               $temp_annotation_item = $annotation_manager->import_item($top_item, $annotation);
+            }
+         }
+      }
+    }
+    
     function getFilesAsXML ($itemID) {
        $item_manager = $this->_environment->getManager('item');
        $item = $item_manager->getItem($itemID);
