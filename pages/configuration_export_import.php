@@ -142,7 +142,7 @@ else {
                
                chdir($commsy_work_dir);
                $room_manager = $environment->getRoomManager();
-               $room_manager->import_item($xml);
+               $room_manager->import_item(null, $xml);
                chdir('var/temp/'.$temp_stamp);
             }
             chdir($commsy_work_dir);

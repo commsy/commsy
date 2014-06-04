@@ -1190,7 +1190,7 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
       
    }
    
-   function import_item($xml) {
+   function import_item($top_item, $xml) {
       
    }
    

@@ -671,7 +671,7 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
       
    }
    
-   function import_item($xml) {
+   function import_item($top_item, $xml) {
       
    }
    

@@ -530,8 +530,17 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
       
    }
    
-   function import_item($xml) {
-      
+   function import_item($top_item, $xml) {
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setDescription((string)$xml->description[0]);
+         $item->setLinkedItemID($top_item->getItemID());
+         $item->setContextID($top_item->getContextID());
+         $item->save();
+      }
+      return $item;
    }
    
    function import_sub_items($top_item, $xml) {

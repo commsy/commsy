@@ -903,7 +903,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       return $xml;
    }
    
-   function import_item($xml) {
+   function import_item($top_item, $xml) {
       if ($xml != null) {
          if (((string)$xml->type[0]) == 'community') {
             $community_manager = $this->_environment->getCommunityManager();
@@ -965,7 +965,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          if (((string)$xml->type[0]) == 'community') {
             $project_manager = $this->_environment->getProjectManager();
             foreach ($xml->projects as $project) {
-               $temp_project_item = $project_manager->import_item($project->context_item);
+               $temp_project_item = $project_manager->import_item($top_item, $project->context_item);
                $community_room_array = array();
                $community_room_array[] = $top_item->getItemId();
                $temp_project_item->setCommunityListByID($community_room_array);
@@ -974,6 +974,17 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if (((string)$xml->type[0]) == 'project') {
             $project_manager = $this->_environment->getProjectManager();
             $context_item = $project_manager->getNewItem();
+         }
+         
+         foreach ($xml->rubric->children() as $rubric) {
+            #el($rubric->getName());
+            $type_manager = $this->_environment->getManager($rubric->getName());
+            if ($type_manager instanceof cs_export_import_interface) {
+               $type_manager->setContextLimit($top_item->getItemID());
+               foreach ($rubric->children() as $item_xml) {
+                  $temp_item = $type_manager->import_item($top_item, $item_xml);
+               }
+            }
          }
       }
    }

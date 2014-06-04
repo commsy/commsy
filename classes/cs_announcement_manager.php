@@ -688,12 +688,29 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       
    }
    
-   function import_item($xml) {
-      
+   function import_item($top_item, $xml) {
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setDescription((string)$xml->description[0]);
+         $item->setFirstDateTime((string)$xml->creation_date[0]);
+         $item->setSecondDateTime((string)$xml->enddate[0]);
+         $item->setContextId($top_item->getItemId());
+         $item->save();
+         $this->import_sub_items($item, $xml->annotations);
+      }
+      return $item;
    }
    
    function import_sub_items($top_item, $xml) {
-      
+      if ($xml != null) {
+         $annotation_manager = $this->_environment->getAnnotationManager();
+         foreach ($xml->children() as $annotation) {
+            el($annotation);
+            $temp_annotation_item = $annotation_manager->import_item($top_item, $annotation);
+         }
+      }
    }
 }
 ?>
