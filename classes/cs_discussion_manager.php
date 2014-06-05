@@ -770,11 +770,31 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
    }
    
    function import_item($top_item, $xml) {
-      
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setContextId($top_item->getItemId());
+         $item->setLatestArticleID((string)$xml->latest_article_item_id[0]);
+         $item->setLatestArticleModificationDate((string)$xml->latest_article_modification_date[0]);
+         $item->setDiscussionStatus((string)$xml->status[0]);
+         $item->setDiscussionType((string)$xml->discussion_type[0]);
+         $item->setPublic((string)$xml->public[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->save();
+         $this->import_sub_items($item, $xml);
+      }
+      return $item;
    }
-   
-   function import_sub_items($top_item, $xml) {
-      
+	
+	function import_sub_items($top_item, $xml) {
+      if ($xml->discarticle != null) {
+         $discarticle_manager = $this->_environment->getDiscussionArticleManager();
+         foreach ($xml->discarticle->children() as $discarticle) {
+            $temp_discarticle_item = $discarticle_manager->import_item($top_item, $discarticle);
+         }
+      }
    }
 }
 ?>

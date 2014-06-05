@@ -567,7 +567,19 @@ class cs_discussionarticles_manager extends cs_manager implements cs_export_impo
    }
    
    function import_item($top_item, $xml) {
-      
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setContextId($top_item->getContextId());
+         $item->setDiscussionID($top_item->getItemId());
+         $item->setSubject((string)$xml->subject[0]);
+         $item->setDescription((string)$xml->description[0]);
+         $item->setPosition((string)$xml->position[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->save();
+      }
+      return $item;
    }
    
    function import_sub_items($top_item, $xml) {
