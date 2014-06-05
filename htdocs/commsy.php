@@ -463,9 +463,11 @@ if ( !empty($SID) ) {
    } else {
    	// Shibboleth Session is empty (session timeout from sp)
    	// reset session and login as guest
-   	if($session->getValue('shibboleth_auth')){
-   		$session->reset();
-   		$session->createSessionID('guest');
+   	if(!empty($session)){
+	   	if($session->getValue('shibboleth_auth')){
+	   		$session->reset();
+	   		$session->createSessionID('guest');
+	   	}
    	}
    }
 
