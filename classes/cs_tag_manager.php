@@ -694,6 +694,11 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
      if (!empty($item_id)) {
         $this->_update($item);
      } else {
+        $creator_id = $item->getCreatorID();
+        if (empty($creator_id)) {
+           $user = $this->_environment->getCurrentUser();
+           $item->setCreatorItem($user);
+        }
         $this->_create($item);
      }
 
@@ -839,7 +844,17 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
    }
    
    function import_item($top_item, $xml) {
-      
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setContextId($top_item->getContextId());
+         //$item->setPosition($top_item->getItemId(), $top_item->getChildrenList()->getCount() + 1);
+         $item->save();
+         $tag2TagManager = $this->_environment->getTag2TagManager();
+         $tag2TagManager->insert_with_context($item->getItemId(), $top_item->getItemid(), $top_item->getChildrenList()->getCount() + 1, $top_item->getContextId());
+      }
+      return $item;
    }
    
    function import_sub_items($top_item, $xml) {

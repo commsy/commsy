@@ -988,6 +988,15 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                }
             }
          }
+         
+         if ($top_item->withTags()) {
+            $tag_manager = $this->_environment->getTagManager();
+            $tag_manager->forceSQL();
+            $root_tag = $tag_manager->getRootTagItemFor($top_item->getItemId());
+            foreach ($xml->tags->children() as $tag) {
+               $tag_item = $this->importTagsFromXML($tag, $root_tag);
+            }
+         }
       }
    }
 }

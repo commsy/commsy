@@ -686,5 +686,16 @@ class cs_tag2tag_manager extends cs_manager {
       }
       return $success;
    }
+   
+   public function insert_with_context ($item_id,$father_id,$place='', $context_id) {
+      $tag2tag_item = $this->getNewItem();
+      $tag2tag_item->setFatherItemID($father_id);
+      $tag2tag_item->setContextItemID($context_id);
+      $tag2tag_item->setChildItemID($item_id);
+      $tag2tag_item->save();
+      if ( !empty($place) ) {
+         $this->change($item_id,$father_id,$place);
+      }
+   }
 }
 ?>
