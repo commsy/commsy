@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -153,6 +153,9 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $counter++;
          $this->_auth_type_array[$counter]['text'] = 'Typo3';
          $this->_auth_type_array[$counter]['value'] = 'Typo3Web';
+         $counter++;
+         $this->_auth_type_array[$counter]['text'] = 'Shibboleth';
+         $this->_auth_type_array[$counter]['value'] = 'Shibboleth';
          $this->_disable_default = false;
          $this->_disable_show = false;
       }
@@ -463,6 +466,20 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 
          $this->_form->addEmptyLine();
       }
+      
+      // Shibboleth - Add configuration form for Shibboleth
+      elseif ( $this->_auth_type == 'Shibboleth'){
+      	$this->_form->addCheckbox('direct_login', true, false, $translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_DIRECT_LOGIN'),'');
+      	$this->_form->addTextfield('session_initiator_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_SESSION_INITIATOR'),'','',21,true,'','','','','','',false,'');
+      	$this->_form->addTextfield('session_logout_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_SESSION_LOGOUT'),'','',21,true,'','','','','','',false,'');
+      	$this->_form->addTextfield('password_change_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_PASSWORD_CHANGE'),'','',21,false,'','','','','','',false,'');
+      	$this->_form->addTextfield('username','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_USERNAME'),'','',21,true,'','','','','','',false,'');
+      	$this->_form->addTextfield('firstname','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_FIRSTNAME'),'','',21,false,'','','','','','',false,'');
+      	$this->_form->addTextfield('lastname','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_LASTNAME'),'','',21,false,'','','','','','',false,'');
+      	$this->_form->addTextfield('email','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_EMAIL'),'','',21,true,'','','','','','',false,'');
+      	$this->_form->addCheckbox('update_user_data', true, false, $translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_UPDATE_DATA'),'');
+      	$this->_form->addEmptyline();
+      }
 
       if ( !$this->_commsy_default and !empty($this->_auth_type) ) {
          $this->_form->addTextfield('contact_fon','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CONACT_FON_TITLE'),'',255,40,false,'','','','','','',$disabled);
@@ -611,6 +628,17 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['try_until_lock'] = $current_context->getTryUntilLock();
          $this->_values['days_before_expiring_sendmail'] = $current_context->getDaysBeforeExpiringPasswordSendMail();
 
+         // Shibboleth
+         $this->_values['direct_login'] = $this->_item->getShibbolethDirectLogin();
+         $this->_values['session_initiator_url'] = $this->_item->getShibbolethSessionInitiator();
+         $this->_values['session_logout_url'] = $this->_item->getShibbolethSessionLogout();
+         $this->_values['password_change_url'] = $this->_item->getShibbolethPasswordChange();
+         $this->_values['username'] = $this->_item->getShibbolethUsername();
+         $this->_values['firstname'] = $this->_item->getShibbolethFirstname();
+         $this->_values['lastname'] = $this->_item->getShibbolethLastname();
+         $this->_values['email'] = $this->_item->getShibbolethEmail();
+         $this->_values['update_user_data'] = $this->_item->getShibbolethUpdateData();
+         
          if( empty($this->_values['password_secure_check'])){
          	$this->_values['password_secure_check'] = 2;
          	$this->_disable_password_check = true;
@@ -869,6 +897,25 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             #   $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
             #}
          }
+         
+         // Shibboleth
+         elseif ($this->_values['auth_type'] == 'Shibboleth'){
+         	$auth_data_array = $this->_item->getAuthData();
+         	if( !empty($auth_data_array['direct_login'])){
+         		$this->_values['direct_login'] = $auth_data_array['direct_login'];
+         	}
+         	    	
+//          	$this->_form->addCheckbox('direct_login', true, false, $translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_DIRECT_LOGIN'));
+//          	$this->_form->addTextfield('session_initiator_url','test',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_SESSION_INITIATOR'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addTextfield('session_logout_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_SESSION_LOGOUT'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addTextfield('password_change_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_PASSWORD_CHANGE'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addTextfield('username','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_USERNAME'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addTextfield('firstname','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_FIRSTNAME'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addTextfield('lastname','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_LASTNAME'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addTextfield('email','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_EMAIL'),'','',21,true,'','','','','','',false,'');
+//          	$this->_form->addCheckbox('update_user_data', true, false, $translator->getMessage('CONFIGURATION_AUTHENTICATION_SHIBBOLETH_UPDATE_DATA'));
+         }
+        
       } else {
       	$current_context = $this->_environment->getCurrentContextItem();
       	

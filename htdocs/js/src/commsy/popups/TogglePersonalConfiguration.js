@@ -71,40 +71,42 @@ define([	"dojo/_base/declare",
 					}));
 				}));
 			}));
-			
-			if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
-				var ulNode = DomConstruct.create('ul',{
-					
-				});
-				if(this.from_php.password.length){
-					DomConstruct.create('li',{
-						innerHTML: this.from_php.password.length
-					},ulNode,'last');
+
+			if(this.from_php.password){
+				if(this.from_php.password.length || this.from_php.password.big || this.from_php.password.small || this.from_php.password.special || this.from_php.password.number){
+					var ulNode = DomConstruct.create('ul',{
+						
+					});
+					if(this.from_php.password.length){
+						DomConstruct.create('li',{
+							innerHTML: this.from_php.password.length
+						},ulNode,'last');
+					}
+					if(this.from_php.password.big){
+						DomConstruct.create('li',{
+							innerHTML: this.from_php.password.big
+						},ulNode,'last');
+					}
+					if(this.from_php.password.small){
+						DomConstruct.create('li',{
+							innerHTML: this.from_php.password.small
+						},ulNode,'last');
+					}
+					if(this.from_php.password.special){
+						DomConstruct.create('li',{
+							innerHTML: this.from_php.password.special
+						},ulNode,'last');
+					}
+					if(this.from_php.password.number){
+						DomConstruct.create('li',{
+							innerHTML: this.from_php.password.number
+						},ulNode,'last');
+					}
+					new Tooltip({
+				        connectId: Query("input[name='form_data[new_password]']", this.contentNode),
+				        label: ulNode.outerHTML
+				    });
 				}
-				if(this.from_php.password.big){
-					DomConstruct.create('li',{
-						innerHTML: this.from_php.password.big
-					},ulNode,'last');
-				}
-				if(this.from_php.password.small){
-					DomConstruct.create('li',{
-						innerHTML: this.from_php.password.small
-					},ulNode,'last');
-				}
-				if(this.from_php.password.special){
-					DomConstruct.create('li',{
-						innerHTML: this.from_php.password.special
-					},ulNode,'last');
-				}
-				if(this.from_php.password.number){
-					DomConstruct.create('li',{
-						innerHTML: this.from_php.password.number
-					},ulNode,'last');
-				}
-				new Tooltip({
-			        connectId: Query("input[name='form_data[new_password]']", this.contentNode),
-			        label: ulNode.outerHTML
-			    });
 			}
 
 			// check for auto load tab

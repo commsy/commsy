@@ -248,6 +248,10 @@ class cs_authentication {
             include_once('classes/cs_auth_typo3.php');
             $auth_manager = new cs_auth_typo3();
             $auth_manager->setAuthSourceItem($auth_source_item);
+         } elseif ( $type == 'Shibboleth' ) {
+         	include_once('classes/cs_auth_shibboleth.php');
+         	$auth_manager = new cs_auth_shibboleth();
+         	$auth_manager->setAuthSourceItem($auth_source_item);
          }
       } else {
          include_once('classes/cs_auth_mysql_commsy.php');
@@ -302,6 +306,9 @@ class cs_authentication {
       } elseif ( $value == 'Typo3Web' ) {
          include_once('classes/cs_auth_typo3.php');
          $auth_manager = new cs_auth_typo3();
+      } elseif ( $value == 'Shibboleth' ) {
+      	 include_once ('classes/cs_auth_shibboleth.php');
+      	 $auth_manager = new cs_auth_shibboleth();
       } else {
          include_once('functions/error_functions.php');
          trigger_error('don\'t know '.$value,E_USER_WARNING);
@@ -393,6 +400,23 @@ class cs_authentication {
 
    private function getAuthSourceList () {
       return $this->_auth_source_list;
+   }
+   
+   public function getShibbolethAuthSource () {
+   	$auth_source_list = $this->getAuthSourceList();
+   	if(isset($auth_source_list) and !empty($auth_source_list)){
+   		$auth_source_item = $auth_source_list->getFirst();
+   		$found = false;
+   		while ( $auth_source_item and !$found ) {
+   			if ( $auth_source_item->getSourceType() == 'Shibboleth') {
+   				$found = true;
+   			} else {
+   				$auth_source_item = $auth_source_list->getNext();
+   			}
+   		}
+   		return $auth_source_item;
+   	}
+   	
    }
 
    public function checkAccount ($uid, $password, $auth_source = '') {

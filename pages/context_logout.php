@@ -35,8 +35,18 @@ $flash = $session->getValue('flash');
 if ( $session->issetValue('root_session_id') ) {
    $root_session_id = $session->getValue('root_session_id');
 }
-$session_manager->delete($SID,true);
-$session->reset();
+$config = $environment->getConfiguration('c_shibboleth_redirect_url');
+if ($environment->getConfiguration('c_shibboleth_direct_login') and !empty($config)){
+	if ($_SERVER['Shib_userId']){
+		$session_manager->delete($SID,true);
+		$session->reset();
+		redirect_with_url($environment->getConfiguration('c_shibboleth_redirect_url'));
+	}
+} else {
+	$session_manager->delete($SID,true);
+	$session->reset();
+}
+
 
 setcookie("expired_password_shown", null);
 
