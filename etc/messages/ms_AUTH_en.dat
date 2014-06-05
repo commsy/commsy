@@ -8,6 +8,7 @@ $message["AUTH_ERROR_ACCOUNT_REJECTED"]["en"] = "Your account <span style=&quot;
 $message["AUTH_ERROR_ACCOUNT_TO_MANY"]["en"] = "There seems to be an inconsistency in the CommSy database concerning your account data <span style=&quot;font-weight:bold;&quot;>%1</span>. Please jot down this message and contact the workspace moderators <span style=&quot;font-weight:bold;&quot;>%2</span>.";
 $message["AUTH_ERROR_LDAP_ROOTUSER"]["en"] = "No access to the authentication source. Please contact the portal moderation.";
 $message["AUTH_ERROR_PASSWORD_WRONG"]["en"] = "The <span style=&quot;font-weight:bold;&quot;>password</span> entered does not conform with account %1.";
+$message["AUTH_ERROR_SHIBBOLETH"]["en"] = "Authentication error with Shibboleth IDP";
 $message["AUTH_ERROR_TYPO3WEB_NOT_YET_IMPLEMENTED"]["en"] = "Authentication via TYPO3 ist not yet possible.";
 $message["AUTH_NOT_AVAILABLE"]["en"] = "This function is not available in CommSy.";
 $message["AUTH_NOT_AVAILABLE2"]["en"] = "This function is not available. Please contact the moderator/s of the CommSy portal.";

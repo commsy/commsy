@@ -1988,6 +1988,19 @@ class cs_page_guide_view extends cs_page_view {
    	
    	$currentUser = $this->_environment->getCurrentUserItem();
    	$translator = $this->_environment->getTranslationObject();
+   	
+   	$shib_logout_url = '';
+   	$shib_logout_flag = false;
+   	// shibboleth get logout information
+   	if(!$currentUser->isGuest()){
+   		$auth_source_manager = $this->_environment->getAuthSourceManager();
+   		$current_auth_source = $auth_source_manager->getItem($currentUser->getAuthSource());
+   		if($current_auth_source->getSourceType() == 'Shibboleth'){
+   			$shib_logout_url = $current_auth_source->getShibbolethSessionLogout();
+   			$shib_logout_flag = true;
+   		}
+   	}
+   	
    	if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
    		$html .= '
    			<div id="top_menu">
@@ -1998,11 +2011,20 @@ class cs_page_guide_view extends cs_page_view {
    		
    		if ( !$currentUser->isReallyGuest() )
    		{
-   			$html .= '
+   			if($shib_logout_flag){
+   				$html .= '
+   							<a href="'.$shib_logout_url.'" id="tm_logout" title="' . $translator->getMessage("LOGOUT") . '">
+   								&nbsp;
+   							</a>
+   				';
+   			} else {
+   				$html .= '
    							<a href="commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=context&fct=logout&iid=' . $currentUser->getItemID() . '" id="tm_logout" title="' . $translator->getMessage("LOGOUT") . '">
    								&nbsp;
    							</a>
-   			';
+   				';
+   			}
+   			
    		}
    		else
    		{
