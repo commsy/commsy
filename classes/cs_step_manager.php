@@ -608,7 +608,21 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
    }
    
    function import_item($top_item, $xml) {
-   
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setContextId($top_item->getContextId());
+         $item->setDescription((string)$xml->description[0]);
+         $item->setMinutes((string)$xml->minutes[0]);
+         $item->setTimeType((string)$xml->time_type[0]);
+         $item->setTodoID($top_item->getItemId());
+         //$item->setPublic((string)$xml->public[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->save();
+      }
+      return $item;
    }
    
    function import_sub_items($top_item, $xml) {

@@ -717,12 +717,33 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
       
    }
    
-   function import_item($top_item, $xml) {
-      
+  function import_item($top_item, $xml) {
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setContextId($top_item->getItemId());
+         $item->setDate((string)$xml->date[0]);
+         $item->setStatus((string)$xml->status[0]);
+         $item->setPlannedTime((string)$xml->minutes[0]);
+         $item->setTimeType((string)$xml->time_type[0]);
+         $item->setDescription((string)$xml->description[0]);
+         $item->setPublic((string)$xml->public[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->save();
+         $this->import_sub_items($item, $xml);
+      }
+      return $item;
    }
-   
-   function import_sub_items($top_item, $xml) {
-      
+	
+	function import_sub_items($top_item, $xml) {
+      if ($xml->step != null) {
+         $step_manager = $this->_environment->getStepManager();
+         foreach ($xml->step->children() as $step) {
+            $temp_step_item = $step_manager->import_item($top_item, $step);
+         }
+      }
    }
 }
 ?>

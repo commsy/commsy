@@ -845,6 +845,11 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
      if (!empty($item_id)) {
         $this->_update($label_item);
      } else {
+        $creator_id = $label_item->getCreatorID();
+        if (empty($creator_id)) {
+           $user = $this->_environment->getCurrentUser();
+           $label_item->setCreatorItem($user);
+        }
         $this->_create($label_item);
      }
 
@@ -1191,7 +1196,19 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
    }
    
    function import_item($top_item, $xml) {
-      
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setContextId($top_item->getItemId());
+         $item->setName((string)$xml->name[0]);
+         $item->setDescription((string)$xml->description[0]);
+         $item->setLabelType((string)$xml->type[0]);
+         $item->setPublic((string)$xml->public[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->save();
+      }
+      return $item;
    }
    
    function import_sub_items($top_item, $xml) {

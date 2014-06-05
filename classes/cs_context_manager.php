@@ -978,11 +978,13 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          
          foreach ($xml->rubric->children() as $rubric) {
             #el($rubric->getName());
-            $type_manager = $this->_environment->getManager($rubric->getName());
-            if ($type_manager instanceof cs_export_import_interface) {
-               $type_manager->setContextLimit($top_item->getItemID());
-               foreach ($rubric->children() as $item_xml) {
-                  $temp_item = $type_manager->import_item($top_item, $item_xml);
+            if (($rubric->getName() != 'group') && ($rubric->getName() != 'topic')) { // those items are included in the exported labels-xml
+               $type_manager = $this->_environment->getManager($rubric->getName());
+               if ($type_manager instanceof cs_export_import_interface) {
+                  $type_manager->setContextLimit($top_item->getItemID());
+                  foreach ($rubric->children() as $item_xml) {
+                     $temp_item = $type_manager->import_item($top_item, $item_xml);
+                  }
                }
             }
          }
