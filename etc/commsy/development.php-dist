@@ -127,11 +127,6 @@ $c_debug = false;
 // at performance problems you should try false
 // $c_portal_show_rooms_for_guests = false;
 
-// shibboleth direct login
-$c_shibboleth_direct_login = false;
-// shibboleth redirect logout
-$c_shibboleth_redirect_url = '';
-
 // old text formating
 // activate old text formating for rooms
 #$c_old_text_formating_array = array();

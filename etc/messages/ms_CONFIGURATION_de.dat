@@ -37,6 +37,7 @@ $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_SERVER"]["de"] = "aktuell gen
 $message["CONFIGURATION_AUTHENTICATION_GENERATION"]["de"] = "Generation";
 $message["CONFIGURATION_AUTHENTICATION_GENERATION_INFO"]["de"] = "Passwort darf sich X-mal nicht wiederholen";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["de"] = "Server";
+$message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["de"] = "Bitte ergänzen Sie https:// oder http:// bei der Server-Adresse.";
 $message["CONFIGURATION_AUTHENTICATION_SHIBBOLETH_DIRECT_LOGIN"]["de"] = "Direkte Anmeldung aktivieren";
 $message["CONFIGURATION_AUTHENTICATION_SHIBBOLETH_EMAIL"]["de"] = "E-Mail";
 $message["CONFIGURATION_AUTHENTICATION_SHIBBOLETH_FIRSTNAME"]["de"] = "Vorname";
