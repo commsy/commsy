@@ -1294,15 +1294,15 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
    	return $xml;
 	}
 	
-   function export_sub_items($top_item, $xml) {
+   function export_sub_items($xml, $top_item) {
       
    }
    
-   function import_item($top_item, $xml) {
+   function import_item($xml, $top_item, &$options) {
       
    }
 	
-   function import_sub_items($top_item, $xml) {
+   function import_sub_items($xml, $top_item, &$options) {
       
    }
 }

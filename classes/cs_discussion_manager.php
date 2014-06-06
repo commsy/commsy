@@ -765,11 +765,11 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
    	return $xml;
 	}
 	
-   function export_sub_items($top_item, $xml) {
+   function export_sub_items($xml, $top_item) {
       
    }
    
-   function import_item($top_item, $xml) {
+   function import_item($xml, $top_item, &$options) {
       $item = null;
       if ($xml != null) {
          $item = $this->getNewItem();
@@ -783,16 +783,16 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
          $extra_array = $this->getXMLAsArray($xml->extras);
          $item->setExtraInformation($extra_array['extras']);
          $item->save();
-         $this->import_sub_items($item, $xml);
+         $this->import_sub_items($xml, $item, $options);
       }
       return $item;
    }
 	
-	function import_sub_items($top_item, $xml) {
+	function import_sub_items($xml, $top_item, &$options) {
       if ($xml->discarticle != null) {
          $discarticle_manager = $this->_environment->getDiscussionArticleManager();
          foreach ($xml->discarticle->children() as $discarticle) {
-            $temp_discarticle_item = $discarticle_manager->import_item($top_item, $discarticle);
+            $temp_discarticle_item = $discarticle_manager->import_item($discarticle, $top_item, $options);
          }
       }
    }

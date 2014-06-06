@@ -799,13 +799,13 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChildWithCDATA('room_description', $context_item->getDescription());
          $xml->addChildWithCDATA('lastlogin', $context_item->getLastLogin());
          
-         $xml = $this->export_sub_items($context_item, $xml);
+         $xml = $this->export_sub_items($xml, $context_item);
          
          return $xml;
       }
    }
    
-   function export_sub_items($top_item, $xml) {
+   function export_sub_items($xml, $top_item) {
       $conf = $top_item->getHomeConf();
       if (!empty($conf)) {
          $rubrics = explode(',', $conf);
@@ -916,7 +916,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       return $xml;
    }
    
-   function import_item($top_item, $xml) {
+   function import_item($xml, $top_item, &$options) {
       if ($xml != null) {
          if (((string)$xml->type[0]) == 'community') {
             $community_manager = $this->_environment->getCommunityManager();
@@ -967,18 +967,18 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if (((string)$xml->type[0]) == 'grouproom') {
          }
          
-         $this->import_sub_items($context_item, $xml);
+         $this->import_sub_items($xml, $context_item, $options);
          
          return $context_item;
       }
    }
    
-   function import_sub_items($top_item, $xml) {
+   function import_sub_items($xml, $top_item, &$options) {
       if ($xml != null) {
          if (((string)$xml->type[0]) == 'community') {
             $project_manager = $this->_environment->getProjectManager();
             foreach ($xml->projects as $project) {
-               $temp_project_item = $project_manager->import_item($top_item, $project->context_item);
+               $temp_project_item = $project_manager->import_item($project->context_item, $top_item, $options);
                $community_room_array = array();
                $community_room_array[] = $top_item->getItemId();
                $temp_project_item->setCommunityListByID($community_room_array);
@@ -996,7 +996,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                if ($type_manager instanceof cs_export_import_interface) {
                   $type_manager->setContextLimit($top_item->getItemID());
                   foreach ($rubric->children() as $item_xml) {
-                     $temp_item = $type_manager->import_item($top_item, $item_xml);
+                     $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
                   }
                }
             }

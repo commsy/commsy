@@ -140,9 +140,10 @@ else {
                $dom->loadXML($xml->asXML());
                //el($dom->saveXML());
                
+               $options = array();
                chdir($commsy_work_dir);
                $room_manager = $environment->getRoomManager();
-               $room_manager->import_item(null, $xml);
+               $room_manager->import_item($xml, null, $options);
                chdir('var/temp/'.$temp_stamp);
             }
             chdir($commsy_work_dir);

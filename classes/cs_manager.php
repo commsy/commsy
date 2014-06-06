@@ -1912,7 +1912,7 @@ class cs_manager {
          if ($xml->annotations != null) {
             $annotation_manager = $this->_environment->getAnnotationManager();
             foreach ($xml->annotations->children() as $annotation) {
-               $temp_annotation_item = $annotation_manager->import_item($top_item, $annotation);
+               $temp_annotation_item = $annotation_manager->import_item($annotation, $top_item, $options);
             }
          }
       }
@@ -1961,14 +1961,10 @@ class cs_manager {
     
     function importTagsFromXML ($xml, $top_item) {
        $tag_manager = $this->_environment->getTagManager();
-       $tag_item = $tag_manager->import_item($top_item, $xml);
+       $tag_item = $tag_manager->import_item($xml, $top_item, $options);
        foreach ($xml->children->children() as $child) {
           $this->importTagsFromXML($child, $tag_item);
        }
-    }
-    
-    function import_sub_items($top_item, $xml) {
-      
     }
 }
 ?>
