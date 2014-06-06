@@ -1322,13 +1322,18 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
    	$xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
       $this->simplexml_import_simplexml($xml, $xmlAnnotations);
    	
-   	$section_manager = $this->_environment->getManager('section');
-      $section_manager->setContextLimit($item->getContextID());
-      $section_manager->setMaterialItemIDLimit($item->getItemID());
+   	$xml = $this->export_sub_items($xml, $item);
+   	
+   	return $xml;
+	}
+	
+   function export_sub_items($xml, $top_item) {
+      $section_manager = $this->_environment->getManager('section');
+      $section_manager->setContextLimit($top_item->getContextID());
+      $section_manager->setMaterialItemIDLimit($top_item->getItemID());
       $section_manager->select();
       $section_list = $section_manager->get();
    	
-   	// get XML for each section
       $section_item_xml_array = array();
       if (!$section_list->isEmpty()) {
          $section_item = $section_list->getFirst();
@@ -1339,20 +1344,14 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          }
       }
 
-      // combine in tag
       $section_xml = new SimpleXMLElementExtended('<section></section>');
       foreach ($section_item_xml_array as $section_item_xml) {
          $this->simplexml_import_simplexml($section_xml, $section_item_xml);
       }
    
-      // add to base xml
       $this->simplexml_import_simplexml($xml, $section_xml);
-   	
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
       
+      return $xml;
    }
    
    function import_item($xml, $top_item, &$options) {

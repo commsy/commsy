@@ -736,13 +736,18 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
       $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
       $this->simplexml_import_simplexml($xml, $xmlExtras);
    
+      $xml = $this->export_sub_items($xml, $item);
+   
+   	return $xml;
+	}
+	
+   function export_sub_items($xml, $top_item) {
       $discussionarticle_manager = $this->_environment->getManager('discarticle');
-      $discussionarticle_manager->setContextLimit($item->getContextID());
-      $discussionarticle_manager->setDiscussionLimit($item->getItemID());
+      $discussionarticle_manager->setContextLimit($top_item->getContextID());
+      $discussionarticle_manager->setDiscussionLimit($top_item->getItemID());
       $discussionarticle_manager->select();
       $discussionarticle_list = $discussionarticle_manager->get();
       
-      // get XML for each discussion article
       $discussionarticle_item_xml_array = array();
       if (!$discussionarticle_list->isEmpty()) {
          $discussionarticle_item = $discussionarticle_list->getFirst();
@@ -753,20 +758,14 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
          }
       }
 
-      // combine in tag
       $discussionarticle_xml = new SimpleXMLElementExtended('<discarticle></discarticle>');
       foreach ($discussionarticle_item_xml_array as $discussionarticle_item_xml) {
          $this->simplexml_import_simplexml($discussionarticle_xml, $discussionarticle_item_xml);
       }
    
-      // add to base xml
       $this->simplexml_import_simplexml($xml, $discussionarticle_xml);
-   
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
       
+      return $xml;
    }
    
    function import_item($xml, $top_item, &$options) {

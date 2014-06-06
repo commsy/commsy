@@ -683,14 +683,19 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
 
       $xmlAnnotations = $this->getAnnotationsAsXML($item->getItemID());
       $this->simplexml_import_simplexml($xml, $xmlAnnotations);
-   
+
+      $xml = $this->export_sub_items($xml, $item);
+
+   	return $xml;
+	}
+	
+   function export_sub_items($xml, $top_item) {
       $step_manager = $this->_environment->getManager('step');
-      $step_manager->setContextLimit($item->getContextID());
-      $step_manager->setTodoItemIDLimit($item->getItemID());
+      $step_manager->setContextLimit($top_item->getContextID());
+      $step_manager->setTodoItemIDLimit($top_item->getItemID());
       $step_manager->select();
       $step_list = $step_manager->get();
       
-      // get XML for each discussion article
       $step_item_xml_array = array();
       if (!$step_list->isEmpty()) {
          $step_item = $step_list->getFirst();
@@ -701,20 +706,14 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
          }
       }
 
-      // combine in tag
       $step_xml = new SimpleXMLElementExtended('<step></step>');
       foreach ($step_item_xml_array as $step_item_xml) {
          $this->simplexml_import_simplexml($step_xml, $step_item_xml);
       }
    
-      // add to base xml
       $this->simplexml_import_simplexml($xml, $step_xml);
-
-   	return $xml;
-	}
-	
-   function export_sub_items($xml, $top_item) {
       
+      return $xml;
    }
    
   function import_item($xml, $top_item, &$options) {
