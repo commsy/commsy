@@ -902,7 +902,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
 
       $link_items_xml = new SimpleXMLElementExtended('<link_items></link_items>');
       $link_item_manager = $this->_environment->getLinkItemManager();
-      $link_item_manager->setContextLimit($top_item->getContextId());
+      $link_item_manager->setContextLimit($top_item->getItemId());
       $link_item_manager->select();
       $link_item_list = $link_item_manager->get();
       $link_item = $link_item_list->getFirst();
