@@ -30,7 +30,7 @@ include_once('classes/cs_list.php');
 /** class for database connection to the database table "links"
  * this class implements a database manager for the table "links". Links between commsy items
  */
-class cs_link_manager extends cs_manager {
+class cs_link_manager extends cs_manager implements cs_export_import_interface {
 
   /**
    * integer - containing the error number if an error occured
@@ -1268,6 +1268,42 @@ class cs_link_manager extends cs_manager {
    			return $result;
    		}
    	}
+   }
+   
+   function export_item($id) {
+	   $item = $this->getItem($id);
+	
+   	$xml = new SimpleXMLElementExtended('<link_item></link_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+   	$xml->addChildWithCDATA('context_id', $item->getContextID());
+   	$xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+   	$xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+   	$xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+   	$xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+   	$xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+   	$xml->addChildWithCDATA('first_item_id', $item->getFirstLinkedItemID());
+   	$xml->addChildWithCDATA('first_item_type', $item->getFirstLinkedItemType());
+   	$xml->addChildWithCDATA('second_item_id', $item->getSecondLinkedItemID());
+   	$xml->addChildWithCDATA('second_item_type', $item->getSecondLinkedItemType());
+   	$xml->addChildWithCDATA('sorting_place', $item->getSortingPlace());
+
+   	$extras_array = $item->getExtraInformation();
+      $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
+      $this->simplexml_import_simplexml($xml, $xmlExtras);
+   	   	
+   	return $xml;
+	}
+	
+   function export_sub_items($top_item, $xml) {
+      
+   }
+   
+   function import_item($top_item, $xml) {
+      
+   }
+	
+   function import_sub_items($top_item, $xml) {
+      
    }
 }
 ?>
