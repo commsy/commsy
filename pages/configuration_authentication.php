@@ -431,6 +431,44 @@ else {
             	}
             }
             
+            // Shibboleth
+            if ( isset($_POST['direct_login']) ) {
+            	$auth_item->setShibbolethDirectLogin($_POST['direct_login']);
+            }
+            
+            if ( isset($_POST['session_initiator_url']) ) {
+            	$auth_item->setShibbolethSessionInitiator($_POST['session_initiator_url']);
+            }
+            
+            if ( isset($_POST['session_logout_url']) ) {
+            	$auth_item->setShibbolethSessionLogout($_POST['session_logout_url']);
+            }
+            
+            if ( isset($_POST['password_change_url']) ) {
+            	$auth_item->setShibbolethPasswordChange($_POST['password_change_url']);
+            }
+            
+            if ( isset($_POST['username']) ) {
+            	$auth_item->setShibbolethUsername($_POST['username']);
+            }
+            
+            if ( isset($_POST['firstname']) ) {
+            	$auth_item->setShibbolethFirstname($_POST['firstname']);
+            }
+            
+            if ( isset($_POST['lastname']) ) {
+            	$auth_item->setShibbolethLastname($_POST['lastname']);
+            }
+            
+            if ( isset($_POST['email']) ) {
+            	$auth_item->setShibbolethEmail($_POST['email']);
+            }
+            
+            if ( isset($_POST['update_user_data']) ) {
+            	$auth_item->setShibbolethUpdateData($_POST['update_user_data']);
+            }
+            
+            
             $portal_item->save();
             unset($portal_item);
 
