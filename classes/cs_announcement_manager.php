@@ -698,7 +698,7 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
          $item->setSecondDateTime((string)$xml->enddate[0]);
          $item->setContextId($top_item->getItemId());
          $item->save();
-         $this->importAnnotationsFromXML($item, $xml);
+         $this->importAnnotationsFromXML($xml, $item);
       }
       return $item;
    }

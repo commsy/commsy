@@ -791,8 +791,8 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
 	function import_sub_items($xml, $top_item, &$options) {
       if ($xml->discarticle != null) {
          $discarticle_manager = $this->_environment->getDiscussionArticleManager();
-         foreach ($xml->discarticle->children() as $discarticle) {
-            $temp_discarticle_item = $discarticle_manager->import_item($discarticle, $top_item, $options);
+         foreach ($xml->discarticle->children() as $discarticle_xml) {
+            $temp_discarticle_item = $discarticle_manager->import_item($discarticle_xml, $top_item, $options);
          }
       }
    }

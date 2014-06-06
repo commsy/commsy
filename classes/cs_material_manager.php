@@ -1375,7 +1375,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $item->setWorkflowResubmissionDate((string)$xml->workflow_resubmission_date[0]);
          $item->setWorkflowValidityDate((string)$xml->workflow_validity_date[0]);
          $item->save();
-         $this->importAnnotationsFromXML($item, $xml);
+         $this->importAnnotationsFromXML($xml, $item);
          $this->import_sub_items($xml, $item, $options);
       }
       return $item;
@@ -1384,8 +1384,8 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
 	function import_sub_items($xml, $top_item, &$options) {
       if ($xml->section != null) {
          $section_manager = $this->_environment->getSectionManager();
-         foreach ($xml->section->children() as $section) {
-            $temp_section_item = $section_manager->import_item($section, $top_item, $options);
+         foreach ($xml->section->children() as $section_xml) {
+            $temp_section_item = $section_manager->import_item($section_xml, $top_item, $options);
          }
       }
    }

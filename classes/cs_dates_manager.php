@@ -1028,7 +1028,7 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $item->setRecurrenceId((string)$xml->recurrence_id[0]);
          $item->setRecurrencePattern((string)$xml->recurrence_pattern[0]);
          $item->save();
-         $this->importAnnotationsFromXML($item, $xml);
+         $this->importAnnotationsFromXML($xml, $item);
       }
       return $item;
    }

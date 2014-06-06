@@ -740,8 +740,8 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
 	function import_sub_items($xml, $top_item, &$options) {
       if ($xml->step != null) {
          $step_manager = $this->_environment->getStepManager();
-         foreach ($xml->step->children() as $step) {
-            $temp_step_item = $step_manager->import_item($step, $top_item, $options);
+         foreach ($xml->step->children() as $step_xml) {
+            $temp_step_item = $step_manager->import_item($step_xml, $top_item, $options);
          }
       }
    }
