@@ -145,6 +145,8 @@ else {
                $room_manager = $environment->getRoomManager();
                $room_manager->import_item($xml, null, $options);
                chdir('var/temp/'.$temp_stamp);
+               
+               el($options);
             }
             chdir($commsy_work_dir);
          }

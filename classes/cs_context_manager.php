@@ -961,6 +961,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $context_item->setExtraInformation($extra_array['extras']);
          $context_item->save();
          
+         $options[$xml->itemId[0]] = $context_item->getItemId();
+         
          // set additional values
          if (((string)$xml->type[0]) == 'community') {
          } else if (((string)$xml->type[0]) == 'project') {

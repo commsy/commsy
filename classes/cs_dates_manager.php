@@ -989,8 +989,10 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
       $xml->addChildWithCDATA('date_mode', $item->getDateMode());
       $xml->addChildWithCDATA('color', $item->getColor());
       $xml->addChildWithCDATA('recurrence_id', $item->getRecurrenceId());
-      $xml->addChildWithCDATA('recurrence_pattern', $item->getRecurrencePattern());
-
+      $recurrence_array = $item->getRecurrencePattern();
+      $xmlRecurrence = $this->getArrayAsXML($xml, $recurrence_array, true, 'recurrence');
+      $this->simplexml_import_simplexml($xml, $xmlRecurrence);
+      
    	$extras_array = $item->getExtraInformation();
       $xmlExtras = $this->getArrayAsXML($xml, $extras_array, true, 'extras');
       $this->simplexml_import_simplexml($xml, $xmlExtras);
