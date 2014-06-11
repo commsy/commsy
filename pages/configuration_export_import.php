@@ -118,7 +118,7 @@ else {
             trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
          }
       }
-   } else if (!empty($command) and (isOption($command, $translator->getMessage('COMMON_UPLOAD')))) {
+   } else if (!empty($command) and (isOption($command, $translator->getMessage('PREFERENCES_EXPORT_COMMON_UPLOAD')))) {
       if ( !empty($_FILES['upload']['tmp_name']) ) {
          $temp_stamp = time();
          //$files = file_get_contents($_FILES['upload']['tmp_name']);
