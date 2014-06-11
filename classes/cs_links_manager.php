@@ -1158,5 +1158,59 @@ class cs_links_manager extends cs_manager {
       $retour .= '      </item>'.LF;
       return $retour;
    }
+   
+   function export_items() {
+	   $links_array = $this->_performQuery();
+   	$links_xml = new SimpleXMLElementExtended('<links></links>');
+   	foreach ($links_array as $link) {
+   	   $link_xml = new SimpleXMLElementExtended('<link></link>');
+   	   $link_xml->addChildWithCDATA('from_item_id', $link['from_item_id']);
+         $link_xml->addChildWithCDATA('from_version_id', $link['from_version_id']);
+         $link_xml->addChildWithCDATA('to_item_id', $link['to_item_id']);
+         $link_xml->addChildWithCDATA('to_version_id', $link['to_version_id']);
+         $link_xml->addChildWithCDATA('link_type', $link['link_type']);
+         $link_xml->addChildWithCDATA('context_id', $link['context_id']);
+         $link_xml->addChildWithCDATA('deleter_id', $link['deleter_id']);
+         $link_xml->addChildWithCDATA('deletion_date', $link['deletion_date']);
+         $link_xml->addChildWithCDATA('x', $link['x']);
+         $link_xml->addChildWithCDATA('y', $link['y']);
+         $this->simplexml_import_simplexml($links_xml, $link_xml);
+      }
+   	return $links_xml;
+	}
+	
+   function export_sub_items($xml, $top_item) {
+      
+   }
+   
+   function import_item($xml, $top_item, &$options) {
+      $item = null;
+      if ($xml != null) {
+         $new_first_item_id = $options[(string)$xml->first_item_id[0]];
+         $new_second_item_id = $options[(string)$xml->second_item_id[0]];
+         if (($new_first_item_id != '') && ($new_second_item_id != '')) {
+            $item_manger = $this->_environment->getItemManager();
+            $first_item = $item_manger->getItem($new_first_item_id);
+            $second_item = $item_manger->getItem($new_second_item_id);
+         
+            $item = $this->getNewItem();
+            $item->setFirstLinkedItemID($new_first_item_id);
+            $item->setFirstLinkedItemType((string)$xml->first_item_type[0]);
+            $item->setFirstLinkedItem($first_item);
+            $item->setSecondLinkedItemID($new_second_item_id);
+            $item->setSecondLinkedItemType((string)$xml->second_item_type[0]);
+            $item->setSecondLinkedItem($second_item);
+            $item->setSortingPlace((string)$xml->sorting_place[0]);
+            $extra_array = $this->getXMLAsArray($xml->extras);
+            $item->setExtraInformation($extra_array['extras']);
+            $item->save();
+         }
+      }
+      return $item;
+   }
+	
+   function import_sub_items($xml, $top_item, &$options) {
+      
+   }
 }
 ?>

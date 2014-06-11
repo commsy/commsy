@@ -900,6 +900,11 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $this->simplexml_import_simplexml($xml, $grouproom_list_xml);
       }
 
+      $links_manager = $this->_environment->getLinkManager();
+      $links_manager->setContextLimit($top_item->getItemId());
+      $links_xml = $links_manager->export_items();
+      $this->simplexml_import_simplexml($xml, $links_xml);
+
       $link_items_xml = new SimpleXMLElementExtended('<link_items></link_items>');
       $link_item_manager = $this->_environment->getLinkItemManager();
       $link_item_manager->setContextLimit($top_item->getItemId());
