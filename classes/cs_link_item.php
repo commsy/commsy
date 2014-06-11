@@ -267,6 +267,14 @@ class cs_link_item extends cs_item {
       return $this->_getValue('sorting_place');
    }
 
+   /** sets the sorting place.
+    *
+    * @param $value
+    */
+   function setSortingPlace ($value) {
+      return $this->_setValue('sorting_place',$value);
+   }
+
    /** get the x-position of the link
     * this method get the x-position of the link for study.log
     *

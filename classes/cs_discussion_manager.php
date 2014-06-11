@@ -784,6 +784,9 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
          $item->save();
          $this->import_sub_items($xml, $item, $options);
       }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
       return $item;
    }
 	

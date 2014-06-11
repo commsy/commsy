@@ -854,6 +854,9 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
          $tag2TagManager = $this->_environment->getTag2TagManager();
          $tag2TagManager->insert_with_context($item->getItemId(), $top_item->getItemid(), $top_item->getChildrenList()->getCount() + 1, $top_item->getContextId());
       }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
       return $item;
    }
    

@@ -960,8 +960,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $extra_array = $this->getXMLAsArray($xml->extras);
          $context_item->setExtraInformation($extra_array['extras']);
          $context_item->save();
-         
-         $options[$xml->itemId[0]] = $context_item->getItemId();
+
+         $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
          // set additional values
          if (((string)$xml->type[0]) == 'community') {
@@ -992,7 +992,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          
          foreach ($xml->rubric->children() as $rubric) {
-            #el($rubric->getName());
             if (($rubric->getName() != 'group') && ($rubric->getName() != 'topic')) { // those items are included in the exported labels-xml
                $type_manager = $this->_environment->getManager($rubric->getName());
                if ($type_manager instanceof cs_export_import_interface) {
@@ -1011,6 +1010,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             foreach ($xml->tags->children() as $tag) {
                $tag_item = $this->importTagsFromXML($tag, $root_tag);
             }
+         }
+         
+         /* perform the import of link items as last task, as the matching $options['<old_item_id>'] = <new_item_id> is needed. */
+         $link_item_manager = $this->_environment->getLinkItemManager();
+         foreach ($xml->link_items->children() as $link_xml) {
+            $link_item = $link_item_manager->import_item($link_xml, $top_item, $options);
          }
       }
    }

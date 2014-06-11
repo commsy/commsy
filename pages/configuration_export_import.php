@@ -110,9 +110,9 @@ else {
             $zip->close();
             unset($zip);
             
-            #header('Content-disposition: attachment; filename=commsy_export_import_'.$_POST['room'].'.zip');
-            #header('Content-type: application/zip');
-            #readfile($zipfile);
+            header('Content-disposition: attachment; filename=commsy_export_import_'.$_POST['room'].'.zip');
+            header('Content-type: application/zip');
+            readfile($zipfile);
          } else {
             include_once('functions/error_functions.php');
             trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
