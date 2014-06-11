@@ -66,7 +66,7 @@ else {
          $dom->preserveWhiteSpace = false;
          $dom->formatOutput = true;
          $dom->loadXML($xml->asXML());
-         el($dom->saveXML());
+         //el($dom->saveXML());
 
          $filename = 'var/temp/commsy_xml_export_import_'.$_POST['room'].'.xml';
          if ( file_exists($filename) ) {

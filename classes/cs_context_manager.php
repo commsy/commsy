@@ -997,11 +997,21 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          
          foreach ($xml->rubric->children() as $rubric) {
-            if (($rubric->getName() != 'group') && ($rubric->getName() != 'topic')) { // those items are included in the exported labels-xml
+            if (($rubric->getName() != 'group') && ($rubric->getName() != 'topic') && ($rubric->getName() != 'label')) { // those items are included in the exported labels-xml
                $type_manager = $this->_environment->getManager($rubric->getName());
                if ($type_manager instanceof cs_export_import_interface) {
-                  $type_manager->setContextLimit($top_item->getItemID());
                   foreach ($rubric->children() as $item_xml) {
+                     $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
+                  }
+               }
+            } else if ($rubric->getName() == 'label') {
+               $type_manager = $this->_environment->getManager($rubric->getName());
+               foreach ($rubric->children() as $item_xml) {
+                  $import = true;
+                  if (($item_xml->type == 'group') && ($item_xml->extras->SYSTEM_LABEL == '1')) {
+                     $import = false;
+                  }
+                  if ($import) {
                      $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
                   }
                }
@@ -1013,11 +1023,15 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $tag_manager->forceSQL();
             $root_tag = $tag_manager->getRootTagItemFor($top_item->getItemId());
             foreach ($xml->tags->children() as $tag) {
-               $tag_item = $this->importTagsFromXML($tag, $root_tag);
+               $tag_item = $this->importTagsFromXML($tag, $root_tag, $options);
             }
          }
          
          /* perform the import of link items as last task, as the matching $options['<old_item_id>'] = <new_item_id> is needed. */
+         
+         $links_manager = $this->_environment->getLinkManager();
+         $links_manager->import_items($xml->links, $top_item, $options);
+         
          $link_item_manager = $this->_environment->getLinkItemManager();
          foreach ($xml->link_items->children() as $link_xml) {
             $link_item = $link_item_manager->import_item($link_xml, $top_item, $options);

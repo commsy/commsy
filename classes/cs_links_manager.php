@@ -1178,39 +1178,28 @@ class cs_links_manager extends cs_manager {
       }
    	return $links_xml;
 	}
-	
-   function export_sub_items($xml, $top_item) {
-      
-   }
    
-   function import_item($xml, $top_item, &$options) {
-      $item = null;
+   function import_items($xml, $top_item, &$options) {
       if ($xml != null) {
-         $new_first_item_id = $options[(string)$xml->first_item_id[0]];
-         $new_second_item_id = $options[(string)$xml->second_item_id[0]];
-         if (($new_first_item_id != '') && ($new_second_item_id != '')) {
-            $item_manger = $this->_environment->getItemManager();
-            $first_item = $item_manger->getItem($new_first_item_id);
-            $second_item = $item_manger->getItem($new_second_item_id);
-         
-            $item = $this->getNewItem();
-            $item->setFirstLinkedItemID($new_first_item_id);
-            $item->setFirstLinkedItemType((string)$xml->first_item_type[0]);
-            $item->setFirstLinkedItem($first_item);
-            $item->setSecondLinkedItemID($new_second_item_id);
-            $item->setSecondLinkedItemType((string)$xml->second_item_type[0]);
-            $item->setSecondLinkedItem($second_item);
-            $item->setSortingPlace((string)$xml->sorting_place[0]);
-            $extra_array = $this->getXMLAsArray($xml->extras);
-            $item->setExtraInformation($extra_array['extras']);
-            $item->save();
+         foreach ($xml->children() as $link) {
+            $new_from_item_id = $options[(string)$link->from_item_id[0]];
+            $new_to_item_id = $options[(string)$link->to_item_id[0]];
+            if (($new_from_item_id != '') && ($new_to_item_id != '')) {
+               $link_array = array();
+               $link_array['from_item_id'] = $new_from_item_id;
+               $link_array['from_version_id'] = (string)$link->from_version_id[0];
+               $link_array['to_item_id'] = $new_to_item_id;
+               $link_array['to_version_id'] = (string)$link->to_version_id[0];
+               $link_array['link_type'] = (string)$link->link_type[0];
+               $link_array['room_id'] = $top_item->getItemId();
+               $link_array['deleter_id'] = (string)$link->deleter_id[0];
+               $link_array['deletion_date'] = (string)$link->deletion_date[0];
+               $link_array['x'] = (string)$link->x[0];
+               $link_array['y'] = (string)$link->y[0];
+               $this->_create($link_array);
+            }
          }
       }
-      return $item;
-   }
-	
-   function import_sub_items($xml, $top_item, &$options) {
-      
    }
 }
 ?>

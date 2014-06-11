@@ -1959,11 +1959,11 @@ class cs_manager {
        return $xml;
     }
     
-    function importTagsFromXML ($xml, $top_item) {
+    function importTagsFromXML ($xml, $top_item, &$options) {
        $tag_manager = $this->_environment->getTagManager();
        $tag_item = $tag_manager->import_item($xml, $top_item, $options);
        foreach ($xml->children->children() as $child) {
-          $this->importTagsFromXML($child, $tag_item);
+          $this->importTagsFromXML($child, $tag_item, $options);
        }
     }
 }

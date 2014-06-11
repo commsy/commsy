@@ -665,9 +665,15 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
               'first_item_id="'.encode(AS_DB,$first_item->getItemID()).'",'.
               'second_item_id="'.encode(AS_DB,$second_item->getItemID()).'",'.
               'first_item_type="'.encode(AS_DB,$link_item->getFirstLinkedItemType()).'",'.
-              'second_item_type="'.encode(AS_DB,$link_item->getSecondLinkedItemType()).'",'.
-              'extras="'.encode(AS_DB,serialize($link_item->getExtraInformation())).'"'.
-              ' WHERE item_id="'.encode(AS_DB,$link_item->getItemID()).'"';
+              'second_item_type="'.encode(AS_DB,$link_item->getSecondLinkedItemType()).'",';
+              
+     if ($link_item->getSortingPlace() != '') {
+        $query .= 'sorting_place="'.encode(AS_DB,$link_item->getSortingPlace()).'",';
+     }
+     
+     $query .= 'sorting_place="'.encode(AS_DB,$link_item->getSortingPlace()).'",'.
+               'extras="'.encode(AS_DB,serialize($link_item->getExtraInformation())).'"'.
+               ' WHERE item_id="'.encode(AS_DB,$link_item->getItemID()).'"';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
@@ -722,14 +728,20 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
            $second_item_id = $link_item->getSecondLinkedItemID();
            $second_item_type = $link_item->getSecondLinkedItemID();
         }
+        
         $query .= 'creator_id="'.encode(AS_DB,$creator_id).'",'.
                   'creation_date="'.$current_datetime.'",'.
                   'modification_date="'.$current_datetime.'",'.
                   'first_item_id="'.encode(AS_DB,$first_item_id).'",'.
                   'second_item_id="'.encode(AS_DB,$second_item_id).'",'.
                   'first_item_type="'.encode(AS_DB,$first_item_type).'",'.
-                  'second_item_type="'.encode(AS_DB,$second_item_type).'",'.
-                  'extras="'.encode(AS_DB,serialize($link_item->getExtraInformation())).'"';
+                  'second_item_type="'.encode(AS_DB,$second_item_type).'",';
+                  
+        if ($link_item->getSortingPlace() != '') {
+            $query .= 'sorting_place="'.encode(AS_DB,$link_item->getSortingPlace()).'",';
+        }
+        
+        $query .= 'extras="'.encode(AS_DB,serialize($link_item->getExtraInformation())).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
            include_once('functions/error_functions.php');
@@ -1304,11 +1316,17 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
          $new_first_item_id = $options[(string)$xml->first_item_id[0]];
          $new_second_item_id = $options[(string)$xml->second_item_id[0]];
          if (($new_first_item_id != '') && ($new_second_item_id != '')) {
+            $item_manger = $this->_environment->getItemManager();
+            $first_item = $item_manger->getItem($new_first_item_id);
+            $second_item = $item_manger->getItem($new_second_item_id);
+         
             $item = $this->getNewItem();
             $item->setFirstLinkedItemID($new_first_item_id);
             $item->setFirstLinkedItemType((string)$xml->first_item_type[0]);
+            $item->setFirstLinkedItem($first_item);
             $item->setSecondLinkedItemID($new_second_item_id);
             $item->setSecondLinkedItemType((string)$xml->second_item_type[0]);
+            $item->setSecondLinkedItem($second_item);
             $item->setSortingPlace((string)$xml->sorting_place[0]);
             $extra_array = $this->getXMLAsArray($xml->extras);
             $item->setExtraInformation($extra_array['extras']);
