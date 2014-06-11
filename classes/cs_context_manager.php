@@ -976,6 +976,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          
          $this->import_sub_items($xml, $context_item, $options);
          
+         $this->checkOptions($xml, $context_item, $options);
+         
          return $context_item;
       }
    }
@@ -1035,6 +1037,23 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $link_item_manager = $this->_environment->getLinkItemManager();
          foreach ($xml->link_items->children() as $link_xml) {
             $link_item = $link_item_manager->import_item($link_xml, $top_item, $options);
+         }
+      }
+   }
+   
+   function checkOptions ($xml, $context_item, $options) {
+      el('check ...');
+      el($options['check']);
+      if (isset($options['check']['dates']['recurrence_id'])) {
+         $dates_manager = $this->_environment->getDatesManager();
+         foreach ($options['check']['dates']['recurrence_id'] as $item_id) {
+            $temp_date_item = $dates_manager->getitem($item_id);
+            $temp_date_old_recurrence_id = $temp_date_item->getRecurrenceId();
+            $temp_date_new_recurrence_id = $options[$temp_date_old_recurrence_id];
+            if ($temp_date_new_recurrence_id != '') {
+               $temp_date_item->setRecurrenceId($temp_date_new_recurrence_id);
+               $temp_date_item->save();
+            }
          }
       }
    }
