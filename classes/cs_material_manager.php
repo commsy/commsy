@@ -1379,7 +1379,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
       }
       
       $options[(string)$xml->item_id[0]] = $item->getItemId();
-      
+
       return $item;
    }
 	

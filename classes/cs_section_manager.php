@@ -672,7 +672,20 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function import_item($xml, $top_item, &$options) {
-      
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setVersionId((string)$xml->version_id[0]);
+         $item->setContextId($top_item->getContextId());
+         $item->setTitle((string)$xml->title[0]);
+         $item->setDescription((string)$xml->description[0]);
+         $item->setNumber((string)$xml->number[0]);
+         $item->setLinkedItemID($top_item->getItemId());
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->save();
+      }
+      return $item;
    }
    
    function import_sub_items($xml, $top_item, &$options) {
