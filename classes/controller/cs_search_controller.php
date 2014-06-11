@@ -96,7 +96,6 @@
 					$this->_params[$key.'_'.$value] = "true";
 				}
 			}
-			pr($this->_params);
 			$seltag_tmp = $this->_params['seltag'];
 			if(!empty($seltag_tmp)){
 				$this->_params['seltag'] = '';
@@ -1395,7 +1394,7 @@ unset($ftsearch_manager);
 				$params = $this->_params;
 				unset($params['search']);
 				$link_parameter_text = '';
-				if ( count($params) > 0 ) {pr($params);
+				if ( count($params) > 0 ) {
 					foreach ($params as $key => $parameter) {
 						$link_parameter_text .= '&'.$key.'='.$parameter;
 					}
