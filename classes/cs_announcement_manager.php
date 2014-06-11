@@ -700,6 +700,9 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
          $item->save();
          $this->importAnnotationsFromXML($xml, $item);
       }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
       return $item;
    }
    

@@ -1032,6 +1032,9 @@ class cs_dates_manager extends cs_manager implements cs_export_import_interface 
          $item->save();
          $this->importAnnotationsFromXML($xml, $item);
       }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
       return $item;
    }
    

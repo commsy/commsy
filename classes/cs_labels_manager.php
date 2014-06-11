@@ -1208,6 +1208,9 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
          $item->setExtraInformation($extra_array['extras']);
          $item->save();
       }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
       return $item;
    }
    
