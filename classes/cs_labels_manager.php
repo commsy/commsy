@@ -1207,6 +1207,17 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
          $extra_array = $this->getXMLAsArray($xml->extras);
          $item->setExtraInformation($extra_array['extras']);
          $item->save();
+         
+         if ($item->getLabelType() == 'group') {
+            if (isset($extra_array['extras']['GROUP_ROOM_ACTIVE'])) {
+               if ($extra_array['extras']['GROUP_ROOM_ACTIVE'] == '1') {
+                  if (!isset($options['check'])) {
+                     $options['check'] = array();
+                  }
+                  $options['check']['labels']['GROUP_ROOM_ID'][] = $item->getItemId();
+               }
+            }
+         }
       }
       
       $options[(string)$xml->item_id[0]] = $item->getItemId();

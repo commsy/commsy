@@ -994,8 +994,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                $temp_project_item->save();
             }
          } else if (((string)$xml->type[0]) == 'project') {
-            $project_manager = $this->_environment->getProjectManager();
-            $context_item = $project_manager->getNewItem();
+            $grouproom_manager = $this->_environment->getGrouproomManager();
+            foreach ($xml->grouprooms as $grouproom) {
+               $temp_grouproom_item = $grouproom_manager->import_item($grouproom->context_item, $top_item, $options);
+               $temp_grouproom_item->setLinkedProjectRoomItemID($top_item->getItemId());
+               $temp_grouproom_item->save();
+            }
          }
          
          foreach ($xml->rubric->children() as $rubric) {
@@ -1042,8 +1046,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function checkOptions ($xml, $context_item, $options) {
-      el('check ...');
-      el($options['check']);
       if (isset($options['check']['dates']['recurrence_id'])) {
          $dates_manager = $this->_environment->getDatesManager();
          foreach ($options['check']['dates']['recurrence_id'] as $item_id) {
@@ -1053,6 +1055,18 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             if ($temp_date_new_recurrence_id != '') {
                $temp_date_item->setRecurrenceId($temp_date_new_recurrence_id);
                $temp_date_item->save();
+            }
+         }
+      }
+      if (isset($options['check']['labels']['GROUP_ROOM_ID'])) {
+         $group_manager = $this->_environment->getGroupManager();
+         foreach ($options['check']['labels']['GROUP_ROOM_ID'] as $item_id) {
+            $temp_group_item = $group_manager->getitem($item_id);
+            $temp_group_old_grouproom_id = $temp_group_item->getGroupRoomItemID();
+            $temp_group_new_grouproom_id = $options[$temp_group_old_grouproom_id];
+            if ($temp_group_new_grouproom_id != '') {
+               $temp_group_item->setGroupRoomItemID($temp_group_new_grouproom_id);
+               $temp_group_item->save();
             }
          }
       }
