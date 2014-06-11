@@ -96,13 +96,16 @@
 					$this->_params[$key.'_'.$value] = "true";
 				}
 			}
-			
 			$seltag_tmp = $this->_params['seltag'];
-			$this->_params['seltag'] = '';
+			if(!empty($seltag_tmp)){
+				$this->_params['seltag'] = '';
+				$this->_params['seltag'] = $seltag_tmp;
+			}
+			
 			
 			$this->assign('search', 'parameters', $this->_params);
 			
-			$this->_params['seltag'] = $seltag_tmp;
+			
 			
 			$this->assign("search", "indexed_search", $this->_indexed_search);
 
@@ -1243,7 +1246,10 @@ unset($ftsearch_manager);
 					$seltag_array[$key.'_'.$value] = "true";
 				}
 			}
-			$this->_params['seltag'] = $seltag_array;
+			
+			if(!empty($seltag_array)){
+				$this->_params['seltag'] = $seltag_array;
+			}
 			
 // 			if(isset($_GET['seltag'])) {
 // 				$this->_params['seltag'] = $_GET['seltag'];
@@ -1393,7 +1399,7 @@ unset($ftsearch_manager);
 						$link_parameter_text .= '&'.$key.'='.$parameter;
 					}
 				}
-				$return[0]['link_parameter'] = $link_parameter_text;
+				$return[0]['link_parameter'] = $link_parameter_text;pr($link_parameter_text);
 			}
 
 			// rubric
