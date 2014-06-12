@@ -964,15 +964,17 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          $extra_array = $this->getXMLAsArray($xml->extras);
          $context_item->setExtraInformation($extra_array['extras']);
-         $context_item->save();
-
-         $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
          // set additional values
          if (((string)$xml->type[0]) == 'community') {
          } else if (((string)$xml->type[0]) == 'project') {
          } else if (((string)$xml->type[0]) == 'grouproom') {
+            $context_item->setLinkedProjectRoomItemID($top_item->getItemId());
          }
+         
+         $context_item->save();
+
+         $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
          $this->import_sub_items($xml, $context_item, $options);
          
@@ -997,8 +999,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $grouproom_manager = $this->_environment->getGrouproomManager();
             foreach ($xml->grouprooms as $grouproom) {
                $temp_grouproom_item = $grouproom_manager->import_item($grouproom->context_item, $top_item, $options);
-               $temp_grouproom_item->setLinkedProjectRoomItemID($top_item->getItemId());
-               $temp_grouproom_item->save();
             }
          }
          
