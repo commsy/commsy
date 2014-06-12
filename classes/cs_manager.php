@@ -1945,6 +1945,13 @@ class cs_manager {
        return $file_xml;
     }
     
+    function importFilesFromXML ($xml, $top_item, &$options) {
+       $file_manager = $this->_environment->getFileManager();
+       foreach ($xml->files->children() as $file) {
+          $file_manager->import_item($file, $top_item, $options);
+       }
+    }
+    
     function getTagsAsXML ($xml, $tag_array) {
        foreach ($tag_array as $tag) {
           $tag_manager = $this->_environment->getTagManager();

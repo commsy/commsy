@@ -909,7 +909,22 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
    }
    
    function import_item($xml, $top_item, &$options) {
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setContextId($top_item->getContextId());
+         $item->setFileName((string)$xml->filename[0]);
+         $item->setHasHTML((string)$xml->has_html[0]);
+         $item->setScanned((string)$xml->scan[0]);
+         $extra_array = $this->getXMLAsArray($xml->extras);
+         $item->setExtraInformation($extra_array['extras']);
+         $item->setTempUploadFromEditorSessionID((string)$xml->temp_upload_session_id[0]);
+         $item->save();
+      }
       
+      $options[(string)$xml->files_id[0]] = $item->getFileId();
+
+      return $item;
    }
    
    function import_sub_items($xml, $top_item, &$options) {

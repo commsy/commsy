@@ -1375,6 +1375,7 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
          $item->setWorkflowValidityDate((string)$xml->workflow_validity_date[0]);
          $item->save();
          $this->importAnnotationsFromXML($xml, $item);
+         $this->importFilesFromXML($xml, $item, $options);
          $this->import_sub_items($xml, $item, $options);
       }
       
