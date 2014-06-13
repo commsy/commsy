@@ -936,6 +936,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                   $project_list = $community_item->getProjectList();
                   $project_item = $project_list->getFirst();
                   while ($project_item) {
+                     $grouproom_list = $project_item->getGroupRoomList();
+                     $grouproom_item = $grouproom_list->getFirst();
+                     while ($grouproom_item) {
+                        $grouproom_item->delete();
+                        $grouproom_item = $grouproom_list->getNext();   
+                     }
                      $project_item->delete();
                      $project_item = $project_list->getNext();
                   }
