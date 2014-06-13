@@ -152,9 +152,9 @@ else {
       if ( !empty($_FILES['upload']['tmp_name']) ) {
          $temp_stamp = time();
          //$files = file_get_contents($_FILES['upload']['tmp_name']);
-         move_uploaded_file($_FILES['upload']['tmp_name'], 'var/temp/upload.zip');
+         move_uploaded_file($_FILES['upload']['tmp_name'], 'var/temp/upload_'.$temp_stamp.'.zip');
          $zip = new ZipArchive;
-         $res = $zip->open('var/temp/upload.zip');
+         $res = $zip->open('var/temp/upload_'.$temp_stamp.'.zip');
          if ($res === TRUE) {
             $zip->extractTo('var/temp/'.$temp_stamp);
             $zip->close();
@@ -176,7 +176,16 @@ else {
                $room_manager->import_item($xml, null, $options);
                chdir('var/temp/'.$temp_stamp);
                
-               el($options);
+               //el($options);
+               
+               el(getcwd());
+               
+               $files = scandir('.');
+               el('files ...');
+               foreach($files as $file) {
+                  el($file);
+               }
+               
             }
             chdir($commsy_work_dir);
          }
