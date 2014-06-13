@@ -86,10 +86,39 @@ else {
          //Location, that will be backuped
          $disc_manager = $environment->getDiscManager();
          $disc_manager->setPortalID($environment->getCurrentPortalID());
-         $disc_manager->setContextID($_POST['room']);
-         $backuppath = $disc_manager->getFilePath();
-         $disc_manager->setContextID($environment->getCurrentContextID());
-         unset($disc_manager);
+
+         $backup_paths = array();
+         $room_item = $room_manager->getItem($_POST['room']);
+         if ($room_item->getRoomType() == 'community') {
+            $disc_manager->setContextID($room_item->getItemId());
+            $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+            $project_list = $room_item->getProjectList();
+            $project_item = $project_list->getFirst();
+            while ($project_item) {
+               $disc_manager->setContextID($project_item->getItemId());
+               $backup_paths[$project_item->getItemId()] = $disc_manager->getFilePath();
+               $grouproom_list = $project_item->getGroupRoomList();
+               $grouproom_item = $grouproom_list->getFirst();
+               while ($grouproom_item) {
+                  $disc_manager->setContextID($grouproom_item->getItemId());
+                  $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
+                  $grouproom_item = $grouproom_list->getNext();   
+               }
+               $project_item = $project_list->getNext();
+            }
+         } else if ($room_item->getRoomType() == 'project') {
+            $disc_manager->setContextID($room_item->getItemId());
+            $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+            $grouproom_list = $room_item->getGroupRoomList();
+            $grouproom_item = $grouproom_list->getFirst();
+            while ($grouproom_item) {
+               $disc_manager->setContextID($grouproom_item->getItemId());
+               $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
+               $grouproom_item = $grouproom_list->getNext();   
+            }
+            $project_item = $project_list->getNext();
+         }
+         
 
          if ( class_exists('ZipArchive') ) {
             include_once('functions/misc_functions.php');
@@ -101,10 +130,11 @@ else {
                trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
             }
             $temp_dir = getcwd();
-            chdir($backuppath);
-
-            $zip = addFolderToZip('.',$zip,'files');
-            chdir($temp_dir);
+            foreach ($backup_paths as $item_id => $backup_path) {
+               chdir($backup_path);
+               $zip = addFolderToZip('.',$zip,'files_'.$item_id);
+               chdir($temp_dir);
+            }
 
             $zip->addFile($filename, basename($filename));
             $zip->close();
