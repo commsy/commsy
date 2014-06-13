@@ -920,6 +920,9 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
          $item->setExtraInformation($extra_array['extras']);
          $item->setTempUploadFromEditorSessionID((string)$xml->temp_upload_session_id[0]);
          $item->save();
+         
+         $link_item_file_manager = $this->_environment->getLinkItemFileManager();
+         $link_item_file_manager->insertDirectly($top_item->getItemId(), $top_item->getVersionId(), $item->getFileId());
       }
       
       $options[(string)$xml->files_id[0]] = $item->getFileId();
