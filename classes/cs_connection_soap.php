@@ -2934,6 +2934,42 @@ class cs_connection_soap {
       return $retour;
    }
    
+   public function getPortalRoomListGuest($sessionId, $portalId)
+   {
+		if ($this->_isSessionValid($sessionId)) {
+			$portalManager = $this->_environment->getPortalManager();
+			$portalItem = $portalManager->getItem($portalId);
+			
+			$showRooms = $portalItem->getShowRoomsOnHome();
+			
+			$roomManager = $this->_environment->getRoomManager();
+			$roomManager->setContextLimit($portalId);
+			
+			$roomManager->select();
+			$roomList = $roomManager->get();
+			
+			$xml = "<room_list>\n";
+			$roomItem = $roomList->getFirst();
+			while ($roomItem) {
+				$xml .= "<room_item>";
+					$xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
+					$xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
+					$xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
+					$xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
+					$xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
+					$xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
+				$xml .= "</room_item>\n";
+				
+				$roomItem = $roomList->getNext();
+			}
+			
+			$xml .= "</room_list>";
+			return $this->_encode_output($xml);
+		} else {
+         return new SoapFault('ERROR','Session not valid!');
+      }
+   }
+   
    public function getPortalRoomList($session_id, $portal_id) {
       include_once('functions/development_functions.php');
       if($this->_isSessionValid($session_id)) {
