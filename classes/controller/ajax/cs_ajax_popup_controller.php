@@ -65,12 +65,18 @@
 
 			// get form data
 			$form_data = array();
+			if (isset($this->_data['form_data']) && is_string($this->_data['form_data'])) {
+				$this->_data['form_data'] = json_decode($this->_data['form_data'], true);
+			}
 			foreach($this->_data['form_data'] as $data) {
 				$form_data[$data['name']] = $data['value'];
 			}
 
 			// additional data
 			$additional = array();
+			if (isset($this->_data['additional']) && is_string($this->_data['additional'])) {
+				$this->_data['additional'] = json_decode($this->_data['additional'], true);
+			}
 			if(isset($this->_data['additional']) && !empty($this->_data['additional'])) {
 				$additional = $this->_data['additional'];
 			}
