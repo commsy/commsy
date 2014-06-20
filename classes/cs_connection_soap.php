@@ -4508,17 +4508,19 @@ class cs_connection_soap {
    		$auth_source_id = $session->getValue('auth_source');
    		$user_manager = $this->_environment->getUserManager();
    		$user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
-   		$own_room_item = $user_item->getOwnRoom();
+   		if ($user_item) {
+   			$own_room_item = $user_item->getOwnRoom();
+   		}
    		
    		$xml .= "<bar_config>\n";
    		
    		if (isset($own_room_item) && !$this->_environment->isArchiveMode()) {
    			
-   			$xml .= "<widgets><![CDATA[".$own_room_item->getCSBarShowWidgets() ? 'yes' : 'no' ."]]></widgets>\n";
-   			$xml .= "<calendar><![CDATA[".$own_room_item->getCSBarShowCalendar() ? 'yes' : 'no' ."]]></calendar>\n";
-   			$xml .= "<stack><![CDATA[".$own_room_item->getCSBarShowStack() ? 'yes' : 'no' ."]]></stack>\n";
-   			$xml .= "<portfolio><![CDATA[".$own_room_item->getCSBarShowPortfolio() ? 'yes' : 'no' ."]]></portfolio>\n";
-   			$xml .= "<connection><![CDATA[".$own_room_item->getCSBarShowConnection() ? 'yes' : 'no' ."]]></connection>\n";
+   			$xml .= "<widgets><![CDATA[".($own_room_item->getCSBarShowWidgets() == '1' ? 'yes' : 'no') ."]]></widgets>\n";
+   			$xml .= "<calendar><![CDATA[".($own_room_item->getCSBarShowCalendar() == '1' ? 'yes' : 'no') ."]]></calendar>\n";
+   			$xml .= "<stack><![CDATA[".($own_room_item->getCSBarShowStack() == '1' ? 'yes' : 'no') ."]]></stack>\n";
+   			$xml .= "<portfolio><![CDATA[".($own_room_item->getCSBarShowPortfolio() == '1' ? 'yes' : 'no') ."]]></portfolio>\n";
+   			$xml .= "<connection><![CDATA[".($own_room_item->getCSBarShowConnection() == '1' ? 'yes' : 'no') ."]]></connection>\n";
    		} else {
    			$xml .= "<widgets>no</widgets>\n";
    			$xml .= "<calendar>no</calendar>\n";
@@ -4528,7 +4530,11 @@ class cs_connection_soap {
    		}
    		
    		$xml .= "<portal_name><![CDATA[".$this->_environment->getCurrentContextItem()->getTitle()."]]></portal_name>\n";
-   		$xml .= "<user_name><![CDATA[".$user_item->getFullName()."]]></user_name>\n";
+   		
+   		if ($user_item) {
+   			$xml .= "<user_name><![CDATA[".$user_item->getFullName()."]]></user_name>\n";
+   			$xml .= "<own_room_id><![CDATA[".$own_room_item->getItemId()."]]></own_room_id>\n";
+   		}
    		
    		$xml .= "</bar_config>";
    		$xml = $this->_encode_output($xml);
