@@ -4460,5 +4460,84 @@ class cs_connection_soap {
    		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
    	}
    }
+   
+   public function getAuthSources($session_id, $portal_id)
+   {
+   		$xml = '';
+   		
+   		if ($this->_isSessionValid($session_id)) {
+   			$authSourceManager = $this->_environment->getAuthSourceManager();
+   			$authSourceManager->setContextLimit($portal_id);
+   			$authSourceManager->select();
+   			$list = $authSourceManager->get();
+   			
+   			if (!$list->isEmpty()) {
+   				$item = $list->getFirst();
+   				$xml .= "<auth_sources>\n";
+   				
+   				while ($item) {
+   					$xml .= "<auth_source>\n";
+   							
+   					$xml .= "<id><![CDATA[".$item->getItemId()."]]></id>\n";
+   					$xml .= "<title><![CDATA[".$item->getTitle()."]]></title>\n";
+   					
+   					$xml .= "</auth_source>\n";
+   					
+   					$item = $list->getNext();
+   				}
+   			}
+   			$xml .= "</auth_sources>";
+   			$xml = $this->_encode_output($xml);
+   			
+   		} else {
+   			return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   		}
+   		
+   		return $xml;
+   }
+   
+   public function getBarInformation($session_id, $portal_id)
+   {
+   	$xml = '';
+   	 
+   	if ($this->_isSessionValid($session_id)) {
+   		$this->_environment->setSessionID($session_id);
+   		$session = $this->_environment->getSessionItem();
+   		$this->_environment->setCurrentContextID($portal_id);
+   		$user_id = $session->getValue('user_id');
+   		$auth_source_id = $session->getValue('auth_source');
+   		$user_manager = $this->_environment->getUserManager();
+   		$user_item = $user_manager->getItemByUserIDAuthSourceID($user_id, $auth_source_id);
+   		$own_room_item = $user_item->getOwnRoom();
+   		
+   		$xml .= "<bar_config>\n";
+   		
+   		if (isset($own_room_item) && !$this->_environment->isArchiveMode()) {
+   			
+   			$xml .= "<widgets><![CDATA[".$own_room_item->getCSBarShowWidgets() ? 'yes' : 'no' ."]]></widgets>\n";
+   			$xml .= "<calendar><![CDATA[".$own_room_item->getCSBarShowCalendar() ? 'yes' : 'no' ."]]></calendar>\n";
+   			$xml .= "<stack><![CDATA[".$own_room_item->getCSBarShowStack() ? 'yes' : 'no' ."]]></stack>\n";
+   			$xml .= "<portfolio><![CDATA[".$own_room_item->getCSBarShowPortfolio() ? 'yes' : 'no' ."]]></portfolio>\n";
+   			$xml .= "<connection><![CDATA[".$own_room_item->getCSBarShowConnection() ? 'yes' : 'no' ."]]></connection>\n";
+   		} else {
+   			$xml .= "<widgets>no</widgets>\n";
+   			$xml .= "<calendar>no</calendar>\n";
+   			$xml .= "<stack>no</stack>\n";
+   			$xml .= "<portfolio>no</portfolio>\n";
+   			$xml .= "<connection>no</connection>\n";
+   		}
+   		
+   		$xml .= "<portal_name><![CDATA[".$this->_environment->getCurrentContextItem()->getTitle()."]]></portal_name>\n";
+   		$xml .= "<user_name><![CDATA[".$user_item->getFullName()."]]></user_name>\n";
+   		
+   		$xml .= "</bar_config>";
+   		$xml = $this->_encode_output($xml);
+   
+   	} else {
+   		return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+   	}
+   	 
+   	return $xml;
+   }
 }
 ?>
