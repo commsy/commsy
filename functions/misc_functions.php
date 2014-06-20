@@ -888,8 +888,15 @@ function isURLValid () {
          $funct != 'search' and
          $funct != 'search_index' and
     	 $funct != 'rubric_popup' and
+    	 $funct != 'popup' and
     	 $funct != 'path' and
     	 $funct != 'picture' and
+    	 $funct != 'widgets' and
+    	 $funct != 'widget_new_entries' and
+    	 $funct != 'widget_released_entries' and
+    	 $funct != 'widget_released_entries_for_me' and
+    	 $funct != 'portfolio' and
+    	 $funct != 'widget_stack' and
          
          $funct != 'workflow'
        ) {
