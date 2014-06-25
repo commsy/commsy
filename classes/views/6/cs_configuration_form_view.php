@@ -326,6 +326,9 @@ class cs_configuration_form_view extends cs_form_view {
                case 'CONFIGURATION_SCRIBD':
                   $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_FORM_TITLE');
                   break;
+               case 'CONFIGURATION_EXPORT_IMPORT':
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT_IMPORT_FORM_TITLE');	// Konfiguration des Uploads(Portal)
+                  break;
                default:
                   $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_configuration_form_view (".__LINE__.")";	// "Bitte Messagetag-Fehler melden"
                   break;

@@ -29,6 +29,9 @@
  * @author CommSy Development Group
  */
 
+/**
+ */
+include_once('custom/SimpleXMLElementExtended.php');
 
 class cs_manager {
 
@@ -1795,5 +1798,180 @@ class cs_manager {
       }
       return $retour;
    }
+   
+   
+   /*
+    * Functions needed for ex- and import of items
+    */
+   
+   function getArrayAsXML($xml, $array, $create_top_element = false, $top_element_name = ''){
+      if ($create_top_element) {
+         if ($top_element_name != '') {
+            $xml = new SimpleXMLElementExtended('<'.$top_element_name.'></'.$top_element_name.'>');
+         }
+      }
+      foreach ($array as $key => $value) {
+         // Tag names must not start with a number.
+         if (is_numeric($key)) {
+            $key = 'COMMSY_'.$key;
+         }
+         if (!is_array($value)) {
+            $xml->addChildWithCDATA($key, $value);
+         } else {
+            $tempXml = new SimpleXMLElementExtended('<'.$key.'></'.$key.'>');
+            $temp = $this->getArrayAsXML($tempXml, $value);
+            $this->simplexml_import_simplexml($xml, $temp);
+         }
+      }
+      return $xml;
+   }
+   
+   function getXMLAsArray($xml){
+      $arr = array();
+      foreach ($xml as $element) {
+         $tag = $element->getName();
+         $e = get_object_vars($element);
+         if (!empty($e)) {
+            $arr[$tag] = $element instanceof SimpleXMLElement ? $this->getXMLAsArray($element) : $e;
+         } else {
+            $arr[$tag] = trim($element);
+         }
+      }
+      return $arr;
+   }
+   
+   function simplexml_import_xml(SimpleXMLElementExtended $parent, $xml, $before = false) {
+      $xml = (string)$xml;
+      // check if there is something to add
+      if ($nodata = !strlen($xml) or $parent[0] == NULL) {
+         return $nodata;
+      }
+      // add the XML
+      $node     = dom_import_simplexml($parent);
+      $fragment = $node->ownerDocument->createDocumentFragment();
+      $fragment->appendXML($xml);
+      if ($before) {
+         return (bool)$node->parentNode->insertBefore($fragment, $node);
+      }
+      return (bool)$node->appendChild($fragment);
+    }
+    
+    function simplexml_import_simplexml(SimpleXMLElementExtended $parent, SimpleXMLElementExtended $child, $before = false) {
+      // check if there is something to add
+      if ($child[0] == NULL) {
+         return true;
+      }
+      // if it is a list of SimpleXMLElements default to the first one
+      $child = $child[0];
+      // insert attribute
+      if ($child->xpath('.') != array($child)) {
+         $parent[$child->getName()] = (string)$child;
+         return true;
+      }
+      $xml = $child->asXML();
+      // remove the XML declaration on document elements
+      if ($child->xpath('/*') == array($child)) {
+         $pos = strpos($xml, "\n");
+         $xml = substr($xml, $pos + 1);
+      }
+      return $this->simplexml_import_xml($parent, $xml, $before);
+    }
+    
+    function getAnnotationsAsXML ($itemID) {
+       $item_manager = $this->_environment->getManager('item');
+       $item = $item_manager->getItem($itemID);
+    
+       $annotations_manager = $this->_environment->getManager('annotations');
+       $annotations_manager->setContextLimit($item->getContextID());
+       $annotations_manager->setLinkedItemID($item->getItemID());
+       $annotations_manager->select();
+       $annotations_list = $annotations_manager->get();
+   	
+   	 // get XML for each section
+       $annotations_item_xml_array = array();
+       if (!$annotations_list->isEmpty()) {
+          $annotations_item = $annotations_list->getFirst();
+          while ($annotations_item) {
+             $annotations_id = $annotations_item->getItemID();
+             $annotations_item_xml_array[] = $annotations_manager->export_item($annotations_id);
+             $annotations_item = $annotations_list->getNext();
+          }
+       }
+
+       // combine in tag
+       $annotations_xml = new SimpleXMLElementExtended('<annotations></annotations>');
+       foreach ($annotations_item_xml_array as $annotations_item_xml) {
+          $this->simplexml_import_simplexml($annotations_xml, $annotations_item_xml);
+       }
+   
+       return $annotations_xml;
+    }
+    
+    function importAnnotationsFromXML ($xml, $top_item) {
+       if ($xml != null) {
+         if ($xml->annotations != null) {
+            $annotation_manager = $this->_environment->getAnnotationManager();
+            foreach ($xml->annotations->children() as $annotation_xml) {
+               $temp_annotation_item = $annotation_manager->import_item($annotation_xml, $top_item, $options);
+            }
+         }
+      }
+    }
+    
+    function getFilesAsXML ($itemID) {
+       $item_manager = $this->_environment->getManager('item');
+       $item = $item_manager->getItem($itemID);
+    
+       $file_manager = $this->_environment->getFileManager();
+       $file_list = $item->getFileList();
+          	
+   	 // get XML for each section
+       $file_item_xml_array = array();
+       if (!$file_list->isEmpty()) {
+          $file_item = $file_list->getFirst();
+          while ($file_item) {
+             $file_id = $file_item->getFileID();
+             $file_item_xml_array[] = $file_manager->export_item($file_id);
+             $file_item = $file_list->getNext();
+          }
+       }
+
+       // combine in tag
+       $file_xml = new SimpleXMLElementExtended('<files></files>');
+       foreach ($file_item_xml_array as $file_item_xml) {
+          $this->simplexml_import_simplexml($file_xml, $file_item_xml);
+       }
+   
+       return $file_xml;
+    }
+    
+    function importFilesFromXML ($xml, $top_item, &$options) {
+       $file_manager = $this->_environment->getFileManager();
+       foreach ($xml->files->children() as $file) {
+          $file_manager->import_item($file, $top_item, $options);
+       }
+    }
+    
+    function getTagsAsXML ($xml, $tag_array) {
+       foreach ($tag_array as $tag) {
+          $tag_manager = $this->_environment->getTagManager();
+          $tag_xml = $tag_manager->export_item($tag['item_id']);
+          if (!empty($tag['children'])) {
+             $children_xml = new SimpleXMLElementExtended('<children></children>');
+             $children_xml_temp = $this->getTagsAsXML($children_xml, $tag['children']);
+             $this->simplexml_import_simplexml($tag_xml, $children_xml_temp);
+          }
+          $this->simplexml_import_simplexml($xml, $tag_xml);
+       }
+       return $xml;
+    }
+    
+    function importTagsFromXML ($xml, $top_item, &$options) {
+       $tag_manager = $this->_environment->getTagManager();
+       $tag_item = $tag_manager->import_item($xml, $top_item, $options);
+       foreach ($xml->children->children() as $child) {
+          $this->importTagsFromXML($child, $tag_item, $options);
+       }
+    }
 }
 ?>

@@ -921,7 +921,8 @@ class cs_account_index_view extends cs_index_view {
              $this->_environment->getCurrentFunction() == 'privateroom_newsletter' or
              $this->_environment->getCurrentFunction() == 'authentication' or
              $this->_environment->getCurrentFunction() == 'language' or
-             $this->_environment->getCurrentFunction() == 'backup'
+             $this->_environment->getCurrentFunction() == 'backup' or
+             $this->_environment->getCurrentFunction() == 'export_import'
             ){
             $show_entry = '1';
          }elseif ($this->_environment->getCurrentFunction() == 'dates' or

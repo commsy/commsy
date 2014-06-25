@@ -359,5 +359,15 @@ class cs_link_item_file_manager extends cs_link_father_manager {
       }
       return $retour;
    }
+   
+   // used for ex- and import
+   function insertDirectly ($item_id, $version_id, $file_id) {
+      $query = 'INSERT INTO '.$this->_db_table.' (item_iid, item_vid, file_id) VALUES ('.$item_id.', '.$version_id.', '.$file_id.')';
+   	$result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems while inserting directly: '.$query,E_USER_WARNING);
+      }
+   }
 }
 ?>
