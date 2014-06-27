@@ -581,7 +581,7 @@ class class_onyx extends cs_plugin {
 	      			and $file_item->getFileID() != $file->getFileID()
 	      			and strtolower($file_item->getExtension()) == 'zip'
 	      			and stristr($file_item->getFileName(), $file->getFileID().'_')
-	      	) {
+	      	   ) {
 	      		$zip = new ZipArchive;
 	      		$res = $zip->open($file_item->getDiskFileName());
 	      		if ( $res === TRUE ) {

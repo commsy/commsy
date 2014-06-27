@@ -350,8 +350,9 @@
 					{/block}
            		</div>
            		{elseif $environment.module == 'topic' }
-           			{if $list.restriction_text_parameters}
+           			{if $list.restriction_text_parameters || $room.usage_info_content.show}
            				<div id="rc_portlet_area">
+           				{if $list.restriction_text_parameters}
 						    <div class="portlet_rc">
 								<h2>___COMMON_RESTRICTIONS___</h2>
 								<div class="clear"> </div>
@@ -365,9 +366,31 @@
 									{/foreach}
 								</div>
 							</div>
+							{/if}
+							{if $room.usage_info_content.show}
+							<div class="portlet_rc">
+								<h2>{$room.usage_info_content.title}</h2>
+								<div class="clear"> </div>
+								<div class="portlet_rc_body">
+									{$room.usage_info_content.content}
+								</div>
+							</div>
+           				{/if}
 						</div>
-				{/if}
+				   {/if}
 
+           		{elseif $environment.module == 'group' || $environment.module == 'project' || $environment.module == 'institution'}
+           			{if $room.usage_info_content.show}
+           				<div id="rc_portlet_area">
+							   <div class="portlet_rc">
+								   <h2>{$room.usage_info_content.title}</h2>
+								   <div class="clear"> </div>
+								   <div class="portlet_rc_body">
+									   {$room.usage_info_content.content}
+						         </div>
+							   </div>
+						   </div>
+				      {/if}
            		{/if}
             </div> <!-- Ende right_column -->
 

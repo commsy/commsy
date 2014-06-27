@@ -351,6 +351,9 @@
 	                        $manager = $environment->getTopicManager();
 	                        $manager->reset();
 	                        $manager->setContextLimit($environment->getCurrentContextID());
+	                        
+	                        $manager->showNoNotActivatedEntries();
+	                        
 	                        $manager->select();
 	                        $list = $manager->get();
 	                        $count_all = $list->getCount();

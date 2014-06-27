@@ -4093,7 +4093,7 @@ $html .='
 			$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
 			if ($current_user->isModerator()){
 				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a></div>'.LF;
-		
+				$html.= $this->_getConfigurationBoxAsHTML();
 			}
 		}
 		$html .='	</div>'.LF;	
@@ -4204,6 +4204,49 @@ $html.= '  </div>
 
       $html .= '</body>'.LF;
       return $html;
+   }
+   
+   function _getConfigurationBoxAsHTML () {
+   	$current_context = $this->_environment->getCurrentContextItem();
+   	$html  = '';
+   	$html .= '<div class="search_link">'.LF;
+   	$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('PORTAL_CONFIGURATION_ACTION')).BRLF;
+   	$html .= '</div>'.LF;
+   
+   	// tasks
+   	$manager = $this->_environment->getTaskManager();
+   	$manager->resetLimits();
+   	$manager->setContextLimit($this->_environment->getCurrentContextID());
+   	$manager->setStatusLimit('REQUEST');
+   	$manager->select();
+   	$task_list = $manager->get();
+   	if ( !$task_list->isEmpty() ) {
+   		$task_item = $task_list->getFirst();
+   		while ( $task_item ) {
+   			$ref_item = $task_item->getLinkedItem();
+   			$html .= '<div class="search_link" style="margin-top:10px;">'.LF;
+   			$html .= $this->_translator->getMessage('PORTAL_ROOM_MOVE_REQUESTED').': '.$ref_item->getTitle().LF;
+   			$html .= '</div>'.LF;
+   			$params = array();
+   			$params['iid'] = $ref_item->getItemID();
+   			$params['tid'] = $task_item->getItemID();
+   			$params['modus'] = 'agree';
+   			$html .= '<div class="search_link">'.LF;
+   			$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','move2',$params,$this->_translator->getMessage('COMMON_ACCEPT')).BRLF;
+   			$html .= '</div>'.LF;
+   			$params['modus'] = 'reject';
+   			$html .= '<div class="search_link">'.LF;
+   			$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','move2',$params,$this->_translator->getMessage('COMMON_REJECT'));
+   			$html .= '</div>'.LF;
+   			unset($params);
+   
+   			$task_item = $task_list->getNext();
+   		}
+   		$html .='</div>'.LF;
+   	}
+   
+   
+   	return $html;
    }
 
 

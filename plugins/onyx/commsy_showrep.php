@@ -19,6 +19,8 @@
 //
 // You have received a copy of the GNU General Public License
 // along with the plugin.
+
+header("Content-Type: text/html; charset=utf-8");
 ?>
 <html>
    <head>
@@ -88,6 +90,8 @@
         and !empty($url)
       ) {
    	echo('<div><iframe class="onyx" src="'.$url.'"></iframe></div>');
+   } elseif ( !empty($_GET['fid']) ) {
+      echo($translator->getMessage('ONYX_REPORTER_NO_RESULTS'));
    } else {
    	echo($translator->getMessage('ONYX_ERROR_URL_SECURITY'));
    }

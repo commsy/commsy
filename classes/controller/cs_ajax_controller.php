@@ -63,6 +63,10 @@
 // 				}
 // 			}
 			
+			if(empty($this->_data)) {
+				$this->_data = $_GET;
+			}
+			
 			// the actual function determes the method to call
 			$function = 'action' . ucfirst($_GET['action']);
 
@@ -92,6 +96,11 @@
 			);
 
 			$this->_return = json_encode($return);
+			
+			if (isset($this->_data['callback'])) {
+				$functionName = $this->_data['callback'];
+				$this->_return = $functionName . '(' . $this->_return . ');';
+			}
 		}
 
 		public function rawDataReturn($data = array()) {

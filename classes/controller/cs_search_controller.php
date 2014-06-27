@@ -89,17 +89,23 @@
 			// get selected seltags
 			$seltag_array = array();
 			foreach($this->_params['seltag'] as $key => $value) {
-				if(substr($key, 0, 6) == 'seltag'){
+				if(substr($key, 0, 7) == 'seltag_'){
 					// set seltag array
 					$this->_params[$key] = $value;
+				} elseif(substr($key, 0, 6) == 'seltag'){
+					$this->_params[$key.'_'.$value] = "true";
 				}
 			}
 			$seltag_tmp = $this->_params['seltag'];
-			$this->_params['seltag'] = '';
+			if(!empty($seltag_tmp)){
+				$this->_params['seltag'] = '';
+				$this->_params['seltag'] = $seltag_tmp;
+			}
+			
 			
 			$this->assign('search', 'parameters', $this->_params);
 			
-			$this->_params['seltag'] = $seltag_tmp;
+			
 			
 			$this->assign("search", "indexed_search", $this->_indexed_search);
 
@@ -1233,13 +1239,17 @@ unset($ftsearch_manager);
 			#$this->_params['seltag'] = '';
 			$seltag_array = array();
 			foreach ($_GET as $key => $value){
-				// get all seltag ids
-				if(substr($key, 0, 6) == 'seltag'){
+				if(substr($key, 0, 7) == 'seltag_'){
+					// set seltag array
 					$seltag_array[$key] = $value;
-					
+				} elseif(substr($key, 0, 6) == 'seltag'){
+					$seltag_array[$key.'_'.$value] = "true";
 				}
 			}
-			$this->_params['seltag'] = $seltag_array;
+			
+			if(!empty($seltag_array)){
+				$this->_params['seltag'] = $seltag_array;
+			}
 			
 // 			if(isset($_GET['seltag'])) {
 // 				$this->_params['seltag'] = $_GET['seltag'];
@@ -1389,7 +1399,7 @@ unset($ftsearch_manager);
 						$link_parameter_text .= '&'.$key.'='.$parameter;
 					}
 				}
-				$return[0]['link_parameter'] = $link_parameter_text;
+				$return[0]['link_parameter'] = $link_parameter_text;pr($link_parameter_text);
 			}
 
 			// rubric

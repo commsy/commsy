@@ -105,6 +105,9 @@ require([	"dojo/_base/declare",
 										path_array.push(path);
 										
 									}
+								} else if(/^seltag$/.test(key)){
+									var path = handler.buildPath(a[key]);
+									path_array.push(path);
 								}
 							}
 							

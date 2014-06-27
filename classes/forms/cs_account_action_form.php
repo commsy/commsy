@@ -106,11 +106,17 @@ class cs_account_action_form extends cs_rubric_form {
             $translate = true;
          }
          
+         if( count($array_user_item_id) <= 0){
+         	redirect($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index');
+         }
+         
          // Datenschutz
-         if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
-         	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
-         } else {
-         	$userid = $user->getUserID();
+         if ( !empty($user) ) {
+	         if($this->_environment->getCurrentPortalItem()->getHideAccountname()){
+	         	$userid = 'XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname());
+	         } else {
+	         	$userid = $user->getUserID();
+	         }
          }
 
          if ( $translate ) {

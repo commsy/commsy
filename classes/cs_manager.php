@@ -245,9 +245,14 @@ class cs_manager {
    	 $first_element = array();
    	 $tag2tag_manager = $this->_environment->getTag2TagManager();
    	 foreach($array as $key => $value) {
-   	 	$first_element[] = substr($key, 7);
-   	 	if($array[$key]){
-   	 		$id_array = array_unique(array_merge($id_array,$tag2tag_manager->getRecursiveChildrenItemIDArray(substr($key, 7))));
+   	 	$output = preg_replace( '/[^0-9]/', '', $value );
+   	 	if(!empty($output)){
+   	 		$first_element[] = $value;
+   	 	} else {
+   	 		$first_element[] = substr($key, 7);
+   	 		if($array[$key]){
+   	 			$id_array = array_unique(array_merge($id_array,$tag2tag_manager->getRecursiveChildrenItemIDArray(substr($key, 7))));
+   	 		}
    	 	}
    	 }
    	 $id_array = array_merge($id_array,$first_element);

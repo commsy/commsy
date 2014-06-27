@@ -729,7 +729,7 @@
 		         			$minutes = $minutes / 60;
 		         			$tmp_message = $translator->getMessage('COMMON_HOURS');
 		         			if($minutes === 1) {
-		         				$tmp_message = $translator->getMesasge('COMMON_HOUR');
+		         				$tmp_message = $translator->getMessage('COMMON_HOUR');
 		         			}
 		         			break;
 		         		case 3:

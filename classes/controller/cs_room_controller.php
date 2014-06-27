@@ -127,6 +127,7 @@
 
 
 		private function getUsageInfoContent(){
+			$text_converter = $this->_environment->getTextConverter();
       		$current_context = $this->_environment->getCurrentContextItem();
 			$return_array = array();
 			$return_array['show'] = false;
@@ -135,7 +136,8 @@
 	        $info_text = $current_context->getUsageInfoTextForRubric($act_rubric);
 	        if (!empty($info_text) ){
 				$return_array['title'] = $current_context->getUsageInfoHeaderForRubric($act_rubric);
-				$return_array['content'] = $current_context->getUsageInfoTextForRubric($act_rubric);
+				//$return_array['content'] = $current_context->getUsageInfoTextForRubric($act_rubric);
+				$return_array['content'] = $text_converter->textFullHTMLFormatting($current_context->getUsageInfoTextForRubric($act_rubric));
 				$return_array['show'] = true;
 			}
 			return $return_array;

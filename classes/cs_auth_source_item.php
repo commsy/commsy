@@ -417,6 +417,194 @@ class cs_auth_source_item extends cs_item {
    	   }
    }
    
+   /**
+    * Get Shibboleth direct login configuration
+    * 
+    * @return boolean
+    */
+   public function getShibbolethDirectLogin() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_DIRECT_LOGIN');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   /**
+    * Set Shibboleth direct login configuration
+    */
+   public function setShibbolethDirectLogin($value) {
+   	$this->_addExtra('SHIB_DIRECT_LOGIN',$value);
+   }
+   
+   /**
+    * Get Shibboleth email configuration
+    *
+    * @return string
+    */
+   public function getShibbolethEmail() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_EMAIL');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+    
+   /**
+    * Set Shibboleth email configuration
+    */
+   public function setShibbolethEmail($value) {
+   	$this->_addExtra('SHIB_EMAIL',$value);
+   }
+   
+   /**
+    * Get Shibboleth firstname configuration
+    *
+    * @return string
+    */
+   public function getShibbolethFirstname() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_FIRSTNAME');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   /**
+    * Set Shibboleth firstname configuration
+    */
+   public function setShibbolethFirstname($value) {
+   	$this->_addExtra('SHIB_FIRSTNAME',$value);
+   }
+   
+   /**
+    * Get Shibboleth lastname configuration
+    *
+    * @return string
+    */
+   public function getShibbolethLastname() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_LASTNAME');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+    
+   /**
+    * Set Shibboleth lastname configuration
+    */
+   public function setShibbolethLastname($value) {
+   	$this->_addExtra('SHIB_LASTNAME',$value);
+   }
+   
+   /**
+    * Get Shibboleth password change url configuration
+    *
+    * @return string
+    */
+   public function getShibbolethPasswordChange() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_PASSWORD_CHANGE');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   /**
+    * Set Shibboleth password change url configuration
+    */
+   public function setShibbolethPasswordChange($value) {
+   	$this->_addExtra('SHIB_PASSWORD_CHANGE',$value);
+   }
+   
+   /**
+    * Get Shibboleth session initiator url configuration
+    *
+    * @return string
+    */
+   public function getShibbolethSessionInitiator() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_SESSION_INITIATOR');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+    
+   /**
+    * Set Shibboleth Session Initiator url configuration
+    */
+   public function setShibbolethSessionInitiator($value) {
+   	$this->_addExtra('SHIB_SESSION_INITIATOR',$value);
+   }
+   
+   /**
+    * Get Shibboleth session logout url configuration
+    *
+    * @return string
+    */
+   public function getShibbolethSessionLogout() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_SESSION_LOGOUT');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   /**
+    * Set Shibboleth Session logout url configuration
+    */
+   public function setShibbolethSessionLogout($value) {
+   	$this->_addExtra('SHIB_SESSION_LOGOUT',$value);
+   }
+   
+   /**
+    * Get Shibboleth update data configuration
+    *
+    * @return boolean
+    */
+   public function getShibbolethUpdateData() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_UPDATE_DATA');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+    
+   /**
+    * Set Shibboleth update data configuration
+    */
+   public function setShibbolethUpdateData($value) {
+   	$this->_addExtra('SHIB_UPDATE_DATA',$value);
+   }
+   
+   /**
+    * Get Shibboleth username configuration
+    *
+    * @return string
+    */
+   public function getShibbolethUsername() {
+   	$retour = '';
+   	$value = $this->_getExtra('SHIB_USERNAME');
+   	if ( !empty($value) ) {
+   		$retour = $value;
+   	}
+   	return $retour;
+   }
+   
+   /**
+    * Set Shibboleth username configuration
+    */
+   public function setShibbolethUsername($value) {
+   	$this->_addExtra('SHIB_USERNAME',$value);
+   }
    
 
 }

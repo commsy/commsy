@@ -323,6 +323,35 @@ if ( !isset($context_item_current)
 
 /*********** SESSION AND AUTHENTICATION ***********/
 
+// Shibboleth Configuration #######################
+$portal_item = $environment->getCurrentPortalItem();
+$shib_direct_login = false;
+$shib_auth_source_id = '';
+if(!empty($portal_item)){
+	// shibboleth auth source and direct login configured?
+	$shib_auth_source = NULL;
+	$auth_source_list = $portal_item->getAuthSourceList();
+	$auth_item = $auth_source_list->getFirst();
+	// search for shibboleth auth source
+	while($auth_item) {
+		if($auth_item->getSourceType() == 'Shibboleth') {
+			$shib_auth_source = $auth_item;
+			$shib_auth_source_id = $shib_auth_source->getItemID();
+		}
+		$auth_item = $auth_source_list->getNext();
+	}
+	if(!empty($shib_auth_source) AND $environment->getConfiguration('c_shibboleth_deactivate_direct_login_by_portal_id') != $portal_item->getItemID()) {
+		// activate shibboleth redirect if configured
+		$shib_direct_login = $shib_auth_source->getShibbolethDirectLogin();
+	}
+
+// 		pr($shib_direct_login);exit;
+}
+// Shibboleth Configuration ########################
+// pr($shib_direct_login);
+// pr($_SERVER);$shib_direct_login = false;
+// pr($_SERVER);
+
 // get Session ID (SID)
 if (!empty($_GET['SID'])) {
    $SID = $_GET['SID'];                     // session id via GET-VARS (url)
@@ -360,11 +389,18 @@ if (!empty($_GET['SID'])) {
          ) {
    include_once('pages/individual_getfile.php');
    exit();
+// } elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
+} elseif ($shib_direct_login) {
+	include_once('pages/context_login.php'); 
+	exit();
 } else {
-   // no session created
-   // so create session and redirect to requested page
-   $session = new cs_session_item();
-   $session->createSessionID('guest');
+
+	// no session created
+	// so create session and redirect to requested page
+	$session = new cs_session_item();
+	$session->createSessionID('guest');
+
+   
    $current_portal_id = $environment->getCurrentPortalID();
    if ( !empty($current_portal_id) ) {
       $session->setValue('commsy_id',$current_portal_id);
@@ -392,6 +428,49 @@ if ( !empty($SID) ) {
    // so we can load the session information
    $session_manager = $environment->getSessionManager();
    $session = $session_manager->get($SID);
+
+   if ($shib_direct_login OR !empty($_SERVER['Shib-Session-ID'])){
+   	// get shibboleth keys from configuration
+   	if(isset($shib_auth_source)){
+   		$uidKey = $shib_auth_source->getShibbolethUsername();
+//    		$mailKey = $shibboleth_auth->getShibbolethEmail();
+//    		$commonNameKey = $shibboleth_auth->getShibbolethFirstname();
+//    		$sureNameKey = $shibboleth_auth->getShibbolethLastname();
+   	}
+   	if ($_SERVER[$uidKey] != $session->getValue('user_id') OR $_SERVER['Shib-Session-ID'] != $session->getSessionID()){
+   		$session->reset();
+   		$session->setSessionID($_SERVER['Shib-Session-ID']);
+   		$session->setValue('user_id', $_SERVER[$uidKey]);
+   		$session->setValue( 'shibboleth_auth', '1');
+   		$session->setValue('commsy_id', $environment->getCurrentPortalItem()->getItemID());
+//    		$session->setSessionID($_SERVER['Shib-Session-ID']);
+   		$environment->setSessionItem($session);
+   		$SID = $session->getSessionID();
+   		
+   		$user_manager = $environment->getUserManager();
+   		$user_item = $user_manager->getItemByUserIDAuthSourceID($_SERVER[$uidKey],$shib_auth_source_id);
+   		$environment->setCurrentUser($user_item);
+   		$session_manager->save($session);
+
+   	} else {
+   		// User has a session and is authenticated by shibboleth
+   		
+   		$user_manager = $environment->getUserManager();
+   		$user_item = $user_manager->getItemByUserIDAuthSourceID($_SERVER[$uidKey],$shib_auth_source_id);
+   		$environment->setCurrentUser($user_item);
+
+   	}
+   } else {
+   	// Shibboleth Session is empty (session timeout from sp)
+   	// reset session and login as guest
+   	if(!empty($session)){
+	   	if($session->getValue('shibboleth_auth')){
+	   		$session->reset();
+	   		$session->createSessionID('guest');
+	   	}
+   	}
+   }
+
    if ( isset($session) ) {
       $environment->setSessionItem($session);
    }
@@ -718,8 +797,12 @@ if ( !empty($SID) ) {
          $current_user->setStatus($current_user->getLastStatus());
       }
       // correction of authentication class and got to room door
-
       $environment->setCurrentUserItem($current_user);
+      
+      //Shibboleth overwrite current User
+      if(isset($shib_auth_source) and !empty($shib_auth_source) and !empty($user_item)){
+      	$environment->setCurrentUserItem($user_item);
+      }
    } elseif (!$outofservice) {
       // there is no user id in the session information, or no session
       // so delete session and just turn to the beginning of the process

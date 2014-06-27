@@ -68,9 +68,11 @@
 			// get selected seltags
 			$seltag_array = array();
 			foreach($params as $key => $value) {
-				if(substr($key, 0, 6) == 'seltag'){
+				if(substr($key, 0, 7) == 'seltag_'){
 					// set seltag array
 					$seltag_array[$key] = $value;
+				} elseif(substr($key, 0, 6) == 'seltag'){
+					$seltag_array[$key.'_'.$value] = "true";
 				}
 			}
 

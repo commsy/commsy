@@ -479,6 +479,7 @@ $message["COMMON_LAST_CHANGE"]["en"] = "last changed";
 $message["COMMON_LAST_MODIFIED_BY"]["en"] = "Last edit by";
 $message["COMMON_LAST_MODIFIED_BY_UPPER"]["en"] = "Last edit by";
 $message["COMMON_LINK_CREATOR"]["en"] = "assigned by";
+$message["COMMON_LINK_WORKSPACE"]["en"] = "Link to workspace:";
 $message["COMMON_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
 $message["COMMON_LIST_ACTION_COPY"]["en"] = "Copy selected to online clipboard";
 $message["COMMON_LIST_ACTION_DELETE"]["en"] = "Delete items";
