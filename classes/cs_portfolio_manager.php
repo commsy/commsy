@@ -6,7 +6,7 @@
 
 include_once('functions/text_functions.php');
 
-class cs_portfolio_manager extends cs_manager {
+class cs_portfolio_manager extends cs_manager implements cs_export_import_interface{
 
   var $_user_limit = NULL;
   var $_template_limit = NULL;
@@ -782,6 +782,43 @@ function deletePortfolioTags($portfolioId) {
   }
 
 /****************************************/
+
+  function export_item($id) {
+      $item = $this->getItem($id);
+      $xml = new SimpleXMLElementExtended('<portfolio_item></portfolio_item>');
+      $xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+      $xml->addChildWithCDATA('description', $item->getDescription());
+      $xml->addChildWithCDATA('template', $item->isTemplate());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+      return $xml;
+	}
+	
+   function export_sub_items($xml, $top_item) {
+      
+   }
+   
+   function import_item($xml, $top_item, &$options) {
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setDescription((string)$xml->description[0]);
+         if ((string)$xml->template[0] == '1') {
+            $item->setTemplate();
+         }
+      }
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      return $item;
+   }
+   
+   function import_sub_items($xml, $top_item, &$options) {
+      
+   }
 
 }
 ?>

@@ -766,6 +766,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if ($item->getItemType() == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getItem($id);
+         } else if ($item->getItemType() == 'privateroom') {
+            $privateroom_manager = $this->_environment->getPrivateRoomManager();
+            $context_item = $privateroom_manager->getItem($id);
          }
 
          $xml = new SimpleXMLElementExtended('<context_item></context_item>');
@@ -820,6 +823,10 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
       }
       $type_array[] = 'label';
+      
+      if ($top_item->getItemType() == 'privateroom') {
+         $type_array[] = 'portfolio';
+      }
       
       $rubric_xml = new SimpleXMLElementExtended('<rubric></rubric>');
 
@@ -955,6 +962,9 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if (((string)$xml->type[0]) == 'grouproom') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getNewItem();
+         } else if (((string)$xml->type[0]) == 'privateroom') {
+            $privateroom_manager = $this->_environment->getPrivateRoomManager();
+            $context_item = $privateroom_manager->getNewItem();
          }
          
          $context_item->setTitle((string)$xml->title[0]);

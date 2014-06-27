@@ -89,6 +89,12 @@ else {
 
          $backup_paths = array();
          $room_item = $room_manager->getItem($_POST['room']);
+         
+         if ($room_item == NULL) {
+            $privateroom_manager = $environment->getPrivateRoomManager();
+            $room_item = $privateroom_manager->getItem($_POST['room']);
+         }
+         
          if ($room_item->getRoomType() == 'community') {
             $disc_manager->setContextID($room_item->getItemId());
             $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
@@ -116,7 +122,9 @@ else {
                $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
                $grouproom_item = $grouproom_list->getNext();   
             }
-            $project_item = $project_list->getNext();
+         } else if ($room_item->getRoomType() == 'privateroom') {
+            $disc_manager->setContextID($room_item->getItemId());
+            $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
          }
          
 
@@ -207,7 +215,6 @@ else {
                      }
                   }
                }
-               
             }
             chdir($commsy_work_dir);
          }
