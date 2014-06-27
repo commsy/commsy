@@ -1,5 +1,5 @@
 <?php
-	$this->_flushHeadline('checking user "all"-group relationship');
+/*	$this->_flushHeadline('checking user "all"-group relationship');
 	$this->_flushHTML(BRLF);
 	$success = true;
 	
@@ -77,4 +77,4 @@
 		}
 	}
 	
-	$this->_flushHTML(BRLF);
+	$this->_flushHTML(BRLF);*/
