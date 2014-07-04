@@ -4481,6 +4481,14 @@ class cs_connection_soap {
    					$xml .= "<id><![CDATA[".$item->getItemId()."]]></id>\n";
    					$xml .= "<title><![CDATA[".$item->getTitle()."]]></title>\n";
    					$xml .= "<allow_add><![CDATA[".($item->allowAddAccount() ? 'yes' : 'no') ."]]></allow_add>\n";
+                  $xml .= "<default><![CDATA[".($item->isCommSyDefault() ? 'yes' : 'no') ."]]></default>\n";
+                  $xml .= "<password>";
+                  $xml .=     "<big_char><![CDATA[".($item->getPasswordSecureBigchar() ? 'yes' : 'no') ."]]></big_char>\n";
+                  $xml .=     "<number><![CDATA[".($item->getPasswordSecureNumber() ? 'yes' : 'no') ."]]></number>\n";
+                  $xml .=     "<small_char><![CDATA[".($item->getPasswordSecureSmallchar() ? 'yes' : 'no') ."]]></small_char>\n";
+                  $xml .=     "<special_char><![CDATA[".($item->getPasswordSecureSpecialchar() ? 'yes' : 'no') ."]]></special_char>\n";
+                  $xml .=     "<length><![CDATA[".($item->getPasswordLength() ? 'yes' : 'no') ."]]></length>\n";
+                  $xml .= "</password>";
    					
    					$xml .= "</auth_source>\n";
    					
@@ -4530,7 +4538,8 @@ class cs_connection_soap {
    			$xml .= "<connection>no</connection>\n";
    		}
    		
-   		$xml .= "<portal_name><![CDATA[".$this->_environment->getCurrentContextItem()->getTitle()."]]></portal_name>\n";
+   		$xml .= "<portal_name><![CDATA[" . $this->_environment->getCurrentContextItem()->getTitle() . "]]></portal_name>\n";
+         $xml .= "<portal_security><![CDATA[" . ($this->_environment->getCurrentContextItem()->withAGBDatasecurity() == '1' ? 'yes' : 'no') . "]]></portal_security>\n";
    		
    		if ($user_item) {
    			$xml .= "<user_name><![CDATA[".$user_item->getFullName()."]]></user_name>\n";
