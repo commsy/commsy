@@ -4480,6 +4480,7 @@ class cs_connection_soap {
    							
    					$xml .= "<id><![CDATA[".$item->getItemId()."]]></id>\n";
    					$xml .= "<title><![CDATA[".$item->getTitle()."]]></title>\n";
+   					$xml .= "<allow_add><![CDATA[".($item->allowAddAccount() ? 'yes' : 'no') ."]]></allow_add>\n";
    					
    					$xml .= "</auth_source>\n";
    					
