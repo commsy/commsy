@@ -415,6 +415,42 @@
 <message name='getBarInformationOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
+<message name='getContextToUIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+</message>
+<message name='getContextToUOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='registerUserIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='firstname' type='xsd:string'/>
+  <part name='lastname' type='xsd:string'/>
+  <part name='email' type='xsd:string'/>
+  <part name='identification' type='xsd:string'/>
+  <part name='password' type='xsd:string'/>
+  <part name='tou' type='xsd:boolean'/>
+</message>
+<message name='registerUserOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='sendIdForgetIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='email' type='xsd:string'/>
+</message>
+<message name='sendIdForgetOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='sendPwForgetIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='identification' type='xsd:string'/>
+</message>
+<message name='sendPwForgetOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
 <message name='getPortalListIN'>
 </message>
 <message name='getPortalListOUT'>
@@ -849,6 +885,22 @@ echo("\n");
   <operation name='getBarInformation'>
     <input message='tns:getBarInformationIN'/>
     <output message='tns:getBarInformationOUT'/>
+  </operation>
+  <operation name='getContextToU'>
+    <input message='tns:getContextToUIN'/>
+    <output message='tns:getContextToUOUT'/>
+  </operation>
+  <operation name='registerUser'>
+    <input message='tns:registerUserIN'/>
+    <output message='tns:registerUserOUT'/>
+  </operation>
+  <operation name='sendIdForget'>
+    <input message='tns:sendIdForgetIN'/>
+    <output message='tns:sendIdForgetOUT'/>
+  </operation>
+  <operation name='sendPwForget'>
+    <input message='tns:sendPwForgetIN'/>
+    <output message='tns:sendPwForgetOUT'/>
   </operation>
   <operation name='getPortalList'>
     <input message='tns:getPortalListIN'/>
@@ -1483,6 +1535,50 @@ echo("\n");
   </operation>
   <operation name='getBarInformation'>
     <soap:operation soapAction='urn:xmethodsCommSy#getBarInformation'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getContextToU'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getContextToU'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='registerUser'>
+    <soap:operation soapAction='urn:xmethodsCommSy#registerUser'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='sendIdForget'>
+    <soap:operation soapAction='urn:xmethodsCommSy#sendIdForget'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='sendPwForget'>
+    <soap:operation soapAction='urn:xmethodsCommSy#sendPwForget'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
