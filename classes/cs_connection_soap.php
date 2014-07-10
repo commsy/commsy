@@ -2933,39 +2933,137 @@ class cs_connection_soap {
       el('_getActiveSessionID $retour '.$retour);
       return $retour;
    }
-   
+
+   public function getPortalConfig($portal_id)
+   {
+      $this->_environment->setCurrentContextID($portal_id);
+      $portalItem = $this->_environment->getCurrentContextItem();
+
+      $configArray = array(
+                        "showRooms" => $portalItem->getShowRoomsOnHome(),
+                        "communityRoomCreation" => $portalItem->getCommunityRoomCreationStatus(),
+                        "projectRoomLink" => $portalItem->getProjectRoomLinkStatus(),
+                        "projectRoomCreation" => $portalItem->getProjectRoomCreationStatus()
+
+
+                        );
+
+      return $configArray;
+   }
+
+   public function getUserInformation($sessionId, $contextId)
+   {
+      $this->_environment->setCurrentContextID($contextId);
+      $this->_environment->setSessionID($sessionId);
+      $session = $this->_environment->getSessionItem();
+      $authSourceId = $session->getValue('auth_source');
+      $userId = $session->getValue('user_id');
+
+      $userManager = $this->_environment->getUserManager();
+      $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+      return array("status" => $userItem->getStatus());
+   }
+
+   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 1, $count = 10, $search = '')
+   {
+      if($this->_isSessionValid($sessionId)) {
+         $this->_environment->setSessionID($sessionId);
+         $session = $this->_environment->getSessionItem();
+         // $contextId = $session->getValue('commsy_id');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $userId = $session->getValue('user_id');
+         // $userId = 'guest';
+         //$portal_manager = $this->_environment->getPortalManager();
+         //$portal_item = $portal_manager->getItem($context_id);
+         
+         // set portal configuration
+
+         $roomManager = $this->_environment->getRoomManager();
+         $roomManager->setContextLimit($contextId);
+         
+         if(!empty($search)) {
+            $roomManager->setSearchLimit($search);
+         }
+
+         // if($userId != "guest") {
+         //    $authSourceId = $session->getValue('auth_source');
+         //    $userManager = $this->_environment->getUserManager();
+         //    $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+         //    $roomListCount = $roomManager->getRelatedRoomListForUser($userItem);
+         //    $roomListCount = $roomListCount->getCount();
+         //    $roomManager->setIntervalLimit($start, $count);
+         //    $roomList = $roomManager->getRelatedRoomListForUser($userItem);
+
+         // } else {
+            $roomListCount = $roomManager->_performQuery('count');
+            $roomManager->setIntervalLimit($start, $count);
+            $roomManager->select();
+            $roomList = $roomManager->get();
+            $roomListCount = $roomListCount[0]['count'];
+         // }
+
+         
+
+         //$roomListCount = $roomListCount->getCount();
+         //$countTest = $roomList->getCount();
+
+         $xml = "<room_list>\n";
+         $roomItem = $roomList->getFirst();
+         while ($roomItem) {
+            $xml .= "<room_item>";
+               $xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
+               $xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
+               $xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
+               $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
+               $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
+               $xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
+            $xml .= "</room_item>\n";
+            
+            $roomItem = $roomList->getNext();
+         }
+         $xml .= "</room_list>";
+
+         return array("count" => $roomListCount, "xml" => $this->_encode_output($xml));
+
+      } else {
+         return new SoapFault('ERROR','Session not valid!');
+      }
+   }
+
    public function getPortalRoomListGuest($sessionId, $portalId)
    {
-		if ($this->_isSessionValid($sessionId)) {
-			$portalManager = $this->_environment->getPortalManager();
-			$portalItem = $portalManager->getItem($portalId);
-			
-			$showRooms = $portalItem->getShowRoomsOnHome();
-			
-			$roomManager = $this->_environment->getRoomManager();
-			$roomManager->setContextLimit($portalId);
-			
-			$roomManager->select();
-			$roomList = $roomManager->get();
-			
-			$xml = "<room_list>\n";
-			$roomItem = $roomList->getFirst();
-			while ($roomItem) {
-				$xml .= "<room_item>";
-					$xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
-					$xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
-					$xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
-					$xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
-					$xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
-					$xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
-				$xml .= "</room_item>\n";
-				
-				$roomItem = $roomList->getNext();
-			}
-			
-			$xml .= "</room_list>";
-			return $this->_encode_output($xml);
-		} else {
+      if ($this->_isSessionValid($sessionId)) {
+         $portalManager = $this->_environment->getPortalManager();
+         $portalItem = $portalManager->getItem($portalId);
+         
+         $showRooms = $portalItem->getShowRoomsOnHome();
+         
+         $roomManager = $this->_environment->getRoomManager();
+         $roomManager->setContextLimit($portalId);
+         
+         $roomManager->select();
+         $roomList = $roomManager->get();
+         
+         $xml = "<room_list>\n";
+         $roomItem = $roomList->getFirst();
+         while ($roomItem) {
+            $xml .= "<room_item>";
+               $xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
+               $xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
+               $xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
+               $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
+               $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
+               $xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
+            $xml .= "</room_item>\n";
+            
+            $roomItem = $roomList->getNext();
+         }
+         
+         $xml .= "</room_list>";
+         return $this->_encode_output($xml);
+      } else {
          return new SoapFault('ERROR','Session not valid!');
       }
    }
