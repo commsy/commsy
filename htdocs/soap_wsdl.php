@@ -394,11 +394,26 @@
 <message name='getPortalRoomListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
-<message name='getPortalRoomListGuestIN'>
+<message name='getPortalRoomListByCountAndSearchIN'>
   <part name='session_id' type='xsd:string'/>
-  <part name='portal_id' type='xsd:integer'/>
+  <part name='start' type='xsd:integer'/>
+  <part name='count' type='xsd:integer'/>
+  <part name='search' type='xsd:string'/>
 </message>
-<message name='getPortalRoomListGuestOUT'>
+<message name='getPortalRoomListByCountAndSearchOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getUserInformationIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getUserInformationOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getPortalConfigIN'>
+  <part name='portal_id' type='xsd:string'/>
+</message>
+<message name='getPortalConfigOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getAuthSourcesIN'>
@@ -838,9 +853,17 @@ echo("\n");
     <input message='tns:getPortalRoomListIN'/>
     <output message='tns:getPortalRoomListOUT'/>
   </operation>
-  <operation name='getPortalRoomListGuest'>
-    <input message='tns:getPortalRoomListGuestIN'/>
-    <output message='tns:getPortalRoomListGuestOUT'/>
+  <operation name='getPortalRoomListByCountAndSearch'>
+    <input message='tns:getPortalRoomListByCountAndSearchIN'/>
+    <output message='tns:getPortalRoomListByCountAndSearchOUT'/>
+  </operation>
+   <operation name='getUserInformation'>
+    <input message='tns:getUserInformationIN'/>
+    <output message='tns:getUserInformationOUT'/>
+  </operation>
+  <operation name='getPortalConfig'>
+    <input message='tns:getPortalConfigIN'/>
+    <output message='tns:getPortalConfigOUT'/>
   </operation>
   <operation name='getAuthSources'>
     <input message='tns:getAuthSourcesIN'/>
@@ -1459,8 +1482,30 @@ echo("\n");
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
       </output>
   </operation>
-  <operation name='getPortalRoomListGuest'>
-    <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomListGuest'/>
+  <operation name='getPortalRoomListByCountAndSearch'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomListByCountAndSearch'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getUserInformation'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getUserInformation'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getPortalConfig'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalConfig'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
