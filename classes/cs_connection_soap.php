@@ -2939,12 +2939,26 @@ class cs_connection_soap {
       $this->_environment->setCurrentContextID($portal_id);
       $portalItem = $this->_environment->getCurrentContextItem();
 
+      $translator = $this->_environment->getTranslationObject();
+
+      $timeArray = array();
+      $timeList = $portalItem->getTimeListRev();
+
+      $timeItem = $timeList->getFirst();
+      while($timeItem) {
+         $timeArray[$timeItem->getItemID()] = $translator->getTimeMessage($timeItem->getTitle());
+
+         $timeItem = $timeList->getNext();
+      }
+
       $configArray = array(
                         "showRooms" => $portalItem->getShowRoomsOnHome(),
                         "communityRoomCreation" => $portalItem->getCommunityRoomCreationStatus(),
                         "projectRoomLink" => $portalItem->getProjectRoomLinkStatus(),
-                        "projectRoomCreation" => $portalItem->getProjectRoomCreationStatus()
-
+                        "projectRoomCreation" => $portalItem->getProjectRoomCreationStatus(),
+                        "showTime" => $portalItem->showTime(),
+                        "timeText" => $timeArray,
+                        "timeName" => $portalItem->getTimeNameArray(),
 
                         );
 
@@ -2965,7 +2979,7 @@ class cs_connection_soap {
       return array("status" => $userItem->getStatus());
    }
 
-   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 1, $count = 10, $search = '')
+   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 0, $count = 10, $search = '', $timeLimit = '', $roomTypeLimit = '')
    {
       if($this->_isSessionValid($sessionId)) {
          $this->_environment->setSessionID($sessionId);
@@ -2982,6 +2996,18 @@ class cs_connection_soap {
 
          $roomManager = $this->_environment->getRoomManager();
          $roomManager->setContextLimit($contextId);
+
+         if($roomTypeLimit == 'community'){
+            $roomManager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
+         } else if($roomTypeLimit == 'project') {
+            $roomManager->setRoomTypeLimit(CS_PROJECT_TYPE);
+         }
+
+         if($timeLimit){
+            $roomManager->setTimeLimit($timeLimit);
+         }
+
+         //$roomManager->setTimeLimit('1453');
          
          if(!empty($search)) {
             $roomManager->setSearchLimit($search);
@@ -3004,7 +3030,7 @@ class cs_connection_soap {
             $roomListCount = $roomListCount[0]['count'];
          // }
 
-         
+         //$roomListCount = $roomList->getCount();
 
          //$roomListCount = $roomListCount->getCount();
          //$countTest = $roomList->getCount();
