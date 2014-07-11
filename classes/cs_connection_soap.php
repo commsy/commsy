@@ -5299,5 +5299,42 @@ class cs_connection_soap {
 
       return $xml;
    }
+
+   public function getRoomDetails($session_id, $context_id, $room_id)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($context_id);
+         $this->_environment->setSessionID($session_id);
+         
+         $sessionItem = $this->_environment->getSessionItem();
+         $userId = $sessionItem->getValue('user_id');
+         $authSourceId = $sessionItem->getValue('auth_source');
+
+         $userManager = $this->_environment->getUserManager();error_log($room_id);
+         $userManager->setUserIdLimit($userId);
+         $userManager->setAuthSourceLimit($authSourceId);
+         $userManager->setContextLimit($room_id);
+         $userManager->select();
+         $userList = $userManager->get();
+
+         $roomManager = $this->_environment->getRoomManager();
+         $roomItem = $roomManager->getItem($room_id);
+
+         global $c_commsy_domain, $c_commsy_url_path;
+         include_once('functions/curl_functions.php');
+
+         $xml .= "<room>\n";
+         $xml .=     "<name><![CDATA[" . $roomItem->getTitle() . "]]></name>\n";
+         $xml .=     "<access><![CDATA[" . ($userList->isEmpty() ? "no" : "yes") . "]]></access>\n";
+         $xml .=     "<link><![CDATA[" . $c_commsy_domain . $c_commsy_url_path . "/" . _curl(false, $roomItem->getItemId(), 'home', 'index', array()) . "]]></link>\n";
+         $xml .= "</room>";
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
 }
 ?>
