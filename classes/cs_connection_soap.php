@@ -5333,6 +5333,7 @@ class cs_connection_soap {
          $this->_environment->setCurrentContextID($context_id);
          $this->_environment->setSessionID($session_id);
          
+         $translator = $this->_environment->getTranslationObject();
          $sessionItem = $this->_environment->getSessionItem();
          $userId = $sessionItem->getValue('user_id');
          $authSourceId = $sessionItem->getValue('auth_source');
@@ -5350,10 +5351,88 @@ class cs_connection_soap {
          global $c_commsy_domain, $c_commsy_url_path;
          include_once('functions/curl_functions.php');
 
+         $contactPersons = $roomItem->getContactModeratorList();
+
+         $communityRooms = $roomItem->getCommunityList();
+
          $xml .= "<room>\n";
          $xml .=     "<name><![CDATA[" . $roomItem->getTitle() . "]]></name>\n";
          $xml .=     "<access><![CDATA[" . ($userList->isEmpty() ? "no" : "yes") . "]]></access>\n";
          $xml .=     "<link><![CDATA[" . $c_commsy_domain . $c_commsy_url_path . "/" . _curl(false, $roomItem->getItemId(), 'home', 'index', array()) . "]]></link>\n";
+         $xml .=     "<description><![CDATA[" . $roomItem->getDescription() . "]]></description>\n";
+
+         $xml .=     "<contacts>\n";
+         if ($contactPersons->isNotEmpty()) {
+            $contactPerson = $contactPersons->getFirst();
+
+            while ($contactPerson) {
+               $xml .= "   <person><![CDATA[" . $contactPerson->getFullName() . "]]></person>\n";
+
+               $contactPerson = $contactPersons->getNext();
+            }
+         }
+         $xml .=     "</contacts>\n";
+
+         $xml .=     "<communities>\n";
+         if ($communityRooms->isNotEmpty()) {
+            $communityRoom = $communityRooms->getFirst();
+
+            while ($communityRoom) {
+               $xml .= "   <room>\n";
+               $xml .= "      <title><![CDATA[" . $communityRoom->getTitle() . "]]></title>\n";
+               $xml .= "   </room>\n";
+
+               $communityRoom = $communityRooms->getNext();
+            }
+         }
+         $xml .=     "</communities>\n";
+
+         if ($this->_environment->getCurrentContextItem()->showTime() && ($roomItem->isProjectRoom() || $roomItem->isCommunityRoom())) {
+            $timeList = $roomItem->getTimeList();
+
+            if ($timeList->isNotEmpty()) {
+               if ($roomItem->isContinuous()) {
+                  $xml .= "   <time assigned='true' continues='true'>\n";
+                  $xml .= "      <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
+
+                  $timeItem = $timeList->getFirst();
+
+                  if ($roomItem->isClosed()) {
+                     $timeItemLast = $timeList->getLast();
+
+                     if ($timeItemLast->getItemID() == $timeItem->GetItemID()) {
+                        $xml .= "<intervals>\n";
+                        $xml .= "   <interval><![CDATA[" . $translator->getMessage("COMMON_FROM2") . " " . $translator->getTimeMessage($timeItem->getTitle()) . "]]></interval>\n";
+                        $xml .= "   <interval><![CDATA[" . $translator->getMessage("COMMON_TO") . " " . $translator->getTimeMessage($timeItemLast->getTitle()) . "]]></interval>\n";
+                        $xml .= "</intervals>\n";
+                     } else {
+                        $xml .= "   <constant><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></constant>\n";
+                     }
+                  } else {
+                     $xml .= "   <constant><![CDATA[" . $translator->getMessage("ROOM_CONTINUOUS_SINCE") . ' ' . BRLF . $translator->getTimeMessage($timeItem->getTitle()) . "]]></constant>\n";
+                  }
+               } else {
+                  $xml .= "   <time assigned='true' continues='false'>\n";
+                  $xml .= "      <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
+
+                  $timeItem = $timeList->getFirst();
+                  while ($timeItem) {
+                     $xml .= "<intervals>\n";
+                     $xml .= "   <interval><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></interval>\n";
+                     $xml .= "</intervals>\n";
+
+                     $timeItem = $timeList->getNext();
+                  }
+               }
+            } else {
+               $xml .= "<time assigned='false'>\n";
+               $xml .= "   <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
+            }
+         } else {
+            $xml .= "<time>\n";
+         }
+         $xml .= "</time>\n";
+
          $xml .= "</room>";
          $xml = $this->_encode_output($xml);
       } else {
