@@ -42,9 +42,9 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					        new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
 					        new Array( 'Podcampus', 'podcampus' ),
 					        new Array( 'Quicktime (mov, wav, mpeg, mp4)', 'quicktime' ),
-//					        new Array( 'GoogleVideo', 'googlevideo' ),
 					        new Array( 'Vimeo', 'vimeo' ),
-					        new Array( 'Youtube', 'youtube' )
+					        new Array( 'Youtube', 'youtube' ),
+					        new Array( 'Projekktor', 'projekktor')
 					);
 					
 					var numbering = function( id ) {
@@ -260,6 +260,11 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												fileSelect.disable();
 												//uploadButton.disable();
 												upload.disable();
+											} else if (this.getValue() == 'projekktor') {
+												urlInput.disable();
+												fileSelect.enable();
+												//uploadButton.enable();
+												upload.enable();
 											}
 										}
 									},
@@ -791,6 +796,10 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //								<embed src="http://vimeo.com/moogaloop.swf?clip_id=60210872&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="500" height="281">
 //								</embed></object>
 								
+							} else if(this.getValueOf('videoTab', 'selectbox') == 'projekktor'){
+								content += '<video width="' + width + '" height="' + height + '">';
+								content += '<source src="' + videoUrl + '" />';
+								content += '</video>';
 							}
 							var instance = this.getParentEditor();
 							instance.insertHtml( content );
