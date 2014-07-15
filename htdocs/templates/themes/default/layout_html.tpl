@@ -39,8 +39,48 @@
 
 	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 
+	    <link rel="stylesheet" type="text/css" media="screen" href="js/3rdParty/projekktor-1.3.09/themes/maccaco/projekktor.style.css" />
+
 		{block name="js"}
 			<!-- SCRIPTS -->
+
+			<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/jquery-1.9.1.min.js"></script>
+			<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/projekktor-1.3.09.min.js"></script>
+
+			{literal}
+			<script type="text/javascript">
+				$( document ).ready(function() {
+
+					//projekktor
+					projekktor('video', {
+				        poster: 'http://www.projekktor.com/wp-content/manual/intro.png',
+				        playerFlashMP4: 'js/3rdParty/projekktor-1.3.09/swf/jarisplayer/jarisplayer.swf',
+				        playerFlashMP3: 'js/3rdParty/projekktor-1.3.09/swf/jarisplayer/jarisplayer.swf',        
+				        useYTIframeAPI: false,
+				        platforms: ['browser', 'android', 'ios', 'vlc', 'native', 'flash'],
+				        ratio: 16/9,
+				        controls: true,
+				        //playlist: [{0:{src:'js/3rdParty/projekktor-1.3.09/media/TestVideo.avi', type:"video/x-msvideo"}}] 
+				    }, function(player) {
+				        player.addListener('displayReady', function(val, ref) {
+				            var model = ref.getModel();            
+				            $('#platform').html( (model=='VIDEOVLC') ? "Yeah!!1 VLC Web Plugin detected and in use." : "DÂ´oh... model " + model + " in use right now.");            
+				        });
+				        var count=0;
+				        $.each($p.mmap, function() {
+				            count++;
+				            $('<p/>').html(this.type + "(." + this.ext + ")").appendTo('#uglylist');
+				        });
+				        if (count>24) {
+				            $('#platform').html("Seems youÂ´ve da VLC Web Plugin installed, dude.");
+				        }
+				    }); 
+
+
+				});
+			</script>
+			{/literal}
+
             {if $environment.c_js_mode === "layer"}
                 <script src="js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
             {else}
