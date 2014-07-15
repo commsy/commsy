@@ -3885,6 +3885,14 @@ class misc_text_converter {
    	$def->addAttribute('embed', 'showstatusbar', 'Text');
    	$def->addAttribute('embed', 'standby', 'Text');
    	$def->addAttribute('embed', 'commsytype', 'Text');
+
+      $def->addElement('video', 'Block', 'Flow', 'Common', array());
+      $def->addAttribute('video', 'width', 'Text');
+      $def->addAttribute('video', 'height', 'Text');
+
+      $def->addElement('source', 'Block', 'Flow', 'Common', array());
+      $def->addAttribute('source', 'src', 'Text');
+
    	
    	
    	// config for description ckeditor
