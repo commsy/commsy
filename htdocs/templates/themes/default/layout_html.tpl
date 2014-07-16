@@ -170,6 +170,9 @@
 	    </div> <!-- Ende wrapper -->
 	    <div id="popup_uploader"></div>
 {block name=body_end}
+      {if !empty($basic.html_before_body_ends)}
+         {$basic.html_before_body_ends}
+      {/if}
 	</body>
 {/block}
 
