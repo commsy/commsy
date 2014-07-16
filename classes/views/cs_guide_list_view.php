@@ -300,7 +300,7 @@ class cs_guide_list_view extends cs_list_view_plain {
     *
     * @return string item as HMTL
     */
-   function _getItemAsHTML($item, $i) {
+   function _getItemAsHTML($item, $i=0) {
       $shown_entry_number = $i;
       if ($shown_entry_number%2 == 0){
          $style='class="portal-even"';
