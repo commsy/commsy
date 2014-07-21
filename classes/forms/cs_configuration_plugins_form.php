@@ -72,6 +72,12 @@ class cs_configuration_plugins_form extends cs_rubric_form {
             $plugin_class = $this->_environment->getPluginClass($plugin);
             $current_context_item = $this->_environment->getCurrentContextItem();
             if ( (
+                   $this->_environment->inServer()
+                   and method_exists($plugin_class,'isConfigurableInServer')
+                   and $plugin_class->isConfigurableInServer()
+                 )
+                 or
+            	  (
                    $this->_environment->inPortal()
                    and method_exists($plugin_class,'isConfigurableInPortal')
                    and $plugin_class->isConfigurableInPortal()
@@ -102,8 +108,11 @@ class cs_configuration_plugins_form extends cs_rubric_form {
                if ( method_exists($plugin_class,'getHomepage') ) {
                   $this->_array_plugins[$plugin_class->getIdentifier()]['homepage'] = $plugin_class->getHomepage();
                }
-
-               if ( $this->_environment->inPortal()
+               if ( $this->_environment->inServer()
+                    and method_exists($plugin_class,'configurationAtServer')
+                  ) {
+                  $this->_array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtServer('change_form');
+               } elseif ( $this->_environment->inPortal()
                     and method_exists($plugin_class,'configurationAtPortal')
                   ) {
                   $this->_array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtPortal('change_form');
@@ -171,7 +180,11 @@ class cs_configuration_plugins_form extends cs_rubric_form {
             }
             if ( !empty($plugin_data['change_form']) ) {
                $plugin_class = $this->_environment->getPluginClass($plugin);
-               if ( $this->_environment->inPortal() ) {
+               if ( $this->_environment->inServer() ) {
+                  if ( method_exists($plugin_class,'configurationAtServer') ) {
+                     $plugin_class->configurationAtServer('create_form',array('form' => $this->_form));
+                  }
+               } elseif ( $this->_environment->inPortal() ) {
                   if ( method_exists($plugin_class,'configurationAtPortal') ) {
                      $plugin_class->configurationAtPortal('create_form',array('form' => $this->_form));
                   }
@@ -207,7 +220,12 @@ class cs_configuration_plugins_form extends cs_rubric_form {
             $current_portal_item = $this->_environment->getCurrentPortalItem();
             foreach ($c_plugin_array as $plugin) {
                $plugin_class = $this->_environment->getPluginClass($plugin);
-               if ( ( $this->_environment->inPortal()
+               if ( ( $this->_environment->inServer()
+                      and method_exists($plugin_class,'isConfigurableInServer')
+                      and $plugin_class->isConfigurableInServer()
+                    )
+                    or
+               	  ( $this->_environment->inPortal()
                       and method_exists($plugin_class,'isConfigurableInPortal')
                       and $plugin_class->isConfigurableInPortal()
                     )
@@ -225,7 +243,11 @@ class cs_configuration_plugins_form extends cs_rubric_form {
                   }
                   $values = array();
                   $values['current_context_item'] = $current_context_item;
-                  if ( $this->_environment->inPortal()
+                  if ( $this->_environment->inServer()
+                       and method_exists($plugin_class,'configurationAtServer')
+                     ) {
+                     $this->_values = array_merge($plugin_class->configurationAtServer('load_values_item',$values),$this->_values);
+                  } elseif ( $this->_environment->inPortal()
                        and method_exists($plugin_class,'configurationAtPortal')
                      ) {
                      $this->_values = array_merge($plugin_class->configurationAtPortal('load_values_item',$values),$this->_values);

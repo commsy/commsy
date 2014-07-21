@@ -28,4 +28,5 @@
 
 $c_plugin_array   = array();
 $c_plugin_array[] = 'ads';
+#$c_plugin_array[] = 'piwik';
 ?>

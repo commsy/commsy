@@ -1,0 +1,299 @@
+<?PHP
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2014 Dr. Iver Jackewitz
+//
+// This file is part of the piwik plugin for CommSy.
+//
+// This plugin is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 3 of the License, or
+// (at your option) any later version.
+//
+// This plugin is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You have received a copy of the GNU General Public License
+// along with the plugin.
+
+include_once('classes/cs_plugin.php');
+class class_piwik extends cs_plugin {
+   
+   /** constructor
+    * the only available constructor
+    *
+    * @param object environment the environment object
+    */
+   public function __construct ($environment) {
+      parent::__construct($environment);
+      $this->_identifier = 'piwik';
+      $this->_translator->addMessageDatFolder('plugins/'.$this->_identifier.'/messages');
+      $this->_title      = ucfirst($this->_identifier);
+      $this->_image_path = 'plugins/'.$this->getIdentifier();
+      $this->_format_media_key = '(:'.$this->_identifier;
+   }
+
+   public function getDescription () {
+      return $this->_translator->getMessage(strtoupper($this->_identifier).'_DESCRIPTION');
+   }
+
+   public function getHomepage () {
+      return 'http://www.piwik.org';
+   }
+
+   public function isConfigurableInServer () {
+      return true;
+   }
+   
+   public function isConfigurableInPortal () {
+      return true;
+   }
+   
+   public function configurationAtServer ( $type = '', $values = array() ) {
+   	return $this->configurationAtPortal( $type, $values );
+   }
+
+   public function configurationAtPortal ( $type = '', $values = array() ) {
+      $retour = '';
+      if ( $type == 'change_form' ) {
+         $retour = true;
+      } elseif ( $type == 'create_form' ) {
+         if ( !empty($values['form']) ) {
+            $retour = $values['form'];
+            $retour->addTextfield( $this->_identifier.'_server_url',
+                                   '',
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG'),
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG_DESC',$this->getTitle()),
+                                   255,
+                                   50,
+                                   false,
+                                   '',
+                                   '',
+                                   '',
+                                   'left',
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_SERVER_URL'),
+                                   '',
+                                   false,
+                                   '',
+                                   10,
+                                   true,
+                                   false);
+            $retour->combine();
+            $retour->addTextfield( $this->_identifier.'_site_id',
+                                   '',
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG'),
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG_DESC',$this->getTitle()),
+                                   255,
+                                   50,
+                                   false,
+                                   '',
+                                   '',
+                                   '',
+                                   'left',
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_SITE_ID'),
+                                   '',
+                                   false,
+                                   '',
+                                   10,
+                                   true,
+                                   false);
+            $retour->combine();
+            $retour->addTextfield( $this->_identifier.'_cookie_domain',
+                                   '',
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG'),
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG_DESC',$this->getTitle()),
+                                   255,
+                                   50,
+                                   false,
+                                   '',
+                                   '',
+                                   '',
+                                   'left',
+                                   $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_COOKIE_DOMAIN'),
+                                   '',
+                                   false,
+                                   '',
+                                   10,
+                                   true,
+                                   false);
+            $retour->combine();
+            $retour->addText($this->_identifier.'_config_form_desc','',$this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_DESCRIPTION'));
+            $retour->combine();
+            $retour->addText($this->_identifier.'_config_form_desc2','',$this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_DESCRIPTION2'));
+         }
+      } elseif ( $type == 'save_config'
+                 and !empty($values['current_context_item'])
+               ) {
+         $config_array = array();
+         if ( isset( $values[$this->_identifier.'_server_url'] ) ) {
+         	$values[$this->_identifier.'_server_url'] = str_replace('http://', '', $values[$this->_identifier.'_server_url']);
+         	$values[$this->_identifier.'_server_url'] = str_replace('https://', '', $values[$this->_identifier.'_server_url']);
+         	$config_array[$this->_identifier.'_server_url'] = $values[$this->_identifier.'_server_url'];
+         }
+         if ( isset( $values[$this->_identifier.'_site_id'] ) ) {
+            $config_array[$this->_identifier.'_site_id'] = $values[$this->_identifier.'_site_id'];
+         }
+         if ( isset( $values[$this->_identifier.'_cookie_domain'] ) ) {
+            $config_array[$this->_identifier.'_cookie_domain'] = $values[$this->_identifier.'_cookie_domain'];
+         }
+         $values['current_context_item']->setPluginConfigForPlugin($this->_identifier,$config_array);
+      } elseif ( $type == 'load_values_item'
+                 and !empty($values['current_context_item'])
+               ) {
+         $retour = array();
+         $config = $values['current_context_item']->getPluginConfigForPlugin($this->_identifier);
+         if ( !empty($config[$this->_identifier.'_server_url']) ) {
+            $retour[$this->_identifier.'_server_url'] = $config[$this->_identifier.'_server_url'];
+         }
+         if ( !empty($config[$this->_identifier.'_site_id']) ) {
+            $retour[$this->_identifier.'_site_id'] = $config[$this->_identifier.'_site_id'];
+         }
+         if ( !empty($config[$this->_identifier.'_cookie_domain']) ) {
+            $retour[$this->_identifier.'_cookie_domain'] = $config[$this->_identifier.'_cookie_domain'];
+         }
+      }
+      return $retour;
+   }
+   
+   public function getInfosForBeforeBodyEndAsHTML () {
+   	// only server and portal
+   	// rooms not implemented yet
+   	$retour = '';
+   	if ( $this->_environment->inServer() ) {
+         $retour .= $this->_getInfoForBeforeBodyEndAsHTML('server');   		
+   	} else {
+   		$retour .= $this->_getInfoForBeforeBodyEndAsHTML('server');
+   		$retour .= $this->_getInfoForBeforeBodyEndAsHTML('portal');
+   	}
+   	return $retour;
+   }
+   
+   private function _getInfoForBeforeBodyEndAsHTML ($context) {
+   	$retour = '';
+   	if ( !empty($context) ) {
+   		$context_item = NULL;
+   		if ( $context == 'server' ) {
+   			$context_item = $this->_environment->getServerItem();
+   		} elseif ( $context == 'portal' ) {
+   			$context_item = $this->_environment->getCurrentPortalItem();
+   		}
+   		if ( !empty($context_item)
+   			  and $context_item->isPluginOn($this->_identifier)
+   			) {
+   			$config = $context_item->getPluginConfigForPlugin($this->_identifier);
+   			if ( !empty($config[$this->_identifier.'_server_url']) ) {
+   				$server_url = $config[$this->_identifier.'_server_url'];
+   			}
+   			if ( !empty($config[$this->_identifier.'_site_id']) ) {
+   				$site_id = $config[$this->_identifier.'_site_id'];
+   			}
+   			if ( !empty($config[$this->_identifier.'_cookie_domain']) ) {
+   				$cookie_domain = $config[$this->_identifier.'_cookie_domain'];
+   			}
+   			
+   			if ( !empty($server_url)
+   				  and !empty($site_id)
+   				  and !empty($cookie_domain)
+   				) {
+   				$retour = '<!-- Piwik -->
+<script type="text/javascript">
+   var _paq = _paq || [];
+   _paq.push(["setCookieDomain", "'.$cookie_domain.'"]);
+   _paq.push(["trackPageView"]);
+   _paq.push(["enableLinkTracking"]);
+
+   (function() {
+     var u=(("https:" == document.location.protocol) ? "https" :  
+"http") + "://'.$server_url.'/";
+     _paq.push(["setTrackerUrl", u+"piwik.php"]);
+     _paq.push(["setSiteId", "'.$site_id.'"]);
+     var d=document, g=d.createElement("script"),  
+s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
+     g.defer=true; g.async=true; g.src=u+"piwik.js";  
+s.parentNode.insertBefore(g,s);
+   })();
+</script>
+   						
+<!-- Piwik Image Tracker -->
+<noscript>
+   <img  src="http://'.$server_url.'?idsite='.$site_id.'&amp;rec=1" style="border:0" alt="" />
+</noscript>
+
+<!-- End Piwik Code -->'.LF;
+   			}
+   			// TBD: noscript url https
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function getMediaRegExp () {
+   	$retour = array();
+   	$retour[$this->_format_media_key] = '~\\(:piwik (donottrack):\\)~eu';
+   	return $retour;
+   }
+   
+   public function formatMedia ( $params ) {
+   	$retour = '';
+   	if ( !empty($params['key'])
+   			and $params['key'] == $this->_format_media_key
+   			and !empty($params['value_new'])
+   			and strstr($params['value_new'],$this->_format_media_key)
+   	   ) {
+   		if ( !empty($params['args_array'][1])
+   			  and $params['args_array'][1] == 'donottrack'
+   			) {
+   			$retour = $this->_formatMediaDoNotTrack();
+   		}
+   	}
+   	return $retour;
+   }
+   
+   private function _formatMediaDoNotTrack () {
+   	$retour = '';
+   	$context_item = $this->_environment->getCurrentContextItem();
+   	if ( !empty($context_item)
+   			and $context_item->isPluginOn($this->_identifier)
+   	   ) {
+   		$config = $context_item->getPluginConfigForPlugin($this->_identifier);
+   		if ( !empty($config[$this->_identifier.'_server_url']) ) {
+   			$server_url = $config[$this->_identifier.'_server_url'];
+   		}
+   		if ( !empty($config[$this->_identifier.'_site_id']) ) {
+   			$site_id = $config[$this->_identifier.'_site_id'];
+   		}
+   	
+   		if ( !empty($server_url)
+   				and !empty($site_id)
+   			) {
+   			$language = $this->_environment->getSelectedLanguage();
+   			if ( empty($language) ) {
+   				$language = 'de';
+   			}
+   			// TBD: https
+   	      $retour = '<iframe frameborder="no" width="550px" height="190px" src="http://'.$server_url.'/index.php?module=CoreAdminHome&action=optOut&idSite='.$site_id.'&language='.$language.'"></iframe>';
+   		}
+   	}
+   	return $retour;
+   }
+
+   /** misc function for logging
+    * 
+    * @param string $msg
+    */
+   private function logToFile($msg){
+     $fd = fopen('var/temp/'.$this->_identifier.'.log', "a");
+     $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;
+     $version_addon = $this->_environment->getConfiguration('c_version_addon');
+     if ( !empty($version_addon) ) {
+        $str .= ' - ['.$version_addon.']';
+     }
+     fwrite($fd, $str . "\n");
+     fclose($fd);
+   }
+}
+?>

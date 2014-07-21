@@ -139,7 +139,10 @@ if ( !isset($translator) and isset($this->_translator) ) {
    $context_item = $environment->getCurrentContextItem();
    global $c_plugin_array;
    if ( !empty($c_plugin_array)
-        and $context_item->isPortal()
+        and (
+        		  $context_item->isPortal()
+        		  or $context_item->isServer()
+        		)
       ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_PLUGIN_LINK'));
