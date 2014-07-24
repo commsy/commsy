@@ -700,9 +700,10 @@ function isURLValid () {
         // Scorm
         $module != 'scorm' and
    		
-   		// download
-   		$module != 'download' and
-   		$module != 'limesurvey' and
+         // download
+         $module != 'download' and
+         $module != 'limesurvey' and
+         $module != 'export_privateroom' and
    		
    		// individual css
    		$module != 'individual'
@@ -731,7 +732,7 @@ function isURLValid () {
          $funct != 'process' and
          $funct != 'getfile' and
          $funct != 'getlogfile' and
-    	 $funct != 'getTemp' and
+    	   $funct != 'getTemp' and
          $funct != 'admin' and
          $funct != 'move' and
          $funct != 'to_moderator' and
@@ -761,7 +762,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
-    	 $funct != 'limesurvey' and
+    	   $funct != 'limesurvey' and
          $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and

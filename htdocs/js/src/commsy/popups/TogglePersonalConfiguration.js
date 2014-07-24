@@ -305,7 +305,11 @@ define([	"dojo/_base/declare",
 		 ************************************************************************************/
 
 		onPopupSubmitSuccess: function(item_id) {
-			location.reload();
+		   if (item_id.commsy_export != undefined) {
+   		   location.href = item_id.commsy_export;
+		   } else {
+			   location.reload();
+			}
 		},
 		
 		/************************************************************************************

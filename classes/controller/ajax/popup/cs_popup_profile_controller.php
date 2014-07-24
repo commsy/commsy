@@ -1160,6 +1160,77 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						      }
 						      // plugins
 
+                        else if($additional['action'] == 'export_private_room'){
+                           $currentUserItem = $this->_environment->getCurrentUserItem();
+                           $privateroom_manager = $this->_environment->getPrivateRoomManager();
+                           $privateroom_item = $privateroom_manager->getRelatedOwnRoomForUser($currentUserItem, $this->_environment->getCurrentPortalID());
+                           
+                           $room_manager = $this->_environment->getRoomManager();
+                           $xml = $room_manager->export_item($privateroom_item->getItemID());
+                           //$xml = $room_manager->export_item(488);
+                           $dom = new DOMDocument('1.0');
+                           $dom->preserveWhiteSpace = false;
+                           $dom->formatOutput = true;
+                           $dom->loadXML($xml->asXML());
+                           //el($dom->saveXML());
+   
+                           $filename = 'var/temp/commsy_xml_export_import_'.$privateroom_item->getItemID().'.xml';
+                           if ( file_exists($filename) ) {
+                              unlink($filename);
+                           }
+                  
+                           $xmlfile = fopen($filename, 'a');   
+                           fputs($xmlfile, $dom->saveXML());
+                           fclose($xmlfile);
+                  
+                           //Location where export is saved
+                           $zipfile = 'var/temp/commsy_export_import_'.$privateroom_item->getItemID().'.zip';
+                           if ( file_exists($zipfile) ) {
+                              unlink($zipfile);
+                           }
+                  
+                           //Location that will be backuped
+                           $disc_manager = $this->_environment->getDiscManager();
+                           $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+                  
+                           $backup_paths = array();
+                           $room_item = $privateroom_manager->getItem($privateroom_item->getItemID());
+
+                           $disc_manager->setContextID($room_item->getItemId());
+                           $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+                  
+                           if ( class_exists('ZipArchive') ) {
+                              include_once('functions/misc_functions.php');
+                              $zip = new ZipArchive();
+                              $filename_zip = $zipfile;
+                  
+                              if ( $zip->open($filename_zip, ZIPARCHIVE::CREATE) !== TRUE ) {
+                                 include_once('functions/error_functions.php');
+                                 trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
+                              }
+                              $temp_dir = getcwd();
+                              foreach ($backup_paths as $item_id => $backup_path) {
+                                 chdir($backup_path);
+                                 $zip = addFolderToZip('.',$zip,'files_'.$item_id);
+                                 chdir($temp_dir);
+                              }
+                  
+                              $zip->addFile($filename, basename($filename));
+                              $zip->close();
+                              unset($zip);
+                              
+                              #header('Content-disposition: attachment; filename=commsy_export_import_'.$_POST['room'].'.zip');
+                              #header('Content-type: application/zip');
+                              #readfile($zipfile);
+                              
+                              //export_privateroom
+                              
+                              $this->_popup_controller->setSuccessfullDataReturn(array('commsy_export' => '/commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=export_privateroom&fct=getfile'));
+                           } else {
+                              include_once('functions/error_functions.php');
+                              trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
+                           }
+                        }
 
 							//---
 

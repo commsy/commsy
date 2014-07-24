@@ -802,6 +802,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChildWithCDATA('room_description', $context_item->getDescription());
          $xml->addChildWithCDATA('lastlogin', $context_item->getLastLogin());
          
+         if ($item->getItemType() == 'privateroom') {
+            $user_manager = $this->_environment->getUserManager();
+            $private_room_user = $user_manager->getItem($context_item->getCreatorID());
+            $xml->addChildWithCDATA('user_id', $private_room_user->getUserID());
+         }
+         
          $xml = $this->export_sub_items($xml, $context_item);
          
          return $xml;
@@ -989,6 +995,25 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          
          $context_item->save();
+
+         if (((string)$xml->type[0]) == 'privateroom') {
+            $privateroom_manager = $this->_environment->getPrivateRoomManager();
+            $user_manager = $this->_environment->getUserManager();
+            $user_array = $user_manager->getAllUserItemArray((string)$xml->user_id[0]);
+            if (!empty($user_array)) {
+               $temp_user_item = $user_array[0];
+               $temp_private_room_item = $privateroom_manager->getRelatedOwnRoomForUser($temp_user_item, $this->_environment->getCurrentPortalID());
+               $temp_private_room_user_item = NULL;
+               foreach ($user_array as $temp_user) {
+                  if ($temp_user->getContextID() == $temp_private_room_item->getItemID()) {
+                     $temp_private_room_user_item = $temp_user;
+                  }
+               }
+               $temp_private_room_item->delete();
+               $temp_private_room_user_item->setContextID($context_item->getItemID());
+               $temp_private_room_user_item->save();
+            }
+         }
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
