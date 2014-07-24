@@ -234,6 +234,15 @@ class class_piwik extends cs_plugin {
 <!-- End Piwik Code -->'.LF;
    			}
    			// TBD: noscript url https
+   			
+   			// problem multiple site ids and asynchronic tracking
+   			// ==================================================
+   			// http://web-development-blog.de/piwik-tracking-methoden-im-vergleich/
+   			// http://developer.piwik.org/api-reference/PHP-Piwik-Tracker
+   			// http://piwik.org/docs/tracking-api/#php-client-for-tracking-web-api
+   			// http://www.redirect301.de/asynchrones-tracking-mit-piwik.html
+   			// http://developer.piwik.org/api-reference/tracking-javascript#multiple-piwik-trackers
+
    		}
    	}
    	return $retour;
