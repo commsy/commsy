@@ -832,11 +832,13 @@
                     </p>
                   </fieldset>
                   <div class="uploader-single">
-                  <form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
-                     <input id="submit_import_private_room" class="fileSelector"></input>
-                     <div class="filePreview"></div>
-                     <div class="fileList"></div>
-                  </form>
+                    <form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+                       <input id="upload_import_private_room" class="fileSelector"></input>
+                       <div class="filePreview"></div>
+                       <div class="fileList"></div>
+
+                       <input id="submit_import_private_room" type="button" class="popup_button submit" disabled="disabled" data-custom="part: 'import', action: 'import_private_room'" name="save" value="___PREFERENCES_IMPORT_PRIVATE_ROOM_BUTTON___"/>
+                    </form>
                   </div>
                   </div>
                 </div>
