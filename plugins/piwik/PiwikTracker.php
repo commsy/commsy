@@ -1224,8 +1224,13 @@ class PiwikTracker
                 CURLOPT_URL            => $url,
                 CURLOPT_USERAGENT      => $this->userAgent,
                 CURLOPT_HEADER         => true,
+            		
+            	 // Dr. Iver Jackewitz
+                // minimize timeout time
                 #CURLOPT_TIMEOUT        => $this->requestTimeout,
-                CURLOPT_TIMEOUT_MS     => $this->requestTimeout, // Dr. Iver Jackewitz
+            	 CURLOPT_NOSIGNAL       => true, // to use CURLOPT_TIMEOUT_MS < 1000 ms
+                CURLOPT_TIMEOUT_MS     => $this->requestTimeout,
+                
             	 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_HTTPHEADER     => array(
                     'Accept-Language: ' . $this->acceptLanguage

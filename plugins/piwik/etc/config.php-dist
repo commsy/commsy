@@ -11,7 +11,7 @@ $c_piwik_api_method = 'php';
 // so users can not say "do-not-track"
 
 // timeout in milliseconds for php method
-// default = 1
+// default = 200
 // set here to overwrite default
-$c_timeout_ms = 1;
+$c_timeout_ms = 200;
 ?>

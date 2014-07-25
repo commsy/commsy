@@ -40,8 +40,8 @@ class class_piwik extends cs_plugin {
       $this->_title      = ucfirst($this->_identifier);
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_format_media_key = '(:'.$this->_identifier;
-      $this->_method = 'javascript'; // options = javascript / php - see etc/config.php
-      $this->_timeout_ms = 1; // to configure see etc/config.php
+      $this->_method     = 'javascript'; // options = javascript / php - see etc/config.php
+      $this->_timeout_ms = 200; // to configure see etc/config.php // only for php method
       
       $this->_plugin_folder = 'plugins'.DIRECTORY_SEPARATOR.$this->getIdentifier();
       
@@ -268,7 +268,7 @@ class class_piwik extends cs_plugin {
    }
    
    private function _getInfosForBeforeBodyEndAsHTMLPHP () {
-   	$retour = '<!-- PIWIK tracking via PHP - BEGIN -->'.LF;
+   	$retour = LF.'<!-- PIWIK tracking via PHP - BEGIN -->'.LF;
    	$tracking_array = array();
    	if ( $this->_environment->inServer() ) {
    		$info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
@@ -327,8 +327,11 @@ class class_piwik extends cs_plugin {
       				$t->setProxy($proxy);
      				}
    				
-   				$t->doTrackPageView($title);
+   				$result = $t->doTrackPageView($title);
    	         $retour .= '<!-- tracking '.$site_array['site_id'].' -->'.LF;
+   			   if ( empty($result) ) {
+   			   	$retour .= '   <!-- don\'t receive result from tracking for site '.$site_array['site_id'].' -->'.LF;
+   				}
    			}
    		}
    	}
