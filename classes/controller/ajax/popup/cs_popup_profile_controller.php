@@ -513,6 +513,11 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						}
 						break;
 
+					/**** IMPORT ****/
+					case 'import':
+						// do something usefull...
+						break;
+
 					/**** USER PICTURE ****/
 					case 'user_picture':
 						if($this->_popup_controller->checkFormData('user_picture')) {
