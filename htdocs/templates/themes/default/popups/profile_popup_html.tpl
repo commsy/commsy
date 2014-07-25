@@ -825,7 +825,7 @@
                     </p>
                   </fieldset>
                   <input id="submit_export_private_room" type="button" class="popup_button submit" data-custom="part: 'cs_bar', action: 'export_private_room'" name="save" value="___PREFERENCES_EXPORT_PRIVATE_ROOM_BUTTON___"/>
-                  
+                  <hr/>
                   <fieldset>
                     <p>
                       <strong>___PREFERENCES_IMPORT_PRIVATE_ROOM_TITLE___</strong>: ___PREFERENCES_IMPORT_PRIVATE_ROOM_DESCRIPTION___
