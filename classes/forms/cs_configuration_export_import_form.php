@@ -76,7 +76,7 @@ class cs_configuration_export_import_form extends cs_rubric_form {
       while ($private_room_item) {
          $user_item = $private_room_item->getOwnerUserItem();
          $temp_array = array();
-         $temp_array['text']  = $this->_translator->getMessage('PRIVATE_ROOM_USER_EXPORT_IMPORT').$user_item->getUserId();
+         $temp_array['text']  = $this->_translator->getMessage('PRIVATE_ROOM_USER_EXPORT_IMPORT').' '.$user_item->getUserId();
          $temp_array['value'] = $private_room_item->getItemID();
          $this->_array_rooms[] = $temp_array;
          
@@ -94,11 +94,10 @@ class cs_configuration_export_import_form extends cs_rubric_form {
       }
       
       $translator = $this->_environment->getTranslationObject();
-      
       $this->_form->addSelect( 'room',
                                $this->_array_rooms,
                                '',
-                               $translator->getMessage('COMMON_ROOM'),
+                               $translator->getMessage('PREFERENCES_EXPORT_ROOM'),
                                '',
                                '',
                                '',
@@ -108,10 +107,10 @@ class cs_configuration_export_import_form extends cs_rubric_form {
                                'option',
                                '',
                                '',
-                               '',
+                               '20',
                                true);
       $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON'),'','',128);
-      $this->_form->addFilefield('upload', $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_UPLOAD'), $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_DESC',$meg_val), 12, false, $this->_translator->getMessage('PREFERENCES_EXPORT_COMMON_UPLOAD'),'option',false);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_UPLOAD'), $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_DESC'), 12, false, $this->_translator->getMessage('PREFERENCES_EXPORT_COMMON_UPLOAD'),'option',false);
       //$this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON'));
    }
    
@@ -127,6 +126,24 @@ class cs_configuration_export_import_form extends cs_rubric_form {
          $this->_values = $this->_form_post;
       }else{
          // Portallimit
+      }
+   }
+   
+   function _checkValues () {
+      el($_POST);
+      el($_FILES);
+      if ($_POST['option'] == $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON')) {
+         if ($_POST['room'] == '-1') {
+            $this->_error_array[] = $this->_translator->getMessage('PREFERENCES_EXPORT_ERROR_NO_ROOM_SELECTED');
+         }
+      } else if ($_POST['option'] == $this->_translator->getMessage('PREFERENCES_EXPORT_COMMON_UPLOAD')) {
+         if (empty($_FILES['upload']['name'])) {
+            $this->_error_array[] = $this->_translator->getMessage('PREFERENCES_EXPORT_ERROR_NO_FILE_SELECTED');
+         } else {
+            if (!stristr($_FILES['upload']['name'], '.zip')) {
+               $this->_error_array[] = $this->_translator->getMessage('PREFERENCES_EXPORT_ERROR_NO_ZIP_FILE_SELECTED');
+            }
+         }
       }
    }
 }

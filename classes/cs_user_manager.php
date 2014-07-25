@@ -1153,7 +1153,7 @@ class cs_user_manager extends cs_manager {
         $contact_status = 0;
      }
   	 
-     
+     $query .= 'context_id="'.encode(AS_DB,$user_item->getContextID()).'",';
      $query .= 'status="'.encode(AS_DB,$user_item->getStatus()).'",';
      $query .= 'is_contact="'.encode(AS_DB,$contact_status).'",';
      $query .= 'user_id="'.encode(AS_DB,$user_item->getUserID()).'",';

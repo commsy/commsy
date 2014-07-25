@@ -11,6 +11,7 @@ define([	"dojo/_base/declare",
         	"dojo/i18n!./nls/tooltipErrors"], function(declare, TogglePopupHandler, Query, DomClass, DomAttr, DomConstruct, request, On, Tooltip, lang, ErrorTranslations) {
 	return declare(TogglePopupHandler, {
 		sendImages: [],
+		sendImports: [],
 		
 		constructor: function(button_node, content_node) {
 			this.popup_button_node = button_node;
@@ -51,6 +52,31 @@ define([	"dojo/_base/declare",
 					
 					this.sendImages.push({ part: "user_picture", fileInfo: fileInfo });
 				}));
+
+				// setup callback for uploading exports
+				if (this.featureHandles["upload-single"][1]) {
+					var exportUploader = this.featureHandles["upload-single"][1];
+
+					exportUploader.setCallback(lang.hitch(this, function(fileInfo) {
+						var fileListNode = Query("div.fileList", exportUploader.uploader.form)[0];
+
+						if (fileListNode) {
+							if (!fileInfo.lenght) {
+								fileInfo = [fileInfo];
+							}
+
+							if (fileInfo[0]) {
+								DomAttr.set(fileListNode, "innerHTML", fileInfo[0].name);
+
+								var importSubmitNode = Query("input#submit_import_private_room")[0];
+								if (importSubmitNode) {
+									DomAttr.remove(importSubmitNode, "disabled");
+									this.sendImports.push(fileInfo[0]);
+								}
+							}
+						}
+					}));
+				}
 
 				// setup account delete handling
 				On(Query("input#delete", this.contentNode)[0], "click", lang.hitch(this, function() {
@@ -264,6 +290,28 @@ define([	"dojo/_base/declare",
 						{ query: Query("select[name='form_data[auth_source]']", this.contentNode) }
 					]
 				};
+			} else if(part === "import") {
+				var data = {
+					module: 		"profile",
+					additional: {
+						part: 		"import",
+						fileInfo: 	this.sendImports[0]
+					}
+				};
+
+				request.ajax({
+					query: {
+						cid:	this.uri_object.cid,
+						mod:	'ajax',
+						fct:	'popup',
+						action:	'save'
+					},
+					data: data
+				}).then(
+					lang.hitch(this, function(response) {
+						location.reload();
+					})
+				);
 			} else {
 				// account delete
 				search = {
@@ -296,7 +344,9 @@ define([	"dojo/_base/declare",
 					})
 				);
 			} else {
-				this.submit(search, { part: part, action: action });
+				if (this.sendImports.length == 0) {
+					this.submit(search, { part: part, action: action });
+				}
 			}
 		},
 		
@@ -305,7 +355,11 @@ define([	"dojo/_base/declare",
 		 ************************************************************************************/
 
 		onPopupSubmitSuccess: function(item_id) {
-			location.reload();
+			if (item_id.commsy_export != undefined) {
+   				location.href = item_id.commsy_export;
+			} else {
+				location.reload();
+			}
 		},
 		
 		/************************************************************************************
