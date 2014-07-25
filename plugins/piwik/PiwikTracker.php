@@ -1204,7 +1204,7 @@ class PiwikTracker
     protected function sendRequest($url, $method = 'GET', $data = null, $force = false)
     {
         self::$DEBUG_LAST_REQUESTED_URL = $url;
-
+        
         // if doing a bulk request, store the url
         if ($this->doBulkRequests && !$force) {
             $this->storedTrackingActions[]

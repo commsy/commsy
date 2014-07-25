@@ -1884,5 +1884,5 @@ if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSO
 
 // plugin hook
 flush();
-plugin_hook('executeAtTheEnd');
+plugin_hook('executeAtTheEnd',array(),false);
 ?>

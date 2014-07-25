@@ -1024,7 +1024,7 @@ function mayEditRegular($user, $item) {
     return $value;
 }
 
-function plugin_hook ($hook_function, $params = null) {
+function plugin_hook ($hook_function, $params = null, $with_config_check = true) {
    global $environment;
    global $c_plugin_array;
 
@@ -1034,7 +1034,9 @@ function plugin_hook ($hook_function, $params = null) {
       $current_context_item = $environment->getCurrentPortalItem();
       foreach ($c_plugin_array as $plugin) {
          if ( isset($current_context_item)
-              and $current_context_item->isPluginOn($plugin)
+              and ( $current_context_item->isPluginOn($plugin)
+              		  or !$with_config_check
+              		)
             ) {
             $plugin_class = $environment->getPluginClass($plugin);
             if ( method_exists($plugin_class,$hook_function) ) {

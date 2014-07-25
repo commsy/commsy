@@ -23,7 +23,12 @@
 include_once('classes/cs_plugin.php');
 class class_piwik extends cs_plugin {
    
-   /** constructor
+   private $_plugin_folder = NULL;
+   private $_plugin_config_folder = NULL;
+   private $_method = '';
+   private $_timeout_ms = 0;
+	
+	/** constructor
     * the only available constructor
     *
     * @param object environment the environment object
@@ -35,8 +40,22 @@ class class_piwik extends cs_plugin {
       $this->_title      = ucfirst($this->_identifier);
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_format_media_key = '(:'.$this->_identifier;
-      #$this->_method = 'javascript'; // options = javascript / PHP
-      $this->_method = 'php'; // options = javascript / PHP
+      $this->_method = 'javascript'; // options = javascript / php - see etc/config.php
+      $this->_timeout_ms = 1; // to configure see etc/config.php
+      
+      $this->_plugin_folder = 'plugins'.DIRECTORY_SEPARATOR.$this->getIdentifier();
+      
+      // config file
+      $this->_plugin_config_folder = $this->_plugin_folder.DIRECTORY_SEPARATOR.'etc';
+      if ( file_exists($this->_plugin_config_folder.DIRECTORY_SEPARATOR.'config.php') ) {
+      	include_once($this->_plugin_config_folder.DIRECTORY_SEPARATOR.'config.php');
+      	if ( !empty($c_piwik_api_method) ) {
+      	   $this->_method = $c_piwik_api_method;
+      	}
+      	if ( !empty($c_timeout_ms) ) {
+      		$this->_timeout_ms = $c_timeout_ms;
+      	}
+      }
    }
 
    public function getDescription () {
@@ -297,7 +316,7 @@ class class_piwik extends cs_plugin {
    				) {
    				$http = 'http';
    				$t = new PiwikTracker($site_array['site_id'],$http.'://'.$site_array['server_url'].'/piwik.php');
-   				$t->setRequestTimeout(1); // in milliseconds - to avoid long waiting time, when piwik server is gone or network is down
+   				$t->setRequestTimeout($this->_timeout_ms); // in milliseconds - to avoid long waiting time, when piwik server is gone or network is down
    				
    				// proxy
    				if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
@@ -336,7 +355,9 @@ class class_piwik extends cs_plugin {
    }
    
    public function executeAtTheEnd () {
-   	$this->_getInfosForBeforeBodyEndAsHTMLPHP();
+   	if ( $this->_method == 'php' ) {
+   	   $this->_getInfosForBeforeBodyEndAsHTMLPHP();
+   	}
    }
    
    public function getMediaRegExp () {
@@ -365,26 +386,30 @@ class class_piwik extends cs_plugin {
    	$retour = '';
    	$context_item = $this->_environment->getCurrentContextItem();
    	if ( !empty($context_item)
-   			and $context_item->isPluginOn($this->_identifier)
+   	  	  and $context_item->isPluginOn($this->_identifier)
    	   ) {
    		$config = $context_item->getPluginConfigForPlugin($this->_identifier);
    		if ( !empty($config[$this->_identifier.'_server_url']) ) {
    			$server_url = $config[$this->_identifier.'_server_url'];
-   		}
+   	   }
    		if ( !empty($config[$this->_identifier.'_site_id']) ) {
    			$site_id = $config[$this->_identifier.'_site_id'];
    		}
    	
    		if ( !empty($server_url)
-   				and !empty($site_id)
+   			   and !empty($site_id)
    			) {
-   			$language = $this->_environment->getSelectedLanguage();
-   			if ( empty($language) ) {
-   				$language = 'de';
+   			if ( $this->_method == 'javascript' ) {
+   			   $language = $this->_environment->getSelectedLanguage();
+   			   if ( empty($language) ) {
+   				   $language = 'de';
+   			   }
+   			   // TBD: https
+   	         $retour = '<iframe frameborder="no" width="550px" height="190px" src="http://'.$server_url.'/index.php?module=CoreAdminHome&action=optOut&idSite='.$site_id.'&language='.$language.'"></iframe>';
+   	      } elseif ( $this->_method == 'php' ) {
+   		      $retour = $this->_translator->getMessage(strtoupper($this->_identifier).'_DESC_DO_NOT_TRACK', $server_url);
    			}
-   			// TBD: https
-   	      $retour = '<iframe frameborder="no" width="550px" height="190px" src="http://'.$server_url.'/index.php?module=CoreAdminHome&action=optOut&idSite='.$site_id.'&language='.$language.'"></iframe>';
-   		}
+   	   }
    	}
    	return $retour;
    }
