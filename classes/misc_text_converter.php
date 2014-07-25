@@ -3892,6 +3892,7 @@ class misc_text_converter {
 
       $def->addElement('source', 'Block', 'Flow', 'Common', array());
       $def->addAttribute('source', 'src', 'Text');
+      $def->addAttribute('source', 'type', 'Text');
 
    	
    	
