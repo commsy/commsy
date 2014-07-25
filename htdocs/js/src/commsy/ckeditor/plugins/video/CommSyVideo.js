@@ -343,62 +343,14 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													}
 												]
 											},
-//											{
-//									            type: 'file',
-//									            id: 'upload',
-//									            label: 'neue Datei hochladen',
-//									            style: 'height:40px',
-//									            size: 38
-//									        },
-//									        {
-//									            type: 'fileButton',
-//									            id: 'uploadButton',
-//									            filebrowser: 'videoTab:videoUrl',
-//									            label: 'btnUpload',
-//									            'for': [ 'videoTab', 'upload' ],
-//									            onSelect : function() 
-//									            {
-//									            	
-//									            }
-//									        }
+											{
+									            type: 'text',
+									            id: 'videoType',
+									            style: 'display:none;',
+									            size: 38
+									        }
 										]
 									},
-//									{
-//										type : 'select',
-//										id: 'fileselect',
-//										label: 'vorhandene Datei auswählen',
-//										items : fileItems,
-//										onLoad : function ()
-//										{
-//											this.disable();
-//										},
-//										onChange : function () 
-//										{
-//											// disable textInput if file is selected
-//											var dialog = this.getDialog();
-//											var inputUrl = dialog.getContentElement( 'videoTab', 'videoUrl' );
-//											if(this.getValue() == 'null'){
-//												inputUrl.enable();
-//												inputUrl.setValue('');
-//												inputUrl.focus();
-//											} else {
-//												inputUrl.disable();
-//												// set file url in textInput
-//												var cid = getUrlParam('cid');
-//												var mod = getUrlParam('mod');
-//												var iid = getUrlParam('iid');
-//												
-//												var input = this.getInputElement().$;
-////												alert(input.options[input.selectedIndex].text);
-//												
-//												fileUrl = 'commsy.php/' + input.options[input.selectedIndex].text + '?cid=' + cid + '&mod=' + mod + '&fct=getfile&iid=' + this.getValue();
-//												
-//												encodeFileUrl = encodeURI(fileUrl);
-////												alert(encodeFileUrl);
-//												inputUrl.setValue(encodeFileUrl);
-//											}
-//										}
-//									},
 									{
 										type : 'hbox',
 										widths : [ '70%' ],
@@ -797,9 +749,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //								</embed></object>
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'projekktor'){
-								content += '<video width="' + width + '" height="' + height + '">';
-								content += '<source src="' + videoUrl + '" />';
+								var fileType = this.getValueOf( 'videoTab', 'videoType' );
+
+								content += '<div>&nbsp;';
+								content += '<video width="' + width + '" height="' + height + '" class="projekktor">';
+								content += '<source src="' + videoUrl + '" type="' + fileType + '"/>';
 								content += '</video>';
+								content += '</div>';
 							}
 							var instance = this.getParentEditor();
 							instance.insertHtml( content );
