@@ -23,7 +23,12 @@
 include_once('classes/cs_plugin.php');
 class class_piwik extends cs_plugin {
    
-   /** constructor
+   private $_plugin_folder = NULL;
+   private $_plugin_config_folder = NULL;
+   private $_method = '';
+   private $_timeout_ms = 0;
+	
+	/** constructor
     * the only available constructor
     *
     * @param object environment the environment object
@@ -35,6 +40,22 @@ class class_piwik extends cs_plugin {
       $this->_title      = ucfirst($this->_identifier);
       $this->_image_path = 'plugins/'.$this->getIdentifier();
       $this->_format_media_key = '(:'.$this->_identifier;
+      $this->_method     = 'javascript'; // options = javascript / php - see etc/config.php
+      $this->_timeout_ms = 200; // to configure see etc/config.php // only for php method
+      
+      $this->_plugin_folder = 'plugins'.DIRECTORY_SEPARATOR.$this->getIdentifier();
+      
+      // config file
+      $this->_plugin_config_folder = $this->_plugin_folder.DIRECTORY_SEPARATOR.'etc';
+      if ( file_exists($this->_plugin_config_folder.DIRECTORY_SEPARATOR.'config.php') ) {
+      	include_once($this->_plugin_config_folder.DIRECTORY_SEPARATOR.'config.php');
+      	if ( !empty($c_piwik_api_method) ) {
+      	   $this->_method = $c_piwik_api_method;
+      	}
+      	if ( !empty($c_timeout_ms) ) {
+      		$this->_timeout_ms = $c_timeout_ms;
+      	}
+      }
    }
 
    public function getDescription () {
@@ -163,11 +184,16 @@ class class_piwik extends cs_plugin {
    	// only server and portal
    	// rooms not implemented yet
    	$retour = '';
-   	if ( $this->_environment->inServer() ) {
-         $retour .= $this->_getInfoForBeforeBodyEndAsHTML('server');   		
-   	} else {
-   		$retour .= $this->_getInfoForBeforeBodyEndAsHTML('server');
-   		$retour .= $this->_getInfoForBeforeBodyEndAsHTML('portal');
+   	if ( $this->_method == 'javascript' ) {
+   	   if ( $this->_environment->inServer() ) {
+            $retour .= $this->_getInfoForBeforeBodyEndAsHTML('server');
+   	   } else {
+   		   $retour .= $this->_getInfoForBeforeBodyEndAsHTML('server');
+   		   $retour .= $this->_getInfoForBeforeBodyEndAsHTML('portal');
+   	   }
+   	} elseif ( $this->_method == 'php' ) {
+   		// see executeAtTheEnd
+   		#$retour .= $this->_getInfosForBeforeBodyEndAsHTMLPHP();
    	}
    	return $retour;
    }
@@ -207,14 +233,15 @@ class class_piwik extends cs_plugin {
    _paq.push(["enableLinkTracking"]);
 
    (function() {
-     var u=(("https:" == document.location.protocol) ? "https" :  
-"http") + "://'.$server_url.'/";
+     var u=(("https:" == document.location.protocol) ? "https" : "http") + "://'.$server_url.'/";
      _paq.push(["setTrackerUrl", u+"piwik.php"]);
      _paq.push(["setSiteId", "'.$site_id.'"]);
-     var d=document, g=d.createElement("script"),  
-s=d.getElementsByTagName("script")[0]; g.type="text/javascript";
-     g.defer=true; g.async=true; g.src=u+"piwik.js";  
-s.parentNode.insertBefore(g,s);
+     var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0];
+     g.type="text/javascript";
+     g.defer=true;
+     g.async=true;
+     g.src=u+"piwik.js";  
+     s.parentNode.insertBefore(g,s);
    })();
 </script>
    						
@@ -226,9 +253,114 @@ s.parentNode.insertBefore(g,s);
 <!-- End Piwik Code -->'.LF;
    			}
    			// TBD: noscript url https
+   			
+   			// problem multiple site ids and asynchronic tracking
+   			// ==================================================
+   			// http://web-development-blog.de/piwik-tracking-methoden-im-vergleich/
+   			// http://developer.piwik.org/api-reference/PHP-Piwik-Tracker
+   			// http://piwik.org/docs/tracking-api/#php-client-for-tracking-web-api
+   			// http://www.redirect301.de/asynchrones-tracking-mit-piwik.html
+   			// http://developer.piwik.org/api-reference/tracking-javascript#multiple-piwik-trackers
+
    		}
    	}
    	return $retour;
+   }
+   
+   private function _getInfosForBeforeBodyEndAsHTMLPHP () {
+   	$retour = LF.'<!-- PIWIK tracking via PHP - BEGIN -->'.LF;
+   	$tracking_array = array();
+   	if ( $this->_environment->inServer() ) {
+   		$info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
+   		if ( !empty($info_array) ) {
+   			$tracking_array[] = $info_array;
+   		}
+   	} else {
+   	   $info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
+   		if ( !empty($info_array) ) {
+   			$tracking_array[] = $info_array;
+   		}
+   	   $info_array = $this->_getInfosForTracking($this->_environment->getCurrentPortalItem());
+   		if ( !empty($info_array) ) {
+   			$tracking_array[] = $info_array;
+   		}
+   	}
+   	
+   	if ( !empty($tracking_array) ) {
+   		
+   		// site title
+   		$title = '';
+   		$current_context_item = $this->_environment->getCurrentContextItem();
+   		if ( !empty($current_context_item) ) {
+   			if ( !$current_context_item->isServer()
+   				  and !$current_context_item->isPortal()
+   				) {
+   				$current_portal = $current_context_item->getContextItem();
+   				if ( !empty($current_portal) ) {
+   					$title .= $current_portal->getTitle().' > ';
+   				}
+   			}
+   			$title .= $current_context_item->getTitle().' > ';
+   			$title .= $this->_environment->getCurrentModule().' > ';
+   			$title .= $this->_environment->getCurrentFunction();
+   			if ( !empty($_GET['iid'])) {
+   				$title .= ' > '.$_GET['iid'];
+   			}
+   		}
+   		
+   		// tracking
+   		include_once('plugins/'.$this->_identifier.'/PiwikTracker.php');
+   		foreach ($tracking_array as $site_array) {
+   			if ( !empty($site_array['server_url'])
+   				  and !empty($site_array['site_id'])
+   				) {
+   				$http = 'http';
+   				$t = new PiwikTracker($site_array['site_id'],$http.'://'.$site_array['server_url'].'/piwik.php');
+   				$t->setRequestTimeout($this->_timeout_ms); // in milliseconds - to avoid long waiting time, when piwik server is gone or network is down
+   				
+   				// proxy
+   				if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
+   					$proxy = $this->_environment->getConfiguration('c_proxy_ip');
+   		   		if ( $this->_environment->getConfiguration('c_proxy_port') ) {
+  		   				$proxy .= ':'.$this->_environment->getConfiguration('c_proxy_port');
+      				}
+      				$t->setProxy($proxy);
+     				}
+   				
+   				$result = $t->doTrackPageView($title);
+   	         $retour .= '<!-- tracking '.$site_array['site_id'].' -->'.LF;
+   			   if ( empty($result) ) {
+   			   	$retour .= '   <!-- don\'t receive result from tracking for site '.$site_array['site_id'].' -->'.LF;
+   				}
+   			}
+   		}
+   	}
+   	
+   	$retour .= '<!-- PIWIK tracking via PHP - END -->'.LF;
+   	return $retour;
+   }
+   
+   private function _getInfosForTracking ($context_item) {
+   	$retour = array();
+   	if ( !empty($context_item) ) {
+   		$config = $context_item->getPluginConfigForPlugin($this->_identifier);
+   		if ( !empty($config[$this->_identifier.'_server_url']) ) {
+   			$retour['server_url'] = $config[$this->_identifier.'_server_url'];
+   		}
+   		if ( !empty($config[$this->_identifier.'_site_id']) ) {
+   			$retour['site_id'] = $config[$this->_identifier.'_site_id'];
+   		}
+   		if ( !empty($config[$this->_identifier.'_cookie_domain']) ) {
+   			$retour['cookie_domain'] = $config[$this->_identifier.'_cookie_domain'];
+   		}
+   	}
+   	return $retour;
+   }
+   
+   public function executeAtTheEnd () {
+   	if ( $this->_method == 'php' ) {
+   	   $this->_getInfosForBeforeBodyEndAsHTMLPHP();
+   	}
    }
    
    public function getMediaRegExp () {
@@ -257,26 +389,30 @@ s.parentNode.insertBefore(g,s);
    	$retour = '';
    	$context_item = $this->_environment->getCurrentContextItem();
    	if ( !empty($context_item)
-   			and $context_item->isPluginOn($this->_identifier)
+   	  	  and $context_item->isPluginOn($this->_identifier)
    	   ) {
    		$config = $context_item->getPluginConfigForPlugin($this->_identifier);
    		if ( !empty($config[$this->_identifier.'_server_url']) ) {
    			$server_url = $config[$this->_identifier.'_server_url'];
-   		}
+   	   }
    		if ( !empty($config[$this->_identifier.'_site_id']) ) {
    			$site_id = $config[$this->_identifier.'_site_id'];
    		}
    	
    		if ( !empty($server_url)
-   				and !empty($site_id)
+   			   and !empty($site_id)
    			) {
-   			$language = $this->_environment->getSelectedLanguage();
-   			if ( empty($language) ) {
-   				$language = 'de';
+   			if ( $this->_method == 'javascript' ) {
+   			   $language = $this->_environment->getSelectedLanguage();
+   			   if ( empty($language) ) {
+   				   $language = 'de';
+   			   }
+   			   // TBD: https
+   	         $retour = '<iframe frameborder="no" width="550px" height="190px" src="http://'.$server_url.'/index.php?module=CoreAdminHome&action=optOut&idSite='.$site_id.'&language='.$language.'"></iframe>';
+   	      } elseif ( $this->_method == 'php' ) {
+   		      $retour = $this->_translator->getMessage(strtoupper($this->_identifier).'_DESC_DO_NOT_TRACK', $server_url);
    			}
-   			// TBD: https
-   	      $retour = '<iframe frameborder="no" width="550px" height="190px" src="http://'.$server_url.'/index.php?module=CoreAdminHome&action=optOut&idSite='.$site_id.'&language='.$language.'"></iframe>';
-   		}
+   	   }
    	}
    	return $retour;
    }
