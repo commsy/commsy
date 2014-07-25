@@ -825,8 +825,20 @@
                     </p>
                   </fieldset>
                   <input id="submit_export_private_room" type="button" class="popup_button submit" data-custom="part: 'cs_bar', action: 'export_private_room'" name="save" value="___PREFERENCES_EXPORT_PRIVATE_ROOM_BUTTON___"/>
+                  
+                  <fieldset>
+                    <p>
+                      <strong>___PREFERENCES_IMPORT_PRIVATE_ROOM_TITLE___</strong>: ___PREFERENCES_IMPORT_PRIVATE_ROOM_DESCRIPTION___
+                    </p>
+                  </fieldset>
+                  <div class="uploader-single">
+                  <form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+                     <input id="submit_import_private_room" class="fileSelector"></input>
+                     <div class="filePreview"></div>
+                     <div class="fileList"></div>
+                  </form>
                   </div>
-
+                  </div>
                 </div>
               </div>
 
