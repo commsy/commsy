@@ -1060,6 +1060,12 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
            $this->_newmaterial($item);
         }else{
            $this->_update($item);
+
+           $checkLocking = $this->_environment->getConfiguration('c_item_locking');
+           $checkLocking = ($checkLocking) ? $checkLocking : false;
+           if ($checkLocking) {
+              $this->clearLocking($item_id);
+           }
         }
      } else {
         $creator_id = $item->getCreatorID();
@@ -1391,6 +1397,35 @@ class cs_material_manager extends cs_manager implements cs_export_import_interfa
             $temp_section_item = $section_manager->import_item($section_xml, $top_item, $options);
          }
       }
+   }
+
+   public function updateLocking($itemId) {
+      $userItem = $this->_environment->getCurrentUserItem();
+      $query = "
+          UPDATE
+              " . $this->addDatabasePrefix("materials") . " AS m
+          SET
+              m.locking_date = NOW(),
+              m.locking_user_id = " . encode(AS_DB, $userItem->getItemId()) . "
+          WHERE
+              m.item_id = '" . encode(AS_DB, $itemId) . "'
+      ";
+
+      return $this->_db_connector->performQuery($query);
+   }
+
+   public function clearLocking($itemId) {
+      $query = "
+          UPDATE
+              " . $this->addDatabasePrefix("materials") . " AS m
+          SET
+              m.locking_date = NULL,
+              m.locking_user_id = NULL
+          WHERE
+              m.item_id = '" . encode(AS_DB, $itemId) . "'
+      ";
+
+      return $this->_db_connector->performQuery($query);
    }
 } // end of class
 ?>

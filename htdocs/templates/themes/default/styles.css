@@ -3191,15 +3191,17 @@ fade-in
 .fade_in_ground_actions a {
     padding: 0px 0px;
     font-size: 10px !important;
-/*    color: #393939 !important;
-    text-decoration: none !important; */
     }
 
-/*
- .fade_in_ground_actions a:hover {
-    color: #D8261D !important;
-    }
-*/
+.fade_in_ground_actions img#edit_attention {
+    vertical-align: middle;
+    height: 16px;
+}
+
+.fade_in_ground_actions span {
+    vertical-align: middle;
+    font-weight: bold;
+}
 
 .fade_in_ground_annotations h2{
     margin-left: 39px;

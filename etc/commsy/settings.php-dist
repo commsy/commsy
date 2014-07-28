@@ -51,4 +51,8 @@ if ( function_exists('get_called_class') ) {
 } else {
    $c_archive_rooms = false;
 }
+
+// locking
+// this will temporary protect items from beeing edited by different users simultaneous
+$c_item_locking = false;
 ?>

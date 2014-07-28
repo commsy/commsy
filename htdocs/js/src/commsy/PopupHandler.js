@@ -101,6 +101,15 @@ define([	"dojo/_base/declare",
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new CKEditor();
 							this.featureHandles[feature][index].create(node);
+
+							// listen for ckeditor changes and emit a change event to bubble them to the container div
+							// this is needed for the locking mechanism to detect user activities
+							this.featureHandles[feature][index].instance.on('change', lang.hitch(this, function() {
+								On.emit(node, "change", {
+									bubbles: true,
+									cancelable: true
+								});
+							}));
 						}));
 					}));
 				}

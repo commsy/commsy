@@ -478,6 +478,24 @@ class cs_material_item extends cs_item {
    	  }
    }
 
+   /**
+    * returns the locking date
+    *
+    * @return Date
+    */
+   function getLockingDate() {
+      return $this->_getValue('locking_date');
+   }
+
+   /*
+    * returns the locking user id
+    *
+    * @return int
+    */
+   function getLockingUserId() {
+    return $this->_getValue('locking_user_id');
+   }
+
    /** get bibliographic values of a material
     * this method gets the bibliographic values of the material
     *

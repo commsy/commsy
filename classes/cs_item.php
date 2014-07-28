@@ -1412,12 +1412,29 @@ class cs_item {
          }
       }
 
-      if ( $access === true )
-      {
-      	return true;
-      }
-      else
-      {
+      if ( $access === true ) {
+          // check locking
+          $checkLocking = $this->_environment->getConfiguration('c_item_locking');
+          $checkLocking = ($checkLocking) ? $checkLocking : false;
+          if ($checkLocking && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId")) {
+              $lockingUserId = $this->getLockingUserId();
+
+              // grant access if there is no lock or we are the user who has created it
+              if (!$lockingUserId || $lockingUserId == $user_item->getItemId()) {
+                  $access = true;
+              } else {
+                  // if there is a lock, check the date
+                  $lockingDate = $this->getLockingDate();
+                  if ($lockingDate) {
+                    $editDate = new DateTime($lockingDate);
+                    $compareDate = new DateTime();
+                    $compareDate->modify("-20 minutes");
+
+                    $access = ($compareDate >= $editDate);
+                  }
+              }
+          }
+      } else {
       	$privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
 
       	// check for sub-types
