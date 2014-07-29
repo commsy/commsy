@@ -147,7 +147,7 @@ class cs_file_item extends cs_item {
       $this->_icon['dv']      = "movie.png";
       $this->_mime['dv']      = 'video/x-dv';
       $this->_icon['flv']     = "movie.png";
-      $this->_mime['flv']     = "video/x-flv";
+      $this->_mime['flv']     = "video/flv"; // flv type for projekktor
       // Missing MIME-type for Flash Video File (TBD) ij 14.07.06
 
       // Vendor-specific
