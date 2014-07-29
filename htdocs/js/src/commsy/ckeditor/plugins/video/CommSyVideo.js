@@ -38,13 +38,14 @@ CKEDITOR.plugins.add( "CommSyVideo",
 					
 					var SelectBoxItems = new Array(
 							new Array( '<Bitte Videotyp auswählen>', 'null'),
+							new Array( 'CommSy Video', 'projekktor'),
 							new Array( 'Lecture2Go', 'lecture2go' ),
-					        new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
+					        //new Array( 'MediaPlayer (wma, wmv, avi)', 'mediaplayer' ),
 					        new Array( 'Podcampus', 'podcampus' ),
-					        new Array( 'Quicktime (mov, wav, mpeg, mp4)', 'quicktime' ),
+					        //new Array( 'Quicktime (mov, wav, mpeg, mp4)', 'quicktime' ),
 					        new Array( 'Vimeo', 'vimeo' ),
-					        new Array( 'Youtube', 'youtube' ),
-					        new Array( 'Projekktor', 'projekktor')
+					        new Array( 'Youtube', 'youtube' )
+					        
 					);
 					
 					var numbering = function( id ) {
@@ -641,8 +642,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //								{
 //									params.push('rel=0');
 //								}
-	
-								http://www.youtube.com/watch?v=CnrjYYB76TM
 								url = url.replace('embed/', 'v/');
 								url = url.replace(/&/g, '&amp;');
 	
@@ -687,41 +686,41 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'quicktime'){
 								
-								if(this.getValueOf('videoTab', 'autostart')){
-									params = 'autoplay="true"';
-								}
+								// if(this.getValueOf('videoTab', 'autostart')){
+								// 	params = 'autoplay="true"';
+								// }
 								
-								content += '<object width="' + width + '" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
-								content += '<param value="true" name="controller">';
-								content += '<param value="high" name="quality">';
-								content += '<param value="tofit" name="scale">';
-								content += '<param value="#000000" name="bgcolor">';
-								content += '<param value="opaque" name="wmode">';
-								if(this.getValueOf('videoTab', 'autostart')){
-									content += '<param value="true" name="autoplay">';
-								} else {
-									content += '<param value="false" name="autoplay">';
-								}
-								content += '<param value="false" name="loop">';
-								content += '<param value="true" name="devicefont">';
-								content += '<param value="mov" name="class">';
-								content += '<embed width="' + width + '" height="' + height + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true"' + params + '>';
-								content += '</object>';
+								// content += '<object width="' + width + '" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
+								// content += '<param value="true" name="controller">';
+								// content += '<param value="high" name="quality">';
+								// content += '<param value="tofit" name="scale">';
+								// content += '<param value="#000000" name="bgcolor">';
+								// content += '<param value="opaque" name="wmode">';
+								// if(this.getValueOf('videoTab', 'autostart')){
+								// 	content += '<param value="true" name="autoplay">';
+								// } else {
+								// 	content += '<param value="false" name="autoplay">';
+								// }
+								// content += '<param value="false" name="loop">';
+								// content += '<param value="true" name="devicefont">';
+								// content += '<param value="mov" name="class">';
+								// content += '<embed width="' + width + '" height="' + height + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true"' + params + '>';
+								// content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'mediaplayer'){
 							
-								content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
-								content += '<param value="' + videoUrl + '" name="fileName">';
-								if(this.getValueOf('videoTab', 'autostart')){
-									content += '<param value="true" name="autoStart">';
-								} else {
-									content += '<param value="false" name="autoStart">';
-								}
-								content += '<param value="true" name="showControls">';
-								content += '<param value="true" name="showStatusBar">';
-								content += '<param value="opaque" name="wmode">';
-								content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
-								content += '</object>';
+								// content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
+								// content += '<param value="' + videoUrl + '" name="fileName">';
+								// if(this.getValueOf('videoTab', 'autostart')){
+								// 	content += '<param value="true" name="autoStart">';
+								// } else {
+								// 	content += '<param value="false" name="autoStart">';
+								// }
+								// content += '<param value="true" name="showControls">';
+								// content += '<param value="true" name="showStatusBar">';
+								// content += '<param value="opaque" name="wmode">';
+								// content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
+								// content += '</object>';
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'vimeo'){
 								
@@ -749,9 +748,12 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //								</embed></object>
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'projekktor'){
+								// autostart ausrichtung rahmen h abstand v abstand
+
+
 								var fileType = this.getValueOf( 'videoTab', 'videoType' );
 
-								content += '<div>&nbsp;';
+								content += '<div class="commsyPlayer" ' + style + '>&nbsp;';
 								content += '<video width="' + width + '" height="' + height + '" class="projekktor">';
 								content += '<source src="' + videoUrl + '" type="' + fileType + '"/>';
 								content += '</video>';
