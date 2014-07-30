@@ -1416,7 +1416,7 @@ class cs_item {
           // check locking
           $checkLocking = $this->_environment->getConfiguration('c_item_locking');
           $checkLocking = ($checkLocking) ? $checkLocking : false;
-          if ($checkLocking && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId")) {
+          if ($checkLocking && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
               $lockingUserId = $this->getLockingUserId();
 
               // grant access if there is no lock or we are the user who has created it
@@ -2799,6 +2799,30 @@ function getExternalViewerArray(){
    ############### END ######################
    # plugin configuration
    ##########################################
-    
+
+    /**
+    * returns the locking date
+    *
+    * @return Date
+    */
+   function getLockingDate() {
+      return $this->_getValue('locking_date');
+   }
+
+   /*
+    * returns the locking user id
+    *
+    * @return int
+    */
+   function getLockingUserId() {
+      return $this->_getValue('locking_user_id');
+   }
+
+   function hasLocking() {
+      return in_array($this->getItemType(), array(
+          CS_MATERIAL_TYPE,
+          CS_ANNOUNCEMENT_TYPE
+      ));
+   }
 }
 ?>
