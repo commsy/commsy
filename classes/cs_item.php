@@ -2821,7 +2821,12 @@ function getExternalViewerArray(){
    function hasLocking() {
       return in_array($this->getItemType(), array(
           CS_MATERIAL_TYPE,
-          CS_ANNOUNCEMENT_TYPE
+          CS_ANNOUNCEMENT_TYPE,
+          CS_DATE_TYPE,
+          CS_DISCUSSION_TYPE,
+          CS_GROUP_TYPE,
+          CS_TODO_TYPE,
+          CS_TOPIC_TYPE
       ));
    }
 }

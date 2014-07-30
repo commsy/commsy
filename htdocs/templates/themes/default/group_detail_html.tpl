@@ -16,6 +16,13 @@
 				{if $detail.actions.edit}
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'" href="#"}">___COMMON_EDIT_ITEM___</a> |
 				{else}
+					{if $detail.actions.locked}
+						<div>
+							<img id="edit_attention" src="{$basic.tpl_path}img/attention.gif" />
+							<span>Dieser Eintrag wird derzeit bearbeitet</span>
+						</div>
+					{/if}
+					
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
 				{if $detail.actions.delete}
