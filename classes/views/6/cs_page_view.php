@@ -670,7 +670,7 @@ class cs_page_view extends cs_view {
    	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
    	
-   	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
+   	$html .= '<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>';
    	
    	switch ($mode) {
    		case "layer":
