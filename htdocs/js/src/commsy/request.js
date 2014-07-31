@@ -30,7 +30,7 @@ define([	"dojo/request/registry",
 		data:		{},
 		
 		// Time in milliseconds before considering the request a failure and triggering the error handler.
-		timeout:	10000,
+		timeout:	60000,
 		
 		// A string representing how to convert the text payload of the response
 		// before passing the converted data to the success handler.
