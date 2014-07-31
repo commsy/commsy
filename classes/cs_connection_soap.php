@@ -5333,11 +5333,16 @@ class cs_connection_soap {
          $this->_environment->setCurrentContextID($context_id);
          $this->_environment->setSessionID($session_id);
          
+         $translator = $this->_environment->getTranslationObject();
          $sessionItem = $this->_environment->getSessionItem();
          $userId = $sessionItem->getValue('user_id');
          $authSourceId = $sessionItem->getValue('auth_source');
 
-         $userManager = $this->_environment->getUserManager();error_log($room_id);
+         // get user item
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+         // room access
          $userManager->setUserIdLimit($userId);
          $userManager->setAuthSourceLimit($authSourceId);
          $userManager->setContextLimit($room_id);
@@ -5350,11 +5355,186 @@ class cs_connection_soap {
          global $c_commsy_domain, $c_commsy_url_path;
          include_once('functions/curl_functions.php');
 
+         $contactPersons = $roomItem->getContactModeratorList();
+         $communityRooms = $roomItem->getCommunityList();
+         $mayEdit = ($userItem && ($userItem->isModerator() || $roomItem->mayEdit($userItem)));
+
          $xml .= "<room>\n";
+         $xml .=     "<id><![CDATA[" . $roomItem->getItemId() . "]]></id>\n";
          $xml .=     "<name><![CDATA[" . $roomItem->getTitle() . "]]></name>\n";
          $xml .=     "<access><![CDATA[" . ($userList->isEmpty() ? "no" : "yes") . "]]></access>\n";
          $xml .=     "<link><![CDATA[" . $c_commsy_domain . $c_commsy_url_path . "/" . _curl(false, $roomItem->getItemId(), 'home', 'index', array()) . "]]></link>\n";
+         $xml .=     "<description><![CDATA[" . $roomItem->getDescription() . "]]></description>\n";
+         $xml .=     "<mayEdit><![CDATA[" . ($mayEdit ? "yes" : "no") . "]]></mayEdit>\n";
+
+         $xml .=     "<contacts>\n";
+         if ($contactPersons->isNotEmpty()) {
+            $contactPerson = $contactPersons->getFirst();
+
+            while ($contactPerson) {
+               $xml .= "<person>\n";
+               $xml .= "   <fullName><![CDATA[" . $contactPerson->getFullName() . "]]></fullName>\n";
+               $xml .= "   <email><![CDATA[" . $contactPerson->getEmail() . "]]></email>\n";
+               $xml .= "</person>\n";
+
+               $contactPerson = $contactPersons->getNext();
+            }
+         }
+         $xml .=     "</contacts>\n";
+
+         $xml .=     "<communities>\n";
+         if ($communityRooms->isNotEmpty()) {
+            $communityRoom = $communityRooms->getFirst();
+
+            while ($communityRoom) {
+               $xml .= "   <room>\n";
+               $xml .= "      <title><![CDATA[" . $communityRoom->getTitle() . "]]></title>\n";
+               $xml .= "   </room>\n";
+
+               $communityRoom = $communityRooms->getNext();
+            }
+         }
+         $xml .=     "</communities>\n";
+
+         if ($this->_environment->getCurrentContextItem()->showTime() && ($roomItem->isProjectRoom() || $roomItem->isCommunityRoom())) {
+            $timeList = $roomItem->getTimeList();
+
+            if ($timeList->isNotEmpty()) {
+               if ($roomItem->isContinuous()) {
+                  $xml .= "   <time assigned='true' continues='true'>\n";
+                  $xml .= "      <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
+
+                  $timeItem = $timeList->getFirst();
+
+                  if ($roomItem->isClosed()) {
+                     $timeItemLast = $timeList->getLast();
+
+                     if ($timeItemLast->getItemID() == $timeItem->GetItemID()) {
+                        $xml .= "<intervals>\n";
+                        $xml .= "   <interval><![CDATA[" . $translator->getMessage("COMMON_FROM2") . " " . $translator->getTimeMessage($timeItem->getTitle()) . "]]></interval>\n";
+                        $xml .= "   <interval><![CDATA[" . $translator->getMessage("COMMON_TO") . " " . $translator->getTimeMessage($timeItemLast->getTitle()) . "]]></interval>\n";
+                        $xml .= "</intervals>\n";
+                     } else {
+                        $xml .= "   <constant><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></constant>\n";
+                     }
+                  } else {
+                     $xml .= "   <constant><![CDATA[" . $translator->getMessage("ROOM_CONTINUOUS_SINCE") . ' ' . BRLF . $translator->getTimeMessage($timeItem->getTitle()) . "]]></constant>\n";
+                  }
+               } else {
+                  $xml .= "   <time assigned='true' continues='false'>\n";
+                  $xml .= "      <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
+
+                  $timeItem = $timeList->getFirst();
+                  while ($timeItem) {
+                     $xml .= "<intervals>\n";
+                     $xml .= "   <interval><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></interval>\n";
+                     $xml .= "</intervals>\n";
+
+                     $timeItem = $timeList->getNext();
+                  }
+               }
+            } else {
+               $xml .= "<time assigned='false'>\n";
+               $xml .= "   <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
+            }
+         } else {
+            $xml .= "<time>\n";
+         }
+         $xml .= "</time>\n";
+
          $xml .= "</room>";
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
+
+   public function sendContactMail($session_id, $context_id, $message)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $context_id = $this->_encode_input($context_id);
+         $this->_environment->setCurrentContextID($context_id);
+         $contextItem = $this->_environment->getCurrentContextItem();
+         $errorArray = array();
+
+         // get the contact moderator list and prepare mail data
+         $moderatorList = $contextItem->getContactModeratorList();
+         $emailAddresses = array();
+         $recipients = "";
+         $moderatorItem = $moderatorList->getFirst();
+         while ($moderatorItem) {
+            $emailAddresses[] = $moderatorItem->getEmail();
+            $recipients .= $moderatorItem->getFullname() . LF;
+
+            $moderatorItem = $moderatorList->getnext();
+         }
+
+         // get user item
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $userId = $session->getValue('user_id');
+         $authSourceId = $session->getValue('auth_source');
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+         // determe language
+         $language = $contextItem->getLanguage();
+         if ($language == "user") {
+            $langguage = $userItem->getLanguage();
+            if ($language == "browser") {
+               $langauge = $this->_environment->getSelectedLanguage();
+            }
+         }
+
+         $emailAddresses = array_filter($emailAddresses, function($element) {
+            return trim($element) !== "";
+         });
+
+         // setup and send mails
+         if ($emailAddresses) {
+            $translator = $this->_environment->getTranslationObject();
+
+            $oldLanguage = $translator->getSelectedLanguage();
+            $subject = $translator->getMessage("USER_ASK_MAIL_SUBJECT", $userItem->getFullname(), $contextItem->getTitle());
+
+            $body = "";
+            $body .= $this->_encode_input($message);
+            $body .= LF . LF;
+            $body .= "---" . LF;
+            $body .= $translator->getMessage("MAIL_SEND_TO", $recipients);
+            $body .= LF;
+
+            include_once('classes/cs_mail.php');
+            $mail = new cs_mail();
+            $mail->set_to(implode(',', $emailAddresses));
+            $mail->set_from_email($userItem->getEmail());
+            $mail->set_from_name($userItem->getFullname());
+            $mail->set_reply_to_name($userItem->getFullname());
+            $mail->set_reply_to_email($userItem->getEmail());
+            $mail->set_subject($subject);
+            $mail->set_message($body);
+            if (!$mail->send()) {
+               $errorArray["send"] = '';
+            }
+
+            $translator->getSelectedLanguage($oldLanguage);
+         } else {
+            $errorArray["missing"] = "Es wurden keine E-Mailadressen hinterlegt.";
+         }
+
+         if (sizeof($errorArray) > 0) {
+            $xml = "<errors>\n";
+            foreach ($errorArray as $code => $description) {
+               $xml .= "<" . $code . "><![CDATA[" . $description . "]]></" . $code . ">\n";
+            }
+            $xml .= "</errors>";
+         } else {
+            $xml = "<success></success>";
+         }
+
          $xml = $this->_encode_output($xml);
       } else {
          return new SoapFault('ERROR','Session ('.$session_id.') not valid!');

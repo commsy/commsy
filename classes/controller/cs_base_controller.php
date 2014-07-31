@@ -682,5 +682,12 @@
 					$this->assign("javascript", "version", "unset");
 				}
 			}
+			
+			// plugins
+			$info_before_body_ends = LF.'   <!-- PLUGINS BEGIN -->'.LF;
+			include_once('functions/misc_functions.php');
+			$info_before_body_ends .= plugin_hook_output_all('getInfosForBeforeBodyEndAsHTML',array(),LF,false).LF;
+			$info_before_body_ends .= '   <!-- PLUGINS END -->'.LF.LF;
+			$this->assign('basic', 'html_before_body_ends', $info_before_body_ends);
 		}
 	}

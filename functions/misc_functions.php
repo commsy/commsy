@@ -700,9 +700,10 @@ function isURLValid () {
         // Scorm
         $module != 'scorm' and
    		
-   		// download
-   		$module != 'download' and
-   		$module != 'limesurvey' and
+         // download
+         $module != 'download' and
+         $module != 'limesurvey' and
+         $module != 'export_privateroom' and
    		
    		// individual css
    		$module != 'individual'
@@ -731,7 +732,7 @@ function isURLValid () {
          $funct != 'process' and
          $funct != 'getfile' and
          $funct != 'getlogfile' and
-    	 $funct != 'getTemp' and
+    	   $funct != 'getTemp' and
          $funct != 'admin' and
          $funct != 'move' and
          $funct != 'to_moderator' and
@@ -761,7 +762,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
-    	 $funct != 'limesurvey' and
+    	   $funct != 'limesurvey' and
          $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and
@@ -1024,7 +1025,7 @@ function mayEditRegular($user, $item) {
     return $value;
 }
 
-function plugin_hook ($hook_function, $params = null) {
+function plugin_hook ($hook_function, $params = null, $with_config_check = true) {
    global $environment;
    global $c_plugin_array;
 
@@ -1034,7 +1035,9 @@ function plugin_hook ($hook_function, $params = null) {
       $current_context_item = $environment->getCurrentPortalItem();
       foreach ($c_plugin_array as $plugin) {
          if ( isset($current_context_item)
-              and $current_context_item->isPluginOn($plugin)
+              and ( $current_context_item->isPluginOn($plugin)
+              		  or !$with_config_check
+              		)
             ) {
             $plugin_class = $environment->getPluginClass($plugin);
             if ( method_exists($plugin_class,$hook_function) ) {
@@ -1075,7 +1078,7 @@ function plugin_hook_plugin ($plugin, $hook_function, $params = null) {
    }
 }
 
-function plugin_hook_output_all ($hook_function, $params = null, $separator = '') {
+function plugin_hook_output_all ($hook_function, $params = null, $separator = '', $with_config_check = true) {
    if ( !empty($separator)
         and $separator == 'ARRAY'
       ) {
@@ -1091,7 +1094,7 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
       ) {
       $first = true;
       foreach ($c_plugin_array as $plugin) {
-         $output = plugin_hook_output($plugin,$hook_function,$params);
+     		$output = plugin_hook_output($plugin,$hook_function,$params,$with_config_check);
          if ( !empty($output) ) {
             if ( !empty($separator)
                  and $separator == 'ARRAY'
@@ -1122,14 +1125,16 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
    return $retour;
 }
 
-function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
+function plugin_hook_output ($plugin,$hook_function,$params = NULL,$with_config_check = true) {
    $retour = '';
    global $environment;
    global $c_plugin_array;
    if ( in_array($plugin,$c_plugin_array) ) {
       $do_it = false;
       $plugin_class = $environment->getPluginClass($plugin);
-      if ( $hook_function == 'getSOAPAPIArray' ) {
+      if ( $hook_function == 'getSOAPAPIArray'
+      	  or !$with_config_check
+      	) {
       	$do_it = true;
       } else {
 	      $current_context_item = $environment->getCurrentContextItem();
@@ -1152,7 +1157,7 @@ function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
            and isset($plugin_class)
            and method_exists($plugin_class,$hook_function)
          ) {
-         $retour = $plugin_class->$hook_function($params);
+      	$retour = $plugin_class->$hook_function($params);
       }
    }
    return $retour;

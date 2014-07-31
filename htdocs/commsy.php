@@ -1877,7 +1877,12 @@ if ( isset($c_show_debug_infos) and $c_show_debug_infos and $environment->getCur
    echo('<span style="font-weight:bold;">Session Object</span>'.BRLF);
    pr($session);
 }
+
 if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
    echo('<!-- Total execution time: '.$time.' seconds -->');
 }
+
+// plugin hook
+flush();
+plugin_hook('executeAtTheEnd',array(),false);
 ?>

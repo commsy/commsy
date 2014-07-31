@@ -173,6 +173,7 @@ $message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Wählen Sie zwischen linea
 $message["CONFIGURATION_ERROR_PORTAL_URL"]["de"] = "Die URL %1 ist bereits vergeben. Sie wird schon vom Portal %2 auf diesem Server verwendet.";
 $message["CONFIGURATION_ERROR_SERVER_URL"]["de"] = "Die URL %1 ist bereits vergeben. Sie wird schon vom CommSy-Server (Portalübersicht) verwendet.";
 $message["CONFIGURATION_ERROR_TIME_SPREAD_LONG"]["de"] = "Es dürfen nur Tage bis zu einem Jahr (= 365 Tage) gewählt werden.";
+$message["CONFIGURATION_EXPORT_IMPORT"]["de"] = "Ex- und Import von Räumen";
 $message["CONFIGURATION_EXPORT_IMPORT_DESC"]["de"] = "Räume ex- und importieren.";
 $message["CONFIGURATION_EXPORT_IMPORT_LINK"]["de"] = "Ex- und Import";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "Einträge freischalten";

@@ -1924,7 +1924,10 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_CONNECTION':
                $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_CONNECTION_FORM');
                break;
-               case 'CONFIGURATION_DATASECURITY':
+            case 'CONFIGURATION_DATASECURITY':
+               $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               break;
+            case 'CONFIGURATION_PLUGINS':
                $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
                break;
             default:

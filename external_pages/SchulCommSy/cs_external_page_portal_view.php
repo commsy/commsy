@@ -1653,7 +1653,7 @@ class cs_external_page_portal_view extends cs_page_view {
    		}
    	}
    	
-   	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
+   	$html .= '<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>';
    
    	switch ($mode) {
    		case "build":

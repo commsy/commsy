@@ -267,6 +267,14 @@
 <message name='getRoomDetailsOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='sendContactMailIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='message' type='xsd:string'/>
+</message>
+<message name='sendContactMailOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='getAuthenticationForWikiIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:string'/>
@@ -828,6 +836,10 @@ echo("\n");
     <input message='tns:getRoomDetailsIN'/>
     <output message='tns:getRoomDetailsOUT'/>
   </operation>
+  <operation name='sendContactMail'>
+    <input message='tns:sendContactMailIN'/>
+    <output message='tns:sendContactMailOUT'/>
+  </operation>
   <operation name='getAuthenticationForWiki'>
     <input message='tns:getAuthenticationForWikiIN'/>
     <output message='tns:getAuthenticationForWikiOUT'/>
@@ -1349,6 +1361,17 @@ echo("\n");
   </operation>
   <operation name='getRoomDetails'>
     <soap:operation soapAction='urn:xmethodsCommSy#getRoomDetails'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='sendContactMail'>
+    <soap:operation soapAction='urn:xmethodsCommSy#sendContactMail'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
