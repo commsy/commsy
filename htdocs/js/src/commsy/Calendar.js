@@ -30,7 +30,8 @@ define([	"dojo/_base/declare",
 				constraints: {
 					datePattern:	dateFormat
 				}
-			}, node).startup();
+			}, node);
+			this.calendar.startup();
 		},
 		
 		destroy: function() {
