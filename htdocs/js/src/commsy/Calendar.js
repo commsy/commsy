@@ -1,9 +1,8 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/_base/lang",
-        	"dojo/query",
         	"dijit/form/DateTextBox",
-        	"dojo/dom-attr"], function(declare, BaseClass, lang, Query, DateTextBox, DomAttr) {
+        	"dojo/dom-attr"], function(declare, BaseClass, lang, DateTextBox, DomAttr) {
 	return declare(BaseClass, {
 		calendar: null,
 		
@@ -31,7 +30,7 @@ define([	"dojo/_base/declare",
 				constraints: {
 					datePattern:	dateFormat
 				}
-			}, node);
+			}, node).startup();
 		},
 		
 		destroy: function() {
