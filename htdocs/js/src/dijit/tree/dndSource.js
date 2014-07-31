@@ -1,7 +1,7 @@
 define([
 	"dojo/_base/array", // array.forEach array.indexOf array.map
-	"dojo/_base/connect", // isCopyKey
 	"dojo/_base/declare", // declare
+	"dojo/dnd/common",
 	"dojo/dom-class", // domClass.add
 	"dojo/dom-geometry", // domGeometry.position
 	"dojo/_base/lang", // lang.mixin lang.hitch
@@ -10,7 +10,7 @@ define([
 	"dojo/topic",
 	"dojo/dnd/Manager", // DNDManager.manager
 	"./_dndSelector"
-], function(array, connect, declare, domClass, domGeometry, lang, on, touch, topic, DNDManager, _dndSelector){
+], function(array, declare, dndCommon, domClass, domGeometry, lang, on, touch, topic, DNDManager, _dndSelector){
 
 	// module:
 	//		dijit/tree/dndSource
@@ -181,25 +181,28 @@ define([
 					// Can't drop before or after tree's root node; the dropped node would just disappear (at least visually)
 					m.canDrop(false);
 				}else{
-					// Guard against dropping onto yourself (TODO: guard against dropping onto your descendant, #7140)
-					var sameId = false;
+					// Guard against dropping onto yourself or your parent.
+					// But when dragging multiple objects, it's OK if some of them are being dropped onto own parent.
+					var dropOntoSelf = false,
+						dropOntoParent = false;
 					if(m.source == this){
+						dropOntoParent = (newDropPosition === "Over");
 						for(var dragId in this.selection){
 							var dragNode = this.selection[dragId];
 							if(dragNode.item === newTarget.item){
-								sameId = true;
+								dropOntoSelf = true;
 								break;
+							}
+							if(dragNode.getParent().id !== newTarget.id){
+								dropOntoParent = false;
 							}
 						}
 					}
-					if(sameId){
-						m.canDrop(false);
-					}else if(this.checkItemAcceptance(newTarget.rowNode, m.source, newDropPosition.toLowerCase())
-						&& !this._isParentChildDrop(m.source, newTarget.rowNode)){
-						m.canDrop(true);
-					}else{
-						m.canDrop(false);
-					}
+					m.canDrop(
+						!dropOntoSelf && !dropOntoParent &&
+						!this._isParentChildDrop(m.source, newTarget.rowNode) &&
+						this.checkItemAcceptance(newTarget.rowNode, m.source, newDropPosition.toLowerCase())
+					);
 				}
 
 				this.targetAnchor = newTarget;
@@ -243,7 +246,7 @@ define([
 						nodes = array.map(nodes, function(n){
 							return n.domNode
 						});
-						m.startDrag(this, nodes, this.copyState(connect.isCopyKey(e)));
+						m.startDrag(this, nodes, this.copyState(dndCommon.getCopyKeyState(e)));
 						this._onDragMouse(e, true);	// because this may be the only mousemove event we get before the drop
 					}
 				}

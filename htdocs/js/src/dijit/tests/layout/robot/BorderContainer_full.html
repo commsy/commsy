@@ -15,7 +15,7 @@
 		<script type="text/javascript">
 			require([
 				"doh/runner", "dojo/robotx", "dojo/dom", "dojo/dom-geometry", "dojo/window",
-				"dijit/tests/helpers", "dijit/tests/layout/robot/borderContainerTestFunctions", "dojo/domReady!"
+				"dijit/tests/helpers", "dijit/tests/layout/robot/borderContainerTestFunctions","dojo/domReady!"
 			], function(doh, robot, dom, geom, window, helpers, bcTest){
 
 				robot.initRobot('../test_BorderContainer_full.html');
@@ -39,8 +39,8 @@
 					function testFullScreen(){
 						var borderContainerPos = geom.position(dom.byId("main"));
 						var view = window.getBox();
-						doh.t( borderContainerPos.h-view.h < 3);
-						doh.t( borderContainerPos.w-view.w < 3);
+						doh.t(borderContainerPos.h-view.h < 3, "borderContainerPos.h-view.h = " + borderContainerPos.h-view.h);
+						doh.t(borderContainerPos.w-view.w < 3, "borderContainerPos.w-view.w = " + borderContainerPos.w-view.w);
 					}
 				]);
 

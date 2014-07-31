@@ -1,4 +1,5 @@
 define([    
+"dojo/_base/array",
 "dojo/_base/declare", 
 "dojo/_base/event", 
 "dojo/_base/lang", 
@@ -19,6 +20,7 @@ define([
 "./ColumnViewSecondarySheet"],
 
 function(
+	arr,
 	declare, 
 	event, 
 	lang, 
@@ -63,6 +65,8 @@ function(
 		//		Padding between the header (composed of the secondary sheet and the column header) 
 		//		and the primary sheet.
 		headerPadding: 3,
+		
+		_showSecondarySheet: true,
 		
 		buildRendering: function(){
 			this.inherited(arguments);
@@ -120,6 +124,23 @@ function(
 
 		},
 		
+		_setSubColumnsAttr: function(value){
+			var old = this.get("subColumns");
+			if(old != value){
+				this._secondaryHeightInvalidated = true;
+			}
+			this._set("subColumns", value);					
+		},
+		
+		refreshRendering: function(){
+			this.inherited(arguments);
+			if(this._secondaryHeightInvalidated){
+				this._secondaryHeightInvalidated = false;
+				var h = domGeometry.getMarginBox(this.secondarySheetNode).h;
+				this.resizeSecondarySheet(h);
+			}
+		},
+		
 		resizeSecondarySheet: function(height){
 			// summary:
 			//		Resizes the secondary sheet header and relayout the other sub components according this new height.
@@ -130,10 +151,14 @@ function(
 				var headerH = domGeometry.getMarginBox(this.header).h;
 				domStyle.set(this.secondarySheetNode, "height", height+"px");
 				this.secondarySheet._resizeHandler(null, true);
-				var top = (height + headerH + this.headerPadding)+"px";
-				domStyle.set(this.scrollContainer, "top", top);
+				var top = (height + headerH + this.headerPadding);
+				if(this.subHeader && this.subColumns){
+					domStyle.set(this.subHeader, "top", top+"px");
+					top += domGeometry.getMarginBox(this.subHeader).h;
+				}
+				domStyle.set(this.scrollContainer, "top", top+"px");
 				if(this.vScrollBar){
-					domStyle.set(this.vScrollBar, "top", top);
+					domStyle.set(this.vScrollBar, "top", top+"px");
 				}
 			}
 		},
@@ -149,6 +174,13 @@ function(
 			this.inherited(arguments);
 			if(this.secondarySheet){
 				this.secondarySheet.set("items", value);
+			}
+		},
+		
+		_setDecorationItemsAttr: function(value){
+			this.inherited(arguments);
+			if(this.secondarySheet){
+				this.secondarySheet.set("decorationItems", value);
 			}
 		},
 		
@@ -170,7 +202,7 @@ function(
 			if(this.secondarySheet){
 				this.secondarySheet.set("horizontalRenderer", value);
 			}
-		},
+		},		
 		
 		_getHorizontalRendererAttr: function(){
 			if(this.secondarySheet){
@@ -179,6 +211,20 @@ function(
             return null;
 		},
 		
+		_setHorizontalDecorationRendererAttr: function(value){
+			this.inherited(arguments);
+			if(this.secondarySheet){
+				this.secondarySheet.set("horizontalDecorationRenderer", value);
+			}
+		},
+		
+		_getHorizontalRendererAttr: function(){
+			if(this.secondarySheet){
+				return this.secondarySheet.get("horizontalDecorationRenderer");
+			}
+            return null;
+		},
+
 		_setExpandRendererAttr: function(value){
 			if(this.secondarySheet){
 				this.secondarySheet.set("expandRenderer", value);
@@ -220,12 +266,29 @@ function(
 		
 		_configureScrollBar: function(renderData){
 
-
 			this.inherited(arguments);
 			if(this.secondarySheetNode){
 				var atRight = this.isLeftToRight() ? true : this.scrollBarRTLPosition == "right";
 				domStyle.set(this.secondarySheetNode, atRight ? "right" : "left", renderData.scrollbarWidth + "px");
 				domStyle.set(this.secondarySheetNode, atRight ? "left" : "right", "0");
+				
+				arr.forEach(this.secondarySheet._hScrollNodes, function(elt){
+					domClass[renderData.hScrollBarEnabled ? "add" : "remove"](elt.parentNode, "dojoxCalendarHorizontalScroll");
+				}, this);
+			}					
+		},
+		
+		_configureHScrollDomNodes: function(styleWidth){
+			this.inherited(arguments);
+			if(this.secondarySheet && this.secondarySheet._configureHScrollDomNodes){
+				this.secondarySheet._configureHScrollDomNodes(styleWidth);
+			}
+		},
+		
+		_setHScrollPosition: function(pos){
+			this.inherited(arguments);
+			if(this.secondarySheet){
+				this.secondarySheet._setHScrollPosition(pos);
 			}
 		},
 		
@@ -242,6 +305,15 @@ function(
 			if(!this.secondarySheet._domReady){
 				this.secondarySheet._domReady = true;
 				this.secondarySheet._layoutRenderers(this.secondarySheet.renderData);
+			}
+			
+			this.inherited(arguments);
+		},
+		
+		_layoutDecorationRenderers: function(renderData){
+			if(!this.secondarySheet._decDomReady){
+				this.secondarySheet._decDomReady = true;
+				this.secondarySheet._layoutDecorationRenderers(this.secondarySheet.renderData);
 			}
 			
 			this.inherited(arguments);

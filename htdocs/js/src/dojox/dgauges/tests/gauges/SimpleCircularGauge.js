@@ -5,7 +5,6 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojox/dgauges/CircularGauge", 
 		 TextIndicator){
 	return declare("dojox.dgauges.tests.gauges.SimpleCircularGauge", CircularGauge, {
 		constructor: function(){
-
 			// Changes the font
 			this.font = {
 				family: "Helvetica",

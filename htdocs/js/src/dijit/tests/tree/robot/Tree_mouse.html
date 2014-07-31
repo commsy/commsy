@@ -19,7 +19,7 @@
 
 			robot.initRobot('../test_Tree.html');
 
-			var registry, focus, mytree, africa;
+			var registry, focus, mytree, africa, asia;
 
 			doh.register("_setup", [
 				{
@@ -46,7 +46,7 @@
 
 					doh.is(expanded, africa.isExpanded, "original state");
 
-					func();
+					func(d);
 
 					robot.sequence(d.getTestCallback(function(){
 						doh.is(!expanded, africa.isExpanded, "after state");
@@ -60,9 +60,12 @@
 				{
 					name: "click to open",
 					timeout: 8000,
-					runTest: toggle(function(){
+					runTest: toggle(function(d){
 						robot.mouseMoveAt(africa.labelNode);
 						robot.mouseClick({left:true}, 100);
+						robot.sequence(d.getTestErrback(function(){
+							doh.is(1, robot.window.mouseDowns, "mouse down reported");
+						}), 500);
 					}, false)
 				},
 
@@ -194,6 +197,24 @@
 							// the previously focused row.
 							doh.is("Asia", helpers.innerText(focus.curNode));
 							doh.f(africaGotFocus, "africa didn't get momentary focus");
+						}), 500);
+						return d;
+					}
+				},
+
+				{
+					name: "focus long label",
+					timeout: 8000,
+					runTest: function(){
+						var d = new doh.Deferred();
+						var thinTree = registry.byId('thinTree');
+						var rootNode = thinTree.rootNode;
+
+						robot.mouseMoveAt(rootNode.expandoNode);
+						robot.mouseClick({left: true}, 100);
+						robot.sequence(d.getTestCallback(function(){
+							doh.f(rootNode.isExpanded, 'Clicking expando of node with long label should collapse node');
+							doh.is(0, thinTree.domNode.scrollLeft, 'Focusing node with long label should not scroll container');
 						}), 500);
 						return d;
 					}

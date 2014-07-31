@@ -112,11 +112,11 @@ define([
 					this._firstAroundPosition = newPos;
 					for(var i = 0; i < this._stack.length; i++){
 						var style = this._stack[i].wrapper.style;
-						style.top = (parseInt(style.top, 10) + dy) + "px";
+						style.top = (parseFloat(style.top) + dy) + "px";
 						if(style.right == "auto"){
-							style.left = (parseInt(style.left, 10) + dx) + "px";
+							style.left = (parseFloat(style.left) + dx) + "px";
 						}else{
-							style.right = (parseInt(style.right, 10) - dx) + "px";
+							style.right = (parseFloat(style.right) - dx) + "px";
 						}
 					}
 				}
@@ -154,6 +154,17 @@ define([
 
 				widget._popupWrapper = wrapper;
 				aspect.after(widget, "destroy", destroyWrapper, true);
+
+				// Workaround iOS problem where clicking a Menu can focus an <input> (or click a button) behind it.
+				// Need to be careful though that you can still focus <input>'s and click <button>'s in a TooltipDialog.
+				// Also, be careful not to break (native) scrolling of dropdown like ComboBox's options list.
+				if("ontouchend" in document) {
+					on(wrapper, "touchend", function (evt){
+						if(!/^(input|button|textarea)$/i.test(evt.target.tagName)) {
+							evt.preventDefault();
+						}
+					});
+				}
 			}
 
 			return wrapper;
@@ -384,6 +395,12 @@ define([
 				var top = stack.pop(),
 					widget = top.widget,
 					onClose = top.onClose;
+
+				if (widget.bgIframe) {
+					// push the iframe back onto the stack.
+					widget.bgIframe.destroy();
+					delete widget.bgIframe;
+				}
 
 				if(widget.onClose){
 					// TODO: in 2.0 standardize onHide() (used by StackContainer) and onClose() (used here).

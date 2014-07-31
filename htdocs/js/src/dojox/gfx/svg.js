@@ -393,7 +393,7 @@ function(lang, has, win, dom, declare, arr, domGeom, domAttr, Color, g, gs, path
 					clipNode = _createElementNS(svg.xmlns.svg, "clipPath");
 					clipShape = _createElementNS(svg.xmlns.svg, clipType);
 					clipNode.appendChild(clipShape);
-					this.rawNode.parentNode.appendChild(clipNode);
+					this.rawNode.parentNode.insertBefore(clipNode, this.rawNode);
 					domAttr.set(clipNode, "id", clipId);
 				}
 				domAttr.set(clipShape, clip);
@@ -809,7 +809,8 @@ else
 		}
 	};
 
-	var C = gs.Container, Container = {
+	var C = gs.Container;
+	var Container = svg.Container = {
 		openBatch: function() {
 			// summary:
 			//		starts a new batch, subsequent new child shapes will be held in
@@ -888,7 +889,7 @@ else
 		_moveChildToBack:  C._moveChildToBack
 	};
 
-	var Creator = {
+	var Creator = svg.Creator = {
 		// summary:
 		//		SVG shape creators
 		createObject: function(shapeType, rawShape){

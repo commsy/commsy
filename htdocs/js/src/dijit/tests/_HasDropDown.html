@@ -8,10 +8,10 @@
 <script type="text/javascript">
 require([
 	"doh/runner",
-	"dojo/_base/declare", "dojo/dom-geometry", "dojo/keys", "dojo/on", "dojo/_base/window",
+	"dojo/_base/declare", "dojo/dom-geometry", "dojo/has", "dojo/keys", "dojo/on", "dojo/_base/window",
 	"dijit/_HasDropDown", "dijit/_WidgetBase", "dijit/_TemplatedMixin",
 	"dijit/tests/helpers", "dojo/domReady!"
-], function(doh, declare, domGeom, keys, on, win,
+], function(doh, declare, domGeom, has, keys, on, win,
 			_HasDropDown, _WidgetBase, _TemplatedMixin, helpers){
 
 
@@ -72,11 +72,11 @@ require([
 		});
 	}
 	function click(node){
-		on.emit(node, navigator.pointerEnabled ? "pointerdown" : navigator.msPointerEnabled ? "MSPointerDown" : "mousedown", {
+		on.emit(node, has("pointer-events") ? "pointerdown" : has("MSPointer") ? "MSPointerDown" : "mousedown", {
 			button: 0,	// left button (except on IE quirks mode, when it's 1)
 			bubbles: true
 		});
-		on.emit(node, navigator.pointerEnabled ? "pointerup" : navigator.msPointerEnabled ? "MSPointerUp" : "mouseup", {
+		on.emit(node, has("pointer-events") ? "pointerup" : has("MSPointer") ? "MSPointerUp" : "mouseup", {
 			button: 0,	// left button (except on IE quirks mode, when it's 1)
 			bubbles: true
 		});
@@ -206,11 +206,32 @@ require([
 		}
 	]);
 
+	doh.register("destroy", [
+		function setup(){
+			dd = new SimpleDropDownButton({id: "dd2"}).placeAt(win.body());
+			popup = dd.dropDown;
+			doh.t(!!popup, "popup exists");
+		},
+		function open(){
+			var d = new doh.Deferred();
+			click(dd.domNode);
+			setTimeout(d.getTestCallback(function(){
+				doh.t(helpers.isVisible(popup), "popup visible");
+				doh.is(1, require("dijit/popup")._stack.length, "in popup manager stack");
+			}), 10);
+			return d;
+		},
+		function destroy(){
+			dd.destroy();
+			doh.is(0, require("dijit/popup")._stack.length, "popup was closed");
+		}
+	]);
+
 	doh.run();
 });
 </script>
 </head>
-<body class="claro">
+<body>
 <h1>_HasDropDown Unit Test</h1>
 </body>
 </html>

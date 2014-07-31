@@ -42,6 +42,7 @@
 		//	|	http://your.server.com/yourapp.html?theme=Custom // forces Custom theme
 		//	|	http://your.server.com/yourapp.html?theme=iPhone // forces iPhone theme
 		//	|	http://your.server.com/yourapp.html?theme=iPad // forces iPad theme
+		//	|	http://your.server.com/yourapp.html?theme=ios7 // forces iOS 7 theme
 		//
 		//		To simulate a particular device from the application code, the user agent
 		//		can be forced by setting dojoConfig.mblUserAgent as follows:
@@ -136,7 +137,7 @@
 			//		Replaces the dojox/mobile object.
 			// description:
 			//		When this module is loaded from a script tag, dm is a plain
-			//		local object defined at the begining of this module.
+			//		local object defined at the beginning of this module.
 			//		common.js will replace the local dm object with the
 			//		real dojox/mobile object through this method.
 			dm = _dm;
@@ -186,6 +187,21 @@
 				[]
 			],
 			[
+				"ios7",
+				"ios7",
+				[]
+			],
+			[
+				"iPhone;.*OS 7_",
+				"ios7",
+				[]
+			],
+			[
+				"iPad;.*OS 7_",
+				"ios7",
+				[]
+			],
+			[
 				"iPhone",
 				"iphone",
 				[]
@@ -201,13 +217,13 @@
 				[]
 			],
 			[
-				"MSIE [6-9]",
-				"iphone",
+				"Windows Phone",
+				"windows",
 				[]
 			],
 			[
 				"Trident",
-				"windows",
+				"iphone",
 				[]
 			],
 			[
@@ -269,7 +285,7 @@
 						// dojox.mobile mirroring support
 						var cssFilePath = files[j].toString();
 						if(config["dojo-bidi"] == true && cssFilePath.indexOf("_rtl") == -1){
-							var rtlCssList = "android.css blackberry.css custom.css iphone.css holodark.css base.css Carousel.css ComboBox.css IconContainer.css IconMenu.css ListItem.css RoundRectCategory.css SpinWheel.css Switch.css TabBar.css ToggleButton.css ToolBarButton.css";
+							var rtlCssList = "android.css blackberry.css custom.css iphone.css holodark.css base.css Carousel.css ComboBox.css IconContainer.css IconMenu.css ListItem.css RoundRectCategory.css SpinWheel.css Switch.css TabBar.css ToggleButton.css ToolBarButton.css ProgressIndicator.css Accordion.css GridLayout.css FormLayout.css";
 							var cssName = cssFilePath.substr(cssFilePath.lastIndexOf('/') + 1);
 							if(rtlCssList.indexOf(cssName) != -1){
 								this.loadCssFile(cssFilePath.replace(".css","_rtl.css"));

@@ -207,7 +207,7 @@ return {
 					node.style.display = disp;
 				}
 			}
-		});	
+		});
 
 
 		lang.extend(Switch, {
@@ -256,7 +256,7 @@ return {
 					f();
 				}
 			}
-		});	
+		});
 
 
 		lang.extend(ProgressIndicator, {
@@ -411,20 +411,6 @@ return {
 						marginBottom: "-2px",
 						fontSize: "1px"
 					});
-				}
-			});
-
-			// #13846: on IE<10, setSelectable(false) sets unselectable="on" on all children,
-			// which makes INPUT elements uneditable.
-			Heading._buildRendering = Heading.prototype.buildRendering;
-			lang.extend(Heading, {
-				buildRendering: function(){
-					Heading._buildRendering.apply(this);
-					var nodes = this.domNode.getElementsByTagName("INPUT"),
-						i = nodes.length;
-					while(i--){
-						nodes[i].removeAttribute("unselectable");
-					}
 				}
 			});
 		} // if	(has("ie"))
@@ -598,7 +584,7 @@ return {
 				for(var i = 0; i < paths.length; i++){
 					var href = paths[i];
 					if(href.indexOf("_rtl") == -1){
-						var rtlCssList = "android.css blackberry.css custom.css iphone.css holodark.css base.css Carousel.css ComboBox.css IconContainer.css IconMenu.css ListItem.css RoundRectCategory.css SpinWheel.css Switch.css TabBar.css ToggleButton.css ToolBarButton.css";
+						var rtlCssList = "android.css blackberry.css custom.css iphone.css holodark.css base.css Carousel.css ComboBox.css IconContainer.css IconMenu.css ListItem.css RoundRectCategory.css SpinWheel.css Switch.css TabBar.css ToggleButton.css ToolBarButton.css ProgressIndicator.css Accordion.css GridLayout.css FormLayout.css";
 						var cssName = href.substr(href.lastIndexOf('/') + 1);
 						if(rtlCssList.indexOf(cssName) != -1){
 							var rtlPath = href.replace(".css", "_rtl.css");
@@ -615,7 +601,7 @@ return {
 		};
 
 		ready(function(){
-			if(config["mblLoadCompatCssFiles"] !== false){
+			if(config.mblLoadCompatCssFiles !== false){
 				dm.loadCompatCssFiles();
 			}
 			if(dm.applyPngFilter){

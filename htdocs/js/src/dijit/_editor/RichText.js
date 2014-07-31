@@ -356,10 +356,8 @@ define([
 
 			var dn = this.domNode;
 
-			// "html" will hold the innerHTML of the srcNodeRef and will be used to
-			// initialize the editor.
+			// Compute initial value of the editor
 			var html;
-
 			if(lang.isString(this.value)){
 				// Allow setting the editor content programmatically instead of
 				// relying on the initial content being contained within the target
@@ -418,7 +416,6 @@ define([
 				html = htmlapi.getChildrenHtml(dn);
 				dn.innerHTML = "";
 			}
-
 			this.value = html;
 
 			// If we're a list item we have to put in a blank line to force the
@@ -449,7 +446,7 @@ define([
 					while((dat = datas[i++])){
 						var data = dat.split(this._NAME_CONTENT_SEP);
 						if(data[0] === this.name){
-							html = data[1];
+							this.value = data[1];
 							datas = datas.splice(i, 1);
 							saveTextarea.value = datas.join(this._SEPARATOR);
 							break;
@@ -496,6 +493,10 @@ define([
 			}
 			ifr.frameBorder = 0;
 			ifr._loadFunc = lang.hitch(this, function(w){
+				// This method is called when the editor is first loaded and also if the Editor's
+				// dom node is repositioned. Unfortunately repositioning the Editor tends to
+				// clear the iframe's contents, so we can't just no-op in that case.
+
 				this.window = w;
 				this.document = w.document;
 
@@ -506,8 +507,10 @@ define([
 					this._localizeEditorCommands();
 				}
 
-				// Do final setup and set initial contents of editor
-				this.onLoad(html);
+				// Do final setup and set contents of editor.
+				// Use get("value") rather than html in case _loadFunc() is being called for a second time
+				// because editor's DOMNode was repositioned.
+				this.onLoad(this.get("value"));
 			});
 
 			// Attach iframe to document, and set the initial (blank) content.
@@ -790,8 +793,6 @@ define([
 			// tags:
 			//		protected
 
-			// TODO: rename this to _onLoad, make empty public onLoad() method, deprecate/make protected onLoadDeferred handler?
-
 			if(!this.window.__registeredWindow){
 				this.window.__registeredWindow = true;
 				this._iframeRegHandle = focus.registerIframe(this.iframe);
@@ -814,10 +815,10 @@ define([
 
 			var events = this.events.concat(this.captureEvents);
 			var ap = this.iframe ? this.document : this.editNode;
-			this.own(
+			this.own.apply(this,
 				array.map(events, function(item){
 					var type = item.toLowerCase().replace(/^on/, "");
-					on(ap, type, lang.hitch(this, item));
+					return on(ap, type, lang.hitch(this, item));
 				}, this)
 			);
 
@@ -834,14 +835,6 @@ define([
 				// not contentEditable.   Removing it would also probably remove the need for creating
 				// the extra <div> in _getIframeDocTxt()
 				this.editNode.style.zoom = 1.0;
-			}else{
-				this.own(on(this.document, "mousedown", lang.hitch(this, function(){
-					// Clear the moveToStart focus, as mouse
-					// down will set cursor point.  Required to properly
-					// work with selection/position driven plugins and clicks in
-					// the window. refs: #10678
-					delete this._cursorToStart;
-				})));
 			}
 
 			if(has("webkit")){
@@ -880,9 +873,13 @@ define([
 			// until plugins load (and do things like register filters).
 			var setContent = lang.hitch(this, function(){
 				this.setValue(html);
-				if(this.onLoadDeferred){
+
+				// Tell app that the Editor has finished loading.  isFulfilled() check avoids spurious
+				// console warning when this function is called repeatedly because Editor DOMNode was moved.
+				if(this.onLoadDeferred && !this.onLoadDeferred.isFulfilled()){
 					this.onLoadDeferred.resolve(true);
 				}
+
 				this.onDisplayChanged();
 				if(this.focusOnLoad){
 					// after the document loads, then set focus after updateInterval expires so that
@@ -1125,13 +1122,6 @@ define([
 			if(!this.isLoaded){
 				this.focusOnLoad = true;
 				return;
-			}
-			if(this._cursorToStart){
-				delete this._cursorToStart;
-				if(this.editNode.childNodes){
-					this.placeCursorAtStart(); // this calls focus() so return
-					return;
-				}
 			}
 			if(has("ie") < 9){
 				//this.editNode.focus(); -> causes IE to scroll always (strict and quirks mode) to the top the Iframe
@@ -1575,7 +1565,6 @@ define([
 				}));
 				return;
 			}
-			this._cursorToStart = true;
 			if(this.textarea && (this.isClosed || !this.isLoaded)){
 				this.textarea.value = html;
 			}else{
@@ -2832,7 +2821,7 @@ define([
 
 		_handleTextColorOrProperties: function(command, argument){
 			// summary:
-			//		This function handles appplying text color as best it is
+			//		This function handles applying text color as best it is
 			//		able to do so when the selection is collapsed, making the
 			//		behavior cross-browser consistent. It also handles the name
 			//		and size for IE.
@@ -2997,9 +2986,19 @@ define([
 			}
 
 			return node;
+		},
+
+		// Needed to support ToggleDir plugin.  Intentionally not inside if(has("dojo-bidi")) block
+		// so that (for backwards compatibility) ToggleDir plugin works even when has("dojo-bidi") is falsy.
+		_setTextDirAttr: function(/*String*/ value){
+			// summary:
+			//		Sets textDir attribute.  Sets direction of editNode accordingly.
+			this._set("textDir", value);
+			this.onLoadDeferred.then(lang.hitch(this, function(){
+				this.editNode.dir = value;
+			}));
 		}
 	});
 
 	return RichText;
-
 });

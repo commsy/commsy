@@ -13,4 +13,4 @@ Notes:
    impacts some of the tests which perform dimensional checks.
 2. When running in IE, the following tests: ButtonsTests.html, ExpandingTextAreaTests.html, and 
    TextAreaTests.html, the dimensional checks are calibrated for execution in IE9, 
-   and the checks are skipped in older IE versions.   
+   and the checks are skipped in older IE versions.

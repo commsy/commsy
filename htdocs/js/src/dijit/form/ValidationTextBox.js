@@ -1,12 +1,13 @@
 define([
 	"dojo/_base/declare", // declare
 	"dojo/_base/kernel", // kernel.deprecated
+	"dojo/_base/lang",
 	"dojo/i18n", // i18n.getLocalization
 	"./TextBox",
 	"../Tooltip",
 	"dojo/text!./templates/ValidationTextBox.html",
 	"dojo/i18n!./nls/validate"
-], function(declare, kernel, i18n, TextBox, Tooltip, template){
+], function(declare, kernel, lang, i18n, TextBox, Tooltip, template){
 
 	// module:
 	//		dijit/form/ValidationTextBox
@@ -173,7 +174,7 @@ define([
 			var isEmpty = this._isEmpty(this.textbox.value);
 			var isValidSubset = !isValid && isFocused && this._isValidSubset();
 			this._set("state", isValid ? "" : (((((!this._hasBeenBlurred || isFocused) && isEmpty) || isValidSubset) && (this._maskValidSubsetError || (isValidSubset && !this._hasBeenBlurred && isFocused))) ? "Incomplete" : "Error"));
-			this.focusNode.setAttribute("aria-invalid", isValid ? "false" : "true");
+			this.focusNode.setAttribute("aria-invalid", this.state == "Error" ? "true" : "false");
 
 			if(this.state == "Error"){
 				this._maskValidSubsetError = isFocused && isValidSubset; // we want the error to show up after a blur and refocus
@@ -222,7 +223,7 @@ define([
 			// srcNodeRef: DOMNode|String?
 			//		If a srcNodeRef (DOM node) is specified, replace srcNodeRef with my generated DOM tree.
 
-			this.constraints = {};
+			this.constraints = lang.clone(this.constraints);
 			this.baseClass += ' dijitValidationTextBox';
 		},
 
@@ -325,6 +326,11 @@ define([
 			// (if the message is being displayed as a tooltip), call displayMessage('')
 			this.displayMessage('');
 
+			this.inherited(arguments);
+		},
+
+		destroy: function(){
+			Tooltip.hide(this.domNode);	// in case tooltip show when ValidationTextBox (or enclosing Dialog) destroyed
 			this.inherited(arguments);
 		}
 	});

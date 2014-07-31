@@ -89,8 +89,10 @@ define([
 		},
 
 		onInput: function(e){
-			this._onKey(e);
-			this.inherited(arguments);
+			if(!e || e.charCode !== 0){ // #18047
+				this._onKey(e);
+				this.inherited(arguments);
+			}
 		},
 
 		_setListAttr: function(v){
@@ -149,7 +151,7 @@ define([
 				domAttr.set(this.domNode, "aria-owns", dropDown.id);
 			}
 
-			if(has('touch')){
+			if(has("touch")){
 				win.global.scrollBy(0, domGeometry.position(aroundNode, false).y); // don't call scrollIntoView since it messes up ScrollableView
 			}
 
@@ -264,7 +266,7 @@ define([
 						active = isGesture = false; // click implies no gesture movement
 					}
 				);
-				this.endHandler = this.connect(win.doc.documentElement, "onmouseup",//touch.release,
+				this.endHandler = this.connect(win.doc.documentElement, touch.release,
 					function(){
 						this.defer(function(){ // allow onclick to go first
 							skipReposition = true;

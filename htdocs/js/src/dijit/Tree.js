@@ -1,7 +1,6 @@
 define([
 	"dojo/_base/array", // array.filter array.forEach array.map
 	"dojo/aspect",
-	"dojo/_base/connect", // connect.isCopyKey()
 	"dojo/cookie", // cookie
 	"dojo/_base/declare", // declare
 	"dojo/Deferred", // Deferred
@@ -36,7 +35,7 @@ define([
 	"./tree/ForestStoreModel",
 	"./tree/_dndSelector",
 	"dojo/query!css2"	// needed when on.selector() used with a string for the selector
-], function(array, aspect, connect, cookie, declare, Deferred, all,
+], function(array, aspect, cookie, declare, Deferred, all,
 			dom, domClass, domGeometry, domStyle, createError, fxUtils, has, kernel, keys, lang, on, topic, touch, when,
 			a11yclick, focus, registry, manager, _Widget, _TemplatedMixin, _Container, _Contained, _CssStateMixin, _KeyNavMixin,
 			treeNodeTemplate, treeTemplate, TreeStoreModel, ForestStoreModel, _dndSelector){
@@ -217,13 +216,13 @@ define([
 			//		Set appropriate CSS classes for this.domNode
 			// tags:
 			//		private
-			var parent = this.getParent();
-			if(!parent || !parent.rowNode || parent.rowNode.style.display == "none"){
-				/* if we are hiding the root node then make every first level child look like a root node */
-				domClass.add(this.domNode, "dijitTreeIsRoot");
-			}else{
-				domClass.toggle(this.domNode, "dijitTreeIsLast", !this.getNextSibling());
-			}
+
+			// if we are hiding the root node then make every first level child look like a root node
+			var parent = this.getParent(),
+				markAsRoot = !parent || !parent.rowNode || parent.rowNode.style.display == "none";
+			domClass.toggle(this.domNode, "dijitTreeIsRoot", markAsRoot);
+
+			domClass.toggle(this.domNode, "dijitTreeIsLast", !markAsRoot && !this.getNextSibling());
 		},
 
 		_setExpando: function(/*Boolean*/ processing){
@@ -362,6 +361,8 @@ define([
 				defs = [];	// list of deferreds that need to fire before I am complete
 
 
+			var focusedChild = tree.focusedChild;
+
 			// Orphan all my existing children.
 			// If items contains some of the same items as before then we will reattach them.
 			// Don't call this.removeChild() because that will collapse the tree etc.
@@ -409,10 +410,19 @@ define([
 							tree._saveExpandedNodes();
 						}
 
+						// If we've orphaned the focused node then move focus to the root node
+						if(tree.lastFocusedChild && !dom.isDescendant(tree.lastFocusedChild, tree.domNode)){
+							delete tree.lastFocusedChild;
+						}
+						if(focusedChild && !dom.isDescendant(focusedChild, tree.domNode)){
+							tree.focus();	// could alternately focus this node (parent of the deleted node)
+						}
+
 						// And finally we can destroy the node
 						node.destroyRecursive();
 					}
 				});
+
 			});
 
 			this.state = "Loaded";
@@ -927,10 +937,11 @@ define([
 
 					// Load top level children, and if persist==true, all nodes that were previously opened
 					this._expandNode(rn).then(lang.hitch(this, function(){
-						// Then, select the nodes specified by params.paths[].
-
-						this.rootLoadingIndicator.style.display = "none";
-						this.expandChildrenDeferred.resolve(true);
+						// Then, select the nodes specified by params.paths[], assuming Tree hasn't been deleted.
+						if(!this._destroyed){
+							this.rootLoadingIndicator.style.display = "none";
+							this.expandChildrenDeferred.resolve(true);
+						}
 					}));
 				}),
 				lang.hitch(this, function(err){
@@ -1357,7 +1368,7 @@ define([
 			// Touching a node should focus it, even if you touch the expando node or the edges rather than the label.
 			// Especially important to avoid _KeyNavMixin._onContainerFocus() causing the previously focused TreeNode
 			// to get focus
-			nodeWidget.focus();
+			this.focusNode(nodeWidget);
 		},
 
 		__click: function(/*TreeNode*/ nodeWidget, /*Event*/ e, /*Boolean*/doOpen, /*String*/func){
@@ -1557,7 +1568,9 @@ define([
 			// tags:
 			//		protected
 
+			var scrollLeft = this.domNode.scrollLeft;
 			this.focusChild(node);
+			this.domNode.scrollLeft = scrollLeft;
 		},
 
 		_onNodeMouseEnter: function(/*dijit/_WidgetBase*/ /*===== node =====*/){
@@ -1628,6 +1641,15 @@ define([
 						// if node has not already been orphaned from a _onSetItem(parent, "children", ..) call...
 						parent.removeChild(node);
 					}
+
+					// If we've orphaned the focused node then move focus to the root node
+					if(this.lastFocusedChild && !dom.isDescendant(this.lastFocusedChild, this.domNode)){
+						delete this.lastFocusedChild;
+					}
+					if(this.focusedChild && !dom.isDescendant(this.focusedChild, this.domNode)){
+						this.focus();
+					}
+
 					node.destroyRecursive();
 				}, this);
 				delete this._itemNodesMap[identity];

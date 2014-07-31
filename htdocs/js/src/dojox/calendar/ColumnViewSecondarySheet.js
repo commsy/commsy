@@ -1,11 +1,21 @@
-define(["./MatrixView", "dojo/text!./templates/ColumnViewSecondarySheet.html",
-	"dojo/_base/html", "dojo/_base/declare", "dojo/_base/event", "dojo/_base/lang", 
-	"dojo/_base/sniff", "dojo/dom", "dojo/dom-class", "dojo/dom-geometry", "dojo/dom-construct", 
-	"dojo/date", "dojo/date/locale", "dojo/query", "dojox/html/metrics", "dojo/_base/fx", "dojo/on", 
-	"dojo/window"],
+define([         	
+"dojo/_base/array",
+"dojo/_base/declare", 
+"dojo/_base/event", 
+"dojo/_base/lang", 	
+"dojo/dom-geometry",
+"dojo/dom-style",
+"dojox/calendar/MatrixView",
+"dojo/text!./templates/ColumnViewSecondarySheet.html"],
 	
-	function(MatrixView, template, html, declare, event, lang, has, dom, domClass, domGeometry, domConstruct, 
-		date, locale, query, metrics, fx, on, win){
+function(arr,
+		declare,
+		event,
+		lang,
+		domGeometry,
+		domStyle,
+		MatrixView, 
+		template){
 	
 	return declare("dojox.calendar.ColumnViewSecondarySheet", MatrixView, {
 		
@@ -24,6 +34,17 @@ define(["./MatrixView", "dojo/text!./templates/ColumnViewSecondarySheet.html",
 		_defaultHeight: -1,
 		
 		layoutDuringResize: true,
+		
+		buildRendering: function(){
+			this.inherited(arguments);
+			this._hScrollNodes = [this.gridTable, this.itemContainerTable];
+		},
+		
+		_configureHScrollDomNodes: function(styleWidth){
+			arr.forEach(this._hScrollNodes, function(elt){
+				domStyle.set(elt, "width", styleWidth);
+			}, this);
+		},
 		
 		_defaultItemToRendererKindFunc: function(item){
 			// tags:
@@ -51,7 +72,7 @@ define(["./MatrixView", "dojo/text!./templates/ColumnViewSecondarySheet.html",
 		},
 		
 		_layoutExpandRenderers: function(index, hasHiddenItems, hiddenItems){
-			if(!this.expandRenderer){
+			if(!this.expandRenderer || this._expandedRowCol == -1){
 				return;
 			}
 			var h = domGeometry.getMarginBox(this.domNode).h;
@@ -76,16 +97,18 @@ define(["./MatrixView", "dojo/text!./templates/ColumnViewSecondarySheet.html",
 			// tags:
 			//		callback
 
-			
 			event.stop(e);
-			var h = domGeometry.getMarginBox(this.domNode).h;			
-			if(this._defaultHeight == h || h < this._getExpandedHeight()){
-				this._expandedRowCol = renderer.columnIndex;
-				this.owner.resizeSecondarySheet(this._getExpandedHeight());
+			
+			var h = domGeometry.getMarginBox(this.domNode).h;
+			var expandedH = this._getExpandedHeight();
+			if(this._defaultHeight == h || h < expandedH){
+				this._expandedRowCol = renderer.columnIndex;				
+				this.owner.resizeSecondarySheet(expandedH);
 			}else{
 				this.owner.resizeSecondarySheet(this._defaultHeight);
 			}
 		},
+		
 		
 		_getExpandedHeight: function(){
 			// tags:
