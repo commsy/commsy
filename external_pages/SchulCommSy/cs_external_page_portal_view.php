@@ -590,6 +590,27 @@ class cs_external_page_portal_view extends cs_page_view {
       } else {
          $room_user = '';
       }
+
+      // archive
+      if ( $may_enter
+           and empty($room_user)
+           and $item->isClosed()
+           and !$this->_environment->isArchiveMode()
+         ) {
+         $user_manager = $this->_environment->getZzzUserManager();
+         $user_manager->setUserIDLimit($current_user->getUserID());
+         $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+         $user_manager->setContextLimit($item->getItemID());
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if (!empty($user_list)) {
+            $room_user = $user_list->getFirst();
+         } else {
+            $room_user = '';
+         }
+         unset($user_list);
+      }
+      
       $current_user = $this->_environment->getCurrentUserItem();
 
       //Anzeige außerhalb des Anmeldeprozesses
