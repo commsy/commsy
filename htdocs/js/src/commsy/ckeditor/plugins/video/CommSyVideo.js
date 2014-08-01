@@ -1,10 +1,54 @@
-/*
-Copyright (c) 2003-2012, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+
 
 CKEDITOR.plugins.add( "CommSyVideo",
 {
+	afterInit : function( editor )
+    {
+        function createFakeElement( editor, realElement )
+        {
+            return editor.createFakeParserElement( realElement, 'cke_video', 'video', true );
+        }
+
+        var dataProcessor = editor.dataProcessor,
+                dataFilter = dataProcessor && dataProcessor.dataFilter;
+            if ( dataFilter )
+            {
+                dataFilter.addRules(
+                    {
+                        elements :
+                        {
+                            'div' : function( element )
+                            {
+                                //alert("here");
+                                var attributes = element.attributes;
+                                console.log(attributes);
+                                if( attributes.class == 'commsyPlayer' ){
+                                    //alert("here");
+                                    console.log("CreateFakeElement");
+                                    console.log(createFakeElement( editor, element ));
+                                    return createFakeElement( editor, element );
+                                }
+                                return null;
+
+                            }
+                        }
+                    },
+                    5);
+        	}
+    },
+    onLoad: function() {
+		CKEDITOR.addCss( 'img.cke_video' +
+			'{' +
+				'background-image: url(' + CKEDITOR.getUrl( this.path + 'images/placeholder.png' ) + ');' +
+				'background-position: center center;' +
+				'background-repeat: no-repeat;' +
+				'border: 1px solid #a9a9a9;' +
+				'width: 640px;' +
+				'height: 360px;' +
+			'}'
+			);
+
+	},
 	init: function( editor )
 	{
 		editor.addCommand( "CommSyVideo", new CKEDITOR.dialogCommand( "CommSyVideo" ) );
@@ -15,9 +59,30 @@ CKEDITOR.plugins.add( "CommSyVideo",
 			command:	"CommSyVideo",
 			icon:		"../../src/commsy/ckeditor/plugins/video/images/icon.png"
 		} );
+
+		if ( editor.contextMenu ) {
+            editor.addMenuGroup( 'abbrGroup' );
+            editor.addMenuItem( 'abbrItem', {
+            label: 		'CommSy Video',
+            icon:		"../../src/commsy/ckeditor/plugins/video/images/icon.png",
+            command: 	'CommSyVideo',
+            group: 		'abbrGroup'
+        });
+
+            editor.contextMenu.addListener( function( element ) {
+            	if ( element.getAscendant( 'img', true )) {
+            		if ( element.getAscendant( 'img', true ).getAttribute('class') == "cke_video") {
+                    	return { abbrItem: CKEDITOR.TRISTATE_OFF };
+                	}
+            	}
+                
+            });
+        }
 		
 		CKEDITOR.dialog.add( 'CommSyVideo', function ( instance )
 				{
+					element: ""
+
 					var regexGetSize = /^\s*(\d+)((px)|\%)?\s*$/i,
 					regexGetSizeOrEmpty = /(^\s*(\d+)((px)|\%)?\s*$)|^$/i,
 					video,
@@ -361,6 +426,33 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												id : 'videoUrl',
 												type : 'text',
 												label : 'Aus URL einfügen',
+												setup: function (element) {
+													if(element){
+														if(element.getName() == 'div' && element.getAttribute('class') == 'commsyPlayer'){
+															console.log(element);	
+															this.setValue(element.findOne('video').findOne('source').getAttribute('src'));
+														}
+													}
+													
+													
+												},
+												commit: function (element) {
+													// console.log("Commit");
+													// console.log(element);	
+
+													// // var videoNode = new CKEDITOR.dom.element( 'video' );
+													// // videoNode.append(new CKEDITOR.dom.element( 'source' ));
+
+													// if(element) {
+													// 	var url;
+													// 	url = this.getValue();
+													// 	if(element.getName() == 'div' && element.getAttribute('class') == 'commsyPlayer' && url){
+													// 		element.findOne('video').findOne('source').setAttribute('src', url);
+													// 	}
+													// }
+													
+													
+												},
 												validate : function ()
 												{
 													if ( this.isEnabled() )
@@ -556,8 +648,33 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //								title: 'blaaaa',
 //							}
 						],
+						onShow: function() {
+							// set all values for input fields
+							// after all remove element in editor
+
+		                    var selection = editor.getSelection(),
+		                        element = selection.getStartElement();
+		                    if ( element )
+		                        element = element.getAscendant( 'div', true );
+
+		                    if ( !element || element.getName() != 'div' || element.getAttribute('class') != 'commsyPlayer' || element.data( 'cke-realelement' ) ) {
+		                        //element = editor.document.createElement( 'video' );
+		                        this.insertMode = true;
+		                    }
+		                    else
+		                        this.insertMode = false;
+
+
+		                    this.element = element;
+
+		                    if ( !this.insertMode )
+		                        this.setupContent( this.element );
+
+		                },
 						onOk: function()
 						{
+							console.log(TEST_GLOBAL);
+
 							var content = '',
 							width = this.getValueOf( 'videoTab', 'videoWidth' ),
 							height = this.getValueOf( 'videoTab', 'videoHeight' ),
@@ -565,6 +682,8 @@ CKEDITOR.plugins.add( "CommSyVideo",
 							
 							var autostart = this.getValueOf( 'videoTab', 'autostart');
 							
+
+							// #########################################################
 							// define styles
 							var float = this.getValueOf( 'videoTab', 'float');
 							var floatValue = '';
@@ -595,7 +714,10 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								style += 'float:left;';
 							}
 							style += '"';
+							// define styles end
+							// ##########################################################
 							
+
 							if(this.getValueOf('videoTab', 'selectbox') == 'lecture2go'){
 								
 //								content = 'http://lecture2go.uni-hamburg.de/';
@@ -684,44 +806,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += '<embed width="' + width + '" height="' + height + '" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="' + videoUrl + '">';
 								content += '</object>';
 								
-							} else if(this.getValueOf('videoTab', 'selectbox') == 'quicktime'){
-								
-								// if(this.getValueOf('videoTab', 'autostart')){
-								// 	params = 'autoplay="true"';
-								// }
-								
-								// content += '<object width="' + width + '" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + '" name="src">';
-								// content += '<param value="true" name="controller">';
-								// content += '<param value="high" name="quality">';
-								// content += '<param value="tofit" name="scale">';
-								// content += '<param value="#000000" name="bgcolor">';
-								// content += '<param value="opaque" name="wmode">';
-								// if(this.getValueOf('videoTab', 'autostart')){
-								// 	content += '<param value="true" name="autoplay">';
-								// } else {
-								// 	content += '<param value="false" name="autoplay">';
-								// }
-								// content += '<param value="false" name="loop">';
-								// content += '<param value="true" name="devicefont">';
-								// content += '<param value="mov" name="class">';
-								// content += '<embed width="' + width + '" height="' + height + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + '" ' + style + ' controller="true"' + params + '>';
-								// content += '</object>';
-								
-							} else if(this.getValueOf('videoTab', 'selectbox') == 'mediaplayer'){
-							
-								// content += '<object width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18" ' + style + '>';
-								// content += '<param value="' + videoUrl + '" name="fileName">';
-								// if(this.getValueOf('videoTab', 'autostart')){
-								// 	content += '<param value="true" name="autoStart">';
-								// } else {
-								// 	content += '<param value="false" name="autoStart">';
-								// }
-								// content += '<param value="true" name="showControls">';
-								// content += '<param value="true" name="showStatusBar">';
-								// content += '<param value="opaque" name="wmode">';
-								// content += '<embed width="' + width + '" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + '" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
-								// content += '</object>';
-								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'vimeo'){
 								
 								var vimeo_regex = /vimeo.com\/(.*)/,
@@ -740,27 +824,59 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								content += '</embed></object>';
 								content += '';
 								
-//								<object width="500" height="281">
-//								<param name="allowfullscreen" value="true" />
-//								<param name="allowscriptaccess" value="always" />
-//								<param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=60210872&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" />
-//								<embed src="http://vimeo.com/moogaloop.swf?clip_id=60210872&amp;force_embed=1&amp;server=vimeo.com&amp;show_title=1&amp;show_byline=1&amp;show_portrait=1&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="500" height="281">
-//								</embed></object>
 								
 							} else if(this.getValueOf('videoTab', 'selectbox') == 'projekktor'){
-								// autostart ausrichtung rahmen h abstand v abstand
-
 
 								var fileType = this.getValueOf( 'videoTab', 'videoType' );
 
-								content += '<div class="commsyPlayer" ' + style + '>&nbsp;';
+								if(!fileType){
+									var regEx = /\/.*\.(.{3,})\?/;
+									var match = videoUrl.match(regEx);
+									//console.log(match);
+									//
+									switch (match[1]) {
+										case "avi":
+											fileType = 'video/x-msvideo';
+											break;
+										case "wmv":
+											fileType = 'video/x-ms-wmv';
+											break;
+										case "mov":
+											fileType = 'video/quicktime';
+											break;
+										case "mp4":
+											fileType = 'video/mpeg';
+											break;
+										case "mpeg":
+											fileType = 'video/mpeg';
+											break;
+										// case "mp3":
+										// 	fileType = 'audio/mpeg'
+										// 	break;
+										// case "wma":
+										// 	fileType = 'x-ms-wma';
+										// 	break;
+									}
+								}
+								var sessionID = getCookie("SID");
+
+								content += '<div class="commsyPlayer" ' + style + ' width="' + width + '" height="' + height + '">&nbsp;T';
 								content += '<video width="' + width + '" height="' + height + '" class="projekktor">';
 								content += '<source src="' + videoUrl + '" type="' + fileType + '"/>';
 								content += '</video>';
 								content += '</div>';
 							}
+							console.log(this.element);
+							//this.commitContent(this.element);
+
 							var instance = this.getParentEditor();
-							instance.insertHtml( content );
+							if(this.insertMode){
+								instance.insertHtml( content );
+							} else {
+								console.log(this.element);
+								instance.insertElement( this.element );
+							}
+							
 						}
 					};
 				});
@@ -779,6 +895,7 @@ function ytVidId( url )
 	var p = /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 	return ( url.match( p ) ) ? RegExp.$1 : false;
 }
+
 function getUrlParam( param )
 {
 	param = param.replace(/[\[]/,"\\\[").replace(/[\]]/,"\\\]");
@@ -792,3 +909,5 @@ function getUrlParam( param )
 	else
 		return results[1];
 }
+
+
