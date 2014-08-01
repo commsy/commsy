@@ -938,7 +938,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 											fileType = 'video/quicktime';
 											break;
 										case "mp4":
-											fileType = 'video/mpeg';
+											fileType = 'video/mp4';
 											break;
 										case "mpeg":
 											fileType = 'video/mpeg';
