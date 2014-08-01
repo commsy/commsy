@@ -21,7 +21,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
                             {
                                 //alert("here");
                                 var attributes = element.attributes;
-                                console.log(attributes);
                                 if( attributes.class == 'commsyPlayer' ){
                                     //alert("here");
                                     console.log("CreateFakeElement");
@@ -437,19 +436,22 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													
 												},
 												commit: function (element) {
-													// console.log("Commit");
-													// console.log(element);	
+													console.log("Commit");
+													console.log(element);	
 
-													// // var videoNode = new CKEDITOR.dom.element( 'video' );
-													// // videoNode.append(new CKEDITOR.dom.element( 'source' ));
+													// var videoNode = new CKEDITOR.dom.element( 'video' );
+													// videoNode.append(new CKEDITOR.dom.element( 'source' ));
 
-													// if(element) {
-													// 	var url;
-													// 	url = this.getValue();
-													// 	if(element.getName() == 'div' && element.getAttribute('class') == 'commsyPlayer' && url){
-													// 		element.findOne('video').findOne('source').setAttribute('src', url);
-													// 	}
-													// }
+													if(element) {
+														var url;
+														url = this.getValue();
+														console.log(url);
+														if(element.getName() == 'div' && element.getAttribute('class') == 'commsyPlayer' && url){
+															element.findOne('video').findOne('source').setAttribute('src', url);
+															element.findOne('video').findOne('source').setAttribute('data-cke-saved-src', url);
+															console.log(element);
+														}
+													}
 													
 													
 												},
@@ -512,6 +514,21 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												label : 'Breite',
 												'default' : '640',
 												onKeyUp: onSizeChange,
+												commit: function(element){
+													if(element) {
+														element.findOne('video').setAttribute('width', this.getValue())
+													}
+												},
+												setup: function(element) {
+													if(element) {
+														console.log("BREITEHTML");
+														console.log(element.findOne('.projekktor').getOuterHtml());
+														var width = element.findOne('.projekktor').getAttribute('width')
+														if(width){
+															this.setValue(width);
+														}
+													}
+												},
 												validate: function() {
 													var aMatch = this.getValue().match( regexGetSizeOrEmpty ),
 														isValid = !!( aMatch && parseInt( aMatch[ 1 ], 10 ) !== 0 );
@@ -530,6 +547,19 @@ CKEDITOR.plugins.add( "CommSyVideo",
 //												onChange: function() {
 //													commitInternally.call( this, 'advanced:txtdlgGenStyle' );
 //												},
+												commit: function(element){
+													if(element) {
+														element.findOne('video').setAttribute('height', this.getValue())
+													}
+												},
+												setup: function(element) {
+													if(element) {
+														var height = element.findOne('.projekktor').getAttribute('height')
+														if(height){
+															this.setValue(height);
+														}
+													}
+												},
 												validate: function() {
 													var aMatch = this.getValue().match( regexGetSizeOrEmpty ),
 														isValid = !!( aMatch && parseInt( aMatch[ 1 ], 10 ) !== 0 );
@@ -597,7 +627,26 @@ CKEDITOR.plugins.add( "CommSyVideo",
 															new Array ('<nichts>','null'),
 															new Array ('Links','left'),
 															new Array ('Rechts','right')
-														)
+														),
+												commit: function(element){
+													if(element) {
+														if(this.getValue() != 'null'){
+															element.setStyle('float', this.getValue());
+														} else {
+															element.setStyle('float', '');
+														}
+													}
+												},
+												setup: function(element) {
+													if(element){
+														var value = element.getStyle('float');
+														if(value == 'right'){
+															this.setValue(value);
+														} else if(value == 'left'){
+															this.setValue(value);
+														}
+													}
+												}
 											},
 											{
 												type : 'text',
@@ -605,6 +654,21 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												width : '60px',
 												label : 'Rahmen',
 												'default' : '',
+												commit: function(element){
+													if(element) {
+														element.setStyle('border-width', this.getValue()+'px');
+														console.log("BORDER");
+														console.log(element);
+													}
+												},
+												setup: function(element) {
+													if(element){
+														var value = element.getStyle('border-width').replace('px','');
+														if(value){
+															this.setValue(value);
+														}
+													}
+												}
 											},
 											{
 												type : 'text',
@@ -612,6 +676,20 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												width : '60px',
 												label : 'H-Abstand',
 												'default' : '',
+												commit: function(element){
+													if(element) {
+														element.setStyle('margin-left', this.getValue()+'px');
+														element.setStyle('margin-right', this.getValue()+'px');
+													}
+												},
+												setup: function(element) {
+													if(element){
+														var value = element.getStyle('margin-left').replace('px','');
+														if(value){
+															this.setValue(value);
+														}
+													}
+												}
 											},
 											{
 												type : 'text',
@@ -619,6 +697,20 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												width : '60px',
 												label : 'V-Abstand',
 												'default' : '',
+												commit: function(element){
+													if(element) {
+														element.setStyle('margin-top', this.getValue()+'px');
+														element.setStyle('margin-bottom', this.getValue()+'px');
+													}
+												},
+												setup: function(element) {
+													if(element){
+														var value = element.getStyle('margin-top').replace('px','');
+														if(value){
+															this.setValue(value);
+														}
+													}
+												}
 											},
 										]
 									},
@@ -651,21 +743,23 @@ CKEDITOR.plugins.add( "CommSyVideo",
 						onShow: function() {
 							// set all values for input fields
 							// after all remove element in editor
-
+							var newElement;
 		                    var selection = editor.getSelection(),
 		                        element = selection.getStartElement();
 		                    if ( element )
-		                        element = element.getAscendant( 'div', true );
+		                        element = element.getAscendant( 'img', true );
 
-		                    if ( !element || element.getName() != 'div' || element.getAttribute('class') != 'commsyPlayer' || element.data( 'cke-realelement' ) ) {
+		                    if ( !element || element.getName() != 'img' || element.getAttribute('class') != 'cke_video' || !element.data( 'cke-realelement' ) ) {
 		                        //element = editor.document.createElement( 'video' );
+		                        newElement = null;
 		                        this.insertMode = true;
 		                    }
-		                    else
+		                    else {
+		                    	newElement = CKEDITOR.dom.element.createFromHtml(decodeURIComponent(element.getAttribute('data-cke-realelement')));
 		                        this.insertMode = false;
+		                    }
 
-
-		                    this.element = element;
+		                    this.element = newElement;
 
 		                    if ( !this.insertMode )
 		                        this.setupContent( this.element );
@@ -673,7 +767,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 		                },
 						onOk: function()
 						{
-							console.log(TEST_GLOBAL);
 
 							var content = '',
 							width = this.getValueOf( 'videoTab', 'videoWidth' ),
@@ -858,23 +951,21 @@ CKEDITOR.plugins.add( "CommSyVideo",
 										// 	break;
 									}
 								}
-								var sessionID = getCookie("SID");
 
-								content += '<div class="commsyPlayer" ' + style + ' width="' + width + '" height="' + height + '">&nbsp;T';
+								content += '<div class="commsyPlayer" ' + style + ' width="' + width + '" height="' + height + '">&nbsp;';
 								content += '<video width="' + width + '" height="' + height + '" class="projekktor">';
 								content += '<source src="' + videoUrl + '" type="' + fileType + '"/>';
 								content += '</video>';
 								content += '</div>';
 							}
-							console.log(this.element);
-							//this.commitContent(this.element);
+							this.commitContent(this.element);
 
 							var instance = this.getParentEditor();
 							if(this.insertMode){
 								instance.insertHtml( content );
 							} else {
-								console.log(this.element);
-								instance.insertElement( this.element );
+								//instance.insertElement( this.element );
+								instance.insertHtml( this.element.getOuterHtml() );
 							}
 							
 						}
