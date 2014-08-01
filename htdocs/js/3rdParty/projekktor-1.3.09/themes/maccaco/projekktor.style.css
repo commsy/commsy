@@ -573,6 +573,10 @@ background: url("maccaco.png") no-repeat -91px top transparent;
     left: 0;
 }
 
+.ppcontextmenu ul, li {
+    list-style-type: none !important;
+}
+
 .ppcontextmenu li {
     color: #333;
     cursor: pointer;
