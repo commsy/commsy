@@ -47,7 +47,7 @@
 			<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/jquery-1.9.1.min.js"></script>
 			<!--<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/projekktor-1.3.09.min.js"></script>-->
 			
-			<script type="text/javascript" src="http://192.168.2.230/projekktor/dist/projekktor-universal.min.js"></script>
+			<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/projekktor-universal.min.js"></script>
 
 
 
@@ -64,6 +64,70 @@
 				    }
 				    return "";
 				}
+
+				var clickAlternativeMethod = function(player) {
+		        	// get player height width from projekktor
+		        	var height = $('.commsyPlayer .projekktor').height();
+		        	var width = $('.commsyPlayer .projekktor').width();
+
+		        	$('.commsyPlayer .projekktor').replaceWith('Alte Abspielmethode');
+		        	console.log(player);
+		        	console.log(player.getItem());
+
+		        	var videoFile = player.getItem().file[0];
+
+		        	var OSName="Unknown OS";
+					if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
+					if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
+					if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
+					if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
+
+					// try to get file extension
+					var regEx = /\/.*\.(.{3,})\?/;
+					var match = videoFile.src.match(regEx);
+
+		   			var videoUrl = videoFile.src;
+
+		   			var SID = "&SID=" + getCookie("SID");
+					
+					var content = '';
+
+					if(match[1] == "mov" || match[1] == "mpeg" || match[1] == "mp4" || match[1] == "wav"){
+
+						content += '<object width="' + width + '" heigth="'+ height +'" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + SID + '" name="src">';
+						content += '<param value="true" name="controller">';
+						content += '<param value="high" name="quality">';
+						content += '<param value="tofit" name="scale">';
+						content += '<param value="#000000" name="bgcolor">';
+						content += '<param value="opaque" name="wmode">';
+						content += '<param value="true" name="autoplay">';
+						content += '<param value="false" name="loop">';
+						content += '<param value="true" name="devicefont">';
+						content += '<param value="mov" name="class">';
+						content += '<embed width="' + width + '" height="' + height + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + SID + '" controller="true">';
+						content += '</object>';
+
+					} else if(match[1] == "avi" || match[1] == "wmv" || match[1] == "wma") {
+						content += '<object height="' + height + '" width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18">';
+						content += '<param value="' + videoUrl + SID + '" name="fileName">';
+						content += '<param value="true" name="autoStart">';
+						content += '<param value="true" name="showControls">';
+						content += '<param value="true" name="showStatusBar">';
+						content += '<param value="opaque" name="wmode">';
+						content += '<embed width="' + width + '" height="' + height + '" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + SID +'" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
+						content += '</object>';
+					}
+
+					
+
+					$('.commsyPlayer').append(content);
+		        	//alert("Test");
+		        	// Try to find out which embedding is useful
+		        	 
+
+		        	
+		        	
+		        }
 
 				$( document ).ready(function() {
 
@@ -87,6 +151,12 @@
 				        player.addListener('state', function(val, ref) {
 				        	console.log("test");
 				        	console.log(val);
+
+				        	if($('.alt_play_method')){
+				        		$('.alt_play_method').click(function(){clickAlternativeMethod(player);});
+				        		console.log("Test");
+				        	}
+
 				            //$('.commsyPlayer').append(val);            
 				        });
 				        var count=0;
@@ -97,71 +167,9 @@
 				        if (count>24) {
 				            $('#platform').html("Seems youÂ´ve da VLC Web Plugin installed, dude.");
 				        }
-				        $('.commsyPlayer').append('Probleme beim Abspielen des Videos? Klicken Sie <a href="#"><strong class="alt_play_method">hier</strong></a>');
+				        //$('.commsyPlayer').append('Probleme beim Abspielen des Videos? Klicken Sie <a href="#"><strong class="alt_play_method">hier</strong></a>');
 
-				        $('.alt_play_method').click(function() {
-				        	// get player height width from projekktor
-				        	var height = $('.commsyPlayer .projekktor').height();
-				        	var width = $('.commsyPlayer .projekktor').width();
-
-				        	$('.commsyPlayer .projekktor').replaceWith('Alte Abspielmethode');
-				        	console.log(player);
-				        	console.log(player.getItem());
-
-				        	var videoFile = player.getItem().file[0];
-
-				        	var OSName="Unknown OS";
-							if (navigator.appVersion.indexOf("Win")!=-1) OSName="Windows";
-							if (navigator.appVersion.indexOf("Mac")!=-1) OSName="MacOS";
-							if (navigator.appVersion.indexOf("X11")!=-1) OSName="UNIX";
-							if (navigator.appVersion.indexOf("Linux")!=-1) OSName="Linux";
-
-							// try to get file extension
-							var regEx = /\/.*\.(.{3,})\?/;
-							var match = videoFile.src.match(regEx);
-
-				   			var videoUrl = videoFile.src;
-
-				   			var SID = "&SID=" + getCookie("SID");
-							
-							var content = '';
-
-							if(match[1] == "mov" || match[1] == "mpeg" || match[1] == "mp4" || match[1] == "wav"){
-
-								content += '<object width="' + width + '" heigth="'+ height +'" codebase="http://www.apple.com/qtactivex/qtplugin.cab" classid="clsid:02BF25D5-8C17-4B23-BC80-D3488ABDDC6B" type="video/quicktime"><param value="' + videoUrl + SID + '" name="src">';
-								content += '<param value="true" name="controller">';
-								content += '<param value="high" name="quality">';
-								content += '<param value="tofit" name="scale">';
-								content += '<param value="#000000" name="bgcolor">';
-								content += '<param value="opaque" name="wmode">';
-								content += '<param value="true" name="autoplay">';
-								content += '<param value="false" name="loop">';
-								content += '<param value="true" name="devicefont">';
-								content += '<param value="mov" name="class">';
-								content += '<embed width="' + width + '" height="' + height + '" pluginspage="http://www.apple.com/quicktime/download/" class="mov" type="video/quicktime" devicefont="true" loop="false" wmode="opaque" bgcolor="#000000" controller="true" scale="tofit" quality="high" src="' + videoUrl + SID + '" controller="true">';
-								content += '</object>';
-
-							} else if(match[1] == "avi" || match[1] == "wmv" || match[1] == "wma") {
-								content += '<object height="' + height + '" width="' + width + '" type="application/x-oleobject" standby="Loading Microsoft Windows Media Player components..." codebase="http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,5,715" classid="CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95" id="MediaPlayer18">';
-								content += '<param value="' + videoUrl + SID + '" name="fileName">';
-								content += '<param value="true" name="autoStart">';
-								content += '<param value="true" name="showControls">';
-								content += '<param value="true" name="showStatusBar">';
-								content += '<param value="opaque" name="wmode">';
-								content += '<embed width="' + width + '" height="' + height + '" showstatusbar="1" showcontrols="1" autostart="true" wmode="opaque" name="MediaPlayer18" src="' + videoUrl + SID +'" pluginspage="http://www.microsoft.com/Windows/MediaPlayer/" type="application/x-mplayer2">';
-								content += '</object>';
-							}
-
-							
-
-							$('.commsyPlayer').append(content);
-				        	//alert("Test");
-				        	// Try to find out which embedding is useful
-				        	 
-
-				        	
-				        	
-				        });
+				        //$('.alt_play_method').click();
 				    }); 
 
 
