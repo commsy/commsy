@@ -23,8 +23,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
                                 var attributes = element.attributes;
                                 if( attributes.class == 'commsyPlayer' ){
                                     //alert("here");
-                                    console.log("CreateFakeElement");
-                                    console.log(createFakeElement( editor, element ));
+                                    
                                     return createFakeElement( editor, element );
                                 }
                                 return null;
@@ -428,7 +427,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												setup: function (element) {
 													if(element){
 														if(element.getName() == 'div' && element.getAttribute('class') == 'commsyPlayer'){
-															console.log(element);	
 															this.setValue(element.findOne('video').findOne('source').getAttribute('src'));
 														}
 													}
@@ -436,20 +434,13 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													
 												},
 												commit: function (element) {
-													console.log("Commit");
-													console.log(element);	
-
-													// var videoNode = new CKEDITOR.dom.element( 'video' );
-													// videoNode.append(new CKEDITOR.dom.element( 'source' ));
 
 													if(element) {
 														var url;
 														url = this.getValue();
-														console.log(url);
 														if(element.getName() == 'div' && element.getAttribute('class') == 'commsyPlayer' && url){
 															element.findOne('video').findOne('source').setAttribute('src', url);
 															element.findOne('video').findOne('source').setAttribute('data-cke-saved-src', url);
-															console.log(element);
 														}
 													}
 													
@@ -521,8 +512,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												},
 												setup: function(element) {
 													if(element) {
-														console.log("BREITEHTML");
-														console.log(element.findOne('.projekktor').getOuterHtml());
 														var width = element.findOne('.projekktor').getAttribute('width')
 														if(width){
 															this.setValue(width);
@@ -657,8 +646,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												commit: function(element){
 													if(element) {
 														element.setStyle('border-width', this.getValue()+'px');
-														console.log("BORDER");
-														console.log(element);
 													}
 												},
 												setup: function(element) {
@@ -925,7 +912,6 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								if(!fileType){
 									var regEx = /\/.*\.(.{3,})\?/;
 									var match = videoUrl.match(regEx);
-									//console.log(match);
 									//
 									switch (match[1]) {
 										case "avi":

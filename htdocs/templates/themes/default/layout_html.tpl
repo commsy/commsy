@@ -149,12 +149,9 @@
 				            $('#platform').html( (model=='VIDEOVLC') ? "Yeah!!1 VLC Web Plugin detected and in use." : "DÂ´oh... model " + model + " in use right now.");            
 				        });
 				        player.addListener('state', function(val, ref) {
-				        	console.log("test");
-				        	console.log(val);
 
 				        	if($('.alt_play_method')){
 				        		$('.alt_play_method').click(function(){clickAlternativeMethod(player);});
-				        		console.log("Test");
 				        	}
 
 				            //$('.commsyPlayer').append(val);            
@@ -167,9 +164,6 @@
 				        if (count>24) {
 				            $('#platform').html("Seems youÂ´ve da VLC Web Plugin installed, dude.");
 				        }
-				        //$('.commsyPlayer').append('Probleme beim Abspielen des Videos? Klicken Sie <a href="#"><strong class="alt_play_method">hier</strong></a>');
-
-				        //$('.alt_play_method').click();
 				    }); 
 
 
