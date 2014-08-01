@@ -36,7 +36,13 @@ $tables = array(
 	"dates",
 	"discussions",
 	"labels",
-	"todos"
+	"todos",
+	"zzz_materials",
+	"zzz_announcement",
+	"zzz_dates",
+	"zzz_discussions",
+	"zzz_labels",
+	"zzz_todos"
 );
 
 $success = true;
