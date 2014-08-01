@@ -143,6 +143,16 @@ require([	"dojo/_base/declare",
 						gallery.init(galleryNode, uri_object.cid, uri_object.iid, uri_object.module);
 					});
 				}
+				//Projekktor
+				if (this.uri_object.fct == "detail") {
+					var videoNodes = query('video');
+
+					if(videoNodes){
+						require(["commsy/projekktor"], function(projekktor){
+							projekktor.setupProjekktor();
+						});
+					}
+				}
 
 				
 				// limesurvey
