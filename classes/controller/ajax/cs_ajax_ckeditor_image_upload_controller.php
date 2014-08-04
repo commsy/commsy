@@ -84,8 +84,15 @@ class cs_ajax_ckeditor_image_upload_controller extends cs_ajax_controller {
          // cron für das regelmäßige löschen von temp-files.
       	$callback_function  = '';
       	$callback_function .= '<script type="text/javascript">'.LF;
-      	$callback_function .= '<!--'.LF;
-      	$callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "commsy.php/'.$file_item->getFileName().'?cid='.$environment->getCurrentContextID().'&mod=material&fct=getfile&iid='.$file_item->getFileID().'", "");'.LF;
+         $callback_function .= '<!--'.LF;
+      	$callback_function .= 'var fileTypeFunction = function () {';
+         $callback_function .= 'var dialog = this.getDialog();';
+         $callback_function .= 'if(dialog.getName() == "CommSyVideo"){';
+         $callback_function .= 'var element = dialog.getContentElement( "videoTab", "videoType" );';
+         $callback_function .= 'element.setValue("'.$file_item->getMime().'")';
+         $callback_function .= '}';
+         $callback_function .= '};';
+      	$callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "commsy.php/'.$file_item->getFileName().'?cid='.$environment->getCurrentContextID().'&mod=material&fct=getfile&iid='.$file_item->getFileID().'", fileTypeFunction);'.LF;
       	$callback_function .= '-->'.LF;
       	$callback_function .= '</script>'.LF;
       	echo $callback_function;

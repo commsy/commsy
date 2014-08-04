@@ -158,7 +158,7 @@ if ( !empty($_GET['iid']) ) {
          	                           'audio/wav',
          	                           'audio/mpeg',
          	                           'video/mp4',
-         	                           'video/avi',
+         	                           'video/x-msvideo',
          	                           'video/quicktime',
          	                           'video/mpeg',
          	                           'application/pdf',

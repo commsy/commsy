@@ -184,6 +184,12 @@ class cs_smarty extends Smarty {
 			$param1 = preg_replace('/(<embed.+?src=")(\S+?.wma\S+?)(".+?>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
 			
 		}
+		if(preg_match('/<video.+?".+?src="(\S+?\S+?)"+?>/', $param1, $matches)){
+			//append session id
+			$param1 = preg_replace('/(<video.+?src=")(\S+?\S+?)(".+?>)/', '$1$2&SID='.$this->environment->getSessionID().'$3', $param1);
+			
+		}
+
 		// print view
 		if($this->environment->getOutputMode() === 'print'){
 			// commsy picture
