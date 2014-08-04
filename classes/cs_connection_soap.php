@@ -5542,5 +5542,31 @@ class cs_connection_soap {
 
       return $xml;
    }
+
+   public function getPortalConfiguration($session_id, $portal_id)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($portal_id);
+         $portalItem = $this->_environment->getCurrentContextItem();
+
+         $languageArray = $this->_environment->getAvailableLanguageArray();
+
+         $xml .= "<config>\n";
+
+         $xml .= "<languages>\n";
+         foreach ($languageArray as $language) {
+            $xml .= "<language><![CDATA[" . $language . "]]></language>\n";
+         }
+         $xml .= "</languages>\n";
+
+         $xml .= "</config>";
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
 }
 ?>
