@@ -54,9 +54,16 @@
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#">___COMMON_EDIT_ITEM___</a> |
 				{else}
 					{if $detail.actions.locked}
-						<div>
-							<img id="edit_attention" src="{$basic.tpl_path}img/attention.gif" />
-							<span>Dieser Eintrag wird derzeit bearbeitet</span>
+						<img id="edit_attention" class="tooltip_toggle" src="{$basic.tpl_path}img/attention.gif" />
+						<div class="tooltip">
+							<div class="tooltip_inner">
+								<div class="tooltip_title">
+									<div class="header">___COMMON_CHANGE_INFORAMTION___</div>
+								</div>
+								<div class="tooltip_content">
+									<span class="content">Dieser Eintrag befindet sich derzeit in Bearbeitung durch ... seit ...</span>
+								</div>
+							</div>
 						</div>
 					{/if}
 

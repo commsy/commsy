@@ -3195,12 +3195,7 @@ fade-in
 
 .fade_in_ground_actions img#edit_attention {
     vertical-align: middle;
-    height: 16px;
-}
-
-.fade_in_ground_actions span {
-    vertical-align: middle;
-    font-weight: bold;
+    height: 15px;
 }
 
 .fade_in_ground_annotations h2{
