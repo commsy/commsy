@@ -3688,10 +3688,16 @@ $error_box = $this->getMyAreaErrorBox();
     }
 
 
+    if ($current_user->getUserId() != "guest") {
+      $isLoggedIn = true;
+    } else {
+      $isLoggedIn = false;
+    }
+
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
     $html .= '<body id="main_body" class="tundra">';
-    if ($current_user->isUser()){
+    if ($isLoggedIn /*$current_user->isUser()*/){
     	$name = 'Willkommen, '.$current_user->getFullName().'';
     }else{
 #   	$name = '<a href="'.$typo_link.'">Anmelden</a>';
@@ -3762,7 +3768,7 @@ if ( (!isset($cs_room_id) or empty($cs_room_id)) and (!$current_user->isModerato
 }
 */
 
-if (!$current_user->isUser()) {
+if (!$isLoggedIn) {
 	$html .= $this->getMyAreaAsHTML();
 } else {
 
