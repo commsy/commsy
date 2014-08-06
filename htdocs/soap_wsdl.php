@@ -259,11 +259,11 @@
 <message name='getRoomListOUT'>
   <part name='result' type='xsd:string'/>
 </message>
-<message name='getPortalConfigurationIN'>
+<message name='getPortalRoomConfigurationIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='portal_id' type='xsd:string'/>
 </message>
-<message name='getPortalConfigurationOUT'>
+<message name='getPortalRoomConfigurationOUT'>
   <part name='result' type='xsd:string'/>
 </message>
 <message name='getRoomDetailsIN'>
@@ -839,9 +839,9 @@ echo("\n");
     <input message='tns:getRoomListIN'/>
     <output message='tns:getRoomListOUT'/>
   </operation>
-  <operation name='getPortalConfiguration'>
-    <input message='tns:getPortalConfigurationIN'/>
-    <output message='tns:getPortalConfigurationOUT'/>
+  <operation name='getPortalRoomConfiguration'>
+    <input message='tns:getPortalRoomConfigurationIN'/>
+    <output message='tns:getPortalRoomConfigurationOUT'/>
   </operation>
   <operation name='getRoomDetails'>
     <input message='tns:getRoomDetailsIN'/>
@@ -1370,8 +1370,8 @@ echo("\n");
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
     </output>
   </operation>
-  <operation name='getPortalConfiguration'>
-    <soap:operation soapAction='urn:xmethodsCommSy#getPortalConfiguration'/>
+  <operation name='getPortalRoomConfiguration'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomConfiguration'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

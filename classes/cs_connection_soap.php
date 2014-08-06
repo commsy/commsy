@@ -5367,6 +5367,14 @@ class cs_connection_soap {
          $xml .=     "<description><![CDATA[" . $roomItem->getDescription() . "]]></description>\n";
          $xml .=     "<mayEdit><![CDATA[" . ($mayEdit ? "yes" : "no") . "]]></mayEdit>\n";
 
+         $type = "group";
+         if ($roomItem->isProjectRoom()) {
+            $type = "project";
+         } else if ($roomItem->isCommunityRoom()) {
+            $type = "community";
+         }
+         $xml .=     "<type><![CDATA[" . $type . "]]></type>\n";
+
          $xml .=     "<contacts>\n";
          if ($contactPersons->isNotEmpty()) {
             $contactPerson = $contactPersons->getFirst();
@@ -5543,22 +5551,298 @@ class cs_connection_soap {
       return $xml;
    }
 
-   public function getPortalConfiguration($session_id, $portal_id)
+   private function getRoomTemplates($isProjectType, $contextId, $userItem) {
+      if ($isProjectType) {
+         $roomManager = $this->_environment->getProjectManager();
+      } else {
+         $roomManager = $this->_environment->getCommunityManager();
+      }
+
+      $portalItem = $this->_environment->getCurrentContextItem();
+      $translator = $this->_environment->getTranslationObject();
+
+      $roomManager->setContextLimit($contextId);
+      $roomManager->setTemplateLimit();
+      $roomManager->select();
+
+      $roomList = $roomManager->get();
+      $defaultTemplateId = $portalItem->getDefaultProjectTemplateID();
+
+      $templateArray = array();
+      if ($roomList->isNotEmpty() || $defaultTemplateId != '-1') {
+         $templateArray[] = array(
+            "text"      => "*" . $translator->getMessage("CONFIGURATION_TEMPLATE_NO_CHOICE"),
+            "value"     => -1
+         );
+         $templateArray[] = array(
+            "text"      => "------------------------",
+            "value"     => "disabled"
+         );
+
+         if ($defaultTemplateId != "-1") {
+            $defaultItem = $roomManager->getItem($defaultTemplateId);
+
+            if (isset($defaultItem)) {
+               $templateAvailability = $defaultItem->getTemplateAvailability();
+
+               if ($templateAvailability == "0" && ($isProjectType || $defaultItem->isClosed())) {
+                  $templateArray[] = array(
+                     "text"      => "*" . $defaultItem->getTitle(),
+                     "value"     => $defaultItem->getItemID()
+                  );
+                  $templateArray[] = array(
+                     "text"      => "------------------------",
+                     "value"     => "disabled"
+                  );
+               }
+            }
+         }
+
+         $roomItem = $roomList->getFirst();
+         while ($roomItem) {
+            if ($isProjectType) {
+               $templateAvailability = $roomItem->getTemplateAvailability();
+               $communityRoomMember = false;
+               $communityList = $roomItem->getCommunityList();
+               $userCommunityList = $userItem->getRelatedCommunityList();
+
+               if ($communityList->isNotEmpty() && $userCommunityList->isNotEmpty()) {
+                  $communityItem = $communityList->getFirst();
+                  while ($communityItem) {
+                     $userCommunityItem = $userCommunityList->getFirst();
+                     while ($userCommunityItem) {
+                        if ($userCommunityItem->getItemID() == $communityItem->getItemID()) {
+                           $communityRoomMember = true;
+                        }
+
+                        $userCommunityItem = $userCommunityList->getNext();
+                     }
+                  }
+
+                  $communityItem = $communityList->getNext();
+               }
+
+               if (  $templateAvailability == "0" ||
+                     ($this->_environment->inPortal() && $templateAvailability == "3" && $communityRoomMember) ||
+                     ($templateAvailability == "1" && $roomItem->mayEnter($userItem)) ||
+                     ($templateAvailability == "2" && $roomItem->mayEnter($userItem) && ($roomItem->isModeratorByUserID($userItem->getUserID(), $userItem->getAuthSource())))) {
+                  if ($roomItem->getItemID() != $defaultTemplateId || $roomItem->getTemplateAvailability() != "0") {
+                     //$this->_with_template_form_element2 = true;
+                     $templateArray[] = array(
+                        "text"      => $roomItem->getTitle(),
+                        "value"     => $roomItem->getItemID()
+                     );
+                  }
+               }
+            } else {
+               $templateAvailability = $roomItem->getCommunityTemplateAvailability();
+
+               if (  $templateAvailability == "0" ||
+                     ($templateAvailability == "1" && $roomItem->mayEnter($userItem)) ||
+                     ($templateAvailability == "2" && $roomItem->mayEnter($userItem) && ($roomItem->isModeratorByUserID($userItem->getUserID(), $userItem->getAuthSource())))) {
+                  if ($roomItem->getItemID() != $defaultTemplateId || $roomItem->getTemplateAvailability() != "0") {
+                     //$this->_with_template_form_element3 = true;
+                     $templateArray[] = array(
+                        "text"      => $roomItem->getTitle(),
+                        "value"     => $roomItem->getItemID()
+                     );
+                  }
+               }
+            }
+
+            $roomItem = $roomList->getNext();
+         }
+      }
+
+      return $templateArray;
+   }
+
+   public function getPortalRoomConfiguration($session_id, $portal_id)
    {
       $xml = "";
       if ($this->_isSessionValid($session_id)) {
          $this->_environment->setCurrentContextID($portal_id);
          $portalItem = $this->_environment->getCurrentContextItem();
+         $translator = $this->_environment->getTranslationObject();
+
+         // get user item
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $userId = $session->getValue('user_id');
+         $authSourceId = $session->getValue('auth_source');
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
 
          $languageArray = $this->_environment->getAvailableLanguageArray();
 
          $xml .= "<config>\n";
 
+         // languages
          $xml .= "<languages>\n";
          foreach ($languageArray as $language) {
             $xml .= "<language><![CDATA[" . $language . "]]></language>\n";
          }
          $xml .= "</languages>\n";
+
+         // templates
+         $projectTemplateArray = $this->getRoomTemplates(true, $portal_id, $userItem);
+         $communityTemplateArray = $this->getRoomTemplates(false, $portal_id, $userItem);
+
+         if (!empty($projectTemplateArray) || !empty($communityTemplateArray)) {
+            $xml .= "<templates>\n";
+
+            if (!empty($projectTemplateArray)) {
+               $xml .= "<project>\n";
+
+               foreach ($projectTemplateArray as $projectTemplate) {
+                  $xml .= "<template>\n";
+                  $xml .= "<text><![CDATA[" . $projectTemplate["text"] . "]]></text>\n";
+                  $xml .= "<value><![CDATA[" . $projectTemplate["value"] . "]]></value>\n";
+                  $xml .= "</template>\n";
+               }
+
+               $xml .= "</project>\n";
+            }
+
+            if (!empty($communityTemplateArray)) {
+               $xml .= "<community>\n";
+
+               foreach ($communityTemplateArray as $communityTemplate) {
+                  $xml .= "<template>\n";
+                  $xml .= "<text><![CDATA[" . $communityTemplate["text"] . "]]></text>\n";
+                  $xml .= "<value><![CDATA[" . $communityTemplate["value"] . "]]></value>\n";
+                  $xml .= "</template>\n";
+               }
+
+               $xml .= "</community>\n";
+            }
+
+            $xml .= "</templates>\n";
+         }
+
+         // intervals
+         if ($portalItem->showTime()) {
+            $xml .= "<intervals>\n";
+
+            $xml .= "<title><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></title>\n";
+
+            $currentTimeTitle = $portalItem->getTitleOfCurrentTime();
+
+            // if (isset($this->_item)) {
+            //     $time_list = $this->_item->getTimeList();
+            //     if ($time_list->isNotEmpty()) {
+            //        $time_item = $time_list->getFirst();
+            //        $linked_time_title = $time_item->getTitle();
+            //     }
+            // }
+            // if ( !empty($linked_time_title)
+            //      and $linked_time_title < $current_time_title
+            //        ) {
+            //         $start_time_title = $linked_time_title;
+            // } else {
+            //         $start_time_title = $current_time_title;
+            $startTimeTitle = $currentTimeTitle;
+            // }
+            
+            $timeList = $portalItem->getTimeList();
+            if ($timeList->isNotEmpty()) {
+               $timeItem = $timeList->getFirst();
+
+               while ($timeItem) {
+                  if ($timeItem->getTitle() >= $startTimeTitle) {
+                     $xml .= "<interval>\n";
+                     $xml .= "<text><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></text>\n";
+                     $xml .= "<value><![CDATA[" . $timeItem->getItemID() . "]]></value>\n";
+                     $xml .= "</interval>\n";
+                  }
+
+                  $timeItem = $timeList->getNext();
+               }
+            }
+
+            $xml .= "<interval>\n";
+            $xml .= "<text><![CDATA[" . $translator->getMessage("COMMON_CONTINUOUS") . "]]></text>\n";
+            $xml .= "<value><![CDATA[" . "cont" . "]]></value>\n";
+            $xml .= "</interval>\n";
+
+            $xml .= "</intervals>\n";
+         }
+
+         // community rooms
+         $communityRoomArray = array();
+         $communityList = $portalItem->getCommunityList();
+
+         $communityRoomArray[] = array(
+            "text"      => "*" . $translator->getMessage("PREFERENCES_NO_COMMUNITY_ROOM"),
+            "value"     => "-1"
+         );
+         $communityRoomArray[] = array(
+            "text"      => '--------------------',
+            "value"     => "disabled"
+         );
+
+         if ($communityList->isNotEmpty()) {
+            $communityItem = $communityList->getFirst();
+
+            while ($communityItem) {
+               if ($communityItem->isAssignmentOnlyOpenForRoomMembers() && !$communityItem->isUser($currentUser)) {
+                  $communityRoomArray[] = array(
+                     "text"      => $communityItem->getTitle(),
+                     "value"     => "disabled"
+                  );
+               } else {
+                  $communityRoomArray[] = array(
+                     "text"      => $communityItem->getTitle(),
+                     "value"     => $communityItem->getItemID()
+                  );
+               }
+
+               $communityItem = $communityList->getNext();
+            }
+         }
+
+         $xml .= "<community_rooms>\n";
+
+         $xml .= "<mandatory><![CDATA[" . (($portalItem->getProjectRoomLinkStatus() == "optional") ? "no" : "yes") . "]]></mandatory>\n";
+
+         foreach ($communityRoomArray as $communityRoom) {
+            $xml .= "<room>\n";
+            $xml .= "<text><![CDATA[" . $communityRoom["text"] . "]]></text>\n";
+            $xml .= "<value><![CDATA[" . $communityRoom["value"] . "]]></value>\n";
+            $xml .= "</room>\n";
+         }
+
+         $xml .= "</community_rooms>\n";
+
+
+
+
+/*if ( isset($this->_item)
+           and $this->_item->isProjectRoom()
+         ) {
+   
+   $community_room_list = $this->_item->getCommunityList();
+   if ($community_room_list->getCount() > 0) {
+      $community_room_item = $community_room_list->getFirst();
+      while ($community_room_item) {
+         $temp_array['text'] = $community_room_item->getTitle();
+         $temp_array['value'] = $community_room_item->getItemID();
+         $community_room_array[] = $temp_array;
+         $community_room_item = $community_room_list->getNext();
+      }
+   }
+}
+$this->_shown_community_room_array = $community_room_array;
+
+
+
+*/
+
+
+
+
+
+
 
          $xml .= "</config>";
          $xml = $this->_encode_output($xml);
