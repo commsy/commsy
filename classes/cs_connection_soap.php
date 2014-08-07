@@ -2967,16 +2967,38 @@ class cs_connection_soap {
 
    public function getUserInformation($sessionId, $contextId)
    {
-      $this->_environment->setCurrentContextID($contextId);
-      $this->_environment->setSessionID($sessionId);
-      $session = $this->_environment->getSessionItem();
-      $authSourceId = $session->getValue('auth_source');
-      $userId = $session->getValue('user_id');
+      if ($this->_isSessionValid($sessionId)) {
+         $this->_environment->setCurrentContextID($contextId);
+         $this->_environment->setSessionID($sessionId);
+         $session = $this->_environment->getSessionItem();
+         $authSourceId = $session->getValue('auth_source');
+         $userId = $session->getValue('user_id');
 
-      $userManager = $this->_environment->getUserManager();
-      $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+         $portalItem = $this->_environment->getCurrentContextItem();
 
-      return array("status" => $userItem->getStatus());
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+         $portalUserItem = $userItem->getRelatedPortalUserItem();
+
+         $touAccepted = true;
+         if ($portalUserItem->isUser() && !$portalUserItem->isRoot()) {
+            $userTouDate = $portalUserItem->getAGBAcceptanceDate();
+            $portalTouDate = $portalItem->getAGBChangeDate();
+
+            if ($userTouDate < $portalTouDate && $portalItem->getAGBStatus() == 1) {
+               $touAccepted = false;
+            }
+         }
+
+         $xml = "<user>\n";
+         $xml .= "   <status><![CDATA[" . $userItem->getStatus() . "]]></status>\n";
+         $xml .= "   <portal_tou_accepted><![CDATA[" . ($touAccepted ? 'yes' : 'no') . "]]></portal_tou_accepted>\n";
+         $xml .= "</user>\n";
+
+         return $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session not valid!');
+      }
    }
 
    public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 0, $count = 10, $search = '', $timeLimit = '', $roomTypeLimit = '')
@@ -5396,6 +5418,7 @@ class cs_connection_soap {
 
             while ($communityRoom) {
                $xml .= "   <room>\n";
+               $xml .= "      <id><![CDATA[" . $communityRoom->getItemId() . "]]></id>\n";
                $xml .= "      <title><![CDATA[" . $communityRoom->getTitle() . "]]></title>\n";
                $xml .= "   </room>\n";
 
@@ -5417,10 +5440,16 @@ class cs_connection_soap {
                   if ($roomItem->isClosed()) {
                      $timeItemLast = $timeList->getLast();
 
-                     if ($timeItemLast->getItemID() == $timeItem->GetItemID()) {
+                     if ($timeItemLast->getItemId() == $timeItem->getItemId()) {
                         $xml .= "<intervals>\n";
-                        $xml .= "   <interval><![CDATA[" . $translator->getMessage("COMMON_FROM2") . " " . $translator->getTimeMessage($timeItem->getTitle()) . "]]></interval>\n";
-                        $xml .= "   <interval><![CDATA[" . $translator->getMessage("COMMON_TO") . " " . $translator->getTimeMessage($timeItemLast->getTitle()) . "]]></interval>\n";
+                        $xml .= "   <interval>\n";
+                        $xml .= "      <title><![CDATA[" . $translator->getMessage("COMMON_FROM2") . " " . $translator->getTimeMessage($timeItem->getTitle()) . "]]></title>\n";
+                        $xml .= "      <id><![CDATA[" . $timeItem->getItemId() . "]]></id>\n";
+                        $xml .= "   </interval>\n";
+                        $xml .= "   <interval>\n";
+                        $xml .= "      <title><![CDATA[" . $translator->getMessage("COMMON_TO") . " " . $translator->getTimeMessage($timeItemLast->getTitle()) . "]]></title>\n";
+                        $xml .= "      <id><![CDATA[" . $timeItem->getItemId() . "]]></id>\n";
+                        $xml .= "   </interval>\n";
                         $xml .= "</intervals>\n";
                      } else {
                         $xml .= "   <constant><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></constant>\n";
@@ -5433,13 +5462,16 @@ class cs_connection_soap {
                   $xml .= "      <intervalTranslation><![CDATA[" . $translator->getMessage('COMMON_TIME_NAME') . "]]></intervalTranslation>\n";
 
                   $timeItem = $timeList->getFirst();
+                  $xml .= "<intervals>\n";
                   while ($timeItem) {
-                     $xml .= "<intervals>\n";
-                     $xml .= "   <interval><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></interval>\n";
-                     $xml .= "</intervals>\n";
+                     $xml .= "<interval>\n";
+                     $xml .= "   <title><![CDATA[" . $translator->getTimeMessage($timeItem->getTitle()) . "]]></title>\n";
+                     $xml .= "   <id><![CDATA[" . $timeItem->getItemId() . "]]></id>\n";
+                     $xml .= "</interval>\n";
 
                      $timeItem = $timeList->getNext();
                   }
+                  $xml .= "</intervals>\n";
                }
             } else {
                $xml .= "<time assigned='false'>\n";
@@ -5617,9 +5649,9 @@ class cs_connection_soap {
 
                         $userCommunityItem = $userCommunityList->getNext();
                      }
-                  }
 
-                  $communityItem = $communityList->getNext();
+                     $communityItem = $communityList->getNext();
+                  }
                }
 
                if (  $templateAvailability == "0" ||
@@ -5771,15 +5803,6 @@ class cs_connection_soap {
          // community rooms
          $communityRoomArray = array();
          $communityList = $portalItem->getCommunityList();
-
-         $communityRoomArray[] = array(
-            "text"      => "*" . $translator->getMessage("PREFERENCES_NO_COMMUNITY_ROOM"),
-            "value"     => "-1"
-         );
-         $communityRoomArray[] = array(
-            "text"      => '--------------------',
-            "value"     => "disabled"
-         );
 
          if ($communityList->isNotEmpty()) {
             $communityItem = $communityList->getFirst();
