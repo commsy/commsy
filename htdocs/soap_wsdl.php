@@ -266,6 +266,20 @@
 <message name='getPortalRoomConfigurationOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='touAcceptedIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+</message>
+<message name='touAcceptedOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='saveRoomIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+</message>
+<message name='saveRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='getRoomDetailsIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:string'/>
@@ -843,6 +857,14 @@ echo("\n");
     <input message='tns:getPortalRoomConfigurationIN'/>
     <output message='tns:getPortalRoomConfigurationOUT'/>
   </operation>
+  <operation name='touAccepted'>
+    <input message='tns:touAcceptedIN'/>
+    <output message='tns:touAcceptedOUT'/>
+  </operation>
+  <operation name='saveRoom'>
+    <input message='tns:saveRoomIN'/>
+    <output message='tns:saveRoomOUT'/>
+  </operation>
   <operation name='getRoomDetails'>
     <input message='tns:getRoomDetailsIN'/>
     <output message='tns:getRoomDetailsOUT'/>
@@ -1372,6 +1394,28 @@ echo("\n");
   </operation>
   <operation name='getPortalRoomConfiguration'>
     <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomConfiguration'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='touAccepted'>
+    <soap:operation soapAction='urn:xmethodsCommSy#touAccepted'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='saveRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveRoom'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

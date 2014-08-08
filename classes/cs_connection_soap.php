@@ -5875,5 +5875,61 @@ $this->_shown_community_room_array = $community_room_array;
 
       return $xml;
    }
+
+   public function touAccepted($session_id, $context_id)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($context_id);
+         $contextItem = $this->_environment->getCurrentContextItem();
+
+         // get user item
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $userId = $session->getValue('user_id');
+         $authSourceId = $session->getValue('auth_source');
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+         $portalUserItem = $userItem->GetRelatedPortalUserItem();
+         $portalUserItem->setAGBAcceptance();
+         $portalUserItem->save();
+
+         $xml .= "<tou>\n";
+         $xml .= "</tou>";
+
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
+
+   public function saveRoom($session_id, $context_id)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($context_id);
+         $contextItem = $this->_environment->getCurrentContextItem();
+
+         // get user item
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $userId = $session->getValue('user_id');
+         $authSourceId = $session->getValue('auth_source');
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+         $xml .= "<room>\n";
+         $xml .= "</room>";
+
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
 }
 ?>
