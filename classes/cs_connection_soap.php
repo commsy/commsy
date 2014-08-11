@@ -5906,12 +5906,13 @@ $this->_shown_community_room_array = $community_room_array;
       return $xml;
    }
 
-   public function saveRoom($session_id, $context_id)
+   public function saveRoom($session_id, $context_id, $title, $id, $type, $template, $language, $intervals, $assignments, $description)
    {
       $xml = "";
       if ($this->_isSessionValid($session_id)) {
          $this->_environment->setCurrentContextID($context_id);
          $contextItem = $this->_environment->getCurrentContextItem();
+         $textConverter = $this->_environment->getTextConverter();
 
          // get user item
          $this->_environment->setSessionID($session_id);
@@ -5920,6 +5921,225 @@ $this->_shown_community_room_array = $community_room_array;
          $authSourceId = $session->getValue('auth_source');
          $userManager = $this->_environment->getUserManager();
          $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+         $this->_environment->setCurrentUserItem($userItem);
+
+         // check form?
+         $isValid = true;
+
+         // new or edit
+         $isNew = false;
+         if (!trim($id)) {
+            $isNew = true;
+         }
+
+         if ($isValid) {
+            $manager = $this->_environment->getManager($type);
+            if ($isNew) {
+               if ($type == "project") {
+                  $projectOpeningStatus = $contextItem->getProjectRoomCreationStatus();
+                  if (!$userItem->isUser() || $projectOpeningStatus != "portal") {
+                     return new SoapFault('ERROR','Insufficent rights!');
+                  }
+               } else if($type == "community") {
+                  $communityOpeningStatus = $contextItem->getCommunityRoomCreationStatus();
+                  if (!($userItem->isUser() && $communityOpeningStatus == "all") && !$userItem->isModerator()) {
+                     return new SoapFault('ERROR','Insufficent rights!');
+                  }
+               } else {
+                  return new SoapFault('ERROR','Wrong type!');
+               }
+               
+               $item = $manager->getNewItem();
+               $item->setCreatorItem($userItem);
+               $item->setCreationDate(getCurrentDateTimeInMySQL());
+
+               if ($this->_environment->inCommunityRoom()) {
+                  $item->setContextID($this->_environment->getCurrentPortalID());
+               } else {
+                  $item->setContextID($this->_environment->getCurrentContextID());
+               }
+
+               $item->open();
+
+               if ($this->_environment->inPortal() || $this->_environment->inCommunityRoom()) {
+                  $item->setRoomContext($contextItem->getRoomContext());
+               }
+            } else {
+               if ($item->mayEdit($userItem)) {
+                  $item = $manager->getItem(trim($id));
+               } else {
+                  return new SoapFault('ERROR','Insufficent rights!');
+               }
+            }
+
+            // modifactor and date
+            $item->setModificatorItem($userItem);
+            $item->setModificationDate(getCurrentDateTimeInMySQL());
+
+            // title
+            $item->setTitle($textConverter->_htmlentities_cleanbadcode($title));
+
+            // intervals
+            if (trim($intervals)) {
+               $timeIntervals = explode(',', $intervals);
+
+               if (in_array('cont', $timeIntervals)) {
+                  $item->setContinuous();
+               } else {
+                  $item->setTimeListByID2($timeIntervals);
+                  $item->setNotContinuous();
+               }
+            } else if ($item->isProjectRoom()) {
+               $item->setTimeListByID2(array());
+               $item->setNotContinuous();
+            }
+
+            // language
+            $item->setLanguage($language);
+
+            // description
+            if (trim($description)) {
+               $item->setDescription(trim($description));
+            }
+
+            // community rooms
+            if (trim($assignments)) {
+               $communityRooms = explode(',', $assignments);
+
+               if ($item->isProjectRoom()) {
+                  $item->setCommunityListByID($communityRooms);
+               }
+            }
+
+            if ($isNew) {
+               if ($contextItem->withHtmlTextArea()) {
+                  $item->setHtmlTextAreaStatus($contextItem->getHtmlTextAreaStatus());
+               }
+            }
+
+            $item->save();
+
+            if (trim($template)) {
+               $template = trim($template);
+
+               if ($isNew && $template > 99 && $template != 'disabled') {
+                  // copy all entries from the template into the new room
+                  $roomManager = $this->_environment->getRoomManager();
+                  $templateRoom = $roomManager->getItem($template);
+                  $creator = $userManager->getItem($item->getCreatorID());
+                  if ($creator->getContextID() == $room->getItemID()) {
+                     $creatorId = $creator->getItemID();
+                  } else {
+                     $userManager->resetLimits();
+                     $userManager->setContextLimit($room->getItemID());
+                     $userManager->setUserIDLimit($creator->getUserID());
+                     $userManager->setAuthSourceLimit($creator->getAuthSource());
+                     $userManager->setModeratorLimit();
+                     $userManager->select();
+                     $userList = $userManager->get();
+
+                     if ($userList->isNotEmpty() && $userList->getCount() == 1) {
+                        $creator = $userList->getFirst();
+                        $creatorId = $creator->getItemID();
+                     } else {
+                        return new SoapFault('ERROR','Unable to create room from template!');
+                     }
+                  }
+
+                  $creator->setAccountWantMail('yes');
+                  $creator->setOpenRoomWantMail('yes');
+                  $creator->setPublishMaterialWantMail('yes');
+                  $creator->save();
+
+                  // copy room settings
+                  $environment =& $this->_environment;
+                  $oldRoom =& $templateRoom;
+                  $newRoom =& $item;
+                  include_once('include/inc_room_copy_config.php');
+
+                  $item->save();
+
+                  // copy data
+                  include_once('include/inc_room_copy_data.php');
+               }
+            }
+         } else {
+            return new SoapFault('ERROR','Invalid data!');
+         }
+         
+         $xml .= "<room>\n";
+         $xml .= "</room>";
+
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
+
+   public function deleteRoom($session_id, $portal_id, $room_id)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($portal_id);
+         $contextItem = $this->_environment->getCurrentContextItem();
+
+         $roomManager = $this->_environment->getRoomManager();
+         $room = $roomManager->getItem($room_id);
+
+         // get user item
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $userId = $session->getValue('user_id');
+         $authSourceId = $session->getValue('auth_source');
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+         // check rights
+         if (!$room->mayEdit($userItem)) {
+            return new SoapFault('ERROR','Insufficent rights!');
+         } else {
+            $room->delete();
+         }
+
+         $xml .= "<room>\n";
+         $xml .= "</room>";
+
+         $xml = $this->_encode_output($xml);
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+
+      return $xml;
+   }
+
+   public function archiveRoom($session_id, $portal_id, $room_id)
+   {
+      $xml = "";
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($portal_id);
+         $contextItem = $this->_environment->getCurrentContextItem();
+
+         $roomManager = $this->_environment->getRoomManager();
+         $room = $roomManager->getItem($room_id);
+
+         // get user item
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $userId = $session->getValue('user_id');
+         $authSourceId = $session->getValue('auth_source');
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
+
+         // check rights
+         if (!$room->mayEdit($userItem)) {
+            return new SoapFault('ERROR','Insufficent rights!');
+         } else {
+            if (!$room->isTemplate()) {
+               $room->moveToArchive();
+            }
+         }
 
          $xml .= "<room>\n";
          $xml .= "</room>";

@@ -275,9 +275,33 @@
 </message>
 <message name='saveRoomIN'>
   <part name='session_id' type='xsd:string'/>
-  <part name='portal_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+  <part name='id' type='xsd:string'/>
+  <part name='type' type='xsd:string'/>
+  <part name='template' type='xsd:string'/>
+  <part name='language' type='xsd:string'/>
+  <part name='intervals' type='xsd:string'/>
+  <part name='assignments' type='xsd:string'/>
+  <part name='description' type='xsd:string'/>
 </message>
 <message name='saveRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='deleteRoomIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+  <part name='room_id' type='xsd:string'/>
+</message>
+<message name='deleteRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='archiveRoomIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+  <part name='room_id' type='xsd:string'/>
+</message>
+<message name='archiveRoomOUT'>
   <part name='result' type='xsd:string'/>
 </message>
 <message name='getRoomDetailsIN'>
@@ -865,6 +889,14 @@ echo("\n");
     <input message='tns:saveRoomIN'/>
     <output message='tns:saveRoomOUT'/>
   </operation>
+  <operation name='deleteRoom'>
+    <input message='tns:deleteRoomIN'/>
+    <output message='tns:deleteRoomOUT'/>
+  </operation>
+  <operation name='archiveRoom'>
+    <input message='tns:archiveRoomIN'/>
+    <output message='tns:archiveRoomOUT'/>
+  </operation>
   <operation name='getRoomDetails'>
     <input message='tns:getRoomDetailsIN'/>
     <output message='tns:getRoomDetailsOUT'/>
@@ -1416,6 +1448,28 @@ echo("\n");
   </operation>
   <operation name='saveRoom'>
     <soap:operation soapAction='urn:xmethodsCommSy#saveRoom'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='deleteRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteRoom'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='archiveRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#archiveRoom'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
