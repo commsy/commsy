@@ -5388,6 +5388,7 @@ class cs_connection_soap {
          $xml .=     "<link><![CDATA[" . $c_commsy_domain . $c_commsy_url_path . "/" . _curl(false, $roomItem->getItemId(), 'home', 'index', array()) . "]]></link>\n";
          $xml .=     "<description><![CDATA[" . $roomItem->getDescription() . "]]></description>\n";
          $xml .=     "<mayEdit><![CDATA[" . ($mayEdit ? "yes" : "no") . "]]></mayEdit>\n";
+         $xml .=     "<isDeleted><![CDATA[" . ($roomItem->isDeleted() ? "yes" : "no") . "]]></isDeleted>\n";
 
          $type = "group";
          if ($roomItem->isProjectRoom()) {
