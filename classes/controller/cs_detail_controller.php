@@ -448,6 +448,11 @@
 						$compareDate->modify("-20 minutes");
 
 						$return['locked'] = ($compareDate < $editDate);
+
+						$userManager = $this->_environment->getUserManager();
+						$lockingUser = $userManager->getItem($this->_item->getLockingUserId());
+						$return['locked_user_name'] = $lockingUser->getFullName();
+						$return['locked_date'] = $this->_environment->getTranslationObject()->getDateTimeinLang($lockingDate);
 					}
 				}
 			}

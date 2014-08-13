@@ -58,10 +58,10 @@
 						<div class="tooltip">
 							<div class="tooltip_inner">
 								<div class="tooltip_title">
-									<div class="header">___COMMON_CHANGE_INFORAMTION___</div>
+									<div class="header">___ITEM_LOCKING_TITLE___</div>
 								</div>
 								<div class="tooltip_content">
-									<span class="content">Dieser Eintrag befindet sich derzeit in Bearbeitung durch ... seit ...</span>
+									<span class="content">{i18n tag=ITEM_LOCKING_DESC param1=$detail.actions.locked_user_name param2=$detail.actions.locked_date}</span>
 								</div>
 							</div>
 						</div>
