@@ -38,9 +38,16 @@
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.content.item_id}, module: '{$environment.module}'" href="#">___COMMON_EDIT_ITEM___</a> |
 				{else}
 					{if $detail.actions.locked}
-						<div>
-							<img id="edit_attention" src="{$basic.tpl_path}img/attention.gif" />
-							<span>Dieser Eintrag wird derzeit bearbeitet</span>
+						<img id="edit_attention" class="tooltip_toggle" src="{$basic.tpl_path}img/attention.gif" />
+						<div class="tooltip">
+							<div class="tooltip_inner">
+								<div class="tooltip_title">
+									<div class="header">___ITEM_LOCKING_TITLE___</div>
+								</div>
+								<div class="tooltip_content">
+									<span class="content">{i18n tag=ITEM_LOCKING_DESC param1=$detail.actions.locked_user_name param2=$detail.actions.locked_date}</span>
+								</div>
+							</div>
 						</div>
 					{/if}
 					
