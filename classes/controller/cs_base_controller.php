@@ -540,7 +540,10 @@
 				$to_javascript['environment']['password_expire_soon'] = false;
 			}
 			
-			
+			// locking
+			$checkLocking = $this->_environment->getConfiguration('c_item_locking');
+          	$checkLocking = ($checkLocking) ? $checkLocking : false;
+          	$to_javascript["environment"]["item_locking"] = $checkLocking;
 			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');

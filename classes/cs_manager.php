@@ -664,6 +664,13 @@ class cs_manager {
          unset($result);
       }
       unset($query);
+
+      $checkLocking = $this->_environment->getConfiguration('c_item_locking');
+      $checkLocking = ($checkLocking) ? $checkLocking : false;
+      if ($checkLocking && $item->hasLocking()) {
+         $this->clearLocking($item->getItemId());
+      }
+
       unset($item);
    }
 
@@ -1973,5 +1980,34 @@ class cs_manager {
           $this->importTagsFromXML($child, $tag_item, $options);
        }
     }
+
+    public function updateLocking($itemId) {
+      $userItem = $this->_environment->getCurrentUserItem();
+      $query = "
+          UPDATE
+              " . $this->addDatabasePrefix($this->_db_table) . " AS t
+          SET
+              t.locking_date = NOW(),
+              t.locking_user_id = " . encode(AS_DB, $userItem->getItemId()) . "
+          WHERE
+              t.item_id = '" . encode(AS_DB, $itemId) . "'
+      ";
+
+      return $this->_db_connector->performQuery($query);
+   }
+
+   public function clearLocking($itemId) {
+      $query = "
+          UPDATE
+              " . $this->addDatabasePrefix($this->_db_table) . " AS t
+          SET
+              t.locking_date = NULL,
+              t.locking_user_id = NULL
+          WHERE
+              t.item_id = '" . encode(AS_DB, $itemId) . "'
+      ";
+
+      return $this->_db_connector->performQuery($query);
+   }
 }
 ?>

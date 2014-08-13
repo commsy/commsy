@@ -316,25 +316,14 @@
 		protected function getEditActions($item, $user, $module = '') {
 			$return = array(
 				'edit'		=> false,
-				'delete'	=> false);
+				'delete'	=> false
+			);
 
 			if($item->mayEdit($user) && $this->_with_modifying_actions) {
 				$return['edit'] = true;
 				$return['delete'] = true;
 				if(empty($module)) $module = $this->_environment->getCurrentModule();
-					$return['edit_module'] = $module;
-				} else {
-
-
-
-				/*
-				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$translator->getMessage('COMMON_NO_ACTION_NEW',$translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
+				$return['edit_module'] = $module;
 			}
 
 			return $return;
@@ -441,77 +430,37 @@
 				'delete'	=> false,
 				'mail'		=> false,
 				'copy'		=> false,
-				'new'		=> false
+				'new'		=> false,
+				'locked'	=> false
 			);
 
 			// edit
 			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel() ) {
 				$return['edit'] = true;
-				/*
-				 * if ( empty($module) ) {
-		            $module = $this->_environment->getCurrentModule();
-		         }
-		         $params = array();
-		         $params['iid'] = $item->getItemID();
-		         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-		            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-		         } else {
-		            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-		         }
-		         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-		                                          $module,
-		                                          'edit',
-		                                          $params,
-		                                          $image,
-		                                          $this->_translator->getMessage('COMMON_EDIT_ITEM')).LF;
-		         unset($params);
-				 */
 			} else {
-				/*
-				* if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-		            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-		         } else {
-		            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-		         }
-		         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
+				$checkLocking = $this->_environment->getConfiguration('c_item_locking');
+          		$checkLocking = ($checkLocking) ? $checkLocking : false;
+				if ($checkLocking && method_exists($this->_item, "getLockingDate")) {
+					$lockingDate = $this->_item->getLockingDate();
+					if ($lockingDate) {
+						$editDate = new DateTime($lockingDate);
+						$compareDate = new DateTime();
+						$compareDate->modify("-20 minutes");
+
+						$return['locked'] = ($compareDate < $editDate);
+
+						$userManager = $this->_environment->getUserManager();
+						$lockingUser = $userManager->getItem($this->_item->getLockingUserId());
+						$return['locked_user_name'] = $lockingUser->getFullName();
+						$return['locked_date'] = $this->_environment->getTranslationObject()->getDateTimeinLang($lockingDate);
+					}
+				}
 			}
 
 			// delete
 			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && (!$this->_item->isA(CS_LABEL_TYPE) || !$this->_item->isSystemLabel())) {
 				$return['delete'] = true;
-				/*
-
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                          $this->_environment->getCurrentModule(),
-                              'detail',
-                          $params,
-                          $image,
-                          $this->_translator->getMessage('COMMON_DELETE_ITEM').LF,
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              '',
-                              'delete_confirm_entry');
-         unset($params);
-				 */
 			} else {
-				/*
-				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
 			}
 
 			$this->getAdditionalActions($return);
@@ -523,98 +472,31 @@
 
 				if($current_user->isUser() && $this->_with_modifying_actions) {
 					$return['mail'] = true;
-					/*
-					 * $params = array();
-         $params['iid'] = $item->getItemID();
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/mail.gif" style="vertical-align:bottom;" alt="'.$text.'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.$text.'"/>';
-         }
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                               $module,
-                               'mail',
-                               $params,
-                               $image,
-                               $text).LF;
-         unset($params);
-					 */
 				} else {
-					/*
-					 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/mail_grey.gif" style="vertical-align:bottom;" alt="'.$text.'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.$text.'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$text).' "class="disabled">'.$image.'</a>'.LF;
-					 */
 				}
 			}
 
 			// copy
 			if($current_user->isUser() && isset($this->_item) and !in_array($this->_item->getItemID(), $this->_clipboard_id_array)) {
 				$return['copy'] = true;
-
-				/*
-				 * $params = array();
-         $params['iid'] = $item->getItemID();
-         $params['add_to_'.$this->_environment->getCurrentModule().'_clipboard'] = $item->getItemID();
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/copy.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
-         }
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'detail',
-                                    $params,
-                                    $image,
-                                    $this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
-         unset($params);
-				 */
 			} else {
-				/*
-				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/copy_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
 			}
 
 			// TODO: dont forget print, download - which are always allowed
 
 			// TODO:  // actions from rubric plugins
-      	$plugin_actions = plugin_hook_output_all('getDetailActionAsHTML',NULL,' | ');
-      	if ( !empty($plugin_actions) ) {
-      	   $return['plugins'] = true;
-      	   $return['plugins_html'] = $plugin_actions;
-      	}
+	      	$plugin_actions = plugin_hook_output_all('getDetailActionAsHTML',NULL,' | ');
+	      	if ( !empty($plugin_actions) ) {
+	      	   $return['plugins'] = true;
+	      	   $return['plugins_html'] = $plugin_actions;
+	      	}
 
 			// new
 			$current_module = $this->_environment->getCurrentModule();
 
 			if($current_user->isUser() && $this->_with_modifying_actions && $current_module != CS_USER_TYPE) {
 				$return['new'] = true;
-				/*
-				 * $params = array();
-         $params['iid'] = 'NEW';
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'" id="new_icon"/>';
-         }
-         $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'edit',
-                                    $params,
-                                    $image,
-                                    $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
-         unset($params);
-				 */
 			} else {
-				//$html .= $this->_getNewActionDisabled();
 			}
 			
 			if($current_context->isMaterialOpenForGuests() && $current_user->isGuest()){
@@ -698,21 +580,7 @@
 						   $picture = $modificator_ref->getPicture();
 						}
 
-						//$html .= $this->_text_as_html_short($this->_compareWithSearchText($subitem->getTitle()));
 						$subitem_title = $annotation->getTitle();
-						//$subitem_title = $converter->text_as_html_short($subitem_title);
-
-						/*
-						 *
-
-		                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-		                     $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
-		                     $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
-		                     $html .='</div>'.LF;
-		                  }
-
-		                  */
-
 
 						$annotated_item = $this->_item;
 						$desc = $annotation->getDescription();
@@ -724,30 +592,12 @@
       					   $desc = $converter->textFullHTMLFormatting($desc);
       				   } else {
 							   $desc = $desc;
-							   //$html .= $this->getScrollableContent($desc,$item,'',true);
       				   }
 						}
 
 						$current_version = $annotated_item->getVersionID();
 						$annotated_version = $annotation->getAnnotatedVersionID();
-
-
-						/*
-					      if ( $current_version > $annotated_version ) {
-					         $text = '('.$this->_translator->getMessage('ANNOTATION_FOR_OLDER_VERSION').')';
-					      } elseif ( $current_version < $annotated_version ) {
-					         $text = '('.$this->_translator->getMessage('ANNOTATION_FOR_NEWER_VERSION').')';
-					      } else {
-					         $text = '';
-					      }
-
-
-
-					      if ( !empty ($text) ) {
-					         $html .= '<p class="disabled" style="margin-left:3px;">'.$text.'</p>'.LF;
-					      }
-					      $html .= '   </div>'.LF;
-					     */
+						
 						$return[] = array(
 							'image'				=> $picture,
 							'pos_number'		=> $pos_number,
@@ -785,24 +635,6 @@
 				$return['edit'] = true;
 				$return['delete'] = true;
 			} else {
-				/*
-				 * else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
-
-				/*
-				 * if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
-				 */
 			}
 
 			return $return;

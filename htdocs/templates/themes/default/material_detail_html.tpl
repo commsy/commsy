@@ -53,6 +53,20 @@
 				{if $detail.actions.edit}
 					<a id="action_edit" class="open_popup" data-custom="iid: {$detail.item_id}, module: '{$environment.module}'{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#">___COMMON_EDIT_ITEM___</a> |
 				{else}
+					{if $detail.actions.locked}
+						<img id="edit_attention" class="tooltip_toggle" src="{$basic.tpl_path}img/attention.gif" />
+						<div class="tooltip">
+							<div class="tooltip_inner">
+								<div class="tooltip_title">
+									<div class="header">___ITEM_LOCKING_TITLE___</div>
+								</div>
+								<div class="tooltip_content">
+									<span class="content">{i18n tag=ITEM_LOCKING_DESC param1=$detail.actions.locked_user_name param2=$detail.actions.locked_date}</span>
+								</div>
+							</div>
+						</div>
+					{/if}
+
 					<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 				{/if}
 				{if $detail.actions.edit}

@@ -1412,12 +1412,29 @@ class cs_item {
          }
       }
 
-      if ( $access === true )
-      {
-      	return true;
-      }
-      else
-      {
+      if ( $access === true ) {
+          // check locking
+          $checkLocking = $this->_environment->getConfiguration('c_item_locking');
+          $checkLocking = ($checkLocking) ? $checkLocking : false;
+          if ($checkLocking && !$user_item->isRoot() && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
+              $lockingUserId = $this->getLockingUserId();
+
+              // grant access if there is no lock or we are the user who has created it
+              if (!$lockingUserId || $lockingUserId == $user_item->getItemId()) {
+                  $access = true;
+              } else {
+                  // if there is a lock, check the date
+                  $lockingDate = $this->getLockingDate();
+                  if ($lockingDate) {
+                    $editDate = new DateTime($lockingDate);
+                    $compareDate = new DateTime();
+                    $compareDate->modify("-20 minutes");
+
+                    $access = ($compareDate >= $editDate);
+                  }
+              }
+          }
+      } else {
       	$privateRoomUserItem = $user_item->getRelatedPrivateRoomUserItem();
 
       	// check for sub-types
@@ -2782,6 +2799,35 @@ function getExternalViewerArray(){
    ############### END ######################
    # plugin configuration
    ##########################################
-    
+
+    /**
+    * returns the locking date
+    *
+    * @return Date
+    */
+   function getLockingDate() {
+      return $this->_getValue('locking_date');
+   }
+
+   /*
+    * returns the locking user id
+    *
+    * @return int
+    */
+   function getLockingUserId() {
+      return $this->_getValue('locking_user_id');
+   }
+
+   function hasLocking() {
+      return in_array($this->getItemType(), array(
+          CS_MATERIAL_TYPE,
+          CS_ANNOUNCEMENT_TYPE,
+          CS_DATE_TYPE,
+          CS_DISCUSSION_TYPE,
+          CS_GROUP_TYPE,
+          CS_TODO_TYPE,
+          CS_TOPIC_TYPE
+      ));
+   }
 }
 ?>

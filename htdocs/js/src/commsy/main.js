@@ -218,7 +218,7 @@ require([	"dojo/_base/declare",
 				}
 				
 				// overlays
-				query("a.new_item_2, a.new_item, a.attachment, span#detail_assessment, div.cal_days_events a, div.cal_days_week_events a").forEach(function(node, index, arr) {
+				query("a.new_item_2, a.new_item, a.attachment, span#detail_assessment, div.cal_days_events a, div.cal_days_week_events a, .tooltip_toggle").forEach(function(node, index, arr) {
 					require(["commsy/Overlay"], function(Overlay) {
 						var handler = Overlay();
 						handler.setup(node);
