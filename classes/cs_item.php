@@ -1416,7 +1416,7 @@ class cs_item {
           // check locking
           $checkLocking = $this->_environment->getConfiguration('c_item_locking');
           $checkLocking = ($checkLocking) ? $checkLocking : false;
-          if ($checkLocking && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
+          if ($checkLocking && !$user_item->isRoot() && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
               $lockingUserId = $this->getLockingUserId();
 
               // grant access if there is no lock or we are the user who has created it
