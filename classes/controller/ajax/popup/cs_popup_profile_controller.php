@@ -715,7 +715,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							unset($email_old);
 
 							if($currentContext->isPortal()){
-								if($form_data['mail_hide']){
+								if(!$form_data['mail_hide']){
 									$portalUser->setDefaultMailNotVisible();
 								} else {
 									$portalUser->setDefaultMailVisible();
@@ -742,7 +742,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								// $form_data['mail_hide'])
 								// $form_data['mail_hide_all'])
 							} else {
-								if($form_data['mail_hide']){
+								if(!$form_data['mail_hide']){
 									$currentUser->setEmailVisible();
 								} else {
 									$currentUser->setEmailNotVisible();
