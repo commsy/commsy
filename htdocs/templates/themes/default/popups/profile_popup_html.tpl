@@ -266,7 +266,7 @@
 
                      <div class="input_row">
                       <label for="data_mail_hide">___USER_EMAIL_HIDE___</label>
-                      <input id="data_mail_hide" type="checkbox" class="mandatory size_200 float-left" name="form_data[mail_hide]" {if $popup.form.config.hide_mail_adress === false}checked=checked{/if}/>
+                      <input id="data_mail_hide" type="checkbox" class="mandatory size_200 float-left" name="form_data[mail_hide]" {if $popup.form.config.hide_mail_adress === true}checked=checked{/if}/>
                       <input id="data_mail_hide_all" type="checkbox" class="float-left" name="form_data[mail_hide_all]" />
                       <label for="data_mail_hide_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
                       <div class="clear"></div>
