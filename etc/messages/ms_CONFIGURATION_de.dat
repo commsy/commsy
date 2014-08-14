@@ -151,6 +151,7 @@ $message["CONFIGURATION_CONNECTION_DESC"]["de"] = "Verbindungen zu anderen CommS
 $message["CONFIGURATION_DATA_SECURITY"]["de"] = "Datenschutz";
 $message["CONFIGURATION_DATA_SECURITY_DESC"]["de"] = "Log-Daten exportieren, maskieren, archivieren, löschen.";
 $message["CONFIGURATION_DATA_SECURITY_DESC_2"]["de"] = "Einstellungen zum Datenschutz";
+$message["CONFIGURATION_DATA_SECURITY_HIDE_MAIL_DEFAULT"]["de"] = "E-Mail Adresse per Default verbergen";
 $message["CONFIGURATION_DATES"]["de"] = "Voreinstellung";
 $message["CONFIGURATION_DATES_CHANGE"]["de"] = "Termindarstellung";
 $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendarstellung, dem Terminkalender in der Wochenansicht oder dem Terminkalender in der Monatsansicht als voreingestellte Darstellung der Termine in diesem Raum.";
