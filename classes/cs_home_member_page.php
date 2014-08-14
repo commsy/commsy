@@ -100,6 +100,13 @@ class cs_home_member_page extends cs_left_page {
               		$portal_user->setAGBAcceptance();
               	}
               }
+
+              if($portal_item->getConfigurationHideMailByDefault()) {
+                // hide 
+                $portal_user->setDefaultMailNotVisible();
+              } else {
+                $portal_user->setDefaultMailVisible();
+              }
               
               if($this->_environment->getCurrentContextItem()->isPasswordExpirationActive()){
               	$portal_user->setPasswordExpireDate($this->_environment->getCurrentContextItem()->getPasswordExpiration());

@@ -499,6 +499,17 @@ class cs_user_detail_view extends cs_detail_view {
       	$formal_data[] = $temp_array;
       }
 
+      $temp_array = array();
+      $temp_array[] = $this->_translator->getMessage('USER_EMAIL_DEFAULT');
+
+      if(!$item->getDefaultIsMailVisible()){
+         $temp_array[] = $this->_translator->getMessage('COMMON_YES');
+      } else {
+         $temp_array[] = $this->_translator->getMessage('COMMON_NO');
+      }
+      $formal_data[] = $temp_array;
+
+
       if ( $item->isModerator() and !$this->_environment->inPrivateRoom() ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('ACCOUNT_EMAIL_MEMBERSHIP');
@@ -994,6 +1005,19 @@ class cs_user_detail_view extends cs_detail_view {
       	}
       	
       }
+      // USER_LIST_ACTION_EMAIL_HIDE_DEFAULT
+      $params['iid'] = $item->getItemID();
+      $params['mode'] = 'hideMailDefault';
+      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_HIDE_DEFAULT')).BRLF;
+      $params['mode'] = 'hideMailAllRooms';
+      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_HIDE_ROOM')).BRLF;
+      $params['mode'] = 'showMailDefault';
+      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SHOW_DEFAULT')).BRLF;
+      $params['mode'] = 'showMailAllRooms';
+      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SHOW_ROOM')).BRLF;
+      
+      
+
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
