@@ -140,6 +140,54 @@ if ($type != CS_USER_TYPE) {
    	  }
    	  $user_item->save();
    	  redirect($environment->getCurrentContextID(),'account','detail',array('iid' => $current_item_id));
+   } else if ($environment->inPortal()
+         and isset($_GET['mode'])
+         and $_GET['mode'] == 'hideMailDefault') {
+
+      $user_item->setDefaultMailNotVisible();
+      $user_item->save();
+
+      redirect($environment->getCurrentContextID(),'account','detail',array('iid' => $current_item_id));
+   } else if ($environment->inPortal()
+         and isset($_GET['mode'])
+         and $_GET['mode'] == 'hideMailAllRooms') {
+
+      $user_item = $user_list->getFirst();
+      while($user_item) {
+         $user_item->setEmailNotVisible();
+         $user_item->save();
+         $user_item = $user_list->getNext();
+      }
+
+      $user_item->setDefaultMailNotVisible();
+      $user_item->save();
+
+      redirect($environment->getCurrentContextID(),'account','detail',array('iid' => $current_item_id));
+   } else if ($environment->inPortal()
+         and isset($_GET['mode'])
+         and $_GET['mode'] == 'showMailDefault') {
+
+
+      $user_item->setDefaultMailVisible();
+      $user_item->save();
+
+      redirect($environment->getCurrentContextID(),'account','detail',array('iid' => $current_item_id));
+   } else if ($environment->inPortal()
+         and isset($_GET['mode'])
+         and $_GET['mode'] == 'showMailAllRooms') {
+
+
+      $user_item = $user_list->getFirst();
+      while($user_item) {
+         $user_item->setEmailVisible();
+         $user_item->save();
+         $user_item = $user_list->getNext();
+      }
+
+      $user_item->setDefaultMailVisible();
+      $user_item->save();
+
+      redirect($environment->getCurrentContextID(),'account','detail',array('iid' => $current_item_id));
    } else {
 
       // Mark as read
