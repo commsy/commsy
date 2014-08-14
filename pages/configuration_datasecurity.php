@@ -184,6 +184,13 @@ if ($command != 'error') { // only if user is allowed to edit datasecurity
       		$context_item->setAGBDatasecurity();
       	}
 
+         $hideMailDefault = $_POST['default_hide_mail'];
+         if($hideMailDefault == 2){
+            $context_item->setConfigurationHideMailByDefault(0);
+         } else {
+            $context_item->setConfigurationHideMailByDefault(1);
+         }
+
       }
 
       // save room_item
