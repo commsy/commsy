@@ -438,6 +438,23 @@ if (!isset($error) or !$error) {
                $view->setCheckedIDs($selected_ids);
             }
             break;
+         case 40:
+            // E-Mail verbergen (default)
+            $action = 'USER_HIDE_MAIL_DEFAULT';
+            
+            break;
+         case 41:
+            // E-Mail in allen Räumen verbergen
+            $action = 'USER_HIDE_MAIL_ALL_ROOMS';
+            break;
+         case 42:
+            // E-Mail anzeigen (default)
+            $action = 'USER_SHOW_MAIL_DEFAULT';
+            break;
+         case 43:
+            // E-Mail in allen Räumen anzeigen
+            $action = 'USER_SHOW_MAIL_ALL_ROOMS';
+            break;
          case 23:
             $action = 'USER_EMAIL_ACCOUNT_MERGE';
             $user_manager = $environment->getUserManager();
