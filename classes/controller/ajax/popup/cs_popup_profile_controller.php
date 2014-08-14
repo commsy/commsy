@@ -683,6 +683,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						$currentUser = $this->_environment->getCurrentUserItem();
 						$portalUser = $currentUser->getRelatedCommSyUserItem();
 						$text_converter = $this->_environment->getTextConverter();
+						$currentContext = $this->_environment->getCurrentContextItem();
 
 						if ( $this->_popup_controller->checkFormData('user') )
 						{
@@ -712,6 +713,61 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$form_data['mail_all'] = 1;
 							}
 							unset($email_old);
+
+							if($currentContext->isPortal()){
+								if($form_data['mail_hide']){
+									$portalUser->setDefaultMailNotVisible();
+								} else {
+									$portalUser->setDefaultMailVisible();
+								}
+								if($form_data['mail_hide_all']){
+									$user_list = $user->getRelatedUserList();
+
+							        $user_item = $user_list->getFirst();
+							        while($user_item) {
+							        	if($form_data['mail_hide']){
+							        		$user_item->setEmailNotVisible();
+							        	} else {
+							        		$user_item->setEmailVisible();
+							        	}
+							            
+							            $user_item->save();
+							            $user_item = $user_list->getNext();
+							        }
+							        $user->setDefaultMailNotVisible();
+							        $user->save();
+
+								}
+								// pr($form_data);
+								// $form_data['mail_hide'])
+								// $form_data['mail_hide_all'])
+							} else {
+								if($form_data['mail_hide']){
+									$currentUser->setEmailVisible();
+								} else {
+									$currentUser->setEmailNotVisible();
+								}
+								if($form_data['mail_hide_all']){
+									$user_list = $user->getRelatedUserList();
+
+							        $user_item = $user_list->getFirst();
+							        while($user_item) {
+							        	if($form_data['mail_hide']){
+							        		$user_item->setEmailNotVisible();
+							        	} else {
+							        		$user_item->setEmailVisible();
+							        	}
+							            
+							            $user_item->save();
+							            $user_item = $user_list->getNext();
+							        }
+							        $user->setDefaultMailNotVisible();
+							        $user->save();	
+								}
+							}
+
+							// im portal nur default wert
+							// im raum default wert und raum wert?
 
 							setValue($currentUser, $portalUser, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
 							setValue($currentUser, $portalUser, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
@@ -1448,6 +1504,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 	public function initPopup($data) {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
+		$current_context = $this->_environment->getCurrentContextItem();
 
 		// set configuration
 		$account = array();
@@ -1505,6 +1562,22 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		if($this->_user->isModerator()) {
 			$this->_config['show_mail_change_form'] = true;
 		}
+
+		// if context room show email visbility
+		// if context portal show default email hide
+
+		$this->_config['hide_mail_adress'] = false;
+		if(!$current_context->isPortal()){
+			// room context
+			if($this->_user->isEmailVisible()){
+				$this->_config['hide_mail_adress'] = true;
+			}
+		} else {
+			if(!$this->_user->getRelatedPortalUserItem()->getDefaultIsMailVisible()){
+				$this->_config['hide_mail_adress'] = true;
+			}
+		}
+		
 
 		// datenschutz: overwrite or not (04.09.2012 IJ)
 		$overwrite = true;

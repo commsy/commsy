@@ -408,6 +408,18 @@ class cs_account_action_form extends cs_rubric_form {
             case 'USER_UNMAKE_CONTACT_PERSON':
                $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
                break;
+            case 'USER_HIDE_MAIL_DEFAULT':
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+               break;
+            case 'USER_HIDE_MAIL_ALL_ROOMS':
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+               break;
+            case 'USER_SHOW_MAIL_DEFAULT':
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+               break;
+            case 'USER_SHOW_MAIL_ALL_ROOMS':
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+               break;
             default:
                $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_account_action_form(539) ');
                break;

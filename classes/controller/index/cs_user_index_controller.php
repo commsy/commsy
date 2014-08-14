@@ -178,7 +178,7 @@
 					$handy = $view->_text_as_html_short($handy);
 				}
 
-				if($item->isEmailVisible()) {
+				if($item->isEmailVisible() || $this->_environment->getCurrentUser()->isModerator()) {
 					$mail = $item->getEmail();
 					//TODO:
 					//$mail = $converter->compareWithSearchText($mail);

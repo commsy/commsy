@@ -104,6 +104,25 @@ class cs_become_member_page extends cs_left_page {
                $user_item->setPicture($new_picture_name);
             }
 
+            $portal_user = $user_item->getRelatedPortalUserItem();
+            if(!empty($portal_user->getConfigurationHideMailByDefault())) {
+              // use default user config
+              if($portal_item->getConfigurationHideMailByDefault()) {
+                // hide 
+                $user_item->setDefaultMailNotVisible();
+              } else {
+                $user_item->setDefaultMailVisible();
+              }
+            } else {
+              // default portal config
+              if($portal_item->getConfigurationHideMailByDefault()){
+                $user_item->setDefaultMailNotVisible();
+              } else {
+                $user_item->setDefaultMailVisible();
+              }
+            }
+            
+
             $user_item->save();
             $user_item->setCreatorID2ItemID();
 

@@ -320,6 +320,40 @@ function performAction ( $environment, $action_array, $post_array ) {
          $send_to = $user->getEmail();
       } elseif ( $action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE' ) {
          $send_to = $user->getEmail();
+      } elseif ( $action_array['action'] == 'USER_HIDE_MAIL_DEFAULT' ) {
+         $user->setDefaultMailNotVisible();
+         $user->save();
+         $send_to = $user->getEmail();
+      } elseif ( $action_array['action'] == 'USER_HIDE_MAIL_ALL_ROOMS' ) {
+         $user_list = $user->getRelatedUserList();
+
+         $user_item = $user_list->getFirst();
+         while($user_item) {
+            $user_item->setEmailNotVisible();
+            $user_item->save();
+            $user_item = $user_list->getNext();
+         }
+         $user->setDefaultMailNotVisible();
+         $user->save();
+
+         $send_to = $user->getEmail();
+      } elseif ( $action_array['action'] == 'USER_SHOW_MAIL_DEFAULT' ) {
+         $user->setDefaultMailVisible();
+         $user->save();
+         $send_to = $user->getEmail();
+      } elseif ( $action_array['action'] == 'USER_SHOW_MAIL_ALL_ROOMS' ) {
+         $user_list = $user->getRelatedUserList();
+
+         $user_item = $user_list->getFirst();
+         while($user_item) {
+            $user_item->setEmailVisible();
+            $user_item->save();
+            $user_item = $user_list->getNext();
+         }
+         $user->setDefaultMailVisible();
+         $user->save();
+
+         $send_to = $user->getEmail();
       }
 
       if($user->isEmailVisible()){
@@ -657,6 +691,18 @@ if ( $command != 'error' ) {
             $tempMessage = $translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_USER_BUTTON');
             break;
          case 'USER_UNMAKE_CONTACT_PERSON':
+            $tempMessage = $translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+            break;
+         case 'USER_HIDE_MAIL_DEFAULT':
+            $tempMessage = $translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+            break;
+         case 'USER_HIDE_MAIL_ALL_ROOMS':
+            $tempMessage = $translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+            break;
+         case 'USER_SHOW_MAIL_DEFAULT':
+            $tempMessage = $translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+            break;
+         case 'USER_SHOW_MAIL_ALL_ROOMS':
             $tempMessage = $translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
             break;
          default:

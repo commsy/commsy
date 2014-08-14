@@ -877,6 +877,31 @@ class cs_user_item extends cs_item {
      return $retour;
   }
 
+  public function setDefaultMailNotVisible()
+  {
+    $this->_setExtra('DEFAULT_MAIL_VISIBILITY', '-1');
+  }
+
+  public function setDefaultMailVisible()
+  {
+    $this->_setExtra('DEFAULT_MAIL_VISIBILITY', '1');
+  }
+
+  public function getDefaultIsMailVisible()
+  {
+     $retour = '';
+     if ($this->_issetExtra('DEFAULT_MAIL_VISIBILITY')) {
+      $retour = $this->_getExtra('DEFAULT_MAIL_VISIBILITY');
+     }
+
+     if($retour == '1'){
+      $retour = true;
+     } else {
+      $retour = false;
+     }
+     return $retour;
+  }
+
   // need anymore ??? (TBD)
   function isCommSyContact () {
      $retour = false;
