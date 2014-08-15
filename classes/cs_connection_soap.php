@@ -3005,16 +3005,18 @@ class cs_connection_soap {
    {
       if($this->_isSessionValid($sessionId)) {
          $this->_environment->setSessionID($sessionId);
-         $session = $this->_environment->getSessionItem();
-         // $contextId = $session->getValue('commsy_id');
-         $context_id = $session->getValue('commsy_id');
-         $this->_environment->setCurrentContextID($context_id);
-         $userId = $session->getValue('user_id');
-         // $userId = 'guest';
-         //$portal_manager = $this->_environment->getPortalManager();
-         //$portal_item = $portal_manager->getItem($context_id);
          
-         // set portal configuration
+         $sessionItem = $this->_environment->getSessionItem();
+         $userId = $sessionItem->getValue('user_id');
+         $context_id = $sessionItem->getValue('commsy_id');
+         $authSourceId = $sessionItem->getValue('auth_source');
+
+         $this->_environment->setCurrentContextID($context_id);
+         $translator = $this->_environment->getTranslationObject();
+         
+         // get user item
+         $userManager = $this->_environment->getUserManager();
+         $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
 
          $roomManager = $this->_environment->getRoomManager();
          $roomManager->setContextLimit($contextId);
@@ -3028,40 +3030,26 @@ class cs_connection_soap {
          if($timeLimit){
             $roomManager->setTimeLimit($timeLimit);
          }
-
-         //$roomManager->setTimeLimit('1453');
          
          if(!empty($search)) {
             $roomManager->setSearchLimit($search);
          }
-
-         // if($userId != "guest") {
-         //    $authSourceId = $session->getValue('auth_source');
-         //    $userManager = $this->_environment->getUserManager();
-         //    $userItem = $userManager->getItemByUserIDAuthSourceID($userId, $authSourceId);
-         //    $roomListCount = $roomManager->getRelatedRoomListForUser($userItem);
-         //    $roomListCount = $roomListCount->getCount();
-         //    $roomManager->setIntervalLimit($start, $count);
-         //    $roomList = $roomManager->getRelatedRoomListForUser($userItem);
-
-         // } else {
-            $roomListCount = $roomManager->_performQuery('count');
-            $roomManager->setIntervalLimit($start, $count);
-            $roomManager->select();
-            $roomList = $roomManager->get();
-            $roomListCount = $roomListCount[0]['count'];
-         // }
-
-         //$roomListCount = $roomList->getCount();
-
-         //$roomListCount = $roomListCount->getCount();
-         //$countTest = $roomList->getCount();
-
+         $roomListCount = $roomManager->_performQuery('count');
+         $roomManager->setIntervalLimit($start, $count);
+         $roomManager->select();
+         $roomList = $roomManager->get();
+         $roomListCount = $roomListCount[0]['count'];
          $xml = "<room_list>\n";
          $roomItem = $roomList->getFirst();
          while ($roomItem) {
+            $mayEnter = false;
+            if ($userItem && $roomItem->mayEnter($userItem)) {
+               $mayEnter = true;
+            }
+
             $xml .= "<room_item>";
                $xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
+               $xml .= "<access><![CDATA[".($mayEnter ? "yes" : "no") ."]]></access>\n";
                $xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
                $xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
                $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
