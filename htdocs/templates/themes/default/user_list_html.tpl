@@ -68,7 +68,7 @@
 			<div class="column_260">
 				<p>
 					{if empty($item.mail)}
-						___USER_EMAIL_HIDDEN___
+						___USER_EMAIL_HIDDEN___ <a class="open_popup" data-custom="module: 'mailtouser', iid: {$item.iid}" href="#">___USER_EMAIL_HIDE_SEND___</a>
 					{else}
 						<a href="mailto:{$item.mail}">{$item.mail|truncate:35:"...":true}</a>
 					{/if}

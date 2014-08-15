@@ -116,24 +116,13 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
       
       $context_item = $this->_environment->getCurrentContextItem();
       if($context_item->isServer()){
-      //$this->_form->addText('Text', $translator->getMessage('CONFIGURATION_LOG_DATA'), '');
-      // Zeitraum zur Löschung alter Log Daten
+
       $this->_form->addTextfield('log_delete_interval','',$translator->getMessage('CONFIGURATION_DELETE_AFTER_DAYS'),'',3,10,true,'','','','','','',false);
-      // Räume für langfristige Archivierung
-      // Log-Daten runterladen für bestimmte Räume (pseudonymisiert)
-      // Log-Daten für bestimmte Räume löschen
-      
-// 	  $this->_form->addRadioGroup('password_specialchar',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_SPECIALCHAR'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-// 	  $this->_form->addTextfield('password_length','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_LENGTH'),'',1,10,false,'','','','','','',$disabled);
-// 	  $this->_form->addEmptyLine();
-// 	  //Datenschutz
-// 	  $this->_form->addTextfield('password_expiration','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW_EXPIRATION'),'',1,10,false,'','','','','','',$disabled);
-	  #$this->_form->addRadioGroup('expired_password', 'Intervall Passwortänderung','',$this->_yes_no_array,'','',true,'','',$disabled);
+
       $this->_form->addRadioGroup('log_ip', $translator->getMessage('CONFIGURATION_EXTRA_LOG_IP'),'',$this->_yes_no_array,'','',true,'','',$disabled);
-      #$this->_form->addText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '','','','','','','','colspan=2');
-      #$this->_form->addEmptyline();
+
       $this->_form->addTitleText('logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'));//( 'logdata', $translator->getMessage('CONFIGURATION_LOG_DATA_ROOM_DELETE'), '', '', 4 ,2);
-	  $this->_form->addSelect( 'portal',
+	    $this->_form->addSelect( 'portal',
                                $this->_array_portal,
                                '',
                                $translator->getMessage('COMMON_PORTAL'),
@@ -224,6 +213,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
         #############################
         $this->_form->addRadioGroup('hide_accountname',$translator->getMessage('CONFIGURATION_HIDE_USERLOGIN'),'',$this->_yes_no_array,'','',true,'','',$disabled);
         $this->_form->addRadioGroup('use_ds_agb',$translator->getMessage('CONFIGURATION_AGB_DATASECURITY'),'',$this->_yes_no_array,'','',true,'','',$disabled);
+        $this->_form->addRadioGroup('default_hide_mail',$translator->getMessage('CONFIGURATION_DATA_SECURITY_HIDE_MAIL_DEFAULT'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
 
       #$this->_form->addEmptyLine();
@@ -265,6 +255,7 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
          } else if($current_context->isPortal()){
          	$this->_values['hide_accountname'] = $current_context->getHideAccountname();
          	$this->_values['use_ds_agb'] = $current_context->withAGBDatasecurity();
+
          	
          	if( $this->_values['hide_accountname']){
          		$this->_values['hide_accountname'] = 1;
@@ -272,12 +263,19 @@ class cs_configuration_datasecurity_form extends cs_rubric_form {
          		$this->_values['hide_accountname'] = 2;
          	}
          	
-         	
          	if ($this->_values['use_ds_agb']){
          		$this->_values['use_ds_agb'] = 1;
          	} else {
          		$this->_values['use_ds_agb'] = 2;
          	}
+
+          $this->_values['default_hide_mail'] = $current_context->getConfigurationHideMailByDefault();
+
+          if($this->_values['default_hide_mail']) {
+            $this->_values['default_hide_mail'] = 1;
+          } else {
+            $this->_values['default_hide_mail'] = 2;
+          }
          	
          	
          }

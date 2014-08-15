@@ -67,20 +67,20 @@
 						</table>
 					{/if}
 
-					{if !empty($detail.content.second_block)}
+					{*if !empty($detail.content.second_block)*}
 						<table>
-							{if !empty($detail.content.second_block.email)}
+							{*if !empty($detail.content.second_block.email)*}
 								<tr>
 									<td class="label"><h4>___USER_EMAIL___</h4></td>
 									<td>
 										{if $detail.content.hidden.email == true}
-											___USER_EMAIL_HIDDEN___
+											___USER_EMAIL_HIDDEN___ <a class="open_popup" data-custom="module: 'mailtouser', iid: {$detail.item_id}" href="#">___USER_EMAIL_HIDE_SEND___</a>
 										{else}
 											<a href="mailto:{$detail.content.second_block.email}">{$detail.content.second_block.email}</a>
 										{/if}
 									</td>
 								</tr>
-							{/if}
+							{*/if*}
 
 							{if !empty($detail.content.second_block.telephone)}
 								<tr>
@@ -100,7 +100,7 @@
 								</tr>
 							{/if}
 						</table>
-					{/if}
+					{*/if*}
 
 					{if !empty($detail.content.third_block)}
 						<table>
