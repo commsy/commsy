@@ -373,10 +373,6 @@ if (!empty($_GET['SID'])) {
            and $environment->getCurrentFunction() == 'login'
            and !$outofservice
          ) {
-#   if (!isset($_GET['jscheck']) and !isset($_GET['isJS'])){
-#       include_once('pages/context_reload.php');
-#       exit();
-#   }
    include_once('pages/context_login.php');
    exit();
 } elseif ( strtolower($environment->getCurrentFunction()) == 'getfile'
