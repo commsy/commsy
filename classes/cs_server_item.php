@@ -252,7 +252,7 @@ class cs_server_item extends cs_guide_item {
 //    						pr('SendMailLock '.$inactivitySendMailLock);
 //    						pr('daysTillLock '.$daysTillLock);
    						if($sourceType == 'MYSQL'){
-   							$userid = $user->getUserID();
+   							$userid = $user->getFullname();
    							
 	   						// delete user
 	   						if($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)){
@@ -622,7 +622,7 @@ class cs_server_item extends cs_guide_item {
 	   							continue;
 	   						}
 	   						
-	   						// lock tomorrow
+	   						// lock now
 	   						if($days >= $portal_item->getInactivityLockDays()-1 and !empty($inactivityLockDays)){
 	
 	   							if($user->getMailSendBeforeLock()){
