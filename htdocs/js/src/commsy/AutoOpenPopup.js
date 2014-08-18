@@ -18,7 +18,15 @@ define([	"dojo/_base/declare",
 				if (openPopup.popup == "tm_user") {
 					this.openUserConfiguration(openPopup.parameters);
 				}
-			}			
+			}
+
+			if (typeof this.uri_object.commsy_bar_open != "undefined") {
+				var popup = this.uri_object.commsy_bar_open;
+				var nodeElement = Query("a#" + popup)[0];
+				if (nodeElement) {
+					nodeElement.click();
+				}
+			}	
 		},
 		
 		openRoomConfiguration: function(parameters) {
