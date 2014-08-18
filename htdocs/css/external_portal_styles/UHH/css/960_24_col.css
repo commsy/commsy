@@ -21,8 +21,8 @@ body {
 ----------------------------------------------------------------------------------------------------*/
 
 .container_24 {
-  margin-left: 100px;
-  /*margin-right: ;*/
+  margin-left: auto;
+  margin-right: auto;
   width: 1080px;
 }
 

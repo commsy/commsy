@@ -474,7 +474,7 @@ li a.active {
 }
 
 #room_detail {
-  width: 850px;
+  width: 860px;
   height: 300px;
   padding: 0px;
   border-left: 1px solid #e0e0e0;
@@ -488,7 +488,17 @@ li a.active {
 }
 
 .myarea_headline {
-  background-color: #D00E1A;
+  background: #e2001a; /* Old browsers */
+  background: -moz-linear-gradient(top,  #e2001a 0%, #d00e1a 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e2001a), color-stop(100%,#d00e1a)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #e2001a 0%,#d00e1a 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #e2001a 0%,#d00e1a 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #e2001a 0%,#d00e1a 100%); /* IE10+ */
+  background: linear-gradient(to bottom,  #e2001a 0%,#d00e1a 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e2001a', endColorstr='#d00e1a',GradientType=0 ); /* IE6-9 */
+
+
+
   height: 35px;
   text-align: center;
   -moz-border-radius: 2px;
@@ -509,17 +519,17 @@ li a.active {
 
 .myarea_content span {
   background-image: url(../img/dart-round-gr.gif);
-  background-position: 0 3px;
+  background-position: 10px 4px;
   background-repeat: no-repeat;
-  padding-left: 15px;
+  padding-left: 20px;
   margin: 0 0 2px 0;
 }
 
 .myarea_content input {
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px; 
+  /*-moz-border-radius: 5px;
+  -webkit-border-radius: 5px; */  
   /* aktuelle Webkitbrowser brauchen keinen Prefix mehr */
-  border-radius: 5px;
+  /*border-radius: 5px;*/
 
   margin-left: 6px;
   margin-bottom: 6px;
@@ -609,4 +619,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', end
   background-color: #f2f2f2;
   padding: 5px;
   margin-top: 10px;
+}
+
+#main-content > #portal_room_config{
+  border: 1px solid lightgrey;
+  padding: 5px;
 }
