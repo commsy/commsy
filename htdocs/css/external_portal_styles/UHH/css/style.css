@@ -1,6 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700);
 body {
-  font: 15px/1.5 'Open Sans',Arial,Helvetica,sans-serif;
+  font: 13px/1.5 'Open Sans',Arial,Helvetica,sans-serif;
   color: #444;
   background-color:#FFF;
 }
@@ -46,10 +46,10 @@ body {
     padding-left: 0.4em;
 }
 
-.room_list_head {
+/*.room_list_head {
     background: url("../img/menu_bg.gif") repeat-x scroll 0 0 #EEEEEE;
     height: 24px;
-}
+}*/
 
 #room_list a.portal_system_link, a.portal_system_link:hover, a.head {
     color: #464646;
@@ -74,7 +74,7 @@ body {
 }
 
 div.search_box{
-    background-color: #F9F9F9;
+    background-color: #f2f2f2;
     padding:10px 5px;
 }
 
@@ -110,7 +110,7 @@ div.search_box{
   height: 80px;
 }
 #logo-wrapper {
-  border-bottom: 2px solid #bbb;
+  /*border-bottom: 2px solid #bbb;*/
   padding-top: 2em;
   padding-bottom: 20px;
 }
@@ -176,7 +176,7 @@ button,
 input[type="reset"],
 input[type="submit"],
 input[type="button"] {
-  -moz-box-shadow: inset 0px 1px 0px -10px #fff;
+ /* -moz-box-shadow: inset 0px 1px 0px -10px #fff;
   -webkit-box-shadow: inset 0px 1px 0px -10px #fff;
   box-shadow: inset 0px 1px 0px -10px #fff;
   background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #ededed), color-stop(1, #dfdfdf) );
@@ -194,7 +194,7 @@ input[type="button"] {
   font-weight: normal;
   padding: 4px 8px;
   text-decoration: none;
-  text-shadow: 1px 1px 0px #fff;
+  text-shadow: 1px 1px 0px #fff;*/
 }
 button:hover,
 input[type="reset"]:hover,
@@ -204,11 +204,11 @@ button:focus,
 input[type="reset"]:focus,
 input[type="submit"]:focus,
 input[type="button"]:focus {
-  background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
+  /*background: -webkit-gradient( linear, left top, left bottom, color-stop(0.05, #dfdfdf), color-stop(1, #ededed) );
   background: -moz-linear-gradient( center top, #dfdfdf 5%, #ededed 100% );
   filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dfdfdf', endColorstr='#ededed');
   background-color: #dfdfdf;
-  border: 1px solid #ffcc33;
+  border: 1px solid #ffcc33;*/
 }
 button:active,
 input[type="reset"]:active,
@@ -233,7 +233,7 @@ a:hover, a:active {
 
 /* Text elements */
 p, dl, hr, ol, ul, pre, table, address, fieldset {
-  margin-bottom: 10px;
+  /*margin-bottom: 10px;*/
 }
 ol {
   list-style: decimal;
@@ -242,7 +242,7 @@ ul {
   list-style: disc;
 }
 li {
-  margin-left: 30px;
+  /*margin-left: 30px;*/
 }
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Lucida Sans',Helvetica,Arial,sans-serif;
@@ -255,10 +255,7 @@ h2 {
 }
 h1#page-title,
 .block h2 {
-  font-size: 21px;
   font-weight: normal;
-  color: #ad6b20;
-  border-bottom: 2px solid #ddd;
 }
 h3 {
   font-size: 15px;
@@ -473,7 +470,7 @@ li a.active {
 
 #sidebar-second {
   width: 300px;
-  margin-top: 325px;
+  margin-top: 320px;
 }
 
 #room_detail {
@@ -506,7 +503,7 @@ li a.active {
 }
 
 .myarea_frame {
-  background-color: #e5e5e5;
+  background-color: #f2f2f2;
 
 }
 
@@ -551,7 +548,7 @@ border-radius: 2px;
 }
 
 #room_list_all {
-  background-color: #e5e5e5;
+  background-color: #f2f2f2;
 }
 
 #room_list_all h2{
@@ -559,13 +556,57 @@ border-radius: 2px;
 }
 
 .portal-head {
-  background: #e8e8e8 !important; /* Old browsers */
-background: -moz-linear-gradient(top,  #e8e8e8 0%, #a3a4a6 100%) !important; /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e8e8e8), color-stop(100%,#a3a4a6)) !important; /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  #e8e8e8 0%,#a3a4a6 100%) !important; /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  #e8e8e8 0%,#a3a4a6 100%) !important; /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  #e8e8e8 0%,#a3a4a6 100%) !important; /* IE10+ */
-background: linear-gradient(to bottom,  #e8e8e8 0%,#a3a4a6 100%) !important; /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e8e8e8', endColorstr='#a3a4a6',GradientType=0 ) !important; /* IE6-9 */
+background: #f7f7f7 !important; /* Old browsers */
+background: -moz-linear-gradient(top,  #f7f7f7 0%, #c4c4c4 100%) !important; /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f7f7f7), color-stop(100%,#c4c4c4)) !important; /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #f7f7f7 0%,#c4c4c4 100%) !important; /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #f7f7f7 0%,#c4c4c4 100%) !important; /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #f7f7f7 0%,#c4c4c4 100%) !important; /* IE10+ */
+background: linear-gradient(to bottom,  #f7f7f7 0%,#c4c4c4 100%) !important; /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', endColorstr='#c4c4c4',GradientType=0 ) !important; /* IE6-9 */
 
+
+
+}
+
+#search_block {
+  background-color: #f2f2f2;
+  padding: 5px;
+}
+
+#search_block h2 {
+  padding-left: 5px;
+}
+#search_block span{
+  padding-left: 5px;
+  font-size: 11px;
+
+}
+.search_box span{
+  padding-left: 0px !important;
+  font-size: 11px;
+  font-weight: bold;
+
+}
+
+#room_list_all h2 {
+  padding-left: 10px;
+}
+.portal_description {
+  padding-left: 10px;
+}
+
+.portal_forward_links {
+  padding-right: 10px;
+  font-size: 12px;
+}
+
+#room_list_all {
+  width: 550px;
+}
+
+#option_block {
+  background-color: #f2f2f2;
+  padding: 5px;
+  margin-top: 10px;
 }

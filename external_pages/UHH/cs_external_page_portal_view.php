@@ -1568,7 +1568,7 @@ class cs_external_page_portal_view extends cs_page_view {
 
    function getDetailWelcomeBox() {
     $html = '<div id="room_detail">
-    <div id="room_detail_head"></div>
+    <div id="room_detail_head" style="text-align:right;">'. $this->_getFlagsAsHTML() .'</div>
     <div>
     </div>
     <div id="room_detail_headline">
@@ -2163,7 +2163,7 @@ class cs_external_page_portal_view extends cs_page_view {
    	   $to_javascript['autoOpenPopup']['parameters'] = array();
    	}
    	
-   	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
+   	$html .= '<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>';
    	
    	switch ($mode) {
    		case "build":
@@ -2257,12 +2257,13 @@ class cs_external_page_portal_view extends cs_page_view {
       $html .= '<input type="hidden" name="sel_archive_room" value="2"/>'.LF;
       $html .= '<div class="search_box">'.LF;
       $html .= '<div style="text-align:left; font-size: 10pt;">';
-      $html .= '<div style="float:right;"><input style="font-size:10pt;" name="option" value="'.$this->_translator->getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
+      $html .= '<span>'.$this->_translator->getMessage('PORTAL_SEARCH_FIELD').'</span>';
+      //$html .= '<div style="float:right;"><input style="font-size:10pt;" name="option" value="'.$this->_translator->getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
 
       if ( isset($this->_room_list_view) ) {
-         $html .= '<div><input style="width:200px; font-size:10pt;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->_room_list_view->getSearchText()).'"/></div>'.LF;
+         $html .= '<div><input style="width:250px; font-size:10pt;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->_room_list_view->getSearchText()).'"/></div>'.LF;
       } else {
-         $html .= '<div><input style="width:200px; font-size:10pt;" name="search" type="text" size="20" value=""/></div>'.LF;
+         $html .= '<div><input style="width:250px; font-size:10pt;" name="search" type="text" size="20" value=""/></div>'.LF;
       }
 
       if ( isset($this->_room_list_view) ) {
@@ -2281,6 +2282,34 @@ class cs_external_page_portal_view extends cs_page_view {
       if ( isset($this->_room_list_view) and !empty($this->_room_list_view->_selected_context)) {
          $html .= '   <input type="hidden" name="room_id" value="'.$this->_text_as_form($this->_room_list_view->_selected_context).'"/>'.LF;
       }
+
+      $html .= '<div style="margin-top:10px;font-size: 11px;font-weight: bold;">'.$this->_translator->getMessage('PORTAL_ROOM_LIST_ROOMS').':</div>';
+      $html .= '   <select style="width: 250px; font-size:10pt;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+
+      $html .= '      <option value="1"';
+      if ( !isset($selroom) || ($selroom == 1 or $selroom == 2) ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').' '.$this->_translator->getMessage('COMMON_ROOMS').'</option>'.LF;
+
+      $current_context = $this->_environment->getCurrentContextItem();
+      if ($show_rooms !='onlycommunityrooms'){
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option value="3"';
+         if ( !empty($selroom) and $selroom == 3 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('COMMON_PROJECT_PL').'</option>'.LF;
+
+         $html .= '      <option value="4"';
+         if ( !empty($selroom) and $selroom == 4 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('COMMON_COMMUNITY_PL').'</option>'.LF;
+      }
+
+      $html .= '   </select>'.LF;
+
 
       #if ($show_rooms !='onlycommunityrooms'){
          $html .= '<div style="float:left; text-align:left; font-size: 10pt; padding-top:5px;">';
@@ -2314,31 +2343,7 @@ class cs_external_page_portal_view extends cs_page_view {
 	  $html .=' value="1" name="sel_archive_room"> '.$this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS').'
       </div>'.LF;
 
-      $html .= '   <select style="width: 215px; font-size:10pt;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-
-      $html .= '      <option value="1"';
-      if ( !isset($selroom) || ($selroom == 1 or $selroom == 2) ) {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').' '.$this->_translator->getMessage('COMMON_ROOMS').'</option>'.LF;
-
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ($show_rooms !='onlycommunityrooms'){
-         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-         $html .= '      <option value="3"';
-         if ( !empty($selroom) and $selroom == 3 ) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>'.$this->_translator->getMessage('COMMON_PROJECT_PL').'</option>'.LF;
-
-         $html .= '      <option value="4"';
-         if ( !empty($selroom) and $selroom == 4 ) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>'.$this->_translator->getMessage('COMMON_COMMUNITY_PL').'</option>'.LF;
-      }
-
-      $html .= '   </select>'.LF;
+      
 
 
       $html .= '</div>'.LF;
@@ -2362,9 +2367,9 @@ class cs_external_page_portal_view extends cs_page_view {
          $portal_item = $this->_environment->getCurrentContextItem();
          $time_list = $portal_item->getTimeListRev();
 
-         $html .= '<div style="float:right; text-align:left; font-size: 10pt; padding-right:40px;">';
-         $html .= '<div style="text-align:left; font-size: 8pt; font-weight:normal; margin-bottom:10px; margin-top:3px;">'.$this->_translator->getMessage('COMMON_TIME_NAME').': </div>'.LF;
-         $html .= '   <select style="width: 237px; font-size: 10pt;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '<div style="float:left; text-align:left; font-size: 10pt; padding-right:40px;">';
+         $html .= '<div style="text-align:left; font-size: 8pt; font-weight:normal; margin-bottom:0px; margin-top:3px;font-size:11px;font-weight:bold;">'.$this->_translator->getMessage('COMMON_TIME_NAME').': </div>'.LF;
+         $html .= '   <select style="width: 250px; font-size: 10pt;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
          $html .= '      <option value="-3"';
          if ( !isset($seltime) or $seltime == 0 or $seltime == -3) {
             $html .= ' selected="selected"';
@@ -3410,16 +3415,16 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .='<td class="room_list_head" style="width:55%; vertical-align:bottom; white-space:nowrap;">'.LF;
          $html .='<div>'.LF;
          $html .='<div>'.LF;
-         if ($this->_environment->inServer()) {
-            $html .= '<span class="portal_section_title">'.$this->_translator->getMessage('SERVER_PORTAL_OVERVIEW').'</span>'.LF;
-         } else {
-            $html .= '<span class="portal_section_title">'.$this->_getRoomListHeadingAsHTML().'</span>'.LF;
-         }
+         // if ($this->_environment->inServer()) {
+         //    $html .= '<span class="portal_section_title">'.$this->_translator->getMessage('SERVER_PORTAL_OVERVIEW').'</span>'.LF;
+         // } else {
+         //    $html .= '<span class="portal_section_title">'.$this->_getRoomListHeadingAsHTML().'</span>'.LF;
+         // }
          $html .='</div>'.LF;
          $html .='</div>'.LF;
          $html .='</td>'.LF;
          $html .='<td class="room_list_head" colspan="2" style="width:45%; vertical-align:bottom; text-align:right; white-space:nowrap;">'.LF;
-         $html .='<div style="float:right;text-align:right;">'.LF;
+         $html .='<div style="float:right;text-align:right;margin-top: -25px;">'.LF;
          $html .= '&nbsp;&nbsp;<span class="portal_forward_links">'.$this->_room_list_view->_getForwardLinkAsHTML().'</span>'.LF;
          $html .='</div>'.LF;
          $html .='</td>'.LF;
@@ -3431,10 +3436,10 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .='<td colspan="2" style="padding-top:5px; vertical-align:bottom; text-align:right; white-space:nowrap;">'.LF;
          if (!$this->_environment->inServer()) {
 
-            $html .='<div style="float:right;text-align:right; font-size:8pt;">'.LF;
-            $html .= '<span class="portal_description">'.$this->_room_list_view->_getIntervalLinksFirstLineAsHTML().'</span>'.LF;
-            $html .= '&nbsp;<span class="portal_description">'.$this->_room_list_view->_getIntervalLinksSecondLineAsHTML().'</span>'.LF;
-            $html .='</div>'.LF;
+            // $html .='<div style="float:right;text-align:right; font-size:8pt;">'.LF;
+            // $html .= '<span class="portal_description">'.$this->_room_list_view->_getIntervalLinksFirstLineAsHTML().'</span>'.LF;
+            // $html .= '&nbsp;<span class="portal_description">'.$this->_room_list_view->_getIntervalLinksSecondLineAsHTML().'</span>'.LF;
+            // $html .='</div>'.LF;
          }
          $html .='</td>'.LF;
          $html .='</tr>'.LF;
@@ -3442,7 +3447,7 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .='<table style="width:100%; margin:0px; padding:0px;" summary="Layout">'.LF;
          $html .='<tr>'.LF;
 
-         $html .='<td colspan="3" style="padding-top:0px; vertical-align:top; ">'.LF;
+         $html .='<td colspan="3" style="padding-top:0px; vertical-align:top; text-align:center;">'.LF;
 
 
          $html .= '<table style="border-collapse: collapse; border: 0px; padding:0px; width: 100%" summary="Layout">'.LF;
@@ -4319,7 +4324,7 @@ $html .='<a id="content" name="content"></a> <!-- Skiplink-Anker: Content -->
 
 
 
-$html.='  
+$html.='  <div style="margin-top:40px;">'.$this->_getSystemInfoAsHTML().'</div>
     </div>
     </div>
     <!-- end #main-content -->'.LF;
@@ -4341,7 +4346,9 @@ $html .='
     <!-- 2. Sidebar -->
     <div id="sidebar-second" class="sidebar grid_5">'.LF;
 
+    $html .= '<div id="search_block">';
     $html .= '<h2>'.$this->_translator->getMessage('COMMON_ROOM_SEARCH').'</h2>'.LF;
+    $html .= '<span>'.$this->_translator->getMessage('COMMON_ROOM_SEARCH_DESCRIPTION').'</span>';
     $html .= $this->getSearchBoxAsHTML().LF;
     $html .='</div>'.LF;
 
@@ -4349,12 +4356,13 @@ $html .='
     $params = $this->_environment->getCurrentParameterArray();
     if ($current_user->isUser()){
 
-		$html .='		<div id="news" class="block">'.LF;
-		$html .= $this->_getMyCommSyAsHTML();
-		$html .='	</div>'.LF;	
+		// $html .='		<div id="news" class="block">'.LF;
+		// $html .= $this->_getMyCommSyAsHTML();
+		// $html .='	</div>'.LF;	
 
 	
 		$html .='		<div id="news" class="block">'.LF;
+    $html .= '<div id="option_block">';
 			if ( $lang == 'en' ) {
 				$html .='<h2>Create workspaces</h2><div style="padding:10px 5px; white-space:nowrap;">';
 				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
@@ -4369,6 +4377,7 @@ $html .='
 				$html.= $this->_getConfigurationBoxAsHTML();
 			}
 		}
+    $html .=' </div>'.LF; 
 		$html .='	</div>'.LF;	
 
 
@@ -4385,10 +4394,11 @@ $html .='	<div id="news" class="block">'.LF;
 $html .= $this->_getServerNewsAsHTML();
 
 	$html.='
-      </div><div style="margin-top:40px;">'.$this->_getSystemInfoAsHTML().'</div>
+      </div>
     </div>
     <!-- end #sidebar-second -->'.LF;
 }	
+
 
 
 $html .= '';
@@ -4535,17 +4545,18 @@ $html .= '';
          $lang = $session_item->getValue('message_language_select');
       }
       $params = array();
-      if ( $lang == 'en' ) {
+      $flag_lang = 'gb';
+         $link_lang = 'en';
+         $params['language'] = $link_lang;
+         $html .= '<div style="float:right;padding-left:5px;padding-right:5px;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'<img src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>',$this->_translator->getMessageInLang('en','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
+      // if ( $lang == 'en' ) {
          $flag_lang = 'de';
          $link_lang = 'de';
          $params['language'] = $link_lang;
-         $html .= '<div style=" border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'Deutsch <img src="images/flags/'.$flag_lang.'.gif"  alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>',$this->_translator->getMessageInLang('de','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
-      }  else {
-         $flag_lang = 'gb';
-         $link_lang = 'en';
-         $params['language'] = $link_lang;
-         $html .= '<div style="border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'English <img src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>',$this->_translator->getMessageInLang('en','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
-      }
+         $html .= '<div style="">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'<img src="images/flags/'.$flag_lang.'.gif"  alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>',$this->_translator->getMessageInLang('de','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
+      // }  else {
+         
+      // }
       unset($params);
       return $html;
    }
