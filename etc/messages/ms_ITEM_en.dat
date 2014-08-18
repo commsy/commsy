@@ -2,6 +2,8 @@
 $message["ITEM_DOES_NOT_EXIST"]["en"] = "You tried to access nonexistent information.";
 $message["ITEM_EXPORT_TO_WIKI"]["en"] = "Show in wiki";
 $message["ITEM_EXPORT_TO_WORDPRESS"]["en"] = "Show in blog";
+$message["ITEM_LOCKING_TITLE"]["en"] = "In editing";
+$message["ITEM_LOCKING_DESC"]["en"] = "This item is currently being edited by %1 since %2.";
 $message["ITEM_NOT_AVAILABLE"]["en"] = "You tried to access an item that has been deleted.";
 $message["ITEM_TITLE_SHORT"]["en"] = "New items";
 $message["ITEM_WORKFLOW_MARK_NOT_READ"]["en"] = "Mark as not read";

@@ -513,6 +513,74 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						}
 						break;
 
+					/**** IMPORT ****/
+					case 'import':
+						if($this->_popup_controller->checkFormData('upload_import_private_room')) {
+                     if(!empty($additional["fileInfo"])) {
+                        $temp_stamp = time();
+                        rename($additional["fileInfo"]["file"], 'var/temp/upload_'.$temp_stamp.'.zip');
+                        $zip = new ZipArchive;
+                        $res = $zip->open('var/temp/upload_'.$temp_stamp.'.zip');
+                        if ($res === TRUE) {
+                           $zip->extractTo('var/temp/'.$temp_stamp);
+                           $zip->close();
+                           
+                           $commsy_work_dir = getcwd();
+                           chdir('var/temp/'.$temp_stamp);
+                           foreach (glob("commsy_xml_export_import_*.xml") as $filename) {
+                              $xml = simplexml_load_file($filename, null, LIBXML_NOCDATA);
+                              //el($xml);
+                              $dom = new DOMDocument('1.0');
+                              $dom->preserveWhiteSpace = false;
+                              $dom->formatOutput = true;
+                              $dom->loadXML($xml->asXML());
+                              //el($dom->saveXML());
+                              
+                              $options = array();
+                              chdir($commsy_work_dir);
+                              $room_manager = $this->_environment->getRoomManager();
+                              $room_manager->import_item($xml, null, $options);
+                              chdir('var/temp/'.$temp_stamp);
+               
+                              $files = scandir('.');
+                              foreach($files as $file) {
+                                 if (strpos($file, 'files') === 0) {
+                                    $directory_name_array = explode('_', $file);
+                                    $directory_old_id = $directory_name_array[1];
+                                    $disc_manager = $this->_environment->getDiscManager();
+                                    $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+                                    $directory_new_id = $options[$directory_old_id];
+                                    if ($directory_new_id != '') {
+                                       $disc_manager->setContextID($directory_new_id);
+                                       $new_file_path = $disc_manager->getFilePath();
+                                       chdir($file);
+                                       $files_to_copy = glob('./*');
+                                       foreach($files_to_copy as $file_to_copy){
+                                          if (!(strpos($file, 'default_cs_gradient') === 0)) {
+                                             $file_to_copy = str_ireplace('./', '', $file_to_copy);
+                                             $file_name_array = explode('.', $file_to_copy);
+                                             $file_old_id = $file_name_array[0];
+                                             $file_new_id = $options[$file_old_id];
+                                             if ($file_new_id != '') {
+                                                $file_to_copy_temp = str_ireplace($file_old_id.'.', $file_new_id.'.', $file_to_copy);
+                                                $file_to_copy_temp = './'.$file_to_copy_temp;
+                                                $file_to_go = str_replace('./',$commsy_work_dir.'/'.$new_file_path, $file_to_copy_temp);
+                                                copy($file_to_copy, $file_to_go);
+                                             }
+                                          }
+                                       }
+                                       chdir('..');
+                                    }
+                                 }
+                              }
+                           }
+                           chdir($commsy_work_dir);
+                        }
+                     }
+                  }
+						
+						break;
+
 					/**** USER PICTURE ****/
 					case 'user_picture':
 						if($this->_popup_controller->checkFormData('user_picture')) {
@@ -615,6 +683,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						$currentUser = $this->_environment->getCurrentUserItem();
 						$portalUser = $currentUser->getRelatedCommSyUserItem();
 						$text_converter = $this->_environment->getTextConverter();
+						$currentContext = $this->_environment->getCurrentContextItem();
 
 						if ( $this->_popup_controller->checkFormData('user') )
 						{
@@ -644,6 +713,61 @@ class cs_popup_profile_controller implements cs_popup_controller {
 								$form_data['mail_all'] = 1;
 							}
 							unset($email_old);
+
+							if($currentContext->isPortal()){
+								if($form_data['mail_hide']){
+									$portalUser->setDefaultMailNotVisible();
+								} else {
+									$portalUser->setDefaultMailVisible();
+								}
+								if($form_data['mail_hide_all']){
+									$user_list = $user->getRelatedUserList();
+
+							        $user_item = $user_list->getFirst();
+							        while($user_item) {
+							        	if($form_data['mail_hide']){
+							        		$user_item->setEmailNotVisible();
+							        	} else {
+							        		$user_item->setEmailVisible();
+							        	}
+							            
+							            $user_item->save();
+							            $user_item = $user_list->getNext();
+							        }
+							        $user->setDefaultMailNotVisible();
+							        $user->save();
+
+								}
+								// pr($form_data);
+								// $form_data['mail_hide'])
+								// $form_data['mail_hide_all'])
+							} else {
+								if($form_data['mail_hide']){
+									$currentUser->setEmailNotVisible();
+								} else {
+									$currentUser->setEmailVisible();
+								}
+								if($form_data['mail_hide_all']){
+									$user_list = $user->getRelatedUserList();
+
+							        $user_item = $user_list->getFirst();
+							        while($user_item) {
+							        	if($form_data['mail_hide']){
+							        		$user_item->setEmailNotVisible();
+							        	} else {
+							        		$user_item->setEmailVisible();
+							        	}
+							            
+							            $user_item->save();
+							            $user_item = $user_list->getNext();
+							        }
+							        $user->setDefaultMailNotVisible();
+							        $user->save();	
+								}
+							}
+
+							// im portal nur default wert
+							// im raum default wert und raum wert?
 
 							setValue($currentUser, $portalUser, 'setTelephone', $text_converter->sanitizeHTML($form_data['telephone']));
 							setValue($currentUser, $portalUser, 'setCellularphone', $text_converter->sanitizeHTML($form_data['cellularphone']));
@@ -1160,6 +1284,77 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						      }
 						      // plugins
 
+                        else if($additional['action'] == 'export_private_room'){
+                           $currentUserItem = $this->_environment->getCurrentUserItem();
+                           $privateroom_manager = $this->_environment->getPrivateRoomManager();
+                           $privateroom_item = $privateroom_manager->getRelatedOwnRoomForUser($currentUserItem, $this->_environment->getCurrentPortalID());
+                           
+                           $room_manager = $this->_environment->getRoomManager();
+                           $xml = $room_manager->export_item($privateroom_item->getItemID());
+                           //$xml = $room_manager->export_item(488);
+                           $dom = new DOMDocument('1.0');
+                           $dom->preserveWhiteSpace = false;
+                           $dom->formatOutput = true;
+                           $dom->loadXML($xml->asXML());
+                           //el($dom->saveXML());
+   
+                           $filename = 'var/temp/commsy_xml_export_import_'.$privateroom_item->getItemID().'.xml';
+                           if ( file_exists($filename) ) {
+                              unlink($filename);
+                           }
+                  
+                           $xmlfile = fopen($filename, 'a');   
+                           fputs($xmlfile, $dom->saveXML());
+                           fclose($xmlfile);
+                  
+                           //Location where export is saved
+                           $zipfile = 'var/temp/commsy_export_import_'.$privateroom_item->getItemID().'.zip';
+                           if ( file_exists($zipfile) ) {
+                              unlink($zipfile);
+                           }
+                  
+                           //Location that will be backuped
+                           $disc_manager = $this->_environment->getDiscManager();
+                           $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+                  
+                           $backup_paths = array();
+                           $room_item = $privateroom_manager->getItem($privateroom_item->getItemID());
+
+                           $disc_manager->setContextID($room_item->getItemId());
+                           $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+                  
+                           if ( class_exists('ZipArchive') ) {
+                              include_once('functions/misc_functions.php');
+                              $zip = new ZipArchive();
+                              $filename_zip = $zipfile;
+                  
+                              if ( $zip->open($filename_zip, ZIPARCHIVE::CREATE) !== TRUE ) {
+                                 include_once('functions/error_functions.php');
+                                 trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
+                              }
+                              $temp_dir = getcwd();
+                              foreach ($backup_paths as $item_id => $backup_path) {
+                                 chdir($backup_path);
+                                 $zip = addFolderToZip('.',$zip,'files_'.$item_id);
+                                 chdir($temp_dir);
+                              }
+                  
+                              $zip->addFile($filename, basename($filename));
+                              $zip->close();
+                              unset($zip);
+                              
+                              #header('Content-disposition: attachment; filename=commsy_export_import_'.$_POST['room'].'.zip');
+                              #header('Content-type: application/zip');
+                              #readfile($zipfile);
+                              
+                              //export_privateroom
+                              
+                              $this->_popup_controller->setSuccessfullDataReturn(array('commsy_export' => '/commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=export_privateroom&fct=getfile'));
+                           } else {
+                              include_once('functions/error_functions.php');
+                              trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
+                           }
+                        }
 
 							//---
 
@@ -1309,6 +1504,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 	public function initPopup($data) {
 		$current_portal_item = $this->_environment->getCurrentPortalItem();
+		$current_context = $this->_environment->getCurrentContextItem();
 
 		// set configuration
 		$account = array();
@@ -1366,6 +1562,22 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		if($this->_user->isModerator()) {
 			$this->_config['show_mail_change_form'] = true;
 		}
+
+		// if context room show email visbility
+		// if context portal show default email hide
+
+		$this->_config['hide_mail_adress'] = false;
+		if(!$current_context->isPortal()){
+			// room context
+			if(!$this->_user->isEmailVisible()){
+				$this->_config['hide_mail_adress'] = true;
+			}
+		} else {
+			if(!$this->_user->getRelatedPortalUserItem()->getDefaultIsMailVisible()){
+				$this->_config['hide_mail_adress'] = true;
+			}
+		}
+		
 
 		// datenschutz: overwrite or not (04.09.2012 IJ)
 		$overwrite = true;

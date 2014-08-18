@@ -1,3 +1,6 @@
+noBacklink = false;
+togglePopups = [];
+
 require([	"dojo/_base/declare",
          	"commsy/base",
          	"dojo/_base/lang"], function(declare, BaseClass, Lang) {
@@ -143,6 +146,16 @@ require([	"dojo/_base/declare",
 						gallery.init(galleryNode, uri_object.cid, uri_object.iid, uri_object.module);
 					});
 				}
+				//Projekktor
+				if (this.uri_object.fct == "detail") {
+					var videoNodes = query('video');
+
+					if(videoNodes){
+						require(["commsy/projekktor"], function(projekktor){
+							projekktor.setupProjekktor();
+						});
+					}
+				}
 
 				
 				// limesurvey
@@ -208,7 +221,7 @@ require([	"dojo/_base/declare",
 				}
 				
 				// overlays
-				query("a.new_item_2, a.new_item, a.attachment, span#detail_assessment, div.cal_days_events a, div.cal_days_week_events a").forEach(function(node, index, arr) {
+				query("a.new_item_2, a.new_item, a.attachment, span#detail_assessment, div.cal_days_events a, div.cal_days_week_events a, .tooltip_toggle").forEach(function(node, index, arr) {
 					require(["commsy/Overlay"], function(Overlay) {
 						var handler = Overlay();
 						handler.setup(node);

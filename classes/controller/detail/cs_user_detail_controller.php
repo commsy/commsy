@@ -684,7 +684,7 @@
 			$email = $converter->text_as_html_short($email);
 
 			$return['hidden']['email'] = false;
-			if(!empty($email) && ($this->_item->isEmailVisible() || $this->_display_mod === 'admin')) {
+			if(!empty($email) && ($this->_item->isEmailVisible() || $this->_display_mod === 'admin' || $this->_environment->getCurrentUser()->isModerator())) {
 				$return['second_block']['email'] = $email;
 			} elseif(!$this->_item->isEmailVisible()) {
 				$return['hidden']['email'] = true;

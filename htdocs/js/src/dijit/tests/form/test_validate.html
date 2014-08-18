@@ -53,9 +53,13 @@
 		<!-- required: the default dijit theme: -->
 		<link id="themeStyles" rel="stylesheet" href="../../themes/claro/claro.css"/>
 
-		<!-- required: dojo.js -->
+		<!--
+			required: dojo.js
+			Note that the locale is hardcoded to english, for benefit of the robot/ValidationTextBox.html test
+			(when running on a non-US computer).
+		 -->
 		<script type="text/javascript" src="../../../dojo/dojo.js"
-			data-dojo-config="isDebug: true, parseOnLoad: true, extraLocale: ['de-de']"></script>
+			data-dojo-config="isDebug: true, parseOnLoad: true, locale: 'en-us', extraLocale: ['de-de']"></script>
 
 		<!-- only needed for alternate theme testing: -->
 		<script type="text/javascript" src="../_testCommon.js"></script>
@@ -86,7 +90,7 @@
 
 				new dijit.form.TextBox({id: 'monospace1', "aria-label":"monospace1", disabled: true, value: 'M|M:monospace?'}, 'monospace1');
 				new dijit.form.TextBox({id: 'monospace2', "aria-label":"monospace2",disabled: true, value: 'M|M:monospace?'}).placeAt('widget_monospace1', 'after');
-				
+
 				new dijit.form.TextBox({id: 'sans1', "aria-label":"sans1", disabled: true, value: 'sans1'}, 'sans1');
 				new dijit.form.TextBox({id: 'sans2', "aria-label":"sans2", disabled: true, value: 'sans2'}).placeAt('widget_sans1', 'after');
 
@@ -94,7 +98,7 @@
 				var props = {
 					name: "elevation",
 					value: 3000,
-					constraints: {min:-20000,max:20000,places:0},
+					constraints: {min:-20000,max:20000,places:0,allowCruft:true},
 					promptMessage: "Enter a value between -20000 and +20000",
 					required: true,
 					style:{ textAlign: document.documentElement.dir == "rtl" ? "left" : "right" },
@@ -103,7 +107,7 @@
 					onChange: function(val){dojo.byId('oc5').value = val; },
 					"class": "medium"
 				};
-				(new dijit.form.NumberTextBox(props, "q05")).startup();
+				(new dojo.declare("customNumberTextBox", dijit.form.NumberTextBox, props)({}, "q05")).startup();
 
 				props = {
 					name: "ticket1651",
@@ -122,27 +126,29 @@
 					name: "initial conditions",
 					runTest: function(){
 						var form1 = dojo.byId("form1");
-						
+
 						doh.is("Testing Testing", form1.firstname.value, "firstname");
 						doh.is("not fired yet!", dojo.byId("oc1").value, "firstname onchange");
 
 						doh.is("TESTING TESTING", form1.lastname.value, "lastname");
-						
+
 						doh.is("", form1.age.value, "age");
 						doh.is("not fired yet!", dojo.byId("oc3").value, "age onchange");
-						
+
 						doh.is("", form1.occupation.value, "occupation");
-						
+
 						doh.is("3000", form1.elevation.value, "elevation");
 						doh.is("3,000", dojo.byId("q05").value, "elevation display value");
 						doh.is("not fired yet!", dojo.byId("oc5").value, "elevation onchange");
-						
+						doh.t(!!dijit.byId("q05").constraints.allowCruft, "constructor constraints value");
+
 						doh.is("54775.53", form1.income1.value, "income1");
 						doh.is("$54,775.53", dojo.byId("q08").value, "income1 display value");
 						doh.is("not fired yet!", dojo.byId("oc8").value, "income1 onchange");
 
 						doh.is("54775.53", form1.income2.value, "income2");
 						doh.is("€54,775.53", dojo.byId("q08eur").value, "income2 display value");
+						doh.f(!!dijit.byId("q08eur").constraints.allowCruft, "constructor constraints value not proliferated");
 
 						doh.is("someTestString", form1.phone.value, "phone");
 						doh.is("", form1.password.value, "password");
@@ -183,12 +189,12 @@
 						runTest: function(){
 
 							textbox = dijit.byId(textbox);
-		
+
 							// expectedState is a combination of the attributes that we expect to change
 							// and the attributes that we expect not to change
 							var expectedState = dojo.delegate(watchExpected, unchangedExpected);
 
-							// save all notifications from watch()		
+							// save all notifications from watch()
 							var watchActual = {};
 							watchHandle = textbox.watch(function(attr, oldVal, newVal){
 									console.log(textbox.id + ": " + attr + ": " + oldVal + " --> " + newVal);
@@ -205,26 +211,26 @@
 
 							// do the set
 							textbox.set(setDict);
-							
+
 							doh.is(expectedState.displayedValue, fixNbsp(textbox.focusNode.value), "focusNode.value");
-		
+
 							doh.is(isValid, textbox.isValid(), "isValid()");
-		
+
 							var d = new doh.Deferred();
-		
+
 							setTimeout(d.getTestCallback(function(){
 								// test that onChange() was called correctly
 								if(onChangeExpected){
 									doh.is(onChangeExpected, onChangeActual, "onChange()");
 								}
-								
+
 								// check that watch() callbacks were called
 								for(attr in watchExpected){
 									doh.t(attr in watchActual, "watch(" + attr + ") fired");
 									doh.is(watchExpected[attr], watchActual[attr], "watch(" + attr + ")");
 									doh.is(typeof watchExpected[attr], typeof watchActual[attr], "typeof watch(" + attr + ")")
 								}
-		
+
 								// check that direct get(...) calls are also working, for both the attributes
 								// that were supposed to change and the attributes that weren't supposed to change
 								for(attr in expectedState){
@@ -234,11 +240,11 @@
 
 								// check that watch() didn't report attributes as changed when they didn't change
 								for(attr in unchangedExpected){
-									doh.f(attr in watchActual, attr + " shouldn't have been reported as changed by watch " + 
+									doh.f(attr in watchActual, attr + " shouldn't have been reported as changed by watch " +
 										watchActual[attr]);
 								}
-							}), 50);		
-		
+							}), 50);
+
 							return d;
 						},
 						tearDown: function(){
@@ -260,7 +266,7 @@
 					setTest("out_of_range_min", 'q03', {value: -1}, {value: -1, displayedValue: "-1", state: "Error"}, {}, false),
 					setTest("invalid", 'q03', {value: 'two'}, {value: undefined, displayedValue: 'two'}, {}, false),
 					setTest("null_required", 'q03', {required: true, value: null},
-							{required: true, value: NaN, displayedValue: ''}, {state: "Error"}, false),	
+							{required: true, value: NaN, displayedValue: ''}, {state: "Error"}, false),
 					setTest("null_notrequired", 'q03', {required: false, value: null}, {}, {displayedValue: ''}, true),
 
 					// test formatting of value vs. displayed value
@@ -415,23 +421,27 @@
 				]);
 
 				doh.register("validation in dialog", [
-					function showDialog(){
-						// Show dialog, returning Deferred that fires when show dialog is finished.
-						// Before showing, focus the open button, so that Dialog knows where to return focus to.
+					{
+						name: "showDialog",
+						timeout: 5000,
+						runTest: function() {
+							// Show dialog, returning Deferred that fires when show dialog is finished.
+							// Before showing, focus the open button, so that Dialog knows where to return focus to.
 
-						var d = new doh.Deferred();
+							var d = new doh.Deferred();
 
-						dijit.byId("dlgOpenBtn").focus();
+							dijit.byId("dlgOpenBtn").focus();
 
-						// Focus on IE9+ is asynchronous, so wait for it to occur before showing Dialog.   Otherwise,
-						// when Dialog closes it restores focus somewhere strange.
-						setTimeout(function(){
-							dijit.byId("dlg").show().then(function(){
-								d.resolve(true);
-							});
-						}, 0);
+							// Focus on IE9+ is asynchronous, so wait for it to occur before showing Dialog.   Otherwise,
+							// when Dialog closes it restores focus somewhere strange.
+							setTimeout(function () {
+								dijit.byId("dlg").show().then(function () {
+									d.resolve(true);
+								});
+							}, 0);
 
-						return d;
+							return d;
+						}
 					},
 					function enterInvalidValue(){
 						// Entering invalid value should make validation tooltip appear
@@ -444,15 +454,19 @@
 						}), 300);
 						return d;
 					},
-					function hideDialog(){
-						// Hiding the dialog should make the validation tooltip disappear
-						var d = new doh.Deferred();
-						dijit.byId("dlg").hide().then(function(){
-							setTimeout(d.getTestCallback(function(){
-								doh.t(isHidden(masterTT.domNode), "tooltip hidden");
-							}), 300);
-						});
-						return d;
+					{
+						name: "hideDialog",
+						timeout: 5000,
+						runTest: function () {
+							// Hiding the dialog should make the validation tooltip disappear
+							var d = new doh.Deferred();
+							dijit.byId("dlg").hide().then(function () {
+								setTimeout(d.getTestCallback(function () {
+									doh.t(isHidden(masterTT.domNode), "tooltip hidden");
+								}), 300);
+							});
+							return d;
+						}
 					}
 				]);
 
@@ -835,6 +849,9 @@
 		</div>
 		<div class="testExample">
 			<input id="q26" data-dojo-type="dijit/form/TextBox" placeHolder="placeholder is here" name="placeHolder" value=""/>
+			<button type="button" onclick="dijit.byId('q26').set('placeHolder', 'this is a very long placeholder that will overflow the input');">
+				set long placeholder
+			</button>
 		</div>
 		<h2>Tooltip positioning</h2>
 		<p>
@@ -859,5 +876,65 @@
 		</div>
 		<button dojoType="dijit.form.Button" id="dlgOpenBtn" onclick="dijit.byId('dlg').show();">show dialog</button>
 
+		<div class="dojoTitlePaneLabel">
+			<label id="l_ticket17923">Trac ticket 17923</label>
+			<span class="noticeMessage">Partial numeric input should be validated with respect to the min/max constraints and available space</span>
+		</div>
+
+        <div class="testExample">
+            <input id="ticket17923" class="medium"/>
+            <input type="button" id="ticket17923-maxLength5" value="maxLength: 5" tabIndex="-1"/>
+            <input type="button" id="ticket17923-maxLength3" value="maxLength: 3" tabIndex="-1"/>
+            <input type="button" id="ticket17923-min1:max15" value="min: 12, max: 142" tabIndex="-1"/>
+            <input type="button" id="ticket17923-min-15:max15" value="min: -15, max: -5" tabIndex="-1"/>
+        </div>
+        <script>
+        require(["dijit/form/NumberTextBox", "dojo/dom", "dojo/on", "dojo/_base/lang"], function(NumberTextBox, dom, on, lang){
+
+            var fld = new NumberTextBox({
+                name: "ticket17923",
+                constraints: {pattern: '#000.#', min: 12, max: 142 },
+                maxLength: 5
+            }, "ticket17923");
+
+            on(dom.byId("ticket17923-maxLength5"), 'click', function(){
+                fld.set('maxLength', 5);
+            });
+
+            on(dom.byId("ticket17923-maxLength3"), 'click', function(){
+                fld.set('maxLength', 3);
+            });
+
+            on(dom.byId("ticket17923-min1:max15"), 'click', function(){
+                fld.set('constraints', lang.mixin({}, fld.get('constraints'), {min: 12, max: 142}));
+            });
+
+            on(dom.byId("ticket17923-min-15:max15"), 'click', function(){
+                fld.set('constraints', lang.mixin({}, fld.get('constraints'), {min: -15, max: -5}));
+            });
+
+            fld.startup();
+        });
+        </script>
+
+		<div class="dojoTitlePaneLabel">
+			<label id="l_ticket17955">Trac ticket 17955</label>
+			<span class="noticeMessage">Ensure setting the formattedValue does not alter the entered value on blur</span>
+		</div>
+		<div class="testExample">
+			<input id="ticket17955" class="medium"/>
+		</div>
+		<script>
+		require(["dijit/form/NumberTextBox", "dojo/dom", "dojo/on", "dojo/_base/lang"], function(NumberTextBox, dom, on, lang){
+
+			var fld = new NumberTextBox({
+				name: "ticket17955",
+				constraints: {pattern: '000.#', min: 12, max: 142 },
+				placeHolder: "Number Pattern 000.#",
+				maxLength: 5
+			}, "ticket17955");
+			fld.startup();
+		});
+		</script>
 	</body>
 </html>

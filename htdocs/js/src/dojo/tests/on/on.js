@@ -1,8 +1,99 @@
 define([
 	"doh", "require",
-	"dojo/_base/declare",  "dojo/Evented", "dojo/has", "dojo/on", "dojo/query", "dojo/topic"
-], function(doh, require, declare, Evented, has, on, query, topic){
+	"dojo/_base/declare",  "dojo/Evented", "dojo/has", "dojo/on", "dojo/query", "dojo/topic", "dojo/dom-construct", "dojo/on/debounce", "dojo/on/throttle"
+], function(doh, require, declare, Evented, has, on, query, topic, domConstruct, dojoDebounce, dojoThrottle){
+	doh.register("tests.on.delegate", [
+		function matches(){
+			var eDiv = document.body.appendChild(document.createElement("div")),
+				eDiv2 = eDiv.appendChild(document.createElement("div")),
+				eSpan = eDiv2.appendChild(document.createElement("span")),
+				matchResult = [];
+				handle = on(eDiv, "click", function(e){
+					matchResult.push(!!on.matches(e.target, 'span:click', this));
+					matchResult.push(!!on.matches(e.target, 'div:click', this));
+					matchResult.push(!!on.matches(e.target, 'div:click', this, false));
+					matchResult.push(!!on.matches(e.target, 'body:click', this));
+				});
 
+			eSpan.click();
+			handle.remove();
+			handle = on(eDiv, "click", function(e){
+				matchResult.push(!!on.matches(e.target, 'span:click', this));
+				matchResult.push(!!on.matches(e.target, 'div:click', this));
+			});
+			eDiv2.click();
+			doh.is([true, true, false, false, false, true], matchResult);
+		},
+		function debounce(){
+			var eDiv = document.body.appendChild(document.createElement("div")),
+				eDiv2 = eDiv.appendChild(document.createElement("div")),
+				eA = eDiv2.appendChild(document.createElement("a")),
+				eButton = eA.appendChild(document.createElement("button")),
+				debouncedCount = 0,
+				debouncedCount2 = 0,
+				debouncedCount3 = 0,
+				eventTargetAvailable = false;
+				clickCount = 0;
+
+			on(eDiv, dojoDebounce("a:click", 100), function(e){
+				debouncedCount++;
+				eventTargetAvailable = e && e.target && e.target.nodeType === 1;
+			});
+			on(eDiv2, dojoDebounce("click", 100), function(){
+				debouncedCount2++;
+			});
+			on(eDiv, dojoDebounce("click,a:click", 100), function(){
+				debouncedCount3++;
+			});
+			on(eDiv, "a:click", function(){
+				clickCount++;
+			});
+			eButton.click();
+			eButton.click();
+			eButton.click();
+			eButton.click();
+			
+			var deferred = new doh.Deferred();
+			setTimeout(deferred.getTestCallback(function(){
+				doh.is(true, eventTargetAvailable);
+				doh.is(1, debouncedCount);
+				doh.is(1, debouncedCount2);
+				doh.is(1, debouncedCount3);
+				doh.is(4, clickCount);
+			}), 110);
+			return deferred;
+
+		},
+		function throttle(){
+			var eDiv = document.body.appendChild(document.createElement("div")),
+				eDiv2 = eDiv.appendChild(document.createElement("div")),
+				eA = eDiv2.appendChild(document.createElement("a")),
+				eButton = eA.appendChild(document.createElement("button")),
+				throttleCount = 0,
+				clickCount = 0;
+
+			on(eDiv, dojoThrottle("a:click", 100), function(){
+				throttleCount++
+			});
+			on(eDiv, "a:click", function(){
+				clickCount++
+			});
+			var interv = setInterval(function() {
+				eButton.click();
+				if(clickCount === 4) {
+					clearInterval(interv);
+				}
+			}, 45);
+			
+			var deferred = new doh.Deferred();
+			setTimeout(deferred.getTestCallback(function(){
+				doh.is(4, clickCount);
+				doh.is(2, throttleCount);
+			}), 300);
+			return deferred;
+
+		}
+	]);
 	doh.register("tests.on", [
 		function object(t){
 			var order = [];
@@ -44,6 +135,23 @@ define([
 			});
 			t.is(order, [0,0,3,0,3,3,3,3,6,0,3,7,4]);
 		},
+		function multipleHandlers(t){
+			var div = document.body.appendChild(document.createElement("div"));
+			var order = [];
+			var customEvent = function(target, listener){
+				return on(target, "custom", listener);
+			};
+			on(div, "a,b", function(event){
+				order.push(1 + event.type);
+			});
+			on(div, ["a",customEvent], function(event){
+				order.push(2 + event.type);
+			});
+			on.emit(div, "a", {});
+			on.emit(div, "b", {});
+			on.emit(div, "custom", {});
+			t.is(order, ["1a", "2a", "1b", "2custom"]);
+		},
 		function once(t){
 			var order = [];
 			var obj = new Evented();
@@ -60,6 +168,7 @@ define([
 		function dom(t){
 			var div = document.body.appendChild(document.createElement("div"));
 			var span = div.appendChild(document.createElement("span"));
+
 			var order = [];
 			var signal = on(div,"custom", function(event){
 				order.push(event.a);
@@ -154,7 +263,8 @@ define([
 
 			// make sure 'document' and 'window' can also emit events
 			var eventEmitted;
-			var globalObjects = [document, window];
+			var iframe = domConstruct.place('<iframe></iframe>', document.body);
+			var globalObjects = [document, window, iframe.contentWindow, iframe.contentDocument || iframe.contentWindow.document];
 			for(var i = 0, len = globalObjects.length; i < len; i++) {
 				eventEmitted = false;
 				on(globalObjects[i], 'custom-test-event', function () {
@@ -167,22 +277,33 @@ define([
 			// test out event delegation
 			if(query){
 				// if dojo.query is loaded, test event delegation
-				on(div, "button:click", function(){
+
+				// check text node target is properly handled by event delegation
+				var textnodespan = div.appendChild(document.createElement("span"));
+				textnodespan.className = "textnode";
+				textnodespan.innerHTML = "text";
+				on(document.body, ".textnode:click", function(){
 					order.push(8);
+				});
+				on.emit(textnodespan.firstChild, "click", {bubbles: true, cancelable: true});
+
+				on(div, "button:click", function(){
+					order.push(9);
 				});
 				on(document, "button:click", function(){
 				}); // just make sure this doesn't throw an error
+				
 			}else{//just pass then
-				order.push(8);
+				order.push(8, 9);
 			}
 			// test out event delegation using a custom selector
 			on(div, on.selector(function(node){
 				return node.tagName == "BUTTON";
 			}, "click"), function(){
-				order.push(9);
+				order.push(10);
 			});
 			button.click();
-			t.is(order, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+			t.is([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], order);
 			on(span, "propertychange", function(){}); // make sure it doesn't throw an error
 		},
 		/*

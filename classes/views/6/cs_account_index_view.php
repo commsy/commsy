@@ -557,6 +557,12 @@ class cs_account_index_view extends cs_index_view {
          $html .= '   <option value="23">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_MERGE_ACCOUNTS').'</option>'.LF;
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       }
+      $html .= '   <option value="40">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_HIDE_DEFAULT').'</option>'.LF;
+      $html .= '   <option value="41">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_HIDE_ROOM').'</option>'.LF;
+      $html .= '   <option value="42">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SHOW_DEFAULT').'</option>'.LF;
+      $html .= '   <option value="43">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SHOW_ROOM').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+
       $html .= '   <option value="21">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SEND').'</option>'.LF;
       $html .= '</select>'.LF;
       $html .= '<input type="hidden" name="mode" value="list_actions"/>'.LF;
@@ -921,7 +927,8 @@ class cs_account_index_view extends cs_index_view {
              $this->_environment->getCurrentFunction() == 'privateroom_newsletter' or
              $this->_environment->getCurrentFunction() == 'authentication' or
              $this->_environment->getCurrentFunction() == 'language' or
-             $this->_environment->getCurrentFunction() == 'backup'
+             $this->_environment->getCurrentFunction() == 'backup' or
+             $this->_environment->getCurrentFunction() == 'export_import'
             ){
             $show_entry = '1';
          }elseif ($this->_environment->getCurrentFunction() == 'dates' or

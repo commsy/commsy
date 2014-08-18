@@ -1,155 +1,400 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# version should be something like 0.9.0beta or 0.9.0
-version=$1
+set -e
 
-# svnUserName is the name you use to connect to Dojo's subversion.
-svnUserName=$2
+usage() {
+	echo "Usage: $0 [-c] [-b branch] [-u username] version"
+	echo
+	echo "-b  Branch to archive. Defaults to 'master'."
+	echo "-u  Username to use for send to downloads.dojotoolkit.org."
+	echo "    If not provided, manual upload is required."
+	echo "-c  Build CDN release as well."
+	exit 1
+}
 
-# The svn revision number to use for tag. Should be a number, like 11203
-svnRevision=$3
+while getopts cb:u: OPTION; do
+	case $OPTION in
+	c)
+		CDN=1
+		shift 1
+		OPTIND=1
+		;;
+	b)
+		BRANCH=$OPTARG
+		shift 2
+		OPTIND=1
+		;;
+	u)
+		USERNAME=$OPTARG
+		shift 2
+		OPTIND=1
+		;;
+	\?)
+		echo "Invalid option -$OPTARG"
+		exit 1
+		;;
+	:)
+		echo "Missing argument for -$OPTARG"
+		exit 1
+		;;
+	esac
+done
 
-# If no svnRevision number, get the latest one from he repo.
-if [ "$svnRevision" = "" ]; then
-	svnRevision=`svn info http://svn.dojotoolkit.org/src/branches/1.9/util/buildscripts/build_release.sh | grep Revision | sed 's/Revision: //'`
-fi
+# Version should be something like 0.9.0-beta or 0.9.0. See http://semver.org.
+VERSION=$1
 
-tagName=release-$version
-buildName=dojo-$tagName
+OLDIFS=$IFS
+IFS="."
+PRE_VERSION=($VERSION)
+IFS=$OLDIFS
 
-echo "This is a RELEASE build for Dojo, you probably meant to run build.sh"
-read -p "If you mean to create a tag for Dojo $version from r$svnRevision ... press a key to continue."
-
-# Make the SVN tag.
-svn mkdir -m "Using r$svnRevision to create a tag for the $version release." https://svn.dojotoolkit.org/src/tags/$tagName
-svn copy -r $svnRevision https://svn.dojotoolkit.org/src/branches/1.9/dojo  https://svn.dojotoolkit.org/src/tags/$tagName/dojo -m "Using r$svnRevision to create a tag for the $version release."
-svn copy -r $svnRevision https://svn.dojotoolkit.org/src/branches/1.9/dijit https://svn.dojotoolkit.org/src/tags/$tagName/dijit -m "Using r$svnRevision to create a tag for the $version release."
-svn copy -r $svnRevision https://svn.dojotoolkit.org/src/branches/1.9/dojox https://svn.dojotoolkit.org/src/tags/$tagName/dojox -m "Using r$svnRevision to create a tag for the $version release."
-svn copy -r $svnRevision https://svn.dojotoolkit.org/src/branches/1.9/util  https://svn.dojotoolkit.org/src/tags/$tagName/util -m "Using r$svnRevision to create a tag for the $version release."
-svn copy -r $svnRevision https://svn.dojotoolkit.org/src/branches/1.9/demos https://svn.dojotoolkit.org/src/tags/$tagName/demos -m "Using r$svnRevision to create a tag for the $version release."
-
-# Check out the tag
-mkdir ../../build
-cd ../../build
-svn co https://svn.dojotoolkit.org/src/tags/$tagName $buildName
-cd $buildName/util/buildscripts
-
-# Update the dojo version in the tag
-java -jar ../shrinksafe/js.jar changeVersion.js $version $svnRevision ../../dojo/_base/kernel.js
-java -jar ../shrinksafe/js.jar changeVersion.js $version $svnRevision ../../dojo/package.json
-java -jar ../shrinksafe/js.jar changeVersion.js $version $svnRevision ../../dijit/package.json
-java -jar ../shrinksafe/js.jar changeVersion.js $version $svnRevision ../../dojox/package.json
-cd ../../dojo
-svn commit -m "Updating dojo version for the tag. \!strict" package.json _base/kernel.js
-cd ../dijit
-svn commit -m "Updating dijit version for the tag. \!strict" package.json
-cd ../dojox
-svn commit -m "Updating dojox version for the tag. \!strict" package.json
-
-# Erase the SVN dir and replace with an exported SVN contents.
-cd ../..
-rm -rf ./$buildName/
-svn export http://svn.dojotoolkit.org/src/tags/$tagName $buildName
-
-# clobber cruft that we don't want in builds
-rm -rf ./$buildName/dijit/themes/noir
-rm -rf ./$buildName/dijit/bench
-
-# Make a shrinksafe bundle
-shrinksafeName=$buildName-shrinksafe
-cp -r $buildName/util/shrinksafe $buildName/util/$shrinksafeName
-cd $buildName/util
-zip -rq $shrinksafeName.zip $shrinksafeName/
-tar -zcf $shrinksafeName.tar.gz $shrinksafeName/
-mv $shrinksafeName.zip ../../
-mv $shrinksafeName.tar.gz ../../
-cd ../..
-rm -rf $buildName/util/$shrinksafeName
-
-# Make a -demos bundle (note, this is before build. Build profile=demos-all if you want to release them)
-# the -demos archives are meant to be extracted from the same folder -src or release archives, and have
-# a matching prefixed folder in the archive
-demoName=$buildName-demos
-zip -rq $demoName.zip $buildName/demos/
-tar -zcf $demoName.tar.gz $buildName/demos/
-# prevent demos/ from appearing in the -src build
-rm -rf $buildName/demos
-
-# Make a src bundle
-srcName=$buildName-src
-mv $buildName $srcName
-zip -rq $srcName.zip $srcName/
-tar -zcf $srcName.tar.gz $srcName/
-mv $srcName $buildName
-
-# Run the build.
-cd $buildName/util/buildscripts/
-chmod +x ./build.sh
-./build.sh profile=standard version=$1 releaseName=$buildName cssOptimize=comments.keepLines optimize=shrinksafe.keepLines action=release insertAbsMids=1
-# remove tests and demos, but only for the actual release:
-chmod +x ./clean_release.sh
-./clean_release.sh ../../release $buildName
-cd ../../release/
-
-# Pause to allow manual process of packing Dojo.
-currDir=`pwd`
-echo "You can find dojo in $currDir/$buildName/dojo/dojo.js"
-read -p "Build Done. If you want to pack Dojo manually, do it now, then press Enter to continue build packaging..."
-
-# Continuing with packaging up the release.
-zip -rq $buildName.zip $buildName/
-tar -zcf $buildName.tar.gz $buildName/
-mv $buildName.zip ../../
-mv $buildName.tar.gz ../../
-
-# copy compressed and uncompressed Dojo to the root
-cp $buildName/dojo/dojo.js* ../../
-
-# remove the testless release build, and unpack a -src archive to rebuild from
-cd ../../
-rm -rf $buildName/
-tar -xzvf $srcName.tar.gz
-cd $srcName/util/buildscripts/
-
-# build the version that will be extracted and live on downloads.dojotoolkit.org (with tests)
-./build.sh action=release version=$1 profile=standard cssOptimize=comments.keepLines releaseName=$buildName copyTests=true mini=false insertAbsMids=1
-
-# cleanup the -src extraction, moving the newly built tree into place. 
-cd ../../release
-mv $buildName ../../
-cd ..
-rm -rf release/
-
-cd ../../
-
-# make a folder structure appropriate for directly extracting on downloads.dojotoolkit.org
-mv build release-$1
-rm -rf release-$1/$srcName/
-cd release-$1
-
-# md5sum the release files -- OSX doesn't have md5sum, foundation servers don't have md5
-md5=`which md5`
-if [[ -n $md5 && -x $md5 ]]; then
-	echo "Found $md5";
+if [[ ${PRE_VERSION[2]} == *-* ]]; then
+	PRE_VERSION="${PRE_VERSION[0]}.${PRE_VERSION[1]}.$((PRE_VERSION[2]))-pre"
+elif [[ ${PRE_VERSION[2]} -eq 0 ]]; then
+	PRE_VERSION="${PRE_VERSION[0]}.$((PRE_VERSION[1] + 1)).0-pre"
 else
-	md5=`which md5sum`
+	PRE_VERSION="${PRE_VERSION[0]}.${PRE_VERSION[1]}.$((PRE_VERSION[2] + 1))-pre"
 fi
 
-if [[ -n $md5 && -x $md5 ]]; then
-	for i in *.zip; do $md5 $i > $i.md5; done
-	for i in *.gz; do $md5 $i > $i.md5; done
-	for i in *.js; do $md5 $i > $i.md5; done
+BRANCH=${BRANCH=master}
+
+# Name used for directory and tar/zip file of prebuilt version
+BUILD_NAME=dojo-release-$VERSION
+
+# Name used for directory and tar/zip file of source version
+SOURCE_NAME=$BUILD_NAME-src
+
+# Name used for tar/zip file of demos
+DEMOS_NAME=$BUILD_NAME-demos
+
+# Name used for tarball of temporary archive for downloads.dojotoolkit.org
+OUTPUT_NAME=release-$VERSION
+
+# Name used for directory and zip file of CDN version
+CDN_NAME=$VERSION
+
+# Name used for directory and zip archive for archive.dojotoolkit.org
+CDN_OUTPUT_NAME=$VERSION-cdn
+
+# Build scripts directory (own directory)
+UTIL_DIR=$(cd $(dirname $0) && pwd)
+
+# Directory where all build operations will be rooted
+ROOT_DIR=$UTIL_DIR/build
+
+###########
+# NOTE: OUTPUT_DIR, SOURCE_DIR, and CDN_OUTPUT_DIR *must* be children of ROOT_DIR for certain operations to work
+# properly. They must also use $*_NAME variables as the last directory part too.
+###########
+
+# Directory into which final output for downloads.dojotoolkit.org is placed
+OUTPUT_DIR=$ROOT_DIR/$OUTPUT_NAME
+
+# Directory into which Dojo source is checked out
+SOURCE_DIR=$ROOT_DIR/$SOURCE_NAME
+
+# Directory where source Dojo build scripts exist
+SOURCE_BUILD_DIR=$SOURCE_DIR/util/buildscripts
+
+# Directory into which the source Dojo writes built data
+SOURCE_RELEASE_DIR=$SOURCE_DIR/release
+
+# Directory into which the source CDN writes built data for CDN
+CDN_OUTPUT_DIR=$ROOT_DIR/$CDN_OUTPUT_NAME
+
+# Repositories that are a part of the Dojo Toolkit
+ALL_REPOS="demos dijit dojo dojox util"
+
+zip="zip -dd -ds 1m -rq"
+
+if [ $(echo $(zip -dd test 2>&1) |grep -c "one action") -eq 1 ]; then
+	# Zip 2.3 does not support progress output
+	zip="zip -rq"
+fi
+
+tar="tar --checkpoint=1000 --checkpoint-action=dot"
+ant=~/.ant/bin/ant
+
+if [ "$VERSION" == "" ]; then
+	usage
+	exit 1
+fi
+
+if [ -d $SOURCE_DIR -o -d $OUTPUT_DIR ]; then
+	echo "Existing build directories detected at $ROOT_DIR"
+	echo "Aborted."
+	exit 1
+fi
+
+echo "This is an internal Dojo release script. You probably meant to run build.sh!"
+echo "If you want to create Dojo version $VERSION from branch $BRANCH, press 'y'."
+echo "The source version will be updated to $PRE_VERSION after the build."
+echo "(You will have an opportunity to abort pushing upstream later on if something"
+echo "goes wrong.)"
+read -s -n 1
+
+if [ "$REPLY" != "y" ]; then
+	echo "Aborted."
+	exit 0
+fi
+
+if [ ! -d $ROOT_DIR ]; then
+	mkdir $ROOT_DIR
+fi
+
+mkdir $SOURCE_DIR
+mkdir $OUTPUT_DIR
+
+VERSION_EXISTS=0
+
+for REPO in $ALL_REPOS; do
+	# Clone pristine copies of the repository for the desired branch instead of trying to copy a local repo
+	# which might be outdated, on a different branch, or containing other unpushed/uncommitted code
+	git clone --recursive --single-branch --branch=$BRANCH git@github.com:dojo/$REPO.git $SOURCE_DIR/$REPO
+
+	cd $SOURCE_DIR/$REPO
+
+	set +e
+	git checkout $VERSION > /dev/null 2>&1
+	if [ $? -eq 0 ]; then
+		set -e
+		echo "Tag $VERSION already exists for $REPO; using existing tag"
+		VERSION_EXISTS=1
+		continue
+	fi
+	set -e
+
+	REVISION=$(git log -n 1 --format='%h')
+	VERSION_FILES=
+
+	if [ -f "package.json" ]; then
+		VERSION_FILES=package.json
+	fi
+
+	if [ $REPO == "dojo" ]; then
+		# Dojo 1.7+
+		if [ -f "_base/kernel.js" ]; then
+			VERSION_FILES="$VERSION_FILES _base/kernel.js"
+		# Dojo 1.6-
+		elif [ -f "_base/_loader/bootstrap.js" ]; then
+			VERSION_FILES="$VERSION_FILES _base/_loader/bootstrap.js"
+		fi
+	fi
+
+	if [ $REPO == "util" ]; then
+		for FILENAME in doh/package.json doh/_rhinoRunner.js doh/mobileRunner.html doh/runner.html doh/_nodeRunner.js; do
+			if [ -f $FILENAME ]; then
+				VERSION_FILES="$VERSION_FILES $FILENAME"
+			fi
+		done
+
+		if [ -f "build/version.js" ]; then
+			VERSION_FILES="$VERSION_FILES build/version.js"
+		fi
+	fi
+
+	if [ -n "$VERSION_FILES" ]; then
+		for FILENAME in $VERSION_FILES; do
+			java -jar $UTIL_DIR/../shrinksafe/js.jar $UTIL_DIR/changeVersion.js $VERSION $REVISION $FILENAME
+		done
+
+		# These will be pushed later, once it is confirmed the build was successful, in order to avoid polluting
+		# the origin repository with failed build commits and tags
+		git commit -m "Updating metadata for $VERSION" $VERSION_FILES
+	fi
+
+	git tag -a -m "Release $VERSION" $VERSION
+
+	if [ -n "$VERSION_FILES" ]; then
+		for FILENAME in $VERSION_FILES; do
+			java -jar $UTIL_DIR/../shrinksafe/js.jar $UTIL_DIR/changeVersion.js $PRE_VERSION "" $FILENAME
+		done
+
+		git commit -m "Updating source version to $PRE_VERSION" $VERSION_FILES
+	fi
+
+	git checkout $VERSION
+done
+
+cd $ROOT_DIR
+
+# Archive all source except for demos, which are provided separately so people do not have to download them
+# with the source
+echo -n "Archiving source..."
+$zip $OUTPUT_DIR/$SOURCE_NAME.zip $SOURCE_NAME/ -x "*/.git" -x "*/.git/*" -x "$SOURCE_NAME/demos/*"
+$tar --exclude="$SOURCE_NAME/demos" --exclude-vcs -zcf $OUTPUT_DIR/$SOURCE_NAME.tar.gz $SOURCE_NAME/
+echo "Done"
+
+# Temporarily rename $SOURCE_NAME ($SOURCE_DIR) to $BUILD_NAME to archive demos backwards-compatibly
+mv $SOURCE_NAME $BUILD_NAME
+echo -n "Archiving demos..."
+$zip $OUTPUT_DIR/$DEMOS_NAME.zip $BUILD_NAME/demos/ -x "*/.git" -x "*/.git/*"
+$tar --exclude-vcs -zcf $OUTPUT_DIR/$DEMOS_NAME.tar.gz $BUILD_NAME/demos/
+mv $BUILD_NAME $SOURCE_NAME
+echo "Done"
+
+# Create the built release archive using the checked out release code
+cd $SOURCE_BUILD_DIR
+echo "Building release..."
+./build.sh action=release profile=standard version=$VERSION releaseName=$BUILD_NAME cssOptimize=comments.keepLines optimize=shrinksafe.keepLines insertAbsMids=1 mini=true
+cd $SOURCE_RELEASE_DIR
+echo -n "Archiving release..."
+$zip $OUTPUT_DIR/$BUILD_NAME.zip $BUILD_NAME/
+$tar -zcf $OUTPUT_DIR/$BUILD_NAME.tar.gz $BUILD_NAME/
+echo "Done"
+
+# For backwards-compatibility, Dojo Base is also copied for direct download
+cp $BUILD_NAME/dojo/dojo.js* $OUTPUT_DIR
+
+# Second build with tests that is kept unarchived and placed directly on downloads.dojotoolkit.org
+rm -rf $SOURCE_RELEASE_DIR
+cd $SOURCE_BUILD_DIR
+echo "Building downloads release..."
+./build.sh action=release profile=standard version=$VERSION releaseName=$BUILD_NAME cssOptimize=comments.keepLines optimize=shrinksafe.keepLines insertAbsMids=1 copyTests=true mini=false
+mv $SOURCE_RELEASE_DIR/$BUILD_NAME $OUTPUT_DIR
+rmdir $SOURCE_RELEASE_DIR
+echo "Done"
+
+if [ $CDN ]; then
+	mkdir $CDN_OUTPUT_DIR
+
+	# Only this super-specific Ant version works!
+	if [ ! -d ~/.ant ]; then
+		mkdir ~/.ant
+		cd ~/.ant
+		echo "Installing ant 1.7.1 to ~/.ant..."
+		curl http://archive.apache.org/dist/ant/binaries/apache-ant-1.7.1-bin.tar.gz |tar --strip-components=1 -zx
+		echo "Done"
+	fi
+
+	echo "Building CDN release..."
+
+	# Build all locales
+	cd $SOURCE_BUILD_DIR/cldr
+	sed -i -e '/<property name="locales"/d' build.xml
+
+	$ant clean
+
+	# On first run of Ant, build.xml does some bad stuff that requires running ant twice
+	set +e
+	set -o pipefail
+	TMPFILE=$(mktemp)
+	$ant 2>&1 | tee $TMPFILE
+	EXITCODE=$?
+	set -e
+	set +o pipefail
+	if [ $EXITCODE -gt 0 ]; then
+		if [ $(grep -c "please re-run" $TMPFILE) -gt 0 ]; then
+			$ant
+		else
+			rm $TMPFILE
+			exit 1
+		fi
+	fi
+	rm $TMPFILE
+	unset TMPFILE EXITCODE
+
+	cd $SOURCE_BUILD_DIR
+
+	# Dojo 1.7+
+	if [ -f "profiles/cdn.profile.js" ]; then
+		./build.sh action=release profile=standard profile=cdn version=$VERSION releaseName=$CDN_NAME cssOptimize=comments.keepLines optimize=closure layerOptimize=closure stripConsole=normal copyTests=false mini=true
+	# Dojo 1.6
+	else
+		java -classpath ../shrinksafe/js.jar:../shrinksafe/shrinksafe.jar org.mozilla.javascript.tools.shell.Main build.js profile=standard version=$VERSION releaseName=$CDN_NAME cssOptimize=comments.keepLines optimize=shrinksafe layerOptimize=shrinksafe stripConsole=normal copyTests=false mini=true action=release loader=xdomain xdDojoPath="//ajax.googleapis.com/ajax/libs/dojo/$VERSION" xdDojoScopeName=window[\(typeof\(djConfig\)\!\=\"undefined\"\&\&djConfig.scopeMap\&\&djConfig.scopeMap[0][1]\)\|\|\"dojo\"]
+	fi
+
+	mv $SOURCE_RELEASE_DIR/$CDN_NAME $CDN_OUTPUT_DIR
+	rmdir $SOURCE_RELEASE_DIR
+	echo "Done"
+
+	echo -n "Generating CDN checksums..."
+	cd $CDN_OUTPUT_DIR
+	$zip $CDN_NAME.zip $CDN_NAME/
+	sha1sum $CDN_NAME.zip > sha1.txt
+	cd $CDN_OUTPUT_DIR/$CDN_NAME
+	find . -type f -exec sha1sum {} >> ../sha1.txt +
+	echo "Done"
+
+	cd $ROOT_DIR
+	echo -n "Creating CDN archive..."
+	$tar -cf $CDN_OUTPUT_NAME.tar $CDN_OUTPUT_NAME/
+	echo "Done"
+
+	cd $ROOT_DIR
+fi
+
+cd $OUTPUT_DIR
+
+# Checksums, because who doesn't love checksums?!
+md5=$(which md5 md5sum 2>/dev/null || true)
+if [ -x $md5 ]; then
+	echo -n "Generating release checksums..."
+	for FILENAME in *.zip *.gz *.js; do
+		$md5 $FILENAME > $FILENAME.md5
+		echo -n "."
+	done
+	echo "Done"
 else
-	echo "ERROR: Failed to generate md5 checksums" 
+	echo "MD5 utility missing; cannot generate checksums"
 fi
 
-# pack up the whole thing for easy copying
-cd ..
-tar -czvf dj-$1-dtk.tar.gz release-$1
+cd $ROOT_DIR
+echo -n "Creating downloads archive..."
+$tar -cf $OUTPUT_NAME.tar $OUTPUT_NAME/
+echo "Done"
 
-# Finished.
-outDirName=`pwd`
-echo "Build complete. Files are in: $outDirName"
-echo "A copy/paste command to push files to download.dojotoolkit.org with permission:"
-echo "scp dj-$1-dtk.tar.gz download.dojotoolkit.org:/srv/www/vhosts.d/download.dojotoolkit.org"
-echo "... then extract in place and rm dj-$1-dtk.tar.gz"
+if [ "$USERNAME" == "" ]; then
+	echo "Build complete."
+	echo "Files are in: $OUTPUT_DIR"
+	echo "You did not provide a username so you will need to upload manually."
+	exit 0
+fi
+
+if [ $VERSION_EXISTS -eq 1 ]; then
+	echo "Please confirm build success, then press 'y' key to clean up archives"
+	echo "and upload, or any other key to bail."
+else
+	echo "Please confirm build success, then press 'y' key to clean up archives, push"
+	echo "tags, and upload, or any other key to bail."
+fi
+read -p "> "
+
+if [ "$REPLY" != "y" ]; then
+	echo "Aborted."
+	exit 0
+fi
+
+echo -n "Cleaning up archives..."
+rm -rf $OUTPUT_DIR
+if [ $CDN ]; then
+	rm -rf $CDN_OUTPUT_DIR
+fi
+echo "Done"
+
+if [ $VERSION_EXISTS -eq 1 ]; then
+	echo "Skipping tag push, since tags already exist"
+else
+	for REPO in $ALL_REPOS; do
+		cd $SOURCE_DIR/$REPO
+		echo "Pushing to repo $REPO"
+		git push origin $BRANCH
+		git push origin --tags
+	done
+fi
+
+cd $ROOT_DIR
+
+HOST="$USERNAME@downloads.dojotoolkit.org"
+
+echo "Copying to downloads.dojotoolkit.org..."
+scp $OUTPUT_NAME.tar $HOST:/srv/www/vhosts.d/download.dojotoolkit.org
+ssh $HOST "cd /srv/www/vhosts.d/download.dojotoolkit.org && tar -xf $OUTPUT_NAME.tar && rm $OUTPUT_NAME.tar"
+
+if [ $CDN ]; then
+	echo "Copying to archive.dojotoolkit.org..."
+	scp $CDN_OUTPUT_NAME.tar $HOST:/srv/www/vhosts.d/archive.dojotoolkit.org/cdn
+	ssh $HOST "cd /srv/www/vhosts.d/archive.dojotoolkit.org/cdn && tar -xf $CDN_OUTPUT_NAME.tar && rm $CDN_OUTPUT_NAME.tar"
+fi
+
+echo "Upload complete. Please remember to update index.html."

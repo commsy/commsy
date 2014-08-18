@@ -85,6 +85,10 @@ class cs_plugin {
       }
    }
 
+   public function isConfigurableInServer () {
+      return false;
+   }
+   
    public function isConfigurableInPortal () {
       return false;
    }

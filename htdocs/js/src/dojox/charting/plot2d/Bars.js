@@ -89,6 +89,7 @@ define(["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "dojo/has",
 			du.updateWithObject(this.opt, kwArgs);
 			du.updateWithPattern(this.opt, kwArgs, this.optionalParams);
 			this.animate = this.opt.animate;
+			this.renderingOptions = { "shape-rendering": "crispEdges" };
 		},
 
 		getSeriesStats: function(){
@@ -159,7 +160,10 @@ define(["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "dojo/has",
 				baselineWidth = ht(baseline),
 				events = this.events();
 			var bar = this.getBarProperties();
-			
+
+			var actualLength = this.series.length;
+			arr.forEach(this.series, function(serie){if(serie.hidden){actualLength--;}});
+			var z = actualLength;
 			for(var i = this.series.length - 1; i >= 0; --i){
 				var run = this.series[i];
 				if(!this.dirty && !run.dirty){
@@ -172,9 +176,16 @@ define(["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "dojo/has",
 					run._rectFreePool = (run._rectFreePool?run._rectFreePool:[]).concat(run._rectUsePool?run._rectUsePool:[]);
 					run._rectUsePool = [];
 				}
-				var theme = t.next("bar", [this.opt, run]),
-					eventSeries = new Array(run.data.length);
-				s = run.group;
+				var theme = t.next("bar", [this.opt, run]);
+				if(run.hidden){
+					run.dyn.fill = theme.series.fill;
+					run.dyn.stroke = theme.series.stroke;
+					continue;
+				}
+				z--;
+
+				var	eventSeries = new Array(run.data.length);
+				s = run.group;	
 				var indexed = arr.some(run.data, function(item){
 					return typeof item == "number" || (item && !item.hasOwnProperty("x"));
 				});
@@ -202,7 +213,8 @@ define(["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "dojo/has",
 						if(w >= 0 && bar.height >= 1){
 							var rect = {
 								x: offsets.l + (val.y < baseline ? hv : baselineWidth),
-								y: dim.height - offsets.b - vt(val.x + 1.5) + bar.gap + bar.thickness * (this.series.length - i - 1),
+								y: dim.height - offsets.b - vt(val.x + 1.5) + bar.gap + bar.thickness * (actualLength - z - 1),
+								// y: dim.height - offsets.b - vt(val.x + 1.5) + bar.gap + bar.thickness * z,
 								width: w,
 								height: bar.height
 							};
@@ -276,7 +288,7 @@ define(["dojo/_base/lang", "dojo/_base/array", "dojo/_base/declare", "dojo/has",
 				x = value.x -1;
 			}
 			return {y:y, x:x};
-		},
+		},	
 		getBarProperties: function(){
 			var f = dc.calculateBarSize(this._vScaler.bounds.scale, this.opt);
 			return {gap: f.gap, height: f.size, thickness: 0};

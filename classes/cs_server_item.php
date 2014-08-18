@@ -252,7 +252,7 @@ class cs_server_item extends cs_guide_item {
 //    						pr('SendMailLock '.$inactivitySendMailLock);
 //    						pr('daysTillLock '.$daysTillLock);
    						if($sourceType == 'MYSQL'){
-   							$userid = $user->getUserID();
+   							$userid = $user->getFullname();
    							
 	   						// delete user
 	   						if($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)){
@@ -622,7 +622,7 @@ class cs_server_item extends cs_guide_item {
 	   							continue;
 	   						}
 	   						
-	   						// lock tomorrow
+	   						// lock now
 	   						if($days >= $portal_item->getInactivityLockDays()-1 and !empty($inactivityLockDays)){
 	
 	   							if($user->getMailSendBeforeLock()){
@@ -1924,7 +1924,10 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_CONNECTION':
                $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_CONNECTION_FORM');
                break;
-               case 'CONFIGURATION_DATASECURITY':
+            case 'CONFIGURATION_DATASECURITY':
+               $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
+               break;
+            case 'CONFIGURATION_PLUGINS':
                $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
                break;
             default:

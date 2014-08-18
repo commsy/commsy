@@ -1984,6 +1984,9 @@ class cs_form_view extends cs_view {
                case 'MATERIAL_IMS_IMPORT':      //
                   $tempMessage = $this->_translator->getMessage('MATERIAL_IMS_IMPORT');
                   break;
+               case 'CONFIGURATION_EXPORT_IMPORT': // Konfiguration des Uploads(Portal)
+                  $tempMessage = $this->_translator->getMessage('COMMON_CONFIGURATION_EXPORT_IMPORT_FORM_TITLE');
+                  break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
                   $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
                   break;

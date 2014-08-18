@@ -264,6 +264,14 @@
                       <div class="clear"></div>
                     </div>
 
+                     <div class="input_row">
+                      <label for="data_mail_hide">___USER_EMAIL_HIDE___</label>
+                      <input id="data_mail_hide" type="checkbox" class="mandatory size_200 float-left" name="form_data[mail_hide]" {if $popup.form.config.hide_mail_adress === true}checked=checked{/if}/>
+                      <input id="data_mail_hide_all" type="checkbox" class="float-left" name="form_data[mail_hide_all]" />
+                      <label for="data_mail_hide_all" class="float-left">___USER_CHANGE_IN_ALL_ROOMS___</label>
+                      <div class="clear"></div>
+                    </div>
+
                     <div class="input_row">
                       <label for="data_telephone">___USER_TELEPHONE___:</label>
                       <input id="data_telephone" type="text" class="size_200 float-left" name="form_data[telephone]" value="{show var=$popup.form.user.telephone}" />
@@ -817,8 +825,31 @@
                      </div>                                 
                      {/foreach}
                   {/if}
+                  <!--
+                  <hr/>
+                  <fieldset>
+                    <p>
+                      <strong>___PREFERENCES_EXPORT_PRIVATE_ROOM_TITLE___</strong>: ___PREFERENCES_EXPORT_PRIVATE_ROOM_DESCRIPTION___
+                    </p>
+                  </fieldset>
+                  <input id="submit_export_private_room" type="button" class="popup_button submit" data-custom="part: 'cs_bar', action: 'export_private_room'" name="save" value="___PREFERENCES_EXPORT_PRIVATE_ROOM_BUTTON___"/>
+                  <hr/>
+                  <fieldset>
+                    <p>
+                      <strong>___PREFERENCES_IMPORT_PRIVATE_ROOM_TITLE___</strong>: ___PREFERENCES_IMPORT_PRIVATE_ROOM_DESCRIPTION___
+                    </p>
+                  </fieldset>
+                  <div class="uploader-single">
+                    <form method="post" action="UploadFile.php" id="myForm" enctype="multipart/form-data" >
+                       <input id="upload_import_private_room" class="fileSelector"></input>
+                       <div class="filePreview"></div>
+                       <div class="fileList"></div>
 
-
+                       <input id="submit_import_private_room" type="button" class="popup_button submit" disabled="disabled" data-custom="part: 'import', action: 'import_private_room'" name="save" value="___PREFERENCES_IMPORT_PRIVATE_ROOM_BUTTON___"/>
+                    </form>
+                  </div>
+                  -->
+                  </div>
                 </div>
               </div>
 

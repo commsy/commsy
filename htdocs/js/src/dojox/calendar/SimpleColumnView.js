@@ -1,8 +1,8 @@
 define([
 "./ViewBase", 
 "dijit/_TemplatedMixin", 
-"./_VerticalScrollBarBase", 
-"dojo/text!./templates/SimpleColumnView.html",
+"./_ScrollBarBase", 
+"dojo/text!./templates/ColumnView.html",
 "dojo/_base/declare", 
 "dojo/_base/event", 
 "dojo/_base/lang", 
@@ -23,7 +23,7 @@ define([
 function(
 	ViewBase, 
 	_TemplatedMixin, 
-	_VerticalScrollBarBase, 
+	_ScrollBarBase, 
 	template, 
 	declare, 
 	event, 
@@ -60,7 +60,7 @@ function(
 		// summary:
 		//		The simple column view is displaying a day per column. Each cell of a column is a time slot.
 
-		baseClass: "dojoxCalendarSimpleColumnView",
+		baseClass: "dojoxCalendarColumnView",
 		
 		templateString: template,
 		
@@ -84,13 +84,17 @@ function(
 		// columnCount: Integer
 		//		The number of column to display (from the startDate).
 		columnCount: 7,
-	
+		
+		// subcolumns: String[]
+		//		Array of sub columns values.
+		subColumns: null,
+			
 		// minHours: Integer
 		//		The minimum hour to be displayed. It must be in the [0,23] interval and must be lower than the maxHours.
 		minHours: 8,
 		
 		// maxHours: Integer
-		//		The maximum hour to be displayed. It must be in the [1,24] interval and must be greater than the minHours.	
+		//		The maximum hour to be displayed. It must be in the [1,36] interval and must be greater than the minHours.	
 		maxHours: 18,
 		
 		// hourSize: Integer
@@ -121,6 +125,16 @@ function(
 		// verticalRenderer: Class
 		//		The class use to create vertical renderers.
 		verticalRenderer: null,
+
+		// verticalDecorationRenderer: Class
+		//		The class use to create decoration renderers.
+		verticalDecorationRenderer: null,
+		
+		// minColumnWidth: Integer
+		//		The minimum column width. If the number of columns and sub columns displayed makes the
+		//		width of a column greater than this property, a horizontal scroll bar is displayed.
+		//		If value <= 0, this constraint is ignored and the columns are using the available space.
+		minColumnWidth: -1,
 		
 		// percentOverlap: Integer
 		//		The percentage of the renderer width used to superimpose one item renderer on another 
@@ -131,13 +145,15 @@ function(
 		//		The number of pixels between two item renderers that are overlapping each other if the percentOverlap property is 0.
 		horizontalGap: 4,
 		
+		_showSecondarySheet: false,
+		
 		_columnHeaderHandlers: null,
 		
 		constructor: function(){
-			this.invalidatingProperties = ["columnCount", "startDate", "minHours", "maxHours", "hourSize", "verticalRenderer",
+			this.invalidatingProperties = ["columnCount", "startDate", "minHours", "maxHours", "hourSize", "verticalRenderer", "verticalDecorationRenderer",
 				"rowHeaderTimePattern", "columnHeaderDatePattern", "timeSlotDuration", "rowHeaderGridSlotDuration", "rowHeaderLabelSlotDuration", 
 				"rowHeaderLabelOffset", "rowHeaderFirstLabelOffset","percentOverlap", "horizontalGap", "scrollBarRTLPosition","itemToRendererKindFunc", 
-				"layoutPriorityFunction", "formatItemTimeFunc", "textDir", "items"];
+				"layoutPriorityFunction", "formatItemTimeFunc", "textDir", "items", "subColumns", "minColumnWidth"];
 			this._columnHeaderHandlers = [];
 		},
 		
@@ -153,18 +169,35 @@ function(
 			this._setScrollPosition(value);
 		},
 		
+		_hscrollBar_onScroll: function(value){
+			this._setHScrollPosition(value);
+		},
+		
 		buildRendering: function(){
 			this.inherited(arguments);
 			if(this.vScrollBar){
-				this.scrollBar = new _VerticalScrollBarBase(
+				this.scrollBar = new _ScrollBarBase(
 					{content: this.vScrollBarContent}, 
 					this.vScrollBar);
 					
-				this.scrollBar.on("scroll", lang.hitch(this, this._scrollBar_onScroll));
-				this._viewHandles.push(
-						on(this.scrollContainer, mouse.wheel,  
-							dojo.hitch(this, this._mouseWheelScrollHander)));
+				this.scrollBar.on("scroll", lang.hitch(this, this._scrollBar_onScroll));				
 			}
+			
+			if(this.hScrollBar){
+				this.hScrollBarW = new _ScrollBarBase(
+					{content: this.hScrollBarContent, direction: "horizontal", value: 0}, 
+					this.hScrollBar);
+					
+				this.hScrollBarW.on("scroll", lang.hitch(this, this._hscrollBar_onScroll));
+				
+				this._hScrollNodes = [this.columnHeaderTable, this.subColumnHeaderTable, this.gridTable, this.itemContainerTable];
+			}
+			
+			this._viewHandles.push(
+					on(this.scrollContainer, mouse.wheel,  
+						dojo.hitch(this, this._mouseWheelScrollHander)));
+			
+			
 		},
 		
 		postscript: function(){
@@ -182,57 +215,78 @@ function(
 				
 		_createRenderData: function(){
 			
-			var renderData = {};
+			var rd = {};
 
-			renderData.minHours = this.get("minHours");		
-			renderData.maxHours = this.get("maxHours");
-			renderData.hourSize = this.get("hourSize");
-			renderData.hourCount = renderData.maxHours - renderData.minHours;		
-			renderData.slotDuration = this.get("timeSlotDuration"); // must be consistent with previous statement
-			renderData.rowHeaderGridSlotDuration = this.get("rowHeaderGridSlotDuration");
-			renderData.slotSize = Math.ceil(renderData.hourSize / (60 / renderData.slotDuration));
-			renderData.hourSize = renderData.slotSize * (60 / renderData.slotDuration);			
-			renderData.sheetHeight = renderData.hourSize * renderData.hourCount;		
-			renderData.scrollbarWidth = metrics.getScrollbar().w + 1;
+			rd.minHours = this.get("minHours");		
+			rd.maxHours = this.get("maxHours");
+			rd.hourSize = this.get("hourSize");
+			rd.hourCount = rd.maxHours - rd.minHours;		
+			rd.slotDuration = this.get("timeSlotDuration"); // must be consistent with previous statement
+			rd.rowHeaderGridSlotDuration = this.get("rowHeaderGridSlotDuration");
+			rd.slotSize = Math.ceil(rd.hourSize / (60 / rd.slotDuration));
+			rd.hourSize = rd.slotSize * (60 / rd.slotDuration);			
+			rd.sheetHeight = rd.hourSize * rd.hourCount;
 			
-			renderData.dateLocaleModule = this.dateLocaleModule;
-			renderData.dateClassObj = this.dateClassObj;
-			renderData.dateModule = this.dateModule; // arithmetics on Dates
+			if(!this._rowHeaderWidth){
+				this._rowHeaderWidth = domGeometry.getMarginBox(this.rowHeader).w;
+			}			
+			rd.rowHeaderWidth = this._rowHeaderWidth;
 			
-			renderData.dates = [];
+			var sbMetrics = metrics.getScrollbar();
+			rd.scrollbarWidth = sbMetrics.w + 1;
+			rd.scrollbarHeight = sbMetrics.h + 1;
+			
+			rd.dateLocaleModule = this.dateLocaleModule;
+			rd.dateClassObj = this.dateClassObj;
+			rd.dateModule = this.dateModule; // arithmetics on Dates
+					
+			rd.dates = [];
 						
-			renderData.columnCount = this.get("columnCount");
+			rd.columnCount = this.get("columnCount");
+			rd.subColumns = this.get("subColumns");
+			rd.subColumnCount =  rd.subColumns ? rd.subColumns.length : 1;
+			
+			rd.hScrollPaneWidth = domGeometry.getMarginBox(this.grid).w;
+			rd.minSheetWidth = this.minColumnWidth < 0 ? -1 : this.minColumnWidth * rd.subColumnCount * rd.columnCount;
+			rd.hScrollBarEnabled = this.minColumnWidth > 0 && rd.hScrollPaneWidth < rd.minSheetWidth;
 
 			var d = this.get("startDate");
 		
 			if (d == null){
-				d = new renderData.dateClassObj();
+				d = new rd.dateClassObj();
 			}
 
-			d = this.floorToDay(d, false, renderData);
+			d = this.floorToDay(d, false, rd);
 			
 			this.startDate = d;
 			
-			for(var col = 0; col < renderData.columnCount ; col++){
-				renderData.dates.push(d);
-				d = renderData.dateModule.add(d, "day", 1);
-				d = this.floorToDay(d, false, renderData);
+			for(var col = 0; col < rd.columnCount ; col++){
+				rd.dates.push(d);
+				d = this.addAndFloor(d, "day", 1);			
 			}
 
-			renderData.startTime = new renderData.dateClassObj(renderData.dates[0]);
-			renderData.startTime.setHours(renderData.minHours);
-			renderData.endTime = new renderData.dateClassObj(renderData.dates[renderData.columnCount-1]);
-			renderData.endTime.setHours(renderData.maxHours);
+			rd.startTime = new rd.dateClassObj(rd.dates[0]);
+			rd.startTime.setHours(rd.minHours);
+			rd.endTime = new rd.dateClassObj(rd.dates[rd.columnCount-1]);
+			rd.endTime.setHours(rd.maxHours);
 			
 			if(this.displayedItemsInvalidated && !this._isEditing){
 				 // while editing in no live layout we must not to recompute items (duplicate renderers)
-				this._computeVisibleItems(renderData);
+				rd.items = this.storeManager._computeVisibleItems(rd);
 								
 			}else if (this.renderData){
-				renderData.items = this.renderData.items;
+				rd.items = this.renderData.items;
 			}
 			
-			return renderData;
+			if(this.displayedDecorationItemsInvalidated){
+				 // while editing in no live layout we must not to recompute items (duplicate renderers)
+				rd.decorationItems = this.decorationStoreManager._computeVisibleItems(rd);
+								
+			}else if (this.renderData){
+				rd.decorationItems = this.renderData.decorationItems;
+			}
+			
+			return rd;
 		},
 		
 		_validateProperties: function() {
@@ -244,8 +298,8 @@ function(
 				this.minHours = 0;
 			}
 			v = this.maxHours;
-			if (v < 1 || v>24 || isNaN(v)){
-				this.minHours = 24;
+			if (v < 1 || v>36 || isNaN(v)){
+				this.minHours = 36;
 			}
 			
 			if(this.minHours > this.maxHours){
@@ -298,6 +352,11 @@ function(
 		//
 		//////////////////////////////////////////
 		
+		// rowHeaderTimePattern: String
+		//		Custom date/time pattern for the row header labels to override default one coming from the CLDR.
+		//		See dojo/date/locale documentation for format string.
+		rowHeaderTimePattern: null,
+		
 		_formatRowHeaderLabel: function(/*Date*/d){
 			// summary:
 			//		Computes the row header label for the specified time of day.
@@ -312,7 +371,12 @@ function(
 				timePattern: this.rowHeaderTimePattern
 			});
 		},
-	
+		
+		// columnHeaderDatePattern: String
+		//		Custom date/time pattern for column header labels to override default one coming from the CLDR.
+		//		See dojo/date/locale documentation for format string.
+		columnHeaderDatePattern: null,
+
 		_formatColumnHeaderLabel: function(/*Date*/d){			
 			// summary:
 			//		Computes the column header label for the specified date.
@@ -425,8 +489,8 @@ function(
 			
 			if (hour < 0){
 				hour = 0;
-			}else if (hour > 24){
-				hour = 24;
+			}else if (hour > rd.maxHours){
+				hour = rd.maxHours;
 			}
 			
 			var timeInMinutes = hour * 60 + minutes;
@@ -553,12 +617,44 @@ function(
 			this._setStartTimeOfDay(Math.floor(t/60), t%60);
 		},
 		
+		scrollViewHorizontal: function(dir){
+			// summary:
+			//		Scrolls the view horizontally to the specified direction of one column or sub column (if set).
+			// dir: Integer
+			//		Direction of the scroll. Valid values are -1 and 1.
+			//
+			this._setHScrollPosition(this._getHScrollPosition() + (dir * this.minColumnWidth));
+			if(this.hScrollBarW){
+				this.hScrollBarW.set("value", this._getHScrollPosition());
+			}
+		},
+		
+		_hScrollNodes: null,
+				
+		_setHScrollPositionImpl: function(pos, useDom, cssProp){
+			var elts = [this.columnHeaderTable, this.subColumnHeaderTable, this.gridTable, this.itemContainerTable];
+			var css = useDom ? null : "translateX(-"+pos+"px)";
+			arr.forEach(elts, function(elt){
+				if(useDom){
+					elt.scrollLeft = pos;
+					domStyle.set(elt, "left", (-pos) + "px");
+				}else{
+					domStyle.set(elt, cssProp, css);
+				}
+			}, this);
+		},
+		
 		_mouseWheelScrollHander: function(e){
 			// summary:
 			//		Mouse wheel handler.
 			// tags:
-			//		protected
-			this.scrollView(e.wheelDelta > 0 ? -1 : 1);
+			//		protected			
+			if(this.renderData.hScrollBarEnabled && e.altKey){
+				this.scrollViewHorizontal(e.wheelDelta > 0 ? -1 : 1);
+			}else{
+				this.scrollView(e.wheelDelta > 0 ? -1 : 1);
+			}
+			event.stop(e);
 		},		
 		
 		//////////////////////////////////////////
@@ -578,6 +674,7 @@ function(
 			var rd = this._createRenderData();
 			this.renderData = rd;
 			this._createRendering(rd, oldRd);
+			this._layoutDecorationRenderers(rd);
 			this._layoutRenderers(rd);
 		},
 		
@@ -586,12 +683,25 @@ function(
 			//		private
 			domStyle.set(this.sheetContainer, "height", renderData.sheetHeight + "px");
 			// padding for the scroll bar.
-			this._configureScrollBar(renderData);
+			this._configureVisibleParts(renderData);
+			this._configureScrollBar(renderData);			
 			this._buildColumnHeader(renderData, oldRenderData);
+			this._buildSubColumnHeader(renderData, oldRenderData);
 			this._buildRowHeader(renderData, oldRenderData);
 			this._buildGrid(renderData, oldRenderData);
 			this._buildItemContainer(renderData, oldRenderData);
+			this._layoutTimeIndicator(renderData);	
 			this._commitProperties(renderData);
+		},
+		
+		_configureVisibleParts: function(renderData){
+			
+			if(this.secondarySheetNode){
+				domStyle.set(this.secondarySheetNode, "display", this._showSecondarySheet ? "block" : "none");
+			}
+			
+			domClass[this.subColumns == null?"remove":"add"](this.domNode, "subColumns");
+			domClass[this._showSecondarySheet?"add":"remove"](this.domNode, "secondarySheet");										
 		},
 		
 		_commitProperties: function(renderData){
@@ -603,7 +713,7 @@ function(
 				}
 			}
 		},
-		
+				
 		_configureScrollBar: function(renderData){
 			// summary:
 			//		Sets the scroll bar size and position.
@@ -613,26 +723,106 @@ function(
 			//		protected
 
 			if(has("ie") && this.scrollBar){
-				domStyle.set(this.scrollBar.domNode, "width", (renderData.scrollbarWidth + 1) + "px");
+				domStyle.set(this.vScrollBar, "width", (renderData.scrollbarWidth + 1) + "px");
 			}
 						
 			var atRight = this.isLeftToRight() ? true : this.scrollBarRTLPosition == "right";
 			var rPos = atRight ? "right" : "left";
-			var lPos = atRight? "left" : "right";
+			var lPos = atRight ? "left" : "right";
 			
 			if(this.scrollBar){
 				this.scrollBar.set("maximum", renderData.sheetHeight);			
-				domStyle.set(this.scrollBar.domNode, rPos, 0);
-				domStyle.set(this.scrollBar.domNode, atRight? "left" : "right", "auto");
+				domStyle.set(this.vScrollBar, rPos, 0);
+				domStyle.set(this.vScrollBar, atRight? "left" : "right", "auto");
+				domStyle.set(this.vScrollBar, "bottom", renderData.hScrollBarEnabled? renderData.scrollbarHeight + "px" : "0");
 			}
 			domStyle.set(this.scrollContainer, rPos, renderData.scrollbarWidth + "px");
 			domStyle.set(this.scrollContainer, lPos, "0");
 			domStyle.set(this.header, rPos, renderData.scrollbarWidth + "px");
 			domStyle.set(this.header, lPos, "0");
+			domStyle.set(this.subHeader, rPos, renderData.scrollbarWidth + "px");
+			domStyle.set(this.subHeader, lPos, "0");
 			if(this.buttonContainer && this.owner != null && this.owner.currentView == this){
 				domStyle.set(this.buttonContainer, rPos, renderData.scrollbarWidth + "px");
 				domStyle.set(this.buttonContainer, lPos, "0");
 			}
+						
+			if(this.hScrollBar){
+				
+				arr.forEach(this._hScrollNodes, function(elt){
+					domClass[renderData.hScrollBarEnabled ? "add" : "remove"](elt.parentNode, "dojoxCalendarHorizontalScroll");
+				}, this);
+				
+				if(!renderData.hScrollBarEnabled){
+					this._setHScrollPosition(0);
+					this.hScrollBarW.set("value", 0);
+				}
+														
+				domStyle.set(this.hScrollBar, {
+					"display": renderData.hScrollBarEnabled ? "block" : "none",
+					"height": renderData.scrollbarHeight + "px",
+					"left": (atRight ? renderData.rowHeaderWidth : renderData.scrollbarWidth) + "px",				
+					"right": (atRight ? renderData.scrollbarWidth : renderData.rowHeaderWidth) + "px"
+				});
+				
+				domStyle.set(this.scrollContainer, "bottom", renderData.hScrollBarEnabled ? (renderData.scrollbarHeight + 1) + "px" : "0");
+				this._configureHScrollDomNodes(renderData.hScrollBarEnabled ? renderData.minSheetWidth + "px" : "100%");				
+												
+				this.hScrollBarW.set("maximum", renderData.minSheetWidth);
+				this.hScrollBarW.set("containerSize", renderData.hScrollPaneWidth);
+				
+			}						
+		},
+		
+		_configureHScrollDomNodes: function(styleWidth){
+			arr.forEach(this._hScrollNodes, function(elt){
+				domStyle.set(elt, "width", styleWidth);
+			}, this);
+		},
+		
+		resize: function(e){
+			this._resizeHandler(e);
+		},
+
+		_resizeHandler: function(e, apply){
+			// summary:
+			//		Refreshes the scroll bars after a resize of the widget.
+			// e: Event
+			//		The resize event (optional)
+			// apply: Boolean
+			//		Whether apply the changes or wait for 100 ms
+			// tags:
+			//		private
+
+			var rd = this.renderData;
+			
+			if(rd == null){				
+				return;
+			}
+			
+					
+			if(apply){
+				
+				var hScrollPaneWidth = domGeometry.getMarginBox(this.grid).w;
+
+				if(rd.hScrollPaneWidth != hScrollPaneWidth){
+					// refresh values
+					rd.hScrollPaneWidth = hScrollPaneWidth;
+					rd.minSheetWidth = this.minColumnWidth < 0 ? -1 : this.minColumnWidth * rd.subColumnCount * rd.columnCount;
+					rd.hScrollBarEnabled = this.minColumnWidth > 0 && domGeometry.getMarginBox(this.grid).w < rd.minSheetWidth;
+				}
+
+				this._configureScrollBar(rd);
+												
+			}else{
+				if(this._resizeTimer != undefined){
+					clearTimeout(this._resizeTimer);
+				}
+				this._resizeTimer = setTimeout(lang.hitch(this, function(){
+					this._resizeHandler(e, true);				
+				}), 100);
+			}
+
 		},
 		
 		_columnHeaderClick: function(e){
@@ -713,7 +903,7 @@ function(
 					var h = [];
 					h.push(on(td, "click", lang.hitch(this, this._columnHeaderClick)));
 										
-					if(has("touch")){					
+					if(has("touch-events")){
 						h.push(on(td, "touchstart", function(e){
 							event.stop(e);
 							domClass.add(e.currentTarget, "Active");
@@ -815,6 +1005,150 @@ function(
 				domClass.add(node, "dojoxCalendarWeekend");
 			}	
 		},
+		
+		_buildSubColumnHeader: function(renderData, oldRenderData){				
+			// summary:
+			//		Creates incrementally the HTML structure of the column header and configures its content.
+			//
+			// renderData:
+			//		The render data to display.
+			//
+			// oldRenderData:
+			//		The previously render data displayed, if any.
+			// tags:
+			//		private
+
+			var table = this.subColumnHeaderTable;
+			
+			if (!table || this.subColumns == null){
+				return;
+			}
+					
+			var count = renderData.columnCount - query("td", table).length;
+			
+			if(has("ie") == 8){
+				// workaround Internet Explorer 8 bug.
+				// if on the table, width: 100% and table-layout: fixed are set
+				// and columns are removed, width of remaining columns is not 
+				// recomputed: must rebuild all. 
+				if(this._colSubTableSave == null){
+					this._colSubTableSave = lang.clone(table);
+				}else if(count < 0){
+					this.subColumnHeader.removeChild(table);
+					domConstruct.destroy(table);
+					table = lang.clone(this._colSubTableSave);
+					this.subColumnHeaderTable = table;
+					this.subColumnHeader.appendChild(table);
+					count = renderData.columnCount;
+				}
+				
+			} // else incremental dom add/remove for real browsers.
+						 				
+			var tbodies = query(">tbody", table);
+
+			var tbody, tr, td;
+			
+			if (tbodies.length == 1){
+				tbody = tbodies[0];
+			}else{ 
+				tbody = html.create("tbody", null, table);
+			}
+			
+			var trs = query(">tr", tbody);
+			if (trs.length == 1){
+				tr = trs[0];
+			}else{ 
+				tr = domConstruct.create("tr", null, tbody);
+			}
+			
+			var subCount = renderData.subColumnCount;
+						 
+			// Build HTML structure (incremental)
+			if(count > 0){ // creation				
+				for(var i=0; i < count; i++){
+					td = domConstruct.create("td", null, tr);									
+					domConstruct.create("div", {"className": "dojoxCalendarSubHeaderContainer"}, td);
+				}
+			}else{ // deletion
+				count = -count;
+				for(var i=0; i < count; i++){
+					td = tr.lastChild;
+					tr.removeChild(td);
+					domConstruct.destroy(td);
+				}
+			}
+			
+			// fill & configure		
+			query("td", table).forEach(function(td, i){
+				td.className = "";											
+				if(i == 0){
+					domClass.add(td, "first-child");
+				}else if(i == this.renderData.columnCount-1){
+					domClass.add(td, "last-child");
+				}
+				
+				query(".dojoxCalendarSubHeaderContainer", td).forEach(function(div, i){
+								
+					var count = query(".dojoxCalendarSubHeaderContainer", div).length - subCount;
+					if(count != 0){
+						var len = div.childNodes.length;
+						for(var i=0; i<len; i++){
+							div.removeChild(div.lastChild);
+						}						
+						for(var j=0; j<subCount; j++){
+							domConstruct.create("div", {"className": "dojoxCalendarSubHeaderCell dojoxCalendarSubHeaderLabel"}, div);
+						}
+					}
+					
+					var colW = (100/subCount) + "%";
+					query(".dojoxCalendarSubHeaderCell", div).forEach(function(div, i){
+						div.className = "dojoxCalendarSubHeaderCell dojoxCalendarSubHeaderLabel";
+						var col = subCount == 1 ? i : Math.floor(i / subCount);
+						subColIdx = subCount == 1 ? 0 : i - col * subCount;					
+						domStyle.set(div, {width: colW, left: ((subColIdx * 100)/subCount)+"%"});
+						domClass[subColIdx<subCount-1 && subCount !== 1?"add":"remove"](div, "subColumn");
+						domClass.add(div, this.subColumns[subColIdx]);
+						this._setText(div, this.subColumnLabelFunc(this.subColumns[subColIdx]));
+					}, this);
+													
+				}, this);
+				
+				var d = renderData.dates[i];
+
+				this.styleSubColumnHeaderCell(td, d, renderData);
+				
+			}, this);
+			
+		},
+		
+		
+		subColumnLabelFunc: function(value){
+			// summary:
+			//	Computes the label for a sub column from the subColumns property.
+			//	By default, return the value.
+			return value;
+		},
+		
+		styleSubColumnHeaderCell: function(node, date, renderData){
+			// summary:
+			//		Styles the CSS classes to the node that displays a sub column header cell.
+			//		By default this method is not setting anythin:
+			// node: Node
+			//		The DOM node that displays the column in the grid.
+			// subColumnIndex: Integer
+			//		The cub column index.
+			// renderData: Object			
+			//		The render data.
+			// tags:
+			//		protected
+			domClass.add(node, this._cssDays[date.getDay()]);
+
+			if(this.isToday(date)){				
+				domClass.add(node, "dojoxCalendarToday");
+			} else if(this.isWeekEnd(date)){
+				domClass.add(node, "dojoxCalendarWeekend");
+			}	
+		},
 
         _addMinutesClasses: function(node, minutes){
             switch(minutes){
@@ -899,10 +1233,11 @@ function(
 								
 				domStyle.set(tr, "height", (has("ie") == 7)?size-2*(60 / renderData.rowHeaderGridSlotDuration):size + "px");
 				
-				this.styleRowHeaderCell(td, d.getHours(), d.getMinutes(), rd);
-				
+				var h = renderData.minHours + (i * this.renderData.rowHeaderGridSlotDuration) / 60;
 				var m = (i * this.renderData.rowHeaderGridSlotDuration) % 60;
-
+			
+				this.styleRowHeaderCell(td, h, m, rd);
+							
                 this._addMinutesClasses(td, m);
 
 			}, this);
@@ -914,7 +1249,7 @@ function(
 			if(count>0){ // creation
 				for(var i=0; i < count; i++){
 					span = domConstruct.create("span", null, lc);
-					domClass.add(span, "dojoxCalendarRowHeaderLabel");
+					domClass.add(span, "dojoxCalendarRowHeaderLabel");					
 				}					 
 			}else{
 				count = -count;
@@ -950,9 +1285,11 @@ function(
 			
 			this._setText(node, this._formatRowHeaderLabel(d));
 			domStyle.set(node, "top", (pos + (index==0?this.rowHeaderFirstLabelOffset:this.rowHeaderLabelOffset))+"px");
-			var m = (index * this.rowHeaderLabelSlotDuration) % 60;
+			var h = renderData.minHours + (index * this.rowHeaderLabelSlotDuration) / 60;
+			var m = (index * this.rowHeaderLabelSlotDuration) % 60;			
 			domClass.remove(node, ["hour", "halfhour", "quarterhour"]);
             this._addMinutesClasses(node, m);
+            this.styleRowHeaderCell(node, h, m, renderData);            
 		},
 		
 		styleRowHeaderCell: function(node, h, m, renderData){
@@ -997,7 +1334,7 @@ function(
 				
 			var addRows = rowDiff > 0;
 			
-			var colDiff  = renderData.columnCount - (oldRenderData ? oldRenderData.columnCount : 0);
+			var colDiff  = (renderData.columnCount - (oldRenderData ? oldRenderData.columnCount : 0));
 			
 			if(has("ie") == 8){
 				// workaround Internet Explorer 8 bug.
@@ -1166,11 +1503,11 @@ function(
 				return;
 			}
 			
-			var bgCols = [];
+			var bgCols = [], decoCols = [];
 	
 			domStyle.set(table, "height", renderData.sheetHeight + "px");			
-			
-			var count = renderData.columnCount - (oldRenderData ? oldRenderData.columnCount : 0);
+			var oldCount = oldRenderData ? oldRenderData.columnCount : 0;
+			var count = renderData.columnCount - oldCount;					
 			
 			if(has("ie") == 8){
 				// workaround Internet Explorer 8 bug.
@@ -1205,31 +1542,151 @@ function(
 				tr = trs[0];
 			}else{ 
 				tr = domConstruct.create("tr", null, tbody);
-			}					
+			}		
+			
+			var subCount = renderData.subColumnCount;
 								
 			// Build HTML structure (incremental)
 			if(count>0){ // creation
 				for(var i=0; i < count; i++){
-					td = domConstruct.create("td", null, tr);	
-					domConstruct.create("div", {"className": "dojoxCalendarContainerColumn"}, td);
+					td = domConstruct.create("td", null, tr);
+					domConstruct.create("div", {"className": "dojoxCalendarContainerColumn"}, td);					
 				}
 			}else{ // deletion		 
 				count = -count;
 				for(var i=0; i < count; i++){
 					tr.removeChild(tr.lastChild);
 				}
-			}	
+			}					
 			
-			query("td>div", table).forEach(function(div, i){
-
-				domStyle.set(div, {
-					"height": renderData.sheetHeight + "px"
-				});
-				bgCols.push(div);		
+			
+			query("td", table).forEach(function(td, i){
+				
+				query(".dojoxCalendarContainerColumn", td).forEach(function(div, i){
+					domStyle.set(div, "height", renderData.sheetHeight + "px");
+					var count = query(".dojoxCalendarSubContainerColumn", td).length - subCount;
+					if(count != 0){
+						var len = div.childNodes.length;
+						for(var i=0; i<len; i++){
+							div.removeChild(div.lastChild);
+						}						
+						for(var j=0; j<subCount; j++){
+							var subdiv = domConstruct.create("div", {"className": "dojoxCalendarSubContainerColumn"}, div);
+							domConstruct.create("div", {"className": "dojoxCalendarDecorationContainerColumn"}, subdiv);
+							domConstruct.create("div", {"className": "dojoxCalendarEventContainerColumn"}, subdiv);
+						}
+					}
+				}, this);
+				
+				var colW = (100/subCount) + "%";
+				query(".dojoxCalendarSubContainerColumn", td).forEach(function(div, i){						
+					var col = subCount == 1 ? i : Math.floor(i / subCount);
+					subColIdx = subCount == 1 ? 0 : i - col * subCount;					
+					domStyle.set(div, {width: colW, left: ((subColIdx * 100)/subCount)+"%"});
+					domClass[subColIdx<subCount-1 && subCount !== 1?"add":"remove"](div, "subColumn");	
+					
+					query(".dojoxCalendarEventContainerColumn", div).forEach(function(eventContainer, i){						
+						bgCols.push(eventContainer);
+					}, this);
+					
+					query(".dojoxCalendarDecorationContainerColumn", div).forEach(function(decoContainer, i){						
+						decoCols.push(decoContainer);
+					}, this);
+				}, this);
+				
+							
+				
 			}, this);
-			
+																											
 			renderData.cells = bgCols;
-		},			
+			renderData.decorationCells = decoCols;
+		},
+		
+		// showTimeIndicator: Boolean
+		//		Whether show or not an indicator (default a red line) at the current time.
+		showTimeIndicator: true,
+
+		// timeIndicatorRefreshInterval: Integer
+		//		Maximal interval between two refreshes of time indicator, in milliseconds.
+		timeIndicatorRefreshInterval: 60000,
+		
+		_setShowTimeIndicatorAttr: function(value){
+			this._set("showTimeIndicator", value);
+			this._layoutTimeIndicator(this.renderData);
+		},
+		
+		_layoutTimeIndicator: function(renderData){
+			if(!renderData){
+				return;
+			}
+			
+			if(this.showTimeIndicator){
+				
+				var now = new Date();
+				
+				var visible = this.isOverlapping(renderData, renderData.startTime, renderData.endTime, now, now) &&
+				 	now.getHours() >= this.get("minHours") && 
+					(now.getHours()*60+now.getMinutes() < this.get("maxHours")*60);
+															
+				if(visible){
+					
+					if(!this._timeIndicator){
+						this._timeIndicator = domConstruct.create("div", 
+								{"className": "dojoxCalendarTimeIndicator"});
+					}	
+					
+					var node = this._timeIndicator;
+					
+					for(var column=0; column<this.renderData.columnCount; column++){
+						if(this.isSameDay(now, this.renderData.dates[column])){
+							break;
+						}
+					}
+					
+					var top = this.computeProjectionOnDate(renderData, this.floorToDay(now), now, renderData.sheetHeight);
+					
+					if(top != renderData.sheetHeight){
+						
+						domStyle.set(node, {top: top+"px", display: "block"});
+						var parentNode = renderData.cells[column*renderData.subColumnCount].parentNode.parentNode;
+						if(parentNode != node.parentNode){
+							if(node.parentNode != null){
+								node.parentNode.removeChild(node);
+							}
+							parentNode.appendChild(node);	
+						}						
+																				
+						if(this._timeIndicatorTimer == null){
+							this._timeIndicatorTimer = setInterval(lang.hitch(this, function(){
+								this._layoutTimeIndicator(this.renderData);
+							}), this.timeIndicatorRefreshInterval);
+						}
+						return;
+					}													
+				}
+											
+			}
+			
+			// not visible or specifically not shown fallback
+				
+			if(this._timeIndicatorTimer){
+				clearInterval(this._timeIndicatorTimer);
+				this._timeIndicatorTimer = null;
+			}
+			if(this._timeIndicator){
+				domStyle.set(this._timeIndicator, "display", "none");
+			}							
+			
+		},
+		
+		beforeDeactivate: function(){
+			if(this._timeIndicatorTimer){				
+				clearInterval(this._timeIndicatorTimer);
+				this._timeIndicatorTimer = null;
+			}
+		},
+		
+		
 		
 		///////////////////////////////////////////////////////////////
 		//
@@ -1291,34 +1748,83 @@ function(
 			return "vertical"; // String
 		},
 		
-		_layoutInterval: function(/*Object*/renderData, /*Integer*/index, /*Date*/start, /*Date*/end, /*Object[]*/items){
+		_layoutInterval: function(/*Object*/renderData, /*Integer*/index, /*Date*/start, /*Date*/end, /*Object[]*/items, /*String*/itemsType){
 			// tags:
 			//		private
 
 			var verticalItems = [];
+			
 			renderData.colW = this.itemContainer.offsetWidth / renderData.columnCount;
 			
-			for(var i=0; i<items.length; i++){
-				var item = items[i];
-				if(this._itemToRendererKind(item) == "vertical"){
-					verticalItems.push(item);
+			if(itemsType === "dataItems"){
+				
+				for(var i=0; i<items.length; i++){
+					var item = items[i];
+					var kind = this._itemToRendererKind(item);
+					if(kind === "vertical"){
+						verticalItems.push(item);
+					}
 				}
-			}
+				
+				this._layoutRendererWithSubColumns(renderData, "vertical", true, index, start, end, verticalItems, itemsType);		
 			
-			if(verticalItems.length > 0){
-				this._layoutVerticalItems(renderData, index, start, end, verticalItems);
+			}else{ // itemsType === "decorationItems"
+			
+				// no different rendererKind for decoration yet
+				this._layoutRendererWithSubColumns(renderData, "decoration", false, index, start, end, items, itemsType);
 			}
 		},
+		
+		_layoutRendererWithSubColumns: function(renderData, rendererKind, computeOverlap, index, start, end, items, itemsType){
+			if(items.length > 0){
+				if(renderData.subColumnCount > 1){
+					var subColumnItems = {};
+					var subCols = this.subColumns;
+					arr.forEach(subCols, function(subCol){
+						subColumnItems[subCol] = [];
+					});
+					arr.forEach(items, function(item){
+						if(itemsType === "decorationItems"){
+							if(item.subColumn){
+								subColumnItems[item.subColumn].push(item);
+							}else{ // for decorations, if no sub column is set, apply to all sub columns
+								arr.forEach(subCols, function(subCol){
+									var clonedItem = lang.mixin({}, item);
+									clonedItem.subColumn = subCol;
+									subColumnItems[subCol].push(clonedItem);
+								});
+							}
+						}else if(item.subColumn){
+							subColumnItems[item.subColumn].push(item);
+						}
+					});
+					var subColIndex = 0;
+					arr.forEach(this.subColumns, function(subCol){
+						this._layoutVerticalItems(renderData, rendererKind, computeOverlap, index, subColIndex++, start, end, subColumnItems[subCol], itemsType);
+					}, this);
+				}else{
+					this._layoutVerticalItems(renderData, rendererKind, computeOverlap, index, 0, start, end, items, itemsType);
+				}
+			}
+		},
+		
+		_getColumn: function(renderData, index, subIndex, itemsType){
+			var cols = itemsType === "dataItems" ? renderData.cells : renderData.decorationCells;
+			return cols[index * renderData.subColumnCount + subIndex];
+		},
 
-		_layoutVerticalItems: function(/*Object*/renderData, /*Integer*/index, /*Date*/startTime, /*Date*/endTime, /*Object[]*/items){
+		_layoutVerticalItems: function(/*Object*/renderData, /*String*/ rendererKind, /*boolean*/ computeOverlap, 
+				/*Integer*/index, /*Integer*/subIndex, /*Date*/startTime, /*Date*/endTime, /*Object[]*/items, /*String*/itemsType){
 			// tags:
 			//		private
 
-			if(this.verticalRenderer == null){
+			if(itemsType === "dataItems" && this.verticalRenderer == null || 
+				itemsType === "decorationItems" && this.verticalDecorationRenderer == null){
 				return;
 			}
 			
-			var cell = renderData.cells[index];
+			var cell = this._getColumn(renderData, index, subIndex, itemsType);
+			
 			var layoutItems = [];			
 			
 			// step 1 compute projected position and size
@@ -1342,60 +1848,68 @@ function(
 			}
 			
 			// step 2: compute overlapping layout
-			var numLanes = this.computeOverlapping(layoutItems, this._overlapLayoutPass2).numLanes;
+			var numLanes = itemsType === "dataItems" ? this.computeOverlapping(layoutItems, this._overlapLayoutPass2).numLanes : 1;
 
 			var hOverlap = this.percentOverlap / 100;
 
 			// step 3: create renderers and apply layout
 			for(i=0; i<layoutItems.length; i++){
 
-				item = layoutItems[i];					
-				var lane = item.lane;
-				var extent = item.extent;
+				item = layoutItems[i];
+				var w, posX, ir, renderer;
+				
+				if(itemsType === "dataItems"){
+					
+					var lane = item.lane;
+					var extent = item.extent;
 
-				var w;
-				var posX;				
+					if(hOverlap == 0) {
+						//no overlap and a padding between each event
+						w = numLanes == 1 ? renderData.colW : ((renderData.colW - (numLanes - 1) * this.horizontalGap)/ numLanes);
+						posX = lane * (w + this.horizontalGap);
+						w = extent == 1 ? w : w * extent + (extent-1) * this.horizontalGap;
+						w = 100 * w / renderData.colW;
+						posX = 100 * posX / renderData.colW; 
+					} else {
+						// an overlap
+						w = numLanes == 1 ? 100 : (100 / (numLanes - (numLanes - 1) * hOverlap));
+						posX = lane * (w - hOverlap*w);
+						w = extent == 1 ? w : w * ( extent - (extent-1) * hOverlap);
+					}
+	
+					ir = this._createRenderer(item, "vertical", this.verticalRenderer, "dojoxCalendarVertical");
+				
+					var edited = this.isItemBeingEdited(item);
+					var selected = this.isItemSelected(item);
+					var hovered = this.isItemHovered(item);
+					var focused = this.isItemFocused(item);
+					
+					renderer = ir.renderer;
+	
+					renderer.set("hovered", hovered);
+					renderer.set("selected", selected);
+					renderer.set("edited", edited);
+					renderer.set("focused", this.showFocus ? focused : false);
+					renderer.set("storeState", this.getItemStoreState(item));
+					
+					renderer.set("moveEnabled", this.isItemMoveEnabled(item._item, "vertical"));
+					renderer.set("resizeEnabled", this.isItemResizeEnabled(item._item, "vertical"));
+					
+					this.applyRendererZIndex(item, ir, hovered, selected, edited, focused);
 
-				if(hOverlap == 0) {
-					//no overlap and a padding between each event
-					w = numLanes == 1 ? renderData.colW : ((renderData.colW - (numLanes - 1) * this.horizontalGap)/ numLanes);
-					posX = lane * (w + this.horizontalGap);
-					w = extent == 1 ? w : w * extent + (extent-1) * this.horizontalGap;
-					w = 100 * w / renderData.colW;
-					posX = 100 * posX / renderData.colW; 
 				} else {
-					// an overlap
-					w = numLanes == 1 ? 100 : (100 / (numLanes - (numLanes - 1) * hOverlap));
-					posX = lane * (w - hOverlap*w);
-					w = extent == 1 ? w : w * ( extent - (extent-1) * hOverlap);
+					w = 100;
+					posX = 0;
+					ir = this.decorationRendererManager.createRenderer(item, "vertical", this.verticalDecorationRenderer, "dojoxCalendarDecoration");
+					renderer = ir.renderer;
 				}
-
-				var ir = this._createRenderer(item, "vertical", this.verticalRenderer, "dojoxCalendarVertical");
-
+				
 				domStyle.set(ir.container, {
 					"top": item.start + "px",
 					"left": posX + "%",
 					"width": w + "%",
 					"height": (item.end-item.start+1) + "px"
 				});
-
-				var edited = this.isItemBeingEdited(item);
-				var selected = this.isItemSelected(item);
-				var hovered = this.isItemHovered(item);
-				var focused = this.isItemFocused(item);
-				
-				var renderer = ir.renderer;
-
-				renderer.set("hovered", hovered);
-				renderer.set("selected", selected);
-				renderer.set("edited", edited);
-				renderer.set("focused", this.showFocus ? focused : false);
-				renderer.set("storeState", this.getItemStoreState(item));
-				
-				renderer.set("moveEnabled", this.isItemMoveEnabled(item._item, "vertical"));
-				renderer.set("resizeEnabled", this.isItemResizeEnabled(item._item, "vertical"));
-
-				this.applyRendererZIndex(item, ir, hovered, selected, edited, focused);
 
 				if(renderer.updateRendering){
 					renderer.updateRendering(w, item.end-item.start+1);
@@ -1423,19 +1937,7 @@ function(
 		//
 		///////////////////////////////////////////////////////////////
 		
-		getTime: function(e, x, y, touchIndex){
-			// summary:
-			//		Returns the time displayed at the specified point by this component.
-			// e: Event
-			//		Optional mouse event.
-			// x: Number
-			//		Position along the x-axis with respect to the sheet container used if event is not defined.
-			// y: Number
-			//		Position along the y-axis with respect to the sheet container (scroll included) used if event is not defined.
-			// touchIndex: Integer
-			//		If parameter 'e' is not null and a touch event, the index of the touch to use.
-			// returns: Date
-			
+		_getNormalizedCoords: function(e, x, y, touchIndex){
 			if (e != null){				
 				var refPos = domGeometry.position(this.itemContainer, true);
 				
@@ -1470,9 +1972,27 @@ function(
 			}else if(y > r.h){
 				y = r.h-1;
 			}
+						
+			return {x: x, y: y};			
+		},
+		
+		getTime: function(e, x, y, touchIndex){
+			// summary:
+			//		Returns the time displayed at the specified point by this component.
+			// e: Event
+			//		Optional mouse event.
+			// x: Number
+			//		Position along the x-axis with respect to the sheet container used if event is not defined.
+			// y: Number
+			//		Position along the y-axis with respect to the sheet container (scroll included) used if event is not defined.
+			// touchIndex: Integer
+			//		If parameter 'e' is not null and a touch event, the index of the touch to use.
+			// returns: Date
 			
-			var col = Math.floor(x / (domGeometry.getMarginBox(this.itemContainer).w / this.renderData.columnCount));
-			var t = this.getTimeOfDay(y, this.renderData);
+			var o = this._getNormalizedCoords(e, x, y, touchIndex);					
+			var t = this.getTimeOfDay(o.y, this.renderData);
+			var colW = domGeometry.getMarginBox(this.itemContainer).w / this.renderData.columnCount;
+			var col = Math.floor(o.x / colW);
 			
 			var date = null;
 			if(col < this.renderData.dates.length){			
@@ -1483,6 +2003,30 @@ function(
 			}
 	
 			return date;
+		},
+		
+		getSubColumn: function(e, x, y, touchIndex){
+			// summary:
+			//		Returns the sub column at the specified point by this component.
+			// e: Event
+			//		Optional mouse event.
+			// x: Number
+			//		Position along the x-axis with respect to the sheet container used if event is not defined.
+			// y: Number
+			//		Position along the y-axis with respect to the sheet container (scroll included) used if event is not defined.
+			// touchIndex: Integer
+			//		If parameter 'e' is not null and a touch event, the index of the touch to use.
+			// returns: Object
+						
+			if(this.subColumns == null || this.subColumns.length == 1){
+				return null;
+			}
+			var o = this._getNormalizedCoords(e, x, y, touchIndex);
+			var rd = this.renderData;
+			var colW = domGeometry.getMarginBox(this.itemContainer).w / this.renderData.columnCount;
+			var col = Math.floor(o.x / colW);
+			var idx = Math.floor((o.x - col*colW) / (colW / rd.subColumnCount));			
+			return this.subColumns[idx]; 						
 		},
 		
 		///////////////////////////////////////////////////////////////

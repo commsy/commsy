@@ -379,6 +379,29 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
              $task_item->save();
           }
 
+          // Datenschutz
+          $portal_user = $user_item->getRelatedPortalUserItem();
+          $portalUserConfig = $portal_user->getDefaultIsMailVisible();
+          if(!empty($portalUserConfig)) {
+            // use default user config
+            if($portal_item->getConfigurationHideMailByDefault()) {
+              // hide 
+              $user_item->setEmailNotVisible();
+            } else {
+              $user_item->setEmailVisible();
+            }
+            $user_item->save();
+          } else {
+            // default portal config
+            // pr($portal_item->getConfigurationHideMailByDefault());exit;
+            if($portal_item->getConfigurationHideMailByDefault()){
+              $user_item->setEmailNotVisible();
+            } else {
+              $user_item->setEmailVisible();
+            }
+            $user_item->save();
+          }
+
           // send email to moderators if necessary
           $user_manager = $environment->getUserManager();
           $user_manager->resetLimits();

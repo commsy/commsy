@@ -50,7 +50,7 @@ class cs_auth_manager {
    */
    private $_is_enabled_array = array();
 
-   private $_auth_source_item = NULL;
+   public $_auth_source_item = NULL;
 
    public $_auth_data_array = array();
 

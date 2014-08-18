@@ -259,6 +259,67 @@
 <message name='getRoomListOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='getPortalRoomConfigurationIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+</message>
+<message name='getPortalRoomConfigurationOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='touAcceptedIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+</message>
+<message name='touAcceptedOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='saveRoomIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='title' type='xsd:string'/>
+  <part name='id' type='xsd:string'/>
+  <part name='type' type='xsd:string'/>
+  <part name='template' type='xsd:string'/>
+  <part name='language' type='xsd:string'/>
+  <part name='intervals' type='xsd:string'/>
+  <part name='assignments' type='xsd:string'/>
+  <part name='description' type='xsd:string'/>
+</message>
+<message name='saveRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='deleteRoomIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+  <part name='room_id' type='xsd:string'/>
+</message>
+<message name='deleteRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='archiveRoomIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:string'/>
+  <part name='room_id' type='xsd:string'/>
+</message>
+<message name='archiveRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='getRoomDetailsIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='room_id' type='xsd:string'/>
+</message>
+<message name='getRoomDetailsOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='sendContactMailIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='message' type='xsd:string'/>
+</message>
+<message name='sendContactMailOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='getAuthenticationForWikiIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:string'/>
@@ -394,11 +455,26 @@
 <message name='getPortalRoomListOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
-<message name='getPortalRoomListGuestIN'>
+<message name='getPortalRoomListByCountAndSearchIN'>
   <part name='session_id' type='xsd:string'/>
-  <part name='portal_id' type='xsd:integer'/>
+  <part name='start' type='xsd:integer'/>
+  <part name='count' type='xsd:integer'/>
+  <part name='search' type='xsd:string'/>
 </message>
-<message name='getPortalRoomListGuestOUT'>
+<message name='getPortalRoomListByCountAndSearchOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getUserInformationIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='getUserInformationOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getPortalConfigIN'>
+  <part name='portal_id' type='xsd:string'/>
+</message>
+<message name='getPortalConfigOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getAuthSourcesIN'>
@@ -413,6 +489,42 @@
   <part name='portal_id' type='xsd:integer'/>
 </message>
 <message name='getBarInformationOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='getContextToUIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+</message>
+<message name='getContextToUOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='registerUserIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='firstname' type='xsd:string'/>
+  <part name='lastname' type='xsd:string'/>
+  <part name='email' type='xsd:string'/>
+  <part name='identification' type='xsd:string'/>
+  <part name='password' type='xsd:string'/>
+  <part name='tou' type='xsd:boolean'/>
+</message>
+<message name='registerUserOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='sendIdForgetIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='email' type='xsd:string'/>
+</message>
+<message name='sendIdForgetOUT'>
+  <part name='xml_list' type='xsd:string'/>
+</message>
+<message name='sendPwForgetIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='identification' type='xsd:string'/>
+</message>
+<message name='sendPwForgetOUT'>
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='getPortalListIN'>
@@ -765,6 +877,34 @@ echo("\n");
     <input message='tns:getRoomListIN'/>
     <output message='tns:getRoomListOUT'/>
   </operation>
+  <operation name='getPortalRoomConfiguration'>
+    <input message='tns:getPortalRoomConfigurationIN'/>
+    <output message='tns:getPortalRoomConfigurationOUT'/>
+  </operation>
+  <operation name='touAccepted'>
+    <input message='tns:touAcceptedIN'/>
+    <output message='tns:touAcceptedOUT'/>
+  </operation>
+  <operation name='saveRoom'>
+    <input message='tns:saveRoomIN'/>
+    <output message='tns:saveRoomOUT'/>
+  </operation>
+  <operation name='deleteRoom'>
+    <input message='tns:deleteRoomIN'/>
+    <output message='tns:deleteRoomOUT'/>
+  </operation>
+  <operation name='archiveRoom'>
+    <input message='tns:archiveRoomIN'/>
+    <output message='tns:archiveRoomOUT'/>
+  </operation>
+  <operation name='getRoomDetails'>
+    <input message='tns:getRoomDetailsIN'/>
+    <output message='tns:getRoomDetailsOUT'/>
+  </operation>
+  <operation name='sendContactMail'>
+    <input message='tns:sendContactMailIN'/>
+    <output message='tns:sendContactMailOUT'/>
+  </operation>
   <operation name='getAuthenticationForWiki'>
     <input message='tns:getAuthenticationForWikiIN'/>
     <output message='tns:getAuthenticationForWikiOUT'/>
@@ -838,9 +978,17 @@ echo("\n");
     <input message='tns:getPortalRoomListIN'/>
     <output message='tns:getPortalRoomListOUT'/>
   </operation>
-  <operation name='getPortalRoomListGuest'>
-    <input message='tns:getPortalRoomListGuestIN'/>
-    <output message='tns:getPortalRoomListGuestOUT'/>
+  <operation name='getPortalRoomListByCountAndSearch'>
+    <input message='tns:getPortalRoomListByCountAndSearchIN'/>
+    <output message='tns:getPortalRoomListByCountAndSearchOUT'/>
+  </operation>
+   <operation name='getUserInformation'>
+    <input message='tns:getUserInformationIN'/>
+    <output message='tns:getUserInformationOUT'/>
+  </operation>
+  <operation name='getPortalConfig'>
+    <input message='tns:getPortalConfigIN'/>
+    <output message='tns:getPortalConfigOUT'/>
   </operation>
   <operation name='getAuthSources'>
     <input message='tns:getAuthSourcesIN'/>
@@ -849,6 +997,22 @@ echo("\n");
   <operation name='getBarInformation'>
     <input message='tns:getBarInformationIN'/>
     <output message='tns:getBarInformationOUT'/>
+  </operation>
+  <operation name='getContextToU'>
+    <input message='tns:getContextToUIN'/>
+    <output message='tns:getContextToUOUT'/>
+  </operation>
+  <operation name='registerUser'>
+    <input message='tns:registerUserIN'/>
+    <output message='tns:registerUserOUT'/>
+  </operation>
+  <operation name='sendIdForget'>
+    <input message='tns:sendIdForgetIN'/>
+    <output message='tns:sendIdForgetOUT'/>
+  </operation>
+  <operation name='sendPwForget'>
+    <input message='tns:sendPwForgetIN'/>
+    <output message='tns:sendPwForgetOUT'/>
   </operation>
   <operation name='getPortalList'>
     <input message='tns:getPortalListIN'/>
@@ -1260,6 +1424,83 @@ echo("\n");
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
     </output>
   </operation>
+  <operation name='getPortalRoomConfiguration'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomConfiguration'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='touAccepted'>
+    <soap:operation soapAction='urn:xmethodsCommSy#touAccepted'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='saveRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#saveRoom'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='deleteRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteRoom'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='archiveRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#archiveRoom'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getRoomDetails'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getRoomDetails'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='sendContactMail'>
+    <soap:operation soapAction='urn:xmethodsCommSy#sendContactMail'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
   <operation name='getAuthenticationForWiki'>
     <soap:operation soapAction='urn:xmethodsCommSy#getAuthenticationForWiki'/>
     <input>
@@ -1459,8 +1700,30 @@ echo("\n");
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
       </output>
   </operation>
-  <operation name='getPortalRoomListGuest'>
-    <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomListGuest'/>
+  <operation name='getPortalRoomListByCountAndSearch'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalRoomListByCountAndSearch'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getUserInformation'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getUserInformation'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getPortalConfig'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getPortalConfig'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
@@ -1483,6 +1746,50 @@ echo("\n");
   </operation>
   <operation name='getBarInformation'>
     <soap:operation soapAction='urn:xmethodsCommSy#getBarInformation'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='getContextToU'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getContextToU'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='registerUser'>
+    <soap:operation soapAction='urn:xmethodsCommSy#registerUser'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='sendIdForget'>
+    <soap:operation soapAction='urn:xmethodsCommSy#sendIdForget'/>
+      <input>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </input>
+      <output>
+        <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+          encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+      </output>
+  </operation>
+  <operation name='sendPwForget'>
+    <soap:operation soapAction='urn:xmethodsCommSy#sendPwForget'/>
       <input>
         <soap:body use='encoded' namespace='urn:xmethodsCommSy'
           encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

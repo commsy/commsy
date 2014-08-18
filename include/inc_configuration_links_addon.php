@@ -139,7 +139,10 @@ if ( !isset($translator) and isset($this->_translator) ) {
    $context_item = $environment->getCurrentContextItem();
    global $c_plugin_array;
    if ( !empty($c_plugin_array)
-        and $context_item->isPortal()
+        and (
+        		  $context_item->isPortal()
+        		  or $context_item->isServer()
+        		)
       ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_PLUGIN_LINK'));
@@ -224,6 +227,22 @@ if ( !isset($translator) and isset($this->_translator) ) {
    	$link_item->setModule('configuration');
    	$link_item->setFunction('connection');
    	$addon_link_list->add($link_item);
+   }
+
+   #############################################
+   # export import
+   #############################################
+   $context_item = $environment->getCurrentContextItem();
+   if ( $context_item->isPortal()) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_EXPORT_IMPORT_LINK'));
+      $link_item->setIconPath('images/cs_config/CONFIGURATION_EXTRA_FORM.gif');
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_EXPORT_IMPORT_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('export_import');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      // $addon_link_list->add($link_item);
    }
 
    if ( $addon_link_list->getFirst() ){

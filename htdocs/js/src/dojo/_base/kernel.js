@@ -79,7 +79,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 	dojo.isAsync = !has("dojo-loader") || require.async;
 	dojo.locale = config.locale;
 
-	var rev = "$Rev: fd52c96 $".match(/[0-9a-f]{7,}/);
+	var rev = "$Rev: e124479 $".match(/[0-9a-f]{7,}/);
 	dojo.version = {
 		// summary:
 		//		Version number of the Dojo Toolkit
@@ -92,7 +92,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 		//		- flag: String: Descriptor flag. If total version is "1.2.0beta1", will be "beta1"
 		//		- revision: Number: The Git rev from which dojo was pulled
 
-		major: 1, minor: 9, patch: 3, flag: "",
+		major: 1, minor: 10, patch: 0, flag: "",
 		revision: rev ? rev[0] : NaN,
 		toString: function(){
 			var v = dojo.version;
@@ -164,7 +164,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 				(function(){
 					var tcn = tn + "";
 					console[tcn] = ('log' in console) ? function(){
-						var a = Array.apply({}, arguments);
+						var a = Array.prototype.slice.call(arguments);
 						a.unshift(tcn + ":");
 						console["log"](a.join(" "));
 					} : function(){};
@@ -263,7 +263,7 @@ define(["../has", "./config", "require", "module"], function(has, config, requir
 			//	|	dojo.body().appendChild(img);
 			// example:
 			//		you may de-reference as far as you like down the package
-			//		hierarchy.  This is sometimes handy to avoid lenghty relative
+			//		hierarchy.  This is sometimes handy to avoid lengthy relative
 			//		urls or for building portable sub-packages. In this example,
 			//		the `acme.widget` and `acme.util` directories may be located
 			//		under different roots (see `dojo.registerModulePath`) but the

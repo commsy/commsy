@@ -18,6 +18,8 @@ define([	"dojo/_base/declare",
 			this.ref_iid		= null;
 			this.ticks			= 0;
 			this.timer			= null;
+			this.userAction		= false;
+			this.lockListener	= null;
 			this.ajaxHTMLSource	= "rubric_popup";
 		},
 		
@@ -63,6 +65,13 @@ define([	"dojo/_base/declare",
 						this.setupSpecific();
 						this.setupAutoSave();
 						this.onCreate();
+
+						if (this.from_php.environment.item_locking) {
+							// if we are editing an item, setup the locking mechanism
+							if (this.item_id !== "NEW") {
+								this.setupLocking();
+							}
+						}
 
 						// register close
 						on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
@@ -149,6 +158,65 @@ define([	"dojo/_base/declare",
 			}
 		},
 
+		setupLocking: function() {
+			// update the locking date, so that the item is initially marked as changing
+			this.updateLockingDate();
+
+			// listen for changes
+			this.lockListener = on(this.contentNode, "click, keypress, change", lang.hitch(this, function(event) {
+				// if we are not already aware of a user action
+				if (!this.userAction) {
+					// don't care about submits
+					if (!dom_class.contains(event.target, "submit")) {
+						this.userAction = true;
+
+						// update the editing date
+						this.updateLockingDate();
+					}
+				}
+			}));
+
+			var cooldown = 20 * 60 * 1000;
+			cooldown = 5 * 1000;
+
+			// setup an interval after that we reset the user action flag
+			window.setInterval(lang.hitch(this, function() {
+				this.userAction = false;
+			}), cooldown);
+		},
+
+		updateLockingDate: function() {
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'locking',
+					action:	'update'
+				},
+				data: {
+					id: this.item_id
+				}
+			});
+		},
+
+		clearLockingDate: function() {
+			if (this.lockListener) {
+				this.lockListener.remove();
+			}
+
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'locking',
+					action:	'clear'
+				},
+				data: {
+					id: this.item_id
+				}
+			});
+		},
+
 		close: function() {
 			this.inherited(arguments);
 			
@@ -180,6 +248,10 @@ define([	"dojo/_base/declare",
 			}
 
 			this.is_open = false;
+
+			if (this.from_php.environment.item_locking) {
+				this.clearLockingDate();
+			}
 		}
 	});
 });

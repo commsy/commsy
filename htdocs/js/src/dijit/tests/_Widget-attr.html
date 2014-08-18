@@ -3,12 +3,8 @@
 <html>
 <head>
 	<title>widget attribute unit test (in constructor and get()/set())</title>
-	<style type="text/css">
-		@import "../themes/claro/document.css";
-		@import "css/dijitTests.css";
-	</style>
-	<script type="text/javascript" src="../../dojo/dojo.js"
-		data-dojo-config="isDebug: true, async: true"></script>
+
+	<script src="boilerplate.js"></script>
 
 	<script type="text/javascript">
 		require([
@@ -129,6 +125,17 @@
 						// (also, hasAttribute() is not available on IE6/7)
 						doh.t(mc.domNode.hasAttribute("novalidate"), "noValidate");
 					}
+				},
+
+				// Test that creating a widget with type defined doesn't causes exceptions on IE6-8.
+				// This is really trying to test that markup like <input dojoType=WidgetBase type=text> works.
+				// (Todo: remove for 2.0)
+				function typeException(){
+					var node = document.createElement("input");
+					document.body.appendChild(node);
+					new _WidgetBase({
+						type: "text"
+					}, node);
 				},
 
 				// Test custom setters/getter methods

@@ -3,7 +3,6 @@ define(["dojo/_base/lang", "dojo/_base/declare", "dojox/dgauges/CircularGauge", 
 	"dojox/dgauges/TextIndicator"],
 	function(lang, declare, CircularGauge, LinearScaler, CircularScale, CircularValueIndicator, CircularRangeIndicator,
 			 TextIndicator){
-
 		return declare("dojox.dgauges.tests.gauges.SimpleSemiCircularGauge", CircularGauge, {
 			constructor: function(){
 				// Changes the font

@@ -373,10 +373,6 @@ if (!empty($_GET['SID'])) {
            and $environment->getCurrentFunction() == 'login'
            and !$outofservice
          ) {
-#   if (!isset($_GET['jscheck']) and !isset($_GET['isJS'])){
-#       include_once('pages/context_reload.php');
-#       exit();
-#   }
    include_once('pages/context_login.php');
    exit();
 } elseif ( strtolower($environment->getCurrentFunction()) == 'getfile'
@@ -1877,7 +1873,12 @@ if ( isset($c_show_debug_infos) and $c_show_debug_infos and $environment->getCur
    echo('<span style="font-weight:bold;">Session Object</span>'.BRLF);
    pr($session);
 }
+
 if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
    echo('<!-- Total execution time: '.$time.' seconds -->');
 }
+
+// plugin hook
+flush();
+plugin_hook('executeAtTheEnd',array(),false);
 ?>

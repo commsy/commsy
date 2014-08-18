@@ -31,7 +31,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					var files = document.getElementsByName('file_name');
 					
 					fileItems = new Array (
-							new Array( '<Auswahl>' , 'null')
+							new Array( '<Auswahl>' , null)
 					);
 					
 					// fill select with filenames
@@ -563,9 +563,24 @@ CKEDITOR.plugins.add( "CommSyDocument",
 									} else {
 										saveaimSection = "";
 									}
-									
+
+									//var fileIdRegEx = /commsy.php\/\.*iid=(\d*)/;
+									// regex filename
+									var fileNameRegEx = /commsy.php\/(.*)\?.*/;
+									var filename = this.getValueOf('documentTab','fileselect');
+									var link = this.getValueOf('documentTab', 'documentUrl');
+
+									if (filename == 'null') {
+										match = link.match(fileNameRegEx);
+										filename = match[1];
+									}
+
+									link = link.replace("material", "onyx");
+									link = link.replace("getfile", "showqti");
+									link = link.replace("/"+filename, "");
+
 									var data = {
-											0: "(:qti " + fileName + " "+paramString+":)",
+											0: "(:qti " + filename + " "+paramString+":)",
 											1: fileName,
 											navi: naviParam,
 											save: saveParam,
@@ -581,15 +596,13 @@ CKEDITOR.plugins.add( "CommSyDocument",
 									
 									var dialog = this;
 									var linkText = this.getValueOf('documentTab','linkText');
-									var link = this.getValueOf('documentTab', 'documentUrl');
 									
-									//var fileIdRegEx = /commsy.php\/\.*iid=(\d*)/;
-									// regex filename
-									var fileNameRegEx = /commsy.php\/(.*)\?.*/;
-									if(linkText == ''){
-										linkText = fileName;
+									
+
+									if(!linkText){
+										var linkText = filename;
 									}
-									
+									console.log(linkText);
 						            var a = editor.document.createElement( 'a' );
 	//					            a.setAttribute( 'href', link);
 						            

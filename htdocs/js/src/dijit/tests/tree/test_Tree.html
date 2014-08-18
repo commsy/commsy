@@ -20,24 +20,34 @@
 		], function(parser){
 			parser.parse();
 		});
+
+		// Global variable used by mytree (and in turn referenced by Tree_mouse.html robot test)
+		mouseDowns = 0;
 	</script>
 
 </head>
 <body class="claro" role="main">
+
+	<script type="dojo/require">
+		registry: "dijit/registry"
+	</script>
 
 	<h1 class="testTitle">Dijit Tree Test</h1>
 
 	<div data-dojo-id="continentStore" data-dojo-type="dojo/data/ItemFileWriteStore" data-dojo-props='url:"../_data/countries.json"'></div>
 	<div data-dojo-id="continentModel" data-dojo-type="dijit/tree/ForestStoreModel" data-dojo-props='store:continentStore, query:{type:"continent"},
 		rootId:"continentRoot", rootLabel:"Continents", childrenAttrs:["children"]'></div>
+	<div data-dojo-id="wideModel" data-dojo-type="dijit/tree/ForestStoreModel" data-dojo-props='store:continentStore, query:{type:"continent"},
+		rootId:"continentRoot", rootLabel:"Long label that causes scrolling", childrenAttrs:["children"]'></div>
 
-	<h2>Tree with hardcoded root node (not corresponding to any item in the store)</h2>
+	<h2 id="mytreeLabel">Tree with hardcoded root node (not corresponding to any item in the store)</h2>
 	<p>
 		Clicking a folder node will open/close it (openOnclick==true),
 		and clicking a leaf node will log a message to the console.
 	</p>
 	<label for="mytree_before">before:</label><input id="mytree_before"/>
-	<div id="mytree" data-dojo-type="dijit/Tree" aria-label="mytree" data-dojo-props='model:continentModel, openOnClick:true, onLoad:function(){ console.log("loaded mytree (first tree)"); }'>
+	<div id="mytree" data-dojo-type="dijit/Tree" aria-labelledby="mytreeLabel"
+		 data-dojo-props='model:continentModel, openOnClick:true, onLoad:function(){ console.log("loaded mytree (first tree)"); }'>
 		<script type="dojo/method" data-dojo-event="onClick" data-dojo-args="item">
 			console.log("Execute of node " + continentStore.getLabel(item)
 				+", population=" + continentStore.getValue(item, "population"));
@@ -48,14 +58,17 @@
 		<script type="dojo/method" data-dojo-event="onClose" data-dojo-args="item">
 			console.log("Close of node " + (continentStore.getLabel(item) || "root"));
 		</script>
+		<script type="dojo/method" data-dojo-event="onMouseDown" data-dojo-args="evt">
+			mouseDowns++;
+		</script>
 	</div>
 
 	<button id="mytreeDestroyButton" onclick="dijit.byId('mytree').destroyRecursive();">destroy</button>
 
-	<h2>A rootless tree (no "continents" node) with context menus, and custom icons</h2>
+	<h2 id="tree2Label">A rootless tree (no "continents" node) with context menus, and custom icons</h2>
 
 	<label for="tree2_before">before:</label><input id="tree2_before"/>
-	<div id="tree2" data-dojo-type="dijit/Tree" aria-label="tree2label" data-dojo-props='model:continentModel, showRoot:false, openOnClick:true,onLoad:function(){ console.log("loaded tree2 (second tree)"); }'>
+	<div id="tree2" data-dojo-type="dijit/Tree" aria-labelledby="tree2Label" data-dojo-props='model:continentModel, showRoot:false, openOnClick:true,onLoad:function(){ console.log("loaded tree2 (second tree)"); }'>
 		<script type="dojo/method" data-dojo-event="getIconClass" data-dojo-args="item, opened">
            return (item == this.model.root || continentStore.getValue(item, "type") == "continent") ?
                    (opened ? "customFolderOpenedIcon" : "customFolderClosedIcon") :
@@ -70,9 +83,9 @@
 	<ul id="tree_menu" data-dojo-type="dijit/Menu"
 			data-dojo-props='style:"display: none;", targetNodeIds: ["tree2"], selector: ".dijitTreeNode"'>
 		<li data-dojo-type="dijit/MenuItem">
-			<script type="dojo/connect" data-dojo-event="onClick">
+			<script type="dojo/on" data-dojo-event="click">
 				// get a hold of the dijit.TreeNode that was the source of this open event
-				var tn = dijit.byNode(this.getParent().currentTarget);
+				var tn = registry.byNode(this.getParent().currentTarget);
 
 				// now print the data store item that backs the tree node
 				console.debug("menu click for item: ", tn.item.name);
@@ -84,13 +97,14 @@
 	<button id="tree2ExpandAll" onclick="dijit.byId('tree2').expandAll();">expand all</button>
 	<button onclick="dijit.byId('tree2').collapseAll();">collapse all</button>
 
-	<h2>Double click, expand on load, direct style setting, tooltip test</h2>
+	<h2 id="mytree3Label">Double click, expand on load, direct style setting, tooltip test tree</h2>
 	<p>
 		Double-Clicking a folder node will open/close it (openOnDblClick==true),
 		and clicking or Double Clicking a leaf node will log a message to the console.
 	</p>
 	<label for="mytree3_before">before:</label> <input id="mytree3_before"/>
-	<div id="mytree3" aria-label="mytree 3"  data-dojo-type="dijit/Tree" data-dojo-props='store:continentStore, query:{type:"continent"},
+	<div id="mytree3" aria-labelledby="mytree3Label"  data-dojo-type="dijit/Tree"
+		 data-dojo-props='store:continentStore, query:{type:"continent"},
 		label:"Continents", openOnClick:false, openOnDblClick:true,
 		autoExpand:true, onLoad:function(){ console.log("loaded mytree3 (third tree)"); }'>
 		<script type="dojo/method" data-dojo-event="getLabelStyle" data-dojo-args="item,opened">
@@ -126,7 +140,7 @@
 		</script>
 	</div>
 
-	<h2>Tree w/horizontal scroll</h2>
+	<h2 id="thinTreeLabel">Tree w/horizontal scroll</h2>
 	<p>
 		For checking that selection and highlighting effect goes all the way to the right.
 	</p>
@@ -140,7 +154,7 @@
 		state.
 	</p>
 	<div id="thinTree" style="width: 170px; border: solid 1px #759dc0"
-		 data-dojo-type="dijit/Tree" aria-label="my thin tree"  data-dojo-props="model:continentModel">
+		 data-dojo-type="dijit/Tree" aria-labelledby="thinTreeLabel"  data-dojo-props="model:wideModel">
 		<script type="dojo/aspect" data-dojo-advice="after" data-dojo-method="_adjustWidths">
 			console.log(this.id + ": adjusted widths of nodes");
 		</script>
@@ -156,7 +170,6 @@
 	<button onclick="continentStore.fetchItemByIdentity({identity: 'US', onItem: function(item){ continentStore.setValue(item, 'name', 'USA'); }});">
 		set short name for USA
 	</button>
-
 
 </body>
 </html>

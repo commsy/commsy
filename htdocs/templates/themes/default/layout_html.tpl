@@ -39,8 +39,16 @@
 
 	    <link rel="stylesheet" type="text/css" media="print" href="{$basic.tpl_path}styles.css" />
 
+	    <link rel="stylesheet" type="text/css" media="screen" href="js/3rdParty/projekktor-1.3.09/themes/maccaco/projekktor.style.css" />
+
 		{block name="js"}
 			<!-- SCRIPTS -->
+
+			<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/jquery-1.9.1.min.js"></script>
+			<!--<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/projekktor-1.3.09.min.js"></script>-->
+			
+			<script type="text/javascript" src="js/3rdParty/projekktor-1.3.09/projekktor-universal.min.js"></script>
+
             {if $environment.c_js_mode === "layer"}
                 <script src="js/src/layerConfig.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
             {else}
@@ -52,7 +60,7 @@
 				{if isset($javascript.locale) && !empty($javascript.locale)}dojoConfig.locale = '{$javascript.locale}';{/if}
 				{if isset($javascript.version) && !empty($javascript.version)}dojoConfig.cacheBust = '{$javascript.version}';{/if}
 			</script>
-			<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>
+			<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>
 	
             {if $environment.c_js_mode === "layer"}
                 <script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
@@ -170,6 +178,9 @@
 	    </div> <!-- Ende wrapper -->
 	    <div id="popup_uploader"></div>
 {block name=body_end}
+      {if !empty($basic.html_before_body_ends)}
+         {$basic.html_before_body_ends}
+      {/if}
 	</body>
 {/block}
 

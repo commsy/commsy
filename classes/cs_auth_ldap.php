@@ -268,7 +268,7 @@ class cs_auth_ldap extends cs_auth_manager {
             if ( $bind ) {
             	
             	// additional server
-            	// save auth source item - TEST
+            	// save auth source item
             	if ( !empty($this->_server_all) ) {
             		if ( $this->_server_selected != $this->_server_selected_save ) {
             	      $auth_data_array = $this->_auth_source_item->getAuthData();
@@ -338,7 +338,6 @@ class cs_auth_ldap extends cs_auth_manager {
          @ldap_unbind($connect);
          @ldap_close($connect);
       }
-      exit;
       return $granted;
    }
 

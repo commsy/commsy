@@ -30,7 +30,7 @@ include_once('classes/cs_manager.php');
 /** class for database connection to the database table "tag"
  * this class implements a database manager for the table "tag".
  */
-class cs_tag_manager extends cs_manager {
+class cs_tag_manager extends cs_manager implements cs_export_import_interface {
 
   /**
    * integer - containing the age of last change as a limit in days
@@ -694,6 +694,11 @@ class cs_tag_manager extends cs_manager {
      if (!empty($item_id)) {
         $this->_update($item);
      } else {
+        $creator_id = $item->getCreatorID();
+        if (empty($creator_id)) {
+           $user = $this->_environment->getCurrentUser();
+           $item->setCreatorItem($user);
+        }
         $this->_create($item);
      }
 
@@ -818,5 +823,45 @@ class cs_tag_manager extends cs_manager {
 		';
 		$indexer->add(CS_TAG_TYPE, $query);
 	}
+	
+	function export_item($id) {
+	   $item = $this->getItem($id);
+   	$xml = new SimpleXMLElementExtended('<tag_item></tag_item>');
+   	$xml->addChildWithCDATA('item_id', $item->getItemID());
+      $xml->addChildWithCDATA('context_id', $item->getContextID());
+      $xml->addChildWithCDATA('creator_id', $item->getCreatorID());
+      $xml->addChildWithCDATA('modifier_id', $item->getModificatorID());
+      $xml->addChildWithCDATA('deleter_id', $item->getDeleterID());
+      $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
+      $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
+      $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
+      $xml->addChildWithCDATA('title', $item->getTitle());
+   	return $xml;
+	}
+	
+   function export_sub_items($xml, $top_item) {
+      
+   }
+   
+   function import_item($xml, $top_item, &$options) {
+      $item = null;
+      if ($xml != null) {
+         $item = $this->getNewItem();
+         $item->setTitle((string)$xml->title[0]);
+         $item->setContextId($top_item->getContextId());
+         //$item->setPosition($top_item->getItemId(), $top_item->getChildrenList()->getCount() + 1);
+         $item->save();
+         $tag2TagManager = $this->_environment->getTag2TagManager();
+         $tag2TagManager->insert_with_context($item->getItemId(), $top_item->getItemid(), $top_item->getChildrenList()->getCount() + 1, $top_item->getContextId());
+      }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
+      return $item;
+   }
+   
+   function import_sub_items($xml, $top_item, &$options) {
+      
+   }
 }
 ?>

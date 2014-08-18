@@ -1756,7 +1756,7 @@ class cs_external_page_portal_view extends cs_page_view {
    		}
    	}
    	
-   	$html .= '<script src="js/3rdParty/ckeditor_4.3.2/ckeditor.js"></script>';
+   	$html .= '<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js"></script>';
    	 
    	switch ($mode) {
    		case "build":
@@ -3688,10 +3688,16 @@ $error_box = $this->getMyAreaErrorBox();
     }
 
 
+    if ($current_user->getUserId() != "guest") {
+      $isLoggedIn = true;
+    } else {
+      $isLoggedIn = false;
+    }
+
     $html = '';
     $html .= $this->_getHTMLHeadAsHTML();
     $html .= '<body id="main_body" class="tundra">';
-    if ($current_user->isUser()){
+    if ($isLoggedIn /*$current_user->isUser()*/){
     	$name = 'Willkommen, '.$current_user->getFullName().'';
     }else{
 #   	$name = '<a href="'.$typo_link.'">Anmelden</a>';
@@ -3762,7 +3768,7 @@ if ( (!isset($cs_room_id) or empty($cs_room_id)) and (!$current_user->isModerato
 }
 */
 
-if (!$current_user->isUser()) {
+if (!$isLoggedIn) {
 	$html .= $this->getMyAreaAsHTML();
 } else {
 

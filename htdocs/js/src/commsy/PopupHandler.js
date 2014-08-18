@@ -101,6 +101,15 @@ define([	"dojo/_base/declare",
 							this.featureHandles[feature] = this.featureHandles[feature] || [];
 							this.featureHandles[feature][index] = new CKEditor();
 							this.featureHandles[feature][index].create(node);
+
+							// listen for ckeditor changes and emit a change event to bubble them to the container div
+							// this is needed for the locking mechanism to detect user activities
+							this.featureHandles[feature][index].instance.on('change', lang.hitch(this, function() {
+								On.emit(node, "change", {
+									bubbles: true,
+									cancelable: true
+								});
+							}));
 						}));
 					}));
 				}
@@ -324,7 +333,13 @@ define([	"dojo/_base/declare",
 			}).then(lang.hitch(this, function(response) {
 				if (response.status === "success") {
 					this.onPopupSubmitSuccess(response.data);
-					this.destroyLoading();
+
+					if (typeof this.uri_object.commsy_bar_backlink != "undefined") {
+						var backlink = decodeURIComponent(this.uri_object.commsy_bar_backlink);
+						window.location = backlink;
+					} else {
+						this.destroyLoading();
+					}
 				} else {
 					/************************************************************************************
 					 * We recieved a failure, maybe a mandatory field is missing or the user entered
@@ -407,6 +422,10 @@ define([	"dojo/_base/declare",
 
 			// set closed
 			this.is_open = false;
+
+			if (!noBacklink) {
+				this.backlink();
+			}
 		}
 	});
 });

@@ -412,7 +412,9 @@
 
 			global $c_js_mode;
 
-			$this->assign('basic', 'tpl_path', $this->_tpl_path);
+			global $c_commsy_url_path;
+			$this->assign('basic', 'commsy_path', '//' . $_SERVER['SERVER_NAME'] . $c_commsy_url_path . '/');
+			$this->assign('basic', 'tpl_path', '//' . $_SERVER['SERVER_NAME'] . $c_commsy_url_path . '/' . $this->_tpl_path);
 			$this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
 			$this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
 			$this->assign('environment', 'current_user_id', $this->_environment->getCurrentUserID());
@@ -540,7 +542,10 @@
 				$to_javascript['environment']['password_expire_soon'] = false;
 			}
 			
-			
+			// locking
+			$checkLocking = $this->_environment->getConfiguration('c_item_locking');
+          	$checkLocking = ($checkLocking) ? $checkLocking : false;
+          	$to_javascript["environment"]["item_locking"] = $checkLocking;
 			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
@@ -682,5 +687,12 @@
 					$this->assign("javascript", "version", "unset");
 				}
 			}
+			
+			// plugins
+			$info_before_body_ends = LF.'   <!-- PLUGINS BEGIN -->'.LF;
+			include_once('functions/misc_functions.php');
+			$info_before_body_ends .= plugin_hook_output_all('getInfosForBeforeBodyEndAsHTML',array(),LF,false).LF;
+			$info_before_body_ends .= '   <!-- PLUGINS END -->'.LF.LF;
+			$this->assign('basic', 'html_before_body_ends', $info_before_body_ends);
 		}
 	}

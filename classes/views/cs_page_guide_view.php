@@ -895,33 +895,33 @@ class cs_page_guide_view extends cs_page_view {
                   $time_item_last = $time_list->getLast();
                   if ($time_item_last->getItemID() == $time_item->getItemID()) {
                      $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
-          $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
-          $html .= $this->_translator->getTimeMessage($time_item->getTitle()).LF;
-          $html .= '   </li>'.LF;
-          $html .= '</ul>'.LF;
-       } else {
-          $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
-          $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
-          $html .= $this->_translator->getMessage('COMMON_FROM2').' '.$this->_translator->getTimeMessage($time_item->getTitle()).LF;
-          $html .= '   </li>'.LF;
-          $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
-          $html .= $this->_translator->getMessage('COMMON_TO').' '.$this->_translator->getTimeMessage($time_item_last->getTitle()).LF;
-          $html .= '   </li>'.LF;
-          $html .= '</ul>'.LF;
-       }
+                      $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
+                      $html .= $this->_translator->getTimeMessage($time_item->getTitle()).LF;
+                      $html .= '   </li>'.LF;
+                      $html .= '</ul>'.LF;
+                   } else {
+                      $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
+                      $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
+                      $html .= $this->_translator->getMessage('COMMON_FROM2').' '.$this->_translator->getTimeMessage($time_item->getTitle()).LF;
+                      $html .= '   </li>'.LF;
+                      $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
+                      $html .= $this->_translator->getMessage('COMMON_TO').' '.$this->_translator->getTimeMessage($time_item_last->getTitle()).LF;
+                      $html .= '   </li>'.LF;
+                      $html .= '</ul>'.LF;
+                   }
                } else {
                   $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
-       $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
-       $html .= $this->_translator->getMessage('ROOM_CONTINUOUS_SINCE').' '.BRLF.$this->_translator->getTimeMessage($time_item->getTitle()).LF;
-       $html .= '   </li>'.LF;
-       $html .= '</ul>'.LF;
+                   $html .= '   <li style="font-weight:normal; font-size:8pt;">'.LF;
+                   $html .= $this->_translator->getMessage('ROOM_CONTINUOUS_SINCE').' '.BRLF.$this->_translator->getTimeMessage($time_item->getTitle()).LF;
+                   $html .= '   </li>'.LF;
+                   $html .= '</ul>'.LF;
                }
             } else {
                $html .= '<ul style="margin-left:0px;margin-top:0em; margin-bottom:0.5em; padding-top:0px;padding-left:1em;">'.LF;
                $time_item = $time_list->getFirst();
                while ($time_item) {
                   $html .= '<li style="font-weight:normal; font-size:8pt;">'.$this->_translator->getTimeMessage($time_item->getTitle()).'</li>'.LF;
-       $time_item = $time_list->getNext();
+                  $time_item = $time_list->getNext();
                }
                $html .= '</ul>'.LF;
             }

@@ -2190,6 +2190,9 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_INACTIVEPROCESS':
                	  $tempMessage = $translator->getMessage('USAGE_INFO_COMING_SOON');
                	  break;
+               case 'CONFIGURATION_EXPORT_IMPORT':
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_EXPORT_IMPORT_FORM');
+                  break;
                default:
                   $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;
@@ -3460,6 +3463,35 @@ class cs_portal_item extends cs_guide_item {
    		$retour = true;
    	}
    	return $retour;
+   }
+
+
+   public function setInactivitySettingChangeTime(){
+      $this->_addExtra('INACTIVITY_CHANGE_SETTING_TIME', getCurrentDateTimeInMySQL());
+   }
+
+   public function getInactivitySettingChangeTime(){
+    $retour = 0;
+    if ($this->_issetExtra('INACTIVITY_CHANGE_SETTING_TIME')) {
+      $retour = $this->_getExtra('INACTIVITY_CHANGE_SETTING_TIME');
+    }
+    return $retour;
+   }
+
+   public function setConfigurationHideMailByDefault($value)
+   {
+     $this->_addExtra('HIDE_MAIL_BY_DEFAULT', $value);
+   }
+
+   public function getConfigurationHideMailByDefault()
+   {
+     $retour = 0;
+     if ($this->_issetExtra('HIDE_MAIL_BY_DEFAULT')) {
+      $retour = $this->_getExtra('HIDE_MAIL_BY_DEFAULT');
+    } else {
+      $retour = '';
+    }
+    return $retour;
    }
    
 }

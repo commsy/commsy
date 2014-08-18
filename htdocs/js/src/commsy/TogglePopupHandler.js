@@ -31,6 +31,7 @@ define([	"dojo/_base/declare",
 				this.setupLoading();
 				
 				this.statics.togglePopups.push(this);
+				togglePopups = this.statics.togglePopups;
 				
 				// setup ajax request for getting html
 				request.ajax({
@@ -78,25 +79,22 @@ define([	"dojo/_base/declare",
 			
 			if (this.is_open) {
 				// close all popups before open this
-				dojo.forEach(this.statics.togglePopups, lang.hitch(this, function(popup, index, arr) {
-					if (popup !== this) {
-						popup.close();
-						popup.is_open = false;
-					}
-				}));
-				
+				noBacklink = true;
 				/* temporary, until all widgets are migrated to current version */
 				var widgetManager = this.getWidgetManager();
-				widgetManager.CloseAllWidgets();
+				widgetManager.CloseAllWidgets(this);
 				/* ~temporary */
+				noBacklink = false;
+			} else {
+				this.backlink();
 			}
-			
+
 			this.onTogglePopup();
 		},
 		
 		close: function() {
 			this.inherited(arguments);
-			
+
 			this.onTogglePopup();
 		}
 	});

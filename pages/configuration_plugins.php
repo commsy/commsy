@@ -96,7 +96,11 @@ else {
             foreach ($c_plugin_array as $plugin) {
                $plugin_class = $environment->getPluginClass($plugin);
                if ( method_exists($plugin_class,'isConfigurableInPortal') ) {
-                  if ( ( $environment->inPortal()
+                  if ( ( $environment->inServer()
+                         and $plugin_class->isConfigurableInServer()
+                       )
+                       or
+                  	  ( $environment->inPortal()
                          and $plugin_class->isConfigurableInPortal()
                        )
                        or
@@ -113,7 +117,11 @@ else {
                      }
                      $values = $_POST;
                      $values['current_context_item'] = $current_context_item;
-                     if ( $environment->inPortal()
+                     if ( $environment->inServer()
+                         and method_exists($plugin_class,'configurationAtServer')
+                        ) {
+                        $plugin_class->configurationAtServer('save_config',$values);
+                     } elseif ( $environment->inPortal()
                          and method_exists($plugin_class,'configurationAtPortal')
                         ) {
                         $plugin_class->configurationAtPortal('save_config',$values);

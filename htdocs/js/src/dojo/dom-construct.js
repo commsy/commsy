@@ -135,11 +135,11 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 		return df; // DocumentFragment
 	};
 
-	exports.place = function place(/*DOMNode|String*/ node, /*DOMNode|String*/ refNode, /*String|Number?*/ position){
+	exports.place = function place(node, refNode, position){
 		// summary:
 		//		Attempt to insert node into the DOM, choosing from various positioning options.
 		//		Returns the first argument resolved to a DOM node.
-		// node: DOMNode|String
+		// node: DOMNode|DocumentFragment|String
 		//		id or node reference, or HTML fragment starting with "<" to place relative to refNode
 		// refNode: DOMNode|String
 		//		id or node reference to use as basis for placement
@@ -302,7 +302,11 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 	};
 
 	function _empty(/*DomNode*/ node){
-		if(node.canHaveChildren){
+		// TODO: remove this if() block in 2.0 when we no longer have to worry about IE memory leaks,
+		// and then uncomment the emptyGrandchildren() test case from html.html.
+		// Note that besides fixing #16957, using removeChild() is actually faster than setting node.innerHTML,
+		// see http://jsperf.com/clear-dom-node.
+		if("innerHTML" in node){
 			try{
 				// fast path
 				node.innerHTML = "";
@@ -312,9 +316,10 @@ define(["exports", "./_base/kernel", "./sniff", "./_base/window", "./dom", "./do
 				// Fall through (saves bytes)
 			}
 		}
-		// SVG/strict elements don't support innerHTML/canHaveChildren, and OBJECT/APPLET elements in quirks node have canHaveChildren=false
+
+		// SVG/strict elements don't support innerHTML
 		for(var c; c = node.lastChild;){ // intentional assignment
-			_destroy(c, node); // destroy is better than removeChild so TABLE subelements are removed in proper order
+			node.removeChild(c);
 		}
 	}
 
