@@ -50,7 +50,7 @@
 													{if $room.item_id == -3}
 														<div class="room_dummy room_dummy_no_border"></div>
 													{else}
-														<div class="room_change_item" title="{$room.title}" data-custom="href: 'commsy.php?cid={$room.item_id}&mod=home&fct=index'">
+														<div class="room_change_item" title="{$room.title}" data-custom="href: '{$basic.commsy_path}commsy.php?cid={$room.item_id}&mod=home&fct=index'">
 															<input type="hidden" name="hidden_item_id" value="{$room.item_id}"/>
 															<div class="room_change_content">
 																<div class="room_change_room_box">
