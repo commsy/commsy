@@ -434,7 +434,7 @@ class cs_external_page_portal_view extends cs_page_view {
          $curl = curl($current_portal->getItemID(), 'picture', 'getfile', $params,'');
          unset($params);
          if ($current_portal->isShowAnnouncementsOnHome()){
-            $html .= '<img class="logo" style="width:200px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>';
+            $html .= '<img class="logo" style="max-height:255px;padding:5px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>';
          }else{
             $html .= '<img class="logo" style="width:300px; height:268px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>';
          }
@@ -453,15 +453,16 @@ class cs_external_page_portal_view extends cs_page_view {
       }
       $text = $current_portal->getDescriptionWellcome2();
       if ( !empty($text) ) {
-         $html .= '<div style="width:99%; text-align:right; padding-bottom:10px;"><h1 class="portal_main_title">'.$current_portal->getDescriptionWellcome2().'</h1></div>'.LF;
+         $html .= '<div style="width:99%; text-align:left; padding-bottom:10px;"><h1 class="portal_main_title">'.$current_portal->getDescriptionWellcome2().'</h1></div>'.LF;
       }
+      $html .= $this->_text_as_html_long($current_portal->getDescription());
       if ($current_portal->isShowAnnouncementsOnHome()){
          $html .= '</td>'."\n";
          $html .= '</tr>'."\n";
          $html .= '<tr>'."\n";
          $html .= '<td colspan="2" style="text-align:left; vertical-align:top; padding-top:5px; padding-bottom:5px; padding-left: 5px; font-weight: normal;">'."\n";
       }
-      $html .= $this->_text_as_html_long($current_portal->getDescription());
+      // $html .= $this->_text_as_html_long($current_portal->getDescription());
       if ($current_portal->isShowAnnouncementsOnHome()){
          $html .= '</td>'."\n";
       }
@@ -1571,16 +1572,7 @@ class cs_external_page_portal_view extends cs_page_view {
     <div id="room_detail_head" style="text-align:right;">'. $this->_getFlagsAsHTML() .'</div>
     <div>
     </div>
-    <div id="room_detail_headline">
-    Herzlich Willkommen in Ihrem CommSy-Portal
-    </div>
-    <div id="room_detail_content">
-    Willkommen im CommSy-Portal Ihrer Fakultät.
-
-    Hier können Studierende und Lehrende in Projekträumen zusammen arbeiten.
-    Führen Sie beispielsweise Diskussionen, tauschen Sie Dateien aus oder erstellen Sie gemeinsam ein Wiki.
-
-    </div>
+    '.$this->getWelcomeTextAsHTML().'
     </div>
     ';
 
@@ -1717,14 +1709,14 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .= '<td style="width:30%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
          $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_ACCESS_POINT').':'.'</span>';
          $html .= '</td>'.LF;
-/*
+
          $html .= '<td style="width:1%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
          $html .= '<img src="'.$this->_style_image_path.'portal_info.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:45%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
          $html .= '<span class="search_title">'.$this->_translator->getMessage('COMMON_DESCRIPTION').':'.'</span>';
          $html .= '</td>'.LF;
-*/
+
          $html .= '<td style="width:1%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
          $html .= '<img src="'.$this->_style_image_path.'portal_info2.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
@@ -1737,7 +1729,7 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .= '<td colspan="2" style="vertical-align:top; font-weight:normal;">'.LF;
          $html .= $this->_getRoomAccessAsHTML($item);
          $html .= '</td>'.LF;
-/*
+
          $html .= '<td colspan="2" style="font-weight:normal; font-size:8pt; vertical-align:top; text-align:left;">'.LF;
          $desc = $item->getDescription();
          if (!empty($desc)){
@@ -1746,31 +1738,29 @@ class cs_external_page_portal_view extends cs_page_view {
             $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
          }
          $html .= '</td>'.LF;
-*/
+
 
          $html .= '<td colspan="2" style="vertical-align:top; text-align:left;">'.LF;
          $html .= $this->_getRoomFacts($item);
          $html .= '</td>'.LF;
          $html .= '</tr>'.LF;
 
-        $html .= '<tr>'.LF;
-        $html .= '<td style="width:1%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
-        $html .= '<img src="'.$this->_style_image_path.'portal_info.gif" alt="" border="0"/>'.LF;
-        $html .= '</td>'.LF;
-        $html .= '<td colspan="3" style="width:99%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
-        $html .= '<span class="search_title">'.getMessage('COMMON_DESCRIPTION').':'.'</span>';
-        $html .= '</td>'.LF;
-        $html .= '</tr>'.LF;
-        $html .= '<tr>'.LF;
-        $html .= '<td colspan="4" style="font-weight:normal; font-size:8pt; vertical-align:top; text-align:left;">'.LF;
-        $desc = $item->getDescription();
-        if (!empty($desc)){
-           $html .= $this->_text_as_html_long($item->getDescription());
-        }else{
-           $html .= '<span class="disabled">'.getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
-        }
-        $html .= '</td>'.LF;
-        $html .= '</tr>'.LF;
+        // $html .= '<tr>'.LF;
+        
+        // $html .= '<td colspan="3" style="width:99%; vertical-align:middle; padding:0px; margin:0px;">'.LF;
+        // $html .= '<span class="search_title">'.getMessage('COMMON_DESCRIPTION').':'.'</span>';
+        // $html .= '</td>'.LF;
+        // $html .= '</tr>'.LF;
+        // $html .= '<tr>'.LF;
+        // $html .= '<td colspan="4" style="font-weight:normal; font-size:8pt; vertical-align:top; text-align:left;">'.LF;
+        // $desc = $item->getDescription();
+        // if (!empty($desc)){
+           // $html .= $this->_text_as_html_long($item->getDescription());
+        // }else{
+           // $html .= '<span class="disabled">'.getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
+        // }
+        // $html .= '</td>'.LF;
+        // $html .= '</tr>'.LF;
 
          $html .= '</table>'.LF;
       } else{

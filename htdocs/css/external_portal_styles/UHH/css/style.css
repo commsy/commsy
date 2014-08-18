@@ -625,3 +625,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f7f7f7', end
   border: 1px solid lightgrey;
   padding: 5px;
 }
+
+.portal_title {
+  font-size: 20px;
+  color: #D00E1A;
+}
+
+.portal_main_title {
+  font-size: 20px;
+}
