@@ -253,11 +253,13 @@ define(
 		 */
 		OnClosePopup: function()
 		{
-			// if this is a switchable popup we just hide it, otherwise we destroy it
-			if ( this.toggle ) {
-				DomStyle.set(this.domNode, "display", "none");
-			} else {
-				this.destroy();
+			if (!this.backlink()) {
+				// if this is a switchable popup we just hide it, otherwise we destroy it
+				if ( this.toggle ) {
+					DomStyle.set(this.domNode, "display", "none");
+				} else {
+					this.destroy();
+				}
 			}
 		}
 	});

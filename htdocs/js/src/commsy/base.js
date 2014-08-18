@@ -135,6 +135,20 @@ define([	"dojo/_base/declare",
 
 			return {};
 		},
+
+		backlink: function() {
+			if (typeof this.uri_object.commsy_bar_backlink != "undefined") {
+				var numChildPopups = Query("body>div#popup_wrapper:first").length;
+				numChildPopups += Query("body>div[class^='portfolio']").length;
+
+				if (numChildPopups == 0) {
+					var backlink = decodeURIComponent(this.uri_object.commsy_bar_backlink);
+					window.location = backlink;
+				}
+			}
+
+			return false;
+		},
 		
 		reload: function(item_id, module, cid, anchor) {
             module = module || null;

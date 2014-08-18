@@ -89,14 +89,16 @@ define([	"dojo/_base/declare",
 				var widgetManager = this.getWidgetManager();
 				widgetManager.CloseAllWidgets();
 				/* ~temporary */
+			} else {
+				this.backlink();
 			}
-			
+
 			this.onTogglePopup();
 		},
 		
 		close: function() {
 			this.inherited(arguments);
-			
+
 			this.onTogglePopup();
 		}
 	});

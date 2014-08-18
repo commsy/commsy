@@ -333,7 +333,13 @@ define([	"dojo/_base/declare",
 			}).then(lang.hitch(this, function(response) {
 				if (response.status === "success") {
 					this.onPopupSubmitSuccess(response.data);
-					this.destroyLoading();
+
+					if (typeof this.uri_object.commsy_bar_backlink != "undefined") {
+						var backlink = decodeURIComponent(this.uri_object.commsy_bar_backlink);
+						window.location = backlink;
+					} else {
+						this.destroyLoading();
+					}
 				} else {
 					/************************************************************************************
 					 * We recieved a failure, maybe a mandatory field is missing or the user entered
@@ -416,6 +422,8 @@ define([	"dojo/_base/declare",
 
 			// set closed
 			this.is_open = false;
+
+			this.backlink();
 		}
 	});
 });
