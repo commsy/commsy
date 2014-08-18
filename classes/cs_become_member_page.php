@@ -105,9 +105,10 @@ class cs_become_member_page extends cs_left_page {
             }
 
             $portal_user = $user_item->getRelatedPortalUserItem();
-            if(!empty($portal_user->getConfigurationHideMailByDefault())) {
+            $conf = $portal_user->getConfigurationHideMailByDefault();
+            if(!empty($conf)) {
               // use default user config
-              if($portal_item->getConfigurationHideMailByDefault()) {
+              if($conf) {
                 // hide 
                 $user_item->setDefaultMailNotVisible();
               } else {
@@ -115,7 +116,7 @@ class cs_become_member_page extends cs_left_page {
               }
             } else {
               // default portal config
-              if($portal_item->getConfigurationHideMailByDefault()){
+              if($conf){
                 $user_item->setDefaultMailNotVisible();
               } else {
                 $user_item->setDefaultMailVisible();
