@@ -200,7 +200,9 @@ define([	"dojo/_base/declare",
 		},
 
 		clearLockingDate: function() {
-			this.lockListener.remove();
+			if (this.lockListener) {
+				this.lockListener.remove();
+			}
 
 			request.ajax({
 				query: {

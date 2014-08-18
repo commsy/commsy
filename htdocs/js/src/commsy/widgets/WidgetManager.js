@@ -144,8 +144,16 @@ define(
 		 * 
 		 * This Method closes all widgets stored in the manager
 		 */
-		CloseAllWidgets: function()
+		CloseAllWidgets: function(currentPopup)
 		{
+			currentPopup = currentPopup || {};
+			dojo.forEach(togglePopups, Lang.hitch(this, function(popup, index, arr) {
+				if (popup !== currentPopup) {
+					popup.close();
+					popup.is_open = false;
+				}
+			}));
+
 			dojo.forEach(this.widgets, function(widget, index, arr)
 			{
 				if ( widget.instance.Close )				// this is false, if the widget is not deferred from PopupBase

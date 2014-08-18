@@ -1,3 +1,6 @@
+noBacklink = false;
+togglePopups = [];
+
 require([	"dojo/_base/declare",
          	"commsy/base",
          	"dojo/_base/lang"], function(declare, BaseClass, Lang) {

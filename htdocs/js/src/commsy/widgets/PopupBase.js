@@ -218,11 +218,14 @@ define(
 			var openDeferred = new Deferred();
 			
 			this._LoadPopup().then(lang.hitch(this, function(response) {
+				noBacklink = true;
+
 				// check if there are other switchable popups open
-				if ( this.statics.switchableIsOpen && this.canOverlay === false ) {
+				if ( /*this.statics.switchableIsOpen &&*/ this.canOverlay === false ) {
 					// close all
 					this.widgetManager.CloseAllWidgets();
 				}
+				noBacklink = false;
 				
 				// place widget
 				var widgetNode = Query("body div#" + this.id)[0];
@@ -253,12 +256,21 @@ define(
 		 */
 		OnClosePopup: function()
 		{
-			if (!this.backlink()) {
+			if (noBacklink) {
 				// if this is a switchable popup we just hide it, otherwise we destroy it
 				if ( this.toggle ) {
 					DomStyle.set(this.domNode, "display", "none");
 				} else {
 					this.destroy();
+				}
+			} else {
+				if (!this.backlink()) {
+					// if this is a switchable popup we just hide it, otherwise we destroy it
+					if ( this.toggle ) {
+						DomStyle.set(this.domNode, "display", "none");
+					} else {
+						this.destroy();
+					}
 				}
 			}
 		}

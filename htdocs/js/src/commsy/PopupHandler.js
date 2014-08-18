@@ -423,7 +423,9 @@ define([	"dojo/_base/declare",
 			// set closed
 			this.is_open = false;
 
-			this.backlink();
+			if (!noBacklink) {
+				this.backlink();
+			}
 		}
 	});
 });
