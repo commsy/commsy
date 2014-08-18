@@ -2802,7 +2802,7 @@ class cs_external_page_portal_view extends cs_page_view {
                 }
                 unset($auth_source_list);
                 $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
-                $html .= '<input type="submit" name="option" style="width: 5.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
+                $html .= '<input type="submit" name="option" style="width: 83px;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
                 $html .= '</td></tr>'.LF;
                 $html .= '</table>'.LF;
     
@@ -3444,13 +3444,13 @@ class cs_external_page_portal_view extends cs_page_view {
          $html .='</td>'.LF;
          $html .='</tr>'.LF;
          $html .='</table>'.LF;
-         $html .='<table style="width:100%; margin:0px; padding:0px;" summary="Layout">'.LF;
+         $html .='<table style="width:98%;margin-left:auto; margin-right:auto; padding:0px;" summary="Layout">'.LF;
          $html .='<tr>'.LF;
 
          $html .='<td colspan="3" style="padding-top:0px; vertical-align:top; text-align:center;">'.LF;
 
 
-         $html .= '<table style="border-collapse: collapse; border: 0px; padding:0px; width: 100%" summary="Layout">'.LF;
+         $html .= '<table style="border-collapse: collapse; border: 1px solid lightgrey; padding:0px; width: 100%" summary="Layout">'.LF;
          $html .= $this->_getTableheadAsHTML($this->_room_list_view);
 
       $current_user = $this->_environment->getCurrentUserItem();
@@ -3886,6 +3886,20 @@ class cs_external_page_portal_view extends cs_page_view {
 
 
    function asHTML(){
+
+    // CommSy Wordpress redirect
+    $url = 'http://commsywp.local.dev2';
+    $ch = curl_init($url); 
+    // set curl timeout
+    curl_setopt($ch,CURLOPT_TIMEOUT,5000);
+    // get only headers
+    curl_setopt($ch, CURLOPT_NOBODY, 1); 
+    // follow redirects
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    $c = curl_exec($ch); 
+    if(curl_getinfo($ch, CURLINFO_HTTP_CODE) == 200){
+      redirect_with_url($url);
+    }
 
      /*
      *********************************
@@ -4365,15 +4379,15 @@ $html .='
     $html .= '<div id="option_block">';
 			if ( $lang == 'en' ) {
 				$html .='<h2>Create workspaces</h2><div style="padding:10px 5px; white-space:nowrap;">';
-				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
+				$html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
 				if ($current_user->isModerator()){
 					$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a></div>'.LF;
 				}
 		}else{
 			$html .='<h2>Raum anlegen</h2><div style="padding:10px 5px; white-space:nowrap;">';
-			$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
+			$html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">Neuer Projektraum</a>'.BRLF;
 			if ($current_user->isModerator()){
-				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a></div>'.LF;
+				$html.= '<a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">Neuer Gemeinschaftsraum</a></div>'.LF;
 				$html.= $this->_getConfigurationBoxAsHTML();
 			}
 		}
@@ -4492,8 +4506,8 @@ $html .= '';
    function _getConfigurationBoxAsHTML () {
    	$current_context = $this->_environment->getCurrentContextItem();
    	$html  = '';
-   	$html .= '<div class="search_link">'.LF;
-   	$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('PORTAL_CONFIGURATION_ACTION')).BRLF;
+   	$html .= '<div class="search_link" style="padding-left:5px;">'.LF;
+   	$html .= ''.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('PORTAL_CONFIGURATION_ACTION')).BRLF;
    	$html .= '</div>'.LF;
    
    	// tasks
