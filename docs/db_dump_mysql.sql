@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: commsy.dev (MySQL 5.5.31-1~dotdeb.0)
+# Host: commsy.dev (MySQL 5.5.38-1~dotdeb.0-log)
 # Datenbank: commsy_vanilla
-# Erstellungsdauer: 2013-10-11 08:17:36 +0000
+# Erstellungsdauer: 2014-08-19 13:40:02 +0000
 # ************************************************************
 
 
@@ -83,6 +83,8 @@ CREATE TABLE `announcement` (
   `enddate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `public` tinyint(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -201,6 +203,8 @@ CREATE TABLE `dates` (
   `recurrence_id` int(11) DEFAULT NULL,
   `recurrence_pattern` text,
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -256,6 +260,8 @@ CREATE TABLE `discussions` (
   `discussion_type` varchar(10) NOT NULL DEFAULT 'simple',
   `public` tinyint(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -446,7 +452,7 @@ CREATE TABLE `items` (
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=utf8;
 
 LOCK TABLES `items` WRITE;
 /*!40000 ALTER TABLE `items` DISABLE KEYS */;
@@ -454,7 +460,7 @@ LOCK TABLES `items` WRITE;
 INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`)
 VALUES
 	(98,99,'user',NULL,NULL,NULL),
-	(99,0,'server',NULL,NULL,'2013-10-11 10:15:24'),
+	(99,0,'server',NULL,NULL,'2014-08-19 15:38:16'),
 	(100,99,'auth_source',NULL,NULL,'2006-09-14 12:32:24');
 
 /*!40000 ALTER TABLE `items` ENABLE KEYS */;
@@ -480,6 +486,8 @@ CREATE TABLE `labels` (
   `type` varchar(15) NOT NULL,
   `extras` text,
   `public` tinyint(11) NOT NULL DEFAULT '0',
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -599,7 +607,7 @@ CREATE TABLE `log` (
   PRIMARY KEY (`id`),
   KEY `timestamp` (`timestamp`),
   KEY `cid` (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 
 
 
@@ -716,6 +724,8 @@ CREATE TABLE `materials` (
   `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
   `workflow_resubmission_date` datetime DEFAULT NULL,
   `workflow_validity_date` datetime DEFAULT NULL,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -991,7 +1001,7 @@ LOCK TABLES `server` WRITE;
 
 INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`, `url`)
 VALUES
-	(99,0,99,0,NULL,'2006-09-13 12:16:38','2013-10-11 10:15:24',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.0\";}','1',69,'server',1,'');
+	(99,0,99,0,NULL,'2006-09-13 12:16:38','2014-08-19 15:38:16',NULL,'CommSy-Server','a:3:{s:8:\"HOMECONF\";s:0:\"\";s:12:\"DEFAULT_AUTH\";s:3:\"100\";s:7:\"VERSION\";s:5:\"8.1.8\";}','1',74,'server',1,'');
 
 /*!40000 ALTER TABLE `server` ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1010,7 +1020,7 @@ CREATE TABLE `session` (
   `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`),
   KEY `session_id` (`session_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 
 
@@ -1165,6 +1175,8 @@ CREATE TABLE `todos` (
   `description` mediumtext,
   `public` tinyint(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1294,6 +1306,8 @@ CREATE TABLE `zzz_announcement` (
   `enddate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `public` tinyint(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1353,6 +1367,8 @@ CREATE TABLE `zzz_dates` (
   `recurrence_id` int(11) DEFAULT NULL,
   `recurrence_pattern` text,
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1408,6 +1424,8 @@ CREATE TABLE `zzz_discussions` (
   `discussion_type` varchar(10) NOT NULL DEFAULT 'simple',
   `public` tinyint(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
@@ -1574,6 +1592,8 @@ CREATE TABLE `zzz_labels` (
   `type` varchar(15) NOT NULL,
   `extras` text,
   `public` tinyint(11) NOT NULL DEFAULT '0',
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1681,6 +1701,8 @@ CREATE TABLE `zzz_materials` (
   `workflow_status` varchar(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT '3_none',
   `workflow_resubmission_date` datetime DEFAULT NULL,
   `workflow_validity_date` datetime DEFAULT NULL,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`,`version_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
@@ -1914,6 +1936,8 @@ CREATE TABLE `zzz_todos` (
   `description` mediumtext,
   `public` tinyint(11) NOT NULL DEFAULT '0',
   `extras` text,
+  `locking_date` datetime DEFAULT NULL,
+  `locking_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
