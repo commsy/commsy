@@ -11,13 +11,17 @@ define([], function() {
         return  {
                
                 setupProjekktor: function() {
+                    var self = this;
+
                     //projekktor
                     projekktor('video', 
                         options,
                     function(player) {
                             player.addListener('state', function(val, ref) {
                             if($('.alt_play_method')){
-                                $('.alt_play_method').click(function(){clickAlternativeMethod(player);});
+                                $('.alt_play_method').click(function(){
+                                    self.clickAlternativeMethod(player);
+                                });
                             }
 
                             });
@@ -44,7 +48,7 @@ define([], function() {
 
                     var videoUrl = videoFile.src;
 
-                    var SID = "&SID=" + getCookie("SID");
+                    var SID = "&SID=" + dojo.cookie("SID");
                     
                     var content = '';
 
@@ -75,8 +79,6 @@ define([], function() {
                     }
 
                     $('.commsyPlayer').append(content);
-                    //alert("Test");
-                    // Try to find out which embedding is useful
                     
                 }
         
