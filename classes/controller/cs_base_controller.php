@@ -546,6 +546,11 @@
 			$checkLocking = $this->_environment->getConfiguration('c_item_locking');
           	$checkLocking = ($checkLocking) ? $checkLocking : false;
           	$to_javascript["environment"]["item_locking"] = $checkLocking;
+
+          	// single categorie selection
+          	$singleCatSelection = $this->_environment->getConfiguration('c_single_cat_selection');
+          	$singleCatSelection = ($singleCatSelection) ? $singleCatSelection : false;
+          	$to_javascript["environment"]["single_cat_selection"] = $singleCatSelection;
 			
 			$to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');
 			$to_javascript['i18n']['COMMON_SAVE_BUTTON'] = $translator->getMessage('COMMON_SAVE_BUTTON');
