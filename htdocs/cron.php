@@ -25,6 +25,8 @@
 $cid = 0;
 if ( !empty($_GET['cid']) ) {
 	$cid = $_GET['cid'];
+} else if (!empty($_SERVER["argv"][1])) {
+	$cid = $_SERVER["argv"][1];
 }
 
 // pretend, we work from the CommSy basedir to allow

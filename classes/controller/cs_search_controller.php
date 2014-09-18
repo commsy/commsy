@@ -1399,7 +1399,7 @@ unset($ftsearch_manager);
 						$link_parameter_text .= '&'.$key.'='.$parameter;
 					}
 				}
-				$return[0]['link_parameter'] = $link_parameter_text;pr($link_parameter_text);
+				$return[0]['link_parameter'] = $link_parameter_text;
 			}
 
 			// rubric
