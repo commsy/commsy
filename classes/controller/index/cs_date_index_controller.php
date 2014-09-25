@@ -1630,8 +1630,12 @@
 								if ($first_char == '0'){
 									$real_month = mb_substr($real_month,1,2);
 								}
-								$month = date("m", $_GET['week']);
-								$year = date("Y", $_GET['week']);
+								$temp_week = $_GET['week'];
+								if (empty($temp_week)) {
+   								$temp_week = $this->_calendar["week"];
+								}
+								$month = date("m", $temp_week);
+								$year = date("Y", $temp_week);
 								$first_char = mb_substr($month,0,1);
 								if ($first_char == '0'){
 									$month = mb_substr($month,1,2);
