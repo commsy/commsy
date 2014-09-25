@@ -359,7 +359,7 @@ class class_piwik extends cs_plugin {
    
    public function executeAtTheEnd () {
    	if ( $this->_method == 'php' ) {
-   	   $this->_getInfosForBeforeBodyEndAsHTMLPHP();
+   	   echo($this->_getInfosForBeforeBodyEndAsHTMLPHP());
    	}
    }
    
