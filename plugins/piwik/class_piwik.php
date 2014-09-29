@@ -104,6 +104,30 @@ class class_piwik extends cs_plugin {
                                    true,
                                    false);
             $retour->combine();
+            $retour->addText($this->_identifier.'_config_form_desc_https','',$this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_DESCRIPTION_HTTPS'));
+            $retour->combine();
+            $https_values = array();
+            $https_values[0]['text']  = 'https';
+            $https_values[0]['value'] = 'https';
+            $https_values[1]['text']  = 'http';
+            $https_values[1]['value'] = 'http';
+            $c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+            if ( stristr($c_commsy_domain,'https') ) {
+            	$c_commsy_domain = 'https';
+            } else {
+            	$c_commsy_domain = 'http';
+            }
+            $https_values[2]['text']  = $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_HTTPS_VALUE_COMMSY',$c_commsy_domain);
+            $https_values[2]['value'] = 'commsy';
+            $retour->addRadioGroup( $this->_identifier.'_https',
+                                    $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG'),
+                                    $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG_DESC',$this->getTitle()),
+            		                  $https_values,
+            		                  '',
+            		                  true,
+            		                  true
+                                  );
+            $retour->combine();
             $retour->addTextfield( $this->_identifier.'_site_id',
                                    '',
                                    $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG'),
@@ -161,6 +185,9 @@ class class_piwik extends cs_plugin {
          if ( isset( $values[$this->_identifier.'_cookie_domain'] ) ) {
             $config_array[$this->_identifier.'_cookie_domain'] = $values[$this->_identifier.'_cookie_domain'];
          }
+         if ( isset( $values[$this->_identifier.'_https'] ) ) {
+            $config_array[$this->_identifier.'_https'] = $values[$this->_identifier.'_https'];
+         }
          $values['current_context_item']->setPluginConfigForPlugin($this->_identifier,$config_array);
       } elseif ( $type == 'load_values_item'
                  and !empty($values['current_context_item'])
@@ -175,6 +202,9 @@ class class_piwik extends cs_plugin {
          }
          if ( !empty($config[$this->_identifier.'_cookie_domain']) ) {
             $retour[$this->_identifier.'_cookie_domain'] = $config[$this->_identifier.'_cookie_domain'];
+         }
+         if ( !empty($config[$this->_identifier.'_https']) ) {
+            $retour[$this->_identifier.'_https'] = $config[$this->_identifier.'_https'];
          }
       }
       return $retour;
@@ -220,6 +250,20 @@ class class_piwik extends cs_plugin {
    			if ( !empty($config[$this->_identifier.'_cookie_domain']) ) {
    				$cookie_domain = $config[$this->_identifier.'_cookie_domain'];
    			}
+   			if ( !empty($config[$this->_identifier.'_https']) ) {
+   				$server_https = $config[$this->_identifier.'_https'];
+   			}
+   			$choice1 = 'https';
+   			$choice2 = 'http';
+   			if ( !empty($server_https)
+   				  and $server_https == 'https'
+   				) {
+   			   $choice2 = 'https';
+   			} elseif ( !empty($server_https)
+   				        and $server_https == 'http'
+   				      ) {
+   				$choice1 = 'http';
+   			}
    			
    			if ( !empty($server_url)
    				  and !empty($site_id)
@@ -233,7 +277,7 @@ class class_piwik extends cs_plugin {
    _paq.push(["enableLinkTracking"]);
 
    (function() {
-     var u=(("https:" == document.location.protocol) ? "https" : "http") + "://'.$server_url.'/";
+     var u=(("https:" == document.location.protocol) ? "'.$choice1.'" : "'.$choice2.'") + "://'.$server_url.'/";
      _paq.push(["setTrackerUrl", u+"piwik.php"]);
      _paq.push(["setSiteId", "'.$site_id.'"]);
      var d=document, g=d.createElement("script"), s=d.getElementsByTagName("script")[0];
@@ -314,7 +358,19 @@ class class_piwik extends cs_plugin {
    			if ( !empty($site_array['server_url'])
    				  and !empty($site_array['site_id'])
    				) {
-   				$http = 'http';
+   				if ( empty($site_array['server_https'])
+   				     or $site_array['server_https'] == 'commsy'
+   					) {
+   					$c_commsy_domain = $this->_environment->getConfiguration('c_commsy_domain');
+   					if ( stristr($c_commsy_domain,'https') ) {
+   						$http = 'https';
+   					} else {
+   						$http = 'http';
+   					}
+   					unset($c_commsy_domain);
+   				} else {
+   					$http = $site_array['server_https'];
+   				}
    				$t = new PiwikTracker($site_array['site_id'],$http.'://'.$site_array['server_url'].'/piwik.php');
    				$t->setRequestTimeout($this->_timeout_ms); // in milliseconds - to avoid long waiting time, when piwik server is gone or network is down
    				
@@ -352,6 +408,9 @@ class class_piwik extends cs_plugin {
    		}
    		if ( !empty($config[$this->_identifier.'_cookie_domain']) ) {
    			$retour['cookie_domain'] = $config[$this->_identifier.'_cookie_domain'];
+   		}
+   		if ( !empty($config[$this->_identifier.'_https']) ) {
+   			$retour['server_https'] = $config[$this->_identifier.'_https'];
    		}
    	}
    	return $retour;
