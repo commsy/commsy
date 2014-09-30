@@ -108,59 +108,45 @@ class cs_guide_room_list_page extends cs_page {
 	            }
 	         }
 	
-	         // get data
-	         $manager = $this->_environment->getRoomManager();
-	         $manager->setContextLimit($this->_environment->getCurrentContextID());
-	         $show_rooms_save = $current_context->getShowRoomsOnHome();
-	         $show_rooms = $show_rooms_save;
-	         if ( empty($selroom)
-	              and !empty($show_rooms)
-	              and $show_rooms_save == 'preselectmyrooms'
-	              and $this->_environment->getCurrentUserItem()->isUser()
-	            ) {
-	            $selroom = 5;
-	            $show_rooms = $show_rooms_save;
-	         }
-	         if ($show_rooms == 'onlycommunityrooms'){
-	            $manager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
-	         } elseif ($show_rooms == 'onlyprojectrooms'){
-	            $manager->setRoomTypeLimit(CS_PROJECT_TYPE);
-	         }
-	         
-	         #if ( empty($sel_archive_room) ) {
-	         #   $manager->setOpenedLimit();
-	         #}
-	         if ( !empty($sel_archive_room) 
-	              and $sel_archive_room == 1
-	            ) {
-	            $manager->setArchiveLimit();
-	            $count_all = $current_context->getCountArchivedProjectAndCommunityRooms();
-	         } else if (!empty($sel_archive_room) 
-	              and $sel_archive_room == 2) {
-	         	// add archive rooms to list
-	         	$manager->setArchiveLimit();
-	         	$manager->select();
-	         	$archive_list = $manager->get();
-	         	$manager->resetLimits();
-	         	$count_all = $current_context->getCountArchivedProjectAndCommunityRooms();
-	         } else {
-	         	# old
-	         	# $count_all = $manager->getCountAll();
-	         	# new - changes for count room redundancy
-	         	if ( $show_rooms == 'onlycommunityrooms' ) {
-	         		$count_all = $current_context->getCountCommunityRooms();
-	         	} elseif ( $show_rooms == 'onlyprojectrooms' ) {
-	         		$count_all = $current_context->getCountProjectRooms();
-	         	} else {
-			         if ( $current_context->isPortal()
-			         	  and !$current_context->showTemplatesInRoomList()
-			         	) {
+			 // get data
+			 $manager = $this->_environment->getRoomManager();
+			 $manager->setContextLimit($this->_environment->getCurrentContextID());
+			 $show_rooms_save = $current_context->getShowRoomsOnHome();
+			 $show_rooms = $show_rooms_save;
+			 if ( empty($selroom)
+			      and !empty($show_rooms)
+			      and $show_rooms_save == 'preselectmyrooms'
+			      and $this->_environment->getCurrentUserItem()->isUser()
+			    ) {
+			    $selroom = 5;
+			    $show_rooms = $show_rooms_save;
+			 }
+			 if ($show_rooms == 'onlycommunityrooms'){
+			    $manager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
+			 } elseif ($show_rooms == 'onlyprojectrooms'){
+			    $manager->setRoomTypeLimit(CS_PROJECT_TYPE);
+			 }
+
+			 // archive limit
+			 if (!empty($sel_archive_room) && $sel_archive_room == 1) {					// archived rooms
+			 	$manager->setArchiveLimit();
+			 	$count_all = $current_context->getCountArchivedProjectAndCommunityRooms();	
+			 } else {																	// usable rooms or parameter missing or unknown value
+			 	$manager->setOpenedLimit();
+			 	
+			 	// changes for count room redundancy - room count from portal extra
+			 	if ($show_rooms == 'onlycommunityrooms') {
+			 		$count_all = $current_context->getCountCommunityRooms();
+			 	} elseif ($show_rooms == 'onlyprojectrooms') {
+			 		$count_all = $current_context->getCountProjectRooms();
+			 	} else {
+			         if ($current_context->isPortal() && !$current_context->showTemplatesInRoomList()) {
 			         	$count_all = $current_context->getCountProjectAndCommunityRoomsWithoutTemplates();
 			         } else {
-	         		   $count_all = $current_context->getCountProjectAndCommunityRooms();
+			 		 	$count_all = $current_context->getCountProjectAndCommunityRooms();
 			         }
-	         	}
-	         }
+			 	}
+			 }
 	         
 	      	// template limit -> not show templates
 	         if ( $current_context->isPortal()
