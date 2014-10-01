@@ -122,15 +122,17 @@
                     </div>
 
                     <div id="delete_options" class="hidden">
-                      {if $popup.form.config.datenschutz_overwrite === true}
-                         {i18n tag="PREFERENCES_REALLY_DELETE_DESC_ROOM" param1="{$popup.context.context_name}" param2="___PREFERENCES_LOCK_BUTTON_ROOM___" param3="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"}
+                      {if $popup.context.isPortal !== true}
+                        {if $popup.form.config.datenschutz_overwrite === true}
+                           {i18n tag="PREFERENCES_REALLY_DELETE_DESC_ROOM" param1="{$popup.context.context_name}" param2="___PREFERENCES_LOCK_BUTTON_ROOM___" param3="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"}
+                        {/if}
+                        {if $popup.form.config.datenschutz_overwrite === false}
+                           {i18n tag="PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE" param1="{$popup.context.context_name}" param2="___PREFERENCES_LOCK_BUTTON_ROOM___" param3="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"}
+                        {/if}
+                        <input id="lock_room" type="button" name="form_data[lock_room]" value="___PREFERENCES_LOCK_BUTTON_ROOM___"/>
+                        <input id="delete_room" type="button" name="form_data[delete_room]" value="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"/>
+                        <br/><br/>
                       {/if}
-                      {if $popup.form.config.datenschutz_overwrite === false}
-                         {i18n tag="PREFERENCES_REALLY_DELETE_DESC_ROOM_NOT_OVERWRITE" param1="{$popup.context.context_name}" param2="___PREFERENCES_LOCK_BUTTON_ROOM___" param3="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"}
-                      {/if}
-                      <input id="lock_room" type="button" name="form_data[lock_room]" value="___PREFERENCES_LOCK_BUTTON_ROOM___"/>
-                      <input id="delete_room" type="button" name="form_data[delete_room]" value="___PREFERENCES_REALLY_DELETE_BUTTON_ROOM___"/>
-                      <br/><br/>
 
                       {assign var="lockButton" value="{i18n tag="PREFERENCES_LOCK_BUTTON" param1="{$popup.portal.portal_name}"}"}
                       {assign var="deleteButton" value="{i18n tag="PREFERENCES_REALLY_DELETE_BUTTON" param1="{$popup.portal.portal_name}"}"}

@@ -1680,6 +1680,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		// context
 		$context_information = array();
 		$context_information["context_name"] = $current_context->getTitle();
+		$context_information["isPortal"] = $current_context->isPortal();
 		$this->_popup_controller->assign("popup", "context", $context_information);
 
 		// form information
