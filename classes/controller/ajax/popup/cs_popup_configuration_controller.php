@@ -81,7 +81,13 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				case "room_configuration":
 					if($this->_popup_controller->checkFormData('room_configuration')) {
 						// title
-						if(isset($form_data['room_name'])) $current_context->setTitle($form_data['room_name']);
+						$title = $form_data['room_name'];
+						if (isset($title) && trim($title) != "") {
+							$current_context->setTitle($form_data['room_name']);
+						} else {
+							$this->_popup_controller->setErrorReturn('101', 'mandetory missing', array());
+							return false;
+						}
 
 						// show title
 						if(isset($form_data['room_show_name']) && $form_data['room_show_name'] == '1') $current_context->setShowTitle();

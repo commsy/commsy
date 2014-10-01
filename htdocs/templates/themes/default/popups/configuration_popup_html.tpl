@@ -37,6 +37,9 @@
 										<p>
 											<strong>___CONFIG_BASIC_DESC_TITLE___:</strong> ___CONFIG_BASIC_DESC___
 										</p>
+										<div id="mandatory_missing" class="input_row hidden">
+					                    	___COMMON_MANDATORY_FIELDS_CONTENT___
+					                    </div>
 										<div class="input_row_100">
 											<label for="room_name">___COMMON_ROOM_NAME___<span class="required">*</span>:</label>
 											<input id="room_name" type="text" class="size_200" name="form_data[room_name]" value="{show var=$popup.room.room_name}"/>
