@@ -138,6 +138,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						$session = $this->_environment->getSessionItem();
 						$session_manager->delete($session->getSessionID());
 						$this->_environment->setSessionItem(null);
+
+						// return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 						break;
 
 					case "account_delete_portal":
@@ -151,6 +154,9 @@ class cs_popup_profile_controller implements cs_popup_controller {
 						$session = $this->_environment->getSessionItem();
 						$session_manager->delete($session->getSessionID());
 						$this->_environment->setSessionItem(null);
+
+						// return
+						$this->_popup_controller->setSuccessfullItemIDReturn($current_user->getItemID());
 						break;
 
 					case 'account':
@@ -1674,6 +1680,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		// context
 		$context_information = array();
 		$context_information["context_name"] = $current_context->getTitle();
+		$context_information["isPortal"] = $current_context->isPortal();
 		$this->_popup_controller->assign("popup", "context", $context_information);
 
 		// form information
