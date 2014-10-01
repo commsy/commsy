@@ -57,6 +57,13 @@
 			// move this, when inline forms are handles via ajax
 			if (isset($_GET["annotation_exception"]) && $_GET["annotation_exception"] == "mandatory") {
 				$this->assign("detail", "exception", "annotation");
+
+				$session = $this->_environment->getSessionItem();
+				$sessionKey = 'cid' . $this->_environment->getCurrentContextID() . '_annotation_last_description';
+				if ($session->issetValue($sessionKey)) {
+					$this->assign("detail", "annotation_description", $session->getValue($sessionKey));
+					$session->unsetValue($sessionKey);
+				}
 			}
 			if (isset($_GET["step_exception"]) && $_GET["step_exception"] == "mandatory") {
 				$this->assign("detail", "exception", "step");
