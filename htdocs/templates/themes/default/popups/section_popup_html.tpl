@@ -22,7 +22,7 @@
 						</div>
 						<div class="input_row">
 							<span class="input_label_80">___COMMON_TITLE___:<span class="required">*</span></span>
-							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_400" />
+							<input type="text" value="{if isset($item.title)}{$item.title|escape:"html"}{/if}" name="form_data[title]" class="size_400" />
 						</div>
 						<div class="editor_content">
 							<div id="description" class="ckeditor">{if isset($item.description)}{$item.description}{/if}</div>
