@@ -140,14 +140,17 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     				   $material_manager = $this->_environment->getMaterialManager();
     				   $item = $material_manager->getItemByVersion($item_id, $additional['version_id']);
     				   $item->delete();
+                       $this->deleteFromClipboard("material", $item_id);
     				   $this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => false, "item_id" => $item_id));
     				} else {
     					$material_manager = $this->_environment->getMaterialManager();
     					$material_version_list = $material_manager->getVersionList($item_id);
     					$item = $material_version_list->getFirst();
     					$item->delete(CS_ALL);
+                        $this->deleteFromClipboard("material", $item_id);
     					$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => true));
     				}
+
     				break;
     			
     			case "date_recurrence":
@@ -176,6 +179,7 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     				$manager = $this->_environment->getManager($delType);
     				$item = $manager->getItem($item_id);
     				$item->delete();
+                    $this->deleteFromClipboard($delType, $item_id);
     				
     				$this->_popup_controller->setSuccessfullDataReturn(array("redirectToIndex" => true));
     				break;
@@ -183,6 +187,24 @@ class cs_popup_delete_controller implements cs_rubric_popup_controller {
     	} else {
     		$this->_popup_controller->setErrorReturn("000", "insufficent rights");
     	}
+    }
+
+    private function deleteFromClipboard($rubric, $itemId) {
+        $sessionItem = $this->_environment->getSessionItem();
+
+        // are there items in clipboard for this rubric?
+        if ($sessionItem->issetValue($rubric . "_clipboard")) {
+            $copyIDs = $sessionItem->getValue($rubric . "_clipboard");
+
+            // search for id and remove
+            if ($key = array_search($itemId, $copyIDs)) {
+                array_splice($copyIDs, $key, 1);
+            }
+
+            // modify and store session
+            $sessionItem->setValue($rubric . "_clipboard", $copyIDs);
+            $this->_environment->getSessionManager()->save($sessionItem);
+        }
     }
     
 	private function checkRights($item_id) {
