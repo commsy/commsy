@@ -381,20 +381,6 @@ class cs_ajax_clipboard_controller extends cs_ajax_controller
                     $session = $this->_environment->getSessionItem();
                     $translator = $this->_environment->getTranslationObject();
                     
-                    // get current room modules
-                    $current_room_modules = $current_context->getHomeConf();
-                    $room_moduls = array();
-                    if (!empty($current_room_modules)) {
-                        $room_modules = explode(",", $current_room_modules);
-                    }
-                    
-                    $modules = array();
-                    foreach ($room_modules as $module) {
-                        list($name, $display) = explode("_", $module);
-                        
-                        if ($display !== "none") $modules[] = $name;
-                    }
-                    
                     $rubric_copy_array = $this->getUtils()->getCopyRubrics();
                     
                     // collect room and item ids
