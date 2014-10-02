@@ -156,6 +156,7 @@ define([	"dojo/_base/declare",
 						}));
 						
 						DomAttr.set(Query("span#tm_clipboard_copies")[0], "innerHTML", numEntries);
+						this.destroyLoading();
 					}
 				})
 			);
