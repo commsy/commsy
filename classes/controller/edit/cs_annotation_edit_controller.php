@@ -13,38 +13,6 @@
 			
 			$this->_tpl_file = 'annotation_edit';
 		}
-		
-		
-		/*
-		 * // Get the translator object
-				$translator = $environment->getTranslationObject();
-				// Function used for redirecting to connected rubrics
-				function attach_redirect ($rubric_type, $current_iid) {
-				   global $session, $environment;
-				   $infix = '_'.$rubric_type;
-				   $session->setValue($current_iid.'_post_vars', $_POST);
-				   if ( isset($_POST[$rubric_type]) ) {
-				      $session->setValue($current_iid.$infix.'_attach_ids', $_POST[$rubric_type]);
-				   } else {
-				      $session->setValue($current_iid.$infix.'_attach_ids', array());
-				   }
-				   $session->setValue($current_iid.$infix.'_back_module', 'annotation');
-				   $params = array();
-				   $params['ref_iid'] = $current_iid;
-				   $params['mode'] = 'formattach';
-				   redirect($environment->getCurrentContextID(), 'material', 'index', $params);
-				}
-				
-				function attach_return ($rubric_type, $current_iid) {
-				   global $session;
-				   $infix = '_'.$rubric_type;
-				   $attach_ids = $session->getValue($current_iid.$infix.'_attach_ids');
-				   $session->unsetValue($current_iid.'_post_vars');
-				   $session->unsetValue($current_iid.$infix.'_attach_ids');
-				   $session->unsetValue($current_iid.$infix.'_back_module');
-				   return $attach_ids;
-				}
-		 */
 
 		/*
 		 * every derived class needs to implement an processTemplate function

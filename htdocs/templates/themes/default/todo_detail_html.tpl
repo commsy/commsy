@@ -337,7 +337,11 @@
 									</select>
 	
 									<div class="editor_content">
-										<div id="ckeditor_step" class="ckeditor"></div>
+										<div id="ckeditor_step" class="ckeditor">
+											{if isset($detail.step_description)}
+												{$detail.step_description}
+											{/if}
+										</div>
 									</div>
 									
 									{*

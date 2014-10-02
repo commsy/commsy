@@ -67,9 +67,23 @@
 			}
 			if (isset($_GET["step_exception"]) && $_GET["step_exception"] == "mandatory") {
 				$this->assign("detail", "exception", "step");
+
+				$session = $this->_environment->getSessionItem();
+				$sessionKey = 'cid' . $this->_environment->getCurrentContextID() . '_step_last_description';
+				if ($session->issetValue($sessionKey)) {
+					$this->assign("detail", "step_description", $session->getValue($sessionKey));
+					$session->unsetValue($sessionKey);
+				}
 			}
 			if (isset($_GET["discarticle_exception"]) && $_GET["discarticle_exception"] == "mandatory") {
 				$this->assign("detail", "exception", "discarticle");
+
+				$session = $this->_environment->getSessionItem();
+				$sessionKey = 'cid' . $this->_environment->getCurrentContextID() . '_discarticle_last_description';
+				if ($session->issetValue($sessionKey)) {
+					$this->assign("detail", "discarticle_description", $session->getValue($sessionKey));
+					$session->unsetValue($sessionKey);
+				}
 			}
 			/*******************/
 
