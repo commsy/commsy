@@ -1,9 +1,12 @@
 define([	"dojo/_base/declare",
         	"commsy/base",
         	"dojo/_base/lang",
+        	"dojo/i18n!commsy/nls/tooltipErrors",
+        	"dojo/_base/array",
         	"dojox/embed/Flash",
         	"dojox/form/Uploader",
         	"dijit/ProgressBar",
+        	"dijit/Dialog",
         	"dojox/form/uploader/FileList",
         	"dojo/dom-construct",
         	"dojox/timing",
@@ -13,7 +16,7 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dijit/form/Button",
         	"dojo/query",
-        	"dojo/_base/connect"], function(declare, BaseClass, Lang, Flash, Uploader, ProgressBar, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect) {
+        	"dojo/_base/connect"], function(declare, BaseClass, Lang, ErrorTranslations, arrayUtil, Flash, Uploader, ProgressBar, Dialog, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect) {
 	return declare(BaseClass, {
 		uploader:		null,
 		loadingImgNode:	null,
@@ -71,6 +74,25 @@ define([	"dojo/_base/declare",
 				}));
 
 				On(this.uploader, "change", Lang.hitch(this, function(fileArray) {
+					// check file size
+					var fileSizeLimit = this.from_php.environment.max_upload_size;
+					var isTooLarge = arrayUtil.some(fileArray, function(item) {
+						return item.size > fileSizeLimit;
+					});
+
+					if (isTooLarge) {
+						this.uploader.reset();
+
+						var myDialog = new dijit.Dialog({
+						    title: "Uploadgrenze",
+						    content: ErrorTranslations.uploadLimit,
+						    style: "width: 300px"
+						});
+						myDialog.show();
+						
+						return false;
+					}
+
 					// prepare data to send
 					var targetRubric = this.uri_object.mod;
 					if(targetRubric === "todo") {
