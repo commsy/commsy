@@ -13,38 +13,6 @@
 			
 			$this->_tpl_file = 'annotation_edit';
 		}
-		
-		
-		/*
-		 * // Get the translator object
-				$translator = $environment->getTranslationObject();
-				// Function used for redirecting to connected rubrics
-				function attach_redirect ($rubric_type, $current_iid) {
-				   global $session, $environment;
-				   $infix = '_'.$rubric_type;
-				   $session->setValue($current_iid.'_post_vars', $_POST);
-				   if ( isset($_POST[$rubric_type]) ) {
-				      $session->setValue($current_iid.$infix.'_attach_ids', $_POST[$rubric_type]);
-				   } else {
-				      $session->setValue($current_iid.$infix.'_attach_ids', array());
-				   }
-				   $session->setValue($current_iid.$infix.'_back_module', 'annotation');
-				   $params = array();
-				   $params['ref_iid'] = $current_iid;
-				   $params['mode'] = 'formattach';
-				   redirect($environment->getCurrentContextID(), 'material', 'index', $params);
-				}
-				
-				function attach_return ($rubric_type, $current_iid) {
-				   global $session;
-				   $infix = '_'.$rubric_type;
-				   $attach_ids = $session->getValue($current_iid.$infix.'_attach_ids');
-				   $session->unsetValue($current_iid.'_post_vars');
-				   $session->unsetValue($current_iid.$infix.'_attach_ids');
-				   $session->unsetValue($current_iid.$infix.'_back_module');
-				   return $attach_ids;
-				}
-		 */
 
 		/*
 		 * every derived class needs to implement an processTemplate function
@@ -166,34 +134,10 @@
 					exit;
 				}
 				
-				// show form and/or save item
-				
-				/*
-				 * // Initialize the form
-				      $class_params= array();
-				      $class_params['environment'] = $environment;
-				      $form = $class_factory->getClass(ANNOTATION_FORM,$class_params);
-				      unset($class_params);
-				
-				      if ( !empty($_GET['mode'])
-				           and $_GET['mode'] == 'annotate'
-				           and !empty($_POST)
-				         ) {
-				         $form->setDetailMode(1);
-				      }
-				 */
-				
 				$post_file_ids = array();
 				if(isset($_POST['filelist'])) {
 					$post_file_ids = $_POST['filelist'];
 				}
-				
-				/*
-				 * // Define rubric connections
-				      $rubric_connection = array();
-				      $rubric_connection[] = CS_MATERIAL_TYPE;
-				      $form->setRubricConnections($rubric_connection);
-				 */
 				
 				// load form data from postvars
 				if(!empty($_POST)) {
@@ -201,19 +145,7 @@
 					if(isset($post_file_ids) && !empty($post_file_ids)) {
 						$session_post_vars['filelist'] = $post_file_ids;
 					}
-					//$form->setFormPost($session_post_vars);
 				}
-				
-				/*
-				 * // Back from multi upload
-				      elseif ( $from_multiupload ) {
-				         $session_post_vars = array();
-				         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
-				            $session_post_vars['filelist'] = $post_file_ids;
-				         }
-				         $form->setFormPost($session_post_vars);
-				      }
-				 */
 				
 				// load form data from database
 				elseif(isset($annotation_item)) {
@@ -257,11 +189,6 @@
 				if($session->issetValue($this->_environment->getCurrentModule() . '_add_files')) {
 					//$form->setSessionFileArray($session->getValue($environment->getCurrentModule().'_add_files'));
 				}
-				
-				/*
-				 * $form->prepareForm();
-				      $form->loadValues();
-				 */
 				
 				// save item
 				if(	$this->_command !== null &&
@@ -343,6 +270,14 @@
 						$refId = $_POST['ref_iid'];
 						$item_manager = $this->_environment->getItemManager();
 						$type = $item_manager->getItemType($refId);
+
+						// store description in session
+						$sessionKey = 'cid' . $this->_environment->getCurrentContextID() . '_annotation_last_description';
+						if (isset($_POST['form_data']['description_annotation'])) {
+							$session->setValue($sessionKey, $_POST['form_data']['description_annotation']);
+						} else if (isset($_POST['form_data']['annotation_description'])) {
+							$session->setValue($sessionKey, $_POST['form_data']['annotation_description']);
+						}
 						
 						redirect($this->_environment->getCurrentContextID(), Type2Module($type), "detail", array("iid" => $refId, "annotation_exception" => "mandatory"), "annotation-1");
 					}
@@ -374,6 +309,7 @@
 			$session->unsetValue($current_iid.'_post_vars');
 			$session->unsetValue($current_iid.'_material_attach_ids');
 			$session->unsetValue($current_iid.'_material_back_module');
+			$session->unsetValue($current_iid.'_annotation_last_description');
 			$session->unsetValue('annotation_history_context');
 			$session->unsetValue('annotation_history_module');
 			$session->unsetValue('annotation_history_function');

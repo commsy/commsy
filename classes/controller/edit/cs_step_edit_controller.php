@@ -156,6 +156,10 @@
 						$this->cleanup_session($this->_item_id);
 						redirect($this->_environment->getCurrentContextID(), "todo", "detail", array("iid" => $step_item->getTodoID()), "step".$step_item->getItemID());
 					} else {
+						// store description in session
+						$sessionKey = 'cid' . $this->_environment->getCurrentContextID() . '_step_last_description';
+						$session->setValue($sessionKey, $_POST['form_data']['ckeditor_step']);
+
 						redirect($this->_environment->getCurrentContextID(), "todo", "detail", array("iid" => $_POST["todo_id"], "step_exception" => "mandatory"), "step_new");
 					}
 				}
@@ -186,5 +190,6 @@
 			$session->unsetValue($current_iid.'_post_vars');
 			$session->unsetValue($current_iid.'_material_attach_ids');
 			$session->unsetValue($current_iid.'_material_back_module');
+			$session->unsetValue($current_iid.'_step_last_description');
 		}
 	}

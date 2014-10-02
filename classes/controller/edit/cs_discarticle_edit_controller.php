@@ -435,6 +435,10 @@
 							$params['iid'] = $discarticle_item->getDiscussionID();
 							redirect($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, 'disc_article_' . $discarticle_item->getItemID());
 						} else {
+							// store description in session
+							$sessionKey = 'cid' . $this->_environment->getCurrentContextID() . '_discarticle_last_description';
+							$session->setValue($sessionKey, $_POST['form_data']['description']);
+
 							redirect($this->_environment->getCurrentContextID(), 'discussion', 'detail', array("iid" => $_POST["discussion_id"], "discarticle_exception" => "mandatory"), "discarticle_new");
 						}
 					}
@@ -538,5 +542,6 @@
 			$session->unsetValue($current_iid.'_post_vars');
 			$session->unsetValue($current_iid.'_material_attach_ids');
 			$session->unsetValue($current_iid.'_material_back_module');
+			$session->unsetValue($current_iid.'_discarticle_last_description');
 		}
 	}
