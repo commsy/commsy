@@ -21,7 +21,7 @@
 						</div>
 						<div class="input_row">
 							<div class="input_label_100">___COMMON_TITLE___:</div>
-							<input type="text" value="{if isset($item.title)}{$item.title}{/if}" name="form_data[title]" class="size_80" />
+							<input type="text" value="{if isset($item.title)}{$item.title|escape:"html"}{/if}" name="form_data[title]" class="size_80" />
 						</div>
 
 						<div class="input_row">
