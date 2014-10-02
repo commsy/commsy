@@ -114,7 +114,11 @@
 											{if isset($detail.content.version)}<input type="hidden" value="{$detail.content.version}" name="version"/>{/if}
 											<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "annotation"} class="missing"{/if}/>
 											<div class="editor_content">
-												<div id="description_annotation" class="ckeditor"></div>
+												<div id="description_annotation" class="ckeditor">
+													{if isset($detail.annotation_description)}
+														{$detail.annotation_description}
+													{/if}
+												</div>
 											</div>
 		
 											<input class="popup_button" style="margin-bottom:20px;" type="submit" id="disc_article_submit" name="form_data[option][new]" value="___ANNOTATION_ADD_NEW_BUTTON___" />

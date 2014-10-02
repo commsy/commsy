@@ -284,7 +284,11 @@
 										<input id="pn_title" type="text" name="form_data[title]"{if $detail.exception == "discarticle"} class="missing"{/if}/>
 		
 										<div class="editor_content">
-											<div id="description" class="ckeditor"></div>
+											<div id="description" class="ckeditor">
+												{if isset($detail.discarticle_description)}
+													{$detail.discarticle_description}
+												{/if}
+											</div>
 										</div>
 		
 										{*
