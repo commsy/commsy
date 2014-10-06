@@ -934,6 +934,9 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
 							// save
 							$current_context->save();
+
+							// create css because of the new bg image
+							$this->_popup_controller->getUtils()->createOwnCSSForRoomContext($current_context, $current_context->getColorArray());
 						}
 
 						// set return
