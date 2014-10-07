@@ -516,7 +516,8 @@
 			$to_javascript['environment']['single_entry_point'] = $this->_environment->getConfiguration('c_single_entry_point');
 			$to_javascript['environment']['max_upload_size'] = $this->_environment->getCurrentContextItem()->getMaxUploadSizeInBytes();
 			$to_javascript['environment']['portal_link_status'] = $portal_item->getProjectRoomLinkStatus();		// optional | mandatory
-			
+			$to_javascript['environment']['isPortal'] = $this->_environment->getCurrentContextItem()->isPortal();
+
 			// escape ' and replace it with \x27
 			$to_javascript['environment']['user_name'] = str_replace("'", '\x27', $current_user->getFullName());
 
