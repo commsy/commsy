@@ -82,13 +82,18 @@ define([	"dojo/_base/declare",
 				On(Query("input#delete", this.contentNode)[0], "click", lang.hitch(this, function() {
 					DomClass.remove(Query("div#delete_options", this.contentNode)[0], "hidden");
 
-					// register handler
-					On(Query("input#lock_room", this.contentNode)[0], "click", lang.hitch(this, function() {
-						this.onPopupSubmit({ part: "account_lock_room" });
-					}));
-					On(Query("input#delete_room", this.contentNode)[0], "click", lang.hitch(this, function() {
-						this.onPopupSubmit({ part: "account_delete_room" });
-					}));
+					if(!this.from_php.environment.isPortal){
+					
+						// register handler room
+						On(Query("input#lock_room", this.contentNode)[0], "click", lang.hitch(this, function() {
+							this.onPopupSubmit({ part: "account_lock_room" });
+						}));
+						On(Query("input#delete_room", this.contentNode)[0], "click", lang.hitch(this, function() {
+							this.onPopupSubmit({ part: "account_delete_room" });
+						}));
+					}
+
+					// register handler portal
 					On(Query("input#lock_portal", this.contentNode)[0], "click", lang.hitch(this, function() {
 						this.onPopupSubmit({ part: "account_lock_portal" });
 					}));
