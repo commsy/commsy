@@ -9,7 +9,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-style",
         	"dojo/_base/array",
         	"dijit/Tooltip",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, lang, Query, On, DomConstruct, request, DomAttr, DomStyle, BaseArray, tooltip) {
+        	"dijit/Dialog",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, lang, Query, On, DomConstruct, request, DomAttr, DomStyle, BaseArray, tooltip, Dialog) {
 	return declare(BaseClass, {		
 		cid: 						null,
 		tpl_path: 					'',
@@ -233,71 +234,83 @@ define([	"dojo/_base/declare",
 				}
 			}).then(
 				lang.hitch(this, function(response) {
-					var selectedIds = this.store.selected_ids;
-					this.store.selected_ids = [];
-					
-					// reload list to get changes
-					this.performRequest();
-					
-					request.ajax({
-						query: {
-							cid:	this.uri_object.cid,
-							mod:	'ajax',
-							fct:	'accounts',
-							action:	'GetNewUserAccount'
-						}
-					}).then(
-						lang.hitch(this, function(response) {
-							var commsyBarAccountNode = Query("span#tm_settings_count_new_accounts")[0];
-							var commsyTabAccountNode = Query("a#popup_account_tab > span")[0];
-							
-							if(commsyBarAccountNode && response.data.count > 0){
-								DomAttr.set(commsyBarAccountNode,"innerHTML",response.data.count);
-							} else if(commsyBarAccountNode && response.data.count == 0){
-								DomConstruct.destroy(commsyBarAccountNode);
-							}
-							
-							if(commsyTabAccountNode && response.data.count > 0){
-								DomAttr.set(commsyTabAccountNode,"innerHTML","("+response.data.count+")");
-							} else if(commsyTabAccountNode && response.data.count == 0){
-								DomConstruct.destroy(commsyTabAccountNode);
-							}
-						})
-					);
-					
-					// load mail popup information
-					if (selectedIds.length > 0) {
+					if(response.status == "error" && response.code == "103"){
+						// console.log("FEHLER! Das Entfernen des letzten Moderators ist nicht möglich");
+						errorDialog = new Dialog({
+					        title: "Fehler",
+					        content: "Der letzte Moderator des Raums kann nicht gelöscht oder gesperrt werden.",
+					        style: "width: 300px"
+					    });
+
+					    errorDialog.show();
+					} else {
+
+						var selectedIds = this.store.selected_ids;
+						this.store.selected_ids = [];
+						
+						// reload list to get changes
+						this.performRequest();
+						
 						request.ajax({
 							query: {
 								cid:	this.uri_object.cid,
 								mod:	'ajax',
-								fct:	'popup',
-								action:	'getHTML'
-							},
-							data: {
-								ids:	selectedIds,
-								action:	action,
-								module:	"configuration_mail"
+								fct:	'accounts',
+								action:	'GetNewUserAccount'
 							}
 						}).then(
 							lang.hitch(this, function(response) {
-								var mailContentNode = Query("div#popup_accounts_mail")[0];
+								var commsyBarAccountNode = Query("span#tm_settings_count_new_accounts")[0];
+								var commsyTabAccountNode = Query("a#popup_account_tab > span")[0];
 								
-								DomConstruct.empty(mailContentNode);
-								DomConstruct.place(response.data, mailContentNode, "last");
+								if(commsyBarAccountNode && response.data.count > 0){
+									DomAttr.set(commsyBarAccountNode,"innerHTML",response.data.count);
+								} else if(commsyBarAccountNode && response.data.count == 0){
+									DomConstruct.destroy(commsyBarAccountNode);
+								}
 								
-								// create mail send and abort event
-								On(Query("input[name='send']", mailContentNode)[0], "click", lang.hitch(this, function(event) {
-									this.sendMail(mailContentNode, action, selectedIds);
-								}));
-								
-								On(Query("input[name='abort']", mailContentNode)[0], "click", lang.hitch(this, function(event) {
-									var mailContentNode = Query("div#popup_accounts_mail")[0];
-									DomConstruct.empty(mailContentNode);
-									
-								}));
+								if(commsyTabAccountNode && response.data.count > 0){
+									DomAttr.set(commsyTabAccountNode,"innerHTML","("+response.data.count+")");
+								} else if(commsyTabAccountNode && response.data.count == 0){
+									DomConstruct.destroy(commsyTabAccountNode);
+								}
 							})
 						);
+						
+						// load mail popup information
+						if (selectedIds.length > 0) {
+							request.ajax({
+								query: {
+									cid:	this.uri_object.cid,
+									mod:	'ajax',
+									fct:	'popup',
+									action:	'getHTML'
+								},
+								data: {
+									ids:	selectedIds,
+									action:	action,
+									module:	"configuration_mail"
+								}
+							}).then(
+								lang.hitch(this, function(response) {
+									var mailContentNode = Query("div#popup_accounts_mail")[0];
+									
+									DomConstruct.empty(mailContentNode);
+									DomConstruct.place(response.data, mailContentNode, "last");
+									
+									// create mail send and abort event
+									On(Query("input[name='send']", mailContentNode)[0], "click", lang.hitch(this, function(event) {
+										this.sendMail(mailContentNode, action, selectedIds);
+									}));
+									
+									On(Query("input[name='abort']", mailContentNode)[0], "click", lang.hitch(this, function(event) {
+										var mailContentNode = Query("div#popup_accounts_mail")[0];
+										DomConstruct.empty(mailContentNode);
+										
+									}));
+								})
+							);
+						}
 					}
 				})
 			);
