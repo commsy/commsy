@@ -23,7 +23,8 @@
 //    along with CommSy.
 $disc_manager = $environment->getDiscManager();
 if (!empty($_GET["fileName"])) {
-	$filePath = $_GET["fileName"];
+	$file = basename($_GET["fileName"]);
+	$filePath = 'var/temp/'.$file;
 	
 	header('Content-type: image');
 	header('Pragma: no-cache');
