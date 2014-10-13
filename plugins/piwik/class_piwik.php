@@ -398,7 +398,9 @@ class class_piwik extends cs_plugin {
    
    private function _getInfosForTracking ($context_item) {
    	$retour = array();
-   	if ( !empty($context_item) ) {
+   	if ( !empty($context_item) 
+   			and $context_item->isPluginOn($this->_identifier)
+   		) {
    		$config = $context_item->getPluginConfigForPlugin($this->_identifier);
    		if ( !empty($config[$this->_identifier.'_server_url']) ) {
    			$retour['server_url'] = $config[$this->_identifier.'_server_url'];
