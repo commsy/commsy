@@ -61,6 +61,9 @@
 				{if isset($javascript.version) && !empty($javascript.version)}dojoConfig.cacheBust = '{$javascript.version}';{/if}
 			</script>
 			<script src="js/3rdParty/ckeditor_4.4.3/ckeditor.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
+			<script>
+				CKEDITOR.env.isCompatible = true;
+			</script>
 	
             {if $environment.c_js_mode === "layer"}
                 <script src="js/build/release/dojo/dojo.js{if isset($javascript.version) && !empty($javascript.version)}?{$javascript.version}{/if}"></script>
