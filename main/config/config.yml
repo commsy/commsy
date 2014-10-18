@@ -1,0 +1,5 @@
+# main/config/config.yml
+parameters:
+    kernel.secret:          changeme
+
+    locale:                 de_DE

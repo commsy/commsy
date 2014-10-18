@@ -1,0 +1,3 @@
+# main/config/config_prod.yml
+imports:
+    - { resource: config.yml }
