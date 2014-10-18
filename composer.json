@@ -1,8 +1,14 @@
 {
+	"autoload" : {
+		"psr-0": {
+			"Application\\": "src/"
+		}
+	},
 	"require" : {
 		"symfony/http-kernel": "2.5.*",
 		"symfony/routing": "2.5.*",
 		"symfony/config": "2.5.*",
-		"symfony/yaml": "2.5.*"
+		"symfony/yaml": "2.5.*",
+		"symfony/dependency-injection": "2.5.*"
 	}
 }
