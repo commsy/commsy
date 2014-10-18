@@ -27,7 +27,7 @@
 
 	$request = Request::createFromGlobals();
 
-	$kernel = new MainKernel('prod', false);
+	$kernel = new MainKernel('dev', true);
 	$response = $kernel->handle($request);
 	$response->prepare($request);
 	$response->send();
