@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- main/config/services/dispatcher -->
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="event_dispatcher.class">Application\Kernel\EventListener\LegacyListener</parameter>
+    </parameters>
+
+    <services>
+        <service id="event_dispatcher" class="%event_dispatcher.class%">
+            <call method="addSubscriber">
+                <argument type="service" id="http_kernel.legacy_listener"/>
+            </call>
+            <call method="addSubscriber">
+                    <argument type="service" id="exception_listener"/>
+            </call>
+        </service>
+    </services>
+</container>
