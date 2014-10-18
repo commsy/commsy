@@ -1,0 +1,28 @@
+API_VERSION = "2"
+
+Vagrant.configure(API_VERSION) do |config|
+	# box configuration
+	config.vm.box = 'precise64'
+	config.vm.box_url = 'http://files.vagrantup.com/precise64.box'
+
+	# network interfaces
+	config.vm.network :private_network, ip: "33.33.33.100"
+	#config.vm.network :forwarded_port, guest: 80, host: 8080
+
+	# shared folders
+	config.vm.synced_folder ".", "/vagrant", id: "vagrant-root", :nfs => true
+	config.vm.synced_folder "..", "/var/www", id: "application", :nfs => true
+
+	# environment
+	config.vm.provider :virtualbox do |v|
+		v.name = (0..8).map { (65 + rand(26)).chr }.join
+		v.customize [ "modifyvm", :id, "--memory", 512 ]
+	end
+
+	# provisioning
+	config.vm.provision :puppet do |puppet|
+		puppet.manifests_path = "puppet/manifests"
+		puppet.module_path = "puppet/modules"
+		puppet.options = ['--verbose']
+	end
+end
