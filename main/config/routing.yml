@@ -1,0 +1,10 @@
+# main/config/routing.yml
+default:
+    path: /
+    defaults:
+        _controller: Application\Controller\DefaultController::indexAction
+
+test:
+    path: /test
+    defaults:
+        _controller: Application\Controller\TestController::indexAction
