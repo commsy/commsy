@@ -241,6 +241,8 @@ define(
 		 ************************************************************************************/
 		onClickCreateAnnotation: function(event)
 		{
+			var createAnnotationNode = this.createAnnotationNode;
+
 			require(["commsy/popups/ClickAnnotationPopup"], lang.hitch(this, function(ClickPopup) {
 				var handler = new ClickPopup();
 				
@@ -256,7 +258,7 @@ define(
 				
 				this.Close();
 				
-				handler.init(this.createAnnotationNode, data);
+				handler.init(createAnnotationNode, data);
 				handler.open();
 			}));
 		}
