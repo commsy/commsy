@@ -1619,7 +1619,6 @@ class cs_popup_profile_controller implements cs_popup_controller {
 			'account'	=> array(
 				array('name' => 'forname', 'type' => 'text', 'mandatory' => true),
 				array('name' => 'surname', 'type' => 'text', 'mandatory' => true),
-				array('name' => 'user_id', 'type' => 'text', 'mandatory' => true),
 				array('name' => 'old_password', 'type' => 'text', 'mandatory' => false),
 				array('name' => 'new_password', 'type' => 'text', 'mandatory' => false, 'same_as' => 'new_password_confirm'),
 				array('name' => 'new_password_confirm', 'type' => 'text', 'mandatory' => false),
@@ -1654,6 +1653,15 @@ class cs_popup_profile_controller implements cs_popup_controller {
 			'user_picture'	=> array(
 			),
 		);
+
+		// user id is only mandatory, if the user is allowed to changed it
+		$userItem = $this->_environment->getCurrentUserItem();
+		$portalItem = $this->_environment->getCurrentPortalItem();
+		$authSourceItem = $portalItem->getAuthSource($userItem->getAuthSource());
+
+		if (isset($authSourceItem) && $authSourceItem->allowChangeUserID()) {
+			$return['account'][] = array('name' => 'user_id', 'type' => 'text', 'mandatory' => true);
+		}
 
 		return $return[$sub];
 	}
