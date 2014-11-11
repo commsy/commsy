@@ -236,7 +236,7 @@ class cs_manager {
    }
 
    function setTagLimit ($limit) {
-      $this->_tag_limit = (int)$limit;
+      $this->_tag_limit = (array) $limit;
    }
    
    function setTagArrayLimit ($limit) {
