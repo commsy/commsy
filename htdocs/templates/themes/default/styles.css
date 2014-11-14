@@ -2702,7 +2702,7 @@ div.detail_description ul,  div.editor_content ul, div.detail_content ul  {
 	}
 
 div.detail_description ul li,  div.editor_content ul li, div.detail_content ul li {
-	list-style-type: disc;
+	list-style-type: disc !important;
 	}
 
 div.detail_description ol,  div.editor_content ol, div.detail_content ol  {
@@ -2710,7 +2710,7 @@ div.detail_description ol,  div.editor_content ol, div.detail_content ol  {
 	}
 
 div.detail_description ol li,  div.editor_content ol li, div.detail_content ol li  {
-	list-style-type: decimal;
+	list-style-type: decimal !important;
 	}
 
 /*
@@ -3619,7 +3619,7 @@ a#tm_user:hover .tm_dropdown {
 
 #tm_icons_left_bar {
     float: left;
-    width: 120px;
+    width: 72px;
     }
 
 #tm_icons_left_bar a {
