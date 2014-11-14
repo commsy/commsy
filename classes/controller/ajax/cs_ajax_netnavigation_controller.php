@@ -105,7 +105,7 @@
 								$value_array[0] = 'cid'.$user_item->getContextID();
 								$new_picture_name = implode('_',$value_array);
 							
-								$disc_manager = $environment->getDiscManager();
+								$disc_manager = $this->_environment->getDiscManager();
 								$disc_manager->copyImageFromRoomToRoom($picture,$user_item->getContextID());
 								$user_item->setPicture($new_picture_name);
 							}
