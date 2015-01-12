@@ -301,6 +301,9 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
        $private_room_user_item = $current_user->getRelatedPrivateRoomUserItem();
        if ( isset($private_room_user_item) ) {
           $user_item = $private_room_user_item->cloneData();
+          if($user_item->isContact()){
+            $user_item->makeNoContactPerson();
+          }
           $picture = $private_room_user_item->getPicture();
        } else {
           $user_item = $current_user->cloneData();
