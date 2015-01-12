@@ -1,4 +1,4 @@
-<?
+<?php
 Class SimpleXMLElementExtended extends SimpleXMLElement {
 
   /**
