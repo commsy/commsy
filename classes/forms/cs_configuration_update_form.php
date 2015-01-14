@@ -63,7 +63,8 @@ class cs_configuration_update_form extends cs_rubric_form {
          closedir($directory_handle);
       }
       if ( !empty($dir_array) ) {
-         sort($dir_array);
+         // sort($dir_array);
+         usort($dir_array, 'version_compare');
          $over = false;
          $found = false;
          foreach ( $dir_array as $entry ) {
