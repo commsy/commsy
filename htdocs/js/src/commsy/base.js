@@ -35,6 +35,17 @@ define([	"dojo/_base/declare",
 			return this.baseStatics.widgetManager;
 		},
 
+		removeURIParam: function(regex) {
+			var object = this.uri_object;
+			for (var key in object) {
+				if (key.search(regex) >= 0) {
+					delete object[key];
+				}
+			}
+
+			return object;
+		},
+
 		replaceOrSetURIParam: function(key, value) {
 			var object = this.uri_object;
 			object[key] = value;

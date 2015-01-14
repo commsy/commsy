@@ -55,4 +55,7 @@ if ( function_exists('get_called_class') ) {
 // locking
 // this will temporary protect items from beeing edited by different users simultaneous
 $c_item_locking = false;
+
+// single selection for categories
+$c_single_cat_selection = false;
 ?>

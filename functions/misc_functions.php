@@ -1033,6 +1033,11 @@ function plugin_hook ($hook_function, $params = null, $with_config_check = true)
         and !empty($c_plugin_array)
       ) {
       $current_context_item = $environment->getCurrentPortalItem();
+      if ( empty($current_context_item)
+           and $environment->inServer()
+         ) {
+         $current_context_item = $environment->getServerItem();
+      }
       foreach ($c_plugin_array as $plugin) {
          if ( isset($current_context_item)
               and ( $current_context_item->isPluginOn($plugin)

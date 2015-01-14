@@ -297,7 +297,17 @@ class cs_log_manager extends cs_manager {
       if($current_context->withLogIPCover()){
       	// if datasecurity is active dont show last two fields
       	$remote_adress_array = explode('.', $array['remote_addr']);
-      	$array['remote_addr']	   = $remote_adress_array['0'].'.'.$remote_adress_array['1'].'.'.$remote_adress_array['2'].'.XXX';
+      	$array['remote_addr'] = '';
+      	if ( !empty($remote_adress_array['0']) ) {
+      		$array['remote_addr'] .= $remote_adress_array['0'];
+      	}
+         if ( !empty($remote_adress_array['1']) ) {
+      		$array['remote_addr'] .= $remote_adress_array['1'];
+      	}
+      	if ( !empty($remote_adress_array['2']) ) {
+      		$array['remote_addr'] .= $remote_adress_array['2'];
+      	}     	 
+      	$array['remote_addr'] .= '.XXX';
       }
       unset($current_context);
       

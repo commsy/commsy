@@ -1000,53 +1000,60 @@ class class_onyx extends cs_plugin {
 	    							}
 	    							if ($create_new) {
 	    								// create new section
-			                     $session_manager = $this->_environment->getSessionManager();
-			                     $session_item = $session_manager->get($sid);
-			                     $user_id = $session_item->getValue('user_id');
-			                     $auth_source = $session_item->getValue('auth_source');
-			                     $user_manager = $this->_environment->getUserManager();
-			                     $user_manager->setContextLimit($cid);
-			                     $user_manager->setUserIDLimit($user_id);
-			                     $user_manager->setAuthSourceLimit($auth_source);
-			                     $user_manager->select();
-			                     $user_list = $user_manager->get();
-			                     if ($user_list->getCount() == 1) {
-			                     	$current_user = $user_list->getFirst();
-			                     	$this->_environment->setCurrentUserItem($current_user);
+	    								if ( !empty($creator_item) ) {
+	    									// annonym saving section and modificator at material
+	    									$current_user = $creator_item;
+	    								} else {
+			                        $session_manager = $this->_environment->getSessionManager();
+			                        $session_item = $session_manager->get($sid);
+			                        $user_id = $session_item->getValue('user_id');
+			                        $auth_source = $session_item->getValue('auth_source');
+			                        $user_manager = $this->_environment->getUserManager();
+			                        $user_manager->setContextLimit($cid);
+			                        $user_manager->setUserIDLimit($user_id);
+			                        $user_manager->setAuthSourceLimit($auth_source);
+			                        $user_manager->select();
+			                        $user_list = $user_manager->get();
+			                        if ($user_list->getCount() == 1) {
+			                     	   $current_user = $user_list->getFirst();
+			                     	   $this->_environment->setCurrentUserItem($current_user);
+			                        } else {
+			                        	$current_user = $this->_environment->getCurrentUserItem();
+			                        }
+	    								}
 			                     
-			                        $section_item = $section_manager->getNewItem();
-	    								   $section_item->setContextID($cid);
-	    								   $section_item->setCreatorItem($current_user);
-	    								   include_once('functions/date_functions.php');
-	    								   $section_item->setCreationDate(getCurrentDateTimeInMySQL());
-			                        $section_item->setModificatorItem($current_user);
-                                 $section_item->setModificationDate(getCurrentDateTimeInMySQL());
+			                     $section_item = $section_manager->getNewItem();
+	    								$section_item->setContextID($cid);
+	    								$section_item->setCreatorItem($current_user);
+	    								include_once('functions/date_functions.php');
+	    								$section_item->setCreationDate(getCurrentDateTimeInMySQL());
+			                     $section_item->setModificatorItem($current_user);
+                              $section_item->setModificationDate(getCurrentDateTimeInMySQL());
 
-							            // section: set attributes
-						               $section_item->setTitle($section_title);
-						               $section_list = $data_item->getSectionList();
-						               $number = $section_list->getCount();
-						               $section_item->setNumber(($number+1));
-						               $section_item->setLinkedItemID($data_item->getItemID());
+							         // section: set attributes
+						            $section_item->setTitle($section_title);
+						            $section_list = $data_item->getSectionList();
+						            $number = $section_list->getCount();
+						            $section_item->setNumber(($number+1));
+						            $section_item->setLinkedItemID($data_item->getItemID());
 						               
-						               $file_id_array = array();
-						               $file_id_array[] = $file_item->getFileID();
-						               $section_item->setFileIDArray($file_id_array);
-						               $section_item->save();
+						            $file_id_array = array();
+						            $file_id_array[] = $file_item->getFileID();
+						            $section_item->setFileIDArray($file_id_array);
+						            $section_item->save();
 						                
-						               // save material item
-						               $data_item->setModificatorItem($current_user);
-						               if (!$data_item->isNotActivated()){
-						               	$data_item->setModificationDate($section_item->getModificationDate());
-						               }else{
-						               	$data_item->setModificationDate($data_item->getModificationDate());
-						               }
+						            // save material item
+						            $data_item->setModificatorItem($current_user);
+						            if ( !$data_item->isNotActivated() ) {
+						            	$data_item->setModificationDate($section_item->getModificationDate());
+						            } else {
+						            	$data_item->setModificationDate($data_item->getModificationDate());
+						            }
 						               
-						               // saveResult_key
-						               $plugin_config['saveResult'][$fid][$section_key] = $section_item->getItemID();
-						               $data_item->setPluginConfigForPlugin($this->_identifier,$plugin_config);
-						               $data_item->save();
-			                     }		
+						            // saveResult_key
+						            $plugin_config['saveResult'][$fid][$section_key] = $section_item->getItemID();
+						            $data_item->setPluginConfigForPlugin($this->_identifier,$plugin_config);
+						            $data_item->save();		
 	    							}
 	    						}
 	    					}

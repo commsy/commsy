@@ -211,11 +211,18 @@ define([	"dojo/_base/declare",
 						if (this.uri_object.mod == "home") {
 							this.replaceOrSetURIParam('mod', "search");
 						}
-						// multiselection - append tags
-						// if already selected, disselect
-						//location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+						
 						this.replaceOrSetURIParam('fct', "index");
-						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+
+						if (!this.from_php.environment.single_cat_selection) {
+							// multiselection - append tags
+							// if already selected, disselect
+							location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+						} else {
+							// single selection
+							var newParams = this.removeURIParam(/seltag_*/);
+							location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag_' + item.item_id, true));
+						}
 					} else {
 						// if click doesn't come from checkbox
 						if(evt.target.nodeName !== "INPUT") {
@@ -255,11 +262,16 @@ define([	"dojo/_base/declare",
 						if (this.uri_object.mod == "home") {
 							this.replaceOrSetURIParam('mod', "search");
 						}
-						// multiselection - append tags
-						// if already selected, disselect
-						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
-						
-//						location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag', item.item_id));
+
+						if (!this.from_php.environment.single_cat_selection) {
+							// multiselection - append tags
+							// if already selected, disselect
+							location.href = 'commsy.php?' + ioQuery.objectToQuery(this.removeOrSetURIParam('seltag_'+item.item_id, true));
+						} else {
+							// single selection
+							var newParams = this.removeURIParam(/seltag_*/);
+							location.href = 'commsy.php?' + ioQuery.objectToQuery(this.replaceOrSetURIParam('seltag_' + item.item_id, true));
+						}
 					} else {
 						// if click doesn't come from checkbox
 						if(evt.target.nodeName !== "INPUT") {
