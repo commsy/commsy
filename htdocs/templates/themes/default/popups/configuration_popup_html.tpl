@@ -330,6 +330,7 @@
 						                                	<option value="2">___USER_NORMAL_USER___</option>
 						                                	<option value="3">___USER_STATUS_MODERATOR___</option>
 						                                	<option value="10">___USER_STATUS_CONTACT___</option>
+						                                	<option value="11">___USER_STATUS_READ_ONLY_USER___</option>
 						                                </select>
 						                                <br/>
 						                                <input name="accounts_submit_restrictions" type="submit" value="___COMMON_SEARCH_OVERLAY_RESTRICTION_OPTIONS___" />
