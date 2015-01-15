@@ -572,6 +572,7 @@
 
 			if(!empty($restrictions['status'])) {
 				if($restrictions['status'] == '10') $user_manager->setContactModeratorLimit();
+				else if($restrictions['status'] == '11') $user_manager->setReadonlyLimit();
 				else $user_manager->setStatusLimit($restrictions['status']);
 			}
 
