@@ -11,7 +11,11 @@
 {/block}
 
 {block name=room_navigation_rubric_title}
-	&Uuml;bersicht Projektraum (Home)
+	{if $environment.room_type_group}
+		&Uuml;bersicht Gruppenraum (Home)
+	{else}
+		&Uuml;bersicht Projektraum (Home)
+	{/if}
 {/block}
 
 {block name=room_main_content}
