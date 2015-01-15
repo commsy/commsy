@@ -277,6 +277,8 @@ define([	"dojo/_base/declare",
 					value:			"Löschen",
 					name:			"form_data[" + id + "]"
 				}, rowDivNode, "last");
+
+				this.setupSpecific();
 		},
 		
 		removeBuzzwordFromEditTab: function(buzzword) {
