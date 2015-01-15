@@ -496,7 +496,8 @@
 				$action === 'lock' ||
 				$action === 'free' ||
 				$action === 'status_user' ||
-				$action === 'status_moderator') {
+				$action === 'status_moderator' ||
+				$action === 'status_readonly_user') {
 
 				$task_manager = $this->_environment->getTaskManager();
 				$task_list = $task_manager->getTaskListForItem($user);
