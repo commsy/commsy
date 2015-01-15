@@ -1,4 +1,4 @@
-define([], function() {
+define(["dojo/cookie"], function(cookie) {
     var options = {
                 poster: 'js/3rdParty/projekktor-1.3.09/media/intro.png',
                 playerFlashMP4: 'js/3rdParty/projekktor-1.3.09/swf/StrobeMediaPlayback/StrobeMediaPlayback.swf', // paths to StrobeMediaPlayback.swf on your serwer
@@ -32,7 +32,11 @@ define([], function() {
                     var height = $('.commsyPlayer .projekktor').height();
                     var width = $('.commsyPlayer .projekktor').width();
 
-                    $('.commsyPlayer .projekktor').replaceWith('Alte Abspielmethode');
+                    // $('.commsyPlayer .projekktor').replaceWith('Alte Abspielmethode');
+                    
+                    var commsyPlayerDiv = $('#' + player.getId() + '_media').parent().parent().parent();
+                    $('#' + player.getId() + '_media').parent().parent().replaceWith('Alte Abspielmethode');
+
 
                     var videoFile = player.getItem().file[0];
 
@@ -48,7 +52,7 @@ define([], function() {
 
                     var videoUrl = videoFile.src;
 
-                    var SID = "&SID=" + dojo.cookie("SID");
+                    var SID = "&SID=" + cookie("SID");
                     
                     var content = '';
 
@@ -78,7 +82,7 @@ define([], function() {
                         content += '</object>';
                     }
 
-                    $('.commsyPlayer').append(content);
+                    commsyPlayerDiv.append(content);
                     
                 }
         
