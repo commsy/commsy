@@ -21,6 +21,8 @@ define([	"dojo/_base/declare",
 		textbox:	null,
 		dialog:		null,
 		button:		null,
+		onCreateTagCallback: null,
+		onDeleteTagCallback: null,
 
 		constructor: function(options) {
 			// parent constructor is called automatically
@@ -155,10 +157,16 @@ define([	"dojo/_base/declare",
 		
 		onCreateEntrySuccessfull: function(newTag)
 		{
+			if(this.onCreateTagCallback) {
+				this.onCreateTagCallback(newTag);
+			}
 		},
 		
-		onDeleteEntrySuccessfull: function(itemId)
+		onDeleteEntrySuccessfull: function(itemId, tag)
 		{
+			if(this.onDeleteTagCallback) {
+				this.onDeleteTagCallback(itemId, tag);
+			}
 		},
 
 		/************************************************************************************
@@ -252,8 +260,8 @@ define([	"dojo/_base/declare",
 				}).then(
 					lang.hitch(this, function(response) {
 						model.deleteItem(item);
-						
-						this.onDeleteEntrySuccessfull(itemId);
+
+						this.onDeleteEntrySuccessfull(itemId, item.title[0]);
 						
 						// publish topic
 						Topic.publish("updateTree", { widgetId: this.tree.get("id") });
