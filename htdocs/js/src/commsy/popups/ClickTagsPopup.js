@@ -35,7 +35,48 @@ define([	"dojo/_base/declare",
 					checkboxes:		false,
 					room_id:		this.contextId,
 					expanded:		false,
-					item_id:		this.item_id
+					item_id:		this.item_id,
+					onCreateTagCallback: lang.hitch(this, function(newTag) {
+						// merge tab
+						this.addTagToMergeSelects(newTag.item_id, newTag.title);
+
+						// attach tab
+						var attachTabContentNode = Query("div#attach_tab div#content_row_one")[0];
+
+						var divNode = DomConstruct.create("div", {
+							className: "input_row"
+						}, attachTabContentNode, "last");
+
+						DomConstruct.create("label", {
+							innerHTML: newTag.title,
+							for: newTag.item_id
+
+						}, divNode, "first");
+
+						DomConstruct.create("input", {
+							className: "popup_button tag_attach",
+							type: "button",
+							name: "form_data[" + newTag.item_id + "]",
+							id: newTag.item_id,
+							value: "Einträge zuordnen"
+						}, divNode, "last");
+
+						this.connectAssignmentButtons();
+						
+						
+					}),
+					onDeleteTagCallback: lang.hitch(this, function(itemId, tag) {
+						// merge tab
+						this.removeTagFromMergeSelects(tag);
+
+						// attach tab
+						dojo.forEach(Query("div#attach_tab div#content_row_one div.input_row label"), lang.hitch(this, function(inputNode, index, arr) {
+							if(DomAttr.get(inputNode, "innerHTML") === tag) {
+								DomConstruct.destroy(inputNode.parentNode);
+							}
+						}));
+						
+					}),
 				});
 				this.tree.setupTree(Query("div.tree", this.contentNode)[0], lang.hitch(this, function(tree) {					
 					On(tree.tree, "open", lang.hitch(this, function(item, node) {
@@ -77,7 +118,13 @@ define([	"dojo/_base/declare",
 					this.list.requestData.contextId = this.contextId;
 				}
 			}));
+
+			this.connectAssignmentButtons();
 			
+			
+		},
+
+		connectAssignmentButtons: function () {
 			// connect all assignment buttons in attach tab
 			dojo.forEach(Query("input.tag_attach"), lang.hitch(this, function(inputNode, index, arr) {
 				On(inputNode, "click", lang.hitch(this, function(event) {
