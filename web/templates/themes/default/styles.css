@@ -2702,7 +2702,7 @@ div.detail_description ul,  div.editor_content ul, div.detail_content ul  {
 	}
 
 div.detail_description ul li,  div.editor_content ul li, div.detail_content ul li {
-	list-style-type: disc;
+	list-style-type: disc !important;
 	}
 
 div.detail_description ol,  div.editor_content ol, div.detail_content ol  {
@@ -2710,7 +2710,7 @@ div.detail_description ol,  div.editor_content ol, div.detail_content ol  {
 	}
 
 div.detail_description ol li,  div.editor_content ol li, div.detail_content ol li  {
-	list-style-type: decimal;
+	list-style-type: decimal !important;
 	}
 
 /*
@@ -5243,9 +5243,14 @@ div.gallery {
 	position:relative;
 }
 
+div.carouselImages {
+    overflow: hidden;
+    padding-bottom: 5px;
+}
+
 div.carouselImages img.gallery_image {
 	margin-top: 10px;
-	width:140px;
+	/*width:140px;*/
 	height:80px;
 	-moz-box-shadow: 0px 2px 5px 1px #BBBBBB;
 	-webkit-box-shadow: 0px 2px 5px 1px #BBBBBB;

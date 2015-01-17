@@ -88,7 +88,7 @@ define([	"dojo/_base/declare",
 					}));
 
 					// update max page
-					this.maxPage = Math.ceil(response.total / this.entriesPerPage);
+					this.maxPage = Math.ceil(response.data.total / this.entriesPerPage);
 
 					// set template values
 					this.currentPageNode.innerHTML = Math.min(this.currentPage, this.maxPage);

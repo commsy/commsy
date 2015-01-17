@@ -70,8 +70,14 @@
 			
 			// init needed values
 			$cid = $this->_environment->getCurrentContextID();
-			$mod = $type;
 			$fct = "detail";
+
+			// label item
+			if($type == 'label') {
+				$mod = $item->getLabelType();
+			} else {
+				$mod = $type;
+			}
 			
 			/************************************************************************************
 			 * We need to create a new instance of smarty and set some environment variables
@@ -98,6 +104,7 @@
 			
 			// setup controller
 			$controller_name = 'cs_' . $mod . '_' . $fct. '_controller';
+			pr($controller_name);
 			require_once('classes/controller/' . $fct . '/' . $controller_name . '.php');
 			
 			// invoke module and function

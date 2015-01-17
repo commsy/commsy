@@ -313,21 +313,32 @@ class class_piwik extends cs_plugin {
    
    private function _getInfosForBeforeBodyEndAsHTMLPHP () {
    	$retour = LF.'<!-- PIWIK tracking via PHP - BEGIN -->'.LF;
+
    	$tracking_array = array();
-   	if ( $this->_environment->inServer() ) {
-   		$info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
-   		if ( !empty($info_array) ) {
-   			$tracking_array[] = $info_array;
-   		}
-   	} else {
-   	   $info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
-   		if ( !empty($info_array) ) {
-   			$tracking_array[] = $info_array;
-   		}
-   	   $info_array = $this->_getInfosForTracking($this->_environment->getCurrentPortalItem());
-   		if ( !empty($info_array) ) {
-   			$tracking_array[] = $info_array;
-   		}
+   	
+   	// opt-out
+   	if ( !empty($_COOKIE['CommSyAGBPiwik'])
+   			and $_COOKIE['CommSyAGBPiwik'] == 1
+   	   ) {
+   		$retour .= '<!-- don\'t track - opt-out is activated -->'.LF;
+   	}
+   	// track
+   	else {
+   	   if ( $this->_environment->inServer() ) {
+   		   $info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
+   		   if ( !empty($info_array) ) {
+   			   $tracking_array[] = $info_array;
+   		   }
+   	   } else {
+   	      $info_array = $this->_getInfosForTracking($this->_environment->getServerItem());
+   		   if ( !empty($info_array) ) {
+   			   $tracking_array[] = $info_array;
+   	   	}
+   	      $info_array = $this->_getInfosForTracking($this->_environment->getCurrentPortalItem());
+   		   if ( !empty($info_array) ) {
+   			   $tracking_array[] = $info_array;
+   		   }
+   	   }
    	}
    	
    	if ( !empty($tracking_array) ) {
@@ -472,9 +483,36 @@ class class_piwik extends cs_plugin {
    	         $retour = '<iframe frameborder="no" width="550px" height="190px" src="http://'.$server_url.'/index.php?module=CoreAdminHome&action=optOut&idSite='.$site_id.'&language='.$language.'"></iframe>';
    	      } elseif ( $this->_method == 'php' ) {
    		      $retour = $this->_translator->getMessage(strtoupper($this->_identifier).'_DESC_DO_NOT_TRACK', $server_url);
+   		      
+   		      // local cookie
+   		      $checked = '';
+   		      if ( !empty($_COOKIE['CommSyAGBPiwik'])
+   		      	  and $_COOKIE['CommSyAGBPiwik'] == 1
+   		      	) {
+   		      	$checked = ' checked=checked';
+   		      }
+   		      $retour .= BRLF.'<input type="checkbox" id="CommSyAGBPiwik" onchange="piwik_set_check();"'.$checked.'> '.$this->_translator->getMessage(strtoupper($this->_identifier).'_DESC_DO_NOT_TRACK_CHECKBOX');  		      
    			}
    	   }
    	}
+   	return $retour;
+   }
+   
+   public function getInfosForHeaderAsHTML () {
+   	$retour  = '   <script type="text/javascript">'.LF;
+      $retour .= '      function piwik_setCookie(c_name,value,expiredays) {'.LF;
+      $retour .= '         if (value == 0) {'.LF;
+   	$retour .= '   		   expiredays = -1;'.LF;
+      $retour .= '         }'.LF;
+      $retour .= '         var exdate=new Date()'.LF;
+      $retour .= '         exdate.setDate(exdate.getDate()+expiredays)'.LF;
+      $retour .= '         document.cookie=c_name+ "=" +escape(value)+((expiredays==null) ? "" : ";expires="+exdate)'.LF;
+      $retour .= '      }'.LF;
+   	
+      $retour .= '      function piwik_set_check(){'.LF;
+      $retour .= '         piwik_setCookie(\'CommSyAGBPiwik\', document.getElementById(\'CommSyAGBPiwik\').checked? 1 : 0, 3650);'.LF;
+      $retour .= '      }'.LF;
+      $retour .= '   </script>';
    	return $retour;
    }
 

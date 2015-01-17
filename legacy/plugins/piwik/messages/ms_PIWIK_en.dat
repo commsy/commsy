@@ -10,4 +10,5 @@ $message["PIWIK_CONFIG_FORM_DESCRIPTION_HTTPS"]["de"] = "Connect via";
 $message["PIWIK_CONFIG_FORM_HTTPS_VALUE_COMMSY"]["en"] = "like CommSy (active: %1)";
 $message["PIWIK_DESCRIPTION"]["en"] = "With this plugin you can send usage information to a piwik server, where you can analyse the usage of commsy.";
 $message["PIWIK_DESC_DO_NOT_TRACK"]["en"] = "The moderation activated the analysis of use data (not personal data) with Piwik, so CommSy will transfer your use data to the Piwik server %1.";
+$message["PIWIK_DESC_DO_NOT_TRACK_CHECKBOX"]["en"] = "NOT track my usage.";
 ?>

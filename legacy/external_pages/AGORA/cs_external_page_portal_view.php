@@ -3321,6 +3321,9 @@ $html .='</div>
    
    
    			$return = array(
+						'connection'	=> array(
+						      'active'	=> false
+						),
    					'wiki'		=> array(
    							'active'	=> false
    					),
@@ -3442,6 +3445,13 @@ $html .='</div>
    			}
    
    			if ( isset($ownRoomItem)) {
+   			   // portal2portal
+   				if ( !empty($ownRoomItem)
+   					  and $ownRoomItem->showCSBarConnection()
+   					) {
+   					$html .= '	<a href="#" id="tm_connection" title="' . $translator->getMessage("CS_BAR_CONNECTION") . '">&nbsp;</a>';
+   				}
+   				   				
    				if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
    				{
    					$html .= '	<a href="#" id="tm_portfolio" title="' . $translator->getMessage("CS_BAR_PORTFOLIO") . '">&nbsp;</a>';
@@ -3599,6 +3609,7 @@ $html .='</div>
       										
       									<div id="tm_menus">
       									<div id="tm_dropmenu_breadcrumb" class="hidden"></div>
+   							   		<div id="tm_dropmenu_connection" class="hidden"></div>
       									<div id="tm_dropmenu_widget_bar" class="hidden"></div>
       									<div id="tm_dropmenu_portfolio" class="hidden"></div>
 			   		<div id="tm_dropmenu_mycalendar" class="hidden"></div>
@@ -4310,7 +4321,14 @@ $html.= '  </div>
    		 if ($this->_environment->InPortal() && !$currentUser->isGuest()) {
          	$retour .= '- <a href="#" onclick="document.getElementById(\'tm_user\').click();" title="' . $this->_translator->getMessage("MYAREA_ACCOUNT_PROFIL") . '">'.$this->_translator->getMessage("MYAREA_ACCOUNT_PROFIL").'</a><br/>';
    		 	
-   		 	if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
+    		   // portal2portal
+   			if ( !empty($ownRoomItem)
+   				   and $ownRoomItem->showCSBarConnection()
+   				) {
+         		$retour .= '- <a href="#" onclick="document.getElementById(\'tm_connection\').click();" title="' . $this->_translator->getMessage("CS_BAR_CONNECTION") . '">'.$this->_translator->getMessage("CS_BAR_CONNECTION").'</a><br/>';
+   			}
+   				
+         	if ( $ownRoomItem->getCSBarShowPortfolio() == "1" )
          	{
          		$retour .= '- <a href="#" onclick="document.getElementById(\'tm_portfolio\').click();" title="' . $this->_translator->getMessage("CS_BAR_PORTFOLIO") . '">'.$this->_translator->getMessage("CS_BAR_PORTFOLIO").'</a><br/>';
          	}

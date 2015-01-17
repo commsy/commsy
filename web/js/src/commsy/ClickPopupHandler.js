@@ -67,9 +67,11 @@ define([	"dojo/_base/declare",
 						this.onCreate();
 
 						if (this.from_php.environment.item_locking) {
-							// if we are editing an item, setup the locking mechanism
-							if (this.item_id !== "NEW") {
-								this.setupLocking();
+							if (typeof(this.contextId) == 'undefined' || this.contextId != this.from_php.ownRoom.id) {
+								// if we are editing an item, setup the locking mechanism
+								if (this.item_id !== "NEW") {
+									this.setupLocking();
+								}
 							}
 						}
 

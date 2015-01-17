@@ -374,7 +374,7 @@ class misc_text_converter {
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
       $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
       // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
-      $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', ' <a href="mailto:$3">$3</a>', $text);
+      $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', '$1<a href="mailto:$3">$3</a>', $text);
       $text = substr($text, 1, strlen($text));
       foreach ($values as $key => $value) {
          $text = str_replace('COMMSY_FCKEDITOR'.$key.' ',$value,$text);

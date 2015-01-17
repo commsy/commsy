@@ -317,6 +317,14 @@ class cs_user_manager extends cs_manager {
      $this->_status_limit = 3;
   }
 
+/**
+ * set status limit to "readonly"
+ * this method sets the status limit to "readonly"
+ */
+  function setReadonlyLimit () {
+    $this->_status_limit = 4;
+  }
+
   function setStatusLimit ($limit){
     if ($limit == 6) {
        $this->_status_select_limit = (int)0;
