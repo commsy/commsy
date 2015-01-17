@@ -5,10 +5,13 @@
 		}
 	},
 	"require" : {
-		"symfony/http-kernel": "2.5.*",
-		"symfony/routing": "2.5.*",
-		"symfony/config": "2.5.*",
-		"symfony/yaml": "2.5.*",
-		"symfony/dependency-injection": "2.5.*"
+		"symfony/http-kernel": "2.6.*",
+		"symfony/routing": "2.6.*",
+		"symfony/config": "2.6.*",
+		"symfony/yaml": "2.6.*",
+		"symfony/dependency-injection": "2.6.*",
+		"twig/twig": "~1.0",
+		"symfony/twig-bridge": "2.6.*",
+		"symfony/templating": "2.6.*"
 	}
 }
