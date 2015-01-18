@@ -13,10 +13,12 @@
 	define('PAGES_DIR', LEGACY_DIR . '/pages');
 	define('PLUGINS_DIR', LEGACY_DIR . '/plugins');
 	define('SCRIPTS_DIR', LEGACY_DIR . '/scripts');
+	define('CONFIG_DIR', LEGACY_DIR . '/etc');
 
 	// load required dependencies
 	
 	// update include path
+	set_include_path(LEGACY_DIR . ":" . get_include_path());
 
 	// require autoloading and kernel files
 	require_once __DIR__ . '/../vendor/autoload.php';
