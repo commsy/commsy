@@ -2,9 +2,9 @@
 	use Symfony\Component\HttpKernel\HttpKernelInterface;
 	use Symfony\Component\HttpFoundation\Request;
 	use Symfony\Component\HttpFoundation\Response;
-	use Symfony\Component\EventDispatcher\EventDispatcher;
 	use Symfony\Component\HttpKernel\HttpKernel;
-	use Symfony\Component\HttpKernel\Controller\ControllerResolver;
+    use Symfony\Component\EventDispatcher\EventDispatcher;
+	use Application\Kernel\Controller\ControllerResolver;
 	use Symfony\Component\HttpKernel\EventListener\ResponseListener;
 	use Symfony\Component\Config\FileLocator;
 	use Symfony\Component\Routing\Matcher\UrlMatcher;
@@ -18,6 +18,8 @@
     use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
     use Symfony\Component\Config\ConfigCache;
     use Symfony\Component\Debug\Debug;
+
+    use Application\Kernel\EventListener\LegacyListener;
 
 	class MainKernel implements HttpKernelInterface
 	{
@@ -48,16 +50,16 @@
 			$matcher = new UrlMatcher($loader->load('routing.yml'), $context);
 
 			$dispatcher = new EventDispatcher();
+            $dispatcher = $this->getContainer()->get('event_dispatcher');
 			$dispatcher->addSubscriber($responseListener);
 			$dispatcher->addSubscriber(new RouterListener($matcher, $context));
 
-			$resolver = new ControllerResolver();
+			$resolver = new ControllerResolver($this->getContainer());
 			$this->httpKernel = new HttpKernel($dispatcher, $resolver);
 		}
 
 		public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
 		{
-            // Service container is lazy loaded.
             $dic = $this->getContainer();
 
             if (self::MASTER_REQUEST === $type) {
@@ -115,6 +117,7 @@
             $loader->load('exception.xml');
             $loader->load('legacy.xml');
             $loader->load('dispatcher.xml');
+            $loader->load('templating.xml');
 
             // Load the application's configuration to override the
             // default service definitions configuration per environment

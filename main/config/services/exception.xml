@@ -12,9 +12,7 @@
 
     <services>
         <service id="exception_listener" class="%exception_listener.class%">
-            <call method="addSubscriber">
-                <argument>%exception_listener.exception_controller%</argument>
-            </call>
+            <argument>%exception_listener.exception_controller%</argument>
         </service>
     </services>
 </container>

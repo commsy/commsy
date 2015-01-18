@@ -1,15 +1,14 @@
 <?php
     namespace Application\Controller;
 
-    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
     use Symfony\Component\Debug\Exception\FlattenException;
 
     class ErrorController extends Controller
     {
         public function exceptionAction(FlattenException $e)
-        {
+        {die("exception");/*
             if ('dev' === $this->container->getParamter('kernel.environment')) {
-                return $this->render->('error/exception', array('exception', $e));
+                return $this->render->('error/exception', array('exception' => $e));
             }
 
             $code = $e->getStatusCode();
@@ -19,6 +18,6 @@
                 $view .= $code;
             }
 
-            return $this->render->($view, array('exception' => $e));
+            return $this->render->($view, array('exception' => $e));*/
         }
     }

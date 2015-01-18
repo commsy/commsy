@@ -2,7 +2,7 @@
 default:
     path: /
     defaults:
-        _controller: Application\Controller\DefaultController::indexAction
+        _controller: Application\Controller\DefaultController::defaultAction
 
 test:
     path: /test

@@ -9,6 +9,8 @@
 		{
 			ob_start();
 
+			//require_once('commsy.php');
+
 			return new Response(ob_get_clean());
 		}
 	}

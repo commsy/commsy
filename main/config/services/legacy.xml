@@ -9,7 +9,7 @@
         <service id="legacy_kernel" class="LegacyKernel"/>
 
         <service id="http_kernel.legacy_listener"
-            class="Application\HttpKernel\Listener\LegacyListener">
+            class="Application\Kernel\EventListener\LegacyListener">
             <argument type="service" id="legacy_kernel"/>
         </service>
     </services>
