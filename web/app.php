@@ -1,36 +1,30 @@
 <?php
-	/**
-	 * CommSy Front Controller
-	 */
-	
-	// definitions for several paths
-	define('LEGACY_DIR', realpath(__DIR__ . '/../legacy'));
-	define('CLASSES_DIR', LEGACY_DIR . '/classes');
-	define('EXTERNAL_PAGES_DIR', LEGACY_DIR . '/external_pages');
-	define('FUNCTIONS_DIR', LEGACY_DIR . '/functions');
-	define('INCLUDE_DIR', LEGACY_DIR . '/include');
-	define('LIBS_DIR', LEGACY_DIR . '/libs');
-	define('PAGES_DIR', LEGACY_DIR . '/pages');
-	define('PLUGINS_DIR', LEGACY_DIR . '/plugins');
-	define('SCRIPTS_DIR', LEGACY_DIR . '/scripts');
-	define('CONFIG_DIR', LEGACY_DIR . '/etc');
 
-	// load required dependencies
-	
-	// update include path
-	set_include_path(LEGACY_DIR . ":" . get_include_path());
+use Symfony\Component\ClassLoader\ApcClassLoader;
+use Symfony\Component\HttpFoundation\Request;
 
-	// require autoloading and kernel files
-	require_once __DIR__ . '/../vendor/autoload.php';
-	require_once __DIR__ . '/../main/MainKernel.php';
-	require_once __DIR__ . '/../main/LegacyKernel.php';
+$loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 
-	use Symfony\Component\HttpFoundation\Request;
+// Enable APC for autoloading to improve performance.
+// You should change the ApcClassLoader first argument to a unique prefix
+// in order to prevent cache key conflicts with other applications
+// also using APC.
+/*
+$apcLoader = new ApcClassLoader(sha1(__FILE__), $loader);
+$loader->unregister();
+$apcLoader->register(true);
+*/
 
-	$request = Request::createFromGlobals();
+require_once __DIR__.'/../app/AppKernel.php';
+//require_once __DIR__.'/../app/AppCache.php';
 
-	$kernel = new MainKernel('prod', false);
-	$response = $kernel->handle($request);
-	$response->prepare($request);
-	$response->send();
-	$kernel->terminate($request, $response);
+$kernel = new AppKernel('prod', false);
+$kernel->loadClassCache();
+//$kernel = new AppCache($kernel);
+
+// When using the HttpCache, you need to call the method in your front controller instead of relying on the configuration parameter
+//Request::enableHttpMethodParameterOverride();
+$request = Request::createFromGlobals();
+$response = $kernel->handle($request);
+$response->send();
+$kernel->terminate($request, $response);

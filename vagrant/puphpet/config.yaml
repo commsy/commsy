@@ -37,7 +37,7 @@ vagrantfile-local:
                 group: www-data
                 source: ../
                 target: /var/www/commsy
-                sync_type: default
+                sync_type: nfs
                 rsync:
                     args:
                         - '--verbose'
