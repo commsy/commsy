@@ -115,6 +115,7 @@
 					            <option value="foto" {if $item.bib_kind == 'foto'} selected="selected" {/if}>___MATERIAL_BIB_FOTO___</option>
 	         				</select>
 	         			</div>
+	         			<div class="clear"></div>
 
 	         			{* bibliographic data *}
 	         			<div id="bibliographic">
