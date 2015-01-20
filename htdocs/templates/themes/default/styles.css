@@ -559,6 +559,11 @@ div.pop_item_navigation {
 	padding:5px 10px;
 	}
 
+.list_action_select_all {
+    float: left;
+    margin-right: 10px;
+}
+
 #crt_row_area h2{
 	padding:5px 10px;
 	}
