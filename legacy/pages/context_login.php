@@ -164,7 +164,7 @@ if (!$shib_direct_login){
 	        // Benutzer nicht beim IDP eingeloggt, redirect zum idp?
 	        redirect_with_url('https://'.$_SERVER["SERVER_NAME"].'/Shibboleth.sso/Login');
 	    }# and $source_type != "SHIBBOLETH"
-	} elseif (!empty($user_id) and !empty($password) and $source_type != "Shibboleth") { 
+	} elseif (!empty($user_id) and !empty($password) and (!isset($source_type) || $source_type != "Shibboleth")) { 
 	//if (!empty($user_id) and !empty($password) ) {
 	   $authentication = $environment->getAuthenticationObject();
 	   if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {

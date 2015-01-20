@@ -80,9 +80,9 @@ local.properties
 ######################
 # CommSy related     #
 ######################
-etc/cs_config.php
-etc/commsy/*.php
-htdocs/javascript/jQuery/commsy_min/*
+legacy/etc/cs_config.php
+legacy/etc/commsy/*.php
+web/javascript/jQuery/commsy_min/*
 htdocs/js/build/*
 htdocs/templates/templates_c/*
 var/[0-9]*

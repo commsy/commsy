@@ -26,7 +26,14 @@
 // pretend, we work from the CommSy basedir to allow
 // giving include files without "../" prefix all the time.
 
-chdir('..');
+global $environment;
+$environment = null;
+global $session;
+$session = null;
+global $db;
+$db = null;
+
+chdir('../legacy/');
 mb_internal_encoding('UTF-8');
 function cleanupSession($session, $environment){
    if ($session->issetValue('history')){

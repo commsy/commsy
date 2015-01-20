@@ -90,7 +90,7 @@ function getCommSyVersion() {
       $commsyversion = trim($temp4);
    }
    if ( empty($commsyversion) ) {
-      $fp = fopen('version','r','1');      // file system access is quite expensive, but the best we can do
+      $fp = fopen('../version','r','1');      // file system access is quite expensive, but the best we can do
       $version = fgets($fp,'50');
       $commsyversion = trim($version);
    }
@@ -2008,8 +2008,8 @@ function getCurrentCommSyFunctions(){
    global $environment;
    global $c_minimized_js;
    
-   $path_norm = 'htdocs/javascript/jQuery/commsy/';
-   $path_min = 'htdocs/javascript/jQuery/commsy_min/';
+   $path_norm = '../web/javascript/jQuery/commsy/';
+   $path_min = '../web/javascript/jQuery/commsy_min/';
    
    // search normal commsy_functions
    $files_found = array();

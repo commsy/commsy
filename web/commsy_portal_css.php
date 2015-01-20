@@ -24,7 +24,7 @@
 
 header("Content-type: text/css");
 // load required classes
-chdir('..');
+chdir('../legacy/');
 include_once('etc/cs_constants.php');
 include_once('etc/cs_config.php');
 include_once('classes/cs_environment.php');
