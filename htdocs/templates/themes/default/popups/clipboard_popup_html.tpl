@@ -35,6 +35,9 @@
 			                        <div class="clear"> </div>
 
 			                        <div class="pop_button_area">
+			                        	<div class="list_action_select_all">
+			                        		<input type="checkbox" id="selectAllClipboard">___COMMON_ALL_ENTRIES___
+			                        	</div>
 			                        	<select id="list_action" size="1">
 			                        		<option value="-1">*___COMMON_LIST_ACTION_NO___</option>
 			                        		<option disabled="disabled">------------------------------</option>
