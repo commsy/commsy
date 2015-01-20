@@ -23,6 +23,14 @@ define([	"dojo/_base/declare",
 			this.tpl_path = tpl_path;
 			
 			this.performRequest();
+
+			// setup select all handler
+			var inputSelectAllNode = Query("input#selectAllClipboard")[0];
+			if (inputSelectAllNode) {
+				On(inputSelectAllNode, "click", lang.hitch(this, function(event) {
+					this.onSelectAll();
+				}));
+			}
 			
 			// setup action submit
 			On(Query("input#list_action_submit")[0], "click", lang.hitch(this, function(event) {
@@ -161,6 +169,47 @@ define([	"dojo/_base/declare",
 					}
 				})
 			);
+		},
+
+		onSelectAll: function() {
+			var checkboxNodes = Query("div.pop_row_even input[type='checkbox'], div.pop_row_odd input[type='checkbox']");
+			var checkedCheckboxNodes = Query("div.pop_row_even input[type='checkbox']:checked, div.pop_row_odd input[type='checkbox']:checked");
+			
+			if ( checkboxNodes && checkedCheckboxNodes )
+			{
+				/*
+				 * If the number of current checked checkboxes is lower than the total number of checkboxes, select all.
+				 * Otherwise deselect all
+				 */
+				if ( checkedCheckboxNodes.length < checkboxNodes.length )
+				{
+					dojo.forEach(checkboxNodes, lang.hitch(this, function(checkboxNode, index, arr)
+					{
+						DomAttr.set(checkboxNode, "checked", true);
+						this.store.selected_ids.push(DomAttr.get(checkboxNode, "id").substr(5));
+					}));
+					
+					var inputSelectAllNode = Query("input#selectAllClipboard")[0];
+					if (inputSelectAllNode)
+					{
+						DomAttr.set(inputSelectAllNode, "checked", true);
+					}
+				}
+				else
+				{
+					dojo.forEach(checkboxNodes, lang.hitch(this, function(checkboxNode, index, arr)
+					{
+						DomAttr.set(checkboxNode, "checked", false);
+						this.store.selected_ids = [];
+					}));
+					
+					var inputSelectAllNode = Query("input#selectAllClipboard")[0];
+					if (inputSelectAllNode)
+					{
+						DomAttr.set(inputSelectAllNode, "checked", false);
+					}
+				}
+			}
 		}
 	});
 });
