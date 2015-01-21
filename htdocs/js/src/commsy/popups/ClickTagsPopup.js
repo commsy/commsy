@@ -49,8 +49,7 @@ define([	"dojo/_base/declare",
 
 						DomConstruct.create("label", {
 							innerHTML: newTag.title,
-							for: newTag.item_id
-
+							'for': newTag.item_id
 						}, divNode, "first");
 
 						DomConstruct.create("input", {
