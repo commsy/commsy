@@ -1275,6 +1275,17 @@ class cs_page_view extends cs_view {
    }
 
    function _getUserPersonalAreaAsHTML () {
+
+      /**
+       *  DONT USE THIS OLD VIEW
+       *  Bugfix redirect
+       */
+      
+      // redirect to current portal
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      redirect ($current_portal->getItemID(), "home", "index");
+
+
       $retour  = '';
       $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
       // jQuery
@@ -1284,6 +1295,10 @@ class cs_page_view extends cs_view {
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
       $current_portal = $this->_environment->getCurrentPortalItem();
+
+      // redirect
+      redirect ($current_portal->getItemID(), "home", "index");
+
       if ( !$this->_environment->inServer() ) {
          $title = $this->_environment->getCurrentPortalItem()->getTitle();
          $title .= ' ('.$this->_translator->getMessage('COMMON_PORTAL').')';
@@ -1313,14 +1328,14 @@ class cs_page_view extends cs_view {
             $user = $this->_environment->getCurrentUser();
             $private_room_manager = $this->_environment->getPrivateRoomManager();
             $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
-            if ( isset($own_room) ) {
-               $own_cid = $own_room->getItemID();
-               $additional = '';
-               if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
-                  $additional = ' selected="selected"';
-               }
-               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
-            }
+            // if ( isset($own_room) ) {
+            //    $own_cid = $own_room->getItemID();
+            //    $additional = '';
+            //    if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
+            //       $additional = ' selected="selected"';
+            //    }
+            //    $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
+            // }
             unset($own_room);
             unset($private_room_manager);
          }
