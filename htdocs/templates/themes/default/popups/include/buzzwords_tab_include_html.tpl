@@ -9,7 +9,8 @@
 				{/foreach}
 				<div class="clear"></div>
 			</ul>
-			<div style="margin-left:10px">___BUZZWORDS_NEW_BUTTON___: <input name="form_data[new_buzzword]" value="" type="text" /></div>
+			<div style="float:left; margin-left:10px">{*___BUZZWORDS_NEW_BUTTON___:*} <input id="new_buzzword_input" name="form_data[new_buzzword]" value="" type="text" /></div>
+			<div style="float:left; margin-left: 10px;"><input class="popup_button" id="popup_button_add_buzzword" type="button" value="___BUZZWORDS_NEW_BUTTON___"></div>
 			<div class="clear"></div>
 		</div>
 	</div>
