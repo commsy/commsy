@@ -5,7 +5,8 @@ define([	"dojo/_base/declare",
         	"dojo/_base/lang",
         	"dojo/dom-construct",
         	"dojo/dom-attr",
-        	"dojo/on"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On) {
+        	"dojo/on",
+        	"commsy/request"], function(declare, ClickPopupHandler, query, dom_class, lang, domConstruct, domAttr, On, request) {
 	return declare(ClickPopupHandler, {
 		answerTo: null,
 		
@@ -36,6 +37,12 @@ define([	"dojo/_base/declare",
 		},
 		
 		setupSpecific: function() {
+
+			// Set up click handler for buzzwords
+			buzzwordAddButton = query("input#popup_button_add_buzzword", this.contentNode)[0];
+			On(buzzwordAddButton, "click", lang.hitch(this, function(event) {
+				this.addNewBuzzword();
+			}));
 		},
 		
 		onPopupSubmit: function(customObject) {
@@ -63,6 +70,41 @@ define([	"dojo/_base/declare",
 			};
 			
 			this.submit(search, { answerTo: this.answerTo, discussionId: this.discussionId, contextId: this.contextId });
+		},
+
+		addNewBuzzword: function () {
+
+			buzzword = domAttr.get(query("input#new_buzzword_input")[0], "value");
+
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'buzzwords',
+					action:	'createNewBuzzword'
+				},
+				data: {
+					buzzword:	buzzword,
+					roomId:		this.contextId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+
+					buzzwordList = query("ul.popup_buzzword_list")[0];
+
+					var listNode = domConstruct.create("li", {
+						className:		"ui-state-default popup_buzzword_item",
+						innerHTML: 		buzzword
+					}, buzzwordList, "first");
+
+					domConstruct.create("input", {
+						className:		"ui-state-default popup_buzzword_item",
+						type:			"checkbox",
+						value:			response.id,
+						name:			"form_data[buzzwords]",
+						checked: 		"checked" 
+					}, listNode, "first");
+				}));
 		},
 		
 		onPopupSubmitSuccess: function(item_id) {
