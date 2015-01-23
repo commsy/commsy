@@ -1175,6 +1175,10 @@ a span#ma_non_act {
     background: url(img/nav_material.png) no-repeat -21px 0px;
     }
 
+span.bib_content {
+    font-size: 10px;
+}
+
 
 /* Diskussionen */
 
