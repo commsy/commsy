@@ -169,6 +169,13 @@
 					{else}
 						{$item.title}
 					{/if}
+					{if $item.bib_author || $item.bib_year}
+						<span class="bib_content">
+						({if $item.bib_author}{$item.bib_author}{/if}
+						{if $item.bib_year}{$item.bib_year}{/if})
+						</span>
+					{/if}
+
 				</p>
 			</div>
 			<div class="column_45">
