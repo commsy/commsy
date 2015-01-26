@@ -521,23 +521,27 @@ function performAction ( $environment, $action_array, $post_array ) {
             }
          }
          $mail->set_to($send_to);
+
          // Datenschutz
          if($environment->getCurrentPortalItem()->getHideAccountname()){
+            // split mail for user (can see account) and other (cant)
          	$mail_user = $mail;
-         	$user_item = $user_list->getFirst();
-         	$content_with_uid = $content;
-         	while ($user_item) {pr($user_item->getUserID());
-         		$content_with_uid = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user_item->getFullname()),$user_item->getUserID(),$content_with_uid);
-         		$user_item = $user_list->getNext();
-         	}
+            $content_with_uid = $content;
+         	// $user_item = $user_list->getFirst(); // $user_list non object
+         	// while ($user_item) {
+         	// 	$content_with_uid = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user_item->getFullname()),$user_item->getUserID(),$content_with_uid);
+         	// 	$user_item = $user_list->getNext();
+         	// }
+            $content_with_uid = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$content_with_uid);
+
          	#$user_description = str_replace('XXX '.$translator->getMessage('COMMON_DATASECURITY_NAME', $user->getFullname()),$user->getUserID(),$content);
          	$mail_user->set_to($user->getEmail());
          	$mail_user->set_message($content_with_uid);
          	$mail_success = $mail_user->send();
          	$mail->set_message($content);
+            $mail->set_to('');
          }
-         
-         
+
          
 
          #// cc / bcc
