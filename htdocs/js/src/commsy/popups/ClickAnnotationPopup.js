@@ -37,9 +37,12 @@ define([	"dojo/_base/declare",
 
 			// Set up click handler for buzzwords
 			buzzwordAddButton = query("input#popup_button_add_buzzword", this.contentNode)[0];
-			On(buzzwordAddButton, "click", lang.hitch(this, function(event) {
-				this.addNewBuzzword();
-			}));
+			if(buzzwordAddButton) {
+				On(buzzwordAddButton, "click", lang.hitch(this, function(event) {
+					this.addNewBuzzword();
+				}));
+			}
+			
 		},
 		
 		onPopupSubmit: function(customObject) {
