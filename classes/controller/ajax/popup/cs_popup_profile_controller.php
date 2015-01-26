@@ -727,7 +727,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									$portalUser->setDefaultMailVisible();
 								}
 								if($form_data['mail_hide_all']){
-									$user_list = $user->getRelatedUserList();
+									$user_list = $currentUser->getRelatedUserList();
 
 							        $user_item = $user_list->getFirst();
 							        while($user_item) {
@@ -740,13 +740,10 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							            $user_item->save();
 							            $user_item = $user_list->getNext();
 							        }
-							        $user->setDefaultMailNotVisible();
-							        $user->save();
+							        $currentUser->setDefaultMailNotVisible();
+							        $currentUser->save();
 
 								}
-								// pr($form_data);
-								// $form_data['mail_hide'])
-								// $form_data['mail_hide_all'])
 							} else {
 								if($form_data['mail_hide']){
 									$currentUser->setEmailNotVisible();
@@ -754,7 +751,7 @@ class cs_popup_profile_controller implements cs_popup_controller {
 									$currentUser->setEmailVisible();
 								}
 								if($form_data['mail_hide_all']){
-									$user_list = $user->getRelatedUserList();
+									$user_list = $currentUser->getRelatedUserList();
 
 							        $user_item = $user_list->getFirst();
 							        while($user_item) {
@@ -767,8 +764,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 							            $user_item->save();
 							            $user_item = $user_list->getNext();
 							        }
-							        $user->setDefaultMailNotVisible();
-							        $user->save();	
+							        $currentUser->setDefaultMailNotVisible();
+							        $currentUser->save();	
 								}
 							}
 
