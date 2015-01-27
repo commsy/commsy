@@ -12,9 +12,9 @@
 
 {block name=room_navigation_rubric_title}
 	{if $environment.room_type_group}
-		&Uuml;bersicht Gruppenraum (Home)
+		___COMMON_HOME_GROUPROOM___
 	{else}
-		&Uuml;bersicht Projektraum (Home)
+		___COMMON_HOME_PROJECTROOM___
 	{/if}
 {/block}
 
