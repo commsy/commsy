@@ -895,7 +895,11 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 								$current_context->setLogoFilename('');
 							}
 
-							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $additional["fileInfo"]["name"];
+							// $filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $additional["fileInfo"]["name"];
+
+							$filename_info = pathinfo($additional["fileInfo"]["name"]);
+							$filename = 'cid' . $this->_environment->getCurrentContextID() . '_logo_' . $filename_info['extension'];
+
 							$disc_manager->copyFile($additional["fileInfo"]["file"], $filename, true);
 							$current_context->setLogoFilename($filename);
 
