@@ -607,6 +607,42 @@
 	 */
 	$indexer->add(CS_MATERIAL_TYPE, $query);
 
+
+	////////////////////////////
+	////// Files  ///////////
+	////////////////////////////
+	$query = '
+		SELECT
+			files.files_id AS item_id,
+			item_link_file.item_iid AS index_id,
+			item_link_file.item_vid AS version_id,
+			files.modification_date,
+			CONCAT(files.filename, " ", user.firstname, " ", user.lastname) AS search_data
+		FROM
+			files
+		LEFT JOIN
+			item_link_file
+		ON
+			files.files_id = item_link_file.file_id
+		LEFT JOIN
+			user
+		ON
+			user.item_id = files.creator_id
+		WHERE
+			files.deletion_date IS NULL
+	';
+	/*
+	 * materials.version_id = (
+		SELECT
+		MAX(m2.version_id)
+		FROM
+		materials as m2
+		WHERE
+		m2.item_id = materials.item_id
+		)
+	 */
+	$indexer->add(CS_FILE_TYPE, $query);
+
 	////////////////////////////
 	////// Institutions ////////
 	////////////////////////////

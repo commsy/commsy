@@ -916,6 +916,7 @@ unset($ftsearch_manager);
 			if(!empty($this->_params['selrubric'])) {
 				$search_rubrics = array($this->_params['selrubric']);
 			}
+			$search_rubrics[] = 'file';
 
 			$query = '
 				SELECT
@@ -966,6 +967,14 @@ unset($ftsearch_manager);
 			************************************************************************************/
 			foreach($results as $result) {
 				$type = $this->rubric2ItemType($result['si_item_type']);
+				if($type == "file"){
+					// get type of their main item
+					$item_manager = $this->_environment->getItemManager();
+					$item = $item_manager->getItem($result['si_item_id']);
+					$type = $item->getItemType();
+					unset($item_manager);
+				}
+
 				// inline types need to be remapped
 				$map = array(
 					"discarticle"	=> "discussion",
