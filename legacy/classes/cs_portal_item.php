@@ -1039,8 +1039,26 @@ class cs_portal_item extends cs_guide_item {
    				$mail->set_from_email($mod_user_first->getEmail());
    				$mail->set_from_name($mod_user_first->getFullname());
    				
-   				$mail->set_cc_to($mod_user_first->getEmail());
+   				// $mail->set_cc_to($mod_user_first->getEmail());
    				$mail->set_cc_to($this->_environment->getRootUserItem()->getEmail());
+
+          // $current_context = $this->_environment->getCurrentContextItem();
+          $mod_list = $mod_contact_list;
+
+          if (!$mod_list->isEmpty()) {
+            $moderator_item = $mod_list->getFirst();
+
+            while ($moderator_item) {
+              $email = $moderator_item->getEmail();
+              if (!empty($email)) {
+                $mail->set_cc_to($email);
+                // $cc_array[] = $email;
+              }
+
+              unset($email);
+              $moderator_item = $mod_list->getNext();
+            }
+          }
    				
    				// link
    				$url_to_portal = '';

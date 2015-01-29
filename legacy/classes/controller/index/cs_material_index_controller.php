@@ -267,7 +267,9 @@
 					'activated'			=> !$item->isNotActivated(),
 					'worldpublic'		=> $item->isWorldPublic(),
 					'activated_text'	=> $activated_text,
-					'creator_id'		=> $item->getCreatorItem()->getItemID()
+					'creator_id'		=> $item->getCreatorItem()->getItemID(),
+					'bib_author'		=> $item->getAuthor(),
+					'bib_year'			=> $item->getPublishingDate()
 				);
 
 				$item = $list->getNext();

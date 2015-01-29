@@ -403,8 +403,9 @@ class misc_text_converter {
       $last_list_type = '';
       $list_open = false;
 
+
       //split up paragraphs in lines
-      $lines = preg_split('~\s*\n~u', $text);
+      $lines = preg_split('~\s*\n~uU', $text);
       foreach ($lines as $line) {
          $line_html = '';
          $hr_line = false;
@@ -446,7 +447,7 @@ class misc_text_converter {
             }
             $line_html .= $line;
          }
-         $html .= $line_html;
+         $html .= $line_html."\r\n";
       }
       if ($list_open) {
          $html .= $this->_close_list($last_list_type);
@@ -4006,7 +4007,7 @@ class misc_text_converter {
     * 	*text*	to bold text
     * 	_text_	to italic text
     * 	!text	to headline4
-    * 	!!text	to headline3
+    * 	!!text	to headline3 
     * 	!!!text to headline2
     */
    public function _old_htmlformat($text) {

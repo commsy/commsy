@@ -559,6 +559,11 @@ div.pop_item_navigation {
 	padding:5px 10px;
 	}
 
+.list_action_select_all {
+    float: left;
+    margin-right: 10px;
+}
+
 #crt_row_area h2{
 	padding:5px 10px;
 	}
@@ -1169,6 +1174,10 @@ a span#ma_act {
 a span#ma_non_act {
     background: url(img/nav_material.png) no-repeat -21px 0px;
     }
+
+span.bib_content {
+    font-size: 10px;
+}
 
 
 /* Diskussionen */
@@ -2673,7 +2682,7 @@ a#sort_down {
 
 #item_postnew h4 {
     float: left;
-    width: 20px;
+    width: 30px;
     }
 
 input#pn_title {

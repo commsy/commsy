@@ -35,6 +35,7 @@ class misc_item2zip extends misc_2zip {
       parent::__construct($params);
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
+         ini_set('max_execution_time', 120);
       } else {
          include_once('functions/error_functions.php');
          trigger_error('no environment defined '.__FILE__.' '.__LINE__,E_USER_ERROR);

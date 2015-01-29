@@ -141,7 +141,7 @@
 						<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1" disabled="disabled"/>
         				<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
 					{else}
-         				<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+         				<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1" {if array_key_exists($item.iid, $environment.post.form_data.attach)}checked="checked"{/if}/>
         				<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
         			{/if}
 				</p>
@@ -169,6 +169,13 @@
 					{else}
 						{$item.title}
 					{/if}
+					{if $item.bib_author || $item.bib_year}
+						<span class="bib_content">
+						({if $item.bib_author}{$item.bib_author}{/if}
+						{if $item.bib_year}{$item.bib_year}{/if})
+						</span>
+					{/if}
+
 				</p>
 			</div>
 			<div class="column_45">

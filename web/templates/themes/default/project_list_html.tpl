@@ -51,7 +51,7 @@
 			</div>
 			<div class="column_list_20">
 				<p>
-         			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1"/>
+         			<input type="checkbox" name="form_data[attach][{$item.iid}]" value="1" {if array_key_exists($item.iid, $environment.post.form_data.attach)}checked="checked"{/if}/>
         			<input type="hidden" name="form_data[shown][{$item.iid}]" value="1"/>
 				</p>
 			</div>
