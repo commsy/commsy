@@ -704,6 +704,12 @@
 			        } else {
 			           $may_enter = false;
 			        }
+                 if(!empty($room_user) and $room_user->isRequested()) {
+                    $return['grouproom_user_request'] = true;
+                 } else {
+                    $return['grouproom_user_request'] = false;
+                 }
+               
 					$return['grouproom_may_enter'] = $may_enter;
 				}
 
