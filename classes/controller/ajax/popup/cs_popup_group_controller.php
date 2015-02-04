@@ -20,7 +20,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 				$this->_popup_controller->assign('item', 'edit_type', $data['editType']);
 			}
 			// assign template vars
-			$this->assignTemplateVars();
+			$this->assignTemplateVars($item);
 			$current_context = $this->_environment->getCurrentContextItem();
 
 			if($item !== null) {
@@ -246,6 +246,19 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					// Save item
 					$item->save();
 
+					if (isset($form_data["grouproom_template"])){
+        				if(isset($form_data['group_room_activate'])){
+        					$_POST['template_select'] = $form_data["grouproom_template"];
+        					if($_POST['template_select'] != 'leerer Raum'){
+        						$itemBackup = $item;
+        						$item = $item->getGroupRoomItem();
+        						include_once('include/inc_room_copy.php');
+        						$item = $itemBackup;
+        					}
+        					
+        				}
+        			}
+
 					// this will update the right box list
 					if($item_is_new){
 						if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids')){
@@ -277,7 +290,7 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );
     }
 
-    private function assignTemplateVars() {
+    private function assignTemplateVars($itemObject) {
         $current_user = $this->_environment->getCurrentUserItem();
         $current_context = $this->_environment->getCurrentContextItem();
 
@@ -296,6 +309,73 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
         $user_information['fullname'] = $current_user->getFullName();
         $this->_popup_controller->assign('popup', 'user', $user_information);
 
+
+		
+        $current_portal = $this->_environment->getCurrentPortalItem();
+        $room_manager = $this->_environment->getRoomManager();
+        $room_manager->setContextLimit($current_portal->getItemID());
+        // $room_manager->setWithGrouproom();
+        $room_manager->setOnlyGrouproom();
+        $room_manager->setTemplateLimit();
+        $room_manager->select();
+        $room_list = $room_manager->get();
+
+        
+        $default_id = $this->_environment->getCurrentPortalItem()->getDefaultProjectTemplateID();
+        if ($room_list->isNotEmpty() or $default_id != '-1' ) {
+        	$current_user = $this->_environment->getCurrentUser();
+        	if ( $default_id != '-1' ) {
+        		$default_item = $room_manager->getItem($default_id);
+        		if ( isset($default_item) ) {
+        			$template_availability = $default_item->getTemplateAvailability();
+        			if ( $template_availability == '0' ) {
+        				$temp_array['text'] = '*'.$default_item->getTitle();
+        				$temp_array['value'] = $default_item->getItemID();
+        				$template_array[] = $temp_array;
+        				$temp_array = array();
+        				$temp_array['text'] = '------------------------';
+        				$temp_array['value'] = 'disabled';
+        				$template_array[] = $temp_array;
+        			}
+        		}
+        	}
+        	$item = $room_list->getFirst();
+        	while ($item) {
+        		$temp_array = array();
+        		$template_availability = $item->getTemplateAvailability(); 
+        
+        		if( ($template_availability == '0') OR
+        		($this->_environment->inCommunityRoom() and $template_availability == '3') OR
+        		($this->_environment->inPortal() and $template_availability == '3' and $community_room_member) OR
+        		($template_availability == '1' and $item->mayEnter($current_user)) OR
+        		($template_availability == '2' and $item->mayEnter($current_user) and ($item->isModeratorByUserID($current_user->getUserID(),$current_user->getAuthSource())))
+        		){
+        			if ($item->getItemID() != $default_id or $item->getTemplateAvailability() != '0'){
+        				$this->_with_template_form_element2 = true;
+        				$temp_array['text'] = $item->getTitle();
+        				$temp_array['value'] = $item->getItemID();
+        				$template_array[] = $temp_array;
+       
+        				$this->_javascript_array[$item->getItemID()] = nl2br($item->getTemplateDescription());
+        			}
+        
+        		}
+        		$item = $room_list->getNext();
+        	}
+        	unset($current_user);
+        }
+        
+        // show group room templates if item is new or item has no grouproom
+        if(!empty($template_array) && $itemObject === null){
+        	$this->_popup_controller->assign('popup', 'withTemplate', '1');
+        	$this->_popup_controller->assign('popup', 'template', $template_array);
+        } else {
+        	$this->_popup_controller->assign('popup', 'withTemplate', '0');
+        }
+        
+
+		
+		$this->_popup_controller->assign("item", "languages", $this->_environment->getAvailableLanguageArray());
     }
 
 
