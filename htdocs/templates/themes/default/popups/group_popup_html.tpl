@@ -152,10 +152,23 @@
 							<div class="tab hidden" id="grouproom_tab">
 								<div class="settings_area">
 									<div class="input_row">
-										<div class="input_label_100">___COMMON_GROUPROOM___:</div>
+										<div class="input_label_150">___COMMON_GROUPROOM___:</div>
 										<div style="padding-top:5px;">
 											<input type="checkbox" class="float-left" value="1" {if $item.group_room_activate}checked="checked"{/if} name="form_data[group_room_activate]"/> ___GROUPROOM_FORM_CHECKBOX_TEXT___
 										</div>
+										{if $popup.withTemplate}	
+										<div class="clear"></div>				
+										<div class="input_label_150">___PROJECTROOM_TEMPLATE___:</div>
+										<div style="padding-top:5px;">
+											<select name="form_data[grouproom_template]">
+											    <option>___CONFIGURATION_TEMPLATE_NO_CHOICE___</option>
+												<option disabled="disabled">-----------------------</option>
+												{foreach $popup.template as $temp}
+												<option value="{$temp.value}">{$temp.text}</option>
+												{/foreach}
+											</select>
+										</div>
+										{/if}
 									</div>
 									<div class="clear"></div>
 								</div>
