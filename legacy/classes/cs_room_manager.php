@@ -71,6 +71,8 @@ class cs_room_manager extends cs_context_manager {
 
   private $_archive_limit = false;
 
+  private $_limit_only_grouproom = false;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -98,11 +100,19 @@ class cs_room_manager extends cs_context_manager {
      $this->_template_limit = NULL;
      $this->_logarchive_limit = NULL;
      $this->_limit_with_grouproom = false;
+     $this->_limit_only_grouproom = false;
      $this->_archive_limit = false;
   }
 
   public function setWithGrouproom () {
      $this->_limit_with_grouproom = true;
+  }
+
+  /**
+   * Select only grouprooms
+   */
+  public function setOnlyGrouproom () {
+    $this->_limit_only_grouproom = true;
   }
 
   /** set interval limit
@@ -269,13 +279,15 @@ class cs_room_manager extends cs_context_manager {
      ###################################
      # FLAG: group room
      ###################################
-     if ( empty($this->_room_type) or $this->_room_type != CS_GROUPROOM_TYPE ) {
+     if ( (empty($this->_room_type) or $this->_room_type != CS_GROUPROOM_TYPE) && !$this->_limit_only_grouproom ) {
         if ( !isset($this->_logarchive_limit)
              and !isset($this->_id_array_limit)
              and !$this->_limit_with_grouproom
            ) {
            $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type != "'.CS_GROUPROOM_TYPE.'"';
         }
+     } else if($this->_limit_only_grouproom) {
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.type = "'.CS_GROUPROOM_TYPE.'"';
      }
      ###################################
      # FLAG: group room

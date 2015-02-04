@@ -121,6 +121,9 @@
 							{else}
 								- ___CONTEXT_ENTER_LOGIN_NOT_ALLOWED___
 							{/if}
+							{if $detail.content.grouproom_user_request}
+							___ACCOUNT_NOT_ACCEPTED_YET___
+							{/if}
 							</p>
 						</div>
 						<div class="clear"> </div>
