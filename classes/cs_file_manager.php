@@ -744,7 +744,7 @@ class cs_file_manager extends cs_manager implements cs_export_import_interface {
             
             // try to get the same file ids from the item_link_file table
             if ( !empty($file_id_array) ) {
-               $sql2 = 'SELECT file_id FROM '.$this->addDatabasePrefix('item_link_file').' WHERE file_id IN ('.implode(',',$file_id_array).');';
+               $sql2 = 'SELECT file_id FROM '.$this->addDatabasePrefix('item_link_file').' WHERE file_id IN ('.implode(',',$file_id_array).') AND deletion_date IS NULL;';
                $result2 = $this->_db_connector->performQuery($sql2);
                if ( !isset($result2) ) {
                   include_once('functions/error_functions.php');
