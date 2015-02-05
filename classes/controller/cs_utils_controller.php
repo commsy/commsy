@@ -843,9 +843,13 @@
 			$bg_fixed = ($room_item->issetBGImageFixed() == true) ? 'fixed' : 'scroll';
 
 			// set complete path for background image
-			$bg_image = 'http://'.$_SERVER['HTTP_HOST'].'/'.$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID().'&mod=picture&fct=getfile&picture='.$bg_image;
-			//$bg_image = 'http://192.168.2.230/workspace/htdocs/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=picture&fct=getfile&picture=' . $bg_image;
+			global $c_commsy_domain;
+			$host = $c_commsy_domain;
+			global $c_commsy_url_path;
+			global $c_single_entry_point;
 			
+			$bg_image = $host.$c_commsy_url_path.'/'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&mod=picture&fct=getfile&picture='.$bg_image;
+
 			// In commsy/var abspeichern (für Loadbalacing)
 // 			$master = 'htdocs/templates/themes/individual/styles_cid.css';
 // 			$path = 'htdocs/templates/themes/individual/styles_' . $room_item->getItemID() . '.css';
