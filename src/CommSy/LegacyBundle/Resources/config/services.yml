@@ -1,3 +1,6 @@
+parameters:
+        legacy.site_index: %kernel.root_dir%/../web/commsy_legacy.php
+
 services:
     # Legacy kernel
     commsy_legacy.legacy_kernel:
