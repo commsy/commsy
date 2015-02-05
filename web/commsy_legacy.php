@@ -33,6 +33,9 @@ $session = null;
 global $db;
 $db = null;
 
+global $symfonyContainer;
+$symfonyContainer = $container;
+
 chdir('../legacy/');
 mb_internal_encoding('UTF-8');
 function cleanupSession($session, $environment)
