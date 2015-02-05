@@ -5313,3 +5313,7 @@ div.carouselImages img.gallery_image {
 	position:absolute;
 	left:0px;
 }
+
+span.account_comment {
+   padding-left: 4px;
+}
