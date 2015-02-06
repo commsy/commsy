@@ -4852,7 +4852,7 @@ class cs_connection_soap {
                   $moderatorItem = $moderatorList->getNext();
                }
 
-               foreach ($emailArras as $language => $addresses) {
+               foreach ($emailArray as $language => $addresses) {
                   $translator->setSelectedLanguage($language);
 
                   if (sizeof($addresses) > 0) {
