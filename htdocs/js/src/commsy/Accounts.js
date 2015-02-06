@@ -167,16 +167,27 @@ define([	"dojo/_base/declare",
 								className:		"pop_col_25"
 							}, rowDivNode, "last");
 							
-								DomConstruct.create("input", {
-									type:		"checkbox",
-									id:			"user_" + entry.item_id,
-									checked:	(BaseArray.indexOf(this.store.selected_ids, entry.item_id) !== -1) ? true : false
-								}, checkboxDivNode, "last");
+							DomConstruct.create("input", {
+								type:		"checkbox",
+								id:			"user_" + entry.item_id,
+								checked:	(BaseArray.indexOf(this.store.selected_ids, entry.item_id) !== -1) ? true : false
+							}, checkboxDivNode, "last");
 							
-							DomConstruct.create("div", {
+							var accountDivNode = DomConstruct.create("div", {
 								className:		"pop_col_270",
-								innerHTML:		entry.fullname
+								innerHTML:		entry.fullname,
+								title:         entry.comment
 							}, rowDivNode, "last");
+							
+							if (entry.comment) {
+   							var accountCommentSpan = DomConstruct.create("span", {
+      							className:  "account_comment"
+							   }, accountDivNode, "last");
+   							
+   							DomConstruct.create("img", {
+								   src:		   "/templates/themes/default/img/comment.gif"
+							   }, accountCommentSpan, "last");
+							}
 							
 							DomConstruct.create("div", {
 								className:		"pop_col_150",

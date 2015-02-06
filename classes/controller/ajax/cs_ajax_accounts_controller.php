@@ -621,7 +621,11 @@
 				if($portal_item->withAGBDatasecurity()){
 					$entry['agb'] = $item->getAGBAcceptanceDate();
 				}
-				
+            if (!$item->isRequested()) {
+               $entry['comment'] = '';
+            } else {
+               $entry['comment'] = $item->getUserComment();
+            }
 
 				$return['list'][] = $entry;
 				$item = $user_list->getNext();
