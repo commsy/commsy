@@ -33,11 +33,6 @@ class cs_session_item
     private $type = 'auth';
 
     /**
-    * string - containing the session id
-    */
-    private $sessionId = null;
-
-    /**
      * The Symfony Session Component
      * @var Symfony\Component\HttpFoundation\Session\Session $symfonySession
      */
@@ -48,10 +43,10 @@ class cs_session_item
     */
     public function __construct()
     {
-        $this->reset();
-
         global $symfonyContainer;
         $this->symfonySession = $symfonyContainer->get('session');
+
+        $this->reset();
     }
 
     /** is the type of the item = $type ?
@@ -76,6 +71,7 @@ class cs_session_item
     */
     public function reset()
     {
+        //$this->symfonySession->clear();
         //$this->sessionId = null;
         //$this->data = array();
     }

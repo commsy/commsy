@@ -351,124 +351,132 @@ if (!empty($portal_item)) {
         // activate shibboleth redirect if configured
         $shib_direct_login = $shib_auth_source->getShibbolethDirectLogin();
     }
-
-// 		pr($shib_direct_login);exit;
 }
-// Shibboleth Configuration ########################
-// pr($shib_direct_login);
-// pr($_SERVER);$shib_direct_login = false;
-// pr($_SERVER);
 
-// get Session ID (SID)
-if (!empty($_GET['SID'])) {
-    $SID = $_GET['SID'];                     // session id via GET-VARS (url)
-} elseif (!empty($_POST['SID'])) {
-    $SID = $_POST['SID'];                    // session id via POST-VARS (form posts)
-} elseif (!empty($_COOKIE['SID'])) {
-    $SID = $_COOKIE['SID'];
-    $session_manager = $environment->getSessionManager();
-    $session = $session_manager->get($SID);
-    if (!isset($session)
-        and $environment->getCurrentModule() == 'context'
-        and $environment->getCurrentFunction() == 'login'
-        and !$outofservice
-      ) {
-        include_once 'pages/context_login.php';
-        exit();
-    }
-} elseif ($environment->getCurrentModule() == 'context'
-           and $environment->getCurrentFunction() == 'login'
-           and !$outofservice
-         ) {
-    include_once 'pages/context_login.php';
-    exit();
-} elseif (strtolower($environment->getCurrentFunction()) == 'getfile'
-           and strtolower($environment->getCurrentModule()) == 'picture'
-         ) {
-    include_once 'pages/picture_getfile.php';
-    exit();
-} elseif (strtolower($environment->getCurrentFunction()) == 'getfile'
-           and strtolower($environment->getCurrentModule()) == 'individual'
-         ) {
-    include_once 'pages/individual_getfile.php';
-    exit();
-// } elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
-} elseif ($shib_direct_login) {
-    include_once 'pages/context_login.php';
-    exit();
-} else {
-    // no session created
-    // so create session and redirect to requested page
-    $session = new cs_session_item();
+// // get Session ID (SID)
+// if (!empty($_GET['SID'])) {
+//     $SID = $_GET['SID'];                     // session id via GET-VARS (url)
+// } elseif (!empty($_POST['SID'])) {
+//     $SID = $_POST['SID'];                    // session id via POST-VARS (form posts)
+// } elseif (!empty($_COOKIE['SID'])) {
+//     $SID = $_COOKIE['SID'];
+//     $session_manager = $environment->getSessionManager();
+//     $session = $session_manager->get($SID);
+//     if (!isset($session)
+//         and $environment->getCurrentModule() == 'context'
+//         and $environment->getCurrentFunction() == 'login'
+//         and !$outofservice
+//       ) {
+//         include_once 'pages/context_login.php';
+//         exit();
+//     }
+// } elseif ($environment->getCurrentModule() == 'context'
+//            and $environment->getCurrentFunction() == 'login'
+//            and !$outofservice
+//          ) {
+//     include_once 'pages/context_login.php';
+//     exit();
+// } elseif (strtolower($environment->getCurrentFunction()) == 'getfile'
+//            and strtolower($environment->getCurrentModule()) == 'picture'
+//          ) {
+//     include_once 'pages/picture_getfile.php';
+//     exit();
+// } elseif (strtolower($environment->getCurrentFunction()) == 'getfile'
+//            and strtolower($environment->getCurrentModule()) == 'individual'
+//          ) {
+//     include_once 'pages/individual_getfile.php';
+//     exit();
+// // } elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
+// } elseif ($shib_direct_login) {
+//     include_once 'pages/context_login.php';
+//     exit();
+// } else {
+//     // no session created
+//     // so create session and redirect to requested page
+//     $session = new cs_session_item();
+//     $session->createSessionID('guest');
+
+//     $current_portal_id = $environment->getCurrentPortalID();
+//     if (!empty($current_portal_id)) {
+//         $session->setValue('commsy_id', $current_portal_id);
+//     } else {
+//         $server_id = $environment->getServerID();
+//         if (!empty($server_id)) {
+//             $session->setValue('commsy_id', $server_id);
+//         }
+//     }
+
+//    // external reload to check javascript
+//     $session_manager = $environment->getSessionManager();
+//     $session_manager->save($session);
+//     if (!$outofservice) {
+//         include_once 'pages/context_reload.php';
+//         exit();
+//     } else {
+//         $SID = $session->getSessionID();
+//     }
+// }
+
+$symfonySession = $symfonyContainer->get('session');
+$SID = $symfonySession->getId();
+$session = new cs_session_item();
+
+$authorizationChecker = $symfonyContainer->get('security.authorization_checker');
+
+$isGuest = !$authorizationChecker->isGranted('IS_AUTHENTICATED_REMEMBERED');
+if ($isGuest) {
     $session->createSessionID('guest');
-
-    $current_portal_id = $environment->getCurrentPortalID();
-    if (!empty($current_portal_id)) {
-        $session->setValue('commsy_id', $current_portal_id);
-    } else {
-        $server_id = $environment->getServerID();
-        if (!empty($server_id)) {
-            $session->setValue('commsy_id', $server_id);
-        }
-    }
-
-   // external reload to check javascript
-    $session_manager = $environment->getSessionManager();
-    $session_manager->save($session);
-    if (!$outofservice) {
-        include_once 'pages/context_reload.php';
-        exit();
-    } else {
-        $SID = $session->getSessionID();
-    }
+} else {
+    $user = $symfonyContainer->get('security.context')->getToken()->getUser();
+    $session->createSessionID($user->getUsername());
 }
 
 if (!empty($SID)) {
-    // there is a session_id,
-   // and there must be a session,
-   // so we can load the session information
-   $session_manager = $environment->getSessionManager();
-    $session = $session_manager->get($SID);
+//     // there is a session_id,
+//    // and there must be a session,
+//    // so we can load the session information
+//    $session_manager = $environment->getSessionManager();
+//     $session = $session_manager->get($SID);
 
-    if ($shib_direct_login or !empty($_SERVER['Shib-Session-ID'])) {
-        // get shibboleth keys from configuration
-    if (isset($shib_auth_source)) {
-        $uidKey = $shib_auth_source->getShibbolethUsername();
-//    		$mailKey = $shibboleth_auth->getShibbolethEmail();
-//    		$commonNameKey = $shibboleth_auth->getShibbolethFirstname();
-//    		$sureNameKey = $shibboleth_auth->getShibbolethLastname();
-    }
-        if ($_SERVER[$uidKey] != $session->getValue('user_id') or $_SERVER['Shib-Session-ID'] != $session->getSessionID()) {
-            $session->reset();
-            $session->setSessionID($_SERVER['Shib-Session-ID']);
-            $session->setValue('user_id', $_SERVER[$uidKey]);
-            $session->setValue('shibboleth_auth', '1');
-            $session->setValue('commsy_id', $environment->getCurrentPortalItem()->getItemID());
-//    		$session->setSessionID($_SERVER['Shib-Session-ID']);
-        $environment->setSessionItem($session);
-            $SID = $session->getSessionID();
+//     if ($shib_direct_login or !empty($_SERVER['Shib-Session-ID'])) {
+//         // get shibboleth keys from configuration
+//     if (isset($shib_auth_source)) {
+//         $uidKey = $shib_auth_source->getShibbolethUsername();
+// //    		$mailKey = $shibboleth_auth->getShibbolethEmail();
+// //    		$commonNameKey = $shibboleth_auth->getShibbolethFirstname();
+// //    		$sureNameKey = $shibboleth_auth->getShibbolethLastname();
+//     }
+//         if ($_SERVER[$uidKey] != $session->getValue('user_id') or $_SERVER['Shib-Session-ID'] != $session->getSessionID()) {
+//             $session->reset();
+//             $session->setSessionID($_SERVER['Shib-Session-ID']);
+//             $session->setValue('user_id', $_SERVER[$uidKey]);
+//             $session->setValue('shibboleth_auth', '1');
+//             $session->setValue('commsy_id', $environment->getCurrentPortalItem()->getItemID());
+// //    		$session->setSessionID($_SERVER['Shib-Session-ID']);
+//         $environment->setSessionItem($session);
+//             $SID = $session->getSessionID();
 
-            $user_manager = $environment->getUserManager();
-            $user_item = $user_manager->getItemByUserIDAuthSourceID($_SERVER[$uidKey], $shib_auth_source_id);
-            $environment->setCurrentUser($user_item);
-            $session_manager->save($session);
-        } else {
-            // User has a session and is authenticated by shibboleth
+//             $user_manager = $environment->getUserManager();
+//             $user_item = $user_manager->getItemByUserIDAuthSourceID($_SERVER[$uidKey], $shib_auth_source_id);
+//             $environment->setCurrentUser($user_item);
+//             $session_manager->save($session);
+//         } else {
+//             // User has a session and is authenticated by shibboleth
 
-        $user_manager = $environment->getUserManager();
-            $user_item = $user_manager->getItemByUserIDAuthSourceID($_SERVER[$uidKey], $shib_auth_source_id);
-            $environment->setCurrentUser($user_item);
-        }
-    } else {
-        // Shibboleth Session is empty (session timeout from sp)
-    // reset session and login as guest
-    if (!empty($session)) {
-        if ($session->getValue('shibboleth_auth')) {
-            $session->reset();
-            $session->createSessionID('guest');
-        }
-    }
-    }
+//         $user_manager = $environment->getUserManager();
+//             $user_item = $user_manager->getItemByUserIDAuthSourceID($_SERVER[$uidKey], $shib_auth_source_id);
+//             $environment->setCurrentUser($user_item);
+//         }
+//     } else {
+//         // Shibboleth Session is empty (session timeout from sp)
+//     // reset session and login as guest
+//     if (!empty($session)) {
+//         if ($session->getValue('shibboleth_auth')) {
+//             $session->reset();
+//             $session->createSessionID('guest');
+//         }
+//     }
+//     }
 
     if (isset($session)) {
         $environment->setSessionItem($session);
@@ -518,154 +526,154 @@ if (!empty($SID)) {
    }
    /** password forget (END) **/
 
-   if (isset($session)
-        and mb_strtoupper($session->getValue('user_id'), 'UTF-8') == 'GUEST'
-        and !$outofservice
-      ) {
-       $cas_ticket = '';
-       if (!empty($_GET['ticket'])) {
-           $cas_ticket = $_GET['ticket'];
-       } elseif (!empty($_POST['ticket'])) {
-           $cas_ticket = $_POST['ticket'];
-       } elseif (!empty($_COOKIE['ticket'])) {
-           $cas_ticket = $_COOKIE['ticket'];
-       }
+   // if (isset($session)
+   //      and mb_strtoupper($session->getValue('user_id'), 'UTF-8') == 'GUEST'
+   //      and !$outofservice
+   //    ) {
+   //     $cas_ticket = '';
+   //     if (!empty($_GET['ticket'])) {
+   //         $cas_ticket = $_GET['ticket'];
+   //     } elseif (!empty($_POST['ticket'])) {
+   //         $cas_ticket = $_POST['ticket'];
+   //     } elseif (!empty($_COOKIE['ticket'])) {
+   //         $cas_ticket = $_COOKIE['ticket'];
+   //     }
 
-       if (!empty($cas_ticket)) {
-           $portal = $environment->getCurrentPortalItem();
-           $cas_list = $portal->getAuthSourceListCASEnabled();
-           if ($cas_list->isNotEmpty()) {
-               $cas_auth_source = $cas_list->getFirst();
-               while ($cas_auth_source) {
-                   $authentication = $environment->getAuthenticationObject();
-                   $cas_manager = $authentication->getAuthManagerByAuthSourceItem($cas_auth_source);
-                   $user_id = $cas_manager->validateTicket($cas_ticket);
-                   if (isset($user_id) and !empty($user_id)) {
-                       $auth_source = $cas_auth_source->getItemID();
-                       $portal_item = $environment->getCurrentPortalItem();
-                       $user_item = $authentication->getPortalUserItem($user_id, $auth_source);
-                       $user_item_id = $user_item->getItemID();
-                       if (empty($user_item_id)) {
-                           $params = array();
-                           $params = $environment->getCurrentParameterArray();
-                           $params['user_id'] = $uid;
-                           $params['auth_source'] = $auth_source;
-                           $params['cs_modus'] = 'portalmember2';
-                           $session_item = $environment->getSessionItem();
-                           if (isset($session_item)) {
-                               $history = $session_item->getValue('history');
-                               $module = $history[0]['module'];
-                               $funct = $history[0]['function'];
-                               unset($session_item);
-                           } else {
-                               $module = $this->_environment->getCurrentModule();
-                               $funct = $this->_environment->getCurrentFunction();
-                           }
-                           redirect($environment->getCurrentContextID(),
-                               $module,
-                               $funct,
-                               $params
-                             );
-                           unset($params);
-                           exit();
-                       } else {
-                           include_once 'include/inc_make_session_for_user.php';
-                           $environment->setSessionItem($session);
-                       }
-                       unset($user_item);
-                       unset($portal_item);
-                       break;
-                   }
-                   $cas_auth_source = $cas_list->getNext();
-               }
-           }
-           unset($portal);
-       }
+   //     if (!empty($cas_ticket)) {
+   //         $portal = $environment->getCurrentPortalItem();
+   //         $cas_list = $portal->getAuthSourceListCASEnabled();
+   //         if ($cas_list->isNotEmpty()) {
+   //             $cas_auth_source = $cas_list->getFirst();
+   //             while ($cas_auth_source) {
+   //                 $authentication = $environment->getAuthenticationObject();
+   //                 $cas_manager = $authentication->getAuthManagerByAuthSourceItem($cas_auth_source);
+   //                 $user_id = $cas_manager->validateTicket($cas_ticket);
+   //                 if (isset($user_id) and !empty($user_id)) {
+   //                     $auth_source = $cas_auth_source->getItemID();
+   //                     $portal_item = $environment->getCurrentPortalItem();
+   //                     $user_item = $authentication->getPortalUserItem($user_id, $auth_source);
+   //                     $user_item_id = $user_item->getItemID();
+   //                     if (empty($user_item_id)) {
+   //                         $params = array();
+   //                         $params = $environment->getCurrentParameterArray();
+   //                         $params['user_id'] = $uid;
+   //                         $params['auth_source'] = $auth_source;
+   //                         $params['cs_modus'] = 'portalmember2';
+   //                         $session_item = $environment->getSessionItem();
+   //                         if (isset($session_item)) {
+   //                             $history = $session_item->getValue('history');
+   //                             $module = $history[0]['module'];
+   //                             $funct = $history[0]['function'];
+   //                             unset($session_item);
+   //                         } else {
+   //                             $module = $this->_environment->getCurrentModule();
+   //                             $funct = $this->_environment->getCurrentFunction();
+   //                         }
+   //                         redirect($environment->getCurrentContextID(),
+   //                             $module,
+   //                             $funct,
+   //                             $params
+   //                           );
+   //                         unset($params);
+   //                         exit();
+   //                     } else {
+   //                         include_once 'include/inc_make_session_for_user.php';
+   //                         $environment->setSessionItem($session);
+   //                     }
+   //                     unset($user_item);
+   //                     unset($portal_item);
+   //                     break;
+   //                 }
+   //                 $cas_auth_source = $cas_list->getNext();
+   //             }
+   //         }
+   //         unset($portal);
+   //     }
 
-/*TYPO3-Anbindung*/
-      $typo3_session_id = '';
-       if (!empty($_GET['ses_id'])) {
-           $typo3_session_id = $_GET['ses_id'];
-       } elseif (!empty($_POST['ses_id'])) {
-           $typo3_session_id = $_POST['ses_id'];
-       } elseif (!empty($_COOKIE['ses_id'])) {
-           $typo3_session_id = $_COOKIE['ses_id'];
-       }
-       if (!empty($typo3_session_id)) {
-           $get_param_context_id = $environment->getCurrentContextId();
-           $environment->setCurrentContextId($environment->getCurrentPortalId());
-           $portal = $environment->getCurrentPortalItem();
-           $typo3web_list = $portal->getAuthSourceListTypo3WebEnabled();
-           if ($typo3web_list->isNotEmpty()) {
-               $typo3web_auth_source = $typo3web_list->getFirst();
-               while ($typo3web_auth_source) {
-                   $authentication = $environment->getAuthenticationObject();
-                   $typo3web_manager = $authentication->getAuthManagerByAuthSourceItem($typo3web_auth_source);
-                   $user_data_array = $typo3web_manager->validateSessionID($typo3_session_id);
-                   if (isset($user_data_array['user_id']) and !empty($user_data_array['user_id'])) {
-                       $user_manager = $environment->getUserManager();
-                       $auth_source = $typo3web_auth_source->getItemID();
-                       $portal_item = $environment->getCurrentPortalItem();
-                       if ($authentication->exists($user_data_array['user_id'], $auth_source)) {
-                           $user_manager = $environment->getUserManager();
-                           $user_manager->setPortalIDLimit($environment->getCurrentPortalID());
-                           $user_manager->setUserIDLimit($user_data_array['user_id']);
-                           $user_manager->select();
-                           $user_list = $user_manager->get();
-                           $user_item = $user_list->getFirst();
-                           $environment->setCurrentUser($user_item);
-                       } else {
-                           $new_account_data = $user_data_array;
-                           if (!empty($new_account_data)
-                          and !empty($new_account_data['firstname'])
-                          and !empty($new_account_data['lastname'])
-                        ) {
-                               $user_item = $user_manager->getNewItem();
-                               $user_item->setUserID($new_account_data['user_id']);
-                               $user_item->setFirstname($new_account_data['firstname']);
-                               $user_item->setLastname($new_account_data['lastname']);
-                               if (!empty($new_account_data['email'])) {
-                                   $user_item->setEmail($new_account_data['email']);
-                               } else {
-                                   $server_item = $environment->getServerItem();
-                                   $email = $server_item->getDefaultSenderAddress();
-                                   $user_item->setEmail($email);
-                                   $user_item->setHasToChangeEmail();
-                               }
-                               $user_item->setAuthSource($typo3web_manager->getAuthSourceItemID());
-                               $user_item->makeUser();
-                               $user_item->save();
-                               $environment->setCurrentUser($user_item);
-                           }
-                       }
-                       $user_id = $user_data_array['user_id'];
-                       $environment->setCurrentContextId($get_param_context_id);
-                       include_once 'include/inc_make_session_for_user.php';
-                       $session_manager = $environment->getSessionManager();
-                       $session_manager->save($session);
-                       $environment->setSessionItem($session);
+// /*TYPO3-Anbindung*/
+//       $typo3_session_id = '';
+//        if (!empty($_GET['ses_id'])) {
+//            $typo3_session_id = $_GET['ses_id'];
+//        } elseif (!empty($_POST['ses_id'])) {
+//            $typo3_session_id = $_POST['ses_id'];
+//        } elseif (!empty($_COOKIE['ses_id'])) {
+//            $typo3_session_id = $_COOKIE['ses_id'];
+//        }
+//        if (!empty($typo3_session_id)) {
+//            $get_param_context_id = $environment->getCurrentContextId();
+//            $environment->setCurrentContextId($environment->getCurrentPortalId());
+//            $portal = $environment->getCurrentPortalItem();
+//            $typo3web_list = $portal->getAuthSourceListTypo3WebEnabled();
+//            if ($typo3web_list->isNotEmpty()) {
+//                $typo3web_auth_source = $typo3web_list->getFirst();
+//                while ($typo3web_auth_source) {
+//                    $authentication = $environment->getAuthenticationObject();
+//                    $typo3web_manager = $authentication->getAuthManagerByAuthSourceItem($typo3web_auth_source);
+//                    $user_data_array = $typo3web_manager->validateSessionID($typo3_session_id);
+//                    if (isset($user_data_array['user_id']) and !empty($user_data_array['user_id'])) {
+//                        $user_manager = $environment->getUserManager();
+//                        $auth_source = $typo3web_auth_source->getItemID();
+//                        $portal_item = $environment->getCurrentPortalItem();
+//                        if ($authentication->exists($user_data_array['user_id'], $auth_source)) {
+//                            $user_manager = $environment->getUserManager();
+//                            $user_manager->setPortalIDLimit($environment->getCurrentPortalID());
+//                            $user_manager->setUserIDLimit($user_data_array['user_id']);
+//                            $user_manager->select();
+//                            $user_list = $user_manager->get();
+//                            $user_item = $user_list->getFirst();
+//                            $environment->setCurrentUser($user_item);
+//                        } else {
+//                            $new_account_data = $user_data_array;
+//                            if (!empty($new_account_data)
+//                           and !empty($new_account_data['firstname'])
+//                           and !empty($new_account_data['lastname'])
+//                         ) {
+//                                $user_item = $user_manager->getNewItem();
+//                                $user_item->setUserID($new_account_data['user_id']);
+//                                $user_item->setFirstname($new_account_data['firstname']);
+//                                $user_item->setLastname($new_account_data['lastname']);
+//                                if (!empty($new_account_data['email'])) {
+//                                    $user_item->setEmail($new_account_data['email']);
+//                                } else {
+//                                    $server_item = $environment->getServerItem();
+//                                    $email = $server_item->getDefaultSenderAddress();
+//                                    $user_item->setEmail($email);
+//                                    $user_item->setHasToChangeEmail();
+//                                }
+//                                $user_item->setAuthSource($typo3web_manager->getAuthSourceItemID());
+//                                $user_item->makeUser();
+//                                $user_item->save();
+//                                $environment->setCurrentUser($user_item);
+//                            }
+//                        }
+//                        $user_id = $user_data_array['user_id'];
+//                        $environment->setCurrentContextId($get_param_context_id);
+//                        include_once 'include/inc_make_session_for_user.php';
+//                        $session_manager = $environment->getSessionManager();
+//                        $session_manager->save($session);
+//                        $environment->setSessionItem($session);
 
-                       $typo3web_manager->sendSessionToTypo3($typo3_session_id, $session->getSessionID());
+//                        $typo3web_manager->sendSessionToTypo3($typo3_session_id, $session->getSessionID());
 
-                       $params = array();
-                       $params = $environment->getCurrentParameterArray();
-                       unset($params['ses_id']);
-                       unset($params['cid']);
-                       redirect($environment->getCurrentContextID(),
-                            $environment->getCurrentModule(),
-                            $environment->getCurrentFunction(),
-                            $params
-                          );
-                       unset($params);
-                       break;
-                   }
-                   $typo3web_auth_source = $typo3web_list->getNext();
-               }
-           }
-           unset($portal);
-       }
-/*Ende TYPO3-Anbindung*/
-   }
+//                        $params = array();
+//                        $params = $environment->getCurrentParameterArray();
+//                        unset($params['ses_id']);
+//                        unset($params['cid']);
+//                        redirect($environment->getCurrentContextID(),
+//                             $environment->getCurrentModule(),
+//                             $environment->getCurrentFunction(),
+//                             $params
+//                           );
+//                        unset($params);
+//                        break;
+//                    }
+//                    $typo3web_auth_source = $typo3web_list->getNext();
+//                }
+//            }
+//            unset($portal);
+//        }
+// /*Ende TYPO3-Anbindung*/
+//   }
 
    // commsy: portal2portal
    if (isset($session)
@@ -951,65 +959,65 @@ if (!empty($_POST)
     unset($csrf_error);
 }
 
-/*********** javascript check *************/
-if (!$outofservice
-     and $environment->isOutputModeNot('XML')
-     and $environment->isOutputModeNot('JSON')
-     and $environment->isOutputModeNot('BLANK')
-#     and !$environment->getCurrentModule() == 'ajax'
-     and !($environment->getCurrentModule() == 'ajax')
-     and !$session->issetValue('javascript')
-     and !isset($_GET['jscheck'])
-     and !($environment->getCurrentModule() == 'file'
-            and $environment->getCurrentFunction() == 'upload'
-          )
-     and !($environment->getCurrentModule() == 'material'
-            and $environment->getCurrentFunction() == 'getfile'
-          )
-     and !($environment->getCurrentModule() == 'room'
-            and $environment->getCurrentFunction() == 'change'
-          )
-     and !($environment->getCurrentModule() == 'context'
-            and $environment->getCurrentFunction() == 'login'
-          )
-   ) {
-    include_once 'pages/context_reload.php';
-    exit();
-}
-if (isset($_GET['jscheck'])
-     and $environment->isOutputModeNot('XML')
-     and $environment->isOutputModeNot('JSON')
-     and $environment->isOutputModeNot('BLANK')
-     and (empty($_POST)
-           or (count($_POST) == 1
-                and !empty($_POST['HTTP_ACCEPT_LANGUAGE']) // bugfix: php configuration
-              )
-         )
-   ) {
-    $session = $environment->getSessionItem();
-    if (isset($session) and !$session->issetValue('javascript')) {
-        if (isset($_GET['isJS'])) {
-            $session->setValue('javascript', 1);
-        } else {
-        }
-    }
-    if (isset($session) and !$session->issetValue('https')) {
-        if (isset($_GET['https'])) {
-            if (!empty($_GET['https']) and $_GET['https'] == 1) {
-                $session->setValue('https', 1);
-            } else {
-                $session->setValue('https', -1);
-            }
-        }
-    }
-    if (isset($session) and !$session->issetValue('flash')) {
-        if (isset($_GET['flash'])) {
-            $session->setValue('flash', 1);
-        } else {
-            $session->setValue('flash', -1);
-        }
-    }
-}
+// /*********** javascript check *************/
+// if (!$outofservice
+//      and $environment->isOutputModeNot('XML')
+//      and $environment->isOutputModeNot('JSON')
+//      and $environment->isOutputModeNot('BLANK')
+// #     and !$environment->getCurrentModule() == 'ajax'
+//      and !($environment->getCurrentModule() == 'ajax')
+//      and !$session->issetValue('javascript')
+//      and !isset($_GET['jscheck'])
+//      and !($environment->getCurrentModule() == 'file'
+//             and $environment->getCurrentFunction() == 'upload'
+//           )
+//      and !($environment->getCurrentModule() == 'material'
+//             and $environment->getCurrentFunction() == 'getfile'
+//           )
+//      and !($environment->getCurrentModule() == 'room'
+//             and $environment->getCurrentFunction() == 'change'
+//           )
+//      and !($environment->getCurrentModule() == 'context'
+//             and $environment->getCurrentFunction() == 'login'
+//           )
+//    ) {
+//     include_once 'pages/context_reload.php';
+//     exit();
+// }
+// if (isset($_GET['jscheck'])
+//      and $environment->isOutputModeNot('XML')
+//      and $environment->isOutputModeNot('JSON')
+//      and $environment->isOutputModeNot('BLANK')
+//      and (empty($_POST)
+//            or (count($_POST) == 1
+//                 and !empty($_POST['HTTP_ACCEPT_LANGUAGE']) // bugfix: php configuration
+//               )
+//          )
+//    ) {
+//     $session = $environment->getSessionItem();
+//     if (isset($session) and !$session->issetValue('javascript')) {
+//         if (isset($_GET['isJS'])) {
+//             $session->setValue('javascript', 1);
+//         } else {
+//         }
+//     }
+//     if (isset($session) and !$session->issetValue('https')) {
+//         if (isset($_GET['https'])) {
+//             if (!empty($_GET['https']) and $_GET['https'] == 1) {
+//                 $session->setValue('https', 1);
+//             } else {
+//                 $session->setValue('https', -1);
+//             }
+//         }
+//     }
+//     if (isset($session) and !$session->issetValue('flash')) {
+//         if (isset($_GET['flash'])) {
+//             $session->setValue('flash', 1);
+//         } else {
+//             $session->setValue('flash', -1);
+//         }
+//     }
+// }
 
 $current_user_item = $environment->getCurrentUserItem();
 
@@ -1037,19 +1045,20 @@ global $c_smarty;
 $c_smarty = true;
 if (isset($c_smarty) && $c_smarty === true) {
     require_once 'classes/cs_smarty.php';
+
     global $c_theme;
-    $shown_sheme = $c_theme;
-    global $theme_array;
     if (!isset($c_theme) || empty($c_theme)) {
         $c_theme = 'default';
     }
 
+    $shown_sheme = $c_theme;
+    
     // room theme
     $color = $environment->getCurrentContextItem()->getColorArray();
     $theme = $color['schema'];
 
     if ($theme !== 'default') {
-        $correct_theme = false;
+        global $theme_array;
         if (is_array($theme_array)) {
             foreach ($theme_array as $key => $value) {
                 if ($theme == $key or $key == 'individual') {
