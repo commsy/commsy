@@ -2,12 +2,78 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}CommSy{% endblock %}</title>
+
+        {% block stylesheets %}
+            {% stylesheets
+                'bundles/app/css/thirdparty/semantic.min.css'
+                'bundles/app/css/*' filter='cssrewrite' %}
+                <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    <body id="commsy">
+        <!-- sidebar -->
+        <div class="ui blue left vertical inverted sidebar menu">
+            <div class="item">
+                Benutzer
+            </div>
+            <div class="ui divider"></div>
+            {{ knp_menu_render('AppBundle:Builder:sidebarMenu', {'template': 'AppBundle:Menu:knp_menu.html.twig'}) }}
+        </div>
+
+        <!-- top menu -->
+        <div class="ui fixed top menu">
+            <a class="ui transparent toggle navigation item">
+                <i class="content icon"></i> Navigation
+              </a>
+
+            <div class="right menu">
+                <div class="item">
+                    <div class="ui transparent icon input">
+                        <input type="text" placeholder="Search...">
+                        <i class="search link icon"></i>
+                    </div>
+                </div>
+                <div class="ui dropdown item">
+                    Sprache <i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item">English</a>
+                        <a class="item">Russian</a>
+                        <a class="item">Spanish</a>
+                    </div>
+                </div>
+                <div class="item">
+                    <a class="ui red button">
+                        <i class="sign out icon"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="pusher">
+            <!-- header -->
+            <div class="header segment">
+                <div class="container">
+                    header
+                </div>
+            </div>
+
+            <div class="main container">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+        
+        {% block javascripts %}
+            {% javascripts
+                '@AppBundle/Resources/public/js/thirdparty/jquery-2.1.3.min.js'
+                '@AppBundle/Resources/public/js/thirdparty/semantic.min.js'
+                '@AppBundle/Resources/public/js/*' %}
+                <script src="{{ asset_url }}"></script>
+            {% endjavascripts %}
+        {% endblock %}
     </body>
 </html>
