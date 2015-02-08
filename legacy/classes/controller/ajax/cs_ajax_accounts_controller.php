@@ -84,6 +84,7 @@
 				case "lock":
 				case "free":
 				case "status_user":
+				case "status_readonly_user":
 					if($room_moderator_count - $selected_moderator_count < 1) {
 						$this->setErrorReturn('103', 'you are trying to remove all moderators', array());
 						echo $this->_return;
