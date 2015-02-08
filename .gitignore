@@ -83,13 +83,13 @@ local.properties
 legacy/etc/cs_config.php
 legacy/etc/commsy/*.php
 web/javascript/jQuery/commsy_min/*
-htdocs/js/build/*
-htdocs/templates/templates_c/*
+web/htdocs/js/build/*
+web/templates/templates_c/*
 var/[0-9]*
 var/templates/individual/*
-libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
+legacy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
 external_pages/[0-9]*
-htdocs/css/external_portal_styles/[0-9]*
+web/css/external_portal_styles/[0-9]*
 wikis/*
 web/commsy
 var
