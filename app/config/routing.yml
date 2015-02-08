@@ -1,3 +1,8 @@
+commsy_room:
+    resource: "@CommSyRoomBundle/Resources/config/routing.yml"
+    #type:     annotation
+    prefix:   /room
+
 commsy_user:
     resource: "@CommSyUserBundle/Controller/"
     type:     annotation

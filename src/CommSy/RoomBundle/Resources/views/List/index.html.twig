@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="ui close right rail">
+        <div class="ui sticky">
+
+            {{ form_start(form, {'method': 'GET'}) }}
+                {{ form_rest(form) }}
+                <input class="ui submit button" type="submit" name="submit-filter" value="filter" />
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    Raumliste
+
+    {# total items count #}
+    <div class="count">
+        {{ pagination.getTotalItemCount }}
+    </div>
+
+    <table class="ui table">
+        <thead>
+            <tr>
+                {# sorting of properties based on query components #}
+                <th>{{ knp_pagination_sortable(pagination, 'Id', 'r.id') }}</th>
+                <th{% if pagination.isSorted('r.title') %} class="sorted"{% endif %}>{{ knp_pagination_sortable(pagination, 'Titel', 'r.title') }}</th>
+            </tr>
+        </thead>
+
+        {# table body #}
+        <tbody>
+            {% for room in pagination %}
+                <tr>
+                    <td>{{ room.id }}</td>
+                    <td>{{ room.title }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}

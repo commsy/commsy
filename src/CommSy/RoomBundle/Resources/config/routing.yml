@@ -1,0 +1,3 @@
+commsy_room_list:
+    path:     /list
+    defaults: { _controller: CommSyRoomBundle:Room:list }
