@@ -1,3 +1,7 @@
+commsy_dashboard:
+    resource: "@CommSyDashboardBundle/Resources/config/routing.yml"
+    prefix:   /
+
 commsy_room:
     resource: "@CommSyRoomBundle/Resources/config/routing.yml"
     #type:     annotation

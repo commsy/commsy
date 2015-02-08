@@ -1,0 +1,3 @@
+commsy_dashboard:
+    path:     /
+    defaults: { _controller: CommSyDashboardBundle:Default:index }
