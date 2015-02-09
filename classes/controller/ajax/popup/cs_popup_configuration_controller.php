@@ -451,6 +451,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				         } elseif ( $current_context->isProjectRoom()
 				                    or $current_context->isCommunityRoom()
 				                    or $current_context->isPrivateRoom()
+				                    or $current_context->isGroupRoom()
 				                  ) {
 				            $current_context->setNotTemplate();
 				         }
