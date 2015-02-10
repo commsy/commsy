@@ -57,6 +57,9 @@
 		}
 
 		public function actionSave() {
+			// logging save
+			include_once('include/inc_log.php');
+
 			// include
 			$module = $this->_data['module'];
 			require_once('classes/controller/ajax/popup/cs_popup_' . $module . '_controller.php');
