@@ -124,6 +124,8 @@
 			$session = $this->_environment->getSessionItem();
 			
 			$isMulti = is_array($uploadData["name"]);
+
+			$virus_found = false;
 			
 			$file_array = array();
 			if($isMulti) {
@@ -152,17 +154,22 @@
 								isset($c_virus_scan_cron) &&
 								//!empty($c_virus_scan_cron) &&
 								!$c_virus_scan_cron) {
-								
 							// use virus scanner
 							require_once('classes/cs_virus_scan.php');
 							$virus_scanner = new cs_virus_scan($this->_environment);
-							if ( $virus_scanner->isClean($tempFile, $uploadData['name'][$i]) ) {
-								$temp_array = array();
-								$temp_array['name'] = $uploadData['name'][$i];
+							$temp_array = array();
+
+							if ( !$virus_scanner->isClean($tempFile, $uploadData['name']) ) {
+								// Error virus detected
+								$virus_found = true;
+								$temp_array['virus'] = true;
+								$temp_array['virusname'] = $virus_scanner->getVirusName();
+							} else {
 								$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
 								$temp_array['file_id'] = $temp_array['name'].'_' . getCurrentDateTimeInMySQL();
-								$file_array[] = $temp_array;
 							}
+							$temp_array['name'] = $uploadData['name'][$i];
+							$file_array[] = $temp_array;
 						} else {
 							// do not use virus scanner
 							require_once('functions/date_functions.php');
@@ -202,13 +209,20 @@
 						// use virus scanner
 						require_once('classes/cs_virus_scan.php');
 						$virus_scanner = new cs_virus_scan($this->_environment);
-						if ( $virus_scanner->isClean($tempFile, $uploadData['name']) ) {
-							$temp_array = array();
-							$temp_array['name'] = $uploadData['name'];
+
+						$temp_array = array();
+
+						if ( !$virus_scanner->isClean($tempFile, $uploadData['name']) ) {
+							// Error virus detected
+							$virus_found = true;
+							$temp_array['virus'] = true;
+							$temp_array['virusname'] = $virus_scanner->getVirusName();
+						} else {
 							$temp_array['tmp_name'] = $disc_manager->moveUploadedFileToTempFolder($tempFile);
 							$temp_array['file_id'] = $temp_array['name'].'_' . getCurrentDateTimeInMySQL();
-							$file_array[] = $temp_array;
 						}
+						$temp_array['name'] = $uploadData['name'];
+						$file_array[] = $temp_array;
 					} else {
 						// do not use virus scanner
 						require_once('functions/date_functions.php');
@@ -231,7 +245,9 @@
 						"file"		=> $file["tmp_name"],
 						"name"		=> $file["name"],
 						"type"		=> "",
-						"file_id"	=> $file["file_id"]
+						"file_id"	=> $file["file_id"],
+						"virus"		=> $file["virus"],
+						"virusname" => $file["virusname"]
 					);
 				}
 				
@@ -246,7 +262,9 @@
 					"file"		=> $file_array[0]["tmp_name"],
 					"name"		=> $file_array[0]["name"],
 					"type"		=> "",
-					"file_id"	=> $file_array[0]["file_id"]
+					"file_id"	=> $file_array[0]["file_id"],
+					"virus"		=> $file_array[0]["virus"],
+					"virusname" => $file_array[0]["virusname"]
 				);
 				
 				$sessionArray[$return["file_id"]] = array(
