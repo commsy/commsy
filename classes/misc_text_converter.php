@@ -760,6 +760,8 @@ class misc_text_converter {
       foreach($terms as $t) {
          $v = preg_replace('~^([\'"])?(.*)\\1$~u', '$2', $t[3]);
          if ($t[2]) { $z['#'][] = $t[2]; $z[$t[2]] = $v; }
+         // bugfix since php 5.4.9
+         elseif (empty($t[2])) { $z[$t[0]][] = $v; }
          else { $z['#'][] = $t[1]; $z[$t[1]][] = $v; }
          $z['#'][] = $v;
       }
@@ -2558,12 +2560,12 @@ class misc_text_converter {
       }
 
       if ( !empty($source) and !empty($file)) {
-         $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
+         // $image_text .= '<div style="'.$float.$height.$width.' padding:5px;">';
          $image_text .= '<a class="lightbox_'.$file->getFileID().'" href="' . $source2 . '" target="blank">';
          #$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
-         $image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
+         $image_text .= '<img style="'.$height.$width.$float.'" src="'.$source2.'" alt="'.$alt.'"/>';
          $image_text .= '</a>';
-         $image_text .= '</div>';
+         // $image_text .= '</div>';
       }
 
       if ( !empty($image_text) ) {
