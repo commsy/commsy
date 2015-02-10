@@ -973,7 +973,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $context_item = $privateroom_manager->getNewItem();
          }
          
-         $context_item->setTitle((string)$xml->title[0]);
+         $translator = $this->_environment->getTranslationObject();
+         $context_item->setTitle((string)$xml->title[0].' ['.$translator->getMessage('PREFERENCES_EXPORT_IMPORTED_CONTEXT').']');
          $context_item->setStatus((string)$xml->status[0]);
          $context_item->getActivityPoints((string)$xml->activity[0]);
          $context_item->setPublic((string)$xml->public[0]);

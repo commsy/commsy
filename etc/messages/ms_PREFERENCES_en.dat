@@ -54,6 +54,7 @@ $message["PREFERENCES_EXPORT_COMMON_UPLOAD"]["en"] = "Import room";
 $message["PREFERENCES_EXPORT_ERROR_NO_FILE_SELECTED"]["en"] = "Please select a file to import";
 $message["PREFERENCES_EXPORT_ERROR_NO_ROOM_SELECTED"]["en"] = "Please select a room to export";
 $message["PREFERENCES_EXPORT_ERROR_NO_ZIP_FILE_SELECTED"]["en"] = "Please select a valid file (.zip) to import";
+$message["PREFERENCES_EXPORT_IMPORTED_CONTEXT"]["en"] = "Imported room";
 $message["PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON"]["en"] = "Export room";
 $message["PREFERENCES_EXPORT_IMPORT_UPLOAD"]["en"] = "Select file to import";
 $message["PREFERENCES_EXPORT_PRIVATE_ROOM_BUTTON"]["en"] = "Export CommSy-bar";
