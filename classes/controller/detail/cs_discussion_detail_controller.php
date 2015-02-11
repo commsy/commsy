@@ -761,6 +761,8 @@ if ($type != CS_DISCUSSION_TYPE) {
 						'index'				=> self::$threadedIndex++,
 						'children'			=> $this->buildThreadedTree($potentialChildList, $item)
 					);
+					// unset files
+					$entry['files'] = '';
 				}
 
 				$item = $node_list->getNext();
