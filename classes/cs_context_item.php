@@ -222,7 +222,7 @@ class cs_context_item extends cs_item {
    * @return string title of a context
    */
   function getTitle () {
-    return $this->_getValue('title');
+    return htmlspecialchars($this->_getValue('title'), ENT_QUOTES, 'UTF-8');
   }
 
   /** set title of a context
