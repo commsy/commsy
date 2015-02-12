@@ -3011,7 +3011,7 @@ class cs_connection_soap {
          $context_id = $sessionItem->getValue('commsy_id');
          $authSourceId = $sessionItem->getValue('auth_source');
 
-         $this->_environment->setCurrentContextID($context_id);
+         $this->_environment->setCurrentContextID($contextId);
          $translator = $this->_environment->getTranslationObject();
          
          // get user item
@@ -3034,6 +3034,10 @@ class cs_connection_soap {
          if(!empty($search)) {
             $roomManager->setSearchLimit($search);
          }
+
+         $portalItem = $this->_environment->getCurrentContextItem();
+         $maxActivity = $portalItem->getMaxRoomActivityPoints();
+
          $roomListCount = $roomManager->_performQuery('count');
          $roomManager->setIntervalLimit($start, $count);
          $roomManager->setOrder($order);
@@ -3048,6 +3052,22 @@ class cs_connection_soap {
                $mayEnter = true;
             }
 
+            // activity
+            $percentage = $roomItem->getActivityPoints();
+
+            if ($maxActivity != 0) {
+               if (empty($percentage)) {
+                  $percentage = 0;
+               } else {
+                  $divisior = $maxActivity / 20;
+                  $percentage = max(0, log(($percentage / $divisior) + 1));
+                  $temp = log(($maxActivity / $divisior) + 1);
+                  $percentage = round(($percentage / $temp) * 100, 2);
+               }
+            } else {
+               $percentage = 0;
+            }
+
             $xml .= "<room_item>";
                $xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
                $xml .= "<access><![CDATA[".($mayEnter ? "yes" : "no") ."]]></access>\n";
@@ -3056,6 +3076,7 @@ class cs_connection_soap {
                $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
                $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
                $xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
+               $xml .= "<activity><![CDATA[".$percentage."]]></activity>\n";
             $xml .= "</room_item>\n";
             
             $roomItem = $roomList->getNext();
