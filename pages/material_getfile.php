@@ -195,7 +195,12 @@ if ( !empty($_GET['iid']) ) {
 	            if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE") != false) {
 	               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '"');
 	            } else {
-	               header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
+                  if($environment->getCurrentBrowserVersion() == 11) {
+                     // header("Content-Disposition: attachment; filename*=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
+                  } else {
+                     header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
+                  }
+	               
 	            }
             }
 
