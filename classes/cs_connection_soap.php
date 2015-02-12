@@ -3001,7 +3001,7 @@ class cs_connection_soap {
       }
    }
 
-   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 0, $count = 10, $search = '', $timeLimit = '', $roomTypeLimit = '')
+   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 0, $count = 10, $search = '', $timeLimit = '', $roomTypeLimit = '', $order = 'title')
    {
       if($this->_isSessionValid($sessionId)) {
          $this->_environment->setSessionID($sessionId);
@@ -3036,6 +3036,7 @@ class cs_connection_soap {
          }
          $roomListCount = $roomManager->_performQuery('count');
          $roomManager->setIntervalLimit($start, $count);
+         $roomManager->setOrder($order);
          $roomManager->select();
          $roomList = $roomManager->get();
          $roomListCount = $roomListCount[0]['count'];
