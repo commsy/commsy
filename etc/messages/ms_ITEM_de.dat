@@ -2,8 +2,8 @@
 $message["ITEM_DOES_NOT_EXIST"]["de"] = "Die Daten, auf die Sie zu greifen wollen, existieren nicht.";
 $message["ITEM_EXPORT_TO_WIKI"]["de"] = "Im Wiki darstellen";
 $message["ITEM_EXPORT_TO_WORDPRESS"]["de"] = "Im Blog darstellen";
-$message["ITEM_LOCKING_TITLE"]["de"] = "In Bearbeitung";
 $message["ITEM_LOCKING_DESC"]["de"] = "Dieser Eintrag befindet sich derzeit in Bearbeitung durch %1 seit %2.";
+$message["ITEM_LOCKING_TITLE"]["de"] = "In Bearbeitung";
 $message["ITEM_NOT_AVAILABLE"]["de"] = "Sie haben versucht, auf einen bereits gelöschten Eintrag zuzugreifen.";
 $message["ITEM_TITLE_SHORT"]["de"] = "Aktuelle Einträge";
 $message["ITEM_WORKFLOW_MARK_NOT_READ"]["de"] = "Als nicht gelesen markieren";

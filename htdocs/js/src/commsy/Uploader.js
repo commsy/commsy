@@ -132,8 +132,11 @@ define([	"dojo/_base/declare",
 			// check if something went wrong
 			if ( data.file === null )
 			{
-				Tooltip.show(ErrorTranslations.upload, this.uploader.domNode);
-				
+				if( data.file === null && data.virus === null) {
+					Tooltip.show(ErrorTranslations.upload, this.uploader.domNode);
+				} else if( data.virus !== null ) {
+					Tooltip.show(ErrorTranslations.virus_found + '</br></br>' + data.name, this.uploader.domNode);
+				}
 				var timer = new Timing.Timer(3000);
 				timer.onTick = Lang.hitch(this, function(event)
 				{
@@ -148,20 +151,47 @@ define([	"dojo/_base/declare",
 					this.callback(data);
 				} else {
 					var fileListNode = Query("div#files_finished")[0];
+					var showError = false;
+					var virusFileNames = [];
 
 					if(!data.length) data = [data];
 
 					dojo.forEach(data, Lang.hitch(this, function(file, index, arr) {
-						// add file to file finished
-						DomConstruct.create("input", {
-							type:		"checkbox",
-							checked:	"checked",
-							name:		"form_data[file_" + index + "]",
-							value:		file.file_id
-						}, fileListNode, "last");
 
-						DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
+						if(file.virus) {
+							showError = true;
+							virusFileNames[virusFileNames.length] = file.name;
+						} else {
+							// add file to file finished
+							DomConstruct.create("input", {
+								type:		"checkbox",
+								checked:	"checked",
+								name:		"form_data[file_" + index + "]",
+								value:		file.file_id
+							}, fileListNode, "last");
+
+							DomAttr.set(fileListNode, "innerHTML", DomAttr.get(fileListNode, "innerHTML") + file.name + "</br>");
+
+						}
 					}));
+
+					if(showError) {
+						var fileNameOutput = '';
+						dojo.forEach(virusFileNames, Lang.hitch(this, function(fileName, index, arr) {
+							fileNameOutput += fileName + '</br>';
+						}));
+						// show error message
+						Tooltip.show(ErrorTranslations.virus_found + '</br></br>' + fileNameOutput, this.uploader.domNode);
+						var timer = new Timing.Timer(4000);
+						timer.onTick = Lang.hitch(this, function(event)
+						{
+							Tooltip.hide(this.uploader.domNode);
+							timer.stop();
+						});
+						timer.start();
+					}
+
+
 				}
 			}
 		},

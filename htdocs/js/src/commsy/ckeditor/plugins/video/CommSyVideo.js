@@ -21,7 +21,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
                             {
                                 //alert("here");
                                 var attributes = element.attributes;
-                                if( attributes.class == 'commsyPlayer' ){
+                                if( attributes['class'] == 'commsyPlayer' ){
                                     //alert("here");
                                     
                                     return createFakeElement( editor, element );
