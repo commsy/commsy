@@ -1303,6 +1303,11 @@ class cs_page_guide_view extends cs_page_view {
      }
       // Person ist User und hat sich angemeldet; wurde aber nicht automatisch freigschaltet
      elseif ($mode =='info') {
+        // redirect if user is not logged in
+        if($this->_environment->getCurrentUser()->isGuest()) {
+            redirect($this->_environment->getCurrentContextID(),'home', 'index','');
+        }
+
         $translator = $this->_environment->getTranslationObject();
         $html .= '<div>'.LF;
         $formal_data = array();
