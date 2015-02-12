@@ -3038,6 +3038,9 @@ class cs_connection_soap {
          $portalItem = $this->_environment->getCurrentContextItem();
          $maxActivity = $portalItem->getMaxRoomActivityPoints();
 
+         global $c_commsy_domain, $c_commsy_url_path;
+         include_once('functions/curl_functions.php');
+
          $roomListCount = $roomManager->_performQuery('count');
          $roomManager->setIntervalLimit($start, $count);
          $roomManager->setOrder($order);
@@ -3073,6 +3076,7 @@ class cs_connection_soap {
                $xml .= "<access><![CDATA[".($mayEnter ? "yes" : "no") ."]]></access>\n";
                $xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
                $xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
+               $xml .= "<link><![CDATA[" . $c_commsy_domain . $c_commsy_url_path . "/" . _curl(false, $roomItem->getItemId(), 'home', 'index', array()) . "]]></link>\n";
                $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
                $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
                $xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
