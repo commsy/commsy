@@ -246,6 +246,18 @@ class cs_popup_group_controller implements cs_rubric_popup_controller {
 					// Save item
 					$item->save();
 
+					if (isset($form_data["grouproom_template"])){
+        				if(isset($form_data['group_room_activate'])){
+        					$_POST['template_select'] = $form_data["grouproom_template"];
+        					if(!($_POST['template_select'] == 'leerer Raum') || !($_POST['template_select'] == 'empty workspace')){
+        						$itemBackup = $item;
+        						$item = $item->getGroupRoomItem();
+        						include_once('include/inc_room_copy.php');
+        						$item = $itemBackup;
+        					}
+        					
+        				}
+        			}
 					// this will update the right box list
 					if($item_is_new){
 						if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.CS_GROUP_TYPE.'_index_ids')){
