@@ -149,76 +149,75 @@ else {
             if (isset( $_POST['auth_source']) and $_POST['auth_source'] == 'new' ) {
                // TBD
             } elseif ( isset($_POST['auth_source']) and $_POST['auth_source'] > 100 ) {
-               $auth_item = $room_item->getAuthSource($_POST['auth_source']);
+               $authItem = $room_item->getAuthSource($_POST['auth_source']);
             } elseif ($_POST['auth_source'] == -1) {
             	
             } else {
                include_once('functions/error_functions.php');
                trigger_error('id of auth source lost',E_USER_WARNING);
             }
-
-            if ( !isset($auth_item) and $_POST['auth_source'] != -1) {
+            if ( !isset($authItem) and $_POST['auth_source'] != -1) {
                $auth_source_manager = $environment->getAuthSourceManager();
-               $auth_item = $auth_source_manager->getNewItem();
-               $auth_item->setContextID($environment->getCurrentContextID());
+               $authItem = $auth_source_manager->getNewItem();
+               $authItem->setContextID($environment->getCurrentContextID());
             }
             
 			   if($_POST['auth_source'] != -1){
-				   $auth_item->setTitle($_POST['title']);
+				   $authItem->setTitle($_POST['title']);
 			
 	            if ( $_POST['changeUserID'] == 1 ) {
-	               $auth_item->setAllowChangeUserID();
+	               $authItem->setAllowChangeUserID();
 	            } elseif ( $_POST['changeUserID'] == 2 ) {
-	               $auth_item->unsetAllowChangeUserID();
+	               $authItem->unsetAllowChangeUserID();
 	            }
 	            /*
 	            if ( $_POST['changeUserData'] == 1 ) {
-	               $auth_item->setAllowChangeUserData();
+	               $authItem->setAllowChangeUserData();
 	            } elseif ( $_POST['changeUserData'] == 2 ) {
-	               $auth_item->unsetAllowChangeUserData();
+	               $authItem->unsetAllowChangeUserData();
 	            }
 	            */
 	            if ( $_POST['changePassword'] == 1 ) {
-	               $auth_item->setAllowChangePassword();
+	               $authItem->setAllowChangePassword();
 	            } elseif ( $_POST['changePassword'] == 2 ) {
-	               $auth_item->unsetAllowChangePassword();
+	               $authItem->unsetAllowChangePassword();
 	            }
 	            if ( $_POST['addAccount'] == 1 ) {
-	               $auth_item->setAllowAddAccount();
+	               $authItem->setAllowAddAccount();
 	            } elseif ( $_POST['addAccount'] == 2 ) {
-	               $auth_item->unsetAllowAddAccount();
+	               $authItem->unsetAllowAddAccount();
 	            }
 	            if ( $_POST['deleteAccount'] == 1 ) {
-	               $auth_item->setAllowDeleteAccount();
+	               $authItem->setAllowDeleteAccount();
 	            } elseif ( $_POST['deleteAccount'] == 2 ) {
-	               $auth_item->unsetAllowDeleteAccount();
+	               $authItem->unsetAllowDeleteAccount();
 	            }
 	            if ( $_POST['show'] == 1 ) {
-	               $auth_item->setShow();
+	               $authItem->setShow();
 	            } elseif ( $_POST['show'] == 2 ) {
-	               $auth_item->unsetShow();
+	               $authItem->unsetShow();
 	            }
 	            if ( isset($_POST['auth_type'])
 	                 and !empty($_POST['auth_type']) ) {
-	               $auth_item->setSourceType($_POST['auth_type']);
+	               $authItem->setSourceType($_POST['auth_type']);
 	            }
 	            if ( isset($_POST['change_password_url']) ) {
-	               $auth_item->setPasswordChangeLink($_POST['change_password_url']);
+	               $authItem->setPasswordChangeLink($_POST['change_password_url']);
 	            }
 	            if ( isset($_POST['contact_mail']) ) {
-	               $auth_item->setContactEMail($_POST['contact_mail']);
+	               $authItem->setContactEMail($_POST['contact_mail']);
 	            }
 	            if ( isset($_POST['contact_fon']) ) {
-	               $auth_item->setContactFon($_POST['contact_fon']);
+	               $authItem->setContactFon($_POST['contact_fon']);
 	            }
 	            if ( isset($_POST['password_secure_check']) ) {
-	               $auth_item->setPasswordSecureCheck($_POST['password_secure_check']);
+	               $authItem->setPasswordSecureCheck($_POST['password_secure_check']);
 	            }
 	            if ( isset($_POST['password_bigchar']) ) {
-	               $auth_item->setPasswordSecureBigchar($_POST['password_bigchar']);
+	               $authItem->setPasswordSecureBigchar($_POST['password_bigchar']);
 	            }
 	            if ( isset($_POST['password_specialchar']) ) {
-	               $auth_item->setPasswordSecureSpecialchar($_POST['password_specialchar']);
+	               $authItem->setPasswordSecureSpecialchar($_POST['password_specialchar']);
 	            }
 	            if ( isset($_POST['password_length'])) {
 	            	if($_POST['password_length'] >= 0){
@@ -232,22 +231,22 @@ else {
 	            			$page->add($errorbox);
 	            			$password_length = 0;
 	            		}
-	            		$auth_item->setPasswordLength($password_length);
+	            		$authItem->setPasswordLength($password_length);
 	            	}
 	            }
 	            
 	            if ( isset($_POST['password_smallchar']) ) {
-	            	$auth_item->setPasswordSecureSmallchar($_POST['password_smallchar']);
+	            	$authItem->setPasswordSecureSmallchar($_POST['password_smallchar']);
 	            }
 	            if ( isset($_POST['password_number']) ) {
-	            	$auth_item->setPasswordSecureNumber($_POST['password_number']);
+	            	$authItem->setPasswordSecureNumber($_POST['password_number']);
 	            }
 			   }
 			   
 			   if ( $_POST['auth_source'] != -1
-			   	  and isset($auth_item)
+			   	  and isset($authItem)
 			      ) {
-			   	$auth_item->save();
+			   	$authItem->save();
 			   }
 			   
             //Datenschutz
@@ -395,8 +394,8 @@ else {
             				while ($portal_user){
             					if ($_POST['password_expiration'] > 0){
             						$auth_source_manager = $environment->getAuthSourceManager();
-            						$auth_item = $auth_source_manager->getItem($portal_user->getAuthSource());
-            						if($auth_item->getSourceType() == 'MYSQL'){
+            						$authItem = $auth_source_manager->getItem($portal_user->getAuthSource());
+            						if($authItem->getSourceType() == 'MYSQL'){
             							$portal_user->setPasswordExpireDate($portal_item->getPasswordExpiration());
             						}
             					} else {
@@ -433,39 +432,39 @@ else {
             
             // Shibboleth
             if ( isset($_POST['direct_login']) ) {
-            	$auth_item->setShibbolethDirectLogin($_POST['direct_login']);
+            	$authItem->setShibbolethDirectLogin($_POST['direct_login']);
             }
             
             if ( isset($_POST['session_initiator_url']) ) {
-            	$auth_item->setShibbolethSessionInitiator($_POST['session_initiator_url']);
+            	$authItem->setShibbolethSessionInitiator($_POST['session_initiator_url']);
             }
             
             if ( isset($_POST['session_logout_url']) ) {
-            	$auth_item->setShibbolethSessionLogout($_POST['session_logout_url']);
+            	$authItem->setShibbolethSessionLogout($_POST['session_logout_url']);
             }
             
             if ( isset($_POST['password_change_url']) ) {
-            	$auth_item->setShibbolethPasswordChange($_POST['password_change_url']);
+            	$authItem->setShibbolethPasswordChange($_POST['password_change_url']);
             }
             
             if ( isset($_POST['username']) ) {
-            	$auth_item->setShibbolethUsername($_POST['username']);
+            	$authItem->setShibbolethUsername($_POST['username']);
             }
             
             if ( isset($_POST['firstname']) ) {
-            	$auth_item->setShibbolethFirstname($_POST['firstname']);
+            	$authItem->setShibbolethFirstname($_POST['firstname']);
             }
             
             if ( isset($_POST['lastname']) ) {
-            	$auth_item->setShibbolethLastname($_POST['lastname']);
+            	$authItem->setShibbolethLastname($_POST['lastname']);
             }
             
             if ( isset($_POST['email']) ) {
-            	$auth_item->setShibbolethEmail($_POST['email']);
+            	$authItem->setShibbolethEmail($_POST['email']);
             }
             
             if ( isset($_POST['update_user_data']) ) {
-            	$auth_item->setShibbolethUpdateData($_POST['update_user_data']);
+            	$authItem->setShibbolethUpdateData($_POST['update_user_data']);
             }
             
             
@@ -591,13 +590,13 @@ else {
             // additional server - END
 
             if ( !empty($auth_data_array) ) {
-               $auth_item->setAuthData($auth_data_array);
+               $authItem->setAuthData($auth_data_array);
             }
             
             if ( $_POST['auth_source'] != -1
-                 and isset($auth_item)
+                 and isset($authItem)
                ) {
-            	$auth_item->save();
+            	$authItem->save();
             } 
 
             if ( isset($_POST['default']) and $_POST['default'] == 1 ) {
