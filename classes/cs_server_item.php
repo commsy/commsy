@@ -425,12 +425,14 @@ class cs_server_item extends cs_guide_item
                                 if ($days >= $portal_item->getInactivitySendMailBeforeLockDays() and !empty($inactivitySendMailLock)) {
                                     // send mail lock in x days
 
-                                    if (!$user->getMailSendBeforeLock()) {
+                                    if (!$user->getMailSendBeforeLock() && !$user->getMailSendNextLock()) {
                                         // ?????
                                     // } else {
                                         if (($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()) {
                                             $mail = $this->sendMailForUserInactivity("lockNotify", $user, $portal_item, $days);
                                             if ($mail->send()) {
+                                                $user->setMailSendNextLock();
+                                                $user->save();
                                                 #$user->setMailSendBeforeLock();
                                                 #$user->save();
 

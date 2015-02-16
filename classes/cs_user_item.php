@@ -2578,6 +2578,22 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    }
+
+    function setMailSendNextLock(){
+    $this->_addExtra('MAIL_SEND_NEXT_LOCK', '1');
+   }
+   
+   function unsetMailSendNextLock(){
+    $this->_unsetExtra('MAIL_SEND_NEXT_LOCK');
+   }
+   
+   function getMailSendNextLock(){
+    $retour = false;
+    if($this->_issetExtra('MAIL_SEND_NEXT_LOCK')){
+      $retour = $this->_getExtra('MAIL_SEND_NEXT_LOCK');
+    }
+    return $retour;
+   }
    
    function setMailSendBeforeDelete(){
    	$this->_addExtra('MAIL_SEND_DELETE', '1');
