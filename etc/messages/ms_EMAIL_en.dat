@@ -5,25 +5,25 @@ $message["EMAIL_COMMSY_PORTAL_MODERATION"]["en"] = "If you have questions contac
 $message["EMAIL_CONTACT_MODERATOR"]["en"] = "Contact via e-mail";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["en"] = "Send an e-mail to contact persons";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Your account will be deleted in %1 days. Please contact the portal user.
+$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Your account %1 (%2) will be deleted in %3 days. Please contact the portal user.
 
-%2";
+%4";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["en"] = "Your account will be deleted in %1 days";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Your account will be deleted tomorrow. Please contact the portal user.
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Your account %1 (%2) will be deleted tomorrow. Please contact the portal user.
 
-%1";
+%3";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["en"] = "%1: Account will be deleted tomorrow";
-$message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["en"] = "your account will be locked in %1 days because of inactivity. Log on to your account will prevent you from getting locked.
+$message["EMAIL_INACTIVITY_LOCK_NEXT_BODY"]["en"] = "your account %1 (%2) will be locked in %3 days because of inactivity. Log on to your account will prevent you from getting locked.
 
-%2";
+%4";
 $message["EMAIL_INACTIVITY_LOCK_NEXT_SUBJECT"]["en"] = "%2: Account will be locked in %1 days";
-$message["EMAIL_INACTIVITY_LOCK_NOW_BODY"]["en"] = "your account is locked because of inactivity.
+$message["EMAIL_INACTIVITY_LOCK_NOW_BODY"]["en"] = "your account %1 (%2) is locked because of inactivity.
 
-%1";
+%3";
 $message["EMAIL_INACTIVITY_LOCK_NOW_SUBJECT"]["en"] = "%1: Your account is locked";
-$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["en"] = "your account will be locked tomorrow. Log on to your account will prevent you from getting locked.
+$message["EMAIL_INACTIVITY_LOCK_TOMORROW_BODY"]["en"] = "your account %1 (%2) will be locked tomorrow. Log on to your account will prevent you from getting locked.
 
-%1";
+%3";
 $message["EMAIL_INACTIVITY_LOCK_TOMORROW_SUBJECT"]["en"] = "%1: Account will be locked tomorrow";
 $message["EMAIL_LOGIN_EXPIRATION_BODY"]["en"] = "your right to login as another user is deactivated now.
 
