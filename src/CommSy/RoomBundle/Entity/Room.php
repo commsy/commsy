@@ -3,6 +3,8 @@ namespace CommSy\RoomBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use AppBundle\Entity\Item;
+
 /**
  * Class Room.php
  *
@@ -10,80 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Entity
  * @ORM\Table(name="room")
- * @ORM\HasLifecycleCallbacks()
  */
-class Room
+class Room extends Item
 {
-    /**
-     * The room id
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="NONE")
-     */
-    private $id;
-
-    /**
-     * The parent room, if it does exist
-     * @var int
-     *
-     * @ORM\OneToOne(targetEntity="CommSy\RoomBundle\Entity\Room")
-     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
-     */
-    private $parentRoom;
-
-    /**
-     * The room creator
-     * @var CommSy\UserBundle\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="CommSy\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="creator_id", referencedColumnName="id")
-     */
-    private $creator;
-
-    /**
-     * Last user who modified the room
-     * @var CommSy\UserBundle\Entity\User
-     *
-     * @ORM\ManyToOne(targetEntity="CommSy\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="id", nullable=true)
-     */
-    private $modifier;
-
-    /**
-     * User who deleted the room
-     * @var CommSy\UserBundle\Entity\User
-     * 
-     * @ORM\ManyToOne(targetEntity="CommSy\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="id", nullable=true)
-     */
-    private $deleter;
-
-    /**
-     * Date the rooms has been created
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", name="created_at")
-     */
-    private $createdAt;
-
-    /**
-     * Date the room has been last modified
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", name="modified_at")
-     */
-    private $modifiedAt;
-
-    /**
-     * Date the room has been deleted
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime", name="deleted_at", nullable=true)
-     */
-    private $deletedAt;
-
     /**
      * The room title
      * @var string
@@ -162,13 +93,13 @@ class Room
      *
      * @ORM\Column(type="string", name="contact_persons", length=255)
      */
-    private $contactpersons;
+    private $contactPersons;
 
     /**
      * The room description
      * @var string
      *
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $description;
 
@@ -176,54 +107,79 @@ class Room
      * Date of last user entering
      * @var \DateTime
      *
-     * @ORM\Column(type="datetime", name="last_login")
+     * @ORM\Column(type="datetime", name="last_login", nullable=true)
      */
     private $lastLogin;
 
     /**
-     * Returns the room unique id
-     * 
-     * @return int room id
+     * Room constructor
      */
-    public function getId()
+    public function __construct()
     {
-        return $this->id;
+        $this->status = 1;
+        $this->activity = 0;
+        $this->type = 'project';
+        $this->public = 0;
+        $this->openForGuests = 0;
+        $this->continuous = 0;
+        $this->template = 0;
+        $this->contactPersons = '';
     }
 
+    /**
+     * Return the room title
+     * 
+     * @return string roomt title
+     */
     public function getTitle()
     {
         return $this->title;
     }
 
     /**
-     * Triggers on inital persist
-     *
-     * @ORM\PrePersist
+     * Sets the room title
+     * @param string $title room title
      */
-    public function onPrePersist()
+    public function setTitle($title)
     {
-        $this->createdAt = new \DateTime();
+        $this->title = $title;
     }
 
     /**
-     * Triggers before the database update operation, but is
-     * not called for DQL UPDATE statements
-     *
-     * @ORM\PreUpdate
+     * Sets the room status
+     * @param int $status room status
      */
-    public function onPreUpdate()
+    public function setStatus($status)
     {
-        $this->modifiedAt = new \DateTime();
+        $this->status = $status;
     }
 
     /**
-     * Triggers before the database remove operation, but is
-     * not called FOR DQL DELETE statements
+     * Returns the room status
      *
-     * @ORM\PreRemove
+     * @return int status
      */
-    public function onPreRemove()
+    public function getStatus()
     {
-        $this->deletedAt = new \DateTime();
+        return $this->status;
+    }
+
+    /**
+     * Returns the room description
+     *
+     * @return string description
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Sets the room description
+     * @param string $description room description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 }

@@ -1,3 +1,7 @@
 commsy_room_list:
-    path:     /list
-    defaults: { _controller: CommSyRoomBundle:Room:list }
+    path:       /list
+    defaults:   { _controller: CommSyRoomBundle:Room:list }
+
+commsy_room_create:
+    path:       /create
+    defaults:   { _controller: CommSyRoomBundle:Room:create }
