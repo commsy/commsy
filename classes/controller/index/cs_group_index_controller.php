@@ -59,6 +59,7 @@
 			$environment = $this->_environment;
 			$context_item = $environment->getCurrentContextItem();
 			$translator = $environment->getTranslationObject();
+            $current_user = $environment->getCurrentUser();
 			$return = array();
 
 			$last_selected_tag = '';
@@ -128,6 +129,8 @@
 			$noticed_manager->getLatestNoticedByIDArray($id_array);
 			$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
 
+
+
 			// prepare item array
 			$item = $list->getFirst();
 			$item_array = array();
@@ -136,6 +139,32 @@
 			$params['with_modifying_actions'] = false;
 			$view = new cs_view($params);
 			while($item) {
+
+                if($item->isGroupRoomActivated()) {
+                    $group_room_manager = $environment->getGroupRoomManager();
+                    $grouproom_item = $group_room_manager->getItem($item->getGroupRoomItemID());
+
+                    $user_manager = $environment->getUserManager();
+                    $user_manager->setUserIDLimit($current_user->getUserID());
+                    $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+                    $user_manager->setContextLimit($grouproom_item->getItemID());
+                    $user_manager->select();
+                    $user_list = $user_manager->get();
+                    if (!empty($user_list)){
+                       $room_user = $user_list->getFirst();
+                    } else {
+                       $room_user = '';
+                    }
+                    if ($current_user->isRoot()) {
+                       $may_enter = true;
+                    } elseif ( !empty($room_user) ) {
+                       $may_enter = $grouproom_item->mayEnter($room_user);
+                    } else {
+                       $may_enter = false;
+                    }
+                }
+                
+
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
 					'iid'				=> $item->getItemID(),
@@ -145,7 +174,8 @@
 					'members_count'		=> $item->getMemberItemList()->getCount(),
 					'linked_entries'	=> count($item->getAllLinkedItemIDArray()),
 					'is_grouproom'		=> $item->isGroupRoomActivated(),
-					'grouproom_id'		=> $item->getGroupRoomItemID()
+					'grouproom_id'		=> $item->getGroupRoomItemID(),
+					'may_enter'			=> $may_enter
 				);
 
 				$item = $list->getNext();
