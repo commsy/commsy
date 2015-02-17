@@ -143,7 +143,9 @@
 					'noticed'			=> $noticed_text,
 					'modificator'		=> $this->getItemModificator($item),
 					'members_count'		=> $item->getMemberItemList()->getCount(),
-					'linked_entries'	=> count($item->getAllLinkedItemIDArray())
+					'linked_entries'	=> count($item->getAllLinkedItemIDArray()),
+					'is_grouproom'		=> $item->isGroupRoomActivated(),
+					'grouproom_id'		=> $item->getGroupRoomItemID()
 				);
 
 				$item = $list->getNext();
