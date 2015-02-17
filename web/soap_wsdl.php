@@ -460,6 +460,9 @@
   <part name='start' type='xsd:integer'/>
   <part name='count' type='xsd:integer'/>
   <part name='search' type='xsd:string'/>
+  <part name='timeLimit' type='xsd:string'/>
+  <part name='roomTypeLimit' type='xsd:string'/>
+  <part name='order' type='xsd:string'/>
 </message>
 <message name='getPortalRoomListByCountAndSearchOUT'>
   <part name='xml_list' type='xsd:string'/>

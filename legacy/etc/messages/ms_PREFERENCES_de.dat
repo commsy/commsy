@@ -54,6 +54,7 @@ $message["PREFERENCES_EXPORT_COMMON_UPLOAD"]["de"] = "Raum importieren";
 $message["PREFERENCES_EXPORT_ERROR_NO_FILE_SELECTED"]["de"] = "Bitte eine Datei zum Importieren auswählen";
 $message["PREFERENCES_EXPORT_ERROR_NO_ROOM_SELECTED"]["de"] = "Bitte einen Raum zum Exportieren auswählen";
 $message["PREFERENCES_EXPORT_ERROR_NO_ZIP_FILE_SELECTED"]["de"] = "Bitte eine gültige Datei (.zip) zum Importieren auswählen";
+$message["PREFERENCES_EXPORT_IMPORTED_CONTEXT"]["de"] = "Importierter Raum";
 $message["PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON"]["de"] = "Raum exportieren";
 $message["PREFERENCES_EXPORT_IMPORT_UPLOAD"]["de"] = "Datei zum Importieren auswählen";
 $message["PREFERENCES_EXPORT_PRIVATE_ROOM_BUTTON"]["de"] = "CommSy-Leiste exportieren";

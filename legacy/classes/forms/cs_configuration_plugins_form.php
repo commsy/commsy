@@ -138,7 +138,7 @@ class cs_configuration_plugins_form extends cs_rubric_form {
       
       
       global $c_wordpress;
-      if ( isset($c_wordpress) and  $c_wordpress ) {
+      if ( isset($c_wordpress) and  $c_wordpress and $this->_environment->inPortal()) {
       	$this->_form->addEmptyLine();
       	
       	$temp_array = array();

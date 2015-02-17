@@ -61,26 +61,12 @@ class cs_configuration_export_import_form extends cs_rubric_form {
          $room_item = $room_list->getFirst();
          while ( $room_item ) {
             $temp_array = array();
-            $temp_array['text']  = $room_item->getTitle();
+            $temp_array['text']  = $room_item->getTitle().' ('.$room_item->getItemID().')';
             $temp_array['value'] = $room_item->getItemID();
             $this->_array_rooms[] = $temp_array;
 
             $room_item = $room_list->getNext();
          }
-      }
-      
-      $private_room_manager = $this->_environment->getPrivateRoomManager();
-      $private_room_manager->select();
-      $private_room_list = $private_room_manager->get();
-      $private_room_item = $private_room_list->getFirst();
-      while ($private_room_item) {
-         $user_item = $private_room_item->getOwnerUserItem();
-         $temp_array = array();
-         $temp_array['text']  = $this->_translator->getMessage('PRIVATE_ROOM_USER_EXPORT_IMPORT').' '.$user_item->getUserId();
-         $temp_array['value'] = $private_room_item->getItemID();
-         $this->_array_rooms[] = $temp_array;
-         
-         $private_room_item = $private_room_list->getNext();
       }
    }
 

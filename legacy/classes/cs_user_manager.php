@@ -1940,10 +1940,10 @@ class cs_user_manager extends cs_manager {
 		return $user_array;
 	}
 	
-	public function getUserLastLoginLaterAs($date,$cid){
+	public function getUserLastLoginLaterAs($date,$cid, $status = 2){
 		$user = NULL;
 		$user_array = array();
-		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."'";
+		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".status >= ".encode(AS_DB,$status)." AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
 			include_once('functions/error_functions.php');
