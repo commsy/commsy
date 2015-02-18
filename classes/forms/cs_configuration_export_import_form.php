@@ -116,8 +116,6 @@ class cs_configuration_export_import_form extends cs_rubric_form {
    }
    
    function _checkValues () {
-      el($_POST);
-      el($_FILES);
       if ($_POST['option'] == $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON')) {
          if ($_POST['room'] == '-1') {
             $this->_error_array[] = $this->_translator->getMessage('PREFERENCES_EXPORT_ERROR_NO_ROOM_SELECTED');

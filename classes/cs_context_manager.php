@@ -796,7 +796,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChildWithCDATA('contact_persons', $context_item->getContactPersonString());
          
          $description_array = $context_item->getDescriptionArray();
-         $xmlDescription = $this->getArrayAsXML($xmlExtras, $description_array, true, 'description');
+         $xmlDescription = $this->getArrayAsXML($xml, $description_array, true, 'description');
          $this->simplexml_import_simplexml($xml, $xmlDescription);
          
          $xml->addChildWithCDATA('room_description', $context_item->getDescription());
@@ -935,6 +935,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function import_item($xml, $top_item, &$options) {
+      $translator = $this->_environment->getTranslationObject();
       if ($xml != null) {
          if (((string)$xml->type[0]) == 'community') {
             $community_manager = $this->_environment->getCommunityManager();
@@ -945,7 +946,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $community_list = $community_manager->get();
             $community_item = $community_list->getFirst();
             while ($community_item) {
-               if ($community_item->getTitle() == ((string)$xml->title[0])) {
+               if ($community_item->getTitle() == ((string)$xml->title[0]) || $community_item->getTitle() == ((string)$xml->title[0]).' ['.$translator->getMessage('PREFERENCES_EXPORT_IMPORTED_CONTEXT').']') {
                   $project_list = $community_item->getProjectList();
                   $project_item = $project_list->getFirst();
                   while ($project_item) {
@@ -972,8 +973,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
             $context_item = $privateroom_manager->getNewItem();
          }
-         
-         $translator = $this->_environment->getTranslationObject();
+
          $context_item->setTitle((string)$xml->title[0].' ['.$translator->getMessage('PREFERENCES_EXPORT_IMPORTED_CONTEXT').']');
          $context_item->setStatus((string)$xml->status[0]);
          $context_item->getActivityPoints((string)$xml->activity[0]);
@@ -987,6 +987,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          $extra_array = $this->getXMLAsArray($xml->extras);
          $context_item->setExtraInformation($extra_array['extras']);
+         $context_item->setDescription((string)$xml->room_description[0]);
          
          // set additional values
          if (((string)$xml->type[0]) == 'community') {
@@ -1028,19 +1029,21 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    
    function import_sub_items($xml, $top_item, &$options) {
       if ($xml != null) {
-         if (((string)$xml->type[0]) == 'community') {
+         if ($top_item->getRoomType() == 'community') {
             $project_manager = $this->_environment->getProjectManager();
-            foreach ($xml->projects as $project) {
-               $temp_project_item = $project_manager->import_item($project->context_item, $top_item, $options);
+            foreach ($xml->projects->children() as $project) {
+               $temp_project_item = $project_manager->import_item($project, $top_item, $options);
                $community_room_array = array();
                $community_room_array[] = $top_item->getItemId();
                $temp_project_item->setCommunityListByID($community_room_array);
                $temp_project_item->save();
             }
-         } else if (((string)$xml->type[0]) == 'project') {
+         } else if ($top_item->getRoomType() == 'project') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
-            foreach ($xml->grouprooms as $grouproom) {
-               $temp_grouproom_item = $grouproom_manager->import_item($grouproom->context_item, $top_item, $options);
+            if (!empty($xml->grouprooms)) {
+               foreach ($xml->grouprooms as $grouproom) {
+                  $temp_grouproom_item = $grouproom_manager->import_item($grouproom->context_item, $top_item, $options);
+               }
             }
          }
          
@@ -1105,10 +1108,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          foreach ($options['check']['labels']['GROUP_ROOM_ID'] as $item_id) {
             $temp_group_item = $group_manager->getitem($item_id);
             $temp_group_old_grouproom_id = $temp_group_item->getGroupRoomItemID();
-            $temp_group_new_grouproom_id = $options[$temp_group_old_grouproom_id];
-            if ($temp_group_new_grouproom_id != '') {
-               $temp_group_item->setGroupRoomItemID($temp_group_new_grouproom_id);
-               $temp_group_item->save();
+            if (isset($options[$temp_group_old_grouproom_id])) {
+               $temp_group_new_grouproom_id = $options[$temp_group_old_grouproom_id];
+               if ($temp_group_new_grouproom_id != '') {
+                  $temp_group_item->setGroupRoomItemID($temp_group_new_grouproom_id);
+                  $temp_group_item->save();
+               }
             }
          }
       }
