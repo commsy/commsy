@@ -387,18 +387,18 @@ function performAction ( $environment, $action_array, $post_array ) {
          unset($task_manager);
       }
 
-      // if commsy user is rejected, reject all accounts in projectrooms and community rooms
-      if ( $user->isRejected() and $environment->inPortal() ) {
-         $user_list = $user->getRelatedUserList();
-         $user_item = $user_list->getFirst();
-         while ($user_item) {
-            $user_item->reject();
-            $user_item->save();
-            $user_item = $user_list->getNext();
-         }
-         unset($user_list);
-         unset($user_item);
-      }
+      // // if commsy user is rejected, reject all accounts in projectrooms and community rooms
+      // if ( $user->isRejected() and $environment->inPortal() ) {
+      //    $user_list = $user->getRelatedUserList();
+      //    $user_item = $user_list->getFirst();
+      //    while ($user_item) {
+      //       $user_item->reject();
+      //       $user_item->save();
+      //       $user_item = $user_list->getNext();
+      //    }
+      //    unset($user_list);
+      //    unset($user_item);
+      // }
 
       // if commsy user is re-opend, re-open own room user
       if ( $environment->inPortal()
