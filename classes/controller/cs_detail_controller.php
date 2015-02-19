@@ -506,11 +506,24 @@
 			// TODO: dont forget print, download - which are always allowed
 
 			// TODO:  // actions from rubric plugins
-	      	$plugin_actions = plugin_hook_output_all('getDetailActionAsHTML',NULL,' | ');
-	      	if ( !empty($plugin_actions) ) {
-	      	   $return['plugins'] = true;
-	      	   $return['plugins_html'] = $plugin_actions;
-	      	}
+			if($current_context->isPluginActive("voyeur")) {
+				$plugin_actions = plugin_hook_output('voyeur','getDetailActionAsHTML',NULL,' | ');
+		      	if ( !empty($plugin_actions) ) {
+		      		if($current_context->isPrivateRoom()){
+		      			$plugin_actions = str_replace("iid=", "iid=".$this->_item->getItemID(), $plugin_actions);
+		      		}
+		      	   $return['plugins'] = true;
+		      	   $return['plugins_html'] = $plugin_actions;
+		      	}
+			}
+
+			$except[] = 'voyeur';
+			$plugin_actions = plugin_hook_output_all('getDetailActionAsHTML',NULL,' | ', '', $except);
+		      	if ( !empty($plugin_actions) ) {
+		      	   $return['plugins'] = true;
+		      	   $return['plugins_html'] = $plugin_actions;
+		      	}
+	      	
 
 			// new
 			$current_module = $this->_environment->getCurrentModule();

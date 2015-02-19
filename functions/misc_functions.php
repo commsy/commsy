@@ -1083,7 +1083,7 @@ function plugin_hook_plugin ($plugin, $hook_function, $params = null) {
    }
 }
 
-function plugin_hook_output_all ($hook_function, $params = null, $separator = '', $with_config_check = true) {
+function plugin_hook_output_all ($hook_function, $params = null, $separator = '', $with_config_check = true, $except = array()) {
    if ( !empty($separator)
         and $separator == 'ARRAY'
       ) {
@@ -1099,31 +1099,33 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
       ) {
       $first = true;
       foreach ($c_plugin_array as $plugin) {
+        if(!in_array($plugin, $except)) {
      		$output = plugin_hook_output($plugin,$hook_function,$params,$with_config_check);
-         if ( !empty($output) ) {
-            if ( !empty($separator)
-                 and $separator == 'ARRAY'
-                 and is_array($output)
-               ) {
-               $retour = array_merge($retour,$output);
-            } elseif ( !empty($separator)
-                 and $separator == 'MULTIARRAY'
-                 and is_array($output)
-               ) {
-               $retour[] = $output;
-            } elseif ( !empty($separator)
-                       and $separator == 'ONE'
-                     ) {
-               $retour = $output;
-               break;
-            } else {
-               if ( $first ) {
-                  $first = false;
-               } else {
-                  $retour .= $separator;
-               }
-               $retour .= $output;
-            }
+             if ( !empty($output) ) {
+                if ( !empty($separator)
+                     and $separator == 'ARRAY'
+                     and is_array($output)
+                   ) {
+                   $retour = array_merge($retour,$output);
+                } elseif ( !empty($separator)
+                     and $separator == 'MULTIARRAY'
+                     and is_array($output)
+                   ) {
+                   $retour[] = $output;
+                } elseif ( !empty($separator)
+                           and $separator == 'ONE'
+                         ) {
+                   $retour = $output;
+                   break;
+                } else {
+                   if ( $first ) {
+                      $first = false;
+                   } else {
+                      $retour .= $separator;
+                   }
+                   $retour .= $output;
+                }
+             }
          }
       }
    }
