@@ -1817,17 +1817,19 @@ class cs_manager {
             $xml = new SimpleXMLElementExtended('<'.$top_element_name.'></'.$top_element_name.'>');
          }
       }
-      foreach ($array as $key => $value) {
-         // Tag names must not start with a number.
-         if (is_numeric($key)) {
-            $key = 'COMMSY_'.$key;
-         }
-         if (!is_array($value)) {
-            $xml->addChildWithCDATA($key, $value);
-         } else {
-            $tempXml = new SimpleXMLElementExtended('<'.$key.'></'.$key.'>');
-            $temp = $this->getArrayAsXML($tempXml, $value);
-            $this->simplexml_import_simplexml($xml, $temp);
+      if ($array != null) {
+         foreach ($array as $key => $value) {
+            // Tag names must not start with a number.
+            if (is_numeric($key)) {
+               $key = 'COMMSY_'.$key;
+            }
+            if (!is_array($value)) {
+               $xml->addChildWithCDATA($key, $value);
+            } else {
+               $tempXml = new SimpleXMLElementExtended('<'.$key.'></'.$key.'>');
+               $temp = $this->getArrayAsXML($tempXml, $value);
+               $this->simplexml_import_simplexml($xml, $temp);
+            }
          }
       }
       return $xml;
