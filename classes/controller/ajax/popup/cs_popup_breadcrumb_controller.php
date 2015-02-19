@@ -590,7 +590,7 @@
 			
 			// get unchecked rooms
 			$room_manager = $this->_environment->getRoomManager();
-			$room_list = $room_manager->getRelatedRoomListForUser($this->_environment->getCurrentUserItem());
+			$room_list = $room_manager->getAllRelatedRoomListForUser($this->_environment->getCurrentUserItem());
 			$room_item = $room_list->getFirst();
 			$unchecked_rooms = array();
 			
