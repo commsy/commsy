@@ -437,16 +437,16 @@ if ( empty($command) and empty($command_delete) ) {
          $user->setChangeModificationOnSave(false);
          $user->save();
 
-         // if commsy user is rejected, reject all accounts in project- and community rooms
-         if ($user->isRejected() and $environment->inPortal()) {
-            $user_list = $user->getRelatedUserList();
-            $user_item = $user_list->getFirst();
-            while ($user_item) {
-               $user_item->reject();
-               $user_item->save();
-               $user_item = $user_list->getNext();
-            }
-         }
+         // // if commsy user is rejected, reject all accounts in project- and community rooms
+         // if ($user->isRejected() and $environment->inPortal()) {
+         //    $user_list = $user->getRelatedUserList();
+         //    $user_item = $user_list->getFirst();
+         //    while ($user_item) {
+         //       $user_item->reject();
+         //       $user_item->save();
+         //       $user_item = $user_list->getNext();
+         //    }
+         // }
 
          // if commsy user is re-opend, re-open own room user
          if ( $environment->inPortal()
