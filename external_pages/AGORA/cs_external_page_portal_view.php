@@ -503,9 +503,9 @@ class cs_external_page_portal_view extends cs_page_view {
       $current_user = $this->_environment->getCurrentUser();
       if ( $current_user->isRoot() ){
          $html .= '<div class="search_link" style="padding-left:0px; padding-top: 5px;">'.LF;
-         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('SERVER_CONFIGURATION_ACTION')).BRLF;
-         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','preferences',array('iid' => 'NEW'),$this->_translator->getMessage('PORTAL_ENTER_NEW')).BRLF;
-         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'context','logout','',$this->_translator->getMessage('LOGOUT')).BRLF;
+         $html .= '- '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('SERVER_CONFIGURATION_ACTION')).BRLF;
+         $html .= '- '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','preferences',array('iid' => 'NEW'),$this->_translator->getMessage('PORTAL_ENTER_NEW')).BRLF;
+         $html .= '- '.ahref_curl($this->_environment->getCurrentContextID(),'context','logout','',$this->_translator->getMessage('LOGOUT')).BRLF;
          $html .= '</div>'.LF;
       }
       $html .= '</td>'."\n";
@@ -2315,6 +2315,22 @@ class cs_external_page_portal_view extends cs_page_view {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('COMMON_COMMUNITY_PL').'</option>'.LF;
+         if($current_user->isUser()) {
+          $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+              $html .= '      <option value="5"';
+            if ( !empty($selroom) and $selroom == 5 ) {
+              $html .= ' selected="selected"';
+            }
+            $html .= '>'.$this->_translator->getMessage('MYROOMS').'</option>'.LF;
+
+            $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+            $html .= '      <option value="6"';
+            if ( !empty($selroom) and $selroom == 6 ) {
+              $html .= ' selected="selected"';
+            }
+            $html .= '>'.$this->_translator->getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE').'</option>'.LF;
+         }
+         
       }
 
       $html .= '   </select>'.LF;
@@ -3181,7 +3197,7 @@ $html .='</div>
          $html .='<td colspan="3" style="padding-top:0px; vertical-align:top; ">'.LF;
 
 
-         $html .= '<table style="border-collapse: collapse; border: 0px; padding:0px;" summary="Layout">'.LF;
+         $html .= '<table style="border-collapse: collapse; border: 0px; padding:0px; width:100%;" summary="Layout">'.LF;
          $html .= $this->_getTableheadAsHTML($this->_room_list_view);
 
       $current_user = $this->_environment->getCurrentUserItem();
@@ -3891,14 +3907,14 @@ $html .='      </div>'.LF;
 if ( $lang == 'en' ) {
 	$html .='<div id="kontakt" class="block">
         <h2>Contact</h2>
-        <h3>Office Hours</h3>
+        <h3 style="padding-top: 10px;">Office Hours</h3>
        <p>Tue 11:30&ndash;12:30 and<br />
 	      Thu 13:30&ndash;14:30,<br />
 	      Phil-Turm (VMP 6), R. 1212,<br />
 	      Phone 040 / 4 28 38-39 71</p>
        <h3>E-Mail_</h3>
        <p><a href="mailto:agora@uni-hamburg.de">agora@uni-hamburg.de</a></p>
-       <h3>Postal adress</h3>
+       <h3>Postal address</h3>
        <p>AGORA-Team<br />
 	      Universität Hamburg<br />
 	      c/o Institut für Germanistik II<br />
@@ -3907,14 +3923,14 @@ if ( $lang == 'en' ) {
       </div>
       <div id="status" class="block">
         <h2>Status</h2>
-        <p><img src="http://appmon.rrz.uni-hamburg.de/appmon/status.php?app=commsy&amp;size=24">&nbsp; Availability<br />
+        <p style="padding-top: 10px;"><img src="http://appmon.rrz.uni-hamburg.de/appmon/status.php?app=commsy&amp;size=24">&nbsp; Availability<br />
 	      (<a title="Availibility of AGORA (CommSy)" href="http://www.rrz.uni-hamburg.de/index.php?id=1874">What means availability</a>)</p>
       </div>'.LF;
 	
 }else{
 $html .='<div id="kontakt" class="block">
         <h2>Kontaktdaten</h2>
-        <h3>Sprechstunden</h3>
+        <h3 style="padding-top: 10px;">Sprechstunden</h3>
        <p>DI 11:30&ndash;12:30 Uhr und<br />
 	      DO 13:30&ndash;14:30 Uhr,<br />
 	      Phil-Turm (VMP 6), R. 1212,<br />
@@ -3924,13 +3940,13 @@ $html .='<div id="kontakt" class="block">
 			<h3>Postadresse</h3>
        <p>AGORA-Team<br />
 	      Universität Hamburg<br />
-	      c/o Institut für Germanistik II<br />
+	      c/o Institut für Germanistik<br />
 	      Von-Melle-Park 6<br />
 	      20146 Hamburg</p>
       </div>
       <div id="status" class="block">
         <h2>Status</h2>
-        <p><img src="http://appmon.rrz.uni-hamburg.de/appmon/status.php?app=commsy&amp;size=24">&nbsp; Verfügbarkeit<br />
+        <p style="padding-top: 10px;"><img src="http://appmon.rrz.uni-hamburg.de/appmon/status.php?app=commsy&amp;size=24">&nbsp; Verfügbarkeit<br />
 	      (<a title="Verfügbarkeit von AGORA (CommSy) am RRZ - Link führt zur Legende der Icons" href="http://www.rrz.uni-hamburg.de/index.php?id=1874">Was bedeutet das?</a>)</p>
       </div>'.LF;
 }
@@ -4100,6 +4116,7 @@ $html .='
 				$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=project&fct=edit&iid=NEW">New project workspace</a>'.BRLF;
 				if ($current_user->isModerator()){
 					$html.= '- <a href="commsy.php?cid='.$this->_environment->getCurrentPortalID().'&mod=community&fct=edit&iid=NEW">New community workspace</a></div>'.LF;
+          $html.= $this->_getConfigurationBoxAsHTML();
 				}
 		}else{
 			$html .='<h2>Raum anlegen</h2><div style="padding:10px 5px; white-space:nowrap;">';
@@ -4223,7 +4240,7 @@ $html.= '  </div>
    	$current_context = $this->_environment->getCurrentContextItem();
    	$html  = '';
    	$html .= '<div class="search_link">'.LF;
-   	$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('PORTAL_CONFIGURATION_ACTION')).BRLF;
+   	$html .= '- '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','index','',$this->_translator->getMessage('PORTAL_CONFIGURATION_ACTION')).BRLF;
    	$html .= '</div>'.LF;
    
    	// tasks
@@ -4245,11 +4262,11 @@ $html.= '  </div>
    			$params['tid'] = $task_item->getItemID();
    			$params['modus'] = 'agree';
    			$html .= '<div class="search_link">'.LF;
-   			$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','move2',$params,$this->_translator->getMessage('COMMON_ACCEPT')).BRLF;
+   			$html .= '- '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','move2',$params,$this->_translator->getMessage('COMMON_ACCEPT')).BRLF;
    			$html .= '</div>'.LF;
    			$params['modus'] = 'reject';
    			$html .= '<div class="search_link">'.LF;
-   			$html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','move2',$params,$this->_translator->getMessage('COMMON_REJECT'));
+   			$html .= '- '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','move2',$params,$this->_translator->getMessage('COMMON_REJECT'));
    			$html .= '</div>'.LF;
    			unset($params);
    
@@ -4279,12 +4296,12 @@ $html.= '  </div>
          $flag_lang = 'de';
          $link_lang = 'de';
          $params['language'] = $link_lang;
-         $html .= '<div style=" border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'Deutsch <img src="images/flags/'.$flag_lang.'.gif"  alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>',$this->_translator->getMessageInLang('de','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
+         $html .= '<div style=" border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'Deutsch <img src="images/flags/'.$flag_lang.'.gif"  alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'" style="padding-bottom: 4px;" />',$this->_translator->getMessageInLang('de','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
       }  else {
          $flag_lang = 'gb';
          $link_lang = 'en';
          $params['language'] = $link_lang;
-         $html .= '<div style="border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'English <img src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>',$this->_translator->getMessageInLang('en','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
+         $html .= '<div style="border-top:1px solid #DDDDDD; border-bottom:1px solid #DDDDDD;">'.ahref_curl($this->_environment->getCurrentContextID(),'language','change',$params,'English <img src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($link_lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'" style="padding-bottom: 4px;" />',$this->_translator->getMessageInLang('en','COMMON_CHANGE_LANGUAGE_WITH_FLAG')).'</div>'.LF;
       }
       unset($params);
       return $html;
