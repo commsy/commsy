@@ -161,7 +161,8 @@ class cs_popup_user_controller implements cs_rubric_popup_controller {
 
 						// determ new file name
 						$filename_info = pathinfo($targetfile);
-						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getUserID() . '_'. $additional["fileInfo"]["name"];
+						$filename = 'cid' . $this->_environment->getCurrentContextID() . '_' . $user_item->getUserID();
+						// . '_'. $additional["fileInfo"]["name"];
 						// copy file and set picture
 						$disc_manager = $this->_environment->getDiscManager();
 
