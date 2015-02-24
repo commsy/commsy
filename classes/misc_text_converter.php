@@ -2566,6 +2566,8 @@ class misc_text_converter {
          $image_text .= '<img style="'.$height.$width.$float.'" src="'.$source2.'" alt="'.$alt.'"/>';
          $image_text .= '</a>';
          // $image_text .= '</div>';
+      } else if (!empty($source)) {
+         $image_text .= '<img style="'.$height.$width.$float.'" src="'.$source2.'" alt="'.$alt.'"/>';
       }
 
       if ( !empty($image_text) ) {
