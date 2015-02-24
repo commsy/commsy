@@ -104,7 +104,6 @@
 			
 			// setup controller
 			$controller_name = 'cs_' . $mod . '_' . $fct. '_controller';
-			pr($controller_name);
 			require_once('classes/controller/' . $fct . '/' . $controller_name . '.php');
 			
 			// invoke module and function
