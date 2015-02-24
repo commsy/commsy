@@ -18,8 +18,8 @@
 			<div id="tm_wrapper">
 				{block name=logout}
 				<div id="tm_icons_bar">
-					{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="___LOGOUT___">&nbsp;</a>{/if}
-					{if $environment.is_guest}<a href="commsy.php?cid={$environment.pid}&mod=home&fct=index&room_id={$environment.cid}&login_redirect=1" class="tm_user" style="width:70px;" title="___MYAREA_LOGIN_BUTTON___">___MYAREA_LOGIN_BUTTON___</a>{/if}
+					{if !$environment.is_guest}<a href="commsy.php?cid={$environment.cid}&mod=context&fct=logout&iid={$environment.user_item_id}" id="tm_logout" title="{i18n tag=LOGOUT language=$environment.user_language}">&nbsp;</a>{/if}
+					{if $environment.is_guest}<a href="commsy.php?cid={$environment.pid}&mod=home&fct=index&room_id={$environment.cid}&login_redirect=1" class="tm_user" style="width:70px;" title="{i18n tag=MYAREA_LOGIN_BUTTON language=$environment.user_language}">{i18n tag=MYAREA_LOGIN_BUTTON language=$environment.user_language}</a>{/if}
 					<div class="clear"></div>
 				</div>
 				{/block}
@@ -30,7 +30,7 @@
 					<a href="#" id="tm_user">
 						{* login / logout *}
 						{if !$environment.is_guest}
-							___COMMON_WELCOME___, {$environment.username|truncate:20}
+							{i18n tag=COMMON_WELCOME language=$environment.user_language}, {$environment.username|truncate:20}
 						{/if}
 						{if $environment.is_guest}
 							___COMMON_WELCOME___, ___COMMON_GUEST___
@@ -41,7 +41,7 @@
                <div id="tm_user">
                   {* login / logout *}
                   {if !$environment.is_guest}
-                     ___COMMON_WELCOME___, {$environment.username|truncate:20}
+                     {i18n tag=COMMON_WELCOME language=$environment.user_language}, {$environment.username|truncate:20}
                   {/if}
                   {if $environment.is_guest}
                      ___COMMON_WELCOME___, ___COMMON_GUEST___
@@ -75,28 +75,28 @@
 					   {/if}
 	               {if $cs_bar.addon_information.wiki.active}
 	                  {$w = $cs_bar.addon_information.wiki}
-	                  <a href="{$w.path}/wikis/{$w.portal_id}/{$w.item_id}/index.php{$w.session}" title="___COMMON_WIKI_LINK___: {$w.title}" target="_blank" id="tm_wiki">&nbsp;</a>
+	                  <a href="{$w.path}/wikis/{$w.portal_id}/{$w.item_id}/index.php{$w.session}" title="{i18n tag=COMMON_WIKI_LINK language=$environment.user_language}: {$w.title}" target="_blank" id="tm_wiki">&nbsp;</a>
 	               {/if}
 	               {if $cs_bar.addon_information.wordpress.active}
 	                  {$wo = $cs_bar.addon_information.wordpress}
-	                  <a href="{$wo.path}/{$environment.pid}_{$wo.item_id}/{$wo.session}" title="___COMMON_WORDPRESS_LINK___: {$wo.title}" target="_blank" id="tm_wordpress">&nbsp;</a>
+	                  <a href="{$wo.path}/{$environment.pid}_{$wo.item_id}/{$wo.session}" title="{i18n tag=COMMON_WORDPRESS_LINK language=$environment.user_language}: {$wo.title}" target="_blank" id="tm_wordpress">&nbsp;</a>
 	               {/if}
                   {if $cs_bar.show_connection == "1"}
-                     <a href="#" id="tm_connection" title="___CS_BAR_CONNECTION___">&nbsp;</a>
+                     <a href="#" id="tm_connection" title="{i18n tag=CS_BAR_CONNECTION language=$environment.user_language}">&nbsp;</a>
                   {/if}
 						{if $cs_bar.show_portfolio == "1"}
-							<a href="#" id="tm_portfolio" title="___CS_BAR_PORTFOLIO___">&nbsp;</a>
+							<a href="#" id="tm_portfolio" title="{i18n tag=CS_BAR_PORTFOLIO language=$environment.user_language}">&nbsp;</a>
 						{/if}
 						{if $cs_bar.show_widgets == '1'}
-							<a href="#" id="tm_widgets" title="___MYWIDGETS_INDEX___">&nbsp;</a>
+							<a href="#" id="tm_widgets" title="{i18n tag=MYWIDGETS_INDEX language=$environment.user_language}">&nbsp;</a>
 						{/if}
 						{if $cs_bar.show_calendar == '1'}
-							<a href="#" id="tm_mycalendar" title="___MYCALENDAR_INDEX___">&nbsp;</a>
+							<a href="#" id="tm_mycalendar" title="{i18n tag=MYCALENDAR_INDEX language=$environment.user_language}">&nbsp;</a>
 						{/if}
 						{if $cs_bar.show_stack == '1'}
-							<a href="#" id="tm_stack" title="___COMMON_ENTRY_INDEX___">&nbsp;</a>
+							<a href="#" id="tm_stack" title="{i18n tag=COMMON_ENTRY_INDEX language=$environment.user_language}">&nbsp;</a>
 						{/if}
-						<a href="#" id="tm_clipboard" title="___MYAREA_MY_COPIES___">&nbsp;</a>
+						<a href="#" id="tm_clipboard" title="{i18n tag=MYAREA_MY_COPIES language=$environment.user_language}">&nbsp;</a>
 						{if ($environment.count_copies > 0)}
 							<span id="tm_clipboard_copies">{$environment.count_copies}</span>
 						{/if}
@@ -112,12 +112,12 @@
 					</div>
 				{else}
 					<div id="tm_breadcrumb">
-						<a href="#" id="tm_bread_crumb">___COMMON_GO_BUTTON___: {$room.room_information.room_name}</a>
+						<a href="#" id="tm_bread_crumb">{i18n tag=COMMON_GO_BUTTON language=$environment.user_language}: {$room.room_information.room_name}</a>
 					</div>
 				{/if}
 				{if $environment.is_moderator}
 					<div id="tm_icons_left_bar">
-						<a href="#" id="tm_settings" title="___COMMON_CONFIGURATION___">
+						<a href="#" id="tm_settings" title="{i18n tag=COMMON_CONFIGURATION language=$environment.user_language}">
 							{if ($environment.count_new_accounts > 0)}
 								<span id="tm_settings_count_new_accounts">{$environment.count_new_accounts}</span>
 							{else}
@@ -126,7 +126,7 @@
 						</a>
 						
 						{if $cs_bar.show_limesurvey == true}
-							<a href="#" id="tm_limesurvey" title="___LIMESURVEY_CONFIGURATION_LINK___">&nbsp;</a>
+							<a href="#" id="tm_limesurvey" title="{i18n tag=LIMESURVEY_CONFIGURATION_LINK language=$environment.user_language}">&nbsp;</a>
 						{/if}
 						<div class="clear"></div>
 					</div>

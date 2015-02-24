@@ -6,15 +6,15 @@
 
 				<div id="popup_pagetitle">
 					{if !$environment.is_guest}
-						<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+						<a id="popup_close" href="" title="{i18n tag=COMMON_CLOSE language=$environment.user_language}"><img src="{$basic.tpl_path}img/popup_close.gif" alt="{i18n tag=COMMON_CLOSE language=$environment.user_language}" /></a>
 						<span class="float-right">
-							<a id="edit_roomlist" href="#" title="___COMMON_EDIT___" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="___COMMON_EDIT___" /></a>
+							<a id="edit_roomlist" href="#" title="{i18n tag=COMMON_EDIT language=$environment.user_language}" class="btn_head_rc2"><img src="{$basic.tpl_path}img/btn_edit_rc.gif" alt="{i18n tag=COMMON_EDIT language=$environment.user_language}" /></a>
 						</span>
 					{else}
-						<a id="popup_close" href="" title="___COMMON_CLOSE___"><img src="{$basic.tpl_path}img/popup_close.gif" alt="___COMMON_CLOSE___" /></a>
+						<a id="popup_close" href="" title="{i18n tag=COMMON_CLOSE language=$environment.user_language}"><img src="{$basic.tpl_path}img/popup_close.gif" alt="{i18n tag=COMMON_CLOSE language=$environment.user_language}" /></a>
 					{/if}
 					<h2>
-						___COMMON_YOUR_ARE_HERE___:
+						{i18n tag=COMMON_YOUR_ARE_HERE language=$environment.user_language}:
 						{foreach $popup.breadcrumb as $crumb}
 							{if !$crumb@first}
 								<span class="tm_bcb_next">
@@ -62,14 +62,14 @@
 																		<div class="room_change_content_element">
 																			<p>
 																				{if $room.new_entries == 1}
-																					{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.time_spread}: {$room.new_entries}
+																					{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.time_spread language=$environment.user_language}: {$room.new_entries}
 																				{else}
-																					{i18n tag=ACTIVITY_NEW_ENTRIES_NEW param1=$room.time_spread}: {$room.new_entries}
+																					{i18n tag=ACTIVITY_NEW_ENTRIES_NEW param1=$room.time_spread language=$environment.user_language}: {$room.new_entries}
 																				{/if}
 
 																			</p>
-																			<p>___ACTIVITY_PAGE_IMPRESSIONS___: {$room.page_impressions}</p>
-																			<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.activity_array.active} / {$room.activity_array.all_users}</p>
+																			<p>{i18n tag=ACTIVITY_PAGE_IMPRESSIONS language=$environment.user_language}: {$room.page_impressions}</p>
+																			<p class="float-left">{i18n tag=ACTIVITY_ACTIVE_MEMBERS_DESC_NEW language=$environment.user_language}: {$room.activity_array.active} / {$room.activity_array.all_users}</p>
 																		</div>
 																	</div>
 																</div>
@@ -88,7 +88,7 @@
 
 						<div id="profile_content_row_four" class="hidden">
 							<div class="room_block">
-								<div class="room_block_h2">___COMMON_NO_DISPLAY___</div>
+								<div class="room_block_h2">{i18n tag=COMMON_NO_DISPLAY language=$environment.user_language}</div>
 
 								<div class="breadcrumb_room_area">
 									{foreach $popup.rooms.unchecked as $subline}
@@ -107,14 +107,14 @@
 																<div class="room_change_content_element"{if $room.color_array.content_background} style="background-color:{$room.color_array.tabs_background}; text-shadow: 0 0px #999; background-image:none; color:{$room.color_array.tabs_title}{/if}">
 																	<p>
 																		{if $room.new_entries == 1}
-																			{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.time_spread}: {$room.new_entries}
+																			{i18n tag=ACTIVITY_NEW_ENTRIES_NEW_SINGULAR param1=$room.time_spread language=$environment.user_language}: {$room.new_entries}
 																		{else}
-																			{i18n tag=ACTIVITY_NEW_ENTRIES_NEW param1=$room.time_spread}: {$room.new_entries}
+																			{i18n tag=ACTIVITY_NEW_ENTRIES_NEW param1=$room.time_spread language=$environment.user_language}: {$room.new_entries}
 																		{/if}
 
 																	</p>
-																	<p>___ACTIVITY_PAGE_IMPRESSIONS___: {$room.page_impressions}</p>
-																	<p class="float-left">___ACTIVITY_ACTIVE_MEMBERS_DESC_NEW___: {$room.activity_array.active} / {$room.activity_array.all_users}</p>
+																	<p>{i18n tag=ACTIVITY_PAGE_IMPRESSIONS language=$environment.user_language}: {$room.page_impressions}</p>
+																	<p class="float-left">{i18n tag=ACTIVITY_ACTIVE_MEMBERS_DESC_NEW language=$environment.user_language}: {$room.activity_array.active} / {$room.activity_array.all_users}</p>
 																</div>
 															</div>
 														</div>

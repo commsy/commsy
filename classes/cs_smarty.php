@@ -141,6 +141,11 @@ class cs_smarty extends Smarty {
 		$param4 = isset($params['param4']) ? $params['param4'] : '';
 		$param5 = isset($params['param5']) ? $params['param5'] : '';
 		
+		$language = isset($params['language']) ? $params['language'] : '';
+		if ($language != '') {
+		   $translator->setSelectedLanguage($language);
+		}
+		
 		if(isset($params['context'])) {
 			switch($params['context']) {
 				case 'portal':
