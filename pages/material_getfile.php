@@ -190,26 +190,29 @@ if ( !empty($_GET['iid']) ) {
 	            header('Content-Type: application/octet-stream');
             #}
             
-            $is_safari = false;
-            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
-            } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false) {
-               $is_safari = true;
-            } else {
-            }
-            
             $add_content_type_header = true;
-            if ($is_safari) {
-               if ((strpos($file->getDisplayName(), 'docx') !== false) ||
-                   (strpos($file->getDisplayName(), 'dotx') !== false) ||
-                   (strpos($file->getDisplayName(), 'xlsx') !== false) ||
-                   (strpos($file->getDisplayName(), 'xltx') !== false) ||
-                   (strpos($file->getDisplayName(), 'pptx') !== false) ||
-                   (strpos($file->getDisplayName(), 'potx') !== false) ||
-                   (strpos($file->getDisplayName(), 'ppsx') !== false)) {
-                  $add_content_type_header = false;
+            if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {
+               $is_safari = false;
+               if (strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false) {
+                  // add content type headers
+               } elseif (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false) {
+                  // don't add content type headers
+                  $is_safari = true;
+               } else {
+                  // add content type headers
+               }
+               if ($is_safari) {
+                  if ((strpos($file->getDisplayName(), 'docx') !== false) ||
+                      (strpos($file->getDisplayName(), 'dotx') !== false) ||
+                      (strpos($file->getDisplayName(), 'xlsx') !== false) ||
+                      (strpos($file->getDisplayName(), 'xltx') !== false) ||
+                      (strpos($file->getDisplayName(), 'pptx') !== false) ||
+                      (strpos($file->getDisplayName(), 'potx') !== false) ||
+                      (strpos($file->getDisplayName(), 'ppsx') !== false)) {
+                     $add_content_type_header = false;
+                  }
                }
             }
-            
             if ($add_content_type_header) {
                header('Content-Type: '.$file->getMime());
             }
