@@ -380,7 +380,9 @@
             $current_context = $this->_environment->getCurrentContextItem();
             $translator = $this->_environment->getTranslationObject();
             $portal_user_item = $current_user->getRelatedPortalUserItem();
-            $this->assign('environment', 'user_language', $portal_user_item->getLanguage());
+            if ($portal_user_item) {
+               $this->assign('environment', 'user_language', $portal_user_item->getLanguage());
+            }
             $count_new_accounts = 0;
             if ($current_user->isModerator()){
                 // tasks
