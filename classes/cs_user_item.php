@@ -1079,7 +1079,7 @@ class cs_user_item extends cs_item {
 
    function getRelatedProjectList () {
       $manager = $this->_environment->getProjectManager();
-      $list = $manager->getRelatedProjectListForUser($this);
+      $list = $manager->getRelatedProjectListForUser($this, null);
       return $list;
    }
 
