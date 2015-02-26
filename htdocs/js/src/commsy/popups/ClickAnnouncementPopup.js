@@ -74,41 +74,6 @@ define([	"dojo/_base/declare",
 			this.submit(search);
 		},
 
-		addNewBuzzword: function () {
-
-			buzzword = domAttr.get(query("input#new_buzzword_input")[0], "value");
-
-			request.ajax({
-				query: {
-					cid:	this.uri_object.cid,
-					mod:	'ajax',
-					fct:	'buzzwords',
-					action:	'createNewBuzzword'
-				},
-				data: {
-					buzzword:	buzzword,
-					roomId:		this.contextId
-				}
-			}).then(
-				lang.hitch(this, function(response) {
-
-					buzzwordList = query("ul.popup_buzzword_list")[0];
-
-					var listNode = domConstruct.create("li", {
-						className:		"ui-state-default popup_buzzword_item",
-						innerHTML: 		buzzword
-					}, buzzwordList, "first");
-
-					domConstruct.create("input", {
-						className:		"ui-state-default popup_buzzword_item",
-						type:			"checkbox",
-						value:			response.id,
-						name:			"form_data[buzzwords]",
-						checked: 		"checked" 
-					}, listNode, "first");
-				}));
-		},
-
 		onPopupSubmitSuccess: function(item_id) {
 			// invoke netnavigation - process after item creation actions
 			if(this.item_id === "NEW") {
