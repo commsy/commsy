@@ -3917,14 +3917,15 @@ if ( $lang == 'en' ) {
        <h3>Postal address</h3>
        <p>AGORA-Team<br />
 	      Universität Hamburg<br />
-	      c/o Institut für Germanistik II<br />
+	      c/o Institut für Germanistik<br />
 	      Von-Melle-Park 6<br />
 	      20146 Hamburg</p>
-      </div>
+		   <p><a href="http://www.facebook.com/agorauhh" title="AGORA at Facebook"><img src="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/img/logo-facebook-29.png" title="AGORA at Facebook"></a></p>
+		</div>
       <div id="status" class="block">
         <h2>Status</h2>
         <p style="padding-top: 10px;"><img src="http://appmon.rrz.uni-hamburg.de/appmon/status.php?app=commsy&amp;size=24">&nbsp; Availability<br />
-	      (<a title="Availibility of AGORA (CommSy)" href="http://www.rrz.uni-hamburg.de/index.php?id=1874">What means availability</a>)</p>
+	      (<a title="Availibility of AGORA (CommSy)" href="http://www.agora.uni-hamburg.de/commsy-verfuegbarkeit">What means availability</a>)</p>
       </div>'.LF;
 	
 }else{
@@ -3943,11 +3944,12 @@ $html .='<div id="kontakt" class="block">
 	      c/o Institut für Germanistik<br />
 	      Von-Melle-Park 6<br />
 	      20146 Hamburg</p>
-      </div>
+		   <p><a href="http://www.facebook.com/agorauhh" title="AGORA bei Facebook"><img src="css/external_portal_styles/'.$this->_environment->getCurrentContextID().'/img/logo-facebook-29.png" title="AGORA bei Facebook"></a></p>
+		</div>
       <div id="status" class="block">
         <h2>Status</h2>
         <p style="padding-top: 10px;"><img src="http://appmon.rrz.uni-hamburg.de/appmon/status.php?app=commsy&amp;size=24">&nbsp; Verfügbarkeit<br />
-	      (<a title="Verfügbarkeit von AGORA (CommSy) am RRZ - Link führt zur Legende der Icons" href="http://www.rrz.uni-hamburg.de/index.php?id=1874">Was bedeutet das?</a>)</p>
+	      (<a title="Verfügbarkeit von AGORA (CommSy) - Link führt zur Legende der Icons" href="http://www.agora.uni-hamburg.de/commsy-verfuegbarkeit">Was bedeutet das?</a>)</p>
       </div>'.LF;
 }
 
