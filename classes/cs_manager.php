@@ -1843,7 +1843,7 @@ class cs_manager {
          if (!empty($e)) {
             $arr[$tag] = $element instanceof SimpleXMLElement ? $this->getXMLAsArray($element) : $e;
          } else {
-            $arr[$tag] = trim($element);
+            $arr[$tag] = ''.trim($element);
          }
       }
       return $arr;
