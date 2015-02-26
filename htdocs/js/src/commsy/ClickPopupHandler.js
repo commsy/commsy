@@ -7,7 +7,9 @@ define([	"dojo/_base/declare",
         	"dojo/dom-class",
         	"dojo/dom-attr",
         	"dojo/dom-construct",
-        	"dojo/dom-style"], function(declare, PopupHandler, on, lang, request, query, dom_class, dom_attr, domConstruct, domStyle) {
+        	"dojo/dom-style",
+        	"dojo/dom-attr",
+        	"dijit/Tooltip"], function(declare, PopupHandler, on, lang, request, query, dom_class, dom_attr, domConstruct, domStyle, domAttr, Tooltip) {
 	return declare(PopupHandler, {
 		constructor: function(args) {
 			this.fct			= "rubric_popup";
@@ -158,6 +160,48 @@ define([	"dojo/_base/declare",
 					this.timer.start();
 				}));
 			}
+		},
+
+		addNewBuzzword: function () {
+
+			buzzword = domAttr.get(query("input#new_buzzword_input")[0], "value");
+
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'buzzwords',
+					action:	'createNewBuzzword'
+				},
+				data: {
+					buzzword:	buzzword,
+					roomId:		this.contextId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+
+					if(response.status != 'error') {
+						buzzwordList = query("ul.popup_buzzword_list")[0];
+
+                        var listNode = domConstruct.create("li", {
+                            className:      "ui-state-default popup_buzzword_item",
+                            innerHTML:      buzzword
+                        }, buzzwordList, "first");
+
+                        domConstruct.create("input", {
+                            className:      "ui-state-default popup_buzzword_item",
+                            type:           "checkbox",
+                            value:          response.data.id,
+                            name:           "form_data[buzzwords]",
+                            checked:        "checked" 
+                        }, listNode, "first");
+					} else {
+                        var errorNode = query("#popup_button_add_buzzword", this.contentNode)[0];
+                        Tooltip.show(response.reason, errorNode);
+                        dijit.Tooltip.defaultPosition = ["left", "right"];
+                        this.errorNodes.push(errorNode);
+                    }
+				}));
 		},
 
 		setupLocking: function() {
