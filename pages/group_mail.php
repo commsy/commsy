@@ -112,12 +112,12 @@ if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          }
 
          $add_message = '';
+         $current_context = $environment->getCurrentContextItem();
+         $context_title = str_ireplace('&amp;', '&', $current_context->getTitle());
          if ($counter == 1) {
-            $current_context = $environment->getCurrentContextItem();
-            $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_S',$current_context->getTitle(),$name_array[0]);
+            $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_S',$context_title,$name_array[0]);
          } elseif ($counter > 1) {
-            $current_context = $environment->getCurrentContextItem();
-            $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_PL',$current_context->getTitle(),implode(','.LF,$name_array));
+            $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_PL',$context_title,implode(','.LF,$name_array));
          }
 
          if (!empty($add_message)) {

@@ -101,16 +101,17 @@ class cs_mail_to_moderator_form extends cs_rubric_form {
       $this->_form->addTextField('subject','',$this->_translator->getMessage('COMMON_MAIL_SUBJECT'),$this->_translator->getMessage('COMMON_MAIL_SUBJECT_DESC'),200,'',true);
 
       $context_item = $this->_environment->getCurrentContextItem();
+      $context_title = str_ireplace('&amp;', '&', $context_item->getTitle());
       if ( $context_item->isCommunityRoom() ) {
-         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_title);
       } elseif ( $context_item->isProjectRoom() ) {
-         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT', $context_title);
       } elseif ( $context_item->isGroupRoom() ) {
-         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_GROUPROOM', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_GROUPROOM', $context_title);
       } elseif ( $context_item->isPortal() ) {
-         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PORTAL', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PORTAL', $context_title);
       } elseif ( $context_item->isServer() ) {
-         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_title);
       }
       $this->_form->addTextArea('content',$body_message,$this->_translator->getMessage('COMMON_CONTENT'),$this->_translator->getMessage('COMMON_MAIL_CONTENT_DESC'),'60','15','',true,false,false);
 
