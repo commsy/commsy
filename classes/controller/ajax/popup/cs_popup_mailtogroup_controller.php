@@ -94,10 +94,11 @@ class cs_popup_mailtogroup_controller implements cs_popup_controller {
 			}
 			
 			$addMessage = "";
+			$context_title = str_ireplace('&amp;', '&', $currentContext->getTitle());
 			if (sizeof($form_data["groups"]) == 1) {
-				$addMessage = $translator->getMessage("RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_S", $currentContext->getTitle(), $nameArray[0]);
+				$addMessage = $translator->getMessage("RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_S", $context_title, $nameArray[0]);
 			} else {
-				$addMessage = $translator->getMessage("RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_PL", $currentContext->getTitle(), implode("," . LF, $nameArray));
+				$addMessage = $translator->getMessage("RUBRIC_EMAIL_ADDED_BODY_PROJECT_GROUP_PL", $context_title, implode("," . LF, $nameArray));
 			}
 			
 			if (!empty($addMessage)) {
