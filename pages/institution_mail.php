@@ -111,19 +111,19 @@ if ( isOption($command,$translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          }
 
    $add_message = '';
+   $current_context = $environment->getCurrentContextItem();
+   $context_title = str_ireplace('&amp;', '&', $current_context->getTitle());
    if ($counter == 1) {
-      $current_context = $environment->getCurrentContextItem();
       if ($current_context->isProjectroom()) {
-         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_S',$current_context->getTitle(),$name_array[0]);
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_S',$context_title,$name_array[0]);
       } else {
-         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_S',$current_context->getTitle(),$name_array[0]);
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_S',$context_title,$name_array[0]);
       }
    } elseif ($counter > 1) {
-      $current_context = $environment->getCurrentContextItem();
       if ($current_context->isProjectroom()) {
-         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_PL',$current_context->getTitle(),implode(','.LF,$name_array));
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_PL',$context_title,implode(','.LF,$name_array));
       } else {
-         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_PL',$current_context->getTitle(),implode(','.LF,$name_array));
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_PL',$context_title,implode(','.LF,$name_array));
       }
    }
 

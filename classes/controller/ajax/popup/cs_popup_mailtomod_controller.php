@@ -120,16 +120,17 @@ class cs_popup_mailtomod_controller implements cs_popup_controller {
 
 		$translator = $this->_environment->getTranslationObject();
 
+      $context_title = str_ireplace('&amp;', '&', $context_item->getTitle());
 		if ( $context_item->isCommunityRoom() ) {
-			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_item->getTitle());
+			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_title);
 		} elseif ( $context_item->isProjectRoom() ) {
-			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT', $context_item->getTitle());
+			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT', $context_title);
 		} elseif ( $context_item->isGroupRoom() ) {
-			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_GROUPROOM', $context_item->getTitle());
+			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_GROUPROOM', $context_title);
 		} elseif ( $context_item->isPortal() ) {
-			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PORTAL', $context_item->getTitle());
+			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PORTAL', $context_title);
 		} elseif ( $context_item->isServer() ) {
-			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_item->getTitle());
+			$body_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_title);
 		}
 
 		$this->_popup_controller->assign('popup', 'mailcontent', $body_message);
