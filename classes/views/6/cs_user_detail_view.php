@@ -937,7 +937,7 @@ class cs_user_detail_view extends cs_detail_view {
             unset($params);
          }
 
-         $private_room_manager = $this->_environment->getPrivateRoomManager();
+         /* $private_room_manager = $this->_environment->getPrivateRoomManager();
          $own_room = $private_room_manager->getRelatedOwnRoomForUser($item,$this->_environment->getCurrentPortalID());
          if ( $this->_environment->inPortal() and $this->_environment->getCurrentModule() == 'account' and $user->isModerator() ){
             $params = array();
@@ -952,7 +952,7 @@ class cs_user_detail_view extends cs_detail_view {
                $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('PRIVATEROOM_LOCK')).BRLF;
                unset($params);
             }
-         }
+         } */
          if ( $user->isRoot() and isset($own_room) ) {
             $params = array();
             $params['iid'] = $own_room->getItemID();

@@ -95,13 +95,13 @@ else {
             $room_item->setDefaultCommunityTemplateID($_POST['template_select_community']);
          }
 
-         if ( !empty($_POST['private_room_link']) ) {
-            if ($_POST['private_room_link'] == 1) {
+         //if ( !empty($_POST['private_room_link']) ) {
+         //   if ($_POST['private_room_link'] == 1) {
                $room_item->setShowAllwaysPrivateRoomLink();
-            } else {
-               $room_item->unsetShowAllwaysPrivateRoomLink();
-            }
-         }
+         //   } else {
+         //      $room_item->unsetShowAllwaysPrivateRoomLink();
+         //   }
+         //}
 
    	   // archiving
          if ( !empty($_POST['room_archiving'])
