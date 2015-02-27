@@ -178,13 +178,13 @@ var $_template_array = array();
         }
 
       // private room configuration
-      $this->_form->addEmptyLine();
+      /* $this->_form->addEmptyLine();
       $radio_values = array();
       $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK_ON');
       $radio_values[0]['value'] = '1';
       $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK_OFF');
       $radio_values[1]['value'] = '-1';
-      $this->_form->addRadioGroup('private_room_link',$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK'),'',$radio_values,'',true,false);
+      $this->_form->addRadioGroup('private_room_link',$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK'),'',$radio_values,'',true,false); */
       
       // archiving
       $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
