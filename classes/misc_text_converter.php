@@ -28,6 +28,7 @@ class misc_text_converter {
    private $_with_old_text_formating = false;
    private $_HTMLPurifier = NULL;
    private $_FullHTMLPurifier = NULL;
+   private $_processMath = false;
    
    public function __construct ($params) {
       if ( !empty($params['environment']) ) {
@@ -1208,10 +1209,10 @@ class misc_text_converter {
                         $value_new = $this->_formatSlideshare($value_new,$args_array);
                         break;
                      } elseif ( $key == '{$' and mb_stristr($value_new,'{$') ) {
-                        $value_new = $this->_formatMath1($value_new,$args_array);
+                        $value_new = $this->_formatMath($value_new,$args_array, 'span');
                         break;
                      } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
-                        $value_new = $this->_formatMath2($value_new,$args_array);
+                        $value_new = $this->_formatMath($value_new,$args_array, 'div');
                         break;
                      } elseif ( $key == '(:flickr' and mb_stristr($value_new,'(:flickr') ) {
                         $value_new = $this->_formatFlickr($value_new,$args_array);
@@ -1241,6 +1242,9 @@ class misc_text_converter {
                   $text = str_replace($value,$value_new,$text);
                }
             }
+         }
+         if ($this->_processMath) {
+            $text .= '<script type="text/javascript">jsMath.Process(); alert(1);</script>'.LF;
          }
       }
       return $text;
@@ -2124,18 +2128,17 @@ class misc_text_converter {
    private function _formatMath1 ( $text, $array ) {
       $retour = '';
       if ( !empty($array[0]) and !empty($array[1]) ) {
-         $div_number = $this->_getDivNumber();
+         //$div_number = $this->_getDivNumber();
          $image_text = '';
-         $image_text .= '<span id="has_math_'.$div_number.'">'.LF;
+         //$image_text .= '<span id="has_math_'.$div_number.'">'.LF;
          $image_text .= '<span class="math">'.$array[1].'</span>'.LF;
-         $image_text .= '</span>'.LF;
-         $image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
-
+         //$image_text .= '</span>'.LF;
+         //$image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
          if ( !empty($image_text) ) {
             $text = str_replace($array[0],$image_text,$text);
          }
-
          $retour = $text;
+         $this->_processMath = true;
       }
       return $retour;
    }
@@ -2145,19 +2148,34 @@ class misc_text_converter {
    private function _formatMath2 ( $text, $array ) {
       $retour = '';
       if ( !empty($array[0]) and !empty($array[1]) ) {
-         $div_number = $this->_getDivNumber();
+         //$div_number = $this->_getDivNumber();
          $image_text = '';
-         $image_text .= '<div id="has_math_'.$div_number.'">'.LF;
+         //$image_text .= '<div id="has_math_'.$div_number.'">'.LF;
          $image_text .= '<div class="math">'.$array[1].'</div>'.LF;
-         $image_text .= '</div>'.LF;
-         $image_text .= '<div class="has_math_'.$div_number.'">'.LF;
-         $image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
-         $image_text .= '</div>'.LF;
+         //$image_text .= '</div>'.LF;
+         //$image_text .= '<div class="has_math_'.$div_number.'">'.LF;
+         //$image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
+         //$image_text .= '</div>'.LF;
          if ( !empty($image_text) ) {
             $text = str_replace($array[0],$image_text,$text);
          }
-
          $retour = $text;
+         $this->_processMath = true;
+      }
+      return $retour;
+   }
+   
+   // jsMath for latex math fonts
+   // see http://www.math.union.edu/~dpvc/jsMath/
+   private function _formatMath ($text, $array, $tag) {
+      $retour = '';
+      if ( !empty($array[0]) and !empty($array[1]) ) {
+         $image_text = '<'.$tag.' class="math">'.$array[1].'</'.$tag.'>'.LF;
+         if ( !empty($image_text) ) {
+            $text = str_replace($array[0],$image_text,$text);
+         }
+         $retour = $text;
+         $this->_processMath = true;
       }
       return $retour;
    }
