@@ -59,7 +59,12 @@ define([	"dojo/_base/declare",
 						}
 						
 						// increase count
-						DomAttr.set(spanNode, "innerHTML", parseInt(DomAttr.get(spanNode, "innerHTML")) + 1);
+						var numberOfCopies = parseInt(DomAttr.get(spanNode, "innerHTML"));
+						if (isNaN(numberOfCopies)) {
+   						numberOfCopies = 0;
+						}
+						numberOfCopies++;
+						DomAttr.set(spanNode, "innerHTML", numberOfCopies);
 					}
 				})
 			);

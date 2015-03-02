@@ -99,6 +99,8 @@
 						<a href="#" id="tm_clipboard" title="{i18n tag=MYAREA_MY_COPIES language=$environment.user_language}">&nbsp;</a>
 						{if ($environment.count_copies > 0)}
 							<span id="tm_clipboard_copies">{$environment.count_copies}</span>
+                  {else}
+                     <span id="tm_clipboard_copies"></span>
 						{/if}
 						<div class="clear"></div>
 					</div>
