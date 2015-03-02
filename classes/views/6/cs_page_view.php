@@ -538,6 +538,14 @@ class cs_page_view extends cs_view {
          #$retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
       // jQuery
+      global $c_jsmath_enable;
+      if ( isset($c_jsmath_enable)
+           and $c_jsmath_enable
+         ) {
+         $retour .= '   <script type="text/javascript"> jsMath = {Controls: {cookie: {scale: 120}}} </script>'.LF;
+         global $c_jsmath_url;
+         $retour .= '   <script type="text/javascript" src="'.$c_jsmath_url.'/jsMath.js"></script>'.LF;
+      }
       return $retour;
    }
    
