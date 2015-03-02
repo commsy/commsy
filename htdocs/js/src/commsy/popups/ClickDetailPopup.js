@@ -106,6 +106,12 @@ define([	"dojo/_base/declare",
 					handler.setup(aNodes);
 				}
 			});
+			
+			if (typeof jsMath !== 'undefined') {
+			   if (typeof jsMath.Process == 'function') {
+			      jsMath.Process();
+			   }
+			}
 		},
 		
 		onPopupSubmit: function(customObject) {

@@ -1244,7 +1244,7 @@ class misc_text_converter {
             }
          }
          if ($this->_processMath) {
-            $text .= '<script type="text/javascript">jsMath.Process(); alert(1);</script>'.LF;
+            $text .= '<script type="text/javascript">jsMath.Process();</script>'.LF;
          }
       }
       return $text;
@@ -2119,48 +2119,6 @@ class misc_text_converter {
          $retour .= '</embed>';
          $retour .= '</object>';
          $retour .= '</div>';
-      }
-      return $retour;
-   }
-
-   // jsMath for latex math fonts
-   // see http://www.math.union.edu/~dpvc/jsMath/
-   private function _formatMath1 ( $text, $array ) {
-      $retour = '';
-      if ( !empty($array[0]) and !empty($array[1]) ) {
-         //$div_number = $this->_getDivNumber();
-         $image_text = '';
-         //$image_text .= '<span id="has_math_'.$div_number.'">'.LF;
-         $image_text .= '<span class="math">'.$array[1].'</span>'.LF;
-         //$image_text .= '</span>'.LF;
-         //$image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
-         if ( !empty($image_text) ) {
-            $text = str_replace($array[0],$image_text,$text);
-         }
-         $retour = $text;
-         $this->_processMath = true;
-      }
-      return $retour;
-   }
-
-   // jsMath for latex math fonts
-   // see http://www.math.union.edu/~dpvc/jsMath/
-   private function _formatMath2 ( $text, $array ) {
-      $retour = '';
-      if ( !empty($array[0]) and !empty($array[1]) ) {
-         //$div_number = $this->_getDivNumber();
-         $image_text = '';
-         //$image_text .= '<div id="has_math_'.$div_number.'">'.LF;
-         $image_text .= '<div class="math">'.$array[1].'</div>'.LF;
-         //$image_text .= '</div>'.LF;
-         //$image_text .= '<div class="has_math_'.$div_number.'">'.LF;
-         //$image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
-         //$image_text .= '</div>'.LF;
-         if ( !empty($image_text) ) {
-            $text = str_replace($array[0],$image_text,$text);
-         }
-         $retour = $text;
-         $this->_processMath = true;
       }
       return $retour;
    }
