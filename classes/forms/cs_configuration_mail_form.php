@@ -145,6 +145,35 @@ class cs_configuration_mail_form extends cs_rubric_form {
          $this->_array_mail_text[33]['text']  = $this->_translator->getMessage('MAIL_CHOICE_ROOM_UNLINK');
          $this->_array_mail_text[33]['value'] = 'MAIL_CHOICE_ROOM_UNLINK';
       }
+      
+      // inactive rooms and users
+      if ($this->_environment->inPortal()) {
+         $this->_array_mail_text[50]['text']  = '----------------------';
+         $this->_array_mail_text[50]['value'] = 'disabled';
+         $this->_array_mail_text[51]['text']  = $this->_translator->getMessage('MAIL_CHOICE_PROJECT_ARCHIVE_INFO');
+         $this->_array_mail_text[51]['value'] = 'MAIL_CHOICE_PROJECT_ARCHIVE_INFO';
+         $this->_array_mail_text[52]['text']  = $this->_translator->getMessage('MAIL_CHOICE_PROJECT_ARCHIVE');
+         $this->_array_mail_text[52]['value'] = 'MAIL_CHOICE_PROJECT_ARCHIVE';
+         $this->_array_mail_text[53]['text']  = $this->_translator->getMessage('MAIL_CHOICE_PROJECT_DELETE_INFO');
+         $this->_array_mail_text[53]['value'] = 'MAIL_CHOICE_PROJECT_DELETE_INFO';
+         $this->_array_mail_text[54]['text']  = $this->_translator->getMessage('MAIL_CHOICE_PROJECT_DELETE');
+         $this->_array_mail_text[54]['value'] = 'MAIL_CHOICE_PROJECT_DELETE';
+         
+         $this->_array_mail_text[55]['text']  = '----------------------';
+         $this->_array_mail_text[55]['value'] = 'disabled';
+         $this->_array_mail_text[56]['text']  = $this->_translator->getMessage('MAIL_CHOICE_INACTIVITY_LOCK_NEXT');
+         $this->_array_mail_text[56]['value'] = 'MAIL_CHOICE_INACTIVITY_LOCK_NEXT';
+         $this->_array_mail_text[57]['text']  = $this->_translator->getMessage('MAIL_CHOICE_INACTIVITY_LOCK_TOMORROW');
+         $this->_array_mail_text[57]['value'] = 'MAIL_CHOICE_INACTIVITY_LOCK_TOMORROW';
+         $this->_array_mail_text[58]['text']  = $this->_translator->getMessage('MAIL_CHOICE_INACTIVITY_LOCK_NOW');
+         $this->_array_mail_text[58]['value'] = 'MAIL_CHOICE_INACTIVITY_LOCK_NOW';
+         $this->_array_mail_text[59]['text']  = $this->_translator->getMessage('MAIL_CHOICE_INACTIVITY_DELETE_NEXT');
+         $this->_array_mail_text[59]['value'] = 'MAIL_CHOICE_INACTIVITY_DELETE_NEXT';
+         $this->_array_mail_text[60]['text']  = $this->_translator->getMessage('MAIL_CHOICE_INACTIVITY_DELETE_TOMORROW');
+         $this->_array_mail_text[60]['value'] = 'MAIL_CHOICE_INACTIVITY_DELETE_TOMORROW';
+         $this->_array_mail_text[61]['text']  = $this->_translator->getMessage('MAIL_CHOICE_INACTIVITY_DELETE_NOW');
+         $this->_array_mail_text[61]['value'] = 'MAIL_CHOICE_INACTIVITY_DELETE_NOW';
+      }
    }
 
 
@@ -239,6 +268,36 @@ class cs_configuration_mail_form extends cs_rubric_form {
                 }else {
                    $headline = ': '.$translator->getMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR');
                 }
+               break;
+            case 'MAIL_CHOICE_PROJECT_ARCHIVE_INFO':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_PROJECT_ARCHIVE_INFO');
+               break;
+            case 'MAIL_CHOICE_PROJECT_ARCHIVE':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_PROJECT_ARCHIVE');
+               break;
+            case 'MAIL_CHOICE_PROJECT_DELETE_INFO':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_PROJECT_DELETE_INFO');
+               break;
+            case 'MAIL_CHOICE_PROJECT_DELETE':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_PROJECT_DELETE');
+               break;
+            case 'MAIL_CHOICE_INACTIVITY_LOCK_NEXT':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_INACTIVITY_LOCK_NEXT');
+               break;
+            case 'MAIL_CHOICE_INACTIVITY_LOCK_TOMORROW':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_INACTIVITY_LOCK_TOMORROW');
+               break;
+            case 'MAIL_CHOICE_INACTIVITY_LOCK_NOW':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_INACTIVITY_LOCK_NOW');
+               break;
+            case 'MAIL_CHOICE_INACTIVITY_DELETE_NEXT':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_INACTIVITY_DELETE_NEXT');
+               break;
+            case 'MAIL_CHOICE_INACTIVITY_DELETE_TOMORROW':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_INACTIVITY_DELETE_TOMORROW');
+               break;
+            case 'MAIL_CHOICE_INACTIVITY_DELETE_NOW':
+               $headline = ': '.$translator->getMessage('MAIL_CHOICE_INACTIVITY_DELETE_NOW');
                break;
             default:
                $headline = ': '.$translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_mail_form(215) ');
