@@ -215,7 +215,7 @@ function email_to_commsy($mbox,$msgno){
 			   $result_mail = new cs_mail();
             $result_mail->set_to($sender);
             $result_mail->set_from_name('CommSy');
-				$result_mail->set_from_email('commsy@commsy.net');
+				// $result_mail->set_from_email('commsy@commsy.net');
 				
 				$errors = array();
 				
