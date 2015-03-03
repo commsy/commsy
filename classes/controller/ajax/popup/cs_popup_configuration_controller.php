@@ -2423,7 +2423,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 		$current_context = $this->_environment->getCurrentContextItem();
 		$translator = $this->_environment->getTranslationObject();
 
-		$return['room_name'] = $current_context->getTitle();
+		$return['room_name'] = htmlspecialchars($current_context->getTitle() , ENT_QUOTES, 'UTF-8');
 		$return['room_show_name'] = $current_context->showTitle();
 
 		// language
