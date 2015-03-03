@@ -5,7 +5,7 @@ $message["PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX_NEW"]["de"] = "E-Mails an diese 
 $message["PRIVATE_ROOM_EMAIL_TO_COMMSY_NO_SECRET"]["de"] = "Bitte geben Sie ein Kennwort für den E-Mail Upload an.";
 $message["PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT"]["de"] = "Bitte ein Upload-Kennwort angeben. Dieses muss im Text der E-Mail in einer Zeile stehen:<br/>
 <b>Upload-Kennwort: IHR_UPLOAD_KENNWORT</b><br/>
-Wenn Sie mehrere Kennungen mit der selben E-Mail-Adresse benutzen, wird das Material in sämtlichen persönlichen Räumen angelegt. Wenn Sie das Material hingegen nur im persönlichen Raum einer bestimmten Kennung anlegen wollen, können Sie diese Angabe in einer einzelnen Zeile im Text der E-Mail verwenden:<br/>
+Wenn Sie mehrere Kennungen mit der selben E-Mail-Adresse benutzen, wird das Material in sämtlichen Ablagen angelegt. Wenn Sie das Material hingegen nur in der Ablage einer bestimmten Kennung anlegen wollen, können Sie diese Angabe in einer einzelnen Zeile im Text der E-Mail verwenden:<br/>
 <b>Kennung: IHRE_KENNUNG</b>";
 $message["PRIVATE_ROOM_PROJECTROOM_CLOSED"]["de"] = "archiviert";
 $message["PRIVATE_ROOM_PROJECTROOM_LOCKED"]["de"] = "gesperrt";
