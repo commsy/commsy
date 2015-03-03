@@ -1312,11 +1312,11 @@ class cs_authentication {
       $user_new_project_array = array();
       $user_new_community_array = array();
    	
-      $user_old_project_list = $user_old->getRelatedProjectList();
-      $user_old_community_list = $user_old->getRelatedCommunityList();
+      $user_old_project_list = $user_old->getRelatedProjectListAllUserStatus();
+      $user_old_community_list = $user_old->getRelatedCommunityListAllUserStatus();
       // grouproom with projectroom
-      $user_new_project_list = $user_new->getRelatedProjectList();
-      $user_new_community_list = $user_new->getRelatedCommunityList();
+      $user_new_project_list = $user_new->getRelatedProjectListAllUserStatus();
+      $user_new_community_list = $user_new->getRelatedCommunityListAllUserStatus();
       // grouproom with projectroom
 
       if ($user_new_project_list->isNotEmpty()) {

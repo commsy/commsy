@@ -477,6 +477,11 @@ class cs_project_manager extends cs_room2_manager {
       return $this->_getRelatedContextListForUserSortByTime($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),true);
    }
 
+   function getRelatedProjectListForUserAllUserStatus ($user_item, $context_id) {
+      $this->_all_status_limit = true;
+   	return $this->getRelatedProjectListForUser($user_item, $context_id);
+   }
+
    /**
     * documentation TBD
     */
