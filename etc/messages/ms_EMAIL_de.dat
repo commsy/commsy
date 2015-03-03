@@ -47,21 +47,21 @@ $message["EMAIL_TO_COMMSY_ACCOUNT"]["de"] = "Kennung";
 $message["EMAIL_TO_COMMSY_PASSWORD"]["de"] = "Upload-Kennwort";
 $message["EMAIL_TO_COMMSY_RESULT_FAILURE"]["de"] = "Hallo %1,
 
-der Upload per E-Mail in Ihren pers&ouml;nlichen Raum war leider nicht erfolgreich.
+der Upload per E-Mail in Ihren persönlichen Raum war leider nicht erfolgreich.
 
-Bitte &uuml;berpr&uuml;fen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
+Bitte überprüfen Sie, ob Sie im Text der E-Mail das entsprechende Upload-Kennwort mit folgender Zeile angegeben haben:
 
 %2: IHR_UPLOAD_KENNWORT
 
-Gru&szlig; ... CommSy Administrator";
-$message["EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE"]["de"] = "Folgende Dateien waren leider gr&ouml;&szlig;er als die erlaubte Upload-Grenze des Portals (%1 MB):
+Gruß ... CommSy Administrator";
+$message["EMAIL_TO_COMMSY_RESULT_FILES_TO_LARGE"]["de"] = "Folgende Dateien waren leider größer als die erlaubte Upload-Grenze des Portals (%1 MB):
 
 %2
-Diese Dateien wurden nicht an das neue Material angeh&auml;ngt.";
-$message["EMAIL_TO_COMMSY_RESULT_REGARDS"]["de"] = "Gru&szlig; ... CommSy Administrator";
+Diese Dateien wurden nicht an das neue Material angehängt.";
+$message["EMAIL_TO_COMMSY_RESULT_REGARDS"]["de"] = "Gruß ... CommSy Administrator";
 $message["EMAIL_TO_COMMSY_RESULT_SUCCESS"]["de"] = "Hallo %1,
 
-der Upload per E-Mail in Ihre pers&ouml;nliche Ablage war erfolgreich.
+der Upload per E-Mail in Ihre persönliche Ablage war erfolgreich.
 
 Das neue Material finden sie in Ihrer CommSy-Leiste.
 ";
