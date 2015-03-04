@@ -61,6 +61,8 @@ define([	"dojo/_base/declare",
 			} else if(event.target.value.length > this.threshold) {
 				// autosuggest
 				this.autoSuggest(event.target.value);
+			} else {
+				this.matches = [];
 			}
 		},
 		
