@@ -16,7 +16,10 @@ define([	"dojo/_base/declare",
         	"dojo/on",
         	"dijit/form/Button",
         	"dojo/query",
-        	"dojo/_base/connect"], function(declare, BaseClass, Lang, ErrorTranslations, arrayUtil, Flash, Uploader, ProgressBar, Dialog, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect) {
+        	"dojo/_base/connect",
+        	"dojo/has",
+        	"dojo/sniff",
+        	"commsy/sniff"], function(declare, BaseClass, Lang, ErrorTranslations, arrayUtil, Flash, Uploader, ProgressBar, Dialog, FileList, DomConstruct, Timing, DomAttr, Tooltip, ErrorTranslations, On, Button, Query, connect, has) {
 	return declare(BaseClass, {
 		uploader:		null,
 		loadingImgNode:	null,
@@ -41,20 +44,25 @@ define([	"dojo/_base/declare",
 			} else {*/
 				dojo.require("dojox/form/uploader/plugins/IFrame");
 			//}
+			
+			var options = {
+				/* multiple false seems to be bugy */
+				multiple:		true,//!this.single,
+				uploadOnSelect: false,
+				"class":		"fileSelector",
+				
+				isDebug:		false,
+
+				url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=upload&action=upload"
+			};
+			
+			if(has("isWindows") && has("safari")){
+				options.multiple = false;
+				options.force = "iframe";
+			}
 
 			dojo.ready(Lang.hitch(this, function() {
-				this.uploader = new dojox.form.Uploader({
-					/* multiple false seems to be bugy */
-					multiple:		true,//!this.single,
-					uploadOnSelect: false,
-					"class":		"fileSelector",
-
-					//force:			"flash",
-					//force:			"iframe",
-					isDebug:		false,
-
-					url:			"commsy.php?cid=" + this.uri_object.cid + "&mod=ajax&fct=upload&action=upload"
-				}, Query("input.fileSelector", uploaderNode)[0]);
+				this.uploader = new dojox.form.Uploader(options, Query("input.fileSelector", uploaderNode)[0]);
 
 				// setup event handler
 				On(this.uploader, "begin", Lang.hitch(this, function(fileArray) {
