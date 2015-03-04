@@ -811,6 +811,7 @@ function deletePortfolioTags($portfolioId) {
          if ((string)$xml->template[0] == '1') {
             $item->setTemplate();
          }
+         $item->save();
       }
       $options[(string)$xml->item_id[0]] = $item->getItemId();
       return $item;
