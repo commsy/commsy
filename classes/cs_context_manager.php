@@ -838,11 +838,21 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $type_array[] = 'label';
       
       if ($top_item->getItemType() == 'privateroom') {
-         $type_array[] = 'portfolio';
-         $type_array[] = 'material';
-         $type_array[] = 'date';
-         $type_array[] = 'discussion';
-         $type_array[] = 'todo';
+         if (!in_array('portfolio', $type_array)) {
+            $type_array[] = 'portfolio';
+         }
+         if (!in_array('material', $type_array)) {
+            $type_array[] = 'material';
+         }
+         if (!in_array('date', $type_array)) {
+            $type_array[] = 'date';
+         }
+         if (!in_array('discussion', $type_array)) {
+            $type_array[] = 'discussion';
+         }
+         if (!in_array('todo', $type_array)) {
+            $type_array[] = 'todo';
+         }
       }
       
       $rubric_xml = new SimpleXMLElementExtended('<rubric></rubric>');
@@ -1023,10 +1033,18 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                }
             }
             $temp_private_room_item->delete();
-            //$temp_private_room_user_item->setContextID($context_item->getItemID());
-            //$temp_private_room_user_item->setFirstName(rand(0, 10000));
-            //$temp_private_room_user_item->save();
             $temp_private_room_user_item->delete();
+            
+            $new_private_room_user_item = NULL;
+            $user_array = $user_manager->getAllUserItemArray($temp_user_item->getUserID());
+            foreach ($user_array as $temp_user) {
+               if ($temp_user->getContextID() == $context_item->getItemID()) {
+                  $new_private_room_user_item = $temp_user;
+               }
+            }
+            $this->_environment->setCurrentUser($new_private_room_user_item);
+            $linkModifierItemManager = $this->_environment->getLinkModifierItemManager();
+            $linkModifierItemManager->_current_user_id = $new_private_room_user_item->getItemID();
          }
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
