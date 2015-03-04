@@ -129,6 +129,11 @@ class cs_community_manager extends cs_room2_manager {
    function getRelatedCommunityListForUser ($user_item) {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
    }
+   
+   function getRelatedCommunityListForUserAllUserStatus ($user_item) {
+      $this->_all_status_limit = true;
+      return $this->getRelatedCommunityListForUser($user_item);
+   }
 
    function getUserRelatedCommunityListForUser ($user_item) {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),false,true);

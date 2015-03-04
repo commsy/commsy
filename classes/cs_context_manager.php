@@ -38,6 +38,8 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    var $_room_type = NULL;
 
    var $_all_room_limit = false;
+   
+   var $_all_status_limit = false;
 
   /**
    * integer - containing the id of a institution as a limit for the selected announcement
@@ -86,6 +88,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       parent::resetLimits();
       $this->_status_limit = NULL;
       $this->_all_room_limit = false;
+      $this->_all_status_limit = false;
       $this->_order = NULL;
       $this->_institution_limit = NULL;
       $this->_topic_limit = NULL;
@@ -240,10 +243,14 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                      AND '.$this->addDatabasePrefix('user').'.auth_source="'.$auth_source.'"
                      AND '.$this->addDatabasePrefix('user').'.deletion_date IS NULL
                      AND '.$this->addDatabasePrefix('user').'.user_id="'.encode(AS_DB,$user_id).'"';
-         if ( !$only_user ) {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "1"';
+         if (!$this->_all_status_limit) {
+            if ( !$only_user ) {
+               $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "1"';
+            } else {
+               $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
+            }
          } else {
-            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "2"';
+            $query .= ' AND '.$this->addDatabasePrefix('user').'.status >= "0"';
          }
          $query .= ' WHERE 1';
          if ( isset($this->_room_type) and !empty($this->_room_type) ) {

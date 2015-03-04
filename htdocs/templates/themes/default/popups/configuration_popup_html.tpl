@@ -19,7 +19,7 @@
 							<a id="popup_account_tab" href="accounts" class="pop_tab">
 								___COMMON_ACCOUNTS___
 							{if ($environment.count_new_accounts >0)}
-								<span href="accounts" class="bold">({$environment.count_new_accounts})</span>
+								<span id="count_new_accounts" href="accounts" class="bold">({$environment.count_new_accounts})</span>
 							{/if}
 							</a>
 							<a href="moderation_configuration" class="pop_tab">___CONFIG_MODERATION_TITLE___</a>

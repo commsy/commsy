@@ -3358,6 +3358,8 @@ class cs_external_page_portal_view extends cs_page_view {
    				if ( $numCopies > 0)
    				{
    					$html .= '	<span id="tm_clipboard_copies">' . $numCopies . '</span>';
+   				} else {
+      				$html .= '	<span id="tm_clipboard_copies"></span>';
    				}
    			}
 
