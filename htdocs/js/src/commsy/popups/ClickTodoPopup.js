@@ -19,6 +19,7 @@ define([	"dojo/_base/declare",
 			this.module = "todo";
 			this.editType = customObject.editType;
 			this.contextId = customObject.contextId;
+			this.ItemTitle = "";
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 
@@ -67,6 +68,9 @@ define([	"dojo/_base/declare",
 				]
 			};
 
+			// set title to refresh item list
+			this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+
 			this.submit(search, { contextId: this.contextId });
 		},
 
@@ -86,6 +90,7 @@ define([	"dojo/_base/declare",
 					this.close();
 					var aNode = query("a#listItem" + item_id)[0];
 					if (aNode) {
+						aNode.innerHTML = this.itemTitle;
 						aNode.click();
 					}
 				} else {

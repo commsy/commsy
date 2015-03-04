@@ -20,6 +20,7 @@ define([	"dojo/_base/declare",
 			this.editType = customObject.editType;
 			this.version_id = customObject.vid;
 			this.contextId = customObject.contextId;
+			this.itemTitle = "";
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 
@@ -81,6 +82,9 @@ define([	"dojo/_base/declare",
 				]
 			};
 
+			// set title to refresh item list
+			this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+
 			// add visible bibliographic div
 			// TODO: maybe there is a not-class selector?
 			dojo.forEach(query("div#bibliographic div[id^='bib_content_']", this.contentNode), function(node, index, arr) {
@@ -112,6 +116,7 @@ define([	"dojo/_base/declare",
 					this.close();
 					var aNode = query("a#listItem" + item_id)[0];
 					if (aNode) {
+						aNode.innerHTML = this.itemTitle;
 						aNode.click();
 					}
 				} else {
