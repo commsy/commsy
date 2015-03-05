@@ -1,7 +1,9 @@
 <?php
 require_once('classes/controller/ajax/popup/cs_rubric_popup_controller.php');
+require_once('classes/controller/ajax/popup/cs_rubric_popup_main_controller.php');
 
-class cs_popup_announcement_controller implements cs_rubric_popup_controller {
+
+class cs_popup_announcement_controller extends cs_rubric_popup_main_controller implements cs_rubric_popup_controller {
     private $_environment = null;
     private $_popup_controller = null;
 
@@ -274,51 +276,9 @@ class cs_popup_announcement_controller implements cs_rubric_popup_controller {
 	                }
                 }
 
-
                 // buzzwords
-				$new_buzzword = '';
-                $buzzwords = array();
-				$buzzword_manager = $this->_environment->getLabelManager();
-				$buzzword_manager->resetLimits();
-				$buzzword_manager->setContextLimit($environment->getCurrentContextID());
-				$buzzword_manager->setTypeLimit('buzzword');
-				$buzzword_manager->select();
-				$buzzword_list = $buzzword_manager->get();
-				$buzzword_ids = $buzzword_manager->getIDArray();
-                if (isset($form_data['buzzwords'])){
-                	foreach($form_data['buzzwords'] as $buzzword){
-                  		if (!in_array($buzzword,$buzzword_ids)){
-                  			$new_buzzword = $buzzword;
-                  		}else{
-                  			$buzzwords[] =	$buzzword;
-                  		}
-                	}
-                }
-                if (!empty($new_buzzword)){
-					$isDuplicate = false;
-					$buzzword_item = $buzzword_list->getFirst();
-					while($buzzword_item) {
-						if($buzzword_item->getName() === $new_buzzword) {
-							$isDuplicate = true;
-							$buzzwords[] = $buzzword_item->getItemID();
-							break;
-						}
-						$buzzword_item = $buzzword_list->getNext();
-					}
-					if (!$isDuplicate){
-						$buzzword_manager = $environment->getBuzzwordManager();
-						$buzzword_item = $buzzword_manager->getNewItem();
-						$buzzword_item->setLabelType('buzzword');
-						$buzzword_item->setName($text_converter->sanitizeHTML($new_buzzword));
-						$buzzword_item->setCreatorItem($current_user);
-						$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
-						$buzzword_item->save();
-						$buzzwords[] = $buzzword_item->getItemID();
-					}
-                }
-                $announcement_item->setBuzzwordListByID($buzzwords);
-
-
+				// save buzzwords
+                $this->saveBuzzwords($environment, $announcement_item, $form_data['buzzwords']);
 
                 // tags
                 if (isset($form_data['tags_tab'])){
