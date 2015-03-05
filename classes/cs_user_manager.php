@@ -1426,9 +1426,6 @@ class cs_user_manager extends cs_manager {
     * @param cs_item
     */
   function saveItem ($item) {
-     xdebug_break();
-     
-     
      $setCreatorID2ItemID = false;
      $item_id = $item->getItemID();
 
