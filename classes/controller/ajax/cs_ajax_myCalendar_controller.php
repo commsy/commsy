@@ -80,237 +80,235 @@
 			}
 			*/
 			
-			if ($this->_environment->getConfiguration("c_use_new_private_room")) {
-				/* get calendar display configuration */
-				$configuration = $privateContextItem->getMyCalendarDisplayConfig();
-				$datesLimit = array();
-				$todoLimit = array();
-				
-				foreach ($configuration as $entry) {
-					$entryExplode = explode("_", $entry);
-					if (sizeof($entryExplode) === 2) {
-						list($value, $type) = $entryExplode;
-						
-						if ($type === "dates") $datesLimit[] = $value;
-						else $todoLimit[] = $value;
-					}
-				}
-				
-				/************************************************************************************
-				 * We need to collect all room ids relevant for our calendar
-				************************************************************************************/
-				$roomIdArray = array();
-				
-				// privateroom itself
-				$roomIdArray[] = $privateContextItem->getItemID();
-				
-				// related group rooms
-				$groupRoomList = $currentUserItem->getRelatedGroupList();
-				if (isset($groupRoomList) && $groupRoomList->isNotEmpty()) {
-					$groupRoomList->reverse();
+			/* get calendar display configuration */
+			$configuration = $privateContextItem->getMyCalendarDisplayConfig();
+			$datesLimit = array();
+			$todoLimit = array();
+			
+			foreach ($configuration as $entry) {
+				$entryExplode = explode("_", $entry);
+				if (sizeof($entryExplode) === 2) {
+					list($value, $type) = $entryExplode;
 					
-					$groupRoomItem = $groupRoomList->getFirst();
-					while ($groupRoomItem) {
-						$projectRoomId = $groupRoomItem->getLinkedProjectItemID();
+					if ($type === "dates") $datesLimit[] = $value;
+					else $todoLimit[] = $value;
+				}
+			}
+			
+			/************************************************************************************
+			 * We need to collect all room ids relevant for our calendar
+			************************************************************************************/
+			$roomIdArray = array();
+			
+			// privateroom itself
+			$roomIdArray[] = $privateContextItem->getItemID();
+			
+			// related group rooms
+			$groupRoomList = $currentUserItem->getRelatedGroupList();
+			if (isset($groupRoomList) && $groupRoomList->isNotEmpty()) {
+				$groupRoomList->reverse();
+				
+				$groupRoomItem = $groupRoomList->getFirst();
+				while ($groupRoomItem) {
+					$projectRoomId = $groupRoomItem->getLinkedProjectItemID();
+					
+					if (in_array($projectRoomId, $roomIdArray)) {
+						$roomIdArrayTemp = array();
 						
-						if (in_array($projectRoomId, $roomIdArray)) {
-							$roomIdArrayTemp = array();
+						foreach ($roomIdArray as $value) {
+							$roomIdArrayTemp[] = $value;
 							
-							foreach ($roomIdArray as $value) {
-								$roomIdArrayTemp[] = $value;
-								
-								if ($value === $projectRoomId) {
-									$roomIdArrayTemp[] = $groupRoomItem->getItemID();
-								}
+							if ($value === $projectRoomId) {
+								$roomIdArrayTemp[] = $groupRoomItem->getItemID();
 							}
-							
-							$roomIdArray = $roomIdArrayTemp;
 						}
 						
-						$groupRoomItem = $groupRoomList->getNext();
+						$roomIdArray = $roomIdArrayTemp;
 					}
-				}
-				
-				// related project rooms
-				$projectList = $currentUserItem->getRelatedProjectList();
-				if (isset($projectList) && $projectList->isNotEmpty()) {
-					$projectItem = $projectList->getFirst();
-					while ($projectItem) {
-						$roomIdArray[] = $projectItem->getItemID();
-						
-						$projectItem = $projectList->getNext();
-					}
-				}
-				
-				// related community rooms
-				$communityList = $currentUserItem->getRelatedCommunityList();
-				if (isset($communityList) && $communityList->isNotEmpty()) {
-					$communityItem = $communityList->getFirst();
-					while ($communityItem) {
-						$roomIdArray[] = $communityItem->getItemID();
-						
-						$communityItem = $communityList->getNext();
-					}
-				}
-				
-				/************************************************************************************
-				 * Filter id array
-				************************************************************************************/
-				$temp = array();
-				
-				foreach ($datesLimit as $limit) {
-					if (in_array($limit, $roomIdArray)) {
-						$temp[] = $limit;
-					}
-				}
-				$temp[] = $privateContextItem->getItemID();
-				$datesLimit = $temp;
-				
-				$temp = array();
-				foreach ($todoLimit as $limit) {
-					if ( in_array($limit, $roomIdArray)) {
-						$temp[] = $limit;
-					}
-				}
-				$temp[] = $privateContextItem->getItemID();
-				$todoLimit = $temp;
-				
-				if ($parameters["selRoom"] != "2") {
-					$datesManager->setContextArrayLimit($parameters["selRoom"]);
-				} else {
-					$datesManager->setContextArrayLimit($datesLimit);
-				}
-				
-				if ( isset($startISO) && isset($endISO) )
-				{
-					$datesManager->setBetweenLimit($startISO, $endISO);
-				}
-				
-				/************************************************************************************
-				 * ToDo
-				************************************************************************************/
-				
-				
-				/*
-				
 					
+					$groupRoomItem = $groupRoomList->getNext();
+				}
+			}
+			
+			// related project rooms
+			$projectList = $currentUserItem->getRelatedProjectList();
+			if (isset($projectList) && $projectList->isNotEmpty()) {
+				$projectItem = $projectList->getFirst();
+				while ($projectItem) {
+					$roomIdArray[] = $projectItem->getItemID();
+					
+					$projectItem = $projectList->getNext();
+				}
+			}
+			
+			// related community rooms
+			$communityList = $currentUserItem->getRelatedCommunityList();
+			if (isset($communityList) && $communityList->isNotEmpty()) {
+				$communityItem = $communityList->getFirst();
+				while ($communityItem) {
+					$roomIdArray[] = $communityItem->getItemID();
+					
+					$communityItem = $communityList->getNext();
+				}
+			}
+			
+			/************************************************************************************
+			 * Filter id array
+			************************************************************************************/
+			$temp = array();
+			
+			foreach ($datesLimit as $limit) {
+				if (in_array($limit, $roomIdArray)) {
+					$temp[] = $limit;
+				}
+			}
+			$temp[] = $privateContextItem->getItemID();
+			$datesLimit = $temp;
+			
+			$temp = array();
+			foreach ($todoLimit as $limit) {
+				if ( in_array($limit, $roomIdArray)) {
+					$temp[] = $limit;
+				}
+			}
+			$temp[] = $privateContextItem->getItemID();
+			$todoLimit = $temp;
+			
+			if ($parameters["selRoom"] != "2") {
+				$datesManager->setContextArrayLimit($parameters["selRoom"]);
+			} else {
+				$datesManager->setContextArrayLimit($datesLimit);
+			}
+			
+			if ( isset($startISO) && isset($endISO) )
+			{
+				$datesManager->setBetweenLimit($startISO, $endISO);
+			}
+			
+			/************************************************************************************
+			 * ToDo
+			************************************************************************************/
+			
+			
+			/*
+			
 				
-				
-				// todo
-				$todo_sel_room = '';
-				if ( !empty($_GET[CS_TODO_TYPE.'_selroom'])
-						and $_GET[CS_TODO_TYPE.'_selroom'] != '-2'
-						and $_GET[CS_TODO_TYPE.'_selroom'] != '2'
+			
+			
+			// todo
+			$todo_sel_room = '';
+			if ( !empty($_GET[CS_TODO_TYPE.'_selroom'])
+					and $_GET[CS_TODO_TYPE.'_selroom'] != '-2'
+					and $_GET[CS_TODO_TYPE.'_selroom'] != '2'
+			) {
+				$todo_sel_room = $_GET[CS_TODO_TYPE.'_selroom'];
+				$room_id_array = array();
+				$room_id_array[] = $todo_sel_room;
+				$view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
+				$context_item->setRubrikSelection(CS_TODO_TYPE,'room',$todo_sel_room);
+				$context_item->save();
+			} elseif ( !empty($_GET[CS_TODO_TYPE.'_selroom'])
+					and $_GET[CS_TODO_TYPE.'_selroom'] == '2'
+			) {
+				$todo_sel_room = $_GET[CS_TODO_TYPE.'_selroom'];
+				$view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
+				$context_item->setRubrikSelection(CS_TODO_TYPE,'room',$todo_sel_room);
+				$context_item->save();
+			} elseif ( empty($_GET[CS_TODO_TYPE.'_selroom']) ) {
+				$todo_sel_room = $context_item->getRubrikSelection(CS_TODO_TYPE,'room');
+				if ( !empty($todo_sel_room)
+						and $todo_sel_room != '-2'
+						and $todo_sel_room != '2'
 				) {
-					$todo_sel_room = $_GET[CS_TODO_TYPE.'_selroom'];
 					$room_id_array = array();
 					$room_id_array[] = $todo_sel_room;
 					$view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
-					$context_item->setRubrikSelection(CS_TODO_TYPE,'room',$todo_sel_room);
-					$context_item->save();
-				} elseif ( !empty($_GET[CS_TODO_TYPE.'_selroom'])
-						and $_GET[CS_TODO_TYPE.'_selroom'] == '2'
-				) {
-					$todo_sel_room = $_GET[CS_TODO_TYPE.'_selroom'];
-					$view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
-					$context_item->setRubrikSelection(CS_TODO_TYPE,'room',$todo_sel_room);
-					$context_item->save();
-				} elseif ( empty($_GET[CS_TODO_TYPE.'_selroom']) ) {
-					$todo_sel_room = $context_item->getRubrikSelection(CS_TODO_TYPE,'room');
-					if ( !empty($todo_sel_room)
-							and $todo_sel_room != '-2'
-							and $todo_sel_room != '2'
-					) {
-						$room_id_array = array();
-						$room_id_array[] = $todo_sel_room;
-						$view->setSelectedRoom($todo_sel_room,CS_TODO_TYPE);
-					}
 				}
-					
-				$todo_sel_status_for_manager = 4;
-				if ( isset($_GET[CS_TODO_TYPE.'_selstatus'])
-						and $_GET[CS_TODO_TYPE.'_selstatus'] != '-2'
-				) {
-					$todo_sel_status = $_GET[CS_TODO_TYPE.'_selstatus'];
+			}
+				
+			$todo_sel_status_for_manager = 4;
+			if ( isset($_GET[CS_TODO_TYPE.'_selstatus'])
+					and $_GET[CS_TODO_TYPE.'_selstatus'] != '-2'
+			) {
+				$todo_sel_status = $_GET[CS_TODO_TYPE.'_selstatus'];
+				$view->setSelectedStatus($todo_sel_status,CS_TODO_TYPE);
+				$context_item->setRubrikSelection(CS_TODO_TYPE,'status',$todo_sel_status);
+				$context_item->save();
+				if ( $todo_sel_status > 9 ) {
+					$todo_sel_status_for_manager = $todo_sel_status - 10;
+				} else {
+					$todo_sel_status_for_manager = $todo_sel_status;
+				}
+			} elseif ( empty($_GET[CS_TODO_TYPE.'_selstatus']) ) {
+				$todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
+				if ( !empty($todo_sel_status) ) {
 					$view->setSelectedStatus($todo_sel_status,CS_TODO_TYPE);
-					$context_item->setRubrikSelection(CS_TODO_TYPE,'status',$todo_sel_status);
-					$context_item->save();
 					if ( $todo_sel_status > 9 ) {
 						$todo_sel_status_for_manager = $todo_sel_status - 10;
 					} else {
 						$todo_sel_status_for_manager = $todo_sel_status;
 					}
-				} elseif ( empty($_GET[CS_TODO_TYPE.'_selstatus']) ) {
-					$todo_sel_status = $context_item->getRubrikSelection(CS_TODO_TYPE,'status');
-					if ( !empty($todo_sel_status) ) {
-						$view->setSelectedStatus($todo_sel_status,CS_TODO_TYPE);
-						if ( $todo_sel_status > 9 ) {
-							$todo_sel_status_for_manager = $todo_sel_status - 10;
-						} else {
-							$todo_sel_status_for_manager = $todo_sel_status;
-						}
-					}
 				}
-					
-				$todo_sel_assignment = 3;
-				if ( !empty($_GET[CS_TODO_TYPE.'_selassignment'])
-						and $_GET[CS_TODO_TYPE.'_selassignment'] != '-2'
-				) {
-					$todo_sel_assignment = $_GET[CS_TODO_TYPE.'_selassignment'];
-					$view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
-					$context_item->setRubrikSelection(CS_TODO_TYPE,'assignment',$todo_sel_assignment);
-					$context_item->save();
-				} elseif ( empty($_GET[CS_TODO_TYPE.'_selassignment']) ) {
-					$todo_sel_assignment = $context_item->getRubrikSelection(CS_TODO_TYPE,'assignment');
-					if ( !empty($todo_sel_assignment) ) {
-						$view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
-					}
-				}
-					
-				// filter room id array
-				$temp = array();
-				foreach($configuration_room_todo_limit as $limit) {
-					if(in_array($limit, $room_id_array)) {
-						$temp[] = $limit;
-					}
-				}
-				$temp[] = $current_context->getItemID();
-				$todo_room_id_array = $temp;
-					
-				$todo_manager = $environment->getToDoManager();
-				$todo_manager->setContextArrayLimit($todo_room_id_array);
-				$todo_ids = $todo_manager->getIDArray();
-				$count_all_todos = count($todo_ids);
-				$todo_manager->showNoNotActivatedEntries();
-				$todo_manager->setSortOrder('date');
-				if ( !empty($todo_sel_status_for_manager) ) {
-					$todo_manager->setStatusLimit($todo_sel_status_for_manager);
-				}
-				if ($todo_sel_assignment == '3'){
-					$current_user = $environment->getCurrentUserItem();
-					$user_list = $current_user->getRelatedUserList();
-					$user_item = $user_list->getFirst();
-					$user_id_array = array();
-					while ($user_item){
-						$user_id_array[] = $user_item->getItemID();
-						$user_item = $user_list->getNext();
-					}
-					$todo_manager->setAssignmentLimit($user_id_array);
-					unset($user_id_array);
-					unset($user_list);
-				}
-				if ( !empty($search) ) {
-					$todo_manager->setSearchLimit($search);
-				}
-				$todo_manager->select();
-				$todo_list = $todo_manager->get();
-				$view->setTodoList($todo_list);
-				if ( isset($count_all_todos) ) {
-					$view->setCountAllTodos($count_all_todos);
-				}
-				// todo
-				 */
 			}
+				
+			$todo_sel_assignment = 3;
+			if ( !empty($_GET[CS_TODO_TYPE.'_selassignment'])
+					and $_GET[CS_TODO_TYPE.'_selassignment'] != '-2'
+			) {
+				$todo_sel_assignment = $_GET[CS_TODO_TYPE.'_selassignment'];
+				$view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
+				$context_item->setRubrikSelection(CS_TODO_TYPE,'assignment',$todo_sel_assignment);
+				$context_item->save();
+			} elseif ( empty($_GET[CS_TODO_TYPE.'_selassignment']) ) {
+				$todo_sel_assignment = $context_item->getRubrikSelection(CS_TODO_TYPE,'assignment');
+				if ( !empty($todo_sel_assignment) ) {
+					$view->setSelectedAssignment($todo_sel_assignment,CS_TODO_TYPE);
+				}
+			}
+				
+			// filter room id array
+			$temp = array();
+			foreach($configuration_room_todo_limit as $limit) {
+				if(in_array($limit, $room_id_array)) {
+					$temp[] = $limit;
+				}
+			}
+			$temp[] = $current_context->getItemID();
+			$todo_room_id_array = $temp;
+				
+			$todo_manager = $environment->getToDoManager();
+			$todo_manager->setContextArrayLimit($todo_room_id_array);
+			$todo_ids = $todo_manager->getIDArray();
+			$count_all_todos = count($todo_ids);
+			$todo_manager->showNoNotActivatedEntries();
+			$todo_manager->setSortOrder('date');
+			if ( !empty($todo_sel_status_for_manager) ) {
+				$todo_manager->setStatusLimit($todo_sel_status_for_manager);
+			}
+			if ($todo_sel_assignment == '3'){
+				$current_user = $environment->getCurrentUserItem();
+				$user_list = $current_user->getRelatedUserList();
+				$user_item = $user_list->getFirst();
+				$user_id_array = array();
+				while ($user_item){
+					$user_id_array[] = $user_item->getItemID();
+					$user_item = $user_list->getNext();
+				}
+				$todo_manager->setAssignmentLimit($user_id_array);
+				unset($user_id_array);
+				unset($user_list);
+			}
+			if ( !empty($search) ) {
+				$todo_manager->setSearchLimit($search);
+			}
+			$todo_manager->select();
+			$todo_list = $todo_manager->get();
+			$view->setTodoList($todo_list);
+			if ( isset($count_all_todos) ) {
+				$view->setCountAllTodos($count_all_todos);
+			}
+			// todo
+			 */
 			
 			
 
@@ -504,12 +502,22 @@
 					$allDay = true;
 				}
 				
+				$context = "public";
+				$item_manager = $this->_environment->getItemManager();
+				$context_item = $item_manager->getItem($dateEntry->getContextID());
+				if ($context_item->getItemType() == 'privateroom') {
+   				$context = "private";
+				}
+				
 				$dates[] = array(
 					"id"		=> $dateEntry->getItemID(),
 					"summary"	=> $dateEntry->getTitle(),
 					"startTime"	=> date("c", $timestampStart),
 					"endTime"	=> date("c", $timestampEnd),
-					"allDay"	=> $allDay
+					"allDay"	=> $allDay,
+					"context" => $context,
+					"contextID" => $dateEntry->getContextID(),
+					"module" => "date"
 				);
 				
 				$dateEntry = $dateList->getNext();

@@ -23,6 +23,9 @@
 				$discussionArticlesManager = $this->_environment->getDiscussionArticleManager();
 				$discussionArticlesList = $discussionArticlesManager->getAllArticlesForItem($discussionItem);
 
+				// sort list by position
+				$discussionArticlesList->sortby('treePosition');
+
 				// build the tree array
 				$treeArray = array($this->buildTreeArray($discussionArticlesList, $discussionArticlesList->getFirst()));
 			}

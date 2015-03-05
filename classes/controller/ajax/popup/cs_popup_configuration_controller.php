@@ -845,8 +845,10 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        			case 8: $messageTag = "MAIL_BODY_USER_STATUS_MODERATOR";			break;
 				        			case 9: $messageTag = "MAIL_BODY_USER_MAKE_CONTACT_PERSON";			break;
 				        			case 10: $messageTag = "MAIL_BODY_USER_UNMAKE_CONTACT_PERSON";		break;
-				        			case 11: $messageTag = "MAIL_BODY_USER_ACCOUNT_PASSWORD";			break;
-				        			case 12: $messageTag = "MAIL_BODY_USER_ACCOUNT_MERGE";				break;
+                                    case 11: $messageTag = "MAIL_BODY_USER_STATUS_USER_READ_ONLY";     break;
+				        			case 12: $messageTag = "MAIL_BODY_USER_ACCOUNT_PASSWORD";			break;
+				        			case 13: $messageTag = "MAIL_BODY_USER_ACCOUNT_MERGE";				break;
+                                    
 				        		}
 				        		
 				        		$languages = $this->_environment->getAvailableLanguageArray();
@@ -1305,6 +1307,22 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				      	
 				      	$current_context->save();
 				      }
+
+                      // mdo
+                      elseif ($additional['action'] == 'save_mdo') {
+                        if( isset($form_data['mdo_room']) && $form_data['mdo_room'] === "yes") {
+                            $current_context->setMDOActive(true);
+                        } else {
+                            $current_context->setMDOActive(false);
+                        }
+                        if( isset($form_data['mdo_key'])) {
+                            $current_context->setMDOKey($form_data['mdo_key']);
+                        } else {
+                            $current_context->setMDOKey();
+                        }
+                        $current_context->save();
+
+                      }
 				      
 				      // plugins
 				      elseif ( substr($additional['action'],0,7) == 'plugin_' ) {
@@ -1885,12 +1903,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      $array_mail_text[9]['value'] = 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON';
 	      $array_mail_text[10]['text']  = $translator->getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
 	      $array_mail_text[10]['value'] = 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON';
+          $array_mail_text[11]['text']  = $translator->getMessage('MAIL_CHOICE_USER_STATUS_READ_ONLY_USER');
+          $array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_STATUS_READ_ONLY_USER';
 	      if ($this->_environment->inCommunityRoom()) {
-	         $array_mail_text[11]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
-	         $array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
-	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
-	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
+	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
+	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
+	         $array_mail_text[13]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
+	         $array_mail_text[13]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
 	      }
+          
 
 	      $languages = $this->_environment->getAvailableLanguageArray();
 	      foreach($array_mail_text as $index => $array) {
@@ -1914,6 +1935,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      		case 'MAIL_CHOICE_ROOM_UNLINK':					$message_tag = 'MAIL_BODY_ROOM_UNLINK'; break;
 	      		case 'MAIL_CHOICE_ROOM_DELETE':					$message_tag = 'MAIL_BODY_ROOM_DELETE'; break;
 	      		case 'MAIL_CHOICE_ROOM_OPEN':					$message_tag = 'MAIL_BODY_ROOM_OPEN'; break;
+                case 'MAIL_CHOICE_USER_STATUS_READ_ONLY_USER':  $message_tag = 'MAIL_BODY_USER_STATUS_USER_READ_ONLY'; break;
 	      	}
 
 	      	foreach ($languages as $language) {
@@ -2356,6 +2378,27 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   {
 	   	$return['limesurvey'] = false;
 	   }
+
+
+        // Medien Distribution Online
+       global $c_media_integration;
+
+       if($c_media_integration && $current_context->isCommunityRoom()) {
+        $return['mdo'] = true;
+        if($current_context->getMDOActive() == 1) {
+            $return['mdo_room'] = true;
+        } else {
+            $return['mdo_room'] = false;
+        }
+        if($current_context->getMDOKey()) {
+            $return['mdo_key'] = $current_context->getMDOKey();
+        } else {
+            $return['mdo_key'] = '';
+        }
+       } else {
+        $return['mdo'] = false;
+       }
+       
 	   
 	   // plugins - TODO
 	   $c_plugin_array = $this->_environment->getConfiguration('c_plugin_array');

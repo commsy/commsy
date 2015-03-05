@@ -414,6 +414,10 @@ class cs_section_manager extends cs_manager implements cs_export_import_interfac
         }
         $modificator_item = $item->getModificatorItem();
 
+        if ( !isset($modificator_item) ) {
+          $modificator_item = $this->_environment->getCurrentUserItem();
+        }
+
         $query = 'UPDATE '.$this->addDatabasePrefix('section').' SET '.
               $date_string.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.

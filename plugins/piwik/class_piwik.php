@@ -124,7 +124,7 @@ class class_piwik extends cs_plugin {
                                     $this->_translator->getMessage(strtoupper($this->_identifier).'_CONFIG_FORM_TITLE_CONFIG_DESC',$this->getTitle()),
             		                  $https_values,
             		                  '',
-            		                  true,
+            		                  false,
             		                  true
                                   );
             $retour->combine();

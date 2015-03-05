@@ -221,8 +221,9 @@ if ( !empty($_GET['iid']) ) {
 	            if (strstr($_SERVER["HTTP_USER_AGENT"], "MSIE") != false) {
 	               header("Content-Disposition: attachment; filename=\"" . urlencode($file->getDisplayName()) . '"; modification-date="' . date('r', $mtime) . '"');
 	            } else {
-                  if($environment->getCurrentBrowserVersion() == 11) {
-                     // header("Content-Disposition: attachment; filename*=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
+                  // ie 11
+                  if (preg_match("/Trident\/7.0;(.*)rv:11.0/", $_SERVER["HTTP_USER_AGENT"], $match) != 0) {
+                     header("Content-Disposition: attachment; filename*=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
                   } else {
                      header("Content-Disposition: attachment; filename=\"" . $file->getDisplayName() . '"; modification-date="' . date('r', $mtime) . '"');
                   }

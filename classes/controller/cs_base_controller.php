@@ -85,6 +85,14 @@
                     
                     require_once('classes/cs_mpdf.php');
                     $mpdf = new cs_mpdf();
+
+                    // set proxy for mpdf
+                    global $c_proxy_ip;
+                    global $c_proxy_port;
+                    if($c_proxy_port) {
+                        $mpdf->proxy = true;
+                        $mpdf->proxyUrl = $c_proxy_ip.":".$c_proxy_port;
+                    }
                     
                     // debug
                     if($_GET['debug'] == 1){
@@ -385,22 +393,33 @@
             }
             $count_new_accounts = 0;
             if ($current_user->isModerator()){
-                // tasks
-                $manager = $this->_environment->getTaskManager();
+                // user count
+                $manager = $this->_environment->getUserManager();
                 $manager->resetLimits();
                 $manager->setContextLimit($this->_environment->getCurrentContextID());
-                $manager->setStatusLimit('REQUEST');
+                $manager->setStatusLimit(1);
                 $manager->select();
-                $tasks = $manager->get();
-                $task = $tasks->getFirst();
+                $user = $manager->get();
                 $count_new_accounts = 0;
-                while($task){
-                   $mode = $task->getTitle();
-                   $task = $tasks->getNext();
-                   if ($mode == 'TASK_USER_REQUEST'){
-                      $count_new_accounts ++;
-                   }
+                if ($user->getCount() > 0) {
+                    $count_new_accounts = $user->getCount();
                 }
+                // // tasks
+                // $manager = $this->_environment->getTaskManager();
+                // $manager->resetLimits();
+                // $manager->setContextLimit($this->_environment->getCurrentContextID());
+                // $manager->setStatusLimit('REQUEST');
+                // $manager->select();
+                // $tasks = $manager->get();
+                // $task = $tasks->getFirst();
+                // $count_new_accounts = 0;
+                // while($task){
+                //    $mode = $task->getTitle();
+                //    $task = $tasks->getNext();
+                //    if ($mode == 'TASK_USER_REQUEST'){
+                //       $count_new_accounts ++;
+                //    }
+                // }
 
             }
 
@@ -417,8 +436,17 @@
 
             global $c_commsy_url_path;
             global $c_commsy_domain;
-            $this->assign('basic', 'commsy_path', $c_commsy_domain . '/' . $c_commsy_url_path . '/');
-            $this->assign('basic', 'tpl_path', $c_commsy_domain . '/' . $c_commsy_url_path . '/' . $this->_tpl_path);
+            $url_path = '';
+            if ($c_commsy_url_path != '') {
+               $url_path = $c_commsy_url_path . '/';
+               if (!(strpos($url_path, '/') === 0)) {
+                  $url_path = '/' . $c_commsy_url_path;
+               }
+            } else {
+               $url_path = '/';
+            }
+            $this->assign('basic', 'commsy_path', $c_commsy_domain . $url_path);
+            $this->assign('basic', 'tpl_path', $c_commsy_domain . $url_path . $this->_tpl_path);
             $this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
             $this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
             $this->assign('environment', 'current_user_id', $this->_environment->getCurrentUserID());
@@ -562,6 +590,13 @@
             $to_javascript['security']['token'] = getToken();
             $to_javascript['autosave']['mode'] = 0;
             $to_javascript['autosave']['limit'] = 0;
+
+            global $c_media_integration;
+            if($c_media_integration) {
+                $to_javascript['c_media_integration'] = true;
+            } else {
+                $to_javascript['c_media_integration'] = false;
+            }
 
 
             if ($ownRoomItem)

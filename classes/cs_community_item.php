@@ -798,41 +798,42 @@ class cs_community_item extends cs_room_item {
       return $retour;
    }
    
-   function getMDOActive() {
-      // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
-      $retour = '';
-      if($this->_issetExtra('MEDIA_MDO_ACTIVE')) {
-         $retour = $this->_getExtra('MEDIA_MDO_ACTIVE');
-      }
-      
-      return $retour;
-   }
-   
-   function setMDOActive($active) {
-      if($active) {
-         $this->_addExtra('MEDIA_MDO_ACTIVE', 1);
-      } else {
-         $this->_addExtra('MEDIA_MDO_ACTIVE', -1);
-      }
-   }
-   
-   function getMDOKey() {
-      // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
-      $retour = '';
-      if($this->_issetExtra('MEDIA_MDO_KEY')) {
-        $retour = $this->_getExtra('MEDIA_MDO_KEY');
-      }
-      
-      return $retour;
-   }
-   
-   function setMDOKey($key) {
-      if(!empty($key)) {
-        $this->_addExtra('MEDIA_MDO_KEY', $key);
-      } else {
-        $this->_addExtra('MEDIA_MDO_KEY', -1);
-      }
-   }
+    function getMDOActive() {
+        // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
+        $retour = '';
+        if($this->_issetExtra('MEDIA_MDO_ACTIVE')) {
+            $retour = $this->_getExtra('MEDIA_MDO_ACTIVE');
+        }
+
+        return $retour;
+    }
+
+    function setMDOActive($active) {
+        if($active) {
+            $this->_addExtra('MEDIA_MDO_ACTIVE', 1);
+        } else {
+            $this->_addExtra('MEDIA_MDO_ACTIVE', -1);
+        }
+    }
+
+    function getMDOKey() {
+        // Konfigurationsoption: Medieninhalte(Mediendistribution-Online)
+        $retour = '';
+        if($this->_issetExtra('MEDIA_MDO_KEY')) {
+            $retour = $this->_getExtra('MEDIA_MDO_KEY');
+        }
+
+        return $retour;
+    }
+
+    function setMDOKey($key) {
+        if(!empty($key)) {
+            $this->_addExtra('MEDIA_MDO_KEY', $key);
+        } else {
+            $this->_addExtra('MEDIA_MDO_KEY', -1);
+        }
+    }
+
 
    ################################################################
    # mail to moderation, if the community room status changed

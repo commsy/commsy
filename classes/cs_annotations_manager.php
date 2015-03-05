@@ -540,6 +540,9 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
          $item->setContextID($top_item->getContextID());
          $item->save();
       }
+      
+      $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
       return $item;
    }
    

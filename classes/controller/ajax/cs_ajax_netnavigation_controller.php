@@ -111,19 +111,21 @@
 							}
 							
 							// check room entry
-							
-							if($group_room->checkNewMembersAlways()){
-								// 
-								$user_item->request();
-								$user_item->save();
-							} else if($group_room->checkNewMembersWithCode()){
-								// user must enter the correct code if he wants to join the room
-								#$user_item->save();
-							} else if($group_room->checkNewMembersNever()){
-								// user is now member of the room
-								$user_item->makeUser();
-								$user_item->save();
+							if(!$group_room->isUser($user_item)) {
+								if($group_room->checkNewMembersAlways()){
+									// 
+									$user_item->request();
+									$user_item->save();
+								} else if($group_room->checkNewMembersWithCode()){
+									// user must enter the correct code if he wants to join the room
+									#$user_item->save();
+								} else if($group_room->checkNewMembersNever()){
+									// user is now member of the room
+									$user_item->makeUser();
+									$user_item->save();
+								}
 							}
+							
 							#$room_item = $linked_item->getLinkedProjectItem();
 							#$room_item->a
 						}
@@ -181,6 +183,24 @@
 				if ( $type === CS_USER_TYPE && $item->getType() === CS_TODO_TYPE )
 				{
 					$item->removeProcessor($linked_item);
+				}
+				else if ($type === CS_USER_TYPE && $item->getType() === CS_LABEL_TYPE ) {
+                    $selected_ids[] = $link_id;
+                    $selected_ids = array_unique($selected_ids);
+
+                    if($item->getLabelType() === CS_GROUP_TYPE) {
+                        $user_manager = $this->_environment->getUserManager();
+                        $user = $user_manager->getItem($link_id);
+                        $group_room = $item->getGroupRoomItem();
+                        if($group_room->isUser($user)) {
+                            $related_user = $user->getRelatedUserItemInContext($group_room->getItemID());
+                            $related_user->delete();
+                            $key = array_search($user->getItemID(),$selected_ids);
+                            if($key!==false){
+                                unset($selected_ids[$key]);
+                            }
+                        }
+                    }
 				}
 				else
 				{
@@ -287,6 +307,22 @@
 					
 				if($restrictions['only_linked'] === true && empty($selected_ids)) $rubric_array = array();
 				
+				
+
+				// deactivate assigning user to groups if item is a group
+				if($item && $item->getType() == CS_LABEL_TYPE && $item->getLabelType() == CS_GROUP_TYPE) {
+					if($item->isGrouproomActivated() && !$current_user->isModerator()) {
+						// dont show user and group items if grouproom is activated
+						if(($key = array_search('user', $rubric_array)) !== false) {
+		 				   unset($rubric_array[$key]);
+						}
+						if(($key = array_search('group', $rubric_array)) !== false) {
+		 				   unset($rubric_array[$key]);
+						}
+					}
+				}
+				
+
 				foreach($rubric_array as $rubric) {
 					$rubric_list = new cs_list();
 					$rubric_manager = $this->_environment->getManager($rubric);
@@ -297,6 +333,9 @@
 						if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
 
 						if($rubric == CS_USER_TYPE) {
+							if(!$current_user->isModerator() && $item->isGrouproomActivated()) {
+								continue;
+							}
 							$rubric_manager->setUserLimit();
 
 							if($current_user->isUser()) $rubric_manager->setVisibleToAllAndCommsy();
@@ -354,6 +393,12 @@
 				}else{
 					$title = $item->getTitle();
 				}
+				if($item->getType() == CS_LABEL_TYPE && $item->getLabelType() == CS_GROUP_TYPE && $module == "user" && $current_user->isModerator()) {
+					if($item->isGrouproomActivated()) {
+						$item = $sublist->getNext();
+						continue;
+					}
+				}
 				$entry = array();
 				$entry['item_id']			= $item->getItemID();
 				$entry['title']				= $title;
@@ -362,6 +407,7 @@
 				} else {
 					$entry['modification_date']	= $item->getModificationDate();
 				}
+
 				//$entry['modification_date']	= $item->getModificationDate();
 				$entry['modificator']		= $item->getModificatorItem()->getFullName();
 				$entry['system_label']		= $item->isSystemLabel();

@@ -1226,16 +1226,20 @@ class cs_link_manager extends cs_manager implements cs_export_import_interface {
       return parent::_buildItem($db_array);
    }
 
-	public function getItemByFirstAndSecondID ($first_id,$second_id) {
+	public function getItemByFirstAndSecondID ($first_id,$second_id, $deletion_date = false) {
       $item = NULL;
       if ( !empty($first_id)
            and !empty($second_id)
          ) {
          $query  = 'SELECT * FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE';
+         if($deletion_date) {
+            $query .= ' deletion_date IS NULL AND deleter_id IS NULL AND';
+          }
          $query .= ' ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.encode(AS_DB,$first_id).'"';
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.encode(AS_DB,$second_id).'")';
          $query .= ' OR ('.$this->addDatabasePrefix($this->_db_table).'.first_item_id = "'.encode(AS_DB,$second_id).'"';
          $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.second_item_id = "'.encode(AS_DB,$first_id).'")';
+        
          $query .= ';';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {

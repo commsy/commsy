@@ -116,10 +116,10 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 	      	jQuery('input[name="ckeditor_mdo_performsearch"]').click(function(object) {
 	        // perform ajax request
 	        var json_data = new Object();
-	        json_data.mdo_search      = jQuery('input[name="ckeditor_mdo_search"]').attr('value');
-	        json_data.mdo_andor       = jQuery('select[name="ckeditor_mdo_andor"]').attr('value');
-	        json_data.mdo_wordbegin   = jQuery('select[name="ckeditor_mdo_wordbegin"]').attr('value');
-	        json_data.mdo_titletext   = jQuery('select[name="ckeditor_mdo_titletext"]').attr('value');
+	        json_data.mdo_search      = jQuery('input[name="ckeditor_mdo_search"]').val();
+	        json_data.mdo_andor       = jQuery('select[name="ckeditor_mdo_andor"]').val();
+	        json_data.mdo_wordbegin   = jQuery('select[name="ckeditor_mdo_wordbegin"]').val();
+	        json_data.mdo_titletext   = jQuery('select[name="ckeditor_mdo_titletext"]').val();
 	        
 	        var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
 	        
@@ -128,7 +128,7 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 	          data:     json_data,
 	          success:  function(message) {
 	            var result = eval('(' + message + ')');
-	            if(result.success === 'true' && result.results.length > 0) {
+	            if(result.status === 'success' && result.data.length > 0) {
 	              // fill result table
 	              var table = '';
 	              
@@ -139,7 +139,7 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 	              table += '</tr>';
 	              
 	              // content
-	              jQuery.each(result.results, function(i, item) {
+	              jQuery.each(result.data, function(i, item) {
 	                if(item.title !== null || item.text !== null) {
 	                  if(item.title === null) {
 	                    item.title = '-';
@@ -153,7 +153,6 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 	                  table += '</tr>';
 	                }
 	              });
-	              
 	              // set content
 	              jQuery('table[id="ckeditor_search_results"]').html(table);
 	              
@@ -174,7 +173,7 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 			      });
 	              
 	              // set number of results
-	              jQuery('span[id="ckedtior_search_results_size"]').html(result.results.length + ' ' + ckeditor_mdo_results);
+	              jQuery('span[id="ckedtior_search_results_size"]').html(result.data.length + ' ' + lang.ckeditor_mdo_results);
 	            }
 	          }
 	        });

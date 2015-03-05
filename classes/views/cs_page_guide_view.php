@@ -2067,114 +2067,116 @@ class cs_page_guide_view extends cs_page_view {
    			$ownRoomItem = $currentUser->getOwnRoom();
    			
    			
-						   				$return = array(
-						   						'connection'	=> array(
-						   								'active'	=> false
-						   						),
-						   						'wiki'		=> array(
-						   								'active'	=> false
-						   						),
-						   						'chat'		=> array(
-						   								'active'	=> false
-						   						),
-						   						'wordpress'	=> array(
-						   								'active'	=> false
-						   						),
-						   						'rss'		=> array(
-						   								'active'	=> false
-						   						),
-						   						'rows'		=> 0
-						   				);
-						   			
-						   				$current_context = $this->_environment->getCurrentContextItem();
-						   				$current_user = $this->_environment->getCurrentUserItem();
-						   				$count = 0;
-						   				
-						   				// portal2portal
-						   				if ( !empty($ownRoomItem)
-						   					  and $ownRoomItem->showCSBarConnection()
-						   					) {
-						   					$return['connection']['active'] = true;
-						   				}
-						   			
-						   				// wiki
-						   				if($current_context->showWikiLink() && $current_context->existWiki() && $current_context->issetWikiHomeLink()) {
-						   					global $c_pmwiki_path_url;
-						   			
-						   					$count++;
-						   					$return['wiki']['active'] = true;
-						   					$return['wiki']['title'] = $current_context->getWikiTitle();
-						   					$return['wiki']['path'] = $c_pmwiki_path_url;
-						   					$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
-						   					$return['wiki']['item_id'] = $current_context->getItemID();
-						   			
-						   					$url_session_id = '';
-						   					if($current_context->withWikiUseCommSyLogin()) {
-						   						$session_item = $this->_environment->getSessionItem();
-						   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
-						   						unset($session_item);
-						   					}
-						   					$return['wiki']['session'] = $url_session_id;
-						   				}
-						   			
-						   				// chat
-						   				if($current_context->showChatLink()) {
-						   					global $c_etchat_enable;
-						   					if(!empty($c_etchat_enable) && $c_etchat_enable) {
-						   						if(isset($current_user) && $current_user->isReallyGuest()) {
-						   						} else {
-						   							$count++;
-						   							$return['chat']['active'] = true;
-						   						}
-						   					}
-						   				}
-						   			
-						   				// wordpress
-						   				if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
-						   					#global $c_wordpress_path_url;
-						   					$wordpress_path_url = $context_item->getWordpressUrl();
-						   					$count++;
-						   					$return['wordpress']['active'] = true;
-						   					$return['wordpress']['title'] = $current_context->getWordpressTitle();
-						   					$return['wordpress']['path'] = $wordpress_path_url;
-						   					$return['wordpress']['item_id'] = $current_context->getItemID();
-						   			
-						   					$url_session_id = '';
-						   					if($current_context->withWordpressUseCommSyLogin()) {
-						   						$session_item = $this->_environment->getSessionItem();
-						   						$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
-						   						unset($session_item);
-						   					}
-						   					$return['wordpress']['session'] = $url_session_id;
-						   				}
-						   				// rss
-						   				$show_rss_link = false;
-						   				if($current_context->isLocked() || $current_context->isClosed()) {
-						   					// do nothing
-						   				} elseif($current_context->isOpenForGuests()) {
-						   					$show_rss_link = true;
-						   				} elseif($current_user->isUser()) {
-						   					$show_rss_link = true;
-						   				}
-						   			
-						   				$hash_string = '';
-						   				if(!$current_context->isOpenForGuests() && $current_user->isUser()) {
-						   					$hash_manager = $this->_environment->getHashManager();
-						   					$hash_string = '&amp;hid=' . $hash_manager->getRSSHashForUser($current_user->getItemID());
-						   				}
-						   			
-						   				if(!$current_context->isRSSOn()) {
-						   					$show_rss_link = false;
-						   				}
-						   			
-						   				if($show_rss_link) {
-						   					$count++;
-						   					$return['rss']['active'] = true;
-						   					$return['rss']['item_id'] = $current_context->getItemID();
-						   					$return['rss']['hash'] = $hash_string;
-						   				}
-						   			
-						   				$return['rows'] = ceil($count / 2);
+			$return = array(
+					'connection'	=> array(
+							'active'	=> false
+					),
+					'wiki'		=> array(
+							'active'	=> false
+					),
+					'chat'		=> array(
+							'active'	=> false
+					),
+					'wordpress'	=> array(
+							'active'	=> false
+					),
+					'rss'		=> array(
+							'active'	=> false
+					),
+					'rows'		=> 0
+			);
+		
+			$current_context = $this->_environment->getCurrentContextItem();
+			$current_user = $this->_environment->getCurrentUserItem();
+			$count = 0;
+			
+			// portal2portal
+			if ( !empty($ownRoomItem)
+				  and $ownRoomItem->showCSBarConnection()
+				) {
+				$return['connection']['active'] = true;
+			}
+		
+			// wiki
+			if (!empty($ownRoomItem)) {
+   			if($ownRoomItem->showWikiLink() && $ownRoomItem->existWiki() && $ownRoomItem->issetWikiHomeLink()) {
+   				global $c_pmwiki_path_url;
+   		
+   				$count++;
+   				$return['wiki']['active'] = true;
+   				$return['wiki']['title'] = $ownRoomItem->getWikiTitle();
+   				$return['wiki']['path'] = $c_pmwiki_path_url;
+   				$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
+   				$return['wiki']['item_id'] = $ownRoomItem->getItemID();
+   		
+   				$url_session_id = '';
+   				if($ownRoomItem->withWikiUseCommSyLogin()) {
+   					$session_item = $this->_environment->getSessionItem();
+   					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+   					unset($session_item);
+   				}
+   				$return['wiki']['session'] = $url_session_id;
+   			}
+			}
+		
+			// chat
+			if($current_context->showChatLink()) {
+				global $c_etchat_enable;
+				if(!empty($c_etchat_enable) && $c_etchat_enable) {
+					if(isset($current_user) && $current_user->isReallyGuest()) {
+					} else {
+						$count++;
+						$return['chat']['active'] = true;
+					}
+				}
+			}
+		
+			// wordpress
+			if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
+				#global $c_wordpress_path_url;
+				$wordpress_path_url = $context_item->getWordpressUrl();
+				$count++;
+				$return['wordpress']['active'] = true;
+				$return['wordpress']['title'] = $current_context->getWordpressTitle();
+				$return['wordpress']['path'] = $wordpress_path_url;
+				$return['wordpress']['item_id'] = $current_context->getItemID();
+		
+				$url_session_id = '';
+				if($current_context->withWordpressUseCommSyLogin()) {
+					$session_item = $this->_environment->getSessionItem();
+					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+					unset($session_item);
+				}
+				$return['wordpress']['session'] = $url_session_id;
+			}
+			// rss
+			$show_rss_link = false;
+			if($current_context->isLocked() || $current_context->isClosed()) {
+				// do nothing
+			} elseif($current_context->isOpenForGuests()) {
+				$show_rss_link = true;
+			} elseif($current_user->isUser()) {
+				$show_rss_link = true;
+			}
+		
+			$hash_string = '';
+			if(!$current_context->isOpenForGuests() && $current_user->isUser()) {
+				$hash_manager = $this->_environment->getHashManager();
+				$hash_string = '&amp;hid=' . $hash_manager->getRSSHashForUser($current_user->getItemID());
+			}
+		
+			if(!$current_context->isRSSOn()) {
+				$show_rss_link = false;
+			}
+		
+			if($show_rss_link) {
+				$count++;
+				$return['rss']['active'] = true;
+				$return['rss']['item_id'] = $current_context->getItemID();
+				$return['rss']['hash'] = $hash_string;
+			}
+		
+			$return['rows'] = ceil($count / 2);
 						   			
 			$addonInformation = $return;
    			

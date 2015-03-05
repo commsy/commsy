@@ -153,6 +153,10 @@ $message["MAIL_BODY_USER_STATUS_USER_PR"]["de"] = "Ihre Kennung
    %1
 
 für den CommSy-%_PROJECT_SUB_AKKS_BIG %2 hat nun den Status &quot;BenutzerIn&quot; und Sie können alle Möglichkeiten im %2 nutzen.";
+$message["MAIL_BODY_USER_STATUS_USER_READ_ONLY"]["de"] = "Ihre Kennung
+   %1
+
+für den CommSy-Raum %2 hat nun den Status &quot;LesendeR BenutzerIn&quot; und Sie können nun lesend auf die Inhalte im Raum %2 zugreifen.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GP"]["de"] = "Ihr Status in dem CommSy-Gruppenraum %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raumes nicht mehr angezeigt.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR"]["de"] = "Ihr Status in %_COMMUNITY_ART_DEF_DATS_LOW CommSy-%_COMMUNITY_SUB_DATS_BIG %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für den Raum mehr und werden auch außerhalb des Raums nicht mehr angezeigt.";
 $message["MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO"]["de"] = "Ihr Status im CommSy-Portal %2 hat sich geändert: Sie sind nun keinE AnsprechpartnerIn für das Portal mehr.";
@@ -184,6 +188,7 @@ $message["MAIL_CHOICE_USER_ACCOUNT_PASSWORD"]["de"] = "Kennung und Passwort";
 $message["MAIL_CHOICE_USER_MAKE_CONTACT_PERSON"]["de"] = "Zur AnsprechpartnerIn machen";
 $message["MAIL_CHOICE_USER_PASSWORD_CHANGE"]["de"] = "Passwort ändern";
 $message["MAIL_CHOICE_USER_STATUS_MODERATOR"]["de"] = "Status Moderator";
+$message["MAIL_CHOICE_USER_STATUS_READ_ONLY_USER"]["de"] = "Status LesendeR BenutzerIn";
 $message["MAIL_CHOICE_USER_STATUS_USER"]["de"] = "Kennung freischalten / Status BenutzerIn";
 $message["MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON"]["de"] = "Status AnsprechpartnerIn entfernen";
 $message["MAIL_COMMENT_BY"]["de"] = "Kommentar von %1:
@@ -215,6 +220,7 @@ $message["MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON"]["de"] = "%1: neuer Status - An
 $message["MAIL_SUBJECT_USER_MEMBERSHIP_DELETE"]["de"] = "%1: Teilnahme beendet";
 $message["MAIL_SUBJECT_USER_PASSWORD_CHANGE"]["de"] = "%1: Passwort geändert";
 $message["MAIL_SUBJECT_USER_STATUS_MODERATOR"]["de"] = "%1: neuer Status - Moderator";
+$message["MAIL_SUBJECT_USER_STATUS_READ_ONLY_USER"]["de"] = "%1: neuer Status - LesendeR BenutzerIn";
 $message["MAIL_SUBJECT_USER_STATUS_USER"]["de"] = "%1: neuer Status - BenutzerIn";
 $message["MAIL_SUBJECT_USER_UNMAKE_CONTACT_PERSON"]["de"] = "%1: keinE AnsprechpartnerIn mehr";
 $message["MAIL_TO"]["de"] = "An:";

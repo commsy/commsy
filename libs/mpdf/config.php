@@ -21,6 +21,10 @@ $this->h2bookmarks = array('H1'=>0, 'H2'=>1, 'H3'=>2);
 // DA - arabic decimal mark U+066B
 $this->decimal_align = array('DP'=>'.', 'DC'=>',', 'DM'=>"\xc2\xb7", 'DA'=>"\xd9\xab", 'DD'=>'-');
 
+// Proxy
+$this->proxy = false;
+$this->proxyUrl = '';
+
 // PAGING
 $this->mirrorMargins = 0;
 $this->restoreBlockPagebreaks = false;
