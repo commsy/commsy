@@ -287,6 +287,22 @@
 					
 				if($restrictions['only_linked'] === true && empty($selected_ids)) $rubric_array = array();
 				
+				
+
+				// deactivate assigning user to groups if item is a group
+				if($item && $item->getType() == CS_LABEL_TYPE && $item->getLabelType() == CS_GROUP_TYPE) {
+					if($item->isGrouproomActivated() && !$current_user->isModerator()) {
+						// dont show user and group items if grouproom is activated
+						if(($key = array_search('user', $rubric_array)) !== false) {
+		 				   unset($rubric_array[$key]);
+						}
+						if(($key = array_search('group', $rubric_array)) !== false) {
+		 				   unset($rubric_array[$key]);
+						}
+					}
+				}
+				
+
 				foreach($rubric_array as $rubric) {
 					$rubric_list = new cs_list();
 					$rubric_manager = $this->_environment->getManager($rubric);
@@ -354,6 +370,12 @@
 				}else{
 					$title = $item->getTitle();
 				}
+				if($item->getType() == CS_LABEL_TYPE && $item->getLabelType() == CS_GROUP_TYPE && $module == "user" && $current_user->isModerator()) {
+					if($item->isGrouproomActivated()) {
+						$item = $sublist->getNext();
+						continue;
+					}
+				}
 				$entry = array();
 				$entry['item_id']			= $item->getItemID();
 				$entry['title']				= $title;
@@ -362,6 +384,7 @@
 				} else {
 					$entry['modification_date']	= $item->getModificationDate();
 				}
+
 				//$entry['modification_date']	= $item->getModificationDate();
 				$entry['modificator']		= $item->getModificatorItem()->getFullName();
 				$entry['system_label']		= $item->isSystemLabel();
