@@ -313,6 +313,9 @@
 						if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
 
 						if($rubric == CS_USER_TYPE) {
+							if(!$current_user->isModerator() && $item->isGrouproomActivated()) {
+								continue;
+							}
 							$rubric_manager->setUserLimit();
 
 							if($current_user->isUser()) $rubric_manager->setVisibleToAllAndCommsy();
