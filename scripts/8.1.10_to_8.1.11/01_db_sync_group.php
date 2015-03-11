@@ -25,7 +25,7 @@
 // headline
 $this->_flushHeadline('db: sync grouproom linked user items');
 
-$success = false;
+$success = true;
 $group_manager = $this->_environment->getGroupManager();
 
 $group_manager->unsetContextLimit();
@@ -52,6 +52,7 @@ while($groupItem) {
             $linkListItem = $linkList->getFirst();
             while($linkListItem) {
                 if(!$groupRoom->isUser($linkListItem->getSecondLinkedItem())) {
+                    pr("Removed member ".$linkListItem->getSecondLinkedItem()->getItemID()." from group ".$groupItem->getItemID());
                     $groupItem->removeMember($linkListItem->getSecondLinkedItem());
                 }
 
