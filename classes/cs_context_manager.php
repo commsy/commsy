@@ -991,6 +991,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getNewItem();
          } else if (((string)$xml->type[0]) == 'privateroom') {
+            $this->_environment->changeContextToPrivateRoom();
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
             $context_item = $privateroom_manager->getNewItem();
          }
@@ -1045,6 +1046,10 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $this->_environment->setCurrentUser($new_private_room_user_item);
             $linkModifierItemManager = $this->_environment->getLinkModifierItemManager();
             $linkModifierItemManager->_current_user_id = $new_private_room_user_item->getItemID();
+            
+            $displayConfig = array($displayConfig->getItemID().'_dates');
+            $context_item->setMyCalendarDisplayConfig($displayConfig);
+            $context_item->save();
          }
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
