@@ -78,6 +78,9 @@ var $decimal_align;	// mPDF 5.6.13
 var $margBuffer;	// mPDF 5.4.04
 var $splitTableBorderWidth;	// mPDF 5.4.16
 
+var $proxy;
+var $proxyUrl;
+
 var $cacheTables;
 var $bookmarkStyles;
 var $useActiveForms;
@@ -9707,6 +9710,12 @@ function _getImage(&$file, $firsttime=true, $allowvector=true, $orig_srcpath=fal
 			$this->file_get_contents_by_curl($file, $data);		// needs full url?? even on local (never needed for local)
 			if ($data) { $type = $this->_imageTypeFromString($data); }
 		}
+        if ((!$data || !$type) && function_exists("curl_init") && $this->proxy) {
+            $this->file_get_contents_by_curl_proxy($file, $data); // needs full url?? even on local (never needed for local)
+            if ($data) { 
+                $type = $this->_imageTypeFromString($data); 
+            }
+        }
 
 	}
 	if (!$data) { return $this->_imageError($file, $firsttime, 'Could not find image file'); }
@@ -10377,6 +10386,18 @@ function file_get_contents_by_curl($url, &$data) {
 	curl_close($ch);
 }
 
+function file_get_contents_by_curl_proxy($url, &$data) {
+    $timeout = 5;
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_NOBODY, 0);
+    curl_setopt($ch,CURLOPT_PROXY, $this->proxyUrl);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt ( $ch , CURLOPT_RETURNTRANSFER , 1 );
+    curl_setopt ( $ch , CURLOPT_CONNECTTIMEOUT , $timeout );
+    $data = curl_exec($ch);
+    curl_close($ch);
+}
 
 function file_get_contents_by_socket($url, &$data) {
 	$timeout = 1;

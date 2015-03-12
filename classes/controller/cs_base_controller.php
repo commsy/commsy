@@ -85,6 +85,14 @@
                     
                     require_once('classes/cs_mpdf.php');
                     $mpdf = new cs_mpdf();
+
+                    // set proxy for mpdf
+                    global $c_proxy_ip;
+                    global $c_proxy_port;
+                    if($c_proxy_port) {
+                        $mpdf->proxy = true;
+                        $mpdf->proxyUrl = $c_proxy_ip.":".$c_proxy_port;
+                    }
                     
                     // debug
                     if($_GET['debug'] == 1){
