@@ -795,11 +795,15 @@ function deletePortfolioTags($portfolioId) {
       $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
       $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
       $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+      
+      $xml = $this->export_sub_items($xml, $item);
+      
       return $xml;
 	}
 	
    function export_sub_items($xml, $top_item) {
-      
+      $tags = $this->getPortfolioTags($top_item->getItemID());
+      return $xml;
    }
    
    function import_item($xml, $top_item, &$options) {
@@ -814,6 +818,9 @@ function deletePortfolioTags($portfolioId) {
          $item->save();
       }
       $options[(string)$xml->item_id[0]] = $item->getItemId();
+      
+      $this->import_sub_items($xml, $item, $options);
+      
       return $item;
    }
    

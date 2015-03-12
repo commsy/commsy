@@ -28,7 +28,5 @@ $privateroom_item = $privateroom_manager->getRelatedOwnRoomForUser($currentUserI
 header('Content-disposition: attachment; filename=commsy_export_import_'.$privateroom_item->getItemID().'.zip');
 header('Content-type: application/zip');
 
-el(getcwd());
-
 $zipfile = 'var/temp/commsy_export_import_'.$privateroom_item->getItemID().'.zip';
 readfile($zipfile);
