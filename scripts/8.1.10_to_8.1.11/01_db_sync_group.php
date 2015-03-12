@@ -33,31 +33,57 @@ $group_manager->select();
 $groupList = $group_manager->get();
 
 $groupItem = $groupList->getFirst();
-while($groupItem) {
-    if($groupItem->isSystemLabel()) {
+while ($groupItem) {
+    if ($groupItem->isSystemLabel()) {
         $groupItem = $groupList->getNext();
         continue;
-    } else if($groupItem->isGrouproomActivated()) {
+    } elseif ($groupItem->isGrouproomActivated()) {
         $groupRoom = $groupItem->getGroupRoomItem();
 
-        $grouproomUserList = $groupRoom->getUserList();
+        $groupRoomUserList = $groupRoom->getUserList();
 
         $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->setLinkedItemLimit($groupItem);
         $link_manager->select();
         $linkList = $link_manager->get();
 
-        if($grouproomUserList->getCount() != $linkList->getCount()) {
+        if ($groupRoomUserList->getCount() < $linkList->getCount()) {
 
             $linkListItem = $linkList->getFirst();
-            while($linkListItem) {
-                if(!$groupRoom->isUser($linkListItem->getSecondLinkedItem())) {
+            while ($linkListItem) {
+                if (!$groupRoom->isUser($linkListItem->getSecondLinkedItem())) {
                     pr("Removed member ".$linkListItem->getSecondLinkedItem()->getItemID()." from group ".$groupItem->getItemID());
                     $groupItem->removeMember($linkListItem->getSecondLinkedItem());
                 }
 
                 $linkListItem = $linkList->getNext();
             }
+        } elseif ($groupRoomUserList->getCount() > $linkList->getCount()) {
+            // add link
+            $linkListItem = $linkList->getFirst();
+            while ($linkListItem) {
+                $linkIdArray[] = $linkListItem->getSecondLinkedItemID();
+                $linkListItem = $linkList->getNext();
+            }
+
+            $userItem = $groupRoomUserList->getFirst();
+            while ($userItem) {
+                $related_user = $userItem ->getRelatedUserItemInContext($groupItem->getContextID());
+                if(!in_array($related_user->getItemID(), $linkIdArray)) {
+                    // add link
+                    $itemExists = $link_manager->getItemByFirstAndSecondID( $groupItem->getItemID(), $related_user->getItemID());
+                    if(!$itemExists) {
+                        $newLinkItem = $link_manager->getNewItem();
+                        $newLinkItem->setFirstLinkedItem($groupItem);
+                        $newLinkItem->setSecondLinkedItem($related_user);
+                        $newLinkItem->save();
+                        pr("Added link from member ". $related_user->getItemID(). " to group ".$groupItem->getItemID());
+                    }
+                    
+                }
+                $userItem = $groupRoomUserList->getNext();
+            }
+            
         }
     }
 

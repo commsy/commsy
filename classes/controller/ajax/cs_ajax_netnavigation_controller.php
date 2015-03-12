@@ -111,19 +111,21 @@
 							}
 							
 							// check room entry
-							
-							if($group_room->checkNewMembersAlways()){
-								// 
-								$user_item->request();
-								$user_item->save();
-							} else if($group_room->checkNewMembersWithCode()){
-								// user must enter the correct code if he wants to join the room
-								#$user_item->save();
-							} else if($group_room->checkNewMembersNever()){
-								// user is now member of the room
-								$user_item->makeUser();
-								$user_item->save();
+							if(!$group_room->isUser($user_item)) {
+								if($group_room->checkNewMembersAlways()){
+									// 
+									$user_item->request();
+									$user_item->save();
+								} else if($group_room->checkNewMembersWithCode()){
+									// user must enter the correct code if he wants to join the room
+									#$user_item->save();
+								} else if($group_room->checkNewMembersNever()){
+									// user is now member of the room
+									$user_item->makeUser();
+									$user_item->save();
+								}
 							}
+							
 							#$room_item = $linked_item->getLinkedProjectItem();
 							#$room_item->a
 						}
@@ -181,6 +183,24 @@
 				if ( $type === CS_USER_TYPE && $item->getType() === CS_TODO_TYPE )
 				{
 					$item->removeProcessor($linked_item);
+				}
+				else if ($type === CS_USER_TYPE && $item->getType() === CS_LABEL_TYPE ) {
+                    $selected_ids[] = $link_id;
+                    $selected_ids = array_unique($selected_ids);
+
+                    if($item->getLabelType() === CS_GROUP_TYPE) {
+                        $user_manager = $this->_environment->getUserManager();
+                        $user = $user_manager->getItem($link_id);
+                        $group_room = $item->getGroupRoomItem();
+                        if($group_room->isUser($user)) {
+                            $related_user = $user->getRelatedUserItemInContext($group_room->getItemID());
+                            $related_user->delete();
+                            $key = array_search($user->getItemID(),$selected_ids);
+                            if($key!==false){
+                                unset($selected_ids[$key]);
+                            }
+                        }
+                    }
 				}
 				else
 				{
