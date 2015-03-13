@@ -453,32 +453,15 @@ if ( !empty($_POST['itemlist'])
 				
 			$selected_ids = array();
 			if (isset($item)) {
-				if ($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_GROUP_TYPE) {
-					/*
-					 * $group_manager = $environment->getGroupManager();
-					$item = $group_manager->getItem($ref_iid);
-					unset($group_manager);
-					*/
-				} elseif ($item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
-					$buzzword_manager = $this->_environment->getBuzzwordManager();
-					$item = $buzzword_manager->getItem($item_id);
+				if (!$item->isA(CS_LABEL_TYPE) || $item->getLabelType() != CS_BUZZWORD_TYPE) {
+					$this->setErrorReturn("108", "wrong item type, buzzword expected", array());
+					echo $this->_return;
+					exit;
 				}
-			
-				/*
-				 * if ($environment->getCurrentModule() == CS_USER_TYPE){
-				if ($environment->inCommunityRoom()){
-				$selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-				}else{
-				$selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
-				}
-				} elseif ( $item->isA(CS_LABEL_TYPE)
-						and $item->getLabelType() == CS_BUZZWORD_TYPE
-				) {
-				$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
-				} else {
-				$selected_ids = $item->getAllLinkedItemIDArray();
-				}
-				*/
+
+				$buzzword_manager = $this->_environment->getBuzzwordManager();
+				$item = $buzzword_manager->getItem($item_id);
+
 				$selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
 			}
 			
@@ -496,16 +479,10 @@ if ( !empty($_POST['itemlist'])
 				}
 				
 				$selected_ids = $tmp_array;
-				//if(($offset = array_search($link_id, $selected_ids)) !== false) array_splice($selected_ids, $offset, 1);
 			}
 			
 			// save
-			if (isset($item) && $item->isA(CS_LABEL_TYPE) && $item->getLabelType() == CS_BUZZWORD_TYPE) {
-				$item->saveLinksByIDArray($selected_ids);
-			} elseif (isset($item)) {
-				$item->setLinkedItemsByIDArray($entry_array);
-				$item->save();
-			}
+			$item->saveLinksByIDArray($selected_ids);
 		
 			$this->setSuccessfullDataReturn(array());
 			echo $this->_return;
