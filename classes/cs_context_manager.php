@@ -803,7 +803,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          $xml->addChildWithCDATA('contact_persons', $context_item->getContactPersonString());
          
          $description_array = $context_item->getDescriptionArray();
-         $xmlDescription = $this->getArrayAsXML($xmlExtras, $description_array, true, 'description');
+         $xmlDescription = $this->getArrayAsXML($xml, $description_array, true, 'description');
          $this->simplexml_import_simplexml($xml, $xmlDescription);
          
          $xml->addChildWithCDATA('room_description', $context_item->getDescription());
@@ -838,7 +838,24 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $type_array[] = 'label';
       
       if ($top_item->getItemType() == 'privateroom') {
-         $type_array[] = 'portfolio';
+         if (!in_array('material', $type_array)) {
+            $type_array[] = 'material';
+         }
+         if (!in_array('date', $type_array)) {
+            $type_array[] = 'date';
+         }
+         if (!in_array('discussion', $type_array)) {
+            $type_array[] = 'discussion';
+         }
+         if (!in_array('todo', $type_array)) {
+            $type_array[] = 'todo';
+         }
+         if (!in_array('annotation', $type_array)) {
+            $type_array[] = 'annotation';
+         }
+         if (!in_array('portfolio', $type_array)) {
+            $type_array[] = 'portfolio';
+         }
       }
       
       $rubric_xml = new SimpleXMLElementExtended('<rubric></rubric>');
@@ -942,6 +959,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    }
    
    function import_item($xml, $top_item, &$options) {
+      $translator = $this->_environment->getTranslationObject();
       if ($xml != null) {
          if (((string)$xml->type[0]) == 'community') {
             $community_manager = $this->_environment->getCommunityManager();
@@ -952,7 +970,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $community_list = $community_manager->get();
             $community_item = $community_list->getFirst();
             while ($community_item) {
-               if ($community_item->getTitle() == ((string)$xml->title[0])) {
+               if ($community_item->getTitle() == ((string)$xml->title[0]) || $community_item->getTitle() == ((string)$xml->title[0]).' ['.$translator->getMessage('PREFERENCES_EXPORT_IMPORTED_CONTEXT').']') {
                   $project_list = $community_item->getProjectList();
                   $project_item = $project_list->getFirst();
                   while ($project_item) {
@@ -976,11 +994,25 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             $grouproom_manager = $this->_environment->getGrouproomManager();
             $context_item = $grouproom_manager->getNewItem();
          } else if (((string)$xml->type[0]) == 'privateroom') {
+            $this->_environment->setCurrentContextID($this->_environment->getCurrentPortalID());
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            $old_private_room_user_item = $current_user_item->getRelatedPrivateRoomUserItem();
+            $portfolio_manager = $this->_environment->getPortfolioManager();
+            $portfolio_manager->setUserLimit($old_private_room_user_item->getItemID());
+            $portfolio_manager->select();
+            $portfolio_list = $portfolio_manager->get();
+            if ($portfolio_list->isNotEmpty()) {
+               $portfolio_item = $portfolio_list->getFirst();
+               while ($portfolio_item) {
+                  $portfolio_item->delete();
+                  $portfolio_item = $portfolio_list->getNext();
+               }
+            }
             $context_item = $privateroom_manager->getNewItem();
          }
-         
-         $context_item->setTitle((string)$xml->title[0]);
+
+         $context_item->setTitle((string)$xml->title[0].' ['.$translator->getMessage('PREFERENCES_EXPORT_IMPORTED_CONTEXT').']');
          $context_item->setStatus((string)$xml->status[0]);
          $context_item->getActivityPoints((string)$xml->activity[0]);
          $context_item->setPublic((string)$xml->public[0]);
@@ -993,6 +1025,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          $extra_array = $this->getXMLAsArray($xml->extras);
          $context_item->setExtraInformation($extra_array['extras']);
+         $context_item->setDescription((string)$xml->room_description[0]);
          
          // set additional values
          if (((string)$xml->type[0]) == 'community') {
@@ -1005,26 +1038,45 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
 
          if (((string)$xml->type[0]) == 'privateroom') {
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
+            $temp_user_item = $this->_environment->getCurrentUser();
+            $temp_private_room_item = $privateroom_manager->getRelatedOwnRoomForUser($temp_user_item, $this->_environment->getCurrentPortalID());
+            
+            $temp_private_room_user_item = NULL;
             $user_manager = $this->_environment->getUserManager();
-            $user_array = $user_manager->getAllUserItemArray((string)$xml->user_id[0]);
-            if (!empty($user_array)) {
-               $temp_user_item = $user_array[0];
-               $temp_private_room_item = $privateroom_manager->getRelatedOwnRoomForUser($temp_user_item, $this->_environment->getCurrentPortalID());
-               $temp_private_room_user_item = NULL;
-               foreach ($user_array as $temp_user) {
-                  if ($temp_user->getContextID() == $temp_private_room_item->getItemID()) {
-                     $temp_private_room_user_item = $temp_user;
-                  }
+            $user_array = $user_manager->getAllUserItemArray($temp_user_item->getUserID());
+            foreach ($user_array as $temp_user) {
+               if ($temp_user->getContextID() == $temp_private_room_item->getItemID()) {
+                  $temp_private_room_user_item = $temp_user;
                }
-               $temp_private_room_item->delete();
-               $temp_private_room_user_item->setContextID($context_item->getItemID());
-               $temp_private_room_user_item->save();
             }
+            $temp_private_room_item->delete();
+            $temp_private_room_user_item->delete();
+            
+            $new_private_room_user_item = NULL;
+            $user_array = $user_manager->getAllUserItemArray($temp_user_item->getUserID());
+            foreach ($user_array as $temp_user) {
+               if ($temp_user->getContextID() == $context_item->getItemID()) {
+                  $new_private_room_user_item = $temp_user;
+               }
+            }
+            $this->_environment->setCurrentUser($new_private_room_user_item);
+            $linkModifierItemManager = $this->_environment->getLinkModifierItemManager();
+            $linkModifierItemManager->_current_user_id = $new_private_room_user_item->getItemID();
+            
+            $displayConfig = array($context_item->getItemID().'_dates');
+            $context_item->setMyCalendarDisplayConfig($displayConfig);
+            $context_item->save();
          }
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
+         if (((string)$xml->type[0]) == 'privateroom') {
+            $this->_environment->changeContextToPrivateRoom($context_item->getItemID());
+         }
          $this->import_sub_items($xml, $context_item, $options);
+         if (((string)$xml->type[0]) == 'privateroom') {
+            $this->_environment->setCurrentContextID($this->_environment->getCurrentPortalID());
+         }
          
          $this->checkOptions($xml, $context_item, $options);
          
@@ -1034,19 +1086,30 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
    
    function import_sub_items($xml, $top_item, &$options) {
       if ($xml != null) {
-         if (((string)$xml->type[0]) == 'community') {
+         if ($top_item->getRoomType() == 'community') {
             $project_manager = $this->_environment->getProjectManager();
-            foreach ($xml->projects as $project) {
-               $temp_project_item = $project_manager->import_item($project->context_item, $top_item, $options);
+            foreach ($xml->projects->children() as $project) {
+               $temp_project_item = $project_manager->import_item($project, $top_item, $options);
                $community_room_array = array();
                $community_room_array[] = $top_item->getItemId();
                $temp_project_item->setCommunityListByID($community_room_array);
                $temp_project_item->save();
             }
-         } else if (((string)$xml->type[0]) == 'project') {
+         } else if ($top_item->getRoomType() == 'project') {
             $grouproom_manager = $this->_environment->getGrouproomManager();
-            foreach ($xml->grouprooms as $grouproom) {
-               $temp_grouproom_item = $grouproom_manager->import_item($grouproom->context_item, $top_item, $options);
+            if (!empty($xml->grouprooms)) {
+               foreach ($xml->grouprooms as $grouproom) {
+                  $temp_grouproom_item = $grouproom_manager->import_item($grouproom->context_item, $top_item, $options);
+               }
+            }
+         }
+         
+         if ($top_item->withTags()) {
+            $tag_manager = $this->_environment->getTagManager();
+            $tag_manager->forceSQL();
+            $root_tag = $tag_manager->getRootTagItemFor($top_item->getItemId());
+            foreach ($xml->tags->children() as $tag) {
+               $tag_item = $this->importTagsFromXML($tag, $root_tag, $options);
             }
          }
          
@@ -1069,15 +1132,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                      $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
                   }
                }
-            }
-         }
-         
-         if ($top_item->withTags()) {
-            $tag_manager = $this->_environment->getTagManager();
-            $tag_manager->forceSQL();
-            $root_tag = $tag_manager->getRootTagItemFor($top_item->getItemId());
-            foreach ($xml->tags->children() as $tag) {
-               $tag_item = $this->importTagsFromXML($tag, $root_tag, $options);
             }
          }
          
@@ -1111,10 +1165,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          foreach ($options['check']['labels']['GROUP_ROOM_ID'] as $item_id) {
             $temp_group_item = $group_manager->getitem($item_id);
             $temp_group_old_grouproom_id = $temp_group_item->getGroupRoomItemID();
-            $temp_group_new_grouproom_id = $options[$temp_group_old_grouproom_id];
-            if ($temp_group_new_grouproom_id != '') {
-               $temp_group_item->setGroupRoomItemID($temp_group_new_grouproom_id);
-               $temp_group_item->save();
+            if (isset($options[$temp_group_old_grouproom_id])) {
+               $temp_group_new_grouproom_id = $options[$temp_group_old_grouproom_id];
+               if ($temp_group_new_grouproom_id != '') {
+                  $temp_group_item->setGroupRoomItemID($temp_group_new_grouproom_id);
+                  $temp_group_item->save();
+               }
             }
          }
       }

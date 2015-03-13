@@ -54,7 +54,7 @@ class cs_group_manager extends cs_labels_manager {
     *
     *  @return cs_label_item a group label
     */
-   public function getNewItem () {
+   public function getNewItem ($label_type = '') {
       include_once('classes/cs_group_item.php');
       $item = new cs_group_item($this->_environment);
       return $item;

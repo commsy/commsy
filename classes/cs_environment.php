@@ -1526,6 +1526,10 @@ class cs_environment {
       return $this->_getInstance('cs_external_id_manager');
    }
 
+   function getEntryManager() {
+      return $this->_getInstance('cs_entry_manager');
+   }
+
    /** get instance of cs_file_multi_upload_manager
    *
    * @return cs_file_multi_upload_manager
@@ -1773,6 +1777,8 @@ class cs_environment {
             return $this->getMatrixManager();
          } elseif ($type == CS_ITEM_BACKUP) {
             return $this->getBackupItemManager();
+         } elseif ($type == CS_ENTRY_TYPE) {
+            return $this->getEntryManager();
          } elseif ( !$this->isPlugin($type) ) {
             include_once('functions/error_functions.php');
             trigger_error('do not know this type ['.$type.']',E_USER_ERROR);

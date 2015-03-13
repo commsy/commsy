@@ -3001,7 +3001,7 @@ class cs_connection_soap {
       }
    }
 
-   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 0, $count = 10, $search = '', $timeLimit = '', $roomTypeLimit = '')
+   public function getPortalRoomListByCountAndSearch($sessionId, $contextId, $start = 0, $count = 10, $search = '', $timeLimit = '', $roomTypeLimit = '', $order = 'title')
    {
       if($this->_isSessionValid($sessionId)) {
          $this->_environment->setSessionID($sessionId);
@@ -3011,7 +3011,7 @@ class cs_connection_soap {
          $context_id = $sessionItem->getValue('commsy_id');
          $authSourceId = $sessionItem->getValue('auth_source');
 
-         $this->_environment->setCurrentContextID($context_id);
+         $this->_environment->setCurrentContextID($contextId);
          $translator = $this->_environment->getTranslationObject();
          
          // get user item
@@ -3034,8 +3034,16 @@ class cs_connection_soap {
          if(!empty($search)) {
             $roomManager->setSearchLimit($search);
          }
+
+         $portalItem = $this->_environment->getCurrentContextItem();
+         $maxActivity = $portalItem->getMaxRoomActivityPoints();
+
+         global $c_commsy_domain, $c_commsy_url_path;
+         include_once('functions/curl_functions.php');
+
          $roomListCount = $roomManager->_performQuery('count');
          $roomManager->setIntervalLimit($start, $count);
+         $roomManager->setOrder($order);
          $roomManager->select();
          $roomList = $roomManager->get();
          $roomListCount = $roomListCount[0]['count'];
@@ -3047,14 +3055,32 @@ class cs_connection_soap {
                $mayEnter = true;
             }
 
+            // activity
+            $percentage = $roomItem->getActivityPoints();
+
+            if ($maxActivity != 0) {
+               if (empty($percentage)) {
+                  $percentage = 0;
+               } else {
+                  $divisior = $maxActivity / 20;
+                  $percentage = max(0, log(($percentage / $divisior) + 1));
+                  $temp = log(($maxActivity / $divisior) + 1);
+                  $percentage = round(($percentage / $temp) * 100, 2);
+               }
+            } else {
+               $percentage = 0;
+            }
+
             $xml .= "<room_item>";
                $xml .= "<title><![CDATA[".$roomItem->getTitle()."]]></title>\n";
                $xml .= "<access><![CDATA[".($mayEnter ? "yes" : "no") ."]]></access>\n";
                $xml .= "<item_id><![CDATA[".$roomItem->getItemID()."]]></item_id>\n";
                $xml .= "<context_id><![CDATA[".$roomItem->getContextID()."]]></context_id>\n";
+               $xml .= "<link><![CDATA[" . $c_commsy_domain . $c_commsy_url_path . "/" . _curl(false, $roomItem->getItemId(), 'home', 'index', array()) . "]]></link>\n";
                $xml .= "<room_user><![CDATA[is_room_user]]></room_user>\n";
                $xml .= "<membership_pending><![CDATA[membership_is_not_pending]]></membership_pending>\n";
                $xml .= "<contact><![CDATA[".$roomItem->getContactPersonString()."]]></contact>\n";
+               $xml .= "<activity><![CDATA[".$percentage."]]></activity>\n";
             $xml .= "</room_item>\n";
             
             $roomItem = $roomList->getNext();

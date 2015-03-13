@@ -242,7 +242,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item->setModule('configuration');
       $link_item->setFunction('export_import');
       $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
-      // $addon_link_list->add($link_item);
+      $addon_link_list->add($link_item);
    }
 
    if ( $addon_link_list->getFirst() ){

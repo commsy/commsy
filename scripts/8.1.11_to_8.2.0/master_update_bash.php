@@ -3,7 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Copyright (c)2002-2007 Dirk Bloessl Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
 // Edouard Simon, Monique Strauss, José Manuel González Vázquez
 //
@@ -22,11 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$currentUserItem = $environment->getCurrentUserItem();
-$privateroom_manager = $environment->getPrivateRoomManager();
-$privateroom_item = $privateroom_manager->getRelatedOwnRoomForUser($currentUserItem, $environment->getCurrentPortalID());
-header('Content-disposition: attachment; filename=commsy_export_import_'.$privateroom_item->getItemID().'.zip');
-header('Content-type: application/zip');
-
-$zipfile = 'var/temp/commsy_export_import_'.$privateroom_item->getItemID().'.zip';
-readfile($zipfile);
+$bash = true;
+include_once('master_update.php');
+?>

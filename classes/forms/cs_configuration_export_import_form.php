@@ -50,21 +50,20 @@ class cs_configuration_export_import_form extends cs_rubric_form {
       $this->setHeadline($this->_headline);
       
       // portal option choice
-      $this->_array_rooms[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_NO_ROOM');
-      $this->_array_rooms[0]['value'] = -1;
+      $this->_array_rooms[]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_NO_ROOM');
+      $this->_array_rooms[]['value'] = -1;
 
       $portal_item = $this->_environment->getCurrentPortalItem();
       $room_list = $portal_item->getRoomList();
-      if ( $room_list->isNotEmpty() ) {
-         $this->_array_rooms[1]['text']  = '----------------------';
-         $this->_array_rooms[1]['value'] = 'disabled';
+      if ($room_list->isNotEmpty()) {
+         $this->_array_rooms[]['text']  = '----------------------';
+         $this->_array_rooms[]['value'] = 'disabled';
          $room_item = $room_list->getFirst();
          while ( $room_item ) {
             $temp_array = array();
-            $temp_array['text']  = $room_item->getTitle();
+            $temp_array['text']  = $room_item->getTitle().' ('.$room_item->getItemID().')';
             $temp_array['value'] = $room_item->getItemID();
             $this->_array_rooms[] = $temp_array;
-
             $room_item = $room_list->getNext();
          }
       }
@@ -72,15 +71,20 @@ class cs_configuration_export_import_form extends cs_rubric_form {
       $private_room_manager = $this->_environment->getPrivateRoomManager();
       $private_room_manager->select();
       $private_room_list = $private_room_manager->get();
-      $private_room_item = $private_room_list->getFirst();
-      while ($private_room_item) {
-         $user_item = $private_room_item->getOwnerUserItem();
-         $temp_array = array();
-         $temp_array['text']  = $this->_translator->getMessage('PRIVATE_ROOM_USER_EXPORT_IMPORT').' '.$user_item->getUserId();
-         $temp_array['value'] = $private_room_item->getItemID();
-         $this->_array_rooms[] = $temp_array;
-         
-         $private_room_item = $private_room_list->getNext();
+      if ($private_room_list->isNotEmpty()) {
+         $this->_array_rooms[]['text']  = '----------------------';
+         $this->_array_rooms[]['value'] = 'disabled';
+         $private_room_item = $private_room_list->getFirst();
+         while ($private_room_item) {
+            $user_item = $private_room_item->getOwnerUserItem();
+            if ($user_item) {
+               $temp_array = array();
+               $temp_array['text']  = $this->_translator->getMessage('PRIVATE_ROOM_USER_EXPORT_IMPORT').' '.$user_item->getUserId();
+               $temp_array['value'] = $private_room_item->getItemID();
+               $this->_array_rooms[] = $temp_array;
+            }
+            $private_room_item = $private_room_list->getNext();
+         }
       }
    }
 
@@ -130,8 +134,6 @@ class cs_configuration_export_import_form extends cs_rubric_form {
    }
    
    function _checkValues () {
-      el($_POST);
-      el($_FILES);
       if ($_POST['option'] == $this->_translator->getMessage('PREFERENCES_EXPORT_IMPORT_EXPORT_BUTTON')) {
          if ($_POST['room'] == '-1') {
             $this->_error_array[] = $this->_translator->getMessage('PREFERENCES_EXPORT_ERROR_NO_ROOM_SELECTED');
