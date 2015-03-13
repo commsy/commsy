@@ -838,9 +838,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
       $type_array[] = 'label';
       
       if ($top_item->getItemType() == 'privateroom') {
-         if (!in_array('portfolio', $type_array)) {
-            $type_array[] = 'portfolio';
-         }
          if (!in_array('material', $type_array)) {
             $type_array[] = 'material';
          }
@@ -852,6 +849,12 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          }
          if (!in_array('todo', $type_array)) {
             $type_array[] = 'todo';
+         }
+         if (!in_array('annotation', $type_array)) {
+            $type_array[] = 'annotation';
+         }
+         if (!in_array('portfolio', $type_array)) {
+            $type_array[] = 'portfolio';
          }
       }
       
@@ -993,6 +996,19 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          } else if (((string)$xml->type[0]) == 'privateroom') {
             $this->_environment->setCurrentContextID($this->_environment->getCurrentPortalID());
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            $old_private_room_user_item = $current_user_item->getRelatedPrivateRoomUserItem();
+            $portfolio_manager = $this->_environment->getPortfolioManager();
+            $portfolio_manager->setUserLimit($old_private_room_user_item->getItemID());
+            $portfolio_manager->select();
+            $portfolio_list = $portfolio_manager->get();
+            if ($portfolio_list->isNotEmpty()) {
+               $portfolio_item = $portfolio_list->getFirst();
+               while ($portfolio_item) {
+                  $portfolio_item->delete();
+                  $portfolio_item = $portfolio_list->getNext();
+               }
+            }
             $context_item = $privateroom_manager->getNewItem();
          }
 
@@ -1054,7 +1070,13 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
+         if (((string)$xml->type[0]) == 'privateroom') {
+            $this->_environment->changeContextToPrivateRoom($context_item->getItemID());
+         }
          $this->import_sub_items($xml, $context_item, $options);
+         if (((string)$xml->type[0]) == 'privateroom') {
+            $this->_environment->setCurrentContextID($this->_environment->getCurrentPortalID());
+         }
          
          $this->checkOptions($xml, $context_item, $options);
          
@@ -1082,6 +1104,15 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             }
          }
          
+         if ($top_item->withTags()) {
+            $tag_manager = $this->_environment->getTagManager();
+            $tag_manager->forceSQL();
+            $root_tag = $tag_manager->getRootTagItemFor($top_item->getItemId());
+            foreach ($xml->tags->children() as $tag) {
+               $tag_item = $this->importTagsFromXML($tag, $root_tag, $options);
+            }
+         }
+         
          foreach ($xml->rubric->children() as $rubric) {
             if (($rubric->getName() != 'group') && ($rubric->getName() != 'topic') && ($rubric->getName() != 'label')) { // those items are included in the exported labels-xml
                $type_manager = $this->_environment->getManager($rubric->getName());
@@ -1101,15 +1132,6 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                      $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
                   }
                }
-            }
-         }
-         
-         if ($top_item->withTags()) {
-            $tag_manager = $this->_environment->getTagManager();
-            $tag_manager->forceSQL();
-            $root_tag = $tag_manager->getRootTagItemFor($top_item->getItemId());
-            foreach ($xml->tags->children() as $tag) {
-               $tag_item = $this->importTagsFromXML($tag, $root_tag, $options);
             }
          }
          

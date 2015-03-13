@@ -1780,9 +1780,6 @@ class cs_environment {
          } elseif ($type == CS_ENTRY_TYPE) {
             return $this->getEntryManager();
          } elseif ( !$this->isPlugin($type) ) {
-            
-            xdebug_break();
-            
             include_once('functions/error_functions.php');
             trigger_error('do not know this type ['.$type.']',E_USER_ERROR);
          }
