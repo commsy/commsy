@@ -54,50 +54,74 @@ class cs_buzzword_item extends cs_label_item {
       $links_manager->saveLinksRubricToBuzzword($array,$this->getItemID(),$rubric);
    }
 
-   function saveLinksByIDArray($array) {
-      if ( !empty($array) ) {
-         $item_manager = $this->_environment->getItemManager();
-         $item_list = $item_manager->getItemList($array);
-         if ( isset($item_list)
-              and $item_list->isNotEmpty()
-            ) {
-            $rubric_item_id_array = array();
-            $item = $item_list->getFirst();
-            while ( $item ) {
-               $rubric_item_id_array[$item->getItemType()][] = $item->getItemID();
-               unset($item);
-               $item = $item_list->getNext();
-            }
-         }
-         unset($item_list);
-         unset($item_manager);
+    /**
+     * Sets linked items for this buzzword
+     * 
+     * @param  array $rubricIdArray Array of item id's to set
+     */
+    function saveLinksByIDArray($rubricIdArray) {
+        $itemManager = $this->_environment->getItemManager();
 
-         // transfer "label" to real module
-         if ( !empty($rubric_item_id_array['label']) ) {
-            $label_manager = $this->_environment->getLabelManager();
-            $label_manager->setIdArrayLimit($rubric_item_id_array['label']);
-            $label_manager->select();
-            $label_list = $label_manager->get();
-            if ( isset($label_list)
-                 and $label_list->isNotEmpty()
-               ) {
-               $item = $label_list->getFirst();
-               while ( $item ) {
-                  $rubric_item_id_array[$item->getLabelType()][] = $item->getItemID();
-                  unset($item);
-                  $item = $label_list->getNext();
-               }
-            }
-            unset($rubric_item_id_array['label']);
-         }
+        /**
+         * We need to store all links per rubric, so we iterate $rubricIdArray and build up
+         * a per rubric array
+         */
+        $rubricUpdateArray = array();
 
-         // now save links
-         if ( !empty($rubric_item_id_array) ) {
-            foreach ( $rubric_item_id_array as $rubric => $id_array ) {
-               $this->saveRubricLinksByIDArray($id_array,$rubric);
+        if (!empty($rubricIdArray)) {
+            $newLinkItemList = $itemManager->getItemList($rubricIdArray);
+
+            if ($newLinkItemList && $newLinkItemList->isNotEmpty()) {
+                $newItem = $newLinkItemList->getFirst();
+                while ($newItem) {
+                    $rubricUpdateArray[$newItem->getItemType()][] = $newItem->getItemID();
+
+                    $newItem = $newLinkItemList->getNext();
+                }
             }
-         }
-      }
+        }
+
+        // check update types and convert "label" types to real modules
+        if (!empty($rubricUpdateArray['label'])) {
+            $labelManager = $this->_environment->getLabelManager();
+            $labelManager->setIdArrayLimit($rubricUpdateArray['label']);
+            $labelManager->select();
+
+            $labelList = $labelManager->get();
+            if ($labelList && $labelList->isNotEmpty()) {
+                $labelItem = $labelList->getFirst();
+                while ($labelItem) {
+                    $rubricUpdateArray[$labelItem->getLabelType()][] = $labelItem->getItemID();
+
+                    $labelItem = $labelList->getNext();
+                }
+            }
+        }
+
+        /**
+         * Compare the update array with the currently linked items to add rubrics that
+         * may be deleted completly
+         */
+        $currentLinkIdArray = $this->getAllLinkedItemIDArrayLabelVersion();
+        $currentLinkItemList = $itemManager->getItemList($currentLinkIdArray);
+
+        if ($currentLinkItemList && $currentLinkItemList->isNotEmpty()) {
+            $currentItem = $currentLinkItemList->getFirst();
+            while ($currentItem) {
+                if (!isset($rubricUpdateArray[$currentItem->getItemType()])) {
+                    $rubricUpdateArray[$currentItem->getItemType()] = array();
+                }
+
+                $currentItem = $currentLinkItemList->getNext();
+            }
+        }
+
+        // save per rubric
+        if (!empty($rubricUpdateArray)) {
+            foreach ($rubricUpdateArray as $rubric => $idArray) {
+                $this->saveRubricLinksByIDArray($idArray, $rubric);
+            }
+        }
    }
 
    public function getAllLinkedItemIDArrayLabelVersion () {
