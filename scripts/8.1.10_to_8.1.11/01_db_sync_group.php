@@ -52,7 +52,7 @@ while ($groupItem) {
             $linkListItem = $linkList->getFirst();
             while ($linkListItem) {
                 if (!$groupRoom->isUser($linkListItem->getSecondLinkedItem())) {
-                    pr("Removed member ".$linkListItem->getSecondLinkedItem()->getItemID()." from group ".$groupItem->getItemID());
+                    $this->_flushHTML("Removed member ".$linkListItem->getSecondLinkedItem()->getItemID()." from group ".$groupItem->getItemID());
                     $groupItem->removeMember($linkListItem->getSecondLinkedItem());
                 }
 
@@ -71,13 +71,13 @@ while ($groupItem) {
                 $related_user = $userItem ->getRelatedUserItemInContext($groupItem->getContextID());
                 if(!in_array($related_user->getItemID(), $linkIdArray)) {
                     // add link
-                    $itemExists = $link_manager->getItemByFirstAndSecondID( $groupItem->getItemID(), $related_user->getItemID());
+                    $itemExists = $link_manager->getItemByFirstAndSecondID($groupItem->getItemID(), $related_user->getItemID());
                     if(!$itemExists) {
                         $newLinkItem = $link_manager->getNewItem();
                         $newLinkItem->setFirstLinkedItem($groupItem);
                         $newLinkItem->setSecondLinkedItem($related_user);
                         $newLinkItem->save();
-                        pr("Added link from member ". $related_user->getItemID(). " to group ".$groupItem->getItemID());
+                        $this->_flushHTML("Added link from member ". $related_user->getItemID(). " to group ".$groupItem->getItemID());
                     }
                     
                 }
