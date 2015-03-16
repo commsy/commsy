@@ -364,6 +364,8 @@
 			$config_information = array();
 			$config_information['with_activating'] = $current_context->withActivatingContent();
 			$this->_popup_controller->assign('popup', 'config', $config_information);
+			
+			$this->_popup_controller->assign('popup', 'show_rights', true);
 		}
 
 		public function cleanup_session($current_iid) {
