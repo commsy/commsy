@@ -502,12 +502,22 @@
 					$allDay = true;
 				}
 				
+				$context = "public";
+				$item_manager = $this->_environment->getItemManager();
+				$context_item = $item_manager->getItem($dateEntry->getContextID());
+				if ($context_item->getItemType() == 'privateroom') {
+   				$context = "private";
+				}
+				
 				$dates[] = array(
 					"id"		=> $dateEntry->getItemID(),
 					"summary"	=> $dateEntry->getTitle(),
 					"startTime"	=> date("c", $timestampStart),
 					"endTime"	=> date("c", $timestampEnd),
-					"allDay"	=> $allDay
+					"allDay"	=> $allDay,
+					"context" => $context,
+					"contextID" => $dateEntry->getContextID(),
+					"module" => "date"
 				);
 				
 				$dateEntry = $dateList->getNext();
