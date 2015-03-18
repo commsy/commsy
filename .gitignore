@@ -78,6 +78,12 @@ local.properties
 /vendor
 
 ######################
+# Sublime related    #
+######################
+*.sublime-project
+*.sublime-workspace
+
+######################
 # CommSy related     #
 ######################
 legacy/etc/cs_config.php
