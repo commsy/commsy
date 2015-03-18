@@ -28,9 +28,16 @@
         <div class="ui fixed top menu">
             <a class="ui transparent toggle navigation item">
                 <i class="content icon"></i> Navigation
-              </a>
+            </a>
 
             <div class="right menu">
+                {% if is_granted('ROLE_ADMIN') %}
+                <div class="item ui button">
+                    <a href="#">
+                        <i class="settings icon"></i>
+                    </a>
+                </div>
+                {% endif %}
                 <div class="item">
                     <div class="ui transparent icon input">
                         <input type="text" placeholder="Search...">
