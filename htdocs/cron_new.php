@@ -142,8 +142,12 @@ function displayCronResults ( $array ) {
             $html .= '<span style="font-weight: bold;">'.$cron['title'].'</span>'.BRLF;
             if (!empty($cron['description'])) {
                $html .= $cron['description'];
-               if ($cron['success']) {
-                  $html .= ' [<font color="#00ff00">done</font>]'.BRLF;
+               if (isset($cron['success'])) {
+                  if ($cron['success']) {
+                     $html .= ' [<font color="#00ff00">done</font>]'.BRLF;
+                  } else {
+                     $html .= ' [<font color="#ff0000>failed</font>]'.BRLF;
+                  }
                } else {
                   $html .= ' [<font color="#ff0000>failed</font>]'.BRLF;
                }

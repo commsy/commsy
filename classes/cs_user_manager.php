@@ -1925,6 +1925,7 @@ class cs_user_manager extends cs_manager {
 	
 	public function getUserTempLoginExpired(){
 		$user = NULL;
+		$user_array = array();
 		$query = "SELECT * FROM ".$this->addDatabasePrefix("user")." WHERE ".$this->addDatabasePrefix("user").".status = '3' AND ".$this->addDatabasePrefix("user").".deletion_date IS NULL AND ".$this->addDatabasePrefix("user").".extras LIKE '%LOGIN_AS_TMSP%'";
 		$result = $this->_db_connector->performQuery($query);
 		if ( !isset($result) ) {
