@@ -1,3 +1,7 @@
+commsy_settings:
+    resource: "@CommSySettingsBundle/Resources/config/routing.yml"
+    prefix:   /settings
+
 commsy_dashboard:
     resource: "@CommSyDashboardBundle/Resources/config/routing.yml"
     prefix:   /

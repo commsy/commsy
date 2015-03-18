@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new CommSy\UserBundle\CommSyUserBundle(),
             new CommSy\RoomBundle\CommSyRoomBundle(),
             new CommSy\DashboardBundle\CommSyDashboardBundle(),
+            new CommSy\SettingsBundle\CommSySettingsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
