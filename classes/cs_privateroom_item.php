@@ -494,7 +494,6 @@ class cs_privateroom_item extends cs_room_item {
                         }
                      }
                   }
-                  $check_managers[] = 'annotation';
 
                   $title = '<a href="'.$curl_text.$item->getItemID().'&amp;mod=home&amp;fct=index">'.$item->getTitle().'</a>';
                   $body_title = BR.BR.$title.''.LF;
@@ -514,6 +513,17 @@ class cs_privateroom_item extends cs_room_item {
                   $body_title .= $translator->getMessage('ACTIVITY_ACTIVE_MEMBERS').': ';
                   $body_title .= $active.'):'.BRLF;
                   $body2 ='';
+
+                  $annotation_manager = $this->_environment->getManager('annotation');
+                  $annotation_manager->setContextLimit($item->getItemID());
+                  if ( $mail_sequence =='daily' ) {
+                     $annotation_manager->setAgeLimit(1);
+                  } else {
+                     $annotation_manager->setAgeLimit(7);
+                  }
+                  $annotation_manager->showNoNotActivatedEntries();
+                  $annotation_manager->select();
+                  $annotation_list = $annotation_manager->get();
 
                   for ( $i =0; $i<$count; $i++){
                      $rubric_array = explode('_', $rubrics[$i]);
@@ -565,6 +575,24 @@ class cs_privateroom_item extends cs_room_item {
                                  } else {
                                     $info_text = '';
                                  }
+                                 $annotation_item = $annotation_list->getFirst();
+                                 $annotation_count = 0;
+                                 while ($annotation_item) {
+                                    $annotation_noticed = $noticed_manager->getLatestNoticedForUserByID($annotation_item->getItemID(),$ref_user->getItemID());
+                                    if (empty($annotation_noticed)) {
+                                       $linked_item = $annotation_item->getLinkedItem();
+                                       if ($linked_item->getItemID() == $rubric_item->getItemID()) {
+                                          $annotation_count++;
+                                       }
+                                    }
+                                    $annotation_item = $annotation_list->getNext();   
+                                 }
+                                 if ($annotation_count == 1) {
+                                    $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATION').']</span>';
+                                 } else if ($annotation_count > 1) {
+                                    $info_text .= ' <span class="changed">['.$translator->getMessage('COMMON_NEW_ANNOTATIONS').']</span>';
+                                 }
+                                 
                                  if (!empty($info_text)){
                                     $count_entries++;
                                     $params = array();
@@ -580,6 +608,7 @@ class cs_privateroom_item extends cs_room_item {
                                     } else {
                                        $mod = $rubric_item->getType();
                                     }
+                                    $title .= $info_text;
                                     $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
 
                                     $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
