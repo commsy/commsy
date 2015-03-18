@@ -1048,22 +1048,23 @@ class cs_grouproom_item extends cs_room_item {
       foreach ($receiver_array as $key => $value) {
          $save_language = $translator->getSelectedLanguage();
          $translator->setSelectedLanguage($key);
+         $title = str_ireplace('&amp;', '&', $this->getTitle());
          if ( $room_change == 'open' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$title);
          } elseif ( $room_change == 'reopen' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN',$title);
          } elseif ( $room_change == 'delete' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE',$title);
          } elseif ( $room_change == 'undelete' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE',$title);
          } elseif ( $room_change == 'archive' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE',$title);
          } elseif ( $room_change == 'link' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK',$title);
          } elseif ( $room_change == 'lock' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK',$title);
          } elseif ( $room_change == 'unlock' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK',$this->getTitle());
+            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK',$title);
          }
          $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
          $body .= LF.LF;
@@ -1090,7 +1091,7 @@ class cs_grouproom_item extends cs_room_item {
             $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_UNLOCK');
          }
          $body .= LF.LF;
-         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$this->getTitle(),$current_user->getFullname(),$room_change_action);
+         $body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
          if ( $room_change != 'delete' ) {
 
             $url_to_portal = '';
@@ -1137,7 +1138,7 @@ class cs_grouproom_item extends cs_room_item {
 
          $project_room = $this->getLinkedProjectItem();
          if ( isset($project_room) and !empty($project_room) ) {
-            $body .= $project_room->getTitle();
+            $body .= str_ireplace('&amp;', '&', $project_room->getTitle());
          } else {
             $body .= $translator->getMessage('GROUPROOM_MAIL_BODY_PROJECT_ROOMS_EMPTY');
          }

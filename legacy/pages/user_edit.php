@@ -564,6 +564,15 @@ if ($command != 'error') { // only if user is allowed to edit user
                $user_item->setEmailVisible();
             }
 
+            // unset user has to change email-address
+            $unsetHasToChangeEmail = false;
+            if (isset($_POST['email'])) {
+               if ($user_item->hasToChangeEmail()) {
+                  $user_item->unsetHasToChangeEmail();
+                  $unsetHasToChangeEmail = true;
+               }
+            }
+
             // save user
             $user_item->save();
             if ( isset($portal_user_item) ) {
@@ -606,7 +615,8 @@ if ($command != 'error') { // only if user is allowed to edit user
                  or isset($_POST['email_change_all'])
                  or isset($_POST['messenger_change_all'])
                  or isset($_POST['description_change_all'])
-                 or isset($_POST['picture_change_all'])) {
+                 or isset($_POST['picture_change_all'])
+                 or $unsetHasToChangeEmail) {
                // change firstname and lastname in all other user_items of this user
                $user_manager = $environment->getUserManager();
                $dummy_user = $user_manager->getNewItem();
@@ -720,7 +730,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                   }
                   $dummy_user->setJabber($value);
                }
-               if (isset($_POST['email_change_all'])) {
+               if (isset($_POST['email_change_all']) || $unsetHasToChangeEmail) {
                   $value = $user_item->getEmail();
                   if (empty($value)) {
                      $value = -1;

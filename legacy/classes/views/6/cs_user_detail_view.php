@@ -693,6 +693,44 @@ class cs_user_detail_view extends cs_detail_view {
        
           $temp_array = array();
           $temp_array[] = $this->_translator->getMessage('PORTAL_ARCHIVED_ROOMS');
+          
+          $zzz_project_manager = $this->_environment->getZzzProjectManager();
+          $zzz_project_manager->setUserIDLimit($item->getUserID());
+          $zzz_project_manager->setStatusLimit(2);
+          $zzz_project_manager->select();
+          $archived_room_list = $zzz_project_manager->get();
+          if ($archived_room_list->isNotEmpty()) {
+             $room_item = $archived_room_list->getFirst();
+             $first = true;
+             $temp_string = '';
+             while ($room_item) {
+               if ($first) {
+                  $first = false;
+               } else {
+                  $temp_string .= BRLF;
+               }
+               $temp_string .= $room_item->getTitle();
+               // room status
+                   if ($room_item->isLocked()) {
+                      $temp_string .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']'.LF;
+                   } elseif ($room_item->isClosed()) {
+                      $temp_string .= ' ['.$this->_translator->getMessage('PROJECTROOM_CLOSED').']'.LF;
+                   }
+               // status
+                   $status = $this->_getStatus($related_user_array[$room_item->getItemID()],$room_item);
+               if (!empty($status)) {
+                  $temp_string .= ' ('.$status.')';
+               }
+               unset($room_item);
+               $room_item = $archived_room_list->getNext();
+            }
+            $temp_array[] = $temp_string;
+            unset($temp_string);
+            unset($room_list);
+          } else {
+             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
+          }
+          
           $formal_data[] = $temp_array;
           unset($temp_array);
        
@@ -899,7 +937,7 @@ class cs_user_detail_view extends cs_detail_view {
             unset($params);
          }
 
-         $private_room_manager = $this->_environment->getPrivateRoomManager();
+         /* $private_room_manager = $this->_environment->getPrivateRoomManager();
          $own_room = $private_room_manager->getRelatedOwnRoomForUser($item,$this->_environment->getCurrentPortalID());
          if ( $this->_environment->inPortal() and $this->_environment->getCurrentModule() == 'account' and $user->isModerator() ){
             $params = array();
@@ -914,7 +952,7 @@ class cs_user_detail_view extends cs_detail_view {
                $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('PRIVATEROOM_LOCK')).BRLF;
                unset($params);
             }
-         }
+         } */
          if ( $user->isRoot() and isset($own_room) ) {
             $params = array();
             $params['iid'] = $own_room->getItemID();

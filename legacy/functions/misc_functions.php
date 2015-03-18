@@ -623,7 +623,7 @@ function isURLValid () {
         $module != 'annotation' and
         $module != 'contact' and
         $module != 'campus_search' and
-   		$module != 'search' and
+      $module != 'search' and
         $module != 'agb' and
         $module != 'agbroom' and
 
@@ -699,14 +699,14 @@ function isURLValid () {
         
         // Scorm
         $module != 'scorm' and
-   		
+      
          // download
          $module != 'download' and
          $module != 'limesurvey' and
          $module != 'export_privateroom' and
-   		
-   		// individual css
-   		$module != 'individual'
+      
+      // individual css
+      $module != 'individual'
       ) {
       return false;
     }
@@ -732,7 +732,7 @@ function isURLValid () {
          $funct != 'process' and
          $funct != 'getfile' and
          $funct != 'getlogfile' and
-    	   $funct != 'getTemp' and
+         $funct != 'getTemp' and
          $funct != 'admin' and
          $funct != 'move' and
          $funct != 'to_moderator' and
@@ -762,7 +762,7 @@ function isURLValid () {
          $funct != 'defaults' and
          $funct != 'upload' and
          $funct != 'wiki' and
-    	   $funct != 'limesurvey' and
+         $funct != 'limesurvey' and
          $funct != 'wordpress' and
          $funct != 'path' and
          $funct != 'tags' and
@@ -797,7 +797,7 @@ function isURLValid () {
          $funct != 'datasecurity' and
          $funct != 'inactive' and
          $funct != 'inactiveprocess' and
-    	   $funct != 'assignroom' and
+         $funct != 'assignroom' and
 
          $funct != 'account_options' and
          $funct != 'structure_options' and
@@ -824,7 +824,7 @@ function isURLValid () {
          $funct != 'language' and
          $funct != 'outofservice' and
          $funct != 'connection' and
-    		$funct != 'update' and
+        $funct != 'update' and
 
          // admin portal
          $funct != 'room' and
@@ -890,16 +890,16 @@ function isURLValid () {
          $funct != 'assessment' and
          $funct != 'search' and
          $funct != 'search_index' and
-    	 $funct != 'rubric_popup' and
-    	 $funct != 'popup' and
-    	 $funct != 'path' and
-    	 $funct != 'picture' and
-    	 $funct != 'widgets' and
-    	 $funct != 'widget_new_entries' and
-    	 $funct != 'widget_released_entries' and
-    	 $funct != 'widget_released_entries_for_me' and
-    	 $funct != 'portfolio' and
-    	 $funct != 'widget_stack' and
+       $funct != 'rubric_popup' and
+       $funct != 'popup' and
+       $funct != 'path' and
+       $funct != 'picture' and
+       $funct != 'widgets' and
+       $funct != 'widget_new_entries' and
+       $funct != 'widget_released_entries' and
+       $funct != 'widget_released_entries_for_me' and
+       $funct != 'portfolio' and
+       $funct != 'widget_stack' and
          
          $funct != 'workflow'
        ) {
@@ -1041,8 +1041,8 @@ function plugin_hook ($hook_function, $params = null, $with_config_check = true)
       foreach ($c_plugin_array as $plugin) {
          if ( isset($current_context_item)
               and ( $current_context_item->isPluginOn($plugin)
-              		  or !$with_config_check
-              		)
+                    or !$with_config_check
+                  )
             ) {
             $plugin_class = $environment->getPluginClass($plugin);
             if ( method_exists($plugin_class,$hook_function) ) {
@@ -1083,7 +1083,7 @@ function plugin_hook_plugin ($plugin, $hook_function, $params = null) {
    }
 }
 
-function plugin_hook_output_all ($hook_function, $params = null, $separator = '', $with_config_check = true) {
+function plugin_hook_output_all ($hook_function, $params = null, $separator = '', $with_config_check = true, $except = array()) {
    if ( !empty($separator)
         and $separator == 'ARRAY'
       ) {
@@ -1099,31 +1099,33 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
       ) {
       $first = true;
       foreach ($c_plugin_array as $plugin) {
-     		$output = plugin_hook_output($plugin,$hook_function,$params,$with_config_check);
-         if ( !empty($output) ) {
-            if ( !empty($separator)
-                 and $separator == 'ARRAY'
-                 and is_array($output)
-               ) {
-               $retour = array_merge($retour,$output);
-            } elseif ( !empty($separator)
-                 and $separator == 'MULTIARRAY'
-                 and is_array($output)
-               ) {
-               $retour[] = $output;
-            } elseif ( !empty($separator)
-                       and $separator == 'ONE'
-                     ) {
-               $retour = $output;
-               break;
-            } else {
-               if ( $first ) {
-                  $first = false;
-               } else {
-                  $retour .= $separator;
-               }
-               $retour .= $output;
-            }
+        if(!in_array($plugin, $except)) {
+        $output = plugin_hook_output($plugin,$hook_function,$params,$with_config_check);
+             if ( !empty($output) ) {
+                if ( !empty($separator)
+                     and $separator == 'ARRAY'
+                     and is_array($output)
+                   ) {
+                   $retour = array_merge($retour,$output);
+                } elseif ( !empty($separator)
+                     and $separator == 'MULTIARRAY'
+                     and is_array($output)
+                   ) {
+                   $retour[] = $output;
+                } elseif ( !empty($separator)
+                           and $separator == 'ONE'
+                         ) {
+                   $retour = $output;
+                   break;
+                } else {
+                   if ( $first ) {
+                      $first = false;
+                   } else {
+                      $retour .= $separator;
+                   }
+                   $retour .= $output;
+                }
+             }
          }
       }
    }
@@ -1138,31 +1140,31 @@ function plugin_hook_output ($plugin,$hook_function,$params = NULL,$with_config_
       $do_it = false;
       $plugin_class = $environment->getPluginClass($plugin);
       if ( $hook_function == 'getSOAPAPIArray'
-      	  or !$with_config_check
-      	) {
-      	$do_it = true;
+          or !$with_config_check
+        ) {
+        $do_it = true;
       } else {
-	      $current_context_item = $environment->getCurrentContextItem();
-	      if ( method_exists($plugin_class,'isConfigurableInRoom')
-	           and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
-	         ) {
-	         $current_context_item = $environment->getCurrentContextItem();
-	      } elseif ( method_exists($plugin_class,'isConfigurableInPortal')
-	                 and $plugin_class->isConfigurableInPortal()
-	               ) {
-	         $current_context_item = $environment->getCurrentPortalItem();
-	      }
-	      if ( isset($current_context_item)
-	           and $current_context_item->isPluginActive($plugin)
-	         ) {
-	         $do_it = true;
-	      }
+        $current_context_item = $environment->getCurrentContextItem();
+        if ( method_exists($plugin_class,'isConfigurableInRoom')
+             and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
+           ) {
+           $current_context_item = $environment->getCurrentContextItem();
+        } elseif ( method_exists($plugin_class,'isConfigurableInPortal')
+                   and $plugin_class->isConfigurableInPortal()
+                 ) {
+           $current_context_item = $environment->getCurrentPortalItem();
+        }
+        if ( isset($current_context_item)
+             and $current_context_item->isPluginActive($plugin)
+           ) {
+           $do_it = true;
+        }
       }
       if ( $do_it
            and isset($plugin_class)
            and method_exists($plugin_class,$hook_function)
          ) {
-      	$retour = $plugin_class->$hook_function($params);
+        $retour = $plugin_class->$hook_function($params);
       }
    }
    return $retour;

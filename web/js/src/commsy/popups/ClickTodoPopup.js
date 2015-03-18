@@ -19,6 +19,7 @@ define([	"dojo/_base/declare",
 			this.module = "todo";
 			this.editType = customObject.editType;
 			this.contextId = customObject.contextId;
+			this.ItemTitle = "";
 
 			this.features = [ "editor", "tree", "upload", "netnavigation", "calendar" ];
 
@@ -67,42 +68,10 @@ define([	"dojo/_base/declare",
 				]
 			};
 
+			// set title to refresh item list
+			this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+
 			this.submit(search, { contextId: this.contextId });
-		},
-
-		addNewBuzzword: function () {
-
-			buzzword = domAttr.get(query("input#new_buzzword_input")[0], "value");
-
-			request.ajax({
-				query: {
-					cid:	this.uri_object.cid,
-					mod:	'ajax',
-					fct:	'buzzwords',
-					action:	'createNewBuzzword'
-				},
-				data: {
-					buzzword:	buzzword,
-					roomId:		this.contextId
-				}
-			}).then(
-				lang.hitch(this, function(response) {
-
-					buzzwordList = query("ul.popup_buzzword_list")[0];
-
-					var listNode = domConstruct.create("li", {
-						className:		"ui-state-default popup_buzzword_item",
-						innerHTML: 		buzzword
-					}, buzzwordList, "first");
-
-					domConstruct.create("input", {
-						className:		"ui-state-default popup_buzzword_item",
-						type:			"checkbox",
-						value:			response.id,
-						name:			"form_data[buzzwords]",
-						checked: 		"checked" 
-					}, listNode, "first");
-				}));
 		},
 
 		onPopupSubmitSuccess: function(item_id) {
@@ -121,6 +90,7 @@ define([	"dojo/_base/declare",
 					this.close();
 					var aNode = query("a#listItem" + item_id)[0];
 					if (aNode) {
+						aNode.innerHTML = this.itemTitle;
 						aNode.click();
 					}
 				} else {

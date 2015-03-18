@@ -827,7 +827,6 @@
                      </div>                                 
                      {/foreach}
                   {/if}
-                  <!--
                   <hr/>
                   <fieldset>
                     <p>
@@ -850,7 +849,6 @@
                        <input id="submit_import_private_room" type="button" class="popup_button submit" disabled="disabled" data-custom="part: 'import', action: 'import_private_room'" name="save" value="___PREFERENCES_IMPORT_PRIVATE_ROOM_BUTTON___"/>
                     </form>
                   </div>
-                  -->
                   </div>
                 </div>
               </div>

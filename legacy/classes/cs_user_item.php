@@ -1070,6 +1070,12 @@ class cs_user_item extends cs_item {
       $list = $manager->getRelatedCommunityListForUser($this);
       return $list;
    }
+   
+   function getRelatedCommunityListAllUserStatus () {
+      $manager = $this->_environment->getCommunityManager();
+      $list = $manager->getRelatedCommunityListForUserAllUserStatus($this);
+      return $list;
+   }
 
    function getUserRelatedProjectList () {
       $manager = $this->_environment->getProjectManager();
@@ -1079,7 +1085,13 @@ class cs_user_item extends cs_item {
 
    function getRelatedProjectList () {
       $manager = $this->_environment->getProjectManager();
-      $list = $manager->getRelatedProjectListForUser($this);
+      $list = $manager->getRelatedProjectListForUser($this, null);
+      return $list;
+   }
+   
+   function getRelatedProjectListAllUserStatus () {
+      $manager = $this->_environment->getProjectManager();
+      $list = $manager->getRelatedProjectListForUserAllUserStatus($this, null);
       return $list;
    }
 

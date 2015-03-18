@@ -5,7 +5,7 @@ $message["PRIVATE_ROOM_EMAIL_TO_COMMSY_CHECKBOX_NEW"]["en"] = "Send e-amils to t
 $message["PRIVATE_ROOM_EMAIL_TO_COMMSY_NO_SECRET"]["en"] = "Please specify a password to be used with the upload via e-mail.";
 $message["PRIVATE_ROOM_EMAIL_TO_COMMSY_TEXT"]["en"] = "Please specify an upload-password. This has to be stated in one single line in the body of the e-mail:<br/>
 <b>upload account: YOUR_UPLOAD_PASSWORT</b><br/>
-If you have more than one account using the same e-mail-address, the new material will be created in the private rooms of all these accounts. If the material should only be created in the private room of one particular account, plase state the account in one single line in the body of the e-mail<br/>
+If you have more than one account using the same e-mail-address, the new material will be created in the repositories of all these accounts. If the material should only be created in the repository of one particular account, please state the account in one single line in the body of the e-mail<br/>
 <b>Account: YOUR_ACCOUNT</b>";
 $message["PRIVATE_ROOM_PROJECTROOM_CLOSED"]["en"] = "archived";
 $message["PRIVATE_ROOM_PROJECTROOM_LOCKED"]["en"] = "blocked";

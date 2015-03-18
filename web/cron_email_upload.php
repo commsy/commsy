@@ -215,7 +215,7 @@ function email_to_commsy($mbox,$msgno){
 			   $result_mail = new cs_mail();
             $result_mail->set_to($sender);
             $result_mail->set_from_name('CommSy');
-				$result_mail->set_from_email('commsy@commsy.net');
+				// $result_mail->set_from_email('commsy@commsy.net');
 				
 				$errors = array();
 				
@@ -288,7 +288,7 @@ function email_to_commsy($mbox,$msgno){
 				   // send e-mail with 'material created in your private room' back to sender
 				   $file = $_SERVER['PHP_SELF'];
                		$file = str_replace('cron_email_upload','commsy',$file);
-               		$curl_text = 'http://'.$_SERVER['HTTP_HOST'].$file.'?cid=';
+               		$curl_text = 'http://'.$c_commsy_domain.$file.'?cid=';
 				   
 				   #$params['iid'] = $material_item->getItemID();
 				   #$link_to_new_material = curl($private_room_id, 'material', 'detail', $params);

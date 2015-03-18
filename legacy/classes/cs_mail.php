@@ -166,7 +166,7 @@ class cs_mail extends Mail
     * In this method the size recipients is divided into one mail for one receiver, if
     * the pristine size of the recipients is greater than 2048.
     */
-   function send() {
+   function send($recipients = '', $headers = '', $body = '', $return = '')  {
       global $c_send_email;
       if ( !isset($c_send_email) or $c_send_email ) {
          if ( $this->_file_added ) {

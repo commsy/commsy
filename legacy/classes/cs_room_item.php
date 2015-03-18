@@ -1601,7 +1601,7 @@ class cs_room_item extends cs_context_item {
    		$save_language = $translator->getSelectedLanguage();
    		$translator->setSelectedLanguage($key);
    		$subject = '';
-		   $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO',$this->getTitle(),$current_portal->getDaysSendMailBeforeArchivingRooms());
+		   $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE_INFO',str_ireplace('&amp;', '&', $this->getTitle()),$current_portal->getDaysSendMailBeforeArchivingRooms());
          
   			$body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
    		$body .= LF.LF;
@@ -1613,7 +1613,7 @@ class cs_room_item extends cs_context_item {
          $room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_ARCHIVE_INFO');
 
   			$body .= LF.LF;
-   		$body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$this->getTitle(),$current_user->getFullname(),$room_change_action);
+   		$body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
    		
          $url_to_portal = '';
          if ( !empty($current_portal) ) {
@@ -1775,7 +1775,7 @@ class cs_room_item extends cs_context_item {
    		$save_language = $translator->getSelectedLanguage();
    		$translator->setSelectedLanguage($key);
    		$subject = '';
-   		$subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO',$this->getTitle(),$current_portal->getDaysSendMailBeforeDeletingRooms());
+   		$subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE_INFO',str_ireplace('&amp;', '&', $this->getTitle()),$current_portal->getDaysSendMailBeforeDeletingRooms());
    		 
    		$body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
    		$body .= LF.LF;
@@ -1787,7 +1787,7 @@ class cs_room_item extends cs_context_item {
    		$room_change_action = $translator->getMessage('PROJECT_MAIL_BODY_ACTION_DELETE_INFO');
    
    		$body .= LF.LF;
-   		$body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',$this->getTitle(),$current_user->getFullname(),$room_change_action);
+   		$body .= $translator->getMessage('PROJECT_MAIL_BODY_INFORMATION',str_ireplace('&amp;', '&', $this->getTitle()),$current_user->getFullname(),$room_change_action);
    		 
    		$url_to_portal = '';
    		if ( !empty($current_portal) ) {

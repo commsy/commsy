@@ -85,6 +85,14 @@
                     
                     require_once('classes/cs_mpdf.php');
                     $mpdf = new cs_mpdf();
+
+                    // set proxy for mpdf
+                    global $c_proxy_ip;
+                    global $c_proxy_port;
+                    if($c_proxy_port) {
+                        $mpdf->proxy = true;
+                        $mpdf->proxyUrl = $c_proxy_ip.":".$c_proxy_port;
+                    }
                     
                     // debug
                     if($_GET['debug'] == 1){
@@ -379,6 +387,10 @@
             $portal_item = $this->_environment->getCurrentPortalItem();
             $current_context = $this->_environment->getCurrentContextItem();
             $translator = $this->_environment->getTranslationObject();
+            $portal_user_item = $current_user->getRelatedPortalUserItem();
+            if ($portal_user_item) {
+               $this->assign('environment', 'user_language', $portal_user_item->getLanguage());
+            }
             $count_new_accounts = 0;
             if ($current_user->isModerator()){
                 // tasks

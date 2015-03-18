@@ -89,6 +89,7 @@ else {
             $disc_manager->setPortalID($environment->getCurrentPortalID());
    
             $backup_paths = array();
+            $backup_paths_files = array();
             $room_item = $room_manager->getItem($_POST['room']);
             
             if ($room_item == NULL) {
@@ -99,16 +100,25 @@ else {
             if ($room_item->getRoomType() == 'community') {
                $disc_manager->setContextID($room_item->getItemId());
                $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+               if (file_exists('var/templates/individual/styles_'.$room_item->getItemID().'.css')) {
+                  $backup_paths_files[] = 'var/templates/individual/styles_'.$room_item->getItemID().'.css';
+               }
                $project_list = $room_item->getProjectList();
                $project_item = $project_list->getFirst();
                while ($project_item) {
                   $disc_manager->setContextID($project_item->getItemId());
                   $backup_paths[$project_item->getItemId()] = $disc_manager->getFilePath();
+                  if (file_exists('var/templates/individual/styles_'.$project_item->getItemID().'.css')) {
+                     $backup_paths_files[] = 'var/templates/individual/styles_'.$project_item->getItemID().'.css';
+                  }
                   $grouproom_list = $project_item->getGroupRoomList();
                   $grouproom_item = $grouproom_list->getFirst();
                   while ($grouproom_item) {
                      $disc_manager->setContextID($grouproom_item->getItemId());
                      $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
+                     if (file_exists('var/templates/individual/styles_'.$grouproom_item->getItemID().'.css')) {
+                        $backup_paths_files[] = 'var/templates/individual/styles_'.$grouproom_item->getItemID().'.css';
+                     }
                      $grouproom_item = $grouproom_list->getNext();   
                   }
                   $project_item = $project_list->getNext();
@@ -116,18 +126,26 @@ else {
             } else if ($room_item->getRoomType() == 'project') {
                $disc_manager->setContextID($room_item->getItemId());
                $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+               if (file_exists('var/templates/individual/styles_'.$room_item->getItemID().'.css')) {
+                  $backup_paths_files[] = 'var/templates/individual/styles_'.$room_item->getItemID().'.css';
+               }
                $grouproom_list = $room_item->getGroupRoomList();
                $grouproom_item = $grouproom_list->getFirst();
                while ($grouproom_item) {
                   $disc_manager->setContextID($grouproom_item->getItemId());
                   $backup_paths[$grouproom_item->getItemId()] = $disc_manager->getFilePath();
+                  if (file_exists('var/templates/individual/styles_'.$grouproom_item->getItemID().'.css')) {
+                     $backup_paths_files[] = 'var/templates/individual/styles_'.$grouproom_item->getItemID().'.css';
+                  }
                   $grouproom_item = $grouproom_list->getNext();   
                }
             } else if ($room_item->getRoomType() == 'privateroom') {
                $disc_manager->setContextID($room_item->getItemId());
                $backup_paths[$room_item->getItemId()] = $disc_manager->getFilePath();
+               if (file_exists('var/templates/individual/styles_'.$room_item->getItemID().'.css')) {
+                  $backup_paths_files[] = 'var/templates/individual/styles_'.$room_item->getItemID().'.css';
+               }
             }
-            
    
             if ( class_exists('ZipArchive') ) {
                include_once('functions/misc_functions.php');
@@ -143,6 +161,10 @@ else {
                   chdir($backup_path);
                   $zip = addFolderToZip('.',$zip,'files_'.$item_id);
                   chdir($temp_dir);
+               }
+               foreach ($backup_paths_files as $backup_paths_file) {
+                  $backup_paths_file_array = explode('/', $backup_paths_file);
+                  $zip->addFile($backup_paths_file, 'styles/'.array_pop($backup_paths_file_array));
                }
    
                $zip->addFile($filename, basename($filename));
@@ -175,12 +197,10 @@ else {
                chdir('var/temp/'.$temp_stamp);
                foreach (glob("commsy_xml_export_import_*.xml") as $filename) {
                   $xml = simplexml_load_file($filename, null, LIBXML_NOCDATA);
-                  //el($xml);
                   $dom = new DOMDocument('1.0');
                   $dom->preserveWhiteSpace = false;
                   $dom->formatOutput = true;
                   $dom->loadXML($xml->asXML());
-                  //el($dom->saveXML());
                   
                   $options = array();
                   chdir($commsy_work_dir);
@@ -195,28 +215,49 @@ else {
                         $directory_old_id = $directory_name_array[1];
                         $disc_manager = $environment->getDiscManager();
                         $disc_manager->setPortalID($environment->getCurrentPortalID());
-                        $directory_new_id = $options[$directory_old_id];
-                        if ($directory_new_id != '') {
-                           $disc_manager->setContextID($directory_new_id);
-                           $new_file_path = $disc_manager->getFilePath();
-                           chdir($file);
-                           $files_to_copy = glob('./*');
-                           foreach($files_to_copy as $file_to_copy){
-                              if (!(strpos($file, 'default_cs_gradient') === 0)) {
-                                 $file_to_copy = str_ireplace('./', '', $file_to_copy);
-                                 $file_name_array = explode('.', $file_to_copy);
-                                 $file_old_id = $file_name_array[0];
-                                 $file_new_id = $options[$file_old_id];
-                                 if ($file_new_id != '') {
-                                    $file_to_copy_temp = str_ireplace($file_old_id.'.', $file_new_id.'.', $file_to_copy);
-                                    $file_to_copy_temp = './'.$file_to_copy_temp;
-                                    $file_to_go = str_replace('./',$commsy_work_dir.'/'.$new_file_path, $file_to_copy_temp);
-                                    copy($file_to_copy, $file_to_go);
+                        if (isset($options[$directory_old_id])) {
+                           $directory_new_id = $options[$directory_old_id];
+                           if ($directory_new_id != '') {
+                              $disc_manager->setContextID($directory_new_id);
+                              $new_file_path = $disc_manager->getFilePath();
+                              chdir($file);
+                              $files_to_copy = glob('./*');
+                              foreach($files_to_copy as $file_to_copy){
+                                 if (!stristr($file_to_copy, 'default_cs_gradient')) {
+                                    $file_to_copy = str_ireplace('./', '', $file_to_copy);
+                                    $file_name_array = explode('.', $file_to_copy);
+                                    $file_old_id = $file_name_array[0];
+                                    if (isset($options[$file_old_id])) {
+                                       $file_new_id = $options[$file_old_id];
+                                       if ($file_new_id != '') {
+                                          $file_to_copy_temp = str_ireplace($file_old_id.'.', $file_new_id.'.', $file_to_copy);
+                                          $file_to_copy_temp = './'.$file_to_copy_temp;
+                                          $file_to_go = str_replace('./',$commsy_work_dir.'/'.$new_file_path, $file_to_copy_temp);
+                                          copy($file_to_copy, $file_to_go);
+                                       }
+                                    }
                                  }
                               }
+                              chdir('..');
                            }
-                           chdir('..');
                         }
+                     } else if (strpos($file, 'styles') === 0) {
+                        chdir($file);
+                        $styles_to_copy = glob('./*');
+                        foreach($styles_to_copy as $style_to_copy){
+                           $style_to_copy = str_ireplace('./', '', $style_to_copy);
+                           $style_name_array = explode('.', $style_to_copy);
+                           $style_name_array = explode('_', $style_name_array[0]);
+                           $style_old_id = $style_name_array[1];
+                           if (isset($options[$style_old_id])) {
+                              $style_new_id = $options[$style_old_id];
+                              if ($style_new_id != '') {
+                                 $style_to_copy_temp = str_ireplace($style_old_id.'.', $style_new_id.'.', $style_to_copy);
+                                 copy($style_to_copy, $commsy_work_dir.'/var/templates/individual/'.$style_to_copy_temp);
+                              }
+                           }
+                        }
+                        chdir('..');
                      }
                   }
                }

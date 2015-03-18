@@ -795,11 +795,31 @@ function deletePortfolioTags($portfolioId) {
       $xml->addChildWithCDATA('creation_date', $item->getCreationDate());
       $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
       $xml->addChildWithCDATA('deletion_date', $item->getDeletionDate());
+      
+      $xml = $this->export_sub_items($xml, $item);
+      
       return $xml;
 	}
 	
    function export_sub_items($xml, $top_item) {
-      
+      $sub_items = array('annotation_portfolio', 'tag_portfolio', 'template_portfolio', 'user_portfolio');
+   	foreach ($sub_items as $sub_item) {
+      	$query = "SELECT * FROM " . $this->addDatabasePrefix($sub_item) . " WHERE p_id = " . $top_item->getItemID();
+     	   $results = $this->_db_connector->performQuery($query);
+     	   if ( !isset($results) ) {
+     		   include_once('functions/error_functions.php');trigger_error('Problems getting '.$sub_item.'.', E_USER_WARNING);
+     	   }
+         $sub_items_xml = new SimpleXMLElementExtended('<'.$sub_item.'></'.$sub_item.'>');
+         foreach ($results as $result) {
+            $sub_item_xml = new SimpleXMLElementExtended('<'.$sub_item.'_entry></'.$sub_item.'_entry>');
+            foreach ($result as $key => $value) {
+               $sub_item_xml->addChildWithCDATA($key, $value);
+            }
+            $this->simplexml_import_simplexml($sub_items_xml, $sub_item_xml);
+         }
+         $this->simplexml_import_simplexml($xml, $sub_items_xml);
+   	}
+      return $xml;
    }
    
    function import_item($xml, $top_item, &$options) {
@@ -811,14 +831,56 @@ function deletePortfolioTags($portfolioId) {
          if ((string)$xml->template[0] == '1') {
             $item->setTemplate();
          }
+         $item->save();
       }
       $options[(string)$xml->item_id[0]] = $item->getItemId();
+
+      $this->import_sub_items($xml, $item, $options);
+      
       return $item;
    }
    
    function import_sub_items($xml, $top_item, &$options) {
-      
+      $sub_items = array('annotation_portfolio', 'tag_portfolio', 'template_portfolio', 'user_portfolio');
+   	foreach ($sub_items as $sub_item) {
+      	if ($xml->$sub_item != null) {
+         	foreach ($xml->$sub_item->children() as $temp_sub_item) {
+            	$rows = '';
+            	$values = '';
+            	$first = true;
+            	foreach ($temp_sub_item->children() as $value) {
+               	if (!$first) {
+                  	$rows .= ', ';
+                  	$values .= ', ';
+               	} else {
+                  	$first = false;
+               	}
+               	$rows .= "`".$value->getName()."`";
+               	if (isset($options[$value->__toString()])) {
+               	   $values .= "'".$options[$value->__toString()]."'";
+               	} else {
+                  	$values .= "'".$value->__toString()."'";
+               	}
+            	}
+            	$query = "INSERT INTO ".$this->addDatabasePrefix($sub_item)." (".$rows.") VALUES (".$values.");";
+     	         $results = $this->_db_connector->performQuery($query);
+         	}
+      	}
+      	if ($sub_item == 'annotation_portfolio') {
+         	$query = "SELECT * FROM " . $this->addDatabasePrefix($sub_item) . " WHERE p_id = " . $top_item->getItemID();
+        	   $results = $this->_db_connector->performQuery($query);
+        	   if ( !isset($results) ) {
+        		   include_once('functions/error_functions.php');trigger_error('Problems getting '.$sub_item.'.', E_USER_WARNING);
+        	   }
+        	   foreach ($results as $result) {
+           	   $query = "UPDATE " . $this->addDatabasePrefix('annotations') . " SET linked_item_id = " . $top_item->getItemID() . " WHERE item_id = " . $result['a_id'] . ";";
+           	   $results = $this->_db_connector->performQuery($query);
+           	   if ( !isset($results) ) {
+           		   include_once('functions/error_functions.php');trigger_error('Problems getting '.$sub_item.'.', E_USER_WARNING);
+           	   }
+        	   }
+      	}
+   	}
    }
-
 }
 ?>

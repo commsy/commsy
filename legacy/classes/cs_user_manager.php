@@ -407,7 +407,7 @@ class cs_user_manager extends cs_manager {
    *  @param string value user id limit for selected user
    */
   function setUserIDLimitBinary($value) {
-  	$this->_user_limit_binary = (string)$value;
+    $this->_user_limit_binary = (string)$value;
   }
 
   function setContactModeratorLimit(){
@@ -545,28 +545,28 @@ class cs_user_manager extends cs_manager {
             if (isset($this->_is_user_in_context_cache[$user_id.$auth_source][$context_id]) and $this->_is_user_in_context_cache[$user_id.$auth_source][$context_id] == 'is_user'){
                return true;
             } else {
-            	if ( $this->_environment->foundCurrentContextInArchive()
-            	     and !$this->_environment->isArchiveMode()
-            	     and !($this instanceof cs_zzz_user_manager)
-            	   ) {
-            		$zzz_user_manager = $this->_environment->getZZZUserManager();
-            		$retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
-            		return $retour;
-            	} else {
+              if ( $this->_environment->foundCurrentContextInArchive()
+                   and !$this->_environment->isArchiveMode()
+                   and !($this instanceof cs_zzz_user_manager)
+                 ) {
+                $zzz_user_manager = $this->_environment->getZZZUserManager();
+                $retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
+                return $retour;
+              } else {
                   return false;
-            	}
+              }
             }
          } else {
-           	if ( $this->_environment->foundCurrentContextInArchive()
-           	     and !$this->_environment->isArchiveMode()
-           	     and !($this instanceof cs_zzz_user_manager)
+            if ( $this->_environment->foundCurrentContextInArchive()
+                 and !$this->_environment->isArchiveMode()
+                 and !($this instanceof cs_zzz_user_manager)
                ) {
-           		$zzz_user_manager = $this->_environment->getZZZUserManager();
-           		$retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
-           		return $retour;
-           	} else {
+              $zzz_user_manager = $this->_environment->getZZZUserManager();
+              $retour = $zzz_user_manager->isUserInContext($user_id, $context_id, $auth_source);
+              return $retour;
+            } else {
                return false;
-           	}
+            }
          }
       }
    }
@@ -636,7 +636,7 @@ class cs_user_manager extends cs_manager {
         $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.user_id = "'.encode(AS_DB,$this->_user_limit).'"';
      }
      if (isset($this->_user_limit_binary)) {
-     	$query .= ' AND BINARY '.$this->addDatabasePrefix($this->_db_table).'.user_id = "'.encode(AS_DB,$this->_user_limit_binary).'"';
+      $query .= ' AND BINARY '.$this->addDatabasePrefix($this->_db_table).'.user_id = "'.encode(AS_DB,$this->_user_limit_binary).'"';
      }
       
      if ( empty($this->_id_array_limit) ) {
@@ -745,17 +745,17 @@ class cs_user_manager extends cs_manager {
      
      // portal2Portal: connection key limit
      if ( !empty($this->_limit_connection_key) ) {
-     	  $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%CONNECTION_EXTERNAL_KEY_ARRAY%"';
-     	  $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_key).'%"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%CONNECTION_EXTERNAL_KEY_ARRAY%"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_key).'%"';
      }
      // portal2Portal: connection server key limit
      if ( !empty($this->_limit_connection_server_key) ) {
-     	  $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%CONNECTION_ARRAY%"';
-     	  $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_server_key).'%"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%CONNECTION_ARRAY%"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%'.encode(AS_DB,$this->_limit_connection_server_key).'%"';
      }
      // portal2Portal: connection own key limit
      if ( !empty($this->_limit_connection_own_key) ) {
-     	  $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%s:17:\"CONNECTION_OWNKEY\";s:32:\"'.$this->_limit_connection_own_key.'\"%"';
+        $query .= ' AND '.$this->addDatabasePrefix($this->_db_table).'.extras LIKE "%s:17:\"CONNECTION_OWNKEY\";s:32:\"'.$this->_limit_connection_own_key.'\"%"';
      }
      
       // restrict sql-statement by search limit, create wheres
@@ -1160,7 +1160,7 @@ class cs_user_manager extends cs_manager {
      if ( empty($contact_status) ) {
         $contact_status = 0;
      }
-  	 
+     
      $query .= 'context_id="'.encode(AS_DB,$user_item->getContextID()).'",';
      $query .= 'status="'.encode(AS_DB,$user_item->getStatus()).'",';
      $query .= 'is_contact="'.encode(AS_DB,$contact_status).'",';
@@ -1176,9 +1176,9 @@ class cs_user_manager extends cs_manager {
      $expire_date = $user_item->getPasswordExpireDate();
      
      if ( empty ($expire_date) or $expire_date == 0){
-     	$query .= 'expire_date=NULL,';
+      $query .= 'expire_date=NULL,';
      } else {
-     	$query .= 'expire_date="'.encode(AS_DB,$expire_date).'",';
+      $query .= 'expire_date="'.encode(AS_DB,$expire_date).'",';
      }
      
 
@@ -1800,180 +1800,181 @@ class cs_user_manager extends cs_manager {
       $this->_cache_sql = array();
    }
 
-	public function updateIndexedSearch($item) {
-		$indexer = $this->_environment->getSearchIndexer();
-		$query = '
-			SELECT
-				user.item_id AS item_id,
-				user.item_id AS index_id,
-				NULL AS version_id,
-				user.modification_date,
-				CONCAT(user.user_id, " ", user.firstname, " ", user.lastname) AS search_data
-			FROM
-				user
-			WHERE
-				user.deletion_date IS NULL AND
-				user.item_id = ' . $item->getItemID() . '
-		';
-		$indexer->add(CS_USER_TYPE, $query);
-	}
-	
-	####################################################
-	# archive method
-	####################################################
-	
-	public function getLastUsedDateOfRoom ( $room_id ) {
-		$retour = '';
-		if ( !empty($room_id) ) {
-			$query = 'SELECT lastlogin FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.$room_id.' AND lastlogin IS NOT NULL ORDER BY lastlogin DESC LIMIT 0,1';
-			$result = $this->_db_connector->performQuery($query);
-			if ( !isset($result) ) {
-				include_once('functions/error_functions.php');
-				trigger_error('Problems getting last used date of this room: '.$room_id,E_USER_WARNING);
-			} elseif ( !empty($result[0]['lastlogin']) ) {
-				$retour = $result[0]['lastlogin'];
-			}	
-		}
-		return $retour;
-	}
-	
-	public function getUserPasswordExpiredByContextID($cid) {
-		$user_array = array();
-		$current_date = getCurrentDateTimeInMySQL();
-		$user = NULL;
-		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".expire_date  <= '".encode(AS_DB,$current_date)."'";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs ) {
-				$user_array[] = $this->_buildItem($rs);
-			}
-			unset($result);
-			unset($query);
-		}
-		
-		return $user_array;
-		
+  public function updateIndexedSearch($item) {
+    $indexer = $this->_environment->getSearchIndexer();
+    $query = '
+      SELECT
+        user.item_id AS item_id,
+        user.item_id AS index_id,
+        NULL AS version_id,
+        user.modification_date,
+        CONCAT(user.user_id, " ", user.firstname, " ", user.lastname) AS search_data
+      FROM
+        user
+      WHERE
+        user.deletion_date IS NULL AND
+        user.item_id = ' . $item->getItemID() . '
+    ';
+    $indexer->add(CS_USER_TYPE, $query);
+  }
+  
+  ####################################################
+  # archive method
+  ####################################################
+  
+  public function getLastUsedDateOfRoom ( $room_id ) {
+    $retour = '';
+    if ( !empty($room_id) ) {
+      $query = 'SELECT lastlogin FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE context_id = '.$room_id.' AND lastlogin IS NOT NULL ORDER BY lastlogin DESC LIMIT 0,1';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+        include_once('functions/error_functions.php');
+        trigger_error('Problems getting last used date of this room: '.$room_id,E_USER_WARNING);
+      } elseif ( !empty($result[0]['lastlogin']) ) {
+        $retour = $result[0]['lastlogin'];
+      } 
+    }
+    return $retour;
+  }
+  
+  public function getUserPasswordExpiredByContextID($cid) {
+    $user_array = array();
+    $current_date = getCurrentDateTimeInMySQL();
+    $user = NULL;
+    $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".expire_date  <= '".encode(AS_DB,$current_date)."'";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs ) {
+        $user_array[] = $this->_buildItem($rs);
+      }
+      unset($result);
+      unset($query);
+    }
+    
+    return $user_array;
+    
 
-	}
-	
-	public function getCountUserPasswordExpiredByContextID($cid) {
-		$retour = 0;
-		$date = getCurrentDateTimeInMySQL();
-		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".expire_date  <= '".encode(AS_DB,$date)."'";
-		$query .= " and deletion_date IS NULL";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems counting open accounts.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs) {
-				$retour = $rs['number'];
-			}
-			unset($result);
-		}
-		return $retour;
-	}
-	
-	public function getCountUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
-		$retour = 0;
-		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
-		if(isset($days_before_expiring_sendmail)){
-			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
-		} else {
-			$date = getCurrentDateTimePlusDaysInMySQL('14');
-		}
-		$query = "SELECT count(DISTINCT ".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems counting open accounts.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs) {
-				$retour = $rs['number'];
-			}
-			unset($result);
-		}
-		return $retour;
-	}
-	
-	public function getUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
-		$days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
-		
-		if(isset($days_before_expiring_sendmail)){
-			$date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
-		} else {
-			$date = getCurrentDateTimePlusDaysInMySQL('14');
-		}
-		$user = NULL;
-		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs ) {
-				$user_array[] = $this->_buildItem($rs);
-			}
-			unset($result);
-			unset($query);
-		}
-		return $user_array;
-	}
-	
-	public function getUserTempLoginExpired(){
-		$user = NULL;
-		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".status = '3' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".extras LIKE '%LOGIN_AS_TMSP%'";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs ) {
-				$user_array[] = $this->_buildItem($rs);
-			}
-			unset($result);
-			unset($query);
-		}
-		return $user_array;
-	}
-	
-	public function getUserLastLoginLaterAs($date,$cid, $status = 2){
-		$user = NULL;
-		$user_array = array();
-		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".status >= ".encode(AS_DB,$status)." AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."'";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs ) {
-				$user_array[] = $this->_buildItem($rs);
-			}
-			unset($result);
-			unset($query);
-		}
-		return $user_array;
-	}
-	
-	public function getAllUserItemArray($uid){
-		$user = NULL;
-		$user_array = array();
-		$query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".user_id = '".encode(AS_DB,$uid)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL";
-		$result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
-		} else {
-			foreach ($result as $rs ) {
-				$user_array[] = $this->_buildItem($rs);
-			}
-			unset($result);
-			unset($query);
-		}
-		return $user_array;
-	}
+  }
+  
+  public function getCountUserPasswordExpiredByContextID($cid) {
+    $retour = 0;
+    $date = getCurrentDateTimeInMySQL();
+    $query = "SELECT count(DISTINCT ".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".expire_date  <= '".encode(AS_DB,$date)."'";
+    $query .= " and deletion_date IS NULL";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems counting open accounts.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs) {
+        $retour = $rs['number'];
+      }
+      unset($result);
+    }
+    return $retour;
+  }
+  
+  public function getCountUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
+    $retour = 0;
+    $days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+    if(isset($days_before_expiring_sendmail)){
+      $date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
+    } else {
+      $date = getCurrentDateTimePlusDaysInMySQL('14');
+    }
+    $query = "SELECT count(DISTINCT ".$this->addDatabasePrefix($this->_db_table).".item_id) as number FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems counting open accounts.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs) {
+        $retour = $rs['number'];
+      }
+      unset($result);
+    }
+    return $retour;
+  }
+  
+  public function getUserPasswordExpiredSoonByContextID($cid, $portal_item = NULL) {
+    $days_before_expiring_sendmail = $portal_item->getDaysBeforeExpiringPasswordSendMail();
+    
+    if(isset($days_before_expiring_sendmail)){
+      $date = getCurrentDateTimePlusDaysInMySQL($days_before_expiring_sendmail);
+    } else {
+      $date = getCurrentDateTimePlusDaysInMySQL('14');
+    }
+    $user = NULL;
+    $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".expire_date IS NOT NULL AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".expire_date BETWEEN now() AND '".encode(AS_DB,$date)."'";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs ) {
+        $user_array[] = $this->_buildItem($rs);
+      }
+      unset($result);
+      unset($query);
+    }
+    return $user_array;
+  }
+  
+  public function getUserTempLoginExpired(){
+    $user = NULL;
+    $user_array = array();
+    $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".status = '3' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".extras LIKE '%LOGIN_AS_TMSP%'";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs ) {
+        $user_array[] = $this->_buildItem($rs);
+      }
+      unset($result);
+      unset($query);
+    }
+    return $user_array;
+  }
+  
+  public function getUserLastLoginLaterAs($date,$cid, $status = 2){
+    $user = NULL;
+    $user_array = array();
+    $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".lastlogin <= '".encode(AS_DB,$date)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL AND ".$this->addDatabasePrefix($this->_db_table).".status >= ".encode(AS_DB,$status)." AND ".$this->addDatabasePrefix($this->_db_table).".context_id = '".encode(AS_DB,$cid)."'";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs ) {
+        $user_array[] = $this->_buildItem($rs);
+      }
+      unset($result);
+      unset($query);
+    }
+    return $user_array;
+  }
+  
+  public function getAllUserItemArray($uid){
+    $user = NULL;
+    $user_array = array();
+    $query = "SELECT * FROM ".$this->addDatabasePrefix($this->_db_table)." WHERE ".$this->addDatabasePrefix($this->_db_table).".user_id = '".encode(AS_DB,$uid)."' AND ".$this->addDatabasePrefix($this->_db_table).".deletion_date IS NULL";
+    $result = $this->_db_connector->performQuery($query);
+    if ( !isset($result) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+    } else {
+      foreach ($result as $rs ) {
+        $user_array[] = $this->_buildItem($rs);
+      }
+      unset($result);
+      unset($query);
+    }
+    return $user_array;
+  }
 }
 ?>

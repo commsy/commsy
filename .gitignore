@@ -93,3 +93,4 @@ web/css/external_portal_styles/[0-9]*
 wikis/*
 web/commsy
 var
+htdocs/jsMath/*

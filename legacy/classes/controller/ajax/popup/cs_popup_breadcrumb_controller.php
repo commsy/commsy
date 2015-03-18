@@ -184,7 +184,7 @@
 	   		$customized_room_array = $own_room_item->getCustomizedRoomIDArray();
 	   	}
 	   	if (isset($customized_room_array[0])){
-	   		return $this->_getCustomizedRoomListForCurrentUser();
+	   		$retour = $this->_getCustomizedRoomListForCurrentUser();
 	   	}else{
 	   		$this->translatorChangeToPortal();
 	   		$selected = false;
@@ -444,6 +444,7 @@
 	   			}
 	   		}
 	   		unset($portal_item);
+	   		}
 	   		$this->translatorChangeToCurrentContext();
 	   		
 	   		// archive - BEGIN
@@ -468,7 +469,7 @@
 	   		// archive - END
 	   		
 	   		return $retour;
-	   	}
+	   	
 	   }
 	
 	   function translatorChangeToPortal () {
@@ -590,7 +591,7 @@
 			
 			// get unchecked rooms
 			$room_manager = $this->_environment->getRoomManager();
-			$room_list = $room_manager->getRelatedRoomListForUser($this->_environment->getCurrentUserItem());
+			$room_list = $room_manager->getAllRelatedRoomListForUser($this->_environment->getCurrentUserItem());
 			$room_item = $room_list->getFirst();
 			$unchecked_rooms = array();
 			
@@ -602,12 +603,32 @@
 							'item_id'	=> $room_item->getItemID(),
 							'title'		=> $room_item->getTitle()
 						);
+                        $checked_room_id_array[] = $room_item->getItemID();
 					}
 				}
 				
 				$room_item = $room_list->getNext();
 			}
-			
+
+            // same way for archive rooms
+            $this->_environment->toggleArchiveMode();
+            $archive_room_list = $context_manager2->getAllRelatedRoomListForUser($this->_environment->getCurrentUserItem());
+            $archive_room_item = $archive_room_list->getFirst();
+
+            while($archive_room_item) {
+                // skip if this room is already checked
+                if(!in_array($archive_room_item->getItemID(), $checked_room_id_array)) {
+                    if(!$archive_room_item->isPrivateRoom() && $archive_room_item->isUser($this->_environment->getCurrentUserItem())) {
+                        $return['unchecked']['']['rooms'][] = array(
+                            'item_id'   => $archive_room_item->getItemID(),
+                            'title'     => $archive_room_item->getTitle()
+                        );
+                    }
+                }
+                $archive_room_item = $archive_room_list->getNext();
+            }
+            $this->_environment->toggleArchiveMode();
+
 			return $return;
 		}
 	}

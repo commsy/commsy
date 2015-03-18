@@ -1,5 +1,9 @@
 {if $popup.is_owner == true}
-	<div class="tab hidden" id="rights_tab">
+   {if !$popup.show_rights}
+	   <div class="tab hidden" id="rights_tab">
+   {else}
+      <div class="tab" id="rights_tab">
+   {/if}
 		<div class="settings_area">
 			{if $popup.overflow}
 				<input type="checkbox" name="form_data[external_viewer]" value="1"{if $item.external_viewer == true} checked="checked"{/if}/>___EXTERNAL_VIEWER_DESCRIPTION___<br/>

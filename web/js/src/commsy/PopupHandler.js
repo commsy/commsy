@@ -56,9 +56,14 @@ define([	"dojo/_base/declare",
 				dojo.forEach(link_nodes, function(node) {
 					dom_class.add(node, "pop_tab");
 				});
-
+				
 				// set clicked active
-				dom_class.replace(event.target, "pop_tab_active", "pop_tab");
+				if(dom_attr.get(event.target, "id") == "count_new_accounts") {
+					dom_class.replace(query(event.target).parent()[0], "pop_tab_active", "pop_tab");
+				} else {
+					dom_class.replace(event.target, "pop_tab_active", "pop_tab");
+				}
+				
 
 				/* switch content */
 				// set classes for divs
