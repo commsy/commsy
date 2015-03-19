@@ -610,6 +610,9 @@
 				$room_item = $room_list->getNext();
 			}
 
+         if ( isset($with_archving_rooms)
+      	     and $with_archving_rooms
+            ) {
             // same way for archive rooms
             $this->_environment->toggleArchiveMode();
             $archive_room_list = $context_manager2->getAllRelatedRoomListForUser($this->_environment->getCurrentUserItem());
@@ -628,6 +631,7 @@
                 $archive_room_item = $archive_room_list->getNext();
             }
             $this->_environment->toggleArchiveMode();
+         }
 
 			return $return;
 		}
