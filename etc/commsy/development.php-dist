@@ -55,17 +55,6 @@ $c_logging_file = '';
 // IJ, 16.08.2010
 $c_enable_htmltextarea_security = false;
 
-// use cron new
-// save cron result in log file
-// don't show it in HTML
-// ATTENTION: maybe the newsletter will be send twice
-// default = false -> use old cron
-// $c_cron_use_new = true;
-// if you use the new cron mechanism, you can force portals (use portal id) to the old one
-// this will only work if you uses cron.php?cid=XYZ with get param cid
-// $c_cron_use_old_array = array();
-// $c_cron_use_old_array[] = 160;
-
 // use project ids stored in community room items
 // default = false -> use LEFT JOIN room -> link_items -> room
 //$c_cache_cr_pr = true;
