@@ -1,5 +1,0 @@
-#wrapper-outer, #header .inner, .configure-App, .icon-set li a{behavior: url(pie.htc);position:relative;}
-.smallicon-set li a{behavior: url(pie.htc);position:relative;}
-#wrapper-outer{ -pie-background: linear-gradient(top,  #ebecf0 0%,#f6f6f6 100%);}
-#header .inner{ background: url(../img/gradient-bg-header.jpg) repeat-x 0 0;}
-.configure-App{ background: url(../img/gradient-bg.jpg) repeat-x 0 0;}
