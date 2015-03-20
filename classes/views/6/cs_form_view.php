@@ -624,45 +624,16 @@ class cs_form_view extends cs_view {
     */
    function _getFileFieldAsHTML ($form_element) {
       $html  = '';
-      if ( !isset($form_element['multi_upload'])
-           or !$form_element['multi_upload']
-         ) {
-         $html .= '<input type="file" name="'.$form_element['name'].'"';
-         $html .= ' size="'.$form_element['size'].'"';
-         $html .= ' tabindex="'.$this->_count_form_elements.'"';
-         $this->_count_form_elements++;
-         $html .= '/>';
-         if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
-            $html .= '&nbsp;'.$this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'125');
-         }
-      } else {
-         $session_item = $this->_environment->getSessionItem();
-         $session_id = $session_item->getSessionID();
-         $context_item = $this->_environment->getCurrentContextItem();
-         $color_array = $context_item->getColorArray();
-         $backgroundcolor = hexdec($color_array['content_background']);
-         $url = 'http://';
-         $url .= $_SERVER['HTTP_HOST'];
-         global $c_single_entry_point;
-         $url .= str_replace($c_single_entry_point,'',$_SERVER['PHP_SELF']);
-         $curl_upload = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'upload',array('SID' => $session_id));
-         $curl_end = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
-         $html .= '<applet name="postlet" code="Main.class" archive="applet/postlet.jar" width="410" height="150">'.LF;
-         $html .= '   <param name = "maxthreads"        value = "5" />'.LF;
-         $html .= '   <param name = "language"      value = "'.$this->_environment->getSelectedLanguage().'" />'.LF;
-         $html .= '   <param name = "type"      value = "application/x-java-applet;version=1.3.1" />'.LF;
-         $html .= '   <param name = "destination"   value = "'.$curl_upload.'" />'.LF;
-         $html .= '   <param name = "backgroundcolour"   value = "'.$backgroundcolor.'" />'.LF;
-         $html .= '   <param name = "tableheaderbackgroundcolour" value = "14079989" />'.LF;
-         $html .= '   <param name = "tableheadercolour"  value = "0" />'.LF;
-         $html .= '   <param name = "warnmessage"        value = "false" />'.LF;
-         $html .= '   <param name = "autoupload"         value = "false" />'.LF;
-         $html .= '   <param name = "helpbutton"         value = "false" />'.LF;
-         #$html .= '   <param name = "fileextensions"     value = "Image Files,jpg,gif,jpeg" />'.LF;
-         $html .= '   <param name = "endpage"            value = "'.$curl_end.'" />'.LF;
-         $html .= '   <param name = "helppage"           value = "http://www.postlet.com/help/?thisIsTheDefaultAnyway" />'.LF;
-         $html .= '</applet>'.LF;
+
+      $html .= '<input type="file" name="'.$form_element['name'].'"';
+      $html .= ' size="'.$form_element['size'].'"';
+      $html .= ' tabindex="'.$this->_count_form_elements.'"';
+      $this->_count_form_elements++;
+      $html .= '/>';
+      if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
+        $html .= '&nbsp;'.$this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'125');
       }
+      
       return $html;
    }
 
