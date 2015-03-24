@@ -45,6 +45,7 @@ while ($groupItem) {
 
             $link_manager = $this->_environment->getLinkItemManager();
             $link_manager->setLinkedItemLimit($groupItem);
+            $link_manager->setTypeLimit('user');
             $link_manager->select();
             $linkList = $link_manager->get();
 
@@ -71,7 +72,7 @@ while ($groupItem) {
                     $related_user = $userItem ->getRelatedUserItemInContext($groupItem->getContextID());
                     if (!in_array($related_user->getItemID(), $linkIdArray)) {
                         // add link
-                        $itemExists = $link_manager->getItemByFirstAndSecondID($groupItem->getItemID(), $related_user->getItemID());
+                        $itemExists = $link_manager->getItemByFirstAndSecondID($groupItem->getItemID(), $related_user->getItemID(), true);
                         if (!$itemExists) {
                             $newLinkItem = $link_manager->getNewItem();
                             $newLinkItem->setFirstLinkedItem($groupItem);
