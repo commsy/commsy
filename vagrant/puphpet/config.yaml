@@ -10,7 +10,7 @@ vagrantfile-local:
         network:
             private_network: 192.168.56.101
             forwarded_port:
-                ODZBiSl8UG4Y:
+                gXnxHtQ0h7BF:
                     host: '9855'
                     guest: '22'
         post_up_message: ''
@@ -32,7 +32,7 @@ vagrantfile-local:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            i4EZuLqqApeZ:
+            ICNnWgpm15zZ:
                 owner: www-data
                 group: www-data
                 source: ../
@@ -73,7 +73,7 @@ cron:
     jobs: {  }
 firewall:
     install: '1'
-    rules: null
+    rules: {  }
 apache:
     install: '0'
     settings:
@@ -86,7 +86,7 @@ apache:
     modules:
         - rewrite
     vhosts:
-        iw9lyauqpzye:
+        xtvyyvgw2qdv:
             servername: commsy.vm
             serveraliases:
                 - www.commsy.vm
@@ -94,8 +94,9 @@ apache:
             port: '80'
             setenv:
                 - 'APP_ENV dev'
+            custom_fragment: ''
             directories:
-                vlpqbbbs5fga:
+                qtf06uamnt70:
                     provider: directory
                     path: /var/www/commsy/web
                     options:
@@ -108,13 +109,10 @@ apache:
                         - all
                         - granted
                     custom_fragment: ''
-            engine: php
-            custom_fragment: ''
             ssl_cert: ''
             ssl_key: ''
             ssl_chain: ''
             ssl_certs_dir: ''
-    mod_pagespeed: 0
 nginx:
     install: '1'
     settings:
@@ -123,27 +121,44 @@ nginx:
         proxy_buffers: '4 256k'
     upstreams: {  }
     vhosts:
-        tmp9p0b70z0z:
+        w9hrrbgopue4:
             proxy: ''
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
             www_root: /var/www/commsy/web
             listen_port: '80'
-            location: \.php$
             index_files:
                 - index.html
                 - index.htm
                 - index.php
-            envvars:
-                - 'APP_ENV dev'
-            engine: php
             client_max_body_size: 1m
+            locations:
+                nbcdpv6f7fa2:
+                    location: '~ ^/(app_dev|config)\.php(/|$)'
+                    fastcgi: '127.0.0.1:9000'
+                    fastcgi_index: ''
+                    fastcgi_split_path: '^(.+\.php)(/.*)$'
+                    fast_cgi_params_extra:
+                        - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
+                        - 'HTTPS off'
+                n6ksrbugiyof:
+                    location: '~ ^/app\.php(/|$)'
+                    fastcgi: '127.0.0.1:9000'
+                    fastcgi_index: ''
+                    fastcgi_split_path: '^(.+\.php)(/.*)$'
+                    fast_cgi_params_extra:
+                        - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
+                        - 'HTTPS off'
             ssl_cert: ''
             ssl_key: ''
+            ssl_port: ''
 php:
     install: '1'
-    version: '56'
+    settings:
+        version: '56'
+    fpm_settings:
+        port: 9000
     composer: '1'
     composer_home: ''
     modules:
@@ -159,8 +174,7 @@ php:
         display_errors: On
         error_reporting: '-1'
         session.save_path: /var/lib/php/session
-    timezone: Europe/Berlin
-    mod_php: 0
+        date.timezone: 'Europe/Berlin'
 hhvm:
     install: '0'
     nightly: 0
@@ -193,7 +207,7 @@ drush:
 ruby:
     install: '1'
     versions:
-        KVF5wyPXx4Ej:
+        vmaWuwtpaqbG:
             version: ''
 nodejs:
     install: '0'
@@ -202,38 +216,33 @@ python:
     install: '1'
     packages: {  }
     versions:
-        fl3ax1lxKpge:
+        KSdWJeVQl1Pw:
             version: ''
 mysql:
     install: '1'
-    override_options: {  }
-    root_password: root
+    settings:
+        version: '5.6'
+        root_password: root
+        override_options: {  }
     adminer: 0
+    users: {  }
     databases:
-        E34e5KHZi33b:
-            grant:
-                - ALL
+        EfoZsblnWsUp:
             name: commsy
-            host: localhost
-            user: commsy
-            password: commsy
-            sql_file: ''
+            sql: ''
+    grants: {  }
 postgresql:
     install: '0'
     settings:
-        root_password: '123'
-        user_group: postgres
-        encoding: UTF8
-        version: '9.3'
+        global:
+            encoding: UTF8
+            version: '9.3'
+        server:
+            postgres_password: ''
     databases: {  }
+    users: {  }
+    grants: {  }
     adminer: 0
-mariadb:
-    install: '0'
-    override_options: {  }
-    root_password: '123'
-    adminer: 0
-    databases: {  }
-    version: '10.0'
 sqlite:
     install: '0'
     adminer: 0
@@ -242,6 +251,7 @@ mongodb:
     install: '0'
     settings:
         auth: 1
+        bind_ip: 127.0.0.1
         port: '27017'
     databases: {  }
 redis:
@@ -249,7 +259,7 @@ redis:
     settings:
         conf_port: '6379'
 mailcatcher:
-    install: '0'
+    install: '1'
     settings:
         smtp_ip: 0.0.0.0
         smtp_port: 1025
@@ -273,6 +283,9 @@ rabbitmq:
     install: '0'
     settings:
         port: '5672'
+    users: {  }
+    vhosts: {  }
+    plugins: {  }
 elastic_search:
     install: '1'
     settings:
