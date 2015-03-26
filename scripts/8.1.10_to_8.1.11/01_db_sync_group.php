@@ -52,10 +52,14 @@ while ($groupItem) {
             if ($groupRoomUserList->getCount() < $linkList->getCount()) {
                 $linkListItem = $linkList->getFirst();
                 while ($linkListItem) {
-                    if (!$groupRoom->isUser($linkListItem->getSecondLinkedItem())) {
-                        $this->_flushHTML("Removed member ".$linkListItem->getSecondLinkedItem()->getItemID()." from group ".$groupItem->getItemID());
-                        $groupItem->removeMember($linkListItem->getSecondLinkedItem());
+                    $itemType = $linkListItem->getSecondLinkedItem()->getItemType();
+                    if ($itemType == CS_USER_TYPE) {
+                        if (!$groupRoom->isUser($linkListItem->getSecondLinkedItem())) {
+                            $this->_flushHTML("Removed member ".$linkListItem->getSecondLinkedItem()->getItemID()." from group ".$groupItem->getItemID());
+                            $groupItem->removeMember($linkListItem->getSecondLinkedItem());
+                        }    
                     }
+                    
 
                     $linkListItem = $linkList->getNext();
                 }
