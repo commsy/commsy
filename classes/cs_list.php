@@ -200,6 +200,8 @@ class cs_list {
                $temp_array2[$sort_by] = $old_list[$i]->getDisplayName();
             } elseif ($sort_by == 'date') {
                $temp_array2[$sort_by] = $old_list[$i]->getDateTime_start().$old_list[$i]->getDateTime_end();
+            } elseif ($sort_by == 'treePosition') {
+                $temp_array2[$sort_by] = $old_list[$i]->getPosition();
             } else {
                include_once('functions/error_functions.php');
                trigger_error('Problems sorting list because '.$sort_by.' is not implemented yet.',E_USER_ERROR);
