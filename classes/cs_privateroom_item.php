@@ -443,7 +443,7 @@ class cs_privateroom_item extends cs_room_item {
                $room_manager = $this->_environment->getRoomManager();
                $list = $this->getCustomizedRoomList();
                if ( !isset($list) ) {
-                  $list = $room_manager->_getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$portal->getItemID(),false,true);
+                  $list = $room_manager->_getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$portal->getItemID(),true,true);
                }
                $list2 = new cs_list();
                if ( !$list->isEmpty() ) {
