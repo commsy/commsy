@@ -74,17 +74,19 @@ while ($groupItem) {
                 $userItem = $groupRoomUserList->getFirst();
                 while ($userItem) {
                     $related_user = $userItem ->getRelatedUserItemInContext($groupItem->getContextID());
-                    if (!in_array($related_user->getItemID(), $linkIdArray)) {
-                        // add link
-                        $itemExists = $link_manager->getItemByFirstAndSecondID($groupItem->getItemID(), $related_user->getItemID(), true);
-                        if (!$itemExists) {
-                            $newLinkItem = $link_manager->getNewItem();
-                            $newLinkItem->setFirstLinkedItem($groupItem);
-                            $newLinkItem->setSecondLinkedItem($related_user);
-                            $newLinkItem->save();
-                            $this->_flushHTML("Added link from member ". $related_user->getItemID(). " to group ".$groupItem->getItemID());
+                    if($related_user == CS_USER_TYPE) {
+                        if (!in_array($related_user->getItemID(), $linkIdArray)) {
+                            // add link
+                            $itemExists = $link_manager->getItemByFirstAndSecondID($groupItem->getItemID(), $related_user->getItemID(), true);
+                            if (!$itemExists) {
+                                $newLinkItem = $link_manager->getNewItem();
+                                $newLinkItem->setFirstLinkedItem($groupItem);
+                                $newLinkItem->setSecondLinkedItem($related_user);
+                                $newLinkItem->save();
+                                $this->_flushHTML("Added link from member ". $related_user->getItemID(). " to group ".$groupItem->getItemID());
+                            }
+                            
                         }
-                        
                     }
                     $userItem = $groupRoomUserList->getNext();
                 }
