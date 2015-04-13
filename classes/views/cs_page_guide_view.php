@@ -2098,23 +2098,25 @@ class cs_page_guide_view extends cs_page_view {
 			}
 		
 			// wiki
-			if($ownRoomItem->showWikiLink() && $ownRoomItem->existWiki() && $ownRoomItem->issetWikiHomeLink()) {
-				global $c_pmwiki_path_url;
-		
-				$count++;
-				$return['wiki']['active'] = true;
-				$return['wiki']['title'] = $ownRoomItem->getWikiTitle();
-				$return['wiki']['path'] = $c_pmwiki_path_url;
-				$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
-				$return['wiki']['item_id'] = $ownRoomItem->getItemID();
-		
-				$url_session_id = '';
-				if($ownRoomItem->withWikiUseCommSyLogin()) {
-					$session_item = $this->_environment->getSessionItem();
-					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
-					unset($session_item);
-				}
-				$return['wiki']['session'] = $url_session_id;
+			if (!empty($ownRoomItem)) {
+   			if($ownRoomItem->showWikiLink() && $ownRoomItem->existWiki() && $ownRoomItem->issetWikiHomeLink()) {
+   				global $c_pmwiki_path_url;
+   		
+   				$count++;
+   				$return['wiki']['active'] = true;
+   				$return['wiki']['title'] = $ownRoomItem->getWikiTitle();
+   				$return['wiki']['path'] = $c_pmwiki_path_url;
+   				$return['wiki']['portal_id'] = $this->_environment->getCurrentPortalID();
+   				$return['wiki']['item_id'] = $ownRoomItem->getItemID();
+   		
+   				$url_session_id = '';
+   				if($ownRoomItem->withWikiUseCommSyLogin()) {
+   					$session_item = $this->_environment->getSessionItem();
+   					$url_session_id = '?commsy_session_id=' . $session_item->getSessionID();
+   					unset($session_item);
+   				}
+   				$return['wiki']['session'] = $url_session_id;
+   			}
 			}
 		
 			// chat
