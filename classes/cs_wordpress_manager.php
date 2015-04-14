@@ -501,10 +501,10 @@ class cs_wordpress_manager extends cs_manager
                 $skinOptions = array();
                 if (!empty($skins)) {
                     foreach ($skins as $name => $skin) {
-                        $templateDirectory = $skin->get_template();
+                        $templateDirectory = $skin['template'];
                         $skinOptions[$name] = $templateDirectory;
 
-                        $screenshotUrl = $skin->get_screenshot();
+                        $screenshotUrl = $skin['screenshot'];
                         if (!empty($screenshotUrl)) {
                             $this->_wp_screenshot_array[$templateDirectory] = $screenshotUrl;
                         } else {

@@ -395,7 +395,19 @@ class commsy_blog {
   }
 
    private function _get_site_allowed_themes() {
-      return wp_get_themes(array('allowed' => 'site'));
+      $themes = wp_get_themes(array('allowed' => 'site'));
+
+      $response = array();
+
+      foreach ($themes as $theme) {
+          $themeName = $theme->get('Name');
+
+          $response[$themeName] = array(
+              'template' => $theme->get_template(),
+              'screenshot' => $theme->get_screenshot());
+      }
+
+      return $response;
    }
 
   /**
