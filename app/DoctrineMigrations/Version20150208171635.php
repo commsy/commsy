@@ -32,7 +32,7 @@ class Version20150208171635 extends AbstractMigration
         $this->addSql('ALTER TABLE room ADD CONSTRAINT FK_729F519B61220EA6 FOREIGN KEY (creator_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE room ADD CONSTRAINT FK_729F519BD079F553 FOREIGN KEY (modifier_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE room ADD CONSTRAINT FK_729F519BEAEF1DFE FOREIGN KEY (deleter_id) REFERENCES user (id)');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_729F519B727ACA70 ON room (parent_id)');
+        $this->addSql('CREATE INDEX UNIQ_729F519B727ACA70 ON room (parent_id)');
         $this->addSql('ALTER TABLE room ADD PRIMARY KEY (id)');
         $this->addSql('DROP INDEX creator_id ON room');
         $this->addSql('CREATE INDEX IDX_729F519B61220EA6 ON room (creator_id)');

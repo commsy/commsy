@@ -90,18 +90,18 @@ class cs_room2_manager extends cs_context_manager {
    	$retour = false;
    	if ( !empty($datetime) ) {
    		$query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-   		                  ' lastlogin="'.$datetime.'"'.
-   		                  ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+   		                  ' last_login="'.$datetime.'"'.
+   		                  ' WHERE id="'.encode(AS_DB,$item->getItemID()).'"';
    		 
    	} else {
          $query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET'.
-                  ' lastlogin=NOW()'.
-                  ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+                  ' last_login=NOW()'.
+                  ' WHERE id="'.encode(AS_DB,$item->getItemID()).'"';
    	}
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
-         trigger_error('Problems saving lastlogin to room ('.$item->getItemID().') - '.$this->_db_table.'.',E_USER_WARNING);
+         trigger_error('Problems saving last_login to room ('.$item->getItemID().') - '.$this->_db_table.'.',E_USER_WARNING);
       } else {
       	$retour = true;
       }
@@ -119,7 +119,7 @@ class cs_room2_manager extends cs_context_manager {
       }
       $query  = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET ';
       if ( $this->_update_with_changing_modification_information ) {
-         $query .= 'modification_date="'.getCurrentDateTimeInMySQL().'",';
+         $query .= 'modified_at="'.getCurrentDateTimeInMySQL().'",';
          $modifier_id = $this->_current_user->getItemID();
          if ( !empty($modifier_id) ) {
             $query .= 'modifier_id="'.encode(AS_DB,$modifier_id).'",';
@@ -161,7 +161,7 @@ class cs_room2_manager extends cs_context_manager {
                 "public='".encode(AS_DB,$public)."',".
                 "continuous='".$continuous."',".
                 "template='".$template."',".
-                "is_open_for_guests='".$open_for_guests."',".
+                "open_for_guests='".$open_for_guests."',".
                 "contact_persons='".encode(AS_DB,$item->getContactPersonString())."',";
                 if ($this->_existsField($this->_db_table, 'room_description')){
                    $query .= "room_description='".encode(AS_DB,$item->getDescription())."'";
@@ -169,7 +169,7 @@ class cs_room2_manager extends cs_context_manager {
                     $query .= "description='".encode(AS_DB,$item->getDescription())."'";
                 }
 
-      $query .= ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+      $query .= ' WHERE id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
@@ -203,12 +203,12 @@ class cs_room2_manager extends cs_context_manager {
       }
 
       $query = 'INSERT INTO '.$this->addDatabasePrefix($this->_db_table).' SET '.
-               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
+               'id="'.encode(AS_DB,$item->getItemID()).'",'.
+               'parent_id="'.encode(AS_DB,$item->getContextID()).'",'.
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                'modifier_id="'.encode(AS_DB,$user->getItemID()).'",'.
-               'creation_date="'.$current_datetime.'",'.
-               'modification_date="'.$current_datetime.'",'.
+               'created_at="'.$current_datetime.'",'.
+               'modified_at="'.$current_datetime.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'public="'.encode(AS_DB,$public).'",'.

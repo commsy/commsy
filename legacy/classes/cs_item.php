@@ -404,7 +404,7 @@ class cs_item {
    * @author CommSy Development Group
    */
    function getItemID() {
-      return $this->_getValue('item_id');
+      return $this->_getValue('id');
    }
 
    /** set item id
@@ -415,7 +415,7 @@ class cs_item {
     * @author CommSy Development Group
     */
    function setItemID ($value) {
-      $this->_setValue('item_id', (int)$value);
+      $this->_setValue('id', (int)$value);
    }
 
    /** get version id
@@ -446,7 +446,7 @@ class cs_item {
     * this function returns the id of the current context:
     */
    function getContextID () {
-      $context_id = $this->_getValue('context_id');
+      $context_id = $this->_getValue('parent_id');
       if ($context_id === '') {
          $context_id = $this->_environment->getCurrentContextID();
       }
@@ -460,7 +460,7 @@ class cs_item {
    * @param integer value context id of the item
    */
    function setContextID ($value) {
-      return $this->_setValue('context_id', $value);
+      return $this->_setValue('parent_id', $value);
    }
 
    /** get creator
@@ -508,7 +508,7 @@ class cs_item {
     * @author CommSy Development Group
     */
    function getCreationDate () {
-      return $this->_getValue('creation_date');
+      return $this->_getValue('created_at');
    }
 
    /** set creation date
@@ -519,7 +519,7 @@ class cs_item {
     * @author CommSy Development Group
     */
    function setCreationDate ($value) {
-      $this->_setValue('creation_date', (string)$value);
+      $this->_setValue('created_at', (string)$value);
    }
 
    /** get modification date
@@ -530,9 +530,9 @@ class cs_item {
     * @author CommSy Development Group
     */
    function getModificationDate () {
-      $date = $this->_getValue('modification_date');
+      $date = $this->_getValue('modified_at');
       if (is_null($date) or $date=='0000-00-00 00:00:00') {
-         $date = $this->_getValue('creation_date');
+         $date = $this->_getValue('created_at');
       }
       return $date;
    }
@@ -545,7 +545,7 @@ class cs_item {
     * @author CommSy Development Group
     */
    function setModificationDate ($value) {
-      $this->_setValue('modification_date', (string)$value);
+      $this->_setValue('modified_at', (string)$value);
    }
 
    /** get deletion date
@@ -556,7 +556,7 @@ class cs_item {
     * @author CommSy Development Group
     */
    function getDeletionDate () {
-      return $this->_getValue('deletion_date');
+      return $this->_getValue('deleted_at');
 
    }
 
@@ -585,7 +585,7 @@ class cs_item {
     * @author CommSy Development Group
     */
    function setDeletionDate ($value) {
-      $this->_setValue('deletion_date', (string)$value);
+      $this->_setValue('deleted_at', (string)$value);
    }
 
    /** get type, should be like getItemType (TBD)
@@ -625,7 +625,7 @@ class cs_item {
     * @return string type of the item out of the database table item
     */
    function getItemType () {
-      $type = $this->_getValue('type');
+      $type = $this->_getValue('discriminator');
       if (empty($type)){
           $type = $this->getType();
       }
@@ -2347,13 +2347,13 @@ function getExternalViewerArray(){
          $retour .= '         <type><![CDATA['.$type.']]></type>'.LF;
       }
       foreach ($this->_data as $key => $value) {
-         if ( $key == 'item_id'
+         if ( $key == 'id'
               or $key == 'title' or $key == 'name'
               or $key == 'first_item_id' or $key == 'second_item_id'
               or $key == 'first_item_type' or $key == 'second_item_type'
               or $key == 'description'
             ) {
-            if ( $key == 'item_id' ) {
+            if ( $key == 'id' ) {
                $key = 'id';
             }
             if ( $key == 'first_item_id' ) {
