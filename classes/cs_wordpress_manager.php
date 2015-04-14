@@ -514,11 +514,14 @@ class cs_wordpress_manager extends cs_manager {
             $skinOptions = array();
             if ( !empty($skins) ) {
                foreach($skins as $name => $skin) {
-                  $skinOptions[$name] = $skin['Template'];
-                  if ( !empty($skin['Screenshot']) ) {
-                     $this->_wp_screenshot_array[$skin['Template']] = $skin['Screenshot'];
+                  $templateDirectory = $skin->get_template();
+                  $skinOptions[$name] = $templateDirectory;
+
+                  $screenshotUrl = $skin->get_screenshot();
+                  if (!empty($screenshotUrl)) {
+                      $this->_wp_screenshot_array[$templateDirectory] = $screenshotUrl;
                   } else {
-                     $this->_wp_screenshot_array[$skin['Template']] = 'screenshot.png';
+                      $this->_wp_screenshot_array[$templateDirectory] = 'screenshot.png';
                   }
                }
             }
