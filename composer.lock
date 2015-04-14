@@ -708,12 +708,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/migrations.git",
-                "reference": "b8ed2683bf48cf13c92f80d99cb723ae28efb227"
+                "reference": "65978aa4e9ffca3bb632225ad8c6320077d80d85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/b8ed2683bf48cf13c92f80d99cb723ae28efb227",
-                "reference": "b8ed2683bf48cf13c92f80d99cb723ae28efb227",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/65978aa4e9ffca3bb632225ad8c6320077d80d85",
+                "reference": "65978aa4e9ffca3bb632225ad8c6320077d80d85",
                 "shasum": ""
             },
             "require": {
@@ -758,7 +758,7 @@
                 "database",
                 "migrations"
             ],
-            "time": "2015-03-13 10:18:59"
+            "time": "2015-03-23 09:47:20"
         },
         {
             "name": "doctrine/orm",
@@ -1494,17 +1494,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v3.0.18",
+            "version": "v3.0.19",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "ac026149ffb1d3a5c893290d2d3ca8795013de08"
+                "reference": "c68d47e3bcdfca74d92ab9d9382e276adf451424"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/ac026149ffb1d3a5c893290d2d3ca8795013de08",
-                "reference": "ac026149ffb1d3a5c893290d2d3ca8795013de08",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/c68d47e3bcdfca74d92ab9d9382e276adf451424",
+                "reference": "c68d47e3bcdfca74d92ab9d9382e276adf451424",
                 "shasum": ""
             },
             "require": {
@@ -1550,21 +1550,21 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-02-27 12:59:18"
+            "time": "2015-03-25 09:01:40"
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v3.0.5",
+            "version": "v3.0.6",
             "target-dir": "Sensio/Bundle/FrameworkExtraBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "a72ce75a73d86c3593eceed5650b58fd3807a0cf"
+                "reference": "1c3ed356bd1ff67cd71806efbb71511644035c85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/a72ce75a73d86c3593eceed5650b58fd3807a0cf",
-                "reference": "a72ce75a73d86c3593eceed5650b58fd3807a0cf",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/1c3ed356bd1ff67cd71806efbb71511644035c85",
+                "reference": "1c3ed356bd1ff67cd71806efbb71511644035c85",
                 "shasum": ""
             },
             "require": {
@@ -1605,7 +1605,7 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2015-02-05 07:39:23"
+            "time": "2015-03-24 15:12:07"
         },
         {
             "name": "sensiolabs/security-checker",
