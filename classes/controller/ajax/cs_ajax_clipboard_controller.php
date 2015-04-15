@@ -296,6 +296,11 @@ class cs_ajax_clipboard_controller extends cs_ajax_controller
                         $err = $copy->getErrorArray();
                         if (!empty($err)) {
                             $error_array[$copy->getItemID() ] = $err;
+                        } else {
+                           $reader_manager = $this->_environment->getReaderManager();
+                           $reader_manager->markRead($copy->getItemID(), $copy->getVersionID());
+                           $noticed_manager = $this->_environment->getNoticedManager();
+                           $noticed_manager->markNoticed($copy->getItemID(), $copy->getVersionID());
                         }
                     }
                 }
