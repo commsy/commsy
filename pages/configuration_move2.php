@@ -154,30 +154,30 @@ else {
          $copy_links_between_rooms = true;
       }
 
-      ############################################
-      # FLAG: group rooms
-      ############################################
-      elseif ( $item->isGrouproomActive() ) {
-         $group_manager = $environment->getGroupManager();
-         $group_manager->setContextLimit($item->getItemID());
-         $group_manager->select();
-         $group_list = $group_manager->get();
-         if ( $group_list->isNotEmpty() ) {
-            $group_item = $group_list->getFirst();
-            while ($group_item) {
-               if ( $group_item->isGroupRoomActivated() ) {
-                  $grouproom_item = $group_item->getGroupRoomItem();
-                  if ( isset($grouproom_item) and !empty($grouproom_item) ) {
-                     $room_list->add($grouproom_item);
+      // add group rooms
+      $temp_room_list = clone $room_list;
+      $temp_room_item = $temp_room_list->getFirst();
+      while($temp_room_item){
+         if ($temp_room_item->isGrouproomActive()) {
+            $group_manager = $environment->getGroupManager();
+            $group_manager->setContextLimit($temp_room_item->getItemID());
+            $group_manager->select();
+            $group_list = $group_manager->get();
+            if ( $group_list->isNotEmpty() ) {
+               $group_item = $group_list->getFirst();
+               while ($group_item) {
+                  if ( $group_item->isGroupRoomActivated() ) {
+                     $grouproom_item = $group_item->getGroupRoomItem();
+                     if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+                        $room_list->add($grouproom_item);
+                     }
                   }
+                  $group_item = $group_list->getNext();
                }
-               $group_item = $group_list->getNext();
             }
          }
+         $temp_room_item = $temp_room_list->getNext();
       }
-      ############################################
-      # FLAG: group rooms
-      ############################################
 
       // select user (portal) array
       // and init room array with room titles
