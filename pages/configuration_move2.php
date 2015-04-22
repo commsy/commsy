@@ -154,30 +154,30 @@ else {
          $copy_links_between_rooms = true;
       }
 
-      // add group rooms
-      $temp_room_list = clone $room_list;
-      $temp_room_item = $temp_room_list->getFirst();
-      while($temp_room_item){
-         if ($temp_room_item->isGrouproomActive()) {
-            $group_manager = $environment->getGroupManager();
-            $group_manager->setContextLimit($temp_room_item->getItemID());
-            $group_manager->select();
-            $group_list = $group_manager->get();
-            if ( $group_list->isNotEmpty() ) {
-               $group_item = $group_list->getFirst();
-               while ($group_item) {
-                  if ( $group_item->isGroupRoomActivated() ) {
-                     $grouproom_item = $group_item->getGroupRoomItem();
-                     if ( isset($grouproom_item) and !empty($grouproom_item) ) {
-                        $room_list->add($grouproom_item);
-                     }
+      ############################################
+      # FLAG: group rooms
+      ############################################
+      elseif ( $item->isGrouproomActive() ) {
+         $group_manager = $environment->getGroupManager();
+         $group_manager->setContextLimit($item->getItemID());
+         $group_manager->select();
+         $group_list = $group_manager->get();
+         if ( $group_list->isNotEmpty() ) {
+            $group_item = $group_list->getFirst();
+            while ($group_item) {
+               if ( $group_item->isGroupRoomActivated() ) {
+                  $grouproom_item = $group_item->getGroupRoomItem();
+                  if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+                     $room_list->add($grouproom_item);
                   }
-                  $group_item = $group_list->getNext();
                }
+               $group_item = $group_list->getNext();
             }
          }
-         $temp_room_item = $temp_room_list->getNext();
       }
+      ############################################
+      # FLAG: group rooms
+      ############################################
 
       // select user (portal) array
       // and init room array with room titles
@@ -198,11 +198,11 @@ else {
                $auth_source_array[$user_item->getAuthSource()] = $user_item->getAuthSource();
                $user_id_test = $user_item->getUserID();
                if (!empty($user_id_test)) {
-                  $user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()][] = $room_item->getItemID();
-                  if (empty($user_array[$user_item->getUserID()])) {
+                  $user_room_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()][] = $room_item->getItemID();
+                  if (empty($user_array[strtoupper($user_item->getUserID())])) {
                      $portal_user_item = $user_item->getRelatedCommSyUserItem();
                      if (isset($portal_user_item)) {
-                        $user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()] = $portal_user_item;
+                        $user_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()] = $portal_user_item;
                      }
                   }
                   $user_id_test = $user_item->getUserID();
@@ -300,12 +300,12 @@ else {
 
             // external auth source
             if ( !$auth_source_item_array[$auth_source_translation_array[$auth_source]]->isCommSyDefault() ) {
-               unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
+               unset($user_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()]);
                // user_id exists in portal
                if ( $user_list->isEmpty() ) {
-                  $user_array_new[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+                  $user_array_new[strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
                }
-               $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+               $user_array_no_change[strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
                $go = false;
             }
 
@@ -316,11 +316,11 @@ else {
 
                // email is equal
                if ($user_item2->getEmail() == $user_item->getEmail()) {
-                  unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
+                  unset($user_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()]);
                   if ($user_item->getUserID() != $user_id) {
-                     $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
+                     $user_change_array[strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
                   } else {
-                     $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+                     $user_array_no_change[strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
                   }
                   $go = false;
                } else {
@@ -344,9 +344,9 @@ else {
             } else {
                // find free user id
                if ($user_item->getUserID() != $user_id) {
-                  $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
+                  $user_change_array[strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
                } else {
-                  $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+                  $user_array_no_change[strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
                }
                $go = false;
             }
