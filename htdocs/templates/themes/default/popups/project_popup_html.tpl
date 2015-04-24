@@ -30,7 +30,7 @@
 						<div class="input_row">	
 							<div class="input_label_80">Vorlage:</div>
 							<select name="form_data[template]">
-							    <option>___CONFIGURATION_TEMPLATE_NO_CHOICE___</option>
+							    <option value="empty">___CONFIGURATION_TEMPLATE_NO_CHOICE___</option>
 								<option disabled="disabled">-----------------------</option>
 								{foreach $popup.template as $temp}
 								<option value="{$temp.value}">{$temp.text}</option>
