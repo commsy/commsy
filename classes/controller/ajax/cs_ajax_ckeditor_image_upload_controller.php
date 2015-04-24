@@ -92,7 +92,7 @@ class cs_ajax_ckeditor_image_upload_controller extends cs_ajax_controller {
          $callback_function .= 'element.setValue("'.$file_item->getMime().'")';
          $callback_function .= '}';
          $callback_function .= '};';
-      	$callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "commsy.php/'.$file_item->getFileName().'?cid='.$environment->getCurrentContextID().'&mod=material&fct=getfile&iid='.$file_item->getFileID().'", fileTypeFunction);'.LF;
+      	$callback_function .= 'window.parent.CKEDITOR.tools.callFunction('.$_GET['CKEditorFuncNum'].', "commsy.php/?cid='.$environment->getCurrentContextID().'&mod=material&fct=getfile&iid='.$file_item->getFileID().'", fileTypeFunction);'.LF;
       	$callback_function .= '-->'.LF;
       	$callback_function .= '</script>'.LF;
       	echo $callback_function;
