@@ -845,8 +845,10 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				        			case 8: $messageTag = "MAIL_BODY_USER_STATUS_MODERATOR";			break;
 				        			case 9: $messageTag = "MAIL_BODY_USER_MAKE_CONTACT_PERSON";			break;
 				        			case 10: $messageTag = "MAIL_BODY_USER_UNMAKE_CONTACT_PERSON";		break;
-				        			case 11: $messageTag = "MAIL_BODY_USER_ACCOUNT_PASSWORD";			break;
-				        			case 12: $messageTag = "MAIL_BODY_USER_ACCOUNT_MERGE";				break;
+                                    case 11: $messageTag = "MAIL_BODY_USER_STATUS_USER_READ_ONLY";     break;
+				        			case 12: $messageTag = "MAIL_BODY_USER_ACCOUNT_PASSWORD";			break;
+				        			case 13: $messageTag = "MAIL_BODY_USER_ACCOUNT_MERGE";				break;
+                                    
 				        		}
 				        		
 				        		$languages = $this->_environment->getAvailableLanguageArray();
@@ -1885,12 +1887,15 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      $array_mail_text[9]['value'] = 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON';
 	      $array_mail_text[10]['text']  = $translator->getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
 	      $array_mail_text[10]['value'] = 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON';
+          $array_mail_text[11]['text']  = $translator->getMessage('MAIL_CHOICE_USER_STATUS_READ_ONLY_USER');
+          $array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_STATUS_READ_ONLY_USER';
 	      if ($this->_environment->inCommunityRoom()) {
-	         $array_mail_text[11]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
-	         $array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
-	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
-	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
+	         $array_mail_text[12]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
+	         $array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
+	         $array_mail_text[13]['text']  = $translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
+	         $array_mail_text[13]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
 	      }
+          
 
 	      $languages = $this->_environment->getAvailableLanguageArray();
 	      foreach($array_mail_text as $index => $array) {
@@ -1914,6 +1919,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	      		case 'MAIL_CHOICE_ROOM_UNLINK':					$message_tag = 'MAIL_BODY_ROOM_UNLINK'; break;
 	      		case 'MAIL_CHOICE_ROOM_DELETE':					$message_tag = 'MAIL_BODY_ROOM_DELETE'; break;
 	      		case 'MAIL_CHOICE_ROOM_OPEN':					$message_tag = 'MAIL_BODY_ROOM_OPEN'; break;
+                case 'MAIL_CHOICE_USER_STATUS_READ_ONLY_USER':  $message_tag = 'MAIL_BODY_USER_STATUS_USER_READ_ONLY'; break;
 	      	}
 
 	      	foreach ($languages as $language) {
