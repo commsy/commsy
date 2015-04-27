@@ -65,26 +65,28 @@ define([	"dojo/_base/declare",
 
 				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
-			
-			if (this.featureHandles['calendar'][0]) {
-				var calendar = this.featureHandles['calendar'][0].calendar;
-				var displayedValue = calendar.get('displayedValue');
-				
-				var hiddenNode = query("input[name='form_data[dayStart]']")[0];
-				if (hiddenNode) {
-					domAttr.set(hiddenNode, 'value', displayedValue);
-				}
+			if (this.featureHandles['calendar']) {
+                if (this.featureHandles['calendar'][0]) {
+                    var calendar = this.featureHandles['calendar'][0].calendar;
+                    var displayedValue = calendar.get('displayedValue');
+
+                    var hiddenNode = query("input[name='form_data[dayStart]']")[0];
+                    if (hiddenNode) {
+                        domAttr.set(hiddenNode, 'value', displayedValue);
+                    }
+                }
 			}
-			
-			if (this.featureHandles['calendar'][1]) {
-				var calendar = this.featureHandles['calendar'][1].calendar;
-				var displayedValue = calendar.get('displayedValue');
-				
-				var hiddenNode = query("input[name='form_data[dayEnd]']")[0];
-				if (hiddenNode) {
-					domAttr.set(hiddenNode, 'value', displayedValue);
-				}
-			}
+			if (this.featureHandles['calendar']) {
+    			if (this.featureHandles['calendar'][1]) {
+    				var calendar = this.featureHandles['calendar'][1].calendar;
+    				var displayedValue = calendar.get('displayedValue');
+    				
+    				var hiddenNode = query("input[name='form_data[dayEnd]']")[0];
+    				if (hiddenNode) {
+    					domAttr.set(hiddenNode, 'value', displayedValue);
+    				}
+    			}
+            }
 
 			// setup data to send via ajax
 			var search = {
@@ -109,7 +111,9 @@ define([	"dojo/_base/declare",
 			};
 
 			// set title to refresh item list
-			this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+            if(query("input[name='form_data[title]']", this.contentNode)[0]) {
+                this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+            }
 
 			this.submit(search, {part:customObject.part, contextId: this.contextId });
 		},

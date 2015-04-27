@@ -66,7 +66,10 @@ define([	"dojo/_base/declare",
 			};
 
 			// set title to refresh item list
-			this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+			if(query("input[name='form_data[title]']", this.contentNode)[0]) {
+				this.itemTitle = domAttr.get(query("input[name='form_data[title]']", this.contentNode)[0], "value");
+			}
+			
 
 			this.submit(search, { contextId: this.contextId } );
 		},
