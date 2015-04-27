@@ -43,13 +43,15 @@ define([	"dojo/_base/declare",
 				domAttr.set(query("input[type='hidden']", node)[0], 'value', editor.getInstance().getData());
 			});
 			
-			if (this.featureHandles['calendar'][0]) {
-				var calendar = this.featureHandles['calendar'][0].calendar;
-				var displayedValue = calendar.get('displayedValue');
-				
-				var hiddenNode = query("input[name='form_data[dayEnd]']")[0];
-				if (hiddenNode) {
-					domAttr.set(hiddenNode, 'value', displayedValue);
+			if(this.featureHandles['calendar']) {
+				if (this.featureHandles['calendar'][0]) {
+					var calendar = this.featureHandles['calendar'][0].calendar;
+					var displayedValue = calendar.get('displayedValue');
+					
+					var hiddenNode = query("input[name='form_data[dayEnd]']")[0];
+					if (hiddenNode) {
+						domAttr.set(hiddenNode, 'value', displayedValue);
+					}
 				}
 			}
 
