@@ -263,6 +263,27 @@ class cs_popup_configuration_mail_controller implements cs_popup_controller {
         		 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR');
         		 */
         		break;
+
+            case "status_readonly_user":
+                $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_READ_ONLY_USER',$room->getTitle());
+                
+                if($needTranslation) {
+                    $content .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY',$userid,$room->getTitle());
+                } else {
+                    $content_temp = $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER_READ_ONLY');
+                    $content_temp = str_replace('%2','%3',$content_temp);
+                    $content_temp = str_replace('%1','%2',$content_temp);
+                    $content .= $content_temp;
+                }
+                
+                $content .= LF.LF;
+                $content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
+                $content .= $url_to_room;
+                
+                /*
+                 * $this->_headline = $translator->getMessage('INDEX_ACTION_FORM_HEADLINE_USER_STATUS_MODERATOR');
+                 */
+                break;
         	
         	case "status_contact_moderator":
         		$subject = $translator->getMessage('MAIL_SUBJECT_USER_MAKE_CONTACT_PERSON',$room->getTitle());
