@@ -393,22 +393,33 @@
             }
             $count_new_accounts = 0;
             if ($current_user->isModerator()){
-                // tasks
-                $manager = $this->_environment->getTaskManager();
+                // user count
+                $manager = $this->_environment->getUserManager();
                 $manager->resetLimits();
                 $manager->setContextLimit($this->_environment->getCurrentContextID());
-                $manager->setStatusLimit('REQUEST');
+                $manager->setStatusLimit(1);
                 $manager->select();
-                $tasks = $manager->get();
-                $task = $tasks->getFirst();
+                $user = $manager->get();
                 $count_new_accounts = 0;
-                while($task){
-                   $mode = $task->getTitle();
-                   $task = $tasks->getNext();
-                   if ($mode == 'TASK_USER_REQUEST'){
-                      $count_new_accounts ++;
-                   }
+                if ($user->getCount() > 0) {
+                    $count_new_accounts = $user->getCount();
                 }
+                // // tasks
+                // $manager = $this->_environment->getTaskManager();
+                // $manager->resetLimits();
+                // $manager->setContextLimit($this->_environment->getCurrentContextID());
+                // $manager->setStatusLimit('REQUEST');
+                // $manager->select();
+                // $tasks = $manager->get();
+                // $task = $tasks->getFirst();
+                // $count_new_accounts = 0;
+                // while($task){
+                //    $mode = $task->getTitle();
+                //    $task = $tasks->getNext();
+                //    if ($mode == 'TASK_USER_REQUEST'){
+                //       $count_new_accounts ++;
+                //    }
+                // }
 
             }
 
