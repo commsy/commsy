@@ -600,9 +600,9 @@ CKEDITOR.plugins.add( "CommSyDocument",
 									
 
 									if(!linkText){
-										var linkText = filename;
+                                        var linkText = 'Onyx Test';
+										// var linkText = filename;
 									}
-									console.log(linkText);
 						            var a = editor.document.createElement( 'a' );
 	//					            a.setAttribute( 'href', link);
 						            
