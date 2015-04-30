@@ -83,6 +83,7 @@
 			}
 
 			$_POST = $form_data;
+			$_POST['log'] = 'INSERT';
 			// logging save
 			include_once('include/inc_log.php');
 
