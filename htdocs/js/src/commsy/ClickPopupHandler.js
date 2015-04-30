@@ -181,6 +181,9 @@ define([	"dojo/_base/declare",
 				lang.hitch(this, function(response) {
 
 					if(response.status != 'error') {
+						buzzwordInput = query("#new_buzzword_input");
+						domAttr.set(query("input#new_buzzword_input")[0], "value", "");
+
 						buzzwordList = query("ul.popup_buzzword_list")[0];
 
                         var listNode = domConstruct.create("li", {
