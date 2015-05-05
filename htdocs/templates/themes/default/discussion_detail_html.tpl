@@ -177,9 +177,26 @@
 					<div class="fade_in_ground_actions">
 						{if $article.actions.edit}
 							<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
+						{else}
+							{if $article.actions.locked}
+							<img id="edit_attention" class="tooltip_toggle" src="{$basic.tpl_path}img/attention.gif" />
+							<div class="tooltip">
+								<div class="tooltip_inner">
+									<div class="tooltip_title">
+										<div class="header">___ITEM_LOCKING_TITLE___</div>
+									</div>
+									<div class="tooltip_content">
+										<span class="content">{i18n tag=ITEM_LOCKING_DESC param1=$article.actions.locked_user_name param2=$article.actions.locked_date}</span>
+									</div>
+								</div>
+							</div>
+							{/if}
+							<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_EDIT_ITEM___</span> |
 						{/if}
 						{if $article.actions.delete}
 							<a class="open_popup" data-custom="iid: {$article.item_id}, module: 'delete', delType: 'discarticle'" href="#">___COMMON_DELETE_ITEM___</a>
+						{else}
+						<span title="___COMMON_NO_ACTION___" class="disabled_actions">___COMMON_DELETE_ITEM___</span>
 						{/if}
 					</div>
 				</div>
