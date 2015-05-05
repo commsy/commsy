@@ -355,30 +355,7 @@ class cs_popup_material_controller extends cs_rubric_popup_main_controller imple
             			}
             		}
             	}
-            	
-            	if (!empty($new_buzzword)){
-            		$isDuplicate = false;
-            		$buzzword_item = $buzzword_list->getFirst();
-            		while($buzzword_item) {
-            			if($buzzword_item->getName() === $new_buzzword) {
-            				$isDuplicate = true;
-            				$buzzwords[] = $buzzword_item->getItemID();
-            				break;
-            			}
-            			$buzzword_item = $buzzword_list->getNext();
-            		}
-            		if (!$isDuplicate){
-            			$buzzword_manager = $environment->getBuzzwordManager();
-            			$buzzword_item = $buzzword_manager->getNewItem();
-            			$buzzword_item->setLabelType('buzzword');
-            			$buzzword_item->setName($text_converter->sanitizeHTML($new_buzzword));
-            			$buzzword_item->setCreatorItem($current_user);
-            			$buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
-            			$buzzword_item->save();
-            			$buzzwords[] = $buzzword_item->getItemID();
-            		}
-            	}
-            	//pr($buzzwords);
+
                 // buzzwords
                 $item->setBuzzwordListByID($buzzwords);
             }
