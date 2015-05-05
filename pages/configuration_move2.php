@@ -436,8 +436,8 @@ else {
             $user_item = $user_list->getFirst();
             while ($user_item) {
                $user_id_test = $user_item->getUserID();
-               if (!empty($user_id_test) and !empty($user_change_array[$user_id_test.'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]])) {
-                  $user_item->setUserID($user_change_array[$user_id_test.'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]]);
+               if (!empty($user_id_test) and !empty($user_change_array[strtoupper($user_id_test).'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]])) {
+                  $user_item->setUserID($user_change_array[strtoupper($user_id_test).'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]]);
                }
 
                // AUTH: auth source translation
@@ -514,8 +514,8 @@ else {
          $mail->set_reply_to_email($current_user->getEmail());
 
          // subject
-         if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
-            $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S',$room_name_array[$user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()][0]]);
+         if (count($user_room_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()]) == 1) {
+            $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S',$room_name_array[$user_room_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()][0]]);
          } else {
             $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_PL',$old_portal->getTitle());
          }
@@ -524,21 +524,21 @@ else {
          // body
          $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
          $body .= LF.LF;
-         if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
+         if (count($user_room_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()]) == 1) {
             $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCESS_S',$old_portal->getTitle(),$current_portal->getTitle()).LF;
          } else {
             $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCESS_PL',$old_portal->getTitle(),$current_portal->getTitle()).LF;
          }
-         foreach ($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()] as $room_id) {
+         foreach ($user_room_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()] as $room_id) {
             $body .= $room_name_array[$room_id].LF;
             $body .= '   http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_id.LF.LF;
          }
-         if (array_key_exists($user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_change_array)) {
+         if (array_key_exists(strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_change_array)) {
             $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY_CHANGE',$user_item->getUserID(),$user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]]);
-         } elseif (array_key_exists($user_item->getUserID().'__CS__'.$user_item->getAuthSource(),$user_array)) {
+         } elseif (array_key_exists(strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource(),$user_array)) {
             $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY',$user_item->getUserID());
-         } elseif (array_key_exists($user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_array_no_change)) {
-            if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
+         } elseif (array_key_exists(strtoupper($user_item->getUserID()).'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_array_no_change)) {
+            if (count($user_room_array[strtoupper($user_item->getUserID()).'__CS__'.$user_item->getAuthSource()]) == 1) {
                $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_S',$user_item->getUserID());
             } else {
                $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_PL',$user_item->getUserID());
@@ -549,6 +549,7 @@ else {
          $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$current_portal->getItemID();
          $mail->set_message($body);
          $mail->send();
+         unset($mail);
       }
 
       // close task
