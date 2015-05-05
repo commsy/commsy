@@ -9,7 +9,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-construct",
         	"dojo/dom-style",
         	"dojo/dom-attr",
-        	"dijit/Tooltip"], function(declare, PopupHandler, on, lang, request, query, dom_class, dom_attr, domConstruct, domStyle, domAttr, Tooltip) {
+        	"dijit/Tooltip",
+        	"dijit/Dialog"], function(declare, PopupHandler, on, lang, request, query, dom_class, dom_attr, domConstruct, domStyle, domAttr, Tooltip, Dialog) {
 	return declare(PopupHandler, {
 		constructor: function(args) {
 			this.fct			= "rubric_popup";
@@ -23,6 +24,7 @@ define([	"dojo/_base/declare",
 			this.userAction		= false;
 			this.lockListener	= null;
 			this.ajaxHTMLSource	= "rubric_popup";
+			this.data 			= null;
 		},
 		
 		setInitData: function(object) {
@@ -42,66 +44,83 @@ define([	"dojo/_base/declare",
 
 				this.setupLoading();
 				
-				var data = { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id, contextId: this.contextId, date_new: this.date_new };
-				declare.safeMixin(data, this.initData);
+				this.data = { module: this.module, iid: this.item_id, ref_iid: this.ref_iid, editType: this.editType, version_id: this.version_id, contextId: this.contextId, date_new: this.date_new };
+				declare.safeMixin(this.data, this.initData);
 
-				// setup ajax request for getting html
-				request.ajax({
-					query: {
-						cid:	this.uri_object.cid,
-						mod:	'ajax',
-						fct:	this.ajaxHTMLSource,
-						action:	'getHTML'
-					},
-					data: data
-				}).then(
-					lang.hitch(this, function(response) {
-						// append html to body
-						domConstruct.place(response.data, query("body")[0], "first");
+				if (this.from_php.environment.item_locking) {
+					if (typeof(this.contextId) == 'undefined' || this.contextId != this.from_php.ownRoom.id) {
+						// if we are editing an item, setup the locking mechanism
+						if (this.item_id !== "NEW") {
+							this.getLocking();
+						} else {
+							this.openPopup();
+						}
+					}
+				} else {
+					this.openPopup();
+				}
 
-						this.contentNode = query("div#popup_wrapper")[0];
-						this.scrollToNodeAnimated(this.contentNode);
+				
+			}
+		},
 
-						this.setupTabs();
-						this.setupFeatures();
-						this.setupSpecific();
-						this.setupAutoSave();
-						this.onCreate();
+		openPopup: function() {
+			// setup ajax request for getting html
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	this.ajaxHTMLSource,
+					action:	'getHTML'
+				},
+				data: this.data
+			}).then(
+				lang.hitch(this, function(response) {
+					// append html to body
+					domConstruct.place(response.data, query("body")[0], "first");
 
-						if (this.from_php.environment.item_locking) {
-							if (typeof(this.contextId) == 'undefined' || this.contextId != this.from_php.ownRoom.id) {
-								// if we are editing an item, setup the locking mechanism
-								if (this.item_id !== "NEW") {
-									this.setupLocking();
-								}
+					this.contentNode = query("div#popup_wrapper")[0];
+					this.scrollToNodeAnimated(this.contentNode);
+
+					this.setupTabs();
+					this.setupFeatures();
+					this.setupSpecific();
+					this.setupAutoSave();
+					this.onCreate();
+
+					if (this.from_php.environment.item_locking) {
+						if (typeof(this.contextId) == 'undefined' || this.contextId != this.from_php.ownRoom.id) {
+							// if we are editing an item, setup the locking mechanism
+							if (this.item_id !== "NEW") {
+								this.setupLocking();
 							}
 						}
+					}
 
-						// register close
-						on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
-							this.close();
+					// register close
+					on(query("a#popup_close, input#popup_button_abort", this.contentNode), "click", lang.hitch(this, function(event) {
+						this.close();
 
-							event.preventDefault();
-						}));
+						event.preventDefault();
+					}));
 
-						// register submit clicks
-						on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
-							// setup loading
-							this.setupLoading();
+					// register submit clicks
+					on(query("input.submit", this.contentNode), "click", lang.hitch(this, function(event) {
+						// setup loading
+						this.setupLoading();
 
-							// get custom data object
-							var customObject = this.getAttrAsObject(event.target, "data-custom");
-							this.onPopupSubmit(customObject);
+						// get custom data object
+						var customObject = this.getAttrAsObject(event.target, "data-custom");
+						this.onPopupSubmit(customObject);
 
-							event.preventDefault();
-						}));
+						event.preventDefault();
+					}));
 
-						this.is_open = !this.is_open;
+					this.is_open = !this.is_open;
 
-						this.destroyLoading();
-					})
-				);
-			}
+					this.destroyLoading();
+				})
+			);
 		},
 
 		setupAutoSave: function() {
@@ -246,6 +265,34 @@ define([	"dojo/_base/declare",
 					id: this.item_id
 				}
 			});
+		},
+
+		getLocking: function() {
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'locking',
+					action:	'status'
+				},
+				data: {
+					id: this.item_id
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					if (response.data.locked) {
+						lockingDialog = new Dialog({
+							title: "Dialog",
+						    content: response.data.locked_message,
+						    style: "width: 300px",
+							hide: function(){location.reload();}
+						});
+						lockingDialog.show();
+						this.destroyLoading();
+					} else {
+						this.openPopup();
+					}
+				}));
 		},
 
 		clearLockingDate: function() {
