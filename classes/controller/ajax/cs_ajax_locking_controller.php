@@ -56,6 +56,22 @@ class cs_ajax_locking_controller extends cs_ajax_controller {
 		$itemType = $itemManager->getItemType($itemId);
 
 		if (!empty($itemType)) {
+            if ($itemType == CS_SECTION_TYPE) {
+                $sectionManager = $this->_environment->getSectionManager();
+                $sectionItem = $sectionManager->getItem($itemId);
+
+                $itemType = CS_MATERIAL_TYPE;
+                $itemId = $sectionItem->getLinkedItemId();
+            }
+
+            if ($itemType == CS_STEP_TYPE) {
+                $stepManager = $this->_environment->getStepManager();
+                $stepItem = $stepManager->getItem($itemId);
+
+                $itemType = CS_TODO_TYPE;
+                $itemId = $stepItem->getTodoID();
+            }
+
 			// get the corresponding manager
 			$manager = $this->_environment->getManager($itemType);
 			if ($manager) {
@@ -81,9 +97,9 @@ class cs_ajax_locking_controller extends cs_ajax_controller {
 							$return['locked_user_name'] = $lockingUser->getFullName();
 							$return['locked_date'] = $translator->getDateTimeinLang($lockingDate);
                             $return['locked_message'] = $translator->getMessage("ITEM_LOCKING_DESC", $return['locked_user_name'], $return['locked_date']);
-						}	
+						}
 					}
-				}		
+				}
 			}
 		}
 
