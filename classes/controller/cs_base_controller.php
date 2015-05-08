@@ -439,9 +439,12 @@
             $url_path = '';
             if ($c_commsy_url_path != '') {
                $url_path = $c_commsy_url_path . '/';
+               if (!(strpos($url_path, '/') === 0)) {
+                  $url_path = '/' . $c_commsy_url_path;
+               }
             }
-            $this->assign('basic', 'commsy_path', $c_commsy_domain . '/' . $url_path);
-            $this->assign('basic', 'tpl_path', $c_commsy_domain . '/' . $url_path . $this->_tpl_path);
+            $this->assign('basic', 'commsy_path', $c_commsy_domain . $url_path);
+            $this->assign('basic', 'tpl_path', $c_commsy_domain . $url_path . $this->_tpl_path);
             $this->assign('environment', 'cid', $this->_environment->getCurrentContextID());
             $this->assign('environment', 'pid', $this->_environment->getCurrentPortalID());
             $this->assign('environment', 'current_user_id', $this->_environment->getCurrentUserID());
