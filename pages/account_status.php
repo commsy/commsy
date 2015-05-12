@@ -303,14 +303,9 @@ if ( empty($command) and empty($command_delete) ) {
          $status = $_POST['status'];
          if ( $status == 'user' ) {
             $user->makeUser();
-            
-            if($user->getMailSendBeforeLock()){
-            	$user->unsetMailSendBeforeLock();
-            	$user->unsetMailSendLocked();
-            	$user->unsetMailSendBeforeDelete();
-            	$user->unsetLockSendMailDate();
-            	$user->unsetLock();
-            }
+
+            // reset inactivity
+            $user->resetInactivity();
             if (!empty($_POST['contact_person'])) {
                $user->makeContactPerson();
             } else {
