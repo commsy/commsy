@@ -5,15 +5,15 @@ $message["EMAIL_COMMSY_PORTAL_MODERATION"]["de"] = "Bei Fragen wenden Sie sich b
 $message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung %1 (%2) wird in %3 Tagen gelöscht. Bitte wenden Sie sich an Ihre Portal-Moderation.
+$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["de"] = "Ihre Kennung %1 (%2) wird in %3 Tagen gelöscht.
 
 %4";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["de"] = "%2: Kennung wird in %1 Tagen gelöscht";
-$message["EMAIL_INACTIVITY_DELETE_NOW_BODY"]["de"] = "Ihre Kennung %1 (%2) wurde gelöscht. Bitte wenden Sie sich an Ihre Portal-Moderation.
+$message["EMAIL_INACTIVITY_DELETE_NOW_BODY"]["de"] = "Ihre Kennung %1 (%2) wurde gelöscht.
 
 %3";
 $message["EMAIL_INACTIVITY_DELETE_NOW_SUBJECT"]["de"] = "%2: Kennung wurde gelöscht";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung %1 (%2) wird morgen gelöscht. Bitte wenden Sie sich an Ihre Portal-Moderation.
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["de"] = "Ihre Kennung %1 (%2) wird morgen gelöscht.
 
 %3";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["de"] = "%1: Kennung wird morgen gelöscht";

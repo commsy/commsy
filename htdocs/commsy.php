@@ -1664,12 +1664,21 @@ if(isset($c_smarty) && $c_smarty === true) {
 /*********** SAVE DATETIME OF LAST ACTIVITY ***********/
 if ($current_user->isUser() and !$current_user->isRoot()) {
    $current_user->updateLastLogin();
+   if($current_user->getMailSendNextLock() || $current_user->getMailSendBeforeLock()) {
+      // reset inactivity by login
+      $current_user->resetInactivity();
+   }
+   
    if ($environment->inProjectRoom() or $environment->inCommunityRoom()) {
       if (!isset($portal_user) or empty($portal_user) ){
          $portal_user = $current_user->getRelatedCommSyUserItem();
       }
       if (isset($portal_user)) {
          $portal_user->updateLastLogin();
+         if($portal_user->getMailSendNextLock() || $portal_user->getMailSendBeforeLock()) {
+            // reset inactivity by login
+            $portal_user->resetInactivity();
+         }
       }
       unset($portal_user);
    }
