@@ -193,6 +193,8 @@ define([	"dojo/_base/declare",
 			// register click event
 			On(saveANode, "click", lang.hitch(this, function(event) {
 				this.saveRoomList();
+				// reload to exist edit mode
+				window.location.reload(true);
 				
 				event.preventDefault();
 			}));
