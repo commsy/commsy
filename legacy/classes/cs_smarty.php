@@ -50,8 +50,8 @@ class cs_smarty extends Smarty {
 		$this->translator = $this->environment->getTranslationObject();
 		
 		// set directory paths
-		$this->setTemplateDir('../web/templates/');
-		$this->setCompileDir('../web/templates/templates_c/');
+		$this->setTemplateDir('htdocs/templates/');
+		$this->setCompileDir('htdocs/templates/templates_c/');
 		$this->setConfigDir('etc/smarty/');
 		$this->setCacheDir('cache/');
 		
@@ -75,10 +75,10 @@ class cs_smarty extends Smarty {
 	public function setTheme($theme) {
 		$this->theme = $theme;
 		
-		if(!empty($theme) && file_exists('../web/templates/themes/' . $theme)) {
-			$this->setTemplateDir('../web/templates/themes/' . $theme);
-			$this->addTemplateDir('../web/templates/themes/default');
-			$this->setCompileDir('../web/templates/templates_c/' . $theme);
+		if(!empty($theme) && file_exists('htdocs/templates/themes/' . $theme)) {
+			$this->setTemplateDir('htdocs/templates/themes/' . $theme);
+			$this->addTemplateDir('htdocs/templates/themes/default');
+			$this->setCompileDir('htdocs/templates/templates_c/' . $theme);
 			return true;
 		} else {
 			return false;

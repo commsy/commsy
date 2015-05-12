@@ -35,7 +35,7 @@ class cs_zzz_item_manager extends cs_item_manager {
       parent::cs_item_manager($environment);
    }
 
-   public function getItem ($iid, $vid = NULL) {
+   public function getItem ( $iid ) {
       $retour = parent::getItem($iid);
       if ( !isset($retour) ) {
          $item_manager = $this->_environment->getItemManager(true);

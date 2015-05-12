@@ -5,11 +5,11 @@ $message["EMAIL_COMMSY_PORTAL_MODERATION"]["en"] = "If you have questions contac
 $message["EMAIL_CONTACT_MODERATOR"]["en"] = "Contact via e-mail";
 $message["EMAIL_CONTACT_MODERATOR_TEXT"]["en"] = "Send an e-mail to contact persons";
 $message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["en"] = "Text";
-$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Your account %1 (%2) will be deleted in %3 days. Please contact the portal user.
+$message["EMAIL_INACTIVITY_DELETE_NEXT_BODY"]["en"] = "Your account %1 (%2) will be deleted in %3 days.
 
 %4";
 $message["EMAIL_INACTIVITY_DELETE_NEXT_SUBJECT"]["en"] = "Your account will be deleted in %1 days";
-$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Your account %1 (%2) will be deleted tomorrow. Please contact the portal user.
+$message["EMAIL_INACTIVITY_DELETE_TOMORROW_BODY"]["en"] = "Your account %1 (%2) will be deleted tomorrow.
 
 %3";
 $message["EMAIL_INACTIVITY_DELETE_TOMORROW_SUBJECT"]["en"] = "%1: Account will be deleted tomorrow";

@@ -2622,7 +2622,23 @@ class cs_user_item extends cs_item {
    	}
    	return $retour;
    	}
-   	
+
+   function setMailSendNextDelete(){
+    $this->_addExtra('MAIL_SEND_NEXT_DELETE', '1');
+   }
+   
+   function unsetMailSendNextDelete(){
+    $this->_unsetExtra('MAIL_SEND_NEXT_DELETE');
+   }
+   
+   function getMailSendNextDelete(){
+    $retour = false;
+    if($this->_issetExtra('MAIL_SEND_NEXT_DELETE')){
+      $retour = $this->_getExtra('MAIL_SEND_NEXT_DELETE');
+    }
+    return $retour;
+    }
+
    function setLockSendMailDate(){
    	$this->_addExtra('LOCK_SEND_MAIL_DATE', getCurrentDateTimeInMySQL());
    }
@@ -2634,6 +2650,18 @@ class cs_user_item extends cs_item {
    function unsetLockSendMailDate(){
    	$this->_unsetExtra('LOCK_SEND_MAIL_DATE');
    }
+
+    function resetInactivity() {
+        $this->unsetMailSendBeforeLock();
+        $this->unsetMailSendLocked();
+        $this->unsetMailSendBeforeDelete();
+        $this->unsetMailSendNextDelete();
+        $this->unsetMailSendNextLock();
+        $this->unsetLockSendMailDate();
+        $this->unsetLock();
+
+        $this->save();
+    }
   
    ## commsy user connections: portal2portal
    public function getOwnConnectionKey () {

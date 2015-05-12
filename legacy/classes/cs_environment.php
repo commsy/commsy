@@ -1794,7 +1794,7 @@ class cs_environment {
    */
    function inCommunityRoom () {
       $context_item = $this->getCurrentContextItem();
-      return $context_item->isCommunityroom();
+      return $context_item->isCommunityRoom();
    }
 
   /** get boolean, if your are in the private room or not

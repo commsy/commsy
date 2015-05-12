@@ -57,8 +57,6 @@
 		}
 
 		public function actionSave() {
-			// logging save
-			include_once('include/inc_log.php');
 
 			// include
 			$module = $this->_data['module'];
@@ -84,8 +82,13 @@
 				$additional = $this->_data['additional'];
 			}
 
-			$this->_popup_controller->save($form_data, $additional);
+			$_POST = $form_data;
+			$_POST['log'] = 'INSERT';
+			// logging save
+			include_once('include/inc_log.php');
 
+			$this->_popup_controller->save($form_data, $additional);
+			
 			echo $this->_return;
 		}
 

@@ -360,19 +360,24 @@ class cs_server_item extends cs_guide_item
                                     // send mail delete in the next y days
                                     if (!$user->getMailSendBeforeDelete()) {
                                         if (($portal_item->getInactivityDeleteDays() - $daysTillLock) <= $portal_item->getInactivitySendMailBeforeDeleteDays()) {
-                                            $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $days);
-                                            if ($mail->send()) {
-                                                #$user->setInactivityMailSendBeforeDelete();
-                                                #$user->save();
+                                            
+                                            if(!$user->getMailSendNextDelete()) {
+                                                $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $days);
+                                                if ($mail->send()) {
+                                                    $user->setMailSendNextDelete();
+                                                    $user->save();
+                                                    // $user->setInactivityMailSendBeforeDelete();
+                                                    // $user->save();
 
-                                                $cron_array['success'] = true;
-                                                $cron_array['success_text'] = 'send mail to '.$to;
-                                            } else {
-                                                $cron_array['success'] = false;
-                                                $cron_array['success_text'] = 'failed send mail to '.$to;
+                                                    $cron_array['success'] = true;
+                                                    $cron_array['success_text'] = 'send mail to '.$to;
+                                                } else {
+                                                    $cron_array['success'] = false;
+                                                    $cron_array['success_text'] = 'failed send mail to '.$to;
+                                                }
+                                                // step over
+                                                continue;
                                             }
-                                            // step over
-                                            continue;
                                         }
                                     }
                                 }
@@ -582,7 +587,7 @@ class cs_server_item extends cs_guide_item
                     // delete tomorrow
                 $body = $translator->getEmailMessage('MAIL_BODY_HELLO', $user->getFullname());
                 $body .= "\n\n";
-                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getUserID(), $link);
+                $body .= $translator->getEmailMessage('EMAIL_INACTIVITY_DELETE_TOMORROW_BODY', $user->getUserID(),$auth_source_item->getTitle(), $link);
                 $body .= "\n\n";
                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO', $mod_user_first->getFullName(), $auth_source_item->getTitle(), $portal_item->getTitle());
                 $body .= "\n\n";

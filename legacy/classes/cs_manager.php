@@ -914,7 +914,7 @@ class cs_manager {
          $result = $this->_performQuery('id_array');
          if ( is_array($result) ) {
             foreach ( $result as $row ) {
-               $this->_id_array[] = $row['id'];
+               $this->_id_array[] = $row['item_id'];
             }
          }
       }

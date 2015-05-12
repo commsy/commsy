@@ -25,84 +25,78 @@
 /** class for session items
  * this class implements a session item
  */
-class cs_session_item
-{
-    /**
+class cs_session_item {
+
+   /**
     * string - containing the type of the item
     */
-    private $type = 'auth';
+   var $_type = 'auth';
 
-    /**
-     * The Symfony Session Component
-     * @var Symfony\Component\HttpFoundation\Session\Session $symfonySession
-     */
-    private $symfonySession = null;
+   /**
+    * string - containing the session id
+    */
+   var $_session_id = NULL;
 
-    /** constructor: cs_session_item
+   /**
+    * array - containing the information of the session
+    */
+   var $_data = NULL;
+
+   /** constructor: cs_session_item
     * the only available constructor, initial values for internal variables
     */
-    public function __construct()
-    {
-        global $symfonyContainer;
-        $this->symfonySession = $symfonyContainer->get('session');
+   function cs_session_item () {
+      $this->reset();
+   }
 
-        $this->reset();
-    }
-
-    /** is the type of the item = $type ?
+   /** is the type of the item = $type ?
     * this method returns a boolean expressing if type of the item is $type or not
     *
-    * @param string type string to compare with type of the item (type)
+    * @param string type string to compare with type of the item (_type)
     *
     * @return boolean   true - type of this item is $type
     *                   false - type of this item is not $type
     *
     * @author CommSy Development Group
     */
-    public function isA($type)
-    {
-        return $this->type == $type;
-    }
+   function isA ($type) {
+      return $this->_type == $type;
+   }
 
-    /** reset session item
+   /** reset session item
     * this method resets the internal information of the session item
     *
     * @author CommSy Development Group
     */
-    public function reset()
-    {
-        //$this->symfonySession->clear();
-        //$this->sessionId = null;
-        //$this->data = array();
-    }
+   function reset () {
+      $this->_session_id = NULL;
+      $this->_data = array();
+   }
 
-    /** get session id
+   /** get session id
     * this method returns the session id
     *
     * @return string user id
     *
     * @author CommSy Development Group
     */
-    public function getSessionID()
-    {
-        return $this->symfonySession->getId();
-    }
+   function getSessionID () {
+      return $this->_session_id;
+   }
 
-    /** set session id
+   /** set session id
     * this method sets the session id
     *
     * @param string value session id
     *
     * @author CommSy Development Group
     */
-    public function setSessionID($value)
-    {
-        $this->reset();
+   function setSessionID ($value) {
+      $this->reset();
+      $this->_session_id = (string)$value;
+   }
 
-        //$this->symfonySession->setId((string) $value);
-    }
-
-    /** add a value to the session
+   /** add a value to the session
     * this method adds a value (string, integer or array) to the session
     *
     * @param string key   the key (name) of the value
@@ -110,26 +104,24 @@ class cs_session_item
     *
     * @author CommSy Development Group
     */
-    public function setValue($key, $value)
-    {
-        $this->symfonySession->set($key, $value);
-    }
+   function setValue($key,$value) {
+      $this->_data[$key] = $value;
+   }
 
-    /** unset a value
+   /** unset a value
     * this method unsets a value of the session
     *
     * @param string key   the key (name) of the value
     *
     * @author CommSy Development Group
     */
-    public function unsetValue($key)
-    {
-        if ($this->symfonySession->has($key)) {
-            $this->symfonySession->remove($key);
-        }
-    }
+   function unsetValue($key) {
+      if (isset($this->_data[$key])) {
+         unset($this->_data[$key]);
+      }
+   }
 
-    /** exists the value with the name $key ?
+   /** exists the value with the name $key ?
     * this method returns a boolean, if the value exists or not
     *
     * @param string key   the key (name) of the value
@@ -139,12 +131,11 @@ class cs_session_item
     *
     * @author CommSy Development Group
     */
-    public function issetValue($key)
-    {
-        return $this->symfonySession->has($key);
-    }
+   function issetValue($key) {
+      return isset($this->_data[$key]);
+   }
 
-    /** get a session value
+   /** get a session value
     * this method returns a value of the session
     *
     * @param string key the key (name) of the value
@@ -153,98 +144,85 @@ class cs_session_item
     *
     * @author CommSy Development Group
     */
-    public function getValue($key)
-    {
-        if ($this->symfonySession->has($key)) {
-            return $this->symfonySession->get($key);
-        }
-    }
+   function getValue ($key) {
+      if (isset($this->_data[$key])) {
+         return $this->_data[$key];
+      }
+   }
 
-    public function setToolName($value)
-    {
-        $this->setValue('cs_external_tool', $value);
-    }
+   function setToolName ($value) {
+      $this->setValue('cs_external_tool',$value);
+   }
 
-    public function getToolName()
-    {
-        $retour = 'commsy';
-        if ($this->issetValue('cs_external_tool')) {
-            $value = $this->getValue('cs_external_tool');
-            if (!empty($value)) {
-                $retour = $value;
-            }
-        }
+   function getToolName () {
+      $retour = 'commsy';
+      if ( $this->issetValue('cs_external_tool') ) {
+         $value = $this->getValue('cs_external_tool');
+         if ( !empty($value) ) {
+            $retour = $value;
+         }
+      }
+      return $retour;
+   }
 
-        return $retour;
-    }
-
-    /** get all keys
+   /** get all keys
     * this method returns an array with all keys in
     *
     * @return array returns an array with all keys in
     *
     * @author CommSy Development Group
     */
-    public function getKeys()
-    {
-        return array_keys($this->symfonySession->all());
-    }
+   function getKeys () {
+      return array_keys($this->_data);
+   }
 
-    /** create a session id
+   /** create a session id
     * this method creates a session id out of the user id, the current time and a random number
     *
     * @param string user id
     *
     * @author CommSy Development Group
     */
-    public function createSessionID($uid)
-    {
-        $this->setValue("user_id", $uid);
+   function createSessionID ($uid) {
+      include_once('functions/date_functions.php');
+      $current_time = getCurrentDateTimeInMySQL();
+      $session_id = '';
+      $randum_number = rand(0,999999);
+      for ($i=0; $i<mb_strlen($current_time); $i++) {
+         $session_id .= mb_substr($current_time,$i,1).mb_substr($uid,$i,1).mb_substr($randum_number,$i,1);
+      }
+      $this->_session_id = md5($session_id);
+      $this->setValue('user_id',$uid);
+   }
 
-        // include_once 'functions/date_functions.php';
-        // $current_time = getCurrentDateTimeInMySQL();
-        // $session_id = '';
-        // $randum_number = rand(0, 999999);
-        // for ($i = 0; $i<mb_strlen($current_time); $i++) {
-        //     $session_id .= mb_substr($current_time, $i, 1).mb_substr($uid, $i, 1).mb_substr($randum_number, $i, 1);
-        // }
-        // $this->sessionId = md5($session_id);
-        // $this->setValue('user_id', $uid);
-    }
+   public function isSoapSession () {
+      $retour = false;
+      if ( $this->issetValue('SOAP_SESSION') ) {
+         $value = $this->getValue('SOAP_SESSION');
+         if ( $value == 1 ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
 
-    public function isSoapSession()
-    {
-        $retour = false;
-        if ($this->issetValue('SOAP_SESSION')) {
-            $value = $this->getValue('SOAP_SESSION');
-            if ($value == 1) {
-                $retour = true;
-            }
-        }
-
-        return $retour;
-    }
-
-    public function setSoapSession()
-    {
-        $this->setValue('SOAP_SESSION', 1);
-    }
-
-    public function setLoginSession()
-    {
-        $this->setValue('SOAP_LOGIN', 1);
-    }
-
-    public function isLoginSession()
-    {
-        $retour = false;
-        if ($this->issetValue('SOAP_LOGIN')) {
-            $value = $this->getValue('SOAP_LOGIN');
-            if ($value == 1) {
-                $retour = true;
-            }
-        }
-
-        return $retour;
-    }
+   public function setSoapSession () {
+      $this->setValue('SOAP_SESSION',1);
+   }
+   
+   public function setLoginSession() {
+	$this->setValue('SOAP_LOGIN', 1);
+   }
+   
+   public function isLoginSession() {
+   	$retour = false;
+   	if ( $this->issetValue('SOAP_LOGIN') ) {
+   		$value = $this->getValue('SOAP_LOGIN');
+   		if ( $value == 1 ) {
+   			$retour = true;
+   		}
+   	}
+   	return $retour;
+   }
 }
+?>
