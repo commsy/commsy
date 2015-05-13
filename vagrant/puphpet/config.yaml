@@ -1,17 +1,17 @@
----
-vagrantfile-local:
+vagrantfile:
+    target: local
     vm:
         box: puphpet/debian75-x64
         box_url: puphpet/debian75-x64
-        hostname: ''
+        hostname: local.puphpet
         memory: '1024'
         cpus: '1'
         chosen_provider: virtualbox
         network:
             private_network: 192.168.56.101
             forwarded_port:
-                gXnxHtQ0h7BF:
-                    host: '9855'
+                vflnp_08lqwmg3jwvq:
+                    host: '7539'
                     guest: '22'
         post_up_message: ''
         provider:
@@ -32,9 +32,7 @@ vagrantfile-local:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            ICNnWgpm15zZ:
-                owner: www-data
-                group: www-data
+            vflsf_tk0ta7x4hcf8:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -45,7 +43,10 @@ vagrantfile-local:
                         - '-z'
                     exclude:
                         - .vagrant/
-                    auto: 'false'
+                        - .git/
+                    auto: 'true'
+                owner: www-data
+                group: www-data
         usable_port_range:
             start: 10200
             stop: 10500
@@ -68,51 +69,12 @@ users_groups:
     install: '1'
     groups: {  }
     users: {  }
-cron:
-    install: '1'
-    jobs: {  }
 firewall:
     install: '1'
     rules: {  }
-apache:
-    install: '0'
-    settings:
-        user: www-data
-        group: www-data
-        default_vhost: true
-        manage_user: false
-        manage_group: false
-        sendfile: 0
-    modules:
-        - rewrite
-    vhosts:
-        xtvyyvgw2qdv:
-            servername: commsy.vm
-            serveraliases:
-                - www.commsy.vm
-            docroot: /var/www/commsy/web
-            port: '80'
-            setenv:
-                - 'APP_ENV dev'
-            custom_fragment: ''
-            directories:
-                qtf06uamnt70:
-                    provider: directory
-                    path: /var/www/commsy/web
-                    options:
-                        - Indexes
-                        - FollowSymlinks
-                        - MultiViews
-                    allow_override:
-                        - All
-                    require:
-                        - all
-                        - granted
-                    custom_fragment: ''
-            ssl_cert: ''
-            ssl_key: ''
-            ssl_chain: ''
-            ssl_certs_dir: ''
+cron:
+    install: '1'
+    jobs: {  }
 nginx:
     install: '1'
     settings:
@@ -121,8 +83,7 @@ nginx:
         proxy_buffers: '4 256k'
     upstreams: {  }
     vhosts:
-        w9hrrbgopue4:
-            proxy: ''
+        nxv_en4nz7mgwvql:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -133,34 +94,95 @@ nginx:
                 - index.htm
                 - index.php
             client_max_body_size: 1m
-            locations:
-                nbcdpv6f7fa2:
-                    location: '~ ^/(app_dev|config)\.php(/|$)'
-                    fastcgi: '127.0.0.1:9000'
-                    fastcgi_index: ''
-                    fastcgi_split_path: '^(.+\.php)(/.*)$'
-                    fast_cgi_params_extra:
-                        - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
-                        - 'HTTPS off'
-                n6ksrbugiyof:
-                    location: '~ ^/app\.php(/|$)'
-                    fastcgi: '127.0.0.1:9000'
-                    fastcgi_index: ''
-                    fastcgi_split_path: '^(.+\.php)(/.*)$'
-                    fast_cgi_params_extra:
-                        - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
-                        - 'HTTPS off'
+            ssl: '0'
             ssl_cert: ''
             ssl_key: ''
-            ssl_port: ''
+            ssl_port: '443'
+            ssl_protocols: ''
+            ssl_ciphers: ''
+            rewrite_to_https: '1'
+            spdy: '1'
+            locations:
+                nxvl_s0610rvaho5t:
+                    location: /
+                    autoindex: off
+                    try_files:
+                        - $uri
+                        - /app.php$is_args$args
+                    fastcgi: ''
+                    fastcgi_index: ''
+                    fastcgi_split_path: ''
+                nxvl_z0bgdtvioqg8:
+                    location: '~ ^/(app_dev|config)\.php(/|$)'
+                    autoindex: off
+                    fastcgi: '127.0.0.1:9000'
+                    fastcgi_index: ''
+                    fastcgi_split_path: '^(.+\.php)(/.*)$'
+                    fast_cgi_params_extra:
+                        - 'SCRIPT_FILENAME $request_filename'
+                        - 'HTTPS off'
+                nxvl_rgm4eebubt5x:
+                    location: '~ ^/app\.php(/|$)'
+                    autoindex: off
+                    fastcgi: '127.0.0.1:9000'
+                    fastcgi_index: ''
+                    fastcgi_split_path: '^(.+\.php)(/.*)$'
+                    fast_cgi_params_extra:
+                        - 'SCRIPT_FILENAME $document_root$fastcgi_script_name'
+                        - 'HTTPS off'
+    proxies: {  }
+apache:
+    install: '0'
+    settings:
+        user: www-data
+        group: www-data
+        default_vhost: true
+        manage_user: false
+        manage_group: false
+        sendfile: 0
+    modules:
+        - proxy_fcgi
+        - rewrite
+    vhosts:
+        av_006vl281knbq:
+            servername: awesome.dev
+            serveraliases:
+                - www.awesome.dev
+            docroot: /var/www/awesome
+            port: '80'
+            setenv:
+                - 'APP_ENV dev'
+            custom_fragment: ''
+            ssl: '0'
+            ssl_cert: ''
+            ssl_key: ''
+            ssl_chain: ''
+            ssl_certs_dir: ''
+            ssl_protocol: ''
+            ssl_cipher: ''
+            directories:
+                avd_qtnz7zldq86l:
+                    path: /var/www/awesome
+                    options:
+                        - Indexes
+                        - FollowSymlinks
+                        - MultiViews
+                    allow_override:
+                        - All
+                    require:
+                        - 'all granted'
+                    custom_fragment: ''
+                    files_match:
+                        avdfm_q5lqqytskd5q:
+                            path: \.php$
+                            sethandler: 'proxy:fcgi://127.0.0.1:9000'
+                            custom_fragment: ''
+                            provider: filesmatch
+                    provider: directory
 php:
     install: '1'
     settings:
         version: '56'
-    fpm_settings:
-        port: 9000
-    composer: '1'
-    composer_home: ''
     modules:
         php:
             - cli
@@ -174,19 +196,19 @@ php:
         display_errors: On
         error_reporting: '-1'
         session.save_path: /var/lib/php/session
-        date.timezone: 'Europe/Berlin'
-hhvm:
-    install: '0'
-    nightly: 0
+        date.timezone: Europe/Berlin
+    fpm_ini:
+        error_log: /var/log/php-fpm.log
+    fpm_pools:
+        phpfp_sjqxrllfay5i:
+            ini:
+                prefix: www
+                listen: '127.0.0.1:9000'
+                security.limit_extensions: .php
+                user: www-user
+                group: www-data
     composer: '1'
     composer_home: ''
-    settings:
-        host: 127.0.0.1
-        port: '9000'
-    ini:
-        display_errors: On
-        error_reporting: '-1'
-    timezone: null
 xdebug:
     install: '1'
     settings:
@@ -196,41 +218,74 @@ xdebug:
         xdebug.remote_enable: '1'
         xdebug.remote_handler: dbgp
         xdebug.remote_port: '9000'
+blackfire:
+    install: '0'
+    settings:
+        server_id: ''
+        server_token: ''
+        agent:
+            http_proxy: ''
+            https_proxy: ''
+            log_file: stderr
+            log_level: '1'
+        php:
+            agent_timeout: '0.25'
+            log_file: ''
+            log_level: '1'
 xhprof:
     install: '0'
 wpcli:
     install: '0'
-    version: v0.17.1
+    version: v0.19.0
 drush:
     install: '0'
     version: 6.3.0
 ruby:
     install: '1'
-    versions:
-        vmaWuwtpaqbG:
-            version: ''
-nodejs:
-    install: '0'
-    npm_packages: {  }
+    versions: {  }
 python:
     install: '1'
     packages: {  }
-    versions:
-        KSdWJeVQl1Pw:
-            version: ''
+    versions: {  }
+nodejs:
+    install: '0'
+    npm_packages: {  }
+hhvm:
+    install: '0'
+    nightly: 0
+    composer: '1'
+    composer_home: ''
+    settings: {  }
+    server_ini:
+        hhvm.server.host: 127.0.0.1
+        hhvm.server.port: '9000'
+        hhvm.log.use_log_file: '1'
+        hhvm.log.file: /var/log/hhvm/error.log
+    php_ini:
+        display_errors: On
+        error_reporting: '-1'
+        date.timezone: UTC
 mysql:
     install: '1'
     settings:
         version: '5.6'
         root_password: root
         override_options: {  }
-    adminer: 0
-    users: {  }
+    adminer: '1'
+    users:
+        mysqlnu_d8l1b52hpaj6:
+            name: commsy
+            password: commsy
     databases:
-        EfoZsblnWsUp:
+        mysqlnd_0v8u3hgtm0q4:
             name: commsy
             sql: ''
-    grants: {  }
+    grants:
+        mysqlng_jhz7x8u8xv4g:
+            user: commsy
+            table: 'commsy.*'
+            privileges:
+                - ALL
 postgresql:
     install: '0'
     settings:
@@ -238,15 +293,11 @@ postgresql:
             encoding: UTF8
             version: '9.3'
         server:
-            postgres_password: ''
+            postgres_password: '123'
     databases: {  }
     users: {  }
     grants: {  }
     adminer: 0
-sqlite:
-    install: '0'
-    adminer: 0
-    databases: {  }
 mongodb:
     install: '0'
     settings:
@@ -258,6 +309,10 @@ redis:
     install: '0'
     settings:
         conf_port: '6379'
+sqlite:
+    install: '0'
+    adminer: 0
+    databases: {  }
 mailcatcher:
     install: '1'
     settings:

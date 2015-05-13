@@ -14,7 +14,7 @@ class puphpet::apache::repo::centos (
     path    => '/usr/bin',
   } ->
   exec { "untar ${save_to}":
-    creates => $extract_location,
+    creates => $extract_to,
     command => "mkdir -p ${extract_to} && \
                 tar xzf '${save_to}' -C ${extract_to} --strip-components=1",
     cwd     => '/.puphpet-stuff',

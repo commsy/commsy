@@ -11,14 +11,16 @@ class puphpet::php::xdebug (
     $notify_service = []
   }
 
-  if !$compile and ! defined(Package[$puphpet::params::xdebug_package]) {
+  if !$compile and ! defined(Package[$puphpet::params::xdebug_package])
+    and $puphpet::php::settings::enable_xdebug
+  {
     package { 'xdebug':
       name    => $puphpet::params::xdebug_package,
       ensure  => installed,
       require => Package['php'],
       notify  => $notify_service,
     }
-  } else {
+  } elsif $puphpet::php::settings::enable_xdebug {
     # php 5.6 requires xdebug be compiled, for now
     case $::operatingsystem {
       # Debian and Ubuntu slightly differ
@@ -57,7 +59,9 @@ class puphpet::php::xdebug (
   }
 
   # shortcut for xdebug CLI debugging
-  if $install_cli and defined(File['/usr/bin/xdebug']) == false {
+  if $install_cli and defined(File['/usr/bin/xdebug']) == false
+    and $puphpet::php::settings::enable_xdebug
+  {
     file { '/usr/bin/xdebug':
       ensure  => present,
       mode    => '+X',

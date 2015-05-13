@@ -68,6 +68,59 @@ if hash_key_equals($nginx_values, 'install', 1) {
     }
   }
 
+  $nginx_proxies = array_true($proxy, 'proxies') ? {
+    true    => $proxy['proxies'],
+    default => [],
+  }
+
+  each( $nginx_proxies ) |$key, $proxy| {
+    $proxy_redirect = array_true($proxy, 'proxy_redirect') ? {
+      true    => $proxy['proxy_redirect'],
+      default => undef,
+    }
+    $proxy_read_timeout = array_true($proxy, 'proxy_read_timeout') ? {
+      true    => $proxy['proxy_read_timeout'],
+      default => $nginx::config::proxy_read_timeout,
+    }
+    $proxy_connect_timeout = array_true($proxy, 'proxy_connect_timeout') ? {
+      true    => $proxy['proxy_connect_timeout'],
+      default => $nginx::config::proxy_connect_timeout,
+    }
+    $proxy_set_header = array_true($proxy, 'proxy_set_header') ? {
+      true    => $proxy['proxy_set_header'],
+      default => [],
+    }
+    $proxy_cache = array_true($proxy, 'proxy_cache') ? {
+      true    => $proxy['proxy_cache'],
+      default => false,
+    }
+    $proxy_cache_valid = array_true($proxy, 'proxy_cache_valid') ? {
+      true    => $proxy['proxy_cache_valid'],
+      default => false,
+    }
+    $proxy_method = array_true($proxy, 'proxy_method') ? {
+      true    => $proxy['proxy_method'],
+      default => undef,
+    }
+    $proxy_set_body = array_true($proxy, 'proxy_set_body') ? {
+      true    => $proxy['proxy_set_body'],
+      default => undef,
+    }
+
+    $proxy_merged = merge($proxy, {
+      'proxy_redirect'        => $proxy_redirect,
+      'proxy_read_timeout'    => $proxy_read_timeout,
+      'proxy_connect_timeout' => $proxy_connect_timeout,
+      'proxy_set_header'      => $proxy_set_header,
+      'proxy_cache'           => $proxy_cache,
+      'proxy_cache_valid'     => $proxy_cache_valid,
+      'proxy_method'          => $proxy_method,
+      'proxy_set_body'        => $proxy_set_body,
+    })
+
+    create_resources(nginx::resource::vhost, { "${key}" => $proxy_merged })
+  }
+
   # Creates a default vhost entry if user chose to do so
   if hash_key_equals($nginx_values['settings'], 'default_vhost', 1) {
     $nginx_vhosts = merge($nginx_values['vhosts'], {
@@ -85,6 +138,7 @@ if hash_key_equals($nginx_values, 'install', 1) {
         'locations'            => [
           {
             'location'              => '/',
+            'autoindex'             => 'off',
             'try_files'             => ['$uri', '$uri/', 'index.php',],
             'fastcgi'               => '',
             'fastcgi_index'         => '',
@@ -94,6 +148,7 @@ if hash_key_equals($nginx_values, 'install', 1) {
           },
           {
             'location'              => '~ \.php$',
+            'autoindex'             => 'off',
             'try_files'             => [
               '$uri', '$uri/', 'index.php', '/index.php$is_args$args'
             ],
@@ -145,6 +200,17 @@ if hash_key_equals($nginx_values, 'install', 1) {
       concat([$vhost['server_name']], $vhost['server_aliases'])
     ))
 
+    $allowed_ciphers = [
+      'ECDHE-RSA-AES256-GCM-SHA384', 'ECDHE-RSA-AES128-GCM-SHA256',
+      'DHE-RSA-AES256-GCM-SHA384', 'DHE-RSA-AES128-GCM-SHA256',
+      'ECDHE-RSA-AES256-SHA384', 'ECDHE-RSA-AES128-SHA256', 'ECDHE-RSA-AES256-SHA',
+      'ECDHE-RSA-AES128-SHA', 'DHE-RSA-AES256-SHA256', 'DHE-RSA-AES128-SHA256',
+      'DHE-RSA-AES256-SHA', 'DHE-RSA-AES128-SHA', 'ECDHE-RSA-DES-CBC3-SHA',
+      'EDH-RSA-DES-CBC3-SHA', 'AES256-GCM-SHA384', 'AES128-GCM-SHA256', 'AES256-SHA256',
+      'AES128-SHA256', 'AES256-SHA', 'AES128-SHA', 'DES-CBC3-SHA',
+      'HIGH', '!aNULL', '!eNULL', '!EXPORT', '!DES', '!MD5', '!PSK', '!RC4'
+    ]
+
     $ssl = array_true($vhost, 'ssl') ? {
       true    => true,
       default => false,
@@ -161,9 +227,17 @@ if hash_key_equals($nginx_values, 'install', 1) {
       true    => $vhost['ssl_port'],
       default => '443',
     }
-    $rewrite_to_https = array_true($vhost, 'rewrite_to_https') ? {
+    $ssl_protocols = array_true($vhost, 'ssl_protocols') ? {
+      true    => $vhost['ssl_protocols'],
+      default => 'TLSv1 TLSv1.1 TLSv1.2',
+    }
+    $ssl_ciphers = array_true($vhost, 'ssl_ciphers') ? {
+      true    => $vhost['ssl_ciphers'],
+      default => join($allowed_ciphers, ':'),
+    }
+    $rewrite_to_https = $ssl and array_true($vhost, 'rewrite_to_https') ? {
       true    => true,
-      default => false,
+      default => undef,
     }
 
     $vhost_cfg_append = deep_merge(
@@ -179,6 +253,8 @@ if hash_key_equals($nginx_values, 'install', 1) {
       'ssl_cert'             => $ssl_cert,
       'ssl_key'              => $ssl_key,
       'ssl_port'             => $ssl_port,
+      'ssl_protocols'        => $ssl_protocols,
+      'ssl_ciphers'          => "\"${ssl_ciphers}\"",
       'rewrite_to_https'     => $rewrite_to_https,
     }), ['server_aliases', 'proxy', 'locations'])
 
@@ -191,18 +267,29 @@ if hash_key_equals($nginx_values, 'install', 1) {
     }
 
     each( $nginx_locations ) |$lkey, $location| {
+      if $location['autoindex'] or $location['autoindex'] == 'on' {
+        $autoindex = 'on'
+      } else {
+        $autoindex = 'off'
+      }
+
       # remove empty values
       $location_trimmed = merge({
         'fast_cgi_params_extra' => [],
       }, delete_values($location, ''))
 
+      # transforms user-data to expected
+      $location_custom_data = merge($location_trimmed, {
+        'autoindex' => $autoindex,
+      })
+
       # Takes gui ENV vars: fastcgi_param {ENV_NAME} {VALUE}
       $location_custom_cfg_append = prefix(
-        $location_trimmed['fast_cgi_params_extra'],
+        $location_custom_data['fast_cgi_params_extra'],
         'fastcgi_param '
       )
 
-      # separate from $location_trimmed because some values
+      # separate from $location_custom_data because some values
       # really need to be set to a default.
       # Removes fast_cgi_params_extra because it only exists in gui
       # not puppet-nginx
@@ -210,7 +297,7 @@ if hash_key_equals($nginx_values, 'install', 1) {
         'vhost'                      => $key,
         'ssl'                        => $ssl,
         'location_custom_cfg_append' => $location_custom_cfg_append,
-      }, $location_trimmed), 'fast_cgi_params_extra')
+      }, $location_custom_data), 'fast_cgi_params_extra')
 
       # If www_root was removed with all the trimmings,
       # add it back it
@@ -236,15 +323,20 @@ if hash_key_equals($nginx_values, 'install', 1) {
     puphpet::firewall::port { '443': }
   }
 
-  if defined(File[$puphpet::params::nginx_webroot_location]) {
-    file { "${puphpet::params::nginx_webroot_location}/index.html":
-      ensure  => present,
-      owner   => 'root',
-      group   => $webroot_group,
-      mode    => '0664',
-      source  => 'puppet:///modules/puphpet/webserver_landing.erb',
-      replace => true,
-      require => File[$puphpet::params::nginx_webroot_location],
-    }
+  $default_vhost_index_file =
+    "${puphpet::params::nginx_webroot_location}/index.html"
+
+  $default_vhost_source_file =
+    '/vagrant/puphpet/puppet/modules/puphpet/files/webserver_landing.html'
+
+  exec { "Set ${default_vhost_index_file} contents":
+    command => "cat ${default_vhost_source_file} > ${default_vhost_index_file} && \
+                chmod 644 ${default_vhost_index_file} && \
+                chown root ${default_vhost_index_file} && \
+                chgrp ${webroot_group} ${default_vhost_index_file} && \
+                touch /.puphpet-stuff/default_vhost_index_file_set",
+    returns => [0, 1],
+    creates => '/.puphpet-stuff/default_vhost_index_file_set',
+    require => File[$puphpet::params::nginx_webroot_location],
   }
 }

@@ -108,7 +108,9 @@ define puphpet::php::pecl (
     $package_name = false
   }
 
-  if $pecl_name and ! defined(::Php::Pecl::Module[$pecl_name]) {
+  if $pecl_name and ! defined(::Php::Pecl::Module[$pecl_name])
+    and $puphpet::php::settings::enable_pecl
+  {
     ::php::pecl::module { $pecl_name:
       use_package         => false,
       preferred_state     => $preferred_state,
@@ -116,7 +118,9 @@ define puphpet::php::pecl (
       service_autorestart => $service_autorestart,
     }
   }
-  elsif $package_name and ! defined(Package[$package_name]) {
+  elsif $package_name and ! defined(Package[$package_name])
+    and $puphpet::php::settings::enable_pecl
+  {
     package { $package_name:
       ensure  => present,
       require => Class['Php::Devel'],
