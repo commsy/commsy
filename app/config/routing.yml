@@ -1,21 +1,3 @@
-commsy_settings:
-    resource: "@CommSySettingsBundle/Resources/config/routing.yml"
-    prefix:   /settings
-
-commsy_dashboard:
-    resource: "@CommSyDashboardBundle/Resources/config/routing.yml"
-    prefix:   /
-
-commsy_room:
-    resource: "@CommSyRoomBundle/Resources/config/routing.yml"
-    #type:     annotation
-    prefix:   /room
-
-commsy_user:
-    resource: "@CommSyUserBundle/Controller/"
-    type:     annotation
-    prefix:   /
-
 commsy_legacy:
     resource: "@CommSyLegacyBundle/Controller/"
     type:     annotation
@@ -24,6 +6,3 @@ commsy_legacy:
 app:
     resource: @AppBundle/Controller/
     type:     annotation
-
-fos_user:
-    resource: "@FOSUserBundle/Resources/config/routing/all.xml"

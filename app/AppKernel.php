@@ -17,17 +17,9 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
-            new FOS\UserBundle\FOSUserBundle(),
-            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
-            new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
-            new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
             
             new AppBundle\AppBundle(),
             new CommSy\LegacyBundle\CommSyLegacyBundle(),
-            new CommSy\UserBundle\CommSyUserBundle(),
-            new CommSy\RoomBundle\CommSyRoomBundle(),
-            new CommSy\DashboardBundle\CommSyDashboardBundle(),
-            new CommSy\SettingsBundle\CommSySettingsBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

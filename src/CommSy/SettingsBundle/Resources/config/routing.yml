@@ -1,3 +1,0 @@
-commsy_settings_homepage:
-    path:     /
-    defaults: { _controller: CommSySettingsBundle:Settings:index }

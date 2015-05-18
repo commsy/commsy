@@ -21,7 +21,7 @@ framework:
     trusted_proxies: ~
     session:
         # handler_id set to null will use default session handler from php.ini
-        handler_id:  session.handler.pdo
+        #handler_id:  session.handler.pdo
     fragments:       ~
     http_method_override: true
 
@@ -79,10 +79,10 @@ swiftmailer:
     spool:     { type: memory }
 
 # FOSUserBundle Configuration
-fos_user:
-    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
-    firewall_name: main
-    user_class: CommSy\UserBundle\Entity\User
+#fos_user:
+#    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
+#    firewall_name: main
+#    user_class: CommSy\UserBundle\Entity\User
 
 # Doctrine Migrations Configuration
 doctrine_migrations:
@@ -90,29 +90,3 @@ doctrine_migrations:
     namespace: Application\Migrations
     table_name: migration_versions
     name: Application Migrations
-
-# KnpMenuBundle Configuration
-knp_menu:
-    # use "twig: false" to disable the Twig extension and the TwigRenderer
-    twig:
-        template: knp_menu.html.twig
-    #  if true, enables the helper for PHP templates
-    templating: false
-    # the renderer to use, list is also available by default
-    default_renderer: twig
-
-# KnpPaginatorBundle Configuration
-knp_paginator:
-    page_range: 5                      # default page range used in pagination control
-    default_options:
-        page_name: page                # page query parameter name
-        sort_field_name: sort          # sort field query parameter name
-        sort_direction_name: direction # sort direction query parameter name
-        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
-    template:
-        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
-        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
-
-# LexikFormFilterBundle Configuration
-lexik_form_filter:
-    where_method: ~  # null | and | or
