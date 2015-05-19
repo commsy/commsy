@@ -1234,7 +1234,10 @@ $email_text_array = $portal_item->getEmailTextArray();
 
       foreach ($item_type_array as $item_type) {
           $manager = $this->_environment->getManager($item_type);
-          global $c_delete_days;
+
+          global $symfonyContainer;
+          $c_delete_days = $symfonyContainer->getParameter('commsy.settings.delete_days');
+
           if (!empty($c_delete_days) and is_numeric($c_delete_days)) {
               $success = $manager->deleteReallyOlderThan($c_delete_days);
               $cron_array['success'] = $success and $cron_array['success'];
@@ -1299,7 +1302,10 @@ $email_text_array = $portal_item->getEmailTextArray();
 
        foreach ($item_type_array as $item_type) {
            $manager = $this->_environment->getManager($item_type);
-           global $c_delete_days;
+           
+           global $symfonyContainer;
+           $c_delete_days = $symfonyContainer->getParameter('commsy.settings.delete_days');
+
            if (!empty($c_delete_days) and is_numeric($c_delete_days)) {
                $success = $manager->deleteReallyOlderThan($c_delete_days);
 

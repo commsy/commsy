@@ -665,8 +665,9 @@ class cs_manager {
       }
       unset($query);
 
-      $checkLocking = $this->_environment->getConfiguration('c_item_locking');
-      $checkLocking = ($checkLocking) ? $checkLocking : false;
+      global $symfonyContainer;
+      $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+      
       if ($checkLocking && $item->hasLocking()) {
          $this->clearLocking($item->getItemId());
       }

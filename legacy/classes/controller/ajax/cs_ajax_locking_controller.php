@@ -76,8 +76,10 @@ class cs_ajax_locking_controller extends cs_ajax_controller {
 			$manager = $this->_environment->getManager($itemType);
 			if ($manager) {
                 $item = $manager->getItem($itemId);
-				$checkLocking = $this->_environment->getConfiguration('c_item_locking');
-          		$checkLocking = ($checkLocking) ? $checkLocking : false;
+
+                global $symfonyContainer;
+                $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+                
 				if ($checkLocking && method_exists($item, "getLockingDate")) {
 					$lockingDate = $item->getLockingDate();
 					if ($lockingDate) {

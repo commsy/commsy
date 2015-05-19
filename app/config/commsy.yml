@@ -91,6 +91,33 @@ commsy:
         # allows all moderators to take over another user by default
         allow_moderator_takeover: true
 
+    # Settings
+    settings:
+        # where to store the temporary export files
+        export_temp_folder = 'var/temp/zip_export'
+
+        # delete entries in database marked as deleted delete_days old
+        delete_days: 182
+
+        # session lifetime in hours
+        session_lifetime: 6
+
+        # proxy settings
+        proxy_ip: ~
+        proxy_port: ~
+
+        # single selection for categories
+        single_cat_selection: false
+
+        # temporary protect items from beeing editet by different users simultaneous
+        item_locking: false
+
+        # return path of emails
+        # - "SENDER" will use sender email address as return path
+        # - "mailreturn@your-domain.net" use the given email address
+        # - "" do not use a return path
+        return_path_mail_address: ''
+    
     # Theming
     themes:
         # Default theme

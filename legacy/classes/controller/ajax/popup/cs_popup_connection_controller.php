@@ -635,14 +635,9 @@
 			$current_portal = $this->_environment->getCurrentPortalItem();
 			$context_manager = $this->_environment->getRoomManager();
 
-         $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
-         if ( isset($with_archving_rooms)
-      	     and $with_archving_rooms
-            ) {
-			   $this->_environment->toggleArchiveMode();
-			   $context_manager2 = $this->_environment->getRoomManager();
-			   $this->_environment->toggleArchiveMode();
-         }
+			$this->_environment->toggleArchiveMode();
+		    $context_manager2 = $this->_environment->getRoomManager();
+		    $this->_environment->toggleArchiveMode();
          
 			$room_array = array();
 			

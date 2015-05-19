@@ -217,7 +217,10 @@ class cs_mail extends Mail
          }
 
          $return_mail_address = '';
-         global $c_return_path_mail_address;
+
+         global $symfonyContainer;
+         $c_return_path_mail_address = $symfonyContainer('commsy.settings.return_path_mail_address');
+
          if ( isset($c_return_path_mail_address)
               and !empty($c_return_path_mail_address)
             ) {

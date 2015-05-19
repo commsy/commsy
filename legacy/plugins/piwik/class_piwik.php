@@ -386,10 +386,14 @@ class class_piwik extends cs_plugin {
    				$t->setRequestTimeout($this->_timeout_ms); // in milliseconds - to avoid long waiting time, when piwik server is gone or network is down
    				
    				// proxy
-   				if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
-   					$proxy = $this->_environment->getConfiguration('c_proxy_ip');
-   		   		if ( $this->_environment->getConfiguration('c_proxy_port') ) {
-  		   				$proxy .= ':'.$this->_environment->getConfiguration('c_proxy_port');
+          global $symfonyContainer;
+          $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+          $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port'); 
+
+   				if ($c_proxy_ip) {
+   					$proxy = $c_proxy_ip;
+   		   		if ($c_proxy_port) {
+  		   				$proxy .= ':'.$c_proxy_port;
       				}
       				$t->setProxy($proxy);
      				}

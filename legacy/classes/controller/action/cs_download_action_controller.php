@@ -18,6 +18,8 @@
 		}
 		
 		public function actionAction() {
+			global $symfonyContainer;
+
 			/************************************************************************************
 			 * This will generate the downloadable content
 			************************************************************************************/
@@ -32,7 +34,7 @@
 			$manager = $this->_environment->getManager($type);
 			
 			// get export temp folder
-			global $export_temp_folder;
+			$export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
 			if (!isset($export_temp_folder)) {
 				$export_temp_folder = "var/temp/zip_export";
 			}
@@ -90,7 +92,6 @@
 			// get a new smarty instance - this is copied from commsy.php
 			require_once('classes/cs_smarty.php');
 
-			global $symfonyContainer;
 			$c_theme = $symfonyContainer->getParameter('commsy.themes.default');
 			if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
 			
@@ -204,20 +205,6 @@
 			// write output to file
 			fwrite($fileHandle, $output);
 			fclose($fileHandle);
-			
-			
-			/*
-			var_dump($images);
-			
-			var_dump($output);
-			
-			
-			var_dump($linkedCSS);
-			var_dump($newLinkedCSS);
-			
-			
-			*/
-			
 			
 			/************************************************************************************
 			 * All files are ready now, create a ZIP archive and set headers for downloading

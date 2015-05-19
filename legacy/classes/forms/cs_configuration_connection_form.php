@@ -135,9 +135,12 @@ class cs_configuration_connection_form extends cs_rubric_form {
       $this->_form->addTextfield('new_title','',$this->_translator->getMessage('SERVER_CONFIGURATION_CONNECTION_NEW_TITLE'),'');
       $this->_form->addTextfield('new_url','',$this->_translator->getMessage('SERVER_CONFIGURATION_CONNECTION_NEW_URL'),'',255,50,false,'','','','left','','',false,'/commsy.php');
       $this->_form->addTextfield('new_key','',$this->_translator->getMessage('SERVER_CONFIGURATION_CONNECTION_NEW_KEY'),'');
-      if ( $this->_environment->getConfiguration('c_proxy_ip')
-      	  and $this->_environment->getConfiguration('c_proxy_port')
-      	) {
+
+      global $symfonyContainer;
+      $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+      $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
+      if ($c_proxy_ip && $c_proxy_port) {
          $this->_form->addRadioGroup('new_proxy',$this->_translator->getMessage('SERVER_CONFIGURATION_CONNECTION_NEW_PROXY'),'',$this->_yesno_array,'',false,true);
       } else {
       	$this->_form->addHidden('new_proxy',-1); // no proxy

@@ -271,7 +271,10 @@ class cs_session_manager {
     */
    function deleteOldSessions() {
       include_once('functions/date_functions.php');
-      global $c_session_lifetime;
+
+      global $symfonyContainer;
+      $c_session_lifetime = $symfonyContainer->getParameter('commsy.settings.session_lifetime');
+      
       if ( !empty($c_session_lifetime)
            and is_int($c_session_lifetime)
            and $c_session_lifetime > 0

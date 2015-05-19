@@ -61,13 +61,12 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
 	   $data2 = $log_manager->getLogdataByContextID($id);
 
 	   if(!empty($data1) or !empty($data2)){
-	   	
-		   #$data = array_merge($data1,$data2);
 		   
 		   #######################
 		   
 		   // get export temp folder
-		   global $export_temp_folder;
+		   global $symfonyContainer;
+      	   $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
 		   if (!isset($export_temp_folder)) {
 		   	$export_temp_folder = "var/temp/zip_export";
 		   }

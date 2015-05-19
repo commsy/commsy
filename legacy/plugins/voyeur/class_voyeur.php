@@ -225,7 +225,8 @@ class class_voyeur extends cs_plugin {
             trigger_error('can not modify zip',E_USER_WARNING);
          } else {
             // extract zip
-            global $export_temp_folder;
+            global $symfonyContainer;
+            $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
             if ( !isset($export_temp_folder) ) {
                $export_temp_folder = 'var/temp/zip_export';
             }

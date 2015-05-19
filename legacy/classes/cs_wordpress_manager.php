@@ -410,11 +410,16 @@ class cs_wordpress_manager extends cs_manager
     public function getSoapClient()
     {
         $options = array("trace" => 1, "exceptions" => 1);
-        if ($this->_environment->getConfiguration('c_proxy_ip')) {
-            $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+
+        global $symfonyContainer;
+        $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+        $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
+        if ($c_proxy_ip) {
+            $options['proxy_host'] = $c_proxy_ip;
         }
-        if ($this->_environment->getConfiguration('c_proxy_port')) {
-            $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+        if ($c_proxy_port)) {
+            $options['proxy_port'] = $c_proxy_port;
         }
         $retour = null;
         try {

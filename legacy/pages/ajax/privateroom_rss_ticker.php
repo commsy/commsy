@@ -17,13 +17,15 @@ include_once('htdocs/javascript/jQuery/rsstickerajax/lastrss/lastRSS.php'); //pa
 $rss = new lastRSS();
 
 // proxy support
-$proxy_ip = $environment->getConfiguration('c_proxy_ip');
-if ( !empty($proxy_ip) ) {
-   $rss->setProxyIP($proxy_ip);
+global $symfonyContainer;
+$c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+$c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
+if ( !empty($c_proxy_ip) ) {
+   $rss->setProxyIP($c_proxy_ip);
 }
-$proxy_port = $environment->getConfiguration('c_proxy_port');
-if ( !empty($proxy_port) ) {
-   $rss->setProxyPort($proxy_port);
+if ( !empty($c_proxy_port) ) {
+   $rss->setProxyPort($c_proxy_port);
 }
 
 $rss->cache_dir = 'cache'; //path to cache directory on your server from this script. Chmod 777!

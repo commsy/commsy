@@ -421,10 +421,13 @@ class cs_disc_manager {
          curl_setopt($ch,CURLOPT_URL,$url);
          curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
          curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
-         global $c_proxy_ip;
+
+         global $symfonyContainer;
+         $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+         $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
          if ( !empty($c_proxy_ip) ) {
             $proxy = $c_proxy_ip;
-            global $c_proxy_port;
             if ( !empty($c_proxy_port) ) {
                $proxy .= ':'.$c_proxy_port;
             }

@@ -211,7 +211,8 @@ $path_to_file = $disc_manager->getFilePath();
 unset($disc_manager);
 $target_directory = $path_to_file.'html_'.$file->getDiskFileNameWithoutFolder().'/';
 
-global $export_temp_folder;
+global $symfonyContainer;
+$export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
 if ( !isset($export_temp_folder) ) {
    $export_temp_folder = 'var/temp/zip_export';
 }

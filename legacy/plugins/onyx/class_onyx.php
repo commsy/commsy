@@ -124,17 +124,18 @@ class class_onyx extends cs_plugin {
                                    10,
                                    true,
                                    false);
-            $proxy_host = $this->_environment->getConfiguration('c_proxy_ip');
-            $proxy_port = $this->_environment->getConfiguration('c_proxy_port');
-            if ( !empty($proxy_host)
-                 and !empty($proxy_port)
-               ) {
+
+            global $symfonyContainer;
+            $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+            $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+            
+            if (!empty($c_proxy_ip) && !empty($c_proxy_port)) {
                $retour->combine();
                $retour->addCheckbox( $this->_identifier.'_proxy',
                                      -1,
                                      false,
                                      $this->_translator->getMessage('ONYX_CONFIG_FORM_TITLE_CONFIG_PROXY'),
-                                     $this->_translator->getMessage('ONYX_CONFIG_FORM_TITLE_CONFIG_DESC_PROXY',$proxy_host.':'.$proxy_port),
+                                     $this->_translator->getMessage('ONYX_CONFIG_FORM_TITLE_CONFIG_DESC_PROXY',$c_proxy_ip.':'.$c_proxy_port),
                                      false,
                                      false
                                    );
@@ -650,24 +651,29 @@ class class_onyx extends cs_plugin {
       if ( empty($this->_player) ) {
          if ( class_exists('SoapClient') ) {            
             $options = array("trace" => 1, "exceptions" => 0, 'user_agent'=>'PHP-SOAP/php-version', 'connection_timeout' => 150);
-            if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
+
+            global $symfonyContainer;
+            $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+            $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
+            if ($c_proxy_ip) {
                if ( isset($this->_proxy_use)
                     and !empty($this->_proxy_use)
                     and $this->_proxy_use == '-1'
                   ) {
                   // no proxy use
                } else {
-                  $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+                  $options['proxy_host'] = $c_proxy_ip;
                }
             }
-            if ( $this->_environment->getConfiguration('c_proxy_port') ) {
+            if ($c_proxy_port) {
                if ( isset($this->_proxy_use)
                     and !empty($this->_proxy_use)
                     and $this->_proxy_use == '-1'
                   ) {
                   // no proxy use
                } else {
-                  $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+                  $options['proxy_port'] = $c_proxy_port;
                }
             }
             $this->_player = new SoapClient($this->_player_url_wsdl, $options);
@@ -686,24 +692,29 @@ class class_onyx extends cs_plugin {
       if ( empty($this->_reporter) ) {
          if ( class_exists('SoapClient') ) {            
             $options = array("trace" => 1, "exceptions" => 0, 'user_agent'=>'PHP-SOAP/php-version', 'connection_timeout' => 150);
-            if ( $this->_environment->getConfiguration('c_proxy_ip') ) {
+
+            global $symfonyContainer;
+            $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+            $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
+            if ($c_proxy_ip) {
                if ( isset($this->_proxy_use)
                     and !empty($this->_proxy_use)
                     and $this->_proxy_use == '-1'
                   ) {
                   // no proxy use
                } else {
-                  $options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+                  $options['proxy_host'] = $c_proxy_ip;
                }
             }
-            if ( $this->_environment->getConfiguration('c_proxy_port') ) {
+            if ($c_proxy_port) {
                if ( isset($this->_proxy_use)
                     and !empty($this->_proxy_use)
                     and $this->_proxy_use == '-1'
                   ) {
                   // no proxy use
                } else {
-                  $options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+                  $options['proxy_port'] = $c_proxy_port;
                }
             }
             $this->_reporter = new SoapClient($this->_reporter_url_wsdl, $options);

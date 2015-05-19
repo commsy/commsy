@@ -87,8 +87,10 @@
                     $mpdf = new cs_mpdf();
 
                     // set proxy for mpdf
-                    global $c_proxy_ip;
-                    global $c_proxy_port;
+                    global $symfonyContainer;
+                    $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+                    $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+                    
                     if($c_proxy_port) {
                         $mpdf->proxy = true;
                         $mpdf->proxyUrl = $c_proxy_ip.":".$c_proxy_port;
@@ -573,15 +575,15 @@
             } else {
                 $to_javascript['environment']['password_expire_soon'] = false;
             }
+
+            global $symfonyContainer;
             
             // locking
-            $checkLocking = $this->_environment->getConfiguration('c_item_locking');
-            $checkLocking = ($checkLocking) ? $checkLocking : false;
+            $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
             $to_javascript["environment"]["item_locking"] = $checkLocking;
 
             // single categorie selection
-            $singleCatSelection = $this->_environment->getConfiguration('c_single_cat_selection');
-            $singleCatSelection = ($singleCatSelection) ? $singleCatSelection : false;
+            $singleCatSelection = $symfonyContainer->getParameter('commsy.settings.single_cat_selection');
             $to_javascript["environment"]["single_cat_selection"] = $singleCatSelection;
             
             $to_javascript['i18n']['COMMON_NEW_BLOCK'] = $translator->getMessage('COMMON_NEW_BLOCK');

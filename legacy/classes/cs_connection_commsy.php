@@ -51,19 +51,16 @@ class cs_connection_commsy {
    	if ( !empty($url) ) {
 	      if ( class_exists('SoapClient') ) {
 	   		$options = array("trace" => 1, "exceptions" => 0, 'user_agent'=>'PHP-SOAP/php-version', 'connection_timeout' => 150);
-	   		if ( $this->_environment->getConfiguration('c_proxy_ip')
-	   			  and ( $proxy == CS_YES
-	   			  		  or empty($proxy)
-	   			  		)
-	   		   ) {
-	   			$options['proxy_host'] = $this->_environment->getConfiguration('c_proxy_ip');
+
+            global $symfonyContainer;
+            $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+            $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+
+	   		if ($c_proxy_ip && ($proxy == CS_YES || empty($proxy))) {
+	   			$options['proxy_host'] = $c_proxy_ip;
 	   		}
-	   		if ( $this->_environment->getConfiguration('c_proxy_port')
-	   			  and ( $proxy == CS_YES
-	   			  		  or empty($proxy)
-	   			  		)
-	   		   ) {
-	   			$options['proxy_port'] = $this->_environment->getConfiguration('c_proxy_port');
+	   		if ($c_proxy_port && ($proxy == CS_YES || empty($proxy))) {
+	   			$options['proxy_port'] = $c_proxy_port;
 	   		}
 	   		$soap_url = $url.'/soap_wsdl.php';
 	   		$new_server = new SoapClient($soap_url, $options);

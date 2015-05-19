@@ -459,8 +459,9 @@
 			if( isset($this->_item) and $this->_item->mayEdit($current_user) && $this->_with_modifying_actions && !$this->_item->isSystemLabel() ) {
 				$return['edit'] = true;
 			} else {
-				$checkLocking = $this->_environment->getConfiguration('c_item_locking');
-          		$checkLocking = ($checkLocking) ? $checkLocking : false;
+				global $symfonyContainer;
+                $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+                
 				if ($checkLocking && method_exists($this->_item, "getLockingDate")) {
 					$lockingDate = $this->_item->getLockingDate();
 					if ($lockingDate) {

@@ -53,6 +53,16 @@ class CommsyExtension extends Extension
         $container->setParameter('commsy.security.privacy_disable_overwriting', $config['security']['privacy_disable_overwriting']);
         $container->setParameter('commsy.security.allow_moderator_takeover', $config['security']['allow_moderator_takeover']);
 
+        // settings
+        $container->setParameter('commsy.settings.export_temp_folder', $config['settings']['export_temp_folder']);
+        $container->setParameter('commsy.settings.delete_days', $config['settings']['delete_days']);
+        $container->setParameter('commsy.settings.session_lifetime', $config['settings']['session_lifetime']);
+        $container->setParameter('commsy.settings.proxy_ip', $config['settings']['proxy_ip']);
+        $container->setParameter('commsy.settings.proxy_port', $config['settings']['proxy_port']);
+        $container->setParameter('commsy.settings.single_cat_selection', $config['settings']['single_cat_selection']);
+        $container->setParameter('commsy.settings.item_locking', $config['settings']['item_locking']);
+        $container->setParameter('commsy.settings.return_path_mail_address', $config['settings']['return_path_mail_address']);
+
         // themes
         $container->setParameter('commsy.themes.default', $config['themes']['default']);
 

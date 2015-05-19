@@ -122,7 +122,10 @@ class cs_etchat_manager extends cs_manager {
          ) {
          // no -> enter user in room
          $context = $user->getContextItem();
-         global $c_proxy_ip;
+         
+         global $symfonyContainer;
+         $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+
          if ( !empty($c_proxy_ip) ) {
             $user_param_all = $_SERVER['REMOTE_ADDR']."@".$_SERVER['REMOTE_ADDR']."@".@getenv('HTTP_X_FORWARDED_FOR');
          } else {

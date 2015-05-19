@@ -1783,13 +1783,8 @@ class cs_page_guide_view extends cs_page_view {
             	$params['automatic'] = 'open';
             	$html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_OPEN'),'','','','','','','class="portal_link"').LF;
             } else {
-               $with_archving_rooms = $this->_environment->getConfiguration('c_archive_rooms');
-			      if ( isset($with_archving_rooms)
-			      	  and $with_archving_rooms
-			         ) {
-            	   $params['automatic'] = 'archive';
-                  $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
-			      }
+              $params['automatic'] = 'archive';
+              $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
             }
             unset($params);
          }elseif( $current_user->isModerator()

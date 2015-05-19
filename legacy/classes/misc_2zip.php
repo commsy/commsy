@@ -36,7 +36,10 @@ class misc_2zip {
 
    public function _makeTempFolder () {
       $retour = false;
-      global $export_temp_folder;
+
+      global $symfonyContainer;
+      $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
+
       if ( !isset($export_temp_folder) ) {
          $export_temp_folder = 'var/temp/zip_export';
       }
@@ -69,8 +72,11 @@ class misc_2zip {
          curl_setopt($ch,CURLOPT_URL,$file_url);
          curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
          curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
-         global $c_proxy_ip;
-         global $c_proxy_port;
+
+         global $symfonyContainer;
+         $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+         $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+         
          if ( !empty($c_proxy_ip) ) {
             $proxy = $c_proxy_ip;
             if ( !empty($c_proxy_port) ) {
@@ -121,8 +127,11 @@ class misc_2zip {
 
    public function _createZIP ($folder) {
       $retour = '';
+
       // create ZIP File
-      global $export_temp_folder;
+      global $symfonyContainer;
+      $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
+
       if ( !isset($export_temp_folder) ) {
          $export_temp_folder = 'var/temp/zip_export';
       }
@@ -145,7 +154,7 @@ class misc_2zip {
          } else {
       		$current_module = $this->_environment->getCurrentModule();
       	}
-         //$zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$this->_environment->getCurrentModule().'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'_'.time().'.zip';
+         
          $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$current_module.'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'_'.time().'.zip';
       }
       if ( file_exists(realpath($zipfile)) ) {

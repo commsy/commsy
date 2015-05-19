@@ -95,6 +95,10 @@ else {
       $destination_dir = $ims_content_connection_temp_folder.$file_name;
 
       // get file from external ims server
+      global $symfonyContainer;
+      $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+      $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
+      
       if ( !empty($c_proxy_ip) ) {
          $out = fopen($destination_dir,'wb');
          if ( $out == false ) {

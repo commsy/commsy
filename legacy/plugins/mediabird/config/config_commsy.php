@@ -52,8 +52,9 @@ if ( isset($environment) ) {
 
 // proxy: address and port
 if ( isset($environment) ) {
-   $c_proxy_ip = $environment->getConfiguration('c_proxy_ip');
-   $c_proxy_port = $environment->getConfiguration('c_proxy_port');
+   global $symfonyContainer;
+   $c_proxy_ip = $symfonyContainer->getParameter('commsy.settings.proxy_ip');
+   $c_proxy_port = $symfonyContainer->getParameter('commsy.settings.proxy_port');
    if ( isset($c_proxy_ip)
         and !empty($c_proxy_ip)
       ) {

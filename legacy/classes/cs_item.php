@@ -1414,8 +1414,9 @@ class cs_item {
 
       if ( $access === true ) {
           // check locking
-          $checkLocking = $this->_environment->getConfiguration('c_item_locking');
-          $checkLocking = ($checkLocking) ? $checkLocking : false;
+          global $symfonyContainer;
+          $checkLocking = $symfonyContainer->getParameter('commsy.settings.item_locking');
+          
           if ($checkLocking && !$user_item->isRoot() && method_exists($this, "getLockingDate") && method_exists($this, "getLockingUserId") && $this->hasLocking()) {
               $lockingUserId = $this->getLockingUserId();
 
