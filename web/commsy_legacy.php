@@ -1044,9 +1044,9 @@ $c_smarty = true;
 if(isset($c_smarty) && $c_smarty === true) {
     require_once('classes/cs_smarty.php');
     global $c_theme;
-    $shown_sheme = $c_theme;
     global $theme_array;
     if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
+    $shown_sheme = $c_theme;
 
     // room theme
     $color = $environment->getCurrentContextItem()->getColorArray();

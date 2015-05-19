@@ -16,10 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 class LegacyKernel implements HttpKernelInterface
 {
 	/**
-	 * Path to the legacy application "commsy.php front controller"
-	 * @var string
-     *
-     * @package  Kernel;
+	 * Path to the legacy application "commsy_legacy.php front controller"
+	 * @var String
 	 */
 	private $legacyAppPath;
 

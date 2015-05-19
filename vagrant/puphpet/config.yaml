@@ -112,17 +112,8 @@ nginx:
                     fastcgi: ''
                     fastcgi_index: ''
                     fastcgi_split_path: ''
-                nxvl_z0bgdtvioqg8:
-                    location: '~ ^/(app_dev|config)\.php(/|$)'
-                    autoindex: off
-                    fastcgi: '127.0.0.1:9000'
-                    fastcgi_index: ''
-                    fastcgi_split_path: '^(.+\.php)(/.*)$'
-                    fast_cgi_params_extra:
-                        - 'SCRIPT_FILENAME $request_filename'
-                        - 'HTTPS off'
                 nxvl_rgm4eebubt5x:
-                    location: '~ ^/app\.php(/|$)'
+                    location: '~ \.php(/|$)'
                     autoindex: off
                     fastcgi: '127.0.0.1:9000'
                     fastcgi_index: ''

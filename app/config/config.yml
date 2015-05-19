@@ -32,7 +32,6 @@ twig:
     form:
         resources:
             - AppBundle:Form:semantic_ui_layout.html.twig
-            - LexikFormFilterBundle:Form:form_div_layout.html.twig
 
 # Assetic Configuration
 assetic:

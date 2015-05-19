@@ -410,7 +410,7 @@ class cs_account_index_view extends cs_index_view {
     *
     * @return string item as HMTL
     */
-   function _getItemAsHTML ( $item,$pos ) {
+   function _getItemAsHTML ( $item, $pos = 0) {
       $shown_entry_number = $pos;
       if ($shown_entry_number%2 == 0){
          $style='class="odd"';
@@ -734,7 +734,7 @@ class cs_account_index_view extends cs_index_view {
       return $this->_selected_status;
    }
 
-   function _getAdditionalFormFieldsAsHTML () {
+   function _getAdditionalFormFieldsAsHTML ($fieldLength = 14.5) {
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');

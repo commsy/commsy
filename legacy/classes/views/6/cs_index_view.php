@@ -2249,7 +2249,7 @@ EOD;
     * @param object item     the single list entry
     * @author CommSy Development Group
     */
-   function _getItemAsHTML($item) {
+   function _getItemAsHTML($item, $pos = 0) {
    //must be overwritten
    }
 

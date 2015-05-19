@@ -37,31 +37,6 @@
 			if(empty($this->_data)) {
 				$this->_data = $_POST;
 			}
-
-			// use converter->sanitize ;
-// 			if(empty($this->_data)) {
-// 				$this->_data = $_POST;
-// 				array_walk_recursive($_POST, array($this, 'sanitize'));
-// 			} else {
-// 				if ( isset($this->_data["form_data"]) && !empty($this->_data["form_data"]) )
-// 				{
-// 					foreach ( $this->_data["form_data"] as $key => $data )
-// 					{
-// 						$filterHTML = true;
-// 						$name = $this->_data['form_data'][$key]['name'];
-						
-// 						if ( $name == "description" || mb_substr($name, 0, 22) == "moderation_description" || mb_substr($name, 0, 8) == "agb_text" ) {
-// 							$filterHTML = false;
-// 						}
-						
-// 						if ( $filterHTML === true && isset($this->_data["form_data"][$key]["value"]) )
-// 						{
-// 							//$this->sanitize($this->_data["form_data"][$key]["value"]);
-// 							array_walk_recursive($this->_data["form_data"][$key]["value"], array($this, 'sanitize'));
-// 						}
-// 					}
-// 				}
-// 			}
 			
 			if(empty($this->_data)) {
 				$this->_data = $_GET;

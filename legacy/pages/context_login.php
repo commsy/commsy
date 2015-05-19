@@ -88,7 +88,6 @@ if ( !empty($_POST['password']) ) {
    $password = $_GET['password'];
 }
 
-
 if (!$shib_direct_login){
 	//Shibboleth
 	// Über das Portal überprüfen, ob Shibboleth als Auth eingestellt ist
@@ -98,7 +97,7 @@ if (!$shib_direct_login){
 		$auth_source_item = $auth_source_manager->getItem($_POST['auth_source']);
 		$source_type = $auth_source_item->getSourceType();
 		$auth_data = $auth_source_item->getAuthData();
-		$host = $auth_data['HOST'];
+		//$host = $auth_data['HOST'];
 	}
 	if(!empty($source_type) AND $source_type == "Shibboleth"){
 	    if(!empty($_SERVER['uid']) AND !empty($_SERVER['Shib_Session_ID'])){
@@ -164,7 +163,7 @@ if (!$shib_direct_login){
 	        // Benutzer nicht beim IDP eingeloggt, redirect zum idp?
 	        redirect_with_url('https://'.$_SERVER["SERVER_NAME"].'/Shibboleth.sso/Login');
 	    }# and $source_type != "SHIBBOLETH"
-	} elseif (!empty($user_id) and !empty($password) and $source_type != "Shibboleth") { 
+	} elseif (!empty($user_id) and !empty($password) and (empty($source_type) || $source_type != "Shibboleth")) { 
 	//if (!empty($user_id) and !empty($password) ) {
 	   $authentication = $environment->getAuthenticationObject();
 	   if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
