@@ -108,7 +108,7 @@
 				{/block}
 	
 				{block name=breadcrumb}
-				{if  $room.old_room_switcher == 'yes'}
+				{if isset($room.old_room_switcher) and $room.old_room_switcher == 'yes'}
 					<div id="tm_breadcrumb_old">
 						{$room.room_switcher_select_box}
 					</div>
@@ -401,7 +401,7 @@
 {/block}
 
 {block name=room_overlay}
-        {if $confirm}
+        {if isset($confirm) and $confirm}
 <div id="popup_wrapper">
 	<div id="popup_delete">
 		<div id="popup_frame">

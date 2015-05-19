@@ -1077,18 +1077,6 @@ if(isset($c_smarty) && $c_smarty === true) {
 
 $context_item = $environment->getCurrentContextItem();
 
-if(isset($_GET['smarty'])) {
-    if($_GET['smarty'] === 'off') {
-        $session->setValue('smarty_off', true);
-    } elseif($_GET['smarty'] === 'on') {
-        $session->setValue('smarty_off', false);
-    }
-}
-
-if(isset($_GET['smarty']) || $session->issetValue('smarty_off')) {
-    $c_smarty = !$session->getValue('smarty_off');
-}
-
 // temporary bypass smarty for server and project context
 if($context_item->isServer()
    // or plugins (03.08.2012 IJ)
@@ -1181,14 +1169,6 @@ if(isset($c_smarty) && $c_smarty === true) {
         if ($environment->getCurrentModule() === "agb" && $environment->getCurrentFunction() === "index") {
             $controller_name = 'cs_agb_controller';
             require_once('classes/controller/' . $controller_name . '.php');
-        /*
-        if ($showAGB) {
-            if ( ($current_module == "picture") && ($current_function == "getfile" || $current_function == "getingray")) {
-                include('pages/'.$current_module.'_'.$current_function.'.php');
-            } else {
-                $controller_name = 'cs_agb_controller';
-                require_once('classes/controller/' . $controller_name . '.php');
-            }*/
         } elseif(isset($_GET['mod']) && $_GET['mod'] === 'search') {
             $controller_name = 'cs_search_controller';
             require_once('classes/controller/' . $controller_name . '.php');

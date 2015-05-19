@@ -735,11 +735,10 @@
 						// files
 						$with_files = false;
 						$file_count = 0;
+						$attachment_infos = array();
 						if(in_array($key, $this->getRubricsWithFiles())) {
 							$with_files = true;
-							$attachment_infos = array();
-
-
+							
 							if ($key == CS_MATERIAL_TYPE){
 								$file_count = $item->getFileListWithFilesFromSections()->getCount();
 								$file_list = $item->getFileListWithFilesFromSections();

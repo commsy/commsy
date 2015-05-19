@@ -142,9 +142,6 @@ class cs_assessments_manager extends cs_manager {
       // ------------------
       // --->UTF8 - OK<----
       // ------------------
-      if (empty($user_id)){
-      	 $user_id = $this->_current_user_id;
-      }
       if ($this->_cache_on and count($id_array) > 0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_item_id_array)){

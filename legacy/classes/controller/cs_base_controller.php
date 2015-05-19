@@ -27,46 +27,10 @@
             // process basic template information
             $this->processBaseTemplate();
 
-            // setup error handling
-            set_error_handler(array($this, 'errorHandler'));
-            set_exception_handler(array($this, 'exceptionHandler'));
-            //register_shutdown_function(array($this, 'shutdownHandler'));
-
             // load exceptions
             require_once('classes/exceptions/cs_form_exceptions.php');
             require_once('classes/exceptions/cs_detail_exceptions.php');
         }
-
-        public function errorHandler($error_code, $error_string, $error_file, $error_line, $error_context) {
-            // create an exception
-            $exception = new ErrorException($error_string, $error_code, 0, $error_file, $error_line);
-
-            // call exception handler with object
-            $this->exceptionHandler($exception);
-        }
-
-        /*
-         * this will catch unhandled exceptions and exceptions from error handler
-         */
-        public function exceptionHandler($exception) {
-            global $c_show_debug_infos;
-            if(isset($c_show_debug_infos) && $c_show_debug_infos === true) {
-                /*
-                echo "an unhandled exception / error occured: </br></br>\n";
-                echo "See " . $exception->getFile() . " on line " . $exception->getLine() . "<br>\n";
-                pr($exception->getMessage());
-                echo "-------------------------<br>\n";
-                */
-            }
-            //pr($exception);
-            //exit;
-        }
-
-        /*
-        public function shutdownHandler() {
-            pr("error");
-        }
-        */
 
         public function setTemplateEngine($tplEngine) {
             $this->_tpl_engine = $tplEngine;
@@ -133,10 +97,6 @@
          */
         protected function processTemplate() {
             $converter = $this->_environment->getTextConverter();
-            //sanitize
-//          if(!empty($_POST) and isset($_POST)){
-//              array_walk_recursive($_POST, array($this, 'sanitize'));
-//          }
 
             if(!empty($_GET) and isset($_GET)){
                 array_walk_recursive($_GET, array($converter, 'sanitizeHTML'));

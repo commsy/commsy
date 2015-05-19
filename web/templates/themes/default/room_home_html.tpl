@@ -107,7 +107,7 @@
 											</div>
 											<div class="tooltip_content">
 												<span class="content">{$item.noticed.item_info}</span>
-												{if $item.noticed.section_info.count_new}
+												{if isset($item.noticed.section_info.count_new) &&$item.noticed.section_info.count_new}
 													<span class="content">___COMMON_NEW_SECTIONS___: {$item.noticed.section_info.count_new}
 													{foreach $item.noticed.section_info.section_new_items as $section_item}
 													   <br/>
@@ -116,7 +116,7 @@
 													{/foreach}
 													</span>
 												{/if}
-												{if $item.noticed.section_info.count_changed}
+												{if isset($item.noticed.section_info.count_changed) && $item.noticed.section_info.count_changed}
 													<span class="content">___COMMON_CHANGED_SECTIONS___: {$item.noticed.section_info.count_changed}
 													{foreach $item.noticed.section_info.section_changed_items as $section_item}
 													   <br/>
@@ -125,7 +125,7 @@
 													{/foreach}
 													</span>
 												{/if}
-												{if $item.noticed.article_info.count_new}
+												{if isset($item.noticed.article_info.count_new) && $item.noticed.article_info.count_new}
 													<span class="content">___COMMON_NEW_ARTICLES___: {$item.noticed.article_info.count_new}
 													{foreach $item.noticed.article_info.article_new_items as $article_item}
 													   <br/>
@@ -134,7 +134,7 @@
 													{/foreach}
 													</span>
 												{/if}
-												{if $item.noticed.article_info.count_changed}
+												{if isset($item.noticed.article_info.count_changed) && $item.noticed.article_info.count_changed}
 													<span class="content">___COMMON_CHANGED_ARTICLES___: {$item.noticed.article_info.count_changed}
 													{foreach $item.noticed.article_info.article_changed_items as $article_item}
 													   <br/>
@@ -143,7 +143,7 @@
 													{/foreach}
 													</span>
 												{/if}
-												{if $item.noticed.annotation_info.count_new}
+												{if isset($item.noticed.annotation_info.count_new) && $item.noticed.annotation_info.count_new}
 													<span class="content">___COMMON_NEW_ANNOTATIONS___: {$item.noticed.annotation_info.count_new}
 													{foreach $item.noticed.annotation_info.anno_new_items as $anno_item}
 													   <br/>
@@ -152,7 +152,7 @@
 													{/foreach}
 													</span>
 												{/if}
-												{if $item.noticed.annotation_info.count_changed}
+												{if isset($item.noticed.annotation_info.count_changed) && $item.noticed.annotation_info.count_changed}
 													<span class="content">___COMMON_CHANGED_ANNOTATIONS___: {$item.noticed.annotation_info.count_changed}
 													{foreach $item.noticed.annotation_info.anno_changed_items as $anno_item}
 													   <br/>
