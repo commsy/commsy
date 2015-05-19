@@ -66,10 +66,7 @@ if(!empty($portal_item)){
 		// activate shibboleth redirect if configured
 		$shib_direct_login = $shib_auth_source->getShibbolethDirectLogin();
 	}
-	
-// 	pr($shib_direct_login);exit;
 }
-// $shib_direct_login = $environment->getConfiguration("c_shibboleth_direct_login") ? true : false;
 
 // user_id and password
 $user_id = '';

@@ -344,17 +344,14 @@ if(!empty($portal_item)){
         }
         $auth_item = $auth_source_list->getNext();
     }
-    if(!empty($shib_auth_source) AND $environment->getConfiguration('c_shibboleth_deactivate_direct_login_by_portal_id') != $portal_item->getItemID()) {
+
+    $shib_deactivate_direct_login_by_portal_id = $symfonyContainer->getParameter('commsy.login.shibboleth_deactivate_direct_login_by_portal_id');
+
+    if(!empty($shib_auth_source) AND $shib_deactivate_direct_login_by_portal_id != $portal_item->getItemID()) {
         // activate shibboleth redirect if configured
         $shib_direct_login = $shib_auth_source->getShibbolethDirectLogin();
     }
-
-//      pr($shib_direct_login);exit;
 }
-// Shibboleth Configuration ########################
-// pr($shib_direct_login);
-// pr($_SERVER);$shib_direct_login = false;
-// pr($_SERVER);
 
 // get Session ID (SID)
 if (!empty($_GET['SID'])) {
@@ -389,7 +386,6 @@ if (!empty($_GET['SID'])) {
          ) {
    include_once('pages/individual_getfile.php');
    exit();
-// } elseif ($environment->getConfiguration("c_shibboleth_direct_login")) {
 } elseif ($shib_direct_login) {
     include_once('pages/context_login.php'); 
     exit();
