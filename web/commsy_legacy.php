@@ -202,12 +202,8 @@ if ( ($environment->getCurrentFunction() == 'index'
    }
 }
 
-if ( $environment->inPortal()
-     or $environment->inServer()
-   ) {
-   $class_factory->setDesignTo6();
-} else {
-   $class_factory->setDesignTo7();
+if ($environment->inPortal() || $environment->inServer()) {
+    $class_factory->setDesignTo6();
 }
 
 $server_item = $environment->getServerItem();

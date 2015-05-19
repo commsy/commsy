@@ -63,9 +63,5 @@ class cs_class_factory {
    public function setDesignTo6 () {
       $this->_design_folder = 6;
    }
-
-   public function setDesignTo7 () {
-      $this->_design_folder = 7;
-   }
 }
 ?>
