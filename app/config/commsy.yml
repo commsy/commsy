@@ -94,7 +94,7 @@ commsy:
     # Settings
     settings:
         # where to store the temporary export files
-        export_temp_folder = 'var/temp/zip_export'
+        export_temp_folder: 'var/temp/zip_export'
 
         # delete entries in database marked as deleted delete_days old
         delete_days: 182
@@ -117,7 +117,7 @@ commsy:
         # - "mailreturn@your-domain.net" use the given email address
         # - "" do not use a return path
         return_path_mail_address: ''
-    
+
     # Theming
     themes:
         # Default theme
