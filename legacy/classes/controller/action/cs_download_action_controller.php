@@ -89,7 +89,9 @@
 			
 			// get a new smarty instance - this is copied from commsy.php
 			require_once('classes/cs_smarty.php');
-			global $c_theme;
+
+			global $symfonyContainer;
+			$c_theme = $symfonyContainer->getParameter('commsy.themes.default');
 			if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
 			
 			// room theme

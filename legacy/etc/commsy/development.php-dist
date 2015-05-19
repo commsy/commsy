@@ -96,9 +96,6 @@ $c_enable_htmltextarea_security = false;
 // enable workflow support
 //$c_workflow = false;
 
-// smarty
-$c_theme = 'default';
-
 // smarty caching
 $c_smarty_caching = false;
 

@@ -527,7 +527,8 @@ class cs_step_manager extends cs_manager implements cs_export_import_interface {
 
 
    function deleteStepsOfUser($uid) {
-   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	  global $symfonyContainer;
+      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
       $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT '.$this->addDatabasePrefix('step').'.* FROM '.$this->addDatabasePrefix('step').' WHERE '.$this->addDatabasePrefix('step').'.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);

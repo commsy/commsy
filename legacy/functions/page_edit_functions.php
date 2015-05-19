@@ -25,13 +25,15 @@
 // function to check files for virus
 function page_edit_virusscan_isClean ($filename_on_disc, $filename_orig) {
    global $page;
-   global $c_virus_scan;
    global $environment;
    $class_factory = $environment->getClassFactory();
 
+   global $symfonyContainer;
+   $c_virus_scan = $symfonyContainer->getParameter('commsy.clamscan.virus_scan');
+   $c_virus_scan_cron = $symfonyContainer->getParameter('commsy.clamscan.virus_scan_cron');
+
    $retour = true;
    if (isset($c_virus_scan) and $c_virus_scan) {
-      global $c_virus_scan_cron;
       if ( !isset($c_virus_scan_cron) or !$c_virus_scan_cron ) {
          include_once('classes/cs_virus_scan.php');
          $virus_scanner = new cs_virus_scan($environment);

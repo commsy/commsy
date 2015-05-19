@@ -30,9 +30,11 @@ include_once('classes/cs_tag2tag_manager.php');
  * this class implements a database manager for the table "zzz_tag2tag"
  */
 class cs_zzz_tag2tag_manager extends cs_tag2tag_manager {
-   public function __construct ($environment) {
-      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::__construct($environment);
-   }
+    public function __construct ($environment) {
+        global $symfonyContainer;
+        $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+        
+        parent::__construct($environment);
+    }
 }
 ?>

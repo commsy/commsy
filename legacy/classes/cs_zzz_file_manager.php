@@ -30,9 +30,11 @@ include_once('classes/cs_file_manager.php');
  * this class implements a database manager for the table "zzz_file"
  */
 class cs_zzz_file_manager extends cs_file_manager {
-   public function __construct ($environment) {
-      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::cs_file_manager($environment);
-   }
+    public function __construct ($environment) {
+        global $symfonyContainer;
+        $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+        
+        parent::cs_file_manager($environment);
+    }
 }
 ?>

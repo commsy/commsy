@@ -27,13 +27,8 @@ if ( isset($_GET['cid']) ) {
 	chdir('..');
    include_once('etc/cs_constants.php');
    include_once('etc/cs_config.php');
-
-	global $c_webserver;
-   if(isset($c_webserver) and $c_webserver == 'lighttpd'){
-	   $path = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-   } else {
-      $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-   }
+   
+   $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
 
    $path = str_replace('rss.php','',$path);
 

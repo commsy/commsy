@@ -663,7 +663,8 @@ class cs_discussion_manager extends cs_manager implements cs_export_import_inter
 
    function deleteDiscussionsOfUser($uid) {
         // create backup of item
-   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	  global $symfonyContainer;
+      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
       $this->backupItem($uid, array(	'title'				=>	'title',
                                    'modification_date'	=>	'modification_date',
                                    'public'			=>	'public'));

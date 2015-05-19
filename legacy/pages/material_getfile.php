@@ -173,22 +173,17 @@ if ( !empty($_GET['iid']) ) {
                ini_set('memory_limit', intval($size * 1.5));
             }
             // Maybe the problem is Apache is trying to compress the output, so:
-            global $c_webserver;
-            if(isset($c_webserver) and $c_webserver != 'lighttpd'){
-            	if(function_exists('apache_setenv')) {
-            		@apache_setenv('no-gzip', 1);
-            	} else {
-            		@ini_set('output_buffering', 'Off');
-            	}
-            	
-            	@ini_set('zlib.output_compression', 'Off');
+            if(function_exists('apache_setenv')) {
+               @apache_setenv('no-gzip', 1);
+            } else {
+               @ini_set('output_buffering', 'Off');
             }
+            
+            @ini_set('zlib.output_compression', 'Off');
+            
             // Maybe the client doesn't know what to do with the output so send a bunch of these headers:
-
-            #if(!in_array($file->getMime(), $no_force_download)){
-	            header("Content-Type: application/force-download");
-	            header('Content-Type: application/octet-stream');
-            #}
+            header("Content-Type: application/force-download");
+            header('Content-Type: application/octet-stream');
             
             $add_content_type_header = true;
             if (strpos($_SERVER['HTTP_USER_AGENT'], 'Macintosh') !== false) {

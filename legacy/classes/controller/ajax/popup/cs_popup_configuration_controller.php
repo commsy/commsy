@@ -1590,35 +1590,14 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 			$this->_shown_community_room_array = $shown_community_room_array;
 		}
 
+		global $symfonyContainer;
+		$c_theme = $symfonyContainer->getParameter('commsy.themes.default');
 
-		global $c_theme;
 		$default_color_value = 'default';
 		if(isset($c_theme) and !empty($c_theme) and $c_theme != 'default'){
 			$default_color_value = $c_theme;
 		}
-
-		// color schemes
-// 		$this->_color_array[] = array(
-// 			'text'		=> $translator->getMessage('COMMON_COLOR_DEFAULT'),
-// 			'value'		=> $default_color_value,
-// 			'disabled'	=> false
-// 		);
-// 		$this->_color_array[] = array(
-// 			'text'		=> '-----',
-// 			'value'		=> '-1',
-// 			'disabled'	=> true
-// 		);
-
-/*		$temp_color_array = array();
-		for($i=1; $i <= 26; $i++) {
-			$translation = $translator->getMessage('COMMON_COLOR_SCHEMA_' . $i);
-
-			$temp_color_array[$translation] = array(
-				'text'		=> $translation,
-				'value'		=> 'COMMON_COLOR_SCHEMA_' . $i,
-				'disabled'	=> false
-			);
-		}*/
+		
 		global $theme_array;
 		foreach($theme_array as $theme){
 			$temp_color_array[$theme['value']] = $theme;

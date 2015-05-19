@@ -361,7 +361,8 @@ class cs_profile_form extends cs_rubric_form {
             $current_context_item = $this->_environment->getCurrentContextItem();
             // datenschutz: overwrite or not (28.08.2012 IJ)
             $overwrite = true;
-            $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+            global $symfonyContainer;
+            $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
             if ( !empty($disable_overwrite) and $disable_overwrite ) {
             	$overwrite = false;
             }            
@@ -377,7 +378,8 @@ class cs_profile_form extends cs_rubric_form {
          } else {
             // datenschutz: overwrite or not (28.08.2012 IJ)
             $overwrite = true;
-            $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+            global $symfonyContainer;
+            $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
             if ( !empty($disable_overwrite) and $disable_overwrite ) {
             	$overwrite = false;
             }            

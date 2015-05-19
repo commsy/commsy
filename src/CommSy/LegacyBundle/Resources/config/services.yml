@@ -4,12 +4,12 @@ parameters:
 services:
     # Legacy kernel
     commsy_legacy.legacy_kernel:
-        class: CommSy\LegacyBundle\Kernel\LegacyKernel
+        class: Commsy\LegacyBundle\Kernel\LegacyKernel
         arguments: [%legacy.site_index%, @service_container]
 
     # Event listeners
     commsy_legacy.listener.legacy_kernel_listener:
-        class: CommSy\LegacyBundle\EventListener\LegacyKernelListener
+        class: Commsy\LegacyBundle\EventListener\LegacyKernelListener
         arguments: [@commsy_legacy.legacy_kernel]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }

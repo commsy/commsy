@@ -1590,7 +1590,8 @@ class cs_popup_profile_controller implements cs_popup_controller {
 
 		// datenschutz: overwrite or not (04.09.2012 IJ)
 		$overwrite = true;
-		$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+		global $symfonyContainer;
+		$disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
 		if ( !empty($disable_overwrite) and $disable_overwrite ) {
 			$overwrite = false;
 		}

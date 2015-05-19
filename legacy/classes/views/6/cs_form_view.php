@@ -451,10 +451,14 @@ class cs_form_view extends cs_view {
                )
          ) {
          $html .= '<span class="formcounter">'.LF;
-         global $c_autosave_mode;
+
+         global $symfonyContainer;
+
+         $c_autosave_mode = $symfonyContainer->getParameter('commsy.autosave.mode');
+         $c_autosave_limit = $symfonyContainer->getParameter('commsy.autosave.limit');
+
          if ( $c_autosave_mode == 1 ) {
             $currTime = time();
-            global $c_autosave_limit;
             $sessEnds = $currTime + ($c_autosave_limit * 60);
             $sessEnds = date("H:i", $sessEnds);
             $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' '.$sessEnds.LF;
@@ -2632,9 +2636,13 @@ class cs_form_view extends cs_view {
             $html .= '         var timerRunning = false;'.LF;
             $html .= '         var startDate;'.LF;
             $html .= '         var startSecs;'.LF;
-            global $c_autosave_mode;
+
+            global $symfonyContainer;
+
+            $c_autosave_mode = $symfonyContainer->getParameter('commsy.autosave.mode');
+            $c_autosave_limit = $symfonyContainer->getParameter('commsy.autosave.limit');
+
             $html .= '         var dispMode = '.$c_autosave_mode.';'.LF;
-            global $c_autosave_limit;
             $html .= '         var sessLimit = '.($c_autosave_limit*60).';'.LF;
 
             $form_element = $this->_form_elements->getFirst();

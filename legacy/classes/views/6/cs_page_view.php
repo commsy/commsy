@@ -430,9 +430,13 @@ class cs_page_view extends cs_view {
                $retour .= '         var timerRunning = false;'.LF;
                $retour .= '         var startDate;'.LF;
                $retour .= '         var startSecs;'.LF;
-               global $c_autosave_mode;
+
+               global $symfonyContainer;
+
+               $c_autosave_mode = $symfonyContainer->getParameter('commsy.autosave.mode');
+               $c_autosave_limit = $symfonyContainer->getParameter('commsy.autosave.limit');
+
                $retour .= '         var dispMode = '.$c_autosave_mode.';'.LF;
-               global $c_autosave_limit;
                $retour .= '         var sessLimit = '.($c_autosave_limit*60).';'.LF;
                $retour .= '      -->'.LF;
                $retour .= '   </script>'.LF;
@@ -664,8 +668,10 @@ class cs_page_view extends cs_view {
    	$to_javascript['dev']['xhr_error_reporting'] = (isset($c_xhr_error_reporting) && !empty($c_xhr_error_reporting)) ? true : false;
    	
    	if(isset($portal_user) && $portal_user->isAutoSaveOn()) {
-   		global $c_autosave_mode;
-   		global $c_autosave_limit;
+      global $symfonyContainer;
+
+      $c_autosave_mode = $symfonyContainer->getParameter('commsy.autosave.mode');
+      $c_autosave_limit = $symfonyContainer->getParameter('commsy.autosave.limit');
    	
    		if(isset($c_autosave_mode) && isset($c_autosave_limit)) {
    			$to_javascript['autosave']['mode'] = $c_autosave_mode;

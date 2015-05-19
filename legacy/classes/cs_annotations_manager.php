@@ -449,7 +449,8 @@ class cs_annotations_manager extends cs_manager implements cs_export_import_inte
    }
 
    function deleteAnnotationsofUser($uid) {
-   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	  global $symfonyContainer;
+      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
    	  // create backup of item
    	  $this->backupItem($uid, array(	'title'				=>	'title',
    	  									'description'		=>	'description',

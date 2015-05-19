@@ -31,7 +31,9 @@ include_once('classes/cs_item_manager.php');
  */
 class cs_zzz_item_manager extends cs_item_manager {
    public function __construct ($environment) {
-      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
+      global $symfonyContainer;
+      $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+
       parent::cs_item_manager($environment);
    }
 

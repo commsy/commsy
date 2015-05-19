@@ -1,5 +1,5 @@
 commsy:
-    # autosaving
+    # Autosaving
     autosave:
         # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
         mode: 0
@@ -7,20 +7,85 @@ commsy:
         # limit in minutes
         limit: 6
 
+        # # if ( !empty($c_session_lifetime) ) {
+        # #    $c_autosave_limit = $c_session_lifetime-0.2;
+        # # }
 
+    # Connection to Beluga, the library system of the university of hamburg
+    # Configuration needs with_ims_content_connection and ims_content_connection_temp_folder
+    beluga:
+        url_for_beluga_system: ~
+        url_for_beluga_upload: ~
 
+    # Use virus scanning at uploading files
+    # ----------------------------------------------------
+    # OPTION 1: there are performance lacks
+    # scan file on upload
+    # 1. installation
+    #    on debian linux
+    #    # apt-get install php5-clamavlib
+    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+    #    # /etc/init.d/apache2 restart
+    # 2. enable virus scan at uploading files
+    #    virus_scan = true;
+    # 3. enable virus scan by php clamav library
+    #    virus_use_php = true;
+    #    
+    # if you want to use another viren scanning tool
+    # you must set the following variables
+    # - only testet with clamav on linux
+    #    virus_scan = true;
+    #    virus_use_php = false;
+    #    virus_scan_path = '/usr/bin';
+    #    virus_scan_bin  = 'clamscan';
+    # ----------------------------------------------------
+    # OPTION 2: scan files with commsy cron
+    # scan files every 24 hours
+    # 1. installation
+    #    on debian linux
+    #    # apt-get install php5-clamavlib
+    #    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+    #    # /etc/init.d/apache2 restart
+    # 2. enable virus scan at uploading files
+    #    virus_scan_cron = true;
+    # 3. enable virus scan by php clamav library
+    #    virus_use_php = true;
+    #
+    # if you want to use another viren scanning tool
+    # you must set the following variables
+    # - only testet with clamav on linux
+    #    virus_scan_cron = true;
+    #    virus_use_php = false;
+    #    virus_scan_path = '/usr/bin';
+    #    virus_scan_bin  = 'clamscan';
+    clamscan:
+        virus_scan: false
+        virus_use_php: false
+        virus_scan_cron: false
+        virus_scan_path: '/usr/bin'
+        virus_scan_bin: 'clamscan'
 
+    # Cookie management
+    cookie:
+        domain: ~
+        path: ~
 
+    # Database
+    db:
+        backup_prefix: 'zzz'
 
+    # Security
+    security:
+        # overwrite entries with "overwritten because of data security" when deleting a user
+        # default = false
+        # do nothing = true
+        # set flag = flag
+        privacy_disable_overwriting: false
 
+        # allows all moderators to take over another user by default
+        allow_moderator_takeover: true
 
-
-
-# // mode: 
-# $c_autosave_mode = 2;
-
-# // autosave limit in minutes
-# $c_autosave_limit = 6;
-# if ( !empty($c_session_lifetime) ) {
-#    $c_autosave_limit = $c_session_lifetime-0.2;
-# }
+    # Theming
+    themes:
+        # Default theme
+        default: 'default'

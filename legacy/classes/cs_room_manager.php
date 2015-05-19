@@ -397,7 +397,9 @@ class cs_room_manager extends cs_context_manager {
      }
 
      // archive limit zzz_tables
-     $db_prefix = $this->_environment->getConfiguration('c_db_backup_prefix').'_';
+     global $symfonyContainer;
+     $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+     $db_prefix = $c_db_backup_prefix.'_';
      if ( isset($this->_archive_limit)
           and $this->_archive_limit
           and !strstr($query,$db_prefix)
@@ -655,7 +657,9 @@ class cs_room_manager extends cs_context_manager {
    ##########################################################
 
    function moveFromDbToBackup($context_id){
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if ( !empty($context_id) ) {
          $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
@@ -671,7 +675,9 @@ class cs_room_manager extends cs_context_manager {
    }
 
    function moveFromBackupToDb($context_id){
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if ( !empty($context_id) ) {
       	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
@@ -687,7 +693,9 @@ class cs_room_manager extends cs_context_manager {
    }
 
    function deleteFromDb($context_id, $from_backup = false){
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+      
       $retour = false;
 
       $db_prefix = '';
@@ -852,7 +860,8 @@ class cs_room_manager extends cs_context_manager {
    function deleteRoomOfUserAndUserItemsInactivity($uid) {
    	
    	// create backup of item
-   	$disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	global $symfonyContainer;
+    $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
    	$current_datetime = getCurrentDateTimeInMySQL();
    	#$query  = 'SELECT '.$this->addDatabasePrefix('room').'.* FROM '.$this->addDatabasePrefix('room').' WHERE '.$this->addDatabasePrefix('room').'.creator_id = "'.$uid.'"';
    	// list of rooms where user is member

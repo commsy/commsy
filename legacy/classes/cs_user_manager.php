@@ -480,7 +480,10 @@ class cs_user_manager extends cs_manager {
          if ( !empty($room_id_array) ) {
             $tmp_db_name = 'usernomem_archive';
             $this->setWithDatabasePrefix();
-            $this->_db_prefix = $this->_environment->getConfiguration('c_db_backup_prefix').'_';
+
+            global $symfonyContainer;
+            $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+            
             $retour .= ' LEFT JOIN '.$this->addDatabasePrefix($this->_db_table).' AS '.$tmp_db_name;
             $this->_db_prefix = '';
             $this->setWithoutDatabasePrefix();

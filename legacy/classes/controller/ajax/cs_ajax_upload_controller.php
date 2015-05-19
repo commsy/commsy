@@ -133,16 +133,11 @@
 				
 				for($i = 0; $i < $numFiles; $i++) {
 					$tempFile = $uploadData["tmp_name"][$i];
-				
-					/*
-					 if($session->issetValue($file_upload_rubric . "_add_files")) {
-					$file_array = $session->getValue($file_upload_rubric . "_add_files");
-					} else {
-					$file_array = array();
-					}*/
-						
-					global $c_virus_scan;
-					global $c_virus_scan_cron;
+
+					global $symfonyContainer;
+					$c_virus_scan = $symfonyContainer->getParameter('commsy.clamscan.virus_scan');
+					$c_virus_scan_cron = $symfonyContainer->getParameter('commsy.clamscan.virus_scan_cron');
+
 					$c_virus_scan = (!isset($c_virus_scan) || $c_virus_scan === false) ? false : true;
 					$c_virus_scan_cron = (!isset($c_virus_scan_cron) || $c_virus_scan_cron === false) ? false : true;
 						
@@ -184,18 +179,10 @@
 				}
 			} else {
 				$tempFile = $uploadData["tmp_name"];
-				
-				/*
-				if($session->issetValue($file_upload_rubric . "_add_files")) {
-					$file_array = $session->getValue($file_upload_rubric . "_add_files");
-				} else {
-					$file_array = array();
-				}*/
-					
-				global $c_virus_scan;
-				global $c_virus_scan_cron;
-				$c_virus_scan = (!isset($c_virus_scan) || $c_virus_scan === false) ? false : true;
-				$c_virus_scan_cron = (!isset($c_virus_scan_cron) || $c_virus_scan_cron === false) ? false : true;
+
+				global $symfonyContainer;
+				$c_virus_scan = $symfonyContainer->getParameter('commsy.clamscan.virus_scan');
+				$c_virus_scan_cron = $symfonyContainer->getParameter('commsy.clamscan.virus_scan_cron');
 					
 				if(!empty($tempFile) && $uploadData["size"] > 0) {
 					$disc_manager = $this->_environment->getDiscManager();

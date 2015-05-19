@@ -30,9 +30,11 @@ include_once('classes/cs_labels_manager.php');
  * this class implements a database manager for the table "zzz_label"
  */
 class cs_zzz_label_manager extends cs_labels_manager {
-   public function __construct ($environment) {
-      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::cs_labels_manager($environment);
-   }
+    public function __construct ($environment) {
+        global $symfonyContainer;
+        $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+        
+        parent::cs_labels_manager($environment);
+    }
 }
 ?>

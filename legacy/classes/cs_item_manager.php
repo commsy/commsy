@@ -964,7 +964,9 @@ class cs_item_manager extends cs_manager {
    ########################################################
 
    function moveFromDbToBackup($context_id){
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if ( !empty($context_id) ) {
          $query = 'INSERT INTO '.$c_db_backup_prefix.'_'.$this->_db_table.' SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.$context_id.'"';
@@ -1005,7 +1007,9 @@ class cs_item_manager extends cs_manager {
    }
 
    function moveFromBackupToDb($context_id){
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if ( !empty($context_id) ) {
       	$query = 'INSERT INTO '.$this->_db_table.' SELECT * FROM '.$c_db_backup_prefix.'_'.$this->_db_table.' WHERE '.$c_db_backup_prefix.'_'.$this->_db_table.'.item_id = "'.$context_id.'"';
@@ -1070,7 +1074,9 @@ class cs_item_manager extends cs_manager {
          $temp_user = $user_list->getNext();
       }
       
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
@@ -1112,7 +1118,9 @@ class cs_item_manager extends cs_manager {
          $temp_user = $user_list->getNext();
       }
       
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
@@ -1131,9 +1139,11 @@ class cs_item_manager extends cs_manager {
    
    // archive
    private function _deleteFromDbWorkflow($context_id, $from_backup = false){
-   	$db_table = 'workflow_read';
+   	  $db_table = 'workflow_read';
    	
-   	global $c_db_backup_prefix;
+   	  global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       
       $db_prefix = '';

@@ -1,6 +1,6 @@
 <?php
 
-namespace CommSy\LegacyBundle\Kernel;
+namespace Commsy\LegacyBundle\Kernel;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

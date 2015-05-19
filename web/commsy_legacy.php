@@ -822,7 +822,9 @@ if ( !empty($SID) ) {
 // multi master implementation - BEGIN
 $session_item = $environment->getSessionItem();
 if ( $session_item->issetValue('db_save_pid_in_cookie') ) {
-    setcookie('db_pid', $environment->getDBPortalID(), 0, $environment->getConfiguration('cookiepath'), $environment->getConfiguration('domain'), 0);
+    $cookiePath = $symfonyContainer->getParameter('commsy.cookie.path');
+    $cookieDomain = $symfonyContainer->getParameter('commsy.cookie.domain');
+    setcookie('db_pid', $environment->getDBPortalID(), 0, $cookiePath, $cookieDomain, 0);
     $session_item->unsetValue('db_save_pid_in_cookie');
 } elseif ( $session_item->issetValue('db_renew_pid_in_cookie') ) {
     $cs_pid = 0;
@@ -833,7 +835,9 @@ if ( $session_item->issetValue('db_save_pid_in_cookie') ) {
     } else {
         $cs_pid = $environment->getCurrentPortalID();
     }
-    setcookie('db_pid', $cs_pid, 0, $environment->getConfiguration('cookiepath'), $environment->getConfiguration('domain'), 0);
+    $cookiePath = $symfonyContainer->getParameter('commsy.cookie.path');
+    $cookieDomain = $symfonyContainer->getParameter('commsy.cookie.domain');
+    setcookie('db_pid', $cs_pid, 0, $cookiePath, $cookieDomain, 0);
     $session_item->unsetValue('db_renew_pid_in_cookie');
 }
 // multi master implementation - END
@@ -1039,8 +1043,10 @@ global $c_smarty;
 $c_smarty = true;
 if(isset($c_smarty) && $c_smarty === true) {
     require_once('classes/cs_smarty.php');
-    global $c_theme;
+    
     global $theme_array;
+
+    $c_theme = $symfonyContainer->getParameter('commsy.themes.default');
     if(!isset($c_theme) || empty($c_theme)) $c_theme = 'default';
     $shown_sheme = $c_theme;
 

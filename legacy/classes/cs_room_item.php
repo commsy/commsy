@@ -890,7 +890,10 @@ class cs_room_item extends cs_context_item {
       $cron_array[] = $this->_cronUnlinkFiles();
       $cron_array[] = $this->_cronControlLinkItems();
       $cron_array[] = $this->_cronControlLinks();
-      global $c_virus_scan_cron;
+
+      global $symfonyContainer;
+      $c_virus_scan = $symfonyContainer->getParameter('commsy.clamscan.virus_scan');
+      
       if ( isset($c_virus_scan_cron)
            and !empty($c_virus_scan_cron)
            and $c_virus_scan_cron

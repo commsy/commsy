@@ -260,8 +260,10 @@ class cs_account_status_form extends cs_rubric_form {
          if($deactived_login_as == 1){
          	$this->_values['login_as']		  = 1;
          } elseif (empty($deactived_login_as)) {
-         	global $c_default_value_login_as_xy_for_new_moderator;
-         	if(!$c_default_value_login_as_xy_for_new_moderator){
+          global $symfonyContainer;
+          $allow_moderator_takeover = $symfonyContainer->getParameter('commsy.security.allow_moderator_takeover');
+          
+         	if(!$allow_moderator_takeover){
          		$this->_values['login_as']		  = 1;
          	} else {
          		$this->_values['login_as']		  = 2;

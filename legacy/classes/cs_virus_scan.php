@@ -32,7 +32,11 @@ class cs_virus_scan {
    var $_translator = NULL;
 
    function cs_virus_scan ($environment) {
-      global $c_virus_use_php, $c_virus_scan_path, $c_virus_scan_bin;
+      global $symfonyContainer;
+      $c_virus_use_php = $symfonyContainer->getParameter('commsy.clamscan.virus_use_php');
+      $c_virus_scan_path = $symfonyContainer->getParameter('commsy.clamscan.virus_scan_path');
+      $c_virus_scan_bin = $symfonyContainer->getParameter('commsy.clamscan.virus_scan_bin');
+
       $this->_path = $c_virus_scan_path;
       $this->_bin  = $c_virus_scan_bin;
       $this->_php  = $c_virus_use_php;

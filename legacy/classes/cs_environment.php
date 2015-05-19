@@ -2355,7 +2355,9 @@ class cs_environment {
    }
 
    public function withBelugaConnection(){
-      global $url_for_beluga_system;
+      global $symfonyContainer;
+      $url_for_beluga_system = $symfonyContainer->getParameter('commsy.beluga.url_for_beluga_system');
+
       $retour = false;
       if (isset($url_for_beluga_system) and !empty($url_for_beluga_system)){
          $retour = true;
@@ -2364,7 +2366,9 @@ class cs_environment {
    }
 
    public function getBelugaConnectionLink(){
-      global $url_for_beluga_system;
+      global $symfonyContainer;
+      $url_for_beluga_system = $symfonyContainer->getParameter('commsy.beluga.url_for_beluga_system');
+      
       $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
       if (!stristr($commsy_link,'SID')) {
          $session = $this->getSessionItem();

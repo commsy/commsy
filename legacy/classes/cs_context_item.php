@@ -102,10 +102,12 @@ class cs_context_item extends cs_item {
 
     global $cs_color;
     $this->_default_colors = $cs_color['DEFAULT'];
- 	global $c_theme;
- 	if(isset($c_theme) && !empty($c_theme)) {
- 		$this->_default_colors['schema'] = $c_theme;
- 	}
+
+    global $symfonyContainer;
+    $c_theme = $symfonyContainer->getParameter('commsy.themes.default');
+    if(isset($c_theme) && !empty($c_theme)) {
+    	$this->_default_colors['schema'] = $c_theme;
+    }
 
   }
 

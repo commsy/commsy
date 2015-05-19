@@ -83,7 +83,10 @@ else {
          trigger_error('can not make directory '.$ims_content_connection_temp_folder,E_USER_ERROR);
       }
       unset($disc_manager);
-      global $url_for_beluga_system;
+
+      global $symfonyContainer;
+      $url_for_beluga_system = $symfonyContainer->getParameter('commsy.beluga.url_for_beluga_system');
+      
       $session = $environment->getSessionItem();
       $target_directory = $ims_content_connection_temp_folder.'/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
       $file_name = 'ims'.$session->getSessionID().'.zip';

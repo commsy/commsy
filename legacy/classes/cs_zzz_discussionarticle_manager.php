@@ -30,9 +30,11 @@ include_once('classes/cs_discussionarticles_manager.php');
  * this class implements a database manager for the table "zzz_discussionarticle"
  */
 class cs_zzz_discussionarticle_manager extends cs_discussionarticles_manager {
-   public function __construct ($environment) {
-      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::cs_discussionarticles_manager($environment);
-   }
+    public function __construct ($environment) {
+        global $symfonyContainer;
+        $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+        
+        parent::cs_discussionarticles_manager($environment);
+    }
 }
 ?>

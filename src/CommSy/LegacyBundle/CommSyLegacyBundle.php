@@ -1,9 +1,9 @@
 <?php
 
-namespace CommSy\LegacyBundle;
+namespace Commsy\LegacyBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class CommSyLegacyBundle extends Bundle
+class CommsyLegacyBundle extends Bundle
 {
 }

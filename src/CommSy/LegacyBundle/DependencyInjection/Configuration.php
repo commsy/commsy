@@ -1,6 +1,6 @@
 <?php
 
-namespace CommSy\LegacyBundle\DependencyInjection;
+namespace Commsy\LegacyBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;

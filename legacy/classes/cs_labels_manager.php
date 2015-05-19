@@ -1129,7 +1129,8 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
 
    function deleteLabelsOfUser($uid) {
    	  // create backup of item
-   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
+   	  global $symfonyContainer;
+      $disable_overwrite = $symfonyContainer->getParameter('commsy.security.privacy_disable_overwriting');
    	  $this->backupItem($uid, array(	'name'				=>	'title',
    	  									'description'		=>	'description',
    	  									'modification_date'	=>	'modification_date',

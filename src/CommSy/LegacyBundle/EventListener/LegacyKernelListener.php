@@ -1,6 +1,6 @@
 <?php
 
-namespace CommSy\LegacyBundle\EventListener;
+namespace Commsy\LegacyBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

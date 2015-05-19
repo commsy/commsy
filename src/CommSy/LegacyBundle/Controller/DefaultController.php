@@ -1,6 +1,6 @@
 <?php
 
-namespace CommSy\LegacyBundle\Controller;
+namespace Commsy\LegacyBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

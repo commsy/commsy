@@ -268,9 +268,11 @@ function performAction ( $environment, $action_array, $post_array ) {
          }
 
          $user->makeModerator();
+
+         global $symfonyContainer;
+         $allow_moderator_takeover = $symfonyContainer->getParameter('commsy.security.allow_moderator_takeover');
          
-         global $c_default_value_login_as_xy_for_new_moderator;
-         if(!$c_default_value_login_as_xy_for_new_moderator){
+         if(!$allow_moderator_takeover){
          	$user->deactivateLoginAsAnotherUser();
          } else {
          	$user->unsetDeactivateLoginAsAnotherUser();

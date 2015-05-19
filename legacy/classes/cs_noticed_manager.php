@@ -433,7 +433,9 @@ class cs_noticed_manager {
          $temp_user = $user_list->getNext();
       }
 
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
@@ -474,7 +476,9 @@ class cs_noticed_manager {
          $temp_user = $user_list->getNext();
       }
 
-      global $c_db_backup_prefix;
+      global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+
       $retour = false;
       if(!empty($id_array_items) and !empty($id_array_users)){
          if ( !empty($context_id) ) {
@@ -492,7 +496,9 @@ class cs_noticed_manager {
    }
 
    function deleteFromDb($context_id, $from_backup = false){
-   	global $c_db_backup_prefix;
+   	  global $symfonyContainer;
+      $c_db_backup_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix');
+      
       $retour = false;
 
       $db_prefix = '';

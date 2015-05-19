@@ -1,8 +1,8 @@
 commsy_legacy:
-    resource: "@CommSyLegacyBundle/Controller/"
+    resource: "@CommsyLegacyBundle/Controller/"
     type:     annotation
     prefix:   /
 
-app:
-    resource: @AppBundle/Controller/
-    type:     annotation
+# app:
+#     resource: @AppBundle/Controller/
+#     type:     annotation

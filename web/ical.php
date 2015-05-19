@@ -24,12 +24,7 @@
 
 mb_internal_encoding('UTF-8');
 if ( isset($_GET['cid']) ) {
-   global $c_webserver;
-   if(isset($c_webserver) and $c_webserver == 'lighttpd'){
-      $path = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-   } else {
-      $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
-   }
+   $path = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['PHP_SELF'];
 
    $path = str_replace('ical.php','',$path);
    chdir('..');

@@ -62,19 +62,9 @@ class db_mysql_connector {
          }
       } else {
          mysql_select_db($data['database'], $this->_db_link);
-         global $c_webserver;
-         if(isset($c_webserver) and $c_webserver == 'lighttpd'){
-         	mysql_query("SET NAMES 'utf8'", $this->_db_link);
-         	mysql_query("SET CHARACTER SET 'utf8'", $this->_db_link);
-         	mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->_db_link);
-         } else {
-         	#mysql_query("SET NAMES 'utf8'");
-         	#mysql_query("SET CHARACTER SET 'utf8'");
-         	mysql_query("SET NAMES 'utf8'", $this->_db_link);
-         	mysql_query("SET CHARACTER SET 'utf8'", $this->_db_link);
-         	mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->_db_link);
-         }
-         
+         mysql_query("SET NAMES 'utf8'", $this->_db_link);
+         mysql_query("SET CHARACTER SET 'utf8'", $this->_db_link);
+         mysql_query("SET character_set_results = 'utf8', character_set_client = 'utf8', character_set_connection = 'utf8', character_set_database = 'utf8', character_set_server = 'utf8'", $this->_db_link);
          
          $this->_connect_failed = 0;
       }

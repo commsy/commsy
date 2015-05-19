@@ -30,9 +30,11 @@ include_once('classes/cs_hash_manager.php');
  * this class implements a database manager for the table "zzz_hash"
  */
 class cs_zzz_hash_manager extends cs_hash_manager {
-   public function __construct ($environment) {
-      $this->_db_prefix = $environment->getConfiguration('c_db_backup_prefix').'_';
-      parent::__construct($environment);
-   }
+    public function __construct ($environment) {
+        global $symfonyContainer;
+        $this->_db_prefix = $symfonyContainer->getParameter('commsy.db.backup_prefix').'_';
+        
+        parent::__construct($environment);
+    }
 }
 ?>
