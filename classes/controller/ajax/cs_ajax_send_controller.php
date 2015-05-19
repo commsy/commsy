@@ -327,20 +327,22 @@ class cs_ajax_send_controller extends cs_ajax_controller {
 			$topic_list = new cs_list();
 
 			if (isset($this->_data["allMembers"])) {	//send to all members of a community room, if no institutions and topics are availlable
-				$cid = $this->_environment->getCurrentContextId();
-				$user_manager->setContextLimit($cid);
-				$user_manager->select();
-				$user_list = $user_manager->get();
-				$user_item = $user_list->getFirst();
-				while($user_item) {
-					if ( $user_item->isEmailVisible()) {
-						$recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-						$recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
-					} else {
-						$recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-						$recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
-					}
-					$user_item = $user_list->getNext();
+   			if ($this->_data["allMembers"] == '1') {
+   				$cid = $this->_environment->getCurrentContextId();
+   				$user_manager->setContextLimit($cid);
+   				$user_manager->select();
+   				$user_list = $user_manager->get();
+   				$user_item = $user_list->getFirst();
+   				while($user_item) {
+   					if ( $user_item->isEmailVisible()) {
+   						$recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
+   						$recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
+   					} else {
+   						$recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
+   						$recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
+   					}
+   					$user_item = $user_list->getNext();
+   				}
 				}
 			}
 
