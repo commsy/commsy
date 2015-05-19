@@ -122,7 +122,8 @@ class cs_configuration_extra_form extends cs_rubric_form {
       /*
        * commsywordpress
        */
-      global $c_wordpress;
+      global $symfonyContainer;
+      $c_wordpress = $symfonyContainer->getParameter('commsy.wordpress.enabled');
       if ( isset($c_wordpress) and  $c_wordpress ) {
          $this->_array_extra[24]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_WORDPRESS');
          $this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_WORDPRESS';

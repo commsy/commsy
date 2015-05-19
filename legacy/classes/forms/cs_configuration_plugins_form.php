@@ -136,8 +136,9 @@ class cs_configuration_plugins_form extends cs_rubric_form {
       $this->setHeadline($this->_headline);
       $this->_form->addText('text','',$this->_translator->getMessage('CONFIGURATION_PLUGIN_DESC'),'');
       
+      global $symfonyContainer;
+      $c_wordpress = $symfonyContainer->getParameter('commsy.wordpress.enabled');
       
-      global $c_wordpress;
       if ( isset($c_wordpress) and  $c_wordpress and $this->_environment->inPortal()) {
       	$this->_form->addEmptyLine();
       	

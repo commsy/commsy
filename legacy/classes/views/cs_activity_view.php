@@ -238,7 +238,6 @@ class cs_activity_view extends cs_view {
       }
       if ( $current_context->showWordpressLink() and $current_context->existWordpress() and $current_context->issetWordpressHomeLink() ) {
       	$current_portal_item = $this->_environment->getCurrentPortalItem();
-         #global $c_wordpress_path_url;
          $wordpress_path_url = $current_portal_item->getWordpressUrl();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/22x22/wordpress.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'"/>';

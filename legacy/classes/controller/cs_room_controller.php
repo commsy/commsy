@@ -211,7 +211,6 @@
 
 			// wordpress
 			if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
-				#global $c_wordpress_path_url;
 				$wordpress_path_url = $current_portal_item->getWordpressUrl();
 				$count++;
 				$return['wordpress']['active'] = true;

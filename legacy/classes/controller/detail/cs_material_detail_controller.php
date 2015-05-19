@@ -1000,7 +1000,6 @@
 				}
 			}
 
-			#global $c_wordpress;
 			if($portal_item->getWordpressPortalActive() and $context_item->isWordpressActive()) {
 				if($this->_item->isExporttoWordpress()) {
 					$temp_array = array();
@@ -1198,18 +1197,7 @@
 			   }
 			}
 
-			// TODO:
-			/*
-			if(!empty($formal_data1)) {
-					$html .= $this->_getFormalDataAsHTML($formal_data1);
-		         if ( isset($html_script) and !empty($html_script) ) {
-		            $html .= $html_script;
-		         }
-			}
-			*/
-
 			// wordpress export
-			#global $c_wordpress;
 			if($portal_item->getWordpressPortalActive() and $context_item->isWordpressActive() and !isset($_GET['version_id'])){
    			$wordpress_manager = $this->_environment->getWordpressManager();
    			if ( $this->_item->mayEdit($current_user)

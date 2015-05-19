@@ -210,8 +210,6 @@ class cs_wordpress_view extends cs_view {
    }
    
    function _format_image ( $text, $array, $file_link_array_images) {
-      #global $c_wordpress_path_url;
-      
    	  $portal_item = $this->_environment->getCurrentPortalItem();
       $wordpress_path_url = $portal_item->getWordpressUrl();
       

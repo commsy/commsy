@@ -2100,7 +2100,6 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	}
 
 	private function getExternalInformation() {
-	   #global $c_wordpress;
 	   global $c_pmwiki;
 	   global $c_etchat_enable;
 

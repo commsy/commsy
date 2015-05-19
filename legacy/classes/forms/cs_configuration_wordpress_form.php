@@ -84,7 +84,6 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
    * this methods creates the form with the form definitions
    */
   function _createForm () {
-    #global $c_wordpress_path_url;
     $wordpress_path_url = $current_portal_item->getWordpressUrl();
     // form fields
     $this->_form->addHidden('iid','');
@@ -146,7 +145,6 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
        $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
        unset($session_item);
        # direkte Verlinkung geht nicht, da die Authentifizierung über die Session zu spät erfolgt
-       #$url = '<a title="'.$title.'" href="'.$c_wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/wp-admin/themes.php'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
        $url = '<a title="'.$title.'" href="'.$wordpress_path_url.'/'.$this->_item->getContextID().'_'.$this->_item->getItemID().'/'.$url_session_id.'" target="_blank">'.$this->_translator->getMessage('COMMON_WORDPRESS_LINK').'</a>';
     } else {
        $url = $this->_translator->getMessage('COMMON_WORDPRESS_LINK');
@@ -191,30 +189,10 @@ class cs_configuration_wordpress_form extends cs_rubric_form {
 
     }
 
-//    // plugins
-//    $this->_form->addEmptyline();
-//    if (!$this->_item->isPortal()){
-//      $this->_form->addCheckbox('use_calendar',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_CALENDAR'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_DESC'),false,false,'','',true,false);
-//      $this->_form->combine();
-//      $this->_form->addCheckbox('use_tagcloud',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_TAGCLOUD'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_PLUGIN_DESC'),false,false,'','',true,false);
-//
-//    }
-
     $this->_form->addEmptyline();
     if (!$this->_item->isPortal()) {
-
       $this->_form->addCheckbox('wordpresslink',1,'',$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMON'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_SHOW_HOMELINK'),$this->_translator->getMessage('WORDPRESS_CONFIGURATION_COMMON_DESC'),false,false,'','',true,false);
-
-
     }
-
-    global $c_wordpress_path_file;
-
-
-
-
-
-    // /new features
 
     // buttons
     if ( isset($this->_item) and $this->_item->existWordpress() ) {

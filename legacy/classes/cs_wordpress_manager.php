@@ -48,14 +48,12 @@ class cs_wordpress_manager extends cs_manager
 
     public function cs_wordpress_manager($environment)
     {
-        global $c_use_soap_for_wordpress; #$c_wordpress_path_url;
         parent::cs_manager($environment);
 
         $this->wp_user = $this->_environment->getCurrentUser()->_getItemData();
 
         $portal_item = $this->_environment->getCurrentPortalItem();
         $wordpress_path_url = $portal_item->getWordpressUrl();
-        #global $c_wordpress;
         if ($portal_item->getWordpressPortalActive()) {
            $this->CW = $this->getSoapClient();
         }

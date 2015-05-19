@@ -56,6 +56,9 @@ class CommsyExtension extends Extension
         // themes
         $container->setParameter('commsy.themes.default', $config['themes']['default']);
 
+        // wordpress
+        $container->setParameter('commsy.wordpress.enabled', $config['wordpress']['enabled']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

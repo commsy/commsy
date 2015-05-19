@@ -95,3 +95,8 @@ commsy:
     themes:
         # Default theme
         default: 'default'
+
+    # Wordpress
+    wordpress:
+        # for activating wordpress please set the following variable on true
+        enabled: false

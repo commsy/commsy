@@ -2134,7 +2134,6 @@ class cs_page_guide_view extends cs_page_view {
 		
 			// wordpress
 			if($current_context->showWordpressLink() && $current_context->existWordpress() && $current_context->issetWordpressHomeLink()) {
-				#global $c_wordpress_path_url;
 				$wordpress_path_url = $context_item->getWordpressUrl();
 				$count++;
 				$return['wordpress']['active'] = true;

@@ -74,8 +74,10 @@ else {
       $correct = $form->check();
       if ( $correct ) {
          $current_context_item = $environment->getCurrentContextItem();
+
+         global $symfonyContainer;
+         $c_wordpress = $symfonyContainer->getParameter('commsy.wordpress.enabled');
          
-         global $c_wordpress;
          if ( isset($c_wordpress) and  $c_wordpress ) {
          	if($environment->inPortal()) {
          		$wp_url = $_POST['wp_url'];

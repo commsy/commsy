@@ -1813,7 +1813,6 @@ class cs_popup_profile_controller implements cs_popup_controller {
 	}
 
 	private function getExternalInformation() {
-	   #global $c_wordpress;
 	   global $c_pmwiki;
 
 	   $return = array();
