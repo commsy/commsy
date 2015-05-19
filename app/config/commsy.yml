@@ -1,0 +1,26 @@
+commsy:
+    # autosaving
+    autosave:
+        # possible modes: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
+        mode: 0
+
+        # limit in minutes
+        limit: 6
+
+
+
+
+
+
+
+
+
+
+# // mode: 
+# $c_autosave_mode = 2;
+
+# // autosave limit in minutes
+# $c_autosave_limit = 6;
+# if ( !empty($c_session_lifetime) ) {
+#    $c_autosave_limit = $c_session_lifetime-0.2;
+# }
