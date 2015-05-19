@@ -96,9 +96,6 @@ $c_enable_htmltextarea_security = false;
 // enable workflow support
 //$c_workflow = false;
 
-// smarty caching
-$c_smarty_caching = false;
-
 // send xhr error reports to developers
 //$c_xhr_error_reporting = array("dev1@commsy.dev", "dev2@commsy.dev");
 

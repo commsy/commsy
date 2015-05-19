@@ -1066,11 +1066,6 @@ if(isset($c_smarty) && $c_smarty === true) {
 
     $smarty = new cs_smarty($environment, $shown_sheme);
 
-    global $c_smarty_caching;
-    if(isset($c_smarty_caching) && $c_smarty_caching === true) {
-        $smarty->caching = Smarty::CACHING_LIFETIME_CURRENT;
-    }
-
     // set smarty in environment
     $environment->setTemplateEngine($smarty);
 
