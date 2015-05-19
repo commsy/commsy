@@ -78,15 +78,14 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
-# FOSUserBundle Configuration
-#fos_user:
-#    db_driver: orm # other valid values are 'mongodb', 'couchdb' and 'propel'
-#    firewall_name: main
-#    user_class: CommSy\UserBundle\Entity\User
-
 # Doctrine Migrations Configuration
 doctrine_migrations:
     dir_name: %kernel.root_dir%/DoctrineMigrations
     namespace: Application\Migrations
     table_name: migration_versions
     name: Application Migrations
+
+# LiipThemeBundle
+liip_theme:
+    themes: ['default']
+    active_theme: 'default'

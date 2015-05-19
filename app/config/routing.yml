@@ -6,3 +6,7 @@ commsy_legacy:
 # app:
 #     resource: @AppBundle/Controller/
 #     type:     annotation
+
+# liip_theme:
+#     resource: "@LiipThemeBundle/Resources/config/routing.xml"
+#     prefix: /theme
