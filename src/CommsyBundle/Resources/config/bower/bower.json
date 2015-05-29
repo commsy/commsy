@@ -1,0 +1,7 @@
+{
+    "name": "CommsyBundle",
+    "dependencies": {
+        "jquery": "latest",
+        "uikit": "latest"
+    }
+}

@@ -78,6 +78,7 @@ function cleanupSession($session, $environment){
 }
 
 // include base-config
+global $cs_color;
 include_once('etc/cs_constants.php');
 @include_once('etc/cs_config.php');
 if ( !isset($db) ) {
@@ -1622,23 +1623,14 @@ if(isset($c_smarty) && $c_smarty === true) {
           $html = $page->asHTMLFirstPart();
           if ( !empty($html) ) {
              echo(addTokenToPost($html));
-    //         if(!$fast_settings){
-    //            flush();
-    //         }
           }
        }
        $html = $page->asHTMLSecondPart();
        if ( !empty($html) ) {
           echo(addTokenToPost($html));
-    //      if(!$fast_settings){
-    //         flush();
-    //      }
        }
        echo(addTokenToPost($page->asHTML()));
     }
-    //if(!$fast_settings){
-    //   flush();
-    //}
     unset($page);
 }
 

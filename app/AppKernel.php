@@ -18,6 +18,7 @@ class AppKernel extends Kernel
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new Liip\ThemeBundle\LiipThemeBundle(),
+            new Sp\BowerBundle\SpBowerBundle(),
             
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),

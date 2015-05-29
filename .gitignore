@@ -110,3 +110,5 @@ web/css/external_portal_styles/[0-9]*
 
 wikis/*
 web/commsy
+
+src/CommsyBundle/Resources/public/components

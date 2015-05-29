@@ -1,0 +1,46 @@
+// Name:            Comment
+// Description:     Defines styles for comment threads
+//
+// Component:       `uk-comment`
+//
+// Sub-objects:     `uk-comment-header`
+//                  `uk-comment-avatar`
+//                  `uk-comment-title`
+//                  `uk-comment-meta`
+//                  `uk-comment-body`
+//                  `uk-comment-list`
+//                  `uk-comment-primary`
+//
+// Markup:
+//
+// <!-- uk-comment -->
+// <article class="uk-comment">
+//     <header class="uk-comment-header">
+//         <img class="uk-comment-avatar" src="avatar.svg" width="50" height="50" alt="">
+//         <h4 class="uk-comment-title"></h4>
+//         <div class="uk-comment-meta"></div>
+//     </header>
+//     <div class="uk-comment-body">
+//         <p></p>
+//     </div>
+// </article>
+//
+// ========================================================================
+
+@comment-title-font-size: 14px;
+
+.hook-comment {
+    padding: 5px;
+    border-bottom: 1px solid #DDDDDD;
+}
+
+.uk-comment:nth-of-type(even) {
+  background: #F5F5F5;
+}
+
+article.uk-comment {
+    i:first-child {
+        position: absolute;
+        right: 16px;
+    }
+}

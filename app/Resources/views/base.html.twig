@@ -1,83 +1,315 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
     <head>
         <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
         <title>{% block title %}CommSy{% endblock %}</title>
 
         {% block stylesheets %}
             {% stylesheets
-                'bundles/app/css/thirdparty/semantic.min.css'
-                'bundles/app/css/*' filter='cssrewrite' %}
+                'bundles/commsy/css/application.less' filter='cssrewrite' %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body id="commsy">
-        <!-- sidebar -->
-        <div class="ui blue left vertical inverted sidebar menu">
-            <div class="item">
-                Benutzer
+    <body id="commsy" class="nav-collapsed">
+
+        <div id="sidebar">
+
+            <div id="sidebar-brand">
+                <a href="#">
+                    CommSy
+                </a>
             </div>
-            <div class="ui divider"></div>
-        </div>
 
-        <!-- top menu -->
-        <div class="ui fixed top menu">
-            <a class="ui transparent toggle navigation item">
-                <i class="content icon"></i> Navigation
-            </a>
+            <div id="sidebar-profile">
+                Profile
+            </div>
 
-            <div class="right menu">
-                {% if is_granted('ROLE_ADMIN') %}
-                <div class="item ui button">
+            <ul id="sidebar-nav" class="uk-nav uk-nav-side uk-nav-parent-icon">
+                <li>
                     <a href="#">
-                        <i class="settings icon"></i>
+                        <i class="uk-icon-home uk-icon-small"></i>
+                        DASHBOARD
                     </a>
-                </div>
-                {% endif %}
-                <div class="item">
-                    <div class="ui transparent icon input">
-                        <input type="text" placeholder="Search...">
-                        <i class="search link icon"></i>
-                    </div>
-                </div>
-                <div class="ui dropdown item">
-                    Sprache <i class="dropdown icon"></i>
-                    <div class="menu">
-                        <a class="item">English</a>
-                        <a class="item">Russian</a>
-                        <a class="item">Spanish</a>
-                    </div>
-                </div>
-                <div class="item">
-                    <a class="ui red button">
-                        <i class="sign out icon"></i>
-                        Logout
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-home uk-icon-small"></i>
+                        Raum-Navigation
                     </a>
-                </div>
-            </div>
+                </li>
+                <li class="uk-nav-divider"></li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-home uk-icon-small"></i>
+                        ANKÜNDIGUNGEN
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-calendar uk-icon-small"></i>
+                        TERMINE
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-file-o uk-icon-small"></i>
+                        MATERIALIEN
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-comments-o uk-icon-small"></i>
+                        DISKUSSIONEN
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-home uk-icon-small"></i>
+                        PERSONEN
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-home uk-icon-small"></i>
+                        GRUPPEN
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-check uk-icon-small"></i>
+                        AUFGABEN
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="uk-icon-home uk-icon-small"></i>
+                        THEMEN
+                    </a>
+                </li>
+            </ul>
         </div>
 
-        <div class="pusher">
-            <!-- header -->
-            <div class="header segment">
-                <div class="container">
-                    header
+        <div id="content">
+            <!-- navbar -->
+            <nav class="uk-navbar uk-navbar-attached">
+                <!-- right -->
+                <div class="uk-navbar-flip">
+                    <div class="uk-navbar-content">
+                        <form class="uk-search" data-uk-search="{source:'my-results.json'}">
+                            <input class="uk-search-field" type="search" placeholder="search...">
+                        </form>
+                    </div>
+
+                    <div class="uk-navbar-content">
+                        <ul class="uk-navbar-nav">
+                            <li>
+                                <a href="#"><i class="uk-icon-bell-o"></i></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="uk-icon-wrench"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <ul class="uk-navbar-nav">
+                        <li>
+                            <a href="#"><i class="uk-icon-power-off"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- toggle -->
+                <a href="" class="uk-navbar-toggle"></a>
+
+                <div class="uk-navbar-brand">
+                    Brand
+                </div>
+
+                <div class="uk-navbar-content">
+                    Raumtitel
+                </div>
+            </nav>
+
+            <!-- breadcrumb -->
+            <ul class="uk-breadcrumb">
+                <li><a href="">Portal</a></li>
+                <li><a href="">Raum</a></li>
+                <li><span>Material</span></li>
+                <li class="uk-active"><span>Hier</span></li>
+            </ul>
+
+            <!-- cover -->
+            <div id="cover" class="uk-cover-background">
+                <img class="uk-invisible" src="" width="" height="" alt="">
+            </div>
+
+            <!-- container -->
+            <div class="uk-container uk-container-center">
+                <div class="uk-grid">
+
+                    <div class="uk-width-medium-1-2">
+                        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                            <div class="uk-panel-teaser panel-teaser-primary">
+                                <div class="uk-clearfix">
+                                    <div class="uk-float-right">
+                                        <a href="#" class="button-toggle uk-button-mini uk-button-primary">
+                                            <i class="uk-icon-chevron-up"></i>
+                                        </a>
+                                    </div>
+                                    <div class="uk-float-left">
+                                        Neueste Aktivitäten - Raumtitel
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ul class="uk-comment-list">
+                                
+                                <article class="uk-comment">
+                                    <i class="uk-icon-comments-o uk-icon-small"></i>
+
+                                    <header class="uk-comment-header">
+                                        <img class="uk-comment-avatar" src="templates/themes/default/img/person_03.jpg" alt="">
+                                        <div class="uk-comment-meta">Termin</div>
+                                        <h4 class="uk-comment-title"><a href="#">CommSy-Entwicklertreffen</a></h4>
+                                        <div class="uk-comment-meta">Wann: am Mittwoch, 18.03.2015 von 16:30 Uhr bis 18:00 Uhr</div>
+                                        <div class="uk-comment-meta">Wo: effective WEBWORK GmbH, Neuer Wall 18, Hamburg</div>
+                                    </header>
+                                </article>
+                                
+                                <article class="uk-comment">
+                                    <i class="uk-icon-comments-o uk-icon-small"></i>
+
+                                    <header class="uk-comment-header">
+                                        <img class="uk-comment-avatar" src="templates/themes/default/img/person_03.jpg" alt="">
+                                        <div class="uk-comment-meta">Material</div>
+                                        <h4 class="uk-comment-title"><a href="#">HOWTO: Erstellen eines CommSy-Releases</a></h4>
+                                        <div class="uk-comment-meta">Von: Christoph Schönfeld</div>
+                                    </header>
+                                </article>
+                                <article class="uk-comment">
+                                    <i class="uk-icon-comments-o uk-icon-small"></i>
+
+                                    <header class="uk-comment-header">
+                                        <div class="uk-comment-meta">Diskussion</div>
+                                        <h4 class="uk-comment-title"><a href="#">Anfrage: Wie früher ein statt x-zips beim Runterladen von Materialien</a></h4>
+                                        <div class="uk-comment-meta">Von: Matthias Finck</div>
+                                    </header>
+                                </article>
+                                <article class="uk-comment">
+                                    <i class="uk-icon-comments-o uk-icon-small"></i>
+
+                                    <header class="uk-comment-header">
+                                        <div class="uk-comment-meta">Diskussion</div>
+                                        <h4 class="uk-comment-title"><a href="#">Anfrage Feature-Erweiterung - Archivierte Räume nach Semester sortieren, ist eine freie Bennung möglich, Verbindung zu Semestern verloren</a></h4>
+                                        <div class="uk-comment-meta">Von: Rebecca Mustermann</div>
+                                    </header>
+                                </article>
+                                <article class="uk-comment">
+                                    <i class="uk-icon-comments-o uk-icon-small"></i>
+
+                                    <header class="uk-comment-header">
+                                        <img class="uk-comment-avatar" src="templates/themes/default/img/person_03.jpg" alt="">
+                                        <div class="uk-comment-meta">Material</div>
+                                        <h4 class="uk-comment-title"><a href="#">Handreichungssammlung</a></h4>
+                                        <div class="uk-comment-meta">Von: Detlef Molder</div>
+                                    </header>
+                                </article>
+
+                                <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="uk-width-medium-1-2">
+                        <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                            <div class="uk-panel-teaser panel-teaser-primary">
+                                <div class="uk-clearfix">
+                                    <div class="uk-float-right">
+                                        <a href="#" class="button-toggle uk-button-mini uk-button-primary">
+                                            <i class="uk-icon-chevron-up"></i>
+                                        </a>
+                                    </div>
+                                    <div class="uk-float-left">
+                                        Title
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="uk-overflow-container">
+                                <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <th>Titel</th>
+                                            <th>Moderation</th>
+                                            <th>Aktivität</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>...</td>
+                                            <td>...</td>
+                                            <td>...</td>
+                                        </tr>
+                                        <tr>
+                                            <td>...</td>
+                                            <td>...</td>
+                                            <td>...</td>
+                                        </tr>
+                                        <tr>
+                                            <td>...</td>
+                                            <td>...</td>
+                                            <td>...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                            <div class="uk-panel-teaser panel-teaser-secondary">
+                                <div class="uk-clearfix">
+                                    <div class="uk-float-right">
+                                        <a href="#" class="button-toggle uk-button-mini uk-button-primary">
+                                            <i class="uk-icon-chevron-up"></i>
+                                        </a>
+                                    </div>
+                                    <div class="uk-float-left">
+                                        Raum-Infos
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <dl class="uk-description-list-horizontal">
+                                <dt>Raum Titel</dt>
+                                <dd>CommSy-Community</dd>
+                                <dt>Beiträge</dt>
+                                <dd>neuester am 10.03.2015 | 202 Beiträge insgesamt</dd>
+                                <dt>Personen</dt>
+                                <dd>gesamt 103 | aktiv 14</dd>
+                                <dt>Moderation</dt>
+                                <dd>Matthias Finck, Iver Jackewitz, Michael Janneck, Oliver Janoschka, Peter Koch, Kai Mertens, Josephine Pezold, Christoph Schönfeld, Johannes Schultze, Christopher Timm</dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="main container">
-                {% block body %}{% endblock %}
-            </div>
+            {% block body %}{% endblock %}
         </div>
         
         {% block javascripts %}
             {% javascripts
-                '@AppBundle/Resources/public/js/thirdparty/jquery-2.1.3.min.js'
-                '@AppBundle/Resources/public/js/thirdparty/semantic.min.js'
-                '@AppBundle/Resources/public/js/*' %}
+                'bundles/commsy/components/jquery/dist/jquery.js'
+                'bundles/commsy/components/uikit/js/uikit.js'
+                'bundles/commsy/components/uikit/js/components/search.js'
+                'bundles/commsy/js/app.js' %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
         {% endblock %}
