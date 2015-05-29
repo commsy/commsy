@@ -3,6 +3,11 @@ commsy_legacy:
     type:     annotation
     prefix:   /
 
+commsy:
+    resource: "@CommsyBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 # app:
 #     resource: @AppBundle/Controller/
 #     type:     annotation
