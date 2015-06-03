@@ -185,7 +185,7 @@ define([	"dojo/_base/declare",
 							   }, accountDivNode, "last");
    							
    							DomConstruct.create("img", {
-								   src:		   "/templates/themes/default/img/comment.gif"
+								   src:		   "templates/themes/default/img/comment.gif"
 							   }, accountCommentSpan, "last");
 							}
 							
