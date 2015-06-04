@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "274b4695f03331a90803be3be8562c5a",
+    "hash": "8746f82381f93ec1332a49a22564429d",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -894,17 +894,16 @@
         },
         {
             "name": "incenteev/composer-parameter-handler",
-            "version": "v2.1.0",
-            "target-dir": "Incenteev/ParameterHandler",
+            "version": "v2.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Incenteev/ParameterHandler.git",
-                "reference": "143272a0a09c62616a3c8011fc165a10c6b35241"
+                "reference": "84a205fe80a46101607bafbc423019527893ddd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Incenteev/ParameterHandler/zipball/143272a0a09c62616a3c8011fc165a10c6b35241",
-                "reference": "143272a0a09c62616a3c8011fc165a10c6b35241",
+                "url": "https://api.github.com/repos/Incenteev/ParameterHandler/zipball/84a205fe80a46101607bafbc423019527893ddd0",
+                "reference": "84a205fe80a46101607bafbc423019527893ddd0",
                 "shasum": ""
             },
             "require": {
@@ -923,8 +922,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Incenteev\\ParameterHandler": ""
+                "psr-4": {
+                    "Incenteev\\ParameterHandler\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -942,7 +941,7 @@
             "keywords": [
                 "parameters management"
             ],
-            "time": "2013-12-07 10:10:39"
+            "time": "2015-06-03 08:27:03"
         },
         {
             "name": "jdorn/sql-formatter",
@@ -1075,12 +1074,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/liip/LiipThemeBundle.git",
-                "reference": "238322091d1f1d7ceea44720fe46c63e9dc515c4"
+                "reference": "6bf4f4ae70b0c884c8620360f5e49c5f82f4e308"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/liip/LiipThemeBundle/zipball/238322091d1f1d7ceea44720fe46c63e9dc515c4",
-                "reference": "238322091d1f1d7ceea44720fe46c63e9dc515c4",
+                "url": "https://api.github.com/repos/liip/LiipThemeBundle/zipball/6bf4f4ae70b0c884c8620360f5e49c5f82f4e308",
+                "reference": "6bf4f4ae70b0c884c8620360f5e49c5f82f4e308",
                 "shasum": ""
             },
             "require": {
@@ -1090,7 +1089,8 @@
             },
             "require-dev": {
                 "kriswallsmith/assetic": "~1.1",
-                "phpunit/phpunit": "~4.5",
+                "phpunit/php-code-coverage": "@stable",
+                "phpunit/phpunit": "~4.5@stable",
                 "symfony/console": "~2.0",
                 "symfony/expression-language": "~2.6",
                 "twig/twig": "~1.0"
@@ -1125,7 +1125,7 @@
                 "themes",
                 "theming"
             ],
-            "time": "2015-04-23 20:12:08"
+            "time": "2015-06-02 10:27:35"
         },
         {
             "name": "monolog/monolog",
@@ -1240,17 +1240,17 @@
         },
         {
             "name": "sensio/distribution-bundle",
-            "version": "v3.0.24",
+            "version": "v3.0.28",
             "target-dir": "Sensio/Bundle/DistributionBundle",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioDistributionBundle.git",
-                "reference": "79b820aee1f1daeb2717fa9471ee19275cc1d638"
+                "reference": "8175618b07793b9d43c3be931f3d8d4c14c9e866"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/79b820aee1f1daeb2717fa9471ee19275cc1d638",
-                "reference": "79b820aee1f1daeb2717fa9471ee19275cc1d638",
+                "url": "https://api.github.com/repos/sensiolabs/SensioDistributionBundle/zipball/8175618b07793b9d43c3be931f3d8d4c14c9e866",
+                "reference": "8175618b07793b9d43c3be931f3d8d4c14c9e866",
                 "shasum": ""
             },
             "require": {
@@ -1296,21 +1296,20 @@
                 "configuration",
                 "distribution"
             ],
-            "time": "2015-05-16 12:57:08"
+            "time": "2015-06-01 15:04:20"
         },
         {
             "name": "sensio/framework-extra-bundle",
-            "version": "v3.0.7",
-            "target-dir": "Sensio/Bundle/FrameworkExtraBundle",
+            "version": "v3.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sensiolabs/SensioFrameworkExtraBundle.git",
-                "reference": "5c37623576ea9e841b87dc0d85414d98fa6f7abb"
+                "reference": "a30fc18bf147bc25faf6b1d54bf55cfad4b63cba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/5c37623576ea9e841b87dc0d85414d98fa6f7abb",
-                "reference": "5c37623576ea9e841b87dc0d85414d98fa6f7abb",
+                "url": "https://api.github.com/repos/sensiolabs/SensioFrameworkExtraBundle/zipball/a30fc18bf147bc25faf6b1d54bf55cfad4b63cba",
+                "reference": "a30fc18bf147bc25faf6b1d54bf55cfad4b63cba",
                 "shasum": ""
             },
             "require": {
@@ -1323,6 +1322,7 @@
             },
             "suggest": {
                 "symfony/expression-language": "",
+                "symfony/psr-http-message-bridge": "To use the PSR-7 converters",
                 "symfony/security-bundle": ""
             },
             "type": "symfony-bundle",
@@ -1332,8 +1332,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Sensio\\Bundle\\FrameworkExtraBundle": ""
+                "psr-4": {
+                    "Sensio\\Bundle\\FrameworkExtraBundle\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1351,7 +1351,7 @@
                 "annotations",
                 "controllers"
             ],
-            "time": "2015-04-02 12:28:58"
+            "time": "2015-05-29 18:27:23"
         },
         {
             "name": "sensiolabs/security-checker",
@@ -1694,16 +1694,16 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.6.8",
+            "version": "v2.6.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "7ae1934082d9ac299303b146e4a999274a723e94"
+                "reference": "b06539573ccf64dd3a62852685f052553d02c5ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/7ae1934082d9ac299303b146e4a999274a723e94",
-                "reference": "7ae1934082d9ac299303b146e4a999274a723e94",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/b06539573ccf64dd3a62852685f052553d02c5ba",
+                "reference": "b06539573ccf64dd3a62852685f052553d02c5ba",
                 "shasum": ""
             },
             "require": {
@@ -1807,7 +1807,7 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-05-27 00:17:10"
+            "time": "2015-05-29 22:55:07"
         },
         {
             "name": "twig/extensions",
@@ -1979,7 +1979,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.9"
     },
     "platform-dev": []
 }
