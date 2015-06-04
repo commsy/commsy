@@ -76,11 +76,6 @@
             		$discussion_article_manager = $this->_environment->getDiscussionArticleManager();
             		$all_disc_entrys = $discussion_article_manager->getAllArticlesForItem($entry);
             		$item = $all_disc_entrys->getFirst();
-//             		while($item){
-//             			// bla
-//             			$desc .= $item->getDescription();
-//             			$item = $all_disc_entrys->getNext();
-//             		}
 					$desc = $item->getDescription();
             		unset($all_disc_entrys);
             	}
