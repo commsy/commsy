@@ -6,6 +6,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
+use Commsy\LegacyBundle\Services\LegacyEnvironment;
+
 /**
  * Class LegacyKernelListener
  *
@@ -23,12 +25,15 @@ class LegacyKernelListener implements EventSubscriberInterface
      */
     private $legacyKernel;
 
+    private $legacyEnvironment;
+
     /**
      * @param HttpKernelInterface $legacyKernel
      */
-    public function __construct(HttpKernelInterface $legacyKernel)
+    public function __construct(HttpKernelInterface $legacyKernel, LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyKernel = $legacyKernel;
+        $this->legacyEnvironment = $legacyEnvironment;
     }
 
     /**
@@ -52,6 +57,10 @@ class LegacyKernelListener implements EventSubscriberInterface
         if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
             return;
         }
+
+        // set user language
+        $request = $event->getRequest();
+        $request->setLocale($this->legacyEnvironment->getEnvironment()->getUserLanguage());
 
         // Let the wrapped legacy kernel handle the legacy request.
         // Setting a response in the event will directly jump to the response event.
