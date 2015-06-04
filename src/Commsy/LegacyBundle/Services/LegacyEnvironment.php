@@ -47,6 +47,16 @@ class LegacyEnvironment
             global $environment;
             $environment = new \cs_environment();
             $this->environment = $environment;
+
+            // try to find the current room id from the request and set context in legacy environment
+            $requestStack = $this->serviceContainer->get('request_stack');
+            $currentRequest = $requestStack->getCurrentRequest();
+            if ($currentRequest) {
+                $attributes = $currentRequest->attributes;
+                if ($attributes->has('roomId')) {
+                    $this->environment->setCurrentContextID($attributes->get('roomId'));
+                }
+            }
         }
 
         return $this->environment;
