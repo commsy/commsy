@@ -591,6 +591,13 @@
             $to_javascript['autosave']['mode'] = 0;
             $to_javascript['autosave']['limit'] = 0;
 
+            global $c_media_integration;
+            if($c_media_integration) {
+                $to_javascript['c_media_integration'] = true;
+            } else {
+                $to_javascript['c_media_integration'] = false;
+            }
+
 
             if ($ownRoomItem)
             {

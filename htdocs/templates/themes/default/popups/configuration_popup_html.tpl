@@ -964,6 +964,26 @@
                            		 <input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'save_limesurvey'" name="save" value="___LIMESURVEY_SAVE_BUTTON___"/>
                            </div>
                            {/if}
+
+                           {if $popup.external.mdo}
+                           {if $popup.external.length > 1}<hr/>{/if}
+                           <fieldset>
+                              <p>
+                                 <strong>___CONFIGURATION_MEDIA_MEDIENINTEGRATIONONLINE___:</strong>
+                              </p>
+                              <div class="input_row_200">
+                                 <input type="checkbox" name="form_data[mdo_room]" value="yes" {if $popup.external.mdo_room} checked="checked"{/if}/> Aktivieren
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 <input type="input" name="form_data[mdo_key]" {if $popup.external.mdo_key} value="{$popup.external.mdo_key}"{/if}/> Key
+                                 <div class="clear"></div>
+                              </div>
+                           </fieldset>
+                           <div class="input_row">
+                                 <input id="submit" type="button" class="popup_button submit" data-custom="part: 'external_configuration', action: 'save_mdo'" name="save" value="___LIMESURVEY_SAVE_BUTTON___"/>
+                           </div>
+                           {/if}
                            
                            {if $popup.external.chat}
                            <hr/>

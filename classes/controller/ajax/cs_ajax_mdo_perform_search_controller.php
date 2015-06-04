@@ -1,0 +1,135 @@
+<?php
+    require_once('classes/controller/cs_ajax_controller.php');
+
+    class cs_ajax_mdo_perform_search_controller extends cs_ajax_controller {
+        /**
+         * constructor
+         */
+        public function __construct(cs_environment $environment) {
+            // call parent
+            parent::__construct($environment);
+        }
+
+        /*
+         * every derived class needs to implement an processTemplate function
+         */
+        public function process() {
+            // TODO: check for rights, see cs_ajax_accounts_controller
+
+            // call parent
+            parent::process();
+        }
+
+        /*
+         * updates the editing date of an item
+         */
+        public function actionSearch() {
+            $environment = $this->_environment;
+
+            include_once('functions/development_functions.php');
+
+            $access = false;
+
+            // check for rights for mdo
+            $current_context_item = $environment->getCurrentContextItem();
+            if($current_context_item->isProjectRoom()) {
+                // does this project room has any community room?
+                $community_list = $current_context_item->getCommunityList();
+                if($community_list->isNotEmpty()) {
+                    // check for community rooms activated the mdo feature
+                    $community = $community_list->getFirst();
+                    while($community) {
+                        $mdo_active = $community->getMDOActive();
+                        if(!empty($mdo_active) && $mdo_active != '-1') {
+                            // mdo access granted, get content from Mediendistribution-Online
+                            $access = true;
+                            $community_room = $community;
+
+                            // stop searching here
+                            break;
+                        }
+                        $community = $community_list->getNext();
+                    }
+                }
+            }
+
+            if($access === true) {
+                global $c_media_integration_url;
+                // $curl_handler = curl_init('http://arix.datenbank-bildungsmedien.net/HH');
+                if ($community_room->getMDOKey()) {
+                    $key = $community_room->getMDOKey();
+                    $curl_handler = curl_init($c_media_integration_url + $key);
+                } else {
+                    $curl_handler = curl_init($c_media_integration_url);
+                }
+                
+                curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl_handler, CURLOPT_POST, true);
+
+                ############################
+                ## 1. CommSy -> Arix: <notch type='commsy' />
+                ## 2. Arix -> CommSy: <notch id='SESSION_ID'>NOTCH</notch> 
+                ############################
+                $data = '<notch type="commsy" />';
+                curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+                $response = curl_exec($curl_handler);
+                if(!$response) {
+                    $this->setErrorReturn("1234", "No response", "Detail");
+                } else {
+                    $xml_object = simplexml_load_string($response);
+                    $result = $xml_object->xpath('/notch[@id]');
+                    $session_id = (string) $result[0]->attributes()->id;
+                    $notch = (string) $result[0];
+                    unset($xml_object);
+
+                    ############################
+                    ## perform search
+                    ############################
+                    $operator = mysql_real_escape_string($_GET['mdo_andor']);
+                    $option = mysql_real_escape_string($_GET['mdo_wordbegin']);
+                    $field = mysql_real_escape_string($_GET['mdo_titletext']);
+                    $search = mysql_real_escape_string($_GET['mdo_search']);
+
+                    $data = '<search fields="titel,text">';
+                    $data .= '<condition';
+                    if(!empty($operator)) {
+                        $data .= ' operator="' . $operator . '"';
+                    }
+                    if(!empty($option)) {
+                        $data .= ' option="' . $option . '"';
+                    }
+                    if(empty($field)) {
+                        $this->setErrorReturn("1234", "Search Error", "Detail");
+                    } else {
+                        $data .= ' field="' . $field . '"';
+                    }
+                    $data .= '>' . $search . '</condition>';
+                    $data .= '</search>';
+
+                    curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+                    $response = curl_exec($curl_handler);
+                    if(!$response) {
+                        $this->setErrorReturn("1234", "No response search", "Detail");
+                    } else {
+                        $xml_object = simplexml_load_string($response);
+                        $result = $xml_object->xpath('/result/r');
+                        $retour = array();
+                        foreach($result as $item) {
+                            $retour[] = array(  'identifier'  => (string) $item->attributes()->identifier,
+                                    'title'       => utf8_decode(html_entity_decode((string) $item->f[1])),
+                                    'text'        => utf8_decode(html_entity_decode((string) $item->f[2])));
+                        }
+                        unset($xml_object);
+                        $this->setSuccessfullDataReturn($retour);
+                        // $page->add('success', 'true');
+                        // $page->add('results', $retour);
+                    }
+                }
+            } else {
+                $this->setErrorReturn("1234", "Error", "Detail");
+                // $page->add('success', 'false');
+            }
+            
+            echo $this->_return;
+        }
+    }

@@ -1307,6 +1307,22 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 				      	
 				      	$current_context->save();
 				      }
+
+                      // mdo
+                      elseif ($additional['action'] == 'save_mdo') {
+                        if( isset($form_data['mdo_room']) && $form_data['mdo_room'] === "yes") {
+                            $current_context->setMDOActive(true);
+                        } else {
+                            $current_context->setMDOActive(false);
+                        }
+                        if( isset($form_data['mdo_key'])) {
+                            $current_context->setMDOKey($form_data['mdo_key']);
+                        } else {
+                            $current_context->setMDOKey();
+                        }
+                        $current_context->save();
+
+                      }
 				      
 				      // plugins
 				      elseif ( substr($additional['action'],0,7) == 'plugin_' ) {
@@ -2362,6 +2378,27 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	   {
 	   	$return['limesurvey'] = false;
 	   }
+
+
+        // Medien Distribution Online
+       global $c_media_integration;
+
+       if($c_media_integration && $current_context->isCommunityRoom()) {
+        $return['mdo'] = true;
+        if($current_context->getMDOActive() == 1) {
+            $return['mdo_room'] = true;
+        } else {
+            $return['mdo_room'] = false;
+        }
+        if($current_context->getMDOKey()) {
+            $return['mdo_key'] = $current_context->getMDOKey();
+        } else {
+            $return['mdo_key'] = '';
+        }
+       } else {
+        $return['mdo'] = false;
+       }
+       
 	   
 	   // plugins - TODO
 	   $c_plugin_array = $this->_environment->getConfiguration('c_plugin_array');
