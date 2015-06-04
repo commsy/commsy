@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Ankündigungen
+                        </div>
+                    </div>
+                </div>
+
+                <ul id="room-feed" class="uk-comment-list">
+
+                   {#  {{ render(controller(
+                        'CommsyBundle:Feed:homeFeed',
+                        { 'roomId': roomItem.itemId}
+                    ))}} #}
+                    
+                    <article class="uk-comment">
+                        <i class="uk-icon-comments-o uk-icon-small"></i>
+
+                        <header class="uk-comment-header">
+                            <img class="uk-comment-avatar" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                            <div class="uk-comment-meta">Material</div>
+                            <h4 class="uk-comment-title"><a href="#">HOWTO: Erstellen eines CommSy-Releases</a></h4>
+                            <div class="uk-comment-meta">Von: Christoph Schönfeld</div>
+                        </header>
+                    </article>
+
+                    <div id="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}">
+                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                    </div>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#room-test', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Zuordnungen
+                        </div>
+                    </div>
+                </div>
+
+                <div id="room-test" class="uk-overflow-container">
+                    <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Titel</th>
+                                <th>Moderation</th>
+                                <th>Aktivität</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-info', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Kategorien
+                        </div>
+                    </div>
+                </div>
+                
+                {{ render(controller(
+                    'CommsyBundle:Category:show',
+                    { 'roomId': roomId }
+                ))}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
