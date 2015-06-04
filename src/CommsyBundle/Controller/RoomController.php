@@ -13,7 +13,7 @@ class RoomController extends Controller
      * @Route("/room/{roomId}")
      * @Template()
      */
-    public function indexAction($roomId, Request $request)
+    public function homeAction($roomId, Request $request)
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
@@ -21,8 +21,21 @@ class RoomController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
+        // ...and prepare some data
+        $timeSpread = $roomItem->getTimeSpread();
+        $numNewEntries = $roomItem->getNewEntries($timeSpread);
+        $pageImpressions = $roomItem->getPageImpressions($timeSpread);
+
+        $numActiveMember = $roomItem->getActiveMembers($timeSpread);
+        $numTotalMember = $roomItem->getAllUsers();
+
         return array(
-            'roomItem' => $roomItem
+            'roomItem' => $roomItem,
+            'timeSpread' => $timeSpread,
+            'numNewEntries' => $numNewEntries,
+            'pageImpressions' => $pageImpressions,
+            'numActiveMember' => $numActiveMember,
+            'numTotalMember' => $numTotalMember,
         );
     }
 }

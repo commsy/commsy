@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>One new entry in the last %days% days|%num% new entries in the last %days% days</source>
+                <target>Ein neuer Beitrag in den letzten %days% Tagen|%num% neue Beiträge in den letzten %days% Tagen</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>Page Impressions:</source>
+                <target>Seitenaufrufe:</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>total %total% | active %active%</source>
+                <target>gesamt %total% | aktiv %active%</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

@@ -13,7 +13,7 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            Neueste Aktivitäten in diesem Raum
+                            Neueste Aktivitäten in diesem Raum(TODO)
                         </div>
                     </div>
                 </div>
@@ -97,20 +97,30 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            Raum-Infos
+                            Raum-Infos(TODO)
                         </div>
                     </div>
                 </div>
                 
                 <dl id="room-info" class="uk-description-list-horizontal description-striped">
-                    <dt>Raum Titel</dt>
+                    <dt>Raum Titel(TODO)</dt>
                     <dd>{{ roomItem.title }}</dd>
-                    <dt>Beiträge</dt>
-                    <dd>neuester am 10.03.2015 | 202 Beiträge insgesamt</dd>
-                    <dt>Personen</dt>
-                    <dd>gesamt 103 | aktiv 14</dd>
-                    <dt>Moderation</dt>
-                    <dd>Matthias Finck, Iver Jackewitz, Michael Janneck, Oliver Janoschka, Peter Koch, Kai Mertens, Josephine Pezold, Christoph Schönfeld, Johannes Schultze, Christopher Timm</dd>
+                    <dt>Beiträge(TODO)</dt>
+                    <dd>
+                        {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
+                            One new entry in the last %days% days|%num% new entries in the last %days% days
+                        {% endtranschoice %}
+                    </dd>
+                    <dt>Personen(TODO)</dt>
+                    <dd>
+                        {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
+                            total %total% | active %active%
+                        {% endtrans %}
+                    </dd>
+                    <dt>{% trans from "room" %}Page Impressions:{% endtrans %}</dt>
+                    <dd>{{ pageImpressions }}</dd>
+                    <dt>Moderation(TODO)</dt>
+                    <dd>TODO</dd>
                 </dl>
             </div>
         </div>
