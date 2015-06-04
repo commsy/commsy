@@ -2,6 +2,8 @@
 
 namespace Commsy\LegacyBundle\Services;
 
+use Symfony\Component\DependencyInjection\ContainerInterface as Container;
+
 class LegacyEnvironment
 {
     private $environment;
@@ -13,11 +15,17 @@ class LegacyEnvironment
     private $legacyAppPath;
 
     /**
+     * Symfony service container
+     */
+    private $serviceContainer;
+
+    /**
      * @param String             $legacyAppPath
      */
-    public function __construct($legacyAppPath)
+    public function __construct($legacyAppPath, Container $container)
     {
         $this->legacyAppPath = $legacyAppPath;
+        $this->serviceContainer = $container;
     }
 
     public function getEnvironment()
@@ -31,6 +39,9 @@ class LegacyEnvironment
             include_once('etc/cs_constants.php');
             include_once('etc/cs_config.php');
             include_once('functions/misc_functions.php');
+
+            global $symfonyContainer;
+            $symfonyContainer = $this->serviceContainer;
 
             include_once('classes/cs_environment.php');
             global $environment;

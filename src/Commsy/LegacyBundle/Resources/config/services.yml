@@ -17,4 +17,4 @@ services:
     # Legacy Environment
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
-        arguments: [%legacy.site_index%]
+        arguments: [%legacy.site_index%, "@service_container"]
