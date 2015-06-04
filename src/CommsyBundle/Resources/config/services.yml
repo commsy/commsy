@@ -1,5 +1,6 @@
 parameters:
 
 services:
-    # Configuration
-    #commsy.configuration:
+    commsy.room_feed_generator:
+        class: CommsyBundle\Utils\RoomFeedGenerator
+        arguments: ["@commsy_legacy.environment"]

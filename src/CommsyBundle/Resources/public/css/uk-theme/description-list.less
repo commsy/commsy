@@ -1,0 +1,21 @@
+// Name:            Description list
+// Description:     Defines styles for description lists
+//
+// Component:       `uk-description-list`
+//
+// Modifiers:       `uk-description-list-horizontal`
+//                  `uk-description-list-line`
+//
+// ========================================================================
+
+@description-striped-background: #f5f5f5;
+
+.description-striped dt:nth-of-type(even),
+.description-striped dd:nth-of-type(even) {
+    background: @description-striped-background;
+}
+
+.description-striped dt,
+.description-striped dd {
+    padding: 5px;
+}

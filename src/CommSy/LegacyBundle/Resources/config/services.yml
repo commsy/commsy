@@ -13,3 +13,8 @@ services:
         arguments: [@commsy_legacy.legacy_kernel]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    # Legacy Environment
+    commsy_legacy.environment:
+        class: Commsy\LegacyBundle\Services\LegacyEnvironment
+        arguments: [%legacy.site_index%]

@@ -14,7 +14,15 @@ class RoomController extends Controller
      * @Template()
      */
     public function indexAction($roomId, Request $request)
-    {   
-        return array();
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        return array(
+            'roomItem' => $roomItem
+        );
     }
 }
