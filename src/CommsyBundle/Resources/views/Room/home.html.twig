@@ -97,32 +97,44 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            Raum-Infos(TODO)
+                            {{ 'Room-Information'|trans({}, "room") }}
                         </div>
                     </div>
                 </div>
                 
                 <dl id="room-info" class="uk-description-list-horizontal description-striped">
-                    <dt>Raum Titel(TODO)</dt>
+                    <dt>{{ 'Room title:'|trans({}, "room") }}</dt>
                     <dd>{{ roomItem.title }}</dd>
-                    <dt>Beiträge(TODO)</dt>
+                    <dt>{{ 'Entries:'|trans({}, "room") }}</dt>
                     <dd>
                         {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
                             One new entry in the last %days% days|%num% new entries in the last %days% days
                         {% endtranschoice %}
                     </dd>
-                    <dt>Personen(TODO)</dt>
+                    <dt>{{ 'Persons:'|trans({}, "room") }}</dt>
                     <dd>
                         {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
                             total %total% | active %active%
                         {% endtrans %}
+                        <div class="uk-progress uk-progress-mini">
+                            {% set activePercent = (numActiveMember/numTotalMember*100)|round %}
+                            <div class="uk-progress-bar" style="width: {{ activePercent }}%;"></div>
+                            }
+                        </div>
                     </dd>
                     <dt>{% trans from "room" %}Page Impressions:{% endtrans %}</dt>
                     <dd>{{ pageImpressions }}</dd>
-                    <dt>Moderation(TODO)</dt>
-                    <dd>TODO</dd>
+                    <dt>{{ 'Moderation:'|trans({}, "room") }}</dt>
+                    <dd>
+                        {{ roomModerators|join(', ') }}
+                    </dd>
                 </dl>
             </div>
+
+            {{ render(controller(
+                'CommsyBundle:Category:show',
+                { 'roomId': roomItem.itemId }
+            ))}}
         </div>
     </div>
 {% endblock %}

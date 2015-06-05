@@ -29,6 +29,15 @@ class RoomController extends Controller
         $numActiveMember = $roomItem->getActiveMembers($timeSpread);
         $numTotalMember = $roomItem->getAllUsers();
 
+        $moderators = array();
+        $moderatorList = $roomItem->getModeratorList();
+        $moderatorUserItem = $moderatorList->getFirst();
+        while ($moderatorUserItem) {
+            $moderators[] = $moderatorUserItem->getFirstname() . ' ' . $moderatorUserItem->getLastname();
+
+            $moderatorUserItem = $moderatorList->getNext();
+        }
+
         return array(
             'roomItem' => $roomItem,
             'timeSpread' => $timeSpread,
@@ -36,6 +45,7 @@ class RoomController extends Controller
             'pageImpressions' => $pageImpressions,
             'numActiveMember' => $numActiveMember,
             'numTotalMember' => $numTotalMember,
+            'roomModerators' => $moderators,
         );
     }
 }
