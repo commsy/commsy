@@ -103,8 +103,6 @@
                 </div>
                 
                 <dl id="room-info" class="uk-description-list-horizontal description-striped">
-                    <dt>{{ 'Room title:'|trans({}, "room") }}</dt>
-                    <dd>{{ roomItem.title }}</dd>
                     <dt>{{ 'Entries:'|trans({}, "room") }}</dt>
                     <dd>
                         {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
