@@ -18,10 +18,6 @@
                 <source>Room-Information</source>
                 <target>Room-Information</target>
             </trans-unit>
-            <trans-unit id="5">
-                <source>Room title:</source>
-                <target>Room title:</target>
-            </trans-unit>
             <trans-unit id="6">
                 <source>Entries:</source>
                 <target>Entries:</target>
