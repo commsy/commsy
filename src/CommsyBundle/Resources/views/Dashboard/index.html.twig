@@ -1,5 +1,69 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    Dashboard
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Neueste Aktivitäten in diesem Raum(TODO)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-test', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Title
+                        </div>
+                    </div>
+                </div>
+
+                <div id="room-test" class="uk-overflow-container">
+                    <table class="uk-table uk-table-hover uk-table-striped uk-table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Titel</th>
+                                <th>Moderation</th>
+                                <th>Aktivität</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                            <tr>
+                                <td>...</td>
+                                <td>...</td>
+                                <td>...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
