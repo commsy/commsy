@@ -4,3 +4,7 @@ services:
     commsy.room_feed_generator:
         class: CommsyBundle\Utils\RoomFeedGenerator
         arguments: ["@commsy_legacy.environment"]
+
+    commsy.tag_manager:
+        class: CommsyBundle\Utils\TagManager
+        arguments: ["@commsy_legacy.environment"]

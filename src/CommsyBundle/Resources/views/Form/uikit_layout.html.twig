@@ -1,0 +1,33 @@
+{% use "form_div_layout.html.twig" %}
+
+{# Widgets #}
+
+{%- block form_widget_compound -%}
+    <fieldset>
+        {{- parent() -}}
+    </fieldset>
+{%- endblock form_widget_compound -%}
+
+{% block button_widget -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-button')|trim}) %}
+    {{- parent() -}}
+{%- endblock %}
+
+{# Rows #}
+
+{%- block form_row -%}
+    {{- form_label(form) -}}
+    {{- form_errors(form) -}}
+    {{- form_widget(form) -}}
+{%- endblock form_row -%}
+
+{%- block button_row -%}
+    {{- form_widget(form) -}}
+{%- endblock button_row -%}
+
+{# Misc #}
+
+{% block form_start -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_start %}

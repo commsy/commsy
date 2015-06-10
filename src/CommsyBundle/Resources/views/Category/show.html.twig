@@ -1,58 +1,68 @@
+{# {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %} #}
+
+{% macro nestedList(data) %}
+    <li class="uk-nestable-item">{{ data.title }}
+
+        {% if data.children is not empty %}
+            <ul>
+                {% for child in data.children %}
+                    {{ _self.nestedList(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endmacro %}
+
 <div class="uk-panel uk-panel-box uk-panel-box-secondary">
     <div class="uk-panel-teaser panel-teaser-secondary">
-        <div class="uk-clearfix">
-            <div class="uk-float-right">
+
+        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+            <div>
+                {{ 'Categories'|trans({}, 'category') }}
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-external-link"></a>
+            </div>
+            <div>
                 <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-categories', animation: 'uk-animation-fade'}">
                     <i class="uk-icon-chevron-up"></i>
                 </a>
-            </div>
-            <div class="uk-float-left">
-                {{ 'Categories'|trans({}, 'category') }}
             </div>
         </div>
     </div>
 
     <div id="room-categories" class="uk-overflow-container">
-        <ul class="uk-list uk-list-striped uk-nestable" data-uk-nestable>
-            <li class="uk-nestable-item">
-                <div class="uk-clearfix">
-                    <div class="uk-float-right">
-                        <a href="" class="uk-icon-plus uk-icon-small"></a>
-                    </div>
-                    <div class="uk-float-left">
-                        Kategorie A
-                    </div>
-                </li>
-            <li class="uk-nestable-item">Kategorie B</li>
-            <li class="uk-nestable-item">
-                <div class="uk-clearfix">
-                    <div class="uk-float-right">
-                        <a href="" class="uk-icon-plus uk-icon-small"></a>
-                    </div>
-                    <div class="uk-float-left">
-                        Kategorie C
-                    </div>
-                </li>
-            <li class="uk-nestable-item">
-                <div class="uk-clearfix">
-                    <div class="uk-float-right">
-                        <a href="" class="uk-icon-plus uk-icon-small"></a>
-                    </div>
-                    <div class="uk-float-left">
-                        Kategorie D
-                    </div>
-                </li>
-            <li class="uk-nestable-item">Kategorie E</li>
-        </ul>
+        <div class="uk-clearfix">
+            <div class="uk-float-right">
+                <span data-uk-tooltip title="Hier steht ein Text der ein wenig was zu dem Panel erklärt und den Benutzer unterstützen soll...">
+                    <i class="uk-icon-small uk-icon-info-circle"></i>
+                </span>
+            </div>
+            <div class="uk-float-left">
+                <a href="#">
+                    <i class="uk-icon-small uk-icon-edit"></i>Quick Edit
+                </a>
+            </div>
+        </div>
 
-        <form class="uk-form">
-            <fieldset>
-                <div class="uk-form-icon">
-                    <i class="uk-icon-tag"></i>
-                    <input type="text" placeholder="New Category" class="uk-form-width-medium">
-                </div>
-                <button class="uk-button uk-button-primary" type="button">Add</button>
-            </fieldset>
-        </form>
+        {% if tags is not empty %}
+            <ul class="uk-list uk-list-striped uk-nestable" data-uk-nestable>
+                {% for tag in tags %}
+                    {{ _self.nestedList(tag) }}
+                {% endfor %}
+            </ul>
+        {% else %}
+            {{ 'No Categories'|trans({}, 'category') }}
+        {% endif %}
+
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            {{ form_errors(form.title) }}
+            <div class="uk-form-icon">
+                <i class="uk-icon-tag"></i>
+                {{ form_widget(form.title) }}
+            </div>
+
+            {{ form_rest(form) }}
+        {{ form_end(form) }}
     </div>
 </div>
