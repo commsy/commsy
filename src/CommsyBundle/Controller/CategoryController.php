@@ -21,7 +21,10 @@ class CategoryController extends Controller
         $tagManager = $this->get('commsy.tag_manager');
         $roomTags = $tagManager->getTags($roomId);
 
-        $form = $this->createForm(new TagType(), null, array(
+        $defaultData = array(
+            'roomId' => $roomId,
+        );
+        $form = $this->createForm(new TagType(), $defaultData, array(
             'action' => $this->generateUrl('commsy_category_new'),
         ));
 

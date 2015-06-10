@@ -29,6 +29,7 @@ class TagType extends AbstractType
                 'label' => 'Add',
                 'translation_domain' => 'form',
             ))
+            ->add('roomId', 'hidden')
         ;
     }
 
