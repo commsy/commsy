@@ -8,3 +8,7 @@ services:
     commsy.tag_manager:
         class: CommsyBundle\Utils\TagManager
         arguments: ["@commsy_legacy.environment"]
+
+    commsy.room_manager:
+        class: CommsyBundle\Utils\RoomManager
+        arguments: ["@commsy_legacy.environment"]
