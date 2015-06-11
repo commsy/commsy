@@ -16,8 +16,9 @@ class RoomManager
     public function getUserList($roomId) {
         // get person list
         $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
-
-
+        $roomItem = $roomManager->getItem($roomId);
+        
+        return $roomItem->getUserList();
     }
 
 
