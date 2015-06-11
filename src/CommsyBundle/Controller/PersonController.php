@@ -18,10 +18,10 @@ class PersonController extends Controller
         // get room user list
         $roomManager = $this->get("commsy.room_manager");
 
-        $personList = $roomManager->getUserList($roomId);
+        $personArray = $roomManager->getUserList($roomId);
 
         return array(
-            'personList' => $personList
+            'personArray' => $personArray
             );
     }
 }

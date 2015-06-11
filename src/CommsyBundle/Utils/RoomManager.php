@@ -18,7 +18,17 @@ class RoomManager
         $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         
-        return $roomItem->getUserList();
+        $personList = $roomItem->getUserList();
+
+        $person = $personList->getFirst();
+        $personArray = array();
+
+        while($person) {
+            $personArray[] = $person;
+            $person = $personList->getNext();
+        }
+
+        return $personArray;
     }
 
 
