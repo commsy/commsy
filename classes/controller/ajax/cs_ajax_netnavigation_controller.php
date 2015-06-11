@@ -310,16 +310,32 @@
 				
 
 				// deactivate assigning user to groups if item is a group
+				$current_user_is_grouproom_moderator = false;
 				if($item && $item->getType() == CS_LABEL_TYPE && $item->getLabelType() == CS_GROUP_TYPE) {
-					if($item->isGrouproomActivated() && !$current_user->isModerator()) {
-						// dont show user and group items if grouproom is activated
-						if(($key = array_search('user', $rubric_array)) !== false) {
-		 				   unset($rubric_array[$key]);
-						}
-						if(($key = array_search('group', $rubric_array)) !== false) {
-		 				   unset($rubric_array[$key]);
-						}
-					}
+   				if ($item->isGrouproomActivated()) {
+      				$group_manager = $this->_environment->getGroupManager();
+                  $group_item = $group_manager->getItem($item->getItemID());
+                  $group_room_item = $group_item->getGroupRoomItem();
+      				$moderator_list = $group_room_item->getModeratorList();
+      				$moderator_item = $moderator_list->getFirst();
+      				while ($moderator_item) {
+         				if ($moderator_item->getUserID() == $current_user->getUserID()) {
+            				$current_user_is_grouproom_moderator = true;
+         				}
+         			   $moderator_item = $moderator_list->getNext();	
+      				}
+      				if(!$current_user->isModerator()) {
+   						// dont show user and group items if grouproom is activated
+   						if (!$current_user_is_grouproom_moderator) {
+   						   if(($key = array_search('user', $rubric_array)) !== false) {
+   		 				     unset($rubric_array[$key]);
+   						   }
+   						}
+   						if(($key = array_search('group', $rubric_array)) !== false) {
+   		 				   unset($rubric_array[$key]);
+   						}
+   					}
+   				}
 				}
 				
 
@@ -333,7 +349,7 @@
 						if($rubric == CS_DATE_TYPE) $rubric_manager->setWithoutDateModeLimit();
 
 						if($rubric == CS_USER_TYPE) {
-							if(!$current_user->isModerator() && $item->isGrouproomActivated()) {
+							if(!$current_user->isModerator() && $item->isGrouproomActivated() && !$current_user_is_grouproom_moderator) {
 								continue;
 							}
 							$rubric_manager->setUserLimit();
