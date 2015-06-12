@@ -7,10 +7,21 @@ services:
         class: Commsy\LegacyBundle\Kernel\LegacyKernel
         arguments: [%legacy.site_index%, @service_container]
 
+    # Legacy authentication
+    commsy_legacy.legacy_authentication:
+        class: Commsy\LegacyBundle\Authentication\LegacyAuthentication
+        arguments: [@commsy_legacy.environment]
+
     # Event listeners
     commsy_legacy.listener.legacy_kernel_listener:
         class: Commsy\LegacyBundle\EventListener\LegacyKernelListener
         arguments: [@commsy_legacy.legacy_kernel, "@commsy_legacy.environment"]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
+    commsy_legacy.listener.legacy_authentication_listener:
+        class: Commsy\LegacyBundle\EventListener\LegacyAuthenticationListener
+        arguments: [@commsy_legacy.legacy_authentication]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 

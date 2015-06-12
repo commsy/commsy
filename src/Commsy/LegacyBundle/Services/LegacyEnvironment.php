@@ -52,9 +52,18 @@ class LegacyEnvironment
             $requestStack = $this->serviceContainer->get('request_stack');
             $currentRequest = $requestStack->getCurrentRequest();
             if ($currentRequest) {
+                // check attributes
                 $attributes = $currentRequest->attributes;
                 if ($attributes->has('roomId')) {
                     $this->environment->setCurrentContextID($attributes->get('roomId'));
+                } else {
+                    // check server bag
+                    $requestUri = $currentRequest->getRequestUri();
+                    
+                    if (preg_match('/room\/(\d+)/', $requestUri, $matches)) {
+                        $roomId = $matches[1];
+                        $this->environment->setCurrentContextID($roomId);
+                    }
                 }
             }
         }
