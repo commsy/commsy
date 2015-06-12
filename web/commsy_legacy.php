@@ -183,11 +183,6 @@ $environment->setCurrentContextID($current_context);
 $environment->setCurrentModule($current_module);
 $environment->setCurrentFunction($current_function);
 unset($current_context);
-#unset($current_module);
-#unset($current_function);
-
-// HTML text area corrections
-$_POST = $environment->getTextConverter()->correctPostValuesForTextEditor($_POST);
 
 // set output mode: default is html
 if ( ($environment->getCurrentFunction() == 'index'

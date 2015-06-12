@@ -3572,59 +3572,6 @@ class misc_text_converter {
       return $text;
    }
 
-   public function correctPostValuesForTextEditor ( $value ) {
-      $retour = $value;
-      global $c_html_textarea;
-      if ( isset($c_html_textarea)
-           and $c_html_textarea
-         ) {
-         $current_context_item = $this->_environment->getCurrentContextItem();
-         if ( ( isset($current_context_item)
-                and $current_context_item->withHtmlTextArea()
-              ) or plugin_hook_method_active('getTextAreaAsHTML')
-            ) {
-            $retour = array();
-            foreach ( $value as $key => $data ) {
-               if ( !strstr($key,'_is_textarea')
-                    and !empty($value[$key.'_is_textarea'])
-                    and !strstr($data,'<!-- KFC TEXT')
-                  ) {
-                  $hack = false;
-                  if ( !empty($_SERVER['HTTP_REFERER']) ) {
-                     $http_referer = $_SERVER['HTTP_REFERER'];
-                     if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
-                        $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
-                     }
-                     global $c_commsy_domain;
-                     global $c_commsy_url_path;
-                     global $c_single_entry_point;
-                     if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
-                        $hack = true;
-
-                        // no hack, if only https is the difference
-                        if ( mb_stristr($http_referer,'https://')
-                             and !mb_stristr($c_commsy_domain,'https://')
-                             and $http_referer == str_replace('http://','https://',$c_commsy_domain).$c_commsy_url_path.'/'.$c_single_entry_point
-                           ) {
-                           $hack = false;
-                        }
-                     }
-                  }
-                  if ( !$hack ) {
-                     #$fck_text = '<!-- KFC TEXT -->';
-                     // security KFC
-                     include_once('functions/security_functions.php');
-                     $fck_text = '<!-- KFC TEXT '.getSecurityHash($data).' -->';
-                     $data = $fck_text.$data.$fck_text;
-                  }
-               }
-               $retour[$key] = $data;
-            }
-         }
-      }
-      return $retour;
-   }
-
    private function _addFCKHash ( $value ) {
       global $c_html_textarea;
       if ( isset($c_html_textarea)
