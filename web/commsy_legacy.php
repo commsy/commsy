@@ -425,9 +425,6 @@ if ( !empty($SID) ) {
     // get shibboleth keys from configuration
     if(isset($shib_auth_source)){
         $uidKey = $shib_auth_source->getShibbolethUsername();
-//          $mailKey = $shibboleth_auth->getShibbolethEmail();
-//          $commonNameKey = $shibboleth_auth->getShibbolethFirstname();
-//          $sureNameKey = $shibboleth_auth->getShibbolethLastname();
     }
     if ($_SERVER[$uidKey] != $session->getValue('user_id') OR $_SERVER['Shib-Session-ID'] != $session->getSessionID()){
         $session->reset();
@@ -435,7 +432,6 @@ if ( !empty($SID) ) {
         $session->setValue('user_id', $_SERVER[$uidKey]);
         $session->setValue( 'shibboleth_auth', '1');
         $session->setValue('commsy_id', $environment->getCurrentPortalItem()->getItemID());
-//          $session->setSessionID($_SERVER['Shib-Session-ID']);
         $environment->setSessionItem($session);
         $SID = $session->getSessionID();
         
@@ -666,22 +662,6 @@ if ( !empty($SID) ) {
            and $plugin_boolean_with_check
          ) {
          ###############################################
-         # show error box in room
-         ###############################################
-         #$params = array();
-         #$params['environment'] = $environment;
-         #$params['with_modifying_actions'] = true;
-         #$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-         #unset($params);
-         #$error_array = $authentication->getErrorArray();
-         #if (!empty($error_array)) {
-         #   $error_string = implode('<br />',$error_array);
-         #   $errorbox->setText($error_string);
-         #} else {
-         #   $errorbox->setText($translator->getMessage('COMMON_ERROR'));
-         #}
-
-         ###############################################
          # goto portal "vor die Tuer" - BEGIN
          ###############################################
          $parameter_array = $environment->getCurrentParameterArray();
@@ -832,15 +812,7 @@ if ( isset($current_user_item) ) {
    if ( isset($current_portal_user_item)
         and $current_portal_user_item->hasToChangeEmail()
       ) {
-    // old profile at portal
-      #$_GET['uid'] = $current_user_item->getItemID();
-      #$_GET['show_profile'] = 'yes';
-      #$_GET['profile_page'] = 'user';
-      #$error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
-      
-      // new profile at portal
-      $has_to_change_mail = true;
-      // used at page object      
+      $has_to_change_mail = true;    
    }
    unset($current_portal_user_item);
 }
