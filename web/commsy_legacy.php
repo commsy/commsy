@@ -1077,49 +1077,40 @@ if(isset($c_smarty) && $c_smarty === true) {
        $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
        unset($params);
     } else {
-      $temp_module = $environment->getCurrentModule();
-      if ( $temp_module == 'help' ) {
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = $with_modifying_actions;
-         $page = $class_factory->getClass(PAGE_HELP_VIEW,$params);
-         unset($params);
+      // create page object
+      if ( $environment->inProjectRoom()
+          or $environment->inCommunityRoom()
+          or $environment->inPrivateRoom()
+          or $environment->inGroupRoom()
+        ) {
+        $params = array();
+        $params['environment'] = $environment;
+        $params['with_modifying_actions'] = $with_modifying_actions;
+        $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
+        unset($params);
+      } elseif ( $environment->inPortal() ) {
+        $context_item = $environment->getCurrentContextItem();
+        $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
+        if ( file_exists($filename) ) {
+           include_once($filename);
+           $params = array();
+           $params['environment'] = $environment;
+           $params['with_modifying_actions'] = $with_modifying_actions;
+           $page = new cs_external_page_portal_view($params);
+           unset($params);
+        } else {
+           $params = array();
+           $params['environment'] = $environment;
+           $params['with_modifying_actions'] = $with_modifying_actions;
+           $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+           unset($params);
+        }
       } else {
-         // create page object
-         if ( $environment->inProjectRoom()
-              or $environment->inCommunityRoom()
-              or $environment->inPrivateRoom()
-              or $environment->inGroupRoom()
-            ) {
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = $with_modifying_actions;
-            $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
-            unset($params);
-         } elseif ( $environment->inPortal() ) {
-            $context_item = $environment->getCurrentContextItem();
-            $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
-            if ( file_exists($filename) ) {
-               include_once($filename);
-               $params = array();
-               $params['environment'] = $environment;
-               $params['with_modifying_actions'] = $with_modifying_actions;
-               $page = new cs_external_page_portal_view($params);
-               unset($params);
-            } else {
-               $params = array();
-               $params['environment'] = $environment;
-               $params['with_modifying_actions'] = $with_modifying_actions;
-               $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
-               unset($params);
-            }
-         } else {
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = $with_modifying_actions;
-            $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
-            unset($params);
-         }
+        $params = array();
+        $params['environment'] = $environment;
+        $params['with_modifying_actions'] = $with_modifying_actions;
+        $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+        unset($params);
       }
     }
     
