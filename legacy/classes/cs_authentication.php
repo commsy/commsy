@@ -232,10 +232,6 @@ class cs_authentication {
             include_once('classes/cs_auth_ldap.php');
             $auth_manager = new cs_auth_ldap();
             $auth_manager->setAuthSourceItem($auth_source_item);
-         } elseif ( $type == 'CAS' ) {
-            include_once('classes/cs_auth_cas.php');
-            $auth_manager = new cs_auth_cas();
-            $auth_manager->setAuthSourceItem($auth_source_item);
          } elseif ( $type == 'Typo3' ) {
             include_once('classes/cs_auth_mysql_typo3.php');
             $auth_manager = new cs_auth_mysql_typo3();
@@ -291,9 +287,6 @@ class cs_authentication {
       } elseif ( $value == 'LDAP' ) {
          include_once('classes/cs_auth_ldap.php');
          $auth_manager = new cs_auth_ldap();
-      } elseif ( $value == 'CAS' ) {
-         include_once('classes/cs_auth_cas.php');
-         $auth_manager = new cs_auth_cas();
       } elseif ( $value == 'Typo3' ) {
          include_once('classes/cs_auth_mysql_typo3.php');
          $auth_manager = new cs_auth_mysql_typo3();

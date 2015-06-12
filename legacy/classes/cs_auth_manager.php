@@ -197,9 +197,7 @@ class cs_auth_manager {
       if ($this->_auth_source_item) {
          $retour = $this->_auth_source_item->getSourceType();
       } else {
-         if ( get_class($this) == 'cs_auth_cas' ) {
-            $retour = 'CAS';
-         } elseif ( get_class($this) == 'cs_auth_mysql' ) {
+         if ( get_class($this) == 'cs_auth_mysql' ) {
             $retour = 'MYSQL';
          } elseif ( get_class($this) == 'cs_auth_ldap' ) {
             $retour = 'LDAP';

@@ -515,66 +515,6 @@ if ( !empty($SID) ) {
         and mb_strtoupper($session->getValue('user_id'), 'UTF-8') == 'GUEST'
         and !$outofservice
       ) {
-      $cas_ticket = '';
-      if ( !empty($_GET['ticket']) ) {
-         $cas_ticket = $_GET['ticket'];
-      } elseif ( !empty($_POST['ticket']) ) {
-         $cas_ticket = $_POST['ticket'];
-      } elseif ( !empty($_COOKIE['ticket']) ) {
-         $cas_ticket = $_COOKIE['ticket'];
-      }
-
-      if ( !empty($cas_ticket) ) {
-         $portal = $environment->getCurrentPortalItem();
-         $cas_list = $portal->getAuthSourceListCASEnabled();
-         if ( $cas_list->isNotEmpty() ) {
-            $cas_auth_source = $cas_list->getFirst();
-            while ($cas_auth_source) {
-               $authentication = $environment->getAuthenticationObject();
-               $cas_manager = $authentication->getAuthManagerByAuthSourceItem($cas_auth_source);
-               $user_id = $cas_manager->validateTicket($cas_ticket);
-               if ( isset($user_id) and !empty($user_id) ) {
-                  $auth_source = $cas_auth_source->getItemID();
-                  $portal_item = $environment->getCurrentPortalItem();
-                  $user_item = $authentication->getPortalUserItem($user_id,$auth_source);
-                  $user_item_id = $user_item->getItemID();
-                  if ( empty($user_item_id) ) {
-                     $params = array();
-                     $params = $environment->getCurrentParameterArray();
-                     $params['user_id'] = $uid;
-                     $params['auth_source'] = $auth_source;
-                     $params['cs_modus'] = 'portalmember2';
-                     $session_item = $environment->getSessionItem();
-                     if ( isset($session_item) ) {
-                        $history = $session_item->getValue('history');
-                        $module = $history[0]['module'];
-                        $funct = $history[0]['function'];
-                        unset($session_item);
-                     } else {
-                        $module = $this->_environment->getCurrentModule();
-                        $funct = $this->_environment->getCurrentFunction();
-                     }
-                     redirect( $environment->getCurrentContextID(),
-                               $module,
-                               $funct,
-                               $params
-                             );
-                     unset($params);
-                     exit();
-                  } else {
-                     include_once('include/inc_make_session_for_user.php');
-                     $environment->setSessionItem($session);
-                  }
-                  unset($user_item);
-                  unset($portal_item);
-                  break;
-               }
-               $cas_auth_source = $cas_list->getNext();
-            }
-         }
-         unset($portal);
-      }
-
 
 /*TYPO3-Anbindung*/
       $typo3_session_id = '';
