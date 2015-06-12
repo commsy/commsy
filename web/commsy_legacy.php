@@ -91,31 +91,6 @@ include_once('functions/misc_functions.php');
 // start of execution time
 $time_start = getmicrotime();
 
-// setup/check required PHP configuration
-if ( get_magic_quotes_gpc() ) {
-   include_once('functions/error_functions.php');
-   trigger_error('"magic_quotes_gpc" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
-}
-if ( get_magic_quotes_runtime() ) {
-   if ( isPHP5() ) {
-      ini_set('magic_quotes_runtime',0);
-      if ( get_magic_quotes_runtime() ) {
-         include_once('functions/error_functions.php');
-         trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
-      }
-   } else {
-      include_once('functions/error_functions.php');
-      trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
-   }
-}
-if ( isPHP5() ) {
-   $ini_reg_globals = ini_get('register_globals');
-   if ( !empty($ini_reg_globals) and strtolower($ini_reg_globals) != 'off' ) {
-      include_once('functions/error_functions.php');
-      trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
-   }
-}
-
 // setup commsy-environment
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
