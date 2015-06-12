@@ -1081,30 +1081,13 @@ if(isset($c_smarty) && $c_smarty === true) {
     } else {
        $parameters = $environment->getCurrentParameterArray();
        if (isset($parameters['mode']) and $parameters['mode']=='print') {
-          if (isset($parameters['view_mode']) and $parameters['view_mode']=='pda') {
-             $params = array();
-             $params['environment'] = $environment;
-             $params['with_modifying_actions'] = $with_modifying_actions;
-             $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
-             unset($params);
-          } else {
-             $params = array();
-             $params['environment'] = $environment;
-             $params['with_modifying_actions'] = $with_modifying_actions;
-             $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
-             unset($params);
-          }
+           $params = array();
+           $params['environment'] = $environment;
+           $params['with_modifying_actions'] = $with_modifying_actions;
+           $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
+           unset($params);
        } else {
           $temp_module = $environment->getCurrentModule();
-          if ( isset($parameters['view_mode'])
-               and $parameters['view_mode']=='pda'
-             ) {
-             $params = array();
-             $params['environment'] = $environment;
-             $params['with_modifying_actions'] = $with_modifying_actions;
-             $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
-             unset($params);
-          }
           if ( $temp_module == 'help' ) {
              $params = array();
              $params['environment'] = $environment;
