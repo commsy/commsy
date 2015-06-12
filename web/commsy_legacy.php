@@ -839,8 +839,6 @@ if ( !empty($_POST)
 /*********** javascript check *************/
 if ( !$outofservice
      and $environment->isOutputModeNot('JSON')
-     and $environment->isOutputModeNot('BLANK')
-#     and !$environment->getCurrentModule() == 'ajax'
      and !($environment->getCurrentModule() == 'ajax')
      and !$session->issetValue('javascript')
      and !isset($_GET['jscheck'])
@@ -862,7 +860,6 @@ if ( !$outofservice
 }
 if ( isset($_GET['jscheck'])
      and $environment->isOutputModeNot('JSON')
-     and $environment->isOutputModeNot('BLANK')
      and ( empty($_POST)
            or ( count($_POST) == 1
                 and !empty($_POST['HTTP_ACCEPT_LANGUAGE']) // bugfix: php configuration
@@ -1081,12 +1078,6 @@ if(isset($c_smarty) && $c_smarty === true) {
        $params['with_modifying_actions'] = $with_modifying_actions;
        $page = $class_factory->getClass(PAGE_JSON_VIEW,$params);
        unset($params);
-    } elseif ( $environment->isOutputMode('BLANK') ) {
-       $params = array();
-       $params['environment'] = $environment;
-       $params['with_modifying_actions'] = $with_modifying_actions;
-       $page = $class_factory->getClass(PAGE_BLANK_VIEW,$params);
-       unset($params);
     } else {
        $parameters = $environment->getCurrentParameterArray();
        if (isset($parameters['mode']) and $parameters['mode']=='print') {
@@ -1176,7 +1167,7 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
     }
 
-    if ( $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+    if ( $environment->isOutputModeNot('JSON')) {
        $page->setCurrentUser($environment->getCurrentUserItem());
 
        // set title
@@ -1354,7 +1345,7 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
     }
 
-    if ( $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+    if ( $environment->isOutputModeNot('JSON')) {
 
        // set navigation links
        $current_room_modules = $context_item_current->getHomeConf();
@@ -1485,7 +1476,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 /************************************/
 
     // display page
-    if ( $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
+    if ( $environment->isOutputMode('JSON')) {
        echo($page->getContent());
     } else {
         header("Content-Type: text/html; charset=utf-8");
@@ -1644,7 +1635,7 @@ if ( isset($context_item_current) ) {
 unset($context_item_current);
 
 // plugin hook
-if ( $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+if ( $environment->isOutputModeNot('JSON')) {
    flush();
     plugin_hook('executeAtTheEnd',array(),false);
 }
