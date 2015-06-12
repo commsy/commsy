@@ -174,48 +174,12 @@ class cs_homepage_detail_view extends cs_detail_view {
       $normal .= '</textarea>'.LF;
       $normal .= LF;
 
-      global $c_html_textarea;
      $current_module = $this->_environment->getCurrentModule();
      $current_function = $this->_environment->getCurrentFunction();
       $current_context = $this->_environment->getCurrentContextItem();
-     # always with html_text_area
-     # $with_htmltextarea = $current_context->withHtmlTextArea();
-     $with_htmltextarea = true;
      $html_status = $current_context->getHtmlTextAreaStatus();
      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-      if ( !isset($c_html_textarea)
-          or !$c_html_textarea
-         or !$with_htmltextarea
-       ) {
-         $html .= $normal;
-     } elseif ( $current_browser != 'msie'
-                and $current_browser != 'firefox'
-                and $current_browser != 'netscape'
-                and $current_browser != 'mozilla'
-            ) {
-         $html .= $normal;
-     } else {
-        $session = $this->_environment->getSessionItem();
-        if ($session->issetValue('javascript')) {
-          $javascript = $session->getValue('javascript');
-             if ($javascript == 1) {
-                include_once('classes/cs_html_textarea.php');
-             $html_area = new cs_html_textarea();
-             $form_element['vsize'] = 94*0.875;
-             $html .= $html_area->getAsHTML( $form_element['name'],
-                                    $this->_text_as_form($form_element['value']),
-                                    $form_element['hsize'],
-                                    'homepage',
-                                    2,
-                                    $form_element['vsize']
-                                    );
-          } else {
-            $html .= $normal;
-          }
-        } else {
-          $html .= $normal;
-        }
-     }
+     $html .= $normal;
       return $html;
    }
 
