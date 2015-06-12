@@ -838,7 +838,6 @@ if ( !empty($_POST)
 
 /*********** javascript check *************/
 if ( !$outofservice
-     and $environment->isOutputModeNot('JSON')
      and !($environment->getCurrentModule() == 'ajax')
      and !$session->issetValue('javascript')
      and !isset($_GET['jscheck'])
@@ -859,7 +858,6 @@ if ( !$outofservice
    exit();
 }
 if ( isset($_GET['jscheck'])
-     and $environment->isOutputModeNot('JSON')
      and ( empty($_POST)
            or ( count($_POST) == 1
                 and !empty($_POST['HTTP_ACCEPT_LANGUAGE']) // bugfix: php configuration
@@ -1072,66 +1070,58 @@ if(isset($c_smarty) && $c_smarty === true) {
     // with or without modifiying options
     $with_modifying_actions = $context_item_current->isOpen();
 
-    if ( $environment->isOutputMode('JSON') ) {
+    $parameters = $environment->getCurrentParameterArray();
+    if (isset($parameters['mode']) and $parameters['mode']=='print') {
        $params = array();
        $params['environment'] = $environment;
        $params['with_modifying_actions'] = $with_modifying_actions;
-       $page = $class_factory->getClass(PAGE_JSON_VIEW,$params);
+       $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
        unset($params);
     } else {
-       $parameters = $environment->getCurrentParameterArray();
-       if (isset($parameters['mode']) and $parameters['mode']=='print') {
-           $params = array();
-           $params['environment'] = $environment;
-           $params['with_modifying_actions'] = $with_modifying_actions;
-           $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
-           unset($params);
-       } else {
-          $temp_module = $environment->getCurrentModule();
-          if ( $temp_module == 'help' ) {
-             $params = array();
-             $params['environment'] = $environment;
-             $params['with_modifying_actions'] = $with_modifying_actions;
-             $page = $class_factory->getClass(PAGE_HELP_VIEW,$params);
-             unset($params);
-          } else {
-             // create page object
-             if ( $environment->inProjectRoom()
-                  or $environment->inCommunityRoom()
-                  or $environment->inPrivateRoom()
-                  or $environment->inGroupRoom()
-                ) {
-                $params = array();
-                $params['environment'] = $environment;
-                $params['with_modifying_actions'] = $with_modifying_actions;
-                $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
-                unset($params);
-             } elseif ( $environment->inPortal() ) {
-                $context_item = $environment->getCurrentContextItem();
-                $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
-                if ( file_exists($filename) ) {
-                   include_once($filename);
-                   $params = array();
-                   $params['environment'] = $environment;
-                   $params['with_modifying_actions'] = $with_modifying_actions;
-                   $page = new cs_external_page_portal_view($params);
-                   unset($params);
-                } else {
-                   $params = array();
-                   $params['environment'] = $environment;
-                   $params['with_modifying_actions'] = $with_modifying_actions;
-                   $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
-                   unset($params);
-                }
-             } else {
-                $params = array();
-                $params['environment'] = $environment;
-                $params['with_modifying_actions'] = $with_modifying_actions;
-                $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
-                unset($params);
-             }
-          }
-       }
+      $temp_module = $environment->getCurrentModule();
+      if ( $temp_module == 'help' ) {
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $with_modifying_actions;
+         $page = $class_factory->getClass(PAGE_HELP_VIEW,$params);
+         unset($params);
+      } else {
+         // create page object
+         if ( $environment->inProjectRoom()
+              or $environment->inCommunityRoom()
+              or $environment->inPrivateRoom()
+              or $environment->inGroupRoom()
+            ) {
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $with_modifying_actions;
+            $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
+            unset($params);
+         } elseif ( $environment->inPortal() ) {
+            $context_item = $environment->getCurrentContextItem();
+            $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
+            if ( file_exists($filename) ) {
+               include_once($filename);
+               $params = array();
+               $params['environment'] = $environment;
+               $params['with_modifying_actions'] = $with_modifying_actions;
+               $page = new cs_external_page_portal_view($params);
+               unset($params);
+            } else {
+               $params = array();
+               $params['environment'] = $environment;
+               $params['with_modifying_actions'] = $with_modifying_actions;
+               $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+               unset($params);
+            }
+         } else {
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $with_modifying_actions;
+            $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+            unset($params);
+         }
+      }
     }
     
     // has to change email (new) at portal
@@ -1150,34 +1140,32 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
     }
 
-    if ( $environment->isOutputModeNot('JSON')) {
-       $page->setCurrentUser($environment->getCurrentUserItem());
+    $page->setCurrentUser($environment->getCurrentUserItem());
 
-       // set title
-       $title = $context_item_current->getTitle();
-       if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
-          $title .= ' ('.$translator->getMessage('PROJECTROOM_TEMPLATE').')';
-       } elseif ($context_item_current->isClosed()) {
-          $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
-       }
+    // set title
+    $title = $context_item_current->getTitle();
+    if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
+      $title .= ' ('.$translator->getMessage('PROJECTROOM_TEMPLATE').')';
+    } elseif ($context_item_current->isClosed()) {
+      $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
+    }
 
-       $user = $environment->getCurrentUserItem();
-       if ( $context_item_current->isPrivateRoom() and $user->isGuest() ) {
-          $page->setRoomName($translator->getMessage('COMMON_FOREIGN_ROOM'));
-          $page->setPageName($translator->getMessage('COMMON_FOREIGN_ROOM'));
-       } elseif ( $context_item_current->isPrivateRoom() ) {
-          $page->setRoomName($translator->getMessage('COMMON_PRIVATEROOM'));
-          $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
-          $tempMessage = "";
-          include_once('include/inc_commsy_php_case_pagetitle.php');
-          $page->setPageName($tempMessage);
-       } else {
-          $page->setRoomName($title);
-          $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
-          $tempMessage = "";
-          include_once('include/inc_commsy_php_case_pagetitle.php');
-          $page->setPageName($tempMessage);
-       }
+    $user = $environment->getCurrentUserItem();
+    if ( $context_item_current->isPrivateRoom() and $user->isGuest() ) {
+      $page->setRoomName($translator->getMessage('COMMON_FOREIGN_ROOM'));
+      $page->setPageName($translator->getMessage('COMMON_FOREIGN_ROOM'));
+    } elseif ( $context_item_current->isPrivateRoom() ) {
+      $page->setRoomName($translator->getMessage('COMMON_PRIVATEROOM'));
+      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
+      $tempMessage = "";
+      include_once('include/inc_commsy_php_case_pagetitle.php');
+      $page->setPageName($tempMessage);
+    } else {
+      $page->setRoomName($title);
+      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
+      $tempMessage = "";
+      include_once('include/inc_commsy_php_case_pagetitle.php');
+      $page->setPageName($tempMessage);
     }
 
     // display login errors
@@ -1328,121 +1316,118 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
     }
 
-    if ( $environment->isOutputModeNot('JSON')) {
+    // set navigation links
+    $current_room_modules = $context_item_current->getHomeConf();
+    if (!empty($current_room_modules)) {
+      $room_modules =  explode(',',$current_room_modules);
+    }
 
-       // set navigation links
-       $current_room_modules = $context_item_current->getHomeConf();
-       if (!empty($current_room_modules)) {
-          $room_modules =  explode(',',$current_room_modules);
-       }
+    // das folgende nur, wenn der Raum auch offen ist
+    // ansonsten hinweis
+    // TBD
+    if ( $environment->inProjectRoom()
+        or $environment->inCommunityRoom()
+        or $environment->inPrivateRoom()
+        or $environment->inGroupRoom()
+      ) {
+      $page->addAction($translator->getMessage('COMMON_HOME_INDEX'),'','home','index');
+      foreach ($room_modules as $item) {
+         $link_name = explode('_',$item);
+         if ( $link_name[1] != 'none' ) {
+            $tempMessage = "";
+            switch ( mb_strtoupper($link_name[0], 'UTF-8') )
+            {
+               case 'ANNOUNCEMENT':
+                  $tempMessage = $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
+                  break;
+               case 'DATE':
+                  $tempMessage = $translator->getMessage('COMMON_DATE_INDEX');
+                  break;
+               case 'DISCUSSION':
+                  $tempMessage = $translator->getMessage('COMMON_DISCUSSION_INDEX');
+                  break;
+               case 'GROUP':
+                  $tempMessage = $translator->getMessage('COMMON_GROUP_INDEX');
+                  break;
+               case 'INSTITUTION':
+                  $tempMessage = $translator->getMessage('COMMON_INSTITUTION_INDEX');
+                  break;
+               case 'MATERIAL':
+                  $tempMessage = $translator->getMessage('COMMON_MATERIAL_INDEX');
+                  break;
+               case 'MYROOM':
+                  $tempMessage = $translator->getMessage('COMMON_MYROOM_INDEX');
+                  break;
+               case 'PROJECT':
+                  $tempMessage = $translator->getMessage('COMMON_PROJECT_INDEX');
+                  break;
+               case 'TODO':
+                  $tempMessage = $translator->getMessage('COMMON_TODO_INDEX');
+                  break;
+               case 'TOPIC':
+                  $tempMessage = $translator->getMessage('COMMON_TOPIC_INDEX');
+                  break;
+               case 'USER':
+                  $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
+                  break;
+               case 'ENTRY':
+                  $tempMessage = $translator->getMessage('COMMON_ENTRY_INDEX');
+                  break;
+               default:
+                  $text = '';
+                  if ( $environment->isPlugin($link_name[0]) ) {
+                     $text = plugin_hook_output($link_name[0],'getDisplayName');
+                  }
+                  if ( !empty($text) ) {
+                     $tempMessage = $text;
+                  } else {
+                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.' ('.__LINE__.') ');
+                  }
+                  break;
+            }
+            $page->addAction($tempMessage,'',$link_name[0],'index');
+         }
+      }
+    }
 
-       // das folgende nur, wenn der Raum auch offen ist
-       // ansonsten hinweis
-       // TBD
-       if ( $environment->inProjectRoom()
-            or $environment->inCommunityRoom()
-            or $environment->inPrivateRoom()
-            or $environment->inGroupRoom()
-          ) {
-          $page->addAction($translator->getMessage('COMMON_HOME_INDEX'),'','home','index');
-          foreach ($room_modules as $item) {
-             $link_name = explode('_',$item);
-             if ( $link_name[1] != 'none' ) {
-                $tempMessage = "";
-                switch ( mb_strtoupper($link_name[0], 'UTF-8') )
-                {
-                   case 'ANNOUNCEMENT':
-                      $tempMessage = $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
-                      break;
-                   case 'DATE':
-                      $tempMessage = $translator->getMessage('COMMON_DATE_INDEX');
-                      break;
-                   case 'DISCUSSION':
-                      $tempMessage = $translator->getMessage('COMMON_DISCUSSION_INDEX');
-                      break;
-                   case 'GROUP':
-                      $tempMessage = $translator->getMessage('COMMON_GROUP_INDEX');
-                      break;
-                   case 'INSTITUTION':
-                      $tempMessage = $translator->getMessage('COMMON_INSTITUTION_INDEX');
-                      break;
-                   case 'MATERIAL':
-                      $tempMessage = $translator->getMessage('COMMON_MATERIAL_INDEX');
-                      break;
-                   case 'MYROOM':
-                      $tempMessage = $translator->getMessage('COMMON_MYROOM_INDEX');
-                      break;
-                   case 'PROJECT':
-                      $tempMessage = $translator->getMessage('COMMON_PROJECT_INDEX');
-                      break;
-                   case 'TODO':
-                      $tempMessage = $translator->getMessage('COMMON_TODO_INDEX');
-                      break;
-                   case 'TOPIC':
-                      $tempMessage = $translator->getMessage('COMMON_TOPIC_INDEX');
-                      break;
-                   case 'USER':
-                      $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
-                      break;
-                   case 'ENTRY':
-                      $tempMessage = $translator->getMessage('COMMON_ENTRY_INDEX');
-                      break;
-                   default:
-                      $text = '';
-                      if ( $environment->isPlugin($link_name[0]) ) {
-                         $text = plugin_hook_output($link_name[0],'getDisplayName');
-                      }
-                      if ( !empty($text) ) {
-                         $tempMessage = $text;
-                      } else {
-                         $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.' ('.__LINE__.') ');
-                      }
-                      break;
-                }
-                $page->addAction($tempMessage,'',$link_name[0],'index');
-             }
-          }
-       }
+    // authentication (bookmarks)
+    $current_user = $environment->getCurrentUserItem();
+    if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
+      $page->setWithoutNavigationLinks();
+    }
 
-       // authentication (bookmarks)
-       $current_user = $environment->getCurrentUserItem();
-       if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
-          $page->setWithoutNavigationLinks();
-       }
+    if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
+      include_once('pages/profile_edit.php');
+    }
 
-       if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
-          include_once('pages/profile_edit.php');
-       }
+    if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
+      include_once('pages/copies_index.php');
+    }
 
-       if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
-          include_once('pages/copies_index.php');
-       }
+    if ( $current_function !='edit'
+        and isset($_GET['attach_view'])
+        and ($_GET['attach_view'] == 'yes')
+        and isset($_GET['attach_type'])
+        and !empty($_GET['attach_type'])
+      ) {
+      switch ( $_GET['attach_type'] ) {
+         case 'buzzword':
+            include_once('pages/buzzword_attach.php');
+            break;
+         case 'tag':
+            include_once('pages/tag_attach.php');
+            break;
+         case 'item':
+            include_once('pages/item_attach.php');
+            break;
+      }
+    }
 
-       if ( $current_function !='edit'
-            and isset($_GET['attach_view'])
-            and ($_GET['attach_view'] == 'yes')
-            and isset($_GET['attach_type'])
-            and !empty($_GET['attach_type'])
-          ) {
-          switch ( $_GET['attach_type'] ) {
-             case 'buzzword':
-                include_once('pages/buzzword_attach.php');
-                break;
-             case 'tag':
-                include_once('pages/tag_attach.php');
-                break;
-             case 'item':
-                include_once('pages/item_attach.php');
-                break;
-          }
-       }
-
-       $password_param = $environment->getValueOfParameter('cs_modus');
-       if ( !empty($password_param)
-            and $password_param == 'password_change'
-          ) {
-          include_once('pages/user_password_overlay.php');
-       }
+    $password_param = $environment->getValueOfParameter('cs_modus');
+    if ( !empty($password_param)
+        and $password_param == 'password_change'
+      ) {
+      include_once('pages/user_password_overlay.php');
     }
 }
 
@@ -1459,26 +1444,22 @@ if(isset($c_smarty) && $c_smarty === true) {
 /************************************/
 
     // display page
-    if ( $environment->isOutputMode('JSON')) {
-       echo($page->getContent());
-    } else {
-        header("Content-Type: text/html; charset=utf-8");
-       include_once('functions/security_functions.php');
-       if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {
-          include_once('pages/rubric_download.php');
-       }
-       if ( empty($_GET['cs_modus']) ) {
-          $html = $page->asHTMLFirstPart();
-          if ( !empty($html) ) {
-             echo(addTokenToPost($html));
-          }
-       }
-       $html = $page->asHTMLSecondPart();
-       if ( !empty($html) ) {
-          echo(addTokenToPost($html));
-       }
-       echo(addTokenToPost($page->asHTML()));
+    header("Content-Type: text/html; charset=utf-8");
+    include_once('functions/security_functions.php');
+    if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {
+      include_once('pages/rubric_download.php');
     }
+    if ( empty($_GET['cs_modus']) ) {
+      $html = $page->asHTMLFirstPart();
+      if ( !empty($html) ) {
+         echo(addTokenToPost($html));
+      }
+    }
+    $html = $page->asHTMLSecondPart();
+    if ( !empty($html) ) {
+      echo(addTokenToPost($html));
+    }
+    echo(addTokenToPost($page->asHTML()));
     unset($page);
 }
 
@@ -1618,8 +1599,6 @@ if ( isset($context_item_current) ) {
 unset($context_item_current);
 
 // plugin hook
-if ( $environment->isOutputModeNot('JSON')) {
-   flush();
-    plugin_hook('executeAtTheEnd',array(),false);
-}
+flush();
+plugin_hook('executeAtTheEnd',array(),false);
 ?>
