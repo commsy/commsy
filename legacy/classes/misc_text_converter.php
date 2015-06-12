@@ -74,20 +74,20 @@ class misc_text_converter {
       $replace[] = '$1&gt;';
 
       // old formating
-	   $c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
-	   if ( !empty($c_old_text_formating_array)
-		     and is_array($c_old_text_formating_array)
-			  and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
-	      ) {
-		   $this->_with_old_text_formating = true;
-	   }
-		if ( !$this->_with_old_text_formating ) {
+      $c_old_text_formating_array = $this->_environment->getConfiguration('c_old_text_formating_array');
+      if ( !empty($c_old_text_formating_array)
+           and is_array($c_old_text_formating_array)
+           and in_array($this->_environment->getCurrentContextID(),$c_old_text_formating_array)
+         ) {
+         $this->_with_old_text_formating = true;
+      }
+      if ( !$this->_with_old_text_formating ) {
          $search[]  = '~<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])~u';
          $replace[] = '&lt;$1';
          $search[]  = '~<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])~u';
          $replace[] = '&lt;$1';
-		}
-		
+      }
+      
       $search[]  = '~<([/]{0,1}[i|I][f|F][r|R][a|A][m|M][e|E])~u';
       $replace[] = '&lt;$1';
 
@@ -162,21 +162,13 @@ class misc_text_converter {
 
    #private function _cs_htmlspecialchars ($text) {
    public function _cs_htmlspecialchars ($text) {
-      global $c_html_textarea;
       $text = $this->_cleanBadCode($text);
-      if ( !isset($c_html_textarea) or !$c_html_textarea ) {
-         $text = str_replace('<img','&lt;img',$text);
-      }
       return $text;
    }
 
    #private function _cs_htmlspecialchars1 ($text) {
    public function _cs_htmlspecialchars1 ($text) {
       $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
-      global $c_html_textarea;
-      if ( !isset($c_html_textarea) or !$c_html_textarea ) {
-         $text = str_replace('<img','&lt;img',$text);
-      }
       return $text;
    }
 
@@ -202,14 +194,14 @@ class misc_text_converter {
    }
 
    public function convertText($text) {
-   	  //$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
+        //$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
       //$text = nl2br($text);
       //$text = $this->_decode_backslashes_1($text);
       //$text = $this->_preserve_whitespaces($text);
       #$text = $this->_newFormating($text);
       //$text = $this->_emphasize_text($text);
 #      if($_GET['mod'] != 'ajax' && $_GET['fct'] != 'index'){
-#	      $text = $this->_activate_urls($text);
+#        $text = $this->_activate_urls($text);
 #      }
       //$text = $this->_display_headers($text);
       //$text = $this->_format_html_long($text);
@@ -217,7 +209,7 @@ class misc_text_converter {
       //$text = $this->_decode_backslashes_2($text);
       //$text = $this->_delete_unnecassary_br($text);
       //$text = $this->_br_with_nl($text);
-   	  return $text;
+        return $text;
    }
 
    // text not from FCKeditor
@@ -855,9 +847,9 @@ class misc_text_converter {
    }
 
    public function _htmlentities_cleanbadcode( $value ) {
-   	  $value = $this->_htmlentities_small($value);
-   	  $value = $this->_cleanBadCode($value);
-   	  return $value;
+        $value = $this->_htmlentities_small($value);
+        $value = $this->_cleanBadCode($value);
+        return $value;
    }
 
    private function _htmlentities_small ( $value ) {
@@ -1021,7 +1013,7 @@ class misc_text_converter {
       $reg_exp_array = array();
       
       // reference
-      #$reg_exp_array['[']			  = '~\\[[0-9]+\|[\w]+\]~eu';
+      #$reg_exp_array['[']         = '~\\[[0-9]+\|[\w]+\]~eu';
       $reg_exp_array['(:flash']       = '~\\(:flash\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:quicktime']   = '~\\(:quicktime\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer\\s(.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -1052,8 +1044,8 @@ class misc_text_converter {
       //$reg_exp_array['(:pdf']       = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
 
       // Lightbox für Bilder die über den CkEditor in das Beschreibungsfeld eingefügt wurden
-      $reg_exp_image['<img']		  = '~\\<img(.*?)\\>~eu'; // \<img.*?\>
-      #$reg_exp_image['link']		  = '~<a(.*?)><img(.*?)></a>~eu'; // \<img.*?\>
+      $reg_exp_image['<img']       = '~\\<img(.*?)\\>~eu'; // \<img.*?\>
+      #$reg_exp_image['link']      = '~<a(.*?)><img(.*?)></a>~eu'; // \<img.*?\>
       
       // plugins
       $plugin_reg_exp_array = plugin_hook_output_all('getMediaRegExp',null,'ARRAY');
@@ -1086,31 +1078,31 @@ class misc_text_converter {
       ############ lightbox images ckEditor ###############
       $matchesImages = array();
       $found_link = preg_match_all('~<a.*?>(<img.*?>)</a>~eu',$text,$matchesLink);
-      	foreach ($reg_exp_image as $key => $exp) {
-      		$found = preg_match_all($exp,$text,$matchesImages);
-      		if($found > 0) {
-      			foreach ($matchesImages[0] as $value) {
-      				// found an <a> tag dont use lightbox
-      				if(!in_array($value, $matchesLink[1])){
-	      				// found an image tag
-	      				$args_array = $this->_getArgs($value, $exp);
-	      				// search for src attribute
-	      				$src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
-	      				$value_new = $value;
-	      				if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
-	      					$params = $this->_environment->getCurrentParameterArray();
-	      					$tempArray[0] = $args_array[0];
-	      					$tempArray[2] = $src[1];
-	      					$tempArray[3] = $args_array[1];
-	      					
-	      					$value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
-	      					$text = str_replace($value,$value_new,$text);
-	      					unset($value_new);
-	      				}
-	      			}
-      			}
-      		}
-      	}
+         foreach ($reg_exp_image as $key => $exp) {
+            $found = preg_match_all($exp,$text,$matchesImages);
+            if($found > 0) {
+               foreach ($matchesImages[0] as $value) {
+                  // found an <a> tag dont use lightbox
+                  if(!in_array($value, $matchesLink[1])){
+                     // found an image tag
+                     $args_array = $this->_getArgs($value, $exp);
+                     // search for src attribute
+                     $src = $this->_getArgs($args_array[1], '~src\=\"(.*?)\\"~eu');
+                     $value_new = $value;
+                     if ( $key == '<img' and mb_stristr($value_new,'<img') ) {
+                        $params = $this->_environment->getCurrentParameterArray();
+                        $tempArray[0] = $args_array[0];
+                        $tempArray[2] = $src[1];
+                        $tempArray[3] = $args_array[1];
+                        
+                        $value_new = $this->_formatImageLightboxCkEditor($text,$args_array[0],$src[1],$params['iid']);
+                        $text = str_replace($value,$value_new,$text);
+                        unset($value_new);
+                     }
+                  }
+               }
+            }
+         }
       
       ############ lightbox images ckEditor ###############
       
@@ -1152,7 +1144,7 @@ class misc_text_converter {
                      #$value_new = $this->_decode_file_names($value_new);
 
                      /*if ( $key == '[' and mb_stristr($value_new,'[') ){#pr($args_array);
-                     	$value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
+                        $value_new = $this->_formatRef($value_new,$args_array); // Referenzen Testen
                      } else*/
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_formatFlash($value_new,$args_array,$file_array);
@@ -1251,44 +1243,44 @@ class misc_text_converter {
    }
    
 //    private function _formatRef ($text, $array) {
-//    	 $retour = '';
-//    	 // explode id and text
-//    	 if (!empty($array['0'])){
-//    	 	$ref = explode('|', $array['0']);
-//    	 	$ref['0'] = substr($ref['0'], 1);
-//    	 	$ref['1'] = substr($ref['1'],0,-1);
-//    	 }
-   	 
-//    	 if( !empty($ref['1'])){
-//    	 	$params = array();
-//    	 	$params['iid'] = $ref['0'];
-//    	 	$word = $ref['1'];
-//    	 }
-   	 
-//    	 include_once('functions/curls_functions.php');
-//    	 $item_manager = $this->_environment->getItemManager();
-//    	 $item_manager->resetLimits();
-//    	 $type = $item_manager->getItemType($params['iid']);
-//    	 unset($item_manager);
-   	 
-//    	 if(   $type == CS_ROOM_TYPE ||
-//    	    		$type == CS_COMMUNITY_TYPE ||
-//    	    		$type == CS_PRIVATEROOM_TYPE ||
-//    	    		$type == CS_GROUPROOM_TYPE ||
-//    	    		$type == CS_MYROOM_TYPE ||
-//    	    		$type == CS_PROJECT_TYPE ||
-//    	    		$type == CS_PORTAL_TYPE/* ||
-//    	    		$type == CS_SERVER_TYPE*/) {
-//    	    		$link_text = ahref_curl($params['iid'], 'home', 'index', '', $word);
-//    	    		} else {
-//    	    			$link_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', '');
-//    	    		}
-//    	    	if ( !empty($link_text) ) {
-//    	    		$text = str_replace($array[0],$link_text,$text);
-//    	    	}
-   	 
-//    	    	$retour = $text;
-//    	    	return $retour;   	
+//        $retour = '';
+//        // explode id and text
+//        if (!empty($array['0'])){
+//          $ref = explode('|', $array['0']);
+//          $ref['0'] = substr($ref['0'], 1);
+//          $ref['1'] = substr($ref['1'],0,-1);
+//        }
+       
+//        if( !empty($ref['1'])){
+//          $params = array();
+//          $params['iid'] = $ref['0'];
+//          $word = $ref['1'];
+//        }
+       
+//        include_once('functions/curls_functions.php');
+//        $item_manager = $this->_environment->getItemManager();
+//        $item_manager->resetLimits();
+//        $type = $item_manager->getItemType($params['iid']);
+//        unset($item_manager);
+       
+//        if(   $type == CS_ROOM_TYPE ||
+//                $type == CS_COMMUNITY_TYPE ||
+//                $type == CS_PRIVATEROOM_TYPE ||
+//                $type == CS_GROUPROOM_TYPE ||
+//                $type == CS_MYROOM_TYPE ||
+//                $type == CS_PROJECT_TYPE ||
+//                $type == CS_PORTAL_TYPE/* ||
+//                $type == CS_SERVER_TYPE*/) {
+//                $link_text = ahref_curl($params['iid'], 'home', 'index', '', $word);
+//                } else {
+//                   $link_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', '');
+//                }
+//             if ( !empty($link_text) ) {
+//                $text = str_replace($array[0],$link_text,$text);
+//             }
+       
+//             $retour = $text;
+//             return $retour;      
 //    }
 
    private function _formatFile ( $text, $array, $file_name_array ) {
@@ -2402,19 +2394,19 @@ class misc_text_converter {
    }
    
    private function _formatImageLightboxCkEditor ($text, $imgTag,$link, $fileID){
-   	$retour = '';
-   	$image_text .= '<a class="lightbox_'.$fileID.'" href="' . $link . '" target="blank">';
-   	#$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
-   	#$image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
-   	$image_text .= $imgTag;
-   	$image_text .= '</a>';
-   	
-   	if ( !empty($image_text) ) {
-   		$retour = $image_text;
-   		#$retour = str_replace($imgTag, $image_text, $text);
-   		#$retour = str_replace($array[0],$image_text,$text);
-   	}
-   	return $retour;
+      $retour = '';
+      $image_text .= '<a class="lightbox_'.$fileID.'" href="' . $link . '" target="blank">';
+      #$image_text .= '<a href="'.$source.'" rel="lightbox'.$gallery.'"'.$href_title.'>';
+      #$image_text .= '<img style="'.$height.$width.'" src="'.$source2.'" alt="'.$alt.'"/>';
+      $image_text .= $imgTag;
+      $image_text .= '</a>';
+      
+      if ( !empty($image_text) ) {
+         $retour = $image_text;
+         #$retour = str_replace($imgTag, $image_text, $text);
+         #$retour = str_replace($array[0],$image_text,$text);
+      }
+      return $retour;
    }
    
    private function _formatImage ( $text, $array, $file_name_array ) {
@@ -2873,6 +2865,7 @@ class misc_text_converter {
              if(!empty($mdo_active) && $mdo_active != '-1') {
                // mdo access granted, get content from Mediendistribution-Online
                $access = true;
+               $community_room = $community;
 
                // stop searching here
                break;
@@ -2883,12 +2876,48 @@ class misc_text_converter {
          }
        }
 
-       if($access === true) {
-         // create div for content
-         $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
-         $retour .= "show content with id: " . $mdo_id . LF;
-         $retour .= '</div>';
-       }
+        if($access === true) {
+
+            global $c_media_integration_url;
+
+            if ($community_room->getMDOKey()) {
+              $key = $community_room->getMDOKey();
+              $curl_handler = curl_init($c_media_integration_url.$key);
+            } else {
+              $curl_handler = curl_init($c_media_integration_url);
+            }
+
+            // $curl_handler = curl_init($c_media_integration_url);
+            curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl_handler, CURLOPT_POST, true);
+
+            // get record data
+            $data = "<RECORD identifier='" . $mdo_id . "' />";
+            curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+
+            $response = curl_exec($curl_handler);
+            // $xml_object = simplexml_load_string($response);
+            // $recordUrl = $xml_object->xpath("//f[@n='recordurl']");
+
+            
+            // get title
+            preg_match("/\<f n=\'titel\'\>(.*)\<\/f\>/", $response, $title_match);
+            if($title_match[1]) {
+               $title = $title_match[1];
+            }
+
+            // get record url
+            preg_match("/\<f n=\'recordurl\'>(.*)\<\/f\>/", $response, $matches);
+            if($matches[1]) {
+               $recordUrl = $matches[1];
+            }
+
+            // create div for content
+            $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
+            // $retour .= "show content with id: " . $mdo_id . LF;
+            $retour .= '<a href="' . $recordUrl . '">' . $title . '</a>';
+            $retour .= '</div>';
+        }
      }
 
      return $retour;
@@ -2898,73 +2927,73 @@ class misc_text_converter {
       $retour = '';
       if ( !empty($array[1]) ) {
          if ( !empty($file_name_array[$array[1]]) ) {
-         	 if(stristr($array[1], '.html') or stristr($array[1], '.htm')){
-	         	 // geogebra attached as HTML-File
-	             $temp_file = $file_name_array[$array[1]];
-	             $file_manager = $this->_environment->getFileManager();
-	             $file = $file_manager->getItem($temp_file->getFileID());
-	             $file_contents = file_get_contents($file->getDiskFileName());
+             if(stristr($array[1], '.html') or stristr($array[1], '.htm')){
+                // geogebra attached as HTML-File
+                $temp_file = $file_name_array[$array[1]];
+                $file_manager = $this->_environment->getFileManager();
+                $file = $file_manager->getItem($temp_file->getFileID());
+                $file_contents = file_get_contents($file->getDiskFileName());
 
-	             $html = new DOMDocument();
-	    			 $html->loadHTML($file_contents);
-	    			 $applet_list = $html->getElementsByTagName('applet');
-	    			 for ($i = 0; $i < $applet_list->length; $i++) {
-	    			 	 $temp_applet = $applet_list->item($i);
-	    			 	 $temp_applet_attributes = $temp_applet->attributes;
-	    			 	 $found_geogebra = false;
-	    			 	 for ($j = 0; $j < $temp_applet_attributes->length; $j++) {
-	    			 	    $temp_attribute = $temp_applet_attributes->item($j);
-	    			 	    if(isset($temp_attribute->nodeName)){
-	    			 	       if($temp_attribute->nodeName == 'name' and $temp_attribute->nodeValue == 'ggbApplet'){
-	    			 	          $found_geogebra = true;
-	    			 	       }
-	    			 	       if($temp_attribute->nodeName == 'codebase' and $temp_attribute->nodeValue == './'){
-	    			 	          $temp_applet->setAttribute('codebase', 'http://www.geogebra.org/webstart/3.2/unsigned/');
-	    			 	       }
-	    			 	    }
-	    			 	 }
-	    			    if($found_geogebra){
-	    			       $retour .= $html->saveXML($temp_applet);
-	    			    }
-	    			 }
-         	 } elseif (stristr($array[1], '.ggb')) {
-         	    // geogebra attached as ggb-File
-         	    $temp_file = $file_name_array[$array[1]];
-	             $file_manager = $this->_environment->getFileManager();
-	             $file = $file_manager->getItem($temp_file->getFileID());
-	             $url = $file->getUrl();
-	             $file_contents = file_get_contents($file->getDiskFileName());
-	             $gbb_base_64 = base64_encode($file_contents);
+                $html = new DOMDocument();
+                $html->loadHTML($file_contents);
+                $applet_list = $html->getElementsByTagName('applet');
+                for ($i = 0; $i < $applet_list->length; $i++) {
+                   $temp_applet = $applet_list->item($i);
+                   $temp_applet_attributes = $temp_applet->attributes;
+                   $found_geogebra = false;
+                   for ($j = 0; $j < $temp_applet_attributes->length; $j++) {
+                      $temp_attribute = $temp_applet_attributes->item($j);
+                      if(isset($temp_attribute->nodeName)){
+                         if($temp_attribute->nodeName == 'name' and $temp_attribute->nodeValue == 'ggbApplet'){
+                            $found_geogebra = true;
+                         }
+                         if($temp_attribute->nodeName == 'codebase' and $temp_attribute->nodeValue == './'){
+                            $temp_applet->setAttribute('codebase', 'http://www.geogebra.org/webstart/3.2/unsigned/');
+                         }
+                      }
+                   }
+                   if($found_geogebra){
+                      $retour .= $html->saveXML($temp_applet);
+                   }
+                }
+             } elseif (stristr($array[1], '.ggb')) {
+                // geogebra attached as ggb-File
+                $temp_file = $file_name_array[$array[1]];
+                $file_manager = $this->_environment->getFileManager();
+                $file = $file_manager->getItem($temp_file->getFileID());
+                $url = $file->getUrl();
+                $file_contents = file_get_contents($file->getDiskFileName());
+                $gbb_base_64 = base64_encode($file_contents);
 
-         	    $retour .= '<applet name="ggbApplet" code="geogebra.GeoGebraApplet" archive="geogebra.jar"';
-					 $retour .= '	codebase="http://www.geogebra.org/webstart/3.2/unsigned/"';
-					 $retour .= '	width="450" height="400"mayscript="true">';
-					 $retour .= '	<param name="ggbBase64" value="'.$gbb_base_64.'">';
-					 $retour .= '	<param name="java_arguments" value="-Xmx512m -Djnlp.packEnabled=true" />';
-					 $retour .= '	<param name="cache_archive" value="geogebra.jar, geogebra_main.jar, geogebra_gui.jar, geogebra_cas.jar, geogebra_export.jar, geogebra_properties.jar" />';
-					 $retour .= '	<param name="cache_version" value="3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0" />';
-					 $retour .= '	<param name="framePossible" value="false" />';
-					 $retour .= '	<param name="showResetIcon" value="false" />';
-					 $retour .= '	<param name="showAnimationButton" value="true" />';
-					 $retour .= '	<param name="enableRightClick" value="false" />';
-					 $retour .= '	<param name="errorDialogsActive" value="true" />';
-					 $retour .= '	<param name="enableLabelDrags" value="false" />';
-					 $retour .= '	<param name="showMenuBar" value="false" />';
-					 $retour .= '	<param name="showToolBar" value="false" />';
-					 $retour .= '	<param name="showToolBarHelp" value="false" />';
-					 $retour .= '	<param name="showAlgebraInput" value="false" />';
-					 $retour .= '	<param name="allowRescaling" value="true" />';
-					 $retour .= '   Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.4.2 (or later) is installed and active in your browser (<a href="http://java.sun.com/getjava">Click here to install Java now</a>)';
-					 $retour .= '</applet>';
+                $retour .= '<applet name="ggbApplet" code="geogebra.GeoGebraApplet" archive="geogebra.jar"';
+                $retour .= '  codebase="http://www.geogebra.org/webstart/3.2/unsigned/"';
+                $retour .= '  width="450" height="400"mayscript="true">';
+                $retour .= '  <param name="ggbBase64" value="'.$gbb_base_64.'">';
+                $retour .= '  <param name="java_arguments" value="-Xmx512m -Djnlp.packEnabled=true" />';
+                $retour .= '  <param name="cache_archive" value="geogebra.jar, geogebra_main.jar, geogebra_gui.jar, geogebra_cas.jar, geogebra_export.jar, geogebra_properties.jar" />';
+                $retour .= '  <param name="cache_version" value="3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0, 3.2.46.0" />';
+                $retour .= '  <param name="framePossible" value="false" />';
+                $retour .= '  <param name="showResetIcon" value="false" />';
+                $retour .= '  <param name="showAnimationButton" value="true" />';
+                $retour .= '  <param name="enableRightClick" value="false" />';
+                $retour .= '  <param name="errorDialogsActive" value="true" />';
+                $retour .= '  <param name="enableLabelDrags" value="false" />';
+                $retour .= '  <param name="showMenuBar" value="false" />';
+                $retour .= '  <param name="showToolBar" value="false" />';
+                $retour .= '  <param name="showToolBarHelp" value="false" />';
+                $retour .= '  <param name="showAlgebraInput" value="false" />';
+                $retour .= '  <param name="allowRescaling" value="true" />';
+                $retour .= '   Sorry, the GeoGebra Applet could not be started. Please make sure that Java 1.4.2 (or later) is installed and active in your browser (<a href="http://java.sun.com/getjava">Click here to install Java now</a>)';
+                $retour .= '</applet>';
 
-         	 }
+             }
           }
       }
       return $retour;
    }
 
    private function _formatScratch ($text, $array, $file_name_array){
-   	global $c_commsy_url_path;
+      global $c_commsy_url_path;
       $retour = '';
 
       $height = '480';
@@ -2976,28 +3005,28 @@ class misc_text_converter {
          $args = array();
       }
       if ( !empty($args['height']) and is_numeric($args['height'])) {
-		   $height = $args['height'];
-		}
-		if ( !empty($args['width']) and is_numeric($args['width']) ) {
-		   $width = $args['width'];
-		}
+         $height = $args['height'];
+      }
+      if ( !empty($args['width']) and is_numeric($args['width']) ) {
+         $width = $args['width'];
+      }
 
       if ( !empty($array[2]) ) {
          if ( !empty($file_name_array[$array[2]]) ) {
-         	 if (stristr($array[2], '.sb')) {
-         	    $temp_file = $file_name_array[$array[2]];
-	             $file_manager = $this->_environment->getFileManager();
-	             $file = $file_manager->getItem($temp_file->getFileID());
-	             $url = $file->getUrl();
+             if (stristr($array[2], '.sb')) {
+                $temp_file = $file_name_array[$array[2]];
+                $file_manager = $this->_environment->getFileManager();
+                $file = $file_manager->getItem($temp_file->getFileID());
+                $url = $file->getUrl();
 
-	             $params = array();
+                $params = array();
                 $params['iid'] = $file->getFileID();
                 global $c_single_entry_point;
                 $file_link = curl($this->_environment->getCurrentContextID(),'material', 'getfile', $params,'',$file->getFileName(),$c_single_entry_point);
-         	    $retour .= '<object width="'.$width.'" height="'.$height.'" archive="'.$c_commsy_url_path.'/scratch/ScratchApplet.jar" codebase="'.$file_link.'" code="ScratchApplet" id="ProjectApplet" type="application/x-java-applet">';
-					 $retour .= '<param value="'.$file->getFileName().'" name="project" />';
-					 $retour .= '</object>';
-         	 }
+                $retour .= '<object width="'.$width.'" height="'.$height.'" archive="'.$c_commsy_url_path.'/scratch/ScratchApplet.jar" codebase="'.$file_link.'" code="ScratchApplet" id="ProjectApplet" type="application/x-java-applet">';
+                $retour .= '<param value="'.$file->getFileName().'" name="project" />';
+                $retour .= '</object>';
+             }
           }
       }
       return $retour;
@@ -3495,123 +3524,10 @@ class misc_text_converter {
       $text = mb_ereg_replace('~\r\n?~u', "\n", $text);
       $text = trim($text);
 
-      // corrections for FCKeditor: create input
-      global $c_html_textarea;
-      if ( isset($c_html_textarea)
-           and $c_html_textarea
-         ) {
-         if ( strstr($text,'<!-- KFC TEXT --><!-- KFC TEXT -->')
-              or strstr($text,'&lt;!-- KFC TEXT --&gt;&lt;!-- KFC TEXT --&gt;')
-            ) {
-            $text = str_replace('<!-- KFC TEXT -->','',$text);
-            $text = str_replace('&lt;!-- KFC TEXT --&gt;','',$text);
-            if ( !empty($text) ) {
-               $hack = false;
-               if ( !empty($_SERVER['HTTP_REFERER']) ) {
-                  $http_referer = $_SERVER['HTTP_REFERER'];
-                  if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
-                     $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
-                  }
-                  global $c_commsy_domain;
-                  global $c_commsy_url_path;
-                  global $c_single_entry_point;
-                  if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
-                     $hack = true;
-                  }
-               }
-               if ( !$hack ) {
-                  #$fck_text = '<!-- KFC TEXT -->';
-                  // security KFC
-                  include_once('functions/security_functions.php');
-                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
-                  $text = $fck_text.$text.$fck_text;
-               }
-            }
-         }
-         if ( strstr($text,'<!-- KFC TEXT') ) {
-            if ( substr($text,0,13) != '<!-- KFC TEXT'
-                 or substr($text,strlen($text)-3) != '-->'
-               ) {
-               $hack = false;
-               if ( !empty($_SERVER['HTTP_REFERER']) ) {
-                  $http_referer = $_SERVER['HTTP_REFERER'];
-                  if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
-                     $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
-                  }
-                  global $c_commsy_domain;
-                  global $c_commsy_url_path;
-                  global $c_single_entry_point;
-                  if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
-                     $hack = true;
-
-                     // non hack, if only https is the difference
-                     if ( mb_stristr($http_referer,'https://')
-                          and !mb_stristr($c_commsy_domain,'https://')
-                          and $http_referer == str_replace('http://','https://',$c_commsy_domain).$c_commsy_url_path.'/'.$c_single_entry_point
-                        ) {
-                        $hack = false;
-                     }
-                  }
-               }
-               if ( !$hack ) {
-                  $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
-                  #$text = preg_replace('~<!-- KFC TEXT -->~u','',$text);
-                  #$fck_text = '<!-- KFC TEXT -->';
-                  // security KFC
-                  include_once('functions/security_functions.php');
-                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
-                  $text = $fck_text.$text.$fck_text;
-               }
-            }
-         }
-      }
-
       // clean text from word
       $text = $this->cleanTextFromWord($text);
 
       return $text;
-   }
-
-   private function _addFCKHash ( $value ) {
-      global $c_html_textarea;
-      if ( isset($c_html_textarea)
-           and $c_html_textarea
-         ) {
-         $current_context_item = $this->_environment->getCurrentContextItem();
-         if ( ( isset($current_context_item)
-                and $current_context_item->withHtmlTextArea()
-              ) or plugin_hook_method_active('getTextAreaAsHTML')
-            ) {
-            $hack = false;
-            if ( !empty($_SERVER['HTTP_REFERER']) ) {
-               $http_referer = $_SERVER['HTTP_REFERER'];
-               if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
-                  $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
-               }
-               global $c_commsy_domain;
-               global $c_commsy_url_path;
-               global $c_single_entry_point;
-               if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
-                  $hack = true;
-
-                  // non hack, if only https is the difference
-                  if ( mb_stristr($http_referer,'https://')
-                       and !mb_stristr($c_commsy_domain,'https://')
-                       and $http_referer == str_replace('http://','https://',$c_commsy_domain).$c_commsy_url_path.'/'.$c_single_entry_point
-                     ) {
-                     $hack = false;
-                  }
-               }
-            }
-            if ( !$hack ) {
-               // security KFC
-               include_once('functions/security_functions.php');
-               $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
-               $value = $fck_text.$value.$fck_text;
-            }
-         }
-      }
-      return $value;
    }
 
    public function cleanTextFromWord ( $value, $force = false ) {
@@ -3659,8 +3575,6 @@ class misc_text_converter {
 
          $retour = trim($retour);
 
-         // FCK security
-         $retour = $this->_addFCKHash($retour);
       }
 
       return $retour;
@@ -3693,7 +3607,7 @@ class misc_text_converter {
                $lastname = rawurlencode($lastname);
             }
             if ( !empty($lastname)
-            	  and $lastname != 'GUEST'
+                 and $lastname != 'GUEST'
                ) {
                $text = str_replace('%LASTNAME%',$lastname,$text);
             } elseif ($empty) {
@@ -3752,67 +3666,67 @@ class misc_text_converter {
    }
    
    private function _constructHTMLPurifier() {
-   	require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
-   	// Allow Full HTML
-   	$configFullHTML = $this->_getFullHTMLPurifierConfig();
-   	$this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
-   	// Do not allow HTML
-   	$configHTML = $this->_getHTMLPurifierConfig();
-   	$this->_HTMLPurifier = new HTMLPurifier($configHTML);
-   	
-   	
-   	
-   	
+      require_once 'libs/HTMLPurifier/HTMLPurifier.auto.php';
+      // Allow Full HTML
+      $configFullHTML = $this->_getFullHTMLPurifierConfig();
+      $this->_FullHTMLPurifier = new HTMLPurifier($configFullHTML);
+      // Do not allow HTML
+      $configHTML = $this->_getHTMLPurifierConfig();
+      $this->_HTMLPurifier = new HTMLPurifier($configHTML);
+      
+      
+      
+      
    }
    
    private function _getHTMLPurifierConfig() {
-   	$config = HTMLPurifier_Config::createDefault();
-   	
-   	$config->set('HTML.Allowed', '');
+      $config = HTMLPurifier_Config::createDefault();
+      
+      $config->set('HTML.Allowed', '');
    }
    
    private function _getFullHTMLPurifierConfig() {
-   	$config = HTMLPurifier_Config::createDefault();
-   	
-   	$config->set('HTML.Allowed', NULL);
-   	// allow flash
-   	$config->set('HTML.SafeObject', true);
-   	$config->set('HTML.SafeEmbed', true);
-   	$config->set('Output.FlashCompat', true);
-   	
-   	// allow to embed youtube videos
-   	$config->set('Filter.YouTube', true);
-   	
-   	// allow target=
-   	$config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
-   	
-   	$def = $config->getHTMLDefinition(true);
-   	
-   	// Attribute for object
-   	$def->addAttribute('object', 'autoplay', 'Enum#true,false');
-   	$def->addAttribute('object', 'classid', 'Text');
-   	$def->addAttribute('object', 'codebase', 'Text');
-   	$def->addAttribute('object', 'standby', 'Text');
-   	$def->addAttribute('object', 'commsytype', 'Text');
-   	
-   	// Attribute for param
-   	$def->addAttribute('param', 'bgcolor', 'Text');
-   	
-   	// Attribute for embed
-   	$def->addAttribute('embed', 'autoplay', 'Enum#true,false');
-   	$def->addAttribute('embed', 'bgcolor', 'Text');
-   	$def->addAttribute('embed', 'controller', 'Text');
-   	$def->addAttribute('embed', 'devicefont', 'Text');
-   	$def->addAttribute('embed', 'loop', 'Text');
-   	$def->addAttribute('embed', 'pluginspage', 'Text');
-   	$def->addAttribute('embed', 'quality', 'Text');
-   	$def->addAttribute('embed', 'scale', 'Text');
-   	$def->addAttribute('embed', 'type', 'Text');
-   	$def->addAttribute('embed', 'autostart', 'Text');
-   	$def->addAttribute('embed', 'showcontrols', 'Text');
-   	$def->addAttribute('embed', 'showstatusbar', 'Text');
-   	$def->addAttribute('embed', 'standby', 'Text');
-   	$def->addAttribute('embed', 'commsytype', 'Text');
+      $config = HTMLPurifier_Config::createDefault();
+      
+      $config->set('HTML.Allowed', NULL);
+      // allow flash
+      $config->set('HTML.SafeObject', true);
+      $config->set('HTML.SafeEmbed', true);
+      $config->set('Output.FlashCompat', true);
+      
+      // allow to embed youtube videos
+      $config->set('Filter.YouTube', true);
+      
+      // allow target=
+      $config->set('Attr.AllowedFrameTargets', '_blank,_self,_top,_parent');
+      
+      $def = $config->getHTMLDefinition(true);
+      
+      // Attribute for object
+      $def->addAttribute('object', 'autoplay', 'Enum#true,false');
+      $def->addAttribute('object', 'classid', 'Text');
+      $def->addAttribute('object', 'codebase', 'Text');
+      $def->addAttribute('object', 'standby', 'Text');
+      $def->addAttribute('object', 'commsytype', 'Text');
+      
+      // Attribute for param
+      $def->addAttribute('param', 'bgcolor', 'Text');
+      
+      // Attribute for embed
+      $def->addAttribute('embed', 'autoplay', 'Enum#true,false');
+      $def->addAttribute('embed', 'bgcolor', 'Text');
+      $def->addAttribute('embed', 'controller', 'Text');
+      $def->addAttribute('embed', 'devicefont', 'Text');
+      $def->addAttribute('embed', 'loop', 'Text');
+      $def->addAttribute('embed', 'pluginspage', 'Text');
+      $def->addAttribute('embed', 'quality', 'Text');
+      $def->addAttribute('embed', 'scale', 'Text');
+      $def->addAttribute('embed', 'type', 'Text');
+      $def->addAttribute('embed', 'autostart', 'Text');
+      $def->addAttribute('embed', 'showcontrols', 'Text');
+      $def->addAttribute('embed', 'showstatusbar', 'Text');
+      $def->addAttribute('embed', 'standby', 'Text');
+      $def->addAttribute('embed', 'commsytype', 'Text');
 
       $def->addElement('video', 'Block', 'Flow', 'Common', array());
       $def->addAttribute('video', 'width', 'Text');
@@ -3822,131 +3736,131 @@ class misc_text_converter {
       $def->addAttribute('source', 'src', 'Text');
       $def->addAttribute('source', 'type', 'Text');
 
-   	
-   	
-   	// config for description ckeditor
-   	#$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
-   	#$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
-   	#$config->set('HTML.AllowedAttributes','a.target');
-   	
-   	
-   	return $config;
+      
+      
+      // config for description ckeditor
+      #$config->set('HTML.AllowedElements', 'p,b,strong,i,em,u,a,ol,ul,li,hr,blockquote,img,table,tr,td,th,span,div,strike,sub,sup,br');
+      #$config->set('HTML.AllowedAttributes', 'a.href,img.src,img.width,img.height,img.alt,img.title,img.style,span.class,span.style,div.style');
+      #$config->set('HTML.AllowedAttributes','a.target');
+      
+      
+      return $config;
    }
    
    public function sanitizeHTML($text) {
-   	
-   	$clean_html = $this->_HTMLPurifier->purify($text);
-   	
-   	return $clean_html;
+      
+      $clean_html = $this->_HTMLPurifier->purify($text);
+      
+      return $clean_html;
    }
    
    /*
-    * 	This function uses HTMLPurifier to clean user input
-    * 	Allows HTML Tags
+    *    This function uses HTMLPurifier to clean user input
+    *    Allows HTML Tags
     */
    public function sanitizeFullHTML($text) {
-   	#pr($text);
-   	$clean_html = $this->_FullHTMLPurifier->purify($text);
-   	
-   	return $clean_html;
-   	
+      #pr($text);
+      $clean_html = $this->_FullHTMLPurifier->purify($text);
+      
+      return $clean_html;
+      
    }
    
 //    public function textFormating($text, $type){
-//    	$text = $this->_textFormating($text,$type);
-//    	return $text;
+//       $text = $this->_textFormating($text,$type);
+//       return $text;
 //    }
    
    public function emphasizeFilename($text) {
-	   	// search (with yellow background)
-	   	$text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
-	   	
-	   	// search (with green background)
-	   	$text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
-	   	
-	   	// search
-	   	// maybe with yellow or orange background ???
-	   	$text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
-	   	// $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
-	   	
-	   	return $text;
+         // search (with yellow background)
+         $text = preg_replace('~\(:mainsearch_text_yellow:\)(.+)\(:mainsearch_text_yellow_end:\)~uU', '<span class="searched_text_yellow">$1</span>', $text);
+         
+         // search (with green background)
+         $text = preg_replace('~\(:mainsearch_text_green:\)(.+)\(:mainsearch_text_green_end:\)~uU', '<span class="searched_text_green">$1</span>', $text);
+         
+         // search
+         // maybe with yellow or orange background ???
+         $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~uU', '<span style="font-style:italic;">$1</span>', $text);
+         // $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span class="searched_text">$1</span>', $text);
+         
+         return $text;
    }
    
    public function filenameFormatting($text) {
-   		$text = $this->emphasizeFilename($text);
-   		
-   		return $text;
+         $text = $this->emphasizeFilename($text);
+         
+         return $text;
    }
    
    
    /*
-    * 	format full html content
+    *    format full html content
     */
    public function textFullHTMLFormatting($text) {
-   	  
-   		//TODO Fehler in der Anzeige von H2. Bild wird über css angehängt
-   		#$text = $this->_display_headers($text);
-   		#$text = $this->_emphasize_text($text);
-   		#$text = $this->_format_html_long($text);
-   		//ersetzt durch _old_htmlformat
-   	
-   		// nl 2 br
-   		#$text = nl2br($text);
-   		
-   		$text = $this->_decode_backslashes($text);
-   		
-   		// bold italic list healines separator etc
-   		$text = $this->_old_htmlformat($text);
-   		
-   		// Formatierungsfunktionen auf Text anwenden
-   		$text = $this->_newFormating($text);
-   		
-   		// format reference to link
-   		$text = $this->_parseText2ID($text);
-   		
-   		// activate url which is not added by the
-   		$text = $this->_activate_urls($text);
-   		
-   		
-   		#$text = $this->sanitize($text);
-   	
-//    	$text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
-//    	$text = nl2br($text);
-//    	$text = $this->_decode_backslashes_1($text);	?
-//    	$text = $this->_preserve_whitespaces($text);	?
-//    	$text = $this->_newFormating($text);			-
-//    	$text = $this->_emphasize_text($text);			-
-//    	$text = $this->_activate_urls($text);			-
-//    	$text = $this->_display_headers($text);			-
-//    	$text = $this->_format_html_long($text);		?
-//    	$text = $this->_parseText2ID($text);			-
-//    	$text = $this->_decode_backslashes_2($text);	?
-//    	$text = $this->_delete_unnecassary_br($text);	?
-//    	$text = $this->_br_with_nl($text);				?
-	return $text;
+        
+         //TODO Fehler in der Anzeige von H2. Bild wird über css angehängt
+         #$text = $this->_display_headers($text);
+         #$text = $this->_emphasize_text($text);
+         #$text = $this->_format_html_long($text);
+         //ersetzt durch _old_htmlformat
+      
+         // nl 2 br
+         #$text = nl2br($text);
+         
+         $text = $this->_decode_backslashes($text);
+         
+         // bold italic list healines separator etc
+         $text = $this->_old_htmlformat($text);
+         
+         // Formatierungsfunktionen auf Text anwenden
+         $text = $this->_newFormating($text);
+         
+         // format reference to link
+         $text = $this->_parseText2ID($text);
+         
+         // activate url which is not added by the
+         $text = $this->_activate_urls($text);
+         
+         
+         #$text = $this->sanitize($text);
+      
+//       $text = $this->_cs_htmlspecialchars($text,$htmlTextArea);
+//       $text = nl2br($text);
+//       $text = $this->_decode_backslashes_1($text); ?
+//       $text = $this->_preserve_whitespaces($text); ?
+//       $text = $this->_newFormating($text);         -
+//       $text = $this->_emphasize_text($text);       -
+//       $text = $this->_activate_urls($text);        -
+//       $text = $this->_display_headers($text);         -
+//       $text = $this->_format_html_long($text);     ?
+//       $text = $this->_parseText2ID($text);         -
+//       $text = $this->_decode_backslashes_2($text); ?
+//       $text = $this->_delete_unnecassary_br($text);   ?
+//       $text = $this->_br_with_nl($text);           ?
+   return $text;
    }
    
    /*
-    * 	This function replaces:
-    * 	# 		to a numeric list
-    * 	- 		to a list
-    * 	---		to horizontal line
-    * 	*text*	to bold text
-    * 	_text_	to italic text
-    * 	!text	to headline4
-    * 	!!text	to headline3 
-    * 	!!!text to headline2
+    *    This function replaces:
+    *    #     to a numeric list
+    *    -     to a list
+    *    ---      to horizontal line
+    *    *text*   to bold text
+    *    _text_   to italic text
+    *    !text to headline4
+    *    !!text   to headline3 
+    *    !!!text to headline2
     */
    public function _old_htmlformat($text) {
-   	  // 
-   	  // display header !text !!text !!!text
-   	  $text = $this->_display_headers($text);
-   	  // Listen, Trennlinie // # , - , ---
-   	  $text = $this->_format_html_long($text);
-   	  // use emphasized color search !? // bold kursiv
-   	  $text = $this->_emphasize_text($text);
-   	  
-   	  return $text;
+        // 
+        // display header !text !!text !!!text
+        $text = $this->_display_headers($text);
+        // Listen, Trennlinie // # , - , ---
+        $text = $this->_format_html_long($text);
+        // use emphasized color search !? // bold kursiv
+        $text = $this->_emphasize_text($text);
+        
+        return $text;
    }
 }
 ?>
