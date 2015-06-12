@@ -1077,18 +1077,7 @@ if(isset($c_smarty) && $c_smarty === true) {
        $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
        unset($params);
     } else {
-      // create page object
-      if ( $environment->inProjectRoom()
-          or $environment->inCommunityRoom()
-          or $environment->inPrivateRoom()
-          or $environment->inGroupRoom()
-        ) {
-        $params = array();
-        $params['environment'] = $environment;
-        $params['with_modifying_actions'] = $with_modifying_actions;
-        $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
-        unset($params);
-      } elseif ( $environment->inPortal() ) {
+      if ( $environment->inPortal() ) {
         $context_item = $environment->getCurrentContextItem();
         $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
         if ( file_exists($filename) ) {
@@ -1134,29 +1123,15 @@ if(isset($c_smarty) && $c_smarty === true) {
 
     // set title
     $title = $context_item_current->getTitle();
-    if ($context_item_current->isProjectRoom() and $context_item_current->isTemplate()) {
-      $title .= ' ('.$translator->getMessage('PROJECTROOM_TEMPLATE').')';
-    } elseif ($context_item_current->isClosed()) {
+    if ($context_item_current->isClosed()) {
       $title .= ' ('.$translator->getMessage('PROJECTROOM_CLOSED').')';
     }
 
-    $user = $environment->getCurrentUserItem();
-    if ( $context_item_current->isPrivateRoom() and $user->isGuest() ) {
-      $page->setRoomName($translator->getMessage('COMMON_FOREIGN_ROOM'));
-      $page->setPageName($translator->getMessage('COMMON_FOREIGN_ROOM'));
-    } elseif ( $context_item_current->isPrivateRoom() ) {
-      $page->setRoomName($translator->getMessage('COMMON_PRIVATEROOM'));
-      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
-      $tempMessage = "";
-      include_once('include/inc_commsy_php_case_pagetitle.php');
-      $page->setPageName($tempMessage);
-    } else {
-      $page->setRoomName($title);
-      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
-      $tempMessage = "";
-      include_once('include/inc_commsy_php_case_pagetitle.php');
-      $page->setPageName($tempMessage);
-    }
+    $page->setRoomName($title);
+    $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
+    $tempMessage = "";
+    include_once('include/inc_commsy_php_case_pagetitle.php');
+    $page->setPageName($tempMessage);
 
     // display login errors
     if ( isset($session) and $session->issetValue('error_array') ) {
@@ -1306,74 +1281,6 @@ if(isset($c_smarty) && $c_smarty === true) {
     $current_room_modules = $context_item_current->getHomeConf();
     if (!empty($current_room_modules)) {
       $room_modules =  explode(',',$current_room_modules);
-    }
-
-    // das folgende nur, wenn der Raum auch offen ist
-    // ansonsten hinweis
-    // TBD
-    if ( $environment->inProjectRoom()
-        or $environment->inCommunityRoom()
-        or $environment->inPrivateRoom()
-        or $environment->inGroupRoom()
-      ) {
-      $page->addAction($translator->getMessage('COMMON_HOME_INDEX'),'','home','index');
-      foreach ($room_modules as $item) {
-         $link_name = explode('_',$item);
-         if ( $link_name[1] != 'none' ) {
-            $tempMessage = "";
-            switch ( mb_strtoupper($link_name[0], 'UTF-8') )
-            {
-               case 'ANNOUNCEMENT':
-                  $tempMessage = $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
-                  break;
-               case 'DATE':
-                  $tempMessage = $translator->getMessage('COMMON_DATE_INDEX');
-                  break;
-               case 'DISCUSSION':
-                  $tempMessage = $translator->getMessage('COMMON_DISCUSSION_INDEX');
-                  break;
-               case 'GROUP':
-                  $tempMessage = $translator->getMessage('COMMON_GROUP_INDEX');
-                  break;
-               case 'INSTITUTION':
-                  $tempMessage = $translator->getMessage('COMMON_INSTITUTION_INDEX');
-                  break;
-               case 'MATERIAL':
-                  $tempMessage = $translator->getMessage('COMMON_MATERIAL_INDEX');
-                  break;
-               case 'MYROOM':
-                  $tempMessage = $translator->getMessage('COMMON_MYROOM_INDEX');
-                  break;
-               case 'PROJECT':
-                  $tempMessage = $translator->getMessage('COMMON_PROJECT_INDEX');
-                  break;
-               case 'TODO':
-                  $tempMessage = $translator->getMessage('COMMON_TODO_INDEX');
-                  break;
-               case 'TOPIC':
-                  $tempMessage = $translator->getMessage('COMMON_TOPIC_INDEX');
-                  break;
-               case 'USER':
-                  $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
-                  break;
-               case 'ENTRY':
-                  $tempMessage = $translator->getMessage('COMMON_ENTRY_INDEX');
-                  break;
-               default:
-                  $text = '';
-                  if ( $environment->isPlugin($link_name[0]) ) {
-                     $text = plugin_hook_output($link_name[0],'getDisplayName');
-                  }
-                  if ( !empty($text) ) {
-                     $tempMessage = $text;
-                  } else {
-                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.' ('.__LINE__.') ');
-                  }
-                  break;
-            }
-            $page->addAction($tempMessage,'',$link_name[0],'index');
-         }
-      }
     }
 
     // authentication (bookmarks)
