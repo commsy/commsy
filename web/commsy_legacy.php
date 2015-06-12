@@ -838,7 +838,6 @@ if ( !empty($_POST)
 
 /*********** javascript check *************/
 if ( !$outofservice
-     and $environment->isOutputModeNot('XML')
      and $environment->isOutputModeNot('JSON')
      and $environment->isOutputModeNot('BLANK')
 #     and !$environment->getCurrentModule() == 'ajax'
@@ -862,7 +861,6 @@ if ( !$outofservice
    exit();
 }
 if ( isset($_GET['jscheck'])
-     and $environment->isOutputModeNot('XML')
      and $environment->isOutputModeNot('JSON')
      and $environment->isOutputModeNot('BLANK')
      and ( empty($_POST)
@@ -1077,13 +1075,7 @@ if(isset($c_smarty) && $c_smarty === true) {
     // with or without modifiying options
     $with_modifying_actions = $context_item_current->isOpen();
 
-    if ( $environment->isOutputMode('XML') ) {
-       $params = array();
-       $params['environment'] = $environment;
-       $params['with_modifying_actions'] = $with_modifying_actions;
-       $page = $class_factory->getClass(PAGE_XML_VIEW,$params);
-       unset($params);
-    } elseif ( $environment->isOutputMode('JSON') ) {
+    if ( $environment->isOutputMode('JSON') ) {
        $params = array();
        $params['environment'] = $environment;
        $params['with_modifying_actions'] = $with_modifying_actions;
@@ -1184,7 +1176,7 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
     }
 
-    if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+    if ( $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
        $page->setCurrentUser($environment->getCurrentUserItem());
 
        // set title
@@ -1362,7 +1354,7 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
     }
 
-    if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+    if ( $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
 
        // set navigation links
        $current_room_modules = $context_item_current->getHomeConf();
@@ -1493,7 +1485,7 @@ if(isset($c_smarty) && $c_smarty === true) {
 /************************************/
 
     // display page
-    if ( $environment->isOutputMode('XML') or $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
+    if ( $environment->isOutputMode('JSON') or $environment->isOutputMode('BLANK')) {
        echo($page->getContent());
     } else {
         header("Content-Type: text/html; charset=utf-8");
@@ -1652,7 +1644,7 @@ if ( isset($context_item_current) ) {
 unset($context_item_current);
 
 // plugin hook
-if ( $environment->isOutputModeNot('XML') and $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
+if ( $environment->isOutputModeNot('JSON') and $environment->isOutputModeNot('BLANK')) {
    flush();
     plugin_hook('executeAtTheEnd',array(),false);
 }
