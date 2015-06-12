@@ -1324,18 +1324,7 @@ if(isset($c_smarty) && $c_smarty === true) {
     }
 }
 
-/*********** SMARTY OUTPUT **********/
-global $c_smarty;
-if(isset($c_smarty) && $c_smarty === true) {
-    try {
-        //$smarty->display($tpl, $environment->getOutputMode());
-    } catch(Exception $e) {
-        die($e->getMessage());
-    }
-} else {
-
-/************************************/
-
+if (!isset($c_smarty) || $c_smarty !== true) {
     // display page
     header("Content-Type: text/html; charset=utf-8");
     include_once('functions/security_functions.php');
