@@ -16,6 +16,9 @@ class LegacyAuthentication
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
+    /**
+     * TODO: this is also executed in legacy context
+     */
     public function authenticate()
     {
         // get the legacy session item
@@ -23,16 +26,18 @@ class LegacyAuthentication
         $sessionManager = $this->legacyEnvironment->getSessionManager();
         $sessionItem = $sessionManager->get($sid);
 
-        // authenticate the legacy way, this will also setup the current user item
-        $authentication = $this->legacyEnvironment->getAuthenticationObject();
-        // $authentication->setModule($current_module);
-        // $authentication->setFunction($current_function);
-        
-        $isAuthenticated = $authentication->check(
-            $sessionItem->getValue('user_id'),
-            $sessionItem->getValue('auth_source')
-        );
+        if ($sessionItem) {
+            // authenticate the legacy way, this will also setup the current user item
+            $authentication = $this->legacyEnvironment->getAuthenticationObject();
+            // $authentication->setModule($current_module);
+            // $authentication->setFunction($current_function);
+            
+            $isAuthenticated = $authentication->check(
+                $sessionItem->getValue('user_id'),
+                $sessionItem->getValue('auth_source')
+            );
 
-        // TODO: send back to portal if not authenticated
+            // TODO: send back to portal if not authenticated
+        }
     }
 }
