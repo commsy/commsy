@@ -2895,7 +2895,7 @@ class misc_text_converter {
               $curl_handler = curl_init($c_media_integration_url);
             }
 
-            $curl_handler = curl_init($c_media_integration_url);
+            // $curl_handler = curl_init($c_media_integration_url);
             curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl_handler, CURLOPT_POST, true);
 
