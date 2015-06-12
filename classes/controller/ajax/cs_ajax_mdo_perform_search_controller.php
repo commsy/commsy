@@ -58,7 +58,7 @@
                 // $curl_handler = curl_init('http://arix.datenbank-bildungsmedien.net/HH');
                 if ($community_room->getMDOKey()) {
                     $key = $community_room->getMDOKey();
-                    $curl_handler = curl_init($c_media_integration_url + $key);
+                    $curl_handler = curl_init($c_media_integration_url.$key);
                 } else {
                     $curl_handler = curl_init($c_media_integration_url);
                 }
