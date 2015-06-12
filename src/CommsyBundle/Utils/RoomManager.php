@@ -13,24 +13,14 @@ class RoomManager
         $this->legacyEnvironment = $legacyEnvironment;
     }
 
-    public function getUserList($roomId) {
+    public function getUserList($roomId)
+    {
         // get person list
         $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         
         $personList = $roomItem->getUserList();
 
-        $person = $personList->getFirst();
-        $personArray = array();
-
-        while($person) {
-            $personArray[] = $person;
-            $person = $personList->getNext();
-        }
-
-        return $personArray;
+        return $personList->to_array();
     }
-
-
-
 }
