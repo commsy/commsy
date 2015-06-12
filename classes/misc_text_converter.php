@@ -2873,6 +2873,7 @@ class misc_text_converter {
              if(!empty($mdo_active) && $mdo_active != '-1') {
                // mdo access granted, get content from Mediendistribution-Online
                $access = true;
+               $community_room = $community;
 
                // stop searching here
                break;
@@ -2886,6 +2887,13 @@ class misc_text_converter {
         if($access === true) {
 
             global $c_media_integration_url;
+
+            if ($community_room->getMDOKey()) {
+              $key = $community_room->getMDOKey();
+              $curl_handler = curl_init($c_media_integration_url.$key);
+            } else {
+              $curl_handler = curl_init($c_media_integration_url);
+            }
 
             $curl_handler = curl_init($c_media_integration_url);
             curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
