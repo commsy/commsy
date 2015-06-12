@@ -202,17 +202,7 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 					elements : [
 				            commsyMDOSearch,
 						]
-				},
-				{
-	        id : 'tab2',
-	        label : lang.ckeditor_mdo_tab_integration,
-	        title : lang.ckeditor_mdo_tab_integration,
-	        expand : false,
-	        padding : 0,
-	        elements : [
-	                  commsyMDOIntegration,
-	          ]
-	      }
+				}
 			],
 			
 			buttons : [ CKEDITOR.dialog.okButton ],
