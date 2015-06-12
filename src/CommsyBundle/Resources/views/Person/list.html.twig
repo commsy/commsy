@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>Personen Liste</div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <ul id="room-feed" class="uk-comment-list">
+
+                    {% for key,value in personArray %}
+                        <article class="uk-comment">
+                            <i class="uk-icon-users uk-icon-small"></i>
+
+                            <header class="uk-comment-header">
+                                <img class="uk-comment-avatar" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                                <div class="uk-comment-meta">Person</div>
+                                <h4 class="uk-comment-title"><a href="#">{{ value.FullName() }}</a></h4>
+                                <div class="uk-comment-meta">{{ value.Email()}}</div>
+                            </header>
+                        </article>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
