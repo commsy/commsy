@@ -610,7 +610,6 @@ if ( !empty($SID) ) {
            $session->getValue('user_id') != 'guest' and
            $session->getValue('user_id') != 'root' and
            $environment->getCurrentFunction() != 'getfile'
-           and $environment->getCurrentFunction() != 'getingray'
            and !$outofservice
          ) {
          redirect($session_commsy_id,'home','index');
@@ -1276,11 +1275,7 @@ if(isset($c_smarty) && $c_smarty === true) {
        }
        $page->add($errorbox);
     } elseif ( $show_agb_again ) {
-       if ( ($current_module == 'picture')
-            and ( $current_function == 'getfile'
-                  or $current_function == 'getingray'
-                )
-          ) {
+       if ( ($current_module == 'picture') and ( $current_function == 'getfile') ) {
           include('pages/'.$current_module.'_'.$current_function.'.php');
        } else {
           include_once('pages/agb_detail.php');
@@ -1527,7 +1522,6 @@ if ( count($db) > 1 ) {
 // UPDATE: do not store ajax requests in history
 // comparison only works with $_GET['mod'] - not with $environment->getCurrentModule()...
 if ( $environment->getCurrentFunction() != 'getfile'
-     and $environment->getCurrentFunction() != 'getingray'
      and $environment->getCurrentModule() != 'help'
      and (!isset($_GET['mod']) or $_GET['mod'] != 'ajax')
      and !($environment->getCurrentModule() == 'agb' and $environment->getCurrentFunction() == 'index')
