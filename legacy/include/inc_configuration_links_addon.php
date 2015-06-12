@@ -32,20 +32,6 @@ if ( !isset($translator) and isset($this->_translator) ) {
    $translator = $this->_translator;
 }
    $addon_link_list = new cs_list();
-
-   global $c_html_textarea;
-   if ( $c_html_textarea ) {
-      $link_item = new cs_link();
-      $link_item->setTitle($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE'));
-      $link_item->setDescription($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
-      $link_item->setIconPath('images/cs_config/CONFIGURATION_TEXTAREA_TITLE.gif');
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('htmltextarea');
-      $link_item->setParameter(array());
-      $addon_link_list->add($link_item);
-   }
-
    $context_item = $environment->getCurrentContextItem();
    $link_item = new cs_link();
    $link_item->setTitle($translator->getMessage('CONFIGURATION_SERVICE_LINK'));

@@ -32,25 +32,6 @@ $translator = $environment->getTranslationObject();
 
    $configuration_rubric_extras_link_list = new cs_list();
 
-   global $c_html_textarea;
-   if ( $c_html_textarea ) {
-      $link_item = new cs_link();
-      $link_item->setTitle($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE'));
-      $link_item->setDescription($translator->getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/htmltextarea.gif');
-         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/htmltextarea.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/htmltextarea.png');
-         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/htmltextarea.png');
-      }
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('htmltextarea');
-      $link_item->setParameter(array());
-      $configuration_rubric_extras_link_list->add($link_item);
-   }
-
    #########################################
    # Wiki - Raum-Wiki
    #########################################

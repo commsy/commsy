@@ -1503,48 +1503,25 @@ class cs_form_view extends cs_view {
       if ( isset($form_element['help_text']) ){
          $show_text = $form_element['help_text'];
       }
-      global $c_html_textarea;
       $html = '';
       $item = $this->_environment->getCurrentContextItem();
-      $with_htmltextarea = $item->withHtmlTextArea();
       $text = '';
-      if ( !isset($c_html_textarea)
-          or !$c_html_textarea
-          or !$form_element['with_html_area']
-          or !$with_htmltextarea
-        ) {
-         $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-         $html .= '<div style="padding-top:5px;">';
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-         $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-         $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-         $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
-         $html .= $title;
-         $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
-         $html .= '<div style="padding:2px;">'.LF;
-         $html .= '<div id="form_formatting_box" style="width:480px">'.LF;
-         $html .= $text;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-      }else{
-         $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
-         $html .= '<div style="padding-top:0px;">';
-         $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-         $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-         $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
-         $html .= $title;
-         $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
-         $html .= '<div style="padding:2px;">'.LF;
-         $html .= '<div id="form_formatting_box" style="width:490px">'.LF;
-         $html .= $text;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.BRLF;
-      }
+       $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+       $html .= '<div style="padding-top:5px;">';
+       $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+       $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+       $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+       $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+       $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+       $html .= $title;
+       $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+       $html .= '<div style="padding:2px;">'.LF;
+       $html .= '<div id="form_formatting_box" style="width:480px">'.LF;
+       $html .= $text;
+       $html .= '</div>'.LF;
+       $html .= '</div>'.LF;
+       $html .= '</div>'.LF;
+       $html .= '</div>'.LF;
       $html .='<script type="text/javascript">initTextFormatingInformation("'.$item->getItemID().'",false)</script>';
       $html .= '<!-- END OF FORM-VIEW -->'.LF;
       $current_module = $this->_environment->getCurrentModule();
