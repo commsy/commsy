@@ -21,6 +21,34 @@ class TagManager
         return $this->buildTagArray($rootItem);
     }
 
+    public function addTag($title, $roomId, $parentTagId = null)
+    {
+        // if has access
+        // ...
+
+        $environment = $this->legacyEnvironment->getEnvironment();
+        $environment->setCurrentContextID($roomId);
+
+        $currentUserItem = $environment->getCurrentUserItem();
+        $tagManager = $environment->getTagManager();
+
+        if (!$parentTagId) {
+            $rootTagItem = $tagManager->getRootTagItemFor($roomId);
+            $parentTagId = $rootTagItem->getItemID();
+        }
+
+        $parentTagItem = $tagManager->getItem($parentTagId);
+
+        $tagItem = $tagManager->getNewItem();
+        $tagItem->setTitle($title);
+        $tagItem->setContextID($roomId);
+        $tagItem->setCreatorItem($currentUserItem);
+        $tagItem->setCreationDate(date("Y-m-d H:i:s"));
+        $tagItem->setPosition($parentTagId, $parentTagItem->getChildrenList()->getCount() + 1);
+
+        $tagItem->save();
+    }
+
     private function buildTagArray($item, $level = 0)
     {
         $return = array();

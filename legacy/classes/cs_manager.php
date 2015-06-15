@@ -32,6 +32,7 @@
 /**
  */
 include_once('custom/SimpleXMLElementExtended.php');
+include_once('functions/date_functions.php');
 
 class cs_manager {
 

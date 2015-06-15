@@ -25,7 +25,7 @@ class CategoryController extends Controller
             'roomId' => $roomId,
         );
         $form = $this->createForm(new TagType(), $defaultData, array(
-            'action' => $this->generateUrl('commsy_category_new'),
+            'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
         ));
 
         return array(
@@ -35,10 +35,10 @@ class CategoryController extends Controller
     }
 
     /**
-     * @Route("/categoy/new")
+     * @Route("/room/{roomId}/categoy/new")
      * @Method("POST")
      */
-    public function newAction(Request $request)
+    public function newAction($roomId, Request $request)
     {
         $form = $this->createForm(new TagType());
 
@@ -47,9 +47,11 @@ class CategoryController extends Controller
         if ($form->isValid()) {
             $data = $form->getData();
 
-            // create the new tag
+            // persist new tag
+            $tagManager = $this->get('commsy.tag_manager');
+            $tagManager->addTag($data['title'], $roomId);
 
-            var_dump($data); exit;
+            return $this->redirectToRoute('commsy_room_home', array('roomId' => $roomId));
         }
     }
 }
