@@ -80,7 +80,7 @@ function cleanupSession($session, $environment){
 // include base-config
 global $cs_color;
 include_once('etc/cs_constants.php');
-@include_once('etc/cs_config.php');
+@include('etc/cs_config.php');
 if ( !isset($db) ) {
    header('Location: install');
    header('HTTP/1.0 302 Found');
@@ -92,8 +92,7 @@ include_once('functions/misc_functions.php');
 $time_start = getmicrotime();
 
 // setup commsy-environment
-include_once('classes/cs_environment.php');
-$environment = new cs_environment();
+$environment = $symfonyContainer->get('commsy_legacy.environment')->getEnvironment();
 $class_factory = $environment->getClassFactory();
 
 // transform POST_VARS and GET_VARS --- move into page object, if exist

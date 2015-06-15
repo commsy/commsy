@@ -35,6 +35,11 @@ $color = $cs_color['DEFAULT'];
 // find out the room we're in
 if (!empty($_GET['cid'])) {
    $cid = $_GET['cid'];
+
+   global $symfonyContainer;
+   $symfonyContainer = $container;
+   var_dump($symfonyContainer);exit;
+   $environment = $symfonyContainer->get('commsy_legacy.environment')->getEnvironment();
    $environment = new cs_environment();
    $environment->setCurrentContextID($cid);
    $room = $environment->getCurrentContextItem();
