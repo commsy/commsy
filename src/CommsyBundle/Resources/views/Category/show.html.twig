@@ -1,7 +1,15 @@
 {# {% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %} #}
 
 {% macro nestedList(data) %}
-    <li class="uk-nestable-item">{{ data.title }}
+    <li class="uk-visible-hover">
+        <div class="uk-clear-float">
+            <div class="uk-float-right">
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit uk-hidden"></a>
+            </div>
+            <div class="uk-float-left">
+                {{ data.title }}
+            </div>
+        </div>
 
         {% if data.children is not empty %}
             <ul>
@@ -30,12 +38,8 @@
     </div>
 
     <div id="room-categories" class="uk-overflow-container">
-        <a href="#">
-            <i class="uk-icon-small uk-icon-edit"></i>Quick Edit
-        </a>
-
         {% if tags is not empty %}
-            <ul class="uk-list uk-list-striped uk-nestable" data-uk-nestable>
+            <ul class="uk-list uk-list-striped">
                 {% for tag in tags %}
                     {{ _self.nestedList(tag) }}
                 {% endfor %}
