@@ -85,6 +85,8 @@ if ( !empty($_POST['password']) ) {
    $password = $_GET['password'];
 }
 
+$count = 0;
+
 if (!$shib_direct_login){
 	//Shibboleth
 	// Über das Portal überprüfen, ob Shibboleth als Auth eingestellt ist
@@ -261,7 +263,7 @@ if (!$shib_direct_login){
 	      	unset($auth_manager);
 	      }
 	            
-      if($portal_item->isTemporaryLockActivated()){
+      	if($portal_item->isTemporaryLockActivated()){
 	      	// Erster Fehlversuch // Timestamp in session speichern und
 		      // Password tempLock
 		      $userExists = false;
@@ -284,7 +286,7 @@ if (!$shib_direct_login){
 	         //Password tempLock
 	         $session->setValue('countWrongPassword', 1);
 	      } else {
-      	if($portal_item->isTemporaryLockActivated()){
+      		if($portal_item->isTemporaryLockActivated()){
 		       	$count = $session->getValue('countWrongPassword');
 		       	if(!isset($count) AND empty($count)){
 		       		$session->setValue('countWrongPassword', 1);
@@ -303,7 +305,7 @@ if (!$shib_direct_login){
 		       	if(empty($trys_login)){
 		       		$trys_login = 3;
 		       	}
-	       	if($count >= $trys_login AND $userExists AND !$locked AND !$locked_temp AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
+	       		if($count >= $trys_login AND $userExists AND !$locked AND !$locked_temp AND $session->getValue('TMSP_'.$session->getValue('userid')) >= getCurrentDateTimeMinusSecondsInMySQL($current_context->getLockTimeInterval())){
 	       			$user = $authentication->_getPortalUserItem($tempUser,$authentication->_auth_source_granted);
 	       			$user->setTemporaryLock();
 	       			$user->save();
@@ -311,7 +313,6 @@ if (!$shib_direct_login){
 	       			$session->setValue('countWrongPassword', 0);
 		       	}
 	      	}
-	       	#$count++;
 	       	$session->setValue('countWrongPassword', $count);
 	      }
 	      // Password tempLock ende 
