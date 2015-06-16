@@ -21,7 +21,7 @@ services:
 
     commsy_legacy.listener.legacy_authentication_listener:
         class: Commsy\LegacyBundle\EventListener\LegacyAuthenticationListener
-        arguments: [@commsy_legacy.legacy_authentication]
+        arguments: [@commsy_legacy.legacy_authentication, @commsy_legacy.environment]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 

@@ -4,8 +4,10 @@ namespace Commsy\LegacyBundle\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Commsy\LegacyBundle\Authentication\LegacyAuthentication;
+use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
 /**
  * Class LegacyAuthenticationListener
@@ -15,10 +17,12 @@ use Commsy\LegacyBundle\Authentication\LegacyAuthentication;
 class LegacyAuthenticationListener implements EventSubscriberInterface
 {
     private $legacyAuthentication;
+    private $legacyEnvironment;
 
-    public function __construct(LegacyAuthentication $legacyAuthentication)
+    public function __construct(LegacyAuthentication $legacyAuthentication, LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyAuthentication = $legacyAuthentication;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
@@ -36,10 +40,14 @@ class LegacyAuthenticationListener implements EventSubscriberInterface
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        // // the legacy kernel only deals with master requests
-        // if (HttpKernelInterface::MASTER_REQUEST != $event->getRequestType()) {
-        //     return;
-        // }
-        $this->legacyAuthentication->authenticate();
+        $isAuthenticated = $this->legacyAuthentication->authenticate();
+
+        // if not authenticated by the legacy code, redirect back to portal
+        if (!$isAuthenticated) {
+            $portalId = $this->legacyEnvironment->getCurrentPortalItem()->getItemID();
+            $url = $event->getRequest()->getBaseUrl() . '?cid=' . $portalId;
+            $response = new RedirectResponse($url);
+            $event->setResponse($response);
+        }
     }
 }
