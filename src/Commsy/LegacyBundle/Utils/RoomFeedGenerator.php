@@ -3,34 +3,24 @@
 namespace Commsy\LegacyBundle\Utils;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Commsy\LegacyBundle\Utils\RoomService;
 
 class RoomFeedGenerator
 {
     private $legacyEnvironment;
+    private $roomService;
 
-    public function __construct(LegacyEnvironment $legacyEnvironment)
+    public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
         $this->legacyEnvironment = $legacyEnvironment;
+        $this->roomService = $roomService;
     }
 
     public function getFeedList($roomId, $max)
     {
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 
-        // get the rooms rubric configuration
-        $roomManager = $legacyEnvironment->getRoomManager();
-        $roomItem = $roomManager->getItem($roomId);
-        $homeConfiguration = $roomItem->getHomeConf();
-
-        $rubrics = array();
-        if (!empty($homeConfiguration)) {
-            $rubricConfigurations = explode(',', $homeConfiguration);
-            
-            foreach ($rubricConfigurations as $rubricConfiguration) {
-                list($rubricName) = explode('_', $rubricConfiguration);
-                $rubrics[] = $rubricName;
-            }
-        }
+        $rubrics = $this->roomService->getRubricInformation($roomId);
 
         // get the lastest items matching the configured rubrics
         $itemManager = $legacyEnvironment->getItemManager();

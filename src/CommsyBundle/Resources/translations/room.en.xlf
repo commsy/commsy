@@ -30,6 +30,34 @@
                 <source>Moderation:</source>
                 <target>Moderation:</target>
             </trans-unit>
+            <trans-unit id="announcements">
+                <source>Announcements</source>
+                <target>Announcements</target>
+            </trans-unit>
+            <trans-unit id="dates">
+                <source>Dates</source>
+                <target>Dates</target>
+            </trans-unit>
+            <trans-unit id="materials">
+                <source>Materials</source>
+                <target>Materials</target>
+            </trans-unit>
+            <trans-unit id="discussions">
+                <source>Discussions</source>
+                <target>Discussions</target>
+            </trans-unit>
+            <trans-unit id="users">
+                <source>Users</source>
+                <target>Users</target>
+            </trans-unit>
+            <trans-unit id="groups">
+                <source>Groups</source>
+                <target>Groups</target>
+            </trans-unit>
+            <trans-unit id="todo">
+                <source>Todos</source>
+                <target>Todos</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
