@@ -1,4 +1,6 @@
 <?php
+use Symfony\Component\HttpFoundation\Request;
+
 // $Id$
 //
 // Release $Name$
@@ -34,16 +36,26 @@ $color = $cs_color['DEFAULT'];
 
 // find out the room we're in
 if (!empty($_GET['cid'])) {
-   $cid = $_GET['cid'];
+    $cid = $_GET['cid'];
 
-   global $symfonyContainer;
-   $symfonyContainer = $container;
-   var_dump($symfonyContainer);exit;
-   $environment = $symfonyContainer->get('commsy_legacy.environment')->getEnvironment();
-   $environment = new cs_environment();
-   $environment->setCurrentContextID($cid);
-   $room = $environment->getCurrentContextItem();
-   $color = $room->getColorArray();
+    $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
+
+    require_once __DIR__.'/../app/AppKernel.php';
+
+    $kernel = new AppKernel('prod', true);
+    $kernel->loadClassCache();
+    $request = Request::createFromGlobals();
+    $response = $kernel->handle($request);
+
+    $container = $kernel->getContainer();
+    $environment = $container->get('commsy_legacy.environment')->getEnvironment();
+    $environment->setCurrentContextID($cid);
+    $room = $environment->getCurrentContextItem();
+    $color = $room->getColorArray();
+
+    $kernel->terminate($request, $response);
+
+    header('Content-type: text/css', true);
 }
 ?>
 
