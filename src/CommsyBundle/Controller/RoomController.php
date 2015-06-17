@@ -21,6 +21,10 @@ class RoomController extends Controller
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
         // ...and prepare some data
         $timeSpread = $roomItem->getTimeSpread();
         $numNewEntries = $roomItem->getNewEntries($timeSpread);
