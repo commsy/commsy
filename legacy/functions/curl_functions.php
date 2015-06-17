@@ -147,7 +147,7 @@ function curl( $context_id, $module, $function, $parameter, $fragment='', $fileh
  */
 function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragment='', $filehack='', $file='' ) {
    if ($module == 'home' && $function == 'index' && empty($parameter)) {
-      return '/room/'.$context_id;
+      return '/commsy.php/room/'.$context_id;
    }
    
    if ( empty($file) ) {
