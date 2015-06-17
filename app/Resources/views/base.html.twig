@@ -56,11 +56,13 @@
                         </ul>
                     </div>
 
-                    <ul class="uk-navbar-nav">
-                        <li>
-                            <a href="#"><i class="uk-icon-power-off"></i></a>
-                        </li>
-                    </ul>
+                    <div class="uk-navbar-content">
+                        <ul class="uk-navbar-nav">
+                            <li>
+                                <a href="#"><i class="uk-icon-power-off"></i></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                 
                 <!-- toggle -->
@@ -80,12 +82,11 @@
             </ul>
 
             <!-- cover -->
-            <div id="cover" class="uk-cover-background">
-                <img class="uk-invisible" src="" width="" height="" alt="">
-            </div>
+            {% block cover %}
+            {% endblock %}
 
             <!-- container -->
-            <div class="uk-container uk-container-center">
+            <div id="container" class="uk-container uk-container-center">
                 {% block content %}{% endblock %}
             </div>
         </div>
