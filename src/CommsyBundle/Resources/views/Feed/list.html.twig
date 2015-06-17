@@ -1,14 +1,29 @@
 {% import 'CommsyBundle:Utils:utils_items.html.twig' as utils_items %}
 {% for feedItem in feedList %}
     <article class="uk-comment">
-        <i class="uk-icon-comments-o uk-icon-small"></i>
-
+        <i class="{{ utils_items.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
         <header class="uk-comment-header">
-            <img class="uk-comment-avatar" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
-            <div class="uk-comment-meta"><span class="{{ utils_items.iconClassForItemType(feedItem.itemType) }}"></span> {{ feedItem.itemType }}</div>
+            <img class="uk-comment-avatar uk-border-circle uk-align-left" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+            <div class="uk-comment-meta">{{ feedItem.itemType|transchoice(0, {}, "rubric") }}</div>
             <h4 class="uk-comment-title"><a href="#">{{ feedItem.title }}</a></h4>
-            <div class="uk-comment-meta">Wann: am Mittwoch, 18.03.2015 von 16:30 Uhr bis 18:00 Uhr</div>
-            <div class="uk-comment-meta">Wo: effective WEBWORK GmbH, Neuer Wall 18, Hamburg</div>
+            {% if feedItem.itemType == 'announcement' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% elseif feedItem.itemType == 'date' %}
+                <div class="uk-comment-meta">{{ 'when'|trans({})|capitalize }}: {{feedItem.getDateDescription}}</div>
+                <div class="uk-comment-meta">{{ 'where'|trans({})|capitalize }}: {{feedItem.getPlace}}</div>
+            {% elseif feedItem.itemType == 'material' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% elseif feedItem.itemType == 'discussion' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% elseif feedItem.itemType == 'user' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% elseif feedItem.itemType == 'group' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% elseif feedItem.itemType == 'todo' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% elseif feedItem.itemType == 'task' %}
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+            {% endif %}
         </header>
     </article>
 {% endfor %}

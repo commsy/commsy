@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="1">
+                <source>announcement</source>
+                <target>{0}Ankündigung|{1}Ankündigungen</target>
+            </trans-unit>
+            <trans-unit id="2">
+                <source>date</source>
+                <target>{0}Termin|{1}Termine</target>
+            </trans-unit>
+            <trans-unit id="3">
+                <source>material</source>
+                <target>{0}Material|{1}Materialien</target>
+            </trans-unit>
+            <trans-unit id="4">
+                <source>discussion</source>
+                <target>{0}Diskussion|{1}Diskussionen</target>
+            </trans-unit>
+            <trans-unit id="5">
+                <source>user</source>
+                <target>{0}Person|{1}Personen</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>group</source>
+                <target>{0}Gruppe|{1}Gruppen</target>
+            </trans-unit>
+            <trans-unit id="7">
+                <source>todo</source>
+                <target>{0}Aufgabe|{1}Aufgaben</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>task</source>
+                <target>{0}Thema|{1}Themen</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

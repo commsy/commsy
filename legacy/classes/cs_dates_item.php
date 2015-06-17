@@ -525,5 +525,164 @@ class cs_dates_item extends cs_item {
       $clone_item->setTopicList($topic_list);
       return $clone_item;
    }
+   
+   
+   
+   /** get full description of date and time
+    *
+    * @author CommSy Development Group
+    */
+    function getDateDescription() {
+        $converter = $this->_environment->getTextConverter();
+		$translator = $this->_environment->getTranslationObject();
+
+		// description
+        $desc = $this->getDescription();
+        if(!empty($desc)) {
+
+            $converter->setFileArray($this->getItemFileList());
+      		if ( $this->_with_old_text_formating ) {
+      			$desc = $converter->textFullHTMLFormatting($desc);
+      		} else {
+			    $desc = $converter->textFullHTMLFormatting($desc);
+      		}
+        }
+
+		// set up style of days and times
+		// time
+		$parse_time_start = convertTimeFromInput($this->getStartingTime());
+		$conforms = $parse_time_start['conforms'];
+		if($conforms === true) {
+			$start_time_print = getTimeLanguage($parse_time_start['datetime']);
+		} else {
+			// TODO: compareWithSearchText
+			$start_time_print = $converter->text_as_html_short($this->getStartingTime());
+		}
+
+		$parse_time_end = convertTimeFromInput($this->getEndingTime());
+		$conforms = $parse_time_end['conforms'];
+		if($conforms === true) {
+			$end_time_print = getTimeLanguage($parse_time_end['datetime']);
+		} else {
+			// TODO: compareWithSearchText
+			$end_time_print = $converter->text_as_html_short($this->getEndingTime());
+		}
+		// day
+		$parse_day_start = convertDateFromInput($this->getStartingDay(), $this->_environment->getSelectedLanguage());
+		$conforms = $parse_day_start['conforms'];
+		if($conforms === true) {
+			$start_day_print = $this->getStartingDayName() . ', ' . $translator->getDateInLang($parse_day_start['datetime']);
+		} else {
+			// TODO: compareWithSearchText
+			$start_day_print = $converter->text_as_html_short($this->getStartingDay());
+		}
+
+		$parse_day_end = convertDateFromInput($this->getEndingDay(), $this->_environment->getSelectedLanguage());
+		$conforms = $parse_day_end['conforms'];
+		if($conforms === true) {
+			$end_day_print = $this->getEndingDayName() . ', ' . $translator->getDateInLang($parse_day_end['datetime']);
+		} else {
+			// TODO: compareWithSearchText
+			$end_day_print = $converter->text_as_html_short($this->getEndingDay());
+		}
+
+		// formate dates and times for displaying
+		$date_print = '';
+		$time_print = '';
+
+		if($end_day_print !== '') {
+			// with ending day
+			$date_print = $translator->getMessage('DATES_AS_OF') . ' ' . $start_day_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_day_print;
+			if($parse_day_start['conforms'] && $parse_day_end['conforms']) {
+				// start and end are dates, not string <- ???
+				$date_print .= ' (' . getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']) . ' ' . $translator->getMessage('DATES_DAYS') . ')';
+			}
+
+			if($start_time_print !== '' && $end_time_print === '') {
+				// only start time given
+				$time_print = $translator->getMessage('DATES_AS_OF_LOWER') . ' ' . $start_time_print;
+
+				if($parse_time_start['conforms'] === true) {
+					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+			} elseif($start_time_print === '' && $end_time_print !== '') {
+				// only end time given
+				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+
+				if($parse_time_end['conforms'] === true) {
+					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+			} elseif($start_time_print !== '' && $end_time_print !== '') {
+				// all times given
+				if($parse_time_end['conforms'] === true) {
+					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+
+				if($parse_time_start['conforms'] === true) {
+					$start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+
+				$date_print =	$translator->getMessage('DATES_AS_OF') . ' ' . $start_day_print . ', ' . $start_time_print . ' ' .
+								$translator->getMessage('DATES_TILL') . ' ' . $end_day_print . ', ' . $end_time_print;
+
+				if($parse_day_start['conforms'] && $parse_day_end['conforms']) {
+					$date_print .= ' (' . getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']) . ' ' . $translator->getMessage('DATES_DAYS') . ')';
+				}
+			}
+		} else {
+			// without ending day
+			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+
+			if($start_time_print !== '' && $end_time_print == '') {
+				// starting time given
+				$time_print = $translator->getMessage('DATES_AS_OF_LOWER') . ' ' . $start_time_print;
+
+				if($parse_time_start['conforms'] === true) {
+					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+			} elseif($start_time_print === '' && $end_time_print !== '') {
+				// end time given
+				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+
+				if($parse_time_end['conforms'] === true) {
+					$time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+			} elseif($start_time_print !== '' && $end_time_print !== '') {
+				// all times given
+				if($parse_time_end['conforms'] === true) {
+					$end_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+
+				if($parse_time_start['conforms'] === true) {
+					$start_time_print .= ' ' . $translator->getMessage('DATES_OCLOCK');
+				}
+
+				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+			}
+		}
+
+		if($parse_day_start['timestamp'] === $parse_day_end['timestamp'] && $parse_day_start['conforms'] && $parse_day_end['conforms']) {
+			$date_print = $translator->getMessage('DATES_ON_DAY') . ' ' . $start_day_print;
+
+			if($start_time_print !== '' && $end_time_print === '') {
+				// starting time given
+				$time_print = $translator->getMessage('DATES_AS_OF_LOWER') . ' ' . $start_time_print;
+			} elseif($start_time_print === '' && $end_time_print !== '') {
+				// endtime given
+				$time_print = $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+			} elseif($start_time_print !== '' && $end_time_print !== '') {
+				// all times given
+				$time_print = $translator->getMessage('DATES_FROM_TIME_LOWER') . ' ' . $start_time_print . ' ' . $translator->getMessage('DATES_TILL') . ' ' . $end_time_print;
+			}
+		}
+
+		// date and time
+		$datetime = $date_print;
+		if($time_print !== '') {
+			$datetime .= ' ' . $time_print;
+		}
+
+        return $datetime;
+    }
 }
 ?>
