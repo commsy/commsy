@@ -1,1 +1,63 @@
 {% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-3-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>Materialien</div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <ul id="room-feed" class="uk-comment-list">
+                        <li>material</li>
+                        <li>material</li>
+                        {# {{ render(controller(
+                            'CommsyBundle:Feed:homeFeed',
+                            { 'roomId': roomId }
+                        ))}} #}
+                        
+                    </ul>
+                    <div id="material-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}">
+                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-2-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Filter
+                        </div>
+                    </div>
+                </div>
+
+                <div id="list-filter" class="uk-overflow-container">
+                    ...
+                </div>
+            </div>
+
+            {{ render(controller(
+                'CommsyBundle:Category:show',
+                { 'roomId': roomId }
+            ))}}
+        </div>
+    </div>
+{% endblock %}

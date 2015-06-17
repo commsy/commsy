@@ -20,10 +20,12 @@ class MaterialController extends Controller
 
     /**
      * @Route("/room/{roomId}/material")
-     *
+     * @Template()
      */
     public function listAction($roomId, Request $request)
     {
-    	return array();
+    	return array(
+            'roomId' => $roomId
+        );
     }
 }
