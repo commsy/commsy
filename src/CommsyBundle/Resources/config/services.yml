@@ -3,7 +3,7 @@ parameters:
 services:
     commsy.room_feed_generator:
         class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
-        arguments: ["@commsy_legacy.environment"]
+        arguments: ["@commsy_legacy.environment", @commsy.room_service]
 
     commsy.tag_manager:
         class: Commsy\LegacyBundle\Utils\TagManager
@@ -11,4 +11,8 @@ services:
 
     commsy.room_manager:
         class: Commsy\LegacyBundle\Utils\RoomManager
+        arguments: ["@commsy_legacy.environment"]
+
+    commsy.room_service:
+        class: Commsy\LegacyBundle\Utils\RoomService
         arguments: ["@commsy_legacy.environment"]
