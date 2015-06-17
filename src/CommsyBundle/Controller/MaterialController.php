@@ -17,4 +17,13 @@ class MaterialController extends Controller
     {   
         return array();
     }
+
+    /**
+     * @Route("/room/{roomId}/material")
+     *
+     */
+    public function listAction($roomId, Request $request)
+    {
+    	return array();
+    }
 }
