@@ -1,0 +1,19 @@
+{% macro iconClassForItemType(type) %}
+   {% if type == 'announcement' %}
+      uk-icon-home
+   {% elseif type == 'date' %}
+      uk-icon-calendar
+   {% elseif type == 'material' %}
+      uk-icon-file-o
+   {% elseif type == 'discussion' %}
+      uk-icon-comments-o
+   {% elseif type == 'user' %}
+      uk-icon-users
+   {% elseif type == 'group' %}
+      uk-icon-home
+   {% elseif type == 'todo' %}
+      uk-icon-check
+   {% elseif type == 'task' %}
+      uk-icon-home
+   {% endif %}
+{% endmacro %}

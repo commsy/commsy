@@ -26,27 +26,15 @@
                 </div>
 
                 <ul id="room-feed" class="uk-comment-list">
-
                     {{ render(controller(
                         'CommsyBundle:Feed:homeFeed',
                         { 'roomId': roomItem.itemId }
                     ))}}
-                    
-                    <article class="uk-comment">
-                        <i class="uk-icon-comments-o uk-icon-small"></i>
-
-                        <header class="uk-comment-header">
-                            <img class="uk-comment-avatar" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
-                            <div class="uk-comment-meta">Material</div>
-                            <h4 class="uk-comment-title"><a href="#">HOWTO: Erstellen eines CommSy-Releases</a></h4>
-                            <div class="uk-comment-meta">Von: Christoph Schönfeld</div>
-                        </header>
-                    </article>
-
                     <div id="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}">
                         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                     </div>
                 </ul>
+                
             </div>
         </div>
         
