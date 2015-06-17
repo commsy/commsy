@@ -16,16 +16,18 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-function deleteLastSlash ( $path ) {
-   $retour = $path;
-   if ( !empty($path) ) {
-      if ( substr($path,strlen($path)-1) == '/'
-           or substr($path,strlen($path)-1) == '\\'
-         ) {
-         $retour = substr($path,0,strlen($path)-1);
+if (!function_exists('deleteLastSlash')) {
+   function deleteLastSlash ( $path ) {
+      $retour = $path;
+      if ( !empty($path) ) {
+         if ( substr($path,strlen($path)-1) == '/'
+              or substr($path,strlen($path)-1) == '\\'
+            ) {
+            $retour = substr($path,0,strlen($path)-1);
+         }
       }
+      return $retour;
    }
-   return $retour;
 }
 
 // Database setup
