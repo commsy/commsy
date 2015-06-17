@@ -16,7 +16,7 @@
             {% elseif feedItem.itemType == 'discussion' %}
                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
             {% elseif feedItem.itemType == 'user' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.getFullName}}</div>
             {% elseif feedItem.itemType == 'group' %}
                 <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
             {% elseif feedItem.itemType == 'todo' %}
