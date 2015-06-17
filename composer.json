@@ -21,7 +21,8 @@
         "doctrine/migrations": "1.0.*@dev",
         "doctrine/doctrine-migrations-bundle": "2.1.*@dev",
         "liip/theme-bundle": "dev-master",
-        "sp/bower-bundle": "^0.11.0"
+        "sp/bower-bundle": "^0.11.0",
+        "knplabs/knp-menu-bundle":"dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
