@@ -2,13 +2,13 @@ parameters:
 
 services:
     commsy.room_feed_generator:
-        class: CommsyBundle\Utils\RoomFeedGenerator
+        class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
         arguments: ["@commsy_legacy.environment"]
 
     commsy.tag_manager:
-        class: CommsyBundle\Utils\TagManager
+        class: Commsy\LegacyBundle\Utils\TagManager
         arguments: ["@commsy_legacy.environment"]
 
     commsy.room_manager:
-        class: CommsyBundle\Utils\RoomManager
+        class: Commsy\LegacyBundle\Utils\RoomManager
         arguments: ["@commsy_legacy.environment"]

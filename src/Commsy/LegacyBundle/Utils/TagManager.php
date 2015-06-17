@@ -1,6 +1,6 @@
 <?php
 
-namespace CommsyBundle\Utils;
+namespace Commsy\LegacyBundle\Utils;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
