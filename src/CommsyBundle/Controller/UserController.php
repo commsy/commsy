@@ -7,10 +7,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
-class PersonController extends Controller
+class UserController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/person")
+     * @Route("/room/{roomId}/user")
      * @Template()
      */
     public function listAction($roomId, Request $request)
