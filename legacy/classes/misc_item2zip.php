@@ -305,11 +305,7 @@ class misc_item2zip extends misc_2zip {
       global $c_commsy_domain;
       global $c_commsy_url_path;
       $params = $this->_environment->getCurrentParameterArray();
-      if (isset($params['view_mode'])){
-         $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_pda_css.php?cid='.$this->_environment->getCurrentContextID();
-      } else {
-         $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID();
-      }
+      $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID();
       $this->_getCSS($folder.'/css/stylesheet.css',$url_to_style);
       unset($url_to_style);
 
@@ -377,7 +373,6 @@ class misc_item2zip extends misc_2zip {
 
          //String replacements
          $output = str_replace('commsy_print_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
-         $output = str_replace('commsy_pda_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
          $output = str_replace('commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet2.css', $output);
          $output = $this->_replaceLinksToFiles($output,$folder);
 

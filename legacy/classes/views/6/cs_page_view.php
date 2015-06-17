@@ -293,10 +293,6 @@ class cs_page_view extends cs_view {
       // portal / server
       } elseif ( $this->_environment->inPortal() or $this->_environment->inServer() ) {
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_portal_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      
-      // room
-      } else {
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_merged_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
       
       // portal / server / room
@@ -321,9 +317,6 @@ class cs_page_view extends cs_view {
 
       if ($this->_environment->getCurrentModule() == 'home' and !$this->_is_print_page){
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_home_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
-      if ($this->_environment->getCurrentModule() == 'date' and $this->_environment->getCurrentFunction() == 'index'){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_calender_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
       $pid = $this->_environment->getCurrentPortalID();
       if (file_exists('htdocs/'.$pid.'/commsy.css') ){

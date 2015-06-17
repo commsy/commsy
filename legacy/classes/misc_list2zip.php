@@ -110,7 +110,6 @@ class misc_list2zip extends misc_2zip {
 
          //String replacements
          $output = str_replace('commsy_print_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
-         $output = str_replace('commsy_pda_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
          $output = str_replace('commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet2.css', $output);
 
          // now detail pages

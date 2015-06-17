@@ -84,7 +84,6 @@ function getCSS ( $file, $file_url ) {
 
      //String replacements
      $output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
-     $output = str_replace('commsy_pda_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
      $output = str_replace('commsy_myarea_css.php?cid='.$environment->getCurrentContextID(),'stylesheet2.css', $output);
      $params = $environment->getCurrentParameterArray();
 
@@ -219,20 +218,12 @@ function getCSS ( $file, $file_url ) {
      unset($output);
 
      //copy CSS File
-     if (isset($params['view_mode'])){
-        $csssrc = 'htdocs/commsy_pda_css.php';
-     } else {
-        $csssrc = 'htdocs/commsy_print_css.php';
-     }
+     $csssrc = 'htdocs/commsy_print_css.php';
      $csstarget = $directory.'/stylesheet.css';
 
      mkdir($directory.'/css', 0777);
 
-     if (isset($params['view_mode'])){
-        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_pda_css.php?cid='.$environment->getCurrentContextID();
-     } else {
-        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
-     }
+     $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
      getCSS($directory.'/css/stylesheet.css',$url_to_style);
      unset($url_to_style);
 
