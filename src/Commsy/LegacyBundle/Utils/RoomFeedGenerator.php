@@ -16,7 +16,7 @@ class RoomFeedGenerator
         $this->roomService = $roomService;
     }
 
-    public function getFeedList($roomId, $max)
+    public function getFeedList($roomId, $max, $start)
     {
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
 

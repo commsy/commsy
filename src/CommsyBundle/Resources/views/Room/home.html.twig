@@ -25,15 +25,18 @@
                     </div>
                 </div>
 
-                <ul id="room-feed" class="uk-comment-list">
-                    {{ render(controller(
-                        'CommsyBundle:Feed:homeFeed',
-                        { 'roomId': roomItem.itemId }
-                    ))}}
+                <div>
+                    <ul id="room-feed" class="uk-comment-list">
+                        {{ render(controller(
+                            'CommsyBundle:Feed:homeFeed',
+                            { 'roomId': roomItem.itemId }
+                        ))}}
+                        
+                    </ul>
                     <div id="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}">
                         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                     </div>
-                </ul>
+                </div>
                 
             </div>
         </div>
