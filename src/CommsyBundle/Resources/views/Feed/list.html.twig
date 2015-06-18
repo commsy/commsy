@@ -2,28 +2,35 @@
 {% for feedItem in feedList %}
     <article class="uk-comment">
         <i class="{{ utils_items.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
-        <header class="uk-comment-header">
-            <img class="uk-comment-avatar uk-border-circle uk-align-left" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
-            <div class="uk-comment-meta">{{ feedItem.itemType|transchoice(0, {}, "rubric") }}</div>
-            <h4 class="uk-comment-title"><a href="#">{{ feedItem.title }}</a></h4>
-            {% if feedItem.itemType == 'announcement' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-            {% elseif feedItem.itemType == 'date' %}
-                <div class="uk-comment-meta">{{ 'when'|trans({})|capitalize }}: {{feedItem.getDateDescription}}</div>
-                <div class="uk-comment-meta">{{ 'where'|trans({})|capitalize }}: {{feedItem.getPlace}}</div>
-            {% elseif feedItem.itemType == 'material' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-            {% elseif feedItem.itemType == 'discussion' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-            {% elseif feedItem.itemType == 'user' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.getFullName}}</div>
-            {% elseif feedItem.itemType == 'group' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-            {% elseif feedItem.itemType == 'todo' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-            {% elseif feedItem.itemType == 'task' %}
-                <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
-            {% endif %}
+        <header class="uk-comment-header uk-flex">
+            <div>
+                <div class="uk-border-circle">
+                    <img class="uk-comment-avatar uk-border-circle" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                </div>
+            </div>
+            <div>
+                <div class="uk-comment-meta">{{ feedItem.itemType|transchoice(0, {}, "rubric") }}</div>
+                <h4 class="uk-comment-title"><a href="{{ app.request.getBaseURL() }}/room/{{ app.request.attributes.get('roomId') }}/{{ feedItem.type }}/{{ feedItem.itemID }}">{{ feedItem.title }}</a></h4>
+                {% if feedItem.itemType == 'announcement' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                {% elseif feedItem.itemType == 'date' %}
+                    <div class="uk-comment-meta">{{ 'when'|trans({})|capitalize }}: {{feedItem.getDateDescription}}</div>
+                    <div class="uk-comment-meta">{{ 'where'|trans({})|capitalize }}: {{feedItem.getPlace}}</div>
+                {% elseif feedItem.itemType == 'material' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                {% elseif feedItem.itemType == 'discussion' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                {% elseif feedItem.itemType == 'user' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.getFullName}}</div>
+                {% elseif feedItem.itemType == 'group' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                {% elseif feedItem.itemType == 'todo' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                {% elseif feedItem.itemType == 'task' %}
+                    <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                {% endif %}
+                <div class="uk-comment-meta">{{ 'last changed'|trans({})|capitalize }}: {{feedItem.getModificationDate|date("d.m.Y H:i")}}</div>
+            </div>
         </header>
     </article>
 {% endfor %}
