@@ -1,0 +1,34 @@
+{% extends 'knp_menu.html.twig' %}
+
+{% macro attributes(attributes) %}
+{% for name, value in attributes %}
+    {%- if value is not none and value is not sameas(false) -%}
+        {{- ' %s="%s"'|format(name, value is sameas(true) ? name|e : value|e)|raw -}}
+    {%- endif -%}
+{%- endfor -%}
+{% endmacro %}
+
+{% block list %}
+{% if item.hasChildren and options.depth is not sameas(0) and item.displayChildren %}
+    {% import _self as knp_menu %}
+    <ul id="sidebar-nav" class="uk-nav uk-nav-side uk-nav-parent-icon"{{ knp_menu.attributes(listAttributes) }}>
+        {{ block('children') }}
+    </ul>
+{% endif %}
+{% endblock %}
+
+{% block linkElement %}
+    {% import _self as knp_menu %}
+    <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
+    <i class="{% if item.extras.icon is defined %}{{ item.extras.icon }}{% endif %}"></i>
+        {{ block('label') }}
+    </a>
+{% endblock %}
+
+{% block label %}
+    {% if options.allow_safe_labels and item.getExtra('safe_label', false) %}
+        {{ item.label|raw }}
+    {% else %}
+        {{ item.label|transchoice(1, {}, "rubric")|upper }}
+    {% endif %}
+{% endblock %}
