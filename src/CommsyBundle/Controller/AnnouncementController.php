@@ -10,12 +10,21 @@ use Symfony\Component\HttpFoundation\Request;
 class AnnouncementController extends Controller
 {
     /**
+     * @Route("/room/{roomId}/announcement/{announcementId}")
+     * @Template()
+     */
+    public function indexAction($roomId, $announcementId, Request $request)
+    {   
+        return array();
+    }
+
+    /**
      * @Route("/room/{roomId}/announcement")
      * @Template()
      */
     public function listAction($roomId, Request $request)
-    {   
-        return array(
+    {
+    	return array(
             'roomId' => $roomId
         );
     }

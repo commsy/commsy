@@ -10,14 +10,22 @@ use Symfony\Component\HttpFoundation\Request;
 class TodoController extends Controller
 {
     /**
+     * @Route("/room/{roomId}/todo/{todoId}")
+     * @Template()
+     */
+    public function indexAction($roomId, $todoId, Request $request)
+    {   
+        return array();
+    }
+
+    /**
      * @Route("/room/{roomId}/todo")
      * @Template()
      */
     public function listAction($roomId, Request $request)
     {
-        // get todo list
-
-        return array(
+    	return array(
+            'roomId' => $roomId
         );
     }
 }
