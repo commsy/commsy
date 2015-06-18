@@ -34,6 +34,10 @@
                 <source>task</source>
                 <target>{0}Thema|{1}Themen</target>
             </trans-unit>
+            <trans-unit id="9">
+                <source>topic</source>
+                <target>{0}Thema|{1}Themen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
