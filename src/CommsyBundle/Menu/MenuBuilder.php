@@ -118,4 +118,27 @@ class MenuBuilder
         }
     return $class;
     }
+
+    
+    public function createBreadcrumbMenu(RequestStack $requestStack)
+    {
+        // get room id
+        $currentStack = $requestStack->getCurrentRequest();
+        $roomId = $currentStack->attributes->get('roomId');
+
+        // create breadcrumb menu
+        $menu = $this->factory->createItem('root');
+
+        // this item will always be displayed
+        $menu->addChild('Portal', array('route' => ''));
+        $menu->addChild('Raum', array(
+            'route' => 'commsy_room_home', 
+            'routeParameters' => array('roomId' => $roomId)
+        ));
+
+        return $menu;
+
+        // return $this->getCurrentMenuItem($menu);
+    }
+
 }

@@ -36,3 +36,11 @@ services:
         arguments: ["@request_stack"]
         tags:
             - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu
+
+    app.breadcrumb_menu:
+          class: Knp\Menu\MenuItem
+          factory_service: app.menu_builder
+          factory_method: createBreadcrumbMenu
+          arguments: ["@request_stack"]
+          tags:
+              - { name: knp_menu.menu, alias: breadcrumb }
