@@ -3,10 +3,8 @@
     <article class="uk-comment">
         <i class="{{ utils_items.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
         <header class="uk-comment-header uk-flex">
-            <div>
-                <div class="uk-border-circle">
-                    <img class="uk-comment-avatar uk-border-circle" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
-                </div>
+            <div class="uk-margin-right">
+                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" width="60" height="60" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
             </div>
             <div>
                 <div class="uk-comment-meta">{{ feedItem.itemType|transchoice(0, {}, "rubric") }}</div>
