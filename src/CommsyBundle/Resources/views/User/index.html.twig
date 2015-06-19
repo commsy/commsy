@@ -3,13 +3,13 @@
 {% block content %}
     <div class="uk-grid">
 
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-medium-2-3">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>User</div>
+                        <div>{{ user.fullName }}</div>
                         <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-info', animation: 'uk-animation-fade'}">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-info', animation: 'uk-animation-fade'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>
@@ -17,13 +17,28 @@
                 </div>
 
                 <div id="user-info" class="uk-overflow-container">
-                    ...
+                    <div class="uk-flex">
+                        <div class="uk-margin-right">
+                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" width="120" height="120" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                        </div>
+                        <div>
+                            <div class="">{{ 'email'|trans({})|capitalize }}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
+                            <div class="">{{ 'phone'|trans({})|capitalize }}: <a href="tel:{{ user.telephone }}">{{ user.telephone }}</a></div>
+                            <div class="">{{ 'mobile'|trans({})|capitalize }}: <a href="tel:{{ user.cellularphone }}">{{ user.cellularphone }}</a></div>
+                            <div class="">{{ 'street'|trans({})|capitalize }}: {{ user.street }}</div>
+                            <div class="">{{ 'city'|trans({})|capitalize }}: {{ user.city }}</div>
+                            <div class="">{{ 'userid'|trans({})|capitalize }}: {{ user.userid }}</div>
+                            <div class="">{{ 'status'|trans({})|capitalize }}: {{ user.status }}</div>
+                            <div class="">{{ 'description'|trans({})|capitalize }}: {{ user.description|raw }}</div>
+                        </div>
+                    </div>
+                    
                 </div>
                 
             </div>
         </div>
         
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-medium-1-3">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-clearfix">
