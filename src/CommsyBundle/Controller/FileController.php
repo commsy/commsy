@@ -17,19 +17,20 @@ class FileController extends Controller
     {
         $fileService = $this->get('commsy.file_service');
         $file = $fileService->getFile($fileId);
+        $rootDir = $this->get('kernel')->getRootDir().'/../';
 
-        if (file_exists($file->getDiskFileName())) {
-            $content = file_get_contents($file->getDiskFileName());
+        if (file_exists($rootDir.$file->getDiskFileName())) {
+            $content = file_get_contents($rootDir.$file->getDiskFileName());
         } else {
             throw $this->createNotFoundException('The requested file does not exist');   
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => $file->getMime()));
-         
-        $dispositionType = DISPOSITION_ATTACHMENT;
+        
         if ($disposition == 'inline') {
-            $dispositionType = DISPOSITION_INLINE;
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file->getFileName());
+        } else {
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$file->getFileName());   
         }
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::$dispositionType,$file->getFileName());
         $response->headers->set('Content-Disposition', $contentDisposition);
         
         return $response;
