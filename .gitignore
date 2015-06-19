@@ -100,6 +100,7 @@ web/templates/templates_c/*
 
 var/[0-9]*
 var/templates/individual/*
+var/temp
 
 libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
 legacy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
