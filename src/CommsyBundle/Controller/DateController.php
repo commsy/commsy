@@ -8,13 +8,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 class DateController extends Controller
-{    
+{
     /**
-     * @Route("/room/{roomId}/date/{dateId}")
+     * @Route("/room/{roomId}/date/{itemId}")
      * @Template()
      */
-    public function indexAction($roomId, $dateId, Request $request)
-    {   
+    public function indexAction($roomId, $itemId, Request $request)
+    {
         return array();
     }
 
@@ -24,7 +24,7 @@ class DateController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-    	return array(
+        return array(
             'roomId' => $roomId
         );
     }

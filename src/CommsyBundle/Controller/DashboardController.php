@@ -14,7 +14,7 @@ class DashboardController extends Controller
      * @Template()
      */
     public function indexAction(Request $request)
-    {   
+    {
         return array();
     }
 }

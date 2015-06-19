@@ -10,11 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 class GroupController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/group/{groupId}")
+     * @Route("/room/{roomId}/group/{itemId}")
      * @Template()
      */
-    public function indexAction($roomId, $groupId, Request $request)
-    {   
+    public function indexAction($roomId, $itemId, Request $request)
+    {
         return array();
     }
 
@@ -24,7 +24,7 @@ class GroupController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-    	return array(
+        return array(
             'roomId' => $roomId
         );
     }

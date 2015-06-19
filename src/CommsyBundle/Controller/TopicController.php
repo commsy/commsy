@@ -10,11 +10,11 @@ use Symfony\Component\HttpFoundation\Request;
 class TopicController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/topic/{topicId}")
+     * @Route("/room/{roomId}/topic/{itemId}")
      * @Template()
      */
-    public function indexAction($roomId, $topicId, Request $request)
-    {   
+    public function indexAction($roomId, $itemId, Request $request)
+    {
         return array();
     }
 
@@ -24,7 +24,7 @@ class TopicController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-    	return array(
+        return array(
             'roomId' => $roomId
         );
     }
