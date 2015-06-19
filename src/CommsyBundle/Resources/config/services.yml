@@ -9,10 +9,6 @@ services:
         class: Commsy\LegacyBundle\Utils\TagManager
         arguments: ["@commsy_legacy.environment"]
 
-    commsy.room_manager:
-        class: Commsy\LegacyBundle\Utils\RoomManager
-        arguments: ["@commsy_legacy.environment"]
-
     commsy.room_service:
         class: Commsy\LegacyBundle\Utils\RoomService
         arguments: ["@commsy_legacy.environment"]

@@ -34,4 +34,15 @@ class RoomService
         return $rubrics;
 
     }
+
+    public function getUserList($roomId)
+    {
+        // get person list
+        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
+        $personList = $roomItem->getUserList();
+
+        return $personList->to_array();
+    }
 }

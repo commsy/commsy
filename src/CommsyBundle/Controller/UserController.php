@@ -16,7 +16,7 @@ class UserController extends Controller
     public function listAction($roomId, Request $request)
     {
         // get room user list
-        $roomManager = $this->get("commsy.room_manager");
+        $roomManager = $this->get("commsy.room_service");
 
         $personArray = $roomManager->getUserList($roomId);
 
