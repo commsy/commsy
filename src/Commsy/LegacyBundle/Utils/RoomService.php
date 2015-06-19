@@ -13,6 +13,11 @@ class RoomService
         $this->legacyEnvironment = $legacyEnvironment;
     }
 
+    /**
+     * returns the rubrics for the room with the $roomId
+     * @param  Integer $roomId  room id
+     * @return array            Array with rubric strings
+     */
     public function getRubricInformation($roomId)
     {
         $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
@@ -35,6 +40,11 @@ class RoomService
 
     }
 
+    /**
+     * returns a user list for the room with the $roomId
+     * @param  Integer $roomId room id
+     * @return Array         Array with legacy user items
+     */
     public function getUserList($roomId)
     {
         // get person list
@@ -44,5 +54,14 @@ class RoomService
         $personList = $roomItem->getUserList();
 
         return $personList->to_array();
+    }
+
+    public function getRoomItem($roomId)
+    {
+        // get room item
+        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        return $roomItem;
     }
 }
