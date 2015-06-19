@@ -191,61 +191,6 @@ if ( $server_item->showOutOfService() ) {
    $outofservice = false;
 }
 
-if ( !empty($cid_not_set) and $cid_not_set) {
-
-   // check url of portals
-   $search_url = '';
-   $set_cid = false;
-   if ( !empty($_SERVER['HTTP_HOST']) ) {
-      $search_url .= $_SERVER['HTTP_HOST'];
-      if ( !empty($_SERVER['REQUEST_URI']) ) {
-         $search_url .= dirname($_SERVER['REQUEST_URI']);
-      }
-      if ( substr($search_url,strlen($search_url)-1) == '/' ) {
-         $search_url = substr($search_url,0,strlen($search_url)-1);
-      }
-      $portal_manager = $environment->getPortalManager();
-      $portal_manager->setUrlLimit($search_url);
-      $portal_manager->select();
-      $portal_list = $portal_manager->get();
-      if ( !empty($portal_list)
-           and $portal_list->isNotEmpty()
-         ) {
-         $count = $portal_list->getCount();
-         if ( $count == 1 ) {
-            $portal_item = $portal_list->getFirst();
-            if ( isset($portal_item) ) {
-               $environment->setCurrentContextID($portal_item->getItemID());
-               $set_cid = true;
-            }
-            unset($portal_item);
-         }
-         unset($count);
-      }
-      unset($portal_manager);
-      unset($portal_list);
-
-      // check url from server_item
-      if ( !$set_cid ) {
-         $server_url = $server_item->getURL();
-         if ( !empty($server_url)
-              and $server_url == $search_url
-            ) {
-            $environment->setCurrentContextID($server_item->getItemID());
-            # don't set cid_set to true, because default portal id should work
-         }
-      }
-   }
-
-   // default portal id
-   if ( !$set_cid ) {
-      $default_portal_id = $server_item->getDefaultPortalItemID();
-      if ( is_numeric($default_portal_id) ) {
-         $environment->setCurrentContextID($default_portal_id);
-      }
-   }
-   unset($set_cid);
-}
 unset($server_item);
 
 $context_item_current = $environment->getCurrentContextItem();

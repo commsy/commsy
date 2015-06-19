@@ -84,7 +84,6 @@ function getCSS ( $file, $file_url ) {
 
      //String replacements
      $output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
-     $output = str_replace('commsy_myarea_css.php?cid='.$environment->getCurrentContextID(),'stylesheet2.css', $output);
      $params = $environment->getCurrentParameterArray();
 
      //find images in string
@@ -225,10 +224,6 @@ function getCSS ( $file, $file_url ) {
 
      $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
      getCSS($directory.'/css/stylesheet.css',$url_to_style);
-     unset($url_to_style);
-
-     $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$environment->getCurrentContextID();
-     getCSS($directory.'/css/stylesheet2.css',$url_to_style);
      unset($url_to_style);
 
      //create ZIP File

@@ -1,5 +1,12 @@
 {% extends 'base.html.twig' %}
 
+{% block cover %}
+    <div id="cover" class="uk-cover-background">
+        <img class="uk-invisible" src="" width="" height="" alt="">
+    </div>
+{% endblock %}
+
+
 {% block content %}
     <div class="uk-grid">
 
@@ -8,15 +15,15 @@
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>Neueste Aktivitäten in diesem Raum(TODO)</div>
-                        <form class="uk-form">
-                            <fieldset>
-                                <select class="form-transparent uk-form-tiny">
-                                    <option>Option A</option>
-                                    <option>Option B</option>
-                                    <option>Option C</option>
-                                </select>
-                            </fieldset>
-                        </form>
+                        <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                            <button class="uk-button">{{ 'filter'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                            <div class="uk-dropdown uk-dropdown-small">
+                                <ul class="uk-nav uk-nav-dropdown">
+                                    <li><a href="#">{{ 'date'|trans({})|capitalize }}</a></li>
+                                    <li><a href="#">{{ 'material'|trans({})|capitalize }}</a></li>
+                                </ul>
+                            </div>
+                        </div>
                         <div>
                             <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
                                 <i class="uk-icon-chevron-up"></i>
@@ -31,9 +38,8 @@
                             'CommsyBundle:Feed:homeFeed',
                             { 'roomId': roomItem.itemId }
                         ))}}
-                        
                     </ul>
-                    <div id="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}">
+                    <div id="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomItem.itemId }}/feed/"}'>
                         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                     </div>
                 </div>

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "doctrine/annotations",
-            "version": "v1.2.4",
+            "version": "v1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/annotations.git",
-                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e"
+                "reference": "f4a91702ca3cd2e568c3736aa031ed00c3752af4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/annotations/zipball/b5202eb9e83f8db52e0e58867e0a46e63be8332e",
-                "reference": "b5202eb9e83f8db52e0e58867e0a46e63be8332e",
+                "url": "https://api.github.com/repos/doctrine/annotations/zipball/f4a91702ca3cd2e568c3736aa031ed00c3752af4",
+                "reference": "f4a91702ca3cd2e568c3736aa031ed00c3752af4",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "docblock",
                 "parser"
             ],
-            "time": "2014-12-23 22:40:37"
+            "time": "2015-06-17 12:21:22"
         },
         {
             "name": "doctrine/cache",
@@ -1063,12 +1063,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/KnpMenuBundle.git",
-                "reference": "802e7f67fa3ea6cdaa40bffb96fc5cc83c7c2826"
+                "reference": "7c0d579ca58f1c7cb3747a84b681fe273f00ffec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpMenuBundle/zipball/802e7f67fa3ea6cdaa40bffb96fc5cc83c7c2826",
-                "reference": "802e7f67fa3ea6cdaa40bffb96fc5cc83c7c2826",
+                "url": "https://api.github.com/repos/KnpLabs/KnpMenuBundle/zipball/7c0d579ca58f1c7cb3747a84b681fe273f00ffec",
+                "reference": "7c0d579ca58f1c7cb3747a84b681fe273f00ffec",
                 "shasum": ""
             },
             "require": {
@@ -1099,7 +1099,7 @@
                     "email": "stof@notk.org"
                 },
                 {
-                    "name": "KnpLabs",
+                    "name": "Knplabs",
                     "homepage": "http://knplabs.com"
                 },
                 {
@@ -1111,7 +1111,7 @@
             "keywords": [
                 "menu"
             ],
-            "time": "2015-04-16 21:48:00"
+            "time": "2015-06-16 12:38:43"
         },
         {
             "name": "kriswallsmith/assetic",

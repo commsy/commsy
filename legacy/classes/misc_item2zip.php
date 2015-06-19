@@ -308,10 +308,6 @@ class misc_item2zip extends misc_2zip {
       $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID();
       $this->_getCSS($folder.'/css/stylesheet.css',$url_to_style);
       unset($url_to_style);
-
-      $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID();
-      $this->_getCSS($folder.'/css/stylesheet2.css',$url_to_style);
-      unset($url_to_style);
    }
 
    public function _createZIP ($folder) {
@@ -373,7 +369,6 @@ class misc_item2zip extends misc_2zip {
 
          //String replacements
          $output = str_replace('commsy_print_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
-         $output = str_replace('commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet2.css', $output);
          $output = $this->_replaceLinksToFiles($output,$folder);
 
          //create HTML-File

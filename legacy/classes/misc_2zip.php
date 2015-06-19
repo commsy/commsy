@@ -115,10 +115,6 @@ class misc_2zip {
       $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID();
       $this->_getCSS($folder.'/css/stylesheet.css',$url_to_style);
       unset($url_to_style);
-
-      $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID();
-      $this->_getCSS($folder.'/css/stylesheet2.css',$url_to_style);
-      unset($url_to_style);
    }
 
    public function _createZIP ($folder) {

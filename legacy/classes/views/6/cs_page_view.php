@@ -314,10 +314,7 @@ class cs_page_view extends cs_view {
       }elseif( ($this->_environment->getCurrentFunction() == 'index' and !$this->_is_print_page) or $this->_environment->getCurrentFunction() == 'clipboard_index'){
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
-
-      if ($this->_environment->getCurrentModule() == 'home' and !$this->_is_print_page){
-         $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_home_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-      }
+      
       $pid = $this->_environment->getCurrentPortalID();
       if (file_exists('htdocs/'.$pid.'/commsy.css') ){
          $retour .= '   <link rel="stylesheet" type="text/css" href="'.$pid.'/commsy.css"/>'.LF;

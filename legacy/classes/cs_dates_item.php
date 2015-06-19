@@ -537,7 +537,7 @@ class cs_dates_item extends cs_item {
 		$translator = $this->_environment->getTranslationObject();
 
 		// description
-        $desc = $this->getDescription();
+        /* $desc = $this->getDescription();
         if(!empty($desc)) {
 
             $converter->setFileArray($this->getItemFileList());
@@ -546,7 +546,7 @@ class cs_dates_item extends cs_item {
       		} else {
 			    $desc = $converter->textFullHTMLFormatting($desc);
       		}
-        }
+        } */
 
 		// set up style of days and times
 		// time

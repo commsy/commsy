@@ -10,18 +10,22 @@ use Symfony\Component\HttpFoundation\Request;
 class DiscussionController extends Controller
 {
     /**
+     * @Route("/room/{roomId}/discussion/{discussionId}")
+     * @Template()
+     */
+    public function indexAction($roomId, $discussionId, Request $request)
+    {   
+        return array();
+    }
+
+    /**
      * @Route("/room/{roomId}/discussion")
      * @Template()
      */
     public function listAction($roomId, Request $request)
     {
-        // get discussion list
-        // $roomManager = $this->get("commsy.room_manager");
-
-        // $personArray = $roomManager->getUserList($roomId);
-
-        return array(
-            // 'personArray' => $personArray
+    	return array(
+            'roomId' => $roomId
         );
     }
 }
