@@ -8,7 +8,7 @@ use Commsy\LegacyBundle\Utils\RoomService;
 use Symfony\Component\Translation\Translator;
 
 
-class MenuBuilder 
+class MenuBuilder
 {
     /**
     * @var Knp\Menu\FactoryInterface $factory
@@ -61,8 +61,8 @@ class MenuBuilder
             // add divider
             $menu->addChild(' ')->setAttribute('class', 'uk-nav-divider');
 
-            // loop every rubric to build the menu
-            foreach($rubrics as $value) {
+            // loop through rubrics to build the menu
+            foreach ($rubrics as $value) {
                 $menu->addChild($value, array(
                     'label' => $value,
                     'route' => 'commsy_'.$value.'_list',
@@ -71,9 +71,6 @@ class MenuBuilder
                 ));
             }
         }
-        
-        // 'routeParameters' => array('id' => $blog->getId())
-        // add more children
 
         return $menu;
     }
@@ -116,29 +113,59 @@ class MenuBuilder
                 $class = "uk-icon-home uk-icon-small";
                 break;
         }
-    return $class;
+        return $class;
     }
 
-    
+    /**
+     * creates the breadcrumb
+     * @param  RequestStack $requestStack [description]
+     * @return menuItem                   [description]
+     */
     public function createBreadcrumbMenu(RequestStack $requestStack)
     {
         // get room id
         $currentStack = $requestStack->getCurrentRequest();
+
         $roomId = $currentStack->attributes->get('roomId');
+        $itemId = $currentStack->attributes->get('itemId');
+        $roomItem = $this->roomService->getRoomItem($roomId);
+
+        // get route information
+        $route = explode('_', $currentStack->attributes->get('_route'));
 
         // create breadcrumb menu
         $menu = $this->factory->createItem('root');
 
         // this item will always be displayed
-        $menu->addChild('Portal', array('route' => ''));
-        $menu->addChild('Raum', array(
-            'route' => 'commsy_room_home', 
+        $menu->addChild('DASHBOARD', array('route' => 'commsy_dashboard_index'));
+
+        // room
+        $menu->addChild($roomItem->getTitle(), array(
+            'route' => 'commsy_room_home',
             'routeParameters' => array('roomId' => $roomId)
         ));
 
-        return $menu;
+        if ($route[1] && $route[1] != "room") {
+            // rubric
+            $menu->addChild($route[1], array(
+                'route' => 'commsy_'.$route[1].'_list',
+                'routeParameters' => array('roomId' => $roomId)
+            ));
 
-        // return $this->getCurrentMenuItem($menu);
+            if ($route[2] != "list") {
+                // item
+                $menu->addChild('Item', array(
+                    'route' => 'commsy_'.$route[1].'_index',
+                    'routeParameters' => array(
+                        'roomId' => $roomId,
+                        'itemId' => $itemId
+                    )
+                ));
+            }
+        }
+        
+
+        return $menu;
     }
 
 }
