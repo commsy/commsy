@@ -22,6 +22,21 @@ class UserController extends Controller
 
         return array(
             'personArray' => $personArray
-            );
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/user/{itemId}")
+     * @Template()
+     */
+    public function indexAction($roomId, $itemId, Request $request)
+    {
+        // get room user list
+        $userService = $this->get("commsy.user_service");
+        $user = $userService->getUser($itemId);
+        
+        return array(
+            'user' => $user
+        );
     }
 }

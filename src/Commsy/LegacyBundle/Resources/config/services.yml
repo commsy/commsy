@@ -29,3 +29,23 @@ services:
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
         arguments: [%legacy.site_index%, "@service_container"]
+    
+    commsy.room_feed_generator:
+        class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
+        arguments: ["@commsy_legacy.environment", @commsy.room_service]
+
+    commsy.tag_manager:
+        class: Commsy\LegacyBundle\Utils\TagManager
+        arguments: ["@commsy_legacy.environment"]
+
+    commsy.room_service:
+        class: Commsy\LegacyBundle\Utils\RoomService
+        arguments: ["@commsy_legacy.environment"]
+        
+    commsy.file_service:
+        class: Commsy\LegacyBundle\Utils\FileService
+        arguments: ["@commsy_legacy.environment"]
+        
+    commsy.user_service:
+        class: Commsy\LegacyBundle\Utils\UserService
+        arguments: ["@commsy_legacy.environment"]

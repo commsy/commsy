@@ -1,5 +1,67 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-    User
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>User</div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-info', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="user-info" class="uk-overflow-container">
+                    ...
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-2">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'Title'|trans({}, "room") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="user-main" class="uk-overflow-container">
+                    ...
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-sub', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'Title'|trans({}, "room") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="user-sub" class="uk-overflow-container">
+                    ...
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}
