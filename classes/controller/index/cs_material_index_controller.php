@@ -252,6 +252,13 @@
 	               $activated_text = $this->_environment->getTranslationObject()->getMessage('COMMON_ACTIVATING_DATE').' '.$this->_environment->getTranslationObject()->getDateInLang($item->getActivatingDate());
 	            }
 
+	            $creatorItem = $item->getCreatorItem();
+
+	            if ($creatorItem) {
+	            	$creatorItemId = $creatorItem->getItemID();
+	            } else {
+	            	$creatorItemId = null;
+	            }
 
 				$noticed_text = $this->_getItemChangeStatus($item);
 				$item_array[] = array(
@@ -267,7 +274,7 @@
 					'activated'			=> !$item->isNotActivated(),
 					'worldpublic'		=> $item->isWorldPublic(),
 					'activated_text'	=> $activated_text,
-					'creator_id'		=> $item->getCreatorItem()->getItemID(),
+					'creator_id'		=> $creatorItemId,
 					'bib_author'		=> $item->getAuthor(),
 					'bib_year'			=> $item->getPublishingDate()
 				);
