@@ -22,7 +22,9 @@
         "doctrine/doctrine-migrations-bundle": "2.1.*@dev",
         "liip/theme-bundle": "dev-master",
         "sp/bower-bundle": "^0.11.0",
-        "knplabs/knp-menu-bundle":"dev-master"
+        "knplabs/knp-menu-bundle":"dev-master",
+        "lexik/form-filter-bundle": "~3.0",
+        "knplabs/knp-paginator-bundle": "^2.4"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
