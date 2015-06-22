@@ -1,2 +1,24 @@
 {% extends "CommsyBundle:Form:uikit_layout.html.twig" %}
 
+{% block form_start -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form-horizontal')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_start %}
+
+{%- block form_row -%}
+    {% spaceless %}
+        <div class="uk-form-row">
+            {{- form_label(form) -}}
+            <div class="uk-form-controls uk-form-controls-text">
+                {{- form_errors(form) -}}
+                {{- form_widget(form) -}}
+            </div>
+        </div>
+    {% endspaceless %}
+{%- endblock form_row -%}
+
+{%- block button_row -%}
+    <div class="uk-form-row">
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock button_row -%}
