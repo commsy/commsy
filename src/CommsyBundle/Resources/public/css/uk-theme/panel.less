@@ -12,6 +12,8 @@
 
 @panel-box-padding: 10px;
 
+@panel-teaser-margin-top: @panel-title-margin-bottom;
+
 
 // // Variables
 // // ========================================================================
@@ -63,6 +65,27 @@
 
 // .hook-panel-badge() {}
 
+/* Sub-object: `panel-footer`
+ ========================================================================== */
+.panel-footer {
+    color: #FFFFFF;
+    background-color: #6593B3;
+    padding: 10px;
+
+    margin-top: @panel-teaser-margin-top;
+}
+
+.uk-panel-box .panel-footer {
+    margin-bottom: @panel-box-teaser-margin !important;
+    margin-left: @panel-box-teaser-margin;
+    margin-right: @panel-box-teaser-margin;
+
+    border-bottom-left-radius: @panel-border-radius;
+    border-bottom-right-radius: @panel-border-radius;
+    overflow: hidden;
+    // Fixed `overflow: hidden` to be ignored with border-radius and CSS transforms in Webkit
+    -webkit-transform: translateZ(0);
+}
 
 // Modifier: `uk-panel-box`
 // ========================================================================
