@@ -286,6 +286,94 @@ if (!isset($error) or !$error) {
    // perform list actions              //
    ///////////////////////////////////////
 
+   $error_on_portal_level = false;
+   $temp_current_context_item = $environment->getCurrentContextItem();
+   if ($temp_current_context_item->isPortal()) {
+       $all_user_ids = array();
+       $all_context_ids = array();
+       
+       foreach ($selected_ids as $temp_user_id) {
+           $temp_user_item = $user_manager->getItem($temp_user_id);
+           $all_user_ids[] = $temp_user_id;
+           $temp_related_user_list = $temp_user_item->getRelatedUserList();
+           $temp_related_user_item = $temp_related_user_list->getFirst();
+           while ($temp_related_user_item) {
+               $all_user_ids[] = $temp_related_user_item->getItemID();
+               $temp_related_user_item = $temp_related_user_list->getNext();
+           }
+           
+           $temp_context_ids = array();
+           $temp_community_list = $temp_user_item->getRelatedCommunityList();
+           $temp_community_item = $temp_community_list->getFirst();
+           while ($temp_community_item) {
+               $all_context_ids[] = $temp_community_item->getItemID();
+               $temp_community_item = $temp_community_list->getNext();
+           }
+           
+           $temp_project_list = $temp_user_item->getRelatedProjectList();
+           $temp_project_item = $temp_project_list->getFirst();
+           while ($temp_project_item) {
+               $all_context_ids[] = $temp_project_item->getItemID();
+               $temp_project_item = $temp_project_list->getNext();
+           }
+           
+           $temp_grouproom_list = $temp_user_item->getRelatedGroupList();
+           $temp_grouproom_item = $temp_grouproom_list->getFirst();
+           while ($temp_grouproom_item) {
+               $all_context_ids[] = $temp_grouproom_item->getItemID();
+               $temp_grouproom_item = $temp_grouproom_list->getNext();
+           }
+       }
+       
+       $all_user_ids = array_unique($all_user_ids);
+       $all_context_ids = array_unique($all_context_ids);
+       
+       $rooms_without_moderators = array();
+       foreach ($all_context_ids as $temp_context_id) {
+           $user_manager->resetLimits();
+           $user_manager->setContextLimit($temp_context_id);
+           $user_manager->setModeratorLimit();
+           $user_manager->select();
+           $moderator_ids = $user_manager->getIds();
+           if (!is_array($moderator_ids)) {
+              $moderator_ids = array();
+           }
+           $kept_moderator_is = array();
+           foreach ($moderator_ids as $temp_moderator_id) {
+               if (!in_array($temp_moderator_id, $all_user_ids)) {
+                   $kept_moderator_is[] = $temp_moderator_id;
+               }
+           }
+           if (empty($kept_moderator_is)) {
+               $rooms_without_moderators[] = $temp_context_id;
+           }
+       }
+       $rooms_without_moderators = array_unique($rooms_without_moderators);
+
+       if (!empty($rooms_without_moderators)) {
+           $error_on_portal_level = true;
+           $error = true;
+           $error_text_on_selection = $translator->getMessage('ERROR_LAST_MODERATOR');
+           $error_text_on_selection .= '<br/><br/>';
+           $error_text_on_selection .= $translator->getMessage('ERROR_ROOMS_WITHOUT_MODERATORS');
+           $item_manager = $environment->getItemManager();
+           foreach ($rooms_without_moderators as $room_without_moderator) {
+               $temp_item = $item_manager->getItem($room_without_moderator);
+               $context_manager = $environment->getManager($temp_item->getItemType());
+               $temp_room_item = $context_manager->getItem($room_without_moderator);
+               $temp_moderator_array = array();
+               $temp_moderator_list = $temp_room_item->getModeratorList();
+               $temp_moderator_item = $temp_moderator_list->getFirst();
+               while ($temp_moderator_item) {
+                   $temp_moderator_array[] = $temp_moderator_item->getFullName();
+                   $temp_moderator_item = $temp_moderator_list->getNext();
+               }
+               $error_text_on_selection .= '<br/>- <a href="commsy.php?cid='.$room_without_moderator.'">'.$temp_room_item->getTitle().'</a> ('.implode(', ', $temp_moderator_array).')';
+           }
+           $action = '';
+       }
+   }
+
    //data needed to prevent removing all moderators
    $user_manager->resetLimits();
    $user_manager->setContextLimit($environment->getCurrentContextID());
@@ -306,7 +394,9 @@ if (!isset($error) or !$error) {
       switch ($_POST['index_view_action']) {
          case 1:
             $action = 'USER_ACCOUNT_DELETE';
-            $error = false;
+            if (!$error_on_portal_level) {
+                $error = false;
+            }
             if ( $room_moderator_count - $selected_moderator_count >= 1 ) {
                $user_manager->resetLimits();
                $array_login_id = array();
