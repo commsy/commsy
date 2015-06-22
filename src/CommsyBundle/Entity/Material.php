@@ -12,12 +12,12 @@ class Material
     /**
      * @ORM\Column(type="integer", name="item_id")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer", name="version_id")
+     * @ORM\Id
      */
     private $versionId;
 
@@ -32,7 +32,7 @@ class Material
     private $creatorId;
 
     /**
-     * @ORM\Column(type="integer", name="deleter_id")
+     * @ORM\Column(type="integer", name="deleter_id", nullable=true)
      */
     private $deleterId;
 
@@ -42,17 +42,17 @@ class Material
     private $creationDate;
 
     /**
-     * @ORM\Column(type="integer", name="modifier_id")
+     * @ORM\Column(type="integer", name="modifier_id", nullable=true)
      */
     private $modifierId;
 
     /**
-     * @ORM\Column(type="datetime", name="modification_date")
+     * @ORM\Column(type="datetime", name="modification_date", nullable=true)
      */
     private $modificationDate;
 
     /**
-     * @ORM\Column(type="datetime", name="deletion_date")
+     * @ORM\Column(type="datetime", name="deletion_date", nullable=true)
      */
     private $deletionDate;
 
@@ -62,17 +62,17 @@ class Material
     private $title;
 
     /**
-     * @ORM\Column(type="text", name="description")
+     * @ORM\Column(type="text", name="description", nullable=true)
      */
     private $description;
 
     /**
-     * @ORM\Column(type="string", name="author", length=200)
+     * @ORM\Column(type="string", name="author", length=200, nullable=true)
      */
     private $author;
 
     /**
-     * @ORM\Column(type="string", name="publishing_date", length=20)
+     * @ORM\Column(type="string", name="publishing_date", length=20, nullable=true)
      */
     private $publishingDate;
 
@@ -87,7 +87,7 @@ class Material
     private $worldPublic;
 
     /**
-     * @ORM\Column(type="array", name="extras")
+     * @ORM\Column(type="text", name="extras", nullable=true)
      */
     private $extras;
 
@@ -97,7 +97,7 @@ class Material
     private $newHack;
 
     /**
-     * @ORM\Column(type="integer", name="copy_of")
+     * @ORM\Column(type="integer", name="copy_of", nullable=true)
      */
     private $copyOf;
 
@@ -107,22 +107,22 @@ class Material
     private $workflowStatus;
 
     /**
-     * @ORM\Column(type="datetime", name="workflow_resubmission_date")
+     * @ORM\Column(type="datetime", name="workflow_resubmission_date", nullable=true)
      */
     private $workflowResubmissionDate;
 
     /**
-     * @ORM\Column(type="datetime", name="workflow_validity_date")
+     * @ORM\Column(type="datetime", name="workflow_validity_date", nullable=true)
      */
     private $workflowValidityDate;
 
     /**
-     * @ORM\Column(type="datetime", name="locking_date")
+     * @ORM\Column(type="datetime", name="locking_date", nullable=true)
      */
     private $lockingDate;
 
     /**
-     * @ORM\Column(type="integer", name="locking_user_id")
+     * @ORM\Column(type="integer", name="locking_user_id", nullable=true)
      */
     private $lockingUserId;
 
@@ -493,7 +493,7 @@ class Material
      */
     public function getExtras()
     {
-        return $this->extras;
+        return mb_unserialize($this->extras);
     }
 
     /**
