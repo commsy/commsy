@@ -55,6 +55,8 @@ define([	"dojo/_base/declare",
 						} else {
 							this.openPopup();
 						}
+					} else {
+						this.openPopup();
 					}
 				} else {
 					this.openPopup();
