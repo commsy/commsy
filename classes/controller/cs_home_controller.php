@@ -728,8 +728,17 @@
 							default:
 								$column1 = $item->getTitle();
 								$column2 = $this->_environment->getTranslationObject()->getDateInLang($item->getModificationDate());
-								$column3 = $item->getModificatorItem()->getFullName();
-								$modificator_id = $item->getModificatorItem()->getItemID();
+
+								$modificatorItem = $item->getModificatorItem();
+								if ($modificatorItem) {
+									$column3 = $modificatorItem->getFullName();
+									$modificator_id = $modificatorItem->getItemID();
+								} else {
+									$column3 = $translator->getMessage('COMMON_DELETED_USER');
+									$modificator_id = null;
+								}
+								
+								
 	               		}
 
 						// files
