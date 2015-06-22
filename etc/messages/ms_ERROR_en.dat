@@ -12,6 +12,7 @@ $message["ERROR_MAIL_REPLY_TO"]["en"] = "Reply-to:";
 $message["ERROR_MAIL_SERVER"]["en"] = "An error occurred while sending the e-mail. Please contact moderator/s of workspace %1.";
 $message["ERROR_MAIL_SUBJECT"]["en"] = "Subject:";
 $message["ERROR_MAIL_TO"]["en"] = "To:";
+$message["ERROR_ROOMS_WITHOUT_MODERATORS"]["en"] = "The following rooms would be without moderators:";
 $message["ERROR_SEND_EMAIL_TO"]["en"] = "An error occured while sending the e-mail. It was not delivered to:";
 $message["ERROR_SEND_MAIL"]["en"] = "An error occurred while sending the following e-mail:";
 $message["ERROR_UPLOADIFY_FILE_SIZE"]["en"] = "Maximal file size was exceeded!";
