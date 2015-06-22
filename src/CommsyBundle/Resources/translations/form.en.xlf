@@ -6,6 +6,14 @@
                 <source>Add</source>
                 <target>Add</target>
             </trans-unit>
+            <trans-unit id="form-filter">
+                <source>Filter</source>
+                <target>Filter</target>
+            </trans-unit>
+            <trans-unit id="form-filter-activated">
+                <source>Activated</source>
+                <target>accessible entries</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

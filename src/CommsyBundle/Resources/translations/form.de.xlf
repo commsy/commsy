@@ -6,6 +6,14 @@
                 <source>Add</source>
                 <target>Hinzufügen</target>
             </trans-unit>
+            <trans-unit id="form-filter">
+                <source>Filter</source>
+                <target>Filtern</target>
+            </trans-unit>
+            <trans-unit id="form-filter-activated">
+                <source>Activated</source>
+                <target>Freigeschaltete Einträge</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -34,6 +34,7 @@ twig:
     strict_variables: "%kernel.debug%"
     form_themes:
         - CommsyBundle:Form:uikit_layout.html.twig
+        - LexikFormFilterBundle:Form:form_div_layout.html.twig
 # Assetic Configuration
 assetic:
     debug:          "%kernel.debug%"
@@ -107,6 +108,7 @@ sp_bower:
     bundles:
         CommsyBundle: ~
 
+# KnpMenuBundle
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer
     twig:
@@ -116,3 +118,15 @@ knp_menu:
     templating: false
     # the renderer to use, list is also available by default
     default_renderer: twig
+
+# KnpPaginatorBundle
+knp_paginator:
+    page_range: 5                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: CommsyBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template

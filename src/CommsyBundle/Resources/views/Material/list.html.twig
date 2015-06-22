@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
@@ -8,29 +9,51 @@
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>Materialien</div>
-                        <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
                     </div>
                 </div>
 
                 <div>
-                    <ul id="room-feed" class="uk-comment-list">
-                        <li>material</li>
-                        <li>material</li>
-                        {# {{ render(controller(
-                            'CommsyBundle:Feed:homeFeed',
-                            { 'roomId': roomId }
-                        ))}} #}
-                        
+                    <ul id="material-list" class="uk-comment-list">
+                        {% for material in pagination %}
+                            <article class="uk-comment">
+                                <header class="uk-comment-header uk-flex">
+                                    <div class="uk-margin-right">
+                                        <form class="uk-form">
+                                            <input type="checkbox">
+                                        </form>
+                                    </div>
+                                    <div class="uk-margin-right">
+                                        <a href="{{ path('commsy_user_index', {'roomId': roomId, 'itemId': material.creator.itemId}) }}">
+                                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" width="60" height="60" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <h4 class="uk-comment-title">
+                                            <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title }}</a>
+                                        </h4>
+
+                                        <div class="uk-comment-meta">
+                                            {{ 'by'|trans({})|capitalize }}: {{material.creator.getFullName}}
+                                        </div>
+
+                                        <div class="uk-comment-meta">
+                                            {{ 'last changed'|trans({})|capitalize }}: {{material.getModificationDate|date("d.m.Y H:i")}}
+                                        </div>
+                                    </div>
+                                </header>
+                            </article>
+                        {% endfor %}
                     </ul>
-                    <div id="material-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}">
-                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
-                    </div>
+
+                    {# display navigation #}
+                    {{ knp_pagination_render(pagination) }}
                 </div>
                 
+                <div class="panel-footer">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>Footer</div>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -50,7 +73,9 @@
                 </div>
 
                 <div id="list-filter" class="uk-overflow-container">
-                    ...
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
                 </div>
             </div>
 
