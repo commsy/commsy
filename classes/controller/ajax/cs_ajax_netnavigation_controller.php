@@ -194,11 +194,16 @@
                         $group_room = $item->getGroupRoomItem();
                         if($group_room->isUser($user)) {
                             $related_user = $user->getRelatedUserItemInContext($group_room->getItemID());
-                            $related_user->delete();
-                            $key = array_search($user->getItemID(),$selected_ids);
-                            if($key!==false){
-                                unset($selected_ids[$key]);
+                            $moderatorList = $group_room->getModeratorList();
+                            // dont remove last moderator
+                            if (!$related_user->isModerator() && $moderatorList->getCount() > 1) {
+                            	$related_user->delete();
+	                            $key = array_search($user->getItemID(),$selected_ids);
+	                            if($key!==false){
+	                                unset($selected_ids[$key]);
+	                            }
                             }
+                            
                         }
                     }
 				}
