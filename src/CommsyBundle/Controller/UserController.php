@@ -104,12 +104,17 @@ class UserController extends Controller
 
         if (file_exists($rootDir.$filePath)) {
             $content = file_get_contents($rootDir.$filePath);
+            if (!$content) {
+                $kernel = $this->get('kernel');
+                $path = $kernel->locateResource('@CommsyBundle/Resources/public/images/user_unknown.gif');          
+                $content = file_get_contents($path);
+            }
         } else {
             throw $this->createNotFoundException('The requested file does not exist');   
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
         
-        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$file);
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE,$file);
 
         $response->headers->set('Content-Disposition', $contentDisposition);
         
