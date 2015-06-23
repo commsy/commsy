@@ -6,6 +6,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 use CommsyBundle\Filter\UserFilterType;
 
@@ -68,5 +70,49 @@ class UserController extends Controller
         return array(
             'user' => $user
         );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/user/{userId}/image")
+     */
+    public function imageAction($roomId, $userId)
+    {
+        $userService = $this->get('commsy.user_service');
+        $user = $userService->getUser($userId);
+        
+        $file = $user->getPicture();
+        $rootDir = $this->get('kernel')->getRootDir().'/../';
+
+        $environment = $this->get("commsy_legacy.environment")->getEnvironment();
+        $disc_manager = $environment->getDiscManager();
+        $disc_manager->setContextID($roomId);
+        $portal_id = $environment->getCurrentPortalID();
+        if ( isset($portal_id) and !empty($portal_id) ) {
+            $disc_manager->setPortalID($portal_id);
+        } else {
+            $context_item = $this->getContextItem();
+            if ( isset($context_item) ) {
+                $portal_item = $context_item->getContextItem();
+                if ( isset($portal_item) ) {
+                    $disc_manager->setPortalID($portal_item->getItemID());
+                    unset($portal_item);
+                }
+                unset($context_item);
+            }
+        }
+        $filePath = $disc_manager->getFilePath().$file;
+
+        if (file_exists($rootDir.$filePath)) {
+            $content = file_get_contents($rootDir.$filePath);
+        } else {
+            throw $this->createNotFoundException('The requested file does not exist');   
+        }
+        $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
+        
+        $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,$file);
+
+        $response->headers->set('Content-Disposition', $contentDisposition);
+        
+        return $response;
     }
 }

@@ -5,7 +5,7 @@
         <header class="uk-comment-header uk-flex">
             <div class="uk-margin-right">
                 <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{feedItem.creator.itemID}}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" width="60" height="60" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" width="60" height="60" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ feedItem.creator.itemID }}/image" alt="">
                 </a>
             </div>
             <div>
