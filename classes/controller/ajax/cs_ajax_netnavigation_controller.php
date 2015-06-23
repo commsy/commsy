@@ -202,6 +202,8 @@
 	                            if($key!==false){
 	                                unset($selected_ids[$key]);
 	                            }
+                            } else {
+                            	$return['last_moderator'] = true;
                             }
                             
                         }

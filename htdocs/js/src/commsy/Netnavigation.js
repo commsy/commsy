@@ -8,7 +8,8 @@ define([	"dojo/_base/declare",
         	"dojo/dom-attr",
         	"dojo/dom-style",
         	"dojo/fx",
-        	"dojo/NodeList-traverse"], function(declare, BaseClass, lang, Query, On, request, DomConstruct, DomAttr, DomStyle, FX) {
+            "dijit/Dialog",
+        	"dojo/NodeList-traverse"], function(declare, BaseClass, lang, Query, On, request, DomConstruct, DomAttr, DomStyle, FX, Dialog) {
 	return declare(BaseClass, {		
 		cid: 						null,
 		item_id: 					null,
@@ -336,23 +337,37 @@ define([	"dojo/_base/declare",
 												}, pathListEntryNode, "last");
 										}
 									} else {
-										// on uncheck
-										this.store.selected--;
-										
-										// remove related entry from entry list
-										var liNode = Query("div#netnavigation_list li#item_" + linkedId)[0];
-										FX.wipeOut({
-											node:	liNode,
-											onEnd:	function() {
-												DomConstruct.destroy(liNode);
+										if (!response.data.last_moderator) {
+											// on uncheck
+											this.store.selected--;
+											
+											// remove related entry from entry list
+											var liNode = Query("div#netnavigation_list li#item_" + linkedId)[0];
+											FX.wipeOut({
+												node:	liNode,
+												onEnd:	function() {
+													DomConstruct.destroy(liNode);
+												}
+											}).play();
+											
+											if(Query("a#popup_path_tab")[0]) {
+												// remove related entry from path list
+												var liPathNode = Query("ul#popup_path_list input#path_" + linkedId)[0];
+												DomConstruct.destroy(liPathNode.parentNode);
 											}
-										}).play();
+										} else {
+                                            var inputNode = Query("div#popup_netnavigation input#linked_" + linkedId)[0];
+                                            $(inputNode).prop('checked', true);
+
+                                            errorDialog = new Dialog({
+                                                title: "Fehler",
+                                                content: "Der letzte Moderator des Raums kann nicht gelöscht oder gesperrt werden.",
+                                                style: "width: 300px"
+                                            });
+
+                                            errorDialog.show();
+                                        }
 										
-										if(Query("a#popup_path_tab")[0]) {
-											// remove related entry from path list
-											var liPathNode = Query("ul#popup_path_list input#path_" + linkedId)[0];
-											DomConstruct.destroy(liPathNode.parentNode);
-										}
 									}
 								})
 							);
