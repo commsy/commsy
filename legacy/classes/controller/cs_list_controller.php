@@ -1548,29 +1548,6 @@
    					$this->_list_parameter_arrray['seltag_array'] = array();
    				}
 
-   				/*
-    			$last_selected_tag = '';
-				if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
-      				$i = 0;
-      				while ( !isset($_GET['seltag_'.$i]) ){
-         				$i++;
-      				}
-      				$seltag_array[] = $_GET['seltag_'.$i];
-      				$j = 0;
-      				while(isset($_GET['seltag_'.$i]) and $_GET['seltag_'.$i] !='-2'){
-         				if (!empty($_GET['seltag_'.$i])){
-            				$seltag_array[$i] = $_GET['seltag_'.$i];
-            				$j++;
-         				}
-         				$i++;
-      				}
-      				$this->_list_parameter_arrray['last_selected_tag'] = $seltag_array[$j-1];
-   				}else{
-      				$this->_list_parameter_arrray['last_selected_tag'] = '';
-      				$this->_list_parameter_arrray['seltag_array'] = array();
-   				}
-   				*/
-
 	   			$context_item = $environment->getCurrentContextItem();
    				$current_room_modules = $context_item->getHomeConf();
    				if ( !empty($current_room_modules) ){
