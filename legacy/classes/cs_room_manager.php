@@ -229,11 +229,7 @@ class cs_room_manager extends cs_context_manager {
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.continuous';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.template';
         $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.contact_persons';
-        if ($this->_existsField($this->_db_table, 'room_description')){
-           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
-        }else{
-           $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.description';
-        }
+        $query .= ', '.$this->addDatabasePrefix($this->_db_table).'.room_description';
      } else {
         $query .= 'SELECT DISTINCT '.$this->addDatabasePrefix($this->_db_table).'.*';
      }

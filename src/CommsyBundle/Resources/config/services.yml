@@ -1,3 +1,6 @@
 parameters:
 
 services:
+    commsy.converter.room:
+        class: CommsyBundle\Converter\RoomConverter
+        arguments: [@doctrine.orm.entity_manager]
