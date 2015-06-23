@@ -1,6 +1,14 @@
 parameters:
 
 services:
+    # Filter types
+    commsy.filter.rubric:
+        class: CommsyBundle\Filter\RubricFilterType
+        arguments: [@commsy.room_service, @request_stack]
+        tags:
+            - { name: form.type, alias: rubric_filter }
+
+    # Converter
     commsy.converter.room:
         class: CommsyBundle\Converter\RoomConverter
         arguments: [@doctrine.orm.entity_manager]

@@ -13,6 +13,9 @@ class MaterialFilterType extends AbstractType
             ->add('activated', 'filter_checkbox', array(
                 'translation_domain' => 'form',
             ))
+            ->add('rubrics', 'rubric_filter', array(
+                'translation_domain' => 'form',
+            ))
             ->add('save', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -21,29 +24,6 @@ class MaterialFilterType extends AbstractType
                 'translation_domain' => 'form',
             ))
         ;
-
-
-
-        // $builder
-        //     ->add('title', 'text', array(
-        //         'constraints' => array(
-        //             new NotBlank(),
-        //         ),
-        //         'label' => false,
-        //         'attr' => array(
-        //             'placeholder' => 'New Category',
-        //             'class' => 'uk-form-width-medium',
-        //         ),
-        //         'translation_domain' => 'category',
-        //     ))
-        //     ->add('save', 'submit', array(
-        //         'attr' => array(
-        //             'class' => 'uk-button-primary',
-        //         ),
-        //         'label' => 'Add',
-        //         'translation_domain' => 'form',
-        //     ))
-        // ;
     }
 
     public function getName()
