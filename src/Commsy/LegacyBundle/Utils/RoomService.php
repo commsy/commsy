@@ -10,7 +10,7 @@ class RoomService
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     /**
@@ -20,10 +20,8 @@ class RoomService
      */
     public function getRubricInformation($roomId)
     {
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
-        
         // get the rooms rubric configuration
-        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         $homeConfiguration = $roomItem->getHomeConf();
 
@@ -48,7 +46,7 @@ class RoomService
     public function getUserList($roomId)
     {
         // get person list
-        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
         
         $personList = $roomItem->getUserList();
@@ -59,9 +57,22 @@ class RoomService
     public function getRoomItem($roomId)
     {
         // get room item
-        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
 
         return $roomItem;
+    }
+
+    public function getFilterableRubrics($roomId)
+    {
+        // get active rubrics
+        $activeRubrics = $this->getRubricInformation($roomId);
+
+        // filter rubrics, only group, topic and institution type is filterable
+        $filterableRubrics = array_filter($activeRubrics, function($rubric) {
+            return in_array($rubric, array('group', 'topic', 'institution'));
+        });
+
+        return $filterableRubrics;
     }
 }
