@@ -67,6 +67,8 @@ doctrine:
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
+        types:
+            mbarray: CommsyBundle\DBAL\Types\ArrayType
         mapping_types:
             enum: string
         # if using pdo_sqlite as your database driver:
