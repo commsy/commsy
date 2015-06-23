@@ -19,7 +19,7 @@
                 <div id="user-info" class="uk-overflow-container">
                     <div class="uk-flex">
                         <div class="uk-margin-right">
-                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" width="120" height="120" src="{{ asset('templates/themes/default/img/person_03.jpg') }}" alt="">
+                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:120px; width:120px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
                         </div>
                         <div>
                             <div class="">{{ 'email'|trans({})|capitalize }}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
