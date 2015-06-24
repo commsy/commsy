@@ -19,9 +19,10 @@ class MaterialManager
         $this->materialManager->reset();
     }
 
-    public function getListMaterials($roomId)
+    public function getListMaterials($roomId, $max, $start)
     {
         $this->materialManager->setContextLimit($roomId);
+        $this->materialManager->setIntervalLimit($start, $max);
 
         $this->materialManager->select();
         $materialList = $this->materialManager->get();

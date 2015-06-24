@@ -12,23 +12,11 @@ use CommsyBundle\Filter\MaterialFilterType;
 class MaterialController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/material/{itemId}")
+     * @Route("/room/{roomId}/material/feed/{start}")
      * @Template()
      */
-    public function indexAction($roomId, $itemId, Request $request)
+    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
-        return array();
-    }
-
-    /**
-     * @Route("/room/{roomId}/material")
-     * @Template()
-     */
-    public function listAction($roomId, Request $request)
-    {
-        // get the material manager service
-        $materialManager = $this->get('commsy_legacy.material_manager');
-
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
@@ -44,23 +32,45 @@ class MaterialController extends Controller
             $form->submit($request->query->get($form->getName()));
         }
 
+        // get the material manager service
+        $materialManager = $this->get('commsy_legacy.material_manager');
+
         // set filter conditions in material manager
         $materialManager->setFilterConditions($form);
 
         // get material list from manager service 
-        $materials = $materialManager->getListMaterials($roomId);
-
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $materials,
-            $request->query->getInt('page', 1),
-            10
-        );
+        $materials = $materialManager->getListMaterials($roomId, $max, $start);
 
         return array(
             'roomId' => $roomId,
-            'pagination' => $pagination,
-            'form' => $form->createView()
+            'materials' => $materials,
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/material")
+     * @Template()
+     */
+    public function listAction($roomId, Request $request)
+    {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+        $form = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
+            'method' => 'GET',
+        ));
+
+        // check query for form data
+        if ($request->query->has($form->getName())) {
+            // manually bind values from the request
+            $form->submit($request->query->get($form->getName()));
+        }
+
+        return array(
+            'roomId' => $roomId,
+            'form' => $form->createView(),
         );
     }
 

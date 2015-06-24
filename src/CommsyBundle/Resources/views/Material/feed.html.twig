@@ -1,0 +1,29 @@
+{% for material in materials %}
+    <article class="uk-comment">
+        <header class="uk-comment-header uk-flex">
+            <div class="uk-margin-right">
+                <form class="uk-form">
+                    <input type="checkbox">
+                </form>
+            </div>
+            <div class="uk-margin-right">
+                <a href="{{ path('commsy_user_index', {'roomId': roomId, 'itemId': material.creator.itemId}) }}">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ material.creator.itemID }}/image" alt="">
+                </a>
+            </div>
+            <div>
+                <h4 class="uk-comment-title">
+                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title }}</a>
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{material.creator.getFullName}}
+                </div>
+
+                <div class="uk-comment-meta">
+                    {{ 'last changed'|trans({})|capitalize }}: {{material.getModificationDate|date("d.m.Y H:i")}}
+                </div>
+            </div>
+        </header>
+    </article>
+{% endfor %}
