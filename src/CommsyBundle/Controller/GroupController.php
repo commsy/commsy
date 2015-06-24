@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use CommsyBundle\Filter\GroupFilterType;
+
 class GroupController extends Controller
 {
     /**
@@ -24,8 +26,50 @@ class GroupController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-        return array(
-            'roomId' => $roomId
+        // get the user manager service
+        $groupService = $this->get('commsy.group_service');
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
         );
+        $form = $this->createForm(new GroupFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_group_list', array('roomId' => $roomId)),
+            'method' => 'GET',
+        ));
+
+        // check query for form data
+        if ($request->query->has($form->getName())) {
+            // manually bind values from the request
+            $form->submit($request->query->get($form->getName()));
+        }
+
+        // set filter conditions in user manager
+        $groupService->setFilterConditions($form);
+
+        // get material list from manager service 
+        $groups = $groupService->getListGroups($roomId);
+
+        $paginator = $this->get('knp_paginator');
+        $pagination = $paginator->paginate(
+            $groups,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return array(
+            'roomId' => $roomId,
+            'pagination' => $pagination,
+            'form' => $form->createView()
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/group/{itemId}")
+     * @Template()
+     */
+    public function detailAction($roomId, $itemId, Request $request)
+    {
+        return array();
     }
 }

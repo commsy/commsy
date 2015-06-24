@@ -1,25 +1,88 @@
 {% extends 'base.html.twig' %}
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
 
-        <div class="uk-width-medium-1-2">
+        <div class="uk-width-medium-3-5">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>Gruppen Liste</div>
-                        <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-feed', animation: 'uk-animation-fade'}">
+                        <div>Gruppen</div>
+                    </div>
+                </div>
+
+                <div>
+                    <ul id="material-list" class="uk-comment-list">
+                        {% for group in pagination %}
+                            <article class="uk-comment">
+                                <header class="uk-comment-header uk-flex">
+                                    <div class="uk-margin-right">
+                                        <form class="uk-form">
+                                            <input type="checkbox">
+                                        </form>
+                                    </div>
+                                    <div class="uk-margin-right">
+                                        <a href="{{ path('commsy_user_index', {'roomId': roomId, 'itemId': group.creator.itemId}) }}">
+                                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ group.creator.itemID }}/image" alt="">
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <h4 class="uk-comment-title">
+                                            <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title }}</a>
+                                        </h4>
+
+                                        <div class="uk-comment-meta">
+                                            {{ 'by'|trans({})|capitalize }}: {{group.creator.getFullName}}
+                                        </div>
+
+                                        <div class="uk-comment-meta">
+                                            {{ 'last changed'|trans({})|capitalize }}: {{group.getModificationDate|date("d.m.Y H:i")}}
+                                        </div>
+                                    </div>
+                                </header>
+                            </article>
+                        {% endfor %}
+                    </ul>
+
+                    {# display navigation #}
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+                
+                <div class="panel-footer">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>Footer</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-2-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Filter
                         </div>
                     </div>
                 </div>
 
-                <ul id="group-list" class="uk-comment-list">
-
-                </ul>
+                <div id="list-filter" class="uk-overflow-container">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
             </div>
+
+            {{ render(controller(
+                'CommsyBundle:Category:show',
+                { 'roomId': roomId }
+            ))}}
         </div>
     </div>
 {% endblock %}
