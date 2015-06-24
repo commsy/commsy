@@ -6,7 +6,7 @@ use Knp\Menu\FactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Symfony\Component\Translation\Translator;
-
+use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
 class MenuBuilder
 {
@@ -17,13 +17,16 @@ class MenuBuilder
 
     private $roomService;
 
+    private $legacyEnvironment;
+
     /**
     * @param FactoryInterface $factory
     */
-    public function __construct(FactoryInterface $factory, RoomService $roomService)
+    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment)
     {
         $this->factory = $factory;
         $this->roomService = $roomService;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
     }
 
     public function createMainMenu(RequestStack $requestStack)
@@ -154,7 +157,17 @@ class MenuBuilder
 
             if ($route[2] != "list") {
                 // item
-                $menu->addChild('Item', array(
+                $itemService = $this->legacyEnvironment->getItemManager();
+                $item = $itemService->getItem($itemId);
+                $tempManager = $this->legacyEnvironment->getManager($item->getItemType());
+                $tempItem = $tempManager->getItem($itemId);
+                $itemText = '';
+                if ($tempItem->getItemType() == 'user') {
+                    $itemText = $tempItem->getFullname();
+                } else {
+                    $itemText = $tempItem->getTitle();
+                }
+                $menu->addChild($itemText, array(
                     'route' => 'commsy_'.$route[1].'_index',
                     'routeParameters' => array(
                         'roomId' => $roomId,
