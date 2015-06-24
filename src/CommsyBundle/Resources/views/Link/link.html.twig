@@ -1,11 +1,15 @@
-<ul class="uk-list">
-{% for group in groups %}
-    <li><i class="uk-icon-home"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/group/{{ group.itemID }}">{{ group.title }}</a></li>
-{% endfor %}
-</ul>
+{% if not groups is empty %}
+    <ul class="uk-list">
+        {% for group in groups %}
+            <li><i class="uk-icon-home"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/group/{{ group.itemID }}">{{ group.title }}</a></li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
-{#
-{% for linkedItem in linkedItems %}
-    //{{ linkedItem.title }}<br/>
-{% endfor %}
-#}
+{% if not users is empty %}
+    <ul class="uk-list">
+    {% for user in users %}
+        <li><i class="uk-icon-user"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}">{{ user.fullname }}</a></li>
+    {% endfor %}
+    </ul>
+{% endif %}
