@@ -24,15 +24,63 @@
                             <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:120px; width:120px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
                         </div>
                         <div>
-                            <div class="">{{ 'email'|trans({})|capitalize }}: <a href="mailto:{{ user.email }}">{{ user.email }}</a></div>
-                            <div class="">{{ 'phone'|trans({})|capitalize }}: <a href="tel:{{ user.telephone }}">{{ user.telephone }}</a></div>
-                            <div class="">{{ 'mobile'|trans({})|capitalize }}: <a href="tel:{{ user.cellularphone }}">{{ user.cellularphone }}</a></div>
-                            <div class="">{{ 'street'|trans({})|capitalize }}: {{ user.street }}</div>
-                            <div class="">{{ 'city'|trans({})|capitalize }}: {{ user.city }}</div>
-                            <div class="">{{ 'userid'|trans({})|capitalize }}: {{ user.userid }}</div>
-                            <div class="">{{ 'status'|trans({})|capitalize }}: {{ utils_items.userStatus(user) }}</div>
-                            <br/>
-                            <div class="">{{ user.description|raw }}</div>
+                            <table class="uk-table-condensed">
+                                <tbody>
+                                    {% if not user.birthday is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'date of birth'|trans({})|capitalize }}</td>
+                                        <td>{{ user.birthday }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.email is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'email'|trans({})|capitalize }}</td>
+                                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.telephone is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'telephone'|trans({})|capitalize }}</td>
+                                        <td><a href="tel:{{ user.telephone }}">{{ user.telephone }}</a></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.cellularphone is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'mobile'|trans({})|capitalize }}</td>
+                                        <td><a href="tel:{{ user.cellularphone }}">{{ user.cellularphone }}</a></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.street is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'street'|trans({})|capitalize }}</td>
+                                        <td>{{ user.street }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.city is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'city'|trans({})|capitalize }}</td>
+                                        <td>{{ user.city }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.userid is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'userid'|trans({})|capitalize }}</td>
+                                        <td>{{ user.userid }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.status is empty %}
+                                    <tr>
+                                        <td class="uk-text-bold">{{ 'status'|trans({})|capitalize }}</td>
+                                        <td>{{ utils_items.userStatus(user) }}</td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if not user.description is empty %}
+                                    <tr>
+                                        <td colspan="2">{{ user.description|raw }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     
