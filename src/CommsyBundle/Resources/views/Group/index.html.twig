@@ -1,5 +1,90 @@
 {% extends 'base.html.twig' %}
 
+{% import 'CommsyBundle:Utils:macros.html.twig' as utils_items %}
+
 {% block content %}
-    Group
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-2-3">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ group.title }}</div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-info', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="user-info" class="uk-overflow-container">
+                    <div class="uk-flex">
+                        <div class="uk-margin-right">
+                            
+                        </div>
+                        <div>
+                            <table class="uk-table-condensed">
+                                <tbody>
+                                    {% if not group.description is empty %}
+                                    <tr>
+                                        <td colspan="2">{{ group.description|raw }}</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-3">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'Info'|trans({}, "room") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="user-main" class="uk-overflow-container">
+                    <div class="">
+                        {{ utils_items.lastModified(group) }} 
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-sub', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'linked entries'|trans({}, "room")|capitalize }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="user-sub" class="uk-overflow-container">
+                    {{ render(controller(
+                        'CommsyBundle:Link:link',
+                        { 'roomId': app.request.attributes.get('roomId'), 'itemId': group.itemId }
+                    ))}}
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

@@ -20,8 +20,8 @@ class GroupService
 
     public function getGroup($itemId)
     {
-        $user = $this->groupManager->getItem($userId);
-        return $user;
+        $group = $this->groupManager->getItem($itemId);
+        return $group;
     }
     
     public function getListGroups($roomId)

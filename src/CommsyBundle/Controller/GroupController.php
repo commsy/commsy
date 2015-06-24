@@ -17,7 +17,12 @@ class GroupController extends Controller
      */
     public function indexAction($roomId, $itemId, Request $request)
     {
-        return array();
+        $groupService = $this->get('commsy.group_service');
+        $group = $groupService->getGroup($itemId);
+        
+        return array(
+            'group' => $group
+        );
     }
 
     /**
@@ -62,14 +67,5 @@ class GroupController extends Controller
             'pagination' => $pagination,
             'form' => $form->createView()
         );
-    }
-    
-    /**
-     * @Route("/room/{roomId}/group/{itemId}")
-     * @Template()
-     */
-    public function detailAction($roomId, $itemId, Request $request)
-    {
-        return array();
     }
 }
