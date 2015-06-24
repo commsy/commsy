@@ -20,8 +20,12 @@ class GroupController extends Controller
         $groupService = $this->get('commsy.group_service');
         $group = $groupService->getGroup($itemId);
         
+        $membersList = $group->getMemberItemList();
+        $members = $membersList->to_array();
+        
         return array(
-            'group' => $group
+            'group' => $group,
+            'members' => $members
         );
     }
 
