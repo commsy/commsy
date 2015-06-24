@@ -51,7 +51,7 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            {{ 'Title'|trans({}, "room") }}
+                            {{ 'Info'|trans({}, "room") }}
                         </div>
                     </div>
                 </div>
@@ -72,13 +72,16 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            {{ 'Title'|trans({}, "room") }}
+                            {{ 'linked entries'|trans({}, "room")|capitalize }}
                         </div>
                     </div>
                 </div>
                 
                 <div id="user-sub" class="uk-overflow-container">
-                    ...
+                    {{ render(controller(
+                        'CommsyBundle:Link:link',
+                        { 'roomId': app.request.attributes.get('roomId'), 'itemId': user.itemId }
+                    ))}}
                 </div>
             </div>
 

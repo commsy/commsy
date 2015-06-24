@@ -1,0 +1,11 @@
+<ul class="uk-list">
+{% for group in groups %}
+    <li><i class="uk-icon-home"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/group/{{ group.itemID }}">{{ group.title }}</a></li>
+{% endfor %}
+</ul>
+
+{#
+{% for linkedItem in linkedItems %}
+    //{{ linkedItem.title }}<br/>
+{% endfor %}
+#}
