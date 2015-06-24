@@ -102,15 +102,19 @@ class UserController extends Controller
         }
         $filePath = $disc_manager->getFilePath().$file;
 
+        $foundUserImage = true;
         if (file_exists($rootDir.$filePath)) {
             $content = file_get_contents($rootDir.$filePath);
             if (!$content) {
-                $kernel = $this->get('kernel');
-                $path = $kernel->locateResource('@CommsyBundle/Resources/public/images/user_unknown.gif');          
-                $content = file_get_contents($path);
+                $foundUserImage = false;
             }
         } else {
-            throw $this->createNotFoundException('The requested file does not exist');   
+            $foundUserImage = false;   
+        }
+        if (!$foundUserImage) {
+            $kernel = $this->get('kernel');
+            $path = $kernel->locateResource('@CommsyBundle/Resources/public/images/user_unknown.gif');          
+            $content = file_get_contents($path);
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
         
