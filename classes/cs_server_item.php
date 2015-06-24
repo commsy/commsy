@@ -277,12 +277,12 @@ class cs_server_item extends cs_guide_item
                                         $portalUser_item = $user->getRelatedCommSyUserItem();
 
                                         // delete own room user item
-                                        $ownRoom = $user->getOwnRoom($portal_item->getItemID());
-                                        $ownRoomUser = $portalUser_item->getRelatedUserItemInContext($ownRoom->getItemID());
-                                        $ownRoomUser->delete();
-                                        $ownRoomUser->save();
-                                        unset($ownRoom);
-                                        unset($ownRoomUser);
+                                        // $ownRoom = $user->getOwnRoom($portal_item->getItemID());
+                                        // $ownRoomUser = $portalUser_item->getRelatedUserItemInContext($ownRoom->getItemID());
+                                        // $ownRoomUser->delete();
+                                        // $ownRoomUser->save();
+                                        // unset($ownRoom);
+                                        // unset($ownRoomUser);
 
                                         $authentication = $this->_environment->getAuthenticationObject();
                                         $authentication->delete($portalUser_item->getItemID());
