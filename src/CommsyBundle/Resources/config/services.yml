@@ -12,3 +12,11 @@ services:
     commsy.converter.room:
         class: CommsyBundle\Converter\RoomConverter
         arguments: [@doctrine.orm.entity_manager]
+
+    # Voter
+    commsy.security.category_voter:
+        class: CommsyBundle\Security\Authorization\Voter\CategoryVoter
+        arguments: [@commsy_legacy.environment]
+        public: false
+        tags:
+            - { name: security.voter }

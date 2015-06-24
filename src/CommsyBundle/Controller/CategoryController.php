@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Form\Type\TagType;
@@ -37,6 +38,7 @@ class CategoryController extends Controller
     /**
      * @Route("/room/{roomId}/categoy/new")
      * @Method("POST")
+     * @Security("is_granted('CATEGORY_EDIT')")
      */
     public function newAction($roomId, Request $request)
     {
