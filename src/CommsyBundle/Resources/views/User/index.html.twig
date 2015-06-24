@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% import 'CommsyBundle:Utils:utils_items.html.twig' as utils_items %}
+
 {% block content %}
     <div class="uk-grid">
 
@@ -54,7 +56,9 @@
                 </div>
                 
                 <div id="user-main" class="uk-overflow-container">
-                    ...
+                    <div class="">
+                        {{ utils_items.lastModified(user) }} 
+                    </div>
                 </div>
             </div>
 

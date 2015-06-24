@@ -17,3 +17,11 @@
         uk-icon-home
     {% endif %}
 {% endmacro %}
+
+
+{% macro lastModified(item) %}
+    {{ 'last modified'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y H:i") }} {{ 'by'|trans({}) }}
+    <a href="{{ path('commsy_user_index', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">
+        {{ item.modificatorItem.fullname }}
+    </a>
+{% endmacro %}
