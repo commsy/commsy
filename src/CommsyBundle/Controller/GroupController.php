@@ -59,16 +59,8 @@ class GroupController extends Controller
         // get material list from manager service 
         $groups = $groupService->getListGroups($roomId);
 
-        $paginator = $this->get('knp_paginator');
-        $pagination = $paginator->paginate(
-            $groups,
-            $request->query->getInt('page', 1),
-            10
-        );
-
         return array(
             'roomId' => $roomId,
-            'pagination' => $pagination,
             'form' => $form->createView()
         );
     }
