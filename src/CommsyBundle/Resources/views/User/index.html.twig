@@ -30,8 +30,9 @@
                             <div class="">{{ 'street'|trans({})|capitalize }}: {{ user.street }}</div>
                             <div class="">{{ 'city'|trans({})|capitalize }}: {{ user.city }}</div>
                             <div class="">{{ 'userid'|trans({})|capitalize }}: {{ user.userid }}</div>
-                            <div class="">{{ 'status'|trans({})|capitalize }}: {{ user.status }}</div>
-                            <div class="">{{ 'description'|trans({})|capitalize }}: {{ user.description|raw }}</div>
+                            <div class="">{{ 'status'|trans({})|capitalize }}: {{ utils_items.userStatus(user) }}</div>
+                            <br/>
+                            <div class="">{{ user.description|raw }}</div>
                         </div>
                     </div>
                     

@@ -25,3 +25,15 @@
         {{ item.modificatorItem.fullname }}
     </a>
 {% endmacro %}
+
+{% macro userStatus(user) %}
+    {% if user.status == 0 %}
+        {{ 'quit'|trans({})|capitalize }}
+    {% elseif user.status == 1 %}
+        {{ 'request'|trans({})|capitalize }}
+    {% elseif user.status == 2 %}
+        {{ 'user'|trans({})|capitalize }}
+    {% elseif user.status == 3 %}
+        {{ 'moderator'|trans({})|capitalize }}
+    {% endif %}
+{% endmacro %}
