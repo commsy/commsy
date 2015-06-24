@@ -1,4 +1,4 @@
-{% import 'CommsyBundle:Utils:utils_items.html.twig' as utils_items %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as utils_items %}
 {% for feedItem in feedList %}
     <article class="uk-comment">
         <i class="{{ utils_items.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>

@@ -53,3 +53,15 @@ services:
     commsy.user_service:
         class: Commsy\LegacyBundle\Utils\UserService
         arguments: ["@commsy_legacy.environment"]
+    
+    commsy.item_service:
+        class: Commsy\LegacyBundle\Utils\ItemService
+        arguments: ["@commsy_legacy.environment"]
+        
+    commsy.label_service:
+        class: Commsy\LegacyBundle\Utils\LabelService
+        arguments: ["@commsy_legacy.environment"]
+        
+    commsy.group_service:
+        class: Commsy\LegacyBundle\Utils\GroupService
+        arguments: ["@commsy_legacy.environment"]

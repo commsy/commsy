@@ -1,0 +1,41 @@
+{% macro iconClassForItemType(type) %}
+    {% if type == 'announcement' %}
+        uk-icon-home
+    {% elseif type == 'date' %}
+        uk-icon-calendar
+    {% elseif type == 'material' %}
+        uk-icon-file-o
+    {% elseif type == 'discussion' %}
+        uk-icon-comments-o
+    {% elseif type == 'user' %}
+        uk-icon-users
+    {% elseif type == 'group' %}
+        uk-icon-home
+    {% elseif type == 'todo' %}
+        uk-icon-check
+    {% elseif type == 'task' %}
+        uk-icon-home
+    {% endif %}
+{% endmacro %}
+
+
+{% macro lastModified(item) %}
+    {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y") }}
+    {{ 'at'|trans({}) }} {{ item.modificationDate|date("H:i") }}
+    {{ 'by'|trans({}) }}
+    <a href="{{ path('commsy_user_index', {'roomId': item.contextId, 'itemId': item.modificatorItem.itemId}) }}">
+        {{ item.modificatorItem.fullname }}
+    </a>
+{% endmacro %}
+
+{% macro userStatus(user) %}
+    {% if user.status == 0 %}
+        {{ 'quit'|trans({})|capitalize }}
+    {% elseif user.status == 1 %}
+        {{ 'request'|trans({})|capitalize }}
+    {% elseif user.status == 2 %}
+        {{ 'user'|trans({})|capitalize }}
+    {% elseif user.status == 3 %}
+        {{ 'moderator'|trans({})|capitalize }}
+    {% endif %}
+{% endmacro %}
