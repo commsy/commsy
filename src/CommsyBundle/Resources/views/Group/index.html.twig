@@ -11,45 +11,31 @@
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ group.title }}</div>
                         <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-info', animation: 'uk-animation-fade'}">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#group-info', animation: 'uk-animation-fade'}">
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>
                     </div>
                 </div>
-
-                <div id="user-info" class="uk-overflow-container">
-                    <div class="uk-flex">
-                        <div class="uk-margin-right">
-                            
-                        </div>
-                        <div>
-                            <table class="uk-table-condensed">
-                                <tbody>
-                                    {% if not group.description is empty %}
-                                    <tr>
-                                        <td colspan="2">{{ group.description|raw }}</td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                            <div data-uk-grid="{gutter: 20}">
-                                {% for member in members %}
-                                    <div class="uk-width-medium-1-2 uk-width-large-1-3">
-                                        <div class="uk-panel">
-                                            <a href="{{ path('commsy_user_index', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
-                                                <img class="uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ member.itemID }}/image" alt="">
-                                            </a>
-                                            <span class="uk-text-middle">
-                                                <a href="{{ path('commsy_user_index', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
-                                                    {{ member.fullname }}
-                                                </a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                {% endfor %}
+                <div id="group-info">
+                    <div class="uk-panel">
+                        {{ group.description|raw }}
+                    </div>
+                    <div data-uk-grid="{gutter: 20}">
+                        {% for member in members %}
+                            <div class="uk-width-medium-1-2 uk-width-large-1-3">
+                                <div class="uk-panel">
+                                    <a href="{{ path('commsy_user_index', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
+                                        <img class="uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ member.itemID }}/image" alt="">
+                                    </a>
+                                    <span class="uk-text-middle">
+                                        <a href="{{ path('commsy_user_index', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
+                                            {{ member.fullname }}
+                                        </a>
+                                    </span>
+                                </div>
                             </div>
-                        </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
