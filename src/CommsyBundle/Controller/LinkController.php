@@ -24,8 +24,7 @@ class LinkController extends Controller
         
         $labelService = $this->get('commsy.label_service');
         
-        $groups = array();
-        $users = array();
+        $linkedItems = array();
         
         if ($item->getItemType() == 'label') {
             $tempLabel = $labelService->getLabel($item->getItemId());
@@ -33,26 +32,34 @@ class LinkController extends Controller
                 $groupService = $this->get('commsy.group_service');
                 $group = $groupService->getGroup($tempLabel->getItemID());
                 $membersList = $group->getMemberItemList();
-                $users = $membersList->to_array();
-            }
-        } else {
-            $ids = $item->getAllLinkeditemIDArray();
-            foreach ($ids as $id) {
-                $tempItem = $itemService->getItem($id);
-                if ($tempItem->getItemType() == 'label') {
-                    $tempLabel = $labelService->getLabel($id);
-                    if ($tempLabel->getLabelType() == 'group') {
-                        $groups[] = $tempLabel;
-                    }
-                }
+                $linkedItems = $membersList->to_array();
             }
         }
+        $ids = $item->getAllLinkeditemIDArray();
+        foreach ($ids as $id) {
+            $linkedItems[] = $itemService->getItem($id);
+        }
         
-        dump($users);
+        usort($linkedItems, function ($firstItem, $secondItem) {
+            return ($firstItem->getModificationDate() < $secondItem->getModificationDate());
+        });
         
+        $environment = $this->get("commsy_legacy.environment")->getEnvironment();
+        
+        $returnArray = array();
+        foreach ($linkedItems as $linkedItem) {
+            $manager = $environment->getManager($linkedItem->getItemType());
+            $item = $manager->getItem($linkedItem->getItemId());
+            if ($item->getItemType() == 'user') {
+                $item->setTitle($item->getFullName());
+            }
+            $returnArray[] = $item;
+        }
+
         return array(
-            'groups' => $groups,
-            'users' => $users
+            'linkedItems' => $returnArray
         );
     }
+    
+    
 }
