@@ -88,32 +88,32 @@ class MenuBuilder
         // return uikit icon class for rubric
         switch ($rubric) {
             case 'announcement':
-                $class = "uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-home uk-icon-small";
                 break;
             case 'date':
-                $class = "uk-icon-calendar uk-icon-small";
+                $class = "uk-icon-justify uk-icon-calendar uk-icon-small";
                 break;
             case 'material':
-                $class = "uk-icon-file-o uk-icon-small";
+                $class = "uk-icon-justify uk-icon-file-o uk-icon-small";
                 break;
             case 'discussion':
-                $class = "uk-icon-comments-o uk-icon-small";
+                $class = "uk-icon-justify uk-icon-comments-o uk-icon-small";
                 break;
             case 'user':
-                $class = "uk-icon-users uk-icon-small";
+                $class = "uk-icon-justify uk-icon-users uk-icon-small";
                 break;
             case 'group':
-                $class = "uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-home uk-icon-small";
                 break;
             case 'todo':
-                $class = "uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-home uk-icon-small";
                 break;
             case 'topic':
-                $class = "uk-icon-check uk-icon-small";
+                $class = "uk-icon-justify uk-icon-check uk-icon-small";
                 break;
             
             default:
-                $class = "uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-home uk-icon-small";
                 break;
         }
         return $class;
