@@ -2,9 +2,15 @@
     <article class="uk-comment">
         <header class="uk-comment-header uk-flex">
             <div class="materials-checkbox uk-margin-right uk-margin-top uk-hidden">
-                <form class="uk-form">
-                    <input type="checkbox">
-                </form>
+
+                {% if material.public %}
+                    <form class="uk-form">
+                        <input type="checkbox">
+                    </form>
+                {% else %}
+                    <i class="uk-icon-ban uk-icon-small red"></i>
+                {% endif %}
+                
             </div>
             <div class="uk-margin-right">
                 <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': material.creator.itemId}) }}">
