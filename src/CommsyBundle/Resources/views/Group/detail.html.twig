@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as utils_items %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% block content %}
     <div class="uk-grid">
@@ -58,7 +58,7 @@
                 
                 <div id="user-main" class="uk-overflow-container">
                     <div class="">
-                        {{ utils_items.lastModified(group) }} 
+                        {{ macros.lastModified(group) }} 
                     </div>
                 </div>
             </div>

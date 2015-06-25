@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as utils_items %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% block content %}
     <div class="uk-grid">
@@ -71,7 +71,7 @@
                                     {% if not user.status is empty %}
                                     <tr>
                                         <td class="uk-text-bold">{{ 'status'|trans({})|capitalize }}</td>
-                                        <td>{{ utils_items.userStatus(user) }}</td>
+                                        <td>{{ macros.userStatus(user) }}</td>
                                     </tr>
                                     {% endif %}
                                     {% if not user.description is empty %}
@@ -106,7 +106,7 @@
                 
                 <div id="user-main" class="uk-overflow-container">
                     <div class="">
-                        {{ utils_items.lastModified(user) }} 
+                        {{ macros.lastModified(user) }} 
                     </div>
                 </div>
             </div>
