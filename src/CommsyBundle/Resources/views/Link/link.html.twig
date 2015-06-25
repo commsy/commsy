@@ -1,8 +1,30 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
-{% if not linkedItems is empty %}
-    <ul class="uk-list">
-        {% for linkedItem in linkedItems %}
-            <li><i class="{{ macros.iconClassForItemType(linkedItem.itemType) }}"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title }}</a></li>
+{% if not linkedItemsByRubric is empty %}
+    <div class="uk-accordion" data-uk-accordion="{collapse: false}">
+        {% for type,rubric in linkedItemsByRubric %}
+            <h3 class="uk-accordion-title">
+            <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|trans({})|capitalize }}</a>
+            </h3>
+            <div class="uk-accordion-content">
+                <ul class="uk-list uk-margin-bottom-remove">
+                {% for linkedItem in rubric [0:10] %}
+                    <li><i class="{{ macros.iconClassForItemType(linkedItem.itemType) }}"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title }}</a></li>
+                {% endfor %}
+                </ul>
+                {% if rubric|length > 10 %}
+                    <div class="show-more-{{ type }} uk-hidden">
+                        <ul class="uk-list">
+                        {% for linkedItem in rubric [10:rubric|length-10] %}
+                            <li><i class="{{ macros.iconClassForItemType(linkedItem.itemType) }}"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="uk-margin-small">
+                        <a class="show-more-{{ type }}" data-uk-toggle="{target:'.show-more-{{ type }}', animation:'uk-animation-fade'}"><i class="uk-icon-plus-square uk-icon-small"></i></a>
+                        <a class="show-more-{{ type }} uk-hidden" data-uk-toggle="{target:'.show-more-{{ type }}', animation:'uk-animation-fade'}"><i class="uk-icon-minus-square uk-icon-small"></i></a>
+                    </div>
+                {% endif %}
+            </div>
         {% endfor %}
-    </ul>
+    </div>
 {% endif %}

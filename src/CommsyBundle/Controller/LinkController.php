@@ -14,7 +14,7 @@ use CommsyBundle\Filter\UserFilterType;
 class LinkController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/link/{itemId}")
+     * @Route("/room/{roomId}/link/{itemId}/{rubric}")
      * @Template()
      */
     public function linkAction($roomId, $itemId)
@@ -25,7 +25,6 @@ class LinkController extends Controller
         $labelService = $this->get('commsy.label_service');
         
         $linkedItems = array();
-        
         if ($item->getItemType() == 'label') {
             $tempLabel = $labelService->getLabel($item->getItemId());
             if ($tempLabel->getLabelType() == 'group') {
@@ -45,21 +44,33 @@ class LinkController extends Controller
         });
         
         $environment = $this->get("commsy_legacy.environment")->getEnvironment();
-        
-        $returnArray = array();
+        $linkedFullItems = array();
         foreach ($linkedItems as $linkedItem) {
             $manager = $environment->getManager($linkedItem->getItemType());
             $item = $manager->getItem($linkedItem->getItemId());
             if ($item->getItemType() == 'user') {
                 $item->setTitle($item->getFullName());
             }
-            $returnArray[] = $item;
+            $linkedFullItems[] = $item;
+        }
+
+        $linkedFullItemsSortedByRubric = array();
+        foreach ($linkedFullItems as $linkedFullItem) {
+            $linkedFullItemsSortedByRubric[$linkedFullItem->getItemType()][] = $linkedFullItem;
+        }
+
+        $roomService = $this->get('commsy.room_service');
+        $rubrics = $roomService->getRubricInformation($roomId);
+
+        $returnArray = array();
+        foreach ($rubrics as $rubric) {
+            if (isset($linkedFullItemsSortedByRubric[$rubric])) {
+                $returnArray[$rubric] = $linkedFullItemsSortedByRubric[$rubric];
+            }
         }
 
         return array(
-            'linkedItems' => $returnArray
+            'linkedItemsByRubric' => $returnArray
         );
     }
-    
-    
 }
