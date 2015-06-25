@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new Sp\BowerBundle\SpBowerBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new Lexik\Bundle\FormFilterBundle\LexikFormFilterBundle(),
+            new FOS\ElasticaBundle\FOSElasticaBundle(),
             
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),

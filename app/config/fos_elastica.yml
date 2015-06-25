@@ -1,0 +1,18 @@
+fos_elastica:
+    clients:
+        default: { host: %elastic_host%, port: %elastic_port% }
+    indexes:
+        commsy:
+            client: default
+            types:
+                user:
+                    mappings:
+                        id:
+                            type: integer
+                        userId : ~
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\User
+                        finder: ~
+                        provider: ~
+                        listener: ~

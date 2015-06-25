@@ -23,7 +23,8 @@
         "liip/theme-bundle": "dev-master",
         "sp/bower-bundle": "^0.11.0",
         "knplabs/knp-menu-bundle":"dev-master",
-        "lexik/form-filter-bundle": "~3.0"
+        "lexik/form-filter-bundle": "~3.0",
+        "friendsofsymfony/elastica-bundle": "3.0.*@dev"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
