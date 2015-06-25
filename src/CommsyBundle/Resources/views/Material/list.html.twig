@@ -21,14 +21,14 @@
                 </div>
 
                 <div>
-                    <ul id="materials-feed" class="uk-comment-list">
+                    <ul id="materials-feed" class="uk-comment-list" data-uk-observe>
                         {{ render(controller(
                             'CommsyBundle:Material:feed',
                             { 'roomId': roomId }
                         ))}}
                     </ul>
 
-                    <div id="materials-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/material/feed/"}'>
+                    <div class="feed-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/material/feed/", "target": "#materials-feed"}'>
                         <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                     </div>
                 </div>
