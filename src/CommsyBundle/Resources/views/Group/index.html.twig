@@ -25,11 +25,11 @@
                         {% for member in members %}
                             <div class="uk-width-medium-1-2 uk-width-large-1-3">
                                 <div class="uk-panel">
-                                    <a href="{{ path('commsy_user_index', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
+                                    <a href="{{ path('commsy_user_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
                                         <img class="uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ member.itemID }}/image" alt="">
                                     </a>
                                     <span class="uk-text-middle">
-                                        <a href="{{ path('commsy_user_index', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
+                                        <a href="{{ path('commsy_user_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
                                             {{ member.fullname }}
                                         </a>
                                     </span>

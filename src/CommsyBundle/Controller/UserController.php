@@ -19,9 +19,6 @@ class UserController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
-        // get the user manager service
-        $userManager = $this->get('commsy.user_service');
-
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
@@ -37,15 +34,45 @@ class UserController extends Controller
             $form->submit($request->query->get($form->getName()));
         }
 
-        // set filter conditions in user manager
-        $userManager->setFilterConditions($form);
+        return array(
+            'roomId' => $roomId,
+            'form' => $form->createView(),
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/user/feed/{start}")
+     * @Template()
+     */
+    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+        $form = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_user_list', array('roomId' => $roomId)),
+            'method' => 'GET',
+        ));
+
+        // check query for form data
+        if ($request->query->has($form->getName())) {
+            // manually bind values from the request
+            $form->submit($request->query->get($form->getName()));
+        }
+
+        // get the material manager service
+        $userService = $this->get('commsy.user_service');
+
+        // set filter conditions in material manager
+        $userService->setFilterConditions($form);
 
         // get material list from manager service 
-        $materials = $userManager->getListUsers($roomId);
+        $users = $userService->getListUsers($roomId, $max, $start);
 
         return array(
             'roomId' => $roomId,
-            'form' => $form->createView()
+            'users' => $users,
         );
     }
     
@@ -53,7 +80,7 @@ class UserController extends Controller
      * @Route("/room/{roomId}/user/{itemId}")
      * @Template()
      */
-    public function indexAction($roomId, $itemId, Request $request)
+    public function detailAction($roomId, $itemId, Request $request)
     {
         // get room user list
         $userService = $this->get("commsy.user_service");

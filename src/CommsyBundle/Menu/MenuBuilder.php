@@ -168,7 +168,7 @@ class MenuBuilder
                     $itemText = $tempItem->getTitle();
                 }
                 $menu->addChild($itemText, array(
-                    'route' => 'commsy_'.$route[1].'_index',
+                    'route' => 'commsy_'.$route[1].'_detail',
                     'routeParameters' => array(
                         'roomId' => $roomId,
                         'itemId' => $itemId

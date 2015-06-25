@@ -23,7 +23,7 @@
                                         </form>
                                     </div>
                                     <div class="uk-margin-right">
-                                        <a href="{{ path('commsy_user_index', {'roomId': roomId, 'itemId': group.creator.itemId}) }}">
+                                        <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': group.creator.itemId}) }}">
                                             <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ group.creator.itemID }}/image" alt="">
                                         </a>
                                     </div>

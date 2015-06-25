@@ -11,35 +11,18 @@
                         <div>{{ 'user'|trans({})|capitalize }}</div>
                     </div>
                 </div>
-
+                
                 <div>
-                    <ul id="user-list" class="uk-comment-list">
-                        {% for user in pagination %}
-                            <article class="uk-comment">
-                                <header class="uk-comment-header uk-flex">
-                                    <div class="uk-margin-right">
-                                        <form class="uk-form">
-                                            <input type="checkbox">
-                                        </form>
-                                    </div>
-                                    <div class="uk-margin-right">
-                                        <a href="{{ path('commsy_user_index', {'roomId': roomId, 'itemId': user.itemId}) }}">
-                                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
-                                        </a>
-                                    </div>
-                                    <div>
-                                        <h4 class="uk-comment-title">
-                                            <a href="{{ path('commsy_user_index', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.getFullName }}</a>
-                                        </h4>
-
-                                        <div class="uk-comment-meta">
-                                            {{ 'last changed'|trans({})|capitalize }}: {{user.getModificationDate|date("d.m.Y H:i")}}
-                                        </div>
-                                    </div>
-                                </header>
-                            </article>
-                        {% endfor %}
+                    <ul id="user-feed" class="uk-comment-list">
+                        {{ render(controller(
+                            'CommsyBundle:User:feed',
+                            { 'roomId': roomId }
+                        ))}}
                     </ul>
+
+                    <div id="materials-load-more" data-uk-scrollspy="{cls: 'uk-animation-fade', repeat: true}" data-feed='{"url": "{{ app.request.baseURL }}/room/{{ roomId }}/material/feed/"}'>
+                        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                    </div>
                 </div>
                 
                 <div class="panel-footer">
