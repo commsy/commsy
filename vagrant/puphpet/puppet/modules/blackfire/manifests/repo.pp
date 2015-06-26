@@ -24,7 +24,7 @@ class blackfire::repo inherits blackfire {
           gpgcheck  => 0,
           enabled   => 1,
           gpgkey    => 'https://packagecloud.io/gpg.key',
-          sslverify => True,
+          sslverify => 'True',
           sslcacert => '/etc/pki/tls/certs/ca-bundle.crt',
         }
       }

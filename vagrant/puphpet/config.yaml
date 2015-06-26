@@ -18,6 +18,7 @@ vagrantfile:
             virtualbox:
                 modifyvm:
                     natdnshostresolver1: on
+                showgui: ''
             vmware:
                 numvcpus: 1
             parallels:
@@ -36,6 +37,10 @@ vagrantfile:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
+                smb:
+                    smb_host: ''
+                    smb_username: ''
+                    smb_password: ''
                 rsync:
                     args:
                         - '--verbose'
@@ -326,7 +331,6 @@ beanstalkd:
         binlogfsync: null
         binlogsize: '10485760'
     beanstalk_console: 0
-    binlogdir: /var/lib/beanstalkd/binlog
 rabbitmq:
     install: '0'
     settings:
