@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
+use Commsy\LegacyBundle\Services\UserService;
+
 class DashboardController extends Controller
 {
     /**
@@ -15,8 +17,8 @@ class DashboardController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $user = $legacyEnvironment->getCurrentUser();
+        $userService = $this->get("commsy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
         return array(
             'user' => $user
         );

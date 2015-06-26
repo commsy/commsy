@@ -25,6 +25,33 @@ class UserService
         return $user;
     }
     
+    public function getPortalUserFromSessionId()
+    {
+        if (isset($_COOKIE['SID'])) {
+            $sid = $_COOKIE['SID'];
+            
+            $sessionManager = $this->legacyEnvironment->getEnvironment()->getSessionManager();
+            $sessionItem = $sessionManager->get($sid);
+
+            if ($sessionItem) {
+                $userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
+                $userList = $userManager->getAllUserItemArray($sessionItem->getValue('user_id'));
+                $portalUser = NULL;
+                if (!empty($userList)) {
+                    $contextID = $userList[0]->getContextId();
+                    $portalUser = $userList[0];
+                    foreach ($userList as $user) {
+                        if ($user->getContextId() < $contextID) {
+                            $contextID = $user->getContextId();
+                            $portalUser = $user;
+                        }
+                    }
+                }
+                return $portalUser;
+            }
+        }
+    }
+    
     public function getListUsers($roomId, $max, $start)
     {
         $this->userManager->setContextLimit($roomId);

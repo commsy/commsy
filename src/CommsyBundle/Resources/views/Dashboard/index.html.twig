@@ -14,7 +14,7 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>Neueste Aktivitäten(TODO)</div>
+                        <div>Neueste Aktivitäten(TODO) {{ user.fullname }}</div>
                         <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                             <button class="uk-button">{{ 'filter'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
                             <div class="uk-dropdown uk-dropdown-small">
@@ -33,7 +33,6 @@
                 </div>
 
                 <div>
-                    {{ user.fullname }}
                     <ul id="dashboard-feed" class="uk-comment-list">
                         {{ render(controller(
                             'CommsyBundle:Dashboard:feed',
