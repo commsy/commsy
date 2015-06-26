@@ -151,7 +151,7 @@ class MenuBuilder
         if ($route[1] && $route[1] != "room") {
             // rubric
             $menu->addChild($route[1], array(
-                'route' => 'commsy_'.$route[1].'_'.$route[2],
+                'route' => 'commsy_'.$route[1].'_'.'list',
                 'routeParameters' => array('roomId' => $roomId)
             ));
 
@@ -167,8 +167,9 @@ class MenuBuilder
                 } else {
                     $itemText = $tempItem->getTitle();
                 }
+                dump($itemId);
                 $menu->addChild($itemText, array(
-                    'route' => 'commsy_'.$route[1].'_detail',
+                    'route' => 'commsy_'.$route[1].'_'.$route[2],
                     'routeParameters' => array(
                         'roomId' => $roomId,
                         'itemId' => $itemId
