@@ -92,12 +92,12 @@ class UserController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/user/{userId}/image")
+     * @Route("/room/{roomId}/user/{itemId}/image")
      */
-    public function imageAction($roomId, $userId)
+    public function imageAction($roomId, $itemId)
     {
         $userService = $this->get('commsy.user_service');
-        $user = $userService->getUser($userId);
+        $user = $userService->getUser($itemId);
         
         $file = $user->getPicture();
         $rootDir = $this->get('kernel')->getRootDir().'/../';
