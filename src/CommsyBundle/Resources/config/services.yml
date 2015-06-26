@@ -20,3 +20,10 @@ services:
         public: false
         tags:
             - { name: security.voter }
+
+    commsy.security.item_voter:
+        class: CommsyBundle\Security\Authorization\Voter\ItemVoter
+        arguments: [@commsy_legacy.environment, @commsy.item_service]
+        public: false
+        tags:
+            - { name: security.voter }
