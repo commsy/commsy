@@ -148,14 +148,14 @@ class MenuBuilder
             'routeParameters' => array('roomId' => $roomId)
         ));
 
-        if ($route[1] && $route[1] != "room") {
+        if ($route[1] && $route[1] != "room" && $route[2] != "search") {
             // rubric
             $menu->addChild($route[1], array(
                 'route' => 'commsy_'.$route[1].'_'.'list',
                 'routeParameters' => array('roomId' => $roomId)
             ));
 
-            if ($route[2] != "list" && $route[2] != "search") {
+            if ($route[2] != "list") {
                 // item
                 $itemService = $this->legacyEnvironment->getItemManager();
                 $item = $itemService->getItem($itemId);
