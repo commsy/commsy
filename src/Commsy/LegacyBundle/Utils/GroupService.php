@@ -24,11 +24,11 @@ class GroupService
         return $group;
     }
     
-    public function getListGroups($roomId)
+    public function getListGroups($roomId, $max, $start)
     {
         $this->groupManager->setContextLimit($roomId);
-        //$this->groupManager->setUserLimit();
-
+        $this->groupManager->setIntervalLimit($start, $max);
+        
         $this->groupManager->select();
         $groupList = $this->groupManager->get();
 

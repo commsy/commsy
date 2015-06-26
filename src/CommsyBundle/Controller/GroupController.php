@@ -39,7 +39,7 @@ class GroupController extends Controller
         $groupService->setFilterConditions($form);
 
         // get material list from manager service 
-        $groups = $groupService->getListGroups($roomId);
+        $groups = $groupService->getListGroups($roomId, 10, 0);
 
         return array(
             'roomId' => $roomId,
