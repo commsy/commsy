@@ -49,7 +49,6 @@ class DashboardFeedGenerator
             $itemManager = $legacyEnvironment->getItemManager();
             $itemManager->reset();
             $itemManager->setContextLimit($project->getItemID());
-            //$itemManager->setIntervalLimit($max + $start);
             $itemManager->setTypeArrayLimit($rubrics);
             $itemManager->select();
             $itemList = $itemManager->get();
@@ -58,38 +57,34 @@ class DashboardFeedGenerator
     
             // iterate items and build up feed list
             $item = $itemList->getFirst();
-            $itemIndex = 0;
             while ($item) {
-                if ($itemIndex >= $start) {
-                    $type = $item->getItemType();
-        
-                    switch ($type) {
-                        case 'user':
-                            $userManager = $legacyEnvironment->getUserManager();
-                            $userItem = $userManager->getItem($item->getItemId());
-                            $feedList[] = $userItem;
-                            break;
-        
-                        case 'material':
-                            $materialManager = $legacyEnvironment->getMaterialManager();
-                            $materialItem = $materialManager->getItem($item->getItemId());
-                            $feedList[] = $materialItem;
-                            break;
-        
-                        case 'date':
-                            $datesManager = $legacyEnvironment->getDatesManager();
-                            $dateItem = $datesManager->getItem($item->getItemId());
-                            $feedList[] = $dateItem;
-                            break;
-        
-                        case 'discussion':
-                            $discussionManager = $legacyEnvironment->getDiscussionManager();
-                            $discussionItem = $discussionManager->getItem($item->getItemId());
-                            $feedList[] = $discussionItem;
-                            break;
-                    }
+                $type = $item->getItemType();
+    
+                switch ($type) {
+                    case 'user':
+                        $userManager = $legacyEnvironment->getUserManager();
+                        $userItem = $userManager->getItem($item->getItemId());
+                        $feedList[] = $userItem;
+                        break;
+    
+                    case 'material':
+                        $materialManager = $legacyEnvironment->getMaterialManager();
+                        $materialItem = $materialManager->getItem($item->getItemId());
+                        $feedList[] = $materialItem;
+                        break;
+    
+                    case 'date':
+                        $datesManager = $legacyEnvironment->getDatesManager();
+                        $dateItem = $datesManager->getItem($item->getItemId());
+                        $feedList[] = $dateItem;
+                        break;
+    
+                    case 'discussion':
+                        $discussionManager = $legacyEnvironment->getDiscussionManager();
+                        $discussionItem = $discussionManager->getItem($item->getItemId());
+                        $feedList[] = $discussionItem;
+                        break;
                 }
-                $itemIndex++;
                 $item = $itemList->getNext();
             }
             $project = $projectList->getNext();
