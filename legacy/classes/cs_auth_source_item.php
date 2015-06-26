@@ -606,6 +606,8 @@ class cs_auth_source_item extends cs_item {
    	$this->_addExtra('SHIB_USERNAME',$value);
    }
    
-
+   public function getContextId () {
+       return $this->_data['context_id'];
+   }
 }
 ?>

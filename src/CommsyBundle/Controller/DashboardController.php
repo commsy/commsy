@@ -25,7 +25,7 @@ class DashboardController extends Controller
     }
     
     /**
-     * @Route("/dashboard/{itemId}feed/{start}")
+     * @Route("/dashboard/{itemId}/feed/{start}")
      * @Template()
      */
     public function feedAction($itemId, $max = 10, $start = 0)

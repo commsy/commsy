@@ -38,11 +38,14 @@ class UserService
                 $userList = $userManager->getAllUserItemArray($sessionItem->getValue('user_id'));
                 $portalUser = NULL;
                 if (!empty($userList)) {
-                    $contextID = $userList[0]->getContextId();
-                    $portalUser = $userList[0];
+                    //$contextID = $userList[0]->getContextId();
+                    //$portalUser = $userList[0];
                     foreach ($userList as $user) {
-                        if ($user->getContextId() < $contextID) {
-                            $contextID = $user->getContextId();
+                        //if ($user->getContextId() < $contextID) {
+                        //    $contextID = $user->getContextId();
+                        //    $portalUser = $user;
+                        //}
+                        if ($user->getAuthSource() == $sessionItem->getValue('auth_source')) {
                             $portalUser = $user;
                         }
                     }
