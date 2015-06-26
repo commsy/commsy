@@ -13,12 +13,16 @@
           url: el.data('feed').url + feedStart
         })
         .done(function(result) {
-            // append the data
-            var target = el.data('feed').target;
-            $(target).append(result);
-
-            // increase for next run
-            feedStart += 10;
+            if (result) {
+                // append the data
+                var target = el.data('feed').target;
+                $(target).append(result);
+    
+                // increase for next run
+                feedStart += 10;
+            } else {
+                $('.feed-load-more').css('display', 'none');
+            }
         });
     });
 

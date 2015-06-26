@@ -1,29 +1,31 @@
-{% for user in users %}
-    <article class="uk-comment">
-        <header class="uk-comment-header uk-flex">
-            <div class="users-checkbox uk-margin-right uk-hidden">
-                <form class="uk-form">
-                    <input type="checkbox">
-                </form>
-            </div>
-            <div class="uk-margin-right">
-                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
-                </a>
-            </div>
-            <div>
-                <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullname }}</a>
-                </h4>
-
-                <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{user.fullname}}
+{% if not users is empty %}
+    {% for user in users %}
+        <article class="uk-comment">
+            <header class="uk-comment-header uk-flex">
+                <div class="users-checkbox uk-margin-right uk-hidden">
+                    <form class="uk-form">
+                        <input type="checkbox">
+                    </form>
                 </div>
-
-                <div class="uk-comment-meta">
-                    {{ 'last changed'|trans({})|capitalize }}: {{user.getModificationDate|date("d.m.Y H:i")}}
+                <div class="uk-margin-right">
+                    <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">
+                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
+                    </a>
                 </div>
-            </div>
-        </header>
-    </article>
-{% endfor %}
+                <div>
+                    <h4 class="uk-comment-title">
+                        <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullname }}</a>
+                    </h4>
+    
+                    <div class="uk-comment-meta">
+                        {{ 'by'|trans({})|capitalize }}: {{user.fullname}}
+                    </div>
+    
+                    <div class="uk-comment-meta">
+                        {{ 'last changed'|trans({})|capitalize }}: {{user.getModificationDate|date("d.m.Y H:i")}}
+                    </div>
+                </div>
+            </header>
+        </article>
+    {% endfor %}
+{% endif %}
