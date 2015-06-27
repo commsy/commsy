@@ -42,7 +42,7 @@ assetic:
     use_controller: false
     bundles:        ['CommsyBundle']
     #java: /usr/bin/java
-    node: /usr/bin/node
+    #node: /usr/bin/node
     node_paths: [/usr/lib/node_modules, /usr/local/lib/node_modules]
     filters:
         cssrewrite: ~
