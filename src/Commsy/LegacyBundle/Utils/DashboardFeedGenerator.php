@@ -43,6 +43,12 @@ class DashboardFeedGenerator
         $itemManager->select();
         $itemList = $itemManager->get();
         
+        if ($itemList->getCount() < $start + $max) {
+            $max = $itemList->getCount() - $start;
+        }
+        
+        $itemList = $itemList->getSubList($start, $max);
+        
         $feedList = array();
         $item = $itemList->getFirst();
         while ($item) {
