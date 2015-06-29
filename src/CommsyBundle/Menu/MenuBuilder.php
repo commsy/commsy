@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Symfony\Component\Translation\Translator;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Commsy\LegacyBundle\Utils\UserService;
 
 class MenuBuilder
 {
@@ -18,15 +19,18 @@ class MenuBuilder
     private $roomService;
 
     private $legacyEnvironment;
+    
+    private $userService;
 
     /**
     * @param FactoryInterface $factory
     */
-    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment)
+    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService)
     {
         $this->factory = $factory;
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->userService = $userService;
     }
 
     public function createMainMenu(RequestStack $requestStack)
@@ -38,45 +42,61 @@ class MenuBuilder
         $menu = $this->factory->createItem('root');
 
         $roomId = $currentStack->attributes->get('roomId');
-        if ($roomId) {
 
+        // dashboard
+        $menu->addChild('dashboard', array(
+            'label' => 'DASHBOARD',
+            'route' => 'commsy_dashboard_index',
+            'extras' => array('icon' => 'uk-icon-home uk-icon-small')
+        ));
+
+        // add divider
+        $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
+
+        if ($roomId)
+        {
             // rubric room information
             $rubrics = $this->roomService->getRubricInformation($roomId);
-    
-            // dashboard
-            $menu->addChild('dashboard', array(
-                'label' => 'DASHBOARD',
-                'route' => 'commsy_dashboard_index',
+            
+            // room navigation
+            $menu->addChild('room_navigation', array(
+                'label' => 'Raum-Navigation',
+                'route' => 'commsy_room_home',
+                'routeParameters' => array('roomId' => $roomId),
                 'extras' => array('icon' => 'uk-icon-home uk-icon-small')
             ));
-    
+
             // add divider
-            $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
-    
-            if ($roomId)
-            {
-                // room navigation
-                $menu->addChild('room_navigation', array(
-                    'label' => 'Raum-Navigation',
-                    'route' => 'commsy_room_home',
+            $menu->addChild(' ')->setAttribute('class', 'uk-nav-divider');
+
+            // loop through rubrics to build the menu
+            foreach ($rubrics as $value) {
+                $menu->addChild($value, array(
+                    'label' => $value,
+                    'route' => 'commsy_'.$value.'_list',
                     'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => $this->getRubricIcon($value))
+                ));
+            }
+        } else {
+            $user = $this->userService->getPortalUserFromSessionId();
+            
+            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+            $authSource = $authSourceManager->getItem($user->getAuthSource());
+            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
+            
+            $projectArray = array();
+            $projectList = $user->getRelatedProjectList();
+            $project = $projectList->getFirst();
+            while ($project) {
+                $menu->addChild($project->getTitle(), array(
+                    'label' => $project->getTitle(),
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $project->getItemId()),
                     'extras' => array('icon' => 'uk-icon-home uk-icon-small')
                 ));
-    
-                // add divider
-                $menu->addChild(' ')->setAttribute('class', 'uk-nav-divider');
-    
-                // loop through rubrics to build the menu
-                foreach ($rubrics as $value) {
-                    $menu->addChild($value, array(
-                        'label' => $value,
-                        'route' => 'commsy_'.$value.'_list',
-                        'routeParameters' => array('roomId' => $roomId),
-                        'extras' => array('icon' => $this->getRubricIcon($value))
-                    ));
-                }
+                $project = $projectList->getNext();
             }
-        
         }
 
         return $menu;
@@ -136,6 +156,9 @@ class MenuBuilder
         // create breadcrumb menu
         $menu = $this->factory->createItem('root');
 
+        // this item will always be displayed
+        $menu->addChild('DASHBOARD', array('route' => 'commsy_dashboard_index'));
+
         $roomId = $currentStack->attributes->get('roomId');
         if ($roomId) {
             $itemId = $currentStack->attributes->get('itemId');
@@ -143,9 +166,6 @@ class MenuBuilder
     
             // get route information
             $route = explode('_', $currentStack->attributes->get('_route'));
-    
-            // this item will always be displayed
-            $menu->addChild('DASHBOARD', array('route' => 'commsy_dashboard_index'));
     
             // room
             $menu->addChild($roomItem->getTitle(), array(

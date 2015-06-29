@@ -38,8 +38,8 @@ services:
         class: Commsy\LegacyBundle\Utils\TagManager
         arguments: ["@commsy_legacy.environment"]
 
-    commsy_legacy.material_manager:
-        class: Commsy\LegacyBundle\Utils\MaterialManager
+    commsy_legacy.material_service:
+        class: Commsy\LegacyBundle\Utils\MaterialService
         arguments: ["@commsy_legacy.environment"]
 
     commsy.room_service:

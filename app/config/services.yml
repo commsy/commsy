@@ -27,7 +27,7 @@ services:
 
     app.menu_builder:
         class: CommsyBundle\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory", "@commsy.room_service", "@commsy_legacy.environment"]
+        arguments: ["@knp_menu.factory", "@commsy.room_service", "@commsy_legacy.environment", "@commsy.user_service"]
 
     app.main_menu:
         class: Knp\Menu\MenuItem # the service definition requires setting the class

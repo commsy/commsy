@@ -1,5 +1,140 @@
 {% extends 'base.html.twig' %}
 
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
 {% block content %}
-    Material
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-2-3">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ material.title }}</div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#material-info', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="material-info" class="uk-overflow-container">
+                
+                    <div class="uk-comment-header uk-flex">
+                        <div class="uk-margin-right">
+                            <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': material.creatorId}) }}">
+                                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ material.creatorID }}/image" alt="">
+                            </a>
+                        </div>
+                        <div>
+                            <div class="uk-comment-meta">
+                                {{ 'by'|trans({})|capitalize }}: {{material.creator.fullname}}
+                            </div>
+                            <div class="uk-comment-meta">
+                                {{ 'created'|trans({})|capitalize }}: {{material.creationDate|date("d.m.Y H:i")}}
+                            </div>
+                            <div class="uk-comment-meta">
+                                {{ 'last changed'|trans({})|capitalize }}: {{material.modificationDate|date("d.m.Y H:i")}}
+                            </div>
+                        </div>
+                    </div>
+                
+                
+                    <div class="uk-flex uk-margin">
+                        {{ material.description|raw }}</td>
+                    </div>
+                    
+                    <div class="uk-flex">
+                        {{ 'sections'|trans({})|capitalize }}:
+                        <ul>
+                        {% for section in sectionList %}
+                            <li><a href="#{{ section.itemId }}">{{ section.title }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    {% for section in sectionList %}
+                        <hr/>
+                        <a name="{{ section.itemId }}"></a>
+                        <div class="uk-comment-header uk-flex">
+                            <div class="uk-margin-right">
+                                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': section.creatorId}) }}">
+                                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ section.creatorID }}/image" alt="">
+                                </a>
+                            </div>
+                            <div>
+                                <h4 class="uk-comment-title">
+                                    {{ section.title }}
+                                </h4>
+                                <div class="uk-comment-meta">
+                                    {{ 'by'|trans({})|capitalize }}: {{section.creator.fullname}}
+                                </div>
+                                <div class="uk-comment-meta">
+                                    {{ 'created'|trans({})|capitalize }}: {{section.creationDate|date("d.m.Y H:i")}}
+                                </div>
+                                <div class="uk-comment-meta">
+                                    {{ 'last changed'|trans({})|capitalize }}: {{section.modificationDate|date("d.m.Y H:i")}}
+                                </div>
+                                <div class="uk-comment-meta">
+                                    {{ 'edited by'|trans({})|capitalize }}: todo
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-flex">
+                            {{ section.description|raw }}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-3">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'Info'|trans({}, "room") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="user-main" class="uk-overflow-container">
+                    <div class="">
+                        {{ macros.lastModified(material) }} 
+                    </div>
+                </div>
+            </div>
+
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-sub', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            {{ 'linked entries'|trans({}, "room")|capitalize }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="user-sub" class="uk-overflow-container">
+                    {{ render(controller(
+                        'CommsyBundle:Link:link',
+                        { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
+                    ))}}
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

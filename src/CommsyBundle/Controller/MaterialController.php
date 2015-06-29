@@ -33,13 +33,13 @@ class MaterialController extends Controller
         }
 
         // get the material manager service
-        $materialManager = $this->get('commsy_legacy.material_manager');
+        $materialService = $this->get('commsy_legacy.material_service');
 
         // set filter conditions in material manager
-        $materialManager->setFilterConditions($form);
+        $materialService->setFilterConditions($form);
 
         // get material list from manager service 
-        $materials = $materialManager->getListMaterials($roomId, $max, $start);
+        $materials = $materialService->getListMaterials($roomId, $max, $start);
 
         return array(
             'roomId' => $roomId,
@@ -80,6 +80,15 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
-        return array();
+        $materialService = $this->get('commsy_legacy.material_service');
+        
+        $material = $materialService->getMaterial($itemId);
+        $sectionList = $material->getSectionList()->to_array();
+        
+        return array(
+            'roomId' => $roomId,
+            'material' => $materialService->getMaterial($itemId),
+            'sectionList' => $sectionList
+        );
     }
 }

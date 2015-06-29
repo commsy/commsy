@@ -9,7 +9,7 @@
                 </div>
                 <div class="uk-margin-right">
                     <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ group.creator.itemID }}/image" alt="">
+                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ group.creatorId }}/image" alt="">
                     </a>
                 </div>
                 <div>
@@ -24,6 +24,15 @@
                     <div class="uk-comment-meta">
                         {{ 'last changed'|trans({})|capitalize }}: {{group.getModificationDate|date("d.m.Y H:i")}}
                     </div>
+                    
+                    {% if group.isGroupRoomActivated %}
+                        <div class="uk-comment-meta">
+                            {{ 'grouproom'|trans({})|capitalize }}:
+                            <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.itemId}) }}">
+                                {{group.groupRoomItem.title}}
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </header>
         </article>
