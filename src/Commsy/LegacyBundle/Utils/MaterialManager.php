@@ -39,4 +39,9 @@ class MaterialManager
             $this->materialManager->showNoNotActivatedEntries();
         }
     }
+    
+    public function getMaterial($itemId)
+    {
+        return $this->materialManager->getItem($itemId);
+    }
 }

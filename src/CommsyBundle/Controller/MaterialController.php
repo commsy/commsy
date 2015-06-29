@@ -80,6 +80,10 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
-        return array();
+        $materialManager = $this->get('commsy_legacy.material_manager');
+        
+        return array(
+            'material' => $materialManager->getMaterial($itemId)
+        );
     }
 }
