@@ -40,8 +40,13 @@
                 <!-- right -->
                 <div class="uk-navbar-flip">
                     <div class="uk-navbar-content">
-                        <form class="uk-search" data-uk-search="{source:'my-results.json'}">
+                        <form class="uk-search" data-uk-search="{source:'{{ path('commsy_search_quick', {'roomId': app.request.attributes.get('roomId') }) }}'}">
                             <input class="uk-search-field" type="search" placeholder="Suche...">
+
+                            <!-- This is the dropdown, which is injected through JavaScript -->
+                            <div class="uk-dropdown uk-dropdown-search">
+                                <ul class="uk-nav uk-nav-search">...</ul>
+                            </div>
                         </form>
                     </div>
 
