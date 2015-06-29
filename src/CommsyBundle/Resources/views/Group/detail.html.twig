@@ -21,6 +21,14 @@
                     <div class="uk-margin">
                         {{ group.description|raw }}
                     </div>
+                    {% if group.isGroupRoomActivated %}
+                        <div class="uk-margin">
+                            {{ 'grouproom'|trans({})|capitalize }}:
+                            <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.itemId}) }}">
+                                {{group.groupRoomItem.title}}
+                            </a>
+                        </div>
+                    {% endif %}
                     <div data-uk-grid="{gutter: 20}">
                         {% for member in members %}
                             <div class="uk-width-medium-1-2 uk-width-large-1-3">

@@ -24,6 +24,15 @@
                     <div class="uk-comment-meta">
                         {{ 'last changed'|trans({})|capitalize }}: {{group.getModificationDate|date("d.m.Y H:i")}}
                     </div>
+                    
+                    {% if group.isGroupRoomActivated %}
+                        <div class="uk-comment-meta">
+                            {{ 'grouproom'|trans({})|capitalize }}:
+                            <a href="{{ path('commsy_room_home', {'roomId': group.groupRoomItem.itemId}) }}">
+                                {{group.groupRoomItem.title}}
+                            </a>
+                        </div>
+                    {% endif %}
                 </div>
             </header>
         </article>
