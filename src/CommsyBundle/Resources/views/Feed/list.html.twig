@@ -10,7 +10,6 @@
                     </a>
                 </div>
                 <div>
-                    <div class="uk-comment-meta">{{ feedItem.itemType|transchoice(0, {}, "rubric") }}</div>
                     <h4 class="uk-comment-title"><a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ feedItem.type }}/{{ feedItem.itemID }}">{{ feedItem.title }}</a></h4>
                     {% if feedItem.itemType == 'announcement' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
