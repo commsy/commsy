@@ -3,6 +3,7 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Materials
@@ -40,16 +41,18 @@ class Materials
     /**
      * @var integer
      *
-     * @ORM\Column(name="creator_id", type="integer", nullable=false)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="creator_id", referencedColumnName="item_id")
      */
-    private $creatorId = '0';
+    private $creator;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="deleter_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="deleter_id", referencedColumnName="item_id")
      */
-    private $deleterId;
+    private $deleter;
 
     /**
      * @var \DateTime
@@ -61,9 +64,10 @@ class Materials
     /**
      * @var integer
      *
-     * @ORM\Column(name="modifier_id", type="integer", nullable=true)
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="modifier_id", referencedColumnName="item_id")
      */
-    private $modifierId;
+    private $modifier;
 
     /**
      * @var \DateTime
@@ -177,6 +181,604 @@ class Materials
      */
     private $lockingUserId;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Section", mappedBy="material")
+     */
+    private $sections;
 
+    public function __construct()
+    {
+        $this->sections = new ArrayCollection();
+    }
+
+    /**
+     * Set itemId
+     *
+     * @param integer $itemId
+     *
+     * @return Materials
+     */
+    public function setItemId($itemId)
+    {
+        $this->itemId = $itemId;
+
+        return $this;
+    }
+
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
+    }
+
+    /**
+     * Set versionId
+     *
+     * @param integer $versionId
+     *
+     * @return Materials
+     */
+    public function setVersionId($versionId)
+    {
+        $this->versionId = $versionId;
+
+        return $this;
+    }
+
+    /**
+     * Get versionId
+     *
+     * @return integer
+     */
+    public function getVersionId()
+    {
+        return $this->versionId;
+    }
+
+    /**
+     * Set contextId
+     *
+     * @param integer $contextId
+     *
+     * @return Materials
+     */
+    public function setContextId($contextId)
+    {
+        $this->contextId = $contextId;
+
+        return $this;
+    }
+
+    /**
+     * Get contextId
+     *
+     * @return integer
+     */
+    public function getContextId()
+    {
+        return $this->contextId;
+    }
+
+    /**
+     * Set creationDate
+     *
+     * @param \DateTime $creationDate
+     *
+     * @return Materials
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get creationDate
+     *
+     * @return \DateTime
+     */
+    public function getCreationDate()
+    {
+        return $this->creationDate;
+    }
+
+    /**
+     * Set modificationDate
+     *
+     * @param \DateTime $modificationDate
+     *
+     * @return Materials
+     */
+    public function setModificationDate($modificationDate)
+    {
+        $this->modificationDate = $modificationDate;
+
+        return $this;
+    }
+
+    /**
+     * Get modificationDate
+     *
+     * @return \DateTime
+     */
+    public function getModificationDate()
+    {
+        return $this->modificationDate;
+    }
+
+    /**
+     * Set deletionDate
+     *
+     * @param \DateTime $deletionDate
+     *
+     * @return Materials
+     */
+    public function setDeletionDate($deletionDate)
+    {
+        $this->deletionDate = $deletionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get deletionDate
+     *
+     * @return \DateTime
+     */
+    public function getDeletionDate()
+    {
+        return $this->deletionDate;
+    }
+
+    /**
+     * Set title
+     *
+     * @param string $title
+     *
+     * @return Materials
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Materials
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set author
+     *
+     * @param string $author
+     *
+     * @return Materials
+     */
+    public function setAuthor($author)
+    {
+        $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * Get author
+     *
+     * @return string
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * Set publishingDate
+     *
+     * @param string $publishingDate
+     *
+     * @return Materials
+     */
+    public function setPublishingDate($publishingDate)
+    {
+        $this->publishingDate = $publishingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get publishingDate
+     *
+     * @return string
+     */
+    public function getPublishingDate()
+    {
+        return $this->publishingDate;
+    }
+
+    /**
+     * Set public
+     *
+     * @param boolean $public
+     *
+     * @return Materials
+     */
+    public function setPublic($public)
+    {
+        $this->public = $public;
+
+        return $this;
+    }
+
+    /**
+     * Get public
+     *
+     * @return boolean
+     */
+    public function getPublic()
+    {
+        return $this->public;
+    }
+
+    /**
+     * Set worldPublic
+     *
+     * @param integer $worldPublic
+     *
+     * @return Materials
+     */
+    public function setWorldPublic($worldPublic)
+    {
+        $this->worldPublic = $worldPublic;
+
+        return $this;
+    }
+
+    /**
+     * Get worldPublic
+     *
+     * @return integer
+     */
+    public function getWorldPublic()
+    {
+        return $this->worldPublic;
+    }
+
+    /**
+     * Set extras
+     *
+     * @param string $extras
+     *
+     * @return Materials
+     */
+    public function setExtras($extras)
+    {
+        $this->extras = $extras;
+
+        return $this;
+    }
+
+    /**
+     * Get extras
+     *
+     * @return string
+     */
+    public function getExtras()
+    {
+        return $this->extras;
+    }
+
+    /**
+     * Set newHack
+     *
+     * @param boolean $newHack
+     *
+     * @return Materials
+     */
+    public function setNewHack($newHack)
+    {
+        $this->newHack = $newHack;
+
+        return $this;
+    }
+
+    /**
+     * Get newHack
+     *
+     * @return boolean
+     */
+    public function getNewHack()
+    {
+        return $this->newHack;
+    }
+
+    /**
+     * Set copyOf
+     *
+     * @param integer $copyOf
+     *
+     * @return Materials
+     */
+    public function setCopyOf($copyOf)
+    {
+        $this->copyOf = $copyOf;
+
+        return $this;
+    }
+
+    /**
+     * Get copyOf
+     *
+     * @return integer
+     */
+    public function getCopyOf()
+    {
+        return $this->copyOf;
+    }
+
+    /**
+     * Set workflowStatus
+     *
+     * @param string $workflowStatus
+     *
+     * @return Materials
+     */
+    public function setWorkflowStatus($workflowStatus)
+    {
+        $this->workflowStatus = $workflowStatus;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowStatus
+     *
+     * @return string
+     */
+    public function getWorkflowStatus()
+    {
+        return $this->workflowStatus;
+    }
+
+    /**
+     * Set workflowResubmissionDate
+     *
+     * @param \DateTime $workflowResubmissionDate
+     *
+     * @return Materials
+     */
+    public function setWorkflowResubmissionDate($workflowResubmissionDate)
+    {
+        $this->workflowResubmissionDate = $workflowResubmissionDate;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowResubmissionDate
+     *
+     * @return \DateTime
+     */
+    public function getWorkflowResubmissionDate()
+    {
+        return $this->workflowResubmissionDate;
+    }
+
+    /**
+     * Set workflowValidityDate
+     *
+     * @param \DateTime $workflowValidityDate
+     *
+     * @return Materials
+     */
+    public function setWorkflowValidityDate($workflowValidityDate)
+    {
+        $this->workflowValidityDate = $workflowValidityDate;
+
+        return $this;
+    }
+
+    /**
+     * Get workflowValidityDate
+     *
+     * @return \DateTime
+     */
+    public function getWorkflowValidityDate()
+    {
+        return $this->workflowValidityDate;
+    }
+
+    /**
+     * Set lockingDate
+     *
+     * @param \DateTime $lockingDate
+     *
+     * @return Materials
+     */
+    public function setLockingDate($lockingDate)
+    {
+        $this->lockingDate = $lockingDate;
+
+        return $this;
+    }
+
+    /**
+     * Get lockingDate
+     *
+     * @return \DateTime
+     */
+    public function getLockingDate()
+    {
+        return $this->lockingDate;
+    }
+
+    /**
+     * Set lockingUserId
+     *
+     * @param integer $lockingUserId
+     *
+     * @return Materials
+     */
+    public function setLockingUserId($lockingUserId)
+    {
+        $this->lockingUserId = $lockingUserId;
+
+        return $this;
+    }
+
+    /**
+     * Get lockingUserId
+     *
+     * @return integer
+     */
+    public function getLockingUserId()
+    {
+        return $this->lockingUserId;
+    }
+
+    public function isIndexable()
+    {
+        return ($this->deleter == null && $this->deletionDate == null);
+    }
+
+    /**
+     * Set creator
+     *
+     * @param \CommsyBundle\Entity\User $creator
+     *
+     * @return Materials
+     */
+    public function setCreator(\CommsyBundle\Entity\User $creator = null)
+    {
+        $this->creator = $creator;
+
+        return $this;
+    }
+
+    /**
+     * Get creator
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getCreator()
+    {
+        return $this->creator;
+    }
+
+    /**
+     * Set deleter
+     *
+     * @param \CommsyBundle\Entity\User $deleter
+     *
+     * @return Materials
+     */
+    public function setDeleter(\CommsyBundle\Entity\User $deleter = null)
+    {
+        $this->deleter = $deleter;
+
+        return $this;
+    }
+
+    /**
+     * Get deleter
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getDeleter()
+    {
+        return $this->deleter;
+    }
+
+    /**
+     * Set modifier
+     *
+     * @param \CommsyBundle\Entity\User $modifier
+     *
+     * @return Materials
+     */
+    public function setModifier(\CommsyBundle\Entity\User $modifier = null)
+    {
+        $this->modifier = $modifier;
+
+        return $this;
+    }
+
+    /**
+     * Get modifier
+     *
+     * @return \CommsyBundle\Entity\User
+     */
+    public function getModifier()
+    {
+        return $this->modifier;
+    }
+
+    /**
+     * Add section
+     *
+     * @param \CommsyBundle\Entity\Section $section
+     *
+     * @return Materials
+     */
+    public function addSection(\CommsyBundle\Entity\Section $section)
+    {
+        $this->sections[] = $section;
+
+        return $this;
+    }
+
+    /**
+     * Remove section
+     *
+     * @param \CommsyBundle\Entity\Section $section
+     */
+    public function removeSection(\CommsyBundle\Entity\Section $section)
+    {
+        $this->sections->removeElement($section);
+    }
+
+    /**
+     * Get sections
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSections()
+    {
+        return $this->sections;
+    }
 }
-
