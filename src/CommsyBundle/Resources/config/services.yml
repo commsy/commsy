@@ -31,4 +31,4 @@ services:
     # Search
     commsy.search_builder:
         class: CommsyBundle\Search\SearchBuilder
-        arguments: [@fos_elastica.finder.commsy]
+        arguments: [@fos_elastica.finder.commsy.material]

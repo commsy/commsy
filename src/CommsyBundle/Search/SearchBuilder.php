@@ -7,7 +7,6 @@ use Elastica\Query\Filtered;
 use Elastica\Query\MatchPhrasePrefix;
 use Elastica\Filter\Term;
 use Elastica\Filter\Range;
-use Elastica\Filter\Bool;
 
 class SearchBuilder
 {
