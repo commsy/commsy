@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Commsy\LegacyBundle\Utils\RoomService;
 use Symfony\Component\Translation\Translator;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use Commsy\LegacyBundle\Utils\UserService;
 
 class MenuBuilder
 {
@@ -18,15 +19,18 @@ class MenuBuilder
     private $roomService;
 
     private $legacyEnvironment;
+    
+    private $userService;
 
     /**
     * @param FactoryInterface $factory
     */
-    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment)
+    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService)
     {
         $this->factory = $factory;
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
+        $this->userService = $userService;
     }
 
     public function createMainMenu(RequestStack $requestStack)
@@ -73,6 +77,25 @@ class MenuBuilder
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => $this->getRubricIcon($value))
                 ));
+            }
+        } else {
+            $user = $this->userService->getPortalUserFromSessionId();
+            
+            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+            $authSource = $authSourceManager->getItem($user->getAuthSource());
+            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
+            
+            $projectArray = array();
+            $projectList = $user->getRelatedProjectList();
+            $project = $projectList->getFirst();
+            while ($project) {
+                $menu->addChild($project->getTitle(), array(
+                    'label' => $project->getTitle(),
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $project->getItemId()),
+                    'extras' => array('icon' => 'uk-icon-home uk-icon-small')
+                ));
+                $project = $projectList->getNext();
             }
         }
 
