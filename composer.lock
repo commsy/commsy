@@ -898,12 +898,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSElasticaBundle.git",
-                "reference": "e26869865d08ce640c71801356d414fa97964095"
+                "reference": "7073fb492301a1f28bfc8ade2d0f1fe03e0e4112"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/e26869865d08ce640c71801356d414fa97964095",
-                "reference": "e26869865d08ce640c71801356d414fa97964095",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSElasticaBundle/zipball/7073fb492301a1f28bfc8ade2d0f1fe03e0e4112",
+                "reference": "7073fb492301a1f28bfc8ade2d0f1fe03e0e4112",
                 "shasum": ""
             },
             "require": {
@@ -913,7 +913,7 @@
                 "symfony/console": "~2.1",
                 "symfony/form": "~2.1",
                 "symfony/framework-bundle": "~2.3",
-                "symfony/property-access": "~2.2"
+                "symfony/property-access": "~2.3"
             },
             "require-dev": {
                 "doctrine/doctrine-bundle": "~1.2@beta",
@@ -979,7 +979,7 @@
                 "propel",
                 "search"
             ],
-            "time": "2015-05-27 23:17:50"
+            "time": "2015-06-29 13:50:33"
         },
         {
             "name": "incenteev/composer-parameter-handler",
