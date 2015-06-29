@@ -4,7 +4,7 @@ namespace Commsy\LegacyBundle\Utils;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class TagManager
+class CategoryService
 {
     private $legacyEnvironment;
 

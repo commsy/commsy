@@ -19,7 +19,7 @@ class CategoryController extends Controller
     public function showAction($roomId, Request $request)
     {
         // get categories from CategoryManager
-        $tagManager = $this->get('commsy.tag_manager');
+        $tagManager = $this->get('commsy.category_service');
         $roomTags = $tagManager->getTags($roomId);
 
         $defaultData = array(
@@ -50,7 +50,7 @@ class CategoryController extends Controller
             $data = $form->getData();
 
             // persist new tag
-            $tagManager = $this->get('commsy.tag_manager');
+            $tagManager = $this->get('commsy.category_service');
             $tagManager->addTag($data['title'], $roomId);
 
             return $this->redirectToRoute('commsy_room_home', array('roomId' => $roomId));
