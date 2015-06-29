@@ -193,5 +193,9 @@ class cs_section_list {
    function isNotEmpty () {
       return !$this->isEmpty();
    }
+   
+   function to_array () {
+      return $this->_data;
+   }
 }
 ?>

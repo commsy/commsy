@@ -82,8 +82,14 @@ class MaterialController extends Controller
     {
         $materialService = $this->get('commsy_legacy.material_service');
         
+        $material = $materialService->getMaterial($itemId);
+        $sectionList = $material->getSectionList()->to_array();
+        
+        error_log(print_r($sectionList, true));
+        
         return array(
-            'material' => $materialService->getMaterial($itemId)
+            'material' => $materialService->getMaterial($itemId),
+            'sectionList' => $sectionList
         );
     }
 }

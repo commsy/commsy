@@ -20,25 +20,28 @@
 
                 <div id="material-info" class="uk-overflow-container">
                     <div class="uk-flex">
-                        <div>
-                            <table class="uk-table-condensed">
-                                <tbody>
-                                    {% if not material.creationDate is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'creation date'|trans({})|capitalize }}</td>
-                                        <td>{{ material.creationDate }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not material.description is empty %}
-                                    <tr>
-                                        <td colspan="2">{{ material.description|raw }}</td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
+                        <table class="uk-table-condensed">
+                            <tbody>
+                                {% if not material.creationDate is empty %}
+                                <tr>
+                                    <td class="uk-text-bold">{{ 'creation date'|trans({})|capitalize }}</td>
+                                    <td>{{ material.creationDate }}</td>
+                                </tr>
+                                {% endif %}
+                                {% if not material.description is empty %}
+                                <tr>
+                                    <td colspan="2">{{ material.description|raw }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        
                     </div>
-                    
+                    {% for section in sectionList %}
+                        <div class="uk-flex">
+                            {{ section.title }}
+                        </div>
+                    {% endfor %}
                 </div>
                 
             </div>
