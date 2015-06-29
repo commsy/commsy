@@ -19,29 +19,73 @@
                 </div>
 
                 <div id="material-info" class="uk-overflow-container">
-                    <div class="uk-flex">
-                        <table class="uk-table-condensed">
-                            <tbody>
-                                {% if not material.creationDate is empty %}
-                                <tr>
-                                    <td class="uk-text-bold">{{ 'creation date'|trans({})|capitalize }}</td>
-                                    <td>{{ material.creationDate }}</td>
-                                </tr>
-                                {% endif %}
-                                {% if not material.description is empty %}
-                                <tr>
-                                    <td colspan="2">{{ material.description|raw }}</td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-                        </table>
-                        
-                    </div>
-                    {% for section in sectionList %}
-                        <div class="uk-flex">
-                            {{ section.title }}
+                
+                    <div class="uk-comment-header uk-flex">
+                        <div class="uk-margin-right">
+                            <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': material.creatorId}) }}">
+                                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ material.creatorID }}/image" alt="">
+                            </a>
                         </div>
+                        <div>
+                            <div class="uk-comment-meta">
+                                {{ 'by'|trans({})|capitalize }}: {{material.creator.fullname}}
+                            </div>
+                            <div class="uk-comment-meta">
+                                {{ 'created'|trans({})|capitalize }}: {{material.creationDate|date("d.m.Y H:i")}}
+                            </div>
+                            <div class="uk-comment-meta">
+                                {{ 'last changed'|trans({})|capitalize }}: {{material.modificationDate|date("d.m.Y H:i")}}
+                            </div>
+                        </div>
+                    </div>
+                
+                
+                    <div class="uk-flex uk-margin">
+                        {{ material.description|raw }}</td>
+                    </div>
+                    
+                    <div class="uk-flex">
+                        {{ 'sections'|trans({})|capitalize }}:
+                        <ul>
+                        {% for section in sectionList %}
+                            <li><a href="#{{ section.itemId }}">{{ section.title }}</a></li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    
+                    {% for section in sectionList %}
+                        <hr/>
+                        <a name="{{ section.itemId }}"></a>
+                        <div class="uk-comment-header uk-flex">
+                            <div class="uk-margin-right">
+                                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': section.creatorId}) }}">
+                                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ section.creatorID }}/image" alt="">
+                                </a>
+                            </div>
+                            <div>
+                                <h4 class="uk-comment-title">
+                                    {{ section.title }}
+                                </h4>
+                                <div class="uk-comment-meta">
+                                    {{ 'by'|trans({})|capitalize }}: {{section.creator.fullname}}
+                                </div>
+                                <div class="uk-comment-meta">
+                                    {{ 'created'|trans({})|capitalize }}: {{section.creationDate|date("d.m.Y H:i")}}
+                                </div>
+                                <div class="uk-comment-meta">
+                                    {{ 'last changed'|trans({})|capitalize }}: {{section.modificationDate|date("d.m.Y H:i")}}
+                                </div>
+                                <div class="uk-comment-meta">
+                                    {{ 'edited by'|trans({})|capitalize }}: todo
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-flex">
+                            {{ section.description|raw }}
+                        </ul>
+                    </div>
                     {% endfor %}
+                    
                 </div>
                 
             </div>

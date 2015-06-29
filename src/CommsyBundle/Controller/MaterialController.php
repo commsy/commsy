@@ -85,9 +85,8 @@ class MaterialController extends Controller
         $material = $materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList()->to_array();
         
-        error_log(print_r($sectionList, true));
-        
         return array(
+            'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),
             'sectionList' => $sectionList
         );
