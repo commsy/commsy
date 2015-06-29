@@ -25,75 +25,37 @@ class DashboardFeedGenerator
         
         $authSourceManager = $legacyEnvironment->getAuthSourceManager();
         $authSource = $authSourceManager->getItem($user->getAuthSource());
-        
         $legacyEnvironment->setCurrentPortalID($authSource->getContextId());
         
+        $projectArray = array();
         $projectList = $user->getRelatedProjectList();
-        
-        $feedList = array();
-        
         $project = $projectList->getFirst();
         while ($project) {
-            $homeConfiguration = $project->getHomeConf();
-            $rubrics = array();
-            if (!empty($homeConfiguration)) {
-                $rubricConfigurations = explode(',', $homeConfiguration);
-                
-                foreach ($rubricConfigurations as $rubricConfiguration) {
-                    list($rubricName) = explode('_', $rubricConfiguration);
-                    $rubrics[] = $rubricName;
-                }
-            }
-
-            // get the lastest items matching the configured rubrics
-            $itemManager = $legacyEnvironment->getItemManager();
-            $itemManager->reset();
-            $itemManager->setContextLimit($project->getItemID());
-            $itemManager->setTypeArrayLimit($rubrics);
-            $itemManager->select();
-            $itemList = $itemManager->get();
-    
-            // TODO: group by rubric and get items chunkwise
-    
-            // iterate items and build up feed list
-            $item = $itemList->getFirst();
-            while ($item) {
-                $type = $item->getItemType();
-    
-                switch ($type) {
-                    case 'user':
-                        $userManager = $legacyEnvironment->getUserManager();
-                        $userItem = $userManager->getItem($item->getItemId());
-                        $feedList[] = $userItem;
-                        break;
-    
-                    case 'material':
-                        $materialManager = $legacyEnvironment->getMaterialManager();
-                        $materialItem = $materialManager->getItem($item->getItemId());
-                        $feedList[] = $materialItem;
-                        break;
-    
-                    case 'date':
-                        $datesManager = $legacyEnvironment->getDatesManager();
-                        $dateItem = $datesManager->getItem($item->getItemId());
-                        $feedList[] = $dateItem;
-                        break;
-    
-                    case 'discussion':
-                        $discussionManager = $legacyEnvironment->getDiscussionManager();
-                        $discussionItem = $discussionManager->getItem($item->getItemId());
-                        $feedList[] = $discussionItem;
-                        break;
-                }
-                $item = $itemList->getNext();
-            }
+            $projectArray[] = $project->getItemId();
             $project = $projectList->getNext();
+        }
+        
+        $itemManager = $legacyEnvironment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextArrayLimit($projectArray);
+        $itemManager->setTypeArrayLimit(array('user', 'material', 'date', 'discussion'));
+        $itemManager->setIntervalLimit($max + $start);
+        $itemManager->select();
+        $itemList = $itemManager->get();
+        
+        $feedList = array();
+        $item = $itemList->getFirst();
+        while ($item) {
+            $tempManager = $legacyEnvironment->getManager($item->getItemType());
+            $tempItem = $tempManager->getItem($item->getItemId());
+            $feedList[] = $tempItem;
+            $item = $itemList->getNext();
         }
         
         usort($feedList, function ($firstItem, $secondItem) {
             return ($firstItem->getModificationDate() < $secondItem->getModificationDate());
         });
         
-        return array_slice($feedList, $start, $max);
+        return $feedList;
     }
 }
