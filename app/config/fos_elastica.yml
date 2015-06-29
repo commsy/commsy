@@ -4,20 +4,39 @@ fos_elastica:
     indexes:
         commsy:
             client: default
+
+            finder: ~
+
+            settings:
+                analysis:
+                    filter:
+                        autocomplete_filter:
+                            type: edge_ngram
+                            min_gram: 1
+                            max_gram: 20
+
+                    analyzer:
+                        autocomplete:
+                            type: custom
+                            tokenizer: standard
+                            filter:
+                                - lowercase
+                                - autocomplete_filter
+
             types:
                 user:
                     indexable_callback: 'isIndexable'
                     mappings:
-                        userId : ~
-                        contextId:
-                        status:
-                        firstname:
-                        lastname:
-                        city:
+                        userId: ~
+                        contextId: ~
+                        status: ~
+                        firstname: ~
+                        lastname: ~
+                        city: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\User
-                        identifier: id
+                        identifier: itemId
                         finder: ~
                         provider: ~
                         listener: ~
@@ -25,21 +44,34 @@ fos_elastica:
                 material:
                     indexable_callback: 'isIndexable'
                     mappings:
-                        versionId:
-                        contextId:
+                        versionId: ~
+                        contextId: ~
                         title:
-                        description:
+                            type: string
+                            index_analyzer: autocomplete
+                            search_analyzer: standard
+                        description: ~
                         sections:
                             type: 'nested'
                             properties:
-                                title:
-                                description:
-                        # creator:
-                        #     type: 'object'
-                        #     properties:
-                        #         userId:
-                        # modifier:
-                        #     type: 'object'
+                                title: ~
+                                description: ~
+                        creator:
+                            type: 'object'
+                            properties:
+                                userId: ~
+                                status: ~
+                                firstname: ~
+                                lastname: ~
+                                city: ~
+                        modifier:
+                            type: 'object'
+                            properties:
+                                userId: ~
+                                status: ~
+                                firstname: ~
+                                lastname: ~
+                                city: ~
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\Materials

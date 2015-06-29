@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Elastica\Query\Filtered;
-use Elastica\Query\MatchAll;
+use Elastica\Query\MatchPhrasePrefix;
 use Elastica\Filter\Term;
 use Elastica\Filter\Range;
 use Elastica\Filter\Bool;
@@ -42,31 +42,24 @@ class SearchController extends Controller
         $query = $request->get('search', null);
 
         if ($query) {
-            $finder = $this->get('fos_elastica.finder.commsy.user');
 
-            $boolFilter = new Bool();
+            $searchBuilder = $this->get('commsy.search_builder');
+            $searchBuilder->setQuery($query);
+            $searchBuilder->setContext($roomId);
 
-            $contextTerm = new Term();
-            $contextTerm->setTerm('contextId', $roomId);
-            $boolFilter->addMust($contextTerm);
-
-            $boolFilter->addMust(new Range('status', array('gte' => 2)));
-
-            $filteredQuery = new Filtered();
-            $filteredQuery->setQuery(new MatchAll());
-            $filteredQuery->setFilter($boolFilter);
-
+            //
+            $searchBuilder->setRubric('material');
+            //
             
-
-            $users = $finder->find($filteredQuery);
+            $materials = $searchBuilder->getResults();
 
             $dataset = array();
 
-            foreach ($users as $user) {
-                $username = $user->getFirstname() . ' ' . $user->getLastname();
+            foreach ($materials as $material) {
+                // $username = $user->getFirstname() . ' ' . $user->getLastname();
 
                 $dataset = array(
-                    'title' => $username,
+                    'title' => $material->getTitle(),
                     'text' => '',
                     'url' => '#',
                 );

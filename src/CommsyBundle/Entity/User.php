@@ -21,7 +21,7 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    public $id = '0';
+    public $itemId = '0';
 
     /**
      * @var integer
@@ -162,18 +162,6 @@ class User
      * @ORM\Column(name="expire_date", type="datetime", nullable=true)
      */
     private $expireDate;
-
-
-
-    /**
-     * Get id
-     *
-     * @return integer
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * Set contextId
@@ -658,5 +646,15 @@ class User
     public function isIndexable()
     {
         return ($this->deleterId == null && $this->deletionDate == null);
+    }
+
+    /**
+     * Get itemId
+     *
+     * @return integer
+     */
+    public function getItemId()
+    {
+        return $this->itemId;
     }
 }
