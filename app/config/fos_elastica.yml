@@ -6,13 +6,44 @@ fos_elastica:
             client: default
             types:
                 user:
+                    indexable_callback: 'isIndexable'
                     mappings:
-                        id:
-                            type: integer
                         userId : ~
+                        contextId:
+                        status:
+                        firstname:
+                        lastname:
+                        city:
                     persistence:
                         driver: orm
                         model: CommsyBundle\Entity\User
+                        identifier: id
+                        finder: ~
+                        provider: ~
+                        listener: ~
+
+                material:
+                    indexable_callback: 'isIndexable'
+                    mappings:
+                        versionId:
+                        contextId:
+                        title:
+                        description:
+                        sections:
+                            type: 'nested'
+                            properties:
+                                title:
+                                description:
+                        # creator:
+                        #     type: 'object'
+                        #     properties:
+                        #         userId:
+                        # modifier:
+                        #     type: 'object'
+                    persistence:
+                        driver: orm
+                        model: CommsyBundle\Entity\Materials
+                        identifier: itemId
                         finder: ~
                         provider: ~
                         listener: ~
