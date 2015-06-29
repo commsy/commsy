@@ -5,7 +5,7 @@ use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class MaterialManager
+class MaterialService
 {
     private $legacyEnvironment;
 
