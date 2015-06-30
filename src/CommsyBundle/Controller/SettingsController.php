@@ -14,7 +14,7 @@ use CommsyBundle\Form\Type\GeneralSettingsType;
 class SettingsController extends Controller
 {
     /**
-    * @Route("/room/{roomId}/settings/")
+    * @Route("/room/{roomId}/settings")
     * @Template
     * @Security("is_granted('MODERATOR')")
     */
