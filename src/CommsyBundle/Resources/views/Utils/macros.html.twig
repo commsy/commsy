@@ -39,3 +39,29 @@
         {{ 'moderator'|trans({})|capitalize }}
     {% endif %}
 {% endmacro %}
+
+{% macro detailInformation(item) %}
+    <a class="toggle-{{ item.itemId }}" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-info"></i> {{ 'information'|trans({}) }}</a>
+    <a class="toggle-{{ item.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-angle-up"></i> {{ 'show less'|trans({}) }}</a>
+    <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
+        <div class="uk-margin-right">
+            <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
+            </a>
+        </div>
+        <div>
+            <div class="uk-comment-meta">
+                {{ 'by'|trans({})|capitalize }}: {{item.creator.fullname}}
+            </div>
+            <div class="uk-comment-meta">
+                {{ 'created'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}
+            </div>
+            <div class="uk-comment-meta">
+                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+            </div>
+            <div class="uk-comment-meta">
+                {{ 'editors'|trans({})|capitalize }}: todo
+            </div>
+        </div>
+    </div>
+{% endmacro %}
