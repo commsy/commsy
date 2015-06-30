@@ -35,8 +35,40 @@ class MenuBuilder
 
     public function createSettingsMenu(RequestStack $requestStack)
     {
+        // get room Id
+        $currentStack = $requestStack->getCurrentRequest();
+        $roomId = $currentStack->attributes->get('roomId');
+
         // create root item
         $menu = $this->factory->createItem('root');
+
+        if ($roomId) {
+            // dashboard
+            $menu->addChild('dashboard', array(
+                'label' => 'Dashboard',
+                'route' => 'commsy_settings_dashboard',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small')
+            ));
+
+            // general settings
+            $menu->addChild('general', array(
+                'label' => 'General',
+                'route' => 'commsy_settings_general',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-server uk-icon-small')
+            ));
+        }
+        
+        // identifier
+        
+        // moderation
+        
+        // additional
+        
+        // extensions
+        
+        // plugins
 
         return $menu;
     }
