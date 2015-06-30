@@ -30,7 +30,8 @@
                 Profile
             </div>
 
-            {{ knp_menu_render('main') }}
+            {% block side_navigation %}
+            {% endblock %}
 
         </div>
 
@@ -55,9 +56,11 @@
                             <li>
                                 <a href="#"><i class="uk-icon-bell-o"></i></a>
                             </li>
-                            <li>
-                                <a href="#"><i class="uk-icon-wrench"></i></a>
-                            </li>
+                            {% if is_granted('MODERATOR') %}
+                                <li>
+                                    <a href="{{ path('commsy_settings_dashboard', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-wrench"></i></a>
+                                </li>
+                            {% endif %}
                         </ul>
                     </div>
 
@@ -79,10 +82,8 @@
             </nav>
 
             <!-- breadcrumb -->
-            {{ knp_menu_render('breadcrumb', 
-                {'template': 'CommsyBundle:Menu:knp_menu_breadcrumb.html.twig', 
-                'currentAsLink':false}) 
-            }}
+            {% block breadcrumb %}
+            {% endblock %}
 
             <!-- cover -->
             {% block cover %}
