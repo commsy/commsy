@@ -263,9 +263,12 @@ function toggleUmlautTempBack($value) {
 function mb_unserialize($serial_str) {
    $retour = @unserialize($serial_str);
    if ( empty($retour) ) {
-        $serial_str = preg_replace_callback('!s:(\d+):"(.*?)";!s', function($match) {
-            return 's:' . strlen($match[2]) . ':\"' . $match[2] . '\";';
-        }, $serial_str);
+        $serial_str = preg_replace_callback('/s:(\d+):"(.*?)";/s', function($match) {
+            $length = strlen($match[2]);
+            $data = $match[2];
+
+            return "s:$length:\"$data\";";
+        }, $serial_str );
 
         $retour = @unserialize($serial_str);
         if ( empty($retour) ) {

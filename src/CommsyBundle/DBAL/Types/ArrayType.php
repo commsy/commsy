@@ -19,9 +19,12 @@ class ArrayType extends BaseType
 
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
 
-        $value = preg_replace_callback('!s:(\d+):"(.*?)";!s', function($match) {
-            return 's:' . strlen($match[2]) . ':\"' . $match[2] . '\";';
-        }, $value);
+        $value = preg_replace_callback('/s:(\d+):"(.*?)";/s', function($match) {
+            $length = strlen($match[2]);
+            $data = $match[2];
+
+            return "s:$length:\"$data\";";
+        }, $value );
 
         $val = unserialize($value);
         if ($val === false && $value != 'b:0;') {
