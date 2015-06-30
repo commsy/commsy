@@ -318,7 +318,16 @@ class cs_guide_list_view extends cs_list_view_plain {
          $current_user = $this->_environment->getCurrentUserItem();
          $may_enter = $item->mayEnter($current_user);
          if ($may_enter) {
-            $html .= ahref_curl($item->getItemID(),'home','index','','<img src="images/door_open_small.gif" alt="door open" style="vertical-align: middle;"/>');
+
+            global $symfonyContainer;
+            $router = $symfonyContainer->get('router');
+
+            $url = $router->generate(
+                'commsy_room_home',
+                array('roomId' => $item->getItemID())
+            );
+
+            $html .= '<a href="' . $url . '"><img src="images/door_open_small.gif" alt="door open" style="vertical-align: middle;"/></a>';
          } else {
             $html .= '<img src="images/door_closed_small.gif" alt="door closed" style="vertical-align: middle;"/>';
          }

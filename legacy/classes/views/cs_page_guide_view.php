@@ -671,32 +671,34 @@ class cs_page_guide_view extends cs_page_view {
          $may_enter = $item->mayEnter($current_user);
          // Eintritt erlaubt
          if ( $may_enter and ( ( !empty($room_user) and $room_user->isUser() ) or $current_user->isRoot() ) ) {
-            $actionCurl = curl( $item->getItemID(),
-                             'home',
-                             'index',
-                             '');
-            $html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
-            $actionCurl = curl( $item->getItemID(),
-                             'home',
-                             'index',
-                             '');
-         $html .= '<div style="padding-top:8px;">&nbsp;</div>'.BRLF;
+                global $symfonyContainer;
+                $router = $symfonyContainer->get('router');
+
+                $actionCurl = $router->generate(
+                    'commsy_room_home',
+                    array('roomId' => $item->getItemID())
+                );
+
+                $html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
+                $html .= '<div style="padding-top:8px;">&nbsp;</div>'.BRLF;
+
          //als Gast Zutritt erlaubt, aber kein Mitglied
          } elseif ( $item->isLocked() ) {
             $html .= '<img src="images/door_closed_large.gif" alt="door closed" />'.LF;
+
          } elseif ( $item->isOpenForGuests()
                     and empty($room_user)
                   ) {
-            $actionCurl = curl( $item->getItemID(),
-                             'home',
-                             'index',
-                             '');
-            $html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
-            $actionCurl = curl( $item->getItemID(),
-                             'home',
-                             'index',
-                             '');
-            $html .= '<div style="padding-top:5px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
+                global $symfonyContainer;
+                $router = $symfonyContainer->get('router');
+
+                $actionCurl = $router->generate(
+                    'commsy_room_home',
+                    array('roomId' => $item->getItemID())
+                );
+
+                $html .= '<a class="room_window" href="'.$actionCurl.'"><img src="images/door_open_large.gif" alt="door open" /></a>'.BRLF;
+                $html .= '<div style="padding-top:5px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
             if ( $item->isOpen()
                  and !$this->_current_user->isOnlyReadUser()
                ) {
