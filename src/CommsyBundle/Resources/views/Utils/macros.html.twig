@@ -77,6 +77,12 @@
     </div>
 {% endmacro %}
 
-{% macro statusBadge(item) %}
-    <div class="uk-panel-badge uk-badge">todo</div>
+{% macro statusBadge(readerList, itemId) %}
+    {% if readerList[itemId] is defined %}
+        {% if readerList[itemId] == 'new' %}
+            <div class="uk-panel-badge uk-badge uk-badge-danger">new</div>
+        {% elseif readerList[itemId] == 'changed' %}
+            <div class="uk-panel-badge uk-badge uk-badge-warning">changed</div>
+        {% endif %}
+    {% endif %}
 {% endmacro %}

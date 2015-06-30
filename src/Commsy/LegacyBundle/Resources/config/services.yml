@@ -73,3 +73,7 @@ services:
     commsy.noticed_service:
         class: Commsy\LegacyBundle\Utils\NoticedService
         arguments: ["@commsy_legacy.environment"]
+        
+    commsy.reader_service:
+        class: Commsy\LegacyBundle\Utils\ReaderService
+        arguments: ["@commsy_legacy.environment"]

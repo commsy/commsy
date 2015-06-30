@@ -194,6 +194,7 @@ class cs_noticed_manager {
                   $this->_noticed_id_array[$rs['item_id']]['read_date'] = $rs['read_date'];
                }
             }
+            return $this->_noticed_id_array;
          }
       }
    }

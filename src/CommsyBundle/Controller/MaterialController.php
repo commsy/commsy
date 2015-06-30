@@ -85,20 +85,28 @@ class MaterialController extends Controller
         $material = $materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList()->to_array();
         
-        $noticedIdArray = array($material->getItemId());
-        foreach ($sectionList as $section) {
-            $noticedIdArray[] = $section->getItemId();
+        $itemArray = array($material);
+        $itemArray = array_merge($itemArray, $sectionList);
+
+        $readerService = $this->get('commsy.reader_service');
+        
+        $readerList = array();
+        foreach ($itemArray as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$itemId] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$itemId] = 'changed';
+            }
         }
-        
-        $legacyEnvironment = $this->get('commsy_legacy.environment');
-        
-        $noticedService = $this->get('commsy.noticed_service');
-        $noticedList = $noticedService->getLatestNoticedByIDArrayAndUser($noticedIdArray, $legacyEnvironment->getEnvironment()->getCurrentUserID());
-        
+
+        dump($readerList);
+
         return array(
             'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),
-            'sectionList' => $sectionList
+            'sectionList' => $sectionList,
+            'readerList' => $readerList
         );
     }
 }

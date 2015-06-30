@@ -150,6 +150,7 @@ class cs_reader_manager {
                   $this->_reader_id_array[$rs['item_id']]['read_date'] = $rs['read_date'];
                }
             }
+            return $this->_reader_id_array;
          }
       }
    }
