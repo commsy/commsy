@@ -33,6 +33,14 @@ class MenuBuilder
         $this->userService = $userService;
     }
 
+    public function createSettingsMenu(RequestStack $requestStack)
+    {
+        // create root item
+        $menu = $this->factory->createItem('root');
+
+        return $menu;
+    }
+
     public function createMainMenu(RequestStack $requestStack)
     {
         // get room id

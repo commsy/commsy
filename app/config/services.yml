@@ -24,23 +24,3 @@ services:
         class: Twig_Extensions_Extension_Text
         tags:
             - { name: twig.extension }
-
-    app.menu_builder:
-        class: CommsyBundle\Menu\MenuBuilder
-        arguments: ["@knp_menu.factory", "@commsy.room_service", "@commsy_legacy.environment", "@commsy.user_service"]
-
-    app.main_menu:
-        class: Knp\Menu\MenuItem # the service definition requires setting the class
-        factory_service: app.menu_builder
-        factory_method: createMainMenu
-        arguments: ["@request_stack"]
-        tags:
-            - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu
-
-    app.breadcrumb_menu:
-          class: Knp\Menu\MenuItem
-          factory_service: app.menu_builder
-          factory_method: createBreadcrumbMenu
-          arguments: ["@request_stack"]
-          tags:
-              - { name: knp_menu.menu, alias: breadcrumb }
