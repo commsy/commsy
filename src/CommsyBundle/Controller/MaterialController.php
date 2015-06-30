@@ -85,6 +85,16 @@ class MaterialController extends Controller
         $material = $materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList()->to_array();
         
+        $noticedIdArray = array($material->getItemId());
+        foreach ($sectionList as $section) {
+            $noticedIdArray[] = $section->getItemId();
+        }
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment');
+        
+        $noticedService = $this->get('commsy.noticed_service');
+        $noticedList = $noticedService->getLatestNoticedByIDArrayAndUser($noticedIdArray, $legacyEnvironment->getEnvironment()->getCurrentUserID());
+        
         return array(
             'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),

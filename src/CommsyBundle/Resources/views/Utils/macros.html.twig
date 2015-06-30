@@ -41,27 +41,42 @@
 {% endmacro %}
 
 {% macro detailInformation(item) %}
-    <a class="toggle-{{ item.itemId }}" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-info"></i> {{ 'information'|trans({}) }}</a>
-    <a class="toggle-{{ item.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-angle-up"></i> {{ 'show less'|trans({}) }}</a>
-    <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
-        <div class="uk-margin-right">
-            <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
-                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
-            </a>
+    <div class="uk-margin-bottom">
+        <div class="toggle-{{ item.itemId }} uk-vertical-align">
+            <div class="uk-margin-right uk-vertical-align-middle">
+                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
+                </a>
+            </div>
+            <div class="uk-vertical-align-middle uk-margin-remove">
+                <a class="toggle-{{ item.itemId }}" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show more'|trans({}) }}</a>
+            </div>
         </div>
-        <div>
-            <div class="uk-comment-meta">
-                {{ 'by'|trans({})|capitalize }}: {{item.creator.fullname}}
+        <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
+            <div class="uk-margin-right">
+                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
+                </a>
             </div>
-            <div class="uk-comment-meta">
-                {{ 'created'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}
-            </div>
-            <div class="uk-comment-meta">
-                {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
-            </div>
-            <div class="uk-comment-meta">
-                {{ 'editors'|trans({})|capitalize }}: todo
+            <div>
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{item.creator.fullname}}
+                </div>
+                <div class="uk-comment-meta">
+                    {{ 'created'|trans({})|capitalize }}: {{item.creationDate|date("d.m.Y H:i")}}
+                </div>
+                <div class="uk-comment-meta">
+                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+                </div>
+                <div class="uk-comment-meta">
+                    {{ 'editors'|trans({})|capitalize }}: todo
+                </div>
+                <a class="toggle-{{ item.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
             </div>
         </div>
     </div>
+{% endmacro %}
+
+{% macro statusBadge(item) %}
+    <div class="uk-panel-badge uk-badge">todo</div>
 {% endmacro %}
