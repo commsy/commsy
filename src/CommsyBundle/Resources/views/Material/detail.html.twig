@@ -6,7 +6,7 @@
     <div class="uk-grid">
 
         <div class="uk-width-medium-2-3">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ material.title }}</div>
@@ -20,19 +20,17 @@
 
                 <div id="material-info" class="uk-overflow-container">
                 
-                    <div class="uk-panel uk-panel-divider">
+                    <div class="uk-panel">
+                        {{ macros.statusBadge(material) }}
                         {{ macros.detailInformation(material) }}
                     </div>
                 
                 
-                    <div class="uk-panel uk-panel-divider">
-                        <div class="uk-panel-badge uk-badge">todo</div>
-                        <h3 class="uk-panel-title">{{ 'description'|trans({})|capitalize }}</h3>
+                    <div class="uk-panel uk-margin-bottom">
                         {{ material.description|raw }}</td>
                     </div>
                     
-                    <div class="uk-panel uk-panel-divider">
-                        <div class="uk-panel-badge uk-badge">todo</div>
+                    <div class="uk-panel">
                         <h3 class="uk-panel-title">{{ 'sections'|trans({})|capitalize }}:</h3>
                         <ul>
                         {% for section in sectionList %}
@@ -45,7 +43,7 @@
                         <div class="uk-panel uk-panel-divider">
                             <a name="{{ section.itemId }}"></a>
                             <div class="uk-panel">
-                                <div class="uk-panel-badge uk-badge uk-badge-success">todo</div>
+                                {{ macros.statusBadge(section) }}
                                 <h3 class="uk-panel-title">{{ section.title }}</h3>
                                 {{ macros.detailInformation(section) }}
                             </div>
