@@ -28,6 +28,13 @@ services:
         tags:
             - { name: security.voter }
 
+    commsy.security.user_voter:
+        class: CommsyBundle\Security\Authorization\Voter\UserVoter
+        arguments: [@commsy_legacy.environment]
+        public: false
+        tags:
+            - { name: security.voter }
+
     # Search
     commsy.search_builder:
         class: CommsyBundle\Search\SearchBuilder
