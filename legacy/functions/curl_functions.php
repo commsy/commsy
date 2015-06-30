@@ -147,14 +147,6 @@ function curl( $context_id, $module, $function, $parameter, $fragment='', $fileh
  */
 function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragment='', $filehack='', $file='' ) {
     global $environment;
-    
-    if ($module == 'home' && $function == 'index' && empty($parameter)) {
-        $room_manager = $environment->getRoomManager();
-        $temp_room = $room_manager->getItem($context_id);
-        if ($temp_room) {
-            return '/commsy.php/room/'.$context_id;
-        }
-    }
    
    if ( empty($file) ) {
       $address = mb_substr($_SERVER['SCRIPT_NAME'],mb_strrpos($_SERVER['SCRIPT_NAME'],'/')+1);

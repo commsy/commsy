@@ -13,6 +13,35 @@ services:
         class: CommsyBundle\Converter\RoomConverter
         arguments: [@doctrine.orm.entity_manager]
 
+    # Menu
+    commsy.menu.builder:
+        class: CommsyBundle\Menu\MenuBuilder
+        arguments: ["@knp_menu.factory", "@commsy.room_service", "@commsy_legacy.environment", "@commsy.user_service"]
+
+    commsy.menu.main:
+        class: Knp\Menu\MenuItem # the service definition requires setting the class
+        factory_service: commsy.menu.builder
+        factory_method: createMainMenu
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: main } # The alias is what is used to retrieve the menu
+
+    commsy.menu.settings:
+        class: Knp\Menu\MenuItem
+        factory_service: commsy.menu.builder
+        factory_method: createSettingsMenu
+        arguments: [@request_stack]
+        tags:
+            - { name: knp_menu.menu, alias: settings }
+
+    commsy.menu.breadcrumb:
+          class: Knp\Menu\MenuItem
+          factory_service: commsy.menu.builder
+          factory_method: createBreadcrumbMenu
+          arguments: ["@request_stack"]
+          tags:
+              - { name: knp_menu.menu, alias: breadcrumb }
+
     # Voter
     commsy.security.category_voter:
         class: CommsyBundle\Security\Authorization\Voter\CategoryVoter
@@ -24,6 +53,13 @@ services:
     commsy.security.item_voter:
         class: CommsyBundle\Security\Authorization\Voter\ItemVoter
         arguments: [@commsy_legacy.environment, @commsy.item_service]
+        public: false
+        tags:
+            - { name: security.voter }
+
+    commsy.security.user_voter:
+        class: CommsyBundle\Security\Authorization\Voter\UserVoter
+        arguments: [@commsy_legacy.environment]
         public: false
         tags:
             - { name: security.voter }
