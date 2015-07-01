@@ -131,7 +131,7 @@
 
 {% macro fileListShort(item) %}
     {% import _self as macros %}
-    {% if not item.itemType == 'material' %}
+    {% if item.itemType != 'material' %}
         {% set fileArray = item.fileList.to_array %}
     {% else %}
         {% set fileArray = item.fileListWithFilesFromSections.to_array %}
