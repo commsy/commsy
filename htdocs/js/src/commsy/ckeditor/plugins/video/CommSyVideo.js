@@ -459,7 +459,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 														}
 													}
 												}
-											},
+											}
 										]
 									},
 									{
@@ -555,7 +555,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 													if ( !isValid )
 														alert( 'invalid height' );
 													return isValid;
-												},
+												}
 											},
 											{
 												id: 'ratioLock',
@@ -698,7 +698,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 														}
 													}
 												}
-											},
+											}
 										]
 									},
 									{
@@ -712,20 +712,14 @@ CKEDITOR.plugins.add( "CommSyVideo",
 												id : 'startAt',
 												width : '60px',
 												label : 'Startpunkt in Sekunden (Funktioniert nur bei Youtube Videos)',
-												'default' : '',
+												'default' : ''
 											}
 
 										]
 									}
 									
 								]
-							},
-							
-//							{
-//								id:	'tab2',
-//								label: 'internal Video',
-//								title: 'blaaaa',
-//							}
+							}
 						],
 						onShow: function() {
 							// set all values for input fields
@@ -765,7 +759,7 @@ CKEDITOR.plugins.add( "CommSyVideo",
 
 							// #########################################################
 							// define styles
-							var float = this.getValueOf( 'videoTab', 'float');
+							var tabFloat = this.getValueOf( 'videoTab', 'float');
 							var floatValue = '';
 							
 							var style,
@@ -788,9 +782,9 @@ CKEDITOR.plugins.add( "CommSyVideo",
 								style += 'margin-right:' + verticalMargin + 'px;';
 							}
 							
-							if(float != 'null' && float == 'right'){
+							if(tabFloat != 'null' && tabFloat == 'right'){
 								style += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
+							} else if (tabFloat != 'null' && tabFloat == 'left') {
 								style += 'float:left;';
 							}
 							style += '"';

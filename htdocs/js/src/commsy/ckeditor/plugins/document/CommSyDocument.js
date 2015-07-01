@@ -200,7 +200,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 													    id: 'uploadButton',
 													    filebrowser: 'documentTab:documentUrl',
 													    label: 'Hochladen',
-													    'for': [ 'documentTab', 'upload' ],
+													    'for': [ 'documentTab', 'upload' ]
 													}
 												]
 											}
@@ -302,21 +302,21 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												id : 'border',
 												width : '60px',
 												label : 'Rahmen',
-												'default' : '',
+												'default' : ''
 											},
 											{
 												type : 'text',
 												id : 'marginH',
 												width : '60px',
 												label : 'H-Abstand',
-												'default' : '',
+												'default' : ''
 											},
 											{
 												type : 'text',
 												id : 'marginV',
 												width : '60px',
 												label : 'V-Abstand',
-												'default' : '',
+												'default' : ''
 											}
 										]
 									},
