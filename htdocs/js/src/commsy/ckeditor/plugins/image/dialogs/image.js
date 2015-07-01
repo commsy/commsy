@@ -522,7 +522,7 @@
 											    id: 'uploadButton',
 											    filebrowser: 'info:txtUrl',
 											    label: 'Hochladen',
-											    'for': [ 'info', 'upload' ],
+											    'for': [ 'info', 'upload' ]
 											}
 										]
 									}

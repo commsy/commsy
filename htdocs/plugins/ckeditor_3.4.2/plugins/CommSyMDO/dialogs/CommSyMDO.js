@@ -200,7 +200,7 @@ CKEDITOR.dialog.add( 'CommSyMDO', function( editor )
 					expand : false,
 					padding : 0,
 					elements : [
-				            commsyMDOSearch,
+				            commsyMDOSearch
 						]
 				},
 				{
