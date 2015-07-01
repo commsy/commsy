@@ -40,7 +40,7 @@
     {% endif %}
 {% endmacro %}
 
-{% macro detailInformation(item) %}
+{% macro detailInformation(item, modifierList) %}
     <div class="uk-margin-bottom">
         <div class="toggle-{{ item.itemId }} uk-vertical-align">
             <div class="uk-margin-right uk-vertical-align-middle">
@@ -54,11 +54,11 @@
         </div>
         <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
             <div class="uk-margin-right">
-                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}" title="{{ item.creator.fullname }}">
                     <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
                 </a>
             </div>
-            <div>
+            <div class="uk-margin-right">
                 <div class="uk-comment-meta">
                     {{ 'by'|trans({})|capitalize }}: {{item.creator.fullname}}
                 </div>
@@ -68,11 +68,24 @@
                 <div class="uk-comment-meta">
                     {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
                 </div>
-                <div class="uk-comment-meta">
-                    {{ 'editors'|trans({})|capitalize }}: todo
-                </div>
                 <a class="toggle-{{ item.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
             </div>
+            {% if modifierList[item.itemId] is defined %}
+                {% if not modifierList[item.itemId] is empty %}
+                    <div class="uk-margin-right">
+                        <div class="uk-comment-meta">
+                            {{ 'additional\neditors'|trans({})|capitalize|nl2br }}:
+                        </div>
+                    </div>
+                    {% for modifier in modifierList[item.itemId] %}
+                        <div class="uk-margin-right">
+                            <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}" title="{{ modifier.fullname }}">
+                                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="">
+                            </a>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
         </div>
     </div>
 {% endmacro %}

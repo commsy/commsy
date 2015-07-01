@@ -43,4 +43,28 @@ class ItemService
 
         return null;
     }
+    
+    public function getEditorsForItem ($item) {
+        $user = $this->legacyEnvironment->getCurrentUserItem();
+	    $link_modifier_item_manager = $this->legacyEnvironment->getLinkModifierItemManager();
+	    $user_manager = $this->legacyEnvironment->getUserManager();
+	    $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
+	    $modifier_array = array();
+	    foreach($modifiers as $modifier_id) {
+	        $modificator = $user_manager->getItem($modifier_id);
+            $modifier_array[] = $modificator;
+	    }
+	    return $modifier_array;
+    }
+    
+    public function getAdditionalEditorsForItem ($item) {
+        $modifier_array = $this->getEditorsForItem($item);
+        $additional_modifier_array = array();
+        foreach ($modifier_array as $modifier) {
+            if ($modifier->getItemId() != $item->getCreatorId()) {
+                $additional_modifier_array[] = $modifier;
+            }
+        }
+        return $additional_modifier_array;
+    }
 }

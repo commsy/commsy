@@ -22,7 +22,7 @@
                 
                     <div class="uk-panel">
                         {{ macros.statusBadge(readerList, material.itemId) }}
-                        {{ macros.detailInformation(material) }}
+                        {{ macros.detailInformation(material, modifierList) }}
                     </div>
                 
                 
@@ -45,7 +45,7 @@
                             <div class="uk-panel">
                                 {{ macros.statusBadge(section) }}
                                 <h3 class="uk-panel-title">{{ section.title }}</h3>
-                                {{ macros.detailInformation(section) }}
+                                {{ macros.detailInformation(section, modifierList) }}
                             </div>
                             <div class="uk-panel">
                                 {{ section.description|raw }}

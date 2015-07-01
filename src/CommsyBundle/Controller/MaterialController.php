@@ -81,6 +81,7 @@ class MaterialController extends Controller
     public function detailAction($roomId, $itemId, Request $request)
     {
         $materialService = $this->get('commsy_legacy.material_service');
+        $itemService = $this->get('commsy.item_service');
         
         $material = $materialService->getMaterial($itemId);
         $sectionList = $material->getSectionList()->to_array();
@@ -91,22 +92,26 @@ class MaterialController extends Controller
         $readerService = $this->get('commsy.reader_service');
         
         $readerList = array();
+        $modifierList = array();
         foreach ($itemArray as $item) {
             $reader = $readerService->getLatestReader($item->getItemId());
             if ( empty($reader) ) {
-               $readerList[$itemId] = 'new';
+               $readerList[$item->getItemId()] = 'new';
             } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$itemId] = 'changed';
+               $readerList[$item->getItemId()] = 'changed';
             }
+            
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
 
-        dump($readerList);
+        dump($modifierList);
 
         return array(
             'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),
             'sectionList' => $sectionList,
-            'readerList' => $readerList
+            'readerList' => $readerList,
+            'modifierList' => $modifierList
         );
     }
 }
