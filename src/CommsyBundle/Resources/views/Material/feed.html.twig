@@ -1,3 +1,5 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
 {% if not materials is empty %}
     {% for material in materials %}
         <article class="uk-comment">
@@ -29,6 +31,10 @@
     
                     <div class="uk-comment-meta">
                         {{ 'last changed'|trans({})|capitalize }}: {{material.getModificationDate|date("d.m.Y H:i")}}
+                    </div>
+                    
+                    <div class="uk-comment-meta">
+                        {{  macros.fileListShort(material) }}
                     </div>
                 </div>
             </header>

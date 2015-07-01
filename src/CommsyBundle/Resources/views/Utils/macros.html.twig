@@ -45,7 +45,7 @@
         <div class="toggle-{{ item.itemId }} uk-vertical-align">
             <div class="uk-margin-right uk-vertical-align-middle">
                 <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
                 </a>
             </div>
             <div class="uk-vertical-align-middle uk-margin-remove">
@@ -54,8 +54,8 @@
         </div>
         <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
             <div class="uk-margin-right">
-                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}" title="{{ item.creator.fullname }}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="">
+                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
                 </a>
             </div>
             <div class="uk-margin-right">
@@ -79,8 +79,8 @@
                     </div>
                     {% for modifier in modifierList[item.itemId] %}
                         <div class="uk-margin-right">
-                            <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}" title="{{ modifier.fullname }}">
-                                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="">
+                            <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
+                                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="" data-uk-tooltip title="{{ modifier.fullname }}">
                             </a>
                         </div>
                     {% endfor %}
@@ -93,9 +93,52 @@
 {% macro statusBadge(readerList, itemId) %}
     {% if readerList[itemId] is defined %}
         {% if readerList[itemId] == 'new' %}
-            <div class="uk-panel-badge uk-badge uk-badge-danger">new</div>
+            <div class="uk-panel-badge uk-badge uk-badge-danger">{{ 'new'|trans({})|capitalize }}</div>
         {% elseif readerList[itemId] == 'changed' %}
-            <div class="uk-panel-badge uk-badge uk-badge-warning">changed</div>
+            <div class="uk-panel-badge uk-badge uk-badge-warning">{{ 'changed'|trans({})|capitalize }}</div>
         {% endif %}
+    {% endif %}
+{% endmacro %}
+
+{% macro iconClassForFileType(type) %}
+    {% if type == 'xls' %}
+        uk-icon-file-excel-o
+    {% elseif type == 'docx' or type == 'doc' or type == 'ods' %}
+        uk-icon-file-word-o
+    {% elseif type == 'pptx' or type == 'ppt' %}
+        uk-icon-file-powerpoint-o
+    {% elseif type == 'pdf' %}
+        uk-icon-file-pdf-o
+    {% elseif type == 'zip' %}
+        uk-icon-file-archive-o
+    {% else %}
+        uk-icon-question
+    {% endif %}
+{% endmacro %}
+
+{% macro fileList(item) %}
+    {% import _self as macros %}
+    {% set fileArray = item.fileList.to_array %}
+    {% if not fileArray is empty %}
+        {{ 'files'|trans({})|capitalize }}:
+        <ul class="uk-list">
+        {% for file in fileArray %}
+            <li><i class="{{ macros.iconClassForFileType(file.extension) }}"></i> <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro fileListShort(item) %}
+    {% import _self as macros %}
+    {% if not item.itemType == 'material' %}
+        {% set fileArray = item.fileList.to_array %}
+    {% else %}
+        {% set fileArray = item.fileListWithFilesFromSections.to_array %}
+    {% endif %}
+    {% if not fileArray is empty %}
+        {% for file in fileArray %}
+            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></a>
+        {% endfor %}
     {% endif %}
 {% endmacro %}

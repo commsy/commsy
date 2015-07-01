@@ -30,6 +30,7 @@
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% endif %}
                     <div class="uk-comment-meta">{{ 'last changed'|trans({})|capitalize }}: {{feedItem.getModificationDate|date("d.m.Y H:i")}}</div>
+                    <div class="uk-comment-meta">{{  macros.fileListShort(feedItem) }}</div>
                 </div>
             </header>
         </article>
