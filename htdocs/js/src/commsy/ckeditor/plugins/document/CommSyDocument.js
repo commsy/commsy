@@ -203,7 +203,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 													    'for': [ 'documentTab', 'upload' ],
 													}
 												]
-											},	
+											}
 										]
 									},
 									{
@@ -317,7 +317,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												width : '60px',
 												label : 'V-Abstand',
 												'default' : '',
-											},
+											}
 										]
 									},
 									{
@@ -392,22 +392,12 @@ CKEDITOR.plugins.add( "CommSyDocument",
 										]
 									}
 								]
-							},
-//							{
-//								id:	'tab2',
-//								label: 'internal Video',
-//								title: 'blaaaa',
-//								elements: [{
-//									type: 'text',
-//									label: 'testststst',
-//									'default': 'helloworld!'
-//								}]
-//							}
+							}
 						],
 						onOk: function()
 						{
 							var content = '';
-							var float = this.getValueOf( 'documentTab', 'float');
+							var tabFloat = this.getValueOf( 'documentTab', 'float');
 							
 							var style = '',
 							tempStyle = '',
@@ -431,9 +421,9 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								tempStyle += 'margin-right:' + verticalMargin + 'px;';
 							}
 							
-							if(float != 'null' && float == 'right'){
+							if(tabFloat != 'null' && tabFloat == 'right'){
 								tempStyle += 'float:right;';
-							} else if (float != 'null' && float == 'left') {
+							} else if (tabFloat != 'null' && tabFloat == 'left') {
 								tempStyle += 'float:left;';
 							}
 							style += tempStyle;

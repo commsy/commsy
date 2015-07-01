@@ -6,7 +6,7 @@ define(["dojo/cookie"], function(cookie) {
                 useYTIframeAPI: false,
                 platforms: ['browser', 'android', 'ios', 'native', 'vlc', 'flash'],
                 ratio: 16/9,
-                controls: true,
+                controls: true
                 };
         return  {
                

@@ -145,17 +145,7 @@ CKEDITOR.dialog.add( 'CommSyVideo', function ( instance )
 										]
 									},
 								]
-							},
-//							{
-//								id:	'tab2',
-//								label: 'internal Video',
-//								title: 'blaaaa',
-//								elements: [{
-//									type: 'text',
-//									label: 'testststst',
-//									'default': 'helloworld!'
-//								}]
-//							}
+							}
 						],
 						onOk: function()
 						{

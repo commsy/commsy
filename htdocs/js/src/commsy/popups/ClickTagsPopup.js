@@ -75,7 +75,7 @@ define([	"dojo/_base/declare",
 							}
 						}));
 						
-					}),
+					})
 				});
 				this.tree.setupTree(Query("div.tree", this.contentNode)[0], lang.hitch(this, function(tree) {					
 					On(tree.tree, "open", lang.hitch(this, function(item, node) {
