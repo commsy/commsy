@@ -18,8 +18,23 @@ class FeedController extends Controller
         $roomFeedGenerator = $this->get('commsy.room_feed_generator');
         $feedList = $roomFeedGenerator->getFeedList($roomId, $max, $start);
 
+        $readerService = $this->get('commsy.reader_service');
+
+        $readerList = array();
+        foreach ($feedList as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+        }
+
+        dump($readerList);
+        
         return array(
-            'feedList' => $feedList
+            'feedList' => $feedList,
+            'readerList' => $readerList
         );
     }
 }
