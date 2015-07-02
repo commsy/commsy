@@ -25,18 +25,17 @@
                         {{ macros.detailInformation(material, modifierList) }}
                     </div>
                 
-                
-                    <div class="uk-panel uk-margin-bottom">
+                    <div class="uk-panel uk-margin-left uk-margin-bottom">
                         {{ material.description|raw }}</td>
                     </div>
                     
-                    <div class="uk-panel uk-margin-bottom">
+                    <div class="uk-panel uk-margin-left uk-margin-bottom">
                         {{  macros.fileList(material) }}
                     </div>
                     
-                    <div class="uk-panel">
+                    <div class="uk-panel uk-margin-left">
                         <h3 class="uk-panel-title">{{ 'sections'|trans({})|capitalize }}:</h3>
-                        <ul>
+                        <ul class="uk-list">
                         {% for section in sectionList %}
                             <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
                         {% endfor %}
@@ -51,10 +50,10 @@
                                 <h3 class="uk-panel-title">{{ section.title }}</h3>
                                 {{ macros.detailInformation(section, modifierList) }}
                             </div>
-                            <div class="uk-panel uk-margin-bottom">
+                            <div class="uk-panel uk-margin-left uk-margin-bottom">
                                 {{ section.description|raw }}
                             </div>
-                            <div class="uk-panel">
+                            <div class="uk-panel uk-margin-left">
                                 {{  macros.fileList(section) }}
                             </div>
                         </div>
