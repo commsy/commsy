@@ -20,6 +20,10 @@ class ArrayType extends BaseType
 
         $value = (is_resource($value)) ? stream_get_contents($value) : $value;
 
+        if (empty($value)) {
+            return array();
+        }
+
         $value = preg_replace_callback('/s:(\d+):"(.*?)";/s', function($match) {
             $length = strlen($match[2]);
             $data = $match[2];
