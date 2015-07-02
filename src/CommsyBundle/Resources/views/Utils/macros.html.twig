@@ -101,7 +101,7 @@
 {% endmacro %}
 
 {% macro iconClassForFileType(type) %}
-    {% if type == 'xls' %}
+    {% if type == 'xlsx' or type == 'xls' %}
         uk-icon-file-excel-o
     {% elseif type == 'docx' or type == 'doc' or type == 'ods' %}
         uk-icon-file-word-o
@@ -109,10 +109,16 @@
         uk-icon-file-powerpoint-o
     {% elseif type == 'pdf' %}
         uk-icon-file-pdf-o
-    {% elseif type == 'zip' %}
+    {% elseif type == 'zip' or type == 'ipa' %}
         uk-icon-file-archive-o
+    {% elseif type == 'png' or type == 'jpg' or type == 'eps' or type == 'gif' or type == 'svg' %}
+        uk-icon-file-image-o
+    {% elseif type == 'txt' or type == 'csv' or type == 'md' %}
+        uk-icon-file-text-o
+    {% elseif type == 'mpg' or type == 'wmv' or type == 'mp4' or type == 'avi' %}
+        uk-icon-file-movie-o
     {% else %}
-        uk-icon-question
+        uk-icon-file-o
     {% endif %}
 {% endmacro %}
 
