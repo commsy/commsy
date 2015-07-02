@@ -80,7 +80,7 @@
                         </div>
                     </div>
                     {% for modifier in modifierList[item.itemId] %}
-                        <div class="uk-margin-right">
+                        <div class="uk-margin-small-right">
                             <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
                                 <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="" data-uk-tooltip title="{{ modifier.fullname }}">
                             </a>
