@@ -30,8 +30,6 @@ class FeedController extends Controller
             }
         }
 
-        dump($readerList);
-        
         return array(
             'feedList' => $feedList,
             'readerList' => $readerList

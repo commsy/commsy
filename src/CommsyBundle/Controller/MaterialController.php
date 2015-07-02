@@ -41,9 +41,22 @@ class MaterialController extends Controller
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start);
 
+        $readerService = $this->get('commsy.reader_service');
+
+        $readerList = array();
+        foreach ($materials as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+        }
+
         return array(
             'roomId' => $roomId,
             'materials' => $materials,
+            'readerList' => $readerList
         );
     }
 
