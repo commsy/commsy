@@ -5,6 +5,8 @@
         uk-icon-calendar
     {% elseif type == 'material' %}
         uk-icon-file-o
+    {% elseif type == 'section' %}
+        uk-icon-file-o
     {% elseif type == 'discussion' %}
         uk-icon-comments-o
     {% elseif type == 'user' %}
@@ -88,16 +90,6 @@
             {% endif %}
         </div>
     </div>
-{% endmacro %}
-
-{% macro statusBadge(readerList, itemId) %}
-    {% if readerList[itemId] is defined %}
-        {% if readerList[itemId] == 'new' %}
-            <div class="uk-panel-badge uk-badge uk-badge-danger">{{ 'new'|trans({})|capitalize }}</div>
-        {% elseif readerList[itemId] == 'changed' %}
-            <div class="uk-panel-badge uk-badge uk-badge-warning">{{ 'changed'|trans({})|capitalize }}</div>
-        {% endif %}
-    {% endif %}
 {% endmacro %}
 
 {% macro statusColor(readerList, itemId) %}

@@ -21,7 +21,7 @@
                 <div id="material-info" class="uk-overflow-container">
                 
                     <div class="uk-panel">
-                        {{ macros.statusBadge(readerList, material.itemId) }}
+                        <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i></div>
                         {{ macros.detailInformation(material, modifierList) }}
                     </div>
                 
@@ -45,9 +45,9 @@
                     
                     {% for section in sectionList %}
                         <div class="uk-panel uk-panel-divider">
+                            <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(section.itemType) }} uk-icon-small {{ macros.statusColor(readerList, section.itemId) }}"></i></div>
                             <a name="{{ section.itemId }}"></a>
                             <div class="uk-panel">
-                                {{ macros.statusBadge(section) }}
                                 <h3 class="uk-panel-title">{{ section.title }}</h3>
                                 {{ macros.detailInformation(section, modifierList) }}
                             </div>
