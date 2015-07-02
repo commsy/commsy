@@ -48,7 +48,7 @@ class GroupFilterType extends AbstractType
 
     public function getName()
     {
-        return 'user_filter';
+        return 'group_filter';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
