@@ -1,0 +1,44 @@
+<div class="uk-panel uk-panel-box uk-panel-box-secondary">
+    <div class="uk-panel-teaser panel-teaser-secondary">
+
+        <div class="uk-flex uk-flex-middle uk-flex-space-between">
+            <div>
+                {{ 'Hashtags'|trans({}, 'hashtag') }}
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-external-link"></a>
+            </div>
+            <div>
+                <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#room-hashtags', animation: 'uk-animation-fade'}">
+                    <i class="uk-icon-chevron-up"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="room-hashtags" class="uk-overflow-container">
+        {% if hashtags is not empty %}
+            <ul class="uk-list uk-list-striped">
+                {% for hashtag in hashtags %}
+                    <span>
+                        {{ hashtag.name }}
+                    </span>
+                {% endfor %}
+            </ul>
+        {% else %}
+            {{ 'No Hashtags'|trans({}, 'hashtag') }}
+        {% endif %}
+        
+{#         {% if is_granted('CATEGORY_EDIT') %}
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
+
+                {{ form_errors(form.title) }}
+                <div class="uk-form-icon">
+                    <i class="uk-icon-tag"></i>
+                    {{ form_widget(form.title) }}
+                </div>
+
+                {{ form_rest(form) }}
+            {{ form_end(form) }}
+        {% endif %} #}
+    </div>
+</div>

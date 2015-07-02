@@ -109,6 +109,11 @@
             </div>
 
             {{ render(controller(
+                'CommsyBundle:Hashtag:show',
+                { 'roomId': roomItem.itemId }
+            ))}}
+
+            {{ render(controller(
                 'CommsyBundle:Category:show',
                 { 'roomId': roomItem.itemId }
             ))}}
