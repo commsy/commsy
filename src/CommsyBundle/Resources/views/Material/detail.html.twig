@@ -33,14 +33,14 @@
                         {{  macros.fileList(material) }}
                     </div>
                     
-                    <div class="uk-panel uk-margin-left">
+                    {# <div class="uk-panel uk-margin-left">
                         <h3 class="uk-panel-title">{{ 'sections'|trans({})|capitalize }}:</h3>
                         <ul class="uk-list">
                         {% for section in sectionList %}
                             <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
                         {% endfor %}
                         </ul>
-                    </div>
+                    </div> #}
                     
                     {% for section in sectionList %}
                         <div class="uk-panel uk-panel-divider">
@@ -74,14 +74,16 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            {{ 'Info'|trans({}, "room") }}
+                            {{ 'Sections'|trans({}, "room") }}
                         </div>
                     </div>
                 </div>
                 
                 <div id="user-main" class="uk-overflow-container">
                     <div class="">
-                        {{ macros.lastModified(material) }} 
+                        {% for section in sectionList %}
+                            <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
+                        {% endfor %} 
                     </div>
                 </div>
             </div>
