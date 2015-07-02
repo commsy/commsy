@@ -46,9 +46,13 @@
     <div class="uk-margin-bottom">
         <div class="toggle-{{ item.itemId }} uk-vertical-align">
             <div class="uk-margin-right uk-vertical-align-middle">
-                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                {% if item.creator.isUser %}
+                    <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
+                    </a>
+                {% else %}
                     <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
-                </a>
+                {% endif %}
             </div>
             <div class="uk-vertical-align-middle uk-margin-remove">
                 <a class="toggle-{{ item.itemId }}" data-uk-toggle="{target:'.toggle-{{ item.itemId }}', animation:'uk-animation-fade'}">{{ 'show more'|trans({}) }}</a>
@@ -56,9 +60,13 @@
         </div>
         <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
             <div class="uk-margin-right">
-                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                {% if item.creator.isUser %}
+                    <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
+                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
+                    </a>
+                {% else %}
                     <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
-                </a>
+                {% endif %}
             </div>
             <div class="uk-margin-right">
                 <div class="uk-comment-meta">
@@ -81,9 +89,13 @@
                     </div>
                     {% for modifier in modifierList[item.itemId] %}
                         <div class="uk-margin-small-right">
-                            <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
+                            {% if modifier.isUser %}
+                                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
+                                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="" data-uk-tooltip title="{{ modifier.fullname }}">
+                                </a>
+                            {% else %}
                                 <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="" data-uk-tooltip title="{{ modifier.fullname }}">
-                            </a>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 {% endif %}
