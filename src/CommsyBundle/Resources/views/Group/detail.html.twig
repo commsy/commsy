@@ -71,27 +71,10 @@
                 </div>
             </div>
 
-            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
-                <div class="uk-panel-teaser panel-teaser-secondary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-sub', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-float-left">
-                            {{ 'linked entries'|trans({}, "room")|capitalize }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="user-sub" class="uk-overflow-container">
-                    {{ render(controller(
-                        'CommsyBundle:Link:link',
-                        { 'roomId': app.request.attributes.get('roomId'), 'itemId': group.itemId }
-                    ))}}
-                </div>
-            </div>
+            {{ render(controller(
+                'CommsyBundle:Link:link',
+                { 'roomId': app.request.attributes.get('roomId'), 'itemId': group.itemId }
+            ))}}
 
         </div>
     </div>
