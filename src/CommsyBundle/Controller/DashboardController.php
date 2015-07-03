@@ -12,10 +12,10 @@ use Commsy\LegacyBundle\Services\UserService;
 class DashboardController extends Controller
 {
     /**
-     * @Route("/dashboard")
+     * @Route("/dashboard/{roomId}")
      * @Template()
      */
-    public function indexAction(Request $request)
+    public function indexAction($roomId, Request $request)
     {
         $userService = $this->get("commsy.user_service");
         $user = $userService->getPortalUserFromSessionId();

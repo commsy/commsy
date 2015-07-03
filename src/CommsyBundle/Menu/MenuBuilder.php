@@ -83,18 +83,19 @@ class MenuBuilder
 
         $roomId = $currentStack->attributes->get('roomId');
 
-        // dashboard
-        $menu->addChild('dashboard', array(
-            'label' => 'DASHBOARD',
-            'route' => 'commsy_dashboard_index',
-            'extras' => array('icon' => 'uk-icon-home uk-icon-small')
-        ));
-
-        // add divider
-        $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
-
         if ($roomId)
         {
+            // dashboard
+            $menu->addChild('dashboard', array(
+                'label' => 'DASHBOARD',
+                'route' => 'commsy_dashboard_index',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-home uk-icon-small')
+            ));
+
+            // add divider
+            $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
+
             // rubric room information
             $rubrics = $this->roomService->getRubricInformation($roomId);
             
@@ -196,11 +197,14 @@ class MenuBuilder
         // create breadcrumb menu
         $menu = $this->factory->createItem('root');
 
-        // this item will always be displayed
-        $menu->addChild('DASHBOARD', array('route' => 'commsy_dashboard_index'));
-
         $roomId = $currentStack->attributes->get('roomId');
         if ($roomId) {
+            // this item will always be displayed
+            $menu->addChild('DASHBOARD', array(
+                'route' => 'commsy_dashboard_index',
+                'routeParameters' => array('roomId' => $roomId),
+            ));
+
             $itemId = $currentStack->attributes->get('itemId');
             $roomItem = $this->roomService->getRoomItem($roomId);
     
@@ -213,7 +217,7 @@ class MenuBuilder
                 'routeParameters' => array('roomId' => $roomId)
             ));
     
-            if ($route[1] && $route[1] != "room" && $route[2] != "search") {
+            if ($route[1] && $route[1] != "room" && $route[1] != "dashboard" && $route[2] != "search") {
                 // rubric
                 $menu->addChild($route[1], array(
                     'route' => 'commsy_'.$route[1].'_'.'list',
