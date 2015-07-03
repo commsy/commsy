@@ -9,7 +9,7 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ user.fullName }}</div>
+                        <div>{{ 'user'|trans({}, "room")|capitalize }}</div>
                         <div>
                             <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-info', animation: 'uk-animation-fade'}">
                                 <i class="uk-icon-chevron-up"></i>
@@ -19,6 +19,9 @@
                 </div>
 
                 <div id="user-info" class="uk-overflow-container">
+                    <div class="uk-panel">
+                        <h3 class="uk-panel-title">{{ user.fullname }}</h3>
+                    </div>
                     <div class="uk-flex">
                         <div class="uk-margin-right">
                             <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:120px; width:120px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
@@ -111,27 +114,10 @@
                 </div>
             </div>
 
-            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
-                <div class="uk-panel-teaser panel-teaser-secondary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-sub', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-float-left">
-                            {{ 'linked entries'|trans({}, "room")|capitalize }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="user-sub" class="uk-overflow-container">
-                    {{ render(controller(
-                        'CommsyBundle:Link:link',
-                        { 'roomId': app.request.attributes.get('roomId'), 'itemId': user.itemId }
-                    ))}}
-                </div>
-            </div>
+            {{ render(controller(
+                'CommsyBundle:Link:show',
+                { 'roomId': app.request.attributes.get('roomId'), 'itemId': user.itemId }
+            ))}}
 
         </div>
     </div>

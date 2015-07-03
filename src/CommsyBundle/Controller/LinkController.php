@@ -17,7 +17,7 @@ class LinkController extends Controller
      * @Route("/room/{roomId}/link/{itemId}/{rubric}")
      * @Template()
      */
-    public function linkAction($roomId, $itemId)
+    public function showAction($roomId, $itemId)
     {
         $itemService = $this->get('commsy.item_service');
         $item = $itemService->getItem($itemId);

@@ -70,9 +70,22 @@ class UserController extends Controller
         // get material list from manager service 
         $users = $userService->getListUsers($roomId, $max, $start);
 
+        $readerService = $this->get('commsy.reader_service');
+
+        $readerList = array();
+        foreach ($users as $item) {
+            $reader = $readerService->getLatestReader($item->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+        }
+
         return array(
             'roomId' => $roomId,
             'users' => $users,
+            'readerList' => $readerList
         );
     }
     

@@ -1,6 +1,9 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
 {% if not users is empty %}
     {% for user in users %}
         <article class="uk-comment">
+            <i class="{{ macros.iconClassForItemType(user.itemType) }} uk-icon-small {{ macros.statusColor(readerList, user.itemId) }}"></i>
             <header class="uk-comment-header uk-flex">
                 <div class="users-checkbox uk-margin-right uk-hidden">
                     <form class="uk-form">
