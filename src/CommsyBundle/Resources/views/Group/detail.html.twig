@@ -72,7 +72,7 @@
             </div>
 
             {{ render(controller(
-                'CommsyBundle:Link:link',
+                'CommsyBundle:Link:show',
                 { 'roomId': app.request.attributes.get('roomId'), 'itemId': group.itemId }
             ))}}
 
