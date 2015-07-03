@@ -9,7 +9,7 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ material.title }}</div>
+                        <div>{{ 'material'|trans({}, "room")|capitalize }}</div>
                         <div>
                             <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#material-info', animation: 'uk-animation-fade'}">
                                 <i class="uk-icon-chevron-up"></i>
@@ -22,6 +22,7 @@
                 
                     <div class="uk-panel">
                         <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i></div>
+                        <h3 class="uk-panel-title">{{ material.title }}</h3>
                         {{ macros.detailInformation(material, modifierList) }}
                     </div>
                 
