@@ -81,9 +81,11 @@
                 
                 <div id="user-main" class="uk-overflow-container">
                     <div class="">
+                        <ul class="uk-list uk-list-striped">
                         {% for section in sectionList %}
                             <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
                         {% endfor %} 
+                        </ul>
                     </div>
                 </div>
             </div>
