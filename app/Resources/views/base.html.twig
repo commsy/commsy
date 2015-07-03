@@ -9,7 +9,7 @@
 
         {% block stylesheets %}
             {% stylesheets
-                'bundles/commsy/css/application.less' filter='cssrewrite' %}
+                'bundles/commsy/css/application.less' filter='cssrewrite' output='css/compiled/main.css' %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
         {% endblock %}
@@ -106,7 +106,7 @@
                 'bundles/commsy/components/uikit/js/components/grid.js'
                 'bundles/commsy/components/uikit/js/components/accordion.js'
                 'bundles/commsy/js/application.js'
-                'bundles/commsy/js/*.js' %}
+                'bundles/commsy/js/*.js' output='js/compiled/main.js' %}
                 <script src="{{ asset_url }}"></script>
             {% endjavascripts %}
         {% endblock %}

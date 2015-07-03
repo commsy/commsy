@@ -47,7 +47,6 @@ assetic:
     filters:
         cssrewrite: ~
         less:
-            class: CommsyBundle\Utils\LessNonCachedFilter
             apply_to: "\.less$"
         #lessphp:
         #    apply_to: "\.less$"

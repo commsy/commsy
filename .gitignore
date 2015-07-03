@@ -112,4 +112,7 @@ web/css/external_portal_styles/[0-9]*
 wikis/*
 web/commsy
 
+web/js/compiled/*
+web/css/compiled/*
+
 src/CommsyBundle/Resources/public/components
