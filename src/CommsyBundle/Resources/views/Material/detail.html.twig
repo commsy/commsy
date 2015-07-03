@@ -126,6 +126,16 @@
                 </div>
             </div>
 
+            {{ render(controller(
+                'CommsyBundle:Hashtag:show',
+                { 'roomId': roomId }
+            ))}}
+
+            {{ render(controller(
+                'CommsyBundle:Category:show',
+                { 'roomId': roomId }
+            ))}}
+
         </div>
     </div>
 {% endblock %}
