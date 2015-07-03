@@ -74,18 +74,31 @@
                             </a>
                         </div>
                         <div class="uk-float-left">
-                            {{ 'Sections'|trans({}, "room") }}
+                            {{ 'Sections'|trans({}, "room") }} ({{ sectionList|length }})
                         </div>
                     </div>
                 </div>
                 
                 <div id="user-main" class="uk-overflow-container">
                     <div class="">
-                        <ul class="uk-list uk-list-striped">
-                        {% for section in sectionList %}
+                        <ul class="uk-list uk-list-striped uk-margin-bottom-remove">
+                        {% for section in sectionList [0:10] %}
                             <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
-                        {% endfor %} 
+                        {% endfor %}
                         </ul>
+                        {% if sectionList|length > 10 %}
+                            <div class="show-more-sections uk-hidden">
+                                <ul class="uk-list uk-list-striped">
+                                {% for section in sectionList [10:sectionList|length-10] %}
+                                    <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="uk-margin-small">
+                                <a class="show-more-sections" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show all'|trans({}) }}</a>
+                                <a class="show-more-sections uk-hidden" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
