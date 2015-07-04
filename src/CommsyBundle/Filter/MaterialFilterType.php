@@ -35,7 +35,8 @@ class MaterialFilterType extends AbstractType
     {
         $resolver->setDefaults(array(
             'csrf_protection'   => false,
-            'validation_groups' => array('filtering') // avoid NotBlank() constraint-related message
+            'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+            'method'            => 'get',
         ));
     }
 }

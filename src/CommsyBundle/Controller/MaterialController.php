@@ -17,26 +17,8 @@ class MaterialController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $form = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
-            'method' => 'GET',
-        ));
-
-        // check query for form data
-        if ($request->query->has($form->getName())) {
-            // manually bind values from the request
-            $form->submit($request->query->get($form->getName()));
-        }
-
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
-
-        // set filter conditions in material manager
-        $materialService->setFilterConditions($form);
 
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start);
@@ -70,20 +52,23 @@ class MaterialController extends Controller
         $defaultFilterValues = array(
             'activated' => true
         );
-        $form = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+        $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
-            'method' => 'GET',
         ));
 
-        // check query for form data
-        if ($request->query->has($form->getName())) {
-            // manually bind values from the request
-            $form->submit($request->query->get($form->getName()));
+        // get the material manager service
+        $materialService = $this->get('commsy_legacy.material_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $materialService->setFilterConditions($filterForm);
         }
 
         return array(
             'roomId' => $roomId,
-            'form' => $form->createView(),
+            'form' => $filterForm->createView(),
         );
     }
 
