@@ -68,3 +68,10 @@ services:
     commsy.search_builder:
         class: CommsyBundle\Search\SearchBuilder
         arguments: [@fos_elastica.finder.commsy.material]
+
+    # Form
+    commsy.form.type.general_settings:
+        class: CommsyBundle\Form\Type\GeneralSettingsType
+        arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
+        tags:
+            - { name: form.type, alias: general_settings }

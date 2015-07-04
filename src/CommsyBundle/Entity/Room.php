@@ -3,12 +3,13 @@
 namespace CommsyBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Room
  *
  * @ORM\Table(name="room", indexes={@ORM\Index(name="context_id", columns={"context_id"}), @ORM\Index(name="creator_id", columns={"creator_id"}), @ORM\Index(name="type", columns={"type"}), @ORM\Index(name="activity", columns={"activity"}), @ORM\Index(name="deleter_id", columns={"deleter_id"}), @ORM\Index(name="deletion_date", columns={"deletion_date"}), @ORM\Index(name="room_description", columns={"room_description"}), @ORM\Index(name="contact_persons", columns={"contact_persons"}), @ORM\Index(name="title", columns={"title"}), @ORM\Index(name="modifier_id", columns={"modifier_id"}), @ORM\Index(name="status", columns={"status"}), @ORM\Index(name="lastlogin", columns={"lastlogin"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="CommsyBundle\Repository\RoomRepository")
  */
 class Room
 {
@@ -117,7 +118,7 @@ class Room
      *
      * @ORM\Column(name="is_open_for_guests", type="boolean", nullable=false)
      */
-    private $isOpenForGuests = '0';
+    private $openForGuests = '0';
 
     /**
      * @var boolean
@@ -154,7 +155,22 @@ class Room
      */
     private $lastlogin;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Room")
+     * @ORM\JoinTable(name="link_items",
+     *     joinColumns={
+     *         @ORM\JoinColumn(name="first_item_id", referencedColumnName="item_id")
+     *     },
+     *     inverseJoinColumns={
+     *         @ORM\JoinColumn(name="second_item_id", referencedColumnName="item_id")
+     *     }
+     * )
+     */
+    private $communityRooms;
 
+    public function __construct() {
+        $this->communityRooms = new ArrayCollection();
+    }
 
     /**
      * Get itemId
@@ -485,9 +501,9 @@ class Room
      *
      * @return Room
      */
-    public function setIsOpenForGuests($isOpenForGuests)
+    public function setOpenForGuests($isOpenForGuests)
     {
-        $this->isOpenForGuests = $isOpenForGuests;
+        $this->openForGuests = $isOpenForGuests;
 
         return $this;
     }
@@ -497,9 +513,9 @@ class Room
      *
      * @return boolean
      */
-    public function getIsOpenForGuests()
+    public function isOpenForGuests()
     {
-        return $this->isOpenForGuests;
+        return $this->openForGuests === 1;
     }
 
     /**
@@ -620,5 +636,127 @@ class Room
     public function getLastlogin()
     {
         return $this->lastlogin;
+    }
+
+    public function getLanguage()
+    {
+        $extras = $this->getExtras();
+
+        if (isset($extras['LANGUAGE'])) {
+            return $extras['LANGUAGE'];
+        }
+
+        return 'user';
+    }
+
+    public function setLanguage($language)
+    {
+        $extras = $this->getExtras();
+        $extras['LANGUAGE'] = $language;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function getLogo()
+    {
+        return '';
+    }
+
+    public function getAccessCheck()
+    {
+        $extras = $this->getExtras();
+
+        if (isset($extras['CHECKNEWMEMBERS'])) {
+            $checkNewMembers = $extras['CHECKNEWMEMBERS'];
+
+            $mapping = array(
+                -1 => 'never',
+                2 => 'sometimes',
+                3 => 'code',
+            );
+
+            if (isset($mapping[$checkNewMembers])) {
+                return $mapping[$checkNewMembers];
+            }
+        }
+
+        return 'always';
+    }
+
+    public function setAccessCheck($access)
+    {
+        $mapping = array(
+            'never' => -1,
+            'sometimes' => 2,
+            'code' => 3,
+        );
+
+        $extras = $this->getExtras();
+        $extras['CHECKNEWMEMBERS'] = $mapping[$access];
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function isProjectRoom()
+    {
+        return $this->type === 'project';
+    }
+
+    public function isCommunityRoom()
+    {
+        return $this->type === 'community';
+    }
+
+    public function isMaterialOpenForGuests()
+    {
+        $extras = $this->getExtras();
+        if (isset($extras['MATERIAL_GUESTS'])) {
+            $materialOpenForGuests = $extras['MATERIAL_GUESTS'];
+
+            return $materialOpenForGuests === 1;
+        }
+
+        return false;
+    }
+
+    public function setIsMaterialOpenForGuests($open)
+    {
+        $extras = $this->getExtras();
+        $extras['MATERIAL_GUESTS'] = $open;
+        $this->setExtras($extras);
+
+        return $this;
+    }
+
+    public function getCommunityRooms()
+    {
+        return $this->communityRooms;
+    }
+
+    public function isAssignmentRestricted()
+    {
+        $extras = $this->getExtras();
+        if (isset($extras['ROOMASSOCIATION'])) {
+            $roomAssociation = $extras['ROOMASSOCIATION'];
+
+            return $roomAssociation === 'onlymembers';
+        }
+
+        return false;
+    }
+
+    public function setAssignmentRestricted($isRestricted)
+    {
+        $roomAssociation = 'forall';
+
+        if ($isRestricted) {
+            $roomAssociation = 'onlymembers';
+        }
+
+        $extras = $this->getExtras();
+        $extras['ROOMASSOCIATION'] = $roomAssociation;
+        $this->setExtras($extras);
     }
 }
