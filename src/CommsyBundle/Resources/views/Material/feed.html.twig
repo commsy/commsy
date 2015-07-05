@@ -1,44 +1,44 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% if not materials is empty %}
-    {% for material in materials %}
-        <article class="uk-comment">
-            <i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i>
-            <header class="uk-comment-header uk-flex">
-                <div class="materials-checkbox uk-margin-right uk-margin-top uk-hidden">
-    
-                    {% if is_granted('ITEM_EDIT', material.itemId) %}
-                        <form class="uk-form">
-                            <input type="checkbox">
-                        </form>
-                    {% else %}
-                        <i class="uk-icon-ban uk-icon-small red"></i>
-                    {% endif %}
-                    
+{% for material in materials %}
+    <article class="uk-comment">
+        <i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i>
+        <header class="uk-comment-header uk-flex">
+            <div class="materials-checkbox uk-margin-right uk-margin-top uk-hidden">
+
+                {% if is_granted('ITEM_EDIT', material.itemId) %}
+                    <form class="uk-form">
+                        <input type="checkbox">
+                    </form>
+                {% else %}
+                    <i class="uk-icon-ban uk-icon-small red"></i>
+                {% endif %}
+                
+            </div>
+            <div class="uk-margin-right uk-flex-item-none">
+                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': material.creatorId}) }}">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ material.creatorID }}/image" alt="">
+                </a>
+            </div>
+            <div>
+                <h4 class="uk-comment-title">
+                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title }}</a>
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{material.creator.getFullName}}
                 </div>
-                <div class="uk-margin-right uk-flex-item-none">
-                    <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': material.creatorId}) }}">
-                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ material.creatorID }}/image" alt="">
-                    </a>
+
+                <div class="uk-comment-meta">
+                    {{ 'last changed'|trans({})|capitalize }}: {{material.getModificationDate|date("d.m.Y H:i")}}
                 </div>
-                <div>
-                    <h4 class="uk-comment-title">
-                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title }}</a>
-                    </h4>
-    
-                    <div class="uk-comment-meta">
-                        {{ 'by'|trans({})|capitalize }}: {{material.creator.getFullName}}
-                    </div>
-    
-                    <div class="uk-comment-meta">
-                        {{ 'last changed'|trans({})|capitalize }}: {{material.getModificationDate|date("d.m.Y H:i")}}
-                    </div>
-                    
-                    <div class="uk-comment-meta">
-                        {{  macros.fileListShort(material) }}
-                    </div>
+                
+                <div class="uk-comment-meta">
+                    {{  macros.fileListShort(material) }}
                 </div>
-            </header>
-        </article>
-    {% endfor %}
-{% endif %}
+            </div>
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

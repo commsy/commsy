@@ -8,12 +8,18 @@
     $('.feed-load-more').on('inview.uk.scrollspy', function() {
         var el = $(this);
 
+        // get current query string
+        var queryString = document.location.search;
+
+        // build up the url
+        var url = el.data('feed').url  + feedStart + queryString;
+
         // send ajax request to get more items
         $.ajax({
-          url: el.data('feed').url + feedStart
+          url: url
         })
         .done(function(result) {
-            if (result) {
+            if ($(result).filter('article').length) {
                 // append the data
                 var target = el.data('feed').target;
                 $(target).append(result);

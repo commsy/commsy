@@ -17,8 +17,23 @@ class MaterialController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true
+        );
+        $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
+        ));
+
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $materialService->setFilterConditions($filterForm);
+        }
 
         // get material list from manager service 
         $materials = $materialService->getListMaterials($roomId, $max, $start);
