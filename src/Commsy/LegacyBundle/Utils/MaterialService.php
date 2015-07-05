@@ -38,6 +38,27 @@ class MaterialService
         if ($formData['activated']) {
             $this->materialManager->showNoNotActivatedEntries();
         }
+
+        // rubrics
+        if ($formData['rubrics']) {
+            // group
+            if (isset($formData['rubrics']['group'])) {
+                $relatedLabel = $formData['rubrics']['group'];
+                $this->materialManager->setGroupLimit($relatedLabel->getItemId());
+            }
+            
+            // topic
+            if (isset($formData['rubrics']['topic'])) {
+                $relatedLabel = $formData['rubrics']['topic'];
+                $this->materialManager->setTopicLimit($relatedLabel->getItemId());
+            }
+            
+            // institution
+            if (isset($formData['rubrics']['institution'])) {
+                $relatedLabel = $formData['rubrics']['institution'];
+                $this->materialManager->setInstitutionLimit($relatedLabel->getItemId());
+            }
+        }
     }
     
     public function getMaterial($itemId)
