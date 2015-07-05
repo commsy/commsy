@@ -67,7 +67,7 @@
                     <div class="uk-navbar-content">
                         <ul class="uk-navbar-nav">
                             <li>
-                                <a href="#"><i class="uk-icon-power-off"></i></a>
+                                <a href="{{ path('commsy_logout_logout', {'roomId': app.request.attributes.get('roomId') }) }}"><i class="uk-icon-power-off"></i></a>
                             </li>
                         </ul>
                     </div>
