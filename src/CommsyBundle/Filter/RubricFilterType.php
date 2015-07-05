@@ -3,9 +3,10 @@ namespace CommsyBundle\Filter;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 use Commsy\LegacyBundle\Utils\RoomService;
-use Symfony\Component\HttpFoundation\RequestStack;
+use CommsyBundle\Repository\LabelRepository;
 
 class RubricFilterType extends AbstractType
 {
@@ -32,8 +33,18 @@ class RubricFilterType extends AbstractType
                 // group
                 if (in_array('group', $filterableRubrics)) {
                     $builder
-                        ->add('group', 'filter_choice', array(
-                            'translation_domain' => 'form'
+                        ->add('group', 'filter_entity', array(
+                            'class' => 'CommsyBundle:Labels',
+                            'query_builder' => function (LabelRepository $er) use ($roomId) {
+                                return $er->createQueryBuilder('l')
+                                    ->andWhere('l.contextId = :contextId')
+                                    ->andWhere('l.type = :type')
+                                    ->andWhere('l.deletionDate IS NULL')
+                                    ->setParameter('contextId', $roomId)
+                                    ->setParameter('type', 'group');
+                            },
+                            'choice_label' => 'name',
+                            'translation_domain' => 'form',
                         ))
                     ;
                 }
@@ -41,8 +52,18 @@ class RubricFilterType extends AbstractType
                 // todo
                 if (in_array('todo', $filterableRubrics)) {
                     $builder
-                        ->add('todo', 'filter_choice', array(
-                            'translation_domain' => 'form'
+                        ->add('todo', 'filter_entity', array(
+                            'class' => 'CommsyBundle:Labels',
+                            'query_builder' => function (LabelRepository $er) use ($roomId) {
+                                return $er->createQueryBuilder('l')
+                                    ->andWhere('l.contextId = :contextId')
+                                    ->andWhere('l.type = :type')
+                                    ->andWhere('l.deletionDate IS NULL')
+                                    ->setParameter('contextId', $roomId)
+                                    ->setParameter('type', 'todo');
+                            },
+                            'choice_label' => 'name',
+                            'translation_domain' => 'form',
                         ))
                     ;
                 }
@@ -50,8 +71,18 @@ class RubricFilterType extends AbstractType
                 // institution
                 if (in_array('institution', $filterableRubrics)) {
                     $builder
-                        ->add('institution', 'filter_choice', array(
-                            'translation_domain' => 'form'
+                        ->add('institution', 'filter_entity', array(
+                            'class' => 'CommsyBundle:Labels',
+                            'query_builder' => function (LabelRepository $er) use ($roomId) {
+                                return $er->createQueryBuilder('l')
+                                    ->andWhere('l.contextId = :contextId')
+                                    ->andWhere('l.type = :type')
+                                    ->andWhere('l.deletionDate IS NULL')
+                                    ->setParameter('contextId', $roomId)
+                                    ->setParameter('type', 'institution');
+                            },
+                            'choice_label' => 'name',
+                            'translation_domain' => 'form',
                         ))
                     ;
                 }

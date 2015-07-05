@@ -14,7 +14,7 @@ class MaterialFilterType extends AbstractType
                 'translation_domain' => 'form',
             ))
             ->add('rubrics', 'rubric_filter', array(
-                'translation_domain' => 'form',
+                'label' => false,
             ))
             ->add('save', 'submit', array(
                 'attr' => array(
