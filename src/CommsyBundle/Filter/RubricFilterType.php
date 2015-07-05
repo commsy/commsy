@@ -50,9 +50,9 @@ class RubricFilterType extends AbstractType
                 }
 
                 // todo
-                if (in_array('todo', $filterableRubrics)) {
+                if (in_array('topic', $filterableRubrics)) {
                     $builder
-                        ->add('todo', 'filter_entity', array(
+                        ->add('topic', 'filter_entity', array(
                             'class' => 'CommsyBundle:Labels',
                             'query_builder' => function (LabelRepository $er) use ($roomId) {
                                 return $er->createQueryBuilder('l')
@@ -60,7 +60,7 @@ class RubricFilterType extends AbstractType
                                     ->andWhere('l.type = :type')
                                     ->andWhere('l.deletionDate IS NULL')
                                     ->setParameter('contextId', $roomId)
-                                    ->setParameter('type', 'todo');
+                                    ->setParameter('type', 'topic');
                             },
                             'choice_label' => 'name',
                             'translation_domain' => 'form',
