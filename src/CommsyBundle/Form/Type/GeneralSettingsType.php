@@ -38,7 +38,9 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'choices_as_values' => true,
             ))
-            ->add('logo', 'file')
+            // ->add('logo', 'file', array(
+            //     'required' => false,
+            // ))
             ->add('access_check', 'choice', array(
                 'choices' => array(
                     'Never' => 'never',
@@ -54,6 +56,7 @@ class GeneralSettingsType extends AbstractType
                 'position' => array(
                     'before' => 'save',
                 ),
+                'required' => false,
             ))
             ->add('save', 'submit', array(
                 'position' => 'last'
@@ -95,6 +98,7 @@ class GeneralSettingsType extends AbstractType
                         'choices' => $this->getAssignableCommunityRoom(),
                         'choice_label' => 'title',
                         'multiple' => true,
+                        'required' => false,
                     ))
                 ;
             }
