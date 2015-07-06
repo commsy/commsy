@@ -29,7 +29,7 @@ services:
     commsy_legacy.environment:
         class: Commsy\LegacyBundle\Services\LegacyEnvironment
         arguments: [%legacy.site_index%, "@service_container"]
-    
+
     commsy.room_feed_generator:
         class: Commsy\LegacyBundle\Utils\RoomFeedGenerator
         arguments: ["@commsy_legacy.environment", @commsy.room_service]
@@ -45,35 +45,41 @@ services:
     commsy.room_service:
         class: Commsy\LegacyBundle\Utils\RoomService
         arguments: ["@commsy_legacy.environment"]
-        
+
     commsy.file_service:
         class: Commsy\LegacyBundle\Utils\FileService
         arguments: ["@commsy_legacy.environment"]
-        
+
     commsy.user_service:
         class: Commsy\LegacyBundle\Utils\UserService
         arguments: ["@commsy_legacy.environment"]
-    
+
     commsy.item_service:
         class: Commsy\LegacyBundle\Utils\ItemService
         arguments: ["@commsy_legacy.environment"]
-        
+
     commsy.label_service:
         class: Commsy\LegacyBundle\Utils\LabelService
         arguments: ["@commsy_legacy.environment"]
-        
+
     commsy.group_service:
         class: Commsy\LegacyBundle\Utils\GroupService
         arguments: ["@commsy_legacy.environment"]
-        
+
     commsy.dashboard_feed_generator:
         class: Commsy\LegacyBundle\Utils\DashboardFeedGenerator
         arguments: ["@commsy_legacy.environment", @commsy.room_service]
-        
+
     commsy.noticed_service:
         class: Commsy\LegacyBundle\Utils\NoticedService
         arguments: ["@commsy_legacy.environment"]
-        
+
     commsy.reader_service:
         class: Commsy\LegacyBundle\Utils\ReaderService
         arguments: ["@commsy_legacy.environment"]
+
+    twig.extension.room:
+        class: CommsyBundle\Twig\Extension\RoomExtension
+        arguments: ["@commsy_legacy.environment"]
+        tags:
+            - { name: twig.extension }
