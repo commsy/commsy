@@ -78,8 +78,3 @@ services:
         class: Commsy\LegacyBundle\Utils\ReaderService
         arguments: ["@commsy_legacy.environment"]
 
-    twig.extension.room:
-        class: CommsyBundle\Twig\Extension\RoomExtension
-        arguments: ["@commsy_legacy.environment"]
-        tags:
-            - { name: twig.extension }

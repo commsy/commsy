@@ -75,3 +75,10 @@ services:
         arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
         tags:
             - { name: form.type, alias: general_settings }
+
+    # Twig
+    twig.extension.room:
+        class: CommsyBundle\Twig\Extension\RoomExtension
+        arguments: ["@commsy_legacy.environment"]
+        tags:
+            - { name: twig.extension }
