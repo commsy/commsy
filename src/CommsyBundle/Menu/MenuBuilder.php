@@ -102,7 +102,7 @@ class MenuBuilder
 
             if ($roomId != $privateRoom->getItemId()) {
                 // add divider
-                $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
+                // $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
     
                 // rubric room information
                 $rubrics = $this->roomService->getRubricInformation($roomId);
@@ -114,9 +114,17 @@ class MenuBuilder
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-home uk-icon-small')
                 ));
+
+                // home navigation
+                $menu->addChild('room_navigation', array(
+                    'label' => 'Home',
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => 'uk-icon-home uk-icon-small')
+                ));
     
                 // add divider
-                $menu->addChild(' ')->setAttribute('class', 'uk-nav-divider');
+                // $menu->addChild(' ')->setAttribute('class', 'uk-nav-divider');
     
                 // loop through rubrics to build the menu
                 foreach ($rubrics as $value) {
