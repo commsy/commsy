@@ -116,7 +116,7 @@ class MenuBuilder
                 ));
 
                 // home navigation
-                $menu->addChild('room_navigation', array(
+                $menu->addChild('room_home', array(
                     'label' => 'Home',
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId),
