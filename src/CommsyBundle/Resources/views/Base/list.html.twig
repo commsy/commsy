@@ -9,7 +9,6 @@
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ 'groups'|trans({})|capitalize }}</div>
-                        
                         {# select #}
                         <div>
                             <button class="uk-button" data-uk-toggle="{target:'article', cls:'selectable'}">
@@ -18,7 +17,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div>
                     {% block feed %}
                     {% endblock%}
@@ -39,7 +37,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div id="list-filter" class="uk-overflow-container">
                     {{ form_start(form) }}
                     {{ form_widget(form) }}

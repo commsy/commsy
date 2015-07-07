@@ -10,21 +10,16 @@
     </div>
     
     <div class="uk-panel uk-margin-left uk-margin-bottom">
-        {{ material.description|raw }}</td>
+        {% include 'CommsyBundle:Material:biblio.html.twig' %}
+    </div>
+    
+    <div class="uk-panel uk-margin-left uk-margin-bottom">
+        {{ material.description|raw }}
     </div>
     
     <div class="uk-panel uk-margin-left uk-margin-bottom">
         {{  macros.fileList(material) }}
     </div>
-    
-    {# <div class="uk-panel uk-margin-left">
-        <h3 class="uk-panel-title">{{ 'sections'|trans({})|capitalize }}:</h3>
-        <ul class="uk-list">
-        {% for section in sectionList %}
-            <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
-        {% endfor %}
-        </ul>
-    </div> #}
     
     {% for section in sectionList %}
         <div class="uk-panel uk-panel-divider">
