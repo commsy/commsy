@@ -98,9 +98,9 @@ web/htdocs/js/build/*
 htdocs/templates/templates_c/*
 web/templates/templates_c/*
 
-var/[0-9]*
-var/templates/individual/*
-var/temp
+files/[0-9]*
+files/templates/individual/*
+files/temp
 
 libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
 legacy/libs/HTMLPurifier/HTMLPurifier/DefinitionCache/*
