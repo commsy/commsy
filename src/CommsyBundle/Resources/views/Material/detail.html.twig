@@ -1,124 +1,95 @@
-{% extends 'CommsyBundle:Room:room.html.twig' %}
+{% extends 'CommsyBundle:Base:detail.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% set item = material %}
 
-{% block content %}
-    <div class="uk-grid">
+{% block content_left_column %}
+    <div class="uk-panel">
+        <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i></div>
+        <h3 class="uk-panel-title">{{ material.title }}</h3>
+        {{ macros.detailInformation(material, modifierList) }}
+    </div>
+    
+    <div class="uk-panel uk-margin-left uk-margin-bottom">
+        {% include 'CommsyBundle:Material:biblio.html.twig' %}
+    </div>
+    
+    <div class="uk-panel uk-margin-left uk-margin-bottom">
+        {{ material.description|raw }}
+    </div>
+    
+    <div class="uk-panel uk-margin-left uk-margin-bottom">
+        {{  macros.fileList(material) }}
+    </div>
+    
+    {% for section in sectionList %}
+        <div class="uk-panel uk-panel-divider">
+            <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(section.itemType) }} uk-icon-small {{ macros.statusColor(readerList, section.itemId) }}"></i></div>
+            <a name="{{ section.itemId }}"></a>
+            <div class="uk-panel">
+                <h3 class="uk-panel-title">{{ section.title }}</h3>
+                {{ macros.detailInformation(section, modifierList) }}
+            </div>
+            <div class="uk-panel uk-margin-left uk-margin-bottom">
+                {{ section.description|raw }}
+            </div>
+            <div class="uk-panel uk-margin-left">
+                {{  macros.fileList(section) }}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
 
-        <div class="uk-width-medium-2-3">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
-                <div class="uk-panel-teaser panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'material'|trans({}, "room")|capitalize }}</div>
-                        <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#material-info', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                    </div>
+{% block content_right_column %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser panel-teaser-primary">
+            <div class="uk-clearfix">
+                <div class="uk-float-right">
+                    <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                        <i class="uk-icon-chevron-up"></i>
+                    </a>
                 </div>
-
-                <div id="material-info" class="uk-overflow-container">
-                
-                    <div class="uk-panel">
-                        <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i></div>
-                        <h3 class="uk-panel-title">{{ material.title }}</h3>
-                        {{ macros.detailInformation(material, modifierList) }}
-                    </div>
-                
-                    <div class="uk-panel uk-margin-left uk-margin-bottom">
-                        {{ material.description|raw }}</td>
-                    </div>
-                    
-                    <div class="uk-panel uk-margin-left uk-margin-bottom">
-                        {{  macros.fileList(material) }}
-                    </div>
-                    
-                    {# <div class="uk-panel uk-margin-left">
-                        <h3 class="uk-panel-title">{{ 'sections'|trans({})|capitalize }}:</h3>
-                        <ul class="uk-list">
-                        {% for section in sectionList %}
-                            <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
-                        {% endfor %}
-                        </ul>
-                    </div> #}
-                    
-                    {% for section in sectionList %}
-                        <div class="uk-panel uk-panel-divider">
-                            <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(section.itemType) }} uk-icon-small {{ macros.statusColor(readerList, section.itemId) }}"></i></div>
-                            <a name="{{ section.itemId }}"></a>
-                            <div class="uk-panel">
-                                <h3 class="uk-panel-title">{{ section.title }}</h3>
-                                {{ macros.detailInformation(section, modifierList) }}
-                            </div>
-                            <div class="uk-panel uk-margin-left uk-margin-bottom">
-                                {{ section.description|raw }}
-                            </div>
-                            <div class="uk-panel uk-margin-left">
-                                {{  macros.fileList(section) }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                    
+                <div class="uk-float-left">
+                    {{ 'Sections'|trans({}, "room") }} ({{ sectionList|length }})
                 </div>
-                
             </div>
         </div>
         
-        <div class="uk-width-medium-1-3">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-float-left">
-                            {{ 'Sections'|trans({}, "room") }} ({{ sectionList|length }})
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="user-main" class="uk-overflow-container">
-                    <div class="">
-                        <ul class="uk-list uk-list-striped uk-margin-bottom-remove">
-                        {% for section in sectionList [0:10] %}
+        <div id="user-main" class="uk-overflow-container">
+            <div class="">
+                <ul class="uk-list uk-list-striped uk-margin-bottom-remove">
+                {% for section in sectionList [0:10] %}
+                    <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
+                {% endfor %}
+                </ul>
+                {% if sectionList|length > 10 %}
+                    <div class="show-more-sections uk-hidden">
+                        <ul class="uk-list uk-list-striped">
+                        {% for section in sectionList [10:sectionList|length-10] %}
                             <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
                         {% endfor %}
                         </ul>
-                        {% if sectionList|length > 10 %}
-                            <div class="show-more-sections uk-hidden">
-                                <ul class="uk-list uk-list-striped">
-                                {% for section in sectionList [10:sectionList|length-10] %}
-                                    <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
-                                {% endfor %}
-                                </ul>
-                            </div>
-                            <div class="uk-margin-small">
-                                <a class="show-more-sections" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show all'|trans({}) }}</a>
-                                <a class="show-more-sections uk-hidden" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
-                            </div>
-                        {% endif %}
                     </div>
-                </div>
+                    <div class="uk-margin-small">
+                        <a class="show-more-sections" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show all'|trans({}) }}</a>
+                        <a class="show-more-sections uk-hidden" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                    </div>
+                {% endif %}
             </div>
-
-            {{ render(controller(
-                'CommsyBundle:Link:show',
-                { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
-            ))}}
-
-            {{ render(controller(
-                'CommsyBundle:Hashtag:show',
-                { 'roomId': roomId }
-            ))}}
-
-            {{ render(controller(
-                'CommsyBundle:Category:show',
-                { 'roomId': roomId }
-            ))}}
-
         </div>
     </div>
+    
+    {{ render(controller(
+        'CommsyBundle:Link:show',
+        { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
+    ))}}
+
+    {{ render(controller(
+        'CommsyBundle:Hashtag:show',
+        { 'roomId': roomId }
+    ))}}
+
+    {{ render(controller(
+        'CommsyBundle:Category:show',
+        { 'roomId': roomId }
+    ))}}
 {% endblock %}

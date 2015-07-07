@@ -1,0 +1,30 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% block content %}
+    <div class="uk-grid">
+        <div class="uk-width-medium-2-3">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ item.itemType|trans({}, "room")|capitalize }}</div>
+                        <div>
+                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#detail-left-column', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div id="detail-left-column" class="uk-overflow-container">
+                    {% block content_left_column %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        <div class="uk-width-medium-1-3">
+            {% block content_right_column %}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,124 +1,101 @@
-{% extends 'CommsyBundle:Room:room.html.twig' %}
+{% extends 'CommsyBundle:Base:detail.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% set item = user %}
 
-{% block content %}
-    <div class="uk-grid">
-
-        <div class="uk-width-medium-2-3">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser panel-teaser-primary">
-                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'user'|trans({}, "room")|capitalize }}</div>
-                        <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-info', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                    </div>
+{% block content_left_column %}
+    <div class="uk-panel">
+        <h3 class="uk-panel-title">{{ user.fullname }}</h3>
+    </div>
+    <div class="uk-flex">
+        <div class="uk-margin-right">
+            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:120px; width:120px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
+        </div>
+        <div>
+            <table class="uk-table-condensed">
+                <tbody>
+                    {% if not user.birthday is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'date of birth'|trans({})|capitalize }}</td>
+                        <td>{{ user.birthday }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.email is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'email'|trans({})|capitalize }}</td>
+                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.telephone is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'telephone'|trans({})|capitalize }}</td>
+                        <td><a href="tel:{{ user.telephone }}">{{ user.telephone }}</a></td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.cellularphone is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'mobile'|trans({})|capitalize }}</td>
+                        <td><a href="tel:{{ user.cellularphone }}">{{ user.cellularphone }}</a></td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.street is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'street'|trans({})|capitalize }}</td>
+                        <td>{{ user.street }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.city is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'city'|trans({})|capitalize }}</td>
+                        <td>{{ user.city }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.userid is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'userid'|trans({})|capitalize }}</td>
+                        <td>{{ user.userid }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.status is empty %}
+                    <tr>
+                        <td class="uk-text-bold">{{ 'status'|trans({})|capitalize }}</td>
+                        <td>{{ macros.userStatus(user) }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if not user.description is empty %}
+                    <tr>
+                        <td colspan="2">{{ user.description|raw }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+        
+{% block content_right_column %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser panel-teaser-primary">
+            <div class="uk-clearfix">
+                <div class="uk-float-right">
+                    <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                        <i class="uk-icon-chevron-up"></i>
+                    </a>
                 </div>
-
-                <div id="user-info" class="uk-overflow-container">
-                    <div class="uk-panel">
-                        <h3 class="uk-panel-title">{{ user.fullname }}</h3>
-                    </div>
-                    <div class="uk-flex">
-                        <div class="uk-margin-right">
-                            <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:120px; width:120px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ user.itemID }}/image" alt="">
-                        </div>
-                        <div>
-                            <table class="uk-table-condensed">
-                                <tbody>
-                                    {% if not user.birthday is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'date of birth'|trans({})|capitalize }}</td>
-                                        <td>{{ user.birthday }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.email is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'email'|trans({})|capitalize }}</td>
-                                        <td><a href="mailto:{{ user.email }}">{{ user.email }}</a></td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.telephone is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'telephone'|trans({})|capitalize }}</td>
-                                        <td><a href="tel:{{ user.telephone }}">{{ user.telephone }}</a></td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.cellularphone is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'mobile'|trans({})|capitalize }}</td>
-                                        <td><a href="tel:{{ user.cellularphone }}">{{ user.cellularphone }}</a></td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.street is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'street'|trans({})|capitalize }}</td>
-                                        <td>{{ user.street }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.city is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'city'|trans({})|capitalize }}</td>
-                                        <td>{{ user.city }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.userid is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'userid'|trans({})|capitalize }}</td>
-                                        <td>{{ user.userid }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.status is empty %}
-                                    <tr>
-                                        <td class="uk-text-bold">{{ 'status'|trans({})|capitalize }}</td>
-                                        <td>{{ macros.userStatus(user) }}</td>
-                                    </tr>
-                                    {% endif %}
-                                    {% if not user.description is empty %}
-                                    <tr>
-                                        <td colspan="2">{{ user.description|raw }}</td>
-                                    </tr>
-                                    {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
+                <div class="uk-float-left">
+                    {{ 'Info'|trans({}, "room") }}
                 </div>
-                
             </div>
         </div>
         
-        <div class="uk-width-medium-1-3">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                <div class="uk-panel-teaser panel-teaser-primary">
-                    <div class="uk-clearfix">
-                        <div class="uk-float-right">
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
-                        <div class="uk-float-left">
-                            {{ 'Info'|trans({}, "room") }}
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="user-main" class="uk-overflow-container">
-                    <div class="">
-                        {{ macros.lastModified(user) }} 
-                    </div>
-                </div>
+        <div id="user-main" class="uk-overflow-container">
+            <div class="">
+                {{ macros.lastModified(user) }} 
             </div>
-
-            {{ render(controller(
-                'CommsyBundle:Link:show',
-                { 'roomId': app.request.attributes.get('roomId'), 'itemId': user.itemId }
-            ))}}
-
         </div>
     </div>
+
+    {{ render(controller(
+        'CommsyBundle:Link:show',
+        { 'roomId': app.request.attributes.get('roomId'), 'itemId': user.itemId }
+    ))}}
 {% endblock %}
