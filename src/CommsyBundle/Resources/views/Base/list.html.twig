@@ -1,0 +1,59 @@
+{% extends 'CommsyBundle:Base:room.html.twig' %}
+
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+        <div class="uk-width-medium-3-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'groups'|trans({})|capitalize }}</div>
+                        
+                        {# select #}
+                        <div>
+                            <button class="uk-button" data-uk-toggle="{target:'article', cls:'selectable'}">
+                                Auswahl(TODO)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    {% block feed %}
+                    {% endblock%}
+                </div>
+            </div>
+        </div>
+        <div class="uk-width-medium-2-5">
+            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
+                <div class="uk-panel-teaser panel-teaser-secondary">
+                    <div class="uk-clearfix">
+                        <div class="uk-float-right">
+                            <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
+                                <i class="uk-icon-chevron-up"></i>
+                            </a>
+                        </div>
+                        <div class="uk-float-left">
+                            Filter
+                        </div>
+                    </div>
+                </div>
+
+                <div id="list-filter" class="uk-overflow-container">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            {{ render(controller(
+                'CommsyBundle:Hashtag:show',
+                { 'roomId': roomId }
+            ))}}
+            {{ render(controller(
+                'CommsyBundle:Category:show',
+                { 'roomId': roomId }
+            ))}}
+        </div>
+    </div>
+{% endblock %}
