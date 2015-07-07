@@ -78,3 +78,7 @@ services:
         class: Commsy\LegacyBundle\Utils\ReaderService
         arguments: ["@commsy_legacy.environment"]
 
+    # Transformer
+    commsy_legacy.transformer.room:
+        class: Commsy\LegacyBundle\Form\DataTransformer\RoomTransformer
+        arguments: [@commsy_legacy.environment]

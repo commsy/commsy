@@ -6,6 +6,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
@@ -15,6 +16,8 @@ class GeneralSettingsType extends AbstractType
     private $em;
     private $legacyEnvironment;
 
+    private $roomItem;
+
     public function __construct(EntityManager $em, LegacyEnvironment $legacyEnvironment)
     {
         $this->em = $em;
@@ -23,6 +26,9 @@ class GeneralSettingsType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $roomManager = $this->legacyEnvironment->getRoomManager();
+        $this->roomItem = $roomManager->getItem($options['roomId']);
+
         $builder
             ->add('title', 'text', array(
                 'constraints' => array(
@@ -38,9 +44,9 @@ class GeneralSettingsType extends AbstractType
                 ),
                 'choices_as_values' => true,
             ))
-            // ->add('logo', 'file', array(
-            //     'required' => false,
-            // ))
+            ->add('room_image', 'file', array(
+                'required' => false,
+            ))
             ->add('access_check', 'choice', array(
                 'choices' => array(
                     'Never' => 'never',
@@ -68,12 +74,11 @@ class GeneralSettingsType extends AbstractType
         // some form fields depend on the underlying data, so we delegate
         // the creation to an event listener
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) {
-            $room = $event->getData();
             $form = $event->getForm();
 
             // check if the room is a community room and
             // add form fields for this case
-            if ($room->isCommunityRoom()) {
+            if ($this->roomItem->isCommunityRoom()) {
                 $form
                     ->add('open_for_guest', 'checkbox', array(
                         'label' => 'Is this room open for guests?',
@@ -91,14 +96,20 @@ class GeneralSettingsType extends AbstractType
             }
 
             // check if the room is a project room
-            if ($room->isProjectRoom()) {
+            if ($this->roomItem->isProjectRoom()) {
                 $form
-                    ->add('community_rooms', 'entity', array(
-                        'class' => 'CommsyBundle:Room',
+                    // ->add('community_rooms', 'entity', array(
+                    //     'class' => 'CommsyBundle:Room',
+                    //     'choices' => $this->getAssignableCommunityRoom(),
+                    //     'choice_label' => 'title',
+                    //     'multiple' => true,
+                    //     'required' => false,
+                    // ))
+                    ->add('community_rooms', 'choice', array(
                         'choices' => $this->getAssignableCommunityRoom(),
-                        'choice_label' => 'title',
                         'multiple' => true,
                         'required' => false,
+                        'choices_as_values' => true,
                     ))
                 ;
             }
@@ -114,6 +125,13 @@ class GeneralSettingsType extends AbstractType
                 ;
             }
         });
+    }
+
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired(array('roomId'))
+        ;
     }
 
     public function getName()
@@ -188,32 +206,54 @@ class GeneralSettingsType extends AbstractType
 
     private function getAssignableCommunityRoom()
     {
+        $results = array();
+
         // query all community rooms
-        $repository = $this->em->getRepository('CommsyBundle:room');
-        $query = $repository->createQueryBuilder('r')
-            ->andWhere('r.type = :type')
-            ->setParameter('type', 'community')
-            ->getQuery();
-        $communityRooms = $query->getResult();
+        //$repository = $this->em->getRepository('CommsyBundle:room');
+        // $query = $repository->createQueryBuilder('r')
+        //     ->andWhere('r.type = :type')
+        //     ->setParameter('type', 'community')
+        //     ->getQuery();
+        // $communityRooms = $query->getResult();
+        
+        $currentPortal = $this->legacyEnvironment->getCurrentPortalItem();
+        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+
+        $communityList = $currentPortal->getCommunityList();
 
         // iterate all community rooms and check if assignment is only allowed for members
-        $currentUser = $this->legacyEnvironment->getCurrentUserItem();
-        $userManager = $this->legacyEnvironment->getUserManager();
-        $results = array();
-        foreach ($communityRooms as $communityRoom) {
-            if ($communityRoom->isAssignmentRestricted()) {
-                $isUser = $userManager->isUserInContext(
-                    $currentUser->getUserID(),
-                    $communityRoom->getItemId(),
-                    $currentUser->getAuthSource()
-                );
+        // $currentUser = $this->legacyEnvironment->getCurrentUserItem();
+        // $userManager = $this->legacyEnvironment->getUserManager();
+        // $results = array();
+        // foreach ($communityRooms as $communityRoom) {
+        //     if ($communityRoom->isAssignmentRestricted()) {
+        //         $isUser = $userManager->isUserInContext(
+        //             $currentUser->getUserID(),
+        //             $communityRoom->getItemId(),
+        //             $currentUser->getAuthSource()
+        //         );
 
-                if (!$isUser) {
-                    continue;
+        //         if (!$isUser) {
+        //             continue;
+        //         }
+        //     }
+
+        //     $results[] = $communityRoom;
+        // }
+        if ($communityList->isNotEmpty()) {
+            $communityItem = $communityList->getFirst();
+            while ($communityItem) {
+                if ($communityItem->isAssignmentOnlyOpenForRoomMembers()) {
+                    if (!$communityItem->isUser($currentUser)) {
+                        $communityItem = $communityList->getNext();
+                        continue;
+                    }
                 }
-            }
 
-            $results[] = $communityRoom;
+                $results[$communityItem->getTitle()] = $communityItem->getItemId();
+
+                $communityItem = $communityList->getNext();
+            }
         }
 
         return $results;

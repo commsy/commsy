@@ -30,22 +30,35 @@ class SettingsController extends Controller
     */
     public function generalAction($roomId, Request $request)
     {
-        $room = $this->getDoctrine()
-            ->getRepository('CommsyBundle:Room')
-            ->find($roomId);
+        // get room from RoomService
+        $roomService = $this->get('commsy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
 
-        if (!$room) {
+        // $room = $this->getDoctrine()
+        //     ->getRepository('CommsyBundle:Room')
+        //     ->find($roomId);
+
+        if (!$roomItem) {
             throw $this->createNotFoundException('No room found for id ' . $roomId);
         }
 
-        $form = $this->createForm('general_settings', $room);
+        $transformer = $this->get('commsy_legacy.transformer.room');
+        $roomData = $transformer->transform($roomItem);
+
+        $form = $this->createForm('general_settings', $roomData, array(
+            'roomId' => $roomId
+        ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
+            $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+
+            $roomItem->save();
+
             // persist
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($room);
-            $em->flush();
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
         }
 
         return array(
