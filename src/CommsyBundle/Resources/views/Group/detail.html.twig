@@ -4,7 +4,7 @@
 
 {% block content_left_column %}
     <div class="uk-panel">
-        <h3 class="uk-panel-title">{{ group.title }}</h3>
+        <h3 class="uk-panel-title">{{ group.title|raw }}</h3>
     </div>
     <div class="uk-margin">
         {{ group.description|raw }}
