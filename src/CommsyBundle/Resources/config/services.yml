@@ -42,6 +42,14 @@ services:
           tags:
               - { name: knp_menu.menu, alias: breadcrumb }
 
+    commsy.menu.profile:
+        class: Knp\Menu\MenuItem
+        factory_service: commsy.menu.builder
+        factory_method: createProfileMenu
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: profile }
+
     # Voter
     commsy.security.category_voter:
         class: CommsyBundle\Security\Authorization\Voter\CategoryVoter

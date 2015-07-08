@@ -33,6 +33,40 @@ class MenuBuilder
         $this->userService = $userService;
     }
 
+    /**
+     * creates the profile sidebar
+     * @param  RequestStack $requestStack [description]
+     * @return knpMenu                    KnpMenu
+     */
+    public function createProfileMenu(RequestStack $requestStack)
+    {
+        // create profile
+        $currentStack = $requestStack->getCurrentRequest();
+        $currentUser = $this->legacyEnvironment->getCurrentUser();
+
+        $menu = $this->factory->createItem('root');
+
+        $menu->addChild('profileImage', array(
+            'label' => $currentUser->getFullname(),
+            // 'route' => 'commsy_user_detail',
+            // 'routeParameters' => array('itemId' => $currentUser->getItemId()),
+            'extras' => array(
+                'img' => '/app_dev.php/room/201/user/202/image',
+                'imgClass' => 'uk-border-circle uk-img-preserve uk-thumbnail uk-align-center'
+            )
+        ));
+
+        // profile configuration
+        $menu->addChild('profileConfig', array(
+            'label' => ' ',
+            'route' => 'commsy_room_home',
+            'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId')),
+            'extras' => array('icon' => 'uk-icon-cog uk-icon-small')
+        ));
+
+        return $menu;
+    }
+
     public function createSettingsMenu(RequestStack $requestStack)
     {
         // get room Id
@@ -73,6 +107,11 @@ class MenuBuilder
         return $menu;
     }
 
+    /**
+     * creates rubric menu
+     * @param  RequestStack $requestStack [description]
+     * @return KnpMenu                    KnpMenu
+     */
     public function createMainMenu(RequestStack $requestStack)
     {
         // get room id
@@ -101,9 +140,6 @@ class MenuBuilder
             ));
 
             if ($roomId != $privateRoom->getItemId()) {
-                // add divider
-                // $menu->addChild('')->setAttribute('class', 'uk-nav-divider');
-    
                 // rubric room information
                 $rubrics = $this->roomService->getRubricInformation($roomId);
                 
@@ -122,9 +158,6 @@ class MenuBuilder
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-home uk-icon-small')
                 ));
-    
-                // add divider
-                // $menu->addChild(' ')->setAttribute('class', 'uk-nav-divider');
     
                 // loop through rubrics to build the menu
                 foreach ($rubrics as $value) {
