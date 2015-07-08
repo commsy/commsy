@@ -97,21 +97,25 @@ class GeneralSettingsType extends AbstractType
 
             // check if the room is a project room
             if ($this->roomItem->isProjectRoom()) {
-                $form
-                    // ->add('community_rooms', 'entity', array(
-                    //     'class' => 'CommsyBundle:Room',
-                    //     'choices' => $this->getAssignableCommunityRoom(),
-                    //     'choice_label' => 'title',
-                    //     'multiple' => true,
-                    //     'required' => false,
-                    // ))
-                    ->add('community_rooms', 'choice', array(
-                        'choices' => $this->getAssignableCommunityRoom(),
-                        'multiple' => true,
-                        'required' => false,
-                        'choices_as_values' => true,
-                    ))
-                ;
+                $choices = $this->getAssignableCommunityRoom();
+
+                if (!empty($choices)) {
+                    $form
+                        // ->add('community_rooms', 'entity', array(
+                        //     'class' => 'CommsyBundle:Room',
+                        //     'choices' => $this->getAssignableCommunityRoom(),
+                        //     'choice_label' => 'title',
+                        //     'multiple' => true,
+                        //     'required' => false,
+                        // ))
+                        ->add('community_rooms', 'choice', array(
+                            'choices' => $choices,
+                            'multiple' => true,
+                            'required' => false,
+                            'choices_as_values' => true,
+                        ))
+                    ;
+                }
             }
 
             // check if time intervals are active in portal
