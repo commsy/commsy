@@ -78,6 +78,10 @@ services:
         class: Commsy\LegacyBundle\Utils\ReaderService
         arguments: ["@commsy_legacy.environment"]
 
+    commsy_legacy.date_service:
+        class: Commsy\LegacyBundle\Utils\DateService
+        arguments: ["@commsy_legacy.environment"]
+
     # Transformer
     commsy_legacy.transformer.room:
         class: Commsy\LegacyBundle\Form\DataTransformer\RoomTransformer
