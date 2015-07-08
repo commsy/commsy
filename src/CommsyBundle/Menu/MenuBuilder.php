@@ -52,7 +52,8 @@ class MenuBuilder
             // 'routeParameters' => array('itemId' => $currentUser->getItemId()),
             'extras' => array(
                 'img' => '/app_dev.php/room/201/user/202/image',
-                'imgClass' => 'uk-border-circle uk-img-preserve uk-thumbnail uk-align-center'
+                'imgClass' => 'uk-border-circle uk-img-preserve uk-thumbnail uk-align-center',
+                'user' => $currentUser
             )
         ));
 
