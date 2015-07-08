@@ -1,61 +1,61 @@
 {% if material.bibKind == 'common' %}
-    {{ 'MATERIAL_AUTHORS'|trans({}) }}: {{ material.author }}<br/>
-    {{ 'MATERIAL_PUBLISHING_DATE'|trans({}) }}: {{ material.publishingDate }}<br/>
-    {{material.bibliographicValues|raw}}
+    {{ 'Author/s'|trans({}) }}: {{ material.author }}<br/>
+    {{ 'Year'|trans({}) }}: {{ material.publishingDate }}<br/>
+    {{ 'Bibl. reference'|trans({}) }}: {{material.bibliographicValues|raw}}
 {% elseif material.bibKind == 'website' %}
     {{ material.author }}
 {% elseif material.bibKind == 'document' %}
 {% else %}
-    {{ material.author }} ({{ material.publishingDate }})
+    {{ material.author }} ({{ material.publishingDate }}).
 {% endif %}
+{% set biblio = '' %}
 {% if material.bibKind != 'common' %}
-    {% if material.bibKind == 'book' %}
-    {% elseif material.bibKind == 'collection' %}
-        {{ material.address }}: {{ material.publisher }}
+    {% if material.bibKind == 'book' or material.bibKind == 'collection' %}
+        {% set biblio = biblio ~ material.address ~ ": " ~ material.publisher %}
 		{% if material.edition %}
-		    , {{ 'MATERIAL_BIB_EDITION'|trans({}) }}: {{ material.edition }}
+		    {% set biblio = biblio ~ ", " ~ "#{'%edition% edition'|trans({'%edition%': material.edition}) }" %}
 		{% endif %}
 		{% if material.series %}
-		    , {{ 'MATERIAL_BIB_SERIES'|trans({}) }}: {{ material.series }}
+		    {% set biblio = biblio ~ ", " ~ "#{'Series %series%'|trans({'%series%': material.series}) }" %}
 		{% endif %}
 		{% if material.volume %}
-		    , {{ 'MATERIAL_BIB_VOLUME'|trans({}) }}: {{ material.volume }}
+		    {% set biblio = biblio ~ ", " ~ "#{'Volume %volume%'|trans({'%volume%': material.volume}) }" %}
 		{% endif %}
 		{% if material.ISBN %}
-		    , {{ 'MATERIAL_BIB_ISBN'|trans({}) }}: {{ material.ISBN }}
+		    {% set biblio = biblio ~ ", " ~ "#{'ISBN: %isbn%'|trans({'%isbn%': material.ISBN}) }" %}
 		{% endif %}
-        .
+        {% set biblio = biblio ~ "." %}
 		{% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		{% endif %}
-		{% if material.urlDate %}
-		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
+		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+		    {% if material.urlDate %}
+    		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+    		{% endif %}
 		{% endif %}
     {% elseif material.bibKind == 'incollection' %}
     	{% if material.editor %}
-    	    {{ 'MATERIAL_BIB_EDITION'|trans({}) }}:
-    	    {{ 'MATERIAL_BIB_EDITION'|trans({ editor: material.editor }) }}
+    	    {% set biblio = biblio ~ "#{'In'|trans({}) }" ~ ": " %}
+    	    {% set biblio = biblio ~ "#{'%editor% (ed.)'|trans({'%editor%': material.editor}) }" ~ ": " %}
     	{% endif %}
-    	{{ material.booktitle }}.
-    	{{ material.address }}: {{ material.publisher }}
+    	{% set biblio = biblio ~ material.booktitle ~ ". " %}
+    	{% set biblio = biblio ~ material.address ~ ": " ~ material.publisher ~ ", " %}
     	{% if material.edition %}
-		    , {{ 'MATERIAL_BIB_EDITION'|trans({}) }}: {{ material.edition }}
+		    {% set biblio = biblio ~ ", " ~ "#{'%edition% edition'|trans({'%edition%': material.edition}) }" %}
 		{% endif %}
 		{% if material.series %}
-		    , {{ 'MATERIAL_BIB_SERIES'|trans({}) }}: {{ material.series }}
+		    {% set biblio = biblio ~ ", " ~ "#{'Series %series%'|trans({'%series%': material.series}) }" %}
 		{% endif %}
 		{% if material.volume %}
-		    , {{ 'MATERIAL_BIB_VOLUME'|trans({}) }}: {{ material.volume }}
+		    {% set biblio = biblio ~ ", " ~ "#{'Volume %volume%'|trans({'%volume%': material.volume}) }" %}
 		{% endif %}
 		{% if material.ISBN %}
-		    , {{ 'MATERIAL_BIB_ISBN'|trans({}) }}: {{ material.ISBN }}
+		    {% set biblio = biblio ~ ", " ~ "#{'ISBN: %isbn%'|trans({'%isbn%': material.ISBN}) }" %}
 		{% endif %}
-        , {{ 'MATERIAL_BIB_PAGES'|trans({}) }}: {{ material.pages }}
+        {% set biblio = biblio ~ ", " ~ "#{'p: %pages%'|trans({'%pages%': material.pages}) }" ~ "." %}
 		{% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		{% endif %}
-		{% if material.urlDate %}
-		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
+		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+		    {% if material.urlDate %}
+    		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+    		{% endif %}
 		{% endif %}
     {% elseif material.bibKind == 'article' %}
 		{{ 'MATERIAL_BIB_IN'|trans({}) }}: {{ material.journal }}
@@ -198,3 +198,4 @@
         {{ material.bibliographicValues }}
     {% endif %}
 {% endif %}
+{{ biblio }}

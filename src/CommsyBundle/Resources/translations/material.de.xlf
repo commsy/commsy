@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="biblio-authors">
+                <source>Author/s</source>
+                <target>AutorInnen</target>
+            </trans-unit>
+            <trans-unit id="biblio-year">
+                <source>Year</source>
+                <target>Jahr</target>
+            </trans-unit>
+            <trans-unit id="biblio-reference">
+                <source>Bibl. reference</source>
+                <target>Bibl. Angaben</target>
+            </trans-unit>
+            <trans-unit id="biblio-edition">
+                <source>%edition% edition</source>
+                <target>%edition%. Auflage</target>
+            </trans-unit>
+            <trans-unit id="biblio-series">
+                <source>Series %series%</source>
+                <target>Reihe %series%</target>
+            </trans-unit>
+            <trans-unit id="biblio-volume">
+                <source>Volume %volume%</source>
+                <target>Band %volume%</target>
+            </trans-unit>
+            <trans-unit id="biblio-isbn">
+                <source>ISBN: %isbn%</source>
+                <target>ISBN: %isbn%</target>
+            </trans-unit>
+            <trans-unit id="biblio-url">
+                <source>Internet: %url%</source>
+                <target>Internet: %url%</target>
+            </trans-unit>
+            <trans-unit id="biblio-url-last-visited">
+                <source>last visited: %date%</source>
+                <target>besucht am: %date%</target>
+            </trans-unit>
+            <trans-unit id="biblio-in">
+                <source>In</source>
+                <target>In</target>
+            </trans-unit>
+            <trans-unit id="biblio-editor">
+                <source>%editor% (ed.)</source>
+                <target>%editor% (Hrsg.)</target>
+            </trans-unit>
+            <trans-unit id="biblio-pages">
+                <source>p. %pages%</source>
+                <target>S. %pages%</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
