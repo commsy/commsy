@@ -125,23 +125,23 @@
     		{% endif %}
 		{% endif %}
     {% elseif material.bibKind == 'thesis' %}
-        {% if material.thesisKind == 'BACHELOR'%}
+        {% if material.thesisKind|upper == 'BACHELOR'%}
             {% set biblio = biblio ~ " " ~ "#{'BA thesis'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'DIPLOMA'%}
+        {% elseif material.thesisKind|upper == 'DIPLOMA'%}
             {% set biblio = biblio ~ " " ~ "#{'Diploma thesis'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'DISSERTATION'%}
+        {% elseif material.thesisKind|upper == 'DISSERTATION'%}
             {% set biblio = biblio ~ " " ~ "#{'Dissertation'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'EXAM'%}
+        {% elseif material.thesisKind|upper == 'EXAM'%}
             {% set biblio = biblio ~ " " ~ "#{'MA thesis'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'KIND'%}
+        {% elseif material.thesisKind|upper == 'KIND'%}
             {% set biblio = biblio ~ " " ~ "#{'Kind of thesis'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'MASTER'%}
+        {% elseif material.thesisKind|upper == 'MASTER'%}
             {% set biblio = biblio ~ " " ~ "#{'MA thesis'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'OTHER'%}
+        {% elseif material.thesisKind|upper == 'OTHER'%}
             {% set biblio = biblio ~ " " ~ "#{'other'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'POSTDOC'%}
+        {% elseif material.thesisKind|upper == 'POSTDOC'%}
             {% set biblio = biblio ~ " " ~ "#{'Professorial dissertation'|trans({}) }" ~ ". " %}
-        {% elseif material.thesisKind == 'TERM'%}
+        {% elseif material.thesisKind|upper == 'TERM'%}
             {% set biblio = biblio ~ " " ~ "#{'Term paper'|trans({}) }" ~ ". " %}
         {% else %}
             {% set biblio = biblio ~ " " ~ "#{'common error'|trans({}) }" ~ ". " %}
