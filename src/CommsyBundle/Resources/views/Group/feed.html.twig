@@ -11,7 +11,11 @@
                     </form>
                 </div>
                 <div class="uk-margin-right">
-                    {{  macros.userIcon(group.creator) }}
+                    {% if group.creator.isUser %}
+                        {{  macros.userIconLink(group.creator) }}
+                    {% else %}
+                        {{  macros.userIcon(group.creator) }}
+                    {% endif %}
                 </div>
                 <div>
                     <h4 class="uk-comment-title">

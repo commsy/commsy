@@ -16,7 +16,11 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                {{  macros.userIcon(material.creator) }}
+                {% if material.creator.isUser %}
+                    {{  macros.userIconLink(material.creator) }}
+                {% else %}
+                    {{  macros.userIcon(material.creator) }}
+                {% endif %}
             </div>
             <div>
                 <h4 class="uk-comment-title">

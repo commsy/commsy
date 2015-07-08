@@ -21,7 +21,11 @@
         {% for member in members %}
             <div class="uk-width-medium-1-2 uk-width-large-1-3">
                 <div class="uk-panel">
-                    {{  macros.userIcon(member) }}
+                    {% if member.isUser %}
+                        {{  macros.userIconLink(member) }}
+                    {% else %}
+                        {{  macros.userIcon(member) }}
+                    {% endif %}
                     <span class="uk-text-middle">
                         <a href="{{ path('commsy_user_detail', {'roomId': app.request.attributes.get('roomId'), 'itemId': member.itemId}) }}">
                             {{ member.fullname }}

@@ -43,15 +43,14 @@
 {% endmacro %}
 
 {% macro detailInformation(item, modifierList) %}
+    {% import _self as macros %}
     <div class="uk-margin-bottom">
         <div class="toggle-{{ item.itemId }} uk-vertical-align">
             <div class="uk-margin-right uk-vertical-align-middle">
                 {% if item.creator.isUser %}
-                    <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
-                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
-                    </a>
+                    {{  macros.userIconLink(item.creator, 'small') }}
                 {% else %}
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
+                    {{  macros.userIcon(item.creator, 'small') }}
                 {% endif %}
             </div>
             <div class="uk-vertical-align-middle uk-margin-remove">
@@ -61,11 +60,9 @@
         <div class="uk-comment-header uk-flex uk-hidden toggle-{{ item.itemId }}">
             <div class="uk-margin-right">
                 {% if item.creator.isUser %}
-                    <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': item.creatorId}) }}">
-                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
-                    </a>
+                    {{  macros.userIconLink(item.creator) }}
                 {% else %}
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ item.creatorID }}/image" alt="" data-uk-tooltip title="{{ item.creator.fullname }}">
+                    {{  macros.userIcon(item.creator) }}
                 {% endif %}
             </div>
             <div class="uk-margin-right">
@@ -90,11 +87,9 @@
                     {% for modifier in modifierList[item.itemId] %}
                         <div class="uk-margin-small-right">
                             {% if modifier.isUser %}
-                                <a href="{{ path('commsy_user_detail', {'roomId': item.contextId, 'itemId': modifier.itemId}) }}">
-                                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="" data-uk-tooltip title="{{ modifier.fullname }}">
-                                </a>
+                                {{  macros.userIconLink(modifier, 'small') }}
                             {% else %}
-                                <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ modifier.itemId }}/image" alt="" data-uk-tooltip title="{{ modifier.fullname }}">
+                                {{  macros.userIcon(modifier, 'small') }}
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -163,8 +158,17 @@
     {% endif %}
 {% endmacro %}
 
-{% macro userIcon(user) %}
-    <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+{% macro userIcon(user, size) %}
+    {% if size == 'small' %}
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+    {% else %}
         <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+    {% endif %}
+{% endmacro %}
+
+{% macro userIconLink(user, size) %}
+    {% import _self as macros %}
+    <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+        {{  macros.userIcon(user, size) }}
     </a>
 {% endmacro %}
