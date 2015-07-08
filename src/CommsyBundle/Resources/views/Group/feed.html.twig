@@ -11,9 +11,7 @@
                     </form>
                 </div>
                 <div class="uk-margin-right">
-                    <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">
-                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ group.creatorId }}/image" alt="">
-                    </a>
+                    {{  macros.userIcon(group.creator) }}
                 </div>
                 <div>
                     <h4 class="uk-comment-title">

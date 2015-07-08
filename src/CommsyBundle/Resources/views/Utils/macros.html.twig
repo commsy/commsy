@@ -162,3 +162,9 @@
         {% endfor %}
     {% endif %}
 {% endmacro %}
+
+{% macro userIcon(user) %}
+    <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
+        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+    </a>
+{% endmacro %}

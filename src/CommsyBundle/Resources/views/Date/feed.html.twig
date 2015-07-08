@@ -17,7 +17,7 @@
             </div>
             <div class="uk-margin-right uk-flex-item-none">
                 <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': date.creatorId}) }}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ date.creatorID }}/image" alt="">
+                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ date.creatorID }}/image" data-uk-tooltip title="{{ date.creator.fullname }}">
                 </a>
             </div>
             <div>
