@@ -50,6 +50,74 @@
                 <source>p. %pages%</source>
                 <target>S. %pages%</target>
             </trans-unit>
+            <trans-unit id="biblio-thesis-ba">
+                <source>BA thesis</source>
+                <target>Bachelorarbeit</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-diploma">
+                <source>Diploma thesis</source>
+                <target>Diplomarbeit</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-dissertation">
+                <source>Dissertation</source>
+                <target>Dissertation</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-ma">
+                <source>MA thesis</source>
+                <target>Examensarbeit</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-kind">
+                <source>Kind of thesis</source>
+                <target>Art der Arbeit</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-master">
+                <source>MA thesis</source>
+                <target>Masterarbeit</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-other">
+                <source>other</source>
+                <target>andere</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-postdoc">
+                <source>Professorial dissertation</source>
+                <target>Habilitation</target>
+            </trans-unit>
+            <trans-unit id="biblio-thesis-term">
+                <source>Term paper</source>
+                <target>Hausarbeit</target>
+            </trans-unit>
+            <trans-unit id="biblio-information-for-document-administration">
+                <source>Information for document administration</source>
+                <target>Informationen zur Dokumentenverwaltung</target>
+            </trans-unit>
+            <trans-unit id="biblio-document-editor">
+                <source>Document editor</source>
+                <target>Ersteller des Dokuments</target>
+            </trans-unit>
+            <trans-unit id="biblio-maintainer">
+                <source>Maintainer</source>
+                <target>Freigabe durch</target>
+            </trans-unit>
+            <trans-unit id="biblio-version">
+                <source>Version</source>
+                <target>Versionsnummer</target>
+            </trans-unit>
+            <trans-unit id="biblio-version-date">
+                <source>Version date</source>
+                <target>Versionsdatum</target>
+            </trans-unit>
+            <trans-unit id="biblio-copyright">
+                <source>Copyright</source>
+                <target>Copyright</target>
+            </trans-unit>
+            <trans-unit id="biblio-reason">
+                <source>Reason</source>
+                <target>Anlass</target>
+            </trans-unit>
+            <trans-unit id="biblio-date">
+                <source>Date</source>
+                <target>Datum</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
