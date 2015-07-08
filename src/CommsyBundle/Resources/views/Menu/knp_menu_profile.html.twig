@@ -28,7 +28,9 @@
 
 {% block label %}
         {% if item.extras.img is defined %}
-            {{  macros.userIcon(item.extras.user, '40') }}
+            {% if item.extras.user.itemId != '' %}
+                {{  macros.userIcon(item.extras.user, '40') }}
+            {% endif %}
             <div class="uk-thumbnail-caption">
         {% endif %}
         {% if item.extras.icon is defined %}
