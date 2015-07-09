@@ -57,6 +57,7 @@ class UserService
     
     public function getListUsers($roomId, $max, $start)
     {
+        $this->userManager->resetLimits();
         $this->userManager->setContextLimit($roomId);
         $this->userManager->setUserLimit();
         $this->userManager->setIntervalLimit($start, $max);

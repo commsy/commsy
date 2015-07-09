@@ -23,10 +23,6 @@
                     </h4>
     
                     <div class="uk-comment-meta">
-                        {{ 'by'|trans({})|capitalize }}: {{user.fullname}}
-                    </div>
-    
-                    <div class="uk-comment-meta">
                         {{ 'last changed'|trans({})|capitalize }}: {{user.getModificationDate|date("d.m.Y H:i")}}
                     </div>
                 </div>
