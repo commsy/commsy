@@ -135,7 +135,6 @@
     {% import _self as macros %}
     {% set fileArray = item.fileList.to_array %}
     {% if not fileArray is empty %}
-        {{ 'files'|trans({})|capitalize }}:
         <ul class="uk-list">
         {% for file in fileArray %}
             <li><i class="{{ macros.iconClassForFileType(file.extension) }}"></i> <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}">{{ file.filename }}</a></li>
