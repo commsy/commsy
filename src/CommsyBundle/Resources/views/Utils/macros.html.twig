@@ -173,3 +173,12 @@
         {{  macros.userIcon(user, size) }}
     </a>
 {% endmacro %}
+
+{% macro editControl(item) %}
+    <div class="toggle-edit-{{ item.itemId }} uk-hidden">
+        EInstellungen
+    </div>
+    <button data-uk-toggle="{target:'.toggle-edit-{{ item.itemId }}', animation:'uk-animation-fade'}">
+        <i class="uk-icon-gear uk-icon-small"></i>
+    </button>
+{% endmacro %}

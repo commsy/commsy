@@ -1,0 +1,31 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{% for annotation in annotations %}
+    <article class="uk-comment">
+        <i class="{{ macros.iconClassForItemType(annotation.itemType) }} uk-icon-small {{ macros.statusColor(readerList, annotation.itemId) }}"></i>
+        <header class="uk-comment-header uk-flex">
+            <div class="uk-margin-right uk-flex-item-none">
+                {% if annotation.creator.isUser %}
+                    {{  macros.userIconLink(annotation.creator) }}
+                {% else %}
+                    {{  macros.userIcon(annotation.creator) }}
+                {% endif %}
+            </div>
+            <div>
+                <h4 class="uk-comment-title">
+                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': annotation.itemId}) }}">{{ annotation.title }}</a>
+                </h4>
+
+                <div class="uk-comment-meta">
+                    {{ 'by'|trans({})|capitalize }}: {{annotation.creator.getFullName}}
+                </div>
+
+                <div class="uk-comment-meta">
+                    {{ 'last changed'|trans({})|capitalize }}: {{annotation.getModificationDate|date("d.m.Y H:i")}}
+                </div>
+            </div>
+        </header>
+    </article>
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}

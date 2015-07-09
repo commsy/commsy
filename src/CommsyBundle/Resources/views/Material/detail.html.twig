@@ -37,6 +37,17 @@
             </div>
         </div>
     {% endfor %}
+    
+    <div class="uk-panel uk-panel-divider">
+        <div class="uk-panel">
+            <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
+        </div>
+        {{ render(controller(
+            'CommsyBundle:Annotation:feed',
+            { 'roomId': roomId, 'linkedItemId': material.itemId }
+        ))}}
+    </div>
+    
 {% endblock %}
 
 {% block content_right_column %}
