@@ -109,6 +109,7 @@ class GroupController extends Controller
         $members = $membersList->to_array();
         
         return array(
+            'roomId' => $roomId,
             'group' => $group,
             'members' => $members
         );
