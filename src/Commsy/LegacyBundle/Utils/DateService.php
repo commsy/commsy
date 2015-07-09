@@ -23,6 +23,7 @@ class DateService
     {
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setIntervalLimit($start, $max);
+        $this->dateManager->setSortOrder('time_rev');
 
         $this->dateManager->select();
         $dateList = $this->dateManager->get();
