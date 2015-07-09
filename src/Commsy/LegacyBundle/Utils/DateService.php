@@ -21,6 +21,7 @@ class DateService
 
     public function getListDates($roomId, $max, $start)
     {
+        $this->dateManager->reset();
         $this->dateManager->setContextLimit($roomId);
         $this->dateManager->setIntervalLimit($start, $max);
         $this->dateManager->setSortOrder('time_rev');

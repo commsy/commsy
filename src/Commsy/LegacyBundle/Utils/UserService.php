@@ -15,7 +15,9 @@ class UserService
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment;
+        
         $this->userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
+        $this->userManager->reset();
     }
 
     public function getUser($userId)
@@ -57,7 +59,7 @@ class UserService
     
     public function getListUsers($roomId, $max, $start)
     {
-        $this->userManager->resetLimits();
+        $this->userManager->reset();
         $this->userManager->setContextLimit($roomId);
         $this->userManager->setUserLimit();
         $this->userManager->setIntervalLimit($start, $max);
