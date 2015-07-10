@@ -2,7 +2,13 @@
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
         <article class="uk-comment">
-            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small {{ macros.statusColor(readerList, feedItem.itemId) }}"></i>
+            
+            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
+            
+            <div class="cs-comment-change-info {{ macros.statusColor(readerList, feedItem.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
+            
+            
+            
             <header class="uk-comment-header uk-flex">
                 <div class="uk-margin-right uk-flex-item-none">
                     {% if feedItem.creator.isUser %}
@@ -10,6 +16,13 @@
                     {% else %}
                         {{  macros.userIcon(feedItem.creator) }}
                     {% endif %}
+                    <div class="uk-comment-meta">
+                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{feedItem.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {{feedItem.getModificationDate|date("d.m.Y")}}
+                        {% endif %}
+                    </div>
                 </div>
                 <div>
                     <h4 class="uk-comment-title">
@@ -39,7 +52,6 @@
                     {% elseif feedItem.itemType == 'task' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% endif %}
-                    <div class="uk-comment-meta">{{ 'last changed'|trans({})|capitalize }}: {{feedItem.getModificationDate|date("d.m.Y H:i")}}</div>
                     <div class="uk-comment-meta">{{  macros.fileListShort(feedItem) }}</div>
                 </div>
             </header>

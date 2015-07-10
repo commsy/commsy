@@ -102,9 +102,9 @@
 {% macro statusColor(readerList, itemId) %}
     {% if readerList[itemId] is defined %}
         {% if readerList[itemId] == 'new' %}
-            uk-text-danger
+            cs-comment-new
         {% elseif readerList[itemId] == 'changed' %}
-            uk-text-warning
+            cs-comment-changed
         {% endif %}
     {% endif %}
 {% endmacro %}
