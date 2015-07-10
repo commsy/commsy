@@ -2,7 +2,8 @@
 
 {% for date in dates %}
     <article class="uk-comment">
-        <i class="{{ macros.iconClassForItemType(date.itemType) }} uk-icon-small {{ macros.statusColor(readerList, date.itemId) }}"></i>
+           
+        <div class="cs-comment-change-info {{ macros.statusColor(readerList, date.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
         <header class="uk-comment-header uk-flex">
             <div class="dates-checkbox uk-margin-right uk-margin-top uk-hidden">
 
@@ -16,9 +17,18 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': date.creatorId}) }}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ date.creatorID }}/image" data-uk-tooltip title="{{ date.creator.fullname }}">
-                </a>
+                    {% if date.creator.isUser %}
+                        {{  macros.userIconLink(date.creator) }}
+                    {% else %}
+                        {{  macros.userIcon(date.creator) }}
+                    {% endif %}
+                    <div class="uk-comment-meta">
+                        {% if date.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{date.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {{date.getModificationDate|date("d.m.Y")}}
+                        {% endif %}
+                    </div>
             </div>
             <div>
                 <h4 class="uk-comment-title">
@@ -27,14 +37,6 @@
 
                 <div class="uk-comment-meta">
                     {{date.dateDescription}}
-                </div>
-
-                <div class="uk-comment-meta">
-                    {{ 'by'|trans({})|capitalize }}: {{date.creator.getFullName}}
-                </div>
-
-                <div class="uk-comment-meta">
-                    {{ 'last changed'|trans({})|capitalize }}: {{date.getModificationDate|date("d.m.Y H:i")}}
                 </div>
                 
                 <div class="uk-comment-meta">

@@ -18,7 +18,7 @@
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{feedItem.getModificationDate|date("H:i")}}
+                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
                         {% else %}
                             {{feedItem.getModificationDate|date("d.m.Y")}}
                         {% endif %}
