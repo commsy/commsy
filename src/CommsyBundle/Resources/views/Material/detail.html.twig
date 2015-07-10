@@ -4,7 +4,6 @@
 
 {% block content_left_column %}
     <div class="uk-panel">
-        <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i></div>
         <h3 class="uk-panel-title">{{ material.title|raw }}</h3>
         {{ macros.detailInformation(material, modifierList) }}
     </div>

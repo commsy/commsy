@@ -9,14 +9,9 @@
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ item.itemType|trans({}, "room")|capitalize }}</div>
-                        <div>
-                            <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#detail-left-column', animation: 'uk-animation-fade'}">
-                                <i class="uk-icon-chevron-up"></i>
-                            </a>
-                        </div>
                     </div>
                 </div>
-                <div id="detail-left-column" class="uk-overflow-container">
+                <div class="uk-overflow-container">
                     {% block content_left_column %}
                     {% endblock %}
                     <div class="uk-panel uk-panel-divider">
