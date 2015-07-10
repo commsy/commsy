@@ -3401,6 +3401,22 @@ class cs_portal_item extends cs_guide_item {
    	}
    	return $retour;
    }
+
+   public function setInactivityConfigDate()
+   {
+        // set inactivity configuration date
+        $this->_addExtra('INACTIVITY_CONFIGURATION_DATE', getCurrentDateTimeInMySQL());
+   }
+
+   public function getInactivityConfigDate()
+   {
+        // get inactivity configuration date
+        $retour = 0;
+        if ($this->_issetExtra('INACTIVITY_CONFIGURATION_DATE')) {
+            $retour = $this->_getExtra('INACTIVITY_CONFIGURATION_DATE');
+        }
+        return $retour;
+   }
    
    public function unsetInactivityOverwriteContent(){
    	$this->_unsetExtra('INACTIVITY_OVERWRITE_CONTENT');
