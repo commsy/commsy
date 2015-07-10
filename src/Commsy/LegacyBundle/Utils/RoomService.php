@@ -78,7 +78,6 @@ class RoomService
 
     public function getRoomTitle($roomId)
     {
-        dump($roomId);
         // return room title
         $roomManager = $this->legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);

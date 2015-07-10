@@ -15,7 +15,9 @@ class GroupService
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment;
+        
         $this->groupManager = $this->legacyEnvironment->getEnvironment()->getGroupManager();
+        $this->groupManager->reset();
     }
 
     public function getGroup($itemId)
@@ -26,6 +28,7 @@ class GroupService
     
     public function getListGroups($roomId, $max, $start)
     {
+        $this->groupManager->reset();
         $this->groupManager->setContextLimit($roomId);
         $this->groupManager->setIntervalLimit($start, $max);
         

@@ -1,200 +1,212 @@
-{% if material.bibKind == 'common' %}
-    {{ 'MATERIAL_AUTHORS'|trans({}) }}: {{ material.author }}<br/>
-    {{ 'MATERIAL_PUBLISHING_DATE'|trans({}) }}: {{ material.publishingDate }}<br/>
-    {{material.bibliographicValues|raw}}
-{% elseif material.bibKind == 'website' %}
-    {{ material.author }}
-{% elseif material.bibKind == 'document' %}
-{% else %}
-    {{ material.author }} ({{ material.publishingDate }})
-{% endif %}
-{% if material.bibKind != 'common' %}
-    {% if material.bibKind == 'book' %}
-    {% elseif material.bibKind == 'collection' %}
-        {{ material.address }}: {{ material.publisher }}
-		{% if material.edition %}
-		    , {{ 'MATERIAL_BIB_EDITION'|trans({}) }}: {{ material.edition }}
-		{% endif %}
-		{% if material.series %}
-		    , {{ 'MATERIAL_BIB_SERIES'|trans({}) }}: {{ material.series }}
-		{% endif %}
-		{% if material.volume %}
-		    , {{ 'MATERIAL_BIB_VOLUME'|trans({}) }}: {{ material.volume }}
-		{% endif %}
-		{% if material.ISBN %}
-		    , {{ 'MATERIAL_BIB_ISBN'|trans({}) }}: {{ material.ISBN }}
-		{% endif %}
-        .
-		{% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		{% endif %}
-		{% if material.urlDate %}
-		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-		{% endif %}
-    {% elseif material.bibKind == 'incollection' %}
-    	{% if material.editor %}
-    	    {{ 'MATERIAL_BIB_EDITION'|trans({}) }}:
-    	    {{ 'MATERIAL_BIB_EDITION'|trans({ editor: material.editor }) }}
-    	{% endif %}
-    	{{ material.booktitle }}.
-    	{{ material.address }}: {{ material.publisher }}
-    	{% if material.edition %}
-		    , {{ 'MATERIAL_BIB_EDITION'|trans({}) }}: {{ material.edition }}
-		{% endif %}
-		{% if material.series %}
-		    , {{ 'MATERIAL_BIB_SERIES'|trans({}) }}: {{ material.series }}
-		{% endif %}
-		{% if material.volume %}
-		    , {{ 'MATERIAL_BIB_VOLUME'|trans({}) }}: {{ material.volume }}
-		{% endif %}
-		{% if material.ISBN %}
-		    , {{ 'MATERIAL_BIB_ISBN'|trans({}) }}: {{ material.ISBN }}
-		{% endif %}
-        , {{ 'MATERIAL_BIB_PAGES'|trans({}) }}: {{ material.pages }}
-		{% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		{% endif %}
-		{% if material.urlDate %}
-		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-		{% endif %}
-    {% elseif material.bibKind == 'article' %}
-		{{ 'MATERIAL_BIB_IN'|trans({}) }}: {{ material.journal }}
-        {% if material.volume %}
-		    , {{ material.volume }}
-            {% if material.issue %}
-                ({{ material.issue }})
-            {% endif %}
-        {% elseif material.issue %}
-		    , {{ material.issue }}
-		{% endif %}
-        , {{ 'MATERIAL_BIB_PAGES'|trans({}) }}: {{ material.pages }}
-        {% set info = '' %}
-        {% if material.address %}
-            {{ info ~ material.address }}
-        {% endif %}
-        {% if material.publisher %}
-            {% if info != '' %}
-                {{ info ~ ', ' }}
-            {% endif %}
-            {{ info ~ material.publisher }}
-        {% endif %}
-        {% if material.ISSN %}
-            {% if info != '' %}
-                {{ info ~ ', ' }}
-            {% endif %}
-            {{ info ~ material.ISSN }}
-        {% endif %}
-        {% if info != '' %}
-            {{ info ~ '.' }}
-        {% endif %}
-        {% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		{% endif %}
-		{% if material.urlDate %}
-		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-		{% endif %}
-    {% elseif material.bibKind == 'inpaper' %}
-        {{ 'MATERIAL_BIB_IN'|trans({}) }}: {{ material.journal }}
-        {% if material.issue %}
-            , {{ material.issue }}
-        {% endif %}
-        {{ 'MATERIAL_BIB_PAGES'|trans({}) }}: {{ material.pages }}
-        {% set info = '' %}
-        {% if material.address %}
-            {{ info ~ material.address }}
-        {% endif %}
-        {% if material.publisher %}
-            {% if info != '' %}
-                {{ info ~ ', ' }}
-            {% endif %}
-            {{ info ~ material.publisher }}
-        {% endif %}
-        {% if info != '' %}
-            {{ info ~ '.' }}
-        {% endif %}
-        {% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		    {% if material.urlDate %}
-    		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-    		{% endif %}
-		{% endif %}
-    {% elseif material.bibKind == 'thesis' %}
-        {% if material.thesisKind == 'BACHELOR'%}
-            {{ 'MATERIAL_THESIS_BACHELOR'|trans({}) }}.
-        {% elseif material.thesisKind == 'DIPLOMA'%}
-            {{ 'MATERIAL_THESIS_DIPLOMA'|trans({}) }}.
-        {% elseif material.thesisKind == 'DISSERTATION'%}
-            {{ 'MATERIAL_THESIS_DISSERTATION'|trans({}) }}.
-        {% elseif material.thesisKind == 'EXAM'%}
-            {{ 'MATERIAL_THESIS_EXAM'|trans({}) }}.
-        {% elseif material.thesisKind == 'KIND'%}
-            {{ 'MATERIAL_THESIS_KIND'|trans({}) }}.
-        {% elseif material.thesisKind == 'KIND_DESC'%}
-            {{ 'MATERIAL_THESIS_KIND_DESC'|trans({}) }}.
-        {% elseif material.thesisKind == 'MASTER'%}
-            {{ 'MATERIAL_THESIS_MASTER'|trans({}) }}.
-        {% elseif material.thesisKind == 'OTHER'%}
-            {{ 'MATERIAL_THESIS_OTHER'|trans({}) }}.
-        {% elseif material.thesisKind == 'POSTDOC'%}
-            {{ 'MATERIAL_THESIS_POSTDOC'|trans({}) }}.
-        {% elseif material.thesisKind == 'TERM'%}
-            {{ 'MATERIAL_THESIS_TERM'|trans({}) }}.
-        {% else %}
-            {{ 'COMMON_MESSAGETAG_ERROR'|trans({}) }}.
-        {% endif %}
-        {{ material.address }}: {{ material.university }}
-        {% if material.faculty %}
-            , {{ material.faculty }}
-        {% endif %}
-        {% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		    {% if material.urlDate %}
-    		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-    		{% endif %}
-		{% endif %}
+{% set biblio = '' %}
+{% if material.bibKind != 'none' %}
+    {% if material.bibKind == 'common' %}
+        {% set biblio = biblio ~ "#{'Author/s'|trans({}) }" ~ ": " ~ material.author ~ "<br/>" %}
+        {% set biblio = biblio ~ "#{'Year'|trans({}) }" ~ ": " ~ material.publishingDate ~ "<br/>" %}
+        {% set biblio = biblio ~ "#{'Bibl. reference'|trans({}) }" ~ ": " ~ material.bibliographicValues ~ "<br/>" %}
     {% elseif material.bibKind == 'website' %}
-        {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-	    {% if material.urlDate %}
-		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-		{% endif %}
-    {% elseif material.bibKind == 'manuscript' %}
-        {{ material.bibliographicValues }}
-        {% if material.address %}
-            {{ material.address }}.
-        {% endif %}
-        {% if material.url %}
-		    {{ 'MATERIAL_BIB_URL'|trans({}) }}: {{ material.url }}
-		    {% if material.urlDate %}
-    		    ({{ 'MATERIAL_BIB_URL_DATE'|trans({}) }}: {{ material.urlDate }}).
-    		{% endif %}
-    		.
-		{% endif %}
+        {% set biblio = biblio ~ material.author ~ ", " %}
     {% elseif material.bibKind == 'document' %}
-        {{ 'MATERIAL_BIB_DOCUMENT_ADMINISTRATION_INFO'|trans({}) }}<br/>
-        {% if material.documentEditor %}
-		    {{ 'MATERIAL_BIB_DOCUMENT_EDITOR'|trans({}) }}: {{ material.documentEditor }}<br/>
-		{% endif %}
-		{% if material.documentMaintainer %}
-		    {{ 'MATERIAL_BIB_DOCUMENT_MAINTAINER'|trans({}) }}: {{ material.documentMaintainer }}<br/>
-		{% endif %}
-		{% if material.documentReleaseNumber %}
-		    {{ 'MATERIAL_BIB_DOCUMENT_RELEASE_NUMBER'|trans({}) }}: {{ material.documentReleaseNumber }}<br/>
-		{% endif %}
-		{% if material.documentReleaseDate %}
-		    {{ 'MATERIAL_BIB_DOCUMENT_RELEASE_DATE'|trans({}) }}: {{ material.documentReleaseDate }}
-		{% endif %}
-    {% elseif material.bibKind == 'foto' %}
-        {% if material.fotoCopyright %}
-		    {{ 'MATERIAL_BIB_FOTO_COPYRIGHT'|trans({}) }}: {{ material.fotoCopyright }}<br/>
-		{% endif %}
-		{% if material.fotoReason %}
-		    {{ 'MATERIAL_BIB_FOTO_REASON'|trans({}) }}: {{ material.fotoReason }}<br/>
-		{% endif %}
-		{% if material.fotoDate %}
-		    {{ 'MATERIAL_BIB_FOTO_DATE'|trans({}) }}: {{ material.fotoDate }}<br/>
-		{% endif %}
-    {% elseif material.bibKind == 'none' %}
     {% else %}
-        {{ material.bibliographicValues }}
+        {% set biblio = biblio ~ material.author ~ " (" ~ material.publishingDate ~ "). " %}
     {% endif %}
+    {% if material.bibKind != 'common' %}
+        {% if material.bibKind == 'book' or material.bibKind == 'collection' %}
+            {% set biblio = biblio ~ material.address ~ ": " ~ material.publisher %}
+    		{% if material.edition %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'%edition% edition'|trans({'%edition%': material.edition}) }" %}
+    		{% endif %}
+    		{% if material.series %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'Series %series%'|trans({'%series%': material.series}) }" %}
+    		{% endif %}
+    		{% if material.volume %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'Volume %volume%'|trans({'%volume%': material.volume}) }" %}
+    		{% endif %}
+    		{% if material.ISBN %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'ISBN: %isbn%'|trans({'%isbn%': material.ISBN}) }" %}
+    		{% endif %}
+            {% set biblio = biblio ~ "." %}
+    		{% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'incollection' %}
+        	{% if material.editor %}
+        	    {% set biblio = biblio ~ "#{'In'|trans({}) }" ~ ": " %}
+        	    {% set biblio = biblio ~ "#{'%editor% (ed.)'|trans({'%editor%': material.editor}) }" ~ ": " %}
+        	{% endif %}
+        	{% set biblio = biblio ~ material.booktitle ~ ". " %}
+        	{% set biblio = biblio ~ material.address ~ ": " ~ material.publisher ~ ", " %}
+        	{% if material.edition %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'%edition% edition'|trans({'%edition%': material.edition}) }" %}
+    		{% endif %}
+    		{% if material.series %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'Series %series%'|trans({'%series%': material.series}) }" %}
+    		{% endif %}
+    		{% if material.volume %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'Volume %volume%'|trans({'%volume%': material.volume}) }" %}
+    		{% endif %}
+    		{% if material.ISBN %}
+    		    {% set biblio = biblio ~ ", " ~ "#{'ISBN: %isbn%'|trans({'%isbn%': material.ISBN}) }" %}
+    		{% endif %}
+            {% set biblio = biblio ~ ", " ~ "#{'p: %pages%'|trans({'%pages%': material.pages}) }" ~ "." %}
+    		{% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'article' %}
+    		{% set biblio = biblio ~ "#{'In'|trans({}) }" ~ ": " ~ material.journal %}
+            {% if material.volume %}
+    		    {% set biblio = biblio ~ ", " ~ material.volume %}
+                {% if material.issue %}
+                    {% set biblio = biblio ~ " (" ~ material.issue ~ ")" %}
+                {% endif %}
+            {% elseif material.issue %}
+    		    {% set biblio = biblio ~ ", " ~ material.issue %}
+    		{% endif %}
+            {% set biblio = biblio ~ ", " ~ "#{'p: %pages%'|trans({'%pages%': material.pages}) }" ~ ". " %}
+            {% set biblio_additional = '' %}
+            {% if material.address %}
+                {% set biblio_additional = biblio_additional ~ material.address %}
+            {% endif %}
+            {% if material.publisher %}
+                {% if biblio_additional != '' %}
+                    {% set biblio_additional = biblio_additional ~ ", " %}
+                {% endif %}
+                {% set biblio_additional = biblio_additional ~ material.publisher %}
+            {% endif %}
+            {% if material.ISSN %}
+                {% if biblio_additional != '' %}
+                    {% set biblio_additional = biblio_additional ~ ", " %}
+                {% endif %}
+                {% set biblio_additional = biblio_additional ~ material.ISSN %}
+            {% endif %}
+            {% if biblio_additional != '' %}
+                {% set biblio_additional = biblio_additional ~ "." %}
+            {% endif %}
+            {% if biblio_additional != '' %}
+                {% set biblio = biblio ~ biblio_additional %}
+            {% endif %}
+            {% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'inpaper' %}
+            {% set biblio = biblio ~ "#{'In'|trans({}) }" ~ ": " ~ material.journal %}
+            {% if material.issue %}
+                {% set biblio = biblio ~ ", " ~ material.issue %}
+            {% endif %}
+            {% set biblio = biblio ~ ", " ~ "#{'p: %pages%'|trans({'%pages%': material.pages}) }" ~ ". " %}
+            {% set biblio_additional = '' %}
+            {% if material.address %}
+                {% set biblio_additional = biblio_additional ~ material.address %}
+            {% endif %}
+            {% if material.publisher %}
+                {% if biblio_additional != '' %}
+                    {% set biblio_additional = biblio_additional ~ ", " %}
+                {% endif %}
+                {% set biblio_additional = biblio_additional ~ material.publisher %}
+            {% endif %}
+            {% if biblio_additional != '' %}
+                {% set biblio_additional = biblio_additional ~ "." %}
+            {% endif %}
+            {% if biblio_additional != '' %}
+                {% set biblio = biblio ~ biblio_additional %}
+            {% endif %}
+            {% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'thesis' %}
+            {% if material.thesisKind|upper == 'BACHELOR'%}
+                {% set biblio = biblio ~ " " ~ "#{'BA thesis'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'DIPLOMA'%}
+                {% set biblio = biblio ~ " " ~ "#{'Diploma thesis'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'DISSERTATION'%}
+                {% set biblio = biblio ~ " " ~ "#{'Dissertation'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'EXAM'%}
+                {% set biblio = biblio ~ " " ~ "#{'MA thesis'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'KIND'%}
+                {% set biblio = biblio ~ " " ~ "#{'Kind of thesis'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'MASTER'%}
+                {% set biblio = biblio ~ " " ~ "#{'MA thesis'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'OTHER'%}
+                {% set biblio = biblio ~ " " ~ "#{'other'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'POSTDOC'%}
+                {% set biblio = biblio ~ " " ~ "#{'Professorial dissertation'|trans({}) }" ~ ". " %}
+            {% elseif material.thesisKind|upper == 'TERM'%}
+                {% set biblio = biblio ~ " " ~ "#{'Term paper'|trans({}) }" ~ ". " %}
+            {% else %}
+                {% set biblio = biblio ~ " " ~ "#{'common error'|trans({}) }" ~ ". " %}
+            {% endif %}
+            {% set biblio = biblio ~ material.address ~ ": " ~ material.university %}
+            {% if material.faculty %}
+                {% set biblio = biblio ~ ", " ~ material.faculty %}
+            {% endif %}
+            {% set biblio = biblio ~ ". " %}
+            {% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'website' %}
+            {% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'manuscript' %}
+            {% set biblio = biblio ~ material.bibliographicValues %}
+            {% if material.address %}
+                {% set biblio = biblio ~ material.address ~ "." %}
+            {% endif %}
+            {% if material.url %}
+    		    {% set biblio = biblio ~ " " ~ "#{'Internet: %url%'|trans({'%url%': material.url}) }" %}
+    		    {% if material.urlDate %}
+        		    {% set biblio = biblio ~ " (" ~ "#{'last visited: %date%'|trans({'%date%': material.urlDate}) }" ~ ")." %}
+        		{% endif %}
+    		{% endif %}
+        {% elseif material.bibKind == 'document' %}
+            {% set biblio = biblio ~ "#{'Information for document administration'|trans({}) }" ~ ": <br/>" %}
+            {% if material.documentEditor %}
+    		    {% set biblio = biblio ~ "#{'Document editor'|trans({}) }" ~ ": " ~ material.documentEditor ~ "<br/>" %}
+    		{% endif %}
+    		{% if material.documentMaintainer %}
+    		    {% set biblio = biblio ~ "#{'Maintainer'|trans({}) }" ~ ": " ~ material.documentMaintainer ~ "<br/>" %}
+    		{% endif %}
+    		{% if material.documentReleaseNumber %}
+    		    {% set biblio = biblio ~ "#{'Version'|trans({}) }" ~ ": " ~ material.documentReleaseNumber ~ "<br/>" %}
+    		{% endif %}
+    		{% if material.documentReleaseDate %}
+    		    {% set biblio = biblio ~ "#{'Version date'|trans({}) }" ~ ": " ~ material.documentReleaseDate ~ "<br/>" %}
+    		{% endif %}
+        {% elseif material.bibKind == 'foto' %}
+            {% set biblio = biblio ~ "<br/>" %}
+            {% if material.fotoCopyright %}
+    		    {% set biblio = biblio ~ "#{'Copyright'|trans({}) }" ~ ": " ~ material.fotoCopyright ~ "<br/>" %}
+    		{% endif %}
+    		{% if material.fotoReason %}
+    		    {% set biblio = biblio ~ "#{'Reason'|trans({}) }" ~ ": " ~ material.fotoReason ~ "<br/>" %}
+    		{% endif %}
+    		{% if material.fotoDate %}
+    		    {% set biblio = biblio ~ "#{'Date'|trans({}) }" ~ ": " ~ material.fotoDate ~ "<br/>" %}
+    		{% endif %}
+        {% elseif material.bibKind == 'none' %}
+        {% else %}
+            {% set biblio = biblio ~ material.bibliographicValues %}
+        {% endif %}
+    {% endif %}
+{% endif %}
+{% if not biblio is empty %}
+    {{ biblio|raw }}
 {% endif %}

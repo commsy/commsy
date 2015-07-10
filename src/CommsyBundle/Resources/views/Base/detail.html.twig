@@ -19,6 +19,15 @@
                 <div id="detail-left-column" class="uk-overflow-container">
                     {% block content_left_column %}
                     {% endblock %}
+                    <div class="uk-panel uk-panel-divider">
+                        <div class="uk-panel">
+                            <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
+                        </div>
+                        {{ render(controller(
+                            'CommsyBundle:Annotation:feed',
+                            { 'roomId': roomId, 'linkedItemId': item.itemId }
+                        ))}}
+                    </div>
                 </div>
             </div>
         </div>

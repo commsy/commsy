@@ -16,9 +16,11 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': material.creatorId}) }}">
-                    <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/{{ material.creatorID }}/image" alt="">
-                </a>
+                {% if material.creator.isUser %}
+                    {{  macros.userIconLink(material.creator) }}
+                {% else %}
+                    {{  macros.userIcon(material.creator) }}
+                {% endif %}
             </div>
             <div>
                 <h4 class="uk-comment-title">

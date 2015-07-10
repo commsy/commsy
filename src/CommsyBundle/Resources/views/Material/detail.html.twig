@@ -5,7 +5,7 @@
 {% block content_left_column %}
     <div class="uk-panel">
         <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(material.itemType) }} uk-icon-small {{ macros.statusColor(readerList, material.itemId) }}"></i></div>
-        <h3 class="uk-panel-title">{{ material.title }}</h3>
+        <h3 class="uk-panel-title">{{ material.title|raw }}</h3>
         {{ macros.detailInformation(material, modifierList) }}
     </div>
     
@@ -13,7 +13,7 @@
         {% include 'CommsyBundle:Material:biblio.html.twig' %}
     </div>
     
-    <div class="uk-panel uk-margin-left uk-margin-bottom">
+    <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
         {{ material.description|raw }}
     </div>
     
@@ -29,7 +29,7 @@
                 <h3 class="uk-panel-title">{{ section.title }}</h3>
                 {{ macros.detailInformation(section, modifierList) }}
             </div>
-            <div class="uk-panel uk-margin-left uk-margin-bottom">
+            <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
                 {{ section.description|raw }}
             </div>
             <div class="uk-panel uk-margin-left">
@@ -58,14 +58,32 @@
             <div class="">
                 <ul class="uk-list uk-list-striped uk-margin-bottom-remove">
                 {% for section in sectionList [0:10] %}
-                    <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
+                    <li>
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-1-10">{{ loop.index }}.</div>
+                            <div class="uk-width-9-10 uk-text-truncate"><a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a></div>
+                        </div>
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-1-10"></div>
+                            <div class="uk-width-9-10">{{ macros.fileListShort(section) }}</div>
+                        </div>
+                    </li>
                 {% endfor %}
                 </ul>
                 {% if sectionList|length > 10 %}
                     <div class="show-more-sections uk-hidden">
                         <ul class="uk-list uk-list-striped">
                         {% for section in sectionList [10:sectionList|length-10] %}
-                            <li><a href="#{{ section.itemId }}">{{ section.title }}</a> {{  macros.fileListShort(section) }}</li>
+                            <li>
+                            <div class="uk-grid uk-grid-collapse">
+                                <div class="uk-width-1-10">{{ loop.index + 10 }}.</div>
+                                <div class="uk-width-9-10 uk-text-truncate"><a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a></div>
+                            </div>
+                            <div class="uk-grid uk-grid-collapse">
+                                <div class="uk-width-1-10"></div>
+                                <div class="uk-width-9-10">{{ macros.fileListShort(section) }}</div>
+                            </div>
+                        </li>
                         {% endfor %}
                         </ul>
                     </div>

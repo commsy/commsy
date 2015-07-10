@@ -5,30 +5,31 @@ use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
-class MaterialService
+class DateService
 {
     private $legacyEnvironment;
 
-    private $materialManager;
+    private $dateManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
 
-        $this->materialManager = $this->legacyEnvironment->getMaterialManager();
-        $this->materialManager->reset();
+        $this->dateManager = $this->legacyEnvironment->getDateManager();
+        $this->dateManager->reset();
     }
 
-    public function getListMaterials($roomId, $max, $start)
+    public function getListDates($roomId, $max, $start)
     {
-        $this->materialManager->reset();
-        $this->materialManager->setContextLimit($roomId);
-        $this->materialManager->setIntervalLimit($start, $max);
+        $this->dateManager->reset();
+        $this->dateManager->setContextLimit($roomId);
+        $this->dateManager->setIntervalLimit($start, $max);
+        $this->dateManager->setSortOrder('time_rev');
 
-        $this->materialManager->select();
-        $materialList = $this->materialManager->get();
+        $this->dateManager->select();
+        $dateList = $this->dateManager->get();
 
-        return $materialList->to_array();
+        return $dateList->to_array();
     }
 
     public function setFilterConditions(Form $filterForm)
@@ -37,7 +38,7 @@ class MaterialService
 
         // activated
         if ($formData['activated']) {
-            $this->materialManager->showNoNotActivatedEntries();
+            $this->dateManager->showNoNotActivatedEntries();
         }
 
         // rubrics
@@ -45,25 +46,25 @@ class MaterialService
             // group
             if (isset($formData['rubrics']['group'])) {
                 $relatedLabel = $formData['rubrics']['group'];
-                $this->materialManager->setGroupLimit($relatedLabel->getItemId());
+                $this->dateManager->setGroupLimit($relatedLabel->getItemId());
             }
             
             // topic
             if (isset($formData['rubrics']['topic'])) {
                 $relatedLabel = $formData['rubrics']['topic'];
-                $this->materialManager->setTopicLimit($relatedLabel->getItemId());
+                $this->dateManager->setTopicLimit($relatedLabel->getItemId());
             }
             
             // institution
             if (isset($formData['rubrics']['institution'])) {
                 $relatedLabel = $formData['rubrics']['institution'];
-                $this->materialManager->setInstitutionLimit($relatedLabel->getItemId());
+                $this->dateManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
     }
     
-    public function getMaterial($itemId)
+    public function getDate($itemId)
     {
-        return $this->materialManager->getItem($itemId);
+        return $this->dateManager->getItem($itemId);
     }
 }

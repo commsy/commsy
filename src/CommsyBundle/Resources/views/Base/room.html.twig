@@ -10,3 +10,9 @@
         'currentAsLink':false}) 
     }}
 {% endblock %}
+
+{% block profile %}
+    {{ knp_menu_render('profile', 
+        {'template': 'CommsyBundle:Menu:knp_menu_profile.html.twig'})
+    }}
+{% endblock %}
