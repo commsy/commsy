@@ -286,159 +286,85 @@ class cs_server_item extends cs_guide_item
                             // pr($user->getAuthSource());
                             // pr('DaysTillLock:' . $daysTillLock);
                             // pr('Days:' . $days);
+                            // pr(($portal_item->getInactivityLockDays() - $days). '<=' . ($portal_item->getInactivitySendMailBeforeLockDays()-1));
                             // pr('-------------');
                             // DEBUG OUTPUT
 
-                            // only for 
-                            if ($sourceType == 'MYSQL') {
-                                $userid = $user->getFullname();
+                            $userid = $user->getFullname();
 
-                                // delete user
-                                if ($daysTillLock >= $portal_item->getInactivityDeleteDays() and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)) {
-                                    // mail locked send or locked configuration is not set
-                                    if (($user->getMailSendLocked() or (empty($inactivitySendMailLockDays) and empty($inactivityLockDays)))) {
-                                        $auth_source_manager = $this->_environment->getAuthSourceManager();
-                                        $auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
+                            // delete user
+                            if ($daysTillLock >= $portal_item->getInactivityDeleteDays() and $user->getMailSendBeforeDelete() and !empty($inactivityDeleteDays)) {
+                                // mail locked send or locked configuration is not set
+                                if (($user->getMailSendLocked() or (empty($inactivitySendMailLockDays) and empty($inactivityLockDays)))) {
+                                    $auth_source_manager = $this->_environment->getAuthSourceManager();
+                                    $auth_source_item = $auth_source_manager->getItem($user->getAuthSource());
 
-                                        // delete user and every room which the user is member only
-                                        $user->deleteAllEntriesOfUserByInactivity(); // delete content
+                                    // delete user and every room which the user is member only
+                                    $user->deleteAllEntriesOfUserByInactivity(); // delete content
 
-                                        $portalUser_item = $user->getRelatedCommSyUserItem();
+                                    // $portalUser_item = $user->getRelatedCommSyUserItem();
 
-                                        $authentication = $this->_environment->getAuthenticationObject();
-                                        $authentication->delete($portalUser_item->getItemID());
+                                    $authentication = $this->_environment->getAuthenticationObject();
+                                    $authentication->delete($user->getItemID());
 
-                                        // $authentication = $this->_environment->getAuthenticationObject();
-                                        // $authentication->delete($user->getItemID()); // delete authentication
-                                        // $user->delete();
-                                        // $user->save();
+                                    // $authentication = $this->_environment->getAuthenticationObject();
+                                    // $authentication->delete($user->getItemID()); // delete authentication
+                                    // $user->delete();
+                                    // $user->save();
 
 
-                                        ##########################
-                                        # delete mail
-                                        ##########################
+                                    ##########################
+                                    # delete mail
+                                    ##########################
 
-                                        $mail = $this->sendMailForUserInactivity("deleted", $user, $portal_item, $days);
-                                        if ($mail->send()) {
-                                            $user->setMailSendBeforeDelete();
-                                            $user->save();
-
-                                            $cron_array['success'] = true;
-                                            $cron_array['success_text'] = 'send delete mail to '.$to;
-                                        } else {
-                                            $cron_array['success'] = false;
-                                            $cron_array['success_text'] = 'failed send mail to '.$to;
-                                        }
-                                    }
-                                }
-                                // 1 Tag vor dem löschen noch eine Email verschicken
-                                if ($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and ($user->getMailSendLocked()
-                                    or (empty($inactivitySendMailLockDays)
-                                        and empty($inactivityLockDays))) and !empty($inactivityDeleteDays)) {
-                                    if (!$user->getMailSendBeforeDelete()) {
-                                        // send mail next day delete
-
-                                        $mail = $this->sendMailForUserInactivity("deleteNext", $user, $portal_item, $days);
-                                        if ($mail->send()) {
-                                            $user->setMailSendBeforeDelete();
-                                            $user->save();
-
-                                            $cron_array['success'] = true;
-                                            $cron_array['success_text'] = 'send mail to '.$to;
-                                        } else {
-                                            $cron_array['success'] = false;
-                                            $cron_array['success_text'] = 'failed send mail to '.$to;
-                                        }
-                                    }
-                                }
-
-                                if ($daysTillLock >= $portal_item->getInactivitySendMailBeforeDeleteDays() and
-                                    ($user->getMailSendLocked() or empty($inactivitySendMailLockDays) and
-                                        empty($inactivityLockDays)) and !empty($inactivitySendMailDeleteDays)) {
-                                    // send mail delete in the next y days
-                                    if (!$user->getMailSendBeforeDelete()) {
-                                        if (($portal_item->getInactivityDeleteDays() - $daysTillLock) <= $portal_item->getInactivitySendMailBeforeDeleteDays()) {
-                                            
-                                            if(!$user->getMailSendNextDelete()) {
-                                                $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $daysTillLock);
-                                                if ($mail->send()) {
-                                                    $user->setMailSendNextDelete();
-                                                    $user->save();
-                                                    // $user->setInactivityMailSendBeforeDelete();
-                                                    // $user->save();
-
-                                                    $cron_array['success'] = true;
-                                                    $cron_array['success_text'] = 'send mail to '.$to;
-                                                } else {
-                                                    $cron_array['success'] = false;
-                                                    $cron_array['success_text'] = 'failed send mail to '.$to;
-                                                }
-                                                // step over
-                                                continue;
-                                            }
-                                        }
-                                    }
-                                }
-                                // step over
-                                if ($daysTillLock > 0) {
-                                    continue;
-                                }
-
-                                // lock now
-                                if ($days >= $portal_item->getInactivityLockDays() and !empty($inactivityLockDays)) {
-                                    if ($user->getMailSendBeforeLock()) {
-                                        // lock user and set lock date till deletion date
-                                        $user->setLock($portal_item->getInactivityDeleteDays() + 365); // days till delete
-                                        $user->reject();
+                                    $mail = $this->sendMailForUserInactivity("deleted", $user, $portal_item, $days);
+                                    if ($mail->send()) {
+                                        $user->setMailSendBeforeDelete();
                                         $user->save();
-                                        // lock user if not locked already
-                                        $mail = $this->sendMailForUserInactivity("locked", $user, $portal_item, $days);
 
-                                        if ($mail->send()) {
-                                            $user->setMailSendLocked();
-                                            $user->setLockSendMailDate();
-                                            $user->save();
-
-                                            $cron_array['success'] = true;
-                                            $cron_array['success_text'] = 'send mail to '.$to;
-                                        } else {
-                                            $cron_array['success'] = false;
-                                            $cron_array['success_text'] = 'failed send mail to '.$to;
-                                        }
+                                        $cron_array['success'] = true;
+                                        $cron_array['success_text'] = 'send delete mail to '.$to;
                                     } else {
-                                        // send mail to user that the user will be locked in one day
-
-                                        if (($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()-1) {
-                                            $mail = $this->sendMailForUserInactivity("lockNext", $user, $portal_item, $days);
-                                            if ($mail->send()) {
-                                                $user->setMailSendBeforeLock();
-                                                $user->save();
-
-                                                $cron_array['success'] = true;
-                                                $cron_array['success_text'] = 'send mail to '.$to;
-                                            } else {
-                                                $cron_array['success'] = false;
-                                                $cron_array['success_text'] = 'failed send mail to '.$to;
-                                            }
-                                        }
-                                        // step over
-                                        continue;
+                                        $cron_array['success'] = false;
+                                        $cron_array['success_text'] = 'failed send mail to '.$to;
                                     }
                                 }
-                                // lock in x days
-                                if ($days >= $portal_item->getInactivitySendMailBeforeLockDays() and !empty($inactivitySendMailLockDays)) {
-                                    // send mail lock in x days
+                            }
+                            // 1 Tag vor dem löschen noch eine Email verschicken
+                            if ($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and ($user->getMailSendLocked()
+                                or (empty($inactivitySendMailLockDays)
+                                    and empty($inactivityLockDays))) and !empty($inactivityDeleteDays)) {
+                                if (!$user->getMailSendBeforeDelete()) {
+                                    // send mail next day delete
 
-                                    if (!$user->getMailSendBeforeLock() && !$user->getMailSendNextLock()) {
-                                        // ?????
-                                    // } else {
-                                        if (($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()) {
-                                            $mail = $this->sendMailForUserInactivity("lockNotify", $user, $portal_item, $days);
+                                    $mail = $this->sendMailForUserInactivity("deleteNext", $user, $portal_item, $days);
+                                    if ($mail->send()) {
+                                        $user->setMailSendBeforeDelete();
+                                        $user->save();
+
+                                        $cron_array['success'] = true;
+                                        $cron_array['success_text'] = 'send mail to '.$to;
+                                    } else {
+                                        $cron_array['success'] = false;
+                                        $cron_array['success_text'] = 'failed send mail to '.$to;
+                                    }
+                                }
+                            }
+
+                            if ($daysTillLock >= $portal_item->getInactivitySendMailBeforeDeleteDays() and
+                                ($user->getMailSendLocked() or empty($inactivitySendMailLockDays) and
+                                    empty($inactivityLockDays)) and !empty($inactivitySendMailDeleteDays)) {
+                                // send mail delete in the next y days
+                                if (!$user->getMailSendBeforeDelete()) {
+                                    if (($portal_item->getInactivityDeleteDays() - $daysTillLock) <= $portal_item->getInactivitySendMailBeforeDeleteDays()) {
+                                        
+                                        if(!$user->getMailSendNextDelete()) {
+                                            $mail = $this->sendMailForUserInactivity("deleteNotify", $user, $portal_item, $daysTillLock);
                                             if ($mail->send()) {
-                                                $user->setMailSendNextLock();
+                                                $user->setMailSendNextDelete();
                                                 $user->save();
-                                                #$user->setMailSendBeforeLock();
-                                                #$user->save();
+                                                // $user->setInactivityMailSendBeforeDelete();
+                                                // $user->save();
 
                                                 $cron_array['success'] = true;
                                                 $cron_array['success_text'] = 'send mail to '.$to;
@@ -446,10 +372,80 @@ class cs_server_item extends cs_guide_item
                                                 $cron_array['success'] = false;
                                                 $cron_array['success_text'] = 'failed send mail to '.$to;
                                             }
-
                                             // step over
                                             continue;
                                         }
+                                    }
+                                }
+                            }
+                            // step over
+                            // if ($daysTillLock > 0) {
+                            //     continue;
+                            // }    
+                            // lock now
+                            if ($days >= $portal_item->getInactivityLockDays()-1 and !empty($inactivityLockDays)) {
+                                if ($user->getMailSendBeforeLock() and !$user->getMailSendLocked()) {
+                                    // lock user and set lock date till deletion date
+                                    $user->setLock($portal_item->getInactivityDeleteDays() + 365); // days till delete
+                                    $user->reject();
+                                    $user->save();
+                                    // lock user if not locked already
+                                    $mail = $this->sendMailForUserInactivity("locked", $user, $portal_item, $days);
+
+                                    if ($mail->send()) {
+                                        $user->setMailSendLocked();
+                                        $user->setLockSendMailDate();
+                                        $user->save();
+
+                                        $cron_array['success'] = true;
+                                        $cron_array['success_text'] = 'send mail to '.$to;
+                                    } else {
+                                        $cron_array['success'] = false;
+                                        $cron_array['success_text'] = 'failed send mail to '.$to;
+                                    }
+                                } else if (!$user->getMailSendBeforeLock()) {
+                                    // send mail to user that the user will be locked in one day
+                                    if (($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()-1) {
+                                        $mail = $this->sendMailForUserInactivity("lockNext", $user, $portal_item, $days);
+                                        if ($mail->send()) {
+                                            $user->setMailSendBeforeLock();
+                                            $user->save();
+
+                                            $cron_array['success'] = true;
+                                            $cron_array['success_text'] = 'send mail to '.$to;
+                                        } else {
+                                            $cron_array['success'] = false;
+                                            $cron_array['success_text'] = 'failed send mail to '.$to;
+                                        }
+                                    }
+                                    // step over
+                                    continue;
+                                }
+                            }
+                            // lock in x days
+                            if ($days >= $portal_item->getInactivitySendMailBeforeLockDays() and !empty($inactivitySendMailLockDays)) {
+                                // send mail lock in x days
+
+                                if (!$user->getMailSendBeforeLock() && !$user->getMailSendNextLock()) {
+                                    // ?????
+                                // } else {
+                                    if (($portal_item->getInactivityLockDays() - $days) <= $portal_item->getInactivitySendMailBeforeLockDays()) {
+                                        $mail = $this->sendMailForUserInactivity("lockNotify", $user, $portal_item, $days);
+                                        if ($mail->send()) {
+                                            $user->setMailSendNextLock();
+                                            $user->save();
+                                            #$user->setMailSendBeforeLock();
+                                            #$user->save();
+
+                                            $cron_array['success'] = true;
+                                            $cron_array['success_text'] = 'send mail to '.$to;
+                                        } else {
+                                            $cron_array['success'] = false;
+                                            $cron_array['success_text'] = 'failed send mail to '.$to;
+                                        }
+
+                                        // step over
+                                        continue;
                                     }
                                 }
                             }
