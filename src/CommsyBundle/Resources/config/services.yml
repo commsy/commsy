@@ -76,6 +76,11 @@ services:
         tags:
             - { name: form.type, alias: general_settings }
 
+    commsy.form.extension.image_type:
+        class: CommsyBundle\Form\Extension\ImageTypeExtension
+        tags:
+            - { name: form.type_extension, alias: file }
+
     # Twig
     twig.extension.room:
         class: CommsyBundle\Twig\Extension\RoomExtension
