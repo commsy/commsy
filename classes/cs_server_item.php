@@ -220,6 +220,9 @@ class cs_server_item extends cs_guide_item
                     $inactivitySendMailLockDays = $portal_item->getInactivitySendMailBeforeLockDays();
                     $inactivityLockDays = $portal_item->getInactivityLockDays();
 
+                    // get configuration date
+                    $configDate = $portal_item->getInactivityConfigDate();
+
                     // calc date to find user which last login is later as the calculated date
                     if (isset($inactivitySendMailLockDays) and !empty($inactivitySendMailLockDays)) {
                         // inactivity lock notification is set
@@ -228,10 +231,13 @@ class cs_server_item extends cs_guide_item
                         // inactivity lock notification is not set
                         $date_lastlogin_do = getCurrentDateTimeMinusDaysInMySQL($inactivitySendMailDeleteDays);
                     }
+
                     // get array of users
                     $user_array = $user_manager->getUserLastLoginLaterAs($date_lastlogin_do, $portal_item->getItemID(), 0);
                     if (!empty($user_array)) {
                         foreach ($user_array as $user) {
+                            // set user mail for log
+                            $to = $user->getEmail();
                             // calc days from lastlogin till now
                             $start_date = new DateTime(getCurrentDateTimeInMySQL());
                             $since_start = $start_date->diff(new DateTime($user->getLastLogin()));
@@ -256,8 +262,17 @@ class cs_server_item extends cs_guide_item
                                 }
                             }
                             // if lock is not set
-                            if (empty($inactivitySendMailLockDays) and empty($inactivityLockDays)) {
+                            if (empty($inactivityLockDays)) {
                                 $daysTillLock = $days;
+                            }
+
+                            // check if config date should be used
+                            if ((empty($inactivityLockDays) and $inactivityDeleteDays < $days)
+                                or (!empty($inactivityLockDays) and $inactivityLockDays < $days)) {
+                                // calc days
+                                $start_date = new DateTime(getCurrentDateTimeInMySQL());
+                                $since_start = $start_date->diff(new DateTime($configDate));
+                                $days = $since_start->days;
                             }
 
                             // DEBUG OUTPUT
@@ -271,6 +286,7 @@ class cs_server_item extends cs_guide_item
                             // pr($user->getAuthSource());
                             // pr('DaysTillLock:' . $daysTillLock);
                             // pr('Days:' . $days);
+                            // pr('-------------');
                             // DEBUG OUTPUT
 
                             // only for 
@@ -288,14 +304,6 @@ class cs_server_item extends cs_guide_item
                                         $user->deleteAllEntriesOfUserByInactivity(); // delete content
 
                                         $portalUser_item = $user->getRelatedCommSyUserItem();
-
-                                        // delete own room user item
-                                        // $ownRoom = $user->getOwnRoom($portal_item->getItemID());
-                                        // $ownRoomUser = $portalUser_item->getRelatedUserItemInContext($ownRoom->getItemID());
-                                        // $ownRoomUser->delete();
-                                        // $ownRoomUser->save();
-                                        // unset($ownRoom);
-                                        // unset($ownRoomUser);
 
                                         $authentication = $this->_environment->getAuthenticationObject();
                                         $authentication->delete($portalUser_item->getItemID());
@@ -321,31 +329,7 @@ class cs_server_item extends cs_guide_item
                                             $cron_array['success'] = false;
                                             $cron_array['success_text'] = 'failed send mail to '.$to;
                                         }
-                                    } 
-                                    // elseif ($user->getMailSendLocked() or (empty($inactivitySendMailLockDays) and empty($inactivityLockDays))) {
-                                    //     // Send mail to user that the user will be deleted in one day
-                                    //     // set MailSentBeforeDelete
-
-                                    //     // send mail next day delete
-
-                                    //     ########################################
-                                    //     ########################################
-
-
-                                    //     $mail = $this->sendMailForUserInactivity("deleteNext", $user, $portal_item, $days);
-                                    //     if ($mail->send()) {
-                                    //         $user->setMailSendBeforeDelete();
-                                    //         $user->save();
-
-                                    //         $cron_array['success'] = true;
-                                    //         $cron_array['success_text'] = 'send mail to '.$to;
-                                    //     } else {
-                                    //         $cron_array['success'] = false;
-                                    //         $cron_array['success_text'] = 'failed send mail to '.$to;
-                                    //     }
-                                    // }
-                                    // step over
-                                    // continue;
+                                    }
                                 }
                                 // 1 Tag vor dem löschen noch eine Email verschicken
                                 if ($daysTillLock >= $portal_item->getInactivityDeleteDays()-1 and ($user->getMailSendLocked()
@@ -404,7 +388,7 @@ class cs_server_item extends cs_guide_item
                                 if ($days >= $portal_item->getInactivityLockDays() and !empty($inactivityLockDays)) {
                                     if ($user->getMailSendBeforeLock()) {
                                         // lock user and set lock date till deletion date
-                                        $user->setLock($portal_item->getInactivityDeleteDays()); // days till delete
+                                        $user->setLock($portal_item->getInactivityDeleteDays() + 365); // days till delete
                                         $user->reject();
                                         $user->save();
                                         // lock user if not locked already
