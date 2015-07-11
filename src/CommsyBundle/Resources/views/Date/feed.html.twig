@@ -35,9 +35,7 @@
                     <a href="{{ path('commsy_date_detail', {'roomId': roomId, 'itemId': date.itemId}) }}">{{ date.title }}</a>
                 </h4>
 
-                <div class="uk-comment-meta">
-                    {{date.dateDescription}}
-                </div>
+                <div class="uk-comment-meta">{{date.getDateListDescription}}{% if date.getPlace != '' %}, {{date.getPlace}}{% endif %}</div>
                 
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(date) }}

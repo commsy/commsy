@@ -37,10 +37,15 @@
                     {% if feedItem.itemType == 'announcement' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% elseif feedItem.itemType == 'date' %}
-                        <div class="uk-comment-meta">{{ 'when'|trans({})|capitalize }}: {{feedItem.getDateDescription}}</div>
-                        <div class="uk-comment-meta">{{ 'where'|trans({})|capitalize }}: {{feedItem.getPlace}}</div>
+                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">
+                            {% if feedItem.author != '' %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
+                                {% else %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                            {% endif %}                        
+                        </div>
                     {% elseif feedItem.itemType == 'discussion' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% elseif feedItem.itemType == 'user' %}

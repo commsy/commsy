@@ -34,7 +34,15 @@
                 <h4 class="uk-comment-title">
                     <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': material.itemId}) }}">{{ material.title }}</a>
                 </h4>
-                
+
+                <div class="uk-comment-meta">
+                    {% if material.author != '' %}
+                            {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
+                        {% else %}
+                            {{ 'by'|trans({})|capitalize }}: {{material.creator.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
+                    {% endif %}
+                </div>
+               
                 <div class="uk-comment-meta">
                     {{  macros.fileListShort(material) }}
                 </div>
