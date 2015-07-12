@@ -3,7 +3,7 @@
 {% if not users is empty %}
     {% for user in users %}
         <article class="uk-comment">
-            <i class="{{ macros.iconClassForItemType(user.itemType) }} uk-icon-small {{ macros.statusColor(readerList, user.itemId) }}"></i>
+        <div class="cs-comment-change-info {{ macros.statusColor(readerList, user.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
             <header class="uk-comment-header uk-flex">
                 <div class="users-checkbox uk-margin-right uk-hidden">
                     <form class="uk-form">
@@ -16,6 +16,13 @@
                     {% else %}
                         {{  macros.userIcon(user) }}
                     {% endif %}
+                     <div class="uk-comment-meta">
+                        {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {{user.getModificationDate|date("d.m.Y")}}
+                        {% endif %}
+                     </div>   
                 </div>
                 <div>
                     <h4 class="uk-comment-title">
@@ -23,7 +30,7 @@
                     </h4>
     
                     <div class="uk-comment-meta">
-                        {{ 'last changed'|trans({})|capitalize }}: {{user.getModificationDate|date("d.m.Y H:i")}}
+                        {{ 'EMail'|trans({})|capitalize }}: {{user.getEMail}}
                     </div>
                 </div>
             </header>

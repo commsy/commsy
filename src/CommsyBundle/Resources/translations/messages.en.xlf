@@ -18,6 +18,14 @@
                 <source>last changed</source>
                 <target>last changed</target>
             </trans-unit>
-        </body>
+            <trans-unit id="5">
+                <source>today</source>
+                <target>today</target>
+            </trans-unit>
+            <trans-unit id="6">
+                <source>EMail</source>
+                <target>email</target>
+            </trans-unit>
+         </body>
     </file>
 </xliff>

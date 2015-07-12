@@ -14,6 +14,10 @@
                 <source>Bibl. reference</source>
                 <target>Bibl. reference</target>
             </trans-unit>
+            <trans-unit id="biblio-creator">
+                <source>Bibl. Creator</source>
+                <target>Creator</target>
+            </trans-unit>
             <trans-unit id="biblio-edition">
                 <source>%edition% edition</source>
                 <target>%edition% edition</target>

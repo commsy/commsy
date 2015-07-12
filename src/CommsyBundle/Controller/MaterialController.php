@@ -116,7 +116,7 @@ class MaterialController extends Controller
             
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
-
+        
         return array(
             'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),

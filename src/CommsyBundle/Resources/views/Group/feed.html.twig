@@ -3,7 +3,8 @@
 {% if not groups is empty %}
     {% for group in groups %}
         <article class="uk-comment">
-            <i class="{{ macros.iconClassForItemType(group.itemType) }} uk-icon-small {{ macros.statusColor(readerList, group.itemId) }}"></i>
+           
+            <div class="cs-comment-change-info {{ macros.statusColor(readerList, group.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
             <header class="uk-comment-header uk-flex">
                 <div class="groups-checkbox uk-margin-right uk-hidden">
                     <form class="uk-form">
@@ -11,25 +12,24 @@
                     </form>
                 </div>
                 <div class="uk-margin-right">
-                    {% if group.creator.isUser %}
+                   {% if group.creator.isUser %}
                         {{  macros.userIconLink(group.creator) }}
                     {% else %}
                         {{  macros.userIcon(group.creator) }}
                     {% endif %}
+                    <div class="uk-comment-meta">
+                        {% if group.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{group.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {{group.getModificationDate|date("d.m.Y")}}
+                        {% endif %}
+                     </div>   
                 </div>
                 <div>
                     <h4 class="uk-comment-title">
                         <a href="{{ path('commsy_group_detail', {'roomId': roomId, 'itemId': group.itemId}) }}">{{ group.title }}</a>
                     </h4>
-    
-                    <div class="uk-comment-meta">
-                        {{ 'by'|trans({})|capitalize }}: {{group.creator.fullname}}
-                    </div>
-    
-                    <div class="uk-comment-meta">
-                        {{ 'last changed'|trans({})|capitalize }}: {{group.getModificationDate|date("d.m.Y H:i")}}
-                    </div>
-                    
+                        
                     {% if group.isGroupRoomActivated %}
                         <div class="uk-comment-meta">
                             <i class="uk-icon-home"></i>

@@ -8,9 +8,20 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{ 'groups'|trans({})|capitalize }}</div>
+                        <div>{{'TODO-RubricTitle'|trans({})|capitalize }}</div>
                         {# select #}
                         <div>
+                            <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                <button class="uk-button">{{ 'Sortierung(TODO)'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                <div class="uk-dropdown uk-dropdown-small">
+                                    <ul class="uk-nav uk-nav-dropdown">
+                                        <li><a href="#">{{ 'title'|trans({})|capitalize }}</a></li>
+                                        <li><a href="#">{{ 'modifier'|trans({})|capitalize }}</a></li>
+                                        <li><a href="#">{{ 'modification_date'|trans({})|capitalize }}</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
                             <button class="uk-button" data-uk-toggle="{target:'article', cls:'selectable'}">
                                 Auswahl(TODO)
                             </button>

@@ -2,7 +2,13 @@
 {% if not feedList is empty %}
     {% for feedItem in feedList %}
         <article class="uk-comment">
-            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small {{ macros.statusColor(readerList, feedItem.itemId) }}"></i>
+            
+            <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
+            
+            <div class="cs-comment-change-info {{ macros.statusColor(readerList, feedItem.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
+            
+            
+            
             <header class="uk-comment-header uk-flex">
                 <div class="uk-margin-right uk-flex-item-none">
                     {% if feedItem.creator.isUser %}
@@ -10,6 +16,13 @@
                     {% else %}
                         {{  macros.userIcon(feedItem.creator) }}
                     {% endif %}
+                    <div class="uk-comment-meta">
+                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {{feedItem.getModificationDate|date("d.m.Y")}}
+                        {% endif %}
+                    </div>
                 </div>
                 <div>
                     <h4 class="uk-comment-title">
@@ -24,10 +37,15 @@
                     {% if feedItem.itemType == 'announcement' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% elseif feedItem.itemType == 'date' %}
-                        <div class="uk-comment-meta">{{ 'when'|trans({})|capitalize }}: {{feedItem.getDateDescription}}</div>
-                        <div class="uk-comment-meta">{{ 'where'|trans({})|capitalize }}: {{feedItem.getPlace}}</div>
+                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">
+                            {% if feedItem.author != '' %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
+                                {% else %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                            {% endif %}                        
+                        </div>
                     {% elseif feedItem.itemType == 'discussion' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% elseif feedItem.itemType == 'user' %}
@@ -39,7 +57,6 @@
                     {% elseif feedItem.itemType == 'task' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% endif %}
-                    <div class="uk-comment-meta">{{ 'last changed'|trans({})|capitalize }}: {{feedItem.getModificationDate|date("d.m.Y H:i")}}</div>
                     <div class="uk-comment-meta">{{  macros.fileListShort(feedItem) }}</div>
                 </div>
             </header>

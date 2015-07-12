@@ -27,10 +27,18 @@
 //
 // ========================================================================
 
+//overwritten variables
 @comment-title-font-size: 14px;
+@comment-title-margin-top: 0px;
+@comment-header-margin-bottom: 0px;
+
+@comment-info-color-new: #fc4350;
+@comment-info-color-changed: yellow;
+@comment-padding: 5px;
+
 
 .hook-comment {
-    padding: 5px;
+    padding: @comment-padding;
     border-bottom: 1px solid #DDDDDD;
 }
 
@@ -50,4 +58,29 @@ article.uk-comment {
         position: absolute;
         right: 16px;
     }
+}
+
+.cs-comment-change-info {
+    position: absolute;
+    left:10px;
+    margin-top: -@comment-padding;
+    width: 0px;
+    height: 0px;
+    -webkit-transform:rotate(360deg);
+}
+
+.cs-comment-new {
+    border-style: solid;
+    border-width: 20px 20px 0 0;
+    border-color: @comment-info-color-new transparent transparent transparent;
+}
+
+.cs-comment-changed {
+    border-style: solid;
+    border-width: 20px 20px 0 0;
+    border-color: @comment-info-color-changed transparent transparent transparent;
+}
+
+.cs-comment-thumbnail{
+    margin: 0 10px;
 }

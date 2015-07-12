@@ -16,13 +16,6 @@ class MaterialFilterType extends AbstractType
             ->add('rubrics', 'rubric_filter', array(
                 'label' => false,
             ))
-            ->add('save', 'submit', array(
-                'attr' => array(
-                    'class' => 'uk-button-primary',
-                ),
-                'label' => 'Filtern',
-                'translation_domain' => 'form',
-            ))
         ;
     }
 
