@@ -45,6 +45,9 @@ class GeneralSettingsType extends AbstractType
                 'choices_as_values' => true,
             ))
             ->add('room_image', 'file', array(
+                'attr' => array(
+                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
+                ),
                 'required' => false,
             ))
             ->add('access_check', 'choice', array(
@@ -134,7 +137,7 @@ class GeneralSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('roomId'))
+            ->setRequired(array('roomId', 'uploadUrl'))
         ;
     }
 
