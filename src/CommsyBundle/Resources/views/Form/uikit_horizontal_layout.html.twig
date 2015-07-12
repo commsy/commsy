@@ -3,6 +3,7 @@
 {# Widgets #}
 
 {%- block choice_widget_collapsed -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form-width-medium')|trim}) %}
     <div class="uk-form-controls">
         {{- parent() -}}
     </div>
