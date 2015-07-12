@@ -11,6 +11,9 @@ class MaterialFilterType extends AbstractType
     {
         $builder
             ->add('activated', 'filter_checkbox', array(
+                'attr' => array(
+                    'onchange' => 'this.form.submit()',
+                ),
                 'translation_domain' => 'form',
             ))
             ->add('rubrics', 'rubric_filter', array(
