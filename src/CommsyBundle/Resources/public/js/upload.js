@@ -3,7 +3,6 @@
     "use strict";
 
     var settings = {
-        action: '/',
         allow: '*.*'
     };
 
@@ -15,7 +14,12 @@
             var progressbar = $(this).siblings('.uk-progress').first();
             var bar = progressbar.find('.uk-progress-bar');
 
-            var callbacks = {
+            // get data from input element
+            var data = $(this).find('input').data('upload');
+
+            var elementSettings = {
+                action: data.path,
+
                 loadstart: function() {
                     bar.css("width", "0%").text("0%");
                     progressbar.removeClass("uk-hidden");
@@ -35,7 +39,7 @@
                 }
             };
 
-            var merged = $.extend(settings, callbacks);
+            var merged = $.extend(settings, elementSettings);
 
             var select = UI.uploadSelect($(this).find('input'), merged);
             var drop = UI.uploadDrop(this, merged);
