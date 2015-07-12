@@ -22,13 +22,13 @@
                                 </div>
                             </div>
 
-                            <button class="uk-button" data-uk-toggle="{target:'article', cls:'selectable'}">
+                            <button class="uk-button" data-uk-button data-commsy-select="{target:'.feed ul'}">
                                 Auswahl(TODO)
                             </button>
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="feed">
                     {% block feed %}
                     {% endblock%}
                 </div>
