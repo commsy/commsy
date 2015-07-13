@@ -20,6 +20,13 @@ class ReaderService
 
     public function getLatestReader($itemId)
     {
+        $this->readerManager->resetLimits();
         return $this->readerManager->getLatestReader($itemId);
+    }
+    
+    public function getLatestReaderForUserByID($itemId, $userId)
+    {
+        $this->readerManager->resetLimits();
+        return $this->readerManager->getLatestReaderForUserByID($itemId, $userId);
     }
 }

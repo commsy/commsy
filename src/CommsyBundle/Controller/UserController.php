@@ -100,6 +100,7 @@ class UserController extends Controller
         $user = $userService->getUser($itemId);
         
         return array(
+            'roomId' => $roomId,
             'user' => $user
         );
     }

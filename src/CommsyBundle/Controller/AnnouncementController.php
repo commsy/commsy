@@ -12,7 +12,7 @@ use CommsyBundle\Filter\AnnouncementFilterType;
 class AnnouncementController extends Controller
 {
     /**
-     * @Route("/room/{roomId}/material/feed/{start}")
+     * @Route("/room/{roomId}/announcement/feed/{start}")
      * @Template()
      */
     public function feedAction($roomId, $max = 10, $start = 0, Request $request)
@@ -88,7 +88,7 @@ class AnnouncementController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/material/{itemId}")
+     * @Route("/room/{roomId}/announcement/{itemId}")
      * @Template()
      */
     public function detailAction($roomId, $itemId, Request $request)
