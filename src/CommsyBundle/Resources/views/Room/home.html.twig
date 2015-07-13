@@ -28,7 +28,7 @@
                 </div>
 
                 <div>
-                    <ul class="uk-comment-list">
+                    <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
                             'CommsyBundle:Feed:homeFeed',
                             { 'roomId': roomItem.itemId }
