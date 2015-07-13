@@ -1,0 +1,56 @@
+{% extends 'CommsyBundle:Base:detail.html.twig' %}
+
+{% set item = announcement %}
+
+{% block content_left_column %}
+    <div class="uk-panel">
+        <h3 class="uk-panel-title">{{ announcement.title|raw }}</h3>
+        {{ macros.detailInformation(announcement, modifierList) }}
+    </div>
+    
+    <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
+        {{ announcement.description|raw }}
+    </div>
+    
+    <div class="uk-panel uk-margin-left uk-margin-bottom">
+        {{  macros.fileList(announcement) }}
+    </div>
+{% endblock %}
+
+{% block content_right_column %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser panel-teaser-primary">
+            <div class="uk-clearfix">
+                <div class="uk-float-right">
+                    <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                        <i class="uk-icon-chevron-up"></i>
+                    </a>
+                </div>
+                <div class="uk-float-left">
+                    {{ '...'|trans({}, "room") }}
+                </div>
+            </div>
+        </div>
+        
+        <div id="user-main" class="uk-overflow-container">
+            <div class="">
+                ...
+            </div>
+        </div>
+    </div>
+    
+    {{ render(controller(
+        'CommsyBundle:Link:show',
+        { 'roomId': app.request.attributes.get('roomId'), 'itemId': announcement.itemId }
+    ))}}
+
+    {{ render(controller(
+        'CommsyBundle:Hashtag:show',
+        { 'roomId': roomId }
+    ))}}
+
+    {{ render(controller(
+        'CommsyBundle:Category:show',
+        { 'roomId': roomId }
+    ))}}
+{% endblock %}

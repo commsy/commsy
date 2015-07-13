@@ -5,24 +5,50 @@
             <i class="{{ macros.iconClassForItemType(feedItem.itemType) }} uk-icon-small"></i>
             <header class="uk-comment-header uk-flex">
                 <div class="uk-margin-right">
-                    <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/user/">
-                        <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:60px; width:60px;" src="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/user/{{ feedItem.creatorId }}/image" alt="">
-                    </a>
+                    {% if feedItem.itemType != 'user' %}
+                        {% if feedItem.creator.isUser %}
+                            {{  macros.userIconLink(feedItem.creator) }}
+                        {% else %}
+                            {{  macros.userIcon(feedItem.creator) }}
+                        {% endif %}
+                    {% else %}
+                        {% if feedItem.isUser %}
+                            {{  macros.userIconLink(feedItem) }}
+                        {% else %}
+                            {{  macros.userIcon(feedItem) }}
+                        {% endif %}
+                    {% endif %}
+                    <div class="uk-comment-meta">
+                        {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
+                            {{ 'today'|trans({})|capitalize }}, {{feedItem.getModificationDate|date("H:i")}}
+                        {% else %}
+                            {{feedItem.getModificationDate|date("d.m.Y")}}
+                        {% endif %}
+                    </div>
                 </div>
                 <div>
                     <div class="uk-comment-meta"><a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}">{{feedItem.contextItem.title}}</a></div>
                     <h4 class="uk-comment-title">
-                        <a href="{{ app.request.baseURL }}/room/{{ feedItem.contextItem.itemId }}/{{ feedItem.type }}/{{ feedItem.itemID }}">
+                        <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ feedItem.type }}/{{ feedItem.itemID }}">
+                        {% if feedItem.itemType != 'user' %}
                             {{ feedItem.title }}
+                        {% else %}
+                            {{ feedItem.getFullName }}
+                        {% endif %}
                         </a>
                     </h4>
                     {% if feedItem.itemType == 'announcement' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% elseif feedItem.itemType == 'date' %}
-                        <div class="uk-comment-meta">{{ 'when'|trans({})|capitalize }}: {{feedItem.getDateDescription}}</div>
-                        <div class="uk-comment-meta">{{ 'where'|trans({})|capitalize }}: {{feedItem.getPlace}}</div>
+                        <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">
+                            {% if feedItem.author != '' %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
+                                {% else %}
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                            {% endif %}                        
+                        </div>
                     {% elseif feedItem.itemType == 'discussion' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% elseif feedItem.itemType == 'user' %}
@@ -34,7 +60,7 @@
                     {% elseif feedItem.itemType == 'task' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
                     {% endif %}
-                    <div class="uk-comment-meta">{{ 'last changed'|trans({})|capitalize }}: {{feedItem.getModificationDate|date("d.m.Y H:i")}}</div>
+                    <div class="uk-comment-meta">{{  macros.fileListShort(feedItem) }}</div>
                 </div>
             </header>
         </article>

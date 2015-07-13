@@ -85,6 +85,14 @@ services:
     commsy_legacy.annotation_service:
         class: Commsy\LegacyBundle\Utils\AnnotationService
         arguments: ["@commsy_legacy.environment"]
+        
+    commsy_legacy.announcement_service:
+        class: Commsy\LegacyBundle\Utils\AnnouncementService
+        arguments: ["@commsy_legacy.environment"]
+        
+    commsy_legacy.discussion_service:
+        class: Commsy\LegacyBundle\Utils\DiscussionService
+        arguments: ["@commsy_legacy.environment"]
 
     # Transformer
     commsy_legacy.transformer.room:
