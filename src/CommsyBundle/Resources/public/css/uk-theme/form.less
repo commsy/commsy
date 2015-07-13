@@ -48,7 +48,12 @@
 @form-horizontal-label-width: 150px;
 @form-horizontal-controls-margin-left: 165px;
 
+@form-horizontal-label-width: 150px;
+@form-horizontal-controls-margin-left: 165px;
+
 @form-stacked-font-weight: normal;
+
+@form-horizontal-dynamic-label: 40%;
 
 /* Size modifiers
  * Higher specificity needed to override defaults
@@ -83,3 +88,38 @@ input:not([type]).uk-form-tiny {
     border-color: @form-blank-border !important;
     .hook-form-blank-focus;
 }
+
+/* Tablet portrait and smaller */
+@media (max-width: @breakpoint-medium-max) {
+
+    /* Behave like `uk-form-stacked` */
+    .cs-form-horizontal-dynamic .uk-form-label {
+        margin-bottom: @form-stacked-margin-bottom;
+        font-weight: @form-stacked-font-weight;
+        width: @form-horizontal-dynamic-label;
+        display: inline;
+    }
+
+}
+
+/* Desktop and bigger */
+@media (min-width: @breakpoint-large) {
+
+    .cs-form-horizontal-dynamic .uk-form-label {
+        width: @form-horizontal-dynamic-label;
+        margin-top: @form-horizontal-label-margin-top;
+        float: left;
+     }
+
+    .cs-form-horizontal-dynamic .uk-form-controls { 
+        margin-left: @form-horizontal-dynamic-label; 
+        width: 60%;
+    }
+    
+    .cs-form-horizontal-full-width{
+        width: 100%;
+    }
+
+}
+
+

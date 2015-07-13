@@ -1,6 +1,6 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
-{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_dynamic_layout.html.twig' %}
 
 {% block content %}
     <div class="uk-grid">
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="list-filter" >
+                <div id="list-filter">
                     {{ form_start(form) }}
                     {{ form_widget(form) }}
                     {{ form_end(form) }}

@@ -1,0 +1,16 @@
+{% extends "CommsyBundle:Form:uikit_horizontal_layout.html.twig" %}
+
+{# Widgets #}
+
+{%- block choice_widget_collapsed -%}
+        {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-full-width')|trim}) %}
+        {{- parent() -}}
+{%- endblock choice_widget_collapsed -%}
+
+
+{# Misc #}
+
+{% block form_start -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-dynamic')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_start %}
