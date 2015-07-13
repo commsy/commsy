@@ -14,6 +14,7 @@
                 <div class="uk-overflow-container">
                     {% block content_left_column %}
                     {% endblock %}
+                    {% if item.itemType != 'discussion' %}
                     <div class="uk-panel uk-panel-divider">
                         <div class="uk-panel">
                             <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
@@ -23,6 +24,7 @@
                             { 'roomId': roomId, 'linkedItemId': item.itemId }
                         ))}}
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
