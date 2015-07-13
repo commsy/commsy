@@ -22,7 +22,14 @@ class RoomExtension extends \Twig_Extension
     public function roomTitle($roomId)
     {
         // get room title
-        $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $item_manager = $this->legacyEnvironment->getEnvironment()->getItemManager();
+        $item = $item_manager->getItem($roomId);
+
+        if ($item->getItemType() != 'privateroom') {
+            $roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        } else {
+            $roomManager = $this->legacyEnvironment->getEnvironment()->getPrivateRoomManager();
+        }
         $roomItem = $roomManager->getItem($roomId);
 
         return $roomItem->getTitle();
