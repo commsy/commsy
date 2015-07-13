@@ -2,6 +2,7 @@
     "name": "CommsyBundle",
     "dependencies": {
         "jquery": "latest",
-        "uikit": "latest"
+        "uikit": "latest",
+        "jstree": "latest"
     }
 }
