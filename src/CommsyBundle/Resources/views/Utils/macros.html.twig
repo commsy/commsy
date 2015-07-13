@@ -20,7 +20,6 @@
     {% endif %}
 {% endmacro %}
 
-
 {% macro lastModified(item) %}
     {{ 'last modified on'|trans({})|capitalize }}: {{ item.modificationDate|date("d.m.Y") }}
     {{ 'at'|trans({}) }} {{ item.modificationDate|date("H:i") }}
