@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 use Commsy\LegacyBundle\Services\UserService;
+use Commsy\LegacyBundle\Services\ReaderService;
 
 class DashboardController extends Controller
 {
@@ -34,8 +35,25 @@ class DashboardController extends Controller
         $dashboardFeedGenerator = $this->get('commsy.dashboard_feed_generator');
         $feedList = $dashboardFeedGenerator->getFeedList($itemId, $max, $start);
 
+        $userService = $this->get("commsy.user_service");
+        $user = $userService->getPortalUserFromSessionId();
+
+        $readerService = $this->get('commsy.reader_service');
+
+        $readerList = array();
+        foreach ($feedList as $item) {
+            $relatedUser = $user->getRelatedUserItemInContext($item->getContextId());
+            $reader = $readerService->getLatestReaderForUserByID($item->getItemId(), $relatedUser->getItemId());
+            if ( empty($reader) ) {
+               $readerList[$item->getItemId()] = 'new';
+            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
+               $readerList[$item->getItemId()] = 'changed';
+            }
+        }
+
         return array(
-            'feedList' => $feedList
+            'feedList' => $feedList,
+            'readerList' => $readerList
         );
     }    
 }
