@@ -200,7 +200,7 @@ class MenuBuilder
         // return uikit icon class for rubric
         switch ($rubric) {
             case 'announcement':
-                $class = "uk-icon-justify uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-comment-o uk-icon-small";
                 break;
             case 'date':
                 $class = "uk-icon-justify uk-icon-calendar uk-icon-small";
@@ -212,10 +212,10 @@ class MenuBuilder
                 $class = "uk-icon-justify uk-icon-comments-o uk-icon-small";
                 break;
             case 'user':
-                $class = "uk-icon-justify uk-icon-users uk-icon-small";
+                $class = "uk-icon-justify uk-icon-user uk-icon-small";
                 break;
             case 'group':
-                $class = "uk-icon-justify uk-icon-home uk-icon-small";
+                $class = "uk-icon-justify uk-icon-group uk-icon-small";
                 break;
             case 'todo':
                 $class = "uk-icon-justify uk-icon-home uk-icon-small";
@@ -247,9 +247,16 @@ class MenuBuilder
         $roomId = $currentStack->attributes->get('roomId');
         if ($roomId) {
             // this item will always be displayed
+            $user = $this->userService->getPortalUserFromSessionId();
+            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+            $authSource = $authSourceManager->getItem($user->getAuthSource());
+            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
+            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
+            
             $menu->addChild('DASHBOARD', array(
                 'route' => 'commsy_dashboard_index',
-                'routeParameters' => array('roomId' => $roomId),
+                'routeParameters' => array('roomId' => $privateRoom->getItemId()),
             ));
 
             $itemId = $currentStack->attributes->get('itemId');
