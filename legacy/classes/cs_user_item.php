@@ -614,12 +614,6 @@ class cs_user_item extends cs_item {
       $this->_changed_values[] = 'email';
    }
 
-   /** get creator - do not use
-    * this method is a warning for coders, because if you want an object cs_user_item here, you get into an endless loop
-    */
-   function getCreator () {
-      echo('use getCreatorID()<br />');
-   }
 
    /** set creator of the user - overwritting parent method - do not use
     *

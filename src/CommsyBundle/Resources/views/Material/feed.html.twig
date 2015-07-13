@@ -17,10 +17,10 @@
                 
             </div>
             <div class="uk-margin-right uk-flex-item-none">
-                    {% if material.creator.isUser %}
-                        {{  macros.userIconLink(material.creator) }}
+                    {% if material.modificatorItem.isUser %}
+                        {{  macros.userIconLink(material.modificatorItem) }}
                     {% else %}
-                        {{  macros.userIcon(material.creator) }}
+                        {{  macros.userIcon(material.modificatorItem) }}
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if material.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -39,7 +39,7 @@
                     {% if material.author != '' %}
                             {{ 'by'|trans({})|capitalize }}: {{material.author}} ({{material.publishingdate}})
                         {% else %}
-                            {{ 'by'|trans({})|capitalize }}: {{material.creator.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
+                            {{ 'by'|trans({})|capitalize }}: {{material.modificatorItem.fullname}} ({{material.getCreationDate|date("d.m.Y")}})
                     {% endif %}
                 </div>
                

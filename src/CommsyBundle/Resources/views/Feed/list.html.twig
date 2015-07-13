@@ -11,10 +11,10 @@
             
             <header class="uk-comment-header uk-flex">
                 <div class="uk-margin-right uk-flex-item-none">
-                    {% if feedItem.creator.isUser %}
-                        {{  macros.userIconLink(feedItem.creator) }}
+                    {% if feedItem.modificatorItem.isUser %}
+                        {{  macros.userIconLink(feedItem.modificatorItem) }}
                     {% else %}
-                        {{  macros.userIcon(feedItem.creator) }}
+                        {{  macros.userIcon(feedItem.modificatorItem) }}
                     {% endif %}
                     <div class="uk-comment-meta">
                         {% if feedItem.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
@@ -35,7 +35,7 @@
                         </a>
                     </h4>
                     {% if feedItem.itemType == 'announcement' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.modificatorItem.getFullName}}</div>
                     {% elseif feedItem.itemType == 'date' %}
                         <div class="uk-comment-meta">{{feedItem.getDateListDescription}}{% if feedItem.getPlace != '' %}, {{feedItem.getPlace}}{% endif %}</div>
                     {% elseif feedItem.itemType == 'material' %}
@@ -43,19 +43,19 @@
                             {% if feedItem.author != '' %}
                                     {{ 'by'|trans({})|capitalize }}: {{feedItem.author}} ({{feedItem.publishingdate}})
                                 {% else %}
-                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.creator.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
+                                    {{ 'by'|trans({})|capitalize }}: {{feedItem.modificatorItem.fullname}} ({{feedItem.getCreationDate|date("d.m.Y")}})
                             {% endif %}                        
                         </div>
                     {% elseif feedItem.itemType == 'discussion' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.modificatorItem.getFullName}}</div>
                     {% elseif feedItem.itemType == 'user' %}
                         <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.getFullName}}</div>
                     {% elseif feedItem.itemType == 'group' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.modificatorItem.getFullName}}</div>
                     {% elseif feedItem.itemType == 'todo' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.modificatorItem.getFullName}}</div>
                     {% elseif feedItem.itemType == 'task' %}
-                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.creator.getFullName}}</div>
+                        <div class="uk-comment-meta">{{ 'by'|trans({})|capitalize }}: {{feedItem.modificatorItem.getFullName}}</div>
                     {% endif %}
                     <div class="uk-comment-meta">{{  macros.fileListShort(feedItem) }}</div>
                 </div>
