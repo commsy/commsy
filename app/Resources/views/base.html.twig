@@ -9,6 +9,7 @@
 
         {% block stylesheets %}
             {% stylesheets
+                'bundles/commsy/components/jstree/dist/themes/default/style.css'
                 'bundles/commsy/css/application.less' filter='cssrewrite' output='css/compiled/main.css' %}
                 <link rel="stylesheet" href="{{ asset_url }}" />
             {% endstylesheets %}
@@ -101,6 +102,7 @@
         {% block javascripts %}
             {% javascripts
                 'bundles/commsy/components/jquery/dist/jquery.js'
+                'bundles/commsy/components/jstree/dist/jstree.js'
                 'bundles/commsy/components/uikit/js/uikit.js'
                 'bundles/commsy/components/uikit/js/components/autocomplete.js'
                 'bundles/commsy/components/uikit/js/components/search.js'
