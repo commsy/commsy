@@ -1,0 +1,108 @@
+{% extends 'CommsyBundle:Base:detail.html.twig' %}
+
+{% set item = discussion %}
+
+{% block content_left_column %}
+    <div class="uk-panel">
+        <h3 class="uk-panel-title">{{ discussion.title|raw }}</h3>
+        {{ macros.detailInformation(discussion, modifierList) }}
+    </div>
+    
+    <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
+        {{ discussion.description|raw }}
+    </div>
+    
+    <div class="uk-panel uk-margin-left uk-margin-bottom">
+        {{  macros.fileList(discussion) }}
+    </div>
+    
+    {% for article in discussionArticleList %}
+        <div class="uk-panel uk-panel-divider">
+            <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(article.itemType) }} uk-icon-small {{ macros.statusColor(readerList, article.itemId) }}"></i></div>
+            <a name="{{ article.itemId }}"></a>
+            <div class="uk-panel">
+                <h3 class="uk-panel-title">{{ article.title }}</h3>
+                {{ macros.detailInformation(article, modifierList) }}
+            </div>
+            <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
+                {{ article.description|raw }}
+            </div>
+            <div class="uk-panel uk-margin-left">
+                {{  macros.fileList(article) }}
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+
+{% block content_right_column %}
+    <div class="uk-panel uk-panel-box uk-panel-box-primary">
+        <div class="uk-panel-teaser panel-teaser-primary">
+            <div class="uk-clearfix">
+                <div class="uk-float-right">
+                    <a href="#" class="button-toggle uk-button-mini uk-button-primary" data-uk-toggle="{target: '#user-main', animation: 'uk-animation-fade'}">
+                        <i class="uk-icon-chevron-up"></i>
+                    </a>
+                </div>
+                <div class="uk-float-left">
+                    {{ 'Articles'|trans({}, "room") }} ({{ discussionArticleList|length }})
+                </div>
+            </div>
+        </div>
+        
+        <div id="user-main" class="uk-overflow-container">
+            <div class="">
+                <ul class="uk-list uk-list-striped uk-margin-bottom-remove">
+                {% for article in discussionArticleList [0:10] %}
+                    <li>
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-1-10">{{ loop.index }}.</div>
+                            <div class="uk-width-9-10 uk-text-truncate"><a href="#{{ article.itemId }}" data-uk-tooltip title="{{ article.title|raw }}">{{ article.title|raw }}</a></div>
+                        </div>
+                        <div class="uk-grid uk-grid-collapse">
+                            <div class="uk-width-1-10"></div>
+                            <div class="uk-width-9-10">{{ macros.fileListShort(article) }}</div>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+                {% if discussionArticleList|length > 10 %}
+                    <div class="show-more-articles uk-hidden">
+                        <ul class="uk-list uk-list-striped">
+                        {% for article in discussionArticleList [10:discussionArticleList|length-10] %}
+                            <li>
+                            <div class="uk-grid uk-grid-collapse">
+                                <div class="uk-width-1-10">{{ loop.index + 10 }}.</div>
+                                <div class="uk-width-9-10 uk-text-truncate"><a href="#{{ article.itemId }}" data-uk-tooltip title="{{ article.title|raw }}">{{ article.title|raw }}</a></div>
+                            </div>
+                            <div class="uk-grid uk-grid-collapse">
+                                <div class="uk-width-1-10"></div>
+                                <div class="uk-width-9-10">{{ macros.fileListShort(article) }}</div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="uk-margin-small">
+                        <a class="show-more-articles" data-uk-toggle="{target:'.show-more-articles', animation:'uk-animation-fade'}">{{ 'show all'|trans({}) }}</a>
+                        <a class="show-more-articles uk-hidden" data-uk-toggle="{target:'.show-more-articles', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    {{ render(controller(
+        'CommsyBundle:Link:show',
+        { 'roomId': app.request.attributes.get('roomId'), 'itemId': discussion.itemId }
+    ))}}
+
+    {{ render(controller(
+        'CommsyBundle:Hashtag:show',
+        { 'roomId': roomId }
+    ))}}
+
+    {{ render(controller(
+        'CommsyBundle:Category:show',
+        { 'roomId': roomId }
+    ))}}
+{% endblock %}
