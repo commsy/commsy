@@ -1036,6 +1036,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          
          $context_item->save();
 
+         $new_private_room_user_item = NULL;
          if (((string)$xml->type[0]) == 'privateroom') {
             $privateroom_manager = $this->_environment->getPrivateRoomManager();
             $temp_user_item = $this->_environment->getCurrentUser();
@@ -1049,29 +1050,33 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                   $temp_private_room_user_item = $temp_user;
                }
             }
+
             $temp_private_room_item->delete();
             $temp_private_room_user_item->delete();
             
-            $new_private_room_user_item = NULL;
             $user_array = $user_manager->getAllUserItemArray($temp_user_item->getUserID());
             foreach ($user_array as $temp_user) {
                if ($temp_user->getContextID() == $context_item->getItemID()) {
                   $new_private_room_user_item = $temp_user;
                }
             }
-            $this->_environment->setCurrentUser($new_private_room_user_item);
+            $this->_environment->setCurrentUserItem($new_private_room_user_item);
             $linkModifierItemManager = $this->_environment->getLinkModifierItemManager();
             $linkModifierItemManager->_current_user_id = $new_private_room_user_item->getItemID();
             
             $displayConfig = array($context_item->getItemID().'_dates');
             $context_item->setMyCalendarDisplayConfig($displayConfig);
+            $privateroom_manager->reset();
             $context_item->save();
          }
 
          $options[(string)$xml->item_id[0]] = $context_item->getItemId();
          
          if (((string)$xml->type[0]) == 'privateroom') {
-            $this->_environment->changeContextToPrivateRoom($context_item->getItemID());
+           	$this->_environment->setCurrentContextID($context_item->getItemId());
+           	$this->_environment->setCurrentContextItem($context_item);
+           	$this->_environment->setCurrentUserItem($new_private_room_user_item);
+           	$this->_environment->unsetAllInstancesExceptTranslator();
          }
          $this->import_sub_items($xml, $context_item, $options);
          if (((string)$xml->type[0]) == 'privateroom') {
@@ -1118,6 +1123,7 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
                $type_manager = $this->_environment->getManager($rubric->getName());
                if ($type_manager instanceof cs_export_import_interface) {
                   foreach ($rubric->children() as $item_xml) {
+                     $type_manager->reset();
                      $temp_item = $type_manager->import_item($item_xml, $top_item, $options);
                   }
                }
