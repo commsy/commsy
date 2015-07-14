@@ -68,7 +68,7 @@ class cs_configuration_export_import_form extends cs_rubric_form {
          }
       }
       
-      $private_room_manager = $this->_environment->getPrivateRoomManager();
+      /* $private_room_manager = $this->_environment->getPrivateRoomManager();
       $private_room_manager->select();
       $private_room_list = $private_room_manager->get();
       if ($private_room_list->isNotEmpty()) {
@@ -85,7 +85,7 @@ class cs_configuration_export_import_form extends cs_rubric_form {
             }
             $private_room_item = $private_room_list->getNext();
          }
-      }
+      } */
    }
 
    /** create the form, INTERNAL
