@@ -836,6 +836,16 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
       $xml->addChildWithCDATA('modification_date', $item->getModificationDate());
       $xml->addChildWithCDATA('deletion_date', $item->getDeleterID());
       $xml->addChildWithCDATA('title', $item->getTitle());
+      $tag2TagManager = $this->_environment->getTag2TagManager();
+      $tag2TagManager->resetCachedFatherIdArray();
+      $tag2TagManager->setContextLimit($item->getContextId());
+      $tag2Tag_father_id = $tag2TagManager->getFatherItemID($item->getItemId());
+      if ($tag2Tag_father_id) {
+        $tag2Tag_item = $tag2TagManager->getItem($tag2Tag_father_id, $item->getItemId());
+        $xml->addChildWithCDATA('sorting_place', $tag2Tag_item->getSortingPlace());
+      } else {
+        $xml->addChildWithCDATA('sorting_place', '1');
+      }
    	return $xml;
 	}
 	
@@ -852,7 +862,7 @@ class cs_tag_manager extends cs_manager implements cs_export_import_interface {
          //$item->setPosition($top_item->getItemId(), $top_item->getChildrenList()->getCount() + 1);
          $item->save();
          $tag2TagManager = $this->_environment->getTag2TagManager();
-         $tag2TagManager->insert_with_context($item->getItemId(), $top_item->getItemid(), $top_item->getChildrenList()->getCount() + 1, $top_item->getContextId());
+         $tag2TagManager->insert_with_context($item->getItemId(), $top_item->getItemid(), (string)$xml->sorting_place[0], $top_item->getContextId());
       }
       
       $options[(string)$xml->item_id[0]] = $item->getItemId();
