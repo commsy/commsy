@@ -6083,6 +6083,7 @@ $this->_shown_community_room_array = $community_room_array;
          }
          
          $xml .= "<room>\n";
+         $xml .= "<id><![CDATA[" . $item->getItemId() . "]]></id>\n";
          $xml .= "</room>";
 
          $xml = $this->_encode_output($xml);

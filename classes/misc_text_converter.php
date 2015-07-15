@@ -2873,6 +2873,7 @@ class misc_text_converter {
              if(!empty($mdo_active) && $mdo_active != '-1') {
                // mdo access granted, get content from Mediendistribution-Online
                $access = true;
+               $community_room = $community;
 
                // stop searching here
                break;
@@ -2883,12 +2884,48 @@ class misc_text_converter {
          }
        }
 
-       if($access === true) {
-         // create div for content
-         $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
-         $retour .= "show content with id: " . $mdo_id . LF;
-         $retour .= '</div>';
-       }
+        if($access === true) {
+
+            global $c_media_integration_url;
+
+            if ($community_room->getMDOKey()) {
+              $key = $community_room->getMDOKey();
+              $curl_handler = curl_init($c_media_integration_url.$key);
+            } else {
+              $curl_handler = curl_init($c_media_integration_url);
+            }
+
+            // $curl_handler = curl_init($c_media_integration_url);
+            curl_setopt($curl_handler, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl_handler, CURLOPT_POST, true);
+
+            // get record data
+            $data = "<RECORD identifier='" . $mdo_id . "' />";
+            curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
+
+            $response = curl_exec($curl_handler);
+            // $xml_object = simplexml_load_string($response);
+            // $recordUrl = $xml_object->xpath("//f[@n='recordurl']");
+
+            
+            // get title
+            preg_match("/\<f n=\'titel\'\>(.*)\<\/f\>/", $response, $title_match);
+            if($title_match[1]) {
+               $title = $title_match[1];
+            }
+
+            // get record url
+            preg_match("/\<f n=\'recordurl\'>(.*)\<\/f\>/", $response, $matches);
+            if($matches[1]) {
+               $recordUrl = $matches[1];
+            }
+
+            // create div for content
+            $retour .= '<div id="mdo_content" style="overflow: scroll;">' . LF;
+            // $retour .= "show content with id: " . $mdo_id . LF;
+            $retour .= '<a href="' . $recordUrl . '">' . $title . '</a>';
+            $retour .= '</div>';
+        }
      }
 
      return $retour;

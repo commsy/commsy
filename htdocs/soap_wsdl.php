@@ -2084,10 +2084,17 @@ foreach ( $soap_functions_array as $key => $in_out ) {
 
 </binding>
 
+<?php
+  $protocol = 'http://';
+  if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== "off") {
+    $protocol = 'https://';
+  }
+?>
+
 <service name='CommSyService'>
   <port name='CommSyPort' binding='tns:CommSyBinding'>
     <soap:address location='<?php
-$soap_url = 'http://';
+$soap_url = $protocol;
 $soap_url .= $_SERVER['HTTP_HOST'];
 $soap_url .= str_replace('soap_wsdl.php','soap.php',$_SERVER['PHP_SELF']);
 echo($soap_url);

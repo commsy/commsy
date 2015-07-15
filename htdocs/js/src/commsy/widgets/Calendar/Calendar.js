@@ -12,7 +12,8 @@ define(
 	"commsy/store/Json",
 	"dojo/topic",
 	"dojox/calendar/Calendar",
-	"dojo/date/stamp"
+	"dojo/date/stamp",
+	"dojo/dom-construct"
 ], function
 (
 	declare,
@@ -27,7 +28,8 @@ define(
 	Json,
 	Topic,
 	Calendar,
-	Stamp
+	Stamp,
+	DomConstruct
 ) {
 	return declare([WidgetBase, TemplatedMixin],
 	{
@@ -114,6 +116,10 @@ define(
 				this.calendar.set("store", store);
 			}));
 			
+			this.calendar.on("itemClick", Lang.hitch(this, function(event) {
+				this.itemClick(event);
+			}));
+			
 			this.calendar.placeAt(this.calendarNode);
 			
 			return this.calendar;
@@ -136,6 +142,27 @@ define(
 			
 			this.options.startISOTime = startISOTime;
 			this.options.endISOTime = endISOTime;
+		},
+		
+		/**
+		 * \brief	itemClick Event
+		 * 
+		 * Event dispatched when item is clicked.
+		 * 
+		 * @param	event
+		 */
+		itemClick: function(event)
+		{
+			if (event.item.context == "public") {
+			   window.open("/commsy.php?cid="+event.item.contextID+"&mod=date&fct=detail&iid="+event.item.id, "_self");
+			} else {
+   			var aNode = DomConstruct.create("a");
+   			require(["commsy/popups/ClickDetailPopup"], Lang.hitch(this, function(ClickPopup) {
+   				var handler = new ClickPopup();
+   				handler.init(aNode, {iid:event.item.id, module:"date", contextId:event.item.contextID, data:event.item});
+   				handler.open();
+   			}));
+			}
 		}
 	});
 });

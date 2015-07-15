@@ -28,11 +28,12 @@ define([	"dojo/_base/declare",
 			    ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', 'SpecialChar'],
 			    ['NumberedList', 'BulletedList', 'Outdent', 'Indent', 'Blockquote'],
 			    ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+			    ['CommSyAbout'],
 			    ['Format', 'Font', 'FontSize'],
 			    ['TextColor', 'BGColor', '-', 'RemoveFormat','-','Maximize', 'Source'],
-			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Flash', 'CommSyAbout'],
+			    ['Link', 'Unlink', '-', 'Table', 'HorizontalRule', 'Smiley', '-', 'Flash'],
 			    //CommSy group
-			    ['CommSyImage', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument']
+			    ['CommSyImage', 'CommSyVideo', 'CommSyAudio', 'CommSyDocument', 'CommSyMDO']
 			    
 			]
 		},
@@ -45,6 +46,10 @@ define([	"dojo/_base/declare",
 			this.options.filebrowserWindowWidth		= '100';
 			this.options.filebrowserWindowHeight	= '50';
 			this.options.language					= this.from_php.environment.lang;
+
+			if (this.from_php.mdo_active) {
+				this.options.extraPlugins = this.options.extraPlugins + ",CommSyMDO";
+			}
 		},
 
 		create: function(node) {
@@ -64,6 +69,11 @@ define([	"dojo/_base/declare",
 			CKEDITOR.config.allowedContent = true;
 			
 			CKEDITOR.plugins.addExternal( "CommSyAbout", "../../src/commsy/ckeditor/plugins/about/", "CommSyAbout.php?cid="+this.uri_object.cid );
+
+			if (this.from_php.mdo_active) {
+				
+				CKEDITOR.plugins.addExternal( "CommSyMDO", "../../src/commsy/ckeditor/plugins/CommSyMDO/", "plugin.js");
+			}
 			
 			CKEDITOR.plugins.addExternal( "CommSyVideo", "../../src/commsy/ckeditor/plugins/video/", "CommSyVideo.js");
 			CKEDITOR.plugins.addExternal( "CommSyAudio", "../../src/commsy/ckeditor/plugins/audio/", "CommSyAudio.js");

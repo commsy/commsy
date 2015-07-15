@@ -395,39 +395,19 @@ class commsy_blog {
   }
 
    private function _get_site_allowed_themes() {
-      $retour_themes = array();
+      $themes = wp_get_themes(array('allowed' => 'site'));
 
-      $themes = get_themes();
+      $response = array();
 
-      $allowed_themes = get_site_option( 'allowedthemes' );
-      if ( !is_array( $allowed_themes )
-           or empty( $allowed_themes )
-         ) {
-         $allowed_themes = get_site_option( 'allowed_themes' ); // convert old allowed_themes format
-         if ( !is_array( $allowed_themes ) ) {
-            $allowed_themes = array();
-         } else {
-            foreach( (array) $themes as $key => $theme ) {
-               $theme_key = esc_html( $theme['Stylesheet'] );
-               if ( isset( $allowed_themes[ $key ] ) == true ) {
-                  $allowed_themes[ $theme_key ] = 1;
-               }
-            }
-         }
+      foreach ($themes as $theme) {
+          $themeName = $theme->get('Name');
+
+          $response[$themeName] = array(
+              'template' => $theme->get_template(),
+              'screenshot' => $theme->get_screenshot());
       }
 
-      if ( !empty($themes)
-           and !empty($allowed_themes)
-         ) {
-         foreach ( $themes as $key => $value ) {
-            if ( isset($value['Stylesheet'])
-                 and array_key_exists($value['Stylesheet'],$allowed_themes)
-               ) {
-               $retour_themes[$key] = $value;
-            }
-         }
-      }
-      return $retour_themes;
+      return $response;
    }
 
   /**

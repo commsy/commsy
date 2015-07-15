@@ -313,7 +313,7 @@ class cs_mail extends Mail
                echo('TO: '.$this->recipients.BRLF);
                echo('HEADER: '.LF);
                pr($multipart_header);
-               echo('BODY:'.BRLF.nl2br($multipart_message).LF);
+               echo('BODY:'.BRLF.nl2br($this->message).LF);
                echo('<hr/>'.LF);
             } else if ($c_send_email === 'error_log') {
                error_log(print_r('------------------', true));

@@ -591,6 +591,31 @@
             $to_javascript['autosave']['mode'] = 0;
             $to_javascript['autosave']['limit'] = 0;
 
+            global $c_media_integration;
+            if($c_media_integration) {
+                $to_javascript['c_media_integration'] = true;
+                // check for rights for mdo
+                $current_context_item = $this->_environment->getCurrentContextItem();
+                if($current_context_item->isProjectRoom()) {
+                    // does this project room has any community room?
+                    $community_list = $current_context_item->getCommunityList();
+                    if($community_list->isNotEmpty()) {
+                        // check for community rooms activated the mdo feature
+                        $community = $community_list->getFirst();
+                        while($community) {
+                            $mdo_active = $community->getMDOActive();
+                            if(!empty($mdo_active) && $mdo_active != '-1') {
+                                $to_javascript['mdo_active'] = true;
+                                break;
+                            }
+                            $community = $community_list->getNext();
+                        }
+                    }
+                }
+            } else {
+                $to_javascript['c_media_integration'] = false;
+            }
+
 
             if ($ownRoomItem)
             {

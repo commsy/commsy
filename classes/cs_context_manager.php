@@ -867,6 +867,11 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
             if ($type == 'date') {
                $type_manager->setWithoutDateModeLimit();
             }
+            if ($type == 'portfolio') {
+               $current_user_item = $this->_environment->getCurrentUserItem();
+               $private_room_user_item = $current_user_item->getRelatedPrivateRoomUserItem();
+               $type_manager->setUserLimit($private_room_user_item->getItemID());
+            }
             $type_manager->select();
             $type_list = $type_manager->get();
             
