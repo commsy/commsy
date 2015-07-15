@@ -6,28 +6,33 @@
     <div class="uk-grid">
         <div class="uk-width-medium-2-3">
             <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
+                {# panel title bar #}
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div>{{ item.itemType|trans({}, "room")|capitalize }}</div>
                     </div>
                 </div>
+
+                {# content #}
                 <div class="uk-overflow-container">
                     {% block content_left_column %}
                     {% endblock %}
+
                     {% if item.itemType != 'discussion' %}
-                    <div class="uk-panel uk-panel-divider">
-                        <div class="uk-panel">
-                            <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
+                        <div class="uk-panel uk-panel-divider">
+                            <div class="uk-panel">
+                                <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
+                            </div>
+                            {{ render(controller(
+                                'CommsyBundle:Annotation:feed',
+                                { 'roomId': roomId, 'linkedItemId': item.itemId }
+                            ))}}
                         </div>
-                        {{ render(controller(
-                            'CommsyBundle:Annotation:feed',
-                            { 'roomId': roomId, 'linkedItemId': item.itemId }
-                        ))}}
-                    </div>
                     {% endif %}
                 </div>
             </div>
         </div>
+        
         <div class="uk-width-medium-1-3">
             {% block content_right_column %}
             {% endblock %}
