@@ -1085,6 +1085,17 @@ class cs_context_manager extends cs_manager implements cs_export_import_interfac
          
          $this->checkOptions($xml, $context_item, $options);
          
+         $room_logo_filename = $context_item->getLogoFilename();
+         $logo_matches = array();
+         preg_match('/(?<=cid)(\d+)(?=_logo)/', $room_logo_filename, $logo_matches);
+         if (!empty($logo_matches)) {
+             if (isset($options[$logo_matches[0]])) {
+                 $room_logo_filename = str_ireplace($logo_matches[0], $options[$logo_matches[0]], $room_logo_filename);
+                 $context_item->setLogoFilename($room_logo_filename);
+                 $context_item->save();
+             }
+         }
+         
          return $context_item;
       }
    }

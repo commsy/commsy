@@ -245,8 +245,6 @@ else {
                                          $logo_file_to_copy_temp = './'.$logo_file_to_copy;
                                          $logo_file_to_go = str_replace('./',$commsy_work_dir.'/'.$new_file_path, $logo_file_to_copy_temp);
                                          copy($file_to_copy, $logo_file_to_go);
-                                         $room_item->setLogoFilename($logo_file_to_copy);
-                                         $room_item->save();
                                      }
                                  }
                               }
