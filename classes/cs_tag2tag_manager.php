@@ -50,6 +50,7 @@ class cs_tag2tag_manager extends cs_manager {
      $retour->setDeletionDate($data_array['deletion_date']);
      $retour->setFatherItemID($data_array['from_item_id']);
      $retour->setChildItemID($data_array['to_item_id']);
+     $retour->setSortingPlace($data_array['sorting_place']);
      return $retour;
   }
 
@@ -314,6 +315,11 @@ class cs_tag2tag_manager extends cs_manager {
          $retour = array_pop($array);
       }
       return $retour;
+   }
+
+   public function resetCachedFatherIdArray(){
+   	  $this->_cached_father_id_array = array();
+   	  $this->_cached_rows = array();
    }
 
    public function getFatherItemIDArray ($item_id) {
