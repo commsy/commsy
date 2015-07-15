@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 use CommsyBundle\Filter\MaterialFilterType;
 
@@ -123,6 +124,53 @@ class MaterialController extends Controller
             'sectionList' => $sectionList,
             'readerList' => $readerList,
             'modifierList' => $modifierList
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/new")
+     * @Template()
+     */
+    public function newAction($roomId, Request $request)
+    {
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/edit")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editAction($roomId, $itemId, Request $request)
+    {
+        // get material from MaterialService
+        $materialService = $this->get('commsy_legacy.material_service');
+        $materialItem = $materialService->getMaterial($itemId);
+
+        if (!$materialItem) {
+            throw $this->createNotFoundException('No material found for id ' . $roomId);
+        }
+
+        $transformer = $this->get('commsy_legacy.transformer.material');
+        $materialData = $transformer->transform($materialItem);
+
+        $form = $this->createForm('material', $materialData, array(
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+
+            //$materialItem->save();
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'form' => $form->createView()
         );
     }
 }

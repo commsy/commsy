@@ -3,7 +3,14 @@
 {% set item = material %}
 
 {% block content_left_column %}
-    <article class="uk-article">
+    <article class="uk-article uk-position-relative" data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': roomId, 'itemId': material.itemId}) }}' }">
+        {# edit #}
+        {% if is_granted('ITEM_EDIT', material.itemId) %}
+            <div class="uk-position-top-right cs-article-edit uk-hidden">
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+            </div>
+        {% endif %}
+
         {# title #}
         <h2 class="uk-artitcle-title">{{ material.title|raw }}</h2>
 
@@ -33,9 +40,14 @@
         {% for section in sectionList %}
             <hr class="uk-article-divider">
 
-            <article class="uk-article">
+            <article class="uk-article uk-position-relative" data-cs-edit>
                 {# anchor #}
                 <a name="{{ section.itemId }}"></a>
+
+                {# edit #}
+                <div class="uk-position-top-right cs-article-edit uk-hidden">
+                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                </div>
 
                 {# title #}
                 <h3 class="uk-artitcle-title">{{ section.title|raw }}</h3>
