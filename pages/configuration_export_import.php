@@ -205,7 +205,7 @@ else {
                   $options = array();
                   chdir($commsy_work_dir);
                   $room_manager = $environment->getRoomManager();
-                  $room_manager->import_item($xml, null, $options);
+                  $room_item = $room_manager->import_item($xml, null, $options);
                   chdir('var/temp/'.$temp_stamp);
    
                   $files = scandir('.');
@@ -236,6 +236,18 @@ else {
                                           copy($file_to_copy, $file_to_go);
                                        }
                                     }
+                                 }
+                                 $logo_matches = array();
+                                 preg_match('/(?<=cid)(\d+)(?=_logo)/', $file_to_copy, $logo_matches);
+                                 if (!empty($logo_matches)) {
+                                     if (isset($options[$logo_matches[0]])) {
+                                         $logo_file_to_copy = str_ireplace($logo_matches[0], $options[$logo_matches[0]], $file_to_copy);
+                                         $logo_file_to_copy_temp = './'.$logo_file_to_copy;
+                                         $logo_file_to_go = str_replace('./',$commsy_work_dir.'/'.$new_file_path, $logo_file_to_copy_temp);
+                                         copy($file_to_copy, $logo_file_to_go);
+                                         $room_item->setLogoFilename($logo_file_to_copy);
+                                         $room_item->save();
+                                     }
                                  }
                               }
                               chdir('..');
