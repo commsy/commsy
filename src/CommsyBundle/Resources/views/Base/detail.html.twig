@@ -5,7 +5,7 @@
 {% block content %}
     <div class="uk-grid">
         <div class="uk-width-medium-2-3">
-            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
+            <div class="uk-panel uk-panel-box uk-margin-bottom">
                 {# panel title bar #}
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
@@ -14,10 +14,11 @@
                 </div>
 
                 {# content #}
-                <div class="uk-overflow-container">
+                <div>
                     {% block content_left_column %}
                     {% endblock %}
 
+                    {# annotations #}
                     {% if item.itemType != 'discussion' %}
                         <div class="uk-panel uk-panel-divider">
                             <div class="uk-panel">

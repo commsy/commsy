@@ -3,39 +3,60 @@
 {% set item = material %}
 
 {% block content_left_column %}
-    <div class="uk-panel">
-        <h3 class="uk-panel-title">{{ material.title|raw }}</h3>
+    <article class="uk-article">
+        {# title #}
+        <h2 class="uk-artitcle-title">{{ material.title|raw }}</h2>
+
+        {# modifier information #}
         {{ macros.detailInformation(material, modifierList) }}
-    </div>
-    
-    <div class="uk-panel uk-margin-left uk-margin-bottom">
-        {% include 'CommsyBundle:Material:biblio.html.twig' %}
-    </div>
-    
-    <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
-        {{ material.description|raw }}
-    </div>
-    
-    <div class="uk-panel uk-margin-left uk-margin-bottom">
-        {{  macros.fileList(material) }}
-    </div>
-    
-    {% for section in sectionList %}
-        <div class="uk-panel uk-panel-divider">
-            <div class="uk-panel-badge"><i class="{{ macros.iconClassForItemType(section.itemType) }} uk-icon-small {{ macros.statusColor(readerList, section.itemId) }}"></i></div>
-            <a name="{{ section.itemId }}"></a>
-            <div class="uk-panel">
-                <h3 class="uk-panel-title">{{ section.title }}</h3>
-                {{ macros.detailInformation(section, modifierList) }}
+
+        {# additional meta description #}
+        <p class="uk-article-meta">
+            {% include 'CommsyBundle:Material:biblio.html.twig' %}
+        </p>
+
+        <div class="uk-margin-left">
+            {# main description #}
+            <div class="cs-detail-description">
+                {{ material.description|raw }}
             </div>
-            <div class="uk-panel uk-panel-box-secondary uk-margin-left uk-margin-bottom">
-                {{ section.description|raw }}
-            </div>
-            <div class="uk-panel uk-margin-left">
-                {{  macros.fileList(section) }}
+
+            {# files #}
+            <div class="cs-detail-files">
+                {{  macros.fileList(material) }}
             </div>
         </div>
-    {% endfor %}
+    </article>
+
+    {# material sections #}
+    <div id="cs-sections">
+        {% for section in sectionList %}
+            <hr class="uk-article-divider">
+
+            <article class="uk-article">
+                {# anchor #}
+                <a name="{{ section.itemId }}"></a>
+
+                {# title #}
+                <h3 class="uk-artitcle-title">{{ section.title|raw }}</h3>
+
+                {# modifier information #}
+                {{ macros.detailInformation(section, modifierList) }}
+
+                <div class="uk-margin-left">
+                    {# section description #}
+                    <div class="cs-detail-description">
+                        {{ section.description|raw }}
+                    </div>
+
+                    {# files #}
+                    <div class="cs-detail-files">
+                        {{  macros.fileList(section) }}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
 {% endblock %}
 
 {% block content_right_column %}
