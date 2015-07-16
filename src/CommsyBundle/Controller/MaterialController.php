@@ -161,16 +161,46 @@ class MaterialController extends Controller
         if ($form->isValid()) {
             $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
 
-            //$materialItem->save();
+            $materialItem->save();
 
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
+            
+            return $this->redirectToRoute('commsy_material_savematerial', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
             'form' => $form->createView()
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/savematerial")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveMaterialAction($roomId, $itemId, Request $request)
+    {
+        $materialService = $this->get('commsy_legacy.material_service');
+        $itemService = $this->get('commsy.item_service');
+        
+        $material = $materialService->getMaterial($itemId);
+        $sectionList = $material->getSectionList()->to_array();
+        
+        $itemArray = array($material);
+        $itemArray = array_merge($itemArray, $sectionList);
+
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        return array(
+            'roomId' => $roomId,
+            'material' => $materialService->getMaterial($itemId),
+            'modifierList' => $modifierList
         );
     }
 }

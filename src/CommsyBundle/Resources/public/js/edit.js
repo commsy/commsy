@@ -48,12 +48,29 @@
         },
 
         onClickEdit: function(el) {
+            var $this = this;
+            var article = $(el).parent('article');
             // send ajax request to get edit html
             $.ajax({
               url: this.options.editUrl
             })
             .done(function(result) {
-                console.log(result);
+                article.html(result);
+                article.find('form').submit(function (e) {
+                    e.preventDefault ();
+                    $ .ajax ({
+                        url: $this.options.editUrl,
+                        type: "POST",
+                        data: $(this).serialize()
+                    })
+                    .done(function(result){
+                        article.html(result);
+                        article.find('div.cs-article-edit').click(function(event) {
+                            event.preventDefault();
+                            $this.onClickEdit(this);
+                        });
+                    });
+                });
             });
         }
     });

@@ -1,0 +1,31 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{# edit #}
+{% if is_granted('ITEM_EDIT', material.itemId) %}
+    <div class="uk-position-top-right cs-article-edit uk-hidden">
+        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+    </div>
+{% endif %}
+
+{# title #}
+<h2 class="uk-artitcle-title">{{ material.title|raw }}</h2>
+
+{# modifier information #}
+{{ macros.detailInformation(material, modifierList) }}
+
+{# additional meta description #}
+<p class="uk-article-meta">
+    {% include 'CommsyBundle:Material:biblio.html.twig' %}
+</p>
+
+<div class="uk-margin-left">
+    {# main description #}
+    <div class="cs-detail-description">
+        {{ material.description|raw }}
+    </div>
+
+    {# files #}
+    <div class="cs-detail-files">
+        {{  macros.fileList(material) }}
+    </div>
+</div>

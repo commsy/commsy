@@ -24,7 +24,7 @@ class MaterialTransformer implements DataTransformerInterface
         $materialData = array();
 
         if ($materialItem) {
-            // $materialData['title'] = $materialItem->getTitle();
+            $materialData['title'] = $materialItem->getTitle();
             // $materialData['language'] = $materialItem->getLanguage();
 
             // if ($materialItem->checkNewMembersAlways()) {
@@ -37,7 +37,7 @@ class MaterialTransformer implements DataTransformerInterface
             //     $materialData['access_check'] = 'withcode';
             // }
 
-            // $materialData['description'] = $materialItem->getDescription();
+            $materialData['description'] = $materialItem->getDescription();
         }
 
         return $materialData;
@@ -53,6 +53,9 @@ class MaterialTransformer implements DataTransformerInterface
      */
     public function applyTransformation($materialObject, $materialData)
     {
+        $materialObject->setTitle($materialData['title']);
+        $materialObject->setDescription($materialData['description']);
+        
         return $materialObject;
     }
 }
