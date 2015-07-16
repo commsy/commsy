@@ -1,14 +1,5 @@
+{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+
 {{ form_start(form) }}
 {{ form_errors(form) }}
-<div class="uk-form-row">
-{{ form_errors(form.title) }}
-{{ form_widget(form.title) }}
-</div>
-<div class="uk-form-row">
-{{ form_errors(form.description) }}
-{{ form_widget(form.description) }}
-</div>
-<div class="uk-form-row">
-{{ form_widget(form.save) }}
-</div>
 {{ form_end(form) }}
