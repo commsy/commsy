@@ -35,6 +35,12 @@
                     $(this).find('div.cs-article-edit').toggleClass('uk-hidden', true);
                 });
 
+            $this.registerArticleEvents(element);
+        },
+
+        registerArticleEvents: function(element) {
+            var $this = this;
+            
             // show articles as selected, when mouseover the edit icon
             $(element).find('div.cs-article-edit')
                 .mouseover(function() {
@@ -80,7 +86,9 @@
                         .done(function(result) {
                             article.fadeOut(function() {
                                 article.html($(result)).fadeIn();
-                                
+
+                                $this.registerArticleEvents(article);
+
                                 article.find('div.cs-article-edit').click(function(event) {
                                     event.preventDefault();
                                     $this.onClickEdit(this);
