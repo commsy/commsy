@@ -89,6 +89,11 @@ services:
         tags:
             - { name: form.type, alias: material }
 
+    commsy.form.type.section:
+        class: CommsyBundle\Form\Type\SectionType
+        tags:
+            - { name: form.type, alias: section }
+
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
         tags:

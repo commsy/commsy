@@ -1,0 +1,27 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+{# anchor #}
+<a name="{{ section.itemId }}"></a>
+
+{# edit #}
+<div class="uk-position-top-right cs-article-edit uk-hidden">
+    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+</div>
+
+{# title #}
+<h3 class="uk-artitcle-title">{{ section.title|raw }}</h3>
+
+{# modifier information #}
+{{ macros.detailInformation(section, modifierList) }}
+
+<div class="uk-margin-left">
+    {# section description #}
+    <div class="cs-detail-description">
+        {{ section.description|raw }}
+    </div>
+
+    {# files #}
+    <div class="cs-detail-files">
+        {{  macros.fileList(section) }}
+    </div>
+</div>

@@ -40,7 +40,7 @@
         {% for section in sectionList %}
             <hr class="uk-article-divider">
 
-            <article class="uk-article uk-position-relative" data-cs-edit>
+            <article class="uk-article uk-position-relative" data-cs-edit="{editUrl: '{{ path('commsy_material_editsection', {'roomId': roomId, 'itemId': section.itemId}) }}' }">
                 {# anchor #}
                 <a name="{{ section.itemId }}"></a>
 

@@ -10,6 +10,8 @@ class MaterialService
     private $legacyEnvironment;
 
     private $materialManager;
+    
+    private $sectionManager;
 
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
@@ -17,6 +19,9 @@ class MaterialService
 
         $this->materialManager = $this->legacyEnvironment->getMaterialManager();
         $this->materialManager->reset();
+        
+        $this->sectionManager = $this->legacyEnvironment->getSectionManager();
+        $this->sectionManager->reset();
     }
 
     public function getListMaterials($roomId, $max, $start)
@@ -65,5 +70,10 @@ class MaterialService
     public function getMaterial($itemId)
     {
         return $this->materialManager->getItem($itemId);
+    }
+    
+    public function getSection($itemId)
+    {
+        return $this->sectionManager->getItem($itemId);
     }
 }
