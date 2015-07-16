@@ -1,4 +1,4 @@
-;(function(UI){
+;(function(UI) {
 
     "use strict";
 
@@ -6,19 +6,22 @@
         allow: '*.*'
     };
 
-    // var select = UIkit.uploadSelect($("#upload-select"), settings);
-    // var drop = UIkit.uploadDrop($("#upload-drop"), settings);
-
-    UIkit.on('beforeready.uk.dom', function() {
+    var setupUpload = function() {
         $('.upload').each(function() {
-            var progressbar = $(this).siblings('.uk-progress').first();
-            var bar = progressbar.find('.uk-progress-bar');
-
             // get data from input element
             var data = $(this).find('input').data('upload');
 
+            // skip already initialized uploa fields, may be optimized
+            if (data.initialized) {
+                return true;
+            }
+
+            var progressbar = $(this).siblings('.uk-progress').first();
+            var bar = progressbar.find('.uk-progress-bar');
+
             var elementSettings = {
                 action: data.path,
+                single: false,
 
                 loadstart: function() {
                     bar.css("width", "0%").text("0%");
@@ -43,7 +46,19 @@
 
             var select = UI.uploadSelect($(this).find('input'), merged);
             var drop = UI.uploadDrop(this, merged);
+
+            // set an initialized flag to prevent re-setup
+            data.initialized = true;
+            $(this).find('input').data('upload', data);
         });
+    };
+
+    UIkit.on('beforeready.uk.dom', function() {
+        setupUpload();
+    });
+
+    UIkit.on('changed.uk.dom', function(event) {
+        setupUpload();
     });
 
 })(UIkit);
