@@ -178,7 +178,7 @@ class MaterialController extends Controller
     
     /**
      * @Route("/room/{roomId}/material/{itemId}/editsection")
-     * @Template()
+     * @Template("CommsyBundle:Section:editSection.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function editSectionAction($roomId, $itemId, Request $request)
@@ -244,7 +244,7 @@ class MaterialController extends Controller
     
     /**
      * @Route("/room/{roomId}/material/{itemId}/savesection")
-     * @Template()
+     * @Template("CommsyBundle:Section:saveSection.html.twig")
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function saveSectionAction($roomId, $itemId, Request $request)
