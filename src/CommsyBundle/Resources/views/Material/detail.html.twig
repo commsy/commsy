@@ -3,7 +3,7 @@
 {% set item = material %}
 
 {% block content_left_column %}
-    <article class="uk-article uk-position-relative" data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': roomId, 'itemId': material.itemId}) }}' }">
+    <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': roomId, 'itemId': material.itemId}) }}' }">
         {# edit #}
         {% if is_granted('ITEM_EDIT', material.itemId) %}
             <div class="uk-position-top-right cs-article-edit uk-hidden">
@@ -42,7 +42,7 @@
         {% for section in sectionList %}
             <hr class="uk-article-divider">
 
-            <article class="uk-article uk-position-relative" data-cs-edit="{editUrl: '{{ path('commsy_material_editsection', {'roomId': roomId, 'itemId': section.itemId}) }}' }">
+            <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsection', {'roomId': roomId, 'itemId': section.itemId}) }}' }">
                 {# anchor #}
                 <a name="{{ section.itemId }}"></a>
 
