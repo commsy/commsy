@@ -26,19 +26,23 @@
 
             var element = $this.element[0];
 
-            // look for div.cs-article-edit and show on hover
-            $(element).hover(function() {
-                $(this).find('div.cs-article-edit').toggleClass('uk-hidden', false);
-            }, function() {
-                $(this).find('div.cs-article-edit').toggleClass('uk-hidden', true);
-            });
+            // look for div.cs-article-edit and show on mouseover
+            $(element)
+                .mouseover(function() {
+                    $(this).find('div.cs-article-edit').toggleClass('uk-hidden', false);
+                })
+                .mouseout(function() {
+                    $(this).find('div.cs-article-edit').toggleClass('uk-hidden', true);
+                });
 
-            // show articles as selected, when hovering the edit icon
-            $(element).find('div.cs-article-edit').hover(function() {
-                $(this).parent('article').toggleClass('cs-article-selected', true);
-            }, function() {
-                $(this).parent('article').toggleClass('cs-article-selected', false);
-            });
+            // show articles as selected, when mouseover the edit icon
+            $(element).find('div.cs-article-edit')
+                .mouseover(function() {
+                    $(this).parent('article').toggleClass('cs-article-selected', true);
+                })
+                .mouseout(function() {
+                    $(this).parent('article').toggleClass('cs-article-selected', false);
+                });
 
             // send ajax requests on click to load the form
             $(element).find('div.cs-article-edit').click(function(event) {
