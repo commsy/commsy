@@ -1,12 +1,14 @@
 {{ form_start(form) }}
 {{ form_errors(form) }}
+<div class="uk-form-row">
 {{ form_errors(form.title) }}
 {{ form_widget(form.title) }}
-<div class="uk-margin-left">
-    <div class="cs-detail-description">
-        {{ form_errors(form.description) }}
-        {{ form_widget(form.description) }}
-    </div>
 </div>
+<div class="uk-form-row">
+{{ form_errors(form.description) }}
+{{ form_widget(form.description) }}
+</div>
+<div class="uk-form-row">
 {{ form_widget(form.save) }}
+</div>
 {{ form_end(form) }}
