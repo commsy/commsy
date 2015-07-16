@@ -65,25 +65,27 @@
             .done(function(result) {
                 // replace article html with some nice effecits
                 article.fadeOut(function() {
-                    article.replaceWith(function() {
-                        return $(result).hide().fadeIn();
-                    });
-                });
+                    article.html($(result)).fadeIn();
 
-                // override form submit behaviour
-                article.find('form').submit(function (e) {
-                    e.preventDefault();
+                    // override form submit behaviour
+                    article.find('form').submit(function (event) {
+                        event.preventDefault();
 
-                    $.ajax ({
-                        url: $this.options.editUrl,
-                        type: "POST",
-                        data: $(this).serialize()
-                    })
-                    .done(function(result){
-                        article.html(result);
-                        article.find('div.cs-article-edit').click(function(event) {
-                            event.preventDefault();
-                            $this.onClickEdit(this);
+                        // submit the form manually
+                        $.ajax({
+                            url: $this.options.editUrl,
+                            type: "POST",
+                            data: $(this).serialize()
+                        })
+                        .done(function(result) {
+                            article.fadeOut(function() {
+                                article.html($(result)).fadeIn();
+                                
+                                article.find('div.cs-article-edit').click(function(event) {
+                                    event.preventDefault();
+                                    $this.onClickEdit(this);
+                                });
+                            });
                         });
                     });
                 });
