@@ -40,7 +40,7 @@
 
         registerArticleEvents: function(element) {
             var $this = this;
-            
+
             // show articles as selected, when mouseover the edit icon
             $(element).find('div.cs-article-edit')
                 .mouseover(function() {
@@ -53,6 +53,11 @@
             // send ajax requests on click to load the form
             $(element).find('div.cs-article-edit').click(function(event) {
                 event.preventDefault();
+
+                // reset article selection class and remove event handling
+                $(this).parent('article').toggleClass('cs-article-selected', false);
+                $(this).off();
+
                 $this.onClickEdit(this);
             });
         },
@@ -88,11 +93,6 @@
                                 article.html($(result)).fadeIn();
 
                                 $this.registerArticleEvents(article);
-
-                                article.find('div.cs-article-edit').click(function(event) {
-                                    event.preventDefault();
-                                    $this.onClickEdit(this);
-                                });
                             });
                         });
                     });
