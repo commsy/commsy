@@ -9,6 +9,8 @@
             <div class="uk-position-top-right cs-article-edit uk-hidden">
                 <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
             </div>
+
+            {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
         {% endif %}
 
         {# title #}
@@ -45,9 +47,13 @@
                 <a name="{{ section.itemId }}"></a>
 
                 {# edit #}
-                <div class="uk-position-top-right cs-article-edit uk-hidden">
-                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                </div>
+                {% if is_granted('ITEM_EDIT', section.itemId) %}
+                    <div class="uk-position-top-right cs-article-edit uk-hidden">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+
+                    {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                {% endif %}
 
                 {# title #}
                 <h3 class="uk-artitcle-title">{{ section.title|raw }}</h3>

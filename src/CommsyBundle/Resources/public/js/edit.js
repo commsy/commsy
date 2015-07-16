@@ -54,15 +54,27 @@
         onClickEdit: function(el) {
             var $this = this;
             var article = $(el).parent('article');
+
+            // show the loading spinner
+            $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
+
             // send ajax request to get edit html
             $.ajax({
               url: this.options.editUrl
             })
             .done(function(result) {
-                article.html(result);
+                // replace article html with some nice effecits
+                article.fadeOut(function() {
+                    article.replaceWith(function() {
+                        return $(result).hide().fadeIn();
+                    });
+                });
+
+                // override form submit behaviour
                 article.find('form').submit(function (e) {
-                    e.preventDefault ();
-                    $ .ajax ({
+                    e.preventDefault();
+
+                    $.ajax ({
                         url: $this.options.editUrl,
                         type: "POST",
                         data: $(this).serialize()
