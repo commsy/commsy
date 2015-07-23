@@ -17,6 +17,9 @@
                 }
             });
 
+            // needed to update the display when a dynamic grid or slider is inside the hidden element
+            UIkit.$html.trigger('changed.uk.dom');
+
             return ret;
         };
     });
