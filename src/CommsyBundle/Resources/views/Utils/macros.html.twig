@@ -169,8 +169,17 @@
                                 {% for file in fileArray %}
                                     <li>
                                         <div class="uk-panel uk-panel-box-secondary">
-                                            <i class="{{ macros.iconClassForFileType(file.extension) }}"></i>
-                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a>
+                                            <div class="uk-grid">
+                                                <div class="uk-width-1-5 uk-vertical-align">
+                                                    <div class="uk-vertical-align-middle">
+                                                        <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                                                    </div>
+                                                </div>
+                                                <div class="uk-width-4-5">
+                                                    <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                                                    ({{ file.filesize }})
+                                                </div>
+                                            </div>
                                         </div>
                                     </li>
                                 {% endfor %}
@@ -185,21 +194,30 @@
                 <div class="toggle-files-{{ item.itemId }} uk-hidden">
                     <div data-uk-grid="{gutter: 20}">
                         {% for file in fileArray %}
-                            <div class="uk-width-medium-1-2 uk-width-large-1-3">
+                            <div class="uk-width-medium-1-2 uk-width-large-1-4">
                                 <div class="uk-panel uk-panel-box-secondary">
-                                    <h3 class="uk-panel-title"><i class="{{ macros.iconClassForFileType(file.extension) }}"></i></h3>
-                                    <span class="uk-text-middle">
-                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename }}</a>
-                                    </span>
+                                    <div class="uk-grid">
+                                        <div class="uk-width-1-5 uk-vertical-align">
+                                            <div class="uk-vertical-align-middle">
+                                                <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                                            </div>
+                                        </div>
+                                        <div class="uk-width-4-5">
+                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                                            ({{ file.filesize }})
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
-            <div class="uk-width-1-10 cs-detail-toggle-icon">
-                <a class="" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-            </div>
+            {% if fileArray|length > 4 %}
+                <div class="uk-width-1-10 cs-detail-toggle-icon">
+                    <a class="" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                </div>
+            {% endif %}
         </div>
     {% endif %}
 {% endmacro %}
