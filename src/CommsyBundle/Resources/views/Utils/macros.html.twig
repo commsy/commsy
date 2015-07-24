@@ -168,17 +168,13 @@
                             <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
                                 {% for file in fileArray %}
                                     <li>
-                                        <div class="uk-panel uk-panel-box-secondary">
-                                            <div class="uk-grid">
-                                                <div class="uk-width-1-5 uk-vertical-align">
-                                                    <div class="uk-vertical-align-middle">
-                                                        <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
-                                                    </div>
-                                                </div>
-                                                <div class="uk-width-4-5">
-                                                    <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
-                                                    ({{ file.filesize }})
-                                                </div>
+                                        <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                                            <div class="uk-margin-right uk-vertical-align-middle">
+                                                <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                                            </div>
+                                            <div class="uk-vertical-align-middle">
+                                                <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                                                ({{ file.fileSize }})
                                             </div>
                                         </div>
                                     </li>
@@ -195,17 +191,13 @@
                     <div data-uk-grid="{gutter: 20}">
                         {% for file in fileArray %}
                             <div class="uk-width-medium-1-2 uk-width-large-1-4">
-                                <div class="uk-panel uk-panel-box-secondary">
-                                    <div class="uk-grid">
-                                        <div class="uk-width-1-5 uk-vertical-align">
-                                            <div class="uk-vertical-align-middle">
-                                                <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
-                                            </div>
-                                        </div>
-                                        <div class="uk-width-4-5">
-                                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
-                                            ({{ file.filesize }})
-                                        </div>
+                                <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                                    <div class="uk-margin-right uk-vertical-align-middle">
+                                        <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                                    </div>
+                                    <div class="uk-vertical-align-middle">
+                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                                        ({{ file.fileSize }})
                                     </div>
                                 </div>
                             </div>
