@@ -229,3 +229,26 @@
         <i class="uk-icon-gear uk-icon-small"></i>
     </button>
 {% endmacro %}
+
+{% macro descriptionDetailView(item) %}
+    {% import _self as macros %}
+    {% if not item.description == "" %}
+        <div class="uk-grid cs-detail-toggle">
+            <div class="uk-width-9-10">
+                <div class="toggle-description-{{ item.itemId }}">
+                    <div class="uk-panel">
+                        {{ item.description|truncate(500)|striptags }}
+                    </div>
+                </div>
+                <div class="toggle-description-{{ item.itemId }} uk-hidden">
+                    <div class="uk-panel">
+                        {{ item.description|raw }}
+                    </div>
+                </div>
+            </div>
+            <div class="uk-width-1-10 cs-detail-toggle-icon">
+                <a class="" data-uk-toggle="{target:'.toggle-description-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            </div>
+        </div>
+    {% endif %}
+{% endmacro %}

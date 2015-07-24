@@ -43,60 +43,60 @@
                     <div class="uk-margin-left">
                         {# main description #}
                         <div class="cs-detail-description">
-                            {{ material.description|raw }}
+                            {{  macros.descriptionDetailView(material) }}
                         </div>
             
                         {# files #}
                         <div class="cs-detail-files">
                             {{  macros.fileListDetailView(material) }}
                         </div>
-                    </div>
-                </article>
-            
-                <!-- -->
-                
-                <div class="uk-panel uk-panel-box uk-panel-box-primary">
-                    <div id="user-main" class="uk-overflow-container">
-                        <div class="">
-                            <ul class="uk-list uk-list-striped uk-margin-bottom-remove">
-                            {% for section in sectionList [0:10] %}
-                                <li>
-                                    <div class="uk-grid uk-grid-collapse">
-                                        <div class="uk-width-1-10">{{ loop.index }}.</div>
-                                        <div class="uk-width-9-10 uk-text-truncate"><a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a></div>
-                                    </div>
-                                    <div class="uk-grid uk-grid-collapse">
-                                        <div class="uk-width-1-10"></div>
-                                        <div class="uk-width-9-10">{{ macros.fileListShort(section) }}</div>
-                                    </div>
-                                </li>
-                            {% endfor %}
-                            </ul>
-                            {% if sectionList|length > 10 %}
-                                <div class="show-more-sections uk-hidden">
-                                    <ul class="uk-list uk-list-striped">
-                                    {% for section in sectionList [10:sectionList|length-10] %}
-                                        <li>
-                                        <div class="uk-grid uk-grid-collapse">
-                                            <div class="uk-width-1-10">{{ loop.index + 10 }}.</div>
-                                            <div class="uk-width-9-10 uk-text-truncate"><a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a></div>
+                        
+                        {# sections #}
+                        <div class="cs-detail-sections">
+                            <div class="uk-grid cs-detail-toggle">
+                                <div class="uk-width-9-10">
+                                    <div class="toggle-sections">
+                                        <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
+                                            <div class="uk-slider-container">
+                                                <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
+                                                    {% for section in sectionList %}
+                                                        <li>
+                                                            <div class="uk-panel uk-panel-box-secondary">
+                                                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw|truncate(15) }}</a>
+                                                            </div>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% if sectionList|length > 4 %}
+                                                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
+                                                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
+                                            {% endif %}
                                         </div>
-                                        <div class="uk-grid uk-grid-collapse">
-                                            <div class="uk-width-1-10"></div>
-                                            <div class="uk-width-9-10">{{ macros.fileListShort(section) }}</div>
+                                    </div>
+                                    <div class="toggle-sections uk-hidden">
+                                        <div data-uk-grid="{gutter: 20}">
+                                            {% for section in sectionList %}
+                                                <div class="uk-width-medium-1-2 uk-width-large-1-3">
+                                                    <div class="uk-panel uk-panel-box-secondary">
+                                                        <h3 class="uk-panel-title"><i class="{{ section.title|raw }}"></i></h3>
+                                                        <span class="uk-text-middle">
+                                                            <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a>
+                                                            {{ macros.fileListShort(section) }}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
                                         </div>
-                                    </li>
-                                    {% endfor %}
-                                    </ul>
+                                    </div>
                                 </div>
-                                <div class="uk-margin-small">
-                                    <a class="show-more-sections" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show all'|trans({}) }}</a>
-                                    <a class="show-more-sections uk-hidden" data-uk-toggle="{target:'.show-more-sections', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                                <div class="uk-width-1-10 cs-detail-toggle-icon">
+                                    <a class="" data-uk-toggle="{target:'.toggle-sections', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                                 </div>
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
-                </div>
+                </article>
                 
                 <div class="uk-grid">
                     <div class="uk-width-medium-1-3">
@@ -149,7 +149,7 @@
                             <div class="uk-margin-left">
                                 {# section description #}
                                 <div class="cs-detail-description">
-                                    {{ section.description|raw }}
+                                    {{  macros.descriptionDetailView(section) }}
                                 </div>
             
                                 {# files #}
