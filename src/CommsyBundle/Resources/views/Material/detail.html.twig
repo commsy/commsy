@@ -9,15 +9,75 @@
         <div class="uk-width-medium-1-5">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
                 <ul class="uk-nav">
-                    <li><a href="">Menü 1</a></li>
-                    <li><a href="">Menü 1</a></li>
-                    <li><a href="">Menü 1</a></li>
+                    <li><a href="#description">{{ 'description'|trans({})|capitalize }}</a></li>
+                    <li><a href="#files">{{ 'files'|trans({})|capitalize }}</a></li>
+                    <li><a href="#links">{{ 'links'|trans({})|capitalize }}</a></li>
+                    <li><a href="#workflow">{{ 'workflow'|trans({})|capitalize }}</a></li>
+                    <li><a href="#editing information">{{ 'editing information'|trans({})|capitalize }}</a></li>
+                    <li><a href="#sections">{{ 'sections'|trans({})|capitalize }}</a></li>
+                    <li><a href="#annotations">{{ 'annotations'|trans({})|capitalize }}</a></li>
                 </ul>
             </div>
         </div>
     
         <div class="uk-width-medium-4-5">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
+                {# navigation #}
+                <div class="uk-grid uk-margin-bottom">
+                    <div class="uk-width-1-3">
+                        <div class="uk-grid">
+                            <div class="uk-width-medium-2-10">
+                                {% if firstItemId %}
+                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-left"></i>
+                                {% endif %}
+                                {% if prevItemId %}
+                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-left"></i>
+                                {% endif %}
+                            </div>
+                            <div class="uk-width-medium-6-10">
+                                <div class="uk-button-dropdown" data-uk-dropdown>
+                                    <button class="uk-button">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
+                                    <div class="uk-dropdown">
+                                        <ul class="uk-nav uk-nav-dropdown">
+                                            {% for tempMaterial in materialList %}
+                                                {% if tempMaterial.itemId != material.itemId %}
+                                                    <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}">{{ tempMaterial.title|raw|truncate(25) }}</a></li>
+                                                {% else %}
+                                                    <li class="uk-nav-divider"></li>
+                                                    <li class="uk-margin-left">{{ tempMaterial.title }}</li>
+                                                    <li class="uk-nav-divider"></li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="uk-width-medium-2-10">
+                                {% if nextItemId %}
+                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-right"></i>
+                                {% endif %}
+                                {% if lastItemId %}
+                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                {% else %}
+                                    <i class="uk-icon-small uk-icon-angle-double-right"></i>
+                                {% endif %}
+                            </div>
+                         </div>
+                    </div>
+                    <div class="uk-width-1-3">
+                        New
+                    </div>
+                    <div class="uk-width-1-3">
+                        Print
+                    </div>
+                </div>
+            
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': roomId, 'itemId': material.itemId}) }}' }">
                     {# edit #}
@@ -28,87 +88,82 @@
             
                         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
                     {% endif %}
-            
-                    {# navigation #}
-                    <div class="uk-grid">
-                        <div class="uk-width-1-3">
-                            <div class="uk-grid">
-                                <div class="uk-width-medium-2-10">
-                                    {% if firstItemId %}
-                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+
+                    <div class="uk-grid uk-margin-bottom">
+                        <div class="uk-width-1-2">
+                            <div class="uk-flex">
+                                <div class="uk-margin-right">
+                                    {% if material.creator.isUser %}
+                                        {{  macros.userIconLink(material.creator) }}
                                     {% else %}
-                                        <i class="uk-icon-small uk-icon-angle-double-left"></i>
-                                    {% endif %}
-                                    {% if prevItemId %}
-                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
-                                    {% else %}
-                                        <i class="uk-icon-small uk-icon-angle-left"></i>
+                                        {{  macros.userIcon(material.creator) }}
                                     {% endif %}
                                 </div>
-                                <div class="uk-width-medium-6-10">
-                                    <div class="uk-button-dropdown" data-uk-dropdown>
-                                        <button class="uk-button">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
-                                        <div class="uk-dropdown">
-                                            <ul class="uk-nav uk-nav-dropdown">
-                                                {% for tempMaterial in materialList %}
-                                                    {% if tempMaterial.itemId != material.itemId %}
-                                                        <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}">{{ tempMaterial.title|raw|truncate(25) }}</a></li>
-                                                    {% else %}
-                                                        <li class="uk-nav-divider"></li>
-                                                        <li class="uk-margin-left">{{ tempMaterial.title }}</li>
-                                                        <li class="uk-nav-divider"></li>
-                                                    {% endif %}
-                                                {% endfor %}
-                                            </ul>
-                                        </div>
+                                <div class="uk-margin-right">
+                                    <h3 class="uk-artitcle-title">{{ material.title|raw }}</h3>
+                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+                                    <div class="">
+                                        <i class="uk-icon-small uk-icon-star"></i>
+                                        <i class="uk-icon-small uk-icon-star"></i>
+                                        <i class="uk-icon-small uk-icon-star"></i>
+                                        <i class="uk-icon-small uk-icon-star-o"></i>
+                                        <i class="uk-icon-small uk-icon-star-o"></i>
                                     </div>
                                 </div>
-                                <div class="uk-width-medium-2-10">
-                                    {% if nextItemId %}
-                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
-                                    {% else %}
-                                        <i class="uk-icon-small uk-icon-angle-right"></i>
-                                    {% endif %}
-                                    {% if lastItemId %}
-                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
-                                    {% else %}
-                                        <i class="uk-icon-small uk-icon-angle-double-right"></i>
-                                    {% endif %}
-                                </div>
-                             </div>
+                            </div>
                         </div>
-                        <div class="uk-width-1-3">
-                            New
-                        </div>
-                        <div class="uk-width-1-3">
-                            Print
+                        
+                        <div class="uk-width-1-2">
+                            {% if modifierList[item.itemId] is defined %}
+                                {% if not modifierList[item.itemId] is empty %}
+                                    <div class="uk-flex">
+                                        <div class="uk-margin-right">
+                                            {{ 'additional\neditors'|trans({})|capitalize|nl2br }}:
+                                        </div>
+                                        {% for modifier in modifierList[item.itemId] %}
+                                            <div class="uk-margin-small-right">
+                                                {% if modifier.isUser %}
+                                                    {{  macros.userIconLink(modifier) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(modifier) }}
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
             
-                    {# title #}
-                    <h2 class="uk-artitcle-title">{{ material.title|raw }}</h2>
-            
-                    {# modifier information #}
-                    {{ macros.detailInformation(material, modifierList) }}
-            
-                    {# additional meta description #}
-                    <p class="uk-article-meta">
-                        {% include 'CommsyBundle:Material:biblio.html.twig' %}
-                    </p>
-            
-                    <div class="uk-margin-left">
+                    <div class="uk-margin-left uk-margin-right">
+                        {# gallery #}
+                        <div class="uk-margin-bottom">
+                            <h4>{{ 'bibliographic information'|trans({})|capitalize }}</h4>
+                            {% include 'CommsyBundle:Material:biblio.html.twig' %}
+                        </div>
+                    
+                        {# gallery #}
+                        <div class="uk-margin-bottom">
+                            <h4>{{ 'gallery'|trans({})|capitalize }}</h4>
+                        </div>
+                    
                         {# main description #}
-                        <div class="cs-detail-description">
+                        <div class="uk-margin-bottom">
+                            <a name="description"></a>
+                            <h4>{{ 'description'|trans({})|capitalize }}</h4>
                             {{  macros.descriptionDetailView(material) }}
                         </div>
             
                         {# files #}
-                        <div class="cs-detail-files">
+                        <div class="uk-margin-bottom">
+                            <a name="files"></a>
+                            <h4>{{ 'files'|trans({})|capitalize }}</h4>
                             {{  macros.fileListDetailView(material) }}
                         </div>
                         
                         {# sections #}
-                        <div class="cs-detail-sections">
+                        <div class="uk-margin-bottom">
+                            <h4>{{ 'sections'|trans({})|capitalize }}</h4>
                             <div class="uk-grid cs-detail-toggle">
                                 <div class="uk-width-9-10">
                                     <div class="toggle-sections">
@@ -151,84 +206,103 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </article>
-                
-                <div class="uk-grid">
-                    <div class="uk-width-medium-1-3">
-                        {{ render(controller(
-                            'CommsyBundle:Link:show',
-                            { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
-                        ))}}
-                    </div>
-                    <div class="uk-width-medium-1-3">
-                        {{ render(controller(
-                            'CommsyBundle:Category:show',
-                            { 'roomId': roomId }
-                        ))}}
-                    </div>
-                    <div class="uk-width-medium-1-3">
-                        {{ render(controller(
-                            'CommsyBundle:Hashtag:show',
-                            { 'roomId': roomId }
-                        ))}}
-                    </div>
-                </div>
-            </div>
-            <div class="uk-panel uk-panel-box uk-margin-bottom">
-                {# material sections #}
-                <div id="cs-sections">
-                    {% for section in sectionList %}
-                        {% if  not loop.first %}
-                            <hr class="uk-article-divider">
-                        {% endif %}
-            
-                        <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsection', {'roomId': roomId, 'itemId': section.itemId}) }}' }">
-                            {# anchor #}
-                            <a name="{{ section.itemId }}"></a>
-            
-                            {# edit #}
-                            {% if is_granted('ITEM_EDIT', section.itemId) %}
-                                <div class="uk-position-top-right cs-article-edit uk-hidden">
-                                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                        
+                        <div class="uk-margin-bottom">
+                            <a name="links"></a>
+                            <h4>{{ 'links'|trans({})|capitalize }}</h4>
+                            <div class="uk-grid">
+                                <div class="uk-width-medium-1-3">
+                                    {{ render(controller(
+                                        'CommsyBundle:Link:show',
+                                        { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
+                                    ))}}
                                 </div>
-            
-                                {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-                            {% endif %}
-            
-                            {# title #}
-                            <h3 class="uk-artitcle-title">{{ section.title|raw }}</h3>
-            
-                            {# modifier information #}
-                            {{ macros.detailInformation(section, modifierList) }}
-            
-                            <div class="uk-margin-left">
-                                {# section description #}
-                                <div class="cs-detail-description">
-                                    {{  macros.descriptionDetailView(section) }}
+                                <div class="uk-width-medium-1-3">
+                                    {{ render(controller(
+                                        'CommsyBundle:Category:show',
+                                        { 'roomId': roomId }
+                                    ))}}
                                 </div>
-            
-                                {# files #}
-                                <div class="cs-detail-files">
-                                    {{  macros.fileListDetailView(section) }}
+                                <div class="uk-width-medium-1-3">
+                                    {{ render(controller(
+                                        'CommsyBundle:Hashtag:show',
+                                        { 'roomId': roomId }
+                                    ))}}
                                 </div>
                             </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="uk-panel uk-panel-box uk-margin-bottom">
-                {# annotations #}
-                {% if item.itemType != 'discussion' %}
-                    <div class="uk-panel uk-panel-divider">
-                        <div class="uk-panel">
-                            <h3 class="uk-panel-title">{{ 'annotations'|trans({})|capitalize }}</h3>
                         </div>
-                        {{ render(controller(
-                            'CommsyBundle:Annotation:feed',
-                            { 'roomId': roomId, 'linkedItemId': item.itemId }
-                        ))}}
+                        
+                        <div class="uk-margin-bottom">
+                            <a name="workflow"></a>
+                            <h4>{{ 'workflow'|trans({})|capitalize }}</h4>
+                        </div>
+                        
+                        <div class="uk-margin-bottom">
+                            <a name="editing information"></a>
+                            <h4>{{ 'editing information'|trans({})|capitalize }}</h4>
+                        </div>
                     </div>
+                </article>
+            </div>
+            
+            {# material sections #}
+            {% for section in sectionList %}
+                <div class="uk-panel uk-panel-box uk-margin-bottom">
+                    <a name="sections"></a>
+                    <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsection', {'roomId': roomId, 'itemId': section.itemId}) }}' }">
+                        {# anchor #}
+                        <a name="{{ section.itemId }}"></a>
+                        {# edit #}
+                        {% if is_granted('ITEM_EDIT', section.itemId) %}
+                            <div class="uk-position-top-right cs-article-edit uk-hidden">
+                                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                            </div>
+        
+                            {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                        {% endif %}
+                        {# title #}
+                        <div class="uk-grid uk-margin-bottom">
+                            <div class="uk-width-1-1">
+                                <div class="uk-flex">
+                                    <div class="uk-margin-right">
+                                        {% if material.creator.isUser %}
+                                            {{  macros.userIconLink(section.creator) }}
+                                        {% else %}
+                                            {{  macros.userIcon(section.creator) }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="uk-margin-right">
+                                        <h3 class="uk-artitcle-title">{{ section.title|raw }}</h3>
+                                        {{ 'last changed'|trans({})|capitalize }}: {{section.modificationDate|date("d.m.Y H:i")}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-margin-left">
+                            {# section description #}
+                            <div class="uk-margin-bottom">
+                                {{  macros.descriptionDetailView(section) }}
+                            </div>
+                            {# files #}
+                            <div class="uk-margin-bottom">
+                                {{  macros.fileListDetailView(section) }}
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% endfor %}
+            
+            <div class="uk-panel uk-panel-box-primary uk-margin-bottom">
+                {# annotations #}
+                <a name="annotations"></a>
+                <div class="uk-panel-teaser">
+                    <h3>{{ 'annotations'|trans({})|capitalize }}</h3>
+                </div>
+                {% if item.itemType != 'discussion' %}
+                    {{ render(controller(
+                        'CommsyBundle:Annotation:feed',
+                        { 'roomId': roomId, 'linkedItemId': item.itemId }
+                    ))}}
                 {% endif %}
             </div>
         </div>
