@@ -124,8 +124,10 @@ class MaterialController extends Controller
         $counterAfter = 0;
         $counterPosition = 0;
         $foundMaterial = false;
+        $firstItemId = false;
         $prevItemId = false;
         $nextItemId = false;
+        $lastItemId = false;
         foreach ($materials as $tempMaterial) {
             if (!$foundMaterial) {
                 if ($counterBefore > 5) {
@@ -153,6 +155,14 @@ class MaterialController extends Controller
                 }
             }
         }
+        if (!empty($materials)) {
+            if ($prevItemId) {
+                $firstItemId = $materials[0]->getItemId();
+            }
+            if ($nextItemId) {
+                $lastItemId = $materials[sizeof($materials)-1]->getItemId();
+            }
+        }
         
         return array(
             'roomId' => $roomId,
@@ -163,8 +173,10 @@ class MaterialController extends Controller
             'materialList' => $materialList,
             'counterPosition' => $counterPosition,
             'count' => sizeof($materials),
+            'firstItemId' => $firstItemId,
             'prevItemId' => $prevItemId,
-            'nextItemId' => $nextItemId
+            'nextItemId' => $nextItemId,
+            'lastItemId' => $lastItemId
         );
     }
 

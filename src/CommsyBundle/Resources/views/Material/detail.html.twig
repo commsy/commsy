@@ -34,10 +34,15 @@
                         <div class="uk-width-1-3">
                             <div class="uk-grid">
                                 <div class="uk-width-medium-2-10">
-                                    {% if prevItemId %}
-                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-angle-left"></i></a>
+                                    {% if firstItemId %}
+                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
                                     {% else %}
-                                        <i class="uk-icon-angle-left"></i>
+                                        <i class="uk-icon-small uk-icon-angle-double-left"></i>
+                                    {% endif %}
+                                    {% if prevItemId %}
+                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                    {% else %}
+                                        <i class="uk-icon-small uk-icon-angle-left"></i>
                                     {% endif %}
                                 </div>
                                 <div class="uk-width-medium-6-10">
@@ -47,9 +52,11 @@
                                             <ul class="uk-nav uk-nav-dropdown">
                                                 {% for tempMaterial in materialList %}
                                                     {% if tempMaterial.itemId != material.itemId %}
-                                                        <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}">{{ tempMaterial.title }}</a></li>
+                                                        <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}">{{ tempMaterial.title|raw|truncate(25) }}</a></li>
                                                     {% else %}
-                                                        <li>{{ tempMaterial.title }}</li>
+                                                        <li class="uk-nav-divider"></li>
+                                                        <li class="uk-margin-left">{{ tempMaterial.title }}</li>
+                                                        <li class="uk-nav-divider"></li>
                                                     {% endif %}
                                                 {% endfor %}
                                             </ul>
@@ -58,9 +65,14 @@
                                 </div>
                                 <div class="uk-width-medium-2-10">
                                     {% if nextItemId %}
-                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-angle-right"></i></a>
+                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
                                     {% else %}
-                                        <i class="uk-icon-angle-right"></i>
+                                        <i class="uk-icon-small uk-icon-angle-right"></i>
+                                    {% endif %}
+                                    {% if lastItemId %}
+                                        <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                    {% else %}
+                                        <i class="uk-icon-small uk-icon-angle-double-right"></i>
                                     {% endif %}
                                 </div>
                              </div>
