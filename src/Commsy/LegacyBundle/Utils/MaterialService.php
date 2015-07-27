@@ -24,11 +24,13 @@ class MaterialService
         $this->sectionManager->reset();
     }
 
-    public function getListMaterials($roomId, $max, $start)
+    public function getListMaterials($roomId, $max = NULL, $start = NULL)
     {
         $this->materialManager->reset();
         $this->materialManager->setContextLimit($roomId);
-        $this->materialManager->setIntervalLimit($start, $max);
+        if ($max != NULL && $start != NULL) {
+            $this->materialManager->setIntervalLimit($start, $max);
+        }
 
         $this->materialManager->select();
         $materialList = $this->materialManager->get();

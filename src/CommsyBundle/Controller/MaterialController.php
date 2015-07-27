@@ -118,12 +118,53 @@ class MaterialController extends Controller
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
+        $materials = $materialService->getListMaterials($roomId);
+        $materialList = array();
+        $counterBefore = 0;
+        $counterAfter = 0;
+        $counterPosition = 0;
+        $foundMaterial = false;
+        $prevItemId = false;
+        $nextItemId = false;
+        foreach ($materials as $tempMaterial) {
+            if (!$foundMaterial) {
+                if ($counterBefore > 5) {
+                    array_shift($materialList);
+                } else {
+                    $counterBefore++;
+                }
+                $materialList[] = $tempMaterial;
+                if ($tempMaterial->getItemID() == $material->getItemID()) {
+                    $foundMaterial = true;
+                }
+                if (!$foundMaterial) {
+                    $prevItemId = $tempMaterial->getItemId();
+                }
+                $counterPosition++;
+            } else {
+                if ($counterAfter < 5) {
+                    $materialList[] = $tempMaterial;
+                    $counterAfter++;
+                    if (!$nextItemId) {
+                        $nextItemId = $tempMaterial->getItemId();
+                    }
+                } else {
+                    break;
+                }
+            }
+        }
+        
         return array(
             'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),
             'sectionList' => $sectionList,
             'readerList' => $readerList,
-            'modifierList' => $modifierList
+            'modifierList' => $modifierList,
+            'materialList' => $materialList,
+            'counterPosition' => $counterPosition,
+            'count' => sizeof($materials),
+            'prevItemId' => $prevItemId,
+            'nextItemId' => $nextItemId
         );
     }
 
