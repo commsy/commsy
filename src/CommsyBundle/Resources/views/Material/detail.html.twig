@@ -190,9 +190,8 @@
                                             {% for section in sectionList %}
                                                 <div class="uk-width-medium-1-2 uk-width-large-1-3">
                                                     <div class="uk-panel uk-panel-box-secondary">
-                                                        <h3 class="uk-panel-title"><i class="{{ section.title|raw }}"></i></h3>
                                                         <span class="uk-text-middle">
-                                                            <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a>
+                                                            <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw|truncate(30) }}</a><br/>
                                                             {{ macros.fileListShort(section) }}
                                                         </span>
                                                     </div>
