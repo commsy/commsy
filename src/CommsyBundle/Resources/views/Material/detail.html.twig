@@ -136,7 +136,7 @@
                     </div>
             
                     <div class="uk-margin-left uk-margin-right">
-                        {# gallery #}
+                        {# biblio #}
                         <div class="uk-margin-bottom">
                             <h4>{{ 'bibliographic information'|trans({})|capitalize }}</h4>
                             {% include 'CommsyBundle:Material:biblio.html.twig' %}
@@ -145,6 +145,35 @@
                         {# gallery #}
                         <div class="uk-margin-bottom">
                             <h4>{{ 'gallery'|trans({})|capitalize }}</h4>
+                            <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
+                                <div class="uk-slider-container">
+                                    <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
+                            
+                                        {% set fileArray = material.fileList.to_array %}
+                                        {% for section in sectionList %}
+                                            {% set fileArray = fileArray|merge(section.fileList.to_array) %}
+                                        {% endfor %}
+                                        
+                                        {% if not fileArray is empty %}
+                                            {% for file in fileArray %}
+                                                {% if file.extension|lower == 'jpg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
+                                                 <li>
+                                                    <div class="">
+                                                        <a href="{{ path('commsy_user_image', {'roomId': roomId, 'itemId': material.creator.itemId}) }}" data-uk-lightbox="{group:{{ material.itemId }}}" title="{{ file.filename }}">
+                                                            <img class="" style="height:90px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-tooltip title="{{ file.filename }}" />
+                                                        </a>
+                                                    </div>
+                                                </li>
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+                                    </ul>
+                                </div>
+                                {% if fileArray|length > 4 %}
+                                    <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
+                                    <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
+                                {% endif %}
+                            </div>
                         </div>
                     
                         {# main description #}
