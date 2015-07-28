@@ -148,18 +148,16 @@
                             <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
                                 <div class="uk-slider-container">
                                     <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
-                            
                                         {% set fileArray = material.fileList.to_array %}
                                         {% for section in sectionList %}
                                             {% set fileArray = fileArray|merge(section.fileList.to_array) %}
                                         {% endfor %}
-                                        
                                         {% if not fileArray is empty %}
                                             {% for file in fileArray %}
                                                 {% if file.extension|lower == 'jpg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
                                                  <li>
                                                     <div class="">
-                                                        <a href="{{ path('commsy_user_image', {'roomId': roomId, 'itemId': material.creator.itemId}) }}" data-uk-lightbox="{group:{{ material.itemId }}}" title="{{ file.filename }}">
+                                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ material.itemId }}}" data-lightbox-type="image" title="{{ file.filename }}">
                                                             <img class="" style="height:90px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-tooltip title="{{ file.filename }}" />
                                                         </a>
                                                     </div>
