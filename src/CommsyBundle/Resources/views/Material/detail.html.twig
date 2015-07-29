@@ -6,20 +6,30 @@
 
 {% block content %}
     <div class="uk-grid">
-        <div class="uk-width-medium-1-5">
+        <div class="uk-width-medium-1-5 uk-sticky-placeholder">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
-                <ul class="uk-nav">
+                <ul class="uk-nav uk-nav-parent-icon" data-uk-nav>
                     <li><a href="#description">{{ 'description'|trans({})|capitalize }}</a></li>
                     <li><a href="#files">{{ 'files'|trans({})|capitalize }}</a></li>
                     <li><a href="#links">{{ 'links'|trans({})|capitalize }}</a></li>
                     <li><a href="#workflow">{{ 'workflow'|trans({})|capitalize }}</a></li>
                     <li><a href="#editing information">{{ 'editing information'|trans({})|capitalize }}</a></li>
-                    <li><a href="#sections">{{ 'sections'|trans({})|capitalize }}</a></li>
+                    {% if not sectionList is empty %}
+                    <li class="uk-parent">
+                        <a href="#">{{ 'sections'|trans({})|capitalize }}</a>
+                        <ul class="uk-nav-sub">
+                        {% for section in sectionList %}
+                            <li>
+                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw|truncate(20) }}</a>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </li>
+                    {% endif %}
                     <li><a href="#annotations">{{ 'annotations'|trans({})|capitalize }}</a></li>
                 </ul>
             </div>
         </div>
-    
         <div class="uk-width-medium-4-5">
             <div class="uk-panel uk-panel-box uk-margin-bottom">
                 {# navigation #}
@@ -143,36 +153,66 @@
                         </div>
                     
                         {# gallery #}
+                        {% set fileArray = material.fileList.to_array %}
+                        {% for section in sectionList %}
+                            {% set fileArray = fileArray|merge(section.fileList.to_array) %}
+                        {% endfor %}
+                        {% if not fileArray is empty %}
                         <div class="uk-margin-bottom">
                             <h4>{{ 'gallery'|trans({})|capitalize }}</h4>
-                            <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
-                                <div class="uk-slider-container">
-                                    <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
-                                        {% set fileArray = material.fileList.to_array %}
-                                        {% for section in sectionList %}
-                                            {% set fileArray = fileArray|merge(section.fileList.to_array) %}
-                                        {% endfor %}
-                                        {% if not fileArray is empty %}
+                            <div class="uk-grid cs-detail-toggle">
+                                <div class="uk-width-9-10">
+                                    <div class="toggle-gallery-{{ material.itemId }}">
+                                        <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
+                                            <div class="uk-slider-container">
+                                                <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
+                                                    {% for file in fileArray %}
+                                                        {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
+                                                             <li>
+                                                                <a class="uk-margin-remove" href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ material.itemId }}}" data-lightbox-type="image">
+                                                                    <div class="uk-clearfix">
+                                                                        <div class="uk-align-center">
+                                                                            <img class="uk-align-center" style="max-height:90px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                            </li>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                            {% if fileArray|length > 4 %}
+                                                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
+                                                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="toggle-gallery-{{ material.itemId }} uk-hidden">
+                                        <div data-uk-grid="{gutter: 20}">
                                             {% for file in fileArray %}
-                                                {% if file.extension|lower == 'jpg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
-                                                 <li>
-                                                    <div class="">
-                                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ material.itemId }}}" data-lightbox-type="image" title="{{ file.filename }}">
-                                                            <img class="" style="height:90px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-tooltip title="{{ file.filename }}" />
-                                                        </a>
+                                                {% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %}
+                                                    <div class="uk-width-medium-1-2 uk-width-large-1-4">
+                                                        <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                                                            <a class="uk-margin-remove" href="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" data-uk-lightbox="{group:{{ material.itemId }}}" data-lightbox-type="image">
+                                                                <div class="uk-clearfix">
+                                                                    <div class="uk-align-center">
+                                                                        <img class="uk-align-center" style="max-height:90px;" src="{{ path('commsy_file_getfile', {'fileId': file.fileId, 'disposition': 'inline'}) }}" />
+                                                                    </div>
+                                                                </div>
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                </li>
                                                 {% endif %}
                                             {% endfor %}
-                                        {% endif %}
-                                    </ul>
+                                        </div>
+                                    </div>
                                 </div>
-                                {% if fileArray|length > 4 %}
-                                    <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
-                                    <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
-                                {% endif %}
+                                <div class="uk-width-1-10 cs-detail-toggle-icon">
+                                    <a class="" data-uk-toggle="{target:'.toggle-gallery-{{ material.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                                </div>
                             </div>
                         </div>
+                        {% endif %}
                     
                         {# main description #}
                         <div class="uk-margin-bottom">
@@ -213,18 +253,14 @@
                                         </div>
                                     </div>
                                     <div class="toggle-sections uk-hidden">
-                                        <div data-uk-grid="{gutter: 20}">
+                                        <ul class="uk-list uk-list-striped">
                                             {% for section in sectionList %}
-                                                <div class="uk-width-medium-1-2 uk-width-large-1-3">
-                                                    <div class="uk-panel uk-panel-box-secondary">
-                                                        <span class="uk-text-middle">
-                                                            <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw|truncate(30) }}</a><br/>
-                                                            {{ macros.fileListShort(section) }}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                                                <li>
+                                                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
+                                                    {{ macros.fileListShort(section) }}
+                                                </li>
                                             {% endfor %}
-                                        </div>
+                                        </ul>
                                     </div>
                                 </div>
                                 <div class="uk-width-1-10 cs-detail-toggle-icon">
@@ -266,6 +302,8 @@
                         <div class="uk-margin-bottom">
                             <a name="editing information"></a>
                             <h4>{{ 'editing information'|trans({})|capitalize }}</h4>
+                            {{ 'reference number'|trans({})|capitalize }}: {{ material.itemId }}<br/>
+                            {{ 'created by'|trans({})|capitalize }}: {{ material.creator.fullname }}
                         </div>
                     </div>
                 </article>
