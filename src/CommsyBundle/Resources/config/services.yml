@@ -99,6 +99,12 @@ services:
         tags:
             - { name: form.type_extension, alias: file }
 
+    commsy.form.type.room_profile:
+        class: CommsyBundle\Form\Type\RoomProfileType
+        arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
+        tags:
+            - { name: form.type, alias: room_profile }
+
     # Twig
     twig.extension.room:
         class: CommsyBundle\Twig\Extension\RoomExtension
