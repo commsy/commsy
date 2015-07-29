@@ -224,48 +224,28 @@
                         {# files #}
                         <div class="uk-margin-bottom">
                             <a name="files"></a>
-                            <h4>{{ 'files'|trans({})|capitalize }}</h4>
                             {{  macros.fileListDetailView(material) }}
                         </div>
                         
                         {# sections #}
                         <div class="uk-margin-bottom">
-                            <h4>{{ 'sections'|trans({})|capitalize }}</h4>
-                            <div class="uk-grid cs-detail-toggle">
-                                <div class="uk-width-9-10">
-                                    <div class="toggle-sections">
-                                        <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
-                                            <div class="uk-slider-container">
-                                                <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
-                                                    {% for section in sectionList %}
-                                                        <li>
-                                                            <div class="uk-panel uk-panel-box-secondary">
-                                                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw|truncate(15) }}</a>
-                                                            </div>
-                                                        </li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </div>
-                                            {% if sectionList|length > 4 %}
-                                                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
-                                                <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    <div class="toggle-sections uk-hidden">
-                                        <ul class="uk-list uk-list-striped">
-                                            {% for section in sectionList %}
-                                                <li>
-                                                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
-                                                    {{ macros.fileListShort(section) }}
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
+                            <div class="uk-flex">
+                                <div>
+                                    <h4>{{ 'sections'|trans({})|capitalize }} ({{ sectionList|length }})</h4>
                                 </div>
-                                <div class="uk-width-1-10 cs-detail-toggle-icon">
+                                <div class="uk-margin-left">
                                     <a class="" data-uk-toggle="{target:'.toggle-sections', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
                                 </div>
+                            </div>
+                            <div class="toggle-sections uk-hidden">
+                                <ul class="uk-list uk-list-striped">
+                                    {% for section in sectionList %}
+                                        <li>
+                                            <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
+                                            {{ macros.fileListShort(section) }}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
                             </div>
                         </div>
                         

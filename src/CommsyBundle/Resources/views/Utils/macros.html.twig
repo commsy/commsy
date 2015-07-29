@@ -160,56 +160,30 @@
     {% import _self as macros %}
     {% set fileArray = item.fileList.to_array %}
     {% if not fileArray is empty %}
-        <div class="uk-grid cs-detail-toggle">
-            <div class="uk-width-9-10">
-                <div class="toggle-files-{{ item.itemId }}">
-                    <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
-                        <div class="uk-slider-container">
-                            <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
-                                {% for file in fileArray %}
-                                    <li>
-                                        <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
-                                            <div class="uk-margin-right uk-vertical-align-middle">
-                                                <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
-                                            </div>
-                                            <div class="uk-vertical-align-middle">
-                                                <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
-                                                ({{ file.fileSize }})
-                                            </div>
-                                        </div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                        {% if fileArray|length > 4 %}
-                            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
-                            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="toggle-files-{{ item.itemId }} uk-hidden">
-                    <div data-uk-grid="{gutter: 20}">
-                        {% for file in fileArray %}
-                            <div class="uk-width-medium-1-2 uk-width-large-1-4">
-                                <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
-                                    <div class="uk-margin-right uk-vertical-align-middle">
-                                        <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
-                                    </div>
-                                    <div class="uk-vertical-align-middle">
-                                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
-                                        ({{ file.fileSize }})
-                                    </div>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+        <div class="uk-flex">
+            <div>
+                <h4>{{ 'files'|trans({})|capitalize }} ({{ fileArray|length }})</h4>
             </div>
-            {% if fileArray|length > 4 %}
-                <div class="uk-width-1-10 cs-detail-toggle-icon">
-                    <a class="" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-                </div>
-            {% endif %}
+            <div class="uk-margin-left">
+                <a class="" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            </div>
+        </div>
+        <div class="toggle-files-{{ item.itemId }} uk-hidden">
+            <div data-uk-grid="{gutter: 20}">
+                {% for file in fileArray %}
+                    <div class="uk-width-medium-1-2 uk-width-large-1-4">
+                        <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                            <div class="uk-margin-right uk-vertical-align-middle">
+                                <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                            </div>
+                            <div class="uk-vertical-align-middle">
+                                <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                                ({{ file.fileSize }})
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
         </div>
     {% endif %}
 {% endmacro %}
