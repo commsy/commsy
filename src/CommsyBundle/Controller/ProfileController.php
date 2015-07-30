@@ -34,8 +34,40 @@ class ProfileController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.user');
         $userData = $transformer->transform($userItem);
 
+        $privateRoomItem = $userItem->getOwnRoom();
+        $userData['newsletterStatus'] = $privateRoomItem->getPrivateRoomNewsletterActivity();
+        if ($privateRoomItem->getCSBarShowWidgets() == '1') {
+            $userData['widgetStatus'] = false;
+        } else {
+            $userData['widgetStatus'] = true;
+        }
+        if ($privateRoomItem->getCSBarShowCalendar() == '1') {
+            $userData['calendarStatus'] = false;
+        } else {
+            $userData['calendarStatus'] = true;
+        }
+        if ($privateRoomItem->getCSBarShowStack() == '1') {
+            $userData['stackStatus'] = false;
+        } else {
+            $userData['stackStatus'] = true;
+        }
+        if ($privateRoomItem->getCSBarShowPortfolio() == '1') {
+            $userData['portfolioStatus'] = false;
+        } else {
+            $userData['portfolioStatus'] = true;
+        }
+        if ($privateRoomItem->getCSBarShowOldRoomSwitcher() == '1') {
+            $userData['switchRoomStatus'] = false;
+        } else {
+            $userData['switchRoomStatus'] = true;
+        }
+
         $form = $this->createForm('room_profile', $userData, array(
-            'itemId' => $itemId
+            'itemId' => $itemId,
+            'uploadUrl' => $this->generateUrl('commsy_profile_room', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId
+            )),
         ));
         
         $form->handleRequest($request);
@@ -44,6 +76,16 @@ class ProfileController extends Controller
 
             $userItem->save();
 
+            $privateRoomItem = $userItem->getOwnRoom();
+            $privateRoomItem->setPrivateRoomNewsletterActivity($userData['newsletterStatus']);
+            $privateRoomItem->setCSBarShowWidgets($userData['widgetStatus']);
+            $privateRoomItem->setCSBarShowCalendar($userData['calendarStatus']);
+            $privateRoomItem->setCSBarShowStack($userData['stackStatus']);
+            $privateRoomItem->setCSBarShowPortfolio($userData['portfolioStatus']);
+            $privateRoomItem->setCSBarShowOldRoomSwitcher($userData['switchRoomStatus']);
+            
+            $privateRoomItem->save();
+            
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($user);
@@ -51,6 +93,8 @@ class ProfileController extends Controller
         }
 
         return array(
+            'roomId' => $roomId,
+            'user' => $userItem,
             'form' => $form->createView()
         );
     }

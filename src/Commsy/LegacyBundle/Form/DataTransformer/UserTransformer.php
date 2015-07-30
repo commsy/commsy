@@ -22,12 +22,36 @@ class UserTransformer implements DataTransformerInterface
     public function transform($userItem)
     {
         $userData = array();
-
         if ($userItem) {
-            $userData['itemId'] = $userItem->getItemId();
             $userData['userId'] = $userItem->getUserId();
+            $userData['firstname'] = $userItem->getFirstname();
+            $userData['lastname'] = $userItem->getLastname();
+            $userData['language'] = $userItem->getLanguage();
+            if ($userItem->getAutoSaveStatus() == '1') {
+                $userData['autoSaveStatus'] = false;
+            } else {
+                $userData['autoSaveStatus'] = true;
+            }
+            $userData['title'] = $userItem->getTitle();
+            $userData['dateOfBirth'] = $userItem->getBirthday();
+            $userData['email'] = $userItem->getEmail();
+            $userData['isEmailVisible'] = $userItem->isEmailVisible();
+            $userData['phone'] = $userItem->getTelephone();
+            $userData['mobile'] = $userItem->getCellularphone();
+            $userData['street'] = $userItem->getStreet();
+            $userData['zipcode'] = $userItem->getZipcode();
+            $userData['city'] = $userItem->getCity();
+            $userData['room'] = $userItem->getRoom();
+            $userData['organisation'] = $userItem->getOrganisation();
+            $userData['position'] = $userItem->getPosition();
+            $userData['icq'] = $userItem->getICQ();
+            $userData['msn'] = $userItem->getMSN();
+            $userData['skype'] = $userItem->getSkype();
+            $userData['yahoo'] = $userItem->getYahoo();
+            $userData['jabber'] = $userItem->getJabber();
+            $userData['homepage'] = $userItem->getHomepage();
+            $userData['description'] = $userItem->getDescription();
         }
-
         return $userData;
     }
 
@@ -41,6 +65,40 @@ class UserTransformer implements DataTransformerInterface
      */
     public function applyTransformation($userObject, $userData)
     {
+        if ($userObject) {
+            $userObject->setUserId($userData['userId']);
+            $userObject->setFirstname($userData['firstname']);
+            $userObject->setLastname($userData['lastname']);
+            $userObject->setLanguage($userData['language']);
+            if ($userData['autoSaveStatus']) {
+                $userObject->turnAutoSaveOn();
+            } else {
+                $userObject->turnAutoSaveOff();
+            }
+            $userObject->setTitle($userData['title']);
+            $userObject->setBirthday($userData['dateOfBirth']);
+            $userObject->setEmail($userData['email']);
+            if ($userData['isEmailVisible']) {
+                $userObject->setEmailVisible();
+            } else {
+                $userObject->setEmailNotVisible();
+            }
+            $userObject->setTelephone($userData['phone']);
+            $userObject->setCellularphone($userData['mobile']);
+            $userObject->setStreet($userData['street']);
+            $userObject->setZipcode($userData['zipcode']);
+            $userObject->setCity($userData['city']);
+            $userObject->setRoom($userData['room']);
+            $userObject->setOrganisation($userData['organisation']);
+            $userObject->setPosition($userData['position']);
+            $userObject->setICQ($userData['icq']);
+            $userObject->setMSN($userData['msn']);
+            $userObject->setSkype($userData['skype']);
+            $userObject->setYahoo($userData['yahoo']);
+            $userObject->setJabber($userData['jabber']);
+            $userObject->setHomepage($userData['homepage']);
+            $userObject->setDescription($userData['description']);
+        }
         return $userObject;
     }
 }
