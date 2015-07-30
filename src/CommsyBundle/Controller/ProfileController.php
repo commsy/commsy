@@ -31,36 +31,14 @@ class ProfileController extends Controller
             throw $this->createNotFoundException('No user found for id ' . $itemId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.user');
-        $userData = $transformer->transform($userItem);
+        $userTransformer = $this->get('commsy_legacy.transformer.user');
+        $userData = $userTransformer->transform($userItem);
 
+        $privateRoomTransformer = $this->get('commsy_legacy.transformer.privateroom');
         $privateRoomItem = $userItem->getOwnRoom();
-        $userData['newsletterStatus'] = $privateRoomItem->getPrivateRoomNewsletterActivity();
-        if ($privateRoomItem->getCSBarShowWidgets() == '1') {
-            $userData['widgetStatus'] = false;
-        } else {
-            $userData['widgetStatus'] = true;
-        }
-        if ($privateRoomItem->getCSBarShowCalendar() == '1') {
-            $userData['calendarStatus'] = false;
-        } else {
-            $userData['calendarStatus'] = true;
-        }
-        if ($privateRoomItem->getCSBarShowStack() == '1') {
-            $userData['stackStatus'] = false;
-        } else {
-            $userData['stackStatus'] = true;
-        }
-        if ($privateRoomItem->getCSBarShowPortfolio() == '1') {
-            $userData['portfolioStatus'] = false;
-        } else {
-            $userData['portfolioStatus'] = true;
-        }
-        if ($privateRoomItem->getCSBarShowOldRoomSwitcher() == '1') {
-            $userData['switchRoomStatus'] = false;
-        } else {
-            $userData['switchRoomStatus'] = true;
-        }
+        $privateRoomData = $privateRoomTransformer->transform($privateRoomItem);
+
+        $userData = array_merge($userData, $privateRoomData);
 
         $form = $this->createForm('room_profile', $userData, array(
             'itemId' => $itemId,
@@ -72,17 +50,11 @@ class ProfileController extends Controller
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $userItem = $transformer->applyTransformation($userItem, $form->getData());
+            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
 
             $userItem->save();
 
-            $privateRoomItem = $userItem->getOwnRoom();
-            $privateRoomItem->setPrivateRoomNewsletterActivity($userData['newsletterStatus']);
-            $privateRoomItem->setCSBarShowWidgets($userData['widgetStatus']);
-            $privateRoomItem->setCSBarShowCalendar($userData['calendarStatus']);
-            $privateRoomItem->setCSBarShowStack($userData['stackStatus']);
-            $privateRoomItem->setCSBarShowPortfolio($userData['portfolioStatus']);
-            $privateRoomItem->setCSBarShowOldRoomSwitcher($userData['switchRoomStatus']);
+            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
             
             $privateRoomItem->save();
             
@@ -90,6 +62,8 @@ class ProfileController extends Controller
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($user);
             // $em->flush();
+            
+            return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(

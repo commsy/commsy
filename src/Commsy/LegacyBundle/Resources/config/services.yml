@@ -106,3 +106,7 @@ services:
     commsy_legacy.transformer.user:
         class: Commsy\LegacyBundle\Form\DataTransformer\UserTransformer
         arguments: [@commsy_legacy.environment]
+        
+    commsy_legacy.transformer.privateroom:
+        class: Commsy\LegacyBundle\Form\DataTransformer\PrivateRoomTransformer
+        arguments: [@commsy_legacy.environment]
