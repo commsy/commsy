@@ -188,17 +188,20 @@
                                 </tr>
                             </table>
                         </div>
+                    {{ form_end(form) }}
                     
+                    {{ form_start(formCombine) }}
+                        {{ form_errors(formCombine) }}
                         <div class="uk-panel uk-panel-divider uk-margin-large-bottom">
                             <div class="uk-panel uk-panel-header">
                                 <h3>{{ 'combine accounts'|trans({})|capitalize }}</h3>
                             </div>
                             <table class="uk-table">
                                 <tr>
-                                    <td>{{ form_row(form.combineUserId) }}</td>
+                                    <td>{{ form_row(formCombine.combineUserId) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>{{ form_row(form.combinePassword) }}</td>
+                                    <td>{{ form_row(formCombine.combinePassword) }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -206,12 +209,11 @@
                         <div class="uk-panel uk-margin-large-bottom">
                             <table class="uk-table">
                                 <tr>
-                                    <td>{{ form_widget(form.saveCombine) }}</td>
+                                    <td>{{ form_widget(formCombine.save) }}</td>
                                 </tr>
                             </table>
                         </div>
-                    
-                    {{ form_end(form) }}
+                    {{ form_end(formCombine) }}
                 </div>
             </div>
         </div>

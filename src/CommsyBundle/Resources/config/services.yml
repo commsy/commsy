@@ -104,6 +104,12 @@ services:
         arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
         tags:
             - { name: form.type, alias: room_profile }
+            
+    commsy.form.type.combine_profile:
+        class: CommsyBundle\Form\Type\CombineProfileType
+        arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
+        tags:
+            - { name: form.type, alias: combine_profile }
 
     # Twig
     twig.extension.room:

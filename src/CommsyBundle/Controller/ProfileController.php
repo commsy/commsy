@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Entity\User;
 use CommsyBundle\Form\Type\RoomProfileType;
+use CommsyBundle\Form\Type\CombineProfileType;
 
 class ProfileController extends Controller
 {
@@ -48,9 +49,13 @@ class ProfileController extends Controller
             )),
         ));
         
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            if ($form->get('save')->isClicked()) {
+        $formCombine = $this->createForm('combine_profile', $userData, array(
+            'itemId' => $itemId,
+        ));
+        
+        if ($request->request->has('room_profile')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
                 $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
     
                 $userItem->save();
@@ -63,17 +68,20 @@ class ProfileController extends Controller
                 // $em = $this->getDoctrine()->getManager();
                 // $em->persist($user);
                 // $em->flush();
-            } else if ($form->get('saveCombine')->isClicked()) {
-                
+                return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
             }
-            
-            return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
+        } else if ($request->request->has('combine_profile')) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
+            }
         }
 
         return array(
             'roomId' => $roomId,
             'user' => $userItem,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'formCombine' => $formCombine->createView()
         );
     }
 

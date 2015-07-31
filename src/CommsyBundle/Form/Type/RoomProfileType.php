@@ -80,17 +80,6 @@ class RoomProfileType extends AbstractType
                 'required' => false,
             ))
             
-            ->add('combineUserId', 'text', array(
-                'label' => 'combineUserId',
-                'translation_domain' => 'profile',
-                'required' => false,
-            ))
-            ->add('combinePassword', 'text', array(
-                'label' => 'combinePassword',
-                'translation_domain' => 'profile',
-                'required' => false,
-            ))
-            
             ->add('title', 'text', array(
                 'label' => 'title',
                 'translation_domain' => 'profile',
@@ -353,9 +342,7 @@ class RoomProfileType extends AbstractType
                 'required' => false,
             ))
             
-            ->add('save', 'submit')
-            
-            ->add('saveCombine', 'submit');   
+            ->add('save', 'submit');   
     }
 
     public function configureOptions(OptionsResolver $resolver)
