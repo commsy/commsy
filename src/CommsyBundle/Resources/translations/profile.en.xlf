@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="firstname">
+                <source>firstname</source>
+                <target>first name</target>
+            </trans-unit>
+            <trans-unit id="lastname">
+                <source>lastname</source>
+                <target>last name</target>
+            </trans-unit>
+            <trans-unit id="userId">
+                <source>userId</source>
+                <target>user id</target>
+            </trans-unit>
+            <trans-unit id="currentPassword">
+                <source>currentPassword</source>
+                <target>current password</target>
+            </trans-unit>
+            <trans-unit id="newPassword">
+                <source>newPassword</source>
+                <target>new password</target>
+            </trans-unit>
+            <trans-unit id="newPasswordConfirm">
+                <source>newPasswordConfirm</source>
+                <target>confirm new password</target>
+            </trans-unit>
+            <trans-unit id="language">
+                <source>language</source>
+                <target>language</target>
+            </trans-unit>
+            <trans-unit id="autoSaveStatus">
+                <source>autoSaveStatus</source>
+                <target>auto save</target>
+            </trans-unit>
+            <trans-unit id="combineUserId">
+                <source>combineUserId</source>
+                <target>user id</target>
+            </trans-unit>
+            <trans-unit id="combinePassword">
+                <source>combinePassword</source>
+                <target>password</target>
+            </trans-unit>
+            <trans-unit id="title">
+                <source>title</source>
+                <target>title</target>
+            </trans-unit>
+            <trans-unit id="dateOfBirth">
+                <source>dateOfBirth</source>
+                <target>date of birth</target>
+            </trans-unit>
+            <trans-unit id="image">
+                <source>image</source>
+                <target>image</target>
+            </trans-unit>
+            <trans-unit id="email">
+                <source>email</source>
+                <target>email</target>
+            </trans-unit>
+            <trans-unit id="isEmailVisible">
+                <source>isEmailVisible</source>
+                <target>is email visible</target>
+            </trans-unit>
+            <trans-unit id="phone">
+                <source>phone</source>
+                <target>phone</target>
+            </trans-unit>
+            <trans-unit id="mobile">
+                <source>mobile</source>
+                <target>mobile</target>
+            </trans-unit>
+            <trans-unit id="street">
+                <source>street</source>
+                <target>street</target>
+            </trans-unit>
+            <trans-unit id="zipcode">
+                <source>zipcode</source>
+                <target>zipcode</target>
+            </trans-unit>
+            <trans-unit id="city">
+                <source>city</source>
+                <target>city</target>
+            </trans-unit>
+            <trans-unit id="room">
+                <source>room</source>
+                <target>room</target>
+            </trans-unit>
+            <trans-unit id="organisation">
+                <source>organisation</source>
+                <target>organisation</target>
+            </trans-unit>
+            <trans-unit id="position">
+                <source>position</source>
+                <target>position</target>
+            </trans-unit>
+            <trans-unit id="icq">
+                <source>icq</source>
+                <target>icq</target>
+            </trans-unit>
+            <trans-unit id="msn">
+                <source>msn</source>
+                <target>msn</target>
+            </trans-unit>
+            <trans-unit id="skype">
+                <source>skype</source>
+                <target>skype</target>
+            </trans-unit>
+            <trans-unit id="yahoo">
+                <source>yahoo</source>
+                <target>yahoo</target>
+            </trans-unit>
+            <trans-unit id="jabber">
+                <source>jabber</source>
+                <target>jabber</target>
+            </trans-unit>
+            <trans-unit id="homepage">
+                <source>homepage</source>
+                <target>homepage</target>
+            </trans-unit>
+            <trans-unit id="description">
+                <source>description</source>
+                <target>description</target>
+            </trans-unit>
+            <trans-unit id="newsletterStatus">
+                <source>newsletterStatus</source>
+                <target>newsletter</target>
+            </trans-unit>
+            <trans-unit id="widgetStatus">
+                <source>widgetStatus</source>
+                <target>widget</target>
+            </trans-unit>
+            <trans-unit id="calendarStatus">
+                <source>calendarStatus</source>
+                <target>calendar</target>
+            </trans-unit>
+            <trans-unit id="stackStatus">
+                <source>stackStatus</source>
+                <target>stack</target>
+            </trans-unit>
+            <trans-unit id="portfolioStatus">
+                <source>portfolioStatus</source>
+                <target>portfolio</target>
+            </trans-unit>
+            <trans-unit id="switchRoomStatus">
+                <source>switchRoomStatus</source>
+                <target>switch room</target>
+            </trans-unit>
+            <trans-unit id="changeInAllContexts">
+                <source>changeInAllContexts</source>
+                <target>Change in all contexts</target>
+            </trans-unit>
+            <trans-unit id="none">
+                <source>none</source>
+                <target>No newsletter</target>
+            </trans-unit>
+            <trans-unit id="weekly">
+                <source>weekly</source>
+                <target>Weekly newsletter</target>
+            </trans-unit>
+            <trans-unit id="daily">
+                <source>daily</source>
+                <target>Daily newsletter</target>
+            </trans-unit>
+         </body>
+    </file>
+</xliff>

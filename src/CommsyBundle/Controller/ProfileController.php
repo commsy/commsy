@@ -50,18 +50,22 @@ class ProfileController extends Controller
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
-
-            $userItem->save();
-
-            $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
-            
-            $privateRoomItem->save();
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($user);
-            // $em->flush();
+            if ($form->get('save')->isClicked()) {
+                $userItem = $userTransformer->applyTransformation($userItem, $form->getData());
+    
+                $userItem->save();
+    
+                $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
+                
+                $privateRoomItem->save();
+                
+                // persist
+                // $em = $this->getDoctrine()->getManager();
+                // $em->persist($user);
+                // $em->flush();
+            } else if ($form->get('saveCombine')->isClicked()) {
+                
+            }
             
             return $this->redirectToRoute('commsy_profile_room', array('roomId' => $roomId, 'itemId' => $itemId));
         }

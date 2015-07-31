@@ -31,30 +31,36 @@ class RoomProfileType extends AbstractType
 
         $builder
             ->add('firstname', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'firstname',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('lastname', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'lastname',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('userId', 'text', array(
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'translation_domain' => 'settings',
+                'label' => 'userId',
+                'translation_domain' => 'profile',
                 'required' => true,
             ))
             ->add('currentPassword', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'currentPassword',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('newPassword', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'newPassword',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('newPasswordConfirm', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'newPasswordConfirm',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('language', 'choice', array(
@@ -64,37 +70,46 @@ class RoomProfileType extends AbstractType
                     'de' => 'Deutsch',
                     'en' => 'English'
                 ),
+                'label' => 'language',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('autoSaveStatus', 'checkbox', array(
                 'label'    => 'autoSaveStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('combineUserId', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'combineUserId',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('combinePassword', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'combinePassword',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('title', 'text', array(
-                'translation_domain' => 'settings',
+                'label' => 'title',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('titleChangeInAllContexts', 'checkbox', array(
-                'label'    => 'titleChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('dateOfBirth', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'dateOfBirth',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('dateOfBirthChangeInAllContexts', 'checkbox', array(
-                'label'    => 'dateOfBirthChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
@@ -102,163 +117,201 @@ class RoomProfileType extends AbstractType
                 'attr' => array(
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
+                'label'    => 'image',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('imageChangeInAllContexts', 'checkbox', array(
-                'label'    => 'imageChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('email', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'email',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('emailChangeInAllContexts', 'checkbox', array(
-                'label'    => 'emailChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('isEmailVisible', 'checkbox', array(
                 'label'    => 'isEmailVisible',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('isEmailVisibleChangeInAllContexts', 'checkbox', array(
-                'label'    => 'isEmailVisibleChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('phone', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'phone',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('phoneChangeInAllContexts', 'checkbox', array(
-                'label'    => 'phoneChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('mobile', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'mobile',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('mobileChangeInAllContexts', 'checkbox', array(
-                'label'    => 'mobileChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('street', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'street',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('streetChangeInAllContexts', 'checkbox', array(
-                'label'    => 'streetChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('zipcode', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'zipcode',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('zipcodeChangeInAllContexts', 'checkbox', array(
-                'label'    => 'zipcodeChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('city', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'city',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('cityChangeInAllContexts', 'checkbox', array(
-                'label'    => 'cityChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('room', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'room',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('roomChangeInAllContexts', 'checkbox', array(
-                'label'    => 'roomChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('organisation', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'organisation',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('organisationChangeInAllContexts', 'checkbox', array(
-                'label'    => 'organisationChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('position', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'position',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('positionChangeInAllContexts', 'checkbox', array(
-                'label'    => 'positionChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('icq', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'icq',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('icqChangeInAllContexts', 'checkbox', array(
-                'label'    => 'icqChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('msn', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'msn',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('msnChangeInAllContexts', 'checkbox', array(
-                'label'    => 'msnChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
                 'required' => false,
+                'translation_domain' => 'profile',
             ))
             
             ->add('skype', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'skype',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('skypeChangeInAllContexts', 'checkbox', array(
-                'label'    => 'skypeChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('yahoo', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'yahoo',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('yahooChangeInAllContexts', 'checkbox', array(
-                'label'    => 'yahooChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('jabber', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'jabber',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('jabberChangeInAllContexts', 'checkbox', array(
-                'label'    => 'jabberChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('homepage', 'text', array(
-                'translation_domain' => 'settings',
+                'label'    => 'homepage',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('homepageChangeInAllContexts', 'checkbox', array(
-                'label'    => 'homepageChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('description', 'textarea', array(
                 'attr' => array('class' => 'tinymce'),
+                'label'    => 'description',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('descriptionChangeInAllContexts', 'checkbox', array(
-                'label'    => 'descriptionChangeInAllContexts',
+                'label'    => 'changeInAllContexts',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
@@ -269,27 +322,34 @@ class RoomProfileType extends AbstractType
                     '2' => 'weekly',
                     '3' => 'daily'
                 ),
+                'label'    => 'newsletterStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
             ->add('widgetStatus', 'checkbox', array(
                 'label'    => 'widgetStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('calendarStatus', 'checkbox', array(
                 'label'    => 'calendarStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('stackStatus', 'checkbox', array(
                 'label'    => 'stackStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('portfolioStatus', 'checkbox', array(
                 'label'    => 'portfolioStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('switchRoomStatus', 'checkbox', array(
                 'label'    => 'switchRoomStatus',
+                'translation_domain' => 'profile',
                 'required' => false,
             ))
             
