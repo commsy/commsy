@@ -60,8 +60,8 @@ class MenuBuilder
         // profile configuration
         $menu->addChild('profileConfig', array(
             'label' => ' ',
-            'route' => 'commsy_room_home',
-            'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId')),
+            'route' => 'commsy_profile_room',
+            'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId'), 'itemId' => $currentUser->getItemId()),
             'extras' => array('icon' => 'uk-icon-cog uk-icon-small')
         ));
 
