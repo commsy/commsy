@@ -49,6 +49,7 @@ class GeneralSettingsType extends AbstractType
                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
                 'required' => false,
+                //'image_path' => 'webPath',
             ))
             ->add('access_check', 'choice', array(
                 'choices' => array(

@@ -47,7 +47,7 @@ class SettingsController extends Controller
 
         $form = $this->createForm('general_settings', $roomData, array(
             'roomId' => $roomId,
-            'uploadUrl' => $this->generateUrl('commsy_settings_general', array(
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
             )),
         ));
