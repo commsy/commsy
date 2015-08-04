@@ -60,6 +60,78 @@ class ProfileController extends Controller
     
                 $userItem->save();
     
+                $formData = $form->getData();
+                $userList = $userItem->getRelatedUserList();
+                $tempUserItem = $userList->getFirst();
+                while ($tempUserItem) {
+                    if ($formData['titleChangeInAllContexts']) {
+                        $tempUserItem->setTitle($formData['title']);
+                    }
+                    if ($formData['dateOfBirthChangeInAllContexts']) {
+                        $tempUserItem->setBirthday($formData['dateOfBirth']);
+                    }
+                    if ($formData['imageChangeInAllContexts']) {
+                        // ...
+                    }
+                    if ($formData['emailChangeInAllContexts']) {
+                        $tempUserItem->setEmail($formData['email']);
+                    }
+                    if ($formData['isEmailVisibleChangeInAllContexts']) {
+                        if ($formData['isEmailVisible']) {
+                            $tempUserItem->setEmailVisible();
+                        } else {
+                            $tempUserItem->setEmailNotVisible();
+                        }
+                    }
+                    if ($formData['phoneChangeInAllContexts']) {
+                        $tempUserItem->setTelephone($formData['phone']);
+                    }
+                    if ($formData['mobileChangeInAllContexts']) {
+                        $tempUserItem->setCellularphone($formData['mobile']);
+                    }
+                    if ($formData['streetChangeInAllContexts']) {
+                        $tempUserItem->setStreet($formData['street']);
+                    }
+                    if ($formData['zipcodeChangeInAllContexts']) {
+                        $tempUserItem->setZipcode($formData['zipcode']);
+                    }
+                    if ($formData['cityChangeInAllContexts']) {
+                        $tempUserItem->setCity($formData['city']);
+                    }
+                    if ($formData['roomChangeInAllContexts']) {
+                        $tempUserItem->setRoom($formData['room']);
+                    }
+                    if ($formData['organisationChangeInAllContexts']) {
+                        $tempUserItem->setOrganisation($formData['organisation']);
+                    }
+                    if ($formData['positionChangeInAllContexts']) {
+                        $tempUserItem->setPosition($formData['position']);
+                    }
+                    if ($formData['icqChangeInAllContexts']) {
+                        $tempUserItem->setICQ($formData['icq']);
+                    }
+                    if ($formData['msnChangeInAllContexts']) {
+                        $tempUserItem->setMSN($formData['msn']);
+                    }
+                    if ($formData['skypeChangeInAllContexts']) {
+                        $tempUserItem->setSkype($formData['skype']);
+                    }
+                    if ($formData['yahooChangeInAllContexts']) {
+                        $tempUserItem->setYahoo($formData['yahoo']);
+                    }
+                    if ($formData['jabberChangeInAllContexts']) {
+                        $tempUserItem->setJabber($formData['jabber']);
+                    }
+                    if ($formData['homepageChangeInAllContexts']) {
+                        $tempUserItem->setHomepage($formData['homepage']);
+                    }
+                    if ($formData['descriptionChangeInAllContexts']) {
+                        $tempUserItem->setDescription($formData['description']);
+                    }
+                    $tempUserItem->save();
+                    $tempUserItem = $userList->getNext();    
+                }
+    
                 $privateRoomItem = $privateRoomTransformer->applyTransformation($privateRoomItem, $form->getData());
                 
                 $privateRoomItem->save();
@@ -84,6 +156,4 @@ class ProfileController extends Controller
             'formCombine' => $formCombine->createView()
         );
     }
-
-    
 }

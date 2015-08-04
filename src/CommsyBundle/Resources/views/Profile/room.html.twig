@@ -26,9 +26,14 @@
                                 <tr>
                                     <td>{{ form_row(form.firstname) }}</td>
                                     <td rowspan="7">
-                                        <img class="uk-thumbnail uk-border-circle" style="height:100px; width:100px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
-                                        {{ form_row(form.image) }}
-                                        {{ form_row(form.imageChangeInAllContexts) }}
+                                        <div class="uk-clearfix">
+                                                <img class="uk-thumbnail uk-border-circle uk-float-right uk-margin-bottom" style="height:100px; width:100px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                                                <div class="uk-float-right uk-clearfix">
+                                                    {{ form_row(form.image, {'attr': {'class': 'uk-float-right'}}) }}
+                                                    {{ form_row(form.imageChangeInAllContexts, {'attr': {'class': 'uk-float-right'}}) }}
+                                                </div>
+                                        </div>
+                                        
                                     </td>
                                 </tr>
                                 <tr>

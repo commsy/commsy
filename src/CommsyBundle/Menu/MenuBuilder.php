@@ -58,12 +58,14 @@ class MenuBuilder
         ));
 
         // profile configuration
-        $menu->addChild('profileConfig', array(
-            'label' => ' ',
-            'route' => 'commsy_profile_room',
-            'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId'), 'itemId' => $currentUser->getItemId()),
-            'extras' => array('icon' => 'uk-icon-cog uk-icon-small')
-        ));
+        if ($currentUser->getItemId() != '') {
+            $menu->addChild('profileConfig', array(
+                'label' => ' ',
+                'route' => 'commsy_profile_room',
+                'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId'), 'itemId' => $currentUser->getItemId()),
+                'extras' => array('icon' => 'uk-icon-cog uk-icon-small')
+            ));
+        }
 
         return $menu;
     }
