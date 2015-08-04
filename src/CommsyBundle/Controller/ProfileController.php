@@ -43,7 +43,7 @@ class ProfileController extends Controller
 
         $form = $this->createForm('room_profile', $userData, array(
             'itemId' => $itemId,
-            'uploadUrl' => $this->generateUrl('commsy_profile_room', array(
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
             )),

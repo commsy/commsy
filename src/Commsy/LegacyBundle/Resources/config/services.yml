@@ -93,6 +93,10 @@ services:
     commsy_legacy.discussion_service:
         class: Commsy\LegacyBundle\Utils\DiscussionService
         arguments: ["@commsy_legacy.environment"]
+        
+    commsy_legacy.disc_service:
+        class: Commsy\LegacyBundle\Utils\DiscService
+        arguments: ["@commsy_legacy.environment"]
 
     # Transformer
     commsy_legacy.transformer.room:
