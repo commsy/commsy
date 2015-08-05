@@ -162,6 +162,10 @@
                 <source>daily</source>
                 <target>Täglicher Newsletter</target>
             </trans-unit>
+            <trans-unit id="descriptionChangeInAllContexts">
+                <source>descriptionChangeInAllContexts</source>
+                <target>Beschreibung in allen Räumen ändern</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

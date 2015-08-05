@@ -293,13 +293,13 @@ class RoomProfileType extends AbstractType
             ))
             
             ->add('description', 'textarea', array(
-                'attr' => array('class' => 'tinymce'),
+                'attr' => array('cols' => '80', 'rows' => '10'),
                 'label'    => 'description',
                 'translation_domain' => 'profile',
                 'required' => false,
             ))
             ->add('descriptionChangeInAllContexts', 'checkbox', array(
-                'label'    => 'changeInAllContexts',
+                'label'    => 'descriptionChangeInAllContexts',
                 'translation_domain' => 'profile',
                 'required' => false,
             ))

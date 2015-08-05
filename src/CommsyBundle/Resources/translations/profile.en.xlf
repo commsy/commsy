@@ -162,6 +162,10 @@
                 <source>daily</source>
                 <target>Daily newsletter</target>
             </trans-unit>
+            <trans-unit id="descriptionChangeInAllContexts">
+                <source>descriptionChangeInAllContexts</source>
+                <target>Change description in all contexts</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>
