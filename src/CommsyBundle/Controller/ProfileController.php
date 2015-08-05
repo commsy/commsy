@@ -71,7 +71,11 @@ class ProfileController extends Controller
                         $tempUserItem->setBirthday($formData['dateOfBirth']);
                     }
                     if ($formData['imageChangeInAllContexts']) {
-                        // ...
+                        $discService = $this->get('commsy_legacy.disc_service');
+                        $tempFilename = $discService->copyImageFromRoomToRoom($userItem->getPicture(), $tempUserItem->getContextId());
+                        if ($tempFilename) {
+                            $tempUserItem->setPicture($tempFilename);
+                        }
                     }
                     if ($formData['emailChangeInAllContexts']) {
                         $tempUserItem->setEmail($formData['email']);
