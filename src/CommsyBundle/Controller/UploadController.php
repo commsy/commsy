@@ -27,7 +27,7 @@ class UploadController extends Controller
                     portal  ->  portal icon
                     <other> ->  attachment to item
                     
-                    file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
+                    $file is an array containing an instance of Symfony\Component\HttpFoundation\File\UploadedFile
                     Array
                     (
                         [0] => Symfony\Component\HttpFoundation\File\UploadedFile Object
