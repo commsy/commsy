@@ -15,8 +15,15 @@ class UploadController extends Controller
     public function uploadAction($roomId, $itemId = NULL, Request $request)
     {
         $response = new JsonResponse();
+
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        $fileService = $this->get('commsy.file_service');
         
         $files = $request->files->all();
+
+        $saveFileIds = false;
+        $fileIds = array();
 
         foreach ($files as $file) {
             if ($itemId) {
@@ -43,9 +50,6 @@ class UploadController extends Controller
                     
                     )
                 */
-                
-                $itemService = $this->get('commsy.item_service');
-                $item = $itemService->getItem($itemId);
                 
                 if ($item->getItemType() == 'user') {
                     $srcfile = $file[0]->getPathname();
@@ -115,9 +119,35 @@ class UploadController extends Controller
                 } else if ($item->getItemType() == 'portal') {
                     
                 } else {
+                    $saveFileIds = true;
                     
+					$fileItem = $fileService->getNewFile();
+					
+					$fileItem->setTempKey($file[0]->getPathname());
+					
+					$fileData = array();
+                    $fileData['tmp_name'] = $file[0]->getPathname();
+                    $fileData['name'] = $file[0]->getClientOriginalName();
+					$fileItem->setPostFile($fileData);
+					
+					$fileItem->save();
+                    $fileIds[] = $fileItem->getFileId();
                 }
             }
+        }
+        
+        if ($saveFileIds) {
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $tempManager = $legacyEnvironment->getManager($item->getItemType());
+            $tempItem = $tempManager->getItem($item->getItemId());
+            
+            $oldFileIds = $tempItem->getFileIDArray();
+            
+            $fileIds = array_merge($oldFileIds, $fileIds);
+            
+            $tempItem->setFileIDArray($fileIds);
+            
+            $tempItem->save();
         }
         
         return $response;

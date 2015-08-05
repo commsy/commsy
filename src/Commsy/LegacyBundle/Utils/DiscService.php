@@ -17,13 +17,11 @@ class DiscService
 
     public function copyFile ($source_file, $dest_filename, $delete_source)
     {
-        $this->discManager->_file_path_basic = '/var/www/commsy/app/../files/';
         return $this->discManager->copyFile($source_file, $dest_filename, $delete_source);
     }
     
     public function copyImageFromRoomToRoom ($picture_name, $new_room_id)
     {
-        $this->discManager->_file_path_basic = '/var/www/commsy/app/../files/';
         if ($this->discManager->copyImageFromRoomToRoom($picture_name, $new_room_id)) {
             return $this->discManager->getLastSavedFileName();
         } else {

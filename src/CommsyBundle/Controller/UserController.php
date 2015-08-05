@@ -114,7 +114,7 @@ class UserController extends Controller
         $user = $userService->getUser($itemId);
         
         $file = $user->getPicture();
-        $rootDir = $this->get('kernel')->getRootDir().'/../';
+        $rootDir = $this->get('kernel')->getRootDir().'/';
 
         $environment = $this->get("commsy_legacy.environment")->getEnvironment();
         $disc_manager = $environment->getDiscManager();

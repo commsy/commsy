@@ -248,6 +248,10 @@ class MaterialController extends Controller
         $sectionData = $transformer->transform($sectionItem);
 
         $form = $this->createForm('section', $sectionData, array(
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId
+            )),
         ));
         
         $form->handleRequest($request);

@@ -24,7 +24,7 @@ class cs_disc_manager {
 
    var $_first_id = NULL;
    var $_second_id = NULL;
-   var $_file_path_basic = 'files/';
+   var $_file_path_basic = '../files/';
    private $_folder_temp = 'temp';
    private $_last_saved_filename = '';
 

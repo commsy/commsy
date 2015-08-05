@@ -17,7 +17,7 @@ class FileController extends Controller
     {
         $fileService = $this->get('commsy.file_service');
         $file = $fileService->getFile($fileId);
-        $rootDir = $this->get('kernel')->getRootDir().'/../';
+        $rootDir = $this->get('kernel')->getRootDir().'/';
 
         if (file_exists($rootDir.$file->getDiskFileName())) {
             $content = file_get_contents($rootDir.$file->getDiskFileName());

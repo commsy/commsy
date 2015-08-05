@@ -16,7 +16,12 @@ class FileService
     public function getFile($fileId)
     {
         $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();
-        $file = $fileManager->getItem($fileId);
-        return $file;
+        return $fileManager->getItem($fileId);
+    }
+    
+    public function getNewFile()
+    {
+        $fileManager = $this->legacyEnvironment->getEnvironment()->getFileManager();
+        return $fileManager->getNewItem();
     }
 }

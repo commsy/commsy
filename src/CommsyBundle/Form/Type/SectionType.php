@@ -43,7 +43,7 @@ class SectionType extends AbstractType
             ->add('files', 'file', array(
                 'label' => 'Files',
                 'attr' => array(
-                    'data-upload' => '{"path": "' . ''/*$options['uploadUrl']*/ . '"}',
+                    'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
                 'required' => false,
                 'translation_domain' => 'material',
@@ -61,9 +61,9 @@ class SectionType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        // $resolver
-        //     ->setRequired(array('roomId', 'uploadUrl'))
-        // ;
+        $resolver
+            ->setRequired(array('uploadUrl'))
+        ;
     }
 
     public function getName()
