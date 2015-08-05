@@ -5,6 +5,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class UploadController extends Controller
 {
@@ -13,13 +14,11 @@ class UploadController extends Controller
      */
     public function uploadAction($roomId, $itemId = NULL, Request $request)
     {
+        $response = new JsonResponse();
+        
         $files = $request->files->all();
 
         foreach ($files as $file) {
-            // file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
-            error_log(print_r($file, true));
-        
-        
             if ($itemId) {
                 /*
                     check type of item:
@@ -28,6 +27,7 @@ class UploadController extends Controller
                     portal  ->  portal icon
                     <other> ->  attachment to item
                     
+                    file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
                     Array
                     (
                         [0] => Symfony\Component\HttpFoundation\File\UploadedFile Object
@@ -102,6 +102,14 @@ class UploadController extends Controller
     				$discService->copyFile($targetfile, $filename, true);
     				$userItem->setPicture($filename);
     				$userItem->save();
+    				
+    				$response->setData(array(
+                        'userImage' => $this->generateUrl('commsy_user_image', array(
+                            'roomId' => $roomId,
+                            'itemId' => $itemId
+                        ))
+                    ));
+    				
                 } else if ($item->getItemType() == 'room') {
                     
                 } else if ($item->getItemType() == 'portal') {
@@ -109,9 +117,9 @@ class UploadController extends Controller
                 } else {
                     
                 }
-                
             }
         }
         
+        return $response;
     }
 }

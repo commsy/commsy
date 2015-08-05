@@ -39,6 +39,11 @@
                     setTimeout(function(){
                         progressbar.addClass("uk-hidden");
                     }, 250);
+                    
+                    var responseData = JSON.parse(response);
+                    if (responseData['userImage']) {
+                        $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
+                    }
                 }
             };
 
