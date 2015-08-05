@@ -17,6 +17,7 @@ class DiscService
 
     public function copyFile ($source_file, $dest_filename, $delete_source)
     {
+        $this->discManager->_file_path_basic = '/var/www/commsy/app/../files/';
         return $this->discManager->copyFile($source_file, $dest_filename, $delete_source);;
     }
 }

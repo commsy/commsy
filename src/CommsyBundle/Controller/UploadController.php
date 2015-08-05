@@ -50,7 +50,6 @@ class UploadController extends Controller
                 if ($item->getItemType() == 'user') {
                     $srcfile = $file[0]->getPathname();
     				$targetfile = $srcfile . "_converted";
-    
     				// resize image to a maximum width of 150px and keep ratio
     	            $size = getimagesize($srcfile);
     	            $x_orig= $size[0];
@@ -59,9 +58,9 @@ class UploadController extends Controller
     	            $verhaeltnis = $y_orig/$x_orig;
     	            $max_width = 150;
     	            //$ratio = 1.618; // Goldener Schnitt
-    	            //$ratio = 1.5; // 2:3
-    	            $ratio = 1.334; // 3:4
-    	            //$ratio = 1; // 1:1
+    	            //$ratio = 1.5;   // 2:3
+    	            //$ratio = 1.334; // 3:4
+    	            $ratio = 1;       // 1:1
     	            if($verhaeltnis < $ratio){
     	               // Breiter als 1:$ratio
     	               $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
@@ -93,22 +92,16 @@ class UploadController extends Controller
                     imagedestroy($newimg);
     
     				// determ new file name
-    				$filename_info = pathinfo($targetfile);
-    				
     				$environment = $this->get("commsy_legacy.environment")->getEnvironment();
     				$userService = $this->get("commsy.user_service");
     				$userItem = $userService->getUser($itemId);
-    				$filename = 'cid' . $environment->getCurrentContextID() . '_' . $userItem->getUserID();
-    				// . '_'. $additional["fileInfo"]["name"];
-    				// copy file and set picture
-    
-                    $discService = $this->get('commsy_legacy.disc_service');
-    
-    				$discService->copyFile($targetfile, $filename, true);
+    				$filename = 'cid' . $environment->getCurrentContextID() . '_' . $userItem->getUserID() . '.png';
     				
+    				// copy file and set picture
+                    $discService = $this->get('commsy_legacy.disc_service');
+    				$discService->copyFile($targetfile, $filename, true);
     				$userItem->setPicture($filename);
     				$userItem->save();
-                    
                 } else if ($item->getItemType() == 'room') {
                     
                 } else if ($item->getItemType() == 'portal') {
