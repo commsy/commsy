@@ -43,6 +43,11 @@
                     var responseData = JSON.parse(response);
                     if (responseData['userImage']) {
                         $('#profile_form_user_image').attr('src', responseData['userImage'] + '?' + Math.random());
+                    } else if (responseData['fileIds']) {
+                        console.log(responseData['fileIds']);
+                        for (var key in responseData['fileIds']) {
+                            $('#upload_oldFiles').append('<div class="uk-form-controls"><input type="checkbox" id="upload_oldFiles_' + key +'" name="upload[oldFiles][]" value="' + key +'" checked="checked"></div><label class="uk-form-label" for="upload_oldFiles_' + key +'">' + responseData['fileIds'][key] + '</label>');
+                        }
                     }
                 }
             };

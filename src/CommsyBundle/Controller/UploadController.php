@@ -141,6 +141,16 @@ class UploadController extends Controller
             $tempManager = $legacyEnvironment->getManager($item->getItemType());
             $tempItem = $tempManager->getItem($item->getItemId());
             
+            $responseData = array();
+            foreach ($fileIds as $fileId) {
+                $tempFile = $fileService->getFile($fileId);
+                $responseData[$fileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
+            }
+            
+            $response->setData(array(
+                'fileIds' => $responseData,
+            ));
+            
             $oldFileIds = $tempItem->getFileIDArray();
             
             $fileIds = array_merge($oldFileIds, $fileIds);
@@ -170,17 +180,44 @@ class UploadController extends Controller
 
         $uploadData = array();
 
+        $fileService = $this->get('commsy.file_service');
+        $oldFileIds = $item->getFileIDArray();
+        $optionsData = array();
+        foreach ($oldFileIds as $oldFileId) {
+            $tempFile = $fileService->getFile($oldFileId);
+            $uploadData['oldFiles'][] = $oldFileId;
+            $optionsData['oldFiles'][$oldFileId] = $tempFile->getFilename().' ('.$tempFile->getCreationDate().')';
+        }
+
         $form = $this->createForm('upload', $uploadData, array(
             'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
                 'roomId' => $roomId,
                 'itemId' => $itemId
             )),
+            'oldFiles' => $optionsData['oldFiles'],
         ));
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $item->save();
+            $formData = $form->getData();
 
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $tempManager = $legacyEnvironment->getManager($item->getItemType());
+            $tempItem = $tempManager->getItem($item->getItemId());
+
+            $oldFileIds = $tempItem->getFileIDArray();
+            
+            $tempItem->setFileIDArray($formData['oldFiles']);
+            
+            $tempItem->save();
+
+            $deleteFileIds = array_diff($oldFileIds, $formData['oldFiles']);
+            
+            foreach ($deleteFileIds as $deleteFileId) {
+                $tempFile = $fileService->getFile($deleteFileId);
+                $tempFile->delete();
+            }
+            
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);

@@ -151,7 +151,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
       return $retour;
    }
 
-   function _performQuery () {
+   function _performQuery ($mode = 'select') {
       $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.*';
       $query .= ' FROM '.$this->addDatabasePrefix($this->_db_table);
 

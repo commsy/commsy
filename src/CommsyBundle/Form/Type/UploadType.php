@@ -23,6 +23,15 @@ class UploadType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('oldFiles', 'choice', array(
+                'placeholder' => false,
+                'choices' => $options['oldFiles'],
+                'label' => 'language',
+                'translation_domain' => 'profile',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ))
             ->add('files', 'file', array(
                 'label' => 'Files',
                 'attr' => array(
@@ -45,7 +54,7 @@ class UploadType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('uploadUrl'))
+            ->setRequired(array('uploadUrl', 'oldFiles'))
         ;
     }
 
