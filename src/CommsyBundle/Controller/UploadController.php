@@ -223,11 +223,31 @@ class UploadController extends Controller
             // $em->persist($room);
             // $em->flush();
             
-            // return $this->redirectToRoute('commsy_material_savematerial', array('roomId' => $roomId, 'itemId' => $itemId));
+            return $this->redirectToRoute('commsy_upload_uploadsave', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
             'form' => $form->createView()
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/upload/{itemId}/saveupload")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function uploadSaveAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $tempManager = $legacyEnvironment->getManager($item->getItemType());
+        $tempItem = $tempManager->getItem($item->getItemId());
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $tempItem
         );
     }
 }
