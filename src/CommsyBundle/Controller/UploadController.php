@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class UploadController extends Controller
 {
@@ -47,7 +48,6 @@ class UploadController extends Controller
                                 [pathName:SplFileInfo:private] => /tmp/phpjoYeVn
                                 [fileName:SplFileInfo:private] => phpjoYeVn
                             )
-                    
                     )
                 */
                 
@@ -151,5 +151,46 @@ class UploadController extends Controller
         }
         
         return $response;
+    }
+    
+    /**
+     * @Route("/room/{roomId}/upload/{itemId}/form")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function uploadFormAction($roomId, $itemId, Request $request)
+    {
+        // get material from MaterialService
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        if (!$item) {
+            throw $this->createNotFoundException('No item found for id ' . $itemId);
+        }
+
+        $uploadData = array();
+
+        $form = $this->createForm('upload', $uploadData, array(
+            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+                'roomId' => $roomId,
+                'itemId' => $itemId
+            )),
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $item->save();
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+            
+            // return $this->redirectToRoute('commsy_material_savematerial', array('roomId' => $roomId, 'itemId' => $itemId));
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

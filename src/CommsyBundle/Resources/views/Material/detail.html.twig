@@ -220,12 +220,6 @@
                             <h4>{{ 'description'|trans({})|capitalize }}</h4>
                             {{  macros.descriptionDetailView(material) }}
                         </div>
-            
-                        {# files #}
-                        <div class="uk-margin-bottom">
-                            <a name="files"></a>
-                            {{  macros.fileListDetailView(material) }}
-                        </div>
                         
                         {# sections #}
                         <div class="uk-margin-bottom">
@@ -287,6 +281,9 @@
                         </div>
                     </div>
                 </article>
+                {# files #}
+                <a name="files"></a>
+                {{  macros.uploadForm(material) }}
             </div>
             
             {# material sections #}
@@ -327,12 +324,10 @@
                             <div class="uk-margin-bottom">
                                 {{  macros.descriptionDetailView(section) }}
                             </div>
-                            {# files #}
-                            <div class="uk-margin-bottom">
-                                {{  macros.fileListDetailView(section) }}
-                            </div>
                         </div>
                     </article>
+                    {# files #}
+                    {{  macros.uploadForm(section) }}
                 </div>
             {% endfor %}
             

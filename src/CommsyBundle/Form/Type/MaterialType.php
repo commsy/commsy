@@ -57,15 +57,6 @@ class MaterialType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
-            ->add('files', 'file', array(
-                'label' => 'Files',
-                'attr' => array(
-                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
-                ),
-                'required' => false,
-                'translation_domain' => 'material',
-                //'image_path' => 'webPath',
-            ))
             ->add('save', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -112,7 +103,7 @@ class MaterialType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('uploadUrl'))
+            ->setRequired(array())
         ;
     }
 

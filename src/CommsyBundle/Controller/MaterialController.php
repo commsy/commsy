@@ -207,12 +207,7 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
         $materialData = $transformer->transform($materialItem);
 
-        $form = $this->createForm('material', $materialData, array(
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
-        ));
+        $form = $this->createForm('material', $materialData, array());
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -251,12 +246,7 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
         $sectionData = $transformer->transform($sectionItem);
 
-        $form = $this->createForm('section', $sectionData, array(
-            'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
-                'roomId' => $roomId,
-                'itemId' => $itemId
-            )),
-        ));
+        $form = $this->createForm('section', $sectionData, array());
         
         $form->handleRequest($request);
         if ($form->isValid()) {

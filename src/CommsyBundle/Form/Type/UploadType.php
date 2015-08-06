@@ -5,13 +5,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use CommsyBundle\Entity\Materials;
 
-class SectionType extends AbstractType
+class UploadType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -21,24 +23,14 @@ class SectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'Title',
+            ->add('files', 'file', array(
+                'label' => 'Files',
                 'attr' => array(
-                    'placeholder' => 'Section title',
-                    'class' => 'uk-form-width-medium',
+                     'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
+                'required' => false,
                 'translation_domain' => 'material',
-            ))
-            ->add('description', 'textarea', array(
-                'label' => 'Description',
-                'attr' => array(
-                    'placeholder' => 'Description',
-                    'class' => 'uk-form-width-large',
-                ),
-                'translation_domain' => 'material',
+                //'image_path' => 'webPath',
             ))
             ->add('save', 'submit', array(
                 'attr' => array(
@@ -53,12 +45,12 @@ class SectionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array())
+            ->setRequired(array('uploadUrl'))
         ;
     }
 
     public function getName()
     {
-        return 'section';
+        return 'upload';
     }
 }

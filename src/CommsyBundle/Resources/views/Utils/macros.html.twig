@@ -185,6 +185,12 @@
                 {% endfor %}
             </div>
         </div>
+    {% else %}
+        <div class="uk-flex">
+            <div>
+                <h4>{{ 'files'|trans({})|capitalize }} ({{ 'no files'|trans({})|capitalize }})</h4>
+            </div>
+        </div>
     {% endif %}
 {% endmacro %}
 
@@ -235,4 +241,19 @@
             </div>
         </div>
     {% endif %}
+{% endmacro %}
+
+{% macro uploadForm(item) %}
+    {% import _self as macros %}
+    <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
+        {# edit #}
+        {% if is_granted('ITEM_EDIT', item.itemId) %}
+            <div class="uk-position-top-right cs-article-edit uk-hidden">
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+            </div>
+
+            {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% endif %}
+        {{  macros.fileListDetailView(item) }}
+    </article>
 {% endmacro %}
