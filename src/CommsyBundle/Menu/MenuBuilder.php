@@ -283,23 +283,27 @@ class MenuBuilder
         
                     if ($route[2] != "list") {
                         // item
-                        $itemService = $this->legacyEnvironment->getItemManager();
-                        $item = $itemService->getItem($itemId);
-                        $tempManager = $this->legacyEnvironment->getManager($item->getItemType());
-                        $tempItem = $tempManager->getItem($itemId);
-                        $itemText = '';
-                        if ($tempItem->getItemType() == 'user') {
-                            $itemText = $tempItem->getFullname();
+                        if ($itemId) {
+                            $itemService = $this->legacyEnvironment->getItemManager();
+                            $item = $itemService->getItem($itemId);
+                            $tempManager = $this->legacyEnvironment->getManager($item->getItemType());
+                            $tempItem = $tempManager->getItem($itemId);
+                            $itemText = '';
+                            if ($tempItem->getItemType() == 'user') {
+                                $itemText = $tempItem->getFullname();
+                            } else {
+                                $itemText = $tempItem->getTitle();
+                            }
+                            $menu->addChild($itemText, array(
+                                'route' => 'commsy_'.$route[1].'_'.$route[2],
+                                'routeParameters' => array(
+                                    'roomId' => $roomId,
+                                    'itemId' => $itemId
+                                )
+                            ));
                         } else {
-                            $itemText = $tempItem->getTitle();
+                            $menu->addChild('create', array());
                         }
-                        $menu->addChild($itemText, array(
-                            'route' => 'commsy_'.$route[1].'_'.$route[2],
-                            'routeParameters' => array(
-                                'roomId' => $roomId,
-                                'itemId' => $itemId
-                            )
-                        ));
                     }
                 }
             }

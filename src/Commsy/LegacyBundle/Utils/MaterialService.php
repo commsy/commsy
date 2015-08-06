@@ -78,4 +78,9 @@ class MaterialService
     {
         return $this->sectionManager->getItem($itemId);
     }
+    
+    public function getNewMaterial()
+    {
+        return $this->materialManager->getNewItem();
+    }
 }

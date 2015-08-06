@@ -79,6 +79,10 @@ class ItemVoter implements VoterInterface
 
                     break;
             }
+        } else if ($itemId == 'NEW') {
+            if ($attribute == self::EDIT) {
+                return VoterInterface::ACCESS_GRANTED;
+            }
         }
 
         return VoterInterface::ACCESS_DENIED;

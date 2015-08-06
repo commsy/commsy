@@ -89,7 +89,9 @@ class MaterialController extends Controller
     }
 
     /**
-     * @Route("/room/{roomId}/material/{itemId}")
+     * @Route("/room/{roomId}/material/{itemId}", requirements={
+     *     "itemId": "\d+"
+     * }))
      * @Template()
      */
     public function detailAction($roomId, $itemId, Request $request)
@@ -196,15 +198,16 @@ class MaterialController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        // get material from MaterialService
+        $materialData = array();
         $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+        // get material from MaterialService
         $materialItem = $materialService->getMaterial($itemId);
 
         if (!$materialItem) {
             throw $this->createNotFoundException('No material found for id ' . $roomId);
         }
 
-        $transformer = $this->get('commsy_legacy.transformer.material');
         $materialData = $transformer->transform($materialItem);
 
         $form = $this->createForm('material', $materialData, array());
@@ -215,12 +218,12 @@ class MaterialController extends Controller
 
             $materialItem->save();
 
+            return $this->redirectToRoute('commsy_material_savematerial', array('roomId' => $roomId, 'itemId' => $itemId));
+
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
-            
-            return $this->redirectToRoute('commsy_material_savematerial', array('roomId' => $roomId, 'itemId' => $itemId));
         }
 
         return array(
@@ -316,6 +319,41 @@ class MaterialController extends Controller
             'roomId' => $roomId,
             'section' => $section,
             'modifierList' => $modifierList
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/material/create")
+     * @Template()
+     */
+    public function createAction($roomId, Request $request)
+    {
+        $materialData = array();
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+        
+        // create new material item
+        $materialItem = $materialService->getNewMaterial();
+
+        $form = $this->createForm('material', $materialData, array());
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+
+            $materialItem->save();
+
+            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'material' => $materialItem,
+            'form' => $form->createView()
         );
     }
 }

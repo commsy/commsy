@@ -41,6 +41,7 @@ class MaterialType extends AbstractType
                     'class' => 'uk-form-width-large',
                 ),
                 'translation_domain' => 'material',
+                'required' => false,
             ))
             ->add('biblio_select', 'choice', array(
                 'choices'  => array(
@@ -56,6 +57,7 @@ class MaterialType extends AbstractType
                     'class' => 'uk-form-width-large',
                 ),
                 'translation_domain' => 'material',
+                'required' => false,
             ))
             ->add('save', 'submit', array(
                 'attr' => array(
@@ -75,6 +77,7 @@ class MaterialType extends AbstractType
                     'class' => 'uk-form-width-large',
                 ),
                 'translation_domain' => 'material',
+                'required' => false,
             ));
         };
 
