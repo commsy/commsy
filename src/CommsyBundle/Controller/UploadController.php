@@ -26,7 +26,7 @@ class UploadController extends Controller
         $saveFileIds = false;
         $fileIds = array();
 
-        foreach ($files as $file) {
+        foreach ($files['files'] as $file) {
             if ($itemId) {
                 /*
                     check type of item:
@@ -35,7 +35,7 @@ class UploadController extends Controller
                     portal  ->  portal icon
                     <other> ->  attachment to item
                     
-                    $file is an array containing an instance of Symfony\Component\HttpFoundation\File\UploadedFile
+                    $file is an instance of Symfony\Component\HttpFoundation\File\UploadedFile
                     Array
                     (
                         [0] => Symfony\Component\HttpFoundation\File\UploadedFile Object
@@ -52,7 +52,7 @@ class UploadController extends Controller
                 */
                 
                 if ($item->getItemType() == 'user') {
-                    $srcfile = $file[0]->getPathname();
+                    $srcfile = $file->getPathname();
     				$targetfile = $srcfile . "_converted";
     				// resize image to a maximum width of 150px and keep ratio
     	            $size = getimagesize($srcfile);
@@ -123,11 +123,11 @@ class UploadController extends Controller
                     
 					$fileItem = $fileService->getNewFile();
 					
-					$fileItem->setTempKey($file[0]->getPathname());
+					$fileItem->setTempKey($file->getPathname());
 					
 					$fileData = array();
-                    $fileData['tmp_name'] = $file[0]->getPathname();
-                    $fileData['name'] = $file[0]->getClientOriginalName();
+                    $fileData['tmp_name'] = $file->getPathname();
+                    $fileData['name'] = $file->getClientOriginalName();
 					$fileItem->setPostFile($fileData);
 					
 					$fileItem->save();
@@ -183,6 +183,8 @@ class UploadController extends Controller
         $fileService = $this->get('commsy.file_service');
         $oldFileIds = $item->getFileIDArray();
         $optionsData = array();
+        $uploadData['oldFiles'] = array();
+        $optionsData['oldFiles'] = array();
         foreach ($oldFileIds as $oldFileId) {
             $tempFile = $fileService->getFile($oldFileId);
             $uploadData['oldFiles'][] = $oldFileId;

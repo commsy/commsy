@@ -26,14 +26,14 @@ class UploadType extends AbstractType
             ->add('oldFiles', 'choice', array(
                 'placeholder' => false,
                 'choices' => $options['oldFiles'],
-                'label' => 'language',
+                'label' => 'files',
                 'translation_domain' => 'profile',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => true
             ))
             ->add('files', 'file', array(
-                'label' => 'Files',
+                'label' => 'upload',
                 'attr' => array(
                      'data-upload' => '{"path": "' . $options['uploadUrl'] . '"}',
                 ),
