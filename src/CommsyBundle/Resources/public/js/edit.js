@@ -29,10 +29,10 @@
             // look for div.cs-article-edit and show on mouseover
             $(element)
                 .mouseover(function() {
-                    $(this).find('div.cs-article-edit').toggleClass('uk-hidden', false);
+                    $(this).find('div.cs-edit').toggleClass('uk-hidden', false);
                 })
                 .mouseout(function() {
-                    $(this).find('div.cs-article-edit').toggleClass('uk-hidden', true);
+                    $(this).find('div.cs-edit').toggleClass('uk-hidden', true);
                 });
 
             $this.registerArticleEvents(element);
@@ -42,20 +42,20 @@
             var $this = this;
 
             // show articles as selected, when mouseover the edit icon
-            $(element).find('div.cs-article-edit')
+            $(element).find('div.cs-edit')
                 .mouseover(function() {
-                    $(this).parent('article').toggleClass('cs-article-selected', true);
+                    $(this).parents('.cs-edit-section').toggleClass('cs-selected', true);
                 })
                 .mouseout(function() {
-                    $(this).parent('article').toggleClass('cs-article-selected', false);
+                    $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
                 });
 
             // send ajax requests on click to load the form
-            $(element).find('div.cs-article-edit').click(function(event) {
+            $(element).find('div.cs-edit').click(function(event) {
                 event.preventDefault();
 
                 // reset article selection class and remove event handling
-                $(this).parent('article').toggleClass('cs-article-selected', false);
+                $(this).parents('.cs-edit-section').toggleClass('cs-selected', false);
                 $(this).off();
 
                 $this.onClickEdit(this);
@@ -64,7 +64,7 @@
 
         onClickEdit: function(el) {
             var $this = this;
-            var article = $(el).parent('article');
+            var article = $(el).parents('.cs-edit-section');
 
             // show the loading spinner
             $(article).find('.cs-edit-spinner').toggleClass('uk-hidden', false);
