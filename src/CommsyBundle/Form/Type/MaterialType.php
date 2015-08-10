@@ -34,15 +34,6 @@ class MaterialType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
-            ->add('description', 'textarea', array(
-                'label' => 'Description',
-                'attr' => array(
-                    'placeholder' => 'Description',
-                    'class' => 'uk-form-width-large',
-                ),
-                'translation_domain' => 'material',
-                'required' => false,
-            ))
             ->add('biblio_select', 'choice', array(
                 'choices'  => array(
                     'thesis' => 'Thesis',

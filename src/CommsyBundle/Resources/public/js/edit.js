@@ -26,7 +26,7 @@
 
             var element = $this.element[0];
 
-            // look for div.cs-article-edit and show on mouseover
+            // look for div.cs-edit and show on mouseover
             $(element)
                 .mouseover(function() {
                     $(this).find('div.cs-edit').toggleClass('uk-hidden', false);

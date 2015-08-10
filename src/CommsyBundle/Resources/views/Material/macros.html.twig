@@ -1,0 +1,145 @@
+{% macro title(item) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+    <a name="description"></a>
+    <div class="uk-grid uk-margin-small-bottom">
+        <div class="uk-width-9-10">
+            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+            {% if item.itemType == 'material' %}
+                {% set material = item %}
+                {% include 'CommsyBundle:Material:biblio.html.twig' %}
+            {% endif %}
+            {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}<br/>
+            {{ 'created by'|trans({})|capitalize }}: {{ item.creator.fullname }}
+        </div>
+        <div class="uk-width-1-10">
+            <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+            {# edit #}
+            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                <div class="cs-edit uk-hidden">
+                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                </div>
+                {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+            {% endif %}
+        </div>
+    </div>
+    <div class="uk-grid uk-margin-top-remove cs-detail-toggle">
+        <div class="uk-width-9-10">
+            <div class="toggle-title-{{ item.itemId }}">
+                <div class="uk-panel">
+                    <div class="uk-grid uk-margin-bottom">
+                        <div class="uk-width-1-2">
+                            <div class="uk-flex">
+                                <div class="uk-margin-right">
+                                    {% if item.creator.isUser %}
+                                        {{  macros.userIconLink(item.creator) }}
+                                    {% else %}
+                                        {{  macros.userIcon(item.creator) }}
+                                    {% endif %}
+                                </div>
+                                <div class="uk-margin-right">
+                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+                                    <div class="">
+                                        <i class="uk-icon-small uk-icon-star"></i>
+                                        <i class="uk-icon-small uk-icon-star"></i>
+                                        <i class="uk-icon-small uk-icon-star"></i>
+                                        <i class="uk-icon-small uk-icon-star-o"></i>
+                                        <i class="uk-icon-small uk-icon-star-o"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="uk-width-1-2">
+                            {% if modifierList[item.itemId] is defined %}
+                                {% if not modifierList[item.itemId] is empty %}
+                                    <div class="uk-flex">
+                                        <div class="uk-margin-right">
+                                            {{ 'additional\neditors'|trans({})|capitalize|nl2br }}:
+                                        </div>
+                                        {% for modifier in modifierList[item.itemId] %}
+                                            <div class="uk-margin-small-right">
+                                                {% if modifier.isUser %}
+                                                    {{  macros.userIconLink(modifier) }}
+                                                {% else %}
+                                                    {{  macros.userIcon(modifier) }}
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="toggle-title-{{ item.itemId }} uk-hidden">
+                <div class="uk-panel">
+                </div>
+            </div>
+        </div>
+        <div class="uk-width-1-10 cs-detail-toggle-icon">
+            <a class="" data-uk-toggle="{target:'.toggle-title-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro description(item) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+    
+    {{ macros.editSectionStart('description', item) }}
+    {{ item.description|truncate(500)|striptags }}
+    {{ macros.editSectionSeperator('description', item) }}
+    {{ item.description|raw }}
+    {{ macros.editSectionEnd('description', item) }}
+{% endmacro %}
+
+{% macro files(item) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+    {{ macros.editSectionStart('files', item) }}
+    <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
+        {% set fileArray = item.fileList.to_array %}
+        <div class="uk-slider-container">
+            <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
+                {% for file in fileArray %}
+                    {#% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %#}
+                         <li>
+                            <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                                <div class="uk-margin-right uk-vertical-align-middle">
+                                    <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                                </div>
+                                <div class="uk-vertical-align-middle">
+                                    <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                                    ({{ file.fileSize }})
+                                </div>
+                            </div>
+                        </li>
+                    {#% endif %#}
+                {% endfor %}
+            </ul>
+        </div>
+        {% if fileArray|length > 4 %}
+            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
+            <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
+        {% endif %}
+    </div>
+    {{ macros.editSectionSeperator('files', item) }}
+    <div data-uk-grid="{gutter: 20}">
+        {% set fileArray = item.fileList.to_array %}
+        {% for file in fileArray %}
+            <div class="uk-width-medium-1-2 uk-width-large-1-4">
+                <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
+                    <div class="uk-margin-right uk-vertical-align-middle">
+                        <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
+                    </div>
+                    <div class="uk-vertical-align-middle">
+                        <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
+                        ({{ file.fileSize }})
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {{ macros.editSectionEnd('files', item) }}
+{% endmacro %}   
