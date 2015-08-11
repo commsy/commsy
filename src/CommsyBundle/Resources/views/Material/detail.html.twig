@@ -92,73 +92,79 @@
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, etc. #}
-                    <div class="uk-margin-left uk-margin-right uk-margin-bottom cs-edit-section" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
+                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosMaterial.title(material) }}
                     </div>
             
                     {# description #}
-                    <div class="uk-margin-left uk-margin-right uk-margin-bottom cs-edit-section" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
+                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosMaterial.description(material) }}
                     </div>
             
                     {# files #}
-                    <div class="uk-margin-left uk-margin-right uk-margin-bottom cs-edit-section" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
+                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         {{ macrosMaterial.files(material) }}
                     </div>
         
                     {# links #}
-                    {{ macros.editSectionStart('links', material) }}
-                    ToDo: Vorschau ...
-                    {{ macros.editSectionSeperator('links', material) }}
-                    <div class="uk-grid">
-                        <div class="uk-width-medium-1-3">
-                            {{ render(controller(
-                                'CommsyBundle:Link:show',
-                                { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
-                            ))}}
+                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        {{ macros.editSectionStart('links', material) }}
+                        ToDo: Vorschau ...
+                        {{ macros.editSectionSeperator('links', material) }}
+                        <div class="uk-grid">
+                            <div class="uk-width-medium-1-3">
+                                {{ render(controller(
+                                    'CommsyBundle:Link:show',
+                                    { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
+                                ))}}
+                            </div>
+                            <div class="uk-width-medium-1-3">
+                                {{ render(controller(
+                                    'CommsyBundle:Category:show',
+                                    { 'roomId': roomId }
+                                ))}}
+                            </div>
+                            <div class="uk-width-medium-1-3">
+                                {{ render(controller(
+                                    'CommsyBundle:Hashtag:show',
+                                    { 'roomId': roomId }
+                                ))}}
+                            </div>
                         </div>
-                        <div class="uk-width-medium-1-3">
-                            {{ render(controller(
-                                'CommsyBundle:Category:show',
-                                { 'roomId': roomId }
-                            ))}}
-                        </div>
-                        <div class="uk-width-medium-1-3">
-                            {{ render(controller(
-                                'CommsyBundle:Hashtag:show',
-                                { 'roomId': roomId }
-                            ))}}
-                        </div>
+                        {{ macros.editSectionEnd('links', material) }}
                     </div>
-                    {{ macros.editSectionEnd('links', material) }}
         
                     {# workflow #}
-                    {{ macros.editSectionStart('workflow', material) }}
-                    ToDo: Vorschau ...
-                    {{ macros.editSectionSeperator('workflow', material) }}
-                    ToDo: Inhalt ...
-                    {{ macros.editSectionEnd('workflow', material) }}
+                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        {{ macros.editSectionStart('workflow', material) }}
+                        ToDo: Vorschau ...
+                        {{ macros.editSectionSeperator('workflow', material) }}
+                        ToDo: Inhalt ...
+                        {{ macros.editSectionEnd('workflow', material) }}
+                    </div>
         
                     {# sections #}
-                    {{ macros.editSectionStart('sections', material) }}
-                    <ul class="uk-list uk-list-striped">
-                        {% for section in sectionList|slice(0, 3) %}
-                            <li>
-                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
-                                {{ macros.fileListShort(section) }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    {{ macros.editSectionSeperator('sections', material) }}
-                    <ul class="uk-list uk-list-striped">
-                        {% for section in sectionList %}
-                            <li>
-                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
-                                {{ macros.fileListShort(section) }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    {{ macros.editSectionEnd('sections', material) }}
+                    <div class="cs-edit-section cs-toggle" data-uk-observe>
+                        {{ macros.editSectionStart('sections', material) }}
+                        <ul class="uk-list uk-list-striped">
+                            {% for section in sectionList|slice(0, 3) %}
+                                <li>
+                                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
+                                    {{ macros.fileListShort(section) }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {{ macros.editSectionSeperator('sections', material) }}
+                        <ul class="uk-list uk-list-striped">
+                            {% for section in sectionList %}
+                                <li>
+                                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
+                                    {{ macros.fileListShort(section) }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {{ macros.editSectionEnd('sections', material) }}
+                    </div>
                     
                 </article> 
             </div>
@@ -169,13 +175,19 @@
                 <div class="uk-panel uk-panel-box uk-margin-bottom">
                     <article class="uk-article uk-position-relative">
                         {# title #}
-                        {{ macrosMaterial.title(section) }}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            {{ macrosMaterial.title(section) }}
+                        </div>
                         
                         {# description #}
-                        {{ macrosMaterial.description(section) }}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            {{ macrosMaterial.description(section) }}
+                        </div>
                 
                         {# files #}
-                        {{ macrosMaterial.files(section) }}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                            {{ macrosMaterial.files(section) }}
+                        </div>
                     </article>
                 </div>
             {% endfor %}

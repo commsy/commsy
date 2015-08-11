@@ -11,12 +11,12 @@
 
     // highligh sections that can be toggled
     $(document).ready(function() {
-        $('div.cs-detail-toggle')
+        $('div.cs-toggle')
             .mouseover(function() {
-                $(this).toggleClass('cs-detail-toggle-selected', true);
+                $(this).toggleClass('cs-toggle-selected', true);
             })
             .mouseout(function() {
-                $(this).toggleClass('cs-detail-toggle-selected', false);
+                $(this).toggleClass('cs-toggle-selected', false);
             });
     });
 

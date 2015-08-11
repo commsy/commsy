@@ -82,6 +82,7 @@
                     article.find('form').submit(function (event) {
                         event.preventDefault();
 
+                        $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
                         // submit the form manually
                         $.ajax({
                             url: $this.options.editUrl,

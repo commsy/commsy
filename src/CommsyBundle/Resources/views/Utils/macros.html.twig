@@ -223,7 +223,7 @@
 {% macro descriptionDetailView(item) %}
     {% import _self as macros %}
     {% if not item.description == "" %}
-        <div class="uk-grid cs-detail-toggle">
+        <div class="uk-grid cs-toggle">
             <div class="uk-width-9-10">
                 <div class="toggle-description-{{ item.itemId }}">
                     <div class="uk-panel">
@@ -236,7 +236,7 @@
                     </div>
                 </div>
             </div>
-            <div class="uk-width-1-10 cs-detail-toggle-icon">
+            <div class="uk-width-1-10 cs-toggle-icon">
                 <a class="" data-uk-toggle="{target:'.toggle-description-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
             </div>
         </div>
@@ -261,43 +261,45 @@
 {# ------------------- #}
 
 {% macro editSectionStart(title, item, edit) %}
-<a name="description"></a>
-<div class="uk-grid uk-margin-small-bottom">
-    <div class="uk-width-9-10">
-        <h4>{{ title|trans({})|capitalize }}</h4>
-    </div>
-    <div class="uk-width-1-10">
-        {% if not edit %}
-            <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
-            {# edit #}
-            {% if is_granted('ITEM_EDIT', item.itemId) %}
-                <div class="cs-edit uk-hidden">
-                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                </div>
-                {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+    <a name="description"></a>
+    {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+    <div class="uk-grid uk-margin-small-bottom">
+        <div class="uk-width-9-10">
+            <h4>{{ title|trans({})|capitalize }}</h4>
+        </div>
+        <div class="uk-width-1-10">
+            {% if not edit %}
+                <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                {# edit #}
+                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                    <div class="cs-edit uk-hidden">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                {% endif %}
             {% endif %}
-        {% endif %}
+        </div>
     </div>
-</div>
-<div class="uk-grid uk-margin-top-remove cs-detail-toggle">
-    <div class="uk-width-9-10">
-        <div class="toggle-{{ title }}-{{ item.itemId }}">
-            <div class="uk-panel">
+    <div class="uk-grid uk-margin-top-remove">
+        <div class="uk-width-9-10">
+            <div class="toggle-{{ title }}-{{ item.itemId }}">
+                <div class="uk-panel">
 {% endmacro %}
 
 {% macro editSectionSeperator(title, item) %}
-    </div>
-</div>
-<div class="toggle-{{ title }}-{{ item.itemId }} uk-hidden">
-    <div class="uk-panel">
+                </div>
+            </div>
+            <div class="toggle-{{ title }}-{{ item.itemId }} uk-hidden">
+                <div class="uk-panel">
 {% endmacro %}
 
 {% macro editSectionEnd(title, item) %}
+                </div>
             </div>
         </div>
-    </div>
-    <div class="uk-width-1-10 cs-detail-toggle-icon">
-        <a class="" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+        <div class="uk-width-1-10 cs-toggle-icon">
+            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+        </div>
     </div>
 </div>
 {% endmacro %}

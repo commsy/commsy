@@ -1,85 +1,87 @@
 {% macro title(item) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
-
-    <a name="description"></a>
-    <div class="uk-grid uk-margin-small-bottom">
-        <div class="uk-width-9-10">
-            <h1 class="uk-article-title">{{ item.title|raw }}</h1>
-            {% if item.itemType == 'material' %}
-                {% set material = item %}
-                {% include 'CommsyBundle:Material:biblio.html.twig' %}
-            {% endif %}
-            {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}<br/>
-            {{ 'created by'|trans({})|capitalize }}: {{ item.creator.fullname }}
+    
+    <div class="uk-margin-left uk-margin-right uk-margin-bottom">
+        <a name="title"></a>
+        <div class="uk-grid uk-margin-small-bottom">
+            <div class="uk-width-9-10">
+                <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+                {% if item.itemType == 'material' %}
+                    {% set material = item %}
+                    {% include 'CommsyBundle:Material:biblio.html.twig' %}
+                {% endif %}
+                {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}<br/>
+                {{ 'created by'|trans({})|capitalize }}: {{ item.creator.fullname }}
+            </div>
+            <div class="uk-width-1-10">
+                <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+                {# edit #}
+                {% if is_granted('ITEM_EDIT', item.itemId) %}
+                    <div class="cs-edit uk-hidden">
+                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+                    </div>
+                    {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+                {% endif %}
+            </div>
         </div>
-        <div class="uk-width-1-10">
-            <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
-            {# edit #}
-            {% if is_granted('ITEM_EDIT', item.itemId) %}
-                <div class="cs-edit uk-hidden">
-                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                </div>
-                {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-            {% endif %}
-        </div>
-    </div>
-    <div class="uk-grid uk-margin-top-remove cs-detail-toggle">
-        <div class="uk-width-9-10">
-            <div class="toggle-title-{{ item.itemId }}">
-                <div class="uk-panel">
-                    <div class="uk-grid uk-margin-bottom">
-                        <div class="uk-width-1-2">
-                            <div class="uk-flex">
-                                <div class="uk-margin-right">
-                                    {% if item.creator.isUser %}
-                                        {{  macros.userIconLink(item.creator) }}
-                                    {% else %}
-                                        {{  macros.userIcon(item.creator) }}
-                                    {% endif %}
-                                </div>
-                                <div class="uk-margin-right">
-                                    {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
-                                    <div class="">
-                                        <i class="uk-icon-small uk-icon-star"></i>
-                                        <i class="uk-icon-small uk-icon-star"></i>
-                                        <i class="uk-icon-small uk-icon-star"></i>
-                                        <i class="uk-icon-small uk-icon-star-o"></i>
-                                        <i class="uk-icon-small uk-icon-star-o"></i>
+        <div class="uk-grid uk-margin-top-remove">
+            <div class="uk-width-9-10">
+                <div class="toggle-title-{{ item.itemId }}">
+                    <div class="uk-panel">
+                        <div class="uk-grid uk-margin-bottom">
+                            <div class="uk-width-1-2">
+                                <div class="uk-flex">
+                                    <div class="uk-margin-right">
+                                        {% if item.creator.isUser %}
+                                            {{  macros.userIconLink(item.creator) }}
+                                        {% else %}
+                                            {{  macros.userIcon(item.creator) }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="uk-margin-right">
+                                        {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+                                        <div class="">
+                                            <i class="uk-icon-small uk-icon-star"></i>
+                                            <i class="uk-icon-small uk-icon-star"></i>
+                                            <i class="uk-icon-small uk-icon-star"></i>
+                                            <i class="uk-icon-small uk-icon-star-o"></i>
+                                            <i class="uk-icon-small uk-icon-star-o"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="uk-width-1-2">
-                            {% if modifierList[item.itemId] is defined %}
-                                {% if not modifierList[item.itemId] is empty %}
-                                    <div class="uk-flex">
-                                        <div class="uk-margin-right">
-                                            {{ 'additional\neditors'|trans({})|capitalize|nl2br }}:
-                                        </div>
-                                        {% for modifier in modifierList[item.itemId] %}
-                                            <div class="uk-margin-small-right">
-                                                {% if modifier.isUser %}
-                                                    {{  macros.userIconLink(modifier) }}
-                                                {% else %}
-                                                    {{  macros.userIcon(modifier) }}
-                                                {% endif %}
+                            
+                            <div class="uk-width-1-2">
+                                {% if modifierList[item.itemId] is defined %}
+                                    {% if not modifierList[item.itemId] is empty %}
+                                        <div class="uk-flex">
+                                            <div class="uk-margin-right">
+                                                {{ 'additional\neditors'|trans({})|capitalize|nl2br }}:
                                             </div>
-                                        {% endfor %}
-                                    </div>
+                                            {% for modifier in modifierList[item.itemId] %}
+                                                <div class="uk-margin-small-right">
+                                                    {% if modifier.isUser %}
+                                                        {{  macros.userIconLink(modifier) }}
+                                                    {% else %}
+                                                        {{  macros.userIcon(modifier) }}
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="toggle-title-{{ item.itemId }} uk-hidden">
-                <div class="uk-panel">
+                <div class="toggle-title-{{ item.itemId }} uk-hidden">
+                    <div class="uk-panel">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="uk-width-1-10 cs-detail-toggle-icon">
-            <a class="" data-uk-toggle="{target:'.toggle-title-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            <div class="uk-width-1-10 cs-toggle-icon">
+                <a class="" data-uk-toggle="{target:'.toggle-title-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            </div>
         </div>
     </div>
 {% endmacro %}
