@@ -304,7 +304,7 @@
 </div>
 {% endmacro %}
 
-{% macro editSection(title, item, content, edit = true) %}
+{% macro editSection(title, item, edit, preview, content) %}
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
     <a name="description"></a>
     {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
@@ -314,8 +314,6 @@
         </div>
         <div class="uk-width-1-10">
             {% if edit %}
-                <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
-                {# edit #}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                     <div class="cs-edit uk-hidden">
                         <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
@@ -324,16 +322,21 @@
             {% endif %}
         </div>
     </div>
+    {% if not preview is empty %}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-9-10">
             <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview">
                 <div class="uk-panel">
-                    {{ content|raw }}
+                    {{ preview|raw }}
                 </div>
             </div>
             <div class="toggle-{{ title }}-{{ item.itemId }} uk-hidden">
                 <div class="uk-panel">
-                    {{ content|raw }}
+                    {% if not content is empty %}
+                        {{ content|raw }}
+                    {% else %}
+                        {{ preview|raw }}
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -341,5 +344,15 @@
             <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
     </div>
+    {% else %}
+    <div class="uk-grid uk-margin-top-remove">
+        <div class="uk-width-1-1">
+            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-empty">
+                <div class="uk-panel">
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endmacro %}
