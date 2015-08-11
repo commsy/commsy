@@ -86,16 +86,6 @@
     </div>
 {% endmacro %}
 
-{% macro description(item) %}
-    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
-    
-    {{ macros.editSectionStart('description', item) }}
-    {{ item.description|truncate(500)|striptags }}
-    {{ macros.editSectionSeperator('description', item) }}
-    {{ item.description|raw }}
-    {{ macros.editSectionEnd('description', item) }}
-{% endmacro %}
-
 {% macro files(item) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
