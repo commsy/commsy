@@ -107,12 +107,12 @@
                     </div>
         
                     {# links #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div class="cs-edit-section cs-toggle" data-uk-observe>
                         {{ macrosMaterial.links(material) }}
                     </div>
         
                     {# workflow #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                    <div class="cs-edit-section cs-toggle" data-uk-observe>
                         {{ macros.editSection('workflow', material, true, 'ToDo') }}
                     </div>
         
