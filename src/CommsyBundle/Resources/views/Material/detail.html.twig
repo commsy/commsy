@@ -108,39 +108,12 @@
         
                     {# links #}
                     <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.editSectionStart('links', material) }}
-                        ToDo: Vorschau ...
-                        {{ macros.editSectionSeperator('links', material) }}
-                        <div class="uk-grid">
-                            <div class="uk-width-medium-1-3">
-                                {{ render(controller(
-                                    'CommsyBundle:Link:show',
-                                    { 'roomId': app.request.attributes.get('roomId'), 'itemId': material.itemId }
-                                ))}}
-                            </div>
-                            <div class="uk-width-medium-1-3">
-                                {{ render(controller(
-                                    'CommsyBundle:Category:show',
-                                    { 'roomId': roomId }
-                                ))}}
-                            </div>
-                            <div class="uk-width-medium-1-3">
-                                {{ render(controller(
-                                    'CommsyBundle:Hashtag:show',
-                                    { 'roomId': roomId }
-                                ))}}
-                            </div>
-                        </div>
-                        {{ macros.editSectionEnd('links', material) }}
+                        {{ macrosMaterial.links(material) }}
                     </div>
         
                     {# workflow #}
                     <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.editSectionStart('workflow', material) }}
-                        ToDo: Vorschau ...
-                        {{ macros.editSectionSeperator('workflow', material) }}
-                        ToDo: Inhalt ...
-                        {{ macros.editSectionEnd('workflow', material) }}
+                        {{ macros.editSection('workflow', material, true, 'ToDo') }}
                     </div>
         
                     {# sections #}

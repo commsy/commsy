@@ -330,7 +330,7 @@
                     {{ preview|raw }}
                 </div>
             </div>
-            <div class="toggle-{{ title }}-{{ item.itemId }} uk-hidden">
+            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content uk-hidden">
                 <div class="uk-panel">
                     {{ content|raw }}
                 </div>
@@ -343,13 +343,18 @@
     {% else %}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-1-1">
-            <div class="toggle-{{ title }}-{{ item.itemId }}">
+            {% if not content is empty %}
+            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
                 <div class="uk-panel">
-                    {% if not content is empty %}
-                        {{ content|raw }}
-                    {% endif %}
+                    {{ content|raw }}
                 </div>
             </div>
+            {% else %}
+            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-empty">
+                <div class="uk-panel">
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
     {% endif %}
