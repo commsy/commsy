@@ -94,12 +94,12 @@
     
     {% set fileArray = item.fileList.to_array %}
     {% if not fileArray is empty %}
-        {% set preview %}
-        <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
-            <div class="uk-slider-container">
-                <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
-                    {% for file in fileArray %}
-                        {#% if file.extension|lower == 'jpg' or file.extension|lower == 'jpeg' or file.extension|lower == 'png' or file.extension|lower == 'gif' %#}
+        {% if fileArray|length > 4 %}
+            {% set preview %}
+            <div class="uk-slidenav-position" data-uk-slider="{infinite: false}">
+                <div class="uk-slider-container">
+                    <ul class="uk-slider uk-grid uk-grid-width-medium-1-4">
+                        {% for file in fileArray %}
                              <li>
                                 <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
                                     <div class="uk-margin-right uk-vertical-align-middle">
@@ -111,16 +111,14 @@
                                     </div>
                                 </div>
                             </li>
-                        {#% endif %#}
-                    {% endfor %}
-                </ul>
-            </div>
-            {% if fileArray|length > 4 %}
+                        {% endfor %}
+                    </ul>
+                </div>
                 <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-previous" data-uk-slider-item="previous" draggable="false"></a>
                 <a href="" class="uk-slidenav uk-slidenav-contrast uk-slidenav-next" data-uk-slider-item="next" draggable="false"></a>
-            {% endif %}
-        </div>
-        {% endset %}
+            </div>
+            {% endset %}
+        {% endif %}
     
         {% set content %}
         <div data-uk-grid="{gutter: 20}">
@@ -141,5 +139,38 @@
         {% endset %}
     {% endif %}
     
-    {{ macros.editSection('files', item, true, preview, content) }}
-{% endmacro %}   
+    {{ macros.editSection('files', item, true, content, preview) }}
+{% endmacro %}
+
+{% macro sections(item, sectionList) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+    {% set preview = '' %}
+    {% set content = '' %}
+    
+    {% if not sectionList is empty %}
+        {% set preview %}
+        <ul class="uk-list uk-list-striped">
+            {% for section in sectionList %}
+                <li>
+                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
+                    {{ macros.fileListShort(section) }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endset %}
+    
+        {% set content %}
+        <ul class="uk-list uk-list-striped">
+            {% for section in sectionList %}
+                <li>
+                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
+                    {{ macros.fileListShort(section) }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% endset %}
+    {% endif %}
+    
+    {{ macros.editSection('sections', item, true, content, preview) }}
+{% endmacro %}

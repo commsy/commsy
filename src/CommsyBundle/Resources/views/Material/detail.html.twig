@@ -98,7 +98,7 @@
             
                     {# description #}
                     <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.editSection('description', material, true, material.description) }}
+                        {{ macros.editSection('description', material, true, material.description, material.description) }}
                     </div>
             
                     {# files #}
@@ -145,25 +145,7 @@
         
                     {# sections #}
                     <div class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macros.editSectionStart('sections', material) }}
-                        <ul class="uk-list uk-list-striped">
-                            {% for section in sectionList|slice(0, 3) %}
-                                <li>
-                                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
-                                    {{ macros.fileListShort(section) }}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        {{ macros.editSectionSeperator('sections', material) }}
-                        <ul class="uk-list uk-list-striped">
-                            {% for section in sectionList %}
-                                <li>
-                                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a><br/>
-                                    {{ macros.fileListShort(section) }}
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        {{ macros.editSectionEnd('sections', material) }}
+                        {{ macrosMaterial.sections(material, sectionList) }}
                     </div>
                     
                 </article> 
@@ -181,7 +163,7 @@
                         
                         {# description #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macros.editSection('description', section, true, section.description) }}
+                            {{ macros.editSection('description', section, true, section.description, section.description) }}
                         </div>
                 
                         {# files #}

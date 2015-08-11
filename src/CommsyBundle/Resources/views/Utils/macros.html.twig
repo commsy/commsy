@@ -304,7 +304,7 @@
 </div>
 {% endmacro %}
 
-{% macro editSection(title, item, edit, preview, content) %}
+{% macro editSection(title, item, edit, content, preview) %}
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
     <a name="description"></a>
     {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
@@ -322,7 +322,7 @@
             {% endif %}
         </div>
     </div>
-    {% if not preview is empty %}
+    {% if not content is empty and not preview is empty %}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-9-10">
             <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview">
@@ -332,11 +332,7 @@
             </div>
             <div class="toggle-{{ title }}-{{ item.itemId }} uk-hidden">
                 <div class="uk-panel">
-                    {% if not content is empty %}
-                        {{ content|raw }}
-                    {% else %}
-                        {{ preview|raw }}
-                    {% endif %}
+                    {{ content|raw }}
                 </div>
             </div>
         </div>
@@ -347,8 +343,11 @@
     {% else %}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-1-1">
-            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-empty">
+            <div class="toggle-{{ title }}-{{ item.itemId }}">
                 <div class="uk-panel">
+                    {% if not content is empty %}
+                        {{ content|raw }}
+                    {% endif %}
                 </div>
             </div>
         </div>
