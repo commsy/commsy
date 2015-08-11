@@ -92,8 +92,8 @@
                 {# content #}
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, etc. #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosMaterial.title(material) }}
+                    <div class="cs-toggle" data-uk-observe>
+                        {{ macrosMaterial.title(material, modifierList) }}
                     </div>
             
                     {# description #}
@@ -130,12 +130,12 @@
                 <div class="uk-panel uk-panel-box uk-margin-bottom">
                     <article class="uk-article uk-position-relative">
                         {# title #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_edit', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macrosMaterial.title(section) }}
+                        <div class="cs-toggle" data-uk-observe>
+                            {{ macrosMaterial.title(section, modifierList) }}
                         </div>
                         
                         {# description #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsectiondescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                             {{ macros.editSection('description', section, true, section.description, section.description) }}
                         </div>
                 

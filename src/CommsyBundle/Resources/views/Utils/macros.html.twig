@@ -337,7 +337,7 @@
             </div>
         </div>
         <div class="uk-width-1-10 cs-toggle-icon">
-            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
     </div>
     {% else %}
@@ -359,4 +359,14 @@
     </div>
     {% endif %}
 </div>
+{% endmacro %}
+
+{% macro rating(item) %}
+    <div class="">
+        <i class="uk-icon-small uk-icon-star"></i>
+        <i class="uk-icon-small uk-icon-star"></i>
+        <i class="uk-icon-small uk-icon-star"></i>
+        <i class="uk-icon-small uk-icon-star-o"></i>
+        <i class="uk-icon-small uk-icon-star-o"></i>
+    </div>
 {% endmacro %}

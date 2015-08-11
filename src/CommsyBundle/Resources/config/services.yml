@@ -99,6 +99,11 @@ services:
         tags:
             - { name: form.type, alias: section }
 
+    commsy.form.type.sectionDescription:
+        class: CommsyBundle\Form\Type\SectionDescriptionType
+        tags:
+            - { name: form.type, alias: sectionDescription }
+
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
         tags:

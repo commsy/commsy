@@ -1,17 +1,21 @@
-{% macro title(item) %}
+{% macro title(item, modifierList) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     
-    <div class="uk-margin-left uk-margin-right uk-margin-bottom">
+    <div class="uk-margin-right uk-margin-bottom">
         <a name="title"></a>
-        <div class="uk-grid uk-margin-small-bottom">
-            <div class="uk-width-9-10">
+        {% set pathName = '' %}
+        {% if item.itemType == 'material' %}
+            {% set pathName = 'commsy_material_edit' %}
+        {% elseif item.itemType == 'section' %}
+            {% set pathName = 'commsy_material_editsection' %}
+        {% endif %}
+        <div class="uk-grid uk-margin-left uk-margin-small-bottom cs-edit-section" data-uk-observe data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
+            <div class="uk-width-9-10 uk-padding-remove">
                 <h1 class="uk-article-title">{{ item.title|raw }}</h1>
                 {% if item.itemType == 'material' %}
                     {% set material = item %}
                     {% include 'CommsyBundle:Material:biblio.html.twig' %}
                 {% endif %}
-                {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}<br/>
-                {{ 'created by'|trans({})|capitalize }}: {{ item.creator.fullname }}
             </div>
             <div class="uk-width-1-10">
                 <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
@@ -22,13 +26,39 @@
                     </div>
                     {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
                 {% endif %}
+                <div class="cs-toggle-icon">
+                    <a class="" data-uk-toggle="{target:'.toggle-title-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+                </div>
             </div>
         </div>
-        <div class="uk-grid uk-margin-top-remove">
-            <div class="uk-width-9-10">
+        <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
+            <div class="uk-width-1-1 uk-padding-remove">
                 <div class="toggle-title-{{ item.itemId }}">
                     <div class="uk-panel">
                         <div class="uk-grid uk-margin-bottom">
+                            <div class="uk-width-1-1">
+                                <div class="uk-flex">
+                                    <div class="uk-margin-right">
+                                        {% if item.creator.isUser %}
+                                            {{  macros.userIconLink(item.creator) }}
+                                        {% else %}
+                                            {{  macros.userIcon(item.creator) }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="uk-margin-right">
+                                        {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
+                                        {% if item.itemType != 'section' %}
+                                            {{  macros.rating(item) }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="toggle-title-{{ item.itemId }} uk-hidden">
+                    <div class="uk-panel">
+                        <div class="uk-grid">
                             <div class="uk-width-1-2">
                                 <div class="uk-flex">
                                     <div class="uk-margin-right">
@@ -40,26 +70,28 @@
                                     </div>
                                     <div class="uk-margin-right">
                                         {{ 'last changed'|trans({})|capitalize }}: {{item.modificationDate|date("d.m.Y H:i")}}
-                                        <div class="">
-                                            <i class="uk-icon-small uk-icon-star"></i>
-                                            <i class="uk-icon-small uk-icon-star"></i>
-                                            <i class="uk-icon-small uk-icon-star"></i>
-                                            <i class="uk-icon-small uk-icon-star-o"></i>
-                                            <i class="uk-icon-small uk-icon-star-o"></i>
-                                        </div>
+                                        {% if item.itemType != 'section' %}
+                                            {{  macros.rating(item) }}
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="uk-width-1-2">
+                                <div class="uk-clearfix">
+                                    <div class="uk-align-right uk-margin-remove">
+                                        {{ 'reference number'|trans({})|capitalize }}: {{ item.itemId }}<br/>
+                                        {{ 'created by'|trans({})|capitalize }}: {{ item.creator.fullname }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="uk-clearfix">
+                            <div class="uk-align-right">
                                 {% if modifierList[item.itemId] is defined %}
                                     {% if not modifierList[item.itemId] is empty %}
                                         <div class="uk-flex">
-                                            <div class="uk-margin-right">
-                                                {{ 'additional\neditors'|trans({})|capitalize|nl2br }}:
-                                            </div>
                                             {% for modifier in modifierList[item.itemId] %}
-                                                <div class="uk-margin-small-right">
+                                                <div class="">
                                                     {% if modifier.isUser %}
                                                         {{  macros.userIconLink(modifier) }}
                                                     {% else %}
@@ -74,14 +106,30 @@
                         </div>
                     </div>
                 </div>
-                <div class="toggle-title-{{ item.itemId }} uk-hidden">
-                    <div class="uk-panel">
-                    </div>
-                </div>
             </div>
-            <div class="uk-width-1-10 cs-toggle-icon">
-                <a class="" data-uk-toggle="{target:'.toggle-title-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro titleSave(item) %}
+    <div class="uk-width-9-10 uk-padding-remove">
+        <h1 class="uk-article-title">{{ item.title|raw }}</h1>
+        {% if item.itemType == 'material' %}
+            {% set material = item %}
+            {% include 'CommsyBundle:Material:biblio.html.twig' %}
+        {% endif %}
+    </div>
+    <div class="uk-width-1-10">
+        <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
+        {# edit #}
+        {% if is_granted('ITEM_EDIT', item.itemId) %}
+            <div class="cs-edit uk-hidden">
+                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
             </div>
+            {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
+        {% endif %}
+        <div class="cs-toggle-icon">
+            <a class="" data-uk-toggle="{target:'.toggle-title-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
     </div>
 {% endmacro %}

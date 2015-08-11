@@ -5,13 +5,15 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
+use CommsyBundle\Entity\Materials;
 
-class SectionType extends AbstractType
+class SectionDescriptionType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -21,16 +23,14 @@ class SectionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', 'text', array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
-                'label' => 'Title',
+            ->add('description', 'textarea', array(
+                'label' => 'Description',
                 'attr' => array(
-                    'placeholder' => 'Section title',
-                    'class' => 'uk-form-width-medium',
+                    'placeholder' => 'Description',
+                    'class' => 'uk-form-width-large',
                 ),
                 'translation_domain' => 'material',
+                'required' => false,
             ))
             ->add('save', 'submit', array(
                 'attr' => array(
@@ -51,6 +51,6 @@ class SectionType extends AbstractType
 
     public function getName()
     {
-        return 'section';
+        return 'sectionDescription';
     }
 }
