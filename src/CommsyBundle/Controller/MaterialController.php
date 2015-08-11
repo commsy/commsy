@@ -198,34 +198,45 @@ class MaterialController extends Controller
      */
     public function editAction($roomId, $itemId, Request $request)
     {
-        $materialData = array();
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
-        // get material from MaterialService
-        $materialItem = $materialService->getMaterial($itemId);
-
-        if (!$materialItem) {
-            throw $this->createNotFoundException('No material found for id ' . $roomId);
+        
+        $formData = array();
+        $tempItem = NULL;
+        
+        if ($item->getItemType() == 'material') {
+            // get material from MaterialService
+            $tempItem = $materialService->getMaterial($itemId);
+            if (!$tempItem) {
+                throw $this->createNotFoundException('No material found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($tempItem);
+            $form = $this->createForm('material', $formData, array());
+        } else if ($item->getItemType() == 'section') {
+            // get section from MaterialService
+            $tempItem = $materialService->getSection($itemId);
+            if (!$tempItem) {
+                throw $this->createNotFoundException('No section found for id ' . $roomId);
+            }
+            $formData = $transformer->transform($tempItem);
+            $form = $this->createForm('section', $formData, array());
         }
-
-        $materialData = $transformer->transform($materialItem);
-
-        $form = $this->createForm('material', $materialData, array());
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
-
-            $materialItem->save();
-
+            $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
+            $tempItem->save();
             return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
-
+            
             // persist
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
         }
-
+        
         return array(
             'form' => $form->createView()
         );
@@ -238,13 +249,21 @@ class MaterialController extends Controller
      */
     public function saveAction($roomId, $itemId, Request $request)
     {
-        $materialService = $this->get('commsy_legacy.material_service');
         $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
         
-        $material = $materialService->getMaterial($itemId);
-
-        $itemArray = array($material);
-
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+        
+        $tempItem = NULL;
+        
+        if ($item->getItemType() == 'material') {
+            $tempItem = $materialService->getMaterial($itemId);
+        } else if ($item->getItemType() == 'section') {
+            $tempItem = $materialService->getSection($itemId); 
+        }
+        
+        $itemArray = array($tempItem);
         $modifierList = array();
         foreach ($itemArray as $item) {
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
@@ -252,7 +271,7 @@ class MaterialController extends Controller
         
         return array(
             'roomId' => $roomId,
-            'material' => $material,
+            'item' => $tempItem,
             'modifierList' => $modifierList
         );
     }
@@ -276,25 +295,20 @@ class MaterialController extends Controller
         if ($item->getItemType() == 'material') {
             // get material from MaterialService
             $tempItem = $materialService->getMaterial($itemId);
-    
             if (!$tempItem) {
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
-    
             $formData = $transformer->transform($tempItem);
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
             $tempItem = $materialService->getSection($itemId);
-    
             if (!$tempItem) {
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
-    
             $formData = $transformer->transform($tempItem);
         }
         
         $form = $this->createForm('itemDescription', $formData, array());
-            
         $form->handleRequest($request);
         if ($form->isValid()) {
             $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
@@ -347,71 +361,6 @@ class MaterialController extends Controller
             'modifierList' => $modifierList
         );
     }
-    
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/editsection")
-     * @Template("CommsyBundle:Section:editSection.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function editSectionAction($roomId, $itemId, Request $request)
-    {
-        // get material from MaterialService
-        $materialService = $this->get('commsy_legacy.material_service');
-        $sectionItem = $materialService->getSection($itemId);
-
-        if (!$sectionItem) {
-            throw $this->createNotFoundException('No section found for id ' . $roomId);
-        }
-
-        $transformer = $this->get('commsy_legacy.transformer.material');
-        $sectionData = $transformer->transform($sectionItem);
-
-        $form = $this->createForm('section', $sectionData, array());
-        
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $sectionItem = $transformer->applyTransformation($sectionItem, $form->getData());
-
-            $sectionItem->save();
-
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
-            
-            return $this->redirectToRoute('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $itemId));
-        }
-
-        return array(
-            'form' => $form->createView()
-        );
-    }
-    
-    /**
-     * @Route("/room/{roomId}/material/{itemId}/savesection")
-     * @Template("CommsyBundle:Section:saveSection.html.twig")
-     * @Security("is_granted('ITEM_EDIT', itemId)")
-     */
-    public function saveSectionAction($roomId, $itemId, Request $request)
-    {
-        $materialService = $this->get('commsy_legacy.material_service');
-        $itemService = $this->get('commsy.item_service');
-        
-        $section = $materialService->getSection($itemId);
-
-        $itemArray = array($section);
-
-        $modifierList = array();
-        foreach ($itemArray as $item) {
-            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
-        }
-        
-        return array(
-            'roomId' => $roomId,
-            'section' => $section,
-            'modifierList' => $modifierList
-        );
-    }
         
     /**
      * @Route("/room/{roomId}/material/create")
@@ -431,9 +380,7 @@ class MaterialController extends Controller
         $form->handleRequest($request);
         if ($form->isValid()) {
             $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
-
             $materialItem->save();
-
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
 
             // persist

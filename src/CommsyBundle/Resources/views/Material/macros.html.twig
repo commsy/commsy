@@ -7,7 +7,7 @@
         {% if item.itemType == 'material' %}
             {% set pathName = 'commsy_material_edit' %}
         {% elseif item.itemType == 'section' %}
-            {% set pathName = 'commsy_material_editsection' %}
+            {% set pathName = 'commsy_material_edit' %}
         {% endif %}
         <div class="uk-grid uk-margin-left uk-margin-small-bottom cs-edit-section" data-uk-observe data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
             <div class="uk-width-9-10 uk-padding-remove">
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
-            <div class="uk-width-1-1 uk-padding-remove">
+            <div class="uk-width-9-10 uk-padding-remove">
                 <div class="toggle-title-{{ item.itemId }}">
                     <div class="uk-panel">
                         <div class="uk-grid uk-margin-bottom">
