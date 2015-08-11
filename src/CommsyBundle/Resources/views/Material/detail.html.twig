@@ -135,7 +135,7 @@
                         </div>
                         
                         {# description #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsectiondescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
                             {{ macros.editSection('description', section, true, section.description, section.description) }}
                         </div>
                 

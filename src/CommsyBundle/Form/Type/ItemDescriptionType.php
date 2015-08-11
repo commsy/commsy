@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManager;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use CommsyBundle\Entity\Materials;
 
-class SectionDescriptionType extends AbstractType
+class ItemDescriptionType extends AbstractType
 {
     private $em;
     private $legacyEnvironment;
@@ -51,6 +51,6 @@ class SectionDescriptionType extends AbstractType
 
     public function getName()
     {
-        return 'sectionDescription';
+        return 'itemDescription';
     }
 }

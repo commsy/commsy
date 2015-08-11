@@ -89,20 +89,15 @@ services:
         tags:
             - { name: form.type, alias: material }
 
-    commsy.form.type.materialDescription:
-        class: CommsyBundle\Form\Type\MaterialDescriptionType
+    commsy.form.type.itemDescription:
+        class: CommsyBundle\Form\Type\ItemDescriptionType
         tags:
-            - { name: form.type, alias: materialDescription }
+            - { name: form.type, alias: itemDescription }
 
     commsy.form.type.section:
         class: CommsyBundle\Form\Type\SectionType
         tags:
             - { name: form.type, alias: section }
-
-    commsy.form.type.sectionDescription:
-        class: CommsyBundle\Form\Type\SectionDescriptionType
-        tags:
-            - { name: form.type, alias: sectionDescription }
 
     commsy.form.extension.image_type:
         class: CommsyBundle\Form\Extension\ImageTypeExtension
