@@ -78,16 +78,22 @@
                 article.fadeOut(function() {
                     article.html($(result)).fadeIn();
 
+                    var buttonpressed;
+                    $('button').click(function() {
+                        buttonpressed = $(this).attr('name')
+                    })
+
                     // override form submit behaviour
                     article.find('form').submit(function (event) {
                         event.preventDefault();
 
                         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
+                        
                         // submit the form manually
                         $.ajax({
                             url: $this.options.editUrl,
                             type: "POST",
-                            data: $(this).serialize()
+                            data: $(this).serialize()+'&'+buttonpressed+'=true'
                         })
                         .done(function(result) {
                             article.fadeOut(function() {

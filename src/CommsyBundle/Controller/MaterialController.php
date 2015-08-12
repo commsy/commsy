@@ -227,8 +227,12 @@ class MaterialController extends Controller
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
-            $tempItem->save();
+            if ($form->get('save')->isClicked()) {
+                $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
+                $tempItem->save();
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
             return $this->redirectToRoute('commsy_material_save', array('roomId' => $roomId, 'itemId' => $itemId));
             
             // persist
@@ -311,10 +315,13 @@ class MaterialController extends Controller
         $form = $this->createForm('itemDescription', $formData, array());
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
-
-            $tempItem->save();
-
+            if ($form->get('save')->isClicked()) {
+                $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
+                $tempItem->save();
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            
             return $this->redirectToRoute('commsy_material_savedescription', array('roomId' => $roomId, 'itemId' => $itemId));
 
             // persist
