@@ -4,5 +4,25 @@
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
+    
+    <div class="uk-flex">
+        <div>
+            {{ form_widget(form.oldFiles) }}
+        </div>
+    </div>
+    <div class="uk-flex uk-margin-small-top">
+        <div>
+            {{ form_widget(form.files) }}
+        </div>
+    </div>
+    <div class="uk-flex uk-margin-small-top">
+        <div>
+            {{ form_row(form.save) }}
+        </div>
+        <div class="uk-margin-small-left">
+            {{ form_row(form.cancel) }}
+        </div>
+    </div>
+    
     {{ form_end(form) }}
 </div>

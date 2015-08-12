@@ -312,7 +312,7 @@ class MaterialController extends Controller
             $formData = $transformer->transform($tempItem);
         }
         
-        $form = $this->createForm('itemDescription', $formData, array());
+        $form = $this->createForm('itemDescription', $formData, array('itemId' => $itemId));
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {

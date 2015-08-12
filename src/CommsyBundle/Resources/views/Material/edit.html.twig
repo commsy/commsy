@@ -1,9 +1,42 @@
-{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
-
-<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+<div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
+    
+    {% if not form.biblio is defined %}
+        <div class="uk-flex">
+            <div>
+                {{ form_widget(form.title) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+    {% else %}
+        <div class="uk-flex">
+            <div>
+                {{ form_widget(form.title) }}
+            </div>
+        </div>
+        <div class="uk-flex uk-margin-small-top">
+            <div>
+                {{ form_widget(form.biblio_select) }}
+                {{ form_widget(form.biblio) }}
+            </div>
+        </div>
+        <div class="uk-flex uk-margin-small-top">
+            <div>
+                {{ form_row(form.save) }}
+            </div>
+            <div class="uk-margin-small-left">
+                {{ form_row(form.cancel) }}
+            </div>
+        </div>
+    {% endif %}
+    
     {{ form_end(form) }}
 </div>
 

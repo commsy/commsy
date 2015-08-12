@@ -23,11 +23,11 @@ class ItemDescriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('description', 'textarea', array(
+            ->add('description', 'ckeditor', array(
                 'label' => 'Description',
                 'attr' => array(
                     'placeholder' => 'Description',
-                    'class' => 'uk-form-width-large',
+                    'class' => 'uk-form-width-large'
                 ),
                 'translation_domain' => 'material',
                 'required' => false,
@@ -52,7 +52,7 @@ class ItemDescriptionType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array())
+            ->setRequired(array('itemId'))
         ;
     }
 

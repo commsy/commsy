@@ -25,7 +25,8 @@
         "knplabs/knp-menu-bundle":"dev-master",
         "lexik/form-filter-bundle": "~3.0",
         "friendsofsymfony/elastica-bundle": "3.0.*@dev",
-        "egeloen/ordered-form-bundle": "~1.0"
+        "egeloen/ordered-form-bundle": "~1.0",
+        "egeloen/ckeditor-bundle": "~2.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
