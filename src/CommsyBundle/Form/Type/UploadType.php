@@ -48,6 +48,13 @@ class UploadType extends AbstractType
                 'label' => 'Save',
                 'translation_domain' => 'form',
             ))
+            ->add('cancel', 'submit', array(
+                'attr' => array(
+                    'class' => 'uk-button-primary',
+                ),
+                'label' => 'Cancel',
+                'translation_domain' => 'form',
+            ))
         ;
     }
 

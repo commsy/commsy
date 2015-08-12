@@ -201,29 +201,33 @@ class UploadController extends Controller
         
         $form->handleRequest($request);
         if ($form->isValid()) {
-            $formData = $form->getData();
-
-            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-            $tempManager = $legacyEnvironment->getManager($item->getItemType());
-            $tempItem = $tempManager->getItem($item->getItemId());
-
-            $oldFileIds = $tempItem->getFileIDArray();
-            
-            $tempItem->setFileIDArray($formData['oldFiles']);
-            
-            $tempItem->save();
-
-            $deleteFileIds = array_diff($oldFileIds, $formData['oldFiles']);
-            
-            foreach ($deleteFileIds as $deleteFileId) {
-                $tempFile = $fileService->getFile($deleteFileId);
-                $tempFile->delete();
+            if ($form->get('save')->isClicked()) {
+                $formData = $form->getData();
+    
+                $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+                $tempManager = $legacyEnvironment->getManager($item->getItemType());
+                $tempItem = $tempManager->getItem($item->getItemId());
+    
+                $oldFileIds = $tempItem->getFileIDArray();
+                
+                $tempItem->setFileIDArray($formData['oldFiles']);
+                
+                $tempItem->save();
+    
+                $deleteFileIds = array_diff($oldFileIds, $formData['oldFiles']);
+                
+                foreach ($deleteFileIds as $deleteFileId) {
+                    $tempFile = $fileService->getFile($deleteFileId);
+                    $tempFile->delete();
+                }
+                
+                // persist
+                // $em = $this->getDoctrine()->getManager();
+                // $em->persist($room);
+                // $em->flush();
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
             }
-            
-            // persist
-            // $em = $this->getDoctrine()->getManager();
-            // $em->persist($room);
-            // $em->flush();
             
             return $this->redirectToRoute('commsy_upload_uploadsave', array('roomId' => $roomId, 'itemId' => $itemId));
         }
