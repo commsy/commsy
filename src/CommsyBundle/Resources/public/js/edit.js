@@ -89,6 +89,11 @@
 
                         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
                         
+                        $('div[id^="cke_"]div[role="application"]').each(function () {
+                           var $textarea = $(this).attr('id').replace('cke_', '');
+                           $('#'+$textarea).val(CKEDITOR.instances[$textarea].getData());
+                        });
+                        
                         // submit the form manually
                         $.ajax({
                             url: $this.options.editUrl,

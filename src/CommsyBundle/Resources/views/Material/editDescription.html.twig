@@ -6,7 +6,7 @@
     {{ form_errors(form) }}
     <div class="uk-flex">
         <div>
-            {{ form_widget(form.description) }}
+            {{ form_widget(form.description, {'id': 'description' ~ itemId}) }}
         </div>
     </div>
     <div class="uk-flex uk-margin-small-top">

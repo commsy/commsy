@@ -4,6 +4,7 @@ imports:
     - { resource: services.yml }
     - { resource: commsy.yml }
     - { resource: fos_elastica.yml }
+    - { resource: ckeditor.yml }
 
 framework:
     #esi:             ~

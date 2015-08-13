@@ -331,6 +331,7 @@ class MaterialController extends Controller
         }
 
         return array(
+            'itemId' => $itemId,
             'form' => $form->createView()
         );
     }
