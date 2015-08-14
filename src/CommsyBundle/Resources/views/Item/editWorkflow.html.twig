@@ -1,0 +1,71 @@
+{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
+    {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowTrafficLight) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowResubmission) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowResubmissionDate) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowResubmissionWho) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowResubmissionWhoAdditional) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowResubmissionTrafficLight) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowValidity) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowValidityDate) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowValidityWho) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowValidityWhoAdditional) }}
+        </div>
+    </div>
+    <div class="uk-flex">
+        <div>
+            {{ form_row(form.workflowValidityTrafficLight) }}
+        </div>
+    </div>
+    <div class="uk-flex uk-margin-small-top">
+        <div>
+            {{ form_row(form.save) }}
+        </div>
+        <div class="uk-margin-small-left">
+            {{ form_row(form.cancel) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div>

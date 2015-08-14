@@ -112,8 +112,8 @@
                     </div>
         
                     {# workflow #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macros.editSection('workflow', material, true, 'ToDo') }}
+                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                        {{ macros.workflow(material) }}
                     </div>
         
                     {# sections #}

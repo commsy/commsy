@@ -94,6 +94,11 @@ services:
         tags:
             - { name: form.type, alias: itemDescription }
 
+    commsy.form.type.itemWorkflow:
+        class: CommsyBundle\Form\Type\ItemWorkflowType
+        tags:
+            - { name: form.type, alias: itemWorkflow }
+
     commsy.form.type.section:
         class: CommsyBundle\Form\Type\SectionType
         tags:

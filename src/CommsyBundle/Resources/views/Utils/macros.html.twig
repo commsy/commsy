@@ -361,7 +361,7 @@
 </div>
 {% endmacro %}
 
-{% macro rating(item) %}
+{% macro ratingStatus(item) %}
     <div class="">
         <i class="uk-icon-small uk-icon-star"></i>
         <i class="uk-icon-small uk-icon-star"></i>
@@ -369,4 +369,40 @@
         <i class="uk-icon-small uk-icon-star-o"></i>
         <i class="uk-icon-small uk-icon-star-o"></i>
     </div>
+{% endmacro %}
+
+{% macro workflowStatus(item) %}
+    <div class="">
+    {% if item.workflowTrafficLight == '0_green' %}
+        <i class="uk-icon-small uk-icon-circle uk-text-success"></i>
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+    {% elseif item.workflowTrafficLight == '1_yellow' %}
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="uk-icon-small uk-icon-circle uk-text-warning"></i>
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+    {% elseif item.workflowTrafficLight == '2_red' %}
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="uk-icon-small uk-icon-circle uk-text-danger"></i>
+    {% else %}
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="uk-icon-small uk-icon-circle-o"></i>
+    {% endif %}
+    </div>
+{% endmacro %}
+
+{% macro workflow(item) %}
+    {% import _self as macros %}
+
+    {% set preview %}
+        {{ macros.workflowStatus(item) }}
+    {% endset %}
+
+    {% set content %}
+        {{ macros.workflowStatus(item) }}
+    {% endset %}
+    
+    {{ macros.editSection('workflow', item, true, content, preview) }}
 {% endmacro %}

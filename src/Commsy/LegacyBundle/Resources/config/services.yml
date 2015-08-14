@@ -114,3 +114,7 @@ services:
     commsy_legacy.transformer.privateroom:
         class: Commsy\LegacyBundle\Form\DataTransformer\PrivateRoomTransformer
         arguments: [@commsy_legacy.environment]
+        
+    commsy_legacy.transformer.item:
+        class: Commsy\LegacyBundle\Form\DataTransformer\ItemTransformer
+        arguments: [@commsy_legacy.environment]
