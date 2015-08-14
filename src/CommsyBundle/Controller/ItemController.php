@@ -56,7 +56,7 @@ class ItemController extends Controller
         }
 
         return array(
-            'itemId' => $itemId,
+            'item' => $tempItem,
             'form' => $form->createView()
         );
     }

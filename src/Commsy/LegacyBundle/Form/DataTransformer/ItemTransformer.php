@@ -1,6 +1,8 @@
 <?php
 namespace Commsy\LegacyBundle\Form\DataTransformer;
 
+use \DateTime;
+
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use CommSy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
 
@@ -30,7 +32,7 @@ class ItemTransformer implements DataTransformerInterface
             } else {
                 $itemData['workflowResubmission'] = false;
             }
-            $itemData['workflowResubmissionDate'] = $item->getWorkflowResubmissionDate();
+            $itemData['workflowResubmissionDate'] = new DateTime($item->getWorkflowResubmissionDate());
             $itemData['workflowResubmissionWho'] = $item->getWorkflowResubmissionWho();
             $itemData['workflowResubmissionWhoAdditional'] = $item->getWorkflowResubmissionWhoAdditional();
             $itemData['workflowResubmissionTrafficLight'] = $item->getWorkflowResubmissionTrafficLight();
@@ -39,7 +41,7 @@ class ItemTransformer implements DataTransformerInterface
             } else {
                 $itemData['workflowValidity'] = false;
             }
-            $itemData['workflowValidityDate'] = $item->getWorkflowValidityDate();
+            $itemData['workflowValidityDate'] = new DateTime($item->getWorkflowValidityDate());
             $itemData['workflowValidityWho'] = $item->getWorkflowValidityWho();
             $itemData['workflowValidityWhoAdditional'] = $item->getWorkflowValidityWhoAdditional();
             $itemData['workflowValidityTrafficLight'] = $item->getWorkflowValidityTrafficLight();
@@ -64,7 +66,7 @@ class ItemTransformer implements DataTransformerInterface
         } else {
             $item->setWorkflowResubmission('-1');
         }
-        $item->setWorkflowResubmissionDate($itemData['workflowResubmissionDate']);
+        $item->setWorkflowResubmissionDate($itemData['workflowResubmissionDate']->format('Y-m-d H:i:s'));
         $item->setWorkflowResubmissionWho($itemData['workflowResubmissionWho']);
         $item->setWorkflowResubmissionWhoAdditional($itemData['workflowResubmissionWhoAdditional']);
         $item->setWorkflowResubmissionTrafficLight($itemData['workflowResubmissionTrafficLight']);
@@ -73,7 +75,7 @@ class ItemTransformer implements DataTransformerInterface
         } else {
             $item->setWorkflowValidity('-1');
         }
-        $item->setWorkflowValidityDate($itemData['workflowValidityDate']);
+        $item->setWorkflowValidityDate($itemData['workflowValidityDate']->format('Y-m-d H:i:s'));
         $item->setWorkflowValidityWho($itemData['workflowValidityWho']);
         $item->setWorkflowValidityWhoAdditional($itemData['workflowValidityWhoAdditional']);
         $item->setWorkflowValidityTrafficLight($itemData['workflowValidityTrafficLight']);

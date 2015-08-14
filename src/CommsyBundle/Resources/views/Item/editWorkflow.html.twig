@@ -1,62 +1,194 @@
-{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_layout.html.twig' %}
+
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
+    {{ form_label(form.workflowTrafficLight) }}
     <div class="uk-flex">
         <div>
-            {{ form_row(form.workflowTrafficLight) }}
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowTrafficLight[0]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('3_none') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowTrafficLight[1]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('0_green') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowTrafficLight[2]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('1_yellow') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowTrafficLight[3]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('2_red') }}
+                </div>
+            </div>
         </div>
     </div>
-    <div class="uk-flex">
+    <hr/>
+    <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.workflowResubmission) }}
         </div>
     </div>
-    <div class="uk-flex">
+    <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.workflowResubmissionDate) }}
         </div>
     </div>
-    <div class="uk-flex">
+    {{ form_label(form.workflowResubmissionWho) }}
+    <div class="uk-flex uk-margin-small-top">
         <div>
-            {{ form_row(form.workflowResubmissionWho) }}
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowResubmissionWho[0]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ 'notify creator'|trans({})|capitalize }} ({{ macros.workflowWhoCreator(item) }})
+                </div>
+            </div>
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowResubmissionWho[1]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                     {{ 'notify all modifiers'|trans({})|capitalize }} ({{ macros.workflowWhoModifier(item) }})
+                </div>
+            </div>
         </div>
     </div>
-    <div class="uk-flex">
+    <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.workflowResubmissionWhoAdditional) }}
         </div>
     </div>
-    <div class="uk-flex">
+    {{ form_label(form.workflowResubmissionTrafficLight) }}
+    <div class="uk-flex uk-margin-small-top">
         <div>
-            {{ form_row(form.workflowResubmissionTrafficLight) }}
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowResubmissionTrafficLight[0]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('3_none') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowResubmissionTrafficLight[1]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('0_green') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowResubmissionTrafficLight[2]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('1_yellow') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowResubmissionTrafficLight[3]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('2_red') }}
+                </div>
+            </div>
         </div>
     </div>
-    <div class="uk-flex">
+    <hr/>
+    <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.workflowValidity) }}
         </div>
     </div>
-    <div class="uk-flex">
+    <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.workflowValidityDate) }}
         </div>
     </div>
-    <div class="uk-flex">
+    {{ form_label(form.workflowValidityWho) }}
+    <div class="uk-flex uk-margin-small-top">
         <div>
-            {{ form_row(form.workflowValidityWho) }}
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowValidityWho[0]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ 'notify creator'|trans({})|capitalize }} ({{ macros.workflowWhoCreator(item) }})
+                </div>
+            </div>
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowValidityWho[1]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ 'notify all modifiers'|trans({})|capitalize }} ({{ macros.workflowWhoModifier(item) }})
+                </div>
+            </div>
         </div>
     </div>
-    <div class="uk-flex">
+    <div class="uk-flex uk-margin-small-top">
         <div>
             {{ form_row(form.workflowValidityWhoAdditional) }}
         </div>
     </div>
-    <div class="uk-flex">
+    {{ form_label(form.workflowValidityTrafficLight) }}
+    <div class="uk-flex uk-margin-small-top">
         <div>
-            {{ form_row(form.workflowValidityTrafficLight) }}
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.workflowValidityTrafficLight[0]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('3_none') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowValidityTrafficLight[1]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('0_green') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowValidityTrafficLight[2]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('1_yellow') }}
+                </div>
+            </div>
+            <div class="uk-flex uk-margin-small-top">
+                <div>
+                    {{ form_widget(form.workflowValidityTrafficLight[3]) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ macros.workflowStatus('2_red') }}
+                </div>
+            </div>
         </div>
     </div>
     <div class="uk-flex uk-margin-small-top">

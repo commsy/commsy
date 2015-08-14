@@ -45,7 +45,6 @@ class ItemWorkflowType extends AbstractType
             ->add('workflowResubmissionDate', 'date', array(
                 'input'  => 'datetime',
                 'widget' => 'single_text',
-                'data' => NULL,
                 'required' => false,
             ))
             ->add('workflowResubmissionWho', 'choice', array(
@@ -61,7 +60,7 @@ class ItemWorkflowType extends AbstractType
                 'multiple' => false
             ))
             ->add('workflowResubmissionWhoAdditional', 'text', array(
-                'label' => 'who additional',
+                'label' => 'additional email addresses',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
@@ -80,14 +79,13 @@ class ItemWorkflowType extends AbstractType
                 'multiple' => false
             ))
             ->add('workflowValidity', 'checkbox', array(
-                'label'    => 'resubmission',
+                'label'    => 'validity',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
             ->add('workflowValidityDate', 'date', array(
                 'input'  => 'datetime',
                 'widget' => 'single_text',
-                'data' => NULL,
                 'required' => false,
             ))
             ->add('workflowValidityWho', 'choice', array(
@@ -103,7 +101,7 @@ class ItemWorkflowType extends AbstractType
                 'multiple' => false
             ))
             ->add('workflowValidityWhoAdditional', 'text', array(
-                'label' => 'validity who additional',
+                'label' => 'additional email addresses',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
