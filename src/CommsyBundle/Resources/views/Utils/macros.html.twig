@@ -191,7 +191,7 @@
                 <h4>{{ 'files'|trans({})|capitalize }} ({{ 'no files'|trans({})|capitalize }})</h4>
             </div>
         </div>
-    {% endif %}
+    {% endif %}  
 {% endmacro %}
 
 {% macro userIcon(user, size) %}
@@ -236,7 +236,7 @@
                     </div>
                 </div>
             </div>
-            <div class="uk-width-1-10 cs-toggle-icon">
+            <div class="uk-width-1-10  uk-text-right cs-toggle-icon uk-text-right">
                 <a class="" data-uk-toggle="{target:'.toggle-description-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
             </div>
         </div>
@@ -268,7 +268,7 @@
         <div class="uk-width-9-10">
             <h4>{{ title|trans({})|capitalize }}</h4>
         </div>
-        <div class="uk-width-1-10">
+        <div class="uk-width-1-10 uk-text-right">
             {% if edit %}
                 <!-- <i class="uk-icon-small uk-icon-hover uk-icon-edit"></i> -->
                 {# edit #}
@@ -297,7 +297,7 @@
                 </div>
             </div>
         </div>
-        <div class="uk-width-1-10 cs-toggle-icon">
+        <div class="uk-width-1-10 uk-text-right cs-toggle-icon">
             <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
     </div>
@@ -305,14 +305,15 @@
 {% endmacro %}
 
 {% macro editSection(title, item, edit, content, preview) %}
+<hr/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
     <a name="description"></a>
     {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
     <div class="uk-grid uk-margin-small-bottom">
         <div class="uk-width-9-10">
-            <h4>{{ title|trans({})|capitalize }}</h4>
+            <h4>{{ title|trans({})}}</h4>
         </div>
-        <div class="uk-width-1-10">
+        <div class="uk-width-1-10  uk-text-right">
             {% if edit %}
                 {% if is_granted('ITEM_EDIT', item.itemId) %}
                     <div class="cs-edit uk-hidden">
@@ -336,7 +337,7 @@
                 </div>
             </div>
         </div>
-        <div class="uk-width-1-10 cs-toggle-icon">
+        <div class="uk-width-1-10  uk-text-right cs-toggle-icon">
             <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
         </div>
     </div>
@@ -363,11 +364,11 @@
 
 {% macro ratingStatus(item) %}
     <div class="">
-        <i class="uk-icon-small uk-icon-star"></i>
-        <i class="uk-icon-small uk-icon-star"></i>
-        <i class="uk-icon-small uk-icon-star"></i>
-        <i class="uk-icon-small uk-icon-star-o"></i>
-        <i class="uk-icon-small uk-icon-star-o"></i>
+        <i class="cs-icon-xs-small uk-icon-star"></i>
+        <i class="cs-icon-xs-small uk-icon-star"></i>
+        <i class="cs-icon-xs-small uk-icon-star"></i>
+        <i class="cs-icon-xs-small uk-icon-star-o"></i>
+        <i class="cs-icon-xs-small uk-icon-star-o"></i>
     </div>
 {% endmacro %}
 
@@ -380,21 +381,21 @@
 {% macro workflowStatus(status) %}
     <div class="">
     {% if status == '0_green' %}
-        <i class="uk-icon-small uk-icon-circle uk-text-success"></i>
-        <i class="uk-icon-small uk-icon-circle-o"></i>
-        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle uk-text-success"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
     {% elseif status == '1_yellow' %}
-        <i class="uk-icon-small uk-icon-circle-o"></i>
-        <i class="uk-icon-small uk-icon-circle uk-text-warning"></i>
-        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle uk-text-warning"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
     {% elseif status == '2_red' %}
-        <i class="uk-icon-small uk-icon-circle-o"></i>
-        <i class="uk-icon-small uk-icon-circle-o"></i>
-        <i class="uk-icon-small uk-icon-circle uk-text-danger"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle uk-text-danger"></i>
     {% else %}
-        <i class="uk-icon-small uk-icon-circle-o"></i>
-        <i class="uk-icon-small uk-icon-circle-o"></i>
-        <i class="uk-icon-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small  uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small  uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small  uk-icon-circle-o"></i>
     {% endif %}
     </div>
 {% endmacro %}

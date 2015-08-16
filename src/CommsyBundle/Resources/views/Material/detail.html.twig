@@ -8,7 +8,7 @@
 {% block content %}
     <div class="uk-grid">
         <div class="uk-width-medium-1-5 uk-sticky-placeholder">
-            <div class="uk-panel uk-panel-box uk-margin-bottom">
+        <div class="uk-panel uk-panel-box uk-margin-bottom data-uk-sticky">
                 <ul class="uk-nav uk-nav-parent-icon" data-uk-nav>
                     <li><a href="#description">{{ 'description'|trans({})|capitalize }}</a></li>
                     <li><a href="#files">{{ 'files'|trans({})|capitalize }}</a></li>
@@ -31,135 +31,146 @@
                 </ul>
             </div>
         </div>
-        <div class="uk-width-medium-4-5">
-            <div class="uk-panel uk-panel-box uk-margin-bottom">
-                {# navigation #}
-                <div class="uk-grid uk-margin-bottom">
-                    <div class="uk-width-1-3">
-                        <div class="uk-grid">
-                            <div class="uk-width-medium-2-10">
-                                {% if firstItemId %}
-                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-double-left"></i>
-                                {% endif %}
-                                {% if prevItemId %}
-                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-left"></i>
-                                {% endif %}
-                            </div>
-                            <div class="uk-width-medium-6-10">
-                                <div class="uk-button-dropdown" data-uk-dropdown>
-                                    <button class="uk-button">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
-                                    <div class="uk-dropdown">
-                                        <ul class="uk-nav uk-nav-dropdown">
-                                            {% for tempMaterial in materialList %}
-                                                {% if tempMaterial.itemId != material.itemId %}
-                                                    <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}">{{ tempMaterial.title|raw|truncate(25) }}</a></li>
-                                                {% else %}
-                                                    <li class="uk-nav-divider"></li>
-                                                    <li class="uk-margin-left">{{ tempMaterial.title }}</li>
-                                                    <li class="uk-nav-divider"></li>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </ul>
+        <div class="uk-width-medium-4-5">       
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+               <div class="uk-panel-teaser panel-teaser-primary">
+                    {# navigation #}
+                    <div class="uk-grid">
+                        <div class="uk-width-1-3">
+                            <div class="uk-grid">
+                                <div class="uk-width-medium-2-10">
+                                    {% if firstItemId %}
+                                        <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
+                                    {% else %}
+                                        <i class="uk-icon-small uk-icon-angle-double-left uk-button-primary"></i>
+                                    {% endif %}
+                                    {% if prevItemId %}
+                                        <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': prevItemId}) }}"><i class="uk-icon-small uk-icon-angle-left"></i></a>
+                                    {% else %}
+                                        <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="uk-width-medium-6-10">
+                                    <div class="uk-button-dropdown" data-uk-dropdown>
+                                        <button class="uk-button">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
+                                        <div class="uk-dropdown">
+                                            <ul class="uk-nav uk-nav-dropdown">
+                                                {% for tempMaterial in materialList %}
+                                                    {% if tempMaterial.itemId != material.itemId %}
+                                                        <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}">{{ tempMaterial.title|raw|truncate(25) }}</a></li>
+                                                    {% else %}
+                                                        <li class="uk-nav-divider"></li>
+                                                        <li class="uk-margin-left">{{ tempMaterial.title }}</li>
+                                                        <li class="uk-nav-divider"></li>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="uk-width-medium-2-10">
+                                    {% if nextItemId %}
+                                        <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
+                                    {% else %}
+                                        <i class="uk-icon-small uk-icon-angle-right uk-button-primary"></i>
+                                    {% endif %}
+                                    {% if lastItemId %}
+                                        <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
+                                    {% else %}
+                                        <i class="uk-icon-small uk-icon-angle-double-right uk-button-primary"></i>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div class="uk-width-medium-2-10">
-                                {% if nextItemId %}
-                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-right"></i>
-                                {% endif %}
-                                {% if lastItemId %}
-                                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': lastItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-right"></i></a>
-                                {% else %}
-                                    <i class="uk-icon-small uk-icon-angle-double-right"></i>
-                                {% endif %}
-                            </div>
-                         </div>
-                    </div>
-                    <div class="uk-width-1-3">
-                        <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}"><i class="uk-icon-small uk-icon-plus-circle"></i> {{ 'new material'|trans({})|capitalize }}</a>
-                    </div>
-                    <div class="uk-width-1-3">
-                        <a href="#"><i class="uk-icon-small uk-icon-print"></i> {{ 'print'|trans({})|capitalize }}</a>
-                    </div>
-                </div>
-            
-                {# content #}
-                <article class="uk-article uk-position-relative" data-uk-observe>
-                    {# title, etc. #}
-                    <div class="cs-toggle" data-uk-observe>
-                        {{ macrosMaterial.title(material, modifierList) }}
-                    </div>
-            
-                    {# description #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.editSection('description', material, true, material.description, material.description) }}
-                    </div>
-            
-                    {# files #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosMaterial.files(material) }}
-                    </div>
-        
-                    {# links #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macrosMaterial.links(material) }}
-                    </div>
-        
-                    {# workflow #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.workflow(material) }}
-                    </div>
-        
-                    {# sections #}
-                    <div class="cs-edit-section cs-toggle" data-uk-observe>
-                        {{ macrosMaterial.sections(material, sectionList) }}
-                    </div>
-                    
-                </article> 
-            </div>
-            
-            {# material sections #}
-            <a name="sections"></a>
-            {% for section in sectionList %}
-                <div class="uk-panel uk-panel-box uk-margin-bottom">
-                    <article class="uk-article uk-position-relative">
-                        {# title #}
-                        <div class="cs-toggle" data-uk-observe>
-                            {{ macrosMaterial.title(section, modifierList) }}
                         </div>
-                        
+                        <div class="uk-width-2-3 uk-text-right">
+                            <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}"><i class="uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}</a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-save"></i> {{ 'save'|trans({})|capitalize }}</a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-copy"></i> {{ 'copy'|trans({})|capitalize }}</a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-send"></i> {{ 'send'|trans({})|capitalize }}</a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-print"></i> {{ 'print'|trans({})|capitalize }}</a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-trash"></i> {{ 'trash'|trans({})|capitalize }}</a>
+                        </div>
+                    </div>
+    
+    
+                    </div>
+                
+                    {# content #}
+                    <article class="uk-article uk-position-relative" data-uk-observe>
+                        {# title, etc. #}
+                        <div class="cs-toggle" data-uk-observe>
+                            {{ macrosMaterial.title(material, modifierList) }}
+                        </div>
+                
                         {# description #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macros.editSection('description', section, true, section.description, section.description) }}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macros.editSection('description', material, true, material.description, material.description) }}
                         </div>
                 
                         {# files #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macrosMaterial.files(section) }}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macrosMaterial.files(material) }}
                         </div>
-                    </article>
-                </div>
-            {% endfor %}
             
-            <div class="uk-panel uk-panel-box-primary uk-margin-bottom">
-                {# annotations #}
-                <a name="annotations"></a>
-                <div class="uk-panel-teaser">
-                    <h3>{{ 'annotations'|trans({})|capitalize }}</h3>
+                        {# links #}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe>
+                            {{ macrosMaterial.links(material) }}
+                        </div>
+            
+                        {# workflow #}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macros.workflow(material) }}
+                        </div>
+            
+                        {# sections #}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe>
+                            {{ macrosMaterial.sections(material, sectionList) }}
+                        </div>
+                        
+                    </article> 
                 </div>
-                {% if item.itemType != 'discussion' %}
-                    {{ render(controller(
-                        'CommsyBundle:Annotation:feed',
-                        { 'roomId': roomId, 'linkedItemId': item.itemId }
-                    ))}}
-                {% endif %}
+    
+    
+                
+                {# material sections #}
+                <a name="sections"></a>
+                {% for section in sectionList %}
+                    <div class="uk-panel uk-panel-box uk-margin-bottom">
+                        <article class="uk-article uk-position-relative">
+                            {# title #}
+                            <div class="cs-toggle" data-uk-observe>
+                                {{ macrosMaterial.title(section, modifierList) }}
+                            </div>
+                            
+                            {# description #}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                                {{ macros.editSection('description', section, true, section.description, section.description) }}
+                            </div>
+                    
+                            {# files #}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                                {{ macrosMaterial.files(section) }}
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+                
+                <div class="uk-panel uk-panel-box-primary uk-margin-bottom">
+                    {# annotations #}
+                    <a name="annotations"></a>
+                    <div class="uk-panel-teaser">
+                        <h3>{{ 'annotations'|trans({})|capitalize }}</h3>
+                    </div>
+                    {% if item.itemType != 'discussion' %}
+                        {{ render(controller(
+                            'CommsyBundle:Annotation:feed',
+                            { 'roomId': roomId, 'linkedItemId': item.itemId }
+                        ))}}
+                    {% endif %}
+                </div>
             </div>
         </div>
+
     </div>
+
 {% endblock %}

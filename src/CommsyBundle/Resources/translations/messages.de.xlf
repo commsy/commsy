@@ -26,6 +26,74 @@
                 <source>EMail</source>
                 <target>E-Mail</target>
             </trans-unit>
+            <trans-unit id="7">
+                <source>changed by</source>
+                <target>geändert von</target>
+            </trans-unit>
+            <trans-unit id="8">
+                <source>reference number</source>
+                <target>Referenznummer</target>
+            </trans-unit>
+            <trans-unit id="9">
+                <source>creator</source>
+                <target>ErstellerIn</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>editors</source>
+                <target>BearbeiterInnen</target>
+            </trans-unit>
+            <trans-unit id="11">
+                <source>clicked since last editing</source>
+                <target>Seit der letzten Bearbeitung aufgerufen von</target>
+            </trans-unit>
+            <trans-unit id="12">
+                <source>clicked since creating</source>
+                <target>Seit der Erstellung aufgerufen von</target>
+            </trans-unit>
+            <trans-unit id="13">
+                <source>new</source>
+                <target>Neuer Eintrag</target>
+            </trans-unit>
+            <trans-unit id="14">
+                <source>save</source>
+                <target>speichern</target>
+            </trans-unit>
+            <trans-unit id="15">
+                <source>send</source>
+                <target>senden</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>copy</source>
+                <target>kopieren</target>
+            </trans-unit>
+            <trans-unit id="17">
+                <source>print</source>
+                <target>drucken</target>
+            </trans-unit>
+            <trans-unit id="18">
+                <source>trash</source>
+                <target>löschen</target>
+            </trans-unit>
+            <trans-unit id="19">
+                <source>description</source>
+                <target>Beschreibung</target>
+            </trans-unit>
+            <trans-unit id="20">
+                <source>files</source>
+                <target>Angehängte Dateien</target>
+            </trans-unit>
+            <trans-unit id="21">
+                <source>links</source>
+                <target>Zugeordnete Einträge</target>
+            </trans-unit>
+            <trans-unit id="22">
+                <source>workflow</source>
+                <target>Workflow</target>
+            </trans-unit>
+            <trans-unit id="23">
+                <source>sections</source>
+                <target>Abschnitte</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
