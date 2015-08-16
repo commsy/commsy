@@ -40,7 +40,7 @@
             </trans-unit>
             <trans-unit id="10">
                 <source>editors</source>
-                <target>BearbeiterInnen</target>
+                <target>Alle BearbeiterInnen</target>
             </trans-unit>
             <trans-unit id="11">
                 <source>clicked since last editing</source>
@@ -93,6 +93,22 @@
             <trans-unit id="23">
                 <source>sections</source>
                 <target>Abschnitte</target>
+            </trans-unit>
+            <trans-unit id="24">
+                <source>entry description</source>
+                <target>Beschreibungstext</target>
+            </trans-unit>
+            <trans-unit id="25">
+                <source>workflow information</source>
+                <target>Workflow Informationen</target>
+            </trans-unit>
+            <trans-unit id="26">
+                <source>annotations</source>
+                <target>Anmerkungen</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>quick navigation</source>
+                <target>Schnellnavigation</target>
             </trans-unit>
         </body>
     </file>

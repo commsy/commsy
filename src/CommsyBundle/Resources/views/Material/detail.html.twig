@@ -8,27 +8,33 @@
 {% block content %}
     <div class="uk-grid">
         <div class="uk-width-medium-1-5 uk-sticky-placeholder">
-        <div class="uk-panel uk-panel-box uk-margin-bottom data-uk-sticky">
-                <ul class="uk-nav uk-nav-parent-icon" data-uk-nav>
-                    <li><a href="#description">{{ 'description'|trans({})|capitalize }}</a></li>
-                    <li><a href="#files">{{ 'files'|trans({})|capitalize }}</a></li>
-                    <li><a href="#links">{{ 'links'|trans({})|capitalize }}</a></li>
-                    <li><a href="#workflow">{{ 'workflow'|trans({})|capitalize }}</a></li>
-                    <li><a href="#editing information">{{ 'editing information'|trans({})|capitalize }}</a></li>
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary data-uk-sticky">
+               <div class="uk-panel-teaser panel-teaser-primary uk-margin-remove">
+               {{ 'quick navigation'|trans({})|capitalize }}
+               </div>
+               <div>
+                 <ul class="uk-nav uk-nav-parent-icon" data-uk-nav>
+                    <li class="uk-comment"><a href="#description">{{ 'entry description'|trans({})}}</a></li>
+                    <li class="uk-comment"><a href="#files">{{ 'files'|trans({})}}</a></li>
+                    <li class="uk-comment"><a href="#links">{{ 'links'|trans({})}}</a></li>
+                    <li class="uk-comment"><a href="#workflow">{{ 'workflow information'|trans({})}}</a></li>
                     {% if not sectionList is empty %}
-                    <li class="uk-parent">
+                    <li class="uk-comment uk-parent ">
                         <a href="#">{{ 'sections'|trans({})|capitalize }}</a>
                         <ul class="uk-nav-sub">
+                        {% set counter = 1 %}                        
                         {% for section in sectionList %}
                             <li>
-                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw|truncate(20) }}</a>
+                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ counter }}. {{ section.title|raw|truncate(20) }}</a>
                             </li>
+                            {% set counter = counter + 1 %}
                         {% endfor %}
                         </ul>
                     </li>
                     {% endif %}
-                    <li><a href="#annotations">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                    <li class="uk-comment"><a href="#annotations">{{ 'annotations'|trans({})|capitalize }}</a></li>
                 </ul>
+                </div>
             </div>
         </div>
         <div class="uk-width-medium-4-5">       
@@ -52,7 +58,7 @@
                                 </div>
                                 <div class="uk-width-medium-6-10">
                                     <div class="uk-button-dropdown" data-uk-dropdown>
-                                        <button class="uk-button">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
+                                        <button class="uk-button uk-button-mini">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
                                         <div class="uk-dropdown">
                                             <ul class="uk-nav uk-nav-dropdown">
                                                 {% for tempMaterial in materialList %}
@@ -109,21 +115,25 @@
                 
                         {# files #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            <a name="files"></a>
                             {{ macrosMaterial.files(material) }}
                         </div>
             
                         {# links #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe>
+                            <a name="links"></a>
                             {{ macrosMaterial.links(material) }}
                         </div>
             
                         {# workflow #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            <a name="workflow"></a>
                             {{ macros.workflow(material) }}
                         </div>
             
                         {# sections #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe>
+                            <a name="sections"></a>
                             {{ macrosMaterial.sections(material, sectionList) }}
                         </div>
                         

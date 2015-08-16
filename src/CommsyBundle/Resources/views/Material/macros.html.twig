@@ -98,7 +98,7 @@
                                     </div>
                                 </div>
                                 <div class="uk-clearfix">
-                                    {{ 'creator'|trans({})|capitalize }} 
+                                    {{ 'creator'|trans({})}} 
                                 </div>
                             </div>
                             <div class="uk-width-2-5">                           
@@ -121,10 +121,14 @@
                                         {% endif %}
                                     </div>
                                  </div>                           
+                                {% if modifierList[item.itemId] is defined %}
+                                {% if not modifierList[item.itemId] is empty %}
                                 <div class="uk-clearfix">
-                                    {{ 'editors'|trans({})|capitalize }} 
+                                    {{ 'editors'|trans({})}} 
                                 </div>
-                           </div>                            
+                                {% endif %}
+                                {% endif %}
+                            </div>                            
                         </div>                        
                     </div>
                     <div class="uk-panel uk-margin-top">
