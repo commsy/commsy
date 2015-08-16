@@ -7,7 +7,7 @@
 
 {% block content %}
     <div class="uk-grid">
-        <div class="uk-width-medium-1-5 uk-sticky-placeholder">
+        <div class="uk-width-medium-1-5 uk-sticky-placeholder cs-addon-navigation">
             <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary data-uk-sticky">
                <div class="uk-panel-teaser panel-teaser-primary uk-margin-remove">
                {{ 'quick navigation'|trans({})|capitalize }}
@@ -25,7 +25,7 @@
                         {% set counter = 1 %}                        
                         {% for section in sectionList %}
                             <li>
-                                <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ counter }}. {{ section.title|raw|truncate(20) }}</a>
+                                <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ counter }}. {{ section.title|raw|truncate(20) }}</a>
                             </li>
                             {% set counter = counter + 1 %}
                         {% endfor %}
@@ -43,8 +43,8 @@
                     {# navigation #}
                     <div class="uk-grid">
                         <div class="uk-width-1-3">
-                            <div class="uk-grid">
-                                <div class="uk-width-medium-2-10">
+                            <div class="uk-flex">
+                                <div  class="uk-margin-right">
                                     {% if firstItemId %}
                                         <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
                                     {% else %}
@@ -56,7 +56,7 @@
                                         <i class="uk-icon-small uk-icon-angle-left uk-button-primary"></i>
                                     {% endif %}
                                 </div>
-                                <div class="uk-width-medium-6-10">
+                                <div class="uk-margin-right">
                                     <div class="uk-button-dropdown" data-uk-dropdown>
                                         <button class="uk-button uk-button-mini">Material {{ counterPosition }} / {{ count }} <i class="uk-icon-caret-down"></i></button>
                                         <div class="uk-dropdown">
@@ -74,7 +74,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="uk-width-medium-2-10">
+                                <div>
                                     {% if nextItemId %}
                                         <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': nextItemId}) }}"><i class="uk-icon-small uk-icon-angle-right"></i></a>
                                     {% else %}
@@ -89,12 +89,16 @@
                             </div>
                         </div>
                         <div class="uk-width-2-3 uk-text-right">
-                            <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}"><i class="uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}</a>
-                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-save"></i> {{ 'save'|trans({})|capitalize }}</a>
-                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-copy"></i> {{ 'copy'|trans({})|capitalize }}</a>
-                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-send"></i> {{ 'send'|trans({})|capitalize }}</a>
-                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-print"></i> {{ 'print'|trans({})|capitalize }}</a>
-                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-trash"></i> {{ 'trash'|trans({})|capitalize }}</a>
+                            <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}"><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-save"></i> <span class="cs-addon-navigation-large">{{ 'save'|trans({})|capitalize }}</span></a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-copy"></i> <span class="cs-addon-navigation-large">{{ 'copy'|trans({})|capitalize }}</span></a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-send"></i> <span class="cs-addon-navigation-large">{{ 'send'|trans({})|capitalize }}</span></a>
+                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-print"></i> <span class="cs-addon-navigation-large">{{ 'print'|trans({})|capitalize }}</span></a>
+                            {% if is_granted('ITEM_EDIT', item.itemId) %}
+                                <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-trash"></i> <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span></a>
+                            {% else %}
+                                <i class="uk-icon-small uk-icon-trash"></i> <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
+                            {% endif %}
                         </div>
                     </div>
     
