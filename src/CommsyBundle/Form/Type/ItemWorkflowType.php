@@ -31,18 +31,20 @@ class ItemWorkflowType extends AbstractType
                     '1_yellow' => 'draft',
                     '2_red' => 'invalid',
                 ),
-                'label' => 'status',
+                'label' => 'workflowStatus',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
             ))
             ->add('workflowResubmission', 'checkbox', array(
-                'label'    => 'resubmission',
+                'label'    => 'workflowResubmission',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
             ->add('workflowResubmissionDate', 'date', array(
+                'label' => 'workflowResubmissionDate',
+                'translation_domain' => 'item',
                 'input'  => 'datetime',
                 'widget' => 'single_text',
                 'required' => false,
@@ -53,14 +55,14 @@ class ItemWorkflowType extends AbstractType
                     'creator' => 'creator',
                     'modifier' => 'modifier',
                 ),
-                'label' => 'who',
+                'label' => 'workflowResubmissionWho',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
             ))
             ->add('workflowResubmissionWhoAdditional', 'text', array(
-                'label' => 'additional email addresses',
+                'label' => 'workflowWhoAdditional',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
@@ -72,18 +74,20 @@ class ItemWorkflowType extends AbstractType
                     '1_yellow' => 'draft',
                     '2_red' => 'invalid',
                 ),
-                'label' => 'status resubmiddion date',
+                'label' => 'workflowStatusResubmissionDate',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
             ))
             ->add('workflowValidity', 'checkbox', array(
-                'label'    => 'validity',
+                'label'    => 'workflowValidity',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
             ->add('workflowValidityDate', 'date', array(
+                'label' => 'workflowValidityDate',
+                'translation_domain' => 'item',
                 'input'  => 'datetime',
                 'widget' => 'single_text',
                 'required' => false,
@@ -94,14 +98,14 @@ class ItemWorkflowType extends AbstractType
                     'creator' => 'creator',
                     'modifier' => 'modifier',
                 ),
-                'label' => 'validity who',
+                'label' => 'workflowValidityWho',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
                 'multiple' => false
             ))
             ->add('workflowValidityWhoAdditional', 'text', array(
-                'label' => 'additional email addresses',
+                'label' => 'workflowWhoAdditional',
                 'translation_domain' => 'item',
                 'required' => false,
             ))
@@ -113,7 +117,7 @@ class ItemWorkflowType extends AbstractType
                     '1_yellow' => 'draft',
                     '2_red' => 'invalid',
                 ),
-                'label' => 'status validity date',
+                'label' => 'workflowStatusValidityDate',
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
@@ -123,14 +127,14 @@ class ItemWorkflowType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Save',
+                'label' => 'save',
                 'translation_domain' => 'form',
             ))
             ->add('cancel', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Cancel',
+                'label' => 'cancel',
                 'translation_domain' => 'form',
             ))
         ;

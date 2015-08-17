@@ -45,7 +45,7 @@ class cs_buzzword_manager extends cs_labels_manager {
     *
     *  @return cs_label_item a time label
     */
-   function getNewItem() {
+   function getNewItem($label_type = '') {
       include_once('classes/cs_buzzword_item.php');
       $item = new cs_buzzword_item($this->_environment);
       return $item;

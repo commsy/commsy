@@ -14,6 +14,14 @@
                 <source>Activated</source>
                 <target>accessible entries</target>
             </trans-unit>
+            <trans-unit id="form-save">
+                <source>save</source>
+                <target>Save</target>
+            </trans-unit>
+            <trans-unit id="form-cancel">
+                <source>cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

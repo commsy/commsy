@@ -124,7 +124,7 @@
                         </div>
             
                         {# links #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe>
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             <a name="links"></a>
                             {{ macrosMaterial.links(material) }}
                         </div>

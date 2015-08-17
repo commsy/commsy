@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="workflowStatus">
+                <source>workflowStatus</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="workflowResubmission">
+                <source>workflowResubmission</source>
+                <target>Resubmission</target>
+            </trans-unit>
+            <trans-unit id="workflowResubmissionDate">
+                <source>workflowResubmissionDate</source>
+                <target>Resubmission date</target>
+            </trans-unit>
+            <trans-unit id="workflowResubmissionWho">
+                <source>workflowResubmissionWho</source>
+                <target>Notification after the expiration of the resubmission date</target>
+            </trans-unit>
+            <trans-unit id="workflowWhoAdditional">
+                <source>workflowWhoAdditional</source>
+                <target>Additional email addresses</target>
+            </trans-unit>
+            <trans-unit id="workflowNotifyCreator">
+                <source>notify creator</source>
+                <target>Notify the creator</target>
+            </trans-unit>
+            <trans-unit id="workflowNotifyAllModifiers">
+                <source>notify all modifiers</source>
+                <target>Notify all modifiers</target>
+            </trans-unit>
+            <trans-unit id="workflowStatusResubmissionDate">
+                <source>workflowStatusResubmissionDate</source>
+                <target>Status after the expiration of the resubmission date</target>
+            </trans-unit>
+            <trans-unit id="workflowValidity">
+                <source>workflowValidity</source>
+                <target>Validity date</target>
+            </trans-unit>
+            <trans-unit id="workflowValidityDate">
+                <source>workflowValidityDate</source>
+                <target>Validity date</target>
+            </trans-unit>
+            <trans-unit id="workflowValidityWho">
+                <source>workflowValidityWho</source>
+                <target>Notification after the expiration of the validity date</target>
+            </trans-unit>
+            <trans-unit id="workflowStatusValidityDate">
+                <source>workflowStatusValidityDate</source>
+                <target>Status after the expiration of the validity date</target>
+            </trans-unit>
+         </body>
+    </file>
+</xliff>

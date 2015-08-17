@@ -104,7 +104,7 @@
             </trans-unit>
             <trans-unit id="26">
                 <source>annotations</source>
-                <targetAnnotations</target>
+                <target>Annotations</target>
             </trans-unit>
             <trans-unit id="27">
                 <source>quick navigation</source>

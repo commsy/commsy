@@ -1,0 +1,46 @@
+{% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
+
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+
+<div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
+    {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
+
+    <ul class="uk-tab" data-uk-tab="{connect:'#linksForm'}">
+        <li><a href="">{{ 'linked entries'|trans({})|capitalize }}</a></li>
+        <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
+        <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
+    </ul>
+    
+    {{ form_start(form) }}
+    {{ form_errors(form) }}
+    
+    <!-- This is the container of the content items -->
+    <ul id="linksForm" class="uk-switcher uk-margin">
+        <li>
+            
+            
+        </li>
+        
+        <li>
+            
+            
+        </li>
+        
+        <li>
+            {{ form_widget(form.hashtags) }}
+            {{ form_row(form.newHashtag) }}
+        </li>
+    </ul>
+    
+    <div class="uk-flex uk-margin-small-top">
+        <div>
+            {{ form_row(form.save) }}
+        </div>
+        <div class="uk-margin-small-left">
+            {{ form_row(form.cancel) }}
+        </div>
+    </div>
+    
+    {{ form_end(form) }}
+    
+</div>

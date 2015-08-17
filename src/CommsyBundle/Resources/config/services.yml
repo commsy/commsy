@@ -98,6 +98,11 @@ services:
         class: CommsyBundle\Form\Type\ItemWorkflowType
         tags:
             - { name: form.type, alias: itemWorkflow }
+            
+    commsy.form.type.itemLinks:
+        class: CommsyBundle\Form\Type\ItemLinksType
+        tags:
+            - { name: form.type, alias: itemLinks }
 
     commsy.form.type.section:
         class: CommsyBundle\Form\Type\SectionType

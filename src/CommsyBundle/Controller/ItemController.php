@@ -26,8 +26,6 @@ class ItemController extends Controller
         $formData = array();
         $tempItem = NULL;
         
-        xdebug_break();
-        
         if ($item->getItemType() == 'material') {
             // get material from MaterialService
             $tempItem = $materialService->getMaterial($itemId);
@@ -67,6 +65,121 @@ class ItemController extends Controller
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
     public function saveWorkflowAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $materialService = $this->get('commsy_legacy.material_service');
+        
+        $tempItem = NULL;
+        
+        if ($item->getItemType() == 'material') {
+            $tempItem = $materialService->getMaterial($itemId);
+        }
+
+        $itemArray = array($tempItem);
+    
+        $modifierList = array();
+        foreach ($itemArray as $item) {
+            $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
+        }
+        
+        return array(
+            'roomId' => $roomId,
+            'item' => $tempItem,
+            'modifierList' => $modifierList
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/editlinks")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editLinksAction($roomId, $itemId, Request $request)
+    {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+        
+        $formData = array();
+        $optionsData = array();
+        
+        // get all items that are linked or can be linked
+        
+        // get all categories -> tree
+        
+        // get all hashtags -> list
+        $buzzwordManager = $environment->getBuzzwordManager();
+        $buzzwordManager->setContextLimit($roomId);
+        $buzzwordManager->select();
+        $buzzwordList = $buzzwordManager->get();
+        $buzzwordItem = $buzzwordList->getFirst();
+        while ($buzzwordItem) {
+            $optionsData['hashtags'][$buzzwordItem->getItemId()] = $buzzwordItem->getTitle();
+            $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
+            if (in_array($itemId, $selected_ids)) {
+                $formData['hashtags'][] = $buzzwordItem->getItemId();
+            }
+            $buzzwordItem = $buzzwordList->getNext();
+        }
+        
+        $form = $this->createForm('itemLinks', $formData, array(
+            'hashtags' => $optionsData['hashtags']
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                // ToDo ...
+                $data = $form->getData();
+                
+    			// save hashtags
+    			$buzzwordList = $buzzwordManager->get();
+                $buzzwordItem = $buzzwordList->getFirst();
+                while ($buzzwordItem) {
+                    $selected_ids = $buzzwordItem->getAllLinkedItemIDArrayLabelVersion();
+                    if (in_array($buzzwordItem->getItemId(), $data['hashtags'])) {
+            			$selected_ids[] = $itemId;
+                        $selected_ids = array_unique($selected_ids);
+                    } else {
+                        $index = 0;
+                        foreach ($selected_ids as $selected_id) {
+                            if ($selected_id == $itemId) {
+                                unset($selected_ids[$index]);
+                                break;
+                            }
+                            $index++;
+                        }
+                    }
+                    $buzzwordItem->saveLinksByIDArray($selected_ids);
+                    $buzzwordItem = $buzzwordList->getNext();
+                }
+    			
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            
+            return $this->redirectToRoute('commsy_item_savelinks', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+    
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/savelinks")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveLinksAction($roomId, $itemId, Request $request)
     {
         $itemService = $this->get('commsy.item_service');
         $item = $itemService->getItem($itemId);

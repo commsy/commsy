@@ -62,7 +62,7 @@
                     {{ form_widget(form.workflowResubmissionWho[0]) }}
                 </div>
                 <div class="uk-margin-small-left">
-                    {{ 'notify creator'|trans({})|capitalize }} ({{ macros.workflowWhoCreator(item) }})
+                    {{ 'notify creator'|trans({}, 'item') }} ({{ macros.workflowWhoCreator(item) }})
                 </div>
             </div>
             <div class="uk-flex">
@@ -70,7 +70,7 @@
                     {{ form_widget(form.workflowResubmissionWho[1]) }}
                 </div>
                 <div class="uk-margin-small-left">
-                     {{ 'notify all modifiers'|trans({})|capitalize }} ({{ macros.workflowWhoModifier(item) }})
+                     {{ 'notify all modifiers'|trans({}, 'item') }} ({{ macros.workflowWhoModifier(item) }})
                 </div>
             </div>
         </div>
@@ -136,7 +136,7 @@
                     {{ form_widget(form.workflowValidityWho[0]) }}
                 </div>
                 <div class="uk-margin-small-left">
-                    {{ 'notify creator'|trans({})|capitalize }} ({{ macros.workflowWhoCreator(item) }})
+                    {{ 'notify creator'|trans({}, 'item') }} ({{ macros.workflowWhoCreator(item) }})
                 </div>
             </div>
             <div class="uk-flex">
@@ -144,7 +144,7 @@
                     {{ form_widget(form.workflowValidityWho[1]) }}
                 </div>
                 <div class="uk-margin-small-left">
-                    {{ 'notify all modifiers'|trans({})|capitalize }} ({{ macros.workflowWhoModifier(item) }})
+                    {{ 'notify all modifiers'|trans({}, 'item') }} ({{ macros.workflowWhoModifier(item) }})
                 </div>
             </div>
         </div>
