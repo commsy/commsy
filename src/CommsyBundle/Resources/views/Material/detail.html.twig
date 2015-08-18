@@ -1,7 +1,8 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
-{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
 {% import 'CommsyBundle:Material:macros.html.twig' as macrosMaterial %}
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
 {% set item = material %}
 
@@ -113,26 +114,26 @@
                         </div>
                 
                         {# description #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                            {{ macros.editSection('description', material, true, material.description, material.description) }}
+                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macros.editContent('description', material, true, material.description, material.description) }}
                         </div>
                 
                         {# files #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             <a name="files"></a>
-                            {{ macrosMaterial.files(material) }}
+                            {{ macrosItem.files(material) }}
                         </div>
             
                         {# links #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             <a name="links"></a>
-                            {{ macrosMaterial.links(material) }}
+                            {{ macrosItem.links(material) }}
                         </div>
             
                         {# workflow #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                             <a name="workflow"></a>
-                            {{ macros.workflow(material) }}
+                            {{ macrosItem.workflow(material) }}
                         </div>
             
                         {# sections #}
@@ -157,13 +158,13 @@
                             </div>
                             
                             {# description #}
-                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                                {{ macros.editSection('description', section, true, section.description, section.description) }}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                                {{ macros.editContent('description', section, true, section.description, section.description) }}
                             </div>
                     
                             {# files #}
                             <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                                {{ macrosMaterial.files(section) }}
+                                {{ macrosItem.files(section) }}
                             </div>
                         </article>
                     </div>
