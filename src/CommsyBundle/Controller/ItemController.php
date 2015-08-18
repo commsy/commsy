@@ -199,6 +199,14 @@ class ItemController extends Controller
         // get all items that are linked or can be linked
         
         // get all categories -> tree
+        $categoryService = $this->get('commsy.category_service');
+        $categories = $categoryService->getTags($roomId);
+        
+        $optionsData['categories'] = $categories;
+        foreach ($categories as $categorie) {
+            //$optionsData['categories'][$categorie['item_id']] = $categorie['title'];
+            $formData['categories'][$categorie['item_id']] = $categorie['title'];
+        }
         
         // get all hashtags -> list
         $buzzwordManager = $environment->getBuzzwordManager();
@@ -216,6 +224,7 @@ class ItemController extends Controller
         }
         
         $form = $this->createForm('itemLinks', $formData, array(
+            'categories' => $optionsData['categories'],
             'hashtags' => $optionsData['hashtags']
         ));
         
