@@ -156,44 +156,6 @@
     {% endif %}
 {% endmacro %}
 
-{% macro fileListDetailView(item) %}
-    {% import _self as macros %}
-    {% set fileArray = item.fileList.to_array %}
-    {% if not fileArray is empty %}
-        <div class="uk-flex">
-            <div>
-                <h4>{{ 'files'|trans({})|capitalize }} ({{ fileArray|length }})</h4>
-            </div>
-            <div class="uk-margin-left">
-                <a class="" data-uk-toggle="{target:'.toggle-files-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-            </div>
-        </div>
-        <div class="toggle-files-{{ item.itemId }} uk-hidden">
-            <div data-uk-grid="{gutter: 20}">
-                {% for file in fileArray %}
-                    <div class="uk-width-medium-1-2 uk-width-large-1-4">
-                        <div class="uk-panel uk-panel-box-secondary uk-vertical-align">
-                            <div class="uk-margin-right uk-vertical-align-middle">
-                                <i class="uk-icon-small {{ macros.iconClassForFileType(file.extension) }}"></i>
-                            </div>
-                            <div class="uk-vertical-align-middle">
-                                <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(15) }}</a><br/>
-                                ({{ file.fileSize }})
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    {% else %}
-        <div class="uk-flex">
-            <div>
-                <h4>{{ 'files'|trans({})|capitalize }} ({{ 'no files'|trans({})|capitalize }})</h4>
-            </div>
-        </div>
-    {% endif %}  
-{% endmacro %}
-
 {% macro userIcon(user, size) %}
     {% if size == 'small' %}
         <img class="uk-comment-avatar uk-thumbnail uk-border-circle" style="height:30px; width:30px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
@@ -209,53 +171,6 @@
     <a href="{{ path('commsy_user_detail', {'roomId': user.contextId, 'itemId': user.itemId}) }}">
         {{  macros.userIcon(user, size) }}
     </a>
-{% endmacro %}
-
-{% macro editControl(item) %}
-    <div class="toggle-edit-{{ item.itemId }} uk-hidden">
-        EInstellungen
-    </div>
-    <button data-uk-toggle="{target:'.toggle-edit-{{ item.itemId }}', animation:'uk-animation-fade'}">
-        <i class="uk-icon-gear uk-icon-small"></i>
-    </button>
-{% endmacro %}
-
-{% macro descriptionDetailView(item) %}
-    {% import _self as macros %}
-    {% if not item.description == "" %}
-        <div class="uk-grid cs-toggle">
-            <div class="uk-width-9-10">
-                <div class="toggle-description-{{ item.itemId }}">
-                    <div class="uk-panel">
-                        {{ item.description|truncate(500)|striptags }}
-                    </div>
-                </div>
-                <div class="toggle-description-{{ item.itemId }} uk-hidden">
-                    <div class="uk-panel">
-                        {{ item.description|raw }}
-                    </div>
-                </div>
-            </div>
-            <div class="uk-width-1-10  uk-text-right cs-toggle-icon uk-text-right">
-                <a class="" data-uk-toggle="{target:'.toggle-description-{{ item.itemId }}', animation:'uk-animation-fade'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-            </div>
-        </div>
-    {% endif %}
-{% endmacro %}
-
-{% macro uploadForm(item) %}
-    {% import _self as macros %}
-    <article class="uk-article uk-position-relative" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
-        {# edit #}
-        {% if is_granted('ITEM_EDIT', item.itemId) %}
-            <div class="uk-position-top-right cs-article-edit uk-hidden">
-                <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-            </div>
-
-            {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
-        {% endif %}
-        {{  macros.fileListDetailView(item) }}
-    </article>
 {% endmacro %}
 
 {% macro editContent(title, item, edit, content, preview) %}
