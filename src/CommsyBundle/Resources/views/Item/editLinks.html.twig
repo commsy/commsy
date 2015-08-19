@@ -2,42 +2,20 @@
 
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% macro nestedList(data) %}
-    <li class="uk-visible-hover">
-        <div class="uk-clear-float">
-            <div class="uk-float-right">
-                {% if is_granted('CATEGORY_EDIT') %}
-                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit uk-hidden"></a>
-                {% endif %}
-            </div>
-            <div class="uk-float-left">
-                {{ data.title }}
-            </div>
-        </div>
-
-        {% if data.children is not empty %}
-            <ul>
-                {% for child in data.children %}
-                    {{ _self.nestedList(child) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </li>
-{% endmacro %}
-
-{% macro rawNestedList(data) %}
+{% macro nestedForm(data) %}
     <li>
-        {{ data.title }}
+        {{ form_widget(data) }}
+        {{ form_label(data) }}
     </li>
-
     {% if data.children is not empty %}
         <ul>
             {% for child in data.children %}
-                {{ _self.rawNestedList(child) }}
+                {#{ _self.nestedForm(child) }#}
             {% endfor %}
         </ul>
     {% endif %}
 {% endmacro %}
+
 
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
@@ -59,26 +37,11 @@
         </li>
         
         <li>
-            {% if false %}
-            <div id="room-categories" data-cs-tree>
-                {% if form.categories is not empty %}
-                    <ul class="uk-list uk-list-striped">
-                        {% for category in form.categories %}
-                            {{ _self.rawNestedList(category) }}
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    {{ 'No Categories'|trans({}, 'category') }}
-                {% endif %}
-            </div>
-    
-            {% if is_granted('CATEGORY_EDIT') %}
-                    <div class="uk-form-icon">
-                        <i class="uk-icon-tag"></i>
-                        {#{ form_widget(form.categories) }#}
-                    </div>
-            {% endif %}
-            {% endif %}
+            <ul>
+                {% for child in form.categories.children %}
+                    {{ _self.nestedForm(child) }}
+                {% endfor %}
+            </ul>
         </li>
         
         <li>

@@ -202,11 +202,16 @@ class ItemController extends Controller
         $categoryService = $this->get('commsy.category_service');
         $categories = $categoryService->getTags($roomId);
         
-        $optionsData['categories'] = $categories;
+        //$optionsData['categories'] = $categories;
         foreach ($categories as $categorie) {
-            //$optionsData['categories'][$categorie['item_id']] = $categorie['title'];
             $formData['categories'][$categorie['item_id']] = $categorie['title'];
         }
+        
+        $formData['categories'] = $this->getChoicesAsTree($categories);
+        $optionsData['categories'] = $this->getChoicesAsTree($categories);
+        
+        error_log(print_r($formData, true));
+        //error_log(print_r($optionsData, true));
         
         // get all hashtags -> list
         $buzzwordManager = $environment->getBuzzwordManager();
@@ -269,6 +274,7 @@ class ItemController extends Controller
         }
 
         return array(
+            'categories' => $categories,
             'form' => $form->createView()
         );
     }
@@ -303,5 +309,16 @@ class ItemController extends Controller
             'item' => $tempItem,
             'modifierList' => $modifierList
         );
+    }
+    
+    private function getChoicesAsTree ($choicesArray) {
+        $result = array();
+        foreach ($choicesArray as $choice) {
+            $result[$choice['item_id']] = $choice['title'];
+            if (!empty($choice['children'])) {
+                //$result['children'] = $this->getChoicesAsTree($choice['children']);
+            }
+        }
+        return $result;
     }
 }
