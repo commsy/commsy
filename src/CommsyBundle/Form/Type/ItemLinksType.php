@@ -23,7 +23,7 @@ class ItemLinksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('categories', 'choice', array(
+            ->add('categories', 'treechoice', array(
                 'placeholder' => false,
                 'choices' => $options['categories'],
                 'label' => 'categories',

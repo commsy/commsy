@@ -130,6 +130,11 @@ services:
         class: CommsyBundle\Form\Type\UploadType
         tags:
             - { name: form.type, alias: upload }
+            
+    commsy.form.type.treechoice:
+        class: CommsyBundle\Form\Type\TreeChoiceType
+        tags:
+            - { name: form.type, alias: treechoice }
 
     # Twig
     twig.extension.room:
