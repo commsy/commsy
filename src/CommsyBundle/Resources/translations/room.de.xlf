@@ -30,6 +30,18 @@
                 <source>Moderation:</source>
                 <target>Moderation:</target>
             </trans-unit>
+            <trans-unit id="9">
+                <source>list filter</source>
+                <target>Filter</target>
+            </trans-unit>
+            <trans-unit id="10">
+                <source>hashtags</source>
+                <target>Schlagworte</target>
+            </trans-unit>
+             <trans-unit id="11">
+                <source>categories</source>
+                <target>Kategorien</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
