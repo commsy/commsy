@@ -48,7 +48,7 @@
             </div>
         </div>
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
-            <div class="uk-width-9-10 uk-padding-remove uk-margin-small-bottom">    
+            <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
                 <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
@@ -95,9 +95,9 @@
                                         <div class="uk-clearfix">
                                             <div class="uk-margin-remove">
                                                 {% if item.creator.isUser %}
-                                                    {{  macros.userIconLink(item.modificatorItem) }}
+                                                    {{  macros.userIconLink(item.creator) }}
                                                 {% else %}
-                                                    {{  macros.userIcon(item.modificatorItem) }}
+                                                    {{  macros.userIcon(item.creator) }}
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -160,8 +160,6 @@
                     </div>
                 </div>
              </div>
-         <div class="uk-width-1-10  uk-text-right">
-        </div>
    </div>
 {% endmacro %}
 
@@ -217,10 +215,6 @@
         </ul>
         {% endset %}
     {% endif %}
-    
-    {% if counter < 4 %}
-        {% set preview = '' %}    
-    {% endif %}
-    
+       
     {{ macros.editContent('sections', item, true, content, preview) }}
 {% endmacro %}

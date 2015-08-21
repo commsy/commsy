@@ -35,6 +35,30 @@ class CategoryController extends Controller
         );
     }
 
+
+    /**
+     * @Template("CommsyBundle:Category:showDetail.html.twig")
+     */
+    public function showDetailAction($roomId, Request $request)
+    {
+        // get categories from CategoryManager
+        $tagManager = $this->get('commsy.category_service');
+        $roomTags = $tagManager->getTags($roomId);
+
+        $defaultData = array(
+            'roomId' => $roomId,
+        );
+        $form = $this->createForm(new TagType(), $defaultData, array(
+            'action' => $this->generateUrl('commsy_category_new', array('roomId' => $roomId)),
+        ));
+
+        return array(
+            'tags' => $roomTags,
+            'form' => $form->createView(),
+        );
+    }
+
+
     /**
      * @Route("/room/{roomId}/categoy/new")
      * @Method("POST")
