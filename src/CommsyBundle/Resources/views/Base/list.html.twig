@@ -35,8 +35,8 @@
             </div>
         </div>
         <div class="uk-width-medium-2-5">
-            <div class="uk-panel uk-panel-box uk-panel-box-secondary">
-                <div class="uk-panel-teaser panel-teaser-secondary">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-clearfix">
                         <div class="uk-float-right">
                             <a href="#" class="button-toggle uk-button-mini uk-button-secondary" data-uk-toggle="{target: '#list-filter', animation: 'uk-animation-fade'}">
@@ -48,13 +48,14 @@
                         </div>
                     </div>
                 </div>
-                <div id="list-filter">
+                <div id="list-filter"> 
+                <div class="uk-margin-bottom">
+                <h4>{{ 'filter entries'|trans({},"rubric") }}</h4>
                     {{ form_start(form) }}
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
-            </div>
-            {{ render(controller(
+           {{ render(controller(
                 'CommsyBundle:Hashtag:show',
                 { 'roomId': roomId }
             ))}}
@@ -62,6 +63,8 @@
                 'CommsyBundle:Category:show',
                 { 'roomId': roomId }
             ))}}
-        </div>
+            </div>
+             </div>
+         </div>
     </div>
 {% endblock %}

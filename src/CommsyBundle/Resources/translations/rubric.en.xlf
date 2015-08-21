@@ -38,6 +38,10 @@
                 <source>topic</source>
                 <target>{0}Topic|{1}Topics</target>
             </trans-unit>
+            <trans-unit id="10">
+                <source>filter entries</source>
+                <target>Entry filter</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
