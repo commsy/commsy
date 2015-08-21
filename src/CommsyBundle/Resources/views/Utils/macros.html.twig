@@ -173,6 +173,22 @@
     </a>
 {% endmacro %}
 
+
+{% macro actionIcons(title, item, edit) %}
+        <div class="uk-width-1-10  uk-flex uk-text-right">
+        {% if edit %}
+            {% if is_granted('ITEM_EDIT', item.itemId) %}
+            <div class="cs-edit uk-hidden">
+                     <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
+             </div>
+            {% endif %}        
+        {% endif %}
+           <div class="cs-toggle-icon uk-margin-left uk-width-1-1">
+                <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
+             </div>
+       </div>
+{% endmacro %}
+
 {% macro editContent(title, item, edit, content, preview) %}
 <hr/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
@@ -182,15 +198,7 @@
         <div class="uk-width-9-10">
             <h4>{{ title|trans({})}}</h4>
         </div>
-        <div class="uk-width-1-10  uk-text-right">
-            {% if edit %}
-                {% if is_granted('ITEM_EDIT', item.itemId) %}
-                    <div class="cs-edit uk-hidden">
-                        <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit"></a>
-                    </div>
-                {% endif %}
-            {% endif %}
-        </div>
+        {{ _self.actionIcons(title, item, edit) }}
     </div>
     {% if not content is empty and not preview is empty %}
     <div class="uk-grid uk-margin-top-remove">
@@ -206,13 +214,10 @@
                 </div>
             </div>
         </div>
-        <div class="uk-width-1-10  uk-text-right cs-toggle-icon">
-            <a class="cs-toggle" data-uk-toggle="{target:'.toggle-{{ title }}-{{ item.itemId }}'}"><i class="uk-icon-small uk-icon-hover uk-icon-chevron-down"></i></a>
-        </div>
     </div>
     {% else %}
     <div class="uk-grid uk-margin-top-remove">
-        <div class="uk-width-1-1">
+        <div class="uk-width-9-10">
             {% if not content is empty %}
             <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
                 <div class="uk-panel">
@@ -225,6 +230,8 @@
                 </div>
             </div>
             {% endif %}
+        </div>
+        <div class="uk-width-1-10  uk-text-right cs-toggle-icon">
         </div>
     </div>
     {% endif %}
