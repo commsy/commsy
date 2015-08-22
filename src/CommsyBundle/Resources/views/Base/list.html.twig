@@ -55,12 +55,13 @@
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
-           {{ render(controller(
-                'CommsyBundle:Hashtag:show',
-                { 'roomId': roomId }
-            ))}}
+                <hr/>
             {{ render(controller(
                 'CommsyBundle:Category:show',
+                { 'roomId': roomId }
+            ))}}
+           {{ render(controller(
+                'CommsyBundle:Hashtag:show',
                 { 'roomId': roomId }
             ))}}
             </div>

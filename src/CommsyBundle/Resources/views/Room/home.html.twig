@@ -69,31 +69,39 @@
                     </div>
                 </div>
                
-                <dl id="room-info" class="uk-description-list-horizontal description-striped">
-                    <dt>{{ 'Entries:'|trans({}, "room") }}</dt>
-                    <dd>
-                        {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
-                            One new entry in the last %days% days|%num% new entries in the last %days% days
-                        {% endtranschoice %}
-                    </dd>
-                    <dt>{{ 'Persons:'|trans({}, "room") }}</dt>
-                    <dd>
-                        {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
-                            total %total% | active %active%
-                        {% endtrans %}
-                        <div class="uk-progress uk-progress-mini">
-                            {% set activePercent = (numActiveMember/numTotalMember*100)|round %}
-                            <div class="uk-progress-bar" style="width: {{ activePercent }}%;"></div>
-                            }
+                <ul id="room-info" class="uk-list uk-list-striped">
+                    <li class="uk-flex">
+                        <div class="uk-width-1-3">{{ 'Entries:'|trans({}, "room") }}</div>
+                        <div class="uk-width-2-3">
+                            {% transchoice numNewEntries with {'%days%': timeSpread, '%num%': numNewEntries} from "room" %}
+                                One new entry in the last %days% days|%num% new entries in the last %days% days
+                            {% endtranschoice %}
                         </div>
-                    </dd>
-                    <dt>{% trans from "room" %}Page Impressions:{% endtrans %}</dt>
-                    <dd>{{ pageImpressions }}</dd>
-                    <dt>{{ 'Moderation:'|trans({}, "room") }}</dt>
-                    <dd>
-                        {{ roomModerators|join(', ') }}
-                    </dd>
-                </dl>
+                    </li>
+                    <li class="uk-flex">
+                        <div class="uk-width-1-3">{{ 'Persons:'|trans({}, "room") }}</div>
+                        <div class="uk-width-2-3">
+                            {% trans with {'%total%': numTotalMember, '%active%': numActiveMember} from "room" %}
+                                total %total% | active %active%
+                            {% endtrans %}
+                            <div class="uk-progress uk-progress-mini">
+                                {% set activePercent = (numActiveMember/numTotalMember*100)|round %}
+                                <div class="uk-progress-bar" style="width: {{ activePercent }}%;"></div>
+                                }
+                            </div>
+                        </div>
+                    </li>
+                    <li  class="uk-flex">
+                        <div class="uk-width-1-3">{% trans from "room" %}Page Impressions:{% endtrans %}</div>
+                        <div class="uk-width-2-3">{{ pageImpressions }}</div>
+                    </li>
+                    <li  class="uk-flex">
+                        <div class="uk-width-1-3">{{ 'Moderation:'|trans({}, "room") }}</div>
+                        <div class="uk-width-2-3">
+                            {{ roomModerators|join(', ') }}
+                        </div>
+                    </li>
+                </ul>
             </div>
 
  
@@ -112,11 +120,11 @@
                 </div>
                 <dl id="list-filter">
             {{ render(controller(
-                'CommsyBundle:Hashtag:show',
+                'CommsyBundle:Category:show',
                 { 'roomId': roomItem.itemId }
             ))}}
             {{ render(controller(
-                'CommsyBundle:Category:show',
+                'CommsyBundle:Hashtag:show',
                 { 'roomId': roomItem.itemId }
             ))}}
             </dl>
