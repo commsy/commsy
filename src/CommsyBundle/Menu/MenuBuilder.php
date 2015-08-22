@@ -134,13 +134,14 @@ class MenuBuilder
             $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
+            $current_user = $this->userService->getUser($user->getUserID());
             
-            $menu->addChild('dashboard', array(
+/*            $menu->addChild('dashboard', array(
                 'label' => 'DASHBOARD',
                 'route' => 'commsy_dashboard_index',
                 'routeParameters' => array('roomId' => $privateRoom->getItemId()),
-                'extras' => array('icon' => 'uk-icon-home uk-icon-small')
-            ));
+                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small')
+            ));*/
 
             if ($roomId != $privateRoom->getItemId()) {
                 // rubric room information
@@ -151,7 +152,14 @@ class MenuBuilder
                     'label' => 'Raum-Navigation',
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-home uk-icon-small')
+                    'extras' => array('icon' => 'uk-icon-list uk-icon-small')
+                ));
+
+                $menu->addChild('room_navigation_space', array(
+                    'label' => ' ',
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => 'uk-icon-small')
                 ));
 
                 // home navigation
@@ -186,6 +194,23 @@ class MenuBuilder
                     ));
                     $project = $projectList->getNext();
                 }
+            }
+            
+            if ($current_user->isModerator()){
+               $menu->addChild('room_navigation_space_2', array(
+                    'label' => ' ',
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => 'uk-icon-small')
+                ));
+
+                $menu->addChild('room_configuration', array(
+                    'label' => 'Raum-Konfiguration',
+                    'route' => 'commsy_settings_dashboard',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
+                ));
+                
             }
         }
 
