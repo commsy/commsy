@@ -8,11 +8,11 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div>{{'TODO-RubricTitle'|trans({})|capitalize }}</div>
+                        <div class="uk-text-large">{{'TODO-RubricTitle'|trans({})|capitalize }}</div>
                         {# select #}
                         <div>
                             <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-                                <button class="uk-button">{{ 'Sortierung(TODO)'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                <button class="uk-button uk-button-mini">{{ 'Sortierung(TODO)'|trans({})|capitalize }} <i class="uk-icon-caret-down"></i></button>
                                 <div class="uk-dropdown uk-dropdown-small">
                                     <ul class="uk-nav uk-nav-dropdown">
                                         <li><a href="#">{{ 'title'|trans({})|capitalize }}</a></li>
@@ -22,7 +22,7 @@
                                 </div>
                             </div>
 
-                            <button class="uk-button" data-uk-button data-commsy-select="{target:'.feed ul'}">
+                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul'}">
                                 Auswahl(TODO)
                             </button>
                         </div>
@@ -43,8 +43,8 @@
                                 <i class="uk-icon-chevron-up"></i>
                             </a>
                         </div>
-                        <div class="uk-float-left">
-                            Filter
+                        <div class="uk-text-large uk-float-left">
+                            {{ 'list filter'|trans({},"room")}}
                         </div>
                     </div>
                 </div>
