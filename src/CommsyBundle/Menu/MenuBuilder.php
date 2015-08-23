@@ -205,7 +205,7 @@ class MenuBuilder
                 ));
 
                 $menu->addChild('room_configuration', array(
-                    'label' => 'Raum-Konfiguration',
+                    'label' => 'Einstellungen',
                     'route' => 'commsy_settings_dashboard',
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
