@@ -191,7 +191,7 @@ class ItemController extends Controller
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $itemService = $this->get('commsy.item_service');
-        $item = $itemService->getItem($itemId);
+        $item = $itemService->getTypedItem($itemId);
         
         $formData = array();
         $optionsData = array();
@@ -201,18 +201,15 @@ class ItemController extends Controller
         // get all categories -> tree
         $categoryService = $this->get('commsy.category_service');
         $categories = $categoryService->getTags($roomId);
-        
-        //$optionsData['categories'] = $categories;
-        foreach ($categories as $categorie) {
-            $formData['categories'][$categorie['item_id']] = $categorie['title'];
-        }
-        
-        $formData['categories'] = $this->getChoicesAsTree($categories);
         $optionsData['categories'] = $this->getChoicesAsTree($categories);
         
-        error_log(print_r($formData, true));
-        //error_log(print_r($optionsData, true));
-        
+        $categoriesList = $item->getTagList();
+        $categoryItem = $categoriesList->getFirst();
+        while ($categoryItem) {
+            $formData['categories'][] = $categoryItem->getItemId();
+            $categoryItem = $categoriesList->getNext();
+        }
+
         // get all hashtags -> list
         $buzzwordManager = $environment->getBuzzwordManager();
         $buzzwordManager->setContextLimit($roomId);
@@ -238,6 +235,10 @@ class ItemController extends Controller
             if ($form->get('save')->isClicked()) {
                 // ToDo ...
                 $data = $form->getData();
+                
+                // save categories
+                $item->setTagListByID($data['categories']);
+                $item->save();
                 
     			// save hashtags
     			$buzzwordList = $buzzwordManager->get();
