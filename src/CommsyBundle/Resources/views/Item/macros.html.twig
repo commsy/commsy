@@ -85,17 +85,15 @@
 {% macro links(item) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-
     {% set preview %}
-   <ul id="linksDisplayTabs" class="uk-tab" data-uk-tab="{connect:'#linksDisplay'}">
+    <ul id="linksDisplayTabs" class="uk-tab" data-uk-tab="{connect:'#linksDisplayPreview'}">
         <li><a href="">{{ 'linked entries'|trans({})|capitalize }}</a></li>
         <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
         <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
     </ul>
 
-
-   <!-- This is the container of the content items -->
-    <ul id="linksDisplay" class="uk-switcher uk-margin">
+    <!-- This is the container of the content items -->
+    <ul id="linksDisplayPreview" class="uk-switcher uk-margin">
         <li>
             <div class="uk-width-1-1">
                 {{ render(controller(
@@ -122,19 +120,15 @@
                 ))}}
             </div>
         </li>
-    </ul> 
-
-
+    </ul>
     {% endset %}
 
     {% set content %}
-   <ul id="linksDisplayTabs" class="uk-tab" data-uk-tab="{connect:'#linksDisplay'}">
+    <ul id="linksDisplayTabs" class="uk-tab" data-uk-tab="{connect:'#linksDisplay'}">
         <li><a href="">{{ 'linked entries'|trans({})|capitalize }}</a></li>
         <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
         <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
     </ul>
-
-
     <!-- This is the container of the content items -->
     <ul id="linksDisplay" class="uk-switcher uk-margin">
         <li>

@@ -54,3 +54,24 @@
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' uk-form')|trim}) %}
     {{- parent() -}}
 {%- endblock form_start %}
+
+{% macro nestedChoiceTree(form, choices) %}
+    <ul class="uk-list">
+        {% for choiceOrOptionGroup,children in choices %}
+            <li>
+            {% if children is iterable %}
+                {{ _self.nestedChoiceTree(form, children) }}
+            {% else %}
+                <label class="checkbox">
+                    {{ form_widget(form.offsetGet(choiceOrOptionGroup)) }}
+                    {{ form.offsetGet(choiceOrOptionGroup).vars.label }}
+                </label>
+            {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% block treechoice_widget %}
+    {{ _self.nestedChoiceTree(form, form.vars.choices) }}
+{% endblock treechoice_widget %}

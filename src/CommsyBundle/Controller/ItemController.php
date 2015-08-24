@@ -314,9 +314,9 @@ class ItemController extends Controller
     private function getChoicesAsTree ($choicesArray) {
         $result = array();
         foreach ($choicesArray as $choice) {
-            $result[$choice['item_id']] = $choice['title'];
+            $result[$choice['title']] = $choice['item_id'];
             if (!empty($choice['children'])) {
-                //$result['children'] = $this->getChoicesAsTree($choice['children']);
+                $result['children'] = $this->getChoicesAsTree($choice['children']);
             }
         }
         return $result;

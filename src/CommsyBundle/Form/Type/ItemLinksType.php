@@ -30,7 +30,8 @@ class ItemLinksType extends AbstractType
                 'translation_domain' => 'item',
                 'required' => false,
                 'expanded' => true,
-                'multiple' => true
+                'multiple' => true,
+                'choices_as_values' => true
             ))
             ->add('hashtags', 'choice', array(
                 'placeholder' => false,
