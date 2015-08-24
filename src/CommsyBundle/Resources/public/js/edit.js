@@ -74,9 +74,9 @@
               url: this.options.editUrl
             })
             .done(function(result) {
-                // replace article html with some nice effecits
-                article.fadeOut(function() {
-                    article.html($(result)).fadeIn();
+                // replace article html
+                //article.fadeOut(function() {
+                    article.html($(result));
 
                     var buttonpressed;
                     $('button').click(function() {
@@ -101,14 +101,14 @@
                             data: $(this).serialize()+'&'+buttonpressed+'=true'
                         })
                         .done(function(result) {
-                            article.fadeOut(function() {
-                                article.html($(result)).fadeIn();
+                            //article.fadeOut(function() {
+                                article.html($(result));
 
                                 $this.registerArticleEvents(article);
-                            });
+                            //});
                         });
                     });
-                });
+                //});
             });
         }
     });
