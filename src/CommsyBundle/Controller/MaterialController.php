@@ -105,6 +105,44 @@ class MaterialController extends Controller
         $itemArray = array($material);
         $itemArray = array_merge($itemArray, $sectionList);
 
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $readerManager = $legacyEnvironment->getReaderManager();
+        $roomItem = $roomManager->getItem($roomId);        
+        $numTotalMember = $roomItem->getAllUsers();
+
+        $userManager = $legacyEnvironment->getUserManager();
+        $userManager->setContextLimit($legacyEnvironment->getCurrentContextID());
+        $userManager->setUserLimit();
+        $userManager->select();
+        $user_list = $userManager->get();
+        $user_count = $user_list->getCount();
+        $read_count = 0;
+        $read_since_modification_count = 0;
+
+        $current_user = $user_list->getFirst();
+        $id_array = array();
+        while ( $current_user ) {
+		   $id_array[] = $current_user->getItemID();
+		   $current_user = $user_list->getNext();
+		}
+		$readerManager->getLatestReaderByUserIDArray($id_array,$material->getItemID());
+		$current_user = $user_list->getFirst();
+		while ( $current_user ) {
+	   	    $current_reader = $readerManager->getLatestReaderForUserByID($material->getItemID(), $current_user->getItemID());
+            if ( !empty($current_reader) ) {
+                if ( $current_reader['read_date'] >= $material->getModificationDate() ) {
+                    $read_count++;
+                    $read_since_modification_count++;
+                } else {
+                    $read_count++;
+                }
+            }
+		    $current_user = $user_list->getNext();
+		}
+        $read_percentage = round(($read_count/$user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
         $readerService = $this->get('commsy.reader_service');
         
         $readerList = array();
@@ -178,7 +216,10 @@ class MaterialController extends Controller
             'firstItemId' => $firstItemId,
             'prevItemId' => $prevItemId,
             'nextItemId' => $nextItemId,
-            'lastItemId' => $lastItemId
+            'lastItemId' => $lastItemId,
+            'readCount' => $read_count,
+            'readSinceModificationCount' => $read_since_modification_count,
+            'userCount' => $user_count
         );
     }
 
