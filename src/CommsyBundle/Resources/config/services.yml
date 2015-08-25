@@ -101,6 +101,7 @@ services:
             
     commsy.form.type.itemLinks:
         class: CommsyBundle\Form\Type\ItemLinksType
+        arguments: ["@commsy_legacy.environment", @commsy.room_service, @commsy.item_service]
         tags:
             - { name: form.type, alias: itemLinks }
 
@@ -142,3 +143,7 @@ services:
         arguments: ["@commsy_legacy.environment"]
         tags:
             - { name: twig.extension }
+
+    # Controller
+    commsy.item_controller:
+        class: CommsyBundle\Controller\ItemController

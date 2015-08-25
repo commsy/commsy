@@ -189,6 +189,7 @@ class ItemController extends Controller
     public function editLinksAction($roomId, $itemId, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $roomService = $this->get('commsy.room_service');
         
         $itemService = $this->get('commsy.item_service');
         $item = $itemService->getTypedItem($itemId);
@@ -197,6 +198,28 @@ class ItemController extends Controller
         $optionsData = array();
         
         // get all items that are linked or can be linked
+        $rubricInformation = $roomService->getRubricInformation($roomId);
+        foreach ($rubricInformation as $rubric) {
+            $optionsData['rubricFilter'][$rubric] = $rubric;
+        }
+        
+        $itemManager = $environment->getItemManager();
+        $itemManager->reset();
+        $itemManager->setContextLimit($roomId);
+        $itemManager->setTypeArrayLimit($rubricInformation);
+        //$itemManager->setNoIntervalLimit();
+        $itemManager->select();
+        $itemList = $itemManager->get();
+        
+        $tempItem = $itemList->getFirst();
+        while ($tempItem) {
+            $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
+            
+            $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
+            $formData['items'][] = $tempTypedItem->getItemId();
+            
+            $tempItem = $itemList->getNext();
+        }
         
         // get all categories -> tree
         $categoryService = $this->get('commsy.category_service');
@@ -226,6 +249,8 @@ class ItemController extends Controller
         }
         
         $form = $this->createForm('itemLinks', $formData, array(
+            'rubricFilter' => $optionsData['rubricFilter'],
+            'items' => $optionsData['items'],
             'categories' => $optionsData['categories'],
             'hashtags' => $optionsData['hashtags']
         ));
@@ -275,7 +300,8 @@ class ItemController extends Controller
         }
 
         return array(
-            'categories' => $categories,
+            'itemId' => $itemId,
+            'roomId' => $roomId,
             'form' => $form->createView()
         );
     }

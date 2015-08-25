@@ -25,8 +25,8 @@
             <!-- This is the container of the content items -->
             <ul id="linksForm" class="uk-switcher uk-margin">
                 <li>
-                    
-                    
+                    {{ form_widget(form.rubricFilter) }}
+                    {{ form_widget(form.items) }}
                 </li>
                 
                 <li>
@@ -66,3 +66,22 @@
         </div>
     </div>
 </div>
+
+<script>
+$("input[id^='itemLinks_rubricFilter_']").each(function() {
+    $(this).change(function(){
+        $data = $("input[id^='itemLinks_rubricFilter_']:checked");
+        var $form = $(this).closest('form');
+        $.ajax({
+            url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
+            type: $form.attr('method'),
+            data : $data,
+            success: function(html) {
+                $('#itemLinks_items').replaceWith(
+                    $(html).find('#itemLinks_items')
+                );
+            }
+        });
+    });
+});
+</script>
