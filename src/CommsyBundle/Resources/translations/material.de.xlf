@@ -122,6 +122,10 @@
                 <source>Date</source>
                 <target>Datum</target>
             </trans-unit>
+            <trans-unit id="workflow-1">
+                <source>workflow marked as read</source>
+                <target>Aktueller Eintrag als gelesen markiert von</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

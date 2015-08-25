@@ -122,6 +122,10 @@
                 <source>Date</source>
                 <target>Date</target>
             </trans-unit>
+            <trans-unit id="workflow-1">
+                <source>workflow marked as read</source>
+                <target>Current version signed as read by</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

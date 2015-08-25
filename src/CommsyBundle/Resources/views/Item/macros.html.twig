@@ -161,11 +161,42 @@
     {{ macros.editContent('links', item, true, content, preview) }}
 {% endmacro %}
 
-{% macro workflow(item) %}
+{% macro workflow(item, workflowGroupArray, workflowUserArray) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
     {% set preview %}
+
+    <div class="uk-grid">
+        <div class="uk-width-1-2">
         {{ macros.workflowTrafficLight(item) }}
+        </div>
+        
+        <div class="uk-width-1-2">
+         <h4>{{ 'workflow marked as read'|trans({}, "material") }}:</h4>
+         <strong>{{ 'group'|trans({}, "rubric") }}:</strong>
+         <p>
+         {% if not workflowGroupArray is empty %}
+            {% for workflowGroup in workflowGroupArray %}
+               {{workflowGroup.title}} ({{workflowGroup.userCount}} {{ 'of'|trans({}, "room") }} {{workflowGroup.userCountComplete}})
+            {% endfor %}
+         {% endif %}       
+         </p>
+         <strong>{{ 'user'|trans({}, "rubric") }}:</strong>
+         <p>
+         {% if not workflowUserArray is empty %}
+            {% for workflowUser in workflowUserArray %}
+               {{workflowUser.name}} 
+            {% endfor %}
+         {% endif %}       
+         </p>
+         </div>
+     </div>
+
+         {{ macros.workflowWhoCreator(item) }}
+         {{ macros.workflowWhoModifier(item) }}
+         
+
+
     {% endset %}
 
     {% set content %}

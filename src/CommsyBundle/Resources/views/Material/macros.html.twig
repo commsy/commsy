@@ -7,6 +7,9 @@
             <a name="section{{item.ItemID}}"></a>
         {% set pathName = 'commsy_material_edit' %}
     {% endif %}
+    {% if userCount == 0 %}
+        {% set userCount = 1 %}
+    {% endif %}
     
     <div class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
         <a name="title"></a>
