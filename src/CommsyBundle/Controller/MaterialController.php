@@ -117,7 +117,7 @@ class MaterialController extends Controller
         $userManager->setUserLimit();
         $userManager->select();
         $user_list = $userManager->get();
-        $user_count = $user_list->getCount();
+        $all_user_count = $user_list->getCount();
         $read_count = 0;
         $read_since_modification_count = 0;
 
@@ -141,8 +141,8 @@ class MaterialController extends Controller
             }
 		    $current_user = $user_list->getNext();
 		}
-        $read_percentage = round(($read_count/$user_count) * 100);
-        $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
+        $read_percentage = round(($read_count/$all_user_count) * 100);
+        $read_since_modification_percentage = round(($read_since_modification_count/$all_user_count) * 100);
         $readerService = $this->get('commsy.reader_service');
         
         $readerList = array();
@@ -291,7 +291,7 @@ class MaterialController extends Controller
             'lastItemId' => $lastItemId,
             'readCount' => $read_count,
             'readSinceModificationCount' => $read_since_modification_count,
-            'userCount' => $user_count,
+            'userCount' => $all_user_count,
             'workflowGroupArray'=> $workflowGroupArray,
             'workflowUserArray'=> $workflowUserArray,
             'workflowText'=>$workflowText,
