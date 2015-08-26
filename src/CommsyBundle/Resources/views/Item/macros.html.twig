@@ -199,27 +199,27 @@
     <div class="uk-grid">
         <div class="uk-width-1-3">
             <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
-            <div class="uk-flex-inline">
+            <div class="uk-flex-inline uk-margin-bottom">
                 <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
                 <div>{{workflowText}}</div>
              </div>         
         </div>
-       {% if workflowValidityDate != '0000-00-00 00:00:00' %}
-            <div class="uk-width-1-3">
+        <div class="uk-width-1-3">
+            {% if workflowValidityDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
                     {{ workflowValidityDate|craue_date }}       
                 </div>
-            </div>
-        {% endif %}
-        {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
-             <div class="uk-width-1-3">
+            {% endif %}
+        </div>
+        <div class="uk-width-1-3">
+            {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
-            </div>
-       {% endif %}
+           {% endif %}
+       </div>
        {% if not workflowGroupArray is empty %}
             <div class="uk-width-1-2">
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
