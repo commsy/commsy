@@ -24,7 +24,8 @@ class AppKernel extends Kernel
             new FOS\ElasticaBundle\FOSElasticaBundle(),
             new Ivory\OrderedFormBundle\IvoryOrderedFormBundle(),
             new Ivory\CKEditorBundle\IvoryCKEditorBundle(),
-            
+            new Craue\TwigExtensionsBundle\CraueTwigExtensionsBundle(),
+           
             new CommsyBundle\CommsyBundle(),
             new Commsy\LegacyBundle\CommsyLegacyBundle(),
         );

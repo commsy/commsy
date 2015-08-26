@@ -4,8 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d79d6f973ea619927e22b39baea97aed",
+    "hash": "92b4bad2b13eeefd81d0c61ca43e49a2",
     "packages": [
+        {
+            "name": "craue/twigextensions-bundle",
+            "version": "2.0.1",
+            "target-dir": "Craue/TwigExtensionsBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/craue/TwigExtensionsBundle.git",
+                "reference": "73af37193ccd9e855cd347b06ebebf5915d44d2d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/craue/TwigExtensionsBundle/zipball/73af37193ccd9e855cd347b06ebebf5915d44d2d",
+                "reference": "73af37193ccd9e855cd347b06ebebf5915d44d2d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2",
+                "symfony/twig-bundle": "~2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "symfony/symfony": "~2.0"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Craue\\TwigExtensionsBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Raue",
+                    "email": "christian.raue@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://github.com/craue/TwigExtensionsBundle/contributors"
+                }
+            ],
+            "description": "Useful Twig extensions for your Symfony2 project.",
+            "homepage": "https://github.com/craue/TwigExtensionsBundle",
+            "keywords": [
+                "Symfony2",
+                "extensions",
+                "twig"
+            ],
+            "time": "2014-06-01 15:09:29"
+        },
         {
             "name": "doctrine/annotations",
             "version": "v1.2.6",
@@ -760,7 +812,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/migrations/zipball/ed26638d87b8d4f726e97536689c8fe8d9a10f14",
+                "url": "https://api.github.com/repos/doctrine/migrations/zipball/27edc388296a3cffc7c30942a7613abb4998701c",
                 "reference": "ed26638d87b8d4f726e97536689c8fe8d9a10f14",
                 "shasum": ""
             },
@@ -1367,7 +1419,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpMenuBundle/zipball/7c0d579ca58f1c7cb3747a84b681fe273f00ffec",
+                "url": "https://api.github.com/repos/KnpLabs/KnpMenuBundle/zipball/5c5b01905d671134efde7dd5d769fee4934a164a",
                 "reference": "7c0d579ca58f1c7cb3747a84b681fe273f00ffec",
                 "shasum": ""
             },
