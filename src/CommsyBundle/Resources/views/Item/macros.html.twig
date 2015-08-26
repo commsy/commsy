@@ -78,7 +78,7 @@
         </div>
         {% endset %}
     {% endif %}
-    {{ macros.editContent('files', item, true, content, preview) }}
+    {{ macros.editContent('files', item, true, content, preview, false) }}
 {% endmacro %}
 
 {% macro links(item) %}
@@ -157,7 +157,7 @@
     </ul> 
     {% endset %}
     
-    {{ macros.editContent('links', item, true, content, preview) }}
+    {{ macros.editContent('links', item, true, content, preview, false) }}
 {% endmacro %}
 
 {% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) %}
@@ -166,65 +166,61 @@
     {% set preview %}
 
     <div class="uk-grid">
-        <div class="uk-width-1-2">
-            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong>
-                <div class="uk-grid">
-                    <div class="uk-width-1-5">
-                        {{ macros.workflowTrafficLight(item) }} 
-                    </div>
-                    <div  class="uk-width-4-5">
-                        {{workflowText}}         
-                    </div>
-                </div>
+        <div class="uk-width-1-3">
+            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
+            <div class="uk-flex-inline">
+                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                <div>{{workflowText}}</div>
+             </div>         
         </div>
 
-        <div class="uk-width-1-2">
-            {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+        {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+            <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
                     {{ workflowValidityDate|craue_date }}       
                 </div>
-            {% endif %}
-            {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+            </div>
+        {% endif %}
+        {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+             <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
-            {% endif %}
-        </div>
-     </div>
+            </div>
+       {% endif %}
+    </div>
 
         
     {% endset %}
 
     {% set content %}
     <div class="uk-grid">
-        <div class="uk-width-1-2 uk-margin-bottom">
-            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong>
-                <div class="uk-grid">
-                    <div class="uk-width-1-5">
-                        {{ macros.workflowTrafficLight(item) }} 
-                    </div>
-                    <div  class="uk-width-4-5">
-                        {{workflowText}}         
-                    </div>
-                </div>
+        <div class="uk-width-1-3">
+            <strong>{{ 'worflow status'|trans({}, "material") }}:</strong> <br/>
+            <div class="uk-flex-inline">
+                <div class="uk-margin-right">{{ macros.workflowTrafficLight(item) }}</div>
+                <div>{{workflowText}}</div>
+             </div>         
         </div>
-        <div class="uk-width-1-2">
-            {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+       {% if workflowValidityDate != '0000-00-00 00:00:00' %}
+            <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow validity date'|trans({}, "material") }}</strong>: <br/>
                     {{ workflowValidityDate|craue_date }}       
                 </div>
-            {% endif %}
-            {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+            </div>
+        {% endif %}
+        {% if workflowResubmissionDate != '0000-00-00 00:00:00' %}
+             <div class="uk-width-1-3">
                 <div class="uk-margin-bottom">
                     <strong>{{ 'workflow resubmission date'|trans({}, "material") }}</strong>:<br/> 
                     {{ workflowResubmissionDate|craue_date }}
                 </div>
-            {% endif %}
-        </div>
-        {% if not workflowGroupArray is empty %}
+            </div>
+       {% endif %}
+       {% if not workflowGroupArray is empty %}
             <div class="uk-width-1-2">
                 <strong>{{ 'workflow marked as read by groups'|trans({}, "material") }}:</strong><br/>
                 {% set counter = 1 %}
@@ -249,5 +245,5 @@
      </div>
    {% endset %}
     
-    {{ macros.editContent('workflow', item, true, content, preview) }}
+    {{ macros.editContent('workflow', item, true, content, preview, true) }}
 {% endmacro %}

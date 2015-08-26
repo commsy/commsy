@@ -189,7 +189,7 @@
        </div>
 {% endmacro %}
 
-{% macro editContent(title, item, edit, content, preview) %}
+{% macro editContent(title, item, edit, content, preview, shortPreview) %}
 <hr class="uk-width-9-10"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
     <a name="description"></a>
@@ -203,7 +203,11 @@
     {% if not content is empty and not preview is empty %}
     <div class="uk-grid uk-margin-top-remove">
         <div class="uk-width-9-10">
+            {% if shortPreview %}
+            <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-small">
+            {% else %}
             <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview">
+            {% endif %}
                 <div class="uk-panel">
                     {{ preview|raw }}
                 </div>
