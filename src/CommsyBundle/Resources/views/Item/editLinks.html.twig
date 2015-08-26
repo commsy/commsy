@@ -68,9 +68,10 @@
 </div>
 
 <script>
-$("input[id^='itemLinks_rubricFilter_']").each(function() {
-    $(this).change(function(){
-        $data = $("input[id^='itemLinks_rubricFilter_']:checked");
+//$("input[id^='itemLinks_rubricFilter_']").each(function() {
+    $('#itemLinks_rubricFilter').change(function(){
+        //$data = $("input[id^='itemLinks_rubricFilter_']:checked");
+        $data = $(this);
         var $form = $(this).closest('form');
         $.ajax({
             url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
@@ -83,5 +84,5 @@ $("input[id^='itemLinks_rubricFilter_']").each(function() {
             }
         });
     });
-});
+//});
 </script>

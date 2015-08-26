@@ -36,9 +36,7 @@ class ItemLinksType extends AbstractType
                 'choices' => $options['rubricFilter'],
                 'label' => 'rubricFilter',
                 'translation_domain' => 'item',
-                'required' => false,
-                'expanded' => true,
-                'multiple' => true
+                'required' => false
             ))
             ->add('categories', 'treechoice', array(
                 'placeholder' => false,
@@ -136,7 +134,7 @@ class ItemLinksType extends AbstractType
         if (empty($rubricData)) {
             $rubricInformation = $this->roomService->getRubricInformation($this->environment->getCurrentContextId());
         } else {
-            $rubricInformation = $rubricData;
+            $rubricInformation = array($rubricData);
         }
         
         $itemManager = $this->environment->getItemManager();
@@ -156,6 +154,10 @@ class ItemLinksType extends AbstractType
                 $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getFullname();
             }
             $tempItem = $itemList->getNext();
+        }
+        
+        if (empty($optionsData['items'])) {
+            $optionsData['items'] = array();
         }
         
         return $optionsData;
