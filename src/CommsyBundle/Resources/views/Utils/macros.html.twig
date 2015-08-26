@@ -190,13 +190,13 @@
 {% endmacro %}
 
 {% macro editContent(title, item, edit, content, preview, shortPreview) %}
-<hr class="uk-width-9-10"/>
+<hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
     <a name="description"></a>
     {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
     <div class="uk-grid uk-margin-small-bottom">
         <div class="uk-width-9-10">
-            <h4>{{ title|trans({})}}</h4>
+            <h4 class="cs-detail-section-header"><span class="cs-detail-section-header-background">{{ title|trans({})}}</span></h4>
         </div>
         {{ _self.actionIcons(title, item, edit) }}
     </div>
