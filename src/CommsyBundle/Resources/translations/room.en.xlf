@@ -46,6 +46,14 @@
                 <source>no content</source>
                 <target>No content</target>
             </trans-unit>
+             <trans-unit id="13">
+                <source>linked entries</source>
+                <target>Entries</target>
+            </trans-unit>
+             <trans-unit id="14">
+                <source>no linked items</source>
+                <target>No assigments</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

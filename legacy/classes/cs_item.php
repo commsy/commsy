@@ -326,6 +326,27 @@ class cs_item {
       return $this->_getValue('tag_array');
    }
 
+   function getTagsArray () {
+      $return = array();
+      $tag_list = $this->getTagList();
+      $tag = $tag_list->getFirst();
+      while ($tag) {
+           $title = $tag->getTitle();
+           if ( !empty($title) ) {
+               $tmp_array = array();
+               $tmp_array['id'] = $tag->getItemID();
+               $tmp_array['title'] = $tag->getTitle();
+               
+               $return[] = $tmp_array;
+           }
+          $tag = $tag_list->getNext();
+      }
+      unset($tag_list);
+      unset($tag);
+      return $return;
+   }
+
+
    /** get tags of a material
     * this method returns a list of tags which are linked to the material
     *

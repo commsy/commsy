@@ -46,6 +46,14 @@
                 <source>no content</source>
                 <target>Kein Inhalt vorhanden</target>
             </trans-unit>
+             <trans-unit id="13">
+                <source>linked entries</source>
+                <target>Beiträge</target>
+            </trans-unit>
+             <trans-unit id="14">
+                <source>no linked items</source>
+                <target>Keine Zuordnungen vorhanden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

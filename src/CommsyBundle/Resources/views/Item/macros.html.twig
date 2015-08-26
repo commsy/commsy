@@ -85,45 +85,51 @@
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
     {% set preview %}
-    <ul id="linksDisplayTabs" class="uk-tab" data-uk-tab="{connect:'#linksDisplayPreview'}">
-        <li><a href="">{{ 'linked entries'|trans({})|capitalize }}</a></li>
-        <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
-        <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
-    </ul>
-
-    <!-- This is the container of the content items -->
-    <ul id="linksDisplayPreview" class="uk-switcher uk-margin">
-        <li>
-            <div class="uk-width-1-1">
-                {{ render(controller(
-                    'CommsyBundle:Link:showDetail',
-                    { 'roomId': item.contextId, 'itemId': item.itemId }
-                ))}}
-            </div>            
-        </li>
-        
-        <li>
-            <div class="uk-width-1-1">
-                {{ render(controller(
-                    'CommsyBundle:Category:showDetail',
-                    { 'roomId': item.contextId }
-                ))}}
-            </div>
-        </li>
-
-        <li>
-            <div class="uk-width-1-1">
-                {{ render(controller(
-                    'CommsyBundle:Hashtag:showDetail',
-                    { 'roomId': item.contextId }
-                ))}}
-            </div>
-        </li>
-    </ul>
+    <div class="uk-grid">
+        <div class="uk-width-1-3">
+            <strong>{{ 'linked entries'|trans({}, "room") }}:</strong> <br/>
+            {{ render(controller(
+                'CommsyBundle:Link:showDetailShort',
+                { 'roomId': item.contextId, 'itemId': item.itemId }
+            ))}}            
+        </div>
+        <div class="uk-width-1-3">
+            <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+            {% set count = 1 %}
+            {% if (item.tagsArray|length) < 4 %}
+                {% if (item.tagsArray|length) == 0 %}
+                    {{ 'no linked items'|trans({}, "room")}}    
+                {%else%}
+                    {% for tag in item.tagsArray %}
+                        {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
+                        {% set count = count +1 %}
+                    {% endfor %}
+                {% endif %}
+             {% else %}
+                    {{item.tagsArray|length}} {{ 'hashtags'|trans({}, "room") }}
+             {% endif %}
+        </div>
+        <div class="uk-width-1-3">
+            <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
+            {% set count = 1 %}
+            {% if (item.buzzwordArray|length) < 4 %}
+                {% if (item.buzzwordArray|length) == 0 %}
+                    {{ 'no linked items'|trans({}, "room")}}    
+                {%else%}
+                    {% for tag in item.buzzwordArray %}
+                        {{tag}}{% if count < item.buzzwordArray|length %}, {% endif %}
+                        {% set count = count +1 %}
+                    {% endfor %}
+                {% endif %}
+             {% else %}
+                    {{item.buzzwordArray|length}} {{ 'hashtags'|trans({}, "room") }}
+             {% endif %}
+        </div>
+    </div>
     {% endset %}
 
     {% set content %}
-    <ul id="linksDisplayTabs" class="uk-tab" data-uk-tab="{connect:'#linksDisplay'}">
+    <ul id="linksDisplayTabs" class="uk-tab uk-width-2-3" data-uk-tab="{connect:'#linksDisplay'}">
         <li><a href="">{{ 'linked entries'|trans({})|capitalize }}</a></li>
         <li><a href="">{{ 'categories'|trans({})|capitalize }}</a></li>
         <li><a href="">{{ 'hashtags'|trans({})|capitalize }}</a></li>
@@ -157,7 +163,7 @@
     </ul> 
     {% endset %}
     
-    {{ macros.editContent('links', item, true, content, preview, false) }}
+    {{ macros.editContent('links', item, true, content, preview, true) }}
 {% endmacro %}
 
 {% macro workflow(item, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) %}
