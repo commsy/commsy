@@ -123,8 +123,24 @@
                 <target>Date</target>
             </trans-unit>
             <trans-unit id="workflow-1">
-                <source>workflow marked as read</source>
-                <target>Current version signed as read by</target>
+                <source>workflow marked as read by groups</source>
+                <target>Current version signed as read by groups</target>
+            </trans-unit>
+            <trans-unit id="workflow-2">
+                <source>workflow marked as read by users</source>
+                <target>Current version signed as read by users</target>
+            </trans-unit>
+            <trans-unit id="workflow-3">
+                <source>worflow status</source>
+                <target>Status</target>
+            </trans-unit>
+            <trans-unit id="workflow-4">
+                <source>workflow validity date</source>
+                <target>valid until</target>
+            </trans-unit>
+            <trans-unit id="workflow-5">
+                <source>workflow resubmission date</source>
+                <target>Resubmission at</target>
             </trans-unit>
         </body>
     </file>

@@ -42,6 +42,10 @@
                 <source>categories</source>
                 <target>Categories</target>
             </trans-unit>
+             <trans-unit id="12">
+                <source>no content</source>
+                <target>No content/target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

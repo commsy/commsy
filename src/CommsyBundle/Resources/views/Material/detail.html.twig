@@ -132,7 +132,7 @@
                     {# workflow #}
                     <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
                         <a name="workflow"></a>
-                        {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray) }}
+                        {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
                     </div>
         
                     {# sections #}
