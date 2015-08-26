@@ -199,9 +199,13 @@ class ItemController extends Controller
         
         // get all items that are linked or can be linked
         $rubricInformation = $roomService->getRubricInformation($roomId);
+        $optionsData['filterRubric']['all'] = 'all';
         foreach ($rubricInformation as $rubric) {
-            $optionsData['rubricFilter'][$rubric] = $rubric;
+            $optionsData['filterRubric'][$rubric] = $rubric;
         }
+        
+        $optionsData['filterPublic']['public'] = 'public';
+        $optionsData['filterPublic']['all'] = 'all';
         
         $itemManager = $environment->getItemManager();
         $itemManager->reset();
@@ -249,7 +253,8 @@ class ItemController extends Controller
         }
         
         $form = $this->createForm('itemLinks', $formData, array(
-            'rubricFilter' => $optionsData['rubricFilter'],
+            'filterRubric' => $optionsData['filterRubric'],
+            'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],
             'categories' => $optionsData['categories'],
             'hashtags' => $optionsData['hashtags']

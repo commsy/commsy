@@ -31,10 +31,17 @@ class ItemLinksType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('rubricFilter', 'choice', array(
+            ->add('filterRubric', 'choice', array(
                 'placeholder' => false,
-                'choices' => $options['rubricFilter'],
-                'label' => 'rubricFilter',
+                'choices' => $options['filterRubric'],
+                'label' => 'filterRubric',
+                'translation_domain' => 'item',
+                'required' => false
+            ))
+            ->add('filterPublic', 'choice', array(
+                'placeholder' => false,
+                'choices' => $options['filterPublic'],
+                'label' => 'filterPublic',
                 'translation_domain' => 'item',
                 'required' => false
             ))
@@ -100,15 +107,10 @@ class ItemLinksType extends AbstractType
             }
         );
 
-        $builder->get('rubricFilter')->addEventListener(
+        $builder->addEventListener(
             FormEvents::POST_SUBMIT,
-            function (FormEvent $event) use ($formModifier, $options) {
-                // It's important here to fetch $event->getForm()->getData(), as
-                // $event->getData() will get you the client data (that is, the ID)
+            function (FormEvent $event) use ($formModifier) {
                 $data = $event->getForm()->getData();
-
-                // since we've added the listener to the child, we'll have to pass on
-                // the parent to the callback functions!
                 $formModifier($event->getForm()->getParent(), $this->getLinkedEntriesData($data));
             }
         );
@@ -118,7 +120,7 @@ class ItemLinksType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('rubricFilter', 'items', 'categories', 'hashtags'))
+            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'categories', 'hashtags'))
         ;
     }
 
@@ -127,14 +129,14 @@ class ItemLinksType extends AbstractType
         return 'itemLinks';
     }
     
-    private function getLinkedEntriesData ($rubricData) {
+    private function getLinkedEntriesData ($filterData) {
         // get all items that are linked or can be linked
         $optionsData = array();
         
-        if (empty($rubricData)) {
+        if (empty($filterData['filterRubric']) || $filterData['filterRubric'] == 'all') {
             $rubricInformation = $this->roomService->getRubricInformation($this->environment->getCurrentContextId());
         } else {
-            $rubricInformation = array($rubricData);
+            $rubricInformation = array($filterData['filterRubric']);
         }
         
         $itemManager = $this->environment->getItemManager();

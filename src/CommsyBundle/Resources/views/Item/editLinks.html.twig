@@ -25,7 +25,8 @@
             <!-- This is the container of the content items -->
             <ul id="linksForm" class="uk-switcher uk-margin">
                 <li>
-                    {{ form_widget(form.rubricFilter) }}
+                    {{ form_widget(form.filterRubric) }}
+                    {{ form_widget(form.filterPublic) }}
                     {{ form_widget(form.items) }}
                 </li>
                 
@@ -69,20 +70,33 @@
 
 <script>
 //$("input[id^='itemLinks_rubricFilter_']").each(function() {
-    $('#itemLinks_rubricFilter').change(function(){
+    $('#itemLinks_filterRubric').change(function(){
+        filterItems($(this));
+    });
+    
+    $('#itemLinks_filterPublic').change(function(){
+        filterItems($(this));
+    });
+    
+    function filterItems(element) {
+        var article = element.parents('.cs-edit-section');
+        $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
         //$data = $("input[id^='itemLinks_rubricFilter_']:checked");
-        $data = $(this);
-        var $form = $(this).closest('form');
+        //$data = element;
+        $data = $("select[id^='itemLinks_filter']");
+        var $form = element.closest('form');
         $.ajax({
             url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
             type: $form.attr('method'),
             data : $data,
             success: function(html) {
+                $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
+                
                 $('#itemLinks_items').replaceWith(
                     $(html).find('#itemLinks_items')
                 );
             }
         });
-    });
+    }
 //});
 </script>
