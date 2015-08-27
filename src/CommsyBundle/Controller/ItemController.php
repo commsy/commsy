@@ -218,12 +218,11 @@ class ItemController extends Controller
         $tempItem = $itemList->getFirst();
         while ($tempItem) {
             $tempTypedItem = $itemService->getTypedItem($tempItem->getItemId());
-            
             $optionsData['items'][$tempTypedItem->getItemId()] = $tempTypedItem->getTitle();
-            $formData['items'][] = $tempTypedItem->getItemId();
-            
             $tempItem = $itemList->getNext();
         }
+        
+        $formData['items'] = $item->getAllLinkedItemIDArray();
         
         // get all categories -> tree
         $categoryService = $this->get('commsy.category_service');
