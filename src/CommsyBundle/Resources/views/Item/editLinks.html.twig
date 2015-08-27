@@ -27,11 +27,21 @@
                 <li>
                     <div class="uk-grid">
                         <div class="uk-width-3-4">
-                            <ul id="linkedItemsList">
-                            {% for entry in form.items %}
-                                <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
-                            {% endfor %}
-                            </ul>
+                            <div id="itemsListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
+                                <ul id="itemsList">
+                                {% for entry in form.items %}
+                                    <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
+                            
+                            <div class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
+                                <ul id="itemsLinkedList">
+                                {% for entry in form.itemsLinked %}
+                                    <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
+                                {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                         <div class="uk-width-1-4">
                             {{ form_widget(form.filterRubric) }}
@@ -102,15 +112,33 @@
             success: function(html) {
                 $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
                 
-                /* $('#itemLinks_items').replaceWith(
-                    $(html).find('#itemLinks_items')
-                ); */
-                
-                $('#linkedItemsList').replaceWith(
-                    $(html).find('#linkedItemsList')
+                $('#itemsList').replaceWith(
+                    $(html).find('#itemsList')
                 );
             }
         });
     }
+    
+    $('#itemsListWrapper').on('change', 'input[id^=itemLinks_items]', function(){
+        var article = $(this).parents('.cs-edit-section');
+        $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
+        $data = $("input[id^='itemLinks']:checked");
+        
+        console.log($data);
+        
+        var $form = $(this).closest('form');
+        $.ajax({
+            url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
+            type: $form.attr('method'),
+            data : $data,
+            success: function(html) {
+                $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
+                
+                $('#itemsLinkedList').replaceWith(
+                    $(html).find('#itemsLinkedList')
+                );
+            }
+        });
+    });
 //});
 </script>

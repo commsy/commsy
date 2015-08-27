@@ -222,7 +222,8 @@ class ItemController extends Controller
             $tempItem = $itemList->getNext();
         }
         
-        $formData['items'] = $item->getAllLinkedItemIDArray();
+        $optionsData['itemsLinked'] = $item->getAllLinkedItemIDArray();
+        $formData['itemsLinked'] = $item->getAllLinkedItemIDArray();
         
         // get all categories -> tree
         $categoryService = $this->get('commsy.category_service');
@@ -255,6 +256,7 @@ class ItemController extends Controller
             'filterRubric' => $optionsData['filterRubric'],
             'filterPublic' => $optionsData['filterPublic'],
             'items' => $optionsData['items'],
+            'itemsLinked' => $optionsData['itemsLinked'],
             'categories' => $optionsData['categories'],
             'hashtags' => $optionsData['hashtags']
         ));

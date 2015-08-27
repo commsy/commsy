@@ -95,6 +95,16 @@ class ItemLinksType extends AbstractType
                 'expanded' => true,
                 'multiple' => true
             ));
+            
+            $form->add('itemsLinked', 'choice', array(
+                'placeholder' => false,
+                'choices' => $options['itemsLinked'],
+                'label' => 'itemsLinked',
+                'translation_domain' => 'item',
+                'required' => false,
+                'expanded' => true,
+                'multiple' => true
+            ));
         };
 
         $builder->addEventListener(
@@ -108,7 +118,10 @@ class ItemLinksType extends AbstractType
             FormEvents::SUBMIT,
             function (FormEvent $event) use ($formModifier) {
                 $data = $event->getData();
-                $formModifier($event->getForm(), $this->getLinkedEntriesData($data));
+                $formModifier($event->getForm(), $this->getLinkableEntriesData($data));
+                if (isset($data['items'])) {
+                    $event->getForm()->get('itemsLinked')->setData($data['items']);
+                }
             }
         );
         
@@ -117,7 +130,7 @@ class ItemLinksType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
-            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'categories', 'hashtags'))
+            ->setRequired(array('filterRubric', 'filterPublic', 'items', 'itemsLinked', 'categories', 'hashtags'))
         ;
     }
 
@@ -126,9 +139,11 @@ class ItemLinksType extends AbstractType
         return 'itemLinks';
     }
     
-    private function getLinkedEntriesData ($filterData) {
+    private function getLinkableEntriesData ($filterData) {
         // get all items that are linked or can be linked
         $optionsData = array();
+        
+        error_log(print_r($filterData, true));
         
         if (empty($filterData['filterRubric']) || $filterData['filterRubric'] == 'all') {
             $rubricInformation = $this->roomService->getRubricInformation($this->environment->getCurrentContextId());
@@ -157,6 +172,28 @@ class ItemLinksType extends AbstractType
         
         if (empty($optionsData['items'])) {
             $optionsData['items'] = array();
+        }
+        
+        $itemManager->reset();
+        
+        if (isset($filterData['items'])) {
+            $itemLinkedList = $itemManager->getItemList($filterData['items']);
+            
+            $tempLinkedItem = $itemLinkedList->getFirst();
+            while ($tempLinkedItem) {
+                $tempTypedLinkedItem = $this->itemService->getTypedItem($tempLinkedItem->getItemId());
+                if ($tempTypedLinkedItem->getItemType() != 'user') {
+                    $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
+                } else {
+                    $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
+                }
+                $tempLinkedItem = $itemLinkedList->getNext();
+            }
+        }
+        
+        //$optionsData['itemsLinked'] = $filterData['items'];
+        if (empty($optionsData['itemsLinked'])) {
+            $optionsData['itemsLinked'] = array();
         }
         
         return $optionsData;
