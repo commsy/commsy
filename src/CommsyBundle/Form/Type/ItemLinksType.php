@@ -143,8 +143,6 @@ class ItemLinksType extends AbstractType
         // get all items that are linked or can be linked
         $optionsData = array();
         
-        error_log(print_r($filterData, true));
-        
         if (empty($filterData['filterRubric']) || $filterData['filterRubric'] == 'all') {
             $rubricInformation = $this->roomService->getRubricInformation($this->environment->getCurrentContextId());
         } else {

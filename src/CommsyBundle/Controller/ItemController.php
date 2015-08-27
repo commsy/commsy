@@ -222,7 +222,21 @@ class ItemController extends Controller
             $tempItem = $itemList->getNext();
         }
         
-        $optionsData['itemsLinked'] = $item->getAllLinkedItemIDArray();
+        $itemLinkedList = $itemManager->getItemList($item->getAllLinkedItemIDArray());
+        $tempLinkedItem = $itemLinkedList->getFirst();
+        while ($tempLinkedItem) {
+            $tempTypedLinkedItem = $this->itemService->getTypedItem($tempLinkedItem->getItemId());
+            if ($tempTypedLinkedItem->getItemType() != 'user') {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
+            } else {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
+            }
+            $tempLinkedItem = $itemLinkedList->getNext();
+        }
+        if (empty($optionsData['itemsLinked'])) {
+            $optionsData['itemsLinked'] = array();
+        }
+        
         $formData['itemsLinked'] = $item->getAllLinkedItemIDArray();
         
         // get all categories -> tree
