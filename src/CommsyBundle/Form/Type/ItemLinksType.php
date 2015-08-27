@@ -100,18 +100,15 @@ class ItemLinksType extends AbstractType
         $builder->addEventListener(
             FormEvents::PRE_SET_DATA,
             function (FormEvent $event) use ($formModifier, $options) {
-                // this would be your entity, i.e. SportMeetup
-                $data = $event->getData();
-
                 $formModifier($event->getForm(), $options);
             }
         );
 
         $builder->addEventListener(
-            FormEvents::POST_SUBMIT,
+            FormEvents::SUBMIT,
             function (FormEvent $event) use ($formModifier) {
-                $data = $event->getForm()->getData();
-                $formModifier($event->getForm()->getParent(), $this->getLinkedEntriesData($data));
+                $data = $event->getData();
+                $formModifier($event->getForm(), $this->getLinkedEntriesData($data));
             }
         );
         
