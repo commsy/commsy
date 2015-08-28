@@ -50,13 +50,13 @@
                 </div>
             </div>
         </div>
-        <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+        <div class="uk-margin-left uk-margin-right uk-position-relative">
             <div class="uk-width-1-1 uk-padding-remove uk-margin-small-bottom">    
                 <div class="uk-grid uk-margin-small-left uk-margin-top-remove">
                     <div class="uk-width-9-10 uk-padding-remove">
                         <div class="toggle-title-{{ item.itemId }}">
                             <div class="uk-panel">
-                                <div class="uk-grid uk-margin-bottom">
+                                <div class="uk-grid">
                                     <div class="uk-width-1-1">
                                         <div class="uk-flex">
                                             <div class="uk-margin-right">
@@ -227,5 +227,5 @@
         {% endset %}
     {% endif %}
        
-    {{ macros.editContent('sections', item, true, content, preview, false) }}
+    {{ macros.editContent('sections', item, true, content, preview, false, true, sectionList|length) }}
 {% endmacro %}

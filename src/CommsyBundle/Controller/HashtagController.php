@@ -39,4 +39,18 @@ class HashtagController extends Controller
         );
     }
 
+    /**
+     * @Template("CommsyBundle:Hashtag:showDetailShort.html.twig")
+     */
+    public function showDetailShortAction($roomId, Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $hashtags = $em->getRepository('CommsyBundle:Labels')
+            ->findRoomHashtags($roomId);
+
+        return array(
+            'hashtags' => $hashtags
+        );
+    }
+
 }

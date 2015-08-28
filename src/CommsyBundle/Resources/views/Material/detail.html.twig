@@ -114,7 +114,7 @@
             
                     {# description #}
                     <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macros.editContent('description', material, true, material.description, material.description, false) }}
+                        {{ macros.editContent('description', material, true, material.description, material.description, false, false, 0) }}
                     </div>
             
                     {# files #}
@@ -154,7 +154,7 @@
                         
                         {# description #}
                         <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macros.editContent('description', section, true, section.description, section.description, false) }}
+                            {{ macros.editContent('description', section, true, section.description, section.description, false, false, 0) }}
                         </div>
                 
                         {# files #}

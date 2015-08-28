@@ -4,16 +4,16 @@
 <div class="">
  
     <div id="user-sub" class="uk-overflow-container">
- <!--       {% if not linkedItemsByRubric is empty %} --!>
+       {% if not linkedItemsByRubric is empty %} 
             <div class="uk-accordion" data-uk-accordion="{collapse: false}">
                 {% for type,rubric in linkedItemsByRubric %}
-                    <h3 class="uk-accordion-title">
-                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|trans({})|capitalize }} ({{ rubric|length }})</a>
-                    </h3>
-                    <div class="uk-accordion-content">
+                    <div class="uk-accordion-title cs-accordion-detail uk-margin-remove">
+                    <i class="{{ macros.iconClassForItemType(type) }}"></i> {{ type|transchoice(1,{},"rubric")|capitalize }} ({{ rubric|length }})</a>
+                    </div>
+                    <div class="uk-accordion-content uk-padding-remove">
                         <ul class="uk-list uk-margin-bottom-remove">
                         {% for linkedItem in rubric [0:10] %}
-                            <li><i class="{{ macros.iconClassForItemType(linkedItem.itemType) }} uk-text-primary"></i> <a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title }}</a></li>
+                            <li><a href="{{ app.request.baseURL }}/room/{{ app.request.attributes.get('roomId') }}/{{ linkedItem.itemType }}/{{ linkedItem.itemID }}">{{ linkedItem.title|truncate(30) }}</a></li>
                         {% endfor %}
                         </ul>
                         {% if rubric|length > 10 %}
@@ -32,6 +32,8 @@
                     </div>
                 {% endfor %}
             </div>
-<!--        {% endif %}  --!>
+        {% else %}
+            {{ 'no linked items'|trans({}, "room")}}    
+        {% endif %}  
     </div>
 </div>

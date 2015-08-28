@@ -80,11 +80,11 @@
             </trans-unit>
             <trans-unit id="20">
                 <source>files</source>
-                <target>Angehängte Dateien</target>
+                <target>Dateien</target>
             </trans-unit>
             <trans-unit id="21">
                 <source>links</source>
-                <target>Zugeordnete Einträge</target>
+                <target>Zuordnungen</target>
             </trans-unit>
             <trans-unit id="22">
                 <source>workflow</source>

@@ -48,7 +48,7 @@
             </trans-unit>
              <trans-unit id="13">
                 <source>linked entries</source>
-                <target>Beiträge</target>
+                <target>Zugeordnete Einträge</target>
             </trans-unit>
              <trans-unit id="14">
                 <source>no linked items</source>
