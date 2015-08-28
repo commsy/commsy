@@ -115,12 +115,29 @@ class ItemLinksType extends AbstractType
         );
 
         $builder->addEventListener(
-            FormEvents::SUBMIT,
+            FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($formModifier) {
                 $data = $event->getData();
-                $formModifier($event->getForm(), $this->getLinkableEntriesData($data));
+
+                $tempEntries = array();
+                if (isset($data['itemsLinked'])) {
+                    $tempEntries = $data['itemsLinked'];
+                }
+                
                 if (isset($data['items'])) {
-                    $event->getForm()->get('itemsLinked')->setData($data['items']);
+                    $tempEntries = array_merge($tempEntries, $data['items']);
+                }
+                
+                $data['itemsLinked'] = $tempEntries;
+                
+                $tempArray = $this->getLinkableEntriesData($data);
+                
+                $data['items'] = $tempArray['items'];
+                
+                $formModifier($event->getForm(), $data);
+                
+                if (!empty($tempEntries)) {
+                    $event->getForm()->get('itemsLinked')->setData($tempEntries);
                 }
             }
         );
