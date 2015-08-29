@@ -50,12 +50,10 @@
                 </div>
                 <div id="list-filter"> 
                 <div class="uk-margin-bottom">
-                <h4>{{ 'filter entries'|trans({},"rubric") }}</h4>
-                    {{ form_start(form) }}
+                   {{ form_start(form) }}
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
-                <hr/>
             {{ render(controller(
                 'CommsyBundle:Category:show',
                 { 'roomId': roomId }

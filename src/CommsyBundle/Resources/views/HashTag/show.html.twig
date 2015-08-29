@@ -1,5 +1,10 @@
     <div id="room-hashtags" class="uk-overflow-container uk-margin-bottom">
-        <h4>{{ 'hashtags'|trans({}, "room") }} </h4>
+ 
+       <hr class="cs-list-divider"/>
+       <h4 class="cs-list-section-header">
+            <span class="cs-detail-section-header-background">{{ 'hashtags'|trans({}, "room") }} 
+            </span>
+       </h4>
         {% if hashtags is not empty %}
             <ul class="uk-list uk-list-striped">
                 {% for hashtag in hashtags %}

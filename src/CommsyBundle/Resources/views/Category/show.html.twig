@@ -35,8 +35,14 @@
     {% endif %}
 {% endmacro %}
 
+
+
     <div>
-       <h4>{{ 'categories'|trans({}, "room") }} </h4>
+       <hr class="cs-list-divider"/>
+       <h4 class="cs-list-section-header">
+            <span class="cs-detail-section-header-background">{{ 'categories'|trans({}, "room") }} 
+            </span>
+       </h4>
          <div id="room-categories" data-cs-tree>
             {% if tags is not empty %}
                 <ul class="uk-list uk-list-striped">
@@ -49,6 +55,7 @@
             {% endif %}
         </div>
 
+ <!--       
         {% if is_granted('CATEGORY_EDIT') %}
             {{ form_start(form) }}
                 {{ form_errors(form) }}
@@ -62,6 +69,5 @@
                 {{ form_rest(form) }}
             {{ form_end(form) }}
         {% endif %}
+  --!>
     </div>
-    <hr/>
-

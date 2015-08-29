@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="9">
                 <source>list filter</source>
-                <target>Filter</target>
+                <target>Liste einschränken</target>
             </trans-unit>
             <trans-unit id="10">
                 <source>hashtags</source>
