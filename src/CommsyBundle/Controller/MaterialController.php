@@ -96,10 +96,27 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+
         $materialService = $this->get('commsy_legacy.material_service');
         $itemService = $this->get('commsy.item_service');
         
         $material = $materialService->getMaterial($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $item = $material;
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+        
         $sectionList = $material->getSectionList()->to_array();
         
         $itemArray = array($material);

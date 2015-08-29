@@ -104,6 +104,21 @@ class GroupController extends Controller
     {
         $groupService = $this->get('commsy.group_service');
         $group = $groupService->getGroup($itemId);
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $item = $group;
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
         
         $membersList = $group->getMemberItemList();
         $members = $membersList->to_array();

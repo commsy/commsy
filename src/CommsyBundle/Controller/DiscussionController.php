@@ -97,6 +97,21 @@ class DiscussionController extends Controller
         $itemService = $this->get('commsy.item_service');
         
         $discussion = $discussionService->getDiscussion($itemId);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $item = $discussion;
+        $reader_manager = $legacyEnvironment->getReaderManager();
+        $reader = $reader_manager->getLatestReader($item->getItemID());
+        if(empty($reader) || $reader['read_date'] < $item->getModificationDate()) {
+            $reader_manager->markRead($item->getItemID(), $item->getVersionID());
+        }
+
+        $noticed_manager = $legacyEnvironment->getNoticedManager();
+        $noticed = $noticed_manager->getLatestNoticed($item->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $item->getModificationDate()) {
+            $noticed_manager->markNoticed($item->getItemID(), $item->getVersionID());
+        }
+
+
         $discussionArticleList = $discussion->getAllArticles()->to_array();
         
         $itemArray = array($discussion);
