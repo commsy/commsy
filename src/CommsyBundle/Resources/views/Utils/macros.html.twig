@@ -101,9 +101,13 @@
 {% macro statusColor(readerList, itemId) %}
     {% if readerList[itemId] is defined %}
         {% if readerList[itemId] == 'new' %}
-            cs-comment-new
+            <div class="cs-comment-change-info" data-uk-tooltip title="ToDo:New Short Changed Info">
+                <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+            </div>
         {% elseif readerList[itemId] == 'changed' %}
-            cs-comment-changed
+            <div class="cs-comment-change-info" data-uk-tooltip title="ToDo:Changed Short Changed Info">
+                 <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+            </div>
         {% endif %}
     {% endif %}
 {% endmacro %}
