@@ -4,7 +4,7 @@
     {% for group in groups %}
         <article class="uk-comment">
            
-            <div class="cs-comment-change-info {{ macros.statusColor(readerList, group.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
+            {{ macros.statusColor(readerList, group.itemId) }}
             <header class="uk-comment-header uk-flex">
                 <div class="groups-checkbox uk-margin-right uk-hidden">
                     <form class="uk-form">
