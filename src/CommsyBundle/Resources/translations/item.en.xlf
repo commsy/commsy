@@ -50,6 +50,10 @@
                 <source>workflowStatusValidityDate</source>
                 <target>Status after the expiration of the validity date</target>
             </trans-unit>
+            <trans-unit id="insertTitle">
+                <source>insert title</source>
+                <target>Insert title</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

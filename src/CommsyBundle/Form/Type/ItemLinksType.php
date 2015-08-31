@@ -118,30 +118,30 @@ class ItemLinksType extends AbstractType
             FormEvents::PRE_SUBMIT,
             function (FormEvent $event) use ($formModifier) {
                 $data = $event->getData();
+                $tempData = $this->getTempData($data);
+                
+                $formModifier($event->getForm(), $tempData);
 
-                $tempEntries = array();
-                if (isset($data['itemsLinked'])) {
-                    $tempEntries = $data['itemsLinked'];
+                $eventData = array();
+                if (isset($tempData['itemsLinked'])) {
+                    if (!empty(array_keys($tempData['itemsLinked']))) {
+                        $eventData['items'] = array_keys($tempData['itemsLinked']);
+                        $eventData['itemsLinked'] = array_keys($tempData['itemsLinked']);
+                    } else {
+                        $eventData['items'] = $tempData['itemsLinked'];
+                        $eventData['itemsLinked'] = $tempData['itemsLinked'];
+                    }
                 }
                 
-                if (isset($data['items'])) {
-                    $tempEntries = array_merge($tempEntries, $data['items']);
+                $event->setData($eventData);
+                if (isset($eventData['items'])) {
+                    $event->getForm()->get('items')->setData($eventData['items']);
                 }
-                
-                $data['itemsLinked'] = $tempEntries;
-                
-                $tempArray = $this->getLinkableEntriesData($data);
-                
-                $data['items'] = $tempArray['items'];
-                
-                $formModifier($event->getForm(), $data);
-                
-                if (!empty($tempEntries)) {
-                    $event->getForm()->get('itemsLinked')->setData($tempEntries);
+                if (isset($eventData['itemsLinked'])) {
+                    $event->getForm()->get('itemsLinked')->setData($eventData['itemsLinked']);
                 }
             }
         );
-        
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -156,10 +156,10 @@ class ItemLinksType extends AbstractType
         return 'itemLinks';
     }
     
-    private function getLinkableEntriesData ($filterData) {
-        // get all items that are linked or can be linked
+    private function getTempData ($filterData) {
+        // get all items that are linked, temporary linked (i.e. already selected in the form) or can be linked
         $optionsData = array();
-        
+
         if (empty($filterData['filterRubric']) || $filterData['filterRubric'] == 'all') {
             $rubricInformation = $this->roomService->getRubricInformation($this->environment->getCurrentContextId());
         } else {
@@ -189,21 +189,27 @@ class ItemLinksType extends AbstractType
             $optionsData['items'] = array();
         }
         
-        $itemManager->reset();
-        
+        $tempData = array();
         if (isset($filterData['items'])) {
-            $itemLinkedList = $itemManager->getItemList($filterData['items']);
-            
-            $tempLinkedItem = $itemLinkedList->getFirst();
-            while ($tempLinkedItem) {
-                $tempTypedLinkedItem = $this->itemService->getTypedItem($tempLinkedItem->getItemId());
-                if ($tempTypedLinkedItem->getItemType() != 'user') {
-                    $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
-                } else {
-                    $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
-                }
-                $tempLinkedItem = $itemLinkedList->getNext();
+            $tempData = $filterData['items'];
+        }
+        
+        if (isset($filterData['itemsLinked'])) {
+            $tempData = array_merge($tempData, $filterData['itemsLinked']);
+        }
+    
+        $itemManager->reset();    
+        $itemLinkedList = $itemManager->getItemList($tempData);
+        
+        $tempLinkedItem = $itemLinkedList->getFirst();
+        while ($tempLinkedItem) {
+            $tempTypedLinkedItem = $this->itemService->getTypedItem($tempLinkedItem->getItemId());
+            if ($tempTypedLinkedItem->getItemType() != 'user') {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getTitle();
+            } else {
+                $optionsData['itemsLinked'][$tempTypedLinkedItem->getItemId()] = $tempTypedLinkedItem->getFullname();
             }
+            $tempLinkedItem = $itemLinkedList->getNext();
         }
         
         //$optionsData['itemsLinked'] = $filterData['items'];
