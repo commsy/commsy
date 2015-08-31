@@ -2654,6 +2654,18 @@ function getExternalViewerArray(){
       return $result;
    }
 
+   /** get draft status
+    */
+   function isDraft () {
+      return $this->_getValue('draft');
+   }
+
+   /** set set draft
+    */
+   function setDraftStatus ($value) {
+      $this->_setValue('draft', (string)$value);
+   }
+
    // archive
    public function setArchiveStatus () {
       $this->_is_archived = true;

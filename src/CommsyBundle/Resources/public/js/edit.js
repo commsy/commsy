@@ -36,6 +36,10 @@
                 });
 
             $this.registerArticleEvents(element);
+            
+            if ($this.options.draft) {
+                $this.onClickEdit($(element).find('div.cs-edit'));
+            }
         },
 
         registerArticleEvents: function(element) {

@@ -1,4 +1,4 @@
-{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount) %}
+{% macro title(item, modifierList, userCount, readCount, readSinceModificationCount, draft) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     {% set pathName = '' %}
     {% if item.itemType == 'material' %}
@@ -11,7 +11,7 @@
         {% set userCount = 1 %}
     {% endif %}
     
-    <div class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}' }">
+    <div class="cs-edit-section cs-toggle" data-cs-edit="{editUrl: '{{ path(pathName, {'roomId': item.contextId, 'itemId': item.itemId}) }}', draft: '{{ draft }}'}">
         <a name="title"></a>
         <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
             <div class="uk-grid uk-margin-small-bottom">
@@ -32,10 +32,6 @@
                     {% else %}
                         <div class="uk-width-1-1">
                             <h1 class="uk-article-title">{{ item.title|raw }}</h1>
-                            {% if item.itemType == 'material' %}
-                                {% set material = item %}
-                                {% include 'CommsyBundle:Material:biblio.html.twig' %}
-                            {% endif %}
                         </div>
                 {% endif %}
                 </div>
@@ -175,6 +171,7 @@
 {% endmacro %}
 
 {% macro titleSave(item) %}
+    {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     <div class="uk-width-9-10 uk-padding-remove">
         <h1 class="uk-article-title">{{ item.title|raw }}</h1>
         {% if item.itemType == 'material' %}

@@ -295,6 +295,7 @@ class MaterialController extends Controller
                     break;
             }
         }
+        
         return array(
             'roomId' => $roomId,
             'material' => $materialService->getMaterial($itemId),
@@ -315,7 +316,8 @@ class MaterialController extends Controller
             'workflowUserArray'=> $workflowUserArray,
             'workflowText'=>$workflowText,
             'workflowValidityDate'=>$material->getWorkflowValidityDate(),
-            'workflowResubmissionDate'=>$material->getWorkflowResubmissionDate()
+            'workflowResubmissionDate'=>$material->getWorkflowResubmissionDate(),
+            'draft' => $itemService->getItem($itemId)->isDraft()
         );
     }
 
@@ -367,6 +369,11 @@ class MaterialController extends Controller
             if ($form->get('save')->isClicked()) {
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
                 $tempItem->save();
+                
+                /* if ($item->isDraft()) {
+                    $item->setDraftStatus(0);
+                    $item->save();
+                } */
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }
@@ -432,6 +439,8 @@ class MaterialController extends Controller
         // create new material item
         $materialItem = $materialService->getNewMaterial();
         $materialItem->setTitle('['.$translator->trans('insert title').']');
+        $materialItem->setBibKind('none');
+        $materialItem->setDraftStatus(1);
         $materialItem->save();
 
         /* $form = $this->createForm('material', $materialData, array());
