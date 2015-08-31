@@ -103,7 +103,7 @@
         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
         //$data = $("input[id^='itemLinks_rubricFilter_']:checked");
         //$data = element;
-        $data = $("select[id^='itemLinks_filter']");
+        $data = $("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked"));
         var $form = element.closest('form');
         $.ajax({
             url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
@@ -124,7 +124,20 @@
         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
         $data = $("input[id^='itemLinks']:checked");
         
-        console.log($data);
+        /* var item = $(this);
+        if (!item.checked) {
+            $data.each(function () {
+                if ($(this).attr('id').match('^itemLinks_itemsLinked')) {
+                    if ($(this).val() == item.val()) {
+                        $(this).remove();
+                    }
+                }
+            });
+        } */
+        
+        /* if (!$(this).checked) {
+            $data['remove'] = $(this).val();
+        } */
         
         var $form = $(this).closest('form');
         $.ajax({
