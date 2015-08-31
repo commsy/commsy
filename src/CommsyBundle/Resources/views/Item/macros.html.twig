@@ -71,7 +71,7 @@
                             </div>
                         {% endif %}
                         <div class="uk-vertical-align-middle">
-                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(25) }}</a><br/>
+                            <a href="{{ path('commsy_file_getfile', {'fileId': file.fileId}) }}" data-uk-tooltip title="{{ file.filename }}">{{ file.filename|truncate(20) }}</a><br/>
                             ({{ file.fileSize }} kb)
                         </div>
                     </div>
