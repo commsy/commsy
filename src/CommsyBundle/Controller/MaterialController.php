@@ -7,6 +7,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use CommsyBundle\Filter\MaterialFilterType;
 
@@ -421,14 +423,18 @@ class MaterialController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
+        $translator = new Translator('de_DE');
+        
         $materialData = array();
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
         
         // create new material item
         $materialItem = $materialService->getNewMaterial();
+        $materialItem->setTitle('['.$translator->trans('insert title').']');
+        $materialItem->save();
 
-        $form = $this->createForm('material', $materialData, array());
+        /* $form = $this->createForm('material', $materialData, array());
         
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -440,11 +446,13 @@ class MaterialController extends Controller
             // $em = $this->getDoctrine()->getManager();
             // $em->persist($room);
             // $em->flush();
-        }
+        } */
 
-        return array(
+        return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $materialItem->getItemId()));
+
+        /* return array(
             'material' => $materialItem,
             'form' => $form->createView()
-        );
+        ); */
     }
 }
