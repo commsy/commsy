@@ -115,19 +115,19 @@
                         </div>
                         <div class="uk-text-large uk-float-left">
                             {{ 'list filter'|trans({}, "room") }} 
-                       </div>
+                        </div>
                     </div>
                 </div>
                 <dl id="list-filter">
-            {{ render(controller(
-                'CommsyBundle:Category:show',
-                { 'roomId': roomItem.itemId }
-            ))}}
-            {{ render(controller(
-                'CommsyBundle:Hashtag:show',
-                { 'roomId': roomItem.itemId }
-            ))}}
-            </dl>
+                    {{ render(controller(
+                        'CommsyBundle:Category:show',
+                        { 'roomId': roomItem.itemId }
+                    ))}}
+                    {{ render(controller(
+                        'CommsyBundle:Hashtag:show',
+                        { 'roomId': roomItem.itemId }
+                    ))}}
+                </dl>
  
             </div>
         </div>

@@ -24,15 +24,15 @@
 {% macro rawNestedList(data) %}
     <li>
         {{ data.title }}
-    </li>
 
-    {% if data.children is not empty %}
-        <ul>
-            {% for child in data.children %}
-                {{ _self.rawNestedList(child) }}
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% if data.children is not empty %}
+            <ul>
+                {% for child in data.children %}
+                    {{ _self.rawNestedList(child) }}
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
 {% endmacro %}
 
     <div>
