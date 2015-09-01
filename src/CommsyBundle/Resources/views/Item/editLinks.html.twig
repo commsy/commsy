@@ -124,20 +124,9 @@
         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
         $data = $("input[id^='itemLinks']:checked");
         
-        /* var item = $(this);
-        if (!item.checked) {
-            $data.each(function () {
-                if ($(this).attr('id').match('^itemLinks_itemsLinked')) {
-                    if ($(this).val() == item.val()) {
-                        $(this).remove();
-                    }
-                }
-            });
-        } */
-        
-        /* if (!$(this).checked) {
-            $data['remove'] = $(this).val();
-        } */
+        if (!$(this).prop('checked')) {
+            $data = $data.add($('<input type="hidden" id="itemLinks_remove" name="itemLinks[remove]" value="'+$(this).val()+'" />'));
+        }
         
         var $form = $(this).closest('form');
         $.ajax({

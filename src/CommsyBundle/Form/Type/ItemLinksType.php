@@ -217,6 +217,15 @@ class ItemLinksType extends AbstractType
             $optionsData['itemsLinked'] = array();
         }
         
+        if (isset($filterData['remove'])) {
+            if(isset($optionsData['items'][$filterData['remove']])) {
+                unset($optionsData['items'][$filterData['remove']]);
+            }
+            if(isset($optionsData['itemsLinked'][$filterData['remove']])) {
+                unset($optionsData['itemsLinked'][$filterData['remove']]);
+            }
+        }
+        
         return $optionsData;
     }
 }
