@@ -304,12 +304,11 @@ class MaterialController extends Controller
                     }
                 }
             }
-        }  
-        if($current_context->withWorkflow()) {
-            switch($material->getWorkflowTrafficLight()) {
-                case '3_none':
-                    $workflowText ='';
-                    break;
+        }
+
+        $workflowText = '';
+        if ($current_context->withWorkflow()) {
+            switch ($material->getWorkflowTrafficLight()) {
                 case '0_green':
                     $workflowText = $current_context->getWorkflowTrafficLightTextGreen();
                     break;
