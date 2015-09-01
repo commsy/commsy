@@ -98,12 +98,41 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        
+        return array(
+            'roomId' => $roomId,
+            'material' => $infoArray['material'],
+            'sectionList' => $infoArray['sectionList'],
+            'readerList' => $infoArray['readerList'],
+            'modifierList' => $infoArray['modifierList'],
+            'materialList' => $infoArray['materialList'],
+            'counterPosition' => $infoArray['counterPosition'],
+            'count' => $infoArray['count'],
+            'firstItemId' => $infoArray['firstItemId'],
+            'prevItemId' => $infoArray['prevItemId'],
+            'nextItemId' => $infoArray['nextItemId'],
+            'lastItemId' => $infoArray['lastItemId'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'userCount' => $infoArray['userCount'],
+            'workflowGroupArray'=> $infoArray['workflowGroupArray'],
+            'workflowUserArray'=> $infoArray['workflowUserArray'],
+            'workflowText'=>$infoArray['workflowText'],
+            'workflowValidityDate'=>$infoArray['workflowValidityDate'],
+            'workflowResubmissionDate'=>$infoArray['workflowResubmissionDate'],
+            'draft' => $infoArray['draft']
+        );
+    }
 
+    private function getDetailInfo ($roomId, $itemId) {
+        $infoArray = array();
+        
         $materialService = $this->get('commsy_legacy.material_service');
         $itemService = $this->get('commsy.item_service');
         
         $material = $materialService->getMaterial($itemId);
-
+        
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $item = $material;
         $reader_manager = $legacyEnvironment->getReaderManager();
@@ -128,7 +157,7 @@ class MaterialController extends Controller
 
         $roomManager = $legacyEnvironment->getRoomManager();
         $readerManager = $legacyEnvironment->getReaderManager();
-        $roomItem = $roomManager->getItem($roomId);        
+        $roomItem = $roomManager->getItem($material->getContextId());        
         $numTotalMember = $roomItem->getAllUsers();
 
         $userManager = $legacyEnvironment->getUserManager();
@@ -296,29 +325,28 @@ class MaterialController extends Controller
             }
         }
         
-        return array(
-            'roomId' => $roomId,
-            'material' => $materialService->getMaterial($itemId),
-            'sectionList' => $sectionList,
-            'readerList' => $readerList,
-            'modifierList' => $modifierList,
-            'materialList' => $materialList,
-            'counterPosition' => $counterPosition,
-            'count' => sizeof($materials),
-            'firstItemId' => $firstItemId,
-            'prevItemId' => $prevItemId,
-            'nextItemId' => $nextItemId,
-            'lastItemId' => $lastItemId,
-            'readCount' => $read_count,
-            'readSinceModificationCount' => $read_since_modification_count,
-            'userCount' => $all_user_count,
-            'workflowGroupArray'=> $workflowGroupArray,
-            'workflowUserArray'=> $workflowUserArray,
-            'workflowText'=>$workflowText,
-            'workflowValidityDate'=>$material->getWorkflowValidityDate(),
-            'workflowResubmissionDate'=>$material->getWorkflowResubmissionDate(),
-            'draft' => $itemService->getItem($itemId)->isDraft()
-        );
+        $infoArray['material'] = $material;
+        $infoArray['sectionList'] = $sectionList;
+        $infoArray['readerList'] = $readerList;
+        $infoArray['modifierList'] = $modifierList;
+        $infoArray['materialList'] = $materialList;
+        $infoArray['counterPosition'] = $counterPosition;
+        $infoArray['count'] = sizeof($materials);
+        $infoArray['firstItemId'] = $firstItemId;
+        $infoArray['prevItemId'] = $prevItemId;
+        $infoArray['nextItemId'] = $nextItemId;
+        $infoArray['lastItemId'] = $lastItemId;
+        $infoArray['readCount'] = $read_count;
+        $infoArray['readSinceModificationCount'] = $read_since_modification_count;
+        $infoArray['userCount'] = $all_user_count;
+        $infoArray['workflowGroupArray'] = $workflowGroupArray;
+        $infoArray['workflowUserArray'] = $workflowUserArray;
+        $infoArray['workflowText'] = $workflowText;
+        $infoArray['workflowValidityDate'] = $material->getWorkflowValidityDate();
+        $infoArray['workflowResubmissionDate'] = $material->getWorkflowResubmissionDate();
+        $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        
+        return $infoArray;
     }
 
     /**
@@ -417,10 +445,15 @@ class MaterialController extends Controller
             $modifierList[$item->getItemId()] = $itemService->getAdditionalEditorsForItem($item);
         }
         
+        $infoArray = $this->getDetailInfo($roomId, $itemId);
+        
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
-            'modifierList' => $modifierList
+            'modifierList' => $modifierList,
+            'userCount' => $infoArray['userCount'],
+            'readCount' => $infoArray['readCount'],
+            'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
         );
     }
         
