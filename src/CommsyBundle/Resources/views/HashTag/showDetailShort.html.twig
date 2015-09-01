@@ -1,14 +1,14 @@
-    <div id="room-hashtags" class="uk-overflow-container uk-margin-bottom">
-        {% if hashtags is not empty %}
-            <ul class="uk-list uk-list-striped">
-                {% for hashtag in hashtags %}
-                    <span>
-                        <button class="uk-button uk-margin-small-bottom">{{ hashtag.name }}</button>
-                    </span>
-                {% endfor %}
-            </ul>
-        {% else %}
-            {{ 'No Hashtags'|trans({}, 'hashtag') }}
-        {% endif %}
-        
-    </div>
+<div id="room-hashtags" class="uk-overflow-container uk-margin-bottom">
+    {% if hashtags is not empty %}
+        <ul class="uk-list uk-list-striped">
+            {% for hashtag in hashtags %}
+                <span>
+                    <button class="uk-button uk-margin-small-bottom">{{ hashtag.name }}</button>
+                </span>
+            {% endfor %}
+        </ul>
+    {% else %}
+        {{ 'No Hashtags'|trans({}, 'hashtag') }}
+    {% endif %}
+    
+</div>
