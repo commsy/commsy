@@ -2204,6 +2204,14 @@ class cs_item {
       $this->_save($manager);
    }
 
+   /** save item
+    * this methode only saves the cs_item itself
+    */
+   public function saveAsItem () {
+      $manager = $this->_environment->getItemManager();
+      $this->_save($manager);
+   }
+
    /**
     * returns true if the modification_date should be saved
     *

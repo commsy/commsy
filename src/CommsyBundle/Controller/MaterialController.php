@@ -370,10 +370,10 @@ class MaterialController extends Controller
                 $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
                 $tempItem->save();
                 
-                /* if ($item->isDraft()) {
+                if ($item->isDraft()) {
                     $item->setDraftStatus(0);
-                    $item->save();
-                } */
+                    $item->saveAsItem();
+                }
             } else if ($form->get('cancel')->isClicked()) {
                 // ToDo ...
             }

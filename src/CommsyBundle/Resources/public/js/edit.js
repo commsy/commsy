@@ -37,7 +37,7 @@
 
             $this.registerArticleEvents(element);
             
-            if ($this.options.draft) {
+            if ($this.options.draft == '1') {
                 $this.onClickEdit($(element).find('div.cs-edit'));
             }
         },
