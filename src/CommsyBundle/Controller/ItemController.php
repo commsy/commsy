@@ -182,11 +182,11 @@ class ItemController extends Controller
     }
     
     /**
-     * @Route("/room/{roomId}/item/{itemId}/editlinks")
+     * @Route("/room/{roomId}/item/{itemId}/editlinks/{feedAmount}", defaults={"feedAmount" = 20})
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")
      */
-    public function editLinksAction($roomId, $itemId, Request $request)
+    public function editLinksAction($roomId, $itemId, $feedAmount, Request $request)
     {
         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
         $roomService = $this->get('commsy.room_service');
@@ -211,7 +211,7 @@ class ItemController extends Controller
         $itemManager->reset();
         $itemManager->setContextLimit($roomId);
         $itemManager->setTypeArrayLimit($rubricInformation);
-        //$itemManager->setNoIntervalLimit();
+        $itemManager->setIntervalLimit($feedAmount);
         $itemManager->select();
         $itemList = $itemManager->get();
         

@@ -171,6 +171,7 @@ class ItemLinksType extends AbstractType
         $itemManager->setContextLimit($this->environment->getCurrentContextId());
         $itemManager->setTypeArrayLimit($rubricInformation);
         //$itemManager->setNoIntervalLimit();
+        $itemManager->setIntervalLimit($filterData['feedAmount']);
         $itemManager->select();
         $itemList = $itemManager->get();
         

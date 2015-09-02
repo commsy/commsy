@@ -27,7 +27,7 @@
                 <li>
                     <div class="uk-grid">
                         <div class="uk-width-3-4">
-                            <div id="itemsListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll">
+                            <div id="itemsListWrapper" class="uk-block uk-block-muted uk-padding-remove uk-margin cs-form-scroll form-load-more">
                                 <ul id="itemsList">
                                 {% for entry in form.items %}
                                     <li>{{ form_widget(entry) }} {{ form_label(entry) }}</li>
@@ -89,6 +89,9 @@
 </div>
 
 <script>
+    var feedAmount = 40;
+    var scrolledToEnd = false;
+
 //$("input[id^='itemLinks_rubricFilter_']").each(function() {
     $('#itemLinks_filterRubric').change(function(){
         filterItems($(this));
@@ -104,6 +107,7 @@
         //$data = $("input[id^='itemLinks_rubricFilter_']:checked");
         //$data = element;
         $data = $("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked"));
+        $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="20" />'));
         var $form = element.closest('form');
         $.ajax({
             url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks',
@@ -127,6 +131,7 @@
         if (!$(this).prop('checked')) {
             $data = $data.add($('<input type="hidden" id="itemLinks_remove" name="itemLinks[remove]" value="'+$(this).val()+'" />'));
         }
+        $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="'+feedAmount+'" />'));
         
         var $form = $(this).closest('form');
         $.ajax({
@@ -151,6 +156,7 @@
         if (!$(this).prop('checked')) {
             $data = $data.add($('<input type="hidden" id="itemLinks_remove" name="itemLinks[remove]" value="'+$(this).val()+'" />'));
         }
+        $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="'+feedAmount+'" />'));
         
         var $form = $(this).closest('form');
         $.ajax({
@@ -169,6 +175,41 @@
                 );
             }
         });
+    });
+    
+    $('.form-load-more').bind('scroll', function() {
+        if($(this).scrollTop() + $(this).innerHeight() >= $(this)[0].scrollHeight) {
+            if (!scrolledToEnd) {
+                scrolledToEnd = true;
+                
+                var article = $(this).parents('.cs-edit-section');
+                $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
+                $data = $("input[id^='itemLinks']:checked");
+                
+                $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="'+feedAmount+'" />'));
+                
+                var $form = $(this).closest('form');
+                $.ajax({
+                    url : '/commsy.php/room/{{ roomId }}/item/{{ itemId }}/editlinks/'+feedAmount,
+                    type: $form.attr('method'),
+                    data : $data,
+                    success: function(html) {
+                        $(article).find('.cs-save-spinner').toggleClass('uk-hidden', true);
+                        
+                        /* $('#itemsLinkedList').replaceWith(
+                            $(html).find('#itemsLinkedList')
+                        ); */
+                        
+                        $('#itemsList').replaceWith(
+                            $(html).find('#itemsList')
+                        );
+                        
+                        scrolledToEnd = false;
+                        feedAmount += 20;
+                    }
+                });
+            }
+        }
     });
 //});
 </script>
