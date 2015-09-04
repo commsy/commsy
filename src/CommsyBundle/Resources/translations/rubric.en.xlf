@@ -42,6 +42,26 @@
                 <source>filter entries</source>
                 <target>Entry filter</target>
             </trans-unit>
+             <trans-unit id="11">
+                <source>title</source>
+                <target>title</target>
+            </trans-unit>
+             <trans-unit id="12">
+                <source>modifier</source>
+                <target>modifier</target>
+            </trans-unit>
+             <trans-unit id="13">
+                <source>modification_date</source>
+                <target>modification date</target>
+            </trans-unit>
+             <trans-unit id="14">
+                <source>list sort</source>
+                <target>Sort list</target>
+            </trans-unit>
+             <trans-unit id="15">
+                <source>list choice</source>
+                <target>Choose Entries</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

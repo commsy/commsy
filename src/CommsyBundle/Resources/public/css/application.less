@@ -139,9 +139,58 @@ article.selectable {
 // ========================================================================
 
 #cover {
-    height: 140px;
+    height: 280px;
     background-color: #6593B3;
+    width: 100%;
+    overflow-y:hidden;
 }
+
+#cover img{
+    width: 100%;
+}
+
+
+#cover-text {
+    background: rgba(255, 255, 255, 0.90) none repeat scroll 0 0;
+    border-radius: 5px;
+    color: #000;
+    height: 220px;
+    left: 30px;
+    max-width: 640px;
+    overflow: auto;
+    padding: 10px;
+    position: absolute;
+    top: 110px;
+    width: 80%;
+}
+
+@media (max-width: 960px){
+    #cover{
+           height: 250px;
+    }
+    #cover-text{
+           height: 190px;
+    }
+}
+
+@media (max-width: 768px){
+    #cover{
+           height: 220px;
+    }
+    #cover-text{
+           height: 160px;
+    }
+}
+
+@media (max-width: 480px){
+    #cover{
+           height: 180px;
+    }
+    #cover-text{
+           height: 120px;
+    }
+}
+
 
 
 // Profile

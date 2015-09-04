@@ -42,6 +42,26 @@
                 <source>filter entries</source>
                 <target>Einschränkungen nach Einträgen</target>
             </trans-unit>
+             <trans-unit id="11">
+                <source>title</source>
+                <target>Titel</target>
+            </trans-unit>
+             <trans-unit id="12">
+                <source>modifier</source>
+                <target>BearbeiterIn</target>
+            </trans-unit>
+             <trans-unit id="13">
+                <source>modification_date</source>
+                <target>Bearbeitungsdatum</target>
+            </trans-unit>
+             <trans-unit id="14">
+                <source>list sort</source>
+                <target>Einträge sortieren</target>
+            </trans-unit>
+             <trans-unit id="15">
+                <source>list choice</source>
+                <target>Einträge auswählen</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

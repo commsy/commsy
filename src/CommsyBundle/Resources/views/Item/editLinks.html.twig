@@ -104,8 +104,6 @@
     function filterItems(element) {
         var article = element.parents('.cs-edit-section');
         $(article).find('.cs-save-spinner').toggleClass('uk-hidden', false);
-        //$data = $("input[id^='itemLinks_rubricFilter_']:checked");
-        //$data = element;
         $data = $("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked"));
         $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="20" />'));
         var $form = element.closest('form');
@@ -132,6 +130,7 @@
             $data = $data.add($('<input type="hidden" id="itemLinks_remove" name="itemLinks[remove]" value="'+$(this).val()+'" />'));
         }
         $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="'+feedAmount+'" />'));
+        $data = $data.add($("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked")));
         
         var $form = $(this).closest('form');
         $.ajax({
@@ -157,6 +156,7 @@
             $data = $data.add($('<input type="hidden" id="itemLinks_remove" name="itemLinks[remove]" value="'+$(this).val()+'" />'));
         }
         $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="'+feedAmount+'" />'));
+        $data = $data.add($("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked")));
         
         var $form = $(this).closest('form');
         $.ajax({
@@ -187,6 +187,7 @@
                 $data = $("input[id^='itemLinks']:checked");
                 
                 $data = $data.add($('<input type="hidden" id="itemLinks_feedAmount" name="itemLinks[feedAmount]" value="'+feedAmount+'" />'));
+                $data = $data.add($("select[id^='itemLinks_filter']").add($("input[id^='itemLinks']:checked")));
                 
                 var $form = $(this).closest('form');
                 $.ajax({
