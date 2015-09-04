@@ -1,9 +1,24 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
 {% block cover %}
-    <div id="cover" class="uk-cover-background">
-        <img class="uk-invisible" src="" width="" height="" alt="">
-    </div>
+    {% set widthHomeInformation = true %}
+    {% set imgSrc = '/images/simpsons-wallpaper.jpg' %}
+    {% set homeInformation = '<h2>Hallo Leute</h2><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>' %}
+     
+    {%if widthHomeInformation %}
+        <div id="cover" class="uk-cover-background uk-nbfc cs-cover-background" aria-hidden="false">
+           {% if imgSrc is empty%}
+                <img class="uk-invisible" src="" width="" height="" alt="">
+            {% else %}
+                <img class="" src="{{imgSrc}}" width="" height="" alt="">        
+            {% endif %}
+            {% if not homeInformation is empty%}
+                <div id="cover-text">
+                {{homeInformation | raw}}
+                </div>
+            {% endif %}
+            </div>
+     {% endif %}
 {% endblock %}
 
 
