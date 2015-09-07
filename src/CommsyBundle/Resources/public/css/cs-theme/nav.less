@@ -44,7 +44,8 @@
 @nav-side-color: #CFCFCF;
 @nav-side-hover-background: rgba(0,0,0,0.15);
 @nav-side-hover-color: #989898;
-
+@nav-side-nested-color: #CFCFCF;
+@nav-side-nested-hover-color: #989898;
 
 
 // @nav-padding-vertical:                          5px;
@@ -116,3 +117,16 @@
 // @nav-offcanvas-divider-border-width:            1px;
 // @nav-offcanvas-nested-color:                    #ccc;
 // @nav-offcanvas-nested-hover-color:              #fff;
+
+/* Modifier `uk-nav-side`
+ ========================================================================== */
+
+/*
+    Active
+    allow uk-active not only for children, but all successors
+ */
+.uk-nav-side li.uk-active > a {
+    background: @nav-side-active-background;
+    color: @nav-side-active-color;
+    .hook-nav-side-active;
+}
