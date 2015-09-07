@@ -19,7 +19,7 @@
     </head>
     <body id="commsy" class="nav-collapsed">
 
-        <div id="sidebar">
+        <div id="sidebar" class="uk-hidden-small">
 
             <div id="sidebar-brand">
                 <a href="#">
@@ -74,9 +74,9 @@
                 </div>
                 
                 <!-- toggle -->
-                <a href="" class="uk-navbar-toggle"></a>
+                <a href="" class="uk-navbar-toggle uk-visible-small"></a>
 
-                <div class="uk-navbar-brand">
+                <div class="uk-navbar-brand cs-padding-5">
                     <a href="{{ path('commsy_room_home', {'roomId': app.request.attributes.get('roomId') }) }}">
                         {{ app.request.attributes.get('roomId')|roomTitle }}
                     </a>
