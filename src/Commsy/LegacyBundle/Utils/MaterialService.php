@@ -28,7 +28,7 @@ class MaterialService
     {
         $this->materialManager->reset();
         $this->materialManager->setContextLimit($roomId);
-        if ($max != NULL && $start != NULL) {
+        if ($max !== NULL && $start !== NULL) {
             $this->materialManager->setIntervalLimit($start, $max);
         }
 
