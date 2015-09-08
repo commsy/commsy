@@ -19,6 +19,7 @@ class MaterialService
 
         $this->materialManager = $this->legacyEnvironment->getMaterialManager();
         $this->materialManager->reset();
+        $this->materialManager->showNoNotActivatedEntries();
         
         $this->sectionManager = $this->legacyEnvironment->getSectionManager();
         $this->sectionManager->reset();
@@ -26,7 +27,6 @@ class MaterialService
 
     public function getListMaterials($roomId, $max = NULL, $start = NULL)
     {
-        $this->materialManager->reset();
         $this->materialManager->setContextLimit($roomId);
         if ($max !== NULL && $start !== NULL) {
             $this->materialManager->setIntervalLimit($start, $max);
@@ -43,8 +43,8 @@ class MaterialService
         $formData = $filterForm->getData();
 
         // activated
-        if ($formData['activated']) {
-            $this->materialManager->showNoNotActivatedEntries();
+        if (!$formData['activated']) {
+            $this->materialManager->showNotActivatedEntries();
         }
 
         // rubrics

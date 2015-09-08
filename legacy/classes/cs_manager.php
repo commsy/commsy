@@ -232,6 +232,10 @@ class cs_manager {
      $this->_show_not_activated_entries_limit = false;
   }
 
+  function showNotActivatedEntries(){
+     $this->_show_not_activated_entries_limit = true;
+  }
+
    function setBuzzwordLimit ($limit) {
       $this->_buzzword_limit = (int)$limit;
    }
