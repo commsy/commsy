@@ -8,6 +8,7 @@ use Commsy\LegacyBundle\Utils\RoomService;
 use Symfony\Component\Translation\Translator;
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\UserService;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class MenuBuilder
 {
@@ -22,15 +23,18 @@ class MenuBuilder
     
     private $userService;
 
+    private $authorizationChecker;
+
     /**
     * @param FactoryInterface $factory
     */
-    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService)
+    public function __construct(FactoryInterface $factory, RoomService $roomService, LegacyEnvironment $legacyEnvironment, UserService $userService, AuthorizationChecker $authorizationChecker )
     {
         $this->factory = $factory;
         $this->roomService = $roomService;
         $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->userService = $userService;
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     /**
@@ -46,26 +50,23 @@ class MenuBuilder
 
         $menu = $this->factory->createItem('root');
 
-        $menu->addChild('profileImage', array(
-            'label' => $currentUser->getFullname(),
-            // 'route' => 'commsy_user_detail',
-            // 'routeParameters' => array('itemId' => $currentUser->getItemId()),
-            'extras' => array(
-                'img' => '/app_dev.php/room/201/user/202/image',
-                'imgClass' => 'uk-border-circle uk-img-preserve uk-thumbnail uk-align-center',
-                'user' => $currentUser
-            )
-        ));
-
-        // profile configuration
         if ($currentUser->getItemId() != '') {
-            $menu->addChild('profileConfig', array(
-                'label' => ' ',
+
+            $menu->addChild('profileImage', array(
+                'label' => $currentUser->getFullname(),
+                // 'route' => 'commsy_user_detail',
                 'route' => 'commsy_profile_room',
                 'routeParameters' => array('roomId' => $currentStack->attributes->get('roomId'), 'itemId' => $currentUser->getItemId()),
-                'extras' => array('icon' => 'uk-icon-cog uk-icon-small')
+                'extras' => array(
+                    'user' => $currentUser
+                )
             ));
         }
+
+        // profile configuration
+        // if ($currentUser->getItemId() != '') {
+        //     $menu->addChild('profileConfig', array(
+        //         'label' => ' ',
 
         return $menu;
     }
@@ -125,16 +126,17 @@ class MenuBuilder
 
         $roomId = $currentStack->attributes->get('roomId');
 
-        if ($roomId)
-        {
+        if ($roomId) {
             // dashboard
             $user = $this->userService->getPortalUserFromSessionId();
             $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
             $authSource = $authSourceManager->getItem($user->getAuthSource());
             $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
-            $current_user = $this->userService->getUser($user->getUserID());
+            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
+            // $current_user = $this->userService->getUser($user->getUserID());
+            $current_user = $this->legacyEnvironment->getCurrentUserItem();
+
             
 /*            $menu->addChild('dashboard', array(
                 'label' => 'DASHBOARD',
@@ -152,8 +154,12 @@ class MenuBuilder
                     'label' => 'Raum-Navigation',
                     'route' => 'commsy_room_home',
                     'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-list uk-icon-small')
+                    'extras' => array(
+                        'icon' => 'uk-icon-list uk-icon-small',
+                        'showList' => true
+                        )
                 ));
+                $menu['room_navigation']->setLinkAttribute('id', 'rooms');
 
                 $menu->addChild('room_navigation_space', array(
                     'label' => ' ',
@@ -195,10 +201,10 @@ class MenuBuilder
                     $project = $projectList->getNext();
                 }
             }
-            
+
             if ($current_user) {
-                if ($current_user->isModerator()){
-                   $menu->addChild('room_navigation_space_2', array(
+                if ($this->authorizationChecker->isGranted('MODERATOR')) {
+                    $menu->addChild('room_navigation_space_2', array(
                         'label' => ' ',
                         'route' => 'commsy_room_home',
                         'routeParameters' => array('roomId' => $roomId),
