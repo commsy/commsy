@@ -9,7 +9,8 @@
                 core: {
                     themes: {
                         icons: false
-                    }
+                    },
+                    multiple: true
                 },
                 plugins: [
                     "wholerow"
