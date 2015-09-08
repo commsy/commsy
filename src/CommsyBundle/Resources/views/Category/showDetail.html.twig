@@ -1,64 +1,43 @@
-{% macro nestedList(data) %}
-    <li class="uk-visible-hover">
-        <div class="uk-clear-float">
-            <div class="uk-float-right">
-                {% if is_granted('CATEGORY_EDIT') %}
-                    <a href="#" class="uk-icon-hover uk-icon-small uk-icon-edit uk-hidden"></a>
-                {% endif %}
-            </div>
-            <div class="uk-float-left">
-                {{ data.title }}
-            </div>
-        </div>
+{% macro rawNestedList(data, level) %}
+    {% set opened = level <= 2 %}
 
-        {% if data.children is not empty %}
-            <ul>
-                {% for child in data.children %}
-                    {{ _self.nestedList(child) }}
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </li>
-{% endmacro %}
-
-{% macro rawNestedList(data) %}
-    <li>
+    <li data-jstree='{"opened": {{ opened }}}'>
         {{ data.title }}
 
         {% if data.children is not empty %}
             <ul>
                 {% for child in data.children %}
-                    {{ _self.rawNestedList(child) }}
+                    {{ _self.rawNestedList(child, level+1) }}
                 {% endfor %}
             </ul>
         {% endif %}
     </li>
 {% endmacro %}
 
-    <div>
-         <div id="room-categories" data-cs-tree>
-            {% if tags is not empty %}
-                <ul class="uk-list uk-list-striped">
-                    {% for tag in tags %}
-                        {{ _self.rawNestedList(tag) }}
-                    {% endfor %}
-                </ul>
-            {% else %}
-                {{ 'No Categories'|trans({}, 'category') }}
-            {% endif %}
-        </div>
-
-        {% if is_granted('CATEGORY_EDIT') %}
-            {{ form_start(form) }}
-                {{ form_errors(form) }}
-
-                {{ form_errors(form.title) }}
-                <div class="uk-form-icon">
-                    <i class="uk-icon-tag"></i>
-                    {{ form_widget(form.title) }}
-                </div>
-
-                {{ form_rest(form) }}
-            {{ form_end(form) }}
+<div>
+     <div id="room-categories" data-cs-tree>
+        {% if tags is not empty %}
+            <ul class="uk-list uk-list-striped">
+                {% for tag in tags %}
+                    {{ _self.rawNestedList(tag) }}
+                {% endfor %}
+            </ul>
+        {% else %}
+            {{ 'No Categories'|trans({}, 'category') }}
         {% endif %}
     </div>
+
+    {% if is_granted('CATEGORY_EDIT') %}
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+
+            {{ form_errors(form.title) }}
+            <div class="uk-form-icon">
+                <i class="uk-icon-tag"></i>
+                {{ form_widget(form.title) }}
+            </div>
+
+            {{ form_rest(form) }}
+        {{ form_end(form) }}
+    {% endif %}
+</div>
