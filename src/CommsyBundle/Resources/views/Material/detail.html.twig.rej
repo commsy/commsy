@@ -1,0 +1,10 @@
+diff a/src/CommsyBundle/Resources/views/Material/detail.html.twig b/src/CommsyBundle/Resources/views/Material/detail.html.twig	(rejected hunks)
+@@ -146,7 +146,7 @@
+                                         {# delete #}
+                                         <li>
+                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
+-                                                <a class="uk-margin-left uk-button-primary" href="#">
++                                                <a href="#">
+                                                     <i class="uk-icon-small uk-icon-trash"></i>
+                                                     <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
+                                                 </a>

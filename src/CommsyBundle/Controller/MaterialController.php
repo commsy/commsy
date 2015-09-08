@@ -369,33 +369,39 @@ class MaterialController extends Controller
         
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         
         $formData = array();
-        $tempItem = NULL;
+        $materialItem = NULL;
         
         if ($item->getItemType() == 'material') {
             // get material from MaterialService
-            $tempItem = $materialService->getMaterial($itemId);
-            if (!$tempItem) {
+            $materialItem = $materialService->getMaterial($itemId);
+            if (!$materialItem) {
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
-            $formData = $transformer->transform($tempItem);
+            $formData = $transformer->transform($materialItem);
             $form = $this->createForm('material', $formData, array());
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
-            $tempItem = $materialService->getSection($itemId);
-            if (!$tempItem) {
+            $materialItem = $materialService->getSection($itemId);
+            if (!$materialItem) {
                 throw $this->createNotFoundException('No section found for id ' . $roomId);
             }
-            $formData = $transformer->transform($tempItem);
+            $formData = $transformer->transform($materialItem);
             $form = $this->createForm('section', $formData, array());
         }
         
         $form->handleRequest($request);
         if ($form->isValid()) {
             if ($form->get('save')->isClicked()) {
-                $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
-                $tempItem->save();
+                $materialItem = $transformer->applyTransformation($materialItem, $form->getData());
+
+                // update modifier
+                $materialItem->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $materialItem->save();
                 
                 if ($item->isDraft()) {
                     $item->setDraftStatus(0);
