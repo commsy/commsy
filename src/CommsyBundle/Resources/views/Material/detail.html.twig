@@ -121,7 +121,7 @@
                                     <ul class="uk-nav uk-nav-dropdown">
                                         {# save #}
                                         <li>
-                                            <a class="uk-margin-left uk-button-primary" href="#">
+                                            <a href="#">
                                                 <i class="uk-icon-small uk-icon-save"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'save'|trans({})|capitalize }}</span>
                                             </a>
@@ -129,7 +129,7 @@
 
                                         {# copy #}
                                         <li>
-                                            <a class="uk-margin-left uk-button-primary" href="#">
+                                            <a href="#">
                                                 <i class="uk-icon-small uk-icon-copy"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'copy'|trans({})|capitalize }}</span>
                                             </a>
@@ -137,7 +137,7 @@
 
                                         {# send #}
                                         <li>
-                                            <a class="uk-margin-left uk-button-primary" href="#">
+                                            <a href="#">
                                                 <i class="uk-icon-small uk-icon-send"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'send'|trans({})|capitalize }}</span>
                                             </a>
@@ -146,7 +146,7 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="uk-margin-left uk-button-primary" href="#">
+                                                <a href="#">
                                                     <i class="uk-icon-small uk-icon-trash"></i>
                                                     <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
                                                 </a>
