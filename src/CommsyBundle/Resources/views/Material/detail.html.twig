@@ -9,40 +9,6 @@
 {% block content %}
     <div class="uk-grid">
 
-        <div class="uk-width-medium-1-5 cs-addon-navigation">
-
-            {# quick navigation #}
-            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
-                <div class="uk-panel-teaser uk-text-large panel-teaser-primary uk-margin-remove">
-                    {{ 'quick navigation'|trans({})|capitalize }}
-                </div>
-                <div class="cs-nav-quick">
-                    <ul class="uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ material.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
-                        <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
-                        <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
-                        <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
-
-                        {% if not sectionList is empty %}
-                            <li class="uk-parent">
-                                <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
-                                <ul class="uk-nav-sub">                      
-                                    {% for section in sectionList %}
-                                        <li>
-                                            <a href="#section{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ loop.index }}. {{ section.title|raw|truncate(20) }}</a>
-                                        </li>
-                                    {% endfor %}
-                                </ul>
-                            </li>
-                        {% endif %}
-
-                        <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
-                    </ul>
-                </div>
-            </div>
-
-        </div>
-
         <div class="uk-width-medium-4-5">
 
             {# material content panel #}
@@ -117,11 +83,11 @@
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
-                                <div class="uk-dropdown">
-                                    <ul class="uk-nav uk-nav-dropdown">
+                                <div id="cs-additional-actions" class="uk-dropdown  cs-remove-padding">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding ">
                                         {# save #}
                                         <li>
-                                            <a class="uk-margin-left uk-button-primary" href="#">
+                                            <a class="" href="#">
                                                 <i class="uk-icon-small uk-icon-save"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'save'|trans({})|capitalize }}</span>
                                             </a>
@@ -129,7 +95,7 @@
 
                                         {# copy #}
                                         <li>
-                                            <a class="uk-margin-left uk-button-primary" href="#">
+                                            <a class="" href="#">
                                                 <i class="uk-icon-small uk-icon-copy"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'copy'|trans({})|capitalize }}</span>
                                             </a>
@@ -137,7 +103,7 @@
 
                                         {# send #}
                                         <li>
-                                            <a class="uk-margin-left uk-button-primary" href="#">
+                                            <a class="" href="#">
                                                 <i class="uk-icon-small uk-icon-send"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'send'|trans({})|capitalize }}</span>
                                             </a>
@@ -146,7 +112,7 @@
                                         {# delete #}
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
-                                                <a class="uk-margin-left uk-button-primary" href="#">
+                                                <a class="" href="#">
                                                     <i class="uk-icon-small uk-icon-trash"></i>
                                                     <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
                                                 </a>
@@ -232,5 +198,42 @@
                 {% endif %}
             </div>
         </div>
+
+        <div class="uk-width-medium-1-5 cs-addon-navigation">
+
+            {# quick navigation #}
+            <div class="uk-panel uk-panel-box uk-padding-remove uk-panel-box-primary" data-uk-sticky>
+                <div class="uk-panel-teaser uk-text-large panel-teaser-primary uk-margin-remove">
+                    {{ 'quick navigation'|trans({})|capitalize }}
+                </div>
+                <div id="cs-nav-quick" class="cs-nav-quick">
+                    <ul class="uk-list uk-list-striped cs-remove-padding uk-nav uk-nav-side uk-nav-parent-icon" data-uk-nav="{toggle: '>li.uk-parent > a[href=\'#sections{{ material.itemId }}\']'}" data-uk-scrollspy-nav="{closest: 'li', smoothscroll: true}">
+                        <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
+                        <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
+                        <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
+                        <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
+
+                        {% if not sectionList is empty %}
+                            <li class="uk-parent">
+                                <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
+                                <ul class="uk-nav-sub">                      
+                                    {% for section in sectionList %}
+                                        <li>
+                                            <a href="#section{{ section.itemId }}">{{ loop.index }}. {{ section.title|raw|truncate(20) }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        {% endif %}
+
+                        <li><a href="#annotations{{ material.itemId }}">{{ 'annotations'|trans({})|capitalize }}</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+
+
     </div>
 {% endblock %}

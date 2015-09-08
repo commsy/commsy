@@ -54,6 +54,10 @@
                 <source>insert title</source>
                 <target>Titel eingeben</target>
             </trans-unit>
+            <trans-unit id="additionalActions">
+                <source>additional actions</source>
+                <target>Weitere Aktionen</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>
