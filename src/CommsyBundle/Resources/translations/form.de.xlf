@@ -31,8 +31,10 @@
                 <source>selecting one</source>
                 <target>Oder wählen Sie welche aus.</target>
             </trans-unit>
-
-
+            <trans-unit id="form-edit-files">
+                <source>edit files</source>
+                <target>Dateien bearbeiten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

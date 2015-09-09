@@ -30,6 +30,10 @@
                 <source>selecting one</source>
                 <target>Or select one</target>
             </trans-unit>
+            <trans-unit id="form-edit-files">
+                <source>edit files</source>
+                <target>edit files</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

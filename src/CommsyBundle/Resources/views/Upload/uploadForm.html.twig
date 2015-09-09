@@ -1,7 +1,18 @@
 {% form_theme form 'CommsyBundle:Form:uikit_stacked_layout.html.twig' %}
 
-<hr class="uk-width-9-10"/>
+<hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+    <a name="description"></a>
+    <div class="uk-grid uk-margin-small-bottom">
+        <div class="uk-width-9-10">
+            <h4 class="cs-detail-section-header">
+                <span class="cs-detail-section-header-background">{{ 'edit files'|trans({},'form')}}
+                 </span>
+            </h4>
+        </div>
+    </div>
+    <div>
+
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
     {{ form_errors(form) }}
@@ -26,4 +37,5 @@
     </div>
     
     {{ form_end(form) }}
+    </div>
 </div>

@@ -1,4 +1,4 @@
-<hr class="uk-width-9-10"/>
+
 <div class="uk-margin-right uk-margin-bottom uk-position-relative uk-padding-remove">
     {% include 'CommsyBundle:Utils:saveSpinner.html.twig' %}
     {{ form_start(form) }}
@@ -18,7 +18,7 @@
         </div>
     {% else %}
         <div class="uk-flex">
-            <div>
+            <div class="uk-width-9-10">
                 {{ form_widget(form.title) }}
             </div>
         </div>
