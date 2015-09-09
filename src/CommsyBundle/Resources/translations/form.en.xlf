@@ -22,6 +22,14 @@
                 <source>cancel</source>
                 <target>Cancel</target>
             </trans-unit>
+            <trans-unit id="form-upload-1">
+                <source>Attach files by dropping them here or</source>
+                <target>Attach files by dropping them here.</target>
+            </trans-unit>
+            <trans-unit id="form-upload-2">
+                <source>selecting one</source>
+                <target>Or select one</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

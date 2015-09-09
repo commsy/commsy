@@ -22,6 +22,17 @@
                 <source>cancel</source>
                 <target>Abbrechen</target>
             </trans-unit>
+
+            <trans-unit id="form-upload-1">
+                <source>Attach files by dropping them here or</source>
+                <target>Ziehen Sie die Dateien in dieses Feld (Drag&amp;Drop).</target>
+            </trans-unit>
+            <trans-unit id="form-upload-2">
+                <source>selecting one</source>
+                <target>Oder wählen Sie welche aus.</target>
+            </trans-unit>
+
+
         </body>
     </file>
 </xliff>
