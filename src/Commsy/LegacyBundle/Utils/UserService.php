@@ -12,12 +12,17 @@ class UserService
 
     private $userManager;
 
+    private $roomManager;
+
     public function __construct(LegacyEnvironment $legacyEnvironment)
     {
         $this->legacyEnvironment = $legacyEnvironment;
         
         $this->userManager = $this->legacyEnvironment->getEnvironment()->getUserManager();
         $this->userManager->reset();
+
+        $this->roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
+        $this->roomManager->reset();
     }
 
     public function getUser($userId)
@@ -55,6 +60,12 @@ class UserService
                 return $portalUser;
             }
         }
+    }
+
+    public function getRoomList($userId)
+    {
+        $roomList = $this->roomManager->getRelatedRoomListForUser($userId);
+        return $roomList->to_array();
     }
     
     public function getListUsers($roomId, $max, $start)

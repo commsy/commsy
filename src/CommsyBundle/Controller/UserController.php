@@ -157,4 +157,21 @@ class UserController extends Controller
         
         return $response;
     }
+
+    /**
+     * @Route("/room/{roomId}/user/{itemId}/rooms/{start}")
+     * @Template("CommsyBundle:Menu:room_list.html.twig")
+     */
+    public function roomsAction($roomId, $itemId, Request $request, $max = 10, $start = 0)
+    {
+        $userService = $this->get('commsy.user_service');
+        $user = $userService->getUser($itemId);
+
+        // Room list feed
+        $rooms = $userService->getRoomList($user);
+
+        return array('roomList' => $rooms);
+
+
+    }
 }
