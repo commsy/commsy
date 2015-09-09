@@ -44,10 +44,10 @@
                 <ul id="roomList" class="uk-list uk-list-striped" data-uk-observe>
                     {{ render(controller(
                         'CommsyBundle:User:rooms',
-                        { 'roomId': 201, 'itemId': 202 }
+                        { 'roomId': item.extras.roomId, 'itemId': item.extras.user.itemId }
                     ))}}
                 </ul>
-                <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/201/user/202/rooms/", "target": "#roomList"}'>
+                <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/{{item.extras.roomId}}/user/{{item.extras.user.itemId}}/rooms/", "target": "#roomList"}'>
                     <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
                 </div>
             </div>

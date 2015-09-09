@@ -156,7 +156,9 @@ class MenuBuilder
                     'routeParameters' => array('roomId' => $roomId),
                     'extras' => array(
                         'icon' => 'uk-icon-list uk-icon-small',
-                        'showList' => true
+                        'showList' => true,
+                        'user' => $current_user,
+                        'roomId' => $roomId
                         )
                 ));
                 $menu['room_navigation']->setLinkAttribute('id', 'rooms');
