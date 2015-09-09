@@ -21,15 +21,15 @@
 
 {% block linkElement %}
     {% import _self as knp_menu %}
-    <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
-        {{ block('label') }}
-    </a>
+    <span>
+        <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
+            {{ block('label') }}
+        </a>
+    </span>
 {% endblock %}
 
 {% block label %}
-        {% if item.extras.img is defined %}
-            {% if item.extras.user.itemId != '' %}
-                {{  macros.userIcon(item.extras.user, '40') }}
-            {% endif %}
-        {% endif %}
+    {% if item.extras.user.itemId != '' %}
+        {{  macros.userIcon(item.extras.user, '40') }}
+    {% endif %}
 {% endblock %}
