@@ -1,0 +1,5 @@
+{% if not roomList is empty %}
+    {% for room in roomList %}
+        <li><a href="">{{room.getTitle}}</a></li>
+    {% endfor %}
+{% endif %}

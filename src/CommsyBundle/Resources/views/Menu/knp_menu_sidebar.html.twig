@@ -19,15 +19,40 @@
 
 {% block linkElement %}
     {% import _self as knp_menu %}
-    <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
-    <i class="{% if item.extras.icon is defined %}{{ item.extras.icon }}{% endif %}"></i>
+    {% if not item.getExtra('showList', false) %}
+        <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
+        <i class="{% if item.extras.icon is defined %}{{ item.extras.icon }}{% endif %}"></i>
+    {% endif %}
+    
         {{ block('label') }}
-    </a>
+    {% if not item.getExtra('showList', false) %}
+        </a>
+    {% endif %}
 {% endblock %}
 
 {% block label %}
     {% if options.allow_safe_labels and item.getExtra('safe_label', false) %}
         {{ item.label|raw }}
+    {% elseif item.getExtra('showList', false) %}
+        <div data-uk-dropdown="{mode:'click'}">
+
+            <!-- This is the element toggling the dropdown -->
+            <i class="{% if item.extras.icon is defined %}{{ item.extras.icon }}{% endif %} room-nav-item"></i>
+
+            <!-- This is the dropdown -->
+            <div class="uk-dropdown room-nav-item-dropdown">
+                <ul id="roomList" class="uk-list uk-list-striped" data-uk-observe>
+                    {{ render(controller(
+                        'CommsyBundle:User:rooms',
+                        { 'roomId': 201, 'itemId': 202 }
+                    ))}}
+                </ul>
+                <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/201/user/202/rooms/", "target": "#roomList"}'>
+                    <i class="uk-icon-refresh uk-icon-spin uk-icon-medium"></i>
+                </div>
+            </div>
+
+        </div>
     {% else %}
         {{ item.label|transchoice(1, {}, "rubric")|upper }}
     {% endif %}
