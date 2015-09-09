@@ -84,8 +84,8 @@
 
                     var buttonpressed;
                     $('button').click(function() {
-                        buttonpressed = $(this).attr('name')
-                    })
+                        buttonpressed = $(this).attr('name');
+                    });
 
                     // override form submit behaviour
                     article.find('form').submit(function (event) {
