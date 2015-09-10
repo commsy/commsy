@@ -188,18 +188,26 @@
             {% endfor %}
             
             {# annotations #}
-            <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box-primary uk-margin-bottom">
-                <div class="uk-panel-teaser">
-                    <h3>{{ 'annotations'|trans({})|capitalize }}</h3>
-                </div>
+            
                 {% if item.itemType != 'discussion' %}
+                <div class="uk-panel-teaser panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
+                        <div class="uk-grid">
+                            <div class="uk-width-3-5 uk-text-large ">
+                                {{ 'annotations'|trans({})|capitalize }}
+                            </div>
+                            <div class="uk-width-2-5 uk-text-right">
+                                <a class="uk-margin-left uk-button-primary" href=""><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
+                            </div>
+                        </div>
+                    </div>
+            <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-panel-box-primary ">
                     {{ render(controller(
                         'CommsyBundle:Annotation:feed',
                         { 'roomId': roomId, 'linkedItemId': item.itemId }
                     ))}}
+                    </div>
+                </div>
                 {% endif %}
-            </div>
-        </div>
 
         <div class="uk-width-medium-1-5 cs-addon-navigation">
 

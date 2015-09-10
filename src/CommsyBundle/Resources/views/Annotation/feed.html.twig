@@ -1,45 +1,32 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
+
 {% for annotation in annotations %}
     <article class="uk-comment">
-        <i class="{{ macros.iconClassForItemType(annotation.itemType) }} uk-icon-small {{ macros.statusColor(readerList, annotation.itemId) }}"></i>
+        {{ macros.statusColor(readerList, annotation.itemId) }}
         <header class="uk-comment-header uk-flex">
             <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }}">
-                {% if annotation.creator.isUser %}
-                    {{  macros.userIconLink(annotation.creator, 'small') }}
-                {% else %}
-                    {{  macros.userIcon(annotation.creator, 'small') }}
-                {% endif %}
-            </div>
-            <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }} uk-hidden">
                 {% if annotation.creator.isUser %}
                     {{  macros.userIconLink(annotation.creator) }}
                 {% else %}
                     {{  macros.userIcon(annotation.creator) }}
                 {% endif %}
             </div>
-            <div>
-                <h4 class="uk-comment-title">
-                    <a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': annotation.itemId}) }}">{{ annotation.title }}</a>
-                </h4>
+            <div class="uk-margin-right uk-flex-item-none toggle-{{ annotation.itemId }} uk-hidden">
+                {% if annotation.creator.isUser %}
+                    {{  macros.userIconLink(annotation.creator) }}
+                {% endif %}
+            </div>
+            <div class="uk-width">
 
-                <div class="uk-comment-meta toggle-{{ annotation.itemId }} uk-hidden">
-                    {{ 'by'|trans({})|capitalize }}: {{annotation.creator.getFullName}}
-                </div>
-
-                <div class="uk-comment-meta toggle-{{ annotation.itemId }} uk-hidden">
-                    {{ 'last changed'|trans({})|capitalize }}: {{annotation.getModificationDate|date("d.m.Y H:i")}}
-                </div>
                 
-                <div class="uk-comment-meta">
-                    {{ annotation.description|raw }}
-                </div>
-                
-                <a class="toggle-{{ annotation.itemId }}" data-uk-toggle="{target:'.toggle-{{ annotation.itemId }}', animation:'uk-animation-fade'}">{{ 'show more'|trans({}) }}</a>
-                <a class="toggle-{{ annotation.itemId }} uk-hidden" data-uk-toggle="{target:'.toggle-{{ annotation.itemId }}', animation:'uk-animation-fade'}">{{ 'show less'|trans({}) }}</a>
+                <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
+                    {{ macros.editAnnotationContent('description', annotation, true, annotation.description, annotation.description, false, false, 0) }}
             </div>
         </header>
     </article>
 {% else %}
     {{ 'No more results found'|trans}}
 {% endfor %}
+
+

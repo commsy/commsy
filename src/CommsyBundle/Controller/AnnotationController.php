@@ -33,6 +33,7 @@ class AnnotationController extends Controller
             }
         }
 
+
         return array(
             'roomId' => $roomId,
             'annotations' => $annotations,

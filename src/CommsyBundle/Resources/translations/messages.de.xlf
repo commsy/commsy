@@ -110,6 +110,10 @@
                 <source>quick navigation</source>
                 <target>Schnellnavigation</target>
             </trans-unit>
+            <trans-unit id="28">
+                <source>new annotation</source>
+                <target>Neue Anmerkung</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
