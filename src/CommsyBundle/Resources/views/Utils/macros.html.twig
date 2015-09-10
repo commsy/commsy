@@ -254,10 +254,10 @@
 {% endmacro %}
 
 {% macro ratingStatus(item) %}
-    <div class="">
-        <i class="cs-icon-xs-small uk-icon-star"></i>
-        <i class="cs-icon-xs-small uk-icon-star"></i>
-        <i class="cs-icon-xs-small uk-icon-star"></i>
+    <div class="uk-text-nowrap">
+        <i class="cs-icon-xs-small uk-icon-star  uk-text-warning"></i>
+        <i class="cs-icon-xs-small uk-icon-star  uk-text-warning"></i>
+        <i class="cs-icon-xs-small uk-icon-star  uk-text-warning"></i>
         <i class="cs-icon-xs-small uk-icon-star-o"></i>
         <i class="cs-icon-xs-small uk-icon-star-o"></i>
     </div>
@@ -270,7 +270,7 @@
 {% endmacro %}
 
 {% macro workflowStatus(status) %}
-    <div class="">
+    <div class="uk-text-nowrap">
     {% if status == '0_green' %}
         <i class="cs-icon-xs-small uk-icon-circle uk-text-success"></i>
         <i class="cs-icon-xs-small uk-icon-circle-o"></i>

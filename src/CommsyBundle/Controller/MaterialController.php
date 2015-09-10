@@ -42,6 +42,9 @@ class MaterialController extends Controller
         $materials = $materialService->getListMaterials($roomId, $max, $start);
 
         $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
 
         $readerList = array();
         foreach ($materials as $item) {
@@ -56,7 +59,9 @@ class MaterialController extends Controller
         return array(
             'roomId' => $roomId,
             'materials' => $materials,
-            'readerList' => $readerList
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive(),
+            'showWorkflow' => $current_context->withWorkflow()
         );
     }
 
@@ -73,6 +78,9 @@ class MaterialController extends Controller
         $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
             'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
         ));
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
 
         // get the material manager service
         $materialService = $this->get('commsy_legacy.material_service');
@@ -87,7 +95,9 @@ class MaterialController extends Controller
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
-            'module' => 'material'
+            'module' => 'material',
+            'showRating' => $current_context->isAssessmentActive(),
+            'showWorkflow' => $current_context->withWorkflow()
         );
     }
 
@@ -122,8 +132,10 @@ class MaterialController extends Controller
             'workflowText'=>$infoArray['workflowText'],
             'workflowValidityDate'=>$infoArray['workflowValidityDate'],
             'workflowResubmissionDate'=>$infoArray['workflowResubmissionDate'],
-            'draft' => $infoArray['draft']
-        );
+            'draft' => $infoArray['draft'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow'],
+       );
     }
 
     private function getDetailInfo ($roomId, $itemId) {
@@ -345,6 +357,8 @@ class MaterialController extends Controller
         $infoArray['workflowValidityDate'] = $material->getWorkflowValidityDate();
         $infoArray['workflowResubmissionDate'] = $material->getWorkflowResubmissionDate();
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
+        $infoArray['showRating'] = $current_context->isAssessmentActive();
+        $infoArray['showWorkflow'] = $current_context->withWorkflow();
         
         return $infoArray;
     }

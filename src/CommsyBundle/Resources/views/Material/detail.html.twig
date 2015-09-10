@@ -133,7 +133,7 @@
                 <article class="uk-article uk-position-relative" data-uk-observe>
                     {# title, etc. #}
                     <div class="cs-toggle" data-uk-observe>
-                        {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft) }}
+                        {{ macrosMaterial.title(material, modifierList, userCount, readCount, readSinceModificationCount, draft, showRating, showWorkflow) }}
                     </div>
             
                     {# description #}
@@ -152,9 +152,11 @@
                     </div>
         
                     {# workflow #}
-                    <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
-                    </div>
+                    {%if showWorkflow%}
+                        <div id="workflow{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editworkflow', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+                            {{ macrosItem.workflow(material, workflowGroupArray, workflowUserArray, workflowText, workflowValidityDate, workflowResubmissionDate) }}
+                        </div>
+                    {% endif %}
         
                     {# sections #}
                     <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe>
@@ -211,8 +213,9 @@
                         <li><a href="#description{{ material.itemId }}">{{ 'entry description'|trans({})}}</a></li>
                         <li><a href="#files{{ material.itemId }}">{{ 'files'|trans({})}}</a></li>
                         <li><a href="#links{{ material.itemId }}">{{ 'links'|trans({})}}</a></li>
-                        <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
-
+                        {%if showWorkflow %}
+                            <li><a href="#workflow{{ material.itemId }}">{{ 'workflow information'|trans({})}}</a></li>
+                        {% endif %}
                         {% if not sectionList is empty %}
                             <li class="uk-parent">
                                 <a href="#sections{{ material.itemId }}">{{ 'sections'|trans({})|capitalize }}</a>
