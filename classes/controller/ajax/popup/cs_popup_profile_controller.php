@@ -1576,14 +1576,16 @@ class cs_popup_profile_controller implements cs_popup_controller {
 		// if context portal show default email hide
 
 		$this->_config['hide_mail_adress'] = false;
-		if(!$current_context->isPortal()){
-			// room context
-			if(!$this->_user->isEmailVisible()){
-				$this->_config['hide_mail_adress'] = true;
-			}
-		} else {
-			if(!$this->_user->getRelatedPortalUserItem()->getDefaultIsMailVisible()){
-				$this->_config['hide_mail_adress'] = true;
+		if(!$this->_user->isRoot()) {
+			if(!$current_context->isPortal()){
+				// room context
+				if(!$this->_user->isEmailVisible()){
+					$this->_config['hide_mail_adress'] = true;
+				}
+			} else {
+				if(!$this->_user->getRelatedPortalUserItem()->getDefaultIsMailVisible()){
+					$this->_config['hide_mail_adress'] = true;
+				}
 			}
 		}
 		
