@@ -37,6 +37,7 @@ class UserController extends Controller
         return array(
             'roomId' => $roomId,
             'form' => $form->createView(),
+            'module' => 'user'
         );
     }
     

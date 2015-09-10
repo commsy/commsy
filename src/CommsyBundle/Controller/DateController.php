@@ -84,6 +84,7 @@ class DateController extends Controller
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
+            'module' => 'date'
         );
     }
     

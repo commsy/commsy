@@ -8,7 +8,13 @@
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
                 <div class="uk-panel-teaser panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
-                        <div class="uk-text-large">{{'TODO-RubricTitle'|trans({})|capitalize }}</div>
+                        <div class="uk-text-large">
+                        {% if not module is empty %}
+                            {{module|transchoice(1, {}, "rubric")|capitalize }}
+                        {% else %}
+                            {{'TODO-RubricTitle'|trans({})|capitalize }}
+                        {% endif %}
+                        </div>
                         {# select #}
                         <div>
                             <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">

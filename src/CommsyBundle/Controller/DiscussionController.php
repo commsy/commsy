@@ -84,6 +84,7 @@ class DiscussionController extends Controller
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
+            'module' => 'discussion'
         );
     }
     

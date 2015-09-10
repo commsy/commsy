@@ -84,6 +84,7 @@ class AnnouncementController extends Controller
         return array(
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
+            'module' => 'announcement'
         );
     }
     

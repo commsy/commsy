@@ -43,7 +43,8 @@ class GroupController extends Controller
 
         return array(
             'roomId' => $roomId,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'module' => 'group'
         );
     }
     

@@ -25,7 +25,8 @@ class TopicController extends Controller
     public function listAction($roomId, Request $request)
     {
         return array(
-            'roomId' => $roomId
+            'roomId' => $roomId,
+            'module' => 'topic'            
         );
     }
 }
