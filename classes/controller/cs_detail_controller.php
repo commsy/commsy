@@ -1255,6 +1255,7 @@
 		            $return['last_modificator_status'] = self::USER_DISABLED;
 
 		        } elseif ( $item->isA(CS_USER_TYPE)
+		        and isset($modificator)
 		        and $item->getUserID() == $modificator->getUserID()
 		        and $item->getAuthSource() == $modificator->getAuthSource()
 		        ) {

@@ -10,7 +10,7 @@
 	    	<img src="{$basic.tpl_path}img/btn_add_new.gif" alt="___COMMON_NEW_ITEM___" />
 	    </a>
     {/if}
-    {if $index.actions.user}
+    {if $index.actions.user and !$environment.is_root}
 		<a id="own_user" href="commsy.php?cid={$environment.cid}&mod=user&fct=detail&iid={$index.actions.user_iid}" title="___USER_OWN_INFORMATION_LINK___">
 	    	<img src="{$basic.tpl_path}img/btn_own_user.gif" alt="___COMMON_OWN_USER___" />
 	    </a>
