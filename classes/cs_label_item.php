@@ -264,6 +264,8 @@ class cs_label_item extends cs_item {
     * @param string value name of the item
     */
    function setName ($value) {
+      $converter = $this->_environment->getTextConverter();
+      $value = $converter->sanitizeHTML($value);
       $this->_setValue('name', $value);
    }
 
