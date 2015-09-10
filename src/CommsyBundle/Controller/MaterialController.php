@@ -167,7 +167,8 @@ class MaterialController extends Controller
         $itemArray = array_merge($itemArray, $sectionList);
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+ 
         $roomManager = $legacyEnvironment->getRoomManager();
         $readerManager = $legacyEnvironment->getReaderManager();
         $roomItem = $roomManager->getItem($material->getContextId());        
@@ -266,8 +267,7 @@ class MaterialController extends Controller
         }
         $workflowGroupArray = array();
         $workflowUserArray = array();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
-        if($current_context->withWorkflowReader()){
+       if($current_context->withWorkflowReader()){
             $itemManager = $legacyEnvironment->getItemManager();
             $users_read_array = $itemManager->getUsersMarkedAsWorkflowReadForItem($material->getItemID());
             $persons_array = array();

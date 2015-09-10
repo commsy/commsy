@@ -17,6 +17,8 @@ class FeedController extends Controller
         // collect information for feed panel
         $roomFeedGenerator = $this->get('commsy.room_feed_generator');
         $feedList = $roomFeedGenerator->getFeedList($roomId, $max, $start);
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
 
         $readerService = $this->get('commsy.reader_service');
 
@@ -32,7 +34,8 @@ class FeedController extends Controller
 
         return array(
             'feedList' => $feedList,
-            'readerList' => $readerList
-        );
+            'readerList' => $readerList,
+            'showRating' => $current_context->isAssessmentActive()
+         );
     }
 }
