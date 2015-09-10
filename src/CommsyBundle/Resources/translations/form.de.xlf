@@ -35,6 +35,10 @@
                 <source>edit files</source>
                 <target>Dateien bearbeiten</target>
             </trans-unit>
+            <trans-unit id="form-edit-description">
+                <source>edit description</source>
+                <target>Beschreibung bearbeiten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
