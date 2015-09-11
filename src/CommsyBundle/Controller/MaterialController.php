@@ -97,7 +97,9 @@ class MaterialController extends Controller
             'form' => $filterForm->createView(),
             'module' => 'material',
             'showRating' => $current_context->isAssessmentActive(),
-            'showWorkflow' => $current_context->withWorkflow()
+            'showWorkflow' => $current_context->withWorkflow(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
         );
     }
 
@@ -135,6 +137,8 @@ class MaterialController extends Controller
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
+            'showHashtags' => $infoArray['showHashtags'],
+            'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
        );
     }
@@ -361,6 +365,9 @@ class MaterialController extends Controller
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
         $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
+        $infoArray['showCategories'] = $current_context->withTags();
+        $infoArray['showHashtags'] = $current_context->withBuzzwords();
+
         
         return $infoArray;
     }
@@ -388,6 +395,7 @@ class MaterialController extends Controller
         $transformer = $this->get('commsy_legacy.transformer.material');
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
         
         $formData = array();
         $materialItem = NULL;
@@ -436,7 +444,10 @@ class MaterialController extends Controller
         }
         
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'showHashtags' => $current_context->withBuzzwords(),
+            'showCategories' => $current_context->withTags(),
+
         );
     }
     

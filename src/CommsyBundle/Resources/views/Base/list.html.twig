@@ -12,7 +12,7 @@
                         {% if not module is empty %}
                             {{module|transchoice(1, {}, "rubric")|capitalize }}
                         {% else %}
-                            {{'TODO-RubricTitle'|trans({})|capitalize }}
+                           Missing rubric title
                         {% endif %}
                         </div>
                         {# select #}
@@ -60,15 +60,19 @@
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
                 </div>
-            {{ render(controller(
-                'CommsyBundle:Category:show',
-                { 'roomId': roomId }
-            ))}}
-           {{ render(controller(
-                'CommsyBundle:Hashtag:show',
-                { 'roomId': roomId }
-            ))}}
-            </div>
+                {% if showCategories %}
+                    {{ render(controller(
+                        'CommsyBundle:Category:show',
+                        { 'roomId': roomId }
+                    ))}}
+                {% endif %}
+                {% if showHashtags %}
+                    {{ render(controller(
+                        'CommsyBundle:Hashtag:show',
+                        { 'roomId': roomId }
+                    ))}}
+                {% endif %}
+               </div>
              </div>
          </div>
     </div>

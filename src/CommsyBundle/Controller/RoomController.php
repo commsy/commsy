@@ -50,6 +50,8 @@ class RoomController extends Controller
             'numActiveMember' => $numActiveMember,
             'numTotalMember' => $numTotalMember,
             'roomModerators' => $moderators,
+            'showCategories' => $roomItem->withTags(),
+            'showHashtags' => $roomItem->withBuzzwords(),
         );
     }
 }

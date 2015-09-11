@@ -134,14 +134,18 @@
                     </div>
                 </div>
                 <dl id="list-filter">
-                    {{ render(controller(
-                        'CommsyBundle:Category:show',
-                        { 'roomId': roomItem.itemId }
-                    ))}}
-                    {{ render(controller(
-                        'CommsyBundle:Hashtag:show',
-                        { 'roomId': roomItem.itemId }
-                    ))}}
+                    {% if showCategories %}
+                        {{ render(controller(
+                            'CommsyBundle:Category:show',
+                            { 'roomId': roomItem.itemId }
+                        ))}}
+                    {% endif %}
+                    {% if showHashtags %}
+                        {{ render(controller(
+                            'CommsyBundle:Hashtag:show',
+                            { 'roomId': roomItem.itemId }
+                        ))}}
+                    {% endif %}
                 </dl>
  
             </div>

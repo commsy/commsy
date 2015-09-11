@@ -49,11 +49,13 @@
                         </div>
                     </div>
                 </li>
-                
+                {%if showCategories %}
                 <li>
                     {{ form_widget(form.categories) }}
                 </li>
+                {% endif %}
                 
+                {% if showHashtags %}
                 <li>
                     <div class="uk-grid-width-small-1-4" data-uk-grid data-uk-check-display>
                         {% for hashtag in form.hashtags %}
@@ -72,6 +74,7 @@
                         </div>
                     </div>
                 </li>
+                {% endif %}
             </ul>
             
             <div class="uk-flex uk-margin-small-top">

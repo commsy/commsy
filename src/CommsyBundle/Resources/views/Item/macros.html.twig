@@ -83,7 +83,7 @@
     {{ macros.editContent('files', item, true, content, preview, true, true, fileArray|length) }}
 {% endmacro %}
 
-{% macro links(item) %}
+{% macro links(item,withTags,withCategories) %}
     {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
     
     {%set countEntries = item.tagsArray|length + item.buzzwordArray|length + item.AllLinkeditemIDArray|length %}
@@ -97,38 +97,42 @@
                 { 'roomId': item.contextId, 'itemId': item.itemId }
             ))}}            
         </div>
-        <div class="uk-width-1-3">
-            <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
-            {% set count = 1 %}
-            {% if (item.tagsArray|length) < 4 %}
-                {% if (item.tagsArray|length) == 0 %}
-                    {{ 'no linked items'|trans({}, "room")}}    
-                {%else%}
-                    {% for tag in item.tagsArray %}
-                        {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
-                        {% set count = count +1 %}
-                    {% endfor %}
+        {% if withCategories %}
+            <div class="uk-width-1-3">
+                <strong>{{ 'categories'|trans({}, "room") }}:</strong> <br/>
+                {% set count = 1 %}
+                {% if (item.tagsArray|length) < 4 %}
+                    {% if (item.tagsArray|length) == 0 %}
+                        {{ 'no linked items'|trans({}, "room")}}    
+                    {%else%}
+                        {% for tag in item.tagsArray %}
+                            {{tag.title}}{% if count < item.tagsArray|length %}, {% endif %}
+                            {% set count = count +1 %}
+                        {% endfor %}
+                    {% endif %}
+                {% else %}
+                        {{item.tagsArray|length}} {{ 'categories'|trans({}, "room") }}
                 {% endif %}
-             {% else %}
-                    {{item.tagsArray|length}} {{ 'categories'|trans({}, "room") }}
-             {% endif %}
-        </div>
-        <div class="uk-width-1-3">
-            <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
-            {% set count = 1 %}
-            {% if (item.buzzwordArray|length) < 4 %}
-                {% if (item.buzzwordArray|length) == 0 %}
-                    {{ 'no linked items'|trans({}, "room")}}    
-                {%else%}
-                    {% for tag in item.buzzwordArray %}
-                        {{tag}}{% if count < item.buzzwordArray|length %}, {% endif %}
-                        {% set count = count +1 %}
-                    {% endfor %}
+            </div>
+        {% endif %}
+        {%if withTags %}
+            <div class="uk-width-1-3">
+                <strong>{{ 'hashtags'|trans({}, "room") }}:</strong> <br/>
+                {% set count = 1 %}
+                {% if (item.buzzwordArray|length) < 4 %}
+                    {% if (item.buzzwordArray|length) == 0 %}
+                        {{ 'no linked items'|trans({}, "room")}}    
+                    {%else%}
+                        {% for tag in item.buzzwordArray %}
+                            {{tag}}{% if count < item.buzzwordArray|length %}, {% endif %}
+                            {% set count = count +1 %}
+                        {% endfor %}
+                    {% endif %}
+                {% else %}
+                        {{item.buzzwordArray|length}} {{ 'hashtags'|trans({}, "room") }}
                 {% endif %}
-             {% else %}
-                    {{item.buzzwordArray|length}} {{ 'hashtags'|trans({}, "room") }}
-             {% endif %}
-        </div>
+            </div>
+        {% endif %}
     </div>
     {% endset %}
 

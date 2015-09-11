@@ -146,7 +146,7 @@
         
                     {# links #}
                     <div id="links{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editlinks', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-                        {{ macrosItem.links(material) }}
+                        {{ macrosItem.links(material,showHashtags,showCategories) }}
                     </div>
         
                     {# workflow #}
