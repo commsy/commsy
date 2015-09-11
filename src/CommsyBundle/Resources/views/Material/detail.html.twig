@@ -41,15 +41,13 @@
                                     Material {{ counterPosition }} / {{ count }}
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
-                                <div class="uk-dropdown">
-                                    <ul class="uk-nav uk-nav-dropdown">
-                                        {% for tempMaterial in materialList %}
+                                <div id="cs-entry-navigation" class="uk-dropdown cs-remove-padding">
+                                   <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding uk-margin-remove uk-text-left">
+                                       {% for tempMaterial in materialList %}
                                             {% if tempMaterial.itemId != material.itemId %}
                                                 <li><a href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': tempMaterial.itemId}) }}" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}">{{ tempMaterial.title|raw|truncate(25) }}</a></li>
                                             {% else %}
-                                                <li class="uk-nav-divider"></li>
-                                                <li class="uk-margin-left">{{ tempMaterial.title }}</li>
-                                                <li class="uk-nav-divider"></li>
+                                                <li><a href="#" data-uk-tooltip="{delay:'250'}" title="{{ tempMaterial.title|raw }}" class="uk-text-muted">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ tempMaterial.title|raw|truncate(20)  }}</a></li>
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
@@ -84,7 +82,7 @@
                                 </button>
 
                                 <div id="cs-additional-actions" class="uk-dropdown  cs-remove-padding">
-                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding ">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding uk-margin-remove uk-text-left">
                                         {# save #}
                                         <li>
                                             <a class="" href="#">
