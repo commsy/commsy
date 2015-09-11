@@ -135,6 +135,7 @@ class MaterialController extends Controller
             'draft' => $infoArray['draft'],
             'showRating' => $infoArray['showRating'],
             'showWorkflow' => $infoArray['showWorkflow'],
+            'user' => $infoArray['user'],
        );
     }
 
@@ -359,6 +360,7 @@ class MaterialController extends Controller
         $infoArray['draft'] = $itemService->getItem($itemId)->isDraft();
         $infoArray['showRating'] = $current_context->isAssessmentActive();
         $infoArray['showWorkflow'] = $current_context->withWorkflow();
+        $infoArray['user'] = $legacyEnvironment->getCurrentUserItem();
         
         return $infoArray;
     }

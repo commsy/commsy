@@ -12,17 +12,17 @@
         <div class="uk-width-medium-4-5">
 
             {# material content panel #}
-            <div class="uk-panel uk-panel-box uk-panel-box-primary uk-margin-bottom">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
 
                 {# panel teaser #}
                 <div class="uk-panel-teaser panel-teaser-primary cs-remove-overflow">
                     <div class="uk-grid">
 
                         {# quick item navigation #}
-                        <div class="uk-width-1-5 uk-flex-inline uk-flex-space-between">
+                        <div class="uk-flex-inline uk-width-2-5 ">
 
                             {# back navigation #}
-                            <div>
+                            <div class="uk-margin-right">
                                 {% if firstItemId %}
                                     <a class="uk-button-primary" href="{{ path('commsy_material_detail', {'roomId': roomId, 'itemId': firstItemId}) }}"><i class="uk-icon-small uk-icon-angle-double-left"></i></a>
                                 {% else %}
@@ -36,7 +36,7 @@
                             </div>
 
                             {# item dropdown #}
-                            <div class="uk-button-dropdown" data-uk-dropdown>
+                            <div class="uk-button-dropdown uk-margin-right" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
                                     Material {{ counterPosition }} / {{ count }}
                                     <i class="uk-icon-caret-down"></i>
@@ -72,12 +72,12 @@
                         </div>
 
                         {# actions #}
-                        <div class="uk-width-2-5 uk-push-2-5 uk-flex-inline uk-flex-space-between">
+                        <div class="uk-width-3-5 uk-text-right">
                             <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}"><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
                             <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-print"></i> <span class="cs-addon-navigation-large">{{ 'print'|trans({})|capitalize }}</span></a>
 
                             {# additional actions #}
-                            <div class="uk-button-dropdown" data-uk-dropdown>
+                            <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
                                     {{ 'additional actions'|trans({}, 'item') }}
                                     <i class="uk-icon-caret-down"></i>
@@ -167,7 +167,7 @@
       
             {# material sections #}
             {% for section in sectionList %}
-                <div class="uk-panel uk-panel-box">
+                <div class="uk-panel uk-panel-box uk-margin-top">
                     <article class="uk-article uk-position-relative">
                         {# title #}
                         <div class="cs-toggle" data-uk-observe>
@@ -189,25 +189,45 @@
             
             {# annotations #}
             
-                {% if item.itemType != 'discussion' %}
+            {% if item.itemType != 'discussion' %}
                 <div class="uk-panel-teaser panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
-                        <div class="uk-grid">
-                            <div class="uk-width-3-5 uk-text-large ">
-                                {{ 'annotations'|trans({})|capitalize }}
-                            </div>
-                            <div class="uk-width-2-5 uk-text-right">
-                                <a class="uk-margin-left uk-button-primary" href=""><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
-                            </div>
+                    <div class="uk-grid">
+                        <div class="uk-width-3-5 uk-text-large ">
+                            {{ 'annotations'|trans({})|capitalize }}
                         </div>
+ <!--                       <div class="uk-width-2-5 uk-text-right">
+                            <a class="uk-margin-left uk-button-primary" href=""><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
+                        </div> --!>
                     </div>
-            <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-panel-box-primary ">
+                </div>              
+                
+                <div id="annotations{{ material.itemId }}" class="uk-panel uk-panel-box uk-margin-bottom uk-panel-box-primary ">
+
+                    <article class="uk-comment">
+                        <header class="uk-comment-header uk-flex">
+                            <div class="uk-margin-right uk-flex-item-none">
+                                {{  macros.userIconLink(user) }}
+                            </div>
+                            <div class="uk-width-8-10">
+                                  <textarea style="width:100%; height:100px;">HIER MUSS EIN FORMULAR FÜR DIE NEUE ANMERKUNG HIN.</textarea>
+                            </div>                            
+                        </header>
+                    </article>
+
+
                     {{ render(controller(
                         'CommsyBundle:Annotation:feed',
                         { 'roomId': roomId, 'linkedItemId': item.itemId }
                     ))}}
-                    </div>
+
+        
+
                 </div>
-                {% endif %}
+                
+                
+                                       
+        {% endif %}
+        </div>
 
         <div class="uk-width-medium-1-5 cs-addon-navigation">
 

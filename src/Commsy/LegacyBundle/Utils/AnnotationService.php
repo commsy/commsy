@@ -27,6 +27,6 @@ class AnnotationService
         $this->annotationManager->select();
         $annotationList = $this->annotationManager->get();
 
-        return $annotationList->to_array();
+        return array_reverse($annotationList->to_array());
     }
 }
