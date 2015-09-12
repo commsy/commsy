@@ -20,6 +20,12 @@ class MaterialFilterType extends AbstractType
                 'label' => false,
             ))
         ;
+
+        if ($options['hasHashtags']) {
+            $builder->add('hashtag', 'hashtag_filter', array(
+                'label' => false,
+            ));
+        }
     }
 
     public function getName()
@@ -29,10 +35,15 @@ class MaterialFilterType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(array(
-            'csrf_protection'   => false,
-            'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
-            'method'            => 'get',
-        ));
+        $resolver
+            ->setDefaults(array(
+                'csrf_protection'   => false,
+                'validation_groups' => array('filtering'), // avoid NotBlank() constraint-related message
+                'method'            => 'get',
+            ))
+            ->setRequired(array(
+                'hasHashtags',
+            ))
+        ;
     }
 }

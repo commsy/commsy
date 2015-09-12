@@ -67,6 +67,15 @@ class MaterialService
                 $this->materialManager->setInstitutionLimit($relatedLabel->getItemId());
             }
         }
+
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->materialManager->setBuzzwordLimit($itemId);
+            }
+        }
     }
     
     public function getMaterial($itemId)

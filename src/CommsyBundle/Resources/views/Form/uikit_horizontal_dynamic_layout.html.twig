@@ -14,3 +14,29 @@
     {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-dynamic')|trim}) %}
     {{- parent() -}}
 {%- endblock form_start %}
+
+{# Custom #}
+
+
+{% block _material_filter_hashtag_hashtag_widget %}
+    <div id="room-hashtags" class="uk-overflow-container uk-margin-bottom">
+
+        <hr class="cs-list-divider"/>
+        <h4 class="cs-list-section-header">
+            <span class="cs-detail-section-header-background">{{ 'hashtags'|trans({}, "room") }} 
+            </span>
+        </h4>
+
+        {% if form is not empty %}
+            {% for child in form %}
+                <input class="uk-hidden" type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" onchange="this.form.submit()" {% if child.vars.checked %} checked="checked"{% endif %} />
+
+                <span>
+                    <button class="uk-button uk-margin-small-bottom uk-margin-small-right{% if child.vars.checked %} uk-button-primary{% endif %}" onclick="$(this).parent().prev().prop('checked', !$(this).parent().prev().prop('checked')); $(this).parents('form').submit(); return false;">{{ child.vars.label }}</button>
+                </span>
+            {% endfor %}
+        {% else %}
+            {{ 'No Hashtags'|trans({}, 'hashtag') }}
+        {% endif %}
+    </div>
+{% endblock %}

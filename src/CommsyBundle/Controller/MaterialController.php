@@ -20,12 +20,24 @@ class MaterialController extends Controller
      */
     public function feedAction($roomId, $max = 10, $start = 0, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
         // setup filter form
         $defaultFilterValues = array(
-            'activated' => true
+            'activated' => true,
         );
         $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('commsy_material_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
         ));
 
         // get the material manager service
@@ -71,15 +83,27 @@ class MaterialController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
         // setup filter form
         $defaultFilterValues = array(
-            'activated' => true
+            'activated' => true,
         );
         $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_material_list', array('roomId' => $roomId)),
+            'action' => $this->generateUrl('commsy_material_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
         ));
+
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
-        $current_context = $legacyEnvironment->getCurrentContextItem();
 
 
         // get the material manager service
@@ -96,10 +120,9 @@ class MaterialController extends Controller
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'material',
-            'showRating' => $current_context->isAssessmentActive(),
-            'showWorkflow' => $current_context->withWorkflow(),
-            'showHashtags' => $current_context->withBuzzwords(),
-            'showCategories' => $current_context->withTags(),
+            'showRating' => $roomItem->isAssessmentActive(),
+            'showWorkflow' => $roomItem->withWorkflow(),
+            'showCategories' => $roomItem->withTags(),
         );
     }
 
