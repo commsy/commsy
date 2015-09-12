@@ -155,6 +155,7 @@ class cs_item_manager extends cs_manager {
      }
 
      $query .= ' WHERE 1';
+     $query .= ' AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
 /***Activating Code***/
       if (!$this->_show_not_activated_entries_limit) {

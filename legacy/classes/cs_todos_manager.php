@@ -144,6 +144,7 @@ class cs_todos_manager extends cs_manager implements cs_export_import_interface 
          $query = 'SELECT '.$this->addDatabasePrefix('todos').'.*';
       }
       $query .= ' FROM '.$this->addDatabasePrefix('todos');
+      $query .= ' INNER JOIN items ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('todos').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
 
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
         ) {

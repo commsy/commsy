@@ -373,6 +373,7 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
         }
      }
      $query .= ' FROM '.$this->addDatabasePrefix('labels');
+     $query .= ' INNER JOIN items ON '.$this->addDatabasePrefix('items').'.item_id = '.$this->addDatabasePrefix('labels').'.item_id AND '.$this->addDatabasePrefix('items').'.draft != "1"';
      if (!isset($this->_attribute_limit) || (isset($this->_attribute_limit) and ('modificator'== $this->_attribute_limit) )|| (isset($this->_attribute_limit) and ('all'== $this->_attribute_limit))){
         if ( (isset($this->_sort_order) and ($this->_sort_order == 'modificator' or $this->_sort_order == 'modificator_rev')) or (isset($this->_search_array) and !empty($this->_search_array))) {
            $query .= ' LEFT JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('labels').'.creator_id = '.$this->addDatabasePrefix('user').'.item_id';
