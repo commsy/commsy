@@ -117,9 +117,15 @@ define([	"dojo/_base/declare",
 			{
 				container = window;
 			}
+
+			if(DomAttr.get(node, 'id') == 'popup_wrapper') {
+				var nodePosition = domGeometry.position(dojo.query('#popup_frame', node)[0]);
+			} else {
+				var nodePosition = domGeometry.position(node);
+			}
 			
 			var vs = Window.getBox();
-			var nodePosition = domGeometry.position(node);
+
 			if(nodePosition.y > vs.t + vs.h || nodePosition.y + nodePosition.h < vs.t) {
 				DojoxFX.smoothScroll({
 					node:		node,
