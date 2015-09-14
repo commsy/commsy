@@ -143,6 +143,11 @@ services:
         tags:
             - { name: form.type, alias: treechoice }
 
+    commsy.form.type.hashtag:
+        class: CommsyBundle\Form\Type\HashtagType
+        tags:
+            - { name: form.type, alias: hashtag }
+
     # Twig
     twig.extension.room:
         class: CommsyBundle\Twig\Extension\RoomExtension

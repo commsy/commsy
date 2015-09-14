@@ -7,18 +7,7 @@
         {{- parent() -}}
 {%- endblock choice_widget_collapsed -%}
 
-
-{# Misc #}
-
-{% block form_start -%}
-    {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-dynamic')|trim}) %}
-    {{- parent() -}}
-{%- endblock form_start %}
-
-{# Custom #}
-
-
-{% block _material_filter_hashtag_hashtag_widget %}
+{% block hashtag_widget %}
     <div id="room-hashtags" class="uk-overflow-container uk-margin-bottom">
 
         <hr class="cs-list-divider"/>
@@ -40,3 +29,10 @@
         {% endif %}
     </div>
 {% endblock %}
+
+{# Misc #}
+
+{% block form_start -%}
+    {% set attr = attr|merge({class: (attr.class|default('') ~ ' cs-form-horizontal-dynamic')|trim}) %}
+    {{- parent() -}}
+{%- endblock form_start %}
