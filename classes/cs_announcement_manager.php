@@ -597,40 +597,49 @@ class cs_announcement_manager extends cs_manager implements cs_export_import_int
       return $retour;
    }
 
-   function deleteAnnouncementsofUser($uid) {
-   	  // create backup of item
-   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
-   	  $this->backupItem($uid, array(	'title'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'));
+    function deleteAnnouncementsofUser($uid) {
+        $disableOverwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix($this->_db_table).'.* FROM '.$this->addDatabasePrefix($this->_db_table).' WHERE '.$this->addDatabasePrefix($this->_db_table).'.creator_id = "'.encode(AS_DB,$uid).'"';
-      $result = $this->_db_connector->performQuery($query);
-      if ( !empty($result) ) {
-         foreach ( $result as $rs ) {
-            $insert_query = 'UPDATE '.$this->addDatabasePrefix($this->_db_table).' SET';
-			if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-               $insert_query .= ' public = "-1",';
-			}else{
-	           $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-    	       $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'title' => 'title',
+                'description' => 'description',
+                'modification_date' => 'modification_date',
+                'public' => 'public'
+            ));
 
-			}
-            $insert_query .= ' modification_date = "'.$current_datetime.'"';
-            $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
-            $result2 = $this->_db_connector->performQuery($insert_query);
-            pr($insert_query);
-            if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems automatic deleting '.$this->_db_table.'.',E_USER_WARNING);
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix($this->_db_table).'.* FROM ' . $this->addDatabasePrefix($this->_db_table).' WHERE ' . $this->addDatabasePrefix($this->_db_table) . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    $updateQuery = 'UPDATE ' . $this->addDatabasePrefix($this->_db_table) . ' SET';
+
+                    /* flag */
+                    if ($disableOverwrite === 'flag') {
+                        $updateQuery .= ' public = "-1",';
+                    }
+
+                    /* disabled */
+                    if ($disableOverwrite === false) {
+                        $updateQuery .= ' title = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                        $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                        
+                    }
+
+                    $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                    $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                    $result2 = $this->_db_connector->performQuery($updateQuery);
+                    if (!$result2) {
+                        include_once('functions/error_functions.php');
+                        trigger_error('Problems automatic deleting '.$this->_db_table.'.', E_USER_WARNING);
+                    }
+                }
             }
-            unset($result2);
-         }
-         unset($result);
-      }
-   }
+        }
+    }
 
    public function updateIndexedSearch($item) {
 	   	$indexer = $this->_environment->getSearchIndexer();

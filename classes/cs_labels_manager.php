@@ -1127,40 +1127,66 @@ class cs_labels_manager extends cs_manager implements cs_export_import_interface
       return $retour;
    }
 
-   function deleteLabelsOfUser($uid) {
-   	  // create backup of item
-   	  $disable_overwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
-   	  $this->backupItem($uid, array(	'name'				=>	'title',
-   	  									'description'		=>	'description',
-   	  									'modification_date'	=>	'modification_date',
-   	  									'public'			=>	'public'));
+    function deleteLabelsOfUser($uid) {
+        $disableOverwrite = $this->_environment->getConfiguration('c_datenschutz_disable_overwriting');
 
-      $current_datetime = getCurrentDateTimeInMySQL();
-      $query  = 'SELECT '.$this->addDatabasePrefix('labels').'.* FROM '.$this->addDatabasePrefix('labels').' WHERE '.$this->addDatabasePrefix('labels').'.creator_id = "'.$uid.'"';
-      $result = $this->_db_connector->performQuery($query);
+        if ($disableOverwrite !== null && $disableOverwrite !== true) {
+            // create backup of item
+            $this->backupItem($uid, array(
+                'name' => 'title',
+                'description' => 'description',
+                'modification_date' => 'modification_date',
+                'public' => 'public',
+            ));
+
+            $currentDatetime = getCurrentDateTimeInMySQL();
+            $query  = 'SELECT ' . $this->addDatabasePrefix('labels').'.* FROM ' . $this->addDatabasePrefix('labels').' WHERE ' . $this->addDatabasePrefix('labels') . '.creator_id = "' . encode(AS_DB,$uid) . '"';
+            $result = $this->_db_connector->performQuery($query);
+
+            if (!empty($result)) {
+                foreach ($result as $rs) {
+                    // do not delete group "ALL"
+                    if (!($rs['type'] == CS_GROUP_TYPE && $rs['name'] == 'ALL')) {
+                        $updateQuery = 'UPDATE ' . $this->addDatabasePrefix('labels') . ' SET';
+
+                        /* flag */
+                        if ($disableOverwrite === 'flag') {
+                            $updateQuery .= ' public = "-1",';
+                            $updateQuery .= ' modification_date = "' . $currentDatetime . '"';
+                        }
+
+                        /* disabled */
+                        if ($disableOverwrite === false) {
+                            $updateQuery .= ' name = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')) . '",';
+                            $updateQuery .= ' description = "' . encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')) . '",';
+                            $updateQuery .= ' modification_date = "' . $currentDatetime . '",';
+                            $updateQuery .= ' public = "1"';
+                        }
+
+                        $updateQuery .= ' WHERE item_id = "' . encode(AS_DB,$rs['item_id']) . '"';
+                        $result2 = $this->_db_connector->performQuery($updateQuery);
+                        if (!$result2) {
+                            include_once('functions/error_functions.php');
+                            trigger_error('Problems automatic deleting labels:.' , E_USER_WARNING);
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             //Never delete any group "ALL"
             if (!($rs['type'] == CS_GROUP_TYPE AND $rs['name'] == 'ALL')) {
-               $insert_query = 'UPDATE '.$this->addDatabasePrefix('labels').' SET';
-				if (!empty($disable_overwrite) and $disable_overwrite == 'flag'){
-	                $insert_query .= ' public = "-1",';
-               		$insert_query .= ' modification_date = "'.$current_datetime.'"';
-				}else{
-	               $insert_query .= ' name = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-	               $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
-	               $insert_query .= ' modification_date = "'.$current_datetime.'",';
-	               $insert_query .= ' public = "1"';
-				}
-				$insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
-               $result2 = $this->_db_connector->performQuery($insert_query);
-               if ( !isset($result2) or !$result2 ) {
-                  include_once('functions/error_functions.php');trigger_error('Problems automatic deleting labels:.',E_USER_WARNING);
-               }
+               
             }
          }
       }
-   }
+    }
 
    public function resetCache () {
       $this->_internal_data = array();
