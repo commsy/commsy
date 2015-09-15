@@ -429,6 +429,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 							style += tempStyle;
 							style += '"';
 							
+							// document type
 							if(this.getValueOf('documentTab', 'selectbox') == 'slideshare'){
 								
 //								content = 'http://lecture2go.uni-hamburg.de/';
@@ -441,25 +442,33 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								var param = '';
 								
 								if (startAt !== "") {
-									param += '&startSlide='+startAt;
+									param += '?startSlide='+startAt;
 								}
-								
-								// wordpress shortcode regex
-								var wp_regex = /\[slideshare id=\d*&doc=(.*)]/,
+
+								var regex = /iframe.src="([^"]*)"/,
 									match,
 									docId;
 								
-								if(documentUrl.match(wp_regex)){
-									match = documentUrl.match(wp_regex);
+								// wordpress shortcode regex
+								// var wp_regex = /\[slideshare id=\d*&doc=(.*)]/,
+								// 	match,
+								// 	docId;
+								
+								if(documentUrl.match(regex)){
+									match = documentUrl.match(regex);
 									docId = match[1];
 								}
-								
-//								content += '<object width="' + width + '" height="' + height + '>';
-//								content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '" name="movie">';
-//								content += '<param value="true" name="allowFullScreen">';
-//								content += '<param value="always" name="allowScriptAccess">';
-								content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0' + param +'">';
-//								content += '</object>';
+
+								content += '<iframe src="'+docId+param+'" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>';
+
+
+								// flash
+								// content += '<object width="' + width + '" height="' + height + '>';
+								// content += '<param value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '" name="movie">';
+								// content += '<param value="true" name="allowFullScreen">';
+								// content += '<param value="always" name="allowScriptAccess">';
+								// content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0' + param +'">';
+								// content += '</object>';
 								
 								
 							} else if(this.getValueOf('documentTab', 'selectbox') == 'onyx') {
