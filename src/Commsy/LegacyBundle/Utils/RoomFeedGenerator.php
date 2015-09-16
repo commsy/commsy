@@ -2,6 +2,8 @@
 
 namespace Commsy\LegacyBundle\Utils;
 
+use Symfony\Component\Form\Form;
+
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use Commsy\LegacyBundle\Utils\RoomService;
 
@@ -10,26 +12,33 @@ class RoomFeedGenerator
     private $legacyEnvironment;
     private $roomService;
 
+    private $itemManager;
+    private $limits = array();
+
     public function __construct(LegacyEnvironment $legacyEnvironment, RoomService $roomService)
     {
-        $this->legacyEnvironment = $legacyEnvironment;
+        $this->legacyEnvironment = $legacyEnvironment->getEnvironment();
         $this->roomService = $roomService;
+
+        $this->itemManager = $this->legacyEnvironment->getItemManager();
+        $this->itemManager->reset();
     }
 
     public function getFeedList($roomId, $max, $start)
     {
-        $legacyEnvironment = $this->legacyEnvironment->getEnvironment();
-
         $rubrics = $this->roomService->getRubricInformation($roomId);
 
         // get the lastest items matching the configured rubrics
-        $itemManager = $legacyEnvironment->getItemManager();
-        $itemManager->reset();
-        $itemManager->setContextLimit($roomId);
-        $itemManager->setIntervalLimit($max + $start);
-        $itemManager->setTypeArrayLimit($rubrics);
-        $itemManager->select();
-        $itemList = $itemManager->get();
+        $this->itemManager->setContextLimit($roomId);
+        $this->itemManager->setIntervalLimit($max + $start);
+        $this->itemManager->setTypeArrayLimit($rubrics);
+
+        if (isset($this->limits['buzzword'])) {
+            $this->itemManager->setListLimit($this->limits['buzzword']);
+        }
+
+        $this->itemManager->select();
+        $itemList = $this->itemManager->get();
 
         // TODO: group by rubric and get items chunkwise
 
@@ -43,25 +52,25 @@ class RoomFeedGenerator
     
                 switch ($type) {
                     case 'user':
-                        $userManager = $legacyEnvironment->getUserManager();
+                        $userManager = $this->legacyEnvironment->getUserManager();
                         $userItem = $userManager->getItem($item->getItemId());
                         $feedList[] = $userItem;
                         break;
     
                     case 'material':
-                        $materialManager = $legacyEnvironment->getMaterialManager();
+                        $materialManager = $this->legacyEnvironment->getMaterialManager();
                         $materialItem = $materialManager->getItem($item->getItemId());
                         $feedList[] = $materialItem;
                         break;
     
                     case 'date':
-                        $datesManager = $legacyEnvironment->getDatesManager();
+                        $datesManager = $this->legacyEnvironment->getDatesManager();
                         $dateItem = $datesManager->getItem($item->getItemId());
                         $feedList[] = $dateItem;
                         break;
     
                     case 'discussion':
-                        $discussionManager = $legacyEnvironment->getDiscussionManager();
+                        $discussionManager = $this->legacyEnvironment->getDiscussionManager();
                         $discussionItem = $discussionManager->getItem($item->getItemId());
                         $feedList[] = $discussionItem;
                         break;
@@ -72,6 +81,20 @@ class RoomFeedGenerator
         }
 
         return $feedList;
+    }
+
+    public function setFilterConditions(Form $filterForm)
+    {
+        $formData = $filterForm->getData();
+
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->limits['buzzword'] = $itemId;
+            }
+        }
     }
 }
 

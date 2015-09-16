@@ -1,5 +1,7 @@
 {% extends 'CommsyBundle:Base:room.html.twig' %}
 
+{% form_theme form 'CommsyBundle:Form:uikit_horizontal_dynamic_layout.html.twig' %}
+
 {% block cover %}
     {% set widthHomeInformation = true %}
     {% set imgSrc = '/images/simpsons-wallpaper.jpg' %}
@@ -36,7 +38,7 @@
                 <div>
                     <ul id="room-feed" class="uk-comment-list">
                         {{ render(controller(
-                            'CommsyBundle:Feed:homeFeed',
+                            'CommsyBundle:Room:feed',
                             { 'roomId': roomItem.itemId }
                         ))}}
                     </ul>
@@ -48,6 +50,7 @@
             </div>
         </div>
         
+        {# sidebar #}
         <div class="uk-width-medium-2-5">
             
             <!--
@@ -133,20 +136,18 @@
                         </div>
                     </div>
                 </div>
-                <dl id="list-filter">
+                <div id="list-filter">
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+
                     {% if showCategories %}
                         {{ render(controller(
                             'CommsyBundle:Category:show',
                             { 'roomId': roomItem.itemId }
                         ))}}
                     {% endif %}
-                    {% if showHashtags %}
-                        {{ render(controller(
-                            'CommsyBundle:Hashtag:show',
-                            { 'roomId': roomItem.itemId }
-                        ))}}
-                    {% endif %}
-                </dl>
+                </div>
  
             </div>
         </div>
