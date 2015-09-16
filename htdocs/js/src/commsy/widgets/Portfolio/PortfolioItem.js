@@ -14,6 +14,7 @@ define(
 	"dojo/dom-style",
 	"dojo/_base/xhr",
 	"dojo/query",
+	"dojo/topic",
 	"dojo/on",
 	"dijit/layout/ContentPane",
 	"dojo/NodeList-traverse"
@@ -33,6 +34,7 @@ define(
 	DomStyle,
 	xhr,
 	Query,
+	topic,
 	On,
 	ContentPane
 ) {
@@ -262,6 +264,7 @@ define(
 					if (this.withEditing === false) {
 						DomStyle.set(this.lastVerticalTag, "display", "none");
 						DomStyle.set(this.portfolioEditDivNode, "display", "none");
+						DomStyle.set(this.portfolioUnsubscribeDivNode, "display", "block");
 						DomStyle.set(this.portfolioEditColumnNode, "display", "none");
 					}
 					
@@ -384,6 +387,25 @@ define(
 				
 				widgetInstance.Open();
 			}));
+		},
+
+		onClickUnsubscribePortfolio: function(event)
+		{
+			request.ajax({
+				query: {
+					cid:	this.uri_object.cid,
+					mod:	'ajax',
+					fct:	'portfolio',
+					action:	'unsubscribePortfolio'
+				},
+				data: {
+					portfolioId:	this.portfolioId
+				}
+			}).then(
+				lang.hitch(this, function(response) {
+					topic.publish("updatePortfolios", {});
+				})
+			);
 		},
 		
 		onInsertNewTag: function(event)

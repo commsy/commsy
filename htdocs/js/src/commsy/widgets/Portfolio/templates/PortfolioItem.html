@@ -4,19 +4,15 @@
         
         <div id="ep_left_col">
             <div id="ep_title">
-            	<!--
-                <div id="ep_title_nav">
-                    <a href="" title="zur&uuml;ck"><img src="${templatePath}img/ep_skip_left.gif" alt="zur&uuml;ck" /></a> 
-                    <a href="" title="n&auml;chster"><img src="${templatePath}img/ep_skip_right.gif" alt="n&auml;chster" /></a>
-                </div>
-                -->
                 <div class="float-right" data-dojo-attach-point="portfolioEditDivNode">
                 	<a href="#" class="ep_edit_head" data-dojo-attach-event="click: onClickEditPortfolio"><img src="${templatePath}img/ep_icon_editdarkgrey.gif" alt="" /></a>
+                </div>
+                <div class="float-right" style="display: none;" data-dojo-attach-point="portfolioUnsubscribeDivNode">
+                    <a href="#" class="ep_edit_head" data-dojo-attach-event="click: onClickUnsubscribePortfolio"><img src="${templatePath}img/pop_close.gif" alt="" /></a>
                 </div>
                 <div id="ep_tides">
                     <strong data-dojo-attach-point="titleNode"></strong>
                     <p data-dojo-attach-point="creatorNode"></p>
-                    
                 </div>
                 
                 <div class="clear"></div>
@@ -27,10 +23,6 @@
             <div>
             	<!-- add row -->
             	<div id="epRowAdd" class="ep_vert_col_cell" data-dojo-attach-point="lastVerticalTag">
-            		<!--<a class="ep_vert_edit">
-            			<img src="${templatePath}img/ep_vert_edit.jpg" alt=""/>
-            		</a>-->
-            		
 	                <div class="ep_vert_col_title">
 	                    <a href="#"><strong data-dojo-attach-event="onclick: onInsertNewTag" data-custom="position: 'row'">+</strong></a>
 	                </div>
