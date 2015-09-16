@@ -56,6 +56,14 @@ services:
         tags:
             - { name: knp_menu.menu, alias: profile }
 
+    commsy.menu.roomlist:
+        class: Knp\Menu\MenuItem
+        factory_service: commsy.menu.builder
+        factory_method: createRoomlistMenu
+        arguments: ["@request_stack"]
+        tags:
+            - { name: knp_menu.menu, alias: roomlist }
+
     # Voter
     commsy.security.category_voter:
         class: CommsyBundle\Security\Authorization\Voter\CategoryVoter

@@ -19,18 +19,19 @@
     </head>
     <body id="commsy" class="nav-collapsed">
 
-        <div id="sidebar" class="uk-hidden-small">
+        <div id="commsy_navigation">
 
-            <div id="sidebar-brand">
-                <a href="#">
-                   <img src="/images/commsy-logo-60x70.gif" style="height:50px; margin-left:5px" title="CommSy" alt="CommSy"/>
-                </a>
+            <div id="portal_logo">
             </div>
 
-            <div id="sidebar-profile">
+            <div id="my_avatar">
                 {% block profile %}
                 {% endblock %}
             </div>
+
+            {% block roomlist %}
+            {% endblock %}
+
 
             {% block side_navigation %}
             {% endblock %}

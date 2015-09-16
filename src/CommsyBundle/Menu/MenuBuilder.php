@@ -71,6 +71,55 @@ class MenuBuilder
         return $menu;
     }
 
+    /**
+     * creates the roomlist sidebar
+     * @param  RequestStack $requestStack [description]
+     * @return knpMenu                    KnpMenu
+     */
+    public function createRoomlistMenu(RequestStack $requestStack)
+    {
+        // create profile
+        $currentStack = $requestStack->getCurrentRequest();
+        $currentUser = $this->legacyEnvironment->getCurrentUser();
+
+        $menu = $this->factory->createItem('root');
+
+         $roomId = $currentStack->attributes->get('roomId');
+
+        if ($roomId) {
+            // dashboard
+            $user = $this->userService->getPortalUserFromSessionId();
+            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
+            $authSource = $authSourceManager->getItem($user->getAuthSource());
+            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
+            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
+            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
+            // $current_user = $this->userService->getUser($user->getUserID());
+            $current_user = $this->legacyEnvironment->getCurrentUserItem();
+               // room navigation
+                $menu->addChild('room_navigation', array(
+                    'label' => 'Raum-Navigation',
+                    'route' => 'commsy_room_home',
+                    'routeParameters' => array('roomId' => $roomId),
+                    'extras' => array(
+                        'icon' => 'uk-icon-list uk-icon-small',
+                        'showList' => true,
+                        'user' => $current_user,
+                        'roomId' => $roomId
+                        )
+                ));
+                $menu['room_navigation']->setLinkAttribute('id', 'rooms');
+
+        // profile configuration
+        // if ($currentUser->getItemId() != '') {
+        //     $menu->addChild('profileConfig', array(
+        //         'label' => ' ',
+        }
+        return $menu;
+    }
+
+
+
     public function createSettingsMenu(RequestStack $requestStack)
     {
         // get room Id
@@ -149,26 +198,6 @@ class MenuBuilder
                 // rubric room information
                 $rubrics = $this->roomService->getRubricInformation($roomId);
                 
-                // room navigation
-                $menu->addChild('room_navigation', array(
-                    'label' => 'Raum-Navigation',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array(
-                        'icon' => 'uk-icon-list uk-icon-small',
-                        'showList' => true,
-                        'user' => $current_user,
-                        'roomId' => $roomId
-                        )
-                ));
-                $menu['room_navigation']->setLinkAttribute('id', 'rooms');
-
-                $menu->addChild('room_navigation_space', array(
-                    'label' => ' ',
-                    'route' => 'commsy_room_home',
-                    'routeParameters' => array('roomId' => $roomId),
-                    'extras' => array('icon' => 'uk-icon-small')
-                ));
 
                 // home navigation
                 $menu->addChild('room_home', array(
