@@ -16,3 +16,9 @@
         {'template': 'CommsyBundle:Menu:knp_menu_profile.html.twig'})
     }}
 {% endblock %}
+
+{% block roomlist %}
+    {{ knp_menu_render('roomlist', 
+        {'template': 'CommsyBundle:Menu:knp_menu_roomlist.html.twig'})
+    }}
+{% endblock %}
