@@ -78,13 +78,13 @@ class MenuBuilder
      */
     public function createRoomlistMenu(RequestStack $requestStack)
     {
-        // create profile
+        // create roomlist
         $currentStack = $requestStack->getCurrentRequest();
         $currentUser = $this->legacyEnvironment->getCurrentUser();
 
         $menu = $this->factory->createItem('root');
 
-         $roomId = $currentStack->attributes->get('roomId');
+        $roomId = $currentStack->attributes->get('roomId');
 
         if ($roomId) {
             // dashboard
@@ -109,11 +109,6 @@ class MenuBuilder
                         )
                 ));
                 $menu['room_navigation']->setLinkAttribute('id', 'rooms');
-
-        // profile configuration
-        // if ($currentUser->getItemId() != '') {
-        //     $menu->addChild('profileConfig', array(
-        //         'label' => ' ',
         }
         return $menu;
     }
