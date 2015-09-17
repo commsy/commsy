@@ -153,9 +153,27 @@ class cs_item_manager extends cs_manager {
         ) {
         $query .= ' INNER JOIN '.$this->addDatabasePrefix('user').' ON '.$this->addDatabasePrefix('user').'.context_id='.$this->addDatabasePrefix($this->_db_table).'.context_id';
      }
+     
+     if (isset($this->_list_limit)) {
+        if ($this->_list_limit == -1){
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="buzzword_for"';
+           $query .= ' LEFT JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+        }else{
+           $query .= ' INNER JOIN '.$this->addDatabasePrefix('links').' AS links ON links.from_item_id='.$this->addDatabasePrefix('items').'.item_id AND links.link_type="buzzword_for"';
+           $query .= ' INNER JOIN '.$this->addDatabasePrefix('labels').' AS buzzwords ON links.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
+        }
+     }
 
      $query .= ' WHERE 1';
      $query .= ' AND '.$this->addDatabasePrefix('items').'.draft != "1"';
+
+     if (isset($this->_list_limit)) {
+         if ($this->_list_limit ==-1){
+            $query .= ' AND (links.to_item_id IS NULL OR links.deletion_date IS NOT NULL)';
+         }else{
+            $query .= ' AND buzzwords.item_id="'.encode(AS_DB,$this->_list_limit).'"';
+         }
+     }
 
 /***Activating Code***/
       if (!$this->_show_not_activated_entries_limit) {

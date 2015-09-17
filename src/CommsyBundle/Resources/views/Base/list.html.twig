@@ -59,11 +59,9 @@
                     </div>
                 </div>
                 <div id="list-filter">
-                    <div class="uk-margin-bottom">
-                        {{ form_start(form) }}
-                        {{ form_widget(form) }}
-                        {{ form_end(form) }}
-                    </div>
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
 
                     {% if showCategories %}
                         {{ render(controller(
@@ -74,5 +72,6 @@
                 </div>
             </div>
         </div>
+        
     </div>
 {% endblock %}
