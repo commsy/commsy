@@ -89,6 +89,25 @@ define(
 					this.ignoreTabChanges = false;
 				}));
 			}));
+
+			this.subscribe("removeTab", lang.hitch(this, function(object)
+			{
+				// find the portfolio with the given id
+				var children = this.activatedPortfolioTabNode.getChildren();
+
+				var child = dojo.filter(children, function(item, index) {
+					return item.portfolioId == object.itemId;
+				});
+
+				if (child[0]) {
+					// select portfolio with given id
+					var selectWidget = child[0];
+
+					if (selectWidget !== null) {
+						this.activatedPortfolioTabNode.removeChild(selectWidget);
+					}
+				}
+			}));
 		},
 		
 		/**

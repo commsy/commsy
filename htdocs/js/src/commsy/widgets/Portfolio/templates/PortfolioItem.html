@@ -8,7 +8,9 @@
                 	<a href="#" class="ep_edit_head" data-dojo-attach-event="click: onClickEditPortfolio"><img src="${templatePath}img/ep_icon_editdarkgrey.gif" alt="" /></a>
                 </div>
                 <div class="float-right" style="display: none;" data-dojo-attach-point="portfolioUnsubscribeDivNode">
-                    <a href="#" class="ep_edit_head" data-dojo-attach-event="click: onClickUnsubscribePortfolio"><img src="${templatePath}img/pop_close.gif" alt="" /></a>
+                    <a href="#" class="ep_edit_head dijitDisabled" title="${popupTranslations.unsubscribe}" data-dojo-attach-event="click: onClickUnsubscribePortfolio">
+                        <span class="dijitInline dijitIcon dijitIconUsers" style="cursor: pointer;"></span>
+                    </a>
                 </div>
                 <div id="ep_tides">
                     <strong data-dojo-attach-point="titleNode"></strong>

@@ -403,7 +403,7 @@ define(
 				}
 			}).then(
 				lang.hitch(this, function(response) {
-					topic.publish("updatePortfolios", {});
+					topic.publish("removeTab", { itemId: this.portfolioId });
 				})
 			);
 		},
