@@ -1,5 +1,25 @@
 {% if not roomList is empty %}
-    {% for room in roomList %}
-        <li><a href="">{{room.getTitle}}</a></li>
+<div class="uk-grid">
+    <div class="uk-width-1-2">
+        <div class="cs-room-block">
+            <i class="uk-icon-dashboard uk-icon-medium cs-menue-padding"></i>{{ 'dashboard'|trans({}, "rubric")}}
+        </div>
+    </div>
+    <div class="uk-width-1-2">
+        <div class="cs-room-block">
+            <input type="search"/><button>{{ 'find rooms'|trans({}, "rubric")}}</button>
+        </div>
+    </div>
+    {% for room in roomList %}       
+        <div class="uk-width-1-2">
+            <a href="{{ path('commsy_room_home', {'roomId': room.ItemID}) }}">
+                <div class="cs-room-block">
+                    {{room.getTitle}}<br/>
+                    <span class="uk-text-small uk-text-muted uk-text-truncate">{{room.getContactModeratorListString}}</span><br/>
+                    <span class="uk-text-small uk-text-muted uk-text-truncate"> {{ 'new Entries'|trans({}, "rubric")}}:{{room.getNewEntries}} ({{room.getTimeSpread}} {{ 'days'|trans({}, "rubric")}})</span>
+                </div>
+            </a>
+        </div>
     {% endfor %}
+</div>
 {% endif %}

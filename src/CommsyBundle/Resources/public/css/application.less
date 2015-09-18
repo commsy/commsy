@@ -171,7 +171,8 @@ ul#switch_room li:hover ul {
     display: block;
     visibility: visible;
     background-color: #2B2F3E;
-    width: 200%;
+    min-width: 250%;
+    max-width: 400%;
     border-top: 1px solid #34394A;
     height:400px;
     overflow-y:auto;
@@ -205,10 +206,22 @@ ul#switch_room li ul li a:hover {
 }
 
 .cs-roomlist {
-    height: 200px; 
+    height: 100%; 
     overflow:auto;
     padding-left:0px !important;
 }
+
+.cs-room-block{
+    white-space:normal;
+    height: 60px;
+    overflow:hidden;
+}
+
+.cs-room-block span{
+    font-weight:normal;   
+    text-transform: none;
+}
+
 
 
 

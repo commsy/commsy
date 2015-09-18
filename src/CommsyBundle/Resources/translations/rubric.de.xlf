@@ -66,6 +66,18 @@
                 <source>roomlist</source>
                 <target>Raum wechseln</target>
             </trans-unit>            
+             <trans-unit id="17">
+                <source>find rooms</source>
+                <target>Raum suchen</target>
+            </trans-unit>            
+             <trans-unit id="18">
+                <source>days</source>
+                <target>Tage</target>
+            </trans-unit>            
+             <trans-unit id="19">
+                <source>new Entries</source>
+                <target>Neue Beiträge</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>

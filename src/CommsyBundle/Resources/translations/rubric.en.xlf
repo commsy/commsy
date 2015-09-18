@@ -66,6 +66,18 @@
                 <source>roomlist</source>
                 <target>Change room</target>
             </trans-unit>
+             <trans-unit id="17">
+                <source>find rooms</source>
+                <target>Search rooms</target>
+            </trans-unit>            
+             <trans-unit id="18">
+                <source>days</source>
+                <target>days</target>
+            </trans-unit>            
+             <trans-unit id="19">
+                <source>new Entries</source>
+                <target>New entries</target>
+            </trans-unit>            
         </body>
     </file>
 </xliff>

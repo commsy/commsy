@@ -19,7 +19,7 @@
                 <i class="uk-icon-list uk-icon-small cs-menue-padding"></i>
                 {{ 'roomlist'|transchoice(1, {}, "rubric")|upper }}
                 <ul class="cs-roomlist">
-                    {{ block('children') }}
+                     {{ block('children') }}
                 </ul>
             </a>
         </li>
@@ -29,21 +29,16 @@
 
 
 {% block linkElement %}
-    {% import _self as knp_menu %}
-    <span>
-        <a href="{{ item.uri }}"{{ knp_menu.attributes(item.linkAttributes) }}>
-            {{ block('label') }}
-        </a>
-    </span>
+       {{ block('label') }}
 {% endblock %}
 
 {% block label %}
-        {{ render(controller(
-            'CommsyBundle:User:rooms',
-            { 'roomId': item.extras.roomId, 'itemId': item.extras.user.itemId }
-        ))}}
-                <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/{{item.extras.roomId}}/user/{{item.extras.user.itemId}}/rooms/", "target": "#roomList"}'>
-                    <i class="uk-icon-refresh uk-icon-spin uk-icon-medium cs-menue-padding"></i>
-                </div>
+    {{ render(controller(
+        'CommsyBundle:User:rooms',
+        { 'roomId': item.extras.roomId, 'itemId': item.extras.user.itemId }
+    ))}}
+    <div class="room-load-more" data-uk-scrollspy="{cls:'uk-animation-fade', repeat: true}" data-rooms='{"url": "{{ app.request.baseURL }}/room/{{item.extras.roomId}}/user/{{item.extras.user.itemId}}/rooms/", "target": "#roomList"}'>
+        <i class="uk-icon-refresh uk-icon-spin uk-icon-medium cs-menue-padding"></i>
+    </div>
         
 {% endblock %}
