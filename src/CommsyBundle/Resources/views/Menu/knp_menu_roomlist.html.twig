@@ -15,13 +15,13 @@
     {% import _self as knp_menu %}
     <ul id="switch_room" class="uk-nav uk-nav-parent-icon"{{ knp_menu.attributes(listAttributes) }}>
         <li>
-            <a >
+            <span>
                 <i class="uk-icon-list uk-icon-small cs-menue-padding"></i>
                 {{ 'roomlist'|transchoice(1, {}, "rubric")|upper }}
                 <ul class="cs-roomlist">
                      {{ block('children') }}
                 </ul>
-            </a>
+            </span>
         </li>
     </ul>
 {% endif %}

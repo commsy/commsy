@@ -78,6 +78,18 @@
                 <source>new Entries</source>
                 <target>Neue Beiträge</target>
             </trans-unit>            
+             <trans-unit id="20">
+                <source>dashboard description text</source>
+                <target>Ihr persönlicher Bereich mit vielen Funtkionen und Widgets.</target>
+            </trans-unit>            
+             <trans-unit id="21">
+                <source>own rooms</source>
+                <target>Meine Räume</target>
+            </trans-unit>
+             <trans-unit id="22">
+                <source>room search text</source>
+                <target>Eingrenzen nach z.B. Name, Beschreibung, ModeratorIn, ... </target>
+            </trans-unit>           
         </body>
     </file>
 </xliff>

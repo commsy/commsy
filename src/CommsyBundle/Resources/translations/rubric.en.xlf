@@ -78,6 +78,18 @@
                 <source>new Entries</source>
                 <target>New entries</target>
             </trans-unit>            
+             <trans-unit id="20">
+                <source>dashboard description text</source>
+                <target>Your own dashboard with many functions and widgets.</target>
+            </trans-unit>            
+             <trans-unit id="21">
+                <source>own rooms</source>
+                <target>My own rooms</target>
+            </trans-unit>            
+             <trans-unit id="22">
+                <source>room search text</source>
+                <target>Search for name, description, moderators,... </target>
+            </trans-unit>           
         </body>
     </file>
 </xliff>

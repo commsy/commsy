@@ -112,7 +112,7 @@ ul#commsy_fields li {
     border-bottom: 1px solid #34394A;
     }
 
-ul#commsy_fields li a, ul#switch_room li a  {
+ul#commsy_fields li a, ul#switch_room li a, ul#switch_room li span  {
     color: #CFCFCF;
     text-decoration: none;
     display: block;
@@ -120,7 +120,7 @@ ul#commsy_fields li a, ul#switch_room li a  {
     text-transform: uppercase;
     }
 
-ul#commsy_fields li a:hover, ul#switch_room li a:hover  {
+ul#commsy_fields li a:hover, ul#switch_room li a:hover, ul#switch_room li span:hover  {
     color: #FF404B;
     -webkit-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
@@ -217,9 +217,33 @@ ul#switch_room li ul li a:hover {
     overflow:hidden;
 }
 
-.cs-room-block span{
+.cs-room-dashboard{
+    white-space:normal;
+    height: 40px;
+    overflow:hidden;
+}
+
+.cs-room-search{
+    white-space:normal;
+    padding: 5px 20px;
+    display: block;
+    color: #FFF;
+    text-decoration: none;
+    border-bottom: 1px solid #34394A;
+    overflow:hidden;
+}
+
+
+.cs-roomsearch-field {
+    background: rgba(255, 255, 255, 1) none repeat scroll 0 0;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    width: 440px;
+}
+
+.cs-room-block p{
     font-weight:normal;   
     text-transform: none;
+    margin: 0px;
 }
 
 

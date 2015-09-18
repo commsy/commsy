@@ -87,15 +87,6 @@ class MenuBuilder
         $roomId = $currentStack->attributes->get('roomId');
 
         if ($roomId) {
-            // dashboard
-            $user = $this->userService->getPortalUserFromSessionId();
-            $authSourceManager = $this->legacyEnvironment->getAuthSourceManager();
-            $authSource = $authSourceManager->getItem($user->getAuthSource());
-            $this->legacyEnvironment->setCurrentPortalID($authSource->getContextId());
-            $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
-            $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user, $this->legacyEnvironment->getCurrentPortalID());
-            // $current_user = $this->userService->getUser($user->getUserID());
-            $current_user = $this->legacyEnvironment->getCurrentUserItem();
                // room navigation
                 $menu->addChild('room_navigation', array(
                     'label' => 'Raum-Navigation',
@@ -104,7 +95,7 @@ class MenuBuilder
                     'extras' => array(
                         'icon' => 'uk-icon-list uk-icon-small',
                         'showList' => true,
-                        'user' => $current_user,
+                        'user' => $currentUser,
                         'roomId' => $roomId
                         )
                 ));

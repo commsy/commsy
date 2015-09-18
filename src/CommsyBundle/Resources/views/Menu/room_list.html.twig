@@ -1,22 +1,33 @@
 {% if not roomList is empty %}
 <div class="uk-grid">
-    <div class="uk-width-1-2">
-        <div class="cs-room-block">
-            <i class="uk-icon-dashboard uk-icon-medium cs-menue-padding"></i>{{ 'dashboard'|trans({}, "rubric")}}
-        </div>
+    <div class="uk-width">
+        <a href="{{ path('commsy_dashboard_index', {'roomId': 'ToDo:XXX'}) }}">
+            <div class="cs-room-block cs-room-dashboard">
+                <i class="uk-icon-dashboard uk-icon-medium cs-menue-padding"></i>{{ 'dashboard'|trans({}, "rubric")}}
+                <p class="uk-text-small uk-text-muted uk-text-truncate">{{ 'dashboard description text'|trans({}, "rubric")}}</p>
+            </div>
+        </a>
     </div>
-    <div class="uk-width-1-2">
-        <div class="cs-room-block">
-            <input type="search"/><button>{{ 'find rooms'|trans({}, "rubric")}}</button>
-        </div>
+
+    <div class="uk-width">
+        <div class="cs-room-block cs-room-search">
+            {{ 'own rooms'|trans({}, "rubric")}}
+            <form class="uk-search" data-uk-search="">
+                <input class="uk-search-field cs-roomsearch-field" type="search" placeholder="{{ 'room search text'|trans({}, "rubric")}}">
+                <div class="uk-dropdown uk-dropdown-search">
+                    <ul class="uk-nav uk-nav-search">...</ul>
+                </div>
+            </form>
+         </div>
     </div>
+
     {% for room in roomList %}       
         <div class="uk-width-1-2">
             <a href="{{ path('commsy_room_home', {'roomId': room.ItemID}) }}">
                 <div class="cs-room-block">
                     {{room.getTitle}}<br/>
-                    <span class="uk-text-small uk-text-muted uk-text-truncate">{{room.getContactModeratorListString}}</span><br/>
-                    <span class="uk-text-small uk-text-muted uk-text-truncate"> {{ 'new Entries'|trans({}, "rubric")}}:{{room.getNewEntries}} ({{room.getTimeSpread}} {{ 'days'|trans({}, "rubric")}})</span>
+                    <p class="uk-text-small uk-text-muted uk-text-truncate">{{room.getContactModeratorListString}}<br/>
+                    {{ 'new Entries'|trans({}, "rubric")}}:{{room.getNewEntries}} ({{room.getTimeSpread}} {{ 'days'|trans({}, "rubric")}})</p>
                 </div>
             </a>
         </div>
