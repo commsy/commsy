@@ -114,5 +114,6 @@ web/commsy
 
 web/js/compiled/*
 web/css/compiled/*
+web/css/themes/*
 
 src/CommsyBundle/Resources/public/components

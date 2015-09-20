@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {% stylesheets
+        '../app/Resources/themes/football/custom.css'
+        filter='cssrewrite' output='css/themes/football/custom.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

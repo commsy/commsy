@@ -102,8 +102,12 @@ doctrine_migrations:
 
 # LiipThemeBundle
 liip_theme:
-    themes: ['default', 'theme_a', 'theme_b']
+    themes:
+        - default
+        - football
+        - stars
     active_theme: 'default'
+    assetic_integration: true
 
 # SpBowerBundle
 sp_bower:

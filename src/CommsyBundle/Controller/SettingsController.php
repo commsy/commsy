@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 use CommsyBundle\Entity\Room;
 use CommsyBundle\Form\Type\GeneralSettingsType;
+use CommsyBundle\Form\Type\AppearanceSettingsType;
 
 class SettingsController extends Controller
 {
@@ -57,6 +58,52 @@ class SettingsController extends Controller
             $roomItem = $transformer->applyTransformation($roomItem, $form->getData());
 
             $roomItem->save();
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+    /**
+     * @Route("/room/{roomId}/settings/appearance")
+     * @Template
+     * @Security("is_granted('MODERATOR')")
+     */
+    public function appearanceAction($roomId, Request $request)
+    {
+        // get room from RoomService
+        $roomService = $this->get('commsy.room_service');
+        $roomItem = $roomService->getRoomItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('No room found for id ' . $roomId);
+        }
+
+        $transformer = $this->get('commsy_legacy.transformer.room');
+        $roomData = $transformer->transform($roomItem);
+
+        // get the configured LiipThemeBundle themes
+        $themeArray = $this->container->getParameter('liip_theme.themes');
+
+        $form = $this->createForm('appearance_settings', $roomData, array(
+            'roomId' => $roomId,
+            'themes' => $themeArray,
+            // 'uploadUrl' => $this->generateUrl('commsy_upload_upload', array(
+            //     'roomId' => $roomId,
+            // )),
+        ));
+        
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            //$roomItem = $transformer->applyTransformation($roomItem, $form->getData());
+
+            //$roomItem->save();
 
             // persist
             // $em = $this->getDoctrine()->getManager();

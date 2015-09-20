@@ -121,7 +121,7 @@ class MenuBuilder
                 'label' => 'Dashboard',
                 'route' => 'commsy_settings_dashboard',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small')
+                'extras' => array('icon' => 'uk-icon-dashboard uk-icon-small'),
             ));
 
             // general settings
@@ -129,7 +129,15 @@ class MenuBuilder
                 'label' => 'General',
                 'route' => 'commsy_settings_general',
                 'routeParameters' => array('roomId' => $roomId),
-                'extras' => array('icon' => 'uk-icon-server uk-icon-small')
+                'extras' => array('icon' => 'uk-icon-server uk-icon-small'),
+            ));
+
+            // appearance
+            $menu->addChild('appearance', array(
+                'label' => 'appearance',
+                'route' => 'commsy_settings_appearance',
+                'routeParameters' => array('roomId' => $roomId),
+                'extras' => array('icon' => 'uk-icon-eyedropper uk-icon-small'),
             ));
         }
         

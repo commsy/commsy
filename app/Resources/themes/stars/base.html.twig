@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {% stylesheets
+        '../app/Resources/themes/stars/custom.css'
+        filter='cssrewrite' output='css/themes/stars/custom.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

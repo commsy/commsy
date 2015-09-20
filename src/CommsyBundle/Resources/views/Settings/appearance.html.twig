@@ -1,0 +1,38 @@
+{% extends 'CommsyBundle:Settings:settings.html.twig' %}
+
+{% block content %}
+    <div class="uk-grid">
+
+        <div class="uk-width-medium-3-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'Appearance Configuration'|trans({}, 'settings') }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    {{ form_end(form) }}
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="uk-width-medium-1-4">
+            <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                <div class="uk-panel-teaser panel-teaser-primary">
+                    <div class="uk-flex uk-flex-middle uk-flex-space-between">
+                        <div>{{ 'Information'|trans({}, 'settings') }}</div>
+                    </div>
+                </div>
+
+                <div>
+                    Some usefull text...
+                </div>
+            </div>
+
+        </div>
+    </div>
+{% endblock content %}
