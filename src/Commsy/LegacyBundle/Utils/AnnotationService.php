@@ -29,4 +29,25 @@ class AnnotationService
 
         return array_reverse($annotationList->to_array());
     }
+
+    public function addAnnotation($roomId, $itemId, $description)
+    {
+        $user = $this->legacyEnvironment->getCurrentUser();
+        // create new annotation
+        $annotation_manager = $this->legacyEnvironment->getAnnotationManager();
+        $annotation_item = $annotation_manager->getNewItem();
+        $annotation_item->setContextID($roomId);
+        $annotation_item->setCreatorItem($user);
+        $annotation_item->setCreationDate(getCurrentDateTimeInMySQL());
+
+        // set modificator and modification date
+        $annotation_item->setModificatorItem($user);
+        $annotation_item->setModificationDate(getCurrentDateTimeInMySQL());
+
+        $annotation_item->setDescription($description);
+
+        $annotation_item->setLinkedItemID($itemId);
+
+        $annotation_item->save();
+    }
 }

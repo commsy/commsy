@@ -207,7 +207,9 @@
                                 {{  macros.userIconLink(user) }}
                             </div>
                             <div class="uk-width-8-10">
-                                  <textarea style="width:100%; height:100px;">HIER MUSS EIN FORMULAR FÜR DIE NEUE ANMERKUNG HIN.</textarea>
+                                {{ form_start(annotationForm, {'action': path('commsy_item_saveannotation', {'roomId': material.contextId, 'itemId': material.itemId}), 'method': 'POST'}) }}
+                                {{ form_widget(annotationForm) }}
+                                {{ form_end(annotationForm) }}
                             </div>                            
                         </header>
                     </article>

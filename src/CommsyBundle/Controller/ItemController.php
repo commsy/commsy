@@ -371,4 +371,33 @@ class ItemController extends Controller
         }
         return $result;
     }
+
+    /**
+     * @Route("/room/{roomId}/item/{itemId}/saveannotation")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveAnnotationAction($roomId, $itemId, Request $request)
+    {
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getItem($itemId);
+
+        $annotationService = $this->get('commsy_legacy.annotation_service');
+
+        $itemType = $item->getItemType();
+
+
+        $form = $this->createForm('annotation');
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $data = $form->getData();
+
+                // create new annotation
+                $annotationService->addAnnotation($roomId, $itemId, $data['description']);
+            }
+        }
+        return $this->redirectToRoute('commsy_'.$itemType.'_detail', array('roomId' => $roomId, 'itemId' => $itemId));
+    }
+
 }

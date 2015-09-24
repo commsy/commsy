@@ -135,6 +135,9 @@ class MaterialController extends Controller
     public function detailAction($roomId, $itemId, Request $request)
     {
         $infoArray = $this->getDetailInfo($roomId, $itemId);
+
+        // annotation form
+        $form = $this->createForm('annotation');
         
         return array(
             'roomId' => $roomId,
@@ -163,6 +166,7 @@ class MaterialController extends Controller
             'showHashtags' => $infoArray['showHashtags'],
             'showCategories' => $infoArray['showCategories'],
             'user' => $infoArray['user'],
+            'annotationForm' => $form->createView(),
        );
     }
 
