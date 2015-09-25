@@ -20,7 +20,7 @@
             <div class="uk-width">
 
                 
-                <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
+                <div id="description{{ annotation.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editannotation', {'roomId': annotation.contextId, 'itemId': annotation.itemId}) }}' }">
                     {{ macros.editAnnotationContent('description', annotation, true, annotation.description, annotation.description, false, false, 0) }}
             </div>
         </header>

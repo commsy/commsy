@@ -373,6 +373,47 @@ class ItemController extends Controller
     }
 
     /**
+     * @Route("/room/{roomId}/item/{itemId}/editannotation")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editAnnotationAction($roomId, $itemId, Request $request)
+    {
+
+        $itemService = $this->get('commsy.item_service');
+        $item = $itemService->getTypedItem($itemId);
+
+        $transformer = $this->get('commsy_legacy.transformer.annotation');
+
+        $formData = array();
+        $formData = $transformer->transform($item);
+
+        $form = $this->createForm('annotation', $formData);
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                $tempItem = $transformer->applyTransformation($tempItem, $form->getData());
+                $tempItem->save();
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            
+            return $this->redirectToRoute('commsy_item_saveannotation', array('roomId' => $roomId, 'itemId' => $itemId));
+
+            // persist
+            // $em = $this->getDoctrine()->getManager();
+            // $em->persist($room);
+            // $em->flush();
+        }
+
+        return array(
+            'itemId' => $itemId,
+            'form' => $form->createView()
+        );
+
+    }
+
+    /**
      * @Route("/room/{roomId}/item/{itemId}/saveannotation")
      * @Template()
      * @Security("is_granted('ITEM_EDIT', itemId)")

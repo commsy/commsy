@@ -118,3 +118,7 @@ services:
     commsy_legacy.transformer.item:
         class: Commsy\LegacyBundle\Form\DataTransformer\ItemTransformer
         arguments: [@commsy_legacy.environment]
+
+    commsy_legacy.transformer.annotation:
+        class: Commsy\LegacyBundle\Form\DataTransformer\AnnotationTransformer
+        arguments: [@commsy_legacy.environment]
