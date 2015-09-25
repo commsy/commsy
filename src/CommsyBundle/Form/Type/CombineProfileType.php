@@ -39,7 +39,10 @@ class CombineProfileType extends AbstractType
                 'translation_domain' => 'profile',
                 'required' => false,
             ))
-            ->add('save', 'submit');   
+            ->add('save', 'submit', array(
+                'label' => 'save',
+                'translation_domain' => 'form'
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

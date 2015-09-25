@@ -38,6 +38,10 @@
                 <source>edit description</source>
                 <target>edit description</target>
             </trans-unit>
+            <trans-unit id="form-title">
+                <source>title</source>
+                <target>title</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

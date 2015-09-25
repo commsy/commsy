@@ -27,9 +27,9 @@ class MaterialType extends AbstractType
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'label' => 'Title',
+                'label' => 'title',
                 'attr' => array(
-                    'placeholder' => 'Material title',
+                    'placeholder' => 'title',
                     'class' => 'uk-form-width-medium',
                 ),
                 'translation_domain' => 'material',
@@ -54,14 +54,14 @@ class MaterialType extends AbstractType
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Save',
+                'label' => 'save',
                 'translation_domain' => 'form',
             ))
             ->add('cancel', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Cancel',
+                'label' => 'cancel',
                 'translation_domain' => 'form',
             ))
         ;
