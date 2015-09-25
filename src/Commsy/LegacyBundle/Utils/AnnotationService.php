@@ -49,5 +49,39 @@ class AnnotationService
         $annotation_item->setLinkedItemID($itemId);
 
         $annotation_item->save();
+
+    }
+
+    public function markAnnotationsReadedAndNoticed($annotation_list) {
+        $reader_manager = $this->legacyEnvironment->getReaderManager();
+        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
+
+        // collect an array of all ids and precach
+        $id_array = array();
+        $annotation = $annotation_list->getFirst();
+        while($annotation) {
+            $id_array[] = $annotation->getItemID();
+
+            $annotation = $annotation_list->getNext();
+        }
+
+        $reader_manager->getLatestReaderByIDArray($id_array);
+        $noticed_manager->getLatestNoticedByIDArray($id_array);
+
+        // mark if needed
+        $annotation = $annotation_list->getFirst();
+        while($annotation) {
+            $reader = $reader_manager->getLatestReader($annotation->getItemID());
+            if(empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
+                $reader_manager->markRead($annotation->getItemID(), 0);
+            }
+
+            $noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());
+            if(empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
+                $noticed_manager->markNoticed($annotation->getItemID(), 0);
+            }
+
+            $annotation = $annotation_list->getNext();
+        }
     }
 }

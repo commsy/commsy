@@ -175,6 +175,8 @@ class MaterialController extends Controller
         
         $materialService = $this->get('commsy_legacy.material_service');
         $itemService = $this->get('commsy.item_service');
+
+        $annotationService = $this->get('commsy_legacy.annotation_service');
         
         $material = $materialService->getMaterial($itemId);
         
@@ -368,6 +370,10 @@ class MaterialController extends Controller
                     break;
             }
         }
+
+        // mark annotations as readed
+        $annotationList = $material->getAnnotationList();
+        $annotationService->markAnnotationsReadedAndNoticed($annotationList);
         
         $infoArray['material'] = $material;
         $infoArray['sectionList'] = $sectionList;
