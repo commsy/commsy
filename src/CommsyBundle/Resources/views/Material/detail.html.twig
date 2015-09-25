@@ -207,7 +207,7 @@
                                 {{  macros.userIconLink(user) }}
                             </div>
                             <div class="uk-width-8-10">
-                                {{ form_start(annotationForm, {'action': path('commsy_item_saveannotation', {'roomId': material.contextId, 'itemId': material.itemId}), 'method': 'POST'}) }}
+                                {{ form_start(annotationForm, {'action': path('commsy_annotation_create', {'roomId': material.contextId, 'itemId': material.itemId}), 'method': 'POST'}) }}
                                 {{ form_widget(annotationForm) }}
                                 {{ form_end(annotationForm) }}
                             </div>                            
