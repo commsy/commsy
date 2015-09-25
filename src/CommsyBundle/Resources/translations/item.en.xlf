@@ -58,6 +58,10 @@
                 <source>additional actions</source>
                 <target>Additional Actions</target>
             </trans-unit>
+            <trans-unit id="annotation">
+                <source>annotation</source>
+                <target>Annotation</target>
+            </trans-unit>
          </body>
     </file>
 </xliff>

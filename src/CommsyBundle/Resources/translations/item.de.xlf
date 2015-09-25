@@ -57,7 +57,11 @@
             <trans-unit id="additionalActions">
                 <source>additional actions</source>
                 <target>Weitere Aktionen</target>
-            </trans-unit>            
+            </trans-unit>   
+            <trans-unit id="annotation">
+                <source>annotation</source>
+                <target>Anmerkung</target>
+            </trans-unit>         
         </body>
     </file>
 </xliff>

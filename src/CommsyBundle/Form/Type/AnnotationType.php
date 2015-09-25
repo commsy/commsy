@@ -27,16 +27,16 @@ class AnnotationType extends AbstractType
                 ),
                 'label' => ' ',
                 'attr' => array(
-                    'placeholder' => 'Description',
+                    'placeholder' => 'annotation',
                     'class' => 'uk-form-width-large',
                 ),
-                'translation_domain' => 'material',
+                'translation_domain' => 'item',
             ))
             ->add('save', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
                 ),
-                'label' => 'Save',
+                'label' => 'save',
                 'translation_domain' => 'form',
             ))
         ;
