@@ -1,16 +1,4 @@
-@import "../components/uikit/less/uikit.less";
-@import "../components/uikit/less/components/autocomplete.less";
-@import "../components/uikit/less/components/search.less";
-@import "../components/uikit/less/components/progress.less";
-@import "../components/uikit/less/components/nestable.less";
-@import "../components/uikit/less/components/tooltip.less";
-@import "../components/uikit/less/components/accordion.less";
-@import "../components/uikit/less/components/placeholder.less";
-@import "../components/uikit/less/components/form-file.less";
-@import "../components/uikit/less/components/upload.less";
-@import "../components/uikit/less/components/sticky.less";
-@import "../components/uikit/less/components/slider.less";
-@import "../components/uikit/less/components/slidenav.less";
+@import "uikit-imports.less";
 
 @import "cs-theme/uikit.less";
 @import "cs-theme/custom.less";
@@ -48,7 +36,7 @@
     }
     
 #commsy_navigation #portal_logo {
-    background: #FF404B url(images/commsy_logo_short.png) 10px 5px no-repeat;
+    background: #FF404B url(../../img/commsy_logo_short.png) 10px 5px no-repeat;
     height: 50px;
     transition: ease-in-out 0.3s;
     }
@@ -60,7 +48,7 @@
     }
     
 #commsy_navigation:hover #portal_logo {
-    background: #FF404B url(images/commsy_logo_120.png) 30px 5px no-repeat;
+    background: #FF404B url(../../img/commsy_logo_120.png) 30px 5px no-repeat;
     transition: ease-in-out 0.3s;
     }
 
@@ -150,7 +138,7 @@ ul#switch_room li.sub_menue {
 
 ul#switch_room li.sub_menue:hover {
     color: #FF404B;
-    background: url(door_icon.png) 24px 10px no-repeat #232631;
+    background: url(../../img/door_icon.png) 24px 10px no-repeat #232631;
     -webkit-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
     -moz-box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);
     box-shadow: inset -10px 0px 5px 0px rgba(0,0,0,0.3);    
