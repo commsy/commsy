@@ -112,8 +112,11 @@ web/css/external_portal_styles/[0-9]*
 wikis/*
 web/commsy
 
-web/js/compiled/*
-web/css/compiled/*
-web/css/themes/*
+web/js/build/*
+web/css/build/*
+web/fonts
+web/img
+app/Resources/assets/manifests/rev-manifest.json
 
+node_modules
 src/CommsyBundle/Resources/public/components
