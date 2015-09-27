@@ -84,7 +84,10 @@ liip_theme:
         - default
         - football
         - stars
-    active_theme: 'default'
+        - sun
+        - ocean
+        - schulcommsyhh
+    active_theme: 'ocean'
     assetic_integration: false
 
 # KnpMenuBundle
