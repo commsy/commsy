@@ -8,11 +8,7 @@
         <title>{% block title %}CommSy{% endblock %}</title>
 
         {% block stylesheets %}
-            {% stylesheets
-                'bundles/commsy/components/jstree/dist/themes/default/style.css'
-                'bundles/commsy/css/application.less' filter='cssrewrite' output='css/compiled/main.css' %}
-                <link rel="stylesheet" href="{{ asset_url }}" />
-            {% endstylesheets %}
+            <link rel="stylesheet" href="{{ asset('css/build/commsy.css'|asset_version) }}" />
         {% endblock %}
 
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
@@ -99,24 +95,7 @@
         </div>
         
         {% block javascripts %}
-            {% javascripts
-                'bundles/commsy/components/jquery/dist/jquery.js'
-                'bundles/commsy/components/jstree/dist/jstree.js'
-                'bundles/commsy/components/uikit/js/uikit.js'
-                'bundles/commsy/components/uikit/js/components/autocomplete.js'
-                'bundles/commsy/components/uikit/js/components/search.js'
-                'bundles/commsy/components/uikit/js/components/nestable.js'
-                'bundles/commsy/components/uikit/js/components/tooltip.js'
-                'bundles/commsy/components/uikit/js/components/grid.js'
-                'bundles/commsy/components/uikit/js/components/accordion.js'
-                'bundles/commsy/components/uikit/js/components/upload.js'
-                'bundles/commsy/components/uikit/js/components/sticky.js'
-                'bundles/commsy/components/uikit/js/components/slider.js'
-                'bundles/commsy/components/uikit/js/components/lightbox.js'
-                'bundles/commsy/js/application.js'
-                'bundles/commsy/js/*.js' output='js/compiled/main.js' %}
-                <script src="{{ asset_url }}"></script>
-            {% endjavascripts %}
+            <script src="{{ asset('js/build/commsy.js'|asset_version) }}"></script>
         {% endblock %}
     </body>
 </html>
