@@ -9,11 +9,6 @@
      
     {%if widthHomeInformation %}
         <div id="cover" class="uk-cover-background cs-cover-background" aria-hidden="false">
-           {% if imgSrc is empty%}
-                <img class="uk-invisible" src="" width="" height="" alt="">
-            {% else %}
-                <img class="" src="{{imgSrc}}" width="" height="" alt="">        
-            {% endif %}
             {% if not homeInformation is empty%}
                 <div id="cover-text">
                 {{homeInformation | raw}}
