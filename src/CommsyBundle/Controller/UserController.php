@@ -147,7 +147,7 @@ class UserController extends Controller
         }
         if (!$foundUserImage) {
             $kernel = $this->get('kernel');
-            $path = $kernel->locateResource('@CommsyBundle/Resources/public/images/user_unknown.gif');          
+            $path = $kernel->getRootDir() . '/Resources/assets/img/user_unknown.gif';     
             $content = file_get_contents($path);
         }
         $response = new Response($content, Response::HTTP_OK, array('content-type' => 'image'));
