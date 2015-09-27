@@ -109,14 +109,6 @@ liip_theme:
     active_theme: 'default'
     assetic_integration: true
 
-# SpBowerBundle
-sp_bower:
-    install_on_warmup: true
-    assetic:
-        enabled: false
-    bundles:
-        CommsyBundle: ~
-
 # KnpMenuBundle
 knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer
@@ -127,6 +119,6 @@ knp_menu:
     templating: false
     # the renderer to use, list is also available by default
     default_renderer: twig
-    
+
 #craue Bundle
 craue_twig_extensions: ~
