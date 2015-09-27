@@ -1,3 +1,9 @@
+@import "base.less";
+@import "cover.less";
+@import "detail.less";
+@import "selectable.less";
+@import "navigation.less";
+
 div.cs-edit-spinner {
     > div {
         background-color: rgba(150, 150, 150, 0.75);
@@ -98,64 +104,56 @@ div.cs-toggle-empty {
     margin-bottom: 2px !important;
 }
 
-.cs-detail-divider{
-    position:relative;
-    top:28px;
-    color: #6593B3;
-    border-color: #6593B3;       
-}
-
 .cs-list-divider{
     position:relative;
     top:27px;
-    color: #6593B3;
-    border-color: #6593B3;       
+    color: @cs-brand-color;
+    border-color: @cs-brand-color;    
 }
 
-.cs-detail-section-header-background{
+.cs-detail-section-header-background {
     background-color: #FFFFFF;
     padding: 5px;
     position:relative;
 }
 
-.cs-detail-section-header{
+.cs-detail-section-header {
     color: #6593B3;
     margin-bottom:25px;
     margin-left: -5px;
 }
 
-.cs-list-section-header{
-    color: #6593B3;
+.cs-list-section-header {
+    color: @cs-brand-color;
     margin-bottom:10px;
     margin-top:0px;
     margin-left: -5px;
 }
 
-.cs-remove-padding{
+.cs-remove-padding {
     padding:0px !important;
 }
 
-.cs-remove-border{
+.cs-remove-border {
     border:0px !important;
 }
 
-.cs-padding-10{
+.cs-padding-10 {
     padding:10px;
 }
 
-.cs-padding-5{
+.cs-padding-5 {
     padding:5px;
 }
 
-@media (max-width: 959px){
-    .cs-addon-navigation{
+@media (max-width: 959px) {
+    .cs-addon-navigation {
         display:none;
     }
 }
 
-@media (max-width: 959px){
-    .cs-addon-navigation-large{
+@media (max-width: 959px) {
+    .cs-addon-navigation-large {
         display:none;
     }
 }
-

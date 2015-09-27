@@ -22,11 +22,8 @@
 
 @breadcrumb-font-size:                          1rem;
 
-.uk-breadcrumb {
-    background-color: #6593B3;
-    padding: 10px;
-    margin: 0;
-}
+/* Items
+ ========================================================================== */
 
 .uk-breadcrumb > li,
 .uk-breadcrumb > li > a,
@@ -36,4 +33,13 @@
 
 .uk-breadcrumb > li:not(.uk-active) > span {
     color: #ccc;
+}
+
+// Hooks
+// ========================================================================
+
+.hook-breadcrumb() {
+    background-color: @cs-brand-color;
+    padding: 10px;
+    margin: 0;
 }
