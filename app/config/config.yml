@@ -87,7 +87,12 @@ liip_theme:
         - sun
         - ocean
         - schulcommsyhh
-    active_theme: 'ocean'
+        - confetti
+        - grey
+        - darkblue
+        - red
+        - redgrey   
+    active_theme: 'football'
     assetic_integration: false
 
 # KnpMenuBundle
