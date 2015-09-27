@@ -11,8 +11,9 @@ $drush          = hiera_hash('drush', {})
 $elasticsearch  = hiera_hash('elastic_search', {})
 $firewall       = hiera_hash('firewall', {})
 $hhvm           = hiera_hash('hhvm', {})
-$locales        = hiera_hash('locales', {})
+$locales        = hiera_hash('locale', {})
 $mailcatcher    = hiera_hash('mailcatcher', {})
+$mariadb        = hiera_hash('mariadb', {})
 $mongodb        = hiera_hash('mongodb', {})
 $mysql          = hiera_hash('mysql', {})
 $nginx          = $yaml['nginx']
@@ -91,6 +92,16 @@ if array_true($mailcatcher, 'install') {
   }
 }
 
+if array_true($mariadb, 'install') and ! array_true($mysql, 'install') {
+  class { '::puphpet_mariadb':
+    mariadb => $mariadb,
+    apache  => $apache,
+    nginx   => $nginx,
+    php     => $php,
+    hhvm    => $hhvm
+  }
+}
+
 if array_true($mongodb, 'install') {
   class { '::puphpet_mongodb':
     mongodb => $mongodb,
@@ -100,7 +111,7 @@ if array_true($mongodb, 'install') {
   }
 }
 
-if array_true($mysql, 'install') {
+if array_true($mysql, 'install') and ! array_true($mariadb, 'install') {
   class { '::puphpet_mysql':
     mysql  => $mysql,
     apache => $apache,
@@ -190,7 +201,10 @@ class { '::puphpet_ruby':
 }
 
 class { '::puphpet_server':
-  server  => $server,
+  server  => $server
+}
+
+class { '::puphpet_locale':
   locales => $locales
 }
 

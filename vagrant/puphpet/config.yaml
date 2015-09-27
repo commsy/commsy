@@ -10,14 +10,14 @@ vagrantfile:
         network:
             private_network: 192.168.56.101
             forwarded_port:
-                vflnp_08lqwmg3jwvq:
+                vflnp_at923tk4gwow:
                     host: '7539'
                     guest: '22'
         post_up_message: ''
         provider:
             virtualbox:
                 modifyvm:
-                    natdnshostresolver1: on
+                    natdnshostresolver1: 'on'
                 showgui: ''
             vmware:
                 numvcpus: 1
@@ -33,7 +33,7 @@ vagrantfile:
                     - '--hiera_config /vagrant/puphpet/puppet/hiera.yaml'
                     - '--parser future'
         synced_folder:
-            vflsf_tk0ta7x4hcf8:
+            vflsf_wr9cmiojc3lt:
                 source: ../
                 target: /var/www/commsy
                 sync_type: nfs
@@ -74,6 +74,13 @@ users_groups:
     install: '1'
     groups: {  }
     users: {  }
+locale:
+    install: '1'
+    settings:
+        default_locale: ''
+        locales:
+            - en_GB.UTF-8
+            - en_US.UTF-8
 firewall:
     install: '1'
     rules: {  }
@@ -88,7 +95,7 @@ nginx:
         proxy_buffers: '4 256k'
     upstreams: {  }
     vhosts:
-        nxv_en4nz7mgwvql:
+        nxv_3i5et38vn9ki:
             server_name: commsy.vm
             server_aliases:
                 - www.commsy.vm
@@ -108,18 +115,20 @@ nginx:
             rewrite_to_https: '1'
             spdy: '1'
             locations:
-                nxvl_s0610rvaho5t:
+                nxvl_ajowj4h1goh3:
                     location: /
-                    autoindex: off
+                    autoindex: 'off'
+                    internal: 'off'
                     try_files:
                         - $uri
                         - /app.php$is_args$args
                     fastcgi: ''
                     fastcgi_index: ''
                     fastcgi_split_path: ''
-                nxvl_rgm4eebubt5x:
+                nxvl_5msbhmv5j4wc:
                     location: '~ \.php(/|$)'
-                    autoindex: off
+                    autoindex: 'off'
+                    internal: 'off'
                     fastcgi: '127.0.0.1:9000'
                     fastcgi_index: ''
                     fastcgi_split_path: '^(.+\.php)(/.*)$'
@@ -140,7 +149,7 @@ apache:
         - proxy_fcgi
         - rewrite
     vhosts:
-        av_006vl281knbq:
+        av_kuz1i6jbjx8f:
             servername: awesome.dev
             serveraliases:
                 - www.awesome.dev
@@ -157,7 +166,7 @@ apache:
             ssl_protocol: ''
             ssl_cipher: ''
             directories:
-                avd_qtnz7zldq86l:
+                avd_rmkhdve8hc9o:
                     path: /var/www/awesome
                     options:
                         - Indexes
@@ -169,7 +178,7 @@ apache:
                         - 'all granted'
                     custom_fragment: ''
                     files_match:
-                        avdfm_q5lqqytskd5q:
+                        avdfm_z2qetdzotvfr:
                             path: \.php$
                             sethandler: 'proxy:fcgi://127.0.0.1:9000'
                             custom_fragment: ''
@@ -190,14 +199,14 @@ php:
         pecl:
             - pecl_http
     ini:
-        display_errors: On
+        display_errors: 'On'
         error_reporting: '-1'
         session.save_path: /var/lib/php/session
         date.timezone: Europe/Berlin
     fpm_ini:
         error_log: /var/log/php-fpm.log
     fpm_pools:
-        phpfp_sjqxrllfay5i:
+        phpfp_9kihcxjna92x:
             ini:
                 prefix: www
                 listen: '127.0.0.1:9000'
@@ -249,6 +258,7 @@ nodejs:
     npm_packages:
         - bower
         - less
+        - gulp
 hhvm:
     install: '0'
     nightly: 0
@@ -261,7 +271,7 @@ hhvm:
         hhvm.log.use_log_file: '1'
         hhvm.log.file: /var/log/hhvm/error.log
     php_ini:
-        display_errors: On
+        display_errors: 'On'
         error_reporting: '-1'
         date.timezone: UTC
 mysql:
@@ -272,17 +282,38 @@ mysql:
         override_options: {  }
     adminer: '1'
     users:
-        mysqlnu_d8l1b52hpaj6:
+        mysqlnu_nlb3sqlu27pn:
             name: commsy
             password: commsy
     databases:
-        mysqlnd_0v8u3hgtm0q4:
+        mysqlnd_ww5r6njqrpf4:
             name: commsy
             sql: ''
     grants:
-        mysqlng_jhz7x8u8xv4g:
+        mysqlng_ylu24bnas2my:
             user: commsy
             table: 'commsy.*'
+            privileges:
+                - ALL
+mariadb:
+    install: '0'
+    settings:
+        version: '10.0'
+        root_password: '123'
+        override_options: {  }
+    adminer: 0
+    users:
+        mariadbnu_nabobarg86em:
+            name: dbuser
+            password: '123'
+    databases:
+        mariadbnd_dy7tv57boobz:
+            name: dbname
+            sql: ''
+    grants:
+        mariadbng_i6sax8ywqtdw:
+            user: dbuser
+            table: '*.*'
             privileges:
                 - ALL
 postgresql:

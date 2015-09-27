@@ -1,3 +1,5 @@
+# -*- mode: ruby -*-
+
 vagrant_home = (ENV['VAGRANT_HOME'].to_s.split.join.length > 0) ? ENV['VAGRANT_HOME'] : "#{ENV['HOME']}/.vagrant.d"
 vagrant_dot  = (ENV['VAGRANT_DOTFILE_PATH'].to_s.split.join.length > 0) ? ENV['VAGRANT_DOTFILE_PATH'] : "#{dir}/.vagrant"
 
@@ -12,9 +14,12 @@ Vagrant.configure('2') do |config|
   if data['vm']['network']['private_network'].to_s != ''
     config.vm.network 'private_network', ip: "#{data['vm']['network']['private_network']}"
   end
-
+  
   if data['vm']['network']['public_network'].to_s != ''
-    config.vm.network 'public_network', ip: "#{data['vm']['network']['public_network']}"
+    config.vm.network 'public_network'
+    if data['vm']['network']['public_network'].to_s != '1'
+      config.vm.network 'public_network', ip: "#{data['vm']['network']['public_network']}"
+    end
   end
 
   data['vm']['network']['forwarded_port'].each do |i, port|
@@ -49,7 +54,7 @@ Vagrant.configure('2') do |config|
         hosts.push(vhost['server_name'])
 
         if vhost['server_aliases'].is_a?(Array)
-          vhost['server_aliases'].each do |x, vhost_alias|
+          vhost['server_aliases'].each do |vhost_alias|
             hosts.push(vhost_alias)
           end
         end
@@ -136,7 +141,7 @@ Vagrant.configure('2') do |config|
 
       virtualbox.customize ['modifyvm', :id, '--memory', "#{data['vm']['memory']}"]
       virtualbox.customize ['modifyvm', :id, '--cpus', "#{data['vm']['cpus']}"]
-
+      
       if !data['vm']['provider']['virtualbox']['showgui'].nil? &&
         data['vm']['provider']['virtualbox']['showgui'].to_i == 1
         virtualbox.gui = true
@@ -265,6 +270,10 @@ Vagrant.configure('2') do |config|
   vagrantKey = "#{vagrant_dot}/machines/default/#{ENV['VAGRANT_DEFAULT_PROVIDER']}/private_key"
 
   if File.file?(customKey)
+    # TODO: Improve SSH key insertion
+    # Turn off insert key to prevent failure to login to VM
+    config.ssh.insert_key = false
+
     config.ssh.private_key_path = [
       customKey,
       "#{vagrant_home}/insecure_private_key"

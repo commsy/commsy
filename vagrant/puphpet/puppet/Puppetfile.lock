@@ -55,6 +55,13 @@ GIT
       stahnma-epel (>= 0)
 
 GIT
+  remote: https://github.com/keen99/puppet-beanstalkd.git
+  ref: 1.0.0
+  sha: 4f4dce03856fc175338e2942c216547c8542fb25
+  specs:
+    keen99-beanstalkd (0.0.1)
+
+GIT
   remote: https://github.com/petems/puppet-swap_file.git
   ref: 39582afda5
   sha: 39582afda5fc98982977cf595883d90d63886d80
@@ -63,11 +70,14 @@ GIT
       puppetlabs-stdlib (>= 3.2.0)
 
 GIT
-  remote: https://github.com/puphpet/puppet-beanstalkd.git
-  ref: 5a530ff
-  sha: 5a530ffec1f3fd79a1c0bdc8ba2201c33d86f4ab
+  remote: https://github.com/puphpet/puppet-blackfire.git
+  ref: cb938a5
+  sha: cb938a59e400590ee077dfb511b5bf8f96602589
   specs:
-    puphpet-beanstalkd (0.0.1)
+    s12v-blackfire (1.2.2)
+      puppetlabs-apt (>= 1.0.0)
+      puppetlabs-inifile (>= 1.0.0)
+      puppetlabs-stdlib (>= 4.0.0)
 
 GIT
   remote: https://github.com/puphpet/puppet-composer.git
@@ -114,8 +124,8 @@ GIT
 
 GIT
   remote: https://github.com/puphpet/puppet-puphpet.git
-  ref: 50c390b
-  sha: 50c390b2327b09ebf8bd11c73538e19c1dcf1a96
+  ref: 7c257c7
+  sha: 7c257c735dca3b3eff9aa47eefbec481c50b215d
   specs:
     puphpet-puphpet (1.0)
 
@@ -155,10 +165,11 @@ GIT
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-apt.git
-  ref: 1.4.2
-  sha: 7cc875aadc6460b8ca635c38078dcd824c0bc877
+  ref: 1.8.0
+  sha: 47c6f338eda98ed849531d92b63c5e33103f76e4
   specs:
-    puppetlabs-apt (1.4.1)
+    puppetlabs-apt (1.8.0)
+      puppetlabs-stdlib (>= 2.2.1)
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-concat.git
@@ -228,13 +239,13 @@ GIT
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-rabbitmq.git
-  ref: 5ce33f4968
-  sha: 5ce33f4968c05a9b447024eca0fa0d9648d4046e
+  ref: 5.2.0
+  sha: fae371537b2ab7f4769b479aa2366115ecd88056
   specs:
-    puppetlabs-rabbitmq (4.0.0)
-      nanliu-staging (>= 0.3.1)
-      puppetlabs-apt (>= 1.0.0)
-      puppetlabs-stdlib (>= 2.0.0)
+    puppetlabs-rabbitmq (5.2.0)
+      nanliu-staging (< 2.0.0, >= 0.3.1)
+      puppetlabs-apt (< 2.0.0, >= 1.8.0)
+      puppetlabs-stdlib (< 5.0.0, >= 3.0.0)
 
 GIT
   remote: https://github.com/puppetlabs/puppetlabs-stdlib.git
@@ -250,13 +261,6 @@ GIT
   specs:
     puppetlabs-vcsrepo (0.2.0)
 
-GIT
-  remote: https://github.com/thias/puppet-resolvconf.git
-  ref: 5bf752b84b
-  sha: 5bf752b84b08aa3e59ec681c26f9920b728b8d26
-  specs:
-    puppet-resolvconf (0.0.3)
-
 DEPENDENCIES
   actionjack-mailcatcher (>= 0)
   ajcrowe-supervisord (>= 0)
@@ -268,13 +272,12 @@ DEPENDENCIES
   example42-yum (>= 0)
   garethr-erlang (>= 0)
   jfryman-nginx (>= 0)
+  keen99-beanstalkd (>= 0)
   maestrodev-rvm (>= 0)
   petems-swap_file (>= 0)
-  puphpet-beanstalkd (>= 0)
   puphpet-php (>= 0)
   puphpet-puphpet (>= 0)
   puphpet-redis (>= 0)
-  puppet-resolvconf (>= 0)
   puppetlabs-apache (>= 0)
   puppetlabs-apt (>= 0)
   puppetlabs-concat (>= 0)
@@ -288,5 +291,6 @@ DEPENDENCIES
   puppetlabs-rabbitmq (>= 0)
   puppetlabs-stdlib (>= 0)
   puppetlabs-vcsrepo (>= 0)
+  s12v-blackfire (>= 0)
   tPl0ch-composer (>= 0)
 

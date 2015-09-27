@@ -1,6 +1,5 @@
 class puphpet_server (
-  $server,
-  $locales
+  $server
 ) {
 
   include ntp
@@ -93,8 +92,6 @@ class puphpet_server (
           ensure => present,
         }
       }
-
-      puphpet::server::link_dotfiles { $user_home: }
     }
     default: {
       error('PuPHPet currently only works with Debian and RHEL families')
@@ -160,25 +157,6 @@ class puphpet_server (
         ensure => present,
       }
     }
-  }
-
-  if $::osfamily == 'debian' {
-    $default_value = array_true($locales, 'default_value') ? {
-      true    => $locales['default_value'],
-      default => 'en_US.UTF-8'
-    }
-
-    $available = array_true($locales, 'available') ? {
-      true    => $locales['default_value'],
-      default => ['en_US.UTF-8 UTF-8', 'en_GB.UTF-8 UTF-8']
-    }
-
-    $locales_settings = merge($locales, {
-      'default_value' => $default_value,
-      'available'     => $available,
-    })
-
-    create_resources('class', { 'locales' => $locales_settings })
   }
 
 }

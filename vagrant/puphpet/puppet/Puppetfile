@@ -5,7 +5,7 @@ mod 'puppetlabs/apache',
     :ref => '7dde9fc31e'
 mod 'puppetlabs/apt',
     :git => 'https://github.com/puppetlabs/puppetlabs-apt.git',
-    :ref => '1.4.2'
+    :ref => '1.8.0'
 mod 'keen99/beanstalkd',
     :git => 'https://github.com/keen99/puppet-beanstalkd.git',
     :ref => '1.0.0'
@@ -34,8 +34,8 @@ mod 'puppetlabs/java',
     :git => 'https://github.com/puppetlabs/puppetlabs-java.git',
     :ref => '1.3.0'
 mod 'attachmentgenie/locales',
-    :git => 'https://github.com/attachmentgenie/attachmentgenie-locales.git',
-    :ref => '1.1.1'
+    :git => 'https://github.com/saz/puppet-locales.git',
+    :ref => 'v2.2.2'
 mod 'actionjack/mailcatcher',
     :git => 'https://github.com/puphpet/puppet-mailcatcher.git',
     :ref => 'dcc8c3d357'
@@ -59,7 +59,7 @@ mod 'puppetlabs/postgresql',
     :ref => '4.2.0'
 mod 'puphpet/puphpet',
     :git => 'https://github.com/puphpet/puppet-puphpet.git',
-    :ref => '7c257c7'
+    :ref => 'df72e89'
 mod 'example42/puppi',
     :git => 'https://github.com/example42/puppi.git',
     :ref => 'v2.1.9'
