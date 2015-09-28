@@ -342,7 +342,10 @@ class RoomProfileType extends AbstractType
                 'required' => false,
             ))
             
-            ->add('save', 'submit');   
+            ->add('save', 'submit', array(
+                'label' => 'save',
+                'translation_domain' => 'form',
+            ));
     }
 
     public function configureOptions(OptionsResolver $resolver)

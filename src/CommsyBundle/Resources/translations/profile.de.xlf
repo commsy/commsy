@@ -2,6 +2,10 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
     <file source-language="en" datatype="plaintext" original="file.ext">
         <body>
+            <trans-unit id="profile">
+                <source>profile</source>
+                <target>Profil</target>
+            </trans-unit>
             <trans-unit id="firstname">
                 <source>firstname</source>
                 <target>Vorname</target>
@@ -33,6 +37,10 @@
             <trans-unit id="autoSaveStatus">
                 <source>autoSaveStatus</source>
                 <target>Automatisches Speichern</target>
+            </trans-unit>
+            <trans-unit id="combineAccount">
+                <source>combineAccount</source>
+                <target>Kennungen verbinden</target>
             </trans-unit>
             <trans-unit id="combineUserId">
                 <source>combineUserId</source>
@@ -124,7 +132,7 @@
             </trans-unit>
             <trans-unit id="newsletterStatus">
                 <source>newsletterStatus</source>
-                <target>newsletter</target>
+                <target>Newsletter</target>
             </trans-unit>
             <trans-unit id="widgetStatus">
                 <source>widgetStatus</source>
@@ -165,6 +173,18 @@
             <trans-unit id="descriptionChangeInAllContexts">
                 <source>descriptionChangeInAllContexts</source>
                 <target>Beschreibung in allen Räumen ändern</target>
+            </trans-unit>
+            <trans-unit id="commsyBar">
+                <source>commsyBar</source>
+                <target>Commsy Bar</target>
+            </trans-unit>
+            <trans-unit id="contactData">
+                <source>contactData</source>
+                <target>Kontaktdaten</target>
+            </trans-unit>
+            <trans-unit id="personalData">
+                <source>personalData</source>
+                <target>Persönliche Daten</target>
             </trans-unit>
         </body>
     </file>
