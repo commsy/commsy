@@ -50,6 +50,10 @@
                 <source>topic</source>
                 <target>Topic</target>
             </trans-unit>
+            <trans-unit id="form-setting-theme">
+                <source>theme</source>
+                <target>Theme</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

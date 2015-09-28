@@ -26,15 +26,18 @@ class AppearanceSettingsType extends AbstractType
 
         $builder
             ->add('theme', 'choice', array(
+                'label' => 'theme',
                 'choices' => $themeChoices,
                 'choices_as_values' => true,
                 'constraints' => array(
                     new NotBlank(),
                 ),
-                'translation_domain' => 'settings',
+                'translation_domain' => 'form'
             ))
             ->add('save', 'submit', array(
-                'position' => 'last'
+                'position' => 'last',
+                'label' => 'save',
+                'translation_domain' => 'form'
             ));
         ;
     }
