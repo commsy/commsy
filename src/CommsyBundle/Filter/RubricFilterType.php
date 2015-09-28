@@ -34,6 +34,7 @@ class RubricFilterType extends AbstractType
                 if (in_array('group', $filterableRubrics)) {
                     $builder
                         ->add('group', 'filter_entity', array(
+                            'label' => 'group',
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
                             ),
@@ -56,6 +57,7 @@ class RubricFilterType extends AbstractType
                 if (in_array('topic', $filterableRubrics)) {
                     $builder
                         ->add('topic', 'filter_entity', array(
+                            'label' => 'topic',
                             'attr' => array(
                                 'onchange' => 'this.form.submit()',
                             ),

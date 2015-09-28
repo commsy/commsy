@@ -42,6 +42,14 @@
                 <source>title</source>
                 <target>title</target>
             </trans-unit>
+            <trans-unit id="form-filter-group">
+                <source>group</source>
+                <target>Group</target>
+            </trans-unit>
+            <trans-unit id="form-filter-topic">
+                <source>topic</source>
+                <target>Topic</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
