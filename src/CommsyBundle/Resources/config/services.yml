@@ -86,6 +86,13 @@ services:
         tags:
             - { name: security.voter }
 
+    # EventListener
+    kernel.listener.comsy_request:
+        class: CommsyBundle\EventListener\CommsyRequestListener
+        arguments: [@commsy.room_service, @liip_theme.active_theme, %liip_theme.themes%]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+
     # Search
     commsy.search_builder:
         class: CommsyBundle\Search\SearchBuilder
@@ -118,7 +125,7 @@ services:
         class: CommsyBundle\Form\Type\ItemWorkflowType
         tags:
             - { name: form.type, alias: itemWorkflow }
-            
+
     commsy.form.type.itemLinks:
         class: CommsyBundle\Form\Type\ItemLinksType
         arguments: ["@commsy_legacy.environment", @commsy.room_service, @commsy.item_service]
@@ -140,18 +147,18 @@ services:
         arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
         tags:
             - { name: form.type, alias: room_profile }
-            
+
     commsy.form.type.combine_profile:
         class: CommsyBundle\Form\Type\CombineProfileType
         arguments: [@doctrine.orm.entity_manager, @commsy_legacy.environment]
         tags:
             - { name: form.type, alias: combine_profile }
-            
+
     commsy.form.type.upload:
         class: CommsyBundle\Form\Type\UploadType
         tags:
             - { name: form.type, alias: upload }
-            
+
     commsy.form.type.treechoice:
         class: CommsyBundle\Form\Type\TreeChoiceType
         tags:

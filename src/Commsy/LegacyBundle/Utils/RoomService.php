@@ -54,6 +54,13 @@ class RoomService
         return $personList->to_array();
     }
 
+    public function getCurrentRoomItem()
+    {
+        $currentContextId = $this->legacyEnvironment->getCurrentContextId();
+        
+        return $this->getRoomItem($currentContextId);
+    }
+
     public function getRoomItem($roomId)
     {
         // get room item
