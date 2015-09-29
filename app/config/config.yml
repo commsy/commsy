@@ -92,7 +92,7 @@ liip_theme:
         - darkblue
         - red
         - redgrey   
-    active_theme: 'football'
+    active_theme: 'default'
     assetic_integration: false
 
 # KnpMenuBundle
