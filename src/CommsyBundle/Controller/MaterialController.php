@@ -563,4 +563,84 @@ class MaterialController extends Controller
             'form' => $form->createView()
         ); */
     }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/createsection")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function createSectionAction($roomId, $itemId, Request $request)
+    {
+        $translator = new Translator('de_DE');
+
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+
+        $material = $materialService->getMaterial($itemId);
+
+        $sectionList = $material->getSectionList();
+        $sections = $sectionList->to_array();
+        $countSections = $sectionList->getCount();
+
+        $section = $materialService->getNewSection();
+        $section->setTitle('['.$translator->trans('insert title').']');
+        $section->setLinkedItemId($itemId);
+        $section->setNumber($countSections+1);
+        $section->save();
+
+        $formData = $transformer->transform($section);
+        $form = $this->createForm('section', $formData, array(
+            'action' => $this->generateUrl('commsy_material_savesection', array('roomId' => $roomId, 'itemId' => $section->getItemID()))
+        ));
+
+
+
+        return array(
+                'form' => $form->createView(),
+                'sectionList' => $sectionList,
+                'material' => $material,
+                'section' => $section,
+                'modifierList' => array(),
+                'userCount' => 0,
+                'readCount' => 0,
+                'readSinceModificationCount' => 0
+            );
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/savesection")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function saveSectionAction($roomId, $itemId, Request $request)
+    {
+        $translator = new Translator('de_DE');
+
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get section
+        $section = $materialService->getSection($itemId);
+
+        $form = $this->createForm('section');
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            if ($form->get('save')->isClicked()) {
+                // update title
+                $section->setTitle($form->getData()['title']);
+
+                // update modifier
+                $section->setModificatorItem($legacyEnvironment->getCurrentUserItem());
+
+                $section->save();
+                
+            } else if ($form->get('cancel')->isClicked()) {
+                // ToDo ...
+            }
+            return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
+        }
+    }
 }

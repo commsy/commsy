@@ -1,0 +1,36 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:Material:macros.html.twig' as macrosMaterial %}
+{% import 'CommsyBundle:Item:macros.html.twig' as macrosItem %}
+
+<div class="uk-panel uk-panel-box uk-margin-top">
+    <article class="uk-article uk-position-relative">
+        {# title #}
+        <div class="cs-toggle" data-uk-observe>
+            {{ form_start(form) }}
+            {{ form_errors(form) }}
+            <div class="uk-flex">
+                <div>
+                    {{ form_widget(form.title) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ form_row(form.save) }}
+                </div>
+                <div class="uk-margin-small-left">
+                    {{ form_row(form.cancel) }}
+                </div>
+            </div>
+            {{ form_end(form) }}
+            {#{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }#}
+        </div>
+        
+        {# description #}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+            {{ macros.editContent('description', section, true, section.description, section.description, false, false, 0) }}
+        </div>
+
+        {# files #}
+        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+            {{ macrosItem.files(section) }}
+        </div>
+    </article>
+</div>

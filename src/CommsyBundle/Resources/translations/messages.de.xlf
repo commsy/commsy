@@ -114,6 +114,10 @@
                 <source>new annotation</source>
                 <target>Neue Anmerkung</target>
             </trans-unit>
+            <trans-unit id="29">
+                <source>new section</source>
+                <target>Neuer Abschnitt</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

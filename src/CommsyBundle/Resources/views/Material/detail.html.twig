@@ -83,6 +83,14 @@
 
                                 <div id="cs-additional-actions" class="uk-dropdown  cs-remove-padding">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding uk-margin-remove uk-text-left">
+                                        {# new section #}
+                                        <li>
+                                            <a class="" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
+                                                <i class="uk-icon-small uk-icon-plus"></i>
+                                                <span class="cs-addon-navigation-large">{{ 'new section'|trans({})|capitalize }}</span>
+                                            </a>
+                                        </li>
+
                                         {# save #}
                                         <li>
                                             <a class="" href="#">
@@ -162,10 +170,11 @@
                     </div>
                 </article> 
             </div>
-      
+            
+            <div data-uk-observe>
             {# material sections #}
             {% for section in sectionList %}
-                <div class="uk-panel uk-panel-box uk-margin-top">
+                <div class="uk-panel uk-panel-box uk-margin-top material-section">
                     <article class="uk-article uk-position-relative">
                         {# title #}
                         <div class="cs-toggle" data-uk-observe>
@@ -184,7 +193,7 @@
                     </article>
                 </div>
             {% endfor %}
-            
+            </div>
             {# annotations #}
             
             {% if item.itemType != 'discussion' %}
