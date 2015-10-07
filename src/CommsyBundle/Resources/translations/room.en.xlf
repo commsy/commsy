@@ -54,6 +54,14 @@
                 <source>no linked items</source>
                 <target>No assigments</target>
             </trans-unit>
+             <trans-unit id="15">
+                <source>latest entries</source>
+                <target>Latest entries in this room</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>no hashtags</source>
+                <target>No hashtags available</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

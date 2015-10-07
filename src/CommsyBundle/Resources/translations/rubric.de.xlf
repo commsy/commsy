@@ -90,6 +90,18 @@
                 <source>room search text</source>
                 <target>Eingrenzen nach z.B. Name, Beschreibung, ModeratorIn, ... </target>
             </trans-unit>           
+             <trans-unit id="23">
+                <source>dashboard</source>
+                <target>Dashboard </target>
+            </trans-unit>           
+             <trans-unit id="24">
+                <source>Home</source>
+                <target>Einstiegsseite</target>
+            </trans-unit>           
+             <trans-unit id="25">
+                <source>settings</source>
+                <target>Einstellungen</target>
+            </trans-unit>           
         </body>
     </file>
 </xliff>
