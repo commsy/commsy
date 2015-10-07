@@ -1,0 +1,25 @@
+{% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
+{% import 'CommsyBundle:Material:macros.html.twig' as macrosMaterial %}
+
+<hr class="uk-width-9-10  cs-detail-divider"/>
+<div class="uk-width-9-10" data-uk-observe>
+    {% if not sectionList is empty %}
+        <ul class="uk-list uk-sortable section-list" data-uk-sortable>
+            {% set counter = 1 %}                        
+            {% for section in sectionList %}
+                <li class="uk-panel uk-panel-box" id="section_{{section.itemId}}">
+                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
+                </li>
+            {% set counter = counter + 1  %}                        
+            {% endfor %}
+        </ul>
+        <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">Speichern</button>
+    {% endif %}
+
+
+    <div class="uk-placeholder">
+        {# <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
+            {{ macrosMaterial.sections(material, sectionList) }}
+        </div> #}
+    </div>
+</div>

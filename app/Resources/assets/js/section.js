@@ -17,4 +17,24 @@
         });
     });
 
+    UIkit.on('changed.uk.dom', function(event) {
+        $("#sorting_save").unbind().on('click', function() {
+            var sorting = [];
+            $(".section-list").children().each(function() {
+                var id = $(this).attr('id').match(/([\d]+)/g);
+                sorting.push(id);
+            });
+            
+            $.ajax({
+                type: "POST",
+                dataType: "json",
+                url: $(this).data('ukUrl'),
+                data: JSON.stringify(sorting)
+            })
+            .done(function(result) {
+            });
+            location.reload();
+        });
+    });
+
 })(UIkit);
