@@ -236,7 +236,7 @@ class MenuBuilder
                         'extras' => array('icon' => 'uk-icon-small')
                     ));
                     $menu->addChild('room_configuration', array(
-                        'label' => 'Einstellungen',
+                        'label' => 'settings',
                         'route' => 'commsy_settings_dashboard',
                         'routeParameters' => array('roomId' => $roomId),
                         'extras' => array('icon' => 'uk-icon-wrench uk-icon-small')
@@ -312,7 +312,7 @@ class MenuBuilder
             $privateRoomManager = $this->legacyEnvironment->getPrivateRoomManager();
             $privateRoom = $privateRoomManager->getRelatedOwnRoomForUser($user,$this->legacyEnvironment->getCurrentPortalID());
             
-            $menu->addChild('DASHBOARD', array(
+            $menu->addChild('dashboard', array(
                 'route' => 'commsy_dashboard_index',
                 'routeParameters' => array('roomId' => $privateRoom->getItemId()),
             ));

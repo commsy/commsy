@@ -54,6 +54,14 @@
                 <source>no linked items</source>
                 <target>Keine Zuordnungen vorhanden</target>
             </trans-unit>
+              <trans-unit id="15">
+                <source>latest entries</source>
+                <target>Die neuesten Einträge in diesem Raum</target>
+            </trans-unit>
+            <trans-unit id="16">
+                <source>no hashtags</source>
+                <target>Keine Schlagworte vorhanden</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
