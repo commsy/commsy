@@ -1,0 +1,74 @@
+// Name:            Sortable
+// Description:     Defines styles for sortable grids and lists
+//
+// Component:       `uk-sortable`
+//
+// Sub-objects:     `uk-sortable-handle`
+//                  `uk-sortable-moving`
+//
+// Modifier:        `uk-sortable-dragged`
+//                  `uk-sortable-placeholder`
+//
+// Markup:
+//
+// <!-- uk-sortable -->
+// <ul class="uk-sortable" data-uk-sortable>
+//     <li></li>
+//     <li></li>
+// </ul>
+//
+// ========================================================================
+
+
+// Variables
+// ========================================================================
+
+
+/* ========================================================================
+   Component: Sortable
+ ========================================================================== */
+
+
+
+/* Sub-modifier `uk-sortable-dragged`
+ ========================================================================== */
+
+
+
+/* Sub-modifier `uk-sortable-placeholder`
+ ========================================================================== */
+
+
+
+/* Empty List
+ ========================================================================== */
+
+
+
+/* Sub-object `uk-sortable-handle`
+ ========================================================================== */
+
+/*
+ * Deactivate browser touch actions in IE11
+ */
+
+.uk-sortable-handle { 
+    touch-action: none; 
+}
+
+/* Hover */
+.uk-sortable-handle:hover { cursor: move; }
+
+
+/* Sub-object `uk-sortable-moving`
+ ========================================================================== */
+
+.uk-sortable-moving,
+/* Needed if moving over links or buttons */
+.uk-sortable-moving * { cursor: move; }
+
+
+// Hooks
+// ========================================================================
+
+

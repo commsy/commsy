@@ -4,11 +4,11 @@
 <hr class="uk-width-9-10  cs-detail-divider"/>
 <div class="uk-width-9-10" data-uk-observe>
     {% if not sectionList is empty %}
-        <ul class="uk-list uk-sortable section-list" data-uk-sortable>
+        <ul class="uk-list uk-sortable section-list" data-uk-sortable="{handleClass:'uk-sortable-handle'}">
             {% set counter = 1 %}                        
             {% for section in sectionList %}
                 <li class="uk-panel uk-panel-box" id="section_{{section.itemId}}">
-                    <a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
+                    <i class="uk-sortable-handle uk-icon uk-icon-bars uk-margin-small-right"></i>{{counter}}.<a href="#{{ section.itemId }}" data-uk-tooltip title="{{ section.title|raw }}">{{ section.title|raw }}</a> {{ macros.fileListShort(section) }}
                 </li>
             {% set counter = counter + 1  %}                        
             {% endfor %}
