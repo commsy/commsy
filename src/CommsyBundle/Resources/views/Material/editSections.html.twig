@@ -15,11 +15,4 @@
         </ul>
         <button id="sorting_save" name="sorting" class="uk-button-primary uk-button" data-uk-url="{{ path('commsy_material_sortsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}">Speichern</button>
     {% endif %}
-
-
-    <div class="uk-placeholder">
-        {# <div id="sections{{ material.itemId }}" class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_material_editsections', {'roomId': material.contextId, 'itemId': material.itemId}) }}' }">
-            {{ macrosMaterial.sections(material, sectionList) }}
-        </div> #}
-    </div>
 </div>

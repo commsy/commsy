@@ -27,13 +27,13 @@
             
             $.ajax({
                 type: "POST",
-                dataType: "json",
                 url: $(this).data('ukUrl'),
                 data: JSON.stringify(sorting)
             })
             .done(function(result) {
+                location.reload();
             });
-            location.reload();
+            
         });
     });
 
