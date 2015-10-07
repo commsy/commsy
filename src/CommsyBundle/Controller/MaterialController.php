@@ -10,6 +10,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
+
 use CommsyBundle\Filter\MaterialFilterType;
 
 class MaterialController extends Controller
@@ -642,5 +644,61 @@ class MaterialController extends Controller
             }
             return $this->redirectToRoute('commsy_material_detail', array('roomId' => $roomId, 'itemId' => $section->getLinkedItemID()));
         }
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/sortsections")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function sortSectionsAction($roomId, $itemId, Request $request)
+    {
+        $translator = new Translator('de_DE');
+
+        $materialService = $this->get('commsy_legacy.material_service');
+        $transformer = $this->get('commsy_legacy.transformer.material');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get section
+        $material = $materialService->getMaterial($itemId);
+
+        $json = json_decode($request->getContent());
+
+        $i = 1;
+        foreach ($json as $key => $value) {
+            // set sorting
+            $section = $materialService->getSection($value[0]);
+            $section->setNumber($i);
+            $section->save();
+            $i++;
+        }
+
+
+        $sectionList = $material->getSectionList()->to_array();
+
+        return array(
+            'sectionList' => $sectionList,
+            'material' => $material
+        );
+
+    }
+
+    /**
+     * @Route("/room/{roomId}/material/{itemId}/editsections")
+     * @Template()
+     * @Security("is_granted('ITEM_EDIT', itemId)")
+     */
+    public function editSectionsAction($roomId, $itemId, Request $request)
+    {
+        $materialService = $this->get('commsy_legacy.material_service');
+
+        $material = $materialService->getMaterial($itemId);
+
+        $sectionList = $material->getSectionList()->to_array();
+
+        return array(
+            'sectionList' => $sectionList,
+            'material' => $material
+        );
     }
 }
