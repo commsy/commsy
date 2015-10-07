@@ -32,56 +32,69 @@ class AnnotationService
 
     public function addAnnotation($roomId, $itemId, $description)
     {
+        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $noticedManager = $this->legacyEnvironment->getNoticedManager();
+
         $user = $this->legacyEnvironment->getCurrentUser();
         // create new annotation
-        $annotation_manager = $this->legacyEnvironment->getAnnotationManager();
-        $annotation_item = $annotation_manager->getNewItem();
-        $annotation_item->setContextID($roomId);
-        $annotation_item->setCreatorItem($user);
-        $annotation_item->setCreationDate(getCurrentDateTimeInMySQL());
+        $annotationManager = $this->legacyEnvironment->getAnnotationManager();
+        $annotationItem = $annotationManager->getNewItem();
+        $annotationItem->setContextID($roomId);
+        $annotationItem->setCreatorItem($user);
+        $annotationItem->setCreationDate(getCurrentDateTimeInMySQL());
 
         // set modificator and modification date
-        $annotation_item->setModificatorItem($user);
-        $annotation_item->setModificationDate(getCurrentDateTimeInMySQL());
+        $annotationItem->setModificatorItem($user);
+        $annotationItem->setModificationDate(getCurrentDateTimeInMySQL());
 
-        $annotation_item->setDescription($description);
+        $annotationItem->setDescription($description);
 
-        $annotation_item->setLinkedItemID($itemId);
+        $annotationItem->setLinkedItemID($itemId);
 
-        $annotation_item->save();
+        $annotationItem->save();
+
+        $reader = $readerManager->getLatestReader($annotationItem->getItemID());
+        if(empty($reader) || $reader['read_date'] < $annotationItem->getModificationDate()) {
+            $readerManager->markRead($annotationItem->getItemID(), 0);
+        }
+
+        $noticed = $noticedManager->getLatestNoticed($annotationItem->getItemID());
+        if(empty($noticed) || $noticed['read_date'] < $annotationItem->getModificationDate()) {
+            $noticedManager->markNoticed($annotationItem->getItemID(), 0);
+        }
 
     }
 
-    public function markAnnotationsReadedAndNoticed($annotation_list) {
-        $reader_manager = $this->legacyEnvironment->getReaderManager();
-        $noticed_manager = $this->legacyEnvironment->getNoticedManager();
+    public function markAnnotationsReadedAndNoticed($annotationList) {
+        $readerManager = $this->legacyEnvironment->getReaderManager();
+        $noticedManager = $this->legacyEnvironment->getNoticedManager();
 
         // collect an array of all ids and precach
-        $id_array = array();
-        $annotation = $annotation_list->getFirst();
+        $idArray = array();
+        $annotation = $annotationList->getFirst();
         while($annotation) {
-            $id_array[] = $annotation->getItemID();
+            $idArray[] = $annotation->getItemID();
 
-            $annotation = $annotation_list->getNext();
+            $annotation = $annotationList->getNext();
         }
 
-        $reader_manager->getLatestReaderByIDArray($id_array);
-        $noticed_manager->getLatestNoticedByIDArray($id_array);
+        $readerManager->getLatestReaderByIDArray($idArray);
+        $noticedManager->getLatestNoticedByIDArray($idArray);
 
         // mark if needed
-        $annotation = $annotation_list->getFirst();
+        $annotation = $annotationList->getFirst();
         while($annotation) {
-            $reader = $reader_manager->getLatestReader($annotation->getItemID());
+            $reader = $readerManager->getLatestReader($annotation->getItemID());
             if(empty($reader) || $reader['read_date'] < $annotation->getModificationDate()) {
-                $reader_manager->markRead($annotation->getItemID(), 0);
+                $readerManager->markRead($annotation->getItemID(), 0);
             }
 
-            $noticed = $noticed_manager->getLatestNoticed($annotation->getItemID());
+            $noticed = $noticedManager->getLatestNoticed($annotation->getItemID());
             if(empty($noticed) || $noticed['read_date'] < $annotation->getModificationDate()) {
-                $noticed_manager->markNoticed($annotation->getItemID(), 0);
+                $noticedManager->markNoticed($annotation->getItemID(), 0);
             }
 
-            $annotation = $annotation_list->getNext();
+            $annotation = $annotationList->getNext();
         }
     }
 }
