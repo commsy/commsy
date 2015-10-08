@@ -136,6 +136,7 @@ class MaterialController extends Controller
      */
     public function detailAction($roomId, $itemId, Request $request)
     {
+
         $infoArray = $this->getDetailInfo($roomId, $itemId);
 
         // annotation form
@@ -181,6 +182,11 @@ class MaterialController extends Controller
         $annotationService = $this->get('commsy_legacy.annotation_service');
         
         $material = $materialService->getMaterial($itemId);
+        if($material == null) {
+            $section = $materialService->getSection($itemId);
+            $material = $materialService->getMaterial($section->getLinkedItemID());
+
+        }
         
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
         $item = $material;
