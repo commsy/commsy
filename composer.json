@@ -24,7 +24,7 @@
         "lexik/form-filter-bundle": "~3.0",
         "friendsofsymfony/elastica-bundle": "3.0.*@dev",
         "egeloen/ordered-form-bundle": "~1.0",
-        "egeloen/ckeditor-bundle": "~2.0",
+        "egeloen/ckeditor-bundle": "~3.0",
         "craue/twigextensions-bundle": "~2.0"
     },
     "require-dev": {

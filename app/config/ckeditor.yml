@@ -1,5 +1,8 @@
 ivory_ck_editor:
+    inline: true
     default_config: cs_config
     configs:
         cs_config:
             toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] , ["NumberedList", "BulletedList", "Outdent", "Indent", "Blockquote"], ["JustifyLeft", "JustifyCenter", "JustifyRight", "JustifyBlock"], "/", ["Format"], ["Font"], ["FontSize"], ["TextColor", "BGColor", "RemoveFormat", "Maximize", "Source"], ["Link", "Unlink", "Table", "HorizontalRule", "Smiley", "Flash"] ]
+        cs_annotation_config:
+            toolbar: [ [ "Cut", "Copy", "Paste", "PasteFromWord", "Undo", "Redo" ], ["Bold", "Italic", "Underline", "Strike", "Subscript", "Superscript", "SpecialChar"] ]
