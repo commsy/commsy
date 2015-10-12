@@ -33,6 +33,16 @@
 
             // button change
             this.on("change.uk.button", function(event) {
+                if ($('#commsy-select-actions').css('display') == 'none') {
+                    $('#commsy-select-actions').css('display', 'block');
+                    $('#commsy-select-actions').css('height', '150px');
+                } else {
+                    $('#commsy-select-actions').css('display', 'none');
+                    $('#commsy-select-actions').css('height', '0px');
+                }
+
+                UIkit.$html.trigger('changed.uk.dom');
+
                 $this.articles.toggleClass('selectable');
             });
 
