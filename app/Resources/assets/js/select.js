@@ -33,17 +33,100 @@
 
             // button change
             this.on("change.uk.button", function(event) {
-                if ($('#commsy-select-actions').css('display') == 'none') {
-                    $('#commsy-select-actions').css('display', 'block');
-                    $('#commsy-select-actions').css('height', '150px');
+                $('#commsy-select-actions').toggleClass('uk-hidden')
+                if ($('#commsy-select-actions').hasClass('uk-hidden')) {
+                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
                 } else {
-                    $('#commsy-select-actions').css('display', 'none');
-                    $('#commsy-select-actions').css('height', '0px');
+                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '75px');
                 }
-
-                UIkit.$html.trigger('changed.uk.dom');
-
+                
                 $this.articles.toggleClass('selectable');
+            });
+
+            $('#commsy-select-actions-select-shown').on("change.uk.button", function(event) {
+                $(this).addClass('uk-active');
+                $('#commsy-select-actions-select-all').removeClass('uk-active');
+                
+                target.find('input[type="checkbox"]').each(function(){
+                    $(this).prop('checked', true);
+                });
+                target.find('article').each(function(){
+                    $(this).addClass('uk-comment-primary');
+                });
+            });
+            
+            $('#commsy-select-actions-select-all').on("change.uk.button", function(event) {
+                $(this).addClass('uk-active');
+                $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                
+                target.find('input[type="checkbox"]').each(function(){
+                    $(this).prop('checked', true);
+                });
+                target.find('article').each(function(){
+                    $(this).addClass('uk-comment-primary');
+                });
+            });
+            
+            $('#commsy-select-actions-unselect').on("change.uk.button", function(event) {
+                $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                $('#commsy-select-actions-select-all').removeClass('uk-active');
+                $('#commsy-select-actions-unselect').removeClass('uk-active');
+                
+                target.find('input[type="checkbox"]').each(function(){
+                    $(this).prop('checked', false);
+                });
+                target.find('article').each(function(){
+                    $(this).removeClass('uk-comment-primary');
+                });
+            });
+            
+            $('#commsy-select-actions-mark-read').on("click", function(event) {
+                event.preventDefault();
+                console.log('mark read ...');
+                
+                var entries =  target.find('input:checked').map(function(){
+                    return this.value;
+                }).get()
+                
+                $.ajax({
+                    url: $this.options.actionUrl,
+                    type: "POST",
+                    data: {action: "markread", data : JSON.stringify(entries)}
+                })
+                .done(function(result) {
+                    $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                    $('#commsy-select-actions-select-all').removeClass('uk-active');
+                    $('#commsy-select-actions-unselect').removeClass('uk-active');
+                    
+                    target.find('input[type="checkbox"]').each(function(){
+                        $(this).prop('checked', false);
+                    });
+                    target.find('article').each(function(){
+                        $(this).removeClass('uk-comment-primary');
+                    });
+                    
+                    UIkit.notify({
+                        message : result.message,
+                        status  : result.status,
+                        timeout : 2000,
+                        pos     : 'top-center'
+                    });
+                });
+            });
+            
+            $('#commsy-select-actions-copy').on("click", function(event) {
+                event.preventDefault();
+                console.log('copy ...');
+            });
+            
+            $('#commsy-select-actions-save').on("click", function(event) {
+                event.preventDefault();
+                console.log('save ...');
+            });
+            
+            $('#commsy-select-actions-delete').on("click", function(event) {
+                event.preventDefault();
+                console.log('delete ...');
             });
 
             // listen for dom changes

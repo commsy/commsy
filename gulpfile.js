@@ -128,6 +128,7 @@ gulp.task('js', ['less'], function() {
         config.bowerDir + '/uikit/js/components/slider.js',
         config.bowerDir + '/uikit/js/components/lightbox.js',
         config.bowerDir + '/uikit/js/components/sortable.js',
+        config.bowerDir + '/uikit/js/components/notify.js',
 
         config.assetsDir + '/js/**/*.js'
     ], 'commsy.js');

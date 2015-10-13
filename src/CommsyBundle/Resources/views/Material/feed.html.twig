@@ -10,7 +10,7 @@
             <div class="materials-checkbox uk-margin-right uk-margin-top uk-hidden">
                 {% if is_granted('ITEM_EDIT', material.itemId) %}
                     <form class="uk-form">
-                        <input type="checkbox">
+                        <input type="checkbox" value="{{ material.itemId }}">
                     </form>
                 {% else %}
                     <i class="uk-icon-ban uk-icon-small red"></i>

@@ -707,4 +707,21 @@ class MaterialController extends Controller
             'material' => $material
         );
     }
+    
+    /**
+     * @Route("/room/{roomId}/material/feedaction")
+     */
+    public function feedActionAction($roomId, Request $request)
+    {
+        $action = $request->request->get('action');
+        $data = $request->request->get('data');
+        
+        $response = new JsonResponse();
+        $response->setData(array(
+            'message' => $action.' done ...',
+            'status' => 'success'
+        ));
+        
+        return $response;
+    }
 }
