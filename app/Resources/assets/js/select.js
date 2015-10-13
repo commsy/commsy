@@ -70,7 +70,7 @@
             $('#commsy-select-actions-unselect').on("change.uk.button", function(event) {
                 $('#commsy-select-actions-select-shown').removeClass('uk-active');
                 $('#commsy-select-actions-select-all').removeClass('uk-active');
-                $('#commsy-select-actions-unselect').removeClass('uk-active');
+                $(this).removeClass('uk-active');
                 
                 target.find('input[type="checkbox"]').each(function(){
                     $(this).prop('checked', false);
@@ -82,51 +82,22 @@
             
             $('#commsy-select-actions-mark-read').on("click", function(event) {
                 event.preventDefault();
-                console.log('mark read ...');
-                
-                var entries =  target.find('input:checked').map(function(){
-                    return this.value;
-                }).get()
-                
-                $.ajax({
-                    url: $this.options.actionUrl,
-                    type: "POST",
-                    data: {action: "markread", data : JSON.stringify(entries)}
-                })
-                .done(function(result) {
-                    $('#commsy-select-actions-select-shown').removeClass('uk-active');
-                    $('#commsy-select-actions-select-all').removeClass('uk-active');
-                    $('#commsy-select-actions-unselect').removeClass('uk-active');
-                    
-                    target.find('input[type="checkbox"]').each(function(){
-                        $(this).prop('checked', false);
-                    });
-                    target.find('article').each(function(){
-                        $(this).removeClass('uk-comment-primary');
-                    });
-                    
-                    UIkit.notify({
-                        message : result.message,
-                        status  : result.status,
-                        timeout : 2000,
-                        pos     : 'top-center'
-                    });
-                });
+                $this.action('markread');
             });
             
             $('#commsy-select-actions-copy').on("click", function(event) {
                 event.preventDefault();
-                console.log('copy ...');
+                $this.action('copy');
             });
             
             $('#commsy-select-actions-save').on("click", function(event) {
                 event.preventDefault();
-                console.log('save ...');
+                $this.action('save');
             });
             
             $('#commsy-select-actions-delete').on("click", function(event) {
                 event.preventDefault();
-                console.log('delete ...');
+                $this.action('delete');
             });
 
             // listen for dom changes
@@ -169,6 +140,40 @@
             this.inputs.off().on("click", function(event) {
                 event.stopPropagation();
                 $(this).parents('article').click();
+            });
+        },
+        
+        action: function(action) {
+            var $this = this;
+            var target = this.options.target ? UI.$(this.options.target) : [];
+            
+            var entries =  target.find('input:checked').map(function(){
+                return this.value;
+            }).get();
+            
+            $.ajax({
+                url: $this.options.actionUrl,
+                type: "POST",
+                data: {act: action, data : JSON.stringify(entries)}
+            })
+            .done(function(result) {
+                $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                $('#commsy-select-actions-select-all').removeClass('uk-active');
+                $('#commsy-select-actions-unselect').removeClass('uk-active');
+                
+                target.find('input[type="checkbox"]').each(function(){
+                    $(this).prop('checked', false);
+                });
+                target.find('article').each(function(){
+                    $(this).removeClass('uk-comment-primary');
+                });
+                
+                UIkit.notify({
+                    message : result.message,
+                    status  : result.status,
+                    timeout : 2000,
+                    pos     : 'top-center'
+                });
             });
         }
     });

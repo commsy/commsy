@@ -713,13 +713,30 @@ class MaterialController extends Controller
      */
     public function feedActionAction($roomId, Request $request)
     {
-        $action = $request->request->get('action');
+        $action = $request->request->get('act');
         $data = $request->request->get('data');
+        
+        $message = '';
+        $status = '';
+        
+        if ($action == 'markread') {
+            $message = 'ToDo: Mark entries as read';
+            $status = 'danger';
+        } else if ($action == 'copy') {
+            $message = 'ToDo: copy entries';
+            $status = 'danger';
+        } else if ($action == 'save') {
+            $message = 'ToDo: save entries';
+            $status = 'danger';
+        } else if ($action == 'delete') {
+            $message = 'ToDo: delete entries';
+            $status = 'danger';
+        }
         
         $response = new JsonResponse();
         $response->setData(array(
-            'message' => $action.' done ...',
-            'status' => 'success'
+            'message' => $message,
+            'status' => $status
         ));
         
         return $response;
