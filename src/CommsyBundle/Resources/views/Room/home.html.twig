@@ -10,7 +10,7 @@
     {%if widthHomeInformation %}
         <div id="cover" class="uk-cover-background cs-cover-background" aria-hidden="false">
             {% if not homeInformation is empty%}
-                <div id="cover-text">
+                <div id="cover-text" data-uk-parallax="{y: '-40px'}">
                 {{homeInformation | raw}}
                 </div>
             {% endif %}
