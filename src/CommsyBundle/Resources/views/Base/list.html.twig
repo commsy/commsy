@@ -30,7 +30,7 @@
                                 </div>
                             </div>
 
-                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}">
+                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-alt-title="{{ 'unset list choice'|trans({},'rubric')|capitalize }}">
                                 {{ 'list choice'|trans({},'rubric')|capitalize }}
                             </button>
                         </div>

@@ -42,10 +42,10 @@
                     target.find('article').each(function(){
                         $(this).removeClass('uk-comment-primary');
                     });
-                    $(this).html('Einträge auswählen');
+                    $(this).html($(this).data('title'));
                 } else {
                     $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '75px');
-                    $(this).html('Auswahl aufheben');
+                    $(this).html($(this).data('alt-title'));
                 }
                 
                 $this.articles.toggleClass('selectable');
