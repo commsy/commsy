@@ -36,8 +36,16 @@
                 $('#commsy-select-actions').toggleClass('uk-hidden')
                 if ($('#commsy-select-actions').hasClass('uk-hidden')) {
                     $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '0px');
+                    target.find('input[type="checkbox"]').each(function(){
+                    $(this).prop('checked', false);
+                    });
+                    target.find('article').each(function(){
+                        $(this).removeClass('uk-comment-primary');
+                    });
+                    $(this).html('Einträge auswählen');
                 } else {
                     $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '75px');
+                    $(this).html('Auswahl aufheben');
                 }
                 
                 $this.articles.toggleClass('selectable');
