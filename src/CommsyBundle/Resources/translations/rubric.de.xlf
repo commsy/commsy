@@ -101,7 +101,11 @@
              <trans-unit id="25">
                 <source>settings</source>
                 <target>Einstellungen</target>
-            </trans-unit>           
+            </trans-unit>
+            <trans-unit id="26">
+                <source>unset list choice</source>
+                <target>Auswahl aufheben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
