@@ -30,7 +30,7 @@
             this.inputs = target.find('input');
 
             this.bind();
-
+            
             // button change
             this.on("change.uk.button", function(event) {
                 $('#commsy-select-actions').toggleClass('uk-hidden')
@@ -47,7 +47,7 @@
                     $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '75px');
                     $(this).html($(this).data('alt-title'));
                 }
-                
+
                 $this.articles.toggleClass('selectable');
             });
 
@@ -105,7 +105,9 @@
             
             $('#commsy-select-actions-delete').on("click", function(event) {
                 event.preventDefault();
-                $this.action('delete');
+                UIkit.modal.confirm($($this.element).data('confirm-delete'), function(){
+                    $this.action('delete');
+                });
             });
 
             // listen for dom changes

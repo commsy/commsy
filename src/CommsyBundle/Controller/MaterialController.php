@@ -713,15 +713,36 @@ class MaterialController extends Controller
      */
     public function feedActionAction($roomId, Request $request)
     {
-        $action = $request->request->get('act');
-        $data = $request->request->get('data');
+        $translator = new Translator('de_DE');
         
-        $message = '';
-        $status = '';
+        $action = $request->request->get('act');
+        $selectedIds = json_decode($request->request->get('data'));
+        
+        $message = $translator->trans('an error has occurred');
+        $status = 'danger';
         
         if ($action == 'markread') {
-            $message = 'ToDo: Mark entries as read';
-            $status = 'danger';
+	        $materialService = $this->get('commsy_legacy.material_service');
+	        
+	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $noticedManager = $legacyEnvironment->getNoticedManager();
+
+            foreach ($selectedIds as $id) {
+    	        $item = $materialService->getMaterial($id);
+    	        $versionId = $item->getVersionID();
+    	        $noticedManager->markNoticed($id, $versionId );
+    	        $annotationList =$item->getAnnotationList();
+    	        if ( !empty($annotationList) ){
+    	            $annotationItem = $annotationList->getFirst();
+    	            while($annotationItem){
+    	               $noticedManager->markNoticed($annotationItem->getItemID(),'0');
+    	               $annotationItem = $annotationList->getNext();
+    	            }
+    	        }
+	        }
+	        
+	        $message = $translator->trans('marked entries as read');
+            $status = 'success';
         } else if ($action == 'copy') {
             $message = 'ToDo: copy entries';
             $status = 'danger';
