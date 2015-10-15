@@ -722,26 +722,26 @@ class MaterialController extends Controller
         $status = 'danger';
         
         if ($action == 'markread') {
-	        $materialService = $this->get('commsy_legacy.material_service');
-	        
-	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+            $materialService = $this->get('commsy_legacy.material_service');
+            
+            $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
 
             foreach ($selectedIds as $id) {
-    	        $item = $materialService->getMaterial($id);
-    	        $versionId = $item->getVersionID();
-    	        $noticedManager->markNoticed($id, $versionId );
-    	        $annotationList =$item->getAnnotationList();
-    	        if ( !empty($annotationList) ){
-    	            $annotationItem = $annotationList->getFirst();
-    	            while($annotationItem){
-    	               $noticedManager->markNoticed($annotationItem->getItemID(),'0');
-    	               $annotationItem = $annotationList->getNext();
-    	            }
-    	        }
-	        }
-	        
-	        $message = $translator->trans('marked entries as read');
+                $item = $materialService->getMaterial($id);
+                $versionId = $item->getVersionID();
+                $noticedManager->markNoticed($id, $versionId);
+                $annotationList =$item->getAnnotationList();
+                if (!empty($annotationList)) {
+                    $annotationItem = $annotationList->getFirst();
+                    while ($annotationItem) {
+                        $noticedManager->markNoticed($annotationItem->getItemID(), '0');
+                        $annotationItem = $annotationList->getNext();
+                    }
+                }
+            }
+            
+            $message = $translator->trans('marked entries as read');
             $status = 'success';
         } else if ($action == 'copy') {
             $message = 'ToDo: copy entries';
