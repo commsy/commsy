@@ -22,10 +22,8 @@ class AnnotationType extends AbstractType
     {
         $builder
             ->add('description', 'ckeditor', array(
-                'constraints' => array(
-                    new NotBlank(),
-                ),
                 'label' => ' ',
+                'required' => false,
                 'attr' => array(
                     'placeholder' => 'annotation',
                     'class' => 'uk-form-width-large',
