@@ -723,10 +723,8 @@ class MaterialController extends Controller
         
         if ($action == 'markread') {
 	        $materialService = $this->get('commsy_legacy.material_service');
-	        
 	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
-
             foreach ($selectedIds as $id) {
     	        $item = $materialService->getMaterial($id);
     	        $versionId = $item->getVersionID();
@@ -740,7 +738,6 @@ class MaterialController extends Controller
     	            }
     	        }
 	        }
-	        
 	        $message = $translator->trans('marked entries as read');
             $status = 'success';
         } else if ($action == 'copy') {
@@ -750,8 +747,13 @@ class MaterialController extends Controller
             $message = 'ToDo: save entries';
             $status = 'danger';
         } else if ($action == 'delete') {
-            $message = 'ToDo: delete entries';
-            $status = 'danger';
+            $materialService = $this->get('commsy_legacy.material_service');
+  		    foreach ($selectedIds as $id) {
+  		        $item = $materialService->getMaterial($id);
+  		        $item->delete();
+  		    }
+            $message = $translator->trans('deleted entries');
+            $status = 'success';
         }
         
         $response = new JsonResponse();

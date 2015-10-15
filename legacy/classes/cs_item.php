@@ -2701,6 +2701,7 @@ function getExternalViewerArray(){
          $current_context = $this->_environment->getCurrentContextItem();
          $moderator_list = $current_context->getModeratorList();
          $mod_item = $moderator_list->getFirst();
+         $receiver_array = array();
          while($mod_item){
             if ($mod_item->getDeleteEntryWantMail() == 'yes') {
 				   $language = $current_context->getLanguage();
@@ -2720,7 +2721,7 @@ function getExternalViewerArray(){
 
          // now email information
          foreach ($receiver_array as $key => $value) {
-			   $current_portal = $this->_environment->getCurrentPortalItem();
+            $current_portal = $this->_environment->getCurrentPortalItem();
             $current_user = $this->_environment->getCurrentUserItem();
             $fullname = $current_user->getFullname();
             $save_language = $translator->getSelectedLanguage();
