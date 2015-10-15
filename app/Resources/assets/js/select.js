@@ -178,16 +178,12 @@
                     $(this).removeClass('uk-comment-primary');
                 });
                 
-                UIkit.notify({
-                    message : result.message,
-                    status  : result.status,
-                    timeout : 2000,
-                    pos     : 'top-center'
-                });
-                
                 var el = $('.feed-load-more');
                 var queryString = document.location.search;
                 var url = el.data('feed').url  + 0 + queryString;
+        
+                var message = result.message;
+                var status = result.status;
         
                 $.ajax({
                   url: url
@@ -203,6 +199,13 @@
                         });
                         
                         $this.bind();
+                        
+                        UIkit.notify({
+                            message : message,
+                            status  : status,
+                            timeout : 2000,
+                            pos     : 'top-center'
+                        });
                     }
                 });
                 

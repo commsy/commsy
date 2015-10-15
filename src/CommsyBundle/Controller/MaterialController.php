@@ -725,10 +725,12 @@ class MaterialController extends Controller
 	        $materialService = $this->get('commsy_legacy.material_service');
 	        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
             $noticedManager = $legacyEnvironment->getNoticedManager();
+            $readerManager = $legacyEnvironment->getReaderManager();
             foreach ($selectedIds as $id) {
     	        $item = $materialService->getMaterial($id);
     	        $versionId = $item->getVersionID();
-    	        $noticedManager->markNoticed($id, $versionId );
+    	        $noticedManager->markNoticed($id, $versionId);
+    	        $readerManager->markRead($id, $versionId);
     	        $annotationList =$item->getAnnotationList();
     	        if ( !empty($annotationList) ){
     	            $annotationItem = $annotationList->getFirst();
