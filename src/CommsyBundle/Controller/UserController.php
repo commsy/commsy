@@ -19,6 +19,12 @@ class UserController extends Controller
      */
     public function listAction($roomId, Request $request)
     {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        // get room item for information panel
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+        
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true
@@ -37,7 +43,8 @@ class UserController extends Controller
         return array(
             'roomId' => $roomId,
             'form' => $form->createView(),
-            'module' => 'user'
+            'module' => 'user',
+            'showCategories' => $roomItem->withTags(),
         );
     }
     
