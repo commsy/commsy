@@ -124,7 +124,7 @@
 
                         $newNotchId = md5($notch_id.':'.$c_media_integration_pw);
 
-                        $data = '<link id='.$notch_id.'>PHRASE</link>';
+                        $data = "<link id='".$notch_id."'>PHRASE</link>";
 
                         // get media
                         curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
