@@ -748,6 +748,13 @@ class MaterialController extends Controller
         } else if ($action == 'save') {
             $message = 'ToDo: save entries';
             $status = 'danger';
+            
+            $detailArray = $this->getDetailInfo($roomId, $selectedIds[0]);
+            $detailArray['roomId'] = $roomId;
+            $detailArray['annotationForm'] = $this->createForm('annotation');
+            
+            error_log(print_r($this->render('CommsyBundle:Material:detail.html.twig', $detailArray), true));
+            
         } else if ($action == 'delete') {
             $materialService = $this->get('commsy_legacy.material_service');
   		    foreach ($selectedIds as $id) {
