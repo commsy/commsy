@@ -74,6 +74,8 @@ $c_enable_htmltextarea_security = false;
 // use true for all or an array of community room id's for restricted access
 //$c_media_integration = true;
 //$c_media_integration_url = '';
+//$c_media_integration_pw = '';
+//$c_media_integration_pw_api = '';
 
 // use scorm in following room id's
 //$c_scorm = array();

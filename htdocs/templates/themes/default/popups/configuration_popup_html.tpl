@@ -971,6 +971,15 @@
                               <p>
                                  <strong>___CONFIGURATION_MEDIA_MEDIENINTEGRATIONONLINE___:</strong>
                               </p>
+                              Authentifizierung für die Aktivierung des MDO Plugin (Daten werden nicht gespeichert)
+                              <div class="input_row_200">
+                                 DSNR: <input type="input" name="form_data[dsnr]" value="" />
+                                 <div class="clear"></div>
+                              </div>
+                              <div class="input_row_200">
+                                 Passwort: <input type="input" name="form_data[pw]" value="" />
+                                 <div class="clear"></div>
+                              </div>
                               <div class="input_row_200">
                                  <input type="checkbox" name="form_data[mdo_room]" value="yes" {if $popup.external.mdo_room} checked="checked"{/if}/> Aktivieren
                                  <div class="clear"></div>

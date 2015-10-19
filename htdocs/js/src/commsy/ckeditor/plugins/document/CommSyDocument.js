@@ -23,6 +23,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 					
 					var SelectBoxItems = new Array(
 							new Array( '<Bitte Medientyp auswählen>', 'null'),
+							new Array( 'MDO', 'mdo'),
 					        new Array( 'Slideshare', 'slideshare' ),
 					        new Array( 'Onyx', 'onyx' )
 					);
@@ -125,10 +126,22 @@ CKEDITOR.plugins.add( "CommSyDocument",
 														fileSelect.add(fileSelect.items[j][0],fileSelect.items[j][1]);
 													}
 												}
+											} else if (this.getValue() == 'mdo') {
+												startAt.enable();
+												textInput.disable();
+												fileSelect.disable();
+												uploadButton.disable();
+												upload.disable();
+												
+												naviParam.disable();
+												saveParam.disable();
+												saveaimParam.disable();
+												saveperiodParam.disable();
 											} else {
 												startAt.enable();
 												textInput.disable();
 												fileSelect.disable();
+												startAt.disable();
 												uploadButton.disable();
 												upload.disable();
 												
@@ -470,8 +483,47 @@ CKEDITOR.plugins.add( "CommSyDocument",
 								// content += '<embed ' + style + ' width="' + width + '" height="' + height + '" wmode="opaque" allowfullscreen="true" allowscriptaccess="always" type="application/x-shockwave-flash" src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' + docId + '&amp;rel=0' + param +'">';
 								// content += '</object>';
 								
+							} else if(this.getValueOf('documentTab', 'selectbox') == 'mdo') {
+
+								var documentUrl = this.getValueOf( 'documentTab', 'documentUrl');
+								// perform ajax request
+                                var json_data = new Object();
+                                // json_data.mdo_search      = jQuery('input[name="ckeditor_mdo_search"]').val();
+                                // json_data.mdo_andor       = jQuery('select[name="ckeditor_mdo_andor"]').val();
+                                // json_data.mdo_wordbegin   = jQuery('select[name="ckeditor_mdo_wordbegin"]').val();
+                                // json_data.mdo_titletext   = jQuery('select[name="ckeditor_mdo_titletext"]').val();
+                                
+                                // id
+                                var regex = /id=(.*)&/;
+
+                                if(documentUrl.match(regex)) {
+                                	match = documentUrl.match(regex);
+                                	id = match[1];
+                                	json_data.identifier = id;
+
+	                                var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
+	                                
+	                                jQuery.ajax({
+	                                    url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+	                                    data:     json_data,
+	                                    success:  function(message) {
+	                                        var result = eval('(' + message + ')');
+	                                        if(result.status === 'success' && result.data.length > 0) {
+	                                        	// get content by ajax
+												// iframe player (stream)
+												content = '<iframe>';
+
+												// link in die Mediathek
+												content = '<a href=""></a>';
+	                                        }
+
+	                                    }
+	                                });
+                                }
+
 								
-							} else if(this.getValueOf('documentTab', 'selectbox') == 'onyx') {
+								
+							} else if (this.getValueOf('documentTab', 'selectbox') == 'onyx') {
 								
 								var naviParam = this.getValueOf('documentTab','naviParam');
 								var saveParam = this.getValueOf('documentTab','saveParam');

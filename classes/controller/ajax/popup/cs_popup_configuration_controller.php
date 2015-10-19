@@ -1310,17 +1310,48 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 
                       // mdo
                       elseif ($additional['action'] == 'save_mdo') {
-                        if( isset($form_data['mdo_room']) && $form_data['mdo_room'] === "yes") {
-                            $current_context->setMDOActive(true);
-                        } else {
-                            $current_context->setMDOActive(false);
-                        }
-                        if( isset($form_data['mdo_key'])) {
-                            $current_context->setMDOKey($form_data['mdo_key']);
-                        } else {
-                            $current_context->setMDOKey();
-                        }
-                        $current_context->save();
+                      	global $c_media_integration_pw_api;
+                      	// global $c_media_integration_authcode;
+                      	global $c_media_integration;
+
+                      	if ($c_media_integration) {
+	                      	// check password if mdo is active
+	                      	$dsnr = $form_data['dsnr'];
+	                      	$password = $form_data['pw'];
+
+	                      	$requestUrl = $c_media_integration_pw_api . 'action=verifyPWD&dsnr='.$dsnr.'&pwd='.md5($password); //&authCode='.$c_media_integration_authcode
+	                      	$response = file_get_contents($requestUrl);
+	                      	$xml = new SimpleXMLElement($response);
+
+							$result = (string) $xml->result;
+							$pwd = (string) $xml->schule->pwd;
+
+	                      	if($result == "OK" && $pwd == "OK") {
+	                      		$saveFlag = true;
+	                      	} else {
+	                      		$saveFlag = false;
+	                      		$this->_popup_controller->setErrorReturn('900', 'authentification failed', array());
+
+								return false;
+	                      	}
+						} else {
+							$saveFlag = true;
+						}
+
+                      	if($saveFlag || !isset($form_data['mdo_room'])) {
+                      		if( isset($form_data['mdo_room']) && $form_data['mdo_room'] === "yes") {
+                            	$current_context->setMDOActive(true);
+	                        } else {
+	                            $current_context->setMDOActive(false);
+	                        }
+	                        if( isset($form_data['mdo_key'])) {
+	                            $current_context->setMDOKey($form_data['mdo_key']);
+	                        } else {
+	                            $current_context->setMDOKey();
+	                        }
+	                        $current_context->save();
+                      	}
+                        
 
                       }
 				      
