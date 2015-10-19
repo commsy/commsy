@@ -122,9 +122,10 @@
                         $notch = (string) $result[0];
                         unset($xml_object);
 
-                        $newNotchId = md5($notch_id.':'.$c_media_integration_pw);
+                        $result = (string) $result[0]
+                        $newNotchId = md5($result.':'.$c_media_integration_pw);
 
-                        $data = "<link id='".$id."'>".$newNotchId."</link>";
+                        $data = "<link id='".$notch_id."'>".$newNotchId."</link>";
 
                         // get media
                         curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
@@ -134,7 +135,7 @@
                         } else {
                             // TODO get html 
                             $xml_object = simplexml_load_string($response);
-                            $result = $xml_object->xpath('/result/r');
+                            $result = $xml_object->xpath("/link/a/text()='direct'");
                             $retour = array();
                             // foreach($result as $item) {
                             //     $retour[] = array(  'identifier'  => (string) $item->attributes()->identifier,
