@@ -109,7 +109,7 @@
                     
                     $id = mysql_real_escape_string($_GET['identifier']);
 
-                    $data = '<notch identifier="' . $id . '">';
+                    $data = "<notch identifier=".$id." />";
 
                     curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
                     $response = curl_exec($curl_handler);
