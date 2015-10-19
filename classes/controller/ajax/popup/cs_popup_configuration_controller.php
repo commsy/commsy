@@ -1319,7 +1319,7 @@ class cs_popup_configuration_controller implements cs_popup_controller {
 	                      	$dsnr = $form_data['dsnr'];
 	                      	$password = $form_data['pw'];
 
-	                      	$requestUrl = $c_media_integration_pw_api . '?action=verifyPWD&dsnr='.$dsnr.'&pwd='.md5($password); //&authCode='.$c_media_integration_authcode
+	                      	$requestUrl = $c_media_integration_pw_api . '?action=verifyPWD&dstnr='.$dsnr.'&pwd='.md5($password); //&authCode='.$c_media_integration_authcode
 	                      	$response = file_get_contents($requestUrl);
 	                      	$xml = new SimpleXMLElement($response);
 
