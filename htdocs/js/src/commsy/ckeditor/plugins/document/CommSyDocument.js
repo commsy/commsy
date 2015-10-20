@@ -128,7 +128,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 												}
 											} else if (this.getValue() == 'mdo') {
 												startAt.enable();
-												textInput.disable();
+												textInput.enable();
 												fileSelect.disable();
 												uploadButton.disable();
 												upload.disable();
@@ -486,6 +486,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 							} else if(this.getValueOf('documentTab', 'selectbox') == 'mdo') {
 
 								var documentUrl = this.getValueOf( 'documentTab', 'documentUrl');
+								var linkText = this.getValueOf('documentTab','linkText');
 								// perform ajax request
                                 var json_data = new Object();
                                 // json_data.mdo_search      = jQuery('input[name="ckeditor_mdo_search"]').val();
@@ -511,7 +512,7 @@ CKEDITOR.plugins.add( "CommSyDocument",
 	                                        if(result.status === 'success' && result.data.length > 0) {
 	                                        	// get content by ajax
 												// link in die Mediathek
-												content = '<a href="'+result.data.url+'"></a>';
+												content = '<a href="'+result.data.url+'">'+linkText+'</a>';
 	                                        }
 
 	                                    }
