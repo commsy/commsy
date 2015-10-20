@@ -503,11 +503,11 @@ CKEDITOR.plugins.add( "CommSyDocument",
                                 	json_data.identifier = id;
 
 	                                var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
-
-                                    mdoAjax(cid, json_data, function(content) {
-                                        var instance = this.getParentEditor();
-                                        instance.insertHtml( content );
+                                    var content = '';
+                                    mdoAjax(cid, json_data, function(retVal) {
+                                        content = retVal;
                                     });
+                                    console.log(content);
 	           //                      jQuery.ajax({
 	           //                          url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
 	           //                          data:     json_data,
