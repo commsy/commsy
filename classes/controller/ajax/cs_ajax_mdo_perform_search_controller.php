@@ -122,8 +122,7 @@
                         $notch = (string) $result[0];
                         unset($xml_object);
 
-                        $result = (string) $result[0]
-                        $newNotchId = md5($result.':'.$c_media_integration_pw);
+                        $newNotchId = md5($notch.':'.$c_media_integration_pw);
 
                         $data = "<link id='".$notch_id."'>".$newNotchId."</link>";
 
