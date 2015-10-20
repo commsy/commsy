@@ -503,20 +503,24 @@ CKEDITOR.plugins.add( "CommSyDocument",
                                 	json_data.identifier = id;
 
 	                                var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
-	                                
-	                                jQuery.ajax({
-	                                    url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
-	                                    data:     json_data,
-	                                    success:  function(message) {
-	                                        var result = eval('(' + message + ')');
-	                                        if(result.status === 'success' && result.data.length > 0) {
-	                                        	// get content by ajax
-												// link in die Mediathek
-												content = '<a href="'+result.data.url+'">'+linkText+'</a>';
-	                                        }
 
-	                                    }
-	                                });
+                                    mdoAjax(cid, json_data, function(content) {
+                                        var instance = this.getParentEditor();
+                                        instance.insertHtml( content );
+                                    });
+	           //                      jQuery.ajax({
+	           //                          url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+	           //                          data:     json_data,
+	           //                          success:  function(message) {
+	           //                              var result = eval('(' + message + ')');
+	           //                              if(result.status === 'success' && result.data.length > 0) {
+	           //                              	// get content by ajax
+												// // link in die Mediathek
+												// content = '<a href="'+result.data.url+'">'+linkText+'</a>';
+	           //                              }
+
+	           //                          }
+	           //                      });
                                 }
 
 								
@@ -675,6 +679,24 @@ CKEDITOR.plugins.add( "CommSyDocument",
 		
 	}
 } );
+
+
+function mdoAjax (cid, json_data, callback) {
+    jQuery.ajax({
+        url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
+        data:     json_data,
+        success:  function(message) {
+            var result = eval('(' + message + ')');
+            if(result.status === 'success' && result.data.length > 0) {
+                // get content by ajax
+                // link in die Mediathek
+                content = '<a href="'+result.data.url+'">'+linkText+'</a>';
+                callback(content);
+            }
+
+        }
+    });
+}
 
 function getUrlParam( param )
 {
