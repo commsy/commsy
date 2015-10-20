@@ -503,9 +503,10 @@ CKEDITOR.plugins.add( "CommSyDocument",
                                 	json_data.identifier = id;
 
 	                                var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
-                                    var content = '';
+                                    var ckInstance = this.getParentEditor();
+                                    
                                     mdoAjax(cid, linkText, json_data, function(retVal) {
-                                        content = retVal;
+                                        ckInstance.insertHtml(retVal);
                                     });
 
 	           //                      jQuery.ajax({
