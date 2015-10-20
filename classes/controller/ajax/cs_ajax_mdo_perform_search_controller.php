@@ -134,8 +134,9 @@
                         } else {
                             // TODO get html 
                             $xml_object = simplexml_load_string($response);
-                            $result = $xml_object->xpath("/link/a[@href]/text()='direct'");
-                            $retour = array();
+                            $result = $xml_object->xpath("/link/a[@href][text()='direct']");
+                            $url = (string) $result[0]->attributes()->href;
+                            $retour = array('url' => $url);
                             // foreach($result as $item) {
                             //     $retour[] = array(  'identifier'  => (string) $item->attributes()->identifier,
                             //             'title'       => html_entity_decode((string) $item->f[1]),
