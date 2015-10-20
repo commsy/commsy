@@ -691,7 +691,7 @@ function mdoAjax (cid, linkText, json_data, callback) {
             if(result.status === 'success') {
                 // get content by ajax
                 // link in die Mediathek
-                content = '<a href="'+result.data.url+'">'+linkText+'</a>';
+                content = '<a href="'+result.data.url+'" target="_new">'+linkText+'</a>';
                 callback(content);
             }
 
