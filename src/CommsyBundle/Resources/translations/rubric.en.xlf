@@ -60,7 +60,7 @@
             </trans-unit>
              <trans-unit id="15">
                 <source>list choice</source>
-                <target>Choose Entries</target>
+                <target>Edit entries</target>
             </trans-unit>
              <trans-unit id="16">
                 <source>roomlist</source>
@@ -104,7 +104,39 @@
             </trans-unit>
             <trans-unit id="26">
                 <source>unset list choice</source>
-                <target>Unset list choice</target>
+                <target>Unset Editing</target>
+            </trans-unit>
+            <trans-unit id="27">
+                <source>select shown entries</source>
+                <target>Select shown entries</target>
+            </trans-unit>
+            <trans-unit id="28">
+                <source>select all entries</source>
+                <target>Select all entries</target>
+            </trans-unit>
+            <trans-unit id="29">
+                <source>unselect entries</source>
+                <target>Unselect entries</target>
+            </trans-unit>
+            <trans-unit id="30">
+                <source>selected entries</source>
+                <target>Choose action</target>
+            </trans-unit>
+            <trans-unit id="31">
+                <source>mark read</source>
+                <target>Mark as read</target>
+            </trans-unit>
+            <trans-unit id="32">
+                <source>copy</source>
+                <target>Copy</target>
+            </trans-unit>
+            <trans-unit id="33">
+                <source>save</source>
+                <target>Download</target>
+            </trans-unit>
+            <trans-unit id="34">
+                <source>delete</source>
+                <target>Delete</target>
             </trans-unit>
         </body>
     </file>

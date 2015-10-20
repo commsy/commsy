@@ -44,7 +44,7 @@
                     });
                     $(this).html($(this).data('title'));
                 } else {
-                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '75px');
+                    $('#commsy-select-actions').parent('.uk-sticky-placeholder').css('height', '65px');
                     $(this).html($(this).data('alt-title'));
                 }
 
