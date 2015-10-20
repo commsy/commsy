@@ -510,11 +510,8 @@ CKEDITOR.plugins.add( "CommSyDocument",
 	                                        var result = eval('(' + message + ')');
 	                                        if(result.status === 'success' && result.data.length > 0) {
 	                                        	// get content by ajax
-												// iframe player (stream)
-												content = '<iframe>';
-
 												// link in die Mediathek
-												content = '<a href=""></a>';
+												content = '<a href="'+result.data.url+'"></a>';
 	                                        }
 
 	                                    }
