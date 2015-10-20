@@ -504,10 +504,10 @@ CKEDITOR.plugins.add( "CommSyDocument",
 
 	                                var cid = unescape((RegExp('cid=(.+?)(&|$)').exec(window.location.href)||[,null])[1]);
                                     var content = '';
-                                    mdoAjax(cid, json_data, function(retVal) {
+                                    mdoAjax(cid, linkText, json_data, function(retVal) {
                                         content = retVal;
                                     });
-                                    console.log(content);
+
 	           //                      jQuery.ajax({
 	           //                          url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
 	           //                          data:     json_data,
@@ -681,13 +681,13 @@ CKEDITOR.plugins.add( "CommSyDocument",
 } );
 
 
-function mdoAjax (cid, json_data, callback) {
+function mdoAjax (cid, linkText, json_data, callback) {
     jQuery.ajax({
         url:      'commsy.php?cid=' + cid + '&mod=ajax&fct=mdo_perform_search&action=search',
         data:     json_data,
         success:  function(message) {
             var result = eval('(' + message + ')');
-            if(result.status === 'success' && result.data.length > 0) {
+            if(result.status === 'success') {
                 // get content by ajax
                 // link in die Mediathek
                 content = '<a href="'+result.data.url+'">'+linkText+'</a>';
