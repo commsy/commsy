@@ -82,33 +82,8 @@
                     $session_id = (string) $result[0]->attributes()->id;
                     $notch = (string) $result[0];
                     unset($xml_object);
-
-                    ############################
-                    ## perform search
-                    ############################
-                    // $operator = mysql_real_escape_string($_GET['mdo_andor']);
-                    // $option = mysql_real_escape_string($_GET['mdo_wordbegin']);
-                    // $field = mysql_real_escape_string($_GET['mdo_titletext']);
-                    // $search = mysql_real_escape_string($_GET['mdo_search']);
-
-                    // $data = '<search fields="titel,text">';
-                    // $data .= '<condition';
-                    // if(!empty($operator)) {
-                    //     $data .= ' operator="' . $operator . '"';
-                    // }
-                    // if(!empty($option)) {
-                    //     $data .= ' option="' . $option . '"';
-                    // }
-                    // if(empty($field)) {
-                    //     $this->setErrorReturn("1234", "Search Error", "Detail");
-                    // } else {
-                    //     $data .= ' field="' . $field . '"';
-                    // }
-                    // $data .= '>' . $search . '</condition>';
-                    // $data .= '</search>';
                     
                     $id = mysql_real_escape_string($_GET['identifier']);
-
                     $data = "<notch identifier='".$id."' />";
 
                     curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
@@ -132,16 +107,11 @@
                         if(!$response) {
                             $this->setErrorReturn("1234", "No response search", "Detail");
                         } else {
-                            // TODO get html 
                             $xml_object = simplexml_load_string($response);
                             $result = $xml_object->xpath("/link/a[@href][text()='direct']");
                             $url = (string) $result[0]->attributes()->href;
                             $retour = array('url' => $url);
-                            // foreach($result as $item) {
-                            //     $retour[] = array(  'identifier'  => (string) $item->attributes()->identifier,
-                            //             'title'       => html_entity_decode((string) $item->f[1]),
-                            //             'text'        => html_entity_decode((string) $item->f[2]));
-                            // }
+
                             unset($xml_object);
                             $this->setSuccessfullDataReturn($retour);
                             
@@ -149,28 +119,9 @@
 
                     }
 
-
-                    // curl_setopt($curl_handler, CURLOPT_POSTFIELDS, array('xmlstatement' => $data));
-                    // $response = curl_exec($curl_handler);
-                    // if(!$response) {
-                    //     $this->setErrorReturn("1234", "No response search", "Detail");
-                    // } else {
-                    //     $xml_object = simplexml_load_string($response);
-                    //     $result = $xml_object->xpath('/result/r');
-                    //     $retour = array();
-                    //     foreach($result as $item) {
-                    //         $retour[] = array(  'identifier'  => (string) $item->attributes()->identifier,
-                    //                 'title'       => html_entity_decode((string) $item->f[1]),
-                    //                 'text'        => html_entity_decode((string) $item->f[2]));
-                    //     }
-                    //     unset($xml_object);
-                    //     $this->setSuccessfullDataReturn($retour);
-                    //     // $page->add('success', 'true');
-                    //     // $page->add('results', $retour);
-                    // }
                 }
             } else {
-                $this->setErrorReturn("1234", "Error", "Detail");
+                $this->setErrorReturn("1234", "Error", "No access");
                 // $page->add('success', 'false');
             }
             
