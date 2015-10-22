@@ -721,7 +721,11 @@ class MaterialController extends Controller
         $translator = new Translator('de_DE');
         
         $action = $request->request->get('act');
-        $selectedIds = json_decode($request->request->get('data'));
+        
+        $selectedIds = $request->request->get('data');
+        if (!is_array($selectedIds)) {
+            $selectedIds = json_decode($selectedIds);
+        }
         
         $message = $translator->trans('an error has occurred');
         $status = 'danger';
@@ -751,23 +755,16 @@ class MaterialController extends Controller
             $message = 'ToDo: copy entries';
             $status = 'danger';
         } else if ($action == 'save') {
-            $message = 'ToDo: save entries';
-            $status = 'danger';
+            xdebug_break();
             
             $zipfile = $this->download($roomId, $selectedIds);
-        
-            error_log(print_r($zipfile, true));
-            
             $content = file_get_contents($zipfile);
-        
-            error_log(print_r($content, true));
-        
+
             $response = new Response($content, Response::HTTP_OK, array('content-type' => 'application/zip'));
-            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile');   
+            $contentDisposition = $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT,'zipfile.zip');   
             $response->headers->set('Content-Disposition', $contentDisposition);
             
             return $response;
-            
         } else if ($action == 'delete') {
             $materialService = $this->get('commsy_legacy.material_service');
   		    foreach ($selectedIds as $id) {

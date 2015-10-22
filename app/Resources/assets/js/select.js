@@ -161,55 +161,66 @@
                 return this.value;
             }).get();
             
-            $.ajax({
-                url: $this.options.actionUrl,
-                type: "POST",
-                data: {act: action, data : JSON.stringify(entries)}
-            })
-            .done(function(result) {
-                $('#commsy-select-actions-select-shown').removeClass('uk-active');
-                $('#commsy-select-actions-select-all').removeClass('uk-active');
-                $('#commsy-select-actions-unselect').removeClass('uk-active');
-                
-                target.find('input[type="checkbox"]').each(function(){
-                    $(this).prop('checked', false);
-                });
-                target.find('article').each(function(){
-                    $(this).removeClass('uk-comment-primary');
-                });
-                
-                var el = $('.feed-load-more');
-                var queryString = document.location.search;
-                var url = el.data('feed').url  + 0 + queryString;
-        
-                var message = result.message;
-                var status = result.status;
-        
+            if (action != 'save') {
                 $.ajax({
-                  url: url
+                    url: $this.options.actionUrl,
+                    type: "POST",
+                    data: {act: action, data : JSON.stringify(entries)}
                 })
                 .done(function(result) {
-                    if ($(result).filter('article').length) {
-                        var target = el.data('feed').target;
-                        $(target).empty();
-                        $(target).html(result);
-                        
-                        $(target).find('article').each(function(){
-                            $(this).toggleClass('selectable');
-                        });
-                        
-                        $this.bind();
-                        
-                        UIkit.notify({
-                            message : message,
-                            status  : status,
-                            timeout : 2000,
-                            pos     : 'top-center'
-                        });
-                    }
+                    $('#commsy-select-actions-select-shown').removeClass('uk-active');
+                    $('#commsy-select-actions-select-all').removeClass('uk-active');
+                    $('#commsy-select-actions-unselect').removeClass('uk-active');
+                    
+                    target.find('input[type="checkbox"]').each(function(){
+                        $(this).prop('checked', false);
+                    });
+                    target.find('article').each(function(){
+                        $(this).removeClass('uk-comment-primary');
+                    });
+                    
+                    var el = $('.feed-load-more');
+                    var queryString = document.location.search;
+                    var url = el.data('feed').url  + 0 + queryString;
+            
+                    var message = result.message;
+                    var status = result.status;
+            
+                    $.ajax({
+                      url: url
+                    })
+                    .done(function(result) {
+                        if ($(result).filter('article').length) {
+                            var target = el.data('feed').target;
+                            $(target).empty();
+                            $(target).html(result);
+                            
+                            $(target).find('article').each(function(){
+                                $(this).toggleClass('selectable');
+                            });
+                            
+                            $this.bind();
+                            
+                            UIkit.notify({
+                                message : message,
+                                status  : status,
+                                timeout : 2000,
+                                pos     : 'top-center'
+                            });
+                        }
+                    });
                 });
-                
-            });
+            } else {
+                var $form=$(document.createElement('form')).css({display:'none'}).attr("method","POST").attr("action",$this.options.actionUrl);
+                for (var i = 0; i < entries.length; i++) { 
+                    var $input=$(document.createElement('input')).attr('name','data[]').val(entries[i]);
+                    $form.append($input)
+                }
+                var $input=$(document.createElement('input')).attr('name','act').val('save');
+                $form.append($input)
+                $("body").append($form);
+                $form.submit();
+            }
         }
     });
 
