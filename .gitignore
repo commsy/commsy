@@ -122,3 +122,5 @@ app/Resources/assets/manifests/rev-manifest.json
 
 node_modules
 src/CommsyBundle/Resources/public/components
+
+legacy/var/temp
