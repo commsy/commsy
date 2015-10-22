@@ -755,8 +755,6 @@ class MaterialController extends Controller
             $message = 'ToDo: copy entries';
             $status = 'danger';
         } else if ($action == 'save') {
-            xdebug_break();
-            
             $zipfile = $this->download($roomId, $selectedIds);
             $content = file_get_contents($zipfile);
 
@@ -785,39 +783,51 @@ class MaterialController extends Controller
     }
     
     private function download($roomId, $selectedIds) {
-         $detailArray = $this->getDetailInfo($roomId, $selectedIds[0]);
-         $detailArray['roomId'] = $roomId;
-         $detailArray['annotationForm'] = $this->createForm('annotation')->createView();
+        $itemId = $selectedIds[0];
         
-         $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $detailArray = $this->getDetailInfo($roomId, $itemId);
+        $detailArray['roomId'] = $roomId;
+        $detailArray['annotationForm'] = $this->createForm('annotation')->createView();
         
-         global $symfonyContainer;
-         $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
-         if(!isset($export_temp_folder)) {
+        $environment = $this->get('commsy_legacy.environment')->getEnvironment();
+        
+        global $symfonyContainer;
+        $export_temp_folder = $symfonyContainer->getParameter('commsy.settings.export_temp_folder');
+        if(!isset($export_temp_folder)) {
             $export_temp_folder = 'var/temp/zip_export';
-         }
-         $directory_split = explode("/",$export_temp_folder);
-         $done_dir = "./";
-         foreach($directory_split as $dir) {
+        }
+        $directory_split = explode("/",$export_temp_folder);
+        $done_dir = "./";
+        foreach($directory_split as $dir) {
             if(!is_dir($done_dir.'/'.$dir)) {
                mkdir($done_dir.'/'.$dir, 0777);
             }
             $done_dir .= '/'.$dir;
-         }
-         $directory = './'.$export_temp_folder.'/'.time();
-         mkdir($directory,0777);
-         $filemanager = $environment->getFileManager();
+        }
+        $directory = './'.$export_temp_folder.'/'.time();
+        mkdir($directory,0777);
+        $filemanager = $environment->getFileManager();
     
-         //create HTML-File
-         $filename = $directory.'/index.html';
-         $handle = fopen($filename, 'a');
-         //Put page into string
-         //$output = $page->asHTML();
-         $output = $this->render('CommsyBundle:Material:detail.html.twig', $detailArray);
+        //create HTML-File
+        $filename = $directory.'/index.html';
+        $handle = fopen($filename, 'a');
+        //Put page into string
+        $output = $this->render('CommsyBundle:Material:detail.html.twig', $detailArray);
     
-         //String replacements
-         $output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
-         $params = $environment->getCurrentParameterArray();
+        //String replacements
+        //$output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
+        //$params = $environment->getCurrentParameterArray();
+
+        //copy CSS File
+        mkdir($directory.'/css', 0777);
+        mkdir($directory.'/css/build', 0777);
+        $cssMatchArray = array();
+        preg_match_all('~\/css\/build\/commsy[^\.]*.css~', $output, $cssMatchArray);
+        foreach ($cssMatchArray as $cssMatch) {
+            $tempCssMatch = str_ireplace('/css', 'css', $cssMatch[0]);
+            $output = str_ireplace($cssMatch, $tempCssMatch, $output);
+            copy($this->get('kernel')->getRootDir().'/../web/'.$tempCssMatch, $directory.'/'.$tempCssMatch);
+        }
     
          //find images in string
          $reg_exp = '~\<a\s{1}href=\"(.*)\"\s{1}t~u';
@@ -953,23 +963,25 @@ class MaterialController extends Controller
          fclose($handle);
          unset($output);
     
-         //copy CSS File
-         $csssrc = 'htdocs/commsy_print_css.php';
-         $csstarget = $directory.'/stylesheet.css';
+         
     
-         mkdir($directory.'/css', 0777);
+         
     
-         $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
+         //$url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
          //$this->getCSS($directory.'/css/stylesheet.css',$url_to_style);
-         unset($url_to_style);
+         //unset($url_to_style);
     
          //create ZIP File
-         if(isset($params['iid'])) {
+         
+         /* if(isset($params['iid'])) {
             $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$environment->getCurrentModule().'_'.$params['iid'].'.zip';
          }
          else {
             $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$environment->getCurrentModule().'_'.$environment->getCurrentFunction().'.zip';
-         }
+         } */
+         
+        $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.'RUBRIC_NAME'.'_'.$itemId.'.zip';
+         
          if(file_exists(realpath($zipfile))) {
             unlink($zipfile);
           }
@@ -991,7 +1003,7 @@ class MaterialController extends Controller
     
             $zip->close();
             unset($zip);
-            unset($params['downloads']);
+            //unset($params['downloads']);
          } else {
             include_once('functions/error_functions.php');
             trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNING);
@@ -1018,12 +1030,14 @@ class MaterialController extends Controller
          } else {
             $current_module = $environment->getCurrentModule();
          }
-         if(isset($params['iid'])) {
+         /* if(isset($params['iid'])) {
             $downloadfile = $current_module.'_'.$params['iid'].'.zip';
          }
          else {
             $downloadfile = $current_module.'_'.$environment->getCurrentFunction().'.zip';
-         }
+         } */
+    
+         $downloadfile = 'RUBRIC_NAME'.'_'.$itemId.'.zip';
     
          return $zipfile;
     }
