@@ -60,7 +60,7 @@
             </trans-unit>
              <trans-unit id="15">
                 <source>list choice</source>
-                <target>Liste bearbeiten</target>
+                <target>Einträge bearbeiten</target>
             </trans-unit>
              <trans-unit id="16">
                 <source>roomlist</source>

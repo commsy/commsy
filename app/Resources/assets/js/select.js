@@ -50,18 +50,6 @@
 
                 $this.articles.toggleClass('selectable');
             });
-
-            $('#commsy-select-actions-select-shown').on("change.uk.button", function(event) {
-                $(this).addClass('uk-active');
-                $('#commsy-select-actions-select-all').removeClass('uk-active');
-                
-                target.find('input[type="checkbox"]').each(function(){
-                    $(this).prop('checked', true);
-                });
-                target.find('article').each(function(){
-                    $(this).addClass('uk-comment-primary');
-                });
-            });
             
             $('#commsy-select-actions-select-all').on("change.uk.button", function(event) {
                 $(this).addClass('uk-active');
