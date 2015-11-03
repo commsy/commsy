@@ -158,9 +158,11 @@ if (!$current_user->isModerator()
                             if ($days == 0) {
                                 $days = 1;
                             }
-                            if ($days >= $delete_days-1 and !empty($delete_days)) {
-                                $count_delete++;
-                                continue;
+                            if(!empty($delete_days) AND empty($lock_days)) {
+                                if ($days >= $delete_days-1 and !empty($delete_days)) {
+                                    $count_delete++;
+                                    continue;
+                                }
                             }
                             if ($days >= $lock_days-1 and !empty($lock_days)) {
                                 $count_lock++;

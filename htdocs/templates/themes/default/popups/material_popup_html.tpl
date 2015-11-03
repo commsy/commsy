@@ -294,6 +294,11 @@
 	         						<input id="bib_isbn" type="text" class="size_200" name="form_data[isbn]" value="{show var=$item.isbn}" />
 	         					</div>
 
+                                <div class="input_row">
+                                    <label for="bib_pages">___MATERIAL_PAGES___:</label>
+                                    <input id="bib_pages" type="text" class="size_200" name="form_data[pages]" value="{show var=$item.pages}" />
+                                </div>
+
 	         					<div class="input_row">
 	         						<label for="bib_url">___MATERIAL_URL___:</label>
 	         						<input id="bib_url" type="text" class="size_200" name="form_data[url]" value="{show var=$item.url}" />
@@ -337,12 +342,12 @@
 	         					</div>
 
 	         					<div class="input_row">
-	         						<label for="bib_address">___MATERIAL_ADDRESS___<span class="required">*</span>:</label>
+	         						<label for="bib_address">___MATERIAL_ADDRESS___:</label>
 	         						<input id="bib_address" type="text" class="size_200" name="form_data[address]" value="{show var=$item.address}" />
 	         					</div>
 
 	         					<div class="input_row">
-	         						<label for="bib_publisher">___MATERIAL_PUBLISHER___<span class="required">*</span>:</label>
+	         						<label for="bib_publisher">___MATERIAL_PUBLISHER___:</label>
 	         						<input id="bib_publisher" type="text" class="size_200" name="form_data[publisher]" value="{show var=$item.publisher}" />
 	         					</div>
 
