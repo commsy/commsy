@@ -21,8 +21,8 @@
                         <div>
                             <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                 <button class="uk-button uk-button-mini">{{ 'list sort'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
-                                <div class="uk-dropdown uk-dropdown-small">
-                                    <ul class="uk-nav uk-nav-dropdown">
+                                <div id="cs-entry-navigation" class="cs-remove-padding uk-dropdown uk-dropdown-small">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding uk-margin-remove uk-text-left">
                                         <li><a href="#">{{ 'title'|trans({},'rubric')}}</a></li>
                                         <li><a href="#">{{ 'modifier'|trans({},'rubric') }}</a></li>
                                         <li><a href="#">{{ 'modification_date'|trans({},'rubric') }}</a></li>
@@ -45,12 +45,12 @@
                         <div class="cs-list-select-buttons uk-text-right uk-width-1-4 uk-margin-remove uk-margin-top uk-padding-bottom">
                             <div class="uk-button-dropdown uk-text-left" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
                                 <button class="uk-button">{{ 'selected entries'|trans({},'rubric')}} <i class="uk-icon-caret-down"></i></button>
-                                <div class="uk-dropdown uk-dropdown">
-                                    <ul class="uk-nav uk-nav-dropdown">
-                                        <li><a href="#" id="commsy-select-actions-mark-read">{{ 'mark read'|trans({},'rubric')|capitalize }}</a></li>
-                                        <li><a href="#" id="commsy-select-actions-copy">{{ 'copy'|trans({},'rubric')|capitalize }}</a></li>
-                                        <li><a href="#" id="commsy-select-actions-save">{{ 'save'|trans({},'rubric')|capitalize }}</a></li>
-                                        <li><a href="#" id="commsy-select-actions-delete">{{ 'delete'|trans({},'rubric')|capitalize }}</a></li>
+                                <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown cs-remove-padding">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped cs-remove-padding uk-margin-remove uk-text-left">
+                                        <li><a href="#" id="commsy-select-actions-mark-read"><i class="uk-icon-justify uk-icon-small uk-icon-check-square-o"></i> <span class="cs-addon-navigation-large">{{ 'mark read'|trans({},'rubric')|capitalize }}</span></a></li>
+                                        <li><a href="#" id="commsy-select-actions-copy"><i class="uk-icon-justify uk-icon-small uk-icon-copy"></i> <span class="cs-addon-navigation-large">{{ 'copy'|trans({},'rubric')|capitalize }}</span></a></li>
+                                        <li><a href="#" id="commsy-select-actions-save"><i class="uk-icon-justify uk-icon-small uk-icon-save"></i> <span class="cs-addon-navigation-large">{{ 'save'|trans({},'rubric')|capitalize }}</span></a></li>
+                                        <li><a href="#" id="commsy-select-actions-delete"><i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> <span class="cs-addon-navigation-large">{{ 'delete'|trans({},'rubric')|capitalize }}</span></a></li>
                                     </ul>
                                 </div>
                             </div>

@@ -718,7 +718,7 @@ class MaterialController extends Controller
      */
     public function feedActionAction($roomId, Request $request)
     {
-        $translator = new Translator('de_DE');
+        $translator = $this->get('translator');
         
         $action = $request->request->get('act');
         
@@ -727,8 +727,7 @@ class MaterialController extends Controller
             $selectedIds = json_decode($selectedIds);
         }
         
-        $message = $translator->trans('an error has occurred');
-        $status = 'danger';
+        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-bolt\'></i> '.$translator->trans('action error');
         
         if ($action == 'markread') {
 	        $materialService = $this->get('commsy_legacy.material_service');
@@ -749,11 +748,9 @@ class MaterialController extends Controller
     	            }
     	        }
 	        }
-	        $message = $translator->trans('marked entries as read');
-            $status = 'success';
+	        $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-check-square-o\'></i> '.$translator->transChoice('marked %count% entries as read',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'copy') {
-            $message = 'ToDo: copy entries';
-            $status = 'danger';
+           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-copy\'></i> '.$translator->transChoice('%count% copied entries',count($selectedIds), array('%count%' => count($selectedIds)));
         } else if ($action == 'save') {
             $zipfile = $this->download($roomId, $selectedIds);
             $content = file_get_contents($zipfile);
@@ -769,16 +766,20 @@ class MaterialController extends Controller
   		        $item = $materialService->getMaterial($id);
   		        $item->delete();
   		    }
-            $message = $translator->trans('deleted entries');
-            $status = 'success';
+           $message = '<i class=\'uk-icon-justify uk-icon-medium uk-icon-trash-o\'></i> '.$translator->transChoice('%count% deleted entries',count($selectedIds), array('%count%' => count($selectedIds)));
         }
         
         $response = new JsonResponse();
-        $response->setData(array(
+ /*       $response->setData(array(
             'message' => $message,
             'status' => $status
         ));
-        
+  */      
+        $response->setData(array(
+            'message' => $message,
+            'timeout' => '5550',
+            'layout'   => 'cs-notify-message'
+        ));
         return $response;
     }
     

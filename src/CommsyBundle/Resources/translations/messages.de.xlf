@@ -118,6 +118,22 @@
                 <source>new section</source>
                 <target>Neuer Abschnitt</target>
             </trans-unit>
+            <trans-unit id="30">
+                <source>marked %count% entries as read</source>
+                 <target>{0} Keine Einträge als gelesen markiert.|{1} Ein Eintrag als gelesen markiert.|]1,Inf[ %count% Einträge als gelesen markiert.</target>
+           </trans-unit>            
+            <trans-unit id="31">
+                <source>%count% deleted entries</source>
+                 <target>{0} Keine Einträge gelöscht.|{1} Ein Eintrag gelöscht.|]1,Inf[ %count% Einträge gelöscht.</target>
+           </trans-unit>            
+            <trans-unit id="32">
+                <source>%count% copied entries</source>
+                 <target>{0} Keine Einträge kopiert.|{1} Ein Eintrag kopiert.|]1,Inf[ %count% Einträge kopiert.</target>
+           </trans-unit>            
+            <trans-unit id="33">
+                <source>action error</source>
+                 <target>Beim Ausführen der Aktion ist ein Fehler aufgetreten.</target>
+           </trans-unit>            
         </body>
     </file>
 </xliff>

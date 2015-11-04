@@ -173,6 +173,8 @@
             
                     var message = result.message;
                     var status = result.status;
+                    var layout = result.layout;
+                    var timeout = result.timeout;
             
                     $.ajax({
                       url: url
@@ -192,7 +194,7 @@
                             UIkit.notify({
                                 message : message,
                                 status  : status,
-                                timeout : 2000,
+                                timeout : timeout,
                                 pos     : 'top-center'
                             });
                         }

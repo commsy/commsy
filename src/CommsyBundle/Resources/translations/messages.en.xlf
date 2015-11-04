@@ -118,6 +118,22 @@
                 <source>new section</source>
                 <target>New section</target>
             </trans-unit>
+            <trans-unit id="30">
+                <source>marked %count% entries as read</source>
+                 <target>{0} No entries marked as read.|{1} One entry marked as read.|]1,Inf[ %count% entries marked as read.</target>
+           </trans-unit>            
+            <trans-unit id="31">
+                <source>%count% deleted entries</source>
+                 <target>{0} No entries deleted.|{1} One entry deleted.|]1,Inf[ %count% entries deleted.</target>
+           </trans-unit>            
+            <trans-unit id="32">
+                <source>%count% copied entries</source>
+                 <target>{0} No entries copied.|{1} One entry copied.|]1,Inf[ %count% entries copied.</target>
+           </trans-unit>            
+            <trans-unit id="33">
+                <source>action error</source>
+                 <target>An error has occured.</target>
+           </trans-unit>            
         </body>
     </file>
 </xliff>

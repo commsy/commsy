@@ -110,7 +110,7 @@
                                         {# send #}
                                         <li>
                                             <a class="" href="#">
-                                                <i class="uk-icon-small uk-icon-send"></i>
+                                                <i class="uk-icon-small uk-icon-send-o"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'send'|trans({})|capitalize }}</span>
                                             </a>
                                         </li>
@@ -119,11 +119,11 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="" href="#">
-                                                    <i class="uk-icon-small uk-icon-trash"></i>
+                                                    <i class="uk-icon-small uk-icon-trash-o"></i>
                                                     <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
                                                 </a>
                                             {% else %}
-                                                <i class="uk-icon-small uk-icon-trash"></i>
+                                                <i class="uk-icon-small uk-icon-trash-o"></i>
                                                 <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
                                             {% endif %}
                                         </li>
