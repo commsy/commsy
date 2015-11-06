@@ -39,7 +39,9 @@ class MaterialTransformer implements DataTransformerInterface
 
             $materialData['description'] = $materialItem->getDescription();
 
-            $materialData['biblio_select'] = 'Biblio'.ucfirst($materialItem->getBibKind()).'Type';
+            if ($materialData['biblio_select'] != 'none') {
+                $materialData['biblio_select'] = 'Biblio'.ucfirst($materialItem->getBibKind()).'Type';
+            }
 
             $materialData['biblio_sub']['author'] = $materialItem->getAuthor();
             $materialData['biblio_sub']['publishing_date'] = $materialItem->getPublishingDate();
