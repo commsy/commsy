@@ -3,8 +3,6 @@ namespace CommsyBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,6 +10,7 @@ use Doctrine\ORM\EntityManager;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 use CommsyBundle\Entity\Materials;
+use CommsyBundle\Form\Type\Event\AddBibliographicFieldListener;
 
 class MaterialType extends AbstractType
 {
@@ -36,20 +35,25 @@ class MaterialType extends AbstractType
             ))
             ->add('biblio_select', 'choice', array(
                 'choices'  => array(
-                    'thesis' => 'Thesis',
-                    'term' => 'Term paper'
+                    'BiblioPlainType' => 'plain',
+                    'BiblioBookType' => 'book',
+                    'BiblioCollectionType' => 'collection',
+                    'BiblioArticleType' => 'article',
+                    'BiblioJournalType' => 'journal',
+                    'BiblioChapterType' => 'chapter',
+                    'BiblioNewspaperType' => 'newspaper',
+                    'BiblioThesisType' => 'thesis',
+                    'BiblioManuscriptType' => 'manuscript',
+                    'BiblioWebsiteType' => 'website',
+                    'BiblioDocManagementType' => 'document management',
+                    'BiblioPictureType' => 'picture',
+
                 ),
                 'required' => false,
+                'translation_domain' => 'form'
             ))
-            ->add('biblio', 'textarea', array(
-                'label' => 'Biblio',
-                'attr' => array(
-                    'placeholder' => 'Biblio',
-                    'class' => 'uk-form-width-large',
-                ),
-                'translation_domain' => 'material',
-                'required' => false,
-            ))
+            ->addEventSubscriber(new AddBibliographicFieldListener())
+            // ->get('biblio_select')->addEventSubscriber() // post submit
             ->add('save', 'submit', array(
                 'attr' => array(
                     'class' => 'uk-button-primary',
@@ -67,37 +71,37 @@ class MaterialType extends AbstractType
         ;
         
         
-        $formModifier = function (FormInterface $form, Materials $material = null) {
-            $form->add('biblio', 'textarea', array(
-                'label' => 'Biblio',
-                'attr' => array(
-                    'placeholder' => 'Biblio',
-                    'class' => 'uk-form-width-large',
-                ),
-                'translation_domain' => 'material',
-                'required' => false,
-            ));
-        };
+//         $formModifier = function (FormInterface $form, Materials $material = null) {
+//             $form->add('biblio', 'textarea', array(
+//                 'label' => 'Biblio',
+//                 'attr' => array(
+//                     'placeholder' => 'Biblio',
+//                     'class' => 'uk-form-width-large',
+//                 ),
+//                 'translation_domain' => 'material',
+//                 'required' => false,
+//             ));
+//         };
 
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) use ($formModifier) {
-                $formModifier($event->getForm(), new Materials());
-            }
-        );
+//         $builder->addEventListener(
+//             FormEvents::PRE_SET_DATA,
+//             function (FormEvent $event) use ($formModifier) {
+//                 $formModifier($event->getForm(), new Materials());
+//             }
+//         );
 
-        $builder->get('biblio_select')->addEventListener(
-            FormEvents::POST_SUBMIT,
-            function (FormEvent $event) use ($formModifier) {
-                // It's important here to fetch $event->getForm()->getData(), as
-                // $event->getData() will get you the client data (that is, the ID)
-                $material = $event->getForm()->getData();
-
-                // since we've added the listener to the child, we'll have to pass on
-                // the parent to the callback functions!
-                $formModifier($event->getForm()->getParent(), $material);
-            }
-        );
+//         $builder->get('biblio_select')->addEventListener(
+//             FormEvents::POST_SUBMIT,
+//             function (FormEvent $event) use ($formModifier) {
+//                 // It's important here to fetch $event->getForm()->getData(), as
+//                 // $event->getData() will get you the client data (that is, the ID)
+//                 $material = $event->getForm()->getData();
+// var_dump($material);
+//                 // since we've added the listener to the child, we'll have to pass on
+//                 // the parent to the callback functions!
+//                 $formModifier($event->getForm()->getParent(), $material);
+//             }
+//         );
         
     }
 

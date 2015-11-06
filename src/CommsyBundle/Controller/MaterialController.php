@@ -453,7 +453,12 @@ class MaterialController extends Controller
                 throw $this->createNotFoundException('No material found for id ' . $roomId);
             }
             $formData = $transformer->transform($materialItem);
-            $form = $this->createForm('material', $formData, array());
+            $form = $this->createForm('material', $formData, array(
+                'action' => $this->generateUrl('commsy_material_edit', array(
+                    'roomId' => $roomId,
+                    'itemId' => $itemId,
+                ))
+            ));
         } else if ($item->getItemType() == 'section') {
             // get section from MaterialService
             $materialItem = $materialService->getSection($itemId);
@@ -525,7 +530,6 @@ class MaterialController extends Controller
         }
         
         $infoArray = $this->getDetailInfo($roomId, $itemId);
-        
         return array(
             'roomId' => $roomId,
             'item' => $tempItem,
@@ -1019,4 +1023,5 @@ class MaterialController extends Controller
     
         return $zipfile;
     }
+
 }

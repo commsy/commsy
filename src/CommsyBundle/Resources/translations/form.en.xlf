@@ -54,6 +54,58 @@
                 <source>theme</source>
                 <target>Theme</target>
             </trans-unit>
+            <trans-unit id="form-bib-plain">
+                <source>plain</source>
+                <target>Plain text</target>
+            </trans-unit>
+            <trans-unit id="form-bib-book">
+                <source>book</source>
+                <target>Book</target>
+            </trans-unit>
+            <trans-unit id="form-bib-collection">
+                <source>collection</source>
+                <target>Collection</target>
+            </trans-unit>
+            <trans-unit id="form-bib-article">
+                <source>article</source>
+                <target>Article from edited volume</target>
+            </trans-unit>
+            <trans-unit id="form-bib-journal">
+                <source>journal</source>
+                <target>Journal article</target>
+            </trans-unit>
+            <trans-unit id="form-bib-chapter">
+                <source>chapter</source>
+                <target>Book chapter</target>
+            </trans-unit>
+            <trans-unit id="form-bib-newspaper">
+                <source>newspaper</source>
+                <target>Newspaper article</target>
+            </trans-unit>
+            <trans-unit id="form-bib-thesis">
+                <source>thesis</source>
+                <target>Thesis</target>
+            </trans-unit>
+            <trans-unit id="form-bib-manuscript">
+                <source>manuscript</source>
+                <target>Manuscript</target>
+            </trans-unit>
+            <trans-unit id="form-bib-website">
+                <source>website</source>
+                <target>Website</target>
+            </trans-unit>
+            <trans-unit id="form-bib-document-management">
+                <source>document management</source>
+                <target>Document management</target>
+            </trans-unit>
+            <trans-unit id="form-bib-picture">
+                <source>picture</source>
+                <target>Picture</target>
+            </trans-unit>
+            <trans-unit id="form-bib-select">
+                <source>Bibl. reference</source>
+                <target>Bibl. Angaben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

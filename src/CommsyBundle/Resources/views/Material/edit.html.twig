@@ -51,6 +51,8 @@ $biblio.change(function() {
   var $form = $(this).closest('form');
   // Simulate form data, but only include the selected sport value.
   var data = {};
+
+  data[$(this).attr('name')] = $(this).val();
   // Submit data via AJAX to the form's action path.
   $.ajax({
     url : $form.attr('action'),
@@ -58,11 +60,22 @@ $biblio.change(function() {
     data : data,
     success: function(html) {
       // Replace current position field ...
-      $('#material_biblio').replaceWith(
-        // ... with the returned one from the AJAX response.
-        $(html).find('#material_biblio')
-      );
-      console.log(html);
+      // add field
+      if (!$('#material_biblio_sub').length) {
+        $('#material_biblio_select').after(
+          // ... with the returned one from the AJAX response.
+          $(html).find('#material_biblio_sub')
+          // html
+        );
+      } else {
+        $('#material_biblio_sub').replaceWith(
+          // ... with the returned one from the AJAX response.
+          $(html).find('#material_biblio_sub')
+          // html
+        );
+      }
+      
+      // console.log(html);
       // Position field now displays the appropriate positions.
     }
   });
