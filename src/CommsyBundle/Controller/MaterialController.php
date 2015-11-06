@@ -542,7 +542,7 @@ class MaterialController extends Controller
      */
     public function createAction($roomId, Request $request)
     {
-        $translator = new Translator('de_DE');
+        $translator = $this->get('translator');
         
         $materialData = array();
         $materialService = $this->get('commsy_legacy.material_service');
@@ -584,7 +584,7 @@ class MaterialController extends Controller
      */
     public function createSectionAction($roomId, $itemId, Request $request)
     {
-        $translator = new Translator('de_DE');
+        $translator = $this->get('translator');
 
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
@@ -628,7 +628,7 @@ class MaterialController extends Controller
      */
     public function saveSectionAction($roomId, $itemId, Request $request)
     {
-        $translator = new Translator('de_DE');
+        $translator = $this->get('translator');
 
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
@@ -664,7 +664,7 @@ class MaterialController extends Controller
      */
     public function sortSectionsAction($roomId, $itemId, Request $request)
     {
-        $translator = new Translator('de_DE');
+        $translator = $this->get('translator');
 
         $materialService = $this->get('commsy_legacy.material_service');
         $transformer = $this->get('commsy_legacy.transformer.material');
