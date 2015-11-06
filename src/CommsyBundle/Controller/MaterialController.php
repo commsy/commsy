@@ -533,6 +533,8 @@ class MaterialController extends Controller
             'userCount' => $infoArray['userCount'],
             'readCount' => $infoArray['readCount'],
             'readSinceModificationCount' => $infoArray['readSinceModificationCount'],
+            'showRating' => $infoArray['showRating'],
+            'showWorkflow' => $infoArray['showWorkflow']
         );
     }
         
