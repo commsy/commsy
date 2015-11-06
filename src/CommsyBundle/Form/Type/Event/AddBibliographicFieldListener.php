@@ -43,8 +43,7 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
         $data = $event->getData();
         $form = $event->getForm();
 
-        var_dump($data);
-        if (isset($data['biblio_select'])) {
+        if (isset($data['biblio_select']) && $data['biblio_select'] != 'none') {
             // $form->add('biblio_sub', new BiblioPlainType());
         
             $bibNamespace = 'CommsyBundle\Form\Type\Bibliographic';
@@ -60,7 +59,7 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
         $data = $event->getData();
         $form = $event->getForm();
 
-        if (isset($data['biblio_select'])) {
+        if (isset($data['biblio_select']) && $data['biblio_select'] != 'none') {
             // $form->add('biblio_sub', new BiblioPlainType());
         
             $bibNamespace = 'CommsyBundle\Form\Type\Bibliographic';
