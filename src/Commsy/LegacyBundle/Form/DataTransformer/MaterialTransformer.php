@@ -67,8 +67,6 @@ class MaterialTransformer implements DataTransformerInterface
             $materialData['biblio_sub']['foto_reason'] = $materialItem->getFotoReason();
             $materialData['biblio_sub']['foto_date'] = $materialItem->getFotoDate();
 
-
-
         }
 
         return $materialData;
@@ -141,7 +139,7 @@ class MaterialTransformer implements DataTransformerInterface
         foreach ($bibFields as $key => $value) {
             $form_data[$value] = isset($form_data[$value]) ? $form_data[$value] : '';
             if($value == 'url_date' && $form_data[$value] != '') {
-                $form_data[$value] = $form_data[$value]->format('Y-m-d H:i:s');
+                $form_data[$value] = $form_data[$value]->format('Y-m-d');
             }
         }
 

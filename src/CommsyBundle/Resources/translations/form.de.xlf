@@ -107,9 +107,129 @@
                 <source>bib reference</source>
                 <target>Bibl. Angaben</target>
             </trans-unit>
-            <trans-unit id="form-bib-author">
+            <trans-unit id="form-bib-field-author">
                 <source>author</source>
                 <target>Autor</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-date">
+                <source>publishing date</source>
+                <target>Jahr</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-editor">
+                <source>editor</source>
+                <target>HerausgeberInnen</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-booktitle">
+                <source>booktitle</source>
+                <target>Buchtitel</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-publisher">
+                <source>publisher</source>
+                <target>Verlag</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-address">
+                <source>address</source>
+                <target>Adresse</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-edition">
+                <source>edition</source>
+                <target>Auflage</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-series">
+                <source>series</source>
+                <target>Reihe</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-volume">
+                <source>volume</source>
+                <target>Band</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-isbn">
+                <source>isbn</source>
+                <target>ISBN</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-url">
+                <source>url</source>
+                <target>URL</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-visited">
+                <source>visited</source>
+                <target>Besucht am</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-journal">
+                <source>journal</source>
+                <target>Zeitschrift</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-issue">
+                <source>issue</source>
+                <target>Heft</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-pages">
+                <source>pages</source>
+                <target>Seiten</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-issn">
+                <source>issn</source>
+                <target>ISSN</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-kind">
+                <source>thesis kind</source>
+                <target>Art der Arbeit</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-university">
+                <source>university</source>
+                <target>Hochschule</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-faculty">
+                <source>faculty</source>
+                <target>Fakultät</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-maintainer">
+                <source>maintainer</source>
+                <target>Freigabe durch</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-release-number">
+                <source>release number</source>
+                <target>Versionsnummer</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-release-date">
+                <source>release date</source>
+                <target>Versionsdatum</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-picture-reason">
+                <source>picture reason</source>
+                <target>Anlass</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-url-date">
+                <source>url date</source>
+                <target>URL Datum</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-term">
+                <source>term</source>
+                <target>Hausarbeit</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-bachelor">
+                <source>bachelor</source>
+                <target>Bachelorarbeit</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-master">
+                <source>master</source>
+                <target>Masterarbeit</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-exam">
+                <source>exam</source>
+                <target>Examensarbeit</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-diploma">
+                <source>diploma</source>
+                <target>Diplomarbeit</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-dissertation">
+                <source>dissertation</source>
+                <target>Dissertation</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-thesis-postdoc">
+                <source>postdoc</source>
+                <target>Habilitation</target>
             </trans-unit>
         </body>
     </file>

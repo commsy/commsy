@@ -11,10 +11,16 @@ class BiblioPlainType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
+        $translationDomain = 'form';
+
         $builder
             ->add('author', 'text', array(
+                'label' => 'author',
+                'translation_domain' => $translationDomain,
                 ))
             ->add('publishing_date', 'text', array(
+                'label' => 'publishing date',
+                'translation_domain' => $translationDomain,
                 ))
             // ->add('bib', 'text', array(
             //     // 'constraints' => array(
