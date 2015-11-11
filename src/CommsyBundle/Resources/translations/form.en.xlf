@@ -103,7 +103,7 @@
                 <target>Picture</target>
             </trans-unit>
             <trans-unit id="form-bib-select">
-                <source>Bibl. reference</source>
+                <source>bib reference</source>
                 <target>Bibl. Angaben</target>
             </trans-unit>
         </body>

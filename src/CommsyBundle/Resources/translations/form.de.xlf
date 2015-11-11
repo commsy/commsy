@@ -104,7 +104,7 @@
                 <target>Foto</target>
             </trans-unit>
             <trans-unit id="form-bib-select">
-                <source>Bibl. reference</source>
+                <source>bib reference</source>
                 <target>Bibl. reference</target>
             </trans-unit>
         </body>

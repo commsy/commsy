@@ -48,8 +48,14 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
         
             $bibNamespace = 'CommsyBundle\Form\Type\Bibliographic';
             // $class = $bibNamespace.'\Biblio'.ucfirst($data['biblio_select']).'Type';
-            $class = $bibNamespace.'\\'.$data['biblio_select'];
-            $form->add('biblio_sub', new $class());
+            if (!empty($data['biblio_select'])) {
+                $class = $bibNamespace.'\\'.$data['biblio_select'];
+                $form->add('biblio_sub', new $class());
+            } else {
+                $class = $bibNamespace.'\\'.'BiblioNoneType';
+                $form->add('biblio_sub', new $class());
+            }
+            
 
         }
     }

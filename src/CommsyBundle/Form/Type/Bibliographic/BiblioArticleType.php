@@ -12,6 +12,9 @@ class BiblioArticleType extends AbstractType
 
         $builder
             ->add('author', 'text', array(
+                'attr' => array(
+                    'class' => 'uk-flex',
+                ),
                 ))
             ->add('publishing_date', 'text', array(
                 ))
