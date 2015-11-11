@@ -16,6 +16,7 @@ use CommsyBundle\Form\Type\Bibliographic\BiblioPictureType;
 use CommsyBundle\Form\Type\Bibliographic\BiblioPlainType;
 use CommsyBundle\Form\Type\Bibliographic\BiblioThesisType;
 use CommsyBundle\Form\Type\Bibliographic\BiblioWebsiteType;
+use CommsyBundle\Form\Type\Bibliographic\BiblioNoneType;
 
 
 /**
@@ -70,8 +71,13 @@ class AddBibliographicFieldListener implements EventSubscriberInterface
         
             $bibNamespace = 'CommsyBundle\Form\Type\Bibliographic';
             // $class = $bibNamespace.'\Biblio'.ucfirst($data['biblio_select']).'Type';
-            $class = $bibNamespace.'\\'.$data['biblio_select'];
-            $form->add('biblio_sub', new $class());
+            if (!empty($data['biblio_select']) && $data['biblio_select'] != 'BiblioType') {
+                $class = $bibNamespace.'\\'.$data['biblio_select'];
+                $form->add('biblio_sub', new $class());
+            } else {
+                $class = $bibNamespace.'\\'.'BiblioNoneType';
+                $form->add('biblio_sub', new $class());
+            }
 
         }
     }

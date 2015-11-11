@@ -104,7 +104,11 @@
             </trans-unit>
             <trans-unit id="form-bib-select">
                 <source>bib reference</source>
-                <target>Bibl. Angaben</target>
+                <target>Bibl. reference</target>
+            </trans-unit>
+            <trans-unit id="form-bib-author">
+                <source>author</source>
+                <target>Author</target>
             </trans-unit>
         </body>
     </file>

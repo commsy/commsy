@@ -49,8 +49,8 @@ class MaterialType extends AbstractType
                     'BiblioPictureType' => 'picture',
 
                 ),
-                'choice_translation_domain' => true,
                 'label' => 'bib reference',
+                'choice_translation_domain' => true,
                 'required' => false,
                 'translation_domain' => 'form'
             ))

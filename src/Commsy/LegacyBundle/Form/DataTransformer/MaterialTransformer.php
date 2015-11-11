@@ -98,7 +98,12 @@ class MaterialTransformer implements DataTransformerInterface
             $type = $materialData['biblio_select'];
             $type = str_replace("Biblio", "", $type);
             $type = str_replace("Type", "", $type);
-            $materialObject->setBibKind(strtolower($type));
+
+            if (!empty($type)) {
+                $materialObject->setBibKind(strtolower($type));    
+            } else {
+                $materialObject->setBibKind('none');
+            }
 
             $materialObject->save();
         }
