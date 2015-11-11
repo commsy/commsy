@@ -586,23 +586,6 @@ class cs_user_detail_view extends cs_detail_view {
            }
            unset($related_user_list);
        }
-
-         // archive
-         if ( !$this->_environment->isArchiveMode() ) {
-            $this->_environment->activateArchiveMode();
-            $related_user_list = $item->getRelatedUserList();
-            if ($related_user_list->isNotEmpty()) {
-               $user_item = $related_user_list->getFirst();
-               while ($user_item) {
-                  $related_user_array[$user_item->getContextID()] = $user_item;
-                  unset($user_item);
-                  $user_item = $related_user_list->getNext();
-               }
-               unset($related_user_list);
-            }
-            $this->_environment->deactivateArchiveMode();
-         }
-         // archive - end
             
        $temp_array = array();
        $formal_data[] = $temp_array;
@@ -700,6 +683,38 @@ class cs_user_detail_view extends cs_detail_view {
           $zzz_project_manager->select();
           $archived_room_list = $zzz_project_manager->get();
           if ($archived_room_list->isNotEmpty()) {
+
+            // get related archived user
+            $roomItem = $archived_room_list->getFirst();
+            $lookupArchivedContextIds = array();
+            while ($roomItem) {
+                if (!isset($related_user_array[$roomItem->getItemID()])) {
+                    $lookupArchivedContextIds[] = $roomItem->getItemID();
+                }
+
+                $roomItem = $archived_room_list->getNext();
+            }
+
+            if (!empty($lookupArchivedContextIds)) {
+                $zzzUserManager = $this->_environment->getZzzUserManager();
+                $zzzUserManager->resetLimits();
+                $zzzUserManager->setUserIDLimit($item->getUserID());
+                $zzzUserManager->setContextArrayLimit($lookupArchivedContextIds);
+                $zzzUserManager->select();
+
+                $zzzUserList = $zzzUserManager->get();
+                if ($zzzUserList->isNotEmpty()) {
+                    $zzzUserItem = $zzzUserList->getFirst();
+
+                    while ($zzzUserItem) {
+                        $related_user_array[$zzzUserItem->getContextID()] = $zzzUserItem;
+
+                        $zzzUserItem = $zzzUserList->getNext();
+                    }
+                }
+            }
+
+            $archived_room_list->reset();
              $room_item = $archived_room_list->getFirst();
              $first = true;
              $temp_string = '';
