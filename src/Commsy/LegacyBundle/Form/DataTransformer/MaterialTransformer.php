@@ -39,33 +39,37 @@ class MaterialTransformer implements DataTransformerInterface
 
             $materialData['description'] = $materialItem->getDescription();
 
-            if ($materialItem->getBibKind() != 'none') {
-                $materialData['biblio_select'] = 'Biblio'.ucfirst($materialItem->getBibKind()).'Type';
-            }
+            if (get_class($materialItem) != 'cs_section_item') {
 
-            $materialData['biblio_sub']['author'] = $materialItem->getAuthor();
-            $materialData['biblio_sub']['publishing_date'] = $materialItem->getPublishingDate();
-            $materialData['biblio_sub']['common'] = $materialItem->getBibliographicValues();
-            $materialData['biblio_sub']['publisher'] = $materialItem->getPublisher();
-            $materialData['biblio_sub']['address'] = $materialItem->getAddress();
-            $materialData['biblio_sub']['edition'] = $materialItem->getEdition();
-            $materialData['biblio_sub']['series'] = $materialItem->getSeries();
-            $materialData['biblio_sub']['volume'] = $materialItem->getVolume();
-            $materialData['biblio_sub']['isbn'] = $materialItem->getISBN();
-            $materialData['biblio_sub']['url'] = $materialItem->getURL();
-            $materialData['biblio_sub']['url_date'] = new \DateTime($materialItem->getURLDate());
-            $materialData['biblio_sub']['editor'] = $materialItem->getEditor();
-            $materialData['biblio_sub']['booktitle'] = $materialItem->getBooktitle();
-            $materialData['biblio_sub']['issn'] = $materialItem->getISSN();
-            $materialData['biblio_sub']['pages'] = $materialItem->getPages();
-            $materialData['biblio_sub']['journal'] = $materialItem->getJournal();
-            $materialData['biblio_sub']['issue'] = $materialItem->getIssue();
-            $materialData['biblio_sub']['thesis_kind'] = $materialItem->getThesisKind();
-            $materialData['biblio_sub']['university'] = $materialItem->getUniversity();
-            $materialData['biblio_sub']['faculty'] = $materialItem->getFaculty();
-            $materialData['biblio_sub']['foto_copyright'] = $materialItem->getFotoCopyright();
-            $materialData['biblio_sub']['foto_reason'] = $materialItem->getFotoReason();
-            $materialData['biblio_sub']['foto_date'] = $materialItem->getFotoDate();
+                if ($materialItem->getBibKind() != 'none') {
+                    $materialData['biblio_select'] = 'Biblio'.ucfirst($materialItem->getBibKind()).'Type';
+                }
+
+                $materialData['biblio_sub']['author'] = $materialItem->getAuthor();
+                $materialData['biblio_sub']['publishing_date'] = $materialItem->getPublishingDate();
+                $materialData['biblio_sub']['common'] = $materialItem->getBibliographicValues();
+                $materialData['biblio_sub']['publisher'] = $materialItem->getPublisher();
+                $materialData['biblio_sub']['address'] = $materialItem->getAddress();
+                $materialData['biblio_sub']['edition'] = $materialItem->getEdition();
+                $materialData['biblio_sub']['series'] = $materialItem->getSeries();
+                $materialData['biblio_sub']['volume'] = $materialItem->getVolume();
+                $materialData['biblio_sub']['isbn'] = $materialItem->getISBN();
+                $materialData['biblio_sub']['url'] = $materialItem->getURL();
+                $materialData['biblio_sub']['url_date'] = new \DateTime($materialItem->getURLDate());
+                $materialData['biblio_sub']['editor'] = $materialItem->getEditor();
+                $materialData['biblio_sub']['booktitle'] = $materialItem->getBooktitle();
+                $materialData['biblio_sub']['issn'] = $materialItem->getISSN();
+                $materialData['biblio_sub']['pages'] = $materialItem->getPages();
+                $materialData['biblio_sub']['journal'] = $materialItem->getJournal();
+                $materialData['biblio_sub']['issue'] = $materialItem->getIssue();
+                $materialData['biblio_sub']['thesis_kind'] = $materialItem->getThesisKind();
+                $materialData['biblio_sub']['university'] = $materialItem->getUniversity();
+                $materialData['biblio_sub']['faculty'] = $materialItem->getFaculty();
+                $materialData['biblio_sub']['foto_copyright'] = $materialItem->getFotoCopyright();
+                $materialData['biblio_sub']['foto_reason'] = $materialItem->getFotoReason();
+                $materialData['biblio_sub']['foto_date'] = $materialItem->getFotoDate();
+
+            }
 
         }
 
@@ -85,25 +89,27 @@ class MaterialTransformer implements DataTransformerInterface
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
 
-        // bibliographic data
-        if ($materialData['biblio_sub']) {
-            $bibData = $materialData['biblio_sub'];
+        if (get_class($materialObject) != 'cs_section_item') {
+            // bibliographic data
+            if ($materialData['biblio_sub']) {
+                $bibData = $materialData['biblio_sub'];
 
-            $this->setBibliographic($materialData['biblio_sub'], $materialObject);
+                $this->setBibliographic($materialData['biblio_sub'], $materialObject);
 
-            // bib_kind
-            // BiblioPlainType
-            $type = $materialData['biblio_select'];
-            $type = str_replace("Biblio", "", $type);
-            $type = str_replace("Type", "", $type);
+                // bib_kind
+                // BiblioPlainType
+                $type = $materialData['biblio_select'];
+                $type = str_replace("Biblio", "", $type);
+                $type = str_replace("Type", "", $type);
 
-            if (!empty($type)) {
-                $materialObject->setBibKind(strtolower($type));    
-            } else {
-                $materialObject->setBibKind('none');
+                if (!empty($type)) {
+                    $materialObject->setBibKind(strtolower($type));    
+                } else {
+                    $materialObject->setBibKind('none');
+                }
+
+                $materialObject->save();
             }
-
-            $materialObject->save();
         }
         
         
