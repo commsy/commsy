@@ -241,8 +241,8 @@
         {{ _self.actionIcons(title, item, edit) }}
     </div>
     {% if not content is empty and not preview is empty %}
-    <div class="uk-grid uk-margin-top-remove">
-        <div class="uk-width-9-10">
+    <div class="uk-grid uk-margin-top-remove remove-margin">
+        <div class="uk-width-9-10 remove-padding">
             {% if shortPreview %}
             <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-preview-small">
             {% else %}
