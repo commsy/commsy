@@ -34,6 +34,8 @@ class RoomFeedGenerator
         $this->itemManager->setTypeArrayLimit($rubrics);
         $this->itemManager->setDeleteLimit(true);
 
+
+
         if (isset($this->limits['buzzword'])) {
             $this->itemManager->setListLimit($this->limits['buzzword']);
         }
@@ -55,25 +57,34 @@ class RoomFeedGenerator
                     case 'user':
                         $userManager = $this->legacyEnvironment->getUserManager();
                         $userItem = $userManager->getItem($item->getItemId());
-                        $feedList[] = $userItem;
+                        if ($userItem) {
+                            $feedList[] = $userItem;
+                        }
+                        
                         break;
     
                     case 'material':
                         $materialManager = $this->legacyEnvironment->getMaterialManager();
                         $materialItem = $materialManager->getItem($item->getItemId());
-                        $feedList[] = $materialItem;
+                        if ($materialItem) {
+                            $feedList[] = $materialItem;   
+                        }
                         break;
     
                     case 'date':
                         $datesManager = $this->legacyEnvironment->getDatesManager();
                         $dateItem = $datesManager->getItem($item->getItemId());
-                        $feedList[] = $dateItem;
+                        if ($dateItem) {
+                            $feedList[] = $dateItem;
+                        }
                         break;
     
                     case 'discussion':
                         $discussionManager = $this->legacyEnvironment->getDiscussionManager();
                         $discussionItem = $discussionManager->getItem($item->getItemId());
-                        $feedList[] = $discussionItem;
+                        if ($discussionItem) {
+                            $feedList[] = $discussionItem;    
+                        }
                         break;
                 }
             }
