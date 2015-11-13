@@ -32,6 +32,7 @@ class RoomFeedGenerator
         $this->itemManager->setContextLimit($roomId);
         $this->itemManager->setIntervalLimit($max + $start);
         $this->itemManager->setTypeArrayLimit($rubrics);
+        $this->itemManager->setDeleteLimit(true);
 
         if (isset($this->limits['buzzword'])) {
             $this->itemManager->setListLimit($this->limits['buzzword']);
