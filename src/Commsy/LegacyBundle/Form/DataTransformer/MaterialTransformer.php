@@ -90,6 +90,7 @@ class MaterialTransformer implements DataTransformerInterface
         $materialObject->setDescription($materialData['description']);
 
         if (get_class($materialObject) != 'cs_section_item') {
+            var_dump($materialData['biblio_sub']);
             // bibliographic data
             if ($materialData['biblio_sub']) {
                 $bibData = $materialData['biblio_sub'];
@@ -98,15 +99,20 @@ class MaterialTransformer implements DataTransformerInterface
 
                 // bib_kind
                 // BiblioPlainType
-                $type = $materialData['biblio_select'];
-                $type = str_replace("Biblio", "", $type);
-                $type = str_replace("Type", "", $type);
+                if (isset($materialData['biblio_select'])) {
+                    $type = $materialData['biblio_select'];
+                    $type = str_replace("Biblio", "", $type);
+                    $type = str_replace("Type", "", $type);
 
-                if (!empty($type)) {
-                    $materialObject->setBibKind(strtolower($type));    
+                    if (!empty($type)) {
+                        $materialObject->setBibKind(strtolower($type));    
+                    } else {
+                        $materialObject->setBibKind('none');
+                    }
                 } else {
                     $materialObject->setBibKind('none');
                 }
+                
 
                 $materialObject->save();
             }
