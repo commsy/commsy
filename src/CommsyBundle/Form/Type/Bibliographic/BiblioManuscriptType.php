@@ -28,10 +28,12 @@ class BiblioManuscriptType extends AbstractType
             ->add('url', 'text', array(
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url_date', 'date', array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
         ;
     }

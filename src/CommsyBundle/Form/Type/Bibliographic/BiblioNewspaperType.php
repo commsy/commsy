@@ -32,22 +32,27 @@ class BiblioNewspaperType extends AbstractType
             ->add('number', 'text', array(
                 'label' => 'number',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('address', 'text', array(
                 'label' => 'address',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('publisher', 'text', array(
                 'label' => 'publisher',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url', 'text', array(
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url_date', 'date', array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
         ;
     }

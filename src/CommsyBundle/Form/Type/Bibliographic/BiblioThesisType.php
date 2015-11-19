@@ -46,14 +46,17 @@ class BiblioThesisType extends AbstractType
             ->add('faculty', 'text', array(
                 'label' => 'faculty',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url', 'text', array(
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url_date', 'date', array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
         ;
     }

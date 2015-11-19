@@ -24,6 +24,7 @@ class BiblioWebsiteType extends AbstractType
             ->add('url_date', 'date', array(
                 'label' => 'visited',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
         ;
     }

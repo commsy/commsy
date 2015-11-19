@@ -10,7 +10,7 @@ class BiblioArticleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
 
-        $translationDomain = 'form'
+        $translationDomain = 'form';
 
         $builder
             ->add('author', 'text', array(
@@ -47,22 +47,27 @@ class BiblioArticleType extends AbstractType
             ->add('series', 'text', array(
                 'label' => 'series',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('volume', 'text', array(
                 'label' => 'volume',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('isbn', 'text', array(
                 'label' => 'isbn',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url', 'text', array(
                 'label' => 'url',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
             ->add('url_date', 'date', array(
                 'label' => 'url date',
                 'translation_domain' => $translationDomain,
+                'required' => false,
                 ))
         ;
     }
