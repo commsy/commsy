@@ -190,6 +190,10 @@
                 <source>release number</source>
                 <target>Release number</target>
             </trans-unit>
+            <trans-unit id="form-bib-field-number">
+                <source>number</source>
+                <target>Number</target>
+            </trans-unit>
             <trans-unit id="form-bib-field-release-date">
                 <source>release date</source>
                 <target>Release date</target>

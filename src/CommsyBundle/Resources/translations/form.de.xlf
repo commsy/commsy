@@ -129,7 +129,7 @@
             </trans-unit>
             <trans-unit id="form-bib-field-address">
                 <source>address</source>
-                <target>Adresse</target>
+                <target>Erscheinungsort</target>
             </trans-unit>
             <trans-unit id="form-bib-field-edition">
                 <source>edition</source>
@@ -190,6 +190,10 @@
             <trans-unit id="form-bib-field-release-number">
                 <source>release number</source>
                 <target>Versionsnummer</target>
+            </trans-unit>
+            <trans-unit id="form-bib-field-number">
+                <source>number</source>
+                <target>Heft</target>
             </trans-unit>
             <trans-unit id="form-bib-field-release-date">
                 <source>release date</source>
