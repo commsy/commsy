@@ -238,7 +238,7 @@
 			<a name="section{$section.iid}"></a>
 			<a name="anchor{$section.iid}"></a>
 			<!-- Start fade_in_ground -->
-			<div id="edit_expand_section_{$section@index}" class="hidden">
+			<div id="edit_expand_section_{$section@index}" {if !$detail.is_action_bar_visible}class="hidden"{/if}>
 				<div class="fade_in_ground_actions">
 					{if $section.actions.edit}
 						<a class="open_popup" data-custom="module: 'section', iid: '{$section.iid}', ref_iid: {$detail.item_id}{if !$detail.content.latest_version}, vid: {$detail.content.version}{/if}" href="#" title="___COMMON_EDIT_ITEM___">___COMMON_EDIT_ITEM___</a> |

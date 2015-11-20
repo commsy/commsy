@@ -173,7 +173,7 @@
 				<a name="article{$article.item_id}"></a>
 
 				<!-- Start fade_in_ground -->
-				<div id="edit_expand_article_{$article@index}" class="hidden">
+				<div id="edit_expand_article_{$article@index}" {if !$detail.is_action_bar_visible}class="hidden"{/if}>
 					<div class="fade_in_ground_actions">
 						{if $article.actions.edit}
 							<a id="action_edit" class="open_popup" data-custom="iid: {$article.item_id}, module: 'discarticle'" href="#">___COMMON_EDIT_ITEM___</a> |
