@@ -91,7 +91,7 @@
 						</div>
 						<div class="input_row">
 							<div class="input_label_80">___COMMON_NAME___<span class="required">*</span>:</div>
-							<input type="text" value="{if isset($item.name)}{$item.name}{/if}" name="form_data[name]" class="size_400" />
+							<input type="text" value="{if isset($item.name)}{$item.name|escape:"html"}{/if}" name="form_data[name]" class="size_400" />
 						</div>
 
 						<div class="input_row_100">
