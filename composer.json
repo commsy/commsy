@@ -17,7 +17,7 @@
         "sensio/distribution-bundle": "~3.0.12",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "doctrine/migrations": "1.0.*@dev",
+        "doctrine/migrations": "~1.1",
         "doctrine/doctrine-migrations-bundle": "2.1.*@dev",
         "liip/theme-bundle": "dev-master",
         "knplabs/knp-menu-bundle":"dev-master",
