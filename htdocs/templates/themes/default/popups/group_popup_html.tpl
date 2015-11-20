@@ -141,8 +141,8 @@
 							{if $popup.is_owner == true}
 								<div class="tab" id="rights_tab">
 									<div class="settings_area">
-										<input type="radio" name="form_data[public]" value="1" checked="checked"/>___RUBRIC_PUBLIC_YES___<br/>
-										<input type="radio" name="form_data[public]" value="0"/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}
+										<input type="radio" name="form_data[public]" value="1" {if $item.public}checked="checked"{/if}/>___RUBRIC_PUBLIC_YES___<br/>
+										<input type="radio" name="form_data[public]" value="0" {if !$item.public}checked="checked"{/if}/>{i18n tag=RUBRIC_PUBLIC_NO param1=$popup.user.fullname}
 									</div>
 								</div>
 							{/if}
