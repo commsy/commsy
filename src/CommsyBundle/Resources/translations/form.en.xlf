@@ -234,6 +234,10 @@
                 <source>postdoc</source>
                 <target>Professorial dissertation</target>
             </trans-unit>
+            <trans-unit id="form-permission">
+                <source>permission</source>
+                <target>Only from %name% editable</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

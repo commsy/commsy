@@ -235,6 +235,10 @@
                 <source>postdoc</source>
                 <target>Habilitation</target>
             </trans-unit>
+            <trans-unit id="form-permission">
+                <source>permission</source>
+                <target>Nur von %name% bearbeitbar</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -38,6 +38,7 @@ class MaterialTransformer implements DataTransformerInterface
             // }
 
             $materialData['description'] = $materialItem->getDescription();
+            $materialData['permission'] = $materialItem->isPrivateEditing();
 
             if (get_class($materialItem) != 'cs_section_item') {
 
@@ -88,6 +89,7 @@ class MaterialTransformer implements DataTransformerInterface
     {
         $materialObject->setTitle($materialData['title']);
         $materialObject->setDescription($materialData['description']);
+        $materialObject->setPrivateEditing($materialData['permission']);
 
         if (get_class($materialObject) != 'cs_section_item') {
             var_dump($materialData['biblio_sub']);

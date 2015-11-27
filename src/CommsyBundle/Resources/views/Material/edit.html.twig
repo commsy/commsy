@@ -11,12 +11,13 @@
                 </div>
             </div>
             {% if not form.vars.name == "section"  %}
-              <div class="uk-flex uk-margin-small-top">
-                  <div>
-                      {{ form_widget(form.biblio_select) }}
-                      {# {{ form_widget(form.biblio_sub) }} #}
-                  </div>
-              </div>
+                <div class="uk-flex uk-margin-small-top">
+                    <div>
+                        {{ form_label(form.biblio_select) }}
+                        {{ form_widget(form.biblio_select) }}
+                        {# {{ form_widget(form.biblio_sub) }} #}
+                    </div>
+                </div>
             {% endif %}
             <div class="uk-flex uk-margin-small-top">
                 <div class="uk-margin-small-left">
@@ -32,8 +33,13 @@
                     {{ form_widget(form.title) }}
                 </div>
             </div>
+            <div>
+                {{ form_label(form.permission) }}
+                {{ form_widget(form.permission) }}
+            </div>
             <div class="uk-flex uk-margin-small-top">
                 <div>
+                    {{ form_label(form.biblio_select) }}
                     {{ form_widget(form.biblio_select) }}
                     {# {{ form_widget(form.biblio_sub) }} #}
                 </div>

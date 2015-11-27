@@ -33,6 +33,11 @@ class MaterialType extends AbstractType
                 ),
                 'translation_domain' => 'material',
             ))
+            ->add('permission', 'checkbox', array(
+                'label' => 'permission',
+                'required' => false,
+                'translation_domain' => 'form',
+            ))
             ->add('biblio_select', 'choice', array(
                 'choices'  => array(
                     'BiblioPlainType' => 'plain',
