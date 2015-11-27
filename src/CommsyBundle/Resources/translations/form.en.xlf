@@ -238,6 +238,14 @@
                 <source>permission</source>
                 <target>Only from %name% editable</target>
             </trans-unit>
+            <trans-unit id="form-no-restrictions">
+                <source>no restrictions</source>
+                <target>No restrictions</target>
+            </trans-unit>
+            <trans-unit id="form-group-all">
+                <source>ALL</source>
+                <target>All</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

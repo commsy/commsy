@@ -49,6 +49,8 @@ class RubricFilterType extends AbstractType
                             },
                             'choice_label' => 'name',
                             'translation_domain' => 'form',
+                            'placeholder' => 'no restrictions',
+                            'choice_translation_domain' => true,
                         ))
                     ;
                 }
@@ -72,6 +74,7 @@ class RubricFilterType extends AbstractType
                             },
                             'choice_label' => 'name',
                             'translation_domain' => 'form',
+                            'placeholder' => 'no restrictions',
                         ))
                     ;
                 }
@@ -94,6 +97,7 @@ class RubricFilterType extends AbstractType
                             },
                             'choice_label' => 'name',
                             'translation_domain' => 'form',
+                            'placeholder' => 'no restrictions',
                         ))
                     ;
                 }

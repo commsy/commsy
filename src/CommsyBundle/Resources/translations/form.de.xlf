@@ -239,6 +239,14 @@
                 <source>permission</source>
                 <target>Nur von %name% bearbeitbar</target>
             </trans-unit>
+            <trans-unit id="form-no-restrictions">
+                <source>no restrictions</source>
+                <target>Keine Einschränkungen</target>
+            </trans-unit>
+            <trans-unit id="form-group-all">
+                <source>ALL</source>
+                <target>Alle</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
