@@ -33,6 +33,7 @@ class RoomController extends Controller
                 'roomId' => $roomId,
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // apply filter
@@ -95,6 +96,7 @@ class RoomController extends Controller
                 'roomId' => $roomId,
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // collect information for feed panel

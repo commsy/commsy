@@ -45,6 +45,7 @@ class MaterialController extends Controller
                 'roomId' => $roomId,
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         // get the material manager service
@@ -108,6 +109,7 @@ class MaterialController extends Controller
                 'roomId' => $roomId,
             )),
             'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
         ));
 
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();

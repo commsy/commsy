@@ -135,13 +135,6 @@
                     {{ form_start(form) }}
                     {{ form_widget(form) }}
                     {{ form_end(form) }}
-
-                    {% if showCategories %}
-                        {{ render(controller(
-                            'CommsyBundle:Category:show',
-                            { 'roomId': roomItem.itemId }
-                        ))}}
-                    {% endif %}
                 </div>
  
             </div>

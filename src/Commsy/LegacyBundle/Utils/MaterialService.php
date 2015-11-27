@@ -76,6 +76,17 @@ class MaterialService
                 $this->materialManager->setBuzzwordLimit($itemId);
             }
         }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->materialManager->setTagArrayLimit($categories);
+                }
+            }
+        }
     }
     
     public function getMaterial($itemId)

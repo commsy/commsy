@@ -14,6 +14,12 @@ services:
         tags:
             - { name: form.type, alias: hashtag_filter }
 
+    commsy.filter.category:
+        class: CommsyBundle\Filter\CategoryFilterType
+        arguments: [@request_stack, @commsy.category_service]
+        tags:
+            - { name: form.type, alias: category_filter }
+
     # Converter
     commsy.converter.room:
         class: CommsyBundle\Converter\RoomConverter
@@ -168,6 +174,11 @@ services:
         class: CommsyBundle\Form\Type\HashtagType
         tags:
             - { name: form.type, alias: hashtag }
+
+    commsy.form.type.category:
+        class: CommsyBundle\Form\Type\CategoryType
+        tags:
+            - { name: form.type, alias: category }
 
     commsy.form.type.annotation:
         class: CommsyBundle\Form\Type\AnnotationType

@@ -34,10 +34,12 @@ class RoomFeedGenerator
         $this->itemManager->setTypeArrayLimit($rubrics);
         $this->itemManager->setDeleteLimit(true);
 
-
-
         if (isset($this->limits['buzzword'])) {
             $this->itemManager->setListLimit($this->limits['buzzword']);
+        }
+
+        if (isset($this->limits['categories'])) {
+            $this->itemManager->setTagArrayLimit($this->limits['categories']);
         }
 
         $this->itemManager->select();
@@ -105,6 +107,17 @@ class RoomFeedGenerator
                 $hashtag = $formData['hashtag']['hashtag'];
                 $itemId = $hashtag->getItemId();
                 $this->limits['buzzword'] = $itemId;
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->limits['categories'] = $categories;
+                }
             }
         }
     }

@@ -1,5 +1,24 @@
 {% extends "CommsyBundle:Form:uikit_horizontal_layout.html.twig" %}
 
+{% macro nestedList(choices, level) %}
+    {% set opened = level <= 2 %}
+
+    {% for child in choices %}
+        {% if child.choices is defined %}
+            <ul>
+                {{ _self.nestedList(child.choices, level+1) }}
+            </ul>
+        {% else %}
+            {% if not loop.first %}
+                </li>
+            {% endif %}
+
+            <li id="tag_{{ child.value }}" data-jstree='{"opened": {{ opened }}}'>
+            {{ child.label }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}
+
 {# Widgets #}
 
 {%- block choice_widget_collapsed -%}
@@ -27,6 +46,37 @@
         {% else %}
             {{ 'no hashtags'|trans({}, 'room') }}
         {% endif %}
+    </div>
+{% endblock %}
+
+{% block category_widget %}
+    {% import _self as macros %}
+
+    <div id="room-category">
+        <hr class="cs-list-divider"/>
+        <h4 class="cs-list-section-header">
+            <span class="cs-detail-section-header-background">{{ 'categories'|trans({}, "room") }} 
+            </span>
+        </h4>
+
+        <div class="uk-hidden">
+            {% if form.children is not empty %}
+                {% for child in form.children %}
+                    <input type="checkbox" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}" {% if child.vars.checked %} checked="checked"{% endif %} />
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div id="room-categories" data-cs-tree>
+            {% if form.vars is not empty %}
+                <ul class="uk-list uk-list-striped">
+                    {{ macros.nestedList(form.vars.choices, 0) }}
+                    </li>
+                </ul>
+            {% else %}
+                {{ 'No Categories'|trans({}, 'category') }}
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 

@@ -37,10 +37,40 @@
             var element = $this.element[0];
 
             // init jstree
-            $(element).jstree(this.options.tree);
+            $(element)
+                .on('ready.jstree', function(event, data) {
+                    // sync checkbox with tree state
+                    $('input[id*="filter_category_category"]').each(function() {
+                        var $input = $(this);
 
-            // var target = this.options.target ? UI.$(this.options.target) : [];
-            // if (!target.length) return;
+                        if ($input.prop('checked')) {
+                            var value = $input.attr('value');
+
+                            $(element).jstree(true).select_node('tag_' + value);
+                        }
+                    });
+
+                    /**
+                     * the following event handler are registered, after checkbox sync
+                     * to prevent triggering the form submit (select_node can supress events,
+                     * but this would prevent the tree from highlighting selected nodes)
+                     */
+                    $(element)
+                        .on('changed.jstree', function(event, data) {
+                            // sync tree state with Checkboxes
+                            $('input[id*="filter_category_category"]').prop('checked', false);
+
+                            $.each(data.selected, function() {
+                                $('input[value="' + this.substring(4) + '"]')
+                                    .prop('checked', true);
+
+                            });
+
+                            $('div#room-category').parents('form').submit();
+                        });
+                })
+                // create the instance
+                .jstree(this.options.tree);
         }
     });
 

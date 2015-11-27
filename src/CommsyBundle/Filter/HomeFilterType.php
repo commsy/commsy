@@ -14,6 +14,12 @@ class HomeFilterType extends AbstractType
                 'label' => false,
             ));
         }
+
+        if ($options['hasCategories']) {
+            $builder->add('category', 'category_filter', array(
+                'label' => false,
+            ));
+        }
     }
 
     public function getName()
@@ -31,6 +37,7 @@ class HomeFilterType extends AbstractType
             ))
             ->setRequired(array(
                 'hasHashtags',
+                'hasCategories',
             ))
         ;
     }
