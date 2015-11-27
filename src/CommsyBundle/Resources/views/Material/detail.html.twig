@@ -194,17 +194,14 @@
                 </div>
             {% endfor %}
             </div>
+
             {# annotations #}
-            
             {% if item.itemType != 'discussion' %}
                 <div class="uk-panel-teaser cs-panel-teaser-primary uk-margin-bottom-remove uk-margin-top">
                     <div class="uk-grid">
                         <div class="uk-width-3-5 uk-text-large ">
                             {{ 'annotations'|trans({})|capitalize }}
                         </div>
- <!--                       <div class="uk-width-2-5 uk-text-right">
-                            <a class="uk-margin-left uk-button-primary" href=""><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
-                        </div> --!>
                     </div>
                 </div>              
                 
@@ -223,19 +220,14 @@
                         </header>
                     </article>
 
-
                     {{ render(controller(
                         'CommsyBundle:Annotation:feed',
                         { 'roomId': roomId, 'linkedItemId': item.itemId }
                     ))}}
 
-        
-
                 </div>
-                
-                
-                                       
-        {% endif %}
+
+            {% endif %}
         </div>
 
         <div class="uk-width-medium-1-5 cs-addon-navigation">
@@ -273,8 +265,6 @@
 
         </div>
       
-
-
     </div>
 {% endblock %}
 
