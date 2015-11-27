@@ -7,12 +7,15 @@
     $('.cs-nav-quick').on('inview.uk.scrollspynav', function(event, data) {
         var id = data.attr('id');
 
-        var quickNavTarget = $('.cs-nav-quick a[href="#' + id + '"]');
-
         if (lastNodeId !== id) {
             lastNodeId = id;
-            
-            quickNavTarget[0].scrollIntoView();
+
+            var containerOffset = $('#cs-nav-quick').offset().top;
+
+            var quickNavTarget = $('.cs-nav-quick a[href="#' + id + '"]');
+            var offset = $(quickNavTarget[0]).offset().top;
+
+            $('#cs-nav-quick').scrollTop(offset - containerOffset);
         }
     });
 
