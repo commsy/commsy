@@ -113,4 +113,3 @@ craue_twig_extensions: ~
 ivory_ck_editor:
     configs:
         commsy_config:
-            startupFocus: false
