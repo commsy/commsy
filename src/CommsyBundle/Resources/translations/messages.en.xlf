@@ -133,7 +133,12 @@
             <trans-unit id="33">
                 <source>action error</source>
                  <target>An error has occured.</target>
+           </trans-unit> 
+            <trans-unit id="34">
+                <source>No more results found</source>
+                 <target>No more results found.</target>
            </trans-unit>            
+
         </body>
     </file>
 </xliff>

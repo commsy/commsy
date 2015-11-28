@@ -133,6 +133,10 @@
             <trans-unit id="33">
                 <source>action error</source>
                  <target>Beim Ausführen der Aktion ist ein Fehler aufgetreten.</target>
+           </trans-unit>  
+            <trans-unit id="34">
+                <source>No more results found</source>
+                 <target>Keine weiteren Einträge vorhanden.</target>
            </trans-unit>            
         </body>
     </file>
