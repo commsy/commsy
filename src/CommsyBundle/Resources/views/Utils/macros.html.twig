@@ -179,7 +179,7 @@
 
 
 {% macro actionIcons(title, item, edit) %}
-    <div class="uk-width-1-10  uk-flex uk-text-right">
+    <div class="uk-width-1-10 uk-flex uk-text-right">
         {% if edit %}
             {% if is_granted('ITEM_EDIT', item.itemId) %}
                 <div class="cs-edit uk-hidden">
@@ -224,73 +224,62 @@
 
 
 {% macro editContent(title, item, edit, content, preview, shortPreview, displayCount, count) %}
-    <hr class="uk-width-9-10 cs-detail-divider"/>
-    <div class="uk-margin-left uk-margin-right uk-margin-bottom uk-position-relative">
+    <hr class="uk-width-9-10"/>
 
+    <article class="uk-article uk-margin-left uk-margin-right">
         <a name="description"></a>
         {% include 'CommsyBundle:Utils:editSpinner.html.twig' %}
 
+        {# title row #}
         <div class="uk-grid uk-margin-small-bottom">
             <div class="uk-width-9-10">
                 <h4 class="cs-detail-section-header">
-                    <span class="cs-detail-section-header-background">{{ title|trans({})}}
-                        {% if displayCount %}
-                            ({{count}})
-                        {% endif %}
-                    </span>
+                    {{- title|trans({}) }}
+                    {% if displayCount %}
+                        ({{count}})
+                    {% endif %}
                 </h4>
             </div>
 
             {{ _self.actionIcons(title, item, edit) }}
         </div>
 
+        {# content #}
         {% if not content is empty and not preview is empty %}
-            <div class="uk-grid uk-margin-remove">
-                <div class="uk-width-9-10 uk-padding-remove">
+            <div class="uk-width-9-10 uk-margin-remove uk-padding-remove">
 
-                    <div class="toggle-{{ title }}-{{ item.itemId }} {% if shortPreview %}cs-toggle-preview-small{% else %}cs-toggle-preview{% endif %}">
-                        <div class="uk-panel">
-                            {{ preview|raw }}
-                        </div>
-                    </div>
-                    <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content uk-hidden">
-                        <div class="uk-panel">
-                            {{ content|raw }}
-                        </div>
-                    </div>
-
+                <div class="toggle-{{ title }}-{{ item.itemId }} {% if shortPreview %}cs-toggle-preview-small{% else %}cs-toggle-preview{% endif %}">
+                    {{ preview|raw }}
                 </div>
+                <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content uk-hidden">
+                    {{ content|raw }}
+                </div>
+
             </div>
         {% else %}
-            <div class="uk-grid uk-margin-top-remove">
-                <div class="uk-width-9-10">
-                    {% if not content is empty %}
-                        <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
-                            <div class="uk-panel">
-                                {{ content|raw }}
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-empty">
-                            <div class="uk-panel">
-                                <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
-                <div class="uk-width-1-10  uk-text-right cs-toggle-icon">
-                </div>
+            <div class="uk-width-9-10 uk-margin-top-remove">
+                
+                {% if not content is empty %}
+                    <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-content">
+                        {{ content|raw }}
+                    </div>
+                {% else %}
+                    <div class="toggle-{{ title }}-{{ item.itemId }} cs-toggle-empty">
+                        <span class="uk-text-muted">{{ 'no content'|trans({}, "room") }}</span>
+                    </div>
+                {% endif %}
+
             </div>
         {% endif %}
+    </article>
 
-    </div>
 {% endmacro %}
 
 {% macro ratingStatus(item) %}
     <div class="uk-text-nowrap">
-        <i class="cs-icon-xs-small uk-icon-star  uk-text-warning"></i>
-        <i class="cs-icon-xs-small uk-icon-star  uk-text-warning"></i>
-        <i class="cs-icon-xs-small uk-icon-star  uk-text-warning"></i>
+        <i class="cs-icon-xs-small uk-icon-star uk-text-warning"></i>
+        <i class="cs-icon-xs-small uk-icon-star uk-text-warning"></i>
+        <i class="cs-icon-xs-small uk-icon-star uk-text-warning"></i>
         <i class="cs-icon-xs-small uk-icon-star-o"></i>
         <i class="cs-icon-xs-small uk-icon-star-o"></i>
     </div>
@@ -317,9 +306,9 @@
         <i class="cs-icon-xs-small uk-icon-circle-o"></i>
         <i class="cs-icon-xs-small uk-icon-circle uk-text-danger"></i>
     {% else %}
-        <i class="cs-icon-xs-small  uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small  uk-icon-circle-o"></i>
-        <i class="cs-icon-xs-small  uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
+        <i class="cs-icon-xs-small uk-icon-circle-o"></i>
     {% endif %}
     </div>
 {% endmacro %}

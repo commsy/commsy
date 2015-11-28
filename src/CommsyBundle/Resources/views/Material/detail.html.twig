@@ -175,27 +175,27 @@
             </div>
             
             <div data-uk-observe>
-            {# material sections #}
-            {% for section in sectionList %}
-                <div class="uk-panel uk-panel-box uk-margin-top material-section">
-                    <article class="uk-article uk-position-relative">
-                        {# title #}
-                        <div class="cs-toggle" data-uk-observe>
-                            {{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
-                        </div>
-                        
-                        {# description #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macros.editContent('description', section, true, section.description, section.description, false, false, 0) }}
-                        </div>
-                
-                        {# files #}
-                        <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
-                            {{ macrosItem.files(section) }}
-                        </div>
-                    </article>
-                </div>
-            {% endfor %}
+                {# material sections #}
+                {% for section in sectionList %}
+                    <div class="uk-panel uk-panel-box uk-margin-top material-section">
+                        <article class="uk-article uk-position-relative">
+                            {# title #}
+                            <div class="cs-toggle" data-uk-observe>
+                                {{ macrosMaterial.title(section, modifierList, userCount, readCount, readSinceModificationCount) }}
+                            </div>
+                            
+                            {# description #}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_item_editdescription', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                                {{ macros.editContent('description', section, true, section.description, section.description, false, false, 0) }}
+                            </div>
+                    
+                            {# files #}
+                            <div class="cs-edit-section cs-toggle" data-uk-observe data-cs-edit="{editUrl: '{{ path('commsy_upload_uploadform', {'roomId': section.contextId, 'itemId': section.itemId}) }}' }">
+                                {{ macrosItem.files(section) }}
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
             </div>
 
             {# annotations #}
