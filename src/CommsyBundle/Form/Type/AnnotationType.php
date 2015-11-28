@@ -22,6 +22,7 @@ class AnnotationType extends AbstractType
     {
         $builder
             ->add('description', 'ckeditor', array(
+                'config_name' => 'commsy_config',
                 'label' => ' ',
                 'required' => false,
                 'attr' => array(
