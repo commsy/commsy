@@ -4,7 +4,7 @@ namespace Commsy\LegacyBundle\Form\DataTransformer;
 use \DateTime;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use CommSy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
 
 class ItemTransformer implements DataTransformerInterface
 {

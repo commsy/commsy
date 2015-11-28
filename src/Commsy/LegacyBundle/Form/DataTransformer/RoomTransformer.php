@@ -2,7 +2,7 @@
 namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
-use CommSy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
+use Commsy\LegacyBundle\Form\DataTransformer\DataTransformerInterface;
 
 class RoomTransformer implements DataTransformerInterface
 {

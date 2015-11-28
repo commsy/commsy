@@ -1,5 +1,5 @@
 <?php
-namespace CommSy\LegacyBundle\Form\DataTransformer;
+namespace Commsy\LegacyBundle\Form\DataTransformer;
 
 interface DataTransformerInterface
 {
