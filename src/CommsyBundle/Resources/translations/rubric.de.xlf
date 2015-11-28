@@ -138,6 +138,18 @@
                 <source>delete</source>
                 <target>Löschen</target>
             </trans-unit>
+            <trans-unit id="35">
+                <source>confirm delete</source>
+                <target>Wollen Sie die ausgewählten Einträge wirklich löschen?</target>
+            </trans-unit>
+            <trans-unit id="36">
+                <source>confirm delete confirm</source>
+                <target>Ja</target>
+            </trans-unit>
+            <trans-unit id="37">
+                <source>confirm delete cancel</source>
+                <target>Nein</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

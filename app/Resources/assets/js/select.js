@@ -28,6 +28,10 @@
 
             this.articles = target.find('article');
             this.inputs = target.find('input');
+            UI.modal.labels = {
+            'Ok': $('#commsy-select-actions-delete').data('confirm-delete-confirm'),
+            'Cancel': $('#commsy-select-actions-delete').data('confirm-delete-cancel')
+            };
 
             this.bind();
             
