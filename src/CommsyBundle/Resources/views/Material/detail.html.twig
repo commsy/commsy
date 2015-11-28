@@ -71,8 +71,16 @@
 
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
-                            <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}"><i class="uk-icon-small uk-icon-plus-circle"></i> <span class="cs-addon-navigation-large">{{ 'new'|trans({})}}</span></a>
-                            <a class="uk-margin-left uk-button-primary" href="#"><i class="uk-icon-small uk-icon-print"></i> <span class="cs-addon-navigation-large">{{ 'print'|trans({})|capitalize }}</span></a>
+
+                            {# new #}
+                            <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}">
+                                <i class="uk-icon-small uk-icon-plus-circle uk-visible-large"></i> {{ 'new'|trans({})}}
+                            </a>
+
+                            {# print #}
+                            <a class="uk-margin-left uk-button-primary" href="#">
+                                <i class="uk-icon-small uk-icon-print uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                            </a>
 
                             {# additional actions #}
                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
@@ -83,35 +91,32 @@
 
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
                                         {# new section #}
                                         <li>
                                             <a class="" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-plus"></i>
-                                                <span class="cs-addon-navigation-large">{{ 'new section'|trans({}) }}</span>
+                                                <i class="uk-icon-small uk-icon-plus uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                             </a>
                                         </li>
 
                                         {# save #}
                                         <li>
                                             <a class="" href="#">
-                                                <i class="uk-icon-small uk-icon-save"></i>
-                                                <span class="cs-addon-navigation-large">{{ 'save'|trans({})|capitalize }}</span>
+                                                <i class="uk-icon-small uk-icon-save uk-icon-justify uk-visible-large"></i> {{ 'save'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# copy #}
                                         <li>
                                             <a class="" href="#">
-                                                <i class="uk-icon-small uk-icon-copy"></i>
-                                                <span class="cs-addon-navigation-large">{{ 'copy'|trans({})|capitalize }}</span>
+                                                <i class="uk-icon-small uk-icon-copy uk-icon-justify uk-visible-large"></i> {{ 'copy'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
                                         {# send #}
                                         <li>
                                             <a class="" href="#">
-                                                <i class="uk-icon-small uk-icon-send-o"></i>
-                                                <span class="cs-addon-navigation-large">{{ 'send'|trans({})|capitalize }}</span>
+                                                <i class="uk-icon-small uk-icon-send-o uk-icon-justify uk-visible-large"></i> {{ 'send'|trans({})|capitalize }}
                                             </a>
                                         </li>
 
@@ -119,12 +124,10 @@
                                         <li>
                                             {% if is_granted('ITEM_EDIT', item.itemId) %}
                                                 <a class="" href="#">
-                                                    <i class="uk-icon-small uk-icon-trash-o"></i>
-                                                    <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
+                                                    <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                                 </a>
                                             {% else %}
-                                                <i class="uk-icon-small uk-icon-trash-o"></i>
-                                                <span class="cs-addon-navigation-large">{{ 'trash'|trans({})|capitalize }}</span>
+                                                <i class="uk-icon-small uk-icon-trash-o uk-icon-justify uk-visible-large"></i> {{ 'trash'|trans({})|capitalize }}
                                             {% endif %}
                                         </li>
                                     </ul>

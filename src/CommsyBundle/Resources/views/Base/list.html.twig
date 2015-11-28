@@ -8,6 +8,7 @@
         {# feed #}
         <div class="uk-width-medium-3-5">
             <div class="uk-panel uk-panel-box uk-panel-box-primary">
+                
                 <div class="uk-panel-teaser cs-panel-teaser-primary">
                     <div class="uk-flex uk-flex-middle uk-flex-space-between">
                         <div class="uk-text-large">
@@ -36,6 +37,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div id="commsy-select-actions" class="uk-hidden" data-uk-sticky>
                     <div class="uk-grid uk-margin-remove">
                         <div class="cs-list-select-buttons uk-width-3-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
@@ -47,16 +49,42 @@
                                 <button class="uk-button">{{ 'selected entries'|trans({},'rubric')}} <i class="uk-icon-caret-down"></i></button>
                                 <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
-                                        <li><a href="#" id="commsy-select-actions-mark-read"><i class="uk-icon-justify uk-icon-small uk-icon-check-square-o"></i> <span class="cs-addon-navigation-large">{{ 'mark read'|trans({},'rubric')|capitalize }}</span></a></li>
-                                        <li><a href="#" id="commsy-select-actions-copy"><i class="uk-icon-justify uk-icon-small uk-icon-copy"></i> <span class="cs-addon-navigation-large">{{ 'copy'|trans({},'rubric')|capitalize }}</span></a></li>
-                                        <li><a href="#" id="commsy-select-actions-save"><i class="uk-icon-justify uk-icon-small uk-icon-save"></i> <span class="cs-addon-navigation-large">{{ 'save'|trans({},'rubric')|capitalize }}</span></a></li>
-                                        <li><a href="#" id="commsy-select-actions-delete"><i class="uk-icon-justify uk-icon-small uk-icon-trash-o"></i> <span class="cs-addon-navigation-large">{{ 'delete'|trans({},'rubric')|capitalize }}</span></a></li>
+
+                                        {# mark read #}
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-mark-read">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# copy #}
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-copy">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# save #}
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-save">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# delete #}
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-delete">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="feed">
                     {% block feed %}
                     {% endblock%}
