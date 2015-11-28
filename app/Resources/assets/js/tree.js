@@ -12,8 +12,12 @@
                     },
                     multiple: true
                 },
+                checkbox: {
+                    keep_selected_style: false
+                },
                 plugins: [
-                    "wholerow"
+                    "wholerow",
+                    "checkbox"
                 ]
             }
         },
