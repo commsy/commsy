@@ -100,6 +100,34 @@ class MaterialController extends Controller
             throw $this->createNotFoundException('The requested room does not exist');
         }
 
+
+
+       // get the material manager service
+        $materialService = $this->get('commsy_legacy.material_service');
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(new MaterialFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_material_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => $roomItem->withBuzzwords(),
+            'hasCategories' => $roomItem->withTags(),
+        ));
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in material manager
+            $materialService->setFilterConditions($filterForm);
+        }
+
+        // get material list from manager service 
+        $itemsCountArray = $materialService->getCountArray($roomId);
+
+
+
+
         // setup filter form
         $defaultFilterValues = array(
             'activated' => true,
@@ -129,6 +157,7 @@ class MaterialController extends Controller
             'roomId' => $roomId,
             'form' => $filterForm->createView(),
             'module' => 'material',
+            'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
             'showCategories' => $roomItem->withTags(),

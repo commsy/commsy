@@ -38,6 +38,19 @@ class MaterialService
         return $materialList->to_array();
     }
 
+    public function getCountArray($roomId)
+    {
+        $this->materialManager->setContextLimit($roomId);
+        $this->materialManager->select();
+        $countMaterial = array();
+        $countMaterialArray['count'] = sizeof($this->materialManager->get()->to_array());
+        $this->materialManager->resetLimits();
+        $this->materialManager->select();
+        $countMaterialArray['countAll'] = $this->materialManager->getCountAll();
+
+        return $countMaterialArray;
+    }
+
     public function setFilterConditions(Form $filterForm)
     {
         $formData = $filterForm->getData();
