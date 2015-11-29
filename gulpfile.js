@@ -80,7 +80,9 @@ app.addScript = function(paths, outputFilename) {
     return gulp.src(paths)
         .pipe(plugins.if(!config.production, plugins.plumber()))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init()))
-        .pipe(plugins.babel())
+        .pipe(plugins.babel({
+            presets: ['es2015']
+        }))
         .pipe(plugins.concat('js/build/' + outputFilename))
         .pipe(plugins.if(config.production, plugins.uglify()))
         .pipe(plugins.rev())
