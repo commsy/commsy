@@ -3,7 +3,7 @@
  * ****************************************************************************
  */
 var gulp = require('gulp');
-var plugins = require('gulp-load-plugins')()
+var plugins = require('gulp-load-plugins')();
 var path = require('path');
 var del = require('del');
 var fs = require('fs');
@@ -51,7 +51,7 @@ app.getThemes = function() {
     });
 
     return list;
-}
+};
 
 app.addStyle = function(paths, outputFilename) {
     return gulp.src(paths)
@@ -73,13 +73,14 @@ app.addStyle = function(paths, outputFilename) {
         .pipe(plugins.rev.manifest(config.revManifestDir + '/' + outputFilename + '-manifest.json', {
             merge: true
         }))
-        .pipe(gulp.dest('.'))
+        .pipe(gulp.dest('.'));
 };
 
 app.addScript = function(paths, outputFilename) {
     return gulp.src(paths)
         .pipe(plugins.if(!config.production, plugins.plumber()))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init()))
+        .pipe(plugins.babel())
         .pipe(plugins.concat('js/build/' + outputFilename))
         .pipe(plugins.if(config.production, plugins.uglify()))
         .pipe(plugins.rev())
@@ -96,7 +97,7 @@ app.addScript = function(paths, outputFilename) {
 app.copy = function(srcFiles, outputDir) {
     return gulp.src(srcFiles)
         .pipe(gulp.dest(outputDir));
-}
+};
 
 /**
  * Tasks
@@ -151,7 +152,7 @@ gulp.task('images', function(done) {
     app.copy([
         config.bowerDir + '/jstree/dist/themes/default/*.png',
         config.bowerDir + '/jstree/dist/themes/default/*.gif'
-    ], 'web/css/build')
+    ], 'web/css/build');
 
     done();
 });
@@ -181,7 +182,7 @@ gulp.task('staticThemes', ['js'], function(done) {
 
     Promise.all(promises).then(function() {
         done();
-    })
+    });
 });
 
 gulp.task('manifest', ['staticThemes'], function() {
@@ -208,7 +209,7 @@ gulp.task('postClean', ['manifest'], function(done) {
 gulp.task('watch', function() {
     gulp.watch(config.assetsDir + '/uikit-commsy/' + config.lessPattern, ['default']);
     gulp.watch(config.assetsDir + '/js/**/*.js', ['default']);
-    gulp.watch(config.themesDir + '/' + config.lessPattern, ['default'])
+    gulp.watch(config.themesDir + '/' + config.lessPattern, ['default']);
 });
 
-gulp.task('default', ['clean', 'less', 'js', 'fonts', 'images', 'staticThemes', 'manifest', 'postClean'])
+gulp.task('default', ['clean', 'less', 'js', 'fonts', 'images', 'staticThemes', 'manifest', 'postClean']);

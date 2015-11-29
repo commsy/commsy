@@ -22,6 +22,7 @@
   "devDependencies": {
     "del": "^2.0.2",
     "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.1",
     "gulp-concat": "^2.6.0",
     "gulp-if": "^1.2.5",
     "gulp-jsoncombine": "^1.0.3",
