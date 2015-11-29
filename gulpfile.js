@@ -45,8 +45,8 @@ app.getThemes = function() {
         }
 
         list.push({
-            "name": theme,
-            "path": path
+            'name': theme,
+            'path': path
         });
     });
 
@@ -81,7 +81,10 @@ app.addScript = function(paths, outputFilename) {
         .pipe(plugins.if(!config.production, plugins.plumber()))
         .pipe(plugins.if(config.sourceMaps, plugins.sourcemaps.init()))
         .pipe(plugins.babel({
-            presets: ['es2015']
+            presets: ['es2015'],
+            only: [
+                config.assetsDir
+            ]
         }))
         .pipe(plugins.concat('js/build/' + outputFilename))
         .pipe(plugins.if(config.production, plugins.uglify()))
