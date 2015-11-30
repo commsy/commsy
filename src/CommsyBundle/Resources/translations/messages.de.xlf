@@ -142,6 +142,22 @@
                 <source>of</source>
                 <target>von</target>
             </trans-unit>
+           <trans-unit id="36">
+                <source>newEntry</source>
+                <target>Neuer Eintrag</target>
+            </trans-unit>
+           <trans-unit id="37">
+                <source>changedEntry</source>
+                <target>Geänderter Eintrag</target>
+            </trans-unit>
+           <trans-unit id="38">
+                <source>newAnnotation</source>
+                <target>Neue Anmerkung</target>
+            </trans-unit>
+           <trans-unit id="39">
+                <source>changedAnnotation</source>
+                <target>Geänderte Anmerkung</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

@@ -142,6 +142,22 @@
                 <source>of</source>
                 <target>of</target>
             </trans-unit>
+           <trans-unit id="36">
+                <source>newEntry</source>
+                <target>New Entry</target>
+            </trans-unit>
+           <trans-unit id="37">
+                <source>changedEntry</source>
+                <target>Changed Entry</target>
+            </trans-unit>
+           <trans-unit id="38">
+                <source>newAnnotation</source>
+                <target>New annotation</target>
+            </trans-unit>
+           <trans-unit id="39">
+                <source>changedAnnotation</source>
+                <target>Changed annotation</target>
+            </trans-unit>
 
         </body>
     </file>
