@@ -68,12 +68,7 @@ class MaterialController extends Controller
 
         $readerList = array();
         foreach ($materials as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
-            }
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
         }
 
         return array(
