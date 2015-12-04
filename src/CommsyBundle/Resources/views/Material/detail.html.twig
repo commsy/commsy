@@ -72,30 +72,35 @@
                         {# actions #}
                         <div class="uk-width-3-5 uk-text-right">
 
-                            {# new #}
-                            <a class="uk-margin-left uk-button-primary" href="{{ path('commsy_material_create', {'roomId': roomId}) }}">
-                                <i class="uk-icon-small uk-icon-plus-circle uk-visible-large"></i> {{ 'new'|trans({})}}
-                            </a>
-
-                            {# print #}
-                            <a class="uk-margin-left uk-button-primary" href="#">
-                                <i class="uk-icon-small uk-icon-print uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
-                            </a>
 
                             {# additional actions #}
                             <div class="uk-margin-left uk-button-dropdown" data-uk-dropdown>
                                 <button class="uk-button uk-button-mini">
-                                    {{ 'additional actions'|trans({}, 'item') }}
+                                    {{ 'actions'|trans({}, 'rubric') }}
                                     <i class="uk-icon-caret-down"></i>
                                 </button>
 
                                 <div id="cs-additional-actions" class="uk-dropdown  uk-padding-remove">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
-                                        {# new section #}
+                                        {# new entry #}
                                         <li>
+                                            <a class="" href="{{ path('commsy_material_create', {'roomId': roomId}) }}" id="newEntry">
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new'|trans({}) }}
+                                            </a>
+                                        </li>
+                                        {# print #}
+ 
+                                        <li>
+                                            <a class="" href="#" id="print" data-section-url="">
+                                                <i class="uk-icon-small uk-icon-print uk-icon-justify uk-visible-large"></i> {{ 'print'|trans({})|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        {# new section #}
+                                         <li>
                                             <a class="" href="#" id="newSection" data-section-url="{{ path('commsy_material_createsection', {'roomId': roomId, 'itemId': material.itemId}) }}">
-                                                <i class="uk-icon-small uk-icon-plus uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
+                                                <i class="uk-icon-small uk-icon-plus-circle uk-icon-justify uk-visible-large"></i> {{ 'new section'|trans({}) }}
                                             </a>
                                         </li>
 

@@ -33,36 +33,19 @@
                                     </ul>
                                 </div>
                             </div>
-
-                            {# selection mode #}
-                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-alt-title="{{ 'unset list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
-                                {{ 'list choice'|trans({},'rubric')|capitalize }}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {# will be displayed when selection mode is active #}
-                <div id="commsy-select-actions" class="uk-hidden" data-uk-sticky>
-                    <div class="uk-grid uk-margin-remove">
-
-                        {# change selection #}
-                        <div class="cs-list-select-buttons uk-width-3-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
-                                <button id="commsy-select-actions-select-all" class="uk-button" type="button" data-uk-button>{{ 'select all entries'|trans({},'rubric')}}</button>
-                                <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'unselect entries'|trans({},'rubric')}}</button>
-                        </div>
-
-                        {# selection actions #}
-                        <div class="cs-list-select-buttons uk-text-right uk-width-1-4 uk-margin-remove uk-margin-top uk-padding-bottom">
-                            <div class="uk-button-dropdown uk-text-left" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
-
-                                <button class="uk-button">{{ 'selected entries'|trans({},'rubric')}} <i class="uk-icon-caret-down"></i></button>
-                                <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown uk-padding-remove">
+                            <div class="uk-button-dropdown uk-button-primary" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+                                <button class="uk-button uk-button-mini">{{ 'actions'|trans({},'rubric')|capitalize }} <i class="uk-icon-caret-down"></i></button>
+                                <div id="cs-entry-navigation" class="uk-padding-remove uk-dropdown uk-dropdown-small">
                                     <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
 
-                                        {# mark read #}
                                         <li>
-                                            <a href="#" id="commsy-select-actions-mark-read">
+                                             <a href="{{ path('commsy_material_create', {'roomId': roomId}) }}">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-plus-circle"></i> {{ 'new'|trans({})}}
+                                            </a>
+
+                                        </li>
+                                        <li>
+                                            <a href="#" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" >
                                                 <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
                                             </a>
                                         </li>
@@ -87,12 +70,77 @@
                                                 <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
                                             </a>
                                         </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            {# selection mode old code
+                            <button class="uk-button uk-button-mini" data-uk-button data-commsy-select="{target:'.feed ul', actionUrl: '{{ path('commsy_material_feedaction', {'roomId': roomId}) }}'}" data-title="{{ 'list choice'|trans({},'rubric')|capitalize }}" data-alt-title="{{ 'unset list choice'|trans({},'rubric')|capitalize }}" data-confirm-delete="{{ 'confirm delete'|trans({},'rubric')}}" data-confirm-delete-cancel ="{{'confirm delete cancel'|trans({},'rubric')}}" data-confirm-delete-confirm ="{{'confirm delete confirm'|trans({},'rubric')}}">
+                                {{ 'list choice'|trans({},'rubric')|capitalize }}
+                            </button>
+                            #}
+                        </div>
+                    </div>
+                </div>
+
+                {# will be displayed when selection mode is active #}
+                <div id="commsy-select-actions" class="uk-hidden" data-uk-sticky>
+                    <div class="uk-grid uk-margin-remove">
+
+                        {# change selection #}
+                        <div class="cs-list-select-buttons uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom uk-padding-top">
+                                <button id="commsy-select-actions-select-all" class="uk-button" type="button" data-uk-button>{{ 'select all entries'|trans({},'rubric')}}</button>
+                                <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'unselect entries'|trans({},'rubric')}}</button>
+                        </div>
+
+                        <div class="cs-list-select-buttons uk-text-right uk-width-2-4 uk-margin-remove uk-margin-top uk-padding-bottom">
+
+                                <button id="commsy-select-actions-mark-read" class="uk-button" type="button" data-uk-button>{{ 'mark read'|trans({},'rubric')|capitalize }}</button>
+                                <button id="commsy-select-actions-unselect" class="uk-button" type="button" data-uk-button>{{ 'cancel'|trans({},'rubric')}}</button>
+                        </div>
+
+                        {# selection actions old code
+                        <div class="cs-list-select-buttons uk-text-right uk-width-1-4 uk-margin-remove uk-margin-top uk-padding-bottom">
+                            <div class="uk-button-dropdown uk-text-left" data-uk-dropdown="" aria-haspopup="true" aria-expanded="false">
+
+                                <button class="uk-button">{{ 'selected entries'|trans({},'rubric')}} <i class="uk-icon-caret-down"></i></button>
+                                <div id="cs-entry-navigation" class="uk-dropdown uk-dropdown uk-padding-remove">
+                                    <ul class="uk-nav uk-nav-dropdown uk-list-striped uk-padding-remove uk-margin-remove uk-text-left">
+
+                                        
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-mark-read">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-check-square-o uk-visible-large"></i> {{ 'mark read'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-copy">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-copy uk-visible-large"></i> {{ 'copy'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
+                                    
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-save">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-save uk-visible-large"></i> {{ 'save'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
+
+                                        
+                                        <li>
+                                            <a href="#" id="commsy-select-actions-delete">
+                                                <i class="uk-icon-justify uk-icon-small uk-icon-trash-o uk-visible-large"></i> {{ 'delete'|trans({},'rubric')|capitalize }}
+                                            </a>
+                                        </li>
 
                                     </ul>
                                 </div>
 
                             </div>
                         </div>
+                        #}
 
                     </div>
                 </div>

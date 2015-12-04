@@ -150,6 +150,15 @@
                 <source>confirm delete cancel</source>
                 <target>No</target>
             </trans-unit>
+             <trans-unit id="38">
+                <source>cancel</source>
+                <target>Cancel</target>
+            </trans-unit>
+            <trans-unit id="39">
+                <source>actions</source>
+                <target>Actions</target>
+            </trans-unit>
+
         </body>
     </file>
 </xliff>
