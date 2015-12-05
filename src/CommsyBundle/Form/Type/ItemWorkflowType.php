@@ -42,7 +42,7 @@ class ItemWorkflowType extends AbstractType
                 'translation_domain' => 'item',
                 'required' => false,
             ))
-            ->add('workflowResubmissionDate', 'date', array(
+            ->add('workflowResubmissionDate', 'datetime', array(
                 'label' => 'workflowResubmissionDate',
                 'translation_domain' => 'item',
                 'input'  => 'datetime',
@@ -85,7 +85,7 @@ class ItemWorkflowType extends AbstractType
                 'translation_domain' => 'item',
                 'required' => false,
             ))
-            ->add('workflowValidityDate', 'date', array(
+            ->add('workflowValidityDate', 'datetime', array(
                 'label' => 'workflowValidityDate',
                 'translation_domain' => 'item',
                 'input'  => 'datetime',

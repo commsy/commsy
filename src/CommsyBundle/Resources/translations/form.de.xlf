@@ -247,6 +247,10 @@
                 <source>ALL</source>
                 <target>Alle</target>
             </trans-unit>
+            <trans-unit id="edit workflow">
+                <source>edit workflow</source>
+                <target>Workflow bearbeiten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
