@@ -20,7 +20,6 @@
       <% filesMatchArr.push(filesmatch) -%>
     <% end -%>
     <% table = scope.effective_symtable(true) -%>
-    <% table.delete('_directories') -%>
     <% scope['_directories'] = filesMatchArr -%>
     <% result = scope.function_template(['apache/vhost/_directories.erb']) -%>
     <% result = result.gsub("\n  ## Directories, there should at least be a declaration for \n", "") -%>

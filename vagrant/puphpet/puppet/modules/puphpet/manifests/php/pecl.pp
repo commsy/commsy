@@ -6,7 +6,8 @@
  */
 
 define puphpet::php::pecl (
-  $service_autorestart
+  $service_autorestart,
+  $prefix = $puphpet::php::settings::prefix
 ){
 
   $ignore = {
@@ -44,20 +45,20 @@ define puphpet::php::pecl (
   $package = $::osfamily ? {
     'Debian' => {
       'apc'         => $::operatingsystem ? {
-        'debian' => 'php5-apc',
-        'ubuntu' => 'php5-apcu',
+        'debian' => "${prefix}apc",
+        'ubuntu' => "${prefix}apcu",
       },
-      'apcu'        => 'php5-apcu',
-      'imagick'     => 'php5-imagick',
-      'memcache'    => 'php5-memcache',
-      'memcached'   => 'php5-memcached',
+      'apcu'        => "${prefix}apcu",
+      'imagick'     => "${prefix}imagick",
+      'memcache'    => "${prefix}memcache",
+      'memcached'   => "${prefix}memcached",
       'mongo'       => $::lsbdistcodename ? {
         'precise' => false,
-        default   => 'php5-mongo',
+        default   => "${prefix}mongo",
       },
-      'redis'       => 'php5-redis',
-      'sqlite'      => 'php5-sqlite',
-      'zendopcache' => 'php5-zendopcache',
+      'redis'       => "${prefix}redis",
+      'sqlite'      => "${prefix}sqlite",
+      'zendopcache' => "${prefix}zendopcache",
     },
     'Redhat' => {
       'apc'         => 'php-pecl-apcu',
@@ -108,7 +109,7 @@ define puphpet::php::pecl (
     $package_name = false
   }
 
-  if $pecl_name and ! defined(::Php::Pecl::Module[$pecl_name])
+  if $pecl_name and ! defined(Php::Pecl::Module[$pecl_name])
     and $puphpet::php::settings::enable_pecl
   {
     ::php::pecl::module { $pecl_name:

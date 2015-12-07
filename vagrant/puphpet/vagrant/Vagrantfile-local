@@ -7,6 +7,8 @@ Vagrant.configure('2') do |config|
   config.vm.box     = "#{data['vm']['box']}"
   config.vm.box_url = "#{data['vm']['box_url']}"
 
+  config.ssh.insert_key = data['ssh']['insert_key']
+
   if data['vm']['hostname'].to_s.strip.length != 0
     config.vm.hostname = "#{data['vm']['hostname']}"
   end
@@ -71,6 +73,8 @@ Vagrant.configure('2') do |config|
       config.hostmanager.ignore_private_ip = false
       config.hostmanager.include_offline   = false
       config.hostmanager.aliases           = hosts
+
+      config.vm.provision :hostmanager
     end
   end
 
@@ -86,7 +90,7 @@ Vagrant.configure('2') do |config|
       if folder['sync_type'] == 'nfs'
         if Vagrant.has_plugin?('vagrant-bindfs')
           config.vm.synced_folder "#{folder['source']}", "/mnt/vagrant-#{i}", id: "#{i}", type: 'nfs'
-          config.bindfs.bind_folder "/mnt/vagrant-#{i}", "#{folder['target']}", owner: sync_owner, group: sync_group, perms: "u=rwX:g=rwX:o=rD", m: "vagrant,www-data"
+          config.bindfs.bind_folder "/mnt/vagrant-#{i}", "#{folder['target']}", after: :provision, force_user: sync_owner, force_group: sync_group, perms: "u=rwX:g=rwX:o=rD", o: 'nonempty'
         else
           config.vm.synced_folder "#{folder['source']}", "#{folder['target']}", id: "#{i}", type: 'nfs'
         end
@@ -228,7 +232,6 @@ Vagrant.configure('2') do |config|
     kg.args = "#{ssh_username}"
   end
   config.vm.provision :shell, :path => 'puphpet/shell/check-puppet-modules.sh'
-  config.vm.provision :shell, :path => 'puphpet/shell/install-ruby.sh'
   config.vm.provision :shell, :path => 'puphpet/shell/install-puppet.sh'
 
   config.vm.provision :puppet do |puppet|
@@ -238,7 +241,7 @@ Vagrant.configure('2') do |config|
       'provisioner_type' => ENV['VAGRANT_DEFAULT_PROVIDER'],
     }
     puppet.manifests_path = "#{data['vm']['provision']['puppet']['manifests_path']}"
-    puppet.manifest_file  = "#{data['vm']['provision']['puppet']['manifest_file']}"
+    puppet.manifest_file  = ""
     puppet.module_path    = "#{data['vm']['provision']['puppet']['module_path']}"
 
     if !data['vm']['provision']['puppet']['options'].empty?
@@ -270,10 +273,6 @@ Vagrant.configure('2') do |config|
   vagrantKey = "#{vagrant_dot}/machines/default/#{ENV['VAGRANT_DEFAULT_PROVIDER']}/private_key"
 
   if File.file?(customKey)
-    # TODO: Improve SSH key insertion
-    # Turn off insert key to prevent failure to login to VM
-    config.ssh.insert_key = false
-
     config.ssh.private_key_path = [
       customKey,
       "#{vagrant_home}/insecure_private_key"

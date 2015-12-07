@@ -22,20 +22,20 @@ class puphpet::mysql::repo(
         }
       }
       'ubuntu': {
-        if ! defined(Apt::Key['E5267A6C']){
-          apt::key { 'E5267A6C':
+        if ! defined(Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']){
+          apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C':
             key_server => 'hkp://keyserver.ubuntu.com:80'
           }
         }
 
         if $::lsbdistcodename in ['lucid', 'precise'] {
           apt::ppa { 'ppa:ondrej/mysql-5.5':
-            require => Apt::Key['E5267A6C'],
+            require => Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C'],
             options => ''
           }
         } else {
           apt::ppa { 'ppa:ondrej/mysql-5.5':
-            require => Apt::Key['E5267A6C']
+            require => Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']
           }
         }
       }
@@ -63,20 +63,20 @@ class puphpet::mysql::repo(
         }
       }
       'ubuntu': {
-        if ! defined(Apt::Key['E5267A6C']){
-          apt::key { 'E5267A6C':
+        if ! defined(Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']){
+          apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C':
             key_server => 'hkp://keyserver.ubuntu.com:80'
           }
         }
 
         if $::lsbdistcodename in ['lucid', 'precise'] {
           apt::ppa { 'ppa:ondrej/mysql-5.6':
-            require => Apt::Key['E5267A6C'],
+            require => Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C'],
             options => ''
           }
         } else {
           apt::ppa { 'ppa:ondrej/mysql-5.6':
-            require => Apt::Key['E5267A6C']
+            require => Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']
           }
         }
       }

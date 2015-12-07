@@ -3,24 +3,32 @@ class puphpet::php::settings (
 ){
 
   if $version_string == '7.0' or $version_string == '70' {
-    $version = '7.0'
+    $version = '70'
   } else {
     $version = $version_string
   }
 
-  if $version == '7.0' or $version == '70' {
-    $enable_modules = false
-    $enable_pear    = false
-    $enable_pecl    = false
-    $enable_xdebug  = false
+  $enable_modules = true
+  $enable_pear    = true
+  $enable_pecl    = true
+  $enable_xdebug  = true
 
+  if $version == '70' {
     $prefix = $::osfamily ? {
-      'debian' => 'php7-',
-      'redhat' => 'php-',
+      'Debian' => $::operatingsystem ? {
+        'ubuntu' => 'php7.0-',
+        'debian' => 'php7-'
+      },
+      'Redhat' => 'php-'
+    }
+
+    $package_devel = $::osfamily ? {
+      'debian' => 'php7.0-dev',
+      'redhat' => 'php-devel',
     }
 
     $base_ini = $::osfamily ? {
-      'debian' => '/etc/php7/php.ini',
+      'debian' => '/etc/php/7.0/php.ini',
       'redhat' => '/etc/php.ini',
     }
 
@@ -34,15 +42,12 @@ class puphpet::php::settings (
       'redhat' => '/var/run/php-fpm.pid',
     }
   } else {
-    $enable_modules = true
-    $enable_pear    = true
-    $enable_pecl    = true
-    $enable_xdebug  = true
-
     $prefix = $::osfamily ? {
       'debian' => 'php5-',
       'redhat' => 'php-',
     }
+
+    $package_devel = $php::params::package_devel
 
     $base_ini = $::osfamily ? {
       'debian' => '/etc/php5/php.ini',

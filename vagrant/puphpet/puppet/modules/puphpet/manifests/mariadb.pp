@@ -24,7 +24,7 @@ class puphpet::mariadb(
         release           => $release,
         repos             => 'main',
         required_packages => 'debian-keyring debian-archive-keyring',
-        key               => '1BB943DB',
+        key               => '199369E5404BD5FC7D2FE43BCBCB082A1BB943DB',
         key_server        => 'hkp://keyserver.ubuntu.com:80',
         include_src       => true
       }

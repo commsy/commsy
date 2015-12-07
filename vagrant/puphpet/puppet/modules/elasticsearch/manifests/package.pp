@@ -20,10 +20,16 @@
 #
 # === Authors
 #
-# * Richard Pijnenburg <mailto:richard@ispavailability.com>
+# * Richard Pijnenburg <mailto:richard.pijnenburg@elasticsearch.com>
 #
 class elasticsearch::package {
 
+  Exec {
+    path      => [ '/bin', '/usr/bin', '/usr/local/bin' ],
+    cwd       => '/',
+    tries     => 3,
+    try_sleep => 10,
+  }
 
   #### Package management
 
@@ -41,12 +47,17 @@ class elasticsearch::package {
     } else {
 
       # install specific version
-      $package_ensure = $elasticsearch::version
+      $package_ensure = $elasticsearch::real_version
 
     }
 
     # action
     if ($elasticsearch::package_url != undef) {
+
+      case $elasticsearch::package_provider {
+        'package': { $before = Package[$elasticsearch::package_name]  }
+        default:   { fail("software provider \"${elasticsearch::package_provider}\".") }
+      }
 
       $package_dir = $elasticsearch::package_dir
 
@@ -55,13 +66,14 @@ class elasticsearch::package {
         cwd     => '/',
         path    => ['/usr/bin', '/bin'],
         command => "mkdir -p ${elasticsearch::package_dir}",
-        creates => $elasticsearch::package_dir;
+        creates => $elasticsearch::package_dir,
       }
 
       file { $package_dir:
         ensure  => 'directory',
         purge   => $elasticsearch::purge_package_dir,
         force   => $elasticsearch::purge_package_dir,
+        backup  => false,
         require => Exec['create_package_dir_elasticsearch'],
       }
 
@@ -74,39 +86,50 @@ class elasticsearch::package {
       $extArray = split($basefilename, '\.')
       $ext = $extArray[-1]
 
+      $pkg_source = "${package_dir}/${basefilename}"
+
       case $protocol_type {
 
-        puppet: {
+        'puppet': {
 
-          file { "${package_dir}/${basefilename}":
-            ensure  => present,
+          file { $pkg_source:
+            ensure  => file,
             source  => $elasticsearch::package_url,
             require => File[$package_dir],
             backup  => false,
-            before  => Package[$elasticsearch::params::package]
+            before  => $before,
           }
 
         }
-        ftp, https, http: {
+        'ftp', 'https', 'http': {
+
+          if $elasticsearch::proxy_url != undef {
+            $exec_environment = [
+              'use_proxy=yes',
+              "http_proxy=${elasticsearch::proxy_url}",
+              "https_proxy=${elasticsearch::proxy_url}",
+            ]
+          }
 
           exec { 'download_package_elasticsearch':
-            command => "${elasticsearch::params::dlcmd} ${package_dir}/${basefilename} ${elasticsearch::package_url} 2> /dev/null",
-            path    => ['/usr/bin', '/bin'],
-            creates => "${package_dir}/${basefilename}",
-            require => File[$package_dir],
-            before  => Package[$elasticsearch::params::package]
+            command     => "${elasticsearch::params::download_tool} ${pkg_source} ${elasticsearch::package_url} 2> /dev/null",
+            creates     => $pkg_source,
+            environment => $exec_environment,
+            timeout     => $elasticsearch::package_dl_timeout,
+            require     => File[$package_dir],
+            before      => $before,
           }
 
         }
-        file: {
+        'file': {
 
           $source_path = $sourceArray[1]
-          file { "${package_dir}/${basefilename}":
-            ensure  => present,
+          file { $pkg_source:
+            ensure  => file,
             source  => $source_path,
             require => File[$package_dir],
             backup  => false,
-            before  => Package[$elasticsearch::params::package]
+            before  => $before,
           }
 
         }
@@ -115,13 +138,15 @@ class elasticsearch::package {
         }
       }
 
-      case $ext {
-        'deb':   { $pkg_provider = 'dpkg' }
-        'rpm':   { $pkg_provider = 'rpm'  }
-        default: { fail("Unknown file extention \"${ext}\".") }
-      }
+      if ($elasticsearch::package_provider == 'package') {
 
-      $pkg_source = "${package_dir}/${basefilename}"
+        case $ext {
+          'deb':   { $pkg_provider = 'dpkg' }
+          'rpm':   { $pkg_provider = 'rpm'  }
+          default: { fail("Unknown file extention \"${ext}\".") }
+        }
+
+      }
 
     } else {
       $pkg_source = undef
@@ -132,14 +157,34 @@ class elasticsearch::package {
   } else {
 
     $pkg_source = undef
-    $pkg_provider = undef
+    if ($::operatingsystem == 'OpenSuSE') {
+      $pkg_provider = 'rpm'
+    } else {
+      $pkg_provider = undef
+    }
     $package_ensure = 'purged'
+
+    $package_dir = $elasticsearch::package_dir
+
+    file { $package_dir:
+      ensure => 'absent',
+      purge  => true,
+      force  => true,
+      backup => false,
+    }
+
   }
 
-  package { $elasticsearch::params::package:
-    ensure   => $package_ensure,
-    source   => $pkg_source,
-    provider => $pkg_provider
+  if ($elasticsearch::package_provider == 'package') {
+
+    package { $elasticsearch::package_name:
+      ensure   => $package_ensure,
+      source   => $pkg_source,
+      provider => $pkg_provider,
+    }
+
+  } else {
+    fail("\"${elasticsearch::package_provider}\" is not supported")
   }
 
 }

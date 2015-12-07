@@ -5,15 +5,15 @@ class puphpet::apache::repo {
   }
 
   if $::operatingsystem == 'ubuntu' and $::lsbdistcodename == 'precise' {
-    if ! defined(Apt::Key['4F4EA0AAE5267A6C']){
-      ::apt::key { '4F4EA0AAE5267A6C':
+    if ! defined(Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']){
+      ::apt::key { '14AA40EC0831756756D7F66C4F4EA0AAE5267A6C':
         key_server => 'hkp://keyserver.ubuntu.com:80'
       }
     }
 
     if ! defined(Apt::Ppa['ppa:ondrej/apache2']){
       ::apt::ppa { 'ppa:ondrej/apache2':
-        require => Apt::Key['4F4EA0AAE5267A6C']
+        require => Apt::Key['14AA40EC0831756756D7F66C4F4EA0AAE5267A6C']
       }
     }
   }

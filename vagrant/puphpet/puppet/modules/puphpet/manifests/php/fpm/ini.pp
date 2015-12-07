@@ -45,13 +45,21 @@ define puphpet::php::fpm::ini (
 
   $pool_name = 'global'
 
-  case $fpm_version {
-    '7.0', '70', '7': {
-      $dir_name = 'php7'
+  if $fpm_version in ['7.0', '70', '7'] {
+    case $::operatingsystem {
+      # Debian and Ubuntu slightly differ
+      'debian': {
+        $dir_name = 'php7'
+      }
+      'ubuntu': {
+        $dir_name = 'php/7.0'
+      }
+      'redhat', 'centos': {
+        $dir_name = 'php'
+      }
     }
-    default: {
-      $dir_name = 'php5'
-    }
+  } else {
+    $dir_name = 'php5'
   }
 
   case $::osfamily {
@@ -66,8 +74,8 @@ define puphpet::php::fpm::ini (
   $conf_filename = "${pool_dir}/php-fpm.conf"
 
   $changes = $ensure ? {
-    present => [ "set '${pool_name}/${entry}' '${value}'" ],
-    absent  => [ "rm '${pool_name}/${entry}'" ],
+    present => [ "set '${pool_name}/${entry}' \"'${value}'\"" ],
+    absent  => [ "rm \"'${pool_name}/${entry}'\"" ],
   }
 
   augeas { "${pool_name}/${entry}: ${value}":

@@ -1,5 +1,5 @@
 require 'yaml'
-require 'active_support'
+require 'deep_merge'
 
 module Puppet::Parser::Functions
   newfunction(:merge_yaml, :type => :rvalue, :doc => <<-'ENDHEREDOC') do |args|

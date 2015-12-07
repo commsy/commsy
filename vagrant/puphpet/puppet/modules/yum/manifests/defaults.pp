@@ -14,6 +14,7 @@ class yum::defaults ( ) inherits yum::params {
   if 'remi' in $yum::extrarepo { include yum::repo::remi }
   if 'remi_php55' in $yum::extrarepo { include yum::repo::remi_php55 }
   if 'remi_php56' in $yum::extrarepo { include yum::repo::remi_php56 }
+  if 'remi_php70' in $yum::extrarepo { include yum::repo::remi_php70 }
   if 'tmz' in $yum::extrarepo and $osver[0] != '4' { include yum::repo::tmz }
   if 'webtatic' in $yum::extrarepo { include yum::repo::webtatic }
   if 'puppetlabs' in $yum::extrarepo and $osver[0] != '4' { include yum::repo::puppetlabs }
@@ -30,16 +31,19 @@ class yum::defaults ( ) inherits yum::params {
   if 'centalt' in $yum::extrarepo { include yum::repo::centalt }
   if 'elastix' in $yum::extrarepo { include yum::repo::elastix }
   if 'mysql_community' in $yum::extrarepo { include yum::repo::mysql_community }
+  if 'dell_omsa' in $yum::extrarepo { include yum::repo::dell_omsa }
 
   if $yum::bool_defaultrepo {
     case $::operatingsystem {
       centos: {
+        if $osver[0] == '7' { include yum::repo::centos7 }
         if $osver[0] == '6' { include yum::repo::centos6 }
         if $osver[0] == '5' { include yum::repo::centos5 }
         if $osver[0] == '4' { include yum::repo::centos4 }
         if 'centos-testing' in $yum::extrarepo { include yum::repo::centos_testing }
         if 'karan' in $yum::extrarepo { include yum::repo::karan }
         if 'atomic' in $yum::extrarepo { include yum::repo::atomic }
+        if 'scl' in $yum::extrarepo { include yum::repo::scl }
       }
       redhat: {
       }
@@ -48,6 +52,9 @@ class yum::defaults ( ) inherits yum::params {
         if $osver[0] == '5' { include yum::repo::sl5 }
         if 'centos-testing' in $yum::extrarepo { include yum::repo::centos_testing }
         if 'karan' in $yum::extrarepo { include yum::repo::karan }
+      }
+      xenserver: {
+        include yum::repo::xenserver
       }
       default: { }
     }

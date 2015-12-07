@@ -24,11 +24,12 @@ define puphpet::php::module (
     $package_name = $name
   }
 
-  if $package_name and ! defined(::Php::Module[$package_name])
+  if $package_name and ! defined(Php::Module[$package_name])
     and $puphpet::php::settings::enable_modules
   {
     ::php::module { $package_name:
       service_autorestart => $service_autorestart,
+      module_prefix       => $puphpet::php::settings::prefix
     }
   }
 

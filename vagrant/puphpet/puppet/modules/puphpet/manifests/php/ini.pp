@@ -26,8 +26,8 @@
 #     CENTOS 6
 #          N/A
 #     UBUNTU 14.04 TRUSTY
-#         CLI   /etc/php7/cli/conf.d  -> /etc/php7/mods-available/*
-#         FPM   /etc/php7/fpm/conf.d  -> /etc/php7/mods-available/*
+#         CLI   /etc/php7/cli/conf.d/*  -> /etc/php7/mods-available/*
+#         FPM   /etc/php7/fpm/conf.d/*  -> /etc/php7/mods-available/*
 #
 define puphpet::php::ini (
   $php_version,
@@ -39,18 +39,19 @@ define puphpet::php::ini (
   ) {
 
   $real_webserver = $webserver ? {
-    'apache'   => 'fpm',
-    'httpd'    => 'fpm',
-    'apache2'  => 'fpm',
-    'nginx'    => 'fpm',
-    'php5-fpm' => 'fpm',
-    'php7-fpm' => 'php7-fpm',
-    'php-fpm'  => 'fpm',
-    'fpm'      => 'fpm',
-    'cgi'      => 'cgi',
-    'fcgi'     => 'cgi',
-    'fcgid'    => 'cgi',
-    undef      => undef,
+    'apache'     => 'fpm',
+    'httpd'      => 'fpm',
+    'apache2'    => 'fpm',
+    'nginx'      => 'fpm',
+    'php5-fpm'   => 'fpm',
+    'php7-fpm'   => 'php7-fpm',
+    'php7.0-fpm' => 'fpm',
+    'php-fpm'    => 'fpm',
+    'fpm'        => 'fpm',
+    'cgi'        => 'cgi',
+    'fcgi'       => 'cgi',
+    'fcgid'      => 'cgi',
+    undef        => undef,
   }
 
   case $php_version {
@@ -155,24 +156,47 @@ define puphpet::php::ini (
     '7.0', '70': {
       case $::osfamily {
         'debian': {
-          $target_dir  = '/etc/php7/mods-available'
+          $target_dir  = '/etc/php/mods-available'
+          $target_file = "${target_dir}/${ini_filename}"
+
+          $webserver_ini_location = $real_webserver ? {
+              'cgi' => '/etc/php/7.0/cgi/conf.d',
+              'fpm' => '/etc/php/7.0/fpm/conf.d',
+              undef => undef,
+          }
+          $cli_ini_location = '/etc/php/7.0/cli/conf.d'
+
+          if ! defined(File[$target_file]) {
+            file { $target_file:
+              replace => no,
+              ensure  => present,
+            }
+          }
+
+          if $webserver_ini_location != undef and ! defined(File["${webserver_ini_location}/${ini_filename}"]) {
+            file { "${webserver_ini_location}/${ini_filename}":
+              ensure  => link,
+              target  => $target_file,
+              require => File[$target_file],
+            }
+          }
+
+          if ! defined(File["${cli_ini_location}/${ini_filename}"]) {
+            file { "${cli_ini_location}/${ini_filename}":
+              ensure  => link,
+              target  => $target_file,
+              require => File[$target_file],
+            }
+          }
+        }
+        'redhat': {
+          $target_dir  = '/etc/php.d'
           $target_file = "${target_dir}/${ini_filename}"
 
           if ! defined(File[$target_file]) {
             file { $target_file:
               replace => no,
               ensure  => present,
-              require => File[$target_dir],
-            }
-          }
-
-          $symlink = "/etc/php7/mods-available/${ini_filename}"
-
-          if ! defined(File[$symlink]) {
-            file { $symlink:
-              ensure  => link,
-              target  => $target_file,
-              require => File[$target_file],
             }
           }
         }
@@ -189,8 +213,8 @@ define puphpet::php::ini (
   }
 
   $changes = $ensure ? {
-    present => [ "set '${entry}' '${value}'" ],
-    absent  => [ "rm '${entry}'" ],
+    present => [ "set '${entry}' \"'${value}'\"" ],
+    absent  => [ "rm \"'${entry}'\"" ],
   }
 
   augeas { "${entry}: ${value}":

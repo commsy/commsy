@@ -1,17 +1,95 @@
-##2015-01-14 - Supported Release 4.6.0
+##2015-09-08 - Supported Release 4.9.0
 ###Summary
 
-Improved functionality and preparing for Puppet Next with new parser
+This release adds new features including the new functions dos2unix, unix2dos, try_get_value, convert_base as well as other features and improvements.
 
 ####Features
-- MODULES-444: concat can now take more than two arrays
-- basename function added to have Ruby File.basename functionality
-- delete function can now take an array of items to remove
-- MODULES-1473: deprecate type function in favor of type_of
+- (MODULES-2370) allow `match` parameter to influence `ensure => absent` behavior
+- (MODULES-2410) Add new functions dos2unix and unix2dos
+- (MODULE-2456) Modify union to accept more than two arrays
+- Adds a convert_base function, which can convert numbers between bases
+- Add a new function "try_get_value"
 
 ####Bugfixes
-- Several test case fixes
-- Ensure_resource is more verbose on debug mode
+- n/a
+
+####Improvements
+- (MODULES-2478) Support root_home fact on AIX through "lsuser" command
+- Acceptance test improvements
+- Unit test improvements
+- Readme improvements
+
+## 2015-08-10 - Supported Release 4.8.0
+### Summary
+This release adds a function for reading metadata.json from any module, and expands file\_line's abilities.
+
+#### Features
+- New parameter `replace` on `file_line`
+- New function `load_module_metadata()` to load metadata.json and return the content as a hash.
+- Added hash support to `size()`
+
+#### Bugfixes
+- Fix various docs typos
+- Fix `file_line` resource on puppet < 3.3
+
+##2015-06-22 - Supported Release 4.7.0
+###Summary
+
+Adds Solaris 12 support along with improved Puppet 4 support. There are significant test improvements, and some minor fixes.
+
+####Features
+- Add support for Solaris 12
+
+####Bugfixes
+- Fix for AIO Puppet 4
+- Fix time for ruby 1.8.7
+- Specify rspec-puppet version
+- range() fix for typeerror and missing functionality
+- Fix pw_hash() on JRuby < 1.7.17
+- fqdn_rand_string: fix argument error message
+- catch and rescue from looking up non-existent facts
+- Use puppet_install_helper, for Puppet 4
+
+####Improvements
+- Enforce support for Puppet 4 testing
+- fqdn_rotate/fqdn_rand_string acceptance tests and implementation
+- Simplify mac address regex
+- validate_integer, validate_numeric: explicitely reject hashes in arrays
+- Readme edits
+- Remove all the pops stuff for rspec-puppet
+- Sync via modulesync
+- Add validate_slength optional 3rd arg
+- Move tests directory to examples directory
+
+##2015-04-14 - Supported Release 4.6.0
+###Summary
+
+Adds functions and function argument abilities, and improves compatibility with the new puppet parser
+
+####Features
+- MODULES-444: `concat()` can now take more than two arrays
+- `basename()` added to have Ruby File.basename functionality
+- `delete()` can now take an array of items to remove
+- `prefix()` can now take a hash
+- `upcase()` can now take a hash or array of upcaseable things
+- `validate_absolute_path()` can now take an array
+- `validate_cmd()` can now use % in the command to embed the validation file argument in the string
+- MODULES-1473: deprecate `type()` function in favor of `type3x()`
+- MODULES-1473: Add `type_of()` to give better type information on future parser
+- Deprecate `private()` for `assert_private()` due to future parser
+- Adds `ceiling()` to take the ceiling of a number
+- Adds `fqdn_rand_string()` to generate random string based on fqdn
+- Adds `pw_hash()` to generate password hashes
+- Adds `validate_integer()`
+- Adds `validate_numeric()` (like `validate_integer()` but also accepts floats)
+
+####Bugfixes
+- Fix seeding of `fqdn_rotate()`
+- `ensure_resource()` is more verbose on debug mode
+- Stricter argument checking for `dirname()`
+- Fix `is_domain_name()` to better match RFC
+- Fix `uriescape()` when called with array
+- Fix `file_line` resource when using the `after` attribute with `match`
 
 ##2015-01-14 - Supported Release 4.5.1
 ###Summary
@@ -75,7 +153,7 @@ backwards-compatible with the stdlib 3 series. It adds two new functions, one bu
 
 #### Features
 - New `bool2str()` function
-- New `camalcase()` function
+- New `camelcase()` function
 
 #### Bugfixes
 - Fix `has_interface_with()` when interfaces fact is nil

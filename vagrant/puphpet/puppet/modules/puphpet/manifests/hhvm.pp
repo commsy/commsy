@@ -30,10 +30,10 @@ class puphpet::hhvm(
         fail('Sorry, HHVM currently only works with Ubuntu 12.04, 13.10 and 14.04.')
       }
 
-      apt::key { '5D50B6BA': key_server => 'hkp://keyserver.ubuntu.com:80' }
+      apt::key { 'A6729974D728D7BA84154F8E4F7B93595D50B6BA': key_server => 'hkp://keyserver.ubuntu.com:80' }
 
       if $lsbdistcodename in ['lucid', 'precise'] {
-        apt::ppa { 'ppa:mapnik/boost': require => Apt::Key['5D50B6BA'], options => '' }
+        apt::ppa { 'ppa:mapnik/boost': require => Apt::Key['A6729974D728D7BA84154F8E4F7B93595D50B6BA'], options => '' }
       }
     }
     'centos': {
