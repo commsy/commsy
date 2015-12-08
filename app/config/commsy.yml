@@ -127,3 +127,8 @@ commsy:
     wordpress:
         # for activating wordpress please set the following variable on true
         enabled: false
+
+    # Limesurvey
+    limesurvey:
+        # set the following variable to activate limesurvey extension
+        enabled: false

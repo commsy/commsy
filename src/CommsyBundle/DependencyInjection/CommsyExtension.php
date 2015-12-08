@@ -69,6 +69,9 @@ class CommsyExtension extends Extension
         // wordpress
         $container->setParameter('commsy.wordpress.enabled', $config['wordpress']['enabled']);
 
+        // limesurvey
+        $container->setParameter('commsy.limesurvey.enabled', $config['limesurvey']['enabled']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

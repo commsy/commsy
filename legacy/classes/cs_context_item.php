@@ -3669,13 +3669,8 @@ class cs_context_item extends cs_item {
   
   function withLimeSurveyFunctions()
   {
-  	global $c_limesurvey;
-  	if ( !isset($c_limesurvey) || !$c_limesurvey )
-  	{
-  		return false;
-  	}
-  	
-  	return true;
+    global $symfonyContainer;
+    return $symfonyContainer->getParameter('commsy.limesurvey.enabled');
   }
   
   function setLimeSurveyActive()
