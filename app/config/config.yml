@@ -105,11 +105,3 @@ knp_menu:
     templating: false
     # the renderer to use, list is also available by default
     default_renderer: twig
-
-# craue Bundle
-craue_twig_extensions: ~
-
-# IvoryCKEditorBundle
-ivory_ck_editor:
-    configs:
-        commsy_config:

@@ -1,8 +1,7 @@
 {
-    "name": "symfony/framework-standard-edition",
-    "license": "MIT",
+    "name": "CommSy",
+    "license": "GPLv2",
     "type": "project",
-    "description": "The \"Symfony Standard Edition\" distribution",
     "autoload": {
         "psr-4": {
             "": "src/"

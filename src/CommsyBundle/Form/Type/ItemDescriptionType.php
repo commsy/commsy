@@ -24,7 +24,7 @@ class ItemDescriptionType extends AbstractType
     {
         $builder
             ->add('description', 'ckeditor', array(
-                'config_name' => 'commsy_config',
+                'config_name' => 'cs_item_config',
                 'label' => 'Description',
                 'attr' => array(
                     'placeholder' => 'Description',
