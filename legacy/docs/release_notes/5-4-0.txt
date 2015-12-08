@@ -1,7 +1,0 @@
-In der CommSy Verison 5.4 sind folgende Features enthalten:
-
-    * Automatisches Speichern kurz vor dem Auslaufen der Session
-    * Materialiensuche findet nun auch Schlagworte
-    * RSS
-    * Wiki-Anbindung
-
