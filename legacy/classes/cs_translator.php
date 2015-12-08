@@ -106,6 +106,7 @@ class cs_translator {
     * the only available constructor, initial values for internal variables
     */
    function cs_translator () {
+    $this->_file_path = realpath(dirname(__FILE__)) . '/../' . $this->_file_path;
    }
 
    /** _loadAllMessages - INTERNAL

@@ -53,10 +53,10 @@ class cs_class_factory {
          trigger_error('don\'t know where class '.$name.' is',E_USER_ERROR);
       } elseif ( empty($this->_class_array[$name]['filename']) ) {
          trigger_error('don\'t know the filename of '.$name,E_USER_ERROR);
-      } elseif ( !file_exists($this->_class_array[$name]['folder'].$this->_class_array[$name]['filename']) ) {
+      } elseif ( !file_exists(realpath(dirname(__FILE__)) . '/../' . $this->_class_array[$name]['folder'].$this->_class_array[$name]['filename']) ) {
          trigger_error('file '.$this->_class_array[$name]['folder'].$this->_class_array[$name]['filename'].' does not exist',E_USER_ERROR);
       } else {
-         include_once($this->_class_array[$name]['folder'].$this->_class_array[$name]['filename']);
+         include_once(realpath(dirname(__FILE__)) . '/../' . $this->_class_array[$name]['folder'].$this->_class_array[$name]['filename']);
       }
    }
 

@@ -645,7 +645,7 @@ class cs_environment {
    function getDiscManager() {
       $name = 'cs_disc_manager';
       if (!isset($this->instance[$name])) {
-         $file = 'classes/'.$name.'.php';
+         $file = realpath(dirname(__FILE__)) . '/'.$name.'.php';
          if ( file_exists($file) ) {
             require_once($file);
          } else {
@@ -1614,7 +1614,7 @@ class cs_environment {
    */
    function _getInstance($name) {
       if ( !isset($this->instance[$name]) ) {
-         $file = 'classes/'.$name.'.php';
+         $file = realpath(dirname(__FILE__)) . '/'.$name.'.php';
          if ( file_exists($file) ) {
             require_once($file);
          } else {

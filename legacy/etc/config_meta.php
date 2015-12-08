@@ -6,7 +6,7 @@
 @include_once('etc/commsy/settings.php');
 
 // include then special config files
-$config_path = 'etc/commsy/';
+$config_path = realpath(dirname(__FILE__)) . '/commsy/';
 $config_folder = opendir($config_path);
 $config_array = array();
 if ( $config_folder ) {
