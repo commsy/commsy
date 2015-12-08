@@ -32,7 +32,7 @@ class LegacyEnvironment
     {
         if ($this->environment === null) {
             $legacyDir = dirname($this->legacyAppPath) . '/../legacy';
-            chdir($legacyDir);
+            set_include_path(get_include_path() . PATH_SEPARATOR . $legacyDir);
 
             global $cs_color;
             global $db;
