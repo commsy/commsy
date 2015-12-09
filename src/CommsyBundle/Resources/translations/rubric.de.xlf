@@ -158,6 +158,10 @@
                 <source>actions</source>
                 <target>Aktionen</target>
             </trans-unit>
+            <trans-unit id="40">
+                <source>rating</source>
+                <target>Bewertung</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

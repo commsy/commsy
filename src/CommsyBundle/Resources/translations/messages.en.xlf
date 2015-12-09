@@ -158,7 +158,10 @@
                 <source>changedAnnotation</source>
                 <target>Changed annotation</target>
             </trans-unit>
-
+           <trans-unit id="40">
+                <source>valid until</source>
+                <target>Valid until</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

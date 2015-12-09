@@ -155,6 +155,7 @@ class MaterialController extends Controller
             'itemsCountArray' => $itemsCountArray,
             'showRating' => $roomItem->isAssessmentActive(),
             'showWorkflow' => $roomItem->withWorkflow(),
+            'showHashTags' => $roomItem->withBuzzwords(),
             'showCategories' => $roomItem->withTags(),
         );
     }

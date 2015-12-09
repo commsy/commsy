@@ -158,6 +158,10 @@
                 <source>actions</source>
                 <target>Actions</target>
             </trans-unit>
+            <trans-unit id="40">
+                <source>rating</source>
+                <target>Rating</target>
+            </trans-unit>
 
         </body>
     </file>

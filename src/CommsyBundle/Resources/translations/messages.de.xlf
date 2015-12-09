@@ -158,6 +158,10 @@
                 <source>changedAnnotation</source>
                 <target>Geänderte Anmerkung</target>
             </trans-unit>
+            <trans-unit id="40">
+                <source>valid until</source>
+                <target>Gültig bis</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
