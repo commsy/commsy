@@ -9,6 +9,8 @@ var del = require('del');
 var fs = require('fs');
 var Promise = require('promise');
 var merge = require('merge');
+var mergeStream = require('merge-stream');
+var gulpSequence = require('gulp-sequence');
 
 /**
  * Configuration
@@ -102,12 +104,20 @@ app.addScript = function(paths, outputFilename) {
 app.copy = function(srcFiles, outputDir) {
     return gulp.src(srcFiles)
         .pipe(gulp.dest(outputDir));
-};
+};  
 
 /**
  * Tasks
  * ****************************************************************************
  */
+gulp.task('clean', function(done) {
+    del.sync(config.revManifestDir + '*');
+    del.sync('web/css/build/*');
+    del.sync('web/js/build/*');
+    del.sync('web/fonts/*');
+
+    done();
+});
 
 gulp.task('less', function() {
     return app.addStyle([
@@ -116,7 +126,7 @@ gulp.task('less', function() {
     ], 'commsy.css');
 });
 
-gulp.task('js', ['less'], function() {
+gulp.task('js', function() {
     return app.addScript([
         config.bowerDir + '/jquery/dist/jquery.js',
 
@@ -148,30 +158,21 @@ gulp.task('fonts', function() {
     );
 });
 
-gulp.task('images', function(done) {
-    app.copy(
+gulp.task('images', function() {
+    var assetImages = app.copy(
         config.assetsDir + '/img/*',
         'web/img'
     );
 
-    app.copy([
+    var bowerImages = app.copy([
         config.bowerDir + '/jstree/dist/themes/default/*.png',
         config.bowerDir + '/jstree/dist/themes/default/*.gif'
     ], 'web/css/build');
 
-    done();
+    return mergeStream(assetImages, bowerImages);
 });
 
-gulp.task('clean', function(done) {
-    del.sync(config.revManifestDir + '*');
-    del.sync('web/css/build/*');
-    del.sync('web/js/build/*');
-    del.sync('web/fonts/*');
-
-    done();
-});
-
-gulp.task('staticThemes', ['js'], function(done) {
+gulp.task('staticThemes', function(done) {
     var promises = [];
 
     app.getThemes().forEach(function(theme) {
@@ -190,7 +191,7 @@ gulp.task('staticThemes', ['js'], function(done) {
     });
 });
 
-gulp.task('manifest', ['staticThemes'], function() {
+gulp.task('manifest', function() {
     return gulp.src(config.revManifestDir + '*.json')
         .pipe(plugins.jsoncombine('rev-manifest.json', function(data) {
             var result = {};
@@ -205,16 +206,39 @@ gulp.task('manifest', ['staticThemes'], function() {
         .pipe(gulp.dest(config.revManifestDir));
 });
 
-gulp.task('postClean', ['manifest'], function(done) {
+gulp.task('postClean', function(done) {
     del.sync(config.revManifestDir + 'commsy*');
 
     done();
 });
 
+/**
+ * Main Tasks
+ * ****************************************************************************
+ */
 gulp.task('watch', function() {
     gulp.watch(config.assetsDir + '/uikit-commsy/' + config.lessPattern, ['default']);
     gulp.watch(config.assetsDir + '/js/**/*.js', ['default']);
-    gulp.watch(config.themesDir + '/' + config.lessPattern, ['default']);
+    gulp.watch(config.themesDir + '/' + config.lessPattern, ['all']);
 });
 
-gulp.task('default', ['clean', 'less', 'js', 'fonts', 'images', 'staticThemes', 'manifest', 'postClean']);
+gulp.task('default', function(done) {
+    gulpSequence(
+        'clean',
+        ['less', 'js', 'fonts', 'images'],
+        'manifest',
+        'postClean'
+    )(done);
+
+});
+
+gulp.task('all', function(done) {
+    gulpSequence(
+        'clean',
+        ['less', 'js', 'fonts', 'images'],
+        'staticThemes',
+        'manifest',
+        'postClean'
+    )(done);
+
+});
