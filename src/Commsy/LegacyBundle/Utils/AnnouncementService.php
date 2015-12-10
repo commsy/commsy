@@ -33,11 +33,12 @@ class AnnouncementService
     }
 
 
-    public function getListAnnouncements($roomId, $max, $start)
+    public function getListAnnouncements($roomId, $max = NULL, $start = NULL)
     {
-        $this->announcementManager->reset();
         $this->announcementManager->setContextLimit($roomId);
-        $this->announcementManager->setIntervalLimit($start, $max);
+        if ($max !== NULL && $start !== NULL) {
+            $this->announcementManager->setIntervalLimit($start, $max);
+        }
 
         $this->announcementManager->select();
         $announcementList = $this->announcementManager->get();
