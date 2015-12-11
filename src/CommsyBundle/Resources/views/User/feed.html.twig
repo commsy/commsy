@@ -1,39 +1,71 @@
 {% import 'CommsyBundle:Utils:macros.html.twig' as macros %}
 
-{% if not users is empty %}
-    {% for user in users %}
-        <article class="uk-comment">
-        <div class="cs-comment-change-info {{ macros.statusColor(readerList, user.itemId) }}" data-uk-tooltip title="ToDo:New Short Changed Info"></div>
-            <header class="uk-comment-header uk-flex">
-                <div class="users-checkbox uk-margin-right uk-hidden">
-                    <form class="uk-form">
-                        <input type="checkbox">
-                    </form>
-                </div>
-                <div class="uk-margin-right">
-                    {% if user.isUser %}
-                        {{  macros.userIconLink(user) }}
-                    {% else %}
-                        {{  macros.userIcon(user) }}
-                    {% endif %}
-                     <div class="uk-comment-meta">
-                        {% if user.getModificationDate|date("d.m.Y") == "now"|date("d.m.Y") %}
-                            {{ 'today'|trans({})|capitalize }}, {{user.getModificationDate|date("H:i")}}
+{% for user in users %}
+
+        <div class="uk-width-medium-1-2">
+
+            <div class="uk-panel uk-panel-box cs-panel-border uk-margin-bottom">
+ 
+                <div class="uk-panel-teaser cs-panel-teaser-user">
+                    {{ macros.statusColor(readerList, user.itemId, 'grid') }}
+ 
+                    <div class="items-checkbox uk-float-left uk-margin-right uk-hidden">
+                        {% if is_granted('ITEM_EDIT', user.itemId) %}
+                            <form class="uk-form">
+                                <input type="checkbox" value="{{ user.itemId }}">
+                            </form>
                         {% else %}
-                            {{user.getModificationDate|date("d.m.Y")}}
+                            <i class="uk-icon-ban uk-icon-small red"></i>
                         {% endif %}
-                     </div>   
+                    </div>
+                   <img class="uk-thumbnail uk-border-circle" style="height:50px; width:50px;" src="{{ path('commsy_user_image', {'roomId': user.contextId, 'itemId': user.itemId}) }}" data-uk-tooltip title="{{ user.fullname }}">
+                    <span class="uk-text-large uk-text-middle">
+                        <a href="">{{ user.title }} {{user.fullname}}</a>
+                    </span>
                 </div>
-                <div>
-                    <h4 class="uk-comment-title">
-                        <a href="{{ path('commsy_user_detail', {'roomId': roomId, 'itemId': user.itemId}) }}">{{ user.fullname }}</a>
-                    </h4>
-    
-                    <div class="uk-comment-meta">
-                        {{ 'EMail'|trans({})|capitalize }}: {{user.getEMail}}
+                <span>
+                    {% if user.email %}
+                        {{ user.email }}
+                    {% else %}
+                        {'no email'|trans({}) }
+                    {% endif %}
+                </span><br/>
+                <div class="uk-flex uk-flex-space-between">
+                    <div>
+                        {% if user.telephone %}
+                            <span data-uk-tooltip title="{{user.telephone}}" >{{ user.telephone|truncate(20) }}</span><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no telephone'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        {% if user.cellularphone %}
+                            <span data-uk-tooltip title="{{user.cellularphone}}" >{{ user.cellularphone|truncate(20) }}</span>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no handy'|trans({}) }}">---</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if user.street %}
+                            <span data-uk-tooltip title="{{user.street}}">{{ user.street |truncate(20)}}</span><br/>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no street'|trans({}) }}">---</span><br/>
+                        {% endif %}
+                        
+                        {% if user.city %}
+                            <span >{{ user.zipcode }} {{ user.city }}</span>
+                        {% else %}
+                            <span class="uk-text-muted" data-uk-tooltip title="{{'no city'|trans({}) }}">---</span>
+                        {% endif %}
+                        </span>
                     </div>
                 </div>
-            </header>
-        </article>
-    {% endfor %}
-{% endif %}
+            </div>
+        </div>
+
+
+
+
+    
+{% else %}
+    {{ 'No more results found'|trans}}
+{% endfor %}
+

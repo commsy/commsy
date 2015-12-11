@@ -158,6 +158,26 @@
                 <source>changedAnnotation</source>
                 <target>Geänderte Anmerkung</target>
             </trans-unit>
+            <trans-unit id="40">
+                <source>valid until</source>
+                <target>Gültig bis</target>
+            </trans-unit>
+            <trans-unit id="41">
+                <source>no telephone</source>
+                <target>Keine Telefonnummer angegeben</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>no handy</source>
+                <target>Keine Mobilnummer angegeben</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>no street</source>
+                <target>Keine Straße angegeben</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>no city</source>
+                <target>Keine Stadt angegeben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

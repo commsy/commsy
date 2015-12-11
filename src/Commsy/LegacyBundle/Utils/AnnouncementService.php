@@ -19,11 +19,26 @@ class AnnouncementService
         $this->announcementManager->reset();
     }
 
-    public function getListAnnouncements($roomId, $max, $start)
+    public function getCountArray($roomId)
     {
-        $this->announcementManager->reset();
         $this->announcementManager->setContextLimit($roomId);
-        $this->announcementManager->setIntervalLimit($start, $max);
+        $this->announcementManager->select();
+        $countAnnouncement = array();
+        $countAnnouncementArray['count'] = sizeof($this->announcementManager->get()->to_array());
+        $this->announcementManager->resetLimits();
+        $this->announcementManager->select();
+        $countAnnouncementArray['countAll'] = $this->announcementManager->getCountAll();
+
+        return $countAnnouncementArray;
+    }
+
+
+    public function getListAnnouncements($roomId, $max = NULL, $start = NULL)
+    {
+        $this->announcementManager->setContextLimit($roomId);
+        if ($max !== NULL && $start !== NULL) {
+            $this->announcementManager->setIntervalLimit($start, $max);
+        }
 
         $this->announcementManager->select();
         $announcementList = $this->announcementManager->get();
@@ -58,6 +73,25 @@ class AnnouncementService
             if (isset($formData['rubrics']['institution'])) {
                 $relatedLabel = $formData['rubrics']['institution'];
                 $this->announcementManager->setInstitutionLimit($relatedLabel->getItemId());
+            }
+        }
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->announcementManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->announcementManager->setTagArrayLimit($categories);
+                }
             }
         }
     }
