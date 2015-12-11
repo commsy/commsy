@@ -6,13 +6,80 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\Loader\ArrayLoader;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use CommsyBundle\Filter\UserFilterType;
 
+use \ZipArchive;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+
+
 class UserController extends Controller
 {
+    /**
+     * @Route("/room/{roomId}/user/feed/{start}")
+     * @Template()
+     */
+    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
+    {
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+        $roomManager = $legacyEnvironment->getRoomManager();
+        $roomItem = $roomManager->getItem($roomId);
+
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
+        }
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_user_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => false,
+            'hasCategories' => false,
+        ));
+
+        // get the user manager service
+        $userService = $this->get('commsy.user_service');
+
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in user manager
+            $userService->setFilterConditions($filterForm);
+        }
+
+        // get user list from manager service 
+        $users = $userService->getListUsers($roomId, $max, $start);
+        $readerService = $this->get('commsy.reader_service');
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+        $current_context = $legacyEnvironment->getCurrentContextItem();
+
+
+        $readerList = array();
+        foreach ($users as $item) {
+            $readerList[$item->getItemId()] = $readerService->getChangeStatus($item->getItemId());
+        }
+
+
+        return array(
+            'roomId' => $roomId,
+            'users' => $users,
+            'readerList' => $readerList,
+            'showRating' => false,
+       );
+    }
+    
     /**
      * @Route("/room/{roomId}/user")
      * @Template()
@@ -21,81 +88,78 @@ class UserController extends Controller
     {
         $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
 
-        // get room item for information panel
         $roomManager = $legacyEnvironment->getRoomManager();
         $roomItem = $roomManager->getItem($roomId);
-        
-        // setup filter form
-        $defaultFilterValues = array(
-            'activated' => true
-        );
-        $form = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array('roomId' => $roomId)),
-            'method' => 'GET',
-        ));
 
-        // check query for form data
-        if ($request->query->has($form->getName())) {
-            // manually bind values from the request
-            $form->submit($request->query->get($form->getName()));
+        if (!$roomItem) {
+            throw $this->createNotFoundException('The requested room does not exist');
         }
 
-        return array(
-            'roomId' => $roomId,
-            'form' => $form->createView(),
-            'module' => 'user',
-            'showCategories' => $roomItem->withTags(),
-        );
-    }
-    
-    /**
-     * @Route("/room/{roomId}/user/feed/{start}")
-     * @Template()
-     */
-    public function feedAction($roomId, $max = 10, $start = 0, Request $request)
-    {
-        // setup filter form
+
+
+       // get the user manager service
+        $userService = $this->get('commsy.user_service');
         $defaultFilterValues = array(
-            'activated' => true
+            'activated' => true,
         );
-        $form = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
-            'action' => $this->generateUrl('commsy_user_list', array('roomId' => $roomId)),
-            'method' => 'GET',
+        $filterForm = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_user_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => false,
+            'hasCategories' => false,
         ));
 
-        // check query for form data
-        if ($request->query->has($form->getName())) {
-            // manually bind values from the request
-            $form->submit($request->query->get($form->getName()));
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in user manager
+            $userService->setFilterConditions($filterForm);
         }
 
-        // get the material manager service
+        // get user list from manager service 
+        $itemsCountArray = $userService->getCountArray($roomId);
+
+
+
+
+        // setup filter form
+        $defaultFilterValues = array(
+            'activated' => true,
+        );
+        $filterForm = $this->createForm(new UserFilterType(), $defaultFilterValues, array(
+            'action' => $this->generateUrl('commsy_user_list', array(
+                'roomId' => $roomId,
+            )),
+            'hasHashtags' => false,
+            'hasCategories' => false,
+        ));
+
+        $legacyEnvironment = $this->get('commsy_legacy.environment')->getEnvironment();
+
+
+        // get the user manager service
         $userService = $this->get('commsy.user_service');
 
-        // set filter conditions in material manager
-        $userService->setFilterConditions($form);
-
-        // get material list from manager service 
-        $users = $userService->getListUsers($roomId, $max, $start);
-
-        $readerService = $this->get('commsy.reader_service');
-
-        $readerList = array();
-        foreach ($users as $item) {
-            $reader = $readerService->getLatestReader($item->getItemId());
-            if ( empty($reader) ) {
-               $readerList[$item->getItemId()] = 'new';
-            } elseif ( $reader['read_date'] < $item->getModificationDate() ) {
-               $readerList[$item->getItemId()] = 'changed';
-            }
+        // apply filter
+        $filterForm->handleRequest($request);
+        if ($filterForm->isValid()) {
+            // set filter conditions in user manager
+            $userService->setFilterConditions($filterForm);
         }
 
         return array(
             'roomId' => $roomId,
-            'users' => $users,
-            'readerList' => $readerList
+            'form' => $filterForm->createView(),
+            'module' => 'user',
+            'itemsCountArray' => $itemsCountArray,
+            'showRating' => false,
+            'showHashTags' => false,
+            'showCategories' => false,
         );
     }
+
+
     
     /**
      * @Route("/room/{roomId}/user/{itemId}")

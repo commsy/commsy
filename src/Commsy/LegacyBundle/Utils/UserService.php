@@ -6,6 +6,7 @@ use Symfony\Component\Form\Form;
 
 use Commsy\LegacyBundle\Services\LegacyEnvironment;
 
+
 class UserService
 {
     private $legacyEnvironment;
@@ -24,6 +25,91 @@ class UserService
         $this->roomManager = $this->legacyEnvironment->getEnvironment()->getRoomManager();
         $this->roomManager->reset();
     }
+
+    public function getCountArray($roomId)
+    {
+        $this->userManager->setContextLimit($roomId);
+        $this->userManager->setUserLimit();
+        $this->userManager->select();
+        $countUser = array();
+        $countUserArray['count'] = sizeof($this->userManager->get()->to_array());
+        $this->userManager->resetLimits();
+        $this->userManager->setUserLimit();
+        $this->userManager->select();
+        $countUserArray['countAll'] = $this->userManager->getCountAll();
+
+        return $countUserArray;
+    }
+
+
+    public function getListUsers($roomId, $max = NULL, $start = NULL)
+    {
+       $this->userManager->setContextLimit($roomId);
+       $this->userManager->resetLimits();
+        if ($max !== NULL && $start !== NULL) {
+            $this->userManager->setIntervalLimit($start, $max);
+        }
+        $this->userManager->setUserLimit();
+        $this->userManager->setOrder('name');
+        $this->userManager->select();
+        $userList = $this->userManager->get();
+
+        $user_array = $userList->to_array();
+
+        return $user_array;
+    }
+
+    public function setFilterConditions(Form $filterForm)
+    {
+        $formData = $filterForm->getData();
+
+        // activated
+        if ($formData['activated']) {
+            $this->userManager->showNoNotActivatedEntries();
+        }
+
+        // rubrics
+        if ($formData['rubrics']) {
+            // group
+            if (isset($formData['rubrics']['group'])) {
+                $relatedLabel = $formData['rubrics']['group'];
+                $this->userManager->setGroupLimit($relatedLabel->getItemId());
+            }
+            
+            // topic
+            if (isset($formData['rubrics']['topic'])) {
+                $relatedLabel = $formData['rubrics']['topic'];
+                $this->userManager->setTopicLimit($relatedLabel->getItemId());
+            }
+            
+            // institution
+            if (isset($formData['rubrics']['institution'])) {
+                $relatedLabel = $formData['rubrics']['institution'];
+                $this->userManager->setInstitutionLimit($relatedLabel->getItemId());
+            }
+        }
+        // hashtag
+        if (isset($formData['hashtag'])) {
+            if (isset($formData['hashtag']['hashtag'])) {
+                $hashtag = $formData['hashtag']['hashtag'];
+                $itemId = $hashtag->getItemId();
+                $this->userManager->setBuzzwordLimit($itemId);
+            }
+        }
+
+        // category
+        if (isset($formData['category'])) {
+            if (isset($formData['category']['category'])) {
+                $categories = $formData['category']['category'];
+
+                if (!empty($categories)) {
+                    $this->userManager->setTagArrayLimit($categories);
+                }
+            }
+        }
+    }
+
+
 
     public function getUser($userId)
     {
@@ -68,26 +154,4 @@ class UserService
         return $roomList->to_array();
     }
     
-    public function getListUsers($roomId, $max, $start)
-    {
-        $this->userManager->reset();
-        $this->userManager->setContextLimit($roomId);
-        $this->userManager->setUserLimit();
-        $this->userManager->setIntervalLimit($start, $max);
-        
-        $this->userManager->select();
-        $userList = $this->userManager->get();
-
-        return $userList->to_array();
-    }
-    
-    public function setFilterConditions(Form $filterForm)
-    {
-        $formData = $filterForm->getData();
-
-        // activated
-        if ($formData['activated']) {
-            $this->userManager->showNoNotActivatedEntries();
-        }
-    }
 }

@@ -162,6 +162,22 @@
                 <source>valid until</source>
                 <target>Valid until</target>
             </trans-unit>
+            <trans-unit id="41">
+                <source>no telephone</source>
+                <target>No telephone number availabe</target>
+            </trans-unit>
+            <trans-unit id="42">
+                <source>no handy</source>
+                <target>No mobil number available</target>
+            </trans-unit>
+            <trans-unit id="43">
+                <source>no street</source>
+                <target>No street available</target>
+            </trans-unit>
+            <trans-unit id="44">
+                <source>no city</source>
+                <target>No city available</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

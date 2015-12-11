@@ -98,24 +98,46 @@
     </div>
 {% endmacro %}
 
-{% macro statusColor(readerList, itemId) %}
-    {% if readerList[itemId] is defined %}
-       {% if readerList[itemId] == 'new' %}
-            <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
-                <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
-            </div>
-        {% elseif readerList[itemId] == 'changed' %}
-            <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
-                 <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-            </div>
-        {% elseif readerList[itemId] == 'new_annotation' %}
-            <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
-                 <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-            </div>
-        {% elseif readerList[itemId] == 'changed_annotation' %}
-            <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
-                 <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
-            </div>
+{% macro statusColor(readerList, itemId, type='comment') %}
+    {% if type == 'grid' %}
+        {% if readerList[itemId] is defined %}
+           {% if readerList[itemId] == 'new' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'new_annotation' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed_annotation' %}
+                <div class="cs-grid-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if readerList[itemId] is defined %}
+           {% if readerList[itemId] == 'new' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newEntry'|trans({})}}">
+                    <i class="uk-icon-medium uk-text-danger uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedEntry'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'new_annotation' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'newAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% elseif readerList[itemId] == 'changed_annotation' %}
+                <div class="cs-comment-change-info" data-uk-tooltip="{pos:'right'}" title="{{ 'changedAnnotation'|trans({})}}">
+                     <i class="uk-icon-medium uk-text-warning uk-icon-exclamation"></i>
+                </div>
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endmacro %}
