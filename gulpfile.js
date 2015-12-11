@@ -226,7 +226,7 @@ gulp.task('default', function(done) {
     gulpSequence(
         'clean',
         ['less', 'js', 'fonts', 'images'],
-        'staticThemes'
+        'staticThemes',
         'manifest',
         'postClean'
     )(done);
