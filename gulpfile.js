@@ -217,22 +217,23 @@ gulp.task('postClean', function(done) {
  * ****************************************************************************
  */
 gulp.task('watch', function() {
-    gulp.watch(config.assetsDir + '/uikit-commsy/' + config.lessPattern, ['default']);
-    gulp.watch(config.assetsDir + '/js/**/*.js', ['default']);
-    gulp.watch(config.themesDir + '/' + config.lessPattern, ['all']);
+    gulp.watch(config.assetsDir + '/uikit-commsy/' + config.lessPattern, ['basic']);
+    gulp.watch(config.assetsDir + '/js/**/*.js', ['basic']);
+    gulp.watch(config.themesDir + '/' + config.lessPattern, ['default']);
 });
 
 gulp.task('default', function(done) {
     gulpSequence(
         'clean',
         ['less', 'js', 'fonts', 'images'],
+        'staticThemes'
         'manifest',
         'postClean'
     )(done);
 
 });
 
-gulp.task('all', function(done) {
+gulp.task('basic', function(done) {
     gulpSequence(
         'clean',
         ['less', 'js', 'fonts', 'images'],
